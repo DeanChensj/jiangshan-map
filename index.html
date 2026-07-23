@@ -71,41 +71,46 @@
         </div>
       </div>
 
-      <!-- 3 大爆款模式选择卡片 -->
+      <!-- 2 大核心爆款模式大屏视觉选择卡片 -->
       <div class="mode-cards-grid">
 
-        <!-- 模式一：看图猜朝代 -->
-        <article class="mode-card" id="modeCardQuiz">
-          <div>
-            <div class="mode-badge-top badge-red">🔥 爆款考点 · 五代十国割据</div>
-            <div class="mode-icon">🗺️</div>
-            <h3 class="mode-title">看图猜朝代 (GeoQuiz)</h3>
+        <!-- 模式一：看图猜朝代 (GEO-QUIZ SHOWCASE CARD) -->
+        <article class="mode-card mode-card-visual" id="modeCardQuiz">
+          <div class="mode-card-bg-art" style="background-image: url('img/quiz_mode_cover.jpg');"></div>
+          <div class="mode-card-glass-overlay">
+            <div class="mode-badge-top badge-red">🔥 核心竞猜 · 无字疆域辩识</div>
+            <h3 class="mode-title">看图猜朝代 <span class="mode-subtitle">GEO-QUIZ EMPIRE DISCOVERY</span></h3>
             <p class="mode-desc">
-              无字矢量疆域图悬浮呈现！放大镜局部辨识都城原点、长城防线与多国分裂边界。快问快答连续 Combo 加倍得分！
+              无字矢量历史疆域高清沙盘呈现在前！精准锁死都城起点、长城边关与分裂割据要塞。连续 Combo 触发气息翻倍加分。
             </p>
             <div class="mode-options-row">
-              <button class="btn-subdifficulty active" data-quiz-diff="standard">标准难度 (大一统)</button>
+              <button class="btn-subdifficulty active" data-quiz-diff="standard">标准考题 (大一统)</button>
               <button class="btn-subdifficulty" data-quiz-diff="hell">地狱难度 (割据乱世)</button>
             </div>
+            <button class="btn-primary-launch" id="btnLaunchQuiz">
+              <span>进入鉴图问答</span> <span class="btn-arrow">➔</span>
+            </button>
           </div>
-          <button class="btn-primary-launch" id="btnLaunchQuiz">
-            <span>进入鉴图问答</span> →
-          </button>
         </article>
 
-        <!-- 模式三：天下大势 Conquest Strategy -->
-        <article class="mode-card" id="modeCardConquest">
-          <div>
-            <div class="mode-badge-top badge-gold">👑 轻量 ROGUELIKE 战略染色</div>
-            <div class="mode-icon">⛩️</div>
-            <h3 class="mode-title">天下大势 (Territorial Conquest)</h3>
+        <!-- 模式三：天下大势 (TERRITORIAL CONQUEST SHOWCASE CARD) -->
+        <article class="mode-card mode-card-visual" id="modeCardConquest">
+          <div class="mode-card-bg-art" style="background-image: url('img/conquest_mode_cover.jpg');"></div>
+          <div class="mode-card-glass-overlay">
+            <div class="mode-badge-top badge-gold">👑 战略染色 · 二十四大区大合纵</div>
+            <h3 class="mode-title">天下大势 <span class="mode-subtitle">WARLORD STRATEGY THEATER</span></h3>
             <p class="mode-desc">
-              选定割据政权（如后梁、曹魏、蜀汉、吴越）。邻接战略板块问答或金币劝降，胜则专属旗帜与代表色动态闪耀复原！通关开国登基。
+              选定割据政权（如后梁、曹魏、蜀汉、吴越）。出兵邻接要冲问答破城或纳贡金钱合纵，大区连片染上班方专属色纹！
             </p>
+            <div class="mode-options-row">
+              <span class="mode-tag-pill">⚔️ 24 大战略要区</span>
+              <span class="mode-tag-pill">🤝 金钱劝降外交</span>
+              <span class="mode-tag-pill">📜 御前军议推演</span>
+            </div>
+            <button class="btn-primary-launch" id="btnLaunchConquest">
+              <span>决战天下大势</span> <span class="btn-arrow">➔</span>
+            </button>
           </div>
-          <button class="btn-primary-launch" id="btnLaunchConquest">
-            <span>决战天下大势</span> →
-          </button>
         </article>
 
       </div>
