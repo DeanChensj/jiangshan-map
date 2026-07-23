@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《指点江山：中国历史地理挑战赛》| 纯前端互动历史地理轻手游</title>
+  <meta name="description" content="包含【看图猜朝代】、【名将征途地理定位 GeoGuessr】与【天下大势策略割据吞并】三大爆款地图游戏模式。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 顶部玻璃框导航条 -->
+  <header class="app-header">
+    <div class="brand" id="brandLobbyBtn">
+      <div class="brand-seal">江</div>
+      <div class="brand-title-box">
+        <h1 class="brand-title">指点江山</h1>
+        <span class="brand-subtitle">CHINA HISTORICAL GEOGRAPHY CHALLENGE</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <button class="btn-icon" id="btnToggleSound" title="点击开关古风视听音效">
+        <div class="audio-waves" id="audioWaveVisualizer">
+          <span></span><span></span><span></span>
+        </div>
+        <span id="soundLabel">乐效: 开</span>
+      </button>
+
+      <button class="btn-icon" id="btnAchievements" title="查看历史勋章">
+        🏅 勋章录 (<span id="unlockedBadgesCount">3</span>/9)
+      </button>
+    </div>
+  </header>
+
+  <!-- 全局视图容器 -->
+  <main class="view-container">
+
+    <!-- ========================================================
+         VIEW 0: 游戏大厅 (LOBBY)
+         ======================================================== -->
+    <section class="game-view active" id="viewLobby">
+      <div class="hero-banner">
+        <div class="hero-tag">MASTER RELEASE SPEC V1.0 · 纯前端纯粹交互</div>
+        <h2 class="hero-headline">风云五千年 · <span>看你指点何处江山</span></h2>
+        <p class="hero-lead">
+          继承现代地图动效美学与视听碰撞。从青铜白银到地狱级五代十国割据认疆，
+          从韩信、岳飞点位精确公里数推算，到 24 战略大区天下大势问答连片染色！
+        </p>
+
+        <div class="stats-strip">
+          <div class="stat-item">
+            <span class="stat-num" id="totalPlayersCount">98,420</span>
+            <span class="stat-label">累计历史挑战战者</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">S+ 级 GPS</span>
+            <span class="stat-label">名将轨迹测量精度</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">24 大区</span>
+            <span class="stat-label">天下大势战略邻接拓扑</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">100% 零外链</span>
+            <span class="stat-label">Web Audio 原生中式声效</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 大爆款模式选择卡片 -->
+      <div class="mode-cards-grid">
+
+        <!-- 模式一：看图猜朝代 -->
+        <article class="mode-card" id="modeCardQuiz">
+          <div>
+            <div class="mode-badge-top badge-red">🔥 爆款考点 · 五代十国割据</div>
+            <div class="mode-icon">🗺️</div>
+            <h3 class="mode-title">看图猜朝代 (GeoQuiz)</h3>
+            <p class="mode-desc">
+              无字矢量疆域图悬浮呈现！放大镜局部辨识都城原点、长城防线与多国分裂边界。快问快答连续 Combo 加倍得分！
+            </p>
+            <div class="mode-options-row">
+              <button class="btn-subdifficulty active" data-quiz-diff="standard">标准难度 (大一统)</button>
+              <button class="btn-subdifficulty" data-quiz-diff="hell">地狱难度 (割据乱世)</button>
+            </div>
+          </div>
+          <button class="btn-primary-launch" id="btnLaunchQuiz">
+            <span>进入鉴图问答</span> →
+          </button>
+        </article>
+
+        <!-- 模式二：名将征途 GeoGuessr -->
+        <article class="mode-card" id="modeCardGuessr">
+          <div>
+            <div class="mode-badge-top badge-blue">📍 GPS 高精度算法 · 抖效流光</div>
+            <div class="mode-icon">⚔️</div>
+            <h3 class="mode-title">名将征途 (GeoGuessr)</h3>
+            <p class="mode-desc">
+              根据英雄生平绝词，在高清矢量 GIS 地图上依次精准指点【籍贯起点 📍】$\rightarrow$【高光战役 ⚔️】$\rightarrow$【长眠落幕 ☠️】！大圆距离公式毫秒核算公里数。
+            </p>
+          </div>
+          <button class="btn-primary-launch" id="btnLaunchGuessr">
+            <span>开始名将寻踪</span> →
+          </button>
+        </article>
+
+        <!-- 模式三：天下大势 Conquest Strategy -->
+        <article class="mode-card" id="modeCardConquest">
+          <div>
+            <div class="mode-badge-top badge-gold">👑 轻量 ROGUELIKE 战略染色</div>
+            <div class="mode-icon">⛩️</div>
+            <h3 class="mode-title">天下大势 (Territorial Conquest)</h3>
+            <p class="mode-desc">
+              选定割据政权（如后梁、曹魏、蜀汉、吴越）。邻接战略板块问答或金币劝降，胜则专属旗帜与代表色动态闪耀复原！通关开国登基。
+            </p>
+          </div>
+          <button class="btn-primary-launch" id="btnLaunchConquest">
+            <span>决战天下大势</span> →
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 1: 看图猜朝代 (MODE 1)
+         ======================================================== -->
+    <section class="game-view" id="viewQuiz">
+      <div class="top-hud-bar">
+        <div class="hud-left">
+          <button class="btn-back-lobby" id="quizBackBtn">← 返回大厅</button>
+          <span class="hud-mode-title" id="quizModeBadgeLabel">看图猜朝代 · 地狱模式</span>
+        </div>
+        <div class="hud-pills">
+          <div class="hud-pill">关卡: <strong id="quizCurrentProgress">1 / 5</strong></div>
+          <div class="hud-pill">得分: <strong id="quizScoreText">0</strong></div>
+          <div class="hud-pill">连胜: <span class="combo-flame" id="quizComboText">X0 COMBO</span></div>
+          <label class="hud-pill" style="cursor:pointer">
+            <input type="checkbox" id="chkModernOverlay" style="margin-right:4px">
+            叠加大一统省界对比
+          </label>
+        </div>
+      </div>
+
+      <div class="geoquiz-layout">
+        <!-- SVG Canvas Vector Map Display -->
+        <div class="svg-board-wrapper" id="quizMapContainer">
+          <div class="zoom-lens" id="quizZoomLens">
+            <svg id="zoomLensSvg" viewBox="0 0 840 560"></svg>
+          </div>
+          <svg id="quizMapSvg" viewBox="0 0 840 560" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+
+        <!-- Right Question Card -->
+        <div class="quiz-side-panel">
+          <div class="quiz-question-box">
+            <div class="quiz-countdown-bar">
+              <div class="quiz-countdown-fill" id="quizTimerBar"></div>
+            </div>
+
+            <h4 style="font-size:17px; margin-bottom:6px" id="quizQuestionPrompt">
+              下图呈现的版图边缘特征，属于历史上的哪一个朝代或割据时期？
+            </h4>
+            <p style="font-size:12px; color:var(--text-secondary)" id="quizHoverHint">
+              💡 提示：按住鼠标在争议要隘（如幽云十六州、西域都护府）上滑动可开启【高精放大镜】。
+            </p>
+
+            <div class="quiz-clue-chips" id="quizClueChips"></div>
+
+            <div class="options-list" id="quizOptionsContainer"></div>
+          </div>
+
+          <!-- Post Answer Historical Master Card -->
+          <div class="dynasty-detail-card" id="quizDetailCard">
+            <div class="dynasty-detail-title" id="detailCardName">后周 (公元 951-960)</div>
+            <div style="font-size:12px; color:var(--gold-emperor); margin-bottom:8px" id="detailCardPeriod"></div>
+            <p style="font-size:13px; line-height:1.7; color:#d1d8e0" id="detailCardDesc"></p>
+            <div style="margin-top:14px; text-align:right">
+              <button class="btn-primary-launch" style="padding:10px 20px; width:auto; display:inline-flex" id="btnNextQuizRound">
+                下一题 ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 2: 名将征途 (MODE 2 - GEOGUESSR)
+         ======================================================== -->
+    <section class="game-view" id="viewGuessr">
+      <div class="top-hud-bar">
+        <div class="hud-left">
+          <button class="btn-back-lobby" id="guessrBackBtn">← 返回大厅</button>
+          <span class="hud-mode-title">名将征途 · 经纬度绝对测量</span>
+        </div>
+        <div class="hud-pills">
+          <div class="hud-pill">当前名将: <strong id="guessrHeroTitle">兵仙韩信</strong></div>
+          <div class="hud-pill">累积误差: <strong id="guessrTotalKmText">0 km</strong></div>
+          <div class="hud-pill">当前评级: <span class="grade-stamp" style="font-size:22px" id="guessrCurrentGrade">S+</span></div>
+        </div>
+      </div>
+
+      <!-- Hero quick carousel switcher -->
+      <div class="geoguessr-hero-strip" id="heroCarouselStrip"></div>
+
+      <div class="guessr-main-grid">
+        <!-- Left Hero Quest Panel -->
+        <aside class="guessr-mission-panel">
+          <div>
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="font-size:38px" id="heroBigAvatar">⚔️</span>
+              <div>
+                <h3 style="font-family:var(--font-calligraphy); font-size:28px" id="heroBigName">韩信</h3>
+                <span style="font-size:12px; color:var(--gold-emperor)" id="heroBigEra">汉初 · 国士无双</span>
+              </div>
+            </div>
+
+            <p class="hero-bio-quote" id="heroQuote">“臣请自择三十万人，为大王破楚。”</p>
+            <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.6; margin-bottom:16px" id="heroBioText"></p>
+
+            <div class="milestones-tracker" id="milestonesList"></div>
+          </div>
+
+          <div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px" id="pinClickHint">
+              👆 请在右侧高精地图点击确定选点，然后再点击【确认投放坐标】。
+            </div>
+            <button class="btn-primary-launch" id="btnConfirmGuessPoint">
+              📍 确认指点该点坐标
+            </button>
+            <button class="btn-primary-launch" id="btnShareGuessrScore" style="display:none; margin-top:8px; background:linear-gradient(135deg,#00f2fe,#4facfe); color:#fff">
+              📜 生成名将专属战报海报
+            </button>
+          </div>
+        </aside>
+
+        <!-- Right Interactive High-Precision China Map -->
+        <div class="svg-board-wrapper" id="guessrMapContainer" style="cursor:crosshair">
+          <svg id="guessrMapSvg" viewBox="0 0 840 560" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 3: 天下大势 (MODE 3 - STRATEGY CONQUEST)
+         ======================================================== -->
+    <section class="game-view" id="viewConquest">
+      <div class="top-hud-bar">
+        <div class="hud-left">
+          <button class="btn-back-lobby" id="conquestBackBtn">← 返回大厅</button>
+          <span class="hud-mode-title" id="scenarioTitleBadge">天下大势 · 907年五代割据</span>
+        </div>
+        <div class="hud-pills">
+          <div class="hud-pill">年号回合: <strong id="conquestTurnText">第 1 年</strong></div>
+          <div class="hud-pill">统一进度: <strong id="conquestUnifyCount">4 / 24 大区</strong></div>
+          <div class="hud-pill">已一统声望: <strong id="conquestPrestige">850</strong></div>
+        </div>
+      </div>
+
+      <div class="conquest-layout">
+        <!-- 24 Strategic Macro Region Topology Map -->
+        <div class="svg-board-wrapper" id="conquestMapContainer">
+          <svg id="conquestMapSvg" viewBox="0 0 840 560" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+
+        <!-- Right Command Dashboard -->
+        <aside class="conquest-cmd-panel">
+          <div class="faction-crest-banner">
+            <div class="faction-flag-dot" id="playerFlagDot" style="background:#e74c3c"></div>
+            <div>
+              <div style="font-family:var(--font-calligraphy); font-size:22px" id="playerFactionName">后梁 (朱温)</div>
+              <div style="font-size:11px; color:var(--text-secondary)" id="playerCapitalRegionName">都城: 汴州中原</div>
+            </div>
+          </div>
+
+          <div class="resources-grid">
+            <div class="res-pill">
+              <div class="res-val" id="resGold">480</div>
+              <div class="res-key">💰 库金</div>
+            </div>
+            <div class="res-pill">
+              <div class="res-val" id="resTroops">28.5万</div>
+              <div class="res-key">⚔️ 兵马</div>
+            </div>
+            <div class="res-pill">
+              <div class="res-val" id="resMorale">92</div>
+              <div class="res-key">🔥 军心</div>
+            </div>
+          </div>
+
+          <!-- Annual Historical Event Card -->
+          <div class="event-card-box" id="eventCardBox">
+            <div class="event-card-tag">📜 年度随机史实策论</div>
+            <h4 class="event-card-title" id="eventCardTitle">【中原大旱，蝗灾频发】</h4>
+            <p class="event-card-body" id="eventCardDesc">
+              公元908年，中原大旱，后梁国库拨给灾民。敌对势力防御兵力小幅动摇。
+            </p>
+            <button class="btn-subdifficulty" style="margin-top:10px; width:100%" id="btnDrawNextEvent">
+              🎲 抽下一年度事件卡
+            </button>
+          </div>
+
+          <!-- Target Territory Invasion Command -->
+          <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px">
+            <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px">当前选中出兵目标:</div>
+            <div style="font-size:18px; font-family:var(--font-calligraphy); color:var(--gold-emperor); margin-bottom:10px" id="selectedRegionTargetText">
+              点击地图上相邻敌对板块...
+            </div>
+
+            <div class="campaign-action-btns">
+              <button class="btn-war-attack" id="btnWarAttack" disabled>
+                ⚔️ 武力征讨 (攻城问答推演)
+              </button>
+              <button class="btn-diplomacy" id="btnDiplomacyBribe" disabled>
+                🤝 纳贡合纵 (消耗 200 库金降降)
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       MODAL 1: 战报海报生成器 (CANVAS POSTER CERTIFICATE)
+       ======================================================== -->
+  <div class="modal-overlay" id="sharePosterModal">
+    <div class="poster-dialog">
+      <h3 style="font-family:var(--font-calligraphy); font-size:26px; color:var(--gold-emperor); margin-bottom:12px">
+        《指点江山》大赏御赐战报海报
+      </h3>
+      <canvas class="canvas-poster-preview" id="posterCanvas" width="600" height="850"></canvas>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:16px">
+        <button class="btn-primary-launch" style="width:auto; padding:10px 24px" id="btnDownloadPoster">
+          ⬇️ 保存海报图片
+        </button>
+        <button class="btn-subdifficulty" style="padding:10px 20px" id="btnClosePoster">
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: 割据剧本/势力选择 (MODE 3 MODAL)
+       ======================================================== -->
+  <div class="modal-overlay" id="scenarioSelectModal">
+    <div class="poster-dialog" style="max-width:640px; text-align:left">
+      <h3 style="font-family:var(--font-calligraphy); font-size:28px; color:var(--gold-emperor); margin-bottom:8px">
+        挑选开局雄霸势力
+      </h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px">
+        可选择称霸中原的强权，亦可挑战偏安一隅的地狱级弱小势力完成天下一统！
+      </p>
+
+      <div class="mode-options-row" style="margin-bottom:16px">
+        <button class="btn-subdifficulty active" id="btnScenario5Dyn">公元 907 年 · 五代十国</button>
+        <button class="btn-subdifficulty" id="btnScenario3Kin">公元 220 年 · 三国鼎立</button>
+      </div>
+
+      <div id="factionsPickContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; max-height:300px; overflow-y:auto; padding-right:4px"></div>
+
+      <div style="margin-top:20px; text-align:right">
+        <button class="btn-primary-launch" style="width:auto; padding:10px 28px" id="btnConfirmStartScenario">
+          皇帝亲征出师 ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/fallback_data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/map_data.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
