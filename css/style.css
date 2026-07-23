@@ -470,21 +470,21 @@ body::before {
   to { transform: scale(1.15); }
 }
 
-/* Shared SVG Canvas Board Container */
+/* Shared SVG Canvas Board Container - Grand World Cup Style Interactive Stage */
 .svg-board-wrapper {
   position: relative;
   width: 100%;
-  background: radial-gradient(circle at center, #131922 0%, #080b0f 100%);
-  border: 1.5px solid var(--border-gold);
-  border-radius: 16px;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8), 0 12px 36px rgba(0, 0, 0, 0.6);
+  background: radial-gradient(circle at center, #111722 0%, #06090e 100%);
+  border: 2px solid var(--border-gold);
+  border-radius: 20px;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.95), 0 16px 48px rgba(0, 0, 0, 0.75);
   overflow: hidden;
-  min-height: 480px;
+  min-height: 620px;
 }
 
 .svg-board-wrapper svg {
   width: 100%;
-  height: 520px;
+  height: 660px;
   display: block;
 }
 
@@ -530,43 +530,48 @@ body::before {
 }
 
 /* =========================================================
-   MODE 1: 看图猜朝代 (GEO-QUIZ)
+   MODE 1: 看图猜朝代 (GEO-QUIZ WIDESCREEN STAGE)
    ========================================================= */
 .geoquiz-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 22px;
-}
-@media (max-width: 980px) {
-  .geoquiz-layout { grid-template-columns: 1fr; }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 /* Magnifying Glass Zoom Lens */
 .zoom-lens {
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 155px;
+  height: 155px;
   border-radius: 50%;
   border: 3px solid var(--gold-emperor);
-  box-shadow: 0 0 25px rgba(241, 196, 15, 0.6), inset 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 28px rgba(241, 196, 15, 0.75), inset 0 0 20px rgba(0,0,0,0.6);
   pointer-events: none;
   display: none;
   overflow: hidden;
-  z-index: 50;
-  background: #0d1117;
+  z-index: 60;
+  background: #090d14;
 }
 
 .quiz-side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+@media (max-width: 960px) {
+  .quiz-side-panel { grid-template-columns: 1fr; }
 }
 
 .quiz-question-box {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
   border-radius: 16px;
-  padding: 20px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .quiz-countdown-bar {
@@ -575,7 +580,7 @@ body::before {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .quiz-countdown-fill {
@@ -589,42 +594,49 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .clue-chip {
-  background: rgba(241, 196, 15, 0.12);
-  border: 1px solid rgba(241, 196, 15, 0.3);
+  background: rgba(241, 196, 15, 0.14);
+  border: 1px solid rgba(241, 196, 15, 0.35);
   color: #ffdd59;
-  font-size: 11.5px;
-  padding: 4px 10px;
-  border-radius: 12px;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 14px;
 }
 
 .options-list {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  margin-top: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .options-list { grid-template-columns: 1fr; }
 }
 
 .btn-option-choice {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
-  padding: 14px 18px;
+  background: rgba(22, 28, 38, 0.88);
+  border: 1.5px solid rgba(241, 196, 15, 0.28);
+  border-radius: 14px;
+  padding: 16px 20px;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 16px;
   text-align: left;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: all 0.22s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .btn-option-choice:hover {
-  background: rgba(241, 196, 15, 0.12);
+  background: rgba(241, 196, 15, 0.18);
+  border-color: var(--gold-emperor);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(241, 196, 15, 0.2);
+};
   border-color: var(--gold-emperor);
   transform: translateX(4px);
 }
@@ -844,12 +856,10 @@ body::before {
    MODE 3: 天下大势 (TERRITORIAL CONQUEST)
    ========================================================= */
 .conquest-layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 20px;
-}
-@media (max-width: 1020px) {
-  .conquest-layout { grid-template-columns: 1fr; }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 .region-polygon {
@@ -879,10 +889,14 @@ body::before {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
   border-radius: 16px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 260px 220px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+@media (max-width: 980px) {
+  .conquest-cmd-panel { grid-template-columns: 1fr; }
 }
 
 .faction-crest-banner {
@@ -1022,3 +1036,142 @@ body::before {
   border: 1px solid var(--border-gold);
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
+
+/* =========================================================
+   D3 GIS HIGH-TECH MAP HUD & FLOATING TOOLTIP SYSTEM
+   ========================================================= */
+.map-gis-hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 120;
+}
+
+.map-hud-group {
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+  flex-wrap: wrap;
+  z-index: 121;
+}
+
+.map-hud-btn {
+  background: rgba(13, 17, 23, 0.94);
+  border: 1.5px solid rgba(241, 196, 15, 0.45);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.map-hud-btn:hover {
+  background: rgba(241, 196, 15, 0.22);
+  border-color: var(--gold-emperor);
+  color: var(--gold-emperor);
+  box-shadow: 0 0 14px rgba(241, 196, 15, 0.35);
+}
+
+.map-hud-btn.active {
+  background: rgba(0, 242, 254, 0.25) !important;
+  border-color: #00f2fe !important;
+  color: #00f2fe !important;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.4) !important;
+}
+
+.modern-prov-label {
+  pointer-events: none;
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: #00f2fe;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.95);
+  letter-spacing: 0.5px;
+}
+
+.map-hud-coords-badge {
+  pointer-events: none;
+  background: rgba(9, 12, 16, 0.88);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  color: #00f2fe;
+  font-family: monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 18px;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.22);
+}
+
+.tactical-tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 60;
+  background: rgba(10, 14, 20, 0.94);
+  border: 1.5px solid var(--gold-emperor);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.9), 0 0 18px rgba(241, 196, 15, 0.28);
+  backdrop-filter: blur(14px);
+  transform: translate(-50%, -115%);
+  transition: opacity 0.1s ease;
+  min-width: 160px;
+  max-width: 250px;
+}
+
+.tactical-tooltip.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tactical-tooltip-title {
+  font-family: var(--font-calligraphy);
+  font-size: 18px;
+  color: var(--gold-emperor);
+  margin-bottom: 2px;
+}
+
+.tactical-tooltip-coords {
+  font-size: 10px;
+  color: #00f2fe;
+  font-family: monospace;
+  margin-bottom: 4px;
+}
+
+.tactical-tooltip-desc {
+  font-size: 11.5px;
+  color: #d1d8e0;
+  line-height: 1.45;
+}
+
+.province-path {
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+  cursor: pointer;
+}
+
+.province-path:hover {
+  stroke: var(--gold-emperor) !important;
+  stroke-width: 1.8px !important;
+  filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.6));
+}
+
+.sonar-ring {
+  fill: none;
+  stroke: #00f2fe;
+  animation: sonarWave 1.6s infinite cubic-bezier(0, 0.2, 0.8, 1);
+}
+@keyframes sonarWave {
+  0% { r: 4px; opacity: 1; stroke-width: 3px; }
+  100% { r: 36px; opacity: 0; stroke-width: 0.4px; }
+}
+

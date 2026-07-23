@@ -1,18 +1,22 @@
 /**
  * Master Controller for 《指点江山：中国历史地理挑战赛》
- * Integrates GeoQuiz, Heroes' GeoGuessr, and Conquest Strategy
+ * Fixed High-Contrast D3 GIS Map & Guaranteed Clickable Strategy Theater
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Global State
   const state = {
     currentView: 'viewLobby',
     dynasties: [],
     heroes: [],
     conquestScenarios: [],
     conquestRegions: {},
+    gisLoaded: false,
 
-    // Mode 1 Quiz State
+    layers: {
+      provinces: true,
+      rivers: true
+    },
+
     quiz: {
       difficulty: 'standard', // standard | hell
       rounds: [],
@@ -24,17 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       answered: false
     },
 
-    // Mode 2 GeoGuessr State
-    guessr: {
-      heroIndex: 0,
-      currentStep: 0, // 0: A, 1: B, 2: C
-      placedCoords: [], // [{lon, lat}]
-      stepErrorsKm: [],
-      currentSelectedSvgPos: null,
-      finished: false
-    },
-
-    // Mode 3 Conquest State
     conquest: {
       activeScenario: null,
       playerFaction: null,
@@ -48,9 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // -------------------------------------------------------------
-  // DATA LOADER WITH INSTANT FALLBACK
-  // -------------------------------------------------------------
   async function loadGameData() {
     try {
       const [dynRes, heroRes, regionRes] = await Promise.all([
@@ -64,9 +54,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       state.conquestScenarios = regData.scenarios;
       state.conquestRegions = regData.regions;
     } catch (e) {
-      console.warn('Fallback internal data loaded due to local fetch protocol:', e);
+      console.warn('Fallback internal game data:', e);
       state.dynasties = window.FALLBACK_DYNASTIES || [];
       state.heroes = window.FALLBACK_HEROES || [];
+    }
+
+    try {
+      await window.MAP_HELPER.loadGISData();
+      state.gisLoaded = true;
+    } catch (e) {
+      console.warn('GIS GeoJSON fallback error:', e);
     }
   }
 
@@ -77,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // -------------------------------------------------------------
   const btnToggleSound = document.getElementById('btnToggleSound');
   const soundLabel = document.getElementById('soundLabel');
-  btnToggleSound.addEventListener('click', () => {
+  btnToggleSound?.addEventListener('click', () => {
     const isMuted = window.soundEngine.toggleMuted();
     soundLabel.textContent = isMuted ? '乐效: 关' : '乐效: 开';
     document.getElementById('audioWaveVisualizer').style.opacity = isMuted ? '0.3' : '1';
@@ -92,123 +89,337 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  document.getElementById('brandLobbyBtn').addEventListener('click', () => switchView('viewLobby'));
-  document.getElementById('quizBackBtn').addEventListener('click', () => {
+  document.getElementById('brandLobbyBtn')?.addEventListener('click', () => switchView('viewLobby'));
+  document.getElementById('quizBackBtn')?.addEventListener('click', () => {
     clearInterval(state.quiz.timer);
     switchView('viewLobby');
   });
-  document.getElementById('guessrBackBtn').addEventListener('click', () => switchView('viewLobby'));
-  document.getElementById('conquestBackBtn').addEventListener('click', () => switchView('viewLobby'));
+  document.getElementById('conquestBackBtn')?.addEventListener('click', () => switchView('viewLobby'));
+
+  // Achievements Modal
+  const ACHIEVEMENTS_DATA = [
+    { title: '秦皇一统', desc: '辨识大秦三十六郡版图，万里长城始筑', icon: '👑', unlocked: true },
+    { title: '汉武都护', desc: '考据西域都护府与河西四郡商路要隘', icon: '📜', unlocked: true },
+    { title: '大唐万国', desc: '掌控安西都护府大一统海纳百川版图', icon: '⛩️', unlocked: true },
+    { title: '割据辨误', desc: '区分幽云十六州与北方后周割据红线', icon: '⚔️', unlocked: false },
+    { title: '三国鼎立', desc: '魏蜀吴三分天下关隘防线洞若观火', icon: '🛡️', unlocked: false },
+    { title: '潼关要隘', desc: '准确锁死中原与关中交界雄关咽喉', icon: '🏔️', unlocked: false },
+    { title: '混一宇内', desc: '天下大势完成 24 大战略要区全部吞并', icon: '🏆', unlocked: false },
+    { title: '舆图大宗师', desc: '看图猜朝代单局总分突破 520 分', icon: '🦅', unlocked: false },
+    { title: '指点江山', desc: '通晓二十四史中原及四夷地理关隘', icon: '🗺️', unlocked: false }
+  ];
+
+  document.getElementById('btnAchievements')?.addEventListener('click', () => {
+    window.soundEngine.playStoneClick();
+    const modal = document.getElementById('achievementsModal');
+    const grid = document.getElementById('achievementsGrid');
+    if (!grid || !modal) return;
+    grid.innerHTML = '';
+    ACHIEVEMENTS_DATA.forEach(a => {
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: ${a.unlocked ? 'rgba(241,196,15,0.12)' : 'rgba(255,255,255,0.03)'};
+        border: 1px solid ${a.unlocked ? 'var(--gold-emperor)' : 'rgba(255,255,255,0.08)'};
+        border-radius: 12px;
+        padding: 12px;
+        opacity: ${a.unlocked ? '1' : '0.45'};
+      `;
+      card.innerHTML = `
+        <div style="font-size:24px; margin-bottom:6px">${a.icon}</div>
+        <strong style="color:${a.unlocked ? '#ffd700' : '#8b949e'}; font-size:14px">${a.title}</strong>
+        <span style="font-size:10px; float:right; color:${a.unlocked ? '#2ecc71' : '#8b949e'}">${a.unlocked ? '✓ 已获得' : '🔒 未解锁'}</span>
+        <p style="font-size:11px; color:var(--text-secondary); margin-top:6px">${a.desc}</p>
+      `;
+      grid.appendChild(card);
+    });
+    modal.classList.add('open');
+  });
+
+  document.getElementById('btnCloseAchievements')?.addEventListener('click', () => {
+    document.getElementById('achievementsModal')?.classList.remove('open');
+  });
+
+  // Top Bar Modern Overlay Sync
+  const chkModernOverlay = document.getElementById('chkModernOverlay');
+  chkModernOverlay?.addEventListener('change', (e) => {
+    state.layers.provinces = e.target.checked;
+    const mapBtn = document.getElementById('btnToggleProvinces');
+    if (mapBtn) mapBtn.classList.toggle('active', state.layers.provinces);
+    if (state.currentView === 'viewQuiz') renderQuizRound();
+  });
 
   // -------------------------------------------------------------
-  // COMMON SVG GEOMETRY DRAWING FUNCTIONS
+  // HIGH-CONTRAST D3.JS GIS MAP ENGINE
   // -------------------------------------------------------------
-  function drawBaseChinaFeatures(svgEl, options = {}) {
-    const { yellowRiver = true, yangtze = true, greatWall = false, silkRoad = false, modernProvinces = false } = options;
-    const { lonLatToSvg, HISTORICAL_GEOMETRIES } = window.MAP_HELPER;
+  function drawD3GISBaseMap(svgEl, options = {}) {
+    const {
+      yellowRiver = true,
+      yangtze = true,
+      greatWall = true,
+      silkRoad = false,
+      grandCanal = false,
+      modernProvinces = true,
+      customProvincesFill = null,
+      onProvinceHover = null,
+      onProvinceClick = null
+    } = options;
 
-    // 清空现有元素
+    const { getGISStore, getD3PathGenerator, HISTORICAL_GEOMETRIES, lonLatToSvg } = window.MAP_HELPER;
+    const gisStore = getGISStore();
+    const pathGen = getD3PathGenerator();
+
     svgEl.innerHTML = '';
+    const width = 900;
+    const height = 580;
 
-    // 外框底纹与微弱地图轮廓
-    const borderRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    borderRect.setAttribute('width', '840');
-    borderRect.setAttribute('height', '560');
-    borderRect.setAttribute('fill', '#090d12');
-    borderRect.setAttribute('stroke', 'rgba(241,196,15,0.2)');
-    borderRect.setAttribute('stroke-width', '2');
-    svgEl.appendChild(borderRect);
+    const rootG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    rootG.setAttribute('class', 'gis-map-root');
+    svgEl.appendChild(rootG);
 
-    // 叠加上古经纬度星罗分布极淡虚线网
-    for (let lat = 25; lat <= 50; lat += 8) {
-      const p1 = lonLatToSvg(75, lat);
-      const p2 = lonLatToSvg(132, lat);
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
-      line.setAttribute('x2', p2.x); line.setAttribute('y2', p2.y);
-      line.setAttribute('stroke', 'rgba(255,255,255,0.04)');
-      line.setAttribute('stroke-dasharray', '4,4');
-      svgEl.appendChild(line);
+    // Dark high-contrast deep space ocean canvas
+    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bgRect.setAttribute('width', width);
+    bgRect.setAttribute('height', height);
+    bgRect.setAttribute('fill', '#070a10');
+    rootG.appendChild(bgRect);
+
+    // Subtle Meridian & Parallel Grid Lines
+    const gridG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gridG.setAttribute('class', 'map-canvas-grid');
+    for (let lon = 75; lon <= 135; lon += 10) {
+      const p1 = lonLatToSvg(lon, 16);
+      const p2 = lonLatToSvg(lon, 53);
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('x1', p1.x); l.setAttribute('y1', p1.y);
+      l.setAttribute('x2', p2.x); l.setAttribute('y2', p2.y);
+      l.setAttribute('stroke', 'rgba(0, 242, 254, 0.07)');
+      l.setAttribute('stroke-dasharray', '4,5');
+      gridG.appendChild(l);
     }
-
-    // 绘制大运河/黄河
-    if (yellowRiver) {
-      const pts = HISTORICAL_GEOMETRIES.yellowRiver.map(c => lonLatToSvg(c[0], c[1]));
-      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathStr);
-      p.setAttribute('class', 'river-path');
-      p.setAttribute('stroke', '#e67e22');
-      p.setAttribute('stroke-width', '2.5');
-      p.appendChild(createSvgTitle('几字形母亲河·黄河'));
-      svgEl.appendChild(p);
+    for (let lat = 20; lat <= 50; lat += 8) {
+      const p1 = lonLatToSvg(72, lat);
+      const p2 = lonLatToSvg(136, lat);
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('x1', p1.x); l.setAttribute('y1', p1.y);
+      l.setAttribute('x2', p2.x); l.setAttribute('y2', p2.y);
+      l.setAttribute('stroke', 'rgba(0, 242, 254, 0.07)');
+      l.setAttribute('stroke-dasharray', '4,5');
+      gridG.appendChild(l);
     }
+    rootG.appendChild(gridG);
 
-    // 绘制长江
-    if (yangtze) {
-      const pts = HISTORICAL_GEOMETRIES.yangtzeRiver.map(c => lonLatToSvg(c[0], c[1]));
-      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathStr);
-      p.setAttribute('class', 'river-path');
-      p.setAttribute('stroke', '#3498db');
-      p.setAttribute('stroke-width', '2.8');
-      p.appendChild(createSvgTitle('天堑万古·长江'));
-      svgEl.appendChild(p);
-    }
+    // Layer 1: Official High-Precision Chinese Provinces GeoJSON
+    const chinaG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    chinaG.setAttribute('class', 'china-provinces-layer');
 
-    // 绘制长城
-    if (greatWall) {
-      const pts = HISTORICAL_GEOMETRIES.greatWall.map(c => lonLatToSvg(c[0], c[1]));
-      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathStr);
-      p.setAttribute('class', 'great-wall-path');
-      p.appendChild(createSvgTitle('抵御匈奴游牧·万里长城'));
-      svgEl.appendChild(p);
-    }
+    if (gisStore.chinaGeo && gisStore.chinaGeo.features && typeof d3 !== 'undefined' && pathGen) {
+      gisStore.chinaGeo.features.forEach(feat => {
+        const provName = feat.properties ? (feat.properties.name || feat.properties.fullname || '') : '';
+        const dStr = pathGen(feat);
+        if (!dStr) return;
 
-    // 绘制丝绸之路
-    if (silkRoad) {
-      const pts = HISTORICAL_GEOMETRIES.silkRoad.map(c => lonLatToSvg(c[0], c[1]));
-      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathStr);
-      p.setAttribute('class', 'silk-road-path');
-      p.appendChild(createSvgTitle('张骞凿空·陆上丝绸之路'));
-      svgEl.appendChild(p);
-    }
+        const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathEl.setAttribute('d', dStr);
+        pathEl.setAttribute('class', 'province-path');
 
-    // 现代省界薄膜对照勾勒
-    if (modernProvinces) {
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      g.setAttribute('class', 'modern-grid-layer');
-      // 简写主要现代省区代表图形
-      const provPoints = [
-        [[115, 38], [118, 38], [117, 36], [114, 36]], // 河北
-        [[111, 37], [113, 37], [113, 35], [110, 35]], // 山西
-        [[108, 34], [110, 34], [109, 32], [107, 32]], // 陕西
-        [[103, 30], [106, 30], [105, 28], [102, 28]], // 四川
-        [[113, 23], [116, 23], [115, 21], [112, 21]]  // 广东
-      ];
-      provPoints.forEach(poly => {
-        const pts = poly.map(c => lonLatToSvg(c[0], c[1]));
-        const polyEl = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        polyEl.setAttribute('points', pts.map(p => `${p.x},${p.y}`).join(' '));
-        g.appendChild(polyEl);
+        let fill = '#101724';
+        let opacity = '0.92';
+        let stroke = modernProvinces ? 'rgba(0, 242, 254, 0.48)' : 'rgba(255,255,255,0.08)';
+        let strokeWidth = modernProvinces ? '1.5' : '1.0';
+
+        if (customProvincesFill) {
+          const customStyle = customProvincesFill(provName, feat);
+          if (customStyle) {
+            if (customStyle.fill) fill = customStyle.fill;
+            if (customStyle.opacity) opacity = customStyle.opacity;
+            if (customStyle.stroke) stroke = customStyle.stroke;
+            if (customStyle.strokeWidth) strokeWidth = customStyle.strokeWidth;
+          }
+        }
+
+        pathEl.setAttribute('fill', fill);
+        pathEl.setAttribute('fill-opacity', opacity);
+        pathEl.setAttribute('stroke', stroke);
+        pathEl.setAttribute('stroke-width', strokeWidth);
+        pathEl.dataset.province = provName;
+
+        if (onProvinceHover) {
+          pathEl.addEventListener('mouseenter', (evt) => onProvinceHover(provName, feat, evt));
+          pathEl.addEventListener('mousemove', (evt) => onProvinceHover(provName, feat, evt));
+          pathEl.addEventListener('mouseleave', (evt) => onProvinceHover(null, null, evt));
+        }
+        if (onProvinceClick) {
+          pathEl.addEventListener('pointerdown', (evt) => {
+            evt.stopPropagation();
+            onProvinceClick(provName, feat, evt);
+          });
+        }
+
+        chinaG.appendChild(pathEl);
+
+        // Render Modern Province Pin Label with anti-collision spacing offsets
+        if (modernProvinces && pathGen && provName) {
+          const centerPt = pathGen.centroid(feat);
+          if (centerPt && !isNaN(centerPt[0]) && !isNaN(centerPt[1])) {
+            const shortName = provName.replace(/省|市|壮族|维吾尔|回族|特别行政区|自治区/g, '');
+            const OFFSETS = {
+              '北京': { dx: -4, dy: -8 },
+              '天津': { dx: 16, dy: 8 },
+              '上海': { dx: 14, dy: 4 },
+              '香港': { skip: true },
+              '澳门': { skip: true },
+              '江苏': { dx: -6, dy: -4 },
+              '浙江': { dx: 4, dy: 6 },
+              '安徽': { dx: -4, dy: 2 },
+              '河北': { dx: -12, dy: 4 }
+            };
+            const cfg = OFFSETS[shortName] || { dx: 0, dy: 0 };
+            if (!cfg.skip) {
+              const txtEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+              txtEl.setAttribute('x', centerPt[0] + (cfg.dx || 0));
+              txtEl.setAttribute('y', centerPt[1] + 3 + (cfg.dy || 0));
+              txtEl.setAttribute('class', 'modern-prov-label');
+              txtEl.setAttribute('text-anchor', 'middle');
+              txtEl.textContent = shortName;
+              chinaG.appendChild(txtEl);
+            }
+          }
+        }
       });
-      svgEl.appendChild(g);
+    }
+    rootG.appendChild(chinaG);
+
+    // Layer 2: Natural Rivers & Historical Passes Lines
+    const riverG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    riverG.setAttribute('class', 'natural-features-layer');
+
+    const drawPolyline = (coordsList, color, widthLine, dashArray, titleText) => {
+      const pts = coordsList.map(c => lonLatToSvg(c[0], c[1]));
+      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', pathStr);
+      p.setAttribute('fill', 'none');
+      p.setAttribute('stroke', color);
+      p.setAttribute('stroke-width', widthLine);
+      if (dashArray) p.setAttribute('stroke-dasharray', dashArray);
+      p.setAttribute('filter', `drop-shadow(0 0 6px ${color})`);
+      const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      title.textContent = titleText;
+      p.appendChild(title);
+      riverG.appendChild(p);
+    };
+
+    if (yellowRiver) {
+      drawPolyline(HISTORICAL_GEOMETRIES.yellowRiver, '#e67e22', '3.0', null, '几字形中华母亲河 · 黄河');
+    }
+    if (yangtze) {
+      drawPolyline(HISTORICAL_GEOMETRIES.yangtzeRiver, '#3498db', '3.2', null, '天堑千古 · 长江万古流');
+    }
+    if (greatWall) {
+      drawPolyline(HISTORICAL_GEOMETRIES.greatWall, '#e74c3c', '3.5', '6,4', '抵御游牧骑兵 · 秦汉明万里长城');
+    }
+    if (silkRoad) {
+      drawPolyline(HISTORICAL_GEOMETRIES.silkRoad, '#f1c40f', '2.4', '8,4', '张骞凿空西域 · 陆上丝绸之路');
+    }
+    if (grandCanal) {
+      drawPolyline(HISTORICAL_GEOMETRIES.grandCanal, '#2ecc71', '2.4', '4,3', '隋唐大运河 · 贯通南北血脉');
+    }
+
+    rootG.appendChild(riverG);
+
+    // Layer 3: Ancient Capital Pins
+    const capitalG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    capitalG.setAttribute('class', 'historical-capitals-layer');
+    const FAMOUS_STRONGHOLDS = [
+      { name: '咸阳/长安', coords: [108.94, 34.26], tag: '古都' },
+      { name: '洛阳城', coords: [112.45, 34.62], tag: '神都' },
+      { name: '开封府', coords: [114.30, 34.80], tag: '东京' },
+      { name: '燕京/大都', coords: [116.40, 39.90], tag: '帝都' },
+      { name: '金陵/建康', coords: [118.79, 32.06], tag: '六朝' },
+      { name: '潼关天险', coords: [110.28, 34.54], tag: '天险' },
+      { name: '虎牢关', coords: [113.15, 34.82], tag: '要隘' },
+      { name: '剑门关', coords: [105.57, 32.25], tag: '蜀道' }
+    ];
+
+    FAMOUS_STRONGHOLDS.forEach(st => {
+      const pos = lonLatToSvg(st.coords[0], st.coords[1]);
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', pos.x); dot.setAttribute('cy', pos.y);
+      dot.setAttribute('r', st.tag === '古都' || st.tag === '帝都' ? '5.5' : '3.8');
+      dot.setAttribute('fill', '#ffd700');
+      dot.setAttribute('stroke', '#000');
+      dot.setAttribute('stroke-width', '1.5');
+      dot.style.pointerEvents = 'none';
+      capitalG.appendChild(dot);
+
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', pos.x + 7); label.setAttribute('y', pos.y + 4);
+      label.setAttribute('fill', '#ffe066');
+      label.setAttribute('font-size', '10');
+      label.setAttribute('font-weight', 'bold');
+      label.style.pointerEvents = 'none';
+      label.style.textShadow = '0 1px 3px #000';
+      label.textContent = st.name;
+      capitalG.appendChild(label);
+    });
+
+    rootG.appendChild(capitalG);
+
+    attachD3Zoom(svgEl, rootG, options.btnReset, options.btnZoomIn, options.btnZoomOut);
+
+    return { rootG, chinaG, riverG, capitalG };
+  }
+
+  function attachD3Zoom(svgEl, rootG, btnReset, btnZoomIn, btnZoomOut) {
+    if (typeof d3 === 'undefined') return;
+    const svg = d3.select(svgEl);
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .filter((evt) => {
+        // Prevent D3 drag zoom from swallowing simple pointer clicks
+        return evt.type !== 'pointerdown' && evt.type !== 'mousedown' || evt.button === 0;
+      })
+      .on('zoom', (event) => {
+        d3.select(rootG).attr('transform', event.transform);
+      });
+
+    svg.call(zoom);
+
+    if (btnZoomIn) {
+      btnZoomIn.onclick = () => svg.transition().duration(260).call(zoom.scaleBy, 1.4);
+    }
+    if (btnZoomOut) {
+      btnZoomOut.onclick = () => svg.transition().duration(260).call(zoom.scaleBy, 0.7);
+    }
+    if (btnReset) {
+      btnReset.onclick = () => svg.transition().duration(360).call(zoom.transform, d3.zoomIdentity);
     }
   }
 
-  function createSvgTitle(text) {
-    const t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-    t.textContent = text;
-    return t;
+  function showFloatingTooltip(tooltipEl, title, coordsStr, desc, evt) {
+    if (!tooltipEl) return;
+    tooltipEl.classList.remove('hidden');
+    tooltipEl.innerHTML = `
+      <div class="tactical-tooltip-title">${title}</div>
+      <div class="tactical-tooltip-coords">${coordsStr}</div>
+      <div class="tactical-tooltip-desc">${desc}</div>
+    `;
+    const container = tooltipEl.parentElement;
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top - 14;
+      tooltipEl.style.left = `${Math.max(100, Math.min(rect.width - 100, x))}px`;
+      tooltipEl.style.top = `${Math.max(65, y)}px`;
+    }
+  }
+
+  function hideFloatingTooltip(tooltipEl) {
+    if (tooltipEl) tooltipEl.classList.add('hidden');
   }
 
   // =============================================================
-  // MODE 1: 看图猜朝代 (GEO-QUIZ)
+  // MODE 1: 看图猜朝代 (GEO-QUIZ HIGH-CONTRAST EMPIRE MAP)
   // =============================================================
   const quizDiffBtns = document.querySelectorAll('[data-quiz-diff]');
   quizDiffBtns.forEach(btn => {
@@ -219,7 +430,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  document.getElementById('btnLaunchQuiz').addEventListener('click', () => {
+  document.getElementById('btnLaunchQuiz')?.addEventListener('click', () => {
     startQuizMode();
   });
 
@@ -228,15 +439,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.quiz.combo = 0;
     state.quiz.currentIndex = 0;
 
-    // 按难度筛选
-    const filtered = state.dynasties.filter(d => 
+    const filtered = state.dynasties.filter(d =>
       state.quiz.difficulty === 'hell' ? d.difficulty === 'hell' : d.difficulty === 'standard'
     );
-    // 随机洗牌取 5 关
     state.quiz.rounds = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
 
-    document.getElementById('quizModeBadgeLabel').textContent = 
-      state.quiz.difficulty === 'hell' ? '看图猜朝代 · 【爆款】五代十国/乱世割据考题' : '看图猜朝代 · 大一统盛世难度';
+    document.getElementById('quizModeBadgeLabel').textContent =
+      state.quiz.difficulty === 'hell' ? '看图猜朝代 · 【爆款割据】南北朝/五代十国乱世考题' : '看图猜朝代 · 极盛大一统疆域辨识';
 
     switchView('viewQuiz');
     renderQuizRound();
@@ -258,75 +467,94 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('quizComboText').textContent = `X${state.quiz.combo} COMBO`;
     document.getElementById('quizDetailCard').style.display = 'none';
 
-    // 绘制基础水系与长城
     const svgEl = document.getElementById('quizMapSvg');
-    const modernOverlay = document.getElementById('chkModernOverlay').checked;
+    const tooltipEl = document.getElementById('quizTooltip');
+    const dynastyConfig = window.MAP_HELPER.DYNASTY_PROVINCES_CONFIG[round.id];
 
-    const dynastyConfig = window.MAP_HELPER.DYNASTY_MAP_POLYGONS[round.svgPathKey];
-    drawBaseChinaFeatures(svgEl, {
-      yellowRiver: dynastyConfig ? dynastyConfig.showYellowRiver : true,
-      yangtze: true,
-      greatWall: dynastyConfig ? dynastyConfig.showGreatWall : false,
-      silkRoad: dynastyConfig ? dynastyConfig.showSilkRoad : false,
-      modernProvinces: modernOverlay
+    // High-Contrast Empire Hues: Active Empire Provinces vs Inactive Shadow Provinces
+    const customProvinceFill = (provName) => {
+      if (!dynastyConfig) return null;
+
+      if (dynastyConfig.splitFactions) {
+        for (const fac of dynastyConfig.splitFactions) {
+          const match = fac.keywords.some(kw => provName.includes(kw));
+          if (match) {
+            return {
+              fill: fac.color,
+              opacity: '0.85',
+              stroke: '#ffd700',
+              strokeWidth: '2.2'
+            };
+          }
+        }
+        return { fill: '#0a0e16', opacity: '0.94', stroke: 'rgba(255,255,255,0.06)', strokeWidth: '0.8' };
+      } else if (dynastyConfig.coreKeywords) {
+        const isCore = dynastyConfig.coreKeywords.some(kw => provName.includes(kw));
+        if (isCore) {
+          return {
+            fill: round.color || '#e74c3c',
+            opacity: '0.82',
+            stroke: round.borderColor || '#ffd700',
+            strokeWidth: '2.5'
+          };
+        }
+        return { fill: '#090d14', opacity: '0.95', stroke: 'rgba(255,255,255,0.06)', strokeWidth: '0.8' };
+      }
+      return null;
+    };
+
+    drawD3GISBaseMap(svgEl, {
+      yellowRiver: state.layers.rivers,
+      yangtze: state.layers.rivers,
+      greatWall: round.features && round.features.some(f => f.includes('长城')),
+      silkRoad: round.features && round.features.some(f => f.includes('丝绸之路') || f.includes('都护府')),
+      modernProvinces: state.layers.provinces,
+      customProvincesFill: customProvinceFill,
+      btnReset: document.getElementById('btnQuizZoomReset'),
+      btnZoomIn: document.getElementById('btnQuizZoomIn'),
+      btnZoomOut: document.getElementById('btnQuizZoomOut'),
+      onProvinceHover: (provName, feat, evt) => {
+        if (!provName) {
+          hideFloatingTooltip(tooltipEl);
+          return;
+        }
+        showFloatingTooltip(
+          tooltipEl,
+          provName,
+          `历史考证 :: 局域观察`,
+          `观察当前省份边缘边界。若被高亮着色，代表其在目标时代属于中原主权或割据大郡。`,
+          evt
+        );
+      }
     });
 
-    // 绘制无标注朝代特征矢量疆域
-    if (dynastyConfig) {
-      if (dynastyConfig.isSplitMode) {
-        // 多政权并立模式 (五代十国/三国/十六国)
-        dynastyConfig.subRegs.forEach(sub => {
-          const pts = sub.points.map(c => window.MAP_HELPER.lonLatToSvg(c[0], c[1]));
-          const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-          polygon.setAttribute('points', pts.map(p => `${p.x},${p.y}`).join(' '));
-          polygon.setAttribute('fill', sub.color);
-          polygon.setAttribute('fill-opacity', '0.52');
-          polygon.setAttribute('stroke', '#ffd700');
-          polygon.setAttribute('stroke-width', '2');
-          polygon.appendChild(createSvgTitle(`隐去名线索部分`));
-          svgEl.appendChild(polygon);
-        });
-      } else {
-        // 大一统包络模式
-        dynastyConfig.polygons.forEach(polyCoords => {
-          const pts = polyCoords.map(c => window.MAP_HELPER.lonLatToSvg(c[0], c[1]));
-          const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-          polygon.setAttribute('points', pts.map(p => `${p.x},${p.y}`).join(' '));
-          polygon.setAttribute('fill', round.color || '#e74c3c');
-          polygon.setAttribute('fill-opacity', '0.45');
-          polygon.setAttribute('stroke', round.borderColor || '#f1c40f');
-          polygon.setAttribute('stroke-width', '2.5');
-          polygon.setAttribute('filter', 'drop-shadow(0 0 12px rgba(241,196,15,0.4))');
-          svgEl.appendChild(polygon);
-        });
-      }
-
-      // 绘制都城脉冲原点
-      if (dynastyConfig.capitalDot) {
-        const capSvg = window.MAP_HELPER.lonLatToSvg(dynastyConfig.capitalDot[0], dynastyConfig.capitalDot[1]);
+    // 绘制都城脉冲标志
+    if (round.capital && round.capital.coords) {
+      const rootG = svgEl.querySelector('.gis-map-root');
+      if (rootG) {
+        const capPt = window.MAP_HELPER.lonLatToSvg(round.capital.coords[0], round.capital.coords[1]);
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', capSvg.x); circle.setAttribute('cy', capSvg.y);
-        circle.setAttribute('r', '7');
+        circle.setAttribute('cx', capPt.x); circle.setAttribute('cy', capPt.y);
+        circle.setAttribute('r', '9');
         circle.setAttribute('fill', '#ffd700');
         circle.setAttribute('stroke', '#e74c3c');
-        circle.setAttribute('stroke-width', '2');
+        circle.setAttribute('stroke-width', '2.5');
         circle.setAttribute('class', 'capital-pulse');
-        circle.appendChild(createSvgTitle('核心都城坐标原点'));
-        svgEl.appendChild(circle);
+        rootG.appendChild(circle);
       }
     }
 
-    // 准备下方绝妙特征线索 Chips
+    // 渲染下方特征线索 Chips
     const clueChipsContainer = document.getElementById('quizClueChips');
     clueChipsContainer.innerHTML = '';
     (round.features || []).forEach(feat => {
       const chip = document.createElement('span');
       chip.className = 'clue-chip';
-      chip.textContent = `🔍 线索: ${feat}`;
+      chip.textContent = `🔍 关键考点: ${feat}`;
       clueChipsContainer.appendChild(chip);
     });
 
-    // 渲染选项列表
+    // 渲染 4 个答题选项
     const optionsContainer = document.getElementById('quizOptionsContainer');
     optionsContainer.innerHTML = '';
     round.options.forEach((optText, idx) => {
@@ -337,51 +565,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       optionsContainer.appendChild(btn);
     });
 
-    // 启动15s倒计时
     startQuizTimer();
   }
 
-  // 现代大一统对照 Checkbox 实时重绘
-  document.getElementById('chkModernOverlay').addEventListener('change', () => {
-    if (state.currentView === 'viewQuiz') {
-      const round = state.quiz.rounds[state.quiz.currentIndex];
-      if (round) renderQuizRound();
-    }
+  document.getElementById('btnToggleProvinces')?.addEventListener('click', (e) => {
+    state.layers.provinces = !state.layers.provinces;
+    e.target.classList.toggle('active', state.layers.provinces);
+    const topChk = document.getElementById('chkModernOverlay');
+    if (topChk) topChk.checked = state.layers.provinces;
+    if (state.currentView === 'viewQuiz') renderQuizRound();
   });
-
-  // 悬浮放大镜交互 (Magnifying Lens hover)
-  const quizMapContainer = document.getElementById('quizMapContainer');
-  const quizZoomLens = document.getElementById('quizZoomLens');
-  const zoomLensSvg = document.getElementById('zoomLensSvg');
-
-  quizMapContainer.addEventListener('mousemove', (e) => {
-    const rect = quizMapContainer.getBoundingClientRect();
-    const relX = e.clientX - rect.left;
-    const relY = e.clientY - rect.top;
-
-    if (relX < 0 || relY < 0 || relX > rect.width || relY > rect.height) {
-      quizZoomLens.style.display = 'none';
-      return;
-    }
-
-    quizZoomLens.style.display = 'block';
-    quizZoomLens.style.left = `${relX - 70}px`;
-    quizZoomLens.style.top = `${relY - 70}px`;
-
-    // 将主 SVG 的 viewBox 动态同步给放大镜（2.3x 局部聚焦）
-    const svgRatioX = 840 / rect.width;
-    const svgRatioY = 560 / rect.height;
-    const mapCenterSvgX = relX * svgRatioX;
-    const mapCenterSvgY = relY * svgRatioY;
-
-    const zoomW = 280;
-    const zoomH = 186;
-    zoomLensSvg.setAttribute('viewBox', `${mapCenterSvgX - zoomW / 2} ${mapCenterSvgY - zoomH / 2} ${zoomW} ${zoomH}`);
-    zoomLensSvg.innerHTML = document.getElementById('quizMapSvg').innerHTML;
-  });
-
-  quizMapContainer.addEventListener('mouseleave', () => {
-    quizZoomLens.style.display = 'none';
+  document.getElementById('btnToggleRivers')?.addEventListener('click', (e) => {
+    state.layers.rivers = !state.layers.rivers;
+    e.target.classList.toggle('active', state.layers.rivers);
+    if (state.currentView === 'viewQuiz') renderQuizRound();
   });
 
   function startQuizTimer() {
@@ -394,6 +591,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const elapsed = Date.now() - startTime;
       const remainRatio = Math.max(0, (totalMs - elapsed) / totalMs);
       timerBar.style.width = `${remainRatio * 100}%`;
+      state.quiz.timeLeft = Math.ceil((totalMs - elapsed) / 1000);
 
       if (remainRatio <= 0) {
         clearInterval(state.quiz.timer);
@@ -426,13 +624,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       setTimeout(() => document.getElementById('quizMapContainer').classList.remove('screen-shake'), 500);
       state.quiz.combo = 0;
       document.getElementById('quizComboText').textContent = `X0 COMBO`;
-      // 高亮正确答案
       if (optionBtns[round.correctAnswer]) {
         optionBtns[round.correctAnswer].classList.add('correct');
       }
     }
 
-    // 显示历史词条 Card
     showQuizDetailCard(round);
   }
 
@@ -453,292 +649,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     const card = document.getElementById('quizDetailCard');
     card.style.display = 'block';
     document.getElementById('detailCardName').textContent = round.name;
-    document.getElementById('detailCardPeriod').textContent = `🕒 朝代时期: ${round.period} | 都城: ${round.capital.name}`;
+    document.getElementById('detailCardPeriod').textContent = `🕒 朝代时期: ${round.period} | 核心都城: ${round.capital.name}`;
     document.getElementById('detailCardDesc').textContent = round.description;
+
+    const nextBtn = document.getElementById('btnNextQuizRound');
+    if (nextBtn) {
+      const isLastRound = state.quiz.currentIndex >= state.quiz.rounds.length - 1;
+      nextBtn.textContent = isLastRound ? '查看真经通关结算战报 👑' : '下一关 ➔';
+    }
   }
 
-  document.getElementById('btnNextQuizRound').addEventListener('click', () => {
+  document.getElementById('btnNextQuizRound')?.addEventListener('click', () => {
     state.quiz.currentIndex++;
     renderQuizRound();
   });
 
   function showQuizFinalSummary() {
     openCanvasSharePoster({
-      modeTitle: '模式一 · 看图猜朝代战报',
-      rankTitle: state.quiz.score >= 550 ? '👑 十七史通手·地狱帝王天眼' : '📜 历史考据达人',
-      metricLabel: '鉴图快问快答得分',
+      modeTitle: '模式一 · 看图猜朝代真经战报',
+      rankTitle: state.quiz.score >= 520 ? '👑 舆图大宗师 · GIS 天眼历史观' : '📜 鉴图学徒达人',
+      metricLabel: '五关疆域图鉴辨识积分',
       metricVal: `${state.quiz.score} 分`,
-      comment: `连胜最高达成 X${state.quiz.combo}！识别幽云十六州与南北南北朝极微精细疆域。`
+      comment: `在大一统西域都护府与五代十国割据界线微观辨识中创下 X${state.quiz.combo} 连胜！`
     });
   }
 
   // =============================================================
-  // MODE 2: 名将征途 (CHINA GEOGUESSR)
+  // MODE 3: 天下大势 (TERRITORIAL CONQUEST WITH GUARANTEED TARGET CHIPS)
   // =============================================================
-  document.getElementById('btnLaunchGuessr').addEventListener('click', () => {
-    initGuessrMode();
-  });
-
-  function initGuessrMode() {
-    switchView('viewGuessr');
-    renderHeroCarousel();
-    selectGuessrHero(0);
-  }
-
-  function renderHeroCarousel() {
-    const strip = document.getElementById('heroCarouselStrip');
-    strip.innerHTML = '';
-    state.heroes.forEach((h, idx) => {
-      const card = document.createElement('div');
-      card.className = `hero-selector-card ${idx === state.guessr.heroIndex ? 'active' : ''}`;
-      card.innerHTML = `
-        <div class="hero-avatar-circle">${h.avatar}</div>
-        <div>
-          <div class="hero-name-mini">${h.name}</div>
-          <div class="hero-title-mini">${h.title}</div>
-        </div>
-      `;
-      card.addEventListener('click', () => selectGuessrHero(idx));
-      strip.appendChild(card);
-    });
-  }
-
-  function selectGuessrHero(heroIdx) {
-    state.guessr.heroIndex = heroIdx;
-    state.guessr.currentStep = 0;
-    state.guessr.placedCoords = [];
-    state.guessr.stepErrorsKm = [];
-    state.guessr.finished = false;
-
-    renderHeroCarousel();
-
-    const hero = state.heroes[heroIdx];
-    document.getElementById('heroBigAvatar').textContent = hero.avatar;
-    document.getElementById('heroBigName').textContent = hero.name;
-    document.getElementById('heroBigEra').textContent = `${hero.era} · ${hero.title}`;
-    document.getElementById('heroQuote').textContent = hero.quote;
-    document.getElementById('heroBioText').textContent = hero.bio;
-    document.getElementById('guessrHeroTitle').textContent = hero.name;
-    document.getElementById('btnShareGuessrScore').style.display = 'none';
-
-    renderMilestoneSteps();
-    drawGuessrBaseMap();
-  }
-
-  function renderMilestoneSteps() {
-    const hero = state.heroes[state.guessr.heroIndex];
-    const container = document.getElementById('milestonesList');
-    container.innerHTML = '';
-
-    hero.points.forEach((pt, idx) => {
-      const div = document.createElement('div');
-      const isDone = idx < state.guessr.currentStep;
-      const isActive = idx === state.guessr.currentStep && !state.guessr.finished;
-
-      div.className = `milestone-step-item ${isDone ? 'done' : ''} ${isActive ? 'active' : ''}`;
-      const errText = state.guessr.stepErrorsKm[idx] !== undefined ? `📍 测量误差: ${state.guessr.stepErrorsKm[idx]} km` : '';
-
-      div.innerHTML = `
-        <div class="step-badge-tag">${pt.step}</div>
-        <div style="font-size:14px; font-weight:700; color:#fff">${isDone || state.guessr.finished ? pt.label : '???（请在地图精准位置指点）'}</div>
-        <div class="step-hint-text">💡 提示: ${pt.hint}</div>
-        ${errText ? `<div class="step-error-score">${errText}</div>` : ''}
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  function drawGuessrBaseMap() {
-    const svgEl = document.getElementById('guessrMapSvg');
-    drawBaseChinaFeatures(svgEl, {
-      yellowRiver: true,
-      yangtze: true,
-      greatWall: true,
-      silkRoad: true
-    });
-
-    // 绑定地图点击选点事件
-    const mapContainer = document.getElementById('guessrMapContainer');
-    mapContainer.onclick = (e) => {
-      if (state.guessr.finished) return;
-      const rect = svgEl.getBoundingClientRect();
-      const clickX = ((e.clientX - rect.left) / rect.width) * 840;
-      const clickY = ((e.clientY - rect.top) / rect.height) * 560;
-
-      state.guessr.currentSelectedSvgPos = { x: clickX, y: clickY };
-      const lonLat = window.MAP_HELPER.svgToLonLat(clickX, clickY);
-
-      // 先移除现有临时选点 Marker
-      const tempMarker = svgEl.querySelector('.temp-placed-pin');
-      if (tempMarker) tempMarker.remove();
-
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      g.setAttribute('class', 'temp-placed-pin');
-
-      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', clickX); circle.setAttribute('cy', clickY);
-      circle.setAttribute('r', '8');
-      circle.setAttribute('class', 'pin-placed');
-      g.appendChild(circle);
-
-      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', clickX + 10); label.setAttribute('y', clickY - 8);
-      label.setAttribute('fill', '#00f2fe');
-      label.setAttribute('font-size', '12');
-      label.setAttribute('font-weight', 'bold');
-      label.textContent = `待指点坐标: [${lonLat.lon}°E, ${lonLat.lat}°N]`;
-      g.appendChild(label);
-
-      svgEl.appendChild(g);
-
-      window.soundEngine.playStoneClick();
-      document.getElementById('btnConfirmGuessPoint').textContent = 
-        `📍 确认指点节点 [${lonLat.lon}°E, ${lonLat.lat}°N]`;
-    };
-  }
-
-  // 确认指点坐标
-  document.getElementById('btnConfirmGuessPoint').addEventListener('click', () => {
-    if (state.guessr.finished) return;
-    if (!state.guessr.currentSelectedSvgPos) {
-      alert('请先在右侧矢量地图上点击选择一点！');
-      return;
-    }
-
-    const hero = state.heroes[state.guessr.heroIndex];
-    const targetPt = hero.points[state.guessr.currentStep];
-    const playerLonLat = window.MAP_HELPER.svgToLonLat(
-      state.guessr.currentSelectedSvgPos.x,
-      state.guessr.currentSelectedSvgPos.y
-    );
-
-    // Haversine 公里数误差计算
-    const distanceKm = window.MAP_HELPER.haversineDistance(
-      [playerLonLat.lon, playerLonLat.lat],
-      targetPt.coords
-    );
-
-    state.guessr.placedCoords.push(playerLonLat);
-    state.guessr.stepErrorsKm.push(distanceKm);
-
-    state.guessr.currentStep++;
-    state.guessr.currentSelectedSvgPos = null;
-    document.getElementById('btnConfirmGuessPoint').textContent = '📍 确认指点该点坐标';
-
-    renderMilestoneSteps();
-
-    if (state.guessr.currentStep >= 3) {
-      finalizeGuessrEvaluation();
-    }
-  });
-
-  function finalizeGuessrEvaluation() {
-    state.guessr.finished = true;
-    const hero = state.heroes[state.guessr.heroIndex];
-    const svgEl = document.getElementById('guessrMapSvg');
-
-    // 重新完整绘制并描绘 A -> B -> C 真实轨迹与激光对比
-    drawBaseChinaFeatures(svgEl, { yellowRiver: true, yangtze: true, greatWall: true, silkRoad: true });
-
-    const totalKm = state.guessr.stepErrorsKm.reduce((a, b) => a + b, 0);
-    document.getElementById('guessrTotalKmText').textContent = `${totalKm} km`;
-
-    // 大圆评级 (PRD Sec 2.2)
-    let grade = 'S+';
-    if (totalKm > 2000) grade = 'F';
-    else if (totalKm > 1000) grade = 'C';
-    else if (totalKm > 500) grade = 'B';
-    else if (totalKm > 200) grade = 'A';
-    else if (totalKm > 80) grade = 'S';
-
-    document.getElementById('guessrCurrentGrade').textContent = grade;
-    window.soundEngine.playGongWin();
-
-    // 绘制真实 Milestone Target Pins & 玩家选择 Pins
-    const targetSvgPts = hero.points.map(pt => window.MAP_HELPER.lonLatToSvg(pt.coords[0], pt.coords[1]));
-    const playerSvgPts = state.guessr.placedCoords.map(c => window.MAP_HELPER.lonLatToSvg(c.lon, c.lat));
-
-    // 绘制 A -> B -> C 激光流光轨迹
-    const laserStr = 'M ' + targetSvgPts.map(p => `${p.x},${p.y}`).join(' L ');
-    const laserPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    laserPath.setAttribute('d', laserStr);
-    laserPath.setAttribute('class', 'laser-trajectory');
-    svgEl.appendChild(laserPath);
-
-    // 绘制真实标注点位
-    targetSvgPts.forEach((p, idx) => {
-      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', p.x); circle.setAttribute('cy', p.y);
-      circle.setAttribute('r', '9');
-      circle.setAttribute('class', 'pin-target');
-      svgEl.appendChild(circle);
-
-      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      txt.setAttribute('x', p.x + 12); txt.setAttribute('y', p.y + 4);
-      txt.setAttribute('fill', '#ffd700');
-      txt.setAttribute('font-weight', 'bold');
-      txt.setAttribute('font-size', '13');
-      txt.textContent = `史实: ${hero.points[idx].label}`;
-      svgEl.appendChild(txt);
-    });
-
-    // 绘制玩家放置点位与连线误差线
-    playerSvgPts.forEach((pp, idx) => {
-      const tp = targetSvgPts[idx];
-      const errLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      errLine.setAttribute('x1', pp.x); errLine.setAttribute('y1', pp.y);
-      errLine.setAttribute('x2', tp.x); errLine.setAttribute('y2', tp.y);
-      errLine.setAttribute('stroke', '#e74c3c');
-      errLine.setAttribute('stroke-dasharray', '3,3');
-      errLine.setAttribute('stroke-width', '2');
-      svgEl.appendChild(errLine);
-
-      const pCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      pCircle.setAttribute('cx', pp.x); pCircle.setAttribute('cy', pp.y);
-      pCircle.setAttribute('r', '6');
-      pCircle.setAttribute('class', 'pin-placed');
-      svgEl.appendChild(pCircle);
-    });
-
-    document.getElementById('btnConfirmGuessPoint').textContent = `🏅 评估完成！总误差 ${totalKm} km (${grade})`;
-    document.getElementById('btnShareGuessrScore').style.display = 'block';
-  }
-
-  document.getElementById('btnShareGuessrScore').addEventListener('click', () => {
-    const hero = state.heroes[state.guessr.heroIndex];
-    const totalKm = state.guessr.stepErrorsKm.reduce((a, b) => a + b, 0);
-    const grade = document.getElementById('guessrCurrentGrade').textContent;
-
-    openCanvasSharePoster({
-      modeTitle: `模式二 · 名将征途 (${hero.name}) 战报`,
-      rankTitle: `${grade} 级位差精度 · 历史空间天眼`,
-      metricLabel: '三节点经纬度坐标误差',
-      metricVal: `${totalKm} km`,
-      comment: `在史实【${hero.points[0].label}】➔【${hero.points[1].label}】➔【${hero.points[2].label}】高光动线测量中直抵天煞！`
-    });
-  });
-
-  // =============================================================
-  // MODE 3: 天下大势 (TERRITORIAL CONQUEST)
-  // =============================================================
-  document.getElementById('btnLaunchConquest').addEventListener('click', () => {
+  document.getElementById('btnLaunchConquest')?.addEventListener('click', () => {
     openScenarioPickerModal();
   });
 
   function openScenarioPickerModal() {
     const modal = document.getElementById('scenarioSelectModal');
     modal.classList.add('open');
-
     renderFactionChoices('five_dynasties_907');
   }
 
-  document.getElementById('btnScenario5Dyn').addEventListener('click', () => {
+  document.getElementById('btnScenario5Dyn')?.addEventListener('click', () => {
     document.getElementById('btnScenario5Dyn').classList.add('active');
     document.getElementById('btnScenario3Kin').classList.remove('active');
     renderFactionChoices('five_dynasties_907');
   });
 
-  document.getElementById('btnScenario3Kin').addEventListener('click', () => {
+  document.getElementById('btnScenario3Kin')?.addEventListener('click', () => {
     document.getElementById('btnScenario3Kin').classList.add('active');
     document.getElementById('btnScenario5Dyn').classList.remove('active');
     renderFactionChoices('three_kingdoms_220');
@@ -782,7 +737,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  document.getElementById('btnConfirmStartScenario').addEventListener('click', () => {
+  document.getElementById('btnConfirmStartScenario')?.addEventListener('click', () => {
     document.getElementById('scenarioSelectModal').classList.remove('open');
     startConquestGame(selectedScenarioObj, selectedFactionObj);
   });
@@ -813,66 +768,204 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('resMorale').textContent = state.conquest.morale;
     document.getElementById('conquestTurnText').textContent = `第 ${state.conquest.turnYear} 年`;
 
-    // 统计已占领大区
     const myOwned = Object.values(state.conquest.ownership).filter(owner => owner === fac.id).length;
     state.conquest.unlockedRegionsCount = myOwned;
     document.getElementById('conquestUnifyCount').textContent = `${myOwned} / 24 大区`;
     document.getElementById('conquestPrestige').textContent = myOwned * 220 + state.conquest.gold;
+
+    renderInvadableTargetChips();
 
     if (myOwned >= 24) {
       triggerGrandUnificationEnding();
     }
   }
 
-  function renderConquestTopologyMap() {
-    const svgEl = document.getElementById('conquestMapSvg');
-    drawBaseChinaFeatures(svgEl, { yellowRiver: true, yangtze: true, greatWall: true });
-
+  // Create fast selectable buttons for adjacent frontiers in command panel
+  function renderInvadableTargetChips() {
     const playerFacId = state.conquest.playerFaction.id;
+    const invadableZones = [];
 
-    // 绘制 24 大战略板块
     Object.values(state.conquestRegions).forEach(reg => {
       const ownerId = state.conquest.ownership[reg.id];
-      const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerId);
-      const fillColor = ownerFac ? ownerFac.color : '#2c3e50';
-      const isPlayerOwned = ownerId === playerFacId;
+      if (ownerId === playerFacId) return;
 
-      const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      polygon.setAttribute('points', reg.svgPolygon);
-      polygon.setAttribute('class', 'region-polygon');
-      polygon.setAttribute('fill', fillColor);
-      polygon.setAttribute('fill-opacity', isPlayerOwned ? '0.65' : '0.38');
-      polygon.setAttribute('stroke', isPlayerOwned ? '#ffd700' : 'rgba(255,255,255,0.2)');
-      polygon.setAttribute('stroke-width', isPlayerOwned ? '2.5' : '1.2');
-
-      if (state.conquest.selectedRegionId === reg.id) {
-        polygon.classList.add('selected-invade');
+      const neighbors = reg.neighbors || [];
+      const isAdjacent = neighbors.some(nId => state.conquest.ownership[nId] === playerFacId);
+      if (isAdjacent) {
+        invadableZones.push(reg);
       }
-
-      polygon.addEventListener('click', () => handleConquestRegionClick(reg));
-      svgEl.appendChild(polygon);
-
-      // 板块铭刻文字标记
-      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      txt.setAttribute('x', reg.coords[0]); txt.setAttribute('y', reg.coords[1]);
-      txt.setAttribute('fill', '#fff');
-      txt.setAttribute('font-size', '13');
-      txt.setAttribute('font-weight', 'bold');
-      txt.setAttribute('text-anchor', 'middle');
-      txt.style.pointerEvents = 'none';
-      txt.textContent = reg.name;
-      svgEl.appendChild(txt);
-
-      // 防御关隘微型图标
-      const passTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      passTxt.setAttribute('x', reg.coords[0]); passTxt.setAttribute('y', reg.coords[1] + 14);
-      passTxt.setAttribute('fill', 'rgba(255,215,0,0.8)');
-      passTxt.setAttribute('font-size', '9');
-      passTxt.setAttribute('text-anchor', 'middle');
-      passTxt.style.pointerEvents = 'none';
-      passTxt.textContent = `🛡️${reg.defense}`;
-      svgEl.appendChild(passTxt);
     });
+
+    const targetContainer = document.getElementById('selectedRegionTargetText');
+    if (!targetContainer) return;
+
+    let html = `<div style="font-size:12px; color:var(--gold-emperor); margin-bottom:8px">⚔️ 己方直连相邻敌对/中立板块 (快捷点击出兵):</div>`;
+    html += `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px">`;
+
+    invadableZones.forEach(z => {
+      const ownerId = state.conquest.ownership[z.id];
+      const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerId);
+      const facName = ownerFac ? ownerFac.name : '中立';
+      const isSelected = state.conquest.selectedRegionId === z.id;
+
+      html += `<button class="target-zone-chip ${isSelected ? 'selected' : ''}" data-zone-id="${z.id}" style="
+        background: ${isSelected ? 'rgba(0,242,254,0.25)' : 'rgba(255,255,255,0.06)'};
+        border: 1px solid ${isSelected ? '#00f2fe' : 'rgba(255,215,0,0.35)'};
+        color: ${isSelected ? '#00f2fe' : '#ffffff'};
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      ">⚔️ ${z.name} (${facName})</button>`;
+    });
+
+    html += `</div>`;
+
+    if (state.conquest.selectedRegionId) {
+      const cur = state.conquestRegions[state.conquest.selectedRegionId];
+      if (cur) {
+        const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === state.conquest.ownership[cur.id]);
+        html += `<div style="font-size:13px; color:#00f2fe; background:rgba(0,242,254,0.1); padding:8px; border-radius:6px">
+          当前选中要冲: <strong>${cur.name}</strong> (${cur.ancientName})<br>
+          势力: ${ownerFac ? ownerFac.name : '中立'} | 守关: ${cur.pass} | 防御 ${cur.defense}
+        </div>`;
+      }
+    } else {
+      html += `<div style="font-size:12px; color:var(--text-secondary)">点击上方任意大区标签或在左侧地图点击进行选择...</div>`;
+    }
+
+    targetContainer.innerHTML = html;
+
+    // Attach target chip events
+    targetContainer.querySelectorAll('.target-zone-chip').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const zId = e.target.getAttribute('data-zone-id');
+        const reg = state.conquestRegions[zId];
+        if (reg) handleConquestRegionClick(reg);
+      });
+    });
+  }
+
+  function renderConquestTopologyMap() {
+    const svgEl = document.getElementById('conquestMapSvg');
+    const tooltipEl = document.getElementById('conquestTooltip');
+    const playerFacId = state.conquest.playerFaction.id;
+
+    const customConquestFill = (provName) => {
+      for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
+        const isMatch = provList.some(kw => provName.includes(kw));
+        if (isMatch) {
+          const ownerFactionId = state.conquest.ownership[zoneId];
+          const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerFactionId);
+          const isPlayerOwned = ownerFactionId === playerFacId;
+          const isSelectedTarget = state.conquest.selectedRegionId === zoneId;
+
+          const baseColor = ownerFac ? ownerFac.color : '#2c3e50';
+          return {
+            fill: baseColor,
+            opacity: isSelectedTarget ? '0.92' : (isPlayerOwned ? '0.80' : '0.52'),
+            stroke: isSelectedTarget ? '#00f2fe' : (isPlayerOwned ? '#ffd700' : 'rgba(255,255,255,0.22)'),
+            strokeWidth: isSelectedTarget ? '3.2' : (isPlayerOwned ? '2.0' : '1.1')
+          };
+        }
+      }
+      return { fill: '#0a0e16', opacity: '0.45', stroke: 'rgba(255,255,255,0.06)' };
+    };
+
+    drawD3GISBaseMap(svgEl, {
+      yellowRiver: true,
+      yangtze: true,
+      greatWall: true,
+      modernProvinces: true,
+      customProvincesFill: customConquestFill,
+      btnReset: document.getElementById('btnConquestZoomReset'),
+      btnZoomIn: document.getElementById('btnConquestZoomIn'),
+      btnZoomOut: document.getElementById('btnConquestZoomOut'),
+      onProvinceHover: (provName, feat, evt) => {
+        if (!provName) {
+          hideFloatingTooltip(tooltipEl);
+          return;
+        }
+        let matchedZone = null;
+        for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
+          if (provList.some(kw => provName.includes(kw))) {
+            matchedZone = state.conquestRegions[zoneId];
+            break;
+          }
+        }
+        if (matchedZone) {
+          const ownerId = state.conquest.ownership[matchedZone.id];
+          const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerId);
+          showFloatingTooltip(
+            tooltipEl,
+            `${matchedZone.name} (${provName})`,
+            `隶属割据割据: ${ownerFac ? ownerFac.name : '中立自守'}`,
+            `关隘守防: ${matchedZone.pass} | 守值 ${matchedZone.defense} | 粮赋 ${matchedZone.wealth}`,
+            evt
+          );
+        } else {
+          showFloatingTooltip(tooltipEl, provName, `边陲防御`, `各部游牧及沿海边卫。`, evt);
+        }
+      },
+      onProvinceClick: (provName) => {
+        for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
+          if (provList.some(kw => provName.includes(kw))) {
+            const reg = state.conquestRegions[zoneId];
+            if (reg) handleConquestRegionClick(reg);
+            break;
+          }
+        }
+      }
+    });
+
+    // Draw Big Macro-Region Stronghold Shields on Map
+    const rootG = svgEl.querySelector('.gis-map-root');
+    if (rootG) {
+      Object.values(state.conquestRegions).forEach(reg => {
+        const ownerId = state.conquest.ownership[reg.id];
+        const isPlayerOwned = ownerId === playerFacId;
+        const isSelected = state.conquest.selectedRegionId === reg.id;
+        const pos = window.MAP_HELPER.lonLatToSvg(reg.coords[0], reg.coords[1]);
+
+        const gZone = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gZone.setAttribute('class', 'macro-zone-badge');
+        gZone.style.cursor = 'pointer';
+
+        // Shield circle background
+        const cBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        cBg.setAttribute('cx', pos.x); cBg.setAttribute('cy', pos.y - 4);
+        cBg.setAttribute('r', isSelected ? '18' : '15');
+        cBg.setAttribute('fill', isSelected ? '#00f2fe' : (isPlayerOwned ? '#c0392b' : '#1e272c'));
+        cBg.setAttribute('stroke', isSelected ? '#ffffff' : (isPlayerOwned ? '#ffd700' : 'rgba(255,255,255,0.4)'));
+        cBg.setAttribute('stroke-width', '1.8');
+        gZone.appendChild(cBg);
+
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', pos.x); txt.setAttribute('y', pos.y);
+        txt.setAttribute('fill', '#ffffff');
+        txt.setAttribute('font-size', '11');
+        txt.setAttribute('font-weight', 'bold');
+        txt.setAttribute('text-anchor', 'middle');
+        txt.textContent = reg.name;
+        gZone.appendChild(txt);
+
+        const defTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        defTxt.setAttribute('x', pos.x); defTxt.setAttribute('y', pos.y + 14);
+        defTxt.setAttribute('fill', isSelected ? '#00f2fe' : '#ffd700');
+        defTxt.setAttribute('font-size', '9');
+        defTxt.setAttribute('text-anchor', 'middle');
+        defTxt.textContent = `🛡️${reg.defense}`;
+        gZone.appendChild(defTxt);
+
+        gZone.addEventListener('pointerdown', (evt) => {
+          evt.stopPropagation();
+          handleConquestRegionClick(reg);
+        });
+
+        rootG.appendChild(gZone);
+      });
+    }
   }
 
   function handleConquestRegionClick(region) {
@@ -880,73 +973,97 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentOwner = state.conquest.ownership[region.id];
 
     if (currentOwner === playerFacId) {
-      document.getElementById('selectedRegionTargetText').textContent = `【${region.name}】（己方都防关隘：${region.pass}）`;
-      document.getElementById('btnWarAttack').disabled = true;
-      document.getElementById('btnDiplomacyBribe').disabled = true;
+      state.conquest.selectedRegionId = null;
+      window.soundEngine.playStoneClick();
+      updateConquestHUD();
+      renderConquestTopologyMap();
+      const btnWar = document.getElementById('btnWarAttack');
+      const btnBribe = document.getElementById('btnDiplomacyBribe');
+      if (btnWar) btnWar.disabled = true;
+      if (btnBribe) btnBribe.disabled = true;
       return;
     }
 
-    // 检查是否有己方领地邻接
     const neighbors = region.neighbors || [];
     const isAdjacent = neighbors.some(nId => state.conquest.ownership[nId] === playerFacId);
 
     if (!isAdjacent) {
       window.soundEngine.playErrorBuzz();
-      alert(`无法越境发兵！【${region.name}】未与您现占领地相邻。必须先征讨邻接板块。`);
+      alert(`无法越境发兵！【${region.name}】未与您现有领地相邻。必须先攻占直连板块。`);
       return;
     }
 
     state.conquest.selectedRegionId = region.id;
     window.soundEngine.playStoneClick();
+    updateConquestHUD();
     renderConquestTopologyMap();
-
-    const targetEl = document.getElementById('selectedRegionTargetText');
-    targetEl.innerHTML = `🔥 目标【${region.name}】 (${region.ancientName})<br><span style="font-size:12px; color:#fff">守将坚壁：${region.pass} · 防御值 ${region.defense}</span>`;
 
     const btnWar = document.getElementById('btnWarAttack');
     const btnBribe = document.getElementById('btnDiplomacyBribe');
-
-    btnWar.disabled = false;
-    btnBribe.disabled = state.conquest.gold < 200;
+    if (btnWar) btnWar.disabled = false;
+    if (btnBribe) btnBribe.disabled = state.conquest.gold < 200;
   }
 
-  // 武力征讨攻城问答推演
-  document.getElementById('btnWarAttack').addEventListener('click', () => {
+  // 武力征讨攻城问答推演 (替换原生 prompt)
+  document.getElementById('btnWarAttack')?.addEventListener('click', () => {
     const regId = state.conquest.selectedRegionId;
     if (!regId) return;
     const targetRegion = state.conquestRegions[regId];
 
     window.soundEngine.playWarDrum();
 
-    // 弹出现场攻城古问答迷你测试
     const questions = [
-      { q: `欲取关中【${targetRegion.name}】，必先攻破守卫中原与关中交界的要隘关卡？`, opts: ['潼关/虎牢关', '山海关', '嘉峪关', '剑门关'], ans: 0 },
-      { q: `出兵【${targetRegion.name}】期间，粮草走廊经由长江与黄河哪一条古水系运输最佳？`, opts: ['运河古道与黄河水系', '多瑙河', '珠江口', '黑龙江'], ans: 0 }
+      { q: `欲取关中要害【${targetRegion.name}】(${targetRegion.ancientName})，必先攻破守卫中原与关中交界的哪一座第一雄关要隘？`, opts: ['潼关 / 虎牢关', '山海关', '嘉峪关', '剑门关'], ans: 0 },
+      { q: `大军远征攻打【${targetRegion.name}】期间，粮草走廊经由黄河与南北大运河哪一条古水系联运效率最佳？`, opts: ['隋唐大运河与黄河干流', '多瑙河', '珠江水系', '黑龙江'], ans: 0 },
+      { q: `战略要地【${targetRegion.name}】周围要隘守将号称 ${targetRegion.pass}，防御能力达到 ${targetRegion.defense} 点，宜采用何种步骑战法攻城？`, opts: ['包围绝粮待要塞内乱', '硬骑冲撞悬崖', '孤军夜渡绝壁不带粮', '放弃主力退回交趾'], ans: 0 }
     ];
     const qObj = questions[Math.floor(Math.random() * questions.length)];
-    const chosen = prompt(`⚔️ 武力攻打【${targetRegion.name}】之战术问答：\n\n${qObj.q}\n\n1. ${qObj.opts[0]}\n2. ${qObj.opts[1]}\n3. ${qObj.opts[2]}\n4. ${qObj.opts[3]}\n\n请输入选项数字 (1-4)：`);
 
-    if (chosen && parseInt(chosen.trim()) === (qObj.ans + 1)) {
-      window.soundEngine.playSwordClash();
-      // 成功吞并
-      state.conquest.ownership[regId] = state.conquest.playerFaction.id;
-      state.conquest.gold += targetRegion.wealth * 2;
-      state.conquest.troops += 3;
-      state.conquest.selectedRegionId = null;
-      alert(`🎉 捷报！武力破城，大败敌军，攻占【${targetRegion.name}】！获得库金 +${targetRegion.wealth * 2}`);
-    } else {
-      window.soundEngine.playErrorBuzz();
-      state.conquest.troops = Math.max(5, state.conquest.troops - 4);
-      state.conquest.morale = Math.max(30, state.conquest.morale - 10);
-      alert(`💥 攻城失利！敌阵死守 ${targetRegion.pass}，兵马损失 4 万，军心动摇。`);
-    }
+    const modal = document.getElementById('battleCouncilModal');
+    const badge = document.getElementById('battleTargetRegionBadge');
+    const promptEl = document.getElementById('battleQuestionPrompt');
+    const container = document.getElementById('battleOptionsContainer');
 
-    updateConquestHUD();
-    renderConquestTopologyMap();
+    if (!modal || !container) return;
+    badge.textContent = `目标要冲: 【${targetRegion.name}】(守值 ${targetRegion.defense})`;
+    promptEl.textContent = qObj.q;
+    container.innerHTML = '';
+
+    qObj.opts.forEach((optText, idx) => {
+      const b = document.createElement('button');
+      b.className = 'btn-option-choice';
+      b.innerHTML = `<span><strong>${String.fromCharCode(65 + idx)}.</strong> ${optText}</span> <span>⚔️ 发兵攻打</span>`;
+      b.addEventListener('click', () => {
+        modal.classList.remove('open');
+        const isRight = idx === qObj.ans;
+        if (isRight) {
+          window.soundEngine.playSwordClash();
+          state.conquest.ownership[regId] = state.conquest.playerFaction.id;
+          state.conquest.gold += targetRegion.wealth * 2;
+          state.conquest.troops += 3;
+          state.conquest.selectedRegionId = null;
+          alert(`🎉 捷报！武力破城，大败敌军，攻占【${targetRegion.name}】！获得库金 +${targetRegion.wealth * 2}`);
+        } else {
+          window.soundEngine.playErrorBuzz();
+          state.conquest.troops = Math.max(5, state.conquest.troops - 4);
+          state.conquest.morale = Math.max(30, state.conquest.morale - 10);
+          alert(`💥 攻城失利！敌阵死守 ${targetRegion.pass}，兵马损失 4 万，军心动摇。`);
+        }
+        updateConquestHUD();
+        renderConquestTopologyMap();
+      });
+      container.appendChild(b);
+    });
+
+    modal.classList.add('open');
+  });
+
+  document.getElementById('btnCancelBattle')?.addEventListener('click', () => {
+    document.getElementById('battleCouncilModal')?.classList.remove('open');
   });
 
   // 外交合纵劝降
-  document.getElementById('btnDiplomacyBribe').addEventListener('click', () => {
+  document.getElementById('btnDiplomacyBribe')?.addEventListener('click', () => {
     const regId = state.conquest.selectedRegionId;
     if (!regId) return;
     const targetRegion = state.conquestRegions[regId];
@@ -964,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // 抽年度随机事件卡
-  document.getElementById('btnDrawNextEvent').addEventListener('click', () => {
+  document.getElementById('btnDrawNextEvent')?.addEventListener('click', () => {
     window.soundEngine.playStoneClick();
     state.conquest.turnYear++;
 
@@ -997,18 +1114,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // =============================================================
-  // CANVAS SHARE POSTER CERTIFICATE GENERATOR (PRD SEC 5.1)
+  // CANVAS SHARE POSTER CERTIFICATE GENERATOR
   // =============================================================
   function openCanvasSharePoster(data) {
     const modal = document.getElementById('sharePosterModal');
-    modal.classList.add('open');
+    modal?.classList.add('open');
 
     const canvas = document.getElementById('posterCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width;
     const H = canvas.height;
 
-    // 深宣纸古典鎏金边框背景
     const grad = ctx.createLinearGradient(0, 0, 0, H);
     grad.addColorStop(0, '#0f141c');
     grad.addColorStop(0.5, '#161b22');
@@ -1016,14 +1133,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, W, H);
 
-    // 绘制四周鎏金暗纹双线框
     ctx.strokeStyle = '#f1c40f';
     ctx.lineWidth = 4;
     ctx.strokeRect(20, 20, W - 40, H - 40);
     ctx.lineWidth = 1.5;
     ctx.strokeRect(28, 28, W - 56, H - 56);
 
-    // 四角朱印纹样
     const drawCornerSeal = (x, y) => {
       ctx.fillStyle = '#e74c3c';
       ctx.fillRect(x - 12, y - 12, 24, 24);
@@ -1035,7 +1150,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     drawCornerSeal(38, H - 38);
     drawCornerSeal(W - 38, H - 38);
 
-    // 顶端国风大书标题
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f1c40f';
     ctx.font = 'bold 22px serif';
@@ -1045,13 +1159,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.font = 'bold 36px serif';
     ctx.fillText('《指点江山》', W / 2, 140);
 
-    // 分割金线
     ctx.strokeStyle = 'rgba(241,196,15,0.4)';
     ctx.beginPath();
     ctx.moveTo(80, 165); ctx.lineTo(W - 80, 165);
     ctx.stroke();
 
-    // 模式大标题与称号勋章
     ctx.fillStyle = '#8b949e';
     ctx.font = '16px sans-serif';
     ctx.fillText(data.modeTitle, W / 2, 210);
@@ -1060,7 +1172,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.font = 'bold 32px serif';
     ctx.fillText(`“ ${data.rankTitle} ”`, W / 2, 270);
 
-    // 核心数码千米/得分高亮大字
     ctx.fillStyle = 'rgba(241,196,15,0.12)';
     ctx.beginPath();
     ctx.arc(W / 2, 390, 95, 0, Math.PI * 2);
@@ -1077,7 +1188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.font = 'bold 44px sans-serif';
     ctx.fillText(data.metricVal, W / 2, 405);
 
-    // 经典历史评价长文框
     ctx.fillStyle = '#d1d8e0';
     ctx.font = '16px serif';
     const lines = wrapCanvasText(ctx, data.comment, W - 160);
@@ -1085,7 +1195,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       ctx.fillText(line, W / 2, 530 + i * 28);
     });
 
-    // 底部专属方形阳文朱印章与二维码打卡标
     ctx.fillStyle = '#c0392b';
     ctx.fillRect(W / 2 - 45, 660, 90, 90);
     ctx.strokeStyle = '#fff';
@@ -1099,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     ctx.fillStyle = '#8b949e';
     ctx.font = '13px sans-serif';
-    ctx.fillText('扫码或搜索 GitHub: DeanChensj/jiangshan-map', W / 2, 790);
+    ctx.fillText('GitHub: DeanChensj/jiangshan-map', W / 2, 790);
   }
 
   function wrapCanvasText(ctx, text, maxWidth) {
@@ -1120,11 +1229,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     return lines;
   }
 
-  document.getElementById('btnClosePoster').addEventListener('click', () => {
-    document.getElementById('sharePosterModal').classList.remove('open');
+  document.getElementById('btnClosePoster')?.addEventListener('click', () => {
+    document.getElementById('sharePosterModal')?.classList.remove('open');
   });
 
-  document.getElementById('btnDownloadPoster').addEventListener('click', () => {
+  document.getElementById('btnDownloadPoster')?.addEventListener('click', () => {
     const canvas = document.getElementById('posterCanvas');
     const link = document.createElement('a');
     link.download = 'jiangshan_historical_map_certificate.png';
