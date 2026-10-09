@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261009j" />
+      <link rel="stylesheet" href="css/style.css?v=20261009k" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -20,16 +20,11 @@
         </h1>
       </div>
       <div class="control-strip" role="toolbar" aria-label="地图图层与交互模式">
-        <label class="layer-chip"><input type="checkbox" id="chk-provinces" checked /><span id="lbl-provinces">现代省界</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-polities" checked /><span id="lbl-polities">历史疆域</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-prefectures" checked /><span id="lbl-prefectures">州道政区</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-settlements" checked /><span id="lbl-settlements">古地名</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-corridors" checked /><span id="lbl-corridors">长城 · 运河 · 丝路</span></label>
-        <label class="layer-chip"><input type="checkbox" id="chk-milestones" checked /><span id="lbl-milestones">事件</span></label>
-        <button id="act-reset-camera" class="action-btn subtle" title="复位视图">
-          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
-          <span id="lbl-reset-camera">复位视图</span>
+        <button id="act-layers-menu" class="action-btn subtle layers-trigger-btn" type="button" aria-expanded="false" aria-controls="layers-popover" title="展开或收起地图图层开关">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.8L1.5 5.2 8 8.6l6.5-3.4L8 1.8zM1.5 8.2L8 11.6l6.5-3.4M1.5 11.2L8 14.6l6.5-3.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="lbl-layers-btn">图层</span>
+          <span id="layers-count-badge" class="layers-count-pill">6/7</span>
+          <span class="caret-mark" aria-hidden="true">▾</span>
         </button>
         <button id="act-genealogy" class="action-btn subtle" title="点击地图任意位置，查看该地从秦到清的政区与古城沿革">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.5a4.3 4.3 0 0 0-4.3 4.3c0 3.1 4.3 8.4 4.3 8.4s4.3-5.3 4.3-8.4A4.3 4.3 0 0 0 8 1.5zm0 5.9a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -39,6 +34,7 @@
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.2" fill="currentColor"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           <span id="lbl-challenge">开始挑战</span>
         </button>
+        <span class="toolbar-divider" aria-hidden="true"></span>
         <div class="music-pill-group" role="group" aria-label="古琴雅乐">
           <button id="act-music" class="action-btn subtle music-btn" title="播放 / 暂停古琴雅乐">
             <svg class="btn-svg music-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -64,6 +60,26 @@
           <span class="star-mark" aria-hidden="true">★</span>
           <span id="lbl-github-star">Star</span>
         </a>
+      </div>
+
+      <div id="layers-popover" class="layers-popover is-hidden" role="dialog" aria-label="地图图层开关">
+        <div class="layers-pop-section">
+          <div class="layers-pop-heading" id="txt-layer-grp-hist">历史舆图要素</div>
+          <div class="layers-pop-grid">
+            <label class="layer-chip"><input type="checkbox" id="chk-polities" checked /><span id="lbl-polities">历史疆域</span></label>
+            <label class="layer-chip"><input type="checkbox" id="chk-prefectures" checked /><span id="lbl-prefectures">州道政区</span></label>
+            <label class="layer-chip"><input type="checkbox" id="chk-settlements" checked /><span id="lbl-settlements">古地名</span></label>
+            <label class="layer-chip" title="长城 · 大运河 · 丝绸之路"><input type="checkbox" id="chk-corridors" checked /><span id="lbl-corridors">关河丝路</span></label>
+            <label class="layer-chip"><input type="checkbox" id="chk-milestones" checked /><span id="lbl-milestones">重大事件</span></label>
+          </div>
+        </div>
+        <div class="layers-pop-section">
+          <div class="layers-pop-heading" id="txt-layer-grp-mod">现代地理参照</div>
+          <div class="layers-pop-grid">
+            <label class="layer-chip"><input type="checkbox" id="chk-provinces" checked /><span id="lbl-provinces">现代省界</span></label>
+            <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -113,9 +129,15 @@
 
         <div id="map-key" aria-live="polite"></div>
 
-        <div id="scale-bar-box" aria-hidden="true">
-          <div class="scale-label" id="scale-label-text">500 km · 约一千里</div>
-          <div class="scale-ruler" id="scale-ruler-bar"></div>
+        <div id="canvas-br-dock">
+          <button id="act-reset-camera" class="canvas-reset-btn" type="button" title="复位视图">
+            <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
+            <span id="lbl-reset-camera">复位视图</span>
+          </button>
+          <div id="scale-bar-box" aria-hidden="true">
+            <div class="scale-label" id="scale-label-text">500 km · 约一千里</div>
+            <div class="scale-ruler" id="scale-ruler-bar"></div>
+          </div>
         </div>
 
         <button id="act-toggle-pane" type="button" title="收起编年侧栏（全屏看图）" aria-label="收起或展开编年侧栏">›</button>
@@ -209,10 +231,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261009j"></script>
-  <script src="js/atlas_snapshots.js?v=20261009j"></script>
-  <script src="js/map_data.js?v=20261009j"></script>
-  <script src="js/i18n_dict.js?v=20261009j"></script>
-  <script src="js/app.js?v=20261009j"></script>
+  <script src="js/china_geo_data.js?v=20261009k"></script>
+  <script src="js/atlas_snapshots.js?v=20261009k"></script>
+  <script src="js/map_data.js?v=20261009k"></script>
+  <script src="js/i18n_dict.js?v=20261009k"></script>
+  <script src="js/app.js?v=20261009k"></script>
 </body>
 </html>

@@ -467,16 +467,44 @@
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 秦 → 今');
+      const lblLayersBtn = this._id('lbl-layers-btn');
+      if (lblLayersBtn) {
+        lblLayersBtn.textContent = this.uiStr('btn_layers', '图层');
+      }
+      const actLayersBtn = this._id('act-layers-menu');
+      if (actLayersBtn) {
+        actLayersBtn.title =
+          this.locale === 'en' ? 'Toggle map layers' : '展开或收起地图图层开关';
+      }
+      const grpHist = this._id('txt-layer-grp-hist');
+      if (grpHist) {
+        grpHist.textContent = this.uiStr('layer_grp_hist', '历史舆图要素');
+      }
+      const grpMod = this._id('txt-layer-grp-mod');
+      if (grpMod) {
+        grpMod.textContent = this.uiStr('layer_grp_mod', '现代地理参照');
+      }
       this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
       this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
       this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
       this._id('lbl-prefectures').textContent =
         this.locale === 'en' ? 'Admin Divisions' : '州道政区';
       this._id('lbl-settlements').textContent = this.uiStr('toggle_cities', '古地名');
-      this._id('lbl-corridors').textContent = this.uiStr('toggle_routes', '长城 · 运河 · 丝路');
-      this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '事件');
+      const lblCorridors = this._id('lbl-corridors');
+      lblCorridors.textContent = this.uiStr('toggle_routes', '关河丝路');
+      if (lblCorridors.parentElement) {
+        lblCorridors.parentElement.title =
+          this.locale === 'en'
+            ? 'Great Wall · Grand Canal · Silk Road'
+            : '长城 · 大运河 · 丝绸之路';
+      }
+      this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '重大事件');
       const lblReset = this._id('lbl-reset-camera') || this._id('act-reset-camera');
       lblReset.textContent = this.uiStr('btn_reset', '复位视图');
+      const actReset = this._id('act-reset-camera');
+      if (actReset) {
+        actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
+      }
       const lblGen = this._id('lbl-genealogy') || this._id('act-genealogy');
       lblGen.textContent = this.genealogyMode
         ? this.uiStr('btn_trace_active', '退出溯源')
@@ -2780,10 +2808,75 @@
         });
       }
 
-      // Layer checkboxes
+      // Layer popover menu & checkboxes
+      const layerIds = [
+        'chk-polities',
+        'chk-prefectures',
+        'chk-settlements',
+        'chk-corridors',
+        'chk-milestones',
+        'chk-provinces',
+        'chk-prov-names',
+      ];
+      const updateLayerBadge = () => {
+        const badge = this._id('layers-count-badge');
+        if (!badge) return;
+        const onCount = layerIds.filter((id) => {
+          const el = this._id(id);
+          return el && el.checked;
+        }).length;
+        badge.textContent = `${onCount}/${layerIds.length}`;
+      };
+      updateLayerBadge();
+
+      const layersBtn = this._id('act-layers-menu');
+      const layersPopover = this._id('layers-popover');
+      const closeLayersPopover = () => {
+        if (!layersPopover || !layersBtn) return;
+        layersPopover.classList.add('is-hidden');
+        layersBtn.classList.remove('is-active');
+        layersBtn.setAttribute('aria-expanded', 'false');
+      };
+      if (layersBtn && layersPopover) {
+        layersBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const willOpen = layersPopover.classList.contains('is-hidden');
+          if (willOpen) {
+            if (window.innerWidth > 640) {
+              const btnRect = layersBtn.getBoundingClientRect();
+              const navRect = this._id('nav-bar').getBoundingClientRect();
+              const leftPx = Math.max(
+                12,
+                Math.min(window.innerWidth - 300, btnRect.left - navRect.left)
+              );
+              layersPopover.style.left = `${leftPx}px`;
+              layersPopover.style.right = 'auto';
+            } else {
+              layersPopover.style.left = '';
+              layersPopover.style.right = '';
+            }
+            layersPopover.classList.remove('is-hidden');
+            layersBtn.classList.add('is-active');
+            layersBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            closeLayersPopover();
+          }
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (
+            !layersPopover.classList.contains('is-hidden') &&
+            !layersPopover.contains(e.target) &&
+            !layersBtn.contains(e.target)
+          ) {
+            closeLayersPopover();
+          }
+        });
+      }
+
       const bindToggle = (chkId, grpEl, inv = false) => {
         this._id(chkId).addEventListener('change', (e) => {
           grpEl.classList.toggle('is-hidden', inv ? e.target.checked : !e.target.checked);
+          updateLayerBadge();
         });
       };
       bindToggle('chk-provinces', this.grpProvinces);
@@ -2793,16 +2886,19 @@
         if (this.grpGhostDiff) {
           this.grpGhostDiff.classList.toggle('is-hidden', !e.target.checked);
         }
+        updateLayerBadge();
       });
       bindToggle('chk-prefectures', this.grpPrefectures);
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
+        updateLayerBadge();
       });
       bindToggle('chk-corridors', this.grpCorridors);
       this._id('chk-milestones').addEventListener('change', (e) => {
         this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
         if (!e.target.checked) this.closeMilestoneBalloon();
+        updateLayerBadge();
       });
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
@@ -2903,6 +2999,7 @@
           if (this.playing) this.stopAutoplay();
           else this.startAutoplay();
         } else if (e.key === 'Escape') {
+          closeLayersPopover();
           this.closeMilestoneBalloon();
           if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
@@ -3285,6 +3382,12 @@
       if (q.has('quiz')) {
         const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
         setTimeout(() => this.startChallenge(mode), 350);
+      }
+      if (q.has('layers')) {
+        setTimeout(() => {
+          const btn = this._id('act-layers-menu');
+          if (btn) btn.click();
+        }, 120);
       }
     }
   }
