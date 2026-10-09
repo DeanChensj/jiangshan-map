@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261009n" />
+  <link rel="stylesheet" href="css/style.css?v=20261009q" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -83,6 +83,14 @@
             <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
           </div>
         </div>
+        <div class="layers-pop-section">
+          <div class="layers-pop-heading" id="txt-layer-grp-journey">青史行迹 · 时空巡礼</div>
+          <div class="journey-pop-list">
+            <button type="button" class="journey-chip-btn" data-journey="zhangqian" id="btn-j-zhangqian">张骞通西域</button>
+            <button type="button" class="journey-chip-btn" data-journey="xuanzang" id="btn-j-xuanzang">玄奘西行</button>
+            <button type="button" class="journey-chip-btn" data-journey="sushi" id="btn-j-sushi">苏轼贬谪路线</button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -114,6 +122,7 @@
             <g id="grp-prov-names" class="is-hidden"></g>
             <g id="grp-settlements"></g>
             <g id="grp-milestones"></g>
+            <g id="grp-journey"></g>
             <g id="grp-challenge"></g>
             <g id="grp-genealogy"></g>
           </g>
@@ -179,6 +188,8 @@
           <ol id="genealogy-timeline" class="genealogy-list"></ol>
         </div>
 
+        <div id="journey-card" class="is-hidden" role="region" aria-label="青史行迹巡礼"></div>
+
         <div id="milestone-balloon" class="is-hidden" role="dialog" aria-live="polite"></div>
 
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
@@ -238,6 +249,6 @@
   <script src="js/atlas_snapshots.js?v=20261009p"></script>
   <script src="js/map_data.js?v=20261009p"></script>
   <script src="js/i18n_dict.js?v=20261009p"></script>
-  <script src="js/app.js?v=20261009p"></script>
+  <script src="js/app.js?v=20261009q"></script>
 </body>
 </html>

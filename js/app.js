@@ -127,6 +127,8 @@
     play: '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>',
     pause:
       '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.8" y="3" width="3" height="10" rx="0.8" fill="currentColor"/><rect x="9.2" y="3" width="3" height="10" rx="0.8" fill="currentColor"/></svg>',
+    arrowLeft:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M13 8H3.5M7.5 4l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrowRight:
       '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
@@ -193,6 +195,9 @@
       this.genealogyMode = false;
       this.activeTrace = null;
       this.activeMilestone = null;
+      this.activeJourney = null;
+      this.journeyStopIdx = 0;
+      this.journeyTimer = null;
       this.challenge = null;
       this.challengeVariant = 'locate';
       this.paneCollapsed = false;
@@ -238,6 +243,7 @@
       this.grpPrefectures = this._id('grp-prefectures');
       this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
+      this.grpJourney = this._id('grp-journey');
       this.grpSettlements = this._id('grp-settlements');
       this.grpMilestones = this._id('grp-milestones');
       this.grpChallenge = this._id('grp-challenge');
@@ -245,6 +251,7 @@
       this.hoverTip = this._id('hover-tip');
       this.mapKey = this._id('map-key');
       this.milestoneBalloon = this._id('milestone-balloon');
+      this.journeyCard = this._id('journey-card');
     }
 
     // ---------------- Localization helpers ----------------
@@ -491,6 +498,23 @@
       if (grpMod) {
         grpMod.textContent = this.uiStr('layer_grp_mod', '现代地理参照');
       }
+      const grpJrn = this._id('txt-layer-grp-journey');
+      if (grpJrn) {
+        grpJrn.textContent =
+          this.locale === 'en' ? 'Historical Journeys' : '青史行迹 · 时空巡礼';
+      }
+      const btnZq = this._id('btn-j-zhangqian');
+      if (btnZq) {
+        btnZq.textContent = this.locale === 'en' ? "Zhang Qian's Envoy" : '张骞通西域';
+      }
+      const btnXz = this._id('btn-j-xuanzang');
+      if (btnXz) {
+        btnXz.textContent = this.locale === 'en' ? "Xuanzang's Pilgrimage" : '玄奘西行';
+      }
+      const btnSs = this._id('btn-j-sushi');
+      if (btnSs) {
+        btnSs.textContent = this.locale === 'en' ? "Su Shi's Exile" : '苏轼贬谪路线';
+      }
       this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
       this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
       this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
@@ -551,8 +575,8 @@
       if (searchInp) {
         searchInp.placeholder =
           this.locale === 'en'
-            ? 'Search city / prefecture / era / event ( / )'
-            : '搜古今地名 / 州府 / 年号 / 事件 ( / )';
+            ? 'Search city / prefecture / era / journey ( / )'
+            : '搜古今地名 / 州府 / 年号 / 青史行迹 ( / )';
       }
       const togglePaneBtn = this._id('act-toggle-pane');
       if (togglePaneBtn) {
@@ -590,6 +614,10 @@
       }
       if (this.activeTrace) {
         this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
+      }
+      if (this.activeJourney) {
+        this._renderJourneyOverlay();
+        this._renderJourneyCard();
       }
       if (this.challenge) {
         this.grpSettlements.classList.add('is-hidden');
@@ -1005,11 +1033,30 @@
       const yrText = this.formatYear(m.year);
       const siteStr = this.milestoneSite(dynasty, m);
       const placeHtml = siteStr ? `<span class="ep-place">${SVG_ICONS.pin} ${siteStr}</span>` : '';
+      const jKey = this._journeyKeyForMilestone(dynasty, m);
+      const jBtnHtml = jKey
+        ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
+        : '';
       this.milestoneBalloon.innerHTML =
         `<div><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}</div>` +
-        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}</div>`;
+        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
+      const jBtn = this.milestoneBalloon.querySelector('.ev-journey-btn');
+      if (jBtn) {
+        jBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.startJourney(jBtn.dataset.journey);
+        });
+      }
       this.milestoneBalloon.classList.remove('is-hidden');
       this._positionMilestoneBalloon();
+    }
+
+    _journeyKeyForMilestone(dynasty, m) {
+      if (!dynasty || !m) return null;
+      if (dynasty.key === 'xihan' && m.year === -138) return 'zhangqian';
+      if (dynasty.key === 'tang' && m.year === 629) return 'xuanzang';
+      if (dynasty.key === 'beisong' && m.year === 1080) return 'sushi';
+      return null;
     }
 
     _positionMilestoneBalloon() {
@@ -1375,7 +1422,18 @@
         const badge = isMapChange
           ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory / layer changes at this year' : '此节点触发版图或城池/路线变化'}">${SVG_ICONS.mapChange}</span>`
           : '';
-        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}</span>`;
+        const jKey = this._journeyKeyForMilestone(dynasty, m);
+        const jBtnHtml = jKey
+          ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
+          : '';
+        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}${jBtnHtml}</span>`;
+        const jBtn = li.querySelector('.ev-journey-btn');
+        if (jBtn) {
+          jBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.startJourney(jBtn.dataset.journey);
+          });
+        }
         li.addEventListener('click', () => {
           this.stopAutoplay();
           this.jumpToYear(targetY);
@@ -1415,6 +1473,9 @@
       if (this.genealogyMode && this.challenge) {
         this.stopChallenge();
       }
+      if (this.genealogyMode && this.activeJourney) {
+        this.stopJourney();
+      }
       this._id('act-genealogy').classList.toggle('is-active', this.genealogyMode);
       const lblEl = this._id('lbl-genealogy') || this._id('act-genealogy');
       lblEl.textContent = this.genealogyMode
@@ -1433,6 +1494,7 @@
     }
 
     openGenealogyAt(lng, lat) {
+      if (this.activeJourney) this.stopJourney();
       this.activeTrace = [lng, lat];
       this.grpGenealogy.innerHTML = '';
       const [sx, sy] = this.projector.toScreen(lng, lat);
@@ -2099,10 +2161,10 @@
       const showCorridors = !this.grpCorridors.classList.contains('is-hidden');
       const showMilestones = !this.grpMilestones.classList.contains('is-hidden');
 
-      // Scale static markers (milestones, challenge pins, genealogy overlays)
+      // Scale static markers (milestones, journey waypoints, challenge pins, genealogy overlays)
       this.svg
         .querySelectorAll(
-          '.neighbor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
+          '.neighbor-caption, .milestone-pin, #grp-journey g[data-x], #grp-challenge g[data-x], #grp-genealogy g[data-x]'
         )
         .forEach((node) => {
           const x = node.getAttribute('data-x');
@@ -2111,6 +2173,12 @@
             node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
           }
         });
+      if (this.grpJourney && this.grpJourney.firstChild) {
+        this.grpJourney.querySelectorAll('path[data-base-sw]').forEach((p) => {
+          const baseSw = parseFloat(p.getAttribute('data-base-sw') || '3');
+          p.style.strokeWidth = `${(baseSw * s).toFixed(2)}px`;
+        });
+      }
 
       const occupied = [];
       const overlapArea = (box) => {
@@ -2538,6 +2606,7 @@
 
     startChallenge(variant) {
       this.stopAutoplay();
+      if (this.activeJourney) this.stopJourney();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
@@ -2801,10 +2870,1031 @@
       };
     }
 
+    // ---------------- Historical Journeys (青史行迹) ----------------
+    static get HISTORICAL_JOURNEYS() {
+      return [
+        {
+          key: 'zhangqian',
+          dynastyKey: 'xihan',
+          color: '#a83b24',
+          shortZh: '张骞通西域',
+          shortEn: "Zhang Qian's Envoy",
+          titleZh: '张骞凿空西域行迹',
+          titleEn: "Zhang Qian's Envoy to the Western Regions",
+          spanZh: '前138年 — 前126年（西汉建元三年至元朔三年）',
+          spanEn: '138 BCE – 126 BCE (Western Han)',
+          stops: [
+            {
+              year: -138,
+              eraZh: '建元三年',
+              coord: [108.94, 34.26],
+              labelPos: 'top',
+              ancientZh: '长安',
+              modernZh: '陕西西安',
+              ancientEn: "Chang'an",
+              modernEn: "Xi'an, Shaanxi",
+              titleZh: '奉诏募使·发自长安',
+              titleEn: "Imperial Commission at Chang'an",
+              descZh:
+                '汉武帝欲联合大月氏共击匈奴，张骞以郎应募，与堂邑氏胡奴甘父率百余人自长安出发西行。',
+              descEn:
+                "Emperor Wu of Han sought an alliance with the Great Yuezhi against the Xiongnu; Zhang Qian volunteered and departed Chang'an with over a hundred men.",
+              quoteZh: '《史记·大宛列传》：“骞以郎应募，使月氏，与堂邑氏胡奴甘父俱出陇西。”',
+              quoteEn:
+                'Records of the Grand Historian: "Zhang Qian volunteered as a palace attendant to go as envoy to the Yuezhi, departing Longxi with Ganfu."',
+            },
+            {
+              year: -138,
+              eraZh: '建元三年',
+              coord: [103.86, 35.38],
+              labelPos: 'bottom',
+              ancientZh: '陇西',
+              modernZh: '甘肃临洮',
+              ancientEn: 'Longxi',
+              modernEn: 'Lintao, Gansu',
+              titleZh: '出陇西塞·踏入绝域',
+              titleEn: 'Crossing the Longxi Frontier',
+              descZh:
+                '自陇西郡出塞西渡黄河，踏入匈奴右贤王与浑邪王控扼的河西之地，由此西去万里皆属未知绝域。',
+              descEn:
+                'Crossing the Han frontier at Longxi Commandery into the Xiongnu-held Hexi Corridor toward the uncharted Western Regions.',
+              quoteZh: '《汉书·张骞传》：“出陇西，径匈奴，匈奴得之。”',
+              quoteEn:
+                'Book of Han: "Departing Longxi, he passed through Xiongnu territory and was captured."',
+            },
+            {
+              year: -138,
+              eraZh: '建元三年',
+              coord: [102.64, 37.93],
+              labelPos: 'top',
+              ancientZh: '姑臧·河西',
+              modernZh: '甘肃武威',
+              ancientEn: 'Guzang (Hexi)',
+              modernEn: 'Wuwei, Gansu',
+              titleZh: '羁留匈奴·持节十载',
+              titleEn: 'Detained by the Xiongnu for a Decade',
+              descZh:
+                '途经河西走廊为匈奴骑兵截获，押送单于王庭。单于予妻生子，然张骞始终“持汉节不失”，羁留十余载待机西奔。',
+              descEn:
+                'Captured in the Hexi Corridor and held for over ten years by the Xiongnu Chanyu, yet Zhang Qian never relinquished his Han imperial tally.',
+              quoteZh: '《史记·大宛列传》：“留骞十余岁，予妻，有子，然骞持汉节不失。”',
+              quoteEn:
+                'Records of the Grand Historian: "Detained over ten years and given a wife and son, yet Zhang Qian kept his Han imperial staff unblemished."',
+            },
+            {
+              year: -129,
+              eraZh: '元光六年',
+              coord: [86.57, 42.06],
+               via: [[95.2, 40.6]],
+              labelPos: 'top',
+              ancientZh: '焉耆·北道',
+              modernZh: '新疆焉耆',
+              ancientEn: 'Yanqi (Karasahr)',
+              modernEn: 'Yanqi, Xinjiang',
+              titleZh: '乘隙脱走·疾驰西域北道',
+              titleEn: 'Escape Along the Northern Tarim Oasis Route',
+              descZh:
+                '匈奴监管渐宽，张骞与甘父乘隙逃脱，循天山南麓绿洲昼夜西驰数十日，穿越车师、焉耆、龟兹诸国。',
+              descEn:
+                'Seizing a moment of lax guard, Zhang Qian and Ganfu escaped westward for dozens of days along the northern Tarim oases at the foot of the Tian Shan.',
+              quoteZh: '《史记·大宛列传》：“居匈奴中，益宽，骞因与其属亡乡月氏，西走数十日。”',
+              quoteEn:
+                'Records of the Grand Historian: "When surveillance eased, Zhang Qian fled with his men toward the Yuezhi, riding west for dozens of days."',
+            },
+            {
+              year: -129,
+              eraZh: '元光六年',
+              coord: [71.78, 40.38],
+              via: [[78.5, 40.9]],
+              labelPos: 'bottom',
+              ancientZh: '大宛·贰师城',
+              modernZh: '费尔干纳盆地',
+              ancientEn: 'Dayuan (Fergana)',
+              modernEn: 'Fergana Valley',
+              titleZh: '越葱岭抵大宛·得发导译',
+              titleEn: 'Crossing the Pamirs to Dayuan (Fergana)',
+              descZh:
+                '翻越帕米尔高原（葱岭）抵达盛产汗血宝马的大宛国。大宛王久闻汉朝饶财欲通而不得，见张骞大喜，特派向导译员护送赴康居。',
+              descEn:
+                'Crossing the Pamir Mountains into Fergana (Dayuan), whose king welcomed Zhang Qian warmly and provided guides and interpreters.',
+              quoteZh: '《史记·大宛列传》：“大宛闻汉之饶财，欲通不得，见骞，喜……为发导驿抵康居。”',
+              quoteEn:
+                'Records of the Grand Historian: "Dayuan had heard of Han wealth and rejoiced at meeting Zhang Qian, dispatching post-guides to escort him to Kangju."',
+            },
+            {
+              year: -129,
+              eraZh: '元光六年',
+              coord: [68.78, 40.85],
+              labelPos: 'top',
+              ancientZh: '康居',
+              modernZh: '锡尔河中游',
+              ancientEn: 'Kangju (Sogdiana)',
+              modernEn: 'Tashkent / Samarkand region',
+              titleZh: '经康居传致大月氏',
+              titleEn: 'Relay Through Kangju to the Oxus',
+              descZh:
+                '由大宛导驿护送至康居国，再由康居王庭遣骑护送南下妫水（阿姆河）流域的大月氏王庭。',
+              descEn:
+                'Escorted through Kangju between the Syr Darya and Zeravshan rivers, and relayed southward toward the Amu Darya (Oxus).',
+              quoteZh: '《史记·大宛列传》：“抵康居，康居传致大月氏。”',
+              quoteEn:
+                'Records of the Grand Historian: "Reaching Kangju, he was relayed onward to the Great Yuezhi."',
+            },
+            {
+              year: -128,
+              eraZh: '元朔元年',
+              coord: [66.9, 36.76],
+              labelPos: 'bottom',
+              ancientZh: '大月氏·蓝氏城',
+              modernZh: '阿富汗巴尔赫',
+              ancientEn: 'Great Yuezhi & Daxia',
+              modernEn: 'Balkh, Afghanistan',
+              titleZh: '驻节大月氏与大夏·考索诸国',
+              titleEn: 'Court of the Great Yuezhi & Bactria',
+              descZh:
+                '抵阿姆河流域，大月氏已臣服大夏（巴克特里亚），土地肥美安乐，无意东还复仇。张骞驻留岁余，详考大夏、安息、身毒及蜀布竹杖商路。',
+              descEn:
+                'In fertile Bactria, the Yuezhi no longer wished to return east against the Xiongnu. Staying over a year, Zhang Qian documented Parthia, India, and Sichuan trade goods.',
+              quoteZh: '《史记·大宛列传》：“留岁余，还，并南山，欲从羌中归。”',
+              quoteEn:
+                'Records of the Grand Historian: "After staying over a year, he headed back along the Southern Mountains to return through Qiang lands."',
+            },
+            {
+              year: -127,
+              eraZh: '元朔二年',
+              coord: [79.92, 37.11],
+              via: [[73.5, 36.8]],
+              labelPos: 'bottom',
+              ancientZh: '于阗·南道',
+              modernZh: '新疆和田',
+              ancientEn: 'Khotan (Yutian)',
+              modernEn: 'Hotan, Xinjiang',
+              titleZh: '循昆仑南道东归·复陷匈奴',
+              titleEn: 'Return via the Southern Tarim Route',
+              descZh:
+                '为避匈奴控制的天山北道，返程改循昆仑山北麓西域南道，经莎车、于阗、楼兰，欲从羌中归汉，不意复为匈奴游骑所得。',
+              descEn:
+                'To avoid Xiongnu patrols on the northern route, Zhang Qian returned along the Kunlun foothills via Yarkand and Khotan, but was captured again by Xiongnu horsemen.',
+              quoteZh: '《史记·大宛列传》：“并南山，欲从羌中归，复为匈奴所得。”',
+              quoteEn:
+                'Records of the Grand Historian: "Skirting the Southern Mountains to return via Qiang territory, he was captured once more by the Xiongnu."',
+            },
+            {
+              year: -126,
+              eraZh: '元朔三年',
+              coord: [109.35, 34.05],
+              via: [[90.5, 37.2], [100.8, 36.1]],
+              labelPos: 'bottom',
+              ancientZh: '长安（归汉）',
+              modernZh: '陕西西安',
+              ancientEn: "Chang'an (Return)",
+              modernEn: "Xi'an, Shaanxi",
+              titleZh: '持节归朝·丝路凿空',
+              titleEn: "Return to Chang'an — Opening the Silk Road",
+              descZh:
+                '元朔三年军臣单于死、匈奴内乱，张骞与胡妻及甘父逃归长安。出使十三载，百余人唯二人得还，封博望侯，史称“凿空”。',
+              descEn:
+                "Amid Xiongnu succession turmoil in 126 BCE, Zhang Qian escaped back to Chang'an with Ganfu—only two survivors of the original hundred—opening the Silk Road.",
+              quoteZh: '《史记·大宛列传》：“初行时百余人，去十三岁，唯二人得还。”',
+              quoteEn:
+                'Records of the Grand Historian: "Of over a hundred men who set out, after thirteen years only two returned."',
+            },
+          ],
+        },
+        {
+          key: 'xuanzang',
+          dynastyKey: 'tang',
+          color: '#9c6317',
+          shortZh: '玄奘西行',
+          shortEn: "Xuanzang's Pilgrimage",
+          titleZh: '玄奘西行求法行迹',
+          titleEn: "Xuanzang's Pilgrimage to the Western Regions",
+          spanZh: '627年 — 645年（唐贞观元年至贞观十九年）',
+          spanEn: '627 CE – 645 CE (Tang Dynasty, Zhenguan Era)',
+          stops: [
+            {
+              year: 627,
+              eraZh: '贞观元年',
+              coord: [108.94, 34.26],
+              labelPos: 'top',
+              ancientZh: '长安',
+              modernZh: '陕西西安',
+              ancientEn: "Chang'an",
+              modernEn: "Xi'an, Shaanxi",
+              titleZh: '发足长安·孤身西迈',
+              titleEn: "Departing Chang'an for the West",
+              descZh:
+                '为求《瑜伽师地论》梵本真义以释诸家纷歧，年二十八的玄奘大师自长安混迹灾民西出秦陇，立誓“不至天竺，终不东归一步”。',
+              descEn:
+                "Seeking original Sanskrit texts of the Yogacara-bhumi-sastra, Master Xuanzang departed Chang'an alone, vowing never to take a step back eastward before reaching India.",
+              quoteZh: '《大慈恩寺三藏法师传》：“遂发足西行，自尔孑然孤游。”',
+              quoteEn:
+                'Biography of the Tripitaka Master: "Thus he set foot westward, traveling onward in solitary resolve."',
+            },
+            {
+              year: 627,
+              eraZh: '贞观元年',
+              coord: [102.64, 37.93],
+              labelPos: 'top',
+              ancientZh: '凉州',
+              modernZh: '甘肃武威',
+              ancientEn: 'Liangzhou',
+              modernEn: 'Wuwei, Gansu',
+              titleZh: '凉州开讲·昼伏夜行',
+              titleEn: 'Preaching in Liangzhou & Night Crossing',
+              descZh:
+                '抵河西都会凉州，受众僧礼请开讲《涅槃》《摄大乘论》月余，名震葱岭以东；因朝廷严禁私度边关，由慧威法师遣徒护送昼伏夜行西赴瓜州。',
+              descEn:
+                'In Liangzhou, Xuanzang lectured for over a month to great acclaim; evading border bans, he traveled by night and hid by day toward Guazhou.',
+              quoteZh: '《大慈恩寺三藏法师传》：“凉州为河西都会，僧徒既多，请留开讲。”',
+              quoteEn:
+                'Biography of the Tripitaka Master: "Liangzhou was the metropolis of Hexi; its many monks entreated him to stay and lecture."',
+            },
+            {
+              year: 627,
+              eraZh: '贞观元年',
+              coord: [95.78, 40.52],
+              labelPos: 'bottom',
+              ancientZh: '瓜州·玉门关',
+              modernZh: '甘肃瓜州',
+              ancientEn: 'Guazhou & Jade Gate',
+              modernEn: 'Guazhou, Gansu',
+              titleZh: '夜渡葫芦河·闯莫贺延碛',
+              titleEn: 'Crossing the Gobi of Moheyan',
+              descZh:
+                '州吏李昌感其诚而暗撕通缉谍文。玄奘夜渡葫芦河、独闯五烽，于八百里莫贺延碛失手覆水，四夜五日滴水未进，绝处逢生终抵伊吾。',
+              descEn:
+                'Crossing the Hulu River by night past five watchtowers, Xuanzang survived five days and four nights without water in the 800-li Moheyan Desert.',
+              quoteZh: '《大慈恩寺三藏法师传》：“莫贺延碛长八百余里，古曰沙河，上无飞鸟，下无走兽。”',
+              quoteEn:
+                'Biography of the Tripitaka Master: "The Moheyan Desert stretches over 800 li—no birds above, no beasts below."',
+            },
+            {
+              year: 628,
+              eraZh: '贞观二年',
+              coord: [89.53, 42.85],
+              labelPos: 'top',
+              ancientZh: '高昌王城',
+              modernZh: '新疆吐鲁番',
+              ancientEn: 'Gaochang (Qocho)',
+              modernEn: 'Turpan, Xinjiang',
+              titleZh: '高昌结义·修书通西域',
+              titleEn: 'Sworn Brotherhood with the King of Gaochang',
+              descZh:
+                '高昌王麴文泰虔礼挽留，玄奘水浆不涉三日以明西求大法之志；麴文泰感泣结为兄弟，修二十四封国书、备黄金百两与三十匹马护送西行。',
+              descEn:
+                'Moved by Xuanzang’s three-day fast, King Qu Wentai became his sworn brother and provided 24 diplomatic letters and provisions for the Western Regions.',
+              quoteZh: '《大慈恩寺三藏法师传》：“任师西迈，乞垂早食……遂共结为兄弟。”',
+              quoteEn:
+                'Biography of the Tripitaka Master: "The King pledged to support his westward journey and swore brotherhood with him."',
+            },
+            {
+              year: 628,
+              eraZh: '贞观二年',
+              coord: [82.96, 41.72],
+              labelPos: 'bottom',
+              ancientZh: '屈支（龟兹）',
+              modernZh: '新疆库车',
+              ancientEn: 'Kucha (Quzhi)',
+              modernEn: 'Kuqa, Xinjiang',
+              titleZh: '驻锡龟兹·翻越凌山雪岭',
+              titleEn: 'Kucha Oasis & Crossing the Icy Tian Shan',
+              descZh:
+                '在龟兹与高僧木叉毱多论辩经义，因大雪封山逗留六十余日；开春后翻越积雪千尺的凌山（天山木扎尔特达坂），历经雪崩严寒出天山北麓。',
+              descEn:
+                'Delayed two months in Kucha by winter snows, Xuanzang then scaled the glacial Muzart Pass of the Tian Shan.',
+              quoteZh: '《大唐西域记》：“山谷积雪，春夏合冻，虽时消泮，寻复结冰。”',
+              quoteEn:
+                'Great Tang Records on the Western Regions: "The mountain valleys are piled with snow, frozen through spring and summer."',
+            },
+            {
+              year: 628,
+              eraZh: '贞观二年',
+              coord: [75.29, 42.83],
+              labelPos: 'top',
+              ancientZh: '碎叶城',
+              modernZh: '吉尔吉斯斯坦托克马克',
+              ancientEn: 'Suyab (Suiye)',
+              modernEn: 'Tokmok, Kyrgyzstan',
+              titleZh: '过大清池·会西突厥叶护可汗',
+              titleEn: 'Audience with the Western Turkic Khagan at Suyab',
+              descZh:
+                '循大清池（伊塞克湖）西北行至碎叶城，恰逢西突厥统叶护可汗游猎。可汗设宴礼敬，命通解汉言及诸国语的摩咄达官率骑护送至迦毕试国境。',
+              descEn:
+                'Passing Lake Issyk-Kul to Suyab, Xuanzang met Tong Yabghu Khagan of the Western Turks, who assigned a multilingual envoy to escort him south.',
+              quoteZh: '《大唐西域记》：“清池西北行五百余里至素叶水城，逢突厥叶护可汗方事畋游。”',
+              quoteEn:
+                'Great Tang Records: "Traveling 500 li northwest from the Clear Lake to Suyab, he met the Turkic Yabghu Khagan on a hunt."',
+            },
+            {
+              year: 628,
+              eraZh: '贞观二年',
+              coord: [66.9, 36.76],
+              via: [[69.6, 39.6]],
+              labelPos: 'top',
+              ancientZh: '缚喝（大夏）',
+              modernZh: '阿富汗巴尔赫',
+              ancientEn: 'Balkh (Fohe)',
+              modernEn: 'Balkh, Afghanistan',
+              titleZh: '过铁门关·参礼小王舍城',
+              titleEn: 'Through the Iron Gate to Balkh',
+              descZh:
+                '经赭时（塔什干）、飒秣建（撒马尔罕），穿险峻铁门关，渡缚刍河（阿姆河）抵号称“小王舍城”的缚喝国，与般若羯罗法师切磋毗婆沙论。',
+              descEn:
+                'Passing Samarkand and the Iron Gate Pass across the Oxus to Balkh ("Little Rajagrha"), studying Abhidharma texts at Nava Vihara.',
+              quoteZh: '《大唐西域记》：“缚喝国，伽蓝百有余所，僧徒三千余人。”',
+              quoteEn:
+                'Great Tang Records: "The Kingdom of Balkh has over a hundred monasteries and more than three thousand monks."',
+            },
+            {
+              year: 629,
+              eraZh: '贞观三年',
+              coord: [71.52, 34.01],
+              labelPos: 'bottom',
+              ancientZh: '健驮逻',
+              modernZh: '巴基斯坦白沙瓦',
+              ancientEn: 'Gandhara (Purushapura)',
+              modernEn: 'Peshawar, Pakistan',
+              titleZh: '越雪山礼大佛·入天竺求法',
+              titleEn: 'Crossing the Hindu Kush into Gandhara & India',
+              descZh:
+                '翻越大雪山（兴都库什山）、瞻礼梵衍那（巴米扬）石佛，入北天竺健驮逻故地；由此深游五印十余载，于那烂陀寺师从戒贤论师，并在曲女城十八国王大会立“真唯识量”。',
+              descEn:
+                'Crossing the Hindu Kush past Bamiyan into Gandhara, beginning over a decade across India culminating at Nalanda Monastery and the Grand Assembly of Kanauj.',
+              quoteZh: '《大唐西域记》：“自古大圣贤，多生此国，作论诸师，亦多出此。”',
+              quoteEn:
+                'Great Tang Records: "Since antiquity, great sages and treatise-masters have arisen in this land of Gandhara."',
+            },
+            {
+              year: 644,
+              eraZh: '贞观十八年',
+              coord: [79.92, 37.11],
+              via: [[74.8, 36.9]],
+              labelPos: 'bottom',
+              ancientZh: '于阗（瞿萨旦那）',
+              modernZh: '新疆和田',
+              ancientEn: 'Khotan (Kustana)',
+              modernEn: 'Hotan, Xinjiang',
+              titleZh: '越葱岭载经东归·奉表唐廷',
+              titleEn: 'Return via Khotan & Memorial to Emperor Taizong',
+              descZh:
+                '载梵本经论越帕米尔高原东归至于阗，遣使向唐太宗奉表陈情；此时大唐已平定高昌、设安西都护府，太宗降敕欣慰迎归，命沿途州县护送。',
+              descEn:
+                'Returning across the Pamirs to Khotan with Sanskrit scriptures, Xuanzang sent a memorial to Emperor Taizong, who issued an imperial edict welcoming him home.',
+              quoteZh: '《进西域记表》：“冒越宪章，私往天竺……历览周游，一十七载。”',
+              quoteEn:
+                'Memorial to the Throne: "Having ventured beyond the border laws to India, I traveled and observed for seventeen years."',
+            },
+            {
+              year: 645,
+              eraZh: '贞观十九年',
+              coord: [109.35, 34.05],
+              via: [[91.0, 38.2], [101.5, 36.2]],
+              labelPos: 'bottom',
+              ancientZh: '长安（归唐）',
+              modernZh: '陕西西安',
+              ancientEn: "Chang'an (Return)",
+              modernEn: "Xi'an, Shaanxi",
+              titleZh: '归至京师·开场译经撰记',
+              titleEn: "Triumphal Return to Chang'an & Translation Bureau",
+              descZh:
+                '贞观十九年正月返抵长安，朱雀街数十万人瞻礼迎奉六百五十七部梵经；后于弘福寺、大慈恩寺主持译场十九载，译经七十五部，撰成《大唐西域记》十二卷。',
+              descEn:
+                "Returning to Chang'an in 645 CE with 657 Sanskrit texts, Xuanzang led the imperial translation bureau for 19 years and compiled the Great Tang Records on the Western Regions.",
+              quoteZh: '《旧唐书·玄奘传》：“贞观十九年，归至京师，太宗见之大悦，与之谈论。”',
+              quoteEn:
+                'Old Book of Tang: "In the 19th year of Zhenguan he returned to the capital; Emperor Taizong met him with great joy."',
+            },
+          ],
+        },
+        {
+          key: 'sushi',
+          dynastyKey: 'beisong',
+          color: '#1f6f8b',
+          shortZh: '苏轼贬谪路线',
+          shortEn: "Su Shi's Exile",
+          titleZh: '苏轼宦海贬谪行迹',
+          titleEn: "Su Shi's Literary Exile Across Song China",
+          spanZh: '1056年 — 1101年（北宋嘉祐元年至建中靖国元年）',
+          spanEn: '1056 CE – 1101 CE (Northern Song Dynasty)',
+          stops: [
+            {
+              year: 1056,
+              eraZh: '嘉祐元年',
+              coord: [103.85, 30.05],
+              labelPos: 'bottom',
+              ancientZh: '眉州',
+              modernZh: '四川眉山',
+              ancientEn: 'Meizhou',
+              modernEn: 'Meishan, Sichuan',
+              titleZh: '弱冠出蜀·仗剑远游',
+              titleEn: 'Leaving Meizhou for the Imperial Capital',
+              descZh:
+                '年二十一的苏轼与弟苏辙随父苏洵自蜀中眉州启程，乘舟循岷江入长江，复由褒斜道越秦岭赴东京汴梁应试。',
+              descEn:
+                'At age twenty-one, Su Shi set out from Meizhou in Sichuan with his father Su Xun and brother Su Zhe to take the imperial examinations in Kaifeng.',
+              quoteZh: '苏轼《初发嘉州》：“朝发鼓阗阗，西风猎画旃。故乡飘已远，往意浩无边。”',
+              quoteEn:
+                'Su Shi, Departing Jiazhou: "Morning drums thunder as the west wind snaps our painted banner; home drifts far behind, our aspirations boundless."',
+            },
+            {
+              year: 1057,
+              eraZh: '嘉祐二年',
+              coord: [114.35, 34.79],
+              via: [[108.5, 33.6]],
+              labelPos: 'top',
+              ancientZh: '东京开封府',
+              modernZh: '河南开封',
+              ancientEn: 'Dongjing Kaifeng',
+              modernEn: 'Kaifeng, Henan',
+              titleZh: '金榜题名·名动京师',
+              titleEn: 'Triumph at the Kaifeng Imperial Court',
+              descZh:
+                '嘉祐二年春闱，主考官欧阳修读苏轼《刑赏忠厚之至论》惊喜击节，苏氏兄弟同科进士及第，文名震动汴京。',
+              descEn:
+                'Chief examiner Ouyang Xiu marveled at Su Shi’s essay in the 1057 examination, proclaiming that the older generation must make way for this rising genius.',
+              quoteZh: '欧阳修《与梅圣俞书》：“读轼书，不觉汗出，快哉快哉！老夫当避路，放他出一头地也。”',
+              quoteEn:
+                'Ouyang Xiu: "Reading Su Shi’s essay brought beads of sweat in sheer delight—this old man must step aside and let him stand a head above!"',
+            },
+            {
+              year: 1061,
+              eraZh: '嘉祐六年',
+              coord: [107.39, 34.52],
+              labelPos: 'top',
+              ancientZh: '凤翔府',
+              modernZh: '陕西凤翔',
+              ancientEn: 'Fengxiang',
+              modernEn: 'Fengxiang, Shaanxi',
+              titleZh: '初仕关中·签判凤翔',
+              titleEn: 'First Official Post in Fengxiang',
+              descZh:
+                '制科入第三等，授大理评事、签书凤翔府判官。初历地方吏治，兴修东湖、革除衙前弊政，作《喜雨亭记》《石鼓歌》。',
+              descEn:
+                'Appointed magistrate-assessor in Fengxiang in Guanzhong, where he reformed corvée transport and composed Pavilion of Joyful Rain.',
+              quoteZh: '苏轼《喜雨亭记》：“使天而雨珠，寒者不得以为襦；使天而雨玉，饥者不得以为粟。”',
+              quoteEn:
+                'Su Shi, Pavilion of Joyful Rain: "Were Heaven to rain pearls, the cold could not wear them as coats; were it to rain jade, the hungry could not eat it as grain."',
+            },
+            {
+              year: 1071,
+              eraZh: '熙宁四年',
+              coord: [120.15, 30.28],
+              via: [[114.6, 32.8]],
+              labelPos: 'bottom',
+              ancientZh: '杭州',
+              modernZh: '浙江杭州',
+              ancientEn: 'Hangzhou',
+              modernEn: 'Hangzhou, Zhejiang',
+              titleZh: '外放通判·寄情西湖',
+              titleEn: 'Vice-Prefect of Hangzhou & West Lake',
+              descZh:
+                '因上书直陈王安石新法之弊，自请外放任杭州通判（后于元祐四年再知杭州浚湖筑苏堤），巡行属县、赈济灾荒，留下无数西湖诗篇。',
+              descEn:
+                'Opposing Wang Anshi’s New Policies, Su Shi requested provincial assignment as Vice-Prefect of Hangzhou, immortalizing West Lake in verse.',
+              quoteZh: '苏轼《饮湖上初晴后雨》：“欲把西湖比西子，淡妆浓抹总相宜。”',
+              quoteEn:
+                'Su Shi: "If I may compare West Lake to Lady Xishi, in light makeup or rich adornment she is equally peerless."',
+            },
+            {
+              year: 1075,
+              eraZh: '熙宁八年',
+              coord: [119.4, 35.99],
+              labelPos: 'top',
+              ancientZh: '密州',
+              modernZh: '山东诸城',
+              ancientEn: 'Mizhou',
+              modernEn: 'Zhucheng, Shandong',
+              titleZh: '知密州·超然豪放',
+              titleEn: 'Governor of Mizhou — Birth of the Heroic Style',
+              descZh:
+                '主动求调密州知州，抗旱捕蝗、收养弃婴；于超然台思念胞弟苏辙，写就《水调歌头·明月几时有》与《江城子·密州出猎》，开宋词豪放一派。',
+              descEn:
+                'As Governor of Mizhou in Shandong, Su Shi pioneered the heroic ci-poetry style with "When Will the Bright Moon Be" and "Hunting at Mizhou."',
+              quoteZh: '苏轼《水调歌头》：“人有悲欢离合，月有阴晴圆缺，此事古难全。但愿人长久，千里共婵娟。”',
+              quoteEn:
+                'Su Shi, Prelude to Water Melody: "Men have sorrow and joy, parting and reunion; the moon has clouds and clear skies, waxing and waning."',
+            },
+            {
+              year: 1077,
+              eraZh: '熙宁十年',
+              coord: [117.18, 34.26],
+              labelPos: 'top',
+              ancientZh: '徐州·湖州',
+              modernZh: '江苏徐州',
+              ancientEn: 'Xuzhou & Huzhou',
+              modernEn: 'Xuzhou, Jiangsu',
+              titleZh: '徐州抗洪·乌台诗案',
+              titleEn: 'Flood Defense at Xuzhou & the Crow Terrace Case',
+              descZh:
+                '知徐州时黄河决口迫城，苏轼布衣草履率禁军筑堤死守保住全城；元丰二年调知湖州，旋因诗文遭御史台弹劾逮赴汴京诏狱，史称“乌台诗案”。',
+              descEn:
+                'After saving Xuzhou from Yellow River floods, Su Shi was arrested in 1079 over alleged satire in his poems and imprisoned in the Imperial Censorate ("Crow Terrace Case").',
+              quoteZh: '苏轼《狱中寄子由》：“是处青山可埋骨，他年夜雨独伤神。与君世世为兄弟，更结来生未了因。”',
+              quoteEn:
+                'Su Shi, From Prison to Ziyou: "Anywhere the green hills may bury my bones; in future years you will grieve alone in the night rain."',
+            },
+            {
+              year: 1080,
+              eraZh: '元丰三年',
+              coord: [114.87, 30.45],
+              labelPos: 'bottom',
+              ancientZh: '黄州',
+              modernZh: '湖北黄冈',
+              ancientEn: 'Huangzhou',
+              modernEn: 'Huanggang, Hubei',
+              titleZh: '贬谪黄州·东坡赤壁',
+              titleEn: 'Exile in Huangzhou — Dongpo & the Red Cliffs',
+              descZh:
+                '出狱后责授检校水部员外郎、黄州团练副使。躬耕城东荒坡自号“东坡居士”，于困顿中完成了精神蜕变，写出《定风波》《念奴娇·赤壁怀古》、前后《赤壁赋》与《寒食帖》。',
+              descEn:
+                'Banished to Huangzhou on the Yangtze, he farmed the "Eastern Slope" (taking the name Dongpo) and composed his greatest masterpieces at the Red Cliffs.',
+              quoteZh: '苏轼《定风波》：“竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。”',
+              quoteEn:
+                'Su Shi, Calming the Waves: "Bamboo staff and straw sandals lighter than a steed—who fears? One straw cloak in misty rain for a lifetime."',
+            },
+            {
+              year: 1094,
+              eraZh: '绍圣元年',
+              coord: [114.41, 23.11],
+              via: [[115.2, 26.8]],
+              labelPos: 'bottom',
+              ancientZh: '惠州',
+              modernZh: '广东惠州',
+              ancientEn: 'Huizhou',
+              modernEn: 'Huizhou, Guangdong',
+              titleZh: '再贬岭南·寓居惠州',
+              titleEn: 'Banished South of the Nanling to Huizhou',
+              descZh:
+                '元祐更化曾召还翰林学士、知杭州颖州扬州定州；绍圣元年哲宗亲政后新党复起，年近六旬的苏轼远贬岭南惠州安置，捐犀带助修东新桥、西新桥。',
+              descEn:
+                'Following political reversals in 1094, the nearly sixty-year-old Su Shi was banished across the Nanling Mountains to Huizhou in Guangdong.',
+              quoteZh: '苏轼《食荔枝》：“日啖荔枝三百颗，不辞长作岭南人。”',
+              quoteEn:
+                'Su Shi, Eating Lychees: "Feasting on three hundred lychees a day, I would gladly remain a man of Lingnan forever."',
+            },
+            {
+              year: 1097,
+              eraZh: '绍圣四年',
+              coord: [109.58, 19.52],
+              via: [[110.3, 21.1]],
+              labelPos: 'bottom',
+              ancientZh: '儋州',
+              modernZh: '海南儋州',
+              ancientEn: 'Danzhou',
+              modernEn: 'Danzhou, Hainan',
+              titleZh: '渡海琼州·敷文儋耳',
+              titleEn: 'Across the Sea to Danzhou (Hainan Island)',
+              descZh:
+                '六十二岁再贬琼州别驾、昌化军（儋州）安置。跨海抵天涯绝岛，居桄榔庵、食芋饮水、讲学授徒，开启琼州文教之风，培养出海南首位举人姜唐佐。',
+              descEn:
+                'At sixty-two, banished across the Qiongzhou Strait to Hainan Island, where he lived in a palm-thatched hut and mentored Hainan’s first provincial graduate.',
+              quoteZh: '苏轼《六月二十日夜渡海》：“九死南荒吾不恨，兹游奇绝冠平生。”',
+              quoteEn:
+                'Su Shi, Crossing the Sea at Night: "Nine deaths in the southern wilds leave me no regret—this wondrous journey crowns my entire life."',
+            },
+            {
+              year: 1101,
+              eraZh: '建中靖国元年',
+              coord: [119.97, 31.81],
+              via: [[114.9, 25.8], [117.2, 29.8]],
+              labelPos: 'top',
+              ancientZh: '常州',
+              modernZh: '江苏常州',
+              ancientEn: 'Changzhou',
+              modernEn: 'Changzhou, Jiangsu',
+              titleZh: '遇赦北归·终老毗陵',
+              titleEn: 'Pardoned Return North & Final Rest in Changzhou',
+              descZh:
+                '元符三年徽宗即位大赦北归，渡海经廉州、永州沿赣江北上；建中靖国元年七月廿八日病逝于常州顾塘桥孙氏馆，享年六十六岁。',
+              descEn:
+                'Pardoned in 1100, Su Shi traveled north by boat and passed away in Changzhou in July 1101 at age sixty-six, summing up his life in a final self-portrait poem.',
+              quoteZh: '苏轼《自题金山画像》：“心似已灰之木，身如不系之舟。问汝平生功业，黄州惠州儋州。”',
+              quoteEn:
+                'Su Shi, Inscription on My Portrait at Jinshan: "My heart like ashen wood, my body an unmoored boat. Ask of my life’s achievements: Huangzhou, Huizhou, Danzhou."',
+            },
+          ],
+        },
+      ];
+    }
+
+    startJourney(journeyKey, stopIdx = 0) {
+      const journeys = HistoricalAtlasController.HISTORICAL_JOURNEYS;
+      const found = journeys.find((j) => j.key === journeyKey) || journeys[0];
+      if (!found) return;
+
+      this.stopAutoplay();
+      if (this.journeyTimer) {
+        clearInterval(this.journeyTimer);
+        this.journeyTimer = null;
+      }
+      if (this.challenge) this.stopChallenge();
+      if (this.genealogyMode) this.toggleGenealogyMode(false);
+      this.closeGenealogyCard();
+      this.closeMilestoneBalloon();
+
+      this.activeJourney = found;
+      this.journeyStopIdx = Math.max(0, Math.min(found.stops.length - 1, stopIdx));
+
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-journey');
+      if (this.journeyCard) this.journeyCard.classList.remove('is-hidden');
+
+      document.querySelectorAll('.journey-chip-btn').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.journey === found.key);
+      });
+
+      const stop = found.stops[this.journeyStopIdx];
+      if (stop) this.jumpToYear(stop.year);
+
+      this._renderJourneyOverlay();
+      this._renderJourneyCard();
+
+      if (stopIdx === 0) {
+        this._frameJourneyOverview(found);
+      } else if (stop) {
+        this._flyToJourneyStop(stop);
+      }
+    }
+
+    stopJourney() {
+      if (this.journeyTimer) {
+        clearInterval(this.journeyTimer);
+        this.journeyTimer = null;
+      }
+      this.activeJourney = null;
+      this.journeyStopIdx = 0;
+      if (this.grpJourney) this.grpJourney.innerHTML = '';
+      if (this.journeyCard) {
+        this.journeyCard.classList.add('is-hidden');
+        this.journeyCard.innerHTML = '';
+      }
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-active-journey');
+      document.querySelectorAll('.journey-chip-btn').forEach((btn) => {
+        btn.classList.remove('is-active');
+      });
+    }
+
+    goToJourneyStop(idx, panCamera = true) {
+      if (!this.activeJourney) return;
+      const stops = this.activeJourney.stops;
+      this.journeyStopIdx = Math.max(0, Math.min(stops.length - 1, idx));
+      const stop = stops[this.journeyStopIdx];
+      if (stop) {
+        this.jumpToYear(stop.year);
+        if (panCamera) this._flyToJourneyStop(stop);
+      }
+      this._renderJourneyOverlay();
+      this._renderJourneyCard();
+    }
+
+    stepJourney(delta) {
+      if (!this.activeJourney) return;
+      const nextIdx =
+        (this.journeyStopIdx + delta + this.activeJourney.stops.length) %
+        this.activeJourney.stops.length;
+      this.goToJourneyStop(nextIdx, true);
+    }
+
+    toggleJourneyAutoplay() {
+      if (!this.activeJourney) return;
+      if (this.journeyTimer) {
+        clearInterval(this.journeyTimer);
+        this.journeyTimer = null;
+        this._renderJourneyCard();
+        return;
+      }
+      this.journeyTimer = setInterval(() => {
+        if (!this.activeJourney) {
+          clearInterval(this.journeyTimer);
+          this.journeyTimer = null;
+          return;
+        }
+        if (this.journeyStopIdx + 1 >= this.activeJourney.stops.length) {
+          clearInterval(this.journeyTimer);
+          this.journeyTimer = null;
+          this._renderJourneyCard();
+          return;
+        }
+        this.goToJourneyStop(this.journeyStopIdx + 1, true);
+      }, 2800);
+      this._renderJourneyCard();
+    }
+
+    _frameJourneyOverview(journey) {
+      if (!journey || !journey.stops.length) return;
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (const st of journey.stops) {
+        const [sx, sy] = this.projector.toScreen(st.coord[0], st.coord[1]);
+        if (sx < minX) minX = sx;
+        if (sx > maxX) maxX = sx;
+        if (sy < minY) minY = sy;
+        if (sy > maxY) maxY = sy;
+      }
+      const cx = (minX + maxX) * 0.5;
+      const cy = (minY + maxY) * 0.5;
+      const spanW = Math.max(maxX - minX + 110, (maxY - minY + 120) / 0.7) * 1.18;
+      const w = Math.max(320, Math.min(960, spanW));
+      const h = w * 0.7;
+      // Offset camera slightly down/left so the bottom-left journey card never occludes western/southern stops
+      const offsetX = window.innerWidth > 900 ? -w * 0.06 : 0;
+      const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.1;
+      this._animateCameraTo({
+        x: Math.max(-140, Math.min(1000 - w + 140, cx - w * 0.5 + offsetX)),
+        y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5 + offsetY)),
+        w,
+        h,
+      });
+    }
+
+    _flyToJourneyStop(stop) {
+      if (!stop || !stop.coord) return;
+      const [tx, ty] = this.projector.toScreen(stop.coord[0], stop.coord[1]);
+      const w = Math.max(360, Math.min(this.camera.w, 540));
+      const h = w * 0.7;
+      const offsetX = window.innerWidth > 900 ? -w * 0.08 : 0;
+      const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.12;
+      this._animateCameraTo({
+        x: tx - w * 0.5 + offsetX,
+        y: ty - h * 0.48 + offsetY,
+        w,
+        h,
+      });
+    }
+
+    _buildJourneySegmentSvgPath(c1, c2, viaCoords) {
+      const geoPts = [c1, ...(viaCoords || []), c2];
+      const pts = geoPts.map((pt) => this.projector.toScreen(pt[0], pt[1]));
+      if (pts.length === 2) {
+        const [x1, y1] = pts[0];
+        const [x2, y2] = pts[1];
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.hypot(dx, dy) || 1;
+        const bend = Math.min(18, len * 0.12);
+        const mx = (x1 + x2) * 0.5 - (dy / len) * bend;
+        const my = (y1 + y2) * 0.5 + (dx / len) * bend;
+        return `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${mx.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+      }
+      let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)];
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        const p3 = pts[Math.min(pts.length - 1, i + 2)];
+        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+        d += `C${cp1x.toFixed(1)} ${cp1y.toFixed(1)},${cp2x.toFixed(1)} ${cp2y.toFixed(1)},${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+      }
+      return d;
+    }
+
+    _renderJourneyOverlay() {
+      if (!this.grpJourney) return;
+      this.grpJourney.innerHTML = '';
+      if (!this.activeJourney) return;
+
+      const j = this.activeJourney;
+      const stops = j.stops;
+      const curIdx = this.journeyStopIdx;
+
+      const segPaths = [];
+      for (let i = 0; i < stops.length - 1; i++) {
+        segPaths.push(
+          this._buildJourneySegmentSvgPath(
+            stops[i].coord,
+            stops[i + 1].coord,
+            stops[i + 1].via
+          )
+        );
+      }
+
+      const fullPathD = segPaths.join(' ');
+      const activeEndSeg = curIdx === 0 ? segPaths.length : curIdx;
+      const passedPathD = segPaths.slice(0, activeEndSeg).join(' ');
+
+      // 1. Parchment casing halo along full route
+      this._svgNode(
+        'path',
+        {
+          d: fullPathD,
+          class: 'journey-track-bg',
+          'data-base-sw': '6.2',
+        },
+        this.grpJourney
+      );
+
+      // 2. Full route baseline so the entire historical route is always visible
+      this._svgNode(
+        'path',
+        {
+          d: fullPathD,
+          class: 'journey-track-upcoming',
+          stroke: j.color,
+          'data-base-sw': '2.4',
+        },
+        this.grpJourney
+      );
+
+      // 3. Passed / active route segment + flowing animated overlay
+      if (passedPathD) {
+        this._svgNode(
+          'path',
+          {
+            d: passedPathD,
+            class: 'journey-track-passed',
+            stroke: j.color,
+            'data-base-sw': '3.5',
+          },
+          this.grpJourney
+        );
+        this._svgNode(
+          'path',
+          {
+            d: passedPathD,
+            class: 'journey-track-flow',
+            'data-base-sw': '1.8',
+          },
+          this.grpJourney
+        );
+      }
+
+      // 4. Numbered waypoint pins (render non-current first, current stop on top)
+      const order = stops.map((_, idx) => idx).sort((a, b) => (a === curIdx ? 1 : b === curIdx ? -1 : a - b));
+      for (const idx of order) {
+        const st = stops[idx];
+        const [sx, sy] = this.projector.toScreen(st.coord[0], st.coord[1]);
+        const stateCls =
+          idx === curIdx ? 'is-current' : idx < curIdx ? 'is-passed' : 'is-upcoming';
+        const g = this._svgNode(
+          'g',
+          {
+            class: `journey-node ${stateCls}`,
+            'data-x': sx.toFixed(1),
+            'data-y': sy.toFixed(1),
+            'data-stop-idx': String(idx),
+          },
+          this.grpJourney
+        );
+        g.style.color = j.color;
+
+        if (idx === curIdx) {
+          this._svgNode('circle', { class: 'jn-pulse', r: 12 }, g);
+        }
+        this._svgNode('circle', { class: 'jn-disc', r: idx === curIdx ? 8.5 : 7.2 }, g);
+        const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
+        numTxt.textContent = String(idx + 1);
+
+        const lblY = st.labelPos === 'bottom' ? '18' : '-11.5';
+        const lblTxt = this._svgNode('text', { class: 'jn-label', x: '0', y: lblY }, g);
+        lblTxt.textContent = this.locale === 'en' ? st.ancientEn : st.ancientZh;
+      }
+
+      this._rescaleSvgTypography();
+    }
+
+    _renderJourneyCard() {
+      if (!this.journeyCard || !this.activeJourney) return;
+      const j = this.activeJourney;
+      const stops = j.stops;
+      const idx = this.journeyStopIdx;
+      const st = stops[idx];
+      const isEn = this.locale === 'en';
+      const allJourneys = HistoricalAtlasController.HISTORICAL_JOURNEYS;
+
+      const tabsHtml = allJourneys
+        .map(
+          (item) =>
+            `<button type="button" class="jc-tab-btn${item.key === j.key ? ' is-active' : ''}" data-jkey="${item.key}">${
+              isEn ? item.shortEn : item.shortZh
+            }</button>`
+        )
+        .join('');
+
+      const dotsHtml = stops
+        .map((s, i) => {
+          const cls =
+            i === idx ? 'jc-dot is-current' : i < idx ? 'jc-dot is-passed' : 'jc-dot';
+          const tip = `${i + 1}. ${isEn ? s.ancientEn : s.ancientZh} (${this.formatYear(s.year)})`;
+          return `<button type="button" class="${cls}" data-sidx="${i}" title="${tip}">${i + 1}</button>`;
+        })
+        .join('');
+
+      const yrStr = isEn
+        ? `${this.formatYear(st.year)} · ${st.eraZh}`
+        : `${st.year <= 0 ? '公元前' + -st.year + '年' : '公元' + st.year + '年'} · ${st.eraZh}`;
+      const placeStr = isEn
+        ? `${st.ancientEn} (Now ${st.modernEn})`
+        : `${st.ancientZh}（今${st.modernZh}）`;
+
+      const autoLabel = this.journeyTimer
+        ? isEn
+          ? `${SVG_ICONS.pause} Pause`
+          : `${SVG_ICONS.pause} 暂停巡礼`
+        : isEn
+          ? `${SVG_ICONS.play} Auto Tour`
+          : `${SVG_ICONS.play} 自动巡礼`;
+
+      this.journeyCard.innerHTML =
+        `<div class="jc-top-bar">` +
+        `<div class="jc-tabs">${tabsHtml}</div>` +
+        `<button type="button" class="jc-close-btn" id="act-journey-overview" title="${isEn ? 'Fit entire route on map' : '全线总览视图'}">${isEn ? 'Full Route' : '全线视图'}</button>` +
+        `<button type="button" class="jc-close-btn" id="act-close-journey" title="${isEn ? 'Exit Historical Journey (Esc)' : '退出行迹巡礼 (Esc)'}">${isEn ? 'Exit' : '退出'} ×</button>` +
+        `</div>` +
+        `<div class="jc-stop-head">` +
+        `<span class="jc-step-badge" style="background:${j.color}">${
+          isEn ? `Stop ${idx + 1} / ${stops.length}` : `第 ${idx + 1} / ${stops.length} 站`
+        }</span>` +
+        `<span class="jc-stop-title">${isEn ? st.titleEn : st.titleZh}</span>` +
+        `<span class="jc-stop-year">${yrStr}</span>` +
+        `</div>` +
+        `<div class="jc-stop-place">${SVG_ICONS.pin} <span>${placeStr}</span></div>` +
+        `<p class="jc-stop-desc">${isEn ? st.descEn : st.descZh}</p>` +
+        `<div class="jc-stop-quote">${isEn ? st.quoteEn : st.quoteZh}</div>` +
+        `<div class="jc-footer">` +
+        `<div class="jc-dots">${dotsHtml}</div>` +
+        `<div class="jc-controls">` +
+        `<button type="button" class="jc-nav-btn" id="act-journey-prev">${SVG_ICONS.arrowLeft} ${isEn ? 'Prev' : '上一站'}</button>` +
+        `<button type="button" class="jc-nav-btn is-primary" id="act-journey-auto">${autoLabel}</button>` +
+        `<button type="button" class="jc-nav-btn" id="act-journey-next">${isEn ? 'Next' : '下一站'} ${SVG_ICONS.arrowRight}</button>` +
+        `</div>` +
+        `</div>`;
+
+      this.journeyCard.querySelectorAll('.jc-tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.startJourney(btn.dataset.jkey, 0);
+        });
+      });
+      this.journeyCard.querySelectorAll('.jc-dot').forEach((dot) => {
+        dot.addEventListener('click', () => {
+          if (this.journeyTimer) {
+            clearInterval(this.journeyTimer);
+            this.journeyTimer = null;
+          }
+          this.goToJourneyStop(Number(dot.dataset.sidx), true);
+        });
+      });
+      const prevBtn = this._id('act-journey-prev');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (this.journeyTimer) {
+            clearInterval(this.journeyTimer);
+            this.journeyTimer = null;
+          }
+          this.stepJourney(-1);
+        });
+      }
+      const nextBtn = this._id('act-journey-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (this.journeyTimer) {
+            clearInterval(this.journeyTimer);
+            this.journeyTimer = null;
+          }
+          this.stepJourney(1);
+        });
+      }
+      const autoBtn = this._id('act-journey-auto');
+      if (autoBtn) {
+        autoBtn.addEventListener('click', () => this.toggleJourneyAutoplay());
+      }
+      const ovBtn = this._id('act-journey-overview');
+      if (ovBtn) {
+        ovBtn.addEventListener('click', () => this._frameJourneyOverview(j));
+      }
+      const closeBtn = this._id('act-close-journey');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.stopJourney());
+      }
+    }
+
     // ---------------- Global Quick Search ----------------
     _ensureSearchIndex() {
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
+
+      // 0a. Curated Historical Journeys (青史行迹)
+      for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
+        const d = this.dynasties.find((item) => item.key === j.dynastyKey) || this.dynasties[0];
+        const stopNames = j.stops.map((s) => `${s.ancientZh} ${s.modernZh} ${s.titleZh}`).join(' ');
+        entries.push({
+          kind: 'journey',
+          journeyKey: j.key,
+          dynasty: d,
+          year: j.stops[0].year,
+          titleZh: j.titleZh,
+          subZh: `${j.spanZh} · 共 ${j.stops.length} 站`,
+          titleEn: j.titleEn,
+          subEn: `${j.spanEn} · ${j.stops.length} stops`,
+          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 行迹 路线 丝绸之路 贬谪 西行 东坡 ${stopNames}`.toLowerCase(),
+        });
+      }
 
       // 0. Dynasties / Historical Periods
       for (const d of this.dynasties) {
@@ -3022,6 +4112,11 @@
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
 
+      if (item.kind === 'journey' && item.journeyKey) {
+        this.startJourney(item.journeyKey, 0);
+        return;
+      }
+
       this.jumpToYear(item.year);
 
       if (item.kind === 'city' && item.coord) {
@@ -3072,9 +4167,43 @@
       const renderSearchDropdown = () => {
         if (!searchInp || !searchList) return;
         const q = searchInp.value.trim();
+        const kindLabel = {
+          journey: this.locale === 'en' ? 'Journey' : '行迹',
+          dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
+          era: this.locale === 'en' ? 'Era' : '纪年',
+          city: this.locale === 'en' ? 'City' : '古城',
+          prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
+          region: this.locale === 'en' ? 'Circuit/Prov' : '大区',
+          event: this.locale === 'en' ? 'Event' : '史事',
+        };
         if (!q) {
-          searchList.classList.add('is-hidden');
-          currentResults = [];
+          const index = this._ensureSearchIndex();
+          currentResults = index.filter((item) => item.kind === 'journey');
+          activeSearchIdx = -1;
+          searchList.innerHTML = '';
+          const head = document.createElement('li');
+          head.className = 'sr-section-head';
+          head.textContent =
+            this.locale === 'en'
+              ? 'Historical Journeys · Quick Launch'
+              : '青史行迹 · 人物时空巡礼';
+          searchList.appendChild(head);
+          currentResults.forEach((item) => {
+            const li = document.createElement('li');
+            const mainText = this.locale === 'en' ? item.titleEn : item.titleZh;
+            const subText = this.locale === 'en' ? item.subEn : item.subZh;
+            const tagText = `${this.dynastyBadge(item.dynasty)} · ${kindLabel.journey}`;
+            li.innerHTML =
+              `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
+              `<span class="sr-tag">${tagText}</span>`;
+            li.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              this._selectSearchResult(item);
+              searchInp.blur();
+            });
+            searchList.appendChild(li);
+          });
+          searchList.classList.remove('is-hidden');
           return;
         }
         currentResults = this._queryQuickSearch(q);
@@ -3087,14 +4216,6 @@
           searchList.classList.remove('is-hidden');
           return;
         }
-        const kindLabel = {
-          dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
-          era: this.locale === 'en' ? 'Era' : '纪年',
-          city: this.locale === 'en' ? 'City' : '古城',
-          prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
-          region: this.locale === 'en' ? 'Circuit/Prov' : '大区',
-          event: this.locale === 'en' ? 'Event' : '史事',
-        };
         currentResults.forEach((item, idx) => {
           const li = document.createElement('li');
           if (idx === activeSearchIdx) li.classList.add('is-active');
@@ -3121,13 +4242,13 @@
           if (e.key === 'ArrowDown' && currentResults.length) {
             e.preventDefault();
             activeSearchIdx = (activeSearchIdx + 1) % currentResults.length;
-            Array.from(searchList.children).forEach((el, i) =>
+            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) =>
               el.classList.toggle('is-active', i === activeSearchIdx)
             );
           } else if (e.key === 'ArrowUp' && currentResults.length) {
             e.preventDefault();
             activeSearchIdx = (activeSearchIdx - 1 + currentResults.length) % currentResults.length;
-            Array.from(searchList.children).forEach((el, i) =>
+            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) =>
               el.classList.toggle('is-active', i === activeSearchIdx)
             );
           } else if (e.key === 'Enter' && currentResults.length) {
@@ -3212,6 +4333,16 @@
           ) {
             closeLayersPopover();
           }
+        });
+        layersPopover.querySelectorAll('.journey-chip-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            closeLayersPopover();
+            if (this.activeJourney && this.activeJourney.key === btn.dataset.journey) {
+              this.stopJourney();
+            } else {
+              this.startJourney(btn.dataset.journey, 0);
+            }
+          });
         });
       }
 
@@ -3334,6 +4465,14 @@
           if (this.challenge) return;
           e.preventDefault();
           this.stopAutoplay();
+          if (this.activeJourney) {
+            if (this.journeyTimer) {
+              clearInterval(this.journeyTimer);
+              this.journeyTimer = null;
+            }
+            this.stepJourney(e.key === 'ArrowRight' ? 1 : -1);
+            return;
+          }
           const step = e.shiftKey ? 50 : 10;
           this.jumpToYear(this.year + (e.key === 'ArrowRight' ? step : -step));
         } else if (e.key === 'Home' && !this.challenge) {
@@ -3342,12 +4481,17 @@
           this.jumpToYear(this.maxYear);
         } else if (e.key === ' ') {
           e.preventDefault();
+          if (this.activeJourney) {
+            this.toggleJourneyAutoplay();
+            return;
+          }
           if (this.playing) this.stopAutoplay();
           else this.startAutoplay();
         } else if (e.key === 'Escape') {
           closeLayersPopover();
           this.closeMilestoneBalloon();
-          if (this.genealogyMode) this.toggleGenealogyMode(false);
+          if (this.activeJourney) this.stopJourney();
+          else if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
           }
@@ -3461,11 +4605,30 @@
 
       const inspectPointTooltip = (e) => {
         const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+        const journeyNodeEl = target && target.closest && target.closest('.journey-node');
         const settlementEl = target && target.closest && target.closest('.settlement-node');
         const corridorEl = target && target.closest && target.closest('.corridor-line');
         const milestoneEl = target && target.closest && target.closest('.milestone-pin');
 
-        if (settlementEl) {
+        if (journeyNodeEl && this.activeJourney) {
+          const sIdx = Number(journeyNodeEl.dataset.stopIdx);
+          const stop = this.activeJourney.stops[sIdx];
+          if (stop) {
+            const title = this.locale === 'en' ? stop.titleEn : stop.titleZh;
+            const place =
+              this.locale === 'en'
+                ? `${stop.ancientEn} (${stop.modernEn})`
+                : `${stop.ancientZh}（今${stop.modernZh}）`;
+            const yr = this.formatYear(stop.year);
+            this._showHoverTip(
+              e,
+              `<b>${sIdx + 1}. ${place} · ${title}</b><div class="tt-sub">${yr} · ${
+                this.locale === 'en' ? 'Click to jump to this stop' : '点击切换至此行迹节点'
+              }</div>`
+            );
+            return;
+          }
+        } else if (settlementEl) {
           const anc = this.trTerm(settlementEl.dataset.ancient);
           const mod = this.trTerm(settlementEl.dataset.modern);
           const rem = this.trTerm(settlementEl.dataset.remark);
@@ -3576,6 +4739,15 @@
           this._evaluateLocateClick(sx, sy);
         } else if (!wasPan && !this.challenge) {
           const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+          const journeyNodeEl = hitTarget && hitTarget.closest && hitTarget.closest('.journey-node');
+          if (journeyNodeEl && journeyNodeEl.dataset.stopIdx !== undefined) {
+            if (this.journeyTimer) {
+              clearInterval(this.journeyTimer);
+              this.journeyTimer = null;
+            }
+            this.goToJourneyStop(Number(journeyNodeEl.dataset.stopIdx), true);
+            return;
+          }
           const milestoneEl = hitTarget && hitTarget.closest && hitTarget.closest('.milestone-pin');
           if (milestoneEl && milestoneEl.dataset.idx !== undefined) {
             const cur = this.dynasties[this.dynastyIdx];
@@ -3728,6 +4900,11 @@
       if (q.has('quiz')) {
         const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
         setTimeout(() => this.startChallenge(mode), 350);
+      }
+      if (q.has('journey')) {
+        const jKey = q.get('journey');
+        const stopIdx = q.has('stop') ? Number(q.get('stop')) : 0;
+        setTimeout(() => this.startJourney(jKey, Number.isNaN(stopIdx) ? 0 : stopIdx), 200);
       }
       if (q.has('layers')) {
         setTimeout(() => {

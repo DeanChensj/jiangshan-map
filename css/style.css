@@ -2154,3 +2154,454 @@ html[lang="en"] .genealogy-list li {
   color: var(--vermilion);
 }
 
+/* #7 Historical Journeys (青史行迹 · 人物时空巡礼) */
+.journey-pop-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.journey-chip-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(181, 69, 47, 0.32);
+  background: rgba(181, 69, 47, 0.06);
+  color: var(--vermilion);
+  font-family: var(--serif-stack);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.journey-chip-btn:hover,
+.journey-chip-btn.is-active {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: #fffaf2;
+}
+
+.ev-journey-btn {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(181, 69, 47, 0.42);
+  background: rgba(181, 69, 47, 0.09);
+  color: var(--vermilion);
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  vertical-align: baseline;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s;
+}
+
+.ev-journey-btn:hover {
+  background: var(--vermilion);
+  color: #fffaf2;
+}
+
+.sr-section-head {
+  padding: 5px 12px 3px !important;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background: rgba(235, 228, 214, 0.55);
+  border-bottom: 1px solid rgba(90, 74, 58, 0.1) !important;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+#viewport-frame.has-active-journey #grp-settlements {
+  opacity: 0.22;
+  transition: opacity 0.25s ease;
+}
+
+#viewport-frame.has-active-journey #map-key {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#viewport-frame.has-active-journey #grp-corridors {
+  opacity: 0.22;
+  transition: opacity 0.25s ease;
+}
+
+.journey-track-bg {
+  fill: none;
+  stroke: rgba(248, 243, 232, 0.88);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.journey-track-upcoming {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 4.5;
+  opacity: 0.68;
+  pointer-events: none;
+}
+
+.journey-track-passed {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.journey-track-flow {
+  fill: none;
+  stroke: #fffaf0;
+  stroke-linecap: round;
+  stroke-dasharray: 2.5 11;
+  opacity: 0.88;
+  animation: journeyDashFlow 1.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes journeyDashFlow {
+  to {
+    stroke-dashoffset: -27;
+  }
+}
+
+.journey-node {
+  cursor: pointer;
+}
+
+.jn-pulse {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8px;
+  opacity: 0.78;
+  animation: journeyPulse 1.8s ease-out infinite;
+}
+
+@keyframes journeyPulse {
+  0% {
+    r: 7px;
+    opacity: 0.85;
+  }
+  100% {
+    r: 16px;
+    opacity: 0;
+  }
+}
+
+.jn-disc {
+  fill: #fffaf2;
+  stroke: currentColor;
+  stroke-width: 2.2px;
+  transition: transform 0.16s ease, fill 0.16s ease;
+}
+
+.journey-node.is-passed .jn-disc {
+  fill: #f9efe6;
+}
+
+.journey-node.is-current .jn-disc {
+  fill: currentColor;
+  stroke: #fffaf2;
+  stroke-width: 2.2px;
+}
+
+.jn-num {
+  font-family: var(--sans-stack);
+  font-size: 8.4px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.journey-node.is-current .jn-num {
+  fill: #fffaf2;
+  font-size: 9px;
+}
+
+.jn-label {
+  font-family: var(--serif-stack);
+  font-size: 10.4px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: #241d17;
+  filter: url(#label-halo);
+  pointer-events: none;
+}
+
+.journey-node.is-current .jn-label {
+  font-size: 11.8px;
+  fill: currentColor;
+}
+
+.journey-node.is-upcoming {
+  opacity: 0.88;
+}
+
+#journey-card {
+  position: absolute;
+  left: 14px;
+  bottom: 26px;
+  z-index: 8;
+  width: min(460px, calc(100% - 28px));
+  padding: 11px 14px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(181, 69, 47, 0.36);
+  background: rgba(248, 243, 233, 0.96);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(36, 28, 20, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jc-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-bottom: 1px solid rgba(90, 74, 58, 0.15);
+  padding-bottom: 6px;
+}
+
+.jc-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.jc-tab-btn {
+  padding: 3px 9px;
+  border-radius: 5px;
+  border: 1px solid rgba(90, 74, 58, 0.18);
+  background: rgba(90, 74, 58, 0.06);
+  color: var(--text-secondary);
+  font-family: var(--serif-stack);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.jc-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(90, 74, 58, 0.14);
+}
+
+.jc-tab-btn.is-active {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: #fffaf2;
+}
+
+.jc-close-btn {
+  padding: 2.5px 7px;
+  border-radius: 5px;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-secondary);
+  font-family: var(--sans-stack);
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.14s, color 0.14s;
+}
+
+.jc-close-btn:hover {
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+}
+
+.jc-stop-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.jc-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--vermilion);
+  color: #fffaf2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.jc-stop-title {
+  font-family: var(--serif-stack);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.jc-stop-year {
+  margin-left: auto;
+  font-family: var(--serif-stack);
+  font-size: 11.5px;
+  color: var(--vermilion);
+  font-weight: 600;
+}
+
+.jc-stop-place {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.jc-stop-place .ico-svg {
+  color: var(--vermilion);
+}
+
+.jc-stop-desc {
+  margin: 0;
+  font-family: var(--serif-stack);
+  font-size: 12.4px;
+  line-height: 1.54;
+  color: var(--text-main);
+}
+
+.jc-stop-quote {
+  margin: 0;
+  padding: 4px 8px;
+  border-left: 2.5px solid var(--vermilion);
+  background: rgba(181, 69, 47, 0.06);
+  border-radius: 0 4px 4px 0;
+  font-family: var(--serif-stack);
+  font-size: 11.6px;
+  color: #5b3b2c;
+  line-height: 1.46;
+}
+
+.jc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 3px;
+  flex-wrap: wrap;
+}
+
+.jc-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.jc-dot {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(90, 74, 58, 0.26);
+  background: rgba(255, 252, 246, 0.9);
+  color: var(--text-secondary);
+  font-family: var(--sans-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.jc-dot:hover {
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+}
+
+.jc-dot.is-passed {
+  background: rgba(181, 69, 47, 0.12);
+  border-color: rgba(181, 69, 47, 0.36);
+  color: var(--vermilion);
+}
+
+.jc-dot.is-current {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: #fffaf2;
+  transform: scale(1.08);
+}
+
+.jc-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.jc-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3.5px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  color: var(--text-main);
+  font-family: var(--serif-stack);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.14s, color 0.14s, background 0.14s;
+}
+
+.jc-nav-btn:hover {
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+}
+
+.jc-nav-btn.is-primary {
+  background: rgba(181, 69, 47, 0.1);
+  border-color: rgba(181, 69, 47, 0.38);
+  color: var(--vermilion);
+}
+
+.jc-nav-btn.is-primary:hover {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: #fffaf2;
+}
+
+@media (max-width: 640px) {
+  #journey-card {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    padding: 9px 10px 8px;
+    gap: 5px;
+  }
+  .jc-stop-desc {
+    font-size: 11.8px;
+    line-height: 1.45;
+  }
+  .jc-stop-quote {
+    font-size: 11px;
+  }
+  .jc-dot {
+    width: 18px;
+    height: 18px;
+    font-size: 9.5px;
+  }
+}
+
+
+
