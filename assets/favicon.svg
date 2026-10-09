@@ -1,0 +1,13 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sealGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c44b33"/>
+      <stop offset="100%" stop-color="#8e2c1b"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#sealGrad)"/>
+  <rect x="6.5" y="6.5" width="51" height="51" rx="10" fill="none" stroke="#f7f1e3" stroke-width="2.2" stroke-opacity="0.88"/>
+  <circle cx="20" cy="19" r="4.2" fill="#eab84b"/>
+  <path d="M32 14 L32 39 M18 25 L18 39 L46 39 L46 23" fill="none" stroke="#fbf7ef" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15 47.5 Q23.5 43.5 32 47.5 T49 47.5" fill="none" stroke="#eab84b" stroke-width="3.4" stroke-linecap="round"/>
+</svg>
