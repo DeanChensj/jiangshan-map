@@ -178,6 +178,11 @@
       this.lastRenderedSnap = null;
       this.playing = false;
       this.playInterval = null;
+      this.musicPlaying = false;
+      this.musicTrackIdx = 0;
+      this.musicAudio = null;
+      this.synthCtx = null;
+      this.synthTimer = null;
       this.genealogyMode = false;
       this.activeTrace = null;
       this.activeMilestone = null;
@@ -340,6 +345,7 @@
         : this.uiStr('btn_quiz', '开始挑战');
       const lblLoc = this._id('lbl-locale') || this._id('act-locale');
       lblLoc.textContent = this.locale === 'en' ? '中文' : 'EN';
+      this._updateMusicUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
         '滚轮缩放 · 拖拽平移 · ← → 调整年份 · 空格播放 · Esc 关闭弹窗'
@@ -488,6 +494,7 @@
         .slice()
         .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
 
+      const polityObstacles = [];
       for (const pol of sorted) {
         const isN = pol.role === 'neighbor';
         const attrs = {
@@ -504,6 +511,7 @@
 
         if (pol.anchor) {
           const [cx, cy] = this.projector.toScreen(pol.anchor[0], pol.anchor[1]);
+          polityObstacles.push({ x: cx, y: cy, w: isN ? 36 : 56, h: isN ? 16 : 23 });
           const lbl = this._svgNode(
             'text',
             {
@@ -517,6 +525,14 @@
         }
       }
 
+      const cityObstacles = [];
+      for (const item of dynasty.settlements || []) {
+        if (item.appear !== undefined && this.year < item.appear) continue;
+        if (item.vanish !== undefined && this.year > item.vanish) continue;
+        const [sx, sy] = this.projector.toScreen(item.coord[0], item.coord[1]);
+        cityObstacles.push({ x: sx + (item.align === 'l' ? -14 : 14), y: sy, w: 26, h: 12 });
+      }
+
       const prefGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPrefectures);
       for (const pref of snap.prefectures || []) {
         const path = this._svgNode(
@@ -526,20 +542,34 @@
         );
         path.dataset.prefTitle = pref.title;
         path.dataset.prefCategory = pref.category;
-        if (pref.anchor && pref.title) {
-          const [px, py] = this.projector.toScreen(pref.anchor[0], pref.anchor[1]);
-          const plbl = this._svgNode(
-            'text',
-            {
-              class: 'prefecture-caption',
-              'data-x': px.toFixed(1),
-              'data-y': py.toFixed(1),
-            },
-            prefGroup
-          );
-          plbl.textContent = this.trTerm(pref.title);
-        }
       }
+
+      const placedRegions = [];
+      const candidateOffsets = [
+        [0, 0],
+        [0, 24],
+        [0, -24],
+        [-34, 20],
+        [34, 20],
+        [-34, -20],
+        [34, -20],
+        [0, 34],
+        [0, -34],
+        [-45, 0],
+        [45, 0],
+      ];
+      const collides = (x, y) => {
+        for (const p of polityObstacles) {
+          if (Math.abs(x - p.x) < p.w && Math.abs(y - p.y) < p.h) return true;
+        }
+        for (const c of cityObstacles) {
+          if (Math.abs(x - c.x) < c.w && Math.abs(y - c.y) < c.h) return true;
+        }
+        for (const r of placedRegions) {
+          if (Math.abs(x - r.x) < 32 && Math.abs(y - r.y) < 12) return true;
+        }
+        return false;
+      };
 
       for (const reg of snap.regions || []) {
         this._svgNode(
@@ -548,7 +578,26 @@
           prefGroup
         );
         if (reg.anchor && reg.title) {
-          const [rx, ry] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          let rx = baseX;
+          let ry = baseY;
+          for (const [dx, dy] of candidateOffsets) {
+            const tx = baseX + dx;
+            const ty = baseY + dy;
+            if (!collides(tx, ty)) {
+              const [lng, lat] = this.projector.toGeo(tx, ty);
+              if (
+                (dx === 0 && dy === 0) ||
+                !reg.shape ||
+                MercatorProjector.pointInShape(lng, lat, reg.shape)
+              ) {
+                rx = tx;
+                ry = ty;
+                break;
+              }
+            }
+          }
+          placedRegions.push({ x: rx, y: ry });
           const rLbl = this._svgNode(
             'text',
             {
@@ -1268,6 +1317,174 @@
       }
     }
 
+    // ---------------- Classical Guqin Music Player ----------------
+    static get GUQIN_TRACKS() {
+      return [
+        {
+          zh: '流水',
+          en: 'Flowing Water',
+          mp3: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e0/Liu_Shui.ogg/Liu_Shui.ogg.mp3',
+          ogg: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Liu_Shui.ogg',
+        },
+        {
+          zh: '平沙落雁',
+          en: 'Wild Geese on the Sandbank',
+          mp3: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5a/Pingsha_Luoyan.ogg/Pingsha_Luoyan.ogg.mp3',
+          ogg: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Pingsha_Luoyan.ogg',
+        },
+        {
+          zh: '阳关三叠',
+          en: 'Parting at Yangguan',
+          mp3: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/60/Guqin-Yangguan_Sandie.ogg/Guqin-Yangguan_Sandie.ogg.mp3',
+          ogg: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Guqin-Yangguan_Sandie.ogg',
+        },
+        {
+          zh: '醉渔唱晚',
+          en: 'Drunken Fisherman',
+          mp3: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/52/Guqin-Zuiyu_Changwan.ogg/Guqin-Zuiyu_Changwan.ogg.mp3',
+          ogg: 'https://upload.wikimedia.org/wikipedia/commons/5/52/Guqin-Zuiyu_Changwan.ogg',
+        },
+        {
+          zh: '酒狂',
+          en: 'Wine Madness',
+          mp3: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Jiu_Kuang.ogg/Jiu_Kuang.ogg.mp3',
+          ogg: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Jiu_Kuang.ogg',
+        },
+      ];
+    }
+
+    _ensureMusicAudio() {
+      if (this.musicAudio) return this.musicAudio;
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.volume = 0.48;
+      audio.addEventListener('ended', () => {
+        if (this.musicPlaying) this.nextMusicTrack();
+      });
+      audio.addEventListener('error', () => {
+        if (!this.musicPlaying) return;
+        const t = HistoricalAtlasController.GUQIN_TRACKS[this.musicTrackIdx];
+        if (audio.src !== t.ogg) {
+          audio.src = t.ogg;
+          audio.play().catch(() => this._startGuqinSynthFallback());
+        } else {
+          this._startGuqinSynthFallback();
+        }
+      });
+      this.musicAudio = audio;
+      return audio;
+    }
+
+    _playCurrentMusicTrack() {
+      this._stopGuqinSynthFallback();
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      const t = tracks[this.musicTrackIdx % tracks.length];
+      const audio = this._ensureMusicAudio();
+      audio.src = t.mp3;
+      this.musicPlaying = true;
+      this._updateMusicUi();
+      audio.play().catch(() => {
+        if (!this.musicPlaying) return;
+        audio.src = t.ogg;
+        audio.play().catch(() => this._startGuqinSynthFallback());
+      });
+    }
+
+    toggleMusic() {
+      if (this.musicPlaying) {
+        this.musicPlaying = false;
+        if (this.musicAudio) this.musicAudio.pause();
+        this._stopGuqinSynthFallback();
+        this._updateMusicUi();
+      } else {
+        this._playCurrentMusicTrack();
+      }
+    }
+
+    nextMusicTrack() {
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      this.musicTrackIdx = (this.musicTrackIdx + 1) % tracks.length;
+      if (this.musicPlaying) {
+        this._playCurrentMusicTrack();
+      } else {
+        this._updateMusicUi();
+      }
+    }
+
+    _startGuqinSynthFallback() {
+      if (!this.musicPlaying || this.synthTimer) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!this.synthCtx) this.synthCtx = new AudioCtx();
+      if (this.synthCtx.state === 'suspended') this.synthCtx.resume();
+      // Gong-Shang-Jue-Zhi-Yu pentatonic frequencies in D (Hz)
+      const scale = [146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63, 369.99, 440.0];
+      let step = 0;
+      const pattern = [0, 3, 4, 5, 3, 2, 1, 0, 4, 6, 5, 3, 4, 2, 0];
+      const pluck = () => {
+        if (!this.musicPlaying || !this.synthCtx) return;
+        const now = this.synthCtx.currentTime;
+        const freq = scale[pattern[step % pattern.length]];
+        step++;
+        const osc = this.synthCtx.createOscillator();
+        const overtone = this.synthCtx.createOscillator();
+        const gain = this.synthCtx.createGain();
+        const filter = this.synthCtx.createBiquadFilter();
+        osc.type = 'triangle';
+        overtone.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.996, now + 2.8);
+        overtone.frequency.setValueAtTime(freq * 2, now);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(920, now);
+        filter.frequency.exponentialRampToValueAtTime(240, now + 3.2);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.11, now + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + 3.5);
+        osc.connect(filter);
+        overtone.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.synthCtx.destination);
+        osc.start(now);
+        overtone.start(now);
+        osc.stop(now + 3.6);
+        overtone.stop(now + 3.6);
+      };
+      pluck();
+      this.synthTimer = setInterval(pluck, 2200);
+    }
+
+    _stopGuqinSynthFallback() {
+      if (this.synthTimer) {
+        clearInterval(this.synthTimer);
+        this.synthTimer = null;
+      }
+    }
+
+    _updateMusicUi() {
+      const btn = this._id('act-music');
+      const lbl = this._id('lbl-music');
+      const nextBtn = this._id('act-music-next');
+      if (!btn || !lbl) return;
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      const cur = tracks[this.musicTrackIdx % tracks.length];
+      const trackName = this.locale === 'en' ? cur.en : cur.zh;
+      btn.classList.toggle('is-active', this.musicPlaying);
+      if (this.musicPlaying) {
+        lbl.textContent = this.locale === 'en' ? `Guqin · ${trackName}` : `雅乐 · ${trackName}`;
+      } else {
+        lbl.textContent = this.locale === 'en' ? 'Guqin' : '雅乐';
+      }
+      btn.title =
+        this.locale === 'en'
+          ? `Classical Guqin Music (${cur.en})`
+          : `古琴雅乐（当前曲目：《${cur.zh}》）`;
+      if (nextBtn) {
+        nextBtn.title =
+          this.locale === 'en' ? 'Switch Guqin Track' : '切换下一首古琴曲';
+      }
+    }
+
     // ---------------- Camera Pan & Zoom ----------------
     _applyCamera() {
       this.svg.setAttribute(
@@ -1282,10 +1499,9 @@
       const z = 1000 / this.camera.w;
       const invScale = (1 / Math.sqrt(z)).toFixed(3);
       this.svg.classList.toggle('is-zoomed-cities', z >= 1.75);
-      this.svg.classList.toggle('is-zoomed-prefs', z >= 2.6);
       this.svg
         .querySelectorAll(
-          '.settlement-node, .region-caption, .prefecture-caption, .neighbor-caption, .corridor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
+          '.settlement-node, .region-caption, .neighbor-caption, .corridor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
         )
         .forEach((node) => {
           const x = node.getAttribute('data-x');
@@ -1689,6 +1905,15 @@
           this.presentChallengeRound();
         }
       });
+
+      const musicBtn = this._id('act-music');
+      if (musicBtn) {
+        musicBtn.addEventListener('click', () => this.toggleMusic());
+      }
+      const musicNextBtn = this._id('act-music-next');
+      if (musicNextBtn) {
+        musicNextBtn.addEventListener('click', () => this.nextMusicTrack());
+      }
 
       this._id('act-locale').addEventListener('click', () => {
         this.locale = this.locale === 'en' ? 'zh' : 'en';
