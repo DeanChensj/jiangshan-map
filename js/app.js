@@ -1965,7 +1965,7 @@
         }
       });
 
-      // SVG Zoom & Pan
+      // SVG Zoom & Pan (Mouse Wheel + Single-Finger Pan + Two-Finger Pinch Zoom)
       this.svg.addEventListener(
         'wheel',
         (e) => {
@@ -1986,25 +1986,80 @@
         { passive: false }
       );
 
+      this.activePointers = new Map();
+      this.pinchState = null;
+
       this.svg.addEventListener('pointerdown', (e) => {
-        if (e.button !== 0) return;
-        this.didPan = false;
-        this.dragState = {
-          startX: e.clientX,
-          startY: e.clientY,
-          camX: this.camera.x,
-          camY: this.camera.y,
-        };
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
+
+        if (this.activePointers.size === 1) {
+          this.didPan = false;
+          this.pinchState = null;
+          this.dragState = {
+            startX: e.clientX,
+            startY: e.clientY,
+            camX: this.camera.x,
+            camY: this.camera.y,
+          };
+        } else if (this.activePointers.size === 2) {
+          this.didPan = true;
+          this.dragState = null;
+          this.hoverTip.classList.add('is-hidden');
+          const pts = Array.from(this.activePointers.values());
+          const midX = (pts[0].x + pts[1].x) * 0.5;
+          const midY = (pts[0].y + pts[1].y) * 0.5;
+          const [svgMidX, svgMidY] = this._clientToSvgPoint(midX, midY);
+          this.pinchState = {
+            startDist: Math.max(10, Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y)),
+            svgMidX,
+            svgMidY,
+            camX: this.camera.x,
+            camY: this.camera.y,
+            camW: this.camera.w,
+            camH: this.camera.h,
+          };
+        }
       });
 
       this.svg.addEventListener('pointermove', (e) => {
+        if (this.activePointers.has(e.pointerId)) {
+          this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+
+        if (this.activePointers.size === 2 && this.pinchState) {
+          const pts = Array.from(this.activePointers.values());
+          const dist = Math.max(10, Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y));
+          const factor = dist / this.pinchState.startDist;
+          const nextW = Math.max(100, Math.min(1300, this.pinchState.camW / factor));
+          const k = nextW / this.pinchState.camW;
+          const midX = (pts[0].x + pts[1].x) * 0.5;
+          const midY = (pts[0].y + pts[1].y) * 0.5;
+          const rect = this.svg.getBoundingClientRect();
+          const scale = Math.min(rect.width / nextW, rect.height / (this.pinchState.camH * k));
+          const padX = (rect.width - nextW * scale) * 0.5;
+          const padY = (rect.height - this.pinchState.camH * k * scale) * 0.5;
+          this.camera = {
+            x: this.pinchState.svgMidX - (midX - rect.left - padX) / scale,
+            y: this.pinchState.svgMidY - (midY - rect.top - padY) / scale,
+            w: nextW,
+            h: this.pinchState.camH * k,
+            zoom: 1000 / nextW,
+          };
+          this._applyCamera();
+          return;
+        }
+
         if (!this.dragState) return;
         const dx = e.clientX - this.dragState.startX;
         const dy = e.clientY - this.dragState.startY;
         if (Math.hypot(dx, dy) > 4) {
           this.didPan = true;
           this.svg.classList.add('is-panning');
+          if (e.pointerType === 'touch') {
+            this.hoverTip.classList.add('is-hidden');
+          }
         }
         if (this.didPan) {
           const rect = this.svg.getBoundingClientRect();
@@ -2015,29 +2070,11 @@
         }
       });
 
-      const endPointer = (e) => {
-        if (!this.dragState) return;
-        const wasPan = this.didPan;
-        this.dragState = null;
-        this.svg.classList.remove('is-panning');
-        if (!wasPan && this.challenge && !this.challenge.answered && this.challenge.variant === 'locate') {
-          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-          this._evaluateLocateClick(sx, sy);
-        } else if (!wasPan && this.genealogyMode) {
-          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-          const [lng, lat] = this.projector.toGeo(sx, sy);
-          this.openGenealogyAt(lng, lat);
-        }
-      };
-      this.svg.addEventListener('pointerup', endPointer);
-      this.svg.addEventListener('pointercancel', endPointer);
-
-      // Hover tooltips
-      const frame = this._id('viewport-frame');
-      frame.addEventListener('pointermove', (e) => {
-        const settlementEl = e.target.closest && e.target.closest('.settlement-node');
-        const corridorEl = e.target.closest && e.target.closest('.corridor-line');
-        const milestoneEl = e.target.closest && e.target.closest('.milestone-pin');
+      const inspectPointTooltip = (e) => {
+        const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+        const settlementEl = target && target.closest && target.closest('.settlement-node');
+        const corridorEl = target && target.closest && target.closest('.corridor-line');
+        const milestoneEl = target && target.closest && target.closest('.milestone-pin');
 
         if (settlementEl) {
           const anc = this.trTerm(settlementEl.dataset.ancient);
@@ -2067,11 +2104,12 @@
             );
           }
         } else if (
-          e.target.dataset &&
-          (e.target.dataset.prefTitle ||
-            e.target.dataset.polityTitle ||
-            e.target.dataset.provTitle ||
-            e.target.dataset.countryTitle)
+          target &&
+          target.dataset &&
+          (target.dataset.prefTitle ||
+            target.dataset.polityTitle ||
+            target.dataset.provTitle ||
+            target.dataset.countryTitle)
         ) {
           const stack = document.elementsFromPoint(e.clientX, e.clientY);
           const findData = (key) => {
@@ -2121,17 +2159,61 @@
         } else {
           this.hoverTip.classList.add('is-hidden');
         }
+      };
+
+      const endPointer = (e) => {
+        this.activePointers.delete(e.pointerId);
+        if (this.activePointers.size < 2) {
+          this.pinchState = null;
+        }
+        if (this.activePointers.size === 1) {
+          const rem = Array.from(this.activePointers.values())[0];
+          this.dragState = {
+            startX: rem.x,
+            startY: rem.y,
+            camX: this.camera.x,
+            camY: this.camera.y,
+          };
+          return;
+        }
+        const wasPan = this.didPan;
+        this.dragState = null;
+        this.svg.classList.remove('is-panning');
+        if (!wasPan && this.challenge && !this.challenge.answered && this.challenge.variant === 'locate') {
+          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+          this._evaluateLocateClick(sx, sy);
+        } else if (!wasPan && this.genealogyMode) {
+          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+          const [lng, lat] = this.projector.toGeo(sx, sy);
+          this.openGenealogyAt(lng, lat);
+        } else if (!wasPan && e.pointerType === 'touch') {
+          inspectPointTooltip(e);
+        }
+      };
+      this.svg.addEventListener('pointerup', endPointer);
+      this.svg.addEventListener('pointercancel', endPointer);
+
+      // Hover tooltips (Desktop pointermove)
+      const frame = this._id('viewport-frame');
+      frame.addEventListener('pointermove', (e) => {
+        if (e.pointerType === 'touch') return;
+        inspectPointTooltip(e);
       });
 
-      frame.addEventListener('pointerleave', () => this.hoverTip.classList.add('is-hidden'));
+      frame.addEventListener('pointerleave', (e) => {
+        if (e.pointerType === 'touch') return;
+        this.hoverTip.classList.add('is-hidden');
+      });
     }
 
     _showHoverTip(e, html) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
       this.hoverTip.classList.remove('is-hidden');
-      this.hoverTip.style.left = `${Math.min(rect.width - 220, e.clientX - rect.left + 14)}px`;
-      this.hoverTip.style.top = `${Math.max(10, e.clientY - rect.top - 10)}px`;
+      const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
+      const top = Math.max(8, Math.min(rect.height - 70, e.clientY - rect.top - 12));
+      this.hoverTip.style.left = `${left}px`;
+      this.hoverTip.style.top = `${top}px`;
     }
 
     _restoreFromQuery() {

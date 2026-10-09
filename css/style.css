@@ -51,6 +51,7 @@ h2 {
 
 #atlas-shell {
   height: 100vh;
+  height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
@@ -240,6 +241,8 @@ h2 {
   display: block;
   cursor: grab;
   user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #atlas-svg.is-panning {
@@ -1367,15 +1370,108 @@ html[lang="en"] .genealogy-list li {
 }
 
 @media (max-width: 900px) {
+  #nav-bar {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+  .brand-group .seal-mark {
+    font-size: 24px;
+  }
+  .brand-group .subtitle-mark {
+    display: none;
+  }
+  .control-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 6px;
+    padding-bottom: 2px;
+  }
+  .control-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .layer-chip,
+  .action-btn {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .music-pill-group {
+    flex-shrink: 0;
+  }
   #workspace-body {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 240px;
+    grid-template-rows: 1fr 215px;
   }
   #viewport-frame {
     border-right: none;
     border-bottom: 1px solid var(--hairline);
   }
-  .brand-group .subtitle-mark {
+  #gesture-guide {
     display: none;
+  }
+  #map-key {
+    left: 8px;
+    bottom: 8px;
+    max-width: calc(100% - 16px);
+    max-height: 86px;
+    overflow-y: auto;
+    padding: 6px 9px;
+    font-size: 11px;
+    gap: 3px;
+  }
+  .key-heading {
+    font-size: 11px;
+  }
+  #genealogy-card,
+  #challenge-card {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: calc(100% - 16px);
+    padding: 10px 12px;
+  }
+  #chronicle-pane {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .dynasty-title-row {
+    padding-bottom: 4px;
+  }
+  #dynasty-title {
+    font-size: 26px;
+  }
+  .seat-row {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+  .dynasty-desc {
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  #milestone-list li {
+    padding: 5px 7px;
+    font-size: 12px;
+  }
+  #scrubber-dock {
+    gap: 10px;
+    padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  #scrubber-track {
+    height: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  #workspace-body {
+    grid-template-rows: 1fr 195px;
+  }
+  .year-stepper {
+    display: none;
+  }
+  .options-grid {
+    grid-template-columns: 1fr;
   }
 }
