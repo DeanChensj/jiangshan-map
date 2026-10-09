@@ -1657,6 +1657,7 @@
       window.addEventListener('resize', () => {
         this._fitBandLabels();
         this._updateScaleBar();
+        this._syncScrubberUi();
       });
     }
 
@@ -1709,12 +1710,33 @@
 
     _syncScrubberUi() {
       const pct = this._yearToProgress(this.year) * 100;
-      this._id('scrubber-handle').style.left = `${pct}%`;
-      this._id('scrubber-Bubble').style.left = `${Math.max(4, Math.min(96, pct))}%`;
+      const handle = this._id('scrubber-handle');
+      if (handle) handle.style.left = `${pct}%`;
+
       const d = this.dynasties[this.dynastyIdx];
-      this._id('bubble-text').textContent = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
-      this._id('scrubber-track').setAttribute('aria-valuenow', String(this.year));
-      this._id('inp-year').value = this.year === 0 ? 1 : this.year;
+      const bubble = this._id('scrubber-Bubble');
+      const bubbleText = this._id('bubble-text');
+      if (bubble && bubbleText) {
+        bubbleText.textContent = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
+        const wrap = this._id('scrubber-rail-wrap');
+        const railW = wrap ? wrap.clientWidth : 300;
+        const bW = bubble.offsetWidth || 180;
+        const handleX = (pct / 100) * railW;
+        // Clamp bubble strictly inside [0, railW - bW] so text never clips off-screen
+        const maxLeft = Math.max(0, railW - bW);
+        const leftPx = Math.max(0, Math.min(maxLeft, handleX - bW * 0.5));
+        bubble.style.left = `${leftPx.toFixed(1)}px`;
+        bubble.style.transform = 'none';
+
+        // Direct caret arrow to point straight at the timeline thumb
+        const arrowX = Math.max(8, Math.min(bW - 8, handleX - leftPx));
+        bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
+      }
+
+      const track = this._id('scrubber-track');
+      if (track) track.setAttribute('aria-valuenow', String(this.year));
+      const inpYear = this._id('inp-year');
+      if (inpYear) inpYear.value = this.year === 0 ? 1 : this.year;
       Array.from(this._id('dynasty-bands').children).forEach((el, idx) =>
         el.classList.toggle('is-active', idx === this.dynastyIdx)
       );

@@ -1458,7 +1458,7 @@ h2 {
 /* Bottom Scrubber Timeline */
 #scrubber-dock {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
   padding: 12px 20px 16px;
@@ -1489,6 +1489,7 @@ h2 {
 #scrubber-rail-wrap {
   position: relative;
   padding-top: 22px;
+  min-width: 0;
 }
 
 #scrubber-Bubble {
@@ -1509,7 +1510,7 @@ h2 {
 #scrubber-Bubble::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: var(--arrow-left, 50%);
   bottom: -4px;
   transform: translateX(-50%);
   border: 4px solid transparent;
@@ -1527,6 +1528,7 @@ h2 {
   user-select: none;
   touch-action: none;
   outline: none;
+  min-width: 0;
 }
 
 #scrubber-track:focus-visible {
@@ -1538,6 +1540,7 @@ h2 {
   height: 100%;
   border-radius: 8px;
   overflow: hidden;
+  min-width: 0;
 }
 
 .band-cell {
@@ -1555,6 +1558,7 @@ h2 {
   transition: opacity 0.2s, filter 0.2s;
   overflow: hidden;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .band-cell:last-child {
@@ -1896,6 +1900,23 @@ html[lang="en"] .genealogy-list li {
   }
   .options-grid {
     grid-template-columns: 1fr;
+  }
+  #scrubber-Bubble {
+    font-size: 11px;
+    padding: 2px 7px;
+    max-width: 100%;
+  }
+  #tick-present {
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+  #scrubber-ticks span:first-child {
+    transform: none;
+  }
+  .dynasty-title-row {
+    flex-wrap: wrap;
+    gap: 4px 8px;
   }
 }
 
