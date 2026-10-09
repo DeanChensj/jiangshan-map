@@ -464,6 +464,13 @@
       );
       this._id('tab-locate').textContent = this.uiStr('mode_locate', '地图寻址');
       this._id('tab-match').textContent = this.uiStr('mode_match', '古今对号');
+      const searchInp = this._id('inp-map-search');
+      if (searchInp) {
+        searchInp.placeholder =
+          this.locale === 'en'
+            ? 'Search city / prefecture / era / event ( / )'
+            : '搜古今地名 / 州府 / 年号 / 事件 ( / )';
+      }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
@@ -760,6 +767,8 @@
         node.dataset.ancient = item.ancient;
         node.dataset.modern = item.modern || '';
         node.dataset.remark = item.remark || '';
+        node.dataset.lng = String(item.coord[0]);
+        node.dataset.lat = String(item.coord[1]);
 
         if (item.isCapital) {
           this._svgNode('circle', { class: 'cap-ring', r: 4.5 }, node);
@@ -951,6 +960,74 @@
 
     _renderLegendBox(snap) {
       this.mapKey.innerHTML = '';
+      const curDyn = this.dynasties[this.dynastyIdx];
+      if (curDyn && Array.isArray(curDyn.phases) && curDyn.phases.length > 1) {
+        const phases = curDyn.phases;
+        let pIdx = phases.findIndex((ph) => this.year < ph.until);
+        if (pIdx === -1) pIdx = phases.length - 1;
+        const phaseStart = (idx) => (idx <= 0 ? curDyn.fromYear : phases[idx - 1].until);
+
+        const bar = document.createElement('div');
+        bar.className = 'key-phase-bar';
+
+        const badge = document.createElement('span');
+        badge.className = 'key-phase-badge';
+        badge.textContent =
+          this.locale === 'en'
+            ? `${this.dynastyBadge(curDyn)} · Stage ${pIdx + 1} / ${phases.length}`
+            : `${this.dynastyBadge(curDyn)} · 阶段 ${pIdx + 1} / ${phases.length}`;
+        bar.appendChild(badge);
+
+        const dots = document.createElement('div');
+        dots.className = 'key-phase-dots';
+        phases.forEach((ph, idx) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = `phase-dot${idx === pIdx ? ' is-active' : ''}`;
+          const sy = phaseStart(idx);
+          const ey = ph.until - 1;
+          dot.title = `${this.formatYear(sy, true)} — ${this.formatYear(ey, true)}`;
+          dot.addEventListener('click', () => {
+            this.stopAutoplay();
+            this.jumpToYear(sy);
+          });
+          dots.appendChild(dot);
+        });
+        bar.appendChild(dots);
+
+        const btns = document.createElement('div');
+        btns.className = 'key-phase-btns';
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'phase-nav-btn';
+        prevBtn.textContent = '‹';
+        prevBtn.disabled = pIdx <= 0;
+        prevBtn.title = this.locale === 'en' ? 'Previous Stage' : '上一版图阶段';
+        prevBtn.addEventListener('click', () => {
+          if (pIdx > 0) {
+            this.stopAutoplay();
+            this.jumpToYear(phaseStart(pIdx - 1));
+          }
+        });
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'phase-nav-btn';
+        nextBtn.textContent = '›';
+        nextBtn.disabled = pIdx >= phases.length - 1;
+        nextBtn.title = this.locale === 'en' ? 'Next Stage' : '下一版图阶段';
+        nextBtn.addEventListener('click', () => {
+          if (pIdx < phases.length - 1) {
+            this.stopAutoplay();
+            this.jumpToYear(phaseStart(pIdx + 1));
+          }
+        });
+        btns.appendChild(prevBtn);
+        btns.appendChild(nextBtn);
+        bar.appendChild(btns);
+
+        this.mapKey.appendChild(bar);
+      }
+
       if (snap.caption) {
         const h = document.createElement('div');
         h.className = 'key-heading';
@@ -1082,6 +1159,15 @@
       Array.from(items).forEach((el, idx) =>
         el.classList.toggle('is-current', idx === activeIdx)
       );
+      if (activeIdx >= 0 && items[activeIdx]) {
+        const el = items[activeIdx];
+        const pane = this._id('chronicle-pane');
+        if (pane && pane.scrollHeight > pane.clientHeight) {
+          const elTop = el.offsetTop - pane.offsetTop;
+          const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
+          pane.scrollTo({ top: targetTop, behavior: 'smooth' });
+        }
+      }
     }
 
     // ---------------- Place Genealogy (Trace Place) ----------------
@@ -1717,6 +1803,8 @@
       this.stopAutoplay();
       this.closeMilestoneBalloon();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
+      const sb = this._id('map-search-box');
+      if (sb) sb.classList.add('is-hidden');
       if (variant) this.challengeVariant = variant;
       this.challenge = {
         variant: this.challengeVariant,
@@ -1741,6 +1829,8 @@
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
       this._id('challenge-options').classList.add('is-hidden');
+      const sb = this._id('map-search-box');
+      if (sb) sb.classList.remove('is-hidden');
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
@@ -1973,8 +2063,292 @@
       };
     }
 
+    // ---------------- Global Quick Search ----------------
+    _ensureSearchIndex() {
+      if (this.searchIndex) return this.searchIndex;
+      const entries = [];
+
+      // 1. Historical Settlements (Ancient & Modern Cities)
+      for (const d of this.dynasties) {
+        if (d.key === 'prc') continue;
+        for (const s of d.settlements || []) {
+          const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
+          entries.push({
+            kind: 'city',
+            dynasty: d,
+            year: yr,
+            coord: s.coord,
+            tier: s.tier || 1,
+            titleZh: s.ancient,
+            subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
+            titleEn: this.trTerm(s.ancient),
+            subEn: s.modern && s.modern !== s.ancient ? `Now ${this.trTerm(s.modern)}` : '',
+            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${this.trTerm(s.ancient)} ${this.trTerm(s.modern || '')}`.toLowerCase(),
+          });
+        }
+      }
+
+      // 2. Prefectures & Macro Regions across snapshots
+      const seenAdmin = new Set();
+      for (const d of this.dynasties) {
+        if (d.key === 'prc') continue;
+        const phaseList = d.phases && d.phases.length ? d.phases : [{ until: d.toYear, snap: `s_${d.key}` }];
+        phaseList.forEach((ph, idx) => {
+          const sy = idx === 0 ? d.fromYear : phaseList[idx - 1].until;
+          const midY = Math.round((sy + ph.until - 1) * 0.5);
+          const snap = this.snapshots[ph.snap];
+          if (!snap) return;
+          for (const item of [...(snap.regions || []), ...(snap.prefectures || [])]) {
+            if (!item.title || !item.anchor) continue;
+            const uid = `${d.key}:${item.title}`;
+            if (seenAdmin.has(uid)) continue;
+            seenAdmin.add(uid);
+            const isPref = (snap.prefectures || []).includes(item);
+            entries.push({
+              kind: isPref ? 'prefecture' : 'region',
+              dynasty: d,
+              year: midY,
+              coord: item.anchor,
+              prefTitle: isPref ? item.title : null,
+              titleZh: item.title,
+              subZh: item.category && !item.title.endsWith(item.category) ? item.category : '',
+              titleEn: this.trTerm(item.title),
+              subEn: '',
+              keywords: `${item.title} ${this.trTerm(item.title)} ${d.title}`.toLowerCase(),
+            });
+          }
+        });
+      }
+
+      // 3. Historical Milestones / Events
+      for (const d of this.dynasties) {
+        for (const m of d.milestones || []) {
+          const enHead = this.milestoneHeadline(d, m);
+          entries.push({
+            kind: 'event',
+            dynasty: d,
+            year: Math.max(d.fromYear, Math.min(d.toYear - 1, m.year)),
+            milestone: m,
+            coord: m.coord,
+            titleZh: m.headline,
+            subZh: `${m.year <= 0 ? '前' + -m.year : m.year}年${m.site ? ' · ' + m.site : ''}`,
+            titleEn: enHead,
+            subEn: `${this.formatYear(m.year)}${m.site ? ' · ' + this.trTerm(m.site) : ''}`,
+            keywords: `${m.headline} ${m.site || ''} ${enHead} ${m.year}`.toLowerCase(),
+          });
+        }
+      }
+
+      this.searchIndex = entries;
+      return entries;
+    }
+
+    _parseChineseNumber(str) {
+      if (!str) return null;
+      if (/^\d+$/.test(str)) return Number(str);
+      if (str === '元') return 1;
+      const map = { 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9, 十: 10 };
+      if (str.length === 1) return map[str] || null;
+      if (str.startsWith('十')) return 10 + (map[str.slice(1)] || 0);
+      if (str.endsWith('十')) return (map[str[0]] || 0) * 10;
+      const parts = str.split('十');
+      if (parts.length === 2) {
+        return (map[parts[0]] || 0) * 10 + (map[parts[1]] || 0);
+      }
+      return null;
+    }
+
+    _matchEraResults(rawQuery) {
+      const q = rawQuery.trim().replace(/[年载]$/, '');
+      if (!q) return [];
+      const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
+      const hits = [];
+      const numMatch = q.match(/^(.*?)([元一二三四五六七八九十]+|\d+)$/);
+      const prefixQ = numMatch ? numMatch[1] : q;
+      const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
+
+      spans.forEach((sp, idx) => {
+        const [startY, prefix, baseNum = 1] = sp;
+        const endY = idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948;
+        if (prefixQ && prefix.includes(prefixQ)) {
+          const targetNum = yearNum !== null ? yearNum : baseNum;
+          const targetY = startY + (targetNum - baseNum);
+          if (targetY >= startY && targetY <= endY + 5) {
+            const dIdx = this._findDynastyIndex(targetY);
+            const d = this.dynasties[dIdx];
+            const label = `${prefix}${this._toChineseEraNum(targetNum)}年`;
+            hits.push({
+              kind: 'era',
+              dynasty: d,
+              year: targetY,
+              titleZh: label,
+              subZh: this.formatYear(targetY),
+              titleEn: `${label} (${this.formatYear(targetY)})`,
+              subEn: this.dynastyName(d),
+              score: prefix.endsWith(prefixQ) ? 120 : 95,
+            });
+          }
+        }
+      });
+      return hits;
+    }
+
+    _queryQuickSearch(rawQuery) {
+      const q = rawQuery.trim().toLowerCase();
+      if (!q) return [];
+      const index = this._ensureSearchIndex();
+      const results = [...this._matchEraResults(rawQuery)];
+
+      for (const item of index) {
+        let score = 0;
+        const tZh = item.titleZh.toLowerCase();
+        const tEn = item.titleEn.toLowerCase();
+        if (tZh === q || tEn === q) score = 100;
+        else if (tZh.startsWith(q) || tEn.startsWith(q)) score = 80;
+        else if (item.keywords.includes(q)) score = 55;
+
+        if (score > 0) {
+          if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 8;
+          results.push({ ...item, score });
+        }
+      }
+
+      results.sort((a, b) => b.score - a.score);
+      return results.slice(0, 12);
+    }
+
+    _selectSearchResult(item) {
+      this.stopAutoplay();
+      const listEl = this._id('map-search-results');
+      if (listEl) listEl.classList.add('is-hidden');
+
+      this.jumpToYear(item.year);
+
+      if (item.kind === 'city' && item.coord) {
+        if (!this._id('chk-settlements').checked) {
+          this._id('chk-settlements').checked = true;
+          this.grpSettlements.classList.remove('is-hidden');
+        }
+        const targetZoom = item.tier === 2 ? 2.2 : 1.85;
+        const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
+        const w = Math.min(this.camera.w, 1000 / targetZoom);
+        const h = w * 0.7;
+        this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.45, w, h });
+        this.openGenealogyAt(item.coord[0], item.coord[1]);
+      } else if ((item.kind === 'prefecture' || item.kind === 'region') && item.coord) {
+        if (!this._id('chk-prefectures').checked) {
+          this._id('chk-prefectures').checked = true;
+          this.grpPrefectures.classList.remove('is-hidden');
+        }
+        const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
+        const w = Math.min(this.camera.w, 1000 / 1.95);
+        const h = w * 0.7;
+        this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.48, w, h });
+        if (item.prefTitle) {
+          setTimeout(() => {
+            this.grpPrefectures
+              .querySelectorAll('.prefecture-shape.is-hovered')
+              .forEach((el) => el.classList.remove('is-hovered'));
+            const el = this.grpPrefectures.querySelector(
+              `.prefecture-shape[data-pref-title="${CSS.escape(item.prefTitle)}"]`
+            );
+            if (el) el.classList.add('is-hovered');
+          }, 80);
+        }
+      } else if (item.kind === 'event' && item.milestone) {
+        this.openMilestoneBalloon(item.dynasty, item.milestone);
+        if (item.coord) this._panToward(item.coord[0], item.coord[1]);
+      }
+    }
+
     // ---------------- Event Listeners ----------------
     _attachListeners() {
+      // Quick Search box
+      const searchInp = this._id('inp-map-search');
+      const searchList = this._id('map-search-results');
+      let activeSearchIdx = -1;
+      let currentResults = [];
+
+      const renderSearchDropdown = () => {
+        if (!searchInp || !searchList) return;
+        const q = searchInp.value.trim();
+        if (!q) {
+          searchList.classList.add('is-hidden');
+          currentResults = [];
+          return;
+        }
+        currentResults = this._queryQuickSearch(q);
+        activeSearchIdx = currentResults.length ? 0 : -1;
+        searchList.innerHTML = '';
+        if (!currentResults.length) {
+          const empty = document.createElement('li');
+          empty.innerHTML = `<span class="sr-sub">${this.locale === 'en' ? 'No matching place, era, or event' : '未找到匹配的古今地名、州府、年号或事件'}</span>`;
+          searchList.appendChild(empty);
+          searchList.classList.remove('is-hidden');
+          return;
+        }
+        const kindLabel = {
+          era: this.locale === 'en' ? 'Era' : '纪年',
+          city: this.locale === 'en' ? 'City' : '古城',
+          prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
+          region: this.locale === 'en' ? 'Circuit/Prov' : '大区',
+          event: this.locale === 'en' ? 'Event' : '史事',
+        };
+        currentResults.forEach((item, idx) => {
+          const li = document.createElement('li');
+          if (idx === activeSearchIdx) li.classList.add('is-active');
+          const mainText = this.locale === 'en' ? item.titleEn : item.titleZh;
+          const subText = this.locale === 'en' ? item.subEn : item.subZh;
+          const tagText = `${this.dynastyBadge(item.dynasty)} · ${kindLabel[item.kind] || ''}`;
+          li.innerHTML =
+            `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
+            `<span class="sr-tag">${tagText}</span>`;
+          li.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            this._selectSearchResult(item);
+            searchInp.blur();
+          });
+          searchList.appendChild(li);
+        });
+        searchList.classList.remove('is-hidden');
+      };
+
+      if (searchInp && searchList) {
+        searchInp.addEventListener('input', renderSearchDropdown);
+        searchInp.addEventListener('focus', renderSearchDropdown);
+        searchInp.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' && currentResults.length) {
+            e.preventDefault();
+            activeSearchIdx = (activeSearchIdx + 1) % currentResults.length;
+            Array.from(searchList.children).forEach((el, i) =>
+              el.classList.toggle('is-active', i === activeSearchIdx)
+            );
+          } else if (e.key === 'ArrowUp' && currentResults.length) {
+            e.preventDefault();
+            activeSearchIdx = (activeSearchIdx - 1 + currentResults.length) % currentResults.length;
+            Array.from(searchList.children).forEach((el, i) =>
+              el.classList.toggle('is-active', i === activeSearchIdx)
+            );
+          } else if (e.key === 'Enter' && currentResults.length) {
+            e.preventDefault();
+            const pick = currentResults[Math.max(0, activeSearchIdx)];
+            if (pick) {
+              this._selectSearchResult(pick);
+              searchInp.blur();
+            }
+          } else if (e.key === 'Escape') {
+            searchList.classList.add('is-hidden');
+            searchInp.blur();
+          }
+        });
+        document.addEventListener('pointerdown', (e) => {
+          const box = this._id('map-search-box');
+          if (box && !box.contains(e.target)) {
+            searchList.classList.add('is-hidden');
+          }
+        });
+      }
+
       // Layer checkboxes
       const bindToggle = (chkId, grpEl, inv = false) => {
         this._id(chkId).addEventListener('change', (e) => {
@@ -2065,6 +2439,14 @@
 
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
+        if ((e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) && e.target.tagName !== 'INPUT') {
+          if (!this.challenge && searchInp) {
+            e.preventDefault();
+            searchInp.focus();
+            searchInp.select();
+            return;
+          }
+        }
         if (e.target.tagName === 'INPUT') return;
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
           if (this.challenge) return;
@@ -2083,6 +2465,9 @@
         } else if (e.key === 'Escape') {
           this.closeMilestoneBalloon();
           if (this.genealogyMode) this.toggleGenealogyMode(false);
+          else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
+            this.closeGenealogyCard();
+          }
         }
       });
 
@@ -2201,10 +2586,11 @@
           const anc = this.trTerm(settlementEl.dataset.ancient);
           const mod = this.trTerm(settlementEl.dataset.modern);
           const rem = this.trTerm(settlementEl.dataset.remark);
+          const traceHint = this.locale === 'en' ? ' · Click to trace' : ' · 点击查看沿革';
           const sub =
             this.locale === 'en'
-              ? `${mod && mod !== anc ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}`
-              : `${mod && mod !== anc ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}`;
+              ? `${mod && mod !== anc ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
+              : `${mod && mod !== anc ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
           this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
         } else if (corridorEl) {
           this._showHoverTip(
@@ -2308,12 +2694,26 @@
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
           const [lng, lat] = this.projector.toGeo(sx, sy);
           this.openGenealogyAt(lng, lat);
-        } else if (!wasPan && e.pointerType === 'touch') {
-          inspectPointTooltip(e);
+        } else if (!wasPan && !this.challenge) {
+          const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+          const settlementEl = hitTarget && hitTarget.closest && hitTarget.closest('.settlement-node');
+          if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
+            this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
+            return;
+          }
+          if (e.pointerType === 'touch') {
+            inspectPointTooltip(e);
+          }
         }
       };
       this.svg.addEventListener('pointerup', endPointer);
       this.svg.addEventListener('pointercancel', endPointer);
+      this.svg.addEventListener('dblclick', (e) => {
+        if (this.challenge) return;
+        const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+        const [lng, lat] = this.projector.toGeo(sx, sy);
+        this.openGenealogyAt(lng, lat);
+      });
 
       // Hover tooltips (Desktop pointermove)
       const frame = this._id('viewport-frame');

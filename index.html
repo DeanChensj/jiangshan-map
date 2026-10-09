@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261009f" />
+  <link rel="stylesheet" href="css/style.css?v=20261009h" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -93,6 +93,17 @@
             <g id="grp-genealogy"></g>
           </g>
         </svg>
+
+        <div id="map-search-box" role="search" aria-label="快速检索古今地名、州府、年号与事件">
+          <div class="search-input-wrap">
+            <svg class="search-ico" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10.6 10.6L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜古今地名 / 州府 / 年号 / 事件 ( / )" aria-label="搜古今地名、州府、年号或事件" />
+          </div>
+          <ul id="map-search-results" class="search-results-list is-hidden" role="listbox"></ul>
+        </div>
 
         <div id="map-key" aria-live="polite"></div>
 
@@ -185,10 +196,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261009g"></script>
-  <script src="js/atlas_snapshots.js?v=20261009g"></script>
-  <script src="js/map_data.js?v=20261009g"></script>
-  <script src="js/i18n_dict.js?v=20261009g"></script>
-  <script src="js/app.js?v=20261009g"></script>
+  <script src="js/china_geo_data.js?v=20261009h"></script>
+  <script src="js/atlas_snapshots.js?v=20261009h"></script>
+  <script src="js/map_data.js?v=20261009h"></script>
+  <script src="js/i18n_dict.js?v=20261009h"></script>
+  <script src="js/app.js?v=20261009h"></script>
 </body>
 </html>
