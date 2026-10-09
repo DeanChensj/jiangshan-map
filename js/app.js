@@ -886,7 +886,7 @@
       if (snap.note) {
         const n = document.createElement('div');
         n.className = 'key-note';
-        n.innerHTML = `${SVG_ICONS.note} <span>${this.trTerm(snap.note)}</span>`;
+        n.innerHTML = `${SVG_ICONS.dashedBox} <span>${this.trTerm(snap.note)}</span>`;
         this.mapKey.appendChild(n);
       }
 
