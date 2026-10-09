@@ -1480,6 +1480,7 @@
           ? `Classical Guqin Music (${cur.en})`
           : `古琴雅乐（当前曲目：《${cur.zh}》）`;
       if (nextBtn) {
+        nextBtn.classList.toggle('is-hidden', !this.musicPlaying);
         nextBtn.title =
           this.locale === 'en' ? 'Switch Guqin Track' : '切换下一首古琴曲';
       }
