@@ -1239,15 +1239,6 @@ h2 {
   text-shadow: none;
 }
 
-.band-cell .sub-divider {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-}
-
 #scrubber-handle {
   position: absolute;
   top: -6px;

@@ -1194,18 +1194,6 @@
         if (cell) {
           cell.textContent = this.dynastyBadge(d);
           cell.title = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
-          if (d.phases && d.phases.length > 1) {
-            for (let k = 0; k < d.phases.length - 1; k++) {
-              const sub = document.createElement('i');
-              sub.className = 'sub-divider';
-              const pct =
-                ((d.phases[k].until - d.fromYear) /
-                  Math.max(1, d.toYear - d.fromYear)) *
-                100;
-              sub.style.left = `${pct.toFixed(1)}%`;
-              cell.appendChild(sub);
-            }
-          }
         }
         const tk = tickNodes[idx];
         if (tk) {
