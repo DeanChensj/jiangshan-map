@@ -322,27 +322,21 @@ h2 {
 
 /* First-Level Macro Administrative Regions (道/州/路/行省/布政使司/省) */
 .region-shape {
-  fill: rgba(255, 255, 255, 0.001);
-  stroke: rgba(105, 58, 38, 0.48);
+  fill: none;
+  stroke: rgba(105, 58, 38, 0.45);
   stroke-width: 0.95;
   stroke-dasharray: 4.5 2.5;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  transition: fill 0.15s, stroke 0.15s;
-}
-
-.region-shape:hover {
-  fill: rgba(181, 69, 47, 0.12);
-  stroke: var(--vermilion);
-  stroke-width: 1.35;
+  pointer-events: none;
 }
 
 .region-caption {
   font-family: var(--serif-stack);
-  font-size: 9.2px;
+  font-size: 9px;
   font-weight: 700;
   fill: #6a3422;
-  fill-opacity: 0.88;
+  fill-opacity: 0.85;
   letter-spacing: 0.08em;
   text-anchor: middle;
   dominant-baseline: central;
@@ -367,20 +361,20 @@ h2 {
 }
 
 .prefecture-caption {
+  display: none;
   font-family: var(--serif-stack);
-  font-size: 7.4px;
+  font-size: 7.2px;
   font-weight: 500;
   fill: #5b4d40;
-  fill-opacity: 0;
+  fill-opacity: 0.82;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
   filter: url(#label-halo);
-  transition: fill-opacity 0.2s;
 }
 
 #atlas-svg.is-zoomed-prefs .prefecture-caption {
-  fill-opacity: 0.84;
+  display: block;
 }
 
 .polity-caption {
@@ -673,6 +667,14 @@ h2 {
 /* Settlements / Ancient Cities (Refined compact cartographic typography) */
 .settlement-node {
   cursor: pointer;
+}
+
+.settlement-node.is-tier2 {
+  display: none;
+}
+
+#atlas-svg.is-zoomed-cities .settlement-node.is-tier2 {
+  display: block;
 }
 
 .settlement-node .dot {

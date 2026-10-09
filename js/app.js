@@ -542,13 +542,11 @@
       }
 
       for (const reg of snap.regions || []) {
-        const rPath = this._svgNode(
+        this._svgNode(
           'path',
           { d: this.projector.shapeToSvgPath(reg.shape), class: 'region-shape' },
           prefGroup
         );
-        rPath.dataset.regionTitle = reg.title;
-        rPath.dataset.regionCategory = reg.category || '';
         if (reg.anchor && reg.title) {
           const [rx, ry] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
           const rLbl = this._svgNode(
@@ -1283,8 +1281,8 @@
     _rescaleSvgTypography() {
       const z = 1000 / this.camera.w;
       const invScale = (1 / Math.sqrt(z)).toFixed(3);
-      this.svg.classList.toggle('is-zoomed-prefs', z >= 1.65);
-      this.svg.classList.toggle('is-zoomed-cities', z >= 1.35);
+      this.svg.classList.toggle('is-zoomed-cities', z >= 1.75);
+      this.svg.classList.toggle('is-zoomed-prefs', z >= 2.6);
       this.svg
         .querySelectorAll(
           '.settlement-node, .region-caption, .prefecture-caption, .neighbor-caption, .corridor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
@@ -1856,8 +1854,7 @@
           }
         } else if (
           e.target.dataset &&
-          (e.target.dataset.regionTitle ||
-            e.target.dataset.prefTitle ||
+          (e.target.dataset.prefTitle ||
             e.target.dataset.polityTitle ||
             e.target.dataset.provTitle ||
             e.target.dataset.countryTitle)
@@ -1867,34 +1864,22 @@
             const hit = stack.find((el) => el.dataset && el.dataset[key]);
             return hit ? hit.dataset : null;
           };
-          const reg = findData('regionTitle');
           const pref = findData('prefTitle');
           const pol = findData('polityTitle');
           const prov = findData('provTitle');
           const country = findData('countryTitle');
 
           const lines = [];
-          if (reg || pref) {
-            const parts = [];
-            if (reg) {
-              const rName = this.trTerm(reg.regionTitle);
-              const rCat = reg.regionCategory;
-              parts.push(
-                this.locale === 'en'
-                  ? rName
-                  : rName + (rCat && !rName.endsWith(rCat) ? '（' + rCat + '）' : '')
-              );
-            }
-            if (pref) {
-              const pName = this.trTerm(pref.prefTitle);
-              const pCat = pref.prefCategory;
-              const pLabel =
+          if (pref) {
+            const pName = this.trTerm(pref.prefTitle);
+            const pCat = pref.prefCategory;
+            lines.push(
+              `<b>${
                 this.locale === 'en'
                   ? pName
-                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '');
-              if (!parts.includes(pLabel)) parts.push(pLabel);
-            }
-            lines.push(`<b>${parts.join(' · ')}</b>`);
+                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
+              }</b>`
+            );
             if (pol) {
               lines.push(
                 `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(pol.polityTitle)}</div>`
