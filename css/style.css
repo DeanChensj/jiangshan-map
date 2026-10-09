@@ -502,12 +502,18 @@ h2 {
   font-size: 9px;
   font-weight: 700;
   fill: #6a3422;
-  fill-opacity: 0.85;
+  fill-opacity: 0.82;
   letter-spacing: 0.08em;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
   filter: url(#label-halo);
+  transition: opacity 0.16s ease;
+}
+
+.region-caption.is-crowded-hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Secondary Prefectures (郡/州/府/路) */
@@ -531,8 +537,8 @@ h2 {
   font-family: var(--serif-stack);
   font-weight: 700;
   font-size: 19px;
-  fill: #2b2622;
-  fill-opacity: 0.72;
+  fill: #241e19;
+  fill-opacity: 0.86;
   letter-spacing: 0.18em;
   text-anchor: middle;
   dominant-baseline: central;
@@ -886,6 +892,14 @@ h2 {
 
 .settlement-node:hover .name {
   fill: var(--vermilion);
+}
+
+.settlement-node.is-label-crowded text {
+  display: none;
+}
+
+.settlement-node.is-label-crowded:hover text {
+  display: block;
 }
 
 /* Map Legend */

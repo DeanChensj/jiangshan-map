@@ -697,7 +697,6 @@
         .slice()
         .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
 
-      const polityObstacles = [];
       for (const pol of sorted) {
         const isN = pol.role === 'neighbor';
         const attrs = {
@@ -714,28 +713,22 @@
 
         if (pol.anchor) {
           const [cx, cy] = this.projector.toScreen(pol.anchor[0], pol.anchor[1]);
-          polityObstacles.push({ x: cx, y: cy, w: isN ? 36 : 56, h: isN ? 16 : 23 });
           const lbl = this._svgNode(
             'text',
             {
               class: `polity-caption ${pol.role}`,
               'data-x': cx.toFixed(1),
               'data-y': cy.toFixed(1),
+              'data-base-x': cx.toFixed(1),
+              'data-base-y': cy.toFixed(1),
             },
             polGroup
           );
+          lbl._polShape = pol.shape;
           lbl.dataset.polityTitle = pol.title;
           lbl.dataset.polityRole = pol.role;
           lbl.textContent = this.trTerm(pol.title);
         }
-      }
-
-      const cityObstacles = [];
-      for (const item of dynasty.settlements || []) {
-        if (item.appear !== undefined && this.year < item.appear) continue;
-        if (item.vanish !== undefined && this.year > item.vanish) continue;
-        const [sx, sy] = this.projector.toScreen(item.coord[0], item.coord[1]);
-        cityObstacles.push({ x: sx + (item.align === 'l' ? -14 : 14), y: sy, w: 26, h: 12 });
       }
 
       const prefGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPrefectures);
@@ -749,33 +742,6 @@
         path.dataset.prefCategory = pref.category;
       }
 
-      const placedRegions = [];
-      const candidateOffsets = [
-        [0, 0],
-        [0, 24],
-        [0, -24],
-        [-34, 20],
-        [34, 20],
-        [-34, -20],
-        [34, -20],
-        [0, 34],
-        [0, -34],
-        [-45, 0],
-        [45, 0],
-      ];
-      const collides = (x, y) => {
-        for (const p of polityObstacles) {
-          if (Math.abs(x - p.x) < p.w && Math.abs(y - p.y) < p.h) return true;
-        }
-        for (const c of cityObstacles) {
-          if (Math.abs(x - c.x) < c.w && Math.abs(y - c.y) < c.h) return true;
-        }
-        for (const r of placedRegions) {
-          if (Math.abs(x - r.x) < 32 && Math.abs(y - r.y) < 12) return true;
-        }
-        return false;
-      };
-
       for (const reg of snap.regions || []) {
         this._svgNode(
           'path',
@@ -784,34 +750,18 @@
         );
         if (reg.anchor && reg.title) {
           const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
-          let rx = baseX;
-          let ry = baseY;
-          for (const [dx, dy] of candidateOffsets) {
-            const tx = baseX + dx;
-            const ty = baseY + dy;
-            if (!collides(tx, ty)) {
-              const [lng, lat] = this.projector.toGeo(tx, ty);
-              if (
-                (dx === 0 && dy === 0) ||
-                !reg.shape ||
-                MercatorProjector.pointInShape(lng, lat, reg.shape)
-              ) {
-                rx = tx;
-                ry = ty;
-                break;
-              }
-            }
-          }
-          placedRegions.push({ x: rx, y: ry });
           const rLbl = this._svgNode(
             'text',
             {
               class: 'region-caption',
-              'data-x': rx.toFixed(1),
-              'data-y': ry.toFixed(1),
+              'data-x': baseX.toFixed(1),
+              'data-y': baseY.toFixed(1),
+              'data-base-x': baseX.toFixed(1),
+              'data-base-y': baseY.toFixed(1),
             },
             prefGroup
           );
+          rLbl._regShape = reg.shape;
           rLbl.textContent = this.trTerm(reg.title);
         }
       }
@@ -836,9 +786,19 @@
       this.activeSettlementMask = this._settlementMask(dynasty, this.year);
       this.grpSettlements.innerHTML = '';
       const group = this._svgNode('g', { class: 'fade-enter' }, this.grpSettlements);
-      for (const item of dynasty.settlements || []) {
-        if (item.appear !== undefined && this.year < item.appear) continue;
-        if (item.vanish !== undefined && this.year > item.vanish) continue;
+      // Paint order: Tier-2 secondary cities first (bottom), Tier-1 cities second, Capitals last (top)
+      const activeList = (dynasty.settlements || [])
+        .filter(
+          (item) =>
+            (item.appear === undefined || this.year >= item.appear) &&
+            (item.vanish === undefined || this.year <= item.vanish)
+        )
+        .sort((a, b) => {
+          const rank = (s) => (s.isCapital ? 2 : s.tier === 2 ? 0 : 1);
+          return rank(a) - rank(b);
+        });
+
+      for (const item of activeList) {
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const isTier2 = item.tier === 2 && !item.isCapital;
         const cls = item.isCapital
@@ -860,6 +820,8 @@
         node.dataset.remark = item.remark || '';
         node.dataset.lng = String(item.coord[0]);
         node.dataset.lat = String(item.coord[1]);
+        node.dataset.prefAlign = item.align || 'r';
+        node.dataset.tier = item.isCapital ? '0' : isTier2 ? '2' : '1';
 
         if (item.isCapital) {
           this._svgNode('circle', { class: 'cap-ring', r: 4.5 }, node);
@@ -2082,13 +2044,36 @@
       }, 240);
     }
 
+    _estimateLocalTextWidth(str, fontPx, letterSpacing = 0) {
+      if (!str) return 0;
+      let w = 0;
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        const isWide =
+          (code >= 0x2e80 && code <= 0x9fff) ||
+          (code >= 0xf900 && code <= 0xfaff) ||
+          (code >= 0xff00 && code <= 0xffef);
+        w += (isWide ? fontPx : fontPx * 0.56) + letterSpacing;
+      }
+      return w;
+    }
+
     _rescaleSvgTypography() {
       const z = 1000 / this.camera.w;
-      const invScale = (1 / Math.sqrt(z)).toFixed(3);
-      this.svg.classList.toggle('is-zoomed-cities', z >= 1.75);
+      const s = 1 / Math.sqrt(z);
+      const invScale = s.toFixed(3);
+      const showTier2 = z >= 1.75;
+      this.svg.classList.toggle('is-zoomed-cities', showTier2);
+
+      const showSettlements = !this.grpSettlements.classList.contains('is-hidden');
+      const showPrefectures = !this.grpPrefectures.classList.contains('is-hidden');
+      const showCorridors = !this.grpCorridors.classList.contains('is-hidden');
+      const showMilestones = !this.grpMilestones.classList.contains('is-hidden');
+
+      // Scale static markers (milestones, challenge pins, genealogy overlays)
       this.svg
         .querySelectorAll(
-          '.settlement-node, .region-caption, .neighbor-caption, .corridor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
+          '.neighbor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
         )
         .forEach((node) => {
           const x = node.getAttribute('data-x');
@@ -2097,12 +2082,209 @@
             node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
           }
         });
-      this.grpPolities.querySelectorAll('.polity-caption').forEach((node) => {
-        const x = node.getAttribute('data-x');
-        const y = node.getAttribute('data-y');
-        if (x !== null) {
-          node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
+
+      const occupied = [];
+      const overlapArea = (box) => {
+        let total = 0;
+        for (let i = 0; i < occupied.length; i++) {
+          const b = occupied[i];
+          const ox = Math.min(box.x2, b.x2) - Math.max(box.x1, b.x1);
+          if (ox <= 0) continue;
+          const oy = Math.min(box.y2, b.y2) - Math.max(box.y1, b.y1);
+          if (oy > 0) total += ox * oy;
         }
+        return total;
+      };
+
+      const settlementNodes = Array.from(this.svg.querySelectorAll('.settlement-node'));
+
+      // Step 0: Reserve all visible city dots and milestone pins so labels never cover dots
+      if (showSettlements) {
+        for (const node of settlementNodes) {
+          const isT2 = node.classList.contains('is-tier2');
+          if (isT2 && !showTier2) continue;
+          const cx = parseFloat(node.getAttribute('data-x'));
+          const cy = parseFloat(node.getAttribute('data-y'));
+          const r = (node.classList.contains('is-capital') ? 5.2 : isT2 ? 3.0 : 3.8) * s;
+          occupied.push({ x1: cx - r, y1: cy - r, x2: cx + r, y2: cy + r });
+        }
+      }
+      if (showMilestones) {
+        this.svg.querySelectorAll('.milestone-pin').forEach((pin) => {
+          const mx = parseFloat(pin.getAttribute('data-x'));
+          const my = parseFloat(pin.getAttribute('data-y'));
+          if (!isNaN(mx)) {
+            occupied.push({
+              x1: mx - 18 * s,
+              y1: my - 10 * s,
+              x2: mx + 18 * s,
+              y2: my + 10 * s,
+            });
+          }
+        });
+      }
+
+      const layoutSettlementLabel = (node, allowCull) => {
+        const cx = parseFloat(node.getAttribute('data-x'));
+        const cy = parseFloat(node.getAttribute('data-y'));
+        node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+        if (!showSettlements) return;
+
+        const nameEl = node.querySelector('.name');
+        if (!nameEl) return;
+        const modEl = node.querySelector('.modern');
+        const tier = node.dataset.tier || '1';
+        const f1 = tier === '0' ? 9.6 : tier === '2' ? 7.3 : 8.2;
+        const f2 = tier === '2' ? 6.0 : 6.6;
+        const wLocal =
+          Math.max(
+            this._estimateLocalTextWidth(nameEl.textContent, f1, 0.45),
+            modEl ? this._estimateLocalTextWidth(modEl.textContent, f2, 0.2) : 0
+          ) + 7;
+
+        const pref = node.dataset.prefAlign || 'r';
+        const dirs = [pref];
+        for (const d of ['r', 'l', 'b', 't']) {
+          if (!dirs.includes(d)) dirs.push(d);
+        }
+
+        const dirSpec = (dir) => {
+          if (dir === 'l') {
+            return {
+              anchor: 'end',
+              dx: -5.5,
+              dy1: -0.5,
+              dy2: 7.8,
+              box: {
+                x1: cx - (5.5 + wLocal) * s,
+                y1: cy - 10.5 * s,
+                x2: cx - 3.5 * s,
+                y2: cy + (modEl ? 10.8 : 2.8) * s,
+              },
+            };
+          }
+          if (dir === 'b') {
+            return {
+              anchor: 'middle',
+              dx: 0,
+              dy1: 9.5,
+              dy2: 17.5,
+              box: {
+                x1: cx - wLocal * 0.52 * s,
+                y1: cy + 2.0 * s,
+                x2: cx + wLocal * 0.52 * s,
+                y2: cy + (modEl ? 20.5 : 12.8) * s,
+              },
+            };
+          }
+          if (dir === 't') {
+            return {
+              anchor: 'middle',
+              dx: 0,
+              dy1: modEl ? -10.5 : -4.5,
+              dy2: -2.8,
+              box: {
+                x1: cx - wLocal * 0.52 * s,
+                y1: cy - (modEl ? 20.2 : 13.5) * s,
+                x2: cx + wLocal * 0.52 * s,
+                y2: cy - 1.8 * s,
+              },
+            };
+          }
+          return {
+            anchor: 'start',
+            dx: 5.5,
+            dy1: -0.5,
+            dy2: 7.8,
+            box: {
+              x1: cx + 3.5 * s,
+              y1: cy - 10.5 * s,
+              x2: cx + (5.5 + wLocal) * s,
+              y2: cy + (modEl ? 10.8 : 2.8) * s,
+            },
+          };
+        };
+
+        let best = null;
+        let bestOverlap = Infinity;
+        for (let i = 0; i < dirs.length; i++) {
+          const spec = dirSpec(dirs[i]);
+          const ov = overlapArea(spec.box) + i * 0.01;
+          if (ov < bestOverlap) {
+            bestOverlap = ov;
+            best = spec;
+            if (ov < 0.05) break;
+          }
+        }
+
+        const boxArea = Math.max(1, (best.box.x2 - best.box.x1) * (best.box.y2 - best.box.y1));
+        if (allowCull && bestOverlap > boxArea * 0.1) {
+          node.classList.add('is-label-crowded');
+          return;
+        }
+        node.classList.remove('is-label-crowded');
+        nameEl.setAttribute('x', String(best.dx));
+        nameEl.setAttribute('y', String(best.dy1));
+        nameEl.setAttribute('text-anchor', best.anchor);
+        if (modEl) {
+          modEl.setAttribute('x', String(best.dx));
+          modEl.setAttribute('y', String(best.dy2));
+          modEl.setAttribute('text-anchor', best.anchor);
+        }
+        occupied.push(best.box);
+      };
+
+      // Tier 1: Capitals first, then Tier-1 primary cities (never culled, always protected)
+      for (const node of settlementNodes) {
+        if (node.classList.contains('is-capital')) layoutSettlementLabel(node, false);
+      }
+      for (const node of settlementNodes) {
+        if (!node.classList.contains('is-capital') && !node.classList.contains('is-tier2')) {
+          layoutSettlementLabel(node, false);
+        }
+      }
+
+      // Tier 2: Polity captions (main & rival first, then protectorate & neighbor)
+      const polNodes = Array.from(this.grpPolities.querySelectorAll('.polity-caption')).sort(
+        (a, b) => {
+          const rank = (el) =>
+            el.classList.contains('main')
+              ? 0
+              : el.classList.contains('rival')
+                ? 1
+                : el.classList.contains('protectorate')
+                  ? 2
+                  : 3;
+          return rank(a) - rank(b);
+        }
+      );
+      const polOffsets = [
+        [0, 0],
+        [-24, -18],
+        [0, -24],
+        [-30, 0],
+        [30, 0],
+        [24, -18],
+        [-24, 18],
+        [24, 18],
+        [0, 24],
+        [-44, -28],
+        [-48, 0],
+        [0, -42],
+        [44, -28],
+        [-44, 28],
+        [44, 28],
+        [48, 0],
+        [0, 42],
+        [-64, -22],
+        [-64, 22],
+        [64, -22],
+        [64, 22],
+        [0, -60],
+        [0, 60],
+      ];
+
+      for (const node of polNodes) {
         const base = node.classList.contains('neighbor')
           ? 9
           : node.classList.contains('protectorate')
@@ -2110,8 +2292,139 @@
             : node.classList.contains('rival')
               ? 12
               : 14;
-        node.setAttribute('font-size', (base + (base > 10 ? 10 : 3) / z).toFixed(1));
+        const fSize = base + (base > 10 ? 10 : 3) / z;
+        node.setAttribute('font-size', fSize.toFixed(1));
+
+        const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
+        const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
+        const ls = node.classList.contains('neighbor')
+          ? 1.6
+          : node.classList.contains('protectorate')
+            ? 2.0
+            : 3.0;
+        const hw = (this._estimateLocalTextWidth(node.textContent, fSize, ls) * 0.5 + 4) * s;
+        const hh = (fSize * 0.58 + 3) * s;
+
+        let bestX = baseX;
+        let bestY = baseY;
+        let bestBox = { x1: baseX - hw, y1: baseY - hh, x2: baseX + hw, y2: baseY + hh };
+        let bestScore = Infinity;
+
+        for (let i = 0; i < polOffsets.length; i++) {
+          const [ox, oy] = polOffsets[i];
+          const cx = baseX + ox;
+          const cy = baseY + oy;
+          if ((ox !== 0 || oy !== 0) && node._polShape) {
+            const [lngC, latC] = this.projector.toGeo(cx, cy);
+            if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
+            const [lngL, latL] = this.projector.toGeo(cx - hw * 0.5, cy);
+            const [lngR, latR] = this.projector.toGeo(cx + hw * 0.5, cy);
+            if (
+              !MercatorProjector.pointInShape(lngL, latL, node._polShape) ||
+              !MercatorProjector.pointInShape(lngR, latR, node._polShape)
+            ) {
+              continue;
+            }
+          }
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005;
+          if (ov < bestScore) {
+            bestScore = ov;
+            bestX = cx;
+            bestY = cy;
+            bestBox = candBox;
+            if (ov < 0.05) break;
+          }
+        }
+
+        node.setAttribute('data-x', bestX.toFixed(1));
+        node.setAttribute('data-y', bestY.toFixed(1));
+        node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
+        occupied.push(bestBox);
+      }
+
+      // Tier 3: Corridor captions
+      this.svg.querySelectorAll('.corridor-caption').forEach((node) => {
+        const cx = parseFloat(node.getAttribute('data-x'));
+        const cy = parseFloat(node.getAttribute('data-y'));
+        if (!isNaN(cx)) {
+          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          if (showCorridors) {
+            const hw = (this._estimateLocalTextWidth(node.textContent, 8.2, 1.4) * 0.5 + 3) * s;
+            const hh = 5.5 * s;
+            occupied.push({ x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh });
+          }
+        }
       });
+
+      // Tier 4: Tier-2 secondary cities (visible when z >= 1.75; auto-flip or cull text if crowded)
+      for (const node of settlementNodes) {
+        if (node.classList.contains('is-tier2')) {
+          if (showTier2) {
+            layoutSettlementLabel(node, true);
+          } else {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          }
+        }
+      }
+
+      // Tier 5: Region / prefecture watermarks (dodge or hide when crowded)
+      const regOffsets = [
+        [0, 0],
+        [0, -14],
+        [0, 14],
+        [-18, 0],
+        [18, 0],
+        [-16, -12],
+        [16, -12],
+        [-16, 12],
+        [16, 12],
+        [0, -24],
+        [0, 24],
+        [-28, 0],
+        [28, 0],
+        [-24, -18],
+        [24, -18],
+        [-24, 18],
+        [24, 18],
+      ];
+      this.svg.querySelectorAll('.region-caption').forEach((node) => {
+        const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
+        const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
+        if (!showPrefectures) {
+          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          return;
+        }
+        const hw = (this._estimateLocalTextWidth(node.textContent, 8.8, 1.8) * 0.5 + 3) * s;
+        const hh = 6.2 * s;
+        let placed = false;
+        for (let i = 0; i < regOffsets.length; i++) {
+          const [ox, oy] = regOffsets[i];
+          const cx = baseX + ox;
+          const cy = baseY + oy;
+          if ((ox !== 0 || oy !== 0) && node._regShape) {
+            const [lng, lat] = this.projector.toGeo(cx, cy);
+            if (!MercatorProjector.pointInShape(lng, lat, node._regShape)) continue;
+          }
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
+            node.setAttribute('data-x', cx.toFixed(1));
+            node.setAttribute('data-y', cy.toFixed(1));
+            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+            node.classList.remove('is-crowded-hidden');
+            occupied.push(candBox);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          node.classList.add('is-crowded-hidden');
+        }
+      });
+
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         node.setAttribute('font-size', (9.5 / Math.sqrt(z)).toFixed(1));
       });
@@ -2877,6 +3190,7 @@
         this._id(chkId).addEventListener('change', (e) => {
           grpEl.classList.toggle('is-hidden', inv ? e.target.checked : !e.target.checked);
           updateLayerBadge();
+          this._rescaleSvgTypography();
         });
       };
       bindToggle('chk-provinces', this.grpProvinces);
@@ -2887,18 +3201,21 @@
           this.grpGhostDiff.classList.toggle('is-hidden', !e.target.checked);
         }
         updateLayerBadge();
+        this._rescaleSvgTypography();
       });
       bindToggle('chk-prefectures', this.grpPrefectures);
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
         updateLayerBadge();
+        this._rescaleSvgTypography();
       });
       bindToggle('chk-corridors', this.grpCorridors);
       this._id('chk-milestones').addEventListener('change', (e) => {
         this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
         if (!e.target.checked) this.closeMilestoneBalloon();
         updateLayerBadge();
+        this._rescaleSvgTypography();
       });
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
