@@ -7,6 +7,26 @@
 
 ---
 
+## 界面预览 / Interface Preview
+
+### 1. 北宋元丰六年（1083 年）· 二级州府悬停检视（黄州）
+> **Northern Song (1083 CE) · Prefecture-Level Hover Inspection (`Huangzhou`)**  
+> 放大至荆湖北路与江淮之间，鼠标悬停于「黄州」（苏轼谪居黄州作《赤壁赋》次年），图面自动高亮黄州州境多边形并浮窗显示所属政权（宋）及今日对应省份（湖北省）。  
+> *Zoomed into Central China in 1083 CE with the cursor hovering over **Huangzhou** (where Su Shi composed the Ode on the Red Cliffs), highlighting its prefecture boundary and displaying its ruling polity (`Song`) and modern provincial mapping (`Hubei`).*  
+> [点击直达该视图 / Open this exact view →](https://deanchensj.github.io/jiangshan-map/?year=1083&zoom=1.85&center=113.5,31.2&hover=%E9%BB%84%E5%B7%9E)
+
+![北宋 1083 年 · 黄州政区悬停预览](assets/preview_1083_huangzhou.png)
+
+### 2. 盛唐开元二十九年（741 年）· 开元十五道与长安「点地溯源」
+> **High Tang (741 CE) · Fifteen Kaiyuan Circuits & Administrative Genealogy (`Chang'an / Xi'an`)**  
+> 展示盛唐本纪版图、开元十五道与安西、北庭两大都护府及海陆丝绸之路，并开启「点地溯源」检视长安（今陕西西安）从秦内史、汉司隶、唐关内道、宋永兴军路直至明清的完整政区沿革。  
+> *Visualizing the High Tang empire at its territorial zenith alongside the Fifteen Circuits, the Anxi and Beiting Protectorates, and the Silk Road, with the **Trace Place** card open for Chang'an (`Xi'an, Shaanxi`) across all 16 historical eras.*  
+> [点击直达该视图 / Open this exact view →](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)
+
+![盛唐 741 年 · 长安点地溯源预览](assets/preview_741_tang_trace.png)
+
+---
+
 ## 中文介绍
 
 **「江山时序」** 是一套零外部运行时依赖的纯前端交互式中国历史地图集。项目以宣纸设色舆图为视觉基调，涵盖从秦并天下（前 221 年）至今两千余年的疆域消长、一级行政大区（州 / 道 / 路 / 行省 / 布政使司 / 省）、二级郡县州府边界、古今名城沿革、重大历史事件空间锚点以及长城、运河、丝绸之路等交通动脉。
@@ -62,6 +82,7 @@
 
 - 指定年份：`?year=741`（唐开元二十九年）或 `?year=-119`（汉武帝漠北之战）
 - 指定年份并弹出事件卡片：`?year=383&event=383`（淝水之战）
+- 指定视野并高亮特定二级州府：`?year=1083&zoom=1.85&center=113.5,31.2&hover=黄州`（北宋黄州）
 - 直接开启某坐标「点地溯源」：`?trace=108.94,34.26`（长安/西安历代沿革）
 - 直接开启挑战模式：`?quiz=locate`（地图寻址）或 `?quiz=match`（古今对号）
 - 默认英文界面：`?lang=en`

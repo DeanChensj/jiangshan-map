@@ -12,7 +12,7 @@ window.EN_LOCALE = {
     "toggle_events": "Events",
     "btn_reset": "Reset",
     "btn_trace": "Trace Place",
-    "btn_trace_active": "Tracing · Click Map",
+    "btn_trace_active": "Exit Trace",
     "btn_quiz": "Challenge",
     "btn_quiz_active": "In Challenge",
     "hint": "Scroll to zoom · Drag to pan · ← → step years · Space play · Esc close",

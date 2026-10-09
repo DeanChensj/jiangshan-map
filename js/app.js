@@ -337,7 +337,7 @@
       lblReset.textContent = this.uiStr('btn_reset', '复位视图');
       const lblGen = this._id('lbl-genealogy') || this._id('act-genealogy');
       lblGen.textContent = this.genealogyMode
-        ? this.uiStr('btn_trace_active', '点地溯源 · 点击地图')
+        ? this.uiStr('btn_trace_active', '退出溯源')
         : this.uiStr('btn_trace', '点地溯源');
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.challenge
@@ -906,11 +906,17 @@
         if (activeKinds.size) {
           const row = document.createElement('div');
           row.className = 'key-grid';
+          const seaLabel =
+            this.year >= 1405 && this.year <= 1433
+              ? this.uiStr('leg_sea', '海上丝路 / 郑和航线')
+              : this.locale === 'en'
+                ? 'Maritime Silk Road'
+                : '海上丝绸之路';
           const meta = [
             ['wall', '#5a3826', '5 2', this.uiStr('leg_wall', '长城')],
             ['canal', '#1f6f8b', '6 2', this.uiStr('leg_canal', '大运河')],
             ['road', '#9c6317', '2 3', this.uiStr('leg_road', '陆上丝路 / 古道')],
-            ['sea', '#2c5d8f', '2 3', this.uiStr('leg_sea', '郑和航线')],
+            ['sea', '#2c5d8f', '2 3', seaLabel],
           ];
           for (const [k, col, dash, label] of meta) {
             if (!activeKinds.has(k)) continue;
@@ -986,7 +992,7 @@
       this._id('act-genealogy').classList.toggle('is-active', this.genealogyMode);
       const lblEl = this._id('lbl-genealogy') || this._id('act-genealogy');
       lblEl.textContent = this.genealogyMode
-        ? this.uiStr('btn_trace_active', '点地溯源 · 点击地图')
+        ? this.uiStr('btn_trace_active', '退出溯源')
         : this.uiStr('btn_trace', '点地溯源');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode || Boolean(this.challenge));
       if (!this.genealogyMode && !this._id('genealogy-card').classList.contains('is-hidden')) {
@@ -2211,6 +2217,9 @@
       const frame = this._id('viewport-frame');
       frame.addEventListener('pointermove', (e) => {
         if (e.pointerType === 'touch') return;
+        this.grpPrefectures
+          .querySelectorAll('.prefecture-shape.is-hovered')
+          .forEach((el) => el.classList.remove('is-hovered'));
         inspectPointTooltip(e);
       });
 
@@ -2235,6 +2244,65 @@
       if (q.has('year')) {
         const y = Number(q.get('year'));
         if (!Number.isNaN(y)) this.jumpToYear(y);
+      }
+      if (q.has('zoom') || q.has('center')) {
+        const z = Math.max(1, Math.min(8, Number(q.get('zoom')) || this.camera.zoom));
+        const w = 1000 / z;
+        const h = 700 / z;
+        let x = this.camera.x;
+        let y = this.camera.y;
+        if (q.has('center')) {
+          const [lng, lat] = q.get('center').split(',').map(Number);
+          if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
+            const [tx, ty] = this.projector.toScreen(lng, lat);
+            x = tx - w * 0.5;
+            y = ty - h * 0.5;
+          }
+        }
+        this.camera = { x, y, w, h, zoom: z };
+        this._applyCamera();
+      }
+      if (q.has('hover')) {
+        const targetPref = q.get('hover');
+        setTimeout(() => {
+          const el = this.grpPrefectures.querySelector(
+            `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
+          );
+          if (el) {
+            el.classList.add('is-hovered');
+            const box = el.getBoundingClientRect();
+            const cx = box.left + box.width * 0.55;
+            const cy = box.top + box.height * 0.45;
+            const cur = this.dynasties[this.dynastyIdx];
+            const snapKey = this._resolveSnapKey(cur, this.year);
+            const snap = this.snapshots[snapKey] || {};
+            const mainPol = (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
+            let provName = '';
+            const stack = document.elementsFromPoint(cx, cy);
+            const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
+            if (provEl) provName = provEl.dataset.provTitle;
+            const pName = this.trTerm(el.dataset.prefTitle);
+            const pCat = el.dataset.prefCategory;
+            const lines = [
+              `<b>${
+                this.locale === 'en'
+                  ? pName
+                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
+              }</b>`,
+            ];
+            if (mainPol) {
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
+              );
+            }
+            if (provName) {
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(provName)}</div>`
+              );
+            }
+            this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
+          }
+        }, 250);
       }
       if (q.has('event')) {
         const ey = Number(q.get('event'));
