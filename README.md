@@ -10,17 +10,17 @@
 ## 界面预览 / Interface Preview
 
 ### 1. 北宋元丰六年（1083 年）· 二级州府悬停检视（黄州）
-> **Northern Song (1083 CE) · Prefecture-Level Hover Inspection (`Huangzhou`)**  
-> 放大至荆湖北路与江淮之间，鼠标悬停于「黄州」（苏轼谪居黄州作《赤壁赋》次年），图面自动高亮黄州州境多边形并浮窗显示所属政权（宋）及今日对应省份（湖北省）。  
-> *Zoomed into Central China in 1083 CE with the cursor hovering over **Huangzhou** (where Su Shi composed the Ode on the Red Cliffs), highlighting its prefecture boundary and displaying its ruling polity (`Song`) and modern provincial mapping (`Hubei`).*  
+> **Northern Song (1083 CE · 6th Year of Yuanfeng) · Prefecture-Level Hover Inspection (`Huangzhou`)**  
+> 放大至荆湖北路与江淮之间，鼠标悬停于「黄州」（苏轼谪居黄州作《赤壁赋》次年），图面自动高亮黄州州境多边形并浮窗显示所属政权（宋）及今日对应省份（湖北省）；左下角显示北宋 10 个版图阶段进度条（`阶段 8/10 · 1038—1114`），右下角实时换算古今双标比例尺（`200 km · 约四百里`）。  
+> *Zoomed into Central China in 1083 CE with the cursor hovering over **Huangzhou** (where Su Shi composed the Ode on the Red Cliffs), highlighting its prefecture boundary, ruling polity (`Song`), modern provincial mapping (`Hubei`), intra-dynasty stage switcher (`Stage 8/10`), and dual-unit scale bar (`200 km · 400 li`).*  
 > [点击直达该视图 / Open this exact view →](https://deanchensj.github.io/jiangshan-map/?year=1083&zoom=1.85&center=113.5,31.2&hover=%E9%BB%84%E5%B7%9E)
 
 ![北宋 1083 年 · 黄州政区悬停预览](assets/preview_1083_huangzhou.png)
 
 ### 2. 盛唐开元二十九年（741 年）· 开元十五道与长安「点地溯源」
-> **High Tang (741 CE) · Fifteen Kaiyuan Circuits & Administrative Genealogy (`Chang'an / Xi'an`)**  
-> 展示盛唐本纪版图、开元十五道与安西、北庭两大都护府及海陆丝绸之路，并开启「点地溯源」检视长安（今陕西西安）从秦内史、汉司隶、唐关内道、宋永兴军路直至明清的完整政区沿革。  
-> *Visualizing the High Tang empire at its territorial zenith alongside the Fifteen Circuits, the Anxi and Beiting Protectorates, and the Silk Road, with the **Trace Place** card open for Chang'an (`Xi'an, Shaanxi`) across all 16 historical eras.*  
+> **High Tang (741 CE · 29th Year of Kaiyuan) · Fifteen Kaiyuan Circuits & Administrative Genealogy (`Chang'an / Xi'an`)**  
+> 展示盛唐本纪版图、开元十五道与安西、北庭两大都护府及海陆丝绸之路，并开启「点地溯源」检视长安（今陕西西安）从秦内史、汉司隶、唐关内道、宋永兴军路直至明清的完整政区沿革，当前朝代（唐）自动朱砂高亮并居中同步。  
+> *Visualizing the High Tang empire at its territorial zenith alongside the Fifteen Circuits, the Anxi and Beiting Protectorates, and the Silk Road, with the **Trace Place** card open for Chang'an (`Xi'an, Shaanxi`) and live-synced to the active Tang dynasty row.*  
 > [点击直达该视图 / Open this exact view →](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)
 
 ![盛唐 741 年 · 长安点地溯源预览](assets/preview_741_tang_trace.png)
@@ -29,31 +29,49 @@
 
 ## 中文介绍
 
-**「江山时序」** 是一套零外部运行时依赖的纯前端交互式中国历史地图集。项目以宣纸设色舆图为视觉基调，涵盖从秦并天下（前 221 年）至今两千余年的疆域消长、一级行政大区（州 / 道 / 路 / 行省 / 布政使司 / 省）、二级郡县州府边界、古今名城沿革、重大历史事件空间锚点以及长城、运河、丝绸之路等交通动脉。
+**「江山时序」** 是一套零外部运行时依赖的纯前端交互式中国历史地图集。项目以宣纸设色舆图为视觉基调，涵盖从秦并天下（前 221 年）至今两千余年的疆域消长、帝王年号纪年、一级行政大区（州 / 道 / 路 / 行省 / 布政使司 / 省）、二级郡县州府边界、古今名城沿革、重大历史事件空间锚点以及长城、运河、丝绸之路等交通动脉。
 
 ### 核心功能
 
-1. **105 个高精度多阶段历史疆域快照**
+1. **105 个高精度多阶段历史疆域快照与「疆域残影对比（Ghost Diff）」**
    - 覆盖 **16 个历史时期**：秦、西汉、东汉、三国、西晋、东晋十六国、南北朝、隋、唐、五代十国、北宋（辽 / 西夏）、南宋（金 / 西夏 / 大蒙古国）、元、明、清、民国及现代。
-   - 同一朝代内部按关键历史节点细分为多个版图演变阶段（如汉武帝开疆、三国三家归晋、东晋淝水之战与刘裕北伐、唐代安史之乱与藩镇割据、南宋绍兴和议与端平入洛、明代永乐极盛与万历九边等）。
-2. **双层历史政区体系（大区常驻 + 州府悬停）**
-   - **第一级行政大区**：图面清晰展示汉十三刺史部、唐开元十五道与天宝节度使、宋代诸路（如荆湖北路、江南东路、川峡四路）、元代行中书省、明代两京十三布政使司、清代省及将军辖区。
-   - **第二级州郡府军（300+ 政区）**：保留精细州郡边界，鼠标悬停（或移动端轻点）即可高亮该州府并显示所属政权与今日对应的现代省份，兼顾图面整洁与信息深度。
-3. **分级古今名城与自动避让排版**
+   - **朝代内阶段步进器**：左下角图例内置阶段圆点与 `‹ / ›` 步进按钮，直显当前阶段起止年份（如 `北宋 · 阶段 8/10 (1038—1114)`）。
+   - **疆域残影对比（Ghost Diff）**：在同一朝代内切换阶段或悬停阶段圆点时，图面自动以虚线叠加上一阶段或目标阶段的疆域轮廓残影，直观呈现版图扩张与收缩的精确边界；底部时间轴色块内嵌阶段切分刻度线与事件微标。
+2. **全量帝王年号纪年系统（前 221 年 — 1949 年）**
+   - 覆盖从秦始皇二十六年（前 221 年）、汉武帝建元/元狩、唐贞观/开元、宋熙宁/元丰直至明清与民国的完整帝王年号表。
+   - 时间轴滑块气泡、事件浮窗与搜索框同步展示公历与传统年号（如 `公元前119年 · 西汉元狩四年`、`公元1083年 · 北宋元丰六年`）。
+3. **全局快速检索框（快捷键 `/` 或 `Cmd/Ctrl + K`）**
+   - 左上角悬浮检索框支持跨朝代即时搜索**古今地名**（如「长安」「建康」「临安」）、**州道政区**（如「黄州」「荆湖北路」）、**帝王年号与公历年份**（如「贞观」「元丰六年」「1083」）、**朝代**及**重大历史事件**（如「淝水之战」），选中后自动跳转年代、平滑飞移镜头并展开沿革或事件详情。
+4. **双层历史政区体系（大区常驻 + 州府悬停）与图例双向联动**
+   - **第一级行政大区**：图面清晰展示汉十三刺史部、唐开元十五道与天宝节度使、宋代诸路、元代行中书省、明代两京十三布政使司、清代省及将军辖区。
+   - **第二级州郡府军（300+ 政区）**：保留精细州郡边界，鼠标悬停（或移动端轻点）即可高亮该州府并显示所属政权与今日对应的现代省份。
+   - **图例与政权双向联动**：鼠标悬停左下角图例中的任意政权色块，地图对应政权疆域与国号自动高亮、其余政权半透明退后；点击图例色块自动缩放聚焦至该政权版图范围。
+5. **分级古今名城、自动避让排版与动态古今比例尺（`km · 华里`）**
    - 默认视图聚焦历代都城、陪都与重镇；放大视图（`Zoom >= 1.75x`）自动浮现各道、路、行省治所及边塞名城，并标注古今地名对照与历史典故。
-   - 内置政权国号、一级政区与城池节点的空间碰撞检测，自动偏移避让，杜绝文字重叠。
-4. **点地溯源（古今政区沿革追踪）**
-   - 开启 **「点地溯源」** 后点击地图任意坐标，即时生成该地点从秦郡、汉州郡、唐道州、宋路府、元行省到明清府省的完整政区沿革时间表，并计算历代最近古城距离，点击任一朝代即可跳转对应舆图。
-5. **双模式古地名挑战（十题计分授衔）**
+   - 画布右下角配备随缩放倍率与中心纬度实时重算的**公制 / 传统华里双标比例尺**（如 `500 km · 约一千里`、`200 km · 约四百里`），读史看图时可直接换算古籍中的行军里程。
+6. **点地溯源（古今政区沿革追踪 · 实时同步）**
+   - 直接**单击任意古城**（或双击地图任意位置 / 开启「点地溯源」模式），即时生成该地点从秦郡、汉州郡、唐道州、宋路府、元行省到明清府省的 15 朝完整政区沿革卡片。
+   - 当前所处朝代自动朱砂高亮并居中滚动；在不关闭卡片的情况下拖动时间轴或切换阶段，卡片会实时同步刷新该地在当前年份的政权与州郡归属。
+7. **双模式古地名挑战（十题计分授衔）**
    - **地图寻址**：给定某朝代古地名（如「建康」「临安」「奉元路」「天临路」），在隐去地名的历史底图上点击定址，按大圆球面距离（km）计算得分并绘制误差圈。
    - **古今对号**：结合地图落点提示，从四个现代城市选项中选出古地名对应的今日城市。十题结束后根据总分授予「太史令 · 舆图大家」「職方郎中」等传统官制封号。
-6. **历史工程与交通走廊**
+8. **历史工程走廊、传统古琴雅乐与全屏舆图模式**
    - 动态按年代渲染秦汉明三代**长城**、隋唐与元明清**大运河**、**陆上丝绸之路**、**唐蕃古道**、**西南丝路（茶马古道）**及**郑和下西洋航线**。
-7. **传统古琴雅乐伴奏**
    - 顶部内置 **「雅乐」** 播放器，收录《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》五首公有领域传统古琴名曲，支持曲目切换与 Web Audio 五声音阶离线泛音合成兜底。
-8. **全端适配与中英双语**
-   - 支持中英双语（`中文` / `EN`）全量切换，涵盖全部 16 个朝代、105 个快照图例、百余座古城及政区词典。
-   - 深度适配桌面端（滚轮缩放、方向键微调年份、空格播放）与移动端（双指捏合缩放、单指拖拽、轻点查州府、单行滑动工具栏）。
+   - 支持一键折叠右侧编年栏进入 **100% 全屏舆图模式**，并提供中英双语（`中文` / `EN`）全量无损切换。
+
+### 快捷键与交互速查表
+
+| 操作 / 按键 | 功能说明 |
+| :--- | :--- |
+| `/` 或 `Cmd/Ctrl + K` | 聚焦左上角全局检索框（搜古今地名 / 州府 / 年号 / 公历年份 / 朝代 / 事件） |
+| `←` / `→` | 年份向前 / 向后步进 `10` 年（按住 `Shift + ←/→` 步进 `50` 年） |
+| `Space`（空格键） | 启动 / 暂停历史时间轴自动演进播放 |
+| `Home` / `End` | 一键跳至时间轴起点（前 221 年秦一统）或终点（现代） |
+| `Esc` | 关闭当前打开的事件气泡、搜索下拉框或点地溯源卡片 |
+| **单击古城 / 双击地图** | 直接打开该坐标从秦至清的 15 朝「点地溯源」沿革卡片 |
+| **悬停 / 点击左下角图例政权** | 悬停单独高亮该政权版图；点击自动平滑缩放聚焦至该政权疆域 |
+| **悬停左下角阶段圆点或 `‹ / ›`** | 在图面实时预览目标版图阶段的朱砂虚线疆域边界（Ghost Diff） |
 
 ### 朝代与政区覆盖概览
 
@@ -91,30 +109,32 @@
 
 ## English Introduction
 
-**Chronicles of the Realm (`jiangshan-map`)** is a zero-dependency, pure front-end interactive historical atlas of China. Styled after traditional Chinese parchment cartography, it visualizes over two millennia of territorial evolution from the Qin unification (221 BCE) to the present day, complete with two-tier administrative divisions, ancient-to-modern city mappings, spatial event markers, historical corridors, and classical Guqin music.
+**Chronicles of the Realm (`jiangshan-map`)** is a zero-dependency, pure front-end interactive historical atlas of China. Styled after traditional Chinese parchment cartography, it visualizes over two millennia of territorial evolution from the Qin unification (221 BCE) to the present day, complete with imperial reign eras (*Nianhao*), two-tier administrative divisions, ancient-to-modern city mappings, spatial event markers, historical corridors, and classical Guqin music.
 
 ### Key Features
 
-1. **105 Multi-Stage Territorial Snapshots**
+1. **105 Multi-Stage Territorial Snapshots & Ghost Boundary Diff**
    - Covers **16 major historical eras**: Qin, Western Han, Eastern Han, Three Kingdoms, Western Jin, Eastern Jin & Sixteen Kingdoms, Northern & Southern Dynasties, Sui, Tang, Five Dynasties & Ten Kingdoms, Northern Song (with Liao & Western Xia), Southern Song (with Jin, Western Xia & Mongol Empire), Yuan, Ming, Qing, Republic of China, and Present.
-   - Captures fine-grained intra-dynastic shifts (e.g., Emperor Wu of Han's western expansion, the Battle of Feishui in 383 CE, the An Lushan Rebellion and Tang circuit commissioners, the Song–Jin Treaty of Shaoxing, and the high-Qing frontier consolidations).
-2. **Two-Tier Historical Administrative Hierarchy**
-   - **First-Level Macro Regions**: Displays Han's 13 Inspectoral Regions (*Zhou*), Tang's 15 Circuits (*Dao*) and Jiedushi defense commands, Song's Circuits (*Lu*), Yuan's Branch Secretariats (*Xingsheng*), and Ming/Qing Provinces (*Sheng*) directly on the map with automatic collision avoidance.
-   - **Second-Level Prefectures & Commanderies (300+ polygons)**: Preserves detailed prefecture (*Zhou / Fu / Jun*) boundaries derived from CHGIS and Hartwell datasets; hovering (or tapping on mobile) highlights the prefecture and reveals its ruling polity and modern provincial equivalent without cluttering the map.
-3. **Zoom-Adaptive Historical Cities**
-   - Displays imperial capitals and primary metropolises at default zoom, and reveals regional circuit seats and frontier garrisons when zoomed in (`Zoom >= 1.75x`), with ancient-to-modern name pairs and historical notes.
-4. **Trace Place (Administrative Genealogy)**
-   - Click any point on the map in **Trace Place** mode to generate a complete chronological genealogy of that location from Qin commanderies to Ming/Qing provinces, along with the nearest historical city in each era.
-5. **Dual-Mode Geography Challenge**
+   - **Intra-Dynasty Stage Switcher & Ghost Diff**: Step through fine-grained territorial stages within a dynasty using the legend stage bar (`Stage 8/10 · 1038—1114`). Switching or hovering over stages renders a dashed **Ghost Diff** outline of the previous/previewed stage's frontier so territorial expansions and contractions are immediately visible.
+2. **Imperial Reign Era (`Nianhao`) Chronology (221 BCE – 1949 CE)**
+   - Maps every historical year to its exact traditional Chinese imperial reign era (e.g., *4th Year of Yuanshou* in 119 BCE, *29th Year of Kaiyuan* in 741 CE, *6th Year of Yuanfeng* in 1083 CE) across the timeline scrubber, event balloons, and quick search.
+3. **Global Quick Search (`/` or `Cmd/Ctrl + K`)**
+   - Instant cross-dynasty search for **ancient & modern city names**, **prefectures & circuits**, **imperial reign eras & Gregorian years**, **dynasties**, and **historical milestones**, automatically jumping to the target year and flying the camera to the location.
+4. **Two-Tier Administrative Hierarchy & Interactive Polity Legend**
+   - **First-Level Macro Regions**: Displays Han's 13 Inspectoral Regions (*Zhou*), Tang's 15 Circuits (*Dao*) and Jiedushi defense commands, Song's Circuits (*Lu*), Yuan's Branch Secretariats (*Xingsheng*), and Ming/Qing Provinces (*Sheng*) with automatic label collision avoidance.
+   - **Second-Level Prefectures & Commanderies (300+ polygons)**: Preserves detailed prefecture (*Zhou / Fu / Jun*) boundaries derived from CHGIS and Hartwell datasets; hovering highlights the prefecture and reveals its ruling polity and modern provincial equivalent.
+   - **Bidirectional Polity Focus**: Hovering any polity swatch in the legend highlights that polity on the map and dims competing realms; clicking the swatch smoothly zooms the camera to frame its territory.
+5. **Zoom-Adaptive Historical Cities & Dual-Unit Scale Bar (`km · li`)**
+   - Displays imperial capitals and primary metropolises at default zoom, and reveals regional circuit seats and frontier garrisons when zoomed in (`Zoom >= 1.75x`).
+   - Features a latitude- and zoom-aware **Dual-Unit Scale Bar** at the bottom-right of the canvas showing both metric kilometers and traditional Chinese *li* (`1 km = 2 li`, e.g., `200 km · 400 li`).
+6. **Live-Synced Trace Place (Administrative Genealogy)**
+   - Click any ancient city directly (or double-click anywhere on the map) to generate a complete 15-dynasty chronological genealogy from Qin commanderies to Ming/Qing provinces, with the active dynasty highlighted and live-updated as you scrub the timeline.
+7. **Dual-Mode Geography Challenge**
    - **Map Locate**: Pinpoint an ancient city on an unlabeled historical map and earn points based on great-circle distance accuracy (km).
    - **Name Match**: Match an ancient city highlighted on the map to its modern counterpart in a 4-way multiple-choice quiz, earning traditional imperial court ranks at the end of 10 rounds.
-6. **Historical Engineering & Trade Corridors**
+8. **Historical Corridors, Classical Guqin Soundtrack (`雅乐`) & Full-Map Mode**
    - Time-filtered rendering of the Great Wall (Qin, Han, Ming), the Grand Canal (Sui–Tang & Yuan–Qing), the overland Silk Road, the Tang–Tibet Ancient Road, the Southwest Tea-Horse Road, and Zheng He's Maritime Voyages.
-7. **Classical Guqin Soundtrack (`雅乐`)**
-   - Built-in player featuring five public-domain classical Guqin pieces (*Flowing Water*, *Wild Geese on the Sandbank*, *Parting at Yangguan*, *Drunken Fisherman*, and *Wine Madness*), with an automatic Web Audio pentatonic synthesizer fallback.
-8. **Full Bilingual (`中文` / `EN`) & Mobile Touch Support**
-   - Instant switching between Chinese and English across all UI controls, 105 snapshot legends, macro regions, prefectures, and 300+ cities.
-   - Full mobile support with two-finger pinch-to-zoom, single-finger panning, tap-to-inspect tooltips, and a swipeable toolbar ribbon.
+   - Built-in player featuring five public-domain classical Guqin pieces with a Web Audio pentatonic synthesizer fallback, a one-click collapsible chronicle sidebar for **100% full-map viewing**, and full bilingual (`中文` / `EN`) support.
 
 ---
 
