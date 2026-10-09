@@ -487,6 +487,13 @@
         : this.uiStr('btn_quiz', '开始挑战');
       const lblLoc = this._id('lbl-locale') || this._id('act-locale');
       lblLoc.textContent = this.locale === 'en' ? '中文' : 'EN';
+      const ghBtn = this._id('act-github-star');
+      if (ghBtn) {
+        ghBtn.title =
+          this.locale === 'en'
+            ? 'Star DeanChensj/jiangshan-map on GitHub'
+            : '在 GitHub 上为「江山时序」点亮 Star';
+      }
       this._updateMusicUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
