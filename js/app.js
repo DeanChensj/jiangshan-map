@@ -188,6 +188,8 @@
       this.activeMilestone = null;
       this.challenge = null;
       this.challengeVariant = 'locate';
+      this.paneCollapsed = false;
+      this.ghostTimer = null;
 
       this.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
       this.flyRaf = null;
@@ -227,6 +229,7 @@
       this.grpProvNames = this._id('grp-prov-names');
       this.grpPolities = this._id('grp-polities');
       this.grpPrefectures = this._id('grp-prefectures');
+      this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
       this.grpSettlements = this._id('grp-settlements');
       this.grpMilestones = this._id('grp-milestones');
@@ -509,6 +512,16 @@
             ? 'Search city / prefecture / era / event ( / )'
             : '搜古今地名 / 州府 / 年号 / 事件 ( / )';
       }
+      const togglePaneBtn = this._id('act-toggle-pane');
+      if (togglePaneBtn) {
+        togglePaneBtn.title = this.paneCollapsed
+          ? this.locale === 'en'
+            ? 'Expand chronicle pane'
+            : '展开编年侧栏'
+          : this.locale === 'en'
+            ? 'Collapse chronicle pane (Full-map view)'
+            : '收起编年侧栏（全屏看图）';
+      }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
@@ -518,6 +531,7 @@
       });
 
       this._refreshBandLabels();
+      this._updateScaleBar();
       this.activeSettlementMask = null;
       this.activeCorridorMask = null;
 
@@ -623,6 +637,7 @@
 
     _renderDynasty(dynasty) {
       document.documentElement.style.setProperty('--dynasty-accent', dynasty.tint);
+      if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       this._renderSettlements(dynasty);
       this._renderCorridors();
       this._renderMilestones(dynasty);
@@ -637,6 +652,7 @@
     }
 
     _renderPolitiesAndPrefectures(dynasty, snap) {
+      this._setPolityFocus(null);
       this.grpPolities.innerHTML = '';
       this.grpPrefectures.innerHTML = '';
 
@@ -673,6 +689,8 @@
             },
             polGroup
           );
+          lbl.dataset.polityTitle = pol.title;
+          lbl.dataset.polityRole = pol.role;
           lbl.textContent = this.trTerm(pol.title);
         }
       }
@@ -1013,6 +1031,123 @@
         .forEach((n) => n.classList.remove('is-active'));
     }
 
+    _setPolityFocus(targetTitle) {
+      if (!this.grpPolities) return;
+      if (!targetTitle) {
+        this.grpPolities.classList.remove('has-polity-focus');
+        this.grpPolities
+          .querySelectorAll('.is-focused')
+          .forEach((el) => el.classList.remove('is-focused'));
+        return;
+      }
+      this.grpPolities.classList.add('has-polity-focus');
+      this.grpPolities
+        .querySelectorAll('.polity-shape, .polity-caption')
+        .forEach((el) => {
+          const match =
+            targetTitle === '__neighbors__'
+              ? el.dataset.polityRole === 'neighbor'
+              : el.dataset.polityTitle === targetTitle;
+          el.classList.toggle('is-focused', match);
+        });
+    }
+
+    _zoomToPolity(polityTitle) {
+      const snap = this.lastRenderedSnap;
+      if (!snap || !Array.isArray(snap.polities)) return;
+      const matches = snap.polities.filter((p) => p.title === polityTitle && p.shape);
+      if (!matches.length) return;
+
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      const visitRing = (ring) => {
+        for (const pt of ring || []) {
+          const [sx, sy] = this.projector.toScreen(pt[0], pt[1]);
+          if (sx < minX) minX = sx;
+          if (sx > maxX) maxX = sx;
+          if (sy < minY) minY = sy;
+          if (sy > maxY) maxY = sy;
+        }
+      };
+      for (const pol of matches) {
+        if (pol.shape.type === 'Polygon') {
+          (pol.shape.coordinates || []).forEach(visitRing);
+        } else if (pol.shape.type === 'MultiPolygon') {
+          (pol.shape.coordinates || []).forEach((poly) => (poly || []).forEach(visitRing));
+        }
+      }
+      if (!Number.isFinite(minX) || !Number.isFinite(minY)) return;
+
+      const cx = (minX + maxX) * 0.5;
+      const cy = (minY + maxY) * 0.5;
+      const spanW = Math.max(maxX - minX, (maxY - minY) / 0.7) * 1.38;
+      const w = Math.max(170, Math.min(1000, spanW));
+      const h = w * 0.7;
+      this._animateCameraTo({
+        x: Math.max(-180, Math.min(1000 - w + 180, cx - w * 0.5)),
+        y: Math.max(-120, Math.min(700 - h + 120, cy - h * 0.5)),
+        w,
+        h,
+      });
+    }
+
+    _renderGhostDiff(refSnap, mode = 'fade') {
+      if (!this.grpGhostDiff) return;
+      if (this.ghostTimer) {
+        clearTimeout(this.ghostTimer);
+        this.ghostTimer = null;
+      }
+      this.grpGhostDiff.innerHTML = '';
+      if (!refSnap || !Array.isArray(refSnap.polities)) return;
+      const chkPol = this._id('chk-polities');
+      if (chkPol && !chkPol.checked) return;
+
+      const curSnap = this.lastRenderedSnap;
+      const curPaths = new Set(
+        ((curSnap && curSnap.polities) || [])
+          .filter((p) => p.role !== 'neighbor')
+          .map((p) => `${p.title}:${this.projector.shapeToSvgPath(p.shape)}`)
+      );
+
+      const hasMain = refSnap.polities.some((p) => p.role === 'main');
+      const candidates = refSnap.polities.filter((p) =>
+        hasMain ? p.role === 'main' : p.role === 'rival'
+      );
+
+      let count = 0;
+      for (const pol of candidates) {
+        const dStr = this.projector.shapeToSvgPath(pol.shape);
+        if (!dStr) continue;
+        if (mode === 'fade' && curPaths.has(`${pol.title}:${dStr}`)) continue;
+        this._svgNode(
+          'path',
+          {
+            d: dStr,
+            class: `polity-ghost-path ${mode === 'preview' ? 'is-preview' : 'is-fade'}`,
+            stroke: pol.tint || '#b5452f',
+          },
+          this.grpGhostDiff
+        );
+        count++;
+      }
+      if (count > 0 && mode === 'fade') {
+        this.ghostTimer = setTimeout(() => {
+          if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+          this.ghostTimer = null;
+        }, 1650);
+      }
+    }
+
+    _previewStageGhost(snapKey) {
+      if (!snapKey || snapKey === this.activeSnapKey) return;
+      const snap = this.snapshots && this.snapshots[snapKey];
+      if (snap) {
+        this._renderGhostDiff(snap, 'preview');
+      }
+    }
+
     _renderLegendBox(snap) {
       this.mapKey.innerHTML = '';
       const curDyn = this.dynasties[this.dynastyIdx];
@@ -1021,6 +1156,9 @@
         let pIdx = phases.findIndex((ph) => this.year < ph.until);
         if (pIdx === -1) pIdx = phases.length - 1;
         const phaseStart = (idx) => (idx <= 0 ? curDyn.fromYear : phases[idx - 1].until);
+        const curSy = phaseStart(pIdx);
+        const curEy = phases[pIdx].until - 1;
+        const spanText = `${this.formatYear(curSy, true)}—${this.formatYear(curEy, true)}`;
 
         const bar = document.createElement('div');
         bar.className = 'key-phase-bar';
@@ -1029,8 +1167,8 @@
         badge.className = 'key-phase-badge';
         badge.textContent =
           this.locale === 'en'
-            ? `${this.dynastyBadge(curDyn)} · Stage ${pIdx + 1} / ${phases.length}`
-            : `${this.dynastyBadge(curDyn)} · 阶段 ${pIdx + 1} / ${phases.length}`;
+            ? `${this.dynastyBadge(curDyn)} · Stage ${pIdx + 1}/${phases.length} (${spanText})`
+            : `${this.dynastyBadge(curDyn)} · 阶段 ${pIdx + 1}/${phases.length} (${spanText})`;
         bar.appendChild(badge);
 
         const dots = document.createElement('div');
@@ -1042,6 +1180,12 @@
           const sy = phaseStart(idx);
           const ey = ph.until - 1;
           dot.title = `${this.formatYear(sy, true)} — ${this.formatYear(ey, true)}`;
+          dot.addEventListener('pointerenter', (e) => {
+            if (e.pointerType !== 'touch' && idx !== pIdx) this._previewStageGhost(ph.snap);
+          });
+          dot.addEventListener('pointerleave', (e) => {
+            if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+          });
           dot.addEventListener('click', () => {
             this.stopAutoplay();
             this.jumpToYear(sy);
@@ -1058,6 +1202,12 @@
         prevBtn.textContent = '‹';
         prevBtn.disabled = pIdx <= 0;
         prevBtn.title = this.locale === 'en' ? 'Previous Stage' : '上一版图阶段';
+        prevBtn.addEventListener('pointerenter', (e) => {
+          if (e.pointerType !== 'touch' && pIdx > 0) this._previewStageGhost(phases[pIdx - 1].snap);
+        });
+        prevBtn.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+        });
         prevBtn.addEventListener('click', () => {
           if (pIdx > 0) {
             this.stopAutoplay();
@@ -1070,6 +1220,14 @@
         nextBtn.textContent = '›';
         nextBtn.disabled = pIdx >= phases.length - 1;
         nextBtn.title = this.locale === 'en' ? 'Next Stage' : '下一版图阶段';
+        nextBtn.addEventListener('pointerenter', (e) => {
+          if (e.pointerType !== 'touch' && pIdx < phases.length - 1) {
+            this._previewStageGhost(phases[pIdx + 1].snap);
+          }
+        });
+        nextBtn.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+        });
         nextBtn.addEventListener('click', () => {
           if (pIdx < phases.length - 1) {
             this.stopAutoplay();
@@ -1095,7 +1253,11 @@
       const hasNeighbors = (snap.polities || []).some((p) => p.role === 'neighbor');
       for (const p of core) {
         const entry = document.createElement('span');
-        entry.className = 'key-entry';
+        entry.className = 'key-entry is-interactive';
+        entry.title =
+          this.locale === 'en'
+            ? 'Hover to highlight · Click to zoom'
+            : '悬停高亮疆域 · 点击聚焦版图';
         const sw = document.createElement('i');
         sw.className = 'swatch';
         sw.style.color = p.tint;
@@ -1103,11 +1265,22 @@
         if (p.role === 'protectorate') sw.style.borderStyle = 'dashed';
         entry.appendChild(sw);
         entry.appendChild(document.createTextNode(this.trTerm(p.title)));
+        entry.addEventListener('pointerenter', (e) => {
+          if (e.pointerType !== 'touch') this._setPolityFocus(p.title);
+        });
+        entry.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch') this._setPolityFocus(null);
+        });
+        entry.addEventListener('click', () => this._zoomToPolity(p.title));
         grid.appendChild(entry);
       }
       if (hasNeighbors) {
         const entry = document.createElement('span');
-        entry.className = 'key-entry';
+        entry.className = 'key-entry is-interactive';
+        entry.title =
+          this.locale === 'en'
+            ? 'Hover to highlight surrounding polities · Click to reset view'
+            : '悬停高亮周边政权 · 点击复位全图';
         const sw = document.createElement('i');
         sw.className = 'swatch';
         sw.style.color = '#6e6256';
@@ -1118,6 +1291,13 @@
         entry.appendChild(
           document.createTextNode(this.uiStr('leg_neighbor', '同期周边政权'))
         );
+        entry.addEventListener('pointerenter', (e) => {
+          if (e.pointerType !== 'touch') this._setPolityFocus('__neighbors__');
+        });
+        entry.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch') this._setPolityFocus(null);
+        });
+        entry.addEventListener('click', () => this.resetCamera());
         grid.appendChild(entry);
       }
       if (grid.firstChild) this.mapKey.appendChild(grid);
@@ -1315,7 +1495,8 @@
 
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
-        const targetYear = d === this.dynasties[this.dynastyIdx] ? this.year : d.focusYear;
+        const isCurDyn = d === this.dynasties[this.dynastyIdx];
+        const targetYear = isCurDyn ? this.year : d.focusYear;
         const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
 
@@ -1357,6 +1538,7 @@
 
         const near = nearestSettlement(d, 170);
         const li = document.createElement('li');
+        if (isCurDyn) li.classList.add('is-current');
         const mainStr = adminHits.length
           ? adminHits.join(' · ')
           : polityHit
@@ -1387,6 +1569,11 @@
       }
 
       this._id('genealogy-card').classList.remove('is-hidden');
+      const curLi = listEl.querySelector('li.is-current');
+      if (curLi && listEl.scrollHeight > listEl.clientHeight) {
+        const top = Math.max(0, curLi.offsetTop - listEl.offsetTop - listEl.clientHeight * 0.38);
+        listEl.scrollTop = top;
+      }
     }
 
     // ---------------- Scrubber / Timeline ----------------
@@ -1429,6 +1616,35 @@
         cell.style.flex = `${this.bandWeights[idx]} 1 0`;
         cell.style.background = d.tint;
         cell.dataset.dynastyIdx = idx;
+
+        const lbl = document.createElement('span');
+        lbl.className = 'band-label';
+        cell.appendChild(lbl);
+
+        const span = Math.max(1, d.toYear - d.fromYear);
+        if (Array.isArray(d.phases) && d.phases.length > 1) {
+          for (let i = 0; i < d.phases.length - 1; i++) {
+            const u = d.phases[i].until;
+            if (u > d.fromYear && u < d.toYear) {
+              const pt = document.createElement('i');
+              pt.className = 'band-phase-tick';
+              pt.style.left = `${(((u - d.fromYear) / span) * 100).toFixed(2)}%`;
+              cell.appendChild(pt);
+            }
+          }
+        }
+        const seenEvPct = new Set();
+        for (const m of d.milestones || []) {
+          const my = this._clampYearToDynasty(d, m.year);
+          const pct = Math.max(3, Math.min(97, Math.round(((my - d.fromYear) / span) * 100)));
+          if (seenEvPct.has(pct)) continue;
+          seenEvPct.add(pct);
+          const dot = document.createElement('i');
+          dot.className = 'band-ev-dot';
+          dot.style.left = `${pct}%`;
+          cell.appendChild(dot);
+        }
+
         bands.appendChild(cell);
 
         const tick = document.createElement('span');
@@ -1441,7 +1657,10 @@
       endTick.textContent = this.uiStr('tick_now', '今');
       ticks.appendChild(endTick);
       this._refreshBandLabels();
-      window.addEventListener('resize', () => this._fitBandLabels());
+      window.addEventListener('resize', () => {
+        this._fitBandLabels();
+        this._updateScaleBar();
+      });
     }
 
     _refreshBandLabels() {
@@ -1450,7 +1669,8 @@
       this.dynasties.forEach((d, idx) => {
         const cell = cells[idx];
         if (cell) {
-          cell.textContent = this.dynastyBadge(d);
+          const lbl = cell.querySelector('.band-label') || cell;
+          lbl.textContent = this.dynastyBadge(d);
           cell.title = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
         }
         const tk = tickNodes[idx];
@@ -1475,7 +1695,11 @@
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
         cell.classList.remove('is-narrow');
-        cell.classList.toggle('is-narrow', cell.scrollWidth > cell.clientWidth + 1);
+        const lbl = cell.querySelector('.band-label');
+        const narrow = lbl
+          ? lbl.scrollWidth > cell.clientWidth - 4
+          : cell.scrollWidth > cell.clientWidth + 1;
+        cell.classList.toggle('is-narrow', narrow);
         const tk = tickNodes[i];
         if (tk) {
           const rect = tk.getBoundingClientRect();
@@ -1513,6 +1737,7 @@
         this._renderChroniclePane(cur);
       } else {
         if (nextSnapKey !== this.activeSnapKey) {
+          const prevSnap = this.lastRenderedSnap;
           this.activeSnapKey = nextSnapKey;
           this._fetchSnapshot(nextSnapKey).then((snap) => {
             if (
@@ -1522,7 +1747,12 @@
               return;
             }
             this._renderPolitiesAndPrefectures(cur, snap);
+            if (!this.playing && prevSnap) {
+              this._renderGhostDiff(prevSnap, 'fade');
+            }
           });
+        } else if (this.lastRenderedSnap) {
+          this._renderLegendBox(this.lastRenderedSnap);
         }
         if (this._settlementMask(cur, y) !== this.activeSettlementMask) {
           this._renderSettlements(cur);
@@ -1535,6 +1765,9 @@
       }
       this._renderCorridors();
       this._syncScrubberUi();
+      if (this.activeTrace && !this._id('genealogy-card').classList.contains('is-hidden')) {
+        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
+      }
     }
 
     // ---------------- Autoplay ----------------
@@ -1739,7 +1972,79 @@
         `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`
       );
       this._rescaleSvgTypography();
+      this._updateScaleBar();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+    }
+
+    _formatChineseLi(li) {
+      const map = {
+        40: '四十',
+        100: '一百',
+        200: '二百',
+        400: '四百',
+        1000: '一千',
+        2000: '二千',
+        3000: '三千',
+      };
+      return map[li] || String(li);
+    }
+
+    _updateScaleBar() {
+      const lblEl = this._id('scale-label-text');
+      const barEl = this._id('scale-ruler-bar');
+      if (!lblEl || !barEl || !this.svg) return;
+      const rect = this.svg.getBoundingClientRect();
+      const rw = rect.width || 1000;
+      const rh = rect.height || 700;
+      const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
+      const [, centerLat] = this.projector.toGeo(
+        this.camera.x + this.camera.w * 0.5,
+        this.camera.y + this.camera.h * 0.5
+      );
+      const clampedLat = Math.max(-70, Math.min(70, centerLat || 34));
+      const kmPerSvgUnit =
+        (111.32 * Math.cos(clampedLat * DEG_TO_RAD)) / this.projector.scale;
+      const kmPerCssPx = kmPerSvgUnit / Math.max(0.05, screenScale);
+
+      const candidates = [20, 50, 100, 200, 500, 1000, 1500];
+      let bestKm = 500;
+      let bestDiff = Infinity;
+      for (const km of candidates) {
+        const px = km / kmPerCssPx;
+        const diff = Math.abs(px - 86);
+        if (px >= 48 && px <= 145 && diff < bestDiff) {
+          bestDiff = diff;
+          bestKm = km;
+        }
+      }
+      const barPx = Math.max(44, Math.min(150, Math.round(bestKm / kmPerCssPx)));
+      const li = bestKm * 2;
+      barEl.style.width = `${barPx}px`;
+      lblEl.textContent =
+        this.locale === 'en'
+          ? `${bestKm} km · ${li} li`
+          : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
+    }
+
+    toggleChroniclePane(force) {
+      this.paneCollapsed = force !== undefined ? force : !this.paneCollapsed;
+      const body = this._id('workspace-body');
+      if (body) body.classList.toggle('is-pane-collapsed', this.paneCollapsed);
+      const btn = this._id('act-toggle-pane');
+      if (btn) {
+        btn.textContent = this.paneCollapsed ? '‹' : '›';
+        btn.title = this.paneCollapsed
+          ? this.locale === 'en'
+            ? 'Expand chronicle pane'
+            : '展开编年侧栏'
+          : this.locale === 'en'
+            ? 'Collapse chronicle pane (Full-map view)'
+            : '收起编年侧栏（全屏看图）';
+      }
+      setTimeout(() => {
+        this._updateScaleBar();
+        if (this.activeMilestone) this._positionMilestoneBalloon();
+      }, 240);
     }
 
     _rescaleSvgTypography() {
@@ -2476,7 +2781,12 @@
       };
       bindToggle('chk-provinces', this.grpProvinces);
       bindToggle('chk-prov-names', this.grpProvNames);
-      bindToggle('chk-polities', this.grpPolities);
+      this._id('chk-polities').addEventListener('change', (e) => {
+        this.grpPolities.classList.toggle('is-hidden', !e.target.checked);
+        if (this.grpGhostDiff) {
+          this.grpGhostDiff.classList.toggle('is-hidden', !e.target.checked);
+        }
+      });
       bindToggle('chk-prefectures', this.grpPrefectures);
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
@@ -2489,6 +2799,10 @@
       });
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
+      const togglePaneBtn = this._id('act-toggle-pane');
+      if (togglePaneBtn) {
+        togglePaneBtn.addEventListener('click', () => this.toggleChroniclePane());
+      }
       this._id('act-genealogy').addEventListener('click', () => this.toggleGenealogyMode());
       this._id('act-close-genealogy').addEventListener('click', () => this.toggleGenealogyMode(false));
 

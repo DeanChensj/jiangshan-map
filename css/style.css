@@ -776,7 +776,7 @@ h2 {
   font-size: 12px;
   box-shadow: var(--card-shadow);
   backdrop-filter: blur(6px);
-  max-width: 310px;
+  max-width: 338px;
 }
 
 .key-phase-bar {
@@ -799,13 +799,14 @@ h2 {
 .key-phase-dots {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
+  gap: 3.5px;
+  flex-wrap: nowrap;
 }
 
 .phase-dot {
-  width: 6px;
-  height: 6px;
+  width: 5.5px;
+  height: 5.5px;
+  flex-shrink: 0;
   padding: 0;
   border-radius: 50%;
   border: none;
@@ -1595,6 +1596,10 @@ html[lang="en"] .genealogy-list li {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 215px;
   }
+  #workspace-body.is-pane-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 0px;
+  }
   #viewport-frame {
     border-right: none;
     border-bottom: 1px solid var(--hairline);
@@ -1622,6 +1627,20 @@ html[lang="en"] .genealogy-list li {
   }
   .key-heading {
     font-size: 11px;
+  }
+  #scale-bar-box {
+    right: 8px;
+    bottom: 8px;
+    padding: 3px 7px 5px;
+  }
+  #act-toggle-pane {
+    top: auto;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(50%) rotate(90deg);
+    transform-origin: center center;
+    width: 18px;
+    height: 36px;
   }
   #genealogy-card,
   #challenge-card {
@@ -1674,3 +1693,202 @@ html[lang="en"] .genealogy-list li {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================================
+   First-Principles UI/UX Enhancements (#1 – #6)
+   ========================================================================= */
+
+/* #1 Bidirectional Legend <-> Polity Highlight & Click-to-Focus */
+.key-entry.is-interactive {
+  cursor: pointer;
+  padding: 2px 5px;
+  margin: -2px -5px;
+  border-radius: 5px;
+  transition: background 0.14s, color 0.14s, transform 0.12s;
+}
+
+.key-entry.is-interactive:hover {
+  background: rgba(181, 69, 47, 0.12);
+  color: var(--text-main);
+}
+
+#grp-polities.has-polity-focus .polity-shape:not(.is-focused) {
+  fill-opacity: 0.08 !important;
+  stroke-opacity: 0.22 !important;
+}
+
+#grp-polities.has-polity-focus .polity-caption:not(.is-focused) {
+  fill-opacity: 0.18 !important;
+}
+
+#grp-polities.has-polity-focus .polity-shape.is-focused {
+  fill-opacity: 0.56 !important;
+  stroke-width: 2.6 !important;
+}
+
+#grp-polities.has-polity-focus .polity-caption.is-focused {
+  fill-opacity: 1 !important;
+}
+
+/* #2 Scrubber Intra-Dynasty Phase Ticks & Event Micro-Dots */
+.band-label {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.band-cell.is-narrow .band-label {
+  opacity: 0;
+}
+
+.band-phase-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 250, 240, 0.34);
+  pointer-events: none;
+}
+
+.band-ev-dot {
+  position: absolute;
+  bottom: 3px;
+  width: 3.5px;
+  height: 3.5px;
+  margin-left: -1.75px;
+  border-radius: 50%;
+  background: rgba(255, 248, 231, 0.85);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+/* #3 Stage Transition Ghost Diff Outline */
+#grp-ghost-diff {
+  pointer-events: none;
+}
+
+.polity-ghost-path {
+  fill: none;
+  stroke-width: 2.1;
+  stroke-dasharray: 6 4;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.polity-ghost-path.is-fade {
+  animation: ghostFadeOut 1.6s ease-out forwards;
+}
+
+.polity-ghost-path.is-preview {
+  stroke-opacity: 0.78;
+  fill: rgba(181, 69, 47, 0.07);
+}
+
+@keyframes ghostFadeOut {
+  0% {
+    stroke-opacity: 0.82;
+    fill: rgba(181, 69, 47, 0.1);
+  }
+  100% {
+    stroke-opacity: 0;
+    fill: rgba(181, 69, 47, 0);
+  }
+}
+
+/* #4 Genealogy Card Active Dynasty Row Sync */
+.genealogy-list li.is-current {
+  background: rgba(181, 69, 47, 0.13);
+  box-shadow: inset 3px 0 0 var(--vermilion);
+}
+
+.genealogy-list li.is-current .t-era {
+  color: var(--vermilion);
+}
+
+/* #5 Dynamic Dual-Unit Historical Scale Bar (km & Chinese Li) */
+#scale-bar-box {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 5px 9px 6px;
+  background: rgba(243, 238, 228, 0.84);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.scale-label {
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.scale-ruler {
+  width: 84px;
+  height: 5px;
+  border-bottom: 1.8px solid var(--text-secondary);
+  border-left: 1.8px solid var(--text-secondary);
+  border-right: 1.8px solid var(--text-secondary);
+  transition: width 0.12s ease-out;
+}
+
+/* #6 Collapsible Chronicle Sidebar / Full-Map Mode */
+#workspace-body {
+  transition: grid-template-columns 0.22s ease;
+}
+
+#workspace-body.is-pane-collapsed {
+  grid-template-columns: 1fr 0px;
+}
+
+#workspace-body.is-pane-collapsed #chronicle-pane {
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#workspace-body.is-pane-collapsed #viewport-frame {
+  border-right: none;
+}
+
+#act-toggle-pane {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 18px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-right: none;
+  border-radius: 7px 0 0 7px;
+  background: rgba(243, 238, 228, 0.92);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: -2px 0 8px rgba(43, 38, 34, 0.08);
+  transition: background 0.15s, color 0.15s, width 0.15s;
+}
+
+#act-toggle-pane:hover {
+  width: 22px;
+  background: #fff;
+  color: var(--vermilion);
+}
+

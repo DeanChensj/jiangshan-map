@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261009i" />
+  <link rel="stylesheet" href="css/style.css?v=20261009j" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -85,6 +85,7 @@
             <g id="grp-provinces"></g>
             <g id="grp-polities"></g>
             <g id="grp-prefectures"></g>
+            <g id="grp-ghost-diff"></g>
             <g id="grp-corridors"></g>
             <g id="grp-prov-names" class="is-hidden"></g>
             <g id="grp-settlements"></g>
@@ -106,6 +107,13 @@
         </div>
 
         <div id="map-key" aria-live="polite"></div>
+
+        <div id="scale-bar-box" aria-hidden="true">
+          <div class="scale-label" id="scale-label-text">500 km · 约一千里</div>
+          <div class="scale-ruler" id="scale-ruler-bar"></div>
+        </div>
+
+        <button id="act-toggle-pane" type="button" title="收起编年侧栏（全屏看图）" aria-label="收起或展开编年侧栏">›</button>
 
         <div id="challenge-card" class="is-hidden" role="region" aria-label="古地名挑战">
           <div class="challenge-top">
@@ -196,10 +204,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261009i"></script>
-  <script src="js/atlas_snapshots.js?v=20261009i"></script>
-  <script src="js/map_data.js?v=20261009i"></script>
-  <script src="js/i18n_dict.js?v=20261009i"></script>
-  <script src="js/app.js?v=20261009i"></script>
+  <script src="js/china_geo_data.js?v=20261009j"></script>
+  <script src="js/atlas_snapshots.js?v=20261009j"></script>
+  <script src="js/map_data.js?v=20261009j"></script>
+  <script src="js/i18n_dict.js?v=20261009j"></script>
+  <script src="js/app.js?v=20261009j"></script>
 </body>
 </html>
