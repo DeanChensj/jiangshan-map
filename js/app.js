@@ -64,15 +64,22 @@
 
     shapeToSvgPath(shapeObj) {
       if (!shapeObj) return '';
+      if (shapeObj._svgPath !== undefined) return shapeObj._svgPath;
+      let d = '';
       if (shapeObj.type === 'Polygon') {
-        return shapeObj.coordinates.map((r) => this.ringToSvgPath(r)).join('');
-      }
-      if (shapeObj.type === 'MultiPolygon') {
-        return shapeObj.coordinates
+        d = shapeObj.coordinates.map((r) => this.ringToSvgPath(r)).join('');
+      } else if (shapeObj.type === 'MultiPolygon') {
+        d = shapeObj.coordinates
           .map((poly) => poly.map((r) => this.ringToSvgPath(r)).join(''))
           .join('');
       }
-      return '';
+      Object.defineProperty(shapeObj, '_svgPath', {
+        value: d,
+        writable: true,
+        enumerable: false,
+        configurable: true,
+      });
+      return d;
     }
 
     static pointInRing(lng, lat, ring) {
