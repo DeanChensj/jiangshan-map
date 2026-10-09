@@ -1250,13 +1250,13 @@
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       this.playInterval = setInterval(() => {
         const cur = this.dynasties[this.dynastyIdx];
-        const delta = Math.max(1, (cur.toYear - cur.fromYear) / 90);
+        const delta = Math.max(1, Math.round((cur.toYear - cur.fromYear) / 140));
         if (this.year >= this.maxYear) {
           this.stopAutoplay();
           return;
         }
         this.jumpToYear(this.year + delta);
-      }, 50);
+      }, 180);
     }
 
     stopAutoplay() {
