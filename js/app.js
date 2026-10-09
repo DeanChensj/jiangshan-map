@@ -250,6 +250,29 @@
       return (this.enLocale.dict && this.enLocale.dict[text]) || text;
     }
 
+    _enDict(text) {
+      if (!text) return '';
+      return (this.enLocale.dict && this.enLocale.dict[text]) || text;
+    }
+
+    _enMilestoneHeadline(d, m) {
+      const key = `${d.key}:${m.year}`;
+      const hit = this.enLocale.milestones && this.enLocale.milestones[key];
+      if (hit) return Array.isArray(hit) ? hit[0] : hit;
+      return m.headline;
+    }
+
+    _clampYearToDynasty(dynasty, y) {
+      if (!dynasty) return y;
+      const idx = this.dynasties.indexOf(dynasty);
+      const nextFrom =
+        idx >= 0 && idx + 1 < this.dynasties.length
+          ? this.dynasties[idx + 1].fromYear
+          : dynasty.toYear + 1;
+      const maxY = Math.min(dynasty.toYear, nextFrom - 1);
+      return Math.max(dynasty.fromYear, Math.min(maxY, y));
+    }
+
     dynastyName(d) {
       return this.locale === 'en' && this.enLocale.dynasties[d.key]
         ? this.enLocale.dynasties[d.key].name
@@ -276,9 +299,7 @@
 
     milestoneHeadline(d, m) {
       if (this.locale === 'en') {
-        const key = `${d.key}:${m.year}`;
-        const hit = this.enLocale.milestones && this.enLocale.milestones[key];
-        if (hit) return Array.isArray(hit) ? hit[0] : hit;
+        return this._enMilestoneHeadline(d, m);
       }
       return m.headline;
     }
@@ -405,13 +426,30 @@
       }
       const yr = Math.round(y);
       if (yr >= 1949) {
+        if (dynasty && dynasty.key === 'roc' && yr === 1949) {
+          return '民国三十八年';
+        }
         return dynasty ? this.dynastyName(dynasty) : '现代';
+      }
+      if (dynasty && dynasty.key === 'yuan' && yr >= 1264 && yr < 1279) {
+        return `元至元${this._toChineseEraNum(yr - 1264 + 1)}年`;
       }
       const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
       let match = spans[0];
       for (let i = spans.length - 1; i >= 0; i--) {
         if (yr >= spans[i][0]) {
-          match = spans[i];
+          if (
+            dynasty &&
+            yr === dynasty.toYear &&
+            spans[i][0] === yr &&
+            i > 0 &&
+            dynasty.key !== 'sanguo' &&
+            dynasty.key !== 'wudai'
+          ) {
+            match = spans[i - 1];
+          } else {
+            match = spans[i];
+          }
           break;
         }
       }
@@ -878,7 +916,7 @@
         pin.addEventListener('click', (e) => {
           e.stopPropagation();
           this.stopAutoplay();
-          this.jumpToYear(Math.max(dynasty.fromYear, Math.min(dynasty.toYear - 1, m.year)));
+          this.jumpToYear(this._clampYearToDynasty(dynasty, m.year));
           this.openMilestoneBalloon(dynasty, m);
           if (m.coord) this._panToward(m.coord[0], m.coord[1]);
         });
@@ -893,9 +931,17 @@
     }
 
     _activeMilestoneIndex(dynasty) {
+      if (
+        this.activeMilestone &&
+        this.activeMilestone.dynastyKey === dynasty.key &&
+        this.activeMilestone.year === this.year &&
+        this.activeMilestone.idx >= 0
+      ) {
+        return this.activeMilestone.idx;
+      }
       let activeIdx = -1;
       (dynasty.milestones || []).forEach((m, idx) => {
-        if (m.year <= this.year) activeIdx = idx;
+        if (this._clampYearToDynasty(dynasty, m.year) <= this.year) activeIdx = idx;
       });
       return activeIdx;
     }
@@ -905,9 +951,10 @@
       let currentPin = null;
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
         const idx = Number(pin.dataset.idx);
-        const yr = Number(pin.dataset.year);
-        pin.classList.toggle('is-future', yr > this.year);
-        pin.classList.toggle('is-past', yr <= this.year && idx !== activeIdx);
+        const m = (dynasty.milestones || [])[idx];
+        const effY = m ? this._clampYearToDynasty(dynasty, m.year) : Number(pin.dataset.year);
+        pin.classList.toggle('is-future', effY > this.year && idx !== activeIdx);
+        pin.classList.toggle('is-past', effY <= this.year && idx !== activeIdx);
         pin.classList.toggle('is-current', idx === activeIdx);
         if (idx === activeIdx) currentPin = pin;
       });
@@ -917,12 +964,20 @@
     }
 
     openMilestoneBalloon(dynasty, m) {
-      this.activeMilestone = { dynastyKey: dynasty.key, milestone: m, year: this.year };
+      const mIdx = (dynasty.milestones || []).indexOf(m);
+      this.activeMilestone = {
+        dynastyKey: dynasty.key,
+        milestone: m,
+        idx: mIdx,
+        year: this.year,
+      };
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
-        n.classList.toggle('is-active', Number(n.dataset.year) === m.year);
+        n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
       });
+      this._highlightCurrentMilestone(dynasty);
+      this._updateMilestoneStates(dynasty);
       if (!m.coord) {
-        this.closeMilestoneBalloon();
+        this.milestoneBalloon.classList.add('is-hidden');
         return;
       }
       const yrText = this.formatYear(m.year);
@@ -1120,7 +1175,7 @@
       ul.innerHTML = '';
       for (const m of dynasty.milestones || []) {
         const li = document.createElement('li');
-        const targetY = Math.max(dynasty.fromYear, Math.min(dynasty.toYear - 1, m.year));
+        const targetY = this._clampYearToDynasty(dynasty, m.year);
         const prevY = Math.max(dynasty.fromYear, targetY - 1);
         const snapShift =
           m.year === dynasty.fromYear ||
@@ -1802,6 +1857,7 @@
     startChallenge(variant) {
       this.stopAutoplay();
       this.closeMilestoneBalloon();
+      this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
@@ -2068,11 +2124,33 @@
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
 
+      // 0. Dynasties / Historical Periods
+      for (const d of this.dynasties) {
+        const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
+        const nameEn = enDyn.name || d.title;
+        const shortEn = enDyn.short || d.badge || d.title;
+        const spanZh = `${d.fromYear <= 0 ? '前' + -d.fromYear : d.fromYear}—${d.toYear <= 0 ? '前' + -d.toYear : d.toYear}`;
+        const spanEn = `${d.fromYear <= 0 ? -d.fromYear + ' BCE' : d.fromYear + ' CE'} – ${d.toYear <= 0 ? -d.toYear + ' BCE' : d.toYear + ' CE'}`;
+        entries.push({
+          kind: 'dynasty',
+          dynasty: d,
+          year: d.focusYear,
+          titleZh: d.title,
+          subZh: `${spanZh} · 都城：${d.seat}`,
+          titleEn: nameEn,
+          subEn: `${spanEn} · ${enDyn.capital || d.seat}`,
+          keywords: `${d.title} ${d.badge || ''} ${d.seat || ''} ${nameEn} ${shortEn}`.toLowerCase(),
+        });
+      }
+
       // 1. Historical Settlements (Ancient & Modern Cities)
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
         for (const s of d.settlements || []) {
           const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
+          const ancEn = this._enDict(s.ancient);
+          const modEn = this._enDict(s.modern || '');
+          const remEn = this._enDict(s.remark || '');
           entries.push({
             kind: 'city',
             dynasty: d,
@@ -2081,9 +2159,9 @@
             tier: s.tier || 1,
             titleZh: s.ancient,
             subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
-            titleEn: this.trTerm(s.ancient),
-            subEn: s.modern && s.modern !== s.ancient ? `Now ${this.trTerm(s.modern)}` : '',
-            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${this.trTerm(s.ancient)} ${this.trTerm(s.modern || '')}`.toLowerCase(),
+            titleEn: ancEn,
+            subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
+            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
           });
         }
       }
@@ -2104,6 +2182,7 @@
             if (seenAdmin.has(uid)) continue;
             seenAdmin.add(uid);
             const isPref = (snap.prefectures || []).includes(item);
+            const itemEn = this._enDict(item.title);
             entries.push({
               kind: isPref ? 'prefecture' : 'region',
               dynasty: d,
@@ -2112,9 +2191,9 @@
               prefTitle: isPref ? item.title : null,
               titleZh: item.title,
               subZh: item.category && !item.title.endsWith(item.category) ? item.category : '',
-              titleEn: this.trTerm(item.title),
+              titleEn: itemEn,
               subEn: '',
-              keywords: `${item.title} ${this.trTerm(item.title)} ${d.title}`.toLowerCase(),
+              keywords: `${item.title} ${itemEn} ${d.title}`.toLowerCase(),
             });
           }
         });
@@ -2123,18 +2202,20 @@
       // 3. Historical Milestones / Events
       for (const d of this.dynasties) {
         for (const m of d.milestones || []) {
-          const enHead = this.milestoneHeadline(d, m);
+          const enHead = this._enMilestoneHeadline(d, m);
+          const siteEn = m.site ? this._enDict(m.site) : '';
+          const yrEn = m.year <= 0 ? `${-m.year || 1} BCE` : `${m.year} CE`;
           entries.push({
             kind: 'event',
             dynasty: d,
-            year: Math.max(d.fromYear, Math.min(d.toYear - 1, m.year)),
+            year: this._clampYearToDynasty(d, m.year),
             milestone: m,
             coord: m.coord,
             titleZh: m.headline,
             subZh: `${m.year <= 0 ? '前' + -m.year : m.year}年${m.site ? ' · ' + m.site : ''}`,
             titleEn: enHead,
-            subEn: `${this.formatYear(m.year)}${m.site ? ' · ' + this.trTerm(m.site) : ''}`,
-            keywords: `${m.headline} ${m.site || ''} ${enHead} ${m.year}`.toLowerCase(),
+            subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
+            keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           });
         }
       }
@@ -2159,11 +2240,46 @@
     }
 
     _matchEraResults(rawQuery) {
-      const q = rawQuery.trim().replace(/[年载]$/, '');
-      if (!q) return [];
-      const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
+      const trimmed = rawQuery.trim();
+      if (!trimmed) return [];
       const hits = [];
-      const numMatch = q.match(/^(.*?)([元一二三四五六七八九十]+|\d+)$/);
+
+      // Direct Gregorian year match (e.g. "1083", "公元1083年", "前214年", "-214", "221 BCE", "741 CE")
+      const directYrMatch = trimmed.match(/^(?:公元)?(前|-)?\s*(\d{1,4})\s*(?:年|bce|bc|ce|ad)?$/i);
+      if (directYrMatch) {
+        const isBce = Boolean(directYrMatch[1]) || /bce|bc/i.test(trimmed);
+        let yr = Number(directYrMatch[2]) * (isBce ? -1 : 1);
+        if (yr === 0) yr = 1;
+        if (yr >= this.minYear && yr <= this.maxYear) {
+          const dIdx = this._findDynastyIndex(yr);
+          const d = this.dynasties[dIdx];
+          const prevLoc = this.locale;
+          this.locale = 'zh';
+          const eraZh = this.formatEraLabel(yr, d);
+          const yrZh = this.formatYear(yr);
+          this.locale = 'en';
+          const yrEn = this.formatYear(yr);
+          this.locale = prevLoc;
+          hits.push({
+            kind: 'era',
+            dynasty: d,
+            year: yr,
+            titleZh: `${yrZh} · ${eraZh}`,
+            subZh: d.title,
+            titleEn: `${yrEn} (${eraZh})`,
+            subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
+            score: 135,
+          });
+        }
+      }
+
+      const isYuanNian = /[元][年载]$/.test(trimmed);
+      const q = trimmed.replace(/[年载]$/, '');
+      if (!q) return hits;
+      const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
+      const numMatch = isYuanNian
+        ? [q, q.slice(0, -1), '元']
+        : q.match(/^(.*?)([一二三四五六七八九十]+|\d+)$/);
       const prefixQ = numMatch ? numMatch[1] : q;
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
 
@@ -2177,14 +2293,16 @@
             const dIdx = this._findDynastyIndex(targetY);
             const d = this.dynasties[dIdx];
             const label = `${prefix}${this._toChineseEraNum(targetNum)}年`;
+            const yrZh = targetY <= 0 ? `公元前${-targetY}年` : `公元 ${targetY} 年`;
+            const yrEn = targetY <= 0 ? `${-targetY} BCE` : `${targetY} CE`;
             hits.push({
               kind: 'era',
               dynasty: d,
               year: targetY,
               titleZh: label,
-              subZh: this.formatYear(targetY),
-              titleEn: `${label} (${this.formatYear(targetY)})`,
-              subEn: this.dynastyName(d),
+              subZh: yrZh,
+              titleEn: `${label} (${yrEn})`,
+              subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
               score: prefix.endsWith(prefixQ) ? 120 : 95,
             });
           }
@@ -2288,6 +2406,7 @@
           return;
         }
         const kindLabel = {
+          dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
           era: this.locale === 'en' ? 'Era' : '纪年',
           city: this.locale === 'en' ? 'City' : '古城',
           prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
@@ -2599,9 +2718,10 @@
           );
         } else if (milestoneEl) {
           const cur = this.dynasties[this.dynastyIdx];
-          const m = (cur.milestones || []).find(
-            (item) => item.year === Number(milestoneEl.dataset.year)
-          );
+          const m =
+            (milestoneEl.dataset.idx !== undefined &&
+              (cur.milestones || [])[Number(milestoneEl.dataset.idx)]) ||
+            (cur.milestones || []).find((item) => item.year === Number(milestoneEl.dataset.year));
           if (m) {
             const eraPart = this.locale === 'en' ? '' : ` · ${this.formatEraLabel(m.year, cur)}`;
             this._showHoverTip(
@@ -2690,12 +2810,26 @@
         if (!wasPan && this.challenge && !this.challenge.answered && this.challenge.variant === 'locate') {
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
           this._evaluateLocateClick(sx, sy);
-        } else if (!wasPan && this.genealogyMode) {
-          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-          const [lng, lat] = this.projector.toGeo(sx, sy);
-          this.openGenealogyAt(lng, lat);
         } else if (!wasPan && !this.challenge) {
           const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+          const milestoneEl = hitTarget && hitTarget.closest && hitTarget.closest('.milestone-pin');
+          if (milestoneEl && milestoneEl.dataset.idx !== undefined) {
+            const cur = this.dynasties[this.dynastyIdx];
+            const m = (cur.milestones || [])[Number(milestoneEl.dataset.idx)];
+            if (m) {
+              this.stopAutoplay();
+              this.jumpToYear(this._clampYearToDynasty(cur, m.year));
+              this.openMilestoneBalloon(cur, m);
+              if (m.coord) this._panToward(m.coord[0], m.coord[1]);
+              return;
+            }
+          }
+          if (this.genealogyMode) {
+            const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+            const [lng, lat] = this.projector.toGeo(sx, sy);
+            this.openGenealogyAt(lng, lat);
+            return;
+          }
           const settlementEl = hitTarget && hitTarget.closest && hitTarget.closest('.settlement-node');
           if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
             this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));

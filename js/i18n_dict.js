@@ -3280,6 +3280,7 @@ window.EN_LOCALE = {
     "孙权（江东）": "Sun Quan (Jiangdong)",
     "汉赵": "Han-Zhao",
     "西秦": "Western Qin",
+    "北燕": "Northern Yan",
     "西海·鄯善等四郡": "Xihai & Shanshan Commanderies",
     "东突厥": "Eastern Tujue",
     "高昌 · 西域诸国": "Gaochang & Western Regions",
