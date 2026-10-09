@@ -389,6 +389,12 @@
       if (this.activeTrace) {
         this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
       }
+      if (this.challenge) {
+        this.grpSettlements.classList.add('is-hidden');
+        if (!this.challenge.answered && this.challenge.index < this.challenge.deck.length) {
+          this.presentChallengeRound();
+        }
+      }
     }
 
     // ---------------- Base Layers ----------------
@@ -974,6 +980,9 @@
     // ---------------- Place Genealogy (Trace Place) ----------------
     toggleGenealogyMode(force) {
       this.genealogyMode = force !== undefined ? force : !this.genealogyMode;
+      if (this.genealogyMode && this.challenge) {
+        this.stopChallenge();
+      }
       this._id('act-genealogy').classList.toggle('is-active', this.genealogyMode);
       const lblEl = this._id('lbl-genealogy') || this._id('act-genealogy');
       lblEl.textContent = this.genealogyMode
@@ -1058,7 +1067,8 @@
 
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
-        const snapKey = this._resolveSnapKey(d, d.focusYear);
+        const targetYear = d === this.dynasties[this.dynastyIdx] ? this.year : d.focusYear;
+        const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
 
         let polityHit = null;
@@ -1599,6 +1609,7 @@
     startChallenge(variant) {
       this.stopAutoplay();
       this.closeMilestoneBalloon();
+      if (this.genealogyMode) this.toggleGenealogyMode(false);
       if (variant) this.challengeVariant = variant;
       this.challenge = {
         variant: this.challengeVariant,
@@ -1613,7 +1624,7 @@
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
       this.svg.classList.toggle('is-crosshair', this.challengeVariant === 'locate');
-      this.grpSettlements.classList.toggle('is-hidden', this.challengeVariant === 'locate');
+      this.grpSettlements.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
       this.presentChallengeRound();
     }
@@ -1867,7 +1878,10 @@
       bindToggle('chk-prov-names', this.grpProvNames);
       bindToggle('chk-polities', this.grpPolities);
       bindToggle('chk-prefectures', this.grpPrefectures);
-      bindToggle('chk-settlements', this.grpSettlements);
+      this._id('chk-settlements').addEventListener('change', (e) => {
+        if (this.challenge) return;
+        this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
+      });
       bindToggle('chk-corridors', this.grpCorridors);
       this._id('chk-milestones').addEventListener('change', (e) => {
         this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
