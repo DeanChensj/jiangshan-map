@@ -1,1243 +1,1975 @@
 /**
- * Master Controller for 《指点江山：中国历史地理挑战赛》
- * Fixed High-Contrast D3 GIS Map & Guaranteed Clickable Strategy Theater
+ * Historical Atlas Controller (ES6 Class Architecture)
  */
+(function () {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const state = {
-    currentView: 'viewLobby',
-    dynasties: [],
-    heroes: [],
-    conquestScenarios: [],
-    conquestRegions: {},
-    gisLoaded: false,
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const RAD_TO_DEG = 180 / Math.PI;
+  const DEG_TO_RAD = Math.PI / 180;
 
-    layers: {
-      provinces: true,
-      rivers: true
-    },
-
-    quiz: {
-      difficulty: 'standard', // standard | hell
-      rounds: [],
-      currentIndex: 0,
-      score: 0,
-      combo: 0,
-      timer: null,
-      timeLeft: 15,
-      answered: false
-    },
-
-    conquest: {
-      activeScenario: null,
-      playerFaction: null,
-      ownership: {}, // regionId -> factionId
-      selectedRegionId: null,
-      gold: 500,
-      troops: 30, // 万
-      morale: 90,
-      turnYear: 1,
-      unlockedRegionsCount: 0
+  class MercatorProjector {
+    constructor(width, height, bounds) {
+      this.width = width;
+      this.height = height;
+      this.bounds = bounds;
+      const spanLng = bounds.east - bounds.west;
+      const spanLat = (this._latToMerc(bounds.north) - this._latToMerc(bounds.south)) * RAD_TO_DEG;
+      this.scale = Math.min(width / spanLng, height / spanLat);
+      this.padX = (width - spanLng * this.scale) * 0.5;
+      this.padY = (height - spanLat * this.scale) * 0.5;
+      this.northMerc = this._latToMerc(bounds.north);
     }
+
+    _latToMerc(lat) {
+      return Math.log(Math.tan(Math.PI * 0.25 + (lat * DEG_TO_RAD) * 0.5));
+    }
+
+    toScreen(lng, lat) {
+      const x = (lng - this.bounds.west) * this.scale + this.padX;
+      const y = (this.northMerc - this._latToMerc(lat)) * RAD_TO_DEG * this.scale + this.padY;
+      return [x, y];
+    }
+
+    toGeo(x, y) {
+      const lng = (x - this.padX) / this.scale + this.bounds.west;
+      const merc = this.northMerc - (y - this.padY) / (this.scale * RAD_TO_DEG);
+      const lat = (2 * Math.atan(Math.exp(merc)) - Math.PI * 0.5) * RAD_TO_DEG;
+      return [lng, lat];
+    }
+
+    greatCircleKm(coordA, coordB) {
+      const dLat = (coordB[1] - coordA[1]) * DEG_TO_RAD;
+      const dLng = (coordB[0] - coordA[0]) * DEG_TO_RAD;
+      const a =
+        Math.sin(dLat * 0.5) ** 2 +
+        Math.cos(coordA[1] * DEG_TO_RAD) *
+          Math.cos(coordB[1] * DEG_TO_RAD) *
+          Math.sin(dLng * 0.5) ** 2;
+      return 12742 * Math.asin(Math.sqrt(a));
+    }
+
+    ringToSvgPath(ring) {
+      let out = '';
+      for (let i = 0; i < ring.length; i++) {
+        const [px, py] = this.toScreen(ring[i][0], ring[i][1]);
+        out += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1);
+      }
+      return out ? out + 'Z' : '';
+    }
+
+    multiRingsToSvgPath(polygons) {
+      return polygons.map((poly) => poly.map((r) => this.ringToSvgPath(r)).join('')).join('');
+    }
+
+    shapeToSvgPath(shapeObj) {
+      if (!shapeObj) return '';
+      if (shapeObj.type === 'Polygon') {
+        return shapeObj.coordinates.map((r) => this.ringToSvgPath(r)).join('');
+      }
+      if (shapeObj.type === 'MultiPolygon') {
+        return shapeObj.coordinates
+          .map((poly) => poly.map((r) => this.ringToSvgPath(r)).join(''))
+          .join('');
+      }
+      return '';
+    }
+
+    static pointInRing(lng, lat, ring) {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i];
+        const [xj, yj] = ring[j];
+        if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi + 1e-12) + xi) {
+          inside = !inside;
+        }
+      }
+      return inside;
+    }
+
+    static pointInPolygonRings(lng, lat, rings) {
+      if (!rings || !rings.length || !MercatorProjector.pointInRing(lng, lat, rings[0])) {
+        return false;
+      }
+      for (let k = 1; k < rings.length; k++) {
+        if (MercatorProjector.pointInRing(lng, lat, rings[k])) return false;
+      }
+      return true;
+    }
+
+    static pointInShape(lng, lat, shapeObj) {
+      if (!shapeObj) return false;
+      if (shapeObj.type === 'Polygon') {
+        return MercatorProjector.pointInPolygonRings(lng, lat, shapeObj.coordinates);
+      }
+      if (shapeObj.type === 'MultiPolygon') {
+        return shapeObj.coordinates.some((p) =>
+          MercatorProjector.pointInPolygonRings(lng, lat, p)
+        );
+      }
+      return false;
+    }
+  }
+
+  const SVG_ICONS = {
+    pin: '<svg class="ico-svg" viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M8 1.5a4.4 4.4 0 0 0-4.4 4.4c0 3.2 4.4 8.6 4.4 8.6s4.4-5.4 4.4-8.6A4.4 4.4 0 0 0 8 1.5zm0 6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z" fill="currentColor"/></svg>',
+    mapChange:
+      '<svg class="ico-svg ev-map-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M1.8 3.6L5.8 2l4.4 1.8L14.2 2v10.4l-4 1.6-4.4-1.8-4 1.6V3.6zm4 .2v8.6m4.4-6.8v8.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+    dashedBox:
+      '<svg class="ico-svg" viewBox="0 0 14 14" width="11" height="11" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2.5 1.5"/></svg>',
+    play: '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>',
+    pause:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.8" y="3" width="3" height="10" rx="0.8" fill="currentColor"/><rect x="9.2" y="3" width="3" height="10" rx="0.8" fill="currentColor"/></svg>',
+    arrowRight:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
-  async function loadGameData() {
-    try {
-      const [dynRes, heroRes, regionRes] = await Promise.all([
-        fetch('data/dynasties.json'),
-        fetch('data/heroes.json'),
-        fetch('data/regions_graph.json')
-      ]);
-      state.dynasties = await dynRes.json();
-      state.heroes = await heroRes.json();
-      const regData = await regionRes.json();
-      state.conquestScenarios = regData.scenarios;
-      state.conquestRegions = regData.regions;
-    } catch (e) {
-      console.warn('Fallback internal game data:', e);
-      state.dynasties = window.FALLBACK_DYNASTIES || [];
-      state.heroes = window.FALLBACK_HEROES || [];
+  class HistoricalAtlasController {
+    constructor() {
+      this.dynasties = window.DYNASTY_DATA || [];
+      this.provinces = window.PROVINCE_OUTLINES || [];
+      this.corridors = window.CORRIDOR_DATA || [];
+      this.snapshots = window.ATLAS_SNAPSHOTS || {};
+      for (const k of Object.keys(this.snapshots)) {
+        const s = this.snapshots[k];
+        if (s && s.prefRef && !s.prefectures && this.snapshots[s.prefRef]) {
+          s.prefectures = this.snapshots[s.prefRef].prefectures || [];
+        }
+        if (s && s.regionRef && !s.regions && this.snapshots[s.regionRef]) {
+          s.regions = this.snapshots[s.regionRef].regions || [];
+        }
+      }
+      this.enLocale = window.EN_LOCALE || {
+        strings: {},
+        dynasties: {},
+        milestones: {},
+        corridors: {},
+        dict: {},
+      };
+
+      this.projector = new MercatorProjector(1000, 700, {
+        west: 66,
+        east: 142,
+        south: 14,
+        north: 55,
+      });
+
+      this.minYear = this.dynasties[0].fromYear;
+      this.maxYear = this.dynasties[this.dynasties.length - 1].toYear;
+
+      const minSpan = 60;
+      this.bandWeights = this.dynasties.map((d) =>
+        Math.max(d.toYear - d.fromYear, minSpan)
+      );
+      this.totalBandWeight = this.bandWeights.reduce((acc, w) => acc + w, 0);
+      this.bandOffsets = [];
+      this.bandWeights.reduce((acc, w, i) => {
+        this.bandOffsets[i] = acc / this.totalBandWeight;
+        return acc + w;
+      }, 0);
+
+      this.locale =
+        new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh';
+      this.year = this.dynasties[0].focusYear;
+      this.dynastyIdx = 0;
+      this.activeSnapKey = null;
+      this.activeSettlementMask = null;
+      this.activeCorridorMask = null;
+      this.lastRenderedSnap = null;
+      this.playing = false;
+      this.playInterval = null;
+      this.genealogyMode = false;
+      this.activeTrace = null;
+      this.activeMilestone = null;
+      this.challenge = null;
+      this.challengeVariant = 'locate';
+
+      this.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
+      this.flyRaf = null;
+      this.dragState = null;
+      this.didPan = false;
+      this.snapshotCache = {};
+
+      this._bindDom();
+      this._applyCamera();
+      this._buildModernProvinces();
+      this._buildNeighborCountries();
+      this._buildScrubberBands();
+      this._attachListeners();
+      this.applyLocale();
+
+      this.jumpToYear(this.dynasties[0].focusYear);
+      this._restoreFromQuery();
     }
 
-    try {
-      await window.MAP_HELPER.loadGISData();
-      state.gisLoaded = true;
-    } catch (e) {
-      console.warn('GIS GeoJSON fallback error:', e);
+    _id(id) {
+      return document.getElementById(id);
     }
-  }
 
-  await loadGameData();
-
-  // -------------------------------------------------------------
-  // AUDIO TOGGLE & VIEW NAVIGATION
-  // -------------------------------------------------------------
-  const btnToggleSound = document.getElementById('btnToggleSound');
-  const soundLabel = document.getElementById('soundLabel');
-  btnToggleSound?.addEventListener('click', () => {
-    const isMuted = window.soundEngine.toggleMuted();
-    soundLabel.textContent = isMuted ? '乐效: 关' : '乐效: 开';
-    document.getElementById('audioWaveVisualizer').style.opacity = isMuted ? '0.3' : '1';
-  });
-
-  function switchView(targetViewId) {
-    window.soundEngine.playStoneClick();
-    document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
-    const targetEl = document.getElementById(targetViewId);
-    if (targetEl) targetEl.classList.add('active');
-    state.currentView = targetViewId;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  document.getElementById('brandLobbyBtn')?.addEventListener('click', () => switchView('viewLobby'));
-  document.getElementById('quizBackBtn')?.addEventListener('click', () => {
-    clearInterval(state.quiz.timer);
-    switchView('viewLobby');
-  });
-  document.getElementById('conquestBackBtn')?.addEventListener('click', () => switchView('viewLobby'));
-
-  // Achievements Modal
-  const ACHIEVEMENTS_DATA = [
-    { title: '秦皇一统', desc: '辨识大秦三十六郡版图，万里长城始筑', icon: '👑', unlocked: true },
-    { title: '汉武都护', desc: '考据西域都护府与河西四郡商路要隘', icon: '📜', unlocked: true },
-    { title: '大唐万国', desc: '掌控安西都护府大一统海纳百川版图', icon: '⛩️', unlocked: true },
-    { title: '割据辨误', desc: '区分幽云十六州与北方后周割据红线', icon: '⚔️', unlocked: false },
-    { title: '三国鼎立', desc: '魏蜀吴三分天下关隘防线洞若观火', icon: '🛡️', unlocked: false },
-    { title: '潼关要隘', desc: '准确锁死中原与关中交界雄关咽喉', icon: '🏔️', unlocked: false },
-    { title: '混一宇内', desc: '天下大势完成 24 大战略要区全部吞并', icon: '🏆', unlocked: false },
-    { title: '舆图大宗师', desc: '看图猜朝代单局总分突破 520 分', icon: '🦅', unlocked: false },
-    { title: '指点江山', desc: '通晓二十四史中原及四夷地理关隘', icon: '🗺️', unlocked: false }
-  ];
-
-  document.getElementById('btnAchievements')?.addEventListener('click', () => {
-    window.soundEngine.playStoneClick();
-    const modal = document.getElementById('achievementsModal');
-    const grid = document.getElementById('achievementsGrid');
-    if (!grid || !modal) return;
-    grid.innerHTML = '';
-    ACHIEVEMENTS_DATA.forEach(a => {
-      const card = document.createElement('div');
-      card.style.cssText = `
-        background: ${a.unlocked ? 'rgba(241,196,15,0.12)' : 'rgba(255,255,255,0.03)'};
-        border: 1px solid ${a.unlocked ? 'var(--gold-emperor)' : 'rgba(255,255,255,0.08)'};
-        border-radius: 12px;
-        padding: 12px;
-        opacity: ${a.unlocked ? '1' : '0.45'};
-      `;
-      card.innerHTML = `
-        <div style="font-size:24px; margin-bottom:6px">${a.icon}</div>
-        <strong style="color:${a.unlocked ? '#ffd700' : '#8b949e'}; font-size:14px">${a.title}</strong>
-        <span style="font-size:10px; float:right; color:${a.unlocked ? '#2ecc71' : '#8b949e'}">${a.unlocked ? '✓ 已获得' : '🔒 未解锁'}</span>
-        <p style="font-size:11px; color:var(--text-secondary); margin-top:6px">${a.desc}</p>
-      `;
-      grid.appendChild(card);
-    });
-    modal.classList.add('open');
-  });
-
-  document.getElementById('btnCloseAchievements')?.addEventListener('click', () => {
-    document.getElementById('achievementsModal')?.classList.remove('open');
-  });
-
-  // Top Bar Modern Overlay Sync
-  const chkModernOverlay = document.getElementById('chkModernOverlay');
-  chkModernOverlay?.addEventListener('change', (e) => {
-    state.layers.provinces = e.target.checked;
-    const mapBtn = document.getElementById('btnToggleProvinces');
-    if (mapBtn) mapBtn.classList.toggle('active', state.layers.provinces);
-    if (state.currentView === 'viewQuiz') renderQuizRound();
-  });
-
-  // -------------------------------------------------------------
-  // HIGH-CONTRAST D3.JS GIS MAP ENGINE
-  // -------------------------------------------------------------
-  function drawD3GISBaseMap(svgEl, options = {}) {
-    const {
-      yellowRiver = true,
-      yangtze = true,
-      greatWall = true,
-      silkRoad = false,
-      grandCanal = false,
-      modernProvinces = true,
-      customProvincesFill = null,
-      onProvinceHover = null,
-      onProvinceClick = null
-    } = options;
-
-    const { getGISStore, getD3PathGenerator, HISTORICAL_GEOMETRIES, lonLatToSvg } = window.MAP_HELPER;
-    const gisStore = getGISStore();
-    const pathGen = getD3PathGenerator();
-
-    svgEl.innerHTML = '';
-    const width = 900;
-    const height = 580;
-
-    const rootG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    rootG.setAttribute('class', 'gis-map-root');
-    svgEl.appendChild(rootG);
-
-    // Dark high-contrast deep space ocean canvas
-    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    bgRect.setAttribute('width', width);
-    bgRect.setAttribute('height', height);
-    bgRect.setAttribute('fill', '#070a10');
-    rootG.appendChild(bgRect);
-
-    // Subtle Meridian & Parallel Grid Lines
-    const gridG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    gridG.setAttribute('class', 'map-canvas-grid');
-    for (let lon = 75; lon <= 135; lon += 10) {
-      const p1 = lonLatToSvg(lon, 16);
-      const p2 = lonLatToSvg(lon, 53);
-      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      l.setAttribute('x1', p1.x); l.setAttribute('y1', p1.y);
-      l.setAttribute('x2', p2.x); l.setAttribute('y2', p2.y);
-      l.setAttribute('stroke', 'rgba(0, 242, 254, 0.07)');
-      l.setAttribute('stroke-dasharray', '4,5');
-      gridG.appendChild(l);
+    _svgNode(tag, attrs = {}, parent = null) {
+      const node = document.createElementNS(SVG_NS, tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        node.setAttribute(k, v);
+      }
+      if (parent) parent.appendChild(node);
+      return node;
     }
-    for (let lat = 20; lat <= 50; lat += 8) {
-      const p1 = lonLatToSvg(72, lat);
-      const p2 = lonLatToSvg(136, lat);
-      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      l.setAttribute('x1', p1.x); l.setAttribute('y1', p1.y);
-      l.setAttribute('x2', p2.x); l.setAttribute('y2', p2.y);
-      l.setAttribute('stroke', 'rgba(0, 242, 254, 0.07)');
-      l.setAttribute('stroke-dasharray', '4,5');
-      gridG.appendChild(l);
+
+    _bindDom() {
+      this.svg = this._id('atlas-svg');
+      this.grpNeighbors = this._id('grp-neighbors');
+      this.grpProvinces = this._id('grp-provinces');
+      this.grpProvNames = this._id('grp-prov-names');
+      this.grpPolities = this._id('grp-polities');
+      this.grpPrefectures = this._id('grp-prefectures');
+      this.grpCorridors = this._id('grp-corridors');
+      this.grpSettlements = this._id('grp-settlements');
+      this.grpMilestones = this._id('grp-milestones');
+      this.grpChallenge = this._id('grp-challenge');
+      this.grpGenealogy = this._id('grp-genealogy');
+      this.hoverTip = this._id('hover-tip');
+      this.mapKey = this._id('map-key');
+      this.milestoneBalloon = this._id('milestone-balloon');
     }
-    rootG.appendChild(gridG);
 
-    // Layer 1: Official High-Precision Chinese Provinces GeoJSON
-    const chinaG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    chinaG.setAttribute('class', 'china-provinces-layer');
+    // ---------------- Localization helpers ----------------
+    uiStr(key, fallback) {
+      if (this.locale === 'en' && this.enLocale.strings && this.enLocale.strings[key] !== undefined) {
+        return this.enLocale.strings[key];
+      }
+      return fallback;
+    }
 
-    if (gisStore.chinaGeo && gisStore.chinaGeo.features && typeof d3 !== 'undefined' && pathGen) {
-      gisStore.chinaGeo.features.forEach(feat => {
-        const provName = feat.properties ? (feat.properties.name || feat.properties.fullname || '') : '';
-        const dStr = pathGen(feat);
-        if (!dStr) return;
+    trTerm(text) {
+      if (!text || this.locale !== 'en') return text;
+      return (this.enLocale.dict && this.enLocale.dict[text]) || text;
+    }
 
-        const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathEl.setAttribute('d', dStr);
-        pathEl.setAttribute('class', 'province-path');
+    dynastyName(d) {
+      return this.locale === 'en' && this.enLocale.dynasties[d.key]
+        ? this.enLocale.dynasties[d.key].name
+        : d.title;
+    }
 
-        let fill = '#101724';
-        let opacity = '0.92';
-        let stroke = modernProvinces ? 'rgba(0, 242, 254, 0.48)' : 'rgba(255,255,255,0.08)';
-        let strokeWidth = modernProvinces ? '1.5' : '1.0';
+    dynastyBadge(d) {
+      return this.locale === 'en' && this.enLocale.dynasties[d.key]
+        ? this.enLocale.dynasties[d.key].short
+        : d.badge || d.title;
+    }
 
-        if (customProvincesFill) {
-          const customStyle = customProvincesFill(provName, feat);
-          if (customStyle) {
-            if (customStyle.fill) fill = customStyle.fill;
-            if (customStyle.opacity) opacity = customStyle.opacity;
-            if (customStyle.stroke) stroke = customStyle.stroke;
-            if (customStyle.strokeWidth) strokeWidth = customStyle.strokeWidth;
+    dynastySeat(d) {
+      return this.locale === 'en' && this.enLocale.dynasties[d.key]
+        ? this.enLocale.dynasties[d.key].capital
+        : d.seat;
+    }
+
+    dynastySummary(d) {
+      return this.locale === 'en' && this.enLocale.dynasties[d.key]
+        ? this.enLocale.dynasties[d.key].desc
+        : d.summary;
+    }
+
+    milestoneHeadline(d, m) {
+      if (this.locale === 'en') {
+        const key = `${d.key}:${m.year}`;
+        const hit = this.enLocale.milestones && this.enLocale.milestones[key];
+        if (hit) return Array.isArray(hit) ? hit[0] : hit;
+      }
+      return m.headline;
+    }
+
+    milestoneSite(d, m) {
+      if (!m.site) return '';
+      if (this.locale === 'en') {
+        const key = `${d.key}:${m.year}`;
+        const hit = this.enLocale.milestones && this.enLocale.milestones[key];
+        if (Array.isArray(hit) && hit[1]) return hit[1];
+      }
+      return this.trTerm(m.site);
+    }
+
+    corridorTitle(c) {
+      return this.locale === 'en' && this.enLocale.corridors[c.key]
+        ? this.enLocale.corridors[c.key].name
+        : c.title;
+    }
+
+    corridorSummary(c) {
+      return this.locale === 'en' && this.enLocale.corridors[c.key]
+        ? this.enLocale.corridors[c.key].note
+        : c.summary;
+    }
+
+    formatYear(y, compact = false) {
+      const n = Math.round(y);
+      if (this.locale === 'en') {
+        if (n <= 0) return `${-n || 1} BCE`;
+        return compact ? `${n}` : `${n} CE`;
+      }
+      if (n <= 0) return `${compact ? '前' : '公元前'}${-n || 1}${compact ? '' : '年'}`;
+      return compact ? `${n}` : `公元 ${n} 年`;
+    }
+
+    formatSpan(d) {
+      return `${this.formatYear(d.fromYear, true)} — ${this.formatYear(d.toYear, true)}`;
+    }
+
+    applyLocale() {
+      document.documentElement.lang = this.locale === 'en' ? 'en' : 'zh-CN';
+      document.title = this.uiStr('title', '江山时序 · 中国历史地图时间轴');
+
+      this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
+      this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 秦 → 今');
+      this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
+      this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
+      this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
+      this._id('lbl-prefectures').textContent =
+        this.locale === 'en' ? 'Admin Divisions' : '州道政区';
+      this._id('lbl-settlements').textContent = this.uiStr('toggle_cities', '古地名');
+      this._id('lbl-corridors').textContent = this.uiStr('toggle_routes', '长城 · 运河 · 丝路');
+      this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '事件');
+      const lblReset = this._id('lbl-reset-camera') || this._id('act-reset-camera');
+      lblReset.textContent = this.uiStr('btn_reset', '复位视图');
+      const lblGen = this._id('lbl-genealogy') || this._id('act-genealogy');
+      lblGen.textContent = this.genealogyMode
+        ? this.uiStr('btn_trace_active', '点地溯源 · 点击地图')
+        : this.uiStr('btn_trace', '点地溯源');
+      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
+      lblChal.textContent = this.challenge
+        ? this.uiStr('btn_quiz_active', '挑战中…')
+        : this.uiStr('btn_quiz', '开始挑战');
+      const lblLoc = this._id('lbl-locale') || this._id('act-locale');
+      lblLoc.textContent = this.locale === 'en' ? '中文' : 'EN';
+      this._id('gesture-guide').textContent = this.uiStr(
+        'hint',
+        '滚轮缩放 · 拖拽平移 · ← → 调整年份 · 空格播放 · Esc 关闭弹窗'
+      );
+      this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
+      this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
+      this._id('txt-disclaimer').textContent = this.uiStr(
+        'caveat',
+        '疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。'
+      );
+      this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
+      this._id('txt-genealogy-kicker').textContent = this.uiStr(
+        'trace_kicker',
+        '点地溯源 · 古今政区沿革'
+      );
+      this._id('tab-locate').textContent = this.uiStr('mode_locate', '地图寻址');
+      this._id('tab-match').textContent = this.uiStr('mode_match', '古今对号');
+
+      this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
+        if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
+      });
+      this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
+        if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
+      });
+
+      this._refreshBandLabels();
+      this.activeSettlementMask = null;
+      this.activeCorridorMask = null;
+
+      const cur = this.dynasties[this.dynastyIdx];
+      if (cur) {
+        this._renderChroniclePane(cur);
+        this._renderSettlements(cur);
+        this._renderCorridors();
+        this._renderMilestones(cur);
+        this._fetchSnapshot(this.activeSnapKey || this._resolveSnapKey(cur, this.year)).then(
+          (snap) => this._renderPolitiesAndPrefectures(cur, snap)
+        );
+        this._syncScrubberUi();
+      }
+      if (this.activeTrace) {
+        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
+      }
+    }
+
+    // ---------------- Base Layers ----------------
+    _buildModernProvinces() {
+      for (const prov of this.provinces) {
+        const isDash = String(prov.code).includes('_JD');
+        const path = this._svgNode(
+          'path',
+          {
+            d: this.projector.multiRingsToSvgPath(prov.rings),
+            class: isDash ? 'province-shape maritime-dash' : 'province-shape',
+          },
+          this.grpProvinces
+        );
+        if (!isDash) {
+          path.dataset.provTitle = prov.title;
+          const [cx, cy] = this.projector.toScreen(prov.hub[0], prov.hub[1]);
+          const lbl = this._svgNode(
+            'text',
+            { x: cx.toFixed(1), y: cy.toFixed(1), class: 'province-caption' },
+            this.grpProvNames
+          );
+          const rawShort = prov.title.replace(/(省|市|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/, '');
+          lbl.dataset.rawName = rawShort;
+          lbl.textContent = this.trTerm(rawShort);
+        }
+      }
+    }
+
+    _buildNeighborCountries() {
+      const list = Array.isArray(this.snapshots.neighbors) ? this.snapshots.neighbors : [];
+      for (const item of list) {
+        const path = this._svgNode(
+          'path',
+          { d: this.projector.shapeToSvgPath(item.shape), class: 'neighbor-shape' },
+          this.grpNeighbors
+        );
+        path.dataset.countryTitle = item.title;
+        if (item.anchor) {
+          const [cx, cy] = this.projector.toScreen(item.anchor[0], item.anchor[1]);
+          const lbl = this._svgNode(
+            'text',
+            {
+              'data-x': cx.toFixed(1),
+              'data-y': cy.toFixed(1),
+              class: 'neighbor-caption',
+            },
+            this.grpNeighbors
+          );
+          lbl.dataset.rawName = item.title;
+          lbl.textContent = this.trTerm(item.title);
+        }
+      }
+      this._rescaleSvgTypography();
+    }
+
+    // ---------------- Historical Layers ----------------
+    _resolvePhase(dynasty, year) {
+      if (!dynasty.phases) return null;
+      return (
+        dynasty.phases.find((ph) => year < ph.until) ||
+        dynasty.phases[dynasty.phases.length - 1]
+      );
+    }
+
+    _resolveSnapKey(dynasty, year) {
+      const ph = this._resolvePhase(dynasty, year);
+      return ph ? ph.snap : `s_${dynasty.key}`;
+    }
+
+    _fetchSnapshot(snapKey) {
+      if (!this.snapshotCache[snapKey]) {
+        const embedded = this.snapshots && this.snapshots[snapKey];
+        this.snapshotCache[snapKey] = Promise.resolve(
+          embedded || { polities: [], prefectures: [], regions: [], note: '', caption: '' }
+        );
+      }
+      return this.snapshotCache[snapKey];
+    }
+
+    _renderDynasty(dynasty) {
+      document.documentElement.style.setProperty('--dynasty-accent', dynasty.tint);
+      this._renderSettlements(dynasty);
+      this._renderCorridors();
+      this._renderMilestones(dynasty);
+      const snapKey = this._resolveSnapKey(dynasty, this.year);
+      this.activeSnapKey = snapKey;
+      this._fetchSnapshot(snapKey).then((snap) => {
+        if (this.dynasties[this.dynastyIdx] !== dynasty || this._resolveSnapKey(dynasty, this.year) !== snapKey) {
+          return;
+        }
+        this._renderPolitiesAndPrefectures(dynasty, snap);
+      });
+    }
+
+    _renderPolitiesAndPrefectures(dynasty, snap) {
+      this.grpPolities.innerHTML = '';
+      this.grpPrefectures.innerHTML = '';
+
+      const polGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPolities);
+      const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
+      const sorted = (snap.polities || [])
+        .slice()
+        .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
+
+      for (const pol of sorted) {
+        const isN = pol.role === 'neighbor';
+        const attrs = {
+          d: this.projector.shapeToSvgPath(pol.shape),
+          class: `polity-shape ${pol.role}`,
+        };
+        if (!isN) {
+          attrs.fill = pol.tint;
+          attrs.stroke = pol.tint;
+        }
+        const path = this._svgNode('path', attrs, polGroup);
+        path.dataset.polityTitle = pol.title;
+        path.dataset.polityRole = pol.role;
+
+        if (pol.anchor) {
+          const [cx, cy] = this.projector.toScreen(pol.anchor[0], pol.anchor[1]);
+          const lbl = this._svgNode(
+            'text',
+            {
+              class: `polity-caption ${pol.role}`,
+              'data-x': cx.toFixed(1),
+              'data-y': cy.toFixed(1),
+            },
+            polGroup
+          );
+          lbl.textContent = this.trTerm(pol.title);
+        }
+      }
+
+      const prefGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPrefectures);
+      for (const pref of snap.prefectures || []) {
+        const path = this._svgNode(
+          'path',
+          { d: this.projector.shapeToSvgPath(pref.shape), class: 'prefecture-shape' },
+          prefGroup
+        );
+        path.dataset.prefTitle = pref.title;
+        path.dataset.prefCategory = pref.category;
+        if (pref.anchor && pref.title) {
+          const [px, py] = this.projector.toScreen(pref.anchor[0], pref.anchor[1]);
+          const plbl = this._svgNode(
+            'text',
+            {
+              class: 'prefecture-caption',
+              'data-x': px.toFixed(1),
+              'data-y': py.toFixed(1),
+            },
+            prefGroup
+          );
+          plbl.textContent = this.trTerm(pref.title);
+        }
+      }
+
+      for (const reg of snap.regions || []) {
+        const rPath = this._svgNode(
+          'path',
+          { d: this.projector.shapeToSvgPath(reg.shape), class: 'region-shape' },
+          prefGroup
+        );
+        rPath.dataset.regionTitle = reg.title;
+        rPath.dataset.regionCategory = reg.category || '';
+        if (reg.anchor && reg.title) {
+          const [rx, ry] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          const rLbl = this._svgNode(
+            'text',
+            {
+              class: 'region-caption',
+              'data-x': rx.toFixed(1),
+              'data-y': ry.toFixed(1),
+            },
+            prefGroup
+          );
+          rLbl.textContent = this.trTerm(reg.title);
+        }
+      }
+
+      this.lastRenderedSnap = snap;
+      this._renderLegendBox(snap);
+      this._rescaleSvgTypography();
+    }
+
+    _settlementMask(dynasty, year) {
+      return (dynasty.settlements || [])
+        .map((item) =>
+          (item.appear !== undefined && year < item.appear) ||
+          (item.vanish !== undefined && year > item.vanish)
+            ? '0'
+            : '1'
+        )
+        .join('');
+    }
+
+    _renderSettlements(dynasty) {
+      this.activeSettlementMask = this._settlementMask(dynasty, this.year);
+      this.grpSettlements.innerHTML = '';
+      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpSettlements);
+      for (const item of dynasty.settlements || []) {
+        if (item.appear !== undefined && this.year < item.appear) continue;
+        if (item.vanish !== undefined && this.year > item.vanish) continue;
+        const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
+        const isTier2 = item.tier === 2 && !item.isCapital;
+        const cls = item.isCapital
+          ? 'settlement-node is-capital'
+          : isTier2
+            ? 'settlement-node is-tier2'
+            : 'settlement-node';
+        const node = this._svgNode(
+          'g',
+          {
+            class: cls,
+            'data-x': x.toFixed(1),
+            'data-y': y.toFixed(1),
+          },
+          group
+        );
+        node.dataset.ancient = item.ancient;
+        node.dataset.modern = item.modern || '';
+        node.dataset.remark = item.remark || '';
+
+        if (item.isCapital) {
+          this._svgNode('circle', { class: 'cap-ring', r: 4.5 }, node);
+          this._svgNode('polygon', { class: 'dot', points: '0,-3.2 3.2,0 0,3.2 -3.2,0' }, node);
+        } else if (isTier2) {
+          this._svgNode('circle', { class: 'dot', r: 1.7 }, node);
+        } else {
+          this._svgNode('circle', { class: 'dot', r: 2.2 }, node);
+        }
+
+        const align = item.align || 'r';
+        const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
+        const dx = align === 'l' ? -5.5 : align === 'b' ? 0 : 5.5;
+        const dy1 = align === 'b' ? 9.5 : -0.5;
+        const dy2 = align === 'b' ? 17.5 : 7.8;
+
+        const nameEl = this._svgNode(
+          'text',
+          { class: 'name', x: dx, y: dy1, 'text-anchor': anchor },
+          node
+        );
+        nameEl.textContent = this.trTerm(item.ancient);
+
+        if (item.modern && item.modern !== item.ancient) {
+          const modEl = this._svgNode(
+            'text',
+            { class: 'modern', x: dx, y: dy2, 'text-anchor': anchor },
+            node
+          );
+          modEl.textContent =
+            this.locale === 'en'
+              ? `${this.uiStr('now_prefix', 'now ')}${this.trTerm(item.modern)}`
+              : `今${item.modern}`;
+        }
+      }
+      this._rescaleSvgTypography();
+    }
+
+    _renderCorridors() {
+      const y = this.year;
+      const mask =
+        this.locale +
+        ':' +
+        this.corridors
+          .map((c) => (!c.span || (y >= c.span[0] && y <= c.span[1]) ? '1' : '0'))
+          .join('');
+      if (mask === this.activeCorridorMask) return;
+      this.activeCorridorMask = mask;
+
+      this.grpCorridors.innerHTML = '';
+      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpCorridors);
+      for (const corr of this.corridors) {
+        if (corr.span && (y < corr.span[0] || y > corr.span[1])) continue;
+
+        let pathStr = '';
+        for (const seg of corr.segments) {
+          for (let i = 0; i < seg.length; i++) {
+            const [px, py] = this.projector.toScreen(seg[i][0], seg[i][1]);
+            pathStr += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1);
           }
         }
+        const p = this._svgNode(
+          'path',
+          { d: pathStr, class: `corridor-line ${corr.kind}` },
+          group
+        );
+        p.dataset.corrTitle = this.corridorTitle(corr);
+        p.dataset.corrSummary = this.corridorSummary(corr);
 
-        pathEl.setAttribute('fill', fill);
-        pathEl.setAttribute('fill-opacity', opacity);
-        pathEl.setAttribute('stroke', stroke);
-        pathEl.setAttribute('stroke-width', strokeWidth);
-        pathEl.dataset.province = provName;
-
-        if (onProvinceHover) {
-          pathEl.addEventListener('mouseenter', (evt) => onProvinceHover(provName, feat, evt));
-          pathEl.addEventListener('mousemove', (evt) => onProvinceHover(provName, feat, evt));
-          pathEl.addEventListener('mouseleave', (evt) => onProvinceHover(null, null, evt));
+        if (corr.labelAt) {
+          const [lx, ly] = this.projector.toScreen(corr.labelAt[0], corr.labelAt[1]);
+          const lbl = this._svgNode(
+            'text',
+            {
+              class: `corridor-caption ${corr.kind}`,
+              'data-x': lx.toFixed(1),
+              'data-y': ly.toFixed(1),
+            },
+            group
+          );
+          lbl.textContent = this.corridorTitle(corr);
         }
-        if (onProvinceClick) {
-          pathEl.addEventListener('pointerdown', (evt) => {
-            evt.stopPropagation();
-            onProvinceClick(provName, feat, evt);
-          });
+      }
+      this._rescaleSvgTypography();
+      if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+    }
+
+    _renderMilestones(dynasty) {
+      this.grpMilestones.innerHTML = '';
+      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpMilestones);
+      (dynasty.milestones || []).forEach((m, idx) => {
+        if (!m.coord) return;
+        const [x, y] = this.projector.toScreen(m.coord[0], m.coord[1]);
+        const pin = this._svgNode(
+          'g',
+          {
+            class: 'milestone-pin',
+            'data-x': x.toFixed(1),
+            'data-y': y.toFixed(1),
+            'data-year': m.year,
+            'data-idx': idx,
+          },
+          group
+        );
+        this._svgNode('circle', { class: 'ev-ring', r: 9 }, pin);
+        this._svgNode('polygon', { class: 'ev-core', points: '0,-5.5 5.5,0 0,5.5 -5.5,0' }, pin);
+        pin.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.stopAutoplay();
+          this.jumpToYear(Math.max(dynasty.fromYear, Math.min(dynasty.toYear - 1, m.year)));
+          this.openMilestoneBalloon(dynasty, m);
+          if (m.coord) this._panToward(m.coord[0], m.coord[1]);
+        });
+      });
+      this._updateMilestoneStates(dynasty);
+      this._rescaleSvgTypography();
+      if (this.activeMilestone && this.activeMilestone.dynastyKey === dynasty.key) {
+        this._positionMilestoneBalloon();
+      } else {
+        this.closeMilestoneBalloon();
+      }
+    }
+
+    _activeMilestoneIndex(dynasty) {
+      let activeIdx = -1;
+      (dynasty.milestones || []).forEach((m, idx) => {
+        if (m.year <= this.year) activeIdx = idx;
+      });
+      return activeIdx;
+    }
+
+    _updateMilestoneStates(dynasty) {
+      const activeIdx = this._activeMilestoneIndex(dynasty);
+      let currentPin = null;
+      this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
+        const idx = Number(pin.dataset.idx);
+        const yr = Number(pin.dataset.year);
+        pin.classList.toggle('is-future', yr > this.year);
+        pin.classList.toggle('is-past', yr <= this.year && idx !== activeIdx);
+        pin.classList.toggle('is-current', idx === activeIdx);
+        if (idx === activeIdx) currentPin = pin;
+      });
+      if (currentPin && currentPin.parentNode) {
+        currentPin.parentNode.appendChild(currentPin);
+      }
+    }
+
+    openMilestoneBalloon(dynasty, m) {
+      this.activeMilestone = { dynastyKey: dynasty.key, milestone: m, year: this.year };
+      this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
+        n.classList.toggle('is-active', Number(n.dataset.year) === m.year);
+      });
+      if (!m.coord) {
+        this.closeMilestoneBalloon();
+        return;
+      }
+      const yrText = this.formatYear(m.year);
+      const siteStr = this.milestoneSite(dynasty, m);
+      const placeHtml = siteStr ? `<span class="ep-place">${SVG_ICONS.pin} ${siteStr}</span>` : '';
+      this.milestoneBalloon.innerHTML =
+        `<div><span class="ep-year">${yrText} · ${this.dynastyName(dynasty)}</span>${placeHtml}</div>` +
+        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}</div>`;
+      this.milestoneBalloon.classList.remove('is-hidden');
+      this._positionMilestoneBalloon();
+    }
+
+    _positionMilestoneBalloon() {
+      if (!this.activeMilestone || !this.activeMilestone.milestone.coord) return;
+      const [sx, sy] = this.projector.toScreen(
+        this.activeMilestone.milestone.coord[0],
+        this.activeMilestone.milestone.coord[1]
+      );
+      const rect = this.svg.getBoundingClientRect();
+      const px = ((sx - this.camera.x) / this.camera.w) * rect.width;
+      const py = ((sy - this.camera.y) / this.camera.h) * rect.height;
+      const left = Math.max(12, Math.min(rect.width - 290, px + 12));
+      const top = Math.max(12, Math.min(rect.height - 90, py - 24));
+      this.milestoneBalloon.style.left = `${left}px`;
+      this.milestoneBalloon.style.top = `${top}px`;
+    }
+
+    closeMilestoneBalloon() {
+      this.activeMilestone = null;
+      this.milestoneBalloon.classList.add('is-hidden');
+      this.grpMilestones
+        .querySelectorAll('.milestone-pin.is-active')
+        .forEach((n) => n.classList.remove('is-active'));
+    }
+
+    _renderLegendBox(snap) {
+      this.mapKey.innerHTML = '';
+      if (snap.caption) {
+        const h = document.createElement('div');
+        h.className = 'key-heading';
+        h.textContent = this.trTerm(snap.caption);
+        this.mapKey.appendChild(h);
+      }
+      const grid = document.createElement('div');
+      grid.className = 'key-grid';
+      const core = (snap.polities || []).filter((p) => p.role !== 'neighbor');
+      const hasNeighbors = (snap.polities || []).some((p) => p.role === 'neighbor');
+      for (const p of core) {
+        const entry = document.createElement('span');
+        entry.className = 'key-entry';
+        const sw = document.createElement('i');
+        sw.className = 'swatch';
+        sw.style.color = p.tint;
+        sw.style.background = `${p.tint}55`;
+        if (p.role === 'protectorate') sw.style.borderStyle = 'dashed';
+        entry.appendChild(sw);
+        entry.appendChild(document.createTextNode(this.trTerm(p.title)));
+        grid.appendChild(entry);
+      }
+      if (hasNeighbors) {
+        const entry = document.createElement('span');
+        entry.className = 'key-entry';
+        const sw = document.createElement('i');
+        sw.className = 'swatch';
+        sw.style.color = '#6e6256';
+        sw.style.borderStyle = 'dashed';
+        sw.style.background =
+          'repeating-linear-gradient(125deg, rgba(43,38,34,0.28) 0 2px, transparent 2px 5px)';
+        entry.appendChild(sw);
+        entry.appendChild(
+          document.createTextNode(this.uiStr('leg_neighbor', '同期周边政权'))
+        );
+        grid.appendChild(entry);
+      }
+      if (grid.firstChild) this.mapKey.appendChild(grid);
+
+      if (snap.note) {
+        const n = document.createElement('div');
+        n.className = 'key-note';
+        n.innerHTML = `${SVG_ICONS.note} <span>${this.trTerm(snap.note)}</span>`;
+        this.mapKey.appendChild(n);
+      }
+
+      if (this._id('chk-corridors') && this._id('chk-corridors').checked) {
+        const activeKinds = new Set();
+        for (const c of this.corridors) {
+          if (c.span && this.year >= c.span[0] && this.year <= c.span[1]) {
+            activeKinds.add(c.kind);
+          }
         }
+        if (activeKinds.size) {
+          const row = document.createElement('div');
+          row.className = 'key-grid';
+          const meta = [
+            ['wall', '#5a3826', '5 2', this.uiStr('leg_wall', '长城')],
+            ['canal', '#1f6f8b', '6 2', this.uiStr('leg_canal', '大运河')],
+            ['road', '#9c6317', '2 3', this.uiStr('leg_road', '陆上丝路 / 古道')],
+            ['sea', '#2c5d8f', '2 3', this.uiStr('leg_sea', '郑和航线')],
+          ];
+          for (const [k, col, dash, label] of meta) {
+            if (!activeKinds.has(k)) continue;
+            const s = document.createElement('span');
+            s.className = 'key-entry';
+            s.innerHTML = `<svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="${col}" stroke-width="2.2" stroke-dasharray="${dash}"/></svg>${label}`;
+            row.appendChild(s);
+          }
+          this.mapKey.appendChild(row);
+        }
+      }
+      this.mapKey.style.display = this.mapKey.firstChild ? 'flex' : 'none';
+    }
 
-        chinaG.appendChild(pathEl);
+    // ---------------- Chronicle Sidebar ----------------
+    _renderChroniclePane(dynasty) {
+      this._id('dynasty-title').textContent = this.dynastyName(dynasty);
+      this._id('dynasty-span').textContent = this.formatSpan(dynasty);
+      this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
+      this._id('dynasty-summary').textContent = this.dynastySummary(dynasty);
 
-        // Render Modern Province Pin Label with anti-collision spacing offsets
-        if (modernProvinces && pathGen && provName) {
-          const centerPt = pathGen.centroid(feat);
-          if (centerPt && !isNaN(centerPt[0]) && !isNaN(centerPt[1])) {
-            const shortName = provName.replace(/省|市|壮族|维吾尔|回族|特别行政区|自治区/g, '');
-            const OFFSETS = {
-              '北京': { dx: -4, dy: -8 },
-              '天津': { dx: 16, dy: 8 },
-              '上海': { dx: 14, dy: 4 },
-              '香港': { skip: true },
-              '澳门': { skip: true },
-              '江苏': { dx: -6, dy: -4 },
-              '浙江': { dx: 4, dy: 6 },
-              '安徽': { dx: -4, dy: 2 },
-              '河北': { dx: -12, dy: 4 }
-            };
-            const cfg = OFFSETS[shortName] || { dx: 0, dy: 0 };
-            if (!cfg.skip) {
-              const txtEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-              txtEl.setAttribute('x', centerPt[0] + (cfg.dx || 0));
-              txtEl.setAttribute('y', centerPt[1] + 3 + (cfg.dy || 0));
-              txtEl.setAttribute('class', 'modern-prov-label');
-              txtEl.setAttribute('text-anchor', 'middle');
-              txtEl.textContent = shortName;
-              chinaG.appendChild(txtEl);
+      const ul = this._id('milestone-list');
+      ul.innerHTML = '';
+      for (const m of dynasty.milestones || []) {
+        const li = document.createElement('li');
+        const targetY = Math.max(dynasty.fromYear, Math.min(dynasty.toYear - 1, m.year));
+        const prevY = Math.max(dynasty.fromYear, targetY - 1);
+        const snapShift =
+          m.year === dynasty.fromYear ||
+          this._resolveSnapKey(dynasty, targetY) !== this._resolveSnapKey(dynasty, prevY);
+        const cityShift =
+          this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
+        const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
+        const isMapChange = snapShift || cityShift || corrShift;
+        const yrLabel =
+          this.locale === 'en'
+            ? this.formatYear(m.year)
+            : `${m.year <= 0 ? '前' + -m.year : m.year} 年`;
+        const badge = isMapChange
+          ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory / layer changes at this year' : '此节点触发版图或城池/路线变化'}">${SVG_ICONS.mapChange}</span>`
+          : '';
+        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}</span>`;
+        li.addEventListener('click', () => {
+          this.stopAutoplay();
+          this.jumpToYear(targetY);
+          this.openMilestoneBalloon(dynasty, m);
+          if (snapShift) {
+            if (this.camera.w < 780) this.resetCamera();
+          } else if (m.coord) {
+            this._panToward(m.coord[0], m.coord[1]);
+          }
+        });
+        ul.appendChild(li);
+      }
+      this._highlightCurrentMilestone(dynasty);
+    }
+
+    _highlightCurrentMilestone(dynasty) {
+      const items = this._id('milestone-list').children;
+      if (!items.length) return;
+      const activeIdx = this._activeMilestoneIndex(dynasty);
+      Array.from(items).forEach((el, idx) =>
+        el.classList.toggle('is-current', idx === activeIdx)
+      );
+    }
+
+    // ---------------- Place Genealogy (Trace Place) ----------------
+    toggleGenealogyMode(force) {
+      this.genealogyMode = force !== undefined ? force : !this.genealogyMode;
+      this._id('act-genealogy').classList.toggle('is-active', this.genealogyMode);
+      const lblEl = this._id('lbl-genealogy') || this._id('act-genealogy');
+      lblEl.textContent = this.genealogyMode
+        ? this.uiStr('btn_trace_active', '点地溯源 · 点击地图')
+        : this.uiStr('btn_trace', '点地溯源');
+      this.svg.classList.toggle('is-crosshair', this.genealogyMode || Boolean(this.challenge));
+      if (!this.genealogyMode && !this._id('genealogy-card').classList.contains('is-hidden')) {
+        this.closeGenealogyCard();
+      }
+    }
+
+    closeGenealogyCard() {
+      this.activeTrace = null;
+      this._id('genealogy-card').classList.add('is-hidden');
+      this.grpGenealogy.innerHTML = '';
+    }
+
+    openGenealogyAt(lng, lat) {
+      this.activeTrace = [lng, lat];
+      this.grpGenealogy.innerHTML = '';
+      const [sx, sy] = this.projector.toScreen(lng, lat);
+      const g = this._svgNode(
+        'g',
+        { 'data-x': sx.toFixed(1), 'data-y': sy.toFixed(1) },
+        this.grpGenealogy
+      );
+      this._svgNode('circle', { class: 'trace-pin', r: 10 }, g);
+      this._svgNode('circle', { class: 'trace-dot', r: 3.5 }, g);
+      this._rescaleSvgTypography();
+
+      let modernTitle = '';
+      for (const prov of this.provinces) {
+        if (String(prov.code).includes('_JD')) continue;
+        if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(lng, lat, poly))) {
+          modernTitle = prov.title;
+          break;
+        }
+      }
+      if (!modernTitle) {
+        const neighbors = Array.isArray(this.snapshots.neighbors) ? this.snapshots.neighbors : [];
+        for (const nb of neighbors) {
+          if (MercatorProjector.pointInShape(lng, lat, nb.shape)) {
+            modernTitle = nb.title;
+            break;
+          }
+        }
+      }
+
+      const nearestSettlement = (dynasty, maxKm) => {
+        let best = null;
+        let bestKm = maxKm;
+        for (const s of dynasty.settlements || []) {
+          const km = this.projector.greatCircleKm([lng, lat], s.coord);
+          if (km < bestKm) {
+            bestKm = km;
+            best = { s, km };
+          }
+        }
+        return best;
+      };
+
+      let closestOverall = null;
+      for (const d of this.dynasties) {
+        const hit = nearestSettlement(d, 160);
+        if (hit && (!closestOverall || hit.km < closestOverall.km)) closestOverall = hit;
+      }
+
+      const titleMain = modernTitle
+        ? this.trTerm(modernTitle)
+        : this.uiStr('outside_modern', '现代省界外 / 海域');
+      const titleSuffix =
+        closestOverall && closestOverall.s.modern
+          ? ` · ${this.trTerm(closestOverall.s.modern)}`
+          : '';
+      this._id('genealogy-heading').textContent = titleMain + titleSuffix;
+      this._id('genealogy-sub').textContent =
+        `${lng.toFixed(2)}°E, ${lat.toFixed(2)}°N · ` +
+        this.uiStr('trace_click_hint', '点击任一朝代可切换地图');
+
+      const listEl = this._id('genealogy-timeline');
+      listEl.innerHTML = '';
+
+      for (const d of this.dynasties) {
+        if (d.key === 'prc') continue;
+        const snapKey = this._resolveSnapKey(d, d.focusYear);
+        const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
+
+        let polityHit = null;
+        for (const p of snap.polities || []) {
+          if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+            polityHit = p.title;
+            break;
+          }
+        }
+        if (!polityHit) {
+          for (const p of snap.polities || []) {
+            if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+              polityHit = p.title;
+              break;
             }
           }
         }
-      });
-    }
-    rootG.appendChild(chinaG);
 
-    // Layer 2: Natural Rivers & Historical Passes Lines
-    const riverG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    riverG.setAttribute('class', 'natural-features-layer');
-
-    const drawPolyline = (coordsList, color, widthLine, dashArray, titleText) => {
-      const pts = coordsList.map(c => lonLatToSvg(c[0], c[1]));
-      const pathStr = 'M ' + pts.map(p => `${p.x},${p.y}`).join(' L ');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', pathStr);
-      p.setAttribute('fill', 'none');
-      p.setAttribute('stroke', color);
-      p.setAttribute('stroke-width', widthLine);
-      if (dashArray) p.setAttribute('stroke-dasharray', dashArray);
-      p.setAttribute('filter', `drop-shadow(0 0 6px ${color})`);
-      const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-      title.textContent = titleText;
-      p.appendChild(title);
-      riverG.appendChild(p);
-    };
-
-    if (yellowRiver) {
-      drawPolyline(HISTORICAL_GEOMETRIES.yellowRiver, '#e67e22', '3.0', null, '几字形中华母亲河 · 黄河');
-    }
-    if (yangtze) {
-      drawPolyline(HISTORICAL_GEOMETRIES.yangtzeRiver, '#3498db', '3.2', null, '天堑千古 · 长江万古流');
-    }
-    if (greatWall) {
-      drawPolyline(HISTORICAL_GEOMETRIES.greatWall, '#e74c3c', '3.5', '6,4', '抵御游牧骑兵 · 秦汉明万里长城');
-    }
-    if (silkRoad) {
-      drawPolyline(HISTORICAL_GEOMETRIES.silkRoad, '#f1c40f', '2.4', '8,4', '张骞凿空西域 · 陆上丝绸之路');
-    }
-    if (grandCanal) {
-      drawPolyline(HISTORICAL_GEOMETRIES.grandCanal, '#2ecc71', '2.4', '4,3', '隋唐大运河 · 贯通南北血脉');
-    }
-
-    rootG.appendChild(riverG);
-
-    // Layer 3: Ancient Capital Pins
-    const capitalG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    capitalG.setAttribute('class', 'historical-capitals-layer');
-    const FAMOUS_STRONGHOLDS = [
-      { name: '咸阳/长安', coords: [108.94, 34.26], tag: '古都' },
-      { name: '洛阳城', coords: [112.45, 34.62], tag: '神都' },
-      { name: '开封府', coords: [114.30, 34.80], tag: '东京' },
-      { name: '燕京/大都', coords: [116.40, 39.90], tag: '帝都' },
-      { name: '金陵/建康', coords: [118.79, 32.06], tag: '六朝' },
-      { name: '潼关天险', coords: [110.28, 34.54], tag: '天险' },
-      { name: '虎牢关', coords: [113.15, 34.82], tag: '要隘' },
-      { name: '剑门关', coords: [105.57, 32.25], tag: '蜀道' }
-    ];
-
-    FAMOUS_STRONGHOLDS.forEach(st => {
-      const pos = lonLatToSvg(st.coords[0], st.coords[1]);
-      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      dot.setAttribute('cx', pos.x); dot.setAttribute('cy', pos.y);
-      dot.setAttribute('r', st.tag === '古都' || st.tag === '帝都' ? '5.5' : '3.8');
-      dot.setAttribute('fill', '#ffd700');
-      dot.setAttribute('stroke', '#000');
-      dot.setAttribute('stroke-width', '1.5');
-      dot.style.pointerEvents = 'none';
-      capitalG.appendChild(dot);
-
-      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', pos.x + 7); label.setAttribute('y', pos.y + 4);
-      label.setAttribute('fill', '#ffe066');
-      label.setAttribute('font-size', '10');
-      label.setAttribute('font-weight', 'bold');
-      label.style.pointerEvents = 'none';
-      label.style.textShadow = '0 1px 3px #000';
-      label.textContent = st.name;
-      capitalG.appendChild(label);
-    });
-
-    rootG.appendChild(capitalG);
-
-    attachD3Zoom(svgEl, rootG, options.btnReset, options.btnZoomIn, options.btnZoomOut);
-
-    return { rootG, chinaG, riverG, capitalG };
-  }
-
-  function attachD3Zoom(svgEl, rootG, btnReset, btnZoomIn, btnZoomOut) {
-    if (typeof d3 === 'undefined') return;
-    const svg = d3.select(svgEl);
-    const zoom = d3.zoom()
-      .scaleExtent([1, 8])
-      .filter((evt) => {
-        // Prevent D3 drag zoom from swallowing simple pointer clicks
-        return evt.type !== 'pointerdown' && evt.type !== 'mousedown' || evt.button === 0;
-      })
-      .on('zoom', (event) => {
-        d3.select(rootG).attr('transform', event.transform);
-      });
-
-    svg.call(zoom);
-
-    if (btnZoomIn) {
-      btnZoomIn.onclick = () => svg.transition().duration(260).call(zoom.scaleBy, 1.4);
-    }
-    if (btnZoomOut) {
-      btnZoomOut.onclick = () => svg.transition().duration(260).call(zoom.scaleBy, 0.7);
-    }
-    if (btnReset) {
-      btnReset.onclick = () => svg.transition().duration(360).call(zoom.transform, d3.zoomIdentity);
-    }
-  }
-
-  function showFloatingTooltip(tooltipEl, title, coordsStr, desc, evt) {
-    if (!tooltipEl) return;
-    tooltipEl.classList.remove('hidden');
-    tooltipEl.innerHTML = `
-      <div class="tactical-tooltip-title">${title}</div>
-      <div class="tactical-tooltip-coords">${coordsStr}</div>
-      <div class="tactical-tooltip-desc">${desc}</div>
-    `;
-    const container = tooltipEl.parentElement;
-    if (container) {
-      const rect = container.getBoundingClientRect();
-      const x = evt.clientX - rect.left;
-      const y = evt.clientY - rect.top - 14;
-      tooltipEl.style.left = `${Math.max(100, Math.min(rect.width - 100, x))}px`;
-      tooltipEl.style.top = `${Math.max(65, y)}px`;
-    }
-  }
-
-  function hideFloatingTooltip(tooltipEl) {
-    if (tooltipEl) tooltipEl.classList.add('hidden');
-  }
-
-  // =============================================================
-  // MODE 1: 看图猜朝代 (GEO-QUIZ HIGH-CONTRAST EMPIRE MAP)
-  // =============================================================
-  const quizDiffBtns = document.querySelectorAll('[data-quiz-diff]');
-  quizDiffBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      quizDiffBtns.forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      state.quiz.difficulty = e.target.getAttribute('data-quiz-diff');
-    });
-  });
-
-  document.getElementById('btnLaunchQuiz')?.addEventListener('click', () => {
-    startQuizMode();
-  });
-
-  function startQuizMode() {
-    state.quiz.score = 0;
-    state.quiz.combo = 0;
-    state.quiz.currentIndex = 0;
-
-    const filtered = state.dynasties.filter(d =>
-      state.quiz.difficulty === 'hell' ? d.difficulty === 'hell' : d.difficulty === 'standard'
-    );
-    state.quiz.rounds = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
-
-    document.getElementById('quizModeBadgeLabel').textContent =
-      state.quiz.difficulty === 'hell' ? '看图猜朝代 · 【爆款割据】南北朝/五代十国乱世考题' : '看图猜朝代 · 极盛大一统疆域辨识';
-
-    switchView('viewQuiz');
-    renderQuizRound();
-  }
-
-  function renderQuizRound() {
-    clearInterval(state.quiz.timer);
-    const round = state.quiz.rounds[state.quiz.currentIndex];
-    if (!round) {
-      showQuizFinalSummary();
-      return;
-    }
-
-    state.quiz.answered = false;
-    state.quiz.timeLeft = 15;
-
-    document.getElementById('quizCurrentProgress').textContent = `${state.quiz.currentIndex + 1} / ${state.quiz.rounds.length}`;
-    document.getElementById('quizScoreText').textContent = state.quiz.score;
-    document.getElementById('quizComboText').textContent = `X${state.quiz.combo} COMBO`;
-    document.getElementById('quizDetailCard').style.display = 'none';
-
-    const svgEl = document.getElementById('quizMapSvg');
-    const tooltipEl = document.getElementById('quizTooltip');
-    const dynastyConfig = window.MAP_HELPER.DYNASTY_PROVINCES_CONFIG[round.id];
-
-    // High-Contrast Empire Hues: Active Empire Provinces vs Inactive Shadow Provinces
-    const customProvinceFill = (provName) => {
-      if (!dynastyConfig) return null;
-
-      if (dynastyConfig.splitFactions) {
-        for (const fac of dynastyConfig.splitFactions) {
-          const match = fac.keywords.some(kw => provName.includes(kw));
-          if (match) {
-            return {
-              fill: fac.color,
-              opacity: '0.85',
-              stroke: '#ffd700',
-              strokeWidth: '2.2'
-            };
+        const adminHits = [];
+        for (const reg of snap.regions || []) {
+          if (MercatorProjector.pointInShape(lng, lat, reg.shape)) {
+            const label =
+              this.locale === 'en'
+                ? this.trTerm(reg.title)
+                : reg.title + (reg.category && !reg.title.endsWith(reg.category) ? `（${reg.category}）` : '');
+            if (!adminHits.includes(label)) adminHits.push(label);
           }
         }
-        return { fill: '#0a0e16', opacity: '0.94', stroke: 'rgba(255,255,255,0.06)', strokeWidth: '0.8' };
-      } else if (dynastyConfig.coreKeywords) {
-        const isCore = dynastyConfig.coreKeywords.some(kw => provName.includes(kw));
-        if (isCore) {
-          return {
-            fill: round.color || '#e74c3c',
-            opacity: '0.82',
-            stroke: round.borderColor || '#ffd700',
-            strokeWidth: '2.5'
-          };
-        }
-        return { fill: '#090d14', opacity: '0.95', stroke: 'rgba(255,255,255,0.06)', strokeWidth: '0.8' };
-      }
-      return null;
-    };
-
-    drawD3GISBaseMap(svgEl, {
-      yellowRiver: state.layers.rivers,
-      yangtze: state.layers.rivers,
-      greatWall: round.features && round.features.some(f => f.includes('长城')),
-      silkRoad: round.features && round.features.some(f => f.includes('丝绸之路') || f.includes('都护府')),
-      modernProvinces: state.layers.provinces,
-      customProvincesFill: customProvinceFill,
-      btnReset: document.getElementById('btnQuizZoomReset'),
-      btnZoomIn: document.getElementById('btnQuizZoomIn'),
-      btnZoomOut: document.getElementById('btnQuizZoomOut'),
-      onProvinceHover: (provName, feat, evt) => {
-        if (!provName) {
-          hideFloatingTooltip(tooltipEl);
-          return;
-        }
-        showFloatingTooltip(
-          tooltipEl,
-          provName,
-          `历史考证 :: 局域观察`,
-          `观察当前省份边缘边界。若被高亮着色，代表其在目标时代属于中原主权或割据大郡。`,
-          evt
-        );
-      }
-    });
-
-    // 绘制都城脉冲标志
-    if (round.capital && round.capital.coords) {
-      const rootG = svgEl.querySelector('.gis-map-root');
-      if (rootG) {
-        const capPt = window.MAP_HELPER.lonLatToSvg(round.capital.coords[0], round.capital.coords[1]);
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', capPt.x); circle.setAttribute('cy', capPt.y);
-        circle.setAttribute('r', '9');
-        circle.setAttribute('fill', '#ffd700');
-        circle.setAttribute('stroke', '#e74c3c');
-        circle.setAttribute('stroke-width', '2.5');
-        circle.setAttribute('class', 'capital-pulse');
-        rootG.appendChild(circle);
-      }
-    }
-
-    // 渲染下方特征线索 Chips
-    const clueChipsContainer = document.getElementById('quizClueChips');
-    clueChipsContainer.innerHTML = '';
-    (round.features || []).forEach(feat => {
-      const chip = document.createElement('span');
-      chip.className = 'clue-chip';
-      chip.textContent = `🔍 关键考点: ${feat}`;
-      clueChipsContainer.appendChild(chip);
-    });
-
-    // 渲染 4 个答题选项
-    const optionsContainer = document.getElementById('quizOptionsContainer');
-    optionsContainer.innerHTML = '';
-    round.options.forEach((optText, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-option-choice';
-      btn.innerHTML = `<span><strong>${String.fromCharCode(65 + idx)}.</strong> ${optText}</span> <span>➔</span>`;
-      btn.addEventListener('click', () => handleQuizOptionSelect(idx, btn));
-      optionsContainer.appendChild(btn);
-    });
-
-    startQuizTimer();
-  }
-
-  document.getElementById('btnToggleProvinces')?.addEventListener('click', (e) => {
-    state.layers.provinces = !state.layers.provinces;
-    e.target.classList.toggle('active', state.layers.provinces);
-    const topChk = document.getElementById('chkModernOverlay');
-    if (topChk) topChk.checked = state.layers.provinces;
-    if (state.currentView === 'viewQuiz') renderQuizRound();
-  });
-  document.getElementById('btnToggleRivers')?.addEventListener('click', (e) => {
-    state.layers.rivers = !state.layers.rivers;
-    e.target.classList.toggle('active', state.layers.rivers);
-    if (state.currentView === 'viewQuiz') renderQuizRound();
-  });
-
-  function startQuizTimer() {
-    const timerBar = document.getElementById('quizTimerBar');
-    timerBar.style.width = '100%';
-    const totalMs = 15000;
-    const startTime = Date.now();
-
-    state.quiz.timer = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const remainRatio = Math.max(0, (totalMs - elapsed) / totalMs);
-      timerBar.style.width = `${remainRatio * 100}%`;
-      state.quiz.timeLeft = Math.ceil((totalMs - elapsed) / 1000);
-
-      if (remainRatio <= 0) {
-        clearInterval(state.quiz.timer);
-        handleQuizTimeout();
-      }
-    }, 80);
-  }
-
-  function handleQuizOptionSelect(selectedIndex, selectedBtn) {
-    if (state.quiz.answered) return;
-    state.quiz.answered = true;
-    clearInterval(state.quiz.timer);
-
-    const round = state.quiz.rounds[state.quiz.currentIndex];
-    const isRight = selectedIndex === round.correctAnswer;
-    const optionBtns = document.querySelectorAll('.btn-option-choice');
-
-    if (isRight) {
-      window.soundEngine.playGongWin();
-      selectedBtn.classList.add('correct');
-      state.quiz.combo++;
-      const timeBonus = Math.round(state.quiz.timeLeft * 8);
-      state.quiz.score += (100 + state.quiz.combo * 30 + timeBonus);
-      document.getElementById('quizScoreText').textContent = state.quiz.score;
-      document.getElementById('quizComboText').textContent = `X${state.quiz.combo} COMBO!`;
-    } else {
-      window.soundEngine.playErrorBuzz();
-      selectedBtn.classList.add('wrong');
-      document.getElementById('quizMapContainer').classList.add('screen-shake');
-      setTimeout(() => document.getElementById('quizMapContainer').classList.remove('screen-shake'), 500);
-      state.quiz.combo = 0;
-      document.getElementById('quizComboText').textContent = `X0 COMBO`;
-      if (optionBtns[round.correctAnswer]) {
-        optionBtns[round.correctAnswer].classList.add('correct');
-      }
-    }
-
-    showQuizDetailCard(round);
-  }
-
-  function handleQuizTimeout() {
-    if (state.quiz.answered) return;
-    state.quiz.answered = true;
-    window.soundEngine.playErrorBuzz();
-    state.quiz.combo = 0;
-    const round = state.quiz.rounds[state.quiz.currentIndex];
-    const optionBtns = document.querySelectorAll('.btn-option-choice');
-    if (optionBtns[round.correctAnswer]) {
-      optionBtns[round.correctAnswer].classList.add('correct');
-    }
-    showQuizDetailCard(round);
-  }
-
-  function showQuizDetailCard(round) {
-    const card = document.getElementById('quizDetailCard');
-    card.style.display = 'block';
-    document.getElementById('detailCardName').textContent = round.name;
-    document.getElementById('detailCardPeriod').textContent = `🕒 朝代时期: ${round.period} | 核心都城: ${round.capital.name}`;
-    document.getElementById('detailCardDesc').textContent = round.description;
-
-    const nextBtn = document.getElementById('btnNextQuizRound');
-    if (nextBtn) {
-      const isLastRound = state.quiz.currentIndex >= state.quiz.rounds.length - 1;
-      nextBtn.textContent = isLastRound ? '查看真经通关结算战报 👑' : '下一关 ➔';
-    }
-  }
-
-  document.getElementById('btnNextQuizRound')?.addEventListener('click', () => {
-    state.quiz.currentIndex++;
-    renderQuizRound();
-  });
-
-  function showQuizFinalSummary() {
-    openCanvasSharePoster({
-      modeTitle: '模式一 · 看图猜朝代真经战报',
-      rankTitle: state.quiz.score >= 520 ? '👑 舆图大宗师 · GIS 天眼历史观' : '📜 鉴图学徒达人',
-      metricLabel: '五关疆域图鉴辨识积分',
-      metricVal: `${state.quiz.score} 分`,
-      comment: `在大一统西域都护府与五代十国割据界线微观辨识中创下 X${state.quiz.combo} 连胜！`
-    });
-  }
-
-  // =============================================================
-  // MODE 3: 天下大势 (TERRITORIAL CONQUEST WITH GUARANTEED TARGET CHIPS)
-  // =============================================================
-  document.getElementById('btnLaunchConquest')?.addEventListener('click', () => {
-    openScenarioPickerModal();
-  });
-
-  function openScenarioPickerModal() {
-    const modal = document.getElementById('scenarioSelectModal');
-    modal.classList.add('open');
-    renderFactionChoices('five_dynasties_907');
-  }
-
-  document.getElementById('btnScenario5Dyn')?.addEventListener('click', () => {
-    document.getElementById('btnScenario5Dyn').classList.add('active');
-    document.getElementById('btnScenario3Kin').classList.remove('active');
-    renderFactionChoices('five_dynasties_907');
-  });
-
-  document.getElementById('btnScenario3Kin')?.addEventListener('click', () => {
-    document.getElementById('btnScenario3Kin').classList.add('active');
-    document.getElementById('btnScenario5Dyn').classList.remove('active');
-    renderFactionChoices('three_kingdoms_220');
-  });
-
-  let selectedScenarioObj = null;
-  let selectedFactionObj = null;
-
-  function renderFactionChoices(scenarioId) {
-    selectedScenarioObj = state.conquestScenarios.find(s => s.id === scenarioId);
-    const container = document.getElementById('factionsPickContainer');
-    container.innerHTML = '';
-
-    selectedScenarioObj.factions.forEach((fac, idx) => {
-      const card = document.createElement('div');
-      card.style.cssText = `
-        background: var(--bg-card);
-        border: 1.5px solid ${idx === 0 ? fac.color : 'rgba(255,255,255,0.1)'};
-        border-radius: 12px;
-        padding: 12px;
-        cursor: pointer;
-      `;
-      if (idx === 0) selectedFactionObj = fac;
-
-      card.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px">
-          <span style="width:14px; height:14px; border-radius:50%; background:${fac.color}; display:inline-block"></span>
-          <strong style="color:#fff">${fac.name}</strong>
-          <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:rgba(241,196,15,0.2); color:#ffd700">${fac.diff}</span>
-        </div>
-        <p style="font-size:11.5px; color:var(--text-secondary); margin-top:6px">${fac.desc}</p>
-      `;
-
-      card.addEventListener('click', () => {
-        container.querySelectorAll('div').forEach(c => c.style.borderColor = 'rgba(255,255,255,0.1)');
-        card.style.borderColor = fac.color;
-        selectedFactionObj = fac;
-      });
-
-      container.appendChild(card);
-    });
-  }
-
-  document.getElementById('btnConfirmStartScenario')?.addEventListener('click', () => {
-    document.getElementById('scenarioSelectModal').classList.remove('open');
-    startConquestGame(selectedScenarioObj, selectedFactionObj);
-  });
-
-  function startConquestGame(scenario, playerFaction) {
-    state.conquest.activeScenario = scenario;
-    state.conquest.playerFaction = playerFaction;
-    state.conquest.ownership = { ...scenario.initialOwnership };
-    state.conquest.gold = 500;
-    state.conquest.troops = 32;
-    state.conquest.morale = 95;
-    state.conquest.turnYear = 1;
-    state.conquest.selectedRegionId = null;
-
-    switchView('viewConquest');
-    updateConquestHUD();
-    renderConquestTopologyMap();
-  }
-
-  function updateConquestHUD() {
-    const fac = state.conquest.playerFaction;
-    document.getElementById('playerFlagDot').style.background = fac.color;
-    document.getElementById('playerFactionName').textContent = fac.name;
-    document.getElementById('scenarioTitleBadge').textContent = state.conquest.activeScenario.name;
-
-    document.getElementById('resGold').textContent = state.conquest.gold;
-    document.getElementById('resTroops').textContent = `${state.conquest.troops}万`;
-    document.getElementById('resMorale').textContent = state.conquest.morale;
-    document.getElementById('conquestTurnText').textContent = `第 ${state.conquest.turnYear} 年`;
-
-    const myOwned = Object.values(state.conquest.ownership).filter(owner => owner === fac.id).length;
-    state.conquest.unlockedRegionsCount = myOwned;
-    document.getElementById('conquestUnifyCount').textContent = `${myOwned} / 24 大区`;
-    document.getElementById('conquestPrestige').textContent = myOwned * 220 + state.conquest.gold;
-
-    renderInvadableTargetChips();
-
-    if (myOwned >= 24) {
-      triggerGrandUnificationEnding();
-    }
-  }
-
-  // Create fast selectable buttons for adjacent frontiers in command panel
-  function renderInvadableTargetChips() {
-    const playerFacId = state.conquest.playerFaction.id;
-    const invadableZones = [];
-
-    Object.values(state.conquestRegions).forEach(reg => {
-      const ownerId = state.conquest.ownership[reg.id];
-      if (ownerId === playerFacId) return;
-
-      const neighbors = reg.neighbors || [];
-      const isAdjacent = neighbors.some(nId => state.conquest.ownership[nId] === playerFacId);
-      if (isAdjacent) {
-        invadableZones.push(reg);
-      }
-    });
-
-    const targetContainer = document.getElementById('selectedRegionTargetText');
-    if (!targetContainer) return;
-
-    let html = `<div style="font-size:12px; color:var(--gold-emperor); margin-bottom:8px">⚔️ 己方直连相邻敌对/中立板块 (快捷点击出兵):</div>`;
-    html += `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px">`;
-
-    invadableZones.forEach(z => {
-      const ownerId = state.conquest.ownership[z.id];
-      const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerId);
-      const facName = ownerFac ? ownerFac.name : '中立';
-      const isSelected = state.conquest.selectedRegionId === z.id;
-
-      html += `<button class="target-zone-chip ${isSelected ? 'selected' : ''}" data-zone-id="${z.id}" style="
-        background: ${isSelected ? 'rgba(0,242,254,0.25)' : 'rgba(255,255,255,0.06)'};
-        border: 1px solid ${isSelected ? '#00f2fe' : 'rgba(255,215,0,0.35)'};
-        color: ${isSelected ? '#00f2fe' : '#ffffff'};
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-      ">⚔️ ${z.name} (${facName})</button>`;
-    });
-
-    html += `</div>`;
-
-    if (state.conquest.selectedRegionId) {
-      const cur = state.conquestRegions[state.conquest.selectedRegionId];
-      if (cur) {
-        const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === state.conquest.ownership[cur.id]);
-        html += `<div style="font-size:13px; color:#00f2fe; background:rgba(0,242,254,0.1); padding:8px; border-radius:6px">
-          当前选中要冲: <strong>${cur.name}</strong> (${cur.ancientName})<br>
-          势力: ${ownerFac ? ownerFac.name : '中立'} | 守关: ${cur.pass} | 防御 ${cur.defense}
-        </div>`;
-      }
-    } else {
-      html += `<div style="font-size:12px; color:var(--text-secondary)">点击上方任意大区标签或在左侧地图点击进行选择...</div>`;
-    }
-
-    targetContainer.innerHTML = html;
-
-    // Attach target chip events
-    targetContainer.querySelectorAll('.target-zone-chip').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const zId = e.target.getAttribute('data-zone-id');
-        const reg = state.conquestRegions[zId];
-        if (reg) handleConquestRegionClick(reg);
-      });
-    });
-  }
-
-  function renderConquestTopologyMap() {
-    const svgEl = document.getElementById('conquestMapSvg');
-    const tooltipEl = document.getElementById('conquestTooltip');
-    const playerFacId = state.conquest.playerFaction.id;
-
-    const customConquestFill = (provName) => {
-      for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
-        const isMatch = provList.some(kw => provName.includes(kw));
-        if (isMatch) {
-          const ownerFactionId = state.conquest.ownership[zoneId];
-          const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerFactionId);
-          const isPlayerOwned = ownerFactionId === playerFacId;
-          const isSelectedTarget = state.conquest.selectedRegionId === zoneId;
-
-          const baseColor = ownerFac ? ownerFac.color : '#2c3e50';
-          return {
-            fill: baseColor,
-            opacity: isSelectedTarget ? '0.92' : (isPlayerOwned ? '0.80' : '0.52'),
-            stroke: isSelectedTarget ? '#00f2fe' : (isPlayerOwned ? '#ffd700' : 'rgba(255,255,255,0.22)'),
-            strokeWidth: isSelectedTarget ? '3.2' : (isPlayerOwned ? '2.0' : '1.1')
-          };
-        }
-      }
-      return { fill: '#0a0e16', opacity: '0.45', stroke: 'rgba(255,255,255,0.06)' };
-    };
-
-    drawD3GISBaseMap(svgEl, {
-      yellowRiver: true,
-      yangtze: true,
-      greatWall: true,
-      modernProvinces: true,
-      customProvincesFill: customConquestFill,
-      btnReset: document.getElementById('btnConquestZoomReset'),
-      btnZoomIn: document.getElementById('btnConquestZoomIn'),
-      btnZoomOut: document.getElementById('btnConquestZoomOut'),
-      onProvinceHover: (provName, feat, evt) => {
-        if (!provName) {
-          hideFloatingTooltip(tooltipEl);
-          return;
-        }
-        let matchedZone = null;
-        for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
-          if (provList.some(kw => provName.includes(kw))) {
-            matchedZone = state.conquestRegions[zoneId];
-            break;
+        for (const pref of snap.prefectures || []) {
+          if (MercatorProjector.pointInShape(lng, lat, pref.shape)) {
+            const label =
+              this.locale === 'en'
+                ? this.trTerm(pref.title)
+                : pref.title + (pref.category && !pref.title.endsWith(pref.category) ? `（${pref.category}）` : '');
+            if (!adminHits.includes(label)) adminHits.push(label);
           }
         }
-        if (matchedZone) {
-          const ownerId = state.conquest.ownership[matchedZone.id];
-          const ownerFac = state.conquest.activeScenario.factions.find(f => f.id === ownerId);
-          showFloatingTooltip(
-            tooltipEl,
-            `${matchedZone.name} (${provName})`,
-            `隶属割据割据: ${ownerFac ? ownerFac.name : '中立自守'}`,
-            `关隘守防: ${matchedZone.pass} | 守值 ${matchedZone.defense} | 粮赋 ${matchedZone.wealth}`,
-            evt
+
+        const near = nearestSettlement(d, 170);
+        const li = document.createElement('li');
+        const mainStr = adminHits.length
+          ? adminHits.join(' · ')
+          : polityHit
+            ? this.trTerm(polityHit)
+            : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
+
+        const subParts = [];
+        if (adminHits.length && polityHit) {
+          subParts.push(`${this.uiStr('belongs_to', '属 ')}${this.trTerm(polityHit)}`);
+        }
+        if (near) {
+          const distStr =
+            near.km < 25
+              ? this.uiStr('at_here', '即此地')
+              : `${Math.round(near.km)} km`;
+          subParts.push(
+            `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
           );
-        } else {
-          showFloatingTooltip(tooltipEl, provName, `边陲防御`, `各部游牧及沿海边卫。`, evt);
         }
-      },
-      onProvinceClick: (provName) => {
-        for (const [zoneId, provList] of Object.entries(window.MAP_HELPER.STRATEGIC_ZONE_PROVINCES)) {
-          if (provList.some(kw => provName.includes(kw))) {
-            const reg = state.conquestRegions[zoneId];
-            if (reg) handleConquestRegionClick(reg);
-            break;
+
+        li.innerHTML =
+          `<span class="t-era">${this.dynastyName(d)}</span>` +
+          `<span class="t-val">${mainStr}${
+            subParts.length ? `<span class="t-sub">${subParts.join(' · ')}</span>` : ''
+          }</span>`;
+        li.addEventListener('click', () => this.jumpToYear(d.focusYear));
+        listEl.appendChild(li);
+      }
+
+      this._id('genealogy-card').classList.remove('is-hidden');
+    }
+
+    // ---------------- Scrubber / Timeline ----------------
+    _findDynastyIndex(y) {
+      for (let i = this.dynasties.length - 1; i >= 0; i--) {
+        if (y >= this.dynasties[i].fromYear) return i;
+      }
+      return 0;
+    }
+
+    _yearToProgress(y) {
+      const idx = this._findDynastyIndex(y);
+      const d = this.dynasties[idx];
+      const span = Math.max(1, d.toYear - d.fromYear);
+      const local = Math.max(0, Math.min(1, (y - d.fromYear) / span));
+      return (
+        this.bandOffsets[idx] +
+        local * (this.bandWeights[idx] / this.totalBandWeight)
+      );
+    }
+
+    _progressToYear(frac) {
+      const clamped = Math.max(0, Math.min(0.999999, frac));
+      let idx = this.dynasties.length - 1;
+      while (idx > 0 && this.bandOffsets[idx] > clamped) idx--;
+      const d = this.dynasties[idx];
+      const weightFrac = this.bandWeights[idx] / this.totalBandWeight;
+      const local = (clamped - this.bandOffsets[idx]) / weightFrac;
+      return Math.round(d.fromYear + local * (d.toYear - d.fromYear));
+    }
+
+    _buildScrubberBands() {
+      const bands = this._id('dynasty-bands');
+      const ticks = this._id('scrubber-ticks');
+      bands.innerHTML = '';
+      ticks.innerHTML = '';
+      this.dynasties.forEach((d, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'band-cell';
+        cell.style.flex = `${this.bandWeights[idx]} 1 0`;
+        cell.style.background = d.tint;
+        cell.dataset.dynastyIdx = idx;
+        bands.appendChild(cell);
+
+        const tick = document.createElement('span');
+        tick.style.left = `${(this.bandOffsets[idx] * 100).toFixed(3)}%`;
+        ticks.appendChild(tick);
+      });
+      const endTick = document.createElement('span');
+      endTick.id = 'tick-present';
+      endTick.style.left = '100%';
+      endTick.textContent = this.uiStr('tick_now', '今');
+      ticks.appendChild(endTick);
+      this._refreshBandLabels();
+      window.addEventListener('resize', () => this._fitBandLabels());
+    }
+
+    _refreshBandLabels() {
+      const cells = this._id('dynasty-bands').children;
+      const tickNodes = this._id('scrubber-ticks').children;
+      this.dynasties.forEach((d, idx) => {
+        const cell = cells[idx];
+        if (cell) {
+          cell.textContent = this.dynastyBadge(d);
+          cell.title = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          if (d.phases && d.phases.length > 1) {
+            for (let k = 0; k < d.phases.length - 1; k++) {
+              const sub = document.createElement('i');
+              sub.className = 'sub-divider';
+              const pct =
+                ((d.phases[k].until - d.fromYear) /
+                  Math.max(1, d.toYear - d.fromYear)) *
+                100;
+              sub.style.left = `${pct.toFixed(1)}%`;
+              cell.appendChild(sub);
+            }
+          }
+        }
+        const tk = tickNodes[idx];
+        if (tk) {
+          tk.textContent =
+            d.fromYear <= 0
+              ? this.locale === 'en'
+                ? `${-d.fromYear} BCE`
+                : `前${-d.fromYear}`
+              : `${d.fromYear}`;
+        }
+      });
+      const endTick = this._id('tick-present');
+      if (endTick) endTick.textContent = this.uiStr('tick_now', '今');
+      this._fitBandLabels();
+    }
+
+    _fitBandLabels() {
+      const cells = this._id('dynasty-bands').children;
+      const tickNodes = this._id('scrubber-ticks').children;
+      let lastRight = -Infinity;
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        cell.classList.remove('is-narrow');
+        cell.classList.toggle('is-narrow', cell.scrollWidth > cell.clientWidth + 1);
+        const tk = tickNodes[i];
+        if (tk) {
+          const rect = tk.getBoundingClientRect();
+          const hide = rect.left < lastRight + 6;
+          tk.classList.toggle('is-hidden-tick', hide);
+          if (!hide) lastRight = rect.right;
+        }
+      }
+    }
+
+    _syncScrubberUi() {
+      const pct = this._yearToProgress(this.year) * 100;
+      this._id('scrubber-handle').style.left = `${pct}%`;
+      this._id('scrubber-Bubble').style.left = `${Math.max(4, Math.min(96, pct))}%`;
+      const d = this.dynasties[this.dynastyIdx];
+      this._id('bubble-text').textContent = `${this.formatYear(this.year)} · ${this.dynastyName(d)}`;
+      this._id('scrubber-track').setAttribute('aria-valuenow', String(this.year));
+      this._id('inp-year').value = this.year === 0 ? 1 : this.year;
+      Array.from(this._id('dynasty-bands').children).forEach((el, idx) =>
+        el.classList.toggle('is-active', idx === this.dynastyIdx)
+      );
+    }
+
+    jumpToYear(targetYear) {
+      let y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(targetYear)));
+      if (y === 0) y = this.year < 0 ? 1 : -1;
+      const prevIdx = this.dynastyIdx;
+      this.year = y;
+      this.dynastyIdx = this._findDynastyIndex(y);
+      const cur = this.dynasties[this.dynastyIdx];
+      const nextSnapKey = this._resolveSnapKey(cur, y);
+
+      if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
+        this._renderDynasty(cur);
+        this._renderChroniclePane(cur);
+      } else {
+        if (nextSnapKey !== this.activeSnapKey) {
+          this.activeSnapKey = nextSnapKey;
+          this._fetchSnapshot(nextSnapKey).then((snap) => {
+            if (
+              this.dynasties[this.dynastyIdx] !== cur ||
+              this._resolveSnapKey(cur, this.year) !== nextSnapKey
+            ) {
+              return;
+            }
+            this._renderPolitiesAndPrefectures(cur, snap);
+          });
+        }
+        if (this._settlementMask(cur, y) !== this.activeSettlementMask) {
+          this._renderSettlements(cur);
+        }
+        this._highlightCurrentMilestone(cur);
+        this._updateMilestoneStates(cur);
+      }
+      if (this.activeMilestone && this.activeMilestone.year !== y) {
+        this.closeMilestoneBalloon();
+      }
+      this._renderCorridors();
+      this._syncScrubberUi();
+    }
+
+    // ---------------- Autoplay ----------------
+    startAutoplay() {
+      if (this.challenge) return;
+      this.playing = true;
+      this._id('act-autoplay').innerHTML = SVG_ICONS.pause;
+      if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
+      this.playInterval = setInterval(() => {
+        const cur = this.dynasties[this.dynastyIdx];
+        const delta = Math.max(1, (cur.toYear - cur.fromYear) / 90);
+        if (this.year >= this.maxYear) {
+          this.stopAutoplay();
+          return;
+        }
+        this.jumpToYear(this.year + delta);
+      }, 50);
+    }
+
+    stopAutoplay() {
+      this.playing = false;
+      this._id('act-autoplay').innerHTML = SVG_ICONS.play;
+      if (this.playInterval) {
+        clearInterval(this.playInterval);
+        this.playInterval = null;
+      }
+    }
+
+    // ---------------- Camera Pan & Zoom ----------------
+    _applyCamera() {
+      this.svg.setAttribute(
+        'viewBox',
+        `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`
+      );
+      this._rescaleSvgTypography();
+      if (this.activeMilestone) this._positionMilestoneBalloon();
+    }
+
+    _rescaleSvgTypography() {
+      const z = 1000 / this.camera.w;
+      const invScale = (1 / Math.sqrt(z)).toFixed(3);
+      this.svg.classList.toggle('is-zoomed-prefs', z >= 1.65);
+      this.svg.classList.toggle('is-zoomed-cities', z >= 1.35);
+      this.svg
+        .querySelectorAll(
+          '.settlement-node, .region-caption, .prefecture-caption, .neighbor-caption, .corridor-caption, .milestone-pin, #grp-challenge g[data-x], #grp-genealogy g[data-x]'
+        )
+        .forEach((node) => {
+          const x = node.getAttribute('data-x');
+          const y = node.getAttribute('data-y');
+          if (x !== null) {
+            node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
+          }
+        });
+      this.grpPolities.querySelectorAll('.polity-caption').forEach((node) => {
+        const x = node.getAttribute('data-x');
+        const y = node.getAttribute('data-y');
+        if (x !== null) {
+          node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
+        }
+        const base = node.classList.contains('neighbor')
+          ? 9
+          : node.classList.contains('protectorate')
+            ? 10
+            : node.classList.contains('rival')
+              ? 12
+              : 14;
+        node.setAttribute('font-size', (base + (base > 10 ? 10 : 3) / z).toFixed(1));
+      });
+      this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
+        node.setAttribute('font-size', (9.5 / Math.sqrt(z)).toFixed(1));
+      });
+    }
+
+    _animateCameraTo(targetCam) {
+      const from = { ...this.camera };
+      const t0 = performance.now();
+      const duration = 650;
+      if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / duration);
+        const ease = 1 - Math.pow(1 - k, 3);
+        const w = from.w + (targetCam.w - from.w) * ease;
+        const h = from.h + (targetCam.h - from.h) * ease;
+        this.camera = {
+          x: from.x + (targetCam.x - from.x) * ease,
+          y: from.y + (targetCam.y - from.y) * ease,
+          w,
+          h,
+          zoom: 1000 / w,
+        };
+        this._applyCamera();
+        if (k < 1) this.flyRaf = requestAnimationFrame(step);
+      };
+      this.flyRaf = requestAnimationFrame(step);
+    }
+
+    resetCamera() {
+      this._animateCameraTo({ x: 0, y: 0, w: 1000, h: 700 });
+    }
+
+    _panToward(lng, lat) {
+      const [tx, ty] = this.projector.toScreen(lng, lat);
+      const w = Math.min(this.camera.w, 1000 / 2.4);
+      const h = w * (this.camera.h / this.camera.w);
+      this._animateCameraTo({
+        x: tx - w * 0.5,
+        y: ty - h * 0.45,
+        w,
+        h,
+      });
+    }
+
+    _clientToSvgPoint(clientX, clientY) {
+      const rect = this.svg.getBoundingClientRect();
+      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      const padX = (rect.width - this.camera.w * scale) * 0.5;
+      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      return [
+        this.camera.x + (clientX - rect.left - padX) / scale,
+        this.camera.y + (clientY - rect.top - padY) / scale,
+      ];
+    }
+
+    // ---------------- Dual-Mode Challenge ----------------
+    _buildChallengeDeck() {
+      const deck = [];
+      for (const d of this.dynasties) {
+        if (d.key === 'prc') continue;
+        for (const s of d.settlements || []) {
+          if (!s.modern) continue;
+          const weight = s.ancient !== s.modern ? 3 : 1;
+          for (let k = 0; k < weight; k++) {
+            deck.push({ dynasty: d, settlement: s });
           }
         }
       }
-    });
-
-    // Draw Big Macro-Region Stronghold Shields on Map
-    const rootG = svgEl.querySelector('.gis-map-root');
-    if (rootG) {
-      Object.values(state.conquestRegions).forEach(reg => {
-        const ownerId = state.conquest.ownership[reg.id];
-        const isPlayerOwned = ownerId === playerFacId;
-        const isSelected = state.conquest.selectedRegionId === reg.id;
-        const pos = window.MAP_HELPER.lonLatToSvg(reg.coords[0], reg.coords[1]);
-
-        const gZone = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        gZone.setAttribute('class', 'macro-zone-badge');
-        gZone.style.cursor = 'pointer';
-
-        // Shield circle background
-        const cBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        cBg.setAttribute('cx', pos.x); cBg.setAttribute('cy', pos.y - 4);
-        cBg.setAttribute('r', isSelected ? '18' : '15');
-        cBg.setAttribute('fill', isSelected ? '#00f2fe' : (isPlayerOwned ? '#c0392b' : '#1e272c'));
-        cBg.setAttribute('stroke', isSelected ? '#ffffff' : (isPlayerOwned ? '#ffd700' : 'rgba(255,255,255,0.4)'));
-        cBg.setAttribute('stroke-width', '1.8');
-        gZone.appendChild(cBg);
-
-        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x', pos.x); txt.setAttribute('y', pos.y);
-        txt.setAttribute('fill', '#ffffff');
-        txt.setAttribute('font-size', '11');
-        txt.setAttribute('font-weight', 'bold');
-        txt.setAttribute('text-anchor', 'middle');
-        txt.textContent = reg.name;
-        gZone.appendChild(txt);
-
-        const defTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        defTxt.setAttribute('x', pos.x); defTxt.setAttribute('y', pos.y + 14);
-        defTxt.setAttribute('fill', isSelected ? '#00f2fe' : '#ffd700');
-        defTxt.setAttribute('font-size', '9');
-        defTxt.setAttribute('text-anchor', 'middle');
-        defTxt.textContent = `🛡️${reg.defense}`;
-        gZone.appendChild(defTxt);
-
-        gZone.addEventListener('pointerdown', (evt) => {
-          evt.stopPropagation();
-          handleConquestRegionClick(reg);
-        });
-
-        rootG.appendChild(gZone);
-      });
-    }
-  }
-
-  function handleConquestRegionClick(region) {
-    const playerFacId = state.conquest.playerFaction.id;
-    const currentOwner = state.conquest.ownership[region.id];
-
-    if (currentOwner === playerFacId) {
-      state.conquest.selectedRegionId = null;
-      window.soundEngine.playStoneClick();
-      updateConquestHUD();
-      renderConquestTopologyMap();
-      const btnWar = document.getElementById('btnWarAttack');
-      const btnBribe = document.getElementById('btnDiplomacyBribe');
-      if (btnWar) btnWar.disabled = true;
-      if (btnBribe) btnBribe.disabled = true;
-      return;
-    }
-
-    const neighbors = region.neighbors || [];
-    const isAdjacent = neighbors.some(nId => state.conquest.ownership[nId] === playerFacId);
-
-    if (!isAdjacent) {
-      window.soundEngine.playErrorBuzz();
-      alert(`无法越境发兵！【${region.name}】未与您现有领地相邻。必须先攻占直连板块。`);
-      return;
-    }
-
-    state.conquest.selectedRegionId = region.id;
-    window.soundEngine.playStoneClick();
-    updateConquestHUD();
-    renderConquestTopologyMap();
-
-    const btnWar = document.getElementById('btnWarAttack');
-    const btnBribe = document.getElementById('btnDiplomacyBribe');
-    if (btnWar) btnWar.disabled = false;
-    if (btnBribe) btnBribe.disabled = state.conquest.gold < 200;
-  }
-
-  // 武力征讨攻城问答推演 (替换原生 prompt)
-  document.getElementById('btnWarAttack')?.addEventListener('click', () => {
-    const regId = state.conquest.selectedRegionId;
-    if (!regId) return;
-    const targetRegion = state.conquestRegions[regId];
-
-    window.soundEngine.playWarDrum();
-
-    const questions = [
-      { q: `欲取关中要害【${targetRegion.name}】(${targetRegion.ancientName})，必先攻破守卫中原与关中交界的哪一座第一雄关要隘？`, opts: ['潼关 / 虎牢关', '山海关', '嘉峪关', '剑门关'], ans: 0 },
-      { q: `大军远征攻打【${targetRegion.name}】期间，粮草走廊经由黄河与南北大运河哪一条古水系联运效率最佳？`, opts: ['隋唐大运河与黄河干流', '多瑙河', '珠江水系', '黑龙江'], ans: 0 },
-      { q: `战略要地【${targetRegion.name}】周围要隘守将号称 ${targetRegion.pass}，防御能力达到 ${targetRegion.defense} 点，宜采用何种步骑战法攻城？`, opts: ['包围绝粮待要塞内乱', '硬骑冲撞悬崖', '孤军夜渡绝壁不带粮', '放弃主力退回交趾'], ans: 0 }
-    ];
-    const qObj = questions[Math.floor(Math.random() * questions.length)];
-
-    const modal = document.getElementById('battleCouncilModal');
-    const badge = document.getElementById('battleTargetRegionBadge');
-    const promptEl = document.getElementById('battleQuestionPrompt');
-    const container = document.getElementById('battleOptionsContainer');
-
-    if (!modal || !container) return;
-    badge.textContent = `目标要冲: 【${targetRegion.name}】(守值 ${targetRegion.defense})`;
-    promptEl.textContent = qObj.q;
-    container.innerHTML = '';
-
-    qObj.opts.forEach((optText, idx) => {
-      const b = document.createElement('button');
-      b.className = 'btn-option-choice';
-      b.innerHTML = `<span><strong>${String.fromCharCode(65 + idx)}.</strong> ${optText}</span> <span>⚔️ 发兵攻打</span>`;
-      b.addEventListener('click', () => {
-        modal.classList.remove('open');
-        const isRight = idx === qObj.ans;
-        if (isRight) {
-          window.soundEngine.playSwordClash();
-          state.conquest.ownership[regId] = state.conquest.playerFaction.id;
-          state.conquest.gold += targetRegion.wealth * 2;
-          state.conquest.troops += 3;
-          state.conquest.selectedRegionId = null;
-          alert(`🎉 捷报！武力破城，大败敌军，攻占【${targetRegion.name}】！获得库金 +${targetRegion.wealth * 2}`);
-        } else {
-          window.soundEngine.playErrorBuzz();
-          state.conquest.troops = Math.max(5, state.conquest.troops - 4);
-          state.conquest.morale = Math.max(30, state.conquest.morale - 10);
-          alert(`💥 攻城失利！敌阵死守 ${targetRegion.pass}，兵马损失 4 万，军心动摇。`);
+      const chosen = [];
+      const seen = new Set();
+      while (chosen.length < 10 && deck.length) {
+        const idx = Math.floor(Math.random() * deck.length);
+        const pick = deck.splice(idx, 1)[0];
+        const uid = `${pick.dynasty.key}:${pick.settlement.ancient}`;
+        if (!seen.has(uid)) {
+          seen.add(uid);
+          chosen.push(pick);
         }
-        updateConquestHUD();
-        renderConquestTopologyMap();
-      });
-      container.appendChild(b);
-    });
-
-    modal.classList.add('open');
-  });
-
-  document.getElementById('btnCancelBattle')?.addEventListener('click', () => {
-    document.getElementById('battleCouncilModal')?.classList.remove('open');
-  });
-
-  // 外交合纵劝降
-  document.getElementById('btnDiplomacyBribe')?.addEventListener('click', () => {
-    const regId = state.conquest.selectedRegionId;
-    if (!regId) return;
-    const targetRegion = state.conquestRegions[regId];
-
-    if (state.conquest.gold < 200) return;
-    state.conquest.gold -= 200;
-
-    window.soundEngine.playGongWin();
-    state.conquest.ownership[regId] = state.conquest.playerFaction.id;
-    state.conquest.selectedRegionId = null;
-
-    alert(`🤝 外交金钱纳贡成效！【${targetRegion.name}】节度使举城降纳，染色归附！`);
-    updateConquestHUD();
-    renderConquestTopologyMap();
-  });
-
-  // 抽年度随机事件卡
-  document.getElementById('btnDrawNextEvent')?.addEventListener('click', () => {
-    window.soundEngine.playStoneClick();
-    state.conquest.turnYear++;
-
-    const events = [
-      { title: '【中原大旱，买粮救灾】', desc: '库金金币 -50，但天下百姓归心，军心上涨 +10 点。', goldDelta: -50, moraleDelta: 10 },
-      { title: '【太行雪灾，敌营减员】', desc: '北方要隘大雪封山，沿边异势防御值暂时削弱！', goldDelta: 30, moraleDelta: 5 },
-      { title: '【江淮盐铁贡银丰盈】', desc: '朝廷盐铁专卖大获全胜，国库拨入纯金 +180 两！', goldDelta: 180, moraleDelta: 0 },
-      { title: '【古运河疏浚，通航畅达】', desc: '南北物流大涨，兵马补给 +5 万精锐归营。', goldDelta: 60, moraleDelta: 8 }
-    ];
-
-    const ev = events[Math.floor(Math.random() * events.length)];
-    state.conquest.gold = Math.max(0, state.conquest.gold + ev.goldDelta);
-    state.conquest.morale = Math.min(100, state.conquest.morale + ev.moraleDelta);
-
-    document.getElementById('eventCardTitle').textContent = ev.title;
-    document.getElementById('eventCardDesc').textContent = ev.desc;
-
-    updateConquestHUD();
-  });
-
-  function triggerGrandUnificationEnding() {
-    window.soundEngine.playGongWin();
-    openCanvasSharePoster({
-      modeTitle: `模式三 · ${state.conquest.activeScenario.name} 独霸九洲`,
-      rankTitle: `👑 改元建号 · 开国神武大皇帝`,
-      metricLabel: '24 大战略要区统一度',
-      metricVal: '100% 混一宇内',
-      comment: `历经 ${state.conquest.turnYear} 年血战角逐，成功统一关中、中原、巴蜀、江东全部二十四大区！`
-    });
-  }
-
-  // =============================================================
-  // CANVAS SHARE POSTER CERTIFICATE GENERATOR
-  // =============================================================
-  function openCanvasSharePoster(data) {
-    const modal = document.getElementById('sharePosterModal');
-    modal?.classList.add('open');
-
-    const canvas = document.getElementById('posterCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
-
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, '#0f141c');
-    grad.addColorStop(0.5, '#161b22');
-    grad.addColorStop(1, '#0a0d12');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.strokeStyle = '#f1c40f';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(20, 20, W - 40, H - 40);
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(28, 28, W - 56, H - 56);
-
-    const drawCornerSeal = (x, y) => {
-      ctx.fillStyle = '#e74c3c';
-      ctx.fillRect(x - 12, y - 12, 24, 24);
-      ctx.strokeStyle = '#ffd700';
-      ctx.strokeRect(x - 10, y - 10, 20, 20);
-    };
-    drawCornerSeal(38, 38);
-    drawCornerSeal(W - 38, 38);
-    drawCornerSeal(38, H - 38);
-    drawCornerSeal(W - 38, H - 38);
-
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#f1c40f';
-    ctx.font = 'bold 22px serif';
-    ctx.fillText('御 赐 中国历史地理挑战战报', W / 2, 85);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 36px serif';
-    ctx.fillText('《指点江山》', W / 2, 140);
-
-    ctx.strokeStyle = 'rgba(241,196,15,0.4)';
-    ctx.beginPath();
-    ctx.moveTo(80, 165); ctx.lineTo(W - 80, 165);
-    ctx.stroke();
-
-    ctx.fillStyle = '#8b949e';
-    ctx.font = '16px sans-serif';
-    ctx.fillText(data.modeTitle, W / 2, 210);
-
-    ctx.fillStyle = '#ffd700';
-    ctx.font = 'bold 32px serif';
-    ctx.fillText(`“ ${data.rankTitle} ”`, W / 2, 270);
-
-    ctx.fillStyle = 'rgba(241,196,15,0.12)';
-    ctx.beginPath();
-    ctx.arc(W / 2, 390, 95, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#f1c40f';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.fillStyle = '#8b949e';
-    ctx.font = '15px sans-serif';
-    ctx.fillText(data.metricLabel, W / 2, 350);
-
-    ctx.fillStyle = '#00f2fe';
-    ctx.font = 'bold 44px sans-serif';
-    ctx.fillText(data.metricVal, W / 2, 405);
-
-    ctx.fillStyle = '#d1d8e0';
-    ctx.font = '16px serif';
-    const lines = wrapCanvasText(ctx, data.comment, W - 160);
-    lines.forEach((line, i) => {
-      ctx.fillText(line, W / 2, 530 + i * 28);
-    });
-
-    ctx.fillStyle = '#c0392b';
-    ctx.fillRect(W / 2 - 45, 660, 90, 90);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(W / 2 - 40, 665, 80, 80);
-
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 22px serif';
-    ctx.fillText('指点', W / 2, 700);
-    ctx.fillText('江山', W / 2, 730);
-
-    ctx.fillStyle = '#8b949e';
-    ctx.font = '13px sans-serif';
-    ctx.fillText('GitHub: DeanChensj/jiangshan-map', W / 2, 790);
-  }
-
-  function wrapCanvasText(ctx, text, maxWidth) {
-    const words = text.split('');
-    const lines = [];
-    let currentLine = '';
-    words.forEach(char => {
-      const testLine = currentLine + char;
-      const width = ctx.measureText(testLine).width;
-      if (width > maxWidth && currentLine !== '') {
-        lines.push(currentLine);
-        currentLine = char;
-      } else {
-        currentLine = testLine;
       }
-    });
-    lines.push(currentLine);
-    return lines;
+      return chosen;
+    }
+
+    startChallenge(variant) {
+      this.stopAutoplay();
+      this.closeMilestoneBalloon();
+      if (variant) this.challengeVariant = variant;
+      this.challenge = {
+        variant: this.challengeVariant,
+        deck: this._buildChallengeDeck(),
+        index: 0,
+        score: 0,
+        answered: false,
+      };
+      this._id('tab-locate').classList.toggle('is-active', this.challengeVariant === 'locate');
+      this._id('tab-match').classList.toggle('is-active', this.challengeVariant === 'match');
+      this._id('challenge-card').classList.remove('is-hidden');
+      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
+      lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
+      this.svg.classList.toggle('is-crosshair', this.challengeVariant === 'locate');
+      this.grpSettlements.classList.toggle('is-hidden', this.challengeVariant === 'locate');
+      this._id('act-next-round').onclick = null;
+      this.presentChallengeRound();
+    }
+
+    stopChallenge() {
+      this.challenge = null;
+      this.grpChallenge.innerHTML = '';
+      this._id('challenge-card').classList.add('is-hidden');
+      this._id('challenge-options').classList.add('is-hidden');
+      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
+      lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
+      this.svg.classList.toggle('is-crosshair', this.genealogyMode);
+      this.grpSettlements.classList.toggle('is-hidden', !this._id('chk-settlements').checked);
+    }
+
+    presentChallengeRound() {
+      const q = this.challenge;
+      this.grpChallenge.innerHTML = '';
+      q.answered = false;
+      const cur = q.deck[q.index];
+      this.jumpToYear(cur.dynasty.focusYear);
+
+      this._id('challenge-step').textContent =
+        this.locale === 'en'
+          ? `Q ${q.index + 1} / ${q.deck.length}`
+          : `第 ${q.index + 1} / ${q.deck.length} 题`;
+      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
+      this._id('challenge-result').classList.add('is-hidden');
+
+      const hint = cur.settlement.remark
+        ? `（${this.trTerm(cur.settlement.remark)}）`
+        : cur.settlement.isCapital
+          ? this.uiStr('cap_hint', '（都城）')
+          : '';
+
+      if (q.variant === 'match') {
+        this.grpSettlements.classList.add('is-hidden');
+        const [sx, sy] = this.projector.toScreen(
+          cur.settlement.coord[0],
+          cur.settlement.coord[1]
+        );
+        const marker = this._svgNode(
+          'g',
+          { 'data-x': sx.toFixed(1), 'data-y': sy.toFixed(1) },
+          this.grpChallenge
+        );
+        this._svgNode('circle', { class: 'target-ring', r: 14 }, marker);
+        this._svgNode('circle', { class: 'answer-pin', r: 5 }, marker);
+        this._rescaleSvgTypography();
+
+        this._id('challenge-question').innerHTML =
+          this.locale === 'en'
+            ? `<b>${this.dynastyName(cur.dynasty)}</b> · The ancient city <b>“${this.trTerm(cur.settlement.ancient)}”</b>${hint} corresponds to which modern city?`
+            : `【${this.dynastyName(cur.dynasty)}】古地名 <b>「${cur.settlement.ancient}」</b>${hint} 对应今天的哪座城市？`;
+
+        const pool = Array.from(
+          new Set(
+            this.dynasties
+              .flatMap((d) => d.settlements.map((s) => s.modern))
+              .filter((m) => m && m !== cur.settlement.modern)
+          )
+        );
+        const distractors = [];
+        while (distractors.length < 3 && pool.length) {
+          distractors.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+        }
+        const choices = [cur.settlement.modern, ...distractors].sort(() => Math.random() - 0.5);
+        const box = this._id('challenge-options');
+        box.innerHTML = '';
+        box.classList.remove('is-hidden');
+        for (const opt of choices) {
+          const btn = document.createElement('button');
+          btn.className = 'option-choice';
+          btn.dataset.optValue = opt;
+          btn.textContent = this.trTerm(opt);
+          btn.addEventListener('click', () => this._evaluateMatchChoice(opt, btn));
+          box.appendChild(btn);
+        }
+      } else {
+        this._id('challenge-options').classList.add('is-hidden');
+        this._id('challenge-question').innerHTML =
+          this.locale === 'en'
+            ? `Click on the map to locate <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${this.trTerm(cur.settlement.ancient)}”</b>${hint}`
+            : `请在地图上点击 <b>${this.dynastyName(cur.dynasty)}</b> 时期的 <b>「${cur.settlement.ancient}」</b>${hint}`;
+      }
+    }
+
+    _evaluateMatchChoice(choice, clickedBtn) {
+      const q = this.challenge;
+      if (!q || q.answered) return;
+      q.answered = true;
+      const cur = q.deck[q.index];
+      const isRight = choice === cur.settlement.modern;
+      if (isRight) q.score += 100;
+
+      Array.from(this._id('challenge-options').children).forEach((b) => {
+        b.disabled = true;
+        if (b.dataset.optValue === cur.settlement.modern) b.classList.add('is-correct');
+        else if (b === clickedBtn) b.classList.add('is-wrong');
+      });
+
+      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
+      this._id('challenge-verdict').innerHTML = isRight
+        ? this.locale === 'en'
+          ? `Correct! <b>${this.trTerm(cur.settlement.ancient)}</b> is modern <b>${this.trTerm(cur.settlement.modern)}</b> (+100 pts)`
+          : `回答正确！<b>${cur.settlement.ancient}</b> 即今 <b>${cur.settlement.modern}</b>（+100 分）`
+        : this.locale === 'en'
+          ? `Not quite — <b>${this.trTerm(cur.settlement.ancient)}</b> is modern <b>${this.trTerm(cur.settlement.modern)}</b> (+0 pts)`
+          : `答错了，<b>${cur.settlement.ancient}</b> 对应今 <b>${cur.settlement.modern}</b>（+0 分）`;
+
+      this._id('act-next-round').innerHTML =
+        q.index + 1 >= q.deck.length
+          ? this.uiStr('quiz_see_result', '查看成绩')
+          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
+      this._id('challenge-result').classList.remove('is-hidden');
+    }
+
+    _evaluateLocateClick(svgX, svgY) {
+      const q = this.challenge;
+      if (!q || q.answered || q.variant !== 'locate') return;
+      q.answered = true;
+
+      const cur = q.deck[q.index];
+      const guessGeo = this.projector.toGeo(svgX, svgY);
+      const km = Math.round(this.projector.greatCircleKm(guessGeo, cur.settlement.coord));
+      const pts =
+        km <= 80
+          ? 100
+          : km <= 200
+            ? 80
+            : km <= 380
+              ? 55
+              : km <= 600
+                ? 25
+                : 0;
+      q.score += pts;
+
+      const [ax, ay] = this.projector.toScreen(
+        cur.settlement.coord[0],
+        cur.settlement.coord[1]
+      );
+      const radPx =
+        (200 / (111 * Math.cos(cur.settlement.coord[1] * DEG_TO_RAD))) * this.projector.scale;
+
+      this._svgNode(
+        'circle',
+        { class: 'target-ring', cx: ax.toFixed(1), cy: ay.toFixed(1), r: radPx.toFixed(1) },
+        this.grpChallenge
+      );
+      this._svgNode(
+        'line',
+        {
+          class: 'error-line',
+          x1: svgX.toFixed(1),
+          y1: svgY.toFixed(1),
+          x2: ax.toFixed(1),
+          y2: ay.toFixed(1),
+        },
+        this.grpChallenge
+      );
+
+      const gPin = this._svgNode(
+        'g',
+        { 'data-x': svgX.toFixed(1), 'data-y': svgY.toFixed(1) },
+        this.grpChallenge
+      );
+      this._svgNode('circle', { class: 'guess-pin', r: 4.5 }, gPin);
+
+      const aPin = this._svgNode(
+        'g',
+        { 'data-x': ax.toFixed(1), 'data-y': ay.toFixed(1) },
+        this.grpChallenge
+      );
+      this._svgNode('circle', { class: 'answer-pin', r: 5 }, aPin);
+      const aLabel = this._svgNode(
+        'text',
+        {
+          x: 8,
+          y: 4,
+          style: 'font-size:12px;font-weight:700;fill:#1f5f3e;filter:url(#label-halo)',
+        },
+        aPin
+      );
+      aLabel.textContent = `${this.trTerm(cur.settlement.ancient)}（${
+        this.locale === 'en' ? this.trTerm(cur.settlement.modern) : '今' + cur.settlement.modern
+      }）`;
+      this._rescaleSvgTypography();
+
+      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
+      const comment =
+        pts === 100
+          ? this.uiStr('verdict_100', '正中靶心！')
+          : pts >= 80
+            ? this.uiStr('verdict_80', '非常接近！')
+            : pts >= 55
+              ? this.uiStr('verdict_55', '方位基本正确。')
+              : pts > 0
+                ? this.uiStr('verdict_25', '稍有点远。')
+                : this.uiStr('verdict_0', '偏离较远。');
+
+      this._id('challenge-verdict').innerHTML =
+        this.locale === 'en'
+          ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${this.trTerm(cur.settlement.ancient)} (${this.trTerm(cur.settlement.modern)})`
+          : `${comment} 偏差 <b>${km} 公里</b>（+${pts} 分）· 答案：${cur.settlement.ancient}（今${cur.settlement.modern}）`;
+
+      this._id('act-next-round').innerHTML =
+        q.index + 1 >= q.deck.length
+          ? this.uiStr('quiz_see_result', '查看成绩')
+          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
+      this._id('challenge-result').classList.remove('is-hidden');
+    }
+
+    _finishChallenge() {
+      const q = this.challenge;
+      const total = q.deck.length * 100;
+      const rank =
+        q.score >= 850
+          ? this.uiStr('title_850', '太史令 · 舆图大家')
+          : q.score >= 650
+            ? this.uiStr('title_650', '職方郎中 · 熟稔疆理')
+            : q.score >= 400
+              ? this.uiStr('title_400', '州郡从事 · 略通古今')
+              : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');
+
+      this._id('challenge-options').classList.add('is-hidden');
+      this._id('challenge-question').innerHTML =
+        this.locale === 'en'
+          ? `Challenge complete! Total score <b>${q.score} / ${total}</b> — Rank: <b>${rank}</b>`
+          : `挑战结束！总分 <b>${q.score} / ${total}</b> —— 封号：<b>「${rank}」</b>`;
+      this._id('challenge-verdict').textContent = this.uiStr(
+        'quiz_again_msg',
+        '可再战一局，或关闭回到自由浏览。'
+      );
+      const nextBtn = this._id('act-next-round');
+      nextBtn.textContent = this.uiStr('quiz_again', '再来一局');
+      nextBtn.onclick = () => {
+        nextBtn.onclick = null;
+        this.startChallenge(this.challengeVariant);
+      };
+    }
+
+    // ---------------- Event Listeners ----------------
+    _attachListeners() {
+      // Layer checkboxes
+      const bindToggle = (chkId, grpEl, inv = false) => {
+        this._id(chkId).addEventListener('change', (e) => {
+          grpEl.classList.toggle('is-hidden', inv ? e.target.checked : !e.target.checked);
+        });
+      };
+      bindToggle('chk-provinces', this.grpProvinces);
+      bindToggle('chk-prov-names', this.grpProvNames);
+      bindToggle('chk-polities', this.grpPolities);
+      bindToggle('chk-prefectures', this.grpPrefectures);
+      bindToggle('chk-settlements', this.grpSettlements);
+      bindToggle('chk-corridors', this.grpCorridors);
+      this._id('chk-milestones').addEventListener('change', (e) => {
+        this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
+        if (!e.target.checked) this.closeMilestoneBalloon();
+      });
+
+      this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
+      this._id('act-genealogy').addEventListener('click', () => this.toggleGenealogyMode());
+      this._id('act-close-genealogy').addEventListener('click', () => this.toggleGenealogyMode(false));
+
+      this._id('act-challenge').addEventListener('click', () => {
+        if (this.challenge) this.stopChallenge();
+        else this.startChallenge();
+      });
+      this._id('act-close-challenge').addEventListener('click', () => this.stopChallenge());
+      this._id('tab-locate').addEventListener('click', () => this.startChallenge('locate'));
+      this._id('tab-match').addEventListener('click', () => this.startChallenge('match'));
+      this._id('act-next-round').addEventListener('click', () => {
+        if (!this.challenge || this._id('act-next-round').onclick) return;
+        this.challenge.index++;
+        if (this.challenge.index >= this.challenge.deck.length) {
+          this._finishChallenge();
+        } else {
+          this.presentChallengeRound();
+        }
+      });
+
+      this._id('act-locale').addEventListener('click', () => {
+        this.locale = this.locale === 'en' ? 'zh' : 'en';
+        this.applyLocale();
+      });
+
+      this._id('act-autoplay').addEventListener('click', () => {
+        if (this.playing) this.stopAutoplay();
+        else this.startAutoplay();
+      });
+
+      this._id('inp-year').addEventListener('change', (e) => {
+        this.stopAutoplay();
+        this.jumpToYear(Number(e.target.value));
+      });
+
+      // Scrubber dragging (smooth continuous scrubbing anywhere on the bar)
+      const track = this._id('scrubber-track');
+      let scrubbing = false;
+      const scrubAt = (clientX) => {
+        const r = track.getBoundingClientRect();
+        this.jumpToYear(this._progressToYear((clientX - r.left) / r.width));
+      };
+      track.addEventListener('pointerdown', (e) => {
+        if (this.challenge) return;
+        this.stopAutoplay();
+        scrubbing = true;
+        track.setPointerCapture(e.pointerId);
+        scrubAt(e.clientX);
+      });
+      track.addEventListener('pointermove', (e) => {
+        if (scrubbing) scrubAt(e.clientX);
+      });
+      const stopScrub = () => {
+        scrubbing = false;
+      };
+      track.addEventListener('pointerup', stopScrub);
+      track.addEventListener('pointercancel', stopScrub);
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          if (this.challenge) return;
+          e.preventDefault();
+          this.stopAutoplay();
+          const step = e.shiftKey ? 50 : 10;
+          this.jumpToYear(this.year + (e.key === 'ArrowRight' ? step : -step));
+        } else if (e.key === 'Home' && !this.challenge) {
+          this.jumpToYear(this.minYear);
+        } else if (e.key === 'End' && !this.challenge) {
+          this.jumpToYear(this.maxYear);
+        } else if (e.key === ' ') {
+          e.preventDefault();
+          if (this.playing) this.stopAutoplay();
+          else this.startAutoplay();
+        } else if (e.key === 'Escape') {
+          this.closeMilestoneBalloon();
+          if (this.genealogyMode) this.toggleGenealogyMode(false);
+        }
+      });
+
+      // SVG Zoom & Pan
+      this.svg.addEventListener(
+        'wheel',
+        (e) => {
+          e.preventDefault();
+          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
+          const factor = Math.exp(-e.deltaY * 0.0015);
+          const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+          const k = nextW / this.camera.w;
+          this.camera = {
+            x: mx - (mx - this.camera.x) * k,
+            y: my - (my - this.camera.y) * k,
+            w: nextW,
+            h: this.camera.h * k,
+            zoom: 1000 / nextW,
+          };
+          this._applyCamera();
+        },
+        { passive: false }
+      );
+
+      this.svg.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        this.didPan = false;
+        this.dragState = {
+          startX: e.clientX,
+          startY: e.clientY,
+          camX: this.camera.x,
+          camY: this.camera.y,
+        };
+        this.svg.setPointerCapture(e.pointerId);
+      });
+
+      this.svg.addEventListener('pointermove', (e) => {
+        if (!this.dragState) return;
+        const dx = e.clientX - this.dragState.startX;
+        const dy = e.clientY - this.dragState.startY;
+        if (Math.hypot(dx, dy) > 4) {
+          this.didPan = true;
+          this.svg.classList.add('is-panning');
+        }
+        if (this.didPan) {
+          const rect = this.svg.getBoundingClientRect();
+          const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+          this.camera.x = this.dragState.camX - dx / scale;
+          this.camera.y = this.dragState.camY - dy / scale;
+          this._applyCamera();
+        }
+      });
+
+      const endPointer = (e) => {
+        if (!this.dragState) return;
+        const wasPan = this.didPan;
+        this.dragState = null;
+        this.svg.classList.remove('is-panning');
+        if (!wasPan && this.challenge && !this.challenge.answered && this.challenge.variant === 'locate') {
+          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+          this._evaluateLocateClick(sx, sy);
+        } else if (!wasPan && this.genealogyMode) {
+          const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+          const [lng, lat] = this.projector.toGeo(sx, sy);
+          this.openGenealogyAt(lng, lat);
+        }
+      };
+      this.svg.addEventListener('pointerup', endPointer);
+      this.svg.addEventListener('pointercancel', endPointer);
+
+      // Hover tooltips
+      const frame = this._id('viewport-frame');
+      frame.addEventListener('pointermove', (e) => {
+        const settlementEl = e.target.closest && e.target.closest('.settlement-node');
+        const corridorEl = e.target.closest && e.target.closest('.corridor-line');
+        const milestoneEl = e.target.closest && e.target.closest('.milestone-pin');
+
+        if (settlementEl) {
+          const anc = this.trTerm(settlementEl.dataset.ancient);
+          const mod = this.trTerm(settlementEl.dataset.modern);
+          const rem = this.trTerm(settlementEl.dataset.remark);
+          const sub =
+            this.locale === 'en'
+              ? `${mod && mod !== anc ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}`
+              : `${mod && mod !== anc ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}`;
+          this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
+        } else if (corridorEl) {
+          this._showHoverTip(
+            e,
+            `<b>${corridorEl.dataset.corrTitle}</b><div class="tt-sub">${corridorEl.dataset.corrSummary || ''}</div>`
+          );
+        } else if (milestoneEl) {
+          const cur = this.dynasties[this.dynastyIdx];
+          const m = (cur.milestones || []).find(
+            (item) => item.year === Number(milestoneEl.dataset.year)
+          );
+          if (m) {
+            this._showHoverTip(
+              e,
+              `<b>${this.formatYear(m.year)} · ${this.milestoneHeadline(cur, m)}</b><div class="tt-sub">${
+                m.site ? SVG_ICONS.pin + ' ' + this.trTerm(m.site) + ' · ' : ''
+              }${this.uiStr('click_for_detail', '点击查看详情')}</div>`
+            );
+          }
+        } else if (
+          e.target.dataset &&
+          (e.target.dataset.regionTitle ||
+            e.target.dataset.prefTitle ||
+            e.target.dataset.polityTitle ||
+            e.target.dataset.provTitle ||
+            e.target.dataset.countryTitle)
+        ) {
+          const stack = document.elementsFromPoint(e.clientX, e.clientY);
+          const findData = (key) => {
+            const hit = stack.find((el) => el.dataset && el.dataset[key]);
+            return hit ? hit.dataset : null;
+          };
+          const reg = findData('regionTitle');
+          const pref = findData('prefTitle');
+          const pol = findData('polityTitle');
+          const prov = findData('provTitle');
+          const country = findData('countryTitle');
+
+          const lines = [];
+          if (reg || pref) {
+            const parts = [];
+            if (reg) {
+              const rName = this.trTerm(reg.regionTitle);
+              const rCat = reg.regionCategory;
+              parts.push(
+                this.locale === 'en'
+                  ? rName
+                  : rName + (rCat && !rName.endsWith(rCat) ? '（' + rCat + '）' : '')
+              );
+            }
+            if (pref) {
+              const pName = this.trTerm(pref.prefTitle);
+              const pCat = pref.prefCategory;
+              const pLabel =
+                this.locale === 'en'
+                  ? pName
+                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '');
+              if (!parts.includes(pLabel)) parts.push(pLabel);
+            }
+            lines.push(`<b>${parts.join(' · ')}</b>`);
+            if (pol) {
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(pol.polityTitle)}</div>`
+              );
+            }
+          } else if (pol) {
+            const tag =
+              pol.polityRole === 'neighbor'
+                ? this.uiStr('tag_neighbor', '（同期周边政权）')
+                : pol.polityRole === 'protectorate'
+                  ? this.uiStr('tag_prot', '（都护府 / 羁縻）')
+                  : this.uiStr('tag_hist', '（历史疆域）');
+            lines.push(`<b>${this.trTerm(pol.polityTitle)}</b> <span class="tt-sub">${tag}</span>`);
+          }
+          if (prov) {
+            lines.push(
+              `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(prov.provTitle)}</div>`
+            );
+          } else if (country) {
+            lines.push(
+              `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(country.countryTitle)}</div>`
+            );
+          }
+          this._showHoverTip(e, lines.join(''));
+        } else {
+          this.hoverTip.classList.add('is-hidden');
+        }
+      });
+
+      frame.addEventListener('pointerleave', () => this.hoverTip.classList.add('is-hidden'));
+    }
+
+    _showHoverTip(e, html) {
+      const rect = this._id('viewport-frame').getBoundingClientRect();
+      this.hoverTip.innerHTML = html;
+      this.hoverTip.classList.remove('is-hidden');
+      this.hoverTip.style.left = `${Math.min(rect.width - 220, e.clientX - rect.left + 14)}px`;
+      this.hoverTip.style.top = `${Math.max(10, e.clientY - rect.top - 10)}px`;
+    }
+
+    _restoreFromQuery() {
+      const q = new URLSearchParams(location.search);
+      if (q.has('year')) {
+        const y = Number(q.get('year'));
+        if (!Number.isNaN(y)) this.jumpToYear(y);
+      }
+      if (q.has('event')) {
+        const ey = Number(q.get('event'));
+        const cur = this.dynasties[this.dynastyIdx];
+        const m = (cur.milestones || []).find((item) => item.year === ey) || (cur.milestones || [])[0];
+        if (m) {
+          if (m.coord) {
+            this.camera.zoom = Math.max(this.camera.zoom, 1.8);
+            this.camera.w = 1000 / this.camera.zoom;
+            this.camera.h = 700 / this.camera.zoom;
+            this._panToward(m.coord[0], m.coord[1]);
+          }
+          setTimeout(() => this.openMilestoneBalloon(cur, m), 350);
+        }
+      }
+      if (q.has('trace')) {
+        const [lng, lat] = q.get('trace').split(',').map(Number);
+        if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
+          this.toggleGenealogyMode(true);
+          setTimeout(() => this.openGenealogyAt(lng, lat), 400);
+        }
+      }
+      if (q.has('quiz')) {
+        const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
+        setTimeout(() => this.startChallenge(mode), 350);
+      }
+    }
   }
 
-  document.getElementById('btnClosePoster')?.addEventListener('click', () => {
-    document.getElementById('sharePosterModal')?.classList.remove('open');
+  window.addEventListener('DOMContentLoaded', () => {
+    window.atlasApp = new HistoricalAtlasController();
   });
-
-  document.getElementById('btnDownloadPoster')?.addEventListener('click', () => {
-    const canvas = document.getElementById('posterCanvas');
-    const link = document.createElement('a');
-    link.download = 'jiangshan_historical_map_certificate.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
-});
+})();

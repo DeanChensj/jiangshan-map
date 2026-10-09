@@ -1,375 +1,178 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>《指点江山：中国历史地理挑战赛》| 纯前端互动历史地理轻手游</title>
-  <meta name="description" content="包含【看图猜朝代】、【名将征途地理定位 GeoGuessr】与【天下大势策略割据吞并】三大爆款地图游戏模式。">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/lib/d3.v7.min.js"></script>
-  <script src="js/lib/topojson.min.js"></script>
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>江山时序 · 中国历史地图时间轴</title>
+  <meta name="description" content="拖动时间轴，从秦朝到现代，浏览历代疆域、州郡政区、古今地名沿革与重大历史事件，支持古地名挑战模式与中英双语。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-
-  <!-- 顶部玻璃框导航条 -->
-  <header class="app-header">
-    <div class="brand" id="brandLobbyBtn">
-      <div class="brand-seal">江</div>
-      <div class="brand-title-box">
-        <h1 class="brand-title">指点江山</h1>
-        <span class="brand-subtitle">CHINA HISTORICAL GEOGRAPHY CHALLENGE</span>
+  <div id="atlas-shell">
+    <header id="nav-bar">
+      <div class="brand-group">
+        <h1 id="site-heading">
+          <span class="seal-mark" id="txt-seal">江山时序</span>
+          <span class="subtitle-mark" id="txt-subtitle">中国历史地图 · 秦 → 今</span>
+        </h1>
       </div>
-    </div>
-
-    <div class="header-controls">
-      <button class="btn-icon" id="btnToggleSound" title="点击开关古风视听音效">
-        <div class="audio-waves" id="audioWaveVisualizer">
-          <span></span><span></span><span></span>
-        </div>
-        <span id="soundLabel">乐效: 开</span>
-      </button>
-
-      <button class="btn-icon" id="btnAchievements" title="查看历史勋章">
-        🏅 勋章录 (<span id="unlockedBadgesCount">3</span>/9)
-      </button>
-    </div>
-  </header>
-
-  <!-- 全局视图容器 -->
-  <main class="view-container">
-
-    <!-- ========================================================
-         VIEW 0: 游戏大厅 (LOBBY)
-         ======================================================== -->
-    <section class="game-view active" id="viewLobby">
-      <div class="hero-banner">
-        <div class="hero-tag">MASTER RELEASE SPEC V1.0 · 纯前端纯粹交互</div>
-        <h2 class="hero-headline">风云五千年 · <span>看你指点何处江山</span></h2>
-        <p class="hero-lead">
-          继承现代地图动效美学与视听碰撞。从青铜白银到地狱级五代十国割据认疆，
-          从韩信、岳飞点位精确公里数推算，到 24 战略大区天下大势问答连片染色！
-        </p>
-
-        <div class="stats-strip">
-          <div class="stat-item">
-            <span class="stat-num" id="totalPlayersCount">98,420</span>
-            <span class="stat-label">累计历史挑战战者</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">S+ 级 GPS</span>
-            <span class="stat-label">名将轨迹测量精度</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">24 大区</span>
-            <span class="stat-label">天下大势战略邻接拓扑</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">100% 零外链</span>
-            <span class="stat-label">Web Audio 原生中式声效</span>
-          </div>
-        </div>
+      <div class="control-strip" role="toolbar" aria-label="地图图层与交互模式">
+        <label class="layer-chip"><input type="checkbox" id="chk-provinces" checked /><span id="lbl-provinces">现代省界</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-polities" checked /><span id="lbl-polities">历史疆域</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-prefectures" checked /><span id="lbl-prefectures">州道政区</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-settlements" checked /><span id="lbl-settlements">古地名</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-corridors" checked /><span id="lbl-corridors">长城 · 运河 · 丝路</span></label>
+        <label class="layer-chip"><input type="checkbox" id="chk-milestones" checked /><span id="lbl-milestones">事件</span></label>
+        <button id="act-reset-camera" class="action-btn subtle" title="复位视图">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
+          <span id="lbl-reset-camera">复位视图</span>
+        </button>
+        <button id="act-genealogy" class="action-btn subtle" title="点击地图任意位置，查看该地从秦到清的政区与古城沿革">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.5a4.3 4.3 0 0 0-4.3 4.3c0 3.1 4.3 8.4 4.3 8.4s4.3-5.3 4.3-8.4A4.3 4.3 0 0 0 8 1.5zm0 5.9a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span id="lbl-genealogy">点地溯源</span>
+        </button>
+        <button id="act-challenge" class="action-btn accent">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.2" fill="currentColor"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span id="lbl-challenge">开始挑战</span>
+        </button>
+        <button id="act-locale" class="action-btn subtle locale-switch" title="Switch language / 切换中英文">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="8" cy="8" rx="2.8" ry="6.2" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+          <span id="lbl-locale">EN</span>
+        </button>
       </div>
+    </header>
 
-      <!-- 2 大核心爆款模式大屏视觉选择卡片 -->
-      <div class="mode-cards-grid">
+    <main id="workspace-body">
+      <div id="viewport-frame">
+        <svg id="atlas-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="中国历史地图">
+          <defs>
+            <pattern id="diag-hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(35)">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(43,38,34,0.28)" stroke-width="2" />
+            </pattern>
+            <filter id="label-halo" x="-20%" y="-20%" width="140%" height="140%">
+              <feMorphology operator="dilate" radius="1.4" in="SourceAlpha" result="dilated" />
+              <feFlood flood-color="#f6f1e6" flood-opacity="0.92" result="bg" />
+              <feComposite in="bg" in2="dilated" operator="in" result="outline" />
+              <feMerge>
+                <feMergeNode in="outline" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <rect id="ocean-bg" x="-2000" y="-2000" width="6000" height="6000" />
+          <g id="camera-rig">
+            <g id="grp-neighbors"></g>
+            <g id="grp-provinces"></g>
+            <g id="grp-polities"></g>
+            <g id="grp-prefectures"></g>
+            <g id="grp-corridors"></g>
+            <g id="grp-prov-names" class="is-hidden"></g>
+            <g id="grp-settlements"></g>
+            <g id="grp-milestones"></g>
+            <g id="grp-challenge"></g>
+            <g id="grp-genealogy"></g>
+          </g>
+        </svg>
 
-        <!-- 模式一：看图猜朝代 (GEO-QUIZ SHOWCASE CARD) -->
-        <article class="mode-card mode-card-visual" id="modeCardQuiz">
-          <div class="mode-card-bg-art" style="background-image: url('img/quiz_mode_cover.jpg');"></div>
-          <div class="mode-card-glass-overlay">
-            <div class="mode-badge-top badge-red">🔥 核心竞猜 · 无字疆域辩识</div>
-            <h3 class="mode-title">看图猜朝代 <span class="mode-subtitle">GEO-QUIZ EMPIRE DISCOVERY</span></h3>
-            <p class="mode-desc">
-              无字矢量历史疆域高清沙盘呈现在前！精准锁死都城起点、长城边关与分裂割据要塞。连续 Combo 触发气息翻倍加分。
-            </p>
-            <div class="mode-options-row">
-              <button class="btn-subdifficulty active" data-quiz-diff="standard">标准考题 (大一统)</button>
-              <button class="btn-subdifficulty" data-quiz-diff="hell">地狱难度 (割据乱世)</button>
+        <div id="map-key" aria-live="polite"></div>
+
+        <div id="challenge-card" class="is-hidden" role="region" aria-label="古地名挑战">
+          <div class="challenge-top">
+            <div class="mode-pills" role="tablist">
+              <button id="tab-locate" class="mode-pill is-active" role="tab">地图寻址</button>
+              <button id="tab-match" class="mode-pill" role="tab">古今对号</button>
             </div>
-            <button class="btn-primary-launch" id="btnLaunchQuiz">
-              <span>进入鉴图问答</span> <span class="btn-arrow">➔</span>
+            <span id="challenge-step" class="pill-badge">第 1 / 10 题</span>
+            <span id="challenge-points" class="score-readout">得分 0</span>
+            <button id="act-close-challenge" class="icon-close" title="退出挑战" aria-label="退出挑战">
+              <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>
           </div>
-        </article>
-
-        <!-- 模式三：天下大势 (TERRITORIAL CONQUEST SHOWCASE CARD) -->
-        <article class="mode-card mode-card-visual" id="modeCardConquest">
-          <div class="mode-card-bg-art" style="background-image: url('img/conquest_mode_cover.jpg');"></div>
-          <div class="mode-card-glass-overlay">
-            <div class="mode-badge-top badge-gold">👑 战略染色 · 二十四大区大合纵</div>
-            <h3 class="mode-title">天下大势 <span class="mode-subtitle">WARLORD STRATEGY THEATER</span></h3>
-            <p class="mode-desc">
-              选定割据政权（如后梁、曹魏、蜀汉、吴越）。出兵邻接要冲问答破城或纳贡金钱合纵，大区连片染上班方专属色纹！
-            </p>
-            <div class="mode-options-row">
-              <span class="mode-tag-pill">⚔️ 24 大战略要区</span>
-              <span class="mode-tag-pill">🤝 金钱劝降外交</span>
-              <span class="mode-tag-pill">📜 御前军议推演</span>
-            </div>
-            <button class="btn-primary-launch" id="btnLaunchConquest">
-              <span>决战天下大势</span> <span class="btn-arrow">➔</span>
-            </button>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ========================================================
-         VIEW 1: 看图猜朝代 (MODE 1)
-         ======================================================== -->
-    <section class="game-view" id="viewQuiz">
-      <div class="top-hud-bar">
-        <div class="hud-left">
-          <button class="btn-back-lobby" id="quizBackBtn">← 返回大厅</button>
-          <span class="hud-mode-title" id="quizModeBadgeLabel">看图猜朝代 · 地狱模式</span>
-        </div>
-        <div class="hud-pills">
-          <div class="hud-pill">关卡: <strong id="quizCurrentProgress">1 / 5</strong></div>
-          <div class="hud-pill">得分: <strong id="quizScoreText">0</strong></div>
-          <div class="hud-pill">连胜: <span class="combo-flame" id="quizComboText">X0 COMBO</span></div>
-          <label class="hud-pill" style="cursor:pointer">
-            <input type="checkbox" id="chkModernOverlay" style="margin-right:4px">
-            叠加大一统省界对比
-          </label>
-        </div>
-      </div>
-
-      <div class="geoquiz-layout">
-        <!-- SVG Canvas Vector Map Display -->
-        <div class="svg-board-wrapper" id="quizMapContainer">
-          <div class="map-gis-hud">
-            <div class="map-hud-group">
-              <button class="map-hud-btn" id="btnQuizZoomIn" title="放大">+ 放大</button>
-              <button class="map-hud-btn" id="btnQuizZoomOut" title="缩小">- 缩小</button>
-              <button class="map-hud-btn" id="btnQuizZoomReset" title="还原视角">⊕ 聚焦九州</button>
-              <button class="map-hud-btn active" id="btnToggleProvinces" title="切换现代省份薄膜">🗺️ 现代省界</button>
-              <button class="map-hud-btn active" id="btnToggleRivers" title="水系长城古道">🌊 水系长城</button>
-            </div>
-            <div class="map-hud-coords-badge" id="quizCoordsBadge">GIS :: D3 CONIC PROJECTION</div>
-          </div>
-          <div class="tactical-tooltip hidden" id="quizTooltip"></div>
-          <svg id="quizMapSvg" viewBox="0 0 900 580" preserveAspectRatio="xMidYMid meet"></svg>
-        </div>
-
-        <!-- Right Question Card -->
-        <div class="quiz-side-panel">
-          <div class="quiz-question-box">
-            <div class="quiz-countdown-bar">
-              <div class="quiz-countdown-fill" id="quizTimerBar"></div>
-            </div>
-
-            <h4 style="font-size:17px; margin-bottom:6px" id="quizQuestionPrompt">
-              下图呈现的版图边缘特征，属于历史上的哪一个朝代或割据时期？
-            </h4>
-            <p style="font-size:12px; color:var(--text-secondary)" id="quizHoverHint">
-              💡 提示：使用鼠标滚轮滚动、鼠标拖拽移动，或点击左上方【+ / - / ⊕ 聚焦】按钮放大聚焦要隘轮廓。
-            </p>
-
-            <div class="quiz-clue-chips" id="quizClueChips"></div>
-
-            <div class="options-list" id="quizOptionsContainer"></div>
-          </div>
-
-          <!-- Post Answer Historical Master Card -->
-          <div class="dynasty-detail-card" id="quizDetailCard">
-            <div class="dynasty-detail-title" id="detailCardName">后周 (公元 951-960)</div>
-            <div style="font-size:12px; color:var(--gold-emperor); margin-bottom:8px" id="detailCardPeriod"></div>
-            <p style="font-size:13px; line-height:1.7; color:#d1d8e0" id="detailCardDesc"></p>
-            <div style="margin-top:14px; text-align:right">
-              <button class="btn-primary-launch" style="padding:10px 20px; width:auto; display:inline-flex" id="btnNextQuizRound">
-                下一题 ➔
-              </button>
-            </div>
+          <div id="challenge-question" class="challenge-prompt"></div>
+          <div id="challenge-options" class="options-grid is-hidden"></div>
+          <div id="challenge-result" class="challenge-feedback is-hidden">
+            <span id="challenge-verdict"></span>
+            <button id="act-next-round" class="action-btn accent sm"></button>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ========================================================
-         VIEW 3: 天下大势 (MODE 3 - STRATEGY CONQUEST)
-         ======================================================== -->
-    <section class="game-view" id="viewConquest">
-      <div class="top-hud-bar">
-        <div class="hud-left">
-          <button class="btn-back-lobby" id="conquestBackBtn">← 返回大厅</button>
-          <span class="hud-mode-title" id="scenarioTitleBadge">天下大势 · 907年五代割据</span>
-        </div>
-        <div class="hud-pills">
-          <div class="hud-pill">年号回合: <strong id="conquestTurnText">第 1 年</strong></div>
-          <div class="hud-pill">统一进度: <strong id="conquestUnifyCount">4 / 24 大区</strong></div>
-          <div class="hud-pill">已一统声望: <strong id="conquestPrestige">850</strong></div>
-        </div>
-      </div>
-
-      <div class="conquest-layout">
-        <!-- 24 Strategic Macro Region Topology Map -->
-        <div class="svg-board-wrapper" id="conquestMapContainer">
-          <div class="map-gis-hud">
-            <div class="map-hud-group">
-              <button class="map-hud-btn" id="btnConquestZoomIn">+ 放大</button>
-              <button class="map-hud-btn" id="btnConquestZoomOut">- 缩小</button>
-              <button class="map-hud-btn" id="btnConquestZoomReset">⊕ 聚焦沙盘</button>
-              <span class="map-hud-btn" style="cursor:default; color:var(--gold-emperor)">👑 真实省份联边割据染色</span>
-            </div>
-            <div class="map-hud-coords-badge" id="conquestLiveCoords">WAR ROOM :: REAL PROVINCES CONQUEST</div>
-          </div>
-          <div class="tactical-tooltip hidden" id="conquestTooltip"></div>
-          <svg id="conquestMapSvg" viewBox="0 0 900 580" preserveAspectRatio="xMidYMid meet"></svg>
-        </div>
-
-        <!-- Right Command Dashboard -->
-        <aside class="conquest-cmd-panel">
-          <div class="faction-crest-banner">
-            <div class="faction-flag-dot" id="playerFlagDot" style="background:#e74c3c"></div>
+        <div id="genealogy-card" class="is-hidden" role="dialog" aria-label="古今地名沿革">
+          <div class="genealogy-header">
             <div>
-              <div style="font-family:var(--font-calligraphy); font-size:22px" id="playerFactionName">后梁 (朱温)</div>
-              <div style="font-size:11px; color:var(--text-secondary)" id="playerCapitalRegionName">都城: 汴州中原</div>
+              <div class="genealogy-tag" id="txt-genealogy-kicker">点地溯源 · 古今政区沿革</div>
+              <div id="genealogy-heading" class="genealogy-title"></div>
             </div>
-          </div>
-
-          <div class="resources-grid">
-            <div class="res-pill">
-              <div class="res-val" id="resGold">480</div>
-              <div class="res-key">💰 库金</div>
-            </div>
-            <div class="res-pill">
-              <div class="res-val" id="resTroops">28.5万</div>
-              <div class="res-key">⚔️ 兵马</div>
-            </div>
-            <div class="res-pill">
-              <div class="res-val" id="resMorale">92</div>
-              <div class="res-key">🔥 军心</div>
-            </div>
-          </div>
-
-          <!-- Annual Historical Event Card -->
-          <div class="event-card-box" id="eventCardBox">
-            <div class="event-card-tag">📜 年度随机史实策论</div>
-            <h4 class="event-card-title" id="eventCardTitle">【中原大旱，蝗灾频发】</h4>
-            <p class="event-card-body" id="eventCardDesc">
-              公元908年，中原大旱，后梁国库拨给灾民。敌对势力防御兵力小幅动摇。
-            </p>
-            <button class="btn-subdifficulty" style="margin-top:10px; width:100%" id="btnDrawNextEvent">
-              🎲 抽下一年度事件卡
+            <button id="act-close-genealogy" class="icon-close" title="关闭" aria-label="关闭">
+              <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>
           </div>
+          <div id="genealogy-sub" class="genealogy-sub"></div>
+          <ol id="genealogy-timeline" class="genealogy-list"></ol>
+        </div>
 
-          <!-- Target Territory Invasion Command -->
-          <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px">
-            <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px">当前选中出兵目标:</div>
-            <div style="font-size:18px; font-family:var(--font-calligraphy); color:var(--gold-emperor); margin-bottom:10px" id="selectedRegionTargetText">
-              点击地图上相邻敌对板块...
-            </div>
+        <div id="milestone-balloon" class="is-hidden" role="dialog" aria-live="polite"></div>
 
-            <div class="campaign-action-btns">
-              <button class="btn-war-attack" id="btnWarAttack" disabled>
-                ⚔️ 武力征讨 (攻城问答推演)
-              </button>
-              <button class="btn-diplomacy" id="btnDiplomacyBribe" disabled>
-                🤝 纳贡合纵 (消耗 200 库金降降)
-              </button>
-            </div>
+        <div id="hover-tip" class="is-hidden" role="tooltip"></div>
+
+        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · ← → 调整年份 · 空格播放 · Esc 关闭弹窗</div>
+      </div>
+
+      <aside id="chronicle-pane" aria-label="历史时期详情">
+        <div class="dynasty-banner">
+          <div class="dynasty-title-row">
+            <h2 id="dynasty-title">秦</h2>
+            <span id="dynasty-span" class="span-label">前221 — 前202</span>
           </div>
-        </aside>
-      </div>
-    </section>
+          <div class="seat-row">
+            <span class="seat-tag" id="txt-seat-label">都城</span>
+            <span id="dynasty-seat">—</span>
+          </div>
+        </div>
 
-  </main>
+        <p id="dynasty-summary" class="dynasty-desc"></p>
 
-  <!-- ========================================================
-       MODAL 1: 战报海报生成器 (CANVAS POSTER CERTIFICATE)
-       ======================================================== -->
-  <div class="modal-overlay" id="sharePosterModal">
-    <div class="poster-dialog">
-      <h3 style="font-family:var(--font-calligraphy); font-size:26px; color:var(--gold-emperor); margin-bottom:12px">
-        《指点江山》大赏御赐战报海报
-      </h3>
-      <canvas class="canvas-poster-preview" id="posterCanvas" width="600" height="850"></canvas>
-      <div style="display:flex; gap:12px; justify-content:center; margin-top:16px">
-        <button class="btn-primary-launch" style="width:auto; padding:10px 24px" id="btnDownloadPoster">
-          ⬇️ 保存海报图片
-        </button>
-        <button class="btn-subdifficulty" style="padding:10px 20px" id="btnClosePoster">
-          关闭
-        </button>
+        <div class="milestone-section">
+          <h3 id="txt-milestones-heading">重大事件</h3>
+          <ul id="milestone-list"></ul>
+        </div>
+
+        <div class="disclaimer-box" id="txt-disclaimer">
+          疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。
+        </div>
+      </aside>
+    </main>
+
+    <footer id="scrubber-dock" aria-label="历史年份时间轴">
+      <button id="act-autoplay" class="round-btn" title="自动播放 / 暂停" aria-label="播放">
+        <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>
+      </button>
+
+      <div id="scrubber-rail-wrap">
+        <div id="scrubber-Bubble" aria-live="polite">
+          <span id="bubble-text">公元前214年 · 秦</span>
+        </div>
+        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-221" aria-valuemax="2026" aria-valuenow="-214" aria-label="年份滑块">
+          <div id="dynasty-bands"></div>
+          <div id="scrubber-handle"></div>
+        </div>
+        <div id="scrubber-ticks"></div>
       </div>
-    </div>
+
+      <div class="year-stepper">
+        <input id="inp-year" type="number" min="-221" max="2026" step="1" value="-214" aria-label="输入年份（负数为公元前）" />
+        <span class="unit-label" id="txt-year-suffix">年</span>
+      </div>
+    </footer>
   </div>
 
-  <!-- ========================================================
-       MODAL 2: 割据剧本/势力选择 (MODE 3 MODAL)
-       ======================================================== -->
-  <div class="modal-overlay" id="scenarioSelectModal">
-    <div class="poster-dialog" style="max-width:640px; text-align:left">
-      <h3 style="font-family:var(--font-calligraphy); font-size:28px; color:var(--gold-emperor); margin-bottom:8px">
-        挑选开局雄霸势力
-      </h3>
-      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px">
-        可选择称霸中原的强权，亦可挑战偏安一隅的地狱级弱小势力完成天下一统！
-      </p>
-
-      <div class="mode-options-row" style="margin-bottom:16px">
-        <button class="btn-subdifficulty active" id="btnScenario5Dyn">公元 907 年 · 五代十国</button>
-        <button class="btn-subdifficulty" id="btnScenario3Kin">公元 220 年 · 三国鼎立</button>
-      </div>
-
-      <div id="factionsPickContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; max-height:300px; overflow-y:auto; padding-right:4px"></div>
-
-      <div style="margin-top:20px; text-align:right">
-        <button class="btn-primary-launch" style="width:auto; padding:10px 28px" id="btnConfirmStartScenario">
-          皇帝亲征出师 ➔
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================
-       MODAL 3: 勋章成就录 (ACHIEVEMENTS MODAL)
-       ======================================================== -->
-  <div class="modal-overlay" id="achievementsModal">
-    <div class="poster-dialog" style="max-width:680px; text-align:left">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
-        <h3 style="font-family:var(--font-calligraphy); font-size:26px; color:var(--gold-emperor)">
-          🏅 华夏千古御赐勋章录
-        </h3>
-        <button class="btn-subdifficulty" id="btnCloseAchievements">✕ 关闭</button>
-      </div>
-      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px">
-        记录您在看图猜朝代辨识与天下大势吞并决战中荣获的历史考据功勋。
-      </p>
-      <div id="achievementsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px"></div>
-    </div>
-  </div>
-
-  <!-- ========================================================
-       MODAL 4: 军师军议推演 (INTERACTIVE WAR BATTLE MODAL)
-       ======================================================== -->
-  <div class="modal-overlay" id="battleCouncilModal">
-    <div class="poster-dialog" style="max-width:580px; text-align:left; border-color:#00f2fe; box-shadow:0 0 40px rgba(0,242,254,0.3)">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
-        <span style="font-size:12px; padding:3px 10px; border-radius:6px; background:rgba(231,76,60,0.25); color:#e74c3c; font-weight:bold">
-          ⚔️ 攻城战术军议御前推演
-        </span>
-        <span style="font-size:12px; color:#00f2fe" id="battleTargetRegionBadge">目标要冲: 【关中】</span>
-      </div>
-      <h4 style="font-size:17px; color:#fff; line-height:1.5; margin-bottom:16px" id="battleQuestionPrompt">
-        欲取此要塞要隘，必先攻破守卫中原与关中交界的何处古要关？
-      </h4>
-      <div id="battleOptionsContainer" style="display:flex; flex-direction:column; gap:10px"></div>
-      <div style="margin-top:14px; text-align:right">
-        <button class="btn-subdifficulty" id="btnCancelBattle">撤兵休整</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JavaScript Modules -->
-  <script src="js/fallback_data.js"></script>
-  <script src="js/audio.js"></script>
   <script src="js/china_geo_data.js"></script>
+  <script src="js/atlas_snapshots.js"></script>
   <script src="js/map_data.js"></script>
+  <script src="js/i18n_dict.js"></script>
   <script src="js/app.js"></script>
-
 </body>
 </html>
