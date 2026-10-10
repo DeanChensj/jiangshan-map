@@ -1966,7 +1966,9 @@
                 ? this.uiStr('at_here', '即此地')
                 : `${Math.round(near.km)} km`;
             subParts.push(
-              `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
+              this.locale === 'en'
+                ? `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)} (${distStr})`
+                : `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
             );
           }
 
