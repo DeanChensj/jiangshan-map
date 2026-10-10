@@ -193,6 +193,8 @@
       this.synthCtx = null;
       this.synthTimer = null;
       this.genealogyMode = false;
+      this.terrainMode = true;
+      this.hydroData = window.HYDRO_DATA || { rivers: [], lakes: [] };
       this.activeTrace = null;
       this.activeMilestone = null;
       this.activeJourney = null;
@@ -211,6 +213,7 @@
 
       this._bindDom();
       this._applyCamera();
+      this._buildTerrainRivers();
       this._buildModernProvinces();
       this._buildNeighborCountries();
       this._buildScrubberBands();
@@ -243,6 +246,8 @@
 
     _bindDom() {
       this.svg = this._id('atlas-svg');
+      this.grpTerrain = this._id('grp-terrain');
+      this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
       this.grpProvinces = this._id('grp-provinces');
       this.grpProvNames = this._id('grp-prov-names');
@@ -503,13 +508,28 @@
         actLayersBtn.title =
           this.locale === 'en' ? 'Toggle map layers' : '展开或收起地图图层开关';
       }
+      const lblTerrain = this._id('lbl-terrain');
+      if (lblTerrain) {
+        lblTerrain.textContent = this.uiStr('btn_terrain', '山川地形');
+      }
+      const actTerrain = this._id('act-terrain');
+      if (actTerrain) {
+        actTerrain.title =
+          this.locale === 'en'
+            ? 'Toggle shaded relief terrain & rivers'
+            : '切换山川地形与江河水系底图';
+      }
+      const lblTerrainChk = this._id('lbl-terrain-chk');
+      if (lblTerrainChk) {
+        lblTerrainChk.textContent = this.uiStr('toggle_terrain', '山川水系');
+      }
       const grpHist = this._id('txt-layer-grp-hist');
       if (grpHist) {
         grpHist.textContent = this.uiStr('layer_grp_hist', '历史舆图要素');
       }
       const grpMod = this._id('txt-layer-grp-mod');
       if (grpMod) {
-        grpMod.textContent = this.uiStr('layer_grp_mod', '现代地理参照');
+        grpMod.textContent = this.uiStr('layer_grp_mod', '山川与现代参照');
       }
       const grpJrn = this._id('txt-layer-grp-journey');
       if (grpJrn) {
@@ -641,6 +661,53 @@
     }
 
     // ---------------- Base Layers ----------------
+    _buildTerrainRivers() {
+      if (!this.grpRivers || !this.hydroData) return;
+      this.grpRivers.innerHTML = '';
+      for (const riv of this.hydroData.rivers || []) {
+        let d = '';
+        for (const line of riv.lines || []) {
+          for (let i = 0; i < line.length; i++) {
+            const [px, py] = this.projector.toScreen(line[i][0], line[i][1]);
+            d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1);
+          }
+        }
+        if (!d) continue;
+        const rankCls =
+          riv.rank <= 3 ? 'rank-major' : riv.rank <= 5 ? 'rank-med' : 'rank-minor';
+        this._svgNode(
+          'path',
+          { d, class: `hydro-river ${rankCls}` },
+          this.grpRivers
+        );
+      }
+      for (const lk of this.hydroData.lakes || []) {
+        const d = (lk.rings || []).map((r) => this.projector.ringToSvgPath(r)).join('');
+        if (!d) continue;
+        this._svgNode('path', { d, class: 'hydro-lake' }, this.grpRivers);
+      }
+    }
+
+    toggleTerrainMode(forceState) {
+      this.terrainMode =
+        forceState !== undefined ? Boolean(forceState) : !this.terrainMode;
+      if (this.svg) {
+        this.svg.classList.toggle('terrain-active', this.terrainMode);
+      }
+      if (this.grpTerrain) {
+        this.grpTerrain.classList.toggle('is-hidden', !this.terrainMode);
+      }
+      const btn = this._id('act-terrain');
+      if (btn) {
+        btn.classList.toggle('is-active', this.terrainMode);
+        btn.setAttribute('aria-pressed', String(this.terrainMode));
+      }
+      const chk = this._id('chk-terrain');
+      if (chk) {
+        chk.checked = this.terrainMode;
+      }
+    }
+
     _buildModernProvinces() {
       for (const prov of this.provinces) {
         const isDash = String(prov.code).includes('_JD');
@@ -4734,6 +4801,7 @@
         'chk-settlements',
         'chk-corridors',
         'chk-milestones',
+        'chk-terrain',
         'chk-provinces',
         'chk-prov-names',
       ];
@@ -4809,6 +4877,20 @@
           this._rescaleSvgTypography();
         });
       };
+      const chkTerrain = this._id('chk-terrain');
+      if (chkTerrain) {
+        chkTerrain.addEventListener('change', (e) => {
+          this.toggleTerrainMode(e.target.checked);
+          updateLayerBadge();
+        });
+      }
+      const actTerrain = this._id('act-terrain');
+      if (actTerrain) {
+        actTerrain.addEventListener('click', () => {
+          this.toggleTerrainMode();
+          updateLayerBadge();
+        });
+      }
       bindToggle('chk-provinces', this.grpProvinces);
       bindToggle('chk-prov-names', this.grpProvNames);
       this._id('chk-polities').addEventListener('change', (e) => {
@@ -5285,6 +5367,10 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      if (q.has('terrain')) {
+        const tv = q.get('terrain');
+        this.toggleTerrainMode(tv !== '0' && tv !== 'false');
+      }
       if (q.has('year')) {
         const y = Number(q.get('year'));
         if (!Number.isNaN(y)) this.jumpToYear(y);

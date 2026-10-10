@@ -384,12 +384,68 @@ h2 {
   fill: var(--water-fill);
 }
 
+/* Terrain Shaded Relief & Hydrology Layer */
+#grp-terrain {
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#grp-terrain.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#terrain-relief-img {
+  opacity: 0.68;
+  pointer-events: none;
+}
+
+#grp-rivers {
+  pointer-events: none;
+}
+
+.hydro-lake {
+  fill: rgba(138, 168, 182, 0.55);
+  stroke: rgba(102, 136, 152, 0.68);
+  stroke-width: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+
+.hydro-river {
+  fill: none;
+  stroke: rgba(104, 142, 158, 0.62);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.hydro-river.rank-major {
+  stroke: rgba(92, 132, 150, 0.78);
+  stroke-width: 1.35;
+}
+
+.hydro-river.rank-med {
+  stroke: rgba(106, 142, 158, 0.6);
+  stroke-width: 0.9;
+}
+
+.hydro-river.rank-minor {
+  stroke: rgba(118, 152, 166, 0.44);
+  stroke-width: 0.6;
+}
+
 /* Map SVG Layers */
 .neighbor-shape {
   fill: #e7dfd0;
   stroke: #c9beaa;
   stroke-width: 0.55;
   vector-effect: non-scaling-stroke;
+  transition: fill 0.2s;
+}
+
+#atlas-svg.terrain-active .neighbor-shape {
+  fill: rgba(231, 223, 208, 0.08);
+  stroke: rgba(164, 148, 128, 0.42);
 }
 
 .neighbor-caption {
@@ -412,6 +468,15 @@ h2 {
 
 .province-shape:hover {
   fill: #e6dcc7;
+}
+
+#atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
+  fill: rgba(246, 239, 225, 0.04);
+  stroke: rgba(154, 139, 120, 0.36);
+}
+
+#atlas-svg.terrain-active .province-shape:not(.maritime-dash):hover {
+  fill: rgba(230, 220, 199, 0.22);
 }
 
 .province-shape.maritime-dash {
@@ -463,9 +528,23 @@ h2 {
   fill-opacity: 0.46;
 }
 
+#atlas-svg.terrain-active .polity-shape {
+  fill-opacity: 0.22;
+  mix-blend-mode: multiply;
+  stroke-width: 1.95;
+}
+
+#atlas-svg.terrain-active .polity-shape:hover {
+  fill-opacity: 0.34;
+}
+
 .polity-shape.rival {
   fill-opacity: 0.3;
   stroke-width: 1.5;
+}
+
+#atlas-svg.terrain-active .polity-shape.rival {
+  fill-opacity: 0.2;
 }
 
 .polity-shape.protectorate {
@@ -474,12 +553,21 @@ h2 {
   stroke-width: 1.4;
 }
 
+#atlas-svg.terrain-active .polity-shape.protectorate {
+  fill-opacity: 0.15;
+}
+
 .polity-shape.neighbor {
   fill: url(#diag-hatch);
   fill-opacity: 0.55;
   stroke: #6e6256;
   stroke-dasharray: 3 3;
   stroke-width: 1.1;
+}
+
+#atlas-svg.terrain-active .polity-shape.neighbor {
+  mix-blend-mode: normal;
+  fill-opacity: 0.42;
 }
 
 .polity-shape.neighbor:hover {
