@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261009z" />
+  <link rel="stylesheet" href="css/style.css?v=20261010c" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -32,10 +32,6 @@
         <button id="act-terrain" class="action-btn subtle is-active" type="button" aria-pressed="true" title="切换山川地形与江河水系底图">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M1.2 13.2L5.8 4.6l3.3 5.5 2.4-3.7 3.3 6.8H1.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.2 7.6L5.8 4.6l1.7 2.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
           <span id="lbl-terrain">山川地形</span>
-        </button>
-        <button id="act-genealogy" class="action-btn subtle" title="点击地图任意位置，查看该地从秦到清的政区与古城沿革">
-          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.5a4.3 4.3 0 0 0-4.3 4.3c0 3.1 4.3 8.4 4.3 8.4s4.3-5.3 4.3-8.4A4.3 4.3 0 0 0 8 1.5zm0 5.9a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-          <span id="lbl-genealogy">点地溯源</span>
         </button>
         <button id="act-challenge" class="action-btn accent">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.2" fill="currentColor"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -203,7 +199,7 @@
 
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
 
-        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · ← → 调整年份 · 空格播放 · Esc 关闭弹窗</div>
+        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放</div>
       </div>
 
       <aside id="chronicle-pane" aria-label="历史时期详情">
@@ -255,10 +251,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261010a"></script>
-  <script src="js/atlas_snapshots.js?v=20261010a"></script>
-  <script src="js/map_data.js?v=20261010a"></script>
-  <script src="js/i18n_dict.js?v=20261010a"></script>
-  <script src="js/app.js?v=20261010a"></script>
+  <script src="js/china_geo_data.js?v=20261010c"></script>
+  <script src="js/atlas_snapshots.js?v=20261010c"></script>
+  <script src="js/map_data.js?v=20261010c"></script>
+  <script src="js/i18n_dict.js?v=20261010c"></script>
+  <script src="js/app.js?v=20261010c"></script>
 </body>
 </html>

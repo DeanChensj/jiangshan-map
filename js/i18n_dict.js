@@ -20,7 +20,7 @@ window.EN_LOCALE = {
     "btn_trace_active": "Exit Trace",
     "btn_quiz": "Challenge",
     "btn_quiz_active": "In Challenge",
-    "hint": "Scroll to zoom · Drag to pan · ← → step years · Space play · Esc close",
+    "hint": "Scroll to zoom · Drag to pan · Click city or double-click to trace · ← → step years · Space play",
     "capital_k": "Capital",
     "events_h": "Key Events",
     "caveat": "Borders are schematic approximations for comparing eras, not exact historical surveys.",

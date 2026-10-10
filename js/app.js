@@ -570,9 +570,11 @@
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
       const lblGen = this._id('lbl-genealogy') || this._id('act-genealogy');
-      lblGen.textContent = this.genealogyMode
-        ? this.uiStr('btn_trace_active', '退出溯源')
-        : this.uiStr('btn_trace', '点地溯源');
+      if (lblGen) {
+        lblGen.textContent = this.genealogyMode
+          ? this.uiStr('btn_trace_active', '退出溯源')
+          : this.uiStr('btn_trace', '点地溯源');
+      }
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.challenge
         ? this.uiStr('btn_quiz_active', '挑战中…')
@@ -589,7 +591,7 @@
       this._updateMusicUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
-        '滚轮缩放 · 拖拽平移 · ← → 调整年份 · 空格播放 · Esc 关闭弹窗'
+        '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放'
       );
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
@@ -1013,6 +1015,31 @@
       if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
     }
 
+    _findCoLocatedSettlement(dynasty, lng, lat, maxKm = 28) {
+      if (!dynasty || !Array.isArray(dynasty.settlements)) return null;
+      const z = 1000 / this.camera.w;
+      const tier2MinZoom =
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
+      const showTier2 = z >= tier2MinZoom;
+      let best = null;
+      let bestKm = maxKm;
+      for (const s of dynasty.settlements) {
+        if (
+          (s.appear !== undefined && this.year < s.appear) ||
+          (s.vanish !== undefined && this.year > s.vanish)
+        ) {
+          continue;
+        }
+        if (s.tier === 2 && !s.isCapital && !showTier2) continue;
+        const km = this.projector.greatCircleKm([lng, lat], s.coord);
+        if (km <= bestKm) {
+          bestKm = km;
+          best = s;
+        }
+      }
+      return best;
+    }
+
     _renderMilestones(dynasty) {
       this.grpMilestones.innerHTML = '';
       const group = this._svgNode('g', { class: 'fade-enter' }, this.grpMilestones);
@@ -1032,13 +1059,6 @@
         );
         this._svgNode('circle', { class: 'ev-ring', r: 9 }, pin);
         this._svgNode('polygon', { class: 'ev-core', points: '0,-5.5 5.5,0 0,5.5 -5.5,0' }, pin);
-        pin.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.stopAutoplay();
-          this.jumpToYear(this._clampYearToDynasty(dynasty, m.year));
-          this.openMilestoneBalloon(dynasty, m);
-          if (m.coord) this._panToward(m.coord[0], m.coord[1]);
-        });
       });
       this._updateMilestoneStates(dynasty);
       this._rescaleSvgTypography();
@@ -1082,6 +1102,32 @@
       }
     }
 
+    _resolvePinMilestone(dynasty, milestoneEl) {
+      if (!milestoneEl || !dynasty) return null;
+      const list = dynasty.milestones || [];
+      const m0 =
+        (milestoneEl.dataset.idx !== undefined && list[Number(milestoneEl.dataset.idx)]) ||
+        list.find((item) => item.year === Number(milestoneEl.dataset.year)) ||
+        null;
+      if (!m0 || !m0.coord) return m0;
+      const colocated = list.filter(
+        (item) => item.coord && this.projector.greatCircleKm(m0.coord, item.coord) <= 18
+      );
+      if (colocated.length <= 1) return m0;
+      if (
+        this.activeMilestone &&
+        this.activeMilestone.dynastyKey === dynasty.key &&
+        !this.milestoneBalloon.classList.contains('is-hidden') &&
+        colocated.includes(this.activeMilestone.milestone)
+      ) {
+        return this.activeMilestone.milestone;
+      }
+      const pastOrNow = colocated.filter(
+        (item) => this._clampYearToDynasty(dynasty, item.year) <= this.year
+      );
+      return pastOrNow.length > 0 ? pastOrNow[pastOrNow.length - 1] : colocated[0];
+    }
+
     openMilestoneBalloon(dynasty, m) {
       const mIdx = (dynasty.milestones || []).indexOf(m);
       this.activeMilestone = {
@@ -1101,7 +1147,12 @@
       }
       const yrText = this.formatYear(m.year);
       const siteStr = this.milestoneSite(dynasty, m);
-      const placeHtml = siteStr ? `<span class="ep-place">${SVG_ICONS.pin} ${siteStr}</span>` : '';
+      const traceTitle =
+        this.locale === 'en' ? 'Click to trace place history' : '点击查看此地历代沿革（点地溯源）';
+      const traceSuffix = this.locale === 'en' ? 'History ›' : '沿革 ›';
+      const placeHtml = siteStr
+        ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
+        : '';
       const jKey = this._journeyKeyForMilestone(dynasty, m);
       const jBtnHtml = jKey
         ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
@@ -1109,6 +1160,15 @@
       this.milestoneBalloon.innerHTML =
         `<div><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}</div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
+      const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
+      if (placeBtn && m.coord) {
+        placeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
+          const targetCoord = coCity ? coCity.coord : m.coord;
+          this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+        });
+      }
       const jBtn = this.milestoneBalloon.querySelector('.ev-journey-btn');
       if (jBtn) {
         jBtn.addEventListener('click', (e) => {
@@ -1140,8 +1200,24 @@
       const padY = (rect.height - this.camera.h * scale) * 0.5;
       const px = padX + (sx - this.camera.x) * scale;
       const py = padY + (sy - this.camera.y) * scale;
-      const left = Math.max(12, Math.min(rect.width - 290, px + 12));
-      const top = Math.max(12, Math.min(rect.height - 90, py - 24));
+      const genCard = this._id('genealogy-card');
+      const genOpen =
+        genCard &&
+        !genCard.classList.contains('is-hidden') &&
+        typeof window !== 'undefined' &&
+        window.innerWidth > 900;
+      const bW = this.milestoneBalloon.offsetWidth || 260;
+      const bH = this.milestoneBalloon.offsetHeight || 62;
+      const rightLimit = genOpen ? rect.width - 360 - bW : rect.width - bW - 12;
+      let left = px + 12;
+      let top = py - 24;
+      if (left > rightLimit) {
+        left = Math.max(12, Math.min(rightLimit, px - bW * 0.5));
+        top = py - bH - 16 >= 12 ? py - bH - 16 : Math.min(rect.height - 90, py + 18);
+      } else {
+        left = Math.max(12, Math.min(rightLimit, left));
+        top = Math.max(12, Math.min(rect.height - 90, top));
+      }
       this.milestoneBalloon.style.left = `${left}px`;
       this.milestoneBalloon.style.top = `${top}px`;
     }
@@ -1602,11 +1678,16 @@
       if (this.genealogyMode && this.activeJourney) {
         this.stopJourney();
       }
-      this._id('act-genealogy').classList.toggle('is-active', this.genealogyMode);
-      const lblEl = this._id('lbl-genealogy') || this._id('act-genealogy');
-      lblEl.textContent = this.genealogyMode
-        ? this.uiStr('btn_trace_active', '退出溯源')
-        : this.uiStr('btn_trace', '点地溯源');
+      const actGen = this._id('act-genealogy');
+      if (actGen) {
+        actGen.classList.toggle('is-active', this.genealogyMode);
+      }
+      const lblEl = this._id('lbl-genealogy') || actGen;
+      if (lblEl) {
+        lblEl.textContent = this.genealogyMode
+          ? this.uiStr('btn_trace_active', '退出溯源')
+          : this.uiStr('btn_trace', '点地溯源');
+      }
       this.svg.classList.toggle('is-crosshair', this.genealogyMode || Boolean(this.challenge));
       if (!this.genealogyMode && !this._id('genealogy-card').classList.contains('is-hidden')) {
         this.closeGenealogyCard();
@@ -1617,6 +1698,7 @@
       this.activeTrace = null;
       this._id('genealogy-card').classList.add('is-hidden');
       this.grpGenealogy.innerHTML = '';
+      if (this.activeMilestone) this._positionMilestoneBalloon();
     }
 
     static get PLACE_LANDMARK_EVENTS() {
@@ -2106,6 +2188,7 @@
       };
 
       renderSubAndList();
+      if (this.activeMilestone) this._positionMilestoneBalloon();
     }
 
     // ---------------- Scrubber / Timeline ----------------
@@ -4936,8 +5019,14 @@
           }
         });
       }
-      this._id('act-genealogy').addEventListener('click', () => this.toggleGenealogyMode());
-      this._id('act-close-genealogy').addEventListener('click', () => this.toggleGenealogyMode(false));
+      const actGenBtn = this._id('act-genealogy');
+      if (actGenBtn) {
+        actGenBtn.addEventListener('click', () => this.toggleGenealogyMode());
+      }
+      this._id('act-close-genealogy').addEventListener('click', () => {
+        if (this.genealogyMode) this.toggleGenealogyMode(false);
+        else this.closeGenealogyCard();
+      });
 
       this._id('act-challenge').addEventListener('click', () => {
         if (this.challenge) this.stopChallenge();
@@ -5159,10 +5248,28 @@
 
       const inspectPointTooltip = (e) => {
         const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
-        const journeyNodeEl = target && target.closest && target.closest('.journey-node');
-        const settlementEl = target && target.closest && target.closest('.settlement-node');
-        const corridorEl = target && target.closest && target.closest('.corridor-line');
-        const milestoneEl = target && target.closest && target.closest('.milestone-pin');
+        const rawStack = document.elementsFromPoint
+          ? document.elementsFromPoint(e.clientX, e.clientY)
+          : [];
+        const stack = rawStack.length ? rawStack : target ? [target] : [];
+        const findClosest = (sel) => {
+          for (const el of stack) {
+            const hit = el && el.closest && el.closest(sel);
+            if (hit) return hit;
+          }
+          return null;
+        };
+        const journeyNodeEl = findClosest('.journey-node');
+        const settlementNameEl = findClosest('.settlement-node .name');
+        const settlementEl = findClosest('.settlement-node');
+        const corridorEl = findClosest('.corridor-line');
+        const milestoneEl = findClosest('.milestone-pin');
+        const cur = this.dynasties[this.dynastyIdx];
+        const mHit = milestoneEl && cur ? this._resolvePinMilestone(cur, milestoneEl) : null;
+        const coCity =
+          !settlementEl && mHit && mHit.coord
+            ? this._findCoLocatedSettlement(cur, mHit.coord[0], mHit.coord[1], 28)
+            : null;
 
         if (journeyNodeEl && this.activeJourney) {
           const sIdx = Number(journeyNodeEl.dataset.stopIdx);
@@ -5182,11 +5289,37 @@
             );
             return;
           }
-        } else if (settlementEl) {
-          const anc = this.trTerm(settlementEl.dataset.ancient);
-          const mod = this.trTerm(settlementEl.dataset.modern);
-          const rem = this.trTerm(settlementEl.dataset.remark);
-          const traceHint = this.locale === 'en' ? ' · Click to trace' : ' · 点击查看沿革';
+        } else if (milestoneEl && !settlementNameEl && mHit) {
+          const eraPart = this.locale === 'en' ? '' : ` · ${this.formatEraLabel(mHit.year, cur)}`;
+          const alreadyOpen =
+            this.activeMilestone &&
+            this.activeMilestone.dynastyKey === cur.key &&
+            this.activeMilestone.milestone === mHit &&
+            !this.milestoneBalloon.classList.contains('is-hidden');
+          const hasCity = Boolean(settlementEl || coCity);
+          const actionHint = alreadyOpen
+            ? this.locale === 'en'
+              ? 'Click again to trace place history'
+              : '再次点击查看此地历代沿革'
+            : hasCity
+              ? this.locale === 'en'
+                ? 'Click for event · Click city name to trace history'
+                : '点击查看事件 · 点击城名查历代沿革'
+              : this.uiStr('click_for_detail', '点击查看详情');
+          this._showHoverTip(
+            e,
+            `<b>◆ ${this.formatYear(mHit.year)}${eraPart} · ${this.milestoneHeadline(cur, mHit)}</b><div class="tt-sub">${
+              mHit.site ? SVG_ICONS.pin + ' ' + this.trTerm(mHit.site) + ' · ' : ''
+            }${actionHint}</div>`
+          );
+        } else if (settlementEl || coCity) {
+          const rawAnc = settlementEl ? settlementEl.dataset.ancient : coCity.ancient;
+          const rawMod = settlementEl ? settlementEl.dataset.modern : coCity.modern || '';
+          const rawRem = settlementEl ? settlementEl.dataset.remark : coCity.remark || '';
+          const anc = this.trTerm(rawAnc);
+          const mod = this.trTerm(rawMod);
+          const rem = this.trTerm(rawRem);
+          const traceHint = this.locale === 'en' ? ' · Click to trace history' : ' · 点击查看历代沿革';
           const sub =
             this.locale === 'en'
               ? `${mod && mod !== anc ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
@@ -5197,21 +5330,6 @@
             e,
             `<b>${corridorEl.dataset.corrTitle}</b><div class="tt-sub">${corridorEl.dataset.corrSummary || ''}</div>`
           );
-        } else if (milestoneEl) {
-          const cur = this.dynasties[this.dynastyIdx];
-          const m =
-            (milestoneEl.dataset.idx !== undefined &&
-              (cur.milestones || [])[Number(milestoneEl.dataset.idx)]) ||
-            (cur.milestones || []).find((item) => item.year === Number(milestoneEl.dataset.year));
-          if (m) {
-            const eraPart = this.locale === 'en' ? '' : ` · ${this.formatEraLabel(m.year, cur)}`;
-            this._showHoverTip(
-              e,
-              `<b>${this.formatYear(m.year)}${eraPart} · ${this.milestoneHeadline(cur, m)}</b><div class="tt-sub">${
-                m.site ? SVG_ICONS.pin + ' ' + this.trTerm(m.site) + ' · ' : ''
-              }${this.uiStr('click_for_detail', '点击查看详情')}</div>`
-            );
-          }
         } else if (
           target &&
           target.dataset &&
@@ -5220,7 +5338,6 @@
             target.dataset.provTitle ||
             target.dataset.countryTitle)
         ) {
-          const stack = document.elementsFromPoint(e.clientX, e.clientY);
           const findData = (key) => {
             const hit = stack.find((el) => el.dataset && el.dataset[key]);
             return hit ? hit.dataset : null;
@@ -5293,7 +5410,18 @@
           this._evaluateLocateClick(sx, sy);
         } else if (!wasPan && !this.challenge) {
           const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
-          const journeyNodeEl = hitTarget && hitTarget.closest && hitTarget.closest('.journey-node');
+          const rawStack = document.elementsFromPoint
+            ? document.elementsFromPoint(e.clientX, e.clientY)
+            : [];
+          const stack = rawStack.length ? rawStack : hitTarget ? [hitTarget] : [];
+          const findClosest = (sel) => {
+            for (const el of stack) {
+              const hit = el && el.closest && el.closest(sel);
+              if (hit) return hit;
+            }
+            return null;
+          };
+          const journeyNodeEl = findClosest('.journey-node');
           if (journeyNodeEl && journeyNodeEl.dataset.stopIdx !== undefined) {
             if (this.journeyTimer) {
               clearInterval(this.journeyTimer);
@@ -5302,29 +5430,71 @@
             this.goToJourneyStop(Number(journeyNodeEl.dataset.stopIdx), true);
             return;
           }
-          const milestoneEl = hitTarget && hitTarget.closest && hitTarget.closest('.milestone-pin');
-          if (milestoneEl && milestoneEl.dataset.idx !== undefined) {
-            const cur = this.dynasties[this.dynastyIdx];
-            const m = (cur.milestones || [])[Number(milestoneEl.dataset.idx)];
-            if (m) {
-              this.stopAutoplay();
-              this.jumpToYear(this._clampYearToDynasty(cur, m.year));
-              this.openMilestoneBalloon(cur, m);
-              if (m.coord) this._panToward(m.coord[0], m.coord[1]);
+          const settlementNameEl = findClosest('.settlement-node .name');
+          const settlementEl = findClosest('.settlement-node');
+          const milestoneEl = findClosest('.milestone-pin');
+          const cur = this.dynasties[this.dynastyIdx];
+
+          if (this.genealogyMode) {
+            if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
+              this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
               return;
             }
-          }
-          if (this.genealogyMode) {
+            if (milestoneEl && cur) {
+              const m = this._resolvePinMilestone(cur, milestoneEl);
+              if (m && m.coord) {
+                const coCity = this._findCoLocatedSettlement(cur, m.coord[0], m.coord[1], 28);
+                const targetCoord = coCity ? coCity.coord : m.coord;
+                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+                return;
+              }
+            }
             const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
             const [lng, lat] = this.projector.toGeo(sx, sy);
             this.openGenealogyAt(lng, lat);
             return;
           }
-          const settlementEl = hitTarget && hitTarget.closest && hitTarget.closest('.settlement-node');
-          if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
+
+          // Clicking the city name text (e.g. "长安") or a city dot without an overlapping event pin -> trace place history
+          if (
+            settlementEl &&
+            settlementEl.dataset.lng &&
+            settlementEl.dataset.lat &&
+            (settlementNameEl || !milestoneEl)
+          ) {
             this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
             return;
           }
+
+          // Clicking an event diamond pin (◆) -> open event balloon (or trace place history if balloon is already open)
+          if (milestoneEl && cur) {
+            const m = this._resolvePinMilestone(cur, milestoneEl);
+            const mIdx = m ? (cur.milestones || []).indexOf(m) : -1;
+            if (m && m.coord) {
+              const coCity = settlementEl
+                ? { coord: [Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat)] }
+                : this._findCoLocatedSettlement(cur, m.coord[0], m.coord[1], 28);
+              const targetCoord = coCity ? coCity.coord : m.coord;
+              const alreadyOpen =
+                this.activeMilestone &&
+                this.activeMilestone.dynastyKey === cur.key &&
+                this.activeMilestone.idx === mIdx &&
+                !this.milestoneBalloon.classList.contains('is-hidden');
+              if (alreadyOpen) {
+                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+                return;
+              }
+              this.stopAutoplay();
+              this.jumpToYear(this._clampYearToDynasty(cur, m.year));
+              this.openMilestoneBalloon(cur, m);
+              this._panToward(m.coord[0], m.coord[1]);
+              if (!this._id('genealogy-card').classList.contains('is-hidden')) {
+                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+              }
+              return;
+            }
+          }
+
           if (e.pointerType === 'touch') {
             inspectPointTooltip(e);
           }

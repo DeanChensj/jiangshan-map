@@ -731,6 +731,7 @@ h2 {
   stroke: var(--vermilion);
   stroke-opacity: 0;
   vector-effect: non-scaling-stroke;
+  pointer-events: none;
 }
 
 .milestone-pin .ev-core {
@@ -800,9 +801,22 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 11px;
   margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(181, 69, 47, 0.24);
+  background: rgba(181, 69, 47, 0.06);
+  font-family: var(--sans-stack);
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+#milestone-balloon .ep-place:hover {
+  background: rgba(181, 69, 47, 0.16);
+  color: var(--vermilion);
+  border-color: rgba(181, 69, 47, 0.45);
 }
 
 #milestone-balloon .ep-text {
@@ -1039,6 +1053,7 @@ h2 {
   font-weight: 600;
   fill: var(--text-main);
   filter: url(#label-halo);
+  pointer-events: bounding-box;
 }
 
 .settlement-node.is-tier2 .name {
