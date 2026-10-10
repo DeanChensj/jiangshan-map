@@ -1129,6 +1129,17 @@
     }
 
     openMilestoneBalloon(dynasty, m) {
+      if (this.hoverTip) {
+        this.hoverTip.classList.add('is-hidden');
+        this.hoverTip.classList.remove('is-interactive');
+      }
+      if (
+        typeof window !== 'undefined' &&
+        window.innerWidth <= 900 &&
+        !this._id('genealogy-card').classList.contains('is-hidden')
+      ) {
+        this.closeGenealogyCard();
+      }
       const mIdx = (dynasty.milestones || []).indexOf(m);
       this.activeMilestone = {
         dynastyKey: dynasty.key,
@@ -1907,8 +1918,50 @@
       return results;
     }
 
+    _findNearestTouchNode(clientX, clientY, maxPx = 22) {
+      const rect = this.svg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return { settlementEl: null, milestoneEl: null };
+      const [sx, sy] = this._clientToSvgPoint(clientX, clientY);
+      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      let bestSettle = null;
+      let bestSettlePx = maxPx;
+      if (this.grpSettlements && !this.grpSettlements.classList.contains('is-hidden')) {
+        const showTier2 = this.svg.classList.contains('is-zoomed-cities');
+        this.grpSettlements.querySelectorAll('.settlement-node').forEach((node) => {
+          if (!showTier2 && node.classList.contains('is-tier2')) return;
+          const dPx = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy) * scale;
+          if (dPx <= bestSettlePx) {
+            bestSettlePx = dPx;
+            bestSettle = node;
+          }
+        });
+      }
+      let bestMile = null;
+      let bestMilePx = maxPx;
+      if (this.grpMilestones && !this.grpMilestones.classList.contains('is-hidden')) {
+        this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
+          const dPx = Math.hypot(Number(pin.dataset.x) - sx, Number(pin.dataset.y) - sy) * scale;
+          if (dPx <= bestMilePx) {
+            bestMilePx = dPx;
+            bestMile = pin;
+          }
+        });
+      }
+      return { settlementEl: bestSettle, milestoneEl: bestMile };
+    }
+
     openGenealogyAt(lng, lat) {
       if (this.activeJourney) this.stopJourney();
+      if (this.hoverTip) {
+        this.hoverTip.classList.add('is-hidden');
+        this.hoverTip.classList.remove('is-interactive');
+      }
+      if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+        this.closeMilestoneBalloon();
+        if (this.mobileChronicleOpen) {
+          this.toggleMobileChronicle(false);
+        }
+      }
       const isSamePlace =
         this.activeTrace &&
         Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01;
@@ -5164,6 +5217,15 @@
 
       this.activePointers = new Map();
       this.pinchState = null;
+      this.longPressTimer = null;
+      this.longPressTriggered = false;
+      this.lastTouchTap = null;
+      const clearLongPress = () => {
+        if (this.longPressTimer) {
+          clearTimeout(this.longPressTimer);
+          this.longPressTimer = null;
+        }
+      };
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -5171,6 +5233,8 @@
         this.svg.setPointerCapture(e.pointerId);
 
         if (this.activePointers.size === 1) {
+          clearLongPress();
+          this.longPressTriggered = false;
           this.didPan = false;
           this.pinchState = null;
           this.dragState = {
@@ -5179,7 +5243,33 @@
             camX: this.camera.x,
             camY: this.camera.y,
           };
+          if (e.pointerType === 'touch' && !this.challenge) {
+            const downX = e.clientX;
+            const downY = e.clientY;
+            this.longPressTimer = setTimeout(() => {
+              this.longPressTimer = null;
+              if (!this.didPan && this.activePointers.size === 1 && !this.challenge) {
+                this.longPressTriggered = true;
+                const near = this._findNearestTouchNode(downX, downY, 24);
+                if (
+                  near.settlementEl &&
+                  near.settlementEl.dataset.lng &&
+                  near.settlementEl.dataset.lat
+                ) {
+                  this.openGenealogyAt(
+                    Number(near.settlementEl.dataset.lng),
+                    Number(near.settlementEl.dataset.lat)
+                  );
+                  return;
+                }
+                const [sx, sy] = this._clientToSvgPoint(downX, downY);
+                const [lng, lat] = this.projector.toGeo(sx, sy);
+                this.openGenealogyAt(lng, lat);
+              }
+            }, 460);
+          }
         } else if (this.activePointers.size === 2) {
+          clearLongPress();
           this.didPan = true;
           this.dragState = null;
           this.hoverTip.classList.add('is-hidden');
@@ -5231,6 +5321,7 @@
         const dx = e.clientX - this.dragState.startX;
         const dy = e.clientY - this.dragState.startY;
         if (Math.hypot(dx, dy) > 4) {
+          clearLongPress();
           this.didPan = true;
           this.svg.classList.add('is-panning');
           if (e.pointerType === 'touch') {
@@ -5381,13 +5472,23 @@
               `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(country.countryTitle)}</div>`
             );
           }
+          if (e.pointerType === 'touch') {
+            const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+            const [lng, lat] = this.projector.toGeo(sx, sy);
+            const btnLbl = this.locale === 'en' ? 'Trace Place History ›' : '查看此地历代沿革 ›';
+            lines.push(
+              `<div><button type="button" class="tt-trace-btn" data-lng="${lng.toFixed(3)}" data-lat="${lat.toFixed(3)}">${SVG_ICONS.pin} ${btnLbl}</button></div>`
+            );
+          }
           this._showHoverTip(e, lines.join(''));
         } else {
           this.hoverTip.classList.add('is-hidden');
+          this.hoverTip.classList.remove('is-interactive');
         }
       };
 
       const endPointer = (e) => {
+        clearLongPress();
         this.activePointers.delete(e.pointerId);
         if (this.activePointers.size < 2) {
           this.pinchState = null;
@@ -5402,6 +5503,12 @@
           };
           return;
         }
+        if (this.longPressTriggered) {
+          this.longPressTriggered = false;
+          this.dragState = null;
+          this.svg.classList.remove('is-panning');
+          return;
+        }
         const wasPan = this.didPan;
         this.dragState = null;
         this.svg.classList.remove('is-panning');
@@ -5409,6 +5516,34 @@
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
           this._evaluateLocateClick(sx, sy);
         } else if (!wasPan && !this.challenge) {
+          if (e.pointerType === 'touch') {
+            const now = Date.now();
+            if (
+              this.lastTouchTap &&
+              now - this.lastTouchTap.time <= 340 &&
+              Math.hypot(e.clientX - this.lastTouchTap.x, e.clientY - this.lastTouchTap.y) <= 28
+            ) {
+              this.lastTouchTap = null;
+              const near = this._findNearestTouchNode(e.clientX, e.clientY, 24);
+              if (
+                near.settlementEl &&
+                near.settlementEl.dataset.lng &&
+                near.settlementEl.dataset.lat
+              ) {
+                this.openGenealogyAt(
+                  Number(near.settlementEl.dataset.lng),
+                  Number(near.settlementEl.dataset.lat)
+                );
+                return;
+              }
+              const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+              const [lng, lat] = this.projector.toGeo(sx, sy);
+              this.openGenealogyAt(lng, lat);
+              return;
+            }
+            this.lastTouchTap = { time: now, x: e.clientX, y: e.clientY };
+          }
+
           const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
           const rawStack = document.elementsFromPoint
             ? document.elementsFromPoint(e.clientX, e.clientY)
@@ -5431,8 +5566,13 @@
             return;
           }
           const settlementNameEl = findClosest('.settlement-node .name');
-          const settlementEl = findClosest('.settlement-node');
-          const milestoneEl = findClosest('.milestone-pin');
+          let settlementEl = findClosest('.settlement-node');
+          let milestoneEl = findClosest('.milestone-pin');
+          if (e.pointerType === 'touch' && !settlementEl && !milestoneEl) {
+            const near = this._findNearestTouchNode(e.clientX, e.clientY, 22);
+            settlementEl = near.settlementEl;
+            milestoneEl = near.milestoneEl;
+          }
           const cur = this.dynasties[this.dynastyIdx];
 
           if (this.genealogyMode) {
@@ -5488,7 +5628,10 @@
               this.jumpToYear(this._clampYearToDynasty(cur, m.year));
               this.openMilestoneBalloon(cur, m);
               this._panToward(m.coord[0], m.coord[1]);
-              if (!this._id('genealogy-card').classList.contains('is-hidden')) {
+              if (
+                window.innerWidth > 900 &&
+                !this._id('genealogy-card').classList.contains('is-hidden')
+              ) {
                 this.openGenealogyAt(targetCoord[0], targetCoord[1]);
               }
               return;
@@ -5528,9 +5671,17 @@
     _showHoverTip(e, html) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
+      const traceBtn = this.hoverTip.querySelector('.tt-trace-btn');
+      this.hoverTip.classList.toggle('is-interactive', Boolean(traceBtn));
+      if (traceBtn) {
+        traceBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          this.openGenealogyAt(Number(traceBtn.dataset.lng), Number(traceBtn.dataset.lat));
+        });
+      }
       this.hoverTip.classList.remove('is-hidden');
       const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
-      const top = Math.max(8, Math.min(rect.height - 70, e.clientY - rect.top - 12));
+      const top = Math.max(8, Math.min(rect.height - 90, e.clientY - rect.top - 12));
       this.hoverTip.style.left = `${left}px`;
       this.hoverTip.style.top = `${top}px`;
     }

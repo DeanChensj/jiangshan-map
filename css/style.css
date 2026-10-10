@@ -368,6 +368,8 @@ h2 {
   display: block;
   cursor: grab;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -1355,9 +1357,33 @@ h2 {
   z-index: 10;
 }
 
+#hover-tip.is-interactive {
+  pointer-events: auto;
+}
+
 #hover-tip .tt-sub {
   color: #cfc6b8;
   font-size: 11px;
+}
+
+#hover-tip .tt-trace-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  padding: 3.5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(217, 123, 102, 0.55);
+  background: rgba(181, 69, 47, 0.32);
+  color: #fff6e8;
+  font-family: var(--sans-stack);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#hover-tip .tt-trace-btn:active {
+  background: rgba(181, 69, 47, 0.52);
 }
 
 /* Quiz / Challenge Overlay */
@@ -1986,6 +2012,10 @@ html[lang="en"] .genealogy-list li {
     max-height: min(50%, 340px);
     padding: 10px 12px;
     z-index: 14;
+  }
+  #milestone-balloon .ep-place {
+    padding: 3.5px 9px;
+    font-size: 11.5px;
   }
   #chronicle-pane {
     padding: 10px 14px;
