@@ -203,7 +203,7 @@
       this.paneCollapsed = false;
       this.ghostTimer = null;
 
-      this.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
+      this.camera = this._getDefaultCamera();
       this.flyRaf = null;
       this.dragState = null;
       this.didPan = false;
@@ -219,6 +219,13 @@
 
       this.jumpToYear(this.dynasties[0].focusYear);
       this._restoreFromQuery();
+    }
+
+    _getDefaultCamera() {
+      if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+        return { x: 420, y: 220, w: 360, h: 435, zoom: 1000 / 360 };
+      }
+      return { x: 350, y: 215, w: 500, h: 420, zoom: 2 };
     }
 
     _id(id) {
@@ -1066,8 +1073,11 @@
         this.activeMilestone.milestone.coord[1]
       );
       const rect = this.svg.getBoundingClientRect();
-      const px = ((sx - this.camera.x) / this.camera.w) * rect.width;
-      const py = ((sy - this.camera.y) / this.camera.h) * rect.height;
+      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      const padX = (rect.width - this.camera.w * scale) * 0.5;
+      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      const px = padX + (sx - this.camera.x) * scale;
+      const py = padY + (sy - this.camera.y) * scale;
       const left = Math.max(12, Math.min(rect.width - 290, px + 12));
       const top = Math.max(12, Math.min(rect.height - 90, py - 24));
       this.milestoneBalloon.style.left = `${left}px`;
@@ -1201,7 +1211,13 @@
 
     _renderLegendBox(snap) {
       this.mapKey.innerHTML = '';
+      this.mobileLegendOpen = Boolean(this.mobileLegendOpen);
+      this.mapKey.classList.toggle('is-mobile-expanded', this.mobileLegendOpen);
+
       const curDyn = this.dynasties[this.dynastyIdx];
+      const bar = document.createElement('div');
+      bar.className = 'key-phase-bar';
+
       if (curDyn && Array.isArray(curDyn.phases) && curDyn.phases.length > 1) {
         const phases = curDyn.phases;
         let pIdx = phases.findIndex((ph) => this.year < ph.until);
@@ -1210,9 +1226,6 @@
         const curSy = phaseStart(pIdx);
         const curEy = phases[pIdx].until - 1;
         const spanText = `${this.formatYear(curSy, true)}—${this.formatYear(curEy, true)}`;
-
-        const bar = document.createElement('div');
-        bar.className = 'key-phase-bar';
 
         const badge = document.createElement('span');
         badge.className = 'key-phase-badge';
@@ -1288,9 +1301,36 @@
         btns.appendChild(prevBtn);
         btns.appendChild(nextBtn);
         bar.appendChild(btns);
-
-        this.mapKey.appendChild(bar);
+      } else {
+        bar.classList.add('is-single-phase');
+        const badge = document.createElement('span');
+        badge.className = 'key-phase-badge';
+        badge.textContent = curDyn ? this.dynastyName(curDyn) : '';
+        bar.appendChild(badge);
       }
+
+      const mobToggle = document.createElement('button');
+      mobToggle.type = 'button';
+      mobToggle.className = 'key-mobile-toggle';
+      const syncMobToggleLabel = () => {
+        mobToggle.textContent = this.mobileLegendOpen
+          ? this.locale === 'en'
+            ? 'Less ▾'
+            : '收起 ▾'
+          : this.locale === 'en'
+            ? 'Legend ▴'
+            : '图例 ▴';
+        mobToggle.setAttribute('aria-expanded', this.mobileLegendOpen ? 'true' : 'false');
+      };
+      syncMobToggleLabel();
+      mobToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.mobileLegendOpen = !this.mobileLegendOpen;
+        this.mapKey.classList.toggle('is-mobile-expanded', this.mobileLegendOpen);
+        syncMobToggleLabel();
+      });
+      bar.appendChild(mobToggle);
+      this.mapKey.appendChild(bar);
 
       if (snap.caption) {
         const h = document.createElement('div');
@@ -1299,7 +1339,7 @@
         this.mapKey.appendChild(h);
       }
       const grid = document.createElement('div');
-      grid.className = 'key-grid';
+      grid.className = 'key-grid key-polities-grid';
       const core = (snap.polities || []).filter((p) => p.role !== 'neighbor');
       const hasNeighbors = (snap.polities || []).some((p) => p.role === 'neighbor');
       for (const p of core) {
@@ -1327,7 +1367,7 @@
       }
       if (hasNeighbors) {
         const entry = document.createElement('span');
-        entry.className = 'key-entry is-interactive';
+        entry.className = 'key-entry is-interactive key-neighbor-entry';
         entry.title =
           this.locale === 'en'
             ? 'Hover to highlight surrounding polities · Click to reset view'
@@ -1369,7 +1409,7 @@
         }
         if (activeKinds.size) {
           const row = document.createElement('div');
-          row.className = 'key-grid';
+          row.className = 'key-grid key-corridors-grid';
           const seaLabel =
             this.year >= 1405 && this.year <= 1433
               ? this.uiStr('leg_sea', '海上丝路 / 郑和航线')
@@ -1431,21 +1471,29 @@
         if (jBtn) {
           jBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
+              this.toggleMobileChronicle(false);
+            }
             this.startJourney(jBtn.dataset.journey);
           });
         }
         li.addEventListener('click', () => {
           this.stopAutoplay();
+          if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
+            this.toggleMobileChronicle(false);
+          }
           this.jumpToYear(targetY);
           this.openMilestoneBalloon(dynasty, m);
           if (snapShift) {
-            if (this.camera.w < 780) this.resetCamera();
+            const defCam = this._getDefaultCamera();
+            if (this.camera.w < defCam.w * 0.85) this.resetCamera();
           } else if (m.coord) {
             this._panToward(m.coord[0], m.coord[1]);
           }
         });
         ul.appendChild(li);
       }
+      this._updateMobileChronicleBtn(dynasty);
       this._highlightCurrentMilestone(dynasty);
     }
 
@@ -2135,6 +2183,40 @@
       }, 240);
     }
 
+    toggleMobileChronicle(force) {
+      this.mobileChronicleOpen =
+        force !== undefined ? force : !this.mobileChronicleOpen;
+      const body = this._id('workspace-body');
+      if (body) {
+        body.classList.toggle('is-mobile-chronicle-open', this.mobileChronicleOpen);
+      }
+      this._updateMobileChronicleBtn(this.dynasties[this.dynastyIdx]);
+      setTimeout(() => {
+        this._updateScaleBar();
+        if (this.activeMilestone) this._positionMilestoneBalloon();
+        if (this.mobileChronicleOpen) {
+          const cur = this.dynasties[this.dynastyIdx];
+          if (cur) this._highlightCurrentMilestone(cur);
+        }
+      }, 230);
+    }
+
+    _updateMobileChronicleBtn(dynasty) {
+      const btn = this._id('act-mobile-chronicle');
+      if (!btn) return;
+      const cur = dynasty || this.dynasties[this.dynastyIdx];
+      const count = (cur && cur.milestones && cur.milestones.length) || 0;
+      btn.setAttribute('aria-expanded', this.mobileChronicleOpen ? 'true' : 'false');
+      if (this.mobileChronicleOpen) {
+        btn.textContent = this.locale === 'en' ? 'Collapse ▾' : '收起史志 ▾';
+      } else {
+        btn.textContent =
+          this.locale === 'en'
+            ? `Chronicle (${count}) ▲`
+            : `史志 · 事件 (${count}) ▲`;
+      }
+    }
+
     _estimateLocalTextWidth(str, fontPx, letterSpacing = 0) {
       if (!str) return 0;
       let w = 0;
@@ -2153,7 +2235,9 @@
       const z = 1000 / this.camera.w;
       const s = 1 / Math.sqrt(z);
       const invScale = s.toFixed(3);
-      const showTier2 = z >= 1.75;
+      const tier2MinZoom =
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
+      const showTier2 = z >= tier2MinZoom;
       this.svg.classList.toggle('is-zoomed-cities', showTier2);
 
       const showSettlements = !this.grpSettlements.classList.contains('is-hidden');
@@ -2551,12 +2635,14 @@
     }
 
     resetCamera() {
-      this._animateCameraTo({ x: 0, y: 0, w: 1000, h: 700 });
+      this._animateCameraTo(this._getDefaultCamera());
     }
 
     _panToward(lng, lat) {
       const [tx, ty] = this.projector.toScreen(lng, lat);
-      const w = Math.min(this.camera.w, 1000 / 2.4);
+      const maxW =
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 290 : 380;
+      const w = Math.min(this.camera.w, maxW);
       const h = w * (this.camera.h / this.camera.w);
       this._animateCameraTo({
         x: tx - w * 0.5,
@@ -4383,6 +4469,21 @@
       if (togglePaneBtn) {
         togglePaneBtn.addEventListener('click', () => this.toggleChroniclePane());
       }
+      const mobChronBtn = this._id('act-mobile-chronicle');
+      if (mobChronBtn) {
+        mobChronBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleMobileChronicle();
+        });
+      }
+      const dynBannerBar = this._id('dynasty-banner-bar');
+      if (dynBannerBar) {
+        dynBannerBar.addEventListener('click', () => {
+          if (window.innerWidth <= 900) {
+            this.toggleMobileChronicle();
+          }
+        });
+      }
       this._id('act-genealogy').addEventListener('click', () => this.toggleGenealogyMode());
       this._id('act-close-genealogy').addEventListener('click', () => this.toggleGenealogyMode(false));
 
@@ -4490,7 +4591,8 @@
         } else if (e.key === 'Escape') {
           closeLayersPopover();
           this.closeMilestoneBalloon();
-          if (this.activeJourney) this.stopJourney();
+          if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
+          else if (this.activeJourney) this.stopJourney();
           else if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
@@ -4909,6 +5011,15 @@
       if (q.has('layers')) {
         setTimeout(() => {
           const btn = this._id('act-layers-menu');
+          if (btn) btn.click();
+        }, 120);
+      }
+      if (q.has('mob_chron')) {
+        setTimeout(() => this.toggleMobileChronicle(true), 120);
+      }
+      if (q.has('mob_leg')) {
+        setTimeout(() => {
+          const btn = this.mapKey && this.mapKey.querySelector('.key-mobile-toggle');
           if (btn) btn.click();
         }, 120);
       }
