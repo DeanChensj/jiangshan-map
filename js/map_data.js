@@ -919,20 +919,29 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 208,
-        "headline": "赤壁之战",
-        "site": "赤壁",
+        "headline": "赤壁之战，孙刘联军破曹，刘备据有荆州",
+        "site": "赤壁 · 江陵",
         "coord": [
           113.901,
           29.851
         ]
       },
       {
-        "year": 219,
-        "headline": "刘备汉中之战大捷称汉中王；关羽水淹七军",
-        "site": "汉中 · 樊城",
+        "year": 214,
+        "headline": "刘备入成都迫降刘璋，跨有荆、益二州",
+        "site": "成都",
         "coord": [
-          107.021,
-          33.071
+          104.071,
+          30.571
+        ]
+      },
+      {
+        "year": 219,
+        "headline": "刘备取汉中称汉中王；冬吕蒙白衣渡江袭取荆州，关羽败亡",
+        "site": "汉中 · 麦城",
+        "coord": [
+          112.121,
+          30.801
         ]
       }
     ],
@@ -1189,8 +1198,16 @@ window.DYNASTY_DATA = [
         "snap": "s_donghan"
       },
       {
-        "until": 220,
+        "until": 208,
+        "snap": "s_donghan_d"
+      },
+      {
+        "until": 219,
         "snap": "s_donghan_e"
+      },
+      {
+        "until": 220,
+        "snap": "s_donghan_f"
       }
     ]
   },
@@ -3061,8 +3078,12 @@ window.DYNASTY_DATA = [
         "snap": "s_sui"
       },
       {
-        "until": 618,
+        "until": 614,
         "snap": "s_sui_c"
+      },
+      {
+        "until": 618,
+        "snap": "s_sui_d"
       }
     ]
   },
@@ -3084,6 +3105,15 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
+        ]
+      },
+      {
+        "year": 621,
+        "headline": "虎牢之战李世民擒窦建德、降王世充；李靖平萧铣，唐一统中原江南",
+        "site": "虎牢 · 江陵",
+        "coord": [
+          113.201,
+          34.851
         ]
       },
       {
@@ -3602,6 +3632,10 @@ window.DYNASTY_DATA = [
       }
     ],
     "phases": [
+      {
+        "until": 621,
+        "snap": "s_tang_0"
+      },
       {
         "until": 630,
         "snap": "s_tang_a0"
@@ -5162,6 +5196,15 @@ window.DYNASTY_DATA = [
           116.151,
           29.181
         ]
+      },
+      {
+        "year": 1367,
+        "headline": "朱元璋攻灭张士诚统一江南，命徐达、常遇春誓师北伐",
+        "site": "应天 · 平江",
+        "coord": [
+          118.801,
+          32.061
+        ]
       }
     ],
     "settlements": [
@@ -5379,8 +5422,12 @@ window.DYNASTY_DATA = [
         "snap": "s_yuan"
       },
       {
-        "until": 1368,
+        "until": 1363,
         "snap": "s_yuan_b"
+      },
+      {
+        "until": 1368,
+        "snap": "s_yuan_c"
       }
     ]
   },
@@ -5397,11 +5444,20 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 1368,
-        "headline": "朱元璋建明，定都应天",
-        "site": "应天",
+        "headline": "朱元璋于应天称帝建明；八月徐达北伐攻克元大都（元廷北迁称北元）",
+        "site": "应天 · 大都",
         "coord": [
           118.801,
           32.061
+        ]
+      },
+      {
+        "year": 1371,
+        "headline": "汤和、傅友德分道伐蜀，灭明夏政权平定四川",
+        "site": "重庆 · 成都",
+        "coord": [
+          104.071,
+          30.571
         ]
       },
       {
@@ -5411,6 +5467,24 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
+        ]
+      },
+      {
+        "year": 1382,
+        "headline": "傅友德、蓝玉、沐英率军平定云南元梁王与大理段氏",
+        "site": "云南府（昆明）",
+        "coord": [
+          102.831,
+          24.881
+        ]
+      },
+      {
+        "year": 1388,
+        "headline": "冯胜收复辽东迫降纳哈出（1387）；蓝玉捕鱼儿海大破北元汗廷",
+        "site": "辽阳 · 捕鱼儿海",
+        "coord": [
+          117.801,
+          47.801
         ]
       },
       {
@@ -5447,6 +5521,15 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
+        ]
+      },
+      {
+        "year": 1427,
+        "headline": "明宣宗罢交趾承宣布政使司，撤军弃守安南，黎利建后黎朝",
+        "site": "交趾（河内）",
+        "coord": [
+          105.851,
+          21.031
         ]
       },
       {
@@ -5828,12 +5911,32 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
+        "until": 1369,
+        "snap": "s_ming_0a"
+      },
+      {
+        "until": 1371,
+        "snap": "s_ming_0b"
+      },
+      {
+        "until": 1382,
+        "snap": "s_ming_0c"
+      },
+      {
+        "until": 1388,
+        "snap": "s_ming_0d"
+      },
+      {
         "until": 1407,
         "snap": "s_ming_a0"
       },
       {
-        "until": 1449,
+        "until": 1427,
         "snap": "s_ming_a"
+      },
+      {
+        "until": 1449,
+        "snap": "s_ming_a2"
       },
       {
         "until": 1616,

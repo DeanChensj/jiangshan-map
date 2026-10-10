@@ -305,8 +305,8 @@ window.EN_LOCALE = {
       "Guandu"
     ],
     "donghan:208": [
-      "Battle of Red Cliffs (Chibi)",
-      "Red Cliffs (Chibi)"
+      "Battle of Red Cliffs: Sun-Liu alliance defeats Cao Cao; Liu Bei holds Jingzhou",
+      "Red Cliffs · Jiangling"
     ],
     "sanguo:220": [
       "Cao Pi forces Emperor Xian to abdicate and proclaims Cao Wei",
@@ -657,8 +657,8 @@ window.EN_LOCALE = {
       "Yingzhou"
     ],
     "ming:1368": [
-      "Zhu Yuanzhang founds the Ming dynasty with the capital at Yingtian (Nanjing)",
-      "Yingtian (Nanjing)"
+      "Zhu Yuanzhang proclaims the Ming Dynasty in Yingtian; in August Xu Da captures Yuan Dadu as the Yuan court retreats north as Northern Yuan",
+      "Yingtian (Nanjing) · Dadu (Beijing)"
     ],
     "ming:1380": [
       "Hu Weiyong case: the office of Grand Chancellor is abolished",
@@ -873,8 +873,8 @@ window.EN_LOCALE = {
       "Xu (Xuchang)"
     ],
     "donghan:219": [
-      "Liu Bei wins Hanzhong Campaign; Guan Yu floods the Seven Armies",
-      "Hanzhong / Fancheng"
+      "Liu Bei takes Hanzhong; in winter Lü Meng seizes Jingzhou in a stealth crossing and Guan Yu falls",
+      "Hanzhong · Maicheng"
     ],
     "sanguo:222": [
       "Battle of Yiling; Lu Xun defeats Liu Bei by fire attack",
@@ -1279,6 +1279,34 @@ window.EN_LOCALE = {
     "prc:2001": [
       "China joins the World Trade Organization (WTO); Qinghai–Tibet Railway begins",
       "Beijing / Lhasa"
+    ],
+    "donghan:214": [
+      "Liu Bei enters Chengdu and receives Liu Zhang’s surrender, holding both Jingzhou and Yizhou",
+      "Chengdu"
+    ],
+    "tang:621": [
+      "Battle of Hulao: Li Shimin captures Dou Jiande and forces Wang Shichong’s surrender; Li Jing pacifies Xiao Xian",
+      "Hulao · Jiangling"
+    ],
+    "yuan:1367": [
+      "Zhu Yuanzhang conquers Zhang Shicheng to unify Jiangnan and launches Xu Da’s Northern Expedition",
+      "Yingtian (Nanjing) · Suzhou"
+    ],
+    "ming:1371": [
+      "Tang He and Fu Youde conquer the Ming Xia regime to unify Sichuan",
+      "Chongqing · Chengdu"
+    ],
+    "ming:1382": [
+      "Fu Youde, Lan Yu, and Mu Ying pacify the Yuan Prince of Liang and the Duan clan in Yunnan",
+      "Yunnan-fu (Kunming)"
+    ],
+    "ming:1388": [
+      "Feng Sheng accepts Naghachu’s surrender in Liaodong (1387); Lan Yu crushes the Northern Yuan court at Lake Buir (1388)",
+      "Liaoyang · Lake Buir"
+    ],
+    "ming:1427": [
+      "Emperor Xuanzong abolishes Jiaozhi Province and withdraws Ming troops from Vietnam; Le Loi founds the Later Le Dynasty",
+      "Jiaozhi (Hanoi)"
     ]
   },
   "corridors": {
@@ -2483,9 +2511,9 @@ window.EN_LOCALE = {
     "辰州府": "Chenzhou Fu",
     "施州卫": "Shizhou Wei",
     "闽中郡": "Minzhong",
-    "鄣郡": "Zhang Jun",
-    "桂林郡": "Guilin Jun",
-    "象郡": "Xiang Jun",
+    "鄣郡": "Zhangjun",
+    "桂林郡": "Guilin",
+    "象郡": "Xiangjun",
     "泗水郡": "Sishui Jun",
     "彭城郡": "Pengcheng Jun",
     "霍州": "Huo Zhou",
@@ -2885,7 +2913,7 @@ window.EN_LOCALE = {
     "重庆路": "Chongqing Lu",
     "绍庆路": "Shaoqing Lu",
     "怀德府": "Huaide Fu",
-    "夔州路": "Kuizhou Lu",
+    "夔州路": "Kuizhou Circuit",
     "顺庆路": "Shunqing Lu",
     "嘉定府路": "Jiading Fu",
     "广元路": "Guangyuan Lu",
@@ -3751,7 +3779,6 @@ window.EN_LOCALE = {
     "梓州路": "Zizhou Circuit",
     "潼川府路": "Tongchuanfu Circuit",
     "利州路": "Lizhou Circuit",
-    "夔州路": "Kuizhou Circuit",
     "京畿路": "Jingji Circuit",
     "京东路": "Jingdong Circuit",
     "京兆府路": "Jingzhaofu Route",
@@ -3781,10 +3808,78 @@ window.EN_LOCALE = {
     "蜀郡": "Shujun",
     "汉中郡": "Hanzhong",
     "九江郡": "Jiujiang",
-    "鄣郡": "Zhangjun",
     "黔中郡": "Qianzhong",
-    "桂林郡": "Guilin",
-    "象郡": "Xiangjun"
+    "赤壁 · 江陵": "Red Cliffs · Jiangling",
+    "汉中 · 麦城": "Hanzhong · Maicheng",
+    "虎牢 · 江陵": "Hulao · Jiangling",
+    "应天 · 平江": "Yingtian (Nanjing) · Suzhou",
+    "应天 · 大都": "Yingtian (Nanjing) · Dadu (Beijing)",
+    "重庆 · 成都": "Chongqing · Chengdu",
+    "云南府（昆明）": "Yunnan-fu (Kunming)",
+    "辽阳 · 捕鱼儿海": "Liaoyang · Lake Buir",
+    "交趾（河内）": "Jiaozhi (Hanoi)",
+    "刘表（荆州）": "Liu Biao (Jingzhou)",
+    "刘璋（益州）": "Liu Zhang (Yizhou)",
+    "刘备（汉中王·益州）": "Liu Bei (King of Hanzhong · Yizhou)",
+    "孙权（江东·荆州）": "Sun Quan (Jiangdong & Jingzhou)",
+    "189—208 年 · 州牧割据与曹操平定北方": "189–208 CE · Warlord Separatism & Cao Cao Unifying the North",
+    "189 年董卓乱政后群雄并起；曹操迎献帝都许、200 年官渡之战击败袁绍并逐步统一北方，刘表据荆州、刘璋据益州、孙策与孙权据江东。": "After Dong Zhuo seized power in 189, warlords rose across the realm; Cao Cao welcomed Emperor Xian to Xuchang and defeated Yuan Shao at Guandu (200) to unify the North, while Liu Biao held Jingzhou, Liu Zhang held Yizhou, and Sun Ce and Sun Quan held Jiangdong.",
+    "208—219 年 · 赤壁之战后刘备借荆州并跨有荆益": "208–219 CE · After Red Cliffs: Liu Bei Holds Jingzhou and Yizhou",
+    "208 年孙刘联军赤壁破曹，刘备收荆州江南四郡并向孙权“借荆州”（南郡），214 年入主益州，跨有荆、益二州，与曹操、孙权形成鼎立。": "After the Sun-Liu alliance defeated Cao Cao at Red Cliffs (208), Liu Bei took southern Jingzhou and Nanjun and conquered Yizhou in 214, spanning both Jingzhou and Yizhou opposite Cao Cao and Sun Quan.",
+    "219—220 年 · 刘备取汉中与吕蒙白衣渡江袭荆州": "219–220 CE · Liu Bei Takes Hanzhong & Lü Meng Seizes Jingzhou",
+    "219 年刘备定军山破夏侯渊取得汉中，进位汉中王；同年冬孙权遣吕蒙白衣渡江袭取荆州，关羽败走麦城，荆州尽归孙权，刘备退保益州与汉中。": "In 219 Liu Bei took Hanzhong and became King of Hanzhong; that winter Sun Quan sent Lü Meng to seize Jingzhou in a stealth crossing, Guan Yu fell at Maicheng, and Liu Bei was confined to Yizhou and Hanzhong.",
+    "隋（江都·留守诸郡）": "Sui (Jiangdu & Loyalist Commanderies)",
+    "瓦岗军（李密·河南义军）": "Wagang Army (Li Mi & Henan Rebels)",
+    "夏（窦建德·河北义军）": "Xia (Dou Jiande · Hebei Rebels)",
+    "李渊（太原留守·唐国公）": "Li Yuan (Taiyuan Regent · Duke of Tang)",
+    "梁（萧铣）· 南方豪强": "Liang (Xiao Xian) & Southern Warlords",
+    "杜伏威（江淮义军）": "Du Fuwei (Jianghuai Rebels)",
+    "秦（薛举）· 河西李轨": "Qin (Xue Ju) & Hexi Li Gui",
+    "614—618 年 · 隋末民变与群雄割据": "614–618 CE · Late Sui Uprisings & Warlord Fragmentation",
+    "炀帝三征高句丽引发天下大乱：瓦岗李密围逼东都洛阳，窦建德据河北，杜伏威控江淮，萧铣起兵荆襄，薛举据陇西，617 年李渊自太原起兵入据长安。": "Emperor Yang’s three Goguryeo campaigns sparked nationwide rebellions: Li Mi’s Wagang Army besieged Luoyang, Dou Jiande held Hebei, Du Fuwei controlled Jianghuai, Xiao Xian rose in Jingxiang, Xue Ju held Longxi, and in 617 Li Yuan marched from Taiyuan to capture Chang’an.",
+    "郑（王世充）": "Zheng (Wang Shichong)",
+    "夏（窦建德）": "Xia (Dou Jiande)",
+    "梁（萧铣）": "Liang (Xiao Xian)",
+    "吴（李子通·杜伏威）": "Wu (Li Zitong & Du Fuwei)",
+    "618—621 年 · 武德建唐与统一战争初期": "618–621 CE · Founding of Tang & Early Reunification Wars",
+    "618 年李渊于长安称帝建唐，先平陇西薛仁杲、河西李轨、河东刘武周，巩固关中、河东与巴蜀根据地，与洛阳王世充、河北窦建德、江陵萧铣对峙。": "In 618 Li Yuan proclaimed the Tang Dynasty in Chang’an, pacifying Xue Rengao in Longxi, Li Gui in Hexi, and Liu Wuzhou in Hedong to secure Guanzhong, Hedong, and Bashu while facing Wang Shichong in Luoyang, Dou Jiande in Hebei, and Xiao Xian in Jiangling.",
+    "621—630 年 · 虎牢决战与武德一统": "621–630 CE · Battle of Hulao & Wude Unification",
+    "621 年李世民于虎牢之战一举擒窦建德、降王世充，李孝恭、李靖平定江南萧铣，唐朝基本统一全国，北与东突厥对峙于阴山一线。": "In 621 Li Shimin captured Dou Jiande and forced Wang Shichong’s surrender at the Battle of Hulao while Li Xiaogong and Li Jing pacified Xiao Xian in the south, reuniting China and facing the Eastern Turks along the Yin Mountains.",
+    "归义军 · 甘州回鹘": "Guiyi Circuit · Ganzhou Uyghurs",
+    "高昌回鹘": "Qocho Uyghur Kingdom",
+    "陈友谅（汉）· 徐寿辉天完红巾": "Chen Youliang (Han) · Tianwan Red Turbans",
+    "朱元璋（吴国公）": "Zhu Yuanzhang (Duke of Wu)",
+    "韩林儿（宋）· 北方红巾": "Han Lin’er (Song) · Northern Red Turbans",
+    "张士诚（周）· 方国珍": "Zhang Shicheng (Zhou) · Fang Guozhen",
+    "明玉珍（陇蜀红巾）": "Ming Yuzhen (Sichuan Red Turbans)",
+    "元（大都朝廷·扩廓帖木儿）": "Yuan (Dadu Court · Köke Temür)",
+    "朱元璋（吴王）": "Zhu Yuanzhang (King of Wu)",
+    "明夏（明玉珍·明升）": "Ming Xia (Ming Yuzhen · Ming Sheng)",
+    "陈友定（福建）· 何真（广东）": "Chen Youding (Fujian) · He Zhen (Guangdong)",
+    "元梁王（把匝刺瓦尔密）": "Yuan Prince of Liang (Basalawarmi)",
+    "1351—1363 年 · 元末红巾大起义与群雄逐鹿": "1351–1363 CE · Late Yuan Red Turban Uprisings & Rival Warlords",
+    "1351 年韩山童、刘福通发动红巾军起义；徐寿辉、陈友谅据湖广江西，张士诚据平江（浙西），朱元璋渡江取集庆（应天），明玉珍入据巴蜀。": "In 1351 Han Shantong and Liu Futong launched the Red Turban rebellion; Xu Shouhui and Chen Youliang held Huguang and Jiangxi, Zhang Shicheng held Suzhou, Zhu Yuanzhang crossed the Yangtze to take Nanjing, and Ming Yuzhen entered Sichuan.",
+    "1363—1368 年 · 鄱阳湖决战后朱元璋一统江南": "1363–1368 CE · Battle of Lake Poyang & Zhu Yuanzhang Unifying Jiangnan",
+    "1363 年朱元璋于鄱阳湖大败陈友谅，尽有湖广江西，1364 年进封吴王；1367 年攻灭平江张士诚、迫降浙东方国珍，随即誓师北伐大都、南征闽广。": "In 1363 Zhu Yuanzhang defeated Chen Youliang at Lake Poyang to secure Huguang and Jiangxi, took the title King of Wu in 1364, conquered Zhang Shicheng and Fang Guozhen in 1367, and launched the Northern and Southern Expeditions.",
+    "元（北迁上都·应昌）": "Yuan (Retreating to Shangdu & Yingchang)",
+    "明夏（明升）": "Ming Xia (Ming Sheng)",
+    "元梁王（云南）": "Yuan Prince of Liang (Yunnan)",
+    "北元（漠北·辽东纳哈出）": "Northern Yuan (Mongolia & Liaodong Naghachu)",
+    "北元（鞑靼 · 瓦剌）": "Northern Yuan (Tatars & Oirats)",
+    "乌斯藏（帕木竹巴）": "Ü-Tsang (Phagmodrupa)",
+    "1368—1369 年 · 朱元璋建明与徐达北伐克大都": "1368–1369 CE · Founding of Ming & Xu Da’s Northern Expedition Capturing Dadu",
+    "1368 年正月朱元璋于应天称帝建明，南征闽广、北取山东河南；八月徐达攻克元大都（改北平府），元顺帝北走上都。此时晋陕陇右、辽东、四川明夏与云南梁王尚待平定。": "In January 1368 Zhu Yuanzhang proclaimed the Ming Dynasty in Yingtian (Nanjing), securing Fujian, Guangdong, Shandong, and Henan; in August Xu Da captured Yuan Dadu (renamed Beiping) as the Yuan emperor fled to Shangdu, while Shanxi-Shaanxi, Liaodong, Sichuan Ming Xia, and Yunnan remained to be unified.",
+    "1369—1371 年 · 徐达克定晋陕与北元南北对峙": "1369–1371 CE · Pacifying Shanxi-Shaanxi & Standoff with Northern Yuan",
+    "徐达、常遇春西下太原、关中与陇右，李文忠克应昌；元廷退居漠北史称“北元”，故元平章纳哈出仍盘踞辽东，西南四川为明夏政权、云南为元梁王据守。": "Xu Da and Chang Yuchun conquered Taiyuan, Guanzhong, and Longyou while Li Wenzhong took Yingchang; the Yuan court retreated to the steppe as Northern Yuan while Naghachu held Liaodong, Ming Xia held Sichuan, and the Yuan Prince of Liang held Yunnan.",
+    "1371—1382 年 · 平定四川明夏与经营西番": "1371–1382 CE · Conquest of Sichuan Ming Xia & Administration of Tibet",
+    "1371 年汤和、傅友德水陆并进灭四川明夏，巴蜀并入明廷并设乌斯藏都司；北方北元与辽东纳哈出尚存，西南云南仍由元梁王把匝刺瓦尔密割据。": "In 1371 Tang He and Fu Youde conquered Ming Xia in Sichuan and established the Ü-Tsang Commission, while Northern Yuan and Naghachu held the north and Liaodong, and the Yuan Prince of Liang still held Yunnan.",
+    "1382—1388 年 · 平定云南与北伐辽东前夕": "1382–1388 CE · Pacification of Yunnan & Eve of the Liaodong Campaign",
+    "1382 年傅友德、蓝玉、沐英平定云南元梁王与大理段氏，西南一统；东北辽东仍由北元纳哈出所部据守，直至 1387 年纳哈出降明、1388 年捕鱼儿海大捷。": "In 1382 Fu Youde, Lan Yu, and Mu Ying pacified the Yuan Prince of Liang and the Duan clan in Yunnan; Naghachu held Liaodong for Northern Yuan until his surrender in 1387 and the Battle of Buir Lake in 1388.",
+    "1388—1407 年 · 洪武一统版图与北元（鞑靼·瓦剌）并立": "1388–1407 CE · Complete Hongwu Unification & Northern Yuan (Tatars & Oirats)",
+    "1387 年收复辽东置辽东都司，1388 年蓝玉于捕鱼儿海大破北元汗廷，洪武两京十三省核心版图最终完成；漠北北元（1402 年后称鞑靼、瓦剌）与明廷隔长城南北对峙。": "After recovering Liaodong (1387) and crushing the Northern Yuan court at Lake Buir (1388), the Hongwu core realm was complete, facing Northern Yuan (Tatars and Oirats after 1402) across the Great Wall.",
+    "1407—1427 年 · 永乐极盛疆域（设交趾布政司与奴儿干都司）": "1407–1427 CE · Yongle Zenith (Jiaozhi Province & Nurgan Commission)",
+    "永乐五年（1407）张辅平定安南胡朝，置交趾承宣布政使司；1409 年于黑龙江口特林设奴儿干都司，西设哈密卫，北五征漠北，1421 年正式迁都北京。": "In 1407 Zhang Fu pacified the Ho Dynasty in Vietnam to establish Jiaozhi Province; in 1409 Ming established the Nurgan Commission on the lower Amur, set up Hami Guard in the west, led five steppe campaigns, and moved the capital to Beijing in 1421.",
+    "1427—1449 年 · 仁宣之治与罢交趾布政使司": "1427–1449 CE · Rule of Ren and Xuan & Withdrawal from Jiaozhi (Vietnam)",
+    "宣德二年（1427）柳升援军于支棱失利，明宣宗采纳杨士奇、杨荣建议，诏罢交趾布政使司撤军还朝，安南黎利建立后黎朝；东北仍维持奴儿干都司羁縻。": "After Liu Sheng fell at Chi Lang in 1427, Emperor Xuanzong abolished the Jiaozhi Provincial Administration and withdrew Ming troops from Vietnam as Le Loi founded the Later Le Dynasty."
   }
 };
-
