@@ -724,7 +724,7 @@ h2 {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 310px;
+  width: 336px;
   max-height: calc(100% - 64px);
   display: flex;
   flex-direction: column;
@@ -759,11 +759,41 @@ h2 {
 }
 
 .genealogy-sub {
-  font-size: 11.5px;
+  font-size: 11.2px;
   color: var(--text-muted);
   margin: 4px 0 8px;
-  padding-bottom: 8px;
+  padding-bottom: 7px;
   border-bottom: 1px dashed var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.gen-filter-pill {
+  border: 1px solid rgba(181, 69, 47, 0.28);
+  background: rgba(181, 69, 47, 0.08);
+  color: var(--vermilion);
+  border-radius: 999px;
+  padding: 1.5px 8px;
+  font-size: 10.8px;
+  font-family: var(--serif-stack);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.gen-filter-pill:hover {
+  background: rgba(181, 69, 47, 0.16);
+  border-color: rgba(181, 69, 47, 0.45);
+}
+
+.gen-filter-pill.is-active {
+  background: var(--vermilion);
+  color: #fffdf8;
+  border-color: var(--vermilion);
 }
 
 .genealogy-list {
@@ -778,7 +808,7 @@ h2 {
 
 .genealogy-list li {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 58px 1fr;
   gap: 8px;
   padding: 5px 7px;
   border-radius: 7px;
@@ -800,12 +830,65 @@ h2 {
 
 .genealogy-list .t-val {
   color: var(--text-main);
+  min-width: 0;
 }
 
 .genealogy-list .t-sub {
   color: var(--text-muted);
   font-size: 11px;
   display: block;
+}
+
+.t-cap-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--vermilion);
+  background: rgba(181, 69, 47, 0.11);
+  border: 1px solid rgba(181, 69, 47, 0.25);
+  padding: 0 5px;
+  border-radius: 4px;
+  margin-left: 5px;
+  vertical-align: 1px;
+}
+
+.t-events {
+  margin-top: 5px;
+  padding: 3px 0 2px 8px;
+  border-left: 2px solid rgba(181, 69, 47, 0.34);
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+}
+
+.t-ev-row {
+  font-size: 11.2px;
+  line-height: 1.36;
+  color: var(--text-main);
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 2px 4px;
+  margin-left: -4px;
+  border-radius: 5px;
+  transition: background 0.12s;
+}
+
+.t-ev-row:hover {
+  background: rgba(181, 69, 47, 0.12);
+}
+
+.t-ev-yr {
+  font-weight: 700;
+  color: var(--vermilion);
+  font-size: 10.8px;
+  flex-shrink: 0;
+}
+
+.t-ev-txt {
+  flex: 1;
+  min-width: 110px;
 }
 
 .trace-pin {
@@ -1790,14 +1873,24 @@ html[lang="en"] .genealogy-list li {
   #act-toggle-pane {
     display: none;
   }
-  #genealogy-card,
   #challenge-card {
-    top: 8px;
+    top: 46px;
     left: 8px;
     right: 8px;
     width: auto;
-    max-height: calc(100% - 16px);
+    max-height: calc(100% - 54px);
     padding: 10px 12px;
+    z-index: 14;
+  }
+  #genealogy-card {
+    top: auto;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: min(50%, 340px);
+    padding: 10px 12px;
+    z-index: 14;
   }
   #chronicle-pane {
     padding: 10px 14px;

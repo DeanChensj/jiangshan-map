@@ -280,6 +280,7 @@
     }
 
     _enMilestoneHeadline(d, m) {
+      if (m.headlineEn) return m.headlineEn;
       const key = `${d.key}:${m.year}`;
       const hit = this.enLocale.milestones && this.enLocale.milestones[key];
       if (hit) return Array.isArray(hit) ? hit[0] : hit;
@@ -331,6 +332,7 @@
     milestoneSite(d, m) {
       if (!m.site) return '';
       if (this.locale === 'en') {
+        if (m.siteEn) return m.siteEn;
         const key = `${d.key}:${m.year}`;
         const hit = this.enLocale.milestones && this.enLocale.milestones[key];
         if (Array.isArray(hit) && hit[1]) return hit[1];
@@ -1541,8 +1543,220 @@
       this.grpGenealogy.innerHTML = '';
     }
 
+    static get PLACE_LANDMARK_EVENTS() {
+      return [
+        // 长安 / 咸阳 / 西安
+        { dynastyKey: 'qin', year: -221, coord: [108.71, 34.33], site: '咸阳', siteEn: 'Xianyang', zh: '秦始皇统一六国定都咸阳，收天下兵器铸十二金人', en: 'Qin Shi Huang unifies China with Xianyang as imperial capital' },
+        { dynastyKey: 'qin', year: -206, coord: [109.21, 34.37], site: '咸阳·鸿门', siteEn: 'Xianyang / Hongmen', zh: '刘邦入关破咸阳约法三章；项羽于鸿门设宴', en: 'Liu Bang enters Xianyang; Xiang Yu hosts the Feast at Hongmen' },
+        { dynastyKey: 'xihan', year: -200, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '萧何营建未央宫成，汉高祖自栎阳正式定都长安', en: "Xiao He completes Weiyang Palace; Chang'an becomes Western Han capital" },
+        { dynastyKey: 'xihan', year: 8, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '王莽于长安篡汉建立新朝，推行王田私属改制', en: "Wang Mang usurps the Han throne in Chang'an and founds the Xin Dynasty" },
+        { dynastyKey: 'donghan', year: 190, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '董卓焚洛阳挟汉献帝西迁长安', en: "Dong Zhuo forcibly relocates Emperor Xian to Chang'an" },
+        { dynastyKey: 'sanguo', year: 228, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '诸葛亮北伐出祁山震动关中，魏明帝亲镇长安督师', en: "Zhuge Liang launches his First Northern Expedition; Emperor Ming of Wei commands defense from Chang'an" },
+        { dynastyKey: 'xijin', year: 316, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '刘曜攻陷长安，晋愍帝出降，西晋灭亡', en: "Liu Yao captures Chang'an; Emperor Min surrenders, ending the Western Jin" },
+        { dynastyKey: 'nanbeichao', year: 351, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '前秦定都长安，苻坚、王猛励精图治统一北方', en: "Former Qin governs from Chang'an and unifies northern China under Fu Jian and Wang Meng" },
+        { dynastyKey: 'nanbeichao', year: 534, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '宇文泰于长安立西魏，开创关陇集团与北周基业', en: "Yuwen Tai establishes Western Wei at Chang'an, laying the foundation for Sui and Tang" },
+        { dynastyKey: 'sui', year: 582, coord: [108.94, 34.26], site: '大兴（长安）', siteEn: "Daxing (Chang'an)", zh: '隋文帝诏宇文恺于龙首原南营建大兴城（唐长安前身）', en: "Emperor Wen of Sui commissions Yuwen Kai to build Daxing City (Tang Chang'an)" },
+        { dynastyKey: 'tang', year: 618, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '李渊于长安太极殿称帝建唐，改大兴为长安', en: "Li Yuan proclaims the Tang Dynasty at Taiji Palace in Chang'an" },
+        { dynastyKey: 'tang', year: 626, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '玄武门之变，李世民即位为唐太宗，次年改元贞观', en: "Xuanwu Gate Incident in Chang'an; Li Shimin ascends as Emperor Taizong" },
+        { dynastyKey: 'tang', year: 756, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '安史叛军破潼关陷长安；次年郭子仪率唐军收复西京', en: "An Lushan rebels capture Chang'an; Guo Ziyi recaptures the capital in 757" },
+        { dynastyKey: 'tang', year: 881, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '黄巢起义军攻占长安称齐帝，唐僖宗奔蜀', en: "Huang Chao captures Chang'an and proclaims the Qi regime" },
+        { dynastyKey: 'ming', year: 1369, coord: [108.94, 34.26], site: '西安府', siteEn: "Xi'an", zh: '徐达克奉元路，明廷改置西安府，始定“西安”之名', en: "Ming general Xu Da captures Fengyuan and renames the prefecture Xi'an" },
+        { dynastyKey: 'ming', year: 1643, coord: [108.94, 34.26], site: '西安', siteEn: "Xi'an", zh: '李自成攻克西安，次年正月于西安建国号大顺', en: "Li Zicheng captures Xi'an and proclaims the Dashun Dynasty" },
+        { dynastyKey: 'roc', year: 1936, coord: [108.94, 34.26], site: '西安', siteEn: "Xi'an", zh: '张学良、杨虎城发动西安事变，促成抗日民族统一战线', en: "Xi'an Incident sparks the Second United Front against Japanese aggression" },
+
+        // 洛阳
+        { dynastyKey: 'donghan', year: 25, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '刘秀建立东汉定都洛阳，开启光武中兴', en: 'Liu Xiu establishes the Eastern Han with Luoyang as imperial capital' },
+        { dynastyKey: 'donghan', year: 68, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '汉明帝于洛阳创建白马寺，为中国第一古刹', en: 'Emperor Ming of Han establishes White Horse Temple in Luoyang' },
+        { dynastyKey: 'sanguo', year: 220, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '曹丕代汉称帝建立曹魏，定都洛阳', en: 'Cao Pi founds Cao Wei with Luoyang as capital' },
+        { dynastyKey: 'xijin', year: 265, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '司马炎代魏建立西晋定都洛阳，280年灭吴一统', en: 'Sima Yan founds the Western Jin in Luoyang and reunifies China in 280' },
+        { dynastyKey: 'xijin', year: 311, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '永嘉之乱：汉赵攻陷洛阳掳晋怀帝，衣冠南渡', en: 'Disaster of Yongjia: sack of Luoyang triggers the southward migration' },
+        { dynastyKey: 'nanbeichao', year: 493, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '北魏孝文帝自平城迁都洛阳，推行汉化并开凿龙门石窟', en: 'Emperor Xiaowen of Northern Wei moves the capital to Luoyang and initiates Longmen Grottoes' },
+        { dynastyKey: 'sui', year: 605, coord: [112.45, 34.62], site: '东都洛阳', siteEn: 'Luoyang', zh: '隋炀帝营建东都洛阳，以洛阳为中心开凿通济渠与永济渠', en: 'Emperor Yang of Sui builds the Eastern Capital Luoyang and launches the Grand Canal' },
+        { dynastyKey: 'tang', year: 690, coord: [112.45, 34.62], site: '神都洛阳', siteEn: 'Luoyang', zh: '武则天改唐为周，定都神都洛阳', en: 'Wu Zetian proclaims the Zhou Dynasty with Luoyang as the Divine Capital' },
+        { dynastyKey: 'wudai', year: 923, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '李存勖灭后梁建立后唐，定都洛阳', en: 'Li Cunxu founds Later Tang with Luoyang as imperial capital' },
+
+        // 建康 / 金陵 / 南京
+        { dynastyKey: 'sanguo', year: 229, coord: [118.78, 32.06], site: '建业', siteEn: 'Jianye (Nanjing)', zh: '孙权自武昌迁都建业（今南京），正式称帝建立东吴', en: 'Sun Quan moves his capital to Jianye (Nanjing) and proclaims the Eastern Wu Empire' },
+        { dynastyKey: 'xijin', year: 280, coord: [118.78, 32.06], site: '建业', siteEn: 'Jianye (Nanjing)', zh: '晋将王濬楼船下益州直抵建业，孙皓出降，三国归晋', en: 'Jin naval forces under Wang Jun capture Jianye, ending the Three Kingdoms' },
+        { dynastyKey: 'dongjin', year: 317, coord: [118.78, 32.06], site: '建康', siteEn: 'Jiankang (Nanjing)', zh: '司马睿渡江于建康建立东晋，开启六朝古都繁华', en: 'Sima Rui establishes the Eastern Jin in Jiankang (Nanjing)' },
+        { dynastyKey: 'nanbeichao', year: 420, coord: [118.78, 32.06], site: '建康', siteEn: 'Jiankang (Nanjing)', zh: '刘裕代晋建宋，南朝宋齐梁陈四代皆都建康', en: 'Liu Yu founds Liu Song; Jiankang serves as capital of all four Southern Dynasties' },
+        { dynastyKey: 'sui', year: 589, coord: [118.78, 32.06], site: '建康', siteEn: 'Jiankang (Nanjing)', zh: '隋军韩擒虎渡江克建康灭陈，结束近三百年南北分裂', en: 'Sui forces cross the Yangtze and capture Jiankang, reunifying China' },
+        { dynastyKey: 'wudai', year: 937, coord: [118.78, 32.06], site: '金陵', siteEn: 'Jinling (Nanjing)', zh: '李昪于金陵建立南唐，词章书画冠绝十国', en: 'Li Bian founds Southern Tang in Jinling, cultural heart of the Ten Kingdoms' },
+        { dynastyKey: 'nansong', year: 1129, coord: [118.78, 32.06], site: '建康府', siteEn: 'Jiankang (Nanjing)', zh: '南宋改江宁为建康府，为留都与长江防线核心枢要', en: 'Jiankang serves as auxiliary capital and Yangtze defense hub of Southern Song' },
+        { dynastyKey: 'ming', year: 1368, coord: [118.78, 32.06], site: '应天府', siteEn: 'Yingtian (Nanjing)', zh: '朱元璋于应天府（南京）称帝建立明朝', en: 'Zhu Yuanzhang proclaims the Ming Dynasty in Yingtian (Nanjing)' },
+        { dynastyKey: 'ming', year: 1402, coord: [118.78, 32.06], site: '应天府', siteEn: 'Nanjing', zh: '靖难之役：燕王朱棣攻克南京，即位为明成祖', en: 'Jingnan Campaign: Zhu Di captures Nanjing and ascends as the Yongle Emperor' },
+        { dynastyKey: 'qing', year: 1842, coord: [118.78, 32.06], site: '江宁（南京）', siteEn: 'Nanjing', zh: '第一次鸦片战争清廷战败，于南京下关江面签署《南京条约》', en: 'Treaty of Nanjing signed after the First Opium War' },
+        { dynastyKey: 'qing', year: 1853, coord: [118.78, 32.06], site: '江宁（天京）', siteEn: 'Nanjing', zh: '太平天国攻占江宁，改名天京并定都十一年', en: 'Taiping Heavenly Kingdom captures Jiangning and makes it its capital Tianjing' },
+        { dynastyKey: 'roc', year: 1912, coord: [118.78, 32.06], site: '南京', siteEn: 'Nanjing', zh: '孙中山于南京就任中华民国临时大总统，宣告共和', en: 'Sun Yat-sen inaugurated in Nanjing as Provisional President of the Republic of China' },
+
+        // 蓟 / 幽州 / 燕京 / 大都 / 北京
+        { dynastyKey: 'qin', year: -226, coord: [116.40, 39.90], site: '蓟城', siteEn: 'Ji (Beijing)', zh: '秦将王翦攻拔燕都蓟城，置广阳郡', en: 'Qin general Wang Jian captures the Yan capital Ji and establishes Guangyang Commandery' },
+        { dynastyKey: 'tang', year: 755, coord: [116.40, 39.90], site: '范阳（幽州）', siteEn: 'Fanyang (Beijing)', zh: '安禄山于范阳（幽州）起兵反唐，安史之乱爆发', en: 'An Lushan launches his rebellion from Fanyang (Youzhou / Beijing)' },
+        { dynastyKey: 'wudai', year: 938, coord: [116.40, 39.90], site: '幽州（辽南京）', siteEn: 'Youzhou (Beijing)', zh: '后晋割燕云十六州，辽升幽州为南京析津府（陪都）', en: 'Liao elevates Youzhou to its Southern Capital, Nanjing Xijin Fu' },
+        { dynastyKey: 'nansong', year: 1153, coord: [116.40, 39.90], site: '金中都', siteEn: 'Zhongdu (Beijing)', zh: '金海陵王完颜亮迁都燕京，定名金中都大兴府，首开北京帝都史', en: 'Jin ruler Wanyan Liang moves the imperial capital to Yanjing, renaming it Zhongdu' },
+        { dynastyKey: 'nansong', year: 1215, coord: [116.40, 39.90], site: '金中都', siteEn: 'Zhongdu (Beijing)', zh: '成吉思汗蒙古大军攻占金中都', en: "Genghis Khan's Mongol forces capture Jin Zhongdu" },
+        { dynastyKey: 'yuan', year: 1272, coord: [116.40, 39.90], site: '大都', siteEn: 'Dadu (Beijing)', zh: '忽必烈营建元大都成，定为元朝国都，积水潭万艘漕船云集', en: 'Kublai Khan establishes Dadu (Khanbaliq) as capital of the Yuan Dynasty' },
+        { dynastyKey: 'ming', year: 1421, coord: [116.40, 39.90], site: '京师（北京）', siteEn: 'Beijing', zh: '明成祖朱棣建北京紫禁城成，正式自南京迁都北京', en: 'Yongle Emperor completes the Forbidden City and moves the Ming capital to Beijing' },
+        { dynastyKey: 'ming', year: 1449, coord: [116.40, 39.90], site: '北京', siteEn: 'Beijing', zh: '土木堡之变后瓦剌逼近京师，于谦指挥北京保卫战获胜', en: 'Yu Qian leads the successful Defense of Beijing after the Tumu Crisis' },
+        { dynastyKey: 'ming', year: 1644, coord: [116.40, 39.90], site: '北京', siteEn: 'Beijing', zh: '李自成破北京崇祯自缢；旋即清军入关定都北京', en: 'Li Zicheng captures Beijing; Qing forces soon enter and make Beijing their capital' },
+        { dynastyKey: 'qing', year: 1860, coord: [116.40, 39.90], site: '北京', siteEn: 'Beijing', zh: '第二次鸦片战争英法联军攻入北京，劫掠并焚毁圆明园', en: 'Anglo-French forces enter Beijing and burn the Old Summer Palace (Yuanmingyuan)' },
+        { dynastyKey: 'roc', year: 1919, coord: [116.40, 39.90], site: '北京', siteEn: 'Beijing', zh: '北京爆发五四爱国运动，揭开新民主主义革命序幕', en: 'May Fourth Movement erupts in Beijing' },
+        { dynastyKey: 'roc', year: 1949, coord: [116.40, 39.90], site: '北平（北京）', siteEn: 'Beijing', zh: '北平和平解放，同年10月1日于北京天安门宣告新中国成立', en: 'Peaceful liberation of Beiping; founding of the PRC proclaimed at Tiananmen' },
+
+        // 大梁 / 汴州 / 汴京 / 开封
+        { dynastyKey: 'qin', year: -225, coord: [114.35, 34.79], site: '大梁', siteEn: 'Daliang (Kaifeng)', zh: '秦将王贲引黄河鸿沟水灌大梁城，魏王假降，魏亡', en: 'Qin general Wang Ben floods Daliang to conquer the state of Wei' },
+        { dynastyKey: 'sui', year: 605, coord: [114.35, 34.79], site: '汴州', siteEn: 'Bianzhou (Kaifeng)', zh: '通济渠贯通洛阳经汴州入淮，汴州跃升为天下漕运咽喉', en: 'Grand Canal makes Bianzhou (Kaifeng) the premier north-south waterway hub' },
+        { dynastyKey: 'wudai', year: 907, coord: [114.35, 34.79], site: '东都开封府', siteEn: 'Kaifeng', zh: '朱温篡唐建后梁定都开封；后晋、后汉、后周皆都于此', en: 'Zhu Wen founds Later Liang in Kaifeng; four of the Five Dynasties make it their capital' },
+        { dynastyKey: 'beisong', year: 960, coord: [114.35, 34.79], site: '东京开封府', siteEn: 'Dongjing (Kaifeng)', zh: '赵匡胤陈桥兵变，于东京开封府建立北宋', en: 'Zhao Kuangyin founds the Northern Song Dynasty with Dongjing (Kaifeng) as capital' },
+        { dynastyKey: 'beisong', year: 1127, coord: [114.35, 34.79], site: '东京汴梁', siteEn: 'Bianjing (Kaifeng)', zh: '靖康之变：金军攻陷汴京，掳徽钦二帝北去，北宋灭亡', en: 'Jingkang Incident: Jurchen Jin forces capture Kaifeng, ending the Northern Song' },
+        { dynastyKey: 'nansong', year: 1214, coord: [114.35, 34.79], site: '金南京（汴京）', siteEn: 'Bianjing (Kaifeng)', zh: '金宣宗避蒙古兵锋，自中都南迁都城至汴京', en: 'Emperor Xuanzong of Jin relocates the Jurchen capital south to Bianjing' },
+        { dynastyKey: 'ming', year: 1642, coord: [114.35, 34.79], site: '开封府', siteEn: 'Kaifeng', zh: '李自成三围开封，黄河决口灌城，古城尽没于泥沙', en: 'Yellow River dike breach during the 1642 Siege of Kaifeng submerges the city' },
+
+        // 杭州 / 临安
+        { dynastyKey: 'sui', year: 610, coord: [120.15, 30.28], site: '余杭（杭州）', siteEn: 'Hangzhou', zh: '隋炀帝开江南河自京口达杭州，贯通大运河最南端', en: 'Sui completes the Jiangnan Canal terminating at Hangzhou' },
+        { dynastyKey: 'wudai', year: 907, coord: [120.15, 30.28], site: '杭州（西府）', siteEn: 'Hangzhou', zh: '钱镠建立吴越国定都杭州，筑捍海塘、浚西湖，保境安民', en: 'Qian Liu establishes the Wuyue Kingdom in Hangzhou and builds the Qiantang seawall' },
+        { dynastyKey: 'nansong', year: 1138, coord: [120.15, 30.28], site: '临安府', siteEn: "Lin'an (Hangzhou)", zh: '宋高宗正式定临安府（杭州）为南宋行在（都城）', en: "Emperor Gaozong establishes Lin'an (Hangzhou) as capital of the Southern Song" },
+        { dynastyKey: 'nansong', year: 1142, coord: [120.15, 30.28], site: '临安府', siteEn: "Lin'an (Hangzhou)", zh: '绍兴和议达成，岳飞于临安风波亭遇害', en: "General Yue Fei is executed at Fengbo Pavilion in Lin'an" },
+        { dynastyKey: 'nansong', year: 1276, coord: [120.15, 30.28], site: '临安府', siteEn: "Lin'an (Hangzhou)", zh: '元军伯颜兵临临安，谢太后携宋恭帝奉玺出降', en: "Yuan forces under Bayan reach Lin'an; the Southern Song court surrenders" },
+
+        // 成都
+        { dynastyKey: 'sanguo', year: 221, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '刘备于成都称帝建立蜀汉，拜诸葛亮为丞相', en: 'Liu Bei proclaims the Shu Han Empire in Chengdu with Zhuge Liang as Chancellor' },
+        { dynastyKey: 'sanguo', year: 263, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '魏将邓艾偷渡阴平直抵成都，刘禅出降，蜀汉灭亡', en: 'Wei general Deng Ai marches through Yinping to Chengdu; Liu Shan surrenders' },
+        { dynastyKey: 'tang', year: 756, coord: [104.06, 30.67], site: '成都府（南京）', siteEn: 'Chengdu', zh: '安史之乱唐玄宗幸蜀驻跸成都，后升益州为成都府', en: 'Emperor Xuanzong takes refuge in Chengdu during the An Lushan Rebellion' },
+        { dynastyKey: 'wudai', year: 907, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '王建于成都建前蜀，后孟知祥复于成都建后蜀', en: 'Former Shu and Later Shu kingdoms successively govern from Chengdu' },
+        { dynastyKey: 'beisong', year: 1023, coord: [104.06, 30.67], site: '益州（成都）', siteEn: 'Chengdu', zh: '北宋于成都设益州交子务，发行世界最早官方纸币“交子”', en: "Northern Song establishes the Jiaozi Bureau in Chengdu, issuing the world's first state paper money" },
+
+        // 江夏 / 武昌 / 鄂州 / 武汉 & 襄阳
+        { dynastyKey: 'donghan', year: 208, coord: [113.95, 29.95], site: '赤壁·江夏', siteEn: 'Red Cliffs / Jiangxia', zh: '孙刘联军于赤壁火攻大破曹操，奠定三国鼎立之局', en: 'Battle of Red Cliffs: Sun Quan and Liu Bei defeat Cao Cao by fire attack' },
+        { dynastyKey: 'sanguo', year: 221, coord: [114.88, 30.40], site: '武昌（今鄂州）', siteEn: 'Wuchang', zh: '孙权自公安徙治鄂县，取“以武而昌”改名武昌', en: 'Sun Quan establishes Wuchang as his military and political capital on the Yangtze' },
+        { dynastyKey: 'nansong', year: 1134, coord: [114.30, 30.55], site: '鄂州（武昌）', siteEn: 'Ezhou (Wuhan)', zh: '岳飞以鄂州为大本营，挥师北伐收复襄阳六郡', en: 'Yue Fei bases his Northern Expedition forces at Ezhou (Wuchang)' },
+        { dynastyKey: 'qing', year: 1911, coord: [114.30, 30.55], site: '武昌', siteEn: 'Wuchang (Wuhan)', zh: '武昌起义爆发，打响辛亥革命第一枪，终结两千年帝制', en: 'Wuchang Uprising sparks the 1911 Xinhai Revolution, ending imperial rule in China' },
+        { dynastyKey: 'donghan', year: 207, coord: [112.14, 32.01], site: '襄阳·隆中', siteEn: 'Xiangyang', zh: '刘备三顾茅庐请诸葛亮于襄阳隆中出山，定《隆中对》', en: 'Liu Bei visits Zhuge Liang three times at Longzhong near Xiangyang' },
+        { dynastyKey: 'sanguo', year: 219, coord: [112.14, 32.01], site: '襄阳·樊城', siteEn: 'Xiangyang', zh: '关羽北伐水淹七军，围曹仁于樊城、襄阳，威震华夏', en: 'Guan Yu floods the Seven Armies and besieges Xiangyang and Fancheng' },
+        { dynastyKey: 'nansong', year: 1273, coord: [112.14, 32.01], site: '襄阳', siteEn: 'Xiangyang', zh: '襄樊之战：宋军孤城苦守襄阳六年，元军回回炮破樊城后降元', en: 'Six-year Siege of Xiangyang ends after Yuan forces deploy counterweight trebuchets' },
+
+        // 沙州 / 敦煌 & 平城 / 大同 & 广陵 / 扬州 & 番禺 / 广州
+        { dynastyKey: 'xihan', year: -111, coord: [94.66, 40.14], site: '敦煌', siteEn: 'Dunhuang', zh: '汉武帝分酒泉置敦煌郡，筑玉门关、阳关扼丝路咽喉', en: 'Emperor Wu of Han establishes Dunhuang Commandery and the Yumen and Yangguan passes' },
+        { dynastyKey: 'nanbeichao', year: 366, coord: [94.66, 40.14], site: '敦煌', siteEn: 'Dunhuang', zh: '沙门乐僔于敦煌鸣沙山东麓开凿莫高窟第一窟', en: 'Monk Yuezun carves the first cave at the Mogao Grottoes in Dunhuang' },
+        { dynastyKey: 'tang', year: 848, coord: [94.66, 40.14], site: '沙州（敦煌）', siteEn: 'Shazhou (Dunhuang)', zh: '张议潮于沙州起义驱逐吐蕃，遣使奉表归唐，置归义军', en: 'Zhang Yichao leads the Dunhuang uprising and restores Tang rule as the Guiyi Circuit' },
+        { dynastyKey: 'xihan', year: -200, coord: [113.30, 40.08], site: '平城（大同）', siteEn: 'Pingcheng (Datong)', zh: '白登之围：汉高祖刘邦于平城白登山被冒顿单于围困七日', en: 'Siege of Baideng: Emperor Gaozu of Han is besieged by Modu Chanyu at Pingcheng' },
+        { dynastyKey: 'nanbeichao', year: 398, coord: [113.30, 40.08], site: '平城（大同）', siteEn: 'Pingcheng (Datong)', zh: '拓跋珪迁都平城称帝建北魏，开凿云冈石窟', en: 'Tuoba Gui moves the Northern Wei capital to Pingcheng and initiates the Yungang Grottoes' },
+        { dynastyKey: 'sui', year: 618, coord: [119.41, 32.39], site: '江都（扬州）', siteEn: 'Jiangdu (Yangzhou)', zh: '宇文化及于江都发动兵变弑隋炀帝，隋朝覆亡', en: 'Yuwen Huaji assassinates Emperor Yang of Sui in Jiangdu (Yangzhou)' },
+        { dynastyKey: 'tang', year: 753, coord: [119.41, 32.39], site: '扬州', siteEn: 'Yangzhou', zh: '鉴真和尚自扬州启航第六次东渡日本成功', en: 'Monk Jianzhen sets sail from Yangzhou on his successful sixth voyage to Japan' },
+        { dynastyKey: 'qing', year: 1645, coord: [119.41, 32.39], site: '扬州', siteEn: 'Yangzhou', zh: '史可法率孤军死守扬州抗击清军，城破殉国', en: 'Ming loyalist Shi Kefa defends Yangzhou to the death against Qing forces' },
+        { dynastyKey: 'xihan', year: -204, coord: [113.26, 23.13], site: '番禺（广州）', siteEn: 'Panyu (Guangzhou)', zh: '赵佗于番禺自立为南越武王；前111年汉武帝平南越置南海郡', en: 'Zhao Tuo founds the Nanyue Kingdom at Panyu (Guangzhou); reconquered by Han in 111 BCE' },
+        { dynastyKey: 'tang', year: 714, coord: [113.26, 23.13], site: '广州', siteEn: 'Guangzhou', zh: '唐廷于广州首设市舶使，总管南海番舶贸易', en: 'Tang establishes the first Maritime Trade Commissioner (Shibosi) in Guangzhou' },
+        { dynastyKey: 'qing', year: 1839, coord: [113.26, 23.13], site: '广州·虎门', siteEn: 'Guangzhou / Humen', zh: '林则徐抵广州查禁鸦片，于虎门海滩当众销烟', en: 'Imperial Commissioner Lin Zexu destroys opium stocks at Humen near Guangzhou' },
+      ];
+    }
+
+    _collectPlaceEventsForDynasty(d, lng, lat, near) {
+      const results = [];
+      const nearCity = near && near.km <= 42 ? near.s : null;
+      const isCloseCoord = (c, maxKm = 58) => {
+        if (!c) return false;
+        if (this.projector.greatCircleKm([lng, lat], c) <= maxKm) return true;
+        if (nearCity && this.projector.greatCircleKm(nearCity.coord, c) <= maxKm * 0.88) return true;
+        return false;
+      };
+      const matchesSiteName = (siteStr) => {
+        if (!nearCity || !siteStr) return false;
+        const cleanAnc = nearCity.ancient.replace(/（.*?）|\(.*?\)/g, '').trim();
+        if (cleanAnc.length >= 2 && siteStr.includes(cleanAnc)) return true;
+        if (nearCity.modern) {
+          const parts = nearCity.modern.split(/[·/、]/).map((s) => s.trim()).filter((s) => s.length >= 2);
+          if (parts.some((p) => siteStr.includes(p))) return true;
+        }
+        return false;
+      };
+
+      // 1. Dynasty milestones
+      for (const m of d.milestones || []) {
+        const veryClose = isCloseCoord(m.coord, 28);
+        const siteMatch = matchesSiteName(m.site);
+        if (siteMatch || veryClose || (!nearCity && isCloseCoord(m.coord, 48))) {
+          results.push({
+            year: m.year,
+            text: this.milestoneHeadline(d, m),
+            milestone: m,
+            journeyKey: this._journeyKeyForMilestone(d, m),
+            journeyStopIdx: 0,
+          });
+        }
+      }
+
+      // 2. Historical journeys (Zhang Qian, Xuanzang, Su Shi)
+      for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
+        if (j.dynastyKey !== d.key) continue;
+        j.stops.forEach((st, sIdx) => {
+          if (isCloseCoord(st.coord, 45)) {
+            const existing = results.find(
+              (r) =>
+                (sIdx === 0 && r.journeyKey === j.key) ||
+                (r.year === st.year && r.journeyKey === j.key)
+            );
+            if (existing) {
+              existing.journeyKey = j.key;
+              existing.journeyStopIdx = sIdx;
+            } else {
+              results.push({
+                year: st.year,
+                text:
+                  this.locale === 'en'
+                    ? `${st.ancientEn} — ${st.titleEn}`
+                    : `${st.ancientZh} · ${st.titleZh}`,
+                milestone: {
+                  year: st.year,
+                  headline: `${st.ancientZh} · ${st.titleZh}：${st.descZh.split(/[；。]/)[0]}`,
+                  headlineEn: `${st.ancientEn} — ${st.titleEn}: ${st.descEn.split('.')[0]}.`,
+                  site: `${st.ancientZh}（今${st.modernZh}）`,
+                  siteEn: `${st.ancientEn} (${st.modernEn})`,
+                  coord: st.coord,
+                },
+                journeyKey: j.key,
+                journeyStopIdx: sIdx,
+              });
+            }
+          }
+        });
+      }
+
+      // 3. Curated landmark events
+      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+        if (lm.dynastyKey !== d.key) continue;
+        if (isCloseCoord(lm.coord, 45)) {
+          const dup = results.some((r) => Math.abs(r.year - lm.year) <= 3);
+          if (!dup) {
+            results.push({
+              year: lm.year,
+              text: this.locale === 'en' ? lm.en : lm.zh,
+              milestone: {
+                year: lm.year,
+                headline: lm.zh,
+                headlineEn: lm.en,
+                site: lm.site,
+                siteEn: lm.siteEn,
+                coord: lm.coord,
+              },
+              journeyKey: null,
+              journeyStopIdx: 0,
+            });
+          }
+        }
+      }
+
+      results.sort((a, b) => a.year - b.year);
+      return results;
+    }
+
     openGenealogyAt(lng, lat) {
       if (this.activeJourney) this.stopJourney();
+      const isSamePlace =
+        this.activeTrace &&
+        Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01;
+      if (!isSamePlace) {
+        this.genealogyEventsOnly = false;
+      }
       this.activeTrace = [lng, lat];
       this.grpGenealogy.innerHTML = '';
       const [sx, sy] = this.projector.toScreen(lng, lat);
@@ -1553,7 +1767,12 @@
       );
       this._svgNode('circle', { class: 'trace-pin', r: 10 }, g);
       this._svgNode('circle', { class: 'trace-dot', r: 3.5 }, g);
-      this._rescaleSvgTypography();
+      if (window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
+        this.camera.y = sy - this.camera.h * 0.28;
+        this._applyCamera();
+      } else {
+        this._rescaleSvgTypography();
+      }
 
       let modernTitle = '';
       for (const prov of this.provinces) {
@@ -1600,12 +1819,10 @@
           ? ` · ${this.trTerm(closestOverall.s.modern)}`
           : '';
       this._id('genealogy-heading').textContent = titleMain + titleSuffix;
-      this._id('genealogy-sub').textContent =
-        `${lng.toFixed(2)}°E, ${lat.toFixed(2)}°N · ` +
-        this.uiStr('trace_click_hint', '点击任一朝代可切换地图');
 
-      const listEl = this._id('genealogy-timeline');
-      listEl.innerHTML = '';
+      const rowsData = [];
+      let totalEvents = 0;
+      let capDynasties = 0;
 
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
@@ -1651,43 +1868,166 @@
         }
 
         const near = nearestSettlement(d, 170);
-        const li = document.createElement('li');
-        if (isCurDyn) li.classList.add('is-current');
-        const mainStr = adminHits.length
-          ? adminHits.join(' · ')
-          : polityHit
-            ? this.trTerm(polityHit)
-            : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
+        const isCapHere = Boolean(near && near.km <= 38 && near.s.isCapital);
+        if (isCapHere) capDynasties++;
 
-        const subParts = [];
-        if (adminHits.length && polityHit) {
-          subParts.push(`${this.uiStr('belongs_to', '属 ')}${this.trTerm(polityHit)}`);
-        }
-        if (near) {
-          const distStr =
-            near.km < 25
-              ? this.uiStr('at_here', '即此地')
-              : `${Math.round(near.km)} km`;
-          subParts.push(
-            `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
-          );
-        }
+        const placeEvents = this._collectPlaceEventsForDynasty(d, lng, lat, near);
+        totalEvents += placeEvents.length;
 
-        li.innerHTML =
-          `<span class="t-era">${this.dynastyName(d)}</span>` +
-          `<span class="t-val">${mainStr}${
-            subParts.length ? `<span class="t-sub">${subParts.join(' · ')}</span>` : ''
-          }</span>`;
-        li.addEventListener('click', () => this.jumpToYear(d.focusYear));
-        listEl.appendChild(li);
+        rowsData.push({
+          d,
+          isCurDyn,
+          polityHit,
+          adminHits,
+          near,
+          isCapHere,
+          placeEvents,
+        });
       }
 
       this._id('genealogy-card').classList.remove('is-hidden');
-      const curLi = listEl.querySelector('li.is-current');
-      if (curLi && listEl.scrollHeight > listEl.clientHeight) {
-        const top = Math.max(0, curLi.offsetTop - listEl.offsetTop - listEl.clientHeight * 0.38);
-        listEl.scrollTop = top;
-      }
+
+      const renderSubAndList = () => {
+        const subEl = this._id('genealogy-sub');
+        const capInfo =
+          capDynasties > 0
+            ? this.locale === 'en'
+              ? ` · Capital in ${capDynasties} dynasties`
+              : ` · ${capDynasties} 朝都城`
+            : '';
+        const coordText = `${lng.toFixed(2)}°E, ${lat.toFixed(2)}°N${capInfo}${
+          totalEvents === 0
+            ? ' · ' + this.uiStr('trace_click_hint', '点击任一朝代可切换地图')
+            : ''
+        }`;
+
+        if (totalEvents > 0) {
+          const btnLabel = this.genealogyEventsOnly
+            ? this.locale === 'en'
+              ? 'All Dynasties'
+              : '历代全览'
+            : this.locale === 'en'
+              ? `Chronicles · ${totalEvents}`
+              : `史事纪要 · ${totalEvents}`;
+          subEl.innerHTML =
+            `<span>${coordText}</span>` +
+            `<button type="button" class="gen-filter-pill ${
+              this.genealogyEventsOnly ? 'is-active' : ''
+            }">${btnLabel}</button>`;
+          const filterBtn = subEl.querySelector('.gen-filter-pill');
+          if (filterBtn) {
+            filterBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.genealogyEventsOnly = !this.genealogyEventsOnly;
+              renderSubAndList();
+            });
+          }
+        } else {
+          subEl.textContent = coordText;
+        }
+
+        const listEl = this._id('genealogy-timeline');
+        listEl.innerHTML = '';
+
+        const visibleRows = this.genealogyEventsOnly
+          ? rowsData.filter((r) => r.placeEvents.length > 0 || r.isCapHere)
+          : rowsData;
+
+        for (const r of visibleRows) {
+          const { d, isCurDyn, polityHit, adminHits, near, isCapHere, placeEvents } = r;
+          const li = document.createElement('li');
+          if (isCurDyn) li.classList.add('is-current');
+          const mainStr = adminHits.length
+            ? adminHits.join(' · ')
+            : polityHit
+              ? this.trTerm(polityHit)
+              : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
+
+          const capBadgeHtml = isCapHere
+            ? `<span class="t-cap-badge">${
+                this.locale === 'en'
+                  ? 'Capital'
+                  : (near.s.remark && near.s.remark.length <= 5 ? near.s.remark : '王朝都城')
+              }</span>`
+            : '';
+
+          const subParts = [];
+          if (adminHits.length && polityHit) {
+            subParts.push(`${this.uiStr('belongs_to', '属 ')}${this.trTerm(polityHit)}`);
+          }
+          if (near) {
+            const distStr =
+              near.km < 25
+                ? this.uiStr('at_here', '即此地')
+                : `${Math.round(near.km)} km`;
+            subParts.push(
+              `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
+            );
+          }
+
+          let eventsHtml = '';
+          if (placeEvents.length) {
+            const evItems = placeEvents
+              .map((ev, evIdx) => {
+                const yrLabel =
+                  this.locale === 'en'
+                    ? this.formatYear(ev.year)
+                    : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
+                const jBtn = ev.journeyKey
+                  ? `<button type="button" class="ev-journey-btn" data-journey="${
+                      ev.journeyKey
+                    }" data-stop="${ev.journeyStopIdx || 0}">${
+                      this.locale === 'en' ? 'View Route' : '展阅行迹'
+                    }</button>`
+                  : '';
+                return `<div class="t-ev-row" data-ev-idx="${evIdx}"><span class="t-ev-yr">▸ ${yrLabel}</span><span class="t-ev-txt">${ev.text}${jBtn}</span></div>`;
+              })
+              .join('');
+            eventsHtml = `<div class="t-events">${evItems}</div>`;
+          }
+
+          li.innerHTML =
+            `<span class="t-era">${this.dynastyName(d)}</span>` +
+            `<span class="t-val">${mainStr}${capBadgeHtml}${
+              subParts.length ? `<span class="t-sub">${subParts.join(' · ')}</span>` : ''
+            }${eventsHtml}</span>`;
+
+          li.querySelectorAll('.ev-journey-btn').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.startJourney(btn.dataset.journey, Number(btn.dataset.stop || 0));
+            });
+          });
+
+          li.querySelectorAll('.t-ev-row').forEach((rowEl) => {
+            rowEl.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const ev = placeEvents[Number(rowEl.dataset.evIdx)];
+              if (!ev) return;
+              this.stopAutoplay();
+              const targetY = this._clampYearToDynasty(d, ev.year);
+              this.jumpToYear(targetY);
+              if (ev.milestone) {
+                this.openMilestoneBalloon(d, ev.milestone);
+              }
+            });
+          });
+
+          li.addEventListener('click', () => {
+            this.stopAutoplay();
+            this.jumpToYear(d.focusYear);
+          });
+          listEl.appendChild(li);
+        }
+
+        const curLi = listEl.querySelector('li.is-current');
+        if (curLi && listEl.scrollHeight > listEl.clientHeight) {
+          const top = Math.max(0, curLi.offsetTop - listEl.offsetTop - listEl.clientHeight * 0.35);
+          listEl.scrollTop = top;
+        }
+      };
+
+      renderSubAndList();
     }
 
     // ---------------- Scrubber / Timeline ----------------
