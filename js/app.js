@@ -1477,7 +1477,23 @@
           this.openMilestoneBalloon(dynasty, m);
           if (snapShift) {
             const defCam = this._getDefaultCamera();
-            if (this.camera.w < defCam.w * 0.85) this.resetCamera();
+            if (m.coord) {
+              const [sx, sy] = this.projector.toScreen(m.coord[0], m.coord[1]);
+              const outX = sx < defCam.x + defCam.w * 0.14 || sx > defCam.x + defCam.w * 0.86;
+              const outY = sy < defCam.y + defCam.h * 0.16 || sy > defCam.y + defCam.h * 0.84;
+              if (outX || outY) {
+                this._animateCameraTo({
+                  x: Math.max(40, Math.min(960 - defCam.w, sx - defCam.w * 0.5)),
+                  y: Math.max(15, Math.min(685 - defCam.h, sy - defCam.h * 0.42)),
+                  w: defCam.w,
+                  h: defCam.h,
+                });
+              } else if (this.camera.w < defCam.w * 0.85) {
+                this.resetCamera();
+              }
+            } else if (this.camera.w < defCam.w * 0.85) {
+              this.resetCamera();
+            }
           } else if (m.coord) {
             this._panToward(m.coord[0], m.coord[1]);
           }

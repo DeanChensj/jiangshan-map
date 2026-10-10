@@ -3690,6 +3690,27 @@ window.EN_LOCALE = {
     "魏郡治所": "Seat of Wei Commandery",
     "黔中道治所": "Seat of Qianzhong Circuit",
     "齐州治所": "Seat of Qizhou",
-    "齐郡治所": "Seat of Qi Commandery"
+    "齐郡治所": "Seat of Qi Commandery",
+    "1038 — 1071 · 宋、辽、西夏三足并立：1038 年李元昊称帝建大夏": "1038–1071 · Song, Liao & Western Xia Tripartite Balance: Li Yuanhao proclaims Western Xia in 1038",
+    "1072 — 1115 · 王韶熙河开边：北宋收复河湟六州，新置熙河路": "1072–1115 · Wang Shao’s Xihe Campaign: Northern Song recovers Hehuang and establishes Xihe Circuit",
+    "1127 — 1141 · 宋金中原拉锯与岳飞北伐：南宋收复襄阳六郡，前线推进至洛阳、商州与颍昌": "1127–1141 · Early Song–Jin Campaigns & Yue Fei’s Northern Expeditions: Southern Song recovers Xiangyang and pushes toward Luoyang & Yancheng",
+    "1141 — 1206 · 绍兴和议定界：宋金东以淮水、西以大散关为界，南北对峙": "1141–1206 · Treaty of Shaoxing Boundary: Song and Jin fix the border along the Huai River and Dasan Pass",
+    "936 — 945 · 后晋与十国：石敬瑭割燕云十六州予契丹，南方南唐、闽、吴越并立": "936–945 · Later Jin & Ten Kingdoms: Shi Jingtang cedes the Sixteen Prefectures to Khitan Liao; Southern Tang, Min & Wuyue coexist in the south",
+    "945 — 947 · 南唐灭闽：南唐攻灭闽国，与吴越瓜分福建之地": "945–947 · Conquest of Min: Southern Tang annexes Min and partitions Fujian with Wuyue",
+    "951 — 958 · 后周太祖与世宗初期：郭威建周，北汉据太原依附辽国，南唐仍据江北淮南": "951–958 · Early Later Zhou: Guo Wei founds Later Zhou; Northern Han holds Taiyuan while Southern Tang holds Huainan north of the Yangtze",
+    "959 — 960 · 周世宗显德开边：南征取南唐江北淮南十四州，北伐收复瀛莫易三州与三关": "959–960 · Chai Rong’s Expansions: Later Zhou conquers the 14 Huainan prefectures north of the Yangtze and recovers the Three Passes in Hebei",
+    "317 — 329 · 东晋初立与两赵并立：司马睿建晋于建康，北方前赵（汉赵）与石勒后赵分据关陇河北": "317–329 · Founding of Eastern Jin & Two Zhaos: Eastern Jin at Jiankang; Former Zhao and Shi Le’s Later Zhao divide North China",
+    "329 — 347 · 后赵统一北方大部：石勒灭前赵尽有中原关陇，与东晋、成汉、前凉、前燕并立": "329–347 · Later Zhao Unifies Most of the North: Shi Le conquers Former Zhao, facing Eastern Jin, Cheng-Han, Former Liang & Former Yan",
+    "370 — 376 · 前秦灭前燕：苻坚、王猛攻灭前燕尽吞华北，河西前凉与塞北代国尚存": "370–376 · Former Qin Conquers Former Yan: Fu Jian and Wang Meng annex Former Yan across North China while Former Liang and Dai remain",
+    "755 — 764 · 安史之乱爆发：范阳起兵两京一度陷落，唐廷平叛期间仍控河西走廊与安西北庭": "755–764 · An Lushan Rebellion: Rebellion rocks the capitals while Tang still holds the Hexi Corridor and Anxi/Beiting Protectorates",
+    "764 — 790 · 吐蕃陷河陇与孤悬西域：凉州失守河西走廊被截断，安西、北庭孤悬绝域坚守": "764–790 · Fall of Hexi & Isolated Protectorates: Tubo captures Liangzhou and severs the Hexi Corridor; Anxi and Beiting hold out in isolation",
+    "1644 — 1661 · 清军入关与南明抗清：清廷定都北京经略中原，南明据南方抗清，台湾尚为荷占": "1644–1661 · Qing Entry & Southern Ming Resistance: Qing establishes rule from Beijing while Southern Ming resists in the south and Taiwan remains Dutch-ruled",
+    "1661 — 1681 · 郑成功收复台湾与三藩之乱：明郑驱逐荷兰殖民者设承天府，吴三桂等三藩于南方举兵": "1661–1681 · Koxinga Recovers Taiwan & Revolt of the Three Feudatories: Kingdom of Tungning established in Taiwan; Three Feudatories rebel in the south",
+    "1851 — 1858 · 太平天国运动：洪秀全定都天京（南京），与清廷沿江对峙": "1851–1858 · Taiping Rebellion: Taiping Heavenly Kingdom establishes its capital at Tianjing (Nanjing)",
+    "1858 — 1860 · 《瑷珲条约》失黑龙江以北：沙俄割占黑龙江以北、外兴安岭以南，乌苏里江以东尚属清廷": "1858–1860 · Treaty of Aigun: Tsarist Russia annexes territory north of the Amur River, while east of the Ussuri River remains under Qing",
+    "熙河路": "Xihe Circuit",
+    "前赵": "Former Zhao",
+    "台湾（荷占）": "Taiwan (Dutch-ruled)",
+    "南明": "Southern Ming"
   }
 };

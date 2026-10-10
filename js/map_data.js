@@ -2297,6 +2297,10 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
+        "until": 329,
+        "snap": "s_dongjin_a0"
+      },
+      {
         "until": 347,
         "snap": "s_dongjin_a"
       },
@@ -2307,6 +2311,10 @@ window.DYNASTY_DATA = [
       {
         "until": 370,
         "snap": "s_dongjin_b"
+      },
+      {
+        "until": 376,
+        "snap": "s_dongjin_b2"
       },
       {
         "until": 384,
@@ -3623,6 +3631,10 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a5"
       },
       {
+        "until": 764,
+        "snap": "s_tang_b0"
+      },
+      {
         "until": 790,
         "snap": "s_tang_b1"
       },
@@ -4030,16 +4042,24 @@ window.DYNASTY_DATA = [
         "snap": "s_wudai_b2"
       },
       {
-        "until": 947,
+        "until": 945,
         "snap": "s_wudai_c"
+      },
+      {
+        "until": 947,
+        "snap": "s_wudai_c2"
       },
       {
         "until": 951,
         "snap": "s_wudai_d"
       },
       {
-        "until": 960,
+        "until": 959,
         "snap": "s_wudai_e"
+      },
+      {
+        "until": 960,
+        "snap": "s_wudai_e2"
       }
     ]
   },
@@ -4566,8 +4586,12 @@ window.DYNASTY_DATA = [
         "snap": "s_beisong_b0"
       },
       {
-        "until": 1115,
+        "until": 1072,
         "snap": "s_beisong_b"
+      },
+      {
+        "until": 1115,
+        "snap": "s_beisong_b1"
       },
       {
         "until": 1125,
@@ -4986,6 +5010,10 @@ window.DYNASTY_DATA = [
       }
     ],
     "phases": [
+      {
+        "until": 1141,
+        "snap": "s_nansong_a0"
+      },
       {
         "until": 1206,
         "snap": "s_nansong_a"
@@ -6343,6 +6371,10 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
+        "until": 1661,
+        "snap": "s_qing_a0"
+      },
+      {
         "until": 1681,
         "snap": "s_qing_a"
       },
@@ -6371,8 +6403,12 @@ window.DYNASTY_DATA = [
         "snap": "s_qing_e"
       },
       {
-        "until": 1860,
+        "until": 1858,
         "snap": "s_qing_e2"
+      },
+      {
+        "until": 1860,
+        "snap": "s_qing_e3"
       },
       {
         "until": 1895,
@@ -7086,7 +7122,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           106.3,
-          37.0
+          37
         ],
         [
           107.1,
@@ -7101,7 +7137,7 @@ window.CORRIDOR_DATA = [
           38.7
         ],
         [
-          110.0,
+          110,
           39.3
         ],
         [
@@ -7110,7 +7146,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           111.6,
-          41.0
+          41
         ],
         [
           112.6,
@@ -7121,7 +7157,7 @@ window.CORRIDOR_DATA = [
           41.5
         ],
         [
-          115.0,
+          115,
           41.6
         ],
         [
@@ -7141,8 +7177,8 @@ window.CORRIDOR_DATA = [
           42.3
         ],
         [
-          121.0,
-          42.0
+          121,
+          42
         ],
         [
           122.4,
@@ -7192,7 +7228,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           106.3,
-          37.0
+          37
         ],
         [
           107.1,
@@ -7207,7 +7243,7 @@ window.CORRIDOR_DATA = [
           38.7
         ],
         [
-          110.0,
+          110,
           39.3
         ],
         [
@@ -7216,7 +7252,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           111.6,
-          41.0
+          41
         ],
         [
           112.6,
@@ -7227,7 +7263,7 @@ window.CORRIDOR_DATA = [
           41.5
         ],
         [
-          115.0,
+          115,
           41.6
         ],
         [
@@ -7247,8 +7283,8 @@ window.CORRIDOR_DATA = [
           42.3
         ],
         [
-          121.0,
-          42.0
+          121,
+          42
         ],
         [
           122.4,
@@ -7294,7 +7330,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           103.1,
-          37.0
+          37
         ],
         [
           102.6,
@@ -7306,7 +7342,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           100.4,
-          39.0
+          39
         ],
         [
           99.5,
@@ -7325,7 +7361,7 @@ window.CORRIDOR_DATA = [
           40.6
         ],
         [
-          95.0,
+          95,
           40.7
         ],
         [
@@ -7353,7 +7389,7 @@ window.CORRIDOR_DATA = [
     ],
     "summary": "明代二百余年陆续修筑的九边长城，西起嘉峪关，东至山海关，今存墙体多为此期遗存。",
     "labelAt": [
-      108.0,
+      108,
       38.9
     ],
     "segments": [
@@ -7396,7 +7432,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           106.5,
-          39.0
+          39
         ],
         [
           106.9,
@@ -7420,7 +7456,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           110.6,
-          39.0
+          39
         ],
         [
           111.5,
@@ -7464,7 +7500,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           119.8,
-          40.0
+          40
         ]
       ]
     ]
@@ -7486,7 +7522,7 @@ window.CORRIDOR_DATA = [
       [
         [
           119.8,
-          40.0
+          40
         ],
         [
           120.5,
@@ -7497,7 +7533,7 @@ window.CORRIDOR_DATA = [
           41.2
         ],
         [
-          122.0,
+          122,
           41.6
         ],
         [
@@ -7592,7 +7628,7 @@ window.CORRIDOR_DATA = [
     "summary": "自长安出发，沿渭河、河西走廊西行至敦煌，为陆上丝路主干。",
     "labelAt": [
       104.5,
-      36.0
+      36
     ],
     "segments": [
       [
@@ -7622,7 +7658,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           103.1,
-          37.0
+          37
         ],
         [
           102.6,
@@ -7700,7 +7736,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           87.6,
-          42.0
+          42
         ],
         [
           86.1,
@@ -7747,7 +7783,7 @@ window.CORRIDOR_DATA = [
           40.5
         ],
         [
-          67.0,
+          67,
           39.7
         ]
       ]
@@ -7773,7 +7809,7 @@ window.CORRIDOR_DATA = [
           40.35
         ],
         [
-          92.0,
+          92,
           40.5
         ],
         [
@@ -7814,7 +7850,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           76.4,
-          39.0
+          39
         ],
         [
           75.98,
@@ -7851,7 +7887,7 @@ window.CORRIDOR_DATA = [
           34.8
         ],
         [
-          115.0,
+          115,
           34.6
         ],
         [
@@ -7860,7 +7896,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           116.3,
-          34.0
+          34
         ],
         [
           116.95,
@@ -7913,7 +7949,7 @@ window.CORRIDOR_DATA = [
           32.2
         ],
         [
-          120.0,
+          120,
           31.8
         ],
         [
@@ -7945,7 +7981,7 @@ window.CORRIDOR_DATA = [
     ],
     "summary": "",
     "labelAt": [
-      114.0,
+      114,
       37.2
     ],
     "segments": [
@@ -8017,7 +8053,7 @@ window.CORRIDOR_DATA = [
           39.9
         ],
         [
-          117.0,
+          117,
           39.5
         ],
         [
@@ -8065,7 +8101,7 @@ window.CORRIDOR_DATA = [
           32.2
         ],
         [
-          120.0,
+          120,
           31.8
         ],
         [
@@ -8116,7 +8152,7 @@ window.CORRIDOR_DATA = [
         ],
         [
           114.5,
-          22.0
+          22
         ],
         [
           113.26,
@@ -8143,16 +8179,16 @@ window.CORRIDOR_DATA = [
           13.8
         ],
         [
-          109.0,
-          12.0
+          109,
+          12
         ],
         [
           107.4,
-          10.0
+          10
         ],
         [
           104.8,
-          7.0
+          7
         ],
         [
           102.25,
@@ -8193,7 +8229,7 @@ window.CORRIDOR_DATA = [
           31.5
         ],
         [
-          122.0,
+          122,
           30.6
         ],
         [
@@ -8209,7 +8245,7 @@ window.CORRIDOR_DATA = [
           25.95
         ],
         [
-          119.0,
+          119,
           24.6
         ],
         [
@@ -8241,16 +8277,16 @@ window.CORRIDOR_DATA = [
           13.8
         ],
         [
-          109.0,
-          12.0
+          109,
+          12
         ],
         [
           107.4,
-          10.0
+          10
         ],
         [
           104.8,
-          7.0
+          7
         ],
         [
           102.25,
