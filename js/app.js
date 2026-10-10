@@ -879,8 +879,7 @@
         const align = item.align || 'r';
         const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
         const dx = align === 'l' ? -5.5 : align === 'b' ? 0 : 5.5;
-        const dy1 = align === 'b' ? 9.5 : -0.5;
-        const dy2 = align === 'b' ? 17.5 : 7.8;
+        const dy1 = align === 'b' ? 10.2 : align === 't' ? -4.8 : 3.0;
 
         const nameEl = this._svgNode(
           'text',
@@ -888,18 +887,6 @@
           node
         );
         nameEl.textContent = this.trTerm(item.ancient);
-
-        if (item.modern && item.modern !== item.ancient) {
-          const modEl = this._svgNode(
-            'text',
-            { class: 'modern', x: dx, y: dy2, 'text-anchor': anchor },
-            node
-          );
-          modEl.textContent =
-            this.locale === 'en'
-              ? `${this.uiStr('now_prefix', 'now ')}${this.trTerm(item.modern)}`
-              : `今${item.modern}`;
-        }
       }
       this._rescaleSvgTypography();
     }
@@ -941,6 +928,8 @@
             'text',
             {
               class: `corridor-caption ${corr.kind}`,
+              'data-base-x': lx.toFixed(1),
+              'data-base-y': ly.toFixed(1),
               'data-x': lx.toFixed(1),
               'data-y': ly.toFixed(1),
             },
@@ -2653,15 +2642,9 @@
 
         const nameEl = node.querySelector('.name');
         if (!nameEl) return;
-        const modEl = node.querySelector('.modern');
         const tier = node.dataset.tier || '1';
         const f1 = tier === '0' ? 9.6 : tier === '2' ? 7.3 : 8.2;
-        const f2 = tier === '2' ? 6.0 : 6.6;
-        const wLocal =
-          Math.max(
-            this._estimateLocalTextWidth(nameEl.textContent, f1, 0.45),
-            modEl ? this._estimateLocalTextWidth(modEl.textContent, f2, 0.2) : 0
-          ) + 7;
+        const wLocal = this._estimateLocalTextWidth(nameEl.textContent, f1, 0.45) + 7;
 
         const pref = node.dataset.prefAlign || 'r';
         const dirs = [pref];
@@ -2674,13 +2657,12 @@
             return {
               anchor: 'end',
               dx: -5.5,
-              dy1: -0.5,
-              dy2: 7.8,
+              dy1: 3.0,
               box: {
                 x1: cx - (5.5 + wLocal) * s,
-                y1: cy - 10.5 * s,
+                y1: cy - 5.5 * s,
                 x2: cx - 3.5 * s,
-                y2: cy + (modEl ? 10.8 : 2.8) * s,
+                y2: cy + 5.5 * s,
               },
             };
           }
@@ -2688,13 +2670,12 @@
             return {
               anchor: 'middle',
               dx: 0,
-              dy1: 9.5,
-              dy2: 17.5,
+              dy1: 10.2,
               box: {
                 x1: cx - wLocal * 0.52 * s,
-                y1: cy + 2.0 * s,
+                y1: cy + 2.2 * s,
                 x2: cx + wLocal * 0.52 * s,
-                y2: cy + (modEl ? 20.5 : 12.8) * s,
+                y2: cy + 12.5 * s,
               },
             };
           }
@@ -2702,26 +2683,24 @@
             return {
               anchor: 'middle',
               dx: 0,
-              dy1: modEl ? -10.5 : -4.5,
-              dy2: -2.8,
+              dy1: -4.8,
               box: {
                 x1: cx - wLocal * 0.52 * s,
-                y1: cy - (modEl ? 20.2 : 13.5) * s,
+                y1: cy - 13.5 * s,
                 x2: cx + wLocal * 0.52 * s,
-                y2: cy - 1.8 * s,
+                y2: cy - 2.2 * s,
               },
             };
           }
           return {
             anchor: 'start',
             dx: 5.5,
-            dy1: -0.5,
-            dy2: 7.8,
+            dy1: 3.0,
             box: {
               x1: cx + 3.5 * s,
-              y1: cy - 10.5 * s,
+              y1: cy - 5.5 * s,
               x2: cx + (5.5 + wLocal) * s,
-              y2: cy + (modEl ? 10.8 : 2.8) * s,
+              y2: cy + 5.5 * s,
             },
           };
         };
@@ -2747,11 +2726,6 @@
         nameEl.setAttribute('x', String(best.dx));
         nameEl.setAttribute('y', String(best.dy1));
         nameEl.setAttribute('text-anchor', best.anchor);
-        if (modEl) {
-          modEl.setAttribute('x', String(best.dx));
-          modEl.setAttribute('y', String(best.dy2));
-          modEl.setAttribute('text-anchor', best.anchor);
-        }
         occupied.push(best.box);
       };
 
@@ -2864,17 +2838,47 @@
         occupied.push(bestBox);
       }
 
-      // Tier 3: Corridor captions
+      // Tier 3: Corridor captions (dodge or hide if colliding with city/polity labels)
+      const corrOffsets = [
+        [0, 0],
+        [0, -10],
+        [0, 10],
+        [-14, 0],
+        [14, 0],
+        [-12, -9],
+        [12, -9],
+        [-12, 9],
+        [12, 9],
+      ];
       this.svg.querySelectorAll('.corridor-caption').forEach((node) => {
-        const cx = parseFloat(node.getAttribute('data-x'));
-        const cy = parseFloat(node.getAttribute('data-y'));
-        if (!isNaN(cx)) {
-          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
-          if (showCorridors) {
-            const hw = (this._estimateLocalTextWidth(node.textContent, 8.2, 1.4) * 0.5 + 3) * s;
-            const hh = 5.5 * s;
-            occupied.push({ x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh });
+        const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
+        const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
+        if (isNaN(baseX)) return;
+        if (!showCorridors) {
+          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          return;
+        }
+        const hw = (this._estimateLocalTextWidth(node.textContent, 8.2, 1.4) * 0.5 + 3) * s;
+        const hh = 5.2 * s;
+        let placed = false;
+        for (let i = 0; i < corrOffsets.length; i++) {
+          const [ox, oy] = corrOffsets[i];
+          const cx = baseX + ox * s;
+          const cy = baseY + oy * s;
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.08) {
+            node.setAttribute('data-x', cx.toFixed(1));
+            node.setAttribute('data-y', cy.toFixed(1));
+            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+            node.classList.remove('is-crowded-hidden');
+            occupied.push(candBox);
+            placed = true;
+            break;
           }
+        }
+        if (!placed) {
+          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          node.classList.add('is-crowded-hidden');
         }
       });
 

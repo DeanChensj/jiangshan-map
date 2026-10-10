@@ -624,6 +624,10 @@ h2 {
   fill: #22496f;
 }
 
+.corridor-caption.is-crowded-hidden {
+  display: none;
+}
+
 /* Milestones / Events on Map */
 #grp-milestones {
   transition: opacity 0.25s;
@@ -959,18 +963,6 @@ h2 {
   font-size: 9.8px;
   font-weight: 700;
   fill: #7f2415;
-}
-
-.settlement-node .modern {
-  font-family: var(--sans-stack);
-  font-size: 7px;
-  fill: var(--text-secondary);
-  filter: url(#label-halo);
-}
-
-.settlement-node.is-tier2 .modern {
-  font-size: 6.5px;
-  fill: var(--text-muted);
 }
 
 .settlement-node:hover .name {
