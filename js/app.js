@@ -148,6 +148,65 @@
           s.regions = this.snapshots[s.regionRef].regions || [];
         }
       }
+      if (
+        this.snapshots.s_prc &&
+        (!this.snapshots.s_prc.regions || !this.snapshots.s_prc.regions.length) &&
+        this.provinces.length
+      ) {
+        const cityProvSet = new Set([
+          '北京市',
+          '天津市',
+          '上海市',
+          '重庆市',
+          '香港特别行政区',
+          '澳门特别行政区',
+        ]);
+        const provAnchors = {
+          河北省: [115.55, 38.65],
+          山西省: [112.15, 36.65],
+          内蒙古自治区: [114.08, 44.33],
+          辽宁省: [122.45, 41.15],
+          吉林省: [126.55, 43.45],
+          黑龙江省: [128.1, 47.65],
+          江苏省: [119.55, 33.15],
+          浙江省: [120.05, 29.05],
+          安徽省: [117.15, 32.95],
+          福建省: [117.95, 26.05],
+          江西省: [115.65, 27.35],
+          山东省: [118.45, 36.25],
+          河南省: [113.55, 33.65],
+          湖北省: [112.15, 31.15],
+          湖南省: [111.55, 27.45],
+          广东省: [114.55, 23.95],
+          广西壮族自治区: [108.85, 24.05],
+          海南省: [109.7, 19.15],
+          四川省: [102.35, 30.75],
+          贵州省: [107.55, 27.25],
+          云南省: [101.25, 24.75],
+          西藏自治区: [88.39, 31.56],
+          陕西省: [108.95, 35.65],
+          甘肃省: [100.45, 38.95],
+          青海省: [96.15, 35.55],
+          宁夏回族自治区: [106.05, 37.25],
+          新疆维吾尔自治区: [85.15, 41.35],
+          台湾省: [120.95, 23.65],
+        };
+        this.snapshots.s_prc.regions = this.provinces
+          .filter((prov) => !String(prov.code).includes('_JD'))
+          .map((prov) => {
+            const shortTitle = prov.title.replace(
+              /(省|市|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/,
+              ''
+            );
+            return {
+              title: shortTitle,
+              fullTitle: prov.title,
+              category: '',
+              anchor: cityProvSet.has(prov.title) ? null : provAnchors[prov.title] || prov.hub,
+              shape: { type: 'MultiPolygon', coordinates: prov.rings },
+            };
+          });
+      }
       this.enLocale = window.EN_LOCALE || {
         strings: {},
         dynasties: {},
@@ -4576,7 +4635,6 @@
 
       // 1. Historical Settlements (Ancient & Modern Cities)
       for (const d of this.dynasties) {
-        if (d.key === 'prc') continue;
         for (const s of d.settlements || []) {
           const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
           const ancEn = this._enDict(s.ancient);
@@ -4600,7 +4658,6 @@
       // 2. Prefectures & Macro Regions across snapshots
       const seenAdmin = new Set();
       for (const d of this.dynasties) {
-        if (d.key === 'prc') continue;
         const phaseList = d.phases && d.phases.length ? d.phases : [{ until: d.toYear, snap: `s_${d.key}` }];
         phaseList.forEach((ph, idx) => {
           const sy = idx === 0 ? d.fromYear : phaseList[idx - 1].until;

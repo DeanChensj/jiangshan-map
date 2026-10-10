@@ -7044,8 +7044,79 @@ window.DYNASTY_DATA = [
           116.401,
           39.901
         ],
+        "align": "l",
         "isCapital": true,
-        "remark": "首都"
+        "remark": "首都 · 直辖市"
+      },
+      {
+        "ancient": "天津",
+        "modern": "天津",
+        "coord": [
+          117.201,
+          39.131
+        ],
+        "align": "r",
+        "remark": "直辖市"
+      },
+      {
+        "ancient": "石家庄",
+        "modern": "石家庄",
+        "coord": [
+          114.511,
+          38.041
+        ],
+        "align": "r",
+        "remark": "河北省会"
+      },
+      {
+        "ancient": "太原",
+        "modern": "太原",
+        "coord": [
+          112.551,
+          37.871
+        ],
+        "align": "l",
+        "remark": "山西省会"
+      },
+      {
+        "ancient": "呼和浩特",
+        "modern": "呼和浩特",
+        "coord": [
+          111.751,
+          40.841
+        ],
+        "align": "t",
+        "remark": "内蒙古自治区首府"
+      },
+      {
+        "ancient": "沈阳",
+        "modern": "沈阳",
+        "coord": [
+          123.431,
+          41.801
+        ],
+        "align": "r",
+        "remark": "辽宁省会"
+      },
+      {
+        "ancient": "长春",
+        "modern": "长春",
+        "coord": [
+          125.321,
+          43.881
+        ],
+        "align": "r",
+        "remark": "吉林省会"
+      },
+      {
+        "ancient": "哈尔滨",
+        "modern": "哈尔滨",
+        "coord": [
+          126.631,
+          45.801
+        ],
+        "align": "r",
+        "remark": "黑龙江省会"
       },
       {
         "ancient": "上海",
@@ -7054,69 +7125,8 @@ window.DYNASTY_DATA = [
           121.471,
           31.231
         ],
-        "align": "b"
-      },
-      {
-        "ancient": "广州",
-        "modern": "广州",
-        "coord": [
-          113.261,
-          23.131
-        ],
-        "align": "l"
-      },
-      {
-        "ancient": "深圳",
-        "modern": "深圳",
-        "coord": [
-          114.061,
-          22.541
-        ],
-        "align": "l",
-        "remark": "1980 年设经济特区"
-      },
-      {
-        "ancient": "香港",
-        "modern": "香港",
-        "coord": [
-          114.171,
-          22.301
-        ],
-        "align": "b",
-        "remark": "1997 年回归"
-      },
-      {
-        "ancient": "重庆",
-        "modern": "重庆",
-        "coord": [
-          106.551,
-          29.561
-        ],
-        "align": "l"
-      },
-      {
-        "ancient": "成都",
-        "modern": "成都",
-        "coord": [
-          104.071,
-          30.571
-        ]
-      },
-      {
-        "ancient": "武汉",
-        "modern": "武汉",
-        "coord": [
-          114.311,
-          30.591
-        ]
-      },
-      {
-        "ancient": "西安",
-        "modern": "西安",
-        "coord": [
-          108.941,
-          34.341
-        ]
+        "align": "r",
+        "remark": "直辖市"
       },
       {
         "ancient": "南京",
@@ -7124,7 +7134,9 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "align": "t",
+        "remark": "江苏省会"
       },
       {
         "ancient": "杭州",
@@ -7133,7 +7145,48 @@ window.DYNASTY_DATA = [
           120.151,
           30.271
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "浙江省会"
+      },
+      {
+        "ancient": "合肥",
+        "modern": "合肥",
+        "coord": [
+          117.281,
+          31.861
+        ],
+        "align": "l",
+        "remark": "安徽省会"
+      },
+      {
+        "ancient": "福州",
+        "modern": "福州",
+        "coord": [
+          119.301,
+          26.081
+        ],
+        "align": "l",
+        "remark": "福建省会"
+      },
+      {
+        "ancient": "南昌",
+        "modern": "南昌",
+        "coord": [
+          115.891,
+          28.681
+        ],
+        "align": "r",
+        "remark": "江西省会"
+      },
+      {
+        "ancient": "济南",
+        "modern": "济南",
+        "coord": [
+          117.001,
+          36.651
+        ],
+        "align": "r",
+        "remark": "山东省会"
       },
       {
         "ancient": "郑州",
@@ -7141,39 +7194,89 @@ window.DYNASTY_DATA = [
         "coord": [
           113.631,
           34.751
-        ]
+        ],
+        "align": "r",
+        "remark": "河南省会"
       },
       {
-        "ancient": "沈阳",
-        "modern": "沈阳",
+        "ancient": "武汉",
+        "modern": "武汉",
         "coord": [
-          123.431,
-          41.801
-        ]
+          114.311,
+          30.591
+        ],
+        "align": "l",
+        "remark": "湖北省会"
       },
       {
-        "ancient": "哈尔滨",
-        "modern": "哈尔滨",
+        "ancient": "长沙",
+        "modern": "长沙",
         "coord": [
-          126.631,
-          45.801
-        ]
+          112.941,
+          28.231
+        ],
+        "align": "l",
+        "remark": "湖南省会"
       },
       {
-        "ancient": "乌鲁木齐",
-        "modern": "乌鲁木齐",
+        "ancient": "广州",
+        "modern": "广州",
         "coord": [
-          87.621,
-          43.831
-        ]
+          113.261,
+          23.131
+        ],
+        "align": "t",
+        "remark": "广东省会"
       },
       {
-        "ancient": "拉萨",
-        "modern": "拉萨",
+        "ancient": "南宁",
+        "modern": "南宁",
         "coord": [
-          91.111,
-          29.651
-        ]
+          108.321,
+          22.821
+        ],
+        "align": "l",
+        "remark": "广西壮族自治区首府"
+      },
+      {
+        "ancient": "海口",
+        "modern": "海口",
+        "coord": [
+          110.351,
+          20.021
+        ],
+        "align": "r",
+        "remark": "海南省会"
+      },
+      {
+        "ancient": "重庆",
+        "modern": "重庆",
+        "coord": [
+          106.551,
+          29.561
+        ],
+        "align": "r",
+        "remark": "直辖市"
+      },
+      {
+        "ancient": "成都",
+        "modern": "成都",
+        "coord": [
+          104.071,
+          30.571
+        ],
+        "align": "l",
+        "remark": "四川省会"
+      },
+      {
+        "ancient": "贵阳",
+        "modern": "贵阳",
+        "coord": [
+          106.711,
+          26.571
+        ],
+        "align": "r",
+        "remark": "贵州省会"
       },
       {
         "ancient": "昆明",
@@ -7181,7 +7284,69 @@ window.DYNASTY_DATA = [
         "coord": [
           102.831,
           24.881
-        ]
+        ],
+        "align": "l",
+        "remark": "云南省会"
+      },
+      {
+        "ancient": "拉萨",
+        "modern": "拉萨",
+        "coord": [
+          91.111,
+          29.651
+        ],
+        "align": "r",
+        "remark": "西藏自治区首府"
+      },
+      {
+        "ancient": "西安",
+        "modern": "西安",
+        "coord": [
+          108.941,
+          34.341
+        ],
+        "align": "r",
+        "remark": "陕西省会"
+      },
+      {
+        "ancient": "兰州",
+        "modern": "兰州",
+        "coord": [
+          103.831,
+          36.061
+        ],
+        "align": "b",
+        "remark": "甘肃省会"
+      },
+      {
+        "ancient": "西宁",
+        "modern": "西宁",
+        "coord": [
+          101.781,
+          36.621
+        ],
+        "align": "l",
+        "remark": "青海省会"
+      },
+      {
+        "ancient": "银川",
+        "modern": "银川",
+        "coord": [
+          106.231,
+          38.491
+        ],
+        "align": "r",
+        "remark": "宁夏回族自治区首府"
+      },
+      {
+        "ancient": "乌鲁木齐",
+        "modern": "乌鲁木齐",
+        "coord": [
+          87.621,
+          43.831
+        ],
+        "align": "r",
+        "remark": "新疆维吾尔自治区首府"
       },
       {
         "ancient": "台北",
@@ -7189,7 +7354,106 @@ window.DYNASTY_DATA = [
         "coord": [
           121.521,
           25.051
-        ]
+        ],
+        "align": "r",
+        "remark": "台湾省会"
+      },
+      {
+        "ancient": "香港",
+        "modern": "香港",
+        "coord": [
+          114.171,
+          22.301
+        ],
+        "align": "r",
+        "remark": "香港特别行政区 · 1997 年回归"
+      },
+      {
+        "ancient": "澳门",
+        "modern": "澳门",
+        "coord": [
+          113.551,
+          22.201
+        ],
+        "align": "l",
+        "remark": "澳门特别行政区 · 1999 年回归"
+      },
+      {
+        "ancient": "深圳",
+        "modern": "深圳",
+        "coord": [
+          114.061,
+          22.541
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "1980 年设经济特区"
+      },
+      {
+        "ancient": "珠海",
+        "modern": "珠海",
+        "coord": [
+          113.571,
+          22.271
+        ],
+        "tier": 2,
+        "align": "l",
+        "remark": "1980 年设经济特区"
+      },
+      {
+        "ancient": "汕头",
+        "modern": "汕头",
+        "coord": [
+          116.681,
+          23.351
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "1980 年设经济特区"
+      },
+      {
+        "ancient": "厦门",
+        "modern": "厦门",
+        "coord": [
+          118.089,
+          24.479
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "1980 年设经济特区"
+      },
+      {
+        "ancient": "青岛",
+        "modern": "青岛",
+        "coord": [
+          120.381,
+          36.071
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "沿海开放城市 · 计划单列市"
+      },
+      {
+        "ancient": "大连",
+        "modern": "大连",
+        "coord": [
+          121.611,
+          38.911
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "沿海开放城市 · 计划单列市"
+      },
+      {
+        "ancient": "宁波",
+        "modern": "宁波",
+        "coord": [
+          121.551,
+          29.871
+        ],
+        "tier": 2,
+        "align": "r",
+        "remark": "沿海开放城市 · 计划单列市"
       }
     ]
   }
