@@ -341,15 +341,19 @@
     }
 
     corridorTitle(c) {
-      return this.locale === 'en' && this.enLocale.corridors[c.key]
-        ? this.enLocale.corridors[c.key].name
-        : c.title;
+      if (this.locale === 'en' && this.enLocale.corridors && this.enLocale.corridors[c.key]) {
+        const hit = this.enLocale.corridors[c.key];
+        return (Array.isArray(hit) ? hit[0] : hit.name) || c.title;
+      }
+      return c.title;
     }
 
     corridorSummary(c) {
-      return this.locale === 'en' && this.enLocale.corridors[c.key]
-        ? this.enLocale.corridors[c.key].note
-        : c.summary;
+      if (this.locale === 'en' && this.enLocale.corridors && this.enLocale.corridors[c.key]) {
+        const hit = this.enLocale.corridors[c.key];
+        return (Array.isArray(hit) ? hit[1] : hit.note) || '';
+      }
+      return c.summary;
     }
 
     formatYear(y, compact = false) {
@@ -3107,7 +3111,9 @@
       this._id('challenge-result').classList.add('is-hidden');
 
       const hint = cur.settlement.remark
-        ? `（${this.trTerm(cur.settlement.remark)}）`
+        ? this.locale === 'en'
+          ? ` (${this.trTerm(cur.settlement.remark)})`
+          : `（${this.trTerm(cur.settlement.remark)}）`
         : cur.settlement.isCapital
           ? this.uiStr('cap_hint', '（都城）')
           : '';
@@ -3260,9 +3266,10 @@
         },
         aPin
       );
-      aLabel.textContent = `${this.trTerm(cur.settlement.ancient)}（${
-        this.locale === 'en' ? this.trTerm(cur.settlement.modern) : '今' + cur.settlement.modern
-      }）`;
+      aLabel.textContent =
+        this.locale === 'en'
+          ? `${this.trTerm(cur.settlement.ancient)} (${this.trTerm(cur.settlement.modern)})`
+          : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
       this._rescaleSvgTypography();
 
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
@@ -4234,8 +4241,9 @@
         })
         .join('');
 
+      const jDyn = this.dynasties.find((d) => d.key === j.dynastyKey);
       const yrStr = isEn
-        ? `${this.formatYear(st.year)} · ${st.eraZh}`
+        ? `${this.formatYear(st.year)}${jDyn ? ' · ' + this.dynastyName(jDyn) : ''}`
         : `${st.year <= 0 ? '公元前' + -st.year + '年' : '公元' + st.year + '年'} · ${st.eraZh}`;
       const placeStr = isEn
         ? `${st.ancientEn} (Now ${st.modernEn})`
