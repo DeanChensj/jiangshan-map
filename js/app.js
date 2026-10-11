@@ -403,7 +403,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011s').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011u').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -426,7 +426,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011s').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011u').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1688,10 +1688,14 @@
           );
           const hasNearTrace =
             this.activeTrace && this.projector.greatCircleKm(p.coord, this.activeTrace) <= 32;
-          const cls =
-            hasNearMilestone || hasNearTrace
-              ? 'settlement-node is-pass is-pass-highlighted'
-              : 'settlement-node is-pass';
+          const cls = [
+            'settlement-node',
+            'is-pass',
+            hasNearMilestone || hasNearTrace ? 'is-pass-highlighted' : '',
+            hasNearTrace ? 'is-pass-trace' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
           const pNode = this._svgNode(
             'g',
             {
@@ -3573,7 +3577,7 @@
         typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
       const showTier2 = z >= tier2MinZoom;
       const passMinZoom =
-        typeof window !== 'undefined' && window.innerWidth <= 900 ? 1.55 : 1.25;
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.18 : 2.28;
       const showPasses = z >= passMinZoom;
       const showCorridors = !this.grpCorridors.classList.contains('is-hidden');
       this.svg.classList.toggle('is-zoomed-cities', showTier2);
@@ -3635,7 +3639,7 @@
       for (const node of settlementNodes) {
         const isPass = node.classList.contains('is-pass');
         if (isPass) {
-          if (!showCorridors) continue;
+          if (!showCorridors || (!showPasses && !node.classList.contains('is-pass-trace'))) continue;
         } else if (!showSettlements) {
           continue;
         }
@@ -3793,12 +3797,11 @@
         }
       }
 
-      // Tier 1b: Strategic mountain/river passes (controlled by 关河丝路 layer; always show labels when zoomed >= passMinZoom)
+      // Tier 1b: Strategic mountain/river passes (controlled by 关河丝路 layer; only visible when zoomed >= passMinZoom or traced)
       for (const node of settlementNodes) {
         if (node.classList.contains('is-pass')) {
-          if (showCorridors) {
-            const mustShowLabel = showPasses || node.classList.contains('is-pass-highlighted');
-            layoutSettlementLabel(node, !mustShowLabel);
+          if (showCorridors && (showPasses || node.classList.contains('is-pass-trace'))) {
+            layoutSettlementLabel(node, false);
           } else {
             const cx = parseFloat(node.getAttribute('data-x'));
             const cy = parseFloat(node.getAttribute('data-y'));
