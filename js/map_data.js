@@ -4428,6 +4428,7 @@ window.DYNASTY_DATA = [
           119.381,
           43.971
         ],
+        "vanish": 1124,
         "remark": "辽都城"
       },
       {
@@ -4438,6 +4439,16 @@ window.DYNASTY_DATA = [
           39.901
         ],
         "remark": "辽五京之一"
+      },
+      {
+        "ancient": "会宁府",
+        "modern": "哈尔滨·阿城",
+        "coord": [
+          126.971,
+          45.541
+        ],
+        "appear": 1115,
+        "remark": "金上京"
       },
       {
         "ancient": "大理",
@@ -4580,6 +4591,17 @@ window.DYNASTY_DATA = [
         "remark": "辽东京道治所"
       },
       {
+        "ancient": "中京大定府",
+        "modern": "赤峰·宁城",
+        "coord": [
+          119.301,
+          41.601
+        ],
+        "tier": 2,
+        "appear": 1007,
+        "remark": "辽中京道治所"
+      },
+      {
         "ancient": "西京大同府",
         "modern": "大同",
         "coord": [
@@ -4587,6 +4609,7 @@ window.DYNASTY_DATA = [
           40.081
         ],
         "tier": 2,
+        "appear": 1044,
         "remark": "辽西京道治所"
       }
     ],

@@ -3939,6 +3939,13 @@ window.EN_LOCALE = {
     "台湾省会": "Capital of Taiwan Province",
     "香港特别行政区 · 1997 年回归": "Hong Kong SAR · Returned in 1997",
     "澳门特别行政区 · 1999 年回归": "Macau SAR · Returned in 1999",
-    "沿海开放城市 · 计划单列市": "Coastal Open City · Sub-provincial City"
+    "沿海开放城市 · 计划单列市": "Coastal Open City · Sub-provincial City",
+    "上京道": "Shangjing Circuit",
+    "中京道": "Zhongjing Circuit",
+    "南京道": "Nanjing Circuit",
+    "西京道": "Xijing Circuit",
+    "中京大定府": "Zhongjing Dadingfu",
+    "赤峰·宁城": "Ningcheng, Chifeng",
+    "辽中京道治所": "Seat of Liao Zhongjing Circuit"
   }
 };
