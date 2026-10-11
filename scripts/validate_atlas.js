@@ -170,6 +170,19 @@ function main() {
     assert(enLocale.dynasties && enLocale.dynasties[d.key], `Missing English translation for dynasty ${d.key}`);
   }
 
+  // 3b. Validate 1864 Fall of the Taiping Heavenly Kingdom milestone & s_qing_e4 transition
+  const qingDyn = dynasties.find((d) => d.key === 'qing');
+  assert(
+    qingDyn && qingDyn.milestones.some((m) => m.year === 1864 && m.headline.includes('太平天国')),
+    'Qing dynasty must include the 1864 Fall of the Taiping Heavenly Kingdom milestone'
+  );
+  assert(
+    snapshots.s_qing_e4 &&
+      snapshots.s_qing_e4.polities.some((p) => p.title === '太平天国') &&
+      !snapshots.s_qing_f.polities.some((p) => p.title === '太平天国'),
+    's_qing_e4 (1860-1864) must retain Taiping Heavenly Kingdom while s_qing_f (1864+) removes it'
+  );
+
   // 4. Validate lazy topology decoding across all snapshots
   const snapKeys = Object.keys(snapshots);
   assert(snapKeys.length >= 100, `Expected >= 100 snapshots, got ${snapKeys.length}`);
