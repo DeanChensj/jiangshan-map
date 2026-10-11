@@ -430,6 +430,10 @@ window.EN_LOCALE = {
       "Failed Yuanjia northern expedition; Northern Wei counterattacks to the Yangtze at Guabu",
       "Guabu (Liuhe)"
     ],
+    "nanbei:469": [
+      "Northern Wei general Murong Baiyao captures Dongyang, annexing Liu Song's four provinces north of the Huai (Qing, Ji, Xu, Yan) and shifting the North–South border to the Huai River",
+      "Dongyang (Qingzhou)"
+    ],
     "nanbei:479": [
       "Xiao Daocheng founds Southern Qi",
       "Jiankang"
@@ -454,9 +458,17 @@ window.EN_LOCALE = {
       "Rebellion of Hou Jing devastates the lower Yangtze",
       "Jiankang (Taicheng)"
     ],
+    "nanbei:553": [
+      "Western Wei general Yuchi Jiong conquers Chengdu and annexes Sichuan (Yizhou) from the Liang dynasty",
+      "Chengdu"
+    ],
     "nanbei:557": [
       "Chen Baxian founds Chen; Yuwen Jue founds Northern Zhou",
       "Jiankang"
+    ],
+    "nanbei:573": [
+      "Emperor Xuan of Chen's Taijian Northern Expedition: Wu Mingche defeats Northern Qi and recovers all of Huainan up to the Huai River",
+      "Shouyang"
     ],
     "nanbei:577": [
       "Emperor Wu of Northern Zhou conquers Northern Qi, reunifying the north",
@@ -545,6 +557,10 @@ window.EN_LOCALE = {
     "wudai:955": [
       "Emperor Shizong of Later Zhou launches reunification campaigns",
       "Shouzhou (Huainan)"
+    ],
+    "wudai:958": [
+      "Emperor Shizong of Later Zhou completes three campaigns against Southern Tang; Li Jing cedes all 14 prefectures north of the Yangtze",
+      "Yangzhou (Jiangdu)"
     ],
     "wudai:960": [
       "Mutiny at Chenqiao: Zhao Kuangyin founds the Song dynasty",
@@ -4011,6 +4027,27 @@ window.EN_LOCALE = {
     "317 — 329 · 东晋初立与两赵并立：司马睿建晋于建康，北方前赵（汉赵）与石勒后赵分据关陇河北": "317–329 · Founding of Eastern Jin & Two Zhaos: Eastern Jin at Jiankang; Former Zhao and Shi Le’s Later Zhao divide North China",
     "329 — 347 · 后赵统一北方大部：石勒灭前赵尽有中原关陇，与东晋、成汉、前凉、前燕并立": "329–347 · Later Zhao Unifies Most of the North: Shi Le conquers Former Zhao, facing Eastern Jin, Cheng-Han, Former Liang & Former Yan",
     "370 — 376 · 前秦灭前燕：苻坚、王猛攻灭前燕尽吞华北，河西前凉与塞北代国尚存": "370–376 · Former Qin Conquers Former Yan: Fu Jian and Wang Meng annex Former Yan across North China while Former Liang and Dai remain",
+    "后燕": "Later Yan",
+    "后凉": "Later Liang",
+    "东阳（青州）": "Dongyang (Qingzhou)",
+    "扬州（江都）": "Yangzhou (Jiangdu)",
+    "306 — 311 · 八王之乱终局与成汉称帝：李雄在蜀称帝建大成（成汉），刘渊汉赵据并州": "306–311 · End of War of the Eight Princes: Li Xiong Founds Cheng-Han in Sichuan; Han-Zhao Holds Bingzhou",
+    "311 — 316 · 永嘉之乱：匈奴汉赵攻陷洛阳与长安，西晋名存实亡": "311–316 · Disaster of Yongjia: Han-Zhao Captures Luoyang and Chang'an",
+    "384 — 398 · 淝水战后北方再分裂：慕容垂建后燕、姚苌建后秦、吕光建后凉，拓跋珪复代建北魏": "384–398 · Post–Fei River Fragmentation: Later Yan, Later Qin, Later Liang & Rise of Northern Wei",
+    "398 — 407 · 北魏迁都平城与南燕分立：拓跋珪大破后燕进据中原，慕容德据青齐建南燕，河西北凉建立": "398–407 · Northern Wei Moves Capital to Pingcheng; Southern Yan in Shandong & Northern Liang in Hexi",
+    "407 — 410 · 赫连勃勃建胡夏：铁弗匈奴赫连勃勃据朔方筑统万城，与北魏、后秦、诸燕、北凉并立": "407–410 · Helian Bobo Founds Xia at Tongwancheng alongside Northern Wei, Later Qin, Yan & Northern Liang",
+    "439 — 469 · 北魏统一北方，与刘宋隔黄河对峙（元嘉北伐与饮马长江）": "439–469 · Northern Wei Unifies the North; Yellow River Standoff with Liu Song",
+    "469 — 479 · 北魏攻取淮北四州：慕容白曜克青齐，刘宋北界自黄河退至淮水": "469–479 · Northern Wei Captures Four Provinces North of the Huai; Liu Song Retreats to the Huai River",
+    "534 — 550 · 东魏 / 西魏 / 梁": "534–550 · Eastern Wei / Western Wei / Liang",
+    "550 — 553 · 高洋代东魏建北齐与侯景之乱：北齐、西魏与萧梁鼎立，巴蜀尚属萧梁": "550–553 · Northern Qi Replaces Eastern Wei & Hou Jing Rebellion; Liang Still Holds Sichuan",
+    "553 — 557 · 西魏尉迟迥平蜀与于谨克江陵：巴蜀汉中并入西魏，北齐南拓江淮": "553–557 · Western Wei Conquers Sichuan & Jiangling; Northern Qi Advances to the Yangtze",
+    "557 — 573 · 北齐 / 北周 / 陈（陈初划江而守）": "557–573 · Northern Qi / Northern Zhou / Chen (Yangtze Defense)",
+    "573 — 577 · 陈宣帝太建北伐：吴明彻大破北齐军尽复淮南，陈疆北抵淮水": "573–577 · Taijian Northern Expedition: Chen Recovers Huainan up to the Huai River",
+    "577 — 581 · 北周灭北齐：周武帝宇文邕统一北方，与江南陈朝南北对峙": "577–581 · Northern Zhou Conquers Northern Qi and Unifies the North vs. Chen",
+    "936 — 937 · 石敬瑭建后晋：割燕云十六州予契丹，江淮尚为杨吴": "936–937 · Shi Jingtang Cedes Sixteen Prefectures to Khitan and Founds Later Jin; Yang Wu in Jianghuai",
+    "937 — 945 · 李昪代吴建南唐：北方后晋与契丹并立，南方南唐、闽、吴越争衡": "937–945 · Li Bian Founds Southern Tang; Later Jin, Khitan, Min & Wuyue",
+    "958 — 959 · 周世宗平淮南：南唐献江北淮南十四州，后周与南唐以长江为界": "958–959 · Emperor Shizong Conquers Huainan: Southern Tang Cedes 14 Prefectures North of the Yangtze",
+    "959 — 960 · 周世宗北伐幽燕：收复瀛、莫、易三州与瓦桥三关": "959–960 · Emperor Shizong's Northern Expedition: Recovery of Ying, Mo & Yi Prefectures and Three Passes",
     "755 — 764 · 安史之乱爆发：范阳起兵两京一度陷落，唐廷平叛期间仍控河西走廊与安西北庭": "755–764 · An Lushan Rebellion: Rebellion rocks the capitals while Tang still holds the Hexi Corridor and Anxi/Beiting Protectorates",
     "764 — 790 · 吐蕃陷河陇与孤悬西域：凉州失守河西走廊被截断，安西、北庭孤悬绝域坚守": "764–790 · Fall of Hexi & Isolated Protectorates: Tubo captures Liangzhou and severs the Hexi Corridor; Anxi and Beiting hold out in isolation",
     "1644 — 1661 · 清军入关与南明抗清：清廷定都北京经略中原，南明据南方抗清，台湾尚为荷占": "1644–1661 · Qing Entry & Southern Ming Resistance: Qing establishes rule from Beijing while Southern Ming resists in the south and Taiwan remains Dutch-ruled",

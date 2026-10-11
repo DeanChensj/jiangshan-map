@@ -1,3 +1,7 @@
+/**
+ * Historical Dynasties, Settlements, Milestones & Corridors
+ * Decoupled from modern province outlines (china_geo_data.js) and historical polygons (atlas_snapshots.js).
+ */
 window.DYNASTY_DATA = [
   {
     "key": "zhanguo",
@@ -2449,6 +2453,10 @@ window.DYNASTY_DATA = [
         "snap": "s_xijin"
       },
       {
+        "until": 311,
+        "snap": "s_xijin_a2"
+      },
+      {
         "until": 316,
         "snap": "s_xijin_b"
       }
@@ -2916,6 +2924,14 @@ window.DYNASTY_DATA = [
         "snap": "s_dongjin_c"
       },
       {
+        "until": 398,
+        "snap": "s_dongjin_d0"
+      },
+      {
+        "until": 407,
+        "snap": "s_dongjin_d1"
+      },
+      {
         "until": 410,
         "snap": "s_dongjin_d"
       },
@@ -2992,6 +3008,15 @@ window.DYNASTY_DATA = [
         "coord": [
           118.851,
           32.251
+        ]
+      },
+      {
+        "year": 469,
+        "headline": "北魏慕容白曜攻克青州东阳，尽取刘宋淮北四州（青、冀、徐、兖）及豫州淮西，南北分界由黄河南移至淮水",
+        "site": "东阳（青州）",
+        "coord": [
+          118.471,
+          36.701
         ]
       },
       {
@@ -3085,6 +3110,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 553,
+        "headline": "西魏尉迟迥统军伐蜀，攻克成都尽取巴蜀益州之地；萧梁丧失西境，仅存江南半壁",
+        "site": "成都",
+        "coord": [
+          104.071,
+          30.571
+        ]
+      },
+      {
         "year": 554,
         "headline": "西魏于谨攻陷江陵，立萧詧为西梁（后梁）主",
         "site": "江陵（荆州）",
@@ -3100,6 +3134,15 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
+        ]
+      },
+      {
+        "year": 573,
+        "headline": "陈宣帝太建北伐：大将吴明彻统军十万大破北齐，尽复淮南江北之地，陈疆北抵淮水",
+        "site": "寿阳",
+        "coord": [
+          116.781,
+          32.581
         ]
       },
       {
@@ -3349,8 +3392,12 @@ window.DYNASTY_DATA = [
         "snap": "s_nanbei_0c"
       },
       {
-        "until": 479,
+        "until": 469,
         "snap": "s_nanbei_a"
+      },
+      {
+        "until": 479,
+        "snap": "s_nanbei_a2"
       },
       {
         "until": 502,
@@ -3365,12 +3412,20 @@ window.DYNASTY_DATA = [
         "snap": "s_nanbei_d"
       },
       {
+        "until": 553,
+        "snap": "s_nanbei_d1"
+      },
+      {
         "until": 557,
         "snap": "s_nanbei_d2"
       },
       {
-        "until": 577,
+        "until": 573,
         "snap": "s_nanbei_e"
+      },
+      {
+        "until": 577,
+        "snap": "s_nanbei_e2"
       },
       {
         "until": 581,
@@ -4526,6 +4581,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 958,
+        "headline": "周世宗三征南唐功成：南唐李璟去帝号奉周正朔，献江北淮南十四州，后周与南唐以长江为界",
+        "site": "扬州（江都）",
+        "coord": [
+          119.411,
+          32.391
+        ]
+      },
+      {
         "year": 959,
         "headline": "周世宗北伐辽国，收复瀛、莫、易三州与三关",
         "site": "瓦桥关（雄州）",
@@ -4783,6 +4847,10 @@ window.DYNASTY_DATA = [
         "snap": "s_wudai_b2"
       },
       {
+        "until": 937,
+        "snap": "s_wudai_c0"
+      },
+      {
         "until": 945,
         "snap": "s_wudai_c"
       },
@@ -4795,8 +4863,12 @@ window.DYNASTY_DATA = [
         "snap": "s_wudai_d"
       },
       {
-        "until": 959,
+        "until": 958,
         "snap": "s_wudai_e"
+      },
+      {
+        "until": 959,
+        "snap": "s_wudai_e1"
       },
       {
         "until": 960,
