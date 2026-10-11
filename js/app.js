@@ -271,6 +271,8 @@
       this._typoDirty = true;
       this._lastTypographyWidth = undefined;
       this._camRaf = null;
+      this.showEventCallouts = this._loadEventCalloutsPref();
+      this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
         this.hasSeenJourneyHint = localStorage.getItem('jiangshan_seen_journey_hint') === '1';
@@ -307,27 +309,45 @@
       }
     }
 
+    _loadEventCalloutsPref() {
+      try {
+        const v = localStorage.getItem('jiangshan_event_callouts');
+        if (v === '0' || v === 'false') return false;
+      } catch (_) {}
+      return true;
+    }
+
+    _saveEventCalloutsPref(enabled) {
+      try {
+        localStorage.setItem('jiangshan_event_callouts', enabled ? '1' : '0');
+      } catch (_) {}
+    }
+
+    toggleEventCallouts(enabled) {
+      this.showEventCallouts = Boolean(enabled);
+      this._saveEventCalloutsPref(this.showEventCallouts);
+      const chk = this._id('chk-event-callouts');
+      if (chk && chk.checked !== this.showEventCallouts) {
+        chk.checked = this.showEventCallouts;
+      }
+      if (!this.showEventCallouts) {
+        this.closeMilestoneBalloon();
+      } else {
+        if (this.dismissedCalloutIds) this.dismissedCalloutIds.clear();
+        const cur = this.dynasties[this.dynastyIdx];
+        if (cur) this._syncAutoMilestoneBalloon(cur);
+      }
+    }
+
     _hydrateSnapshots() {
       if (!this.snapshots) return;
       for (const k of Object.keys(this.snapshots)) {
         const s = this.snapshots[k];
-        if (!s || k === 'neighbors' || k === 's_prc') continue;
-        const baseKey = k.replace(/^(s_[a-z]+)_.*$/, '$1');
-        const prefSource = s.prefRef || (baseKey !== k ? baseKey : null);
-        if (
-          (!s.prefectures || !s.prefectures.length) &&
-          prefSource &&
-          this.snapshots[prefSource]
-        ) {
-          s.prefectures = this.snapshots[prefSource].prefectures || [];
+        if (s && s.prefRef && !s.prefectures && this.snapshots[s.prefRef]) {
+          s.prefectures = this.snapshots[s.prefRef].prefectures || [];
         }
-        const regSource = s.regionRef || (baseKey !== k ? baseKey : null);
-        if (
-          (!s.regions || !s.regions.length) &&
-          regSource &&
-          this.snapshots[regSource]
-        ) {
-          s.regions = this.snapshots[regSource].regions || [];
+        if (s && s.regionRef && !s.regions && this.snapshots[s.regionRef]) {
+          s.regions = this.snapshots[s.regionRef].regions || [];
         }
       }
       if (
@@ -415,20 +435,12 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011x').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011z').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
             this._fullSnapshotsLoaded = true;
-            this.snapshotCache = {};
             this.searchIndex = null;
-            const cur = this.dynasties && this.dynasties[this.dynastyIdx];
-            if (cur) {
-              const snapKey = this._resolveSnapKey(cur, this.year);
-              if (this.snapshots && this.snapshots[snapKey]) {
-                this._renderPolitiesAndPrefectures(cur, this.snapshots[snapKey]);
-              }
-            }
             return this.snapshots;
           }
         );
@@ -446,7 +458,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011x').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011z').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -884,6 +896,16 @@
             : '长城 · 大运河 · 丝绸之路';
       }
       this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '重大事件');
+      const lblEventCallouts = this._id('lbl-event-callouts');
+      if (lblEventCallouts) {
+        lblEventCallouts.textContent = this.uiStr('toggle_event_callouts', '史事浮签');
+        if (lblEventCallouts.parentElement) {
+          lblEventCallouts.parentElement.title = this.uiStr(
+            'toggle_event_callouts_tip',
+            '在地图事件坐标旁浮显当前节点史事小笺'
+          );
+        }
+      }
       const lblReset = this._id('lbl-reset-camera') || this._id('act-reset-camera');
       lblReset.textContent = this.uiStr('btn_reset', '复位视图');
       const actReset = this._id('act-reset-camera');
@@ -904,10 +926,10 @@
             : '在 GitHub 上为「江山时序」点亮 Star';
       }
       this._updateMusicUi();
-      this._id('gesture-guide').textContent =
-        this.locale === 'en'
-          ? 'Scroll to zoom · Drag to pan · Click city or double-click to trace · ← → step years · Space play'
-          : '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放';
+      this._id('gesture-guide').textContent = this.uiStr(
+        'hint',
+        '滚轮缩放 · 拖拽平移 · 点击城名或双击地图查历代沿革 · ← → 调整年份 · 空格播放'
+      );
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
@@ -1611,16 +1633,21 @@
       });
       this._updateMilestoneStates(dynasty);
       this._rescaleSvgTypography();
-      if (this.activeMilestone && this.activeMilestone.dynastyKey === dynasty.key) {
+      if (
+        this.activeMilestone &&
+        this.activeMilestone.dynastyKey === dynasty.key &&
+        !this.activeMilestone.isAuto
+      ) {
         this._positionMilestoneBalloon();
       } else {
-        this.closeMilestoneBalloon();
+        this._syncAutoMilestoneBalloon(dynasty);
       }
     }
 
     _activeMilestoneIndex(dynasty) {
       if (
         this.activeMilestone &&
+        !this.activeMilestone.isAuto &&
         this.activeMilestone.dynastyKey === dynasty.key &&
         this.activeMilestone.year === this.year &&
         this.activeMilestone.idx >= 0
@@ -1637,24 +1664,55 @@
     _updateMilestoneStates(dynasty) {
       const activeIdx = this._activeMilestoneIndex(dynasty);
       let currentPin = null;
-      let futureChanged = false;
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
         const idx = Number(pin.dataset.idx);
         const m = (dynasty.milestones || [])[idx];
         const effY = m ? this._clampYearToDynasty(dynasty, m.year) : Number(pin.dataset.year);
         const nextFuture = effY > this.year && idx !== activeIdx;
-        if (pin.classList.contains('is-future') !== nextFuture) futureChanged = true;
+        const isCurrent = idx === activeIdx;
         pin.classList.toggle('is-future', nextFuture);
-        pin.classList.toggle('is-past', effY <= this.year && idx !== activeIdx);
-        pin.classList.toggle('is-current', idx === activeIdx);
-        if (idx === activeIdx) currentPin = pin;
+        pin.classList.toggle('is-past', effY <= this.year && !isCurrent);
+        pin.classList.toggle('is-current', isCurrent);
+        if (isCurrent) currentPin = pin;
       });
       if (currentPin && currentPin.parentNode) {
         currentPin.parentNode.appendChild(currentPin);
       }
-      if (futureChanged && this._bootDone) {
-        this._rescaleSvgTypography();
+    }
+
+    _syncAutoMilestoneBalloon(dynasty) {
+      if (!dynasty || !this.milestoneBalloon) return;
+      const milestonesHidden =
+        this.grpMilestones && this.grpMilestones.classList.contains('is-hidden');
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+      const genCard = this._id('genealogy-card');
+      const mobileOverlayBusy =
+        isMobile &&
+        (this.mobileChronicleOpen || (genCard && !genCard.classList.contains('is-hidden')));
+      if (
+        this.showEventCallouts === false ||
+        milestonesHidden ||
+        this.playing ||
+        this.challenge ||
+        this.activeJourney ||
+        mobileOverlayBusy
+      ) {
+        if (this.activeMilestone && this.activeMilestone.isAuto) {
+          this.closeMilestoneBalloon();
+        }
+        return;
       }
+      const activeIdx = this._activeMilestoneIndex(dynasty);
+      const m = activeIdx >= 0 ? (dynasty.milestones || [])[activeIdx] : null;
+      if (
+        !m ||
+        !m.coord ||
+        (this.dismissedCalloutIds && this.dismissedCalloutIds.has(`${dynasty.key}:${activeIdx}`))
+      ) {
+        this.closeMilestoneBalloon();
+        return;
+      }
+      this.openMilestoneBalloon(dynasty, m, { isAuto: true });
     }
 
     _resolvePinMilestone(dynasty, milestoneEl) {
@@ -1683,12 +1741,14 @@
       return pastOrNow.length > 0 ? pastOrNow[pastOrNow.length - 1] : colocated[0];
     }
 
-    openMilestoneBalloon(dynasty, m) {
-      if (this.hoverTip) {
+    openMilestoneBalloon(dynasty, m, opts = {}) {
+      const isAuto = Boolean(opts && opts.isAuto);
+      if (!isAuto && this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
       }
       if (
+        !isAuto &&
         typeof window !== 'undefined' &&
         window.innerWidth <= 900 &&
         !this._id('genealogy-card').classList.contains('is-hidden')
@@ -1696,11 +1756,15 @@
         this.closeGenealogyCard();
       }
       const mIdx = (dynasty.milestones || []).indexOf(m);
+      if (!isAuto && this.dismissedCalloutIds && mIdx >= 0) {
+        this.dismissedCalloutIds.delete(`${dynasty.key}:${mIdx}`);
+      }
       this.activeMilestone = {
         dynastyKey: dynasty.key,
         milestone: m,
         idx: mIdx,
         year: this.year,
+        isAuto,
       };
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
         n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
@@ -1709,6 +1773,8 @@
       this._updateMilestoneStates(dynasty);
       if (!m.coord) {
         this.milestoneBalloon.classList.add('is-hidden');
+        const vf = this._id('viewport-frame');
+        if (vf) vf.classList.remove('has-open-milestone-balloon');
         return;
       }
       const yrText = this.formatYear(m.year);
@@ -1719,12 +1785,13 @@
       const placeHtml = siteStr
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
+      const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       const jKey = this._journeyKeyForMilestone(dynasty, m);
       const jBtnHtml = jKey
         ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
         : '';
       this.milestoneBalloon.innerHTML =
-        `<div><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}</div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
@@ -1735,6 +1802,16 @@
           this.openGenealogyAt(targetCoord[0], targetCoord[1]);
         });
       }
+      const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this.dismissedCalloutIds && mIdx >= 0) {
+            this.dismissedCalloutIds.add(`${dynasty.key}:${mIdx}`);
+          }
+          this.closeMilestoneBalloon();
+        });
+      }
       const jBtn = this.milestoneBalloon.querySelector('.ev-journey-btn');
       if (jBtn) {
         jBtn.addEventListener('click', (e) => {
@@ -1742,7 +1819,9 @@
           this.startJourney(jBtn.dataset.journey);
         });
       }
-      this.milestoneBalloon.classList.remove('is-hidden');
+      this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-open-milestone-balloon');
       this._positionMilestoneBalloon();
     }
 
@@ -1773,36 +1852,55 @@
         this.activeMilestone.milestone.coord[1]
       );
       const rect = this.svg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
       const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       const padX = (rect.width - this.camera.w * scale) * 0.5;
       const padY = (rect.height - this.camera.h * scale) * 0.5;
       const px = padX + (sx - this.camera.x) * scale;
       const py = padY + (sy - this.camera.y) * scale;
+      if (px < -16 || px > rect.width + 16 || py < -16 || py > rect.height + 16) {
+        this.milestoneBalloon.classList.add('is-offscreen');
+        return;
+      }
+      this.milestoneBalloon.classList.remove('is-offscreen');
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
       const genCard = this._id('genealogy-card');
       const genOpen =
-        genCard &&
-        !genCard.classList.contains('is-hidden') &&
-        typeof window !== 'undefined' &&
-        window.innerWidth > 900;
-      const bW = this.milestoneBalloon.offsetWidth || 260;
-      const bH = this.milestoneBalloon.offsetHeight || 62;
-      const rightLimit = genOpen ? rect.width - 360 - bW : rect.width - bW - 12;
-      let left = px + 12;
-      let top = py - 24;
-      if (left > rightLimit) {
-        left = Math.max(12, Math.min(rightLimit, px - bW * 0.5));
-        top = py - bH - 16 >= 12 ? py - bH - 16 : Math.min(rect.height - 90, py + 18);
+        genCard && !genCard.classList.contains('is-hidden') && !isMobile;
+      const bW = this.milestoneBalloon.offsetWidth || (isMobile ? 228 : 260);
+      const bH = this.milestoneBalloon.offsetHeight || (isMobile ? 54 : 62);
+      const minLeft = isMobile ? 8 : 12;
+      const rightLimit = Math.max(
+        minLeft,
+        genOpen ? rect.width - 356 - bW : rect.width - bW - (isMobile ? 8 : 12)
+      );
+      const minTop = isMobile ? 48 : 12;
+      const maxTop = Math.max(minTop, rect.height - bH - (isMobile ? 56 : 16));
+      const pinGap = isMobile ? 10 : 12;
+
+      let left;
+      let top = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
+      if (px + pinGap <= rightLimit) {
+        left = px + pinGap;
+      } else if (px - bW - pinGap >= minLeft) {
+        left = px - bW - pinGap;
       } else {
-        left = Math.max(12, Math.min(rightLimit, left));
-        top = Math.max(12, Math.min(rect.height - 90, top));
+        left = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
+        top =
+          py - bH - pinGap >= minTop
+            ? py - bH - pinGap
+            : Math.min(maxTop, py + pinGap + 4);
       }
-      this.milestoneBalloon.style.left = `${left}px`;
-      this.milestoneBalloon.style.top = `${top}px`;
+      this.milestoneBalloon.style.left = `${Math.round(left)}px`;
+      this.milestoneBalloon.style.top = `${Math.round(top)}px`;
     }
 
     closeMilestoneBalloon() {
       this.activeMilestone = null;
       this.milestoneBalloon.classList.add('is-hidden');
+      this.milestoneBalloon.classList.remove('is-offscreen');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-open-milestone-balloon');
       this.grpMilestones
         .querySelectorAll('.milestone-pin.is-active')
         .forEach((n) => n.classList.remove('is-active'));
@@ -2936,9 +3034,10 @@
         this._buildTerrainRivers();
         this._rescaleSvgTypography();
       }
-      if (this.activeMilestone && this.activeMilestone.year !== y) {
+      if (this.activeMilestone && (this.activeMilestone.year !== y || this.activeMilestone.isAuto)) {
         this.closeMilestoneBalloon();
       }
+      this._syncAutoMilestoneBalloon(cur);
       this._renderCorridors();
       this._syncScrubberUi();
       if (this.activeTrace && !this._id('genealogy-card').classList.contains('is-hidden')) {
@@ -2995,6 +3094,7 @@
     startAutoplay() {
       if (this.challenge) return;
       this.playing = true;
+      this.closeMilestoneBalloon();
       this._id('act-autoplay').innerHTML = SVG_ICONS.pause;
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       this.playInterval = setInterval(() => {
@@ -3015,6 +3115,8 @@
         clearInterval(this.playInterval);
         this.playInterval = null;
       }
+      const cur = this.dynasties[this.dynastyIdx];
+      if (cur) this._syncAutoMilestoneBalloon(cur);
     }
 
     // ---------------- Classical Guqin Music Player ----------------
@@ -3850,7 +3952,7 @@
     }
 
     // ---------------- Dual-Mode Challenge ----------------
-    _buildChallengeDeck(preferredDynasty = null) {
+    _buildChallengeDeck() {
       const deck = [];
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
@@ -3864,20 +3966,6 @@
       }
       const chosen = [];
       const seen = new Set();
-      if (preferredDynasty && preferredDynasty.key !== 'prc') {
-        const pool = (preferredDynasty.settlements || []).filter(
-          (s) => s.modern && s.ancient !== s.modern && !s.isCapital
-        );
-        const pickPool = pool.length
-          ? pool
-          : (preferredDynasty.settlements || []).filter((s) => s.modern);
-        if (pickPool.length) {
-          const firstS = pickPool[0];
-          const uid = `${preferredDynasty.key}:${firstS.ancient}`;
-          seen.add(uid);
-          chosen.push({ dynasty: preferredDynasty, settlement: firstS });
-        }
-      }
       while (chosen.length < 10 && deck.length) {
         const idx = Math.floor(Math.random() * deck.length);
         const pick = deck.splice(idx, 1)[0];
@@ -3890,7 +3978,7 @@
       return chosen;
     }
 
-    startChallenge(mode = 'locate', preferredDynasty = null, initialYear = undefined) {
+    startChallenge() {
       this._recordGestureClick();
       this.stopAutoplay();
       if (this.activeJourney) this.stopJourney(true);
@@ -3904,11 +3992,10 @@
       this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
-        deck: this._buildChallengeDeck(preferredDynasty),
+        deck: this._buildChallengeDeck(),
         index: 0,
         score: 0,
         answered: false,
-        initialYear,
       };
       this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
@@ -3943,8 +4030,7 @@
       q.answered = false;
       q.pendingGuess = null;
       const cur = q.deck[q.index];
-      let roundYear =
-        q.index === 0 && q.initialYear !== undefined ? q.initialYear : cur.dynasty.focusYear;
+      let roundYear = cur.dynasty.focusYear;
       if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
         roundYear = cur.settlement.appear;
       }
@@ -5159,9 +5245,21 @@
       });
       this._id('chk-milestones').addEventListener('change', (e) => {
         this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
-        if (!e.target.checked) this.closeMilestoneBalloon();
+        if (!e.target.checked) {
+          this.closeMilestoneBalloon();
+        } else {
+          const cur = this.dynasties[this.dynastyIdx];
+          if (cur) this._syncAutoMilestoneBalloon(cur);
+        }
         this._rescaleSvgTypography();
       });
+      const chkEventCallouts = this._id('chk-event-callouts');
+      if (chkEventCallouts) {
+        chkEventCallouts.checked = this.showEventCallouts;
+        chkEventCallouts.addEventListener('change', (e) => {
+          this.toggleEventCallouts(e.target.checked);
+        });
+      }
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
       const togglePaneBtn = this._id('act-toggle-pane');
@@ -5872,49 +5970,45 @@
       }
       if (q.has('hover')) {
         const targetPref = q.get('hover');
-        this._dismissTraceOnboarding();
-        this._ensureFullSnapshots().then(() => {
-          setTimeout(() => {
-            const el = this.grpPrefectures.querySelector(
-              `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
-            );
-            if (el) {
-              el.classList.add('is-hovered');
-              const box = el.getBoundingClientRect();
-              const cx = box.left + box.width * 0.55;
-              const cy = box.top + box.height * 0.45;
-              const cur = this.dynasties[this.dynastyIdx];
-              const snapKey = this._resolveSnapKey(cur, this.year);
-              const snap = this.snapshots[snapKey] || {};
-              const mainPol =
-                (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
-              let provName = '';
-              const stack = document.elementsFromPoint(cx, cy);
-              const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
-              if (provEl) provName = provEl.dataset.provTitle;
-              const pName = this.trTerm(el.dataset.prefTitle);
-              const pCat = el.dataset.prefCategory;
-              const lines = [
-                `<b>${
-                  this.locale === 'en'
-                    ? pName
-                    : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
-                }</b>`,
-              ];
-              if (mainPol) {
-                lines.push(
-                  `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
-                );
-              }
-              if (provName) {
-                lines.push(
-                  `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(provName)}</div>`
-                );
-              }
-              this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
+        setTimeout(() => {
+          const el = this.grpPrefectures.querySelector(
+            `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
+          );
+          if (el) {
+            el.classList.add('is-hovered');
+            const box = el.getBoundingClientRect();
+            const cx = box.left + box.width * 0.55;
+            const cy = box.top + box.height * 0.45;
+            const cur = this.dynasties[this.dynastyIdx];
+            const snapKey = this._resolveSnapKey(cur, this.year);
+            const snap = this.snapshots[snapKey] || {};
+            const mainPol = (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
+            let provName = '';
+            const stack = document.elementsFromPoint(cx, cy);
+            const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
+            if (provEl) provName = provEl.dataset.provTitle;
+            const pName = this.trTerm(el.dataset.prefTitle);
+            const pCat = el.dataset.prefCategory;
+            const lines = [
+              `<b>${
+                this.locale === 'en'
+                  ? pName
+                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
+              }</b>`,
+            ];
+            if (mainPol) {
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
+              );
             }
-          }, 300);
-        });
+            if (provName) {
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(provName)}</div>`
+              );
+            }
+            this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
+          }
+        }, 250);
       }
       if (q.has('event')) {
         const ey = Number(q.get('event'));
@@ -5941,9 +6035,7 @@
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
         const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
-        const prefDyn = q.has('year') ? this.dynasties[this.dynastyIdx] : null;
-        const initYr = q.has('year') ? this.year : undefined;
-        setTimeout(() => this.startChallenge(mode, prefDyn, initYr), 120);
+        setTimeout(() => this.startChallenge(mode), 120);
       }
       if (q.has('journey')) {
         this._paneAutoCollapsed = true;
