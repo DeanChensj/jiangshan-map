@@ -268,6 +268,19 @@ function main() {
     }
   }
 
+  // 4b. Validate split-era intermediate phase granularity (xijin, dongjin, nanbei, wudai)
+  assert(
+    snapshots.s_xijin_a2 &&
+      snapshots.s_dongjin_d0 &&
+      snapshots.s_dongjin_d1 &&
+      snapshots.s_nanbei_a2 &&
+      snapshots.s_nanbei_d1 &&
+      snapshots.s_nanbei_e2 &&
+      snapshots.s_wudai_c0 &&
+      snapshots.s_wudai_e1,
+    'Split eras must provide intermediate snapshots (s_xijin_a2, s_dongjin_d0/d1, s_nanbei_a2/d1/e2, s_wudai_c0/e1)'
+  );
+
   // 5. Validate corridors, i18n, and isolated cold-start boot seed
   assert(Array.isArray(corridors) && corridors.length >= 3, 'Expected >= 3 historical corridors');
   for (const c of corridors) {
@@ -297,6 +310,7 @@ function main() {
     'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a for instant first paint'
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
+
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
