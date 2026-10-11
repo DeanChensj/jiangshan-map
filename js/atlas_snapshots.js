@@ -73,5 +73,79 @@
       out[k] = sc;
     }
   }
-  window.ATLAS_SNAPSHOTS = out;
+  if (out.s_qing_e3 && out.s_qing_f) {
+    const qingE3 = out.s_qing_e3.polities.find((p) => p.title === '清');
+    const qingF = out.s_qing_f.polities.find((p) => p.title === '清');
+    const rusE3 = out.s_qing_e3.polities.find((p) => p.title === '俄罗斯帝国');
+    const rusF = out.s_qing_f.polities.find((p) => p.title === '俄罗斯帝国');
+    const e4Polities = out.s_qing_e3.polities.map((p) => {
+      if (p.title === '清' && qingE3 && qingF) {
+        const sh = { type: 'MultiPolygon' };
+        Object.defineProperty(sh, 'coordinates', {
+          enumerable: true,
+          configurable: true,
+          get() {
+            const cE3 = qingE3.shape.coordinates;
+            const cF = qingF.shape.coordinates;
+            const mainRing = cE3[0][0]
+              .slice(0, 117)
+              .concat(cF[0][0].slice(632, 657), cE3[0][0].slice(147));
+            const v = [[mainRing]].concat(cE3.slice(1));
+            Object.defineProperty(this, 'coordinates', {
+              value: v,
+              writable: true,
+              enumerable: true,
+              configurable: true,
+            });
+            return v;
+          },
+        });
+        return Object.assign({}, p, { shape: sh });
+      }
+      if (p.title === '俄罗斯帝国' && rusE3 && rusF) {
+        const sh = { type: 'MultiPolygon' };
+        Object.defineProperty(sh, 'coordinates', {
+          enumerable: true,
+          configurable: true,
+          get() {
+            const rE3 = rusE3.shape.coordinates;
+            const rF = rusF.shape.coordinates;
+            const mainRing = rE3[0][0]
+              .slice(0, 23)
+              .concat(rF[0][0].slice(24, 141), rE3[0][0].slice(98));
+            const v = [[mainRing].concat(rE3[0].slice(1))].concat(rE3.slice(1));
+            Object.defineProperty(this, 'coordinates', {
+              value: v,
+              writable: true,
+              enumerable: true,
+              configurable: true,
+            });
+            return v;
+          },
+        });
+        return Object.assign({}, p, { shape: sh });
+      }
+      return p;
+    });
+    const jilinF = (out.s_qing_f.regions || []).find((r) => r.title === '吉林');
+    const hljF = (out.s_qing_f.regions || []).find((r) => r.title === '黑龙江');
+    const e4Regions = (out.s_qing_e3.regions || []).map((r) => {
+      if (r.title === '吉林' && jilinF) return jilinF;
+      if (r.title === '黑龙江' && hljF) return hljF;
+      return r;
+    });
+    out.s_qing_e4 = {
+      caption: '1860 — 1864 · 《北京条约》失乌苏里江以东；太平天国与湘淮军决战江南（安庆、天京之战）',
+      note: out.s_qing_e3.note,
+      prefRef: out.s_qing_e3.prefRef,
+      polities: e4Polities,
+      prefectures: out.s_qing_e3.prefectures,
+      regions: e4Regions,
+    };
+    out.s_qing_f = Object.assign({}, out.s_qing_f, {
+      caption: '1864 — 1895 · 太平天国覆灭与同光中兴：湘军攻陷天京，俄割占外西北，1876 左宗棠收复新疆',
+    });
+  }
+  window.ATLAS_SNAPSHOTS = Object.assign(window.ATLAS_SNAPSHOTS || {}, out);
+  window.ATLAS_FULL_SNAPSHOTS_LOADED = true;
 })();
