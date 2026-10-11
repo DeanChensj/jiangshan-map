@@ -403,7 +403,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011q').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -426,7 +426,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011q').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -575,9 +575,19 @@
       return (this.enLocale.dict && this.enLocale.dict[text]) || text;
     }
 
+    trModernCity(text) {
+      const res = this.trTerm(text);
+      return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
+    }
+
     _enDict(text) {
       if (!text) return '';
       return (this.enLocale.dict && this.enLocale.dict[text]) || text;
+    }
+
+    _enModernCity(text) {
+      const res = this._enDict(text);
+      return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
     }
 
     _enMilestoneHeadline(d, m) {
@@ -638,7 +648,9 @@
         const hit = this.enLocale.milestones && this.enLocale.milestones[key];
         if (Array.isArray(hit) && hit[1]) return hit[1];
       }
-      return this.trTerm(m.site);
+      return d && (d.key === 'roc' || d.key === 'prc')
+        ? this.trModernCity(m.site)
+        : this.trTerm(m.site);
     }
 
     corridorTitle(c) {
@@ -1362,7 +1374,10 @@
           { class: 'name', x: dx, y: dy1, 'text-anchor': anchor },
           node
         );
-        nameEl.textContent = this.trTerm(item.ancient);
+        nameEl.textContent =
+          dynasty.key === 'roc' || dynasty.key === 'prc'
+            ? this.trModernCity(item.ancient)
+            : this.trTerm(item.ancient);
 
         if (isHintCap) {
           try {
@@ -2389,7 +2404,7 @@
         : this.uiStr('outside_modern', '现代省界外 / 海域');
       const titleSuffix =
         closestOverall && closestOverall.s.modern
-          ? ` · ${this.trTerm(closestOverall.s.modern)}`
+          ? ` · ${this.trModernCity(closestOverall.s.modern)}`
           : '';
       this._id('genealogy-heading').textContent = titleMain + titleSuffix;
 
@@ -2535,10 +2550,14 @@
               near.km < 25
                 ? this.uiStr('at_here', '即此地')
                 : `${Math.round(near.km)} km`;
+            const nearCityName =
+              d.key === 'roc' || d.key === 'prc'
+                ? this.trModernCity(near.s.ancient)
+                : this.trTerm(near.s.ancient);
             subParts.push(
               this.locale === 'en'
-                ? `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)} (${distStr})`
-                : `${this.uiStr('near_city', '邻近古城：')}${this.trTerm(near.s.ancient)}（${distStr}）`
+                ? `${this.uiStr('near_city', '邻近古城：')}${nearCityName} (${distStr})`
+                : `${this.uiStr('near_city', '邻近古城：')}${nearCityName}（${distStr}）`
             );
           }
 
@@ -3275,6 +3294,19 @@
           }
         });
       }
+      if (this.grpRivers && !this.grpRivers.classList.contains('is-hidden')) {
+        this.grpRivers.querySelectorAll('.hydro-label').forEach((hl) => {
+          const hx = parseFloat(hl.getAttribute('data-x'));
+          const hy = parseFloat(hl.getAttribute('data-y'));
+          if (!isNaN(hx) && !isNaN(hy)) {
+            const isLake = hl.classList.contains('is-lake');
+            const fPx = isLake ? 8.2 : hl.classList.contains('is-trunk') ? 8.6 : 7.4;
+            const hw = (this._estimateLocalTextWidth(hl.textContent, fPx, 1.5) * 0.5 + (isLake ? 8 : 4)) * s;
+            const hh = (isLake ? 8.5 : 5.5) * s;
+            occupied.push({ x1: hx - hw, y1: hy - hh, x2: hx + hw, y2: hy + hh });
+          }
+        });
+      }
 
       const layoutSettlementLabel = (node, allowCull) => {
         const cx = parseFloat(node.getAttribute('data-x'));
@@ -3822,9 +3854,13 @@
       }
 
       const clueTag = this.locale === 'en' ? 'Historical Clue' : '当朝掌故';
+      const targetCityEn =
+        cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
+          ? this.trModernCity(cur.settlement.ancient)
+          : this.trTerm(cur.settlement.ancient);
       const promptHtml =
         this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${this.trTerm(cur.settlement.ancient)}”</b>`
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${targetCityEn}”</b>`
           : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${cur.settlement.ancient}」</b>`;
 
       this._id('challenge-question').innerHTML =
@@ -3926,9 +3962,14 @@
         },
         aPin
       );
+      const ansAncEn =
+        cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
+          ? this.trModernCity(cur.settlement.ancient)
+          : this.trTerm(cur.settlement.ancient);
+      const ansModEn = this.trModernCity(cur.settlement.modern);
       aLabel.textContent =
         this.locale === 'en'
-          ? `${this.trTerm(cur.settlement.ancient)} (${this.trTerm(cur.settlement.modern)})`
+          ? `${ansAncEn} (${ansModEn})`
           : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
       this._rescaleSvgTypography();
 
@@ -3946,7 +3987,7 @@
 
       this._id('challenge-verdict').innerHTML =
         this.locale === 'en'
-          ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${this.trTerm(cur.settlement.ancient)} (${this.trTerm(cur.settlement.modern)})`
+          ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${ansAncEn} (${ansModEn})`
           : `${comment} 偏差 <b>${km} 公里</b>（+${pts} 分）· 答案：${cur.settlement.ancient}（今${cur.settlement.modern}）`;
 
       this._id('act-next-round').innerHTML =
@@ -4445,10 +4486,12 @@
 
       // 1. Historical Settlements (Ancient & Modern Cities)
       for (const d of this.dynasties) {
+        const isModernDyn = d.key === 'roc' || d.key === 'prc';
         for (const s of d.settlements || []) {
           const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
-          const ancEn = this._enDict(s.ancient);
-          const modEn = this._enDict(s.modern || '');
+          const rawAncEn = this._enDict(s.ancient);
+          const ancEn = isModernDyn ? this._enModernCity(s.ancient) : rawAncEn;
+          const modEn = this._enModernCity(s.modern || '');
           const remEn = this._enDict(s.remark || '');
           entries.push({
             kind: 'city',
@@ -4460,7 +4503,7 @@
             subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
             titleEn: ancEn,
             subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
-            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
+            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
           });
         }
       }
@@ -5348,21 +5391,23 @@
           this._showHoverTip(
             e,
             `<b>◆ ${this.formatYear(mHit.year)}${eraPart} · ${this.milestoneHeadline(cur, mHit)}</b><div class="tt-sub">${
-              mHit.site ? SVG_ICONS.pin + ' ' + this.trTerm(mHit.site) + ' · ' : ''
+              mHit.site ? SVG_ICONS.pin + ' ' + this.milestoneSite(cur, mHit) + ' · ' : ''
             }${actionHint}</div>`
           );
         } else if (settlementEl || coCity) {
+          const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));
           const rawAnc = settlementEl ? settlementEl.dataset.ancient : coCity.ancient;
           const rawMod = settlementEl ? settlementEl.dataset.modern : coCity.modern || '';
           const rawRem = settlementEl ? settlementEl.dataset.remark : coCity.remark || '';
-          const anc = this.trTerm(rawAnc);
-          const mod = this.trTerm(rawMod);
+          const anc = isModernDyn ? this.trModernCity(rawAnc) : this.trTerm(rawAnc);
+          const mod = this.trModernCity(rawMod);
           const rem = this.trTerm(rawRem);
+          const hasDiffMod = Boolean(rawMod && rawMod !== rawAnc);
           const traceHint = this.locale === 'en' ? ' · Click to trace history' : ' · 点击查看历代沿革';
           const sub =
             this.locale === 'en'
-              ? `${mod && mod !== anc ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
-              : `${mod && mod !== anc ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
+              ? `${hasDiffMod ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
+              : `${hasDiffMod ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
           this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
         } else if (corridorEl) {
           this._showHoverTip(
