@@ -1,5 +1,5 @@
 /**
- * Historical Lore, Reign Eras, Landmark Events, Guqin Tracks & Biographical Journeys
+ * Historical Lore, Reign Eras, Landmark Events, Strategic Passes, Guqin Tracks & Biographical Journeys
  * Decoupled from the view/projection controller (js/app.js) for modular maintenance.
  */
 (function () {
@@ -2460,6 +2460,198 @@
       "siteEn": "Guangzhou / Humen",
       "zh": "林则徐抵广州查禁鸦片，于虎门海滩当众销烟",
       "en": "Imperial Commissioner Lin Zexu destroys opium stocks at Humen near Guangzhou"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -318,
+      "coord": [
+        110.92,
+        34.63
+      ],
+      "site": "函谷关（今河南灵宝）",
+      "siteEn": "Hangu Pass (Lingbao, Henan)",
+      "zh": "楚、赵、魏、韩、燕五国合纵攻秦，至函谷关，秦出兵逆击，五国联军皆败走",
+      "en": "Coalition of Chu, Zhao, Wei, Han, and Yan marches on Hangu Pass but is repulsed by Qin forces"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -298,
+      "coord": [
+        110.92,
+        34.63
+      ],
+      "site": "函谷关（今河南灵宝）",
+      "siteEn": "Hangu Pass (Lingbao, Henan)",
+      "zh": "齐孟尝君田文合韩、魏之师连战三年攻破函谷关，迫秦昭襄王割河东三城求和",
+      "en": "Lord Mengchang of Qi leads a Qi-Han-Wei alliance that storms Hangu Pass after a three-year campaign"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -206,
+      "coord": [
+        110.33,
+        33.62
+      ],
+      "site": "武关（今陕西丹凤）",
+      "siteEn": "Wuguan Pass (Danfeng, Shaanxi)",
+      "zh": "刘邦率楚军自南阳迂回攻破武关，继克峣关，先入关中降秦王子婴",
+      "en": "Liu Bang breaches Wuguan Pass from Nanyang and enters the Guanzhong heartland to accept Qin’s surrender"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -204,
+      "coord": [
+        113.89,
+        37.97
+      ],
+      "site": "井陉关·娘子关（今河北井陉）",
+      "siteEn": "Jingxing / Niangzi Pass (Hebei)",
+      "zh": "井陉之战：韩信率汉军出井陉口，背绵水列阵诱敌，奇兵拔赵壁立汉赤帜，破赵军二十万",
+      "en": "Battle of Jingxing: Han Xin deploys with his back to the river at Jingxing Pass and routs the Zhao army"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -166,
+      "coord": [
+        106.32,
+        35.85
+      ],
+      "site": "萧关（今宁夏固原东南）",
+      "siteEn": "Xiaoguan Pass (Guyuan, Ningxia)",
+      "zh": "匈奴老上单于率十四万骑攻破朝那萧关，候骑至甘泉宫，汉文帝遣三将军屯兵细柳、棘门、霸上备胡",
+      "en": "Xiongnu Chanyu Laoshang leads 140,000 cavalry through Xiaoguan Pass, prompting Han defenses around Chang’an"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -111,
+      "coord": [
+        93.86,
+        40.35
+      ],
+      "site": "玉门关·阳关（今甘肃敦煌）",
+      "siteEn": "Yumen & Yangguan Passes (Dunhuang)",
+      "zh": "汉武帝分置敦煌郡，筑玉门关与阳关，“列四郡、据两关”，扼控丝绸之路南北两道咽喉",
+      "en": "Emperor Wu of Han establishes Yumen Pass and Yangguan Pass to command the northern and southern Silk Road routes"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 211,
+      "coord": [
+        110.25,
+        34.54
+      ],
+      "site": "潼关（今陕西潼关）",
+      "siteEn": "Tongguan Pass (Shaanxi)",
+      "zh": "潼关之战：曹操北渡蒲阪津迂回渭南，以轻兵诱敌、离间计大破马超、韩遂关西联军",
+      "en": "Battle of Tongguan: Cao Cao outflanks the pass across the Yellow River and defeats the coalition of Ma Chao and Han Sui"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 219,
+      "coord": [
+        106.12,
+        33.11
+      ],
+      "site": "阳平关·定军山（今陕西勉县）",
+      "siteEn": "Yangping Pass (Mianxian, Shaanxi)",
+      "zh": "汉中之战：刘备据阳平关与定军山，黄忠阵斩夏侯渊，尽取汉中之地",
+      "en": "Hanzhong Campaign: Liu Bei secures Yangping Pass and Mount Dingjun as Huang Zhong slays Xiahou Yuan"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 263,
+      "coord": [
+        105.53,
+        32.21
+      ],
+      "site": "剑门关（今四川剑阁）",
+      "siteEn": "Jianmen Pass (Jiange, Sichuan)",
+      "zh": "蜀汉大将军姜维自沓中疾退，凭剑门关绝壁天险拒钟会十余万魏军于关外",
+      "en": "Shu general Jiang Wei holds the sheer cliffs of Jianmen Pass against Zhong Hui’s 100,000-strong Wei army"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 621,
+      "coord": [
+        113.32,
+        34.82
+      ],
+      "site": "虎牢关（今河南荥阳汜水）",
+      "siteEn": "Hulao Pass (Xingyang, Henan)",
+      "zh": "虎牢之战：唐秦王李世民率三千五百精骑据虎牢关，一战生擒夏王窦建德，洛阳王世充随即出降",
+      "en": "Battle of Hulao: Li Shimin crushes Dou Jiande’s relief army at Hulao Pass, forcing Wang Shichong in Luoyang to surrender"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 716,
+      "coord": [
+        114.34,
+        25.32
+      ],
+      "site": "大庾岭梅关（今广东南雄北）",
+      "siteEn": "Meiguan Pass (Dayu Ridge, Guangdong/Jiangxi)",
+      "zh": "唐玄宗纳张九龄之议，凿辟大庾岭梅关新路，贯通赣江与珠江南北商道",
+      "en": "Chancellor Zhang Jiuling excavates the Meiguan mountain road across the Dayu Ridge, linking Jiangxi and Guangdong"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 756,
+      "coord": [
+        110.25,
+        34.54
+      ],
+      "site": "潼关（今陕西潼关）",
+      "siteEn": "Tongguan Pass (Shaanxi)",
+      "zh": "哥舒翰被迫出潼关与安禄山叛军决战，于灵宝西原中伏惨败，潼关失守，唐玄宗仓皇奔蜀",
+      "en": "Geshu Han is ambushed west of Lingbao after being forced out of Tongguan Pass; Chang’an falls to An Lushan’s rebels"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 980,
+      "coord": [
+        112.87,
+        39.19
+      ],
+      "site": "雁门关（今山西代县北）",
+      "siteEn": "Yanmen Pass (Daixian, Shanxi)",
+      "zh": "雁门之战：代州刺史杨业率数百骑自西陉出雁门关背奇袭，大破辽军十万，阵斩驸马萧咄李",
+      "en": "Battle of Yanmen Pass: Song general Yang Ye leads a flanking cavalry strike through Yanmen Pass, routing 100,000 Liao troops"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1372,
+      "coord": [
+        98.22,
+        39.8
+      ],
+      "site": "嘉峪关（今甘肃嘉峪关）",
+      "siteEn": "Jiayuguan Pass (Gansu)",
+      "zh": "明征虏大将军冯胜平定河西，于祁连山与黑山峡谷最窄处始筑嘉峪关，成明长城西端锁钥",
+      "en": "Ming general Feng Sheng constructs Jiayuguan Pass at the narrowest waist of the Hexi Corridor as the western anchor of the Great Wall"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1449,
+      "coord": [
+        116.07,
+        40.29
+      ],
+      "site": "居庸关·紫荆关（今北京昌平/河北易县）",
+      "siteEn": "Juyong & Zijing Passes (Beijing / Hebei)",
+      "zh": "土木之变后瓦剌也先逼紫荆关、窥居庸关，于谦檄诸将严守内三关并于北京九门外击退瓦剌大军",
+      "en": "Following the Tumu Crisis, Yu Qian fortifies Juyong and Zijing passes and repels Esen’s Oirat forces outside Beijing"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1644,
+      "coord": [
+        119.77,
+        40.01
+      ],
+      "site": "山海关（今河北秦皇岛）",
+      "siteEn": "Shanhai Pass (Qinhuangdao, Hebei)",
+      "zh": "山海关大战：吴三桂于一片石开关纳多尔衮清军入援，联手击败李自成大顺军，清廷旋即定都北京",
+      "en": "Battle of Shanhai Pass: Wu Sangui opens the gates to Dorgon’s Qing cavalry, defeating Li Zicheng’s Shun army"
     }
   ],
   "GUQIN_TRACKS": [
@@ -4307,6 +4499,369 @@
           "quoteEn": "Wang Yangming’s last words: \"This mind is luminous—what more is there to say!\""
         }
       ]
+    }
+  ],
+  "STRATEGIC_PASSES": [
+    {
+      "key": "hanguguan",
+      "ancientZh": "函谷关",
+      "ancientEn": "Hangu Pass",
+      "modernZh": "河南灵宝",
+      "modernEn": "Lingbao, Henan",
+      "coord": [
+        110.92,
+        34.63
+      ],
+      "appear": -403,
+      "vanish": 200,
+      "focusYear": -241,
+      "align": "b",
+      "rangeZh": "崤山 · 黄河大曲南岸",
+      "rangeEn": "Mount Xiao & Yellow River Gorge",
+      "chokepointZh": "西据关中高原，东临绝涧，南接秦岭，北塞黄河，因关在谷中深险如函得名，为战国秦汉“一夫当关，万夫莫开”之东大门。",
+      "chokepointEn": "Set deep in a canyon between Mount Xiao, the Qinling Mountains, and the Yellow River; the impregnable eastern gateway of Qin and Western Han."
+    },
+    {
+      "key": "tongguan",
+      "ancientZh": "潼关",
+      "ancientEn": "Tongguan Pass",
+      "modernZh": "陕西潼关",
+      "modernEn": "Tongguan, Shaanxi",
+      "coord": [
+        110.25,
+        34.54
+      ],
+      "appear": 196,
+      "focusYear": 756,
+      "align": "b",
+      "rangeZh": "秦岭北麓 · 黄河风陵渡南",
+      "rangeEn": "Qinling Foothills & Yellow River Bend",
+      "chokepointZh": "东汉建安年间代函谷关而兴，北临黄河、渭水、洛水三河交汇，南依秦岭绝壁，扼长安与洛阳两京咽喉，为汉唐以降关中第一锁钥。",
+      "chokepointEn": "Established in the late Eastern Han at the confluence of the Yellow, Wei, and Luo rivers against the Qinling cliffs; the primary lock between Chang’an and Luoyang."
+    },
+    {
+      "key": "wuguan",
+      "ancientZh": "武关",
+      "ancientEn": "Wuguan Pass",
+      "modernZh": "陕西丹凤",
+      "modernEn": "Danfeng, Shaanxi",
+      "coord": [
+        110.33,
+        33.62
+      ],
+      "appear": -403,
+      "focusYear": -206,
+      "align": "r",
+      "rangeZh": "秦岭东段 · 丹江峡谷",
+      "rangeEn": "Eastern Qinling & Dan River Gorge",
+      "chokepointZh": "居秦岭东段少习山峡谷，控丹江水陆通道，与函谷关、萧关、大散关并称“秦之四塞”，为江汉、南阳盆地入关中之南大门。",
+      "chokepointEn": "One of the \"Four Fortresses of Qin\" guarding the Dan River gorge through the eastern Qinling Mountains, linking the Nanyang Basin with Guanzhong."
+    },
+    {
+      "key": "dasanguan",
+      "ancientZh": "大散关",
+      "ancientEn": "Dasan Pass",
+      "modernZh": "陕西宝鸡西南",
+      "modernEn": "Baoji SW, Shaanxi",
+      "coord": [
+        106.95,
+        34.28
+      ],
+      "appear": -403,
+      "focusYear": 228,
+      "align": "l",
+      "rangeZh": "秦岭北麓 · 陈仓故道",
+      "rangeEn": "Qinling North Slope & Chencang Road",
+      "chokepointZh": "扼秦岭北麓清姜河谷与嘉陵江源头，为关中经陈仓道、故道出入汉中与巴蜀之咽喉，“楼船夜雪瓜洲渡，铁马秋风大散关”。",
+      "chokepointEn": "Guards the northern entrance of the Chencang trail across the Qinling Mountains, the strategic hinge between Guanzhong, Hanzhong, and Sichuan."
+    },
+    {
+      "key": "xiaoguan",
+      "ancientZh": "萧关",
+      "ancientEn": "Xiaoguan Pass",
+      "modernZh": "宁夏固原东南",
+      "modernEn": "Guyuan SE, Ningxia",
+      "coord": [
+        106.32,
+        35.85
+      ],
+      "appear": -403,
+      "focusYear": -166,
+      "align": "l",
+      "rangeZh": "六盘山（陇山） · 泾水谷道",
+      "rangeEn": "Liupan Mountains & Jing River Corridor",
+      "chokepointZh": "锁六盘山（古陇山）东麓泾水通道，为关中西北门户；汉文帝时匈奴入朝那萧关、唐宋防御吐蕃与西夏皆以此为要冲。",
+      "chokepointEn": "Controls the Jing River corridor on the eastern flank of the Liupan Mountains, serving as the northwestern shield of Chang’an against steppe incursions."
+    },
+    {
+      "key": "hulaoguan",
+      "ancientZh": "虎牢关",
+      "ancientEn": "Hulao Pass",
+      "modernZh": "河南荥阳汜水",
+      "modernEn": "Xingyang, Henan",
+      "coord": [
+        113.32,
+        34.82
+      ],
+      "appear": -403,
+      "focusYear": 621,
+      "align": "t",
+      "rangeZh": "嵩山北麓 · 黄河汜水交汇",
+      "rangeEn": "Mount Song Foothills & Sishui Gorge",
+      "chokepointZh": "又名汜水关、成皋关，北临黄河，南依嵩山邙岭，绝岸峻崖天然成隘，历为洛阳东境屏障，唐秦王李世民在此一战擒窦建德、降王世充。",
+      "chokepointEn": "Also known as Sishui or Chenggao Pass; wedged between the Yellow River and the Mount Song bluffs as the eastern bulwark of Luoyang."
+    },
+    {
+      "key": "jianmenguan",
+      "ancientZh": "剑门关",
+      "ancientEn": "Jianmen Pass",
+      "modernZh": "四川剑阁",
+      "modernEn": "Jiange, Sichuan",
+      "coord": [
+        105.53,
+        32.21
+      ],
+      "appear": -316,
+      "focusYear": 263,
+      "align": "l",
+      "rangeZh": "大剑山 · 蜀道金牛道",
+      "rangeEn": "Dajian Mountain & Jinniu Shu Road",
+      "chokepointZh": "大剑山七十二峰断崖绝壁相倚如门，诸葛亮在此垒石立剑阁，扼金牛道入蜀咽喉，“剑阁峥嵘而崔嵬，一夫当关，万夫莫开”。",
+      "chokepointEn": "Built by Zhuge Liang in a sheer cliff gap of the Dajian Mountains along the Jinniu Shu Road; the northern lock of the Sichuan Basin."
+    },
+    {
+      "key": "yangpingguan",
+      "ancientZh": "阳平关",
+      "ancientEn": "Yangping Pass",
+      "modernZh": "陕西勉县西",
+      "modernEn": "Mianxian W, Shaanxi",
+      "coord": [
+        106.12,
+        33.11
+      ],
+      "appear": 191,
+      "focusYear": 219,
+      "align": "l",
+      "rangeZh": "秦巴谷地 · 汉水上游",
+      "rangeEn": "Upper Han River & Hanzhong West Gate",
+      "chokepointZh": "北依秦岭，南临汉水与嘉陵江分水岭，与定军山隔江相望，为汉中盆地西大门及蜀汉北伐屯兵要塞。",
+      "chokepointEn": "Guarding the western approach to the Hanzhong Basin opposite Mount Dingjun, linking the upper Han River with the Sichuan passes."
+    },
+    {
+      "key": "yanmenguan",
+      "ancientZh": "雁门关",
+      "ancientEn": "Yanmen Pass",
+      "modernZh": "山西代县北",
+      "modernEn": "Daixian N, Shanxi",
+      "coord": [
+        112.87,
+        39.19
+      ],
+      "appear": -403,
+      "focusYear": -129,
+      "align": "l",
+      "rangeZh": "恒山 · 勾注山脊",
+      "rangeEn": "Mount Heng & Gouzhu Ridge",
+      "chokepointZh": "屹立恒山与吕梁山交汇之勾注山巅，南控晋阳（太原），北瞰塞外云朔草原，自赵武灵王李牧、汉卫青霍去病至宋杨业，历称“九塞尊崇第一关”。",
+      "chokepointEn": "Perched atop the Gouzhu Ridge of the Hengshan range between the Datong steppe basin and Taiyuan; revered as the foremost of China’s Nine Frontier Passes."
+    },
+    {
+      "key": "juyongguan",
+      "ancientZh": "居庸关",
+      "ancientEn": "Juyong Pass",
+      "modernZh": "北京昌平西北",
+      "modernEn": "Changping NW, Beijing",
+      "coord": [
+        116.07,
+        40.29
+      ],
+      "appear": -403,
+      "focusYear": 1449,
+      "align": "l",
+      "rangeZh": "太行军都陉 · 燕山交汇",
+      "rangeEn": "Jundu Gorge, Taihang & Yanshan",
+      "chokepointZh": "居“太行八陉”第八陉军都陉，关沟峡谷长四十里，两山夹峙、巨涧中流，自古为幽燕与北京西北第一天险。",
+      "chokepointEn": "Controls the 20-km Jundu Gorge where the Taihang and Yanshan ranges meet, forming the northwestern bastion of Beijing."
+    },
+    {
+      "key": "zijingguan",
+      "ancientZh": "紫荆关",
+      "ancientEn": "Zijing Pass",
+      "modernZh": "河北易县西北",
+      "modernEn": "Yixian NW, Hebei",
+      "coord": [
+        115.17,
+        39.42
+      ],
+      "appear": -403,
+      "focusYear": 1449,
+      "align": "l",
+      "rangeZh": "太行蒲阴陉 · 拒马河谷",
+      "rangeEn": "Puyin Gorge, Taihang Mountains",
+      "chokepointZh": "居“太行八陉”第七陉蒲阴陉，东达保定与华北平原，西通大同与宣府，与居庸关、倒马关并称明长城“内三关”。",
+      "chokepointEn": "Situated in the Puyin Gorge of the Taihang Mountains; one of the Three Inner Passes protecting the North China Plain from the western plateau."
+    },
+    {
+      "key": "niangziguan",
+      "ancientZh": "娘子关（井陉）",
+      "ancientEn": "Niangzi (Jingxing) Pass",
+      "modernZh": "山西平定·河北井陉",
+      "modernEn": "Pingding / Jingxing",
+      "coord": [
+        113.89,
+        37.97
+      ],
+      "appear": -403,
+      "focusYear": -204,
+      "align": "b",
+      "rangeZh": "太行井陉 · 绵河峡谷",
+      "rangeEn": "Jingxing Gorge, Taihang Mountains",
+      "chokepointZh": "古称苇泽关，扼“太行八陉”第五陉井陉狭道，“车不得方轨，骑不得成列”，韩信背水一战灭赵、唐平阳公主驻兵于此得名。",
+      "chokepointEn": "Commands the narrow Jingxing Gorge through the central Taihang Mountains where Han Xin fought his famous Battle of Jingxing with his back to the river."
+    },
+    {
+      "key": "shanhaiguan",
+      "ancientZh": "山海关（渝关）",
+      "ancientEn": "Shanhai Pass",
+      "modernZh": "河北秦皇岛",
+      "modernEn": "Qinhuangdao, Hebei",
+      "coord": [
+        119.77,
+        40.01
+      ],
+      "appear": 583,
+      "focusYear": 1644,
+      "align": "r",
+      "rangeZh": "燕山东端 · 辽西走廊临海处",
+      "rangeEn": "Mount Yan & Bohai Coastal Corridor",
+      "chokepointZh": "隋开皇三年筑临渝关，明洪武十四年徐达移建山海关，北倚燕山角山，南接渤海老龙头，扼辽西走廊入关唯一通道，号“天下第一关”。",
+      "chokepointEn": "Wedged in the narrow coastal strip between the Yanshan Mountains and the Bohai Sea, guarding the Liaoxi Corridor as the \"First Pass Under Heaven.\""
+    },
+    {
+      "key": "gubeikou",
+      "ancientZh": "古北口",
+      "ancientEn": "Gubeikou Pass",
+      "modernZh": "北京密云东北",
+      "modernEn": "Miyun NE, Beijing",
+      "coord": [
+        117.16,
+        40.69
+      ],
+      "appear": 555,
+      "focusYear": 1368,
+      "align": "r",
+      "rangeZh": "燕山中段 · 潮河峡谷",
+      "rangeEn": "Yanshan Range & Chao River Gorge",
+      "chokepointZh": "潮河劈开燕山蟠龙、卧虎二山形成之天险隘口，东顾山海，西援居庸，为蒙古草原南下直趋幽州之咽喉捷径。",
+      "chokepointEn": "Carved through the Yanshan Mountains by the Chao River; the direct northern mountain gateway between the Mongolian steppe and Beijing."
+    },
+    {
+      "key": "yumenguan",
+      "ancientZh": "玉门关",
+      "ancientEn": "Yumen Pass",
+      "modernZh": "甘肃敦煌西北",
+      "modernEn": "Dunhuang NW, Gansu",
+      "coord": [
+        93.86,
+        40.35
+      ],
+      "appear": -111,
+      "focusYear": -102,
+      "align": "t",
+      "rangeZh": "疏勒河谷 · 西域北道门户",
+      "rangeEn": "Shule River & Northern Silk Road Gate",
+      "chokepointZh": "汉武帝“列四郡、据两关”之一，因西域和田美玉由此输入中原得名，扼河西走廊通往西域北道之咽喉，“春风不度玉门关”。",
+      "chokepointEn": "Established by Emperor Wu of Han at the western end of the Hexi Corridor, controlling the northern Silk Road route toward Hami and Turpan."
+    },
+    {
+      "key": "yangguan",
+      "ancientZh": "阳关",
+      "ancientEn": "Yangguan Pass",
+      "modernZh": "甘肃敦煌西南",
+      "modernEn": "Dunhuang SW, Gansu",
+      "coord": [
+        94.06,
+        39.93
+      ],
+      "appear": -111,
+      "focusYear": 737,
+      "align": "b",
+      "rangeZh": "渥洼池南 · 西域南道门户",
+      "rangeEn": "Southern Silk Road & Lop Nor Gate",
+      "chokepointZh": "因居玉门关之南得名，扼河西走廊通往楼兰、鄯善、于阗之丝路南道门户，“劝君更尽一杯酒，西出阳关无故人”。",
+      "chokepointEn": "Located south of Yumen Pass, guarding the southern Silk Road oasis route toward Loulan, Khotan, and the Pamir Mountains."
+    },
+    {
+      "key": "jiayuguan",
+      "ancientZh": "嘉峪关",
+      "ancientEn": "Jiayuguan Pass",
+      "modernZh": "甘肃嘉峪关",
+      "modernEn": "Jiayuguan, Gansu",
+      "coord": [
+        98.22,
+        39.8
+      ],
+      "appear": 1372,
+      "focusYear": 1372,
+      "align": "t",
+      "rangeZh": "祁连山雪峰 · 黑山峡谷",
+      "rangeEn": "Qilian Snow Peaks & Heishan Narrow",
+      "chokepointZh": "明洪武五年冯胜择河西走廊最窄处（南北仅十五公里）筑关，南倚祁连终年积雪，北连黑山悬壁，为明代万里长城西端起点，号“天下第一雄关”。",
+      "chokepointEn": "Built in 1372 at the narrowest 15-km waist of the Hexi Corridor between the Qilian snow peaks and Black Mountain; the western terminus of the Ming Great Wall."
+    },
+    {
+      "key": "wushengguan",
+      "ancientZh": "武胜关（冥阨）",
+      "ancientEn": "Wusheng (Ming'e) Pass",
+      "modernZh": "河南信阳·湖北广水",
+      "modernEn": "Xinyang / Guangshui",
+      "coord": [
+        114.08,
+        31.81
+      ],
+      "appear": -403,
+      "focusYear": -506,
+      "align": "r",
+      "rangeZh": "大别山 · 桐柏山交界隘口",
+      "rangeEn": "Dabie & Tongbai Mountain Saddle",
+      "chokepointZh": "春秋称大隧、直辕、冥阨（义阳三关），扼淮河上游与江汉平原分水岭最低山口，历为中原南下武汉、荆襄之兵家必争通道。",
+      "chokepointEn": "One of the Three Passes of Yiyang at the saddle between the Tongbai and Dabie mountains, controlling the north-south corridor between the Central Plains and the middle Yangtze."
+    },
+    {
+      "key": "xianxiaguan",
+      "ancientZh": "仙霞关",
+      "ancientEn": "Xianxia Pass",
+      "modernZh": "浙江江山·福建浦城",
+      "modernEn": "Jiangshan, Zhejiang",
+      "coord": [
+        118.52,
+        28.38
+      ],
+      "appear": 878,
+      "focusYear": 878,
+      "align": "l",
+      "rangeZh": "仙霞岭 · 浙闽赣三省交界",
+      "rangeEn": "Xianxia Ridge (Zhejiang-Fujian Border)",
+      "chokepointZh": "唐乾符五年黄巢军自浙入闽刊山开道七百里，始通仙霞古道；崇山峻岭夹峙竹林石级，为钱塘江流域通往建州（福建）之唯一陆路锁钥。",
+      "chokepointEn": "Cut through the Xianxia Mountains by Huang Chao’s army in 878 CE, guarding the mountain trail linking Zhejiang with Fujian."
+    },
+    {
+      "key": "meiguan",
+      "ancientZh": "梅关（大庾岭）",
+      "ancientEn": "Meiguan (Dayu Ridge) Pass",
+      "modernZh": "广东南雄·江西大余",
+      "modernEn": "Nanxiong / Dayu",
+      "coord": [
+        114.34,
+        25.32
+      ],
+      "appear": -214,
+      "focusYear": 716,
+      "align": "r",
+      "rangeZh": "五岭大庾岭 · 赣粤古驿道",
+      "rangeEn": "Dayu Ridge of the Five Ridges",
+      "chokepointZh": "秦置横浦关，唐开元四年张九龄奉诏凿辟大庾岭新路，沟通长江水系章水与珠江水系浈水，成为唐宋明清南北商旅与文人迁谪第一驿道。",
+      "chokepointEn": "Widened across the Dayu Ridge by Chancellor Zhang Jiuling in 716 CE to link the Gan and Pearl river basins across the Five Ridges."
     }
   ]
 };

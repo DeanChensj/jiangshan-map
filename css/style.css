@@ -1011,6 +1011,92 @@ h2 {
   vertical-align: 1px;
 }
 
+/* Strategic Mountain & River Passes (名关雄隘 · 天下锁钥) */
+.settlement-node.is-pass {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+#atlas-svg.is-zoomed-passes .settlement-node.is-pass,
+.settlement-node.is-pass.is-pass-highlighted {
+  opacity: 0.94;
+  pointer-events: auto;
+}
+
+.settlement-node.is-pass .pass-gate-icon {
+  fill: #fdf6ea;
+  stroke: #8c3b22;
+  stroke-width: 1.05;
+  stroke-linejoin: round;
+  transition: fill 0.15s ease, stroke 0.15s ease, transform 0.15s ease;
+}
+
+.settlement-node.is-pass:hover .pass-gate-icon,
+.settlement-node.is-pass.is-pass-highlighted .pass-gate-icon {
+  fill: #b5452f;
+  stroke: #fff9f0;
+}
+
+.settlement-node.is-pass .name.pass-name {
+  font-family: var(--serif-stack);
+  font-size: 7.4px;
+  font-weight: 700;
+  fill: #6e2b17;
+  letter-spacing: 0.04em;
+}
+
+.settlement-node.is-pass.is-label-crowded .name.pass-name {
+  display: none;
+}
+
+.genealogy-list li.pass-lore-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(181, 69, 47, 0.11), rgba(156, 99, 23, 0.08));
+  border: 1px solid rgba(181, 69, 47, 0.3);
+  cursor: default;
+}
+
+.genealogy-list li.pass-lore-banner:hover {
+  background: linear-gradient(135deg, rgba(181, 69, 47, 0.13), rgba(156, 99, 23, 0.1));
+}
+
+.pass-lore-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pass-lore-badge {
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fffaf2;
+  background: #9e3a22;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.pass-lore-range {
+  font-family: var(--serif-stack);
+  font-size: 11.2px;
+  font-weight: 700;
+  color: #6e2b17;
+}
+
+.pass-lore-desc {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-main);
+}
+
 .t-events {
   margin-top: 5px;
   padding: 3px 0 2px 8px;
