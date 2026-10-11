@@ -1850,6 +1850,30 @@
       "en": "Taiping Heavenly Kingdom captures Jiangning and makes it its capital Tianjing"
     },
     {
+      "dynastyKey": "qing",
+      "year": 1861,
+      "coord": [
+        117.06,
+        30.54
+      ],
+      "site": "安庆府",
+      "siteEn": "Anqing",
+      "zh": "安庆之战：曾国荃湘军合围苦战两年攻克太平天国长江上游屏障安庆，陈玉成败退，天京门户洞开",
+      "en": "Siege of Anqing: Zeng Guoquan's Xiang Army captures Anqing after a two-year siege, breaking the western shield of Tianjing"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1864,
+      "coord": [
+        118.78,
+        32.06
+      ],
+      "site": "天京（江宁）",
+      "siteEn": "Tianjing (Nanjing)",
+      "zh": "曾国藩、曾国荃率湘军于龙脖子掘地道轰塌天京城墙，攻陷天京，历时十四年的太平天国运动覆灭",
+      "en": "Xiang Army under Zeng Guofan and Zeng Guoquan breaches the walls of Tianjing (Nanjing), ending the 14-year Taiping Heavenly Kingdom"
+    },
+    {
       "dynastyKey": "roc",
       "year": 1912,
       "coord": [

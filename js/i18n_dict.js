@@ -770,6 +770,10 @@ window.EN_LOCALE = {
       "Convention of Peking cedes Outer Manchuria to Russia",
       "Beijing"
     ],
+    "qing:1864": [
+      "Zeng Guofan and Zeng Guoquan's Xiang Army captures Tianjing (Nanjing), ending the 14-year Taiping Heavenly Kingdom; Russia cedes northwestern Ili–Balkhash via Treaty of Tarbagatai",
+      "Tianjing (Nanjing)"
+    ],
     "qing:1911": [
       "Wuchang Uprising sparks the Xinhai Revolution",
       "Wuchang"
@@ -1961,6 +1965,13 @@ window.EN_LOCALE = {
     "1722 — 1735 · 雍正：平青海、设驻藏大臣、《恰克图条约》": "1722–1735 · Yongzheng: Qinghai Pacified, Amban in Tibet & Treaty of Kyakhta",
     "1735 — 1796 · 乾隆：平准噶尔、定回部，设伊犁将军": "1735–1796 · Qianlong: Conquest of Dzungaria & Altishahr; General of Ili",
     "1796 — 1860 · 嘉庆、道光、咸丰：鸦片战争": "1796–1860 · Mid-Qing & the Opium Wars",
+    "太平天国": "Taiping Heavenly Kingdom",
+    "天京（太平天国）": "Tianjing (Taiping)",
+    "天京（江宁）": "Tianjing (Nanjing)",
+    "1851 — 1858 · 太平天国运动：洪秀全定都天京（南京），与清廷沿江对峙": "1851–1858 · Taiping Rebellion: Hong Xiuquan Establishes Capital at Tianjing (Nanjing)",
+    "1858 — 1860 · 《瑷珲条约》失黑龙江以北：沙俄割占黑龙江以北、外兴安岭以南，乌苏里江以东尚属清廷": "1858–1860 · Treaty of Aigun: Amur North Ceded to Russia; Taiping Standoff Continues",
+    "1860 — 1864 · 《北京条约》失乌苏里江以东；太平天国与湘淮军决战江南（安庆、天京之战）": "1860–1864 · Convention of Peking Cedes Ussuri East; Final Xiang–Taiping Campaigns in Jiangnan",
+    "1864 — 1895 · 太平天国覆灭与同光中兴：湘军攻陷天京，俄割占外西北，1876 左宗棠收复新疆": "1864–1895 · Fall of Taiping & Tongzhi Restoration; Zuo Zongtang Reconquers Xinjiang (1876)",
     "1860 — 1912 · 晚清：外东北、伊犁西境割让": "1860–1912 · Late Qing: Outer Manchuria & Western Ili Ceded",
     "郡": "Commandery (Jun)",
     "州": "Prefecture (Zhou)",
