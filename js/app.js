@@ -965,12 +965,40 @@
     }
 
     // ---------------- Base Layers ----------------
+    _isHydroVisible(item, year) {
+      if (!item) return false;
+      const y = year !== undefined ? year : this.year;
+      if (item.appear !== undefined && y < item.appear) return false;
+      if (item.vanish !== undefined && y >= item.vanish) return false;
+      return true;
+    }
+
+    _hydroMask(year) {
+      if (!this.hydroData) return '';
+      const y = year !== undefined ? year : this.year;
+      const rMask = (this.hydroData.rivers || [])
+        .filter((r) => r.appear !== undefined || r.vanish !== undefined)
+        .map((r) => (this._isHydroVisible(r, y) ? '1' : '0'))
+        .join('');
+      const lMask = (this.hydroData.lakes || [])
+        .filter((l) => l.appear !== undefined || l.vanish !== undefined)
+        .map((l) => (this._isHydroVisible(l, y) ? '1' : '0'))
+        .join('');
+      const tMask = (this.hydroData.labels || [])
+        .filter((t) => t.appear !== undefined || t.vanish !== undefined)
+        .map((t) => (this._isHydroVisible(t, y) ? '1' : '0'))
+        .join('');
+      return `${rMask}:${lMask}:${tMask}`;
+    }
+
     _buildTerrainRivers() {
       if (!this.grpRivers || !this.hydroData) return;
+      this.activeHydroMask = this._hydroMask(this.year);
       this.grpRivers.innerHTML = '';
 
       // 1. Render lakes first (underneath river inflows/outflows)
       for (const lk of this.hydroData.lakes || []) {
+        if (!this._isHydroVisible(lk, this.year)) continue;
         const d = (lk.rings || []).map((r) => this.projector.ringToSvgPath(r)).join('');
         if (!d) continue;
         const lkCls = lk.rank <= 2 ? 'hydro-lake rank-major' : 'hydro-lake';
@@ -979,7 +1007,7 @@
 
       // 2. Render subtle parchment casing under trunk rivers (Yangtze, Yellow, Huai)
       for (const riv of this.hydroData.rivers || []) {
-        if (riv.rank !== 1) continue;
+        if (riv.rank !== 1 || !this._isHydroVisible(riv, this.year)) continue;
         let d = '';
         for (const line of riv.lines || []) {
           for (let i = 0; i < line.length; i++) {
@@ -993,6 +1021,7 @@
 
       // 3. Render river strokes by rank hierarchy
       for (const riv of this.hydroData.rivers || []) {
+        if (!this._isHydroVisible(riv, this.year)) continue;
         let d = '';
         for (const line of riv.lines || []) {
           for (let i = 0; i < line.length; i++) {
@@ -1018,7 +1047,7 @@
 
       // 4. Render classical & bilingual water captions
       for (const lb of this.hydroData.labels || []) {
-        if (!lb.coord) continue;
+        if (!lb.coord || !this._isHydroVisible(lb, this.year)) continue;
         const [lx, ly] = this.projector.toScreen(lb.coord[0], lb.coord[1]);
         const kindCls =
           lb.kind === 'trunk'
@@ -2033,13 +2062,14 @@
         const cityShift =
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
-        const isMapChange = snapShift || cityShift || corrShift;
+        const hydroShift = this._hydroMask(targetY) !== this._hydroMask(prevY);
+        const isMapChange = snapShift || cityShift || corrShift || hydroShift;
         const yrLabel =
           this.locale === 'en'
             ? this.formatYear(m.year)
             : `${m.year <= 0 ? '前' + -m.year : m.year} 年`;
         const badge = isMapChange
-          ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory / layer changes at this year' : '此节点触发版图或城池/路线变化'}">${SVG_ICONS.mapChange}</span>`
+          ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory, city, or river course changes at this year' : '此节点触发版图、城池或河道水系变化'}">${SVG_ICONS.mapChange}</span>`
           : '';
         const jKey = this._journeyKeyForMilestone(dynasty, m);
         const jBtnHtml = jKey
@@ -2784,6 +2814,10 @@
         }
         this._highlightCurrentMilestone(cur);
         this._updateMilestoneStates(cur);
+      }
+      if (this._hydroMask(y) !== this.activeHydroMask) {
+        this._buildTerrainRivers();
+        this._rescaleSvgTypography();
       }
       if (this.activeMilestone && this.activeMilestone.year !== y) {
         this.closeMilestoneBalloon();

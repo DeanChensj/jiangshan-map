@@ -1517,6 +1517,26 @@ window.EN_LOCALE = {
     "qing:1813": [
       "Guiyou Incident: Eight Trigrams rebels under Lin Qing storm the Forbidden City to Longzong Gate; Prince Mianning repels attackers with a musket",
       "Forbidden City, Beijing"
+    ],
+    "xihan:11": [
+      "Yellow River breaches at Weijun (Yuancheng), ending the ancient northern course and flooding the eastern plains for sixty years",
+      "Weijun (Daming)"
+    ],
+    "donghan:69": [
+      "Wang Jing harnesses the Yellow River with a 500-km levee system from Xingyang to Qiancheng, stabilizing its course for nearly a millennium",
+      "Xingyang · Qiancheng"
+    ],
+    "beisong:1048": [
+      "Yellow River breaches at Shanghu in Chanzhou, shifting sharply north toward Tianjin and ending the 1,000-year Wang Jing course",
+      "Chanzhou (Puyang)"
+    ],
+    "nansong:1194": [
+      "Yellow River breaches at Yangwu and captures the Si and Huai rivers into the Yellow Sea, reshaping the Jianghuai plain and forming Hongze Lake",
+      "Yangwu · Xuzhou · Huai'an"
+    ],
+    "qing:1855": [
+      "Yellow River breaches at Tongwaxiang (Lanyang), abandoning the Huai course to capture the Daqing River into Bohai Sea along its modern path",
+      "Tongwaxiang (Lankao)"
     ]
   },
   "corridors": {
@@ -3054,7 +3074,7 @@ window.EN_LOCALE = {
     "冈州": "Gang Zhou",
     "玉州": "Yu Zhou",
     "邳州": "Pi Zhou",
-    "熙州": "Xi Zhou",
+    "熙州": "Xizhou",
     "箕州": "Qi Zhou",
     "岚州": "Lan Zhou",
     "沔州": "Mian Zhou",
@@ -4221,10 +4241,13 @@ window.EN_LOCALE = {
     "齐东重镇 · 田单火牛阵复国之地": "Eastern Qi stronghold · Where Tian Dan launched his Fire-Oxen counterattack",
     "1072 — 1103 · 王韶熙河开边：收复熙、河、洮、岷、叠、宕六州，新置熙河路": "1072–1103 · Wang Shao’s Xihe Campaign: Song Recovers Six Prefectures and Establishes Xihe Circuit",
     "1104 — 1114 · 河湟开边：王厚、童贯收复青唐吐蕃故地，置西宁州与陇右都护府": "1104–1114 · Hehuang Campaign: Wang Hou & Tong Guan Recover Qingtang and Establish Xining Prefecture",
-    "熙州": "Xizhou",
-    "定西·临洮": "Dingxi · Lintao",
     "熙河路治所，王韶开边置": "Seat of Xihe Circuit established by Wang Shao",
     "西宁州（青唐）": "Xining (Qingtang)",
-    "故青唐城，1104 年收复置陇右都护府": "Former Qingtang City; recovered in 1104 CE as Xining Prefecture"
+    "故青唐城，1104 年收复置陇右都护府": "Former Qingtang City; recovered in 1104 CE as Xining Prefecture",
+    "魏郡元城（大名东）": "Weijun (Daming)",
+    "滎阳 · 千乘": "Xingyang · Qiancheng",
+    "澶州商胡埽（濮阳）": "Chanzhou (Puyang)",
+    "阳武 · 徐州 · 淮安": "Yangwu · Xuzhou · Huai'an",
+    "兰阳铜瓦厢（兰考）": "Tongwaxiang (Lankao)"
   }
 };
