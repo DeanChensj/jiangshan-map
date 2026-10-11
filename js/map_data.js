@@ -239,6 +239,7 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
+        "align": "t",
         "vanish": -256,
         "remark": "东周王室都城"
       },
@@ -272,6 +273,7 @@ window.DYNASTY_DATA = [
           34.401
         ],
         "isCapital": true,
+        "align": "b",
         "vanish": -230,
         "remark": "韩国都城（前375灭郑迁此）"
       },
@@ -356,6 +358,7 @@ window.DYNASTY_DATA = [
           113.471,
           34.211
         ],
+        "tier": 2,
         "align": "l",
         "remark": "韩国初都 · 后为颍川郡治"
       },
@@ -4415,6 +4418,7 @@ window.DYNASTY_DATA = [
           112.451,
           34.621
         ],
+        "align": "l",
         "remark": "后唐都城"
       },
       {

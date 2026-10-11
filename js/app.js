@@ -263,8 +263,13 @@
       this.challengeVariant = 'locate';
       this.paneCollapsed = false;
       this.ghostTimer = null;
-      this.hasSeenTraceHint = false;
-      this.hasSeenJourneyHint = false;
+      try {
+        this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
+        this.hasSeenJourneyHint = localStorage.getItem('jiangshan_seen_journey_hint') === '1';
+      } catch (_) {
+        this.hasSeenTraceHint = false;
+        this.hasSeenJourneyHint = false;
+      }
 
       this.camera = this._getDefaultCamera();
       this.flyRaf = null;
@@ -273,6 +278,10 @@
       this.snapshotCache = {};
 
       this._bindDom();
+      if (this.hasSeenJourneyHint) {
+        const dot = this._id('journey-onboarding-dot');
+        if (dot) dot.classList.add('is-hidden');
+      }
       this._applyCamera();
       this._buildTerrainRivers();
       this._buildModernProvinces();
@@ -283,11 +292,15 @@
 
       this.jumpToYear(this.dynasties[0].focusYear);
       this._restoreFromQuery();
+      this._bootDone = true;
     }
 
     _dismissTraceOnboarding() {
       if (this.hasSeenTraceHint) return;
       this.hasSeenTraceHint = true;
+      try {
+        localStorage.setItem('jiangshan_seen_trace_hint', '1');
+      } catch (_) {}
       if (this.svg) {
         this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
         this.svg
@@ -299,6 +312,9 @@
     _dismissJourneyOnboarding() {
       if (this.hasSeenJourneyHint) return;
       this.hasSeenJourneyHint = true;
+      try {
+        localStorage.setItem('jiangshan_seen_journey_hint', '1');
+      } catch (_) {}
       const dot = this._id('journey-onboarding-dot');
       if (dot) dot.classList.add('is-hidden');
     }
@@ -1139,6 +1155,9 @@
         nameEl.textContent = this.trTerm(item.ancient);
 
         if (isHintCap) {
+          try {
+            localStorage.setItem('jiangshan_seen_trace_hint', '1');
+          } catch (_) {}
           const tagG = this._svgNode(
             'g',
             { class: 'cap-hint-tag', transform: 'translate(0, 15.2)' },
@@ -2649,6 +2668,7 @@
     }
 
     jumpToYear(targetYear) {
+      if (this._bootDone) this._dismissTraceOnboarding();
       let y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(targetYear)));
       if (y === 0) y = this.year < 0 ? 1 : -1;
       const prevIdx = this.dynastyIdx;
@@ -3224,14 +3244,30 @@
       );
       const polOffsets = [
         [0, 0],
-        [-24, -18],
-        [0, -24],
-        [-30, 0],
-        [30, 0],
-        [24, -18],
-        [-24, 18],
-        [24, 18],
-        [0, 24],
+        [0, 12],
+        [0, -12],
+        [-14, 0],
+        [14, 0],
+        [-12, 10],
+        [12, 10],
+        [-12, -10],
+        [12, -10],
+        [0, -16],
+        [0, 16],
+        [-22, 0],
+        [22, 0],
+        [-20, -15],
+        [20, -15],
+        [-20, 15],
+        [20, 15],
+        [-28, -20],
+        [0, -26],
+        [-34, 0],
+        [34, 0],
+        [28, -20],
+        [-28, 20],
+        [28, 20],
+        [0, 26],
         [-44, -28],
         [-48, 0],
         [0, -42],
@@ -3249,25 +3285,23 @@
       ];
 
       for (const node of polNodes) {
-        const base = node.classList.contains('neighbor')
-          ? 9
+        const cssFontPx = node.classList.contains('neighbor')
+          ? 11.5
           : node.classList.contains('protectorate')
-            ? 10
+            ? 12
             : node.classList.contains('rival')
-              ? 12
-              : 14;
-        const fSize = base + (base > 10 ? 10 : 3) / z;
-        node.setAttribute('font-size', fSize.toFixed(1));
+              ? 15
+              : 19;
 
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
         const ls = node.classList.contains('neighbor')
-          ? 1.6
+          ? 1.2
           : node.classList.contains('protectorate')
-            ? 2.0
-            : 3.0;
-        const hw = (this._estimateLocalTextWidth(node.textContent, fSize, ls) * 0.5 + 4) * s;
-        const hh = (fSize * 0.58 + 3) * s;
+            ? 1.4
+            : 3.2;
+        const hw = (this._estimateLocalTextWidth(node.textContent, cssFontPx, ls) * 0.5 + 5) * s;
+        const hh = (cssFontPx * 0.56 + 3.5) * s;
 
         let bestX = baseX;
         let bestY = baseY;
@@ -3276,8 +3310,8 @@
 
         for (let i = 0; i < polOffsets.length; i++) {
           const [ox, oy] = polOffsets[i];
-          const cx = baseX + ox;
-          const cy = baseY + oy;
+          const cx = baseX + ox * s;
+          const cy = baseY + oy * s;
           if ((ox !== 0 || oy !== 0) && node._polShape) {
             const [lngC, latC] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
@@ -3298,6 +3332,25 @@
             bestY = cy;
             bestBox = candBox;
             if (ov < 0.05) break;
+          }
+        }
+
+        // Fallback for very small or narrow polities (e.g., 周, 韩) where strict interior bounds
+        // prevented dodging a co-located capital city label
+        if (bestScore > 1.0) {
+          for (let i = 1; i < Math.min(18, polOffsets.length); i++) {
+            const [ox, oy] = polOffsets[i];
+            const cx = baseX + ox * s;
+            const cy = baseY + oy * s;
+            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002;
+            if (ov < bestScore) {
+              bestScore = ov;
+              bestX = cx;
+              bestY = cy;
+              bestBox = candBox;
+              if (ov < 0.1) break;
+            }
           }
         }
 
