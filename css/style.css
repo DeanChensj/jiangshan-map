@@ -407,33 +407,84 @@ h2 {
 }
 
 .hydro-lake {
-  fill: rgba(138, 168, 182, 0.55);
-  stroke: rgba(102, 136, 152, 0.68);
-  stroke-width: 0.55;
+  fill: rgba(96, 158, 188, 0.62);
+  stroke: rgba(44, 108, 138, 0.78);
+  stroke-width: 0.65;
   vector-effect: non-scaling-stroke;
 }
 
-.hydro-river {
+.hydro-lake.rank-major {
+  fill: rgba(82, 150, 184, 0.72);
+  stroke: rgba(34, 98, 130, 0.88);
+  stroke-width: 0.8;
+}
+
+.hydro-river-casing {
   fill: none;
-  stroke: rgba(104, 142, 158, 0.62);
+  stroke: rgba(246, 239, 225, 0.48);
+  stroke-width: 2.9;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
+.hydro-river {
+  fill: none;
+  stroke: rgba(68, 128, 156, 0.68);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.hydro-river.rank-trunk {
+  stroke: rgba(36, 102, 136, 0.9);
+  stroke-width: 1.75;
+}
+
 .hydro-river.rank-major {
-  stroke: rgba(92, 132, 150, 0.78);
-  stroke-width: 1.35;
+  stroke: rgba(48, 114, 146, 0.82);
+  stroke-width: 1.25;
 }
 
 .hydro-river.rank-med {
-  stroke: rgba(106, 142, 158, 0.6);
+  stroke: rgba(66, 128, 158, 0.68);
   stroke-width: 0.9;
 }
 
 .hydro-river.rank-minor {
-  stroke: rgba(118, 152, 166, 0.44);
-  stroke-width: 0.6;
+  stroke: rgba(94, 144, 168, 0.44);
+  stroke-width: 0.58;
+}
+
+.hydro-label {
+  font-family: var(--serif-stack);
+  font-style: italic;
+  fill: rgba(30, 88, 120, 0.86);
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: 0.14em;
+  pointer-events: none;
+  filter: url(#label-halo);
+}
+
+.hydro-label.is-trunk {
+  font-size: 7.6px;
+  font-weight: 600;
+  fill: rgba(24, 80, 112, 0.92);
+}
+
+.hydro-label.is-river {
+  font-size: 6.4px;
+  font-weight: 600;
+  fill: rgba(34, 92, 124, 0.82);
+}
+
+.hydro-label.is-lake {
+  font-size: 6.2px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  fill: rgba(26, 84, 116, 0.88);
 }
 
 /* Map SVG Layers */
@@ -1344,7 +1395,10 @@ h2 {
   transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
-#gesture-guide.is-dismissed {
+#gesture-guide.is-dismissed,
+#viewport-frame.has-active-genealogy #gesture-guide,
+#viewport-frame.has-active-journey #gesture-guide,
+#viewport-frame.has-active-challenge #gesture-guide {
   opacity: 0;
   transform: translateY(-4px);
 }
@@ -2390,12 +2444,13 @@ html[lang="en"] .genealogy-list li {
 }
 
 #workspace-body.is-pane-collapsed {
-  grid-template-columns: 1fr 0px;
+  grid-template-columns: minmax(0, 1fr) 0px;
 }
 
 #workspace-body.is-pane-collapsed #chronicle-pane {
-  padding-left: 0;
-  padding-right: 0;
+  min-width: 0;
+  width: 0;
+  padding: 0;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;

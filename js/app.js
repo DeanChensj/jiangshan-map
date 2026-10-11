@@ -849,6 +849,12 @@
       this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
       });
+      if (this.grpRivers) {
+        this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
+          node.textContent =
+            this.locale === 'en' ? node.dataset.en || '' : node.dataset.zh || '';
+        });
+      }
 
       this._refreshBandLabels();
       this._updateScaleBar();
@@ -885,6 +891,30 @@
     _buildTerrainRivers() {
       if (!this.grpRivers || !this.hydroData) return;
       this.grpRivers.innerHTML = '';
+
+      // 1. Render lakes first (underneath river inflows/outflows)
+      for (const lk of this.hydroData.lakes || []) {
+        const d = (lk.rings || []).map((r) => this.projector.ringToSvgPath(r)).join('');
+        if (!d) continue;
+        const lkCls = lk.rank <= 2 ? 'hydro-lake rank-major' : 'hydro-lake';
+        this._svgNode('path', { d, class: lkCls }, this.grpRivers);
+      }
+
+      // 2. Render subtle parchment casing under trunk rivers (Yangtze, Yellow, Huai)
+      for (const riv of this.hydroData.rivers || []) {
+        if (riv.rank !== 1) continue;
+        let d = '';
+        for (const line of riv.lines || []) {
+          for (let i = 0; i < line.length; i++) {
+            const [px, py] = this.projector.toScreen(line[i][0], line[i][1]);
+            d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1);
+          }
+        }
+        if (!d) continue;
+        this._svgNode('path', { d, class: 'hydro-river-casing' }, this.grpRivers);
+      }
+
+      // 3. Render river strokes by rank hierarchy
       for (const riv of this.hydroData.rivers || []) {
         let d = '';
         for (const line of riv.lines || []) {
@@ -895,17 +925,45 @@
         }
         if (!d) continue;
         const rankCls =
-          riv.rank <= 3 ? 'rank-major' : riv.rank <= 5 ? 'rank-med' : 'rank-minor';
+          riv.rank === 1
+            ? 'rank-trunk'
+            : riv.rank === 2
+              ? 'rank-major'
+              : riv.rank <= 4
+                ? 'rank-med'
+                : 'rank-minor';
         this._svgNode(
           'path',
           { d, class: `hydro-river ${rankCls}` },
           this.grpRivers
         );
       }
-      for (const lk of this.hydroData.lakes || []) {
-        const d = (lk.rings || []).map((r) => this.projector.ringToSvgPath(r)).join('');
-        if (!d) continue;
-        this._svgNode('path', { d, class: 'hydro-lake' }, this.grpRivers);
+
+      // 4. Render classical & bilingual water captions
+      for (const lb of this.hydroData.labels || []) {
+        if (!lb.coord) continue;
+        const [lx, ly] = this.projector.toScreen(lb.coord[0], lb.coord[1]);
+        const kindCls =
+          lb.kind === 'trunk'
+            ? 'is-trunk'
+            : lb.kind === 'lake'
+              ? 'is-lake'
+              : 'is-river';
+        const rot = lb.rot || 0;
+        const tNode = this._svgNode(
+          'text',
+          {
+            class: `hydro-label ${kindCls}`,
+            'data-x': lx.toFixed(1),
+            'data-y': ly.toFixed(1),
+            'data-rot': String(rot),
+            'data-zh': lb.zh || '',
+            'data-en': lb.en || '',
+            transform: `translate(${lx.toFixed(1)},${ly.toFixed(1)}) rotate(${rot})`,
+          },
+          this.grpRivers
+        );
+        tNode.textContent = this.locale === 'en' ? lb.en || '' : lb.zh || '';
       }
     }
 
@@ -3154,6 +3212,19 @@
             node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
           }
         });
+      if (this.grpRivers) {
+        this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
+          const x = node.getAttribute('data-x');
+          const y = node.getAttribute('data-y');
+          const rot = node.getAttribute('data-rot') || '0';
+          if (x !== null) {
+            node.setAttribute(
+              'transform',
+              `translate(${x},${y}) scale(${invScale}) rotate(${rot})`
+            );
+          }
+        });
+      }
       if (this.grpJourney && this.grpJourney.firstChild) {
         this.grpJourney.querySelectorAll('path[data-base-sw]').forEach((p) => {
           const baseSw = parseFloat(p.getAttribute('data-base-sw') || '3');
@@ -7147,13 +7218,17 @@
         }
       }
       if (q.has('quiz')) {
+        this._paneAutoCollapsed = true;
+        this.toggleChroniclePane(true);
         const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
-        setTimeout(() => this.startChallenge(mode), 350);
+        setTimeout(() => this.startChallenge(mode), 120);
       }
       if (q.has('journey')) {
+        this._paneAutoCollapsed = true;
+        this.toggleChroniclePane(true);
         const jKey = q.get('journey');
         const stopIdx = q.has('stop') ? Number(q.get('stop')) : 0;
-        setTimeout(() => this.startJourney(jKey, Number.isNaN(stopIdx) ? 0 : stopIdx), 200);
+        setTimeout(() => this.startJourney(jKey, Number.isNaN(stopIdx) ? 0 : stopIdx), 120);
       }
       if (q.has('layers')) {
         setTimeout(() => {
