@@ -3412,3 +3412,229 @@ html[lang="en"] .genealogy-list li {
   color: var(--text-secondary);
   line-height: 1.3;
 }
+
+/* =========================================================================
+   Mobile Cartographic Legibility & Stroke Hierarchy (<= 900px & <= 640px)
+   ========================================================================= */
+@media (max-width: 900px) {
+  :root {
+    --text-main: #1e1915;
+    --text-secondary: #433b33;
+    --text-muted: #665d53;
+  }
+
+  /* 1. Soften shaded relief mid-tone darkness so mountain textures don't swallow text */
+  #terrain-relief-img {
+    opacity: 0.54;
+  }
+
+  /* 2. Deepen ink contrast & apply vector-crisp xuan-paper stroke halo */
+  .settlement-node .name {
+    font-size: 9.4px;
+    font-weight: 700;
+    fill: #16120e;
+    paint-order: stroke fill;
+    stroke: rgba(249, 244, 234, 0.95);
+    stroke-width: 2.3px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: none;
+  }
+
+  .settlement-node.is-capital .name {
+    font-size: 10.6px;
+    font-weight: 700;
+    fill: #6e1508;
+    paint-order: stroke fill;
+    stroke: rgba(251, 246, 236, 0.96);
+    stroke-width: 2.6px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: none;
+  }
+
+  .settlement-node.is-tier2 .name {
+    font-size: 8.5px;
+    font-weight: 600;
+    fill: #241e18;
+    paint-order: stroke fill;
+    stroke: rgba(249, 244, 234, 0.92);
+    stroke-width: 2.1px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: none;
+  }
+
+  .region-caption {
+    font-size: 9.4px;
+    font-weight: 700;
+    fill: #4e2010;
+    fill-opacity: 0.95;
+    paint-order: stroke fill;
+    stroke: rgba(248, 243, 232, 0.92);
+    stroke-width: 2.3px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: none;
+  }
+
+  .polity-caption {
+    fill: #18130f;
+    fill-opacity: 0.94;
+    paint-order: stroke fill;
+    stroke: rgba(248, 243, 232, 0.92);
+    stroke-width: 3.1px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: none;
+  }
+
+  .polity-caption.neighbor {
+    fill: #3d352d;
+    fill-opacity: 0.9;
+    stroke-width: 2.3px;
+  }
+
+  .neighbor-caption {
+    fill: #665c50;
+    font-weight: 600;
+    paint-order: stroke fill;
+    stroke: rgba(246, 240, 228, 0.86);
+    stroke-width: 2px;
+    stroke-linejoin: round;
+  }
+
+  .corridor-caption {
+    fill: #432e18;
+    font-weight: 700;
+    paint-order: stroke fill;
+    stroke: rgba(248, 243, 232, 0.92);
+    stroke-width: 2.2px;
+    stroke-linejoin: round;
+    filter: none;
+  }
+
+  .corridor-caption.canal {
+    fill: #0f4456;
+  }
+
+  .hydro-label {
+    paint-order: stroke fill;
+    stroke: rgba(246, 240, 228, 0.9);
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    filter: none;
+  }
+
+  .hydro-label.is-trunk {
+    font-size: 8px;
+    fill: rgba(14, 66, 96, 0.96);
+  }
+
+  .hydro-label.is-river,
+  .hydro-label.is-lake {
+    font-size: 6.8px;
+    fill: rgba(20, 74, 106, 0.9);
+  }
+
+  /* 3. Progressive disclosure for 300+ secondary prefecture mesh on mobile */
+  #atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-shape:not(:hover):not(.is-hovered) {
+    stroke: rgba(43, 38, 34, 0.08);
+    stroke-width: 0.3;
+  }
+
+  #atlas-svg.is-mobile-zoomed-detail .prefecture-shape:not(:hover):not(.is-hovered) {
+    stroke: rgba(43, 38, 34, 0.2);
+    stroke-width: 0.42;
+  }
+}
+
+@media (max-width: 640px) {
+  #terrain-relief-img {
+    opacity: 0.48;
+  }
+
+  /* Slim down non-scaling border & corridor strokes by ~38% so lines don't overpower text */
+  .polity-shape,
+  #atlas-svg.terrain-active .polity-shape {
+    stroke-width: 1.18;
+    stroke-opacity: 0.86;
+  }
+
+  .polity-shape.rival,
+  #atlas-svg.terrain-active .polity-shape.rival {
+    stroke-width: 0.95;
+    stroke-opacity: 0.84;
+  }
+
+  .polity-shape.protectorate,
+  #atlas-svg.terrain-active .polity-shape.protectorate {
+    stroke-width: 0.85;
+    stroke-dasharray: 4 2.5;
+  }
+
+  .polity-shape.neighbor,
+  #atlas-svg.terrain-active .polity-shape.neighbor {
+    stroke-width: 0.68;
+    stroke-dasharray: 2.5 2.5;
+    fill-opacity: 0.3;
+  }
+
+  .region-shape {
+    stroke: rgba(105, 58, 38, 0.3);
+    stroke-width: 0.55;
+    stroke-dasharray: 3.5 2.5;
+  }
+
+  .province-shape,
+  #atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
+    stroke: rgba(154, 139, 120, 0.22);
+    stroke-width: 0.42;
+  }
+
+  .neighbor-shape,
+  #atlas-svg.terrain-active .neighbor-shape {
+    stroke: rgba(164, 148, 128, 0.26);
+    stroke-width: 0.38;
+  }
+
+  .corridor-line.wall {
+    stroke-width: 1.45;
+    stroke-dasharray: 4 2;
+  }
+
+  .corridor-line.canal {
+    stroke-width: 1.35;
+    stroke-dasharray: 5 2.5;
+  }
+
+  .corridor-line.silk,
+  .corridor-line.road,
+  .corridor-line.sea {
+    stroke-width: 1.1;
+  }
+
+  .hydro-river-casing {
+    stroke-width: 1.85;
+  }
+
+  .hydro-river.rank-trunk {
+    stroke-width: 1.22;
+  }
+
+  .hydro-river.rank-major {
+    stroke-width: 0.88;
+  }
+
+  .hydro-river.rank-med {
+    stroke-width: 0.62;
+  }
+
+  /* Boost UI surface contrast on mobile chrome */
+  #nav-bar,
+  #scrubber-dock,
+  #chronicle-pane {
+    background: rgba(243, 238, 228, 0.96);
+  }
+}
+

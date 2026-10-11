@@ -1510,6 +1510,9 @@
           nameEl.textContent = this.locale === 'en' ? p.ancientEn : p.ancientZh;
         }
       }
+      group.querySelectorAll('.settlement-node.is-capital').forEach((capNode) => {
+        group.appendChild(capNode);
+      });
       this._rescaleSvgTypography();
     }
 
@@ -2841,6 +2844,8 @@
     _fitBandLabels() {
       const cells = this._id('dynasty-bands').children;
       const tickNodes = this._id('scrubber-ticks').children;
+      const endTick = this._id('tick-present');
+      const maxRight = endTick ? endTick.getBoundingClientRect().left - 4 : Infinity;
       let lastRight = -Infinity;
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
@@ -2853,7 +2858,7 @@
         const tk = tickNodes[i];
         if (tk) {
           const rect = tk.getBoundingClientRect();
-          const hide = rect.left < lastRight + 6;
+          const hide = rect.left < lastRight + 6 || rect.right > maxRight;
           tk.classList.toggle('is-hidden-tick', hide);
           if (!hide) lastRight = rect.right;
         }
@@ -3305,20 +3310,25 @@
     }
 
     _rescaleSvgTypography() {
+      const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
       this._lastTypographyWidth = this.camera.w;
+      this._lastViewportWidth = vw;
       this._typoDirty = false;
       const z = 1000 / this.camera.w;
-      const s = 1 / Math.sqrt(z);
+      const isNarrowMobile = vw <= 640;
+      const isMobile = vw <= 900;
+      const mobileTypoBoost = isNarrowMobile ? 1.46 : isMobile ? 1.22 : 1.0;
+      const s = (1 / Math.sqrt(z)) * mobileTypoBoost;
       const invScale = s.toFixed(3);
-      const tier2MinZoom =
-        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
+      const tier2MinZoom = isMobile ? 3.45 : 2.55;
       const showTier2 = z >= tier2MinZoom;
-      const passMinZoom =
-        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.18 : 2.28;
+      const passMinZoom = isMobile ? 3.25 : 2.28;
       const showPasses = z >= passMinZoom;
+      const showMobilePrefDetail = !isMobile || z >= 3.55;
       const showCorridors = !this.grpCorridors.classList.contains('is-hidden');
       this.svg.classList.toggle('is-zoomed-cities', showTier2);
       this.svg.classList.toggle('is-zoomed-passes', showPasses);
+      this.svg.classList.toggle('is-mobile-zoomed-detail', showMobilePrefDetail);
       this.svg.classList.toggle('is-corridors-hidden', !showCorridors);
 
       const showSettlements = !this.grpSettlements.classList.contains('is-hidden');
@@ -3416,7 +3426,7 @@
         });
       }
 
-      const layoutSettlementLabel = (node, allowCull) => {
+      const layoutSettlementLabel = (node, allowCull, maxOverlapRatio = 0.14) => {
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
         node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
@@ -3432,10 +3442,10 @@
         const hasHintTag = node.classList.contains('has-trace-hint');
         if (hasHintTag) {
           occupied.push({
-            x1: cx - 60 * s,
-            y1: cy + 7.5 * s,
-            x2: cx + 60 * s,
-            y2: cy + 24 * s,
+            x1: cx - 64 * s,
+            y1: cy + 6 * s,
+            x2: cx + 64 * s,
+            y2: cy + 28 * s,
           });
         }
         const pref = node.dataset.prefAlign || 'r';
@@ -3510,7 +3520,7 @@
         }
 
         const boxArea = Math.max(1, (best.box.x2 - best.box.x1) * (best.box.y2 - best.box.y1));
-        if (allowCull && bestOverlap > boxArea * 0.14) {
+        if (allowCull && bestOverlap > boxArea * maxOverlapRatio) {
           node.classList.add('is-label-crowded');
           return;
         }
@@ -3521,7 +3531,7 @@
         occupied.push(best.box);
       };
 
-      // Tier 1: Capitals first, then Tier-1 primary cities (never culled, always protected)
+      // Tier 1: Capitals first (never culled), then Tier-1 primary cities (gently culled on narrow mobile overview if unavoidable)
       for (const node of settlementNodes) {
         if (node.classList.contains('is-capital')) layoutSettlementLabel(node, false);
       }
@@ -3531,7 +3541,7 @@
           !node.classList.contains('is-tier2') &&
           !node.classList.contains('is-pass')
         ) {
-          layoutSettlementLabel(node, false);
+          layoutSettlementLabel(node, isNarrowMobile && z < 3.4, 0.26);
         }
       }
 
@@ -3539,7 +3549,7 @@
       for (const node of settlementNodes) {
         if (node.classList.contains('is-pass')) {
           if (showCorridors && (showPasses || node.classList.contains('is-pass-trace'))) {
-            layoutSettlementLabel(node, false);
+            layoutSettlementLabel(node, !node.classList.contains('is-pass-trace'), 0.14);
           } else {
             const cx = parseFloat(node.getAttribute('data-x'));
             const cy = parseFloat(node.getAttribute('data-y'));
@@ -3793,7 +3803,7 @@
       });
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-        node.setAttribute('font-size', (9.5 / Math.sqrt(z)).toFixed(1));
+        node.setAttribute('font-size', (9.5 * s).toFixed(1));
       });
     }
 
@@ -5822,6 +5832,14 @@
       frame.addEventListener('pointerleave', (e) => {
         if (e.pointerType === 'touch') return;
         this.hoverTip.classList.add('is-hidden');
+      });
+
+      window.addEventListener('resize', () => {
+        const vw = window.innerWidth;
+        if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
+          this._rescaleSvgTypography();
+        }
+        this._updateScaleBar();
       });
     }
 
