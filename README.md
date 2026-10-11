@@ -53,11 +53,11 @@
 
 - **同屏看多政权对峙**：从战国七雄（秦、楚、齐、燕、赵、魏、韩）与周、越、巴蜀、中山并立，到匈奴、突厥、吐蕃、回鹘，再到宋、辽、西夏、大理、金、蒙古，都以各自鲜明的设色同屏呈现。鼠标移到左下角图例的政权名字上，对应政权立刻高亮；点一下直接聚焦过去。
 - **疆域盈亏「虚线残影」**：同一个朝代内部也有多次疆域伸缩（比如战国 9 个阶段、北宋 11 个阶段、唐朝 12 个阶段）。点左下角图例的阶段小圆点或时间轴右侧的 `‹ / ›` 步进按钮，图面会浮现上一阶段的朱砂虚线残影，哪块地是新开辟的、哪块地丢了，一眼看穿。
-- **300+ 历史州府悬停即查**：放大地图，鼠标指到任意州郡（如北宋的「黄州」、三国的「荆州」），自动高亮州界，并告诉你它属于哪个政权、对应今天的哪个省。
+- **300+ 历史州府悬停即查**：放大地图，鼠标指到任意州郡（如明代的「应天府」「顺天府」、三国的「荆州」），自动高亮州界，并告诉你它属于哪个政权、对应今天的哪个省。
 
-> [点击直达：北宋元丰六年（1083 年）· 宋辽夏三足鼎立与「黄州」州境探查 →](https://deanchensj.github.io/jiangshan-map/?year=1083&zoom=1.85&center=113.5,31.2&hover=%E9%BB%84%E5%B7%9E)
+> [点击直达：大明永乐十三年（1415 年）· 两京十三布政使司与「应天府」府境探查 →](https://deanchensj.github.io/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C)
 
-![北宋 1083 年 · 黄州政区悬停预览](assets/preview_1083_huangzhou.png)
+![明永乐十三年（1415 年）· 应天府政区悬停预览](assets/preview_1415_ming_yingtian.png)
 
 ---
 
@@ -76,12 +76,12 @@
 ### 玩法五：舆图寻址挑战 —— 测测你在古代能当几品官？
 
 觉得自己历史地理很熟？点右上角的 **「开始挑战」** 试试身手：
-- **当朝掌故线索 + 舆图盲猜扎针**：地图隐去所有城池标注，题目给出「南宋时期的泉州」「六朝古都建康」或「元代的奉元路」，并附上**当朝掌故与史事线索**（不剧透现代城市名），凭你的山河水系直觉在舆图上扎针（手机端支持「先落针微调、再确认作答」防误触），系统按你的落点与真实古城的球面距离打分！
+- **当朝掌故线索 + 舆图盲猜扎针**：地图隐去所有城池标注，题目给出「西汉时期的武威（凉州）」「南宋时期的泉州」或「六朝古都建康」，并附上**当朝掌故与史事线索**（不剧透现代城市名），凭你的山河水系直觉在舆图上扎针（手机端支持「先落针微调、再确认作答」防误触），系统按你的落点与真实古城的球面距离打分！
 - 十道题答完，系统会根据总分授予你 **「太史令 · 舆图大家」「职方郎中」「州郡从事」** 等传统官阶封号。
 
-> [点击直达：开启「舆图寻址」挑战模式 →](https://deanchensj.github.io/jiangshan-map/?year=741&quiz=locate)
+> [点击直达：西汉武帝元狩二年（前 121 年）· 开启「舆图寻址」挑战模式 →](https://deanchensj.github.io/jiangshan-map/?year=-121&quiz=locate)
 
-![舆图寻址挑战模式预览](assets/preview_quiz_challenge.png)
+![西汉前 121 年 · 舆图寻址挑战模式预览](assets/preview_quiz_challenge.png)
 
 ---
 
@@ -91,7 +91,7 @@
 
 | 操作 / 按键 | 作用 |
 | :--- | :--- |
-| **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：搜古今地名（`咸阳`/`长安`）、州府（`黄州`）、年号（`贞观`/`元丰六年`）、年份（`-260`/`1083`）、事件（`长平之战`/`淝水之战`）或人物行迹（`秦始皇`/`诸葛亮`/`李白`/`苏轼`/`王阳明`） |
+| **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：搜古今地名（`咸阳`/`长安`）、州府（`应天府`）、年号（`永乐`/`元狩二年`）、年份（`-121`/`1415`）、事件（`长平之战`/`淝水之战`）或人物行迹（`秦始皇`/`诸葛亮`/`李白`/`苏轼`/`王阳明`） |
 | **`←` / `→`** 或底部 **`‹ / ›`** | 键盘左右键向前 / 向后走 `10` 年（按住 `Shift` 走 `50` 年）；点击底部 **`‹ / ›`** 按钮直接跳往上 / 下一关键历史节点或行迹站点 |
 | **`Space`（空格键）** | 自动播放 / 暂停历史演进（行迹模式下自动巡礼） |
 | **`单击古城` / `双击地图`** | 打开该地从战国到近现代的 18 时期「点地溯源 + 史事纪要」卡片 |
@@ -100,11 +100,11 @@
 ### 一键直达链接（适合分享给朋友）
 
 你可以直接在网址后面加上参数，把某个特定的历史瞬间分享给朋友：
-- **看某一年**：[`?year=-403`](https://deanchensj.github.io/jiangshan-map/?year=-403)（《资治通鉴》开篇 · 三家分晋） / [`?year=-260`](https://deanchensj.github.io/jiangshan-map/?year=-260)（战国长平之战） / [`?year=741`](https://deanchensj.github.io/jiangshan-map/?year=741)（盛唐开元二十九年）
+- **看某一年**：[`?year=-403`](https://deanchensj.github.io/jiangshan-map/?year=-403)（《资治通鉴》开篇 · 三家分晋） / [`?year=-121`](https://deanchensj.github.io/jiangshan-map/?year=-121)（西汉霍去病开河西） / [`?year=1415`](https://deanchensj.github.io/jiangshan-map/?year=1415)（明永乐盛世）
 - **看某场大战**：[`?year=-260&event=-260`](https://deanchensj.github.io/jiangshan-map/?year=-260&event=-260)（长平之战） / [`?year=383&event=383`](https://deanchensj.github.io/jiangshan-map/?year=383&event=383)（东晋前秦 · 淝水之战）
-- **查某座古城的千年故事**：[`?year=741&trace=108.94,34.26`](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)（长安/西安） / [`?year=1083&trace=114.35,34.79`](https://deanchensj.github.io/jiangshan-map/?year=1083&trace=114.35,34.79)（大梁/东京汴梁/开封）
+- **查某座古城的千年故事**：[`?year=741&trace=108.94,34.26`](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)（长安/西安） / [`?year=1415&trace=118.78,32.04`](https://deanchensj.github.io/jiangshan-map/?year=1415&trace=118.78,32.04)（建康/应天/南京）
 - **走一段人物行迹**：[`?journey=qinshihuang`](https://deanchensj.github.io/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchensj.github.io/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchensj.github.io/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchensj.github.io/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
-- **直接开一局挑战**：[`?quiz=locate`](https://deanchensj.github.io/jiangshan-map/?quiz=locate)（舆图寻址挑战）
+- **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchensj.github.io/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换英文版**：[`?lang=en`](https://deanchensj.github.io/jiangshan-map/?lang=en)
 
 ---
@@ -117,7 +117,7 @@
 
 1. **Click Any Ancient City to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any city (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and every major historical event that unfolded there—click any event to time-travel straight to that year.
 2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Qin Shi Huang's Unification Campaigns** (238–221 BCE, watching Han, Zhao, Wei, Chu, Yan, and Qi merge into Qin step by step), **Zhang Qian's** mission to the Western Regions (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), **Su Shi's** literary exile across Song China (1056–1101 CE), or **Wang Yangming's** Philosophy of Mind and campaigns (1472–1529 CE).
-3. **Scrub Through 2,400+ Years & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across 124 territorial stages (134 snapshots) with dashed **Ghost Boundary Diffs** showing exact frontier shifts. Zoom in and hover over 300+ historical prefectures (*Zhou / Fu / Jun*) to see their modern provincial counterparts.
+3. **Scrub Through 2,400+ Years & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across 133 territorial stages (143 snapshots) with dashed **Ghost Boundary Diffs** showing exact frontier shifts. Zoom in and hover over 300+ historical prefectures (*Zhou / Fu / Jun*) to see their modern provincial counterparts.
 4. **Explore Historical Megaprojects & Listen to Classical Guqin (`雅乐`)**: Trace the Warring States, Qin, Han, and Ming Great Walls, the Grand Canal, the Silk Road, and Zheng He's maritime voyages; measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-data English (`EN`) or classical Guqin music in one click.
 5. **Play the Map Pinpoint Challenge**: Test your historical intuition by pinpointing unlabeled ancient cities on the map using dynastic historical clues across 10 rounds to earn traditional imperial court titles.
 
