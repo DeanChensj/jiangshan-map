@@ -657,6 +657,10 @@
       if (btnSs) {
         btnSs.textContent = this.locale === 'en' ? "Su Shi's Exile" : '苏轼贬谪路线';
       }
+      const btnWy = this._id('btn-j-wangyangming');
+      if (btnWy) {
+        btnWy.textContent = this.locale === 'en' ? 'Wang Yangming' : '王阳明行迹';
+      }
       const lblJourneyBtn = this._id('lbl-journey-btn');
       if (lblJourneyBtn) {
         lblJourneyBtn.textContent = this.locale === 'en' ? 'Journeys' : '青史行迹';
@@ -665,8 +669,8 @@
       if (actJourneyBtn) {
         actJourneyBtn.title =
           this.locale === 'en'
-            ? 'Historical Journeys · Qin Unification / Su Shi / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
-            : '青史行迹 · 人物时空巡礼（秦王扫六合 / 苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
+            ? 'Historical Journeys · Qin Unification / Su Shi / Wang Yangming / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
+            : '青史行迹 · 人物时空巡礼（秦王扫六合 / 苏轼 / 王阳明 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
       }
       const jPopHead = this._id('txt-journey-pop-heading');
       if (jPopHead) {
@@ -697,6 +701,17 @@
         'lbl-jm-meta-sushi',
         '眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站',
         'Meizhou → Kaifeng → Huangzhou → Danzhou · 10 stops'
+      );
+      setTxt('lbl-jm-badge-wangyangming', '明', 'Ming');
+      setTxt(
+        'lbl-jm-title-wangyangming',
+        '王阳明知行一生行迹',
+        "Wang Yangming's Unity of Knowledge & Action"
+      );
+      setTxt(
+        'lbl-jm-meta-wangyangming',
+        '余姚 → 京师 → 龙场悟道 → 赣州 → 平宁王 → 绍兴 → 南安 · 10站',
+        'Yuyao → Beijing → Longchang → Nanchang → Shaoxing · 10 stops'
       );
       setTxt('lbl-jm-badge-libai', '唐', 'Tang');
       setTxt('lbl-jm-title-libai', '李白仗剑壮游行迹', "Li Bai's Grand Travels");
@@ -1433,6 +1448,7 @@
       }
       if (dynasty.key === 'tang' && m.year === 629) return 'xuanzang';
       if (dynasty.key === 'beisong' && m.year === 1080) return 'sushi';
+      if (dynasty.key === 'ming' && m.year === 1519) return 'wangyangming';
       return null;
     }
 
@@ -5063,6 +5079,239 @@
               quoteZh: '苏轼《自题金山画像》：“心似已灰之木，身如不系之舟。问汝平生功业，黄州惠州儋州。”',
               quoteEn:
                 'Su Shi, Inscription on My Portrait at Jinshan: "My heart like ashen wood, my body an unmoored boat. Ask of my life’s achievements: Huangzhou, Huizhou, Danzhou."',
+            },
+          ],
+        },
+        {
+          key: 'wangyangming',
+          dynastyKey: 'ming',
+          color: '#b33939',
+          shortZh: '王阳明知行行迹',
+          shortEn: 'Wang Yangming',
+          titleZh: '阳明心学 · 王阳明知行一生行迹',
+          titleEn: "Wang Yangming's Unity of Knowledge and Action",
+          spanZh: '1472年 — 1529年（明宪宗成化八年至明世宗嘉靖七年）',
+          spanEn: '1472 – 1529 CE (Ming Dynasty)',
+          stops: [
+            {
+              year: 1472,
+              eraZh: '成化八年',
+              coord: [121.15, 30.04],
+              labelPos: 'right',
+              ancientZh: '余姚',
+              modernZh: '浙江宁波余姚',
+              ancientEn: 'Yuyao',
+              modernEn: 'Yuyao, Ningbo, Zhejiang',
+              titleZh: '降生瑞云·志在圣贤',
+              titleEn: 'Birth at Ruiyun Tower & Aspiration for Sagehood',
+              descZh:
+                '王守仁诞生于浙江绍兴府余姚县瑞云楼，父王华次年高中状元。十一岁随祖父北上京师塾读，问塾师「何为第一等事」，师答「惟读书登第耳」，守仁昂然对曰：「登第恐未为第一等事，或读书学圣贤耳。」自幼立下成圣之志。',
+              descEn:
+                'Born at Ruiyun Tower in Yuyao, Wang Shouren asked his tutor at age eleven what the highest pursuit in life was. Told it was passing the imperial exams, he replied: "Passing exams is surely not the highest pursuit; learning to become a sage is."',
+              quoteZh: '王阳明少时语：“登第恐未为第一等事，或读书学圣贤耳。”——《王阳明先生年谱》',
+              quoteEn:
+                'Young Wang Yangming: "Passing the imperial examination is hardly the highest undertaking; reading to become a sage is."',
+            },
+            {
+              year: 1489,
+              eraZh: '弘治二年',
+              coord: [117.97, 28.45],
+              via: [[119.64, 29.08]],
+              labelPos: 'bottom',
+              ancientZh: '广信',
+              modernZh: '江西上饶',
+              ancientEn: 'Guangxin',
+              modernEn: 'Shangrao, Jiangxi',
+              titleZh: '谒娄一斋·始闻格物',
+              titleEn: 'Meeting Lou Liang at Guangxin & Inquiring into Gewu',
+              descZh:
+                '十八岁自南昌迎妇归余姚，舟次江西广信（今上饶），特往拜谒崇仁学派大儒娄谅（娄一斋）。娄谅向其阐发宋儒格物穷理之旨，语以「圣人必可学而至」，守仁深相契合，自此笃志圣学，归后遍读考亭朱子遗书。',
+              descEn:
+                'Returning from Nanchang at age eighteen, Wang visited Neo-Confucian master Lou Liang at Guangxin, who assured him that sagehood could truly be attained through learning and inquiry.',
+              quoteZh: '《明史·王守仁传》：“过广信，谒娄谅，语以圣人可学而至，遂深契之。”',
+              quoteEn:
+                'History of Ming: "Passing through Guangxin, he visited Lou Liang, who taught that sagehood can be learned, striking a deep chord in him."',
+            },
+            {
+              year: 1492,
+              eraZh: '弘治五年',
+              coord: [116.4, 39.9],
+              via: [
+                [118.8, 32.06],
+                [117.2, 36.65],
+              ],
+              labelPos: 'top',
+              ancientZh: '京师',
+              modernZh: '北京',
+              ancientEn: 'Jingshi (Beijing)',
+              modernEn: 'Beijing',
+              titleZh: '格竹致疾·进士及第',
+              titleEn: 'Investigating Bamboo & Passing the Metropolitan Exam',
+              descZh:
+                '在京师欲依朱熹「即物穷理」之法穷究草木之理，与钱友同坐亭前面竹「格竹」七日七夜，理未得而劳神成疾，始疑外求之弊。弘治十二年（1499）赐进士及第，历任工部、刑部主事，究心兵法韬略与经世之学。',
+              descEn:
+                'In Beijing, Wang meditated before bamboo for seven days trying to grasp its Neo-Confucian principle, falling ill and doubting externalism. In 1499 he passed the palace exam and served in the Ministries of Works and Justice.',
+              quoteZh: '《传习录》：“众人只说格物要依晦翁，何曾把他的说去用？我着实曾用来。”',
+              quoteEn:
+                'Instructions for Practical Living: "People say we must follow Zhu Xi in investigating things, yet who has truly practiced it? I genuinely tried for seven days."',
+            },
+            {
+              year: 1506,
+              eraZh: '正德元年',
+              coord: [120.2, 30.22],
+              via: [
+                [117.2, 34.26],
+                [119.45, 32.2],
+              ],
+              labelPos: 'right',
+              ancientZh: '钱塘江',
+              modernZh: '浙江杭州钱塘江口',
+              ancientEn: 'Qiantang River',
+              modernEn: 'Hangzhou, Zhejiang',
+              titleZh: '廷杖下狱·投江脱险',
+              titleEn: 'Flogged in Court & Escaping Assassins at Qiantang',
+              descZh:
+                '正德元年，司礼监权宦刘瑾擅权，逮捕南京给事中戴铣等二十余人。守仁抗疏力救，触怒刘瑾，被廷杖四十下诏狱，谪贵州龙场驿丞。南下途经杭州钱塘江，刘瑾遣刺客尾随欲加害，守仁夜掷衣冠于江中留绝命诗诈死，乘海舟脱险。',
+              descEn:
+                'For defending upright officials against eunuch dictator Liu Jin, Wang was flogged forty strokes, imprisoned, and banished to Guizhou. Pursued by Liu Jin’s assassins at Qiantang River, he faked his drowning at night to escape.',
+              quoteZh: '王阳明《泛海》：“险夷原不滞胸中，何异浮云过太空！夜静海涛三万里，月明飞锡下天风。”',
+              quoteEn:
+                'Wang Yangming, Sailing the Sea: "Danger and safety leave no trace in my breast, like floating clouds across the vast sky!"',
+            },
+            {
+              year: 1508,
+              eraZh: '正德三年',
+              coord: [106.59, 26.84],
+              via: [
+                [115.9, 28.68],
+                [112.9, 28.19],
+                [109.6, 27.2],
+              ],
+              labelPos: 'left',
+              ancientZh: '龙场',
+              modernZh: '贵州贵阳修文',
+              ancientEn: 'Longchang',
+              modernEn: 'Xiuwen, Guiyang, Guizhou',
+              titleZh: '龙场大悟·创立心学',
+              titleEn: 'Longchang Enlightenment & Philosophy of Mind',
+              descZh:
+                '抵达贵州万山丛棘、瘴疠横行之龙场驿。居东洞石棺之中，日夜端居澄默，自问「圣人处此更有何道」。正德三年中夜忽然大悟格物致知之旨，彻见「圣人之道，吾性自足，向之求理于事物者误也」，继而倡「知行合一」，开五百年阳明心学。',
+              descEn:
+                'Living in a stone cave in remote Guizhou, Wang meditated day and night on life and death. One midnight in 1508 he achieved sudden enlightenment: "The Way of the Sages is complete within my own nature; seeking principles in external things was mistaken."',
+              quoteZh: '《王阳明年谱》：“圣人之道，吾性自足，向之求理于事物者误也。”',
+              quoteEn:
+                'Chronicle of Wang Yangming: "The Way of the Sages is self-sufficient within our own mind-nature; seeking principle outside in external things was an error."',
+            },
+            {
+              year: 1510,
+              eraZh: '正德五年',
+              coord: [114.98, 27.11],
+              via: [
+                [109.6, 26.8],
+                [112.6, 26.89],
+              ],
+              labelPos: 'left',
+              ancientZh: '庐陵',
+              modernZh: '江西吉安',
+              ancientEn: 'Luling',
+              modernEn: "Ji'an, Jiangxi",
+              titleZh: '知县庐陵·兴教善政',
+              titleEn: 'Magistrate of Luling — Benevolent Governance',
+              descZh:
+                '刘瑾伏诛前夕，守仁升任江西吉安府庐陵县知县。视事七月，不以威刑而重告谕，均徭役、息词讼、立十家牌保甲法，选里老敦厚者劝诫乡民，庐陵风俗翕然丕变，为日后经略江西奠定深厚民心。',
+              descEn:
+                'Appointed magistrate of Luling County in Jiangxi, Wang governed through moral persuasion rather than harsh punishment, equalizing corvée labor and establishing community compacts.',
+              quoteZh: '王阳明《告谕庐陵父老》：“一念之善，即吉神佑之；一念之恶，即厉鬼随之。”',
+              quoteEn:
+                'Proclamation to the Elders of Luling: "A single good thought brings auspicious blessings; a single evil thought invites calamity."',
+            },
+            {
+              year: 1517,
+              eraZh: '正德十二年',
+              coord: [114.93, 25.83],
+              via: [[115.05, 26.45]],
+              labelPos: 'bottom',
+              ancientZh: '赣州',
+              modernZh: '江西赣州',
+              ancientEn: 'Ganzhou',
+              modernEn: 'Ganzhou, Jiangxi',
+              titleZh: '巡抚南赣·破山中贼',
+              titleEn: 'Governor of Southern Gan — Quelling Mountain Bandits',
+              descZh:
+                '受兵部尚书王琼力荐，以左佥都御史巡抚南赣汀漳。自编选练民兵，严明赏罚，两年内连破詹师富、大帽山、横水、桶冈、浰头诸巢，荡平盘踞赣闽粤湘边界数十年之巨寇；继而颁《南赣乡约》、设崇义县，兴立社学教化百姓。',
+              descEn:
+                'As Governor of Southern Gan, Wang trained local militias and eradicated decades-old bandit strongholds across the Jiangxi–Fujian–Guangdong border, then instituted the Southern Gan Community Compact.',
+              quoteZh: '王阳明《与杨仕德薛尚谦书》：“破山中贼易，破心中贼难。”',
+              quoteEn:
+                'Letter to Yang Shide: "It is easy to vanquish the bandits in the mountains, but hard to vanquish the bandits in the mind."',
+            },
+            {
+              year: 1519,
+              eraZh: '正德十四年',
+              coord: [115.89, 28.68],
+              via: [[115.2, 27.35]],
+              labelPos: 'left',
+              ancientZh: '南昌',
+              modernZh: '江西南昌·鄱阳湖',
+              ancientEn: 'Nanchang',
+              modernEn: 'Nanchang & Poyang Lake, Jiangxi',
+              titleZh: '平宁王乱·奇兵定难',
+              titleEn: "Crushing Prince of Ning's Rebellion in 35 Days",
+              descZh:
+                '六月，宁王朱宸濠于南昌起兵十万反叛，顺江东下围安庆、逼南京。守仁在丰城闻变，退保吉安特征集义军，施反间疑兵计迟滞叛军，随即乘虚直捣南昌老巢。宁王回救，两军决战于鄱阳湖黄家渡，守仁火攻大破叛军，仅三十五日生擒朱宸濠。',
+              descEn:
+                'When Prince Zhu Chenhao rebelled with 100,000 troops, Wang rallied local forces in Ji’an, used deception to stall the rebels, stormed their base at Nanchang, and captured the prince after a fire-ship battle on Poyang Lake in just 35 days.',
+              quoteZh: '王阳明《擒获宸濠捷音疏》：“臣等仰仗天威，一鼓而克其巢穴，再战而擒其渠魁。”',
+              quoteEn:
+                'Victory Memorial on Capturing Chenhao: "With one drumbeat we stormed his lair; in the second battle we captured the rebel chief alive."',
+            },
+            {
+              year: 1521,
+              eraZh: '正德十六年',
+              coord: [120.58, 30.0],
+              via: [
+                [117.97, 28.45],
+                [119.64, 29.08],
+              ],
+              labelPos: 'bottom',
+              ancientZh: '绍兴',
+              modernZh: '浙江绍兴',
+              ancientEn: 'Shaoxing',
+              modernEn: 'Shaoxing, Zhejiang',
+              titleZh: '致良知教·天泉证道',
+              titleEn: 'Doctrine of Liangzhi & Tianquan Bridge Discourse',
+              descZh:
+                '明世宗即位，封守仁新建伯，守仁归越城绍兴，于稽山书院、阳明洞聚徒讲学，正式揭出「致良知」三字教法，四方学者云集。嘉靖六年（1527）奉诏出征两广前夕，于天泉桥与大弟子钱德洪、王畿印证心学「四句教」，成心学传世纲领。',
+              descEn:
+                'Enfeoffed as Earl of Xinjian, Wang lectured at Shaoxing and proclaimed the doctrine of "Extending Innate Moral Knowledge" (Zhi Liangzhi). On the eve of his Guangxi campaign in 1527, he delivered the Four-Sentence Teaching at Tianquan Bridge.',
+              quoteZh: '《天泉证道·四句教》：“无善无恶心之体，有善有恶意之动。知善知恶是良知，为善去恶是格物。”',
+              quoteEn:
+                'Four-Sentence Teaching: "Neither good nor evil is the substance of the mind; good and evil arise with the movement of intention. Knowing good and evil is innate knowledge; doing good and removing evil is the investigation of things."',
+            },
+            {
+              year: 1529,
+              eraZh: '嘉靖七年冬',
+              coord: [114.36, 25.4],
+              via: [
+                [115.89, 28.68],
+                [111.2, 24.5],
+                [108.32, 23.4],
+                [112.5, 24.8],
+              ],
+              labelPos: 'left',
+              ancientZh: '南安',
+              modernZh: '江西南安府（今大余）',
+              ancientEn: "Nan'an",
+              modernEn: 'Dayu, Ganzhou, Jiangxi',
+              titleZh: '此心光明·亦复何言',
+              titleEn: 'Radiant Mind — Final Passing at Qinglongpu',
+              descZh:
+                '嘉靖六年总督两广，不费一兵一卒招抚思恩、田州卢苏王受七万众，继以奇兵荡平断藤峡八寨瑶乱。次年冬肺疾加剧上疏乞归，十一月二十九日（公历1529年1月）舟次江西南安府大余县青龙铺。门人周积问遗言，先生微笑曰：「此心光明，亦复何言！」遂瞑目而逝。',
+              descEn:
+                'After pacifying Guangxi’s Sien, Tianzhou, and Rattan Gorge rebellions, Wang fell gravely ill on his journey home. Passing away on a boat at Qinglongpu in Nan’an, he spoke his final words: "This mind is luminous; what more is there to say?"',
+              quoteZh: '王阳明临终遗言：“此心光明，亦复何言！”——《王阳明先生年谱》',
+              quoteEn:
+                'Wang Yangming’s last words: "This mind is luminous—what more is there to say!"',
             },
           ],
         },

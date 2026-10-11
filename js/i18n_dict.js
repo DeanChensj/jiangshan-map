@@ -1493,6 +1493,30 @@ window.EN_LOCALE = {
     "qing:1900": [
       "Boxer Movement and Eight-Nation Alliance occupation of Beijing; Cixi and Guangxu flee to Xi’an, followed by the Boxer Protocol in 1901",
       "Beijing"
+    ],
+    "xihan:-8": [
+      "Emperor Cheng establishes the Three Excellencies system; Wang Mang appointed Grand Marshal, consolidating Wang clan dominance",
+      "Chang'an"
+    ],
+    "tang:881": [
+      "Huang Chao’s rebel army captures Chang’an and proclaims the Great Qi dynasty; Emperor Xizong flees to Shu",
+      "Chang'an"
+    ],
+    "beisong:1104": [
+      "Hehuang Campaign: Emperor Huizong appoints Cai Jing as Wang Hou and Tong Guan recover Qingtang and establish Xining Prefecture",
+      "Xining (Qingtang)"
+    ],
+    "ming:1479": [
+      "Emperor Xianzong sets up the Western Depot under Wang Zhi; Ming-Joseon coalition launches the Chenghua Campaign against Jianzhou Jurchens",
+      "Beijing · Hetu Ala"
+    ],
+    "ming:1524": [
+      "Great Rites Controversy: Jiajing Emperor flogs protesting officials at Left Shun Gate (exiling Yang Shen to Yunnan), asserting imperial supremacy",
+      "Beijing"
+    ],
+    "qing:1813": [
+      "Guiyou Incident: Eight Trigrams rebels under Lin Qing storm the Forbidden City to Longzong Gate; Prince Mianning repels attackers with a musket",
+      "Forbidden City, Beijing"
     ]
   },
   "corridors": {
