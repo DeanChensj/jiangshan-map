@@ -55,6 +55,48 @@ function main() {
     'ATLAS_LORE_DATA must provide era spans, landmark events, and 7 historical journeys'
   );
 
+  // 1b. Validate time-aware historical hydrography (5 Yellow River courses & historical lakes)
+  const hydro = sandbox.window.HYDRO_DATA;
+  assert(
+    hydro && Array.isArray(hydro.rivers) && Array.isArray(hydro.lakes) && Array.isArray(hydro.labels),
+    'HYDRO_DATA must contain rivers, lakes, and labels arrays'
+  );
+  const isHydroActive = (item, y) =>
+    (item.appear === undefined || y >= item.appear) &&
+    (item.vanish === undefined || y < item.vanish);
+  const sampleEras = [
+    [-200, '河水（禹贡故道）'],
+    [500, '黄 河（王景故道）'],
+    [1100, '黄 河（北宋北流）'],
+    [1500, '黄 河（夺淮故道）'],
+    [2000, '黄 河'],
+  ];
+  for (const [sampleY, expectedLabel] of sampleEras) {
+    const activeHuangTrunks = hydro.rivers.filter(
+      (r) => r.name === 'Huang' && r.rank === 1 && isHydroActive(r, sampleY)
+    );
+    assert.strictEqual(
+      activeHuangTrunks.length,
+      4,
+      `Expected 4 active Yellow River trunk segments at year ${sampleY}, got ${activeHuangTrunks.length}`
+    );
+    const activeLabels = hydro.labels.filter((l) => isHydroActive(l, sampleY));
+    assert(
+      activeLabels.some((l) => l.zh === expectedLabel),
+      `Expected active Yellow River label "${expectedLabel}" at year ${sampleY}`
+    );
+  }
+  assert(
+    !hydro.lakes.some((l) => l.name === 'Hongze Hu' && isHydroActive(l, 1000)) &&
+      hydro.lakes.some((l) => l.name === 'Hongze Hu' && isHydroActive(l, 1500)),
+    'Hongze Hu should only appear from 1194 CE onward'
+  );
+  assert(
+    hydro.lakes.some((l) => l.name === 'Juye Ze' && isHydroActive(l, 1080)) &&
+      !hydro.lakes.some((l) => l.name === 'Juye Ze' && isHydroActive(l, 1400)),
+    'Juye Ze / Liangshan Marsh should vanish after 1280 CE'
+  );
+
   // 2. Validate modern provincial outlines
   assert(Array.isArray(provinces) && provinces.length >= 34, 'PROVINCE_OUTLINES must contain >= 34 provinces');
   let provRingCount = 0;
