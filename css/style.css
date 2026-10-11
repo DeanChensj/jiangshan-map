@@ -1341,6 +1341,12 @@ h2 {
   border-radius: 999px;
   border: 1px solid var(--hairline);
   pointer-events: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+#gesture-guide.is-dismissed {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 #hover-tip {
@@ -1410,13 +1416,6 @@ h2 {
   flex-wrap: wrap;
 }
 
-.mode-pills {
-  display: inline-flex;
-  background: rgba(43, 38, 34, 0.07);
-  border-radius: 999px;
-  padding: 2px;
-}
-
 .mode-pill {
   border: none;
   background: transparent;
@@ -1430,41 +1429,6 @@ h2 {
   background: var(--vermilion);
   color: #fff;
   font-weight: 600;
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
-  margin-top: 8px;
-}
-
-.option-choice {
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  text-align: left;
-  transition: background 0.12s, border-color 0.12s;
-}
-
-.option-choice:hover:not(:disabled) {
-  background: #fff;
-  border-color: var(--vermilion);
-}
-
-.option-choice.is-correct {
-  background: rgba(47, 133, 90, 0.16);
-  border-color: #2f855a;
-  color: #1f5f3e;
-  font-weight: 600;
-}
-
-.option-choice.is-wrong {
-  background: rgba(181, 69, 47, 0.15);
-  border-color: var(--vermilion);
-  color: #8b2c1b;
 }
 
 .pill-badge {
@@ -1503,6 +1467,31 @@ h2 {
 
 .challenge-prompt b {
   color: var(--vermilion);
+}
+
+.challenge-clue-box {
+  margin-top: 7px;
+  padding: 6px 10px;
+  border-radius: 7px;
+  background: rgba(181, 69, 47, 0.06);
+  border-left: 2.5px solid var(--vermilion);
+  font-family: var(--serif-stack);
+  font-size: 12.6px;
+  line-height: 1.48;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.clue-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--vermilion);
+  background: rgba(181, 69, 47, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .challenge-feedback {

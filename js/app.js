@@ -262,6 +262,11 @@
       this.challenge = null;
       this.challengeVariant = 'locate';
       this.paneCollapsed = false;
+      this._paneAutoCollapsed = false;
+      this._gestureMoved = false;
+      this._gestureClicked = false;
+      this._gestureGuideTimer = null;
+      this.hasDismissedGestureGuide = false;
       this.ghostTimer = null;
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -293,6 +298,45 @@
       this.jumpToYear(this.dynasties[0].focusYear);
       this._restoreFromQuery();
       this._bootDone = true;
+    }
+
+    _syncImmersivePaneState() {
+      const immersiveActive = Boolean(this.activeJourney || this.challenge);
+      if (immersiveActive) {
+        if (!this.paneCollapsed) {
+          this._paneAutoCollapsed = true;
+          this.toggleChroniclePane(true);
+        }
+        if (this.mobileChronicleOpen) {
+          this.toggleMobileChronicle(false);
+        }
+      } else if (this._paneAutoCollapsed) {
+        this._paneAutoCollapsed = false;
+        this.toggleChroniclePane(false);
+      }
+    }
+
+    _recordGestureMove() {
+      if (!this._bootDone || this.hasDismissedGestureGuide) return;
+      this._gestureMoved = true;
+      this._checkDismissGestureGuide();
+    }
+
+    _recordGestureClick() {
+      if (!this._bootDone || this.hasDismissedGestureGuide) return;
+      this._gestureClicked = true;
+      this._checkDismissGestureGuide();
+    }
+
+    _checkDismissGestureGuide() {
+      if (this.hasDismissedGestureGuide || this._gestureGuideTimer) return;
+      if (this._gestureMoved && this._gestureClicked) {
+        this._gestureGuideTimer = setTimeout(() => {
+          this.hasDismissedGestureGuide = true;
+          const gg = this._id('gesture-guide');
+          if (gg) gg.classList.add('is-dismissed');
+        }, 2000);
+      }
     }
 
     _dismissTraceOnboarding() {
@@ -605,17 +649,6 @@
         actLayersBtn.title =
           this.locale === 'en' ? 'Toggle map layers' : '展开或收起地图图层开关';
       }
-      const lblTerrain = this._id('lbl-terrain');
-      if (lblTerrain) {
-        lblTerrain.textContent = this.uiStr('btn_terrain', '山川地形');
-      }
-      const actTerrain = this._id('act-terrain');
-      if (actTerrain) {
-        actTerrain.title =
-          this.locale === 'en'
-            ? 'Toggle shaded relief terrain & rivers'
-            : '切换山川地形与江河水系底图';
-      }
       const lblTerrainChk = this._id('lbl-terrain-chk');
       if (lblTerrainChk) {
         lblTerrainChk.textContent = this.uiStr('toggle_terrain', '山川水系');
@@ -627,39 +660,6 @@
       const grpMod = this._id('txt-layer-grp-mod');
       if (grpMod) {
         grpMod.textContent = this.uiStr('layer_grp_mod', '山川与现代参照');
-      }
-      const grpJrn = this._id('txt-layer-grp-journey');
-      if (grpJrn) {
-        grpJrn.textContent =
-          this.locale === 'en' ? 'Historical Journeys' : '青史行迹 · 时空巡礼';
-      }
-      const btnQsh = this._id('btn-j-qinshihuang');
-      if (btnQsh) {
-        btnQsh.textContent = this.locale === 'en' ? 'Qin Shi Huang' : '秦始皇扫六合';
-      }
-      const btnZq = this._id('btn-j-zhangqian');
-      if (btnZq) {
-        btnZq.textContent = this.locale === 'en' ? 'Zhang Qian' : '张骞凿空西域';
-      }
-      const btnZgl = this._id('btn-j-zhugeliang');
-      if (btnZgl) {
-        btnZgl.textContent = this.locale === 'en' ? 'Zhuge Liang' : '诸葛亮出山北伐';
-      }
-      const btnXz = this._id('btn-j-xuanzang');
-      if (btnXz) {
-        btnXz.textContent = this.locale === 'en' ? 'Xuanzang' : '玄奘西行求法';
-      }
-      const btnLb = this._id('btn-j-libai');
-      if (btnLb) {
-        btnLb.textContent = this.locale === 'en' ? 'Li Bai' : '李白仗剑壮游';
-      }
-      const btnSs = this._id('btn-j-sushi');
-      if (btnSs) {
-        btnSs.textContent = this.locale === 'en' ? 'Su Shi' : '苏轼宦海贬谪';
-      }
-      const btnWy = this._id('btn-j-wangyangming');
-      if (btnWy) {
-        btnWy.textContent = this.locale === 'en' ? 'Wang Yangming' : '王阳明知行悟道';
       }
       const lblJourneyBtn = this._id('lbl-journey-btn');
       if (lblJourneyBtn) {
@@ -791,8 +791,10 @@
         'trace_kicker',
         '点地溯源 · 古今政区沿革'
       );
-      this._id('tab-locate').textContent = this.uiStr('mode_locate', '地图寻址');
-      this._id('tab-match').textContent = this.uiStr('mode_match', '古今对号');
+      const chalKicker = this._id('txt-challenge-kicker');
+      if (chalKicker) {
+        chalKicker.textContent = this.locale === 'en' ? 'Map Pinpoint' : '舆图寻址';
+      }
       const searchInp = this._id('inp-map-search');
       if (searchInp) {
         searchInp.placeholder =
@@ -3556,44 +3558,46 @@
       return chosen;
     }
 
-    startChallenge(variant) {
+    startChallenge() {
+      this._recordGestureClick();
       this.stopAutoplay();
-      if (this.activeJourney) this.stopJourney();
+      if (this.activeJourney) this.stopJourney(true);
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
-      if (variant) this.challengeVariant = variant;
+      this.challengeVariant = 'locate';
       this.challenge = {
-        variant: this.challengeVariant,
+        variant: 'locate',
         deck: this._buildChallengeDeck(),
         index: 0,
         score: 0,
         answered: false,
       };
-      this._id('tab-locate').classList.toggle('is-active', this.challengeVariant === 'locate');
-      this._id('tab-match').classList.toggle('is-active', this.challengeVariant === 'match');
+      this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
-      this.svg.classList.toggle('is-crosshair', this.challengeVariant === 'locate');
+      this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
       this.presentChallengeRound();
     }
 
-    stopChallenge() {
+    stopChallenge(keepPaneState = false) {
       this.challenge = null;
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
-      this._id('challenge-options').classList.add('is-hidden');
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
       this.grpSettlements.classList.toggle('is-hidden', !this._id('chk-settlements').checked);
+      if (!keepPaneState) {
+        this._syncImmersivePaneState();
+      }
     }
 
     presentChallengeRound() {
@@ -3601,7 +3605,15 @@
       this.grpChallenge.innerHTML = '';
       q.answered = false;
       const cur = q.deck[q.index];
-      this.jumpToYear(cur.dynasty.focusYear);
+      let roundYear = cur.dynasty.focusYear;
+      if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
+        roundYear = cur.settlement.appear;
+      }
+      if (cur.settlement.vanish !== undefined && roundYear > cur.settlement.vanish) {
+        roundYear = cur.settlement.vanish;
+      }
+      this.jumpToYear(this._clampYearToDynasty(cur.dynasty, roundYear));
+      this.grpSettlements.classList.add('is-hidden');
 
       this._id('challenge-step').textContent =
         this.locale === 'en'
@@ -3610,99 +3622,54 @@
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
       this._id('challenge-result').classList.add('is-hidden');
 
-      const hint = cur.settlement.remark
-        ? this.locale === 'en'
-          ? ` (${this.trTerm(cur.settlement.remark)})`
-          : `（${this.trTerm(cur.settlement.remark)}）`
+      const baseClue = cur.settlement.remark
+        ? this.trTerm(cur.settlement.remark)
         : cur.settlement.isCapital
-          ? this.uiStr('cap_hint', '（都城）')
-          : '';
+          ? this.locale === 'en'
+            ? 'Imperial / Dynastic Capital'
+            : '当朝都城'
+          : this.locale === 'en'
+            ? 'Strategic Prefecture & Hub'
+            : '当朝重镇州府';
 
-      if (q.variant === 'match') {
-        this.grpSettlements.classList.add('is-hidden');
-        const [sx, sy] = this.projector.toScreen(
-          cur.settlement.coord[0],
-          cur.settlement.coord[1]
-        );
-        const marker = this._svgNode(
-          'g',
-          { 'data-x': sx.toFixed(1), 'data-y': sy.toFixed(1) },
-          this.grpChallenge
-        );
-        this._svgNode('circle', { class: 'target-ring', r: 14 }, marker);
-        this._svgNode('circle', { class: 'answer-pin', r: 5 }, marker);
-        this._rescaleSvgTypography();
-
-        this._id('challenge-question').innerHTML =
+      const placeEvents = this._collectPlaceEventsForDynasty(
+        cur.dynasty,
+        cur.settlement.coord[0],
+        cur.settlement.coord[1],
+        { s: cur.settlement, km: 0 }
+      );
+      let extraEventStr = '';
+      if (placeEvents.length) {
+        const ev = placeEvents[0];
+        const yrLbl =
           this.locale === 'en'
-            ? `<b>${this.dynastyName(cur.dynasty)}</b> · The ancient city <b>“${this.trTerm(cur.settlement.ancient)}”</b>${hint} corresponds to which modern city?`
-            : `【${this.dynastyName(cur.dynasty)}】古地名 <b>「${cur.settlement.ancient}」</b>${hint} 对应今天的哪座城市？`;
-
-        const pool = Array.from(
-          new Set(
-            this.dynasties
-              .flatMap((d) => d.settlements.map((s) => s.modern))
-              .filter((m) => m && m !== cur.settlement.modern)
-          )
-        );
-        const distractors = [];
-        while (distractors.length < 3 && pool.length) {
-          distractors.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+            ? this.formatYear(ev.year)
+            : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
+        let cleanEv = ev.text.replace(/（今[^）]+）|\(Now [^)]+\)/gi, '');
+        if (cur.settlement.modern && cur.settlement.modern !== cur.settlement.ancient) {
+          for (const modPart of cur.settlement.modern.split(/[·/、]/)) {
+            if (modPart && modPart.length >= 2 && modPart !== cur.settlement.ancient) {
+              cleanEv = cleanEv.replaceAll(modPart, cur.settlement.ancient);
+            }
+          }
         }
-        const choices = [cur.settlement.modern, ...distractors].sort(() => Math.random() - 0.5);
-        const box = this._id('challenge-options');
-        box.innerHTML = '';
-        box.classList.remove('is-hidden');
-        for (const opt of choices) {
-          const btn = document.createElement('button');
-          btn.className = 'option-choice';
-          btn.dataset.optValue = opt;
-          btn.textContent = this.trTerm(opt);
-          btn.addEventListener('click', () => this._evaluateMatchChoice(opt, btn));
-          box.appendChild(btn);
-        }
-      } else {
-        this._id('challenge-options').classList.add('is-hidden');
-        this._id('challenge-question').innerHTML =
-          this.locale === 'en'
-            ? `Click on the map to locate <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${this.trTerm(cur.settlement.ancient)}”</b>${hint}`
-            : `请在地图上点击 <b>${this.dynastyName(cur.dynasty)}</b> 时期的 <b>「${cur.settlement.ancient}」</b>${hint}`;
+        extraEventStr = ` · ${yrLbl}：${cleanEv}`;
       }
-    }
 
-    _evaluateMatchChoice(choice, clickedBtn) {
-      const q = this.challenge;
-      if (!q || q.answered) return;
-      q.answered = true;
-      const cur = q.deck[q.index];
-      const isRight = choice === cur.settlement.modern;
-      if (isRight) q.score += 100;
+      const clueTag = this.locale === 'en' ? 'Historical Clue' : '当朝掌故';
+      const promptHtml =
+        this.locale === 'en'
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${this.trTerm(cur.settlement.ancient)}”</b>`
+          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${cur.settlement.ancient}」</b>`;
 
-      Array.from(this._id('challenge-options').children).forEach((b) => {
-        b.disabled = true;
-        if (b.dataset.optValue === cur.settlement.modern) b.classList.add('is-correct');
-        else if (b === clickedBtn) b.classList.add('is-wrong');
-      });
-
-      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
-      this._id('challenge-verdict').innerHTML = isRight
-        ? this.locale === 'en'
-          ? `Correct! <b>${this.trTerm(cur.settlement.ancient)}</b> is modern <b>${this.trTerm(cur.settlement.modern)}</b> (+100 pts)`
-          : `回答正确！<b>${cur.settlement.ancient}</b> 即今 <b>${cur.settlement.modern}</b>（+100 分）`
-        : this.locale === 'en'
-          ? `Not quite — <b>${this.trTerm(cur.settlement.ancient)}</b> is modern <b>${this.trTerm(cur.settlement.modern)}</b> (+0 pts)`
-          : `答错了，<b>${cur.settlement.ancient}</b> 对应今 <b>${cur.settlement.modern}</b>（+0 分）`;
-
-      this._id('act-next-round').innerHTML =
-        q.index + 1 >= q.deck.length
-          ? this.uiStr('quiz_see_result', '查看成绩')
-          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
-      this._id('challenge-result').classList.remove('is-hidden');
+      this._id('challenge-question').innerHTML =
+        `<div>${promptHtml}</div>` +
+        `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${baseClue}${extraEventStr}</span></div>`;
     }
 
     _evaluateLocateClick(svgX, svgY) {
       const q = this.challenge;
-      if (!q || q.answered || q.variant !== 'locate') return;
+      if (!q || q.answered) return;
       q.answered = true;
 
       const cur = q.deck[q.index];
@@ -3808,7 +3775,6 @@
               ? this.uiStr('title_400', '州郡从事 · 略通古今')
               : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');
 
-      this._id('challenge-options').classList.add('is-hidden');
       this._id('challenge-question').innerHTML =
         this.locale === 'en'
           ? `Challenge complete! Total score <b>${q.score} / ${total}</b> — Rank: <b>${rank}</b>`
@@ -3821,7 +3787,7 @@
       nextBtn.textContent = this.uiStr('quiz_again', '再来一局');
       nextBtn.onclick = () => {
         nextBtn.onclick = null;
-        this.startChallenge(this.challengeVariant);
+        this.startChallenge();
       };
     }
 
@@ -5323,6 +5289,7 @@
       const found = journeys.find((j) => j.key === journeyKey) || journeys[0];
       if (!found) return;
 
+      this._recordGestureClick();
       this._dismissJourneyOnboarding();
       this._dismissTraceOnboarding();
       this.stopAutoplay();
@@ -5330,13 +5297,14 @@
         clearInterval(this.journeyTimer);
         this.journeyTimer = null;
       }
-      if (this.challenge) this.stopChallenge();
+      if (this.challenge) this.stopChallenge(true);
       if (this.genealogyMode) this.toggleGenealogyMode(false);
       this.closeGenealogyCard();
       this.closeMilestoneBalloon();
 
       this.activeJourney = found;
       this.journeyStopIdx = Math.max(0, Math.min(found.stops.length - 1, stopIdx));
+      this._syncImmersivePaneState();
 
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-active-journey');
@@ -5361,7 +5329,7 @@
       }
     }
 
-    stopJourney() {
+    stopJourney(keepPaneState = false) {
       if (this.journeyTimer) {
         clearInterval(this.journeyTimer);
         this.journeyTimer = null;
@@ -5380,6 +5348,9 @@
       });
       const jMenuBtn = this._id('act-journey-menu');
       if (jMenuBtn) jMenuBtn.classList.remove('is-active');
+      if (!keepPaneState) {
+        this._syncImmersivePaneState();
+      }
     }
 
     goToJourneyStop(idx, panCamera = true) {
@@ -6240,16 +6211,6 @@
             closeLayersPopover();
           }
         });
-        layersPopover.querySelectorAll('.journey-chip-btn').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            closeLayersPopover();
-            if (this.activeJourney && this.activeJourney.key === btn.dataset.journey) {
-              this.stopJourney();
-            } else {
-              this.startJourney(btn.dataset.journey, 0);
-            }
-          });
-        });
       }
 
       const bindToggle = (chkId, grpEl, inv = false) => {
@@ -6263,13 +6224,6 @@
       if (chkTerrain) {
         chkTerrain.addEventListener('change', (e) => {
           this.toggleTerrainMode(e.target.checked);
-          updateLayerBadge();
-        });
-      }
-      const actTerrain = this._id('act-terrain');
-      if (actTerrain) {
-        actTerrain.addEventListener('click', () => {
-          this.toggleTerrainMode();
           updateLayerBadge();
         });
       }
@@ -6301,7 +6255,10 @@
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
       const togglePaneBtn = this._id('act-toggle-pane');
       if (togglePaneBtn) {
-        togglePaneBtn.addEventListener('click', () => this.toggleChroniclePane());
+        togglePaneBtn.addEventListener('click', () => {
+          this._paneAutoCollapsed = false;
+          this.toggleChroniclePane();
+        });
       }
       const mobChronBtn = this._id('act-mobile-chronicle');
       if (mobChronBtn) {
@@ -6328,8 +6285,6 @@
         else this.startChallenge();
       });
       this._id('act-close-challenge').addEventListener('click', () => this.stopChallenge());
-      this._id('tab-locate').addEventListener('click', () => this.startChallenge('locate'));
-      this._id('tab-match').addEventListener('click', () => this.startChallenge('match'));
       this._id('act-next-round').addEventListener('click', () => {
         if (!this.challenge || this._id('act-next-round').onclick) return;
         this.challenge.index++;
@@ -6373,6 +6328,7 @@
       };
       track.addEventListener('pointerdown', (e) => {
         if (this.challenge) return;
+        this._recordGestureClick();
         this.stopAutoplay();
         scrubbing = true;
         track.setPointerCapture(e.pointerId);
@@ -6442,6 +6398,7 @@
         'wheel',
         (e) => {
           e.preventDefault();
+          this._recordGestureMove();
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const factor = Math.exp(-e.deltaY * 0.0015);
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
@@ -6538,6 +6495,7 @@
         }
 
         if (this.activePointers.size === 2 && this.pinchState) {
+          this._recordGestureMove();
           const pts = Array.from(this.activePointers.values());
           const dist = Math.max(10, Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y));
           const factor = dist / this.pinchState.startDist;
@@ -6566,6 +6524,7 @@
         if (Math.hypot(dx, dy) > 4) {
           clearLongPress();
           this.didPan = true;
+          this._recordGestureMove();
           this.svg.classList.add('is-panning');
           if (e.pointerType === 'touch') {
             this.hoverTip.classList.add('is-hidden');
@@ -6755,10 +6714,12 @@
         const wasPan = this.didPan;
         this.dragState = null;
         this.svg.classList.remove('is-panning');
-        if (!wasPan && this.challenge && !this.challenge.answered && this.challenge.variant === 'locate') {
+        if (!wasPan && this.challenge && !this.challenge.answered) {
+          this._recordGestureClick();
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
           this._evaluateLocateClick(sx, sy);
         } else if (!wasPan && !this.challenge) {
+          this._recordGestureClick();
           if (e.pointerType === 'touch') {
             const now = Date.now();
             if (
@@ -6890,6 +6851,7 @@
       this.svg.addEventListener('pointercancel', endPointer);
       this.svg.addEventListener('dblclick', (e) => {
         if (this.challenge) return;
+        this._recordGestureClick();
         const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
         const [lng, lat] = this.projector.toGeo(sx, sy);
         this.openGenealogyAt(lng, lat);

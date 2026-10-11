@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261011a" />
+  <link rel="stylesheet" href="css/style.css?v=20261011i" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -28,10 +28,6 @@
           <span id="lbl-layers-btn">图层</span>
           <span id="layers-count-badge" class="layers-count-pill">7/8</span>
           <span class="caret-mark" aria-hidden="true">▾</span>
-        </button>
-        <button id="act-terrain" class="action-btn subtle is-active" type="button" aria-pressed="true" title="切换山川地形与江河水系底图">
-          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M1.2 13.2L5.8 4.6l3.3 5.5 2.4-3.7 3.3 6.8H1.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.2 7.6L5.8 4.6l1.7 2.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
-          <span id="lbl-terrain">山川地形</span>
         </button>
         <button id="act-journey-menu" class="action-btn subtle layers-trigger-btn journey-trigger-btn" type="button" aria-expanded="false" aria-controls="journey-popover" title="青史行迹 · 人物时空巡礼（秦始皇 / 张骞 / 诸葛亮 / 玄奘 / 李白 / 苏轼 / 王阳明）">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="3.2" cy="12.5" r="1.7" fill="currentColor"/><circle cx="12.8" cy="3.5" r="1.7" fill="currentColor"/><path d="M4.6 11.5C6.5 9.8 6.2 6.2 8.5 5.5s2.2-.8 3.2-1.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2.2 1.8"/></svg>
@@ -88,18 +84,6 @@
             <label class="layer-chip"><input type="checkbox" id="chk-terrain" checked /><span id="lbl-terrain-chk">山川水系</span></label>
             <label class="layer-chip"><input type="checkbox" id="chk-provinces" checked /><span id="lbl-provinces">现代省界</span></label>
             <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
-          </div>
-        </div>
-        <div class="layers-pop-section">
-          <div class="layers-pop-heading" id="txt-layer-grp-journey">青史行迹 · 时空巡礼</div>
-          <div class="journey-pop-list">
-            <button type="button" class="journey-chip-btn" data-journey="qinshihuang" id="btn-j-qinshihuang">秦始皇扫六合</button>
-            <button type="button" class="journey-chip-btn" data-journey="zhangqian" id="btn-j-zhangqian">张骞凿空西域</button>
-            <button type="button" class="journey-chip-btn" data-journey="zhugeliang" id="btn-j-zhugeliang">诸葛亮出山北伐</button>
-            <button type="button" class="journey-chip-btn" data-journey="xuanzang" id="btn-j-xuanzang">玄奘西行求法</button>
-            <button type="button" class="journey-chip-btn" data-journey="libai" id="btn-j-libai">李白仗剑壮游</button>
-            <button type="button" class="journey-chip-btn" data-journey="sushi" id="btn-j-sushi">苏轼宦海贬谪</button>
-            <button type="button" class="journey-chip-btn" data-journey="wangyangming" id="btn-j-wangyangming">王阳明知行悟道</button>
           </div>
         </div>
       </div>
@@ -227,10 +211,7 @@
 
         <div id="challenge-card" class="is-hidden" role="region" aria-label="古地名挑战">
           <div class="challenge-top">
-            <div class="mode-pills" role="tablist">
-              <button id="tab-locate" class="mode-pill is-active" role="tab">地图寻址</button>
-              <button id="tab-match" class="mode-pill" role="tab">古今对号</button>
-            </div>
+            <span id="txt-challenge-kicker" class="mode-pill is-active">舆图寻址</span>
             <span id="challenge-step" class="pill-badge">第 1 / 10 题</span>
             <span id="challenge-points" class="score-readout">得分 0</span>
             <button id="act-close-challenge" class="icon-close" title="退出挑战" aria-label="退出挑战">
@@ -238,7 +219,6 @@
             </button>
           </div>
           <div id="challenge-question" class="challenge-prompt"></div>
-          <div id="challenge-options" class="options-grid is-hidden"></div>
           <div id="challenge-result" class="challenge-feedback is-hidden">
             <span id="challenge-verdict"></span>
             <button id="act-next-round" class="action-btn accent sm"></button>
@@ -317,10 +297,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261011h"></script>
-  <script src="js/atlas_snapshots.js?v=20261011h"></script>
-  <script src="js/map_data.js?v=20261011h"></script>
-  <script src="js/i18n_dict.js?v=20261011h"></script>
-  <script src="js/app.js?v=20261011h"></script>
+  <script src="js/china_geo_data.js?v=20261011i"></script>
+  <script src="js/atlas_snapshots.js?v=20261011i"></script>
+  <script src="js/map_data.js?v=20261011i"></script>
+  <script src="js/i18n_dict.js?v=20261011i"></script>
+  <script src="js/app.js?v=20261011i"></script>
 </body>
 </html>
