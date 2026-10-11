@@ -331,6 +331,22 @@ h2 {
   background: #a03b26;
 }
 
+#nav-bar #act-challenge {
+  background: rgba(181, 69, 47, 0.08);
+  color: var(--vermilion);
+  border-color: rgba(181, 69, 47, 0.34);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+#nav-bar #act-challenge:hover,
+#nav-bar #act-challenge.is-active {
+  background: var(--vermilion);
+  color: #fffaf2;
+  border-color: var(--vermilion);
+  box-shadow: 0 3px 10px rgba(181, 69, 47, 0.24);
+}
+
 .action-btn.sm {
   padding: 5px 12px;
   font-size: 12px;
@@ -863,6 +879,48 @@ h2 {
   line-height: 1.42;
   pointer-events: auto;
   transition: opacity 0.16s ease;
+}
+
+#milestone-balloon::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(252, 248, 240, 0.96);
+  border: 0 solid rgba(181, 69, 47, 0.45);
+  pointer-events: none;
+}
+
+#milestone-balloon[data-caret="left"]::before {
+  left: -4.5px;
+  top: var(--caret-y, 24px);
+  transform: translateY(-50%) rotate(45deg);
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+}
+
+#milestone-balloon[data-caret="right"]::before {
+  right: -4.5px;
+  top: var(--caret-y, 24px);
+  transform: translateY(-50%) rotate(45deg);
+  border-right-width: 1px;
+  border-top-width: 1px;
+}
+
+#milestone-balloon[data-caret="bottom"]::before {
+  bottom: -4.5px;
+  left: var(--caret-x, 50%);
+  transform: translateX(-50%) rotate(45deg);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+#milestone-balloon[data-caret="top"]::before {
+  top: -4.5px;
+  left: var(--caret-x, 50%);
+  transform: translateX(-50%) rotate(45deg);
+  border-left-width: 1px;
+  border-top-width: 1px;
 }
 
 #milestone-balloon.is-offscreen {
@@ -2598,27 +2656,51 @@ html[lang="en"] .genealogy-list li {
   top: 50%;
   transform: translateY(-50%);
   z-index: 6;
-  width: 18px;
-  height: 46px;
-  padding: 0;
-  border: 1px solid var(--hairline);
+  width: 22px;
+  min-height: 64px;
+  padding: 7px 0;
+  border: 1px solid rgba(181, 69, 47, 0.28);
   border-right: none;
-  border-radius: 7px 0 0 7px;
-  background: rgba(243, 238, 228, 0.92);
+  border-radius: 8px 0 0 8px;
+  background: rgba(250, 245, 235, 0.95);
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: -2px 0 8px rgba(43, 38, 34, 0.08);
-  transition: background 0.15s, color 0.15s, width 0.15s;
+  gap: 3px;
+  box-shadow: -2px 0 10px rgba(43, 38, 34, 0.1);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, width 0.15s, box-shadow 0.15s;
+}
+
+#act-toggle-pane .tp-arrow {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--vermilion);
+}
+
+#act-toggle-pane .tp-label {
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.15;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.06em;
+}
+
+html[lang="en"] #act-toggle-pane .tp-label {
+  font-family: var(--sans-stack);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
 }
 
 #act-toggle-pane:hover {
-  width: 22px;
-  background: #fff;
+  width: 26px;
+  background: #fffdf8;
   color: var(--vermilion);
+  border-color: rgba(181, 69, 47, 0.55);
+  box-shadow: -3px 0 12px rgba(181, 69, 47, 0.16);
 }
 
 /* #7 Historical Journeys (青史行迹 · 人物时空巡礼) */
