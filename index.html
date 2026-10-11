@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>江山时序 · 中国历史地图时间轴</title>
-  <meta name="description" content="拖动时间轴，从秦朝到现代，浏览历代疆域、州郡政区、古今地名沿革与重大历史事件，支持古地名挑战模式与中英双语。" />
+  <meta name="description" content="拖动时间轴，从战国三家分晋到现代，浏览历代疆域、州郡政区、古今地名沿革与重大历史事件，支持古地名挑战模式与中英双语。" />
   <meta name="theme-color" content="#f3eee4" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="apple-touch-icon" href="assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261010j" />
+  <link rel="stylesheet" href="css/style.css?v=20261011a" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -19,7 +19,7 @@
       <div class="brand-group">
         <h1 id="site-heading">
           <span class="seal-mark" id="txt-seal">江山时序</span>
-          <span class="subtitle-mark" id="txt-subtitle">中国历史地图 · 秦 → 今</span>
+          <span class="subtitle-mark" id="txt-subtitle">中国历史地图 · 战国 → 今</span>
         </h1>
       </div>
       <div class="control-strip" role="toolbar" aria-label="地图图层与交互模式">
@@ -33,7 +33,7 @@
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M1.2 13.2L5.8 4.6l3.3 5.5 2.4-3.7 3.3 6.8H1.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.2 7.6L5.8 4.6l1.7 2.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
           <span id="lbl-terrain">山川地形</span>
         </button>
-        <button id="act-journey-menu" class="action-btn subtle layers-trigger-btn journey-trigger-btn" type="button" aria-expanded="false" aria-controls="journey-popover" title="青史行迹 · 人物时空巡礼（苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）">
+        <button id="act-journey-menu" class="action-btn subtle layers-trigger-btn journey-trigger-btn" type="button" aria-expanded="false" aria-controls="journey-popover" title="青史行迹 · 人物时空巡礼（秦王扫六合 / 苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="3.2" cy="12.5" r="1.7" fill="currentColor"/><circle cx="12.8" cy="3.5" r="1.7" fill="currentColor"/><path d="M4.6 11.5C6.5 9.8 6.2 6.2 8.5 5.5s2.2-.8 3.2-1.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2.2 1.8"/></svg>
           <span id="lbl-journey-btn">青史行迹</span>
           <span id="journey-onboarding-dot" class="onboarding-dot" aria-hidden="true"></span>
@@ -93,6 +93,7 @@
         <div class="layers-pop-section">
           <div class="layers-pop-heading" id="txt-layer-grp-journey">青史行迹 · 时空巡礼</div>
           <div class="journey-pop-list">
+            <button type="button" class="journey-chip-btn" data-journey="qinshihuang" id="btn-j-qinshihuang">秦王扫六合</button>
             <button type="button" class="journey-chip-btn" data-journey="zhangqian" id="btn-j-zhangqian">张骞通西域</button>
             <button type="button" class="journey-chip-btn" data-journey="zhugeliang" id="btn-j-zhugeliang">诸葛亮北伐</button>
             <button type="button" class="journey-chip-btn" data-journey="xuanzang" id="btn-j-xuanzang">玄奘西行</button>
@@ -106,6 +107,13 @@
         <div class="layers-pop-heading" id="txt-journey-pop-heading">青史行迹 · 人物时空巡礼</div>
         <div class="journey-pop-sub" id="txt-journey-pop-sub">跟随历史人物足迹，跨越年代、州郡与诗词纪事</div>
         <div class="journey-menu-list">
+          <button type="button" class="journey-menu-item journey-chip-btn" data-journey="qinshihuang" id="btn-jm-qinshihuang">
+            <span class="jm-badge" style="background:#5a554f" id="lbl-jm-badge-qinshihuang">战国·秦</span>
+            <span class="jm-body">
+              <span class="jm-title" id="lbl-jm-title-qinshihuang">秦王扫六合 · 统一六国战局</span>
+              <span class="jm-meta" id="lbl-jm-meta-qinshihuang">咸阳 → 灭韩 → 灭赵 → 灭魏 → 灭楚 → 灭燕 → 灭齐 · 10站</span>
+            </span>
+          </button>
           <button type="button" class="journey-menu-item journey-chip-btn" data-journey="sushi" id="btn-jm-sushi">
             <span class="jm-badge" style="background:#7a3b69" id="lbl-jm-badge-sushi">北宋</span>
             <span class="jm-body">
@@ -287,7 +295,7 @@
         <div id="scrubber-Bubble" aria-live="polite">
           <span id="bubble-text">公元前214年 · 秦始皇三十三年</span>
         </div>
-        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-221" aria-valuemax="2026" aria-valuenow="-214" aria-label="年份滑块">
+        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-403" aria-valuemax="2026" aria-valuenow="-214" aria-label="年份滑块">
           <div id="dynasty-bands"></div>
           <div id="scrubber-handle"></div>
         </div>
@@ -295,16 +303,16 @@
       </div>
 
       <div class="year-stepper">
-        <input id="inp-year" type="number" min="-221" max="2026" step="1" value="-214" aria-label="输入年份（负数为公元前）" />
+        <input id="inp-year" type="number" min="-403" max="2026" step="1" value="-214" aria-label="输入年份（负数为公元前）" />
         <span class="unit-label" id="txt-year-suffix">年</span>
       </div>
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261010j"></script>
-  <script src="js/atlas_snapshots.js?v=20261010j"></script>
-  <script src="js/map_data.js?v=20261010j"></script>
-  <script src="js/i18n_dict.js?v=20261010j"></script>
-  <script src="js/app.js?v=20261010j"></script>
+  <script src="js/china_geo_data.js?v=20261011b"></script>
+  <script src="js/atlas_snapshots.js?v=20261011b"></script>
+  <script src="js/map_data.js?v=20261011b"></script>
+  <script src="js/i18n_dict.js?v=20261011b"></script>
+  <script src="js/app.js?v=20261011b"></script>
 </body>
 </html>

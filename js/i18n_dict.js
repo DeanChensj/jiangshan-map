@@ -2,7 +2,7 @@ window.EN_LOCALE = {
   "strings": {
     "title": "Chronicles of the Realm · Historical Atlas of China",
     "brand_seal": "江山时序",
-    "brand_sub": "Atlas of China · 221 BCE → Present",
+    "brand_sub": "Atlas of China · 403 BCE → Present",
     "btn_layers": "Layers",
     "btn_terrain": "Terrain",
     "layer_grp_hist": "Historical Atlas Layers",
@@ -49,7 +49,7 @@ window.EN_LOCALE = {
     "trace_click_hint": "Click any dynasty to jump on map",
     "tick_now": "Now",
     "btn_close": "Close",
-    "trace_hint": "Click anywhere on the map to see which polities ruled that spot from 221 BCE to the present. Click any row to jump to that year.",
+    "trace_hint": "Click anywhere on the map to see which polities ruled that spot from 403 BCE to the present. Click any row to jump to that year.",
     "trace_caveat": "Computed from the schematic polygons on this site; for reference only.",
     "trace_now_k": "Today",
     "trace_outside": "Sea / Outside dataset",
@@ -104,6 +104,12 @@ window.EN_LOCALE = {
     "now_prov": "Today: "
   },
   "dynasties": {
+    "zhanguo": {
+      "name": "Warring States",
+      "short": "Warring States",
+      "capital": "Xianyang (Qin) · Luoyang (Zhou) · Seven Capitals",
+      "desc": "Beginning in 403 BCE when King Weilie of Zhou recognized Han, Zhao, and Wei as feudal lords (the opening year of Sima Guang’s Zizhi Tongjian), the Seven Warring States (Qin, Chu, Qi, Yan, Zhao, Wei, Han) vied for supremacy through legalist reforms, frontier wall-building, and the Hundred Schools of Thought. Strengthened by Shang Yang’s reforms and the conquest of Ba-Shu, King Zheng of Qin annexed all six rival states between 230 and 221 BCE (drag across 9 stages)."
+    },
     "qin": {
       "name": "Qin",
       "short": "Qin",
@@ -485,8 +491,8 @@ window.EN_LOCALE = {
       "Gaochang"
     ],
     "tang:713": [
-      "Kaiyuan heyday under Emperor Xuanzong begins",
-      "Chang'an"
+      "Kaiyuan heyday under Emperor Xuanzong begins; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
+      "Chang'an · Huhancheng"
     ],
     "tang:755": [
       "An Lushan Rebellion breaks out at Fanyang",
@@ -1308,10 +1314,6 @@ window.EN_LOCALE = {
       "Emperor Xuanzong abolishes Jiaozhi Province and withdraws Ming troops from Vietnam; Le Loi founds the Later Le Dynasty",
       "Jiaozhi (Hanoi)"
     ],
-    "tang:713": [
-      "Kaiyuan heyday under Emperor Xuanzong begins; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
-      "Chang'an · Huhancheng"
-    ],
     "tang:727": [
       "After Tibet raids Guazhou, Tang generals Wang Junchuo and Prince Li Yi counterattack and capture strategic Shibao Fortress, securing Hexi and Longyou",
       "Liangzhou · Shibao Fortress"
@@ -1347,6 +1349,78 @@ window.EN_LOCALE = {
     "ming:1519": [
       "Philosopher-governor Wang Yangming suppresses the Prince of Ning (Zhu Chenhao) Rebellion at Nanchang in 35 days",
       "Nanchang-fu"
+    ],
+    "zhanguo:-403": [
+      "King Weilie of Zhou officially recognizes Wei, Zhao, and Han as feudal lords (Partition of Jin — opening of Zizhi Tongjian)",
+      "Luoyang · Jinyang"
+    ],
+    "zhanguo:-386": [
+      "Tian He is recognized as Marquis of Qi (Tian Usurpation of Qi), completing the Seven Warring States",
+      "Linzi"
+    ],
+    "zhanguo:-356": [
+      "Duke Xiao of Qin appoints Shang Yang to enact Legalist & military-agrarian reforms; capital moves to Xianyang in 350 BCE",
+      "Xianyang"
+    ],
+    "zhanguo:-353": [
+      "Battles of Guiling (353 BCE) and Maling (341 BCE): Sun Bin and Tian Ji defeat Wei, shifting hegemony in the central plains",
+      "Maling (SE of Daming)"
+    ],
+    "zhanguo:-316": [
+      "Qin conquers the kingdoms of Shu and Ba in Sichuan (316 BCE) and takes Hanzhong from Chu at Danyang (312 BCE)",
+      "Chengdu · Hanzhong"
+    ],
+    "zhanguo:-307": [
+      "King Wuling of Zhao adopts “Nomadic Dress and Cavalry Archery”, conquering Zhongshan and expanding north; Chu annexes Yue in 306 BCE",
+      "Handan"
+    ],
+    "zhanguo:-284": [
+      "Yan general Yue Yi leads a five-state coalition to crush Qi, capturing over 70 Qi cities including Linzi",
+      "Linzi"
+    ],
+    "zhanguo:-278": [
+      "Qin general Bai Qi captures the Chu capital Ying (establishing Nan Commandery) as Qu Yuan drowns in the Miluo River; Tian Dan restores Qi in 279 BCE",
+      "Ying (Jiangling)"
+    ],
+    "zhanguo:-260": [
+      "Battle of Changping: Bai Qi encircles and annihilates 400,000 Zhao troops under Zhao Kuo, breaking Zhao’s military power",
+      "Changping (Gaoping)"
+    ],
+    "zhanguo:-256": [
+      "Qin extinguishes the Eastern Zhou royal house; Shu Governor Li Bing constructs the Dujiangyan irrigation system",
+      "Dujiangyan · Luoyang"
+    ],
+    "zhanguo:-238": [
+      "King Zheng of Qin assumes personal rule, crushes Lao Ai’s revolt, dismisses Lü Buwei, and adopts Li Si & Wei Liao’s unification strategy",
+      "Xianyang"
+    ],
+    "zhanguo:-236": [
+      "Wang Jian, Huan Yi, and Yang Duanhe attack Zhao and take nine cities around Ye, opening the wars of unification",
+      "Ye (Linzhang)"
+    ],
+    "zhanguo:-230": [
+      "Conquest of Han: Qin Governor Teng captures King An of Han at Xinzheng and establishes Yingchuan Commandery — first of the six states to fall",
+      "Xinzheng"
+    ],
+    "zhanguo:-228": [
+      "Conquest of Zhao: Wang Jian captures Handan and King Qian of Zhao; Prince Jia flees north to proclaim the rump state of Dai",
+      "Handan"
+    ],
+    "zhanguo:-226": [
+      "After Jing Ke’s failed assassination in Xianyang (227 BCE), Wang Jian routs Yan west of the Yi River and captures Jicheng; King Xi flees to Liaodong",
+      "Jicheng (Beijing)"
+    ],
+    "zhanguo:-225": [
+      "Conquest of Wei: Wang Ben channels the Yellow River and Honggou Canal to flood Daliang; King Jia surrenders and Wei falls",
+      "Daliang (Kaifeng)"
+    ],
+    "zhanguo:-223": [
+      "Conquest of Chu: Leading 600,000 Qin troops, Wang Jian and Meng Wu defeat Xiang Yan and capture King Fuchu at Shouchun",
+      "Shouchun (Shouxian)"
+    ],
+    "zhanguo:-222": [
+      "Wang Ben conquers Yan in Liaodong and Dai in Shanxi while Wang Jian pacifies Jiangnan; only Qi remains on the eastern coast",
+      "Xiangping (Liaoyang)"
     ]
   },
   "corridors": {
@@ -1409,6 +1483,10 @@ window.EN_LOCALE = {
     "zhenghe": [
       "Zheng He's Voyages",
       "Seven expeditions (1405–1433) from Nanjing and Taicang across the Indian Ocean to East Africa."
+    ],
+    "wall_zhanguo": [
+      "Warring States Great Walls (Qin · Zhao · Yan)",
+      "Northern frontier walls built by Qin, Zhao (under King Wuling), and Yan (under King Zhao) against the Xiongnu and Donghu, later linked into the Qin Great Wall."
     ]
   },
   "dict": {
@@ -1855,7 +1933,7 @@ window.EN_LOCALE = {
     "寿阳": "Shouyang",
     "京口": "Jingkou",
     "龙城": "Longcheng",
-    "晋阳": "Jinyang",
+    "晋阳": "Jinyang (Taiyuan)",
     "广州": "Guangzhou",
     "大兴": "Daxing",
     "东都洛阳": "Eastern Capital Luoyang",
@@ -2939,7 +3017,7 @@ window.EN_LOCALE = {
     "定西州": "Dingxi Zhou",
     "巩昌路": "Gongchang Lu",
     "陇州": "Long Zhou",
-    "兰州": "Lan Zhou",
+    "兰州": "Lanzhou",
     "宁夏府路": "Ningxiafu Lu",
     "肃州路": "Suzhou Lu",
     "甘州路": "Ganzhou Lu",
@@ -3676,23 +3754,23 @@ window.EN_LOCALE = {
     "吉林将军驻地": "Seat of the General of Jilin",
     "后唐建号之地": "Founding seat of Later Tang",
     "吴郡治所": "Seat of Wu Commandery",
-    "四川省会": "Provincial capital of Sichuan",
+    "四川省会": "Capital of Sichuan Province",
     "天山北路重镇": "Key stronghold north of Tianshan",
     "太原郡治": "Seat of Taiyuan Commandery",
     "契丹/辽上京": "Supreme Capital of Khitan / Liao",
     "孙吴陪都": "Secondary capital of Eastern Wu",
     "宁州治所": "Seat of Ningzhou",
-    "安徽省会": "Provincial capital of Anhui",
+    "安徽省会": "Capital of Anhui Province",
     "宣武军节度使治所": "Seat of Xuanwu Military Commissioner",
     "山东东西道": "Shandong East & West Circuits",
     "山东布政司治所": "Seat of Shandong Provincial Administration",
-    "山东省会": "Provincial capital of Shandong",
+    "山东省会": "Capital of Shandong Province",
     "山东重镇": "Major stronghold of Shandong",
     "山南东道治所": "Seat of Shannan East Circuit",
     "山南东道重镇": "Major hub of Shannan East Circuit",
     "山南西道治所": "Seat of Shannan West Circuit",
     "山西布政司治所": "Seat of Shanxi Provincial Administration",
-    "山西省会": "Provincial capital of Shanxi",
+    "山西省会": "Capital of Shanxi Province",
     "岭北湖南道": "Hunan Circuit under Lingbei/Hugwang",
     "岭北重镇": "Northern frontier stronghold",
     "巴郡治所": "Seat of Ba Commandery",
@@ -3732,18 +3810,18 @@ window.EN_LOCALE = {
     "江南西道治所，《滕王阁序》": "Seat of Jiangnan West Circuit; Pavilion of Prince Teng",
     "江州治所": "Seat of Jiangzhou",
     "江西布政司治所": "Seat of Jiangxi Provincial Administration",
-    "江西省会": "Provincial capital of Jiangxi",
+    "江西省会": "Capital of Jiangxi Province",
     "江西行省治所": "Seat of Jiangxi Branch Secretariat",
     "河东郡治": "Seat of Hedong Commandery",
     "河东重镇": "Major hub of Hedong",
     "河北西路治所": "Seat of Hebei West Circuit",
     "河南布政司治所": "Seat of Henan Provincial Administration",
-    "河南省会": "Provincial capital of Henan",
+    "河南省会": "Capital of Henan Province",
     "浙东观察使治所": "Seat of Zhedong Observation Commissioner",
     "淮东江防重镇": "Key Yangtze defense hub of Eastern Huainan",
     "淮南东路治所": "Seat of Huainan East Circuit",
     "淮南西路重镇": "Major hub of Huainan West Circuit",
-    "湖南省会": "Provincial capital of Hunan",
+    "湖南省会": "Capital of Hunan Province",
     "湖南观察使治所": "Seat of Hunan Observation Commissioner",
     "湖广行省治所": "Seat of Huguang Branch Secretariat",
     "湖广重镇": "Major hub of Huguang",
@@ -3754,7 +3832,7 @@ window.EN_LOCALE = {
     "益州郡治": "Seat of Yizhou Commandery",
     "直隶总督驻地": "Seat of the Viceroy of Zhili",
     "福建布政司治所": "Seat of Fujian Provincial Administration",
-    "福建省会": "Provincial capital of Fujian",
+    "福建省会": "Capital of Fujian Province",
     "福建观察使治所": "Seat of Fujian Observation Commissioner",
     "福建路治所": "Seat of Fujian Circuit",
     "福建道宣慰司": "Fujian Pacification Commission",
@@ -3773,7 +3851,7 @@ window.EN_LOCALE = {
     "西北国际交通枢纽": "International Silk Road hub of the Northwest",
     "豫章郡治": "Seat of Yuzhang Commandery",
     "贵州布政司治所": "Seat of Guizhou Provincial Administration",
-    "贵州省会": "Provincial capital of Guizhou",
+    "贵州省会": "Capital of Guizhou Province",
     "辽东京道治所": "Seat of Liao Dongjing Circuit",
     "辽东郡治": "Seat of Liaodong Commandery",
     "辽东都司治所": "Seat of Liaodong Regional Military Commission",
@@ -3924,23 +4002,11 @@ window.EN_LOCALE = {
     "辰国（三韩）": "Jin State (Samhan)",
     "三韩（辰国）": "Samhan (Three Han)",
     "夫余 · 秽貊": "Buyeo & Yemaek",
-    "天津": "Tianjin",
     "石家庄": "Shijiazhuang",
-    "太原": "Taiyuan",
     "呼和浩特": "Hohhot",
-    "长春": "Changchun",
-    "合肥": "Hefei",
-    "福州": "Fuzhou",
-    "南昌": "Nanchang",
-    "济南": "Jinan",
-    "长沙": "Changsha",
     "南宁": "Nanning",
     "海口": "Haikou",
-    "贵阳": "Guiyang",
-    "兰州": "Lanzhou",
     "西宁": "Xining",
-    "银川": "Yinchuan",
-    "澳门": "Macau",
     "珠海": "Zhuhai",
     "汕头": "Shantou",
     "厦门": "Xiamen",
@@ -3950,25 +4016,16 @@ window.EN_LOCALE = {
     "首都 · 直辖市": "National Capital · Municipality",
     "直辖市": "Direct-Administered Municipality",
     "河北省会": "Capital of Hebei Province",
-    "山西省会": "Capital of Shanxi Province",
     "内蒙古自治区首府": "Capital of Inner Mongolia Autonomous Region",
     "辽宁省会": "Capital of Liaoning Province",
     "吉林省会": "Capital of Jilin Province",
     "黑龙江省会": "Capital of Heilongjiang Province",
     "江苏省会": "Capital of Jiangsu Province",
     "浙江省会": "Capital of Zhejiang Province",
-    "安徽省会": "Capital of Anhui Province",
-    "福建省会": "Capital of Fujian Province",
-    "江西省会": "Capital of Jiangxi Province",
-    "山东省会": "Capital of Shandong Province",
-    "河南省会": "Capital of Henan Province",
     "湖北省会": "Capital of Hubei Province",
-    "湖南省会": "Capital of Hunan Province",
     "广东省会": "Capital of Guangdong Province",
     "广西壮族自治区首府": "Capital of Guangxi Zhuang Autonomous Region",
     "海南省会": "Capital of Hainan Province",
-    "四川省会": "Capital of Sichuan Province",
-    "贵州省会": "Capital of Guizhou Province",
     "云南省会": "Capital of Yunnan Province",
     "西藏自治区首府": "Capital of Tibet Autonomous Region",
     "陕西省会": "Capital of Shaanxi Province",
@@ -3980,10 +4037,6 @@ window.EN_LOCALE = {
     "香港特别行政区 · 1997 年回归": "Hong Kong SAR · Returned in 1997",
     "澳门特别行政区 · 1999 年回归": "Macau SAR · Returned in 1999",
     "沿海开放城市 · 计划单列市": "Coastal Open City · Sub-provincial City",
-    "上京道": "Shangjing Circuit",
-    "中京道": "Zhongjing Circuit",
-    "南京道": "Nanjing Circuit",
-    "西京道": "Xijing Circuit",
     "中京大定府": "Zhongjing Dadingfu",
     "赤峰·宁城": "Ningcheng, Chifeng",
     "辽中京道治所": "Seat of Liao Zhongjing Circuit",
@@ -3991,6 +4044,86 @@ window.EN_LOCALE = {
     "南诏都城，738 年皮逻阁统一六诏": "Nanzhao capital, unified by Piluoge in 738",
     "延绥镇": "Yansui Garrison",
     "榆林": "Yulin",
-    "九边延绥镇，成化十年余子俊筑边墙": "Nine Garrisons Yansui defense hub; Yu Zijun built the Ordos wall in 1474"
+    "九边延绥镇，成化十年余子俊筑边墙": "Nine Garrisons Yansui defense hub; Yu Zijun built the Ordos wall in 1474",
+    "战国": "Warring States",
+    "战国长城（秦·赵·燕北长城）": "Warring States Walls (Qin · Zhao · Yan)",
+    "赵": "Zhao",
+    "韩": "Han (Warring States)",
+    "楚": "Chu",
+    "燕": "Yan",
+    "燕（辽东）": "Yan (Liaodong)",
+    "周": "Royal Zhou",
+    "越": "Yue",
+    "巴·蜀": "Ba & Shu",
+    "义渠": "Yiqu (Rong)",
+    "中山": "Zhongshan",
+    "代": "Dai",
+    "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，巴蜀、越、中山尚存": "403–341 BCE · Partition of Jin, Tian Qi & Hegemony of Wei: Seven Warring States alongside Ba-Shu, Yue & Zhongshan",
+    "前 340 — 前 296 · 商鞅变法与秦并巴蜀、赵胡服骑射辟塞北、楚灭越尽取吴越": "340–296 BCE · Shang Yang’s Reforms, Qin Conquest of Ba-Shu, Zhao’s Cavalry Reforms & Chu’s Conquest of Yue",
+    "前 295 — 前 239 · 乐毅破齐、白起拔郢与长平之战：秦取巴蜀汉中南郡上党，独霸西方": "295–239 BCE · Yue Yi’s Campaign against Qi, Bai Qi’s Capture of Ying & Battle of Changping",
+    "前 238 — 前 231 · 秦王政亲政与灭六国前夕：秦灭周室置三川、太原、东郡，腰斩合纵": "238–231 BCE · King Zheng Assumes Personal Rule: Qin Annexes Zhou, Taiyuan & Dongjun, Severing the Six States",
+    "前 230 — 前 229 · 秦王扫六合之首灭韩国：内史腾俘韩王安，置颍川郡": "230–229 BCE · Unification Wars — Fall of Han: Governor Teng Captures King An and Establishes Yingchuan Commandery",
+    "前 228 — 前 227 · 秦王扫六合之攻克邯郸灭赵：王翦破赵俘赵王迁，公子嘉北奔代郡": "228–227 BCE · Unification Wars — Fall of Zhao: Wang Jian Captures Handan; Prince Jia Flees to Dai",
+    "前 226 · 秦王扫六合之易水破燕：荆轲刺秦后王翦攻拔燕都蓟城，燕王喜东退辽东": "226 BCE · Unification Wars — Capture of Jicheng: Wang Jian Takes the Yan Capital; King Xi Retreats to Liaodong",
+    "前 225 — 前 224 · 秦王扫六合之水灌大梁灭魏：王贲引河沟灌城，魏王假出降，三晋尽入秦": "225–224 BCE · Unification Wars — Fall of Wei: Wang Ben Floods Daliang and Receives King Jia’s Surrender",
+    "前 223 — 前 222 · 秦王扫六合之王翦六十万灭楚、王贲灭燕代：六国唯余齐国孤悬东海": "223–222 BCE · Unification Wars — Fall of Chu, Yan & Dai: Wang Jian Conquers Chu and Wang Ben Takes Liaodong; Only Qi Remains",
+    "战国初期（约前350年 · 三家分晋与七雄并立）": "Early Warring States (c. 350 BCE · Partition of Jin & Seven Powers)",
+    "前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄格局确立；魏文侯、武侯任李悝、吴起率先称雄中原，巴、蜀、越、中山与东周王畿并存。": "In 403 BCE King Weilie of Zhou recognized Han, Zhao, and Wei as feudal lords (opening Zizhi Tongjian), and in 386 BCE the Tian house became Marquis of Qi. Wei initially dominated the Central Plains while Ba, Shu, Yue, Zhongshan, and Royal Zhou coexisted.",
+    "战国中期（约前300年 · 秦并巴蜀、赵胡服骑射与楚灭越）": "Mid Warring States (c. 300 BCE · Qin Annexes Ba-Shu, Zhao’s Cavalry Reforms & Chu Conquers Yue)",
+    "商鞅变法后秦收复河西与上郡，前316年司马错灭巴蜀、前312年取汉中，据有天府之国；赵武灵王胡服骑射辟云中雁门、灭中山；燕将秦开却东胡置辽东五郡；前306年楚怀王灭越尽取吴越之地。": "Strengthened by Shang Yang’s reforms, Qin annexed Ba-Shu (316 BCE) and Hanzhong (312 BCE); King Wuling of Zhao adopted cavalry archery, conquered Zhongshan, and established Yunzhong and Yanmen; Yan general Qin Kai pushed back the Donghu to establish five northern commanderies; Chu annexed Yue in 306 BCE.",
+    "战国后期（前260年 · 白起拔郢与长平之战）": "Late Warring States (260 BCE · Capture of Ying & Battle of Changping)",
+    "前284年乐毅率五国联军破齐；前278年秦将白起拔楚都郢置南郡，楚东迁陈郢；前260年秦赵长平决战，白起坑赵卒四十万，山东六国再难独力抗秦。": "In 284 BCE Yue Yi led a five-state coalition to rout Qi; in 278 BCE Bai Qi captured the Chu capital Ying, forcing Chu east to Chen; in 260 BCE Bai Qi destroyed 400,000 Zhao troops at Changping, leaving no eastern state able to match Qin alone.",
+    "秦王政亲政前夕（前238年 · 灭周置三川、东郡与六国合纵终结）": "Eve of Unification (238 BCE · King Zheng Assumes Personal Rule)",
+    "前256年秦灭周室置三川郡，前247年置太原郡，前242年置东郡与齐接界，彻底腰斩六国南北合纵通道；前238年秦王政亲政，部署十年灭六国之战。": "Qin annexed the Eastern Zhou domain (256 BCE), established Taiyuan (247 BCE) and Dongjun (242 BCE) to sever the north-south coalition corridor, and in 238 BCE King Zheng assumed personal rule to launch the unification campaigns.",
+    "秦王扫六合 · 首灭韩国（前230年 · 内史腾俘韩王安，置颍川郡）": "Qin Unification · Conquest of Han (230 BCE · Yingchuan Commandery Established)",
+    "前230年（秦王政十七年），秦内史腾攻韩，俘韩王安，尽纳其地置颍川郡。韩国成为六国中第一个覆灭的诸侯国。": "In 230 BCE Qin Governor Teng captured King An of Han at Xinzheng and established Yingchuan Commandery, making Han the first of the six states to fall.",
+    "秦王扫六合 · 攻克邯郸灭赵（前228年 · 王翦破赵，公子嘉奔代）": "Qin Unification · Fall of Handan & Conquest of Zhao (228 BCE)",
+    "前228年（秦王政十九年），王翦大破赵军攻克邯郸，俘赵王迁；赵公子嘉率宗族奔代称代王，与燕联兵拒秦。": "In 228 BCE Wang Jian captured Handan and King Qian of Zhao; Prince Jia fled north to Dai to continue resistance alongside Yan.",
+    "秦王扫六合 · 易水破燕拔蓟城（前226年 · 燕王喜东保辽东）": "Qin Unification · Capture of Jicheng in Yan (226 BCE)",
+    "前227年荆轲刺秦不果，王翦、辛胜大破燕代联军于易水之西，前226年十月攻拔燕都蓟城，燕王喜斩太子丹首级献秦，退保辽东襄平。": "Following Jing Ke’s failed assassination attempt (227 BCE), Wang Jian routed the Yan-Dai army west of the Yi River and captured Jicheng in 226 BCE, forcing King Xi of Yan to retreat to Liaodong.",
+    "秦王扫六合 · 水灌大梁灭魏（前225年 · 三晋尽入于秦）": "Qin Unification · Flooding of Daliang & Conquest of Wei (225 BCE)",
+    "前225年（秦王政二十二年），王贲引黄河、鸿沟之水灌魏都大梁，三月城坏，魏王假出降，魏国灭亡，三晋故地尽归于秦。": "In 225 BCE Wang Ben diverted the Yellow River and Honggou Canal to flood Daliang for three months; King Jia surrendered, completing Qin’s conquest of the Three Jins.",
+    "秦王扫六合 · 灭楚平燕代，唯余齐国（前223—前222年）": "Qin Unification · Conquest of Chu, Yan & Dai; Only Qi Remains (223–222 BCE)",
+    "前223年王翦、蒙武统六十万大军破楚拔寿春，俘楚王负刍；前222年王贲攻灭辽东燕王喜与代王嘉，王翦悉定江南置会稽郡，六国唯余东海之滨的齐国孤悬。": "In 223 BCE Wang Jian and Meng Wu conquered Chu at Shouchun; in 222 BCE Wang Ben extinguished Yan in Liaodong and Dai while Wang Jian pacified Jiangnan, leaving Qi isolated on the eastern coast.",
+    "洛阳（王城）": "Luoyang (Royal Zhou)",
+    "新郑": "Xinzheng",
+    "郢都": "Ying (Jiangling)",
+    "蓟城": "Jicheng (Beijing)",
+    "雍城": "Yongcheng",
+    "安邑": "Anyi",
+    "阳翟": "Yangdi",
+    "陈郢": "Chen (Huaiyang)",
+    "吴（姑苏）": "Wu (Suzhou)",
+    "江州（巴）": "Jiangzhou (Chongqing)",
+    "灵寿（中山）": "Lingshou (Zhongshan)",
+    "上党": "Shangdang (Changzhi)",
+    "云中": "Yunzhong",
+    "即墨": "Jimo",
+    "秦都（前350孝公迁此）": "Qin capital (moved here by Duke Xiao in 350 BCE)",
+    "东周王室都城": "Royal capital of Eastern Zhou",
+    "赵国都城": "Capital of the Zhao kingdom",
+    "魏国都城（前364迁此）": "Capital of the Wei kingdom (from 364 BCE)",
+    "韩国都城（前375灭郑迁此）": "Capital of the Han kingdom (from 375 BCE)",
+    "齐国都城 · 稷下学宫": "Capital of Qi · Home of the Jixia Academy",
+    "楚国都城（前278白起拔郢）": "Capital of Chu (captured by Bai Qi in 278 BCE)",
+    "楚国后期都城（前241迁此）": "Late Chu capital (moved here in 241 BCE)",
+    "燕国都城": "Capital of the Yan kingdom",
+    "秦国旧都": "Former capital of Qin",
+    "魏国旧都": "Early capital of Wei",
+    "赵国初都 · 三家分晋重镇": "Early Zhao capital · Key stronghold in the Partition of Jin",
+    "韩国初都 · 后为颍川郡治": "Early Han capital · Later seat of Yingchuan Commandery",
+    "楚国中期都城（前278—前241）": "Mid-period Chu capital (278–241 BCE)",
+    "古蜀国都 · 前316秦灭蜀置郡": "Capital of Ancient Shu · Seat of Qin Shu Commandery after 316 BCE",
+    "越国都城 · 后为楚春申君封邑": "Capital of Yue · Later fief of Lord Chunshen of Chu",
+    "巴国都城 · 秦巴郡治": "Capital of Ba · Seat of Qin Ba Commandery",
+    "中山国都城（前296赵灭中山）": "Capital of Zhongshan (conquered by Zhao in 296 BCE)",
+    "西门豹治邺 · 魏赵漳水重镇": "Governed by Ximen Bao · Key Wei/Zhao stronghold on the Zhang River",
+    "韩赵秦争夺要冲 · 长平之战": "Strategic highland contested by Han, Zhao & Qin · Battle of Changping",
+    "秦楚必争汉中重镇": "Strategic Hanzhong stronghold contested by Qin and Chu",
+    "楚宛邑 · 秦南阳郡治": "Chu city of Wan · Seat of Qin Nanyang Commandery",
+    "赵武灵王辟边置云中郡": "Seat of Yunzhong Commandery established by King Wuling of Zhao",
+    "代郡治所 · 前228赵公子嘉奔代": "Seat of Dai Commandery · Refuge of Prince Jia of Zhao in 228 BCE",
+    "燕辽东郡治 · 燕王喜终保于此": "Seat of Yan Liaodong Commandery · Final refuge of King Xi of Yan",
+    "齐东重镇 · 田单火牛阵复国之地": "Eastern Qi stronghold · Where Tian Dan launched his Fire-Oxen counterattack"
   }
 };

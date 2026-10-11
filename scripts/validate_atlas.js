@@ -63,8 +63,8 @@ function main() {
   }
 
   // 3. Validate historical dynasties, phases, settlements, and snapshot references
-  assert(Array.isArray(dynasties) && dynasties.length === 17, `Expected 17 dynasties, got ${dynasties && dynasties.length}`);
-  assert.strictEqual(dynasties[0].fromYear, -221, 'Timeline must start at 221 BCE (-221)');
+  assert(Array.isArray(dynasties) && dynasties.length === 18, `Expected 18 dynasties, got ${dynasties && dynasties.length}`);
+  assert.strictEqual(dynasties[0].fromYear, -403, 'Timeline must start at 403 BCE (-403)');
   assert(dynasties[dynasties.length - 1].toYear >= 2026, 'Timeline must cover up to present (2026)');
 
   let totalSettlements = 0;

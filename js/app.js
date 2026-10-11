@@ -456,6 +456,8 @@
 
     static get CHINESE_ERA_SPANS() {
       return [
+        [-403, '周威烈王', 23], [-401, '周安王'], [-375, '周烈王'], [-368, '周显王'], [-320, '周慎靓王'], [-314, '周赧王'],
+        [-255, '秦昭襄王', 52], [-250, '秦孝文王'], [-249, '秦庄襄王'], [-246, '秦王政'],
         [-221, '秦始皇', 26], [-209, '秦二世'], [-206, '汉高帝'], [-194, '西汉惠帝'], [-187, '西汉高后'],
         [-179, '西汉文帝前元'], [-163, '西汉文帝后元'], [-156, '西汉景帝前元'], [-149, '西汉景帝中元'], [-143, '西汉景帝后元'],
         [-140, '西汉建元'], [-134, '西汉元光'], [-128, '西汉元朔'], [-122, '西汉元狩'], [-116, '西汉元鼎'], [-110, '西汉元封'],
@@ -577,7 +579,7 @@
       document.title = this.uiStr('title', '江山时序 · 中国历史地图时间轴');
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
-      this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 秦 → 今');
+      this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
       const lblLayersBtn = this._id('lbl-layers-btn');
       if (lblLayersBtn) {
         lblLayersBtn.textContent = this.uiStr('btn_layers', '图层');
@@ -615,6 +617,10 @@
         grpJrn.textContent =
           this.locale === 'en' ? 'Historical Journeys' : '青史行迹 · 时空巡礼';
       }
+      const btnQsh = this._id('btn-j-qinshihuang');
+      if (btnQsh) {
+        btnQsh.textContent = this.locale === 'en' ? "Qin's Unification" : '秦王扫六合';
+      }
       const btnZq = this._id('btn-j-zhangqian');
       if (btnZq) {
         btnZq.textContent = this.locale === 'en' ? "Zhang Qian's Envoy" : '张骞通西域';
@@ -643,8 +649,8 @@
       if (actJourneyBtn) {
         actJourneyBtn.title =
           this.locale === 'en'
-            ? 'Historical Journeys · Su Shi / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
-            : '青史行迹 · 人物时空巡礼（苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
+            ? 'Historical Journeys · Qin Unification / Su Shi / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
+            : '青史行迹 · 人物时空巡礼（秦王扫六合 / 苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
       }
       const jPopHead = this._id('txt-journey-pop-heading');
       if (jPopHead) {
@@ -662,6 +668,13 @@
         const el = this._id(id);
         if (el) el.textContent = this.locale === 'en' ? en : zh;
       };
+      setTxt('lbl-jm-badge-qinshihuang', '战国·秦', 'Qin');
+      setTxt('lbl-jm-title-qinshihuang', '秦王扫六合 · 统一六国战局', "Qin Shi Huang's Unification Wars");
+      setTxt(
+        'lbl-jm-meta-qinshihuang',
+        '咸阳 → 灭韩 → 灭赵 → 灭魏 → 灭楚 → 灭燕 → 灭齐 · 10站',
+        'Xianyang → Han → Zhao → Wei → Chu → Yan → Qi · 10 stops'
+      );
       setTxt('lbl-jm-badge-sushi', '北宋', 'N. Song');
       setTxt('lbl-jm-title-sushi', '苏轼宦海贬谪行迹', "Su Shi's Literary Exile");
       setTxt(
@@ -1393,6 +1406,13 @@
 
     _journeyKeyForMilestone(dynasty, m) {
       if (!dynasty || !m) return null;
+      if (
+        dynasty.key === 'zhanguo' &&
+        [-238, -236, -230, -228, -227, -226, -225, -223, -222].includes(m.year)
+      ) {
+        return 'qinshihuang';
+      }
+      if (dynasty.key === 'qin' && m.year === -221) return 'qinshihuang';
       if (dynasty.key === 'xihan' && m.year === -138) return 'zhangqian';
       if (dynasty.key === 'donghan' && m.year === 208) return 'zhugeliang';
       if (dynasty.key === 'sanguo' && (m.year === 225 || m.year === 228 || m.year === 234)) {
@@ -1922,6 +1942,7 @@
     static get PLACE_LANDMARK_EVENTS() {
       return [
         // 长安 / 咸阳 / 西安
+        { dynastyKey: 'zhanguo', year: -350, coord: [108.71, 34.33], site: '咸阳', siteEn: 'Xianyang', zh: '秦孝公与商鞅自栎阳迁都咸阳，废井田、设县制、统一度量衡', en: 'Duke Xiao of Qin and Shang Yang move the capital to Xianyang and launch the Second Reform' },
         { dynastyKey: 'qin', year: -221, coord: [108.71, 34.33], site: '咸阳', siteEn: 'Xianyang', zh: '秦始皇统一六国定都咸阳，收天下兵器铸十二金人', en: 'Qin Shi Huang unifies China with Xianyang as imperial capital' },
         { dynastyKey: 'qin', year: -206, coord: [109.21, 34.37], site: '咸阳·鸿门', siteEn: 'Xianyang / Hongmen', zh: '刘邦入关破咸阳约法三章；项羽于鸿门设宴', en: 'Liu Bang enters Xianyang; Xiang Yu hosts the Feast at Hongmen' },
         { dynastyKey: 'xihan', year: -200, coord: [108.94, 34.26], site: '长安', siteEn: "Chang'an", zh: '萧何营建未央宫成，汉高祖自栎阳正式定都长安', en: "Xiao He completes Weiyang Palace; Chang'an becomes Western Han capital" },
@@ -1941,6 +1962,7 @@
         { dynastyKey: 'roc', year: 1936, coord: [108.94, 34.26], site: '西安', siteEn: "Xi'an", zh: '张学良、杨虎城发动西安事变，促成抗日民族统一战线', en: "Xi'an Incident sparks the Second United Front against Japanese aggression" },
 
         // 洛阳
+        { dynastyKey: 'zhanguo', year: -403, coord: [112.45, 34.62], site: '洛邑（洛阳）', siteEn: 'Luoyi (Luoyang)', zh: '周威烈王于洛邑初命晋大夫魏斯、赵籍、韩虔为诸侯（三家分晋）', en: 'King Weilie of Zhou formally recognizes Wei, Zhao, and Han as marquises at Luoyi' },
         { dynastyKey: 'donghan', year: 25, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '刘秀建立东汉定都洛阳，开启光武中兴', en: 'Liu Xiu establishes the Eastern Han with Luoyang as imperial capital' },
         { dynastyKey: 'donghan', year: 68, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '汉明帝于洛阳创建白马寺，为中国第一古刹', en: 'Emperor Ming of Han establishes White Horse Temple in Luoyang' },
         { dynastyKey: 'sanguo', year: 220, coord: [112.45, 34.62], site: '洛阳', siteEn: 'Luoyang', zh: '曹丕代汉称帝建立曹魏，定都洛阳', en: 'Cao Pi founds Cao Wei with Luoyang as capital' },
@@ -1966,7 +1988,7 @@
         { dynastyKey: 'roc', year: 1912, coord: [118.78, 32.06], site: '南京', siteEn: 'Nanjing', zh: '孙中山于南京就任中华民国临时大总统，宣告共和', en: 'Sun Yat-sen inaugurated in Nanjing as Provisional President of the Republic of China' },
 
         // 蓟 / 幽州 / 燕京 / 大都 / 北京
-        { dynastyKey: 'qin', year: -226, coord: [116.40, 39.90], site: '蓟城', siteEn: 'Ji (Beijing)', zh: '秦将王翦攻拔燕都蓟城，置广阳郡', en: 'Qin general Wang Jian captures the Yan capital Ji and establishes Guangyang Commandery' },
+        { dynastyKey: 'zhanguo', year: -226, coord: [116.40, 39.90], site: '蓟城', siteEn: 'Ji (Beijing)', zh: '秦将王翦、王贲攻拔燕都蓟城，燕王喜走保辽东', en: 'Qin generals Wang Jian and Wang Ben capture the Yan capital Ji; King Xi flees to Liaodong' },
         { dynastyKey: 'tang', year: 755, coord: [116.40, 39.90], site: '范阳（幽州）', siteEn: 'Fanyang (Beijing)', zh: '安禄山于范阳（幽州）起兵反唐，安史之乱爆发', en: 'An Lushan launches his rebellion from Fanyang (Youzhou / Beijing)' },
         { dynastyKey: 'wudai', year: 938, coord: [116.40, 39.90], site: '幽州（辽南京）', siteEn: 'Youzhou (Beijing)', zh: '后晋割燕云十六州，辽升幽州为南京析津府（陪都）', en: 'Liao elevates Youzhou to its Southern Capital, Nanjing Xijin Fu' },
         { dynastyKey: 'nansong', year: 1153, coord: [116.40, 39.90], site: '金中都', siteEn: 'Zhongdu (Beijing)', zh: '金海陵王完颜亮迁都燕京，定名金中都大兴府，首开北京帝都史', en: 'Jin ruler Wanyan Liang moves the imperial capital to Yanjing, renaming it Zhongdu' },
@@ -1980,7 +2002,8 @@
         { dynastyKey: 'roc', year: 1949, coord: [116.40, 39.90], site: '北平（北京）', siteEn: 'Beijing', zh: '北平和平解放，同年10月1日于北京天安门宣告新中国成立', en: 'Peaceful liberation of Beiping; founding of the PRC proclaimed at Tiananmen' },
 
         // 大梁 / 汴州 / 汴京 / 开封
-        { dynastyKey: 'qin', year: -225, coord: [114.35, 34.79], site: '大梁', siteEn: 'Daliang (Kaifeng)', zh: '秦将王贲引黄河鸿沟水灌大梁城，魏王假降，魏亡', en: 'Qin general Wang Ben floods Daliang to conquer the state of Wei' },
+        { dynastyKey: 'zhanguo', year: -364, coord: [114.35, 34.79], site: '大梁', siteEn: 'Daliang (Kaifeng)', zh: '魏惠王自安邑迁都大梁，开凿鸿沟连接黄河与淮泗水系', en: 'King Hui of Wei moves his capital to Daliang and excavates the Honggou Canal' },
+        { dynastyKey: 'zhanguo', year: -225, coord: [114.35, 34.79], site: '大梁', siteEn: 'Daliang (Kaifeng)', zh: '秦将王贲引黄河鸿沟水灌大梁城，魏王假降，魏亡', en: 'Qin general Wang Ben floods Daliang to conquer the state of Wei' },
         { dynastyKey: 'sui', year: 605, coord: [114.35, 34.79], site: '汴州', siteEn: 'Bianzhou (Kaifeng)', zh: '通济渠贯通洛阳经汴州入淮，汴州跃升为天下漕运咽喉', en: 'Grand Canal makes Bianzhou (Kaifeng) the premier north-south waterway hub' },
         { dynastyKey: 'wudai', year: 907, coord: [114.35, 34.79], site: '东都开封府', siteEn: 'Kaifeng', zh: '朱温篡唐建后梁定都开封；后晋、后汉、后周皆都于此', en: 'Zhu Wen founds Later Liang in Kaifeng; four of the Five Dynasties make it their capital' },
         { dynastyKey: 'beisong', year: 960, coord: [114.35, 34.79], site: '东京开封府', siteEn: 'Dongjing (Kaifeng)', zh: '赵匡胤陈桥兵变，于东京开封府建立北宋', en: 'Zhao Kuangyin founds the Northern Song Dynasty with Dongjing (Kaifeng) as capital' },
@@ -1996,6 +2019,8 @@
         { dynastyKey: 'nansong', year: 1276, coord: [120.15, 30.28], site: '临安府', siteEn: "Lin'an (Hangzhou)", zh: '元军伯颜兵临临安，谢太后携宋恭帝奉玺出降', en: "Yuan forces under Bayan reach Lin'an; the Southern Song court surrenders" },
 
         // 成都
+        { dynastyKey: 'zhanguo', year: -316, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '秦将司马错由石牛道灭蜀置蜀郡，前311年张仪按咸阳规制筑成都城', en: 'Qin general Sima Cuo conquers Shu; Zhang Yi rebuilds Chengdu modeled on Xianyang' },
+        { dynastyKey: 'zhanguo', year: -256, coord: [103.62, 31.00], site: '都江堰·成都', siteEn: 'Dujiangyan / Chengdu', zh: '蜀郡太守李冰凿离堆修筑都江堰，成都平原自此沃野千里号“天府之国”', en: 'Shu Governor Li Bing constructs the Dujiangyan Irrigation System, making the Chengdu Plain the Land of Abundance' },
         { dynastyKey: 'sanguo', year: 221, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '刘备于成都称帝建立蜀汉，拜诸葛亮为丞相', en: 'Liu Bei proclaims the Shu Han Empire in Chengdu with Zhuge Liang as Chancellor' },
         { dynastyKey: 'sanguo', year: 263, coord: [104.06, 30.67], site: '成都', siteEn: 'Chengdu', zh: '魏将邓艾偷渡阴平直抵成都，刘禅出降，蜀汉灭亡', en: 'Wei general Deng Ai marches through Yinping to Chengdu; Liu Shan surrenders' },
         { dynastyKey: 'tang', year: 756, coord: [104.06, 30.67], site: '成都府（南京）', siteEn: 'Chengdu', zh: '安史之乱唐玄宗幸蜀驻跸成都，后升益州为成都府', en: 'Emperor Xuanzong takes refuge in Chengdu during the An Lushan Rebellion' },
@@ -2061,12 +2086,12 @@
         }
       }
 
-      // 2. Historical journeys (Zhang Qian, Zhuge Liang, Xuanzang, Li Bai, Su Shi)
+      // 2. Historical journeys (Qin Shi Huang, Zhang Qian, Zhuge Liang, Xuanzang, Li Bai, Su Shi)
       for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
         j.stops.forEach((st, sIdx) => {
           const inDynSpan = st.year >= d.fromYear && st.year <= d.toYear;
           if (!inDynSpan && j.dynastyKey !== d.key) return;
-          if (j.key === 'zhugeliang' && !inDynSpan) return;
+          if ((j.key === 'zhugeliang' || j.key === 'qinshihuang') && !inDynSpan) return;
           if (isCloseCoord(st.coord, 45)) {
             const existing = results.find(
               (r) =>
@@ -3751,6 +3776,236 @@
     static get HISTORICAL_JOURNEYS() {
       return [
         {
+          key: 'qinshihuang',
+          dynastyKey: 'zhanguo',
+          color: '#3d3934',
+          shortZh: '秦王扫六合',
+          shortEn: 'Qin Unification',
+          titleZh: '秦王扫六合 · 统一六国战局',
+          titleEn: "Qin Shi Huang's Unification of the Six States",
+          spanZh: '前238年 — 前221年（秦王政九年至二十六年）',
+          spanEn: '238 BCE – 221 BCE (Reign of King Zheng of Qin)',
+          stops: [
+            {
+              year: -238,
+              eraZh: '秦王政九年',
+              ancientZh: '咸阳',
+              modernZh: '陕西咸阳',
+              ancientEn: 'Xianyang',
+              modernEn: 'Xianyang, Shaanxi',
+              coord: [108.71, 34.33],
+              labelPos: 'bottom',
+              titleZh: '亲政平乱 · 蓄势东出',
+              titleEn: 'Assuming Personal Rule & Grand Strategy',
+              descZh:
+                '二十二岁的秦王政在故都雍城蕲年宫行冠礼亲政，旋即发兵平定长信侯嫪毐之乱，次年罢免相邦吕不韦。随后采纳大梁人尉缭、楚人李斯「远交近攻、先弱后强、各个击破」之策，倾关中与巴蜀之力，蓄势东出函谷关。',
+              descEn:
+                'At age 22, King Zheng of Qin assumed personal rule, crushed Lao Ai’s rebellion, dismissed Chancellor Lü Buwei, and adopted Li Si and Wei Liao’s grand strategy to annex the six eastern states one by one.',
+              quoteZh:
+                '「秦王为人，蜂准，长目，挚鸟膺，豺声，少恩而虎狼之心……诚得志于天下，天下皆为虏矣。」——《史记·秦始皇本纪》引尉缭语',
+              quoteEn:
+                '“With the resources of Qin and the strategy of annexing the feudal lords, the whole world can be unified under one rule.” — Records of the Grand Historian (Shiji)',
+            },
+            {
+              year: -236,
+              eraZh: '秦王政十一年',
+              ancientZh: '邺城',
+              modernZh: '河北临漳西南',
+              ancientEn: 'Ye (Yecheng)',
+              modernEn: 'Linzhang, Hebei',
+              coord: [114.35, 36.32],
+              fromCoord: [108.71, 34.33],
+              via: [
+                [110.35, 34.62],
+                [112.5, 35.5],
+              ],
+              labelPos: 'bottom',
+              titleZh: '攻赵取邺 · 灭国序幕',
+              titleEn: 'Capture of Ye — Opening the Unification Wars',
+              descZh:
+                '趁赵燕交兵、赵军主力北上攻燕之际，秦王政命王翦、桓齮、杨端和三路大军东出伐赵，连拔邺城、阏与等九城。此役夺取赵国南部漳水门户，正式拉开秦灭六国十年统一战争的序幕。',
+              descEn:
+                'Exploiting a war between Zhao and Yan, Qin generals Wang Jian, Huan Yi, and Yang Duanhe marched east and captured nine Zhao cities including Ye and Yanyu, opening the unification wars.',
+              quoteZh:
+                '「十一年，王翦、桓齮、杨端和攻邺，取九城。」——《史记·秦始皇本纪》',
+              quoteEn:
+                '“In the 11th year, Wang Jian, Huan Yi, and Yang Duanhe attacked Ye and took nine cities.” — Shiji',
+            },
+            {
+              year: -230,
+              eraZh: '秦王政十七年',
+              ancientZh: '新郑',
+              modernZh: '河南新郑',
+              ancientEn: 'Xinzheng',
+              modernEn: 'Xinzheng, Henan',
+              coord: [113.74, 34.4],
+              fromCoord: [108.71, 34.33],
+              via: [
+                [110.35, 34.62],
+                [112.45, 34.62],
+              ],
+              labelPos: 'bottom',
+              titleZh: '内史腾灭韩 · 六国首灭',
+              titleEn: 'Conquest of Han — First of the Six States to Fall',
+              descZh:
+                '韩国扼守函谷关外，为秦东进首冲。秦内史腾率军渡河急袭韩都新郑，一举俘虏韩王安，尽收其地设立颍川郡（治阳翟）。韩国成为战国七雄中第一个覆灭的诸侯国，秦军由此牢牢扼住中原腹心。',
+              descEn:
+                'Commandery Governor Teng marched on the Han capital Xinzheng, captured King An of Han, and established Yingchuan Commandery. Han became the first of the six states to fall.',
+              quoteZh:
+                '「十七年，内史腾攻韩，得韩王安，尽纳其地，以其地为郡，命曰颍川。」——《史记·秦始皇本纪》',
+              quoteEn:
+                '“In the 17th year, Governor Teng attacked Han, captured King An, and made his territory Yingchuan Commandery.” — Shiji',
+            },
+            {
+              year: -228,
+              eraZh: '秦王政十九年',
+              ancientZh: '邯郸',
+              modernZh: '河北邯郸',
+              ancientEn: 'Handan',
+              modernEn: 'Handan, Hebei',
+              coord: [114.48, 36.61],
+              fromCoord: [113.74, 34.4],
+              via: [[114.15, 35.55]],
+              labelPos: 'top',
+              titleZh: '王翦克邯郸 · 破灭赵国',
+              titleEn: 'Fall of Handan — Conquest of Zhao',
+              descZh:
+                '赵国名将李牧屡挫秦军。秦军重金行反间计于赵王宠臣郭开，赵王迁自毁长城冤杀李牧、废司马尚。王翦遂猛攻大破赵军，于前228年攻克赵都邯郸，俘赵王迁；秦王政亲赴邯郸尽坑昔日母家仇人。赵公子嘉率宗族北奔代郡称代王。',
+              descEn:
+                'After a Qin espionage plot induced King Qian of Zhao to execute his brilliant general Li Mu, Wang Jian shattered the Zhao army and captured Handan. Prince Jia fled north to establish the rump state of Dai.',
+              quoteZh:
+                '「赵葱死，颜聚亡，后三月，王翦因急击，大破赵，杀赵葱，虏赵王迁及其将颜聚，遂灭赵。」——《战国策》及《史记》',
+              quoteEn:
+                '“Wang Jian pressed the attack, shattered the Zhao forces, and captured King Qian, extinguishing Zhao.” — Shiji',
+            },
+            {
+              year: -226,
+              eraZh: '秦王政二十一年',
+              ancientZh: '蓟城',
+              modernZh: '北京西南',
+              ancientEn: 'Jicheng (Yan Capital)',
+              modernEn: 'Beijing',
+              coord: [116.32, 39.9],
+              fromCoord: [114.48, 36.61],
+              via: [
+                [115.48, 38.85],
+                [115.8, 39.32],
+              ],
+              labelPos: 'top',
+              titleZh: '图穷匕见与易水破燕 · 攻拔蓟城',
+              titleEn: 'Battle of Yi River & Capture of Jicheng',
+              descZh:
+                '秦军饮马易水，燕太子丹于前227年遣荆轲歌「风萧萧兮易水寒」入咸阳献督亢地图刺秦，图穷匕见未果。秦王政震怒，命王翦、辛胜率主力北伐，于易水之西大破燕代联军，前226年十月攻拔燕都蓟城。燕王喜斩太子丹首级献秦求和未果，退保辽东襄平。',
+              descEn:
+                'After Jing Ke’s failed assassination attempt in Xianyang (227 BCE), Wang Jian crushed the Yan-Dai army west of the Yi River and captured the Yan capital Jicheng in 226 BCE. King Xi of Yan fled east to Liaodong.',
+              quoteZh:
+                '「风萧萧兮易水寒，壮士一去兮不复还！」——《战国策·燕策三》',
+              quoteEn:
+                '“The wind blows shrill and the Yi River is cold; once the hero departs, he shall never return!” — Intrigues of the Warring States',
+            },
+            {
+              year: -225,
+              eraZh: '秦王政二十二年',
+              ancientZh: '大梁',
+              modernZh: '河南开封',
+              ancientEn: 'Daliang',
+              modernEn: 'Kaifeng, Henan',
+              coord: [114.35, 34.79],
+              fromCoord: [108.71, 34.33],
+              via: [
+                [110.35, 34.62],
+                [112.45, 34.62],
+              ],
+              labelPos: 'bottom',
+              titleZh: '王贲水灌大梁 · 荡平魏国',
+              titleEn: 'Flooding of Daliang — Conquest of Wei',
+              descZh:
+                '魏都大梁城垣坚厚、护城河深广，易守难攻。王翦之子王贲率军南下攻魏，掘开黄河与鸿沟水渠引水灌城。浸灌三月，大梁城墙崩坏，魏王假出降被杀，秦尽收魏地设砀郡，三晋至此尽入于秦。',
+              descEn:
+                'Facing the heavily fortified Wei capital of Daliang, Wang Ben diverted the Yellow River and Honggou Canal to flood the city for three months until its walls collapsed. King Jia surrendered, ending the state of Wei.',
+              quoteZh:
+                '「二十二年，王贲攻魏，引河沟灌大梁，大梁城坏，其王请降，尽取其地。」——《史记·秦始皇本纪》',
+              quoteEn:
+                '“In the 22nd year, Wang Ben attacked Wei, channeled the Yellow River to flood Daliang, and took all its land.” — Shiji',
+            },
+            {
+              year: -223,
+              eraZh: '秦王政二十四年',
+              ancientZh: '寿春',
+              modernZh: '安徽寿县',
+              ancientEn: 'Shouchun',
+              modernEn: 'Shouxian, Anhui',
+              coord: [116.78, 32.58],
+              fromCoord: [114.35, 34.79],
+              via: [
+                [114.88, 33.78],
+                [115.8, 33.1],
+              ],
+              labelPos: 'bottom',
+              titleZh: '王翦六十万破楚 · 攻克寿春',
+              titleEn: 'Six Hundred Thousand Troops — Conquest of Chu',
+              descZh:
+                '李信率二十万秦军伐楚先胜后败，为项燕所乘。秦王政亲赴频阳向老将王翦谢过，倾全国六十万大军托付王翦、蒙武。王翦坚壁不出以老楚师，待楚军东撤之际大举追击，于蕲南击杀项燕，攻克楚都寿春，俘楚王负刍，广袤楚地尽归于秦。',
+              descEn:
+                'After Li Xin’s setback, King Zheng entrusted 600,000 troops to veteran general Wang Jian. Wearing down the Chu forces before striking decisively, Wang Jian captured Shouchun and King Fuchu, conquering Chu.',
+              quoteZh:
+                '「王翦果代李信击荆……荆数挑战而秦不出。乃引而东。翦因举兵追之，令壮士击，大破荆军。」——《史记·白起王翦列传》',
+              quoteEn:
+                '“Chu repeatedly challenged Qin to battle, yet Wang Jian held firm inside his ramparts until Chu retreated east, then struck with full force and routed them.” — Shiji',
+            },
+            {
+              year: -222,
+              eraZh: '秦王政二十五年',
+              ancientZh: '襄平',
+              modernZh: '辽宁辽阳',
+              ancientEn: 'Xiangping (Liaodong)',
+              modernEn: 'Liaoyang, Liaoning',
+              coord: [123.17, 41.27],
+              fromCoord: [116.32, 39.9],
+              via: [
+                [118.9, 40.05],
+                [121.1, 41.1],
+              ],
+              labelPos: 'top',
+              titleZh: '远征辽东 · 灭燕平代定江南',
+              titleEn: 'Liaodong Campaign — Extinguishing Yan & Dai',
+              descZh:
+                '王贲、李信挥师东北远征辽东，攻破襄平，俘燕王喜，燕国彻底灭亡；旋即回师北击代郡，俘代王嘉，赵氏余脉亦绝。同年南线王翦大军渡江平定楚国江南旧地，降服越君，置会稽郡。天下六国仅余东海之滨的齐国孤悬。',
+              descEn:
+                'Wang Ben and Li Xin marched into Liaodong to capture King Xi of Yan at Xiangping, then turned west to capture King Jia of Dai, while Wang Jian pacified Jiangnan and established Kuaiji Commandery.',
+              quoteZh:
+                '「二十五年，大兴兵，使王贲将，攻燕辽东，得燕王喜。还攻代，虏代王嘉。王翦遂定荆江南地。」——《史记·秦始皇本纪》',
+              quoteEn:
+                '“In the 25th year, Wang Ben attacked Liaodong, captured King Xi of Yan, and returned to capture King Jia of Dai, while Wang Jian pacified Jiangnan.” — Shiji',
+            },
+            {
+              year: -221,
+              eraZh: '秦始皇二十六年',
+              ancientZh: '临淄',
+              modernZh: '山东淄博临淄',
+              ancientEn: 'Linzi',
+              modernEn: 'Zibo, Shandong',
+              coord: [118.35, 36.82],
+              fromCoord: [116.32, 39.9],
+              via: [
+                [116.6, 38.2],
+                [117.0, 36.9],
+              ],
+              labelPos: 'bottom',
+              titleZh: '六王毕 · 四海一（齐降天下一统）',
+              titleEn: 'Surrender of Qi at Linzi — Empire Unified',
+              descZh:
+                '齐相后胜受秦重金贿赂，劝齐王建不修战备、不援五国，仅于西界屯兵防秦。前221年，王贲、李信、蒙恬自燕地南下避开齐军西境主力，径直突入齐都临淄，齐王建不战出降。秦王政遂完成统一大业，定尊号「始皇帝」，废分封、设三十六郡，开创中国两千年大一统格局。',
+              descEn:
+                'Bypassing Qi’s western border defenses, Wang Ben, Li Xin, and Meng Tian plunged south from Yan straight into Linzi. King Jian of Qi surrendered without a battle, completing the unification of China under the First Emperor.',
+              quoteZh:
+                '「六王毕，四海一。」——杜牧《阿房宫赋》 · 「秦初并天下……法令由一统。」——《史记·秦始皇本纪》',
+              quoteEn:
+                '“The six kings met their end, and the four seas became one.” — Du Mu, Rhapsody on Epang Palace',
+            },
+          ],
+        },
+        {
           key: 'zhangqian',
           dynastyKey: 'xihan',
           color: '#a83b24',
@@ -4973,7 +5228,7 @@
       for (let i = 0; i < stops.length - 1; i++) {
         segPaths.push(
           this._buildJourneySegmentSvgPath(
-            stops[i].coord,
+            stops[i + 1].fromCoord || stops[i].coord,
             stops[i + 1].coord,
             stops[i + 1].via
           )
@@ -5200,7 +5455,7 @@
           subZh: `${j.spanZh} · 共 ${j.stops.length} 站`,
           titleEn: j.titleEn,
           subEn: `${j.spanEn} · ${j.stops.length} stops`,
-          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 ${stopNames}`.toLowerCase(),
+          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 秦始皇 嬴政 秦王 扫六合 统一六国 灭六国 王翦 王贲 李信 蒙恬 荆轲 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 ${stopNames}`.toLowerCase(),
         });
       }
 
