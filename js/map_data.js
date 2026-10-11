@@ -4961,7 +4961,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1072,
-        "headline": "王韶熙河开边，收复河湟",
+        "headline": "王韶熙河开边，收复熙、河、洮、岷等六州，新置熙河路",
         "site": "熙州 · 河州",
         "coord": [
           103.201,
@@ -5327,6 +5327,29 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": 1044,
         "remark": "辽西京道治所"
+      },
+      {
+        "ancient": "熙州",
+        "modern": "定西·临洮",
+        "coord": [
+          103.861,
+          35.381
+        ],
+        "tier": 2,
+        "appear": 1072,
+        "remark": "熙河路治所，王韶开边置"
+      },
+      {
+        "ancient": "西宁州（青唐）",
+        "modern": "西宁",
+        "coord": [
+          101.778,
+          36.617
+        ],
+        "tier": 2,
+        "appear": 1104,
+        "align": "l",
+        "remark": "故青唐城，1104 年收复置陇右都护府"
       }
     ],
     "phases": [
@@ -5363,8 +5386,12 @@ window.DYNASTY_DATA = [
         "snap": "s_beisong_b"
       },
       {
-        "until": 1115,
+        "until": 1104,
         "snap": "s_beisong_b1"
+      },
+      {
+        "until": 1115,
+        "snap": "s_beisong_b2"
       },
       {
         "until": 1125,

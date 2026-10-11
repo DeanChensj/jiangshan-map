@@ -591,7 +591,7 @@ window.EN_LOCALE = {
       "Kaifeng"
     ],
     "beisong:1072": [
-      "Wang Shao's Xihe campaign recovers the Hehuang region",
+      "Wang Shao's Xihe Campaign recovers Xi, He, Tao, and Min prefectures, establishing Xihe Circuit",
       "Xizhou & Hezhou"
     ],
     "beisong:1120": [
@@ -4218,6 +4218,13 @@ window.EN_LOCALE = {
     "赵武灵王辟边置云中郡": "Seat of Yunzhong Commandery established by King Wuling of Zhao",
     "代郡治所 · 前228赵公子嘉奔代": "Seat of Dai Commandery · Refuge of Prince Jia of Zhao in 228 BCE",
     "燕辽东郡治 · 燕王喜终保于此": "Seat of Yan Liaodong Commandery · Final refuge of King Xi of Yan",
-    "齐东重镇 · 田单火牛阵复国之地": "Eastern Qi stronghold · Where Tian Dan launched his Fire-Oxen counterattack"
+    "齐东重镇 · 田单火牛阵复国之地": "Eastern Qi stronghold · Where Tian Dan launched his Fire-Oxen counterattack",
+    "1072 — 1103 · 王韶熙河开边：收复熙、河、洮、岷、叠、宕六州，新置熙河路": "1072–1103 · Wang Shao’s Xihe Campaign: Song Recovers Six Prefectures and Establishes Xihe Circuit",
+    "1104 — 1114 · 河湟开边：王厚、童贯收复青唐吐蕃故地，置西宁州与陇右都护府": "1104–1114 · Hehuang Campaign: Wang Hou & Tong Guan Recover Qingtang and Establish Xining Prefecture",
+    "熙州": "Xizhou",
+    "定西·临洮": "Dingxi · Lintao",
+    "熙河路治所，王韶开边置": "Seat of Xihe Circuit established by Wang Shao",
+    "西宁州（青唐）": "Xining (Qingtang)",
+    "故青唐城，1104 年收复置陇右都护府": "Former Qingtang City; recovered in 1104 CE as Xining Prefecture"
   }
 };

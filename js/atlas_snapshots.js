@@ -73,5 +73,80 @@
       out[k] = sc;
     }
   }
+  if (out.s_beisong_b && out.s_beisong_b1) {
+    const uighurPol = feat(108);
+    const b2Polities = out.s_beisong_b1.polities.slice();
+    if (uighurPol && !b2Polities.some((p) => p.title === uighurPol.title)) {
+      b2Polities.push(uighurPol);
+    }
+    out.s_beisong_b2 = {
+      caption: '1104 — 1114 · 河湟开边：王厚、童贯收复青唐吐蕃故地，置西宁州与陇右都护府',
+      note: out.s_beisong_b1.note,
+      polities: b2Polities,
+      prefectures: out.s_beisong_b1.prefectures,
+      regions: out.s_beisong_b1.regions,
+    };
+
+    const songB2 = out.s_beisong_b1.polities.find((p) => p.title === '宋');
+    const tuboB = out.s_beisong_b.polities.find((p) => p.title === '吐蕃');
+    const songB1Ring = songB2.shape.coordinates[0].map((pt, idx) => {
+      if (idx === 3) return [103.21, 34.11];
+      if (idx === 4) return [102.85, 34.87];
+      if (idx === 5) return [102.95, 36.15];
+      if (idx === 6) return [103.45, 37.74];
+      return pt;
+    });
+    const tuboB1Ring = tuboB.shape.coordinates[0].map((pt, idx) => {
+      if (idx === 21) return [103.45, 37.74];
+      if (idx === 22) return [102.95, 36.15];
+      if (idx === 23) return [102.85, 34.87];
+      if (idx === 24) return [103.21, 34.11];
+      return pt;
+    });
+    const b1Polities = b2Polities.map((p) => {
+      if (p.title === '宋') {
+        return Object.assign({}, p, {
+          shape: { type: 'Polygon', coordinates: [songB1Ring] },
+        });
+      }
+      if (p.title === '吐蕃') {
+        return Object.assign({}, p, {
+          shape: { type: 'Polygon', coordinates: [tuboB1Ring] },
+        });
+      }
+      return p;
+    });
+    const b1Regions = (out.s_beisong_b1.regions || []).map((r) => {
+      if (r.title === '熙河路') {
+        return Object.assign({}, r, {
+          anchor: [103.95, 35.45],
+          shape: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [104.65, 34.11],
+                [103.21, 34.11],
+                [102.85, 34.87],
+                [102.95, 36.15],
+                [103.45, 37.74],
+                [104.85, 37.74],
+                [105.25, 36.31],
+                [105.15, 34.87],
+                [104.65, 34.11],
+              ],
+            ],
+          },
+        });
+      }
+      return r;
+    });
+    out.s_beisong_b1 = {
+      caption: '1072 — 1103 · 王韶熙河开边：收复熙、河、洮、岷、叠、宕六州，新置熙河路',
+      note: out.s_beisong_b1.note,
+      polities: b1Polities,
+      prefectures: out.s_beisong_b1.prefectures,
+      regions: b1Regions,
+    };
+  }
   window.ATLAS_SNAPSHOTS = out;
 })();

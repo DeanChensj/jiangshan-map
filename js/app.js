@@ -635,31 +635,31 @@
       }
       const btnQsh = this._id('btn-j-qinshihuang');
       if (btnQsh) {
-        btnQsh.textContent = this.locale === 'en' ? "Qin's Unification" : '秦王扫六合';
+        btnQsh.textContent = this.locale === 'en' ? 'Qin Shi Huang' : '秦始皇扫六合';
       }
       const btnZq = this._id('btn-j-zhangqian');
       if (btnZq) {
-        btnZq.textContent = this.locale === 'en' ? "Zhang Qian's Envoy" : '张骞通西域';
+        btnZq.textContent = this.locale === 'en' ? 'Zhang Qian' : '张骞凿空西域';
       }
       const btnZgl = this._id('btn-j-zhugeliang');
       if (btnZgl) {
-        btnZgl.textContent = this.locale === 'en' ? 'Zhuge Liang' : '诸葛亮北伐';
+        btnZgl.textContent = this.locale === 'en' ? 'Zhuge Liang' : '诸葛亮出山北伐';
       }
       const btnXz = this._id('btn-j-xuanzang');
       if (btnXz) {
-        btnXz.textContent = this.locale === 'en' ? "Xuanzang's Pilgrimage" : '玄奘西行';
+        btnXz.textContent = this.locale === 'en' ? 'Xuanzang' : '玄奘西行求法';
       }
       const btnLb = this._id('btn-j-libai');
       if (btnLb) {
-        btnLb.textContent = this.locale === 'en' ? "Li Bai's Travels" : '李白壮游';
+        btnLb.textContent = this.locale === 'en' ? 'Li Bai' : '李白仗剑壮游';
       }
       const btnSs = this._id('btn-j-sushi');
       if (btnSs) {
-        btnSs.textContent = this.locale === 'en' ? "Su Shi's Exile" : '苏轼贬谪路线';
+        btnSs.textContent = this.locale === 'en' ? 'Su Shi' : '苏轼宦海贬谪';
       }
       const btnWy = this._id('btn-j-wangyangming');
       if (btnWy) {
-        btnWy.textContent = this.locale === 'en' ? 'Wang Yangming' : '王阳明行迹';
+        btnWy.textContent = this.locale === 'en' ? 'Wang Yangming' : '王阳明知行悟道';
       }
       const lblJourneyBtn = this._id('lbl-journey-btn');
       if (lblJourneyBtn) {
@@ -669,8 +669,8 @@
       if (actJourneyBtn) {
         actJourneyBtn.title =
           this.locale === 'en'
-            ? 'Historical Journeys · Qin Unification / Su Shi / Wang Yangming / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
-            : '青史行迹 · 人物时空巡礼（秦王扫六合 / 苏轼 / 王阳明 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
+            ? 'Historical Journeys · Qin Shi Huang / Zhang Qian / Zhuge Liang / Xuanzang / Li Bai / Su Shi / Wang Yangming'
+            : '青史行迹 · 人物时空巡礼（秦始皇 / 张骞 / 诸葛亮 / 玄奘 / 李白 / 苏轼 / 王阳明）';
       }
       const jPopHead = this._id('txt-journey-pop-heading');
       if (jPopHead) {
@@ -689,14 +689,14 @@
         if (el) el.textContent = this.locale === 'en' ? en : zh;
       };
       setTxt('lbl-jm-badge-qinshihuang', '战国·秦', 'Qin');
-      setTxt('lbl-jm-title-qinshihuang', '秦王扫六合 · 统一六国战局', "Qin Shi Huang's Unification Wars");
+      setTxt('lbl-jm-title-qinshihuang', '秦始皇一统六国行迹', "Qin Shi Huang's Unification Campaigns");
       setTxt(
         'lbl-jm-meta-qinshihuang',
-        '咸阳 → 灭韩 → 灭赵 → 灭魏 → 灭楚 → 灭燕 → 灭齐 · 10站',
-        'Xianyang → Han → Zhao → Wei → Chu → Yan → Qi · 10 stops'
+        '咸阳 → 灭韩 → 灭赵 → 灭魏 → 灭楚 → 灭燕 → 灭齐 · 9站',
+        'Xianyang → Han → Zhao → Wei → Chu → Yan → Qi · 9 stops'
       );
       setTxt('lbl-jm-badge-sushi', '北宋', 'N. Song');
-      setTxt('lbl-jm-title-sushi', '苏轼宦海贬谪行迹', "Su Shi's Literary Exile");
+      setTxt('lbl-jm-title-sushi', '苏轼宦海贬谪行迹', "Su Shi's Literary Exile Across Song China");
       setTxt(
         'lbl-jm-meta-sushi',
         '眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站',
@@ -705,7 +705,7 @@
       setTxt('lbl-jm-badge-wangyangming', '明', 'Ming');
       setTxt(
         'lbl-jm-title-wangyangming',
-        '王阳明知行一生行迹',
+        '王阳明知行悟道行迹',
         "Wang Yangming's Unity of Knowledge & Action"
       );
       setTxt(
@@ -714,28 +714,28 @@
         'Yuyao → Beijing → Longchang → Nanchang → Shaoxing · 10 stops'
       );
       setTxt('lbl-jm-badge-libai', '唐', 'Tang');
-      setTxt('lbl-jm-title-libai', '李白仗剑壮游行迹', "Li Bai's Grand Travels");
+      setTxt('lbl-jm-title-libai', '李白仗剑壮游行迹', "Li Bai's Grand Travels Across Tang China");
       setTxt(
         'lbl-jm-meta-libai',
         '碎叶 → 蜀中 → 扬州 → 长安 → 白帝城 · 10站',
         "Suyab → Shu → Yangzhou → Chang'an → Baidicheng · 10 stops"
       );
       setTxt('lbl-jm-badge-xuanzang', '唐', 'Tang');
-      setTxt('lbl-jm-title-xuanzang', '玄奘西行求法行迹', "Xuanzang's Pilgrimage to India");
+      setTxt('lbl-jm-title-xuanzang', '玄奘西行求法行迹', "Xuanzang's Pilgrimage to the Western Regions");
       setTxt(
         'lbl-jm-meta-xuanzang',
         '长安 → 敦煌 → 高昌 → 碎叶 → 天竺 · 10站',
         "Chang'an → Dunhuang → Suyab → India · 10 stops"
       );
       setTxt('lbl-jm-badge-zhugeliang', '三国', '3 Kingdoms');
-      setTxt('lbl-jm-title-zhugeliang', '诸葛亮出山北伐行迹', "Zhuge Liang's Northern Expeditions");
+      setTxt('lbl-jm-title-zhugeliang', '诸葛亮出山北伐行迹', "Zhuge Liang's Southern & Northern Campaigns");
       setTxt(
         'lbl-jm-meta-zhugeliang',
         '隆中 → 赤壁 → 成都 → 汉中 → 五丈原 · 10站',
         'Longzhong → Red Cliffs → Chengdu → Wuzhang Plains · 10 stops'
       );
       setTxt('lbl-jm-badge-zhangqian', '西汉', 'W. Han');
-      setTxt('lbl-jm-title-zhangqian', '张骞凿空西域行迹', "Zhang Qian's Mission to the West");
+      setTxt('lbl-jm-title-zhangqian', '张骞凿空西域行迹', "Zhang Qian's Mission to the Western Regions");
       setTxt(
         'lbl-jm-meta-zhangqian',
         '长安 → 河西 → 大宛 → 大月氏 · 9站',
@@ -3832,10 +3832,10 @@
           key: 'qinshihuang',
           dynastyKey: 'zhanguo',
           color: '#3d3934',
-          shortZh: '秦王扫六合',
-          shortEn: 'Qin Unification',
-          titleZh: '秦王扫六合 · 统一六国战局',
-          titleEn: "Qin Shi Huang's Unification of the Six States",
+          shortZh: '秦始皇扫六合',
+          shortEn: 'Qin Shi Huang',
+          titleZh: '秦始皇一统六国行迹',
+          titleEn: "Qin Shi Huang's Unification Campaigns",
           spanZh: '前238年 — 前221年（秦王政九年至二十六年）',
           spanEn: '238 BCE – 221 BCE (Reign of King Zheng of Qin)',
           stops: [
@@ -4062,10 +4062,10 @@
           key: 'zhangqian',
           dynastyKey: 'xihan',
           color: '#a83b24',
-          shortZh: '张骞通西域',
+          shortZh: '张骞凿空西域',
           shortEn: 'Zhang Qian',
           titleZh: '张骞凿空西域行迹',
-          titleEn: "Zhang Qian's Envoy to the Western Regions",
+          titleEn: "Zhang Qian's Mission to the Western Regions",
           spanZh: '前138年 — 前126年（西汉建元三年至元朔三年）',
           spanEn: '138 BCE – 126 BCE (Western Han)',
           stops: [
@@ -4250,7 +4250,7 @@
           key: 'zhugeliang',
           dynastyKey: 'sanguo',
           color: '#2c6b56',
-          shortZh: '诸葛亮北伐',
+          shortZh: '诸葛亮出山北伐',
           shortEn: 'Zhuge Liang',
           titleZh: '诸葛亮出山北伐行迹',
           titleEn: "Zhuge Liang's Southern & Northern Campaigns",
@@ -4460,7 +4460,7 @@
           key: 'xuanzang',
           dynastyKey: 'tang',
           color: '#9c6317',
-          shortZh: '玄奘西行',
+          shortZh: '玄奘西行求法',
           shortEn: 'Xuanzang',
           titleZh: '玄奘西行求法行迹',
           titleEn: "Xuanzang's Pilgrimage to the Western Regions",
@@ -4666,7 +4666,7 @@
           key: 'libai',
           dynastyKey: 'tang',
           color: '#2e5c8a',
-          shortZh: '李白壮游',
+          shortZh: '李白仗剑壮游',
           shortEn: 'Li Bai',
           titleZh: '李白仗剑壮游行迹',
           titleEn: "Li Bai's Grand Travels Across Tang China",
@@ -4878,7 +4878,7 @@
           key: 'sushi',
           dynastyKey: 'beisong',
           color: '#1f6f8b',
-          shortZh: '苏轼贬谪',
+          shortZh: '苏轼宦海贬谪',
           shortEn: 'Su Shi',
           titleZh: '苏轼宦海贬谪行迹',
           titleEn: "Su Shi's Literary Exile Across Song China",
@@ -5086,12 +5086,12 @@
           key: 'wangyangming',
           dynastyKey: 'ming',
           color: '#b33939',
-          shortZh: '王阳明知行行迹',
+          shortZh: '王阳明知行悟道',
           shortEn: 'Wang Yangming',
-          titleZh: '阳明心学 · 王阳明知行一生行迹',
-          titleEn: "Wang Yangming's Unity of Knowledge and Action",
-          spanZh: '1472年 — 1529年（明宪宗成化八年至明世宗嘉靖七年）',
-          spanEn: '1472 – 1529 CE (Ming Dynasty)',
+          titleZh: '王阳明知行悟道行迹',
+          titleEn: "Wang Yangming's Unity of Knowledge & Action",
+          spanZh: '1472年 — 1529年（明成化八年至嘉靖七年）',
+          spanEn: '1472 CE – 1529 CE (Ming Dynasty)',
           stops: [
             {
               year: 1472,
@@ -5741,7 +5741,7 @@
           subZh: `${j.spanZh} · 共 ${j.stops.length} 站`,
           titleEn: j.titleEn,
           subEn: `${j.spanEn} · ${j.stops.length} stops`,
-          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 秦始皇 嬴政 秦王 扫六合 统一六国 灭六国 王翦 王贲 李信 蒙恬 荆轲 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 ${stopNames}`.toLowerCase(),
+          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 秦始皇 嬴政 秦王 扫六合 一统六国 统一六国 灭六国 王翦 王贲 李信 蒙恬 荆轲 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 王阳明 王守仁 阳明心学 知行合一 致良知 龙场悟道 ${stopNames}`.toLowerCase(),
         });
       }
 
