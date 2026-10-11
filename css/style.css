@@ -3445,3 +3445,93 @@ html[lang="en"] .genealogy-list li {
   color: var(--text-secondary);
   line-height: 1.3;
 }
+
+/* #8 X-Ray Modern Lens (古今透视镜 · 按住空格局部透视今图) */
+.xray-lens-group.is-hidden {
+  display: none;
+}
+
+.xray-lens-bg {
+  fill: rgba(246, 248, 245, 0.9);
+}
+
+.xray-river-trunk {
+  fill: none;
+  stroke: rgba(34, 108, 145, 0.72);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.xray-river-major {
+  fill: none;
+  stroke: rgba(45, 122, 158, 0.52);
+  stroke-width: 0.95;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.xray-prov-shape {
+  fill: rgba(218, 230, 226, 0.16);
+  stroke: rgba(42, 92, 112, 0.78);
+  stroke-width: 1.15;
+  stroke-dasharray: 4 2.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.xray-prov-caption {
+  font-family: var(--sans-stack);
+  font-weight: 700;
+  fill: rgba(32, 76, 94, 0.86);
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: 0.08em;
+  filter: url(#label-halo);
+}
+
+.xray-city-dot {
+  fill: #23586e;
+  stroke: #f6f8f5;
+  stroke-width: 0.75;
+}
+
+.xray-city-name {
+  font-family: var(--sans-stack);
+  font-size: 7.4px;
+  font-weight: 600;
+  fill: #1d495c;
+  filter: url(#label-halo);
+}
+
+.xray-lens-ring {
+  fill: none;
+  stroke: #8c3b22;
+  stroke-width: 2.1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 3px 10px rgba(32, 26, 20, 0.26));
+}
+
+.xray-lens-ring-inner {
+  fill: none;
+  stroke: rgba(255, 250, 240, 0.85);
+  stroke-width: 1;
+  stroke-dasharray: 3 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.xray-badge-bg {
+  fill: rgba(36, 56, 66, 0.94);
+  stroke: rgba(255, 248, 236, 0.65);
+  stroke-width: 0.8;
+  filter: drop-shadow(0 2px 5px rgba(20, 18, 15, 0.25));
+}
+
+.xray-badge-text {
+  font-family: var(--serif-stack);
+  font-size: 7.8px;
+  font-weight: 700;
+  fill: #fffaf2;
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: 0.03em;
+}

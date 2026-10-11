@@ -196,6 +196,37 @@ function main() {
     decodedPolygons++;
   }
 
+  function pointInRing(x, y, ring) {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const xi = ring[i][0];
+      const yi = ring[i][1];
+      const xj = ring[j][0];
+      const yj = ring[j][1];
+      if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi + 1e-12) + xi) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+  function pointInShape(x, y, shape) {
+    const polys = shape.type === 'Polygon' ? [shape.coordinates] : shape.coordinates;
+    for (const poly of polys) {
+      if (poly.length && pointInRing(x, y, poly[0])) {
+        let inHole = false;
+        for (let h = 1; h < poly.length; h++) {
+          if (pointInRing(x, y, poly[h])) {
+            inHole = true;
+            break;
+          }
+        }
+        if (!inHole) return true;
+      }
+    }
+    return false;
+  }
+  const lakeLabels = (hydro.labels || []).filter((l) => l.kind === 'lake');
+
   for (const [k, snap] of Object.entries(snapshots)) {
     if (Array.isArray(snap)) {
       snap.forEach((item, idx) => verifyShape(item.shape, `${k}[${idx}]`));
@@ -203,6 +234,22 @@ function main() {
       for (const grp of ['polities', 'prefectures', 'regions']) {
         for (const item of snap[grp] || []) {
           verifyShape(item.shape, `${k}.${grp}(${item.title || 'unnamed'})`);
+          if (grp === 'polities' && (item.role === 'main' || item.role === 'rival') && item.anchor) {
+            const [ax, ay] = item.anchor;
+            assert(
+              pointInShape(ax, ay, item.shape),
+              `Polity anchor [${ax}, ${ay}] for ${item.title} (${item.role}) in ${k} lies outside its polygon`
+            );
+            if (item.role === 'main') {
+              for (const lk of lakeLabels) {
+                const dist = Math.hypot(ax - lk.coord[0], ay - lk.coord[1]);
+                assert(
+                  dist >= 0.85,
+                  `Main polity anchor [${ax}, ${ay}] for ${item.title} in ${k} collides with lake label ${lk.zh} at [${lk.coord}] (dist=${dist.toFixed(2)}°)`
+                );
+              }
+            }
+          }
         }
       }
     }
@@ -212,6 +259,15 @@ function main() {
   assert(Array.isArray(corridors) && corridors.length >= 3, 'Expected >= 3 historical corridors');
   for (const c of corridors) {
     assert(enLocale.corridors && enLocale.corridors[c.key], `Missing English translation for corridor ${c.key}`);
+  }
+  const zhouExceptions = new Set(['贵州', '北朝幽州', '曹魏徐州']);
+  for (const [zhKey, enVal] of Object.entries((enLocale && enLocale.dict) || {})) {
+    if (zhKey.length >= 2 && zhKey.length <= 4 && zhKey.endsWith('州') && !zhouExceptions.has(zhKey)) {
+      assert(
+        /\bZhou\b/.test(enVal),
+        `Expected spaced "Xx Zhou" Romanization for historical prefecture "${zhKey}", got "${enVal}"`
+      );
+    }
   }
 
   const bootSandbox = { window: {} };
@@ -228,6 +284,14 @@ function main() {
     'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a for instant first paint'
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
+
+  // 6. Verify X-Ray Modern Lens controller methods exist in app.js
+  assert(
+    appCode.includes('_initXrayLens') &&
+      appCode.includes('_setXrayLensActive') &&
+      appCode.includes('_updateXrayLens'),
+    'app.js must implement X-Ray Modern Lens methods (_initXrayLens, _setXrayLensActive, _updateXrayLens)'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
