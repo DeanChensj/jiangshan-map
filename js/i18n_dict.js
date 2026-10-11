@@ -1307,6 +1307,46 @@ window.EN_LOCALE = {
     "ming:1427": [
       "Emperor Xuanzong abolishes Jiaozhi Province and withdraws Ming troops from Vietnam; Le Loi founds the Later Le Dynasty",
       "Jiaozhi (Hanoi)"
+    ],
+    "tang:713": [
+      "Kaiyuan heyday under Emperor Xuanzong begins; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
+      "Chang'an · Huhancheng"
+    ],
+    "tang:727": [
+      "After Tibet raids Guazhou, Tang generals Wang Junchuo and Prince Li Yi counterattack and capture strategic Shibao Fortress, securing Hexi and Longyou",
+      "Liangzhou · Shibao Fortress"
+    ],
+    "tang:733": [
+      "Emperor Xuanzong divides the empire into Fifteen Kaiyuan Circuits under Investigating Commissioners",
+      "Chang'an"
+    ],
+    "tang:738": [
+      "Tang invests Piluoge as King of Yunnan; the Six Zhao unite to form the Nanzhao Kingdom with its capital at Taihecheng",
+      "Taihecheng (Dali)"
+    ],
+    "tang:742": [
+      "Tianbao era begins; Ten Frontier Military Commands (Jiedushi) established along the borders",
+      "Chang'an · Fanyang"
+    ],
+    "tang:744": [
+      "Kutlug Bilge Kül destroys the Second Turkic Khaganate to found the Uyghur Khaganate, invested by Tang as Huairen Qaghan",
+      "Ordu-Baliq (Orkhon)"
+    ],
+    "tang:747": [
+      "General Gao Xianzhi leads 10,000 troops across the Pamirs on the Gilgit (Little Balur) expedition",
+      "Lianyun Fort · Little Balur (Gilgit)"
+    ],
+    "ming:1474": [
+      "Yu Zijun constructs the 1,700-li Yansui Wall along the Ordos loop, shaping the Ming Nine Garrisons Great Wall line",
+      "Yansui Garrison (Yulin)"
+    ],
+    "ming:1513": [
+      "Turpan occupies Hami Guard; the Ming court closes Jiayuguan Pass and suspends Western Regions tribute",
+      "Hami Guard"
+    ],
+    "ming:1519": [
+      "Philosopher-governor Wang Yangming suppresses the Prince of Ning (Zhu Chenhao) Rebellion at Nanchang in 35 days",
+      "Nanchang-fu"
     ]
   },
   "corridors": {
@@ -3946,6 +3986,11 @@ window.EN_LOCALE = {
     "西京道": "Xijing Circuit",
     "中京大定府": "Zhongjing Dadingfu",
     "赤峰·宁城": "Ningcheng, Chifeng",
-    "辽中京道治所": "Seat of Liao Zhongjing Circuit"
+    "辽中京道治所": "Seat of Liao Zhongjing Circuit",
+    "太和城": "Taihecheng",
+    "南诏都城，738 年皮逻阁统一六诏": "Nanzhao capital, unified by Piluoge in 738",
+    "延绥镇": "Yansui Garrison",
+    "榆林": "Yulin",
+    "九边延绥镇，成化十年余子俊筑边墙": "Nine Garrisons Yansui defense hub; Yu Zijun built the Ordos wall in 1474"
   }
 };

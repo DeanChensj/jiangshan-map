@@ -1041,7 +1041,7 @@
       return (dynasty.settlements || [])
         .map((item) =>
           (item.appear !== undefined && year < item.appear) ||
-          (item.vanish !== undefined && year > item.vanish)
+          (item.vanish !== undefined && year >= item.vanish)
             ? '0'
             : '1'
         )
@@ -1057,7 +1057,7 @@
         .filter(
           (item) =>
             (item.appear === undefined || this.year >= item.appear) &&
-            (item.vanish === undefined || this.year <= item.vanish)
+            (item.vanish === undefined || this.year < item.vanish)
         )
         .sort((a, b) => {
           const rank = (s) => (s.isCapital ? 2 : s.tier === 2 ? 0 : 1);
@@ -1226,7 +1226,7 @@
       for (const s of dynasty.settlements) {
         if (
           (s.appear !== undefined && this.year < s.appear) ||
-          (s.vanish !== undefined && this.year > s.vanish)
+          (s.vanish !== undefined && this.year >= s.vanish)
         ) {
           continue;
         }
