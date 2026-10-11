@@ -89,30 +89,48 @@
 
     const songB2 = out.s_beisong_b1.polities.find((p) => p.title === '宋');
     const tuboB = out.s_beisong_b.polities.find((p) => p.title === '吐蕃');
-    const songB1Ring = songB2.shape.coordinates[0].map((pt, idx) => {
-      if (idx === 3) return [103.21, 34.11];
-      if (idx === 4) return [102.85, 34.87];
-      if (idx === 5) return [102.95, 36.15];
-      if (idx === 6) return [103.45, 37.74];
-      return pt;
-    });
-    const tuboB1Ring = tuboB.shape.coordinates[0].map((pt, idx) => {
-      if (idx === 21) return [103.45, 37.74];
-      if (idx === 22) return [102.95, 36.15];
-      if (idx === 23) return [102.85, 34.87];
-      if (idx === 24) return [103.21, 34.11];
-      return pt;
-    });
     const b1Polities = b2Polities.map((p) => {
-      if (p.title === '宋') {
-        return Object.assign({}, p, {
-          shape: { type: 'Polygon', coordinates: [songB1Ring] },
+      if (p.title === '宋' && songB2) {
+        const sh = { type: 'Polygon' };
+        Object.defineProperty(sh, 'coordinates', {
+          enumerable: true,
+          configurable: true,
+          get() {
+            const v = [
+              songB2.shape.coordinates[0].map((pt, idx) => {
+                if (idx === 3) return [103.21, 34.11];
+                if (idx === 4) return [102.85, 34.87];
+                if (idx === 5) return [102.95, 36.15];
+                if (idx === 6) return [103.45, 37.74];
+                return pt;
+              }),
+            ];
+            Object.defineProperty(this, 'coordinates', { value: v, writable: true, enumerable: true, configurable: true });
+            return v;
+          },
         });
+        return Object.assign({}, p, { shape: sh });
       }
-      if (p.title === '吐蕃') {
-        return Object.assign({}, p, {
-          shape: { type: 'Polygon', coordinates: [tuboB1Ring] },
+      if (p.title === '吐蕃' && tuboB) {
+        const sh = { type: 'Polygon' };
+        Object.defineProperty(sh, 'coordinates', {
+          enumerable: true,
+          configurable: true,
+          get() {
+            const v = [
+              tuboB.shape.coordinates[0].map((pt, idx) => {
+                if (idx === 21) return [103.45, 37.74];
+                if (idx === 22) return [102.95, 36.15];
+                if (idx === 23) return [102.85, 34.87];
+                if (idx === 24) return [103.21, 34.11];
+                return pt;
+              }),
+            ];
+            Object.defineProperty(this, 'coordinates', { value: v, writable: true, enumerable: true, configurable: true });
+            return v;
+          },
         });
+        return Object.assign({}, p, { shape: sh });
       }
       return p;
     });
@@ -148,5 +166,6 @@
       regions: b1Regions,
     };
   }
-  window.ATLAS_SNAPSHOTS = out;
+  window.ATLAS_SNAPSHOTS = Object.assign(window.ATLAS_SNAPSHOTS || {}, out);
+  window.ATLAS_FULL_SNAPSHOTS_LOADED = true;
 })();

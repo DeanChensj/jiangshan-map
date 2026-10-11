@@ -21,8 +21,10 @@ function main() {
   // 1. Load data bundles and verify syntax of all JS files
   const dataScripts = [
     'china_geo_data.js',
+    'atlas_boot.js',
     'atlas_snapshots.js',
     'map_data.js',
+    'lore_data.js',
     'i18n_dict.js',
   ];
   for (const file of dataScripts) {
@@ -40,7 +42,18 @@ function main() {
   const snapshots = sandbox.window.ATLAS_SNAPSHOTS;
   const dynasties = sandbox.window.DYNASTY_DATA;
   const corridors = sandbox.window.CORRIDOR_DATA;
+  const loreData = sandbox.window.ATLAS_LORE_DATA;
   const enLocale = sandbox.window.EN_LOCALE;
+  assert(
+    loreData &&
+      Array.isArray(loreData.CHINESE_ERA_SPANS) &&
+      loreData.CHINESE_ERA_SPANS.length >= 100 &&
+      Array.isArray(loreData.PLACE_LANDMARK_EVENTS) &&
+      loreData.PLACE_LANDMARK_EVENTS.length >= 60 &&
+      Array.isArray(loreData.HISTORICAL_JOURNEYS) &&
+      loreData.HISTORICAL_JOURNEYS.length === 7,
+    'ATLAS_LORE_DATA must provide era spans, landmark events, and 7 historical journeys'
+  );
 
   // 2. Validate modern provincial outlines
   assert(Array.isArray(provinces) && provinces.length >= 34, 'PROVINCE_OUTLINES must contain >= 34 provinces');
@@ -140,11 +153,26 @@ function main() {
     }
   }
 
-  // 5. Validate corridors and i18n
+  // 5. Validate corridors, i18n, and isolated cold-start boot seed
   assert(Array.isArray(corridors) && corridors.length >= 3, 'Expected >= 3 historical corridors');
   for (const c of corridors) {
     assert(enLocale.corridors && enLocale.corridors[c.key], `Missing English translation for corridor ${c.key}`);
   }
+
+  const bootSandbox = { window: {} };
+  vm.createContext(bootSandbox);
+  vm.runInContext(fs.readFileSync(path.join(JS_DIR, 'atlas_boot.js'), 'utf8'), bootSandbox, {
+    filename: 'atlas_boot.js',
+  });
+  const bootSnaps = bootSandbox.window.ATLAS_SNAPSHOTS;
+  assert(
+    bootSnaps &&
+      Array.isArray(bootSnaps.neighbors) &&
+      bootSnaps.s_zhanguo_a &&
+      bootSnaps.s_qin_a,
+    'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a for instant first paint'
+  );
+  verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
@@ -152,6 +180,7 @@ function main() {
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys, ${loreData.CHINESE_ERA_SPANS.length} era spans & ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events in lore_data.js`);
 }
 
 main();
