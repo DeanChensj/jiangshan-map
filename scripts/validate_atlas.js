@@ -311,6 +311,16 @@ function main() {
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
 
+  // 6. Verify Unified Milestone Balloon Auto-Show ("史事浮签") & config toggle
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert(
+    appCode.includes('_syncAutoMilestoneBalloon') &&
+      appCode.includes('toggleEventCallouts') &&
+      appCode.includes('ep-close') &&
+      !appCode.includes('_buildMilestoneCalloutDom') &&
+      indexHtml.includes('id="chk-event-callouts"'),
+    'app.js & index.html must unify event callouts into #milestone-balloon (_syncAutoMilestoneBalloon, toggleEventCallouts, ep-close, #chk-event-callouts)'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
