@@ -1534,7 +1534,7 @@
     }
 
     _settlementMask(dynasty, year) {
-      return (dynasty.settlements || [])
+      const sMask = (dynasty.settlements || [])
         .map((item) =>
           (item.appear !== undefined && year < item.appear) ||
           (item.vanish !== undefined && year >= item.vanish)
@@ -1542,6 +1542,13 @@
             : '1'
         )
         .join('');
+      const pMask = HistoricalAtlasController.STRATEGIC_PASSES.map((p) =>
+        (p.appear !== undefined && year < p.appear) ||
+        (p.vanish !== undefined && year >= p.vanish)
+          ? '0'
+          : '1'
+      ).join('');
+      return `${sMask}:${pMask}`;
     }
 
     _renderSettlements(dynasty) {
@@ -1661,6 +1668,67 @@
           hintTxt.textContent = isEn
             ? '◆ Click city · 2,000 yrs of history ›'
             : '◆ 点按城池 · 阅两千年身世 ›';
+        }
+      }
+
+      // Render Strategic Passes (名关雄隘 · 天下锁钥): subtle crenellated pass markers
+      if (dynasty.key !== 'prc') {
+        const activePasses = HistoricalAtlasController.STRATEGIC_PASSES.filter(
+          (p) =>
+            (p.appear === undefined || this.year >= p.appear) &&
+            (p.vanish === undefined || this.year < p.vanish)
+        );
+        for (const p of activePasses) {
+          const [px, py] = this.projector.toScreen(p.coord[0], p.coord[1]);
+          const hasNearMilestone = (dynasty.milestones || []).some(
+            (m) =>
+              m.coord &&
+              Math.abs(m.year - this.year) <= 8 &&
+              this.projector.greatCircleKm(p.coord, m.coord) <= 42
+          );
+          const hasNearTrace =
+            this.activeTrace && this.projector.greatCircleKm(p.coord, this.activeTrace) <= 32;
+          const cls =
+            hasNearMilestone || hasNearTrace
+              ? 'settlement-node is-pass is-pass-highlighted'
+              : 'settlement-node is-pass';
+          const pNode = this._svgNode(
+            'g',
+            {
+              class: cls,
+              'data-x': px.toFixed(1),
+              'data-y': py.toFixed(1),
+            },
+            group
+          );
+          pNode.dataset.passKey = p.key;
+          pNode.dataset.ancient = this.locale === 'en' ? p.ancientEn : p.ancientZh;
+          pNode.dataset.modern = this.locale === 'en' ? p.modernEn : p.modernZh;
+          pNode.dataset.remark = this.locale === 'en' ? p.rangeEn : p.rangeZh;
+          pNode.dataset.chokepoint = this.locale === 'en' ? p.chokepointEn : p.chokepointZh;
+          pNode.dataset.lng = String(p.coord[0]);
+          pNode.dataset.lat = String(p.coord[1]);
+          pNode.dataset.prefAlign = p.align || 'r';
+          pNode.dataset.tier = 'pass';
+
+          this._svgNode(
+            'path',
+            {
+              class: 'pass-gate-icon',
+              d: 'M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z',
+            },
+            pNode
+          );
+          const align = p.align || 'r';
+          const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
+          const dx = align === 'l' ? -5.2 : align === 'b' ? 0 : 5.2;
+          const dy1 = align === 'b' ? 9.8 : align === 't' ? -4.5 : 2.8;
+          const nameEl = this._svgNode(
+            'text',
+            { class: 'name pass-name', x: dx, y: dy1, 'text-anchor': anchor },
+            pNode
+          );
+          nameEl.textContent = this.locale === 'en' ? p.ancientEn : p.ancientZh;
         }
       }
       this._rescaleSvgTypography();
@@ -2431,6 +2499,23 @@
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS) || [];
     }
 
+    static get STRATEGIC_PASSES() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.STRATEGIC_PASSES) || [];
+    }
+
+    _findNearbyPass(lng, lat, maxKm = 32) {
+      let best = null;
+      let bestKm = maxKm;
+      for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
+        const km = this.projector.greatCircleKm([lng, lat], p.coord);
+        if (km <= bestKm) {
+          bestKm = km;
+          best = { pass: p, km };
+        }
+      }
+      return best;
+    }
+
     _collectPlaceEventsForDynasty(d, lng, lat, near) {
       const results = [];
       const nearCity = near && near.km <= 42 ? near.s : null;
@@ -2644,11 +2729,16 @@
         if (hit && (!closestOverall || hit.km < closestOverall.km)) closestOverall = hit;
       }
 
-      const titleMain = modernTitle
-        ? this.trTerm(modernTitle)
-        : this.uiStr('outside_modern', '现代省界外 / 海域');
-      const titleSuffix =
-        closestOverall && closestOverall.s.modern
+      const matchedPassHit = this._findNearbyPass(lng, lat, 30);
+      const matchedPass = matchedPassHit ? matchedPassHit.pass : null;
+      const titleMain = matchedPass
+        ? (this.locale === 'en' ? matchedPass.ancientEn : matchedPass.ancientZh)
+        : modernTitle
+          ? this.trTerm(modernTitle)
+          : this.uiStr('outside_modern', '现代省界外 / 海域');
+      const titleSuffix = matchedPass
+        ? ` · ${this.locale === 'en' ? matchedPass.modernEn : '今' + matchedPass.modernZh}`
+        : closestOverall && closestOverall.s.modern
           ? ` · ${this.trModernCity(closestOverall.s.modern)}`
           : '';
       this._id('genealogy-heading').textContent = titleMain + titleSuffix;
@@ -2763,6 +2853,19 @@
 
         const listEl = this._id('genealogy-timeline');
         listEl.innerHTML = '';
+
+        if (matchedPass) {
+          const passBanner = document.createElement('li');
+          passBanner.className = 'pass-lore-banner';
+          const rangeText = this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh;
+          const chokeText =
+            this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh;
+          const badgeLbl = this.locale === 'en' ? 'Strategic Pass' : '雄关形胜';
+          passBanner.innerHTML =
+            `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLbl}</span><span class="pass-lore-range">${rangeText}</span></div>` +
+            `<div class="pass-lore-desc">${chokeText}</div>`;
+          listEl.appendChild(passBanner);
+        }
 
         const visibleRows = this.genealogyEventsOnly
           ? rowsData.filter((r) => r.placeEvents.length > 0 || r.isCapHere)
@@ -3461,7 +3564,11 @@
       const tier2MinZoom =
         typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
       const showTier2 = z >= tier2MinZoom;
+      const passMinZoom =
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 1.95 : 1.62;
+      const showPasses = z >= passMinZoom;
       this.svg.classList.toggle('is-zoomed-cities', showTier2);
+      this.svg.classList.toggle('is-zoomed-passes', showPasses);
 
       const showSettlements = !this.grpSettlements.classList.contains('is-hidden');
       const showPrefectures = !this.grpPrefectures.classList.contains('is-hidden');
@@ -3518,11 +3625,13 @@
       // Step 0: Reserve all visible city dots and milestone pins so labels never cover dots
       if (showSettlements) {
         for (const node of settlementNodes) {
+          const isPass = node.classList.contains('is-pass');
+          if (isPass && !showPasses && !node.classList.contains('is-pass-highlighted')) continue;
           const isT2 = node.classList.contains('is-tier2');
           if (isT2 && !showTier2) continue;
           const cx = parseFloat(node.getAttribute('data-x'));
           const cy = parseFloat(node.getAttribute('data-y'));
-          const r = (node.classList.contains('is-capital') ? 5.2 : isT2 ? 3.0 : 3.8) * s;
+          const r = (node.classList.contains('is-capital') ? 5.2 : isPass ? 3.4 : isT2 ? 3.0 : 3.8) * s;
           occupied.push({ x1: cx - r, y1: cy - r, x2: cx + r, y2: cy + r });
         }
       }
@@ -3663,7 +3772,11 @@
         if (node.classList.contains('is-capital')) layoutSettlementLabel(node, false);
       }
       for (const node of settlementNodes) {
-        if (!node.classList.contains('is-capital') && !node.classList.contains('is-tier2')) {
+        if (
+          !node.classList.contains('is-capital') &&
+          !node.classList.contains('is-tier2') &&
+          !node.classList.contains('is-pass')
+        ) {
           layoutSettlementLabel(node, false);
         }
       }
@@ -3843,6 +3956,19 @@
           node.classList.add('is-crowded-hidden');
         }
       });
+
+      // Tier 3b: Strategic mountain/river passes (visible when z >= passMinZoom or event-highlighted)
+      for (const node of settlementNodes) {
+        if (node.classList.contains('is-pass')) {
+          if (showPasses || node.classList.contains('is-pass-highlighted')) {
+            layoutSettlementLabel(node, true);
+          } else {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          }
+        }
+      }
 
       // Tier 4: Tier-2 secondary cities (visible when z >= 1.75; auto-flip or cull text if crowded)
       for (const node of settlementNodes) {
@@ -4754,6 +4880,24 @@
         }
       }
 
+      // 1b. Strategic Historical Passes (名关雄隘 · 天下锁钥)
+      for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
+        const dIdx = this._findDynastyIndex(p.focusYear || -200);
+        const d = this.dynasties[dIdx] || this.dynasties[0];
+        entries.push({
+          kind: 'pass',
+          passKey: p.key,
+          dynasty: d,
+          year: p.focusYear || d.focusYear,
+          coord: p.coord,
+          titleZh: p.ancientZh,
+          subZh: `今${p.modernZh} · ${p.rangeZh}`,
+          titleEn: p.ancientEn,
+          subEn: `${p.modernEn} · ${p.rangeEn}`,
+          keywords: `${p.ancientZh} ${p.modernZh} ${p.rangeZh} ${p.ancientEn} ${p.modernEn} ${p.rangeEn} 名关 雄关 关隘 险关 pass`.toLowerCase(),
+        });
+      }
+
       // 2. Prefectures & Macro Regions across snapshots
       const seenAdmin = new Set();
       for (const d of this.dynasties) {
@@ -4936,12 +5080,12 @@
 
       this.jumpToYear(item.year);
 
-      if (item.kind === 'city' && item.coord) {
+      if ((item.kind === 'city' || item.kind === 'pass') && item.coord) {
         if (!this._id('chk-settlements').checked) {
           this._id('chk-settlements').checked = true;
           this.grpSettlements.classList.remove('is-hidden');
         }
-        const targetZoom = item.tier === 2 ? 2.2 : 1.85;
+        const targetZoom = item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.2 : 1.85;
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / targetZoom);
         const h = w * this._getViewportAspect();
@@ -4989,6 +5133,7 @@
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
           era: this.locale === 'en' ? 'Era' : '纪年',
           city: this.locale === 'en' ? 'City' : '古城',
+          pass: this.locale === 'en' ? 'Pass' : '雄关',
           prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
           region: this.locale === 'en' ? 'Circuit/Prov' : '大区',
           event: this.locale === 'en' ? 'Event' : '史事',
@@ -5670,6 +5815,19 @@
             `<b>◆ ${this.formatYear(mHit.year)}${eraPart} · ${this.milestoneHeadline(cur, mHit)}</b><div class="tt-sub">${
               mHit.site ? SVG_ICONS.pin + ' ' + this.milestoneSite(cur, mHit) + ' · ' : ''
             }${actionHint}</div>`
+          );
+        } else if (settlementEl && settlementEl.classList.contains('is-pass')) {
+          const pName = settlementEl.dataset.ancient;
+          const pMod = settlementEl.dataset.modern;
+          const pRange = settlementEl.dataset.remark;
+          const pChoke = settlementEl.dataset.chokepoint || '';
+          const badge = this.locale === 'en' ? '[Strategic Pass]' : '【天下名关】';
+          const traceHint =
+            this.locale === 'en' ? 'Click to view pass history & battles ›' : '点击查看关隘形胜与历代战史 ›';
+          const locStr = this.locale === 'en' ? `Now ${pMod}` : `今${pMod}`;
+          this._showHoverTip(
+            e,
+            `<b>${badge} ${pName}（${locStr}）</b><div class="tt-sub">${pRange} · ${pChoke}</div><div class="tt-sub">${traceHint}</div>`
           );
         } else if (settlementEl || coCity) {
           const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));

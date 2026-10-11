@@ -51,9 +51,22 @@ function main() {
       Array.isArray(loreData.PLACE_LANDMARK_EVENTS) &&
       loreData.PLACE_LANDMARK_EVENTS.length >= 60 &&
       Array.isArray(loreData.HISTORICAL_JOURNEYS) &&
-      loreData.HISTORICAL_JOURNEYS.length === 7,
-    'ATLAS_LORE_DATA must provide era spans, landmark events, and 7 historical journeys'
+      loreData.HISTORICAL_JOURNEYS.length === 7 &&
+      Array.isArray(loreData.STRATEGIC_PASSES) &&
+      loreData.STRATEGIC_PASSES.length >= 18,
+    'ATLAS_LORE_DATA must provide era spans, landmark events, strategic passes, and 7 historical journeys'
   );
+  for (const p of loreData.STRATEGIC_PASSES) {
+    assert(
+      p.key && p.ancientZh && p.ancientEn && Array.isArray(p.coord) && p.coord.length === 2,
+      `Invalid strategic pass entry: ${JSON.stringify(p)}`
+    );
+    const [lng, lat] = p.coord;
+    assert(
+      lng >= 70 && lng <= 135 && lat >= 18 && lat <= 50,
+      `Out-of-bounds pass coordinate [${lng}, ${lat}] for ${p.ancientZh}`
+    );
+  }
 
   // 1b. Validate time-aware historical hydrography (5 Yellow River courses & historical lakes)
   const hydro = sandbox.window.HYDRO_DATA;
