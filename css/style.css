@@ -1011,11 +1011,17 @@ h2 {
   vertical-align: 1px;
 }
 
-/* Strategic Mountain & River Passes (名关雄隘 · 天下锁钥, controlled by 关河丝路 layer) */
+/* Strategic Mountain & River Passes (名关雄隘 · 天下锁钥, controlled by 关河丝路 layer & zoom) */
 .settlement-node.is-pass {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+#atlas-svg.is-zoomed-passes .settlement-node.is-pass,
+.settlement-node.is-pass.is-pass-trace {
   opacity: 0.94;
   pointer-events: auto;
-  transition: opacity 0.22s ease;
 }
 
 #grp-settlements.is-hidden {
