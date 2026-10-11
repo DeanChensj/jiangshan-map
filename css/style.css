@@ -1511,6 +1511,13 @@ h2 {
   stroke-width: 1.5;
 }
 
+.guess-preview-ring {
+  fill: rgba(43, 108, 176, 0.16);
+  stroke: #2b6cb0;
+  stroke-width: 1.3;
+  stroke-dasharray: 3 2;
+}
+
 .answer-pin {
   fill: #2f855a;
   stroke: #fff;
@@ -1808,16 +1815,45 @@ h2 {
 .year-stepper {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: #fff;
   border: 1px solid var(--hairline);
   border-radius: 8px;
-  padding: 4px 8px;
+  padding: 3px 5px;
   font-size: 12px;
 }
 
+.step-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: rgba(90, 74, 58, 0.07);
+  color: var(--text-main);
+  font-family: var(--sans-stack);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.step-nav-btn:hover {
+  background: rgba(181, 69, 47, 0.12);
+  border-color: rgba(181, 69, 47, 0.35);
+  color: var(--vermilion);
+}
+
+.step-nav-btn:active {
+  transform: scale(0.95);
+}
+
 .year-stepper input {
-  width: 64px;
+  width: 60px;
   border: none;
   outline: none;
   font: inherit;
@@ -1829,6 +1865,7 @@ h2 {
 
 .year-stepper .unit-label {
   color: var(--text-muted);
+  margin-right: 2px;
 }
 
 .is-hidden {
@@ -1954,8 +1991,22 @@ html[lang="en"] .genealogy-list li {
     top: 8px;
     width: 210px;
   }
-  #map-search-box:focus-within {
+  #map-search-box:focus-within,
+  #map-search-box.is-expanded {
     width: calc(100% - 16px);
+  }
+  /* Single Floating Overlay Mutex on Mobile (<= 900px) */
+  #viewport-frame.has-active-journey #map-search-box,
+  #viewport-frame.has-active-challenge #map-search-box,
+  #viewport-frame.has-active-genealogy #map-search-box,
+  #viewport-frame.has-active-journey #map-key,
+  #viewport-frame.has-active-challenge #map-key,
+  #viewport-frame.has-active-genealogy #map-key,
+  #viewport-frame.has-active-journey #scale-bar-box,
+  #viewport-frame.has-active-challenge #scale-bar-box,
+  #viewport-frame.has-active-genealogy #scale-bar-box {
+    opacity: 0;
+    pointer-events: none;
   }
   #map-key {
     left: 8px;
@@ -1979,16 +2030,17 @@ html[lang="en"] .genealogy-list li {
   }
   #scale-bar-box {
     padding: 3px 7px 5px;
+    transition: opacity 0.18s ease;
   }
   #act-toggle-pane {
     display: none;
   }
   #challenge-card {
-    top: 46px;
+    top: 8px;
     left: 8px;
     right: 8px;
     width: auto;
-    max-height: calc(100% - 54px);
+    max-height: calc(100% - 16px);
     padding: 10px 12px;
     z-index: 14;
   }
@@ -2029,8 +2081,8 @@ html[lang="en"] .genealogy-list li {
     font-size: 12px;
   }
   #scrubber-dock {
-    gap: 10px;
-    padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+    padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px));
   }
   #scrubber-track {
     height: 30px;
@@ -2046,19 +2098,19 @@ html[lang="en"] .genealogy-list li {
     font-size: 18.5px;
   }
   .control-strip {
-    gap: 3px;
+    gap: 3.5px;
   }
   .toolbar-divider,
   .layers-trigger-btn .layers-count-pill,
   #act-locale .btn-svg,
   #lbl-music,
-  #lbl-github-star {
-    display: none;
+  #act-github-star {
+    display: none !important;
   }
   .action-btn {
-    padding: 3.5px 5.5px;
-    font-size: 10.5px;
-    gap: 2px;
+    padding: 4px 6.5px;
+    font-size: 11px;
+    gap: 2.5px;
   }
   .action-btn .btn-svg {
     width: 11.5px;
@@ -2066,15 +2118,33 @@ html[lang="en"] .genealogy-list li {
   }
   .action-btn.locale-switch {
     min-width: 0;
-    padding: 3.5px 5.5px;
+    padding: 4px 6px;
   }
   .music-pill-group .music-btn {
-    padding: 3.5px 6px;
+    padding: 4px 6.5px;
   }
   .layers-popover {
     left: 8px;
     right: 8px;
     width: auto;
+  }
+  /* Collapsible 34x34px Search Button on Mobile (<= 640px) */
+  #map-search-box:not(:focus-within):not(.is-expanded) {
+    width: 34px;
+    height: 34px;
+  }
+  #map-search-box:not(:focus-within):not(.is-expanded) .search-input-wrap {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    cursor: pointer;
+  }
+  #map-search-box:not(:focus-within):not(.is-expanded) #inp-map-search {
+    width: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
   }
   #map-key {
     max-width: calc(100% - 134px);
@@ -2096,11 +2166,20 @@ html[lang="en"] .genealogy-list li {
   .scale-label {
     font-size: 9.5px;
   }
+  /* Keep thumb-friendly ‹ / › step buttons on mobile while hiding numeric input */
   .year-stepper {
+    padding: 2px;
+    gap: 2px;
+    border-radius: 7px;
+  }
+  .year-stepper input,
+  .year-stepper .unit-label {
     display: none;
   }
-  .options-grid {
-    grid-template-columns: 1fr;
+  .step-nav-btn {
+    width: 28px;
+    height: 30px;
+    font-size: 16px;
   }
   #scrubber-Bubble {
     font-size: 11px;
@@ -2580,6 +2659,18 @@ html[lang="en"] .genealogy-list li {
   flex: 1;
 }
 
+.jc-mobile-person {
+  display: none;
+  font-family: var(--serif-stack);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--vermilion);
+  margin-right: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .jc-tab-btn {
   padding: 3px 7.5px;
   border-radius: 5px;
@@ -2789,6 +2880,12 @@ html[lang="en"] .genealogy-list li {
     width: auto;
     padding: 9px 10px 8px;
     gap: 5px;
+  }
+  .jc-tabs {
+    display: none;
+  }
+  .jc-mobile-person {
+    display: inline-flex;
   }
   .jc-stop-desc {
     font-size: 11.8px;

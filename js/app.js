@@ -363,9 +363,29 @@
       if (dot) dot.classList.add('is-hidden');
     }
 
+    _getViewportAspect() {
+      if (this.svg) {
+        const r = this.svg.getBoundingClientRect();
+        if (r.width > 40 && r.height > 40) {
+          return Math.max(0.65, Math.min(1.45, r.height / r.width));
+        }
+      }
+      if (typeof window !== 'undefined' && window.innerWidth < window.innerHeight) {
+        return 1.24;
+      }
+      return 0.7;
+    }
+
     _getDefaultCamera() {
-      if (typeof window !== 'undefined' && window.innerWidth <= 900) {
-        return { x: 420, y: 220, w: 360, h: 435, zoom: 1000 / 360 };
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth <= 900 && window.innerWidth < window.innerHeight) {
+          const w = 340;
+          const h = Math.round(w * this._getViewportAspect());
+          return { x: 430, y: 225, w, h, zoom: 1000 / w };
+        }
+        if (window.innerWidth <= 900) {
+          return { x: 410, y: 220, w: 380, h: 420, zoom: 1000 / 380 };
+        }
       }
       return { x: 350, y: 215, w: 500, h: 420, zoom: 2 };
     }
@@ -787,6 +807,16 @@
         '疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
+      const stepPrevBtn = this._id('act-step-prev');
+      if (stepPrevBtn) {
+        stepPrevBtn.title =
+          this.locale === 'en' ? 'Previous historical milestone' : '上一历史节点 / 事件';
+      }
+      const stepNextBtn = this._id('act-step-next');
+      if (stepNextBtn) {
+        stepNextBtn.title =
+          this.locale === 'en' ? 'Next historical milestone' : '下一历史节点 / 事件';
+      }
       this._id('txt-genealogy-kicker').textContent = this.uiStr(
         'trace_kicker',
         '点地溯源 · 古今政区沿革'
@@ -1956,6 +1986,8 @@
     closeGenealogyCard() {
       this.activeTrace = null;
       this._id('genealogy-card').classList.add('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-active-genealogy');
       this.grpGenealogy.innerHTML = '';
       if (this.activeMilestone) this._positionMilestoneBalloon();
     }
@@ -2353,6 +2385,8 @@
       }
 
       this._id('genealogy-card').classList.remove('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-genealogy');
 
       const renderSubAndList = () => {
         const subEl = this._id('genealogy-sub');
@@ -2717,6 +2751,51 @@
       }
     }
 
+    stepTimelineNode(dir) {
+      if (this.challenge) return;
+      this._recordGestureClick();
+      this.stopAutoplay();
+      if (this.activeJourney) {
+        if (this.journeyTimer) {
+          clearInterval(this.journeyTimer);
+          this.journeyTimer = null;
+        }
+        this.stepJourney(dir > 0 ? 1 : -1);
+        return;
+      }
+      if (!this._timelineStepYears) {
+        const yrs = new Set();
+        for (const d of this.dynasties) {
+          yrs.add(d.fromYear);
+          yrs.add(d.focusYear);
+          if (Array.isArray(d.phases)) {
+            for (const ph of d.phases) {
+              if (ph.until > d.fromYear && ph.until <= d.toYear) {
+                yrs.add(ph.until);
+              }
+            }
+          }
+          for (const m of d.milestones || []) {
+            yrs.add(this._clampYearToDynasty(d, m.year));
+          }
+        }
+        this._timelineStepYears = Array.from(yrs).sort((a, b) => a - b);
+      }
+      const list = this._timelineStepYears;
+      if (dir > 0) {
+        const nextY = list.find((y) => y > this.year);
+        this.jumpToYear(nextY !== undefined ? nextY : this.maxYear);
+      } else {
+        for (let i = list.length - 1; i >= 0; i--) {
+          if (list[i] < this.year) {
+            this.jumpToYear(list[i]);
+            return;
+          }
+        }
+        this.jumpToYear(this.minYear);
+      }
+    }
+
     // ---------------- Autoplay ----------------
     startAutoplay() {
       if (this.challenge) return;
@@ -2997,6 +3076,13 @@
     toggleMobileChronicle(force) {
       this.mobileChronicleOpen =
         force !== undefined ? force : !this.mobileChronicleOpen;
+      if (this.mobileChronicleOpen) {
+        this.closeMilestoneBalloon();
+        this.closeGenealogyCard();
+        if (this.activeJourney && window.innerWidth <= 900) {
+          this.stopJourney(true);
+        }
+      }
       const body = this._id('workspace-body');
       if (body) {
         body.classList.toggle('is-mobile-chronicle-open', this.mobileChronicleOpen);
@@ -3567,6 +3653,8 @@
       if (this.genealogyMode) this.toggleGenealogyMode(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-challenge');
       this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
@@ -3589,6 +3677,8 @@
       this.challenge = null;
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-active-challenge');
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
@@ -3604,6 +3694,7 @@
       const q = this.challenge;
       this.grpChallenge.innerHTML = '';
       q.answered = false;
+      q.pendingGuess = null;
       const cur = q.deck[q.index];
       let roundYear = cur.dynasty.focusYear;
       if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
@@ -3667,10 +3758,38 @@
         `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${baseClue}${extraEventStr}</span></div>`;
     }
 
+    _previewLocatePin(svgX, svgY) {
+      const q = this.challenge;
+      if (!q || q.answered) return;
+      q.pendingGuess = [svgX, svgY];
+      this.grpChallenge.innerHTML = '';
+
+      const gPin = this._svgNode(
+        'g',
+        { 'data-x': svgX.toFixed(1), 'data-y': svgY.toFixed(1) },
+        this.grpChallenge
+      );
+      this._svgNode('circle', { class: 'guess-preview-ring', r: 10 }, gPin);
+      this._svgNode('circle', { class: 'guess-pin', r: 4.5 }, gPin);
+      this._rescaleSvgTypography();
+
+      this._id('challenge-verdict').textContent =
+        this.locale === 'en'
+          ? 'Pin placed. Tap elsewhere to adjust, or confirm below.'
+          : '已落针，可点击他处微调位置，或点击下方确认作答。';
+      this._id('act-next-round').innerHTML =
+        this.locale === 'en'
+          ? `Confirm Pin ${SVG_ICONS.arrowRight}`
+          : `确认落针 ${SVG_ICONS.arrowRight}`;
+      this._id('challenge-result').classList.remove('is-hidden');
+    }
+
     _evaluateLocateClick(svgX, svgY) {
       const q = this.challenge;
       if (!q || q.answered) return;
       q.answered = true;
+      q.pendingGuess = null;
+      this.grpChallenge.innerHTML = '';
 
       const cur = q.deck[q.index];
       const guessGeo = this.projector.toGeo(svgX, svgY);
@@ -5414,9 +5533,10 @@
       }
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
-      const spanW = Math.max(maxX - minX + 110, (maxY - minY + 120) / 0.7) * 1.18;
+      const aspect = this._getViewportAspect();
+      const spanW = Math.max(maxX - minX + 110, (maxY - minY + 120) / aspect) * 1.18;
       const w = Math.max(320, Math.min(960, spanW));
-      const h = w * 0.7;
+      const h = w * aspect;
       // Offset camera slightly down/left so the bottom-left journey card never occludes western/southern stops
       const offsetX = window.innerWidth > 900 ? -w * 0.06 : 0;
       const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.1;
@@ -5431,8 +5551,9 @@
     _flyToJourneyStop(stop) {
       if (!stop || !stop.coord) return;
       const [tx, ty] = this.projector.toScreen(stop.coord[0], stop.coord[1]);
+      const aspect = this._getViewportAspect();
       const w = Math.max(360, Math.min(this.camera.w, 540));
-      const h = w * 0.7;
+      const h = w * aspect;
       const offsetX = window.innerWidth > 900 ? -w * 0.08 : 0;
       const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.12;
       this._animateCameraTo({
@@ -5623,6 +5744,7 @@
 
       this.journeyCard.innerHTML =
         `<div class="jc-top-bar">` +
+        `<span class="jc-mobile-person">${isEn ? j.shortEn : j.shortZh}</span>` +
         `<div class="jc-tabs">${tabsHtml}</div>` +
         `<button type="button" class="jc-close-btn" id="act-journey-overview" title="${isEn ? 'Fit entire route on map' : '全线总览视图'}">${isEn ? 'Full Route' : '全线视图'}</button>` +
         `<button type="button" class="jc-close-btn" id="act-close-journey" title="${isEn ? 'Exit Historical Journey (Esc)' : '退出行迹巡礼 (Esc)'}">${isEn ? 'Exit' : '退出'} ×</button>` +
@@ -5929,6 +6051,8 @@
       this.stopAutoplay();
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
+      const boxEl = this._id('map-search-box');
+      if (boxEl) boxEl.classList.remove('is-expanded');
 
       if (item.kind === 'journey' && item.journeyKey) {
         this.startJourney(item.journeyKey, 0);
@@ -5945,7 +6069,7 @@
         const targetZoom = item.tier === 2 ? 2.2 : 1.85;
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / targetZoom);
-        const h = w * 0.7;
+        const h = w * this._getViewportAspect();
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.45, w, h });
         this.openGenealogyAt(item.coord[0], item.coord[1]);
       } else if ((item.kind === 'prefecture' || item.kind === 'region') && item.coord) {
@@ -5955,7 +6079,7 @@
         }
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / 1.95);
-        const h = w * 0.7;
+        const h = w * this._getViewportAspect();
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.48, w, h });
         if (item.prefTitle) {
           setTimeout(() => {
@@ -6054,8 +6178,24 @@
       };
 
       if (searchInp && searchList) {
+        const searchBox = this._id('map-search-box');
+        if (searchBox) {
+          searchBox.addEventListener('click', () => {
+            if (window.innerWidth <= 640 && !searchBox.classList.contains('is-expanded')) {
+              searchBox.classList.add('is-expanded');
+              setTimeout(() => searchInp.focus(), 20);
+            }
+          });
+        }
         searchInp.addEventListener('input', renderSearchDropdown);
         searchInp.addEventListener('focus', renderSearchDropdown);
+        searchInp.addEventListener('blur', () => {
+          setTimeout(() => {
+            if (searchBox && !searchInp.value.trim()) {
+              searchBox.classList.remove('is-expanded');
+            }
+          }, 180);
+        });
         searchInp.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowDown' && currentResults.length) {
             e.preventDefault();
@@ -6078,6 +6218,7 @@
             }
           } else if (e.key === 'Escape') {
             searchList.classList.add('is-hidden');
+            if (searchBox) searchBox.classList.remove('is-expanded');
             searchInp.blur();
           }
         });
@@ -6085,6 +6226,7 @@
           const box = this._id('map-search-box');
           if (box && !box.contains(e.target)) {
             searchList.classList.add('is-hidden');
+            box.classList.remove('is-expanded');
           }
         });
       }
@@ -6287,6 +6429,13 @@
       this._id('act-close-challenge').addEventListener('click', () => this.stopChallenge());
       this._id('act-next-round').addEventListener('click', () => {
         if (!this.challenge || this._id('act-next-round').onclick) return;
+        if (this.challenge.pendingGuess && !this.challenge.answered) {
+          this._evaluateLocateClick(
+            this.challenge.pendingGuess[0],
+            this.challenge.pendingGuess[1]
+          );
+          return;
+        }
         this.challenge.index++;
         if (this.challenge.index >= this.challenge.deck.length) {
           this._finishChallenge();
@@ -6318,6 +6467,14 @@
         this.stopAutoplay();
         this.jumpToYear(Number(e.target.value));
       });
+      const stepPrevBtn = this._id('act-step-prev');
+      if (stepPrevBtn) {
+        stepPrevBtn.addEventListener('click', () => this.stepTimelineNode(-1));
+      }
+      const stepNextBtn = this._id('act-step-next');
+      if (stepNextBtn) {
+        stepNextBtn.addEventListener('click', () => this.stepTimelineNode(1));
+      }
 
       // Scrubber dragging (smooth continuous scrubbing anywhere on the bar)
       const track = this._id('scrubber-track');
@@ -6496,6 +6653,7 @@
 
         if (this.activePointers.size === 2 && this.pinchState) {
           this._recordGestureMove();
+          this.lastPinchTime = Date.now();
           const pts = Array.from(this.activePointers.values());
           const dist = Math.max(10, Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y));
           const factor = dist / this.pinchState.startDist;
@@ -6715,9 +6873,16 @@
         this.dragState = null;
         this.svg.classList.remove('is-panning');
         if (!wasPan && this.challenge && !this.challenge.answered) {
+          if (this.lastPinchTime && Date.now() - this.lastPinchTime < 350) {
+            return;
+          }
           this._recordGestureClick();
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-          this._evaluateLocateClick(sx, sy);
+          if (e.pointerType === 'touch') {
+            this._previewLocatePin(sx, sy);
+          } else {
+            this._evaluateLocateClick(sx, sy);
+          }
         } else if (!wasPan && !this.challenge) {
           this._recordGestureClick();
           if (e.pointerType === 'touch') {
