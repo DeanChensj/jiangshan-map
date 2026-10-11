@@ -630,28 +630,32 @@ window.EN_LOCALE = {
       "Kublai conquers the Dali Kingdom in Yunnan",
       "Dali"
     ],
+    "nansong:1264": [
+      "Kublai establishes the Bureau of Buddhist and Tibetan Affairs (Zongzhiyuan)",
+      "Dadu / Sakya"
+    ],
+    "nansong:1271": [
+      "Kublai Khan proclaims the Great Yuan dynasty",
+      "Dadu"
+    ],
     "nansong:1273": [
       "Fall of Xiangyang after a six-year siege",
       "Xiangyang"
     ],
+    "nansong:1275": [
+      "Marco Polo arrives at Dadu",
+      "Dadu"
+    ],
     "nansong:1276": [
-      "Fall of the Southern Song capital Lin'an",
-      "Lin'an"
+      "Bayan captures Lin'an, Emperor Gong surrenders; Yuan sets Yunnan Branch Secretariat at Zhongqing",
+      "Lin'an / Zhongqing"
     ],
     "nansong:1279": [
       "Battle of Yashan: end of the Song dynasty",
       "Yashan"
     ],
-    "yuan:1271": [
-      "Kublai Khan proclaims the Great Yuan dynasty",
-      "Dadu"
-    ],
-    "yuan:1275": [
-      "Marco Polo arrives at Dadu",
-      "Dadu"
-    ],
     "yuan:1279": [
-      "Conquest of Southern Song completes reunification",
+      "Battle of Yashan destroys Southern Song; Yuan reunifies China",
       "Yashan"
     ],
     "yuan:1293": [
@@ -1133,14 +1137,6 @@ window.EN_LOCALE = {
     "nansong:1259": [
       "Siege of Diaoyu Fortress; Möngke Khan dies in campaign",
       "Diaoyu Fortress (Hechuan)"
-    ],
-    "yuan:1264": [
-      "Kublai establishes the Bureau of Buddhist and Tibetan Affairs",
-      "Dadu / Sakya"
-    ],
-    "yuan:1276": [
-      "Yuan forces enter Lin'an; Yunnan Branch Secretariat established at Zhongqing",
-      "Zhongqing (Kunming)"
     ],
     "yuan:1281": [
       "Penghu Inspection Office established; second eastern campaign to Japan",

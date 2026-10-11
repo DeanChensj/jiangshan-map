@@ -89,6 +89,15 @@ function main() {
     for (const m of d.milestones || []) {
       totalMilestones++;
       assert(typeof m.year === 'number' && m.headline, `Invalid milestone in ${d.key}: ${JSON.stringify(m)}`);
+      assert(
+        m.year >= d.fromYear && m.year <= d.toYear,
+        `Milestone year ${m.year} out of bounds [${d.fromYear}, ${d.toYear}] in ${d.key}: ${m.headline}`
+      );
+      const mk = `${d.key}:${m.year}`;
+      assert(
+        enLocale.milestones && enLocale.milestones[mk],
+        `Missing English milestone translation for ${mk} (${m.headline})`
+      );
     }
     assert(enLocale.dynasties && enLocale.dynasties[d.key], `Missing English translation for dynasty ${d.key}`);
   }

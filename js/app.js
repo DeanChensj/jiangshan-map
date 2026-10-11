@@ -747,12 +747,6 @@
       if (actReset) {
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
-      const lblGen = this._id('lbl-genealogy') || this._id('act-genealogy');
-      if (lblGen) {
-        lblGen.textContent = this.genealogyMode
-          ? this.uiStr('btn_trace_active', '退出溯源')
-          : this.uiStr('btn_trace', '点地溯源');
-      }
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.challenge
         ? this.uiStr('btn_quiz_active', '挑战中…')
@@ -1934,16 +1928,6 @@
       }
       if (this.genealogyMode && this.activeJourney) {
         this.stopJourney();
-      }
-      const actGen = this._id('act-genealogy');
-      if (actGen) {
-        actGen.classList.toggle('is-active', this.genealogyMode);
-      }
-      const lblEl = this._id('lbl-genealogy') || actGen;
-      if (lblEl) {
-        lblEl.textContent = this.genealogyMode
-          ? this.uiStr('btn_trace_active', '退出溯源')
-          : this.uiStr('btn_trace', '点地溯源');
       }
       this.svg.classList.toggle('is-crosshair', this.genealogyMode || Boolean(this.challenge));
       if (!this.genealogyMode && !this._id('genealogy-card').classList.contains('is-hidden')) {
@@ -6085,10 +6069,6 @@
           }
         });
       }
-      const actGenBtn = this._id('act-genealogy');
-      if (actGenBtn) {
-        actGenBtn.addEventListener('click', () => this.toggleGenealogyMode());
-      }
       this._id('act-close-genealogy').addEventListener('click', () => {
         if (this.genealogyMode) this.toggleGenealogyMode(false);
         else this.closeGenealogyCard();
@@ -6817,6 +6797,7 @@
     }
   }
 
+  window.HistoricalAtlasController = HistoricalAtlasController;
   window.addEventListener('DOMContentLoaded', () => {
     window.atlasApp = new HistoricalAtlasController();
   });
