@@ -388,7 +388,7 @@ h2 {
 }
 
 #terrain-relief-img {
-  opacity: 0.68;
+  opacity: 0.56;
   pointer-events: none;
 }
 
@@ -449,24 +449,28 @@ h2 {
 .hydro-label {
   font-family: var(--serif-stack);
   font-style: italic;
-  fill: rgba(30, 88, 120, 0.86);
+  fill: rgba(20, 76, 108, 0.92);
   text-anchor: middle;
   dominant-baseline: central;
   letter-spacing: 0.14em;
   pointer-events: none;
-  filter: url(#label-halo);
+  paint-order: stroke fill;
+  stroke: rgba(246, 240, 228, 0.9);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .hydro-label.is-trunk {
   font-size: 7.6px;
   font-weight: 600;
-  fill: rgba(24, 80, 112, 0.92);
+  fill: rgba(14, 68, 98, 0.95);
 }
 
 .hydro-label.is-river {
   font-size: 6.4px;
   font-weight: 600;
-  fill: rgba(34, 92, 124, 0.82);
+  fill: rgba(22, 78, 110, 0.88);
 }
 
 .hydro-label.is-lake {
@@ -474,37 +478,42 @@ h2 {
   font-style: normal;
   font-weight: 600;
   letter-spacing: 0.06em;
-  fill: rgba(26, 84, 116, 0.88);
+  fill: rgba(18, 74, 106, 0.92);
 }
 
 /* Map SVG Layers */
 .neighbor-shape {
   fill: #e7dfd0;
   stroke: #c9beaa;
-  stroke-width: 0.55;
+  stroke-width: 0.48;
   vector-effect: non-scaling-stroke;
   transition: fill 0.2s;
 }
 
 #atlas-svg.terrain-active .neighbor-shape {
   fill: rgba(231, 223, 208, 0.08);
-  stroke: rgba(164, 148, 128, 0.42);
+  stroke: rgba(164, 148, 128, 0.34);
 }
 
 .neighbor-caption {
   font-family: var(--sans-stack);
   font-size: 9px;
-  fill: #9b9184;
+  font-weight: 600;
+  fill: #6c6256;
   text-anchor: middle;
   dominant-baseline: central;
   letter-spacing: 0.08em;
   pointer-events: none;
+  paint-order: stroke fill;
+  stroke: rgba(246, 240, 228, 0.86);
+  stroke-width: 2px;
+  stroke-linejoin: round;
 }
 
 .province-shape {
   fill: var(--province-fill);
   stroke: var(--province-border);
-  stroke-width: 0.7;
+  stroke-width: 0.52;
   vector-effect: non-scaling-stroke;
   transition: fill 0.2s;
 }
@@ -515,7 +524,7 @@ h2 {
 
 #atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
   fill: rgba(246, 239, 225, 0.04);
-  stroke: rgba(154, 139, 120, 0.36);
+  stroke: rgba(154, 139, 120, 0.26);
 }
 
 #atlas-svg.terrain-active .province-shape:not(.maritime-dash):hover {
@@ -530,7 +539,7 @@ h2 {
 
 #grp-provinces.is-hidden .province-shape {
   fill: none;
-  stroke: rgba(141, 132, 122, 0.35);
+  stroke: rgba(141, 132, 122, 0.26);
 }
 
 #grp-prov-names {
@@ -540,10 +549,13 @@ h2 {
 .province-caption {
   font-family: var(--sans-stack);
   font-size: 9.2px;
-  fill: #7b7268;
+  fill: #6e655b;
   text-anchor: middle;
   dominant-baseline: central;
-  filter: url(#label-halo);
+  paint-order: stroke fill;
+  stroke: rgba(248, 243, 232, 0.9);
+  stroke-width: 2.1px;
+  stroke-linejoin: round;
 }
 
 #grp-polities {
@@ -574,7 +586,7 @@ h2 {
 #atlas-svg.terrain-active .polity-shape {
   fill-opacity: 0.3;
   mix-blend-mode: multiply;
-  stroke-width: 1.95;
+  stroke-width: 1.85;
 }
 
 #atlas-svg.terrain-active .polity-shape:hover {
@@ -583,7 +595,7 @@ h2 {
 
 .polity-shape.rival {
   fill-opacity: 0.32;
-  stroke-width: 1.5;
+  stroke-width: 1.45;
 }
 
 #atlas-svg.terrain-active .polity-shape.rival {
@@ -593,7 +605,7 @@ h2 {
 .polity-shape.protectorate {
   fill-opacity: 0.24;
   stroke-dasharray: 5 3;
-  stroke-width: 1.4;
+  stroke-width: 1.35;
 }
 
 #atlas-svg.terrain-active .polity-shape.protectorate {
@@ -602,15 +614,15 @@ h2 {
 
 .polity-shape.neighbor {
   fill: url(#diag-hatch);
-  fill-opacity: 0.55;
+  fill-opacity: 0.52;
   stroke: #6e6256;
   stroke-dasharray: 3 3;
-  stroke-width: 1.1;
+  stroke-width: 1.05;
 }
 
 #atlas-svg.terrain-active .polity-shape.neighbor {
   mix-blend-mode: normal;
-  fill-opacity: 0.42;
+  fill-opacity: 0.38;
 }
 
 .polity-shape.neighbor:hover {
@@ -620,8 +632,8 @@ h2 {
 /* First-Level Macro Administrative Regions (道/州/路/行省/布政使司/省) */
 .region-shape {
   fill: none;
-  stroke: rgba(105, 58, 38, 0.45);
-  stroke-width: 0.95;
+  stroke: rgba(105, 58, 38, 0.38);
+  stroke-width: 0.82;
   stroke-dasharray: 4.5 2.5;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -632,13 +644,17 @@ h2 {
   font-family: var(--serif-stack);
   font-size: 9px;
   font-weight: 700;
-  fill: #6a3422;
-  fill-opacity: 0.82;
+  fill: #522212;
+  fill-opacity: 0.93;
   letter-spacing: 0.08em;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
-  filter: url(#label-halo);
+  paint-order: stroke fill;
+  stroke: rgba(248, 243, 232, 0.92);
+  stroke-width: 2.3px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   transition: opacity 0.16s ease;
 }
 
@@ -650,8 +666,8 @@ h2 {
 /* Secondary Prefectures (郡/州/府/路) */
 .prefecture-shape {
   fill: rgba(255, 255, 255, 0.001);
-  stroke: rgba(43, 38, 34, 0.24);
-  stroke-width: 0.5;
+  stroke: rgba(43, 38, 34, 0.15);
+  stroke-width: 0.42;
   stroke-dasharray: 2 1.5;
   vector-effect: non-scaling-stroke;
 }
@@ -668,13 +684,17 @@ h2 {
   font-family: var(--serif-stack);
   font-weight: 700;
   font-size: 19px;
-  fill: #241e19;
-  fill-opacity: 0.86;
+  fill: #1c1612;
+  fill-opacity: 0.92;
   letter-spacing: 0.18em;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
-  filter: url(#label-halo);
+  paint-order: stroke fill;
+  stroke: rgba(248, 243, 232, 0.92);
+  stroke-width: 3.1px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .polity-caption.rival {
@@ -690,8 +710,10 @@ h2 {
 .polity-caption.neighbor {
   font-size: 11.5px;
   font-weight: 600;
-  fill: #5a5046;
+  fill: #433a32;
+  fill-opacity: 0.9;
   letter-spacing: 0.1em;
+  stroke-width: 2.3px;
 }
 
 /* Historical Corridors (Walls / Canals / Silk Road) */
@@ -740,19 +762,23 @@ h2 {
 .corridor-caption {
   font-family: var(--serif-stack);
   font-size: 8.8px;
-  font-weight: 600;
-  fill: #5a4228;
+  font-weight: 700;
+  fill: #4a341c;
   text-anchor: middle;
   pointer-events: none;
-  filter: url(#label-halo);
+  paint-order: stroke fill;
+  stroke: rgba(248, 243, 232, 0.92);
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .corridor-caption.canal {
-  fill: #175469;
+  fill: #12485c;
 }
 
 .corridor-caption.sea {
-  fill: #22496f;
+  fill: #1d4266;
 }
 
 .corridor-caption.is-crowded-hidden {
@@ -1189,22 +1215,29 @@ h2 {
 .settlement-node .name {
   font-family: var(--serif-stack);
   font-size: 8.8px;
-  font-weight: 600;
-  fill: var(--text-main);
-  filter: url(#label-halo);
+  font-weight: 700;
+  fill: #1c1713;
+  paint-order: stroke fill;
+  stroke: rgba(249, 244, 234, 0.94);
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   pointer-events: bounding-box;
 }
 
 .settlement-node.is-tier2 .name {
   font-size: 8px;
-  font-weight: 500;
-  fill: #3d3630;
+  font-weight: 600;
+  fill: #2c251f;
+  stroke-width: 2px;
 }
 
 .settlement-node.is-capital .name {
   font-size: 9.8px;
   font-weight: 700;
-  fill: #7f2415;
+  fill: #72190b;
+  stroke: rgba(251, 246, 236, 0.96);
+  stroke-width: 2.5px;
 }
 
 .settlement-node:hover .name {
@@ -2719,8 +2752,12 @@ html[lang="en"] .genealogy-list li {
   font-size: 10.4px;
   font-weight: 700;
   text-anchor: middle;
-  fill: #241d17;
-  filter: url(#label-halo);
+  fill: #1b1611;
+  paint-order: stroke fill;
+  stroke: rgba(249, 244, 234, 0.95);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   pointer-events: none;
 }
 
@@ -3423,121 +3460,40 @@ html[lang="en"] .genealogy-list li {
     --text-muted: #665d53;
   }
 
-  /* 1. Soften shaded relief mid-tone darkness so mountain textures don't swallow text */
-  #terrain-relief-img {
-    opacity: 0.54;
-  }
-
-  /* 2. Deepen ink contrast & apply vector-crisp xuan-paper stroke halo */
   .settlement-node .name {
     font-size: 9.4px;
-    font-weight: 700;
     fill: #16120e;
-    paint-order: stroke fill;
-    stroke: rgba(249, 244, 234, 0.95);
     stroke-width: 2.3px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
   }
 
   .settlement-node.is-capital .name {
     font-size: 10.6px;
-    font-weight: 700;
     fill: #6e1508;
-    paint-order: stroke fill;
-    stroke: rgba(251, 246, 236, 0.96);
     stroke-width: 2.6px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
   }
 
   .settlement-node.is-tier2 .name {
     font-size: 8.5px;
-    font-weight: 600;
     fill: #241e18;
-    paint-order: stroke fill;
-    stroke: rgba(249, 244, 234, 0.92);
     stroke-width: 2.1px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
   }
 
   .region-caption {
     font-size: 9.4px;
-    font-weight: 700;
     fill: #4e2010;
     fill-opacity: 0.95;
-    paint-order: stroke fill;
-    stroke: rgba(248, 243, 232, 0.92);
-    stroke-width: 2.3px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
-  }
-
-  .polity-caption {
-    fill: #18130f;
-    fill-opacity: 0.94;
-    paint-order: stroke fill;
-    stroke: rgba(248, 243, 232, 0.92);
-    stroke-width: 3.1px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    filter: none;
-  }
-
-  .polity-caption.neighbor {
-    fill: #3d352d;
-    fill-opacity: 0.9;
-    stroke-width: 2.3px;
-  }
-
-  .neighbor-caption {
-    fill: #665c50;
-    font-weight: 600;
-    paint-order: stroke fill;
-    stroke: rgba(246, 240, 228, 0.86);
-    stroke-width: 2px;
-    stroke-linejoin: round;
-  }
-
-  .corridor-caption {
-    fill: #432e18;
-    font-weight: 700;
-    paint-order: stroke fill;
-    stroke: rgba(248, 243, 232, 0.92);
-    stroke-width: 2.2px;
-    stroke-linejoin: round;
-    filter: none;
-  }
-
-  .corridor-caption.canal {
-    fill: #0f4456;
-  }
-
-  .hydro-label {
-    paint-order: stroke fill;
-    stroke: rgba(246, 240, 228, 0.9);
-    stroke-width: 2px;
-    stroke-linejoin: round;
-    filter: none;
   }
 
   .hydro-label.is-trunk {
     font-size: 8px;
-    fill: rgba(14, 66, 96, 0.96);
   }
 
   .hydro-label.is-river,
   .hydro-label.is-lake {
     font-size: 6.8px;
-    fill: rgba(20, 74, 106, 0.9);
   }
 
-  /* 3. Progressive disclosure for 300+ secondary prefecture mesh on mobile */
+  /* Progressive disclosure for 300+ secondary prefecture mesh on mobile */
   #atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-shape:not(:hover):not(.is-hovered) {
     stroke: rgba(43, 38, 34, 0.08);
     stroke-width: 0.3;
