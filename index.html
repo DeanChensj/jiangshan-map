@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261010h" />
+  <link rel="stylesheet" href="css/style.css?v=20261010i" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -33,7 +33,7 @@
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M1.2 13.2L5.8 4.6l3.3 5.5 2.4-3.7 3.3 6.8H1.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.2 7.6L5.8 4.6l1.7 2.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
           <span id="lbl-terrain">山川地形</span>
         </button>
-        <button id="act-journey-menu" class="action-btn subtle layers-trigger-btn journey-trigger-btn" type="button" aria-expanded="false" aria-controls="journey-popover" title="青史行迹 · 人物时空巡礼（苏轼贬谪 / 玄奘西行 / 张骞通西域）">
+        <button id="act-journey-menu" class="action-btn subtle layers-trigger-btn journey-trigger-btn" type="button" aria-expanded="false" aria-controls="journey-popover" title="青史行迹 · 人物时空巡礼（苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="3.2" cy="12.5" r="1.7" fill="currentColor"/><circle cx="12.8" cy="3.5" r="1.7" fill="currentColor"/><path d="M4.6 11.5C6.5 9.8 6.2 6.2 8.5 5.5s2.2-.8 3.2-1.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2.2 1.8"/></svg>
           <span id="lbl-journey-btn">青史行迹</span>
           <span id="journey-onboarding-dot" class="onboarding-dot" aria-hidden="true"></span>
@@ -94,7 +94,9 @@
           <div class="layers-pop-heading" id="txt-layer-grp-journey">青史行迹 · 时空巡礼</div>
           <div class="journey-pop-list">
             <button type="button" class="journey-chip-btn" data-journey="zhangqian" id="btn-j-zhangqian">张骞通西域</button>
+            <button type="button" class="journey-chip-btn" data-journey="zhugeliang" id="btn-j-zhugeliang">诸葛亮北伐</button>
             <button type="button" class="journey-chip-btn" data-journey="xuanzang" id="btn-j-xuanzang">玄奘西行</button>
+            <button type="button" class="journey-chip-btn" data-journey="libai" id="btn-j-libai">李白壮游</button>
             <button type="button" class="journey-chip-btn" data-journey="sushi" id="btn-j-sushi">苏轼贬谪路线</button>
           </div>
         </div>
@@ -105,21 +107,35 @@
         <div class="journey-pop-sub" id="txt-journey-pop-sub">跟随历史人物足迹，跨越年代、州郡与诗词纪事</div>
         <div class="journey-menu-list">
           <button type="button" class="journey-menu-item journey-chip-btn" data-journey="sushi" id="btn-jm-sushi">
-            <span class="jm-badge" style="background:#1f6f8b" id="lbl-jm-badge-sushi">北宋</span>
+            <span class="jm-badge" style="background:#7a3b69" id="lbl-jm-badge-sushi">北宋</span>
             <span class="jm-body">
               <span class="jm-title" id="lbl-jm-title-sushi">苏轼宦海贬谪行迹</span>
               <span class="jm-meta" id="lbl-jm-meta-sushi">眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站</span>
             </span>
           </button>
+          <button type="button" class="journey-menu-item journey-chip-btn" data-journey="libai" id="btn-jm-libai">
+            <span class="jm-badge" style="background:#2e5c8a" id="lbl-jm-badge-libai">唐</span>
+            <span class="jm-body">
+              <span class="jm-title" id="lbl-jm-title-libai">李白仗剑壮游行迹</span>
+              <span class="jm-meta" id="lbl-jm-meta-libai">碎叶 → 蜀中 → 扬州 → 长安 → 白帝城 · 10站</span>
+            </span>
+          </button>
           <button type="button" class="journey-menu-item journey-chip-btn" data-journey="xuanzang" id="btn-jm-xuanzang">
-            <span class="jm-badge" style="background:#b5452f" id="lbl-jm-badge-xuanzang">唐</span>
+            <span class="jm-badge" style="background:#9c6317" id="lbl-jm-badge-xuanzang">唐</span>
             <span class="jm-body">
               <span class="jm-title" id="lbl-jm-title-xuanzang">玄奘西行求法行迹</span>
               <span class="jm-meta" id="lbl-jm-meta-xuanzang">长安 → 敦煌 → 高昌 → 碎叶 → 天竺 · 10站</span>
             </span>
           </button>
+          <button type="button" class="journey-menu-item journey-chip-btn" data-journey="zhugeliang" id="btn-jm-zhugeliang">
+            <span class="jm-badge" style="background:#2c6b56" id="lbl-jm-badge-zhugeliang">三国</span>
+            <span class="jm-body">
+              <span class="jm-title" id="lbl-jm-title-zhugeliang">诸葛亮出山北伐行迹</span>
+              <span class="jm-meta" id="lbl-jm-meta-zhugeliang">隆中 → 赤壁 → 成都 → 汉中 → 五丈原 · 10站</span>
+            </span>
+          </button>
           <button type="button" class="journey-menu-item journey-chip-btn" data-journey="zhangqian" id="btn-jm-zhangqian">
-            <span class="jm-badge" style="background:#9c6317" id="lbl-jm-badge-zhangqian">西汉</span>
+            <span class="jm-badge" style="background:#a83b24" id="lbl-jm-badge-zhangqian">西汉</span>
             <span class="jm-body">
               <span class="jm-title" id="lbl-jm-title-zhangqian">张骞凿空西域行迹</span>
               <span class="jm-meta" id="lbl-jm-meta-zhangqian">长安 → 河西 → 大宛 → 大月氏 · 9站</span>
@@ -167,13 +183,13 @@
           </g>
         </svg>
 
-        <div id="map-search-box" role="search" aria-label="快速检索古今地名、州府、年号与事件">
+        <div id="map-search-box" role="search" aria-label="快速检索古今地名、州府、年号与青史行迹">
           <div class="search-input-wrap">
             <svg class="search-ico" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
               <circle cx="7" cy="7" r="4.8" fill="none" stroke="currentColor" stroke-width="1.5"/>
               <path d="M10.6 10.6L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
-            <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜古今地名 / 州府 / 年号 / 事件 ( / )" aria-label="搜古今地名、州府、年号或事件" />
+            <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜古今地名 / 州府 / 年号 / 青史行迹" aria-label="搜古今地名、州府、年号或青史行迹" />
           </div>
           <ul id="map-search-results" class="search-results-list is-hidden" role="listbox"></ul>
         </div>
@@ -285,10 +301,10 @@
     </footer>
   </div>
 
-  <script src="js/china_geo_data.js?v=20261010h"></script>
-  <script src="js/atlas_snapshots.js?v=20261010h"></script>
-  <script src="js/map_data.js?v=20261010h"></script>
-  <script src="js/i18n_dict.js?v=20261010h"></script>
-  <script src="js/app.js?v=20261010h"></script>
+  <script src="js/china_geo_data.js?v=20261010i"></script>
+  <script src="js/atlas_snapshots.js?v=20261010i"></script>
+  <script src="js/map_data.js?v=20261010i"></script>
+  <script src="js/i18n_dict.js?v=20261010i"></script>
+  <script src="js/app.js?v=20261010i"></script>
 </body>
 </html>

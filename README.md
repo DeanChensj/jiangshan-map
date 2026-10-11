@@ -30,14 +30,16 @@
 
 ---
 
-### 玩法二：跟着张骞、玄奘、苏东坡走一趟万里人生路
+### 玩法二：跟着张骞、诸葛亮、玄奘、李白、苏东坡走一趟万里人生路
 
-打开 **「青史行迹」**，你可以化身历史同路人，沿着三条跨越万里与数十载的经典路线逐站巡礼：
+打开顶部工具栏的 **「青史行迹」**，你可以化身历史同路人，沿着五条跨越万里与数十载的经典路线逐站巡礼：
 - **张骞凿空西域（前 138 — 前 126 年）**：从长安出发，被匈奴羁留十余载不改其志，持汉节一路走到大宛、康居、大月氏。
+- **诸葛亮出山北伐行迹（207 — 234 年）**：从襄阳隆中三顾茅庐、柴桑联吴破曹、溯江入蜀、白帝托孤、五月渡泸南征，到进驻汉中上《出师表》、祁山北伐与五丈原秋风星落。
 - **玄奘西行求法（627 — 645 年）**：孤身出玉门关，涉莫贺延碛、越凌山雪隘、渡印度河，抵那烂陀寺求法归唐。
+- **李白仗剑壮游行迹（701 — 762 年）**：自安西碎叶入蜀居青莲，二十四岁仗剑出三峡、漫游扬州散金三十万、酒隐安陆、仰天大笑入长安供奉翰林、洛阳逢杜甫、白帝城遇赦放舟，终老当涂青山。
 - **苏轼宦海贬谪行迹（1056 — 1101 年）**：从出川赴京、密州超然台赏月，到乌台诗案后贬谪黄州写下《赤壁赋》，再到惠州、跨海远谪海南儋州。
 
-每点「下一站」（或按空格键开启自动巡礼），**底下的历史年份、帝王年号、王朝版图都会跟着古人的脚步同步流转**，卡片里还会浮现他们当年在此地留下的《史记》记载或千古名篇。
+每点「下一站」（或按空格键开启自动巡礼），**底下的历史年份、帝王年号、王朝版图都会跟着古人的脚步同步流转**，卡片里还会浮现他们当年在此地留下的《史记》《出师表》或唐宋千古名篇。
 
 > [点击直达：跟着苏东坡去密州与黄州（1075 — 1082 年）→](https://deanchensj.github.io/jiangshan-map/?journey=sushi&stop=4)
 
@@ -88,7 +90,7 @@
 
 | 操作 / 按键 | 作用 |
 | :--- | :--- |
-| **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：搜古今地名（`长安`/`西安`）、州府（`黄州`）、年号（`贞观`/`元丰六年`）、年份（`1083`）、事件（`淝水之战`）或人物行迹（`苏轼`） |
+| **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：搜古今地名（`长安`/`西安`）、州府（`黄州`）、年号（`贞观`/`元丰六年`）、年份（`1083`）、事件（`淝水之战`）或人物行迹（`诸葛亮`/`李白`/`苏轼`） |
 | **`←` / `→`** | 时间轴向前 / 向后走 `10` 年（按住 `Shift` 走 `50` 年；行迹模式下切换上一站 / 下一站） |
 | **`Space`（空格键）** | 自动播放 / 暂停历史演进（行迹模式下自动巡礼） |
 | **`单击古城` / `双击地图`** | 打开该地从秦到清的 15 朝「点地溯源 + 史事纪要」卡片 |
@@ -100,7 +102,7 @@
 - **看某一年**：[`?year=741`](https://deanchensj.github.io/jiangshan-map/?year=741)（盛唐开元二十九年） / [`?year=-119`](https://deanchensj.github.io/jiangshan-map/?year=-119)（汉武帝漠北之战）
 - **看某场大战**：[`?year=383&event=383`](https://deanchensj.github.io/jiangshan-map/?year=383&event=383)（东晋前秦 · 淝水之战）
 - **查某座古城的千年故事**：[`?year=741&trace=108.94,34.26`](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)（长安/西安） / [`?year=1083&trace=114.35,34.79`](https://deanchensj.github.io/jiangshan-map/?year=1083&trace=114.35,34.79)（东京汴梁/开封）
-- **走一段人物行迹**：[`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞通西域） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼贬谪路线）
+- **走一段人物行迹**：[`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞通西域） / [`?journey=zhugeliang`](https://deanchensj.github.io/jiangshan-map/?journey=zhugeliang)（诸葛亮北伐） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行） / [`?journey=libai`](https://deanchensj.github.io/jiangshan-map/?journey=libai)（李白壮游） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼贬谪路线）
 - **直接开一局挑战**：[`?quiz=locate`](https://deanchensj.github.io/jiangshan-map/?quiz=locate)（地图盲猜寻址） / [`?quiz=match`](https://deanchensj.github.io/jiangshan-map/?quiz=match)（古今地名对号）
 - **切换英文版**：[`?lang=en`](https://deanchensj.github.io/jiangshan-map/?lang=en)
 
@@ -113,7 +115,7 @@
 ### What You Can Do
 
 1. **Click Any Ancient City to Uncover 2,000 Years of Stories (`Trace Place`)**: Click any city (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 15 dynasties, which empires crowned it as their capital, and every major historical event that unfolded there—click any event to time-travel straight to that year.
-2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Zhang Qian's** expedition to Central Asia (138–126 BCE), **Xuanzang's** pilgrimage to India (627–645 CE), or **Su Shi's** literary exile across Song China (1056–1101 CE). As you step from stop to stop, the map's reign eras, borders, and primary-source literary quotes evolve in sync.
+2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Zhang Qian's** expedition to Central Asia (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), or **Su Shi's** literary exile across Song China (1056–1101 CE). As you step from stop to stop, the map's reign eras, borders, and primary-source literary quotes evolve in sync.
 3. **Scrub Through 2,200+ Years & Inspect 300+ Ancient Prefectures**: Watch empires rise, split, and reunify across 105 territorial stages with dashed **Ghost Boundary Diffs** showing exact frontier shifts. Zoom in and hover over over 300 historical prefectures (*Zhou / Fu / Jun*) to see their modern provincial counterparts.
 4. **Explore Historical Megaprojects & Listen to Classical Guqin (`雅乐`)**: Trace the Great Wall, the Grand Canal, the Silk Road, and Zheng He's maritime voyages; measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-Data English (`EN`) or classical Guqin music in one click.
 5. **Play the Ancient Geography Challenge**: Test your historical intuition by pinpointing unlabeled ancient cities on the map (`Map Locate`) or matching ancient names to modern cities (`Name Match`) across 10 rounds to earn traditional imperial court titles.

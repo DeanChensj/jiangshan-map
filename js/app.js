@@ -619,9 +619,17 @@
       if (btnZq) {
         btnZq.textContent = this.locale === 'en' ? "Zhang Qian's Envoy" : '张骞通西域';
       }
+      const btnZgl = this._id('btn-j-zhugeliang');
+      if (btnZgl) {
+        btnZgl.textContent = this.locale === 'en' ? 'Zhuge Liang' : '诸葛亮北伐';
+      }
       const btnXz = this._id('btn-j-xuanzang');
       if (btnXz) {
         btnXz.textContent = this.locale === 'en' ? "Xuanzang's Pilgrimage" : '玄奘西行';
+      }
+      const btnLb = this._id('btn-j-libai');
+      if (btnLb) {
+        btnLb.textContent = this.locale === 'en' ? "Li Bai's Travels" : '李白壮游';
       }
       const btnSs = this._id('btn-j-sushi');
       if (btnSs) {
@@ -635,8 +643,8 @@
       if (actJourneyBtn) {
         actJourneyBtn.title =
           this.locale === 'en'
-            ? 'Historical Journeys · Su Shi / Xuanzang / Zhang Qian'
-            : '青史行迹 · 人物时空巡礼（苏轼贬谪 / 玄奘西行 / 张骞通西域）';
+            ? 'Historical Journeys · Su Shi / Li Bai / Xuanzang / Zhuge Liang / Zhang Qian'
+            : '青史行迹 · 人物时空巡礼（苏轼 / 李白 / 玄奘 / 诸葛亮 / 张骞）';
       }
       const jPopHead = this._id('txt-journey-pop-heading');
       if (jPopHead) {
@@ -661,12 +669,26 @@
         '眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站',
         'Meizhou → Kaifeng → Huangzhou → Danzhou · 10 stops'
       );
+      setTxt('lbl-jm-badge-libai', '唐', 'Tang');
+      setTxt('lbl-jm-title-libai', '李白仗剑壮游行迹', "Li Bai's Grand Travels");
+      setTxt(
+        'lbl-jm-meta-libai',
+        '碎叶 → 蜀中 → 扬州 → 长安 → 白帝城 · 10站',
+        "Suyab → Shu → Yangzhou → Chang'an → Baidicheng · 10 stops"
+      );
       setTxt('lbl-jm-badge-xuanzang', '唐', 'Tang');
       setTxt('lbl-jm-title-xuanzang', '玄奘西行求法行迹', "Xuanzang's Pilgrimage to India");
       setTxt(
         'lbl-jm-meta-xuanzang',
         '长安 → 敦煌 → 高昌 → 碎叶 → 天竺 · 10站',
         "Chang'an → Dunhuang → Suyab → India · 10 stops"
+      );
+      setTxt('lbl-jm-badge-zhugeliang', '三国', '3 Kingdoms');
+      setTxt('lbl-jm-title-zhugeliang', '诸葛亮出山北伐行迹', "Zhuge Liang's Northern Expeditions");
+      setTxt(
+        'lbl-jm-meta-zhugeliang',
+        '隆中 → 赤壁 → 成都 → 汉中 → 五丈原 · 10站',
+        'Longzhong → Red Cliffs → Chengdu → Wuzhang Plains · 10 stops'
       );
       setTxt('lbl-jm-badge-zhangqian', '西汉', 'W. Han');
       setTxt('lbl-jm-title-zhangqian', '张骞凿空西域行迹', "Zhang Qian's Mission to the West");
@@ -737,8 +759,8 @@
       if (searchInp) {
         searchInp.placeholder =
           this.locale === 'en'
-            ? 'Search city / prefecture / era / journey ( / )'
-            : '搜古今地名 / 州府 / 年号 / 青史行迹 ( / )';
+            ? 'Search city / prefecture / era / journey'
+            : '搜古今地名 / 州府 / 年号 / 青史行迹';
       }
       const togglePaneBtn = this._id('act-toggle-pane');
       if (togglePaneBtn) {
@@ -1372,6 +1394,10 @@
     _journeyKeyForMilestone(dynasty, m) {
       if (!dynasty || !m) return null;
       if (dynasty.key === 'xihan' && m.year === -138) return 'zhangqian';
+      if (dynasty.key === 'donghan' && m.year === 208) return 'zhugeliang';
+      if (dynasty.key === 'sanguo' && (m.year === 225 || m.year === 228 || m.year === 234)) {
+        return 'zhugeliang';
+      }
       if (dynasty.key === 'tang' && m.year === 629) return 'xuanzang';
       if (dynasty.key === 'beisong' && m.year === 1080) return 'sushi';
       return null;
@@ -2035,10 +2061,12 @@
         }
       }
 
-      // 2. Historical journeys (Zhang Qian, Xuanzang, Su Shi)
+      // 2. Historical journeys (Zhang Qian, Zhuge Liang, Xuanzang, Li Bai, Su Shi)
       for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
-        if (j.dynastyKey !== d.key) continue;
         j.stops.forEach((st, sIdx) => {
+          const inDynSpan = st.year >= d.fromYear && st.year <= d.toYear;
+          if (!inDynSpan && j.dynastyKey !== d.key) return;
+          if (j.key === 'zhugeliang' && !inDynSpan) return;
           if (isCloseCoord(st.coord, 45)) {
             const existing = results.find(
               (r) =>
@@ -3727,7 +3755,7 @@
           dynastyKey: 'xihan',
           color: '#a83b24',
           shortZh: '张骞通西域',
-          shortEn: "Zhang Qian's Envoy",
+          shortEn: 'Zhang Qian',
           titleZh: '张骞凿空西域行迹',
           titleEn: "Zhang Qian's Envoy to the Western Regions",
           spanZh: '前138年 — 前126年（西汉建元三年至元朔三年）',
@@ -3911,11 +3939,221 @@
           ],
         },
         {
+          key: 'zhugeliang',
+          dynastyKey: 'sanguo',
+          color: '#2c6b56',
+          shortZh: '诸葛亮北伐',
+          shortEn: 'Zhuge Liang',
+          titleZh: '诸葛亮出山北伐行迹',
+          titleEn: "Zhuge Liang's Southern & Northern Campaigns",
+          spanZh: '207年 — 234年（东汉建安十二年至蜀汉建兴十二年）',
+          spanEn: '207 CE – 234 CE (Late Eastern Han to Three Kingdoms)',
+          stops: [
+            {
+              year: 207,
+              eraZh: '建安十二年',
+              coord: [112.04, 32.0],
+              labelPos: 'top',
+              ancientZh: '隆中（襄阳）',
+              modernZh: '湖北襄阳',
+              ancientEn: 'Longzhong (Xiangyang)',
+              modernEn: 'Xiangyang, Hubei',
+              titleZh: '三顾茅庐·隆中决策',
+              titleEn: 'Three Visits to the Thatched Cottage — The Longzhong Plan',
+              descZh:
+                '刘备驻新野，三诣襄阳城西二十里隆中草庐访诸葛亮。年二十七的孔明纵论天下大势，提出跨有荆益、保其岩阻、西和诸戎、南抚夷越、内修政理、待天下有变则命一上将将荆州之军向宛洛而身率益州之众出秦川的“隆中对”宏图。',
+              descEn:
+                'At age twenty-seven in his cottage at Longzhong west of Xiangyang, Zhuge Liang received Liu Bei on his third visit and unveiled the Longzhong Plan: secure Jing and Yi provinces, ally with Eastern Wu, pacify the southern tribes, and launch a two-pronged northern offensive to restore the Han.',
+              quoteZh: '诸葛亮《出师表》：“臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中。”',
+              quoteEn:
+                'Zhuge Liang, Former Chu Shi Biao: "I was originally a commoner, tilling the fields in Nanyang... Yet the Late Emperor did not disdain my humble station and deigned to visit me thrice in my thatched cottage."',
+            },
+            {
+              year: 208,
+              eraZh: '建安十三年',
+              coord: [115.98, 29.71],
+              via: [[114.3, 30.55]],
+              labelPos: 'bottom',
+              ancientZh: '柴桑·赤壁',
+              modernZh: '江西九江 / 湖北赤壁',
+              ancientEn: 'Chaisang & Red Cliffs',
+              modernEn: 'Jiujiang, Jiangxi / Chibi, Hubei',
+              titleZh: '奉使柴桑·联吴破曹',
+              titleEn: 'Diplomatic Mission to Chaisang & Victory at Red Cliffs',
+              descZh:
+                '曹操南下荆州、刘备败走当阳长坂，诸葛亮临危请命顺江东下柴桑说孙权，剖析曹军远来疲弊、北人不习水战之弊，促成孙刘同盟；旋于赤壁大破曹军，奠定三分天下之基。',
+              descEn:
+                'As Cao Cao swept south through Jing Province, Zhuge Liang sailed down the Yangtze to Chaisang to persuade Sun Quan into an alliance; the allied forces burned Cao Cao’s fleet at the Red Cliffs, forging the tripartite balance.',
+              quoteZh: '《三国志·诸葛亮传》：“权大悦，即遣周瑜、程普、鲁肃等水军三万，随亮诣先主，并力拒曹公。”',
+              quoteEn:
+                'Records of the Three Kingdoms: "Sun Quan was greatly pleased and immediately dispatched Zhou Yu, Cheng Pu, and Lu Su with thirty thousand naval troops to join Liu Bei against Cao Cao."',
+            },
+            {
+              year: 214,
+              eraZh: '建安十九年',
+              coord: [104.07, 30.67],
+              via: [[111.3, 30.7], [107.7, 30.9]],
+              labelPos: 'bottom',
+              ancientZh: '成都',
+              modernZh: '四川成都',
+              ancientEn: 'Chengdu',
+              modernEn: 'Chengdu, Sichuan',
+              titleZh: '溯江入蜀·会师成都',
+              titleEn: 'Ascending the Yangtze into Shu & Taking Chengdu',
+              descZh:
+                '刘备入蜀受阻于雒城，诸葛亮与张飞、赵云自荆州率军溯长江西上，分定江州、江阳、犍为诸郡，与刘备合围成都；刘璋出降，亮署左将军府事，修订《蜀科》，宽严相济治理巴蜀。',
+              descEn:
+                'Leading reinforcements up the Yangtze Three Gorges with Zhang Fei and Zhao Yun, Zhuge Liang converged on Chengdu with Liu Bei, securing Yi Province and codifying the legal code of Shu.',
+              quoteZh: '《三国志·诸葛亮传》：“亮与张飞、赵云等率众泝江，分定郡县，与先主共围成都。成都平，以亮为军师将军。”',
+              quoteEn:
+                'Records of the Three Kingdoms: "Zhuge Liang, Zhang Fei, and Zhao Yun led forces up the Yangtze, pacifying commanderies and counties before joining Liu Bei to encircle Chengdu."',
+            },
+            {
+              year: 221,
+              eraZh: '章武元年',
+              coord: [104.07, 30.67],
+              labelPos: 'top',
+              ancientZh: '成都·武担山',
+              modernZh: '四川成都',
+              ancientEn: 'Chengdu (Capital of Shu Han)',
+              modernEn: 'Chengdu, Sichuan',
+              titleZh: '劝进昭烈·开府拜相',
+              titleEn: 'Founding of Shu Han & Appointment as Imperial Chancellor',
+              descZh:
+                '曹丕篡汉自立，诸葛亮与群臣劝进刘备于成都武担山之南即皇帝位，延续汉室正统；诸葛亮拜丞相、录尚书事、假节，总摄蜀汉朝政与盐铁锦官经济。',
+              descEn:
+                'Following Cao Pi’s usurpation of the Han throne, Zhuge Liang advised Liu Bei to proclaim the continuation of Han in Chengdu, becoming Imperial Chancellor of Shu Han.',
+              quoteZh: '册丞相诏：“朕遭家不造，奉承大统，兢兢业业，不敢康宁，思靖百姓，惧未能绥。於戏！丞相亮其悉朕意。”',
+              quoteEn:
+                'Imperial Edict of 221 CE: "Having inherited the Great Succession in troubled times, I rely wholeheartedly upon Chancellor Liang to bring peace to the realm."',
+            },
+            {
+              year: 223,
+              eraZh: '章武三年',
+              coord: [109.57, 31.04],
+              via: [[106.5, 30.8]],
+              labelPos: 'top',
+              ancientZh: '永安（白帝城）',
+              modernZh: '重庆奉节',
+              ancientEn: "Yong'an (Baidicheng)",
+              modernEn: 'Fengjie, Chongqing',
+              titleZh: '白帝托孤·受命危难',
+              titleEn: 'Entrustment of the Orphan Emperor at Baidicheng',
+              descZh:
+                '夷陵之战后刘备病笃永安白帝城，自成都召诸葛亮赴行宫托孤，嘱以“嗣子可辅，辅之；如其不才，君可自取”。亮涕泣死节，回朝后开府治事、遣邓芝修好东吴，稳固危局。',
+              descEn:
+                'Summoned to the dying Emperor Liu Bei’s bedside at Baidicheng, Zhuge Liang accepted the regency in tears, pledging unyielding loyalty until death and restoring the Wu alliance.',
+              quoteZh: '诸葛亮《出师表》：“受任于败军之际，奉命于危难之间，尔来二十有一年矣。”',
+              quoteEn:
+                'Zhuge Liang, Former Chu Shi Biao: "I received my appointment in the hour of defeat and accepted my mandate in the midst of peril—twenty-one years have passed since then."',
+            },
+            {
+              year: 225,
+              eraZh: '建兴三年',
+              coord: [102.71, 25.04],
+              via: [[104.6, 28.7], [103.7, 27.3]],
+              labelPos: 'bottom',
+              ancientZh: '滇池（南中）',
+              modernZh: '云南昆明',
+              ancientEn: 'Dianchi (Nanzhong)',
+              modernEn: 'Kunming, Yunnan',
+              titleZh: '渡泸南征·七擒孟获',
+              titleEn: 'Southern Campaign Across the Lu River — Pacifying Nanzhong',
+              descZh:
+                '为解除北伐后顾之忧，诸葛亮率军自安上水路入越巂，五月渡泸水（金沙江），采马谡“攻心为上”之策，七擒七纵孟获，平定益州、永昌、牂牁、越巂四郡，皆即其渠帅而用之，终亮之世南方不复反。',
+              descEn:
+                'Marching south across the Jinsha (Lu) River in summer 225 CE, Zhuge Liang adopted the strategy of "winning hearts above all," capturing and releasing Meng Huo seven times to secure the southern frontier.',
+              quoteZh: '《汉晋春秋》：“亮笑，纵使更战，七纵七禽，而亮犹遣获。获止不去，曰：‘公，天威也，南人不复反矣。’”',
+              quoteEn:
+                'Annals of Han and Jin: "Captured and released seven times, Meng Huo bowed and refused to leave, saying: \'Your Excellency possesses the majesty of Heaven; the south will never rebel again.\'"',
+            },
+            {
+              year: 227,
+              eraZh: '建兴五年',
+              coord: [107.02, 33.07],
+              via: [[104.1, 30.7], [105.5, 32.2]],
+              labelPos: 'bottom',
+              ancientZh: '汉中（沔阳）',
+              modernZh: '陕西汉中',
+              ancientEn: 'Hanzhong (Mianyang)',
+              modernEn: 'Hanzhong, Shaanxi',
+              titleZh: '进驻汉中·上出师表',
+              titleEn: 'Garrisoning Hanzhong & Presenting the Chu Shi Biao',
+              descZh:
+                '南中既定，诸葛亮率诸军北驻汉中沔阳，临发向后主刘禅奏呈千古名篇《出师表》，勉以亲贤臣远小人、兴复汉室还于旧都，以汉中为北伐大本营经略关陇。',
+              descEn:
+                'Establishing his forward headquarters at Hanzhong, Zhuge Liang submitted his immortal Memorial on Deploying the Troops (Chu Shi Biao) to Emperor Liu Shan before marching north.',
+              quoteZh: '诸葛亮《出师表》：“今南方已定，兵甲已足，当奖率三军，北定中原，庶竭驽钝，攘除奸凶，兴复汉室，还于旧都。”',
+              quoteEn:
+                'Zhuge Liang, Former Chu Shi Biao: "Now the south is pacified and our armor is sufficient; I ought to lead the Three Armies to secure the Central Plains and restore the House of Han."',
+            },
+            {
+              year: 228,
+              eraZh: '建兴六年',
+              coord: [105.72, 34.58],
+              via: [[106.2, 33.8]],
+              labelPos: 'top',
+              ancientZh: '祁山·天水',
+              modernZh: '甘肃礼县 / 天水',
+              ancientEn: 'Mount Qi & Tianshui',
+              modernEn: 'Lixian / Tianshui, Gansu',
+              titleZh: '一出祁山·收姜维失街亭',
+              titleEn: 'First Expedition from Mount Qi — Recruiting Jiang Wei',
+              descZh:
+                '声东击西由箕谷设疑兵、亲率大军攻祁山，戎阵整齐，南安、天水、安定三郡叛魏应亮，关中震响，收天水俊杰姜维；惜马谡违亮节度于街亭依山不下城，为张郃绝水道所破，亮拔西县千余家还汉中并自贬三等。',
+              descEn:
+                'Debouching from Mount Qi in disciplined array, Zhuge Liang won over three Wei commanderies—shaking all Guanzhong and recruiting Jiang Wei—before Ma Su’s defeat at Jieting forced an orderly withdrawal.',
+              quoteZh: '《三国志·诸葛亮传》：“亮身率诸军攻祁山，戎阵整齐，赏罚肃而号令明，南安、天水、安定三郡叛魏应亮，关中响震。”',
+              quoteEn:
+                'Records of the Three Kingdoms: "Zhuge Liang led the armies in person to attack Mount Qi in disciplined ranks; Nanan, Tianshui, and Anding commanderies defected from Wei to join him, shaking all Guanzhong."',
+            },
+            {
+              year: 231,
+              eraZh: '建兴九年',
+              coord: [105.38, 34.22],
+              labelPos: 'bottom',
+              ancientZh: '卤城·木门道',
+              modernZh: '甘肃礼县 / 天水秦州',
+              ancientEn: 'Lucheng & Mumen Trail',
+              modernEn: 'Lixian / Tianshui, Gansu',
+              titleZh: '木牛流马·木门道射杀张郃',
+              titleEn: 'Fourth Expedition — Victory at Lucheng & Mumen Ambush',
+              descZh:
+                '始以木牛运粮四出祁山，于卤城大破司马懿主力，获甲首三千级、玄铠五千领；夏六月粮尽退军，司马懿遣名将张郃追至木门道，亮乘高布伏万弩齐发，射杀张郃。',
+              descEn:
+                'Using wooden-ox transport on his fourth northern campaign, Zhuge Liang routed Sima Yi outside Lucheng and ambushed the pursuing Wei general Zhang He with massed crossbows in Mumen Gorge.',
+              quoteZh: '《三国志·诸葛亮传》：“亮粮尽退军，司马宣王遣张郃追之，郃进至木门，与亮军交战，飞矢中郃右膝，薨。”',
+              quoteEn:
+                'Records of the Three Kingdoms: "When Zhuge Liang withdrew for lack of grain, Sima Yi sent Zhang He in pursuit; at Mumen Trail, a flying bolt struck Zhang He in the right knee, and he perished."',
+            },
+            {
+              year: 234,
+              eraZh: '建兴十二年',
+              coord: [107.63, 34.34],
+              via: [[107.02, 33.07], [107.5, 33.8]],
+              labelPos: 'top',
+              ancientZh: '五丈原（岐山）',
+              modernZh: '陕西宝鸡岐山',
+              ancientEn: 'Wuzhang Plains (Qishan)',
+              modernEn: 'Qishan, Baoji, Shaanxi',
+              titleZh: '出斜谷屯五丈原·秋风星落',
+              titleEn: 'Final Stand on the Wuzhang Plains',
+              descZh:
+                '春二月悉大众十万由褒斜道出斜谷，以流马运粮，据武功五丈原与司马懿对峙于渭水之南，分兵屯田久驻之基，百姓安堵军无私焉；相持百余日，八月积劳病逝于军中，年五十四，杨仪、姜维整军从容退入斜谷，留“死诸葛走生仲达”之谚。',
+              descEn:
+                'Leading 100,000 troops through the Xie Valley to the Wuzhang Plains south of the Wei River, Zhuge Liang established military-agricultural colonies and held off Sima Yi for over a hundred days before passing away in camp at age fifty-four.',
+              quoteZh: '杜甫《蜀相》：“三顾频烦天下计，两朝开济老臣心。出师未捷身先死，长使英雄泪满襟。”',
+              quoteEn:
+                'Du Fu, The Chancellor of Shu: "Three visits sought his counsel for the realm; through two reigns the old minister’s heart sustained the state. Before the campaign triumphed he died in the field, forever filling heroes’ robes with tears."',
+            },
+          ],
+        },
+        {
           key: 'xuanzang',
           dynastyKey: 'tang',
           color: '#9c6317',
           shortZh: '玄奘西行',
-          shortEn: "Xuanzang's Pilgrimage",
+          shortEn: 'Xuanzang',
           titleZh: '玄奘西行求法行迹',
           titleEn: "Xuanzang's Pilgrimage to the Western Regions",
           spanZh: '627年 — 645年（唐贞观元年至贞观十九年）',
@@ -4117,11 +4355,223 @@
           ],
         },
         {
+          key: 'libai',
+          dynastyKey: 'tang',
+          color: '#2e5c8a',
+          shortZh: '李白壮游',
+          shortEn: 'Li Bai',
+          titleZh: '李白仗剑壮游行迹',
+          titleEn: "Li Bai's Grand Travels Across Tang China",
+          spanZh: '701年 — 762年（武周长安元年至唐宝应元年）',
+          spanEn: '701 CE – 762 CE (High Tang Dynasty)',
+          stops: [
+            {
+              year: 701,
+              eraZh: '长安元年',
+              coord: [75.29, 42.83],
+              labelPos: 'top',
+              ancientZh: '碎叶城',
+              modernZh: '吉尔吉斯斯坦托克马克',
+              ancientEn: 'Suyab (Anxi Protectorate)',
+              modernEn: 'Tokmok, Kyrgyzstan',
+              titleZh: '诞于西域·安西碎叶',
+              titleEn: 'Birth at Suyab in the Western Regions',
+              descZh:
+                '长安元年（701年），李白诞于唐安西都护府碎叶城（今楚河流域托克马克附近），幼承丝路胡汉交融之风，五岁随父李客东迁入蜀。',
+              descEn:
+                'Born in 701 CE at Suyab—one of the Four Garrisons of Anxi in the Chu River valley—Li Bai spent his earliest childhood on the Silk Road frontier before migrating with his family to Sichuan at age five.',
+              quoteZh: '范传正《唐左拾遗翰林学士李公新墓碑》：“隋末多难，一房被窜于碎叶，流离散落，隐易姓名。”',
+              quoteEn:
+                'Fan Chuanzheng, New Tomb Inscription for Li Bai: "Amid the turmoil at the end of Sui, his branch of the clan was exiled to Suyab, living incognito until returning to Shu in the Shenlong era."',
+            },
+            {
+              year: 705,
+              eraZh: '神龙元年',
+              coord: [104.74, 31.78],
+              via: [[89.2, 42.9], [98.5, 39.7], [105.5, 33.0]],
+              labelPos: 'top',
+              ancientZh: '绵州昌隆（青莲）',
+              modernZh: '四川江油青莲镇',
+              ancientEn: 'Qinglian, Mianzhou',
+              modernEn: 'Jiangyou, Sichuan',
+              titleZh: '卜居青莲·大匡山读书',
+              titleEn: 'Youth in Qinglian & Studying on Mount Dakuang',
+              descZh:
+                '随父客居剑南道绵州昌隆县青莲乡（自号“青莲居士”）。少时博学广览、好剑术任侠，隐大匡山读书，后游成都、登峨眉，受道士司马承祯赞为“有仙风道骨，可与神游八极之表”，作《大鹏遇希有鸟赋》。',
+              descEn:
+                'Settling in Qinglian in Mianzhou (whence his sobriquet "Layman of Blue Lotus"), young Li Bai practiced swordsmanship, studied on Mount Dakuang, climbed Mount Emei, and was praised by Taoist master Sima Chengzhen as having "immortal bones."',
+              quoteZh: '李白《上安州裴长史书》：“五岁诵六甲，十岁观百家……十五观奇书，作赋凌相如。”',
+              quoteEn:
+                'Li Bai, Letter to Administrator Pei of Anzhou: "At five I recited the calendar classics; at ten I read the Hundred Schools; at fifteen I composed rhapsodies rivaling Sima Xiangru."',
+            },
+            {
+              year: 724,
+              eraZh: '开元十二年',
+              coord: [111.45, 30.69],
+              via: [[104.07, 30.67], [106.55, 29.56]],
+              labelPos: 'bottom',
+              ancientZh: '渝州·荆门',
+              modernZh: '重庆 / 湖北宜都',
+              ancientEn: 'Yuzhou & Jingmen Gorge',
+              modernEn: 'Chongqing / Yidu, Hubei',
+              titleZh: '仗剑去国·辞亲出三峡',
+              titleEn: 'Leaving Shu with Sword in Hand Through the Three Gorges',
+              descZh:
+                '年二十四的李白怀济世远志“仗剑去国，辞亲远游”，自成都乘舟顺岷江下渝州，穿巫峡、出荆门，初见江汉平原天地壮阔，写下《峨眉山月歌》与《渡荆门送别》。',
+              descEn:
+                'At twenty-four, Li Bai bade farewell to Sichuan and sailed down the Three Gorges past Jingmen into the vast Jianghan Plain, beginning his lifelong travels across the Tang Empire.',
+              quoteZh: '李白《渡荆门送别》：“山随平野尽，江入大荒流。月下飞天镜，云生结海楼。”',
+              quoteEn:
+                'Li Bai, Farewell at Jingmen: "Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions."',
+            },
+            {
+              year: 726,
+              eraZh: '开元十四年',
+              coord: [119.41, 32.39],
+              via: [[113.1, 29.37], [116.0, 29.7], [118.8, 32.06]],
+              labelPos: 'top',
+              ancientZh: '金陵·扬州',
+              modernZh: '江苏南京 / 扬州',
+              ancientEn: 'Jinling & Yangzhou',
+              modernEn: 'Nanjing / Yangzhou, Jiangsu',
+              titleZh: '漫游吴越·散金三十万',
+              titleEn: 'Grand Tour of Wu-Yue & Spending 300,000 Cash in Yangzhou',
+              descZh:
+                '顺江东下，登庐山望瀑布、游金陵怀古，转赴繁华甲天下的淮南都会扬州与吴越诸郡，豪爽济困，“不逾一年，散金三十余万”，写就《望庐山瀑布》《静夜思》等千古绝唱。',
+              descEn:
+                'Sailing down the lower Yangtze past Mount Lu and Jinling to prosperous Yangzhou, Li Bai generously aided destitute scholars—giving away over 300,000 coins within a year—and composed Quiet Night Thought.',
+              quoteZh: '李白《上安州裴长史书》：“曩昔东游维扬，不逾一年，散金三十余万，有落魄公子，悉皆济之。”',
+              quoteEn:
+                'Li Bai: "Formerly traveling east to Yangzhou, in less than a year I scattered more than three hundred thousand in gold, coming to the aid of every stranded gentleman."',
+            },
+            {
+              year: 727,
+              eraZh: '开元十五年',
+              coord: [113.69, 31.26],
+              via: [[116.5, 30.5], [114.3, 30.55]],
+              labelPos: 'bottom',
+              ancientZh: '安陆·江夏',
+              modernZh: '湖北安陆 / 武汉',
+              ancientEn: 'Anlu & Jiangxia (Yellow Crane Tower)',
+              modernEn: 'Anlu / Wuhan, Hubei',
+              titleZh: '酒隐安陆·登临黄鹤楼',
+              titleEn: 'Ten Years in Anlu & Farewell at Yellow Crane Tower',
+              descZh:
+                '西归荆楚，赘于安陆故相许圉师孙女家，隐居白兆山桃花岩所谓“酒隐安陆，蹉跎十年”；其间频游江夏与襄阳，结交孟浩然，于黄鹤楼赋诗送其东下广陵。',
+              descEn:
+                'Marrying into the family of former Chancellor Xu Yushi in Anlu, Li Bai made Mount Baizhao his home base for a decade, befriending Meng Haoran and seeing him off at the Yellow Crane Tower.',
+              quoteZh: '李白《黄鹤楼送孟浩然之广陵》：“故人西辞黄鹤楼，烟花三月下扬州。孤帆远影碧空尽，唯见长江天际流。”',
+              quoteEn:
+                'Li Bai, Seeing Off Meng Haoran at Yellow Crane Tower: "My old friend bids farewell to the west at Yellow Crane Tower, sailing down to Yangzhou in the misty blossoms of March."',
+            },
+            {
+              year: 742,
+              eraZh: '天宝元年',
+              coord: [108.94, 34.26],
+              via: [[111.0, 33.2]],
+              labelPos: 'top',
+              ancientZh: '长安',
+              modernZh: '陕西西安',
+              ancientEn: "Chang'an",
+              modernEn: "Xi'an, Shaanxi",
+              titleZh: '奉诏入京·翰林待诏',
+              titleEn: "Summoned to Chang'an — Imperial Hanlin Academy",
+              descZh:
+                '因道士吴筠及玉真公主举荐，唐玄宗降诏征召入京。李白高歌“仰天大笑出门去，我辈岂是蓬蒿人”西入长安，贺知章读《蜀道难》惊呼“谪仙人”，玄宗降辇步迎、供奉翰林，赋《清平调》三章。',
+              descEn:
+                'Summoned to Chang’an by Emperor Xuanzong, Li Bai was hailed by He Zhizhang as a "Banished Immortal" upon reading The Hard Roads of Shu, and served in the Imperial Hanlin Academy.',
+              quoteZh: '李白《南陵别儿童入京》：“仰天大笑出门去，我辈岂是蓬蒿人！”',
+              quoteEn:
+                'Li Bai, Parting from My Children at Nanling for the Capital: "Throwing back my head with a great laugh I stride out the gate—how could men like us remain forever amid the mugwort?"',
+            },
+            {
+              year: 744,
+              eraZh: '天宝三载',
+              coord: [112.45, 34.62],
+              via: [[110.5, 34.5]],
+              labelPos: 'bottom',
+              ancientZh: '洛阳·梁宋',
+              modernZh: '河南洛阳 / 商丘开封',
+              ancientEn: 'Luoyang & Liang-Song',
+              modernEn: 'Luoyang / Kaifeng, Henan',
+              titleZh: '赐金放还·洛阳逢杜甫',
+              titleEn: 'Leaving Court & Historic Meeting with Du Fu in Luoyang',
+              descZh:
+                '因傲岸不羁遭权贵谗毁，玄宗“赐金放还”。李白东出长安至东都洛阳，与年三十三的杜甫初遇定交，复邀高适同游梁宋（开封、商丘），登吹台、猎孟诸，淋漓尽致展现盛唐双子星风采。',
+              descEn:
+                'Granted gold to leave court in 744 CE, Li Bai traveled east to Luoyang where he met the younger Du Fu—a meeting hailed as the twin peaks of Tang poetry—and roamed the Liang-Song plains with Gao Shi.',
+              quoteZh: '杜甫《寄李十二白二十韵》：“乞归优诏许，遇我宿心亲。醉舞梁园夜，行歌泗水春。”',
+              quoteEn:
+                'Du Fu, Twenty Rhymes Sent to Li Bai: "Your plea to retire was granted by gracious edict; meeting me, our kindred hearts grew close—dancing drunk in Liang Garden by night, singing along the Si River in spring."',
+            },
+            {
+              year: 745,
+              eraZh: '天宝四载',
+              coord: [116.59, 35.41],
+              via: [[114.35, 34.79]],
+              labelPos: 'top',
+              ancientZh: '齐鲁（兖州任城）',
+              modernZh: '山东济宁',
+              ancientEn: 'Qilu (Rencheng, Yanzhou)',
+              modernEn: 'Jining, Shandong',
+              titleZh: '东游齐鲁·梦游天姥',
+              titleEn: 'Sojourn in Qilu & Dreaming of Mount Tianmu',
+              descZh:
+                '寄家山东兖州任城，与杜甫携手同游齐鲁，访范十隐居、登泰山徂徕，于紫极宫受道箓；临别东鲁南游越中时赋《梦游天姥吟留别》，喊出“安能摧眉折腰事权贵，使我不得开心颜”之千古强音。',
+              descEn:
+                'Making his family home in Rencheng (Shandong) and roaming Qilu with Du Fu, Li Bai composed Dreaming of Mount Tianmu: A Farewell Song before heading south.',
+              quoteZh: '李白《梦游天姥吟留别》：“安能摧眉折腰事权贵，使我不得开心颜！”',
+              quoteEn:
+                'Li Bai, Dreaming of Mount Tianmu: "How can I bow my brow and bend my waist to serve the powerful, denying myself a joyful heart and open brow?"',
+            },
+            {
+              year: 759,
+              eraZh: '乾元二年',
+              coord: [109.57, 31.04],
+              via: [[115.98, 29.71], [113.0, 29.4], [111.3, 30.7]],
+              labelPos: 'bottom',
+              ancientZh: '白帝城（夔州）',
+              modernZh: '重庆奉节',
+              ancientEn: 'Baidicheng (Kuizhou)',
+              modernEn: 'Fengjie, Chongqing',
+              titleZh: '长流夜郎·白帝遇赦还江陵',
+              titleEn: 'Exile to Yelang & Imperial Pardon at Baidicheng',
+              descZh:
+                '安史之乱起，李白怀平胡复国之志入永王李璘幕府，兵败后系浔阳狱，坐长流夜郎（黔中）；乾元二年春溯江行至巫山白帝城，忽逢关内大旱朝廷大赦天下，惊喜放舟东下江陵，写下《早发白帝城》。',
+              descEn:
+                'Implicated in Prince Lin of Yong’s campaign during the An Lushan Rebellion, Li Bai was banished toward distant Yelang; reaching Baidicheng in spring 759 CE, he received an imperial amnesty and raced downstream to Jiangling.',
+              quoteZh: '李白《早发白帝城》：“朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。”',
+              quoteEn:
+                'Li Bai, Departing Baidicheng at Dawn: "At dawn I leave Baidicheng amid rainbow clouds; a thousand li to Jiangling I return in a single day. While gibbons on both banks cry without cease, my light skiff has already shot past ten thousand mountains."',
+            },
+            {
+              year: 762,
+              eraZh: '宝应元年',
+              coord: [118.49, 31.55],
+              via: [[114.3, 30.55], [117.0, 30.9]],
+              labelPos: 'bottom',
+              ancientZh: '当涂（宣城郡）',
+              modernZh: '安徽马鞍山当涂',
+              ancientEn: 'Dangtu (Xuancheng)',
+              modernEn: "Dangtu, Ma'anshan, Anhui",
+              titleZh: '赋临路歌·终老当涂青山',
+              titleEn: 'Final Song at Dangtu & Resting by Mount Qing',
+              descZh:
+                '晚年漂泊金陵、宣城、秋浦之间，闻太尉李光弼统军讨史朝义，六十一岁仍请缨从军，行至金陵因病折返，依族叔当涂令李阳冰；宝应元年十一月赋《临路歌》绝笔，病逝于当涂，终葬谢朓曾游之青山。',
+              descEn:
+                'After attempting at sixty-one to join Li Guangbi’s army against the rebels, an ailing Li Bai stayed with his kinsman Li Yangbing in Dangtu, composing his final Song Before the Road and passing away in late 762 CE.',
+              quoteZh: '李白《临路歌》：“大鹏飞兮振八裔，中天摧兮力不济。馀风激兮万世，游扶桑兮挂石袂。”',
+              quoteEn:
+                'Li Bai, Song Before the Road: "The Great Peng soared and shook the eight horizons; broken in mid-heaven, its strength gave out—yet its lingering wind stirs ten thousand generations."',
+            },
+          ],
+        },
+        {
           key: 'sushi',
           dynastyKey: 'beisong',
           color: '#1f6f8b',
-          shortZh: '苏轼贬谪路线',
-          shortEn: "Su Shi's Exile",
+          shortZh: '苏轼贬谪',
+          shortEn: 'Su Shi',
           titleZh: '苏轼宦海贬谪行迹',
           titleEn: "Su Shi's Literary Exile Across Song China",
           spanZh: '1056年 — 1101年（北宋嘉祐元年至建中靖国元年）',
@@ -4641,7 +5091,9 @@
         })
         .join('');
 
-      const jDyn = this.dynasties.find((d) => d.key === j.dynastyKey);
+      const jDyn =
+        this.dynasties[this._findDynastyIndex(st.year)] ||
+        this.dynasties.find((d) => d.key === j.dynastyKey);
       const yrStr = isEn
         ? `${this.formatYear(st.year)}${jDyn ? ' · ' + this.dynastyName(jDyn) : ''}`
         : `${st.year <= 0 ? '公元前' + -st.year + '年' : '公元' + st.year + '年'} · ${st.eraZh}`;
@@ -4748,7 +5200,7 @@
           subZh: `${j.spanZh} · 共 ${j.stops.length} 站`,
           titleEn: j.titleEn,
           subEn: `${j.spanEn} · ${j.stops.length} stops`,
-          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 行迹 路线 丝绸之路 贬谪 西行 东坡 ${stopNames}`.toLowerCase(),
+          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 ${stopNames}`.toLowerCase(),
         });
       }
 
