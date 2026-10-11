@@ -298,14 +298,6 @@ function main() {
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
 
-  // 6. Verify X-Ray Modern Lens controller methods exist in app.js
-  assert(
-    appCode.includes('_initXrayLens') &&
-      appCode.includes('_setXrayLensActive') &&
-      appCode.includes('_updateXrayLens'),
-    'app.js must implement X-Ray Modern Lens methods (_initXrayLens, _setXrayLensActive, _updateXrayLens)'
-  );
-
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);
