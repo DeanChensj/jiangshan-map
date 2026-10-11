@@ -94,7 +94,7 @@
 | **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：搜古今地名（`咸阳`/`长安`）、州府（`黄州`）、年号（`贞观`/`元丰六年`）、年份（`-260`/`1083`）、事件（`长平之战`/`淝水之战`）或人物行迹（`秦始皇`/`诸葛亮`/`李白`/`苏轼`） |
 | **`←` / `→`** | 时间轴向前 / 向后走 `10` 年（按住 `Shift` 走 `50` 年；行迹模式下切换上一站 / 下一站） |
 | **`Space`（空格键）** | 自动播放 / 暂停历史演进（行迹模式下自动巡礼） |
-| **`单击古城` / `双击地图`** | 打开该地从战国到清的 18 时期「点地溯源 + 史事纪要」卡片 |
+| **`单击古城` / `双击地图`** | 打开该地从战国到近现代的 18 时期「点地溯源 + 史事纪要」卡片 |
 | **`悬停 / 点击图例色块`** | 悬停单独高亮该政权疆域；点击自动缩放聚焦至该政权 |
 
 ### 一键直达链接（适合分享给朋友）
@@ -117,7 +117,7 @@
 
 1. **Click Any Ancient City to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any city (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and every major historical event that unfolded there—click any event to time-travel straight to that year.
 2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Qin Shi Huang's Unification of the Six States** (238–221 BCE, watching Han, Zhao, Wei, Chu, Yan, and Qi merge into Qin step by step), **Zhang Qian's** expedition to Central Asia (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), or **Su Shi's** literary exile across Song China (1056–1101 CE).
-3. **Scrub Through 2,400+ Years & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across 114 territorial stages with dashed **Ghost Boundary Diffs** showing exact frontier shifts. Zoom in and hover over over 300 historical prefectures (*Zhou / Fu / Jun*) to see their modern provincial counterparts.
+3. **Scrub Through 2,400+ Years & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across 123 territorial stages (133 snapshots) with dashed **Ghost Boundary Diffs** showing exact frontier shifts. Zoom in and hover over over 300 historical prefectures (*Zhou / Fu / Jun*) to see their modern provincial counterparts.
 4. **Explore Historical Megaprojects & Listen to Classical Guqin (`雅乐`)**: Trace the Warring States, Qin, Han, and Ming Great Walls, the Grand Canal, the Silk Road, and Zheng He's maritime voyages; measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-data English (`EN`) or classical Guqin music in one click.
 5. **Play the Ancient Geography Challenge**: Test your historical intuition by pinpointing unlabeled ancient cities on the map (`Map Locate`) or matching ancient names to modern cities (`Name Match`) across 10 rounds to earn traditional imperial court titles.
 
@@ -140,7 +140,7 @@ python3 -m http.server 8000
 
 ## 致谢与开源协议 / Credits & License
 
-- **历史疆域与政区参考 / Historical GIS References**: [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0), **CHGIS** (Harvard Yenching Institute & Fudan University), and **Robert M. Hartwell** historical GIS datasets.
+- **历史疆域与政区参考 / Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
 - **现代省界参考 / Modern Provincial Reference**: DataV GeoAtlas open boundary data.
 - **古琴雅乐录音 / Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
 - **说明 / Note**: 地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
