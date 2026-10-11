@@ -403,7 +403,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011v').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011w').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -426,7 +426,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011v').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011w').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1617,17 +1617,23 @@
     _updateMilestoneStates(dynasty) {
       const activeIdx = this._activeMilestoneIndex(dynasty);
       let currentPin = null;
+      let futureChanged = false;
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
         const idx = Number(pin.dataset.idx);
         const m = (dynasty.milestones || [])[idx];
         const effY = m ? this._clampYearToDynasty(dynasty, m.year) : Number(pin.dataset.year);
-        pin.classList.toggle('is-future', effY > this.year && idx !== activeIdx);
+        const nextFuture = effY > this.year && idx !== activeIdx;
+        if (pin.classList.contains('is-future') !== nextFuture) futureChanged = true;
+        pin.classList.toggle('is-future', nextFuture);
         pin.classList.toggle('is-past', effY <= this.year && idx !== activeIdx);
         pin.classList.toggle('is-current', idx === activeIdx);
         if (idx === activeIdx) currentPin = pin;
       });
       if (currentPin && currentPin.parentNode) {
         currentPin.parentNode.appendChild(currentPin);
+      }
+      if (futureChanged && this._bootDone) {
+        this._rescaleSvgTypography();
       }
     }
 
@@ -1952,50 +1958,6 @@
           dots.appendChild(dot);
         });
         bar.appendChild(dots);
-
-        const btns = document.createElement('div');
-        btns.className = 'key-phase-btns';
-        const prevBtn = document.createElement('button');
-        prevBtn.type = 'button';
-        prevBtn.className = 'phase-nav-btn';
-        prevBtn.textContent = '‹';
-        prevBtn.disabled = pIdx <= 0;
-        prevBtn.title = this.locale === 'en' ? 'Previous Stage' : '上一版图阶段';
-        prevBtn.addEventListener('pointerenter', (e) => {
-          if (e.pointerType !== 'touch' && pIdx > 0) this._previewStageGhost(phases[pIdx - 1].snap);
-        });
-        prevBtn.addEventListener('pointerleave', (e) => {
-          if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
-        });
-        prevBtn.addEventListener('click', () => {
-          if (pIdx > 0) {
-            this.stopAutoplay();
-            this.jumpToYear(phaseStart(pIdx - 1));
-          }
-        });
-        const nextBtn = document.createElement('button');
-        nextBtn.type = 'button';
-        nextBtn.className = 'phase-nav-btn';
-        nextBtn.textContent = '›';
-        nextBtn.disabled = pIdx >= phases.length - 1;
-        nextBtn.title = this.locale === 'en' ? 'Next Stage' : '下一版图阶段';
-        nextBtn.addEventListener('pointerenter', (e) => {
-          if (e.pointerType !== 'touch' && pIdx < phases.length - 1) {
-            this._previewStageGhost(phases[pIdx + 1].snap);
-          }
-        });
-        nextBtn.addEventListener('pointerleave', (e) => {
-          if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
-        });
-        nextBtn.addEventListener('click', () => {
-          if (pIdx < phases.length - 1) {
-            this.stopAutoplay();
-            this.jumpToYear(phaseStart(pIdx + 1));
-          }
-        });
-        btns.appendChild(prevBtn);
-        btns.appendChild(nextBtn);
-        bar.appendChild(btns);
       } else {
         bar.classList.add('is-single-phase');
         const badge = document.createElement('span');
@@ -2406,6 +2368,7 @@
       let bestMilePx = maxPx;
       if (this.grpMilestones && !this.grpMilestones.classList.contains('is-hidden')) {
         this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
+          if (pin.classList.contains('is-future')) return;
           const dPx = Math.hypot(Number(pin.dataset.x) - sx, Number(pin.dataset.y) - sy) * scale;
           if (dPx <= bestMilePx) {
             bestMilePx = dPx;
@@ -3406,6 +3369,7 @@
       }
       if (showMilestones) {
         this.svg.querySelectorAll('.milestone-pin').forEach((pin) => {
+          if (pin.classList.contains('is-future')) return;
           const mx = parseFloat(pin.getAttribute('data-x'));
           const my = parseFloat(pin.getAttribute('data-y'));
           if (!isNaN(mx)) {
@@ -5022,27 +4986,6 @@
       }
 
       // Layer popover menu & checkboxes
-      const layerIds = [
-        'chk-polities',
-        'chk-prefectures',
-        'chk-settlements',
-        'chk-corridors',
-        'chk-milestones',
-        'chk-terrain',
-        'chk-provinces',
-        'chk-prov-names',
-      ];
-      const updateLayerBadge = () => {
-        const badge = this._id('layers-count-badge');
-        if (!badge) return;
-        const onCount = layerIds.filter((id) => {
-          const el = this._id(id);
-          return el && el.checked;
-        }).length;
-        badge.textContent = `${onCount}/${layerIds.length}`;
-      };
-      updateLayerBadge();
-
       const layersBtn = this._id('act-layers-menu');
       const layersPopover = this._id('layers-popover');
       const journeyBtn = this._id('act-journey-menu');
@@ -5148,7 +5091,6 @@
       const bindToggle = (chkId, grpEl, inv = false) => {
         this._id(chkId).addEventListener('change', (e) => {
           grpEl.classList.toggle('is-hidden', inv ? e.target.checked : !e.target.checked);
-          updateLayerBadge();
           this._rescaleSvgTypography();
         });
       };
@@ -5156,7 +5098,6 @@
       if (chkTerrain) {
         chkTerrain.addEventListener('change', (e) => {
           this.toggleTerrainMode(e.target.checked);
-          updateLayerBadge();
         });
       }
       bindToggle('chk-provinces', this.grpProvinces);
@@ -5166,27 +5107,23 @@
         if (this.grpGhostDiff) {
           this.grpGhostDiff.classList.toggle('is-hidden', !e.target.checked);
         }
-        updateLayerBadge();
         this._rescaleSvgTypography();
       });
       bindToggle('chk-prefectures', this.grpPrefectures);
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
-        updateLayerBadge();
         this._rescaleSvgTypography();
       });
       this._id('chk-corridors').addEventListener('change', (e) => {
         this.grpCorridors.classList.toggle('is-hidden', !e.target.checked);
         this.svg.classList.toggle('is-corridors-hidden', !e.target.checked);
-        updateLayerBadge();
         this._rescaleSvgTypography();
         if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
       });
       this._id('chk-milestones').addEventListener('change', (e) => {
         this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
         if (!e.target.checked) this.closeMilestoneBalloon();
-        updateLayerBadge();
         this._rescaleSvgTypography();
       });
 
