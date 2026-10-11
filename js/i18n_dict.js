@@ -1363,8 +1363,8 @@ window.EN_LOCALE = {
       "Xianyang"
     ],
     "zhanguo:-353": [
-      "Battles of Guiling (353 BCE) and Maling (341 BCE): Sun Bin and Tian Ji defeat Wei, shifting hegemony in the central plains",
-      "Maling (SE of Daming)"
+      "Battle of Guiling: Sun Bin and Tian Ji 'besiege Wei to rescue Zhao', defeating Pang Juan",
+      "Guiling (Changyuan)"
     ],
     "zhanguo:-316": [
       "Qin conquers the kingdoms of Shu and Ba in Sichuan (316 BCE) and takes Hanzhong from Chu at Danyang (312 BCE)",
@@ -1421,6 +1421,82 @@ window.EN_LOCALE = {
     "zhanguo:-222": [
       "Wang Ben conquers Yan in Liaodong and Dai in Shanxi while Wang Jian pacifies Jiangnan; only Qi remains on the eastern coast",
       "Xiangping (Liaoyang)"
+    ],
+    "zhanguo:-341": [
+      "Battle of Maling: Sun Bin ambushes and slays Pang Juan; the next year Shang Yang seizes Hexi and forces Wei to move its capital to Daliang",
+      "Maling · Anyi"
+    ],
+    "zhanguo:-296": [
+      "Zhao completes the conquest of Zhongshan; Qi, Han, and Wei coalition defeats Qin at Hangu Pass",
+      "Lingshou (Zhongshan)"
+    ],
+    "zhanguo:-241": [
+      "Final five-state coalition against Qin fails at Zui; King Kaolie of Chu moves the Chu capital east from Chen to Shouchun",
+      "Shouchun"
+    ],
+    "xihan:-109": [
+      "Emperor Wu pacifies the Southwestern Yi; the King of Dian submits, and Yizhou Commandery is established with the 'Gold Seal of the King of Dian'",
+      "Dianchi (Yizhou)"
+    ],
+    "xihan:-51": [
+      "Chanyu Huhanye pays personal homage to Emperor Xuan at Chang’an; eleven meritorious ministers painted in the Qilin Pavilion (Zhaoxuan Restoration)",
+      "Chang'an"
+    ],
+    "donghan:123": [
+      "Ban Yong (son of Ban Chao) appointed Chief Clerk of the Western Regions at Liuzhong, reopening the Tarim Basin",
+      "Liuzhong (Gaochang)"
+    ],
+    "nanbei:485": [
+      "Empress Dowager Feng and Emperor Xiaowen of Northern Wei promulgate the Equal-Field (Juntian) and Three-Elders systems",
+      "Pingcheng (Datong)"
+    ],
+    "nanbei:523": [
+      "Rebellion of the Six Garrisons: Poliuhan Baling leads a frontier uprising at Woye Garrison, shattering the foundation of Northern Wei",
+      "Woye · Huaihuang Garrisons"
+    ],
+    "nanbei:537": [
+      "Battle of Shayuan: Yuwen Tai’s outnumbered Western Wei army routs Gao Huan’s 200,000 Eastern Wei troops and founds the Fubing military system",
+      "Shayuan (Dali)"
+    ],
+    "sui:615": [
+      "Emperor Yang besieged by the Eastern Turks at Yanmen; Wagang rebels under Zhai Rang and Li Mi seize the Luokou Granary as uprisings sweep the empire",
+      "Yanmen · Luokou"
+    ],
+    "tang:705": [
+      "Shenlong Coup: Chancellor Zhang Jianzhi and allies restore Emperor Zhongzong at Luoyang, reviving the Tang dynasty",
+      "Luoyang"
+    ],
+    "tang:840": [
+      "Collapse of the Uyghur Khaganate; Emperor Wuzong and Chancellor Li Deyu defeat the Uyghurs, crush the Zelu garrison, and launch the Huichang Persecution of Buddhism",
+      "Chang'an · Zhenwu"
+    ],
+    "beisong:1007": [
+      "Emperor Shengzong of Liao builds the Central Capital (Zhongjing Dadingfu); Song and Liao open border trade markets",
+      "Zhongjing Dadingfu"
+    ],
+    "beisong:1085": [
+      "Death of Emperor Shenzong; Empress Dowager Gao appoints Sima Guang to repeal Wang Anshi’s New Policies (Yuanyou Reversal), intensifying factional strife",
+      "Kaifeng"
+    ],
+    "nansong:1175": [
+      "Qian-Chun Prosperity under Emperor Xiaozong of Song and Dading Prosperity under Emperor Shizong of Jin; Zhu Xi and Lu Jiuyuan debate at Goose Lake Temple",
+      "Lin'an · Goose Lake"
+    ],
+    "yuan:1328": [
+      "War of the Two Capitals (Tianli Incident): El Temür and the Dadu faction enthrone Emperor Wenzong and defeat the Shangdu court",
+      "Dadu · Shangdu"
+    ],
+    "ming:1621": [
+      "Battle of Shen-Liao: Nurhaci’s Later Jin captures Shenyang and Liaoyang, taking over 70 cities east of the Liao River and moving the Later Jin capital to Liaoyang",
+      "Liaoyang"
+    ],
+    "qing:1898": [
+      "Hundred Days’ Reform (Wuxu Reform): Emperor Guangxu launches institutional reforms with Kang Youwei and Liang Qichao before Empress Dowager Cixi’s coup",
+      "Beijing"
+    ],
+    "qing:1900": [
+      "Boxer Movement and Eight-Nation Alliance occupation of Beijing; Cixi and Guangxu flee to Xi’an, followed by the Boxer Protocol in 1901",
+      "Beijing"
     ]
   },
   "corridors": {
@@ -1604,7 +1680,7 @@ window.EN_LOCALE = {
     "前凉": "Former Liang",
     "前燕": "Former Yan",
     "前秦": "Former Qin",
-    "代": "Dai (Tuoba)",
+    "代": "Dai",
     "前秦（苻坚一统北方）": "Former Qin (Fu Jian Unifies the North)",
     "后秦 · 西秦": "Later Qin · Western Qin",
     "胡夏": "Xia (Helian)",
@@ -4056,8 +4132,6 @@ window.EN_LOCALE = {
     "越": "Yue",
     "巴·蜀": "Ba & Shu",
     "义渠": "Yiqu (Rong)",
-    "中山": "Zhongshan",
-    "代": "Dai",
     "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，巴蜀、越、中山尚存": "403–341 BCE · Partition of Jin, Tian Qi & Hegemony of Wei: Seven Warring States alongside Ba-Shu, Yue & Zhongshan",
     "前 340 — 前 296 · 商鞅变法与秦并巴蜀、赵胡服骑射辟塞北、楚灭越尽取吴越": "340–296 BCE · Shang Yang’s Reforms, Qin Conquest of Ba-Shu, Zhao’s Cavalry Reforms & Chu’s Conquest of Yue",
     "前 295 — 前 239 · 乐毅破齐、白起拔郢与长平之战：秦取巴蜀汉中南郡上党，独霸西方": "295–239 BCE · Yue Yi’s Campaign against Qi, Bai Qi’s Capture of Ying & Battle of Changping",
