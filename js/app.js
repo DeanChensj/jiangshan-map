@@ -884,10 +884,10 @@
             : '在 GitHub 上为「江山时序」点亮 Star';
       }
       this._updateMusicUi();
-      this._id('gesture-guide').textContent = this.uiStr(
-        'hint',
-        '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放'
-      );
+      this._id('gesture-guide').textContent =
+        this.locale === 'en'
+          ? 'Scroll zoom · Drag pan · Hold Space for Modern X-Ray Lens · Click city to trace history'
+          : '滚轮缩放 · 拖拽平移 · 按住空格透视今图 · 点击城名查沿革 · ← → 调整年份';
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
@@ -941,6 +941,16 @@
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
           node.textContent =
             this.locale === 'en' ? node.dataset.en || '' : node.dataset.zh || '';
+        });
+      }
+      if (this.grpXrayLens) {
+        this.grpXrayLens.querySelectorAll('.xray-prov-caption').forEach((node) => {
+          if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
+        });
+        this.grpXrayLens.querySelectorAll('.xray-city-name').forEach((node) => {
+          const rawMod = node.dataset.rawModern || '';
+          node.textContent =
+            this.locale === 'en' ? this.trModernCity(rawMod) : `今${rawMod}`;
         });
       }
 
@@ -1129,6 +1139,241 @@
           lbl.textContent = this.trTerm(rawShort);
         }
       }
+      this._initXrayLens();
+    }
+
+    _initXrayLens() {
+      if (!this.svg || this.grpXrayLens) return;
+      const defs = this.svg.querySelector('defs') || this._svgNode('defs', {}, this.svg);
+      const clipPath = this._svgNode('clipPath', { id: 'xray-lens-clip' }, defs);
+      this.xrayClipCircle = this._svgNode(
+        'circle',
+        { id: 'xray-lens-clip-circle', cx: '-9999', cy: '-9999', r: '0' },
+        clipPath
+      );
+
+      const rig = this._id('camera-rig') || this.svg;
+      this.grpXrayLens = this._svgNode(
+        'g',
+        { id: 'grp-xray-lens', class: 'xray-lens-group is-hidden', 'pointer-events': 'none' },
+        rig
+      );
+      const clipped = this._svgNode(
+        'g',
+        { id: 'grp-xray-clipped', 'clip-path': 'url(#xray-lens-clip)' },
+        this.grpXrayLens
+      );
+      this.xrayBgCircle = this._svgNode(
+        'circle',
+        { class: 'xray-lens-bg', cx: '-9999', cy: '-9999', r: '0' },
+        clipped
+      );
+
+      // 1. Modern river network reference inside the lens (present-day courses)
+      if (this.hydroData && Array.isArray(this.hydroData.rivers)) {
+        for (const riv of this.hydroData.rivers) {
+          if (riv.rank > 2 || !this._isHydroVisible(riv, 2026)) continue;
+          let d = '';
+          for (const line of riv.lines || []) {
+            for (let i = 0; i < line.length; i++) {
+              const [px, py] = this.projector.toScreen(line[i][0], line[i][1]);
+              d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1);
+            }
+          }
+          if (d) {
+            this._svgNode(
+              'path',
+              { d, class: riv.rank === 1 ? 'xray-river-trunk' : 'xray-river-major' },
+              clipped
+            );
+          }
+        }
+      }
+
+      // 2. Modern provincial outlines & labels inside the lens
+      for (const prov of this.provinces || []) {
+        const isDash = String(prov.code).includes('_JD');
+        if (isDash) continue;
+        this._svgNode(
+          'path',
+          {
+            d: this.projector.multiRingsToSvgPath(prov.rings),
+            class: 'xray-prov-shape',
+          },
+          clipped
+        );
+        if (prov.hub) {
+          const [cx, cy] = this.projector.toScreen(prov.hub[0], prov.hub[1]);
+          const rawShort = prov.title.replace(
+            /(省|市|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/,
+            ''
+          );
+          const lbl = this._svgNode(
+            'text',
+            {
+              class: 'xray-prov-caption',
+              'data-x': cx.toFixed(1),
+              'data-y': cy.toFixed(1),
+              x: cx.toFixed(1),
+              y: cy.toFixed(1),
+            },
+            clipped
+          );
+          lbl.dataset.rawName = rawShort;
+          lbl.textContent = this.trTerm(rawShort);
+        }
+      }
+
+      // 3. Deduplicated modern city reference points inside the lens
+      const seenModern = new Set();
+      const modernCities = [];
+      for (const d of this.dynasties || []) {
+        for (const s of d.settlements || []) {
+          if (!s.modern || !s.coord) continue;
+          const cleanMod = s.modern.split(/[·/（(]/)[0].trim();
+          if (!cleanMod || seenModern.has(cleanMod)) continue;
+          seenModern.add(cleanMod);
+          modernCities.push({ modern: cleanMod, coord: s.coord, isCap: Boolean(s.isCapital) });
+        }
+      }
+      for (const mc of modernCities) {
+        const [mx, my] = this.projector.toScreen(mc.coord[0], mc.coord[1]);
+        const cNode = this._svgNode(
+          'g',
+          {
+            class: 'xray-city-node',
+            'data-x': mx.toFixed(1),
+            'data-y': my.toFixed(1),
+            transform: `translate(${mx.toFixed(1)},${my.toFixed(1)})`,
+          },
+          clipped
+        );
+        this._svgNode('circle', { class: 'xray-city-dot', r: '1.8' }, cNode);
+        const cTxt = this._svgNode(
+          'text',
+          { class: 'xray-city-name', x: '4.2', y: '2.4' },
+          cNode
+        );
+        cTxt.dataset.rawModern = mc.modern;
+        cTxt.textContent = this.locale === 'en' ? this.trModernCity(mc.modern) : `今${mc.modern}`;
+      }
+
+      // 4. Classical bronze/jade lens rim & top readout badge
+      this.xrayRimGroup = this._svgNode('g', { class: 'xray-rim-group' }, this.grpXrayLens);
+      this.xrayOuterRing = this._svgNode('circle', { class: 'xray-lens-ring', r: '0' }, this.xrayRimGroup);
+      this.xrayInnerRing = this._svgNode('circle', { class: 'xray-lens-ring-inner', r: '0' }, this.xrayRimGroup);
+      this.xrayBadgeGroup = this._svgNode('g', { class: 'xray-badge-group' }, this.xrayRimGroup);
+      this.xrayBadgeBg = this._svgNode(
+        'rect',
+        { class: 'xray-badge-bg', rx: '6', ry: '6', x: '-70', y: '-10', width: '140', height: '16' },
+        this.xrayBadgeGroup
+      );
+      this.xrayBadgeText = this._svgNode(
+        'text',
+        { class: 'xray-badge-text', x: '0', y: '-1.5' },
+        this.xrayBadgeGroup
+      );
+    }
+
+    _setXrayLensActive(active, clientX, clientY) {
+      if (!this.grpXrayLens) return;
+      this.xrayActive = Boolean(active);
+      this.grpXrayLens.classList.toggle('is-hidden', !this.xrayActive);
+      if (this.xrayActive) {
+        if (this.hoverTip) this.hoverTip.classList.add('is-hidden');
+        this._updateXrayLens(clientX, clientY);
+      }
+    }
+
+    _updateXrayLens(clientX, clientY) {
+      if (!this.xrayActive || !this.grpXrayLens || !this.svg) return;
+      const rect = this.svg.getBoundingClientRect();
+      const cxClient =
+        clientX !== undefined
+          ? clientX
+          : this.lastPointerClient
+            ? this.lastPointerClient.x
+            : rect.left + rect.width * 0.5;
+      const cyClient =
+        clientY !== undefined
+          ? clientY
+          : this.lastPointerClient
+            ? this.lastPointerClient.y
+            : rect.top + rect.height * 0.5;
+      const [sx, sy] = this._clientToSvgPoint(cxClient, cyClient);
+      const [lng, lat] = this.projector.toGeo(sx, sy);
+      const z = 1000 / this.camera.w;
+      const s = 1 / Math.sqrt(z);
+      const invScale = s.toFixed(3);
+      const radiusSvg = Math.max(18, Math.min(135, 108 / z));
+
+      this.xrayClipCircle.setAttribute('cx', sx.toFixed(1));
+      this.xrayClipCircle.setAttribute('cy', sy.toFixed(1));
+      this.xrayClipCircle.setAttribute('r', radiusSvg.toFixed(1));
+      this.xrayBgCircle.setAttribute('cx', sx.toFixed(1));
+      this.xrayBgCircle.setAttribute('cy', sy.toFixed(1));
+      this.xrayBgCircle.setAttribute('r', radiusSvg.toFixed(1));
+
+      this.xrayOuterRing.setAttribute('cx', sx.toFixed(1));
+      this.xrayOuterRing.setAttribute('cy', sy.toFixed(1));
+      this.xrayOuterRing.setAttribute('r', radiusSvg.toFixed(1));
+      this.xrayInnerRing.setAttribute('cx', sx.toFixed(1));
+      this.xrayInnerRing.setAttribute('cy', sy.toFixed(1));
+      this.xrayInnerRing.setAttribute('r', (radiusSvg * 0.965).toFixed(1));
+
+      // Rescale captions inside the lens
+      this.grpXrayLens.querySelectorAll('.xray-prov-caption').forEach((node) => {
+        node.setAttribute('font-size', (9.6 * s).toFixed(2));
+      });
+      this.grpXrayLens.querySelectorAll('.xray-city-node').forEach((node) => {
+        const nx = node.getAttribute('data-x');
+        const ny = node.getAttribute('data-y');
+        node.setAttribute('transform', `translate(${nx},${ny}) scale(${invScale})`);
+      });
+
+      // Compute Ancient <-> Modern comparison label for the lens rim pill
+      const curDyn = this.dynasties[this.dynastyIdx];
+      let ancLabel = curDyn ? this.dynastyBadge(curDyn) : '';
+      let modProv = '';
+      for (const prov of this.provinces || []) {
+        if (String(prov.code).includes('_JD')) continue;
+        if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(lng, lat, poly))) {
+          modProv = this.trTerm(prov.title);
+          break;
+        }
+      }
+      let nearAnc = '';
+      let nearMod = '';
+      if (curDyn && Array.isArray(curDyn.settlements)) {
+        let bestKm = 95;
+        for (const st of curDyn.settlements) {
+          const km = this.projector.greatCircleKm([lng, lat], st.coord);
+          if (km < bestKm) {
+            bestKm = km;
+            nearAnc = this.trTerm(st.ancient.split(/[（(]/)[0]);
+            nearMod = st.modern ? this.trModernCity(st.modern.split(/[·/]/)[0]) : '';
+          }
+        }
+      }
+      const leftPart = nearAnc ? `${ancLabel}·${nearAnc}` : ancLabel;
+      const rightPart =
+        modProv && nearMod && !modProv.includes(nearMod)
+          ? `${modProv}·${nearMod}`
+          : modProv || nearMod || `${lng.toFixed(1)}°E, ${lat.toFixed(1)}°N`;
+      const pillStr =
+        this.locale === 'en'
+          ? `X-Ray · ${leftPart} ⇄ Now ${rightPart}`
+          : `古今透视 · ${leftPart} ⇄ 今${rightPart}`;
+
+      this.xrayBadgeText.textContent = pillStr;
+      const estW = Math.max(118, this._estimateLocalTextWidth(pillStr, 7.8, 0.35) + 18);
+      this.xrayBadgeBg.setAttribute('x', (-estW * 0.5).toFixed(1));
+      this.xrayBadgeBg.setAttribute('width', estW.toFixed(1));
+      const badgeY = sy - radiusSvg - 8 * s;
+      this.xrayBadgeGroup.setAttribute(
+        'transform',
+        `translate(${sx.toFixed(1)},${badgeY.toFixed(1)}) scale(${invScale})`
+      );
     }
 
     _buildNeighborCountries() {
@@ -3078,6 +3323,7 @@
       }
       this._updateScaleBar();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+      if (this.xrayActive) this._updateXrayLens();
     }
 
     _formatChineseLi(li) {
@@ -5160,12 +5406,15 @@
           this.jumpToYear(this.maxYear);
         } else if (e.key === ' ') {
           e.preventDefault();
-          if (this.activeJourney) {
-            this.toggleJourneyAutoplay();
-            return;
+          if (!e.repeat && !this.challenge) {
+            this._spaceDownAt = performance.now();
+            this._spaceMovedPx = 0;
+            this._setXrayLensActive(true);
           }
-          if (this.playing) this.stopAutoplay();
-          else this.startAutoplay();
+        } else if ((e.key === 'x' || e.key === 'X' || e.key === 'Alt') && !e.metaKey && !e.ctrlKey && !this.challenge) {
+          if (!this.xrayActive) {
+            this._setXrayLensActive(true);
+          }
         } else if (e.key === 'Escape') {
           closeLayersPopover();
           closeJourneyPopover();
@@ -5177,6 +5426,34 @@
             this.closeGenealogyCard();
           }
         }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.target && e.target.tagName === 'INPUT') return;
+        if (e.key === ' ') {
+          const heldMs = this._spaceDownAt ? performance.now() - this._spaceDownAt : 999;
+          const movedPx = this._spaceMovedPx || 0;
+          this._spaceDownAt = 0;
+          if (this.xrayActive) {
+            this._setXrayLensActive(false);
+          }
+          if (heldMs < 210 && movedPx < 10 && !this.challenge) {
+            if (this.activeJourney) {
+              this.toggleJourneyAutoplay();
+            } else if (this.playing) {
+              this.stopAutoplay();
+            } else {
+              this.startAutoplay();
+            }
+          }
+        } else if (e.key === 'x' || e.key === 'X' || e.key === 'Alt') {
+          if (this.xrayActive) {
+            this._setXrayLensActive(false);
+          }
+        }
+      });
+      window.addEventListener('blur', () => {
+        if (this.xrayActive) this._setXrayLensActive(false);
       });
 
       // SVG Zoom & Pan (Mouse Wheel + Single-Finger Pan + Two-Finger Pinch Zoom)
@@ -5655,9 +5932,19 @@
         this.openGenealogyAt(lng, lat);
       });
 
-      // Hover tooltips (Desktop pointermove)
+      // Hover tooltips & X-Ray lens pointer tracking (Desktop pointermove)
       const frame = this._id('viewport-frame');
       frame.addEventListener('pointermove', (e) => {
+        if (this.lastPointerClient && this._spaceDownAt) {
+          this._spaceMovedPx =
+            (this._spaceMovedPx || 0) +
+            Math.hypot(e.clientX - this.lastPointerClient.x, e.clientY - this.lastPointerClient.y);
+        }
+        this.lastPointerClient = { x: e.clientX, y: e.clientY };
+        if (this.xrayActive) {
+          this._updateXrayLens(e.clientX, e.clientY);
+          return;
+        }
         if (e.pointerType === 'touch') return;
         this.grpPrefectures
           .querySelectorAll('.prefecture-shape.is-hovered')
