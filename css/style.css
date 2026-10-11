@@ -1099,7 +1099,7 @@ h2 {
 .settlement-node.is-pass .pass-gate-icon {
   fill: #fdf6ea;
   stroke: #8c3b22;
-  stroke-width: 1.05;
+  stroke-width: 0.95;
   stroke-linejoin: round;
   transition: fill 0.15s ease, stroke 0.15s ease, transform 0.15s ease;
 }
@@ -1108,6 +1108,7 @@ h2 {
 .settlement-node.is-pass.is-pass-highlighted .pass-gate-icon {
   fill: #b5452f;
   stroke: #fff9f0;
+  transform: scale(1.12);
 }
 
 .settlement-node.is-pass .name.pass-name {

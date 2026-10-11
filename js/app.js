@@ -1516,13 +1516,13 @@
             'path',
             {
               class: 'pass-gate-icon',
-              d: 'M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z',
+              d: 'M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z',
             },
             pNode
           );
           const align = p.align || 'r';
           const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
-          const dx = align === 'l' ? -5.2 : align === 'b' ? 0 : 5.2;
+          const dx = align === 'l' ? -5.6 : align === 'b' ? 0 : 5.6;
           const dy1 = align === 'b' ? 9.8 : align === 't' ? -4.5 : 2.8;
           const nameEl = this._svgNode(
             'text',
@@ -2193,7 +2193,7 @@
             const passChip = document.createElement('span');
             passChip.className = 'key-entry';
             const passLabel = this.locale === 'en' ? 'Strategic Passes' : '名关雄隘';
-            passChip.innerHTML = `<svg width="12" height="9" viewBox="-4 -3 8 6"><path d="M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="1.05" stroke-linejoin="round"/></svg>${passLabel}`;
+            passChip.innerHTML = `<svg width="13" height="10" viewBox="-4.6 -3.3 9.2 6.7"><path d="M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="0.95" stroke-linejoin="round"/></svg>${passLabel}`;
             row.appendChild(passChip);
           }
           const seaLabel =
