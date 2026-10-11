@@ -311,11 +311,23 @@
       if (!this.snapshots) return;
       for (const k of Object.keys(this.snapshots)) {
         const s = this.snapshots[k];
-        if (s && s.prefRef && !s.prefectures && this.snapshots[s.prefRef]) {
-          s.prefectures = this.snapshots[s.prefRef].prefectures || [];
+        if (!s || k === 'neighbors' || k === 's_prc') continue;
+        const baseKey = k.replace(/^(s_[a-z]+)_.*$/, '$1');
+        const prefSource = s.prefRef || (baseKey !== k ? baseKey : null);
+        if (
+          (!s.prefectures || !s.prefectures.length) &&
+          prefSource &&
+          this.snapshots[prefSource]
+        ) {
+          s.prefectures = this.snapshots[prefSource].prefectures || [];
         }
-        if (s && s.regionRef && !s.regions && this.snapshots[s.regionRef]) {
-          s.regions = this.snapshots[s.regionRef].regions || [];
+        const regSource = s.regionRef || (baseKey !== k ? baseKey : null);
+        if (
+          (!s.regions || !s.regions.length) &&
+          regSource &&
+          this.snapshots[regSource]
+        ) {
+          s.regions = this.snapshots[regSource].regions || [];
         }
       }
       if (
@@ -403,12 +415,20 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011w').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011x').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
             this._fullSnapshotsLoaded = true;
+            this.snapshotCache = {};
             this.searchIndex = null;
+            const cur = this.dynasties && this.dynasties[this.dynastyIdx];
+            if (cur) {
+              const snapKey = this._resolveSnapKey(cur, this.year);
+              if (this.snapshots && this.snapshots[snapKey]) {
+                this._renderPolitiesAndPrefectures(cur, this.snapshots[snapKey]);
+              }
+            }
             return this.snapshots;
           }
         );
@@ -426,7 +446,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011w').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011x').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -886,8 +906,8 @@
       this._updateMusicUi();
       this._id('gesture-guide').textContent =
         this.locale === 'en'
-          ? 'Scroll zoom · Drag pan · Hold Space for Modern X-Ray Lens · Click city to trace history'
-          : '滚轮缩放 · 拖拽平移 · 按住空格透视今图 · 点击城名查沿革 · ← → 调整年份';
+          ? 'Scroll to zoom · Drag to pan · Click city or double-click to trace · ← → step years · Space play'
+          : '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放';
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
@@ -3830,7 +3850,7 @@
     }
 
     // ---------------- Dual-Mode Challenge ----------------
-    _buildChallengeDeck() {
+    _buildChallengeDeck(preferredDynasty = null) {
       const deck = [];
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
@@ -3844,6 +3864,20 @@
       }
       const chosen = [];
       const seen = new Set();
+      if (preferredDynasty && preferredDynasty.key !== 'prc') {
+        const pool = (preferredDynasty.settlements || []).filter(
+          (s) => s.modern && s.ancient !== s.modern && !s.isCapital
+        );
+        const pickPool = pool.length
+          ? pool
+          : (preferredDynasty.settlements || []).filter((s) => s.modern);
+        if (pickPool.length) {
+          const firstS = pickPool[0];
+          const uid = `${preferredDynasty.key}:${firstS.ancient}`;
+          seen.add(uid);
+          chosen.push({ dynasty: preferredDynasty, settlement: firstS });
+        }
+      }
       while (chosen.length < 10 && deck.length) {
         const idx = Math.floor(Math.random() * deck.length);
         const pick = deck.splice(idx, 1)[0];
@@ -3856,7 +3890,7 @@
       return chosen;
     }
 
-    startChallenge() {
+    startChallenge(mode = 'locate', preferredDynasty = null, initialYear = undefined) {
       this._recordGestureClick();
       this.stopAutoplay();
       if (this.activeJourney) this.stopJourney(true);
@@ -3870,10 +3904,11 @@
       this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
-        deck: this._buildChallengeDeck(),
+        deck: this._buildChallengeDeck(preferredDynasty),
         index: 0,
         score: 0,
         answered: false,
+        initialYear,
       };
       this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
@@ -3908,7 +3943,8 @@
       q.answered = false;
       q.pendingGuess = null;
       const cur = q.deck[q.index];
-      let roundYear = cur.dynasty.focusYear;
+      let roundYear =
+        q.index === 0 && q.initialYear !== undefined ? q.initialYear : cur.dynasty.focusYear;
       if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
         roundYear = cur.settlement.appear;
       }
@@ -5836,45 +5872,49 @@
       }
       if (q.has('hover')) {
         const targetPref = q.get('hover');
-        setTimeout(() => {
-          const el = this.grpPrefectures.querySelector(
-            `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
-          );
-          if (el) {
-            el.classList.add('is-hovered');
-            const box = el.getBoundingClientRect();
-            const cx = box.left + box.width * 0.55;
-            const cy = box.top + box.height * 0.45;
-            const cur = this.dynasties[this.dynastyIdx];
-            const snapKey = this._resolveSnapKey(cur, this.year);
-            const snap = this.snapshots[snapKey] || {};
-            const mainPol = (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
-            let provName = '';
-            const stack = document.elementsFromPoint(cx, cy);
-            const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
-            if (provEl) provName = provEl.dataset.provTitle;
-            const pName = this.trTerm(el.dataset.prefTitle);
-            const pCat = el.dataset.prefCategory;
-            const lines = [
-              `<b>${
-                this.locale === 'en'
-                  ? pName
-                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
-              }</b>`,
-            ];
-            if (mainPol) {
-              lines.push(
-                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
-              );
+        this._dismissTraceOnboarding();
+        this._ensureFullSnapshots().then(() => {
+          setTimeout(() => {
+            const el = this.grpPrefectures.querySelector(
+              `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
+            );
+            if (el) {
+              el.classList.add('is-hovered');
+              const box = el.getBoundingClientRect();
+              const cx = box.left + box.width * 0.55;
+              const cy = box.top + box.height * 0.45;
+              const cur = this.dynasties[this.dynastyIdx];
+              const snapKey = this._resolveSnapKey(cur, this.year);
+              const snap = this.snapshots[snapKey] || {};
+              const mainPol =
+                (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
+              let provName = '';
+              const stack = document.elementsFromPoint(cx, cy);
+              const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
+              if (provEl) provName = provEl.dataset.provTitle;
+              const pName = this.trTerm(el.dataset.prefTitle);
+              const pCat = el.dataset.prefCategory;
+              const lines = [
+                `<b>${
+                  this.locale === 'en'
+                    ? pName
+                    : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
+                }</b>`,
+              ];
+              if (mainPol) {
+                lines.push(
+                  `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
+                );
+              }
+              if (provName) {
+                lines.push(
+                  `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(provName)}</div>`
+                );
+              }
+              this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
             }
-            if (provName) {
-              lines.push(
-                `<div class="tt-sub">${this.uiStr('now_prov', '今：')}${this.trTerm(provName)}</div>`
-              );
-            }
-            this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
-          }
-        }, 250);
+          }, 300);
+        });
       }
       if (q.has('event')) {
         const ey = Number(q.get('event'));
@@ -5901,7 +5941,9 @@
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
         const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
-        setTimeout(() => this.startChallenge(mode), 120);
+        const prefDyn = q.has('year') ? this.dynasties[this.dynastyIdx] : null;
+        const initYr = q.has('year') ? this.year : undefined;
+        setTimeout(() => this.startChallenge(mode, prefDyn, initYr), 120);
       }
       if (q.has('journey')) {
         this._paneAutoCollapsed = true;
