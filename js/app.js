@@ -263,6 +263,8 @@
       this.challengeVariant = 'locate';
       this.paneCollapsed = false;
       this.ghostTimer = null;
+      this.hasSeenTraceHint = false;
+      this.hasSeenJourneyHint = false;
 
       this.camera = this._getDefaultCamera();
       this.flyRaf = null;
@@ -281,6 +283,24 @@
 
       this.jumpToYear(this.dynasties[0].focusYear);
       this._restoreFromQuery();
+    }
+
+    _dismissTraceOnboarding() {
+      if (this.hasSeenTraceHint) return;
+      this.hasSeenTraceHint = true;
+      if (this.svg) {
+        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
+        this.svg
+          .querySelectorAll('.has-trace-hint')
+          .forEach((el) => el.classList.remove('has-trace-hint'));
+      }
+    }
+
+    _dismissJourneyOnboarding() {
+      if (this.hasSeenJourneyHint) return;
+      this.hasSeenJourneyHint = true;
+      const dot = this._id('journey-onboarding-dot');
+      if (dot) dot.classList.add('is-hidden');
     }
 
     _getDefaultCamera() {
@@ -607,6 +627,54 @@
       if (btnSs) {
         btnSs.textContent = this.locale === 'en' ? "Su Shi's Exile" : '苏轼贬谪路线';
       }
+      const lblJourneyBtn = this._id('lbl-journey-btn');
+      if (lblJourneyBtn) {
+        lblJourneyBtn.textContent = this.locale === 'en' ? 'Journeys' : '青史行迹';
+      }
+      const actJourneyBtn = this._id('act-journey-menu');
+      if (actJourneyBtn) {
+        actJourneyBtn.title =
+          this.locale === 'en'
+            ? 'Historical Journeys · Su Shi / Xuanzang / Zhang Qian'
+            : '青史行迹 · 人物时空巡礼（苏轼贬谪 / 玄奘西行 / 张骞通西域）';
+      }
+      const jPopHead = this._id('txt-journey-pop-heading');
+      if (jPopHead) {
+        jPopHead.textContent =
+          this.locale === 'en' ? 'Historical Journeys · Interactive Tours' : '青史行迹 · 人物时空巡礼';
+      }
+      const jPopSub = this._id('txt-journey-pop-sub');
+      if (jPopSub) {
+        jPopSub.textContent =
+          this.locale === 'en'
+            ? 'Follow iconic figures across eras, prefectures & classical verse'
+            : '跟随历史人物足迹，跨越年代、州郡与诗词纪事';
+      }
+      const setTxt = (id, zh, en) => {
+        const el = this._id(id);
+        if (el) el.textContent = this.locale === 'en' ? en : zh;
+      };
+      setTxt('lbl-jm-badge-sushi', '北宋', 'N. Song');
+      setTxt('lbl-jm-title-sushi', '苏轼宦海贬谪行迹', "Su Shi's Literary Exile");
+      setTxt(
+        'lbl-jm-meta-sushi',
+        '眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站',
+        'Meizhou → Kaifeng → Huangzhou → Danzhou · 10 stops'
+      );
+      setTxt('lbl-jm-badge-xuanzang', '唐', 'Tang');
+      setTxt('lbl-jm-title-xuanzang', '玄奘西行求法行迹', "Xuanzang's Pilgrimage to India");
+      setTxt(
+        'lbl-jm-meta-xuanzang',
+        '长安 → 敦煌 → 高昌 → 碎叶 → 天竺 · 10站',
+        "Chang'an → Dunhuang → Suyab → India · 10 stops"
+      );
+      setTxt('lbl-jm-badge-zhangqian', '西汉', 'W. Han');
+      setTxt('lbl-jm-title-zhangqian', '张骞凿空西域行迹', "Zhang Qian's Mission to the West");
+      setTxt(
+        'lbl-jm-meta-zhangqian',
+        '长安 → 河西 → 大宛 → 大月氏 · 9站',
+        "Chang'an → Hexi → Fergana → Bactria · 9 stops"
+      );
       this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
       this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
       this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
@@ -974,11 +1042,22 @@
           return rank(a) - rank(b);
         });
 
+      const showOnboardingTraceHint =
+        !this.hasSeenTraceHint && !this.activeJourney && !this.challenge;
+      const hintCapital = showOnboardingTraceHint
+        ? activeList.find(
+            (s) => s.isCapital && dynasty.seat && dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
+          ) || activeList.find((s) => s.isCapital)
+        : null;
+
       for (const item of activeList) {
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const isTier2 = item.tier === 2 && !item.isCapital;
+        const isHintCap = item === hintCapital;
         const cls = item.isCapital
-          ? 'settlement-node is-capital'
+          ? isHintCap
+            ? 'settlement-node is-capital has-trace-hint'
+            : 'settlement-node is-capital'
           : isTier2
             ? 'settlement-node is-tier2'
             : 'settlement-node';
@@ -1000,6 +1079,10 @@
         node.dataset.tier = item.isCapital ? '0' : isTier2 ? '2' : '1';
 
         if (item.isCapital) {
+          if (isHintCap) {
+            this._svgNode('circle', { class: 'cap-breath-ring', r: 6.5 }, node);
+            this._svgNode('circle', { class: 'cap-breath-ring is-delayed', r: 6.5 }, node);
+          }
           this._svgNode('circle', { class: 'cap-ring', r: 4.5 }, node);
           this._svgNode('polygon', { class: 'dot', points: '0,-3.2 3.2,0 0,3.2 -3.2,0' }, node);
         } else if (isTier2) {
@@ -1019,6 +1102,42 @@
           node
         );
         nameEl.textContent = this.trTerm(item.ancient);
+
+        if (isHintCap) {
+          const tagG = this._svgNode(
+            'g',
+            { class: 'cap-hint-tag', transform: 'translate(0, 15.2)' },
+            node
+          );
+          const innerG = this._svgNode('g', { class: 'cap-hint-inner' }, tagG);
+          this._svgNode(
+            'line',
+            { class: 'cap-hint-stem', x1: '0', y1: '-9.8', x2: '0', y2: '-6.8' },
+            innerG
+          );
+          const isEn = this.locale === 'en';
+          const pillW = isEn ? 132 : 112;
+          this._svgNode(
+            'rect',
+            {
+              class: 'cap-hint-bg',
+              x: String(-pillW * 0.5),
+              y: '-6.8',
+              width: String(pillW),
+              height: '13.6',
+              rx: '6.8',
+            },
+            innerG
+          );
+          const hintTxt = this._svgNode(
+            'text',
+            { class: 'cap-hint-text', x: '0', y: '0.3' },
+            innerG
+          );
+          hintTxt.textContent = isEn
+            ? '◆ Click city · 2,000 yrs of history ›'
+            : '◆ 点按城池 · 阅两千年身世 ›';
+        }
       }
       this._rescaleSvgTypography();
     }
@@ -1742,6 +1861,9 @@
     // ---------------- Place Genealogy (Trace Place) ----------------
     toggleGenealogyMode(force) {
       this.genealogyMode = force !== undefined ? force : !this.genealogyMode;
+      if (this.genealogyMode) {
+        this._dismissTraceOnboarding();
+      }
       if (this.genealogyMode && this.challenge) {
         this.stopChallenge();
       }
@@ -2010,6 +2132,7 @@
     }
 
     openGenealogyAt(lng, lat) {
+      this._dismissTraceOnboarding();
       if (this.activeJourney) this.stopJourney();
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
@@ -2930,9 +3053,18 @@
         const f1 = tier === '0' ? 9.6 : tier === '2' ? 7.3 : 8.2;
         const wLocal = this._estimateLocalTextWidth(nameEl.textContent, f1, 0.45) + 7;
 
+        const hasHintTag = node.classList.contains('has-trace-hint');
+        if (hasHintTag) {
+          occupied.push({
+            x1: cx - 60 * s,
+            y1: cy + 7.5 * s,
+            x2: cx + 60 * s,
+            y2: cy + 24 * s,
+          });
+        }
         const pref = node.dataset.prefAlign || 'r';
-        const dirs = [pref];
-        for (const d of ['r', 'l', 'b', 't']) {
+        const dirs = [hasHintTag && pref === 'b' ? 't' : pref];
+        for (const d of hasHintTag ? ['r', 'l', 't'] : ['r', 'l', 'b', 't']) {
           if (!dirs.includes(d)) dirs.push(d);
         }
 
@@ -4200,6 +4332,8 @@
       const found = journeys.find((j) => j.key === journeyKey) || journeys[0];
       if (!found) return;
 
+      this._dismissJourneyOnboarding();
+      this._dismissTraceOnboarding();
       this.stopAutoplay();
       if (this.journeyTimer) {
         clearInterval(this.journeyTimer);
@@ -4217,9 +4351,11 @@
       if (vf) vf.classList.add('has-active-journey');
       if (this.journeyCard) this.journeyCard.classList.remove('is-hidden');
 
-      document.querySelectorAll('.journey-chip-btn').forEach((btn) => {
+      document.querySelectorAll('.journey-chip-btn, .journey-menu-item').forEach((btn) => {
         btn.classList.toggle('is-active', btn.dataset.journey === found.key);
       });
+      const jMenuBtn = this._id('act-journey-menu');
+      if (jMenuBtn) jMenuBtn.classList.add('is-active');
 
       const stop = found.stops[this.journeyStopIdx];
       if (stop) this.jumpToYear(stop.year);
@@ -4248,9 +4384,11 @@
       }
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-journey');
-      document.querySelectorAll('.journey-chip-btn').forEach((btn) => {
+      document.querySelectorAll('.journey-chip-btn, .journey-menu-item').forEach((btn) => {
         btn.classList.remove('is-active');
       });
+      const jMenuBtn = this._id('act-journey-menu');
+      if (jMenuBtn) jMenuBtn.classList.remove('is-active');
     }
 
     goToJourneyStop(idx, panCamera = true) {
@@ -5011,15 +5149,73 @@
 
       const layersBtn = this._id('act-layers-menu');
       const layersPopover = this._id('layers-popover');
+      const journeyBtn = this._id('act-journey-menu');
+      const journeyPopover = this._id('journey-popover');
       const closeLayersPopover = () => {
         if (!layersPopover || !layersBtn) return;
         layersPopover.classList.add('is-hidden');
         layersBtn.classList.remove('is-active');
         layersBtn.setAttribute('aria-expanded', 'false');
       };
+      const closeJourneyPopover = () => {
+        if (!journeyPopover || !journeyBtn) return;
+        journeyPopover.classList.add('is-hidden');
+        if (!this.activeJourney) {
+          journeyBtn.classList.remove('is-active');
+        }
+        journeyBtn.setAttribute('aria-expanded', 'false');
+      };
+      if (journeyBtn && journeyPopover) {
+        journeyBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._dismissJourneyOnboarding();
+          closeLayersPopover();
+          const willOpen = journeyPopover.classList.contains('is-hidden');
+          if (willOpen) {
+            if (window.innerWidth > 640) {
+              const btnRect = journeyBtn.getBoundingClientRect();
+              const navRect = this._id('nav-bar').getBoundingClientRect();
+              const leftPx = Math.max(
+                12,
+                Math.min(window.innerWidth - 310, btnRect.left - navRect.left)
+              );
+              journeyPopover.style.left = `${leftPx}px`;
+              journeyPopover.style.right = 'auto';
+            } else {
+              journeyPopover.style.left = '';
+              journeyPopover.style.right = '';
+            }
+            journeyPopover.classList.remove('is-hidden');
+            journeyBtn.classList.add('is-active');
+            journeyBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            closeJourneyPopover();
+          }
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (
+            !journeyPopover.classList.contains('is-hidden') &&
+            !journeyPopover.contains(e.target) &&
+            !journeyBtn.contains(e.target)
+          ) {
+            closeJourneyPopover();
+          }
+        });
+        journeyPopover.querySelectorAll('.journey-menu-item').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            closeJourneyPopover();
+            if (this.activeJourney && this.activeJourney.key === btn.dataset.journey) {
+              this.stopJourney();
+            } else {
+              this.startJourney(btn.dataset.journey, 0);
+            }
+          });
+        });
+      }
       if (layersBtn && layersPopover) {
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          closeJourneyPopover();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -5241,6 +5437,7 @@
           else this.startAutoplay();
         } else if (e.key === 'Escape') {
           closeLayersPopover();
+          closeJourneyPopover();
           this.closeMilestoneBalloon();
           if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
           else if (this.activeJourney) this.stopJourney();
@@ -5408,7 +5605,7 @@
           return null;
         };
         const journeyNodeEl = findClosest('.journey-node');
-        const settlementNameEl = findClosest('.settlement-node .name');
+        const settlementNameEl = findClosest('.settlement-node .name, .cap-hint-tag');
         const settlementEl = findClosest('.settlement-node');
         const corridorEl = findClosest('.corridor-line');
         const milestoneEl = findClosest('.milestone-pin');
@@ -5622,7 +5819,7 @@
             this.goToJourneyStop(Number(journeyNodeEl.dataset.stopIdx), true);
             return;
           }
-          const settlementNameEl = findClosest('.settlement-node .name');
+          const settlementNameEl = findClosest('.settlement-node .name, .cap-hint-tag');
           let settlementEl = findClosest('.settlement-node');
           let milestoneEl = findClosest('.milestone-pin');
           if (e.pointerType === 'touch' && !settlementEl && !milestoneEl) {
@@ -5652,12 +5849,12 @@
             return;
           }
 
-          // Clicking the city name text (e.g. "长安") or a city dot without an overlapping event pin -> trace place history
+          // Clicking the city name text (e.g. "长安"), the onboarding whisper tag, or a city dot without an overlapping event pin -> trace place history
           if (
             settlementEl &&
             settlementEl.dataset.lng &&
             settlementEl.dataset.lat &&
-            (settlementNameEl || !milestoneEl)
+            (settlementNameEl || !milestoneEl || settlementEl.classList.contains('has-trace-hint'))
           ) {
             this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
             return;
