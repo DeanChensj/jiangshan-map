@@ -3839,6 +3839,10 @@ html[lang="en"] #act-toggle-pane .tp-label {
   color: #fff;
 }
 
+#atlas-shell:has(#viewport-frame.has-active-challenge) .compare-toggle-btn {
+  display: none;
+}
+
 .compare-toggle-btn:focus-visible,
 #compare-divider:focus-visible .compare-grip {
   outline: 2px solid var(--vermilion);
