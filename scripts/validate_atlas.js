@@ -841,13 +841,38 @@ function main() {
     );
   }
 
+  // CUJ 9o: First-Level Administrative Boundary Deduplication & Casing Verification
+  assert(
+    cssSrc.includes('.region-shape-casing') && cssSrc.includes('.region-shape'),
+    'css/style.css must define both .region-shape-casing and .region-shape'
+  );
+  ctrl.projector.toScreen = (lng, lat) => [(lng - 66) * 13.15, (55 - lat) * 17.07];
+  ctrl._hydrateSnapshots();
+  const tangDyn = dynasties.find((d) => d.key === 'tang');
+  const tang780Key = ctrl._resolveSnapKey(tangDyn, 780);
+  const tang780Snap = snapshots[tang780Key];
+  assert(
+    tang780Snap && Array.isArray(tang780Snap.regions) && tang780Snap.regions.length >= 10,
+    `Missing ${tang780Key} circuits (regions)`
+  );
+  const tang780RegPath = ctrl._buildRegionBoundaryPath(tang780Snap);
+  assert(
+    typeof tang780RegPath === 'string' && tang780RegPath.length > 500,
+    `Expected non-empty deduplicated region boundary SVG path for s_tang_780, got length ${tang780RegPath ? tang780RegPath.length : 0}`
+  );
+  assert.strictEqual(
+    ctrl._buildRegionBoundaryPath(tang780Snap),
+    tang780RegPath,
+    '_buildRegionBoundaryPath must return cached SVG path on subsequent calls'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 14 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 15 E2E CUJs`);
 }
 
 main();
