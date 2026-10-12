@@ -322,6 +322,17 @@ function main() {
     'app.js & index.html must unify event callouts into #milestone-balloon (_syncAutoMilestoneBalloon, toggleEventCallouts, ep-close, #chk-event-callouts)'
   );
 
+  // 7. Validate SEO metadata, JSON-LD structured data, semantic directory, sitemap.xml & robots.txt
+  assert(
+    indexHtml.includes('application/ld+json') &&
+      indexHtml.includes('property="og:title"') &&
+      indexHtml.includes('rel="canonical"') &&
+      indexHtml.includes('id="seo-atlas-directory"'),
+    'index.html must include JSON-LD structured data, Open Graph tags, canonical link, and #seo-atlas-directory'
+  );
+  assert(fs.existsSync(path.join(ROOT, 'sitemap.xml')), 'Missing sitemap.xml at repository root');
+  assert(fs.existsSync(path.join(ROOT, 'robots.txt')), 'Missing robots.txt at repository root');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);
