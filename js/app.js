@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012i').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012j').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012i').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012j').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2507,7 +2507,10 @@
 
       // 3. Curated landmark events
       for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
-        if (lm.dynastyKey !== d.key) continue;
+        const dynMatch = lm.dynastyKey
+          ? (lm.dynastyKey === d.key || (lm.dynastyKey === 'nanbeichao' && d.key === 'nanbei'))
+          : (lm.year >= d.fromYear && lm.year <= d.toYear);
+        if (!dynMatch) continue;
         if (isCloseCoord(lm.coord, 45)) {
           const dup = results.some((r) => Math.abs(r.year - lm.year) <= 3);
           if (!dup) {
@@ -4934,17 +4937,20 @@
       for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
         const dIdx = this._findDynastyIndex(p.focusYear || -200);
         const d = this.dynasties[dIdx] || this.dynasties[0];
+        const aliases = (p.aliases || []).map((a) => a.toLowerCase());
+        const aliasStr = aliases.join(' ');
         entries.push({
           kind: 'pass',
           passKey: p.key,
           dynasty: d,
           year: p.focusYear || d.focusYear,
           coord: p.coord,
+          aliases,
           titleZh: p.ancientZh,
           subZh: `今${p.modernZh} · ${p.rangeZh}`,
           titleEn: p.ancientEn,
           subEn: `${p.modernEn} · ${p.rangeEn}`,
-          keywords: `${p.ancientZh} ${p.modernZh} ${p.rangeZh} ${p.ancientEn} ${p.modernEn} ${p.rangeEn} 名关 雄关 关隘 险关 pass`.toLowerCase(),
+          keywords: `${p.ancientZh} ${aliasStr} ${p.modernZh} ${p.rangeZh} ${p.ancientEn} ${p.modernEn} ${p.rangeEn} 名关 雄关 关隘 险关 pass`.toLowerCase(),
         });
       }
 
@@ -5020,6 +5026,40 @@
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           });
         }
+      }
+
+      // 3b. Curated Place Landmark Events (名胜史事 · 战役古迹)
+      const seenLm = new Set();
+      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+        if (!lm.zh) continue;
+        const uid = `${lm.year}:${lm.zh.slice(0, 16)}`;
+        if (seenLm.has(uid)) continue;
+        seenLm.add(uid);
+        const d =
+          this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
+          this.dynasties[this._findDynastyIndex(lm.year)] ||
+          this.dynasties[0];
+        const yrEn = lm.year <= 0 ? `${-lm.year || 1} BCE` : `${lm.year} CE`;
+        const milestoneObj = {
+          year: lm.year,
+          headline: lm.zh,
+          headlineEn: lm.en,
+          site: lm.site,
+          siteEn: lm.siteEn,
+          coord: lm.coord,
+        };
+        entries.push({
+          kind: 'event',
+          dynasty: d,
+          year: this._clampYearToDynasty(d, lm.year),
+          milestone: milestoneObj,
+          coord: lm.coord,
+          titleZh: lm.zh,
+          subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
+          titleEn: lm.en || lm.zh,
+          subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
+          keywords: `${lm.zh} ${lm.site || ''} ${lm.en || ''} ${lm.siteEn || ''} ${lm.year} 史事 事件 战役 名胜`.toLowerCase(),
+        });
       }
 
       this.searchIndex = entries;
