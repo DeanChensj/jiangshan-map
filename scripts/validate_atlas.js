@@ -376,8 +376,8 @@ function main() {
   assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
   assert(fs.existsSync(skillMdPath), 'skills/jiangshan-atlas/SKILL.md must exist');
   assert(
-    Array.isArray(loreData.PLACE_GAZETTEER) && loreData.PLACE_GAZETTEER.length >= 40,
-    'lore_data.js must provide PLACE_GAZETTEER with poetic/historical landmarks and city aliases'
+    Array.isArray(loreData.PLACE_GAZETTEER) && loreData.PLACE_GAZETTEER.length >= 100,
+    'lore_data.js must provide >= 100 PLACE_GAZETTEER entries with poetic/historical landmarks and city aliases'
   );
   const llmsTxt = fs.readFileSync(llmsTxtPath, 'utf8');
   assert(
@@ -392,13 +392,149 @@ function main() {
     'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), PLACE_GAZETTEER, and URL deep-link protocol'
   );
 
+  // 9. End-to-End CUJ Verification Suite (Headless Controller Harness)
+  sandbox.window.addEventListener = () => {};
+  sandbox.window.URLSearchParams = URLSearchParams;
+  sandbox.URLSearchParams = URLSearchParams;
+  sandbox.location = {
+    search: '',
+    origin: 'https://deanchensj.github.io',
+    pathname: '/jiangshan-map/',
+  };
+  sandbox.window.location = sandbox.location;
+  vm.runInContext(appCode, sandbox, { filename: 'app.js' });
+  const ControllerClass = sandbox.window.HistoricalAtlasController;
+  assert(typeof ControllerClass === 'function', 'HistoricalAtlasController must be exposed on window');
+
+  const DEG_TO_RAD = Math.PI / 180;
+  const ctrl = Object.create(ControllerClass.prototype);
+  Object.assign(ctrl, {
+    dynasties,
+    provinces,
+    corridors,
+    snapshots,
+    enLocale,
+    locale: 'zh',
+    year: -403,
+    minYear: dynasties[0].fromYear,
+    maxYear: dynasties[dynasties.length - 1].toYear,
+    camera: { x: 350, y: 215, w: 500, h: 420, zoom: 2 },
+    projector: {
+      greatCircleKm(coordA, coordB) {
+        const dLat = (coordB[1] - coordA[1]) * DEG_TO_RAD;
+        const dLng = (coordB[0] - coordA[0]) * DEG_TO_RAD;
+        const a =
+          Math.sin(dLat * 0.5) ** 2 +
+          Math.cos(coordA[1] * DEG_TO_RAD) *
+            Math.cos(coordB[1] * DEG_TO_RAD) *
+            Math.sin(dLng * 0.5) ** 2;
+        return 12742 * Math.asin(Math.sqrt(a));
+      },
+    },
+  });
+
+  // CUJ 9a: 0D Single-Place Resolution & Exact-First Disambiguation (Poems, Passes, Battles, Cities)
+  const languan819 = ctrl.inspect({ year: 819, place: '蓝关' });
+  assert.strictEqual(languan819.year, 819);
+  assert.strictEqual(languan819.polity, '唐');
+  assert(languan819.era.includes('元和十四年'), `Expected 元和十四年 for 819 CE, got ${languan819.era}`);
+  assert(
+    Math.hypot(languan819.coord[0] - 109.52, languan819.coord[1] - 34.03) < 0.2,
+    `Expected 蓝关 near [109.52, 34.03], got ${JSON.stringify(languan819.coord)}`
+  );
+
+  const jingkou1205 = ctrl.inspect({ year: 1205, place: '京口' });
+  assert.strictEqual(jingkou1205.year, 1205);
+  assert.strictEqual(jingkou1205.polity, '南宋');
+  assert(jingkou1205.modernProvince.includes('江苏'), `Expected 江苏 for 京口, got ${jingkou1205.modernProvince}`);
+
+  // Exact-First check: '西安' and '洛阳' must resolve to the capital settlements, not substring-match a pass's modern description
+  const xianHit = ctrl.resolvePlace('西安', 741);
+  const luoyangHit = ctrl.resolvePlace('洛阳', 741);
+  assert(xianHit && xianHit.kind === 'city', `Expected '西安' to resolve to city, got ${JSON.stringify(xianHit)}`);
+  assert(luoyangHit && luoyangHit.kind === 'city', `Expected '洛阳' to resolve to city, got ${JSON.stringify(luoyangHit)}`);
+
+  // CUJ 9b: 1D Same-Year Multi-Stop Poetic Route (?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)
+  const dufu763 = ctrl.inspect({ year: 763, place: '剑外,巴峡,巫峡,襄阳,洛阳' });
+  assert(Array.isArray(dufu763.route) && dufu763.route.length === 5, 'Du Fu 763 route must resolve all 5 stops');
+  assert(dufu763.route.every((st) => st.year === 763), 'All stops in Du Fu 763 route must share year 763');
+  assert(dufu763.routeDistanceKm >= 700 && dufu763.routeDistanceKm <= 1400, `Unexpected Du Fu route distance: ${dufu763.routeDistanceKm} km`);
+  assert(
+    dufu763.url.includes('year=763') && decodeURIComponent(dufu763.url).includes('place=剑外,巴峡,巫峡,襄阳,洛阳'),
+    `Unexpected Du Fu 1D route URL: ${decodeURIComponent(dufu763.url)}`
+  );
+
+  // CUJ 9c: 4D Multi-Year Trajectory (?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州) + Inline Year Fallback
+  const sushiRoute = ctrl.inspect({ year: '1079,1080,1094,1097', place: '湖州,黄州,惠州,儋州' });
+  assert(Array.isArray(sushiRoute.route) && sushiRoute.route.length === 4, 'Su Shi route must resolve all 4 stops');
+  assert.strictEqual(
+    sushiRoute.route.map((s) => s.year).join(','),
+    '1079,1080,1094,1097',
+    'Su Shi route stops must preserve per-stop years [1079, 1080, 1094, 1097]'
+  );
+  assert(
+    decodeURIComponent(sushiRoute.url).includes('year=1079,1080,1094,1097'),
+    `Multi-year route URL must preserve comma-separated years, got ${decodeURIComponent(sushiRoute.url)}`
+  );
+  const sushiInline = ctrl.inspect({ place: '1079:湖州,1080:黄州,1094:惠州,1097:儋州' });
+  assert.strictEqual(
+    JSON.stringify(sushiInline.route.map((s) => [s.year, s.place])),
+    JSON.stringify(sushiRoute.route.map((s) => [s.year, s.place])),
+    'Inline year:place syntax must resolve identically to parallel year= & place= lists'
+  );
+
+  // CUJ 9d: Timeline Clamping & No-Year-Zero Contract
+  const mingtiaoClamped = ctrl.inspect({ year: -1600, place: '鸣条' });
+  assert.strictEqual(mingtiaoClamped.year, -403, 'Years before -403 must clamp to -403 (Warring States start)');
+  assert(mingtiaoClamped.modernProvince.includes('山西'), `Expected 鸣条 in 山西, got ${mingtiaoClamped.modernProvince}`);
+  const yearZeroNorm = ctrl.inspect({ year: 0, place: '长安' });
+  assert.strictEqual(yearZeroNorm.year, 1, 'Year 0 must normalize to 1 CE');
+
+  // CUJ 9e: 100% Gazetteer & Alias Resolution Coverage
+  for (const g of loreData.PLACE_GAZETTEER) {
+    assert(
+      g.name && Array.isArray(g.coord) && g.coord.length === 2,
+      `Invalid PLACE_GAZETTEER entry: ${JSON.stringify(g)}`
+    );
+    const [gx, gy] = g.coord;
+    assert(
+      gx >= 70 && gx <= 135 && gy >= 15 && gy <= 52,
+      `Out-of-bounds PLACE_GAZETTEER coordinate [${gx}, ${gy}] for ${g.name}`
+    );
+    const hitMain = ctrl.resolvePlace(g.name, 750);
+    assert(hitMain, `resolvePlace failed for PLACE_GAZETTEER primary name: ${g.name}`);
+    for (const alias of g.aliases || []) {
+      const hitAlias = ctrl.resolvePlace(alias, 750);
+      assert(hitAlias, `resolvePlace failed for PLACE_GAZETTEER alias "${alias}" of ${g.name}`);
+    }
+  }
+
+  // CUJ 9f: Root Mirror Byte-Level Synchronization Check (js/app.js === app.js, js/lore_data.js === lore_data.js, css/style.css === style.css)
+  const mirrorPairs = [
+    ['js/app.js', 'app.js'],
+    ['js/lore_data.js', 'lore_data.js'],
+    ['css/style.css', 'style.css'],
+  ];
+  for (const [srcRel, dstRel] of mirrorPairs) {
+    const srcPath = path.join(ROOT, srcRel);
+    const dstPath = path.join(ROOT, dstRel);
+    if (fs.existsSync(dstPath)) {
+      const srcBuf = fs.readFileSync(srcPath);
+      const dstBuf = fs.readFileSync(dstPath);
+      assert(
+        srcBuf.equals(dstBuf),
+        `Mirror file out of sync: ${dstRel} differs from ${srcRel} (run: cp ${srcRel} ${dstRel})`
+      );
+    }
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys, ${loreData.CHINESE_ERA_SPANS.length} era spans & ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events in lore_data.js`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys, ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 6 E2E CUJs`);
 }
 
 main();
