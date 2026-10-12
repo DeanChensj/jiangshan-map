@@ -1377,40 +1377,49 @@
         return snap._cachedRegionBoundaryPath;
       }
 
-      const polGrid = new Set();
-      const addPolPt = (lng, lat) => {
-        const gx = Math.round(lng * 16);
-        const gy = Math.round(lat * 16);
-        for (let dx = -1; dx <= 1; dx++) {
-          for (let dy = -1; dy <= 1; dy++) {
-            polGrid.add(`${gx + dx},${gy + dy}`);
-          }
-        }
-      };
+      const polRings = [];
       for (const pol of snap.polities || []) {
         if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
         const coords = pol.shape.coordinates;
         const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
         for (const poly of polys) {
-          for (const ring of poly || []) {
-            if (!ring || !ring.length) continue;
-            for (let i = 0; i < ring.length; i++) {
-              const a = ring[i];
-              addPolPt(a[0], a[1]);
-              if (i + 1 < ring.length) {
-                const b = ring[i + 1];
-                const dist = Math.hypot(b[0] - a[0], b[1] - a[1]);
-                const steps = Math.min(40, Math.floor(dist / 0.05));
-                for (let s = 1; s < steps; s++) {
-                  const t = s / steps;
-                  addPolPt(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t);
-                }
-              }
-            }
+          const ring = poly && poly[0];
+          if (!ring || ring.length < 3) continue;
+          let minX = Infinity,
+            maxX = -Infinity,
+            minY = Infinity,
+            maxY = -Infinity;
+          for (let i = 0; i < ring.length; i++) {
+            const x = ring[i][0],
+              y = ring[i][1];
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
           }
+          polRings.push({ minX, maxX, minY, maxY, ring });
         }
       }
-      const onPol = (pt) => polGrid.has(`${Math.round(pt[0] * 16)},${Math.round(pt[1] * 16)}`);
+      const inPolity = (x, y) => {
+        if (!polRings.length) return true;
+        for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+          const b = polRings[rIdx];
+          if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
+          const ring = b.ring;
+          let inside = false;
+          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+            const xi = ring[i][0],
+              yi = ring[i][1];
+            const xj = ring[j][0],
+              yj = ring[j][1];
+            if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+              inside = !inside;
+            }
+          }
+          if (inside) return true;
+        }
+        return false;
+      };
       const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
       const edgeKey = (p1, p2) => {
         const k1 = ptKey(p1);
@@ -1445,18 +1454,16 @@
           const p1 = ring[i];
           const p2 = ring[i + 1];
           const ek = edgeKey(p1, p2);
-          if (seenEdges.has(ek)) {
+          if (
+            (regEdgeCounts.get(ek) || 0) < 2 ||
+            seenEdges.has(ek) ||
+            !inPolity((p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5)
+          ) {
             penX = NaN;
             penY = NaN;
             continue;
           }
           seenEdges.add(ek);
-          const midPt = [(p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5];
-          if (regEdgeCounts.get(ek) === 1 && onPol(p1) && onPol(p2) && onPol(midPt)) {
-            penX = NaN;
-            penY = NaN;
-            continue;
-          }
           const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
           const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
           if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
