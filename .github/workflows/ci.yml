@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    name: Validate Geo Topology & Historical Data
+    name: Validate Atlas Integrity & Regression Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
