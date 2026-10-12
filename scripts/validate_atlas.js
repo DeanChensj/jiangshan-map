@@ -371,10 +371,26 @@ function main() {
   );
 
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
+  for (const strayJs of [
+    'app.js',
+    'lore_data.js',
+    'map_data.js',
+    'china_geo_data.js',
+    'atlas_boot.js',
+    'atlas_snapshots.js',
+    'i18n_dict.js',
+  ]) {
+    assert(
+      !fs.existsSync(path.join(ROOT, strayJs)),
+      `Stray duplicate JS file "${strayJs}" found at repository root; all runtime scripts must live exclusively under js/`
+    );
+  }
   const llmsTxtPath = path.join(ROOT, 'llms.txt');
   const skillMdPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'SKILL.md');
+  const skillPyPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'scripts', 'jiangshan.py');
   assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
   assert(fs.existsSync(skillMdPath), 'skills/jiangshan-atlas/SKILL.md must exist');
+  assert(fs.existsSync(skillPyPath), 'skills/jiangshan-atlas/scripts/jiangshan.py must exist');
   assert(
     Array.isArray(loreData.PLACE_GAZETTEER) && loreData.PLACE_GAZETTEER.length >= 100,
     'lore_data.js must provide >= 100 PLACE_GAZETTEER entries with poetic/historical landmarks and city aliases'
@@ -385,11 +401,13 @@ function main() {
       appCode.includes('resolvePlace(') &&
       appCode.includes('inspect(') &&
       appCode.includes('locate(') &&
+      appCode.includes('_parsePlaceTokens(') &&
+      appCode.includes('_renderCustomRoute(') &&
       appCode.includes('PLACE_GAZETTEER') &&
       appCode.includes('trace-pin-label') &&
       llmsTxt.includes('?year=') &&
       llmsTxt.includes('window.atlasAPI.locate'),
-    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), PLACE_GAZETTEER, and URL deep-link protocol'
+    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), multi-stop route rendering, PLACE_GAZETTEER, and URL deep-link protocol'
   );
 
   // 9. End-to-End CUJ Verification Suite (Headless Controller Harness)
@@ -509,7 +527,7 @@ function main() {
     }
   }
 
-  // CUJ 9f: Root Mirror Byte-Level Synchronization Check (js/app.js === app.js, js/lore_data.js === lore_data.js, css/style.css === style.css)
+  // CUJ 9f: Root Mirror Byte-Level Synchronization Check (if any root mirror files exist)
   const mirrorPairs = [
     ['js/app.js', 'app.js'],
     ['js/lore_data.js', 'lore_data.js'],

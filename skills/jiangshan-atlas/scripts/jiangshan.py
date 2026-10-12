@@ -30,11 +30,17 @@ def find_chrome():
 
 def find_local_repo_root():
   script_dir = os.path.dirname(os.path.abspath(__file__))
-  candidate = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
-  if os.path.isfile(os.path.join(candidate, "index.html")) and os.path.isfile(
-      os.path.join(candidate, "js", "app.js")
-  ):
-    return candidate
+  candidates = [
+      os.environ.get("JIANGSHAN_REPO_ROOT", ""),
+      os.path.abspath(os.path.join(script_dir, "..", "..", "..")),
+  ]
+  for candidate in candidates:
+    if (
+        candidate
+        and os.path.isfile(os.path.join(candidate, "index.html"))
+        and os.path.isfile(os.path.join(candidate, "js", "app.js"))
+    ):
+      return candidate
   return None
 
 
