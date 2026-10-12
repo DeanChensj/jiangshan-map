@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012g').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012h').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012g').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012h').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -649,6 +649,7 @@
     }
 
     dynastyBadge(d) {
+      if (!d) return this.locale === 'en' ? 'All Eras' : '历代';
       return this.locale === 'en' && this.enLocale.dynasties[d.key]
         ? this.enLocale.dynasties[d.key].short
         : d.badge || d.title;
@@ -4098,7 +4099,16 @@
       this.flyRaf = requestAnimationFrame(step);
     }
 
+    clearCustomRoute() {
+      if (!this.activeCustomRoute) return;
+      this.activeCustomRoute = null;
+      if (this.grpJourney && !this.activeJourney) {
+        this.grpJourney.innerHTML = '';
+      }
+    }
+
     resetCamera() {
+      this.clearCustomRoute();
       this._animateCameraTo(this._getDefaultCamera());
     }
 
@@ -4454,6 +4464,7 @@
       }
       if (this.challenge) this.stopChallenge(true);
       if (this.genealogyMode) this.toggleGenealogyMode(false);
+      this.clearCustomRoute();
       this.closeGenealogyCard();
       this.closeMilestoneBalloon();
 
@@ -4491,6 +4502,7 @@
         this.journeyTimer = null;
       }
       this.activeJourney = null;
+      this.activeCustomRoute = null;
       this.journeyStopIdx = 0;
       if (this.grpJourney) this.grpJourney.innerHTML = '';
       if (this.journeyCard) {
@@ -4936,6 +4948,27 @@
         });
       }
 
+      // 1c. Poetic & Historical Gazetteer (诗词名胜 · 古战场 · 关隘渡口)
+      for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
+        const aliases = (g.aliases || []).map((a) => a.toLowerCase());
+        const aliasSub = (g.aliases || []).slice(0, 3).join(' · ');
+        const nameEn = this._enDict(g.name);
+        const modEn = this._enModernCity(g.modern || '');
+        entries.push({
+          kind: 'gazetteer',
+          dynasty: null,
+          year: null,
+          coord: g.coord,
+          zoom: g.zoom || 2.5,
+          aliases,
+          titleZh: g.name,
+          subZh: `今${g.modern}${aliasSub ? ' · ' + aliasSub : ''}`,
+          titleEn: nameEn,
+          subEn: modEn ? `Now ${modEn}` : '',
+          keywords: `${g.name} ${aliases.join(' ')} ${g.modern || ''} ${nameEn} ${modEn} 名胜 古迹 古战场`.toLowerCase(),
+        });
+      }
+
       // 2. Prefectures & Macro Regions across snapshots
       const seenAdmin = new Set();
       for (const d of this.dynasties) {
@@ -5091,6 +5124,7 @@
         const tZh = item.titleZh.toLowerCase();
         const tEn = item.titleEn.toLowerCase();
         if (tZh === q || tEn === q) score = 100;
+        else if (item.aliases && item.aliases.some((a) => a === q)) score = 92;
         else if (tZh.startsWith(q) || tEn.startsWith(q)) score = 80;
         else if (item.keywords.includes(q)) score = 55;
 
@@ -5106,6 +5140,7 @@
 
     _selectSearchResult(item) {
       this.stopAutoplay();
+      this.clearCustomRoute();
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
       const boxEl = this._id('map-search-box');
@@ -5116,19 +5151,25 @@
         return;
       }
 
-      this.jumpToYear(item.year);
+      if (item.year !== null && item.year !== undefined) {
+        this.jumpToYear(item.year);
+      }
 
-      if ((item.kind === 'city' || item.kind === 'pass') && item.coord) {
-        if (!this._id('chk-settlements').checked) {
+      if ((item.kind === 'city' || item.kind === 'pass' || item.kind === 'gazetteer') && item.coord) {
+        if (item.kind !== 'gazetteer' && !this._id('chk-settlements').checked) {
           this._id('chk-settlements').checked = true;
           this.grpSettlements.classList.remove('is-hidden');
         }
-        const targetZoom = item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.2 : 1.85;
+        const targetZoom = item.zoom || (item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.2 : 1.85);
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / targetZoom);
         const h = w * this._getViewportAspect();
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.45, w, h });
-        this.openGenealogyAt(item.coord[0], item.coord[1]);
+        this.openGenealogyAt(
+          item.coord[0],
+          item.coord[1],
+          item.kind === 'gazetteer' ? item.titleZh : undefined
+        );
       } else if ((item.kind === 'prefecture' || item.kind === 'region') && item.coord) {
         if (!this._id('chk-prefectures').checked) {
           this._id('chk-prefectures').checked = true;
@@ -5172,6 +5213,7 @@
           era: this.locale === 'en' ? 'Era' : '纪年',
           city: this.locale === 'en' ? 'City' : '古城',
           pass: this.locale === 'en' ? 'Pass' : '雄关',
+          gazetteer: this.locale === 'en' ? 'Landmark' : '名胜',
           prefecture: this.locale === 'en' ? 'Prefecture' : '州府',
           region: this.locale === 'en' ? 'Circuit/Prov' : '大区',
           event: this.locale === 'en' ? 'Event' : '史事',
@@ -5593,6 +5635,7 @@
           this.closeMilestoneBalloon();
           if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
           else if (this.activeJourney) this.stopJourney();
+          else if (this.activeCustomRoute) this.clearCustomRoute();
           else if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
