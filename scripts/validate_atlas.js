@@ -1077,13 +1077,71 @@ function main() {
     );
   }
 
+  // CUJ 9s: Distance Ruler (舆图量尺) Great-Circle Legs, 1 km = 2 里 Conversion & Bilingual Labels
+  ctrl.locale = 'zh';
+  const rulerPts = [
+    { lng: 108.94, lat: 34.34, ancient: '长安' },
+    { lng: 112.45, lat: 34.62, ancient: '洛阳' },
+    { lng: 114.31, lat: 34.8, ancient: '汴州' },
+  ];
+  const ruler = ctrl._measureLegs(rulerPts);
+  const caLyKm = ctrl.projector.greatCircleKm([108.94, 34.34], [112.45, 34.62]);
+  const lyBjKm = ctrl.projector.greatCircleKm([112.45, 34.62], [114.31, 34.8]);
+  assert.strictEqual(ruler.legs.length, 2, 'Expected 长安 → 洛阳 → 汴州 to yield two ruler legs');
+  assert(
+    Math.abs(ruler.legs[0].km - caLyKm) < 1e-9 && caLyKm > 318 && caLyKm < 328,
+    `Expected 长安 → 洛阳 to measure ~322 km by haversine, got ${ruler.legs[0].km}`
+  );
+  assert(Math.abs(ruler.totalKm - (caLyKm + lyBjKm)) < 1e-9, 'Ruler total must equal the sum of its legs');
+  assert.strictEqual(ctrl._measureKmToLi(323.2), 646);
+  assert.strictEqual(ctrl._measureKmToLi(4.26), 9);
+  assert.strictEqual(ctrl._measureKmToLi(0), 0);
+  const caLyShown = Math.round(caLyKm);
+  assert.strictEqual(
+    ctrl._formatMeasureLeg(rulerPts, ruler.legs[0]),
+    `长安 → 洛阳 ${caLyShown} km · 约 ${caLyShown * 2} 里`
+  );
+  const totalShown = Math.round(caLyKm + lyBjKm);
+  assert.strictEqual(ctrl._formatMeasureTotal(ruler.totalKm), `总计 ${totalShown} km · 约 ${totalShown * 2} 里`);
+  assert.strictEqual(ctrl._measurePointName({ lng: 0, lat: 0 }, 2), '测点3');
+  assert.strictEqual(ctrl._measurePointName({ lng: 0, lat: 0, ancient: '东京（汴梁）' }, 0), '东京');
+  const rulerPass = loreData.STRATEGIC_PASSES[0];
+  assert.strictEqual(
+    ctrl._measurePointName({ lng: 0, lat: 0, passKey: rulerPass.key }, 0),
+    rulerPass.ancientZh.replace(/\s*[（(].*?[）)]/g, '').trim()
+  );
+  ctrl.locale = 'en';
+  assert.strictEqual(
+    ctrl._formatMeasureLeg(rulerPts, ruler.legs[0]),
+    `Chang'an → Luoyang ${caLyShown} km · ${caLyShown * 2} li`
+  );
+  assert.strictEqual(ctrl._formatMeasureTotal(ruler.totalKm), `Total ${totalShown} km · ${totalShown * 2} li`);
+  assert.strictEqual(ctrl._measurePointName({ lng: 0, lat: 0 }, 0), 'Point 1');
+  ctrl.locale = 'zh';
+  const gcPts = ctrl._greatCirclePoints([108.94, 34.34], [112.45, 34.62]);
+  assert.strictEqual(gcPts.length, 25, 'Expected 24 great-circle segments per ruler leg');
+  assert.strictEqual(JSON.stringify(gcPts[0]), '[108.94,34.34]');
+  assert.strictEqual(JSON.stringify(gcPts[gcPts.length - 1]), '[112.45,34.62]');
+  let gcSumKm = 0;
+  for (let i = 1; i < gcPts.length; i++) {
+    const segKm = ctrl.projector.greatCircleKm(gcPts[i - 1], gcPts[i]);
+    assert(Math.abs(segKm - caLyKm / 24) < 0.01, `Great-circle samples must be evenly spaced, got ${segKm} km`);
+    gcSumKm += segKm;
+  }
+  assert(Math.abs(gcSumKm - caLyKm) < 0.01, 'Densified great-circle path must keep the leg length');
+  assert(
+    gcPts.slice(1, -1).every(([, lat], i) => lat > 34.34 + ((34.62 - 34.34) * (i + 1)) / 24),
+    'Great-circle samples between 长安 and 洛阳 must bow poleward of the rhumb line'
+  );
+  assert.strictEqual(ctrl._greatCirclePoints([110, 30], [110, 30]).length, 2);
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 17 E2E CUJs`);
 }
 
 main();

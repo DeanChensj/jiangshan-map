@@ -103,7 +103,19 @@ window.EN_LOCALE = {
     "tag_neighbor": "(Surrounding Polity)",
     "tag_prot": "(Protectorate / Tributary)",
     "tag_hist": "(Historical Realm)",
-    "now_prov": "Today: "
+    "now_prov": "Today: ",
+    "measure_btn": "Measure",
+    "measure_btn_tip": "Measure distance between places (M)",
+    "measure_title": "Distance Ruler",
+    "measure_close": "Close ruler",
+    "measure_total": "Total",
+    "measure_undo": "Undo",
+    "measure_done": "Done",
+    "measure_clear": "Clear",
+    "measure_hint_start": "Click the map to add points; snaps to nearby cities and passes",
+    "measure_hint_start_touch": "Tap the map to add points; snaps to nearby cities and passes",
+    "measure_hint_more": "Double-click or Enter to finish · Backspace to undo",
+    "measure_hint_more_touch": "Keep tapping to add, then tap Done"
   },
   "dynasties": {
     "zhanguo": {

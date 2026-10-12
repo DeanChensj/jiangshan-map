@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261012n" />
+  <link rel="stylesheet" href="css/style.css?v=20261012-ruler" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -434,6 +434,7 @@
             <g id="grp-milestones"></g>
             <g id="grp-journey"></g>
             <g id="grp-challenge"></g>
+            <g id="grp-measure"></g>
             <g id="grp-genealogy"></g>
           </g>
         </svg>
@@ -452,6 +453,10 @@
         <div id="map-key" aria-live="polite"></div>
 
         <div id="canvas-br-dock">
+          <button id="act-measure" class="canvas-reset-btn" type="button" title="量尺：测量两地距离（M）" aria-pressed="false" aria-keyshortcuts="M">
+            <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M1.8 10.6L10.6 1.8l3.6 3.6-8.8 8.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.2 7.2l1.4 1.4M7.2 5.2l1.4 1.4M9.2 3.2l1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="lbl-measure">量尺</span>
+          </button>
           <button id="act-reset-camera" class="canvas-reset-btn" type="button" title="复位视图">
             <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
             <span id="lbl-reset-camera">复位视图</span>
@@ -459,6 +464,22 @@
           <div id="scale-bar-box" aria-hidden="true">
             <div class="scale-label" id="scale-label-text">500 km · 约一千里</div>
             <div class="scale-ruler" id="scale-ruler-bar"></div>
+          </div>
+          <div id="measure-panel" class="is-hidden" role="region" aria-label="舆图量尺">
+            <div class="measure-head">
+              <span id="txt-measure-title" class="measure-title">舆图量尺</span>
+              <button id="act-measure-close" class="icon-close" type="button" title="关闭量尺" aria-label="关闭量尺">
+                <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <ol id="measure-legs" class="measure-legs" aria-live="polite"></ol>
+            <div id="measure-total" class="measure-total"></div>
+            <div id="measure-hint" class="measure-hint"></div>
+            <div class="measure-actions">
+              <button id="act-measure-undo" class="measure-act-btn" type="button">撤销</button>
+              <button id="act-measure-done" class="measure-act-btn" type="button">完成</button>
+              <button id="act-measure-clear" class="measure-act-btn" type="button">清除</button>
+            </div>
           </div>
         </div>
 
@@ -640,10 +661,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261012n"></script>
-  <script src="js/atlas_boot.js?v=20261012n"></script>
-  <script src="js/map_data.js?v=20261012n"></script>
-  <script src="js/lore_data.js?v=20261012n"></script>
-  <script src="js/app.js?v=20261012n"></script>
+  <script src="js/china_geo_data.js?v=20261012-ruler"></script>
+  <script src="js/atlas_boot.js?v=20261012-ruler"></script>
+  <script src="js/map_data.js?v=20261012-ruler"></script>
+  <script src="js/lore_data.js?v=20261012-ruler"></script>
+  <script src="js/app.js?v=20261012-ruler"></script>
 </body>
 </html>

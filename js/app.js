@@ -441,7 +441,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012-ruler').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -465,7 +465,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012-ruler').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -595,6 +595,7 @@
       this.grpMilestones = this._id('grp-milestones');
       this.grpChallenge = this._id('grp-challenge');
       this.grpGenealogy = this._id('grp-genealogy');
+      this.grpMeasure = this._id('grp-measure');
       this.hoverTip = this._id('hover-tip');
       this.mapKey = this._id('map-key');
       this.milestoneBalloon = this._id('milestone-balloon');
@@ -946,6 +947,7 @@
       if (actReset) {
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
+      this._renderMeasure();
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.challenge
         ? this.uiStr('btn_quiz_active', '挑战中…')
@@ -3604,6 +3606,7 @@
       }
       this._updateScaleBar();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+      if (this.measure) this._layoutMeasure();
     }
 
     _formatChineseLi(li) {
@@ -4349,6 +4352,386 @@
       ];
     }
 
+    // ---------------- Distance Ruler (舆图量尺) ----------------
+    _greatCirclePoints(a, b, segments = 24) {
+      const toVec = ([lng, lat]) => [
+        Math.cos(lat * DEG_TO_RAD) * Math.cos(lng * DEG_TO_RAD),
+        Math.cos(lat * DEG_TO_RAD) * Math.sin(lng * DEG_TO_RAD),
+        Math.sin(lat * DEG_TO_RAD),
+      ];
+      const va = toVec(a);
+      const vb = toVec(b);
+      const dot = va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2];
+      const omega = Math.acos(Math.max(-1, Math.min(1, dot)));
+      const pts = [[a[0], a[1]]];
+      if (omega > 1e-9) {
+        const sinO = Math.sin(omega);
+        for (let i = 1; i < segments; i++) {
+          const t = i / segments;
+          const ka = Math.sin((1 - t) * omega) / sinO;
+          const kb = Math.sin(t * omega) / sinO;
+          const x = ka * va[0] + kb * vb[0];
+          const y = ka * va[1] + kb * vb[1];
+          const z = ka * va[2] + kb * vb[2];
+          pts.push([Math.atan2(y, x) * RAD_TO_DEG, Math.atan2(z, Math.hypot(x, y)) * RAD_TO_DEG]);
+        }
+      }
+      pts.push([b[0], b[1]]);
+      return pts;
+    }
+
+    _measureLegs(points) {
+      const legs = [];
+      let totalKm = 0;
+      for (let i = 1; i < points.length; i++) {
+        const km = this.projector.greatCircleKm(
+          [points[i - 1].lng, points[i - 1].lat],
+          [points[i].lng, points[i].lat]
+        );
+        legs.push({ from: i - 1, to: i, km });
+        totalKm += km;
+      }
+      return { legs, totalKm };
+    }
+
+    _measureRoundKm(km) {
+      return km < 10 ? Math.round(km * 10) / 10 : Math.round(km);
+    }
+
+    // Same 1 km = 2 里 convention as _updateScaleBar(), applied to the displayed km.
+    _measureKmToLi(km) {
+      return Math.round(this._measureRoundKm(km) * 2);
+    }
+
+    _formatMeasureDistance(km) {
+      const shown = this._measureRoundKm(km);
+      const li = this._measureKmToLi(km);
+      return this.locale === 'en' ? `${shown} km · ${li} li` : `${shown} km · 约 ${li} 里`;
+    }
+
+    _measurePointName(pt, idx) {
+      let name = '';
+      if (pt.passKey) {
+        const p = HistoricalAtlasController.STRATEGIC_PASSES.find((q) => q.key === pt.passKey);
+        if (p) name = this.locale === 'en' ? p.ancientEn : p.ancientZh;
+      } else if (pt.ancient) {
+        name = pt.modernCity ? this.trModernCity(pt.ancient) : this.trTerm(pt.ancient);
+      }
+      name = String(name || '').replace(/\s*[（(].*?[）)]/g, '').trim();
+      return name || (this.locale === 'en' ? `Point ${idx + 1}` : `测点${idx + 1}`);
+    }
+
+    _formatMeasureRoute(points, leg) {
+      const from = this._measurePointName(points[leg.from], leg.from);
+      return `${from} → ${this._measurePointName(points[leg.to], leg.to)}`;
+    }
+
+    _formatMeasureLeg(points, leg) {
+      return `${this._formatMeasureRoute(points, leg)} ${this._formatMeasureDistance(leg.km)}`;
+    }
+
+    _formatMeasureTotal(totalKm) {
+      return `${this.uiStr('measure_total', '总计')} ${this._formatMeasureDistance(totalKm)}`;
+    }
+
+    toggleMeasure(force) {
+      const on = force !== undefined ? Boolean(force) : !this.measure;
+      if (on && this.challenge) return;
+      if (on && !this.measure) {
+        this.closeMilestoneBalloon();
+        this.closeGenealogyCard();
+        this.measure = { points: [], adding: true, lastTap: null };
+      } else if (!on) {
+        this.measure = null;
+      }
+      this._renderMeasure();
+    }
+
+    undoMeasure() {
+      if (!this.measure || !this.measure.points.length) return;
+      this.measure.points.pop();
+      this.measure.adding = true;
+      this._renderMeasure();
+    }
+
+    finishMeasure() {
+      if (!this.measure || this.measure.points.length < 2) return;
+      this.measure.adding = false;
+      this._renderMeasure();
+    }
+
+    clearMeasure() {
+      if (!this.measure) return;
+      this.measure.points = [];
+      this.measure.adding = true;
+      this._renderMeasure();
+    }
+
+    _measureSnapAt(clientX, clientY, maxPx = 14) {
+      if (!this.grpSettlements) return null;
+      const rect = this.svg.getBoundingClientRect();
+      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      const [sx, sy] = this._clientToSvgPoint(clientX, clientY);
+      let best = null;
+      let bestPx = maxPx;
+      this.grpSettlements.querySelectorAll('.settlement-node').forEach((node) => {
+        const dPx = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy) * scale;
+        if (dPx > bestPx || !node.dataset.lng) return;
+        const cs = window.getComputedStyle(node);
+        if (cs.display === 'none' || Number(cs.opacity) < 0.2) return;
+        bestPx = dPx;
+        best = node;
+      });
+      if (!best) return null;
+      const d = best.dataset;
+      const pt = { lng: Number(d.lng), lat: Number(d.lat) };
+      if (d.passKey) {
+        pt.passKey = d.passKey;
+      } else {
+        const cur = this.dynasties[this.dynastyIdx];
+        pt.ancient = d.ancient;
+        pt.modernCity = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));
+      }
+      return pt;
+    }
+
+    _measureAddAt(clientX, clientY, pointerType) {
+      const m = this.measure;
+      if (!m || !m.adding) return;
+      const now = Date.now();
+      const prev = m.lastTap;
+      if (prev && now - prev.t < 500 && Math.hypot(clientX - prev.x, clientY - prev.y) < 8) return;
+      m.lastTap = { t: now, x: clientX, y: clientY, touch: pointerType === 'touch' };
+      this._recordGestureClick();
+      let pt = this._measureSnapAt(clientX, clientY);
+      if (!pt) {
+        const [sx, sy] = this._clientToSvgPoint(clientX, clientY);
+        const [lng, lat] = this.projector.toGeo(sx, sy);
+        pt = { lng, lat };
+      }
+      const last = m.points[m.points.length - 1];
+      if (last && this.projector.greatCircleKm([last.lng, last.lat], [pt.lng, pt.lat]) < 0.05) {
+        return;
+      }
+      m.points.push(pt);
+      this._renderMeasure();
+    }
+
+    _measureLabelNode(parent, x, y, text, cls) {
+      const g = this._svgNode(
+        'g',
+        { class: cls, 'data-x': x.toFixed(1), 'data-y': y.toFixed(1) },
+        parent
+      );
+      const w = this._estimateLocalTextWidth(text, 11) + 12;
+      this._svgNode(
+        'rect',
+        { x: (-w / 2).toFixed(1), y: '-9', width: w.toFixed(1), height: '18', rx: '9' },
+        g
+      );
+      this._svgNode('text', { x: '0', y: '0.5' }, g).textContent = text;
+      return g;
+    }
+
+    _measurePathD(a, b) {
+      return this._greatCirclePoints([a.lng, a.lat], [b.lng, b.lat])
+        .map(([lng, lat], i) => {
+          const [x, y] = this.projector.toScreen(lng, lat);
+          return (i ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2);
+        })
+        .join('');
+    }
+
+    _renderMeasure() {
+      const m = this.measure;
+      const btn = this._id('act-measure');
+      if (btn) {
+        btn.classList.toggle('is-active', Boolean(m));
+        btn.setAttribute('aria-pressed', m ? 'true' : 'false');
+        btn.title = this.uiStr('measure_btn_tip', '量尺：测量两地距离（M）');
+      }
+      const lbl = this._id('lbl-measure');
+      if (lbl) lbl.textContent = this.uiStr('measure_btn', '量尺');
+      if (!this.grpMeasure || !this.svg) return;
+      this.grpMeasure.innerHTML = '';
+      this._measureRubber = null;
+      this.svg.classList.toggle('is-measuring', Boolean(m && m.adding));
+      const panel = this._id('measure-panel');
+      if (panel) panel.classList.toggle('is-hidden', !m);
+      if (!m) return;
+
+      const pts = m.points;
+      const { legs, totalKm } = this._measureLegs(pts);
+      const lines = this._svgNode('g', { class: 'measure-lines' }, this.grpMeasure);
+      for (const leg of legs) {
+        const d = this._measurePathD(pts[leg.from], pts[leg.to]);
+        this._svgNode('path', { class: 'measure-casing', d }, lines);
+        this._svgNode('path', { class: 'measure-line', d }, lines);
+      }
+      const rubber = this._svgNode('path', { class: 'measure-line is-rubber', d: '' }, lines);
+      pts.forEach((p, i) => {
+        const [x, y] = this.projector.toScreen(p.lng, p.lat);
+        const v = this._svgNode(
+          'g',
+          { class: 'measure-vertex', 'data-x': x.toFixed(1), 'data-y': y.toFixed(1) },
+          this.grpMeasure
+        );
+        this._svgNode('circle', { r: i === 0 ? 4.6 : 3.8 }, v);
+      });
+      for (const leg of legs) {
+        const a = pts[leg.from];
+        const b = pts[leg.to];
+        const mid = this._greatCirclePoints([a.lng, a.lat], [b.lng, b.lat], 2)[1];
+        const [x, y] = this.projector.toScreen(mid[0], mid[1]);
+        const text = this._formatMeasureDistance(leg.km);
+        this._measureLabelNode(this.grpMeasure, x, y, text, 'measure-label');
+      }
+      this._measureRubber = { path: rubber, label: null };
+      this._layoutMeasure();
+
+      const title = this._id('txt-measure-title');
+      if (title) title.textContent = this.uiStr('measure_title', '舆图量尺');
+      const closeBtn = this._id('act-measure-close');
+      if (closeBtn) {
+        closeBtn.title = this.uiStr('measure_close', '关闭量尺');
+        closeBtn.setAttribute('aria-label', closeBtn.title);
+      }
+      if (panel) panel.setAttribute('aria-label', this.uiStr('measure_title', '舆图量尺'));
+      const list = this._id('measure-legs');
+      if (list) {
+        list.innerHTML = '';
+        for (const leg of legs) {
+          const li = document.createElement('li');
+          const route = document.createElement('span');
+          route.className = 'ml-route';
+          route.textContent = this._formatMeasureRoute(pts, leg);
+          const dist = document.createElement('span');
+          dist.className = 'ml-dist';
+          dist.textContent = this._formatMeasureDistance(leg.km);
+          li.append(route, dist);
+          list.appendChild(li);
+        }
+      }
+      const total = this._id('measure-total');
+      if (total) {
+        total.textContent = legs.length > 1 ? this._formatMeasureTotal(totalKm) : '';
+        total.classList.toggle('is-hidden', legs.length < 2);
+      }
+      const hint = this._id('measure-hint');
+      if (hint) {
+        const coarse = m.lastTap
+          ? m.lastTap.touch
+          : (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+            navigator.maxTouchPoints > 0;
+        hint.textContent = !m.adding
+          ? ''
+          : !pts.length
+            ? coarse
+              ? this.uiStr('measure_hint_start_touch', '轻点地图添加测点，靠近城池关隘自动吸附')
+              : this.uiStr('measure_hint_start', '点击地图添加测点，靠近城池关隘自动吸附')
+            : coarse
+              ? this.uiStr('measure_hint_more_touch', '继续轻点添加，点「完成」结束')
+              : this.uiStr('measure_hint_more', '双击或 Enter 完成 · Backspace 撤销');
+        hint.classList.toggle('is-hidden', !hint.textContent);
+      }
+      const setBtn = (id, key, fallback, disabled) => {
+        const b = this._id(id);
+        if (!b) return;
+        b.textContent = this.uiStr(key, fallback);
+        b.disabled = disabled;
+      };
+      setBtn('act-measure-undo', 'measure_undo', '撤销', !pts.length);
+      setBtn('act-measure-done', 'measure_done', '完成', !m.adding || pts.length < 2);
+      setBtn('act-measure-clear', 'measure_clear', '清除', !pts.length);
+    }
+
+    _layoutMeasure() {
+      if (!this.grpMeasure || !this.grpMeasure.firstChild) return;
+      const rect =
+        (this.pinchState && this.pinchState.rect) ||
+        (this.dragState && this.dragState.rect) ||
+        this.svg.getBoundingClientRect();
+      const screenScale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h) || 1;
+      const k = (1 / screenScale).toFixed(4);
+      this.grpMeasure.querySelectorAll('g[data-x]').forEach((node) => {
+        const { x, y } = node.dataset;
+        node.setAttribute('transform', `translate(${x},${y}) scale(${k})`);
+      });
+    }
+
+    _updateMeasureRubber(e) {
+      const m = this.measure;
+      const r = this._measureRubber;
+      if (!r) return;
+      if (r.label) {
+        r.label.remove();
+        r.label = null;
+      }
+      const last = m && m.adding && m.points[m.points.length - 1];
+      const overMap = e && e.pointerType !== 'touch' && !this.dragState && this.svg.contains(e.target);
+      if (!last || !overMap) {
+        r.path.setAttribute('d', '');
+        return;
+      }
+      const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+      const [lng, lat] = this.projector.toGeo(sx, sy);
+      r.path.setAttribute('d', this._measurePathD(last, { lng, lat }));
+      const km = this.projector.greatCircleKm([last.lng, last.lat], [lng, lat]);
+      const [lx, ly] = this.projector.toScreen(
+        ...this._greatCirclePoints([last.lng, last.lat], [lng, lat], 2)[1]
+      );
+      const text = this._formatMeasureDistance(km);
+      r.label = this._measureLabelNode(this.grpMeasure, lx, ly, text, 'measure-label is-rubber');
+      this._layoutMeasure();
+    }
+
+    _handleMeasureKey(e) {
+      const tag = e.target && e.target.tagName;
+      if (tag === 'TEXTAREA' || tag === 'SELECT' || (e.target && e.target.isContentEditable)) {
+        return false;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey) return false;
+      if ((e.key === 'm' || e.key === 'M') && !this.challenge) {
+        e.preventDefault();
+        this.toggleMeasure();
+        return true;
+      }
+      if (!this.measure) return false;
+      if (e.key === 'Backspace' && this.measure.points.length) {
+        e.preventDefault();
+        this.undoMeasure();
+        return true;
+      }
+      if (e.key === 'Enter' && this.measure.adding && this.measure.points.length >= 2) {
+        e.preventDefault();
+        this.finishMeasure();
+        return true;
+      }
+      return false;
+    }
+
+    _bindMeasureControls() {
+      const on = (id, fn) => {
+        const el = this._id(id);
+        if (el) el.addEventListener('click', fn);
+      };
+      on('act-measure', () => this.toggleMeasure());
+      on('act-measure-close', () => this.toggleMeasure(false));
+      on('act-measure-undo', () => this.undoMeasure());
+      on('act-measure-done', () => this.finishMeasure());
+      on('act-measure-clear', () => this.clearMeasure());
+      const frame = this._id('viewport-frame');
+      if (frame) {
+        frame.addEventListener('pointermove', (e) => {
+          if (!this.measure || !this.measure.adding) return;
+          if (e.pointerType !== 'touch') this.hoverTip.classList.add('is-hidden');
+          this._updateMeasureRubber(e);
+        });
+        frame.addEventListener('pointerleave', () => this._updateMeasureRubber(null));
+      }
+      window.addEventListener('resize', () => this._layoutMeasure());
+    }
+
     // ---------------- Dual-Mode Challenge ----------------
     _buildChallengeDeck() {
       const deck = [];
@@ -4383,6 +4766,7 @@
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
+      if (this.measure) this.toggleMeasure(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
       const vf = this._id('viewport-frame');
@@ -5935,6 +6319,7 @@
           }
         }
         if (e.target.tagName === 'INPUT') return;
+        if (this._handleMeasureKey(e)) return;
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
           if (this.challenge) return;
           e.preventDefault();
@@ -5966,7 +6351,8 @@
           closeLayersPopover();
           closeJourneyPopover();
           this.closeMilestoneBalloon();
-          if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
+          if (this.measure) this.toggleMeasure(false);
+          else if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
           else if (this.activeJourney) this.stopJourney();
           else if (this.activeCustomRoute) this.clearCustomRoute();
           else if (this.genealogyMode) this.toggleGenealogyMode(false);
@@ -6027,7 +6413,8 @@
             camY: this.camera.y,
             rect: this.svg.getBoundingClientRect(),
           };
-          if (e.pointerType === 'touch' && !this.challenge) {
+          const measuring = this.measure && this.measure.adding;
+          if (e.pointerType === 'touch' && !this.challenge && !measuring) {
             const downX = e.clientX;
             const downY = e.clientY;
             this.longPressTimer = setTimeout(() => {
@@ -6339,6 +6726,13 @@
         const wasPan = this.didPan;
         this.dragState = null;
         this.svg.classList.remove('is-panning');
+        if (this.measure && this.measure.adding) {
+          const pinched = this.lastPinchTime && Date.now() - this.lastPinchTime < 350;
+          if (!wasPan && !pinched && e.type === 'pointerup') {
+            this._measureAddAt(e.clientX, e.clientY, e.pointerType);
+          }
+          return;
+        }
         if (!wasPan && this.challenge && !this.challenge.answered) {
           if (this.lastPinchTime && Date.now() - this.lastPinchTime < 350) {
             return;
@@ -6494,6 +6888,7 @@
       this.svg.addEventListener('pointercancel', endPointer);
       this.svg.addEventListener('dblclick', (e) => {
         if (this.challenge) return;
+        if (this.measure && this.measure.adding) return this.finishMeasure();
         this._recordGestureClick();
         const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
         const [lng, lat] = this.projector.toGeo(sx, sy);
@@ -6522,6 +6917,7 @@
         }
         this._updateScaleBar();
       });
+      this._bindMeasureControls();
     }
 
     _showHoverTip(e, html) {
