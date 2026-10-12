@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012h').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012i').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012h').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012i').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2302,7 +2302,7 @@
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
         const hydroShift = this._hydroMask(targetY) !== this._hydroMask(prevY);
-        const isMapChange = snapShift || cityShift || corrShift || hydroShift;
+        const isMapChange = Boolean(m.isMapChange) || snapShift || cityShift || corrShift || hydroShift;
         const yrLabel =
           this.locale === 'en'
             ? this.formatYear(m.year)
@@ -2332,7 +2332,7 @@
           }
           this.jumpToYear(targetY);
           this.openMilestoneBalloon(dynasty, m);
-          if (snapShift) {
+          if (snapShift || m.isMapChange) {
             const defCam = this._getDefaultCamera();
             if (m.coord) {
               const [sx, sy] = this.projector.toScreen(m.coord[0], m.coord[1]);
