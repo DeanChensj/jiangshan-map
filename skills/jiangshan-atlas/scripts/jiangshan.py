@@ -39,21 +39,26 @@ def find_local_repo_root():
 
 
 def build_query(args):
-  params = [("year", str(args.year))]
+  years = ",".join(
+      str(int(y.strip()))
+      for y in re.split(r"[,，、;\s]+", str(args.year).strip())
+      if y.strip()
+  )
+  params = [("year", years)]
   if args.place:
-    params.append(("place", args.place.strip()))
-  if args.lng is not None and args.lat is not None:
-    params.append(("lng", f"{args.lng:.2f}"))
-    params.append(("lat", f"{args.lat:.2f}"))
-  if args.zoom is not None:
-    params.append(("zoom", f"{args.zoom:.2f}"))
-  return urllib.parse.urlencode(params)
+    normalized = ",".join(
+        p.strip() for p in re.split(r"\s*(?:,|，|、|→|->)\s*", args.place.strip()) if p.strip()
+    )
+    params.append(("place", normalized))
+  return urllib.parse.urlencode(params, safe=",")
 
 
 def render_screenshot(query, out_path):
   chrome = find_chrome()
   if not chrome:
-    raise RuntimeError("No headless Chrome/Chromium binary found. Set CHROME_BIN to render screenshots.")
+    raise RuntimeError(
+        "No headless Chrome/Chromium binary found. Set CHROME_BIN to render screenshots."
+    )
 
   repo_root = find_local_repo_root()
   tmp_html = None
@@ -95,13 +100,27 @@ def render_screenshot(query, out_path):
 
 
 def main():
-  parser = argparse.ArgumentParser(description="Jiangshan Historical Atlas deep-link & screenshot CLI")
-  parser.add_argument("--year", type=int, required=True, help="Historical year (-403 to 2026, negative for BCE)")
-  parser.add_argument("--place", type=str, default="", help="Plain ancient or modern place name (e.g. 蓝田关, 京口, 运城)")
-  parser.add_argument("--lng", type=float, default=None, help="Optional longitude override")
-  parser.add_argument("--lat", type=float, default=None, help="Optional latitude override")
-  parser.add_argument("--zoom", type=float, default=None, help="Optional zoom override (1.0 to 8.0)")
-  parser.add_argument("--out", type=str, default="", help="Optional output PNG path for rendered map screenshot")
+  parser = argparse.ArgumentParser(
+      description="Jiangshan Historical Atlas 2-parameter (year + place/route) CLI"
+  )
+  parser.add_argument(
+      "--year",
+      type=str,
+      required=True,
+      help="Historical year (-403 to 2026, negative for BCE) or comma-separated years for multi-year routes (e.g. 1079,1080,1094,1097)",
+  )
+  parser.add_argument(
+      "--place",
+      type=str,
+      default="",
+      help="Single place name (e.g. 蓝关) or comma-separated route (e.g. 剑外,巴峡,巫峡,襄阳,洛阳)",
+  )
+  parser.add_argument(
+      "--out",
+      type=str,
+      default="",
+      help="Optional output PNG path for rendered map screenshot",
+  )
   args = parser.parse_args()
 
   query = build_query(args)

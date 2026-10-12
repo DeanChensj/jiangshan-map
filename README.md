@@ -24,7 +24,7 @@
 - **看古今政区怎么变**：从战国七雄与秦朝的郡、汉朝的刺史部、唐朝的道、宋朝的路，一路看到明清的府省，哪几个朝代曾在此建都（`王朝都城` 徽章）一目了然。
 - **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的历史大事（如咸阳的「商鞅变法」「秦王扫六合」、长安的「玄武门之变」「开元盛世」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
 
-> [点击直达：盛唐开元二十九年（741 年）· 点开长安看 33 桩千年风云 →](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)
+> [点击直达：盛唐开元二十九年（741 年）· 点开长安看 33 桩千年风云 →](https://deanchensj.github.io/jiangshan-map/?year=741&place=长安)
 
 ![盛唐 741 年 · 长安点地溯源与史事纪要](assets/preview_741_tang_trace.png)
 
@@ -102,10 +102,48 @@
 你可以直接在网址后面加上参数，把某个特定的历史瞬间分享给朋友：
 - **看某一年**：[`?year=-403`](https://deanchensj.github.io/jiangshan-map/?year=-403)（《资治通鉴》开篇 · 三家分晋） / [`?year=-121`](https://deanchensj.github.io/jiangshan-map/?year=-121)（西汉霍去病开河西） / [`?year=1415`](https://deanchensj.github.io/jiangshan-map/?year=1415)（明永乐盛世）
 - **看某场大战**：[`?year=-260&event=-260`](https://deanchensj.github.io/jiangshan-map/?year=-260&event=-260)（长平之战） / [`?year=383&event=383`](https://deanchensj.github.io/jiangshan-map/?year=383&event=383)（东晋前秦 · 淝水之战）
-- **查某座古城的千年故事**：[`?year=741&trace=108.94,34.26`](https://deanchensj.github.io/jiangshan-map/?year=741&trace=108.94,34.26)（长安/西安） / [`?year=1415&trace=118.78,32.04`](https://deanchensj.github.io/jiangshan-map/?year=1415&trace=118.78,32.04)（建康/应天/南京）
-- **走一段人物行迹**：[`?journey=qinshihuang`](https://deanchensj.github.io/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchensj.github.io/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchensj.github.io/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchensj.github.io/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
+- **查某座古城的千年故事**：[`?year=741&place=长安`](https://deanchensj.github.io/jiangshan-map/?year=741&place=长安)（长安/西安） / [`?year=1415&place=应天府`](https://deanchensj.github.io/jiangshan-map/?year=1415&place=应天府)（建康/应天/南京） / [`?year=819&place=蓝关`](https://deanchensj.github.io/jiangshan-map/?year=819&place=蓝关)（韩愈「雪拥蓝关马不前」）
+- **画一条自定义诗词/行军路线**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchensj.github.io/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)（杜甫《闻官军收河南河北》同年归乡路） / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)（苏轼「黄州惠州儋州」跨年贬谪路）
+- **走一段内置人物行迹**：[`?journey=qinshihuang`](https://deanchensj.github.io/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchensj.github.io/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchensj.github.io/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchensj.github.io/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
 - **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchensj.github.io/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换英文版**：[`?lang=en`](https://deanchensj.github.io/jiangshan-map/?lang=en)
+
+---
+
+## AI Agent & LLM 接入指南 / AI Agent & LLM Integration
+
+「江山时序」原生支持作为大语言模型（LLM）与 AI Agent 的**历史地理可视化工具**。模型**无需猜测经纬度坐标**，只需从诗词或史料中提取 **`year`（年份）** 与 **`place`（古今地名）** 两个语义参数，地图即可自动完成地名解析、镜头聚焦、疆域政区渲染、轨迹连线与「点地溯源」卡片展开：
+
+- **机器可读说明文档**：[`llms.txt`](llms.txt)
+- **开箱即用 Agent Skill**：[`skills/jiangshan-atlas/SKILL.md`](skills/jiangshan-atlas/SKILL.md)（含零依赖 CLI 渲染脚本 [`skills/jiangshan-atlas/scripts/jiangshan.py`](skills/jiangshan-atlas/scripts/jiangshan.py)）
+
+### 1. 零坐标双参数 URL 协议（0D 单点 / 1D 同年路线 / 4D 跨年路线）
+
+| 模式 | URL 格式示例 | 自动渲染效果 |
+| :--- | :--- | :--- |
+| **单点寻址 (0D)** | [`?year=819&place=蓝关`](https://deanchensj.github.io/jiangshan-map/?year=819&place=蓝关)<br>*(韩愈「雪拥蓝关马不前」)* | 自动跳转至唐宪宗元和十四年（819 年），精准落针秦岭蓝田关，展开两千四百年政区沿革卡片 |
+| **同年多站路线 (1D)** | [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchensj.github.io/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)<br>*(杜甫「即从巴峡穿巫峡，便下襄阳向洛阳」)* | 自动在 763 年唐代版图上绘制 `1` → `5` 朱砂弧线轨迹并自适应缩放视野，点击任意站点即可查看历代沿革 |
+| **跨年多站路线 (4D)** | [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)<br>*(苏轼「问汝平生功业，黄州惠州儋州」)* | `year[i]` 与 `place[i]` 一一对应，地图路标自动标注 **`湖州 (1079)` → `黄州 (1080)` → `惠州 (1094)` → `儋州 (1097)`**，点击任意站点即可同步切换至该年份版图 |
+
+### 2. CLI 一键出图（供 Agent 工具调用）
+
+```bash
+# 单点诗境落针截图
+python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 819 --place 蓝关 --out /tmp/languan_819.png
+
+# 同年多站轨迹截图
+python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 763 --place 剑外,巴峡,巫峡,襄阳,洛阳 --out /tmp/dufu_763.png
+
+# 跨年多站轨迹截图
+python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 --place 湖州,黄州,惠州,儋州 --out /tmp/sushi_exile.png
+```
+
+### 3. 浏览器端 JavaScript API（`window.atlasAPI`）
+
+在浏览器自动化环境（Playwright / WebMCP）中可直接调用：
+- `window.atlasAPI.locate({ year, place, zoom? })`：驱动地图跳转并渲染单点落针或跨年轨迹，同时返回结构化历史地理信息。
+- `window.atlasAPI.inspect({ year, place })`：只读查询指定时空点（或多站路线）所属政权、州郡政区、现代省市、各站里程与标准分享链接。
+- `window.atlasAPI.resolvePlace(place, year?)`：解析 470+ 历代城池、20 座天下名关、100+ 诗词名胜与古战场古今地名。
 
 ---
 
