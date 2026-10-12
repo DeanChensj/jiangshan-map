@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012k').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012l').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012k').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012l').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1294,12 +1294,21 @@
         path.dataset.prefCategory = pref.category;
       }
 
-      for (const reg of snap.regions || []) {
+      const regBoundaryPath = this._buildRegionBoundaryPath(snap);
+      if (regBoundaryPath) {
         this._svgNode(
           'path',
-          { d: this.projector.shapeToSvgPath(reg.shape), class: 'region-shape' },
+          { d: regBoundaryPath, class: 'region-shape-casing' },
           prefGroup
         );
+        this._svgNode(
+          'path',
+          { d: regBoundaryPath, class: 'region-shape' },
+          prefGroup
+        );
+      }
+
+      for (const reg of snap.regions || []) {
         if (reg.anchor && reg.title) {
           const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
           const rLbl = this._svgNode(
@@ -1321,6 +1330,98 @@
       this.lastRenderedSnap = snap;
       this._renderLegendBox(snap);
       this._rescaleSvgTypography();
+    }
+
+    _buildRegionBoundaryPath(snap) {
+      if (!snap || !Array.isArray(snap.regions) || !snap.regions.length) return '';
+      if (snap._cachedRegionBoundaryPath !== undefined) {
+        return snap._cachedRegionBoundaryPath;
+      }
+
+      const polGrid = new Set();
+      for (const pol of snap.polities || []) {
+        if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
+        const coords = pol.shape.coordinates;
+        const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
+        for (const poly of polys) {
+          for (const ring of poly || []) {
+            for (const pt of ring || []) {
+              const gx = Math.round(pt[0] * 12);
+              const gy = Math.round(pt[1] * 12);
+              for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                  polGrid.add(`${gx + dx},${gy + dy}`);
+                }
+              }
+            }
+          }
+        }
+      }
+      const onPol = (pt) => polGrid.has(`${Math.round(pt[0] * 12)},${Math.round(pt[1] * 12)}`);
+      const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
+      const edgeKey = (p1, p2) => {
+        const k1 = ptKey(p1);
+        const k2 = ptKey(p2);
+        return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
+      };
+
+      const allRings = [];
+      const regEdgeCounts = new Map();
+      for (const reg of snap.regions) {
+        if (!reg || !reg.shape) continue;
+        const coords = reg.shape.coordinates;
+        const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
+        for (const poly of polys) {
+          for (const ring of poly || []) {
+            if (!ring || ring.length < 2) continue;
+            allRings.push(ring);
+            for (let i = 0; i < ring.length - 1; i++) {
+              const ek = edgeKey(ring[i], ring[i + 1]);
+              regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+            }
+          }
+        }
+      }
+
+      const seenEdges = new Set();
+      let d = '';
+      for (const ring of allRings) {
+        let penX = NaN;
+        let penY = NaN;
+        for (let i = 0; i < ring.length - 1; i++) {
+          const p1 = ring[i];
+          const p2 = ring[i + 1];
+          const ek = edgeKey(p1, p2);
+          if (seenEdges.has(ek)) {
+            penX = NaN;
+            penY = NaN;
+            continue;
+          }
+          seenEdges.add(ek);
+          if (regEdgeCounts.get(ek) === 1 && onPol(p1) && onPol(p2)) {
+            penX = NaN;
+            penY = NaN;
+            continue;
+          }
+          const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
+          const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
+          if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
+          if (x1 !== penX || y1 !== penY) {
+            d += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
+          }
+          d += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
+          penX = x2;
+          penY = y2;
+        }
+      }
+
+      Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
+        value: d,
+        writable: true,
+        enumerable: false,
+        configurable: true,
+      });
+      return d;
     }
 
     _settlementMask(dynasty, year) {
