@@ -28,12 +28,14 @@ function main() {
     'lore_data.js',
     'i18n_dict.js',
   ];
+  let bootSnapshots = null;
   for (const file of dataScripts) {
     const fullPath = path.join(JS_DIR, file);
     assert(fs.existsSync(fullPath), `Missing required script: js/${file}`);
     const code = fs.readFileSync(fullPath, 'utf8');
     vm.runInContext(code, sandbox, { filename: file });
     if (file === 'atlas_boot.js') {
+      bootSnapshots = sandbox.window.ATLAS_SNAPSHOTS;
       assert(
         !sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED &&
           !sandbox.window.ATLAS_SNAPSHOTS.s_prc &&
@@ -715,13 +717,46 @@ function main() {
     `Unexpected jiangshan.py CLI output: ${decodedCliOut}`
   );
 
+  // CUJ 9l: Neighbor Polity Clean Fill & Stray Full-China Ring Guard
+  const cssSrc = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
+  assert(
+    !cssSrc.includes('fill: url(#diag-hatch)'),
+    'css/style.css must not apply diagonal hatch pattern (url(#diag-hatch)) to .polity-shape.neighbor'
+  );
+  for (const [bundleLabel, snapBundle] of [
+    ['atlas_boot.js', bootSnapshots],
+    ['atlas_snapshots.js', snapshots],
+  ]) {
+    for (const [sk, snap] of Object.entries(snapBundle)) {
+      if (!snap || Array.isArray(snap)) continue;
+      for (const pol of snap.polities || []) {
+        if (pol.role === 'main') continue;
+        const polys = pol.shape.type === 'Polygon' ? [pol.shape.coordinates] : pol.shape.coordinates;
+        for (const poly of polys) {
+          const ring = poly[0] || [];
+          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+          for (const [x, y] of ring) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+          assert(
+            !(minX < 98 && maxX > 122 && minY < 20 && maxY > 41),
+            `[${bundleLabel}:${sk}] Non-main polity "${pol.title}" (${pol.role}) contains stray full-China outline ring [${minX.toFixed(1)},${minY.toFixed(1)},${maxX.toFixed(1)},${maxY.toFixed(1)}]`
+          );
+        }
+      }
+    }
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 11 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 12 E2E CUJs`);
 }
 
 main();
