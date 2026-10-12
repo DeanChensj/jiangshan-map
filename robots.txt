@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deanchensj.github.io/jiangshan-map/sitemap.xml
