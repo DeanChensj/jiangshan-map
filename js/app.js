@@ -962,7 +962,16 @@
             ? 'Search city / prefecture / era / journey'
             : '搜古今地名 / 州府 / 年号 / 青史行迹';
       }
-      this._syncTogglePaneButton();
+      const togglePaneBtn = this._id('act-toggle-pane');
+      if (togglePaneBtn) {
+        togglePaneBtn.title = this.paneCollapsed
+          ? this.locale === 'en'
+            ? 'Expand chronicle pane'
+            : '展开编年侧栏'
+          : this.locale === 'en'
+            ? 'Collapse chronicle pane (Full-map view)'
+            : '收起编年侧栏（全屏看图）';
+      }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
@@ -1507,13 +1516,13 @@
             'path',
             {
               class: 'pass-gate-icon',
-              d: 'M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z',
+              d: 'M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z',
             },
             pNode
           );
           const align = p.align || 'r';
           const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
-          const dx = align === 'l' ? -5.6 : align === 'b' ? 0 : 5.6;
+          const dx = align === 'l' ? -5.2 : align === 'b' ? 0 : 5.2;
           const dy1 = align === 'b' ? 9.8 : align === 't' ? -4.5 : 2.8;
           const nameEl = this._svgNode(
             'text',
@@ -1874,28 +1883,17 @@
 
       let left;
       let top = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
-      let caretDir = 'left';
       if (px + pinGap <= rightLimit) {
         left = px + pinGap;
-        caretDir = 'left';
       } else if (px - bW - pinGap >= minLeft) {
         left = px - bW - pinGap;
-        caretDir = 'right';
       } else {
         left = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
-        if (py - bH - pinGap >= minTop) {
-          top = py - bH - pinGap;
-          caretDir = 'bottom';
-        } else {
-          top = Math.min(maxTop, py + pinGap + 4);
-          caretDir = 'top';
-        }
+        top =
+          py - bH - pinGap >= minTop
+            ? py - bH - pinGap
+            : Math.min(maxTop, py + pinGap + 4);
       }
-      const caretX = Math.max(14, Math.min(bW - 14, Math.round(px - left)));
-      const caretY = Math.max(12, Math.min(bH - 12, Math.round(py - top)));
-      this.milestoneBalloon.dataset.caret = caretDir;
-      this.milestoneBalloon.style.setProperty('--caret-x', `${caretX}px`);
-      this.milestoneBalloon.style.setProperty('--caret-y', `${caretY}px`);
       this.milestoneBalloon.style.left = `${Math.round(left)}px`;
       this.milestoneBalloon.style.top = `${Math.round(top)}px`;
     }
@@ -2195,7 +2193,7 @@
             const passChip = document.createElement('span');
             passChip.className = 'key-entry';
             const passLabel = this.locale === 'en' ? 'Strategic Passes' : '名关雄隘';
-            passChip.innerHTML = `<svg width="13" height="10" viewBox="-4.6 -3.3 9.2 6.7"><path d="M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="0.95" stroke-linejoin="round"/></svg>${passLabel}`;
+            passChip.innerHTML = `<svg width="12" height="9" viewBox="-4 -3 8 6"><path d="M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="1.05" stroke-linejoin="round"/></svg>${passLabel}`;
             row.appendChild(passChip);
           }
           const seaLabel =
@@ -3395,33 +3393,21 @@
           : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
     }
 
-    _syncTogglePaneButton() {
-      const btn = this._id('act-toggle-pane');
-      if (!btn) return;
-      const arrow = this.paneCollapsed ? '‹' : '›';
-      const label = this.paneCollapsed
-        ? this.locale === 'en'
-          ? 'Info'
-          : '史志'
-        : this.locale === 'en'
-          ? 'Full'
-          : '全图';
-      btn.innerHTML = `<span class="tp-arrow" aria-hidden="true">${arrow}</span><span class="tp-label" id="lbl-toggle-pane">${label}</span>`;
-      btn.classList.toggle('is-collapsed', Boolean(this.paneCollapsed));
-      btn.title = this.paneCollapsed
-        ? this.locale === 'en'
-          ? 'Expand chronicle pane'
-          : '展开编年侧栏'
-        : this.locale === 'en'
-          ? 'Collapse chronicle pane (Full-map view)'
-          : '收起编年侧栏（全屏看图）';
-    }
-
     toggleChroniclePane(force) {
       this.paneCollapsed = force !== undefined ? force : !this.paneCollapsed;
       const body = this._id('workspace-body');
       if (body) body.classList.toggle('is-pane-collapsed', this.paneCollapsed);
-      this._syncTogglePaneButton();
+      const btn = this._id('act-toggle-pane');
+      if (btn) {
+        btn.textContent = this.paneCollapsed ? '‹' : '›';
+        btn.title = this.paneCollapsed
+          ? this.locale === 'en'
+            ? 'Expand chronicle pane'
+            : '展开编年侧栏'
+          : this.locale === 'en'
+            ? 'Collapse chronicle pane (Full-map view)'
+            : '收起编年侧栏（全屏看图）';
+      }
       setTimeout(() => {
         this._updateScaleBar();
         if (this.activeMilestone) this._positionMilestoneBalloon();
@@ -4081,10 +4067,8 @@
       };
       this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
-      const actChal = this._id('act-challenge');
-      if (actChal) actChal.classList.add('is-active');
-      const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
+      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
+      lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
@@ -4099,10 +4083,8 @@
       if (vf) vf.classList.remove('has-active-challenge');
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
-      const actChal = this._id('act-challenge');
-      if (actChal) actChal.classList.remove('is-active');
-      const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
+      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
+      lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
       this.grpSettlements.classList.toggle('is-hidden', !this._id('chk-settlements').checked);
       if (!keepPaneState) {
