@@ -22,6 +22,12 @@ Do **NOT** guess longitude or latitude numbers. Only extract two values:
   - **Multi-stop route / poetic trajectory (1D / 4D path)**: Pass comma-separated place names in chronological order (`place=剑外,巴峡,巫峡,襄阳,洛阳` or `place=湖州,黄州,惠州,儋州`). The atlas automatically draws a curved crimson trajectory connecting all stops (`1` → `2` → `3`...), frames the camera bounding box, and lets the user click any numbered stop to jump to its year and open its 2,000-year administrative genealogy card.
   - **Never** combine ancient and modern names with parentheses in a single token (write `place=蓝关` or `place=运城`, never `place=鸣条(运城)`).
 
+Optional extras (append only when they add value):
+- `hover` (exact prefecture title): Highlights one 州/府/郡 polygon of that year's snapshot and pops its tooltip (`黄州 · 属 宋 · 今：湖北省`). Use it when the user asks which prefecture a place belonged to or how far its jurisdiction reached.
+  - The value must match the prefecture's title **in that era** (`hover=黄州` in 1083, `hover=应天府` in 1415). It is an exact match: a miss silently does nothing, so pick the era-correct name.
+  - Pair it with `place` so the camera frames the prefecture (`?year=1083&place=黄州&hover=黄州`). Without `place`, add `zoom` + `center=<lng>,<lat>` (e.g. `?year=1415&zoom=1.75&center=115.8,33.2&hover=应天府`).
+- `lang=en`: Renders the English atlas (UI, legend, timeline, genealogy card, and route stop labels). Use it when the user writes in English or asks for an English map. Keep `place` and `hover` values in **Chinese**; only the UI language changes (`?year=1083&place=黄州&lang=en`).
+
 ### Step 2: Construct the Deep-Link URL
 Format the URL using `year` and `place`:
 
@@ -35,6 +41,8 @@ Examples:
 - *"苏轼问汝平生功业，黄州惠州儋州贬谪路线？"* → `https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`
 - *"文天祥《过零丁洋》惶恐滩头说惶恐，零丁洋里叹零丁抗元路线？"* → `https://deanchensj.github.io/jiangshan-map/?year=1275,1277,1278,1279&place=赣州,惶恐滩,零丁洋,崖山`
 - *"辛弃疾写京口北固亭怀古时天下局势如何？"* → `https://deanchensj.github.io/jiangshan-map/?year=1205&place=京口`
+- *"苏轼写《记承天寺夜游》时黄州归哪里管？"* → `https://deanchensj.github.io/jiangshan-map/?year=1083&place=黄州&hover=黄州`
+- *"Where was Su Shi exiled when he wrote the Red Cliff odes?"* → `https://deanchensj.github.io/jiangshan-map/?year=1082&place=黄州&lang=en`
 
 ### Step 3: Render a Map Screenshot (When Headless Browser is Available)
 Run the bundled `scripts/jiangshan.py` helper to render a PNG screenshot of the exact historical year and place (or single-year / multi-year route):
@@ -57,8 +65,16 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py \
   --year 1079,1080,1094,1097 \
   --place 湖州,黄州,惠州,儋州 \
   --out /tmp/jiangshan_sushi_exile_route.png
+
+# 4. Prefecture highlight and/or English UI (optional flags)
+python3 skills/jiangshan-atlas/scripts/jiangshan.py \
+  --year 1083 \
+  --place 黄州 \
+  --hover 黄州 \
+  --lang en \
+  --out /tmp/jiangshan_1083_huangzhou_en.png
 ```
 
-- If run inside a local checkout of `jiangshan-map`, the script renders offline against the local `index.html` in ~2 seconds.
-- If run standalone outside the repository, the script automatically renders against `https://deanchensj.github.io/jiangshan-map/`.
+- If run inside a local checkout of `jiangshan-map` (or when `JIANGSHAN_REPO_ROOT` is set), the script renders offline against the local `index.html` in ~2 seconds.
+- If run standalone outside the repository, the script checks reachability of `https://deanchensj.github.io/jiangshan-map/` and validates the rendered PNG (exiting with code `1` if network is blocked by a sandbox or if a blank screenshot is produced).
 - Embed the generated PNG screenshot in your response alongside the clickable deep-link URL.
