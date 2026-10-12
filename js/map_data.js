@@ -20,9 +20,14 @@ window.DYNASTY_DATA = [
         "overview": "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，巴蜀、越、中山尚存"
       },
       {
+        "until": -300,
+        "snap": "s_zhanguo_b0",
+        "overview": "前 340 — 前 301 · 商鞅破魏、秦并巴蜀与楚灭越：燕尚未东辟辽东"
+      },
+      {
         "until": -295,
         "snap": "s_zhanguo_b",
-        "overview": "前 340 — 前 296 · 商鞅变法与秦并巴蜀、赵胡服骑射辟塞北、楚灭越尽取吴越"
+        "overview": "前 300 — 前 296 · 燕将秦开却东胡辟辽东五郡、赵武灵王胡服骑射"
       },
       {
         "until": -238,
@@ -521,7 +526,6 @@ window.DYNASTY_DATA = [
           123.171,
           41.271
         ],
-        "tier": 2,
         "appear": -300,
         "remark": "燕辽东郡治 · 燕王喜终保于此"
       },
@@ -834,7 +838,6 @@ window.DYNASTY_DATA = [
           123.171,
           41.271
         ],
-        "tier": 2,
         "remark": "辽东郡治"
       },
       {
@@ -1786,6 +1789,10 @@ window.DYNASTY_DATA = [
         "snap": "s_donghan_a"
       },
       {
+        "until": 43,
+        "snap": "s_donghan_b0"
+      },
+      {
         "until": 48,
         "snap": "s_donghan_b"
       },
@@ -2126,7 +2133,6 @@ window.DYNASTY_DATA = [
           123.171,
           41.271
         ],
-        "tier": 2,
         "appear": 238,
         "remark": "司马懿平公孙渊"
       },
@@ -2192,6 +2198,10 @@ window.DYNASTY_DATA = [
       }
     ],
     "phases": [
+      {
+        "until": 238,
+        "snap": "s_sanguo_a"
+      },
       {
         "until": 263,
         "snap": "s_sanguo"
@@ -4147,7 +4157,6 @@ window.DYNASTY_DATA = [
           99.70,
           36.95
         ],
-        "tier": 2,
         "appear": 635,
         "remark": "李靖破吐谷浑降服"
       },
@@ -4158,7 +4167,6 @@ window.DYNASTY_DATA = [
           85.13,
           25.61
         ],
-        "tier": 2,
         "appear": 648,
         "remark": "王玄策借兵大破阿罗那顺"
       },
@@ -4489,12 +4497,20 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a0"
       },
       {
-        "until": 640,
+        "until": 635,
         "snap": "s_tang_a1"
       },
       {
-        "until": 657,
+        "until": 640,
+        "snap": "s_tang_a1b"
+      },
+      {
+        "until": 648,
         "snap": "s_tang_a2"
+      },
+      {
+        "until": 657,
+        "snap": "s_tang_a2b"
       },
       {
         "until": 668,
@@ -6400,6 +6416,10 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
+        "until": 1288,
+        "snap": "s_yuan_a"
+      },
+      {
         "until": 1351,
         "snap": "s_yuan"
       },
@@ -7278,7 +7298,6 @@ window.DYNASTY_DATA = [
           80.42,
           44.20
         ],
-        "tier": 2,
         "appear": 1881,
         "remark": "《中俄伊犁条约》勘界收复"
       },
@@ -7289,7 +7308,6 @@ window.DYNASTY_DATA = [
           120.38,
           36.07
         ],
-        "tier": 2,
         "appear": 1898,
         "remark": "德国强租胶州湾"
       },
@@ -7300,7 +7318,6 @@ window.DYNASTY_DATA = [
           122.12,
           37.51
         ],
-        "tier": 2,
         "appear": 1898,
         "remark": "英国强租威海卫"
       },
@@ -7677,8 +7694,16 @@ window.DYNASTY_DATA = [
         "snap": "s_qing_e4"
       },
       {
+        "until": 1881,
+        "snap": "s_qing_f0"
+      },
+      {
         "until": 1895,
         "snap": "s_qing_f"
+      },
+      {
+        "until": 1898,
+        "snap": "s_qing_g0"
       },
       {
         "until": 1912,
@@ -7992,7 +8017,6 @@ window.DYNASTY_DATA = [
           106.91,
           47.92
         ],
-        "tier": 2,
         "vanish": 1946,
         "remark": "1946年承认外蒙古独立"
       },
@@ -8103,12 +8127,20 @@ window.DYNASTY_DATA = [
         "snap": "s_roc_a"
       },
       {
+        "until": 1932,
+        "snap": "s_roc_b0"
+      },
+      {
         "until": 1945,
         "snap": "s_roc"
       },
       {
-        "until": 1949,
+        "until": 1946,
         "snap": "s_roc_c"
+      },
+      {
+        "until": 1949,
+        "snap": "s_roc_d"
       }
     ]
   },
