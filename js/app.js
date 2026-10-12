@@ -7237,7 +7237,7 @@
     static get SHARE_URL_KEYS() {
       return [
         'year', 'zoom', 'center', 'place', 'lng', 'lat', 'event', 'journey', 'stop', 'lang', 'terrain',
-        'hover', 'q', 'layers', 'mob_chron', 'mob_leg',
+        'hover', 'q', 'layers', 'mob_chron', 'mob_leg', 'quiz',
       ];
     }
 

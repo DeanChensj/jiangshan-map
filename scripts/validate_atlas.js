@@ -1141,7 +1141,7 @@ function main() {
   assert.strictEqual(ctrl._buildShareParams(), null, 'Nothing may be shared while a challenge is active');
   ctrl.challenge = null;
 
-  sandbox.location.search = '?year=1415&hover=应天府&compare=741&q=长安';
+  sandbox.location.search = '?year=1415&hover=应天府&compare=741&q=长安&quiz=locate';
   const mergedSearch = decodeURIComponent(ctrl._shareSearchString(ctrl._buildShareParams()));
   assert.strictEqual(mergedSearch, 'year=741&compare=741', `Share must drop one-shot params and keep foreign ones, got ${mergedSearch}`);
   sandbox.location.search = '';
