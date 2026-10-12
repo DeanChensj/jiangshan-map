@@ -370,6 +370,21 @@ function main() {
     `Cache-busting ?v= query strings must be uniform across index.html (${htmlVersions}) and js/app.js (${appVersions})`
   );
 
+  // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect) & llms.txt
+  const llmsTxtPath = path.join(ROOT, 'llms.txt');
+  assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
+  const llmsTxt = fs.readFileSync(llmsTxtPath, 'utf8');
+  assert(
+    appCode.includes('window.atlasAPI') &&
+      appCode.includes('resolvePlace(') &&
+      appCode.includes('inspect(') &&
+      appCode.includes('locate(') &&
+      appCode.includes('trace-pin-label') &&
+      llmsTxt.includes('?year=') &&
+      llmsTxt.includes('window.atlasAPI.locate'),
+    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect) and 5-parameter URL deep-link protocol'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);
