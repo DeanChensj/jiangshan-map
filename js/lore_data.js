@@ -1478,7 +1478,7 @@
       "en": "Liu Yao captures Chang'an; Emperor Min surrenders, ending the Western Jin"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "dongjin",
       "year": 351,
       "coord": [
         108.94,
@@ -1490,7 +1490,7 @@
       "en": "Former Qin governs from Chang'an and unifies northern China under Fu Jian and Wang Meng"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "nanbei",
       "year": 534,
       "coord": [
         108.94,
@@ -1646,7 +1646,7 @@
       "en": "Cao Pi founds Cao Wei with Luoyang as capital"
     },
     {
-      "dynastyKey": "xijin",
+      "dynastyKey": "sanguo",
       "year": 265,
       "coord": [
         112.45,
@@ -1670,7 +1670,7 @@
       "en": "Disaster of Yongjia: sack of Luoyang triggers the southward migration"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "nanbei",
       "year": 493,
       "coord": [
         112.45,
@@ -1754,7 +1754,7 @@
       "en": "Sima Rui establishes the Eastern Jin in Jiankang (Nanjing)"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "nanbei",
       "year": 420,
       "coord": [
         118.78,
@@ -1946,7 +1946,7 @@
       "en": "Genghis Khan's Mongol forces capture Jin Zhongdu"
     },
     {
-      "dynastyKey": "yuan",
+      "dynastyKey": "nansong",
       "year": 1272,
       "coord": [
         116.4,
@@ -2330,7 +2330,7 @@
       "en": "Liu Bei visits Zhuge Liang three times at Longzhong near Xiangyang"
     },
     {
-      "dynastyKey": "sanguo",
+      "dynastyKey": "donghan",
       "year": 219,
       "coord": [
         112.14,
@@ -2366,7 +2366,7 @@
       "en": "Emperor Wu of Han establishes Dunhuang Commandery and the Yumen and Yangguan passes"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "dongjin",
       "year": 366,
       "coord": [
         94.66,
@@ -2402,7 +2402,7 @@
       "en": "Siege of Baideng: Emperor Gaozu of Han is besieged by Modu Chanyu at Pingcheng"
     },
     {
-      "dynastyKey": "nanbeichao",
+      "dynastyKey": "dongjin",
       "year": 398,
       "coord": [
         113.3,
@@ -2450,7 +2450,7 @@
       "en": "Ming loyalist Shi Kefa defends Yangzhou to the death against Qing forces"
     },
     {
-      "dynastyKey": "xihan",
+      "dynastyKey": "qin",
       "year": -204,
       "coord": [
         113.26,
@@ -2522,7 +2522,7 @@
       "en": "Liu Bang breaches Wuguan Pass from Nanyang and enters the Guanzhong heartland to accept Qin’s surrender"
     },
     {
-      "dynastyKey": "xihan",
+      "dynastyKey": "qin",
       "year": -204,
       "coord": [
         113.89,
@@ -2570,7 +2570,7 @@
       "en": "Battle of Tongguan: Cao Cao outflanks the pass across the Yellow River and defeats the coalition of Ma Chao and Han Sui"
     },
     {
-      "dynastyKey": "sanguo",
+      "dynastyKey": "donghan",
       "year": 219,
       "coord": [
         106.12,
@@ -4741,6 +4741,7 @@
       "key": "niangziguan",
       "ancientZh": "娘子关（井陉）",
       "ancientEn": "Niangzi (Jingxing) Pass",
+      "aliases": ["井陉关", "井陉口", "土门关", "苇泽关", "井陉"],
       "modernZh": "山西平定·河北井陉",
       "modernEn": "Pingding / Jingxing",
       "coord": [
@@ -4901,6 +4902,9 @@
     }
   ],
   "PLACE_GAZETTEER": [
+    { "name": "洛邑", "aliases": ["成周", "东周王城", "洛京"], "modern": "河南洛阳", "coord": [112.45, 34.62], "zoom": 2.5 },
+    { "name": "汴京", "aliases": ["东京汴梁", "汴梁", "东京", "汴州", "东都开封府", "大梁"], "modern": "河南开封", "coord": [114.35, 34.79], "zoom": 2.5 },
+    { "name": "幽州", "aliases": ["辽南京", "析津府", "燕京", "蓟城", "幽燕"], "modern": "北京", "coord": [116.40, 39.90], "zoom": 2.5 },
     { "name": "蓝田关", "aliases": ["蓝关", "峣关", "蓝田", "蓝田县"], "modern": "陕西西安蓝田", "coord": [109.48, 34.03], "zoom": 2.6 },
     { "name": "马嵬坡", "aliases": ["马嵬驿", "马嵬", "兴平"], "modern": "陕西咸阳兴平", "coord": [108.35, 34.28], "zoom": 2.6 },
     { "name": "五丈原", "aliases": ["岐山", "眉县"], "modern": "陕西宝鸡岐山", "coord": [107.63, 34.23], "zoom": 2.6 },
