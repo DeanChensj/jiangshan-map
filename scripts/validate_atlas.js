@@ -370,19 +370,26 @@ function main() {
     `Cache-busting ?v= query strings must be uniform across index.html (${htmlVersions}) and js/app.js (${appVersions})`
   );
 
-  // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect) & llms.txt
+  // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   const llmsTxtPath = path.join(ROOT, 'llms.txt');
+  const skillMdPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'SKILL.md');
   assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
+  assert(fs.existsSync(skillMdPath), 'skills/jiangshan-atlas/SKILL.md must exist');
+  assert(
+    Array.isArray(loreData.PLACE_GAZETTEER) && loreData.PLACE_GAZETTEER.length >= 40,
+    'lore_data.js must provide PLACE_GAZETTEER with poetic/historical landmarks and city aliases'
+  );
   const llmsTxt = fs.readFileSync(llmsTxtPath, 'utf8');
   assert(
     appCode.includes('window.atlasAPI') &&
       appCode.includes('resolvePlace(') &&
       appCode.includes('inspect(') &&
       appCode.includes('locate(') &&
+      appCode.includes('PLACE_GAZETTEER') &&
       appCode.includes('trace-pin-label') &&
       llmsTxt.includes('?year=') &&
       llmsTxt.includes('window.atlasAPI.locate'),
-    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect) and 5-parameter URL deep-link protocol'
+    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), PLACE_GAZETTEER, and URL deep-link protocol'
   );
 
   const elapsed = (performance.now() - t0).toFixed(1);

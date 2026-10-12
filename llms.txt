@@ -4,42 +4,44 @@
 
 - Live URL: https://deanchensj.github.io/jiangshan-map/
 - Repository: https://github.com/DeanChensj/jiangshan-map
+- Agent Skill: `skills/jiangshan-atlas/SKILL.md`
 
-## 1. AI Deep-Link URL Protocol (Zero-Backend Spatiotemporal Linking)
+## 1. AI Deep-Link URL Protocol (`?year=<YEAR>&place=<PLACE>`)
 
-When a user asks about a historical event, classical poem, battle, or ancient place (e.g. *"雪拥蓝关马不前 当时是什么时间地点"*), resolve the historical year and location yourself, then return a direct deep link using the 5 supported query parameters:
+When a user asks about a historical event, classical poem, battle, or ancient place (e.g. *"雪拥蓝关马不前 当时是什么时间地点"*), you only need to resolve **two parameters** from your historical knowledge — `year` and `place` — and the atlas automatically resolves coordinates, zooms to the site, drops a labeled pin, and opens the 2,000-year administrative genealogy card:
 
 ```text
-https://deanchensj.github.io/jiangshan-map/?year=<YEAR>&place=<PLACE>&lng=<LNG>&lat=<LAT>&zoom=<ZOOM>
+https://deanchensj.github.io/jiangshan-map/?year=<YEAR>&place=<PLACE>
 ```
 
-### Query Parameters (5 Parameters Only)
-- `year` (integer, `-403` to `2026`, no year `0`): Historical year. Negative numbers represent BCE (e.g., `-221` = 221 BCE, `819` = 819 CE).
-- `place` (string, optional): Ancient or modern place name to highlight on the map pin and genealogy card (e.g., `蓝田关`, `长安`, `赤壁`, `黄州`). If `lng`/`lat` are omitted, the atlas automatically resolves `place` against its built-in settlements, strategic passes, prefectures, and provinces.
-- `lng` (float, optional): Longitude in decimal degrees (`70.0` to `142.0`). Provide alongside `lat` for exact pinpoint placement (especially for poetic sites, mountain passes, or battlefields not in the default city list).
-- `lat` (float, optional): Latitude in decimal degrees (`15.0` to `56.0`).
-- `zoom` (float, optional, `1.0` to `8.0`, default `2.5`): Camera zoom level (`1.8` = macro region, `2.6` = prefecture/pass closeup, `3.5+` = local city detail).
+### Query Parameters
+- `year` (**required**, integer, `-403` to `2026`, no year `0`): Historical year. Negative numbers represent BCE (e.g., `-221` = 221 BCE, `819` = 819 CE).
+- `place` (**recommended**, plain string): Either the ancient/poetic place name (e.g., `蓝田关`, `长安`, `赤壁`, `京口`, `五丈原`, `马嵬坡`, `白帝城`, `鸣条`, `牧野`, `崖山`) OR a modern city/county name (e.g., `运城`, `镇江`, `黄冈`, `宝鸡`). Pass a single clean place name — do NOT combine ancient and modern names with parentheses.
+- `zoom` (optional, float, `1.0` to `8.0`): Camera zoom level override (defaults automatically based on place type, typically `2.3`–`2.6`).
+- `lng` / `lat` (optional, float): Explicit longitude/latitude override (`70.0`–`142.0`, `15.0`–`56.0`), only needed if pinpointing raw coordinates not associated with any named place.
 
 ### Canonical Deep-Link Examples
 - **韩愈《左迁至蓝关示侄孙湘》("雪拥蓝关马不前", 唐宪宗元和十四年 / 819 CE, 蓝田关)**:
-  https://deanchensj.github.io/jiangshan-map/?year=819&place=蓝田关&lng=109.48&lat=34.03&zoom=2.6
-- **苏轼《念奴娇·赤壁怀古》(宋神宗元丰五年 / 1082 CE, 黄州赤鼻矶)**:
-  https://deanchensj.github.io/jiangshan-map/?year=1082&place=黄州&lng=114.88&lat=30.45&zoom=2.6
+  https://deanchensj.github.io/jiangshan-map/?year=819&place=蓝田关
+- **辛弃疾《永遇乐·京口北固亭怀古》(宋宁宗开禧元年 / 1205 CE, 京口)**:
+  https://deanchensj.github.io/jiangshan-map/?year=1205&place=京口
+- **苏轼《念奴娇·赤壁怀古》(宋神宗元丰五年 / 1082 CE, 黄州)**:
+  https://deanchensj.github.io/jiangshan-map/?year=1082&place=黄州
 - **赤壁之战 (东汉建安十三年 / 208 CE, 赤壁)**:
-  https://deanchensj.github.io/jiangshan-map/?year=208&place=赤壁&lng=113.90&lat=29.88&zoom=2.6
-- **秦灭六国一统天下 (秦始皇二十六年 / 221 BCE, 咸阳)**:
-  https://deanchensj.github.io/jiangshan-map/?year=-221&place=咸阳&zoom=2.3
+  https://deanchensj.github.io/jiangshan-map/?year=208&place=赤壁
+- **诸葛亮五丈原秋风 (蜀汉建兴十二年 / 234 CE, 五丈原)**:
+  https://deanchensj.github.io/jiangshan-map/?year=234&place=五丈原
 
 ## 2. Browser JavaScript API (`window.atlasAPI`)
 
 For browser agents, Playwright scripts, or WebMCP integrations interacting with a live page instance:
 
-- `window.atlasAPI.locate({ year, place, lng, lat, zoom })`:
-  Jumps the timeline to `year`, centers/zooms the map camera on `(lng, lat)` (or resolves `place` automatically), drops a labeled pin on the canvas, opens the 2,000-year administrative genealogy card (`#genealogy-card`), and returns the structured inspection object.
+- `window.atlasAPI.locate({ year, place, zoom?, lng?, lat? })`:
+  Jumps the timeline to `year`, resolves `place` against the built-in gazetteer (passes, poetic landmarks, ancient/modern settlements, prefectures, provinces), centers/zooms the map camera, drops a labeled pin on the canvas, opens the 2,000-year administrative genealogy card (`#genealogy-card`), and returns the structured inspection object.
 - `window.atlasAPI.resolvePlace(place, year?)`:
-  Resolves an ancient/modern city, strategic pass, prefecture, or province name to `{ kind, name, modern, lng, lat, coord, zoom }` (or `null` if not found).
-- `window.atlasAPI.inspect({ year, place, lng, lat, zoom })`:
-  Read-only query that returns the historical context at `(year, place / lng, lat)` without moving the camera:
+  Resolves an ancient/modern city, poetic site, strategic pass, prefecture, or province name to `{ kind, name, modern, lng, lat, coord, zoom }` (or `null` if not found).
+- `window.atlasAPI.inspect({ year, place, zoom?, lng?, lat? })`:
+  Read-only query that returns the historical context at `(year, place)` without moving the camera:
   `{ year, era, dynasty, place, coord, zoom, polity, regions, prefectures, modernProvince, nearestCity, url }`.
 
 ## 3. Dynasty Timeline Coverage (`-403` to `2026`)
