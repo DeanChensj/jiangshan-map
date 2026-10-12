@@ -418,6 +418,8 @@ function main() {
   sandbox.window.addEventListener = () => {};
   sandbox.window.URLSearchParams = URLSearchParams;
   sandbox.URLSearchParams = URLSearchParams;
+  sandbox.setTimeout = setTimeout;
+  sandbox.clearTimeout = clearTimeout;
   sandbox.location = {
     search: '',
     origin: 'https://deanchensj.github.io',
@@ -937,13 +939,78 @@ function main() {
     'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 345 historical events'
   );
 
+  // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
+  const ghostNodes = [];
+  ctrl.grpGhostDiff = {
+    get innerHTML() {
+      return '';
+    },
+    set innerHTML(_v) {
+      ghostNodes.length = 0;
+    },
+  };
+  ctrl._id = () => null;
+  ctrl.projector.shapeToSvgPath = (shape) =>
+    shape && shape.coordinates ? `M${JSON.stringify(shape.coordinates).length}` : '';
+  ctrl._svgNode = (tag, attrs, parent) => {
+    const node = { tag, attrs, dataset: {} };
+    if (parent === ctrl.grpGhostDiff) ghostNodes.push(node);
+    return node;
+  };
+
+  // 1) Tang peak (669 CE, with 安西都护府/北庭都护府 protectorate) -> Late Tang contraction (820 CE)
+  const tangPeakSnap = snapshots[ctrl._resolveSnapKey(tangDyn, 669)];
+  const tangLateSnap = snapshots[ctrl._resolveSnapKey(tangDyn, 820)];
+  ctrl.lastRenderedSnap = tangLateSnap;
+  ctrl._renderGhostDiff(tangPeakSnap, 'fade');
+  assert(
+    ghostNodes.length > 0 &&
+      ghostNodes.some((n) => n.dataset.polityRole === 'protectorate' || n.dataset.polityRole === 'main'),
+    `Expected _renderGhostDiff from Tang peak to Late Tang to emit ghost paths for changed main/protectorate polities, got ${JSON.stringify(ghostNodes)}`
+  );
+  if (ctrl.ghostTimer) {
+    clearTimeout(ctrl.ghostTimer);
+    ctrl.ghostTimer = null;
+  }
+
+  // 2) Cross-dynasty transition: Warring States (-231 BCE, with rival Six States) -> Qin unification (-221 BCE)
+  const zgDyn = dynasties.find((d) => d.key === 'zhanguo');
+  const qinDyn = dynasties.find((d) => d.key === 'qin');
+  const zgSnap = snapshots[ctrl._resolveSnapKey(zgDyn, -231)];
+  const qinSnap = snapshots[ctrl._resolveSnapKey(qinDyn, -221)];
+  ctrl.lastRenderedSnap = qinSnap;
+  ctrl._renderGhostDiff(zgSnap, 'fade');
+  assert(
+    ghostNodes.length >= 2 && ghostNodes.some((n) => n.dataset.polityRole === 'rival'),
+    `Expected _renderGhostDiff from Warring States to Qin unification to include annexed rival states, got ${JSON.stringify(ghostNodes.map((n) => n.dataset))}`
+  );
+  if (ctrl.ghostTimer) {
+    clearTimeout(ctrl.ghostTimer);
+    ctrl.ghostTimer = null;
+  }
+
+  // 3) Preview mode + _clearPreviewGhost preserves active fade timer but clears preview
+  const bsDyn = dynasties.find((d) => d.key === 'beisong');
+  const nsDyn = dynasties.find((d) => d.key === 'nansong');
+  const bsKey = ctrl._resolveSnapKey(bsDyn, 1100);
+  const nsKey = ctrl._resolveSnapKey(nsDyn, 1142);
+  ctrl.activeSnapKey = bsKey;
+  ctrl.lastRenderedSnap = snapshots[bsKey];
+  ctrl._previewStageGhost(nsKey);
+  assert(
+    ghostNodes.length > 0 && ghostNodes.every((n) => n.attrs.class.includes('is-preview')),
+    'Expected _previewStageGhost to render .is-preview ghost paths'
+  );
+  ctrl._clearPreviewGhost();
+  assert.strictEqual(ghostNodes.length, 0, 'Expected _clearPreviewGhost to clear preview paths when no fade timer is active');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 15 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
 }
 
 main();
