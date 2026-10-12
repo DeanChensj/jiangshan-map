@@ -776,7 +776,7 @@
         return;
       }
       document.documentElement.lang = this.locale === 'en' ? 'en' : 'zh-CN';
-      this._syncDocumentSeoMeta();
+      document.title = this.uiStr('title', '江山时序 · 中国历史地图时间轴');
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -2222,69 +2222,11 @@
     }
 
     // ---------------- Chronicle Sidebar ----------------
-    _syncDocumentSeoMeta() {
-      if (typeof document === 'undefined') return;
-      const baseSiteUrl = 'https://deanchensj.github.io/jiangshan-map/';
-      const isEn = this.locale === 'en';
-      const cur = this.dynasties && this.dynasties[this.dynastyIdx];
-      let pageTitle = isEn
-        ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
-        : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
-      let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 143 territory snapshots, 470 ancient cities, 20 strategic passes, and 7 historical journeys.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代143幅历史疆域、州郡道省政区、黄河改道水系、470座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
-      let canonicalUrl = baseSiteUrl;
-
-      if (this.activeJourney) {
-        const j = this.activeJourney;
-        const jTitle = isEn ? j.titleEn : j.titleZh;
-        const jSpan = isEn ? j.spanEn : j.spanZh;
-        pageTitle = isEn
-          ? `${jTitle} (${jSpan}) · Jiangshan Historical Atlas of China`
-          : `${jTitle}（${jSpan}）路线图 · 江山时序中国历史地图`;
-        pageDesc = isEn
-          ? `Interactive route map of ${jTitle} (${jSpan}) across ${j.stops.length} historical stops in the Jiangshan Atlas of China.`
-          : `${jTitle}（${jSpan}）交互式历史行迹路线图，共 ${j.stops.length} 站古今地名、州郡疆域与诗词纪事对照。`;
-        canonicalUrl = `${baseSiteUrl}?journey=${encodeURIComponent(j.key)}${isEn ? '&lang=en' : ''}`;
-      } else if (cur && this._bootDone) {
-        const dName = this.dynastyName(cur);
-        const dSpan = this.formatSpan(cur);
-        const dSeat = this.dynastySeat(cur);
-        const dSum = this.dynastySummary(cur);
-        pageTitle = isEn
-          ? `${dName} (${dSpan}) Map · Jiangshan Historical Atlas of China`
-          : `${dName}历史地图（${dSpan}）疆域政区与古今地名 · 江山时序`;
-        pageDesc = isEn
-          ? `${dName} (${dSpan}) historical territory, administrative divisions & cities. Capital: ${dSeat}. ${dSum}`
-          : `${dName}（${dSpan}）历史疆域与州郡政区地图。都城：${dSeat}。${dSum}`;
-        const qParams = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
-        if (qParams && qParams.has('year')) {
-          canonicalUrl = `${baseSiteUrl}?year=${this.year}${isEn ? '&lang=en' : ''}`;
-        } else if (isEn) {
-          canonicalUrl = `${baseSiteUrl}?lang=en`;
-        }
-      }
-
-      document.title = pageTitle;
-      const setMeta = (id, attr, val) => {
-        const el = this._id(id);
-        if (el && val) el.setAttribute(attr, val);
-      };
-      setMeta('meta-description', 'content', pageDesc);
-      setMeta('og-title', 'content', pageTitle);
-      setMeta('og-description', 'content', pageDesc);
-      setMeta('og-url', 'content', canonicalUrl);
-      setMeta('tw-title', 'content', pageTitle);
-      setMeta('tw-description', 'content', pageDesc);
-      setMeta('lnk-canonical', 'href', canonicalUrl);
-    }
-
     _renderChroniclePane(dynasty) {
       this._id('dynasty-title').textContent = this.dynastyName(dynasty);
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
       this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
       this._id('dynasty-summary').textContent = this.dynastySummary(dynasty);
-      this._syncDocumentSeoMeta();
 
       const ul = this._id('milestone-list');
       ul.innerHTML = '';
@@ -4090,7 +4032,6 @@
       if (!keepPaneState) {
         this._syncImmersivePaneState();
       }
-      this._syncDocumentSeoMeta();
     }
 
     presentChallengeRound() {
@@ -4364,7 +4305,6 @@
 
       this._renderJourneyOverlay();
       this._renderJourneyCard();
-      this._syncDocumentSeoMeta();
 
       if (stopIdx === 0) {
         this._frameJourneyOverview(found);
@@ -6021,17 +5961,6 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
-      if (q.has('q')) {
-        const rawQ = (q.get('q') || '').trim();
-        if (rawQ) {
-          const inp = this._id('inp-map-search');
-          if (inp) inp.value = rawQ;
-          setTimeout(() => {
-            const hits = this._queryQuickSearch(rawQ);
-            if (hits && hits.length) this._selectSearchResult(hits[0]);
-          }, 180);
-        }
-      }
       if (q.has('terrain')) {
         const tv = q.get('terrain');
         this.toggleTerrainMode(tv !== '0' && tv !== 'false');
