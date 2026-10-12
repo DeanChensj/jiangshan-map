@@ -110,6 +110,7 @@
 - **走一段内置人物行迹**：[`?journey=qinshihuang`](https://deanchensj.github.io/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchensj.github.io/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchensj.github.io/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchensj.github.io/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchensj.github.io/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchensj.github.io/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchensj.github.io/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
 - **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchensj.github.io/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换英文版**：[`?lang=en`](https://deanchensj.github.io/jiangshan-map/?lang=en)
+- **分享眼前这一幕**：拖动时间轴、缩放平移、点开古城或走行迹时，地址栏会同步写成上面这些参数（如 `?year=1127&zoom=2.6&center=114.84,31.15`），刷新即可复现；点导航栏「分享」一键复制链接（手机上调起系统分享）
 
 ---
 
