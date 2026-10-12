@@ -74,4 +74,5 @@
     }
   }
   window.ATLAS_SNAPSHOTS = out;
+  window.ATLAS_FULL_SNAPSHOTS_LOADED = true;
 })();

@@ -201,7 +201,7 @@
       this.corridors = window.CORRIDOR_DATA || [];
       this.snapshots = window.ATLAS_SNAPSHOTS || {};
       this._fullSnapshotsLoaded = Boolean(
-        window.ATLAS_FULL_SNAPSHOTS_LOADED || (this.snapshots && this.snapshots.s_qin)
+        window.ATLAS_FULL_SNAPSHOTS_LOADED || (this.snapshots && this.snapshots.s_prc)
       );
       this._fullSnapshotsPromise = null;
       this._enLocalePromise = null;
@@ -427,7 +427,7 @@
       if (this._fullSnapshotsLoaded) return Promise.resolve(this.snapshots);
       if (
         window.ATLAS_FULL_SNAPSHOTS_LOADED ||
-        (window.ATLAS_SNAPSHOTS && window.ATLAS_SNAPSHOTS.s_qin)
+        (window.ATLAS_SNAPSHOTS && window.ATLAS_SNAPSHOTS.s_prc)
       ) {
         this.snapshots = window.ATLAS_SNAPSHOTS;
         this._hydrateSnapshots();
@@ -435,11 +435,12 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261011z').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
             this._fullSnapshotsLoaded = true;
+            this.snapshotCache = {};
             this.searchIndex = null;
             return this.snapshots;
           }
@@ -458,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261011z').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;

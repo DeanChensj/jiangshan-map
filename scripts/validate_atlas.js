@@ -32,6 +32,21 @@ function main() {
     assert(fs.existsSync(fullPath), `Missing required script: js/${file}`);
     const code = fs.readFileSync(fullPath, 'utf8');
     vm.runInContext(code, sandbox, { filename: file });
+    if (file === 'atlas_boot.js') {
+      assert(
+        !sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED &&
+          !sandbox.window.ATLAS_SNAPSHOTS.s_prc &&
+          !sandbox.window.ATLAS_SNAPSHOTS.s_qin,
+        'atlas_boot.js must not set full-snapshot sentinels (ATLAS_FULL_SNAPSHOTS_LOADED / s_prc / s_qin)'
+      );
+    }
+    if (file === 'atlas_snapshots.js') {
+      assert(
+        sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED === true &&
+          Boolean(sandbox.window.ATLAS_SNAPSHOTS.s_prc),
+        'atlas_snapshots.js must set window.ATLAS_FULL_SNAPSHOTS_LOADED = true'
+      );
+    }
   }
 
   // Verify controller syntax
