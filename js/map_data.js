@@ -1780,8 +1780,20 @@ window.DYNASTY_DATA = [
         "snap": "s_donghan"
       },
       {
+        "until": 196,
+        "snap": "s_donghan_d1"
+      },
+      {
+        "until": 200,
+        "snap": "s_donghan_d2"
+      },
+      {
         "until": 208,
         "snap": "s_donghan_d"
+      },
+      {
+        "until": 214,
+        "snap": "s_donghan_e0"
       },
       {
         "until": 219,

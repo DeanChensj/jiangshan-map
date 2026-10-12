@@ -268,9 +268,12 @@ function main() {
     }
   }
 
-  // 4b. Validate split-era intermediate phase granularity (xijin, dongjin, nanbei, wudai)
+  // 4b. Validate split-era intermediate phase granularity (donghan, xijin, dongjin, nanbei, wudai)
   assert(
-    snapshots.s_xijin_a2 &&
+    snapshots.s_donghan_d1 &&
+      snapshots.s_donghan_d2 &&
+      snapshots.s_donghan_e0 &&
+      snapshots.s_xijin_a2 &&
       snapshots.s_dongjin_d0 &&
       snapshots.s_dongjin_d1 &&
       snapshots.s_nanbei_a2 &&
@@ -278,7 +281,7 @@ function main() {
       snapshots.s_nanbei_e2 &&
       snapshots.s_wudai_c0 &&
       snapshots.s_wudai_e1,
-    'Split eras must provide intermediate snapshots (s_xijin_a2, s_dongjin_d0/d1, s_nanbei_a2/d1/e2, s_wudai_c0/e1)'
+    'Split eras must provide intermediate snapshots (s_donghan_d1/d2/e0, s_xijin_a2, s_dongjin_d0/d1, s_nanbei_a2/d1/e2, s_wudai_c0/e1)'
   );
 
   // 5. Validate corridors, i18n, and isolated cold-start boot seed
