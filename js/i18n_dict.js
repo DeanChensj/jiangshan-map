@@ -103,7 +103,11 @@ window.EN_LOCALE = {
     "tag_neighbor": "(Surrounding Polity)",
     "tag_prot": "(Protectorate / Tributary)",
     "tag_hist": "(Historical Realm)",
-    "now_prov": "Today: "
+    "now_prov": "Today: ",
+    "btn_compare": "Compare",
+    "btn_compare_tip": "Compare two years: pin this year, then move the timeline to pick another (C)",
+    "compare_hint": "Move the timeline to pick the other year",
+    "compare_divider": "Compare divider (← → to move)"
   },
   "dynasties": {
     "zhanguo": {

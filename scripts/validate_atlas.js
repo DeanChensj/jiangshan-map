@@ -1077,13 +1077,58 @@ function main() {
     );
   }
 
+  // CUJ 9t: Two-Year Compare (?compare=) Snapshot Resolution, Parameter Clamping & Split Tags
+  for (const [yr, expKey] of [
+    [-300, 'zhanguo'],
+    [100, 'donghan'],
+    [741, 'tang'],
+    [1820, 'qing'],
+  ]) {
+    const target = ctrl._compareTarget(yr);
+    assert(target && target.dynasty.key === expKey, `Expected compare year ${yr} in ${expKey}, got ${target && target.dynasty.key}`);
+    assert.strictEqual(target.year, yr);
+    assert.strictEqual(target.snapKey, ctrl._resolveSnapKey(target.dynasty, yr));
+    assert(snapshots[target.snapKey], `Compare snapshot ${target.snapKey} for ${yr} must exist`);
+  }
+  assert.notStrictEqual(ctrl._compareTarget(741).snapKey, ctrl._compareTarget(1820).snapKey);
+  assert.strictEqual(ctrl._compareTarget('abc'), null);
+  for (const [raw, expected] of [
+    ['741', 741],
+    [' -300 ', -300],
+    ['12.6', 13],
+    ['0', 1],
+    ['-9999', ctrl.minYear],
+    ['99999', ctrl.maxYear],
+    ['', null],
+    ['abc', null],
+    ['Infinity', null],
+    [null, null],
+  ]) {
+    assert.strictEqual(ctrl._parseCompareParam(raw), expected, `_parseCompareParam(${JSON.stringify(raw)}) should be ${expected}`);
+  }
+  const tagLeft741 = ctrl._compareTagText(741, 'left');
+  const tagRight1820 = ctrl._compareTagText(1820, 'right');
+  assert(tagLeft741.startsWith('◀ 741 · 唐') && tagLeft741.includes('开元二十九年'), `Unexpected compare tag: ${tagLeft741}`);
+  assert.strictEqual(tagRight1820, '1820 · 清 嘉庆二十五年 ▶');
+  assert(ctrl._compareTagText(-300, 'left').startsWith('◀ 前300 · '), 'BCE compare tags must use the 前 prefix');
+  assert.strictEqual(ctrl._compareTagText(2000, 'right'), `2000 · ${ctrl.dynastyBadge(dynasties[dynasties.length - 1])} ▶`);
+  ctrl.locale = 'en';
+  const tagEn = ctrl._compareTagText(741, 'left');
+  assert(tagEn.startsWith('◀ 741 · Tang') && !/[\u4e00-\u9fff]/.test(tagEn), `Unexpected English compare tag: ${tagEn}`);
+  assert(ctrl._compareTagText(-300, 'right').startsWith('300 BCE · '), 'English BCE compare tag must read "300 BCE"');
+  ctrl.locale = 'zh';
+  const splitCam = { x: 350, y: 215, w: 500, h: 420 };
+  assert.strictEqual(ctrl._compareSplitX(0.5, { width: 1000, height: 840 }, splitCam), 600);
+  assert.strictEqual(ctrl._compareSplitX(0, { width: 1000, height: 840 }, splitCam), 350);
+  assert(Math.abs(ctrl._compareSplitX(0.5, { width: 1200, height: 840 }, splitCam) - 600) < 1e-9, 'Letterboxed split must stay centered on the camera');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 17 E2E CUJs`);
 }
 
 main();

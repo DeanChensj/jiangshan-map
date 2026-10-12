@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261012n" />
+  <link rel="stylesheet" href="css/style.css?v=20261012-compare" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -498,6 +498,15 @@
 
         <div id="milestone-balloon" class="is-hidden" role="dialog" aria-live="polite"></div>
 
+        <div id="compare-overlay" class="is-hidden">
+          <div id="compare-tag-left" class="compare-tag is-left" aria-live="polite"></div>
+          <div id="compare-tag-right" class="compare-tag is-right" aria-live="polite"></div>
+          <div id="compare-hint" class="compare-hint is-hidden"></div>
+          <div id="compare-divider" role="separator" tabindex="0" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="对照分隔线（← → 移动）">
+            <span class="compare-grip" aria-hidden="true">‹ ›</span>
+          </div>
+        </div>
+
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
 
         <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放</div>
@@ -573,6 +582,11 @@
         <span class="unit-label" id="txt-year-suffix">年</span>
         <button id="act-step-next" class="step-nav-btn" type="button" title="下一历史阶段 / 事件节点" aria-label="下一历史节点">›</button>
       </div>
+
+      <button id="act-compare" class="compare-toggle-btn" type="button" title="双年对照：固定当前年份，拖动时间轴选另一年 (C)" aria-pressed="false">
+        <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="2.75" y="3.75" width="5.25" height="8.5" fill="currentColor" opacity="0.3"/><rect x="2" y="3" width="12" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="lbl-compare">对照</span>
+      </button>
     </footer>
   </div>
     <nav id="seo-atlas-directory" class="sr-only-seo" aria-label="中国历代疆域、青史行迹与天下名关索引">
@@ -640,10 +654,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261012n"></script>
-  <script src="js/atlas_boot.js?v=20261012n"></script>
-  <script src="js/map_data.js?v=20261012n"></script>
-  <script src="js/lore_data.js?v=20261012n"></script>
-  <script src="js/app.js?v=20261012n"></script>
+  <script src="js/china_geo_data.js?v=20261012-compare"></script>
+  <script src="js/atlas_boot.js?v=20261012-compare"></script>
+  <script src="js/map_data.js?v=20261012-compare"></script>
+  <script src="js/lore_data.js?v=20261012-compare"></script>
+  <script src="js/app.js?v=20261012-compare"></script>
 </body>
 </html>
