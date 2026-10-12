@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012f').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012g').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012f').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012g').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2157,8 +2157,7 @@
         sw.className = 'swatch';
         sw.style.color = '#6e6256';
         sw.style.borderStyle = 'dashed';
-        sw.style.background =
-          'repeating-linear-gradient(125deg, rgba(43,38,34,0.28) 0 2px, transparent 2px 5px)';
+        sw.style.background = 'rgba(138, 124, 107, 0.22)';
         entry.appendChild(sw);
         entry.appendChild(
           document.createTextNode(this.uiStr('leg_neighbor', '同期周边政权'))
