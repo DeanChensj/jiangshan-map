@@ -641,8 +641,8 @@ window.EN_LOCALE = {
       "Xingqingfu"
     ],
     "nansong:1234": [
-      "Allied Mongol and Song forces destroy the Jin dynasty at Caizhou",
-      "Caizhou"
+      "Song and Mongol allied forces annihilate the Jin dynasty at Caizhou; the Song army's 'Duanping Expedition into Luoyang' briefly retakes the three capitals before being routed when Mongols breach the Yellow River dikes, igniting full-scale Song-Mongol war",
+      "Caizhou · Kaifeng"
     ],
     "nansong:1253": [
       "Kublai conquers the Dali Kingdom in Yunnan",
@@ -675,6 +675,10 @@ window.EN_LOCALE = {
     "yuan:1279": [
       "Battle of Yashan destroys Southern Song; Yuan reunifies China",
       "Yashan"
+    ],
+    "yuan:1288": [
+      "The Yuan imperial court established the Bureau of Buddhist and Tibetan Affairs (Xuanzheng Yuan), formally integrating Tibet into central imperial administrative governance",
+      "Sakya (Bureau Domain)"
     ],
     "yuan:1293": [
       "Beijing–Hangzhou Grand Canal fully opened via Shandong",
@@ -817,8 +821,8 @@ window.EN_LOCALE = {
       "Marco Polo Bridge"
     ],
     "roc:1945": [
-      "Victory in the War of Resistance against Japan; Taiwan restored",
-      "Nanjing"
+      "Victory in the War of Resistance against Japan; the Taiwan Provincial Administrative Office was established, formally restoring Taiwan Island and Penghu Islands to China after fifty years of Japanese colonial rule",
+      "Taipei (Zhongshan Hall) · Nanjing"
     ],
     "prc:1949": [
       "Founding of the People's Republic of China",
@@ -1509,8 +1513,8 @@ window.EN_LOCALE = {
       "Liaoyang"
     ],
     "qing:1898": [
-      "Hundred Days’ Reform (Wuxu Reform): Emperor Guangxu launches institutional reforms with Kang Youwei and Liang Qichao before Empress Dowager Cixi’s coup",
-      "Beijing"
+      "Britain leased the New Territories of Hong Kong and Weihaiwei, Germany leased Jiaozhou Bay, and Russia leased Port Arthur/Dalian as the imperialist scramble for concessions peaked; Guangxu Emperor launched the Hundred Days' Reform",
+      "Jiaozhou Bay · New Territories"
     ],
     "qing:1900": [
       "Boxer Movement and Eight-Nation Alliance occupation of Beijing; Cixi and Guangxu flee to Xi’an, followed by the Boxer Protocol in 1901",
@@ -1559,6 +1563,38 @@ window.EN_LOCALE = {
     "qing:1855": [
       "Yellow River breaches at Tongwaxiang (Lanyang), abandoning the Huai course to capture the Daqing River into Bohai Sea along its modern path",
       "Tongwaxiang (Lankao)"
+    ],
+    "zhanguo:-300": [
+      "King Zhao of Yan dispatched general Qin Kai to defeat the Donghu, advancing a thousand li, constructing the Northern Yan Great Wall, and establishing the five commanderies of Shanggu, Yuyang, Youbeiping, Liaoxi, and Liaodong",
+      "Xiangping (Liaoyang)"
+    ],
+    "donghan:43": [
+      "General Fubo Ma Yuan led the southern expedition to Jiaozhi, subduing the Trưng sisters' rebellion and erecting bronze pillars marking the southernmost boundary of the Han Empire",
+      "Jiaozhi (Hanoi)"
+    ],
+    "sanguo:238": [
+      "Sima Yi led an expedition to Liaodong, executing Gongsun Yuan; Cao Wei recovered the four Liaodong commanderies along with Lelang and Daifang on the Korean Peninsula",
+      "Xiangping (Liaoyang)"
+    ],
+    "tang:635": [
+      "Li Jing and Hou Junji mounted a six-column expedition defeating Tuyuhun, marching to Lake Baihai at the Yellow River headwaters, forcing King Buyun to submit",
+      "Fusicheng (West Qinghai Lake)"
+    ],
+    "tang:648": [
+      "Wang Xuance borrowed Tibetan and Nepalese forces to crush Arunāśva in Central India, projecting Tang imperial prestige into the South Asian subcontinent for the first time",
+      "Chaboharocheng (Central India)"
+    ],
+    "qing:1881": [
+      "Zeng Jize negotiated the Treaty of Saint Petersburg (Treaty of Ili) with Tsarist Russia, recovering the majority of the Nine Cities of Ili and delineating the northwestern boundary",
+      "Ili (Khorgas)"
+    ],
+    "roc:1932": [
+      "Imperial Japan installed deposed Qing Emperor Puyi in Changchun to establish puppet 'Manchukuo', detaching Northeast China for fourteen years",
+      "Xinjing (Changchun)"
+    ],
+    "roc:1946": [
+      "The Nationalist Government recognized the Outer Mongolian independence referendum result and exchanged notes with the Soviet Union; Outer Mongolia detached from China, transforming the national map silhouette from a 'begonia leaf' into a 'rooster'",
+      "Kulun (Ulaanbaatar)"
     ]
   },
   "corridors": {
