@@ -340,6 +340,28 @@ function main() {
     'app.js & index.html must unify event callouts into #milestone-balloon (_syncAutoMilestoneBalloon, toggleEventCallouts, ep-close, #chk-event-callouts)'
   );
 
+  // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
+  const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
+  assert(
+    appCode.includes('A1.25,1.25 0 0,0 -1.25,1.1') &&
+      appCode.includes('_syncTogglePaneButton') &&
+      appCode.includes('caretDir') &&
+      appCode.includes('_syncDocumentSeoMeta') &&
+      indexHtml.includes('id="lbl-toggle-pane"') &&
+      styleCss.includes('data-caret="left"') &&
+      styleCss.includes('.sr-only-seo'),
+    'app.js, index.html & style.css must retain 3-merlon pass icon, balloon directional caret, bookmark toggle tab, and SEO meta sync'
+  );
+  assert(
+    indexHtml.includes('application/ld+json') &&
+      indexHtml.includes('property="og:title"') &&
+      indexHtml.includes('rel="canonical"') &&
+      indexHtml.includes('id="seo-atlas-directory"'),
+    'index.html must include JSON-LD structured data, Open Graph tags, canonical link, and #seo-atlas-directory'
+  );
+  assert(fs.existsSync(path.join(ROOT, 'sitemap.xml')), 'Missing sitemap.xml at repository root');
+  assert(fs.existsSync(path.join(ROOT, 'robots.txt')), 'Missing robots.txt at repository root');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);

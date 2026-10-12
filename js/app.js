@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -777,7 +777,7 @@
         return;
       }
       document.documentElement.lang = this.locale === 'en' ? 'en' : 'zh-CN';
-      document.title = this.uiStr('title', '江山时序 · 中国历史地图时间轴');
+      this._syncDocumentSeoMeta();
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -963,16 +963,7 @@
             ? 'Search city / prefecture / era / journey'
             : '搜古今地名 / 州府 / 年号 / 青史行迹';
       }
-      const togglePaneBtn = this._id('act-toggle-pane');
-      if (togglePaneBtn) {
-        togglePaneBtn.title = this.paneCollapsed
-          ? this.locale === 'en'
-            ? 'Expand chronicle pane'
-            : '展开编年侧栏'
-          : this.locale === 'en'
-            ? 'Collapse chronicle pane (Full-map view)'
-            : '收起编年侧栏（全屏看图）';
-      }
+      this._syncTogglePaneButton();
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
@@ -1517,13 +1508,13 @@
             'path',
             {
               class: 'pass-gate-icon',
-              d: 'M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z',
+              d: 'M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z',
             },
             pNode
           );
           const align = p.align || 'r';
           const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
-          const dx = align === 'l' ? -5.2 : align === 'b' ? 0 : 5.2;
+          const dx = align === 'l' ? -5.6 : align === 'b' ? 0 : 5.6;
           const dy1 = align === 'b' ? 9.8 : align === 't' ? -4.5 : 2.8;
           const nameEl = this._svgNode(
             'text',
@@ -1884,17 +1875,28 @@
 
       let left;
       let top = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
+      let caretDir = 'left';
       if (px + pinGap <= rightLimit) {
         left = px + pinGap;
+        caretDir = 'left';
       } else if (px - bW - pinGap >= minLeft) {
         left = px - bW - pinGap;
+        caretDir = 'right';
       } else {
         left = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
-        top =
-          py - bH - pinGap >= minTop
-            ? py - bH - pinGap
-            : Math.min(maxTop, py + pinGap + 4);
+        if (py - bH - pinGap >= minTop) {
+          top = py - bH - pinGap;
+          caretDir = 'bottom';
+        } else {
+          top = Math.min(maxTop, py + pinGap + 4);
+          caretDir = 'top';
+        }
       }
+      const caretX = Math.max(14, Math.min(bW - 14, Math.round(px - left)));
+      const caretY = Math.max(12, Math.min(bH - 12, Math.round(py - top)));
+      this.milestoneBalloon.dataset.caret = caretDir;
+      this.milestoneBalloon.style.setProperty('--caret-x', `${caretX}px`);
+      this.milestoneBalloon.style.setProperty('--caret-y', `${caretY}px`);
       this.milestoneBalloon.style.left = `${Math.round(left)}px`;
       this.milestoneBalloon.style.top = `${Math.round(top)}px`;
     }
@@ -2194,7 +2196,7 @@
             const passChip = document.createElement('span');
             passChip.className = 'key-entry';
             const passLabel = this.locale === 'en' ? 'Strategic Passes' : '名关雄隘';
-            passChip.innerHTML = `<svg width="12" height="9" viewBox="-4 -3 8 6"><path d="M-2.8,-2.1 L-1.0,-2.1 L-1.0,-0.7 L1.0,-0.7 L1.0,-2.1 L2.8,-2.1 L2.8,2.1 L1.0,2.1 L1.0,0.6 L-1.0,0.6 L-1.0,2.1 L-2.8,2.1 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="1.05" stroke-linejoin="round"/></svg>${passLabel}`;
+            passChip.innerHTML = `<svg width="13" height="10" viewBox="-4.6 -3.3 9.2 6.7"><path d="M-3.8,2.6 L-3.3,-0.9 L-3.3,-2.5 L-1.75,-2.5 L-1.75,-0.9 L-0.85,-0.9 L-0.85,-2.5 L0.85,-2.5 L0.85,-0.9 L1.75,-0.9 L1.75,-2.5 L3.3,-2.5 L3.3,-0.9 L3.8,2.6 L1.25,2.6 L1.25,1.1 A1.25,1.25 0 0,0 -1.25,1.1 L-1.25,2.6 Z" fill="#fdf6ea" stroke="#8c3b22" stroke-width="0.95" stroke-linejoin="round"/></svg>${passLabel}`;
             row.appendChild(passChip);
           }
           const seaLabel =
@@ -2223,11 +2225,69 @@
     }
 
     // ---------------- Chronicle Sidebar ----------------
+    _syncDocumentSeoMeta() {
+      if (typeof document === 'undefined') return;
+      const baseSiteUrl = 'https://deanchensj.github.io/jiangshan-map/';
+      const isEn = this.locale === 'en';
+      const cur = this.dynasties && this.dynasties[this.dynastyIdx];
+      let pageTitle = isEn
+        ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
+        : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
+      let pageDesc = isEn
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 146 territory snapshots, 470 ancient cities, 20 strategic passes, and 7 historical journeys.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代146幅历史疆域、州郡道省政区、黄河改道水系、470座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
+      let canonicalUrl = baseSiteUrl;
+
+      if (this.activeJourney) {
+        const j = this.activeJourney;
+        const jTitle = isEn ? j.titleEn : j.titleZh;
+        const jSpan = isEn ? j.spanEn : j.spanZh;
+        pageTitle = isEn
+          ? `${jTitle} (${jSpan}) · Jiangshan Historical Atlas of China`
+          : `${jTitle}（${jSpan}）路线图 · 江山时序中国历史地图`;
+        pageDesc = isEn
+          ? `Interactive route map of ${jTitle} (${jSpan}) across ${j.stops.length} historical stops in the Jiangshan Atlas of China.`
+          : `${jTitle}（${jSpan}）交互式历史行迹路线图，共 ${j.stops.length} 站古今地名、州郡疆域与诗词纪事对照。`;
+        canonicalUrl = `${baseSiteUrl}?journey=${encodeURIComponent(j.key)}${isEn ? '&lang=en' : ''}`;
+      } else if (cur && this._bootDone) {
+        const dName = this.dynastyName(cur);
+        const dSpan = this.formatSpan(cur);
+        const dSeat = this.dynastySeat(cur);
+        const dSum = this.dynastySummary(cur);
+        pageTitle = isEn
+          ? `${dName} (${dSpan}) Map · Jiangshan Historical Atlas of China`
+          : `${dName}历史地图（${dSpan}）疆域政区与古今地名 · 江山时序`;
+        pageDesc = isEn
+          ? `${dName} (${dSpan}) historical territory, administrative divisions & cities. Capital: ${dSeat}. ${dSum}`
+          : `${dName}（${dSpan}）历史疆域与州郡政区地图。都城：${dSeat}。${dSum}`;
+        const qParams = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
+        if (qParams && qParams.has('year')) {
+          canonicalUrl = `${baseSiteUrl}?year=${this.year}${isEn ? '&lang=en' : ''}`;
+        } else if (isEn) {
+          canonicalUrl = `${baseSiteUrl}?lang=en`;
+        }
+      }
+
+      document.title = pageTitle;
+      const setMeta = (id, attr, val) => {
+        const el = this._id(id);
+        if (el && val) el.setAttribute(attr, val);
+      };
+      setMeta('meta-description', 'content', pageDesc);
+      setMeta('og-title', 'content', pageTitle);
+      setMeta('og-description', 'content', pageDesc);
+      setMeta('og-url', 'content', canonicalUrl);
+      setMeta('tw-title', 'content', pageTitle);
+      setMeta('tw-description', 'content', pageDesc);
+      setMeta('lnk-canonical', 'href', canonicalUrl);
+    }
+
     _renderChroniclePane(dynasty) {
       this._id('dynasty-title').textContent = this.dynastyName(dynasty);
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
       this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
       this._id('dynasty-summary').textContent = this.dynastySummary(dynasty);
+      this._syncDocumentSeoMeta();
 
       const ul = this._id('milestone-list');
       ul.innerHTML = '';
@@ -3336,21 +3396,33 @@
           : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
     }
 
+    _syncTogglePaneButton() {
+      const btn = this._id('act-toggle-pane');
+      if (!btn) return;
+      const arrow = this.paneCollapsed ? '‹' : '›';
+      const label = this.paneCollapsed
+        ? this.locale === 'en'
+          ? 'Info'
+          : '史志'
+        : this.locale === 'en'
+          ? 'Full'
+          : '全图';
+      btn.innerHTML = `<span class="tp-arrow" aria-hidden="true">${arrow}</span><span class="tp-label" id="lbl-toggle-pane">${label}</span>`;
+      btn.classList.toggle('is-collapsed', Boolean(this.paneCollapsed));
+      btn.title = this.paneCollapsed
+        ? this.locale === 'en'
+          ? 'Expand chronicle pane'
+          : '展开编年侧栏'
+        : this.locale === 'en'
+          ? 'Collapse chronicle pane (Full-map view)'
+          : '收起编年侧栏（全屏看图）';
+    }
+
     toggleChroniclePane(force) {
       this.paneCollapsed = force !== undefined ? force : !this.paneCollapsed;
       const body = this._id('workspace-body');
       if (body) body.classList.toggle('is-pane-collapsed', this.paneCollapsed);
-      const btn = this._id('act-toggle-pane');
-      if (btn) {
-        btn.textContent = this.paneCollapsed ? '‹' : '›';
-        btn.title = this.paneCollapsed
-          ? this.locale === 'en'
-            ? 'Expand chronicle pane'
-            : '展开编年侧栏'
-          : this.locale === 'en'
-            ? 'Collapse chronicle pane (Full-map view)'
-            : '收起编年侧栏（全屏看图）';
-      }
+      this._syncTogglePaneButton();
       setTimeout(() => {
         this._updateScaleBar();
         if (this.activeMilestone) this._positionMilestoneBalloon();
@@ -4010,8 +4082,10 @@
       };
       this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
-      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
-      lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
+      const actChal = this._id('act-challenge');
+      if (actChal) actChal.classList.add('is-active');
+      const lblChal = this._id('lbl-challenge') || actChal;
+      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
@@ -4026,13 +4100,16 @@
       if (vf) vf.classList.remove('has-active-challenge');
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
-      const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
-      lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
+      const actChal = this._id('act-challenge');
+      if (actChal) actChal.classList.remove('is-active');
+      const lblChal = this._id('lbl-challenge') || actChal;
+      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
       this.grpSettlements.classList.toggle('is-hidden', !this._id('chk-settlements').checked);
       if (!keepPaneState) {
         this._syncImmersivePaneState();
       }
+      this._syncDocumentSeoMeta();
     }
 
     presentChallengeRound() {
@@ -4306,6 +4383,7 @@
 
       this._renderJourneyOverlay();
       this._renderJourneyCard();
+      this._syncDocumentSeoMeta();
 
       if (stopIdx === 0) {
         this._frameJourneyOverview(found);
@@ -5962,6 +6040,17 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      if (q.has('q')) {
+        const rawQ = (q.get('q') || '').trim();
+        if (rawQ) {
+          const inp = this._id('inp-map-search');
+          if (inp) inp.value = rawQ;
+          setTimeout(() => {
+            const hits = this._queryQuickSearch(rawQ);
+            if (hits && hits.length) this._selectSearchResult(hits[0]);
+          }, 180);
+        }
+      }
       if (q.has('terrain')) {
         const tv = q.get('terrain');
         this.toggleTerrainMode(tv !== '0' && tv !== 'false');
