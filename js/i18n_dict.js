@@ -4314,6 +4314,26 @@ window.EN_LOCALE = {
     "208—213 年 · 赤壁之战：孙刘破曹与刘备据荆州": "208–213 CE · Battle of Red Cliffs: Sun–Liu Alliance & Liu Bei in Jingzhou",
     "208 年曹操南下荆州，孙权、刘备联军于赤壁大破曹军；战后刘备收江南荆州四郡并向孙权“借荆州”（南郡），据有荆州，此时巴蜀益州仍由刘璋割据，直至 214 年刘备入成都。": "In 208 the allied forces of Sun Quan and Liu Bei defeated Cao Cao at the Battle of Red Cliffs; Liu Bei secured southern Jingzhou and Nanjun to hold Jingzhou, while Yizhou (Sichuan) remained under Liu Zhang until 214.",
     "214—218 年 · 刘备入成都，跨有荆、益二州": "214–218 CE · Liu Bei Takes Chengdu, Spanning Jingzhou and Yizhou",
-    "214 年刘备率军入成都迫降刘璋，正式领益州牧，实践《隆中对》“跨有荆、益”战略，与北方曹操、江东孙权形成三方鼎立之势。": "In 214 Liu Bei entered Chengdu and received Liu Zhang's surrender to become Governor of Yizhou, fulfilling the Longzhong Plan by holding both Jingzhou and Yizhou opposite Cao Cao in the north and Sun Quan in Jiangdong."
+    "214 年刘备率军入成都迫降刘璋，正式领益州牧，实践《隆中对》“跨有荆、益”战略，与北方曹操、江东孙权形成三方鼎立之势。": "In 214 Liu Bei entered Chengdu and received Liu Zhang's surrender to become Governor of Yizhou, fulfilling the Longzhong Plan by holding both Jingzhou and Yizhou opposite Cao Cao in the north and Sun Quan in Jiangdong.",
+    "董卓(长安)": "Dong Zhuo (Chang'an)",
+    "马腾(凉州)": "Ma Teng (Liangzhou)",
+    "袁绍(冀州)": "Yuan Shao (Jizhou)",
+    "公孙瓒(幽州)": "Gongsun Zan (Youzhou)",
+    "曹操(兖豫)": "Cao Cao (Yanzhou & Yuzhou)",
+    "刘表(荆州)": "Liu Biao (Jingzhou)",
+    "刘焉(益州)": "Liu Yan (Yizhou)",
+    "孙坚(江东)": "Sun Jian (Jiangdong)",
+    "曹操(许都)": "Cao Cao (Xuchang)",
+    "袁绍(河北)": "Yuan Shao (Hebei)",
+    "刘璋(益州)": "Liu Zhang (Yizhou)",
+    "孙策(江东)": "Sun Ce (Jiangdong)",
+    "曹操(北方)": "Cao Cao (North)",
+    "孙权(江东)": "Sun Quan (Jiangdong)",
+    "刘备(荆州)": "Liu Bei (Jingzhou)",
+    "刘备(荆益)": "Liu Bei (Jing & Yi)",
+    "刘备(益州)": "Liu Bei (Yizhou)",
+    "孙权(荆扬)": "Sun Quan (Jing & Yang)",
+    "189 年董卓入洛阳废立少帝，190 年袁绍、曹操等关东诸侯联兵讨董，董卓挟献帝西迁长安；192 年董卓诛后李傕、郭汜把持长安朝政，北方袁绍据冀州与幽州公孙瓒争河北，凉州马腾韩遂割据，曹操崛起兖豫，南方刘表据荆州、刘焉据益州、孙坚等起兵江东。": "In 189 Dong Zhuo seized Luoyang and deposed the young emperor; in 190 the Guandong coalition rose against him and Dong Zhuo moved Emperor Xian west to Chang'an. In the north Yuan Shao in Jizhou contested Hebei against Gongsun Zan in Youzhou, Ma Teng and Han Sui held Liangzhou, Cao Cao rose in Yanzhou and Yuzhou, Liu Biao held Jingzhou, Liu Yan held Yizhou, and Sun Jian rose in Jiangdong.",
+    "196 年汉献帝东归洛阳，曹操迎天子迁都许昌，“奉天子以令不臣”，据有河南、兖、豫、徐州；北方袁绍灭公孙瓒尽统冀、青、幽、并四州，与曹操隔黄河对峙；凉州及关西由马腾、韩遂等割据，江东孙策渡江平定吴会六郡。": "In 196 Cao Cao escorted Emperor Xian to Xuchang, holding Henan, Yanzhou, Yuzhou, and Xuzhou in the imperial name; north of the Yellow River, Yuan Shao eliminated Gongsun Zan to unite the four provinces of Jizhou, Qingzhou, Youzhou, and Bingzhou; Ma Teng and Han Sui held Liangzhou and Guanxi, while Sun Ce conquered Jiangdong."
   }
 };
