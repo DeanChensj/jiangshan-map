@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2413,6 +2413,10 @@
 
     static get STRATEGIC_PASSES() {
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.STRATEGIC_PASSES) || [];
+    }
+
+    static get PLACE_GAZETTEER() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PLACE_GAZETTEER) || [];
     }
 
     _findNearbyPass(lng, lat, maxKm = 32) {
@@ -6116,6 +6120,29 @@
         }
       }
 
+      // 1b. Poetic & Historical Gazetteer (诗词名胜 · 古战场 · 关隘渡口 · 州县别名)
+      for (const exact of [true, false]) {
+        for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
+          const allNames = [g.name, ...(g.aliases || []), g.modern]
+            .filter(Boolean)
+            .map((s) => s.toLowerCase());
+          const matched = exact
+            ? allNames.some((n) => n === q || n === qStripped)
+            : allNames.some((n) => n.includes(q) || (qStripped.length >= 2 && n.includes(qStripped)));
+          if (matched) {
+            return {
+              kind: 'gazetteer',
+              name: g.name,
+              modern: g.modern || '',
+              lng: g.coord[0],
+              lat: g.coord[1],
+              coord: g.coord,
+              zoom: g.zoom || 2.6,
+            };
+          }
+        }
+      }
+
       // 2. Settlements (exact match first, then substring match, preferring target dynasty)
       for (const exact of [true, false]) {
         for (const d of orderedDynasties) {
@@ -6347,11 +6374,11 @@
       const params = new URLSearchParams();
       params.set('year', String(yr));
       if (placeLabel) params.set('place', placeLabel);
-      if (hasCoord) {
+      if (hasExplicitCoord) {
         params.set('lng', Number(cLng).toFixed(2));
         params.set('lat', Number(cLat).toFixed(2));
       }
-      if (zoom !== undefined || hasCoord) {
+      if (zoom !== undefined) {
         params.set('zoom', Number(targetZoom.toFixed(2)));
       }
       const basePath =
