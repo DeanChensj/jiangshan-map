@@ -905,6 +905,54 @@ function main() {
     '',
     's_prc must skip duplicate region boundary stroke over modern grpProvinces'
   );
+  for (const checkSnapKey of [
+    's_zhanguo_a',
+    's_qin_a',
+    's_qin',
+    's_donghan',
+    's_sanguo',
+    's_dongjin_a',
+    's_nanbei',
+    's_sui',
+    's_tang',
+    's_wudai',
+    's_beisong',
+    's_nansong',
+    's_yuan',
+    's_ming',
+    's_qing',
+    's_roc',
+  ]) {
+    const checkSnap = snapshots[checkSnapKey];
+    assert(checkSnap && Array.isArray(checkSnap.regions) && checkSnap.regions.length > 0, `Missing regions on ${checkSnapKey}`);
+    const regPath = ctrl._buildRegionBoundaryPath(checkSnap);
+    assert(regPath.length > 500, `Expected non-empty region boundary path on ${checkSnapKey}`);
+    const segRe = /([ML])(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g;
+    let m;
+    let prevX = NaN;
+    let prevY = NaN;
+    let straightRulerSegs = 0;
+    while ((m = segRe.exec(regPath)) !== null) {
+      const cmd = m[1];
+      const x = parseFloat(m[2]);
+      const y = parseFloat(m[3]);
+      if (cmd === 'L' && !Number.isNaN(prevX)) {
+        const dx = Math.abs(x - prevX);
+        const dy = Math.abs(y - prevY);
+        const len = Math.hypot(dx, dy);
+        if ((len > 4.5 && (dx < 0.35 || dy < 0.35)) || len > 7.5) {
+          straightRulerSegs++;
+        }
+      }
+      prevX = x;
+      prevY = y;
+    }
+    assert.strictEqual(
+      straightRulerSegs,
+      0,
+      `Expected 0 artificial straight ruler segments in ${checkSnapKey} region boundary path, found ${straightRulerSegs}`
+    );
+  }
 
   // Verify cross-dynasty city search deduplication (e.g. "长安" returns 1 city entry + events/journeys)
   const changanHits = ctrl._queryQuickSearch('长安');
