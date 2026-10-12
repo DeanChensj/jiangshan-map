@@ -874,7 +874,7 @@ function main() {
     );
   }
 
-  // CUJ 9o: First-Level Administrative Boundary Deduplication & Casing Verification
+  // CUJ 9o: First-Level Administrative Boundary Deduplication, Search Deduplication & Bilingual Polish
   assert(
     cssSrc.includes('.region-shape-casing') && cssSrc.includes('.region-shape'),
     'css/style.css must define both .region-shape-casing and .region-shape'
@@ -897,6 +897,44 @@ function main() {
     ctrl._buildRegionBoundaryPath(tang780Snap),
     tang780RegPath,
     '_buildRegionBoundaryPath must return cached SVG path on subsequent calls'
+  );
+  assert.strictEqual(
+    ctrl._buildRegionBoundaryPath(snapshots.s_prc),
+    '',
+    's_prc must skip duplicate region boundary stroke over modern grpProvinces'
+  );
+
+  // Verify cross-dynasty city search deduplication (e.g. "长安" returns 1 city entry + events/journeys)
+  const changanHits = ctrl._queryQuickSearch('长安');
+  const changanCityHits = changanHits.filter((h) => h.kind === 'city' && h.titleZh === '长安');
+  assert.strictEqual(
+    changanCityHits.length,
+    1,
+    `Expected cross-dynasty city "长安" to be deduplicated to 1 city row, got ${changanCityHits.length}`
+  );
+  assert(
+    changanHits.some((h) => h.kind === 'event' || h.kind === 'journey'),
+    'Expected deduplicated "长安" search dropdown to surface related events or journeys'
+  );
+
+  // Verify English monarch name search in _matchEraResults
+  const enEmpWu = ctrl._queryQuickSearch('Emperor Wu of Han');
+  assert(
+    enEmpWu.some((h) => h.kind === 'era' && h.year === -140),
+    `Expected English monarch search "Emperor Wu of Han" to resolve to -140 BCE, got ${JSON.stringify(enEmpWu[0])}`
+  );
+  const enTaizong = ctrl._queryQuickSearch('Taizong of Tang');
+  assert(
+    enTaizong.some((h) => h.kind === 'era' && h.year === 627),
+    `Expected English monarch search "Taizong of Tang" to resolve to 627 CE, got ${JSON.stringify(enTaizong[0])}`
+  );
+
+  // Verify index.html metadata sync and removal of unused diag-hatch pattern
+  const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
+  assert(
+    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('345项'),
+    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 345 historical events'
   );
 
   const elapsed = (performance.now() - t0).toFixed(1);

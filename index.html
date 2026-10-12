@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代146幅历史疆域、州郡道省政区、黄河改道水系、470座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹，支持古今透视镜、古地名挑战与中英双语。" />
+  <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代156幅历史疆域、州郡道省政区、黄河改道水系、476座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹，支持古今透视镜、古地名挑战与中英双语。" />
   <meta name="keywords" content="中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,点地溯源,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,苏轼贬谪路线,王阳明行迹,Historical Atlas of China,Chinese History Map Timeline" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="author" content="Jiangshan Atlas Contributors" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="江山时序 · 中国历史地图时间轴" />
   <meta property="og:title" id="og-title" content="江山时序 · 中国历史地图时间轴（战国 → 现代）" />
-  <meta property="og:description" id="og-description" content="从战国三家分晋到现代：18个朝代、146幅历史疆域与州道政区快照、点地溯源古今地名沿革、20座天下名关与7条历史人物时空行迹。" />
+  <meta property="og:description" id="og-description" content="从战国三家分晋到现代：18个朝代、156幅历史疆域与州道政区快照、点地溯源古今地名沿革、20座天下名关与7条历史人物时空行迹。" />
   <meta property="og:url" id="og-url" content="https://deanchensj.github.io/jiangshan-map/" />
   <meta property="og:image" content="https://deanchensj.github.io/jiangshan-map/assets/terrain_relief.webp" />
   <meta property="og:image:alt" content="江山时序 · 中国历史地图时间轴预览" />
@@ -65,14 +65,14 @@
         "en"
       ],
       "isAccessibleForFree": true,
-      "description": "交互式中国历史地图时间轴（公元前403年战国三家分晋至现代），涵盖18个历史时期、143幅多阶段疆域快照、州郡道省政区、黄河五期改道水系、470座古城古今地名沿革（点地溯源）、20座天下名关雄隘与7条历史人物行迹。",
+      "description": "交互式中国历史地图时间轴（公元前403年战国三家分晋至现代），涵盖18个历史时期、156幅多阶段疆域快照、州郡道省政区、黄河五期改道水系、476座古城古今地名沿革（点地溯源）、20座天下名关雄隘与7条历史人物行迹。",
       "temporalCoverage": "-0403/2026",
       "spatialCoverage": {
         "@type": "Place",
         "name": "中国及东亚历史疆域 (China & Historical East Asia)"
       },
       "featureList": [
-        "战国至现代18个朝代、143幅细分阶段历史疆域与州道政区地图",
+        "战国至现代18个朝代、156幅细分阶段历史疆域与州道政区地图",
         "点地溯源：点击任意坐标或古城查阅两千四百年政区沿革与历代战史",
         "青史行迹：秦始皇一统六国、张骞凿空西域、诸葛亮北伐、玄奘西行、李白壮游、苏轼贬谪、王阳明悟道行迹巡礼",
         "名关雄隘：函谷关、潼关、剑门关、雁门关、玉门关、山海关等20座历史关隘形胜与锁钥志",
@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261012m" />
+  <link rel="stylesheet" href="css/style.css?v=20261012n" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -407,9 +407,6 @@
       <div id="viewport-frame">
         <svg id="atlas-svg" class="terrain-active" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="中国历史地图">
           <defs>
-            <pattern id="diag-hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(35)">
-              <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(43,38,34,0.28)" stroke-width="2" />
-            </pattern>
             <filter id="label-halo" x="-20%" y="-20%" width="140%" height="140%">
               <feMorphology operator="dilate" radius="1.4" in="SourceAlpha" result="dilated" />
               <feFlood flood-color="#f6f1e6" flood-opacity="0.92" result="bg" />
@@ -580,7 +577,7 @@
   </div>
     <nav id="seo-atlas-directory" class="sr-only-seo" aria-label="中国历代疆域、青史行迹与天下名关索引">
       <h2>江山时序：中国历代疆域地图、州郡政区、古今地名对照与历史事件全览（公元前403年—现代）</h2>
-      <p>本交互式中国历史地图时间轴涵盖战国、秦、西汉、东汉、三国、西晋、东晋十六国、南北朝、隋、唐、五代十国、北宋（辽·西夏）、南宋（金·蒙）、元、明、清、中华民国与现代共18个历史时期、143幅疆域快照、470座历史名城古今对照、336项重大历史事件、20座名关雄隘与7条人物时空行迹。</p>
+      <p>本交互式中国历史地图时间轴涵盖战国、秦、西汉、东汉、三国、西晋、东晋十六国、南北朝、隋、唐、五代十国、北宋（辽·西夏）、南宋（金·蒙）、元、明、清、中华民国与现代共18个历史时期、156幅疆域快照、476座历史名城古今对照、345项重大历史事件、20座名关雄隘与7条人物时空行迹。</p>
       <section>
         <h3>一、历代疆域与州郡政区时间轴目录（Dynasties &amp; Historical Territories）</h3>
         <ul>
@@ -643,10 +640,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261012m"></script>
-  <script src="js/atlas_boot.js?v=20261012m"></script>
-  <script src="js/map_data.js?v=20261012m"></script>
-  <script src="js/lore_data.js?v=20261012m"></script>
-  <script src="js/app.js?v=20261012m"></script>
+  <script src="js/china_geo_data.js?v=20261012n"></script>
+  <script src="js/atlas_boot.js?v=20261012n"></script>
+  <script src="js/map_data.js?v=20261012n"></script>
+  <script src="js/lore_data.js?v=20261012n"></script>
+  <script src="js/app.js?v=20261012n"></script>
 </body>
 </html>
