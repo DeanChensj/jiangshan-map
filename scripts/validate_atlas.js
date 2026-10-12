@@ -750,13 +750,40 @@ function main() {
     }
   }
 
+  // CUJ 9m: Major Territorial Change Milestones & Map Linkage Verification
+  const territorialMilestoneChecks = [
+    { dyn: 'zhanguo', year: -300, keyword: '秦开' },
+    { dyn: 'donghan', year: 43, keyword: '马援' },
+    { dyn: 'sanguo', year: 238, keyword: '公孙渊' },
+    { dyn: 'tang', year: 635, keyword: '吐谷浑' },
+    { dyn: 'tang', year: 648, keyword: '王玄策' },
+    { dyn: 'nansong', year: 1234, keyword: '端平入洛' },
+    { dyn: 'yuan', year: 1288, keyword: '宣政院' },
+    { dyn: 'qing', year: 1881, keyword: '伊犁' },
+    { dyn: 'qing', year: 1898, keyword: '胶州湾' },
+    { dyn: 'roc', year: 1932, keyword: '满洲国' },
+    { dyn: 'roc', year: 1945, keyword: '台湾' },
+    { dyn: 'roc', year: 1946, keyword: '外蒙古' },
+  ];
+  for (const tmc of territorialMilestoneChecks) {
+    const d = dynasties.find((item) => item.key === tmc.dyn);
+    assert(d, `Missing dynasty ${tmc.dyn} in DYNASTY_DATA`);
+    const m = (d.milestones || []).find((item) => item.year === tmc.year);
+    assert(m, `Missing milestone for year ${tmc.year} in dynasty ${tmc.dyn}`);
+    assert(
+      m.headline.includes(tmc.keyword),
+      `Milestone ${tmc.dyn}:${tmc.year} headline does not contain "${tmc.keyword}": ${m.headline}`
+    );
+    assert(Array.isArray(m.coord) && m.coord.length === 2, `Milestone ${tmc.dyn}:${tmc.year} missing coordinate`);
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 12 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 13 E2E CUJs`);
 }
 
 main();
