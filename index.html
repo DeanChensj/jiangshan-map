@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261012n" />
+  <link rel="stylesheet" href="css/style.css?v=20261012-export" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -456,6 +456,10 @@
             <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
             <span id="lbl-reset-camera">复位视图</span>
           </button>
+          <button id="act-export-image" class="canvas-reset-btn" type="button" title="将当前视图存为图片">
+            <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 2.5v7M5 6.8L8 9.8l3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 10.5v2.2c0 .5.4.8.8.8h9.4c.4 0 .8-.3.8-.8v-2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="lbl-export-image">存图</span>
+          </button>
           <div id="scale-bar-box" aria-hidden="true">
             <div class="scale-label" id="scale-label-text">500 km · 约一千里</div>
             <div class="scale-ruler" id="scale-ruler-bar"></div>
@@ -640,10 +644,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261012n"></script>
-  <script src="js/atlas_boot.js?v=20261012n"></script>
-  <script src="js/map_data.js?v=20261012n"></script>
-  <script src="js/lore_data.js?v=20261012n"></script>
-  <script src="js/app.js?v=20261012n"></script>
+  <script src="js/china_geo_data.js?v=20261012-export"></script>
+  <script src="js/atlas_boot.js?v=20261012-export"></script>
+  <script src="js/map_data.js?v=20261012-export"></script>
+  <script src="js/lore_data.js?v=20261012-export"></script>
+  <script src="js/app.js?v=20261012-export"></script>
 </body>
 </html>

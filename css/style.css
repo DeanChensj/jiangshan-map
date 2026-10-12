@@ -3804,3 +3804,49 @@ html[lang="en"] #act-toggle-pane .tp-label {
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+/* Save map as image (#act-export-image) */
+#viewport-frame.has-active-challenge #act-export-image {
+  display: none;
+}
+
+.canvas-reset-btn.is-busy {
+  cursor: progress;
+  color: var(--text-muted);
+  border-color: var(--hairline);
+  background: rgba(243, 238, 228, 0.88);
+}
+
+.canvas-reset-btn.is-busy .btn-svg {
+  animation: export-busy-pulse 1s ease-in-out infinite;
+}
+
+@keyframes export-busy-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+#export-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 64px;
+  z-index: 30;
+  max-width: calc(100% - 32px);
+  padding: 7px 14px;
+  background: rgba(43, 38, 34, 0.88);
+  color: var(--bg-parchment);
+  border-radius: 8px;
+  font-family: var(--sans-stack);
+  font-size: 12px;
+  box-shadow: var(--card-shadow);
+  transform: translate(-50%, 6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#export-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

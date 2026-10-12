@@ -1077,13 +1077,63 @@ function main() {
     );
   }
 
+  // CUJ 9r: Save map as image (font subsetting, viewBox fit, caption & filename)
+  assert.strictEqual(
+    JSON.stringify(ctrl._exportUnicodeRanges('U+4e00-4e3f, U+3000, U+26??')),
+    JSON.stringify([[0x4e00, 0x4e3f], [0x3000, 0x3000], [0x2600, 0x26ff]])
+  );
+  const fontCss = [
+    "@font-face { font-family: 'Noto Serif SC'; font-weight: 700; src: url(a); unicode-range: U+5510-5520; }",
+    "@font-face { font-family: 'Noto Serif SC'; font-weight: 700; src: url(b); unicode-range: U+9f00-9fff; }",
+    "@font-face { font-family: 'Noto Serif SC'; font-weight: 400; src: url(c); unicode-range: U+5510-5520; }",
+    "@font-face { font-family: 'Noto Sans SC'; font-weight: 500; src: url(d); unicode-range: U+00??; }",
+    "@font-face { font-family: 'Noto Sans SC'; font-weight: 400; src: url(e); }",
+  ].join('\n');
+  const pickedFonts = ctrl._exportFontFaceBlocks(fontCss, '唐 A', { 'Noto Serif SC': [600], 'Noto Sans SC': [600] });
+  assert.strictEqual(
+    pickedFonts.map((b) => b.match(/url\((\w)\)/)[1]).join(','),
+    'a,d',
+    `Expected only the nearest-weight faces whose unicode-range covers the text, got ${JSON.stringify(pickedFonts)}`
+  );
+  assert.strictEqual(ctrl._exportFontFaceBlocks(fontCss, '唐', { Missing: [400] }).length, 0);
+  assert.strictEqual(ctrl._exportScale(1100, 877), 2);
+  assert.strictEqual(ctrl._exportScale(3000, 1000), 4096 / 3000);
+  ctrl.camera = { ...ctrl._getDefaultCamera() };
+  const exportVb = ctrl._exportViewBox(1000, 420);
+  assert(
+    Math.abs(exportVb.h - ctrl.camera.h) < 1e-6 && exportVb.w > ctrl.camera.w &&
+      Math.abs(exportVb.x + exportVb.w / 2 - (ctrl.camera.x + ctrl.camera.w / 2)) < 1e-6,
+    `Expected export viewBox to widen around the camera center, got ${JSON.stringify(exportVb)}`
+  );
+  const tangIdx = dynasties.findIndex((d) => d.key === 'tang');
+  Object.assign(ctrl, { dynastyIdx: tangIdx, year: 741, activeTrace: null, activeTraceLabel: '' });
+  ctrl.lastRenderedSnap = snapshots[ctrl._resolveSnapKey(dynasties[tangIdx], 741)];
+  const capZh = ctrl._exportCaption();
+  assert(
+    capZh.heading.includes('开元二十九年') && capZh.heading.includes('741'),
+    `Expected zh export heading with era and year, got ${capZh.heading}`
+  );
+  assert.strictEqual(capZh.filename, 'jiangshan_741_tang.png');
+  assert.strictEqual(capZh.url, 'https://deanchensj.github.io/jiangshan-map/?year=741');
+  assert(capZh.legend.length > 0 && capZh.legend.every((p) => p.name && p.tint), 'Expected a polity legend in the export caption');
+  Object.assign(ctrl, { activeTrace: [120.15, 30.25], activeTraceLabel: '临安' });
+  assert.strictEqual(ctrl._exportViewUrl(), 'https://deanchensj.github.io/jiangshan-map/?year=741&place=临安&zoom=2.00');
+  Object.assign(ctrl, { activeTrace: null, activeTraceLabel: '', locale: 'en' });
+  const capEn = ctrl._exportCaption();
+  assert(
+    capEn.heading.includes('741 CE') && !/[\u4e00-\u9fff]/.test(capEn.heading) && capEn.url.endsWith('&lang=en'),
+    `Expected English export heading and lang=en URL, got ${JSON.stringify(capEn)}`
+  );
+  Object.assign(ctrl, { locale: 'zh', year: -300, dynastyIdx: dynasties.findIndex((d) => d.key === 'zhanguo') });
+  assert.strictEqual(ctrl._exportCaption().filename, 'jiangshan_300BCE_zhanguo.png');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 17 E2E CUJs`);
 }
 
 main();

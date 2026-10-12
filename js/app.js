@@ -441,7 +441,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012-export').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -465,7 +465,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012-export').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -946,6 +946,7 @@
       if (actReset) {
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
+      this._syncExportButton();
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       lblChal.textContent = this.challenge
         ? this.uiStr('btn_quiz_active', '挑战中…')
@@ -3656,6 +3657,474 @@
           : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
     }
 
+    // ---------------- Save Map as Image ----------------
+    static get EXPORT_STYLE_PROPS() {
+      return [
+        'fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-opacity',
+        'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin',
+        'stroke-miterlimit', 'opacity', 'visibility', 'filter', 'mix-blend-mode',
+        'vector-effect', 'paint-order', 'clip-path', 'mask', 'marker-start', 'marker-mid',
+        'marker-end', 'stop-color', 'stop-opacity', 'font-family', 'font-size',
+        'font-weight', 'font-style', 'letter-spacing', 'text-anchor', 'dominant-baseline',
+        'shape-rendering',
+      ];
+    }
+
+    _exportViewBox(rw, rh) {
+      const { x, y, w, h } = this.camera;
+      const s = Math.min(rw / w, rh / h);
+      const vw = rw / s;
+      const vh = rh / s;
+      return { x: x - (vw - w) * 0.5, y: y - (vh - h) * 0.5, w: vw, h: vh };
+    }
+
+    _exportScale(w, h) {
+      return Math.min(2, 4096 / Math.max(w, h, 1));
+    }
+
+    _exportUnicodeRanges(rangeText) {
+      return String(rangeText)
+        .split(',')
+        .map((tok) => tok.trim().replace(/^U\+/i, ''))
+        .filter(Boolean)
+        .map((tok) => {
+          const [lo, hi] = tok.includes('-')
+            ? tok.split('-')
+            : [tok.replace(/\?/g, '0'), tok.replace(/\?/g, 'f')];
+          return [parseInt(lo, 16), parseInt(hi.replace(/^U\+/i, ''), 16)];
+        })
+        .filter(([lo, hi]) => !Number.isNaN(lo) && !Number.isNaN(hi));
+    }
+
+    _exportFontFaceBlocks(cssText, text, families) {
+      const blocks = String(cssText || '').match(/@font-face\s*\{[^}]*\}/g) || [];
+      const codes = [];
+      for (const ch of new Set(String(text || ''))) {
+        if (ch.trim()) codes.push(ch.codePointAt(0));
+      }
+      const faces = blocks.map((block) => {
+        const fam = block.match(/font-family:\s*['"]?([^;'"]+)['"]?\s*;/);
+        const wt = block.match(/font-weight:\s*(\d+)/);
+        const ur = block.match(/unicode-range:\s*([^;}]+)/);
+        return {
+          block,
+          family: fam ? fam[1].trim() : '',
+          weight: wt ? Number(wt[1]) : 400,
+          ranges: ur ? this._exportUnicodeRanges(ur[1]) : null,
+        };
+      });
+      const wanted = new Map();
+      for (const [family, weights] of Object.entries(families || {})) {
+        const available = Array.from(
+          new Set(faces.filter((f) => f.family === family).map((f) => f.weight))
+        );
+        if (!available.length) continue;
+        const picks = new Set();
+        for (const w of weights) {
+          picks.add(
+            available.reduce((best, a) =>
+              Math.abs(a - w) < Math.abs(best - w) ||
+              (Math.abs(a - w) === Math.abs(best - w) && a > best)
+                ? a
+                : best
+            )
+          );
+        }
+        wanted.set(family, picks);
+      }
+      return faces
+        .filter(
+          (f) =>
+            wanted.has(f.family) &&
+            wanted.get(f.family).has(f.weight) &&
+            (!f.ranges ||
+              codes.some((c) => f.ranges.some(([lo, hi]) => c >= lo && c <= hi)))
+        )
+        .map((f) => f.block);
+    }
+
+    _exportViewUrl() {
+      const base =
+        location.origin && location.origin !== 'null'
+          ? location.origin + location.pathname
+          : String(location.href || '').split(/[?#]/)[0];
+      const params = [['year', String(Math.round(this.year))]];
+      if (this.activeTrace) {
+        if (this.activeTraceLabel) {
+          params.push(['place', this.activeTraceLabel]);
+        } else {
+          params.push(['lng', this.activeTrace[0].toFixed(2)], ['lat', this.activeTrace[1].toFixed(2)]);
+        }
+        params.push(['zoom', this.camera.zoom.toFixed(2)]);
+      } else {
+        const def = this._getDefaultCamera();
+        const moved =
+          Math.abs(this.camera.zoom - def.zoom) > 0.01 ||
+          Math.abs(this.camera.x - def.x) > 1 ||
+          Math.abs(this.camera.y - def.y) > 1;
+        if (moved) {
+          const [lng, lat] = this.projector.toGeo(
+            this.camera.x + this.camera.w * 0.5,
+            this.camera.y + this.camera.h * 0.5
+          );
+          params.push(['zoom', this.camera.zoom.toFixed(2)], ['center', `${lng.toFixed(2)},${lat.toFixed(2)}`]);
+        }
+      }
+      if (this.locale === 'en') params.push(['lang', 'en']);
+      return `${base}?${params.map(([k, v]) => `${k}=${v}`).join('&')}`;
+    }
+
+    _exportCaption() {
+      const d = this.dynasties[this.dynastyIdx];
+      const dyn = d ? this.dynastyName(d) : '';
+      const era = d ? this.formatEraLabel(this.year, d) : '';
+      const yr = this.formatYear(this.year);
+      const parts =
+        !era || era === dyn ? [dyn, yr] : era.startsWith(`${dyn} · `) ? [era, yr] : [dyn, era, yr];
+      const y = Math.round(this.year);
+      const snap = this.lastRenderedSnap || {};
+      return {
+        seal: this.uiStr('brand_seal', '江山时序'),
+        heading: parts.filter(Boolean).join(' · '),
+        legend: (snap.polities || [])
+          .filter((p) => p.role !== 'neighbor')
+          .map((p) => ({ name: this.trTerm(p.title), tint: p.tint, dashed: p.role === 'protectorate' })),
+        url: this._exportViewUrl(),
+        caveat: this.uiStr(
+          'caveat',
+          '疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。'
+        ),
+        filename: `jiangshan_${y <= 0 ? `${-y || 1}BCE` : y}_${d ? d.key : 'map'}.png`,
+      };
+    }
+
+    _exportCloneSvg(rect) {
+      const clone = this.svg.cloneNode(true);
+      const props = HistoricalAtlasController.EXPORT_STYLE_PROPS;
+      const families = {};
+      const walk = (src, dst) => {
+        const cs = getComputedStyle(src);
+        if (cs.display === 'none') {
+          dst.remove();
+          return;
+        }
+        const decl = [];
+        for (const p of props) {
+          const v = cs.getPropertyValue(p);
+          if (v) decl.push(`${p}:${v.replace(/url\(\s*["']?[^"')]*?(#[^"')]+)["']?\s*\)/g, 'url($1)')}`);
+        }
+        dst.setAttribute('style', decl.join(';'));
+        if (src.tagName === 'text' || src.tagName === 'tspan') {
+          const fam = cs.fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '');
+          (families[fam] = families[fam] || new Set()).add(Number(cs.fontWeight) || 400);
+        }
+        const sc = Array.from(src.children);
+        const dc = Array.from(dst.children);
+        for (let i = 0; i < sc.length; i++) {
+          if (sc[i].tagName !== 'defs') walk(sc[i], dc[i]);
+        }
+      };
+      walk(this.svg, clone);
+      const vb = this._exportViewBox(rect.width, rect.height);
+      clone.setAttribute('xmlns', SVG_NS);
+      clone.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+      clone.setAttribute('width', rect.width);
+      clone.setAttribute('height', rect.height);
+      for (const k of Object.keys(families)) families[k] = Array.from(families[k]);
+      return { clone, families };
+    }
+
+    _exportDataUrl(url) {
+      this._exportDataCache = this._exportDataCache || {};
+      if (!this._exportDataCache[url]) {
+        this._exportDataCache[url] = fetch(url)
+          .then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.blob();
+          })
+          .then(
+            (blob) =>
+              new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(reader.error);
+                reader.readAsDataURL(blob);
+              })
+          )
+          .catch((err) => {
+            delete this._exportDataCache[url];
+            throw err;
+          });
+      }
+      return this._exportDataCache[url];
+    }
+
+    async _exportFontStyle(families, text) {
+      const link = document.querySelector('link[rel="stylesheet"][href*="fonts.googleapis.com"]');
+      if (!link) return '';
+      try {
+        if (!this._exportFontCss) {
+          this._exportFontCss = fetch(link.href).then((res) => (res.ok ? res.text() : ''));
+        }
+        const css = await this._exportFontCss;
+        if (!css) this._exportFontCss = null;
+        const blocks = this._exportFontFaceBlocks(css, text, families);
+        const inlined = await Promise.all(
+          blocks.map(async (block) => {
+            const m = block.match(/url\((['"]?)([^'")]+)\1\)/);
+            if (!m) return '';
+            try {
+              return block.replace(m[0], `url(${await this._exportDataUrl(m[2])})`);
+            } catch (_) {
+              return '';
+            }
+          })
+        );
+        return inlined.join('\n');
+      } catch (_) {
+        this._exportFontCss = null;
+        return '';
+      }
+    }
+
+    _exportWrapText(ctx, text, maxW, mode = 'text') {
+      const words = (str) =>
+        String(str).match(/[\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef][。，、；：！？）》」』]?|[^\s\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef]+\s*|\s+/g) || [];
+      let tokens;
+      if (mode === 'url') {
+        tokens = Array.from(String(text));
+      } else if (mode === 'heading') {
+        const segs = String(text).split(' · ');
+        tokens = segs.flatMap((seg, i) => {
+          const tok = i < segs.length - 1 ? `${seg} · ` : seg;
+          return ctx.measureText(tok).width > maxW ? words(tok) : [tok];
+        });
+      } else {
+        tokens = words(text);
+      }
+      const lines = [];
+      let line = '';
+      for (const tok of tokens) {
+        if (line && ctx.measureText(line + tok).width > maxW) {
+          lines.push(line.replace(/\s*·?\s*$/, ''));
+          line = tok.trimStart();
+        } else {
+          line += tok;
+        }
+      }
+      if (line.trim()) lines.push(line.replace(/\s*·?\s*$/, ''));
+      return lines;
+    }
+
+    _exportDrawCartouche(ctx, cap, width, s, top, draw) {
+      const pad = 14 * s;
+      const fonts = {
+        seal: `${19 * s}px 'Ma Shan Zheng', 'STKaiti', 'KaiTi', serif`,
+        head: `700 ${15.5 * s}px 'Noto Serif SC', 'Songti SC', serif`,
+        legend: `500 ${11 * s}px 'Noto Sans SC', 'PingFang SC', sans-serif`,
+        url: `400 ${10.5 * s}px 'Noto Sans SC', 'PingFang SC', sans-serif`,
+        caveat: `400 ${9.5 * s}px 'Noto Sans SC', 'PingFang SC', sans-serif`,
+      };
+      ctx.textBaseline = 'middle';
+      let y = top + pad;
+
+      ctx.font = fonts.seal;
+      const sealW = ctx.measureText(cap.seal).width + 12 * s;
+      const sealH = 28 * s;
+      ctx.font = fonts.head;
+      const headX = pad + sealW + 10 * s;
+      const headLines = this._exportWrapText(ctx, cap.heading, width - headX - pad, 'heading');
+      const headLh = 21 * s;
+      const rowH = Math.max(sealH, headLines.length * headLh);
+      if (draw) {
+        ctx.fillStyle = '#b5452f';
+        ctx.fillRect(pad, y + (rowH - sealH) * 0.5, sealW, sealH);
+        ctx.fillStyle = '#f6f1e6';
+        ctx.font = fonts.seal;
+        ctx.fillText(cap.seal, pad + 6 * s, y + rowH * 0.5 + 1 * s);
+        ctx.fillStyle = '#2b2622';
+        ctx.font = fonts.head;
+        const headTop = y + (rowH - headLines.length * headLh) * 0.5;
+        headLines.forEach((ln, i) => ctx.fillText(ln, headX, headTop + headLh * (i + 0.5)));
+      }
+      y += rowH;
+
+      if (cap.legend.length) {
+        y += 8 * s;
+        ctx.font = fonts.legend;
+        const lh = 18 * s;
+        const sw = 14 * s;
+        let x = pad;
+        let rows = 1;
+        for (const item of cap.legend) {
+          const w = sw + 4 * s + ctx.measureText(item.name).width;
+          if (x > pad && x + w > width - pad) {
+            if (rows === 3) break;
+            rows += 1;
+            x = pad;
+          }
+          if (draw) {
+            const cy = y + lh * (rows - 0.5);
+            ctx.fillStyle = `${item.tint}55`;
+            ctx.fillRect(x, cy - 5 * s, sw, 10 * s);
+            ctx.strokeStyle = item.tint;
+            ctx.lineWidth = 1.3 * s;
+            ctx.setLineDash(item.dashed ? [3 * s, 2 * s] : []);
+            ctx.strokeRect(x, cy - 5 * s, sw, 10 * s);
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#2b2622';
+            ctx.fillText(item.name, x + sw + 4 * s, cy);
+          }
+          x += w + 12 * s;
+        }
+        y += rows * lh;
+      }
+
+      y += 7 * s;
+      if (draw) {
+        ctx.fillStyle = 'rgba(43, 38, 34, 0.14)';
+        ctx.fillRect(pad, y, width - pad * 2, Math.max(1, s * 0.6));
+      }
+      y += 7 * s;
+      ctx.font = fonts.url;
+      const urlLines = this._exportWrapText(ctx, cap.url, width - pad * 2, 'url');
+      if (draw) {
+        ctx.fillStyle = '#5d554c';
+        urlLines.forEach((ln, i) => ctx.fillText(ln, pad, y + 14 * s * (i + 0.5)));
+      }
+      y += urlLines.length * 14 * s + 2 * s;
+      ctx.font = fonts.caveat;
+      const cavLines = this._exportWrapText(ctx, cap.caveat, width - pad * 2);
+      if (draw) {
+        ctx.fillStyle = '#8d847a';
+        cavLines.forEach((ln, i) => ctx.fillText(ln, pad, y + 13 * s * (i + 0.5)));
+      }
+      y += cavLines.length * 13 * s + pad;
+      return { height: y - top, fonts };
+    }
+
+    async _deliverExport(blob, filename) {
+      const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      if (coarse && navigator.canShare && navigator.share && typeof File === 'function') {
+        const file = new File([blob], filename, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: document.title });
+            return;
+          } catch (err) {
+            if (err && err.name === 'AbortError') return;
+          }
+        }
+      }
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(href), 4000);
+    }
+
+    _showExportToast(msg) {
+      let toast = this._id('export-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'export-toast';
+        toast.setAttribute('role', 'status');
+        this._id('viewport-frame').appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('is-visible');
+      clearTimeout(this._exportToastTimer);
+      this._exportToastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2600);
+    }
+
+    _syncExportButton() {
+      const btn = this._id('act-export-image');
+      const lbl = this._id('lbl-export-image');
+      if (!btn || !lbl) return;
+      lbl.textContent = this._exportBusy
+        ? this.uiStr('export_busy', '生成中…')
+        : this.uiStr('btn_export', '存图');
+      btn.title = this.uiStr('export_tip', '将当前视图存为图片');
+      btn.disabled = Boolean(this._exportBusy);
+      btn.classList.toggle('is-busy', Boolean(this._exportBusy));
+      btn.setAttribute('aria-busy', this._exportBusy ? 'true' : 'false');
+    }
+
+    async exportMapImage() {
+      if (this._exportBusy || this.challenge || !this.svg) return;
+      this._exportBusy = true;
+      this._syncExportButton();
+      try {
+        if (document.fonts && document.fonts.ready) await document.fonts.ready;
+        const rect = this.svg.getBoundingClientRect();
+        const { clone, families } = this._exportCloneSvg(rect);
+        const terrainImg = clone.querySelector('#terrain-relief-img');
+        const [fontCss, terrainHref] = await Promise.all([
+          this._exportFontStyle(families, clone.textContent),
+          terrainImg
+            ? this._exportDataUrl(terrainImg.getAttribute('href')).catch(() => null)
+            : null,
+        ]);
+        if (terrainImg) {
+          if (terrainHref) terrainImg.setAttribute('href', terrainHref);
+          else terrainImg.remove();
+        }
+        if (fontCss) {
+          const style = document.createElementNS(SVG_NS, 'style');
+          style.textContent = fontCss;
+          clone.insertBefore(style, clone.firstChild);
+        }
+
+        const cap = this._exportCaption();
+        const s = this._exportScale(rect.width, rect.height * 1.25);
+        const width = Math.round(rect.width * s);
+        const mapH = Math.round(rect.height * s);
+        const probe = document.createElement('canvas').getContext('2d');
+        const { fonts } = this._exportDrawCartouche(probe, cap, width, s, 0, false);
+        if (document.fonts && document.fonts.load) {
+          const sample = `${cap.seal}${cap.heading}${cap.legend.map((l) => l.name).join('')}${cap.url}${cap.caveat}`;
+          await Promise.all(Object.values(fonts).map((f) => document.fonts.load(f, sample).catch(() => null)));
+        }
+        const band = this._exportDrawCartouche(probe, cap, width, s, 0, false).height;
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = mapH + Math.round(band);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = getComputedStyle(this._id('viewport-frame')).backgroundColor || '#d6e0de';
+        ctx.fillRect(0, 0, width, mapH);
+
+        const svgUrl = URL.createObjectURL(
+          new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml;charset=utf-8' })
+        );
+        try {
+          const img = new Image();
+          img.src = svgUrl;
+          await img.decode();
+          await new Promise((r) => setTimeout(r, 60));
+          ctx.drawImage(img, 0, 0, width, mapH);
+        } finally {
+          URL.revokeObjectURL(svgUrl);
+        }
+        ctx.fillStyle = '#f3eee4';
+        ctx.fillRect(0, mapH, width, canvas.height - mapH);
+        ctx.fillStyle = '#b5452f';
+        ctx.fillRect(0, mapH, width, Math.max(1, Math.round(1.5 * s)));
+        this._exportDrawCartouche(ctx, cap, width, s, mapH, true);
+
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('empty canvas');
+        await this._deliverExport(blob, cap.filename);
+      } catch (_) {
+        this._showExportToast(this.uiStr('export_fail', '图片生成失败，请重试'));
+      } finally {
+        this._exportBusy = false;
+        this._syncExportButton();
+      }
+    }
+
     _syncTogglePaneButton() {
       const btn = this._id('act-toggle-pane');
       if (!btn) return;
@@ -5819,6 +6288,7 @@
       }
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
+      this._id('act-export-image').addEventListener('click', () => this.exportMapImage());
       const togglePaneBtn = this._id('act-toggle-pane');
       if (togglePaneBtn) {
         togglePaneBtn.addEventListener('click', () => {

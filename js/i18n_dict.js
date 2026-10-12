@@ -103,7 +103,11 @@ window.EN_LOCALE = {
     "tag_neighbor": "(Surrounding Polity)",
     "tag_prot": "(Protectorate / Tributary)",
     "tag_hist": "(Historical Realm)",
-    "now_prov": "Today: "
+    "now_prov": "Today: ",
+    "btn_export": "Save image",
+    "export_tip": "Save the current map view as a PNG image",
+    "export_busy": "Saving…",
+    "export_fail": "Could not create the image. Please try again."
   },
   "dynasties": {
     "zhanguo": {
