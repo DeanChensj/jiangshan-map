@@ -777,13 +777,71 @@ function main() {
     assert(Array.isArray(m.coord) && m.coord.length === 2, `Milestone ${tmc.dyn}:${tmc.year} missing coordinate`);
   }
 
+  // CUJ 9n: Historical Landmark Events Full Integrity, Bilingual Precision & Quick Search Coverage
+  const dynKeySet = new Set(dynasties.map((d) => d.key));
+  for (const lm of loreData.PLACE_LANDMARK_EVENTS) {
+    assert(
+      dynKeySet.has(lm.dynastyKey),
+      `Invalid dynastyKey "${lm.dynastyKey}" in landmark event: ${lm.zh}`
+    );
+    const d = dynasties.find((dyn) => dyn.key === lm.dynastyKey);
+    assert(
+      lm.year >= d.fromYear && lm.year <= d.toYear,
+      `Landmark event year ${lm.year} out of bounds [${d.fromYear}, ${d.toYear}] for ${d.key}: ${lm.zh}`
+    );
+    assert(
+      Array.isArray(lm.coord) &&
+        lm.coord.length === 2 &&
+        lm.coord[0] >= 60 &&
+        lm.coord[0] <= 135 &&
+        lm.coord[1] >= 15 &&
+        lm.coord[1] <= 55,
+      `Out-of-bounds landmark coord ${JSON.stringify(lm.coord)} in ${lm.zh}`
+    );
+    assert(
+      typeof lm.zh === 'string' &&
+        lm.zh.trim().length >= 5 &&
+        typeof lm.en === 'string' &&
+        lm.en.trim().length >= 5 &&
+        !/[\u4e00-\u9fa5]/.test(lm.en),
+      `Invalid bilingual text in landmark event: ${JSON.stringify(lm)}`
+    );
+    assert(
+      typeof lm.site === 'string' &&
+        lm.site.trim().length > 0 &&
+        typeof lm.siteEn === 'string' &&
+        lm.siteEn.trim().length > 0 &&
+        !/[\u4e00-\u9fa5]/.test(lm.siteEn),
+      `Invalid bilingual site in landmark event: ${JSON.stringify(lm)}`
+    );
+  }
+
+  // Quick search coverage verification for landmark events and newly indexed places
+  const sampleSearchQueries = [
+    ['迁都咸阳', 'event'],
+    ['水淹七军', 'event'],
+    ['风波亭', 'event'],
+    ['积水潭', 'event'],
+    ['井陉之战', 'event'],
+    ['洛邑', 'gazetteer'],
+    ['东京汴梁', 'gazetteer'],
+    ['井陉关', 'pass'],
+  ];
+  for (const [query, expectedKind] of sampleSearchQueries) {
+    const hits = ctrl._queryQuickSearch(query);
+    assert(
+      hits.length > 0 && hits.some((h) => h.kind === expectedKind),
+      `Expected quick search query "${query}" to return at least one result of kind "${expectedKind}", got: ${JSON.stringify(hits.map((h) => ({ title: h.titleZh, kind: h.kind })))}`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 13 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 14 E2E CUJs`);
 }
 
 main();
