@@ -775,6 +775,12 @@ function main() {
       `Milestone ${tmc.dyn}:${tmc.year} headline does not contain "${tmc.keyword}": ${m.headline}`
     );
     assert(Array.isArray(m.coord) && m.coord.length === 2, `Milestone ${tmc.dyn}:${tmc.year} missing coordinate`);
+    const snapAtYear = ctrl._resolveSnapKey(d, tmc.year);
+    const snapPrevYear = ctrl._resolveSnapKey(d, tmc.year - 1);
+    assert(
+      snapAtYear !== snapPrevYear,
+      `Territorial milestone ${tmc.dyn}:${tmc.year} (${tmc.keyword}) must trigger a real polygon snapshot transition, but both ${tmc.year - 1} and ${tmc.year} resolved to "${snapAtYear}"`
+    );
   }
 
   // CUJ 9n: Historical Landmark Events Full Integrity, Bilingual Precision & Quick Search Coverage
