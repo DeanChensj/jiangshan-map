@@ -435,7 +435,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012l').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012m').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +459,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012l').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012m').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -731,19 +731,10 @@
       return digits[tens] + '十' + (rem ? digits[rem] : '');
     }
 
-    formatEraLabel(y, dynasty) {
-      if (this.locale === 'en') {
-        return dynasty ? this.dynastyName(dynasty) : '';
-      }
+    _resolveEraSpan(y, dynasty) {
       const yr = Math.round(y);
-      if (yr >= 1949) {
-        if (dynasty && dynasty.key === 'roc' && yr === 1949) {
-          return '民国三十八年';
-        }
-        return dynasty ? this.dynastyName(dynasty) : '现代';
-      }
       if (dynasty && dynasty.key === 'yuan' && yr >= 1264 && yr < 1279) {
-        return `元至元${this._toChineseEraNum(yr - 1264 + 1)}年`;
+        return [1264, '元至元', 1, '元世祖', 'Kublai Khan (Shizu)'];
       }
       const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
       let match = spans[0];
@@ -764,9 +755,44 @@
           break;
         }
       }
-      const [startY, prefix, baseNum = 1] = match;
+      return match;
+    }
+
+    _formatSpanEraZh(sp, targetNum) {
+      const [startY, prefix, , monarchZh = ''] = sp;
+      const numStr = this._toChineseEraNum(targetNum);
+      if (startY >= -140 && startY < 1368 && monarchZh) {
+        const dynPrefixes = [
+          '南朝宋', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
+          '北魏', '北齐', '北周', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
+          '北宋', '南宋', '汉', '魏', '隋', '唐', '元',
+        ];
+        const dynPfx = dynPrefixes.find((dp) => prefix.startsWith(dp)) || '';
+        const eraName = dynPfx ? prefix.slice(dynPfx.length) : prefix;
+        return `${monarchZh}·${eraName}${numStr}年`;
+      }
+      return `${prefix}${numStr}年`;
+    }
+
+    formatEraLabel(y, dynasty) {
+      const yr = Math.round(y);
+      if (this.locale === 'en') {
+        const dynName = dynasty ? this.dynastyName(dynasty) : '';
+        if (yr >= 1912) return dynName;
+        const match = this._resolveEraSpan(yr, dynasty);
+        const monarchEn = match && match[4];
+        return monarchEn ? `${dynName} · ${monarchEn}` : dynName;
+      }
+      if (yr >= 1949) {
+        if (dynasty && dynasty.key === 'roc' && yr === 1949) {
+          return '民国三十八年';
+        }
+        return dynasty ? this.dynastyName(dynasty) : '现代';
+      }
+      const match = this._resolveEraSpan(yr, dynasty);
+      const [startY, , baseNum = 1] = match;
       const num = yr - startY + baseNum;
-      return `${prefix}${this._toChineseEraNum(num)}年`;
+      return this._formatSpanEraZh(match, num);
     }
 
     applyLocale() {
@@ -961,8 +987,8 @@
       if (searchInp) {
         searchInp.placeholder =
           this.locale === 'en'
-            ? 'Search city / prefecture / era / journey'
-            : '搜古今地名 / 州府 / 年号 / 青史行迹';
+            ? 'Search city / prefecture / emperor or era / journey'
+            : '搜古今地名 / 州府 / 帝王年号 / 青史行迹';
       }
       this._syncTogglePaneButton();
 
@@ -3185,7 +3211,16 @@
       const bubble = this._id('scrubber-Bubble');
       const bubbleText = this._id('bubble-text');
       if (bubble && bubbleText) {
-        bubbleText.textContent = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
+        const eraText = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
+        bubbleText.textContent = eraText;
+        if (this.year >= 1368 && this.year < 1912) {
+          const sp = this._resolveEraSpan(this.year, d);
+          const templeZh = sp && sp[3];
+          bubble.title =
+            this.locale === 'en' || !templeZh ? eraText : `${eraText}（${templeZh}）`;
+        } else {
+          bubble.title = eraText;
+        }
         const wrap = this._id('scrubber-rail-wrap');
         const railW = wrap ? wrap.clientWidth : 300;
         const bW = bubble.offsetWidth || 180;
@@ -5223,30 +5258,79 @@
       const numMatch = isYuanNian
         ? [q, q.slice(0, -1), '元']
         : q.match(/^(.*?)([一二三四五六七八九十]+|\d+)$/);
-      const prefixQ = numMatch ? numMatch[1] : q;
+      const prefixQ = (numMatch ? numMatch[1] : q).replace(/[·\s]/g, '');
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
+      const seenMonarchOnly = new Set();
 
       spans.forEach((sp, idx) => {
-        const [startY, prefix, baseNum = 1] = sp;
+        const [startY, prefix, baseNum = 1, monarchZh = '', monarchEn = ''] = sp;
         const endY = idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948;
-        if (prefixQ && prefix.includes(prefixQ)) {
+        if (!prefixQ) return;
+        const shortMonarch = monarchZh
+          .replace(/^(?:西|东|北|南|南朝|武周)/, '')
+          .replace(/^汉高帝$/, '汉高祖');
+        const dynPrefixes = [
+          '南朝宋', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
+          '北魏', '北齐', '北周', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
+          '北宋', '南宋', '汉', '魏', '隋', '唐', '元', '明', '清',
+        ];
+        const dynPfx = dynPrefixes.find((dp) => prefix.startsWith(dp)) || '';
+        const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
+        const fullCombo = monarchZh ? `${monarchZh}${eraOnly}` : prefix;
+        const shortCombo = shortMonarch ? `${shortMonarch}${eraOnly}` : prefix;
+
+        const matchEra =
+          prefix.includes(prefixQ) ||
+          fullCombo.includes(prefixQ) ||
+          shortCombo.includes(prefixQ);
+        const matchMonarchOnly =
+          !matchEra &&
+          yearNum === null &&
+          monarchZh &&
+          (monarchZh.includes(prefixQ) ||
+            shortMonarch.includes(prefixQ) ||
+            (prefixQ === '汉高祖' && prefix === '汉高帝'));
+
+        if (matchEra || matchMonarchOnly) {
+          if (matchMonarchOnly) {
+            if (seenMonarchOnly.has(monarchZh)) return;
+            seenMonarchOnly.add(monarchZh);
+          } else if (
+            yearNum === null &&
+            monarchZh &&
+            (prefixQ === monarchZh || prefixQ === shortMonarch)
+          ) {
+            if (seenMonarchOnly.has(monarchZh)) return;
+            seenMonarchOnly.add(monarchZh);
+          }
           const targetNum = yearNum !== null ? yearNum : baseNum;
           const targetY = startY + (targetNum - baseNum);
           if (targetY >= startY && targetY <= endY + 5) {
             const dIdx = this._findDynastyIndex(targetY);
             const d = this.dynasties[dIdx];
-            const label = `${prefix}${this._toChineseEraNum(targetNum)}年`;
+            const label = this._formatSpanEraZh(sp, targetNum);
+            const titleZh =
+              startY >= 1368 && startY < 1912 && monarchZh
+                ? `${label} · ${monarchZh}`
+                : label;
             const yrZh = targetY <= 0 ? `公元前${-targetY}年` : `公元 ${targetY} 年`;
             const yrEn = targetY <= 0 ? `${-targetY} BCE` : `${targetY} CE`;
+            const enMonarchPart = monarchEn ? ` · ${monarchEn}` : '';
+            const isExactOrSuffix =
+              prefix.endsWith(prefixQ) ||
+              fullCombo.endsWith(prefixQ) ||
+              shortCombo.endsWith(prefixQ) ||
+              monarchZh === prefixQ ||
+              shortMonarch === prefixQ;
             hits.push({
               kind: 'era',
               dynasty: d,
               year: targetY,
-              titleZh: label,
+              titleZh,
               subZh: yrZh,
-              titleEn: `${label} (${yrEn})`,
+              titleEn: `${label}${enMonarchPart} (${yrEn})`,
               subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
-              score: prefix.endsWith(prefixQ) ? 120 : 95,
+              score: isExactOrSuffix ? 120 : 95,
             });
           }
         }
