@@ -261,6 +261,7 @@
       this.journeyTimer = null;
       this.challenge = null;
       this.challengeVariant = 'locate';
+      this.compare = null;
       this.paneCollapsed = false;
       this._paneAutoCollapsed = false;
       this._gestureMoved = false;
@@ -441,7 +442,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012-compare').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -465,7 +466,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012-compare').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -997,6 +998,7 @@
             : '搜古今地名 / 州府 / 帝王年号 / 青史行迹';
       }
       this._syncTogglePaneButton();
+      this._syncCompareLocale();
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
@@ -1853,6 +1855,7 @@
         this.playing ||
         this.challenge ||
         this.activeJourney ||
+        this.compare ||
         mobileOverlayBusy
       ) {
         if (this.activeMilestone && this.activeMilestone.isAuto) {
@@ -2138,7 +2141,7 @@
     }
 
     _renderGhostDiff(refSnap, mode = 'fade') {
-      if (!this.grpGhostDiff) return;
+      if (!this.grpGhostDiff || this.compare) return;
       if (this.ghostTimer) {
         clearTimeout(this.ghostTimer);
         this.ghostTimer = null;
@@ -2214,6 +2217,341 @@
           if (loaded) this._renderGhostDiff(loaded, 'preview');
         });
       }
+    }
+
+    // ---------------- Two-Year Compare (split view) ----------------
+    _parseCompareParam(raw) {
+      if (raw === null || raw === undefined || String(raw).trim() === '') return null;
+      const n = Number(String(raw).trim());
+      if (!Number.isFinite(n)) return null;
+      const y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(n)));
+      return y === 0 ? 1 : y;
+    }
+
+    _compareTarget(year) {
+      const y = this._parseCompareParam(year);
+      if (y === null) return null;
+      const dynastyIdx = this._findDynastyIndex(y);
+      const dynasty = this.dynasties[dynastyIdx];
+      return { year: y, dynastyIdx, dynasty, snapKey: this._resolveSnapKey(dynasty, y) };
+    }
+
+    _compareTagText(year, side) {
+      const d = this.dynasties[this._findDynastyIndex(year)];
+      const yearText = this.formatYear(year, true);
+      const era = this.formatEraLabel(year, d);
+      let body;
+      if (this.locale === 'en') {
+        body = `${yearText} · ${era}`;
+      } else {
+        const badge = this.dynastyBadge(d);
+        let eraShort = String(era).split('·').pop();
+        if (eraShort.startsWith(badge) && eraShort.length > badge.length) {
+          eraShort = eraShort.slice(badge.length);
+        }
+        body =
+          eraShort && eraShort !== badge && eraShort !== this.dynastyName(d)
+            ? `${yearText} · ${badge} ${eraShort}`
+            : `${yearText} · ${badge}`;
+      }
+      return side === 'left' ? `◀ ${body}` : `${body} ▶`;
+    }
+
+    _compareSplitX(frac, rect, camera) {
+      const w = (rect && rect.width) || 1000;
+      const h = (rect && rect.height) || 700;
+      const scale = Math.min(w / camera.w, h / camera.h);
+      const padX = (w - camera.w * scale) * 0.5;
+      return camera.x + (frac * w - padX) / scale;
+    }
+
+    toggleCompare() {
+      if (this.compare) this.stopCompare();
+      else this.startCompare();
+    }
+
+    startCompare(refYear = this.year) {
+      if (this.challenge) return;
+      const target = this._compareTarget(refYear);
+      if (!target) return;
+      this.stopAutoplay();
+      if (this.activeJourney) this.stopJourney();
+      this.compare = { ...target, split: this.compare ? this.compare.split : 0.5, snap: null };
+      if (this.ghostTimer) {
+        clearTimeout(this.ghostTimer);
+        this.ghostTimer = null;
+      }
+      if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+      this._mountCompareLayers();
+
+      const btn = this._id('act-compare');
+      if (btn) {
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      this._id('compare-overlay').classList.remove('is-hidden');
+      this._id('viewport-frame').classList.add('has-active-compare');
+      this._showCompareHint(true);
+      this._syncCompareTags();
+      this._syncCompareClip();
+      this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+
+      const snapKey = target.snapKey;
+      this._fetchSnapshot(snapKey).then((snap) => {
+        if (!this.compare || this.compare.snapKey !== snapKey) return;
+        this.compare.snap = snap;
+        this._renderCompareSnapshot();
+      });
+    }
+
+    stopCompare() {
+      if (!this.compare) return;
+      this.compare = null;
+      this._showCompareHint(false);
+      this._unmountCompareLayers();
+      this._rescaleSvgTypography();
+      const btn = this._id('act-compare');
+      if (btn) {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+      this._id('compare-overlay').classList.add('is-hidden');
+      this._id('viewport-frame').classList.remove('has-active-compare');
+      const cur = this.dynasties[this.dynastyIdx];
+      if (cur) this._syncAutoMilestoneBalloon(cur);
+    }
+
+    _mountCompareLayers() {
+      const defs = this.svg.querySelector('defs');
+      for (const side of ['left', 'right']) {
+        if (this._id(`compare-clip-${side}`)) continue;
+        const clip = this._svgNode(
+          'clipPath',
+          { id: `compare-clip-${side}`, clipPathUnits: 'userSpaceOnUse' },
+          defs
+        );
+        this._svgNode('rect', { x: 0, y: -5000, width: 10000, height: 11000 }, clip);
+      }
+      if (!this.grpCompare) {
+        this.grpCompare = this._svgNode('g', { id: 'grp-compare', 'clip-path': 'url(#compare-clip-left)' });
+        this.grpPrefectures.after(this.grpCompare);
+      }
+      for (const g of [this.grpPolities, this.grpPrefectures, this.grpSettlements]) {
+        g.setAttribute('clip-path', 'url(#compare-clip-right)');
+      }
+    }
+
+    _unmountCompareLayers() {
+      for (const side of ['left', 'right']) {
+        const clip = this._id(`compare-clip-${side}`);
+        if (clip) clip.remove();
+      }
+      if (this.grpCompare) {
+        this.grpCompare.remove();
+        this.grpCompare = null;
+      }
+      for (const g of [this.grpPolities, this.grpPrefectures, this.grpSettlements]) {
+        g.removeAttribute('clip-path');
+      }
+    }
+
+    _renderCompareSnapshot() {
+      if (!this.compare || !this.grpCompare) return;
+      this.grpCompare.innerHTML = '';
+      const snap = this.compare.snap;
+      if (!snap) return;
+      const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
+      const sorted = (snap.polities || [])
+        .slice()
+        .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
+      const labels = [];
+      for (const pol of sorted) {
+        const attrs = {
+          d: this.projector.shapeToSvgPath(pol.shape),
+          class: `polity-shape ${pol.role}`,
+        };
+        if (pol.role !== 'neighbor') {
+          attrs.fill = pol.tint;
+          attrs.stroke = pol.tint;
+        }
+        this._svgNode('path', attrs, this.grpCompare);
+        if (pol.anchor) labels.push(pol);
+      }
+      for (const pol of labels) {
+        const [cx, cy] = this.projector.toScreen(pol.anchor[0], pol.anchor[1]);
+        const lbl = this._svgNode(
+          'text',
+          { class: `polity-caption ${pol.role}`, 'data-x': cx.toFixed(1), 'data-y': cy.toFixed(1) },
+          this.grpCompare
+        );
+        lbl._polShape = pol.shape;
+        lbl.dataset.polityTitle = pol.title;
+        lbl.textContent = this.trTerm(pol.title);
+      }
+      this._syncCompareClip();
+    }
+
+    // Slides each realm label into its visible half when it still fits inside its own shape.
+    _placeCompareLabels(splitX) {
+      const vw = window.innerWidth;
+      const boost = vw <= 640 ? 1.46 : vw <= 900 ? 1.22 : 1.0;
+      const s = Math.sqrt(this.camera.w / 1000) * boost;
+      const place = (node, side) => {
+        const x = parseFloat(node.getAttribute('data-x'));
+        const y = parseFloat(node.getAttribute('data-y'));
+        if (Number.isNaN(x)) return;
+        const fontPx = node.classList.contains('main') ? 19 : node.classList.contains('rival') ? 15 : 12;
+        const ls = node.classList.contains('main') || node.classList.contains('rival') ? 3.2 : 1.3;
+        const hw = (this._estimateLocalTextWidth(node.textContent, fontPx, ls) * 0.5 + 4) * s;
+        let px = x;
+        const hidden = side === 'left' ? x + hw > splitX : x - hw < splitX;
+        if (hidden && node._polShape) {
+          const tx = side === 'left' ? splitX - hw : splitX + hw;
+          const fits = [tx - hw * 0.6, tx, tx + hw * 0.6].every((sx) => {
+            const [lng, lat] = this.projector.toGeo(sx, y);
+            return MercatorProjector.pointInShape(lng, lat, node._polShape);
+          });
+          if (fits) px = tx;
+        }
+        node.setAttribute('transform', `translate(${px.toFixed(1)},${y.toFixed(1)}) scale(${s.toFixed(3)})`);
+      };
+      if (this.grpCompare) {
+        this.grpCompare.querySelectorAll('.polity-caption').forEach((node) => place(node, 'left'));
+      }
+      this.grpPolities
+        .querySelectorAll('.polity-caption:not(.neighbor)')
+        .forEach((node) => place(node, 'right'));
+    }
+
+    _syncCompareClip() {
+      if (!this.compare || !this.svg) return;
+      const rect = this.svg.getBoundingClientRect();
+      const x = this._compareSplitX(this.compare.split, rect, this.camera);
+      const left = this._id('compare-clip-left');
+      const right = this._id('compare-clip-right');
+      if (left) left.firstChild.setAttribute('x', (x - 10000).toFixed(2));
+      if (right) right.firstChild.setAttribute('x', x.toFixed(2));
+      this._placeCompareLabels(x);
+    }
+
+    _setCompareSplit(frac) {
+      if (!this.compare) return;
+      this.compare.split = Math.max(0.04, Math.min(0.96, frac));
+      this._syncCompareTags();
+      this._syncCompareClip();
+    }
+
+    _syncCompareTags() {
+      if (!this.compare) return;
+      const pct = this.compare.split * 100;
+      const divider = this._id('compare-divider');
+      if (divider) {
+        divider.style.left = `${pct.toFixed(2)}%`;
+        divider.setAttribute('aria-valuenow', String(Math.round(pct)));
+      }
+      const sides = [
+        ['compare-tag-left', this.compare.year, 'left'],
+        ['compare-tag-right', this.year, 'right'],
+      ];
+      for (const [id, year, side] of sides) {
+        const tag = this._id(id);
+        if (!tag) continue;
+        const d = this.dynasties[this._findDynastyIndex(year)];
+        tag.textContent = this._compareTagText(year, side);
+        tag.title = tag.textContent;
+        tag.style.setProperty('--compare-tint', d.tint);
+        if (side === 'left') {
+          tag.style.right = `calc(${(100 - pct).toFixed(2)}% + 12px)`;
+          tag.style.maxWidth = `calc(${pct.toFixed(2)}% - 20px)`;
+        } else {
+          tag.style.left = `calc(${pct.toFixed(2)}% + 12px)`;
+          tag.style.maxWidth = `calc(${(100 - pct).toFixed(2)}% - 20px)`;
+        }
+      }
+      const hint = this._id('compare-hint');
+      if (hint) {
+        hint.style.left = `calc(${pct.toFixed(2)}% + 12px)`;
+        hint.style.maxWidth = `calc(${(100 - pct).toFixed(2)}% - 20px)`;
+      }
+    }
+
+    _showCompareHint(show) {
+      const hint = this._id('compare-hint');
+      if (this._compareHintTimer) {
+        clearTimeout(this._compareHintTimer);
+        this._compareHintTimer = null;
+      }
+      if (!hint) return;
+      hint.classList.toggle('is-hidden', !show);
+      if (show) this._compareHintTimer = setTimeout(() => this._showCompareHint(false), 6000);
+    }
+
+    _onCompareYearChange() {
+      this._syncCompareTags();
+      if (this._compareHintTimer) this._showCompareHint(false);
+    }
+
+    _syncCompareLocale() {
+      const lbl = this._id('lbl-compare');
+      if (lbl) lbl.textContent = this.uiStr('btn_compare', '对照');
+      const btn = this._id('act-compare');
+      if (btn) {
+        btn.title = this.uiStr(
+          'btn_compare_tip',
+          '双年对照：固定当前年份，拖动时间轴选另一年 (C)'
+        );
+      }
+      const hint = this._id('compare-hint');
+      if (hint) hint.textContent = this.uiStr('compare_hint', '拖动时间轴，选择另一年份');
+      const divider = this._id('compare-divider');
+      if (divider) {
+        divider.setAttribute('aria-label', this.uiStr('compare_divider', '对照分隔线（← → 移动）'));
+      }
+      if (this.compare) {
+        this._syncCompareTags();
+        if (this.grpCompare) {
+          this.grpCompare.querySelectorAll('.polity-caption').forEach((node) => {
+            node.textContent = this.trTerm(node.dataset.polityTitle);
+          });
+        }
+      }
+    }
+
+    _bindCompareUi() {
+      const btn = this._id('act-compare');
+      if (btn) btn.addEventListener('click', () => this.toggleCompare());
+      const divider = this._id('compare-divider');
+      if (!divider) return;
+      let dragging = false;
+      const moveTo = (clientX) => {
+        const r = this.svg.getBoundingClientRect();
+        if (r.width > 0) this._setCompareSplit((clientX - r.left) / r.width);
+      };
+      divider.addEventListener('pointerdown', (e) => {
+        if (!this.compare || (e.pointerType === 'mouse' && e.button !== 0)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        dragging = true;
+        divider.setPointerCapture(e.pointerId);
+        divider.classList.add('is-dragging');
+        divider.focus({ preventScroll: true });
+      });
+      divider.addEventListener('pointermove', (e) => {
+        if (dragging) moveTo(e.clientX);
+      });
+      const endDrag = () => {
+        dragging = false;
+        divider.classList.remove('is-dragging');
+      };
+      divider.addEventListener('pointerup', endDrag);
+      divider.addEventListener('pointercancel', endDrag);
+      divider.addEventListener('keydown', (e) => {
+        if (!this.compare || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        this._setCompareSplit(this.compare.split + (e.key === 'ArrowRight' ? 0.05 : -0.05));
+      });
+      window.addEventListener('resize', () => this._syncCompareClip());
     }
 
     _renderLegendBox(snap) {
@@ -3369,6 +3707,7 @@
       if (this.activeTrace && !this._id('genealogy-card').classList.contains('is-hidden')) {
         this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
       }
+      if (this.compare) this._onCompareYearChange();
     }
 
     stepTimelineNode(dir) {
@@ -3604,6 +3943,7 @@
       }
       this._updateScaleBar();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+      if (this.compare) this._syncCompareClip();
     }
 
     _formatChineseLi(li) {
@@ -4286,6 +4626,7 @@
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         node.setAttribute('font-size', (9.5 * s).toFixed(1));
       });
+      if (this.compare) this._syncCompareClip();
     }
 
     _animateCameraTo(targetCam) {
@@ -4380,6 +4721,7 @@
       this._recordGestureClick();
       this.stopAutoplay();
       if (this.activeJourney) this.stopJourney(true);
+      if (this.compare) this.stopCompare();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
@@ -4675,6 +5017,7 @@
         this.journeyTimer = null;
       }
       if (this.challenge) this.stopChallenge(true);
+      if (this.compare) this.stopCompare();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
       this.clearCustomRoute();
       this.closeGenealogyCard();
@@ -5962,6 +6305,8 @@
           } else {
             this.startAutoplay();
           }
+        } else if ((e.key === 'c' || e.key === 'C') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          if (!this.challenge) this.toggleCompare();
         } else if (e.key === 'Escape') {
           closeLayersPopover();
           closeJourneyPopover();
@@ -5972,9 +6317,12 @@
           else if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
+          } else if (this.compare) {
+            this.stopCompare();
           }
         }
       });
+      this._bindCompareUi();
 
       // SVG Zoom & Pan (Mouse Wheel + Single-Finger Pan + Two-Finger Pinch Zoom)
       this.svg.addEventListener(
@@ -7275,6 +7623,10 @@
           this.camera = { x, y, w, h, zoom: z };
           this._applyCamera();
         }
+      }
+      if (q.has('compare')) {
+        const refYear = this._parseCompareParam(q.get('compare'));
+        if (refYear !== null) this.startCompare(refYear);
       }
       if (q.has('year') || q.has('place') || (q.has('lng') && q.has('lat'))) {
         afterFullSnapshots(() => {

@@ -29,6 +29,7 @@ https://deanchensj.github.io/jiangshan-map/?year=<YEAR>&place=<PLACE>
 - `lang` (optional, `en`): Renders the English UI while keeping `place` and `hover` values in Chinese.
 - `zoom` (optional, float, `1.0` to `8.0`): Camera zoom level override (defaults automatically based on place type or multi-stop bounding box).
 - `lng` / `lat` (optional, float): Explicit longitude/latitude override (`70.0`–`142.0`, `15.0`–`56.0`), only needed if pinpointing raw coordinates not associated with any named place.
+- `compare` (optional, integer, `-403` to `2026`, `0` reads as `1`): Opens a two-year split view with the `compare` year's territory on the left and the `year` territory on the right (e.g., `?year=1820&compare=741` puts Tang 741 beside Qing 1820). Invalid values are ignored.
 
 ### Canonical Deep-Link Examples
 - **《水浒传》宋江浔阳楼题反诗·江州劫法场 (北宋徽宗崇宁元年 / 1102 CE, 宋代江州治所浔阳=今江西九江)**:
