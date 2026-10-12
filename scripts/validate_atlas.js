@@ -569,6 +569,24 @@ function main() {
       `Invalid era label "${eraLbl}" at year ${y} (${d.key})`
     );
   }
+  for (const sp of loreData.CHINESE_ERA_SPANS) {
+    if (sp[0] < 1912) {
+      assert(
+        typeof sp[3] === 'string' &&
+          sp[3].length >= 2 &&
+          typeof sp[4] === 'string' &&
+          sp[4].length >= 3,
+        `Imperial era span at year ${sp[0]} (${sp[1]}) must include [monarchZh, monarchEn], got ${JSON.stringify(sp)}`
+      );
+    }
+  }
+  assert.strictEqual(ctrl.formatEraLabel(-214, dynasties[1]), '秦始皇三十三年');
+  assert.strictEqual(ctrl.formatEraLabel(-119, dynasties[2]), '西汉武帝·元狩四年');
+  assert.strictEqual(ctrl.formatEraLabel(627, dynasties[9]), '唐太宗·贞观元年');
+  assert.strictEqual(ctrl.formatEraLabel(819, dynasties[9]), '唐宪宗·元和十四年');
+  assert.strictEqual(ctrl.formatEraLabel(1082, dynasties[11]), '北宋神宗·元丰五年');
+  assert.strictEqual(ctrl.formatEraLabel(1587, dynasties[14]), '明万历十五年');
+  assert.strictEqual(ctrl.formatEraLabel(1683, dynasties[15]), '清康熙二十二年');
 
   // CUJ 9h: Adjacent / Overlapping Polity Color Collision Guard across all snapshots
   function shapeBbox(shape) {
@@ -619,7 +637,7 @@ function main() {
     }
   }
 
-  // CUJ 9i: Quick Search (_queryQuickSearch) End-to-End Verification (Era Chinese Numerals, Cities, Passes, Events, Journeys)
+  // CUJ 9i: Quick Search (_queryQuickSearch) End-to-End Verification (Era Chinese Numerals, Emperors, Cities, Passes, Events, Journeys)
   const eraHit1 = ctrl._queryQuickSearch('元狩二年');
   assert(
     eraHit1.length > 0 && eraHit1[0].kind === 'era' && eraHit1[0].year === -121,
@@ -634,6 +652,21 @@ function main() {
   assert(
     eraHit3.length > 0 && eraHit3[0].kind === 'era' && eraHit3[0].year === -214,
     `Expected '公元前214年' to resolve to -214 BCE, got ${JSON.stringify(eraHit3[0])}`
+  );
+  const empHit1 = ctrl._queryQuickSearch('汉武帝');
+  assert(
+    empHit1.some((item) => item.kind === 'era' && item.year === -140),
+    `Expected '汉武帝' quick search to include -140 BCE accession era, got ${JSON.stringify(empHit1)}`
+  );
+  const empHit2 = ctrl._queryQuickSearch('宋神宗');
+  assert(
+    empHit2.some((item) => item.kind === 'era' && item.year === 1068),
+    `Expected '宋神宗' quick search to include 1068 CE accession era, got ${JSON.stringify(empHit2)}`
+  );
+  const empHit3 = ctrl._queryQuickSearch('明神宗');
+  assert(
+    empHit3.some((item) => item.kind === 'era' && item.year === 1573),
+    `Expected '明神宗' quick search to include 1573 CE Wanli accession era, got ${JSON.stringify(empHit3)}`
   );
   const passSearch = ctrl._queryQuickSearch('函谷关');
   assert(
