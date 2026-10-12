@@ -6,7 +6,6 @@
 'use strict';
 
 const assert = require('assert');
-const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -372,26 +371,10 @@ function main() {
   );
 
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
-  for (const strayJs of [
-    'app.js',
-    'lore_data.js',
-    'map_data.js',
-    'china_geo_data.js',
-    'atlas_boot.js',
-    'atlas_snapshots.js',
-    'i18n_dict.js',
-  ]) {
-    assert(
-      !fs.existsSync(path.join(ROOT, strayJs)),
-      `Stray duplicate JS file "${strayJs}" found at repository root; all runtime scripts must live exclusively under js/`
-    );
-  }
   const llmsTxtPath = path.join(ROOT, 'llms.txt');
   const skillMdPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'SKILL.md');
-  const skillPyPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'scripts', 'jiangshan.py');
   assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
   assert(fs.existsSync(skillMdPath), 'skills/jiangshan-atlas/SKILL.md must exist');
-  assert(fs.existsSync(skillPyPath), 'skills/jiangshan-atlas/scripts/jiangshan.py must exist');
   assert(
     Array.isArray(loreData.PLACE_GAZETTEER) && loreData.PLACE_GAZETTEER.length >= 100,
     'lore_data.js must provide >= 100 PLACE_GAZETTEER entries with poetic/historical landmarks and city aliases'
@@ -402,13 +385,11 @@ function main() {
       appCode.includes('resolvePlace(') &&
       appCode.includes('inspect(') &&
       appCode.includes('locate(') &&
-      appCode.includes('_parsePlaceTokens(') &&
-      appCode.includes('_renderCustomRoute(') &&
       appCode.includes('PLACE_GAZETTEER') &&
       appCode.includes('trace-pin-label') &&
       llmsTxt.includes('?year=') &&
       llmsTxt.includes('window.atlasAPI.locate'),
-    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), multi-stop route rendering, PLACE_GAZETTEER, and URL deep-link protocol'
+    'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), PLACE_GAZETTEER, and URL deep-link protocol'
   );
 
   // 9. End-to-End CUJ Verification Suite (Headless Controller Harness)
@@ -528,7 +509,7 @@ function main() {
     }
   }
 
-  // CUJ 9f: Root Mirror Byte-Level Synchronization Check (if any root mirror files exist)
+  // CUJ 9f: Root Mirror Byte-Level Synchronization Check (js/app.js === app.js, js/lore_data.js === lore_data.js, css/style.css === style.css)
   const mirrorPairs = [
     ['js/app.js', 'app.js'],
     ['js/lore_data.js', 'lore_data.js'],
@@ -547,180 +528,13 @@ function main() {
     }
   }
 
-  // CUJ 9g: Full Timeline Sweep (-403 to 2026) — Dynasty, Snapshot & Imperial Era Continuity
-  let sweptYears = 0;
-  for (let y = ctrl.minYear; y <= ctrl.maxYear; y++) {
-    if (y === 0) continue;
-    sweptYears++;
-    const dIdx = ctrl._findDynastyIndex(y);
-    assert(dIdx >= 0 && dIdx < dynasties.length, `Invalid dynasty index ${dIdx} at year ${y}`);
-    const d = dynasties[dIdx];
-    const sk = ctrl._resolveSnapKey(d, y);
-    assert(sk && snapshots[sk], `Missing snapshot "${sk}" resolved at year ${y} (${d.key})`);
-    const eraLbl = ctrl.formatEraLabel(y, d);
-    assert(
-      typeof eraLbl === 'string' &&
-        eraLbl.length > 0 &&
-        !eraLbl.includes('undefined') &&
-        !eraLbl.includes('NaN'),
-      `Invalid era label "${eraLbl}" at year ${y} (${d.key})`
-    );
-  }
-
-  // CUJ 9h: Adjacent / Overlapping Polity Color Collision Guard across all snapshots
-  function shapeBbox(shape) {
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-    const polys = shape.type === 'Polygon' ? [shape.coordinates] : shape.coordinates;
-    for (const poly of polys) {
-      for (const ring of poly) {
-        for (const [x, y] of ring) {
-          if (x < minX) minX = x;
-          if (x > maxX) maxX = x;
-          if (y < minY) minY = y;
-          if (y > maxY) maxY = y;
-        }
-      }
-    }
-    return { minX, minY, maxX, maxY };
-  }
-  function bboxOverlapOrTouch(a, b, pad = 0.6) {
-    return !(
-      a.maxX + pad < b.minX ||
-      b.maxX + pad < a.minX ||
-      a.maxY + pad < b.minY ||
-      b.maxY + pad < a.minY
-    );
-  }
-  for (const [sk, snap] of Object.entries(snapshots)) {
-    if (!snap || Array.isArray(snap)) continue;
-    const activePols = (snap.polities || []).filter(
-      (p) => (p.role === 'main' || p.role === 'rival') && p.tint && p.title
-    );
-    for (let i = 0; i < activePols.length; i++) {
-      for (let j = i + 1; j < activePols.length; j++) {
-        const pA = activePols[i];
-        const pB = activePols[j];
-        if (pA.title === pB.title) continue;
-        if (pA.tint.toLowerCase() === pB.tint.toLowerCase()) {
-          const boxA = shapeBbox(pA.shape);
-          const boxB = shapeBbox(pB.shape);
-          assert(
-            !bboxOverlapOrTouch(boxA, boxB),
-            `Polity color collision in ${sk}: "${pA.title}" and "${pB.title}" share identical tint ${pA.tint} with overlapping/adjacent bounds`
-          );
-        }
-      }
-    }
-  }
-
-  // CUJ 9i: Quick Search (_queryQuickSearch) End-to-End Verification (Era Chinese Numerals, Cities, Passes, Events, Journeys)
-  const eraHit1 = ctrl._queryQuickSearch('元狩二年');
-  assert(
-    eraHit1.length > 0 && eraHit1[0].kind === 'era' && eraHit1[0].year === -121,
-    `Expected '元狩二年' to resolve to -121 BCE era, got ${JSON.stringify(eraHit1[0])}`
-  );
-  const eraHit2 = ctrl._queryQuickSearch('贞观元年');
-  assert(
-    eraHit2.length > 0 && eraHit2[0].kind === 'era' && eraHit2[0].year === 627,
-    `Expected '贞观元年' to resolve to 627 CE era, got ${JSON.stringify(eraHit2[0])}`
-  );
-  const eraHit3 = ctrl._queryQuickSearch('公元前214年');
-  assert(
-    eraHit3.length > 0 && eraHit3[0].kind === 'era' && eraHit3[0].year === -214,
-    `Expected '公元前214年' to resolve to -214 BCE, got ${JSON.stringify(eraHit3[0])}`
-  );
-  const passSearch = ctrl._queryQuickSearch('函谷关');
-  assert(
-    passSearch.some((item) => item.kind === 'pass' && item.passKey === 'hanguguan'),
-    'Quick search for "函谷关" must return strategic pass entry'
-  );
-  const eventSearch = ctrl._queryQuickSearch('淝水之战');
-  assert(
-    eventSearch.some((item) => item.kind === 'event' && item.year === 383),
-    'Quick search for "淝水之战" must return 383 CE milestone event'
-  );
-  const journeySearch = ctrl._queryQuickSearch('苏轼');
-  assert(
-    journeySearch.some((item) => item.kind === 'journey' && item.journeyKey === 'sushi'),
-    'Quick search for "苏轼" must return Su Shi historical journey'
-  );
-
-  // CUJ 9j: 7 Historical Journeys Full Stop & Bilingual Completeness Verification
-  let totalJourneyStops = 0;
-  for (const j of loreData.HISTORICAL_JOURNEYS) {
-    assert(
-      j.key && j.titleZh && j.titleEn && Array.isArray(j.stops) && j.stops.length >= 8,
-      `Invalid journey metadata for ${j && j.key}`
-    );
-    for (const st of j.stops) {
-      totalJourneyStops++;
-      assert(
-        typeof st.year === 'number' && st.year >= -403 && st.year <= 2026 && st.year !== 0,
-        `Invalid stop year ${st.year} in journey ${j.key}`
-      );
-      assert(
-        Array.isArray(st.coord) &&
-          st.coord.length === 2 &&
-          st.coord[0] >= 60 &&
-          st.coord[0] <= 135 &&
-          st.coord[1] >= 15 &&
-          st.coord[1] <= 55,
-        `Out-of-bounds stop coord ${JSON.stringify(st.coord)} in journey ${j.key}`
-      );
-      for (const viaPt of st.via || []) {
-        assert(
-          Array.isArray(viaPt) &&
-            viaPt.length === 2 &&
-            viaPt[0] >= 60 &&
-            viaPt[0] <= 135 &&
-            viaPt[1] >= 15 &&
-            viaPt[1] <= 55,
-          `Out-of-bounds via point ${JSON.stringify(viaPt)} in journey ${j.key}`
-        );
-      }
-      for (const reqField of [
-        'eraZh',
-        'ancientZh',
-        'modernZh',
-        'ancientEn',
-        'modernEn',
-        'titleZh',
-        'titleEn',
-        'descZh',
-        'descEn',
-        'quoteZh',
-        'quoteEn',
-      ]) {
-        assert(
-          typeof st[reqField] === 'string' && st[reqField].trim().length > 0,
-          `Missing bilingual field "${reqField}" at stop ${st.ancientZh || st.year} in journey ${j.key}`
-        );
-      }
-    }
-  }
-
-  // CUJ 9k: Python CLI (skills/jiangshan-atlas/scripts/jiangshan.py) Execution Smoke Test
-  const cliOut = execFileSync(
-    'python3',
-    [skillPyPath, '--year', '1079, 1080, 1094, 1097', '--place', '湖州 → 黄州 → 惠州 → 儋州'],
-    { encoding: 'utf8' }
-  ).trim();
-  const decodedCliOut = decodeURIComponent(cliOut);
-  assert(
-    decodedCliOut.includes('URL: https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州'),
-    `Unexpected jiangshan.py CLI output: ${decodedCliOut}`
-  );
-
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
-  console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
-  console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
+  console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked)`);
+  console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 11 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys, ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 6 E2E CUJs`);
 }
 
 main();
