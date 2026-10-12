@@ -1052,6 +1052,31 @@ function main() {
   ctrl._clearPreviewGhost();
   assert.strictEqual(ghostNodes.length, 0, 'Expected _clearPreviewGhost to clear preview paths when no fade timer is active');
 
+  // 4) Era-aware resolvePlace disambiguation for 江州 (Tang/Song Jiujiang vs Warring States/Han Chongqing) & literary landmarks
+  const jzSong = ctrl.resolvePlace('江州', 1102);
+  assert(
+    jzSong && Math.abs(jzSong.lng - 115.98) < 0.2 && Math.abs(jzSong.lat - 29.71) < 0.2,
+    `Expected resolvePlace("江州", 1102) in Northern Song to resolve to Jiujiang (~115.98, 29.71), got ${JSON.stringify(jzSong)}`
+  );
+  const jzZg = ctrl.resolvePlace('江州', -300);
+  assert(
+    jzZg && Math.abs(jzZg.lng - 106.55) < 0.2 && Math.abs(jzZg.lat - 29.56) < 0.2,
+    `Expected resolvePlace("江州", -300) in Warring States to resolve to Chongqing (~106.55, 29.56), got ${JSON.stringify(jzZg)}`
+  );
+  for (const [placeName, yr, expLng, expLat] of [
+    ['浔阳楼', 1102, 115.98, 29.71],
+    ['梁山泊', 1119, 116.09, 35.80],
+    ['景阳冈', 1102, 115.92, 36.11],
+    ['大名府', 1115, 115.15, 36.28],
+    ['风波亭', 1142, 120.14, 30.25],
+  ]) {
+    const hit = ctrl.resolvePlace(placeName, yr);
+    assert(
+      hit && Math.abs(hit.lng - expLng) < 0.2 && Math.abs(hit.lat - expLat) < 0.2,
+      `Expected resolvePlace("${placeName}", ${yr}) to resolve near [${expLng}, ${expLat}], got ${JSON.stringify(hit)}`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""CLI helper for the jiangshan-atlas skill: builds deep-link URLs and renders map screenshots."""
+"""CLI helper for the jiangshan-atlas skill: builds deep-link URLs, inspects historical context, and renders map screenshots."""
 import argparse
 import glob
+import html as html_lib
+import json
 import os
 import re
 import shutil
@@ -18,6 +20,9 @@ PUBLIC_BASE_URL = os.environ.get(
 )
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 MIN_VALID_PNG_BYTES = 65_536
+TRANSPARENT_GIF_DATA_URI = (
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+)
 
 
 def _discover_playwright_chromes():
@@ -48,11 +53,10 @@ def find_chrome():
       *_discover_playwright_chromes(),
       shutil.which("chromium") or "",
       shutil.which("chromium-browser") or "",
-      shutil.which("google-chrome-stable") or "",
-      shutil.which("google-chrome") or "",
       shutil.which("chrome-headless-shell") or "",
-      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      "/Applications/Chromium.app/Contents/MacOS/Chromium",
+      shutil.which("chrome") or "",
+      *sorted(glob.glob("/usr/bin/*chrom*")),
+      *sorted(glob.glob("/Applications/*Chrom*.app/Contents/MacOS/*")),
   ]
   for c in candidates:
     if c and os.path.isfile(c) and os.access(c, os.X_OK):
@@ -78,20 +82,30 @@ def find_local_repo_root():
   return None
 
 
-def build_query(args):
-  years = ",".join(
+def normalize_years(year_str):
+  return ",".join(
       str(int(y.strip()))
-      for y in re.split(r"[,，、;\s]+", str(args.year).strip())
+      for y in re.split(r"[,，、;\s]+", str(year_str).strip())
       if y.strip()
   )
+
+
+def normalize_places(place_str):
+  if not place_str:
+    return ""
+  return ",".join(
+      p.strip()
+      for p in re.split(r"\s*(?:,|，|、|→|->)\s*", place_str.strip())
+      if p.strip()
+  )
+
+
+def build_query(args):
+  years = normalize_years(args.year)
   params = [("year", years)]
-  if args.place:
-    normalized = ",".join(
-        p.strip()
-        for p in re.split(r"\s*(?:,|，|、|→|->)\s*", args.place.strip())
-        if p.strip()
-    )
-    params.append(("place", normalized))
+  normalized_place = normalize_places(args.place)
+  if normalized_place:
+    params.append(("place", normalized_place))
   if args.hover:
     params.append(("hover", args.hover.strip()))
   if args.lang == "en":
@@ -112,10 +126,200 @@ def _check_remote_reachable(url):
   except Exception as exc:
     raise RuntimeError(
         f"Cannot reach {url} ({exc}). "
-        "Headless Chrome would produce a blank screenshot when offline or sandboxed. "
+        "Headless browser rendering requires network access when no local repository is present. "
         "Set JIANGSHAN_REPO_ROOT=/path/to/jiangshan-map for offline rendering, "
         "or re-run with network access enabled."
     ) from exc
+
+
+def _write_offline_html(repo_root):
+  index_path = os.path.join(repo_root, "index.html")
+  tmp_html = os.path.join(repo_root, f"_snap_skill_tmp_{os.getpid()}.html")
+  with open(index_path, "r", encoding="utf-8") as f:
+    html = f.read()
+  # Strip external stylesheet/preconnect links and external avatar images so
+  # offline/sandboxed headless browsers never block on network timeouts.
+  html_local = re.sub(r"<link[^>]+https?://[^>]+>\s*", "", html)
+  html_local = re.sub(
+      r'(<img[^>]+)\bsrc="https?://[^"]+"',
+      rf'\1src="{TRANSPARENT_GIF_DATA_URI}"',
+      html_local,
+  )
+  html_local = html_local.replace(
+      '<script src="js/app.js',
+      '<style>.fade-enter { animation: none !important; opacity: 1 !important; }</style>\n'
+      '  <script src="js/atlas_snapshots.js"></script>\n'
+      '  <script src="js/i18n_dict.js"></script>\n'
+      '  <script src="js/app.js',
+  )
+  with open(tmp_html, "w", encoding="utf-8") as f:
+    f.write(html_local)
+  return tmp_html
+
+
+def _chrome_env():
+  env = os.environ.copy()
+  env["DBUS_SESSION_BUS_ADDRESS"] = "disabled:"
+  return env
+
+
+def _chrome_common_flags():
+  return [
+      "--headless",
+      "--disable-gpu",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-background-networking",
+      "--disable-sync",
+      "--no-first-run",
+      "--disable-default-apps",
+      "--disable-extensions",
+      "--mute-audio",
+      "--hide-scrollbars",
+  ]
+
+
+def _validate_inspect_result(data, args):
+  normalized_place = normalize_places(args.place)
+  if not normalized_place:
+    return
+  stops = [s for s in normalized_place.split(",") if s]
+  if len(stops) >= 2:
+    resolved_route = data.get("route") or []
+    resolved_places = {s.get("place") for s in resolved_route}
+    missing = [s for s in stops if s not in resolved_places]
+    if missing or len(resolved_route) < 2:
+      raise RuntimeError(
+          f"Could not resolve route stop(s) {missing or stops} in the atlas gazetteer. "
+          "Use canonical ancient names or modern prefecture/county city names (e.g. 九江, 运城, 镇江)."
+      )
+  elif not data.get("coord"):
+    raise RuntimeError(
+        f"Could not resolve place '{normalized_place}' in the atlas gazetteer. "
+        "Use a canonical ancient name or modern prefecture/county city name (e.g. 九江, 运城, 镇江)."
+    )
+
+
+def inspect_context(args, query, public_url):
+  repo_root = find_local_repo_root()
+  node_bin = shutil.which("node")
+  normalized_years = normalize_years(args.year)
+  normalized_place = normalize_places(args.place)
+
+  if repo_root and node_bin:
+    node_script = r"""
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+const root = process.env.JS_REPO_ROOT;
+const sandbox = {
+  window: {},
+  addEventListener: () => {},
+  document: { addEventListener: () => {}, getElementById: () => null, querySelectorAll: () => [] },
+  localStorage: { getItem: () => null, setItem: () => {} },
+  history: { replaceState: () => {} },
+  location: { origin: "https://deanchensj.github.io", pathname: "/jiangshan-map/", search: "" },
+  navigator: { language: process.env.JS_LANG === "en" ? "en-US" : "zh-CN" },
+  performance: { now: () => 0 },
+  requestAnimationFrame: () => {},
+  URLSearchParams
+};
+sandbox.window = sandbox;
+vm.createContext(sandbox);
+for (const rel of [
+  "js/china_geo_data.js",
+  "js/map_data.js",
+  "js/atlas_snapshots.js",
+  "js/i18n_dict.js",
+  "js/lore_data.js",
+  "js/app.js"
+]) {
+  vm.runInContext(fs.readFileSync(path.join(root, rel), "utf8"), sandbox);
+}
+const ctrl = Object.create(sandbox.HistoricalAtlasController.prototype);
+ctrl.minYear = -403;
+ctrl.maxYear = 2026;
+ctrl.year = 1102;
+ctrl.locale = process.env.JS_LANG === "en" ? "en" : "zh";
+ctrl.dynasties = sandbox.DYNASTY_DATA;
+ctrl.snapshots = sandbox.ATLAS_SNAPSHOTS;
+ctrl.provinces = (sandbox.CHINA_PROVINCE_SHAPES || []).map(p => ({
+  ...p,
+  rings: p.shape.type === "Polygon" ? [p.shape.coordinates] : p.shape.coordinates
+}));
+ctrl.projector = new sandbox.MercatorProjector(1000, 700);
+ctrl.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
+const res = ctrl.inspect({
+  year: process.env.JS_YEAR,
+  place: process.env.JS_PLACE
+});
+process.stdout.write(JSON.stringify(res));
+"""
+    env = os.environ.copy()
+    env["JS_REPO_ROOT"] = repo_root
+    env["JS_YEAR"] = normalized_years
+    env["JS_PLACE"] = normalized_place
+    env["JS_LANG"] = args.lang
+    proc = subprocess.run(
+        [node_bin, "-e", node_script],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode == 0 and proc.stdout.strip():
+      data = json.loads(proc.stdout.strip())
+      data["url"] = public_url
+      _validate_inspect_result(data, args)
+      return data
+
+  chrome = find_chrome()
+  if not chrome:
+    raise RuntimeError(
+        "Neither local Node.js nor headless Chrome/Chromium is available to run --inspect."
+    )
+
+  tmp_html = None
+  try:
+    if repo_root:
+      tmp_html = _write_offline_html(repo_root)
+      target_url = f"file://{tmp_html}?{query}"
+    else:
+      _check_remote_reachable(PUBLIC_BASE_URL)
+      target_url = f"{PUBLIC_BASE_URL}?{query}"
+
+    proc = subprocess.run(
+        [
+            chrome,
+            *_chrome_common_flags(),
+            "--virtual-time-budget=2000",
+            "--dump-dom",
+            target_url,
+        ],
+        env=_chrome_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+      stderr_tail = (proc.stderr or "").strip()[-400:]
+      raise RuntimeError(
+          f"Headless Chrome --dump-dom exited with code {proc.returncode}: {stderr_tail}"
+      )
+    match = re.search(
+        r'<script[^>]+id="atlas-inspect-json"[^>]*>(.*?)</script>',
+        proc.stdout or "",
+        re.DOTALL,
+    )
+    if not match or not match.group(1).strip():
+      raise RuntimeError("Failed to extract #atlas-inspect-json from rendered DOM.")
+    data = json.loads(html_lib.unescape(match.group(1).strip()))
+    data["url"] = public_url
+    _validate_inspect_result(data, args)
+    return data
+  finally:
+    if tmp_html and os.path.exists(tmp_html):
+      os.remove(tmp_html)
 
 
 def _verify_screenshot_png(out_path):
@@ -177,23 +381,7 @@ def render_screenshot(query, out_path):
   abs_out = os.path.abspath(out_path)
   try:
     if repo_root:
-      index_path = os.path.join(repo_root, "index.html")
-      tmp_html = os.path.join(repo_root, f"_snap_skill_tmp_{os.getpid()}.html")
-      with open(index_path, "r", encoding="utf-8") as f:
-        html = f.read()
-      html_local = re.sub(r"<link[^>]+fonts\.googleapis\.com[^>]+>\s*", "", html)
-      html_local = re.sub(
-          r"<link[^>]+fonts\.gstatic\.com[^>]+>\s*", "", html_local
-      )
-      html_local = html_local.replace(
-          '<script src="js/app.js',
-          '<style>.fade-enter { animation: none !important; opacity: 1 !important; }</style>\n'
-          '  <script src="js/atlas_snapshots.js"></script>\n'
-          '  <script src="js/i18n_dict.js"></script>\n'
-          '  <script src="js/app.js',
-      )
-      with open(tmp_html, "w", encoding="utf-8") as f:
-        f.write(html_local)
+      tmp_html = _write_offline_html(repo_root)
       target_url = f"file://{tmp_html}?{query}"
     else:
       _check_remote_reachable(PUBLIC_BASE_URL)
@@ -206,16 +394,14 @@ def render_screenshot(query, out_path):
     proc = subprocess.run(
         [
             chrome,
-            "--headless",
-            "--disable-gpu",
-            "--no-sandbox",
-            "--hide-scrollbars",
+            *_chrome_common_flags(),
             "--force-device-scale-factor=2",
             "--window-size=1440,900",
             "--virtual-time-budget=2000",
             f"--screenshot={abs_out}",
             target_url,
         ],
+        env=_chrome_env(),
         capture_output=True,
         text=True,
         check=False,
@@ -268,6 +454,11 @@ def main():
       help="UI language; 'en' renders the English atlas (place/hover stay in Chinese)",
   )
   parser.add_argument(
+      "--inspect",
+      action="store_true",
+      help="Return structured JSON from atlasAPI.inspect (era, dynasty, polity, regions, prefectures, modernProvince, nearestCity, route) and verify place resolution",
+  )
+  parser.add_argument(
       "--out",
       type=str,
       default="",
@@ -278,6 +469,14 @@ def main():
   query = build_query(args)
   public_url = f"https://deanchensj.github.io/jiangshan-map/?{query}"
   print(f"URL: {public_url}")
+
+  if args.inspect:
+    try:
+      info = inspect_context(args, query, public_url)
+    except Exception as exc:  # pylint: disable=broad-except
+      print(f"Error: {exc}", file=sys.stderr)
+      return 1
+    print(f"Inspect: {json.dumps(info, ensure_ascii=False)}")
 
   if args.out:
     try:
