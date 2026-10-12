@@ -408,6 +408,12 @@
               shape: { type: 'MultiPolygon', coordinates: prov.rings },
             };
           });
+        Object.defineProperty(this.snapshots.s_prc, '_skipRegionBoundaryStroke', {
+          value: true,
+          writable: true,
+          enumerable: false,
+          configurable: true,
+        });
       }
     }
 
@@ -435,7 +441,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012m').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -459,7 +465,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012m').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1028,6 +1034,8 @@
       if (this.activeJourney) {
         this._renderJourneyOverlay();
         this._renderJourneyCard();
+      } else if (this.activeCustomRoute) {
+        this._renderCustomRoute(this.activeCustomRoute, this.camera.zoom);
       }
       if (this.challenge) {
         this.grpSettlements.classList.add('is-hidden');
@@ -1359,31 +1367,47 @@
     }
 
     _buildRegionBoundaryPath(snap) {
-      if (!snap || !Array.isArray(snap.regions) || !snap.regions.length) return '';
+      if (!snap || snap._skipRegionBoundaryStroke || !Array.isArray(snap.regions) || !snap.regions.length) {
+        return '';
+      }
       if (snap._cachedRegionBoundaryPath !== undefined) {
         return snap._cachedRegionBoundaryPath;
       }
 
       const polGrid = new Set();
+      const addPolPt = (lng, lat) => {
+        const gx = Math.round(lng * 16);
+        const gy = Math.round(lat * 16);
+        for (let dx = -1; dx <= 1; dx++) {
+          for (let dy = -1; dy <= 1; dy++) {
+            polGrid.add(`${gx + dx},${gy + dy}`);
+          }
+        }
+      };
       for (const pol of snap.polities || []) {
         if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
         const coords = pol.shape.coordinates;
         const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
         for (const poly of polys) {
           for (const ring of poly || []) {
-            for (const pt of ring || []) {
-              const gx = Math.round(pt[0] * 12);
-              const gy = Math.round(pt[1] * 12);
-              for (let dx = -1; dx <= 1; dx++) {
-                for (let dy = -1; dy <= 1; dy++) {
-                  polGrid.add(`${gx + dx},${gy + dy}`);
+            if (!ring || !ring.length) continue;
+            for (let i = 0; i < ring.length; i++) {
+              const a = ring[i];
+              addPolPt(a[0], a[1]);
+              if (i + 1 < ring.length) {
+                const b = ring[i + 1];
+                const dist = Math.hypot(b[0] - a[0], b[1] - a[1]);
+                const steps = Math.min(40, Math.floor(dist / 0.05));
+                for (let s = 1; s < steps; s++) {
+                  const t = s / steps;
+                  addPolPt(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t);
                 }
               }
             }
           }
         }
       }
-      const onPol = (pt) => polGrid.has(`${Math.round(pt[0] * 12)},${Math.round(pt[1] * 12)}`);
+      const onPol = (pt) => polGrid.has(`${Math.round(pt[0] * 16)},${Math.round(pt[1] * 16)}`);
       const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
       const edgeKey = (p1, p2) => {
         const k1 = ptKey(p1);
@@ -1424,7 +1448,8 @@
             continue;
           }
           seenEdges.add(ek);
-          if (regEdgeCounts.get(ek) === 1 && onPol(p1) && onPol(p2)) {
+          const midPt = [(p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5];
+          if (regEdgeCounts.get(ek) === 1 && onPol(p1) && onPol(p2) && onPol(midPt)) {
             penX = NaN;
             penY = NaN;
             continue;
@@ -2361,8 +2386,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 146 territory snapshots, 470 ancient cities, 20 strategic passes, and 7 historical journeys.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代146幅历史疆域、州郡道省政区、黄河改道水系、470座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 156 territory snapshots, 476 ancient cities, 20 strategic passes, and 7 historical journeys.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代156幅历史疆域、州郡道省政区、黄河改道水系、476座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activeJourney) {
@@ -2747,7 +2772,8 @@
             { class: 'trace-pin-label', x: '0', y: '22', 'text-anchor': 'middle' },
             g
           );
-          lbl.textContent = this.activeTraceLabel;
+          lbl.textContent =
+            this.locale === 'en' ? this.trTerm(this.activeTraceLabel) : this.activeTraceLabel;
         }
       }
       if (window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
@@ -5006,6 +5032,9 @@
 
     // ---------------- Global Quick Search ----------------
     _ensureSearchIndex() {
+      if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
+        this._ensureFullSnapshots();
+      }
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
 
@@ -5048,6 +5077,8 @@
       // 1. Historical Settlements (Ancient & Modern Cities)
       for (const d of this.dynasties) {
         const isModernDyn = d.key === 'roc' || d.key === 'prc';
+        const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
+        const dynNameEn = enDyn.name || d.title;
         for (const s of d.settlements || []) {
           const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
           const rawAncEn = this._enDict(s.ancient);
@@ -5060,11 +5091,12 @@
             year: yr,
             coord: s.coord,
             tier: s.tier || 1,
+            isCapital: Boolean(s.isCapital),
             titleZh: s.ancient,
             subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
             titleEn: ancEn,
             subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
-            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
+            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${d.title} ${dynNameEn} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
           });
         }
       }
@@ -5259,6 +5291,8 @@
         ? [q, q.slice(0, -1), '元']
         : q.match(/^(.*?)([一二三四五六七八九十]+|\d+)$/);
       const prefixQ = (numMatch ? numMatch[1] : q).replace(/[·\s]/g, '');
+      const qLower = trimmed.toLowerCase();
+      const isLatinQuery = qLower.length >= 3 && /[a-z]/i.test(qLower);
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
       const seenMonarchOnly = new Set();
 
@@ -5278,6 +5312,14 @@
         const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
         const fullCombo = monarchZh ? `${monarchZh}${eraOnly}` : prefix;
         const shortCombo = shortMonarch ? `${shortMonarch}${eraOnly}` : prefix;
+        const monarchEnLower = (monarchEn || '').toLowerCase();
+        const monarchEnExpanded = monarchEnLower.replace(/\bemp\./g, 'emperor');
+        const monarchBare = monarchEnExpanded.replace(/^emperor\s+/, '');
+        const dForSpan = this.dynasties[this._findDynastyIndex(startY)] || this.dynasties[0];
+        const enDynObj = (this.enLocale.dynasties && this.enLocale.dynasties[dForSpan.key]) || {};
+        const enDynShort = (enDynObj.short || enDynObj.name || dForSpan.key || '').toLowerCase();
+        const enDynBase = enDynShort.replace(/^[wens]\.\s*/, '');
+        const enSearchTarget = `${monarchEnLower} ${monarchEnExpanded} ${monarchEnExpanded} of ${enDynShort} ${monarchEnExpanded} of ${enDynBase} ${monarchBare} of ${enDynBase}`;
 
         const matchEra =
           prefix.includes(prefixQ) ||
@@ -5286,22 +5328,24 @@
         const matchMonarchOnly =
           !matchEra &&
           yearNum === null &&
-          monarchZh &&
-          (monarchZh.includes(prefixQ) ||
-            shortMonarch.includes(prefixQ) ||
-            (prefixQ === '汉高祖' && prefix === '汉高帝'));
+          ((monarchZh &&
+            (monarchZh.includes(prefixQ) ||
+              shortMonarch.includes(prefixQ) ||
+              (prefixQ === '汉高祖' && prefix === '汉高帝'))) ||
+            (isLatinQuery && enSearchTarget.includes(qLower)));
 
         if (matchEra || matchMonarchOnly) {
+          const monarchDedupKey = monarchZh || monarchEnLower;
           if (matchMonarchOnly) {
-            if (seenMonarchOnly.has(monarchZh)) return;
-            seenMonarchOnly.add(monarchZh);
+            if (seenMonarchOnly.has(monarchDedupKey)) return;
+            seenMonarchOnly.add(monarchDedupKey);
           } else if (
             yearNum === null &&
             monarchZh &&
             (prefixQ === monarchZh || prefixQ === shortMonarch)
           ) {
-            if (seenMonarchOnly.has(monarchZh)) return;
-            seenMonarchOnly.add(monarchZh);
+            if (seenMonarchOnly.has(monarchDedupKey)) return;
+            seenMonarchOnly.add(monarchDedupKey);
           }
           const targetNum = yearNum !== null ? yearNum : baseNum;
           const targetY = startY + (targetNum - baseNum);
@@ -5321,7 +5365,9 @@
               fullCombo.endsWith(prefixQ) ||
               shortCombo.endsWith(prefixQ) ||
               monarchZh === prefixQ ||
-              shortMonarch === prefixQ;
+              shortMonarch === prefixQ ||
+              (isLatinQuery &&
+                (monarchEnLower.startsWith(qLower) || monarchEnExpanded.startsWith(qLower)));
             hits.push({
               kind: 'era',
               dynasty: d,
@@ -5355,12 +5401,27 @@
 
         if (score > 0) {
           if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 8;
+          if (item.isCapital) score += 2;
           results.push({ ...item, score });
         }
       }
 
       results.sort((a, b) => b.score - a.score);
-      return results.slice(0, 12);
+      const deduped = [];
+      const seenPlaceKey = new Set();
+      for (const item of results) {
+        if (
+          (item.kind === 'city' || item.kind === 'prefecture' || item.kind === 'region') &&
+          item.coord
+        ) {
+          const pk = `${item.kind}:${item.titleZh}:${Math.round(item.coord[0])},${Math.round(item.coord[1])}`;
+          if (seenPlaceKey.has(pk)) continue;
+          seenPlaceKey.add(pk);
+        }
+        deduped.push(item);
+        if (deduped.length >= 12) break;
+      }
+      return deduped;
     }
 
     _selectSearchResult(item) {
@@ -6046,14 +6107,20 @@
           const sIdx = Number(journeyNodeEl.dataset.stopIdx);
           const stop = this.activeCustomRoute[sIdx];
           if (stop) {
-            const label = stop.query || stop.name;
+            const rawLabel = stop.query || stop.name;
+            const isEn = this.locale === 'en';
+            const label = isEn ? this.trTerm(rawLabel) : rawLabel;
             const mod =
-              stop.modern && stop.modern !== label ? `（今${stop.modern}）` : '';
+              stop.modern && stop.modern !== rawLabel
+                ? isEn
+                  ? ` (Now ${this.trModernCity(stop.modern)})`
+                  : `（今${stop.modern}）`
+                : '';
             const yr = this.formatYear(stop.year !== undefined ? stop.year : this.year);
             this._showHoverTip(
               e,
               `<b>${sIdx + 1}. ${label}${mod}</b><div class="tt-sub">${yr} · ${
-                this.locale === 'en'
+                isEn
                   ? 'Click to jump to this year & trace history'
                   : '点击切换至该年份并查看历代沿革'
               }</div>`
@@ -6844,8 +6911,11 @@
 
         const lblY = below ? '18.5' : '-11.5';
         const lblTxt = this._svgNode('text', { class: 'jn-label', x: '0', y: lblY }, g);
-        const baseLbl = st.query || st.name;
-        const yrTag = st.year < 0 ? `前${-st.year}` : `${st.year}`;
+        const rawLbl = st.query || st.name;
+        const isEn = this.locale === 'en';
+        const baseLbl = isEn ? this.trTerm(rawLbl) : rawLbl;
+        const yrTag =
+          st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
         lblTxt.textContent = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
       });
 
@@ -7089,15 +7159,23 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      const afterFullSnapshots = (fn, delayMs = 80) => {
+        const run = () => setTimeout(fn, delayMs);
+        if (this._fullSnapshotsLoaded || typeof window === 'undefined') {
+          run();
+        } else {
+          this._ensureFullSnapshots().then(run);
+        }
+      };
       if (q.has('q')) {
         const rawQ = (q.get('q') || '').trim();
         if (rawQ) {
           const inp = this._id('inp-map-search');
           if (inp) inp.value = rawQ;
-          setTimeout(() => {
+          afterFullSnapshots(() => {
             const hits = this._queryQuickSearch(rawQ);
             if (hits && hits.length) this._selectSearchResult(hits[0]);
-          }, 180);
+          }, 80);
         }
       }
       if (q.has('terrain')) {
@@ -7137,7 +7215,7 @@
       }
       if (q.has('hover')) {
         const targetPref = q.get('hover');
-        setTimeout(() => {
+        afterFullSnapshots(() => {
           const el = this.grpPrefectures.querySelector(
             `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
           );
@@ -7175,7 +7253,7 @@
             }
             this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
           }
-        }, 250);
+        }, 120);
       }
       if (q.has('event')) {
         const ey = Number(q.get('event'));
@@ -7188,7 +7266,7 @@
             this.camera.h = 700 / this.camera.zoom;
             this._panToward(m.coord[0], m.coord[1]);
           }
-          setTimeout(() => this.openMilestoneBalloon(cur, m), 350);
+          afterFullSnapshots(() => this.openMilestoneBalloon(cur, m), 160);
         }
       }
       if (q.has('quiz')) {
