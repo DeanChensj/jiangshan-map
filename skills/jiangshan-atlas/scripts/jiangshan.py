@@ -30,17 +30,11 @@ def find_chrome():
 
 def find_local_repo_root():
   script_dir = os.path.dirname(os.path.abspath(__file__))
-  candidates = [
-      os.environ.get("JIANGSHAN_REPO_ROOT", ""),
-      os.path.abspath(os.path.join(script_dir, "..", "..", "..")),
-  ]
-  for candidate in candidates:
-    if (
-        candidate
-        and os.path.isfile(os.path.join(candidate, "index.html"))
-        and os.path.isfile(os.path.join(candidate, "js", "app.js"))
-    ):
-      return candidate
+  candidate = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
+  if os.path.isfile(os.path.join(candidate, "index.html")) and os.path.isfile(
+      os.path.join(candidate, "js", "app.js")
+  ):
+    return candidate
   return None
 
 
@@ -76,6 +70,13 @@ def render_screenshot(query, out_path):
         html = f.read()
       html_local = re.sub(r"<link[^>]+fonts\.googleapis\.com[^>]+>\s*", "", html)
       html_local = re.sub(r"<link[^>]+fonts\.gstatic\.com[^>]+>\s*", "", html_local)
+      html_local = html_local.replace(
+          '<script src="js/app.js',
+          '<style>.fade-enter { animation: none !important; opacity: 1 !important; }</style>\n'
+          '  <script src="js/atlas_snapshots.js"></script>\n'
+          '  <script src="js/i18n_dict.js"></script>\n'
+          '  <script src="js/app.js',
+      )
       with open(tmp_html, "w", encoding="utf-8") as f:
         f.write(html_local)
       target_url = f"file://{tmp_html}?{query}"
