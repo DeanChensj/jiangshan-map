@@ -2545,25 +2545,32 @@ html[lang="en"] .genealogy-list li {
 
 .polity-ghost-path {
   fill: none;
-  stroke-width: 2.1;
-  stroke-dasharray: 6 4;
+  stroke-width: 2.4;
+  stroke-dasharray: 7 4;
+  stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px rgba(181, 69, 47, 0.28));
+}
+
+.polity-ghost-path.is-protectorate {
+  stroke-dasharray: 4 3;
 }
 
 .polity-ghost-path.is-fade {
-  animation: ghostFadeOut 1.6s ease-out forwards;
+  animation: ghostFadeOut 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 .polity-ghost-path.is-preview {
-  stroke-opacity: 0.78;
-  fill: rgba(181, 69, 47, 0.07);
+  stroke-opacity: 0.85;
+  fill: rgba(181, 69, 47, 0.09);
 }
 
 @keyframes ghostFadeOut {
-  0% {
-    stroke-opacity: 0.82;
-    fill: rgba(181, 69, 47, 0.1);
+  0%,
+  22% {
+    stroke-opacity: 0.88;
+    fill: rgba(181, 69, 47, 0.12);
   }
   100% {
     stroke-opacity: 0;

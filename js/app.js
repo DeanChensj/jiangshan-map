@@ -1256,7 +1256,7 @@
       });
     }
 
-    _renderDynasty(dynasty) {
+    _renderDynasty(dynasty, prevSnap = null) {
       document.documentElement.style.setProperty('--dynasty-accent', dynasty.tint);
       if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       this._renderSettlements(dynasty);
@@ -1269,6 +1269,9 @@
           return;
         }
         this._renderPolitiesAndPrefectures(dynasty, snap);
+        if (!this.playing && prevSnap && prevSnap !== snap) {
+          this._renderGhostDiff(prevSnap, 'fade');
+        }
       });
     }
 
@@ -2139,39 +2142,58 @@
       if (chkPol && !chkPol.checked) return;
 
       const curSnap = this.lastRenderedSnap;
+      const curNonNeighbors = ((curSnap && curSnap.polities) || []).filter(
+        (p) => p.role !== 'neighbor'
+      );
       const curPaths = new Set(
-        ((curSnap && curSnap.polities) || [])
-          .filter((p) => p.role !== 'neighbor')
-          .map((p) => `${p.title}:${this.projector.shapeToSvgPath(p.shape)}`)
+        curNonNeighbors.map((p) => `${p.title}:${this.projector.shapeToSvgPath(p.shape)}`)
+      );
+      const curShapes = new Set(
+        curNonNeighbors.map((p) => this.projector.shapeToSvgPath(p.shape))
       );
 
-      const hasMain = refSnap.polities.some((p) => p.role === 'main');
-      const candidates = refSnap.polities.filter((p) =>
-        hasMain ? p.role === 'main' : p.role === 'rival'
-      );
+      const candidates = refSnap.polities.filter((p) => p.role !== 'neighbor');
+      const diffCandidates = candidates.filter((pol) => {
+        const dStr = this.projector.shapeToSvgPath(pol.shape);
+        return dStr && !curPaths.has(`${pol.title}:${dStr}`) && !curShapes.has(dStr);
+      });
+      const listToRender =
+        diffCandidates.length > 0
+          ? diffCandidates
+          : mode === 'preview'
+            ? candidates
+            : [];
 
       let count = 0;
-      for (const pol of candidates) {
+      for (const pol of listToRender) {
         const dStr = this.projector.shapeToSvgPath(pol.shape);
         if (!dStr) continue;
-        if (mode === 'fade' && curPaths.has(`${pol.title}:${dStr}`)) continue;
-        this._svgNode(
+        const ghostPath = this._svgNode(
           'path',
           {
             d: dStr,
-            class: `polity-ghost-path ${mode === 'preview' ? 'is-preview' : 'is-fade'}`,
+            class: `polity-ghost-path is-${pol.role || 'main'} ${mode === 'preview' ? 'is-preview' : 'is-fade'}`,
             stroke: pol.tint || '#b5452f',
           },
           this.grpGhostDiff
         );
+        if (ghostPath && ghostPath.dataset) {
+          ghostPath.dataset.polityTitle = pol.title || '';
+          ghostPath.dataset.polityRole = pol.role || '';
+        }
         count++;
       }
       if (count > 0 && mode === 'fade') {
         this.ghostTimer = setTimeout(() => {
           if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
           this.ghostTimer = null;
-        }, 1650);
+        }, 2850);
       }
+    }
+
+    _clearPreviewGhost() {
+      if (!this.grpGhostDiff || this.ghostTimer) return;
+      this.grpGhostDiff.innerHTML = '';
     }
 
     _previewStageGhost(snapKey) {
@@ -2226,7 +2248,7 @@
             if (e.pointerType !== 'touch' && idx !== pIdx) this._previewStageGhost(ph.snap);
           });
           dot.addEventListener('pointerleave', (e) => {
-            if (e.pointerType !== 'touch' && this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+            if (e.pointerType !== 'touch') this._clearPreviewGhost();
           });
           dot.addEventListener('click', () => {
             this.stopAutoplay();
@@ -2447,9 +2469,15 @@
         const li = document.createElement('li');
         const targetY = this._clampYearToDynasty(dynasty, m.year);
         const prevY = Math.max(dynasty.fromYear, targetY - 1);
+        const targetSnapKey = this._resolveSnapKey(dynasty, targetY);
+        const prevDyn = this.dynastyIdx > 0 ? this.dynasties[this.dynastyIdx - 1] : null;
+        const prevSnapKey =
+          m.year === dynasty.fromYear && prevDyn
+            ? this._resolveSnapKey(prevDyn, prevDyn.toYear)
+            : this._resolveSnapKey(dynasty, prevY);
         const snapShift =
           m.year === dynasty.fromYear ||
-          this._resolveSnapKey(dynasty, targetY) !== this._resolveSnapKey(dynasty, prevY);
+          targetSnapKey !== this._resolveSnapKey(dynasty, prevY);
         const cityShift =
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
@@ -2477,6 +2505,17 @@
             this.startJourney(jBtn.dataset.journey);
           });
         }
+        li.addEventListener('pointerenter', (e) => {
+          if (e.pointerType === 'touch') return;
+          if (targetSnapKey && targetSnapKey !== this.activeSnapKey) {
+            this._previewStageGhost(targetSnapKey);
+          } else if (snapShift && prevSnapKey && prevSnapKey !== this.activeSnapKey) {
+            this._previewStageGhost(prevSnapKey);
+          }
+        });
+        li.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch') this._clearPreviewGhost();
+        });
         li.addEventListener('click', () => {
           this.stopAutoplay();
           if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
@@ -3282,7 +3321,8 @@
       const nextSnapKey = this._resolveSnapKey(cur, y);
 
       if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
-        this._renderDynasty(cur);
+        const prevSnap = this.lastRenderedSnap;
+        this._renderDynasty(cur, prevSnap);
         this._renderChroniclePane(cur);
       } else {
         if (nextSnapKey !== this.activeSnapKey) {
