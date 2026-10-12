@@ -441,7 +441,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012-share').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -465,7 +465,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012-share').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -952,6 +952,12 @@
         : this.uiStr('btn_quiz', '开始挑战');
       const lblLoc = this._id('lbl-locale') || this._id('act-locale');
       lblLoc.textContent = this.locale === 'en' ? '中文' : 'EN';
+      const shareBtn = this._id('act-share');
+      if (shareBtn) {
+        this._id('lbl-share').textContent = this.uiStr('btn_share', '分享');
+        shareBtn.setAttribute('aria-label', this.uiStr('btn_share', '分享'));
+        shareBtn.title = this.uiStr('share_title', '复制当前视图的分享链接');
+      }
       const ghBtn = this._id('act-github-star');
       if (ghBtn) {
         ghBtn.title =
@@ -3369,6 +3375,7 @@
       if (this.activeTrace && !this._id('genealogy-card').classList.contains('is-hidden')) {
         this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
       }
+      this._scheduleShareSync();
     }
 
     stepTimelineNode(dir) {
@@ -3604,6 +3611,7 @@
       }
       this._updateScaleBar();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+      this._scheduleShareSync();
     }
 
     _formatChineseLi(li) {
@@ -5877,6 +5885,11 @@
         musicNextBtn.addEventListener('click', () => this.nextMusicTrack());
       }
 
+      ['pointerdown', 'keydown', 'wheel'].forEach((type) => {
+        window.addEventListener(type, () => this._noteShareInteraction(), { capture: true, passive: true });
+      });
+      this._id('act-share').addEventListener('click', () => this.shareCurrentView());
+
       this._id('act-locale').addEventListener('click', () => {
         this.locale = this.locale === 'en' ? 'zh' : 'en';
         this.applyLocale();
@@ -7218,6 +7231,197 @@
         lat: targetLat !== null ? targetLat : undefined,
         zoom,
       });
+    }
+
+    // ---------------- Share current view (live URL sync) ----------------
+    static get SHARE_URL_KEYS() {
+      return [
+        'year', 'zoom', 'center', 'place', 'lng', 'lat', 'event', 'journey', 'stop', 'lang', 'terrain',
+        'hover', 'q', 'layers', 'mob_chron', 'mob_leg', 'quiz',
+      ];
+    }
+
+    _shareViewportZoom(fillsViewport) {
+      const cam = this.camera;
+      const rect = this.svg && this.svg.getBoundingClientRect ? this.svg.getBoundingClientRect() : null;
+      let z = 1000 / cam.w;
+      if (rect && rect.width > 40 && rect.height > 40) {
+        const W = rect.width;
+        const H = rect.height;
+        const scale = Math.min(W / cam.w, H / cam.h);
+        z = fillsViewport
+          ? (scale * 1000) / Math.min(W, H / this._getViewportAspect())
+          : scale / Math.min(W / 1000, H / 700);
+      }
+      return String(Number(Math.max(1, Math.min(8, z)).toFixed(2)));
+    }
+
+    _sharePlaceName(lng, lat) {
+      if (this.activeTraceLabel) return this.activeTraceLabel;
+      const near = (c) => Array.isArray(c) && Math.abs(c[0] - lng) < 0.01 && Math.abs(c[1] - lat) < 0.01;
+      const d = this.dynasties[this._findDynastyIndex(this.year)];
+      const names = [
+        ...((d && d.settlements) || []).filter((s) => near(s.coord)).map((s) => s.ancient),
+        ...HistoricalAtlasController.STRATEGIC_PASSES.filter((p) => near(p.coord)).map((p) => p.ancientZh),
+      ];
+      for (const raw of names) {
+        const name = String(raw || '').replace(/（.*?）|\(.*?\)/g, '').trim();
+        const hit = name && this.resolvePlace(name, this.year);
+        if (hit && near([hit.lng, hit.lat])) return name;
+      }
+      return '';
+    }
+
+    _buildShareParams() {
+      if (this.challenge) return null;
+      const params = new URLSearchParams();
+      if (this.activeJourney) {
+        params.set('journey', this.activeJourney.key);
+        params.set('stop', String(this.journeyStopIdx || 0));
+      } else if (Array.isArray(this.activeCustomRoute) && this.activeCustomRoute.length >= 2) {
+        const years = this.activeCustomRoute.map((st) => st.year);
+        params.set('year', new Set(years).size > 1 ? years.join(',') : String(years[0]));
+        params.set('place', this.activeCustomRoute.map((st) => st.query || st.name).join(','));
+      } else {
+        params.set('year', String(this.year));
+        if (this.activeTrace) {
+          const [lng, lat] = this.activeTrace;
+          const name = this._sharePlaceName(lng, lat);
+          if (name) {
+            params.set('place', name);
+          } else {
+            params.set('lng', lng.toFixed(2));
+            params.set('lat', lat.toFixed(2));
+          }
+          params.set('zoom', this._shareViewportZoom(true));
+        } else {
+          const cam = this.camera;
+          const def = this._getDefaultCamera();
+          if (Math.abs(cam.x - def.x) > 0.5 || Math.abs(cam.y - def.y) > 0.5 || Math.abs(cam.w - def.w) > 0.5) {
+            const [lng, lat] = this.projector.toGeo(cam.x + cam.w * 0.5, cam.y + cam.h * 0.5);
+            params.set('zoom', this._shareViewportZoom(false));
+            params.set('center', `${lng.toFixed(2)},${lat.toFixed(2)}`);
+          }
+        }
+        const m = this.activeMilestone;
+        if (m && !m.isAuto && m.milestone) params.set('event', String(m.milestone.year));
+      }
+      if (this.locale === 'en') params.set('lang', 'en');
+      if (this.terrainMode === false) params.set('terrain', '0');
+      return params;
+    }
+
+    _shareSearchString(params) {
+      const owned = new Set(HistoricalAtlasController.SHARE_URL_KEYS);
+      const merged = new URLSearchParams(params);
+      new URLSearchParams(location.search).forEach((v, k) => {
+        if (!owned.has(k)) merged.append(k, v);
+      });
+      return merged.toString().replace(/%2C/gi, ',');
+    }
+
+    _noteShareInteraction() {
+      if (this._shareBaseline === undefined) {
+        const params = this._buildShareParams();
+        this._shareBaseline = params ? params.toString() : null;
+      }
+      this._scheduleShareSync();
+    }
+
+    _scheduleShareSync() {
+      if (this._shareBaseline === undefined || typeof history === 'undefined') return;
+      clearTimeout(this._shareSyncTimer);
+      this._shareSyncTimer = setTimeout(() => this._syncShareUrl(), 400);
+    }
+
+    _syncShareUrl() {
+      clearTimeout(this._shareSyncTimer);
+      this._shareSyncTimer = null;
+      const params = this._buildShareParams();
+      if (!params) return;
+      const sig = params.toString();
+      if (sig === (this._shareWritten !== undefined ? this._shareWritten : this._shareBaseline)) return;
+      try {
+        history.replaceState(
+          history.state,
+          '',
+          `${location.pathname}?${this._shareSearchString(params)}${location.hash}`
+        );
+        this._shareWritten = sig;
+      } catch (_) {}
+    }
+
+    _currentShareUrl() {
+      const base =
+        location.origin && location.origin !== 'null'
+          ? `${location.origin}${location.pathname}`
+          : location.href.split(/[?#]/)[0];
+      const search = location.search
+        ? location.search.slice(1)
+        : this._shareSearchString(this._buildShareParams() || new URLSearchParams());
+      return `${base}?${search}`;
+    }
+
+    _copyShareText(text) {
+      const fallback = () => {
+        const prevFocus = document.activeElement;
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (_) {}
+        ta.remove();
+        if (prevFocus && prevFocus.focus) prevFocus.focus();
+        return ok;
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).then(() => true, fallback);
+      }
+      return Promise.resolve(fallback());
+    }
+
+    _showShareToast(msg) {
+      let el = this._id('share-toast');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'share-toast';
+        el.className = 'share-toast';
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.classList.remove('is-visible');
+      void el.offsetWidth;
+      el.classList.add('is-visible');
+      clearTimeout(this._shareToastTimer);
+      this._shareToastTimer = setTimeout(() => el.classList.remove('is-visible'), 2200);
+    }
+
+    async shareCurrentView() {
+      if (this._shareBaseline !== undefined) this._syncShareUrl();
+      const url = this._currentShareUrl();
+      const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      if (coarse && navigator.share) {
+        try {
+          await navigator.share({ title: document.title, url });
+          return url;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return url;
+        }
+      }
+      const ok = await this._copyShareText(url);
+      this._showShareToast(
+        ok
+          ? this.uiStr('share_copied', '链接已复制')
+          : this.uiStr('share_failed', '复制失败，请复制地址栏中的链接')
+      );
+      return url;
     }
 
     _restoreFromQuery() {

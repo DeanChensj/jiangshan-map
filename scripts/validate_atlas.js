@@ -1077,13 +1077,84 @@ function main() {
     );
   }
 
+  // CUJ 9q: Share Current View — _buildShareParams() writes only deep-link params _restoreFromQuery() reads back
+  const shareProjector = ctrl.projector;
+  ctrl.projector = {
+    greatCircleKm: shareProjector.greatCircleKm,
+    toScreen: (lng, lat) => [(lng - 66) * 13.16, (55 - lat) * 17.07],
+    toGeo: (x, y) => [66 + x / 13.16, 55 - y / 17.07],
+  };
+  const shareOf = () => {
+    const p = ctrl._buildShareParams();
+    return p ? decodeURIComponent(p.toString()) : null;
+  };
+  Object.assign(ctrl, { year: 1127, locale: 'zh', terrainMode: true, challenge: null, activeJourney: null });
+  assert.strictEqual(shareOf(), 'year=1127', 'Default camera must emit only the year');
+
+  ctrl.camera = { x: 400, y: 250, w: 250, h: 210, zoom: 4 };
+  const camShare = ctrl._buildShareParams();
+  assert.strictEqual(camShare.get('zoom'), '4', `Expected zoom=4, got ${camShare.get('zoom')}`);
+  const [cLng, cLat] = camShare.get('center').split(',').map(Number);
+  const [rtx, rty] = ctrl.projector.toScreen(cLng, cLat);
+  assert(
+    Math.abs(rtx - 125 - 400) < 1.5 && Math.abs(rty - 105 - 250) < 1.5 && ctrl._parseYearList(camShare.get('year'))[0] === 1127,
+    `Year + camera share must round-trip through the center/zoom restore math, got ${camShare.toString()}`
+  );
+  ctrl.camera = { x: 350, y: 215, w: 500, h: 420, zoom: 2 };
+
+  const changan741 = ctrl.resolvePlace('长安', 741);
+  Object.assign(ctrl, { year: 741, activeTrace: [changan741.lng, changan741.lat], activeTraceLabel: '' });
+  const traceShare = ctrl._buildShareParams();
+  assert.strictEqual(decodeURIComponent(traceShare.toString()), 'year=741&place=长安&zoom=2', 'Trace card on a city must share year + place + zoom');
+  const traceTok = ctrl._parsePlaceTokens(traceShare.get('place'), traceShare.get('year'));
+  const traceHit = ctrl.resolvePlace(traceTok[0].place, traceTok[0].year);
+  assert(
+    traceTok.length === 1 && Math.hypot(traceHit.lng - changan741.lng, traceHit.lat - changan741.lat) < 0.01,
+    'Shared trace place must resolve back to the same coordinates'
+  );
+  ctrl.activeTrace = [100.123, 30.456];
+  assert.strictEqual(shareOf(), 'year=741&lng=100.12&lat=30.46&zoom=2', 'Arbitrary trace point must share lng/lat');
+  ctrl.activeTrace = null;
+
+  const shareTangDyn = dynasties[ctrl._findDynastyIndex(741)];
+  const tangMilestone = (shareTangDyn.milestones || []).find((m) => m.year === 741) || shareTangDyn.milestones[0];
+  ctrl.activeMilestone = { milestone: tangMilestone, isAuto: true };
+  assert.strictEqual(shareOf(), 'year=741', 'Auto milestone balloons must not be shared');
+  ctrl.activeMilestone = { milestone: tangMilestone, isAuto: false };
+  assert.strictEqual(shareOf(), `year=741&event=${tangMilestone.year}`, 'Opened milestone balloon must share event=<year>');
+  ctrl.activeMilestone = null;
+
+  const sushiJourney = loreData.HISTORICAL_JOURNEYS.find((j) => j.key === 'sushi');
+  Object.assign(ctrl, { activeJourney: sushiJourney, journeyStopIdx: 4, locale: 'en', terrainMode: false });
+  assert.strictEqual(shareOf(), 'journey=sushi&stop=4&lang=en&terrain=0', 'Journey share must replace year/camera with journey + stop');
+  Object.assign(ctrl, { activeJourney: null, journeyStopIdx: 0, locale: 'zh', terrainMode: true });
+
+  ctrl.activeCustomRoute = ctrl
+    ._parsePlaceTokens('湖州,黄州,惠州,儋州', '1079,1080,1094,1097')
+    .map((tok) => ({ query: tok.place, year: tok.year, ...ctrl.resolvePlace(tok.place, tok.year) }));
+  const routeShare = ctrl._buildShareParams();
+  assert.strictEqual(decodeURIComponent(routeShare.toString()), 'year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州');
+  assert.strictEqual(ctrl._parseYearList(routeShare.get('year')).join(','), '1079,1080,1094,1097');
+  ctrl.activeCustomRoute = null;
+
+  ctrl.challenge = { variant: 'locate' };
+  assert.strictEqual(ctrl._buildShareParams(), null, 'Nothing may be shared while a challenge is active');
+  ctrl.challenge = null;
+
+  sandbox.location.search = '?year=1415&hover=应天府&compare=741&q=长安&quiz=locate';
+  const mergedSearch = decodeURIComponent(ctrl._shareSearchString(ctrl._buildShareParams()));
+  assert.strictEqual(mergedSearch, 'year=741&compare=741', `Share must drop one-shot params and keep foreign ones, got ${mergedSearch}`);
+  sandbox.location.search = '';
+  ctrl.projector = shareProjector;
+  ctrl.year = -403;
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 17 E2E CUJs`);
 }
 
 main();

@@ -103,7 +103,11 @@ window.EN_LOCALE = {
     "tag_neighbor": "(Surrounding Polity)",
     "tag_prot": "(Protectorate / Tributary)",
     "tag_hist": "(Historical Realm)",
-    "now_prov": "Today: "
+    "now_prov": "Today: ",
+    "btn_share": "Share",
+    "share_title": "Copy a link to this view",
+    "share_copied": "Link copied",
+    "share_failed": "Copy failed — copy the link from the address bar"
   },
   "dynasties": {
     "zhanguo": {
