@@ -6653,61 +6653,75 @@
           }
         }
 
-        // 2. Settlements (preferring target dynasty)
-        for (const d of orderedDynasties) {
-          for (const s of d.settlements || []) {
-            const anc = (s.ancient || '').toLowerCase();
-            const mod = (s.modern || '').toLowerCase();
-            const cleanAnc = anc.replace(/（.*?）|\(.*?\)/g, '').trim();
-            if (exact) {
-              if (anc === q || cleanAnc === q || mod === q || cleanAnc === qStripped || mod === qStripped) {
-                return {
-                  kind: 'city',
-                  name: s.ancient,
-                  modern: s.modern || '',
-                  lng: s.coord[0],
-                  lat: s.coord[1],
-                  coord: s.coord,
-                  zoom: s.tier === 2 ? 2.6 : 2.3,
-                };
-              }
-            } else if (
-              anc.includes(q) ||
+        const matchSettlement = (s) => {
+          const anc = (s.ancient || '').toLowerCase();
+          const mod = (s.modern || '').toLowerCase();
+          const cleanAnc = anc.replace(/（.*?）|\(.*?\)/g, '').trim();
+          const hit = exact
+            ? anc === q || cleanAnc === q || mod === q || cleanAnc === qStripped || mod === qStripped
+            : anc.includes(q) ||
               mod.includes(q) ||
-              (qStripped.length >= 2 && (anc.includes(qStripped) || mod.includes(qStripped)))
-            ) {
+              (qStripped.length >= 2 && (anc.includes(qStripped) || mod.includes(qStripped)));
+          if (!hit) return null;
+          return {
+            kind: 'city',
+            name: s.ancient,
+            modern: s.modern || '',
+            lng: s.coord[0],
+            lat: s.coord[1],
+            coord: s.coord,
+            zoom: s.tier === 2 ? 2.6 : 2.3,
+          };
+        };
+
+        // 2a. Target dynasty settlements first (preserves era-specific homonyms like 战国/西汉 江州=重庆)
+        for (const s of targetDyn.settlements || []) {
+          const res = matchSettlement(s);
+          if (res) return res;
+        }
+
+        // 2b. On exact pass, check Poetic & Historical Gazetteer before out-of-era settlements
+        // so Tang/Song 江州 (江西九江) is not hijacked by Warring States 江州（巴）(重庆)
+        const matchGazetteer = () => {
+          for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
+            const allNames = [g.name, ...(g.aliases || [])]
+              .filter(Boolean)
+              .map((s) => s.toLowerCase());
+            const matched = exact
+              ? allNames.some((n) => n === q || n === qStripped)
+              : allNames.some((n) => n.includes(q) || (qStripped.length >= 2 && n.includes(qStripped)));
+            if (matched) {
               return {
-                kind: 'city',
-                name: s.ancient,
-                modern: s.modern || '',
-                lng: s.coord[0],
-                lat: s.coord[1],
-                coord: s.coord,
-                zoom: s.tier === 2 ? 2.6 : 2.3,
+                kind: 'gazetteer',
+                name: g.name,
+                modern: g.modern || '',
+                lng: g.coord[0],
+                lat: g.coord[1],
+                coord: g.coord,
+                zoom: g.zoom || 2.6,
               };
             }
           }
+          return null;
+        };
+
+        if (exact) {
+          const gazHit = matchGazetteer();
+          if (gazHit) return gazHit;
         }
 
-        // 3. Poetic & Historical Gazetteer (诗词名胜 · 古战场 · 关隘渡口 · 州县别名)
-        for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
-          const allNames = [g.name, ...(g.aliases || [])]
-            .filter(Boolean)
-            .map((s) => s.toLowerCase());
-          const matched = exact
-            ? allNames.some((n) => n === q || n === qStripped)
-            : allNames.some((n) => n.includes(q) || (qStripped.length >= 2 && n.includes(qStripped)));
-          if (matched) {
-            return {
-              kind: 'gazetteer',
-              name: g.name,
-              modern: g.modern || '',
-              lng: g.coord[0],
-              lat: g.coord[1],
-              coord: g.coord,
-              zoom: g.zoom || 2.6,
-            };
+        // 2c. Remaining dynasties' settlements
+        for (const d of orderedDynasties.slice(1)) {
+          for (const s of d.settlements || []) {
+            const res = matchSettlement(s);
+            if (res) return res;
           }
+        }
+
+        // 3. Poetic & Historical Gazetteer (substring pass)
+        if (!exact) {
+          const gazHit = matchGazetteer();
+          if (gazHit) return gazHit;
         }
       }
 
@@ -7113,6 +7127,8 @@
           span: [d.fromYear, d.toYear],
         },
         place: placeLabel || null,
+        resolvedName: resolved ? resolved.name : null,
+        modern: resolved ? resolved.modern || '' : null,
         coord: hasCoord ? [Number(cLng.toFixed(4)), Number(cLat.toFixed(4))] : null,
         zoom: Number(targetZoom.toFixed(2)),
         ...info,
@@ -7259,6 +7275,27 @@
           this.camera = { x, y, w, h, zoom: z };
           this._applyCamera();
         }
+      }
+      if (q.has('year') || q.has('place') || (q.has('lng') && q.has('lat'))) {
+        afterFullSnapshots(() => {
+          if (typeof document === 'undefined' || !document.body || !document.createElement) return;
+          let node = this._id('atlas-inspect-json');
+          if (!node) {
+            node = document.createElement('script');
+            node.id = 'atlas-inspect-json';
+            node.type = 'application/json';
+            document.body.appendChild(node);
+          }
+          node.textContent = JSON.stringify(
+            this.inspect({
+              year: q.has('year') ? q.get('year') : this.year,
+              place: q.get('place') || '',
+              lng: q.has('lng') ? Number(q.get('lng')) : undefined,
+              lat: q.has('lat') ? Number(q.get('lat')) : undefined,
+              zoom: q.has('zoom') ? Number(q.get('zoom')) : undefined,
+            })
+          );
+        }, 40);
       }
       if (q.has('hover')) {
         const targetPref = q.get('hover');
