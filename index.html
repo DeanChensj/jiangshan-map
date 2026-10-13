@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261013a" />
+  <link rel="stylesheet" href="css/style.css?v=20261013b" />
 </head>
 <body>
   <div id="atlas-shell">
@@ -500,7 +500,7 @@
 
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
 
-        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 调整年份 · 空格播放</div>
+        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放</div>
       </div>
 
       <aside id="chronicle-pane" aria-label="历史时期详情">
@@ -521,27 +521,27 @@
         <div class="milestone-section">
           <h3 id="txt-milestones-heading">重大事件</h3>
           <ul id="milestone-list">
-            <li><span class="ev-yr">前403 年</span><span>周威烈王初命晋大夫魏斯、赵籍、韩虔为诸侯（三家分晋，《资治通鉴》开篇）</span></li>
-            <li><span class="ev-yr">前386 年</span><span>周安王册命田和为齐侯，田氏代齐，战国七雄格局正式形成</span></li>
-            <li><span class="ev-yr">前356 年</span><span>秦孝公任用商鞅变法，废井田、奖耕战、行县制；前350年迁都咸阳</span></li>
-            <li><span class="ev-yr">前353 年</span><span>桂陵之战：魏围赵都邯郸，齐威王拜田忌、孙膑率军“围魏救赵”，大破庞涓</span></li>
-            <li><span class="ev-yr">前341 年</span><span>马陵之战孙膑减灶诱敌射杀庞涓；次年商鞅袭魏夺取河西，魏自安邑迁都大梁</span></li>
-            <li><span class="ev-yr">前316 年</span><span>秦惠文王采司马错策灭巴、蜀（置蜀郡、巴郡）；前312年丹阳之战破楚取汉中</span></li>
-            <li><span class="ev-yr">前307 年</span><span>赵武灵王推行“胡服骑射”，北略中山、辟云中雁门；前306年楚怀王灭越</span></li>
-            <li><span class="ev-yr">前296 年</span><span>赵惠文王彻底攻灭中山国；齐、韩、魏三国合纵攻秦，败秦军于函谷关</span></li>
-            <li><span class="ev-yr">前284 年</span><span>燕昭王拜乐毅为上将军，统五国联军破齐，连下七十余城</span></li>
-            <li><span class="ev-yr">前278 年</span><span>秦白起攻拔楚都郢（置南郡），楚东迁陈郢，屈原投汨罗江；次年田单火牛阵复齐</span></li>
-            <li><span class="ev-yr">前260 年</span><span>长平之战：秦将白起大破赵括军，坑杀赵卒四十万，山东六国再难独力抗秦</span></li>
-            <li><span class="ev-yr">前256 年</span><span>秦灭东周王室（置三川郡）；蜀郡守李冰主持修筑都江堰，成都平原化为天府沃野</span></li>
-            <li><span class="ev-yr">前241 年</span><span>楚、赵、魏、韩、燕最后一次合纵攻秦败于蕞；楚考烈王畏秦自陈郢东迁寿春</span></li>
-            <li><span class="ev-yr">前238 年</span><span>秦王政行冠礼亲政，平定嫪毐之乱、罢免吕不韦，纳尉缭、李斯策部署灭六国方略</span></li>
-            <li><span class="ev-yr">前236 年</span><span>王翦、桓齮、杨端和攻赵邺城，连取九城，正式拉开秦灭六国统一战争序幕</span></li>
-            <li><span class="ev-yr">前230 年</span><span>秦王扫六合之首灭韩国：内史腾率军急袭韩都新郑，俘韩王安，以其地置颍川郡</span></li>
-            <li><span class="ev-yr">前228 年</span><span>秦王扫六合之破灭赵国：赵王迁中反间计杀李牧，王翦攻克邯郸俘赵王迁；公子嘉奔代</span></li>
-            <li><span class="ev-yr">前226 年</span><span>荆轲刺秦图穷匕见（前227）；王翦大破燕军于易水之西，攻拔燕都蓟城，燕王喜走辽东</span></li>
-            <li><span class="ev-yr">前225 年</span><span>秦王扫六合之荡平魏国：王贲引黄河、鸿沟水灌大梁，三月城坏，魏王假出降，魏亡</span></li>
-            <li><span class="ev-yr">前223 年</span><span>秦王扫六合之攻灭楚国：王翦、蒙武统六十万大军破楚，击杀项燕、攻克寿春，俘楚王负刍</span></li>
-            <li><span class="ev-yr">前222 年</span><span>王贲攻灭辽东燕王喜与代王嘉，王翦悉定楚江南地置会稽郡；六国唯余齐国孤悬东海</span></li>
+            <li><span class="ev-yr">前403 年</span><span>周威烈王命韩、赵、魏为诸侯，三家分晋</span></li>
+            <li><span class="ev-yr">前386 年</span><span>周安王命田和为齐侯，田氏代齐，七雄并立</span></li>
+            <li><span class="ev-yr">前356 年</span><span>秦孝公任商鞅变法，废井田、奖耕战；前350年迁都咸阳</span></li>
+            <li><span class="ev-yr">前353 年</span><span>桂陵之战，齐田忌、孙膑围魏救赵，大破庞涓</span></li>
+            <li><span class="ev-yr">前341 年</span><span>马陵之战孙膑射杀庞涓；次年秦夺河西，魏迁都大梁</span></li>
+            <li><span class="ev-yr">前316 年</span><span>秦司马错灭巴、蜀；前312年丹阳之战破楚取汉中</span></li>
+            <li><span class="ev-yr">前307 年</span><span>赵武灵王胡服骑射，辟云中、雁门；前306年楚灭越</span></li>
+            <li><span class="ev-yr">前296 年</span><span>赵惠文王灭中山国；齐、韩、魏合纵攻秦至函谷关</span></li>
+            <li><span class="ev-yr">前284 年</span><span>燕乐毅统五国联军破齐，连下七十余城</span></li>
+            <li><span class="ev-yr">前278 年</span><span>秦白起拔楚都郢，屈原投汨罗江；次年田单复齐</span></li>
+            <li><span class="ev-yr">前260 年</span><span>长平之战，秦白起大破赵括军，坑赵卒四十万</span></li>
+            <li><span class="ev-yr">前256 年</span><span>秦灭东周王室；蜀郡守李冰修筑都江堰</span></li>
+            <li><span class="ev-yr">前241 年</span><span>五国合纵攻秦败于蕞；楚考烈王东迁寿春</span></li>
+            <li><span class="ev-yr">前238 年</span><span>秦王政亲政，平嫪毐之乱、罢吕不韦</span></li>
+            <li><span class="ev-yr">前236 年</span><span>王翦等攻赵邺城，秦灭六国之战始</span></li>
+            <li><span class="ev-yr">前230 年</span><span>秦内史腾袭韩都新郑，俘韩王安，韩亡</span></li>
+            <li><span class="ev-yr">前228 年</span><span>秦王翦克邯郸俘赵王迁，赵亡；公子嘉奔代</span></li>
+            <li><span class="ev-yr">前226 年</span><span>荆轲刺秦不克（前227）；王翦拔燕都蓟城，燕王走辽东</span></li>
+            <li><span class="ev-yr">前225 年</span><span>秦王贲引水灌大梁，魏王假降，魏亡</span></li>
+            <li><span class="ev-yr">前223 年</span><span>秦王翦、蒙武破楚杀项燕，克寿春俘楚王负刍，楚亡</span></li>
+            <li><span class="ev-yr">前222 年</span><span>王贲灭辽东燕与代，王翦定江南置会稽郡</span></li>
           </ul>
         </div>
 
@@ -558,9 +558,9 @@
 
       <div id="scrubber-rail-wrap">
         <div id="scrubber-Bubble" aria-live="polite">
-          <span id="bubble-text">公元前214年 · 秦始皇三十三年</span>
+          <span id="bubble-text">公元前403年 · 周威烈王二十三年</span>
         </div>
-        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-403" aria-valuemax="2026" aria-valuenow="-214" aria-label="年份滑块">
+        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-403" aria-valuemax="2026" aria-valuenow="-403" aria-label="年份滑块">
           <div id="dynasty-bands"></div>
           <div id="scrubber-handle"></div>
         </div>
@@ -568,10 +568,10 @@
       </div>
 
       <div class="year-stepper">
-        <button id="act-step-prev" class="step-nav-btn" type="button" title="上一历史阶段 / 事件节点" aria-label="上一历史节点">‹</button>
-        <input id="inp-year" type="number" min="-403" max="2026" step="1" value="-214" aria-label="输入年份（负数为公元前）" />
+        <button id="act-step-prev" class="step-nav-btn" type="button" title="上一历史阶段 / 事件节点（←）· Shift+← 退十年" aria-label="上一历史节点">‹</button>
+        <input id="inp-year" type="number" min="-403" max="2026" step="1" value="-403" aria-label="输入年份（负数为公元前）" />
         <span class="unit-label" id="txt-year-suffix">年</span>
-        <button id="act-step-next" class="step-nav-btn" type="button" title="下一历史阶段 / 事件节点" aria-label="下一历史节点">›</button>
+        <button id="act-step-next" class="step-nav-btn" type="button" title="下一历史阶段 / 事件节点（→）· Shift+→ 进十年" aria-label="下一历史节点">›</button>
       </div>
     </footer>
   </div>
@@ -581,20 +581,20 @@
       <section>
         <h3>一、历代疆域与州郡政区时间轴目录（Dynasties &amp; Historical Territories）</h3>
         <ul>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=-403"><strong>战国历史地图（前403—前221 · Warring States）</strong></a> — 都城：咸阳（秦）· 洛阳（周）· 七雄都城。公元前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄（秦、楚、齐、燕、赵、魏、韩）并立争雄。各国推行变法、修筑长城、兴修水利，百家争鸣；秦经商鞅变法与并巴蜀后崛起，秦王嬴政自前230年至前221年十年间次第攻灭韩、赵、魏、楚、燕、齐，终结列国纷争（拖动滑块可看九阶段版图演变与灭六国进程）。 代表城池：咸阳（今西安·咸阳）、洛阳（王城）（今洛阳）、邯郸、大梁（今开封）、新郑、临淄（今淄博）、郢都（今荆州）、寿春（今寿县）、蓟城（今北京）。重要历史事件：前403年周威烈王初命晋大夫魏斯、赵籍、韩虔为诸侯（三家分晋，《资治通鉴》开篇）；前386年周安王册命田和为齐侯，田氏代齐，战国七雄格局正式形成；前356年秦孝公任用商鞅变法，废井田、奖耕战、行县制；前350年迁都咸阳；前353年桂陵之战：魏围赵都邯郸，齐威王拜田忌、孙膑率军“围魏救赵”，大破庞涓；前341年马陵之战孙膑减灶诱敌射杀庞涓；次年商鞅袭魏夺取河西，魏自安邑迁都大梁；前316年秦惠文王采司马错策灭巴、蜀（置蜀郡、巴郡）；前312年丹阳之战破楚取汉中。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=-214"><strong>秦历史地图（前221—前202 · Qin）</strong></a> — 都城：咸阳。秦灭六国，首次建立大一统的中央集权帝国。推行郡县制、书同文、车同轨，北筑长城，南征百越。 代表城池：咸阳（今西安·咸阳）。重要历史事件：前221年秦王嬴政统一六国，称“始皇帝”；前215年蒙恬北击匈奴，收复河套，连接长城；前214年平定岭南，设桂林、象、南海三郡；前212年命蒙恬修筑秦直道（咸阳至九原）；前210年秦始皇东巡病逝沙丘，胡亥即位；前209年陈胜吴广大泽乡起义。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=-403"><strong>战国历史地图（前403—前221 · Warring States）</strong></a> — 都城：咸阳（秦）· 洛阳（周）· 七雄都城。公元前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄（秦、楚、齐、燕、赵、魏、韩）并立争雄。各国推行变法、修筑长城、兴修水利，百家争鸣；秦经商鞅变法与并巴蜀后崛起，秦王嬴政自前230年至前221年十年间次第攻灭韩、赵、魏、楚、燕、齐，终结列国纷争（拖动滑块可看九阶段版图演变与灭六国进程）。 代表城池：咸阳（今西安·咸阳）、洛阳（王城）（今洛阳）、邯郸、大梁（今开封）、新郑、临淄（今淄博）、郢都（今荆州）、寿春（今寿县）、蓟城（今北京）。重要历史事件：前403年周威烈王命韩、赵、魏为诸侯，三家分晋；前386年周安王命田和为齐侯，田氏代齐，七雄并立；前356年秦孝公任商鞅变法，废井田、奖耕战；前350年迁都咸阳；前353年桂陵之战，齐田忌、孙膑围魏救赵，大破庞涓；前341年马陵之战孙膑射杀庞涓；次年秦夺河西，魏迁都大梁；前316年秦司马错灭巴、蜀；前312年丹阳之战破楚取汉中。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=-214"><strong>秦历史地图（前221—前202 · Qin）</strong></a> — 都城：咸阳。秦灭六国，首次建立大一统的中央集权帝国。推行郡县制、书同文、车同轨，北筑长城，南征百越。 代表城池：咸阳（今西安·咸阳）。重要历史事件：前221年秦王嬴政统一六国，称“始皇帝”；前215年蒙恬北击匈奴，收复河套，连接长城；前214年平定岭南，设桂林、象、南海三郡；前212年命蒙恬修筑秦直道（咸阳至九原）；前210年沙丘政变，秦始皇崩，赵高、李斯矫诏立胡亥；前209年陈胜吴广大泽乡起义。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=-100"><strong>西汉历史地图（前202—25 · Western Han）</strong></a> — 都城：长安。汉初郡国并行、与匈奴和亲；武帝北击匈奴，开河西走廊与丝绸之路，南平南越，东置朝鲜四郡，宣帝时设西域都护府。8 年王莽代汉建新，23 年新亡。拖动底部时间轴可查看各阶段疆域演变。 代表城池：长安（今西安）。重要历史事件：前202年刘邦称帝，建都长安；前200年白登之围，汉初行和亲之策；前180年平诸吕之乱，文景之治开启；前154年七国之乱，削藩后中央集权确立；前138年张骞出使西域，凿空丝绸之路；前133年马邑之谋，汉匈全面战争爆发。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=100"><strong>东汉历史地图（25—220 · Eastern Han）</strong></a> — 都城：洛阳。光武中兴后定都洛阳。班超经营西域，窦宪勒石燕然，北匈奴西迁；蔡伦改进造纸术。中后期外戚宦官交替专权，党锢之祸后黄巾起义，董卓入京，群雄割据。 代表城池：洛阳。重要历史事件：25年刘秀称帝，定都洛阳；36年平公孙述，光武统一全国；48年匈奴分裂，南匈奴内附；68年汉明帝建白马寺，佛教正式传入洛阳；69年汉明帝命王景与王吴发卒数十万修渠筑堤治河，自滎阳东至千乘海口千余里，形成此后近千年安流的“王景故道”；73年班超出使西域，重开丝路。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=100"><strong>东汉历史地图（25—220 · Eastern Han）</strong></a> — 都城：洛阳。光武中兴后定都洛阳。班超经营西域，窦宪勒石燕然，北匈奴西迁；蔡伦改进造纸术。中后期外戚宦官交替专权，党锢之祸后黄巾起义，董卓入京，群雄割据。 代表城池：洛阳。重要历史事件：25年刘秀称帝，定都洛阳；36年平公孙述，光武统一全国；48年匈奴分裂，南匈奴内附；68年汉明帝建白马寺，佛教正式传入洛阳；69年王景修渠筑堤治河，形成“王景故道”；73年班超出使西域，重开丝路。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=250"><strong>三国历史地图（220—280 · Three Kingdoms）</strong></a> — 都城：洛阳 / 成都 / 建业。魏、蜀、吴三足鼎立。曹魏据中原与西北，蜀汉据巴蜀，孙吴据江东与岭南。 代表城池：洛阳、成都、建业（今南京）。重要历史事件：220年曹丕代汉称帝，国号魏；221年刘备在成都称帝，国号汉；222年夷陵之战，陆逊火烧连营大破刘备；225年诸葛亮南征孟获，平定南中；228年诸葛亮首次北伐，马谡失街亭；229年孙权称帝，迁都建业。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=300"><strong>西晋历史地图（280—316 · Western Jin）</strong></a> — 都城：洛阳。司马炎代魏建晋，280 年灭吴重归一统。分封宗室引发八王之乱，内迁诸族起兵，311 年永嘉之乱洛阳陷落，316 年长安失守西晋亡。图示约公元 300 年，并标出 304 年起割据并州的匈奴汉赵。 代表城池：洛阳。重要历史事件：280年西晋灭吴，三国归晋；290年晋武帝司马炎卒，惠帝即位，杨骏、贾南风相继专权；291年八王之乱开始；301年赵王司马伦篡位，八王之乱全面升级；304年刘渊称汉王，十六国之始；306年李雄在成都称帝建大成（成汉）；司马越迎惠帝还洛阳。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=383"><strong>东晋十六国历史地图（317—420 · Eastern Jin &amp; Sixteen Kingdoms）</strong></a> — 都城：建康（东晋）。衣冠南渡，司马睿在建康重建晋室；北方先后出现十六国。初期石勒建立后赵，329 年灭前赵统一北方大部；后赵崩溃后形成前秦与前燕东西对峙；376 年前秦苻坚统一整个北方，383 年南征在淝水之战被谢玄北府兵击败，北方再度分裂，鲜卑拓跋氏北魏随即在代北崛起。拖动底部时间轴可查看各阶段疆域演变。 代表城池：建康（今南京）。重要历史事件：317年司马睿在建康即晋王位，东晋建立；319年石勒称赵王，建立后赵；329年石勒灭前赵，后赵统一北方大部；335年石虎迁后赵都城自襄国至邺城；347年桓温西征灭成汉，收复巴蜀；351年苻健在长安称天王，建立前秦。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=383"><strong>东晋十六国历史地图（317—420 · Eastern Jin &amp; Sixteen Kingdoms）</strong></a> — 都城：建康（东晋）。衣冠南渡，司马睿在建康重建晋室；北方先后出现十六国。初期石勒建立后赵，329 年灭前赵统一北方大部；后赵崩溃后形成前秦与前燕东西对峙；376 年前秦苻坚统一整个北方，383 年南征在淝水之战被谢玄北府兵击败，北方再度分裂，鲜卑拓跋氏北魏随即在代北崛起。拖动底部时间轴可查看各阶段疆域演变。 代表城池：建康（今南京）。重要历史事件：317年司马睿在建康即晋王位，东晋建立；319年石勒称赵王，建立后赵；322年王敦之乱，王敦自武昌举兵攻入建康；329年石勒灭前赵，后赵统一北方大部；335年石虎迁后赵都城自襄国至邺城；347年桓温西征灭成汉，收复巴蜀。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=500"><strong>南北朝历史地图（420—581 · Northern &amp; Southern Dynasties）</strong></a> — 都城：平城→洛阳（北朝）/ 建康（南朝）。420 年刘裕代晋建宋，南朝历宋、齐、梁、陈；北方北魏太武帝拓跋焘先后灭胡夏（431）、北燕（436）、北凉（439），于 439 年正式统一北方，结束五胡十六国。534 年北魏分裂为东魏、西魏，又分别为北齐、北周所代。拖动底部时间轴可查看各阶段疆域演变。 代表城池：洛阳、建康（今南京）。重要历史事件：420年刘裕代晋建宋，南朝开始；427年北魏太武帝攻克胡夏都城统万城，431 年灭夏；431年赫连定被俘，北魏灭胡夏；宋文帝元嘉之治；436年北魏攻入龙城，北燕亡；439年北魏太武帝灭北凉，统一北方，结束十六国；450年宋文帝元嘉北伐失利，北魏太武帝南征饮马长江。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=605"><strong>隋历史地图（581—618 · Sui）</strong></a> — 都城：大兴（长安）。隋结束三百年分裂，重建统一。开凿大运河，创立科举制，营建东都洛阳。 代表城池：大兴（今西安）。重要历史事件：581年杨坚建隋，定都大兴；589年隋灭陈，统一全国；599年东突厥启民可汗内附，隋于河套北筑大利城；605年营建东都洛阳；开通济渠，大运河开凿；608年隋炀帝开凿永济渠，北通涿郡，南达黄河；609年隋炀帝西巡张掖，破吐谷浑置西海、河源、鄯善、且末四郡。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=605"><strong>隋历史地图（581—618 · Sui）</strong></a> — 都城：大兴（长安）。隋结束三百年分裂，重建统一。开凿大运河，创立科举制，营建东都洛阳。 代表城池：大兴（今西安）。重要历史事件：581年杨坚建隋，定都大兴；589年隋灭陈，统一全国；599年东突厥启民可汗内附，隋于河套北筑大利城；605年营建东都洛阳；开通济渠，大运河开凿；608年隋炀帝开凿永济渠，北通涿郡，南达黄河；609年隋炀帝西巡张掖，破吐谷浑置西海等四郡。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=700"><strong>唐历史地图（618—907 · Tang）</strong></a> — 都城：长安。盛唐设安西、北庭、安北、安东、安南等都护府，长安是当时世界最大的都市。755 年安史之乱后，河西、陇右与西域先后陷于吐蕃，藩镇割据，直至 907 年朱温代唐。拖动底部时间轴可查看各阶段疆域演变。 代表城池：长安（今西安）。重要历史事件：618年李渊在长安称帝，建立唐朝；621年虎牢之战李世民擒窦建德、降王世充；李靖平萧铣，唐一统中原江南；626年玄武门之变，李世民即位；627年贞观之治开始；630年李靖灭东突厥，尊太宗为“天可汗”，置定襄、云中都督府；640年设安西都护府。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=950"><strong>五代十国历史地图（907—960 · Five Dynasties &amp; Ten Kingdoms）</strong></a> — 都城：开封。907 年朱温代唐，中原五十余年间后梁、后唐、后晋、后汉、后周五代更迭，南方及河东先后出现前蜀、后蜀、吴、南唐、吴越、闽、楚、南汉、荆南、北汉十国。936 年石敬瑭割燕云十六州予契丹，939 年安南脱离，为此后数百年边疆格局埋下伏笔。 代表城池：东京开封府（今开封）。重要历史事件：907年朱温代唐建后梁，契丹耶律阿保机称汗；909年王审知受封闽王，定都福州；王建在蜀称帝；916年耶律阿保机建契丹国，称帝建元神册；917年刘龑在番禺称帝建南汉，定都兴王府；923年李存勖灭后梁，建后唐；925年后唐庄宗遣军灭前蜀并有巴蜀；次年契丹灭渤海国。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1100"><strong>北宋历史地图（960—1127 · Northern Song）</strong></a> — 都城：东京开封府。陈桥兵变后用近二十年平定荆湖、后蜀、南汉、南唐、吴越、北汉，结束五代十国；两次北伐失利，燕云十六州终为辽有，与辽、西夏长期并立。经济文化高度繁荣。拖动底部时间轴可查看各阶段疆域演变。 代表城池：东京（汴梁）（今开封）。重要历史事件：960年陈桥兵变，赵匡胤建宋；961年杯酒释兵权，确立重文轻武国策；963年平荆南、湖南；965年灭后蜀；971年灭南汉；975年灭南唐。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1200"><strong>南宋历史地图（1127—1279 · Southern Song）</strong></a> — 都城：临安。宋室南渡，以临安为行在，与金以淮河—大散关为界。北方蒙古崛起，1234 年宋蒙联军灭金后，蒙古连灭大理、吐蕃归附，南宋独支四十余年，终于崖山。拖动底部时间轴可查看各阶段疆域演变。 代表城池：临安（今杭州）。重要历史事件：1127年赵构即位于南京应天府，南宋开始；1130年韩世忠黄天荡阻击金兀术水军；1138年宋高宗正式定行在于临安府；1140年岳飞北伐，郾城、颍昌大捷，进兵朱仙镇；1141年绍兴和议，以淮河—大散关为界；1161年金海陵王南侵，虞允文采石矶大捷。</li>
-          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1300"><strong>元历史地图（1279—1368 · Yuan）</strong></a> — 都城：大都。元朝首次将西藏、云南、漠北、东北纳入同一中央政权，创立行省制度。大都是欧亚贸易与文化交流中心。 代表城池：大都（今北京）。重要历史事件：1279年崖山海战灭南宋，元朝统一全国；1281年置澎湖巡检司管辖澎湖与琉球；第二次东征日本；1287年忽必烈亲征平定辽东乃颜之乱，设辽阳行省；1293年京杭大运河全线贯通；1307年中书省与全国十行省行政格局定型；1328年两都之战（天历之变）：元泰定帝卒后大都派燕铁木儿拥元文宗击败上都派天顺帝，元廷皇权剧烈动荡。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1200"><strong>南宋历史地图（1127—1279 · Southern Song）</strong></a> — 都城：临安。宋室南渡，以临安为行在，与金以淮河—大散关为界。北方蒙古崛起，1234 年宋蒙联军灭金后，蒙古连灭大理、吐蕃归附，南宋独支四十余年，终于崖山。拖动底部时间轴可查看各阶段疆域演变。 代表城池：临安（今杭州）。重要历史事件：1127年赵构即位于南京应天府，南宋开始；1129年苗刘兵变，苗傅、刘正彦逼高宗内禅，韩世忠、张俊平之；1130年韩世忠黄天荡阻击金兀术水军；1138年宋高宗正式定行在于临安府；1140年岳飞北伐，郾城、颍昌大捷，进兵朱仙镇；1141年绍兴和议，以淮河—大散关为界。</li>
+          <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1300"><strong>元历史地图（1279—1368 · Yuan）</strong></a> — 都城：大都。元朝首次将西藏、云南、漠北、东北纳入同一中央政权，创立行省制度。大都是欧亚贸易与文化交流中心。 代表城池：大都（今北京）。重要历史事件：1279年崖山海战灭南宋，元朝统一全国；1281年置澎湖巡检司管辖澎湖与琉球；第二次东征日本；1287年忽必烈亲征平定辽东乃颜之乱，设辽阳行省；1293年京杭大运河全线贯通；1307年中书省与全国十行省行政格局定型；1323年南坡之变，铁失等弑元英宗与拜住于上都南坡。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1450"><strong>明历史地图（1368—1644 · Ming）</strong></a> — 都城：顺天府（北京）。洪武、永乐时设奴儿干都司、哈密卫、交趾布政司，郑和七下西洋；土木堡之变后收缩至长城、辽东，北御蒙古、东南抗倭；1616 年后金崛起，萨尔浒之战后辽东尽失。拖动底部时间轴可查看各阶段疆域演变。 代表城池：顺天府（今北京）。重要历史事件：1368年朱元璋于应天称帝建明；八月徐达北伐攻克元大都（元廷北迁称北元）；1371年汤和、傅友德分道伐蜀，灭明夏政权平定四川；1380年胡惟庸案，废丞相；1382年傅友德、蓝玉、沐英率军平定云南元梁王与大理段氏；1388年冯胜收复辽东迫降纳哈出（1387）；蓝玉捕鱼儿海大破北元汗廷；1399年靖难之役。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1800"><strong>清历史地图（1644—1912 · Qing）</strong></a> — 都城：京师（北京）。1644 年入关后，历康熙、雍正、乾隆三朝逐步奠定版图：收台湾、定漠北、平青海、设驻藏大臣、平定天山南北。1840 年后屡遭列强侵略，外东北与伊犁西境割让。拖动底部时间轴可查看各阶段疆域演变。 代表城池：京师（今北京）、天京（太平天国）（今南京）。重要历史事件：1644年清军入关，定都北京；1661年郑成功横渡鹿耳门驱逐荷兰殖民者，收复台湾设承天府；1681年平定三藩之乱；1683年施琅收台湾，设台湾府；1685年康熙命彭春、萨布素发起雅克萨之战，痛击沙俄侵略军；1689年《尼布楚条约》划定东段边界。</li>
           <li><a href="https://deanchensj.github.io/jiangshan-map/?year=1936"><strong>中华民国历史地图（1912—1949 · Republic of China）</strong></a> — 都城：南京。帝制终结，共和肇始。军阀混战、北伐、抗日战争与解放战争相继发生。图示 1936 年：东北为日本扶植的伪满洲国占据。 代表城池：南京。重要历史事件：1912年中华民国成立；1915年蔡锷在云南起义，发起讨袁护国战争；1919年五四运动；1921年中国共产党第一次全国代表大会召开；1924年国共第一次合作，黄埔军校在广州创办；1926年国民革命军自广州誓师北伐，攻克武昌、南昌。</li>
@@ -640,10 +640,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261013a"></script>
-  <script src="js/atlas_boot.js?v=20261013a"></script>
-  <script src="js/map_data.js?v=20261013a"></script>
-  <script src="js/lore_data.js?v=20261013a"></script>
-  <script src="js/app.js?v=20261013a"></script>
+  <script src="js/china_geo_data.js?v=20261013b"></script>
+  <script src="js/atlas_boot.js?v=20261013b"></script>
+  <script src="js/map_data.js?v=20261013b"></script>
+  <script src="js/lore_data.js?v=20261013b"></script>
+  <script src="js/app.js?v=20261013b"></script>
 </body>
 </html>
