@@ -2961,8 +2961,13 @@
         closestOverall
       );
 
+      // A pass may own the heading only when it is nearer than the nearest settlement; otherwise a
+      // seat such as 陕州 (27 km from 函谷关) or 上洛 (9 km from 武关) would be titled as the pass.
       const matchedPassHit = this._findNearbyPass(lng, lat, 30);
-      const matchedPass = matchedPassHit ? matchedPassHit.pass : null;
+      const matchedPass =
+        matchedPassHit && !(closestOverall && closestOverall.km < matchedPassHit.km)
+          ? matchedPassHit.pass
+          : null;
       const titleMain = matchedPass
         ? (this.locale === 'en' ? matchedPass.ancientEn : matchedPass.ancientZh)
         : modernTitle
