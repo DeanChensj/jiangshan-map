@@ -443,7 +443,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261013a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261013b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -467,7 +467,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261013a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261013b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -976,12 +976,12 @@
       const stepPrevBtn = this._id('act-step-prev');
       if (stepPrevBtn) {
         stepPrevBtn.title =
-          this.locale === 'en' ? 'Previous historical milestone' : '上一历史节点 / 事件';
+          this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 / 事件 (←)';
       }
       const stepNextBtn = this._id('act-step-next');
       if (stepNextBtn) {
         stepNextBtn.title =
-          this.locale === 'en' ? 'Next historical milestone' : '下一历史节点 / 事件';
+          this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 / 事件 (→)';
       }
       this._id('txt-genealogy-kicker').textContent = this.uiStr(
         'trace_kicker',
@@ -1031,7 +1031,10 @@
         this._syncScrubberUi();
       }
       if (this.activeTrace) {
-        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
+        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
+          fromYearSync: true,
+          preserveScroll: true,
+        });
       }
       if (this.activeJourney) {
         this._renderJourneyOverlay();
@@ -1868,6 +1871,16 @@
         }
         return;
       }
+      if (
+        this.activeMilestone &&
+        !this.activeMilestone.isAuto &&
+        this.activeMilestone.dynastyKey === dynasty.key &&
+        this.activeMilestone.year === this.year &&
+        !this.milestoneBalloon.classList.contains('is-hidden')
+      ) {
+        this._positionMilestoneBalloon();
+        return;
+      }
       const activeIdx = this._activeMilestoneIndex(dynasty);
       const m = activeIdx >= 0 ? (dynasty.milestones || [])[activeIdx] : null;
       if (
@@ -1937,7 +1950,7 @@
       });
       this._highlightCurrentMilestone(dynasty);
       this._updateMilestoneStates(dynasty);
-      if (!m.coord) {
+      if (!m.coord || (opts && opts.fromStep && this.showEventCallouts === false)) {
         this.milestoneBalloon.classList.add('is-hidden');
         const vf = this._id('viewport-frame');
         if (vf) vf.classList.remove('has-open-milestone-balloon');
@@ -1951,13 +1964,18 @@
       const placeHtml = siteStr
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
+      const prevTitle =
+        this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 (←)';
+      const nextTitle =
+        this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 (→)';
+      const navHtml = `<span class="ep-nav"><button type="button" class="ep-step ep-prev" title="${prevTitle}" aria-label="${prevTitle}">‹</button><button type="button" class="ep-step ep-next" title="${nextTitle}" aria-label="${nextTitle}">›</button></span>`;
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       const jKey = this._journeyKeyForMilestone(dynasty, m);
       const jBtnHtml = jKey
         ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
         : '';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}${navHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
@@ -1966,6 +1984,20 @@
           const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
           const targetCoord = coCity ? coCity.coord : m.coord;
           this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+        });
+      }
+      const prevBtn = this.milestoneBalloon.querySelector('.ep-prev');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.stepTimelineNode(-1);
+        });
+      }
+      const nextBtn = this.milestoneBalloon.querySelector('.ep-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.stepTimelineNode(1);
         });
       }
       const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
@@ -2847,7 +2879,9 @@
       return provPrefix ? raw.slice(provPrefix.length) : raw;
     }
 
-    openGenealogyAt(lng, lat, customLabel = null) {
+    openGenealogyAt(lng, lat, customLabel = null, opts = {}) {
+      const fromYearSync = Boolean(opts && opts.fromYearSync);
+      const preserveScroll = Boolean(opts && opts.preserveScroll);
       const isSamePlace =
         this.activeTrace &&
         Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01;
@@ -2859,7 +2893,7 @@
       if (!this._fullSnapshotsLoaded) {
         this._ensureFullSnapshots().then(() => {
           if (this.activeTrace && Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01) {
-            this.openGenealogyAt(lng, lat, this.activeTraceLabel);
+            this.openGenealogyAt(lng, lat, this.activeTraceLabel, opts);
           }
         });
       }
@@ -2902,16 +2936,20 @@
             this.locale === 'en' ? this.trTerm(this.activeTraceLabel) : this.activeTraceLabel;
         }
       }
-      if (typeof window !== 'undefined' && window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
-        this.camera.y = sy - this.camera.h * 0.28;
-        this._applyCamera(true);
-      } else if (
-        typeof window !== 'undefined' &&
-        window.innerWidth > 900 &&
-        sx > this.camera.x + this.camera.w * 0.62
-      ) {
-        this.camera.x = sx - this.camera.w * 0.38;
-        this._applyCamera(true);
+      if (!fromYearSync) {
+        if (typeof window !== 'undefined' && window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
+          this.camera.y = sy - this.camera.h * 0.28;
+          this._applyCamera(true);
+        } else if (
+          typeof window !== 'undefined' &&
+          window.innerWidth > 900 &&
+          sx > this.camera.x + this.camera.w * 0.62
+        ) {
+          this.camera.x = sx - this.camera.w * 0.38;
+          this._applyCamera(true);
+        } else {
+          this._rescaleSvgTypography(true);
+        }
       } else {
         this._rescaleSvgTypography(true);
       }
@@ -3114,6 +3152,8 @@
         }
 
         const listEl = this._id('genealogy-timeline');
+        const prevScrollTop = listEl.scrollTop;
+        const hadItems = listEl.children.length > 0;
         listEl.innerHTML = '';
 
         if (matchedPass) {
@@ -3211,6 +3251,7 @@
               const ev = placeEvents[Number(rowEl.dataset.evIdx)];
               if (!ev) return;
               this.stopAutoplay();
+              this._preserveGenealogyScrollOnce = true;
               const targetY = this._clampYearToDynasty(d, ev.year);
               this.jumpToYear(targetY);
               if (ev.milestone) {
@@ -3221,6 +3262,7 @@
 
           li.addEventListener('click', () => {
             this.stopAutoplay();
+            this._preserveGenealogyScrollOnce = true;
             this.jumpToYear(d.focusYear);
           });
           listEl.appendChild(li);
@@ -3228,8 +3270,19 @@
 
         const curLi = listEl.querySelector('li.is-current');
         if (curLi && listEl.scrollHeight > listEl.clientHeight) {
-          const top = Math.max(0, curLi.offsetTop - listEl.offsetTop - listEl.clientHeight * 0.35);
-          listEl.scrollTop = top;
+          const liTop = curLi.offsetTop - listEl.offsetTop;
+          const liBottom = liTop + curLi.offsetHeight;
+          const alreadyVisible =
+            hadItems &&
+            isSamePlace &&
+            liTop >= prevScrollTop + 8 &&
+            liBottom <= prevScrollTop + listEl.clientHeight - 8;
+          if (preserveScroll || (fromYearSync && alreadyVisible)) {
+            listEl.scrollTop = prevScrollTop;
+          } else {
+            const top = Math.max(0, liTop - listEl.clientHeight * 0.35);
+            listEl.scrollTop = top;
+          }
         }
       };
 
@@ -3465,8 +3518,14 @@
       this._syncAutoMilestoneBalloon(cur);
       this._renderCorridors();
       this._syncScrubberUi();
-      if (this.activeTrace && !this._id('genealogy-card').classList.contains('is-hidden')) {
-        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1]);
+      const preserveScroll = Boolean(this._preserveGenealogyScrollOnce);
+      this._preserveGenealogyScrollOnce = false;
+      const genCard = this._id('genealogy-card');
+      if (this.activeTrace && genCard && !genCard.classList.contains('is-hidden')) {
+        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
+          fromYearSync: true,
+          preserveScroll,
+        });
       }
     }
 
@@ -3481,6 +3540,48 @@
         }
         this.stepJourney(dir > 0 ? 1 : -1);
         return;
+      }
+      if (this.activeCustomRoute) {
+        this.stepCustomRoute(dir > 0 ? 1 : -1);
+        return;
+      }
+      const ensureCoordInView = (coord) => {
+        if (!coord || !this.projector || typeof this._animateCameraTo !== 'function') return;
+        const [sx, sy] = this.projector.toScreen(coord[0], coord[1]);
+        const outX =
+          sx < this.camera.x + this.camera.w * 0.14 ||
+          sx > this.camera.x + this.camera.w * 0.86;
+        const outY =
+          sy < this.camera.y + this.camera.h * 0.16 ||
+          sy > this.camera.y + this.camera.h * 0.84;
+        if (outX || outY) {
+          this._animateCameraTo({
+            x: Math.max(-140, Math.min(1000 - this.camera.w + 140, sx - this.camera.w * 0.5)),
+            y: Math.max(-100, Math.min(700 - this.camera.h + 120, sy - this.camera.h * 0.45)),
+            w: this.camera.w,
+            h: this.camera.h,
+          });
+        }
+      };
+      const curDyn = this.dynasties[this.dynastyIdx];
+      if (curDyn && Array.isArray(curDyn.milestones)) {
+        const sameYrIdxs = [];
+        curDyn.milestones.forEach((m, idx) => {
+          if (this._clampYearToDynasty(curDyn, m.year) === this.year) {
+            sameYrIdxs.push(idx);
+          }
+        });
+        if (sameYrIdxs.length > 1) {
+          const curMIdx = this._activeMilestoneIndex(curDyn);
+          const pos = sameYrIdxs.indexOf(curMIdx);
+          const nextPos = pos + (dir > 0 ? 1 : -1);
+          if (pos !== -1 && nextPos >= 0 && nextPos < sameYrIdxs.length) {
+            const targetM = curDyn.milestones[sameYrIdxs[nextPos]];
+            this.openMilestoneBalloon(curDyn, targetM, { fromStep: true });
+            ensureCoordInView(targetM.coord);
+            return;
+          }
+        }
       }
       if (!this._timelineStepYears) {
         const yrs = new Set();
@@ -3501,17 +3602,35 @@
         this._timelineStepYears = Array.from(yrs).sort((a, b) => a - b);
       }
       const list = this._timelineStepYears;
+      let targetY = this.year;
       if (dir > 0) {
         const nextY = list.find((y) => y > this.year);
-        this.jumpToYear(nextY !== undefined ? nextY : this.maxYear);
+        targetY = nextY !== undefined ? nextY : this.maxYear;
       } else {
+        targetY = this.minYear;
         for (let i = list.length - 1; i >= 0; i--) {
           if (list[i] < this.year) {
-            this.jumpToYear(list[i]);
-            return;
+            targetY = list[i];
+            break;
           }
         }
-        this.jumpToYear(this.minYear);
+      }
+      this.jumpToYear(targetY);
+      const nextDyn = this.dynasties[this.dynastyIdx];
+      if (nextDyn && Array.isArray(nextDyn.milestones)) {
+        const matched = nextDyn.milestones.filter(
+          (m) => this._clampYearToDynasty(nextDyn, m.year) === this.year
+        );
+        if (matched.length > 1 && dir > 0) {
+          this.openMilestoneBalloon(nextDyn, matched[0], { fromStep: true });
+        }
+        const activeM =
+          this.activeMilestone && this.activeMilestone.dynastyKey === nextDyn.key
+            ? this.activeMilestone.milestone
+            : matched[matched.length - 1];
+        if (activeM && activeM.coord) {
+          ensureCoordInView(activeM.coord);
+        }
       }
     }
 
@@ -6356,21 +6475,13 @@
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
           if (this.challenge) return;
           e.preventDefault();
-          this.stopAutoplay();
-          if (this.activeJourney) {
-            if (this.journeyTimer) {
-              clearInterval(this.journeyTimer);
-              this.journeyTimer = null;
-            }
-            this.stepJourney(e.key === 'ArrowRight' ? 1 : -1);
+          const dir = e.key === 'ArrowRight' ? 1 : -1;
+          if (e.shiftKey && !this.activeJourney && !this.activeCustomRoute) {
+            this.stopAutoplay();
+            this.jumpToYear(this.year + dir * 10);
             return;
           }
-          if (this.activeCustomRoute) {
-            this.stepCustomRoute(e.key === 'ArrowRight' ? 1 : -1);
-            return;
-          }
-          const step = e.shiftKey ? 50 : 10;
-          this.jumpToYear(this.year + (e.key === 'ArrowRight' ? step : -step));
+          this.stepTimelineNode(dir);
         } else if (e.key === 'Home' && !this.challenge) {
           this.jumpToYear(this.minYear);
         } else if (e.key === 'End' && !this.challenge) {
