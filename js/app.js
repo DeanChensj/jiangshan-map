@@ -257,6 +257,8 @@
       this.activeTrace = null;
       this.activeMilestone = null;
       this.activeJourney = null;
+      this.activeCustomRoute = null;
+      this.customRouteStopIdx = -1;
       this.journeyStopIdx = 0;
       this.journeyTimer = null;
       this.challenge = null;
@@ -441,7 +443,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261012n').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261013a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -465,7 +467,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261012n').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261013a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1371,6 +1373,7 @@
 
       this.lastRenderedSnap = snap;
       this._renderLegendBox(snap);
+      this._syncTracedPrefecture();
       this._rescaleSvgTypography();
     }
 
@@ -1525,7 +1528,10 @@
         });
 
       const showOnboardingTraceHint =
-        !this.hasSeenTraceHint && !this.activeJourney && !this.challenge;
+        !this.hasSeenTraceHint &&
+        !this.activeJourney &&
+        !this.activeCustomRoute &&
+        !this.challenge;
       const hintCapital = showOnboardingTraceHint
         ? activeList.find(
             (s) => s.isCapital && dynasty.seat && dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
@@ -1589,9 +1595,6 @@
             : this.trTerm(item.ancient);
 
         if (isHintCap) {
-          try {
-            localStorage.setItem('jiangshan_seen_trace_hint', '1');
-          } catch (_) {}
           const tagG = this._svgNode(
             'g',
             { class: 'cap-hint-tag', transform: 'translate(0, 15.2)' },
@@ -2603,11 +2606,50 @@
     closeGenealogyCard() {
       this.activeTrace = null;
       this.activeTraceLabel = '';
-      this._id('genealogy-card').classList.add('is-hidden');
+      const cardEl = this._id('genealogy-card');
+      if (cardEl) cardEl.classList.add('is-hidden');
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-genealogy');
-      this.grpGenealogy.innerHTML = '';
+      if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      this._syncTracedPrefecture();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+    }
+
+    _syncTracedPrefecture() {
+      if (!this.grpPrefectures || typeof this.grpPrefectures.querySelectorAll !== 'function') {
+        return;
+      }
+      this.grpPrefectures
+        .querySelectorAll('.prefecture-shape.is-traced')
+        .forEach((el) => el.classList.remove('is-traced'));
+      const cardEl = this._id('genealogy-card');
+      if (!this.activeTrace || (cardEl && cardEl.classList.contains('is-hidden'))) {
+        return;
+      }
+      const [lng, lat] = this.activeTrace;
+      const snap = this.lastRenderedSnap;
+      if (!snap || !Array.isArray(snap.prefectures)) return;
+      let matchedPrefTitle = '';
+      for (const pref of snap.prefectures) {
+        if (pref && pref.title && MercatorProjector.pointInShape(lng, lat, pref.shape)) {
+          matchedPrefTitle = pref.title;
+          break;
+        }
+      }
+      if (!matchedPrefTitle) return;
+      this.grpPrefectures.querySelectorAll('.prefecture-shape').forEach((el) => {
+        if (el.dataset && el.dataset.prefTitle === matchedPrefTitle) {
+          el.classList.add('is-traced');
+          if (el.parentNode && typeof el.parentNode.insertBefore === 'function') {
+            const regCasing = el.parentNode.querySelector('.region-shape-casing, .region-caption');
+            if (regCasing) {
+              el.parentNode.insertBefore(el, regCasing);
+            } else if (typeof el.parentNode.appendChild === 'function') {
+              el.parentNode.appendChild(el);
+            }
+          }
+        }
+      });
     }
 
     static get PLACE_LANDMARK_EVENTS() {
@@ -2827,8 +2869,15 @@
             this.locale === 'en' ? this.trTerm(this.activeTraceLabel) : this.activeTraceLabel;
         }
       }
-      if (window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
+      if (typeof window !== 'undefined' && window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
         this.camera.y = sy - this.camera.h * 0.28;
+        this._applyCamera(true);
+      } else if (
+        typeof window !== 'undefined' &&
+        window.innerWidth > 900 &&
+        sx > this.camera.x + this.camera.w * 0.62
+      ) {
+        this.camera.x = sx - this.camera.w * 0.38;
         this._applyCamera(true);
       } else {
         this._rescaleSvgTypography(true);
@@ -2978,6 +3027,7 @@
       this._id('genealogy-card').classList.remove('is-hidden');
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-active-genealogy');
+      this._syncTracedPrefecture();
 
       const renderSubAndList = () => {
         const subEl = this._id('genealogy-sub');
@@ -3323,7 +3373,6 @@
     }
 
     jumpToYear(targetYear) {
-      if (this._bootDone) this._dismissTraceOnboarding();
       let y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(targetYear)));
       if (y === 0) y = this.year < 0 ? 1 : -1;
       const prevIdx = this.dynastyIdx;
@@ -4319,8 +4368,158 @@
     clearCustomRoute() {
       if (!this.activeCustomRoute) return;
       this.activeCustomRoute = null;
+      this.customRouteStopIdx = -1;
       if (this.grpJourney && !this.activeJourney) {
         this.grpJourney.innerHTML = '';
+      }
+      if (this.journeyCard && !this.activeJourney) {
+        this.journeyCard.classList.add('is-hidden');
+        this.journeyCard.classList.remove('is-custom-route');
+        this.journeyCard.innerHTML = '';
+      }
+      const vf = this._id('viewport-frame');
+      if (vf && !this.activeJourney) vf.classList.remove('has-active-journey');
+    }
+
+    selectCustomRouteStop(idx, panCamera = true) {
+      if (!Array.isArray(this.activeCustomRoute) || !this.activeCustomRoute.length) return;
+      const stops = this.activeCustomRoute;
+      const clampedIdx = Math.max(0, Math.min(stops.length - 1, idx));
+      this.customRouteStopIdx = clampedIdx;
+      const st = stops[clampedIdx];
+      if (!st) return;
+      if (st.year !== undefined && st.year !== this.year) {
+        this.jumpToYear(st.year);
+      }
+      if (this.grpJourney && typeof this.grpJourney.querySelectorAll === 'function') {
+        this.grpJourney.querySelectorAll('.journey-node').forEach((nodeEl) => {
+          const nIdx = Number(nodeEl.dataset.stopIdx);
+          const isCur = nIdx === clampedIdx;
+          nodeEl.classList.toggle('is-current', isCur);
+          nodeEl.classList.toggle('is-passed', !isCur);
+          const disc = nodeEl.querySelector('.jn-disc');
+          if (disc) disc.setAttribute('r', isCur ? '8.5' : '7.5');
+          const oldPulse = nodeEl.querySelector('.jn-pulse');
+          if (isCur && !oldPulse) {
+            const pulse = this._svgNode('circle', { class: 'jn-pulse', r: 12 });
+            nodeEl.insertBefore(pulse, nodeEl.firstChild);
+          } else if (!isCur && oldPulse) {
+            oldPulse.remove();
+          }
+        });
+      }
+      if (panCamera && st.lng !== undefined && st.lat !== undefined) {
+        const [tx, ty] = this.projector.toScreen(st.lng, st.lat);
+        const aspect = this._getViewportAspect();
+        const w = Math.max(320, Math.min(this.camera.w, 480));
+        const h = w * aspect;
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        const xFrac = isDesktop ? 0.38 : 0.5;
+        const yFrac = isDesktop ? 0.44 : 0.3;
+        this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
+      }
+      this.openGenealogyAt(st.lng, st.lat, st.query || st.name);
+      this._renderCustomRouteCard();
+    }
+
+    stepCustomRoute(delta) {
+      if (!Array.isArray(this.activeCustomRoute) || !this.activeCustomRoute.length) return;
+      const len = this.activeCustomRoute.length;
+      const base = this.customRouteStopIdx < 0 ? (delta > 0 ? -1 : 0) : this.customRouteStopIdx;
+      const nextIdx = (base + delta + len) % len;
+      this.selectCustomRouteStop(nextIdx, true);
+    }
+
+    _renderCustomRouteCard() {
+      if (!this.journeyCard || !Array.isArray(this.activeCustomRoute) || this.activeCustomRoute.length < 2) {
+        return;
+      }
+      const stops = this.activeCustomRoute;
+      const curIdx = this.customRouteStopIdx;
+      const isEn = this.locale === 'en';
+      const isMultiYear = new Set(stops.map((s) => s.year)).size > 1;
+      let totalKm = 0;
+      for (let i = 0; i < stops.length - 1; i++) {
+        totalKm += this.projector.greatCircleKm(stops[i].coord, stops[i + 1].coord);
+      }
+      const distStr =
+        totalKm > 0
+          ? isEn
+            ? `~${Math.round(totalKm)} km`
+            : `全程约 ${Math.round(totalKm)} km`
+          : '';
+
+      const pillsHtml = stops
+        .map((st, i) => {
+          const rawLbl = st.query || st.name;
+          const baseLbl = isEn ? this.trTerm(rawLbl) : rawLbl;
+          const yrTag =
+            st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
+          const lbl = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
+          const cls = i === curIdx ? 'cr-stop-pill is-current' : 'cr-stop-pill';
+          return `<button type="button" class="${cls}" data-cidx="${i}"><span class="cr-stop-num">${i + 1}</span><span>${lbl}</span></button>`;
+        })
+        .join('<span class="cr-stop-arrow">→</span>');
+
+      this.journeyCard.classList.remove('is-hidden');
+      this.journeyCard.classList.add('is-custom-route');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-journey');
+
+      this.journeyCard.innerHTML =
+        `<div class="jc-top-bar">` +
+        `<span class="jc-step-badge" style="background:#9e2a2b">${
+          isEn ? `Route · ${stops.length} Stops` : `行迹路线 · 共 ${stops.length} 站`
+        }</span>` +
+        (distStr ? `<span class="cr-dist-label">${distStr}</span>` : '') +
+        `<div class="cr-top-actions">` +
+        `<button type="button" class="jc-close-btn" id="act-custom-overview" title="${
+          isEn ? 'Fit entire route on map' : '全线总览视图'
+        }">${isEn ? 'Full Route' : '全线视图'}</button>` +
+        `<button type="button" class="jc-close-btn" id="act-close-custom-route" title="${
+          isEn ? 'Clear Route (Esc)' : '清除自定义路线 (Esc)'
+        }">${isEn ? 'Clear ×' : '清除路线 ×'}</button>` +
+        `</div>` +
+        `</div>` +
+        `<div class="cr-stops-bar">` +
+        `<div class="cr-stops-list">${pillsHtml}</div>` +
+        `<div class="jc-controls">` +
+        `<button type="button" class="jc-nav-btn" id="act-custom-prev">${SVG_ICONS.arrowLeft} ${
+          isEn ? 'Prev' : '上一站'
+        }</button>` +
+        `<button type="button" class="jc-nav-btn is-primary" id="act-custom-next">${
+          isEn ? 'Next' : '下一站'
+        } ${SVG_ICONS.arrowRight}</button>` +
+        `</div>` +
+        `</div>`;
+
+      this.journeyCard.querySelectorAll('.cr-stop-pill').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.selectCustomRouteStop(Number(btn.dataset.cidx), true);
+        });
+      });
+      const prevBtn = this._id('act-custom-prev');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => this.stepCustomRoute(-1));
+      }
+      const nextBtn = this._id('act-custom-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => this.stepCustomRoute(1));
+      }
+      const ovBtn = this._id('act-custom-overview');
+      if (ovBtn) {
+        ovBtn.addEventListener('click', () => {
+          this.closeGenealogyCard();
+          this.customRouteStopIdx = -1;
+          this._renderCustomRoute(stops);
+        });
+      }
+      const closeBtn = this._id('act-close-custom-route');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          this.clearCustomRoute();
+          this.closeGenealogyCard();
+        });
       }
     }
 
@@ -4331,12 +4530,16 @@
 
     _panToward(lng, lat) {
       const [tx, ty] = this.projector.toScreen(lng, lat);
-      const maxW =
-        typeof window !== 'undefined' && window.innerWidth <= 900 ? 290 : 380;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+      const maxW = isMobile ? 290 : 380;
       const w = Math.min(this.camera.w, maxW);
       const h = w * (this.camera.h / this.camera.w);
+      const genCard = this._id('genealogy-card');
+      const genOpenDesktop =
+        !isMobile && genCard && !genCard.classList.contains('is-hidden');
+      const xFrac = genOpenDesktop ? 0.38 : 0.5;
       this._animateCameraTo({
-        x: tx - w * 0.5,
+        x: tx - w * xFrac,
         y: ty - h * 0.45,
         w,
         h,
@@ -4469,10 +4672,20 @@
       return chosen;
     }
 
+    _syncChallengeScrubberState(locked) {
+      const dock = this._id('scrubber-dock');
+      if (dock) dock.classList.toggle('is-challenge-locked', Boolean(locked));
+      for (const id of ['act-autoplay', 'act-step-prev', 'act-step-next', 'inp-year']) {
+        const el = this._id(id);
+        if (el) el.disabled = Boolean(locked);
+      }
+    }
+
     startChallenge() {
       this._recordGestureClick();
       this.stopAutoplay();
       if (this.activeJourney) this.stopJourney(true);
+      this.clearCustomRoute();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
       if (this.genealogyMode) this.toggleGenealogyMode(false);
@@ -4483,6 +4696,7 @@
         vf.classList.add('has-active-challenge');
         vf.classList.remove('is-challenge-answered');
       }
+      this._syncChallengeScrubberState(true);
       this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
@@ -4510,6 +4724,7 @@
       this._id('challenge-card').classList.add('is-hidden');
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-challenge', 'is-challenge-answered');
+      this._syncChallengeScrubberState(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
@@ -4857,10 +5072,12 @@
       }
       this.activeJourney = null;
       this.activeCustomRoute = null;
+      this.customRouteStopIdx = -1;
       this.journeyStopIdx = 0;
       if (this.grpJourney) this.grpJourney.innerHTML = '';
       if (this.journeyCard) {
         this.journeyCard.classList.add('is-hidden');
+        this.journeyCard.classList.remove('is-custom-route');
         this.journeyCard.innerHTML = '';
       }
       const vf = this._id('viewport-frame');
@@ -5145,6 +5362,7 @@
           ? `${SVG_ICONS.play} Auto Tour`
           : `${SVG_ICONS.play} 自动巡礼`;
 
+      this.journeyCard.classList.remove('is-custom-route');
       this.journeyCard.innerHTML =
         `<div class="jc-top-bar">` +
         `<span class="jc-mobile-person">${isEn ? j.shortEn : j.shortZh}</span>` +
@@ -5176,6 +5394,14 @@
           this.startJourney(btn.dataset.jkey, 0);
         });
       });
+      const activeTabEl = this.journeyCard.querySelector('.jc-tab-btn.is-active');
+      const tabsWrapEl = this.journeyCard.querySelector('.jc-tabs');
+      if (activeTabEl && tabsWrapEl && tabsWrapEl.scrollWidth > tabsWrapEl.clientWidth) {
+        tabsWrapEl.scrollLeft = Math.max(
+          0,
+          activeTabEl.offsetLeft - (tabsWrapEl.clientWidth - activeTabEl.offsetWidth) * 0.5
+        );
+      }
       this.journeyCard.querySelectorAll('.jc-dot').forEach((dot) => {
         dot.addEventListener('click', () => {
           if (this.journeyTimer) {
@@ -5639,7 +5865,10 @@
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / targetZoom);
         const h = w * this._getViewportAspect();
-        this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.45, w, h });
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        const xFrac = isDesktop ? 0.38 : 0.5;
+        const yFrac = isDesktop ? 0.45 : 0.32;
+        this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
         this.openGenealogyAt(
           item.coord[0],
           item.coord[1],
@@ -6025,11 +6254,13 @@
       });
 
       this._id('act-autoplay').addEventListener('click', () => {
+        if (this.challenge) return;
         if (this.playing) this.stopAutoplay();
         else this.startAutoplay();
       });
 
       this._id('inp-year').addEventListener('change', (e) => {
+        if (this.challenge) return;
         this.stopAutoplay();
         this.jumpToYear(Number(e.target.value));
       });
@@ -6087,6 +6318,10 @@
               this.journeyTimer = null;
             }
             this.stepJourney(e.key === 'ArrowRight' ? 1 : -1);
+            return;
+          }
+          if (this.activeCustomRoute) {
+            this.stepCustomRoute(e.key === 'ArrowRight' ? 1 : -1);
             return;
           }
           const step = e.shiftKey ? 50 : 10;
@@ -6553,14 +6788,7 @@
           const journeyNodeEl = findClosest('.journey-node');
           if (journeyNodeEl && journeyNodeEl.dataset.stopIdx !== undefined) {
             if (this.activeCustomRoute) {
-              const idx = Number(journeyNodeEl.dataset.stopIdx);
-              const st = this.activeCustomRoute[idx];
-              if (st) {
-                if (st.year !== undefined && st.year !== this.year) {
-                  this.jumpToYear(st.year);
-                }
-                this.openGenealogyAt(st.lng, st.lat, st.query || st.name);
-              }
+              this.selectCustomRouteStop(Number(journeyNodeEl.dataset.stopIdx), true);
               return;
             }
             if (this.journeyTimer) {
@@ -7050,9 +7278,15 @@
       if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return;
       if (this.activeJourney) this.stopJourney(true);
       this.closeMilestoneBalloon();
-      this.closeGenealogyCard();
+      if (this.activeCustomRoute !== stops) {
+        this.closeGenealogyCard();
+        this.customRouteStopIdx = -1;
+      }
       this.activeCustomRoute = stops;
       this.grpJourney.innerHTML = '';
+      if (this.svg && typeof this.svg.querySelectorAll === 'function') {
+        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
+      }
 
       const routeColor = '#9e2a2b';
       const segPaths = [];
@@ -7100,11 +7334,14 @@
         if (sy < minY) minY = sy;
         if (sy > maxY) maxY = sy;
 
-        const isEndpoint = idx === 0 || idx === stops.length - 1;
+        const isHighlighted =
+          this.customRouteStopIdx >= 0
+            ? idx === this.customRouteStopIdx
+            : idx === 0 || idx === stops.length - 1;
         const g = this._svgNode(
           'g',
           {
-            class: `journey-node ${isEndpoint ? 'is-current' : 'is-passed'}`,
+            class: `journey-node ${isHighlighted ? 'is-current' : 'is-passed'}`,
             'data-x': sx.toFixed(1),
             'data-y': sy.toFixed(1),
             'data-stop-idx': String(idx),
@@ -7113,10 +7350,10 @@
         );
         g.style.color = routeColor;
 
-        if (isEndpoint) {
+        if (isHighlighted) {
           this._svgNode('circle', { class: 'jn-pulse', r: 12 }, g);
         }
-        this._svgNode('circle', { class: 'jn-disc', r: isEndpoint ? 8.5 : 7.5 }, g);
+        this._svgNode('circle', { class: 'jn-disc', r: isHighlighted ? 8.5 : 7.5 }, g);
         const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
         numTxt.textContent = String(idx + 1);
 
@@ -7151,14 +7388,17 @@
         ? 1000 / Math.max(1, Math.min(8, Number(explicitZoom)))
         : Math.max(260, Math.min(920, spanW));
       const h = w * aspect;
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      const offsetY = isDesktop ? h * 0.05 : h * 0.08;
       this.camera = {
         x: Math.max(-140, Math.min(1000 - w + 140, cx - w * 0.5)),
-        y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5)),
+        y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5 + offsetY)),
         w,
         h,
         zoom: 1000 / w,
       };
       this._applyCamera(true);
+      this._renderCustomRouteCard();
     }
 
     inspect({ year, place, lng, lat, zoom } = {}) {
@@ -7327,10 +7567,7 @@
       }
 
       if (this.activeCustomRoute) {
-        this.activeCustomRoute = null;
-        if (this.grpJourney && !this.activeJourney) {
-          this.grpJourney.innerHTML = '';
-        }
+        this.clearCustomRoute();
       }
 
       const singlePlace = placeTokens.length === 1 ? placeTokens[0].place : place;

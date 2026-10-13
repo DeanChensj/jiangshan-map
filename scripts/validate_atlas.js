@@ -1120,6 +1120,40 @@ function main() {
   }
   assert(sawPassInDeck, 'Expected STRATEGIC_PASSES to appear in challenge decks across 15 runs');
 
+  // CUJ 9q: Onboarding Persistence (#2), Traced Prefecture Highlight (#5), Custom Route Dock (#3) & Mobile/Challenge UX (#6)
+  assert(
+    !appCode.includes("if (this._bootDone) this._dismissTraceOnboarding()") &&
+      appCode.includes('_syncTracedPrefecture') &&
+      appCode.includes('_renderCustomRouteCard') &&
+      appCode.includes('selectCustomRouteStop') &&
+      appCode.includes('_syncChallengeScrubberState') &&
+      cssSrc.includes('.prefecture-shape.is-traced') &&
+      cssSrc.includes('#scrubber-dock.is-challenge-locked') &&
+      cssSrc.includes('#journey-card.is-custom-route'),
+    'app.js & style.css must implement persistent trace onboarding (#2), traced prefecture highlight (#5), custom route control card (#3), and challenge scrubber lock (#6)'
+  );
+  const mockPrefNodes = [
+    { dataset: { prefTitle: '黄州' }, classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } } },
+    { dataset: { prefTitle: '江州' }, classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } } },
+  ];
+  ctrl.grpPrefectures = {
+    querySelectorAll: () => mockPrefNodes,
+  };
+  const song1082Snap = snapshots[ctrl._resolveSnapKey(bsDyn, 1082)];
+  ctrl.lastRenderedSnap = song1082Snap;
+  ctrl.activeTrace = [114.88, 30.45]; // Huangzhou
+  ctrl._syncTracedPrefecture();
+  assert(
+    mockPrefNodes[0].classList.contains('is-traced') && !mockPrefNodes[1].classList.contains('is-traced'),
+    'Expected _syncTracedPrefecture to mark containing prefecture (黄州) with .is-traced'
+  );
+  ctrl.activeTrace = null;
+  ctrl._syncTracedPrefecture();
+  assert(
+    !mockPrefNodes[0].classList.contains('is-traced'),
+    'Expected _syncTracedPrefecture to clear .is-traced when activeTrace is null'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
