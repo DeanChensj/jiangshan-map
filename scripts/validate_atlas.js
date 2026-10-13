@@ -994,8 +994,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('363项'),
-    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 363 historical events'
+    htmlSrc.includes('156幅') && htmlSrc.includes('652座') && htmlSrc.includes('363项'),
+    'index.html SEO metadata must reflect 156 snapshots, 652 ancient cities, and 363 historical events'
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
@@ -1178,14 +1178,15 @@ function main() {
   };
   const yueyang = loreData.PLACE_GAZETTEER.find((g) => g.name === '岳阳楼');
   const yueyangNear = nearestAcrossDynasties(yueyang.coord);
-  assert(
-    yueyangNear && yueyangNear.km > 25,
-    'Test precondition: 岳阳楼 must have no settlement within 25 km so the far-neighbour path is exercised'
+  assert.strictEqual(
+    ctrl._resolveModernIdentity(yueyang.coord[0], yueyang.coord[1], '岳阳楼', '湖南省', { s: { modern: '赤壁' }, km: 87 }),
+    '岳阳',
+    'Gazetteer landmark must use its own modern field (province prefix stripped), not a far neighbour'
   );
   assert.strictEqual(
     ctrl._resolveModernIdentity(yueyang.coord[0], yueyang.coord[1], '岳阳楼', '湖南省', yueyangNear),
     '岳阳',
-    'Gazetteer landmark must use its own modern field (province prefix stripped), not the nearest settlement'
+    'Gazetteer landmark identity must be stable regardless of the nearest settlement'
   );
   assert.strictEqual(
     ctrl._resolveModernIdentity(yueyang.coord[0] + 1.2, yueyang.coord[1] + 0.9, '', '湖北省', { s: { modern: '赤壁' }, km: 87 }),
