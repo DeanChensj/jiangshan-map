@@ -983,8 +983,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('345项'),
-    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 345 historical events'
+    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('363项'),
+    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 363 historical events'
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
@@ -1193,6 +1193,40 @@ function main() {
     assert(
       !identity || gm.includes(identity) || identity.includes(gm.slice(-2)),
       `Heading identity for ${g.name} must derive from its gazetteer modern "${gm}", got "${identity}"`
+    );
+  }
+
+  // CUJ 17: Historical coups & political turning points across dynasties discoverable via Quick Search
+  const expectedCoups = [
+    ['沙丘政变', 'qin', -210],
+    ['巫蛊之祸', 'xihan', -91],
+    ['霍光', 'xihan', -74],
+    ['永元之隆', 'donghan', 92],
+    ['甘露之变', 'sanguo', 260],
+    ['曹髦', 'sanguo', 260],
+    ['王敦之乱', 'dongjin', 322],
+    ['桓玄', 'dongjin', 404],
+    ['景龙政变', 'tang', 707],
+    ['唐隆政变', 'tang', 710],
+    ['先天政变', 'tang', 713],
+    ['马嵬驿兵变', 'tang', 756],
+    ['永贞内禅', 'tang', 805],
+    ['甘露之变', 'tang', 835],
+    ['兴教门之变', 'wudai', 926],
+    ['斧声烛影', 'beisong', 976],
+    ['苗刘兵变', 'nansong', 1129],
+    ['绍熙内禅', 'nansong', 1194],
+    ['南坡之变', 'yuan', 1323],
+    ['夺门之变', 'ming', 1457],
+    ['壬寅宫变', 'ming', 1542],
+    ['辛酉政变', 'qing', 1861],
+    ['戊戌政变', 'qing', 1898],
+  ];
+  for (const [kw, dynKey, yr] of expectedCoups) {
+    const hits = ctrl._queryQuickSearch(kw);
+    assert(
+      hits.some((h) => h.dynasty && h.dynasty.key === dynKey && h.year === yr),
+      `Expected quick search "${kw}" to match ${dynKey}:${yr}, got ${JSON.stringify(hits[0])}`
     );
   }
 
