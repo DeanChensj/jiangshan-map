@@ -994,8 +994,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('156幅') && htmlSrc.includes('788座') && htmlSrc.includes('363项'),
-    'index.html SEO metadata must reflect 156 snapshots, 788 ancient cities, and 363 historical events'
+    htmlSrc.includes('156幅') && htmlSrc.includes('788座') && htmlSrc.includes(`${totalMilestones}项`),
+    `index.html SEO metadata must reflect 156 snapshots, 788 ancient cities, and ${totalMilestones} historical events`
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
@@ -1242,13 +1242,65 @@ function main() {
     );
   }
 
+  // CUJ 18: UX Friction Polish — same-effective-year milestone stepping, balloon nav, genealogy camera preservation, and pre-rendered HTML sync
+  assert(
+    indexHtml.includes('value="-403"') &&
+      indexHtml.includes('公元前403年 · 周威烈王二十三年') &&
+      indexHtml.includes('周威烈王命韩、赵、魏为诸侯，三家分晋') &&
+      appCode.includes('fromYearSync: true') &&
+      appCode.includes('preserveGenealogyScroll'),
+    'Expected index.html pre-rendered initial state to match -403 Warring States opening milestone and app.js to preserve genealogy camera/scroll'
+  );
+  ctrl.milestoneBalloon = {
+    innerHTML: '',
+    classList: { remove() {}, add() {}, contains() { return false; } },
+    querySelector: () => null,
+  };
+  ctrl.grpMilestones = { querySelectorAll: () => [], classList: { contains: () => false } };
+  ctrl._positionMilestoneBalloon = () => {};
+  ctrl._syncMilestoneSelection = () => {};
+  ctrl._highlightCurrentMilestone = () => {};
+  ctrl.stopAutoplay = () => {};
+  ctrl._animateCameraTo = () => {};
+  ctrl.jumpToYear = function (y) {
+    this.year = Math.max(this.minYear, Math.min(this.maxYear, Math.round(y)));
+    this.dynastyIdx = this._findDynastyIndex(this.year);
+    this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+  };
+  for (const dynKey of ['sanguo', 'sui', 'wudai', 'roc']) {
+    const dynObj = dynasties.find((d) => d.key === dynKey);
+    const ms = dynObj.milestones;
+    const mPrev = ms[ms.length - 3];
+    const mPenult = ms[ms.length - 2];
+    const mFinal = ms[ms.length - 1];
+    ctrl.activeJourney = null;
+    ctrl.activeCustomRoute = null;
+    ctrl.jumpToYear(mPrev.year);
+    ctrl.openMilestoneBalloon(dynObj, mPrev);
+    ctrl.stepTimelineNode(1);
+    assert(
+      ctrl.activeMilestone && ctrl.activeMilestone.milestone === mPenult,
+      `Expected stepTimelineNode(1) from ${dynKey}:${mPrev.year} to reach penultimate milestone ${mPenult.year}, got ${ctrl.activeMilestone && ctrl.activeMilestone.milestone && ctrl.activeMilestone.milestone.year}`
+    );
+    ctrl.stepTimelineNode(1);
+    assert(
+      ctrl.activeMilestone && ctrl.activeMilestone.milestone === mFinal,
+      `Expected stepTimelineNode(1) from ${dynKey}:${mPenult.year} to reach final milestone ${mFinal.year}, got ${ctrl.activeMilestone && ctrl.activeMilestone.milestone && ctrl.activeMilestone.milestone.year}`
+    );
+    assert(
+      ctrl.milestoneBalloon.innerHTML.includes('ep-prev') &&
+        ctrl.milestoneBalloon.innerHTML.includes('ep-next'),
+      'Expected #milestone-balloon to include .ep-prev and .ep-next direct event stepper buttons'
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 16 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 18 E2E CUJs`);
 }
 
 main();
