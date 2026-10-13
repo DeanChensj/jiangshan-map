@@ -400,6 +400,30 @@
     },
     {
       "dynastyKey": "xihan",
+      "year": -91,
+      "coord": [
+        108.94,
+        34.26
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "巫蛊之祸：江充构陷戾太子刘据，长安激战五日太子兵败自尽，汉武帝晚年由扩张转向守成",
+      "en": "Witchcraft Crisis (Wugu Affair) erupts in Chang'an; Crown Prince Liu Ju is driven to rebellion and suicide"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -74,
+      "coord": [
+        108.94,
+        34.26
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "权臣霍光于未央宫奏请上官太后废黜昌邑王刘贺，迎立汉宣帝刘询，开启昭宣中兴",
+      "en": "Regent Huo Guang deposes Liu He at Weiyang Palace and enthrones Emperor Xuan of Han"
+    },
+    {
+      "dynastyKey": "xihan",
       "year": 8,
       "coord": [
         108.94,
@@ -508,6 +532,18 @@
     },
     {
       "dynastyKey": "tang",
+      "year": 710,
+      "coord": [
+        108.94,
+        34.26
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "唐隆政变：李隆基与太平公主率禁军诛韦后、安乐公主，奉唐睿宗复位；713年发动先天政变开启开元盛世",
+      "en": "Tanglong Coup (710) and Xiantian Coup (713): Li Longji eliminates Empress Wei and Princess Taiping's factions to inaugurate the Kaiyuan Era"
+    },
+    {
+      "dynastyKey": "tang",
       "year": 756,
       "coord": [
         108.94,
@@ -515,8 +551,20 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "安史叛军破潼关陷长安；次年郭子仪率唐军收复西京",
-      "en": "An Lushan rebels capture Chang'an; Guo Ziyi recaptures the capital in 757"
+      "zh": "安史叛军破潼关陷长安，玄宗奔蜀于马嵬驿赐死杨贵妃；次年郭子仪率唐军收复西京",
+      "en": "An Lushan rebels capture Chang'an, triggering the Mawei Mutiny; Guo Ziyi recaptures the capital in 757"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 835,
+      "coord": [
+        108.94,
+        34.26
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "甘露之变：唐文宗与李训、郑注密谋诛宦官事败，神策军血洗大明宫朝堂，晚唐宦官彻底专权",
+      "en": "Sweet Dew Incident in Daming Palace: failed court plot against eunuch Qiu Shiliang leads to a purge of Tang ministers"
     },
     {
       "dynastyKey": "tang",
@@ -603,6 +651,18 @@
       "en": "Emperor Ming of Han establishes White Horse Temple in Luoyang"
     },
     {
+      "dynastyKey": "donghan",
+      "year": 92,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "永元之隆：汉和帝于洛阳诛除大将军窦宪外戚集团亲政，东汉国力达于极盛",
+      "en": "Prosperity of Yongyuan: Emperor He overthrows Dou Xian's consort clan in Luoyang and brings Eastern Han to its zenith"
+    },
+    {
       "dynastyKey": "sanguo",
       "year": 220,
       "coord": [
@@ -613,6 +673,18 @@
       "siteEn": "Luoyang",
       "zh": "曹丕代汉称帝建立曹魏，定都洛阳",
       "en": "Cao Pi founds Cao Wei with Luoyang as capital"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 260,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "甘露之变：魏帝曹髦率宿卫讨司马昭，于洛阳南阙下遇弑",
+      "en": "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain at the southern palace gate in Luoyang"
     },
     {
       "dynastyKey": "sanguo",
@@ -711,6 +783,18 @@
       "en": "Jin naval forces under Wang Jun capture Jianye, ending the Three Kingdoms"
     },
     {
+      "dynastyKey": "wudai",
+      "year": 926,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "兴教门之变：郭从谦于洛阳发动兵变，后唐庄宗李存勖中流矢崩，李嗣源入洛即位为后唐明宗",
+      "en": "Xingjiao Gate Incident in Luoyang: Emperor Zhuangzong Li Cunxu falls in a palace mutiny and Li Siyuan ascends as Emperor Mingzong"
+    },
+    {
       "dynastyKey": "dongjin",
       "year": 317,
       "coord": [
@@ -721,6 +805,30 @@
       "siteEn": "Jiankang (Nanjing)",
       "zh": "司马睿渡江于建康建立东晋，开启六朝古都繁华",
       "en": "Sima Rui establishes the Eastern Jin in Jiankang (Nanjing)"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 322,
+      "coord": [
+        118.78,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang (Nanjing)",
+      "zh": "王敦之乱：王敦自武昌顺江东下攻入建康，控制东晋朝政",
+      "en": "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang and seizes control of the Eastern Jin court"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 404,
+      "coord": [
+        118.78,
+        32.06
+      ],
+      "site": "建康·京口",
+      "siteEn": "Jiankang / Jingkou",
+      "zh": "北府将刘裕自京口起兵克建康，讨平篡晋称楚的桓玄，开启寒门北府兵掌权时代",
+      "en": "Northern Garrison general Liu Yu rises at Jingkou, retakes Jiankang, and crushes usurper Huan Xuan"
     },
     {
       "dynastyKey": "nanbei",
@@ -949,6 +1057,90 @@
       "siteEn": "Beijing",
       "zh": "土木堡之变后瓦剌逼近京师，于谦指挥北京保卫战获胜",
       "en": "Yu Qian leads the successful Defense of Beijing after the Tumu Crisis"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1457,
+      "coord": [
+        116.4,
+        39.9
+      ],
+      "site": "北京",
+      "siteEn": "Beijing",
+      "zh": "夺门之变（南宫复辟）：石亨、徐有贞、曹吉祥迎太上皇明英宗自南宫复辟，于谦含冤遇害",
+      "en": "Wresting the Gate Coup: Emperor Yingzong is restored from the Southern Palace in Beijing; Yu Qian is executed"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1542,
+      "coord": [
+        116.4,
+        39.9
+      ],
+      "site": "北京",
+      "siteEn": "Beijing",
+      "zh": "壬寅宫变：杨金英等十余名宫女于乾清宫谋缢嘉靖帝未遂，嘉靖帝自此移居西苑万寿宫",
+      "en": "RenYin Palace Rebellion: palace women led by Yang Jinying attempt to strangle the Jiajing Emperor in Qianqing Palace"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1861,
+      "coord": [
+        116.4,
+        39.9
+      ],
+      "site": "北京",
+      "siteEn": "Beijing",
+      "zh": "辛酉政变（祺祥政变）：慈禧、慈安两宫太后联结恭亲王奕訢逮捕肃顺等顾命八大臣，开启两宫垂帘听政",
+      "en": "Xinyou Coup in Beijing: Empresses Dowager Cixi and Ci'an ally with Prince Gong to oust the Eight Regents"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1898,
+      "coord": [
+        116.4,
+        39.9
+      ],
+      "site": "北京",
+      "siteEn": "Beijing",
+      "zh": "戊戌变法与戊戌政变：光绪帝推行百日维新，慈禧太后发动政变囚光绪于瀛台、于菜市口杀谭嗣同等戊戌六君子",
+      "en": "Hundred Days' Reform and Wuxu Coup in Beijing: Empress Dowager Cixi confines the Guangxu Emperor and executes the Six Gentlemen"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 976,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京开封府",
+      "siteEn": "Dongjing (Kaifeng)",
+      "zh": "开宝九年十月宋太祖与晋王赵光义夜饮万岁殿，留传“斧声烛影”疑云，赵光义即位为宋太宗",
+      "en": "Candlelight and Axe-Sound Mystery at Wansui Hall in Kaifeng: Emperor Taizu dies suddenly and Zhao Guangyi ascends as Emperor Taizong"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1129,
+      "coord": [
+        120.15,
+        30.28
+      ],
+      "site": "杭州（临安）",
+      "siteEn": "Hangzhou (Lin'an)",
+      "zh": "苗刘兵变：苗傅、刘正彦于杭州逼宋高宗禅位，韩世忠、张俊等统兵勤王平叛，高宗复辟",
+      "en": "Miao-Liu Mutiny in Hangzhou: generals Miao Fu and Liu Zhengyan briefly depose Emperor Gaozong before Han Shizhong restores him"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1194,
+      "coord": [
+        120.15,
+        30.28
+      ],
+      "site": "临安府",
+      "siteEn": "Lin'an (Hangzhou)",
+      "zh": "绍熙内禅：赵汝愚、韩侂胄奉太皇太后吴氏旨意于临安迫宋光宗退位，拥立宋宁宗",
+      "en": "Shaoxi Abdication in Lin'an: Zhao Ruyu and Han Tuozhou compel Emperor Guangzong to abdicate in favor of Emperor Ningzong"
     },
     {
       "dynastyKey": "ming",
