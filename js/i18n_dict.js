@@ -293,15 +293,15 @@ window.EN_LOCALE = {
       "Mt. Yanran (Khangai)"
     ],
     "donghan:105": [
-      "Cai Lun refines the papermaking process",
+      "Imperial eunuch Cai Lun refines the papermaking process in Luoyang",
       "Luoyang"
     ],
     "donghan:166": [
-      "Disasters of the Partisan Prohibitions begin",
+      "First Disaster of the Partisan Prohibitions purges scholar-officials",
       "Luoyang"
     ],
     "donghan:184": [
-      "Yellow Turban Rebellion breaks out",
+      "Zhang Jue launches the Yellow Turban Rebellion across eight provinces",
       "Julu"
     ],
     "donghan:189": [
@@ -329,7 +329,7 @@ window.EN_LOCALE = {
       "Jianye"
     ],
     "sanguo:263": [
-      "Wei conquers Shu Han",
+      "Wei generals Deng Ai and Zhong Hui conquer Shu Han at Chengdu",
       "Chengdu"
     ],
     "sanguo:280": [
@@ -341,7 +341,7 @@ window.EN_LOCALE = {
       "Jianye"
     ],
     "xijin:291": [
-      "War of the Eight Princes begins",
+      "Empress Jia Nanfeng seizes power, sparking the War of the Eight Princes",
       "Luoyang"
     ],
     "xijin:304": [
@@ -433,11 +433,11 @@ window.EN_LOCALE = {
       "Guabu (Liuhe)"
     ],
     "nanbei:469": [
-      "Northern Wei general Murong Baiyao captures Dongyang, annexing Liu Song's four provinces north of the Huai (Qing, Ji, Xu, Yan) and shifting the North–South border to the Huai River",
+      "Northern Wei annexes Liu Song’s four provinces north of the Huai, shifting the border to Huai",
       "Dongyang (Qingzhou)"
     ],
     "nanbei:479": [
-      "Xiao Daocheng founds Southern Qi",
+      "Xiao Daocheng deposes Liu Song and founds the Southern Qi dynasty",
       "Jiankang"
     ],
     "nanbei:494": [
@@ -445,7 +445,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "nanbei:502": [
-      "Xiao Yan founds the Liang dynasty",
+      "Xiao Yan deposes Southern Qi and founds the Liang dynasty at Jiankang",
       "Jiankang"
     ],
     "nanbei:528": [
@@ -461,7 +461,7 @@ window.EN_LOCALE = {
       "Jiankang (Taicheng)"
     ],
     "nanbei:553": [
-      "Western Wei general Yuchi Jiong conquers Chengdu and annexes Sichuan (Yizhou) from the Liang dynasty",
+      "Western Wei general Yuchi Jiong conquers Chengdu and annexes Sichuan from the Liang dynasty",
       "Chengdu"
     ],
     "nanbei:557": [
@@ -469,7 +469,7 @@ window.EN_LOCALE = {
       "Jiankang"
     ],
     "nanbei:573": [
-      "Emperor Xuan of Chen's Taijian Northern Expedition: Wu Mingche defeats Northern Qi and recovers all of Huainan up to the Huai River",
+      "Taijian Northern Expedition: Chen general Wu Mingche defeats Northern Qi and recovers Huainan",
       "Shouyang"
     ],
     "nanbei:577": [
@@ -489,27 +489,27 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "sui:610": [
-      "Grand Canal completed from Hangzhou to the Beijing region",
+      "Emperor Yang completes the Grand Canal linking Jiangnan and the north",
       "Jiangdu"
     ],
     "sui:618": [
-      "Emperor Yang killed at Jiangdu; collapse of Sui",
+      "Yuwen Huaji mutinies at Jiangdu and kills Emperor Yang, ending the Sui",
       "Jiangdu"
     ],
     "tang:627": [
-      "Reign of Zhenguan under Emperor Taizong begins",
+      "Emperor Taizong (Li Shimin) inaugurates the prosperous Reign of Zhenguan",
       "Chang'an"
     ],
     "tang:640": [
-      "Protectorate General to Pacify the West (Anxi) established",
+      "Hou Junji conquers Gaochang; Tang establishes the Anxi Protectorate",
       "Gaochang"
     ],
     "tang:713": [
-      "Xiantian Coup: Emperor Xuanzong eliminates Princess Taiping's faction to end female court dominance and inaugurates the Kaiyuan heyday; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
+      "Xiantian Coup: Xuanzong ousts Princess Taiping to open the Kaiyuan era and invests Bohai",
       "Chang'an · Huhancheng"
     ],
     "tang:755": [
-      "An Lushan Rebellion breaks out at Fanyang",
+      "An Lushan and Shi Siming rebel at Fanyang, sparking the An–Shi Rebellion",
       "Fanyang (Youzhou)"
     ],
     "tang:763": [
@@ -521,11 +521,11 @@ window.EN_LOCALE = {
       "Beiting"
     ],
     "tang:875": [
-      "Huang Chao Uprising breaks out",
+      "Wang Xianzhi and Huang Chao launch the late-Tang peasant uprising",
       "Caozhou"
     ],
     "tang:907": [
-      "Zhu Wen deposes the last Tang emperor; end of Tang",
+      "Zhu Wen deposes Emperor Ai to found Later Liang, ending the Tang dynasty",
       "Bianzhou"
     ],
     "wudai:907": [
@@ -541,7 +541,7 @@ window.EN_LOCALE = {
       "Youzhou"
     ],
     "wudai:937": [
-      "Li Bian founds Southern Tang at Jinling",
+      "Xu Zhigao (Li Bian) replaces Wu to found Southern Tang at Jinling",
       "Jinling"
     ],
     "wudai:939": [
@@ -561,7 +561,7 @@ window.EN_LOCALE = {
       "Shouzhou (Huainan)"
     ],
     "wudai:958": [
-      "Emperor Shizong of Later Zhou completes three campaigns against Southern Tang; Li Jing cedes all 14 prefectures north of the Yangtze",
+      "Shizong of Later Zhou compels Southern Tang to cede all 14 prefectures north of the Yangtze",
       "Yangzhou (Jiangdu)"
     ],
     "wudai:960": [
@@ -573,23 +573,23 @@ window.EN_LOCALE = {
       "Chenqiao Post"
     ],
     "beisong:963": [
-      "Song annexes Jingnan and Hunan",
+      "Northern Song annexes the Jingnan and Chu (Hunan) regimes along the Yangtze",
       "Jiangling"
     ],
     "beisong:965": [
-      "Song conquers Later Shu",
+      "Wang Quanbin captures Chengdu as Meng Chang surrenders, ending Later Shu",
       "Chengdu"
     ],
     "beisong:971": [
-      "Song conquers Southern Han",
+      "Pan Mei captures Guangzhou and accepts Liu Chang’s surrender, ending Southern Han",
       "Xingwangfu (Guangzhou)"
     ],
     "beisong:975": [
-      "Song conquers Southern Tang",
+      "Cao Bin captures Jinling and accepts Li Yu’s surrender, ending Southern Tang",
       "Jinling"
     ],
     "beisong:979": [
-      "Song conquers Northern Han, ending the Ten Kingdoms; northern campaign defeated at Gaoliang River",
+      "Emperor Taizong conquers Northern Han, ending Ten Kingdoms; routed by Liao at Gaoliang River",
       "Gaoliang R. (Youzhou)"
     ],
     "beisong:1004": [
@@ -597,7 +597,7 @@ window.EN_LOCALE = {
       "Chanzhou"
     ],
     "beisong:1038": [
-      "Li Yuanhao proclaims the Western Xia empire",
+      "Li Yuanhao proclaims the Western Xia empire at Xingqingfu (Yinchuan)",
       "Xingqingfu"
     ],
     "beisong:1044": [
@@ -605,7 +605,7 @@ window.EN_LOCALE = {
       "Xingqingfu"
     ],
     "beisong:1069": [
-      "Wang Anshi launches the New Policies reforms",
+      "Emperor Shenzong appoints Wang Anshi to enact the Xining New Policies",
       "Kaifeng"
     ],
     "beisong:1072": [
@@ -617,7 +617,7 @@ window.EN_LOCALE = {
       "Dengzhou"
     ],
     "beisong:1125": [
-      "Jin destroys the Liao dynasty",
+      "Jurchen Jin general Wanyan Loushi captures Emperor Tianzuo, ending Liao",
       "Yingzhou"
     ],
     "beisong:1127": [
@@ -637,15 +637,15 @@ window.EN_LOCALE = {
       "Onon River"
     ],
     "nansong:1227": [
-      "Mongols destroy Western Xia",
+      "Genghis Khan dies at Mount Liupan as Mongol forces annihilate Western Xia",
       "Xingqingfu"
     ],
     "nansong:1234": [
-      "Song and Mongol allied forces annihilate the Jin dynasty at Caizhou; the Song army's 'Duanping Expedition into Luoyang' briefly retakes the three capitals before being routed when Mongols breach the Yellow River dikes, igniting full-scale Song-Mongol war",
+      "Song-Mongol forces destroy Jin at Caizhou; failed Duanping Expedition sparks Song-Mongol war",
       "Caizhou · Kaifeng"
     ],
     "nansong:1253": [
-      "Kublai conquers the Dali Kingdom in Yunnan",
+      "Kublai leads Mongol forces across the Jinsha River to conquer Dali",
       "Dali"
     ],
     "nansong:1264": [
@@ -657,7 +657,7 @@ window.EN_LOCALE = {
       "Dadu"
     ],
     "nansong:1273": [
-      "Fall of Xiangyang after a six-year siege",
+      "Xiangyang falls to the Yuan army after a six-year siege under Lü Wenhuan",
       "Xiangyang"
     ],
     "nansong:1275": [
@@ -677,7 +677,7 @@ window.EN_LOCALE = {
       "Yashan"
     ],
     "yuan:1288": [
-      "The Yuan imperial court established the Bureau of Buddhist and Tibetan Affairs (Xuanzheng Yuan), formally integrating Tibet into central imperial administrative governance",
+      "Yuan court establishes Xuanzheng Yuan, integrating Tibet into central imperial administration",
       "Sakya (Bureau Domain)"
     ],
     "yuan:1293": [
@@ -685,11 +685,11 @@ window.EN_LOCALE = {
       "Huitong Canal (Linqing)"
     ],
     "yuan:1351": [
-      "Red Turban Rebellion breaks out",
+      "Han Shantong and Liu Futong launch the Red Turban Rebellion at Yingzhou",
       "Yingzhou"
     ],
     "ming:1368": [
-      "Zhu Yuanzhang proclaims the Ming Dynasty in Yingtian; in August Xu Da captures Yuan Dadu as the Yuan court retreats north as Northern Yuan",
+      "Zhu Yuanzhang founds the Ming in Yingtian; Xu Da captures Dadu as Yuan retreats north",
       "Yingtian (Nanjing) · Dadu (Beijing)"
     ],
     "ming:1380": [
@@ -697,11 +697,11 @@ window.EN_LOCALE = {
       "Yingtian (Nanjing)"
     ],
     "ming:1399": [
-      "Jingnan Campaign launched by Zhu Di, Prince of Yan",
+      "Zhu Di, Prince of Yan, launches the Jingnan Campaign from Beiping",
       "Beiping"
     ],
     "ming:1405": [
-      "Zheng He embarks on his first voyage to the Western Ocean",
+      "Zheng He embarks on his first treasure fleet voyage from Liujiagang",
       "Liujiagang (Taicang)"
     ],
     "ming:1407": [
@@ -709,7 +709,7 @@ window.EN_LOCALE = {
       "Jiaozhi"
     ],
     "ming:1421": [
-      "Yongle Emperor moves the primary capital to Beijing",
+      "Yongle Emperor formally moves the primary Ming capital to Beijing",
       "Beijing"
     ],
     "ming:1433": [
@@ -717,7 +717,7 @@ window.EN_LOCALE = {
       "Changle"
     ],
     "ming:1449": [
-      "Tumu Crisis: Emperor Yingzong captured by the Oirat Mongols",
+      "Tumu Crisis: Oirat leader Esen routs the Ming army and captures Emperor Yingzong",
       "Tumu Fort"
     ],
     "ming:1550": [
@@ -725,7 +725,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "ming:1561": [
-      "Qi Jiguang defeats Japanese pirates (wokou) at Taizhou",
+      "Qi Jiguang wins nine straight victories at Taizhou, crushing Japanese pirates",
       "Taizhou"
     ],
     "ming:1571": [
@@ -733,15 +733,15 @@ window.EN_LOCALE = {
       "Datong"
     ],
     "ming:1592": [
-      "Imjin War: Ming sends forces to aid Joseon Korea against Toyotomi Hideyoshi",
+      "Imjin War: Ming dispatches forces to aid Joseon against Toyotomi Hideyoshi",
       "Pyongyang"
     ],
     "ming:1616": [
-      "Nurhaci proclaims the Later Jin khanate",
+      "Nurhaci proclaims himself Khan of Later Jin at Hetu Ala in Manchuria",
       "Hetu Ala"
     ],
     "ming:1619": [
-      "Battle of Sarhū: Later Jin defeats the Ming expeditionary armies",
+      "Battle of Sarhū: Nurhaci defeats the four Ming expeditionary columns piecemeal",
       "Sarhū"
     ],
     "ming:1627": [
@@ -757,7 +757,7 @@ window.EN_LOCALE = {
       "Shanhai Pass"
     ],
     "qing:1681": [
-      "Revolt of the Three Feudatories suppressed at Kunming",
+      "Qing forces capture Kunming, suppressing the Revolt of the Three Feudatories",
       "Kunming"
     ],
     "qing:1683": [
@@ -785,7 +785,7 @@ window.EN_LOCALE = {
       "Ili"
     ],
     "qing:1840": [
-      "First Opium War breaks out",
+      "British fleet blockades the Pearl River estuary, sparking the First Opium War",
       "Humen"
     ],
     "qing:1860": [
@@ -793,19 +793,19 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "qing:1864": [
-      "Zeng Guofan and Zeng Guoquan's Xiang Army captures Tianjing (Nanjing), ending the 14-year Taiping Heavenly Kingdom; Russia cedes northwestern Ili–Balkhash via Treaty of Tarbagatai",
+      "Xiang Army captures Tianjing, ending Taiping Heavenly Kingdom; Russia annexes outer northwest",
       "Tianjing (Nanjing)"
     ],
     "qing:1911": [
-      "Wuchang Uprising sparks the Xinhai Revolution",
+      "Wuchang Uprising erupts and sparks the nationwide Xinhai Revolution",
       "Wuchang"
     ],
     "roc:1912": [
-      "Republic of China founded at Nanjing",
+      "Sun Yat-sen is inaugurated in Nanjing, founding the Republic of China",
       "Nanjing"
     ],
     "roc:1919": [
-      "May Fourth Movement in Beijing",
+      "May Fourth Movement erupts in Beijing over the Treaty of Versailles",
       "Beijing"
     ],
     "roc:1928": [
@@ -813,7 +813,7 @@ window.EN_LOCALE = {
       "Nanjing"
     ],
     "roc:1931": [
-      "Mukden Incident (September 18): Japanese occupation of Manchuria",
+      "Mukden Incident (Sept 18): Kwantung Army seizes Shenyang and occupies Manchuria",
       "Shenyang"
     ],
     "roc:1937": [
@@ -821,31 +821,31 @@ window.EN_LOCALE = {
       "Marco Polo Bridge"
     ],
     "roc:1945": [
-      "Victory in the War of Resistance against Japan; the Taiwan Provincial Administrative Office was established, formally restoring Taiwan Island and Penghu Islands to China after fifty years of Japanese colonial rule",
+      "Victory over Japan: China formally recovers Taiwan Island and the Penghu Archipelago",
       "Taipei (Zhongshan Hall) · Nanjing"
     ],
     "prc:1949": [
-      "Founding of the People's Republic of China",
+      "Mao Zedong proclaims the founding of the People’s Republic of China in Beijing",
       "Beijing"
     ],
     "prc:1978": [
-      "Reform and Opening-Up launched",
+      "Third Plenum of the 11th Central Committee launches Reform and Opening-Up",
       "Shenzhen"
     ],
     "prc:1997": [
-      "Transfer of sovereignty over Hong Kong",
+      "China resumes exercise of sovereignty over Hong Kong on July 1",
       "Hong Kong"
     ],
     "prc:1999": [
-      "Transfer of sovereignty over Macau",
+      "China resumes exercise of sovereignty over Macau on December 20",
       "Macau"
     ],
     "prc:2008": [
-      "Beijing Summer Olympics",
+      "29th Summer Olympic Games hosted in Beijing (\"One World, One Dream\")",
       "Beijing"
     ],
     "prc:2010": [
-      "Expo 2010 Shanghai",
+      "Expo 2010 Shanghai hosted under the theme \"Better City, Better Life\"",
       "Shanghai"
     ],
     "qin:-212": [
@@ -853,7 +853,7 @@ window.EN_LOCALE = {
       "Xianyang / Jiuyuan"
     ],
     "qin:-210": [
-      "Shaqiu Coup: First Emperor dies at Shaqiu; Zhao Gao and Li Si forge an edict ordering Prince Fusu and Meng Tian to die and enthrone Huhai as Second Emperor",
+      "Shaqiu Coup: First Emperor dies; Zhao Gao and Li Si forge an edict to enthrone Huhai",
       "Shaqiu (Guangzong)"
     ],
     "qin:-207": [
@@ -909,7 +909,7 @@ window.EN_LOCALE = {
       "Xu (Xuchang)"
     ],
     "donghan:219": [
-      "Liu Bei takes Hanzhong; in winter Lü Meng seizes Jingzhou in a stealth crossing and Guan Yu falls",
+      "Liu Bei takes Hanzhong; in winter Lü Meng seizes Jingzhou and Guan Yu falls",
       "Hanzhong · Maicheng"
     ],
     "sanguo:222": [
@@ -1313,7 +1313,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "tang:621": [
-      "Battle of Hulao: Li Shimin captures Dou Jiande and forces Wang Shichong’s surrender; Li Jing pacifies Xiao Xian",
+      "Battle of Hulao: Li Shimin captures Dou Jiande and Wang Shichong; Li Jing pacifies Xiao Xian",
       "Hulao · Jiangling"
     ],
     "yuan:1367": [
@@ -1329,23 +1329,23 @@ window.EN_LOCALE = {
       "Yunnan-fu (Kunming)"
     ],
     "ming:1388": [
-      "Feng Sheng accepts Naghachu’s surrender in Liaodong (1387); Lan Yu crushes the Northern Yuan court at Lake Buir (1388)",
+      "Feng Sheng pacifies Liaodong (1387); Lan Yu crushes the Northern Yuan court at Lake Buir",
       "Liaoyang · Lake Buir"
     ],
     "ming:1427": [
-      "Emperor Xuanzong abolishes Jiaozhi Province and withdraws Ming troops from Vietnam; Le Loi founds the Later Le Dynasty",
+      "Emperor Xuanzong abolishes Jiaozhi Province and withdraws from Vietnam; Le Loi founds Later Le",
       "Jiaozhi (Hanoi)"
     ],
     "tang:727": [
-      "After Tibet raids Guazhou, Tang generals Wang Junchuo and Prince Li Yi counterattack and capture strategic Shibao Fortress, securing Hexi and Longyou",
+      "Tang generals Wang Junchuo and Li Yi capture Shibao Fortress from Tibet, securing Hexi",
       "Liangzhou · Shibao Fortress"
     ],
     "tang:733": [
-      "Emperor Xuanzong divides the empire into Fifteen Kaiyuan Circuits under Investigating Commissioners",
+      "Emperor Xuanzong divides the empire into Fifteen Kaiyuan Circuits under commissioners",
       "Chang'an"
     ],
     "tang:738": [
-      "Tang invests Piluoge as King of Yunnan; the Six Zhao unite to form the Nanzhao Kingdom with its capital at Taihecheng",
+      "Tang invests Piluoge as King of Yunnan; the Six Zhao unite to form the Nanzhao Kingdom",
       "Taihecheng (Dali)"
     ],
     "tang:742": [
@@ -1353,99 +1353,99 @@ window.EN_LOCALE = {
       "Chang'an · Fanyang"
     ],
     "tang:744": [
-      "Kutlug Bilge Kül destroys the Second Turkic Khaganate to found the Uyghur Khaganate, invested by Tang as Huairen Qaghan",
+      "Kutlug Bilge Kül founds the Uyghur Khaganate, invested by Tang as Huairen Qaghan",
       "Ordu-Baliq (Orkhon)"
     ],
     "tang:747": [
-      "General Gao Xianzhi leads 10,000 troops across the Pamirs on the Gilgit (Little Balur) expedition",
+      "General Gao Xianzhi leads 10,000 troops across the Pamirs to conquer Gilgit (Little Balur)",
       "Lianyun Fort · Little Balur (Gilgit)"
     ],
     "ming:1474": [
-      "Yu Zijun constructs the 1,700-li Yansui Wall along the Ordos loop, shaping the Ming Nine Garrisons Great Wall line",
+      "Yu Zijun constructs the 1,700-li Yansui Wall, shaping the Ming Nine Garrisons Great Wall",
       "Yansui Garrison (Yulin)"
     ],
     "ming:1513": [
-      "Turpan occupies Hami Guard; the Ming court closes Jiayuguan Pass and suspends Western Regions tribute",
+      "Turpan occupies Hami Guard; the Ming court closes Jiayuguan Pass and halts western tribute",
       "Hami Guard"
     ],
     "ming:1519": [
-      "Philosopher-governor Wang Yangming suppresses the Prince of Ning (Zhu Chenhao) Rebellion at Nanchang in 35 days",
+      "Wang Yangming suppresses the Prince of Ning (Zhu Chenhao) Rebellion at Nanchang in 35 days",
       "Nanchang-fu"
     ],
     "zhanguo:-403": [
-      "King Weilie of Zhou officially recognizes Wei, Zhao, and Han as feudal lords (Partition of Jin — opening of Zizhi Tongjian)",
+      "King Weilie of Zhou recognizes Wei, Zhao, and Han as feudal lords (Partition of Jin)",
       "Luoyang · Jinyang"
     ],
     "zhanguo:-386": [
-      "Tian He is recognized as Marquis of Qi (Tian Usurpation of Qi), completing the Seven Warring States",
+      "Tian He recognized as Marquis of Qi (Tian Usurpation), forming the Seven Warring States",
       "Linzi"
     ],
     "zhanguo:-356": [
-      "Duke Xiao of Qin appoints Shang Yang to enact Legalist & military-agrarian reforms; capital moves to Xianyang in 350 BCE",
+      "Duke Xiao of Qin appoints Shang Yang for Legalist reforms; capital moves to Xianyang (350 BCE)",
       "Xianyang"
     ],
     "zhanguo:-353": [
-      "Battle of Guiling: Sun Bin and Tian Ji 'besiege Wei to rescue Zhao', defeating Pang Juan",
+      "Battle of Guiling: Sun Bin and Tian Ji besiege Wei to rescue Zhao, defeating Pang Juan",
       "Guiling (Changyuan)"
     ],
     "zhanguo:-316": [
-      "Qin conquers the kingdoms of Shu and Ba in Sichuan (316 BCE) and takes Hanzhong from Chu at Danyang (312 BCE)",
+      "Qin conquers Shu and Ba (316 BCE) and seizes Hanzhong from Chu at Danyang (312 BCE)",
       "Chengdu · Hanzhong"
     ],
     "zhanguo:-307": [
-      "King Wuling of Zhao adopts “Nomadic Dress and Cavalry Archery”, conquering Zhongshan and expanding north; Chu annexes Yue in 306 BCE",
+      "King Wuling of Zhao adopts cavalry archery and conquers Zhongshan; Chu annexes Yue (306 BCE)",
       "Handan"
     ],
     "zhanguo:-284": [
-      "Yan general Yue Yi leads a five-state coalition to crush Qi, capturing over 70 Qi cities including Linzi",
+      "Yan general Yue Yi leads a five-state coalition to crush Qi, capturing over 70 cities",
       "Linzi"
     ],
     "zhanguo:-278": [
-      "Qin general Bai Qi captures the Chu capital Ying (establishing Nan Commandery) as Qu Yuan drowns in the Miluo River; Tian Dan restores Qi in 279 BCE",
+      "Bai Qi captures Chu capital Ying as Qu Yuan drowns; Tian Dan restores Qi (279 BCE)",
       "Ying (Jiangling)"
     ],
     "zhanguo:-260": [
-      "Battle of Changping: Bai Qi encircles and annihilates 400,000 Zhao troops under Zhao Kuo, breaking Zhao’s military power",
+      "Battle of Changping: Bai Qi annihilates 400,000 Zhao troops, breaking Zhao’s military power",
       "Changping (Gaoping)"
     ],
     "zhanguo:-256": [
-      "Qin extinguishes the Eastern Zhou royal house; Shu Governor Li Bing constructs the Dujiangyan irrigation system",
+      "Qin extinguishes the Eastern Zhou house; Shu Governor Li Bing builds Dujiangyan irrigation",
       "Dujiangyan · Luoyang"
     ],
     "zhanguo:-238": [
-      "King Zheng of Qin assumes personal rule, crushes Lao Ai’s revolt, dismisses Lü Buwei, and adopts Li Si & Wei Liao’s unification strategy",
+      "King Zheng of Qin assumes rule, crushes Lao Ai, ousts Lü Buwei, and plans unification",
       "Xianyang"
     ],
     "zhanguo:-236": [
-      "Wang Jian, Huan Yi, and Yang Duanhe attack Zhao and take nine cities around Ye, opening the wars of unification",
+      "Wang Jian and Huan Yi take nine cities around Ye, opening Qin’s wars of unification",
       "Ye (Linzhang)"
     ],
     "zhanguo:-230": [
-      "Conquest of Han: Qin Governor Teng captures King An of Han at Xinzheng and establishes Yingchuan Commandery — first of the six states to fall",
+      "Conquest of Han: Qin Governor Teng captures King An at Xinzheng and sets Yingchuan Commandery",
       "Xinzheng"
     ],
     "zhanguo:-228": [
-      "Conquest of Zhao: Wang Jian captures Handan and King Qian of Zhao; Prince Jia flees north to proclaim the rump state of Dai",
+      "Conquest of Zhao: Wang Jian captures Handan and King Qian; Prince Jia flees to proclaim Dai",
       "Handan"
     ],
     "zhanguo:-226": [
-      "After Jing Ke’s failed assassination in Xianyang (227 BCE), Wang Jian routs Yan west of the Yi River and captures Jicheng; King Xi flees to Liaodong",
+      "After Jing Ke’s failed assassination, Wang Jian captures Jicheng; King Xi flees to Liaodong",
       "Jicheng (Beijing)"
     ],
     "zhanguo:-225": [
-      "Conquest of Wei: Wang Ben channels the Yellow River and Honggou Canal to flood Daliang; King Jia surrenders and Wei falls",
+      "Conquest of Wei: Wang Ben floods Daliang with Yellow River waters; King Jia surrenders",
       "Daliang (Kaifeng)"
     ],
     "zhanguo:-223": [
-      "Conquest of Chu: Leading 600,000 Qin troops, Wang Jian and Meng Wu defeat Xiang Yan and capture King Fuchu at Shouchun",
+      "Conquest of Chu: Wang Jian leads 600,000 troops to defeat Xiang Yan and capture Shouchun",
       "Shouchun (Shouxian)"
     ],
     "zhanguo:-222": [
-      "Wang Ben conquers Yan in Liaodong and Dai in Shanxi while Wang Jian pacifies Jiangnan; only Qi remains on the eastern coast",
+      "Wang Ben conquers Yan and Dai while Wang Jian pacifies Jiangnan; only Qi remains",
       "Xiangping (Liaoyang)"
     ],
     "zhanguo:-341": [
-      "Battle of Maling: Sun Bin ambushes and slays Pang Juan; the next year Shang Yang seizes Hexi and forces Wei to move its capital to Daliang",
+      "Battle of Maling: Sun Bin slays Pang Juan; Shang Yang seizes Hexi as Wei moves to Daliang",
       "Maling · Anyi"
     ],
     "zhanguo:-296": [
@@ -1453,219 +1453,219 @@ window.EN_LOCALE = {
       "Lingshou (Zhongshan)"
     ],
     "zhanguo:-241": [
-      "Final five-state coalition against Qin fails at Zui; King Kaolie of Chu moves the Chu capital east from Chen to Shouchun",
+      "Final five-state coalition against Qin fails at Zui; Chu moves its capital east to Shouchun",
       "Shouchun"
     ],
     "xihan:-109": [
-      "Emperor Wu pacifies the Southwestern Yi; the King of Dian submits, and Yizhou Commandery is established with the 'Gold Seal of the King of Dian'",
+      "Emperor Wu pacifies the Southwestern Yi; King of Dian submits and Yizhou Commandery is set",
       "Dianchi (Yizhou)"
     ],
     "xihan:-51": [
-      "Chanyu Huhanye pays personal homage to Emperor Xuan at Chang’an; eleven meritorious ministers painted in the Qilin Pavilion (Zhaoxuan Restoration)",
+      "Chanyu Huhanye pays homage to Emperor Xuan; 11 ministers honored in Qilin Pavilion",
       "Chang'an"
     ],
     "donghan:123": [
-      "Ban Yong (son of Ban Chao) appointed Chief Clerk of the Western Regions at Liuzhong, reopening the Tarim Basin",
+      "Ban Yong (son of Ban Chao) garrisons Liuzhong and defeats Northern Xiongnu, reopening Tarim",
       "Liuzhong (Gaochang)"
     ],
     "nanbei:485": [
-      "Empress Dowager Feng and Emperor Xiaowen of Northern Wei promulgate the Equal-Field (Juntian) and Three-Elders systems",
+      "Empress Dowager Feng and Emperor Xiaowen enact the Equal-Field and Three-Elders systems",
       "Pingcheng (Datong)"
     ],
     "nanbei:523": [
-      "Rebellion of the Six Garrisons: Poliuhan Baling leads a frontier uprising at Woye Garrison, shattering the foundation of Northern Wei",
+      "Rebellion of the Six Garrisons: Poliuhan Baling’s frontier uprising shatters Northern Wei",
       "Woye · Huaihuang Garrisons"
     ],
     "nanbei:537": [
-      "Battle of Shayuan: Yuwen Tai’s outnumbered Western Wei army routs Gao Huan’s 200,000 Eastern Wei troops and founds the Fubing military system",
+      "Battle of Shayuan: Yuwen Tai routs Gao Huan’s Eastern Wei army and founds the Fubing system",
       "Shayuan (Dali)"
     ],
     "sui:615": [
-      "Emperor Yang besieged by the Eastern Turks at Yanmen; Wagang rebels under Zhai Rang and Li Mi seize the Luokou Granary as uprisings sweep the empire",
+      "Emperor Yang besieged at Yanmen by Turks; Wagang rebels seize Luokou Granary as revolts spread",
       "Yanmen · Luokou"
     ],
     "tang:705": [
-      "Shenlong Coup: Chancellor Zhang Jianzhi and allies restore Emperor Zhongzong at Luoyang, reviving the Tang dynasty",
+      "Shenlong Coup: Chancellor Zhang Jianzhi restores Emperor Zhongzong in Luoyang, reviving Tang",
       "Luoyang"
     ],
     "tang:840": [
-      "Collapse of the Uyghur Khaganate; Emperor Wuzong and Chancellor Li Deyu defeat the Uyghurs, crush the Zelu garrison, and launch the Huichang Persecution of Buddhism",
+      "Uyghur Khaganate collapses; Emperor Wuzong and Li Deyu defeat Uyghurs and Zelu (Huichang Era)",
       "Chang'an · Zhenwu"
     ],
     "beisong:1007": [
-      "Emperor Shengzong of Liao builds the Central Capital (Zhongjing Dadingfu); Song and Liao open border trade markets",
+      "Emperor Shengzong of Liao builds the Central Capital; Song and Liao open border trade markets",
       "Zhongjing Dadingfu"
     ],
     "beisong:1085": [
-      "Death of Emperor Shenzong; Empress Dowager Gao appoints Sima Guang to repeal Wang Anshi’s New Policies (Yuanyou Reversal), intensifying factional strife",
+      "Empress Dowager Gao appoints Sima Guang to repeal Wang Anshi’s reforms (Yuanyou Reversal)",
       "Kaifeng"
     ],
     "nansong:1175": [
-      "Qian-Chun Prosperity under Emperor Xiaozong of Song and Dading Prosperity under Emperor Shizong of Jin; Zhu Xi and Lu Jiuyuan debate at Goose Lake Temple",
+      "Qian-Chun and Dading eras bring stability; Zhu Xi and Lu Jiuyuan debate at Goose Lake",
       "Lin'an · Goose Lake"
     ],
     "yuan:1328": [
-      "War of the Two Capitals (Tianli Incident): El Temür and the Dadu faction enthrone Emperor Wenzong and defeat the Shangdu court",
+      "War of the Two Capitals: El Temür enthrones Emperor Wenzong in Dadu and defeats Shangdu",
       "Dadu · Shangdu"
     ],
     "ming:1621": [
-      "Battle of Shen-Liao: Nurhaci’s Later Jin captures Shenyang and Liaoyang, taking over 70 cities east of the Liao River and moving the Later Jin capital to Liaoyang",
+      "Battle of Shen-Liao: Nurhaci captures Shenyang and Liaoyang, moving the Later Jin capital",
       "Liaoyang"
     ],
     "qing:1898": [
-      "Hundred Days' Reform and Wuxu Coup: Guangxu Emperor launches reforms with Kang Youwei and Liang Qichao before Empress Dowager Cixi seizes power, confines Guangxu at Yingtai, and executes the Six Gentlemen; Germany leases Jiaozhou Bay, Russia leases Port Arthur/Dalian, and Britain leases Weihaiwei and the New Territories",
+      "Hundred Days’ Reform ends in Wuxu Coup; powers lease Jiaozhou Bay, Dalian, and New Territories",
       "Beijing · Jiaozhou Bay"
     ],
     "qing:1900": [
-      "Boxer Movement and Eight-Nation Alliance occupation of Beijing; Cixi and Guangxu flee to Xi’an, followed by the Boxer Protocol in 1901",
+      "Eight-Nation Alliance occupies Beijing as Cixi flees to Xi’an; southern governors keep peace",
       "Beijing"
     ],
     "xihan:-8": [
-      "Emperor Cheng establishes the Three Excellencies system; Wang Mang appointed Grand Marshal, consolidating Wang clan dominance",
+      "Emperor Cheng establishes Three Excellencies; Wang Mang becomes Grand Marshal",
       "Chang'an"
     ],
     "tang:881": [
-      "Huang Chao’s rebel army captures Chang’an and proclaims the Great Qi dynasty; Emperor Xizong flees to Shu",
+      "Huang Chao captures Chang’an and proclaims the Qi dynasty; Emperor Xizong flees to Shu",
       "Chang'an"
     ],
     "beisong:1104": [
-      "Hehuang Campaign: Emperor Huizong appoints Cai Jing as Wang Hou and Tong Guan recover Qingtang and establish Xining Prefecture",
+      "Hehuang Campaign: Wang Hou and Tong Guan recover Qingtang and establish Xining Prefecture",
       "Xining (Qingtang)"
     ],
     "ming:1479": [
-      "Emperor Xianzong sets up the Western Depot under Wang Zhi; Ming-Joseon coalition launches the Chenghua Campaign against Jianzhou Jurchens",
+      "Emperor Xianzong sets up the Western Depot; Ming-Joseon forces launch the Chenghua Campaign",
       "Beijing · Hetu Ala"
     ],
     "ming:1524": [
-      "Great Rites Controversy: Jiajing Emperor flogs protesting officials at Left Shun Gate (exiling Yang Shen to Yunnan), asserting imperial supremacy",
+      "Great Rites Controversy: Jiajing Emperor flogs protesting officials at Left Shun Gate",
       "Beijing"
     ],
     "qing:1813": [
-      "Guiyou Incident: Eight Trigrams rebels under Lin Qing storm the Forbidden City to Longzong Gate; Prince Mianning repels attackers with a musket",
+      "Guiyou Incident: Lin Qing’s rebels storm the Forbidden City to Longzong Gate and are repelled",
       "Forbidden City, Beijing"
     ],
     "xihan:11": [
-      "Yellow River breaches at Weijun (Yuancheng), ending the ancient northern course and flooding the eastern plains for sixty years",
+      "Yellow River breaches at Yuancheng, ending the ancient northern course and flooding the east",
       "Weijun (Daming)"
     ],
     "donghan:69": [
-      "Wang Jing harnesses the Yellow River with a 500-km levee system from Xingyang to Qiancheng, stabilizing its course for nearly a millennium",
+      "Wang Jing builds a 500-km Yellow River levee system, stabilizing its course for a millennium",
       "Xingyang · Qiancheng"
     ],
     "beisong:1048": [
-      "Yellow River breaches at Shanghu in Chanzhou, shifting sharply north toward Tianjin and ending the 1,000-year Wang Jing course",
+      "Yellow River breaches at Shanghu in Chanzhou, shifting north and ending the Wang Jing course",
       "Chanzhou (Puyang)"
     ],
     "nansong:1194": [
-      "Shaoxi Abdication: Grand Empress Dowager Wu, backed by Zhao Ruyu and Han Tuozhou, compels Emperor Guangzong to abdicate in favor of Emperor Ningzong; the Yellow River breaches at Yangwu to capture the Si and Huai rivers into the Yellow Sea",
+      "Shaoxi Abdication enthrones Ningzong; Yellow River breaches at Yangwu into the Huai",
       "Lin'an · Yangwu · Huai'an"
     ],
     "qing:1855": [
-      "Yellow River breaches at Tongwaxiang (Lanyang), abandoning the Huai course to capture the Daqing River into Bohai Sea along its modern path",
+      "Yellow River breaches at Tongwaxiang, shifting north into the Bohai Sea along its modern path",
       "Tongwaxiang (Lankao)"
     ],
     "zhanguo:-300": [
-      "King Zhao of Yan dispatched general Qin Kai to defeat the Donghu, advancing a thousand li, constructing the Northern Yan Great Wall, and establishing the five commanderies of Shanggu, Yuyang, Youbeiping, Liaoxi, and Liaodong",
+      "Yan general Qin Kai routs the Donghu, builds the Northern Wall, and sets five commanderies",
       "Xiangping (Liaoyang)"
     ],
     "donghan:43": [
-      "General Fubo Ma Yuan led the southern expedition to Jiaozhi, subduing the Trưng sisters' rebellion and erecting bronze pillars marking the southernmost boundary of the Han Empire",
+      "General Ma Yuan suppresses the Trưng sisters in Jiaozhi and erects bronze border pillars",
       "Jiaozhi (Hanoi)"
     ],
     "sanguo:238": [
-      "Sima Yi led an expedition to Liaodong, executing Gongsun Yuan; Cao Wei recovered the four Liaodong commanderies along with Lelang and Daifang on the Korean Peninsula",
+      "Sima Yi conquers Liaodong and executes Gongsun Yuan, recovering Lelang and Daifang",
       "Xiangping (Liaoyang)"
     ],
     "tang:635": [
-      "Li Jing and Hou Junji mounted a six-column expedition defeating Tuyuhun, marching to Lake Baihai at the Yellow River headwaters, forcing King Buyun to submit",
+      "Li Jing leads a six-column expedition to Lake Baihai, forcing Tuyuhun King Buyun to submit",
       "Fusicheng (West Qinghai Lake)"
     ],
     "tang:648": [
-      "Wang Xuance borrowed Tibetan and Nepalese forces to crush Arunāśva in Central India, projecting Tang imperial prestige into the South Asian subcontinent for the first time",
+      "Wang Xuance leads Tibetan-Nepalese forces to defeat Arunāśva in Central India",
       "Chaboharocheng (Central India)"
     ],
     "qing:1881": [
-      "Zeng Jize negotiated the Treaty of Saint Petersburg (Treaty of Ili) with Tsarist Russia, recovering the majority of the Nine Cities of Ili and delineating the northwestern boundary",
+      "Zeng Jize signs the Treaty of Ili with Russia, recovering most of the Nine Cities of Ili",
       "Ili (Khorgas)"
     ],
     "roc:1932": [
-      "Imperial Japan installed deposed Qing Emperor Puyi in Changchun to establish puppet 'Manchukuo', detaching Northeast China for fourteen years",
+      "Japan installs Puyi in Changchun as head of puppet Manchukuo, occupying Northeast China",
       "Xinjing (Changchun)"
     ],
     "roc:1946": [
-      "The Nationalist Government recognized the Outer Mongolian independence referendum result and exchanged notes with the Soviet Union; Outer Mongolia detached from China, transforming the national map silhouette from a 'begonia leaf' into a 'rooster'",
+      "Nationalist Government recognizes the Outer Mongolian referendum, detaching Outer Mongolia",
       "Kulun (Ulaanbaatar)"
     ],
     "xihan:-91": [
-      "Witchcraft Crisis (Wugu Affair): Jiang Chong frames Crown Prince Liu Ju, sparking five days of fighting in Chang'an and the suicides of Liu Ju and Empress Wei",
+      "Witchcraft Crisis: Jiang Chong frames Crown Prince Liu Ju, who dies after fighting in Chang’an",
       "Chang'an · Huxian"
     ],
     "xihan:-74": [
-      "Regent Marshal Huo Guang deposes Liu He (Marquis of Haihun) after 27 days and enthrones Liu Xun as Emperor Xuan, inaugurating the Zhaoxuan Restoration",
+      "Regent Huo Guang deposes Liu He after 27 days and enthrones Emperor Xuan (Zhaoxuan Restoration)",
       "Chang'an (Weiyang Palace)"
     ],
     "donghan:92": [
-      "Yongyuan Coup and Prosperity of Yongyuan: 14-year-old Emperor He allies with eunuch Zheng Zhong to overthrow Regent Marshal Dou Xian's consort clan, bringing Eastern Han power to its zenith",
+      "Prosperity of Yongyuan: Emperor He ousts Regent Dou Xian and brings Eastern Han to its zenith",
       "Luoyang"
     ],
     "sanguo:260": [
-      "Coup of Ganlu: Wei Emperor Cao Mao declares 'Sima Zhao's ambition is known to every passerby' and leads palace guards against Sima Zhao, falling to Jia Chong and Cheng Ji at the southern palace gate",
+      "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain at the palace gate",
       "Luoyang (Southern Gate)"
     ],
     "dongjin:322": [
-      "Rebellion of Wang Dun: Generalissimo Wang Dun marches east from Wuchang into Jiankang under the pretext of purging Liu Wei and Diao Xie, intensifying the 'Wang and Sima co-rule'",
+      "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang and controls the court",
       "Wuchang · Jiankang"
     ],
     "dongjin:404": [
-      "After Huan Xuan usurps the Jin throne to proclaim Chu (403), Northern Garrison general Liu Yu rises at Jingkou, defeats Huan Xuan, and restores the Eastern Jin court",
+      "Liu Yu rises at Jingkou to crush usurper Huan Xuan and restore the Eastern Jin court",
       "Jingkou · Jiankang · Jiangling"
     ],
     "tang:707": [
-      "Jinglong Coup: Crown Prince Li Chongjun leads imperial guards to slay Wu Sansi and Wu Chongxun, but is defeated and killed after his assault on Xuanwu Gate fails",
+      "Jinglong Coup: Crown Prince Li Chongjun slays Wu Sansi with palace guards but falls in battle",
       "Chang'an (Xuanwu Gate)"
     ],
     "tang:710": [
-      "Tanglong Coup: Following Emperor Zhongzong's sudden death, Prince Li Longji and Princess Taiping storm the palace to eliminate Empress Wei's faction and restore Emperor Ruizong",
+      "Tanglong Coup: Li Longji and Princess Taiping eliminate Empress Wei and restore Ruizong",
       "Chang'an (Taiji Palace)"
     ],
     "tang:756": [
-      "Mutiny at Mawei Post: As Rebels capture Chang'an and Emperor Xuanzong flees toward Sichuan, imperial guards execute Chancellor Yang Guozhong and compel Consort Yang Yuhuan to die at Mawei; Crown Prince Li Heng ascends as Emperor Suzong at Lingwu",
+      "Mawei Mutiny: guards execute Yang Guozhong and Consort Yang; Suzong ascends at Lingwu",
       "Mawei Post (Xingping) · Lingwu"
     ],
     "tang:805": [
-      "Yongzhen Reform and Abdication: Emperor Shunzong empowers Wang Shuwen, Liu Zongyuan, and Liu Yuxi to curb eunuch and warlord power, before Shence Army eunuchs compel his abdication to Emperor Xianzong",
+      "Yongzhen Abdication: eunuch Ju Wenzhen halts the Wang Shuwen reform and forces Shunzong out",
       "Chang'an"
     ],
     "tang:835": [
-      "Sweet Dew Incident: Emperor Wenzong, Li Xun, and Zheng Zhu's plot to ambush eunuch commander Qiu Shiliang fails; Shence troops slaughter over a thousand courtiers including Chancellor Wang Ya",
+      "Sweet Dew Incident: Emperor Wenzong and Li Xun’s failed plot against Qiu Shiliang ends in purge",
       "Chang'an (Daming Palace)"
     ],
     "wudai:926": [
-      "Yedu Mutiny and Xingjiao Gate Incident: Following the Weibo garrison mutiny backing Li Siyuan, Commander Guo Congqian storms Xingjiao Gate in Luoyang where Emperor Zhuangzong Li Cunxu is killed; Li Siyuan ascends as Emperor Mingzong",
+      "Xingjiao Gate Incident: Zhuangzong Li Cunxu dies in a Luoyang mutiny; Li Siyuan ascends",
       "Luoyang (Xingjiao Gate) · Yedu"
     ],
     "beisong:976": [
-      "Candlelight and Axe-Sound Mystery: Emperor Taizu Zhao Kuangyin dies suddenly after a late-night drink with his brother Zhao Guangyi at Wansui Hall; Zhao Guangyi ascends the throne as Emperor Taizong",
+      "Candlelight and Axe-Sound Mystery: Emperor Taizu dies suddenly; brother Taizong ascends",
       "Kaifeng (Wansui Hall)"
     ],
     "nansong:1129": [
-      "Miao-Liu Mutiny: Commanders Miao Fu and Liu Zhengyan mutiny in Hangzhou, forcing Emperor Gaozong to abdicate in favor of his infant son before loyalist generals Han Shizhong and Zhang Jun restore Gaozong",
+      "Miao-Liu Mutiny: Miao Fu and Liu Zhengyan depose Gaozong; Han Shizhong restores him",
       "Hangzhou (Lin'an)"
     ],
     "yuan:1323": [
-      "Coup at Nanpo: Censor-in-Chief Tegshi and conspirators assassinate reformist Emperor Yingzong (Gegeen Khan) and Chancellor Baiju at Nanpo south of Shangdu; Yesün Temür ascends as the Taiding Emperor",
+      "Coup at Nanpo: Censor Tegshi assassinates reformist Emperor Yingzong and Chancellor Baiju",
       "Nanpo (south of Shangdu)"
     ],
     "ming:1457": [
-      "Wresting the Gate Coup (Southern Palace Restoration): As the Jingtai Emperor falls critically ill, Shi Heng, Xu Youzhen, and Cao Jixiang restore retired Emperor Yingzong from the Southern Palace and execute Yu Qian",
+      "Wresting the Gate Coup: Shi Heng and Xu Youzhen restore Emperor Yingzong and execute Yu Qian",
       "Beijing (Southern Palace)"
     ],
     "ming:1542": [
-      "RenYin Palace Rebellion: Palace women led by Yang Jinying attempt to strangle the tyrannical Jiajing Emperor with a silk cord in Qianqing Palace; after surviving, Jiajing retreats to West Park for over twenty years",
+      "RenYin Palace Rebellion: palace women led by Yang Jinying fail to strangle the Jiajing Emperor",
       "Forbidden City, Beijing"
     ],
     "qing:1861": [
-      "Xinyou Coup (Qixiang Coup): Following the Xianfeng Emperor's death in Chengde, Empresses Dowager Cixi and Ci'an ally with Prince Gong (Yixin) to oust Sushun's Eight Regents and inaugurate the Tongzhi Regency",
+      "Xinyou Coup: Cixi, Ci’an, and Prince Gong oust Sushun’s Eight Regents to begin the Regency",
       "Beijing · Chengde"
     ]
   },

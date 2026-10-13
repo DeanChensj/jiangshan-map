@@ -407,8 +407,8 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "巫蛊之祸：江充构陷戾太子刘据，长安激战五日太子兵败自尽，汉武帝晚年由扩张转向守成",
-      "en": "Witchcraft Crisis (Wugu Affair) erupts in Chang'an; Crown Prince Liu Ju is driven to rebellion and suicide"
+      "zh": "巫蛊之祸：江充构陷太子刘据，长安激战五日太子兵败自尽",
+      "en": "Witchcraft Crisis (Wugu Affair) in Chang’an drives Crown Prince Liu Ju to rebellion and suicide"
     },
     {
       "dynastyKey": "xihan",
@@ -419,7 +419,7 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "权臣霍光于未央宫奏请上官太后废黜昌邑王刘贺，迎立汉宣帝刘询，开启昭宣中兴",
+      "zh": "大将军霍光于未央宫奏废昌邑王刘贺，迎立汉宣帝开启昭宣中兴",
       "en": "Regent Huo Guang deposes Liu He at Weiyang Palace and enthrones Emperor Xuan of Han"
     },
     {
@@ -455,8 +455,8 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "诸葛亮北伐出祁山震动关中，魏明帝亲镇长安督师",
-      "en": "Zhuge Liang launches his First Northern Expedition; Emperor Ming of Wei commands defense from Chang'an"
+      "zh": "诸葛亮首次北伐出祁山震动关中，魏明帝亲镇长安督师",
+      "en": "Zhuge Liang launches his First Northern Expedition; Emperor Ming of Wei defends from Chang’an"
     },
     {
       "dynastyKey": "xijin",
@@ -539,8 +539,8 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "唐隆政变：李隆基与太平公主率禁军诛韦后、安乐公主，奉唐睿宗复位；713年发动先天政变开启开元盛世",
-      "en": "Tanglong Coup (710) and Xiantian Coup (713): Li Longji eliminates Empress Wei and Princess Taiping's factions to inaugurate the Kaiyuan Era"
+      "zh": "唐隆政变李隆基诛韦后；713年发动先天政变开启开元盛世",
+      "en": "Tanglong (710) and Xiantian (713) Coups: Li Longji eliminates Empress Wei and Princess Taiping"
     },
     {
       "dynastyKey": "tang",
@@ -551,8 +551,8 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "安史叛军破潼关陷长安，玄宗奔蜀于马嵬驿赐死杨贵妃；次年郭子仪率唐军收复西京",
-      "en": "An Lushan rebels capture Chang'an, triggering the Mawei Mutiny; Guo Ziyi recaptures the capital in 757"
+      "zh": "安史叛军破潼关陷长安，玄宗奔蜀；次年郭子仪收复西京",
+      "en": "An Lushan rebels capture Chang’an, sparking the Mawei Mutiny; Guo Ziyi retakes it in 757"
     },
     {
       "dynastyKey": "tang",
@@ -563,8 +563,8 @@
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "甘露之变：唐文宗与李训、郑注密谋诛宦官事败，神策军血洗大明宫朝堂，晚唐宦官彻底专权",
-      "en": "Sweet Dew Incident in Daming Palace: failed court plot against eunuch Qiu Shiliang leads to a purge of Tang ministers"
+      "zh": "甘露之变：唐文宗与李训谋诛宦官事败，神策军血洗大明宫",
+      "en": "Sweet Dew Incident in Daming Palace: failed plot against Qiu Shiliang leads to court purge"
     },
     {
       "dynastyKey": "tang",
@@ -659,8 +659,8 @@
       ],
       "site": "洛阳",
       "siteEn": "Luoyang",
-      "zh": "永元之隆：汉和帝于洛阳诛除大将军窦宪外戚集团亲政，东汉国力达于极盛",
-      "en": "Prosperity of Yongyuan: Emperor He overthrows Dou Xian's consort clan in Luoyang and brings Eastern Han to its zenith"
+      "zh": "永元之隆：汉和帝于洛阳诛除大将军窦宪外戚集团，东汉达极盛",
+      "en": "Prosperity of Yongyuan: Emperor He overthrows Dou Xian’s clan in Luoyang, reaching Han zenith"
     },
     {
       "dynastyKey": "sanguo",
@@ -684,7 +684,7 @@
       "site": "洛阳",
       "siteEn": "Luoyang",
       "zh": "甘露之变：魏帝曹髦率宿卫讨司马昭，于洛阳南阙下遇弑",
-      "en": "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain at the southern palace gate in Luoyang"
+      "en": "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain in Luoyang"
     },
     {
       "dynastyKey": "sanguo",
@@ -791,8 +791,8 @@
       ],
       "site": "洛阳",
       "siteEn": "Luoyang",
-      "zh": "兴教门之变：郭从谦于洛阳发动兵变，后唐庄宗李存勖中流矢崩，李嗣源入洛即位为后唐明宗",
-      "en": "Xingjiao Gate Incident in Luoyang: Emperor Zhuangzong Li Cunxu falls in a palace mutiny and Li Siyuan ascends as Emperor Mingzong"
+      "zh": "兴教门之变：郭从谦洛阳兵变弑后唐庄宗，李嗣源入洛即位",
+      "en": "Xingjiao Gate Incident in Luoyang: Emperor Zhuangzong falls in mutiny and Li Siyuan ascends"
     },
     {
       "dynastyKey": "dongjin",
@@ -816,7 +816,7 @@
       "site": "建康",
       "siteEn": "Jiankang (Nanjing)",
       "zh": "王敦之乱：王敦自武昌顺江东下攻入建康，控制东晋朝政",
-      "en": "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang and seizes control of the Eastern Jin court"
+      "en": "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang to control the Jin court"
     },
     {
       "dynastyKey": "dongjin",
@@ -827,8 +827,8 @@
       ],
       "site": "建康·京口",
       "siteEn": "Jiankang / Jingkou",
-      "zh": "北府将刘裕自京口起兵克建康，讨平篡晋称楚的桓玄，开启寒门北府兵掌权时代",
-      "en": "Northern Garrison general Liu Yu rises at Jingkou, retakes Jiankang, and crushes usurper Huan Xuan"
+      "zh": "北府将刘裕自京口起兵克建康，讨平桓玄，开启北府兵掌权",
+      "en": "Northern Garrison general Liu Yu rises at Jingkou, retakes Jiankang, and crushes Huan Xuan"
     },
     {
       "dynastyKey": "nanbei",
@@ -935,8 +935,8 @@
       ],
       "site": "安庆府",
       "siteEn": "Anqing",
-      "zh": "安庆之战：曾国荃湘军合围苦战两年攻克太平天国长江上游屏障安庆，陈玉成败退，天京门户洞开",
-      "en": "Siege of Anqing: Zeng Guoquan's Xiang Army captures Anqing after a two-year siege, breaking the western shield of Tianjing"
+      "zh": "安庆之战：曾国荃湘军合围两年攻克安庆，天京门户洞开",
+      "en": "Siege of Anqing: Zeng Guoquan’s Xiang Army captures Anqing, opening the approach to Tianjing"
     },
     {
       "dynastyKey": "qing",
@@ -947,8 +947,8 @@
       ],
       "site": "天京（江宁）",
       "siteEn": "Tianjing (Nanjing)",
-      "zh": "曾国藩、曾国荃率湘军于龙脖子掘地道轰塌天京城墙，攻陷天京，历时十四年的太平天国运动覆灭",
-      "en": "Xiang Army under Zeng Guofan and Zeng Guoquan breaches the walls of Tianjing (Nanjing), ending the 14-year Taiping Heavenly Kingdom"
+      "zh": "曾国藩、曾国荃率湘军轰塌城墙攻陷天京，太平天国运动覆灭",
+      "en": "Xiang Army under Zeng Guofan and Zeng Guoquan breaches Tianjing, ending the Taiping Kingdom"
     },
     {
       "dynastyKey": "roc",
@@ -1067,8 +1067,8 @@
       ],
       "site": "北京",
       "siteEn": "Beijing",
-      "zh": "夺门之变（南宫复辟）：石亨、徐有贞、曹吉祥迎太上皇明英宗自南宫复辟，于谦含冤遇害",
-      "en": "Wresting the Gate Coup: Emperor Yingzong is restored from the Southern Palace in Beijing; Yu Qian is executed"
+      "zh": "夺门之变：石亨、徐有贞迎明英宗自南宫复辟，于谦含冤遇害",
+      "en": "Wresting the Gate Coup: Emperor Yingzong is restored from the Southern Palace; Yu Qian is slain"
     },
     {
       "dynastyKey": "ming",
@@ -1079,8 +1079,8 @@
       ],
       "site": "北京",
       "siteEn": "Beijing",
-      "zh": "壬寅宫变：杨金英等十余名宫女于乾清宫谋缢嘉靖帝未遂，嘉靖帝自此移居西苑万寿宫",
-      "en": "RenYin Palace Rebellion: palace women led by Yang Jinying attempt to strangle the Jiajing Emperor in Qianqing Palace"
+      "zh": "壬寅宫变：杨金英等宫女于乾清宫谋缢嘉靖帝未遂，帝移居西苑",
+      "en": "RenYin Palace Rebellion: palace women led by Yang Jinying attempt to strangle Emperor Jiajing"
     },
     {
       "dynastyKey": "qing",
@@ -1091,8 +1091,8 @@
       ],
       "site": "北京",
       "siteEn": "Beijing",
-      "zh": "辛酉政变（祺祥政变）：慈禧、慈安两宫太后联结恭亲王奕訢逮捕肃顺等顾命八大臣，开启两宫垂帘听政",
-      "en": "Xinyou Coup in Beijing: Empresses Dowager Cixi and Ci'an ally with Prince Gong to oust the Eight Regents"
+      "zh": "辛酉政变：慈禧、慈安两宫太后联结恭亲王奕訢诛肃顺等八大臣",
+      "en": "Xinyou Coup in Beijing: Cixi and Ci’an ally with Prince Gong to oust the Eight Regents"
     },
     {
       "dynastyKey": "qing",
@@ -1103,8 +1103,8 @@
       ],
       "site": "北京",
       "siteEn": "Beijing",
-      "zh": "戊戌变法与戊戌政变：光绪帝推行百日维新，慈禧太后发动政变囚光绪于瀛台、于菜市口杀谭嗣同等戊戌六君子",
-      "en": "Hundred Days' Reform and Wuxu Coup in Beijing: Empress Dowager Cixi confines the Guangxu Emperor and executes the Six Gentlemen"
+      "zh": "戊戌政变：慈禧太后囚光绪帝于瀛台，于菜市口杀戊戌六君子",
+      "en": "Wuxu Coup in Beijing: Empress Dowager Cixi confines Emperor Guangxu and executes Six Gentlemen"
     },
     {
       "dynastyKey": "beisong",
@@ -1115,8 +1115,8 @@
       ],
       "site": "东京开封府",
       "siteEn": "Dongjing (Kaifeng)",
-      "zh": "开宝九年十月宋太祖与晋王赵光义夜饮万岁殿，留传“斧声烛影”疑云，赵光义即位为宋太宗",
-      "en": "Candlelight and Axe-Sound Mystery at Wansui Hall in Kaifeng: Emperor Taizu dies suddenly and Zhao Guangyi ascends as Emperor Taizong"
+      "zh": "斧声烛影：宋太祖与晋王赵光义夜饮万岁殿暴崩，宋太宗即位",
+      "en": "Candlelight and Axe-Sound Mystery at Wansui Hall: Emperor Taizu dies and Taizong ascends"
     },
     {
       "dynastyKey": "nansong",
@@ -1127,8 +1127,8 @@
       ],
       "site": "杭州（临安）",
       "siteEn": "Hangzhou (Lin'an)",
-      "zh": "苗刘兵变：苗傅、刘正彦于杭州逼宋高宗禅位，韩世忠、张俊等统兵勤王平叛，高宗复辟",
-      "en": "Miao-Liu Mutiny in Hangzhou: generals Miao Fu and Liu Zhengyan briefly depose Emperor Gaozong before Han Shizhong restores him"
+      "zh": "苗刘兵变：苗傅、刘正彦于杭州逼宋高宗禅位，韩世忠勤王复辟",
+      "en": "Miao-Liu Mutiny in Hangzhou: Miao Fu and Liu Zhengyan briefly depose Gaozong before restoration"
     },
     {
       "dynastyKey": "nansong",
@@ -1139,8 +1139,8 @@
       ],
       "site": "临安府",
       "siteEn": "Lin'an (Hangzhou)",
-      "zh": "绍熙内禅：赵汝愚、韩侂胄奉太皇太后吴氏旨意于临安迫宋光宗退位，拥立宋宁宗",
-      "en": "Shaoxi Abdication in Lin'an: Zhao Ruyu and Han Tuozhou compel Emperor Guangzong to abdicate in favor of Emperor Ningzong"
+      "zh": "绍熙内禅：赵汝愚、韩侂胄奉太皇太后旨于临安迫光宗禅位宁宗",
+      "en": "Shaoxi Abdication in Lin’an: Zhao Ruyu and Han Tuozhou compel Guangzong to yield to Ningzong"
     },
     {
       "dynastyKey": "ming",
@@ -1367,8 +1367,8 @@
       ],
       "site": "都江堰·成都",
       "siteEn": "Dujiangyan / Chengdu",
-      "zh": "蜀郡太守李冰凿离堆修筑都江堰，成都平原自此沃野千里号“天府之国”",
-      "en": "Shu Governor Li Bing constructs the Dujiangyan Irrigation System, making the Chengdu Plain the Land of Abundance"
+      "zh": "蜀郡太守李冰凿离堆修筑都江堰，成都平原自此号“天府之国”",
+      "en": "Shu Governor Li Bing builds the Dujiangyan Irrigation System, making Chengdu the Land of Plenty"
     },
     {
       "dynastyKey": "sanguo",
@@ -1428,7 +1428,7 @@
       "site": "益州（成都）",
       "siteEn": "Chengdu",
       "zh": "北宋于成都设益州交子务，发行世界最早官方纸币“交子”",
-      "en": "Northern Song establishes the Jiaozi Bureau in Chengdu, issuing the world's first state paper money"
+      "en": "Northern Song establishes the Jiaozi Bureau in Chengdu, issuing the world’s first paper money"
     },
     {
       "dynastyKey": "donghan",
@@ -1667,8 +1667,8 @@
       ],
       "site": "函谷关（今河南灵宝）",
       "siteEn": "Hangu Pass (Lingbao, Henan)",
-      "zh": "齐孟尝君田文合韩、魏之师连战三年攻破函谷关，迫秦昭襄王割河东三城求和",
-      "en": "Lord Mengchang of Qi leads a Qi-Han-Wei alliance that storms Hangu Pass after a three-year campaign"
+      "zh": "齐孟尝君田文合韩、魏之师攻破函谷关，迫秦昭襄王割城求和",
+      "en": "Lord Mengchang of Qi leads a Qi-Han-Wei coalition that storms Hangu Pass after three years"
     },
     {
       "dynastyKey": "qin",
@@ -1679,8 +1679,8 @@
       ],
       "site": "武关（今陕西丹凤）",
       "siteEn": "Wuguan Pass (Danfeng, Shaanxi)",
-      "zh": "刘邦率楚军自南阳迂回攻破武关，继克峣关，先入关中降秦王子婴",
-      "en": "Liu Bang breaches Wuguan Pass from Nanyang and enters the Guanzhong heartland to accept Qin’s surrender"
+      "zh": "刘邦率楚军自南阳迂回攻破武关、峣关，先入关中降秦王子婴",
+      "en": "Liu Bang breaches Wuguan Pass from Nanyang and enters Guanzhong to accept Qin’s surrender"
     },
     {
       "dynastyKey": "qin",
@@ -1691,8 +1691,8 @@
       ],
       "site": "井陉关·娘子关（今河北井陉）",
       "siteEn": "Jingxing / Niangzi Pass (Hebei)",
-      "zh": "井陉之战：韩信率汉军出井陉口，背绵水列阵诱敌，奇兵拔赵壁立汉赤帜，破赵军二十万",
-      "en": "Battle of Jingxing: Han Xin deploys with his back to the river at Jingxing Pass and routs the Zhao army"
+      "zh": "井陉之战：韩信出井陉口背水列阵，奇兵拔赵壁破赵军二十万",
+      "en": "Battle of Jingxing: Han Xin deploys with his back to the river and routs 200,000 Zhao troops"
     },
     {
       "dynastyKey": "xihan",
@@ -1703,8 +1703,8 @@
       ],
       "site": "萧关（今宁夏固原东南）",
       "siteEn": "Xiaoguan Pass (Guyuan, Ningxia)",
-      "zh": "匈奴老上单于率十四万骑攻破朝那萧关，候骑至甘泉宫，汉文帝遣三将军屯兵细柳、棘门、霸上备胡",
-      "en": "Xiongnu Chanyu Laoshang leads 140,000 cavalry through Xiaoguan Pass, prompting Han defenses around Chang’an"
+      "zh": "匈奴老上单于率十四万骑破萧关，汉文帝遣三将军屯细柳备胡",
+      "en": "Xiongnu Chanyu Laoshang breaches Xiaoguan Pass with 140,000 cavalry, alarming Chang’an"
     },
     {
       "dynastyKey": "xihan",
@@ -1715,8 +1715,8 @@
       ],
       "site": "玉门关·阳关（今甘肃敦煌）",
       "siteEn": "Yumen & Yangguan Passes (Dunhuang)",
-      "zh": "汉武帝分置敦煌郡，筑玉门关与阳关，“列四郡、据两关”，扼控丝绸之路南北两道咽喉",
-      "en": "Emperor Wu of Han establishes Yumen Pass and Yangguan Pass to command the northern and southern Silk Road routes"
+      "zh": "汉武帝分置敦煌郡，筑玉门关与阳关，扼控丝绸之路南北咽喉",
+      "en": "Emperor Wu establishes Yumen Pass and Yangguan Pass to command the Silk Road routes"
     },
     {
       "dynastyKey": "donghan",
@@ -1727,8 +1727,8 @@
       ],
       "site": "潼关（今陕西潼关）",
       "siteEn": "Tongguan Pass (Shaanxi)",
-      "zh": "潼关之战：曹操北渡蒲阪津迂回渭南，以轻兵诱敌、离间计大破马超、韩遂关西联军",
-      "en": "Battle of Tongguan: Cao Cao outflanks the pass across the Yellow River and defeats the coalition of Ma Chao and Han Sui"
+      "zh": "潼关之战：曹操北渡蒲阪津迂回渭南，以离间计大破马超韩遂",
+      "en": "Battle of Tongguan: Cao Cao outflanks the pass and defeats the coalition of Ma Chao and Han Sui"
     },
     {
       "dynastyKey": "donghan",
@@ -1739,8 +1739,8 @@
       ],
       "site": "阳平关·定军山（今陕西勉县）",
       "siteEn": "Yangping Pass (Mianxian, Shaanxi)",
-      "zh": "汉中之战：刘备据阳平关与定军山，黄忠阵斩夏侯渊，尽取汉中之地",
-      "en": "Hanzhong Campaign: Liu Bei secures Yangping Pass and Mount Dingjun as Huang Zhong slays Xiahou Yuan"
+      "zh": "汉中之战：刘备据阳平关与定军山，黄忠阵斩夏侯渊尽取汉中",
+      "en": "Hanzhong Campaign: Liu Bei takes Yangping Pass and Mount Dingjun; Huang Zhong slays Xiahou Yuan"
     },
     {
       "dynastyKey": "sanguo",
@@ -1751,8 +1751,8 @@
       ],
       "site": "剑门关（今四川剑阁）",
       "siteEn": "Jianmen Pass (Jiange, Sichuan)",
-      "zh": "蜀汉大将军姜维自沓中疾退，凭剑门关绝壁天险拒钟会十余万魏军于关外",
-      "en": "Shu general Jiang Wei holds the sheer cliffs of Jianmen Pass against Zhong Hui’s 100,000-strong Wei army"
+      "zh": "蜀汉大将军姜维自沓中疾退，凭剑门关天险拒钟会十万魏军",
+      "en": "Shu general Jiang Wei holds the cliffs of Jianmen Pass against Zhong Hui’s 100,000 Wei troops"
     },
     {
       "dynastyKey": "tang",
@@ -1763,8 +1763,8 @@
       ],
       "site": "虎牢关（今河南荥阳汜水）",
       "siteEn": "Hulao Pass (Xingyang, Henan)",
-      "zh": "虎牢之战：唐秦王李世民率三千五百精骑据虎牢关，一战生擒夏王窦建德，洛阳王世充随即出降",
-      "en": "Battle of Hulao: Li Shimin crushes Dou Jiande’s relief army at Hulao Pass, forcing Wang Shichong in Luoyang to surrender"
+      "zh": "虎牢之战：李世民率精骑据虎牢关生擒窦建德，王世充随即出降",
+      "en": "Battle of Hulao: Li Shimin captures Dou Jiande at Hulao Pass, forcing Wang Shichong to yield"
     },
     {
       "dynastyKey": "tang",
@@ -1775,8 +1775,8 @@
       ],
       "site": "大庾岭梅关（今广东南雄北）",
       "siteEn": "Meiguan Pass (Dayu Ridge, Guangdong/Jiangxi)",
-      "zh": "唐玄宗纳张九龄之议，凿辟大庾岭梅关新路，贯通赣江与珠江南北商道",
-      "en": "Chancellor Zhang Jiuling excavates the Meiguan mountain road across the Dayu Ridge, linking Jiangxi and Guangdong"
+      "zh": "唐玄宗纳张九龄之议凿辟大庾岭梅关新路，贯通赣粤南北商道",
+      "en": "Chancellor Zhang Jiuling excavates the Meiguan Pass road across Dayu Ridge, linking Gan and Yue"
     },
     {
       "dynastyKey": "tang",
@@ -1787,8 +1787,8 @@
       ],
       "site": "潼关（今陕西潼关）",
       "siteEn": "Tongguan Pass (Shaanxi)",
-      "zh": "哥舒翰被迫出潼关与安禄山叛军决战，于灵宝西原中伏惨败，潼关失守，唐玄宗仓皇奔蜀",
-      "en": "Geshu Han is ambushed west of Lingbao after being forced out of Tongguan Pass; Chang’an falls to An Lushan’s rebels"
+      "zh": "哥舒翰被迫出潼关中伏惨败，潼关失守，唐玄宗仓皇奔蜀",
+      "en": "Geshu Han is ambushed outside Tongguan Pass; the pass falls and Emperor Xuanzong flees to Shu"
     },
     {
       "dynastyKey": "tang",
@@ -1799,8 +1799,8 @@
       ],
       "site": "蓝田关（今陕西蓝田）",
       "siteEn": "Lantian Pass (Lantian, Shaanxi)",
-      "zh": "韩愈因谏迎佛骨贬潮州刺史，风雪逾秦岭蓝田关，赋《左迁至蓝关示侄孙湘》“云横秦岭家何在，雪拥蓝关马不前”",
-      "en": "Exiled to Chaozhou for remonstrating against the Buddha bone relic, Han Yu crosses snowbound Lantian Pass and composes his famous poem"
+      "zh": "韩愈谏迎佛骨贬潮州，风雪逾蓝田关赋“雪拥蓝关马不前”名句",
+      "en": "Exiled to Chaozhou, Han Yu crosses snowbound Lantian Pass and composes his famous quatrain"
     },
     {
       "dynastyKey": "beisong",
@@ -1811,8 +1811,8 @@
       ],
       "site": "雁门关（今山西代县北）",
       "siteEn": "Yanmen Pass (Daixian, Shanxi)",
-      "zh": "雁门之战：代州刺史杨业率数百骑自西陉出雁门关背奇袭，大破辽军十万，阵斩驸马萧咄李",
-      "en": "Battle of Yanmen Pass: Song general Yang Ye leads a flanking cavalry strike through Yanmen Pass, routing 100,000 Liao troops"
+      "zh": "雁门之战：杨业率骑自西陉出雁门关背奇袭，大破辽军斩萧咄李",
+      "en": "Battle of Yanmen Pass: Song general Yang Ye leads a flanking cavalry strike to rout Liao forces"
     },
     {
       "dynastyKey": "ming",
@@ -1823,8 +1823,8 @@
       ],
       "site": "嘉峪关（今甘肃嘉峪关）",
       "siteEn": "Jiayuguan Pass (Gansu)",
-      "zh": "明征虏大将军冯胜平定河西，于祁连山与黑山峡谷最窄处始筑嘉峪关，成明长城西端锁钥",
-      "en": "Ming general Feng Sheng constructs Jiayuguan Pass at the narrowest waist of the Hexi Corridor as the western anchor of the Great Wall"
+      "zh": "明将冯胜平定河西，于祁连峡谷最窄处筑嘉峪关，成明长城西端",
+      "en": "Ming general Feng Sheng builds Jiayuguan Pass in the Hexi Corridor as the Great Wall’s west end"
     },
     {
       "dynastyKey": "ming",
@@ -1835,8 +1835,8 @@
       ],
       "site": "居庸关·紫荆关（今北京昌平/河北易县）",
       "siteEn": "Juyong & Zijing Passes (Beijing / Hebei)",
-      "zh": "土木之变后瓦剌也先逼紫荆关、窥居庸关，于谦檄诸将严守内三关并于北京九门外击退瓦剌大军",
-      "en": "Following the Tumu Crisis, Yu Qian fortifies Juyong and Zijing passes and repels Esen’s Oirat forces outside Beijing"
+      "zh": "土木之变后瓦剌逼紫荆、居庸二关，于谦督军严守内三关退敌",
+      "en": "After the Tumu Crisis, Yu Qian fortifies Juyong and Zijing passes and repels Oirat forces"
     },
     {
       "dynastyKey": "ming",
@@ -1847,8 +1847,8 @@
       ],
       "site": "山海关（今河北秦皇岛）",
       "siteEn": "Shanhai Pass (Qinhuangdao, Hebei)",
-      "zh": "山海关大战：吴三桂于一片石开关纳多尔衮清军入援，联手击败李自成大顺军，清廷旋即定都北京",
-      "en": "Battle of Shanhai Pass: Wu Sangui opens the gates to Dorgon’s Qing cavalry, defeating Li Zicheng’s Shun army"
+      "zh": "山海关大战：吴三桂开关纳多尔衮清军，联手击败李自成大顺军",
+      "en": "Battle of Shanhai Pass: Wu Sangui opens the gates to Dorgon’s Qing army, defeating Li Zicheng"
     }
   ],
   "GUQIN_TRACKS": [
