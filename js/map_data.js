@@ -538,6 +538,16 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "齐东重镇 · 田单火牛阵复国之地"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "楚西境要塞，白起拔郢烧夷陵"
       }
     ]
   },
@@ -850,6 +860,36 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": -214,
         "remark": "桂林郡"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "南郡夷陵县"
+      },
+      {
+        "ancient": "乌程",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "会稽郡乌程县"
+      },
+      {
+        "ancient": "蕲县",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "泗水郡蕲县，大泽乡起义"
       }
     ],
     "phases": [
@@ -1342,6 +1382,68 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": -121,
         "remark": "河西四郡"
+      },
+      {
+        "ancient": "临沅（武陵郡）",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "武陵郡治"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "南郡夷陵，三峡出口"
+      },
+      {
+        "ancient": "宛陵（丹阳郡）",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "丹阳郡治"
+      },
+      {
+        "ancient": "乌程",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "会稽郡乌程"
+      },
+      {
+        "ancient": "潭中",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "郁林郡潭中县"
+      },
+      {
+        "ancient": "儋耳",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "appear": -110,
+        "vanish": -82,
+        "remark": "元封元年置儋耳郡，始元五年罢"
       }
     ],
     "phases": [
@@ -1808,6 +1910,56 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": 73,
         "remark": "班超经营西域驻地"
+      },
+      {
+        "ancient": "临沅（武陵）",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "武陵郡治，五溪蛮门户"
+      },
+      {
+        "ancient": "泉陵（零陵郡）",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "零陵郡治徙泉陵"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "荆州南郡夷陵"
+      },
+      {
+        "ancient": "宛陵",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "丹阳郡治"
+      },
+      {
+        "ancient": "乌程",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "吴郡乌程"
       }
     ],
     "phases": [
@@ -2231,6 +2383,56 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "刘备托孤之地"
+      },
+      {
+        "ancient": "武陵",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "吴荆州武陵郡"
+      },
+      {
+        "ancient": "零陵",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "吴零陵郡"
+      },
+      {
+        "ancient": "西陵（夷陵）",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "章武二年刘备败于夷陵猇亭；吴改名西陵"
+      },
+      {
+        "ancient": "宛陵",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "吴丹阳郡"
+      },
+      {
+        "ancient": "乌程（吴兴郡）",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "宝鼎元年置吴兴郡"
       }
     ],
     "phases": [
@@ -2532,6 +2734,66 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "宁州治所"
+      },
+      {
+        "ancient": "巴陵",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "太康元年置巴陵县，洞庭湖口"
+      },
+      {
+        "ancient": "武陵",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "武陵郡治"
+      },
+      {
+        "ancient": "零陵",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "零陵郡治"
+      },
+      {
+        "ancient": "西陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "西陵督，长江上游锁钥"
+      },
+      {
+        "ancient": "宛陵（宣城郡）",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "太康二年置宣城郡"
+      },
+      {
+        "ancient": "吴兴",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "吴兴郡治"
       }
     ],
     "phases": [
@@ -3005,6 +3267,106 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "西凉初都；366年乐僔开凿莫高窟"
+      },
+      {
+        "ancient": "巴陵",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "洞庭湖口，湘州北门"
+      },
+      {
+        "ancient": "武陵",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "陶渊明《桃花源记》所称武陵"
+      },
+      {
+        "ancient": "零陵",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "湘州零陵郡"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "宜都郡夷陵"
+      },
+      {
+        "ancient": "宣城",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "宣城郡治"
+      },
+      {
+        "ancient": "吴兴",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "吴兴郡治乌程"
+      },
+      {
+        "ancient": "姑孰",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "桓温镇姑孰"
+      },
+      {
+        "ancient": "赣（南康郡）",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "永和五年南康郡徙治赣县"
+      },
+      {
+        "ancient": "庐陵（石阳）",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "庐陵郡治石阳"
+      },
+      {
+        "ancient": "义安（海阳）",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "义熙九年置义安郡"
       }
     ],
     "phases": [
@@ -3485,6 +3847,106 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "东扬州治所"
+      },
+      {
+        "ancient": "巴陵（巴陵郡）",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "刘宋元嘉中置巴陵郡"
+      },
+      {
+        "ancient": "武陵",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "武陵郡治"
+      },
+      {
+        "ancient": "零陵",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "零陵郡治"
+      },
+      {
+        "ancient": "夷陵",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "宜都郡治"
+      },
+      {
+        "ancient": "宣城",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "谢朓守宣城，建高斋"
+      },
+      {
+        "ancient": "吴兴",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "吴兴郡治"
+      },
+      {
+        "ancient": "姑孰",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "建康西南门户"
+      },
+      {
+        "ancient": "南康",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "南康郡治"
+      },
+      {
+        "ancient": "庐陵",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "庐陵郡治"
+      },
+      {
+        "ancient": "义安",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "义安郡治海阳"
       }
     ],
     "phases": [
@@ -3844,6 +4306,126 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "609年炀帝西巡万国博览会"
+      },
+      {
+        "ancient": "岳州（巴陵）",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "开皇中置巴州，寻改岳州"
+      },
+      {
+        "ancient": "朗州（武陵）",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "开皇九年置朗州"
+      },
+      {
+        "ancient": "衡州",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "开皇九年置衡州，治衡阳"
+      },
+      {
+        "ancient": "永州（零陵）",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "开皇九年置永州"
+      },
+      {
+        "ancient": "峡州（夷陵）",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "开皇七年置峡州"
+      },
+      {
+        "ancient": "宣州",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "开皇九年置宣州"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "开皇九年置滁州"
+      },
+      {
+        "ancient": "湖州",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "仁寿二年置湖州，以滨太湖得名"
+      },
+      {
+        "ancient": "虔州",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "开皇九年置虔州"
+      },
+      {
+        "ancient": "吉州",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "开皇十年置吉州"
+      },
+      {
+        "ancient": "潮州",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "开皇十一年置潮州"
+      },
+      {
+        "ancient": "循州",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "开皇十年置循州，治归善"
       }
     ],
     "phases": [
@@ -4584,6 +5166,176 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": 738,
         "remark": "南诏都城，738 年皮逻阁统一六诏"
+      },
+      {
+        "ancient": "岳州",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "开元四年张说谪守岳州，始建岳阳楼"
+      },
+      {
+        "ancient": "朗州",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "刘禹锡贬朗州司马十年，作《竹枝词》"
+      },
+      {
+        "ancient": "衡州",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "回雁峰下，南岳衡山之南"
+      },
+      {
+        "ancient": "永州",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "柳宗元贬永州司马十年，作《永州八记》"
+      },
+      {
+        "ancient": "峡州（夷陵）",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "三峡门户，入蜀水路起点"
+      },
+      {
+        "ancient": "宣州",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "李白屡登敬亭山、谢朓楼；宣州纸笔"
+      },
+      {
+        "ancient": "池州（秋浦）",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "杜牧刺池州，《清明》杏花村"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "韦应物《滁州西涧》"
+      },
+      {
+        "ancient": "湖州",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "颜真卿守湖州，陆羽著《茶经》"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "元和四年置宿州，汴河要冲"
+      },
+      {
+        "ancient": "当涂",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "李白终老当涂，葬青山"
+      },
+      {
+        "ancient": "虔州",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "赣江上游，大庾岭北门"
+      },
+      {
+        "ancient": "吉州（庐陵）",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "江南西道吉州"
+      },
+      {
+        "ancient": "潮州",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "元和十四年韩愈贬潮州刺史，驱鳄兴学"
+      },
+      {
+        "ancient": "循州",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "岭南循州，罗浮山麓"
+      },
+      {
+        "ancient": "柳州",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "元和十年柳宗元任柳州刺史，终于柳州"
+      },
+      {
+        "ancient": "儋州",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "武德五年置儋州"
       }
     ],
     "phases": [
@@ -5038,6 +5790,166 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "937年段思平建大理国"
+      },
+      {
+        "ancient": "岳州",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "楚马殷据有，洞庭水军要津"
+      },
+      {
+        "ancient": "朗州",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "周行逢据朗州，湖南节度"
+      },
+      {
+        "ancient": "衡州",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "楚衡州"
+      },
+      {
+        "ancient": "永州",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "楚永州"
+      },
+      {
+        "ancient": "峡州",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "荆南峡州"
+      },
+      {
+        "ancient": "宣州",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "南唐宣州"
+      },
+      {
+        "ancient": "池州",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "南唐池州"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "显德三年赵匡胤破南唐于清流关"
+      },
+      {
+        "ancient": "湖州",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "吴越湖州"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "汴河宿州"
+      },
+      {
+        "ancient": "当涂",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "南唐当涂"
+      },
+      {
+        "ancient": "虔州",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "南唐虔州"
+      },
+      {
+        "ancient": "吉州",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "南唐吉州"
+      },
+      {
+        "ancient": "潮州",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "南汉潮州"
+      },
+      {
+        "ancient": "祯州",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "南汉乾亨元年置祯州"
+      },
+      {
+        "ancient": "柳州",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "南汉柳州"
       }
     ],
     "phases": [
@@ -5669,6 +6581,176 @@ window.DYNASTY_DATA = [
         "appear": 1104,
         "align": "l",
         "remark": "故青唐城，1104 年收复置陇右都护府"
+      },
+      {
+        "ancient": "岳州",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "庆历五年滕子京重修岳阳楼，范仲淹作《岳阳楼记》"
+      },
+      {
+        "ancient": "鼎州（朗州）",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "大中祥符五年改朗州为鼎州"
+      },
+      {
+        "ancient": "衡州",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "荆湖南路；石鼓书院"
+      },
+      {
+        "ancient": "永州",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "潇湘二水汇流"
+      },
+      {
+        "ancient": "峡州",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "景祐三年欧阳修贬夷陵令"
+      },
+      {
+        "ancient": "宣州",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "江南东路宣州"
+      },
+      {
+        "ancient": "池州",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "江南东路池州"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "庆历六年欧阳修贬知滁州，作《醉翁亭记》"
+      },
+      {
+        "ancient": "湖州",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "元丰二年乌台诗案起于湖州任上"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "汴河漕运重镇"
+      },
+      {
+        "ancient": "太平州",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "太平兴国二年置太平州"
+      },
+      {
+        "ancient": "虔州",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "八境台；赣江漕运枢纽"
+      },
+      {
+        "ancient": "吉州",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "欧阳修故里永丰；白鹭洲"
+      },
+      {
+        "ancient": "潮州",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "广南东路潮州"
+      },
+      {
+        "ancient": "惠州",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "绍圣元年苏轼贬惠州，“日啖荔枝三百颗”"
+      },
+      {
+        "ancient": "柳州",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "广南西路柳州"
+      },
+      {
+        "ancient": "昌化军（儋州）",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "绍圣四年苏轼贬儋州，居桄榔庵、讲学载酒堂"
       }
     ],
     "phases": [
@@ -6181,6 +7263,176 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "vanish": 1253,
         "remark": "大理国都"
+      },
+      {
+        "ancient": "岳州",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "荆湖北路，洞庭锁钥"
+      },
+      {
+        "ancient": "常德府",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "乾道元年升常德府，始得今名"
+      },
+      {
+        "ancient": "衡州",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "湘南重镇"
+      },
+      {
+        "ancient": "永州",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "荆湖南路永州"
+      },
+      {
+        "ancient": "峡州",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "荆湖北路峡州"
+      },
+      {
+        "ancient": "宁国府",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "乾道二年升宁国府"
+      },
+      {
+        "ancient": "池州",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "长江防线池州"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "淮南东路滁州"
+      },
+      {
+        "ancient": "湖州",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "两浙西路湖州"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "隆兴元年符离之战"
+      },
+      {
+        "ancient": "太平州",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "绍兴三十一年虞允文采石大捷"
+      },
+      {
+        "ancient": "赣州",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "绍兴二十三年改虔州为赣州；辛弃疾郁孤台词"
+      },
+      {
+        "ancient": "吉州",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "文天祥故里，惶恐滩头"
+      },
+      {
+        "ancient": "潮州",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "韩江流域中心"
+      },
+      {
+        "ancient": "惠州",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "广南东路惠州"
+      },
+      {
+        "ancient": "柳州",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "柳江中游"
+      },
+      {
+        "ancient": "昌化军",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "琼管昌化军"
       }
     ],
     "phases": [
@@ -6547,6 +7799,176 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "天山北路重镇"
+      },
+      {
+        "ancient": "岳州路",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "岳州路总管府"
+      },
+      {
+        "ancient": "常德路",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "常德路总管府"
+      },
+      {
+        "ancient": "衡州路",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "衡州路总管府"
+      },
+      {
+        "ancient": "永州路",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "永州路总管府"
+      },
+      {
+        "ancient": "峡州路",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "峡州路总管府"
+      },
+      {
+        "ancient": "宁国路",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "宁国路总管府"
+      },
+      {
+        "ancient": "池州路",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "池州路总管府"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "扬州路滁州"
+      },
+      {
+        "ancient": "湖州路",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "湖州路总管府"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "归德府宿州"
+      },
+      {
+        "ancient": "太平路",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "太平路总管府"
+      },
+      {
+        "ancient": "赣州路",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "赣州路总管府"
+      },
+      {
+        "ancient": "吉安路",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "元贞元年改吉安路，始得今名"
+      },
+      {
+        "ancient": "潮州路",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "潮州路总管府"
+      },
+      {
+        "ancient": "惠州路",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "惠州路总管府"
+      },
+      {
+        "ancient": "柳州路",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "柳州路总管府"
+      },
+      {
+        "ancient": "南宁军",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "元改昌化军为南宁军"
       }
     ],
     "phases": [
@@ -7127,6 +8549,176 @@ window.DYNASTY_DATA = [
         "appear": 1406,
         "vanish": 1513,
         "remark": "关西七卫之首"
+      },
+      {
+        "ancient": "岳州府",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "岳州府治巴陵"
+      },
+      {
+        "ancient": "常德府",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "常德府治武陵"
+      },
+      {
+        "ancient": "衡州府",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "王夫之故里"
+      },
+      {
+        "ancient": "永州府",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "永州府治零陵"
+      },
+      {
+        "ancient": "夷陵州",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "荆州府夷陵州"
+      },
+      {
+        "ancient": "宁国府",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "宁国府治宣城"
+      },
+      {
+        "ancient": "池州府",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "池州府治贵池"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "直隶滁州；明太祖发迹地"
+      },
+      {
+        "ancient": "湖州府",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "湖丝名甲天下"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "凤阳府宿州"
+      },
+      {
+        "ancient": "太平府",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "太平府治当涂"
+      },
+      {
+        "ancient": "赣州府",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "正德间王阳明巡抚南赣"
+      },
+      {
+        "ancient": "吉安府",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "解缙、杨士奇庐陵文脉"
+      },
+      {
+        "ancient": "潮州府",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "潮州府治海阳"
+      },
+      {
+        "ancient": "惠州府",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "惠州府治归善"
+      },
+      {
+        "ancient": "柳州府",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "柳州府治马平"
+      },
+      {
+        "ancient": "儋州",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "琼州府儋州"
       }
     ],
     "phases": [
@@ -7808,6 +9400,176 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "吉林将军驻地"
+      },
+      {
+        "ancient": "岳州府",
+        "modern": "岳阳",
+        "coord": [
+          113.129,
+          29.357
+        ],
+        "tier": 2,
+        "remark": "岳州府；同治间重修岳阳楼"
+      },
+      {
+        "ancient": "常德府",
+        "modern": "常德",
+        "coord": [
+          111.698,
+          29.032
+        ],
+        "tier": 2,
+        "remark": "湘西北门户"
+      },
+      {
+        "ancient": "衡州府",
+        "modern": "衡阳",
+        "coord": [
+          112.572,
+          26.894
+        ],
+        "tier": 2,
+        "remark": "衡州府治衡阳"
+      },
+      {
+        "ancient": "永州府",
+        "modern": "永州",
+        "coord": [
+          111.613,
+          26.421
+        ],
+        "tier": 2,
+        "remark": "永州府治零陵"
+      },
+      {
+        "ancient": "宜昌府",
+        "modern": "宜昌",
+        "coord": [
+          111.286,
+          30.692
+        ],
+        "tier": 2,
+        "remark": "雍正十三年升宜昌府；光绪二年开埠"
+      },
+      {
+        "ancient": "宁国府",
+        "modern": "宣城",
+        "coord": [
+          118.759,
+          30.94
+        ],
+        "tier": 2,
+        "remark": "宁国府治宣城"
+      },
+      {
+        "ancient": "池州府",
+        "modern": "池州",
+        "coord": [
+          117.491,
+          30.665
+        ],
+        "tier": 2,
+        "remark": "池州府治贵池"
+      },
+      {
+        "ancient": "滁州",
+        "modern": "滁州",
+        "coord": [
+          118.317,
+          32.301
+        ],
+        "tier": 2,
+        "remark": "直隶滁州"
+      },
+      {
+        "ancient": "湖州府",
+        "modern": "湖州",
+        "coord": [
+          120.087,
+          30.894
+        ],
+        "tier": 2,
+        "remark": "湖州府治乌程"
+      },
+      {
+        "ancient": "宿州",
+        "modern": "宿州",
+        "coord": [
+          116.964,
+          33.647
+        ],
+        "tier": 2,
+        "remark": "凤阳府宿州"
+      },
+      {
+        "ancient": "太平府",
+        "modern": "马鞍山当涂",
+        "coord": [
+          118.497,
+          31.571
+        ],
+        "tier": 2,
+        "remark": "太平府治当涂"
+      },
+      {
+        "ancient": "赣州府",
+        "modern": "赣州",
+        "coord": [
+          114.935,
+          25.831
+        ],
+        "tier": 2,
+        "remark": "赣州府治赣县"
+      },
+      {
+        "ancient": "吉安府",
+        "modern": "吉安",
+        "coord": [
+          114.993,
+          27.114
+        ],
+        "tier": 2,
+        "remark": "吉安府治庐陵"
+      },
+      {
+        "ancient": "潮州府",
+        "modern": "潮州",
+        "coord": [
+          116.623,
+          23.657
+        ],
+        "tier": 2,
+        "remark": "潮州府；咸丰间汕头开埠"
+      },
+      {
+        "ancient": "惠州府",
+        "modern": "惠州",
+        "coord": [
+          114.416,
+          23.112
+        ],
+        "tier": 2,
+        "remark": "惠州府治归善"
+      },
+      {
+        "ancient": "柳州府",
+        "modern": "柳州",
+        "coord": [
+          109.416,
+          24.326
+        ],
+        "tier": 2,
+        "remark": "柳州府治马平"
+      },
+      {
+        "ancient": "儋州",
+        "modern": "儋州",
+        "coord": [
+          109.577,
+          19.521
+        ],
+        "tier": 2,
+        "remark": "琼州府儋州"
       }
     ],
     "phases": [
