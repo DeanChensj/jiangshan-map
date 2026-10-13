@@ -184,6 +184,15 @@ function main() {
         enLocale.milestones && enLocale.milestones[mk],
         `Missing English milestone translation for ${mk} (${m.headline})`
       );
+      assert(
+        m.headline.length >= 8 && m.headline.length <= 32,
+        `Milestone ${mk} zh headline length ${m.headline.length} outside [8, 32]: ${m.headline}`
+      );
+      const enHeadline = enLocale.milestones[mk][0] || '';
+      assert(
+        enHeadline.length >= 24 && enHeadline.length <= 96,
+        `Milestone ${mk} en headline length ${enHeadline.length} outside [24, 96]: ${enHeadline}`
+      );
     }
     assert(enLocale.dynasties && enLocale.dynasties[d.key], `Missing English translation for dynasty ${d.key}`);
   }
@@ -841,11 +850,13 @@ function main() {
     );
     assert(
       typeof lm.zh === 'string' &&
-        lm.zh.trim().length >= 5 &&
+        lm.zh.trim().length >= 10 &&
+        lm.zh.trim().length <= 34 &&
         typeof lm.en === 'string' &&
-        lm.en.trim().length >= 5 &&
+        lm.en.trim().length >= 24 &&
+        lm.en.trim().length <= 96 &&
         !/[\u4e00-\u9fa5]/.test(lm.en),
-      `Invalid bilingual text in landmark event: ${JSON.stringify(lm)}`
+      `Invalid or out-of-bounds bilingual text length in landmark event: ${JSON.stringify(lm)}`
     );
     assert(
       typeof lm.site === 'string' &&
