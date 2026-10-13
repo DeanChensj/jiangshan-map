@@ -512,8 +512,12 @@ window.EN_LOCALE = {
       "An Lushan and Shi Siming rebel at Fanyang, sparking the An–Shi Rebellion",
       "Fanyang (Youzhou)"
     ],
+    "tang:757": [
+      "Guo Ziyi recovers Chang'an and Luoyang with Uyghur cavalry; An Qingxu falls back to Yecheng",
+      "Chang'an · Luoyang"
+    ],
     "tang:763": [
-      "An Lushan Rebellion ends; Tibetan troops briefly occupy Chang'an",
+      "An–Shi Rebellion ends; Hebei warlords keep their garrisons; Tibet briefly seizes Chang'an",
       "Chang'an"
     ],
     "tang:790": [
@@ -4156,7 +4160,7 @@ window.EN_LOCALE = {
     "937 — 945 · 李昪代吴建南唐：北方后晋与契丹并立，南方南唐、闽、吴越争衡": "937–945 · Li Bian Founds Southern Tang; Later Jin, Khitan, Min & Wuyue",
     "958 — 959 · 周世宗平淮南：南唐献江北淮南十四州，后周与南唐以长江为界": "958–959 · Emperor Shizong Conquers Huainan: Southern Tang Cedes 14 Prefectures North of the Yangtze",
     "959 — 960 · 周世宗北伐幽燕：收复瀛、莫、易三州与瓦桥三关": "959–960 · Emperor Shizong's Northern Expedition: Recovery of Ying, Mo & Yi Prefectures and Three Passes",
-    "755 — 764 · 安史之乱爆发：范阳起兵两京一度陷落，唐廷平叛期间仍控河西走廊与安西北庭": "755–764 · An Lushan Rebellion: Rebellion rocks the capitals while Tang still holds the Hexi Corridor and Anxi/Beiting Protectorates",
+    "763 — 764 · 安史之乱平定：史朝义败亡，降将田承嗣、李怀仙、李宝臣分领魏博、幽州、成德，藩镇割据肇端": "763–764 · Rebellion Ends: Shi Chaoyi falls; surrendered generals Tian Chengsi, Li Huaixian and Li Baochen keep Weibo, Youzhou and Chengde, opening the age of regional warlords",
     "764 — 790 · 吐蕃陷河陇与孤悬西域：凉州失守河西走廊被截断，安西、北庭孤悬绝域坚守": "764–790 · Fall of Hexi & Isolated Protectorates: Tubo captures Liangzhou and severs the Hexi Corridor; Anxi and Beiting hold out in isolation",
     "1644 — 1661 · 清军入关与南明抗清：清廷定都北京经略中原，南明据南方抗清，台湾尚为荷占": "1644–1661 · Qing Entry & Southern Ming Resistance: Qing establishes rule from Beijing while Southern Ming resists in the south and Taiwan remains Dutch-ruled",
     "1661 — 1681 · 郑成功收复台湾与三藩之乱：明郑驱逐荷兰殖民者设承天府，吴三桂等三藩于南方举兵": "1661–1681 · Koxinga Recovers Taiwan & Revolt of the Three Feudatories: Kingdom of Tungning established in Taiwan; Three Feudatories rebel in the south",
@@ -4232,6 +4236,10 @@ window.EN_LOCALE = {
     "炀帝三征高句丽引发天下大乱：瓦岗李密围逼东都洛阳，窦建德据河北，杜伏威控江淮，萧铣起兵荆襄，薛举据陇西，617 年李渊自太原起兵入据长安。": "Emperor Yang’s three Goguryeo campaigns sparked nationwide rebellions: Li Mi’s Wagang Army besieged Luoyang, Dou Jiande held Hebei, Du Fuwei controlled Jianghuai, Xiao Xian rose in Jingxiang, Xue Ju held Longxi, and in 617 Li Yuan marched from Taiyuan to capture Chang’an.",
     "郑（王世充）": "Zheng (Wang Shichong)",
     "夏（窦建德）": "Xia (Dou Jiande)",
+    "大燕（安禄山）": "Yan (An Lushan)",
+    "大燕（史思明）": "Yan (Shi Siming)",
+    "755 — 757 · 安史之乱爆发：安禄山据河北、河南称帝大燕，两京相继陷落，玄宗幸蜀、肃宗灵武即位": "755–757 · An Lushan Rebellion: An Lushan proclaims the Yan state over Hebei and Henan; both capitals fall, Xuanzong flees to Shu and Suzong is enthroned at Lingwu",
+    "757 — 763 · 两京光复与史思明再起：郭子仪借回纥兵收复长安、洛阳，史思明据河北再叛并一度复陷洛阳": "757–763 · Capitals Recovered, Shi Siming Rises: Guo Ziyi retakes Chang'an and Luoyang with Uyghur help; Shi Siming rebels again from Hebei and briefly retakes Luoyang",
     "梁（萧铣）": "Liang (Xiao Xian)",
     "吴（李子通·杜伏威）": "Wu (Li Zitong & Du Fuwei)",
     "618—621 年 · 武德建唐与统一战争初期": "618–621 CE · Founding of Tang & Early Reunification Wars",

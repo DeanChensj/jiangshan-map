@@ -532,6 +532,42 @@
     },
     {
       "dynastyKey": "tang",
+      "year": 756,
+      "coord": [
+        114.57,
+        38.14
+      ],
+      "site": "常山（真定）",
+      "siteEn": "Changshan (Zhengding)",
+      "zh": "颜杲卿、颜真卿举河北十七郡抗燕；常山陷落颜氏殉国，《祭侄文稿》所哀",
+      "en": "Yan Gaoqing and Yan Zhenqing raise 17 Hebei commanderies; Changshan falls, the Yan clan dies"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 757,
+      "coord": [
+        115.65,
+        34.41
+      ],
+      "site": "睢阳（商丘）",
+      "siteEn": "Suiyang (Shangqiu)",
+      "zh": "睢阳之战：张巡、许远数千人死守十月，屏障江淮财赋，城破殉国",
+      "en": "Siege of Suiyang: Zhang Xun and Xu Yuan hold out ten months, shielding the Jianghuai tax base"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 759,
+      "coord": [
+        114.35,
+        36.32
+      ],
+      "site": "邺城（相州）",
+      "siteEn": "Yecheng (Xiangzhou)",
+      "zh": "邺城之战：九节度围安庆绪，史思明来援唐军溃散，遂杀安庆绪称帝再陷洛阳",
+      "en": "Battle of Yecheng: Shi Siming routs nine Tang governors, kills An Qingxu, takes the Yan throne"
+    },
+    {
+      "dynastyKey": "tang",
       "year": 710,
       "coord": [
         108.94,
