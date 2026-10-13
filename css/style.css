@@ -651,8 +651,8 @@ h2 {
 /* First-Level Macro Administrative Regions (道/州/路/行省/布政使司/省) */
 .region-shape-casing {
   fill: none;
-  stroke: rgba(250, 244, 232, 0.55);
-  stroke-width: 2.2;
+  stroke: rgba(250, 244, 232, 0.68);
+  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -661,9 +661,9 @@ h2 {
 
 .region-shape {
   fill: none;
-  stroke: rgba(110, 34, 16, 0.72);
-  stroke-width: 1.15;
-  stroke-dasharray: 5 3;
+  stroke: rgba(104, 28, 12, 0.88);
+  stroke-width: 1.45;
+  stroke-dasharray: 7 3;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -3877,14 +3877,14 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   .region-shape-casing {
-    stroke: rgba(250, 244, 232, 0.52);
-    stroke-width: 1.8;
+    stroke: rgba(250, 244, 232, 0.64);
+    stroke-width: 2.5;
   }
 
   .region-shape {
-    stroke: rgba(110, 34, 16, 0.76);
-    stroke-width: 0.96;
-    stroke-dasharray: 4.2 2.4;
+    stroke: rgba(104, 28, 12, 0.86);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 2.6;
   }
 
   .province-shape,
