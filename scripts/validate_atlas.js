@@ -1154,6 +1154,48 @@ function main() {
     'Expected _syncTracedPrefecture to clear .is-traced when activeTrace is null'
   );
 
+  // 6) Genealogy heading "今 X" must assert identity, never a far-away neighbour (regression: 岳阳楼 -> "今赤壁")
+  const nearestAcrossDynasties = (coord) => {
+    let best = null;
+    for (const d of dynasties) {
+      for (const s of d.settlements || []) {
+        const kmv = ctrl.projector.greatCircleKm(coord, s.coord);
+        if (kmv < 160 && (!best || kmv < best.km)) best = { s, km: kmv };
+      }
+    }
+    return best;
+  };
+  const yueyang = loreData.PLACE_GAZETTEER.find((g) => g.name === '岳阳楼');
+  const yueyangNear = nearestAcrossDynasties(yueyang.coord);
+  assert(
+    yueyangNear && yueyangNear.km > 25,
+    'Test precondition: 岳阳楼 must have no settlement within 25 km so the far-neighbour path is exercised'
+  );
+  assert.strictEqual(
+    ctrl._resolveModernIdentity(yueyang.coord[0], yueyang.coord[1], '岳阳楼', '湖南省', yueyangNear),
+    '岳阳',
+    'Gazetteer landmark must use its own modern field (province prefix stripped), not the nearest settlement'
+  );
+  assert.strictEqual(
+    ctrl._resolveModernIdentity(yueyang.coord[0] + 1.2, yueyang.coord[1] + 0.9, '', '湖北省', { s: { modern: '赤壁' }, km: 87 }),
+    '',
+    'A settlement 87 km away must not be asserted as "今赤壁"'
+  );
+  assert.strictEqual(
+    ctrl._resolveModernIdentity(0, 0, '', '陕西省', { s: { modern: '西安' }, km: 4 }),
+    '西安',
+    'A settlement within 25 km is a valid identity'
+  );
+  for (const g of loreData.PLACE_GAZETTEER) {
+    const near = nearestAcrossDynasties(g.coord);
+    const identity = ctrl._resolveModernIdentity(g.coord[0], g.coord[1], g.name, '', near);
+    const gm = String(g.modern || '');
+    assert(
+      !identity || gm.includes(identity) || identity.includes(gm.slice(-2)),
+      `Heading identity for ${g.name} must derive from its gazetteer modern "${gm}", got "${identity}"`
+    );
+  }
+
   // CUJ 17: Historical coups & political turning points across dynasties discoverable via Quick Search
   const expectedCoups = [
     ['沙丘政变', 'qin', -210],
