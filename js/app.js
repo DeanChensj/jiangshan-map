@@ -1039,6 +1039,11 @@
       }
       if (this.challenge) {
         this.grpSettlements.classList.add('is-hidden');
+        const chkM = this._id('chk-milestones');
+        this.grpMilestones.classList.toggle(
+          'is-hidden',
+          !this.challenge.answered || Boolean(chkM && !chkM.checked)
+        );
         if (!this.challenge.answered && this.challenge.index < this.challenge.deck.length) {
           this.presentChallengeRound();
         }
@@ -4350,16 +4355,100 @@
     }
 
     // ---------------- Dual-Mode Challenge ----------------
+    _stripPromptParenthetical(name) {
+      return String(name || '')
+        .replace(/（[^）]+）|\([^)]+\)/g, '')
+        .trim();
+    }
+
+    _sanitizeChallengeClue(text, settlement, displayAncient) {
+      if (!text) return '';
+      let out = String(text).replace(/（今[^）]+）|\(Now [^)]+\)/gi, '');
+      if (this.locale === 'en') {
+        const modEn = settlement.modernEn || this.trModernCity(settlement.modern || '');
+        const cleanAncEn = String(displayAncient || '').toLowerCase();
+        for (const rawPart of String(modEn).split(/[,/·]/)) {
+          const part = rawPart.replace(/\b(NW|NE|SW|SE|N|S|E|W)\b/g, '').trim();
+          if (part.length >= 3 && !cleanAncEn.includes(part.toLowerCase())) {
+            const escaped = part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            out = out.replace(new RegExp(`\\b${escaped}\\b`, 'gi'), 'this site');
+          }
+        }
+        return out;
+      }
+
+      const ancCore = String(displayAncient || '').trim();
+      const tokens = new Set();
+      const provRe =
+        /^(?:黑龙江|内蒙古|新疆|广西|宁夏|西藏|北京|天津|上海|重庆|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)/;
+      const dirRe = /(?:东北|西北|东南|西南|东|西|南|北|境内|一带|附近)$/;
+      for (const rawPart of String(settlement.modern || '').split(/[·/、，,\s（）()]+/)) {
+        const p0 = rawPart.replace(/^今/, '').trim();
+        if (!p0) continue;
+        tokens.add(p0);
+        const pNoDir = p0.replace(dirRe, '').trim();
+        if (pNoDir.length >= 2) tokens.add(pNoDir);
+        const pNoProv = pNoDir.replace(provRe, '').trim();
+        if (pNoProv.length >= 2) {
+          tokens.add(pNoProv);
+          if (pNoProv.length === 4) {
+            tokens.add(pNoProv.slice(0, 2));
+            tokens.add(pNoProv.slice(2, 4));
+          }
+        }
+      }
+      const sortedTokens = Array.from(tokens)
+        .filter(
+          (tok) =>
+            tok.length >= 2 &&
+            tok !== ancCore &&
+            !ancCore.includes(tok) &&
+            !tok.includes(ancCore)
+        )
+        .sort((a, b) => b.length - a.length);
+      for (const tok of sortedTokens) {
+        out = out.replaceAll(tok, ancCore || '此地');
+      }
+      return out;
+    }
+
     _buildChallengeDeck() {
       const deck = [];
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
         for (const s of d.settlements || []) {
-          if (!s.modern) continue;
-          const weight = s.ancient !== s.modern ? 3 : 1;
+          if (!s.modern || !Array.isArray(s.coord)) continue;
+          const hasEvents =
+            this._collectPlaceEventsForDynasty(d, s.coord[0], s.coord[1], { s, km: 0 }).length > 0;
+          if (!s.isCapital && !s.remark && !hasEvents) continue;
+          const weight = (s.ancient !== s.modern ? 3 : 1) + (hasEvents ? 1 : 0);
           for (let k = 0; k < weight; k++) {
             deck.push({ dynasty: d, settlement: s });
           }
+        }
+      }
+      for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
+        if (!p || !Array.isArray(p.coord)) continue;
+        const focusY = p.focusYear !== undefined ? p.focusYear : p.appear || -221;
+        const dIdx = this._findDynastyIndex(focusY);
+        const d = this.dynasties[dIdx] || this.dynasties[0];
+        if (!d || d.key === 'prc') continue;
+        const passSettlement = {
+          ancient: p.ancientZh,
+          ancientEn: p.ancientEn,
+          modern: p.modernZh,
+          modernEn: p.modernEn,
+          coord: p.coord,
+          appear: p.appear,
+          vanish: p.vanish,
+          focusYear: focusY,
+          isPass: true,
+          passKey: p.key,
+          remark: `${p.rangeZh} · ${p.chokepointZh}`,
+          remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
+        };
+        for (let k = 0; k < 4; k++) {
+          deck.push({ dynasty: d, settlement: passSettlement });
         }
       }
       const chosen = [];
@@ -4368,7 +4457,11 @@
         const idx = Math.floor(Math.random() * deck.length);
         const pick = deck.splice(idx, 1)[0];
         const uid = `${pick.dynasty.key}:${pick.settlement.ancient}`;
-        if (!seen.has(uid)) {
+        if (seen.has(uid)) continue;
+        const tooClose = chosen.some(
+          (c) => this.projector.greatCircleKm(c.settlement.coord, pick.settlement.coord) < 35
+        );
+        if (!tooClose) {
           seen.add(uid);
           chosen.push(pick);
         }
@@ -4386,7 +4479,10 @@
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.add('has-active-challenge');
+      if (vf) {
+        vf.classList.add('has-active-challenge');
+        vf.classList.remove('is-challenge-answered');
+      }
       this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
@@ -4403,6 +4499,7 @@
       if (lblChal) lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
+      if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
       this.presentChallengeRound();
     }
@@ -4412,7 +4509,7 @@
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('has-active-challenge');
+      if (vf) vf.classList.remove('has-active-challenge', 'is-challenge-answered');
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
@@ -4420,7 +4517,15 @@
       const lblChal = this._id('lbl-challenge') || actChal;
       if (lblChal) lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
-      this.grpSettlements.classList.toggle('is-hidden', !this._id('chk-settlements').checked);
+      const chkSettle = this._id('chk-settlements');
+      this.grpSettlements.classList.toggle('is-hidden', Boolean(chkSettle && !chkSettle.checked));
+      const chkMilestones = this._id('chk-milestones');
+      if (this.grpMilestones) {
+        this.grpMilestones.classList.toggle(
+          'is-hidden',
+          Boolean(chkMilestones && !chkMilestones.checked)
+        );
+      }
       if (!keepPaneState) {
         this._syncImmersivePaneState();
       }
@@ -4432,8 +4537,22 @@
       this.grpChallenge.innerHTML = '';
       q.answered = false;
       q.pendingGuess = null;
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('is-challenge-answered');
+      if (this.hoverTip) {
+        this.hoverTip.classList.add('is-hidden');
+        this.hoverTip.classList.remove('is-interactive');
+      }
+      const defCam = this._getDefaultCamera();
+      if (
+        this.camera.w < defCam.w * 0.92 ||
+        Math.hypot(this.camera.x - defCam.x, this.camera.y - defCam.y) > 40
+      ) {
+        this.resetCamera();
+      }
       const cur = q.deck[q.index];
-      let roundYear = cur.dynasty.focusYear;
+      let roundYear =
+        cur.settlement.focusYear !== undefined ? cur.settlement.focusYear : cur.dynasty.focusYear;
       if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
         roundYear = cur.settlement.appear;
       }
@@ -4442,6 +4561,7 @@
       }
       this.jumpToYear(this._clampYearToDynasty(cur.dynasty, roundYear));
       this.grpSettlements.classList.add('is-hidden');
+      if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
 
       this._id('challenge-step').textContent =
         this.locale === 'en'
@@ -4450,15 +4570,29 @@
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
       this._id('challenge-result').classList.add('is-hidden');
 
-      const baseClue = cur.settlement.remark
-        ? this.trTerm(cur.settlement.remark)
-        : cur.settlement.isCapital
-          ? this.locale === 'en'
-            ? 'Imperial / Dynastic Capital'
-            : '当朝都城'
-          : this.locale === 'en'
-            ? 'Strategic Prefecture & Hub'
-            : '当朝重镇州府';
+      const displayAncientZh = this._stripPromptParenthetical(cur.settlement.ancient);
+      const rawAncientEn = cur.settlement.ancientEn
+        ? cur.settlement.ancientEn
+        : cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
+          ? this.trModernCity(displayAncientZh)
+          : this.trTerm(displayAncientZh);
+      const displayAncientEn = this._stripPromptParenthetical(rawAncientEn);
+      const displayTarget = this.locale === 'en' ? displayAncientEn : displayAncientZh;
+
+      const rawBaseClue = cur.settlement.isPass
+        ? this.locale === 'en'
+          ? cur.settlement.remarkEn || cur.settlement.remark
+          : cur.settlement.remark
+        : cur.settlement.remark
+          ? this.trTerm(cur.settlement.remark)
+          : cur.settlement.isCapital
+            ? this.locale === 'en'
+              ? 'Imperial / Dynastic Capital'
+              : '当朝都城'
+            : this.locale === 'en'
+              ? 'Strategic Prefecture & Hub'
+              : '当朝重镇州府';
+      const baseClue = this._sanitizeChallengeClue(rawBaseClue, cur.settlement, displayTarget);
 
       const placeEvents = this._collectPlaceEventsForDynasty(
         cur.dynasty,
@@ -4467,32 +4601,30 @@
         { s: cur.settlement, km: 0 }
       );
       let extraEventStr = '';
-      if (placeEvents.length) {
+      if (placeEvents.length && !cur.settlement.isPass) {
         const ev = placeEvents[0];
         const yrLbl =
           this.locale === 'en'
             ? this.formatYear(ev.year)
             : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
-        let cleanEv = ev.text.replace(/（今[^）]+）|\(Now [^)]+\)/gi, '');
-        if (cur.settlement.modern && cur.settlement.modern !== cur.settlement.ancient) {
-          for (const modPart of cur.settlement.modern.split(/[·/、]/)) {
-            if (modPart && modPart.length >= 2 && modPart !== cur.settlement.ancient) {
-              cleanEv = cleanEv.replaceAll(modPart, cur.settlement.ancient);
-            }
-          }
-        }
+        const cleanEv = this._sanitizeChallengeClue(ev.text, cur.settlement, displayTarget);
         extraEventStr = ` · ${yrLbl}：${cleanEv}`;
       }
 
-      const clueTag = this.locale === 'en' ? 'Historical Clue' : '当朝掌故';
-      const targetCityEn =
-        cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
-          ? this.trModernCity(cur.settlement.ancient)
-          : this.trTerm(cur.settlement.ancient);
-      const promptHtml =
-        this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${targetCityEn}”</b>`
-          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${cur.settlement.ancient}」</b>`;
+      const clueTag = cur.settlement.isPass
+        ? this.locale === 'en'
+          ? 'Strategic Pass'
+          : '雄关形胜'
+        : this.locale === 'en'
+          ? 'Historical Clue'
+          : '当朝掌故';
+      const promptHtml = cur.settlement.isPass
+        ? this.locale === 'en'
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s strategic pass <b>“${displayAncientEn}”</b>`
+          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的天下名关 <b>「${displayAncientZh}」</b>`
+        : this.locale === 'en'
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${displayAncientEn}”</b>`
+          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${displayAncientZh}」</b>`;
 
       this._id('challenge-question').innerHTML =
         `<div>${promptHtml}</div>` +
@@ -4531,6 +4663,15 @@
       q.answered = true;
       q.pendingGuess = null;
       this.grpChallenge.innerHTML = '';
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('is-challenge-answered');
+      const chkMilestones = this._id('chk-milestones');
+      if (this.grpMilestones) {
+        this.grpMilestones.classList.toggle(
+          'is-hidden',
+          Boolean(chkMilestones && !chkMilestones.checked)
+        );
+      }
 
       const cur = q.deck[q.index];
       const guessGeo = this.projector.toGeo(svgX, svgY);
@@ -4593,11 +4734,12 @@
         },
         aPin
       );
-      const ansAncEn =
-        cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
+      const ansAncEn = cur.settlement.ancientEn
+        ? cur.settlement.ancientEn
+        : cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
           ? this.trModernCity(cur.settlement.ancient)
           : this.trTerm(cur.settlement.ancient);
-      const ansModEn = this.trModernCity(cur.settlement.modern);
+      const ansModEn = cur.settlement.modernEn || this.trModernCity(cur.settlement.modern);
       aLabel.textContent =
         this.locale === 'en'
           ? `${ansAncEn} (${ansModEn})`
@@ -5953,6 +6095,16 @@
           this.jumpToYear(this.minYear);
         } else if (e.key === 'End' && !this.challenge) {
           this.jumpToYear(this.maxYear);
+        } else if (
+          (e.key === ' ' || e.key === 'Enter') &&
+          this.challenge &&
+          (this.challenge.pendingGuess ||
+            this.challenge.answered ||
+            Boolean(this._id('act-next-round') && this._id('act-next-round').onclick))
+        ) {
+          e.preventDefault();
+          const nextBtn = this._id('act-next-round');
+          if (nextBtn) nextBtn.click();
         } else if (e.key === ' ' && !this.challenge) {
           e.preventDefault();
           if (this.activeJourney) {
@@ -5967,6 +6119,7 @@
           closeJourneyPopover();
           this.closeMilestoneBalloon();
           if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
+          else if (this.challenge) this.stopChallenge();
           else if (this.activeJourney) this.stopJourney();
           else if (this.activeCustomRoute) this.clearCustomRoute();
           else if (this.genealogyMode) this.toggleGenealogyMode(false);
@@ -6126,6 +6279,11 @@
       });
 
       const inspectPointTooltip = (e) => {
+        if (this.challenge && !this.challenge.answered) {
+          this.hoverTip.classList.add('is-hidden');
+          this.hoverTip.classList.remove('is-interactive');
+          return;
+        }
         const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
         const rawStack = document.elementsFromPoint
           ? document.elementsFromPoint(e.clientX, e.clientY)

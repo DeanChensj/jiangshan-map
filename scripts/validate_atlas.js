@@ -1077,6 +1077,49 @@ function main() {
     );
   }
 
+  // 5) Challenge Deck Quality, Strategic Passes & Spoiler Sanitization
+  assert.strictEqual(ctrl._stripPromptParenthetical('襄平（辽阳）'), '襄平');
+  assert.strictEqual(ctrl._stripPromptParenthetical('山海关（渝关）'), '山海关');
+  const scrubbedZibo = ctrl._sanitizeChallengeClue(
+    '齐国都城（今山东淄博临淄），姜太公封地，淄博重镇',
+    { ancient: '临淄', modern: '山东淄博临淄' },
+    '临淄'
+  );
+  assert(
+    !scrubbedZibo.includes('淄博') && !scrubbedZibo.includes('山东'),
+    `Expected modern spoilers "山东/淄博" to be scrubbed from clue, got: ${scrubbedZibo}`
+  );
+  let sawPassInDeck = false;
+  for (let run = 0; run < 15; run++) {
+    const deck = ctrl._buildChallengeDeck();
+    assert.strictEqual(deck.length, 10, `Expected 10 questions in challenge deck, got ${deck.length}`);
+    for (let i = 0; i < deck.length; i++) {
+      const q = deck[i];
+      if (q.settlement.isPass) sawPassInDeck = true;
+      const evs = ctrl._collectPlaceEventsForDynasty(
+        q.dynasty,
+        q.settlement.coord[0],
+        q.settlement.coord[1],
+        { s: q.settlement, km: 0 }
+      );
+      assert(
+        q.settlement.isCapital || q.settlement.remark || q.settlement.isPass || evs.length > 0,
+        `Challenge deck item ${q.dynasty.key}:${q.settlement.ancient} lacks capital/remark/events`
+      );
+      for (let j = i + 1; j < deck.length; j++) {
+        const distKm = ctrl.projector.greatCircleKm(
+          q.settlement.coord,
+          deck[j].settlement.coord
+        );
+        assert(
+          distKm >= 35,
+          `Challenge deck items ${q.settlement.ancient} and ${deck[j].settlement.ancient} are too close (${distKm.toFixed(1)} km)`
+        );
+      }
+    }
+  }
+  assert(sawPassInDeck, 'Expected STRATEGIC_PASSES to appear in challenge decks across 15 runs');
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
