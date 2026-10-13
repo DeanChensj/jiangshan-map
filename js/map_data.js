@@ -548,6 +548,46 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "楚西境要塞，白起拔郢烧夷陵"
+      },
+      {
+        "ancient": "蒲坂",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "魏国蒲坂，蒲津渡口"
+      },
+      {
+        "ancient": "濮阳（帝丘）",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "卫国都城帝丘"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "魏国荥阳，鸿沟水运枢纽"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "韩穰邑；秦穰侯魏冉封地"
       }
     ]
   },
@@ -890,6 +930,66 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "泗水郡蕲县，大泽乡起义"
+      },
+      {
+        "ancient": "蒲坂（河东郡）",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "河东郡蒲坂县"
+      },
+      {
+        "ancient": "濮阳（东郡）",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "东郡治濮阳"
+      },
+      {
+        "ancient": "荥阳（三川郡）",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "敖仓所在，三川郡"
+      },
+      {
+        "ancient": "巨鹿（巨鹿郡）",
+        "modern": "邢台平乡",
+        "coord": [
+          115.03,
+          37.07
+        ],
+        "tier": 2,
+        "remark": "巨鹿郡治；沙丘平台始皇崩于此"
+      },
+      {
+        "ancient": "上洛",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "武关道上洛县"
+      },
+      {
+        "ancient": "穰（南阳郡）",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳郡穰县"
       }
     ],
     "phases": [
@@ -1444,6 +1544,96 @@ window.DYNASTY_DATA = [
         "appear": -110,
         "vanish": -82,
         "remark": "元封元年置儋耳郡，始元五年罢"
+      },
+      {
+        "ancient": "蒲坂",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "河东郡蒲坂，黄河蒲津关"
+      },
+      {
+        "ancient": "濮阳（东郡）",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "东郡治"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "楚汉荥阳、成皋对峙"
+      },
+      {
+        "ancient": "奉高（泰山郡）",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "泰山郡治，汉武帝封禅驻跸"
+      },
+      {
+        "ancient": "巨鹿",
+        "modern": "邢台平乡",
+        "coord": [
+          115.03,
+          37.07
+        ],
+        "tier": 2,
+        "remark": "巨鹿郡治"
+      },
+      {
+        "ancient": "上洛",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "弘农郡上洛，商山四皓隐居"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳郡穰县"
+      },
+      {
+        "ancient": "交河（车师前国）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.07,
+          42.95
+        ],
+        "tier": 2,
+        "remark": "车师前国王庭交河城"
+      },
+      {
+        "ancient": "楼兰（鄯善）",
+        "modern": "若羌",
+        "coord": [
+          89.84,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "元凤四年傅介子刺楼兰王，更名鄯善"
       }
     ],
     "phases": [
@@ -1960,6 +2150,96 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "吴郡乌程"
+      },
+      {
+        "ancient": "蒲坂",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "河东蒲坂"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "兴平元年曹操吕布濮阳之战"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "河南尹荥阳"
+      },
+      {
+        "ancient": "奉高",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "泰山郡治"
+      },
+      {
+        "ancient": "巨鹿",
+        "modern": "邢台平乡",
+        "coord": [
+          115.03,
+          37.07
+        ],
+        "tier": 2,
+        "remark": "黄巾张角巨鹿人，起事于此"
+      },
+      {
+        "ancient": "上洛",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "京兆上洛"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳穰县"
+      },
+      {
+        "ancient": "高昌壁",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "戊己校尉屯田高昌壁"
+      },
+      {
+        "ancient": "楼兰",
+        "modern": "若羌",
+        "coord": [
+          89.84,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "丝路南北道分岔，西域长史府驻此"
       }
     ],
     "phases": [
@@ -2433,6 +2713,56 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "宝鼎元年置吴兴郡"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "魏东郡濮阳"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "魏荥阳郡"
+      },
+      {
+        "ancient": "奉高",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "魏泰山郡"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "魏南阳穰县"
+      },
+      {
+        "ancient": "楼兰",
+        "modern": "若羌",
+        "coord": [
+          89.84,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "魏西域长史府"
       }
     ],
     "phases": [
@@ -2794,6 +3124,76 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "吴兴郡治"
+      },
+      {
+        "ancient": "蒲坂",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "河东蒲坂"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "濮阳国"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "荥阳郡治"
+      },
+      {
+        "ancient": "奉高",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "泰山郡治"
+      },
+      {
+        "ancient": "上洛（上洛郡）",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "泰始二年置上洛郡"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳穰县"
+      },
+      {
+        "ancient": "楼兰",
+        "modern": "若羌",
+        "coord": [
+          89.84,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "西域长史府驻海头"
       }
     ],
     "phases": [
@@ -3367,6 +3767,66 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "义熙九年置义安郡"
+      },
+      {
+        "ancient": "蒲坂",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "前秦、后秦蒲坂重镇"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "濮阳郡"
+      },
+      {
+        "ancient": "上洛",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "上洛郡"
+      },
+      {
+        "ancient": "穰",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南北争衡要地"
+      },
+      {
+        "ancient": "高昌（高昌郡）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "前凉置高昌郡"
+      },
+      {
+        "ancient": "楼兰",
+        "modern": "若羌",
+        "coord": [
+          89.84,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "前凉西域长史驻楼兰；五世纪后渐废"
       }
     ],
     "phases": [
@@ -3947,6 +4407,86 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "义安郡治海阳"
+      },
+      {
+        "ancient": "蒲坂（秦州）",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "北魏置泰州（秦州）治蒲坂"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "濮阳郡治"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "北魏太和中置陕州"
+      },
+      {
+        "ancient": "荥阳",
+        "modern": "郑州荥阳",
+        "coord": [
+          113.38,
+          34.79
+        ],
+        "tier": 2,
+        "remark": "荥阳郡治"
+      },
+      {
+        "ancient": "奉高",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "泰山郡治"
+      },
+      {
+        "ancient": "上洛（洛州）",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "北魏置洛州治上洛"
+      },
+      {
+        "ancient": "穰（荆州）",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "北魏荆州治穰"
+      },
+      {
+        "ancient": "高昌（高昌国）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "麴氏高昌国都"
       }
     ],
     "phases": [
@@ -4426,6 +4966,86 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "开皇十年置循州，治归善"
+      },
+      {
+        "ancient": "蒲州（河东郡）",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "蒲州治河东，蒲津桥"
+      },
+      {
+        "ancient": "濮阳",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "东郡濮阳"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "崤函孔道，三门峡漕运"
+      },
+      {
+        "ancient": "博城（泰山）",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "鲁郡博城"
+      },
+      {
+        "ancient": "商州（上洛）",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "开皇中改洛州为商州"
+      },
+      {
+        "ancient": "邓州（穰）",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "开皇中置邓州"
+      },
+      {
+        "ancient": "梓州",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "开皇末置梓州"
+      },
+      {
+        "ancient": "高昌国",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "麴氏高昌"
       }
     ],
     "phases": [
@@ -5336,6 +5956,118 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "武德五年置儋州"
+      },
+      {
+        "ancient": "蒲州（河中府）",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "开元九年升河中府，置中都；鹳雀楼、蒲津铁牛"
+      },
+      {
+        "ancient": "澶州（濮阳）",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "武德四年置澶州"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "开元漕运，三门开山置仓"
+      },
+      {
+        "ancient": "乾封（泰山）",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "乾封元年高宗封禅，改博城为乾封"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "武关道驿路，长安东南门户"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "山南东道邓州"
+      },
+      {
+        "ancient": "梓州",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "剑南东川节度使治；杜甫寓梓州作《闻官军收河南河北》"
+      },
+      {
+        "ancient": "播州",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "贞观十三年置播州"
+      },
+      {
+        "ancient": "西州（高昌）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "贞观十四年灭高昌置西州；玄奘曾驻锡"
+      },
+      {
+        "ancient": "碎叶",
+        "modern": "托克马克（吉尔吉斯斯坦）",
+        "coord": [
+          75.29,
+          42.83
+        ],
+        "tier": 2,
+        "appear": 679,
+        "vanish": 766,
+        "remark": "调露元年王方翼筑城，安西四镇之一；李白出生地"
+      },
+      {
+        "ancient": "瓜州（晋昌）",
+        "modern": "酒泉瓜州",
+        "coord": [
+          96.21,
+          40.25
+        ],
+        "tier": 2,
+        "remark": "玄奘夜渡葫芦河西行处；张议潮归义军起兵"
       }
     ],
     "phases": [
@@ -5950,6 +6682,86 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "南汉柳州"
+      },
+      {
+        "ancient": "河中府",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "护国军节度使治"
+      },
+      {
+        "ancient": "澶州",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "黄河渡口，镇宁军"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "保义军节度使治"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "商州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "威胜军节度使治"
+      },
+      {
+        "ancient": "梓州",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "前蜀、后蜀东川节度"
+      },
+      {
+        "ancient": "高昌（西州回鹘）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "西州回鹘王都"
+      },
+      {
+        "ancient": "瓜州",
+        "modern": "酒泉瓜州",
+        "coord": [
+          96.21,
+          40.25
+        ],
+        "tier": 2,
+        "remark": "归义军瓜州"
       }
     ],
     "phases": [
@@ -6751,6 +7563,116 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "绍圣四年苏轼贬儋州，居桄榔庵、讲学载酒堂"
+      },
+      {
+        "ancient": "河中府",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "永兴军路河中府；普救寺"
+      },
+      {
+        "ancient": "澶州",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "景德元年澶渊之盟于此"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "永兴军路陕州"
+      },
+      {
+        "ancient": "奉符（泰山）",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "大中祥符元年真宗封禅，改乾封为奉符"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "永兴军路商州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "庆历间范仲淹知邓州，作《岳阳楼记》于花洲书院"
+      },
+      {
+        "ancient": "梓州",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "梓州路治"
+      },
+      {
+        "ancient": "播州",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "杨氏世守播州"
+      },
+      {
+        "ancient": "高昌回鹘",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "高昌回鹘，王延德出使"
+      },
+      {
+        "ancient": "瓜州",
+        "modern": "酒泉瓜州",
+        "coord": [
+          96.21,
+          40.25
+        ],
+        "tier": 2,
+        "remark": "西夏西平监军司"
+      },
+      {
+        "ancient": "锦州",
+        "modern": "锦州",
+        "coord": [
+          121.13,
+          41.1
+        ],
+        "tier": 2,
+        "remark": "辽置锦州临海军"
       }
     ],
     "phases": [
@@ -7433,6 +8355,106 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "琼管昌化军"
+      },
+      {
+        "ancient": "河中府",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "金河中府"
+      },
+      {
+        "ancient": "开德府（澶州）",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "金开德府"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "金陕州"
+      },
+      {
+        "ancient": "泰安州",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "金大定二十二年置泰安州"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "宋金拉锯商州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "金邓州"
+      },
+      {
+        "ancient": "潼川府",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "重和元年升潼川府"
+      },
+      {
+        "ancient": "播州",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "杨氏筑海龙屯以御蒙古"
+      },
+      {
+        "ancient": "高昌（畏兀儿）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "畏兀儿亦都护归附蒙古"
+      },
+      {
+        "ancient": "锦州",
+        "modern": "锦州",
+        "coord": [
+          121.13,
+          41.1
+        ],
+        "tier": 2,
+        "remark": "金锦州"
       }
     ],
     "phases": [
@@ -7969,6 +8991,116 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "元改昌化军为南宁军"
+      },
+      {
+        "ancient": "河中府",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "晋宁路河中府"
+      },
+      {
+        "ancient": "开州",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "大名路开州"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "河南府路陕州"
+      },
+      {
+        "ancient": "泰安州",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "东平路泰安州"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "奉元路商州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳府邓州"
+      },
+      {
+        "ancient": "潼川府",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "潼川府"
+      },
+      {
+        "ancient": "播州宣慰司",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "播州宣慰司"
+      },
+      {
+        "ancient": "火州（高昌）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "元火州"
+      },
+      {
+        "ancient": "瓜州",
+        "modern": "酒泉瓜州",
+        "coord": [
+          96.21,
+          40.25
+        ],
+        "tier": 2,
+        "remark": "沙州路瓜州"
+      },
+      {
+        "ancient": "锦州",
+        "modern": "锦州",
+        "coord": [
+          121.13,
+          41.1
+        ],
+        "tier": 2,
+        "remark": "大宁路锦州"
       }
     ],
     "phases": [
@@ -8719,6 +9851,118 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "琼州府儋州"
+      },
+      {
+        "ancient": "蒲州",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "平阳府蒲州"
+      },
+      {
+        "ancient": "开州",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "大名府开州"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "河南府陕州"
+      },
+      {
+        "ancient": "泰安州",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "济南府泰安州"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "西安府商州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳府邓州"
+      },
+      {
+        "ancient": "潼川州",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "成都府潼川州"
+      },
+      {
+        "ancient": "播州（宣慰司）",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "万历二十八年平播之役，改土归流"
+      },
+      {
+        "ancient": "火州（吐鲁番）",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "吐鲁番地面"
+      },
+      {
+        "ancient": "宁远卫",
+        "modern": "葫芦岛兴城",
+        "coord": [
+          120.72,
+          40.61
+        ],
+        "tier": 2,
+        "appear": 1428,
+        "remark": "宣德三年置宁远卫；天启六年袁崇焕宁远大捷"
+      },
+      {
+        "ancient": "赫图阿拉",
+        "modern": "抚顺新宾",
+        "coord": [
+          124.85,
+          41.72
+        ],
+        "tier": 2,
+        "appear": 1603,
+        "remark": "万历三十一年努尔哈赤筑城；1616 年建后金称汗"
       }
     ],
     "phases": [
@@ -9570,6 +10814,126 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "琼州府儋州"
+      },
+      {
+        "ancient": "蒲州府",
+        "modern": "运城永济",
+        "coord": [
+          110.32,
+          34.84
+        ],
+        "tier": 2,
+        "remark": "雍正六年升蒲州府"
+      },
+      {
+        "ancient": "开州",
+        "modern": "濮阳",
+        "coord": [
+          115.03,
+          35.76
+        ],
+        "tier": 2,
+        "remark": "大名府开州"
+      },
+      {
+        "ancient": "陕州",
+        "modern": "三门峡",
+        "coord": [
+          111.17,
+          34.78
+        ],
+        "tier": 2,
+        "remark": "雍正二年升直隶州"
+      },
+      {
+        "ancient": "泰安府",
+        "modern": "泰安",
+        "coord": [
+          117.12,
+          36.19
+        ],
+        "tier": 2,
+        "remark": "雍正十三年升泰安府"
+      },
+      {
+        "ancient": "商州",
+        "modern": "商洛",
+        "coord": [
+          109.94,
+          33.87
+        ],
+        "tier": 2,
+        "remark": "雍正三年升直隶州"
+      },
+      {
+        "ancient": "邓州",
+        "modern": "南阳邓州",
+        "coord": [
+          112.09,
+          32.69
+        ],
+        "tier": 2,
+        "remark": "南阳府邓州"
+      },
+      {
+        "ancient": "潼川府",
+        "modern": "绵阳三台",
+        "coord": [
+          105.09,
+          31.1
+        ],
+        "tier": 2,
+        "remark": "雍正十二年升潼川府"
+      },
+      {
+        "ancient": "遵义府",
+        "modern": "遵义",
+        "coord": [
+          106.93,
+          27.72
+        ],
+        "tier": 2,
+        "remark": "雍正五年改隶贵州"
+      },
+      {
+        "ancient": "吐鲁番",
+        "modern": "吐鲁番",
+        "coord": [
+          89.19,
+          42.95
+        ],
+        "tier": 2,
+        "remark": "乾隆间置吐鲁番厅"
+      },
+      {
+        "ancient": "安西州",
+        "modern": "酒泉瓜州",
+        "coord": [
+          95.78,
+          40.52
+        ],
+        "tier": 2,
+        "remark": "雍正间置安西直隶州"
+      },
+      {
+        "ancient": "锦州府",
+        "modern": "锦州",
+        "coord": [
+          121.13,
+          41.1
+        ],
+        "tier": 2,
+        "remark": "松锦之战后置锦州府"
+      },
+      {
+        "ancient": "兴京（赫图阿拉）",
+        "modern": "抚顺新宾",
+        "coord": [
+          124.85,
+          41.72
+        ],
+        "tier": 2,
+        "remark": "后金肇基之地，清尊为兴京"
       }
     ],
     "phases": [
