@@ -505,7 +505,7 @@ window.EN_LOCALE = {
       "Gaochang"
     ],
     "tang:713": [
-      "Kaiyuan heyday under Emperor Xuanzong begins; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
+      "Xiantian Coup: Emperor Xuanzong eliminates Princess Taiping's faction to end female court dominance and inaugurates the Kaiyuan heyday; envoy Cui Xin invests Dae Jo-yeong as King of Bohai",
       "Chang'an · Huhancheng"
     ],
     "tang:755": [
@@ -853,7 +853,7 @@ window.EN_LOCALE = {
       "Xianyang / Jiuyuan"
     ],
     "qin:-210": [
-      "First Emperor dies at Shaqiu during eastern tour; Huhai enthroned",
+      "Shaqiu Coup: First Emperor dies at Shaqiu; Zhao Gao and Li Si forge an edict ordering Prince Fusu and Meng Tian to die and enthrone Huhai as Second Emperor",
       "Shaqiu (Guangzong)"
     ],
     "qin:-207": [
@@ -1513,8 +1513,8 @@ window.EN_LOCALE = {
       "Liaoyang"
     ],
     "qing:1898": [
-      "Britain leased the New Territories of Hong Kong and Weihaiwei, Germany leased Jiaozhou Bay, and Russia leased Port Arthur/Dalian as the imperialist scramble for concessions peaked; Guangxu Emperor launched the Hundred Days' Reform",
-      "Jiaozhou Bay · New Territories"
+      "Hundred Days' Reform and Wuxu Coup: Guangxu Emperor launches reforms with Kang Youwei and Liang Qichao before Empress Dowager Cixi seizes power, confines Guangxu at Yingtai, and executes the Six Gentlemen; Germany leases Jiaozhou Bay, Russia leases Port Arthur/Dalian, and Britain leases Weihaiwei and the New Territories",
+      "Beijing · Jiaozhou Bay"
     ],
     "qing:1900": [
       "Boxer Movement and Eight-Nation Alliance occupation of Beijing; Cixi and Guangxu flee to Xi’an, followed by the Boxer Protocol in 1901",
@@ -1557,8 +1557,8 @@ window.EN_LOCALE = {
       "Chanzhou (Puyang)"
     ],
     "nansong:1194": [
-      "Yellow River breaches at Yangwu and captures the Si and Huai rivers into the Yellow Sea, reshaping the Jianghuai plain and forming Hongze Lake",
-      "Yangwu · Xuzhou · Huai'an"
+      "Shaoxi Abdication: Grand Empress Dowager Wu, backed by Zhao Ruyu and Han Tuozhou, compels Emperor Guangzong to abdicate in favor of Emperor Ningzong; the Yellow River breaches at Yangwu to capture the Si and Huai rivers into the Yellow Sea",
+      "Lin'an · Yangwu · Huai'an"
     ],
     "qing:1855": [
       "Yellow River breaches at Tongwaxiang (Lanyang), abandoning the Huai course to capture the Daqing River into Bohai Sea along its modern path",
@@ -1595,6 +1595,78 @@ window.EN_LOCALE = {
     "roc:1946": [
       "The Nationalist Government recognized the Outer Mongolian independence referendum result and exchanged notes with the Soviet Union; Outer Mongolia detached from China, transforming the national map silhouette from a 'begonia leaf' into a 'rooster'",
       "Kulun (Ulaanbaatar)"
+    ],
+    "xihan:-91": [
+      "Witchcraft Crisis (Wugu Affair): Jiang Chong frames Crown Prince Liu Ju, sparking five days of fighting in Chang'an and the suicides of Liu Ju and Empress Wei",
+      "Chang'an · Huxian"
+    ],
+    "xihan:-74": [
+      "Regent Marshal Huo Guang deposes Liu He (Marquis of Haihun) after 27 days and enthrones Liu Xun as Emperor Xuan, inaugurating the Zhaoxuan Restoration",
+      "Chang'an (Weiyang Palace)"
+    ],
+    "donghan:92": [
+      "Yongyuan Coup and Prosperity of Yongyuan: 14-year-old Emperor He allies with eunuch Zheng Zhong to overthrow Regent Marshal Dou Xian's consort clan, bringing Eastern Han power to its zenith",
+      "Luoyang"
+    ],
+    "sanguo:260": [
+      "Coup of Ganlu: Wei Emperor Cao Mao declares 'Sima Zhao's ambition is known to every passerby' and leads palace guards against Sima Zhao, falling to Jia Chong and Cheng Ji at the southern palace gate",
+      "Luoyang (Southern Gate)"
+    ],
+    "dongjin:322": [
+      "Rebellion of Wang Dun: Generalissimo Wang Dun marches east from Wuchang into Jiankang under the pretext of purging Liu Wei and Diao Xie, intensifying the 'Wang and Sima co-rule'",
+      "Wuchang · Jiankang"
+    ],
+    "dongjin:404": [
+      "After Huan Xuan usurps the Jin throne to proclaim Chu (403), Northern Garrison general Liu Yu rises at Jingkou, defeats Huan Xuan, and restores the Eastern Jin court",
+      "Jingkou · Jiankang · Jiangling"
+    ],
+    "tang:707": [
+      "Jinglong Coup: Crown Prince Li Chongjun leads imperial guards to slay Wu Sansi and Wu Chongxun, but is defeated and killed after his assault on Xuanwu Gate fails",
+      "Chang'an (Xuanwu Gate)"
+    ],
+    "tang:710": [
+      "Tanglong Coup: Following Emperor Zhongzong's sudden death, Prince Li Longji and Princess Taiping storm the palace to eliminate Empress Wei's faction and restore Emperor Ruizong",
+      "Chang'an (Taiji Palace)"
+    ],
+    "tang:756": [
+      "Mutiny at Mawei Post: As Rebels capture Chang'an and Emperor Xuanzong flees toward Sichuan, imperial guards execute Chancellor Yang Guozhong and compel Consort Yang Yuhuan to die at Mawei; Crown Prince Li Heng ascends as Emperor Suzong at Lingwu",
+      "Mawei Post (Xingping) · Lingwu"
+    ],
+    "tang:805": [
+      "Yongzhen Reform and Abdication: Emperor Shunzong empowers Wang Shuwen, Liu Zongyuan, and Liu Yuxi to curb eunuch and warlord power, before Shence Army eunuchs compel his abdication to Emperor Xianzong",
+      "Chang'an"
+    ],
+    "tang:835": [
+      "Sweet Dew Incident: Emperor Wenzong, Li Xun, and Zheng Zhu's plot to ambush eunuch commander Qiu Shiliang fails; Shence troops slaughter over a thousand courtiers including Chancellor Wang Ya",
+      "Chang'an (Daming Palace)"
+    ],
+    "wudai:926": [
+      "Yedu Mutiny and Xingjiao Gate Incident: Following the Weibo garrison mutiny backing Li Siyuan, Commander Guo Congqian storms Xingjiao Gate in Luoyang where Emperor Zhuangzong Li Cunxu is killed; Li Siyuan ascends as Emperor Mingzong",
+      "Luoyang (Xingjiao Gate) · Yedu"
+    ],
+    "beisong:976": [
+      "Candlelight and Axe-Sound Mystery: Emperor Taizu Zhao Kuangyin dies suddenly after a late-night drink with his brother Zhao Guangyi at Wansui Hall; Zhao Guangyi ascends the throne as Emperor Taizong",
+      "Kaifeng (Wansui Hall)"
+    ],
+    "nansong:1129": [
+      "Miao-Liu Mutiny: Commanders Miao Fu and Liu Zhengyan mutiny in Hangzhou, forcing Emperor Gaozong to abdicate in favor of his infant son before loyalist generals Han Shizhong and Zhang Jun restore Gaozong",
+      "Hangzhou (Lin'an)"
+    ],
+    "yuan:1323": [
+      "Coup at Nanpo: Censor-in-Chief Tegshi and conspirators assassinate reformist Emperor Yingzong (Gegeen Khan) and Chancellor Baiju at Nanpo south of Shangdu; Yesün Temür ascends as the Taiding Emperor",
+      "Nanpo (south of Shangdu)"
+    ],
+    "ming:1457": [
+      "Wresting the Gate Coup (Southern Palace Restoration): As the Jingtai Emperor falls critically ill, Shi Heng, Xu Youzhen, and Cao Jixiang restore retired Emperor Yingzong from the Southern Palace and execute Yu Qian",
+      "Beijing (Southern Palace)"
+    ],
+    "ming:1542": [
+      "RenYin Palace Rebellion: Palace women led by Yang Jinying attempt to strangle the tyrannical Jiajing Emperor with a silk cord in Qianqing Palace; after surviving, Jiajing retreats to West Park for over twenty years",
+      "Forbidden City, Beijing"
+    ],
+    "qing:1861": [
+      "Xinyou Coup (Qixiang Coup): Following the Xianfeng Emperor's death in Chengde, Empresses Dowager Cixi and Ci'an ally with Prince Gong (Yixin) to oust Sushun's Eight Regents and inaugurate the Tongzhi Regency",
+      "Beijing · Chengde"
     ]
   },
   "corridors": {

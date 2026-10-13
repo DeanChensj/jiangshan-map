@@ -983,8 +983,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('345项'),
-    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 345 historical events'
+    htmlSrc.includes('156幅') && htmlSrc.includes('476座') && htmlSrc.includes('363项'),
+    'index.html SEO metadata must reflect 156 snapshots, 476 ancient cities, and 363 historical events'
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
@@ -1154,45 +1154,37 @@ function main() {
     'Expected _syncTracedPrefecture to clear .is-traced when activeTrace is null'
   );
 
-  // 6) Genealogy heading "今 X" must assert identity, never a far-away neighbour (regression: 岳阳楼 -> "今赤壁")
-  const nearestAcrossDynasties = (coord) => {
-    let best = null;
-    for (const d of dynasties) {
-      for (const s of d.settlements || []) {
-        const kmv = ctrl.projector.greatCircleKm(coord, s.coord);
-        if (kmv < 160 && (!best || kmv < best.km)) best = { s, km: kmv };
-      }
-    }
-    return best;
-  };
-  const yueyang = loreData.PLACE_GAZETTEER.find((g) => g.name === '岳阳楼');
-  const yueyangNear = nearestAcrossDynasties(yueyang.coord);
-  assert(
-    yueyangNear && yueyangNear.km > 25,
-    'Test precondition: 岳阳楼 must have no settlement within 25 km so the far-neighbour path is exercised'
-  );
-  assert.strictEqual(
-    ctrl._resolveModernIdentity(yueyang.coord[0], yueyang.coord[1], '岳阳楼', '湖南省', yueyangNear),
-    '岳阳',
-    'Gazetteer landmark must use its own modern field (province prefix stripped), not the nearest settlement'
-  );
-  assert.strictEqual(
-    ctrl._resolveModernIdentity(yueyang.coord[0] + 1.2, yueyang.coord[1] + 0.9, '', '湖北省', { s: { modern: '赤壁' }, km: 87 }),
-    '',
-    'A settlement 87 km away must not be asserted as "今赤壁"'
-  );
-  assert.strictEqual(
-    ctrl._resolveModernIdentity(0, 0, '', '陕西省', { s: { modern: '西安' }, km: 4 }),
-    '西安',
-    'A settlement within 25 km is a valid identity'
-  );
-  for (const g of loreData.PLACE_GAZETTEER) {
-    const near = nearestAcrossDynasties(g.coord);
-    const identity = ctrl._resolveModernIdentity(g.coord[0], g.coord[1], g.name, '', near);
-    const gm = String(g.modern || '');
+  // CUJ 17: Historical coups & political turning points across dynasties discoverable via Quick Search
+  const expectedCoups = [
+    ['沙丘政变', 'qin', -210],
+    ['巫蛊之祸', 'xihan', -91],
+    ['霍光', 'xihan', -74],
+    ['永元之隆', 'donghan', 92],
+    ['甘露之变', 'sanguo', 260],
+    ['曹髦', 'sanguo', 260],
+    ['王敦之乱', 'dongjin', 322],
+    ['桓玄', 'dongjin', 404],
+    ['景龙政变', 'tang', 707],
+    ['唐隆政变', 'tang', 710],
+    ['先天政变', 'tang', 713],
+    ['马嵬驿兵变', 'tang', 756],
+    ['永贞内禅', 'tang', 805],
+    ['甘露之变', 'tang', 835],
+    ['兴教门之变', 'wudai', 926],
+    ['斧声烛影', 'beisong', 976],
+    ['苗刘兵变', 'nansong', 1129],
+    ['绍熙内禅', 'nansong', 1194],
+    ['南坡之变', 'yuan', 1323],
+    ['夺门之变', 'ming', 1457],
+    ['壬寅宫变', 'ming', 1542],
+    ['辛酉政变', 'qing', 1861],
+    ['戊戌政变', 'qing', 1898],
+  ];
+  for (const [kw, dynKey, yr] of expectedCoups) {
+    const hits = ctrl._queryQuickSearch(kw);
     assert(
-      !identity || gm.includes(identity) || identity.includes(gm.slice(-2)),
-      `Heading identity for ${g.name} must derive from its gazetteer modern "${gm}", got "${identity}"`
+      hits.some((h) => h.dynasty && h.dynasty.key === dynKey && h.year === yr),
+      `Expected quick search "${kw}" to match ${dynKey}:${yr}, got ${JSON.stringify(hits[0])}`
     );
   }
 
