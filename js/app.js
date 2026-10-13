@@ -2814,6 +2814,39 @@
       return { settlementEl: bestSettle, milestoneEl: bestMile };
     }
 
+    /**
+     * Resolve the modern place name a genealogy heading may assert as "今 X".
+     * "今" claims identity, not proximity: only a gazetteer landmark's own `modern` field, or the
+     * nearest settlement within the same 25 km "即此地" radius used by the per-dynasty rows, qualifies.
+     * A leading province already shown as the modern title is dropped ("湖南岳阳" -> "岳阳").
+     */
+    _resolveModernIdentity(lng, lat, traceLabel, modernTitle, closestOverall) {
+      const IDENTITY_KM = 25;
+      const labelLower = String(traceLabel || '').toLowerCase();
+      const gazHit =
+        HistoricalAtlasController.PLACE_GAZETTEER.find(
+          (g) =>
+            Array.isArray(g.coord) &&
+            (this.projector.greatCircleKm([lng, lat], g.coord) <= 3 ||
+              (labelLower &&
+                [g.name, ...(g.aliases || [])].some((n) => String(n).toLowerCase() === labelLower)))
+        ) || null;
+      const raw =
+        gazHit && gazHit.modern
+          ? gazHit.modern
+          : closestOverall && closestOverall.km <= IDENTITY_KM && closestOverall.s.modern
+            ? closestOverall.s.modern
+            : '';
+      if (!raw) return '';
+      const provStem = modernTitle
+        ? String(modernTitle).replace(/(省|市|自治区|特别行政区|壮族|回族|维吾尔|藏族)+$/g, '')
+        : '';
+      const provPrefix = [provStem, provStem.slice(0, 2)].find(
+        (p) => p && p.length >= 2 && raw.startsWith(p) && raw.length > p.length + 1
+      );
+      return provPrefix ? raw.slice(provPrefix.length) : raw;
+    }
+
     openGenealogyAt(lng, lat, customLabel = null) {
       const isSamePlace =
         this.activeTrace &&
@@ -2920,6 +2953,14 @@
         if (hit && (!closestOverall || hit.km < closestOverall.km)) closestOverall = hit;
       }
 
+      const identityModern = this._resolveModernIdentity(
+        lng,
+        lat,
+        this.activeTraceLabel,
+        modernTitle,
+        closestOverall
+      );
+
       const matchedPassHit = this._findNearbyPass(lng, lat, 30);
       const matchedPass = matchedPassHit ? matchedPassHit.pass : null;
       const titleMain = matchedPass
@@ -2929,8 +2970,8 @@
           : this.uiStr('outside_modern', '现代省界外 / 海域');
       const titleSuffix = matchedPass
         ? ` · ${this.locale === 'en' ? matchedPass.modernEn : '今' + matchedPass.modernZh}`
-        : closestOverall && closestOverall.s.modern
-          ? ` · ${this.trModernCity(closestOverall.s.modern)}`
+        : identityModern
+          ? ` · ${this.trModernCity(identityModern)}`
           : '';
       if (this.activeTraceLabel && this.activeTraceLabel !== titleMain) {
         const extraParts = [];
@@ -2941,15 +2982,14 @@
             extraParts.push(this.trTerm(modernTitle));
           }
           if (
-            closestOverall &&
-            closestOverall.s.modern &&
-            closestOverall.s.modern !== this.activeTraceLabel &&
-            closestOverall.s.modern !== modernTitle
+            identityModern &&
+            identityModern !== this.activeTraceLabel &&
+            identityModern !== modernTitle
           ) {
             extraParts.push(
               this.locale === 'en'
-                ? this.trModernCity(closestOverall.s.modern)
-                : `今${closestOverall.s.modern}`
+                ? this.trModernCity(identityModern)
+                : `今${identityModern}`
             );
           }
         }
