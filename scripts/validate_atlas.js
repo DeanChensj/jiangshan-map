@@ -994,8 +994,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('156幅') && htmlSrc.includes('652座') && htmlSrc.includes('363项'),
-    'index.html SEO metadata must reflect 156 snapshots, 652 ancient cities, and 363 historical events'
+    htmlSrc.includes('156幅') && htmlSrc.includes('788座') && htmlSrc.includes('363项'),
+    'index.html SEO metadata must reflect 156 snapshots, 788 ancient cities, and 363 historical events'
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
