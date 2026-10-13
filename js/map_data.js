@@ -5321,7 +5321,8 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 756,
@@ -5333,13 +5334,24 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 757,
+        "headline": "郭子仪借回纥兵收复长安、洛阳两京，安庆绪退保邺城",
+        "site": "长安 · 洛阳",
+        "coord": [
+          108.941,
+          34.341
+        ],
+        "isMapChange": true
+      },
+      {
         "year": 763,
-        "headline": "安史之乱平定；吐蕃一度攻入长安",
+        "headline": "安史之乱平定，河朔三镇割据肇端；吐蕃一度攻入长安",
         "site": "长安",
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 764,
@@ -6110,6 +6122,14 @@ window.DYNASTY_DATA = [
       {
         "until": 755,
         "snap": "s_tang_a5"
+      },
+      {
+        "until": 757,
+        "snap": "s_tang_b0a"
+      },
+      {
+        "until": 763,
+        "snap": "s_tang_b0b"
       },
       {
         "until": 764,
