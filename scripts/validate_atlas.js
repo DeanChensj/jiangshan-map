@@ -990,13 +990,35 @@ function main() {
     `Expected English monarch search "Taizong of Tang" to resolve to 627 CE, got ${JSON.stringify(enTaizong[0])}`
   );
 
-  // Verify index.html metadata sync and removal of unused diag-hatch pattern
+  // Verify index.html, README.md, and llms.txt metadata sync and removal of unused diag-hatch pattern
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('162幅') && htmlSrc.includes('788座') && htmlSrc.includes(`${totalMilestones}项`),
-    `index.html SEO metadata must reflect 162 snapshots, 788 ancient cities, and ${totalMilestones} historical events`
+    htmlSrc.includes(`${snapKeys.length}幅`) &&
+      htmlSrc.includes(`${totalSettlements}座`) &&
+      htmlSrc.includes(`${totalMilestones}项`),
+    `index.html SEO metadata must reflect ${snapKeys.length} snapshots, ${totalSettlements} ancient cities, and ${totalMilestones} historical events`
   );
+  const readmeSrc = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  assert(
+    readmeSrc.includes(`${referencedSnaps.size} 个疆域阶段（${snapKeys.length} 幅政区舆图快照）`) &&
+      readmeSrc.includes(`${referencedSnaps.size} 个疆域阶段与`) &&
+      readmeSrc.includes(`${totalMilestones} 条编年大事`) &&
+      readmeSrc.includes(`${loreData.PLACE_LANDMARK_EVENTS.length} 桩定点地标大事`) &&
+      readmeSrc.includes(`${loreData.PLACE_GAZETTEER.length} 处诗词名胜与古战场`) &&
+      readmeSrc.includes(`${referencedSnaps.size} territorial stages (${snapKeys.length} snapshots)`) &&
+      readmeSrc.includes(`${totalMilestones} historical milestones`) &&
+      readmeSrc.includes(`${loreData.PLACE_LANDMARK_EVENTS.length} site-specific landmark events`) &&
+      readmeSrc.includes(`${loreData.PLACE_GAZETTEER.length} poetic & battlefield landmarks`),
+    `README.md must stay synchronized with ${referencedSnaps.size} phases, ${snapKeys.length} snapshots, ${totalMilestones} milestones, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events, and ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks in both ZH and EN`
+  );
+  const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
+  for (const d of dynasties) {
+    assert(
+      llmsSrc.includes(`| \`${d.key}\` |`) && llmsSrc.includes(`\`${d.fromYear}\` to \`${d.toYear}\``),
+      `llms.txt must list exact dynasty key ${d.key} and year span ${d.fromYear} to ${d.toYear}`
+    );
+  }
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
   const ghostNodes = [];
@@ -1342,13 +1364,38 @@ function main() {
     's_tang_d2 must map Late Tang regional warlords (Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi)'
   );
 
+  // CUJ 20: Ming-Qing Transition (1643-1644 Dashun & Daxi) & Early Qing Split (1661-1673 Koxinga Taiwan vs. 1673-1681 Three Feudatories)
+  const mingDyn = dynasties.find((d) => d.key === 'ming');
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1642), 's_ming_c', 'Ming at 1642 CE must resolve to s_ming_c');
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1643), 's_ming_d', 'Ming at 1643 CE must resolve to s_ming_d');
+  assert(
+    snapshots.s_ming_d.polities.some((p) => p.title === '大顺（李自成）') &&
+      snapshots.s_ming_d.polities.some((p) => p.title === '大西（张献忠）') &&
+      snapshots.s_ming_d.polities.some((p) => p.title === '后金（1636 年起称清）'),
+    's_ming_d must map Li Zicheng Dashun, Zhang Xianzhong Daxi, and Qing alongside Ming'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1650), 's_qing_a0', 'Qing at 1650 CE must resolve to s_qing_a0');
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1665), 's_qing_a1', 'Qing at 1665 CE must resolve to s_qing_a1');
+  assert(
+    snapshots.s_qing_a1.polities.some((p) => p.title === '清') &&
+      snapshots.s_qing_a1.polities.some((p) => p.title === '郑氏台湾') &&
+      !snapshots.s_qing_a1.polities.some((p) => p.title.includes('三藩')),
+    's_qing_a1 (1661-1673) must map unified mainland Qing and Koxinga Taiwan prior to the Revolt of the Three Feudatories'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1675), 's_qing_a', 'Qing at 1675 CE must resolve to s_qing_a');
+  const sanfanPolity = snapshots.s_qing_a.polities.find((p) => p.title === '吴周 · 三藩');
+  assert(
+    sanfanPolity && sanfanPolity.shape.coordinates.length >= 10,
+    's_qing_a (1673-1681) must map Wu Zhou & Three Feudatories across all 7 southern/southwestern provinces (>=10 polygon parts)'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 18 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 20 E2E CUJs`);
 }
 
 main();
