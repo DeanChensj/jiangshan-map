@@ -345,10 +345,10 @@
       if (!this.snapshots) return;
       for (const k of Object.keys(this.snapshots)) {
         const s = this.snapshots[k];
-        if (s && s.prefRef && !s.prefectures && this.snapshots[s.prefRef]) {
+        if (s && s.prefRef && (!s.prefectures || !s.prefectures.length) && this.snapshots[s.prefRef]) {
           s.prefectures = this.snapshots[s.prefRef].prefectures || [];
         }
-        if (s && s.regionRef && !s.regions && this.snapshots[s.regionRef]) {
+        if (s && s.regionRef && (!s.regions || !s.regions.length) && this.snapshots[s.regionRef]) {
           s.regions = this.snapshots[s.regionRef].regions || [];
         }
       }

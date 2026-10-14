@@ -1002,8 +1002,12 @@ window.DYNASTY_DATA = [
         "snap": "s_qin_b"
       },
       {
-        "until": -202,
+        "until": -206,
         "snap": "s_qin"
+      },
+      {
+        "until": -202,
+        "snap": "s_qin_chuhan"
       }
     ]
   },
@@ -1662,8 +1666,12 @@ window.DYNASTY_DATA = [
         "snap": "s_xihan_c"
       },
       {
-        "until": 25,
+        "until": 23,
         "snap": "s_xihan_d"
+      },
+      {
+        "until": 25,
+        "snap": "s_xihan_e"
       }
     ]
   },
@@ -6144,8 +6152,16 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_b"
       },
       {
-        "until": 907,
+        "until": 880,
         "snap": "s_tang_c"
+      },
+      {
+        "until": 885,
+        "snap": "s_tang_d1"
+      },
+      {
+        "until": 907,
+        "snap": "s_tang_d2"
       }
     ]
   },

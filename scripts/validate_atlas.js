@@ -994,8 +994,8 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   assert(
-    htmlSrc.includes('158幅') && htmlSrc.includes('788座') && htmlSrc.includes(`${totalMilestones}项`),
-    `index.html SEO metadata must reflect 158 snapshots, 788 ancient cities, and ${totalMilestones} historical events`
+    htmlSrc.includes('162幅') && htmlSrc.includes('788座') && htmlSrc.includes(`${totalMilestones}项`),
+    `index.html SEO metadata must reflect 162 snapshots, 788 ancient cities, and ${totalMilestones} historical events`
   );
 
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
@@ -1293,6 +1293,54 @@ function main() {
       'Expected #milestone-balloon to include .ep-prev and .ep-next direct event stepper buttons'
     );
   }
+
+  // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
+  for (const [sk, snap] of Object.entries(snapshots)) {
+    if (!snap || Array.isArray(snap) || sk === 's_prc') continue;
+    assert(
+      Array.isArray(snap.regions) && snap.regions.length > 0,
+      `Snapshot ${sk} must have non-empty regions after _hydrateSnapshots(), got ${(snap.regions || []).length}`
+    );
+    assert(
+      Array.isArray(snap.prefectures) && snap.prefectures.length >= 16,
+      `Snapshot ${sk} must have >= 16 prefectures after _hydrateSnapshots(), got ${(snap.prefectures || []).length}`
+    );
+  }
+  assert(
+    snapshots.s_zhanguo_a.prefectures.length >= 28 &&
+      snapshots.s_zhanguo_b.prefectures.length >= 33 &&
+      snapshots.s_qin.prefectures.length >= 40 &&
+      snapshots.s_xihan.prefectures.length >= 50 &&
+      snapshots.s_donghan.prefectures.length >= 48,
+    'Warring States, Qin, and Han snapshots must provide full nationwide commandery (郡) coverage in prefectures'
+  );
+  const xihanDyn = dynasties.find((d) => d.key === 'xihan');
+  assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -204), 's_qin_chuhan', 'Qin at -204 BCE must resolve to s_qin_chuhan');
+  assert(
+    snapshots.s_qin_chuhan.polities.some((p) => p.title === '汉（刘邦）') &&
+      snapshots.s_qin_chuhan.polities.some((p) => p.title === '西楚（项羽）'),
+    's_qin_chuhan must map both Han (Liu Bang) and Western Chu (Xiang Yu)'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(xihanDyn, 24), 's_xihan_e', 'Western Han at 24 CE must resolve to s_xihan_e');
+  assert(
+    snapshots.s_xihan_e.polities.some((p) => p.title === '更始（汉）') &&
+      snapshots.s_xihan_e.polities.some((p) => p.title === '刘秀（河北）') &&
+      snapshots.s_xihan_e.polities.some((p) => p.title === '赤眉军'),
+    's_xihan_e must map Gengshi, Liu Xiu (Hebei), and Chimei Army'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 881), 's_tang_d1', 'Tang at 881 CE must resolve to s_tang_d1');
+  assert(
+    snapshots.s_tang_d1.polities.some((p) => p.title === '大齐（黄巢）'),
+    's_tang_d1 must map Huang Chao Great Qi rival polity'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 895), 's_tang_d2', 'Tang at 895 CE must resolve to s_tang_d2');
+  assert(
+    snapshots.s_tang_d2.polities.some((p) => p.title === '宣武（朱温）') &&
+      snapshots.s_tang_d2.polities.some((p) => p.title === '河东（李克用）') &&
+      snapshots.s_tang_d2.polities.some((p) => p.title === '西川（王建）') &&
+      snapshots.s_tang_d2.polities.some((p) => p.title === '淮南（杨行密）'),
+    's_tang_d2 must map Late Tang regional warlords (Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi)'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
