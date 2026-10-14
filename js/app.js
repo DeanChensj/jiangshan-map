@@ -119,20 +119,41 @@
       return out + 'Z';
     }
 
+    _orientRing(ring, isHole = false) {
+      if (!ring || ring.length < 3) return ring;
+      let area2 = 0;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        area2 += ring[j][0] * ring[i][1] - ring[i][0] * ring[j][1];
+      }
+      if (area2 === 0) return ring;
+      const wantPositive = !isHole;
+      if ((area2 > 0) !== wantPositive) {
+        return ring.slice().reverse();
+      }
+      return ring;
+    }
+
     multiRingsToSvgPath(polygons) {
-      return polygons.map((poly) => poly.map((r) => this.ringToSvgPath(r)).join('')).join('');
+      return polygons
+        .map((poly) =>
+          poly.map((r, idx) => this.ringToSvgPath(this._orientRing(r, idx > 0))).join('')
+        )
+        .join('');
     }
 
     shapeToSvgPath(shapeObj, smooth = true) {
       if (!shapeObj) return '';
       const cacheKey = smooth ? '_svgPathSmooth' : '_svgPath';
       if (shapeObj[cacheKey] !== undefined) return shapeObj[cacheKey];
-      const fn = (r) => (smooth ? this.smoothRingToSvgPath(r) : this.ringToSvgPath(r));
+      const fn = (r, idx) => {
+        const oriented = this._orientRing(r, idx > 0);
+        return smooth ? this.smoothRingToSvgPath(oriented) : this.ringToSvgPath(oriented);
+      };
       let d = '';
       if (shapeObj.type === 'Polygon') {
-        d = shapeObj.coordinates.map(fn).join('');
+        d = shapeObj.coordinates.map((r, idx) => fn(r, idx)).join('');
       } else if (shapeObj.type === 'MultiPolygon') {
-        d = shapeObj.coordinates.map((poly) => poly.map(fn).join('')).join('');
+        d = shapeObj.coordinates.map((poly) => poly.map((r, idx) => fn(r, idx)).join('')).join('');
       }
       Object.defineProperty(shapeObj, cacheKey, {
         value: d,
@@ -443,7 +464,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014j').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014k').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -467,7 +488,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014j').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014k').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -7980,6 +8001,7 @@
     }
   }
 
+  window.MercatorProjector = MercatorProjector;
   window.HistoricalAtlasController = HistoricalAtlasController;
   window.addEventListener('DOMContentLoaded', () => {
     const app = new HistoricalAtlasController();
