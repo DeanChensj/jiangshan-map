@@ -452,18 +452,12 @@ function main() {
     minYear: dynasties[0].fromYear,
     maxYear: dynasties[dynasties.length - 1].toYear,
     camera: { x: 350, y: 215, w: 500, h: 420, zoom: 2 },
-    projector: {
-      greatCircleKm(coordA, coordB) {
-        const dLat = (coordB[1] - coordA[1]) * DEG_TO_RAD;
-        const dLng = (coordB[0] - coordA[0]) * DEG_TO_RAD;
-        const a =
-          Math.sin(dLat * 0.5) ** 2 +
-          Math.cos(coordA[1] * DEG_TO_RAD) *
-            Math.cos(coordB[1] * DEG_TO_RAD) *
-            Math.sin(dLng * 0.5) ** 2;
-        return 12742 * Math.asin(Math.sqrt(a));
-      },
-    },
+    projector: new sandbox.window.MercatorProjector(1000, 700, {
+      west: 66,
+      east: 142,
+      south: 14,
+      north: 55,
+    }),
   });
 
   // CUJ 9a: 0D Single-Place Resolution & Exact-First Disambiguation (Poems, Passes, Battles, Cities)
@@ -1539,10 +1533,17 @@ function main() {
   );
   ctrl._id = prevIdFn;
 
-  // CUJ 22: Complete English Dictionary Coverage, Boot Seed Parity & Even-Odd Fill Rule Guard
+  // CUJ 22: Complete English Dictionary Coverage, Boot Seed Parity & Non-Zero Oriented Fill Rule Guard
   assert(
-    cssSrc.includes('.polity-shape') && /\.polity-shape\s*\{[\s\S]*?fill-rule:\s*evenodd;/m.test(cssSrc),
-    'style.css .polity-shape must explicitly set fill-rule: evenodd for MultiPolygon interior holes'
+    cssSrc.includes('.polity-shape') && /\.polity-shape\s*\{[\s\S]*?fill-rule:\s*nonzero;/m.test(cssSrc),
+    'style.css .polity-shape must explicitly set fill-rule: nonzero with opposite outer/hole ring winding so overlapping MultiPolygon sub-polygons never cancel out'
+  );
+  const sampleRing = [[100, 30], [110, 30], [110, 40], [100, 40], [100, 30]];
+  const outerOriented = ctrl.projector._orientRing(sampleRing, false);
+  const holeOriented = ctrl.projector._orientRing(sampleRing, true);
+  assert(
+    outerOriented[1][0] !== holeOriented[1][0] || outerOriented[1][1] !== holeOriented[1][1],
+    '_orientRing must orient outer rings and interior hole rings in opposite winding directions'
   );
   const enDict = (enLocale && enLocale.dict) || {};
   for (const [k, snap] of Object.entries(snapshots)) {
@@ -1625,6 +1626,15 @@ function main() {
       loreData.PLACE_LANDMARK_EVENTS.some((ev) => ev.dynastyKey === dk && ev.year === yr),
       `Missing required PLACE_LANDMARK_EVENTS entry ${dk}:${yr}`
     );
+  }
+  for (const sk of ['s_ming', 's_ming_b']) {
+    const mingPol = snapshots[sk].polities.find((p) => p.title === '明');
+    assert(
+      mingPol && mingPol.shape.type === 'MultiPolygon' && mingPol.shape.coordinates.length === 4,
+      `${sk} Ming polity must have 4 disjoint sub-polygons (no duplicate overlapping mainland polygon)`
+    );
+    const jurchenPol = snapshots[sk].polities.find((p) => p.title === '女真诸部');
+    assert(jurchenPol && jurchenPol.role === 'neighbor', `${sk} must include 女真诸部 neighbor polity in the Northeast`);
   }
 
   // Verify Western Regions Great Lakes (Lop Nur vanish 1972, labels, and gazetteer resolution)
