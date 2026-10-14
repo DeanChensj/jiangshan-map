@@ -2228,11 +2228,6 @@ html[lang="en"] .region-caption {
   letter-spacing: 0.01em;
 }
 
-html[lang="en"] .prefecture-caption {
-  font-size: 6.4px;
-  letter-spacing: 0;
-}
-
 html[lang="en"] .band-cell {
   font-family: var(--sans-stack);
   font-size: 10px;
@@ -2409,11 +2404,9 @@ html[lang="en"] .genealogy-list li {
     gap: 3.5px;
   }
   .toolbar-divider,
-  .layers-trigger-btn .layers-count-pill,
   .layers-trigger-btn .caret-mark,
   #act-layers-menu .btn-svg,
   #act-journey-menu .btn-svg,
-  #act-challenge .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
   #act-github-star .star-mark,
@@ -2597,10 +2590,6 @@ html[lang="en"] .genealogy-list li {
   filter: drop-shadow(0 0 3px rgba(181, 69, 47, 0.28));
 }
 
-.polity-ghost-path.is-protectorate {
-  stroke-dasharray: 4 3;
-}
-
 .polity-ghost-path.is-fade {
   animation: ghostFadeOut 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
@@ -2781,12 +2770,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 /* #7 Historical Journeys (青史行迹 · 人物时空巡礼) */
-.journey-pop-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 .journey-chip-btn {
   padding: 5px 10px;
   border-radius: 6px;
@@ -3525,11 +3508,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
     text-overflow: ellipsis;
   }
 
-  .key-phase-btns {
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
   .key-mobile-toggle {
     display: inline-flex;
     align-items: center;
@@ -3665,11 +3643,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   transition: fill 0.15s ease, stroke 0.15s ease;
 }
 
-.settlement-node .cap-hint-dot {
-  fill: var(--vermilion);
-  transition: fill 0.15s ease;
-}
-
 .settlement-node .cap-hint-text {
   font-family: var(--serif-stack);
   font-size: 7.6px;
@@ -3688,9 +3661,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 .settlement-node:hover .cap-hint-text,
-.settlement-node .cap-hint-tag:hover .cap-hint-text,
-.settlement-node:hover .cap-hint-dot,
-.settlement-node .cap-hint-tag:hover .cap-hint-dot {
+.settlement-node .cap-hint-tag:hover .cap-hint-text {
   fill: #fffaf2;
 }
 

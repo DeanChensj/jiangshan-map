@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014m').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014n').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014m').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014n').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -952,7 +952,7 @@
       this._updateMusicUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
-        '滚轮缩放 · 拖拽平移 · 点击城名或双击地图查历代沿革 · ← → 调整年份 · 空格播放'
+        '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
       );
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
@@ -964,12 +964,16 @@
       const stepPrevBtn = this._id('act-step-prev');
       if (stepPrevBtn) {
         stepPrevBtn.title =
-          this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 / 事件 (←)';
+          this.locale === 'en'
+            ? 'Previous historical stage / event node (←) · Shift+← -10 yrs'
+            : '上一历史阶段 / 事件节点（←）· Shift+← 退十年';
       }
       const stepNextBtn = this._id('act-step-next');
       if (stepNextBtn) {
         stepNextBtn.title =
-          this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 / 事件 (→)';
+          this.locale === 'en'
+            ? 'Next historical stage / event node (→) · Shift+→ +10 yrs'
+            : '下一历史阶段 / 事件节点（→）· Shift+→ 进十年';
       }
       this._id('txt-genealogy-kicker').textContent = this.uiStr(
         'trace_kicker',
@@ -5115,7 +5119,7 @@
         q.score >= 850
           ? this.uiStr('title_850', '太史令 · 舆图大家')
           : q.score >= 650
-            ? this.uiStr('title_650', '職方郎中 · 熟稔疆理')
+            ? this.uiStr('title_650', '职方郎中 · 熟稔疆理')
             : q.score >= 400
               ? this.uiStr('title_400', '州郡从事 · 略通古今')
               : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');
