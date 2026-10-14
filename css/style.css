@@ -2428,9 +2428,14 @@ html[lang="en"] .genealogy-list li {
   }
   .toolbar-divider,
   .layers-trigger-btn .layers-count-pill,
+  .layers-trigger-btn .caret-mark,
+  #act-layers-menu .btn-svg,
+  #act-journey-menu .btn-svg,
+  #act-challenge .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
-  #act-github-star {
+  #act-github-star .star-mark,
+  #lbl-github-star {
     display: none !important;
   }
   .action-btn {
@@ -2439,14 +2444,15 @@ html[lang="en"] .genealogy-list li {
     gap: 2.5px;
   }
   .action-btn .btn-svg {
-    width: 11.5px;
-    height: 11.5px;
+    width: 12.5px;
+    height: 12.5px;
   }
   .action-btn.locale-switch {
     min-width: 0;
     padding: 4px 6px;
   }
-  .music-pill-group .music-btn {
+  .music-pill-group .music-btn,
+  #act-github-star {
     padding: 4px 6.5px;
   }
   .layers-popover {

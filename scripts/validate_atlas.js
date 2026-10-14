@@ -1229,8 +1229,11 @@ function main() {
       appCode.includes('_syncChallengeScrubberState') &&
       cssSrc.includes('.prefecture-shape.is-traced') &&
       cssSrc.includes('#scrubber-dock.is-challenge-locked') &&
-      cssSrc.includes('#journey-card.is-custom-route'),
-    'app.js & style.css must implement persistent trace onboarding (#2), traced prefecture highlight (#5), custom route control card (#3), and challenge scrubber lock (#6)'
+      cssSrc.includes('#journey-card.is-custom-route') &&
+      cssSrc.includes('#act-github-star .star-mark') &&
+      cssSrc.includes('#lbl-github-star') &&
+      !cssSrc.includes('#lbl-music,\n  #act-github-star {'),
+    'app.js & style.css must implement persistent trace onboarding (#2), traced prefecture highlight (#5), custom route control card (#3), challenge scrubber lock (#6), and icon-only mobile GitHub link'
   );
   const mockPrefNodes = [
     { dataset: { prefTitle: '黄州' }, classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } } },
