@@ -1469,6 +1469,76 @@ function main() {
     's_qing_a (1673-1681) must map Wu Zhou & Three Feudatories across Yunnan, Guizhou, Sichuan, Hunan, Guangxi, Guangdong, and Fujian with zero overlap against Qing'
   );
 
+  // CUJ 21: Mobile vs. Desktop Chronicle Toggle Synchronization (#act-toggle-pane & #act-mobile-chronicle)
+  const mockToggleBtn = {
+    innerHTML: '',
+    title: '',
+    isCollapsed: false,
+    classList: {
+      toggle(cls, val) {
+        if (cls === 'is-collapsed') mockToggleBtn.isCollapsed = Boolean(val);
+      }
+    }
+  };
+  const mockMobBtn = {
+    textContent: '',
+    ariaExpanded: 'false',
+    setAttribute(k, v) {
+      if (k === 'aria-expanded') mockMobBtn.ariaExpanded = v;
+    }
+  };
+  const mockBodyClasses = new Set(['is-pane-collapsed']);
+  const mockWorkspaceBody = {
+    classList: {
+      remove(cls) {
+        mockBodyClasses.delete(cls);
+      },
+      toggle(cls, val) {
+        if (val) mockBodyClasses.add(cls);
+        else mockBodyClasses.delete(cls);
+      }
+    }
+  };
+  const prevIdFn = ctrl._id;
+  ctrl._id = (id) => {
+    if (id === 'act-toggle-pane') return mockToggleBtn;
+    if (id === 'act-mobile-chronicle') return mockMobBtn;
+    if (id === 'workspace-body') return mockWorkspaceBody;
+    return prevIdFn ? prevIdFn.call(ctrl, id) : null;
+  };
+  ctrl.closeMilestoneBalloon = () => {};
+  ctrl.closeGenealogyCard = () => {};
+  ctrl._updateScaleBar = () => {};
+  ctrl.paneCollapsed = true;
+  ctrl.mobileChronicleOpen = false;
+  ctrl._isMobileViewport = () => true;
+  ctrl._syncTogglePaneButton();
+  assert(
+    mockToggleBtn.isCollapsed === true && mockToggleBtn.innerHTML.includes('史志'),
+    `Mobile #act-toggle-pane must show 史志 (collapsed) when mobileChronicleOpen is false, got ${mockToggleBtn.innerHTML}`
+  );
+  ctrl.toggleMobileChronicle(true);
+  assert(
+    ctrl.mobileChronicleOpen === true &&
+      ctrl.paneCollapsed === false &&
+      mockBodyClasses.has('is-mobile-chronicle-open') &&
+      !mockBodyClasses.has('is-pane-collapsed') &&
+      mockToggleBtn.isCollapsed === false &&
+      mockToggleBtn.innerHTML.includes('全图') &&
+      mockMobBtn.ariaExpanded === 'true',
+    'Opening mobile chronicle must clear is-pane-collapsed, add is-mobile-chronicle-open, and flip #act-toggle-pane to 全图'
+  );
+  ctrl.toggleMobileChronicle(false);
+  assert(
+    ctrl.mobileChronicleOpen === false &&
+      !mockBodyClasses.has('is-mobile-chronicle-open') &&
+      mockToggleBtn.isCollapsed === true &&
+      mockToggleBtn.innerHTML.includes('史志') &&
+      mockMobBtn.ariaExpanded === 'false',
+    'Closing mobile chronicle must remove is-mobile-chronicle-open and flip #act-toggle-pane back to 史志'
+  );
+  ctrl._id = prevIdFn;
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
