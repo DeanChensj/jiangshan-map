@@ -1559,13 +1559,29 @@ function main() {
         `Snapshot ${k} macro-region "${r.title}" is missing an English translation in EN_LOCALE.dict`
       );
     }
+    for (const pref of snap.prefectures || []) {
+      assert(
+        enDict[pref.title],
+        `Snapshot ${k} prefecture "${pref.title}" is missing an English translation in EN_LOCALE.dict`
+      );
+    }
   }
   for (const d of dynasties) {
     for (const st of d.settlements || []) {
+      assert(
+        enDict[st.ancient],
+        `Dynasty ${d.key} settlement "${st.ancient}" ancient name is missing in EN_LOCALE.dict`
+      );
       if (st.modern) {
         assert(
           enDict[st.modern],
           `Dynasty ${d.key} settlement "${st.ancient}" modern location "${st.modern}" is missing in EN_LOCALE.dict`
+        );
+      }
+      if (st.remark) {
+        assert(
+          enDict[st.remark],
+          `Dynasty ${d.key} settlement "${st.ancient}" remark "${st.remark}" is missing in EN_LOCALE.dict`
         );
       }
     }
