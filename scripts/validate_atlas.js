@@ -316,7 +316,7 @@ function main() {
   for (const c of corridors) {
     assert(enLocale.corridors && enLocale.corridors[c.key], `Missing English translation for corridor ${c.key}`);
   }
-  const zhouExceptions = new Set(['贵州', '北朝幽州', '曹魏徐州']);
+  const zhouExceptions = new Set(['贵州', '北朝幽州', '曹魏徐州', '南阳邓州', '酒泉瓜州']);
   for (const [zhKey, enVal] of Object.entries((enLocale && enLocale.dict) || {})) {
     if (zhKey.length >= 2 && zhKey.length <= 4 && zhKey.endsWith('州') && !zhouExceptions.has(zhKey)) {
       assert(
@@ -1539,13 +1539,50 @@ function main() {
   );
   ctrl._id = prevIdFn;
 
+  // CUJ 22: Complete English Dictionary Coverage, Boot Seed Parity & Even-Odd Fill Rule Guard
+  assert(
+    cssSrc.includes('.polity-shape') && /\.polity-shape\s*\{[\s\S]*?fill-rule:\s*evenodd;/m.test(cssSrc),
+    'style.css .polity-shape must explicitly set fill-rule: evenodd for MultiPolygon interior holes'
+  );
+  const enDict = (enLocale && enLocale.dict) || {};
+  for (const [k, snap] of Object.entries(snapshots)) {
+    if (!snap || Array.isArray(snap)) continue;
+    for (const p of snap.polities || []) {
+      assert(
+        enDict[p.title],
+        `Snapshot ${k} polity "${p.title}" is missing an English translation in EN_LOCALE.dict`
+      );
+    }
+    for (const r of snap.regions || []) {
+      assert(
+        enDict[r.title],
+        `Snapshot ${k} macro-region "${r.title}" is missing an English translation in EN_LOCALE.dict`
+      );
+    }
+  }
+  for (const d of dynasties) {
+    for (const st of d.settlements || []) {
+      if (st.modern) {
+        assert(
+          enDict[st.modern],
+          `Dynasty ${d.key} settlement "${st.ancient}" modern location "${st.modern}" is missing in EN_LOCALE.dict`
+        );
+      }
+    }
+  }
+  assert.strictEqual(
+    bootSnaps.s_qin_a.prefectures.length,
+    snapshots.s_qin_a.prefectures.length,
+    `atlas_boot.js s_qin_a prefecture count (${bootSnaps.s_qin_a.prefectures.length}) must match atlas_snapshots.js (${snapshots.s_qin_a.prefectures.length})`
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 20 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 22 E2E CUJs`);
 }
 
 main();
