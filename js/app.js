@@ -443,7 +443,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014e').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -467,7 +467,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014e').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2600,20 +2600,31 @@
     }
 
     _highlightCurrentMilestone(dynasty) {
-      const items = this._id('milestone-list').children;
+      const listEl = this._id('milestone-list');
+      if (!listEl) return;
+      const items = listEl.children;
       if (!items.length) return;
       const activeIdx = this._activeMilestoneIndex(dynasty);
       Array.from(items).forEach((el, idx) =>
         el.classList.toggle('is-current', idx === activeIdx)
       );
-      if (activeIdx >= 0 && items[activeIdx]) {
-        const el = items[activeIdx];
-        const pane = this._id('chronicle-pane');
-        if (pane && pane.scrollHeight > pane.clientHeight) {
-          const elTop = el.offsetTop - pane.offsetTop;
-          const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
-          pane.scrollTo({ top: targetTop, behavior: 'smooth' });
+      const pane = this._id('chronicle-pane');
+      if (!pane) return;
+      if (this._isMobileViewport() && !this.mobileChronicleOpen) {
+        pane.scrollTop = 0;
+        return;
+      }
+      if (activeIdx <= 0) {
+        if (pane.scrollTop > 0) {
+          pane.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        return;
+      }
+      if (activeIdx > 0 && items[activeIdx] && pane.scrollHeight > pane.clientHeight) {
+        const el = items[activeIdx];
+        const elTop = el.offsetTop - pane.offsetTop;
+        const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
+        pane.scrollTo({ top: targetTop, behavior: 'smooth' });
       }
     }
 
@@ -3874,11 +3885,23 @@
           : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
     }
 
+    _isMobileViewport() {
+      return (
+        typeof window !== 'undefined' &&
+        typeof window.innerWidth === 'number' &&
+        window.innerWidth > 0 &&
+        window.innerWidth <= 900
+      );
+    }
+
     _syncTogglePaneButton() {
       const btn = this._id('act-toggle-pane');
       if (!btn) return;
-      const arrow = this.paneCollapsed ? '‹' : '›';
-      const label = this.paneCollapsed
+      const isCollapsed = this._isMobileViewport()
+        ? !this.mobileChronicleOpen
+        : Boolean(this.paneCollapsed);
+      const arrow = isCollapsed ? '‹' : '›';
+      const label = isCollapsed
         ? this.locale === 'en'
           ? 'Info'
           : '史志'
@@ -3886,8 +3909,8 @@
           ? 'Full'
           : '全图';
       btn.innerHTML = `<span class="tp-arrow" aria-hidden="true">${arrow}</span><span class="tp-label" id="lbl-toggle-pane">${label}</span>`;
-      btn.classList.toggle('is-collapsed', Boolean(this.paneCollapsed));
-      btn.title = this.paneCollapsed
+      btn.classList.toggle('is-collapsed', isCollapsed);
+      btn.title = isCollapsed
         ? this.locale === 'en'
           ? 'Expand chronicle pane'
           : '展开编年侧栏'
@@ -3911,24 +3934,36 @@
       this.mobileChronicleOpen =
         force !== undefined ? force : !this.mobileChronicleOpen;
       if (this.mobileChronicleOpen) {
+        if (this.paneCollapsed) {
+          this.paneCollapsed = false;
+          const bodyEl = this._id('workspace-body');
+          if (bodyEl) bodyEl.classList.remove('is-pane-collapsed');
+        }
         this.closeMilestoneBalloon();
         this.closeGenealogyCard();
-        if (this.activeJourney && window.innerWidth <= 900) {
+        if (this.activeJourney && this._isMobileViewport()) {
           this.stopJourney(true);
         }
+        if (this.challenge && this._isMobileViewport()) {
+          this.stopChallenge(true);
+        }
+      }
+      const pane = this._id('chronicle-pane');
+      if (pane) {
+        pane.scrollTop = 0;
       }
       const body = this._id('workspace-body');
       if (body) {
         body.classList.toggle('is-mobile-chronicle-open', this.mobileChronicleOpen);
       }
       this._updateMobileChronicleBtn(this.dynasties[this.dynastyIdx]);
+      this._syncTogglePaneButton();
       setTimeout(() => {
+        if (pane && !this.mobileChronicleOpen) {
+          pane.scrollTop = 0;
+        }
         this._updateScaleBar();
         if (this.activeMilestone) this._positionMilestoneBalloon();
-        if (this.mobileChronicleOpen) {
-          const cur = this.dynasties[this.dynastyIdx];
-          if (cur) this._highlightCurrentMilestone(cur);
-        }
       }, 230);
     }
 
@@ -6358,7 +6393,16 @@
       if (togglePaneBtn) {
         togglePaneBtn.addEventListener('click', () => {
           this._paneAutoCollapsed = false;
-          this.toggleChroniclePane();
+          if (this._isMobileViewport()) {
+            if (this.paneCollapsed) {
+              this.paneCollapsed = false;
+              const body = this._id('workspace-body');
+              if (body) body.classList.remove('is-pane-collapsed');
+            }
+            this.toggleMobileChronicle();
+          } else {
+            this.toggleChroniclePane();
+          }
         });
       }
       const mobChronBtn = this._id('act-mobile-chronicle');
@@ -7061,6 +7105,7 @@
         const vw = window.innerWidth;
         if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
           this._rescaleSvgTypography();
+          this._syncTogglePaneButton();
         }
         this._updateScaleBar();
       });

@@ -2358,9 +2358,6 @@ html[lang="en"] .genealogy-list li {
     padding: 3px 7px 5px;
     transition: opacity 0.18s ease;
   }
-  #act-toggle-pane {
-    display: none;
-  }
   #challenge-card {
     top: 8px;
     left: 8px;
@@ -3399,6 +3396,28 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 @media (max-width: 900px) {
+  #workspace-body {
+    grid-template-columns: 1fr;
+    transition: grid-template-rows 0.22s ease;
+  }
+
+  #workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 0px;
+  }
+
+  #workspace-body.is-mobile-chronicle-open {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr min(50vh, 310px);
+  }
+
+  #workspace-body.is-mobile-chronicle-open #chronicle-pane {
+    width: auto;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 0 14px 12px;
+  }
+
   .mobile-chronicle-btn {
     display: inline-flex;
     align-items: center;
@@ -3473,10 +3492,16 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   #workspace-body.is-mobile-chronicle-open #chronicle-pane .dynasty-banner {
+    position: sticky;
+    top: 0;
+    z-index: 4;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 4px 10px;
+    padding: 8px 0 6px;
+    background: rgba(246, 241, 231, 0.98);
+    border-bottom: 1px solid rgba(90, 74, 58, 0.14);
     cursor: pointer;
   }
 
