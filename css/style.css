@@ -331,22 +331,6 @@ h2 {
   background: #a03b26;
 }
 
-#nav-bar #act-challenge {
-  background: rgba(181, 69, 47, 0.08);
-  color: var(--vermilion);
-  border-color: rgba(181, 69, 47, 0.34);
-  box-shadow: none;
-  font-weight: 600;
-}
-
-#nav-bar #act-challenge:hover,
-#nav-bar #act-challenge.is-active {
-  background: var(--vermilion);
-  color: #fffaf2;
-  border-color: var(--vermilion);
-  box-shadow: 0 3px 10px rgba(181, 69, 47, 0.24);
-}
-
 .action-btn.sm {
   padding: 5px 12px;
   font-size: 12px;
@@ -3739,6 +3723,14 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
 .journey-popover {
   width: 318px;
+  max-height: min(78vh, 560px);
+  overflow-y: auto;
+}
+
+.journey-quiz-section {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--hairline);
 }
 
 @media (max-width: 640px) {

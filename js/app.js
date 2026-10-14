@@ -464,7 +464,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014k').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014l').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -488,7 +488,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014k').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014l').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -938,6 +938,12 @@
         '长安 → 河西 → 大宛 → 大月氏 · 9站',
         "Chang'an → Hexi → Fergana → Bactria · 9 stops"
       );
+      setTxt('lbl-jm-badge-quiz', '雅集', 'Quiz');
+      setTxt(
+        'lbl-jm-meta-quiz',
+        '盲图落针标定历代名城与雄关 · 10题计分',
+        'Pinpoint 10 ancient cities & strategic passes on the map'
+      );
       this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
       this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
       this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
@@ -970,9 +976,15 @@
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
-      lblChal.textContent = this.challenge
-        ? this.uiStr('btn_quiz_active', '挑战中…')
-        : this.uiStr('btn_quiz', '开始挑战');
+      if (lblChal) {
+        lblChal.textContent = this.challenge
+          ? this.locale === 'en'
+            ? 'Quiz Active · Click to Exit'
+            : '挑战进行中 · 点击退出'
+          : this.locale === 'en'
+            ? 'Map Pinpoint · Ancient Place Quiz'
+            : '舆图寻址 · 古地名小试';
+      }
       const lblLoc = this._id('lbl-locale') || this._id('act-locale');
       lblLoc.textContent = this.locale === 'en' ? '中文' : 'EN';
       const ghBtn = this._id('act-github-star');
@@ -4929,8 +4941,13 @@
       this._id('challenge-card').classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
       if (actChal) actChal.classList.add('is-active');
+      const jMenuBtn = this._id('act-journey-menu');
+      if (jMenuBtn) jMenuBtn.classList.add('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz_active', '挑战中…');
+      if (lblChal) {
+        lblChal.textContent =
+          this.locale === 'en' ? 'Quiz Active · Click to Exit' : '挑战进行中 · 点击退出';
+      }
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
       if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
@@ -4949,8 +4966,13 @@
       if (sb) sb.classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
       if (actChal) actChal.classList.remove('is-active');
+      const jMenuBtn = this._id('act-journey-menu');
+      if (jMenuBtn && !this.activeJourney) jMenuBtn.classList.remove('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) lblChal.textContent = this.uiStr('btn_quiz', '开始挑战');
+      if (lblChal) {
+        lblChal.textContent =
+          this.locale === 'en' ? 'Map Pinpoint · Ancient Place Quiz' : '舆图寻址 · 古地名小试';
+      }
       this.svg.classList.toggle('is-crosshair', this.genealogyMode);
       const chkSettle = this._id('chk-settlements');
       this.grpSettlements.classList.toggle('is-hidden', Boolean(chkSettle && !chkSettle.checked));
@@ -6269,7 +6291,7 @@
       const closeJourneyPopover = () => {
         if (!journeyPopover || !journeyBtn) return;
         journeyPopover.classList.add('is-hidden');
-        if (!this.activeJourney) {
+        if (!this.activeJourney && !this.challenge) {
           journeyBtn.classList.remove('is-active');
         }
         journeyBtn.setAttribute('aria-expanded', 'false');
@@ -6310,7 +6332,7 @@
             closeJourneyPopover();
           }
         });
-        journeyPopover.querySelectorAll('.journey-menu-item').forEach((btn) => {
+        journeyPopover.querySelectorAll('.journey-menu-item[data-journey]').forEach((btn) => {
           btn.addEventListener('click', () => {
             closeJourneyPopover();
             if (this.activeJourney && this.activeJourney.key === btn.dataset.journey) {
@@ -6447,6 +6469,7 @@
       });
 
       this._id('act-challenge').addEventListener('click', () => {
+        closeJourneyPopover();
         if (this.challenge) this.stopChallenge();
         else this.startChallenge();
       });
