@@ -5152,6 +5152,21 @@ window.EN_LOCALE = {
     "甘肃行省西宁州，通吐蕃孔道": "Xining Zhou in Gansu Province, strategic gateway into Tibet",
     "洪武六年置西宁卫，河湟茶马互市重镇": "Xining Garrison established in 1373 CE as a major Hehuang tea-and-horse trade hub",
     "施琅于泉州整训水师收复台湾": "Shi Lang trained his naval fleet at Quanzhou before recovering Taiwan",
-    "雍正间平罗卜藏丹津升西宁府，驻青海办事大臣": "Elevated to Xining Prefecture under Yongzheng and seat of the Qinghai Imperial Resident"
+    "雍正间平罗卜藏丹津升西宁府，驻青海办事大臣": "Elevated to Xining Prefecture under Yongzheng and seat of the Qinghai Imperial Resident",
+    "罗布泊": "Lop Nur (Puchanghai)",
+    "蒲昌海": "Puchanghai (Lop Nur)",
+    "博斯腾湖": "Bosten Lake",
+    "热海": "Rehai (Issyk-Kul)",
+    "伊塞克湖": "Issyk-Kul (Rehai)",
+    "巴尔喀什湖": "Lake Balkhash",
+    "夷播海": "Yibohai (Lake Balkhash)",
+    "居延海": "Juyan Lake",
+    "居延泽": "Juyan Marsh",
+    "斋桑泊": "Lake Zaysan",
+    "新疆巴音郭楞若羌罗布泊": "Lop Nur, Ruoqiang, Xinjiang",
+    "新疆巴音郭楞博湖": "Bohu, Bayingolin, Xinjiang",
+    "吉尔吉斯斯坦伊塞克湖": "Issyk-Kul, Kyrgyzstan",
+    "哈萨克斯坦巴尔喀什湖": "Lake Balkhash, Kazakhstan",
+    "内蒙古阿拉善额济纳": "Ejin Banner, Alxa, Inner Mongolia"
   }
 };
