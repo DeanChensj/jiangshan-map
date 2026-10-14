@@ -752,6 +752,10 @@ window.EN_LOCALE = {
       "Shaanxi peasant uprisings begin; rise of Li Zicheng",
       "Mizhi"
     ],
+    "ming:1643": [
+      "Li Zicheng takes Xi'an as King of Xinshun; Zhang Xianzhong seizes Wuchang and enters Shu",
+      "Xi'an · Wuchang"
+    ],
     "ming:1644": [
       "Li Zicheng takes Beijing; Qing armies enter Shanhai Pass",
       "Beijing"
@@ -759,6 +763,10 @@ window.EN_LOCALE = {
     "qing:1644": [
       "Qing armies enter Shanhai Pass and make Beijing the capital",
       "Shanhai Pass"
+    ],
+    "qing:1673": [
+      "Kangxi orders abolition of the feudatories; Wu Sangui rebels in Yunnan (Three Feudatories)",
+      "Kunming · Hengzhou"
     ],
     "qing:1681": [
       "Qing forces capture Kunming, suppressing the Revolt of the Three Feudatories",
@@ -4538,6 +4546,13 @@ window.EN_LOCALE = {
     "23 — 25 · 绿林赤眉起义与更始政权：昆阳大捷诛王莽，更始帝入洛阳长安，赤眉军、河北刘秀与陇蜀群雄并起": "23–25 CE · Fall of Xin & Gengshi Regime: Victory at Kunyang, Chimei Army, Liu Xiu in Hebei & Regional Warlords",
     "848 — 880 · 张议潮归义军收复河西：沙州起义驱逐吐蕃，收复瓜沙等十一州归唐": "848–880 CE · Zhang Yichao's Guiyi Circuit Recovers Hexi: Eleven Prefectures Restored to Tang",
     "880 — 884 · 黄巢攻入长安称帝大齐：黄巢大军渡江破洛阳、入长安建国号大齐，唐僖宗奔蜀，李克用等会诸镇收复长安": "880–884 CE · Huang Chao's Rebellion: Huang Chao Captures Chang'an and Proclaims Great Qi; Emperor Xizong Flees to Shu",
-    "885 — 907 · 唐末藩镇彻底裂解：朱温据宣武河南、李克用据河东、王建据西川、杨行密据淮南、钱镠据两浙，唐室仅存关中一隅": "885–907 CE · Late Tang Warlord Fragmentation: Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi & Qian Liu Divide the Realm"
+    "885 — 907 · 唐末藩镇彻底裂解：朱温据宣武河南、李克用据河东、王建据西川、杨行密据淮南、钱镠据两浙，唐室仅存关中一隅": "885–907 CE · Late Tang Warlord Fragmentation: Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi & Qian Liu Divide the Realm",
+    "大顺（李自成）": "Dashun (Li Zicheng)",
+    "大西（张献忠）": "Daxi (Zhang Xianzhong)",
+    "吴周 · 三藩": "Wu Zhou & Three Feudatories",
+    "1616 — 1643 · 明末辽东危局：后金崛起（1636 改国号大清），萨尔浒之战后辽东尽失": "1616–1643 CE · Late Ming Liaodong Crisis: Rise of Later Jin (Renamed Great Qing in 1636) & Loss of Liaodong",
+    "1643 — 1644 · 崇祯末局与大顺、大西割据：李自成据陕晋豫建国号大顺东进北京，张献忠据荆襄入蜀，清军陈兵关外": "1643–1644 CE · Fall of Ming, Dashun & Daxi: Li Zicheng Proclaims Dashun and Marches on Beijing; Zhang Xianzhong Enters Sichuan",
+    "1661 — 1673 · 郑成功收复台湾与南明终结：明郑驱逐荷兰殖民者设承天府，清军入缅俘永历帝统一大陆": "1661–1673 CE · Koxinga Recovers Taiwan & End of Southern Ming: Kingdom of Tungning Established; Qing Unifies the Mainland",
+    "1673 — 1681 · 三藩之乱：吴三桂于云南起兵称周，福建耿精忠、广东尚之信及陕甘王辅臣响应，一度席卷云贵川陕湖广闽粤": "1673–1681 CE · Revolt of the Three Feudatories: Wu Sangui, Geng Jingzhong & Shang Zhixin Rebel Across Seven Southern Provinces"
   }
 };

@@ -9449,6 +9449,16 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 1643,
+        "headline": "李自成克潼关入西安称新顺王；张献忠拔武昌进取巴蜀",
+        "site": "西安 · 武昌",
+        "coord": [
+          108.941,
+          34.341
+        ],
+        "isMapChange": true
+      },
+      {
         "year": 1644,
         "headline": "李自成破北京，清军入关",
         "site": "北京",
@@ -10035,8 +10045,12 @@ window.DYNASTY_DATA = [
         "snap": "s_ming_b"
       },
       {
-        "until": 1644,
+        "until": 1643,
         "snap": "s_ming_c"
+      },
+      {
+        "until": 1644,
+        "snap": "s_ming_d"
       }
     ]
   },
@@ -10067,7 +10081,18 @@ window.DYNASTY_DATA = [
         "coord": [
           120.211,
           23.001
-        ]
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 1673,
+        "headline": "康熙帝下旨撤藩，吴三桂于云南起兵反清，三藩之乱爆发",
+        "site": "昆明 · 衡州",
+        "coord": [
+          102.701,
+          25.051
+        ],
+        "isMapChange": true
       },
       {
         "year": 1681,
@@ -10076,7 +10101,8 @@ window.DYNASTY_DATA = [
         "coord": [
           102.701,
           25.051
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1683,
@@ -10976,6 +11002,10 @@ window.DYNASTY_DATA = [
       {
         "until": 1661,
         "snap": "s_qing_a0"
+      },
+      {
+        "until": 1673,
+        "snap": "s_qing_a1"
       },
       {
         "until": 1681,
