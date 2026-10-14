@@ -270,9 +270,6 @@
       this.musicPlaying = false;
       this.musicTrackIdx = 0;
       this.musicAudio = null;
-      this.synthCtx = null;
-      this.synthTimer = null;
-      this.genealogyMode = false;
       this.terrainMode = true;
       this.hydroData = window.HYDRO_DATA || { rivers: [], lakes: [] };
       this.activeTrace = null;
@@ -283,7 +280,6 @@
       this.journeyStopIdx = 0;
       this.journeyTimer = null;
       this.challenge = null;
-      this.challengeVariant = 'locate';
       this.paneCollapsed = false;
       this._paneAutoCollapsed = false;
       this._gestureMoved = false;
@@ -294,7 +290,6 @@
       this._typoDirty = true;
       this._lastTypographyWidth = undefined;
       this._camRaf = null;
-      this.showEventCallouts = this._loadEventCalloutsPref();
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -329,36 +324,6 @@
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
         setTimeout(() => this._ensureFullSnapshots(), 50);
-      }
-    }
-
-    _loadEventCalloutsPref() {
-      try {
-        const v = localStorage.getItem('jiangshan_event_callouts');
-        if (v === '0' || v === 'false') return false;
-      } catch (_) {}
-      return true;
-    }
-
-    _saveEventCalloutsPref(enabled) {
-      try {
-        localStorage.setItem('jiangshan_event_callouts', enabled ? '1' : '0');
-      } catch (_) {}
-    }
-
-    toggleEventCallouts(enabled) {
-      this.showEventCallouts = Boolean(enabled);
-      this._saveEventCalloutsPref(this.showEventCallouts);
-      const chk = this._id('chk-event-callouts');
-      if (chk && chk.checked !== this.showEventCallouts) {
-        chk.checked = this.showEventCallouts;
-      }
-      if (!this.showEventCallouts) {
-        this.closeMilestoneBalloon();
-      } else {
-        if (this.dismissedCalloutIds) this.dismissedCalloutIds.clear();
-        const cur = this.dynasties[this.dynastyIdx];
-        if (cur) this._syncAutoMilestoneBalloon(cur);
       }
     }
 
@@ -464,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014l').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014m').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -488,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014l').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014m').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -959,16 +924,6 @@
             : '长城 · 大运河 · 丝绸之路';
       }
       this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '重大事件');
-      const lblEventCallouts = this._id('lbl-event-callouts');
-      if (lblEventCallouts) {
-        lblEventCallouts.textContent = this.uiStr('toggle_event_callouts', '史事浮签');
-        if (lblEventCallouts.parentElement) {
-          lblEventCallouts.parentElement.title = this.uiStr(
-            'toggle_event_callouts_tip',
-            '在地图事件坐标旁浮显当前节点史事小笺'
-          );
-        }
-      }
       const lblReset = this._id('lbl-reset-camera') || this._id('act-reset-camera');
       lblReset.textContent = this.uiStr('btn_reset', '复位视图');
       const actReset = this._id('act-reset-camera');
@@ -1892,7 +1847,6 @@
         isMobile &&
         (this.mobileChronicleOpen || (genCard && !genCard.classList.contains('is-hidden')));
       if (
-        this.showEventCallouts === false ||
         milestonesHidden ||
         this.playing ||
         this.challenge ||
@@ -1983,7 +1937,7 @@
       });
       this._highlightCurrentMilestone(dynasty);
       this._updateMilestoneStates(dynasty);
-      if (!m.coord || (opts && opts.fromStep && this.showEventCallouts === false)) {
+      if (!m.coord || (opts && opts.fromStep && this.grpMilestones && this.grpMilestones.classList.contains('is-hidden'))) {
         this.milestoneBalloon.classList.add('is-hidden');
         const vf = this._id('viewport-frame');
         if (vf) vf.classList.remove('has-open-milestone-balloon');
@@ -2662,23 +2616,6 @@
     }
 
     // ---------------- Place Genealogy (Trace Place) ----------------
-    toggleGenealogyMode(force) {
-      this.genealogyMode = force !== undefined ? force : !this.genealogyMode;
-      if (this.genealogyMode) {
-        this._dismissTraceOnboarding();
-      }
-      if (this.genealogyMode && this.challenge) {
-        this.stopChallenge();
-      }
-      if (this.genealogyMode && this.activeJourney) {
-        this.stopJourney();
-      }
-      this.svg.classList.toggle('is-crosshair', this.genealogyMode || Boolean(this.challenge));
-      if (!this.genealogyMode && !this._id('genealogy-card').classList.contains('is-hidden')) {
-        this.closeGenealogyCard();
-      }
-    }
-
     closeGenealogyCard() {
       this.activeTrace = null;
       this.activeTraceLabel = '';
@@ -3725,9 +3662,7 @@
         const t = HistoricalAtlasController.GUQIN_TRACKS[this.musicTrackIdx];
         if (audio.src !== t.ogg) {
           audio.src = t.ogg;
-          audio.play().catch(() => this._startGuqinSynthFallback());
-        } else {
-          this._startGuqinSynthFallback();
+          audio.play().catch(() => {});
         }
       });
       this.musicAudio = audio;
@@ -3735,7 +3670,6 @@
     }
 
     _playCurrentMusicTrack() {
-      this._stopGuqinSynthFallback();
       const tracks = HistoricalAtlasController.GUQIN_TRACKS;
       const t = tracks[this.musicTrackIdx % tracks.length];
       const audio = this._ensureMusicAudio();
@@ -3745,7 +3679,7 @@
       audio.play().catch(() => {
         if (!this.musicPlaying) return;
         audio.src = t.ogg;
-        audio.play().catch(() => this._startGuqinSynthFallback());
+        audio.play().catch(() => {});
       });
     }
 
@@ -3753,7 +3687,6 @@
       if (this.musicPlaying) {
         this.musicPlaying = false;
         if (this.musicAudio) this.musicAudio.pause();
-        this._stopGuqinSynthFallback();
         this._updateMusicUi();
       } else {
         this._playCurrentMusicTrack();
@@ -3767,56 +3700,6 @@
         this._playCurrentMusicTrack();
       } else {
         this._updateMusicUi();
-      }
-    }
-
-    _startGuqinSynthFallback() {
-      if (!this.musicPlaying || this.synthTimer) return;
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      if (!this.synthCtx) this.synthCtx = new AudioCtx();
-      if (this.synthCtx.state === 'suspended') this.synthCtx.resume();
-      // Gong-Shang-Jue-Zhi-Yu pentatonic frequencies in D (Hz)
-      const scale = [146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63, 369.99, 440.0];
-      let step = 0;
-      const pattern = [0, 3, 4, 5, 3, 2, 1, 0, 4, 6, 5, 3, 4, 2, 0];
-      const pluck = () => {
-        if (!this.musicPlaying || !this.synthCtx) return;
-        const now = this.synthCtx.currentTime;
-        const freq = scale[pattern[step % pattern.length]];
-        step++;
-        const osc = this.synthCtx.createOscillator();
-        const overtone = this.synthCtx.createOscillator();
-        const gain = this.synthCtx.createGain();
-        const filter = this.synthCtx.createBiquadFilter();
-        osc.type = 'triangle';
-        overtone.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        osc.frequency.exponentialRampToValueAtTime(freq * 0.996, now + 2.8);
-        overtone.frequency.setValueAtTime(freq * 2, now);
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(920, now);
-        filter.frequency.exponentialRampToValueAtTime(240, now + 3.2);
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(0.11, now + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.0008, now + 3.5);
-        osc.connect(filter);
-        overtone.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.synthCtx.destination);
-        osc.start(now);
-        overtone.start(now);
-        osc.stop(now + 3.6);
-        overtone.stop(now + 3.6);
-      };
-      pluck();
-      this.synthTimer = setInterval(pluck, 2200);
-    }
-
-    _stopGuqinSynthFallback() {
-      if (this.synthTimer) {
-        clearInterval(this.synthTimer);
-        this.synthTimer = null;
       }
     }
 
@@ -4920,7 +4803,6 @@
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
-      if (this.genealogyMode) this.toggleGenealogyMode(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.add('is-hidden');
       const vf = this._id('viewport-frame');
@@ -4929,7 +4811,6 @@
         vf.classList.remove('is-challenge-answered');
       }
       this._syncChallengeScrubberState(true);
-      this.challengeVariant = 'locate';
       this.challenge = {
         variant: 'locate',
         deck: this._buildChallengeDeck(),
@@ -4973,7 +4854,7 @@
         lblChal.textContent =
           this.locale === 'en' ? 'Map Pinpoint · Ancient Place Quiz' : '舆图寻址 · 古地名小试';
       }
-      this.svg.classList.toggle('is-crosshair', this.genealogyMode);
+      this.svg.classList.remove('is-crosshair');
       const chkSettle = this._id('chk-settlements');
       this.grpSettlements.classList.toggle('is-hidden', Boolean(chkSettle && !chkSettle.checked));
       const chkMilestones = this._id('chk-milestones');
@@ -5274,7 +5155,6 @@
         this.journeyTimer = null;
       }
       if (this.challenge) this.stopChallenge(true);
-      if (this.genealogyMode) this.toggleGenealogyMode(false);
       this.clearCustomRoute();
       this.closeGenealogyCard();
       this.closeMilestoneBalloon();
@@ -6418,18 +6298,12 @@
         if (!e.target.checked) {
           this.closeMilestoneBalloon();
         } else {
+          if (this.dismissedCalloutIds) this.dismissedCalloutIds.clear();
           const cur = this.dynasties[this.dynastyIdx];
           if (cur) this._syncAutoMilestoneBalloon(cur);
         }
         this._rescaleSvgTypography();
       });
-      const chkEventCallouts = this._id('chk-event-callouts');
-      if (chkEventCallouts) {
-        chkEventCallouts.checked = this.showEventCallouts;
-        chkEventCallouts.addEventListener('change', (e) => {
-          this.toggleEventCallouts(e.target.checked);
-        });
-      }
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
       const togglePaneBtn = this._id('act-toggle-pane');
@@ -6464,8 +6338,7 @@
         });
       }
       this._id('act-close-genealogy').addEventListener('click', () => {
-        if (this.genealogyMode) this.toggleGenealogyMode(false);
-        else this.closeGenealogyCard();
+        this.closeGenealogyCard();
       });
 
       this._id('act-challenge').addEventListener('click', () => {
@@ -6601,7 +6474,6 @@
           else if (this.challenge) this.stopChallenge();
           else if (this.activeJourney) this.stopJourney();
           else if (this.activeCustomRoute) this.clearCustomRoute();
-          else if (this.genealogyMode) this.toggleGenealogyMode(false);
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
           }
@@ -7051,26 +6923,6 @@
             milestoneEl = near.milestoneEl;
           }
           const cur = this.dynasties[this.dynastyIdx];
-
-          if (this.genealogyMode) {
-            if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
-              this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
-              return;
-            }
-            if (milestoneEl && cur) {
-              const m = this._resolvePinMilestone(cur, milestoneEl);
-              if (m && m.coord) {
-                const coCity = this._findCoLocatedSettlement(cur, m.coord[0], m.coord[1], 28);
-                const targetCoord = coCity ? coCity.coord : m.coord;
-                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
-                return;
-              }
-            }
-            const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-            const [lng, lat] = this.projector.toGeo(sx, sy);
-            this.openGenealogyAt(lng, lat);
-            return;
-          }
 
           // Clicking the city name text (e.g. "长安"), the onboarding whisper tag, or a city dot without an overlapping event pin -> trace place history
           if (
@@ -7996,8 +7848,7 @@
       if (q.has('quiz')) {
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
-        const mode = q.get('quiz') === 'match' ? 'match' : 'locate';
-        setTimeout(() => this.startChallenge(mode), 120);
+        setTimeout(() => this.startChallenge(), 120);
       }
       if (q.has('journey')) {
         this._paneAutoCollapsed = true;
