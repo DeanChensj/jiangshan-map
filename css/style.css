@@ -588,6 +588,7 @@ h2 {
 }
 
 .polity-shape {
+  fill-rule: evenodd;
   fill-opacity: 0.38;
   stroke-width: 1.85;
   stroke-linejoin: round;
