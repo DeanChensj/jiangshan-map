@@ -881,7 +881,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "xihan:-180": [
-      "Lü Clan disturbance quelled; Rule of Wen and Jing begins",
+      "Zhou Bo and Chen Ping eliminate the Lü clan and enthrone Emperor Wen of Han",
       "Chang'an"
     ],
     "xihan:-133": [
@@ -1679,6 +1679,90 @@ window.EN_LOCALE = {
     "qing:1861": [
       "Xinyou Coup: Cixi, Ci’an, and Prince Gong oust Sushun’s Eight Regents to begin the Regency",
       "Beijing · Chengde"
+    ],
+    "zhanguo:-381": [
+      "King Dao of Chu appoints Wu Qi to enact sweeping military reforms, expanding south and north",
+      "Yingdu (Jiangling)"
+    ],
+    "zhanguo:-375": [
+      "Han conquers Zheng and moves its capital to Xinzheng after the Three Jins depose Duke Jing",
+      "Xinzheng"
+    ],
+    "zhanguo:-323": [
+      "Gongsun Yan organizes the Five-State Alliance to march against Qin at Hangu Pass (318 BCE)",
+      "Hangu Pass (Lingbao)"
+    ],
+    "qin:-204": [
+      "Han Xin destroys the Zhao army at Jingxing Pass while Liu Bang and Xiang Yu clash at Xingyang",
+      "Jingxing & Chenggao"
+    ],
+    "xihan:-167": [
+      "Emperor Wen abolishes corporal punishment and land taxes, ushering in the Rule of Wen and Jing",
+      "Chang'an"
+    ],
+    "xihan:-25": [
+      "Protector-General Duan Huizong pacifies strife in Wusun and stabilizes the Pamir states",
+      "Chigu (Issyk-Kul)"
+    ],
+    "xihan:24": [
+      "Gengshi Emperor moves his court to Chang’an while Liu Xiu captures Handan and pacifies Hebei",
+      "Handan & Chang'an"
+    ],
+    "donghan:144": [
+      "Major Qiang rebellion sweeps Guanzhong and Longyou while Regent Liang Ji monopolizes power",
+      "Anding & Luoyang"
+    ],
+    "donghan:159": [
+      "Emperor Huan and five eunuchs overthrow Regent Liang Ji while Duan Jiong crushes the Qiang",
+      "Luoyang & Longyou"
+    ],
+    "nanbei:507": [
+      "Battle of Zhongli: Liang generals Wei Rui and Cao Jingzong rout 300,000 Northern Wei troops",
+      "Zhongli (Fengyang)"
+    ],
+    "tang:868": [
+      "Pang Xun leads the Guilin garrison mutiny north to seize Xuzhou and sever the Grand Canal",
+      "Xuzhou & Guilin"
+    ],
+    "tang:895": [
+      "Li Keyong marches into Guanzhong as Wang Jian and Yang Xingmi carve out warlord regimes",
+      "Jinyang & Fengxiang"
+    ],
+    "beisong:1057": [
+      "Ouyang Xiu presides over the 1057 exam, graduating Su Shi, Su Zhe, Zeng Gong, and Zhang Zai",
+      "Kaifeng (Imperial Exam Hall)"
+    ],
+    "yuan:1344": [
+      "Yellow River breaches the Baimaodi dike at Caoxian; Jia Lu’s massive corvée sparks unrest",
+      "Baimaodi (Caoxian)"
+    ],
+    "ming:1494": [
+      "Liu Daxia seals the Huanglinggang breach and builds the Taihang Dike, fixing the Yellow-Huai",
+      "Huanglinggang (Lankao)"
+    ],
+    "ming:1508": [
+      "Wang Yangming attains enlightenment at Longchang in Guizhou, founding the School of Mind",
+      "Longchang (Xiuwen)"
+    ],
+    "ming:1600": [
+      "Ming forces crush the Bozhou Tusi rebellion, replacing hereditary rule with two prefectures",
+      "Bozhou (Zunyi)"
+    ],
+    "qing:1696": [
+      "Emperor Kangxi personally leads campaigns into Outer Mongolia, routing Galdan at Jao Modo",
+      "Jao Modo (South of Ulaanbaatar)"
+    ],
+    "qing:1755": [
+      "Qing armies march into Ili in two columns, destroying the Dzungar Khanate and Dawachi",
+      "Ili (Huiyuan)"
+    ],
+    "qing:1787": [
+      "Fuk’anggan crosses the strait to suppress Lin Shuangwen’s uprising; Zhuluo is renamed Jiayi",
+      "Jiayi (Zhuluo)"
+    ],
+    "qing:1839": [
+      "Imperial Commissioner Lin Zexu destroys over 20,000 chests of opium at Humen in Guangdong",
+      "Humen (Dongguan)"
     ]
   },
   "corridors": {
@@ -4985,6 +5069,25 @@ window.EN_LOCALE = {
     "松锦之战后置锦州府": "Jinzhou Prefecture established following the Battle of Song-Jin",
     "后金肇基之地，清尊为兴京": "Ancestral birthplace of Later Jin, honored by the Qing court as Xingjing",
     "1945年抗战胜利台湾光复": "Retrocession of Taiwan in 1945 following victory in the War of Resistance",
-    "1946年承认外蒙古独立": "Outer Mongolian independence recognized in 1946"
+    "1946年承认外蒙古独立": "Outer Mongolian independence recognized in 1946",
+    "郢都（江陵）": "Yingdu (Jiangling)",
+    "函谷关（灵宝）": "Hangu Pass (Lingbao)",
+    "井陉 · 成皋": "Jingxing & Chenggao",
+    "赤谷城（伊塞克湖）": "Chigu (Issyk-Kul)",
+    "邯郸 · 长安": "Handan & Chang'an",
+    "安定 · 洛阳": "Anding & Luoyang",
+    "洛阳 · 陇右": "Luoyang & Longyou",
+    "钟离（凤阳）": "Zhongli (Fengyang)",
+    "徐州 · 桂林": "Xuzhou & Guilin",
+    "晋阳 · 凤翔": "Jinyang & Fengxiang",
+    "开封（礼部贡院）": "Kaifeng (Imperial Exam Hall)",
+    "白茅堤（曹县）": "Baimaodi (Caoxian)",
+    "黄陵岗（兰考）": "Huanglinggang (Lankao)",
+    "龙场（修文）": "Longchang (Xiuwen)",
+    "播州（遵义）": "Bozhou (Zunyi)",
+    "昭莫多（乌兰巴托南）": "Jao Modo (South of Ulaanbaatar)",
+    "伊犁（惠远）": "Ili (Huiyuan)",
+    "嘉义（诸罗）": "Jiayi (Zhuluo)",
+    "虎门（东莞）": "Humen (Dongguan)"
   }
 };
