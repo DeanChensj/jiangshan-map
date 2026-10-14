@@ -648,6 +648,73 @@ function main() {
     }
   }
 
+  // CUJ 9h2: Territorial Exclusivity Guard — no two main/rival/protectorate polities in one snapshot may overlap.
+  // Overlap area is estimated by grid sampling inside the shared bounding box (0.2° step ≈ 0.04 deg² per cell);
+  // anything above 0.3 deg² (~3,000 km²) is a real overlap rather than shared-border sampling noise.
+  const OVERLAP_STEP = 0.2;
+  const OVERLAP_MAX_DEG2 = 0.3;
+  function sampledOverlapDeg2(shapeA, shapeB) {
+    const a = shapeBbox(shapeA);
+    const b = shapeBbox(shapeB);
+    const x0 = Math.max(a.minX, b.minX);
+    const y0 = Math.max(a.minY, b.minY);
+    const x1 = Math.min(a.maxX, b.maxX);
+    const y1 = Math.min(a.maxY, b.maxY);
+    if (x0 >= x1 || y0 >= y1) return 0;
+    const limitCells = Math.ceil(OVERLAP_MAX_DEG2 / (OVERLAP_STEP * OVERLAP_STEP) + 1);
+    let hits = 0;
+    for (let x = x0 + OVERLAP_STEP / 2; x < x1; x += OVERLAP_STEP) {
+      for (let y = y0 + OVERLAP_STEP / 2; y < y1; y += OVERLAP_STEP) {
+        if (pointInShape(x, y, shapeA) && pointInShape(x, y, shapeB)) {
+          hits++;
+          if (hits > limitCells) return hits * OVERLAP_STEP * OVERLAP_STEP;
+        }
+      }
+    }
+    return hits * OVERLAP_STEP * OVERLAP_STEP;
+  }
+  let overlapPairsChecked = 0;
+  for (const [sk, snap] of Object.entries(snapshots)) {
+    if (!snap || Array.isArray(snap)) continue;
+    const pols = (snap.polities || []).filter(
+      (p) => (p.role === 'main' || p.role === 'rival' || p.role === 'protectorate') && p.shape
+    );
+    for (let i = 0; i < pols.length; i++) {
+      for (let j = i + 1; j < pols.length; j++) {
+        overlapPairsChecked++;
+        const area = sampledOverlapDeg2(pols[i].shape, pols[j].shape);
+        assert(
+          area <= OVERLAP_MAX_DEG2,
+          `Territorial overlap in ${sk}: "${pols[i].title}" [${pols[i].role}] and "${pols[j].title}" [${pols[j].role}] share ≈${area.toFixed(2)} deg² — carve the larger polity by the smaller one`
+        );
+      }
+    }
+  }
+  assert(
+    overlapPairsChecked > 300,
+    `Expected to check hundreds of polity pairs, checked ${overlapPairsChecked}`
+  );
+  // Regression anchors for overlaps fixed in this guard's first run
+  const tangA1 = snapshots.s_tang_a1;
+  const tangMainA1 = tangA1.polities.find((p) => p.role === 'main');
+  assert(
+    !pointInShape(99.5, 36.6, tangMainA1.shape),
+    's_tang_a1: Tang main polygon must not cover the Tuyuhun basin (Qinghai Lake area)'
+  );
+  const yuanA = snapshots.s_yuan_a;
+  const yuanMain = yuanA.polities.find((p) => p.role === 'main');
+  assert(
+    !pointInShape(91.1, 29.7, yuanMain.shape),
+    's_yuan_a: Yuan main polygon must leave Lhasa to the 吐蕃（总制院辖） protectorate'
+  );
+  const xihanE = snapshots.s_xihan_e;
+  const gengshiMain = xihanE.polities.find((p) => p.role === 'main');
+  const weixiaoRival = xihanE.polities.find((p) => p.title.includes('隗嚣'));
+  assert(
+    pointInShape(108.9, 34.3, gengshiMain.shape) && !pointInShape(108.9, 34.3, weixiaoRival.shape),
+    's_xihan_e: Chang\'an (108.9, 34.3) must belong exclusively to 更始（汉） rather than 隗嚣 · 窦融'
+  );
+
   // CUJ 9i: Quick Search (_queryQuickSearch) End-to-End Verification (Era Chinese Numerals, Emperors, Cities, Passes, Events, Journeys)
   const eraHit1 = ctrl._queryQuickSearch('元狩二年');
   assert(
