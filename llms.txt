@@ -64,21 +64,21 @@ For browser agents, Playwright scripts, or WebMCP integrations interacting with 
 
 | Key | Period (ZH / EN) | Year Span | Capital / Seat |
 | :--- | :--- | :--- | :--- |
-| `zhanguo` | 战国 / Warring States | `-403` to `-222` | 洛阳(周王畿) · 七雄并立 |
+| `zhanguo` | 战国 / Warring States | `-403` to `-221` | 咸阳(秦) · 洛阳(周) · 七雄都城 |
 | `qin` | 秦 / Qin | `-221` to `-202` | 咸阳 (今陕西咸阳东北) |
-| `xihan` | 西汉 / Western Han | `-201` to `8` | 长安 (今陕西西安) |
-| `donghan` | 新朝 · 东汉 / Xin & Eastern Han | `9` to `220` | 洛阳 (今河南洛阳) |
-| `sanguo` | 三国 / Three Kingdoms | `221` to `265` | 洛阳(魏) · 成都(蜀) · 建业(吴) |
-| `xijin` | 西晋 / Western Jin | `266` to `316` | 洛阳 (今河南洛阳) |
-| `dongjin` | 东晋十六国 / Eastern Jin & Sixteen Kingdoms | `317` to `419` | 建康 (今江苏南京) |
-| `nanbeichao` | 南北朝 / Northern & Southern Dynasties | `420` to `580` | 建康(南朝) · 平城/洛阳/邺城/长安(北朝) |
-| `sui` | 隋 / Sui | `581` to `617` | 大兴 (今陕西西安) · 东都洛阳 |
-| `tang` | 唐 / Tang | `618` to `906` | 长安 (今陕西西安) · 东都洛阳 |
-| `wudai` | 五代十国 / Five Dynasties & Ten Kingdoms | `907` to `959` | 汴州(开封) · 洛阳 |
-| `beisong` | 北宋 · 辽 · 西夏 / Northern Song, Liao & Xixia | `960` to `1126` | 东京开封府 (今河南开封) |
-| `nansong` | 南宋 · 金 · 西夏 / Southern Song, Jin & Xixia | `1127` to `1270` | 临安府 (今浙江杭州) · 金中都(今北京) |
-| `yuan` | 元 / Yuan | `1271` to `1367` | 大都 (今北京) · 上都(今正蓝旗) |
-| `ming` | 明 / Ming | `1368` to `1643` | 应天府(南京) → 顺天府(北京) |
-| `qing` | 清 / Qing | `1644` to `1911` | 京师顺天府 (今北京) |
-| `roc` | 中华民国 / Republic of China | `1912` to `1948` | 北京(北洋) · 南京(国民政府) · 重庆(陪都) |
-| `prc` | 现代中国 / Modern China | `1949` to `2026` | 北京 |
+| `xihan` | 西汉 · 新朝 / Western Han & Xin | `-202` to `25` | 长安 (今陕西西安) |
+| `donghan` | 东汉 / Eastern Han | `25` to `220` | 洛阳 (今河南洛阳) |
+| `sanguo` | 三国 / Three Kingdoms | `220` to `280` | 洛阳(魏) · 成都(蜀) · 建业(吴) |
+| `xijin` | 西晋 / Western Jin | `280` to `316` | 洛阳 (今河南洛阳) |
+| `dongjin` | 东晋十六国 / Eastern Jin & Sixteen Kingdoms | `317` to `420` | 建康 (今江苏南京) |
+| `nanbei` | 南北朝 / Northern & Southern Dynasties | `420` to `581` | 建康(南朝) · 平城/洛阳/邺城/长安(北朝) |
+| `sui` | 隋 / Sui | `581` to `618` | 大兴 (今陕西西安) · 东都洛阳 |
+| `tang` | 唐 / Tang | `618` to `907` | 长安 (今陕西西安) · 东都洛阳 |
+| `wudai` | 五代十国 / Five Dynasties & Ten Kingdoms | `907` to `960` | 汴州(开封) · 洛阳 |
+| `beisong` | 北宋 · 辽 · 西夏 / Northern Song, Liao & Xixia | `960` to `1127` | 东京开封府 (今河南开封) |
+| `nansong` | 南宋 · 金 · 蒙古 / Southern Song, Jin & Mongols | `1127` to `1279` | 临安府 (今浙江杭州) · 金中都(今北京) |
+| `yuan` | 元 / Yuan | `1279` to `1368` | 大都 (今北京) · 上都(今正蓝旗) |
+| `ming` | 明 / Ming | `1368` to `1644` | 应天府(南京) → 顺天府(北京) |
+| `qing` | 清 / Qing | `1644` to `1912` | 京师顺天府 (今北京) |
+| `roc` | 中华民国 / Republic of China | `1912` to `1949` | 北京(北洋) · 南京(国民政府) · 重庆(陪都) |
+| `prc` | 中华人民共和国 / Modern China | `1949` to `2027` | 北京 |
