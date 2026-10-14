@@ -1655,6 +1655,14 @@ function main() {
       `Expected Western Regions lake "${westernLake}" to resolve via PLACE_GAZETTEER, got ${JSON.stringify(hit)}`
     );
   }
+  const controlStripMatch = indexHtml.match(/<div class="control-strip"[\s\S]*?<\/div>\s*<div id="layers-popover"/);
+  assert(
+    controlStripMatch &&
+      !controlStripMatch[0].includes('id="act-challenge"') &&
+      indexHtml.includes('class="journey-quiz-section"') &&
+      indexHtml.includes('id="lbl-jm-badge-quiz"'),
+    '#act-challenge must be tucked inside #journey-popover (.journey-quiz-section), not in the top .control-strip'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
