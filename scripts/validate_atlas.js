@@ -341,15 +341,17 @@ function main() {
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
 
-  // 6. Verify Unified Milestone Balloon Auto-Show ("史事浮签") & config toggle
+  // 6. Verify Unified Milestone Balloon Auto-Show ("史事浮签") follows #chk-milestones directly & dead code pruned
   const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(
     appCode.includes('_syncAutoMilestoneBalloon') &&
-      appCode.includes('toggleEventCallouts') &&
       appCode.includes('ep-close') &&
       !appCode.includes('_buildMilestoneCalloutDom') &&
-      indexHtml.includes('id="chk-event-callouts"'),
-    'app.js & index.html must unify event callouts into #milestone-balloon (_syncAutoMilestoneBalloon, toggleEventCallouts, ep-close, #chk-event-callouts)'
+      !appCode.includes('toggleEventCallouts') &&
+      !appCode.includes('toggleGenealogyMode') &&
+      !appCode.includes('_startGuqinSynthFallback') &&
+      !indexHtml.includes('id="chk-event-callouts"'),
+    'app.js & index.html must unify event callouts under #chk-milestones (_syncAutoMilestoneBalloon, ep-close) and remove dead code (chk-event-callouts, toggleEventCallouts, toggleGenealogyMode, _startGuqinSynthFallback)'
   );
 
   // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
