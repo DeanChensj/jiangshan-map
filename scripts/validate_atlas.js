@@ -1627,6 +1627,25 @@ function main() {
     );
   }
 
+  // Verify Western Regions Great Lakes (Lop Nur vanish 1972, labels, and gazetteer resolution)
+  const lopNurLake = (sandbox.window.HYDRO_DATA.lakes || []).find((l) => l.name === 'Lop Nur');
+  assert(
+    lopNurLake && lopNurLake.rank === 2 && lopNurLake.vanish === 1972,
+    `Lop Nur lake must have rank 2 and vanish 1972, got ${JSON.stringify(lopNurLake)}`
+  );
+  const lopNurLabel = (sandbox.window.HYDRO_DATA.labels || []).find((lb) => lb.zh === '蒲昌海·罗布泊');
+  assert(
+    lopNurLabel && lopNurLabel.vanish === 1972,
+    `蒲昌海·罗布泊 hydro label must have vanish 1972, got ${JSON.stringify(lopNurLabel)}`
+  );
+  for (const westernLake of ['蒲昌海', '博斯腾湖', '热海', '夷播海', '居延海']) {
+    const hit = ctrl.resolvePlace(westernLake, 741);
+    assert(
+      hit && hit.kind === 'gazetteer',
+      `Expected Western Regions lake "${westernLake}" to resolve via PLACE_GAZETTEER, got ${JSON.stringify(hit)}`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
