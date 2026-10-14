@@ -1993,6 +1993,186 @@
       "siteEn": "Heng Zhou (Hengyang, Hunan)",
       "zh": "吴三桂于湖南衡州称帝建国号大周，旋即病卒，清军随即反攻收复湖南",
       "en": "Wu Sangui proclaims the Zhou dynasty at Heng Zhou shortly before dying, turning the war"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -249,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "鲁城（今山东曲阜）",
+      "siteEn": "Lu Capital (Qufu, Shandong)",
+      "zh": "楚考烈王伐鲁灭之，迁鲁顷公于莒，周公所封八百年鲁国绝祀",
+      "en": "King Kaolie of Chu annexes Lu at Qufu, ending the 800-year state founded by the Duke of Zhou"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -195,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "鲁县（今山东曲阜）",
+      "siteEn": "Lu County (Qufu, Shandong)",
+      "zh": "汉高祖刘邦自淮南还过鲁，以太牢祠孔子，开历代帝王亲祭孔子之始",
+      "en": "Emperor Gaozu of Han offers the Grand Sacrifice to Confucius at Lu, starting imperial rites"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1008,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "曲阜（今山东曲阜）",
+      "siteEn": "Qufu (Qufu, Shandong)",
+      "zh": "宋真宗东封泰山毕亲幸曲阜谒孔庙，追谥孔子为玄圣文宣王",
+      "en": "Emperor Zhenzong visits the Temple of Confucius at Qufu after the Mount Tai Fengshan rites"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 952,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "曲阜（今山东曲阜）",
+      "siteEn": "Qufu (Qufu, Shandong)",
+      "zh": "后周太祖郭威平兖州后幸曲阜谒孔庙，称孔子“百世帝王之师”并亲行拜礼",
+      "en": "Later Zhou Emperor Guo Wei visits Qufu and bows to Confucius as Teacher of Emperors for All Ages"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1684,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "曲阜（今山东曲阜）",
+      "siteEn": "Qufu (Qufu, Shandong)",
+      "zh": "康熙帝南巡回銮亲幸曲阜孔庙，行三跪九叩大礼并御书“万世师表”匾额",
+      "en": "Emperor Kangxi visits Qufu Temple of Confucius, performing full imperial rites and calligraphy"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -375,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊（今山东青岛黄岛）",
+      "siteEn": "Langya (Qingdao, Shandong)",
+      "zh": "越王勾践灭吴后北徙都琅琊望东海，至越王翳时始自琅琊南迁返吴",
+      "en": "King Yi of Yue moves his capital south from Langya, ending Yue's northern maritime court era"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -219,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊台（今山东青岛黄岛）",
+      "siteEn": "Langya Terrace (Qingdao, Shandong)",
+      "zh": "秦始皇东巡登琅琊山，留三月，徙三万户筑琅琊台立石颂秦德",
+      "en": "Qin Shi Huang ascends Mount Langya, moving 30,000 households to build Langya Terrace and stele"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -210,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊（今山东青岛黄岛）",
+      "siteEn": "Langya (Qingdao, Shandong)",
+      "zh": "秦始皇末次东巡至琅琊，遣方士徐福率童男女数千人入海求仙",
+      "en": "On his final eastern tour at Langya, Qin Shi Huang sends Xu Fu across the sea for immortals"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -106,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊台（今山东青岛黄岛）",
+      "siteEn": "Langya Terrace (Qingdao, Shandong)",
+      "zh": "汉武帝东巡海上至琅琊，登琅琊台礼祠四时主，遣方士入海求蓬莱",
+      "en": "Emperor Wu of Han tours the coast to Langya, sacrificing at Langya Terrace and seeking Penglai"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": 18,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊（今山东诸城·莒县）",
+      "siteEn": "Langya (Zhucheng & Ju County, Shandong)",
+      "zh": "琅琊人樊崇起兵反莽，义军以朱涂眉相别号“赤眉军”，终成覆莽主力",
+      "en": "Fan Chong of Langya launches the Red Eyebrows uprising against Wang Mang's Xin dynasty"
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 307,
+      "coord": [
+        119.98,
+        35.65
+      ],
+      "site": "琅琊国（今山东鲁东南）",
+      "siteEn": "Langya Principality (SE Shandong)",
+      "zh": "琅琊王司马睿采王导之策南渡镇建邺，偕琅琊王氏奠定东晋基业",
+      "en": "Sima Rui, Prince of Langya, crosses south to Jianye with Wang Dao, founding the Eastern Jin"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1004,
+      "coord": [
+        117.18,
+        29.27
+      ],
+      "site": "昌南镇（今江西景德镇）",
+      "siteEn": "Changnan Town (Jingdezhen, Jiangxi)",
+      "zh": "宋真宗景德元年诏昌南镇进御瓷底书“景德年制”，景德镇由此得名",
+      "en": "Emperor Zhenzong decrees Changnan imperial porcelain bear the Jingde mark, naming Jingdezhen"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1402,
+      "coord": [
+        117.18,
+        29.27
+      ],
+      "site": "景德镇（今江西景德镇）",
+      "siteEn": "Jingdezhen (Jingdezhen, Jiangxi)",
+      "zh": "明廷于景德镇珠山置御器厂督造宫廷御瓷，永宣青花与成化斗彩冠绝天下",
+      "en": "The Ming court establishes the Zhushan Imperial Kiln Factory at Jingdezhen for royal porcelain"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1658,
+      "coord": [
+        129.48,
+        44.58
+      ],
+      "site": "宁古塔（今黑龙江海林）",
+      "siteEn": "Ningguta (Hailin, Heilongjiang)",
+      "zh": "顺治丁酉科场案发，江南才子吴兆骞等流徙宁古塔，塞外苦寒渐兴文教",
+      "en": "After the 1657 exam scandal, Jiangnan literati like Wu Zhaoqian are exiled to frontier Ningguta"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1662,
+      "coord": [
+        129.48,
+        44.58
+      ],
+      "site": "宁古塔城（今黑龙江海林）",
+      "siteEn": "Ningguta Garrison (Hailin, Heilongjiang)",
+      "zh": "清廷设镇守宁古塔等处将军，统辖松花江、乌苏里江至库页岛广袤边疆",
+      "en": "The Qing court appoints the General of Ningguta to govern the frontier to Ussuri and Sakhalin"
     }
   ],
   "GUQIN_TRACKS": [
@@ -4326,7 +4506,11 @@
     { "name": "博斯腾湖", "aliases": ["敦薨之水", "鱼海", "巴格拉什湖"], "modern": "新疆巴音郭楞博湖", "coord": [87.05, 41.97], "zoom": 2.4 },
     { "name": "热海", "aliases": ["伊塞克湖", "大清池"], "modern": "吉尔吉斯斯坦伊塞克湖", "coord": [77.22, 42.39], "zoom": 2.3 },
     { "name": "巴尔喀什湖", "aliases": ["夷播海", "得嶷海"], "modern": "哈萨克斯坦巴尔喀什湖", "coord": [76.05, 45.85], "zoom": 2.1 },
-    { "name": "居延海", "aliases": ["居延泽", "居延", "西海", "额济纳"], "modern": "内蒙古阿拉善额济纳", "coord": [101.25, 42.27], "zoom": 2.3 }
+    { "name": "居延海", "aliases": ["居延泽", "居延", "西海", "额济纳"], "modern": "内蒙古阿拉善额济纳", "coord": [101.25, 42.27], "zoom": 2.3 },
+    { "name": "曲阜", "aliases": ["鲁城", "鲁都", "曲阜孔庙", "孔庙", "孔林", "杏坛", "阙里"], "modern": "山东济宁曲阜", "coord": [116.99, 35.60], "zoom": 2.5 },
+    { "name": "琅琊", "aliases": ["琅琊台", "琅邪", "琅邪台", "琅琊山", "诸城"], "modern": "山东青岛黄岛", "coord": [119.98, 35.65], "zoom": 2.5 },
+    { "name": "景德镇", "aliases": ["昌南镇", "昌南", "新平镇", "浮梁", "珠山御窑", "御器厂"], "modern": "江西景德镇", "coord": [117.18, 29.27], "zoom": 2.5 },
+    { "name": "宁古塔", "aliases": ["宁古塔城", "宁古塔将军", "宁安", "旧街"], "modern": "黑龙江牡丹江海林", "coord": [129.48, 44.58], "zoom": 2.3 }
   ]
 };
 })();
