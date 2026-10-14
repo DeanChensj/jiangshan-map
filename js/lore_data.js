@@ -1885,6 +1885,114 @@
       "siteEn": "Shanhai Pass (Qinhuangdao, Hebei)",
       "zh": "山海关大战：吴三桂开关纳多尔衮清军，联手击败李自成大顺军",
       "en": "Battle of Shanhai Pass: Wu Sangui opens the gates to Dorgon’s Qing army, defeating Li Zicheng"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": 4,
+      "coord": [
+        100.9,
+        36.96
+      ],
+      "site": "西海郡龙夷城（今青海海晏）",
+      "siteEn": "Longyi, Xihai Commandery (Haiyan, Qinghai)",
+      "zh": "王莽于青海湖东岸置西海郡（治龙夷城），汉代郡县首次推进至青海湖畔",
+      "en": "Wang Mang establishes Xihai Commandery east of Qinghai Lake with its seat at Longyi"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 260,
+      "coord": [
+        118.32,
+        27.03
+      ],
+      "site": "建安（今福建建瓯）",
+      "siteEn": "Jian'an (Jian'ou, Fujian)",
+      "zh": "东吴景帝孙休析会稽南部置建安郡，治建安县，福建始设独立郡级建置",
+      "en": "Sun Xiu of Eastern Wu carves Jian'an Commandery from southern Kuaiji in northern Fujian"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 540,
+      "coord": [
+        99.5,
+        36.85
+      ],
+      "site": "伏俟城（今青海共和铁卜卡）",
+      "siteEn": "Fusi City (Gonghe, Qinghai)",
+      "zh": "吐谷浑首领夸吕始自称可汗，于青海湖西十五里营建王都伏俟城",
+      "en": "Tuyuhun ruler Kualu proclaims himself Khagan and builds his royal capital at Fusi City"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 927,
+      "coord": [
+        112.97,
+        28.2
+      ],
+      "site": "潭州（今湖南长沙）",
+      "siteEn": "Tan Zhou (Changsha, Hunan)",
+      "zh": "后唐册封马殷为楚国王，马氏于潭州建南楚政权，兴茶铸币保境安民",
+      "en": "Later Tang invests Ma Yin as King of Chu at Tan Zhou, founding the Southern Chu kingdom"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1032,
+      "coord": [
+        101.78,
+        36.62
+      ],
+      "site": "青唐城（今青海西宁）",
+      "siteEn": "Qingtang City (Xining, Qinghai)",
+      "zh": "吐蕃唃厮啰部迁都青唐城（今西宁），建青唐政权并扼丝路青海道要冲",
+      "en": "Tibetan ruler Gusiluo moves his capital to Qingtang (Xining) on the Qinghai Silk Road"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1053,
+      "coord": [
+        108.65,
+        23.06
+      ],
+      "site": "昆仑关（今广西南宁）",
+      "siteEn": "Kunlun Pass (Nanning, Guangxi)",
+      "zh": "枢密副使狄青元宵夜袭昆仑关，于归仁铺大破侬智高，平定广南西路",
+      "en": "Song general Di Qing launches a night raid through Kunlun Pass to defeat Nong Zhigao"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1276,
+      "coord": [
+        119.3,
+        26.08
+      ],
+      "site": "福安府（今福建福州）",
+      "siteEn": "Fu'an Prefecture (Fuzhou, Fujian)",
+      "zh": "文天祥、张世杰、陆秀夫奉益王赵昰于福州称帝（宋端宗），升福安府抗元",
+      "en": "Wen Tianxiang, Zhang Shijie, and Lu Xiufu enthrone Emperor Duanzong at Fuzhou against Yuan"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1600,
+      "coord": [
+        106.82,
+        27.81
+      ],
+      "site": "海龙屯（今贵州遵义）",
+      "siteEn": "Hailongtun Fortress (Zunyi, Guizhou)",
+      "zh": "万历平播之役：李化龙督八路明军攻克海龙屯，灭播州杨氏土司改土归流",
+      "en": "Bozhou Campaign: Ming commander Li Hualong storms Hailongtun Fortress, ending Yang tusi rule"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1678,
+      "coord": [
+        112.61,
+        26.89
+      ],
+      "site": "衡州（今湖南衡阳）",
+      "siteEn": "Heng Zhou (Hengyang, Hunan)",
+      "zh": "吴三桂于湖南衡州称帝建国号大周，旋即病卒，清军随即反攻收复湖南",
+      "en": "Wu Sangui proclaims the Zhou dynasty at Heng Zhou shortly before dying, turning the war"
     }
   ],
   "GUQIN_TRACKS": [
