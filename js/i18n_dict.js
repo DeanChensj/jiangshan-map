@@ -4670,6 +4670,7 @@ window.EN_LOCALE = {
     "1661 — 1673 · 郑成功收复台湾与南明终结：明郑驱逐荷兰殖民者设承天府，清军入缅俘永历帝统一大陆": "1661–1673 CE · Koxinga Recovers Taiwan & End of Southern Ming: Kingdom of Tungning Established; Qing Unifies the Mainland",
     "1673 — 1681 · 三藩之乱：吴三桂于云南起兵称周，福建耿精忠、广东尚之信及陕甘王辅臣响应，一度席卷云贵川陕湖广闽粤": "1673–1681 CE · Revolt of the Three Feudatories: Wu Sangui, Geng Jingzhong & Shang Zhixin Rebel Across Seven Southern Provinces",
     "鲜卑": "Xianbei",
+    "女真诸部": "Jurchen Tribes",
     "漠北（和林）": "Mobei (Karakorum)",
     "吐蕃（宣政院辖地）": "Tibet (Xuanzhengyuan Jurisdiction)",
     "大理（云南）": "Dali (Yunnan)",
