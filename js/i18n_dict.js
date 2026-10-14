@@ -1763,6 +1763,38 @@ window.EN_LOCALE = {
     "qing:1839": [
       "Imperial Commissioner Lin Zexu destroys over 20,000 chests of opium at Humen in Guangdong",
       "Humen (Dongguan)"
+    ],
+    "xihan:-110": [
+      "Emperor Wu conquers Minyue and establishes Zhuya and Dan'er commanderies on Hainan Island",
+      "Dongye (Fuzhou) · Zhuya (Haikou)"
+    ],
+    "xihan:-61": [
+      "General Zhao Chongguo pacifies the Qiang in Hehuang and pioneers frontier military farms",
+      "Linqiang · Huangshui (Xining)"
+    ],
+    "donghan:215": [
+      "Liu Bei and Sun Quan divide Jing Province along the Xiang River (Xiang River Partition)",
+      "Linxiang · Xiang River (Changsha)"
+    ],
+    "dongjin:397": [
+      "Tufa Wugu founds Southern Liang in the Hehuang valley with capitals at Ledu and Xiping",
+      "Ledu · Xiping (Qinghai)"
+    ],
+    "tang:670": [
+      "Battle of Dafeichuan: Xue Rengui's Tang army is defeated by Tibet, which annexes Tuyuhun",
+      "Dafeichuan (Gonghe, Qinghai)"
+    ],
+    "tang:698": [
+      "Dae Jo-yeong founds the state of Balhae (Bohai) at Mount Dongmou in Jilin",
+      "Mt. Dongmou (Dunhua, Jilin)"
+    ],
+    "ming:1413": [
+      "Yongle Emperor establishes Guizhou Province, completing the Ming thirteen-province system",
+      "Guiyang (Guizhou)"
+    ],
+    "qing:1885": [
+      "Battle of Zhennan Pass: General Feng Zicai routs French forces and recaptures Lang Son",
+      "Zhennan Pass (Pingxiang, Guangxi)"
     ]
   },
   "corridors": {
@@ -2798,7 +2830,7 @@ window.EN_LOCALE = {
     "镇夷所": "Zhenyi Suo",
     "甘州卫": "Ganzhou Wei",
     "山丹卫": "Shandan Wei",
-    "西宁卫": "Xining Wei",
+    "西宁卫": "Xining Garrison",
     "永昌卫": "Yongchang Wei",
     "凉州卫": "Liangzhou Wei",
     "庄浪卫": "Zhuanglang Wei",
@@ -2917,7 +2949,7 @@ window.EN_LOCALE = {
     "镇江府": "Zhenjiang Fu",
     "邵武府": "Shaowu Fu",
     "东番": "Dongfan",
-    "泉州府": "Quanzhou Fu",
+    "泉州府": "Quanzhou Prefecture",
     "建宁府": "Jianning Fu",
     "福宁州": "Funing Zhou",
     "兴化府": "Xinghua Fu",
@@ -3034,7 +3066,7 @@ window.EN_LOCALE = {
     "安西州": "Anxi Zhou",
     "肃州": "Su Zhou",
     "甘州府": "Ganzhou Fu",
-    "西宁府": "Xi'ning Fu",
+    "西宁府": "Xining Prefecture",
     "凉州府": "Liangzhou Fu",
     "乾州": "Qian Zhou",
     "懋功厅": "Maogong Ting",
@@ -4338,7 +4370,6 @@ window.EN_LOCALE = {
     "618 年李渊于长安称帝建唐，先平陇西薛仁杲、河西李轨、河东刘武周，巩固关中、河东与巴蜀根据地，与洛阳王世充、河北窦建德、江陵萧铣对峙。": "In 618 Li Yuan proclaimed the Tang Dynasty in Chang’an, pacifying Xue Rengao in Longxi, Li Gui in Hexi, and Liu Wuzhou in Hedong to secure Guanzhong, Hedong, and Bashu while facing Wang Shichong in Luoyang, Dou Jiande in Hebei, and Xiao Xian in Jiangling.",
     "621—630 年 · 虎牢决战与武德一统": "621–630 CE · Battle of Hulao & Wude Unification",
     "621 年李世民于虎牢之战一举擒窦建德、降王世充，李孝恭、李靖平定江南萧铣，唐朝基本统一全国，北与东突厥对峙于阴山一线。": "In 621 Li Shimin captured Dou Jiande and forced Wang Shichong’s surrender at the Battle of Hulao while Li Xiaogong and Li Jing pacified Xiao Xian in the south, reuniting China and facing the Eastern Turks along the Yin Mountains.",
-    "归义军（张议潮复瓜沙河西）": "Guiyi Circuit (Zhang Yichao)",
     "归义军（张议潮）": "Guiyi Circuit (Zhang Yichao)",
     "归义军 · 甘州回鹘": "Guiyi Circuit · Ganzhou Uyghurs",
     "高昌回鹘": "Qocho Uyghur Kingdom",
@@ -5088,6 +5119,39 @@ window.EN_LOCALE = {
     "昭莫多（乌兰巴托南）": "Jao Modo (South of Ulaanbaatar)",
     "伊犁（惠远）": "Ili (Huiyuan)",
     "嘉义（诸罗）": "Jiayi (Zhuluo)",
-    "虎门（东莞）": "Humen (Dongguan)"
+    "虎门（东莞）": "Humen (Dongguan)",
+    "东冶（闽中郡）": "Dongye (Minzhong Cmd.)",
+    "东冶（闽越）": "Dongye (Minyue)",
+    "临羌（河湟）": "Linqiang (Hehuang)",
+    "侯官（东冶）": "Houguan (Dongye)",
+    "西都（西平郡）": "Xidu (Xiping Cmd.)",
+    "建安（建安郡）": "Jian'an (Jian'an Cmd.)",
+    "南平建瓯": "Jian'ou, Nanping",
+    "西平": "Xiping",
+    "晋安": "Jin'an",
+    "乐都（南凉）": "Ledu (Southern Liang)",
+    "晋安（闽州）": "Jin'an (Min Zhou)",
+    "西平（鄯州）": "Xiping (Shan Zhou)",
+    "青唐（鄯州）": "Qingtang (Shan Zhou)",
+    "始皇置闽中郡治东冶": "First Emperor established Minzhong Commandery with its seat at Dongye",
+    "闽越王无诸都东冶；武帝灭闽越置冶县": "Capital of Minyue King Wuzhu at Dongye; Emperor Wu conquered Minyue and set Ye County",
+    "赵充国河湟屯田；王莽置西海郡于青海湖畔": "Zhao Chongguo's Hehuang military farms; Wang Mang set Xihai Commandery by Qinghai Lake",
+    "会稽郡南部都尉治": "Seat of the Southern Chief Commandant of Kuaiji Commandery",
+    "建安中析金城郡置西平郡": "Xiping Commandery carved out of Jincheng Commandery during the Jian'an era",
+    "永安三年吴置建安郡，福建建郡之始": "Jian'an Commandery established by Eastern Wu in 260 CE, Fujian's first commandery",
+    "魏凉州西平郡": "Cao Wei's Xiping Commandery in Liang Province",
+    "太康三年析建安郡置晋安郡": "Jin'an Commandery carved from Jian'an Commandery in 282 CE",
+    "凉州西平郡治西都": "Xidu, seat of Xiping Commandery in Liang Province",
+    "衣冠南渡八姓入闽，江州晋安郡": "Destination of the Eight Northern Clans migration into Fujian; Jin'an Commandery",
+    "秃发乌孤建南凉，定都乐都、西平": "Tufa Wugu founded Southern Liang with capitals at Ledu and Xiping",
+    "陈永定元年置闽州，治晋安": "Min Zhou established in 557 CE with its seat at Jin'an",
+    "吐谷浑可汗夸吕建都伏俟城": "Tuyuhun Khagan Kualu established his royal capital at Fusi City",
+    "炀帝西巡破吐谷浑，置西海、河源四郡": "Emperor Yang routed Tuyuhun on his western tour and established Xihai and Heyuan commanderies",
+    "河湟吐蕃据守鄯州": "Shan Zhou held by Hehuang Tibetan chieftains",
+    "唃厮啰青唐故地，宋金夏交争": "Former Gusiluo capital of Qingtang contested among Song, Jin, and Western Xia",
+    "甘肃行省西宁州，通吐蕃孔道": "Xining Zhou in Gansu Province, strategic gateway into Tibet",
+    "洪武六年置西宁卫，河湟茶马互市重镇": "Xining Garrison established in 1373 CE as a major Hehuang tea-and-horse trade hub",
+    "施琅于泉州整训水师收复台湾": "Shi Lang trained his naval fleet at Quanzhou before recovering Taiwan",
+    "雍正间平罗卜藏丹津升西宁府，驻青海办事大臣": "Elevated to Xining Prefecture under Yongzheng and seat of the Qinghai Imperial Resident"
   }
 };

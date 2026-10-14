@@ -1026,6 +1026,15 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "南阳郡穰县"
+      },
+      {
+        "ancient": "东冶（闽中郡）",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "始皇置闽中郡治东冶"
       }
     ],
     "phases": [
@@ -1158,6 +1167,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": -110,
+        "headline": "汉武帝灭闽越国迁其民于江淮，并于海南岛置珠崖、儋耳二郡",
+        "site": "东冶 · 珠崖（福州 · 海口）",
+        "coord": [
+          119.3,
+          26.08
+        ]
+      },
+      {
         "year": -109,
         "headline": "汉武帝发兵平西南夷，滇王降汉，置益州郡赐金印",
         "site": "滇池（益州郡）",
@@ -1209,6 +1227,15 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
+        ]
+      },
+      {
+        "year": -61,
+        "headline": "赵充国率军平定河湟先零诸羌，首创河湟军屯并置破羌县",
+        "site": "临羌 · 湟水（青海西宁）",
+        "coord": [
+          101.78,
+          36.62
         ]
       },
       {
@@ -1701,6 +1728,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "元凤四年傅介子刺楼兰王，更名鄯善"
+      },
+      {
+        "ancient": "东冶（闽越）",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "闽越王无诸都东冶；武帝灭闽越置冶县"
+      },
+      {
+        "ancient": "临羌（河湟）",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "赵充国河湟屯田；王莽置西海郡于青海湖畔"
       }
     ],
     "phases": [
@@ -1946,6 +1991,15 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
+        ]
+      },
+      {
+        "year": 215,
+        "headline": "刘备、孙权“湘水划界”中分荆州，以湘水划分长沙与零陵",
+        "site": "临湘 · 湘水（湖南长沙）",
+        "coord": [
+          112.97,
+          28.2
         ]
       },
       {
@@ -2329,6 +2383,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "丝路南北道分岔，西域长史府驻此"
+      },
+      {
+        "ancient": "侯官（东冶）",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "会稽郡南部都尉治"
+      },
+      {
+        "ancient": "西都（西平郡）",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "建安中析金城郡置西平郡"
       }
     ],
     "phases": [
@@ -2852,6 +2924,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "魏西域长史府"
+      },
+      {
+        "ancient": "建安（建安郡）",
+        "modern": "南平建瓯",
+        "coord": [
+          118.32,
+          27.03
+        ],
+        "remark": "永安三年吴置建安郡，福建建郡之始"
+      },
+      {
+        "ancient": "西平",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "魏凉州西平郡"
       }
     ],
     "phases": [
@@ -3283,6 +3373,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "西域长史府驻海头"
+      },
+      {
+        "ancient": "晋安",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "太康三年析建安郡置晋安郡"
+      },
+      {
+        "ancient": "西平",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "凉州西平郡治西都"
       }
     ],
     "phases": [
@@ -3448,6 +3556,15 @@ window.DYNASTY_DATA = [
         "coord": [
           113.701,
           40.201
+        ]
+      },
+      {
+        "year": 397,
+        "headline": "河西鲜卑秃发乌孤起兵建南凉，定都乐都、西平据有河湟",
+        "site": "乐都 · 西平（青海海东 · 西宁）",
+        "coord": [
+          102.4,
+          36.48
         ]
       },
       {
@@ -3916,6 +4033,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "前凉西域长史驻楼兰；五世纪后渐废"
+      },
+      {
+        "ancient": "晋安",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "衣冠南渡八姓入闽，江州晋安郡"
+      },
+      {
+        "ancient": "乐都（南凉）",
+        "modern": "海东·乐都",
+        "coord": [
+          102.4,
+          36.48
+        ],
+        "remark": "秃发乌孤建南凉，定都乐都、西平"
       }
     ],
     "phases": [
@@ -4585,6 +4720,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "麴氏高昌国都"
+      },
+      {
+        "ancient": "晋安（闽州）",
+        "modern": "福州",
+        "coord": [
+          119.3,
+          26.08
+        ],
+        "remark": "陈永定元年置闽州，治晋安"
+      },
+      {
+        "ancient": "伏俟城",
+        "modern": "青海湖西（吐谷浑）",
+        "coord": [
+          99.5,
+          36.85
+        ],
+        "remark": "吐谷浑可汗夸吕建都伏俟城"
       }
     ],
     "phases": [
@@ -5144,6 +5297,15 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "麴氏高昌"
+      },
+      {
+        "ancient": "西平（鄯州）",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "炀帝西巡破吐谷浑，置西海、河源四郡"
       }
     ],
     "phases": [
@@ -5226,7 +5388,7 @@ window.DYNASTY_DATA = [
         "headline": "李靖分道远征吐谷浑抵黄河源柏海，伏允可汗降唐",
         "site": "伏俟城（青海湖西）",
         "coord": [
-          99.70,
+          99.7,
           36.95
         ],
         "isMapChange": true
@@ -5278,6 +5440,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 670,
+        "headline": "大非川之战：薛仁贵护送吐谷浑复国败于吐蕃，吐谷浑入吐蕃",
+        "site": "大非川（青海共和）",
+        "coord": [
+          99.82,
+          36.28
+        ]
+      },
+      {
         "year": 676,
         "headline": "安东都护府自平壤内迁辽东故城",
         "site": "辽东（辽阳）",
@@ -5302,6 +5473,15 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
+        ]
+      },
+      {
+        "year": 698,
+        "headline": "粟末靺鞨大祚荣于东牟山立震国，后受唐封渤海郡王建渤海国",
+        "site": "东牟山（吉林敦化）",
+        "coord": [
+          128.23,
+          43.37
         ]
       },
       {
@@ -5583,7 +5763,7 @@ window.DYNASTY_DATA = [
         "ancient": "伏俟城",
         "modern": "青海湖西（吐谷浑）",
         "coord": [
-          99.70,
+          99.7,
           36.95
         ],
         "appear": 635,
@@ -6906,6 +7086,15 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "归义军瓜州"
+      },
+      {
+        "ancient": "青唐（鄯州）",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "河湟吐蕃据守鄯州"
       }
     ],
     "phases": [
@@ -8608,6 +8797,15 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "金锦州"
+      },
+      {
+        "ancient": "西宁州",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "唃厮啰青唐故地，宋金夏交争"
       }
     ],
     "phases": [
@@ -8689,7 +8887,7 @@ window.DYNASTY_DATA = [
         "site": "萨迦（宣政院辖地）",
         "coord": [
           88.02,
-          28.90
+          28.9
         ],
         "isMapChange": true
       },
@@ -9263,6 +9461,15 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "大宁路锦州"
+      },
+      {
+        "ancient": "西宁州",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "甘肃行省西宁州，通吐蕃孔道"
       }
     ],
     "phases": [
@@ -9365,6 +9572,15 @@ window.DYNASTY_DATA = [
         "coord": [
           105.851,
           21.031
+        ]
+      },
+      {
+        "year": 1413,
+        "headline": "明成祖废思州、思南宣慰司，置贵州承宣布政使司定十三行省",
+        "site": "贵阳（贵州布政司）",
+        "coord": [
+          106.71,
+          26.57
         ]
       },
       {
@@ -10162,6 +10378,15 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": 1603,
         "remark": "万历三十一年努尔哈赤筑城；1616 年建后金称汗"
+      },
+      {
+        "ancient": "西宁卫",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "洪武六年置西宁卫，河湟茶马互市重镇"
       }
     ],
     "phases": [
@@ -10433,8 +10658,8 @@ window.DYNASTY_DATA = [
         "headline": "太平天国金田起义（1853 年定都天京，据长江中下游）",
         "site": "金田 · 江宁",
         "coord": [
-          118.801,
-          32.061
+          110.08,
+          23.53
         ]
       },
       {
@@ -10497,9 +10722,18 @@ window.DYNASTY_DATA = [
         "site": "伊犁（霍尔果斯）",
         "coord": [
           80.42,
-          44.20
+          44.2
         ],
         "isMapChange": true
+      },
+      {
+        "year": 1885,
+        "headline": "老将冯子材率军于镇南关大捷重创法军并克谅山，扭转中法战局",
+        "site": "镇南关（广西凭祥）",
+        "coord": [
+          106.75,
+          21.97
+        ]
       },
       {
         "year": 1895,
@@ -10545,7 +10779,7 @@ window.DYNASTY_DATA = [
         "modern": "中俄勘界口岸",
         "coord": [
           80.42,
-          44.20
+          44.2
         ],
         "appear": 1881,
         "remark": "《中俄伊犁条约》勘界收复"
@@ -11185,6 +11419,24 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "后金肇基之地，清尊为兴京"
+      },
+      {
+        "ancient": "泉州府",
+        "modern": "泉州",
+        "coord": [
+          118.67,
+          24.87
+        ],
+        "remark": "施琅于泉州整训水师收复台湾"
+      },
+      {
+        "ancient": "西宁府",
+        "modern": "西宁",
+        "coord": [
+          101.78,
+          36.62
+        ],
+        "remark": "雍正间平罗卜藏丹津升西宁府，驻青海办事大臣"
       }
     ],
     "phases": [
@@ -12229,7 +12481,6 @@ window.DYNASTY_DATA = [
     ]
   }
 ];
-
 window.CORRIDOR_DATA = [
   {
     "key": "wall_zhanguo",

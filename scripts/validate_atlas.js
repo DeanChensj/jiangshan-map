@@ -1592,13 +1592,48 @@ function main() {
     `atlas_boot.js s_qin_a prefecture count (${bootSnaps.s_qin_a.prefectures.length}) must match atlas_snapshots.js (${snapshots.s_qin_a.prefectures.length})`
   );
 
+  // ── 23. CUJ 23: Regional Milestone, Landmark & Settlement Coverage ──
+  const requiredMilestones = [
+    ['xihan', -110],
+    ['xihan', -61],
+    ['donghan', 215],
+    ['dongjin', 397],
+    ['tang', 670],
+    ['tang', 698],
+    ['ming', 1413],
+    ['qing', 1885],
+  ];
+  for (const [dk, yr] of requiredMilestones) {
+    const dynObj = dynasties.find((x) => x.key === dk);
+    assert(dynObj && dynObj.milestones.some((m) => m.year === yr), `Missing required milestone ${dk}:${yr}`);
+  }
+  const jintianEv = dynasties.find((x) => x.key === 'qing').milestones.find((m) => m.year === 1851);
+  assert(jintianEv && Math.abs(jintianEv.coord[0] - 110.08) < 0.5 && Math.abs(jintianEv.coord[1] - 23.53) < 0.5, 'qing:1851 Jintian Uprising must be located at Guiping, Guangxi');
+  const requiredLandmarks = [
+    ['xihan', 4],
+    ['sanguo', 260],
+    ['nanbei', 540],
+    ['wudai', 927],
+    ['beisong', 1032],
+    ['beisong', 1053],
+    ['nansong', 1276],
+    ['ming', 1600],
+    ['qing', 1678],
+  ];
+  for (const [dk, yr] of requiredLandmarks) {
+    assert(
+      loreData.PLACE_LANDMARK_EVENTS.some((ev) => ev.dynastyKey === dk && ev.year === yr),
+      `Missing required PLACE_LANDMARK_EVENTS entry ${dk}:${yr}`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 22 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 23 E2E CUJs`);
 }
 
 main();

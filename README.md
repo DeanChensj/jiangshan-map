@@ -14,7 +14,7 @@
 - *「长安在两千年里换过多少个名字？这片土地上先后发生过多少场改写国运的大事？」*
 - *「《资治通鉴》开篇的三家分晋与战国七雄、秦王嬴政十年扫六合、汉武帝打通河西走廊、盛唐安西四镇与王玄策破中天竺、元代设宣政院辖西藏、晚清曾纪泽收复伊犁，再到近现代版图从『秋海棠』变为『雄鸡』，疆域是怎么一步步演变的？」*
 
-**「江山时序」** 把从公元前 403 年（《资治通鉴》开篇 · 三家分晋）至今 **2,430 年**、**18 个历史时期**、**154 个疆域阶段（164 幅政区舆图快照）**、**788 座历代古城**、**20 座天下名关**、**115 处诗词名胜与古战场**、**387 条编年大事**与 **342 段帝王年号纪年**装进了一张宣纸设色古舆图里。你不需要翻检厚重的历史地图册，只需拖动滑块、点点城池，就能在时空之间自由穿梭。
+**「江山时序」** 把从公元前 403 年（《资治通鉴》开篇 · 三家分晋）至今 **2,430 年**、**18 个历史时期**、**154 个疆域阶段（164 幅政区舆图快照）**、**808 座历代古城**、**20 座天下名关**、**115 处诗词名胜与古战场**、**395 条编年大事**与 **342 段帝王年号纪年**装进了一张宣纸设色古舆图里。你不需要翻检厚重的历史地图册，只需拖动滑块、点点城池，就能在时空之间自由穿梭。
 
 ---
 
@@ -22,7 +22,7 @@
 
 在地图上**直接点击任意古城、名关**（或者双击地图任意位置），就会展开一张 **「点地溯源」** 卡片：
 - **看古今政区怎么变**：从战国七雄与秦朝的郡、汉朝的刺史部、唐朝的道、宋朝的路，一路看到元明清的行省与府州，哪几个朝代曾在此建都（`王朝都城` 徽章）一目了然。
-- **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的 **128 桩定点地标大事**（如咸阳的「商鞅变法」「秦王扫六合」、樊城的「关羽水淹七军」、长安的「玄武门之变」、临安的「风波亭岳飞蒙难」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
+- **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的 **137 桩定点地标大事**（如咸阳的「商鞅变法」「秦王扫六合」、樊城的「关羽水淹七军」、长安的「玄武门之变」、临安的「风波亭岳飞蒙难」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
 - **探访 20 座天下名关与 110 处诗词名胜**：地图以专属汉阙城楼图标标出函谷关、潼关、剑门关、雁门关、玉门关、阳关、山海关等 **20 座天下雄关**（附山脉水系扼守形势详解），并收录赤壁、垓下、五丈原、兰亭、岳阳楼、滕王阁、蓝关、楼兰等 **115 处诗词名胜与古战场**，支持直接检索落针。
 
 > [点击直达：盛唐开元二十九年（741 年）· 点开长安看 33 桩千年风云 →](https://deanchensj.github.io/jiangshan-map/?year=741&place=长安)
@@ -150,7 +150,7 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 -
 在浏览器自动化环境（Playwright / WebMCP）中可直接调用：
 - `window.atlasAPI.locate({ year, place, zoom? })`：驱动地图跳转并渲染单点落针或跨年轨迹，同时返回结构化历史地理信息。
 - `window.atlasAPI.inspect({ year, place })`：只读查询指定时空点（或多站路线）所属政权、州郡政区、现代省市、各站里程与标准分享链接。
-- `window.atlasAPI.resolvePlace(place, year?)`：解析 788 座历代城池、20 座天下名关、115 处诗词名胜与古战场古今地名。
+- `window.atlasAPI.resolvePlace(place, year?)`：解析 808 座历代城池、20 座天下名关、115 处诗词名胜与古战场古今地名。
 
 ---
 
@@ -160,9 +160,9 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 -
 
 ### What You Can Do
 
-1. **Click Any Ancient City, Strategic Pass, or Landmark to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any of the **788 ancient cities**, **20 strategic mountain passes** (rendered with traditional *Hanque* gatehouse icons), or **115 poetic & battlefield landmarks** (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and **128 site-specific landmark events** that unfolded there—click any event to time-travel straight to that year.
+1. **Click Any Ancient City, Strategic Pass, or Landmark to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any of the **808 ancient cities**, **20 strategic mountain passes** (rendered with traditional *Hanque* gatehouse icons), or **115 poetic & battlefield landmarks** (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and **137 site-specific landmark events** that unfolded there—click any event to time-travel straight to that year.
 2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Qin Shi Huang's Unification Campaigns** (238–221 BCE, watching Han, Zhao, Wei, Chu, Yan, and Qi merge into Qin step by step), **Zhang Qian's** mission to the Western Regions (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), **Su Shi's** literary exile across Song China (1056–1101 CE), or **Wang Yangming's** Philosophy of Mind and campaigns (1472–1529 CE).
-3. **Scrub Through 2,430 Years, Track Reigning Monarchs & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across **154 territorial stages (164 snapshots)** and **387 historical milestones**—including Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Zeng Jize's recovery of Ili (1881 CE), the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—complete with dashed **Ghost Boundary Diffs**, inline **Reigning Monarch & Imperial Era** displays (**342 era spans**, searchable by temple/posthumous title or personal name), deduplicated **Parchment Casing** borders, and an **X-Ray Modern Lens** for comparing ancient prefectures (*Zhou / Fu / Jun*) against modern provinces.
+3. **Scrub Through 2,430 Years, Track Reigning Monarchs & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across **154 territorial stages (164 snapshots)** and **395 historical milestones**—including Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Zeng Jize's recovery of Ili (1881 CE), the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—complete with dashed **Ghost Boundary Diffs**, inline **Reigning Monarch & Imperial Era** displays (**342 era spans**, searchable by temple/posthumous title or personal name), deduplicated **Parchment Casing** borders, and an **X-Ray Modern Lens** for comparing ancient prefectures (*Zhou / Fu / Jun*) against modern provinces.
 4. **Explore Historical Megaprojects & Listen to Classical Guqin (`雅乐`)**: Trace the Warring States, Qin, Han, and Ming Great Walls, the Grand Canal, the Silk Road, and Zheng He's maritime voyages; measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-data English (`EN`) or classical Guqin music in one click.
 5. **Play the Map Pinpoint Challenge**: Test your historical intuition by pinpointing unlabeled ancient cities on the map using dynastic historical clues across 10 rounds to earn traditional imperial court titles.
 
