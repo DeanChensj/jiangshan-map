@@ -14,7 +14,7 @@
 - *「长安在两千年里换过多少个名字？这片土地上先后发生过多少场改写国运的大事？」*
 - *「《资治通鉴》开篇的三家分晋与战国七雄、秦王嬴政十年扫六合、汉武帝打通河西走廊、盛唐安西四镇与王玄策破中天竺、元代设宣政院辖西藏、晚清曾纪泽收复伊犁，再到近现代版图从『秋海棠』变为『雄鸡』，疆域是怎么一步步演变的？」*
 
-**「江山时序」** 把从公元前 403 年（《资治通鉴》开篇 · 三家分晋）至今 **2,430 年**、**18 个历史时期**、**154 个疆域阶段（164 幅政区舆图快照）**、**808 座历代古城**、**20 座天下名关**、**120 处诗词名胜与古战场**、**395 条编年大事**与 **342 段帝王年号纪年**装进了一张宣纸设色古舆图里。你不需要翻检厚重的历史地图册，只需拖动滑块、点点城池，就能在时空之间自由穿梭。
+**「江山时序」** 把从公元前 403 年（《资治通鉴》开篇 · 三家分晋）至今 **两千四百余年**、**18 个历史时期**的**多阶段疆域与州郡政区舆图**、**历代古城**、**天下名关**、**诗词名胜与古战场**、**编年大事**及**帝王年号纪年**装进了一张宣纸设色古舆图里。你不需要翻检厚重的历史地图册，只需拖动滑块、点点城池，就能在时空之间自由穿梭。
 
 ---
 
@@ -22,10 +22,10 @@
 
 在地图上**直接点击任意古城、名关**（或者双击地图任意位置），就会展开一张 **「点地溯源」** 卡片：
 - **看古今政区怎么变**：从战国七雄与秦朝的郡、汉朝的刺史部、唐朝的道、宋朝的路，一路看到元明清的行省与府州，哪几个朝代曾在此建都（`王朝都城` 徽章）一目了然。
-- **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的 **137 桩定点地标大事**（如咸阳的「商鞅变法」「秦王扫六合」、樊城的「关羽水淹七军」、长安的「玄武门之变」、临安的「风波亭岳飞蒙难」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
-- **探访 20 座天下名关与 120 处诗词名胜**：地图以专属汉阙城楼图标标出函谷关、潼关、剑门关、雁门关、玉门关、阳关、山海关等 **20 座天下雄关**（附山脉水系扼守形势详解），并收录赤壁、垓下、五丈原、兰亭、岳阳楼、滕王阁、蓝关、楼兰、蒲昌海（罗布泊）、热海（伊塞克湖）等 **120 处诗词名胜与古战场**，支持直接检索落针。
+- **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的**定点地标大事**（如咸阳的「商鞅变法」「秦王扫六合」、樊城的「关羽水淹七军」、长安的「玄武门之变」、临安的「风波亭岳飞蒙难」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
+- **探访天下名关与诗词名胜**：地图以专属汉阙城楼图标标出函谷关、潼关、剑门关、雁门关、玉门关、阳关、山海关等**天下雄关**（附山脉水系扼守形势详解），并收录赤壁、垓下、五丈原、兰亭、岳阳楼、滕王阁、蓝关、楼兰、蒲昌海（罗布泊）、热海（伊塞克湖）等**诗词名胜与古战场**，支持直接检索落针。
 
-> [点击直达：盛唐开元二十九年（741 年）· 点开长安看 33 桩千年风云 →](https://deanchensj.github.io/jiangshan-map/?year=741&place=长安)
+> [点击直达：盛唐开元二十九年（741 年）· 点开长安看千年风云 →](https://deanchensj.github.io/jiangshan-map/?year=741&place=长安)
 
 ![盛唐 741 年 · 长安点地溯源与史事纪要](assets/preview_741_tang_trace.png)
 
@@ -53,9 +53,9 @@
 ### 玩法三：拉动时间轴看天下分合、查在位帝王、比古今省界
 
 - **同屏看多政权对峙**：从战国七雄（秦、楚、齐、燕、赵、魏、韩）与周、越、巴蜀、中山并立，到汉末三国群雄割据（袁绍、曹操、刘备、孙权、公孙氏辽东），再到宋、辽、西夏、大理、金、蒙古，都以高对比度宣纸设色同屏呈现。鼠标移到左下角图例的政权名字上，对应政权立刻高亮；点一下直接聚焦过去。
-- **154 个疆域阶段与「虚线残影」对比**：每一个重大开疆或失地节点——如前 300 年燕将秦开破东胡辟辽东五郡、43 年马援平交趾立铜柱、238 年司马懿平公孙渊收辽东、635 年李靖平吐谷浑、648 年置安西四镇与王玄策破中天竺、1288 年元设宣政院直辖西藏、1643 年大顺大西起兵、1673 年三藩之乱、1881 年曾纪泽签《中俄伊犁条约》收复伊犁、1898 年列强强租胶州湾/旅大/威海卫/九龙新界，乃至 1945 年抗战胜利台湾光复（“秋海棠”重光）与 1946 年外蒙古独立（版图由**“秋海棠”变为“雄鸡”**）——点击编年事件或阶段圆点，版图即刻切换并浮现上一阶段的朱砂虚线残影，盈亏得失一目了然。
-- **当朝在位帝王与年号同步显示**：时间轴实时内联展示当年在位君主（庙号 / 谥号 + 姓名 + 在位起止年，如 `汉武帝 刘彻`、`唐太宗 李世民`、`清圣祖 玄烨`）及 342 段年号纪年。
-- **300+ 历史州府悬停即查 & 古今透视镜**：一级政区采用拓扑去重与宣纸衬底双重描边（Parchment Casing）；放大地图悬停任意州郡（如明代的「应天府」「顺天府」、三国的「荆州」）即可查看政区归属与今省对照，还可打开 **「透视镜」** 在古舆图上直接投射现代省界。
+- **多阶段疆域演进与「虚线残影」对比**：每一个重大开疆或失地节点——如前 300 年燕将秦开破东胡辟辽东五郡、43 年马援平交趾立铜柱、238 年司马懿平公孙渊收辽东、635 年李靖平吐谷浑、648 年置安西四镇与王玄策破中天竺、1288 年元设宣政院直辖西藏、1643 年大顺大西起兵、1673 年三藩之乱、1881 年曾纪泽签《中俄伊犁条约》收复伊犁、1898 年列强强租胶州湾/旅大/威海卫/九龙新界，乃至 1945 年抗战胜利台湾光复（“秋海棠”重光）与 1946 年外蒙古独立（版图由**“秋海棠”变为“雄鸡”**）——点击编年事件或阶段圆点，版图即刻切换并浮现上一阶段的朱砂虚线残影，盈亏得失一目了然。
+- **当朝在位帝王与年号同步显示**：时间轴实时内联展示当年在位君主（庙号 / 谥号 + 姓名 + 在位起止年，如 `汉武帝 刘彻`、`唐太宗 李世民`、`清圣祖 玄烨`）及历代年号纪年。
+- **历代州府悬停即查 & 古今透视镜**：一级政区采用拓扑去重与宣纸衬底双重描边（Parchment Casing）；放大地图悬停任意州郡（如明代的「应天府」「顺天府」、三国的「荆州」）即可查看政区归属与今省对照，还可打开 **「透视镜」** 在古舆图上直接投射现代省界。
 
 > [点击直达：大明永乐十三年（1415 年）· 两京十三布政使司与「应天府」府境探查 →](https://deanchensj.github.io/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C)
 
@@ -65,7 +65,7 @@
 
 ### 玩法四：看千年工程动脉、量古代华里、听古琴雅乐
 
-- **长城、运河与丝路随年代生长**：切到战国秦汉明看北长城与万里长城演进，切到隋大业四年（608 年）看隋炀帝开凿的永济渠、通济渠、邗沟、江南河如何把涿郡（今北京）、洛阳、江都（今扬州）与余杭（今杭州）连成一体，切到永乐年间看郑和船队下西洋。
+- **长城、运河、丝路与大河古泽随年代演进**：切到战国秦汉明看北长城与万里长城演进，切到隋大业四年（608 年）看隋炀帝开凿的永济渠、通济渠、邗沟、江南河如何把涿郡（今北京）、洛阳、江都（今扬州）与余杭（今杭州）连成一体，切到永乐年间看郑和船队下西洋；同时还可观察黄河历代改道及云梦泽、巨野泽、蒲昌海（罗布泊）等历史大湖的沧桑消长。
 - **读史专用的「公里 / 华里」双标比例尺**：右下角比例尺会随着缩放自动换算公里与传统华里（如 `200 km · 约四百里`），读史书看到「孤军深入三百里」时，直接在图上就能比划出有多远。
 - **古琴「雅乐」伴读**：点一下顶部工具栏的 **「雅乐」**，伴着《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》的古琴声慢慢看图，历史氛围直接拉满。
 
@@ -77,7 +77,7 @@
 
 ### 玩法五：舆图寻址挑战 —— 测测你在古代能当几品官？
 
-觉得自己历史地理很熟？点右上角的 **「开始挑战」** 试试身手：
+觉得自己历史地理很熟？打开顶部工具栏 **「青史行迹 ▾」** 菜单底部的 **「雅集 · 舆图寻址 · 古地名小试」** 试试身手：
 - **当朝掌故线索 + 舆图盲猜扎针**：地图隐去所有城池标注，题目给出「西汉时期的武威（凉州）」「南宋时期的泉州」或「六朝古都建康」，并附上**当朝掌故与史事线索**（不剧透现代城市名），凭你的山河水系直觉在舆图上扎针（手机端支持「先落针微调、再确认作答」防误触），系统按你的落点与真实古城的球面距离打分！
 - 十道题答完，系统会根据总分授予你 **「太史令 · 舆图大家」「职方郎中」「州郡从事」** 等传统官阶封号。
 
@@ -150,7 +150,7 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 -
 在浏览器自动化环境（Playwright / WebMCP）中可直接调用：
 - `window.atlasAPI.locate({ year, place, zoom? })`：驱动地图跳转并渲染单点落针或跨年轨迹，同时返回结构化历史地理信息。
 - `window.atlasAPI.inspect({ year, place })`：只读查询指定时空点（或多站路线）所属政权、州郡政区、现代省市、各站里程与标准分享链接。
-- `window.atlasAPI.resolvePlace(place, year?)`：解析 808 座历代城池、20 座天下名关、120 处诗词名胜与古战场古今地名。
+- `window.atlasAPI.resolvePlace(place, year?)`：解析历代城池、天下名关、诗词名胜与古战场古今地名。
 
 ---
 
@@ -160,11 +160,11 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 -
 
 ### What You Can Do
 
-1. **Click Any Ancient City, Strategic Pass, or Landmark to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any of the **808 ancient cities**, **20 strategic mountain passes** (rendered with traditional *Hanque* gatehouse icons), or **120 poetic & battlefield landmarks** (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and **137 site-specific landmark events** that unfolded there—click any event to time-travel straight to that year.
+1. **Click Any Ancient City, Strategic Pass, or Landmark to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any **ancient city**, **strategic mountain pass** (rendered with traditional *Hanque* gatehouse icons), or **poetic & battlefield landmark** (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras, which kingdoms and empires crowned it as their capital, and the **site-specific landmark events** that unfolded there—click any event to time-travel straight to that year.
 2. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Qin Shi Huang's Unification Campaigns** (238–221 BCE, watching Han, Zhao, Wei, Chu, Yan, and Qi merge into Qin step by step), **Zhang Qian's** mission to the Western Regions (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), **Su Shi's** literary exile across Song China (1056–1101 CE), or **Wang Yangming's** Philosophy of Mind and campaigns (1472–1529 CE).
-3. **Scrub Through 2,430 Years, Track Reigning Monarchs & Inspect 300+ Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across **154 territorial stages (164 snapshots)** and **395 historical milestones**—including Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Zeng Jize's recovery of Ili (1881 CE), the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—complete with dashed **Ghost Boundary Diffs**, inline **Reigning Monarch & Imperial Era** displays (**342 era spans**, searchable by temple/posthumous title or personal name), deduplicated **Parchment Casing** borders, and an **X-Ray Modern Lens** for comparing ancient prefectures (*Zhou / Fu / Jun*) against modern provinces.
-4. **Explore Historical Megaprojects & Listen to Classical Guqin (`雅乐`)**: Trace the Warring States, Qin, Han, and Ming Great Walls, the Grand Canal, the Silk Road, and Zheng He's maritime voyages; measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-data English (`EN`) or classical Guqin music in one click.
-5. **Play the Map Pinpoint Challenge**: Test your historical intuition by pinpointing unlabeled ancient cities on the map using dynastic historical clues across 10 rounds to earn traditional imperial court titles.
+3. **Scrub Through 2,400+ Years, Track Reigning Monarchs & Inspect Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across **multi-stage territorial snapshots** and **chronological milestones**—including Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Zeng Jize's recovery of Ili (1881 CE), the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—complete with dashed **Ghost Boundary Diffs**, inline **Reigning Monarch & Imperial Era** displays (searchable by temple/posthumous title or personal name), deduplicated **Parchment Casing** borders, and an **X-Ray Modern Lens** for comparing ancient prefectures (*Zhou / Fu / Jun*) against modern provinces.
+4. **Explore Historical Megaprojects, Shifting Rivers & Classical Guqin (`雅乐`)**: Trace the Warring States, Qin, Han, and Ming Great Walls, the Grand Canal, the Silk Road, Zheng He's maritime voyages, and the historical shifts of the Yellow River and ancient lakes (such as Yunmeng Marsh and Lop Nur); measure distances with a live **km / traditional Chinese *li*** dual scale bar; and toggle full-data English (`EN`) or classical Guqin music in one click.
+5. **Play the Map Pinpoint Challenge**: Open the **`Journeys ▾`** menu (`Quiz · Map Pinpoint · Ancient Place Quiz`) to test your historical intuition by pinpointing unlabeled ancient cities on the map using dynastic historical clues across 10 rounds to earn traditional imperial court titles.
 
 ---
 
