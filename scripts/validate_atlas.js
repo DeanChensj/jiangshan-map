@@ -1056,24 +1056,13 @@ function main() {
   // Verify index.html, README.md, and llms.txt metadata sync and removal of unused diag-hatch pattern
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
-  assert(
-    htmlSrc.includes(`${snapKeys.length}幅`) &&
-      htmlSrc.includes(`${totalSettlements}座`) &&
-      htmlSrc.includes(`${totalMilestones}项`),
-    `index.html SEO metadata must reflect ${snapKeys.length} snapshots, ${totalSettlements} ancient cities, and ${totalMilestones} historical events`
-  );
   const readmeSrc = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
   assert(
-    readmeSrc.includes(`${referencedSnaps.size} 个疆域阶段（${snapKeys.length} 幅政区舆图快照）`) &&
-      readmeSrc.includes(`${referencedSnaps.size} 个疆域阶段与`) &&
-      readmeSrc.includes(`${totalMilestones} 条编年大事`) &&
-      readmeSrc.includes(`${loreData.PLACE_LANDMARK_EVENTS.length} 桩定点地标大事`) &&
-      readmeSrc.includes(`${loreData.PLACE_GAZETTEER.length} 处诗词名胜与古战场`) &&
-      readmeSrc.includes(`${referencedSnaps.size} territorial stages (${snapKeys.length} snapshots)`) &&
-      readmeSrc.includes(`${totalMilestones} historical milestones`) &&
-      readmeSrc.includes(`${loreData.PLACE_LANDMARK_EVENTS.length} site-specific landmark events`) &&
-      readmeSrc.includes(`${loreData.PLACE_GAZETTEER.length} poetic & battlefield landmarks`),
-    `README.md must stay synchronized with ${referencedSnaps.size} phases, ${snapKeys.length} snapshots, ${totalMilestones} milestones, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events, and ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks in both ZH and EN`
+    !readmeSrc.includes('点右上角的 **「开始挑战」**') &&
+      readmeSrc.includes('青史行迹 ▾') &&
+      readmeSrc.includes('Journeys ▾') &&
+      !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeSrc),
+    'README.md must document the Journeys dropdown challenge entry point and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
