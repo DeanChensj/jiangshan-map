@@ -1893,12 +1893,21 @@ function main() {
     'style.css and app.js must style cased modern province boundaries across historical and PRC eras and hide them when #grp-provinces.is-hidden is active'
   );
 
-  // 23d. Verify hovering in regions without secondary prefectures (e.g. Western Sichuan / 剑南道 in Tang) does not highlight the entire polity and resolves macro-region
+  // 23d. Verify hovering in regions without secondary prefectures (e.g. Western Sichuan / 剑南道 in Tang) does not highlight the entire polity, non-PRC eras do not hover-highlight modern provinces, and canonical place registry unifies openGenealogyAt & _inspectCoord
   assert(
     !/\.polity-shape:hover\b/.test(styleCss) &&
+      !/^\.province-shape:not\(\.maritime-dash\):hover\b/m.test(styleCss) &&
+      styleCss.includes('#atlas-svg[data-dynasty="prc"] .province-shape:not(.maritime-dash):hover') &&
       styleCss.includes('#grp-polities.has-polity-focus .polity-shape.is-focused') &&
-      appCode.includes('this.lastRenderedSnap.regions.find'),
-    'style.css must not apply .polity-shape:hover on canvas hover (preventing whole-empire highlight in regions without secondary prefectures) and app.js must resolve macro-regions in inspectPointTooltip'
+      appCode.includes('this.lastRenderedSnap.regions.find') &&
+      appCode.includes('_getCanonicalPlaces()') &&
+      appCode.includes('_resolveEraPlaceAt('),
+    'style.css and app.js must scope province hover to PRC only, prevent whole-polity hover highlight, resolve macro-regions in inspectPointTooltip, and unify spatial resolution via _getCanonicalPlaces and _resolveEraPlaceAt'
+  );
+  const canonPlaces = ctrl._getCanonicalPlaces();
+  assert(
+    Array.isArray(canonPlaces) && canonPlaces.length >= 220 && ctrl._getCanonicalPlaces() === canonPlaces,
+    `Expected cached _getCanonicalPlaces() to return >=220 canonical places, got ${canonPlaces && canonPlaces.length}`
   );
 
   const elapsed = (performance.now() - t0).toFixed(1);
