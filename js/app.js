@@ -953,24 +953,28 @@
       this._updateMusicUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
-        '滚轮缩放 · 拖拽平移 · 点击城名或双击地图查历代沿革 · ← → 调整年份 · 空格播放'
+        '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
       );
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
         'caveat',
-        '疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。'
+        '历史疆域与政区为示意性近似，非精确测绘边界。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
       const stepPrevBtn = this._id('act-step-prev');
       if (stepPrevBtn) {
         stepPrevBtn.title =
-          this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 / 事件 (←)';
+          this.locale === 'en'
+            ? 'Previous historical stage / event node (←) · Shift+← -10 yrs'
+            : '上一历史阶段 / 事件节点（←）· Shift+← 退十年';
       }
       const stepNextBtn = this._id('act-step-next');
       if (stepNextBtn) {
         stepNextBtn.title =
-          this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 / 事件 (→)';
+          this.locale === 'en'
+            ? 'Next historical stage / event node (→) · Shift+→ +10 yrs'
+            : '下一历史阶段 / 事件节点（→）· Shift+→ 进十年';
       }
       this._id('txt-genealogy-kicker').textContent = this.uiStr(
         'trace_kicker',
@@ -1952,18 +1956,13 @@
       const placeHtml = siteStr
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
-      const prevTitle =
-        this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 (←)';
-      const nextTitle =
-        this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 (→)';
-      const navHtml = `<span class="ep-nav"><button type="button" class="ep-step ep-prev" title="${prevTitle}" aria-label="${prevTitle}">‹</button><button type="button" class="ep-step ep-next" title="${nextTitle}" aria-label="${nextTitle}">›</button></span>`;
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       const jKey = this._journeyKeyForMilestone(dynasty, m);
       const jBtnHtml = jKey
         ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
         : '';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}${navHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
@@ -1972,20 +1971,6 @@
           const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
           const targetCoord = coCity ? coCity.coord : m.coord;
           this.openGenealogyAt(targetCoord[0], targetCoord[1]);
-        });
-      }
-      const prevBtn = this.milestoneBalloon.querySelector('.ep-prev');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.stepTimelineNode(-1);
-        });
-      }
-      const nextBtn = this.milestoneBalloon.querySelector('.ep-next');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.stepTimelineNode(1);
         });
       }
       const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
@@ -3821,19 +3806,6 @@
       if (this.activeMilestone) this._positionMilestoneBalloon();
     }
 
-    _formatChineseLi(li) {
-      const map = {
-        40: '四十',
-        100: '一百',
-        200: '二百',
-        400: '四百',
-        1000: '一千',
-        2000: '二千',
-        3000: '三千',
-      };
-      return map[li] || String(li);
-    }
-
     _updateScaleBar() {
       const lblEl = this._id('scale-label-text');
       const barEl = this._id('scale-ruler-bar');
@@ -3863,12 +3835,8 @@
         }
       }
       const barPx = Math.max(44, Math.min(150, Math.round(bestKm / kmPerCssPx)));
-      const li = bestKm * 2;
       barEl.style.width = `${barPx}px`;
-      lblEl.textContent =
-        this.locale === 'en'
-          ? `${bestKm} km · ${li} li`
-          : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
+      lblEl.textContent = `${bestKm} km`;
     }
 
     _isMobileViewport() {
@@ -5185,7 +5153,7 @@
         q.score >= 850
           ? this.uiStr('title_850', '太史令 · 舆图大家')
           : q.score >= 650
-            ? this.uiStr('title_650', '職方郎中 · 熟稔疆理')
+            ? this.uiStr('title_650', '职方郎中 · 熟稔疆理')
             : q.score >= 400
               ? this.uiStr('title_400', '州郡从事 · 略通古今')
               : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');

@@ -1365,9 +1365,10 @@ function main() {
       `Expected stepTimelineNode(1) from ${dynKey}:${mPenult.year} to reach final milestone ${mFinal.year}, got ${ctrl.activeMilestone && ctrl.activeMilestone.milestone && ctrl.activeMilestone.milestone.year}`
     );
     assert(
-      ctrl.milestoneBalloon.innerHTML.includes('ep-prev') &&
-        ctrl.milestoneBalloon.innerHTML.includes('ep-next'),
-      'Expected #milestone-balloon to include .ep-prev and .ep-next direct event stepper buttons'
+      !ctrl.milestoneBalloon.innerHTML.includes('ep-prev') &&
+        !ctrl.milestoneBalloon.innerHTML.includes('ep-next') &&
+        ctrl.milestoneBalloon.innerHTML.includes('ep-close'),
+      'Expected #milestone-balloon header to stay clean without moving-target .ep-prev / .ep-next stepper buttons'
     );
   }
 
@@ -1602,15 +1603,30 @@ function main() {
   const jintianEv = dynasties.find((x) => x.key === 'qing').milestones.find((m) => m.year === 1851);
   assert(jintianEv && Math.abs(jintianEv.coord[0] - 110.08) < 0.5 && Math.abs(jintianEv.coord[1] - 23.53) < 0.5, 'qing:1851 Jintian Uprising must be located at Guiping, Guangxi');
   const requiredLandmarks = [
+    ['zhanguo', -375],
+    ['zhanguo', -249],
+    ['qin', -219],
+    ['qin', -210],
+    ['xihan', -195],
+    ['xihan', -106],
     ['xihan', 4],
+    ['xihan', 18],
     ['sanguo', 260],
+    ['xijin', 307],
     ['nanbei', 540],
     ['wudai', 927],
+    ['wudai', 952],
+    ['beisong', 1004],
+    ['beisong', 1008],
     ['beisong', 1032],
     ['beisong', 1053],
     ['nansong', 1276],
+    ['ming', 1402],
     ['ming', 1600],
+    ['qing', 1658],
+    ['qing', 1662],
     ['qing', 1678],
+    ['qing', 1684],
   ];
   for (const [dk, yr] of requiredLandmarks) {
     assert(
@@ -1646,6 +1662,13 @@ function main() {
       `Expected Western Regions lake "${westernLake}" to resolve via PLACE_GAZETTEER, got ${JSON.stringify(hit)}`
     );
   }
+  for (const culturalPlace of ['曲阜', '孔庙', '琅琊', '琅琊台', '景德镇', '昌南镇', '宁古塔']) {
+    const hit = ctrl.resolvePlace(culturalPlace, 1008);
+    assert(
+      hit && Array.isArray(hit.coord) && hit.coord.length === 2,
+      `Expected cultural/frontier place "${culturalPlace}" to resolve with valid coordinates, got ${JSON.stringify(hit)}`
+    );
+  }
   const controlStripMatch = indexHtml.match(/<div class="control-strip"[\s\S]*?<\/div>\s*<div id="layers-popover"/);
   assert(
     controlStripMatch &&
@@ -1653,6 +1676,11 @@ function main() {
       indexHtml.includes('class="journey-quiz-section"') &&
       indexHtml.includes('id="lbl-jm-badge-quiz"'),
     '#act-challenge must be tucked inside #journey-popover (.journey-quiz-section), not in the top .control-strip'
+  );
+  assert(
+    indexHtml.includes('id="scale-label-text">500 km</div>') &&
+      !appCode.includes('_formatChineseLi'),
+    'Expected #scale-label-text to use clean metric km format without _formatChineseLi'
   );
 
   // ── 24. CUJ 24: Place Genealogy (点地溯源) Full 18-Era Coverage to Present (PRC) & ROC/PRC City Resolution ──

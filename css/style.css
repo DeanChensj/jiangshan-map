@@ -969,37 +969,6 @@ h2 {
   border-color: rgba(181, 69, 47, 0.45);
 }
 
-#milestone-balloon .ep-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  margin-left: auto;
-}
-
-#milestone-balloon .ep-step {
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: 1px solid rgba(181, 69, 47, 0.22);
-  border-radius: 50%;
-  background: rgba(181, 69, 47, 0.06);
-  color: var(--text-secondary);
-  font-family: var(--sans-stack);
-  font-size: 12.5px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.14s, color 0.14s, border-color 0.14s;
-}
-
-#milestone-balloon .ep-step:hover {
-  background: var(--vermilion);
-  color: #fffaf2;
-  border-color: var(--vermilion);
-}
-
 #milestone-balloon .ep-close {
   position: absolute;
   top: 6px;
@@ -1947,11 +1916,11 @@ h2 {
 
 .disclaimer-box {
   margin-top: auto;
-  font-size: 11.5px;
-  line-height: 1.55;
+  font-size: 10.5px;
+  line-height: 1.4;
   color: var(--text-muted);
-  padding-top: 10px;
-  border-top: 1px dashed var(--hairline);
+  opacity: 0.72;
+  padding-top: 4px;
 }
 
 /* Bottom Scrubber Timeline */
@@ -2228,11 +2197,6 @@ html[lang="en"] .region-caption {
   letter-spacing: 0.01em;
 }
 
-html[lang="en"] .prefecture-caption {
-  font-size: 6.4px;
-  letter-spacing: 0;
-}
-
 html[lang="en"] .band-cell {
   font-family: var(--sans-stack);
   font-size: 10px;
@@ -2340,7 +2304,6 @@ html[lang="en"] .genealogy-list li {
     font-size: 11px;
   }
   #scale-bar-box {
-    padding: 3px 7px 5px;
     transition: opacity 0.18s ease;
   }
   #challenge-card {
@@ -2409,11 +2372,9 @@ html[lang="en"] .genealogy-list li {
     gap: 3.5px;
   }
   .toolbar-divider,
-  .layers-trigger-btn .layers-count-pill,
   .layers-trigger-btn .caret-mark,
   #act-layers-menu .btn-svg,
   #act-journey-menu .btn-svg,
-  #act-challenge .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
   #act-github-star .star-mark,
@@ -2473,9 +2434,6 @@ html[lang="en"] .genealogy-list li {
   .canvas-reset-btn {
     padding: 3.5px 7px;
     font-size: 10.5px;
-  }
-  #scale-bar-box {
-    padding: 2.5px 6px 4px;
   }
   .scale-label {
     font-size: 9.5px;
@@ -2597,10 +2555,6 @@ html[lang="en"] .genealogy-list li {
   filter: drop-shadow(0 0 3px rgba(181, 69, 47, 0.28));
 }
 
-.polity-ghost-path.is-protectorate {
-  stroke-dasharray: 4 3;
-}
-
 .polity-ghost-path.is-fade {
   animation: ghostFadeOut 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
@@ -2677,12 +2631,8 @@ html[lang="en"] .genealogy-list li {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
-  padding: 5px 9px 6px;
-  background: rgba(243, 238, 228, 0.84);
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  backdrop-filter: blur(5px);
+  gap: 2px;
+  padding: 0 2px 2px;
   pointer-events: none;
   user-select: none;
 }
@@ -2694,14 +2644,16 @@ html[lang="en"] .genealogy-list li {
   color: var(--text-secondary);
   line-height: 1.1;
   white-space: nowrap;
+  text-shadow: 0 0 3px rgba(246, 241, 230, 0.95), 0 1px 2px rgba(246, 241, 230, 0.9);
 }
 
 .scale-ruler {
   width: 84px;
-  height: 5px;
-  border-bottom: 1.8px solid var(--text-secondary);
-  border-left: 1.8px solid var(--text-secondary);
-  border-right: 1.8px solid var(--text-secondary);
+  height: 4.5px;
+  border-bottom: 1.6px solid var(--text-secondary);
+  border-left: 1.6px solid var(--text-secondary);
+  border-right: 1.6px solid var(--text-secondary);
+  filter: drop-shadow(0 0 2px rgba(246, 241, 230, 0.9));
   transition: width 0.12s ease-out;
 }
 
@@ -2781,12 +2733,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 /* #7 Historical Journeys (青史行迹 · 人物时空巡礼) */
-.journey-pop-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 .journey-chip-btn {
   padding: 5px 10px;
   border-radius: 6px;
@@ -3525,11 +3471,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
     text-overflow: ellipsis;
   }
 
-  .key-phase-btns {
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
   .key-mobile-toggle {
     display: inline-flex;
     align-items: center;
@@ -3665,11 +3606,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   transition: fill 0.15s ease, stroke 0.15s ease;
 }
 
-.settlement-node .cap-hint-dot {
-  fill: var(--vermilion);
-  transition: fill 0.15s ease;
-}
-
 .settlement-node .cap-hint-text {
   font-family: var(--serif-stack);
   font-size: 7.6px;
@@ -3688,9 +3624,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 .settlement-node:hover .cap-hint-text,
-.settlement-node .cap-hint-tag:hover .cap-hint-text,
-.settlement-node:hover .cap-hint-dot,
-.settlement-node .cap-hint-tag:hover .cap-hint-dot {
+.settlement-node .cap-hint-tag:hover .cap-hint-text {
   fill: #fffaf2;
 }
 
