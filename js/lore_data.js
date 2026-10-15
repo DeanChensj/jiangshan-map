@@ -3349,6 +3349,30 @@
       "siteEn": "Tholing Monastery, Guge (Zanda, Ngari, Tibet)",
       "zh": "古格王室迎印度高僧阿底峡抵阿里托林寺译经，开启藏传佛教后弘期",
       "en": "The Guge court welcomes Indian master Atisha to Tholing Monastery in Ngari to translate sutras"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1876,
+      "coord": [
+        121.2,
+        37.3
+      ],
+      "site": "烟台芝罘（今山东烟台）",
+      "siteEn": "Chefoo, Yantai (Yantai, Shandong)",
+      "zh": "李鸿章于芝罘签订《烟台条约》，增开宜昌、芜湖、温州、北海通商",
+      "en": "Li Hongzhang signs the Chefoo Convention at Yantai, opening four more treaty ports"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1929,
+      "coord": [
+        117.02,
+        25.08
+      ],
+      "site": "上杭古田（今福建龙岩）",
+      "siteEn": "Gutian, Shanghang (Longyan, Fujian)",
+      "zh": "红四军在闽西龙岩上杭召开古田会议，确立思想建党、政治建军原则",
+      "en": "Gutian Conference in Longyan establishes the foundational principle of political army building"
     }
   ],
   "GUQIN_TRACKS": [
@@ -5742,7 +5766,12 @@
     { "name": "永昌（保山）", "aliases": ["保山", "永昌", "永昌郡", "永昌府", "哀牢", "不韦", "兰津渡"], "modern": "云南保山", "coord": [99.16, 25.11], "zoom": 2.4 },
     { "name": "临安府（建水）", "aliases": ["红河", "建水", "临安府", "临安路", "建水州", "步头"], "modern": "云南红河建水", "coord": [102.83, 23.62], "zoom": 2.4 },
     { "name": "山南（雅砻）", "aliases": ["山南", "雅砻", "泽当", "桑耶寺", "雍布拉康", "乃东", "帕竹"], "modern": "西藏山南乃东", "coord": [91.77, 29.24], "zoom": 2.3 },
-    { "name": "古格（阿里）", "aliases": ["阿里", "古格", "象雄", "札达", "托林寺", "穹窿银城", "古格王朝"], "modern": "西藏阿里札达", "coord": [79.80, 31.48], "zoom": 2.3 }
+    { "name": "古格（阿里）", "aliases": ["阿里", "古格", "象雄", "札达", "托林寺", "穹窿银城", "古格王朝"], "modern": "西藏阿里札达", "coord": [79.80, 31.48], "zoom": 2.3 },
+    { "name": "烟台", "aliases": ["登州", "登州府", "芝罘", "之罘", "蓬莱", "蓬莱阁", "奇山所", "东莱"], "modern": "山东烟台", "coord": [121.20, 37.30], "zoom": 2.3 },
+    { "name": "龙岩", "aliases": ["龙岩州", "新罗", "汀州", "汀州府", "长汀", "古田", "永定土楼"], "modern": "福建龙岩", "coord": [117.02, 25.08], "zoom": 2.3 },
+    { "name": "三明", "aliases": ["宁化", "石壁", "宁化石壁", "尤溪", "沙县", "永安", "将乐", "南剑州"], "modern": "福建三明", "coord": [117.64, 26.26], "zoom": 2.3 },
+    { "name": "武川镇", "aliases": ["武川", "北魏六镇", "六镇"], "modern": "内蒙古呼和浩特·武川", "coord": [111.65, 40.68], "zoom": 2.3 },
+    { "name": "怀朔镇", "aliases": ["怀朔", "沃野镇"], "modern": "内蒙古包头·固阳", "coord": [109.84, 40.66], "zoom": 2.3 }
   ]
 };
 })();
