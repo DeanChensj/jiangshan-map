@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1538,12 +1538,18 @@
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const isTier2 = item.tier === 2 && !item.isCapital;
         const isHintCap = item === hintCapital;
+        const isTracedCity =
+          isTier2 &&
+          Boolean(this.activeTrace) &&
+          this.projector.greatCircleKm(this.activeTrace, item.coord) <= 28;
         const cls = item.isCapital
           ? isHintCap
             ? 'settlement-node is-capital has-trace-hint'
             : 'settlement-node is-capital'
           : isTier2
-            ? 'settlement-node is-tier2'
+            ? isTracedCity
+              ? 'settlement-node is-tier2 is-trace-city'
+              : 'settlement-node is-tier2'
             : 'settlement-node';
         const node = this._svgNode(
           'g',
@@ -1752,7 +1758,7 @@
       if (!dynasty || !Array.isArray(dynasty.settlements)) return null;
       const z = 1000 / this.camera.w;
       const tier2MinZoom =
-        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.35 : 2.55;
+        typeof window !== 'undefined' && window.innerWidth <= 900 ? 3.15 : 2.18;
       const showTier2 = z >= tier2MinZoom;
       let best = null;
       let bestKm = maxKm;
@@ -2610,6 +2616,11 @@
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-genealogy');
       if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
+        this.grpSettlements
+          .querySelectorAll('.settlement-node.is-trace-city')
+          .forEach((el) => el.classList.remove('is-trace-city'));
+      }
       this._syncTracedPrefecture();
       if (this.activeMilestone) this._positionMilestoneBalloon();
     }
@@ -2790,7 +2801,13 @@
       if (this.grpSettlements && !this.grpSettlements.classList.contains('is-hidden')) {
         const showTier2 = this.svg.classList.contains('is-zoomed-cities');
         this.grpSettlements.querySelectorAll('.settlement-node').forEach((node) => {
-          if (!showTier2 && node.classList.contains('is-tier2')) return;
+          if (
+            !showTier2 &&
+            node.classList.contains('is-tier2') &&
+            !node.classList.contains('is-trace-city')
+          ) {
+            return;
+          }
           const dPx = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy) * scale;
           if (dPx <= bestSettlePx) {
             bestSettlePx = dPx;
@@ -3962,7 +3979,7 @@
       const mobileTypoBoost = isNarrowMobile ? 1.46 : isMobile ? 1.22 : 1.0;
       const s = (1 / Math.sqrt(z)) * mobileTypoBoost;
       const invScale = s.toFixed(3);
-      const tier2MinZoom = isMobile ? 3.45 : 2.55;
+      const tier2MinZoom = isMobile ? 3.15 : 2.18;
       const showTier2 = z >= tier2MinZoom;
       const passMinZoom = isMobile ? 3.25 : 2.28;
       const showPasses = z >= passMinZoom;
@@ -4024,8 +4041,18 @@
 
       const settlementNodes = Array.from(this.svg.querySelectorAll('.settlement-node'));
 
-      // Step 0: Reserve all visible city dots and milestone pins so labels never cover dots
+      // Sync traced Tier-2 city visibility state and reserve all visible city dots and milestone pins
       for (const node of settlementNodes) {
+        if (node.classList.contains('is-tier2')) {
+          const nLng = parseFloat(node.dataset.lng);
+          const nLat = parseFloat(node.dataset.lat);
+          const isTraced =
+            Boolean(this.activeTrace) &&
+            !isNaN(nLng) &&
+            !isNaN(nLat) &&
+            this.projector.greatCircleKm(this.activeTrace, [nLng, nLat]) <= 28;
+          node.classList.toggle('is-trace-city', isTraced);
+        }
         const isPass = node.classList.contains('is-pass');
         if (isPass) {
           if (!showCorridors || (!showPasses && !node.classList.contains('is-pass-trace'))) continue;
@@ -4033,7 +4060,7 @@
           continue;
         }
         const isT2 = node.classList.contains('is-tier2');
-        if (isT2 && !showTier2) continue;
+        if (isT2 && !showTier2 && !node.classList.contains('is-trace-city')) continue;
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
         const r = (node.classList.contains('is-capital') ? 5.2 : isPass ? 3.4 : isT2 ? 3.0 : 3.8) * s;
@@ -4422,11 +4449,11 @@
         }
       });
 
-      // Tier 4: Tier-2 secondary cities (visible when z >= 1.75; auto-flip or cull text if crowded)
+      // Tier 4: Tier-2 secondary cities (visible when z >= tier2MinZoom or traced; auto-flip or cull text if crowded)
       for (const node of settlementNodes) {
         if (node.classList.contains('is-tier2')) {
-          if (showTier2) {
-            layoutSettlementLabel(node, true);
+          if (showTier2 || node.classList.contains('is-trace-city')) {
+            layoutSettlementLabel(node, !node.classList.contains('is-trace-city'));
           } else {
             const cx = parseFloat(node.getAttribute('data-x'));
             const cy = parseFloat(node.getAttribute('data-y'));
@@ -4774,6 +4801,7 @@
         if (d.key === 'prc') continue;
         for (const s of d.settlements || []) {
           if (!s.modern || !Array.isArray(s.coord)) continue;
+          if (d.key === 'roc' && !s.isCapital && !s.remark) continue;
           const hasEvents =
             this._collectPlaceEventsForDynasty(d, s.coord[0], s.coord[1], { s, km: 0 }).length > 0;
           if (!s.isCapital && !s.remark && !hasEvents) continue;
@@ -4803,7 +4831,7 @@
           remark: `${p.rangeZh} · ${p.chokepointZh}`,
           remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
         };
-        for (let k = 0; k < 4; k++) {
+        for (let k = 0; k < 5; k++) {
           deck.push({ dynasty: d, settlement: passSettlement });
         }
       }
@@ -5668,8 +5696,10 @@
             tier: s.tier || 1,
             isCapital: Boolean(s.isCapital),
             titleZh: s.ancient,
+            modernZh: s.modern || '',
             subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
             titleEn: ancEn,
+            modernEn: modEn,
             subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
             keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${d.title} ${dynNameEn} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
           });
@@ -5969,13 +5999,17 @@
         let score = 0;
         const tZh = item.titleZh.toLowerCase();
         const tEn = item.titleEn.toLowerCase();
+        const mZh = (item.modernZh || '').toLowerCase();
+        const mEn = (item.modernEn || '').toLowerCase();
         if (tZh === q || tEn === q) score = 100;
+        else if (mZh && (mZh === q || mZh.split(/[·/、]/).includes(q) || mEn === q)) score = 96;
         else if (item.aliases && item.aliases.some((a) => a === q)) score = 92;
         else if (tZh.startsWith(q) || tEn.startsWith(q)) score = 80;
+        else if (mZh && (mZh.startsWith(q) || mEn.startsWith(q))) score = 78;
         else if (item.keywords.includes(q)) score = 55;
 
         if (score > 0) {
-          if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 8;
+          if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
           if (item.isCapital) score += 2;
           results.push({ ...item, score });
         }
@@ -6017,15 +6051,18 @@
       }
 
       if ((item.kind === 'city' || item.kind === 'pass' || item.kind === 'gazetteer') && item.coord) {
-        if (item.kind !== 'gazetteer' && !this._id('chk-settlements').checked) {
+        if (!this._id('chk-settlements').checked) {
           this._id('chk-settlements').checked = true;
           this.grpSettlements.classList.remove('is-hidden');
         }
-        const targetZoom = item.zoom || (item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.2 : 1.85);
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        const minCityZoom = isDesktop ? 2.4 : 3.25;
+        const rawZoom = item.zoom || (item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.4 : 1.85);
+        const targetZoom =
+          item.kind === 'gazetteer' || item.tier === 2 ? Math.max(rawZoom, minCityZoom) : rawZoom;
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / targetZoom);
         const h = w * this._getViewportAspect();
-        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
         const xFrac = isDesktop ? 0.38 : 0.5;
         const yFrac = isDesktop ? 0.45 : 0.32;
         this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
