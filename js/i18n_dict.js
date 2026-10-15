@@ -1,3 +1,6 @@
+/**
+ * English Localization Dictionary & UI Strings
+ */
 window.EN_LOCALE = {
   "strings": {
     "title": "Chronicles of the Realm · Historical Atlas of China",
@@ -5604,6 +5607,44 @@ window.EN_LOCALE = {
     "滇南首府，个旧锡矿兴起与滇越铁路支线枢纽": "Premier prefecture of southern Yunnan, hub for Gejiu tin mining and the Yunnan-Vietnam Railway branch",
     "清驻藏大臣巡查山南诸宗要地": "Key inspection center for the Qing Imperial Resident in Tibet across the Shannan districts",
     "西藏噶厦设噶本二员驻噶大克统管阿里三围": "Seat of the two Garpon governors at Gartok administering the Three Circuits of Ngari",
-    "乾隆年间安置旧土尔扈特部游牧于额济纳河流域": "Pastoral homeland along the Ejin River settled by the Old Torghut Mongols under Emperor Qianlong"
+    "乾隆年间安置旧土尔扈特部游牧于额济纳河流域": "Pastoral homeland along the Ejin River settled by the Old Torghut Mongols under Emperor Qianlong",
+    "南平·建瓯": "Jian'ou, Nanping",
+    "南阳·邓州": "Dengzhou, Nanyang",
+    "周口·淮阳": "Huaiyang, Zhoukou",
+    "呼和浩特·托克托": "Togtoh, Hohhot",
+    "宝鸡·凤翔": "Fengxiang, Baoji",
+    "张家口·蔚县": "Yu County, Zhangjiakou",
+    "抚顺·新宾": "Xinbin, Fushun",
+    "济宁·曲阜": "Qufu, Jining",
+    "牡丹江·海林": "Hailin, Mudanjiang",
+    "石家庄·平山": "Pingshan, Shijiazhuang",
+    "绵阳·三台": "Santai, Mianyang",
+    "葫芦岛·兴城": "Xingcheng, Huludao",
+    "运城·永济": "Yongji, Yuncheng",
+    "邢台·平乡": "Pingxiang, Xingtai",
+    "邯郸·临漳": "Linzhang, Handan",
+    "郑州·荥阳": "Xingyang, Zhengzhou",
+    "酒泉·瓜州": "Guazhou, Jiuquan",
+    "青岛·平度东南": "Southeast of Pingdu, Qingdao",
+    "青岛·黄岛": "Huangdao, Qingdao",
+    "马鞍山·当涂": "Dangtu, Ma'anshan",
+    "马鞍山": "Ma'anshan",
+    "运城": "Yuncheng",
+    "绵阳": "Mianyang",
+    "抚顺": "Fushun",
+    "济宁": "Jining",
+    "西昌": "Xichang",
+    "张家口": "Zhangjiakou",
+    "葫芦岛": "Huludao",
+    "日喀则": "Shigatse",
+    "江门": "Jiangmen",
+    "赤峰": "Chifeng",
+    "定西": "Dingxi",
+    "海东": "Haidong",
+    "驻马店": "Zhumadian",
+    "南平": "Nanping",
+    "宝鸡": "Baoji",
+    "周口": "Zhoukou",
+    "1922年中国收回胶州湾；民国重要院辖市与海防重镇": "Jiaozhou Bay recovered by China in 1922; major municipal port and naval base of the Republic"
   }
 };
