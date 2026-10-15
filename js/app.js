@@ -6976,17 +6976,44 @@
           const prov = findData('provTitle');
           const country = findData('countryTitle');
 
+          let reg = null;
+          if (
+            pol &&
+            pol.polityRole !== 'neighbor' &&
+            this.grpPrefectures &&
+            !this.grpPrefectures.classList.contains('is-hidden') &&
+            this.lastRenderedSnap &&
+            Array.isArray(this.lastRenderedSnap.regions) &&
+            this.lastRenderedSnap.regions.length
+          ) {
+            const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
+            const [lng, lat] = this.projector.toGeo(sx, sy);
+            reg =
+              this.lastRenderedSnap.regions.find(
+                (r) => r && r.title && r.shape && MercatorProjector.pointInShape(lng, lat, r.shape)
+              ) || null;
+          }
+          const formatAdminLabel = (rawTitle, rawCat) => {
+            const name = this.trTerm(rawTitle);
+            return this.locale === 'en'
+              ? name
+              : name + (rawCat && !name.endsWith(rawCat) ? '（' + rawCat + '）' : '');
+          };
+
           const lines = [];
           if (pref) {
-            const pName = this.trTerm(pref.prefTitle);
-            const pCat = pref.prefCategory;
-            lines.push(
-              `<b>${
-                this.locale === 'en'
-                  ? pName
-                  : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
-              }</b>`
-            );
+            lines.push(`<b>${formatAdminLabel(pref.prefTitle, pref.prefCategory)}</b>`);
+            if (pol) {
+              const regSuffix =
+                reg && reg.title !== pref.prefTitle
+                  ? ` · ${formatAdminLabel(reg.title, reg.category)}`
+                  : '';
+              lines.push(
+                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(pol.polityTitle)}${regSuffix}</div>`
+              );
+            }
+          } else if (reg) {
+            lines.push(`<b>${formatAdminLabel(reg.title, reg.category)}</b>`);
             if (pol) {
               lines.push(
                 `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(pol.polityTitle)}</div>`

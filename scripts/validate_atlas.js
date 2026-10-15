@@ -1891,6 +1891,14 @@ function main() {
     'style.css and app.js must style cased modern province boundaries across historical and PRC eras and hide them when #grp-provinces.is-hidden is active'
   );
 
+  // 23d. Verify hovering in regions without secondary prefectures (e.g. Western Sichuan / 剑南道 in Tang) does not highlight the entire polity and resolves macro-region
+  assert(
+    !/\.polity-shape:hover\b/.test(styleCss) &&
+      styleCss.includes('#grp-polities.has-polity-focus .polity-shape.is-focused') &&
+      appCode.includes('this.lastRenderedSnap.regions.find'),
+    'style.css must not apply .polity-shape:hover on canvas hover (preventing whole-empire highlight in regions without secondary prefectures) and app.js must resolve macro-regions in inspectPointTooltip'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
