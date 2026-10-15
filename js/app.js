@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015e').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015f').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015e').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015f').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -8113,20 +8113,6 @@
             this._showHoverTip({ clientX: cx, clientY: cy }, lines.join(''));
           }
         }, 120);
-      }
-      if (q.has('event')) {
-        const ey = Number(q.get('event'));
-        const cur = this.dynasties[this.dynastyIdx];
-        const m = (cur.milestones || []).find((item) => item.year === ey) || (cur.milestones || [])[0];
-        if (m) {
-          if (m.coord) {
-            this.camera.zoom = Math.max(this.camera.zoom, 1.8);
-            this.camera.w = 1000 / this.camera.zoom;
-            this.camera.h = 700 / this.camera.zoom;
-            this._panToward(m.coord[0], m.coord[1]);
-          }
-          afterFullSnapshots(() => this.openMilestoneBalloon(cur, m), 160);
-        }
       }
       if (q.has('quiz')) {
         this._paneAutoCollapsed = true;
