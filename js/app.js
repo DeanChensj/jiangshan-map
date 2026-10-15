@@ -2968,6 +2968,125 @@
       return (provPrefix ? raw.slice(provPrefix.length) : raw).replace(/^[·/、\s]+/, '');
     }
 
+    _resolveModernLocationAt(lng, lat) {
+      for (const prov of this.provinces || []) {
+        if (String(prov.code).includes('_JD')) continue;
+        if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(lng, lat, poly))) {
+          return { modernTitle: prov.title, inModernChina: true };
+        }
+      }
+      for (const nb of (this.snapshots && this.snapshots.neighbors) || []) {
+        if (MercatorProjector.pointInShape(lng, lat, nb.shape)) {
+          return { modernTitle: nb.title, inModernChina: false };
+        }
+      }
+      return { modernTitle: '', inModernChina: false };
+    }
+
+    _getCanonicalPlaces() {
+      if (this._canonicalPlaces) return this._canonicalPlaces;
+      const seen = new Set();
+      const list = [];
+      for (const d of this.dynasties || []) {
+        for (const s of d.settlements || []) {
+          if (!s.modern || !Array.isArray(s.coord)) continue;
+          const key = `${s.modern}:${Math.round(s.coord[0] * 100)},${Math.round(s.coord[1] * 100)}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          list.push({ ancient: s.ancient, modern: s.modern, coord: s.coord, isCapital: false });
+        }
+      }
+      for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
+        if (!g.modern || !Array.isArray(g.coord)) continue;
+        if (list.some((p) => this.projector.greatCircleKm(p.coord, g.coord) <= 15)) continue;
+        list.push({ ancient: g.name, modern: g.modern, coord: g.coord, isCapital: false });
+      }
+      this._canonicalPlaces = list;
+      return list;
+    }
+
+    _findNearestSettlement(items, lng, lat, maxKm = 170) {
+      let best = null;
+      let bestKm = maxKm;
+      for (const s of items || []) {
+        const km = this.projector.greatCircleKm([lng, lat], s.coord);
+        if (km < bestKm) {
+          bestKm = km;
+          best = { s, km };
+        }
+      }
+      return best;
+    }
+
+    _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall) {
+      const loc = modernLoc || this._resolveModernLocationAt(lng, lat);
+      const closest =
+        closestOverall !== undefined
+          ? closestOverall
+          : this._findNearestSettlement(this._getCanonicalPlaces(), lng, lat, 160);
+      let polity = null;
+      const regionObjs = [];
+      const prefObjs = [];
+      if (d && d.key === 'prc') {
+        polity = loc.inModernChina ? '中华人民共和国' : loc.modernTitle || null;
+      } else if (snap) {
+        for (const p of snap.polities || []) {
+          if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+            polity = p.title;
+            break;
+          }
+        }
+        if (!polity) {
+          for (const p of snap.polities || []) {
+            if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+              polity = p.title;
+              break;
+            }
+          }
+        }
+        for (const reg of snap.regions || []) {
+          if (MercatorProjector.pointInShape(lng, lat, reg.shape)) regionObjs.push(reg);
+        }
+        for (const pref of snap.prefectures || []) {
+          if (MercatorProjector.pointInShape(lng, lat, pref.shape)) prefObjs.push(pref);
+        }
+      }
+      let near = this._findNearestSettlement(d && d.settlements, lng, lat, 175);
+      if (
+        d &&
+        (d.key === 'roc' || d.key === 'prc') &&
+        closest &&
+        closest.s &&
+        closest.s.modern &&
+        (!near || (near.km > 25 && closest.km + 5 < near.km))
+      ) {
+        const rawMod = String(closest.s.modern).replace(/（.*?）|\(.*?\)/g, '').trim();
+        const cleanMod = this._stripModernProvincePrefix(rawMod, loc.modernTitle) || rawMod;
+        near = {
+          s: {
+            ancient: cleanMod,
+            rawModern: closest.s.modern,
+            modern: closest.s.modern,
+            coord: closest.s.coord,
+            isCapital: false,
+          },
+          km: closest.km,
+        };
+      } else if (
+        d &&
+        d.key !== 'roc' &&
+        d.key !== 'prc' &&
+        prefObjs.length > 0 &&
+        closest &&
+        closest.km < 25 &&
+        near &&
+        near.km >= 25
+      ) {
+        near = null;
+      }
+      return { polity, regionObjs, prefObjs, near, modernLoc: loc };
+    }
+
     /**
      * Resolve the modern place name a genealogy heading may assert as "今 X".
      * "今" claims identity, not proximity: only a gazetteer landmark's own `modern` field, or the
@@ -3069,45 +3188,9 @@
         this._rescaleSvgTypography(true);
       }
 
-      let modernTitle = '';
-      let inModernChina = false;
-      for (const prov of this.provinces) {
-        if (String(prov.code).includes('_JD')) continue;
-        if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(lng, lat, poly))) {
-          modernTitle = prov.title;
-          inModernChina = true;
-          break;
-        }
-      }
-      if (!modernTitle) {
-        const neighbors = Array.isArray(this.snapshots.neighbors) ? this.snapshots.neighbors : [];
-        for (const nb of neighbors) {
-          if (MercatorProjector.pointInShape(lng, lat, nb.shape)) {
-            modernTitle = nb.title;
-            break;
-          }
-        }
-      }
-
-      const nearestSettlement = (dynasty, maxKm) => {
-        let best = null;
-        let bestKm = maxKm;
-        for (const s of dynasty.settlements || []) {
-          const km = this.projector.greatCircleKm([lng, lat], s.coord);
-          if (km < bestKm) {
-            bestKm = km;
-            best = { s, km };
-          }
-        }
-        return best;
-      };
-
-      let closestOverall = null;
-      for (const d of this.dynasties) {
-        const hit = nearestSettlement(d, 160);
-        if (hit && (!closestOverall || hit.km < closestOverall.km)) closestOverall = hit;
-      }
-
+      const modernLoc = this._resolveModernLocationAt(lng, lat);
+      const { modernTitle, inModernChina } = modernLoc;
+      const closestOverall = this._findNearestSettlement(this._getCanonicalPlaces(), lng, lat, 160);
       const identityModern = this._resolveModernIdentity(
         lng,
         lat,
@@ -3168,13 +3251,12 @@
         const targetYear = isCurDyn ? this.year : d.focusYear;
         const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
-
-        let polityHit = null;
-        let hasPrefHit = false;
+        const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall);
+        const polityHit = eraHit.polity;
+        const near = eraHit.near;
         const adminHits = [];
         if (d.key === 'prc') {
           if (inModernChina) {
-            polityHit = '中华人民共和国';
             const provLabel = this.locale === 'en' ? this.trTerm(modernTitle) : modernTitle;
             if (provLabel) adminHits.push(provLabel);
             if (identityModern && !modernTitle.startsWith(identityModern)) {
@@ -3182,78 +3264,16 @@
                 this.locale === 'en' ? this.trModernCity(identityModern) : identityModern;
               if (cityLabel && !adminHits.includes(cityLabel)) adminHits.push(cityLabel);
             }
-          } else if (modernTitle) {
-            polityHit = modernTitle;
           }
         } else {
-          for (const p of snap.polities || []) {
-            if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
-              polityHit = p.title;
-              break;
-            }
+          for (const item of [...eraHit.regionObjs, ...eraHit.prefObjs]) {
+            const label =
+              this.locale === 'en'
+                ? this.trTerm(item.title)
+                : item.title +
+                  (item.category && !item.title.endsWith(item.category) ? `（${item.category}）` : '');
+            if (!adminHits.includes(label)) adminHits.push(label);
           }
-          if (!polityHit) {
-            for (const p of snap.polities || []) {
-              if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
-                polityHit = p.title;
-                break;
-              }
-            }
-          }
-
-          for (const reg of snap.regions || []) {
-            if (MercatorProjector.pointInShape(lng, lat, reg.shape)) {
-              const label =
-                this.locale === 'en'
-                  ? this.trTerm(reg.title)
-                  : reg.title + (reg.category && !reg.title.endsWith(reg.category) ? `（${reg.category}）` : '');
-              if (!adminHits.includes(label)) adminHits.push(label);
-            }
-          }
-          for (const pref of snap.prefectures || []) {
-            if (MercatorProjector.pointInShape(lng, lat, pref.shape)) {
-              hasPrefHit = true;
-              const label =
-                this.locale === 'en'
-                  ? this.trTerm(pref.title)
-                  : pref.title + (pref.category && !pref.title.endsWith(pref.category) ? `（${pref.category}）` : '');
-              if (!adminHits.includes(label)) adminHits.push(label);
-            }
-          }
-        }
-
-        let near = nearestSettlement(d, 170);
-        if (
-          (d.key === 'roc' || d.key === 'prc') &&
-          closestOverall &&
-          closestOverall.s &&
-          closestOverall.s.modern &&
-          (!near || (near.km > 25 && closestOverall.km + 5 < near.km))
-        ) {
-          const rawMod = String(closestOverall.s.modern)
-            .replace(/（.*?）|\(.*?\)/g, '')
-            .trim();
-          const cleanMod = this._stripModernProvincePrefix(rawMod, modernTitle) || rawMod;
-          near = {
-            s: {
-              ancient: cleanMod,
-              rawModern: closestOverall.s.modern,
-              modern: closestOverall.s.modern,
-              coord: closestOverall.s.coord,
-              isCapital: false,
-            },
-            km: closestOverall.km,
-          };
-        } else if (
-          d.key !== 'roc' &&
-          d.key !== 'prc' &&
-          hasPrefHit &&
-          closestOverall &&
-          closestOverall.km < 25 &&
-          near &&
-          near.km >= 25
-        ) {
-          near = null;
         }
         const isCapHere = Boolean(near && near.km <= 38 && near.s.isCapital);
         if (isCapHere) capDynasties++;
@@ -7542,116 +7562,35 @@
     }
 
     _inspectCoord(cLng, cLat, d, snap) {
-      let polity = null;
-      const regions = [];
-      const prefectures = [];
-      let modernProvince = null;
-      let nearestCity = null;
-
-      for (const p of snap.polities || []) {
-        if (p.role !== 'neighbor' && MercatorProjector.pointInShape(cLng, cLat, p.shape)) {
-          polity = p.title;
-          break;
-        }
-      }
-      if (!polity) {
-        for (const p of snap.polities || []) {
-          if (p.role === 'neighbor' && MercatorProjector.pointInShape(cLng, cLat, p.shape)) {
-            polity = p.title;
-            break;
+      const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
+      const modernProvince = eraHit.modernLoc.inModernChina ? eraHit.modernLoc.modernTitle : null;
+      const nearestCity = eraHit.near
+        ? {
+            ancient: eraHit.near.s.ancient,
+            modern: eraHit.near.s.modern || '',
+            distanceKm: Math.round(eraHit.near.km),
           }
-        }
-      }
-      for (const reg of snap.regions || []) {
-        if (MercatorProjector.pointInShape(cLng, cLat, reg.shape)) {
-          const label =
-            reg.title +
-            (reg.category && !reg.title.endsWith(reg.category) ? `(${reg.category})` : '');
-          if (!regions.includes(label)) regions.push(label);
-        }
-      }
-      for (const pref of snap.prefectures || []) {
-        if (MercatorProjector.pointInShape(cLng, cLat, pref.shape)) {
-          const label =
-            pref.title +
-            (pref.category && !pref.title.endsWith(pref.category) ? `(${pref.category})` : '');
-          if (!prefectures.includes(label)) prefectures.push(label);
-        }
-      }
-      for (const prov of this.provinces || []) {
-        if (String(prov.code).includes('_JD')) continue;
-        if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(cLng, cLat, poly))) {
-          modernProvince = prov.title;
-          break;
-        }
-      }
-      if (d && d.key === 'prc') {
-        if (modernProvince) {
-          polity = '中华人民共和国';
-          regions.length = 0;
-          regions.push(modernProvince);
-        } else {
-          const neighbors = Array.isArray(this.snapshots && this.snapshots.neighbors)
-            ? this.snapshots.neighbors
-            : [];
-          for (const nb of neighbors) {
-            if (MercatorProjector.pointInShape(cLng, cLat, nb.shape)) {
-              polity = nb.title;
-              break;
-            }
-          }
-        }
-      }
-      let bestKm = 180;
-      for (const s of (d && d.settlements) || []) {
-        const km = this.projector.greatCircleKm([cLng, cLat], s.coord);
-        if (km < bestKm) {
-          bestKm = km;
-          nearestCity = {
-            ancient: s.ancient,
-            modern: s.modern || '',
-            distanceKm: Math.round(km),
-          };
-        }
-      }
-      if (d && (d.key === 'roc' || d.key === 'prc') && bestKm > 25) {
-        let bestCross = null;
-        let bestCrossKm = 160;
-        for (const od of this.dynasties || []) {
-          for (const s of od.settlements || []) {
-            if (!s.modern) continue;
-            const km = this.projector.greatCircleKm([cLng, cLat], s.coord);
-            if (km < bestCrossKm) {
-              bestCrossKm = km;
-              bestCross = s;
-            }
-          }
-        }
-        if (bestCross && bestCrossKm + 5 < bestKm) {
-          const rawMod = String(bestCross.modern)
-            .replace(/（.*?）|\(.*?\)/g, '')
-            .trim();
-          const cleanMod = this._stripModernProvincePrefix(rawMod, modernProvince) || rawMod;
-          nearestCity = {
-            ancient: cleanMod,
-            modern: bestCross.modern,
-            distanceKm: Math.round(bestCrossKm),
-          };
-        }
-      }
-      if (
-        d &&
-        d.key === 'prc' &&
-        modernProvince &&
-        nearestCity &&
-        nearestCity.distanceKm <= 25 &&
-        nearestCity.ancient &&
-        !modernProvince.startsWith(nearestCity.ancient) &&
-        !prefectures.includes(nearestCity.ancient)
-      ) {
-        prefectures.push(nearestCity.ancient);
-      }
-      return { polity, regions, prefectures, modernProvince, nearestCity };
+        : null;
+      const fmt = (item) =>
+        item.title +
+        (item.category && !item.title.endsWith(item.category) ? `(${item.category})` : '');
+      const regions =
+        d && d.key === 'prc'
+          ? modernProvince
+            ? [modernProvince]
+            : []
+          : Array.from(new Set(eraHit.regionObjs.map(fmt)));
+      const prefectures =
+        d && d.key === 'prc'
+          ? modernProvince &&
+            nearestCity &&
+            nearestCity.distanceKm <= 25 &&
+            nearestCity.ancient &&
+            !modernProvince.startsWith(nearestCity.ancient)
+            ? [nearestCity.ancient]
+            : []
+          : Array.from(new Set(eraHit.prefObjs.map(fmt)));
+      return { polity: eraHit.polity, regions, prefectures, modernProvince, nearestCity };
     }
 
     _renderCustomRoute(stops, explicitZoom) {
