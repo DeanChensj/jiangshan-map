@@ -673,18 +673,10 @@ h2 {
   transition: fill-opacity 0.2s;
 }
 
-.polity-shape:hover {
-  fill-opacity: 0.48;
-}
-
 #atlas-svg.terrain-active .polity-shape {
   fill-opacity: 0.3;
   mix-blend-mode: multiply;
   stroke-width: 1.9;
-}
-
-#atlas-svg.terrain-active .polity-shape:hover {
-  fill-opacity: 0.42;
 }
 
 .polity-shape.rival {
