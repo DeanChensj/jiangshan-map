@@ -1061,8 +1061,10 @@ function main() {
     !readmeSrc.includes('点右上角的 **「开始挑战」**') &&
       readmeSrc.includes('青史行迹 ▾') &&
       readmeSrc.includes('Journeys ▾') &&
+      !readmeSrc.includes('&event=') &&
+      !appCode.includes("q.has('event')") &&
       !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeSrc),
-    'README.md must document the Journeys dropdown challenge entry point and avoid hardcoded 3-digit entity counts'
+    'README.md and app.js must document the Journeys dropdown challenge entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
