@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014o').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014p').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014o').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014p').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1955,18 +1955,13 @@
       const placeHtml = siteStr
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
-      const prevTitle =
-        this.locale === 'en' ? 'Previous historical node (←)' : '上一历史节点 (←)';
-      const nextTitle =
-        this.locale === 'en' ? 'Next historical node (→)' : '下一历史节点 (→)';
-      const navHtml = `<span class="ep-nav"><button type="button" class="ep-step ep-prev" title="${prevTitle}" aria-label="${prevTitle}">‹</button><button type="button" class="ep-step ep-next" title="${nextTitle}" aria-label="${nextTitle}">›</button></span>`;
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       const jKey = this._journeyKeyForMilestone(dynasty, m);
       const jBtnHtml = jKey
         ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
         : '';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}${navHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
@@ -1975,20 +1970,6 @@
           const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
           const targetCoord = coCity ? coCity.coord : m.coord;
           this.openGenealogyAt(targetCoord[0], targetCoord[1]);
-        });
-      }
-      const prevBtn = this.milestoneBalloon.querySelector('.ep-prev');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.stepTimelineNode(-1);
-        });
-      }
-      const nextBtn = this.milestoneBalloon.querySelector('.ep-next');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.stepTimelineNode(1);
         });
       }
       const closeBtn = this.milestoneBalloon.querySelector('.ep-close');

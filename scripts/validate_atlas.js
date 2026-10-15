@@ -1365,9 +1365,10 @@ function main() {
       `Expected stepTimelineNode(1) from ${dynKey}:${mPenult.year} to reach final milestone ${mFinal.year}, got ${ctrl.activeMilestone && ctrl.activeMilestone.milestone && ctrl.activeMilestone.milestone.year}`
     );
     assert(
-      ctrl.milestoneBalloon.innerHTML.includes('ep-prev') &&
-        ctrl.milestoneBalloon.innerHTML.includes('ep-next'),
-      'Expected #milestone-balloon to include .ep-prev and .ep-next direct event stepper buttons'
+      !ctrl.milestoneBalloon.innerHTML.includes('ep-prev') &&
+        !ctrl.milestoneBalloon.innerHTML.includes('ep-next') &&
+        ctrl.milestoneBalloon.innerHTML.includes('ep-close'),
+      'Expected #milestone-balloon header to stay clean without moving-target .ep-prev / .ep-next stepper buttons'
     );
   }
 
