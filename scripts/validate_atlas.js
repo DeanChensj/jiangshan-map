@@ -1834,6 +1834,33 @@ function main() {
     `Expected searching "潍坊" in PRC era to rank PRC city entry first, got ${JSON.stringify(wfHits[0] && { kind: wfHits[0].kind, dyn: wfHits[0].dynasty && wfHits[0].dynasty.key, title: wfHits[0].titleZh })}`
   );
 
+  // 23c. Verify deduplicated modern province boundary paths & PRC boundary styling
+  const provBounds = ctrl._buildProvinceBoundaryPaths();
+  assert(
+    provBounds &&
+      typeof provBounds.interior === 'string' &&
+      provBounds.interior.length > 50000 &&
+      typeof provBounds.outer === 'string' &&
+      provBounds.outer.length > 35000 &&
+      provBounds.combined === `${provBounds.interior}${provBounds.outer}`,
+    `Expected _buildProvinceBoundaryPaths to return non-empty deduplicated interior and outer SVG paths, got interior=${provBounds && provBounds.interior && provBounds.interior.length} outer=${provBounds && provBounds.outer && provBounds.outer.length}`
+  );
+  assert.strictEqual(
+    ctrl._buildProvinceBoundaryPaths(),
+    provBounds,
+    '_buildProvinceBoundaryPaths must return cached boundary object on subsequent calls'
+  );
+  assert(
+    styleCss.includes('.province-boundary-casing') &&
+      styleCss.includes('.province-boundary-interior') &&
+      styleCss.includes('.province-boundary-outer') &&
+      styleCss.includes('#atlas-svg[data-dynasty="prc"] .province-boundary-interior') &&
+      styleCss.includes('#atlas-svg[data-dynasty="prc"] .province-boundary-outer') &&
+      styleCss.includes('#grp-provinces.is-hidden .province-boundary-interior') &&
+      appCode.includes('this.svg.dataset.dynasty = dynasty.key'),
+    'style.css and app.js must style cased modern province boundaries across historical and PRC eras and hide them when #grp-provinces.is-hidden is active'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
