@@ -397,7 +397,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "雍城",
-        "modern": "宝鸡凤翔",
+        "modern": "宝鸡·凤翔",
         "coord": [
           107.381,
           34.461
@@ -407,7 +407,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "安邑",
-        "modern": "运城夏县",
+        "modern": "运城·夏县",
         "coord": [
           110.951,
           35.121
@@ -437,7 +437,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "陈郢",
-        "modern": "周口淮阳",
+        "modern": "周口·淮阳",
         "coord": [
           114.881,
           33.781
@@ -476,7 +476,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "灵寿（中山）",
-        "modern": "石家庄平山",
+        "modern": "石家庄·平山",
         "coord": [
           114.381,
           38.311
@@ -487,7 +487,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邺城",
-        "modern": "邯郸临漳",
+        "modern": "邯郸·临漳",
         "coord": [
           114.351,
           36.321
@@ -527,7 +527,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "云中",
-        "modern": "呼和浩特托克托",
+        "modern": "呼和浩特·托克托",
         "coord": [
           111.201,
           40.251
@@ -538,7 +538,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "代",
-        "modern": "张家口蔚县",
+        "modern": "张家口·蔚县",
         "coord": [
           114.551,
           40.151
@@ -558,7 +558,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "即墨",
-        "modern": "青岛平度东南",
+        "modern": "青岛·平度东南",
         "coord": [
           120.451,
           36.391
@@ -578,7 +578,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -598,7 +598,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -608,7 +608,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -618,7 +618,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "曲阜（鲁都）",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -629,7 +629,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "琅琊",
-        "modern": "青岛黄岛",
+        "modern": "青岛·黄岛",
         "coord": [
           119.98,
           35.65
@@ -1021,7 +1021,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂（河东郡）",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -1041,7 +1041,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳（三川郡）",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -1051,7 +1051,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "巨鹿（巨鹿郡）",
-        "modern": "邢台平乡",
+        "modern": "邢台·平乡",
         "coord": [
           115.03,
           37.07
@@ -1071,7 +1071,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰（南阳郡）",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -1090,7 +1090,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "琅琊",
-        "modern": "青岛黄岛",
+        "modern": "青岛·黄岛",
         "coord": [
           119.98,
           35.65
@@ -1733,7 +1733,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -1753,7 +1753,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -1773,7 +1773,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "巨鹿",
-        "modern": "邢台平乡",
+        "modern": "邢台·平乡",
         "coord": [
           115.03,
           37.07
@@ -1793,7 +1793,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -1841,7 +1841,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "鲁县（曲阜）",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -1851,7 +1851,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "琅琊",
-        "modern": "青岛黄岛",
+        "modern": "青岛·黄岛",
         "coord": [
           119.98,
           35.65
@@ -2564,7 +2564,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -2584,7 +2584,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -2604,7 +2604,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "巨鹿",
-        "modern": "邢台平乡",
+        "modern": "邢台·平乡",
         "coord": [
           115.03,
           37.07
@@ -2624,7 +2624,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -3226,7 +3226,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -3246,7 +3246,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -3266,7 +3266,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "建安（建安郡）",
-        "modern": "南平建瓯",
+        "modern": "南平·建瓯",
         "coord": [
           118.32,
           27.03
@@ -3695,7 +3695,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -3715,7 +3715,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -3745,7 +3745,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -3783,7 +3783,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "琅琊国",
-        "modern": "青岛黄岛",
+        "modern": "青岛·黄岛",
         "coord": [
           119.98,
           35.65
@@ -4335,7 +4335,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "姑孰",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -4375,7 +4375,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -4405,7 +4405,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -5022,7 +5022,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "姑孰",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -5062,7 +5062,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲坂（秦州）",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -5092,7 +5092,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "荥阳",
-        "modern": "郑州荥阳",
+        "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
@@ -5122,7 +5122,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "穰（荆州）",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -5659,7 +5659,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲州（河东郡）",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -5709,7 +5709,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州（穰）",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -5719,7 +5719,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "梓州",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -6656,7 +6656,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "当涂",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -6726,7 +6726,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲州（河中府）",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -6776,7 +6776,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -6786,7 +6786,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "梓州",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -6828,7 +6828,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "瓜州（晋昌）",
-        "modern": "酒泉瓜州",
+        "modern": "酒泉·瓜州",
         "coord": [
           96.21,
           40.25
@@ -7740,7 +7740,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "当涂",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -7800,7 +7800,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "河中府",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -7840,7 +7840,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -7850,7 +7850,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "梓州",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -7870,7 +7870,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "瓜州",
-        "modern": "酒泉瓜州",
+        "modern": "酒泉·瓜州",
         "coord": [
           96.21,
           40.25
@@ -7889,7 +7889,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "曲阜",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -8660,7 +8660,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "太平州",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -8730,7 +8730,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "河中府",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -8780,7 +8780,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -8790,7 +8790,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "梓州",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -8820,7 +8820,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "瓜州",
-        "modern": "酒泉瓜州",
+        "modern": "酒泉·瓜州",
         "coord": [
           96.21,
           40.25
@@ -8840,7 +8840,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "曲阜（仙源）",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -9682,7 +9682,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "太平州",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -9752,7 +9752,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "河中府",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -9802,7 +9802,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -9812,7 +9812,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "潼川府",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -10466,7 +10466,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "太平路",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -10536,7 +10536,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "河中府",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -10586,7 +10586,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -10596,7 +10596,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "潼川府",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -10626,7 +10626,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "瓜州",
-        "modern": "酒泉瓜州",
+        "modern": "酒泉·瓜州",
         "coord": [
           96.21,
           40.25
@@ -11441,7 +11441,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "太平府",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -11511,7 +11511,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲州",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -11561,7 +11561,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -11571,7 +11571,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "潼川州",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -11601,7 +11601,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "宁远卫",
-        "modern": "葫芦岛兴城",
+        "modern": "葫芦岛·兴城",
         "coord": [
           120.72,
           40.61
@@ -11612,7 +11612,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "赫图阿拉",
-        "modern": "抚顺新宾",
+        "modern": "抚顺·新宾",
         "coord": [
           124.85,
           41.72
@@ -11632,7 +11632,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "曲阜",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -13045,7 +13045,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "太平府",
-        "modern": "马鞍山当涂",
+        "modern": "马鞍山·当涂",
         "coord": [
           118.497,
           31.571
@@ -13115,7 +13115,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "蒲州府",
-        "modern": "运城永济",
+        "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
@@ -13165,7 +13165,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "邓州",
-        "modern": "南阳邓州",
+        "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
@@ -13175,7 +13175,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "潼川府",
-        "modern": "绵阳三台",
+        "modern": "绵阳·三台",
         "coord": [
           105.09,
           31.1
@@ -13205,7 +13205,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "安西州",
-        "modern": "酒泉瓜州",
+        "modern": "酒泉·瓜州",
         "coord": [
           95.78,
           40.52
@@ -13225,7 +13225,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "兴京（赫图阿拉）",
-        "modern": "抚顺新宾",
+        "modern": "抚顺·新宾",
         "coord": [
           124.85,
           41.72
@@ -13263,7 +13263,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "宁古塔",
-        "modern": "牡丹江海林",
+        "modern": "牡丹江·海林",
         "coord": [
           129.48,
           44.58
@@ -13273,7 +13273,7 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "曲阜",
-        "modern": "济宁曲阜",
+        "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
@@ -14370,8 +14370,8 @@ window.DYNASTY_DATA = [
         "remark": "1941年皖南事变后新四军于盐城重建军部"
       },
       {
-        "ancient": "芷江（怀化）",
-        "modern": "怀化·芷江",
+        "ancient": "怀化",
+        "modern": "怀化",
         "coord": [
           109.68,
           27.44
@@ -14380,13 +14380,14 @@ window.DYNASTY_DATA = [
         "remark": "1945年8月抗战胜利于湖南芷江接受侵华日军洽降"
       },
       {
-        "ancient": "青岛（德国强租）",
-        "modern": "青岛（德国强租）",
+        "ancient": "青岛",
+        "modern": "青岛",
         "coord": [
           120.38,
           36.07
         ],
-        "tier": 2
+        "tier": 2,
+        "remark": "1922年中国收回胶州湾；民国重要院辖市与海防重镇"
       },
       {
         "ancient": "承德",
@@ -14569,8 +14570,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "马鞍山当涂",
-        "modern": "马鞍山当涂",
+        "ancient": "马鞍山",
+        "modern": "马鞍山",
         "coord": [
           118.497,
           31.571
@@ -14632,15 +14633,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "运城永济",
-        "modern": "运城永济",
-        "coord": [
-          110.32,
-          34.84
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "濮阳",
         "modern": "濮阳",
         "coord": [
@@ -14677,17 +14669,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "南阳邓州",
-        "modern": "南阳邓州",
-        "coord": [
-          112.09,
-          32.69
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "绵阳三台",
-        "modern": "绵阳三台",
+        "ancient": "绵阳",
+        "modern": "绵阳",
         "coord": [
           105.09,
           31.1
@@ -14713,11 +14696,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "酒泉瓜州",
-        "modern": "酒泉瓜州",
+        "ancient": "酒泉",
+        "modern": "酒泉",
         "coord": [
-          95.78,
-          40.52
+          98.51,
+          39.74
         ],
         "tier": 2
       },
@@ -14731,8 +14714,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "抚顺新宾",
-        "modern": "抚顺新宾",
+        "ancient": "抚顺",
+        "modern": "抚顺",
         "coord": [
           124.85,
           41.72
@@ -14767,17 +14750,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "牡丹江海林",
-        "modern": "牡丹江海林",
-        "coord": [
-          129.48,
-          44.58
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "济宁曲阜",
-        "modern": "济宁曲阜",
+        "ancient": "济宁",
+        "modern": "济宁",
         "coord": [
           116.99,
           35.6
@@ -14794,8 +14768,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "黄山·歙县",
-        "modern": "黄山·歙县",
+        "ancient": "黄山",
+        "modern": "黄山",
         "coord": [
           118.43,
           29.87
@@ -14821,8 +14795,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "凉山·西昌",
-        "modern": "凉山·西昌",
+        "ancient": "西昌",
+        "modern": "西昌",
         "coord": [
           102.26,
           27.89
@@ -14857,29 +14831,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "北海·合浦",
-        "modern": "北海·合浦",
+        "ancient": "北海",
+        "modern": "北海",
         "coord": [
           109.2,
           21.66
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "崇左·凭祥",
-        "modern": "崇左·凭祥",
-        "coord": [
-          106.75,
-          21.97
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "锡林郭勒·多伦",
-        "modern": "锡林郭勒·多伦",
-        "coord": [
-          116.48,
-          42.2
         ],
         "tier": 2
       },
@@ -14911,20 +14867,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "潍坊·青州",
-        "modern": "潍坊·青州",
+        "ancient": "潍坊",
+        "modern": "潍坊",
         "coord": [
           118.48,
           36.68
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "潍坊·诸城",
-        "modern": "潍坊·诸城",
-        "coord": [
-          119.4,
-          35.99
         ],
         "tier": 2
       },
@@ -14938,8 +14885,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "忻州·代县",
-        "modern": "忻州·代县",
+        "ancient": "忻州",
+        "modern": "忻州",
         "coord": [
           112.96,
           39.07
@@ -14947,8 +14894,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "吴忠·灵武",
-        "modern": "吴忠·灵武",
+        "ancient": "吴忠",
+        "modern": "吴忠",
         "coord": [
           106.28,
           38.09
@@ -14956,17 +14903,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "阿克苏·库车",
-        "modern": "阿克苏·库车",
-        "coord": [
-          82.96,
-          41.72
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "通化·集安",
-        "modern": "通化·集安",
+        "ancient": "通化",
+        "modern": "通化",
         "coord": [
           126.19,
           41.12
@@ -15082,8 +15020,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "南充·阆中",
-        "modern": "南充·阆中",
+        "ancient": "南充",
+        "modern": "南充",
         "coord": [
           105.97,
           31.56
@@ -15145,29 +15083,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "荆门·当阳",
-        "modern": "荆门·当阳",
-        "coord": [
-          111.79,
-          30.82
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "随州",
         "modern": "随州",
         "coord": [
           113.38,
           31.69
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "十堰·丹江口",
-        "modern": "十堰·丹江口",
-        "coord": [
-          111.08,
-          32.54
         ],
         "tier": 2
       },
@@ -15190,8 +15110,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "湛江·雷州",
-        "modern": "湛江·雷州",
+        "ancient": "湛江",
+        "modern": "湛江",
         "coord": [
           110.08,
           20.91
@@ -15199,8 +15119,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "茂名·高州",
-        "modern": "茂名·高州",
+        "ancient": "茂名",
+        "modern": "茂名",
         "coord": [
           110.85,
           21.92
@@ -15253,8 +15173,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "红河·建水",
-        "modern": "红河·建水",
+        "ancient": "红河",
+        "modern": "红河",
         "coord": [
           102.83,
           23.62
@@ -15276,24 +15196,6 @@ window.DYNASTY_DATA = [
         "coord": [
           80.4,
           31.15
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "阿拉善·额济纳",
-        "modern": "阿拉善·额济纳",
-        "coord": [
-          101.14,
-          41.76
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "苏州·太仓",
-        "modern": "苏州·太仓",
-        "coord": [
-          121.111,
-          31.451
         ],
         "tier": 2
       },
@@ -15325,15 +15227,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "张家口·怀来",
-        "modern": "张家口·怀来",
-        "coord": [
-          115.521,
-          40.401
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "辽阳",
         "modern": "辽阳",
         "coord": [
@@ -15352,8 +15245,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "张家口·宣化",
-        "modern": "张家口·宣化",
+        "ancient": "张家口",
+        "modern": "张家口",
         "coord": [
           115.061,
           40.611
@@ -15379,8 +15272,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "葫芦岛兴城",
-        "modern": "葫芦岛兴城",
+        "ancient": "葫芦岛",
+        "modern": "葫芦岛",
         "coord": [
           120.72,
           40.61
@@ -15388,8 +15281,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "锡林郭勒·正蓝旗",
-        "modern": "锡林郭勒·正蓝旗",
+        "ancient": "锡林郭勒",
+        "modern": "锡林郭勒",
         "coord": [
           116.18,
           42.36
@@ -15397,8 +15290,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "日喀则·萨迦",
-        "modern": "日喀则·萨迦",
+        "ancient": "日喀则",
+        "modern": "日喀则",
         "coord": [
           88.021,
           28.901
@@ -15433,17 +15326,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·合川",
-        "modern": "重庆·合川",
-        "coord": [
-          106.281,
-          30.031
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "江门·新会",
-        "modern": "江门·新会",
+        "ancient": "江门",
+        "modern": "江门",
         "coord": [
           113.031,
           22.451
@@ -15451,11 +15335,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "哈尔滨·阿城",
-        "modern": "哈尔滨·阿城",
+        "ancient": "哈尔滨",
+        "modern": "哈尔滨",
         "coord": [
-          126.971,
-          45.541
+          126.631,
+          45.801
         ],
         "tier": 2
       },
@@ -15523,26 +15407,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "邯郸·大名",
-        "modern": "邯郸·大名",
-        "coord": [
-          115.151,
-          36.281
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "保定·雄县",
-        "modern": "保定·雄县",
-        "coord": [
-          116.111,
-          38.991
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "赤峰·巴林左旗",
-        "modern": "赤峰·巴林左旗",
+        "ancient": "赤峰",
+        "modern": "赤峰",
         "coord": [
           119.381,
           43.971
@@ -15559,11 +15425,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "石家庄·正定",
-        "modern": "石家庄·正定",
+        "ancient": "石家庄",
+        "modern": "石家庄",
         "coord": [
-          114.571,
-          38.141
+          114.511,
+          38.041
         ],
         "tier": 2
       },
@@ -15586,17 +15452,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "赤峰·宁城",
-        "modern": "赤峰·宁城",
-        "coord": [
-          119.301,
-          41.601
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "定西·临洮",
-        "modern": "定西·临洮",
+        "ancient": "定西",
+        "modern": "定西",
         "coord": [
           103.861,
           35.381
@@ -15640,17 +15497,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·彭水",
-        "modern": "重庆·彭水",
-        "coord": [
-          108.161,
-          29.291
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "海东·乐都",
-        "modern": "海东·乐都",
+        "ancient": "海东",
+        "modern": "海东",
         "coord": [
           102.401,
           36.481
@@ -15658,8 +15506,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "牡丹江·宁安",
-        "modern": "牡丹江·宁安",
+        "ancient": "牡丹江",
+        "modern": "牡丹江",
         "coord": [
           129.15,
           44.05
@@ -15676,17 +15524,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "榆林·靖边",
-        "modern": "榆林·靖边",
-        "coord": [
-          108.871,
-          37.991
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "淮南·寿县",
-        "modern": "淮南·寿县",
+        "ancient": "淮南",
+        "modern": "淮南",
         "coord": [
           116.781,
           32.581
@@ -15694,8 +15533,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "驻马店·汝南",
-        "modern": "驻马店·汝南",
+        "ancient": "驻马店",
+        "modern": "驻马店",
         "coord": [
           114.361,
           33.001
@@ -15712,11 +15551,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "郑州荥阳",
-        "modern": "郑州荥阳",
+        "ancient": "郑州",
+        "modern": "郑州",
         "coord": [
-          113.38,
-          34.79
+          113.631,
+          34.751
         ],
         "tier": 2
       },
@@ -15730,11 +15569,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "呼和浩特·和林格尔",
-        "modern": "呼和浩特·和林格尔",
+        "ancient": "呼和浩特",
+        "modern": "呼和浩特",
         "coord": [
-          111.821,
-          40.381
+          111.751,
+          40.841
         ],
         "tier": 2
       },
@@ -15784,15 +15623,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "青岛黄岛",
-        "modern": "青岛黄岛",
-        "coord": [
-          119.98,
-          35.65
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "许昌",
         "modern": "许昌",
         "coord": [
@@ -15829,17 +15659,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·奉节",
-        "modern": "重庆·奉节",
-        "coord": [
-          109.461,
-          31.021
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "南平建瓯",
-        "modern": "南平建瓯",
+        "ancient": "南平",
+        "modern": "南平",
         "coord": [
           118.32,
           27.03
@@ -15861,15 +15682,6 @@ window.DYNASTY_DATA = [
         "coord": [
           75.991,
           39.471
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "邢台平乡",
-        "modern": "邢台平乡",
-        "coord": [
-          115.03,
-          37.07
         ],
         "tier": 2
       },
@@ -15901,17 +15713,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "禹州",
-        "modern": "禹州",
-        "coord": [
-          113.471,
-          34.151
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "运城·夏县",
-        "modern": "运城·夏县",
+        "ancient": "运城",
+        "modern": "运城",
         "coord": [
           111.221,
           35.141
@@ -15928,26 +15731,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "榆林·绥德",
-        "modern": "榆林·绥德",
-        "coord": [
-          110.261,
-          37.501
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "新郑",
-        "modern": "新郑",
-        "coord": [
-          113.741,
-          34.401
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "宝鸡凤翔",
-        "modern": "宝鸡凤翔",
+        "ancient": "宝鸡",
+        "modern": "宝鸡",
         "coord": [
           107.381,
           34.461
@@ -15955,20 +15740,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "周口淮阳",
-        "modern": "周口淮阳",
+        "ancient": "周口",
+        "modern": "周口",
         "coord": [
           114.881,
           33.781
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "石家庄平山",
-        "modern": "石家庄平山",
-        "coord": [
-          114.381,
-          38.311
         ],
         "tier": 2
       },
@@ -15978,24 +15754,6 @@ window.DYNASTY_DATA = [
         "coord": [
           113.111,
           36.191
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "呼和浩特托克托",
-        "modern": "呼和浩特托克托",
-        "coord": [
-          111.201,
-          40.251
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "张家口蔚县",
-        "modern": "张家口蔚县",
-        "coord": [
-          114.551,
-          40.151
         ],
         "tier": 2
       }
@@ -16743,8 +16501,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "马鞍山当涂",
-        "modern": "马鞍山当涂",
+        "ancient": "马鞍山",
+        "modern": "马鞍山",
         "coord": [
           118.497,
           31.571
@@ -16806,15 +16564,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "运城永济",
-        "modern": "运城永济",
-        "coord": [
-          110.32,
-          34.84
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "濮阳",
         "modern": "濮阳",
         "coord": [
@@ -16851,17 +16600,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "南阳邓州",
-        "modern": "南阳邓州",
-        "coord": [
-          112.09,
-          32.69
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "绵阳三台",
-        "modern": "绵阳三台",
+        "ancient": "绵阳",
+        "modern": "绵阳",
         "coord": [
           105.09,
           31.1
@@ -16887,11 +16627,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "酒泉瓜州",
-        "modern": "酒泉瓜州",
+        "ancient": "酒泉",
+        "modern": "酒泉",
         "coord": [
-          95.78,
-          40.52
+          98.51,
+          39.74
         ],
         "tier": 2
       },
@@ -16905,8 +16645,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "抚顺新宾",
-        "modern": "抚顺新宾",
+        "ancient": "抚顺",
+        "modern": "抚顺",
         "coord": [
           124.85,
           41.72
@@ -16932,17 +16672,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "牡丹江海林",
-        "modern": "牡丹江海林",
-        "coord": [
-          129.48,
-          44.58
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "济宁曲阜",
-        "modern": "济宁曲阜",
+        "ancient": "济宁",
+        "modern": "济宁",
         "coord": [
           116.99,
           35.6
@@ -16959,8 +16690,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "黄山·歙县",
-        "modern": "黄山·歙县",
+        "ancient": "黄山",
+        "modern": "黄山",
         "coord": [
           118.43,
           29.87
@@ -16986,8 +16717,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "凉山·西昌",
-        "modern": "凉山·西昌",
+        "ancient": "西昌",
+        "modern": "西昌",
         "coord": [
           102.26,
           27.89
@@ -17004,8 +16735,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "怀化·芷江",
-        "modern": "怀化·芷江",
+        "ancient": "怀化",
+        "modern": "怀化",
         "coord": [
           109.68,
           27.44
@@ -17031,29 +16762,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "北海·合浦",
-        "modern": "北海·合浦",
+        "ancient": "北海",
+        "modern": "北海",
         "coord": [
           109.2,
           21.66
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "崇左·凭祥",
-        "modern": "崇左·凭祥",
-        "coord": [
-          106.75,
-          21.97
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "锡林郭勒·多伦",
-        "modern": "锡林郭勒·多伦",
-        "coord": [
-          116.48,
-          42.2
         ],
         "tier": 2
       },
@@ -17085,20 +16798,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "潍坊·青州",
-        "modern": "潍坊·青州",
+        "ancient": "潍坊",
+        "modern": "潍坊",
         "coord": [
           118.48,
           36.68
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "潍坊·诸城",
-        "modern": "潍坊·诸城",
-        "coord": [
-          119.4,
-          35.99
         ],
         "tier": 2
       },
@@ -17112,8 +16816,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "忻州·代县",
-        "modern": "忻州·代县",
+        "ancient": "忻州",
+        "modern": "忻州",
         "coord": [
           112.96,
           39.07
@@ -17121,8 +16825,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "吴忠·灵武",
-        "modern": "吴忠·灵武",
+        "ancient": "吴忠",
+        "modern": "吴忠",
         "coord": [
           106.28,
           38.09
@@ -17130,17 +16834,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "阿克苏·库车",
-        "modern": "阿克苏·库车",
-        "coord": [
-          82.96,
-          41.72
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "通化·集安",
-        "modern": "通化·集安",
+        "ancient": "通化",
+        "modern": "通化",
         "coord": [
           126.19,
           41.12
@@ -17274,8 +16969,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "南充·阆中",
-        "modern": "南充·阆中",
+        "ancient": "南充",
+        "modern": "南充",
         "coord": [
           105.97,
           31.56
@@ -17337,29 +17032,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "荆门·当阳",
-        "modern": "荆门·当阳",
-        "coord": [
-          111.79,
-          30.82
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "随州",
         "modern": "随州",
         "coord": [
           113.38,
           31.69
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "十堰·丹江口",
-        "modern": "十堰·丹江口",
-        "coord": [
-          111.08,
-          32.54
         ],
         "tier": 2
       },
@@ -17382,8 +17059,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "湛江·雷州",
-        "modern": "湛江·雷州",
+        "ancient": "湛江",
+        "modern": "湛江",
         "coord": [
           110.08,
           20.91
@@ -17391,8 +17068,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "茂名·高州",
-        "modern": "茂名·高州",
+        "ancient": "茂名",
+        "modern": "茂名",
         "coord": [
           110.85,
           21.92
@@ -17445,8 +17122,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "红河·建水",
-        "modern": "红河·建水",
+        "ancient": "红河",
+        "modern": "红河",
         "coord": [
           102.83,
           23.62
@@ -17468,24 +17145,6 @@ window.DYNASTY_DATA = [
         "coord": [
           80.4,
           31.15
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "阿拉善·额济纳",
-        "modern": "阿拉善·额济纳",
-        "coord": [
-          101.14,
-          41.76
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "苏州·太仓",
-        "modern": "苏州·太仓",
-        "coord": [
-          121.111,
-          31.451
         ],
         "tier": 2
       },
@@ -17517,15 +17176,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "张家口·怀来",
-        "modern": "张家口·怀来",
-        "coord": [
-          115.521,
-          40.401
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "辽阳",
         "modern": "辽阳",
         "coord": [
@@ -17544,8 +17194,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "张家口·宣化",
-        "modern": "张家口·宣化",
+        "ancient": "张家口",
+        "modern": "张家口",
         "coord": [
           115.061,
           40.611
@@ -17571,8 +17221,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "葫芦岛兴城",
-        "modern": "葫芦岛兴城",
+        "ancient": "葫芦岛",
+        "modern": "葫芦岛",
         "coord": [
           120.72,
           40.61
@@ -17580,8 +17230,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "锡林郭勒·正蓝旗",
-        "modern": "锡林郭勒·正蓝旗",
+        "ancient": "锡林郭勒",
+        "modern": "锡林郭勒",
         "coord": [
           116.18,
           42.36
@@ -17589,8 +17239,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "日喀则·萨迦",
-        "modern": "日喀则·萨迦",
+        "ancient": "日喀则",
+        "modern": "日喀则",
         "coord": [
           88.021,
           28.901
@@ -17625,29 +17275,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·合川",
-        "modern": "重庆·合川",
-        "coord": [
-          106.281,
-          30.031
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "江门·新会",
-        "modern": "江门·新会",
+        "ancient": "江门",
+        "modern": "江门",
         "coord": [
           113.031,
           22.451
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "哈尔滨·阿城",
-        "modern": "哈尔滨·阿城",
-        "coord": [
-          126.971,
-          45.541
         ],
         "tier": 2
       },
@@ -17706,26 +17338,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "邯郸·大名",
-        "modern": "邯郸·大名",
-        "coord": [
-          115.151,
-          36.281
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "保定·雄县",
-        "modern": "保定·雄县",
-        "coord": [
-          116.111,
-          38.991
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "赤峰·巴林左旗",
-        "modern": "赤峰·巴林左旗",
+        "ancient": "赤峰",
+        "modern": "赤峰",
         "coord": [
           119.381,
           43.971
@@ -17751,17 +17365,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "赤峰·宁城",
-        "modern": "赤峰·宁城",
-        "coord": [
-          119.301,
-          41.601
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "定西·临洮",
-        "modern": "定西·临洮",
+        "ancient": "定西",
+        "modern": "定西",
         "coord": [
           103.861,
           35.381
@@ -17805,17 +17410,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·彭水",
-        "modern": "重庆·彭水",
-        "coord": [
-          108.161,
-          29.291
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "海东·乐都",
-        "modern": "海东·乐都",
+        "ancient": "海东",
+        "modern": "海东",
         "coord": [
           102.401,
           36.481
@@ -17823,8 +17419,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "牡丹江·宁安",
-        "modern": "牡丹江·宁安",
+        "ancient": "牡丹江",
+        "modern": "牡丹江",
         "coord": [
           129.15,
           44.05
@@ -17841,17 +17437,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "榆林·靖边",
-        "modern": "榆林·靖边",
-        "coord": [
-          108.871,
-          37.991
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "淮南·寿县",
-        "modern": "淮南·寿县",
+        "ancient": "淮南",
+        "modern": "淮南",
         "coord": [
           116.781,
           32.581
@@ -17859,8 +17446,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "驻马店·汝南",
-        "modern": "驻马店·汝南",
+        "ancient": "驻马店",
+        "modern": "驻马店",
         "coord": [
           114.361,
           33.001
@@ -17882,15 +17469,6 @@ window.DYNASTY_DATA = [
         "coord": [
           114.501,
           37.071
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "呼和浩特·和林格尔",
-        "modern": "呼和浩特·和林格尔",
-        "coord": [
-          111.821,
-          40.381
         ],
         "tier": 2
       },
@@ -17940,15 +17518,6 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "青岛黄岛",
-        "modern": "青岛黄岛",
-        "coord": [
-          119.98,
-          35.65
-        ],
-        "tier": 2
-      },
-      {
         "ancient": "许昌",
         "modern": "许昌",
         "coord": [
@@ -17985,17 +17554,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "重庆·奉节",
-        "modern": "重庆·奉节",
-        "coord": [
-          109.461,
-          31.021
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "南平建瓯",
-        "modern": "南平建瓯",
+        "ancient": "南平",
+        "modern": "南平",
         "coord": [
           118.32,
           27.03
@@ -18017,15 +17577,6 @@ window.DYNASTY_DATA = [
         "coord": [
           75.991,
           39.471
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "邢台平乡",
-        "modern": "邢台平乡",
-        "coord": [
-          115.03,
-          37.07
         ],
         "tier": 2
       },
@@ -18057,17 +17608,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "禹州",
-        "modern": "禹州",
-        "coord": [
-          113.471,
-          34.151
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "运城·夏县",
-        "modern": "运城·夏县",
+        "ancient": "运城",
+        "modern": "运城",
         "coord": [
           111.221,
           35.141
@@ -18084,26 +17626,8 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "榆林·绥德",
-        "modern": "榆林·绥德",
-        "coord": [
-          110.261,
-          37.501
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "新郑",
-        "modern": "新郑",
-        "coord": [
-          113.741,
-          34.401
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "宝鸡凤翔",
-        "modern": "宝鸡凤翔",
+        "ancient": "宝鸡",
+        "modern": "宝鸡",
         "coord": [
           107.381,
           34.461
@@ -18111,20 +17635,11 @@ window.DYNASTY_DATA = [
         "tier": 2
       },
       {
-        "ancient": "周口淮阳",
-        "modern": "周口淮阳",
+        "ancient": "周口",
+        "modern": "周口",
         "coord": [
           114.881,
           33.781
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "石家庄平山",
-        "modern": "石家庄平山",
-        "coord": [
-          114.381,
-          38.311
         ],
         "tier": 2
       },
@@ -18136,28 +17651,11 @@ window.DYNASTY_DATA = [
           36.191
         ],
         "tier": 2
-      },
-      {
-        "ancient": "呼和浩特托克托",
-        "modern": "呼和浩特托克托",
-        "coord": [
-          111.201,
-          40.251
-        ],
-        "tier": 2
-      },
-      {
-        "ancient": "张家口蔚县",
-        "modern": "张家口蔚县",
-        "coord": [
-          114.551,
-          40.151
-        ],
-        "tier": 2
       }
     ]
   }
 ];
+
 window.CORRIDOR_DATA = [
   {
     "key": "wall_zhanguo",

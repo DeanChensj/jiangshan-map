@@ -1806,19 +1806,49 @@ function main() {
   ctrl._id = prevIdForGen;
   sandbox.document = prevDoc;
 
-  // 23b. Verify ROC & PRC modern settlement coverage and traced Tier-2 city visibility
+  // 23b. Verify ROC & PRC modern settlement coverage, zero compound/duplicate city names, and traced Tier-2 city visibility
   const rocDyn = dynasties.find((d) => d.key === 'roc');
   const prcDyn = dynasties.find((d) => d.key === 'prc');
   assert(
-    rocDyn && rocDyn.settlements.length >= 205 && prcDyn && prcDyn.settlements.length >= 210,
-    `Expected ROC (>=205) and PRC (>=210) to include propagated domestic historical cities, got ROC=${rocDyn && rocDyn.settlements.length}, PRC=${prcDyn && prcDyn.settlements.length}`
+    rocDyn && rocDyn.settlements.length >= 180 && prcDyn && prcDyn.settlements.length >= 185,
+    `Expected ROC (>=180) and PRC (>=185) to include deduplicated modern cities, got ROC=${rocDyn && rocDyn.settlements.length}, PRC=${prcDyn && prcDyn.settlements.length}`
   );
-  for (const modCity of ['淮安', '温州', '嘉兴', '金华', '衢州', '丽水', '亳州', '阜阳', '连云港', '南通', '盐城', '无锡', '宜宾', '乐山', '泸州', '达州', '抚州', '宜春', '莆田', '随州', '邵阳', '郴州', '韶关', '肇庆', '梧州', '崇左', '三亚', '平凉', '庆阳', '保山', '山南', '阿里', '潍坊·青州', '黄山·歙县', '南充·阆中', '凉山·西昌']) {
+  for (const modCity of ['淮安', '温州', '嘉兴', '金华', '衢州', '丽水', '亳州', '阜阳', '连云港', '南通', '盐城', '无锡', '宜宾', '乐山', '泸州', '达州', '抚州', '宜春', '莆田', '随州', '邵阳', '郴州', '韶关', '肇庆', '梧州', '崇左', '三亚', '平凉', '庆阳', '保山', '山南', '阿里', '潍坊', '黄山', '南充', '西昌', '马鞍山', '运城', '绵阳', '酒泉', '抚顺', '牡丹江', '济宁', '怀化', '北海', '锡林郭勒', '忻州', '吴忠', '通化', '湛江', '茂名', '红河', '张家口', '葫芦岛', '日喀则', '江门', '赤峰', '定西', '海东', '淮南', '驻马店', '南平', '宝鸡', '周口']) {
     assert(
-      prcDyn.settlements.some((s) => s.modern === modCity) &&
+      prcDyn.settlements.some((s) => s.modern === modCity && s.ancient === modCity) &&
         rocDyn.settlements.some((s) => s.modern === modCity),
-      `Expected ${modCity} to be present on both ROC and PRC maps`
+      `Expected clean city "${modCity}" to be present on both ROC and PRC maps`
     );
+  }
+  const bannedUnseparated = new Set([
+    '南平建瓯', '南阳邓州', '周口淮阳', '呼和浩特托克托', '宝鸡凤翔', '张家口蔚县',
+    '抚顺新宾', '济宁曲阜', '牡丹江海林', '石家庄平山', '绵阳三台', '葫芦岛兴城',
+    '运城夏县', '运城永济', '邢台平乡', '邯郸临漳', '郑州荥阳', '酒泉瓜州',
+    '青岛平度东南', '青岛黄岛', '马鞍山当涂',
+  ]);
+  for (const d of dynasties) {
+    for (const s of d.settlements || []) {
+      assert(
+        !bannedUnseparated.has(s.modern) && !bannedUnseparated.has(s.ancient),
+        `Dynasty ${d.key} settlement "${s.ancient}" (modern="${s.modern}") must not use unseparated city+county compound name`
+      );
+    }
+  }
+  for (const modDyn of [rocDyn, prcDyn]) {
+    const seenAnc = new Set();
+    const seenMod = new Set();
+    for (const s of modDyn.settlements) {
+      assert(
+        !s.ancient.includes('·') && !s.modern.includes('·'),
+        `${modDyn.key} settlement "${s.ancient}" (modern="${s.modern}") must use a clean single city name without "·" compound`
+      );
+      assert(
+        !seenAnc.has(s.ancient) && !seenMod.has(s.modern),
+        `${modDyn.key} must not contain duplicate city "${s.ancient}" / "${s.modern}"`
+      );
+      seenAnc.add(s.ancient);
+      seenMod.add(s.modern);
+    }
   }
   assert(
     styleCss.includes('.settlement-node.is-tier2.is-trace-city') &&
