@@ -512,8 +512,7 @@ h2 {
 
 .province-shape {
   fill: var(--province-fill);
-  stroke: var(--province-border);
-  stroke-width: 0.52;
+  stroke: none;
   vector-effect: non-scaling-stroke;
   transition: fill 0.2s;
 }
@@ -524,22 +523,116 @@ h2 {
 
 #atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
   fill: rgba(246, 239, 225, 0.04);
-  stroke: rgba(154, 139, 120, 0.26);
+  stroke: none;
 }
 
 #atlas-svg.terrain-active .province-shape:not(.maritime-dash):hover {
-  fill: rgba(230, 220, 199, 0.22);
+  fill: rgba(230, 220, 199, 0.24);
+}
+
+#atlas-svg[data-dynasty="prc"] .province-shape:not(.maritime-dash) {
+  fill: rgba(158, 42, 43, 0.11);
+}
+
+#atlas-svg[data-dynasty="prc"] .province-shape:not(.maritime-dash):hover {
+  fill: rgba(158, 42, 43, 0.22);
+}
+
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-shape:not(.maritime-dash) {
+  fill: rgba(158, 42, 43, 0.08);
+}
+
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-shape:not(.maritime-dash):hover {
+  fill: rgba(158, 42, 43, 0.2);
+}
+
+.province-boundary-casing {
+  fill: none;
+  stroke: rgba(250, 245, 234, 0.58);
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.province-boundary-interior {
+  fill: none;
+  stroke: rgba(84, 70, 54, 0.62);
+  stroke-width: 0.94;
+  stroke-dasharray: 4.5 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.province-boundary-outer {
+  fill: none;
+  stroke: rgba(74, 60, 46, 0.58);
+  stroke-width: 0.98;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+#atlas-svg.terrain-active .province-boundary-casing {
+  stroke: rgba(250, 245, 234, 0.54);
+  stroke-width: 2.05;
+}
+
+#atlas-svg.terrain-active .province-boundary-interior {
+  stroke: rgba(70, 56, 42, 0.68);
+  stroke-width: 0.96;
+  stroke-dasharray: 4.5 2.2;
+}
+
+#atlas-svg.terrain-active .province-boundary-outer {
+  stroke: rgba(64, 50, 38, 0.62);
+  stroke-width: 1.02;
+}
+
+#atlas-svg[data-dynasty="prc"] .province-boundary-casing,
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-casing {
+  stroke: rgba(250, 244, 232, 0.72);
+  stroke-width: 2.85;
+}
+
+#atlas-svg[data-dynasty="prc"] .province-boundary-interior,
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-interior {
+  stroke: rgba(104, 28, 12, 0.88);
+  stroke-width: 1.42;
+  stroke-dasharray: 7 3;
+}
+
+#atlas-svg[data-dynasty="prc"] .province-boundary-outer,
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-outer {
+  stroke: rgba(158, 42, 43, 0.9);
+  stroke-width: 1.85;
+  stroke-dasharray: none;
 }
 
 .province-shape.maritime-dash {
-  fill: #9fb2b0;
+  fill: #7f9492;
   stroke: none;
   pointer-events: none;
 }
 
-#grp-provinces.is-hidden .province-shape {
-  fill: none;
-  stroke: rgba(141, 132, 122, 0.26);
+#atlas-svg[data-dynasty="prc"] .province-shape.maritime-dash {
+  fill: #9e2a2b;
+}
+
+#grp-provinces.is-hidden .province-boundary-casing,
+#grp-provinces.is-hidden .province-boundary-interior,
+#grp-provinces.is-hidden .province-boundary-outer,
+#grp-provinces.is-hidden .province-shape.maritime-dash {
+  display: none;
+}
+
+#grp-provinces.is-hidden .province-shape:not(.maritime-dash),
+#atlas-svg.terrain-active #grp-provinces.is-hidden .province-shape:not(.maritime-dash) {
+  stroke: none;
 }
 
 #grp-prov-names {
@@ -3877,10 +3970,36 @@ html[lang="en"] #act-toggle-pane .tp-label {
     stroke-dasharray: 6 2.6;
   }
 
-  .province-shape,
-  #atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
-    stroke: rgba(154, 139, 120, 0.22);
-    stroke-width: 0.42;
+  .province-boundary-casing,
+  #atlas-svg.terrain-active .province-boundary-casing {
+    stroke-width: 1.75;
+  }
+
+  .province-boundary-interior,
+  #atlas-svg.terrain-active .province-boundary-interior {
+    stroke-width: 0.84;
+    stroke-dasharray: 4 2;
+  }
+
+  .province-boundary-outer,
+  #atlas-svg.terrain-active .province-boundary-outer {
+    stroke-width: 0.88;
+  }
+
+  #atlas-svg[data-dynasty="prc"] .province-boundary-casing,
+  #atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-casing {
+    stroke-width: 2.4;
+  }
+
+  #atlas-svg[data-dynasty="prc"] .province-boundary-interior,
+  #atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-interior {
+    stroke-width: 1.2;
+    stroke-dasharray: 6 2.6;
+  }
+
+  #atlas-svg[data-dynasty="prc"] .province-boundary-outer,
+  #atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-outer {
+    stroke-width: 1.55;
   }
 
   .neighbor-shape,

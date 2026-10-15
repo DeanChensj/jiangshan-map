@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1177,7 +1177,97 @@
       }
     }
 
+    _buildProvinceBoundaryPaths() {
+      if (this._cachedProvinceBoundaryPaths) {
+        return this._cachedProvinceBoundaryPaths;
+      }
+      const ptKey = (pt) => Math.round(pt[0] * 100) * 10000 + Math.round(pt[1] * 100);
+      const edgeKey = (p1, p2) => {
+        const k1 = ptKey(p1);
+        const k2 = ptKey(p2);
+        return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
+      };
+      const allRings = [];
+      const edgeCounts = new Map();
+      for (const prov of this.provinces || []) {
+        if (!prov || String(prov.code).includes('_JD') || !Array.isArray(prov.rings)) continue;
+        for (const poly of prov.rings) {
+          for (const ring of poly || []) {
+            if (!ring || ring.length < 2) continue;
+            allRings.push(ring);
+            for (let i = 0; i < ring.length - 1; i++) {
+              const ek = edgeKey(ring[i], ring[i + 1]);
+              edgeCounts.set(ek, (edgeCounts.get(ek) || 0) + 1);
+            }
+          }
+        }
+      }
+
+      const seenInterior = new Set();
+      const seenOuter = new Set();
+      let interior = '';
+      let outer = '';
+
+      for (const ring of allRings) {
+        let intPenX = NaN;
+        let intPenY = NaN;
+        let outPenX = NaN;
+        let outPenY = NaN;
+        for (let i = 0; i < ring.length - 1; i++) {
+          const p1 = ring[i];
+          const p2 = ring[i + 1];
+          const ek = edgeKey(p1, p2);
+          const count = edgeCounts.get(ek) || 0;
+          if (count >= 2) {
+            outPenX = NaN;
+            outPenY = NaN;
+            if (seenInterior.has(ek)) {
+              intPenX = NaN;
+              intPenY = NaN;
+              continue;
+            }
+            seenInterior.add(ek);
+            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
+            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
+            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
+            if (x1 !== intPenX || y1 !== intPenY) {
+              interior += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
+            }
+            interior += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
+            intPenX = x2;
+            intPenY = y2;
+          } else {
+            intPenX = NaN;
+            intPenY = NaN;
+            if (seenOuter.has(ek)) {
+              outPenX = NaN;
+              outPenY = NaN;
+              continue;
+            }
+            seenOuter.add(ek);
+            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
+            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
+            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
+            if (x1 !== outPenX || y1 !== outPenY) {
+              outer += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
+            }
+            outer += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
+            outPenX = x2;
+            outPenY = y2;
+          }
+        }
+      }
+
+      this._cachedProvinceBoundaryPaths = {
+        interior,
+        outer,
+        combined: `${interior}${outer}`,
+      };
+      return this._cachedProvinceBoundaryPaths;
+    }
+
     _buildModernProvinces() {
+      const dashPaths = [];
       for (const prov of this.provinces) {
         const isDash = String(prov.code).includes('_JD');
         const path = this._svgNode(
@@ -1188,7 +1278,9 @@
           },
           this.grpProvinces
         );
-        if (!isDash) {
+        if (isDash) {
+          dashPaths.push(path);
+        } else {
           path.dataset.provTitle = prov.title;
           const [cx, cy] = this.projector.toScreen(prov.hub[0], prov.hub[1]);
           const lbl = this._svgNode(
@@ -1199,6 +1291,33 @@
           const rawShort = prov.title.replace(/(省|市|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/, '');
           lbl.dataset.rawName = rawShort;
           lbl.textContent = this.trTerm(rawShort);
+        }
+      }
+      const bounds = this._buildProvinceBoundaryPaths();
+      if (bounds.combined) {
+        this._svgNode(
+          'path',
+          { d: bounds.combined, class: 'province-boundary-casing' },
+          this.grpProvinces
+        );
+      }
+      if (bounds.interior) {
+        this._svgNode(
+          'path',
+          { d: bounds.interior, class: 'province-boundary-interior' },
+          this.grpProvinces
+        );
+      }
+      if (bounds.outer) {
+        this._svgNode(
+          'path',
+          { d: bounds.outer, class: 'province-boundary-outer' },
+          this.grpProvinces
+        );
+      }
+      for (const dp of dashPaths) {
+        if (this.grpProvinces && this.grpProvinces.appendChild) {
+          this.grpProvinces.appendChild(dp);
         }
       }
     }
@@ -1261,6 +1380,14 @@
 
     _renderDynasty(dynasty, prevSnap = null) {
       document.documentElement.style.setProperty('--dynasty-accent', dynasty.tint);
+      if (this.svg && dynasty && dynasty.key) {
+        if (this.svg.dataset) {
+          this.svg.dataset.dynasty = dynasty.key;
+        }
+        if (typeof this.svg.setAttribute === 'function') {
+          this.svg.setAttribute('data-dynasty', dynasty.key);
+        }
+      }
       if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       this._renderSettlements(dynasty);
       this._renderCorridors();
