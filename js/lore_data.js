@@ -2173,6 +2173,1182 @@
       "siteEn": "Ningguta Garrison (Hailin, Heilongjiang)",
       "zh": "清廷设镇守宁古塔等处将军，统辖松花江、乌苏里江至库页岛广袤边疆",
       "en": "The Qing court appoints the General of Ningguta to govern the frontier to Ussuri and Sakhalin"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 410,
+      "coord": [
+        118.48,
+        36.68
+      ],
+      "site": "广固（今山东潍坊青州）",
+      "siteEn": "Guanggu (Qingzhou, Weifang, Shandong)",
+      "zh": "刘裕北伐攻克南燕都城广固，擒慕容超收复青齐之地",
+      "en": "Liu Yu storms the Southern Yan capital Guanggu, capturing Murong Chao and recovering Shandong"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1048,
+      "coord": [
+        118.48,
+        36.68
+      ],
+      "site": "青州（今山东潍坊青州）",
+      "siteEn": "Qing Zhou (Weifang, Shandong)",
+      "zh": "河北大水百万流民南奔，富弼知青州置场劝募赈活饥民五十余万",
+      "en": "Prefect Fu Bi organizes relief in Qing Zhou for Hebei flood refugees, saving over 500,000 lives"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1076,
+      "coord": [
+        119.4,
+        35.99
+      ],
+      "site": "密州（今山东潍坊诸城）",
+      "siteEn": "Mi Zhou (Zhucheng, Weifang, Shandong)",
+      "zh": "苏轼知密州筑超然台，丙辰中秋欢饮达旦赋《水调歌头》",
+      "en": "Su Shi governs Mi Zhou, composing his Mid-Autumn masterpiece Prelude to Water Melody"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 212,
+      "coord": [
+        105.84,
+        32.44
+      ],
+      "site": "葭萌（今四川广元）",
+      "siteEn": "Jiameng (Guangyuan, Sichuan)",
+      "zh": "刘备自葭萌挥师南下与刘璋决裂，夺取涪城开启益州之战",
+      "en": "Liu Bei marches south from Jiameng to break with Liu Zhang, launching his Yi Province campaign"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 624,
+      "coord": [
+        105.84,
+        32.44
+      ],
+      "site": "利州（今四川广元）",
+      "siteEn": "Li Zhou (Guangyuan, Sichuan)",
+      "zh": "利州都督武士彟任上，武则天相传诞于利州嘉陵江畔",
+      "en": "Empress Wu Zetian is traditionally born at Li Zhou while her father Wu Shiyue governs there"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 980,
+      "coord": [
+        112.96,
+        39.07
+      ],
+      "site": "代州雁门（今山西忻州代县）",
+      "siteEn": "Dai Zhou & Yanmen (Daixian, Xinzhou, Shanxi)",
+      "zh": "代州刺史杨业出雁门关背击辽军，杀辽驸马萧咄李获雁门大捷",
+      "en": "Prefect Yang Ye leads cavalry behind Liao lines at Yanmen Pass, winning the Battle of Yanmen"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 756,
+      "coord": [
+        106.28,
+        38.09
+      ],
+      "site": "灵武（今宁夏吴忠灵武）",
+      "siteEn": "Lingwu (Wuzhong, Ningxia)",
+      "zh": "长安失守，太子李亨北上朔方军治所灵武即位为唐肃宗号令平叛",
+      "en": "Crown Prince Li Heng ascends the throne as Emperor Suzong at Lingwu to rally Tang forces"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1002,
+      "coord": [
+        106.28,
+        38.09
+      ],
+      "site": "灵州（今宁夏吴忠灵武）",
+      "siteEn": "Ling Zhou (Wuzhong, Ningxia)",
+      "zh": "党项李继迁攻陷宋朔方重镇灵州，改灵州为西平府定为西夏陪都",
+      "en": "Tangut leader Li Jiqian captures Ling Zhou, renaming it Xiping Prefecture as a Xia capital"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 384,
+      "coord": [
+        82.96,
+        41.72
+      ],
+      "site": "龟兹（今新疆阿克苏库车）",
+      "siteEn": "Kucha (Kuqa, Aksu, Xinjiang)",
+      "zh": "前秦吕光攻破龟兹城，奉迎高僧鸠摩罗什东入凉州与长安译经",
+      "en": "Former Qin general Lü Guang captures Kucha and escorts Buddhist master Kumarajiva east"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 648,
+      "coord": [
+        82.96,
+        41.72
+      ],
+      "site": "龟兹（今新疆阿克苏库车）",
+      "siteEn": "Kucha (Kuqa, Aksu, Xinjiang)",
+      "zh": "唐阿史那社尔率军平定龟兹，移安西都护府于龟兹统辖安西四镇",
+      "en": "Tang general Ashina She'er pacifies Kucha, where the Anxi Protectorate is relocated"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 73,
+      "coord": [
+        79.92,
+        37.11
+      ],
+      "site": "于阗（今新疆和田）",
+      "siteEn": "Khotan (Hotan, Xinjiang)",
+      "zh": "班超自鄯善西至于阗，诛匈奴使者降服于阗王广德复通西域南道",
+      "en": "Ban Chao wins the allegiance of King Guangde of Khotan, reopening the southern Silk Road"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 675,
+      "coord": [
+        79.92,
+        37.11
+      ],
+      "site": "于阗（今新疆和田）",
+      "siteEn": "Khotan (Hotan, Xinjiang)",
+      "zh": "唐廷于于阗置毗沙都督府，与龟兹、疏勒、碎叶并列安西四镇",
+      "en": "The Tang court establishes the Pisha Area Command at Khotan among the Four Garrisons of Anxi"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 755,
+      "coord": [
+        129.15,
+        44.05
+      ],
+      "site": "上京龙泉府（今黑龙江牡丹江宁安）",
+      "siteEn": "Shangjing Longquanfu (Ning'an, Mudanjiang, Heilongjiang)",
+      "zh": "渤海文王大钦茂迁都上京龙泉府，仿唐长安形制筑城号海东盛国",
+      "en": "King Mun of Balhae moves his capital to Shangjing Longquanfu, modeled on Tang Chang'an"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 926,
+      "coord": [
+        129.15,
+        44.05
+      ],
+      "site": "忽汗城（今黑龙江牡丹江宁安）",
+      "siteEn": "Huhancheng (Ning'an, Mudanjiang, Heilongjiang)",
+      "zh": "辽太祖耶律阿保机围困渤海上京忽汗城，大諲譔出降改设东丹国",
+      "en": "Liao founder Abaoji captures Huhancheng (Shangjing), ending Balhae and establishing Dongdan"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 244,
+      "coord": [
+        126.19,
+        41.12
+      ],
+      "site": "丸都城（今吉林通化集安）",
+      "siteEn": "Wandu City (Ji'an, Tonghua, Jilin)",
+      "zh": "曹魏毌丘俭东征高句丽，登丸都山攻克高句丽王都丸都城刻石纪功",
+      "en": "Cao Wei general Guanqiu Jian storms the Goguryeo capital at Wandu and carves a victory stele"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 414,
+      "coord": [
+        126.19,
+        41.12
+      ],
+      "site": "国内城（今吉林通化集安）",
+      "siteEn": "Guonei City (Ji'an, Tonghua, Jilin)",
+      "zh": "高句丽长寿王于国都国内城立广开土境好太王碑，铭记开疆史事",
+      "en": "King Jangsu of Goguryeo erects the Gwanggaeto Stele at Guonei City in modern Ji'an, Tonghua"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1406,
+      "coord": [
+        106.75,
+        21.97
+      ],
+      "site": "凭祥坡垒关（今广西崇左凭祥）",
+      "siteEn": "Pingxiang Pass (Chongzuo, Guangxi)",
+      "zh": "明征夷将军张辅率军自广西太平府凭祥度坡垒关（镇南关）南征",
+      "en": "Ming general Zhang Fu marches from Taiping Prefecture through Pingxiang Pass into Jiaozhi"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1260,
+      "coord": [
+        116.18,
+        42.36
+      ],
+      "site": "开平（今内蒙古锡林郭勒正蓝旗）",
+      "siteEn": "Kaiping / Xanadu (Xilingol, Inner Mongolia)",
+      "zh": "忽必烈于滦河上游开平即大汗位建元中统，旋升开平府为上都",
+      "en": "Kublai Khan is enthroned as Great Khan at Kaiping, soon elevated to summer capital Shangdu"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1691,
+      "coord": [
+        116.48,
+        42.2
+      ],
+      "site": "多伦诺尔（今内蒙古锡林郭勒多伦）",
+      "siteEn": "Dolon Nor (Xilingol, Inner Mongolia)",
+      "zh": "康熙帝亲赴多伦诺尔会盟喀尔喀三部与漠南诸旗，编旗管辖漠北",
+      "en": "Emperor Kangxi convenes the Dolon Nor Assembly, integrating the Khalkha Mongols into banners"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -102,
+      "coord": [
+        101.06,
+        41.95
+      ],
+      "site": "居延（今内蒙古阿拉善额济纳）",
+      "siteEn": "Juyan (Ejin Banner, Alxa, Inner Mongolia)",
+      "zh": "汉武帝遣路博德筑居延遮虏障屯田戍边，遗存万枚居延汉简",
+      "en": "Emperor Wu dispatches Lu Bode to build the Juyan frontier forts, leaving 10,000 Han slips"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1226,
+      "coord": [
+        101.14,
+        41.76
+      ],
+      "site": "黑水城（今内蒙古阿拉善额济纳）",
+      "siteEn": "Khara-Khoto (Ejin Banner, Alxa, Inner Mongolia)",
+      "zh": "成吉思汗末次亲征西夏首克黑水城，后元朝于此置亦集乃路",
+      "en": "Genghis Khan captures the Western Xia fortress of Khara-Khoto on his final campaign"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1037,
+      "coord": [
+        103.85,
+        30.08
+      ],
+      "site": "眉州（今四川眉山）",
+      "siteEn": "Mei Zhou (Meishan, Sichuan)",
+      "zh": "苏轼生于眉州眉山纱縠行，与苏洵、苏辙同出眉山并列唐宋八大家",
+      "en": "Su Shi is born in Mei Zhou (Meishan), home to the Three Su literary masters of Northern Song"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1175,
+      "coord": [
+        117.94,
+        28.45
+      ],
+      "site": "信州鹅湖（今江西上饶铅山）",
+      "siteEn": "Goose Lake, Xin Zhou (Shangrao, Jiangxi)",
+      "zh": "朱熹与陆九龄、陆九渊会讲于信州铅山鹅湖寺，史称“鹅湖之会”",
+      "en": "Zhu Xi and Lu Jiuyuan debate Neo-Confucian philosophy at Goose Lake Temple in Shangrao"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1196,
+      "coord": [
+        117.94,
+        28.45
+      ],
+      "site": "信州上饶（今江西上饶）",
+      "siteEn": "Xin Zhou (Shangrao, Jiangxi)",
+      "zh": "辛弃疾罢官隐居信州上饶带湖与瓢泉，赋豪放词抒恢复中原之志",
+      "en": "Patriotic poet Xin Qiji resides in Shangrao for two decades, composing his greatest poems"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 229,
+      "coord": [
+        104.92,
+        33.4
+      ],
+      "site": "武都（今甘肃陇南）",
+      "siteEn": "Wudu (Longnan, Gansu)",
+      "zh": "诸葛亮第三次北伐遣陈式进取武都、阴平二郡，收复陇南要冲",
+      "en": "On his third northern expedition, Zhuge Liang captures Wudu and Yinping in modern Longnan"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -209,
+      "coord": [
+        119.14,
+        33.5
+      ],
+      "site": "淮阴（今江苏淮安）",
+      "siteEn": "Huaiyin (Huai'an, Jiangsu)",
+      "zh": "韩信少时于淮阴受漂母饭信、胯下之辱，后仗剑从军拜汉大将军",
+      "en": "Han Xin endures early hardship in Huaiyin before rising to become Han's supreme commander"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1135,
+      "coord": [
+        119.14,
+        33.5
+      ],
+      "site": "楚州（今江苏淮安）",
+      "siteEn": "Chu Zhou (Huai'an, Jiangsu)",
+      "zh": "韩世忠与梁红玉屯兵楚州筑城抚民，扼守淮东门户十余年屏卫南宋",
+      "en": "Han Shizhong and Liang Hongyu garrison Chu Zhou (Huai'an), defending the Huai frontier"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1451,
+      "coord": [
+        119.14,
+        33.5
+      ],
+      "site": "淮安府（今江苏淮安）",
+      "siteEn": "Huai'an Prefecture (Huai'an, Jiangsu)",
+      "zh": "明廷设漕运总督驻节淮安府城，统辖南北大运河四百万石漕粮北运",
+      "en": "The Ming court establishes the Viceroy of Grain Transport at Huai'an on the Grand Canal"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -138,
+      "coord": [
+        120.66,
+        28.01
+      ],
+      "site": "东瓯（今浙江温州）",
+      "siteEn": "Dong'ou (Wenzhou, Zhejiang)",
+      "zh": "闽越围东瓯，汉武帝遣庄助发会稽兵浮海救东瓯并内徙其众于江淮",
+      "en": "Emperor Wu of Han dispatches naval forces from Kuaiji to relieve Dong'ou (Wenzhou)"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 422,
+      "coord": [
+        120.66,
+        28.01
+      ],
+      "site": "永嘉郡（今浙江温州）",
+      "siteEn": "Yongjia Commandery (Wenzhou, Zhejiang)",
+      "zh": "谢灵运出任永嘉太守，遍游永嘉楠溪江山水，开创中国古典山水诗派",
+      "en": "Xie Lingyun governs Yongjia (Wenzhou), pioneering classical Chinese landscape poetry"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1130,
+      "coord": [
+        120.66,
+        28.01
+      ],
+      "site": "温州（今浙江温州）",
+      "siteEn": "Wen Zhou (Wenzhou, Zhejiang)",
+      "zh": "金军渡江南侵搜山检海，宋高宗赵构自明州航海驻跸温州江心屿",
+      "en": "Fleeing Jurchen Jin pursuit by sea, Emperor Gaozong of Song holds court at Wenzhou"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -403,
+      "coord": [
+        120.75,
+        30.75
+      ],
+      "site": "槜李（今浙江嘉兴）",
+      "siteEn": "Zuili (Jiaxing, Zhejiang)",
+      "zh": "吴越争霸古战场槜李（今嘉兴）归越国，扼杭嘉湖水网要冲",
+      "en": "Site of the classic Wu-Yue battle of Zuili, Jiaxing guards the fertile northern Zhejiang plain"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1555,
+      "coord": [
+        120.75,
+        30.75
+      ],
+      "site": "嘉兴王江泾（今浙江嘉兴）",
+      "siteEn": "Wangjiangjing, Jiaxing (Zhejiang)",
+      "zh": "张经、卢镗与俞大猷统兵于嘉兴王江泾大破倭寇，获抗倭首捷",
+      "en": "Ming commanders Zhang Jing and Yu Dayou crush Wokou pirates at Wangjiangjing in Jiaxing"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1921,
+      "coord": [
+        120.75,
+        30.75
+      ],
+      "site": "嘉兴南湖（今浙江嘉兴）",
+      "siteEn": "South Lake, Jiaxing (Zhejiang)",
+      "zh": "中共一大自上海转移至嘉兴南湖红船续会闭幕，宣告中国共产党成立",
+      "en": "The First National Congress concludes aboard the Red Boat on South Lake in Jiaxing"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1358,
+      "coord": [
+        119.65,
+        29.08
+      ],
+      "site": "婺州（今浙江金华）",
+      "siteEn": "Wu Zhou (Jinhua, Zhejiang)",
+      "zh": "朱元璋亲率大军攻克婺州改宁越府，延揽宋濂、王祎等浙东名儒",
+      "en": "Zhu Yuanzhang captures Wu Zhou (Jinhua), recruiting Neo-Confucian scholars Song Lian and Wang Yi"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1129,
+      "coord": [
+        118.87,
+        28.97
+      ],
+      "site": "衢州（今浙江衢州）",
+      "siteEn": "Qu Zhou (Quzhou, Zhejiang)",
+      "zh": "衍圣公孔端友负楷木圣像随宋高宗南渡，诏赐家衢州形成孔氏南宗",
+      "en": "Duke Yansheng Kong Duanyou escorts sacred Confucian heirlooms south and settles in Quzhou"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1359,
+      "coord": [
+        119.92,
+        28.45
+      ],
+      "site": "处州（今浙江丽水）",
+      "siteEn": "Chu Zhou (Lishui, Zhejiang)",
+      "zh": "朱元璋遣使入处州青田山中礼聘刘基（刘伯温）出山辅佐定天下",
+      "en": "After capturing Chu Zhou (Lishui), Zhu Yuanzhang invites Liu Bowen of Qingtian to his court"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 220,
+      "coord": [
+        115.78,
+        33.87
+      ],
+      "site": "谯县（今安徽亳州）",
+      "siteEn": "Qiao County (Bozhou, Anhui)",
+      "zh": "曹丕代汉建魏，尊曹氏故里谯县（今亳州）为陪都，列曹魏五都",
+      "en": "Cao Pi designates the Cao clan's ancestral home of Qiao (Bozhou) among the Five Capitals of Wei"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1355,
+      "coord": [
+        115.78,
+        33.87
+      ],
+      "site": "亳州（今安徽亳州）",
+      "siteEn": "Bo Zhou (Bozhou, Anhui)",
+      "zh": "刘福通迎韩林儿于亳州称帝，号小明王，建国大宋改元龙凤",
+      "en": "Liu Futong enthrones Han Lin'er at Bozhou as Emperor of the restored Song Red Turban regime"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1121,
+      "coord": [
+        118.43,
+        29.87
+      ],
+      "site": "徽州（今安徽黄山歙县）",
+      "siteEn": "Hui Zhou (Shexian, Huangshan, Anhui)",
+      "zh": "宋廷平定方腊起义后诏改歙州为徽州，统辖一府六县育徽州文化",
+      "en": "After suppressing Fang La's uprising, the Song court renames She Zhou to Hui Zhou"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1357,
+      "coord": [
+        118.43,
+        29.87
+      ],
+      "site": "徽州（今安徽黄山歙县）",
+      "siteEn": "Hui Zhou (Shexian, Huangshan, Anhui)",
+      "zh": "朱元璋克徽州访休宁名儒朱升，获“高筑墙、广积粮、缓称王”国策",
+      "en": "At Huizhou, scholar Zhu Sheng counsels Zhu Yuanzhang to build high walls and store grain"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1071,
+      "coord": [
+        115.81,
+        32.89
+      ],
+      "site": "颍州（今安徽阜阳）",
+      "siteEn": "Ying Zhou (Fuyang, Anhui)",
+      "zh": "欧阳修致仕退居颍州西湖畔，合藏书金石琴棋酒鹤自号六一居士",
+      "en": "Ouyang Xiu retires beside West Lake in Ying Zhou (Fuyang) as the Six-One Lay Buddhist"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1140,
+      "coord": [
+        115.81,
+        32.89
+      ],
+      "site": "顺昌府（今安徽阜阳）",
+      "siteEn": "Shunchang Prefecture (Fuyang, Anhui)",
+      "zh": "刘锜率八字军孤城坚守顺昌（今阜阳），以少击众大破金兀术主力",
+      "en": "Song general Liu Qi defends Shunchang (Fuyang), routing Wuzhu's elite Jin iron cavalry"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1161,
+      "coord": [
+        119.18,
+        34.59
+      ],
+      "site": "海州（今江苏连云港）",
+      "siteEn": "Hai Zhou (Lianyungang, Jiangsu)",
+      "zh": "魏胜于海州举义收复州城，会合宋水师李宝屡败金兵屏蔽淮海",
+      "en": "Loyalist commander Wei Sheng recovers Hai Zhou (Lianyungang) and repels Jin forces"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 958,
+      "coord": [
+        120.89,
+        31.98
+      ],
+      "site": "通州（今江苏南通）",
+      "siteEn": "Tong Zhou (Nantong, Jiangsu)",
+      "zh": "后周世宗柴荣南征取江北十四州，升静海始建通州扼长江入海口",
+      "en": "Later Zhou Emperor Chai Rong establishes Tong Zhou (Nantong) at the mouth of the Yangtze"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1899,
+      "coord": [
+        120.89,
+        31.98
+      ],
+      "site": "通州唐闸（今江苏南通）",
+      "siteEn": "Tong Zhou / Nantong (Jiangsu)",
+      "zh": "状元张謇于通州唐闸建成大生纱厂投产，兴办实业学堂开近代南通",
+      "en": "Optimus scholar Zhang Jian opens the Dasheng Cotton Mill in Nantong, pioneering industry"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1024,
+      "coord": [
+        120.16,
+        33.35
+      ],
+      "site": "楚州盐城（今江苏盐城）",
+      "siteEn": "Yancheng (Jiangsu)",
+      "zh": "范仲淹任西溪盐官倡议重修海堰，筑百里范公堤护淮南盐场良田",
+      "en": "Fan Zhongyan initiates construction of the coastal Fan Gong Dike at Yancheng"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1941,
+      "coord": [
+        120.16,
+        33.35
+      ],
+      "site": "盐城（今江苏盐城）",
+      "siteEn": "Yancheng (Jiangsu)",
+      "zh": "皖南事变后新四军于江苏盐城重建军部，陈毅代军长、刘少奇政委",
+      "en": "After the Southern Anhui Incident, the New Fourth Army rebuilds its headquarters at Yancheng"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1604,
+      "coord": [
+        120.3,
+        31.57
+      ],
+      "site": "无锡东林书院（今江苏无锡）",
+      "siteEn": "Donglin Academy, Wuxi (Jiangsu)",
+      "zh": "顾宪成、高攀龙于无锡重修东林书院讲学议政，撰“风声雨声”名联",
+      "en": "Gu Xiancheng and Gao Panlong restore the Donglin Academy in Wuxi as a center of reform"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -104,
+      "coord": [
+        105.97,
+        31.56
+      ],
+      "site": "巴郡阆中（今四川南充阆中）",
+      "siteEn": "Langzhong (Nanchong, Sichuan)",
+      "zh": "巴郡阆中天文学家落下闳入长安造《太初历》，确立正月为岁首",
+      "en": "Astronomer Luoxia Hong of Langzhong authors the Taichu Calendar under Emperor Wu of Han"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 214,
+      "coord": [
+        105.97,
+        31.56
+      ],
+      "site": "巴西阆中（今四川南充阆中）",
+      "siteEn": "Langzhong, Baxi (Nanchong, Sichuan)",
+      "zh": "刘备定益州后拜张飞为巴西太守镇守阆中七年，于宕渠大破张郃",
+      "en": "Zhang Fei governs Baxi Commandery from Langzhong for seven years and defeats Zhang He"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1114,
+      "coord": [
+        104.64,
+        28.77
+      ],
+      "site": "叙州（今四川宜宾）",
+      "siteEn": "Xu Zhou (Yibin, Sichuan)",
+      "zh": "宋政和四年改戎州为叙州，控扼金沙江与岷江汇合万里长江第一城",
+      "en": "The Song court renames Rong Zhou to Xu Zhou (Yibin) at the headwaters of the Yangtze River"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 713,
+      "coord": [
+        103.77,
+        29.55
+      ],
+      "site": "嘉州凌云山（今四川乐山）",
+      "siteEn": "Jia Zhou (Leshan, Sichuan)",
+      "zh": "海通禅师于嘉州三江汇流凌云山开凿弥勒大佛，历九十载至韦皋竣工",
+      "en": "Monk Haitong begins carving the 71-meter Leshan Giant Buddha at the confluence in Jia Zhou"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 225,
+      "coord": [
+        105.44,
+        28.89
+      ],
+      "site": "江阳（今四川泸州）",
+      "siteEn": "Jiangyang (Luzhou, Sichuan)",
+      "zh": "诸葛亮南征自成都率水师顺江至江阳（今泸州）会师，分兵平南中",
+      "en": "Zhuge Liang sails down the Min River to Jiangyang (Luzhou) to assemble his southern expedition"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1243,
+      "coord": [
+        105.44,
+        28.89
+      ],
+      "site": "泸州神臂城（今四川泸州）",
+      "siteEn": "Shenbicheng, Lu Zhou (Luzhou, Sichuan)",
+      "zh": "余玠筑泸州神臂城扼守长江上游，军民拉锯坚守抗蒙长达三十四年",
+      "en": "Song commander Yu Jie fortifies Shenbicheng at Luzhou, resisting Mongol sieges for 34 years"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 815,
+      "coord": [
+        107.5,
+        31.21
+      ],
+      "site": "通州（今四川达州）",
+      "siteEn": "Tong Zhou (Dazhou, Sichuan)",
+      "zh": "元稹左迁通州（今达州）司马，与江州司马白居易千里寄诗唱和",
+      "en": "Poet Yuan Zhen serves in exile as Marshal of Tong Zhou (Dazhou), exchanging poems with Bai Juyi"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -111,
+      "coord": [
+        102.26,
+        27.89
+      ],
+      "site": "越嶲郡（今四川凉山西昌）",
+      "siteEn": "Yuexi Commandery (Xichang, Liangshan, Sichuan)",
+      "zh": "汉武帝开西南夷定邛都，置越嶲郡治邛都（今西昌）通川滇古道",
+      "en": "Emperor Wu establishes Yuexi Commandery at Qiongdu (Xichang), opening the Sichuan-Yunnan road"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1392,
+      "coord": [
+        102.26,
+        27.89
+      ],
+      "site": "建昌卫（今四川凉山西昌）",
+      "siteEn": "Jianchang Garrison (Xichang, Liangshan, Sichuan)",
+      "zh": "蓝玉平建昌卫月鲁帖木儿之乱，明置四川行都司驻节建昌统川西南",
+      "en": "General Lan Yu pacifies Jianchang (Xichang), seat of the Sichuan Branch Military Commission"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1021,
+      "coord": [
+        116.36,
+        27.98
+      ],
+      "site": "抚州临川（今江西抚州）",
+      "siteEn": "Linchuan, Fu Zhou (Fuzhou, Jiangxi)",
+      "zh": "王安石诞于抚州临川，与同郡南丰曾巩双双名列“唐宋八大家”",
+      "en": "Reformist statesman and poet Wang Anshi is born in Linchuan, Fuzhou (Jiangxi)"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1598,
+      "coord": [
+        116.36,
+        27.98
+      ],
+      "site": "抚州玉茗堂（今江西抚州）",
+      "siteEn": "Yuming Hall, Fuzhou (Jiangxi)",
+      "zh": "汤显祖于抚州临川玉茗堂写成《牡丹亭》，“临川四梦”冠绝明代剧坛",
+      "en": "Playwright Tang Xianzu completes The Peony Pavilion at Yuming Hall in Linchuan, Fuzhou"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 820,
+      "coord": [
+        114.39,
+        27.8
+      ],
+      "site": "袁州（今江西宜春）",
+      "siteEn": "Yuan Zhou (Yichun, Jiangxi)",
+      "zh": "韩愈由潮州量移袁州（今宜春）刺史，赎放质押奴婢七百余人兴学",
+      "en": "Governing Yuan Zhou (Yichun), Han Yu frees over 700 bonded servants and promotes schooling"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1637,
+      "coord": [
+        114.39,
+        27.8
+      ],
+      "site": "袁州分宜（今江西宜春）",
+      "siteEn": "Fenyi, Yuanzhou Prefecture (Yichun, Jiangxi)",
+      "zh": "宋应星任袁州府分宜教谕期间刊印《天工开物》，总结百工技艺",
+      "en": "While teaching in Yuanzhou Prefecture (Yichun), Song Yingxing publishes Tiangong Kaiwu"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1083,
+      "coord": [
+        119.01,
+        25.43
+      ],
+      "site": "兴化军（今福建莆田）",
+      "siteEn": "Xinghua Military Prefecture (Putian, Fujian)",
+      "zh": "莆田木兰陂历三代接力合龙建成，拒咸蓄淡灌溉兴化平原万顷良田",
+      "en": "The Mulan Weir irrigation project is completed in Putian, turning the plain into fertile fields"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1562,
+      "coord": [
+        119.01,
+        25.43
+      ],
+      "site": "兴化府（今福建莆田）",
+      "siteEn": "Xinghua Prefecture (Putian, Fujian)",
+      "zh": "戚继光率军疾驰入闽，连破横屿、林墩与平海卫倭巢收复莆田",
+      "en": "General Qi Jiguang leads his army into Fujian, routing Wokou pirates to recover Putian"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 208,
+      "coord": [
+        111.79,
+        30.82
+      ],
+      "site": "当阳长坂（今湖北荆门当阳）",
+      "siteEn": "Changban, Dangyang (Jingmen, Hubei)",
+      "zh": "曹操精骑追刘备于当阳长坂，赵云单骑救主、张飞据水断桥",
+      "en": "Cao Cao overtakes Liu Bei at Changban in Dangyang (Jingmen), where Zhao Yun rescues Liu Shan"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 219,
+      "coord": [
+        111.79,
+        30.82
+      ],
+      "site": "当阳麦城（今湖北荆门当阳）",
+      "siteEn": "Maicheng, Dangyang (Jingmen, Hubei)",
+      "zh": "吕蒙袭取江陵，关羽退保当阳麦城，年底突围至临沮漳乡遇害",
+      "en": "Cut off after the fall of Jiangling, Guan Yu retreats to Maicheng in Dangyang before falling"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -400,
+      "coord": [
+        113.38,
+        31.69
+      ],
+      "site": "随邑（今湖北随州）",
+      "siteEn": "Sui / Zeng State (Suizhou, Hubei)",
+      "zh": "曾国（随国）立国汉东，曾侯乙墓六十五件青铜编钟冠绝先秦礼乐",
+      "en": "The Marquis Yi of Zeng bronze chime bells at Suizhou showcase pre-Qin ritual music mastery"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1412,
+      "coord": [
+        111.08,
+        32.54
+      ],
+      "site": "均州武当山（今湖北十堰丹江口）",
+      "siteEn": "Mount Wudang, Jun Zhou (Shiyan, Hubei)",
+      "zh": "明成祖敕调军民三十万大修均州武当山，历十二年建成太和宫道场",
+      "en": "Emperor Yongle mobilizes 300,000 artisans over twelve years to build Mount Wudang's temples"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1476,
+      "coord": [
+        110.78,
+        32.65
+      ],
+      "site": "郧阳府（今湖北十堰郧阳）",
+      "siteEn": "Yunyang Prefecture (Shiyan, Hubei)",
+      "zh": "都御史原杰抚治荆襄流民，于秦鄂豫交界置郧阳府并设郧阳抚治",
+      "en": "Imperial Commissioner Yuan Jie establishes Yunyang Prefecture at Shiyan to settle migrants"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1225,
+      "coord": [
+        111.47,
+        27.24
+      ],
+      "site": "宝庆府（今湖南邵阳）",
+      "siteEn": "Baoqing Prefecture (Shaoyang, Hunan)",
+      "zh": "宋理宗赵昀即位改元宝庆，以潜邸升邵州为宝庆府，控扼湘西南",
+      "en": "Emperor Lizong of Song elevates his former fief Shao Zhou to Baoqing Prefecture (Shaoyang)"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1842,
+      "coord": [
+        111.47,
+        27.24
+      ],
+      "site": "宝庆邵阳（今湖南邵阳）",
+      "siteEn": "Baoqing / Shaoyang (Hunan)",
+      "zh": "邵阳人魏源据林则徐《四洲志》编成《海国图志》，倡师夷长技",
+      "en": "Shaoyang scholar Wei Yuan compiles the Illustrated Treatise on the Maritime Kingdoms"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -206,
+      "coord": [
+        113.01,
+        25.77
+      ],
+      "site": "郴县（今湖南郴州）",
+      "siteEn": "Chen County (Chenzhou, Hunan)",
+      "zh": "项羽尊楚怀王心为义帝并徙于江南郴县，旋密令英布弑之于郴江",
+      "en": "Xiang Yu exiles Emperor Yi of Chu to Chen County (Chenzhou) and orders his assassination"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 105,
+      "coord": [
+        113.01,
+        25.77
+      ],
+      "site": "桂阳郴县（今湖南郴州）",
+      "siteEn": "Chen County, Guiyang (Chenzhou, Hunan)",
+      "zh": "桂阳郡郴县人蔡伦用树皮麻头改良造纸术奏上汉和帝，称“蔡侯纸”",
+      "en": "Cai Lun of Guiyang Commandery (Chenzhou) presents his improved papermaking process to the court"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 748,
+      "coord": [
+        109.68,
+        27.44
+      ],
+      "site": "龙标（今湖南怀化黔阳）",
+      "siteEn": "Longbiao (Huaihua, Hunan)",
+      "zh": "王昌龄贬龙标（今怀化）尉筑芙蓉楼，李白寄诗“随君直到夜郎西”",
+      "en": "Poet Wang Changling is exiled to Longbiao (Huaihua), inspiring Li Bai's famous farewell poem"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1945,
+      "coord": [
+        109.68,
+        27.44
+      ],
+      "site": "芷江（今湖南怀化芷江）",
+      "siteEn": "Zhijiang (Huaihua, Hunan)",
+      "zh": "中国陆军总司令部于湖南芷江受降堂接受侵华日军今井武夫洽降",
+      "en": "Chinese forces accept the preliminary surrender of Japanese troops in China at Zhijiang"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 677,
+      "coord": [
+        113.6,
+        24.81
+      ],
+      "site": "韶州曹溪（今广东韶关）",
+      "siteEn": "Caoxi, Shao Zhou (Shaoguan, Guangdong)",
+      "zh": "禅宗六祖慧能驻锡韶州曹溪宝林寺弘法三十七年，口述《六祖坛经》",
+      "en": "Sixth Patriarch Huineng teaches Chan Buddhism for 37 years at Baolin Temple in Shaoguan"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 716,
+      "coord": [
+        113.6,
+        24.81
+      ],
+      "site": "韶州曲江（今广东韶关）",
+      "siteEn": "Qujiang, Shao Zhou (Shaoguan, Guangdong)",
+      "zh": "韶州曲江人张九龄主持开凿大庾岭梅关新道，打通南北商贸坦途",
+      "en": "Chancellor Zhang Jiuling of Qujiang (Shaoguan) cuts the Meiguan Pass road over Dayu Ridge"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1118,
+      "coord": [
+        112.47,
+        23.05
+      ],
+      "site": "肇庆府（今广东肇庆）",
+      "siteEn": "Zhaoqing Prefecture (Zhaoqing, Guangdong)",
+      "zh": "宋徽宗以潜邸端王升端州为肇庆府，亲书“肇庆府”御匾赐之",
+      "en": "Emperor Huizong elevates his former fief Duan Zhou to Zhaoqing Prefecture and inscribes its name"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1583,
+      "coord": [
+        112.47,
+        23.05
+      ],
+      "site": "肇庆府（今广东肇庆）",
+      "siteEn": "Zhaoqing Prefecture (Zhaoqing, Guangdong)",
+      "zh": "利玛窦获准入驻两广总督驻地肇庆，绘成中文世界地图《山海舆地全图》",
+      "en": "Jesuit Matteo Ricci settles at Zhaoqing and produces the first Chinese world map"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1646,
+      "coord": [
+        112.47,
+        23.05
+      ],
+      "site": "肇庆（今广东肇庆）",
+      "siteEn": "Zhaoqing (Guangdong)",
+      "zh": "桂王朱由榔于广东肇庆称帝改元永历，以肇庆为南明抗清中枢",
+      "en": "Zhu Youlang, Prince of Gui, is proclaimed the Yongli Emperor at Zhaoqing to resist the Qing"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1023,
+      "coord": [
+        110.08,
+        20.91
+      ],
+      "site": "雷州（今广东湛江雷州）",
+      "siteEn": "Lei Zhou (Zhanjiang, Guangdong)",
+      "zh": "北宋名相寇准贬雷州司户参军卒于任上，州民感其忠直建莱公祠",
+      "en": "Former Song Chancellor Kou Zhun dies in exile at Lei Zhou (Zhanjiang), honored by a local shrine"
+    },
+    {
+      "dynastyKey": "sui",
+      "year": 589,
+      "coord": [
+        110.85,
+        21.92
+      ],
+      "site": "高凉（今广东茂名高州）",
+      "siteEn": "Gaoliang (Gaozhou, Maoming, Guangdong)",
+      "zh": "岭南高凉冼夫人率百越诸州奉表归隋，隋文帝册封其为谯国夫人",
+      "en": "Lady Xian of Gaoliang (Maoming) leads Lingnan into peaceful reunification under the Sui"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -106,
+      "coord": [
+        111.28,
+        23.48
+      ],
+      "site": "苍梧广信（今广西梧州）",
+      "siteEn": "Guangxin, Cangwu (Wuzhou, Guangxi)",
+      "zh": "汉武帝置交趾刺史部治苍梧郡广信县（今梧州），广信分界广东广西",
+      "en": "Emperor Wu places the Jiaozhi Inspector at Guangxin (Wuzhou), dividing Guangdong and Guangxi"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1470,
+      "coord": [
+        111.28,
+        23.48
+      ],
+      "site": "梧州府（今广西梧州）",
+      "siteEn": "Wuzhou Prefecture (Wuzhou, Guangxi)",
+      "zh": "明廷于梧州设两广总督府与总镇府，统摄广东广西军政百余年",
+      "en": "The Ming court establishes the Viceroy of Liangguang at Wuzhou to govern Guangdong and Guangxi"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -111,
+      "coord": [
+        109.2,
+        21.66
+      ],
+      "site": "合浦（今广西北海合浦）",
+      "siteEn": "Hepu (Beihai, Guangxi)",
+      "zh": "汉武帝平南越置合浦郡，合浦港成为汉代海上丝绸之路始发港",
+      "en": "Emperor Wu establishes Hepu Commandery (Beihai), a primary port of the Han Maritime Silk Road"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 103,
+      "coord": [
+        109.2,
+        21.66
+      ],
+      "site": "合浦郡（今广西北海合浦）",
+      "siteEn": "Hepu Commandery (Beihai, Guangxi)",
+      "zh": "孟尝出任合浦太守革除滥采海珠弊政，不出岁余“去珠复还”",
+      "en": "Grand Administrator Meng Chang reforms pearl-harvesting in Hepu, restoring the pearl beds"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 748,
+      "coord": [
+        109.18,
+        18.36
+      ],
+      "site": "振州（今海南三亚崖州）",
+      "siteEn": "Zhen Zhou (Yazhou, Sanya, Hainan)",
+      "zh": "鉴真第五次东渡遇飓风漂至海南振州（今三亚），留大云寺传戒一年",
+      "en": "Blown off course by a typhoon, Monk Jianzhen lands at Zhen Zhou (Sanya) and teaches for a year"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1295,
+      "coord": [
+        109.18,
+        18.36
+      ],
+      "site": "崖州（今海南三亚崖州）",
+      "siteEn": "Ya Zhou (Sanya, Hainan)",
+      "zh": "黄道婆自崖州水南村习得黎族棉纺织绝技返松江，革新江南棉纺",
+      "en": "After learning Li textile skills in Ya Zhou (Sanya), Huang Daopo revolutionizes cotton weaving"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 32,
+      "coord": [
+        106.67,
+        35.54
+      ],
+      "site": "高平第一城（今甘肃平凉）",
+      "siteEn": "Gaoping (Pingliang, Gansu)",
+      "zh": "汉光武帝刘秀亲征陇右至高平第一城（今平凉），会窦融兵合围隗嚣",
+      "en": "Emperor Guangwu marches to Gaoping (Pingliang), joining Dou Rong's forces against Wei Xiao"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 787,
+      "coord": [
+        106.67,
+        35.54
+      ],
+      "site": "平凉川（今甘肃平凉）",
+      "siteEn": "Pingliang (Gansu)",
+      "zh": "唐德宗遣浑瑊与吐蕃会盟于平凉川，吐蕃伏兵劫盟史称平凉劫盟",
+      "en": "Tibetan forces ambush Tang envoy Hun Jian during treaty talks in the Ambush of Pingliang"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -272,
+      "coord": [
+        107.64,
+        35.71
+      ],
+      "site": "义渠（今甘肃庆阳）",
+      "siteEn": "Yiqu / Beidi (Qingyang, Gansu)",
+      "zh": "秦宣太后诱杀义渠戎王，起兵灭义渠国，于陇东置北地郡筑长城",
+      "en": "Queen Dowager Xuan of Qin eliminates Yiqu, establishing Beidi Commandery at Qingyang"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1041,
+      "coord": [
+        107.64,
+        35.71
+      ],
+      "site": "庆州（今甘肃庆阳）",
+      "siteEn": "Qing Zhou (Qingyang, Gansu)",
+      "zh": "范仲淹知庆州兼掌环庆路，抢筑大顺城稳固宋夏中路防线",
+      "en": "Fan Zhongyan governs Qing Zhou (Qingyang) and builds Dashun Fortress against Western Xia"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 69,
+      "coord": [
+        99.16,
+        25.11
+      ],
+      "site": "永昌郡（今云南保山）",
+      "siteEn": "Yongchang Commandery (Baoshan, Yunnan)",
+      "zh": "哀牢王柳貌率五十余万口内属东汉，汉明帝置永昌郡（治今保山）",
+      "en": "King Liumao of Ailao submits to Eastern Han, which establishes Yongchang Commandery at Baoshan"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1382,
+      "coord": [
+        102.83,
+        23.62
+      ],
+      "site": "临安府（今云南红河建水）",
+      "siteEn": "Lin'an Prefecture (Jianshui, Honghe, Yunnan)",
+      "zh": "明军平滇改临安路为临安府（治建水），拓建砖城文庙号滇南邹鲁",
+      "en": "The Ming court establishes Lin'an Prefecture at Jianshui (Honghe) and builds its brick walls"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 779,
+      "coord": [
+        91.5,
+        29.32
+      ],
+      "site": "桑耶寺（今西藏山南扎囊）",
+      "siteEn": "Samye Monastery (Shannan, Tibet)",
+      "zh": "赤松德赞迎莲花生与寂护于山南建成西藏首座佛法僧俱全桑耶寺",
+      "en": "Tibetan Emperor Trisong Detsen completes Samye Monastery in Shannan, Tibet's first monastery"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1354,
+      "coord": [
+        91.77,
+        29.24
+      ],
+      "site": "乃东（今西藏山南泽当）",
+      "siteEn": "Nedong / Tsetang (Shannan, Tibet)",
+      "zh": "帕木竹巴绛曲坚赞统一卫藏，以山南乃东（泽当）为首府建帕竹政权",
+      "en": "Jangchub Gyaltsen unifies Central Tibet from Nedong in Shannan, founding the Phagmodrupa rule"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 644,
+      "coord": [
+        80.4,
+        31.15
+      ],
+      "site": "象雄穹窿银城（今西藏阿里噶尔）",
+      "siteEn": "Khyunglung, Zhangzhung (Ngari, Tibet)",
+      "zh": "吐蕃赞普松赞干布亲征灭象雄王国，将藏西阿里高原并入吐蕃版图",
+      "en": "Tibetan Emperor Songtsen Gampo conquers Zhangzhung, incorporating Ngari into the Tibetan Empire"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1042,
+      "coord": [
+        79.8,
+        31.48
+      ],
+      "site": "古格托林寺（今西藏阿里札达）",
+      "siteEn": "Tholing Monastery, Guge (Zanda, Ngari, Tibet)",
+      "zh": "古格王室迎印度高僧阿底峡抵阿里托林寺译经，开启藏传佛教后弘期",
+      "en": "The Guge court welcomes Indian master Atisha to Tholing Monastery in Ngari to translate sutras"
     }
   ],
   "GUQIN_TRACKS": [
@@ -4510,7 +5686,63 @@
     { "name": "曲阜", "aliases": ["鲁城", "鲁都", "曲阜孔庙", "孔庙", "孔林", "杏坛", "阙里"], "modern": "山东济宁曲阜", "coord": [116.99, 35.60], "zoom": 2.5 },
     { "name": "琅琊", "aliases": ["琅琊台", "琅邪", "琅邪台", "琅琊山", "诸城"], "modern": "山东青岛黄岛", "coord": [119.98, 35.65], "zoom": 2.5 },
     { "name": "景德镇", "aliases": ["昌南镇", "昌南", "新平镇", "浮梁", "珠山御窑", "御器厂"], "modern": "江西景德镇", "coord": [117.18, 29.27], "zoom": 2.5 },
-    { "name": "宁古塔", "aliases": ["宁古塔城", "宁古塔将军", "宁安", "旧街"], "modern": "黑龙江牡丹江海林", "coord": [129.48, 44.58], "zoom": 2.3 }
+    { "name": "宁古塔", "aliases": ["宁古塔城", "宁古塔将军", "宁安", "旧街"], "modern": "黑龙江牡丹江海林", "coord": [129.48, 44.58], "zoom": 2.3 },
+    { "name": "青州", "aliases": ["潍坊", "广固", "益都", "青州府", "潍州", "北海郡"], "modern": "山东潍坊青州", "coord": [118.48, 36.68], "zoom": 2.5 },
+    { "name": "密州", "aliases": ["诸城", "潍坊诸城", "高密", "东武", "超然台"], "modern": "山东潍坊诸城", "coord": [119.40, 35.99], "zoom": 2.5 },
+    { "name": "利州", "aliases": ["广元", "葭萌", "葭萌关", "皇泽寺", "千佛崖", "绵谷"], "modern": "四川广元", "coord": [105.84, 32.44], "zoom": 2.5 },
+    { "name": "代州", "aliases": ["忻州", "代县", "雁门郡", "秀容", "九原", "广武"], "modern": "山西忻州代县", "coord": [112.96, 39.07], "zoom": 2.5 },
+    { "name": "灵州", "aliases": ["吴忠", "灵武", "西平府", "朔方节度使", "灵州卫"], "modern": "宁夏吴忠灵武", "coord": [106.28, 38.09], "zoom": 2.5 },
+    { "name": "龟兹", "aliases": ["阿克苏", "库车", "屈支", "邱兹", "安西都护府", "姑墨", "温宿"], "modern": "新疆阿克苏库车", "coord": [82.96, 41.72], "zoom": 2.3 },
+    { "name": "于阗", "aliases": ["和田", "和阗", "瞿萨旦那", "毗沙都督府", "于阗国"], "modern": "新疆和田", "coord": [79.92, 37.11], "zoom": 2.3 },
+    { "name": "上京龙泉府", "aliases": ["牡丹江", "渤海上京", "龙泉府", "忽汗城", "渤海国", "东京城"], "modern": "黑龙江牡丹江宁安", "coord": [129.15, 44.05], "zoom": 2.3 },
+    { "name": "国内城", "aliases": ["通化", "丸都城", "丸都", "集安", "高句丽王城", "好太王碑"], "modern": "吉林通化集安", "coord": [126.19, 41.12], "zoom": 2.4 },
+    { "name": "太平府", "aliases": ["崇左", "左江", "丽江", "花山岩画"], "modern": "广西崇左", "coord": [107.36, 22.38], "zoom": 2.5 },
+    { "name": "元上都", "aliases": ["锡林郭勒", "上都", "开平府", "开平", "多伦", "正蓝旗", "多伦诺尔"], "modern": "内蒙古锡林郭勒正蓝旗", "coord": [116.18, 42.36], "zoom": 2.3 },
+    { "name": "黑水城", "aliases": ["阿拉善", "亦集乃路", "黑城", "定远营", "巴彦浩特"], "modern": "内蒙古阿拉善额济纳", "coord": [101.14, 41.76], "zoom": 2.3 },
+    { "name": "眉州", "aliases": ["眉山", "通义郡", "三苏祠", "青神"], "modern": "四川眉山", "coord": [103.85, 30.08], "zoom": 2.5 },
+    { "name": "信州", "aliases": ["上饶", "广信府", "广信", "鹅湖书院", "铅山", "带湖"], "modern": "江西上饶", "coord": [117.94, 28.45], "zoom": 2.5 },
+    { "name": "武都", "aliases": ["陇南", "阶州", "武州", "祁山", "礼县", "阴平", "成州"], "modern": "甘肃陇南", "coord": [104.92, 33.40], "zoom": 2.5 },
+    { "name": "淮安", "aliases": ["楚州", "淮阴", "山阳", "淮安府", "清江浦"], "modern": "江苏淮安", "coord": [119.14, 33.50], "zoom": 2.5 },
+    { "name": "温州", "aliases": ["永嘉", "永嘉郡", "东瓯", "温州府", "江心屿", "瑞安"], "modern": "浙江温州", "coord": [120.66, 28.01], "zoom": 2.5 },
+    { "name": "嘉兴", "aliases": ["秀州", "槜李", "由拳", "嘉兴府", "南湖"], "modern": "浙江嘉兴", "coord": [120.75, 30.75], "zoom": 2.5 },
+    { "name": "婺州", "aliases": ["金华", "金华府", "东阳郡", "宁越府", "八咏楼"], "modern": "浙江金华", "coord": [119.65, 29.08], "zoom": 2.5 },
+    { "name": "衢州", "aliases": ["三衢", "信安", "太末", "衢州府", "孔氏南宗"], "modern": "浙江衢州", "coord": [118.87, 28.97], "zoom": 2.5 },
+    { "name": "处州", "aliases": ["丽水", "括州", "处州府", "青田", "龙泉"], "modern": "浙江丽水", "coord": [119.92, 28.45], "zoom": 2.5 },
+    { "name": "亳州", "aliases": ["谯郡", "谯县", "谯城", "涡阳"], "modern": "安徽亳州", "coord": [115.78, 33.87], "zoom": 2.5 },
+    { "name": "徽州", "aliases": ["黄山", "歙州", "新安郡", "徽州府", "歙县", "休宁", "婺源"], "modern": "安徽黄山歙县", "coord": [118.43, 29.87], "zoom": 2.5 },
+    { "name": "颍州", "aliases": ["阜阳", "汝阴", "顺昌", "顺昌府", "颍州府", "颍州西湖"], "modern": "安徽阜阳", "coord": [115.81, 32.89], "zoom": 2.5 },
+    { "name": "海州", "aliases": ["连云港", "朐山", "东海郡", "海州卫", "云台山"], "modern": "江苏连云港", "coord": [119.18, 34.59], "zoom": 2.5 },
+    { "name": "南通", "aliases": ["通州", "静海", "崇川", "狼山", "通州直隶州"], "modern": "江苏南通", "coord": [120.89, 31.98], "zoom": 2.5 },
+    { "name": "盐城", "aliases": ["盐渎", "瓢城", "西溪", "范公堤"], "modern": "江苏盐城", "coord": [120.16, 33.35], "zoom": 2.5 },
+    { "name": "无锡", "aliases": ["梅里", "梁溪", "东林书院", "锡山", "惠山"], "modern": "江苏无锡", "coord": [120.30, 31.57], "zoom": 2.5 },
+    { "name": "阆中", "aliases": ["南充", "保宁府", "果州", "顺庆府", "巴西郡", "阆州"], "modern": "四川南充阆中", "coord": [105.97, 31.56], "zoom": 2.5 },
+    { "name": "叙州", "aliases": ["宜宾", "戎州", "僰道", "叙州府", "南溪", "李庄"], "modern": "四川宜宾", "coord": [104.64, 28.77], "zoom": 2.5 },
+    { "name": "嘉州", "aliases": ["乐山", "嘉定府", "凌云寺", "乐山大佛"], "modern": "四川乐山", "coord": [103.77, 29.55], "zoom": 2.5 },
+    { "name": "泸州", "aliases": ["江阳", "神臂城", "泸川", "泸州直隶州"], "modern": "四川泸州", "coord": [105.44, 28.89], "zoom": 2.5 },
+    { "name": "达州", "aliases": ["宕渠", "绥定府", "通川", "巴渠"], "modern": "四川达州", "coord": [107.50, 31.21], "zoom": 2.5 },
+    { "name": "建昌（西昌）", "aliases": ["凉山", "西昌", "越嶲", "越嶲郡", "嶲州", "邛都", "建昌卫", "宁远府"], "modern": "四川凉山西昌", "coord": [102.26, 27.89], "zoom": 2.4 },
+    { "name": "抚州", "aliases": ["临川", "临汝", "抚州府", "玉茗堂", "拟岘台"], "modern": "江西抚州", "coord": [116.36, 27.98], "zoom": 2.5 },
+    { "name": "袁州", "aliases": ["宜春", "袁州府", "分宜", "化成岩", "昌山"], "modern": "江西宜春", "coord": [114.39, 27.80], "zoom": 2.5 },
+    { "name": "兴化（莆田）", "aliases": ["莆田", "兴化军", "兴化府", "莆阳", "木兰陂", "湄洲岛"], "modern": "福建莆田", "coord": [119.01, 25.43], "zoom": 2.5 },
+    { "name": "当阳（荆门）", "aliases": ["荆门", "当阳", "长坂坡", "麦城", "荆门军", "荆门州", "玉泉寺"], "modern": "湖北荆门当阳", "coord": [111.79, 30.82], "zoom": 2.5 },
+    { "name": "随州", "aliases": ["随国", "曾国", "随县", "汉东郡", "擂鼓墩"], "modern": "湖北随州", "coord": [113.38, 31.69], "zoom": 2.5 },
+    { "name": "均州（武当）", "aliases": ["十堰", "均州", "武当山", "郧阳", "郧阳府", "太和山"], "modern": "湖北十堰丹江口", "coord": [111.08, 32.54], "zoom": 2.5 },
+    { "name": "宝庆（邵阳）", "aliases": ["邵阳", "邵州", "宝庆府", "昭陵", "邵陵"], "modern": "湖南邵阳", "coord": [111.47, 27.24], "zoom": 2.5 },
+    { "name": "郴州", "aliases": ["桂阳", "桂阳郡", "郴县", "苏仙岭", "义帝陵"], "modern": "湖南郴州", "coord": [113.01, 25.77], "zoom": 2.5 },
+    { "name": "沅州（怀化）", "aliases": ["怀化", "沅州", "芷江", "龙标", "黔阳", "沅州府", "芙蓉楼"], "modern": "湖南怀化芷江", "coord": [109.68, 27.44], "zoom": 2.5 },
+    { "name": "韶州", "aliases": ["韶关", "曲江", "始兴郡", "韶州府", "南华寺", "曹溪"], "modern": "广东韶关", "coord": [113.60, 24.81], "zoom": 2.5 },
+    { "name": "肇庆（端州）", "aliases": ["肇庆", "端州", "高要", "肇庆府", "七星岩", "端溪"], "modern": "广东肇庆", "coord": [112.47, 23.05], "zoom": 2.5 },
+    { "name": "雷州", "aliases": ["湛江", "海康", "徐闻", "雷州府", "广州湾"], "modern": "广东湛江雷州", "coord": [110.08, 20.91], "zoom": 2.4 },
+    { "name": "高州", "aliases": ["茂名", "高凉", "高凉郡", "高州府", "潘州"], "modern": "广东茂名高州", "coord": [110.85, 21.92], "zoom": 2.4 },
+    { "name": "梧州", "aliases": ["苍梧", "苍梧郡", "广信", "梧州府"], "modern": "广西梧州", "coord": [111.28, 23.48], "zoom": 2.5 },
+    { "name": "合浦（廉州）", "aliases": ["北海", "合浦", "合浦郡", "廉州", "廉州府", "珠官"], "modern": "广西北海合浦", "coord": [109.20, 21.66], "zoom": 2.4 },
+    { "name": "崖州", "aliases": ["三亚", "振州", "吉阳军", "崖州城", "天涯海角"], "modern": "海南三亚崖州", "coord": [109.18, 18.36], "zoom": 2.4 },
+    { "name": "平凉（泾州）", "aliases": ["平凉", "泾州", "原州", "安定郡", "渭州", "平凉府", "崆峒山"], "modern": "甘肃平凉", "coord": [106.67, 35.54], "zoom": 2.5 },
+    { "name": "庆州（庆阳）", "aliases": ["庆阳", "庆州", "环庆", "北地郡", "庆阳府", "义渠", "大顺城"], "modern": "甘肃庆阳", "coord": [107.64, 35.71], "zoom": 2.5 },
+    { "name": "永昌（保山）", "aliases": ["保山", "永昌", "永昌郡", "永昌府", "哀牢", "不韦", "兰津渡"], "modern": "云南保山", "coord": [99.16, 25.11], "zoom": 2.4 },
+    { "name": "临安府（建水）", "aliases": ["红河", "建水", "临安府", "临安路", "建水州", "步头"], "modern": "云南红河建水", "coord": [102.83, 23.62], "zoom": 2.4 },
+    { "name": "山南（雅砻）", "aliases": ["山南", "雅砻", "泽当", "桑耶寺", "雍布拉康", "乃东", "帕竹"], "modern": "西藏山南乃东", "coord": [91.77, 29.24], "zoom": 2.3 },
+    { "name": "古格（阿里）", "aliases": ["阿里", "古格", "象雄", "札达", "托林寺", "穹窿银城", "古格王朝"], "modern": "西藏阿里札达", "coord": [79.80, 31.48], "zoom": 2.3 }
   ]
 };
 })();

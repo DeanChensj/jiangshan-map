@@ -1305,7 +1305,8 @@ h2 {
   display: none;
 }
 
-#atlas-svg.is-zoomed-cities .settlement-node.is-tier2 {
+#atlas-svg.is-zoomed-cities .settlement-node.is-tier2,
+.settlement-node.is-tier2.is-trace-city {
   display: block;
 }
 

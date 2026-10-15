@@ -1662,11 +1662,23 @@ function main() {
       `Expected Western Regions lake "${westernLake}" to resolve via PLACE_GAZETTEER, got ${JSON.stringify(hit)}`
     );
   }
-  for (const culturalPlace of ['曲阜', '孔庙', '琅琊', '琅琊台', '景德镇', '昌南镇', '宁古塔']) {
-    const hit = ctrl.resolvePlace(culturalPlace, 1008);
+  for (const culturalPlace of [
+    '曲阜', '孔庙', '琅琊', '琅琊台', '景德镇', '昌南镇', '宁古塔',
+    '潍坊', '密州', '广元', '利州', '忻州', '代州', '吴忠', '灵州', '阿克苏', '龟兹', '和田', '于阗',
+    '牡丹江', '上京龙泉府', '通化', '国内城', '崇左', '太平府', '锡林郭勒', '元上都', '阿拉善', '黑水城',
+    '眉山', '眉州', '上饶', '信州', '陇南', '武都',
+    '淮安', '楚州', '温州', '永嘉', '嘉兴', '秀州', '金华', '婺州', '衢州', '丽水', '处州',
+    '亳州', '谯郡', '黄山', '徽州', '阜阳', '颍州', '连云港', '海州', '南通', '盐城', '无锡',
+    '南充', '阆中', '宜宾', '叙州', '乐山', '嘉州', '泸州', '达州', '凉山', '西昌',
+    '抚州', '临川', '宜春', '袁州', '莆田', '兴化军', '荆门', '当阳', '随州', '十堰', '武当山',
+    '邵阳', '宝庆府', '郴州', '怀化', '芷江', '韶关', '韶州', '肇庆', '端州', '湛江', '雷州',
+    '茂名', '高州', '梧州', '北海', '合浦', '三亚', '崖州', '平凉', '庆阳', '保山', '永昌',
+    '红河', '建水', '山南', '桑耶寺', '阿里', '古格',
+  ]) {
+    const hit = ctrl.resolvePlace(culturalPlace, 1076);
     assert(
       hit && Array.isArray(hit.coord) && hit.coord.length === 2,
-      `Expected cultural/frontier place "${culturalPlace}" to resolve with valid coordinates, got ${JSON.stringify(hit)}`
+      `Expected cultural/historical place "${culturalPlace}" to resolve with valid coordinates, got ${JSON.stringify(hit)}`
     );
   }
   const controlStripMatch = indexHtml.match(/<div class="control-strip"[\s\S]*?<\/div>\s*<div id="layers-popover"/);
@@ -1793,6 +1805,34 @@ function main() {
   );
   ctrl._id = prevIdForGen;
   sandbox.document = prevDoc;
+
+  // 23b. Verify ROC & PRC modern settlement coverage and traced Tier-2 city visibility
+  const rocDyn = dynasties.find((d) => d.key === 'roc');
+  const prcDyn = dynasties.find((d) => d.key === 'prc');
+  assert(
+    rocDyn && rocDyn.settlements.length >= 205 && prcDyn && prcDyn.settlements.length >= 210,
+    `Expected ROC (>=205) and PRC (>=210) to include propagated domestic historical cities, got ROC=${rocDyn && rocDyn.settlements.length}, PRC=${prcDyn && prcDyn.settlements.length}`
+  );
+  for (const modCity of ['淮安', '温州', '嘉兴', '金华', '衢州', '丽水', '亳州', '阜阳', '连云港', '南通', '盐城', '无锡', '宜宾', '乐山', '泸州', '达州', '抚州', '宜春', '莆田', '随州', '邵阳', '郴州', '韶关', '肇庆', '梧州', '崇左', '三亚', '平凉', '庆阳', '保山', '山南', '阿里', '潍坊·青州', '黄山·歙县', '南充·阆中', '凉山·西昌']) {
+    assert(
+      prcDyn.settlements.some((s) => s.modern === modCity) &&
+        rocDyn.settlements.some((s) => s.modern === modCity),
+      `Expected ${modCity} to be present on both ROC and PRC maps`
+    );
+  }
+  assert(
+    styleCss.includes('.settlement-node.is-tier2.is-trace-city') &&
+      appCode.includes("node.classList.toggle('is-trace-city', isTraced)"),
+    'style.css and app.js must keep traced Tier-2 cities visible (.is-trace-city)'
+  );
+  ctrl.dynastyIdx = 17;
+  ctrl.year = 2026;
+  ctrl.searchIndex = null;
+  const wfHits = ctrl._queryQuickSearch('潍坊');
+  assert(
+    wfHits.length > 0 && wfHits[0].kind === 'city' && wfHits[0].dynasty.key === 'prc',
+    `Expected searching "潍坊" in PRC era to rank PRC city entry first, got ${JSON.stringify(wfHits[0] && { kind: wfHits[0].kind, dyn: wfHits[0].dynasty && wfHits[0].dynasty.key, title: wfHits[0].titleZh })}`
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
