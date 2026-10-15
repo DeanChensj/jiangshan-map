@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014p').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014q').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014p').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014q').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -958,7 +958,7 @@
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
         'caveat',
-        '疆域轮廓与州郡政区为示意性近似，用于直观对比各时期大致范围，非精确历史测绘边界。'
+        '历史疆域与政区为示意性近似，非精确测绘边界。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
       const stepPrevBtn = this._id('act-step-prev');
@@ -3736,19 +3736,6 @@
       if (this.activeMilestone) this._positionMilestoneBalloon();
     }
 
-    _formatChineseLi(li) {
-      const map = {
-        40: '四十',
-        100: '一百',
-        200: '二百',
-        400: '四百',
-        1000: '一千',
-        2000: '二千',
-        3000: '三千',
-      };
-      return map[li] || String(li);
-    }
-
     _updateScaleBar() {
       const lblEl = this._id('scale-label-text');
       const barEl = this._id('scale-ruler-bar');
@@ -3778,12 +3765,8 @@
         }
       }
       const barPx = Math.max(44, Math.min(150, Math.round(bestKm / kmPerCssPx)));
-      const li = bestKm * 2;
       barEl.style.width = `${barPx}px`;
-      lblEl.textContent =
-        this.locale === 'en'
-          ? `${bestKm} km · ${li} li`
-          : `${bestKm} km · 约${this._formatChineseLi(li)}里`;
+      lblEl.textContent = `${bestKm} km`;
     }
 
     _isMobileViewport() {

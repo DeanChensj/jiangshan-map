@@ -1677,6 +1677,11 @@ function main() {
       indexHtml.includes('id="lbl-jm-badge-quiz"'),
     '#act-challenge must be tucked inside #journey-popover (.journey-quiz-section), not in the top .control-strip'
   );
+  assert(
+    indexHtml.includes('id="scale-label-text">500 km</div>') &&
+      !appCode.includes('_formatChineseLi'),
+    'Expected #scale-label-text to use clean metric km format without _formatChineseLi'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);

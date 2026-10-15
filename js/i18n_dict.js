@@ -17,7 +17,7 @@ window.EN_LOCALE = {
     "hint": "Scroll to zoom · Drag to pan · Click city or double-click to trace · ← → jump events (Shift+← → ±10 yrs) · Space play",
     "capital_k": "Capital",
     "events_h": "Key Events",
-    "caveat": "Borders are schematic approximations for comparing eras, not exact historical surveys.",
+    "caveat": "Historical boundaries are schematic approximations, not exact surveys.",
     "year_unit": "yr",
     "trace_kicker": "Place Genealogy · Historical Prefecture Evolution",
     "belongs_to": "Realm: ",
