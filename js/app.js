@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261014q').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261014q').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -599,6 +599,7 @@
 
     trTerm(text) {
       if (!text || this.locale !== 'en') return text;
+      if (text === '中华人民共和国') return "People's Republic of China";
       return (this.enLocale.dict && this.enLocale.dict[text]) || text;
     }
 
@@ -2812,6 +2813,17 @@
       return { settlementEl: bestSettle, milestoneEl: bestMile };
     }
 
+    _stripModernProvincePrefix(raw, modernTitle) {
+      if (!raw) return '';
+      const provStem = modernTitle
+        ? String(modernTitle).replace(/(省|市|自治区|特别行政区|壮族|回族|维吾尔|藏族)+$/g, '')
+        : '';
+      const provPrefix = [provStem, provStem.slice(0, 2)].find(
+        (p) => p && p.length >= 2 && raw.startsWith(p) && raw.length > p.length + 1
+      );
+      return (provPrefix ? raw.slice(provPrefix.length) : raw).replace(/^[·/、\s]+/, '');
+    }
+
     /**
      * Resolve the modern place name a genealogy heading may assert as "今 X".
      * "今" claims identity, not proximity: only a gazetteer landmark's own `modern` field, or the
@@ -2835,14 +2847,7 @@
           : closestOverall && closestOverall.km <= IDENTITY_KM && closestOverall.s.modern
             ? closestOverall.s.modern
             : '';
-      if (!raw) return '';
-      const provStem = modernTitle
-        ? String(modernTitle).replace(/(省|市|自治区|特别行政区|壮族|回族|维吾尔|藏族)+$/g, '')
-        : '';
-      const provPrefix = [provStem, provStem.slice(0, 2)].find(
-        (p) => p && p.length >= 2 && raw.startsWith(p) && raw.length > p.length + 1
-      );
-      return provPrefix ? raw.slice(provPrefix.length) : raw;
+      return this._stripModernProvincePrefix(raw, modernTitle);
     }
 
     openGenealogyAt(lng, lat, customLabel = null, opts = {}) {
@@ -2921,10 +2926,12 @@
       }
 
       let modernTitle = '';
+      let inModernChina = false;
       for (const prov of this.provinces) {
         if (String(prov.code).includes('_JD')) continue;
         if (prov.rings.some((poly) => MercatorProjector.pointInPolygonRings(lng, lat, poly))) {
           modernTitle = prov.title;
+          inModernChina = true;
           break;
         }
       }
@@ -3013,49 +3020,97 @@
       let capDynasties = 0;
 
       for (const d of this.dynasties) {
-        if (d.key === 'prc') continue;
         const isCurDyn = d === this.dynasties[this.dynastyIdx];
         const targetYear = isCurDyn ? this.year : d.focusYear;
         const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
 
         let polityHit = null;
-        for (const p of snap.polities || []) {
-          if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
-            polityHit = p.title;
-            break;
+        let hasPrefHit = false;
+        const adminHits = [];
+        if (d.key === 'prc') {
+          if (inModernChina) {
+            polityHit = '中华人民共和国';
+            const provLabel = this.locale === 'en' ? this.trTerm(modernTitle) : modernTitle;
+            if (provLabel) adminHits.push(provLabel);
+            if (identityModern && !modernTitle.startsWith(identityModern)) {
+              const cityLabel =
+                this.locale === 'en' ? this.trModernCity(identityModern) : identityModern;
+              if (cityLabel && !adminHits.includes(cityLabel)) adminHits.push(cityLabel);
+            }
+          } else if (modernTitle) {
+            polityHit = modernTitle;
           }
-        }
-        if (!polityHit) {
+        } else {
           for (const p of snap.polities || []) {
-            if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+            if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
               polityHit = p.title;
               break;
             }
           }
-        }
+          if (!polityHit) {
+            for (const p of snap.polities || []) {
+              if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
+                polityHit = p.title;
+                break;
+              }
+            }
+          }
 
-        const adminHits = [];
-        for (const reg of snap.regions || []) {
-          if (MercatorProjector.pointInShape(lng, lat, reg.shape)) {
-            const label =
-              this.locale === 'en'
-                ? this.trTerm(reg.title)
-                : reg.title + (reg.category && !reg.title.endsWith(reg.category) ? `（${reg.category}）` : '');
-            if (!adminHits.includes(label)) adminHits.push(label);
+          for (const reg of snap.regions || []) {
+            if (MercatorProjector.pointInShape(lng, lat, reg.shape)) {
+              const label =
+                this.locale === 'en'
+                  ? this.trTerm(reg.title)
+                  : reg.title + (reg.category && !reg.title.endsWith(reg.category) ? `（${reg.category}）` : '');
+              if (!adminHits.includes(label)) adminHits.push(label);
+            }
+          }
+          for (const pref of snap.prefectures || []) {
+            if (MercatorProjector.pointInShape(lng, lat, pref.shape)) {
+              hasPrefHit = true;
+              const label =
+                this.locale === 'en'
+                  ? this.trTerm(pref.title)
+                  : pref.title + (pref.category && !pref.title.endsWith(pref.category) ? `（${pref.category}）` : '');
+              if (!adminHits.includes(label)) adminHits.push(label);
+            }
           }
         }
-        for (const pref of snap.prefectures || []) {
-          if (MercatorProjector.pointInShape(lng, lat, pref.shape)) {
-            const label =
-              this.locale === 'en'
-                ? this.trTerm(pref.title)
-                : pref.title + (pref.category && !pref.title.endsWith(pref.category) ? `（${pref.category}）` : '');
-            if (!adminHits.includes(label)) adminHits.push(label);
-          }
-        }
 
-        const near = nearestSettlement(d, 170);
+        let near = nearestSettlement(d, 170);
+        if (
+          (d.key === 'roc' || d.key === 'prc') &&
+          closestOverall &&
+          closestOverall.s &&
+          closestOverall.s.modern &&
+          (!near || (near.km > 25 && closestOverall.km + 5 < near.km))
+        ) {
+          const rawMod = String(closestOverall.s.modern)
+            .replace(/（.*?）|\(.*?\)/g, '')
+            .trim();
+          const cleanMod = this._stripModernProvincePrefix(rawMod, modernTitle) || rawMod;
+          near = {
+            s: {
+              ancient: cleanMod,
+              rawModern: closestOverall.s.modern,
+              modern: closestOverall.s.modern,
+              coord: closestOverall.s.coord,
+              isCapital: false,
+            },
+            km: closestOverall.km,
+          };
+        } else if (
+          d.key !== 'roc' &&
+          d.key !== 'prc' &&
+          hasPrefHit &&
+          closestOverall &&
+          closestOverall.km < 25 &&
+          near &&
+          near.km >= 25
+        ) {
+          near = null;
+        }
         const isCapHere = Boolean(near && near.km <= 38 && near.s.isCapital);
         if (isCapHere) capDynasties++;
 
@@ -3149,11 +3204,12 @@
               ? this.trTerm(polityHit)
               : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
 
+          const defaultCapLabel = d.key === 'roc' || d.key === 'prc' ? '首都' : '王朝都城';
           const capBadgeHtml = isCapHere
             ? `<span class="t-cap-badge">${
                 this.locale === 'en'
                   ? 'Capital'
-                  : (near.s.remark && near.s.remark.length <= 5 ? near.s.remark : '王朝都城')
+                  : (near.s.remark && near.s.remark.length <= 6 ? near.s.remark : defaultCapLabel)
               }</span>`
             : '';
 
@@ -3168,12 +3224,26 @@
                 : `${Math.round(near.km)} km`;
             const nearCityName =
               d.key === 'roc' || d.key === 'prc'
-                ? this.trModernCity(near.s.ancient)
+                ? this.locale === 'en' &&
+                  near.s.rawModern &&
+                  !(this.enLocale.dict && this.enLocale.dict[near.s.ancient])
+                  ? this.trModernCity(near.s.rawModern)
+                  : this.trModernCity(near.s.ancient)
                 : this.trTerm(near.s.ancient);
+            const nearPrefix =
+              d.key === 'prc'
+                ? near.km < 25
+                  ? this.locale === 'en'
+                    ? 'Modern city: '
+                    : '现代城市：'
+                  : this.locale === 'en'
+                    ? 'Nearby city: '
+                    : '邻近城市：'
+                : this.uiStr('near_city', '邻近古城：');
             subParts.push(
               this.locale === 'en'
-                ? `${this.uiStr('near_city', '邻近古城：')}${nearCityName} (${distStr})`
-                : `${this.uiStr('near_city', '邻近古城：')}${nearCityName}（${distStr}）`
+                ? `${nearPrefix}${nearCityName} (${distStr})`
+                : `${nearPrefix}${nearCityName}（${distStr}）`
             );
           }
 
@@ -7324,8 +7394,25 @@
           break;
         }
       }
+      if (d && d.key === 'prc') {
+        if (modernProvince) {
+          polity = '中华人民共和国';
+          regions.length = 0;
+          regions.push(modernProvince);
+        } else {
+          const neighbors = Array.isArray(this.snapshots && this.snapshots.neighbors)
+            ? this.snapshots.neighbors
+            : [];
+          for (const nb of neighbors) {
+            if (MercatorProjector.pointInShape(cLng, cLat, nb.shape)) {
+              polity = nb.title;
+              break;
+            }
+          }
+        }
+      }
       let bestKm = 180;
-      for (const s of d.settlements || []) {
+      for (const s of (d && d.settlements) || []) {
         const km = this.projector.greatCircleKm([cLng, cLat], s.coord);
         if (km < bestKm) {
           bestKm = km;
@@ -7335,6 +7422,43 @@
             distanceKm: Math.round(km),
           };
         }
+      }
+      if (d && (d.key === 'roc' || d.key === 'prc') && bestKm > 25) {
+        let bestCross = null;
+        let bestCrossKm = 160;
+        for (const od of this.dynasties || []) {
+          for (const s of od.settlements || []) {
+            if (!s.modern) continue;
+            const km = this.projector.greatCircleKm([cLng, cLat], s.coord);
+            if (km < bestCrossKm) {
+              bestCrossKm = km;
+              bestCross = s;
+            }
+          }
+        }
+        if (bestCross && bestCrossKm + 5 < bestKm) {
+          const rawMod = String(bestCross.modern)
+            .replace(/（.*?）|\(.*?\)/g, '')
+            .trim();
+          const cleanMod = this._stripModernProvincePrefix(rawMod, modernProvince) || rawMod;
+          nearestCity = {
+            ancient: cleanMod,
+            modern: bestCross.modern,
+            distanceKm: Math.round(bestCrossKm),
+          };
+        }
+      }
+      if (
+        d &&
+        d.key === 'prc' &&
+        modernProvince &&
+        nearestCity &&
+        nearestCity.distanceKm <= 25 &&
+        nearestCity.ancient &&
+        !modernProvince.startsWith(nearestCity.ancient) &&
+        !prefectures.includes(nearestCity.ancient)
+      ) {
+        prefectures.push(nearestCity.ancient);
       }
       return { polity, regions, prefectures, modernProvince, nearestCity };
     }
