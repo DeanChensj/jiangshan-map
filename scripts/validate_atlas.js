@@ -1655,6 +1655,117 @@ function main() {
     '#act-challenge must be tucked inside #journey-popover (.journey-quiz-section), not in the top .control-strip'
   );
 
+  // ── 24. CUJ 24: Place Genealogy (点地溯源) Full 18-Era Coverage to Present (PRC) & ROC/PRC City Resolution ──
+  const yueyang2026 = ctrl.inspect({ year: 2026, place: '岳阳' });
+  assert.strictEqual(yueyang2026.polity, '中华人民共和国', 'inspect(2026, 岳阳) must return polity 中华人民共和国');
+  assert(
+    Array.isArray(yueyang2026.regions) &&
+      yueyang2026.regions.length === 1 &&
+      yueyang2026.regions[0] === '湖南省' &&
+      Array.isArray(yueyang2026.prefectures) &&
+      yueyang2026.prefectures.includes('岳阳') &&
+      yueyang2026.nearestCity &&
+      yueyang2026.nearestCity.ancient === '岳阳' &&
+      yueyang2026.nearestCity.distanceKm <= 10,
+    `inspect(2026, 岳阳) must resolve 湖南省 · 岳阳 within <=10 km, got ${JSON.stringify(yueyang2026)}`
+  );
+  const yueyang1936 = ctrl.inspect({ year: 1936, place: '岳阳' });
+  assert(
+    yueyang1936.nearestCity &&
+      yueyang1936.nearestCity.ancient === '岳阳' &&
+      yueyang1936.nearestCity.distanceKm <= 10,
+    `inspect(1936, 岳阳) in ROC must resolve local city 岳阳 (<=10 km) rather than Changsha (127 km), got ${JSON.stringify(yueyang1936.nearestCity)}`
+  );
+  assert(
+    !String(ctrl.openGenealogyAt).includes("if (d.key === 'prc') continue;"),
+    'openGenealogyAt must not skip d.key === "prc" so Place Genealogy covers all 18 eras up to the present day'
+  );
+  const mockTimelineItems = [];
+  const mockHeadingEl = { textContent: '' };
+  const mockSubEl = { innerHTML: '', textContent: '', querySelector: () => null };
+  const mockCardEl = { classList: { remove() {}, add() {}, contains: () => false } };
+  const mockListEl = {
+    scrollTop: 0,
+    scrollHeight: 0,
+    clientHeight: 500,
+    offsetTop: 0,
+    get children() {
+      return mockTimelineItems;
+    },
+    set innerHTML(_v) {
+      mockTimelineItems.length = 0;
+    },
+    appendChild(li) {
+      mockTimelineItems.push(li);
+    },
+    querySelector: () => null,
+  };
+  const prevDoc = sandbox.document;
+  sandbox.document = {
+    createElement(tag) {
+      return {
+        tag,
+        className: '',
+        innerHTML: '',
+        offsetTop: 0,
+        offsetHeight: 28,
+        classList: { add() {}, remove() {}, contains: () => false },
+        querySelectorAll: () => [],
+        addEventListener() {},
+      };
+    },
+  };
+  const prevIdForGen = ctrl._id;
+  ctrl._id = (id) => {
+    if (id === 'genealogy-heading') return mockHeadingEl;
+    if (id === 'genealogy-sub') return mockSubEl;
+    if (id === 'genealogy-card') return mockCardEl;
+    if (id === 'genealogy-timeline') return mockListEl;
+    return null;
+  };
+  ctrl.grpGenealogy = { innerHTML: '' };
+  ctrl._dismissTraceOnboarding = () => {};
+  ctrl._rescaleSvgTypography = () => {};
+  ctrl._syncTracedPrefecture = () => {};
+  ctrl._fullSnapshotsLoaded = true;
+  ctrl.year = 2026;
+  ctrl.dynastyIdx = 17;
+  ctrl.openGenealogyAt(113.13, 29.36, null, { fromYearSync: true });
+  assert.strictEqual(
+    mockTimelineItems.length,
+    18,
+    `Expected openGenealogyAt to render all 18 dynasty rows including PRC, got ${mockTimelineItems.length}`
+  );
+  const rocRowHtml = mockTimelineItems[16].innerHTML;
+  const prcRowHtml = mockTimelineItems[17].innerHTML;
+  assert(
+    rocRowHtml.includes('中华民国') && rocRowHtml.includes('邻近古城：岳阳（即此地）'),
+    `Expected ROC row at Yueyang to resolve 邻近古城：岳阳（即此地）, got ${rocRowHtml}`
+  );
+  assert(
+    prcRowHtml.includes('中华人民共和国') &&
+      prcRowHtml.includes('湖南省 · 岳阳') &&
+      prcRowHtml.includes('现代城市：岳阳（即此地）'),
+    `Expected PRC row at Yueyang to display 湖南省 · 岳阳 and 现代城市：岳阳（即此地）, got ${prcRowHtml}`
+  );
+  ctrl.openGenealogyAt(112.24, 30.33, null, { fromYearSync: true });
+  assert.strictEqual(mockTimelineItems.length, 18, 'Expected 18 rows at Jingzhou (江陵)');
+  const jzQingHtml = mockTimelineItems[15].innerHTML;
+  const jzRocHtml = mockTimelineItems[16].innerHTML;
+  const jzPrcHtml = mockTimelineItems[17].innerHTML;
+  assert(
+    jzQingHtml.includes('荆州府') && !jzQingHtml.includes('宜昌府'),
+    `Expected Qing row at Jingzhou not to show misleading 100 km neighbor 宜昌府, got ${jzQingHtml}`
+  );
+  assert(
+    jzRocHtml.includes('邻近古城：荆州（即此地）') &&
+      jzPrcHtml.includes('湖北省 · 荆州') &&
+      jzPrcHtml.includes('现代城市：荆州（即此地）'),
+    `Expected ROC and PRC rows at Jingzhou to resolve 荆州（即此地）, got ROC=${jzRocHtml} PRC=${jzPrcHtml}`
+  );
+  ctrl._id = prevIdForGen;
+  sandbox.document = prevDoc;
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
