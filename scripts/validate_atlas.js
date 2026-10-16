@@ -1945,15 +1945,52 @@ function main() {
     `Expected cached _getCanonicalPlaces() to return >=220 canonical places, got ${canonPlaces && canonPlaces.length}`
   );
 
-  // 23e. Verify autoplay aria-pressed state, timeline band button accessibility, and SEO directory pointer-events isolation
+  // 23e. Verify autoplay aria-pressed state, timeline band button accessibility, SEO directory locale sync, and quick search cleanup
   assert(
     indexHtml.includes('aria-pressed="false"') &&
       indexHtml.includes('id="seo-atlas-directory" class="sr-only-seo" aria-hidden="true"') &&
       styleCss.includes('pointer-events: none !important;') &&
       appCode.includes('_updateAutoplayUi()') &&
+      appCode.includes('_syncSeoDirectoryLocale()') &&
+      appCode.includes('_clearQuickSearchInput()') &&
       appCode.includes("cell.setAttribute('role', 'button')"),
-    'index.html, style.css, and app.js must include autoplay aria-pressed state, accessible timeline band buttons, and SEO directory pointer-events isolation'
+    'index.html, style.css, and app.js must include autoplay aria-pressed state, accessible timeline band buttons, SEO directory locale sync, and quick search cleanup'
   );
+  const mockSeoNav = {
+    innerHTML: '<h2>江山时序</h2>',
+    dataset: {},
+    setAttribute(k, v) {
+      this[k] = v;
+    },
+  };
+  const mockSearchInp = {
+    value: "Chang'an",
+    blurred: false,
+    blur() {
+      this.blurred = true;
+    },
+  };
+  const origId23e = ctrl._id;
+  ctrl._id = (id) => {
+    if (id === 'seo-atlas-directory') return mockSeoNav;
+    if (id === 'inp-map-search') return mockSearchInp;
+    return origId23e ? origId23e.call(ctrl, id) : null;
+  };
+  ctrl.locale = 'en';
+  ctrl._syncSeoDirectoryLocale();
+  assert(
+    mockSeoNav.dataset.locale === 'en' &&
+      mockSeoNav.innerHTML.includes('Warring States Historical Map') &&
+      mockSeoNav.innerHTML.includes("People's Republic of China Historical Map") &&
+      !/[\u4e00-\u9fff]/.test(mockSeoNav.innerHTML),
+    'In English mode, _syncSeoDirectoryLocale() must translate all 18 dynasty entries with zero remaining CJK characters'
+  );
+  ctrl.locale = 'zh';
+  ctrl._syncSeoDirectoryLocale();
+  assert.strictEqual(mockSeoNav.innerHTML, '<h2>江山时序</h2>', '_syncSeoDirectoryLocale() must restore Chinese HTML when switching back to zh');
+  ctrl._clearQuickSearchInput();
+  assert.strictEqual(mockSearchInp.value, '', '_clearQuickSearchInput() must clear #inp-map-search value');
+  ctrl._id = origId23e;
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
