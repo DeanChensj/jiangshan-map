@@ -1381,19 +1381,54 @@ function main() {
       Array.isArray(snap.regions) && snap.regions.length > 0,
       `Snapshot ${sk} must have non-empty regions after _hydrateSnapshots(), got ${(snap.regions || []).length}`
     );
+    const minPref = sk === 's_zhanguo_a' || sk === 's_zhanguo_b0' ? 11 : 16;
     assert(
-      Array.isArray(snap.prefectures) && snap.prefectures.length >= 16,
-      `Snapshot ${sk} must have >= 16 prefectures after _hydrateSnapshots(), got ${(snap.prefectures || []).length}`
+      Array.isArray(snap.prefectures) && snap.prefectures.length >= minPref,
+      `Snapshot ${sk} must have >= ${minPref} prefectures after _hydrateSnapshots(), got ${(snap.prefectures || []).length}`
     );
   }
   assert(
-    snapshots.s_zhanguo_a.prefectures.length >= 28 &&
-      snapshots.s_zhanguo_b.prefectures.length >= 33 &&
-      snapshots.s_qin.prefectures.length >= 40 &&
+    snapshots.s_zhanguo_a.prefectures.length === 11 &&
+      snapshots.s_zhanguo_b0.prefectures.length === 13 &&
+      snapshots.s_zhanguo_b.prefectures.length === 18 &&
+      snapshots.s_zhanguo_c.prefectures.length === 21 &&
+      snapshots.s_zhanguo_d.prefectures.length === 23 &&
+      snapshots.s_zhanguo_e1.prefectures.length === 24 &&
+      snapshots.s_zhanguo_e2.prefectures.length === 26 &&
+      snapshots.s_zhanguo_e4.prefectures.length === 27 &&
+      snapshots.s_zhanguo_e5.prefectures.length === 33 &&
+      snapshots.s_qin_a.prefectures.length === 36 &&
+      snapshots.s_qin_b.prefectures.length === 37 &&
+      snapshots.s_qin.prefectures.length === 40 &&
       snapshots.s_xihan.prefectures.length >= 50 &&
       snapshots.s_donghan.prefectures.length >= 48,
-    'Warring States, Qin, and Han snapshots must provide full nationwide commandery (郡) coverage in prefectures'
+    'Warring States, Qin, and Han snapshots must reflect chronological commandery (郡) progression up to 36/40 Qin commanderies'
   );
+  for (const anachronistic of ['会稽郡', '鄣郡', '东海郡', '泗水郡']) {
+    assert(
+      !snapshots.s_zhanguo_a.prefectures.some((p) => p.title === anachronistic) &&
+        !snapshots.s_zhanguo_a.regions.some((r) => r.title === anachronistic),
+      `s_zhanguo_a (-403 BCE) must not split State of Yue with post-222 BCE Qin commandery ${anachronistic}`
+    );
+  }
+  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_chuhan']) {
+    const qSnap = snapshots[qinSnapKey];
+    for (const cmdTitle of ['泗水郡', '东海郡', '鄣郡', '会稽郡']) {
+      assert(
+        qSnap.prefectures.some((p) => p.title === cmdTitle) &&
+          qSnap.regions.some((r) => r.title === cmdTitle),
+        `${qinSnapKey} must include ${cmdTitle} in both prefectures and regions`
+      );
+    }
+    for (const southTitle of ['鄣郡', '会稽郡']) {
+      const feat = qSnap.prefectures.find((p) => p.title === southTitle);
+      const maxLat = Math.max(...feat.shape.coordinates[0].map((pt) => pt[1]));
+      assert(
+        maxLat <= 32.3,
+        `${qinSnapKey} ${southTitle} must stay south of the Yangtze (maxLat <= 32.3°N), got ${maxLat}`
+      );
+    }
+  }
   const xihanDyn = dynasties.find((d) => d.key === 'xihan');
   assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -204), 's_qin_chuhan', 'Qin at -204 BCE must resolve to s_qin_chuhan');
   assert(
