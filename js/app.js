@@ -6545,18 +6545,17 @@
           }, 180);
         });
         searchInp.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowDown' && currentResults.length) {
+          if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && currentResults.length) {
             e.preventDefault();
-            activeSearchIdx = (activeSearchIdx + 1) % currentResults.length;
-            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) =>
-              el.classList.toggle('is-active', i === activeSearchIdx)
-            );
-          } else if (e.key === 'ArrowUp' && currentResults.length) {
-            e.preventDefault();
-            activeSearchIdx = (activeSearchIdx - 1 + currentResults.length) % currentResults.length;
-            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) =>
-              el.classList.toggle('is-active', i === activeSearchIdx)
-            );
+            const step = e.key === 'ArrowDown' ? 1 : -1;
+            activeSearchIdx = (activeSearchIdx + step + currentResults.length) % currentResults.length;
+            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) => {
+              const active = i === activeSearchIdx;
+              el.classList.toggle('is-active', active);
+              if (active && typeof el.scrollIntoView === 'function') {
+                el.scrollIntoView({ block: 'nearest' });
+              }
+            });
           } else if (e.key === 'Enter' && currentResults.length) {
             e.preventDefault();
             const pick = currentResults[Math.max(0, activeSearchIdx)];
