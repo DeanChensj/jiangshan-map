@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015f').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261016a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015f').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261016a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -800,6 +800,7 @@
       }
       document.documentElement.lang = this.locale === 'en' ? 'en' : 'zh-CN';
       this._syncDocumentSeoMeta();
+      this._syncSeoDirectoryLocale();
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -931,6 +932,22 @@
       if (actReset) {
         actReset.title = this.locale === 'en' ? 'Reset camera view' : '复位视图';
       }
+      const zoomInBtn = this._id('act-zoom-in');
+      if (zoomInBtn) {
+        const zInLbl = this.locale === 'en' ? 'Zoom in (+)' : '放大地图 (+)';
+        zoomInBtn.title = zInLbl;
+        zoomInBtn.setAttribute('aria-label', zInLbl);
+      }
+      const zoomOutBtn = this._id('act-zoom-out');
+      if (zoomOutBtn) {
+        const zOutLbl = this.locale === 'en' ? 'Zoom out (-)' : '缩小地图 (-)';
+        zoomOutBtn.title = zOutLbl;
+        zoomOutBtn.setAttribute('aria-label', zOutLbl);
+      }
+      const zoomGrp = this._id('grp-zoom-controls');
+      if (zoomGrp) {
+        zoomGrp.setAttribute('aria-label', this.locale === 'en' ? 'Zoom controls' : '缩放控制');
+      }
       const lblChal = this._id('lbl-challenge') || this._id('act-challenge');
       if (lblChal) {
         lblChal.textContent = this.challenge
@@ -951,9 +968,10 @@
             : '在 GitHub 上为「江山时序」点亮 Star';
       }
       this._updateMusicUi();
+      this._updateAutoplayUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
-        '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
+        '滚轮或双击缩放 · 拖拽平移 · 点击城名查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
       );
       this._id('txt-seat-label').textContent = this.uiStr('capital_k', '都城');
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
@@ -2609,6 +2627,75 @@
       setMeta('lnk-canonical', 'href', canonicalUrl);
     }
 
+    _syncSeoDirectoryLocale() {
+      const nav = this._id('seo-atlas-directory');
+      if (!nav) return;
+      if (!this._seoDirZhHtml) {
+        this._seoDirZhHtml = nav.innerHTML;
+      }
+      if (this.locale !== 'en') {
+        nav.setAttribute('aria-label', '中国历代疆域、青史行迹与天下名关索引');
+        if (nav.dataset.locale === 'en') {
+          nav.innerHTML = this._seoDirZhHtml;
+          nav.dataset.locale = 'zh';
+        }
+        return;
+      }
+      if (nav.dataset.locale === 'en') return;
+      nav.setAttribute(
+        'aria-label',
+        'Historical Dynasties, Biographical Journeys & Strategic Passes Directory'
+      );
+      const baseSiteUrl = 'https://deanchensj.github.io/jiangshan-map/';
+      const dynItems = (this.dynasties || [])
+        .map((d) => {
+          const dName = this.dynastyName(d);
+          const dSpan = this.formatSpan(d);
+          const dSeat = this.dynastySeat(d);
+          const dSum = this.dynastySummary(d);
+          const focusY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
+          const isMod = d.key === 'roc' || d.key === 'prc';
+          const cities = (d.settlements || [])
+            .filter((s) => s.isCapital || s.tier === 1)
+            .slice(0, 8)
+            .map((s) => {
+              const anc = isMod ? this.trModernCity(s.ancient) : this.trTerm(s.ancient);
+              const mod = s.modern ? this.trModernCity(s.modern) : '';
+              return mod && mod !== anc ? `${anc} (now ${mod})` : anc;
+            })
+            .join(', ');
+          const events = (d.milestones || [])
+            .slice(0, 6)
+            .map((m) => `${this.formatYear(m.year)}: ${this.milestoneHeadline(d, m)}`)
+            .join('; ');
+          return `<li><a href="${baseSiteUrl}?year=${focusY}&amp;lang=en"><strong>${dName} Map (${dSpan} · ${d.title})</strong></a> — Capital: ${dSeat}. ${dSum}${cities ? ` Key cities: ${cities}.` : ''}${events ? ` Major events: ${events}.` : ''}</li>`;
+        })
+        .join('');
+      const journeyItems = (HistoricalAtlasController.HISTORICAL_JOURNEYS || [])
+        .map((j) => {
+          const stopsStr = (j.stops || [])
+            .map((s) => `${s.ancientEn} (${s.modernEn})`)
+            .join(' → ');
+          return `<li><a href="${baseSiteUrl}?journey=${encodeURIComponent(j.key)}&amp;lang=en"><strong>${j.titleEn} (${j.spanEn})</strong></a> — Route stops: ${stopsStr}.</li>`;
+        })
+        .join('');
+      const passItems = (HistoricalAtlasController.STRATEGIC_PASSES || [])
+        .map((p) => {
+          const y = p.focusYear !== undefined ? p.focusYear : p.appear || -200;
+          const c0 = p.coord ? p.coord[0] : 110;
+          const c1 = p.coord ? p.coord[1] : 34;
+          return `<li><a href="${baseSiteUrl}?year=${y}&amp;trace=${c0},${c1}&amp;lang=en"><strong>${p.ancientEn} (now ${p.modernEn} · ${p.ancientZh})</strong></a> — ${p.rangeEn}: ${p.chokepointEn}</li>`;
+        })
+        .join('');
+      nav.innerHTML =
+        `<h2>Jiangshan Atlas: Historical Maps of China, Prefectures, Ancient &amp; Modern Place Names, and Major Events (403 BCE – Present)</h2>` +
+        `<p>Interactive timeline atlas of Chinese history across 18 major eras—Warring States, Qin, Western Han, Eastern Han, Three Kingdoms, Western Jin, Eastern Jin &amp; Sixteen Kingdoms, Northern &amp; Southern Dynasties, Sui, Tang, Five Dynasties &amp; Ten Kingdoms, Northern Song (Liao &amp; Western Xia), Southern Song (Jin &amp; Mongol), Yuan, Ming, Qing, Republic of China, and People's Republic of China.</p>` +
+        `<section><h3>1. Historical Dynasties &amp; Territories Directory</h3><ul>${dynItems}</ul></section>` +
+        `<section><h3>2. Historical Figure Journeys</h3><ul>${journeyItems}</ul></section>` +
+        `<section><h3>3. 20 Strategic Mountain &amp; River Passes</h3><ul>${passItems}</ul></section>`;
+      nav.dataset.locale = 'en';
+    }
+
     _renderChroniclePane(dynasty) {
       this._id('dynasty-title').textContent = this.dynastyName(dynasty);
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
@@ -3530,6 +3617,17 @@
         cell.style.flex = `${this.bandWeights[idx]} 1 0`;
         cell.style.background = d.tint;
         cell.dataset.dynastyIdx = idx;
+        cell.setAttribute('role', 'button');
+        cell.tabIndex = 0;
+        cell.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.challenge) return;
+            this.stopAutoplay();
+            this.jumpToYear(d.focusYear !== undefined ? d.focusYear : d.fromYear);
+          }
+        });
 
         const lbl = document.createElement('span');
         lbl.className = 'band-label';
@@ -3586,7 +3684,9 @@
         if (cell) {
           const lbl = cell.querySelector('.band-label') || cell;
           lbl.textContent = this.dynastyBadge(d);
-          cell.title = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          const fullLabel = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          cell.title = fullLabel;
+          cell.setAttribute('aria-label', fullLabel);
         }
         const tk = tickNodes[idx];
         if (tk) {
@@ -3680,6 +3780,16 @@
       const nextSnapKey = this._resolveSnapKey(cur, y);
 
       if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
+        if (prevIdx !== this.dynastyIdx) {
+          const searchInp = this._id('inp-map-search');
+          if (searchInp && document.activeElement !== searchInp && searchInp.value) {
+            searchInp.value = '';
+            const listEl = this._id('map-search-results');
+            if (listEl) listEl.classList.add('is-hidden');
+            const boxEl = this._id('map-search-box');
+            if (boxEl) boxEl.classList.remove('is-expanded');
+          }
+        }
         const prevSnap = this.lastRenderedSnap;
         this._renderDynasty(cur, prevSnap);
         this._renderChroniclePane(cur);
@@ -3835,11 +3945,32 @@
     }
 
     // ---------------- Autoplay ----------------
+    _updateAutoplayUi() {
+      const btn = this._id('act-autoplay');
+      if (!btn) return;
+      btn.innerHTML = this.playing ? SVG_ICONS.pause : SVG_ICONS.play;
+      btn.classList.toggle('is-playing', Boolean(this.playing));
+      btn.setAttribute('aria-pressed', String(Boolean(this.playing)));
+      const actionLbl = this.playing
+        ? this.locale === 'en'
+          ? 'Pause'
+          : '暂停'
+        : this.locale === 'en'
+          ? 'Play'
+          : '播放';
+      btn.setAttribute('aria-label', actionLbl);
+      btn.title = this.playing
+        ? this.locale === 'en'
+          ? 'Pause timeline autoplay (Space)'
+          : '暂停时间轴播放（空格）'
+        : this.uiStr('play_title', '自动播放 / 暂停（空格）');
+    }
+
     startAutoplay() {
       if (this.challenge) return;
       this.playing = true;
       this.closeMilestoneBalloon();
-      this._id('act-autoplay').innerHTML = SVG_ICONS.pause;
+      this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       this.playInterval = setInterval(() => {
         const cur = this.dynasties[this.dynastyIdx];
@@ -3849,12 +3980,12 @@
           return;
         }
         this.jumpToYear(this.year + delta);
-      }, 180);
+      }, 280);
     }
 
     stopAutoplay() {
       this.playing = false;
-      this._id('act-autoplay').innerHTML = SVG_ICONS.play;
+      this._updateAutoplayUi();
       if (this.playInterval) {
         clearInterval(this.playInterval);
         this.playInterval = null;
@@ -4853,6 +4984,29 @@
     resetCamera() {
       this.clearCustomRoute();
       this._animateCameraTo(this._getDefaultCamera());
+    }
+
+    zoomBy(factor, clientX, clientY, animate = true) {
+      this._recordGestureMove();
+      const [mx, my] =
+        clientX !== undefined && clientY !== undefined
+          ? this._clientToSvgPoint(clientX, clientY)
+          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+      const k = nextW / this.camera.w;
+      const targetCam = {
+        x: mx - (mx - this.camera.x) * k,
+        y: my - (my - this.camera.y) * k,
+        w: nextW,
+        h: this.camera.h * k,
+        zoom: 1000 / nextW,
+      };
+      if (animate && typeof this._animateCameraTo === 'function') {
+        this._animateCameraTo(targetCam);
+      } else {
+        this.camera = targetCam;
+        this._applyCamera();
+      }
     }
 
     _panToward(lng, lat) {
@@ -6183,6 +6337,8 @@
     _selectSearchResult(item) {
       this.stopAutoplay();
       this.clearCustomRoute();
+      const searchInp = this._id('inp-map-search');
+      if (searchInp) searchInp.value = '';
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
       const boxEl = this._id('map-search-box');
@@ -6528,6 +6684,14 @@
       });
 
       this._id('act-reset-camera').addEventListener('click', () => this.resetCamera());
+      const zoomInBtn = this._id('act-zoom-in');
+      if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => this.zoomBy(1.45));
+      }
+      const zoomOutBtn = this._id('act-zoom-out');
+      if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => this.zoomBy(1 / 1.45));
+      }
       const togglePaneBtn = this._id('act-toggle-pane');
       if (togglePaneBtn) {
         togglePaneBtn.addEventListener('click', () => {
@@ -6643,6 +6807,43 @@
       };
       track.addEventListener('pointerup', stopScrub);
       track.addEventListener('pointercancel', stopScrub);
+      track.addEventListener('click', (e) => {
+        if (this.challenge) return;
+        const bandCell = e.target && e.target.closest && e.target.closest('.band-cell');
+        if (bandCell && e.detail === 0 && bandCell.dataset.dynastyIdx !== undefined) {
+          const d = this.dynasties[Number(bandCell.dataset.dynastyIdx)];
+          if (d) {
+            this.stopAutoplay();
+            this.jumpToYear(d.focusYear !== undefined ? d.focusYear : d.fromYear);
+          }
+        }
+      });
+
+      const seoDir = this._id('seo-atlas-directory');
+      if (seoDir) {
+        seoDir.addEventListener('click', (e) => {
+          const a = e.target && e.target.closest && e.target.closest('a');
+          if (!a || !a.href) return;
+          try {
+            const u = new URL(a.href, window.location.href);
+            e.preventDefault();
+            if (u.searchParams.has('journey')) {
+              this.startJourney(u.searchParams.get('journey'), 0);
+              return;
+            }
+            if (u.searchParams.has('year')) {
+              this.stopAutoplay();
+              this.jumpToYear(Number(u.searchParams.get('year')));
+            }
+            if (u.searchParams.has('trace')) {
+              const parts = u.searchParams.get('trace').split(',').map(Number);
+              if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+                this.openGenealogyAt(parts[0], parts[1]);
+              }
+            }
+          } catch (_) {}
+        });
+      }
 
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
@@ -6653,6 +6854,36 @@
             searchInp.select();
             return;
           }
+        }
+        if (e.target && e.target.id === 'inp-year') {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (!this.challenge) {
+              this.stopAutoplay();
+              this.jumpToYear(Number(e.target.value));
+            }
+            e.target.blur();
+            return;
+          }
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            e.target.blur();
+            return;
+          }
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            if (this.challenge) return;
+            e.preventDefault();
+            e.target.blur();
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            if (e.shiftKey && !this.activeJourney && !this.activeCustomRoute) {
+              this.stopAutoplay();
+              this.jumpToYear(this.year + dir * 10);
+              return;
+            }
+            this.stepTimelineNode(dir);
+            return;
+          }
+          return;
         }
         if (e.target.tagName === 'INPUT') return;
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -6665,6 +6896,12 @@
             return;
           }
           this.stepTimelineNode(dir);
+        } else if ((e.key === '+' || e.key === '=') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          this.zoomBy(1.35);
+        } else if ((e.key === '-' || e.key === '_') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          this.zoomBy(1 / 1.35);
         } else if (e.key === 'Home' && !this.challenge) {
           this.jumpToYear(this.minYear);
         } else if (e.key === 'End' && !this.challenge) {
@@ -6703,13 +6940,26 @@
       });
 
       // SVG Zoom & Pan (Mouse Wheel + Single-Finger Pan + Two-Finger Pinch Zoom)
-      this.svg.addEventListener(
+      const viewportFrame = this._id('viewport-frame') || this.svg;
+      viewportFrame.addEventListener(
         'wheel',
         (e) => {
+          if (
+            e.target &&
+            e.target.closest &&
+            e.target.closest(
+              '#genealogy-card, #journey-card, #milestone-balloon, #map-search-results, #challenge-card'
+            )
+          ) {
+            return;
+          }
           e.preventDefault();
           this._recordGestureMove();
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
-          const factor = Math.exp(-e.deltaY * 0.0015);
+          const rawDelta =
+            e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
+          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
+          const factor = Math.exp(-clampedDelta * 0.002);
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
@@ -7225,10 +7475,16 @@
       this.svg.addEventListener('pointercancel', endPointer);
       this.svg.addEventListener('dblclick', (e) => {
         if (this.challenge) return;
+        e.preventDefault();
         this._recordGestureClick();
-        const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-        const [lng, lat] = this.projector.toGeo(sx, sy);
-        this.openGenealogyAt(lng, lat);
+        const hitTarget = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+        const settlementEl =
+          hitTarget && hitTarget.closest && hitTarget.closest('.settlement-node');
+        if (settlementEl && settlementEl.dataset.lng && settlementEl.dataset.lat) {
+          this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
+          return;
+        }
+        this.zoomBy(1.65, e.clientX, e.clientY, true);
       });
 
       // Hover tooltips (Desktop pointermove)

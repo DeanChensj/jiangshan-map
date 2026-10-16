@@ -269,7 +269,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261015f" />
+  <link rel="stylesheet" href="css/style.css?v=20261016a" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -459,6 +459,10 @@
         <div id="map-key" aria-live="polite"></div>
 
         <div id="canvas-br-dock">
+          <div class="canvas-zoom-group" role="group" id="grp-zoom-controls" aria-label="缩放控制">
+            <button id="act-zoom-in" class="canvas-zoom-btn" type="button" title="放大地图 (+)" aria-label="放大地图">+</button>
+            <button id="act-zoom-out" class="canvas-zoom-btn" type="button" title="缩小地图 (-)" aria-label="缩小地图">−</button>
+          </div>
           <button id="act-reset-camera" class="canvas-reset-btn" type="button" title="复位视图">
             <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
             <span id="lbl-reset-camera">复位视图</span>
@@ -507,7 +511,7 @@
 
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
 
-        <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放</div>
+        <div id="gesture-guide">滚轮或双击缩放 · 拖拽平移 · 点击城名查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放</div>
       </div>
 
       <aside id="chronicle-pane" aria-label="历史时期详情">
@@ -562,7 +566,7 @@
     </main>
 
     <footer id="scrubber-dock" aria-label="历史年份时间轴">
-      <button id="act-autoplay" class="round-btn" title="自动播放 / 暂停" aria-label="播放">
+      <button id="act-autoplay" class="round-btn" type="button" title="自动播放 / 暂停（空格）" aria-label="播放" aria-pressed="false">
         <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>
       </button>
 
@@ -585,7 +589,7 @@
       </div>
     </footer>
   </div>
-    <nav id="seo-atlas-directory" class="sr-only-seo" aria-label="中国历代疆域、青史行迹与天下名关索引">
+    <nav id="seo-atlas-directory" class="sr-only-seo" aria-hidden="true" aria-label="中国历代疆域、青史行迹与天下名关索引">
       <h2>江山时序：中国历代疆域地图、州郡政区、古今地名对照与历史事件全览（公元前403年—现代）</h2>
       <p>本交互式中国历史地图时间轴涵盖战国、秦、西汉、东汉、三国、西晋、东晋十六国、南北朝、隋、唐、五代十国、北宋（辽·西夏）、南宋（金·蒙）、元、明、清、中华民国与现代共18个历史时期、多阶段疆域快照、历代历史名城古今对照、重大历史事件、名关雄隘与人物时空行迹。</p>
       <section>
@@ -650,10 +654,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261015f"></script>
-  <script src="js/atlas_boot.js?v=20261015f"></script>
-  <script src="js/map_data.js?v=20261015f"></script>
-  <script src="js/lore_data.js?v=20261015f"></script>
-  <script src="js/app.js?v=20261015f"></script>
+  <script src="js/china_geo_data.js?v=20261016a"></script>
+  <script src="js/atlas_boot.js?v=20261016a"></script>
+  <script src="js/map_data.js?v=20261016a"></script>
+  <script src="js/lore_data.js?v=20261016a"></script>
+  <script src="js/app.js?v=20261016a"></script>
 </body>
 </html>

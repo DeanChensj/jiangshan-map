@@ -15,7 +15,7 @@ window.EN_LOCALE = {
     "toggle_routes": "Routes & Walls",
     "toggle_events": "Events",
     "btn_reset": "Reset",
-    "hint": "Scroll to zoom · Drag to pan · Click city or double-click to trace · ← → jump events (Shift+← → ±10 yrs) · Space play",
+    "hint": "Scroll or double-click to zoom · Drag to pan · Click city to trace history · ← → jump events (Shift+← → ±10 yrs) · Space play",
     "capital_k": "Capital",
     "events_h": "Key Events",
     "caveat": "Historical boundaries are schematic approximations, not exact surveys.",
