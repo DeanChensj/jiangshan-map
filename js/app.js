@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261016c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261016d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261016c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261016d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -800,6 +800,7 @@
       }
       document.documentElement.lang = this.locale === 'en' ? 'en' : 'zh-CN';
       this._syncDocumentSeoMeta();
+      this._syncSeoDirectoryLocale();
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -969,6 +970,10 @@
           this.locale === 'en'
             ? 'Previous historical stage / event node (←) · Shift+← -10 yrs'
             : '上一历史阶段 / 事件节点（←）· Shift+← 退十年';
+        stepPrevBtn.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Previous historical node' : '上一历史节点'
+        );
       }
       const stepNextBtn = this._id('act-step-next');
       if (stepNextBtn) {
@@ -976,6 +981,45 @@
           this.locale === 'en'
             ? 'Next historical stage / event node (→) · Shift+→ +10 yrs'
             : '下一历史阶段 / 事件节点（→）· Shift+→ 进十年';
+        stepNextBtn.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Next historical node' : '下一历史节点'
+        );
+      }
+      const inpYear = this._id('inp-year');
+      if (inpYear) {
+        inpYear.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Enter year (negative for BCE)' : '输入年份（负数为公元前）'
+        );
+      }
+      const scrubberDock = this._id('scrubber-dock');
+      if (scrubberDock) {
+        scrubberDock.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Historical timeline' : '历史年份时间轴'
+        );
+      }
+      const scrubberTrack = this._id('scrubber-track');
+      if (scrubberTrack) {
+        scrubberTrack.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Year slider' : '年份滑块'
+        );
+      }
+      const chroniclePane = this._id('chronicle-pane');
+      if (chroniclePane) {
+        chroniclePane.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Historical era details' : '历史时期详情'
+        );
+      }
+      const atlasSvg = this._id('atlas-svg');
+      if (atlasSvg) {
+        atlasSvg.setAttribute(
+          'aria-label',
+          this.locale === 'en' ? 'Historical Atlas of China' : '中国历史地图'
+        );
       }
       this._id('txt-genealogy-kicker').textContent = this.uiStr(
         'trace_kicker',
@@ -987,10 +1031,21 @@
       }
       const searchInp = this._id('inp-map-search');
       if (searchInp) {
-        searchInp.placeholder =
+        const searchPh =
           this.locale === 'en'
             ? 'Search city / prefecture / emperor or era / journey'
             : '搜古今地名 / 州府 / 帝王年号 / 青史行迹';
+        searchInp.placeholder = searchPh;
+        searchInp.setAttribute('aria-label', searchPh);
+      }
+      const searchBox = this._id('map-search-box');
+      if (searchBox) {
+        searchBox.setAttribute(
+          'aria-label',
+          this.locale === 'en'
+            ? 'Quick search for places, prefectures, eras, and journeys'
+            : '快速检索古今地名、州府、帝王年号与青史行迹'
+        );
       }
       this._syncTogglePaneButton();
 
@@ -2610,6 +2665,75 @@
       setMeta('lnk-canonical', 'href', canonicalUrl);
     }
 
+    _syncSeoDirectoryLocale() {
+      const nav = this._id('seo-atlas-directory');
+      if (!nav) return;
+      if (!this._seoDirZhHtml) {
+        this._seoDirZhHtml = nav.innerHTML;
+      }
+      if (this.locale !== 'en') {
+        nav.setAttribute('aria-label', '中国历代疆域、青史行迹与天下名关索引');
+        if (nav.dataset.locale === 'en') {
+          nav.innerHTML = this._seoDirZhHtml;
+          nav.dataset.locale = 'zh';
+        }
+        return;
+      }
+      if (nav.dataset.locale === 'en') return;
+      nav.setAttribute(
+        'aria-label',
+        'Historical Dynasties, Biographical Journeys & Strategic Passes Directory'
+      );
+      const baseSiteUrl = 'https://deanchensj.github.io/jiangshan-map/';
+      const dynItems = (this.dynasties || [])
+        .map((d) => {
+          const dName = this.dynastyName(d);
+          const dSpan = this.formatSpan(d);
+          const dSeat = this.dynastySeat(d);
+          const dSum = this.dynastySummary(d);
+          const focusY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
+          const isMod = d.key === 'roc' || d.key === 'prc';
+          const cities = (d.settlements || [])
+            .filter((s) => s.isCapital || s.tier === 1)
+            .slice(0, 8)
+            .map((s) => {
+              const anc = isMod ? this.trModernCity(s.ancient) : this.trTerm(s.ancient);
+              const mod = s.modern ? this.trModernCity(s.modern) : '';
+              return mod && mod !== anc ? `${anc} (now ${mod})` : anc;
+            })
+            .join(', ');
+          const events = (d.milestones || [])
+            .slice(0, 6)
+            .map((m) => `${this.formatYear(m.year)}: ${this.milestoneHeadline(d, m)}`)
+            .join('; ');
+          return `<li><a href="${baseSiteUrl}?year=${focusY}&amp;lang=en"><strong>${dName} Historical Map (${dSpan})</strong></a> — Capital: ${dSeat}. ${dSum}${cities ? ` Key cities: ${cities}.` : ''}${events ? ` Major events: ${events}.` : ''}</li>`;
+        })
+        .join('');
+      const journeyItems = (HistoricalAtlasController.HISTORICAL_JOURNEYS || [])
+        .map((j) => {
+          const stopsStr = (j.stops || [])
+            .map((s) => `${s.ancientEn} (${s.modernEn})`)
+            .join(' → ');
+          return `<li><a href="${baseSiteUrl}?journey=${encodeURIComponent(j.key)}&amp;lang=en"><strong>${j.titleEn} (${j.spanEn})</strong></a> — Route stops: ${stopsStr}.</li>`;
+        })
+        .join('');
+      const passItems = (HistoricalAtlasController.STRATEGIC_PASSES || [])
+        .map((p) => {
+          const y = p.focusYear !== undefined ? p.focusYear : p.appear || -200;
+          const c0 = p.coord ? p.coord[0] : 110;
+          const c1 = p.coord ? p.coord[1] : 34;
+          return `<li><a href="${baseSiteUrl}?year=${y}&amp;trace=${c0},${c1}&amp;lang=en"><strong>${p.ancientEn} (now ${p.modernEn})</strong></a> — ${p.rangeEn}: ${p.chokepointEn}</li>`;
+        })
+        .join('');
+      nav.innerHTML =
+        `<h2>Jiangshan Atlas: Historical Maps of China, Prefectures, Ancient &amp; Modern Place Names, and Major Events (403 BCE – Present)</h2>` +
+        `<p>Interactive timeline atlas of Chinese history across 18 major eras—Warring States, Qin, Western Han, Eastern Han, Three Kingdoms, Western Jin, Eastern Jin &amp; Sixteen Kingdoms, Northern &amp; Southern Dynasties, Sui, Tang, Five Dynasties &amp; Ten Kingdoms, Northern Song (Liao &amp; Western Xia), Southern Song (Jin &amp; Mongol), Yuan, Ming, Qing, Republic of China, and People's Republic of China.</p>` +
+        `<section><h3>1. Historical Dynasties &amp; Territories Directory</h3><ul>${dynItems}</ul></section>` +
+        `<section><h3>2. Historical Figure Journeys</h3><ul>${journeyItems}</ul></section>` +
+        `<section><h3>3. 20 Strategic Mountain &amp; River Passes</h3><ul>${passItems}</ul></section>`;
+      nav.dataset.locale = 'en';
+    }
+
     _renderChroniclePane(dynasty) {
       this._id('dynasty-title').textContent = this.dynastyName(dynasty);
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
@@ -3684,6 +3808,20 @@
       );
     }
 
+    _clearQuickSearchInput() {
+      const searchInp = this._id('inp-map-search');
+      if (searchInp) {
+        if (searchInp.value) searchInp.value = '';
+        if (typeof document !== 'undefined' && document.activeElement === searchInp) {
+          searchInp.blur();
+        }
+      }
+      const listEl = this._id('map-search-results');
+      if (listEl) listEl.classList.add('is-hidden');
+      const boxEl = this._id('map-search-box');
+      if (boxEl) boxEl.classList.remove('is-expanded');
+    }
+
     jumpToYear(targetYear) {
       let y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(targetYear)));
       if (y === 0) y = this.year < 0 ? 1 : -1;
@@ -3695,14 +3833,7 @@
 
       if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
         if (prevIdx !== this.dynastyIdx) {
-          const searchInp = this._id('inp-map-search');
-          if (searchInp && document.activeElement !== searchInp && searchInp.value) {
-            searchInp.value = '';
-            const listEl = this._id('map-search-results');
-            if (listEl) listEl.classList.add('is-hidden');
-            const boxEl = this._id('map-search-box');
-            if (boxEl) boxEl.classList.remove('is-expanded');
-          }
+          this._clearQuickSearchInput();
         }
         const prevSnap = this.lastRenderedSnap;
         this._renderDynasty(cur, prevSnap);
@@ -6251,12 +6382,7 @@
     _selectSearchResult(item) {
       this.stopAutoplay();
       this.clearCustomRoute();
-      const searchInp = this._id('inp-map-search');
-      if (searchInp) searchInp.value = '';
-      const listEl = this._id('map-search-results');
-      if (listEl) listEl.classList.add('is-hidden');
-      const boxEl = this._id('map-search-box');
-      if (boxEl) boxEl.classList.remove('is-expanded');
+      this._clearQuickSearchInput();
 
       if (item.kind === 'journey' && item.journeyKey) {
         this.startJourney(item.journeyKey, 0);
@@ -6356,11 +6482,13 @@
             li.innerHTML =
               `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
               `<span class="sr-tag">${tagText}</span>`;
-            li.addEventListener('mousedown', (e) => {
+            const pickItem = (e) => {
               e.preventDefault();
               this._selectSearchResult(item);
               searchInp.blur();
-            });
+            };
+            li.addEventListener('mousedown', pickItem);
+            li.addEventListener('click', pickItem);
             searchList.appendChild(li);
           });
           searchList.classList.remove('is-hidden');
@@ -6385,11 +6513,13 @@
           li.innerHTML =
             `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
             `<span class="sr-tag">${tagText}</span>`;
-          li.addEventListener('mousedown', (e) => {
+          const pickItem = (e) => {
             e.preventDefault();
             this._selectSearchResult(item);
             searchInp.blur();
-          });
+          };
+          li.addEventListener('mousedown', pickItem);
+          li.addEventListener('click', pickItem);
           searchList.appendChild(li);
         });
         searchList.classList.remove('is-hidden');
@@ -6701,6 +6831,7 @@
         if (this.challenge) return;
         this._recordGestureClick();
         this.stopAutoplay();
+        this._clearQuickSearchInput();
         scrubbing = true;
         track.setPointerCapture(e.pointerId);
         scrubAt(e.clientX);
@@ -6715,6 +6846,7 @@
       track.addEventListener('pointercancel', stopScrub);
       track.addEventListener('click', (e) => {
         if (this.challenge) return;
+        this._clearQuickSearchInput();
         const bandCell = e.target && e.target.closest && e.target.closest('.band-cell');
         if (bandCell && e.detail === 0 && bandCell.dataset.dynastyIdx !== undefined) {
           const d = this.dynasties[Number(bandCell.dataset.dynastyIdx)];
@@ -6724,6 +6856,33 @@
           }
         }
       });
+
+      const seoDirNav = this._id('seo-atlas-directory');
+      if (seoDirNav) {
+        seoDirNav.addEventListener('click', (e) => {
+          const a = e.target && e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          try {
+            const u = new URL(a.href, window.location.href);
+            e.preventDefault();
+            this._clearQuickSearchInput();
+            if (u.searchParams.has('journey')) {
+              this.startJourney(u.searchParams.get('journey'), 0);
+              return;
+            }
+            if (u.searchParams.has('year')) {
+              this.stopAutoplay();
+              this.jumpToYear(Number(u.searchParams.get('year')));
+            }
+            if (u.searchParams.has('trace')) {
+              const parts = u.searchParams.get('trace').split(',').map(Number);
+              if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+                this.openGenealogyAt(parts[0], parts[1]);
+              }
+            }
+          } catch (_) {}
+        });
+      }
 
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
