@@ -1910,6 +1910,16 @@ function main() {
     `Expected cached _getCanonicalPlaces() to return >=220 canonical places, got ${canonPlaces && canonPlaces.length}`
   );
 
+  // 23e. Verify autoplay aria-pressed state, timeline band button accessibility, and SEO directory pointer-events isolation
+  assert(
+    indexHtml.includes('aria-pressed="false"') &&
+      indexHtml.includes('id="seo-atlas-directory" class="sr-only-seo" aria-hidden="true"') &&
+      styleCss.includes('pointer-events: none !important;') &&
+      appCode.includes('_updateAutoplayUi()') &&
+      appCode.includes("cell.setAttribute('role', 'button')"),
+    'index.html, style.css, and app.js must include autoplay aria-pressed state, accessible timeline band buttons, and SEO directory pointer-events isolation'
+  );
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
