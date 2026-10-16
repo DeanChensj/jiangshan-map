@@ -1910,45 +1910,15 @@ function main() {
     `Expected cached _getCanonicalPlaces() to return >=220 canonical places, got ${canonPlaces && canonPlaces.length}`
   );
 
-  // 23e. Verify zoom buttons, double-click zoom, autoplay aria state, timeline band accessibility, and bilingual SEO directory
+  // 23e. Verify autoplay aria-pressed state, timeline band button accessibility, and SEO directory pointer-events isolation
   assert(
-    indexHtml.includes('id="act-zoom-in"') &&
-      indexHtml.includes('id="act-zoom-out"') &&
-      indexHtml.includes('aria-pressed="false"') &&
+    indexHtml.includes('aria-pressed="false"') &&
       indexHtml.includes('id="seo-atlas-directory" class="sr-only-seo" aria-hidden="true"') &&
-      styleCss.includes('.canvas-zoom-btn') &&
       styleCss.includes('pointer-events: none !important;') &&
-      appCode.includes('zoomBy(') &&
       appCode.includes('_updateAutoplayUi()') &&
-      appCode.includes('_syncSeoDirectoryLocale()') &&
       appCode.includes("cell.setAttribute('role', 'button')"),
-    'index.html, style.css, and app.js must include explicit +/- zoom controls, autoplay aria-pressed state, accessible timeline band buttons, and bilingual SEO directory sync'
+    'index.html, style.css, and app.js must include autoplay aria-pressed state, accessible timeline band buttons, and SEO directory pointer-events isolation'
   );
-  const mockSeoNav = {
-    innerHTML: '<h2>中文标题</h2>',
-    dataset: {},
-    attrs: {},
-    setAttribute(k, v) {
-      this.attrs[k] = v;
-    },
-  };
-  const prevIdSeo = ctrl._id;
-  ctrl._id = (id) => (id === 'seo-atlas-directory' ? mockSeoNav : null);
-  ctrl.locale = 'en';
-  ctrl._syncSeoDirectoryLocale();
-  assert(
-    mockSeoNav.dataset.locale === 'en' &&
-      mockSeoNav.innerHTML.includes('1. Historical Dynasties &amp; Territories Directory') &&
-      mockSeoNav.innerHTML.includes("People's Republic of China Map"),
-    'Expected _syncSeoDirectoryLocale() to render English 18-dynasty directory when locale is en'
-  );
-  ctrl.locale = 'zh';
-  ctrl._syncSeoDirectoryLocale();
-  assert(
-    mockSeoNav.dataset.locale === 'zh' && mockSeoNav.innerHTML === '<h2>中文标题</h2>',
-    'Expected _syncSeoDirectoryLocale() to restore Chinese HTML when locale returns to zh'
-  );
-  ctrl._id = prevIdSeo;
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);

@@ -2378,11 +2378,6 @@ html[lang="en"] .genealogy-list li {
     bottom: 8px;
     gap: 6px;
   }
-  .canvas-zoom-btn {
-    width: 24px;
-    height: 24px;
-    font-size: 13.5px;
-  }
   .canvas-reset-btn {
     padding: 4px 8px;
     font-size: 11px;
@@ -2514,11 +2509,6 @@ html[lang="en"] .genealogy-list li {
     gap: 4px;
     right: 6px;
     bottom: 6px;
-  }
-  .canvas-zoom-btn {
-    width: 22px;
-    height: 22px;
-    font-size: 13px;
   }
   .canvas-reset-btn {
     padding: 3.5px 7px;
@@ -2685,49 +2675,6 @@ html[lang="en"] .genealogy-list li {
   align-items: center;
   gap: 8px;
   pointer-events: none;
-}
-
-.canvas-zoom-group {
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  background: rgba(243, 238, 228, 0.88);
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(43, 38, 34, 0.08);
-  overflow: hidden;
-}
-
-.canvas-zoom-btn {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--text-main);
-  font-family: var(--sans-stack);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.canvas-zoom-btn + .canvas-zoom-btn {
-  border-left: 1px solid var(--hairline);
-}
-
-.canvas-zoom-btn:hover {
-  background: #fff;
-  color: var(--vermilion);
-}
-
-.canvas-zoom-btn:active {
-  background: rgba(181, 69, 47, 0.1);
 }
 
 .canvas-reset-btn {
