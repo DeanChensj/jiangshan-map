@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261015f').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261016b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261015f').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261016b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -951,6 +951,7 @@
             : '在 GitHub 上为「江山时序」点亮 Star';
       }
       this._updateMusicUi();
+      this._updateAutoplayUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
         '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
@@ -3530,6 +3531,17 @@
         cell.style.flex = `${this.bandWeights[idx]} 1 0`;
         cell.style.background = d.tint;
         cell.dataset.dynastyIdx = idx;
+        cell.setAttribute('role', 'button');
+        cell.tabIndex = 0;
+        cell.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.challenge) return;
+            this.stopAutoplay();
+            this.jumpToYear(d.focusYear !== undefined ? d.focusYear : d.fromYear);
+          }
+        });
 
         const lbl = document.createElement('span');
         lbl.className = 'band-label';
@@ -3586,7 +3598,9 @@
         if (cell) {
           const lbl = cell.querySelector('.band-label') || cell;
           lbl.textContent = this.dynastyBadge(d);
-          cell.title = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          const fullLabel = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          cell.title = fullLabel;
+          cell.setAttribute('aria-label', fullLabel);
         }
         const tk = tickNodes[idx];
         if (tk) {
@@ -3680,6 +3694,16 @@
       const nextSnapKey = this._resolveSnapKey(cur, y);
 
       if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
+        if (prevIdx !== this.dynastyIdx) {
+          const searchInp = this._id('inp-map-search');
+          if (searchInp && document.activeElement !== searchInp && searchInp.value) {
+            searchInp.value = '';
+            const listEl = this._id('map-search-results');
+            if (listEl) listEl.classList.add('is-hidden');
+            const boxEl = this._id('map-search-box');
+            if (boxEl) boxEl.classList.remove('is-expanded');
+          }
+        }
         const prevSnap = this.lastRenderedSnap;
         this._renderDynasty(cur, prevSnap);
         this._renderChroniclePane(cur);
@@ -3835,11 +3859,32 @@
     }
 
     // ---------------- Autoplay ----------------
+    _updateAutoplayUi() {
+      const btn = this._id('act-autoplay');
+      if (!btn) return;
+      btn.innerHTML = this.playing ? SVG_ICONS.pause : SVG_ICONS.play;
+      btn.classList.toggle('is-playing', Boolean(this.playing));
+      btn.setAttribute('aria-pressed', String(Boolean(this.playing)));
+      const actionLbl = this.playing
+        ? this.locale === 'en'
+          ? 'Pause'
+          : '暂停'
+        : this.locale === 'en'
+          ? 'Play'
+          : '播放';
+      btn.setAttribute('aria-label', actionLbl);
+      btn.title = this.playing
+        ? this.locale === 'en'
+          ? 'Pause timeline autoplay (Space)'
+          : '暂停时间轴播放（空格）'
+        : this.uiStr('play_title', '自动播放 / 暂停（空格）');
+    }
+
     startAutoplay() {
       if (this.challenge) return;
       this.playing = true;
       this.closeMilestoneBalloon();
-      this._id('act-autoplay').innerHTML = SVG_ICONS.pause;
+      this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       this.playInterval = setInterval(() => {
         const cur = this.dynasties[this.dynastyIdx];
@@ -3849,12 +3894,12 @@
           return;
         }
         this.jumpToYear(this.year + delta);
-      }, 180);
+      }, 280);
     }
 
     stopAutoplay() {
       this.playing = false;
-      this._id('act-autoplay').innerHTML = SVG_ICONS.play;
+      this._updateAutoplayUi();
       if (this.playInterval) {
         clearInterval(this.playInterval);
         this.playInterval = null;
@@ -4853,6 +4898,29 @@
     resetCamera() {
       this.clearCustomRoute();
       this._animateCameraTo(this._getDefaultCamera());
+    }
+
+    zoomBy(factor, clientX, clientY, animate = true) {
+      this._recordGestureMove();
+      const [mx, my] =
+        clientX !== undefined && clientY !== undefined
+          ? this._clientToSvgPoint(clientX, clientY)
+          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+      const k = nextW / this.camera.w;
+      const targetCam = {
+        x: mx - (mx - this.camera.x) * k,
+        y: my - (my - this.camera.y) * k,
+        w: nextW,
+        h: this.camera.h * k,
+        zoom: 1000 / nextW,
+      };
+      if (animate && typeof this._animateCameraTo === 'function') {
+        this._animateCameraTo(targetCam);
+      } else {
+        this.camera = targetCam;
+        this._applyCamera();
+      }
     }
 
     _panToward(lng, lat) {
@@ -6183,6 +6251,8 @@
     _selectSearchResult(item) {
       this.stopAutoplay();
       this.clearCustomRoute();
+      const searchInp = this._id('inp-map-search');
+      if (searchInp) searchInp.value = '';
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
       const boxEl = this._id('map-search-box');
@@ -6643,6 +6713,17 @@
       };
       track.addEventListener('pointerup', stopScrub);
       track.addEventListener('pointercancel', stopScrub);
+      track.addEventListener('click', (e) => {
+        if (this.challenge) return;
+        const bandCell = e.target && e.target.closest && e.target.closest('.band-cell');
+        if (bandCell && e.detail === 0 && bandCell.dataset.dynastyIdx !== undefined) {
+          const d = this.dynasties[Number(bandCell.dataset.dynastyIdx)];
+          if (d) {
+            this.stopAutoplay();
+            this.jumpToYear(d.focusYear !== undefined ? d.focusYear : d.fromYear);
+          }
+        }
+      });
 
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
@@ -6653,6 +6734,36 @@
             searchInp.select();
             return;
           }
+        }
+        if (e.target && e.target.id === 'inp-year') {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (!this.challenge) {
+              this.stopAutoplay();
+              this.jumpToYear(Number(e.target.value));
+            }
+            e.target.blur();
+            return;
+          }
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            e.target.blur();
+            return;
+          }
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            if (this.challenge) return;
+            e.preventDefault();
+            e.target.blur();
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            if (e.shiftKey && !this.activeJourney && !this.activeCustomRoute) {
+              this.stopAutoplay();
+              this.jumpToYear(this.year + dir * 10);
+              return;
+            }
+            this.stepTimelineNode(dir);
+            return;
+          }
+          return;
         }
         if (e.target.tagName === 'INPUT') return;
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -6665,6 +6776,12 @@
             return;
           }
           this.stepTimelineNode(dir);
+        } else if ((e.key === '+' || e.key === '=') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          this.zoomBy(1.35);
+        } else if ((e.key === '-' || e.key === '_') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          this.zoomBy(1 / 1.35);
         } else if (e.key === 'Home' && !this.challenge) {
           this.jumpToYear(this.minYear);
         } else if (e.key === 'End' && !this.challenge) {
@@ -6703,13 +6820,26 @@
       });
 
       // SVG Zoom & Pan (Mouse Wheel + Single-Finger Pan + Two-Finger Pinch Zoom)
-      this.svg.addEventListener(
+      const viewportFrame = this._id('viewport-frame') || this.svg;
+      viewportFrame.addEventListener(
         'wheel',
         (e) => {
+          if (
+            e.target &&
+            e.target.closest &&
+            e.target.closest(
+              '#genealogy-card, #journey-card, #milestone-balloon, #map-search-results, #challenge-card'
+            )
+          ) {
+            return;
+          }
           e.preventDefault();
           this._recordGestureMove();
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
-          const factor = Math.exp(-e.deltaY * 0.0015);
+          const rawDelta =
+            e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
+          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
+          const factor = Math.exp(-clampedDelta * 0.002);
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
