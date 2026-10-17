@@ -124,7 +124,7 @@ window.EN_LOCALE = {
       "name": "Northern Song",
       "short": "N. Song",
       "capital": "Dongjing (Kaifeng)",
-      "desc": "After the Chenqiao mutiny (960), Song reunified the southern kingdoms and Northern Han within two decades, but failed to recover the Sixteen Prefectures from Liao, coexisting with Khitan Liao and Tangut Western Xia amid an economic and cultural boom."
+      "desc": "After the Chenqiao mutiny (960), Song reunified the southern kingdoms and Northern Han within two decades, but failed to recover the Sixteen Prefectures from Liao, coexisting with Khitan Liao, Tangut Western Xia, and Dali amid an economic and cultural boom."
     },
     "nansong": {
       "name": "Southern Song",
