@@ -2042,6 +2042,64 @@ function main() {
     );
   }
 
+  // 23g. National Map Compliance Guard (Zangnan, Aksai Chin, Taiwan, Ten-Dash Line & ROC Tibet Unification)
+  assert(
+    !snapshots.neighbors.some((n) => n.title === '台湾地区') &&
+      !bootSnaps.neighbors.some((n) => n.title === '台湾地区'),
+    'snapshots.neighbors and bootSnaps.neighbors must not list 台湾地区 as a foreign neighbor'
+  );
+  assert(
+    /\.province-shape\.maritime-dash\s*\{[\s\S]*?stroke:\s*rgba\(/m.test(styleCss) &&
+      /\.province-shape\.maritime-dash\s*\{[\s\S]*?vector-effect:\s*non-scaling-stroke;/m.test(styleCss),
+    'css/style.css .province-shape.maritime-dash must reinforce Ten-Dash Line (100000_JD) with explicit non-scaling stroke'
+  );
+  const complianceCheckPts = [
+    ['达旺', 91.86, 27.58],
+    ['山南南端', 92.5, 27.15],
+    ['下苏班西里', 93.8, 27.6],
+    ['墨脱南端', 95.33, 28.2],
+    ['下察隅', 96.5, 28.1],
+    ['阿克赛钦中', 79.8, 35.1],
+    ['阿克赛钦西', 78.9, 34.7],
+    ['阿克赛钦北', 79.4, 35.6],
+  ];
+  for (const [label, cx, cy] of [...complianceCheckPts, ['台湾', 120.99, 23.98]]) {
+    for (const nb of snapshots.neighbors) {
+      assert(
+        !pointInShape(cx, cy, nb.shape),
+        `Modern neighbor "${nb.title}" must not encroach on ${label} ([${cx}, ${cy}])`
+      );
+    }
+  }
+  const foreignSouthWest = new Set([
+    '英属印度',
+    '印度',
+    '不丹',
+    '尼泊尔',
+    '克什米尔·拉达克',
+    '莫卧儿帝国',
+    '锡克（拉合尔）',
+    '阿富汗',
+    '浩罕汗国',
+    '德里苏丹国',
+    '缅甸',
+  ]);
+  for (const [sk, snap] of Object.entries(snapshots)) {
+    if (!snap || Array.isArray(snap) || sk === 's_prc') continue;
+    assert(
+      !(snap.polities || []).some((p) => p.title === '西藏（噶厦）'),
+      `${sk} must unify Tibet into 中华民国(main) rather than splitting 西藏（噶厦）`
+    );
+    for (const [label, cx, cy] of complianceCheckPts) {
+      const polHits = (snap.polities || []).filter((p) => pointInShape(cx, cy, p.shape));
+      const badForeign = polHits.filter((p) => foreignSouthWest.has(p.title));
+      assert(
+        polHits.length > 0 && badForeign.length === 0,
+        `${sk}: ${label} ([${cx}, ${cy}]) must belong to a historical Chinese/Tibetan/Western Regions polity and zero foreign neighbors, got [${polHits.map((p) => `${p.title}(${p.role})`).join(', ')}]`
+      );
+    }
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
