@@ -1992,6 +1992,56 @@ function main() {
   assert.strictEqual(mockSearchInp.value, '', '_clearQuickSearchInput() must clear #inp-map-search value');
   ctrl._id = origId23e;
 
+  // 23f. Verify Dali (大理, 937–1253 CE) is elevated to a peer Chinese regime (role: 'rival') with Tier-1 capital
+  for (const sk of [
+    's_wudai',
+    's_wudai_c0',
+    's_wudai_c',
+    's_wudai_c2',
+    's_wudai_d',
+    's_wudai_e',
+    's_wudai_e1',
+    's_wudai_e2',
+    's_beisong',
+    's_beisong_a0',
+    's_beisong_a',
+    's_beisong_a2',
+    's_beisong_a3',
+    's_beisong_a4',
+    's_beisong_a5',
+    's_beisong_b0',
+    's_beisong_b',
+    's_beisong_b1',
+    's_beisong_b2',
+    's_beisong_c',
+    's_beisong_d',
+    's_nansong',
+    's_nansong_a0',
+    's_nansong_a',
+    's_nansong_b0',
+    's_nansong_c',
+    's_nansong_d',
+    's_nansong_e',
+  ]) {
+    const daliPol = (snapshots[sk].polities || []).find((p) => p.title === '大理');
+    assert(
+      daliPol && daliPol.role === 'rival' && daliPol.tint === '#7a5c91',
+      `${sk} must model 大理 as role="rival" with tint="#7a5c91"`
+    );
+    assert(
+      pointInShape(100.271, 25.611, daliPol.shape),
+      `${sk}: 大理 polygon must contain Dali capital ([100.271, 25.611])`
+    );
+  }
+  for (const dk of ['wudai', 'beisong', 'nansong']) {
+    const dynObj = dynasties.find((d) => d.key === dk);
+    const daliSet = (dynObj.settlements || []).find((s) => s.ancient === '大理');
+    assert(
+      daliSet && (!daliSet.tier || daliSet.tier === 1),
+      `${dk} must define 大理 capital as a Tier-1 settlement visible at default zoom`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
