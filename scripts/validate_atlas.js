@@ -2007,8 +2007,8 @@ function main() {
   assert.strictEqual(mockSearchInp.value, '', '_clearQuickSearchInput() must clear #inp-map-search value');
   ctrl._id = origId23e;
 
-  // 23f. Verify Dali (大理, 937–1253 CE) is elevated to a peer Chinese regime (role: 'rival') with Tier-1 capital
-  for (const sk of [
+  // 23f. Verify Dali (大理, 937–1253 CE), Nanzhao (南诏, 649–936 CE), and unified Tubo (吐蕃, 618–877 CE) vs fragmented Tibetan polities (吐蕃诸部, 880–1246 CE)
+  const daliSnapKeys = [
     's_wudai',
     's_wudai_c0',
     's_wudai_c',
@@ -2037,7 +2037,8 @@ function main() {
     's_nansong_c',
     's_nansong_d',
     's_nansong_e',
-  ]) {
+  ];
+  for (const sk of daliSnapKeys) {
     const daliPol = (snapshots[sk].polities || []).find((p) => p.title === '大理');
     assert(
       daliPol && daliPol.role === 'rival' && daliPol.tint === '#7a5c91',
@@ -2054,6 +2055,89 @@ function main() {
     assert(
       daliSet && (!daliSet.tier || daliSet.tier === 1),
       `${dk} must define 大理 capital as a Tier-1 settlement visible at default zoom`
+    );
+  }
+  const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
+  assert(tangSnapKeys.length === 19, `Expected 19 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
+  for (const sk of unifiedTuboSnapKeys) {
+    const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
+    assert(
+      tuboPol && tuboPol.role === 'rival' && tuboPol.tint === '#a8583b',
+      `${sk} must model unified 吐蕃 (618–877 CE) as role="rival" with tint="#a8583b"`
+    );
+    assert(
+      pointInShape(91.111, 29.651, tuboPol.shape),
+      `${sk}: 吐蕃 polygon must contain Luoxie/Lhasa capital ([91.111, 29.651])`
+    );
+  }
+  const fragmentedTuboSnapKeys = [
+    's_tang_d1',
+    's_tang_d2',
+    's_wudai_a',
+    's_wudai_b1',
+    's_wudai_b',
+    's_wudai_b2',
+    ...daliSnapKeys.filter((k) => k !== 's_nansong_e'),
+  ];
+  for (const sk of fragmentedTuboSnapKeys) {
+    const fragPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃诸部');
+    assert(
+      fragPol && fragPol.role === 'neighbor' && !fragPol.tint,
+      `${sk} must model post-877 fragmented Tibet as uncolored 吐蕃诸部 (role="neighbor", tint=null)`
+    );
+  }
+  const nzSnapKeys = [...tangSnapKeys, 's_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2'];
+  for (const sk of nzSnapKeys) {
+    const nzPol = (snapshots[sk].polities || []).find((p) => p.title === '南诏');
+    assert(
+      nzPol && nzPol.role === 'rival' && nzPol.tint === '#7a5c91',
+      `${sk} must model 南诏 as role="rival" with tint="#7a5c91"`
+    );
+    assert(
+      pointInShape(100.161, 25.691, nzPol.shape),
+      `${sk}: 南诏 polygon must contain Taihecheng/Dali capital ([100.161, 25.691])`
+    );
+    assert(
+      pointInShape(102.68, 24.82, nzPol.shape),
+      `${sk}: 南诏 polygon must contain Dianchi/Kunming ([102.68, 24.82])`
+    );
+  }
+  const tangDynObj = dynasties.find((d) => d.key === 'tang');
+  for (const capName of ['逻些', '太和城']) {
+    const capSet = (tangDynObj.settlements || []).find((s) => s.ancient === capName);
+    assert(
+      capSet && (!capSet.tier || capSet.tier === 1),
+      `tang must define ${capName} capital as a Tier-1 settlement visible at default zoom`
+    );
+  }
+  function collectVertices(shape) {
+    const s = new Set();
+    const polys = shape.type === 'Polygon' ? [shape.coordinates] : shape.coordinates;
+    for (const poly of polys) {
+      for (const ring of poly) {
+        for (const [x, y] of ring) s.add(`${x.toFixed(2)},${y.toFixed(2)}`);
+      }
+    }
+    return s;
+  }
+  for (const sk of [...nzSnapKeys, ...daliSnapKeys]) {
+    const pols = snapshots[sk].polities || [];
+    const swPol = pols.find((p) => p.title === '南诏' || p.title === '大理');
+    assert(swPol && swPol.shape, `${sk} must contain 南诏 or 大理`);
+    const swVerts = collectVertices(swPol.shape);
+    const otherVerts = new Set();
+    for (const p of pols) {
+      if (p === swPol || !p.shape) continue;
+      for (const v of collectVertices(p.shape)) otherVerts.add(v);
+    }
+    let sharedCount = 0;
+    for (const v of swVerts) {
+      if (otherVerts.has(v)) sharedCount++;
+    }
+    assert(
+      sharedCount >= 5,
+      `${sk}: ${swPol.title} must share contiguous boundary vertices with adjacent polities (found ${sharedCount})`
     );
   }
 
