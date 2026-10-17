@@ -6607,7 +6607,7 @@ window.DYNASTY_DATA = [
           100.161,
           25.691
         ],
-        "tier": 2,
+        "align": "b",
         "appear": 738,
         "remark": "南诏都城，738 年皮逻阁统一六诏"
       },
