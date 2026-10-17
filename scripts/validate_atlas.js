@@ -375,6 +375,21 @@ function main() {
   );
   assert(fs.existsSync(path.join(ROOT, 'sitemap.xml')), 'Missing sitemap.xml at repository root');
   assert(fs.existsSync(path.join(ROOT, 'robots.txt')), 'Missing robots.txt at repository root');
+  const sitemapXml = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
+  const robotsTxt = fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8');
+  assert(
+    indexHtml.includes('href="https://deanchen.me/jiangshan-map/"') &&
+      indexHtml.includes('"@type": "FAQPage"') &&
+      sitemapXml.includes('<loc>https://deanchen.me/jiangshan-map/</loc>') &&
+      robotsTxt.includes('User-agent: Baiduspider') &&
+      robotsTxt.includes('User-agent: Bytespider') &&
+      robotsTxt.includes('Sitemap: https://deanchen.me/jiangshan-map/sitemap.xml') &&
+      !indexHtml.toLowerCase().includes('deanchensj.github.io') &&
+      !sitemapXml.toLowerCase().includes('deanchensj.github.io') &&
+      !robotsTxt.toLowerCase().includes('deanchensj.github.io') &&
+      !appCode.toLowerCase().includes('deanchensj.github.io'),
+    'SEO/GEO files (index.html, sitemap.xml, robots.txt, app.js) must canonicalize to https://deanchen.me/jiangshan-map/ and allow Baiduspider/Bytespider'
+  );
   const htmlVersions = Array.from(new Set(indexHtml.match(/\?v=[0-9a-zA-Z_.-]+/g) || []));
   const appVersions = Array.from(new Set(appCode.match(/\?v=[0-9a-zA-Z_.-]+/g) || []));
   assert(
@@ -433,7 +448,7 @@ function main() {
   sandbox.clearTimeout = clearTimeout;
   sandbox.location = {
     search: '',
-    origin: 'https://deanchensj.github.io',
+    origin: 'https://deanchen.me',
     pathname: '/jiangshan-map/',
   };
   sandbox.window.location = sandbox.location;
@@ -820,7 +835,7 @@ function main() {
   ).trim();
   const decodedCliOut = decodeURIComponent(cliOut);
   assert(
-    decodedCliOut.includes('URL: https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州'),
+    decodedCliOut.includes('URL: https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州'),
     `Unexpected jiangshan.py CLI output: ${decodedCliOut}`
   );
 
