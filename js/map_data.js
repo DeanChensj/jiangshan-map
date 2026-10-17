@@ -1,4 +1,3 @@
-/* Historical Dynasty Timeline, Settlements & Corridors for Jiangshan Atlas */
 window.DYNASTY_DATA = [
   {
     "key": "zhanguo",
@@ -17,19 +16,34 @@ window.DYNASTY_DATA = [
         "overview": "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，巴蜀、越、中山尚存"
       },
       {
-        "until": -300,
-        "snap": "s_zhanguo_b0",
-        "overview": "前 340 — 前 301 · 商鞅破魏、秦并巴蜀与楚灭越：燕尚未东辟辽东"
+        "until": -316,
+        "snap": "s_zhanguo_a2",
+        "overview": "前 340 — 前 317 · 商鞅收河西、魏迁大梁与五国相王：巴蜀、越、中山、义渠尚存"
       },
       {
-        "until": -295,
+        "until": -306,
+        "snap": "s_zhanguo_b0",
+        "overview": "前 316 — 前 307 · 秦司马错灭巴蜀、丹阳之战取汉中：越、中山、义渠尚存"
+      },
+      {
+        "until": -300,
+        "snap": "s_zhanguo_b1",
+        "overview": "前 306 — 前 301 · 楚怀王灭越尽取旧吴之地：中山、义渠尚存，燕尚未东辟辽东"
+      },
+      {
+        "until": -296,
         "snap": "s_zhanguo_b",
-        "overview": "前 300 — 前 296 · 燕将秦开却东胡辟辽东五郡、赵武灵王胡服骑射"
+        "overview": "前 300 — 前 297 · 燕将秦开却东胡辟辽东五郡、赵武灵王辟云中雁门"
+      },
+      {
+        "until": -278,
+        "snap": "s_zhanguo_b2",
+        "overview": "前 296 — 前 279 · 赵惠文王灭中山、五国伐秦与乐毅破齐：楚保郢都、义渠尚存"
       },
       {
         "until": -238,
         "snap": "s_zhanguo_c",
-        "overview": "前 295 — 前 239 · 乐毅破齐、白起拔郢与长平之战：秦取巴蜀汉中南郡上党，独霸西方"
+        "overview": "前 278 — 前 239 · 白起拔郢、秦灭义渠与长平之战：秦取南郡上党北地，独霸西方"
       },
       {
         "until": -230,
