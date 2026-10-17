@@ -606,13 +606,26 @@ h2 {
 }
 
 .province-shape.maritime-dash {
-  fill: #7f9492;
-  stroke: none;
+  fill: #5a4838;
+  stroke: rgba(74, 60, 46, 0.78);
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
-#atlas-svg[data-dynasty="prc"] .province-shape.maritime-dash {
+#atlas-svg.terrain-active .province-shape.maritime-dash {
+  fill: #4e3d2e;
+  stroke: rgba(64, 50, 38, 0.82);
+  stroke-width: 1.1;
+}
+
+#atlas-svg[data-dynasty="prc"] .province-shape.maritime-dash,
+#atlas-svg.terrain-active[data-dynasty="prc"] .province-shape.maritime-dash {
   fill: #9e2a2b;
+  stroke: rgba(158, 42, 43, 0.94);
+  stroke-width: 1.65;
 }
 
 #grp-provinces.is-hidden .province-boundary-casing,
