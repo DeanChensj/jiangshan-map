@@ -1434,7 +1434,8 @@ function main() {
       Array.isArray(snap.regions) && snap.regions.length > 0,
       `Snapshot ${sk} must have non-empty regions after _hydrateSnapshots(), got ${(snap.regions || []).length}`
     );
-    const minPref = sk === 's_zhanguo_a' || sk === 's_zhanguo_b0' ? 11 : 16;
+    const minPref =
+      sk === 's_zhanguo_a' || sk === 's_zhanguo_a2' || sk === 's_zhanguo_b0' || sk === 's_zhanguo_b1' ? 11 : 16;
     assert(
       Array.isArray(snap.prefectures) && snap.prefectures.length >= minPref,
       `Snapshot ${sk} must have >= ${minPref} prefectures after _hydrateSnapshots(), got ${(snap.prefectures || []).length}`
@@ -2303,6 +2304,36 @@ function main() {
       `${sk}: 蒙古诸部 · 东察合台 must not overlap Hami ([93.511, 42.821])`
     );
   }
+
+  // 23j. Verify Warring States (zhanguo) phase transitions align with -323, -316, -306, -300, -296, -278 milestones
+  const zgDynRef = dynasties.find((d) => d.key === 'zhanguo');
+  assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -323), 's_zhanguo_a2', 'zhanguo at -323 BCE must resolve to s_zhanguo_a2');
+  assert(
+    snapshots.s_zhanguo_a2.polities.some((p) => p.title === '巴·蜀') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '越') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '中山') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '义渠'),
+    's_zhanguo_a2 (-340..-317 BCE, including -323 Five-State Accord) must keep 巴·蜀, 越, 中山, and 义渠 independent'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -316), 's_zhanguo_b0', 'zhanguo at -316 BCE must resolve to s_zhanguo_b0');
+  assert(
+    !snapshots.s_zhanguo_b0.polities.some((p) => p.title === '巴·蜀') &&
+      snapshots.s_zhanguo_b0.polities.some((p) => p.title === '越') &&
+      snapshots.s_zhanguo_b0.polities.some((p) => p.title === '中山'),
+    's_zhanguo_b0 (-316..-307 BCE) must annex 巴·蜀 into 秦 while keeping 越 and 中山 independent'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -306), 's_zhanguo_b1', 'zhanguo at -306 BCE must resolve to s_zhanguo_b1');
+  assert(
+    !snapshots.s_zhanguo_b1.polities.some((p) => p.title === '越') &&
+      snapshots.s_zhanguo_b1.polities.some((p) => p.title === '中山'),
+    's_zhanguo_b1 (-306..-301 BCE) must annex 越 into 楚 while keeping 中山 independent'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -296), 's_zhanguo_b2', 'zhanguo at -296 BCE must resolve to s_zhanguo_b2');
+  assert(
+    !snapshots.s_zhanguo_b2.polities.some((p) => p.title === '中山') &&
+      pointInShape(112.201, 30.351, snapshots.s_zhanguo_b2.polities.find((p) => p.title === '楚').shape),
+    's_zhanguo_b2 (-296..-279 BCE) must annex 中山 into 赵 while keeping Yingdu ([112.201, 30.351]) inside 楚 prior to -278 BCE'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
