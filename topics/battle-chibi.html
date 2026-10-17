@@ -264,11 +264,17 @@
       color: var(--ink-muted);
       font-style: normal;
     }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 0.5rem;
+    }
     table.data-table {
       width: 100%;
+      min-width: 620px;
       border-collapse: collapse;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
     }
     table.data-table th,
     table.data-table td {
@@ -391,43 +397,46 @@
 
     <section class="section-card">
       <h2>一、目标时空节点精准考据（公元208年 · 东汉献帝·建安十三年）</h2>
-      <table class="data-table">
-        <tbody>
-          <tr>
-            <th style="width:24%">查询古地名 / 典故地标</th>
-            <td><strong>赤壁</strong>（标准古地名：赤壁）</td>
-          </tr>
-          <tr>
-            <th>历史纪年与帝王年号</th>
-            <td>公元208年 · <strong>东汉献帝·建安十三年</strong>（东汉，都城：洛阳）</td>
-          </tr>
-          <tr>
-            <th>当时所属政权与州郡政区</th>
-            <td><strong>刘备(荆州)</strong> · 刘备(荆州)</td>
-          </tr>
-          <tr>
-            <th>现代行政区划与经纬度</th>
-            <td>湖北省 · 今赤壁（113.90°E, 29.72°N）</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th style="width:24%">查询古地名 / 典故地标</th>
+              <td><strong>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</strong></td>
+            </tr>
+            <tr>
+              <th>历史纪年与帝王年号</th>
+              <td>公元208年 · <strong>东汉献帝·建安十三年</strong>（东汉，都城：洛阳）</td>
+            </tr>
+            <tr>
+              <th>当时所属政权与州郡政区</th>
+              <td><strong>东汉荆州南郡 · 孙刘抗曹前线（与曹操水军乌林隔江对峙）</strong></td>
+            </tr>
+            <tr>
+              <th>现代行政区划与经纬度</th>
+              <td>湖北省 · 今赤壁（113.90°E, 29.72°N）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
-      <h2>二、「赤壁」两千四百年历代政区沿革表（点地溯源）</h2>
+      <h2>二、「赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）」两千四百年历代政区沿革表（点地溯源）</h2>
       <p>同一地理坐标（113.90°E, 29.72°N）从战国（前403年）至现代共 18 个历史时期的政权归属与州道郡县沿革：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>历史时期</th>
-            <th>代表纪年与年号</th>
-            <th>所属政权</th>
-            <th>州 / 道 / 路 / 省政区</th>
-            <th>邻近治所 / 古城</th>
-            <th>地图跳转</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>历史时期</th>
+              <th>代表纪年与年号</th>
+              <th>所属政权</th>
+              <th>州 / 道 / 路 / 省政区</th>
+              <th>邻近治所 / 古城</th>
+              <th>地图跳转</th>
+            </tr>
+          </thead>
+          <tbody>
           <tr>
             <td><strong>战国</strong>（前403—前221）</td>
             <td>周威烈王二十三年</td>
@@ -441,14 +450,14 @@
             <td>秦始皇三十三年</td>
             <td>秦</td>
             <td>南郡</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=-214&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
             <td><strong>西汉</strong>（前202—25）</td>
             <td>西汉武帝·天汉元年</td>
             <td>汉</td>
-            <td>荆州(刺史部)</td>
+            <td>王畿/直辖</td>
             <td>江陵（南郡）（今荆州）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -456,7 +465,7 @@
             <td><strong>东汉</strong>（25—220）</td>
             <td>东汉和帝·永元十二年</td>
             <td>东汉</td>
-            <td>荆州(刺史部) · 长沙郡</td>
+            <td>长沙郡</td>
             <td>赤壁（今赤壁）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=100&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -497,7 +506,7 @@
             <td>隋炀帝·大业元年</td>
             <td>隋</td>
             <td>荆襄诸郡(郡区) · 鄂州</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=605&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
@@ -505,14 +514,14 @@
             <td>武周武则天·久视元年</td>
             <td>唐</td>
             <td>山南东道 · 鄂州</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=700&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
             <td><strong>五代十国</strong>（907—960）</td>
             <td>后汉隐帝·乾祐三年</td>
             <td>后汉</td>
-            <td>荆湖(政区)</td>
+            <td>王畿/直辖</td>
             <td>岳州（今岳阳）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=950&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -521,7 +530,7 @@
             <td>北宋哲宗·元符三年</td>
             <td>宋</td>
             <td>荆湖北路 · 鄂州</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1100&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
@@ -529,7 +538,7 @@
             <td>南宋宁宗·庆元六年</td>
             <td>南宋</td>
             <td>荆湖北路 · 鄂州</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1200&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
@@ -537,14 +546,14 @@
             <td>元成宗·大德四年</td>
             <td>元</td>
             <td>湖广行省 · 鄂州路</td>
-            <td>赤壁</td>
+            <td>赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1300&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
             <td><strong>明</strong>（1368—1644）</td>
             <td>明景泰元年</td>
             <td>明</td>
-            <td>湖广(布政使司)</td>
+            <td>王畿/直辖</td>
             <td>武昌（今武汉）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1450&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -572,8 +581,9 @@
             <td>赤壁（今赤壁）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=2026&amp;place=%E8%B5%A4%E5%A3%81">查看该朝版图 &rarr;</a></td>
           </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
