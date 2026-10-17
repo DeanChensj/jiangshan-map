@@ -390,6 +390,39 @@ function main() {
       !appCode.toLowerCase().includes('deanchensj.github.io'),
     'SEO/GEO files (index.html, sitemap.xml, robots.txt, app.js) must canonicalize to https://deanchen.me/jiangshan-map/ and allow Baiduspider/Bytespider'
   );
+  const topicsDir = path.join(ROOT, 'topics');
+  assert(
+    fs.existsSync(path.join(topicsDir, 'index.html')),
+    'Missing topics/index.html static SEO directory page'
+  );
+  const expectedTopicFiles = [
+    'index.html',
+    ...dynasties.map((d) => `${d.key}.html`),
+    ...loreData.HISTORICAL_JOURNEYS.map((j) => `journey-${j.key}.html`),
+    'dufu-763.html',
+    'sushi-exile.html',
+    'wentianxiang-lingdingyang.html',
+    'hanyu-languan.html',
+    'shuihu-jiangzhou.html',
+    'xinqiji-jingkou.html',
+    'battle-changping.html',
+    'battle-chibi.html',
+    'battle-feishui.html',
+  ];
+  for (const tf of expectedTopicFiles) {
+    const tfPath = path.join(topicsDir, tf);
+    assert(fs.existsSync(tfPath), `Missing static SEO topic page: topics/${tf}`);
+    const tfHtml = fs.readFileSync(tfPath, 'utf8');
+    const expectedCanon = `https://deanchen.me/jiangshan-map/topics/${tf}`;
+    assert(
+      tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&
+        tfHtml.includes('application/ld+json') &&
+        !tfHtml.toLowerCase().includes('deanchensj.github.io') &&
+        sitemapXml.includes(`<loc>${expectedCanon}</loc>`) &&
+        indexHtml.includes(expectedCanon),
+      `Static topic page topics/${tf} must have canonical ${expectedCanon}, JSON-LD, and be linked in sitemap.xml and index.html`
+    );
+  }
   const htmlVersions = Array.from(new Set(indexHtml.match(/\?v=[0-9a-zA-Z_.-]+/g) || []));
   const appVersions = Array.from(new Set(appCode.match(/\?v=[0-9a-zA-Z_.-]+/g) || []));
   assert(
