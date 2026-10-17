@@ -33,7 +33,7 @@ When a user asks about a historical event, classical novel scene, poem, battle, 
 Once `(year, place)` are deduced, format the deep-link URL (do **NOT** guess longitude or latitude numbers):
 
 ```text
-https://deanchensj.github.io/jiangshan-map/?year=<YEAR>&place=<PLACE>
+https://deanchen.me/jiangshan-map/?year=<YEAR>&place=<PLACE>
 ```
 
 - **Single site (0D pinpoint)**: `year=<INT>&place=<SITE>` (e.g., `?year=1102&place=浔阳` or `?year=819&place=蓝关`).
@@ -49,20 +49,20 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 -
 
 | User Prompt | Step 1: Historical & Geographic Deduction (先考据) | Step 2: Deep-Link URL (后构建 URL) |
 | :--- | :--- | :--- |
-| *"找到水浒传宋江江州劫法场的地方"* | 《水浒传》宋江刺配江州、浔阳楼题反诗、劫法场背景为**北宋徽宗崇宁年间**（约 `1102` 年）；宋代江南西路**江州**治所为**浔阳**（今**江西九江**，非巴郡重庆） | `https://deanchensj.github.io/jiangshan-map/?year=1102&place=浔阳&hover=江州` |
-| *"雪拥蓝关马不前 当时是什么时间地点？"* | 韩愈于**唐宪宗元和十四年**（`819` 年）贬潮州途中经秦岭**蓝田关（蓝关）**（今陕西西安蓝田） | `https://deanchensj.github.io/jiangshan-map/?year=819&place=蓝关` |
-| *"杜甫《闻官军收河南河北》即从巴峡穿巫峡，便下襄阳向洛阳路线？"* | **唐代宗广德元年**（`763` 年）杜甫在剑外（四川梓州）闻叛乱平定，规划同年水陆返洛阳路线 | `https://deanchensj.github.io/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳` |
-| *"苏轼问汝平生功业，黄州惠州儋州贬谪路线？"* | 苏轼自乌台诗案（`1079` 湖州）起，历贬**黄州**（`1080`）、**惠州**（`1094`）、**儋州**（`1097`） | `https://deanchensj.github.io/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州` |
-| *"文天祥《过零丁洋》惶恐滩头说惶恐，零丁洋里叹零丁抗元路线？"* | 南宋末文天祥自**赣州**起兵（`1275`），撤退经江西万安**惶恐滩**（`1277`），于珠江口**零丁洋**被俘（`1278`），至**崖山**海战（`1279`） | `https://deanchensj.github.io/jiangshan-map/?year=1275,1277,1278,1279&place=赣州,惶恐滩,零丁洋,崖山` |
-| *"辛弃疾写京口北固亭怀古时天下局势如何？"* | **南宋宁宗开禧元年**（`1205` 年）辛弃疾任镇江知府，登**京口**（今江苏镇江）北固亭北望金朝 | `https://deanchensj.github.io/jiangshan-map/?year=1205&place=京口` |
-| *"苏轼写《记承天寺夜游》时黄州归哪里管？"* | **北宋神宗元丰六年**（`1083` 年）苏轼贬居淮南西路**黄州**（今湖北黄冈），高亮黄州州界 | `https://deanchensj.github.io/jiangshan-map/?year=1083&place=黄州&hover=黄州` |
-| *"Where was Su Shi exiled when he wrote the Red Cliff odes?"* | **Northern Song Yuanfeng 5** (`1082` CE), exiled at **Huangzhou** (`黄州`, modern Huanggang, Hubei), English UI | `https://deanchensj.github.io/jiangshan-map/?year=1082&place=黄州&lang=en` |
+| *"找到水浒传宋江江州劫法场的地方"* | 《水浒传》宋江刺配江州、浔阳楼题反诗、劫法场背景为**北宋徽宗崇宁年间**（约 `1102` 年）；宋代江南西路**江州**治所为**浔阳**（今**江西九江**，非巴郡重庆） | `https://deanchen.me/jiangshan-map/?year=1102&place=浔阳&hover=江州` |
+| *"雪拥蓝关马不前 当时是什么时间地点？"* | 韩愈于**唐宪宗元和十四年**（`819` 年）贬潮州途中经秦岭**蓝田关（蓝关）**（今陕西西安蓝田） | `https://deanchen.me/jiangshan-map/?year=819&place=蓝关` |
+| *"杜甫《闻官军收河南河北》即从巴峡穿巫峡，便下襄阳向洛阳路线？"* | **唐代宗广德元年**（`763` 年）杜甫在剑外（四川梓州）闻叛乱平定，规划同年水陆返洛阳路线 | `https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳` |
+| *"苏轼问汝平生功业，黄州惠州儋州贬谪路线？"* | 苏轼自乌台诗案（`1079` 湖州）起，历贬**黄州**（`1080`）、**惠州**（`1094`）、**儋州**（`1097`） | `https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州` |
+| *"文天祥《过零丁洋》惶恐滩头说惶恐，零丁洋里叹零丁抗元路线？"* | 南宋末文天祥自**赣州**起兵（`1275`），撤退经江西万安**惶恐滩**（`1277`），于珠江口**零丁洋**被俘（`1278`），至**崖山**海战（`1279`） | `https://deanchen.me/jiangshan-map/?year=1275,1277,1278,1279&place=赣州,惶恐滩,零丁洋,崖山` |
+| *"辛弃疾写京口北固亭怀古时天下局势如何？"* | **南宋宁宗开禧元年**（`1205` 年）辛弃疾任镇江知府，登**京口**（今江苏镇江）北固亭北望金朝 | `https://deanchen.me/jiangshan-map/?year=1205&place=京口` |
+| *"苏轼写《记承天寺夜游》时黄州归哪里管？"* | **北宋神宗元丰六年**（`1083` 年）苏轼贬居淮南西路**黄州**（今湖北黄冈），高亮黄州州界 | `https://deanchen.me/jiangshan-map/?year=1083&place=黄州&hover=黄州` |
+| *"Where was Su Shi exiled when he wrote the Red Cliff odes?"* | **Northern Song Yuanfeng 5** (`1082` CE), exiled at **Huangzhou** (`黄州`, modern Huanggang, Hubei), English UI | `https://deanchen.me/jiangshan-map/?year=1082&place=黄州&lang=en` |
 
 ### Step 3 (Optional): Render a Map Screenshot On-Demand (`--out`)
 
 Follow these three execution rules to keep responses fast and avoid wasted turns:
 1. **Link & `--inspect` first, screenshot on-demand**: The deep-link URL and `--inspect` JSON are instantaneous and sufficient for most answers. Only pass `--out <PATH>` to render a PNG screenshot when the user asks for an image/map or when visual territorial/route comparison clearly adds value.
-2. **Request network access upfront for remote renders**: When running inside a local checkout of `jiangshan-map` (or with `JIANGSHAN_REPO_ROOT` set), `--inspect` (~0.2s via Node) and `--out` (~3–5s) work completely offline. When running standalone without a local checkout, headless Chrome must fetch ~3 MB of map/terrain assets from `deanchensj.github.io` (typically 6–12s): run with network access enabled from the start (do not try in an offline sandbox first) and set a synchronous wait/timeout of at least 10–15 seconds.
+2. **Request network access upfront for remote renders**: When running inside a local checkout of `jiangshan-map` (or with `JIANGSHAN_REPO_ROOT` set), `--inspect` (~0.2s via Node) and `--out` (~3–5s) work completely offline. When running standalone without a local checkout, headless Chrome must fetch ~3 MB of map/terrain assets from `deanchen.me` (typically 6–12s): run with network access enabled from the start (do not try in an offline sandbox first) and set a synchronous wait/timeout of at least 10–15 seconds.
 3. **Skip re-reading the generated PNG**: `jiangshan.py` automatically verifies the PNG header, dimensions (`>=800x500`), and pixel variance (exiting with code `1` on blank renders). Once it exits `0`, embed the PNG path directly in your response without calling an image-viewing tool unless you specifically need to inspect visual details on the canvas.
 
 ```bash
