@@ -2259,6 +2259,51 @@ function main() {
     's_sui_a2 (587–589 CE) must merge Jiangling ([112.241, 30.331]) into 隋 after Emperor Wen abolishes Western Liang'
   );
 
+  // 23i. Verify Ming Hexi Corridor (Jiayuguan & Xining) and contiguous Seven Guards West of Jiayuguan (哈密卫（关西七卫）)
+  for (const sk of ['s_ming', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
+    const mingPol = (snapshots[sk].polities || []).find((p) => p.title === '明');
+    assert(
+      mingPol && pointInShape(98.291, 39.771, mingPol.shape) && pointInShape(101.78, 36.62, mingPol.shape),
+      `${sk}: 明 polygon must contain Jiayuguan ([98.291, 39.771]) and Xining ([101.78, 36.62])`
+    );
+    const shanxiReg = (snapshots[sk].regions || []).find((r) => r.title === '陕西');
+    assert(
+      shanxiReg &&
+        shanxiReg.shape.type === 'Polygon' &&
+        pointInShape(98.291, 39.771, shanxiReg.shape) &&
+        pointInShape(101.78, 36.62, shanxiReg.shape),
+      `${sk}: 陕西 macro-region must be a single contiguous Polygon containing Jiayuguan ([98.291, 39.771]) and Xining ([101.78, 36.62])`
+    );
+  }
+  for (const sk of ['s_ming_a', 's_ming_a2']) {
+    const mingPol = (snapshots[sk].polities || []).find((p) => p.title === '明');
+    const hamiPol = (snapshots[sk].polities || []).find((p) => p.title === '哈密卫（关西七卫）');
+    const mongolPol = (snapshots[sk].polities || []).find((p) => p.title === '蒙古诸部 · 东察合台');
+    assert(
+      hamiPol &&
+        hamiPol.role === 'protectorate' &&
+        pointInShape(93.511, 42.821, hamiPol.shape) &&
+        pointInShape(93.86, 40.35, hamiPol.shape) &&
+        pointInShape(94.06, 39.93, hamiPol.shape) &&
+        pointInShape(95.45, 40.0, hamiPol.shape),
+      `${sk}: 哈密卫（关西七卫） must contain Hami ([93.511, 42.821]), Yumen Pass ([93.86, 40.35]), Yangguan ([94.06, 39.93]), and Handong ([95.45, 40.0])`
+    );
+    const mingVertSet = new Set(
+      mingPol.shape.coordinates[0][0].map((pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`)
+    );
+    const sharedWithMing = hamiPol.shape.coordinates[0].filter((pt) =>
+      mingVertSet.has(`${pt[0].toFixed(2)},${pt[1].toFixed(2)}`)
+    );
+    assert(
+      sharedWithMing.length >= 8,
+      `${sk}: 哈密卫（关西七卫） must share at least 8 contiguous boundary vertices with 明 at Jiayuguan, found ${sharedWithMing.length}`
+    );
+    assert(
+      mongolPol && !pointInShape(93.511, 42.821, mongolPol.shape),
+      `${sk}: 蒙古诸部 · 东察合台 must not overlap Hami ([93.511, 42.821])`
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
