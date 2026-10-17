@@ -5707,6 +5707,22 @@ window.EN_LOCALE = {
     "554 — 557 · 西魏于谨克江陵立萧詧为西梁主，北齐南拓江淮": "554–557 · Western Wei Captures Jiangling & Installs Western Liang; Northern Qi Takes Jianghuai",
     "581 — 587 · 隋初南北对峙：杨坚代周建隋，江陵西梁存续，与江南陈朝隔江并立": "581–587 · Founding of Sui, Western Liang at Jiangling, and Southern Chen",
     "587 — 589 · 隋文帝废西梁并入隋境，大军临江蓄势灭陈": "587–589 · Emperor Wen of Sui Abolishes Western Liang and Prepares to Conquer Chen",
-    "西梁都城（587 年隋废西梁置荆州总管府）": "Capital of Western Liang (abolished by Sui in 587)"
+    "西梁都城（587 年隋废西梁置荆州总管府）": "Capital of Western Liang (abolished by Sui in 587)",
+    "前 340 — 前 317 · 商鞅收河西、魏迁大梁与五国相王：巴蜀、越、中山、义渠尚存": "340–317 BCE · Shang Yang Retakes Hexi, Wei Moves to Daliang & Five-State Royal Accord: Ba–Shu, Yue, Zhongshan & Yiqu Remain",
+    "战国中期之初（前340 — 前317 · 商鞅收河西与五国相王）": "Early Mid-Warring States (340–317 BCE · Qin Retakes Hexi & Five-State Royal Accord)",
+    "前340年商鞅破魏收复河西，魏惠王东迁大梁并献上郡于秦；前323年公孙衍发起“五国相王”。此时巴、蜀、越、中山与义渠诸国皆尚独立存续。": "In 340 BCE Shang Yang defeated Wei to retake Hexi, forcing King Hui of Wei to move his capital east to Daliang and cede Shangjun to Qin; in 323 BCE Gongsun Yan initiated the Five-State Royal Accord. Ba, Shu, Yue, Zhongshan, and Yiqu all remained independent.",
+    "前 316 — 前 307 · 秦司马错灭巴蜀、丹阳之战取汉中：越、中山、义渠尚存": "316–307 BCE · Sima Cuo Conquers Ba–Shu & Qin Takes Hanzhong at Danyang: Yue, Zhongshan & Yiqu Remain",
+    "战国中期前叶（前316 — 前307 · 秦灭巴蜀与丹阳之战取汉中）": "Mid-Warring States (316–307 BCE · Qin Conquest of Ba–Shu & Hanzhong)",
+    "前316年秦惠文王遣司马错灭巴、蜀置巴郡与蜀郡，前312年丹阳、蓝田之战大破楚军取汉中郡；此时江南越国、河北中山国及陇东义渠尚存。": "In 316 BCE King Huiwen of Qin sent Sima Cuo to conquer Ba and Shu, and in 312 BCE Qin defeated Chu at Danyang to take Hanzhong Commandery; Yue in the southeast, Zhongshan in Hebei, and Yiqu in the northwest still remained.",
+    "前 306 — 前 301 · 楚怀王灭越尽取旧吴之地：中山、义渠尚存，燕尚未东辟辽东": "306–301 BCE · Chu Annexes Yue Across Former Wu Lands: Zhongshan & Yiqu Remain (Pre-Liaodong Expansion)",
+    "战国中期（前306 — 前301 · 楚怀王灭越与胡服骑射）": "Mid-Warring States (306–301 BCE · Chu Annexation of Yue & Zhao Cavalry Reforms)",
+    "前306年楚怀王乘越国内乱攻灭越国，尽取旧吴之地并置江东；北方赵武灵王推行胡服骑射，中山与义渠尚存，燕国尚未东辟辽东。": "In 306 BCE King Huai of Chu conquered Yue and absorbed the former Wu-Yue lands; in the north King Wuling of Zhao pursued cavalry archery reforms while Zhongshan and Yiqu persisted and Yan had not yet expanded into Liaodong.",
+    "前 300 — 前 297 · 燕将秦开却东胡辟辽东五郡、赵武灵王辟云中雁门": "300–297 BCE · Yan General Qin Kai Establishes Five Liaodong Commanderies & Zhao Expands into Yunzhong",
+    "战国中期后叶（前300 — 前297 · 燕将秦开辟辽东五郡与赵略中山）": "Late Mid-Warring States (300–297 BCE · Yan General Qin Kai Expands into Liaodong)",
+    "前300年燕将秦开大破东胡却地千里，筑北长城置上谷、渔阳、右北平、辽西、辽东五郡；赵武灵王辟云中、雁门，中山国仅余灵寿一隅。": "In 300 BCE Yan general Qin Kai pushed back the Donghu by a thousand li and established five northern commanderies into Liaodong; King Wuling of Zhao established Yunzhong and Yanmen while Zhongshan held onto Lingshou.",
+    "前 296 — 前 279 · 赵惠文王灭中山、五国伐秦与乐毅破齐：楚保郢都、义渠尚存": "296–279 BCE · Zhao Conquers Zhongshan & Yue Yi Routs Qi: Chu Holds Yingdu & Yiqu Remains",
+    "战国中后期（前296 — 前279 · 赵灭中山与乐毅破齐）": "Late Mid-Warring States (296–279 BCE · Zhao Conquest of Zhongshan & Yue Yi’s Campaign Against Qi)",
+    "前296年赵惠文王彻底攻灭中山国，北境连成一片；前284年燕昭王拜乐毅统五国联军大破齐军。此时白起尚未拔郢，楚都仍在江陵郢都，陇东义渠尚存。": "In 296 BCE King Huiwen of Zhao extinguished Zhongshan, uniting northern Hebei; in 284 BCE Yue Yi led a five-state coalition to rout Qi. Prior to Bai Qi’s 278 BCE campaign, the Chu capital remained at Ying (Jiangling) and Yiqu still stood in Longdong.",
+    "前 278 — 前 239 · 白起拔郢、秦灭义渠与长平之战：秦取南郡上党北地，独霸西方": "278–239 BCE · Bai Qi’s Capture of Ying, Conquest of Yiqu & Battle of Changping: Qin Dominates the West"
   }
 };
