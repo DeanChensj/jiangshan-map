@@ -5274,8 +5274,12 @@ window.DYNASTY_DATA = [
         "snap": "s_nanbei_d1"
       },
       {
-        "until": 557,
+        "until": 554,
         "snap": "s_nanbei_d2"
+      },
+      {
+        "until": 557,
+        "snap": "s_nanbei_d3"
       },
       {
         "until": 573,
@@ -5309,6 +5313,15 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
+        ]
+      },
+      {
+        "year": 587,
+        "headline": "隋文帝废西梁国，江陵并入隋境，大造战船备战伐陈",
+        "site": "江陵（荆州）",
+        "coord": [
+          112.241,
+          30.331
         ]
       },
       {
@@ -5541,8 +5554,7 @@ window.DYNASTY_DATA = [
           112.241,
           30.331
         ],
-        "tier": 2,
-        "remark": "南郡治所"
+        "remark": "西梁都城（587 年隋废西梁置荆州总管府）"
       },
       {
         "ancient": "豫章（洪州）",
@@ -5826,8 +5838,12 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
-        "until": 589,
+        "until": 587,
         "snap": "s_sui_a"
+      },
+      {
+        "until": 589,
+        "snap": "s_sui_a2"
       },
       {
         "until": 609,

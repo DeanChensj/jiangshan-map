@@ -913,6 +913,8 @@ function main() {
     { dyn: 'zhanguo', year: -300, keyword: '秦开' },
     { dyn: 'donghan', year: 43, keyword: '马援' },
     { dyn: 'sanguo', year: 238, keyword: '公孙渊' },
+    { dyn: 'nanbei', year: 554, keyword: '西梁' },
+    { dyn: 'sui', year: 587, keyword: '西梁' },
     { dyn: 'tang', year: 635, keyword: '吐谷浑' },
     { dyn: 'tang', year: 648, keyword: '王玄策' },
     { dyn: 'nansong', year: 1234, keyword: '端平入洛' },
@@ -2234,6 +2236,28 @@ function main() {
       );
     }
   }
+
+  // 23h. Verify Western Liang (西梁, 554–587 CE) at Jiangling ([112.241, 30.331])
+  const xiliangSnapKeys = ['s_nanbei_d3', 's_nanbei_e', 's_nanbei_e2', 's_nanbei_f', 's_sui_a'];
+  for (const sk of xiliangSnapKeys) {
+    const xlPol = (snapshots[sk].polities || []).find((p) => p.title === '西梁');
+    assert(
+      xlPol && xlPol.role === 'rival' && pointInShape(112.241, 30.331, xlPol.shape),
+      `${sk} must model 西梁 (554–587 CE) as role="rival" containing Jiangling ([112.241, 30.331])`
+    );
+  }
+  const liang553 = (snapshots.s_nanbei_d2.polities || []).find((p) => p.title === '梁');
+  assert(
+    liang553 && pointInShape(112.241, 30.331, liang553.shape),
+    's_nanbei_d2 (553 CE) must keep Jiangling ([112.241, 30.331]) inside 梁 (Emperor Yuan of Liang) prior to 554 CE'
+  );
+  const sui587 = (snapshots.s_sui_a2.polities || []).find((p) => p.title === '隋');
+  assert(
+    sui587 &&
+      pointInShape(112.241, 30.331, sui587.shape) &&
+      !(snapshots.s_sui_a2.polities || []).some((p) => p.title === '西梁'),
+    's_sui_a2 (587–589 CE) must merge Jiangling ([112.241, 30.331]) into 隋 after Emperor Wen abolishes Western Liang'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);

@@ -1,4 +1,3 @@
-/* English Localization Dictionary (EN_LOCALE) for Jiangshan Atlas */
 window.EN_LOCALE = {
   "strings": {
     "title": "Chronicles of the Realm · Historical Atlas of China",
@@ -1743,6 +1742,10 @@ window.EN_LOCALE = {
     "qing:1885": [
       "Battle of Zhennan Pass: General Feng Zicai routs French forces and recaptures Lang Son",
       "Zhennan Pass (Pingxiang, Guangxi)"
+    ],
+    "sui:587": [
+      "Emperor Wen of Sui abolishes Western Liang at Jiangling and prepares to conquer Chen",
+      "Jiangling (Jingzhou)"
     ]
   },
   "corridors": {
@@ -5698,6 +5701,12 @@ window.EN_LOCALE = {
     "武川镇": "Wuchuan Garrison",
     "呼和浩特·武川": "Hohhot (Wuchuan)",
     "内蒙古呼和浩特·武川": "Wuchuan, Hohhot, Inner Mongolia",
-    "北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮": "One of the Six Frontier Towns of Northern Wei; cradle of Yuwen Tai, the Guanlong Group, and the Sui and Tang imperial houses"
+    "北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮": "One of the Six Frontier Towns of Northern Wei; cradle of Yuwen Tai, the Guanlong Group, and the Sui and Tang imperial houses",
+    "西梁": "Western Liang",
+    "553 — 554 · 西魏尉迟迥平蜀：巴蜀汉中并入西魏，梁元帝萧绎都江陵": "553–554 · Western Wei Conquers Sichuan; Emperor Yuan of Liang Rules from Jiangling",
+    "554 — 557 · 西魏于谨克江陵立萧詧为西梁主，北齐南拓江淮": "554–557 · Western Wei Captures Jiangling & Installs Western Liang; Northern Qi Takes Jianghuai",
+    "581 — 587 · 隋初南北对峙：杨坚代周建隋，江陵西梁存续，与江南陈朝隔江并立": "581–587 · Founding of Sui, Western Liang at Jiangling, and Southern Chen",
+    "587 — 589 · 隋文帝废西梁并入隋境，大军临江蓄势灭陈": "587–589 · Emperor Wen of Sui Abolishes Western Liang and Prepares to Conquer Chen",
+    "西梁都城（587 年隋废西梁置荆州总管府）": "Capital of Western Liang (abolished by Sui in 587)"
   }
 };
