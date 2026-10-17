@@ -418,9 +418,12 @@ function main() {
       tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&
         tfHtml.includes('application/ld+json') &&
         !tfHtml.toLowerCase().includes('deanchensj.github.io') &&
+        !tfHtml.includes('undefined') &&
+        !tfHtml.includes('NaN') &&
+        !/\b(zhanguo|xihan|donghan|sanguo|xijin|dongjin|nanbei|wudai|beisong|nansong|roc|prc)\s+Historical/i.test(tfHtml) &&
         sitemapXml.includes(`<loc>${expectedCanon}</loc>`) &&
         indexHtml.includes(expectedCanon),
-      `Static topic page topics/${tf} must have canonical ${expectedCanon}, JSON-LD, and be linked in sitemap.xml and index.html`
+      `Static topic page topics/${tf} must have canonical ${expectedCanon}, JSON-LD, zero undefined/NaN, clean English naming, and be linked in sitemap.xml and index.html`
     );
   }
   const htmlVersions = Array.from(new Set(indexHtml.match(/\?v=[0-9a-zA-Z_.-]+/g) || []));

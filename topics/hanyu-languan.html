@@ -264,11 +264,17 @@
       color: var(--ink-muted);
       font-style: normal;
     }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 0.5rem;
+    }
     table.data-table {
       width: 100%;
+      min-width: 620px;
       border-collapse: collapse;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
     }
     table.data-table th,
     table.data-table td {
@@ -391,49 +397,52 @@
 
     <section class="section-card">
       <h2>一、目标时空节点精准考据（公元819年 · 唐宪宗·元和十四年）</h2>
-      <table class="data-table">
-        <tbody>
-          <tr>
-            <th style="width:24%">查询古地名 / 典故地标</th>
-            <td><strong>蓝关</strong>（标准古地名：蓝田关）</td>
-          </tr>
-          <tr>
-            <th>历史纪年与帝王年号</th>
-            <td>公元819年 · <strong>唐宪宗·元和十四年</strong>（唐，都城：长安）</td>
-          </tr>
-          <tr>
-            <th>当时所属政权与州郡政区</th>
-            <td><strong>唐</strong> · 关内道</td>
-          </tr>
-          <tr>
-            <th>现代行政区划与经纬度</th>
-            <td>陕西省 · 今陕西西安蓝田（109.48°E, 34.03°N）</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th style="width:24%">查询古地名 / 典故地标</th>
+              <td><strong>蓝关（秦汉峣关 · 隋唐蓝田关）</strong></td>
+            </tr>
+            <tr>
+              <th>历史纪年与帝王年号</th>
+              <td>公元819年 · <strong>唐宪宗·元和十四年</strong>（唐，都城：长安）</td>
+            </tr>
+            <tr>
+              <th>当时所属政权与州郡政区</th>
+              <td><strong>唐 · 关内道</strong></td>
+            </tr>
+            <tr>
+              <th>现代行政区划与经纬度</th>
+              <td>陕西省 · 今陕西西安蓝田（109.48°E, 34.03°N）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
-      <h2>二、「蓝田关」两千四百年历代政区沿革表（点地溯源）</h2>
+      <h2>二、「蓝关（秦汉峣关 · 隋唐蓝田关）」两千四百年历代政区沿革表（点地溯源）</h2>
       <p>同一地理坐标（109.48°E, 34.03°N）从战国（前403年）至现代共 18 个历史时期的政权归属与州道郡县沿革：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>历史时期</th>
-            <th>代表纪年与年号</th>
-            <th>所属政权</th>
-            <th>州 / 道 / 路 / 省政区</th>
-            <th>邻近治所 / 古城</th>
-            <th>地图跳转</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>历史时期</th>
+              <th>代表纪年与年号</th>
+              <th>所属政权</th>
+              <th>州 / 道 / 路 / 省政区</th>
+              <th>邻近治所 / 古城</th>
+              <th>地图跳转</th>
+            </tr>
+          </thead>
+          <tbody>
           <tr>
             <td><strong>战国</strong>（前403—前221）</td>
             <td>周威烈王二十三年</td>
             <td>楚</td>
             <td>汉中郡</td>
-            <td>蓝田关</td>
+            <td>蓝关（秦汉峣关 · 隋唐蓝田关）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=-403&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
@@ -441,14 +450,14 @@
             <td>秦始皇三十三年</td>
             <td>秦</td>
             <td>关中（内史）(郡)</td>
-            <td>蓝田关</td>
+            <td>蓝关（秦汉峣关 · 隋唐蓝田关）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=-214&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
             <td><strong>西汉</strong>（前202—25）</td>
             <td>西汉武帝·天汉元年</td>
             <td>汉</td>
-            <td>司隶(刺史部)</td>
+            <td>王畿/直辖</td>
             <td>上洛（今商洛）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -456,15 +465,15 @@
             <td><strong>东汉</strong>（25—220）</td>
             <td>东汉和帝·永元十二年</td>
             <td>东汉</td>
-            <td>司隶(刺史部) · 关中（内史）(郡)</td>
-            <td>蓝田关</td>
+            <td>关中（内史）(郡)</td>
+            <td>蓝关（秦汉峣关 · 隋唐蓝田关）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=100&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
             <td><strong>三国</strong>（220—280）</td>
             <td>魏齐王·嘉平二年</td>
             <td>魏</td>
-            <td>司隶(州)</td>
+            <td>王畿/直辖</td>
             <td>长安（今西安）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=250&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -529,7 +538,7 @@
             <td>南宋宁宗·庆元六年</td>
             <td>金</td>
             <td>京兆府路 · 京兆府</td>
-            <td>蓝田关</td>
+            <td>蓝关（秦汉峣关 · 隋唐蓝田关）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1200&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
           <tr>
@@ -544,7 +553,7 @@
             <td><strong>明</strong>（1368—1644）</td>
             <td>明景泰元年</td>
             <td>明</td>
-            <td>陕西(布政使司)</td>
+            <td>王畿/直辖</td>
             <td>商州（今商洛）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1450&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
@@ -572,8 +581,9 @@
             <td>西安蓝田（今陕西西安蓝田）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=2026&amp;place=%E8%93%9D%E5%85%B3">查看该朝版图 &rarr;</a></td>
           </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">

@@ -264,11 +264,17 @@
       color: var(--ink-muted);
       font-style: normal;
     }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 0.5rem;
+    }
     table.data-table {
       width: 100%;
+      min-width: 620px;
       border-collapse: collapse;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
     }
     table.data-table th,
     table.data-table td {
@@ -392,19 +398,20 @@
     <section class="section-card">
       <h2>一、路线各站时空坐标与历史政区解析（总航程/里程约 991 公里）</h2>
       <p>以下数据由「江山时序」历史地理引擎（<code>window.atlasAPI.inspect</code>）按各站对应历史年份自动解算：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>站序</th>
-            <th>历史年份与年号</th>
-            <th>诗文/史籍古地名</th>
-            <th>现代地理位置</th>
-            <th>当时所属政权与州道政区</th>
-            <th>经纬度</th>
-            <th>交互式地图</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>站序</th>
+              <th>历史年份与年号</th>
+              <th>诗文/史籍古地名</th>
+              <th>现代地理位置</th>
+              <th>当时所属政权与州道政区</th>
+              <th>经纬度</th>
+              <th>交互式地图</th>
+            </tr>
+          </thead>
+          <tbody>
           <tr>
             <td>第 1 站</td>
             <td><strong>763年</strong><br/><small>唐代宗·广德元年</small></td>
@@ -435,7 +442,7 @@
           <tr>
             <td>第 4 站</td>
             <td><strong>763年</strong><br/><small>唐代宗·广德元年</small></td>
-            <td><strong>襄阳</strong>（襄州）</td>
+            <td><strong>襄阳（襄州）</strong></td>
             <td>襄阳（湖北省）</td>
             <td>唐 · 山南东道</td>
             <td>112.12°E, 32.01°N</td>
@@ -444,14 +451,15 @@
           <tr>
             <td>第 5 站</td>
             <td><strong>763年</strong><br/><small>唐代宗·广德元年</small></td>
-            <td><strong>洛阳</strong>（东都洛阳）</td>
+            <td><strong>洛阳（东都 / 河南府）</strong></td>
             <td>洛阳（河南省）</td>
             <td>唐 · 河南道</td>
             <td>112.45°E, 34.62°N</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=763&amp;place=%E6%B4%9B%E9%98%B3">单站定位 &rarr;</a></td>
           </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">

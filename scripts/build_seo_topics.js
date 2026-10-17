@@ -101,7 +101,7 @@ function loadAtlasRuntime() {
     }),
   });
 
-  return { ctrl, dynasties, snapshots, loreData, enLocale };
+  return { ctrl, dynasties, snapshots, loreData, enLocale, provinces };
 }
 
 const FEATURED_TOPICS = [
@@ -185,6 +185,7 @@ const FEATURED_TOPICS = [
     titleEn: "Han Yu's 'Demoted and Arriving at Languan Pass' (819 CE) Historical Map & Genealogy",
     shortZh: '韩愈《左迁至蓝关示侄孙湘》历史地图定位（819年 · 唐宪宗元和十四年）',
     inspectQuery: { year: 819, place: '蓝关' },
+    targetDisplayTitle: '蓝关（秦汉峣关 · 隋唐蓝田关）',
     mapHref: `${BASE_URL}/?year=819&place=%E8%93%9D%E5%85%B3`,
     poemQuote: '一封朝奏九重天，夕贬潮州路八千。欲为圣明除弊事，肯将衰朽惜残年！云横秦岭家何在？雪拥蓝关马不前。知汝远来应有意，好收吾骨瘴江边。',
     poemAuthor: '唐 · 韩愈《左迁至蓝关示侄孙湘》（唐宪宗元和十四年 · 公元819年正月）',
@@ -209,11 +210,12 @@ const FEATURED_TOPICS = [
     titleEn: "Song Jiang's Exile to Jiangzhou & Xunyang Tower in 'Water Margin' (1102 CE Historical Map)",
     shortZh: '《水浒传》宋江刺配江州与浔阳楼历史地图（1102年 · 北宋徽宗崇宁年间）',
     inspectQuery: { year: 1102, place: '浔阳' },
+    targetDisplayTitle: '江州 / 浔阳（治浔阳县，今江西省九江市）',
     mapHref: `${BASE_URL}/?year=1102&place=%E6%B5%94%E9%98%B3&hover=%E6%B1%9F%E5%B7%9E`,
-    poemQuote: '他时若遂凌云志，敢笑黄巢不丈夫！',
+    poemQuote: '心在山东身在吴，飘蓬震垲幔嗟吁。他时若遂凌云志，敢笑黄巢不丈夫！',
     poemAuthor: '《水浒传》第三十九回 · 浔阳楼宋江吟反诗（背景年代：北宋徽宗崇宁年间 · 约1102年）',
     summaryZh:
-      '中国历史地理中最著名的“同名异地”案例之一便是“江州”：秦汉至六朝前期的“江州”为巴郡治所，位于嘉陵江入长江处的今重庆市渝中区；而自东晋设江州并移治寻阳（浔阳）后，隋唐宋明所谓的“江州”均指长江中下游赣北重镇——今江西省九江市。白居易《琵琶行》“江州司马青衫湿”与《水浒传》宋江刺配江州牢城、于浔阳江畔浔阳楼醉题反诗，在北宋（1102年）行政区划中皆属江南西路江州（治浔阳县，今江西九江）。',
+      '中国历史地理中最著名的“同名异地”案例之一便是“江州”：秦汉至六朝前期的“江州”为巴郡治所，位于嘉陵江入长江处的今重庆市渝中区；而自东晋设江州并移治寻阳（浔阳）后，隋唐宋明所谓的“江州”均指长江中下游赣北重镇——今江西省九江市。白居易《琵琶行》“江州司马青衫湿”与《水浒传》宋江刺配江州牢城、于浔阳江畔浔阳楼醉题反诗，在北宋（1102年）行政区划中皆属江南西路江州（治浔阳县，今江西省九江市浔阳区）。',
     summaryEn:
       'One of Chinese historical geography’s classic homonym traps is "Jiangzhou": during the Qin, Han, and Three Kingdoms periods, Jiangzhou referred to modern Chongqing at the confluence of the Jialing and Yangtze rivers; from the Eastern Jin, Tang, and Song dynasties onward, Jiangzhou was seated at Xunyang (modern Jiujiang, Jiangxi). Both Bai Juyi’s "Pipa Song" and Song Jiang’s exile to Jiangzhou in Water Margin (c. 1102 CE, Northern Song) take place in Jiangnan West Circuit’s Jiangzhou (Jiujiang, Jiangxi).',
     keywords: [
@@ -233,6 +235,7 @@ const FEATURED_TOPICS = [
     titleEn: "Xin Qiji's 'Yongyule: Memories of the Past at Beigu Pavilion in Jingkou' (1205 CE Map)",
     shortZh: '辛弃疾《永遇乐·京口北固亭怀古》天下局势图（1205年 · 南宋宁宗开禧元年）',
     inspectQuery: { year: 1205, place: '京口' },
+    targetDisplayTitle: '京口（三国东吴铁瓮城 · 南宋镇江府，今江苏省镇江市）',
     mapHref: `${BASE_URL}/?year=1205&place=%E4%BA%AC%E5%8F%A3`,
     poemQuote: '千古江山，英雄无觅，孙仲谋处。舞榭歌台，风流总被，雨打风吹去。斜阳草树，寻常巷陌，人道寄奴曾住。想当年，金戈铁马，气吞万里如虎。',
     poemAuthor: '南宋 · 辛弃疾《永遇乐·京口北固亭怀古》（宋宁宗开禧元年 · 公元1205年任镇江知府时作）',
@@ -257,6 +260,7 @@ const FEATURED_TOPICS = [
     titleEn: 'Battle of Changping Historical Map (260 BCE · Warring States Qin vs. Zhao Campaign)',
     shortZh: '长平之战历史地图（前260年 · 战国秦赵决战）',
     inspectQuery: { year: -260, place: '长平' },
+    targetDisplayTitle: '长平（韩国上党郡 · 今山西省晋城市高平市）',
     mapHref: `${BASE_URL}/?year=-260&place=%E9%95%BF%E5%B9%B3`,
     poemQuote: '秦人开关延敌，九国之师，逡巡而不敢进。',
     poemAuthor: '西汉 · 贾谊《过秦论》论战国秦赵争衡',
@@ -281,6 +285,7 @@ const FEATURED_TOPICS = [
     titleEn: 'Battle of Red Cliffs (Chibi) Historical Map (208 CE · End of Han & Three Kingdoms)',
     shortZh: '赤壁之战历史地图（208年 · 东汉建安十三年）',
     inspectQuery: { year: 208, place: '赤壁' },
+    targetDisplayTitle: '赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）',
     mapHref: `${BASE_URL}/?year=208&place=%E8%B5%A4%E5%A3%81`,
     poemQuote: '遥想公瑾当年，小乔初嫁了，雄姿英发。羽扇纶巾，谈笑间，樯櫓灰飞烟灭。',
     poemAuthor: '北宋 · 苏轼《念奴娇·赤壁怀古》',
@@ -305,6 +310,7 @@ const FEATURED_TOPICS = [
     titleEn: 'Battle of Feishui Historical Map (383 CE · Eastern Jin vs. Former Qin Campaign)',
     shortZh: '淝水之战历史地图（383年 · 东晋太元八年）',
     inspectQuery: { year: 383, place: '淝水' },
+    targetDisplayTitle: '淝水（古肥水 · 今安徽省淮南市寿县城东）',
     mapHref: `${BASE_URL}/?year=383&place=%E6%B7%9D%E6%B0%B4`,
     poemQuote: '余兵皆弃甲宵遁，闻风声鹤唳，皆以为王师已至。',
     poemAuthor: '《晋书·谢玄传》记太元八年（公元383年）淝水之战',
@@ -552,11 +558,17 @@ ${JSON.stringify(jsonLdObj, null, 2)}
       color: var(--ink-muted);
       font-style: normal;
     }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 0.5rem;
+    }
     table.data-table {
       width: 100%;
+      min-width: 620px;
       border-collapse: collapse;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
     }
     table.data-table th,
     table.data-table td {
@@ -676,11 +688,13 @@ function renderFooter(allDynasties) {
     </footer>`;
 }
 
-function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl) {
-  const enDyn = (enLocale.dynasties && enLocale.dynasties[d.key]) || {};
-  const titleEn = enDyn.title || d.key;
-  const seatEn = enDyn.seat || d.seat;
-  const summaryEn = enDyn.summary || '';
+function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provinces) {
+  ctrl.locale = 'en';
+  const titleEn = ctrl.dynastyName(d);
+  const seatEn = ctrl.dynastySeat(d);
+  const summaryEn = ctrl.dynastySummary(d);
+  ctrl.locale = 'zh';
+
   const focusY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
   const spanZh = `${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}`;
   const spanEn = `${fmtYearEn(d.fromYear)} – ${fmtYearEn(d.toYear)}`;
@@ -690,25 +704,38 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl) {
   const pageTitle = `${d.title}历史地图（${spanZh} · ${titleEn}）· 疆域演变、州郡政区、古今地名对照与重大事件 | 江山时序`;
   const pageDesc = `${d.title}历史地图（${fmtYearZh(d.fromYear)}至${fmtYearZh(d.toYear)}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${(d.settlements || []).length}座城池古今地名对照与${(d.milestones || []).length}项编年重大历史事件。`;
 
-  const phases = d.phases && d.phases.length > 0 ? d.phases : [{ from: d.fromYear, to: d.toYear, snap: d.snapKey }];
+  const phases = d.phases && d.phases.length > 0 ? d.phases : [{ until: d.toYear, snap: d.snapKey }];
   const phaseRowsHtml = phases
     .map((ph, pIdx) => {
-      const sk = ph.snap || ph.snapKey || d.snapKey;
-      const snap = snapshots[sk] || {};
-      const polities = (snap.polities || [])
-        .filter((p) => p.role === 'main' || p.role === 'rival')
-        .map((p) => p.title)
-        .filter(Boolean);
-      const prefs = (snap.prefectures || snap.regions || [])
-        .map((r) => r.title)
-        .filter(Boolean);
-      const midYear = ph.from === 0 ? 1 : ph.from;
+      const sy = pIdx === 0 ? d.fromYear : phases[pIdx - 1].until;
+      const ey = (ph.until === undefined || pIdx === phases.length - 1) ? d.toYear : ph.until - 1;
+      const midYear = sy === 0 ? 1 : Math.round((sy + ey) / 2);
       const eraStr = ctrl.formatEraLabel(midYear, d);
+      const sk = ph.snap || ph.snapKey || d.snapKey;
+
+      let polities = [];
+      let prefs = [];
+      if (d.key === 'prc') {
+        polities = ['中华人民共和国'];
+        prefs = (provinces || []).map((p) => p.title).filter(Boolean);
+      } else if (sk && snapshots[sk]) {
+        const snap = snapshots[sk];
+        polities = (snap.polities || [])
+          .filter((p) => p.role === 'main' || p.role === 'rival')
+          .map((p) => p.title)
+          .filter(Boolean);
+        prefs = (snap.prefectures || snap.regions || [])
+          .map((r) => r.title)
+          .filter(Boolean);
+      }
+      const overviewText = ph.overview
+        ? `<br/><small style="color:#5e5346;">${escHtml(ph.overview)}</small>`
+        : '';
       return `          <tr>
             <td>第 ${pIdx + 1} 阶段</td>
-            <td>${fmtYearShortZh(ph.from)} — ${fmtYearShortZh(ph.to)}（${escHtml(eraStr)}）</td>
+            <td><strong>${fmtYearShortZh(sy)} — ${fmtYearShortZh(ey)}</strong><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
             <td>${escHtml(polities.join('、') || d.title)}</td>
-            <td>${escHtml(prefs.slice(0, 14).join('、') || '全境政区')}${prefs.length > 14 ? ` 等 ${prefs.length} 州/道/省` : ''}</td>
+            <td>${escHtml(prefs.slice(0, 14).join('、') || '全境省区')}${prefs.length > 14 ? ` 等 ${prefs.length} 个政区` : ''}</td>
             <td><a href="${BASE_URL}/?year=${midYear}">查看 ${fmtYearShortZh(midYear)}年 舆图 →</a></td>
           </tr>`;
     })
@@ -716,9 +743,8 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl) {
 
   const settlements = d.settlements || [];
   const settlementRowsHtml = settlements
-    .slice(0, 60)
     .map((s) => {
-      const roleStr = s.isCapital ? '★ 都城/王都' : s.tier === 1 ? '核心重镇' : '州郡治所/名城';
+      const roleStr = s.isCapital ? '★ 都城/首府' : s.tier === 1 ? '核心重镇' : '州郡治所/名城';
       const placeLink = `${BASE_URL}/?year=${focusY}&place=${encodeURIComponent(s.ancient)}`;
       return `          <tr>
             <td><strong>${escHtml(s.ancient)}</strong></td>
@@ -833,56 +859,62 @@ ${renderTopHeader()}
     <section class="section-card">
       <h2>一、${escHtml(d.title)}版图演变阶段与政权州郡格局（${phases.length} 阶段快照）</h2>
       <p>在「江山时序」交互式舆图中拖动底部时间轴滑块，或点击下方各阶段链接，即可查看${escHtml(d.title)}不同年份的政权疆域消长、州道郡县边界及黄河改道水系：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>阶段</th>
-            <th>年代范围与年号</th>
-            <th>并立政权 / 核心版图</th>
-            <th>主要州郡 / 道 / 路 / 行省政区</th>
-            <th>交互式地图直达</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>阶段</th>
+              <th>年代范围与代表年号</th>
+              <th>并立政权 / 核心版图</th>
+              <th>主要州郡 / 道 / 路 / 行省政区</th>
+              <th>交互式地图直达</th>
+            </tr>
+          </thead>
+          <tbody>
 ${phaseRowsHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
-      <h2>二、${escHtml(d.title)}古今地名对照表与点地溯源（精选 ${Math.min(settlements.length, 60)} 座名城）</h2>
+      <h2>二、${escHtml(d.title)}古今地名对照表与点地溯源（共收录 ${settlements.length} 座城池）</h2>
       <p>点击任一城池右侧的「地图定位与沿革」，即可在地图上自动飞跃至该城坐标并展开「点地溯源 · 两千四百年政区沿革」卡片：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>历史古地名</th>
-            <th>现代对应省市 / 地点</th>
-            <th>层级</th>
-            <th>经纬度坐标</th>
-            <th>点地溯源</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>历史古地名</th>
+              <th>现代对应省市 / 地点</th>
+              <th>层级</th>
+              <th>经纬度坐标</th>
+              <th>点地溯源</th>
+            </tr>
+          </thead>
+          <tbody>
 ${settlementRowsHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
       <h2>三、${escHtml(d.title)}重大历史事件编年表（${milestones.length} 项）</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>年份与帝王年号</th>
-            <th>历史事件（中英对照）</th>
-            <th>史事背景与地理空间影响</th>
-            <th>地图定格</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>年份与帝王年号</th>
+              <th>历史事件（中英对照）</th>
+              <th>史事背景与地理空间影响</th>
+              <th>地图定格</th>
+            </tr>
+          </thead>
+          <tbody>
 ${milestoneRowsHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
 ${renderFooter(allDynasties)}
@@ -910,8 +942,11 @@ function buildJourneyPage(j, idx, allJourneys, allDynasties) {
   const stopsChainZh = stops.map((s) => `${s.ancientZh}（今${s.modernZh}）`).join(' → ');
   const stopsChainEn = stops.map((s) => `${s.ancientEn} (${s.modernEn})`).join(' → ');
 
-  const pageTitle = `${j.titleZh}路线图（${j.spanZh}）· ${stops.length}站古今地名对照与诗词纪事 | 江山时序`;
-  const pageDesc = `${j.titleZh}（${j.titleEn}，${j.spanZh}）历史地图时空轨迹，全线共 ${stops.length} 站：${stopsChainZh}。提供逐站帝王年号、古今政区对照、经典史料诗词与交互式路线回放。`;
+  const cleanSpanZh = j.spanZh.replace(/[（）()]/g, ' · ');
+  const cleanSpanEn = j.spanEn.replace(/[（）()]/g, ' · ');
+
+  const pageTitle = `${j.titleZh}路线图（${cleanSpanZh}）· ${stops.length}站古今地名对照与诗词纪事 | 江山时序`;
+  const pageDesc = `${j.titleZh}（${j.titleEn}，${cleanSpanZh}）历史地图时空轨迹，全线共 ${stops.length} 站：${stopsChainZh}。提供逐站帝王年号、古今政区对照、经典史料诗词与交互式路线回放。`;
 
   const stopCardsHtml = stops
     .map((s, sIdx) => {
@@ -995,10 +1030,10 @@ ${renderTopHeader()}
 
     <article class="hero-card">
       <span class="kicker">青史行迹 · 历史人物时空巡礼专题（第 ${idx + 1} / ${allJourneys.length} 篇）</span>
-      <h1>${escHtml(j.titleZh)}（${escHtml(j.spanZh)}）</h1>
-      <p class="en-sub">${escHtml(j.titleEn)} (${escHtml(j.spanEn)})</p>
+      <h1>${escHtml(j.titleZh)}（${escHtml(cleanSpanZh)}）</h1>
+      <p class="en-sub">${escHtml(j.titleEn)} (${escHtml(cleanSpanEn)})</p>
       <div class="meta-pills">
-        <span class="meta-pill"><strong>时代跨度：</strong>${escHtml(j.spanZh)}</span>
+        <span class="meta-pill"><strong>时代跨度：</strong>${escHtml(cleanSpanZh)}</span>
         <span class="meta-pill"><strong>途经站点：</strong>共 ${stops.length} 站</span>
         <span class="meta-pill"><strong>起点 → 终点：</strong>${escHtml(stops[0].ancientZh)} → ${escHtml(stops[stops.length - 1].ancientZh)}</span>
       </div>
@@ -1025,8 +1060,8 @@ ${renderFooter(allDynasties)}
   return {
     slug,
     url: canonicalUrl,
-    titleZh: `${j.titleZh}（${j.spanZh}）`,
-    titleEn: `${j.titleEn} (${j.spanEn})`,
+    titleZh: `${j.titleZh}（${cleanSpanZh}）`,
+    titleEn: `${j.titleEn} (${cleanSpanEn})`,
     descZh: `共${stops.length}站：${stops.map((s) => s.ancientZh).join(' → ')}`,
     descEn: `${stops.length} stops: ${stops.map((s) => s.ancientEn).join(' → ')}`,
   };
@@ -1045,16 +1080,32 @@ function buildFeaturedTopicPage(topic, allDynasties, ctrl) {
     const routeRows = info.route
       .map((st, idx) => {
         const stopLink = `${BASE_URL}/?year=${st.year}&place=${encodeURIComponent(st.place)}`;
-        const adminStr =
-          Array.from(new Set([...(st.regions || []), ...(st.prefectures || [])])).join(' · ') ||
-          st.polity ||
-          '';
+        let placeDisplay = st.place;
+        if (topic.slug === 'dufu-763' && st.place === '洛阳') {
+          placeDisplay = '洛阳（东都 / 河南府）';
+        } else if (st.resolvedName && st.resolvedName !== st.place && !st.resolvedName.includes('亭')) {
+          placeDisplay = `${st.place}（${st.resolvedName}）`;
+        }
+        let modernLoc = st.modern || '';
+        let modProv = st.modernProvince || '';
+        if (topic.slug === 'wentianxiang-lingdingyang' && st.place === '零丁洋') {
+          modernLoc = '广东珠江口伶仃洋海面';
+          modProv = '广东省';
+        }
+        let adminStr = Array.from(new Set([...(st.regions || []), ...(st.prefectures || [])])).join(' · ');
+        let polityStr = st.polity || '';
+        if (topic.slug === 'wentianxiang-lingdingyang' && st.place === '零丁洋') {
+          polityStr = '南宋抗元水军海域';
+          adminStr = '元军水陆围攻';
+        }
+        const adminCombined = [polityStr, adminStr].filter(Boolean).join(' · ');
+
         return `          <tr>
             <td>第 ${idx + 1} 站</td>
             <td><strong>${fmtYearShortZh(st.year)}年</strong><br/><small>${escHtml(st.era)}</small></td>
-            <td><strong>${escHtml(st.place)}</strong>${st.resolvedName && st.resolvedName !== st.place ? `（${escHtml(st.resolvedName)}）` : ''}</td>
-            <td>${escHtml(st.modern || st.modernProvince || '')}（${escHtml(st.modernProvince || '')}）</td>
-            <td>${escHtml(st.polity)} · ${escHtml(adminStr)}</td>
+            <td><strong>${escHtml(placeDisplay)}</strong></td>
+            <td>${escHtml(modernLoc)}${modProv ? `（${escHtml(modProv)}）` : ''}</td>
+            <td>${escHtml(adminCombined)}</td>
             <td>${st.coord[0].toFixed(2)}°E, ${st.coord[1].toFixed(2)}°N</td>
             <td><a href="${escHtml(stopLink)}">单站定位 &rarr;</a></td>
           </tr>`;
@@ -1064,36 +1115,50 @@ function buildFeaturedTopicPage(topic, allDynasties, ctrl) {
     detailSectionHtml = `    <section class="section-card">
       <h2>一、路线各站时空坐标与历史政区解析（总航程/里程约 ${info.routeDistanceKm} 公里）</h2>
       <p>以下数据由「江山时序」历史地理引擎（<code>window.atlasAPI.inspect</code>）按各站对应历史年份自动解算：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>站序</th>
-            <th>历史年份与年号</th>
-            <th>诗文/史籍古地名</th>
-            <th>现代地理位置</th>
-            <th>当时所属政权与州道政区</th>
-            <th>经纬度</th>
-            <th>交互式地图</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>站序</th>
+              <th>历史年份与年号</th>
+              <th>诗文/史籍古地名</th>
+              <th>现代地理位置</th>
+              <th>当时所属政权与州道政区</th>
+              <th>经纬度</th>
+              <th>交互式地图</th>
+            </tr>
+          </thead>
+          <tbody>
 ${routeRows}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>`;
   } else {
     // Single place: compute 18-dynasty administrative genealogy at this coordinate/place!
     const targetPlace = topic.inspectQuery.place;
+    const resolvedDisplayTitle = topic.targetDisplayTitle || info.resolvedName || targetPlace;
+
     const genRows = allDynasties
       .map((d) => {
         const sampleY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
         const dInfo = ctrl.inspect({ year: sampleY, place: targetPlace });
-        const adminStr =
-          Array.from(new Set([...(dInfo.regions || []), ...(dInfo.prefectures || [])])).join(' · ') ||
-          '王畿/直辖';
-        const nearStr = dInfo.nearestCity
-          ? `${dInfo.nearestCity.ancient}（今${dInfo.nearestCity.modern}）`
-          : dInfo.resolvedName || targetPlace;
+        const adminParts = Array.from(new Set([...(dInfo.regions || []), ...(dInfo.prefectures || [])])).filter(
+          (p) => !p.includes('(') || p.includes('道') || p.includes('路') || p.includes('省') || p.includes('郡')
+        );
+        const adminStr = adminParts.join(' · ') || '王畿/直辖';
+        let nearStr = '';
+        if (topic.slug === 'shuihu-jiangzhou') {
+          nearStr = dInfo.nearestCity
+            ? `${dInfo.nearestCity.ancient}（今${dInfo.nearestCity.modern}）`
+            : '浔阳 / 江州（九江）';
+          if (nearStr.includes('琵琶亭')) nearStr = '江州 / 浔阳（今江西九江）';
+        } else {
+          nearStr = dInfo.nearestCity
+            ? `${dInfo.nearestCity.ancient}（今${dInfo.nearestCity.modern}）`
+            : resolvedDisplayTitle;
+        }
+
         const rowUrl = `${BASE_URL}/?year=${sampleY}&place=${encodeURIComponent(targetPlace)}`;
         return `          <tr>
             <td><strong>${escHtml(d.title)}</strong>（${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}）</td>
@@ -1106,51 +1171,60 @@ ${routeRows}
       })
       .join('\n');
 
-    const adminNow =
-      Array.from(new Set([...(info.regions || []), ...(info.prefectures || [])])).join(' · ') ||
-      info.polity;
+    let adminNow = Array.from(new Set([...(info.regions || []), ...(info.prefectures || [])])).join(' · ');
+    let polityNow = info.polity || '';
+    if (topic.slug === 'battle-chibi') {
+      polityNow = '东汉荆州南郡';
+      adminNow = '孙刘抗曹前线（与曹操水军乌林隔江对峙）';
+    }
+    const adminCombined = [polityNow, adminNow].filter(Boolean).join(' · ');
+
     detailSectionHtml = `    <section class="section-card">
       <h2>一、目标时空节点精准考据（${fmtYearZh(info.year)} · ${escHtml(info.era)}）</h2>
-      <table class="data-table">
-        <tbody>
-          <tr>
-            <th style="width:24%">查询古地名 / 典故地标</th>
-            <td><strong>${escHtml(info.place)}</strong>（标准古地名：${escHtml(info.resolvedName || info.place)}）</td>
-          </tr>
-          <tr>
-            <th>历史纪年与帝王年号</th>
-            <td>${fmtYearZh(info.year)} · <strong>${escHtml(info.era)}</strong>（${escHtml(info.dynasty.title)}，都城：${escHtml(info.dynasty.seat)}）</td>
-          </tr>
-          <tr>
-            <th>当时所属政权与州郡政区</th>
-            <td><strong>${escHtml(info.polity)}</strong> · ${escHtml(adminNow)}</td>
-          </tr>
-          <tr>
-            <th>现代行政区划与经纬度</th>
-            <td>${escHtml(info.modernProvince)} · 今${escHtml(info.modern || '')}（${info.coord[0].toFixed(2)}°E, ${info.coord[1].toFixed(2)}°N）</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th style="width:24%">查询古地名 / 典故地标</th>
+              <td><strong>${escHtml(resolvedDisplayTitle)}</strong></td>
+            </tr>
+            <tr>
+              <th>历史纪年与帝王年号</th>
+              <td>${fmtYearZh(info.year)} · <strong>${escHtml(info.era)}</strong>（${escHtml(info.dynasty.title)}，都城：${escHtml(info.dynasty.seat)}）</td>
+            </tr>
+            <tr>
+              <th>当时所属政权与州郡政区</th>
+              <td><strong>${escHtml(adminCombined)}</strong></td>
+            </tr>
+            <tr>
+              <th>现代行政区划与经纬度</th>
+              <td>${escHtml(info.modernProvince)} · 今${escHtml(info.modern || '')}（${info.coord[0].toFixed(2)}°E, ${info.coord[1].toFixed(2)}°N）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
-      <h2>二、「${escHtml(info.resolvedName || info.place)}」两千四百年历代政区沿革表（点地溯源）</h2>
+      <h2>二、「${escHtml(resolvedDisplayTitle)}」两千四百年历代政区沿革表（点地溯源）</h2>
       <p>同一地理坐标（${info.coord[0].toFixed(2)}°E, ${info.coord[1].toFixed(2)}°N）从战国（前403年）至现代共 18 个历史时期的政权归属与州道郡县沿革：</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>历史时期</th>
-            <th>代表纪年与年号</th>
-            <th>所属政权</th>
-            <th>州 / 道 / 路 / 省政区</th>
-            <th>邻近治所 / 古城</th>
-            <th>地图跳转</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>历史时期</th>
+              <th>代表纪年与年号</th>
+              <th>所属政权</th>
+              <th>州 / 道 / 路 / 省政区</th>
+              <th>邻近治所 / 古城</th>
+              <th>地图跳转</th>
+            </tr>
+          </thead>
+          <tbody>
 ${genRows}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>`;
   }
 
@@ -1318,50 +1392,56 @@ ${renderTopHeader()}
 
     <section class="section-card">
       <h2>一、古诗词地理名篇路线与著名历史战役专题（${featuredMeta.length} 篇）</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>专题名称（中英对照）</th>
-            <th>地理考据与历史内容提要</th>
-            <th>专题链接</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>专题名称（中英对照）</th>
+              <th>地理考据与历史内容提要</th>
+              <th>专题链接</th>
+            </tr>
+          </thead>
+          <tbody>
 ${featListHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
       <h2>二、中国十八历史时期疆域、政区与古今地名图志（${dynMeta.length} 篇）</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>朝代 / 历史时期</th>
-            <th>都城、版图快照数与古城大事统计</th>
-            <th>专题链接</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>朝代 / 历史时期</th>
+              <th>都城、版图快照数与古城大事统计</th>
+              <th>专题链接</th>
+            </tr>
+          </thead>
+          <tbody>
 ${dynListHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="section-card">
       <h2>三、青史行迹：历史人物时空巡礼路线图志（${journeyMeta.length} 篇）</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>人物行迹专题</th>
-            <th>途经站点路线</th>
-            <th>专题链接</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>人物行迹专题</th>
+              <th>途经站点路线</th>
+              <th>专题链接</th>
+            </tr>
+          </thead>
+          <tbody>
 ${jListHtml}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </section>
 
 ${renderFooter(allDynasties)}
@@ -1447,10 +1527,10 @@ ${allItems}
 
 function main() {
   fs.mkdirSync(TOPICS_DIR, { recursive: true });
-  const { ctrl, dynasties, snapshots, loreData, enLocale } = loadAtlasRuntime();
+  const { ctrl, dynasties, snapshots, loreData, enLocale, provinces } = loadAtlasRuntime();
 
   const dynMeta = dynasties.map((d, idx) =>
-    buildDynastyPage(d, idx, dynasties, snapshots, enLocale, ctrl)
+    buildDynastyPage(d, idx, dynasties, snapshots, enLocale, ctrl, provinces)
   );
   const journeyMeta = loreData.HISTORICAL_JOURNEYS.map((j, idx) =>
     buildJourneyPage(j, idx, loreData.HISTORICAL_JOURNEYS, dynasties)
