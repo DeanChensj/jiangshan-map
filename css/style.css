@@ -1270,18 +1270,25 @@ h2 {
   display: none;
 }
 
+#genealogy-lore,
 .genealogy-list li.pass-lore-banner {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 8px 10px;
-  margin-bottom: 4px;
-  border-radius: 8px;
+  gap: 3px;
+  padding: 6px 9px;
+  margin-bottom: 6px;
+  border-radius: 7px;
   background: linear-gradient(135deg, rgba(181, 69, 47, 0.11), rgba(156, 99, 23, 0.08));
   border: 1px solid rgba(181, 69, 47, 0.3);
   cursor: default;
+  flex-shrink: 0;
 }
 
+#genealogy-lore.is-hidden {
+  display: none;
+}
+
+#genealogy-lore:hover,
 .genealogy-list li.pass-lore-banner:hover {
   background: linear-gradient(135deg, rgba(181, 69, 47, 0.13), rgba(156, 99, 23, 0.1));
 }
@@ -2413,9 +2420,27 @@ html[lang="en"] .genealogy-list li {
     left: 8px;
     right: 8px;
     width: auto;
-    max-height: min(50%, 340px);
-    padding: 10px 12px;
+    max-height: min(54%, 370px);
+    padding: 9px 11px;
     z-index: 14;
+  }
+  #genealogy-lore {
+    padding: 4px 8px;
+    margin-bottom: 5px;
+    gap: 2px;
+  }
+  #genealogy-lore .pass-lore-badge {
+    font-size: 9.8px;
+    padding: 1px 5px;
+  }
+  #genealogy-lore .pass-lore-range {
+    font-size: 10.6px;
+  }
+  #genealogy-lore .pass-lore-desc {
+    font-size: 11px;
+    line-height: 1.36;
+    max-height: 4.1em;
+    overflow-y: auto;
   }
   #milestone-balloon .ep-place {
     padding: 3.5px 9px;

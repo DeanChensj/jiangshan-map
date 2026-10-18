@@ -1814,6 +1814,21 @@ function main() {
   const mockTimelineItems = [];
   const mockHeadingEl = { textContent: '' };
   const mockSubEl = { innerHTML: '', textContent: '', querySelector: () => null };
+  const mockLoreEl = {
+    innerHTML: '',
+    isHidden: true,
+    classList: {
+      remove(c) {
+        if (c === 'is-hidden') mockLoreEl.isHidden = false;
+      },
+      add(c) {
+        if (c === 'is-hidden') mockLoreEl.isHidden = true;
+      },
+      contains(c) {
+        return c === 'is-hidden' ? mockLoreEl.isHidden : false;
+      },
+    },
+  };
   const mockCardEl = { classList: { remove() {}, add() {}, contains: () => false } };
   const mockListEl = {
     scrollTop: 0,
@@ -1850,6 +1865,7 @@ function main() {
   ctrl._id = (id) => {
     if (id === 'genealogy-heading') return mockHeadingEl;
     if (id === 'genealogy-sub') return mockSubEl;
+    if (id === 'genealogy-lore') return mockLoreEl;
     if (id === 'genealogy-card') return mockCardEl;
     if (id === 'genealogy-timeline') return mockListEl;
     return null;
@@ -1867,8 +1883,20 @@ function main() {
     18,
     `Expected openGenealogyAt to render all 18 dynasty rows including PRC, got ${mockTimelineItems.length}`
   );
+  assert(
+    !mockLoreEl.isHidden &&
+      mockLoreEl.innerHTML.includes('名城形胜') &&
+      mockLoreEl.innerHTML.includes('洞庭湖口 · 江湖锁钥'),
+    `Expected #genealogy-lore at Yueyang to render curated city lore banner, got ${mockLoreEl.innerHTML}`
+  );
+  const tangRowHtml = mockTimelineItems[9].innerHTML;
   const rocRowHtml = mockTimelineItems[16].innerHTML;
   const prcRowHtml = mockTimelineItems[17].innerHTML;
+  assert(
+    tangRowHtml.includes('邻近古城：岳州（即此地）') &&
+      tangRowHtml.includes('开元四年张说谪守岳州，始建岳阳楼'),
+    `Expected Tang row at Yueyang to surface per-dynasty settlement remark 开元四年张说谪守岳州，始建岳阳楼, got ${tangRowHtml}`
+  );
   assert(
     rocRowHtml.includes('中华民国') && rocRowHtml.includes('邻近古城：岳阳（即此地）'),
     `Expected ROC row at Yueyang to resolve 邻近古城：岳阳（即此地）, got ${rocRowHtml}`
@@ -1881,6 +1909,12 @@ function main() {
   );
   ctrl.openGenealogyAt(112.24, 30.33, null, { fromYearSync: true });
   assert.strictEqual(mockTimelineItems.length, 18, 'Expected 18 rows at Jingzhou (江陵)');
+  assert(
+    !mockLoreEl.isHidden &&
+      mockLoreEl.innerHTML.includes('名城形胜') &&
+      mockLoreEl.innerHTML.includes('荆楚雄都 · 江汉锁钥'),
+    `Expected #genealogy-lore at Jingzhou to render curated city lore banner, got ${mockLoreEl.innerHTML}`
+  );
   const jzQingHtml = mockTimelineItems[15].innerHTML;
   const jzRocHtml = mockTimelineItems[16].innerHTML;
   const jzPrcHtml = mockTimelineItems[17].innerHTML;
@@ -1894,6 +1928,33 @@ function main() {
       jzPrcHtml.includes('现代城市：荆州（即此地）'),
     `Expected ROC and PRC rows at Jingzhou to resolve 荆州（即此地）, got ROC=${jzRocHtml} PRC=${jzPrcHtml}`
   );
+  ctrl.openGenealogyAt(113.38, 31.69, null, { fromYearSync: true });
+  assert(
+    !mockLoreEl.isHidden &&
+      mockLoreEl.innerHTML.includes('城池形胜') &&
+      mockLoreEl.innerHTML.includes('曾侯乙墓'),
+    `Expected #genealogy-lore at non-curated city Suizhou to render synthesized City Profile banner, got ${mockLoreEl.innerHTML}`
+  );
+  ctrl.openGenealogyAt(110.9, 34.64, null, { fromYearSync: true });
+  assert(
+    !mockLoreEl.isHidden &&
+      mockLoreEl.innerHTML.includes('雄关形胜'),
+    `Expected #genealogy-lore at Hangu Pass to render Strategic Pass banner, got ${mockLoreEl.innerHTML}`
+  );
+  const prevLocaleGen = ctrl.locale;
+  ctrl.locale = 'en';
+  for (const s of dynasties[0].settlements.concat(dynasties[9].settlements, dynasties[17].settlements)) {
+    ctrl.openGenealogyAt(s.coord[0], s.coord[1], s.ancient, { fromYearSync: true });
+    assert(
+      mockHeadingEl.textContent && !/[\u4e00-\u9fa5]/.test(mockHeadingEl.textContent),
+      `English genealogy-heading for ${s.ancient} contains CJK: "${mockHeadingEl.textContent}"`
+    );
+    assert(
+      mockLoreEl.innerHTML && !/[\u4e00-\u9fa5]/.test(mockLoreEl.innerHTML),
+      `English genealogy-lore for ${s.ancient} contains CJK: "${mockLoreEl.innerHTML}"`
+    );
+  }
+  ctrl.locale = prevLocaleGen;
   ctrl._id = prevIdForGen;
   sandbox.document = prevDoc;
 
@@ -2334,6 +2395,45 @@ function main() {
       pointInShape(112.201, 30.351, snapshots.s_zhanguo_b2.polities.find((p) => p.title === '楚').shape),
     's_zhanguo_b2 (-296..-279 BCE) must annex 中山 into 赵 while keeping Yingdu ([112.201, 30.351]) inside 楚 prior to -278 BCE'
   );
+
+  // 23k. Verify 100% pre-modern settlement remark coverage and curated CITY_LORE bilingual integrity
+  for (const [k, v] of Object.entries(enLocale.dict || {})) {
+    assert(
+      !/[\u4e00-\u9fa5]/.test(String(v)),
+      `English dictionary value for "${k}" contains untranslated CJK characters: "${v}"`
+    );
+  }
+  for (const d of dynasties) {
+    if (d.key === 'roc' || d.key === 'prc') continue;
+    for (const s of d.settlements || []) {
+      assert(
+        typeof s.remark === 'string' && s.remark.trim().length > 0,
+        `Pre-modern settlement ${d.key}:${s.ancient} (${s.modern}) must have a non-empty historical remark`
+      );
+    }
+  }
+  assert(
+    Array.isArray(loreData.CITY_LORE) && loreData.CITY_LORE.length >= 87,
+    `Expected >= 87 curated CITY_LORE entries in lore_data.js, got ${loreData.CITY_LORE && loreData.CITY_LORE.length}`
+  );
+  for (const cl of loreData.CITY_LORE) {
+    assert(
+      cl.modern &&
+        Array.isArray(cl.coord) &&
+        cl.coord.length === 2 &&
+        typeof cl.tagZh === 'string' &&
+        cl.tagZh.length >= 4 &&
+        typeof cl.tagEn === 'string' &&
+        cl.tagEn.length >= 6 &&
+        !/[\u4e00-\u9fa5]/.test(cl.tagEn) &&
+        typeof cl.descZh === 'string' &&
+        cl.descZh.length >= 25 &&
+        typeof cl.descEn === 'string' &&
+        cl.descEn.length >= 40 &&
+        !/[\u4e00-\u9fa5]/.test(cl.descEn),
+      `Invalid or incomplete bilingual CITY_LORE entry for ${cl && cl.modern}`
+    );
+  }
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
