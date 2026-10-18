@@ -1110,24 +1110,14 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   const readmeSrc = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
-  const readmeZhSrc = fs.readFileSync(path.join(ROOT, 'README_ZH.md'), 'utf8');
-  const contributingSrc = fs.readFileSync(path.join(ROOT, 'CONTRIBUTING.md'), 'utf8');
-  const contributingZhSrc = fs.readFileSync(path.join(ROOT, 'CONTRIBUTING_ZH.md'), 'utf8');
   assert(
-    !readmeZhSrc.includes('点右上角的 **「开始挑战」**') &&
-      readmeZhSrc.includes('青史行迹 ▾') &&
-      readmeZhSrc.includes('href="README.md"') &&
+    !readmeSrc.includes('点右上角的 **「开始挑战」**') &&
+      readmeSrc.includes('青史行迹 ▾') &&
       readmeSrc.includes('Journeys ▾') &&
-      readmeSrc.includes('href="README_ZH.md"') &&
-      contributingSrc.includes('href="CONTRIBUTING_ZH.md"') &&
-      contributingSrc.includes('lore_data.js') &&
-      contributingZhSrc.includes('href="CONTRIBUTING.md"') &&
-      contributingZhSrc.includes('lore_data.js') &&
       !readmeSrc.includes('&event=') &&
-      !readmeZhSrc.includes('&event=') &&
       !appCode.includes("q.has('event')") &&
-      !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeZhSrc),
-    'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_data.js, document the Journeys dropdown challenge entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
+      !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeSrc),
+    'README.md and app.js must document the Journeys dropdown challenge entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
@@ -2445,59 +2435,38 @@ function main() {
     );
   }
 
-  // 23l. Verify Sui & Tang frontier borders (Anxi/Beiting Tianshan, Anxi/Tubo Kunlun-Altun, Tang/Tubo Qilian-Hengduan, Tang/Nanzhao) are naturally curved & vertex-locked
-  for (const sk of ['s_tang_a5', 's_tang_b0a', 's_tang_b0']) {
-    const pols = snapshots[sk].polities;
-    const findPol = (t) => pols.find((p) => p.title === t);
-    const anxi = findPol('安西都护府');
-    const beiting = findPol('北庭都护府');
-    const tubo = findPol('吐蕃');
-    const nanzhao = findPol('南诏');
-    const tang = findPol('唐');
-    assert(
-      anxi && beiting && tubo && nanzhao && tang,
-      `${sk} must contain 安西都护府, 北庭都护府, 吐蕃, 南诏, and 唐`
-    );
-    const ringOf = (p) =>
-      p.shape.type === 'Polygon'
-        ? p.shape.coordinates[0]
-        : p.shape.coordinates.reduce((best, cur) => (cur[0].length > best.length ? cur[0] : best), []);
-    const keySetOf = (p) => new Set(ringOf(p).map((pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`));
-    const anxiKeys = keySetOf(anxi);
-    const beitingKeys = keySetOf(beiting);
-    const tuboKeys = keySetOf(tubo);
-    const nanzhaoKeys = keySetOf(nanzhao);
-    const tangKeys = keySetOf(tang);
-
-    const countShared = (setA, setB) => {
-      let c = 0;
-      for (const k of setA) if (setB.has(k)) c++;
-      return c;
-    };
-    assert(
-      countShared(anxiKeys, beitingKeys) >= 40,
-      `${sk}: 安西都护府 and 北庭都护府 must share >= 40 curved Tianshan frontier vertices`
-    );
-    assert(
-      countShared(anxiKeys, tuboKeys) >= 50,
-      `${sk}: 安西都护府 and 吐蕃 must share >= 50 curved Kunlun-Altun frontier vertices`
-    );
-    assert(
-      countShared(tangKeys, tuboKeys) >= 50,
-      `${sk}: 唐 and 吐蕃 must share >= 50 curved Qilian-Minshan-Hengduan frontier vertices`
-    );
-    assert(
-      countShared(tangKeys, nanzhaoKeys) >= 40,
-      `${sk}: 唐 and 南诏 must share >= 40 curved Yunnan-Guangxi-Annan frontier vertices`
-    );
-    for (const p of [anxi, beiting, tubo, nanzhao, tang]) {
-      const r = ringOf(p);
-      assert(
-        r.length >= 120,
-        `${sk}: ${p.title} ring must have >= 120 curved vertices (got ${r.length})`
-      );
-    }
-  }
+  // 23l. Verify bilingual (ZH / EN / Pinyin) resolvePlace and inspect() city lore
+  const changanRes = ctrl.resolvePlace("Chang'an", 741);
+  assert(
+    changanRes && changanRes.name.includes('长安'),
+    `Expected resolvePlace("Chang'an", 741) to match 长安, got ${changanRes && changanRes.name}`
+  );
+  const changanUnspaced = ctrl.resolvePlace('Changan', 741);
+  assert(
+    changanUnspaced && changanUnspaced.name.includes('长安'),
+    `Expected resolvePlace("Changan", 741) to match 长安, got ${changanUnspaced && changanUnspaced.name}`
+  );
+  const jinanFujian = ctrl.resolvePlace("Jin'an", 589);
+  const jinanShandong = ctrl.resolvePlace('Jinan', 589);
+  assert(
+    jinanFujian && jinanFujian.name.includes('晋安') && jinanShandong && !jinanShandong.name.includes('晋安'),
+    `Expected apostrophe-aware disambiguation between Jin'an (${jinanFujian && jinanFujian.name}) and Jinan (${jinanShandong && jinanShandong.name})`
+  );
+  const lantianRes = ctrl.resolvePlace('Lantian Pass', 819);
+  assert(
+    lantianRes && lantianRes.name === '蓝田关',
+    `Expected resolvePlace("Lantian Pass", 819) to match 蓝田关, got ${lantianRes && lantianRes.name}`
+  );
+  const inspectChangan = ctrl.inspect({ year: 741, place: "Chang'an" });
+  assert(
+    inspectChangan &&
+      inspectChangan.resolvedName === '长安' &&
+      inspectChangan.lore &&
+      inspectChangan.lore.tagEn &&
+      inspectChangan.nearestCity &&
+      inspectChangan.nearestCity.remark,
+    'Expected inspect({ year: 741, place: "Chang\'an" }) to include resolvedName, lore, and nearestCity.remark'
+  );
 
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);

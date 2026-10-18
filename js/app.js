@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261018c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261018d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261018c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261018d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -599,8 +599,7 @@
 
     trTerm(text) {
       if (!text || this.locale !== 'en') return text;
-      if (text === '中华人民共和国') return "People's Republic of China";
-      return (this.enLocale.dict && this.enLocale.dict[text]) || text;
+      return this._enDict(text);
     }
 
     trModernCity(text) {
@@ -610,7 +609,17 @@
 
     _enDict(text) {
       if (!text) return '';
-      return (this.enLocale.dict && this.enLocale.dict[text]) || text;
+      if (text === '中华人民共和国') return "People's Republic of China";
+      const dict = this.enLocale && this.enLocale.dict;
+      if (!dict) return text;
+      if (dict[text]) return dict[text];
+      const provMatch = String(text).match(
+        /^(黑龙江|内蒙古|新疆|广西|宁夏|西藏|北京|天津|上海|重庆|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)(.+)$/
+      );
+      if (provMatch && dict[provMatch[1]] && dict[provMatch[2]]) {
+        return `${dict[provMatch[2]]}, ${dict[provMatch[1]]}`;
+      }
+      return text;
     }
 
     _enModernCity(text) {
@@ -2941,6 +2950,8 @@
           badge: this.locale === 'en' ? 'Strategic Pass' : '雄关形胜',
           tag: this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh,
           desc: this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh,
+          tagEn: matchedPass.rangeEn,
+          descEn: matchedPass.chokepointEn,
         };
       }
       let bestCity = null;
@@ -2965,12 +2976,22 @@
           badge: this.locale === 'en' ? 'Historic City' : '名城形胜',
           tag: this.locale === 'en' ? bestCity.tagEn : bestCity.tagZh,
           desc: this.locale === 'en' ? bestCity.descEn : bestCity.descZh,
+          tagEn: bestCity.tagEn,
+          descEn: bestCity.descEn,
         };
       }
 
-      const preModRows = (rowsData || []).filter(
-        (r) => r.d && r.d.key !== 'roc' && r.d.key !== 'prc' && r.near && r.near.km < 25
-      );
+      const preModRows = rowsData
+        ? rowsData.filter(
+            (r) => r.d && r.d.key !== 'roc' && r.d.key !== 'prc' && r.near && r.near.km < 25
+          )
+        : (this.dynasties || [])
+            .filter((dyn) => dyn.key !== 'roc' && dyn.key !== 'prc')
+            .map((dyn) => ({
+              d: dyn,
+              near: this._findNearestSettlement(dyn.settlements, lng, lat, 25),
+            }))
+            .filter((r) => r.near && r.near.km < 25);
       if (!preModRows.length) return null;
       const gazHit =
         HistoricalAtlasController.PLACE_GAZETTEER.find(
@@ -2978,15 +2999,29 @@
         ) || null;
 
       const isEn = this.locale === 'en';
-      const modCompare = isEn && identityModern ? this.trModernCity(identityModern) : identityModern;
-      const ancNames = [];
+      const modCompareEn = identityModern
+        ? String(this._enModernCity(identityModern) || '').trim()
+        : '';
+      const ancNamesZh = [];
+      const ancNamesEn = [];
       const addAncName = (raw) => {
         if (!raw) return;
-        const localized = isEn ? this.trTerm(String(raw).trim()) : String(raw).trim();
-        const clean = String(localized || '').replace(/（.*?）|\(.*?\)/g, '').trim();
-        if (!clean || (isEn && /[\u4e00-\u9fa5]/.test(clean))) return;
-        if (clean === identityModern || clean === modCompare || ancNames.includes(clean)) return;
-        ancNames.push(clean);
+        const rawTrim = String(raw).trim();
+        const cleanZh = rawTrim.replace(/（.*?）|\(.*?\)/g, '').trim();
+        if (cleanZh && cleanZh !== identityModern && !ancNamesZh.includes(cleanZh)) {
+          ancNamesZh.push(cleanZh);
+        }
+        const enRaw = this._enDict(rawTrim);
+        const cleanEn = String(enRaw || '').replace(/（.*?）|\(.*?\)/g, '').trim();
+        if (
+          cleanEn &&
+          !/[\u4e00-\u9fa5]/.test(cleanEn) &&
+          cleanEn !== identityModern &&
+          cleanEn !== modCompareEn &&
+          !ancNamesEn.includes(cleanEn)
+        ) {
+          ancNamesEn.push(cleanEn);
+        }
       };
       for (const r of preModRows) {
         addAncName(r.near.s.ancient);
@@ -2994,50 +3029,60 @@
       if (gazHit) {
         addAncName(gazHit.name);
         for (const al of gazHit.aliases || []) {
-          if (ancNames.length >= 4) break;
+          if (ancNamesZh.length >= 4 && ancNamesEn.length >= 4) break;
           addAncName(al);
         }
       }
 
-      const roleGroups = [];
+      const roleGroupsZh = [];
+      const roleGroupsEn = [];
       for (const r of preModRows) {
         if (!r.near.s.remark) continue;
-        const rem = isEn ? this.trTerm(r.near.s.remark) : r.near.s.remark;
-        if (!rem) continue;
-        const dynLbl = this.dynastyName(r.d);
-        const existing = roleGroups.find((g) => g.rem === rem);
-        if (existing) {
-          if (!existing.dyns.includes(dynLbl) && existing.dyns.length < 2) {
-            existing.dyns.push(dynLbl);
+        const remZh = r.near.s.remark;
+        const dynZh = r.d.title;
+        const exZh = roleGroupsZh.find((g) => g.rem === remZh);
+        if (exZh) {
+          if (!exZh.dyns.includes(dynZh) && exZh.dyns.length < 2) {
+            exZh.dyns.push(dynZh);
           }
-        } else if (roleGroups.length < 4) {
-          roleGroups.push({ dyns: [dynLbl], rem });
+        } else if (roleGroupsZh.length < 4) {
+          roleGroupsZh.push({ dyns: [dynZh], rem: remZh });
+        }
+
+        const remEn = this._enDict(remZh);
+        const enDynObj =
+          (this.enLocale && this.enLocale.dynasties && this.enLocale.dynasties[r.d.key]) || {};
+        const dynEn = enDynObj.name || r.d.title;
+        if (remEn && !/[\u4e00-\u9fa5]/.test(remEn)) {
+          const exEn = roleGroupsEn.find((g) => g.rem === remEn);
+          if (exEn) {
+            if (!exEn.dyns.includes(dynEn) && exEn.dyns.length < 2) {
+              exEn.dyns.push(dynEn);
+            }
+          } else if (roleGroupsEn.length < 4) {
+            roleGroupsEn.push({ dyns: [dynEn], rem: remEn });
+          }
         }
       }
 
-      const roleParts = roleGroups.map((g) =>
-        isEn
-          ? `${g.dyns.join('/')}: ${g.rem}`
-          : `${g.dyns.join('·')}：${g.rem}`
-      );
-      if (!roleParts.length) return null;
+      if (!roleGroupsZh.length) return null;
+      const tagZh = ancNamesZh.length
+        ? `古称${ancNamesZh.slice(0, 4).join('、')}`
+        : '历代建置要览';
+      const descZh = `${roleGroupsZh.map((g) => `${g.dyns.join('·')}：${g.rem}`).join('；')}。`;
+      const tagEn = ancNamesEn.length
+        ? `Historic ${ancNamesEn.slice(0, 3).join(' / ')}`
+        : 'Historical Evolution';
+      const descEn = roleGroupsEn.length
+        ? `${roleGroupsEn.map((g) => `${g.dyns.join('/')}: ${g.rem}`).join('; ')}.`
+        : descZh;
 
-      const tagStr =
-        isEn
-          ? ancNames.length
-            ? `Historic ${ancNames.slice(0, 3).join(' / ')}`
-            : 'Historical Evolution'
-          : ancNames.length
-            ? `古称${ancNames.slice(0, 4).join('、')}`
-            : '历代建置要览';
-      const descStr =
-        isEn
-          ? `${roleParts.join('; ')}.`
-          : `${roleParts.join('；')}。`;
       return {
         badge: isEn ? 'City Profile' : '城池形胜',
-        tag: tagStr,
-        desc: descStr,
+        tag: isEn ? (roleGroupsEn.length ? tagEn : tagZh) : tagZh,
+        desc: isEn ? descEn : descZh,
+        tagEn: roleGroupsEn.length ? tagEn : tagZh,
+        descEn,
       };
     }
 
@@ -6489,6 +6534,12 @@
     _queryQuickSearch(rawQuery) {
       const q = rawQuery.trim().toLowerCase();
       if (!q) return [];
+      const fold = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.\s]+/g, '');
+      const isAscii = /[a-z]/i.test(q) && !/[\u4e00-\u9fa5]/.test(q);
+      const qFold = isAscii ? fold(q) : '';
       const index = this._ensureSearchIndex();
       const results = [...this._matchEraResults(rawQuery)];
 
@@ -6498,12 +6549,36 @@
         const tEn = item.titleEn.toLowerCase();
         const mZh = (item.modernZh || '').toLowerCase();
         const mEn = (item.modernEn || '').toLowerCase();
+        const tEnFold = isAscii ? fold(tEn) : '';
+        const mEnFold = isAscii ? fold(mEn) : '';
         if (tZh === q || tEn === q) score = 100;
+        else if (isAscii && qFold.length >= 3 && tEnFold === qFold) score = 98;
         else if (mZh && (mZh === q || mZh.split(/[·/、]/).includes(q) || mEn === q)) score = 96;
-        else if (item.aliases && item.aliases.some((a) => a === q)) score = 92;
-        else if (tZh.startsWith(q) || tEn.startsWith(q)) score = 80;
-        else if (mZh && (mZh.startsWith(q) || mEn.startsWith(q))) score = 78;
-        else if (item.keywords.includes(q)) score = 55;
+        else if (isAscii && qFold.length >= 3 && mEnFold === qFold) score = 94;
+        else if (
+          item.aliases &&
+          item.aliases.some((a) => a === q || (isAscii && qFold.length >= 3 && fold(a) === qFold))
+        ) {
+          score = 92;
+        } else if (
+          tZh.startsWith(q) ||
+          tEn.startsWith(q) ||
+          (isAscii && qFold.length >= 3 && tEnFold.startsWith(qFold))
+        ) {
+          score = 80;
+        } else if (
+          mZh &&
+          (mZh.startsWith(q) ||
+            mEn.startsWith(q) ||
+            (isAscii && qFold.length >= 3 && mEnFold.startsWith(qFold)))
+        ) {
+          score = 78;
+        } else if (
+          item.keywords.includes(q) ||
+          (isAscii && qFold.length >= 4 && fold(item.keywords).includes(qFold))
+        ) {
+          score = 55;
+        }
 
         if (score > 0) {
           if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
@@ -6643,6 +6718,13 @@
             searchList.appendChild(li);
           });
           searchList.classList.remove('is-hidden');
+          return;
+        }
+        if (
+          /[a-z]/i.test(q) &&
+          (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
+        ) {
+          this._ensureEnglishLocale().then(renderSearchDropdown);
           return;
         }
         currentResults = this._queryQuickSearch(q);
@@ -7766,25 +7848,56 @@
       const raw = place.trim();
       if (!raw) return null;
 
-      // Support fallback syntax like "古名(今名)" or "古名/今名" if passed
-      if (/[（()/]/.test(raw)) {
-        const subParts = raw
-          .split(/[（()/）]/)
-          .map((s) => s.trim())
-          .filter(Boolean);
-        if (subParts.length > 1) {
-          for (const sp of subParts) {
-            const hit = this.resolvePlace(sp, year);
-            if (hit) return hit;
-          }
+      const normApos = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/[’‘`]/g, "'")
+          .replace(/\s+/g, ' ')
+          .trim();
+      const normSpace = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.]+/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      const foldAscii = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.\s]+/g, '');
+      const stripParens = (s) =>
+        String(s || '')
+          .replace(/（.*?）|\(.*?\)/g, '')
+          .trim();
+      const extractParens = (s) => {
+        const out = [];
+        const re = /[（(]([^）)]+)[）)]/g;
+        let m;
+        while ((m = re.exec(String(s || ''))) !== null) {
+          if (m[1] && m[1].trim()) out.push(m[1].trim().toLowerCase());
         }
-      }
+        return out;
+      };
 
       const q = raw.toLowerCase();
+      const qApos = normApos(q);
+      const hasQueryParens = /[（(]/.test(raw);
+      const isAsciiQuery = /[a-z]/i.test(raw) && !/[\u4e00-\u9fa5]/.test(raw);
+      const isPassSuffix = /(?:关|\s+(?:pass|guan))$/i.test(raw);
       const stripped = raw
-        .replace(/(?:省|市|州|郡|府|道|路|县|国|关|城|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/, '')
+        .replace(
+          /(?:省|市|州|郡|府|道|路|县|国|关|城|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/,
+          ''
+        )
+        .replace(
+          /\s+(?:province|prefecture|commandery|circuit|pass|city|county|region|autonomous\s+region|municipality|sar|fu|zhou|jun|lu|dao|xian|guan)$/i,
+          ''
+        )
         .trim();
       const qStripped = stripped.length >= 2 ? stripped.toLowerCase() : q;
+      const qNorm = isAsciiQuery ? normSpace(q) : q;
+      const qStrippedNorm = isAsciiQuery ? normSpace(qStripped) : qStripped;
+      const qFold = isAsciiQuery ? foldAscii(q) : '';
+      const qStrippedFold = isAsciiQuery ? foldAscii(qStripped) : '';
 
       const yr = Number.isFinite(Number(year)) ? Number(year) : this.year;
       const targetDynIdx = this._findDynastyIndex(yr);
@@ -7794,45 +7907,293 @@
         ...this.dynasties.filter((d) => d !== targetDyn),
       ];
 
-      // Pass 1 (Exact Match) before Pass 2 (Substring Match) so exact city names (e.g. 西安, 洛阳) never collide with gazetteer substrings
-      for (const exact of [true, false]) {
+      const gazetteerPinyin = {
+        琵琶亭: [
+          'pipating',
+          'pipapavilion',
+          'xunyangtower',
+          'xunyanglou',
+          'mountlu',
+          'lushan',
+          'jiangzhou',
+          'xunyang',
+        ],
+        蓝田关: ['lantianguan', 'languan', 'lantian', 'lantianpass'],
+        赤壁: ['chibi', 'redcliffs', 'wulin'],
+        黄州: ['huangzhou', 'huangzhouredcliffs', 'dongporedcliffs'],
+        马嵬坡: ['maweipo', 'mawei', 'maweiyi', 'maweislope'],
+        白帝城: ['baidicheng', 'whiteemperorcity', 'kuizhou', 'qutangxia', 'fengjie'],
+        五丈原: ['wuzhangyuan', 'wuzhangplains', 'qishan'],
+        街亭: ['jieting', 'longxi'],
+        上方谷: ['shangfanggu', 'hulugu', 'xiegu'],
+        北固楼: ['beigulou', 'beiguting', 'beigupavilion', 'jingkou'],
+        乌衣巷: [
+          'wuyixiang',
+          'blackrobealley',
+          'vermilionbirdbridge',
+          'zhuqueqiao',
+          'qinhuai',
+          'qinhuaihe',
+          'fuzimiao',
+          'shitoucheng',
+          'stonecity',
+        ],
+        寒山寺: ['hanshansi', 'hanshantemple', 'maplebridge', 'fengqiao', 'gusu'],
+        桃花源: ['taohuayuan', 'peachblossomspring', 'wuling', 'wulingyuan'],
+        岳阳楼: ['yueyanglou', 'yueyangtower', 'dongtinghu', 'baling', 'yuezhou'],
+        黄鹤楼: ['huanghelou', 'yellowcranetower', 'xiakou', 'yingwuzhou'],
+        滕王阁: ['tengwangge', 'tengwangpavilion', 'hongdu', 'yuzhang', 'hongzhou'],
+        鹳雀楼: ['guanquelou', 'storktower', 'puzhou', 'zhongtiaoshan'],
+        兰亭: ['lanting', 'orchidpavilion', 'kuaiji', 'shaoxing'],
+        碎叶: ['suiye', 'suyab', 'tokmok'],
+        瓜洲渡: ['guazhoudu', 'guazhou', 'jingkou'],
+        采石矶: ['caishiji', 'caishi', 'niuzhu'],
+        天门山: ['tianmenshan', 'bowangshan'],
+        醉翁亭: ['zuiwengting', 'olddrunkardspavilion', 'langyashan', 'chuzhou'],
+        灞桥: ['baqiao', 'bashui', 'zheliu'],
+        渭城: ['weicheng', 'xianyang'],
+        孟津渡: ['mengjindu', 'mengjin'],
+        风陵渡: ['fenglingdu', 'fengling'],
+        西津渡: ['xijindu', 'jinlingdu'],
+        北邙山: ['beimangshan', 'beimang'],
+        长平: ['changping', 'gaoping', 'shangdang'],
+        大泽乡: ['dazexiang', 'qixian'],
+        巨鹿: ['julu', 'pingxiang'],
+        垓下: ['gaixia', 'lingbi'],
+        乌江亭: ['wujiangting', 'wujiang', 'wujiangpu', 'hezhou'],
+        白登: ['baideng', 'baidengshan'],
+        官渡: ['guandu', 'wuchao', 'zhongmu'],
+        逍遥津: ['xiaoyaojin', 'hefei'],
+        淝水: ['feishui', 'feiriver', 'bagongshan', 'shouchun', 'shouxian'],
+        陈桥驿: ['chenqiaoyi', 'chenqiao', 'fengqiu'],
+        朱仙镇: ['zhuxianzhen', 'zhuxian'],
+        钓鱼城: ['diaoyucheng', 'hezhou', 'hechuan'],
+        崖山: ['yashan', 'yamen', 'xinhui'],
+        土木堡: ['tumubao', 'tumu', 'huailai'],
+        卢沟桥: ['lugouqiao', 'lugoubridge', 'marcopolobridge', 'wanping'],
+        威海卫: ['weihaiwei', 'weihai', 'liugongdao'],
+        井冈山: ['jinggangshan', 'huangyangjie'],
+        牧野: ['muye', 'zhaoge', 'qixian'],
+        长勺: ['changshao', 'laiwu'],
+        桂陵: ['guiling', 'changyuan'],
+        马陵道: ['malingdao', 'maling', 'tancheng'],
+        崤山: ['xiaoshan', 'yaoshan'],
+        琅琊台: ['langyatai', 'langya'],
+        柏举: ['boju', 'macheng'],
+        井陉: ['jingxing', 'tumenguan'],
+        濡须口: ['ruxukou', 'ruxu', 'dongguan'],
+        虎牢: ['hulao', 'hulaoguan', 'hulaopass', 'sishuiguan'],
+        香积寺: ['xiangjisi'],
+        睢阳: ['suiyang', 'shangqiu'],
+        蔡州: ['caizhou', 'runan'],
+        野狐岭: ['yehuling'],
+        三峰山: ['sanfengshan', 'junzhou', 'yuzhou'],
+        鄱阳湖: ['poyanghu', 'poyanglake', 'lakepoyang', 'kangshan'],
+        台儿庄: ['taierzhuang'],
+        泰山: ['taishan', 'mounttai', 'mttai', 'daizong', 'dongyue'],
+        华山: ['huashan', 'mounthua', 'mthua', 'taihuashan', 'xiyue'],
+        嵩山: ['songshan', 'mountsong', 'mtsong', 'shaolinsi', 'zhongyue'],
+        衡山: ['hengshan', 'mountheng', 'mtheng', 'zhurongfeng', 'nanyue'],
+        恒山: ['hengshan', 'xuankongsi', 'beiyue'],
+        新野: ['xinye', 'bowangpo'],
+        樊城: ['fancheng', 'xiangyang'],
+        隆中: ['longzhong', 'gulongzhong'],
+        宛城: ['wancheng', 'wolonggang'],
+        梁山泊: ['liangshanpo', 'liangshan', 'mountliang', 'mtliang', 'shuiboliangshan'],
+        景阳冈: ['jingyanggang', 'yanggu'],
+        大名府: ['damingfu', 'daming'],
+        燕京: ['yanjing', 'xijinfu'],
+        汴梁: ['bianliang', 'bianjing', 'dongjing', 'kaifeng'],
+        风波亭: ['fengboting', 'yuewangmiao', 'xihu', 'westlake'],
+        三峡: ['sanxia', 'threegorges'],
+        巴峡: ['baxia', 'qutangxia'],
+        巫峡: ['wuxia', 'wushan'],
+        西陵峡: ['xilingxia', 'yichang'],
+        惶恐滩: ['huangkongtan', 'wanan'],
+        零丁洋: ['lingdingyang', 'lingding'],
+        终南山: ['zhongnanshan', 'zhongnan', 'taibaishan'],
+        瓜步: ['guabu', 'liuhe'],
+        乌苏里: ['wusuli', 'ussuri'],
+        宁古塔: ['ningguta', 'ningan'],
+        曲阜: ['qufu', 'kongmiao'],
+        景德镇: ['jingdezhen', 'changnan'],
+        苍山洱海: ['cangshanerhai', 'cangshan', 'erhai'],
+        天涯海角: ['tianyahaijiao', 'yazhou'],
+        楼兰: ['loulan', 'kroran', 'lopnur'],
+        轮台: ['luntai', 'bugur'],
+        居延海: ['juyanhai', 'juyan', 'ejin'],
+        燕然山: ['yanranshan', 'hangai', 'khangai'],
+        狼居胥: ['langjuxu', 'khentii'],
+        阴山: ['yinshan', 'yinmountains'],
+        玉门: ['yumen', 'yumenguan', 'jadegate'],
+        阳关: ['yangguan', 'yangpass'],
+        铁门关: ['tiemenguan', 'ironpass'],
+        天山: ['tianshan', 'bogda'],
+        昆仑山: ['kunlunshan', 'kunlun'],
+        祁连山: ['qilianshan', 'qilian', 'yanzhishan'],
+        贺兰山: ['helanshan', 'helan'],
+        黑水: ['heishui', 'amur', 'heilongjiang'],
+        澎湖: ['penghu', 'pescadores'],
+        钓鱼岛: ['diaoyudao', 'diaoyuislands'],
+        曾母暗沙: ['zengmuansha', 'jamesshoal'],
+        黄岩岛: ['huangyandao', 'scarboroughshoal'],
+        华容道: ['huarongdao', 'huarong'],
+        长坂坡: ['changbanpo', 'changban', 'dangyang'],
+      };
+
+      const passModes = isAsciiQuery
+        ? ['strict', 'folded', 'substring']
+        : ['strict', 'substring'];
+
+      // Pass 1A ('strict': apostrophe-preserving) -> Pass 1B ('folded': space/apostrophe-insensitive) -> Pass 2 ('substring')
+      for (const mode of passModes) {
+        const isExact = mode !== 'substring';
+        const isFolded = mode === 'folded';
+
         // 1. Strategic passes (名关雄隘)
-        for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
-          const names = [
-            p.ancientZh,
-            (p.ancientZh || '').replace(/（.*?）|\(.*?\)/g, '').trim(),
-            p.modernZh,
-            p.ancientEn,
-            p.modernEn,
-            p.key,
-          ]
-            .filter(Boolean)
-            .map((s) => s.toLowerCase());
-          const matched = exact
-            ? names.some((n) => n === q || n === qStripped)
-            : names.some((n) => n.includes(q) || (q.length >= 2 && q.includes(n)));
-          if (matched) {
-            return {
-              kind: 'pass',
-              name: p.ancientZh,
-              modern: p.modernZh || '',
-              lng: p.coord[0],
-              lat: p.coord[1],
-              coord: p.coord,
-              zoom: 2.6,
-            };
+        for (const allowStrip of isExact ? [false, true] : [true]) {
+          for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
+            const cleanZh = stripParens(p.ancientZh || '');
+            const cleanEn = stripParens(p.ancientEn || '');
+            const bareZh = cleanZh.replace(/关$/, '').trim();
+            const bareKey = (p.key || '').replace(/guan$/, '').trim();
+            const names = [
+              p.ancientZh,
+              allowStrip && !hasQueryParens ? cleanZh : '',
+              allowStrip && bareZh.length >= 2 ? bareZh : '',
+              ...(allowStrip ? extractParens(p.ancientZh) : []),
+              ...(p.aliases || []),
+              p.ancientEn,
+              allowStrip && !hasQueryParens ? cleanEn : '',
+              ...(allowStrip ? extractParens(p.ancientEn) : []),
+              p.key,
+              bareKey.length >= 3 ? `${bareKey} pass` : '',
+            ]
+              .filter(Boolean)
+              .map((s) => s.toLowerCase());
+
+            const matched =
+              mode === 'strict'
+                ? names.some(
+                    (n) =>
+                      n === q ||
+                      (allowStrip && isPassSuffix && n === qStripped) ||
+                      (isAsciiQuery &&
+                        (normApos(n) === qApos ||
+                          (allowStrip &&
+                            isPassSuffix &&
+                            normApos(n) === normApos(qStripped))))
+                  )
+                : isFolded
+                  ? names.some(
+                      (n) =>
+                        qFold.length >= 3 &&
+                        (foldAscii(n) === qFold ||
+                          (allowStrip &&
+                            isPassSuffix &&
+                            qStrippedFold.length >= 3 &&
+                            foldAscii(n) === qStrippedFold))
+                    )
+                  : names.some(
+                      (n) =>
+                        n.includes(q) ||
+                        (q.length >= 2 && q.includes(n)) ||
+                        (isAsciiQuery &&
+                          qFold.length >= 4 &&
+                          (foldAscii(n).includes(qFold) ||
+                            (foldAscii(n).length >= 4 && qFold.includes(foldAscii(n)))))
+                    );
+            if (matched) {
+              return {
+                kind: 'pass',
+                name: p.ancientZh,
+                modern: p.modernZh || '',
+                lng: p.coord[0],
+                lat: p.coord[1],
+                coord: p.coord,
+                zoom: 2.6,
+              };
+            }
           }
         }
 
-        const matchSettlement = (s) => {
+        const matchSettlement = (s, allowStrip = true) => {
           const anc = (s.ancient || '').toLowerCase();
           const mod = (s.modern || '').toLowerCase();
-          const cleanAnc = anc.replace(/（.*?）|\(.*?\)/g, '').trim();
-          const hit = exact
-            ? anc === q || cleanAnc === q || mod === q || cleanAnc === qStripped || mod === qStripped
-            : anc.includes(q) ||
-              mod.includes(q) ||
-              (qStripped.length >= 2 && (anc.includes(qStripped) || mod.includes(qStripped)));
+          const cleanAnc = stripParens(anc);
+          let hit = false;
+          if (!isAsciiQuery) {
+            hit = !allowStrip
+              ? anc === q || mod === q
+              : isExact
+                ? anc === q ||
+                  (!hasQueryParens && cleanAnc === q) ||
+                  mod === q ||
+                  (!hasQueryParens && cleanAnc === qStripped) ||
+                  mod === qStripped
+                : anc.includes(q) ||
+                  mod.includes(q) ||
+                  (!hasQueryParens &&
+                    qStripped.length >= 2 &&
+                    (anc.includes(qStripped) || mod.includes(qStripped)));
+          } else {
+            const ancEnRaw = this._enDict(s.ancient || '').toLowerCase();
+            const cleanAncEn = stripParens(ancEnRaw);
+            const ancParens = extractParens(ancEnRaw);
+            const modEnRaw = this._enModernCity(s.modern || '').toLowerCase();
+            const cleanModEn = stripParens(modEnRaw);
+            const modCityPart = cleanModEn.split(',')[0].trim();
+            const candidates = !allowStrip
+              ? [
+                  ancEnRaw,
+                  cleanModEn,
+                  !hasQueryParens ? modCityPart : '',
+                ].filter(Boolean)
+              : mode === 'strict'
+                ? [
+                    ancEnRaw,
+                    !hasQueryParens ? cleanAncEn : '',
+                    cleanModEn,
+                    !hasQueryParens ? modCityPart : '',
+                  ].filter(Boolean)
+                : [
+                    ancEnRaw,
+                    !hasQueryParens ? cleanAncEn : '',
+                    ...(!hasQueryParens ? ancParens : []),
+                    cleanModEn,
+                    !hasQueryParens ? modCityPart : '',
+                  ].filter(Boolean);
+            if (mode === 'strict') {
+              const qStrippedApos = normApos(qStripped);
+              hit = candidates.some(
+                (c) =>
+                  normApos(c) === qApos ||
+                  (allowStrip &&
+                    !hasQueryParens &&
+                    qStrippedApos.length >= 2 &&
+                    normApos(c) === qStrippedApos)
+              );
+            } else if (isFolded) {
+              hit =
+                qFold.length >= 2 &&
+                candidates.some(
+                  (c) =>
+                    normSpace(c) === qNorm ||
+                    foldAscii(c) === qFold ||
+                    (allowStrip &&
+                      !hasQueryParens &&
+                      qStrippedFold.length >= 2 &&
+                      (normSpace(c) === qStrippedNorm || foldAscii(c) === qStrippedFold))
+                );
+            } else {
+              hit = candidates.some(
+                (c) =>
+                  c.includes(q) ||
+                  (!hasQueryParens && qStripped.length >= 3 && c.includes(qStripped)) ||
+                  (qFold.length >= 4 && foldAscii(c).includes(qFold))
+              );
+            }
+          }
           if (!hit) return null;
           return {
             kind: 'city',
@@ -7846,21 +8207,74 @@
         };
 
         // 2a. Target dynasty settlements first (preserves era-specific homonyms like 战国/西汉 江州=重庆)
-        for (const s of targetDyn.settlements || []) {
-          const res = matchSettlement(s);
-          if (res) return res;
+        for (const allowStrip of isExact ? [false, true] : [true]) {
+          for (const s of targetDyn.settlements || []) {
+            const res = matchSettlement(s, allowStrip);
+            if (res) return res;
+          }
         }
 
         // 2b. On exact pass, check Poetic & Historical Gazetteer before out-of-era settlements
         // so Tang/Song 江州 (江西九江) is not hijacked by Warring States 江州（巴）(重庆)
         const matchGazetteer = () => {
           for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
-            const allNames = [g.name, ...(g.aliases || [])]
-              .filter(Boolean)
-              .map((s) => s.toLowerCase());
-            const matched = exact
-              ? allNames.some((n) => n === q || n === qStripped)
-              : allNames.some((n) => n.includes(q) || (qStripped.length >= 2 && n.includes(qStripped)));
+            const rawList = [g.name, ...(g.aliases || [])].filter(Boolean);
+            const zhNames = rawList.map((s) => s.toLowerCase());
+            let matched = false;
+            if (!isAsciiQuery) {
+              matched = isExact
+                ? zhNames.some(
+                    (n) =>
+                      n === q ||
+                      (!hasQueryParens && stripParens(n) === q) ||
+                      (!hasQueryParens && stripParens(n) === qStripped)
+                  )
+                : zhNames.some(
+                    (n) =>
+                      n.includes(q) ||
+                      (!hasQueryParens && qStripped.length >= 2 && n.includes(qStripped))
+                  );
+            } else {
+              const enNames = [];
+              for (const rawItem of rawList) {
+                const tr = this._enDict(rawItem).toLowerCase();
+                if (tr && !/[\u4e00-\u9fa5]/.test(tr)) {
+                  enNames.push(
+                    tr,
+                    !hasQueryParens ? stripParens(tr) : '',
+                    ...(!hasQueryParens && mode !== 'strict' ? extractParens(tr) : [])
+                  );
+                }
+              }
+              const pyExtras = gazetteerPinyin[g.name] || [];
+              const allEn = [...enNames, ...pyExtras].filter(Boolean);
+              if (mode === 'strict') {
+                const qStrippedApos = normApos(qStripped);
+                matched = allEn.some(
+                  (n) =>
+                    normApos(n) === qApos ||
+                    (!hasQueryParens && qStrippedApos.length >= 3 && normApos(n) === qStrippedApos)
+                );
+              } else if (isFolded) {
+                matched =
+                  qFold.length >= 3 &&
+                  allEn.some(
+                    (n) =>
+                      normSpace(n) === qNorm ||
+                      foldAscii(n) === qFold ||
+                      (!hasQueryParens &&
+                        qStrippedFold.length >= 3 &&
+                        (normSpace(n) === qStrippedNorm || foldAscii(n) === qStrippedFold))
+                  );
+              } else {
+                matched = allEn.some(
+                  (n) =>
+                    n.includes(q) ||
+                    (!hasQueryParens && qStripped.length >= 3 && n.includes(qStripped)) ||
+                    (qFold.length >= 4 && foldAscii(n).includes(qFold))
+                );
+              }
+            }
             if (matched) {
               return {
                 kind: 'gazetteer',
@@ -7876,21 +8290,23 @@
           return null;
         };
 
-        if (exact) {
+        if (isExact) {
           const gazHit = matchGazetteer();
           if (gazHit) return gazHit;
         }
 
         // 2c. Remaining dynasties' settlements
-        for (const d of orderedDynasties.slice(1)) {
-          for (const s of d.settlements || []) {
-            const res = matchSettlement(s);
-            if (res) return res;
+        for (const allowStrip of isExact ? [false, true] : [true]) {
+          for (const d of orderedDynasties.slice(1)) {
+            for (const s of d.settlements || []) {
+              const res = matchSettlement(s, allowStrip);
+              if (res) return res;
+            }
           }
         }
 
         // 3. Poetic & Historical Gazetteer (substring pass)
-        if (!exact) {
+        if (!isExact) {
           const gazHit = matchGazetteer();
           if (gazHit) return gazHit;
         }
@@ -7901,7 +8317,18 @@
         for (const st of j.stops || []) {
           const anc = (st.ancientZh || '').toLowerCase();
           const mod = (st.modernZh || '').toLowerCase();
-          if (anc === q || mod === q || anc.includes(q) || mod.includes(q)) {
+          const ancEn = (st.ancientEn || '').toLowerCase();
+          const modEn = (st.modernEn || '').toLowerCase();
+          const zhHit = anc === q || mod === q || anc.includes(q) || mod.includes(q);
+          const enHit =
+            isAsciiQuery &&
+            (ancEn === q ||
+              modEn === q ||
+              foldAscii(ancEn) === qFold ||
+              foldAscii(stripParens(ancEn)) === qFold ||
+              ancEn.includes(q) ||
+              modEn.includes(q));
+          if (zhHit || enHit) {
             return {
               kind: 'journey_stop',
               name: st.ancientZh,
@@ -7921,7 +8348,26 @@
           if (!m.coord) continue;
           const site = (m.site || '').toLowerCase();
           const head = (m.headline || '').toLowerCase();
-          if ((site && (site.includes(q) || q.includes(site))) || head.includes(q)) {
+          const enPair =
+            this.enLocale && this.enLocale.milestones && this.enLocale.milestones[`${d.key}:${m.year}`];
+          const headEn = (
+            m.headlineEn ||
+            (Array.isArray(enPair) ? enPair[0] : enPair) ||
+            ''
+          ).toLowerCase();
+          const siteEn = (
+            m.siteEn ||
+            (Array.isArray(enPair) ? enPair[1] : '') ||
+            (m.site ? this._enDict(m.site) : '')
+          ).toLowerCase();
+          const zhHit = (site && (site.includes(q) || q.includes(site))) || head.includes(q);
+          const enHit =
+            isAsciiQuery &&
+            ((siteEn &&
+              (siteEn.includes(q) ||
+                (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
+              (headEn && headEn.includes(q)));
+          if (zhHit || enHit) {
             return {
               kind: 'event_site',
               name: m.site || raw,
@@ -7938,7 +8384,15 @@
         if (!lm.coord) continue;
         const site = (lm.site || '').toLowerCase();
         const zh = (lm.zh || '').toLowerCase();
-        if ((site && (site.includes(q) || q.includes(site))) || zh.includes(q)) {
+        const siteEn = (lm.siteEn || '').toLowerCase();
+        const en = (lm.en || '').toLowerCase();
+        const zhHit = (site && (site.includes(q) || q.includes(site))) || zh.includes(q);
+        const enHit =
+          isAsciiQuery &&
+          ((siteEn &&
+            (siteEn.includes(q) || (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
+            (en && en.includes(q)));
+        if (zhHit || enHit) {
           return {
             kind: 'event_site',
             name: lm.site || raw,
@@ -7964,8 +8418,28 @@
           for (const item of [...(snap.prefectures || []), ...(snap.regions || [])]) {
             if (!item.title || !item.anchor) continue;
             const t = item.title.toLowerCase();
+            const tEn = isAsciiQuery ? this._enDict(item.title).toLowerCase() : '';
+            const tEnStripped = tEn
+              .replace(
+                /\s+(?:province|prefecture|commandery|circuit|region|protectorate|fu|zhou|jun|dao|lu)$/i,
+                ''
+              )
+              .trim();
             const isPref = (snap.prefectures || []).includes(item);
-            if (exact ? t === q || t === qStripped : t.includes(q) || t.includes(qStripped)) {
+            const zhMatch = exact
+              ? t === q || t === qStripped
+              : t.includes(q) || t.includes(qStripped);
+            const enMatch =
+              isAsciiQuery &&
+              tEn &&
+              (exact
+                ? tEn === q ||
+                  tEnStripped === qStripped ||
+                  foldAscii(tEn) === qFold ||
+                  (qStrippedFold.length >= 3 && foldAscii(tEnStripped) === qStrippedFold)
+                : tEn.includes(q) ||
+                  (qFold.length >= 4 && foldAscii(tEn).includes(qFold)));
+            if (zhMatch || enMatch) {
               return {
                 kind: isPref ? 'prefecture' : 'region',
                 name: item.title,
@@ -7984,7 +8458,22 @@
       for (const prov of this.provinces || []) {
         if (!prov.hub || String(prov.code).includes('_JD')) continue;
         const pt = prov.title.toLowerCase();
-        if (pt === q || pt.includes(q) || pt.includes(qStripped)) {
+        const ptShort = prov.title
+          .replace(/(?:省|市|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/, '')
+          .toLowerCase();
+        const ptEn = isAsciiQuery
+          ? (this._enDict(prov.title) || this._enDict(ptShort) || '').toLowerCase()
+          : '';
+        const zhMatch = pt === q || pt.includes(q) || pt.includes(qStripped);
+        const enMatch =
+          isAsciiQuery &&
+          ptEn &&
+          (ptEn === q ||
+            ptEn === qStripped ||
+            foldAscii(ptEn) === qFold ||
+            foldAscii(ptEn) === qStrippedFold ||
+            ptEn.includes(qStripped));
+        if (zhMatch || enMatch) {
           return {
             kind: 'province',
             name: prov.title,
@@ -7994,6 +8483,20 @@
             coord: prov.hub,
             zoom: 2.0,
           };
+        }
+      }
+
+      // Fallback syntax like "古名(今名)" or "古名/今名" if full string did not match
+      if (/[（()/]/.test(raw)) {
+        const subParts = raw
+          .split(/[（()/）]/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (subParts.length > 1) {
+          for (const sp of subParts) {
+            const hit = this.resolvePlace(sp, year);
+            if (hit) return hit;
+          }
         }
       }
 
@@ -8008,6 +8511,8 @@
             ancient: eraHit.near.s.ancient,
             modern: eraHit.near.s.modern || '',
             distanceKm: Math.round(eraHit.near.km),
+            ...(eraHit.near.s.isCapital ? { isCapital: true } : {}),
+            ...(eraHit.near.s.remark ? { remark: eraHit.near.s.remark } : {}),
           }
         : null;
       const fmt = (item) =>
@@ -8029,7 +8534,33 @@
             ? [nearestCity.ancient]
             : []
           : Array.from(new Set(eraHit.prefObjs.map(fmt)));
-      return { polity: eraHit.polity, regions, prefectures, modernProvince, nearestCity };
+      const closestOverall = this._findNearestSettlement(
+        this._getCanonicalPlaces(),
+        cLng,
+        cLat,
+        160
+      );
+      const matchedPassHit = this._findNearbyPass(cLng, cLat, 30);
+      const matchedPass =
+        matchedPassHit && !(closestOverall && closestOverall.km < matchedPassHit.km)
+          ? matchedPassHit.pass
+          : null;
+      const identityModern = this._resolveModernIdentity(
+        cLng,
+        cLat,
+        '',
+        eraHit.modernLoc.modernTitle,
+        closestOverall
+      );
+      const lore = this._resolvePlaceLoreBanner(cLng, cLat, matchedPass, identityModern, null);
+      return {
+        polity: eraHit.polity,
+        regions,
+        prefectures,
+        modernProvince,
+        nearestCity,
+        ...(lore ? { lore } : {}),
+      };
     }
 
     _renderCustomRoute(stops, explicitZoom) {
@@ -8224,6 +8755,7 @@
             prefectures: first.prefectures,
             modernProvince: first.modernProvince,
             nearestCity: first.nearestCity,
+            lore: first.lore,
             route,
             routeDistanceKm: totalKm,
             url: `${basePath}?${params.toString()}`,
@@ -8253,6 +8785,7 @@
             prefectures: [],
             modernProvince: null,
             nearestCity: null,
+            lore: null,
           };
 
       const targetZoom = Math.max(
@@ -8294,8 +8827,16 @@
 
     locate(opts = {}) {
       const { year, place, lng, lat, zoom } = opts || {};
-      if (!this._fullSnapshotsLoaded) {
-        this._ensureFullSnapshots().then(() => {
+      const hasEnDict = Boolean(
+        this.enLocale && this.enLocale.dict && Object.keys(this.enLocale.dict).length > 0
+      );
+      const needsEnDict =
+        !hasEnDict && (this.locale === 'en' || (place && /[a-z]/i.test(String(place))));
+      if (!this._fullSnapshotsLoaded || needsEnDict) {
+        Promise.all([
+          this._fullSnapshotsLoaded ? Promise.resolve() : this._ensureFullSnapshots(),
+          needsEnDict ? this._ensureEnglishLocale() : Promise.resolve(),
+        ]).then(() => {
           this.locate(opts);
         });
       }
@@ -8354,7 +8895,21 @@
         this.camera = { x: tx - w * xFrac, y: ty - h * yFrac, w, h, zoom: z };
         this._applyCamera();
         this.closeMilestoneBalloon();
-        const pinLabel = singlePlace ? String(singlePlace).trim() : resolved ? resolved.name : '';
+        const rawTrim = singlePlace ? String(singlePlace).trim() : '';
+        const useResolvedZh =
+          this.locale !== 'en' &&
+          resolved &&
+          resolved.name &&
+          rawTrim &&
+          /^[a-z0-9'’‘`\-_.\s()]+$/i.test(rawTrim) &&
+          (resolved.kind !== 'gazetteer' ||
+            String(this._enDict(resolved.name) || '')
+              .toLowerCase()
+              .replace(/['’‘`\-_.\s]+/g, '') ===
+              rawTrim.toLowerCase().replace(/['’‘`\-_.\s]+/g, ''));
+        const pinLabel = useResolvedZh
+          ? resolved.name
+          : rawTrim || (resolved ? resolved.name : '');
         this.openGenealogyAt(targetLng, targetLat, pinLabel);
       } else if (zoom !== undefined && zoom !== null && zoom !== '' && !Number.isNaN(Number(zoom))) {
         const z = Math.max(1, Math.min(8, Number(zoom)));
@@ -8375,12 +8930,26 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      const needsEn =
+        this.locale === 'en' ||
+        /[a-z]/i.test(`${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''}`);
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
-        if (this._fullSnapshotsLoaded || typeof window === 'undefined') {
+        const tasks = [];
+        if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
+          tasks.push(this._ensureFullSnapshots());
+        }
+        if (
+          needsEn &&
+          typeof window !== 'undefined' &&
+          (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
+        ) {
+          tasks.push(this._ensureEnglishLocale());
+        }
+        if (!tasks.length) {
           run();
         } else {
-          this._ensureFullSnapshots().then(run);
+          Promise.all(tasks).then(run);
         }
       };
       if (q.has('q')) {
@@ -8453,9 +9022,30 @@
       if (q.has('hover')) {
         const targetPref = q.get('hover');
         afterFullSnapshots(() => {
-          const el = this.grpPrefectures.querySelector(
+          let el = this.grpPrefectures.querySelector(
             `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
           );
+          if (!el && targetPref) {
+            const fold = (s) =>
+              String(s || '')
+                .toLowerCase()
+                .replace(/\s+(?:prefecture|commandery|circuit|province|fu|zhou|jun)$/i, '')
+                .replace(/['’‘`\-_.\s]+/g, '');
+            const qFold = fold(targetPref);
+            const shapes = Array.from(this.grpPrefectures.querySelectorAll('.prefecture-shape'));
+            el =
+              shapes.find((node) => {
+                const zh = node.dataset && node.dataset.prefTitle;
+                if (!zh) return false;
+                const en = this._enDict(zh);
+                return (
+                  en.toLowerCase() === targetPref.trim().toLowerCase() ||
+                  (qFold.length >= 2 && fold(en) === qFold) ||
+                  zh.replace(/(?:州|府|郡|道|路)$/, '') ===
+                    targetPref.trim().replace(/(?:州|府|郡|道|路)$/, '')
+                );
+              }) || null;
+          }
           if (el) {
             el.classList.add('is-hovered');
             const box = el.getBoundingClientRect();

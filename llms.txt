@@ -33,11 +33,11 @@ https://deanchen.me/jiangshan-map/?year=<YEAR>&place=<PLACE>
 - `year` (**required**, integer OR comma-separated integers, `-403` to `2026`, no year `0`):
   - Single year (`year=819` or `year=763`): Jumps to that year. If `place` has multiple stops, the single year broadcasts across all stops.
   - Multi-year list (`year=1079,1080,1094,1097`): Pairs `year[i]` with `place[i]` for multi-year trajectories, labeling each stop on the map with its year (`湖州 (1079)` → `黄州 (1080)` → `惠州 (1094)` → `儋州 (1097)`) and jumping the timeline when a stop is clicked.
-- `place` (**recommended**, plain string — single site OR comma-separated route):
-  - **Single site (0D pinpoint)**: Pass a single canonical ancient/poetic place name (e.g., `浔阳`, `浔阳楼`, `梁山泊`, `蓝关`, `长安`, `赤壁`, `京口`, `五丈原`, `马嵬坡`, `白帝城`, `鸣条`, `牧野`, `崖山`) OR a modern city/county name (e.g., `九江`, `运城`, `镇江`, `黄冈`, `宝鸡`). Do NOT pass event phrases (`江州劫法场`) or combine ancient and modern names with parentheses.
-  - **Multi-stop route (1D / 4D trajectory)**: Pass 2+ comma-separated place names in order (e.g., `place=剑外,巴峡,巫峡,襄阳,洛阳` or `place=湖州,黄州,惠州,儋州`). The atlas automatically draws a curved crimson route connecting all stops (`1` → `2` → `3`...), frames the bounding box, and lets the user click any stop to jump to its year and inspect its administrative genealogy.
-- `hover` (optional, exact prefecture title in that era): Highlights a 州/府/郡 polygon and pops its tooltip (e.g., `hover=江州` in 1102, `hover=黄州` in 1083, `hover=应天府` in 1415).
-- `lang` (optional, `en`): Renders the English UI while keeping `place` and `hover` values in Chinese.
+- `place` (**recommended**, plain string in **Chinese, English, or Pinyin** — single site OR comma-separated route):
+  - **Single site (0D pinpoint)**: Pass a single canonical ancient/poetic place name in Chinese or English/Pinyin (e.g., `浔阳`/`Xunyang`, `浔阳楼`, `梁山泊`/`Mount Liang`, `蓝关`/`Lantian Pass`/`Languan`, `长安`/`Chang'an`/`Changan`, `赤壁`/`Red Cliffs`/`Chibi`, `京口`/`Jingkou`, `五丈原`/`Wuzhang Plains`, `马嵬坡`/`Mawei`, `白帝城`/`Baidicheng`, `鸣条`/`Mingtiao`, `牧野`/`Muye`, `崖山`/`Yamen`) OR a modern city/county name (e.g., `九江`/`Jiujiang`, `运城`/`Yuncheng`, `镇江`/`Zhenjiang`, `黄冈`/`Huanggang`, `宝鸡`/`Baoji`). Apostrophes, hyphens, and spaces are normalized automatically (`Chang'an` = `Changan`, `Lin'an` = `Linan`). Do NOT pass event phrases (`江州劫法场`) or combine ancient and modern names with parentheses.
+  - **Multi-stop route (1D / 4D trajectory)**: Pass 2+ comma-separated place names in order (e.g., `place=剑外,巴峡,巫峡,襄阳,洛阳` or `place=Huzhou,Huangzhou,Huizhou,Danzhou`). The atlas automatically draws a curved crimson route connecting all stops (`1` → `2` → `3`...), frames the bounding box, and lets the user click any stop to jump to its year and inspect its administrative genealogy.
+- `hover` (optional, prefecture title in Chinese or English/Pinyin in that era): Highlights a 州/府/郡 polygon and pops its tooltip (e.g., `hover=江州` or `hover=Jiangzhou` in 1102, `hover=黄州` or `hover=Huangzhou` in 1083, `hover=应天府` or `hover=Yingtian Fu` in 1415).
+- `lang` (optional, `en`): Renders the English UI (`place` and `hover` accept both Chinese and English/Pinyin).
 - `zoom` (optional, float, `1.0` to `8.0`): Camera zoom level override (defaults automatically based on place type or multi-stop bounding box).
 - `lng` / `lat` (optional, float): Explicit longitude/latitude override (`70.0`–`142.0`, `15.0`–`56.0`), only needed if pinpointing raw coordinates not associated with any named place.
 
@@ -66,10 +66,10 @@ For browser agents, Playwright scripts, or WebMCP integrations interacting with 
 - `window.atlasAPI.locate({ year, place, zoom?, lng?, lat? })`:
   Jumps the timeline to `year`, resolves `place` (single site or comma-separated multi-stop route) against the built-in gazetteer, centers/zooms the map camera, renders either a pinpoint marker or a numbered multi-stop route on the canvas, opens the 2,000-year administrative genealogy card (`#genealogy-card`), and returns the structured inspection object.
 - `window.atlasAPI.resolvePlace(place, year?)`:
-  Resolves an ancient/modern city, poetic site, strategic pass, prefecture, or province name to `{ kind, name, modern, lng, lat, coord, zoom }` (or `null` if not found).
+  Resolves a Chinese, English, or Pinyin ancient/modern city, poetic site, strategic pass, prefecture, or province name to `{ kind, name, modern, lng, lat, coord, zoom }` (or `null` if not found).
 - `window.atlasAPI.inspect({ year, place, zoom?, lng?, lat? })`:
   Read-only query that returns the historical context at `(year, place)` without moving the camera:
-  `{ year, era, dynasty, place, coord, zoom, polity, regions, prefectures, modernProvince, nearestCity, route, routeDistanceKm, url }`.
+  `{ year, era, dynasty, place, resolvedName, modern, coord, zoom, polity, regions, prefectures, modernProvince, nearestCity, lore, route, routeDistanceKm, url }` (where `nearestCity` includes `isCapital` and era-specific `remark`, and `lore` contains the 2,400-year city/pass overview `{ badge, tag, desc, tagEn, descEn }`).
 
 ## 3. Dynasty Timeline Coverage (`-403` to `2026`)
 
