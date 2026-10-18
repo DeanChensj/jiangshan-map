@@ -6104,6 +6104,18 @@ window.EN_LOCALE = {
     "州郡政区：魏蜀吴州郡政区": "Prefectures: Provinces & Commanderies of Wei, Shu & Wu",
     "州郡政区：唐代十道/十五道与州府政区": "Prefectures: Tang 10/15 Circuits & Prefectures",
     "州郡政区：唐代道州与边疆都护政区": "Prefectures: Tang Circuits, Prefectures & Frontier Protectorates",
-    "州郡政区：五代十国州府与割据政区": "Prefectures: Five Dynasties & Ten Kingdoms Prefectures"
+    "州郡政区：五代十国州府与割据政区": "Prefectures: Five Dynasties & Ten Kingdoms Prefectures",
+    "延平路": "Yanping Route",
+    "嘉定府": "Jiading Prefecture",
+    "建昌卫": "Jianchang Guard",
+    "建州卫": "Jianzhou Guard",
+    "南平·三明": "Nanping / Sanming",
+    "开元二十四年（736年）置汀州，与福、建、泉、漳合称唐代福建五州": "Established as Tingzhou in 736 CE, forming the five Tang prefectures of Fujian together with Fuzhou, Jianzhou, Quanzhou, and Zhangzhou",
+    "武德四年（621年）置建州，与福州合称“福建”，为福建得名之源": "Established as Jianzhou in 621 CE; combined with Fuzhou to coin the name \"Fujian\"",
+    "景云二年（711年）改武荣州为泉州，唐代四大外贸海港之一": "Renamed Quanzhou in 711 CE; one of the four great maritime trade ports of Tang China",
+    "垂拱二年（686年）陈元光请置漳州，开漳圣王经营闽南之始": "Established as Zhangzhou in 686 CE by Chen Yuanguang, marking the development of southern Fujian",
+    "元改南剑路为延平路，控扼闽江上游三溪汇流要冲": "Renamed Yanping Route under the Yuan, commanding the upper Min River confluence",
+    "福建八府之一，辖南平、沙县、尤溪、永安、将乐等县，正统年间邓茂七起义于此": "One of the Eight Prefectures of Fujian governing Nanping, Shaxian, Youxi, and Yong'an; site of the 1448 Deng Maoqi rebellion",
+    "福建省八府之一，连接闽北延建与闽西汀州之水陆咽喉，领南平、沙县、永安等县": "One of the Eight Prefectures of Fujian linking northern and western Fujian across Nanping, Shaxian, and Yong'an"
   }
 };
