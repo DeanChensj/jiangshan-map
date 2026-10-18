@@ -1461,7 +1461,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
-        ]
+        ],
+        "remark": "河南郡治，关东第一大都会"
       },
       {
         "ancient": "敦煌",
@@ -1500,7 +1501,8 @@ window.DYNASTY_DATA = [
           75.991,
           39.471
         ],
-        "appear": -60
+        "appear": -60,
+        "remark": "西域北道西端重镇，葱岭东门"
       },
       {
         "ancient": "成都",
@@ -1508,7 +1510,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "蜀郡治所，文翁石室兴学，“列备五都”之一"
       },
       {
         "ancient": "番禺",
@@ -1527,7 +1530,8 @@ window.DYNASTY_DATA = [
           105.851,
           21.031
         ],
-        "appear": -111
+        "appear": -111,
+        "remark": "元鼎六年平南越置交趾郡，岭南南疆中枢"
       },
       {
         "ancient": "乐浪",
@@ -1565,7 +1569,8 @@ window.DYNASTY_DATA = [
           116.781,
           32.581
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "淮南国都，后为九江郡治"
       },
       {
         "ancient": "蓟（幽州）",
@@ -2339,7 +2344,8 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "西京重镇，献帝初平元年自洛阳西迁都此"
       },
       {
         "ancient": "宛",
@@ -2357,7 +2363,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.391,
           36.101
-        ]
+        ],
+        "remark": "冀州治所，建安九年曹操平河北定霸府于此"
       },
       {
         "ancient": "许",
@@ -2375,7 +2382,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "益州及蜀郡治所，汉末刘焉、刘璋父子割据于此"
       },
       {
         "ancient": "襄阳",
@@ -2383,7 +2391,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           32.011
-        ]
+        ],
+        "remark": "建安中荆州牧刘表移治于此，诸葛亮躬耕隆中"
       },
       {
         "ancient": "敦煌",
@@ -2391,7 +2400,8 @@ window.DYNASTY_DATA = [
         "coord": [
           94.661,
           40.141
-        ]
+        ],
+        "remark": "河西丝路咽喉，东汉西域经营后方基地"
       },
       {
         "ancient": "龟兹",
@@ -2410,7 +2420,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "南海郡及交州刺史部治所，岭南海上贸易枢纽"
       },
       {
         "ancient": "交趾",
@@ -3020,7 +3031,8 @@ window.DYNASTY_DATA = [
           113.851,
           34.041
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "曹魏五都之一，汉献帝建安故都"
       },
       {
         "ancient": "邺城",
@@ -3038,7 +3050,8 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "曹魏关中都督驻地，抵御蜀汉北伐核心重镇"
       },
       {
         "ancient": "汉中",
@@ -3057,7 +3070,8 @@ window.DYNASTY_DATA = [
           112.241,
           30.331
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "荆州南郡治所，吕蒙白衣渡江夺城、陆逊火烧连营重镇"
       },
       {
         "ancient": "襄阳",
@@ -3065,7 +3079,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           32.011
-        ]
+        ],
+        "remark": "曹魏荆州刺史及南征大本营，与吴蜀隔汉水相望"
       },
       {
         "ancient": "合肥",
@@ -3084,7 +3099,8 @@ window.DYNASTY_DATA = [
           113.901,
           29.721
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "建安十三年孙刘联军火烧赤壁大破曹军古战场"
       },
       {
         "ancient": "交州（番禺）",
@@ -3093,7 +3109,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "孙吴交州及广州治所，通南海诸国海贸门户"
       },
       {
         "ancient": "蓟（幽州）",
@@ -3504,7 +3521,8 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "秦州及雍州重镇，永嘉之乱后晋愍帝即位于此"
       },
       {
         "ancient": "建邺",
@@ -3521,7 +3539,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "益州刺史部治所；永兴元年李雄克成都称王，寻建大成国"
       },
       {
         "ancient": "邺",
@@ -3529,7 +3548,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.391,
           36.101
-        ]
+        ],
+        "remark": "冀州重镇，八王之乱成都王司马颖镇守之地"
       },
       {
         "ancient": "平阳",
@@ -3548,7 +3568,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           32.011
-        ]
+        ],
+        "remark": "荆州都督驻地，羊祜、杜预先后镇守经营伐吴"
       },
       {
         "ancient": "寿春",
@@ -3557,7 +3578,8 @@ window.DYNASTY_DATA = [
           116.781,
           32.581
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "扬州淮南重镇，伐吴东路大军会师出发地"
       },
       {
         "ancient": "番禺",
@@ -3566,7 +3588,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "广州刺史部治所，岭南第一大港"
       },
       {
         "ancient": "姑臧（凉州）",
@@ -3574,7 +3597,8 @@ window.DYNASTY_DATA = [
         "coord": [
           102.641,
           37.931
-        ]
+        ],
+        "remark": "凉州刺史张轨保境安民，永嘉乱后为前凉都城"
       },
       {
         "ancient": "襄平",
@@ -3582,7 +3606,8 @@ window.DYNASTY_DATA = [
         "coord": [
           123.171,
           41.271
-        ]
+        ],
+        "remark": "平州及辽东国治所，东北边疆重镇"
       },
       {
         "ancient": "蓟（幽州）",
@@ -4213,7 +4238,8 @@ window.DYNASTY_DATA = [
           112.241,
           30.331
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "荆州刺史部治所，桓温、谢安经营“荆扬相持”之西府重镇"
       },
       {
         "ancient": "寿阳",
@@ -4866,7 +4892,8 @@ window.DYNASTY_DATA = [
           116.781,
           32.581
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "南朝豫州与北魏、梁陈反复争夺之淮南锁钥"
       },
       {
         "ancient": "襄阳",
@@ -4874,7 +4901,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           32.011
-        ]
+        ],
+        "remark": "南朝雍州刺史部治所，萧衍自襄阳起兵建梁，后为西魏占据"
       },
       {
         "ancient": "江陵",
@@ -4892,7 +4920,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "南朝益州重镇，553年西魏尉迟迥平蜀纳入北朝"
       },
       {
         "ancient": "广州",
@@ -4901,7 +4930,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "南朝广州都督驻地，海外诸国商舶云集"
       },
       {
         "ancient": "敦煌",
@@ -5484,7 +5514,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "蜀郡治所，隋文帝子蜀王杨秀镇守经营西南中枢"
       },
       {
         "ancient": "番禺",
@@ -5493,7 +5524,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "南海郡治，隋平陈后岭南钦服之海贸首府"
       },
       {
         "ancient": "太原",
@@ -5519,7 +5551,8 @@ window.DYNASTY_DATA = [
         "coord": [
           94.661,
           40.141
-        ]
+        ],
+        "remark": "敦煌郡治，裴矩于河西掌西域通商互市咽喉"
       },
       {
         "ancient": "邺（相州）",
@@ -6360,7 +6393,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "剑南道及成都府治所，安史之乱唐玄宗入蜀升为南京，号“扬一益二”"
       },
       {
         "ancient": "广州",
@@ -6417,7 +6451,8 @@ window.DYNASTY_DATA = [
           41.721
         ],
         "vanish": 790,
-        "appear": 640
+        "appear": 640,
+        "remark": "显庆三年移安西大都护府治龟兹，统辖碎叶、疏勒、于阗、龟兹四镇"
       },
       {
         "ancient": "北庭都护府",
@@ -6427,7 +6462,8 @@ window.DYNASTY_DATA = [
           44.001
         ],
         "vanish": 790,
-        "appear": 657
+        "appear": 657,
+        "remark": "长安二年置北庭都护府于庭州，统领天山北路与瀚海军"
       },
       {
         "ancient": "安东都护府",
@@ -8366,7 +8402,8 @@ window.DYNASTY_DATA = [
           112.451,
           34.621
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "北宋四京之西京河南府，司马光于此退居独乐园纂成《资治通鉴》"
       },
       {
         "ancient": "南京应天府",
@@ -8376,7 +8413,8 @@ window.DYNASTY_DATA = [
           34.411
         ],
         "align": "b",
-        "appear": 1014
+        "appear": 1014,
+        "remark": "北宋四京之南京，范仲淹执教应天府书院；1127年赵构即位于此"
       },
       {
         "ancient": "北京大名府",
@@ -8385,7 +8423,8 @@ window.DYNASTY_DATA = [
           115.151,
           36.281
         ],
-        "appear": 1042
+        "appear": 1042,
+        "remark": "庆历二年升魏州大名府为北京，控御河北抗辽门户"
       },
       {
         "ancient": "杭州",
@@ -8394,7 +8433,8 @@ window.DYNASTY_DATA = [
           120.151,
           30.271
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "两浙路治所，苏轼两任杭州整浚西湖筑苏堤，号“东南第一州”"
       },
       {
         "ancient": "江宁",
@@ -8421,7 +8461,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "广南东路治所，开宝四年首置市舶司统管南海诸国贸易"
       },
       {
         "ancient": "泉州",
@@ -9497,7 +9538,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "remark": "南宋留都建康府及江南东路治所，拱卫行在临安之长江锁钥"
       },
       {
         "ancient": "襄阳",
@@ -9514,7 +9556,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           30.591
-        ]
+        ],
+        "remark": "荆湖北路重镇，岳飞驻军鄂州北伐，南宋中游江防核心"
       },
       {
         "ancient": "成都",
@@ -9522,7 +9565,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "成都府路及四川制置司治所，统筹川陕抗金抗蒙军政中枢"
       },
       {
         "ancient": "钓鱼城",
@@ -9550,7 +9594,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "广南东路治所与南海大港，宋季市舶岁入之重镇"
       },
       {
         "ancient": "崖山",
@@ -10387,7 +10432,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "remark": "江南诸道行御史台及集庆路治所，1356年朱元璋攻克改应天府"
       },
       {
         "ancient": "汴梁",
@@ -10395,7 +10441,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           34.801
-        ]
+        ],
+        "remark": "河南江北行省治所，控驭中原黄河水陆枢轴"
       },
       {
         "ancient": "成都",
@@ -10403,7 +10450,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "四川行省治所，元代西南军政与商贸都会"
       },
       {
         "ancient": "中庆",
@@ -10431,7 +10479,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "江西行省广东道宣慰司治所，南海番舶贸易大港"
       },
       {
         "ancient": "辽阳",
@@ -11303,7 +11352,8 @@ window.DYNASTY_DATA = [
         "coord": [
           120.581,
           31.301
-        ]
+        ],
+        "remark": "南直隶苏州府，全国赋税与丝绸棉纺工商业之冠"
       },
       {
         "ancient": "杭州",
@@ -11312,7 +11362,8 @@ window.DYNASTY_DATA = [
           120.151,
           30.271
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "浙江承宣布政使司治所，运河钞关与东南丝茶商贸大都会"
       },
       {
         "ancient": "广州",
@@ -11321,7 +11372,8 @@ window.DYNASTY_DATA = [
           113.261,
           23.131
         ],
-        "align": "l"
+        "align": "l",
+        "remark": "广东承宣布政使司治所，南海海防与对外通商门户"
       },
       {
         "ancient": "月港",
@@ -11339,7 +11391,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           30.591
-        ]
+        ],
+        "remark": "湖广承宣布政使司治所，楚王藩府驻地，九省通衢"
       },
       {
         "ancient": "成都",
@@ -11347,7 +11400,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "四川承宣布政使司治所，蜀王藩府驻地，西南首府"
       },
       {
         "ancient": "西安",
@@ -11355,7 +11409,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "remark": "陕西承宣布政使司治所，秦王藩府驻地，统驭西北九边军务"
       },
       {
         "ancient": "云南府",
@@ -11363,7 +11418,8 @@ window.DYNASTY_DATA = [
         "coord": [
           102.831,
           24.881
-        ]
+        ],
+        "remark": "云南承宣布政使司治所，黔国公沐氏世镇西南中枢"
       },
       {
         "ancient": "山海关",
@@ -12902,7 +12958,8 @@ window.DYNASTY_DATA = [
         "coord": [
           120.581,
           31.301
-        ]
+        ],
+        "remark": "江苏巡抚及江苏布政使驻地，乾隆《盛世滋生图》所绘天下繁华首府"
       },
       {
         "ancient": "杭州",
@@ -12911,7 +12968,8 @@ window.DYNASTY_DATA = [
           120.151,
           30.271
         ],
-        "align": "b"
+        "align": "b",
+        "remark": "浙江省会及杭州将军驻地，东南人文与商贸都会"
       },
       {
         "ancient": "广州",
@@ -12938,7 +12996,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "remark": "四川省会及四川总督、成都将军驻地，川藏交通大本营"
       },
       {
         "ancient": "西安",
@@ -12946,7 +13005,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "remark": "陕西省会及西安将军驻地，西北军政重镇"
       },
       {
         "ancient": "伊犁",
@@ -12965,7 +13025,8 @@ window.DYNASTY_DATA = [
           87.621,
           43.831
         ],
-        "appear": 1759
+        "appear": 1759,
+        "remark": "乾隆二十八年筑迪化城，光绪十年新疆建省定为省会"
       },
       {
         "ancient": "拉萨",
