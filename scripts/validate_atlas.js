@@ -1110,14 +1110,18 @@ function main() {
   const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert(!htmlSrc.includes('id="diag-hatch"'), 'index.html must not contain unused #diag-hatch pattern');
   const readmeSrc = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  const readmeZhSrc = fs.readFileSync(path.join(ROOT, 'README_ZH.md'), 'utf8');
   assert(
-    !readmeSrc.includes('点右上角的 **「开始挑战」**') &&
-      readmeSrc.includes('青史行迹 ▾') &&
+    !readmeZhSrc.includes('点右上角的 **「开始挑战」**') &&
+      readmeZhSrc.includes('青史行迹 ▾') &&
+      readmeZhSrc.includes('href="README.md"') &&
       readmeSrc.includes('Journeys ▾') &&
+      readmeSrc.includes('href="README_ZH.md"') &&
       !readmeSrc.includes('&event=') &&
+      !readmeZhSrc.includes('&event=') &&
       !appCode.includes("q.has('event')") &&
-      !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeSrc),
-    'README.md and app.js must document the Journeys dropdown challenge entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
+      !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeZhSrc),
+    'README.md (English default), README_ZH.md (Chinese), and app.js must document the Journeys dropdown challenge entry point, cross-link between English and Chinese READMEs, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
