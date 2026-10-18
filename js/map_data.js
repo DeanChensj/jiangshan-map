@@ -7302,24 +7302,44 @@ window.DYNASTY_DATA = [
         "remark": "河南道登州治蓬莱，唐代经略辽东与通航新罗、日本之北方第一海港"
       },
       {
-        "ancient": "龙岩（汀州）",
+        "ancient": "汀州",
         "modern": "龙岩",
         "coord": [
           117.02,
           25.08
         ],
         "tier": 2,
-        "remark": "开元二十四年置汀州领新罗县，天宝元年（742年）因城东翠屏山龙岩洞改名龙岩县"
+        "remark": "开元二十四年（736年）置汀州，与福、建、泉、漳合称唐代福建五州"
       },
       {
-        "ancient": "沙县（宁化）",
-        "modern": "三明",
+        "ancient": "建州",
+        "modern": "南平·建瓯",
         "coord": [
-          117.64,
-          26.26
+          118.32,
+          27.03
         ],
         "tier": 2,
-        "remark": "江南东道闽中腹地，唐置沙县、宁化县，宁化石壁为客家先民入闽聚居首站"
+        "remark": "武德四年（621年）置建州，与福州合称“福建”，为福建得名之源"
+      },
+      {
+        "ancient": "泉州",
+        "modern": "泉州",
+        "coord": [
+          118.681,
+          24.871
+        ],
+        "tier": 2,
+        "remark": "景云二年（711年）改武荣州为泉州，唐代四大外贸海港之一"
+      },
+      {
+        "ancient": "漳州",
+        "modern": "漳州",
+        "coord": [
+          117.651,
+          24.511
+        ],
+        "tier": 2,
+        "remark": "垂拱二年（686年）陈元光请置漳州，开漳圣王经营闽南之始"
       }
     ],
     "phases": [
@@ -9158,7 +9178,7 @@ window.DYNASTY_DATA = [
         "remark": "太平兴国四年置兴化军，木兰陂水利与妈祖故里"
       },
       {
-        "ancient": "端州（肇庆）",
+        "ancient": "端州",
         "modern": "肇庆",
         "coord": [
           112.47,
@@ -9188,7 +9208,7 @@ window.DYNASTY_DATA = [
         "remark": "环庆路经略安抚使治所，范仲淹筑大顺城御夏"
       },
       {
-        "ancient": "渭州（平凉）",
+        "ancient": "渭州",
         "modern": "平凉",
         "coord": [
           106.67,
@@ -9238,7 +9258,7 @@ window.DYNASTY_DATA = [
         "remark": "京东东路海防重镇，元丰八年苏轼知登州五日，作《登州海市》诗"
       },
       {
-        "ancient": "汀州（龙岩）",
+        "ancient": "汀州",
         "modern": "龙岩",
         "coord": [
           117.02,
@@ -9248,7 +9268,7 @@ window.DYNASTY_DATA = [
         "remark": "福建路闽西重镇，客家先民南迁聚居大本营，享有“客家首府”之称"
       },
       {
-        "ancient": "南剑州（尤溪）",
+        "ancient": "南剑州",
         "modern": "三明",
         "coord": [
           117.64,
@@ -10053,7 +10073,7 @@ window.DYNASTY_DATA = [
         "remark": "唃厮啰青唐故地，宋金夏交争"
       },
       {
-        "ancient": "楚州（淮安）",
+        "ancient": "楚州",
         "modern": "淮安",
         "coord": [
           119.14,
@@ -10113,7 +10133,7 @@ window.DYNASTY_DATA = [
         "remark": "朱陆鹅湖之会讲学处，辛弃疾闲居上饶带湖"
       },
       {
-        "ancient": "嘉定府（乐山）",
+        "ancient": "嘉定府",
         "modern": "乐山",
         "coord": [
           103.77,
@@ -10163,7 +10183,7 @@ window.DYNASTY_DATA = [
         "remark": "荆湖北路军事要冲，孟珙屯田荆襄屏障江汉"
       },
       {
-        "ancient": "宝庆府（邵阳）",
+        "ancient": "宝庆府",
         "modern": "邵阳",
         "coord": [
           111.47,
@@ -10193,7 +10213,7 @@ window.DYNASTY_DATA = [
         "remark": "金代山东东路海防名州，全真道王重阳于昆嵛山、宁海创立北五祖教脉"
       },
       {
-        "ancient": "汀州（龙岩）",
+        "ancient": "汀州",
         "modern": "龙岩",
         "coord": [
           117.02,
@@ -10203,7 +10223,7 @@ window.DYNASTY_DATA = [
         "remark": "闽西山川形胜要地，宋末文天祥抗元曾屯兵汀州经营闽赣"
       },
       {
-        "ancient": "南剑州（尤溪）",
+        "ancient": "南剑州",
         "modern": "三明",
         "coord": [
           117.64,
@@ -10911,7 +10931,7 @@ window.DYNASTY_DATA = [
         "remark": "元置亦集乃路总管府于黑水城，马可波罗东行经此"
       },
       {
-        "ancient": "临安路（建水）",
+        "ancient": "临安路",
         "modern": "红河·建水",
         "coord": [
           102.83,
@@ -10941,7 +10961,7 @@ window.DYNASTY_DATA = [
         "remark": "帕木竹巴绛曲坚赞统一卫藏，以山南泽当为中心"
       },
       {
-        "ancient": "汀州路（龙岩）",
+        "ancient": "汀州路",
         "modern": "龙岩",
         "coord": [
           117.02,
@@ -10949,6 +10969,16 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "江浙行省闽西重镇，连接闽南漳泉与赣南粤东之山陆枢纽"
+      },
+      {
+        "ancient": "延平路",
+        "modern": "南平·三明",
+        "coord": [
+          118.18,
+          26.64
+        ],
+        "tier": 2,
+        "remark": "元改南剑路为延平路，控扼闽江上游三溪汇流要冲"
       }
     ],
     "phases": [
@@ -11955,7 +11985,7 @@ window.DYNASTY_DATA = [
         "remark": "顾宪成、高攀龙讲学东林书院，江南工商米市重镇"
       },
       {
-        "ancient": "保宁府（阆中）",
+        "ancient": "保宁府",
         "modern": "南充·阆中",
         "coord": [
           105.97,
@@ -11975,7 +12005,7 @@ window.DYNASTY_DATA = [
         "remark": "控扼川南与乌蒙山区要冲"
       },
       {
-        "ancient": "建昌卫（西昌）",
+        "ancient": "建昌卫",
         "modern": "凉山·西昌",
         "coord": [
           102.26,
@@ -11985,7 +12015,7 @@ window.DYNASTY_DATA = [
         "remark": "四川行都指挥使司治所，统摄川西南五卫"
       },
       {
-        "ancient": "广信府（上饶）",
+        "ancient": "广信府",
         "modern": "上饶",
         "coord": [
           117.94,
@@ -12015,7 +12045,7 @@ window.DYNASTY_DATA = [
         "remark": "宋应星于袁州分宜教谕任上著《天工开物》"
       },
       {
-        "ancient": "兴化府（莆田）",
+        "ancient": "兴化府",
         "modern": "莆田",
         "coord": [
           119.01,
@@ -12076,7 +12106,7 @@ window.DYNASTY_DATA = [
         "remark": "成化六年置两广总督府于梧州，总镇两广军政"
       },
       {
-        "ancient": "太平府（崇左）",
+        "ancient": "太平府",
         "modern": "崇左",
         "coord": [
           107.36,
@@ -12106,7 +12136,7 @@ window.DYNASTY_DATA = [
         "remark": "滇西军政中枢，邓子龙抗缅大捷驻地"
       },
       {
-        "ancient": "临安府（建水）",
+        "ancient": "临安府",
         "modern": "红河·建水",
         "coord": [
           102.83,
@@ -12186,7 +12216,7 @@ window.DYNASTY_DATA = [
         "remark": "永乐年间屡遣使入贡美玉，复通西域贡道"
       },
       {
-        "ancient": "建州卫（集安）",
+        "ancient": "建州卫",
         "modern": "通化·集安",
         "coord": [
           126.19,
@@ -12296,7 +12326,7 @@ window.DYNASTY_DATA = [
         "remark": "两淮盐运司伍祐、新兴诸盐场重镇"
       },
       {
-        "ancient": "嘉定州（乐山）",
+        "ancient": "嘉定州",
         "modern": "乐山",
         "coord": [
           103.77,
@@ -12346,7 +12376,7 @@ window.DYNASTY_DATA = [
         "remark": "德安府北境重镇，控扼随枣走廊"
       },
       {
-        "ancient": "宝庆府（邵阳）",
+        "ancient": "宝庆府",
         "modern": "邵阳",
         "coord": [
           111.47,
@@ -12396,7 +12426,7 @@ window.DYNASTY_DATA = [
         "remark": "洪武元年置雷州府，粤西琼州海峡北岸要塞"
       },
       {
-        "ancient": "廉州府（北海）",
+        "ancient": "廉州府",
         "modern": "北海·合浦",
         "coord": [
           109.2,
@@ -12456,7 +12486,7 @@ window.DYNASTY_DATA = [
         "remark": "洪武九年升登州府；洪武三十一年于芝罘设奇山守御千户所，筑狼烟墩台抗倭，烟台由此得名"
       },
       {
-        "ancient": "汀州府（龙岩）",
+        "ancient": "汀州府",
         "modern": "龙岩",
         "coord": [
           117.02,
@@ -12466,14 +12496,14 @@ window.DYNASTY_DATA = [
         "remark": "福建八府之一，正德年间王阳明任南赣巡抚平定璋寇、增设永定县，闽西土楼肇兴"
       },
       {
-        "ancient": "沙县（永安）",
+        "ancient": "延平府",
         "modern": "三明",
         "coord": [
           117.64,
           26.26
         ],
         "tier": 2,
-        "remark": "延平府辖地，正统十三年爆发邓茂七起义，景泰三年析沙县、尤溪置永安县"
+        "remark": "福建八府之一，辖南平、沙县、尤溪、永安、将乐等县，正统年间邓茂七起义于此"
       }
     ],
     "phases": [
@@ -13591,7 +13621,7 @@ window.DYNASTY_DATA = [
         "remark": "光绪末状元张謇创大生纱厂与通州师范，实业救国典范"
       },
       {
-        "ancient": "绥定府（达州）",
+        "ancient": "绥定府",
         "modern": "达州",
         "coord": [
           107.5,
@@ -13601,7 +13631,7 @@ window.DYNASTY_DATA = [
         "remark": "嘉庆年间平白莲教后升达州为绥定府"
       },
       {
-        "ancient": "宁远府（西昌）",
+        "ancient": "宁远府",
         "modern": "凉山·西昌",
         "coord": [
           102.26,
@@ -13611,7 +13641,7 @@ window.DYNASTY_DATA = [
         "remark": "雍正六年裁建昌卫置宁远府"
       },
       {
-        "ancient": "宝庆府（邵阳）",
+        "ancient": "宝庆府",
         "modern": "邵阳",
         "coord": [
           111.47,
@@ -13621,7 +13651,7 @@ window.DYNASTY_DATA = [
         "remark": "《海国图志》作者魏源与湘军名将刘长佑故里"
       },
       {
-        "ancient": "沅州府（怀化）",
+        "ancient": "沅州府",
         "modern": "怀化·芷江",
         "coord": [
           109.68,
@@ -13651,7 +13681,7 @@ window.DYNASTY_DATA = [
         "remark": "南明永历帝监国称帝之地，清初两广总督驻地"
       },
       {
-        "ancient": "廉州府（北海）",
+        "ancient": "廉州府",
         "modern": "北海·合浦",
         "coord": [
           109.2,
@@ -13782,7 +13812,7 @@ window.DYNASTY_DATA = [
         "remark": "光绪三年重现好太王碑，光绪二十八年置辑安县"
       },
       {
-        "ancient": "太平府（崇左）",
+        "ancient": "太平府",
         "modern": "崇左",
         "coord": [
           107.36,
@@ -13802,7 +13832,7 @@ window.DYNASTY_DATA = [
         "remark": "四川眉州直隶州，康熙四年重修三苏祠"
       },
       {
-        "ancient": "广信府（上饶）",
+        "ancient": "广信府",
         "modern": "上饶",
         "coord": [
           117.94,
@@ -13922,7 +13952,7 @@ window.DYNASTY_DATA = [
         "remark": "江南四大米市之首，清末荣氏家族兴办近代面粉纺织工业"
       },
       {
-        "ancient": "保宁府（阆中）",
+        "ancient": "保宁府",
         "modern": "南充·阆中",
         "coord": [
           105.97,
@@ -13942,7 +13972,7 @@ window.DYNASTY_DATA = [
         "remark": "川南永宁道重镇，金沙江铜运与川茶集散大埠"
       },
       {
-        "ancient": "嘉定府（乐山）",
+        "ancient": "嘉定府",
         "modern": "乐山",
         "coord": [
           103.77,
@@ -13982,7 +14012,7 @@ window.DYNASTY_DATA = [
         "remark": "赣西入湘咽喉，产夏布与宜春脱胎漆器"
       },
       {
-        "ancient": "兴化府（莆田）",
+        "ancient": "兴化府",
         "modern": "莆田",
         "coord": [
           119.01,
@@ -14112,7 +14142,7 @@ window.DYNASTY_DATA = [
         "remark": "迤西道重镇，滇缅商道咽喉"
       },
       {
-        "ancient": "临安府（建水）",
+        "ancient": "临安府",
         "modern": "红河·建水",
         "coord": [
           102.83,
@@ -14172,14 +14202,14 @@ window.DYNASTY_DATA = [
         "remark": "雍正十二年（1734年）升龙岩县为福建省直隶州，领漳平、宁洋二县"
       },
       {
-        "ancient": "永安（沙县）",
+        "ancient": "延平府",
         "modern": "三明",
         "coord": [
           117.64,
           26.26
         ],
         "tier": 2,
-        "remark": "福建省延平府重镇，连接闽北延建与闽西汀州之水陆咽喉"
+        "remark": "福建省八府之一，连接闽北延建与闽西汀州之水陆咽喉，领南平、沙县、永安等县"
       }
     ],
     "phases": [
