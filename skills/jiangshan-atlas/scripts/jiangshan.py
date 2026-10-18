@@ -191,12 +191,14 @@ def _validate_inspect_result(data, args):
     if missing or len(resolved_route) < 2:
       raise RuntimeError(
           f"Could not resolve route stop(s) {missing or stops} in the atlas gazetteer. "
-          "Use canonical ancient names or modern prefecture/county city names (e.g. 九江, 运城, 镇江)."
+          "Use canonical ancient/modern Chinese, English, or Pinyin place names "
+          "(e.g. 九江 / Jiujiang, 蓝关 / Lantian Pass, 长安 / Chang'an)."
       )
   elif not data.get("coord"):
     raise RuntimeError(
         f"Could not resolve place '{normalized_place}' in the atlas gazetteer. "
-        "Use a canonical ancient name or modern prefecture/county city name (e.g. 九江, 运城, 镇江)."
+        "Use a canonical ancient/modern Chinese, English, or Pinyin place name "
+        "(e.g. 九江 / Jiujiang, 蓝关 / Lantian Pass, 长安 / Chang'an)."
     )
 
 
@@ -241,13 +243,17 @@ ctrl.minYear = -403;
 ctrl.maxYear = 2026;
 ctrl.year = 1102;
 ctrl.locale = process.env.JS_LANG === "en" ? "en" : "zh";
+ctrl.enLocale = sandbox.EN_LOCALE;
 ctrl.dynasties = sandbox.DYNASTY_DATA;
 ctrl.snapshots = sandbox.ATLAS_SNAPSHOTS;
-ctrl.provinces = (sandbox.CHINA_PROVINCE_SHAPES || []).map(p => ({
-  ...p,
-  rings: p.shape.type === "Polygon" ? [p.shape.coordinates] : p.shape.coordinates
-}));
-ctrl.projector = new sandbox.MercatorProjector(1000, 700);
+ctrl.provinces = sandbox.PROVINCE_OUTLINES || [];
+ctrl.projector = new sandbox.MercatorProjector(1000, 700, {
+  west: 66,
+  east: 142,
+  south: 14,
+  north: 55
+});
+ctrl._hydrateSnapshots();
 ctrl.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
 const res = ctrl.inspect({
   year: process.env.JS_YEAR,
@@ -439,24 +445,24 @@ def main():
       "--place",
       type=str,
       default="",
-      help="Single place name (e.g. 蓝关) or comma-separated route (e.g. 剑外,巴峡,巫峡,襄阳,洛阳)",
+      help="Single place name or comma-separated route in Chinese, English, or Pinyin (e.g. 蓝关 / Lantian Pass, or 剑外,巴峡,巫峡,襄阳,洛阳 / Huzhou,Huangzhou,Huizhou,Danzhou)",
   )
   parser.add_argument(
       "--hover",
       type=str,
       default="",
-      help="Optional exact prefecture title to highlight with its tooltip (e.g. 应天府, 黄州)",
+      help="Optional prefecture title in Chinese or English/Pinyin to highlight with its tooltip (e.g. 应天府 / Yingtian Fu, 黄州 / Huangzhou)",
   )
   parser.add_argument(
       "--lang",
       choices=["zh", "en"],
       default="zh",
-      help="UI language; 'en' renders the English atlas (place/hover stay in Chinese)",
+      help="UI language; 'en' renders the English atlas",
   )
   parser.add_argument(
       "--inspect",
       action="store_true",
-      help="Return structured JSON from atlasAPI.inspect (era, dynasty, polity, regions, prefectures, modernProvince, nearestCity, route) and verify place resolution",
+      help="Return structured JSON from atlasAPI.inspect (era, dynasty, polity, regions, prefectures, modernProvince, nearestCity with remark, lore, route) and verify place resolution",
   )
   parser.add_argument(
       "--out",

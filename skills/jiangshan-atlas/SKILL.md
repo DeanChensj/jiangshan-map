@@ -7,7 +7,7 @@ description: Locate historical Chinese events, classical poems, battles, and anc
 
 Use **江山时序 (Jiangshan Atlas)** to turn any question about Chinese history, classical literature, poetry, battles, or ancient geography into:
 1. A clickable **interactive deep-link URL** (`?year=<YEAR>&place=<PLACE>`)
-2. **Structured historical & administrative context (`--inspect`)** returning the exact reign era, regime (`polity`), macro-region (`道/路/行省`), prefecture (`郡/州/府`), modern province, and nearest ancient city
+2. **Structured historical & administrative context (`--inspect`)** returning the exact reign era, regime (`polity`), macro-region (`道/路/行省`), prefecture (`郡/州/府`), modern province, nearest ancient city (with capital status and era-specific historical `remark`), and the 2,400-year city/pass overview (`lore` with bilingual `tag`/`desc` and `tagEn`/`descEn`)
 3. An optional **high-resolution rendered map screenshot (`--out`)** showing dynastic territories, mountains/rivers, red pinpoint marker or multi-stop trajectory, and the 2,000-year administrative genealogy card (`点地溯源 · 古今政区沿革`).
 
 ## Workflow (Deduce Time & Place First → Inspect & Build URL → Optional Screenshot)
@@ -23,11 +23,11 @@ When a user asks about a historical event, classical novel scene, poem, battle, 
    - *Multi-year trajectories*: When a route spans multiple years (e.g., Su Shi's lifetime exile stops or Wen Tianxiang's resistance campaign), deduce the chronological year for each stop (`year=1079,1080,1094,1097`).
 
 2. **Deduce & Disambiguate the Canonical Place (`再定地点 · 古今消歧`)**:
-   - Convert event phrases or literary scenes into the **canonical ancient settlement/landmark name** or **modern prefecture/county city name**:
-     - **Strip event/action suffixes**: Never pass an event phrase like `place=江州劫法场` or `place=风雪山神庙`. Extract the actual geographic site (`浔阳` / `浔阳楼` / `九江`).
-     - **Disambiguate cross-dynasty homonyms (同名异地)**: Check what a historical name referred to *in that specific era*. For example, `江州` in Qin/Han/Three Kingdoms (`巴郡江州`) was modern **重庆**, whereas `江州` in Eastern Jin, Tang, and Song (e.g., 白居易“江州司马”、宋江“刺配江州”) had its seat at **浔阳**, i.e., modern **江西九江**.
-     - **When in doubt, prefer unambiguous city/landmark names**: Pass a clean canonical ancient/poetic name (`浔阳`, `浔阳楼`, `梁山泊`, `景阳冈`, `大名府`, `风波亭`, `蓝关`, `长安`, `赤壁`, `京口`, `五丈原`, `马嵬坡`, `白帝城`, `采石矶`, `长平`, `巨鹿`, `垓下`, `官渡`, `肥水`, `牧野`, `鸣条`, `崖山`, `土木堡`, `滕王阁`, `黄鹤楼`, `岳阳楼`, `兰亭`, `瓜洲`, `轮台`, `寒山寺`, `卢沟桥`) OR its modern prefecture/county city name (`九江`, `运城`, `镇江`, `黄冈`, `宝鸡`, `奉节`, `绍兴`).
-     - **Never** combine ancient and modern names with parentheses in a single token (write `place=浔阳` or `place=九江`, never `place=浔阳(九江)`).
+   - Convert event phrases or literary scenes into the **canonical ancient settlement/landmark name** or **modern prefecture/county city name** (both **Chinese** and **English / Pinyin** are natively supported, with apostrophe/hyphen/space-insensitive matching):
+     - **Strip event/action suffixes**: Never pass an event phrase like `place=江州劫法场` or `place=风雪山神庙`. Extract the actual geographic site (`浔阳` / `Xunyang` / `九江` / `Jiujiang`).
+     - **Disambiguate cross-dynasty homonyms (同名异地)**: Check what a historical name referred to *in that specific era*. For example, `江州` in Qin/Han/Three Kingdoms (`巴郡江州`) was modern **重庆 (`Chongqing`)**, whereas `江州` in Eastern Jin, Tang, and Song (e.g., 白居易“江州司马”、宋江“刺配江州”) had its seat at **浔阳 (`Xunyang`)**, i.e., modern **江西九江 (`Jiujiang`)**.
+     - **When in doubt, prefer unambiguous city/landmark names**: Pass a clean canonical ancient/poetic name (`浔阳`/`Xunyang`, `浔阳楼`, `梁山泊`/`Mount Liang`, `景阳冈`, `大名府`/`Daming`, `风波亭`, `蓝关`/`Lantian Pass`/`Languan`, `长安`/`Chang'an`/`Changan`, `赤壁`/`Red Cliffs`/`Chibi`, `京口`/`Jingkou`, `五丈原`/`Wuzhang Plains`, `马嵬坡`/`Mawei`, `白帝城`/`Baidicheng`, `采石矶`, `长平`/`Changping`, `巨鹿`/`Julu`, `垓下`/`Gaixia`, `官渡`/`Guandu`, `肥水`/`Fei River`, `牧野`/`Muye`, `鸣条`/`Mingtiao`, `崖山`/`Yamen`, `土木堡`/`Tumu`, `滕王阁`/`Tengwang Pavilion`, `黄鹤楼`, `岳阳楼`, `兰亭`, `瓜洲`, `轮台`, `寒山寺`, `卢沟桥`) OR its modern prefecture/county city name (`九江`/`Jiujiang`, `运城`/`Yuncheng`, `镇江`/`Zhenjiang`, `黄冈`/`Huanggang`, `宝鸡`/`Baoji`, `奉节`/`Fengjie`, `绍兴`/`Shaoxing`).
+     - **Never** combine ancient and modern names with parentheses in a single token (write `place=浔阳`, `place=九江`, or `place=Xunyang`, never `place=浔阳(九江)`).
 
 ### Step 2: Construct the Deep-Link URL & Verify with `--inspect`
 Once `(year, place)` are deduced, format the deep-link URL (do **NOT** guess longitude or latitude numbers):
@@ -36,12 +36,12 @@ Once `(year, place)` are deduced, format the deep-link URL (do **NOT** guess lon
 https://deanchen.me/jiangshan-map/?year=<YEAR>&place=<PLACE>
 ```
 
-- **Single site (0D pinpoint)**: `year=<INT>&place=<SITE>` (e.g., `?year=1102&place=浔阳` or `?year=819&place=蓝关`).
-- **Multi-stop route (1D same-year / 4D multi-year trajectory)**: Pass comma-separated place names in chronological order (`place=剑外,巴峡,巫峡,襄阳,洛阳` with `year=763`, or `place=湖州,黄州,惠州,儋州` with `year=1079,1080,1094,1097`). The atlas draws a curved crimson trajectory (`1` → `2` → `3`...), frames the camera bounding box, and lets the user click any numbered stop to jump to its year and open its 2,000-year administrative genealogy card.
-- **Optional `hover=<PREFECTURE>`**: Highlights one 州/府/郡 polygon of that year's snapshot and pops its tooltip (`江州 · 属 宋 · 今：江西省`). Must match the prefecture's exact title **in that era** (`hover=江州` in 1102, `hover=黄州` in 1083, `hover=应天府` in 1415). Pair with `place` so the camera frames the prefecture (`?year=1102&place=浔阳&hover=江州`).
-- **Optional `lang=en`**: Renders the English atlas UI when the user writes in English or asks for an English map. Keep `place` and `hover` values in **Chinese** (`?year=1083&place=黄州&lang=en`).
+- **Single site (0D pinpoint)**: `year=<INT>&place=<SITE>` in Chinese or English/Pinyin (e.g., `?year=1102&place=浔阳`, `?year=819&place=蓝关`, or `?year=819&place=Lantian+Pass&lang=en`).
+- **Multi-stop route (1D same-year / 4D multi-year trajectory)**: Pass comma-separated place names in chronological order (`place=剑外,巴峡,巫峡,襄阳,洛阳` with `year=763`, or `place=Huzhou,Huangzhou,Huizhou,Danzhou` with `year=1079,1080,1094,1097`). The atlas draws a curved crimson trajectory (`1` → `2` → `3`...), frames the camera bounding box, and lets the user click any numbered stop to jump to its year and open its 2,000-year administrative genealogy card.
+- **Optional `hover=<PREFECTURE>`**: Highlights one 州/府/郡 polygon of that year's snapshot and pops its tooltip (`江州 · 属 宋 · 今：江西省`). Supports both Chinese and English/Pinyin prefecture titles **in that era** (`hover=江州` or `hover=Jiangzhou` in 1102, `hover=黄州` or `hover=Huangzhou` in 1083, `hover=应天府` or `hover=Yingtian Fu` in 1415). Pair with `place` so the camera frames the prefecture (`?year=1102&place=浔阳&hover=江州`).
+- **Optional `lang=en`**: Renders the English atlas UI when the user writes in English or asks for an English map (`place` and `hover` work in either Chinese or English/Pinyin, e.g., `?year=1082&place=Huangzhou&hover=Huangzhou&lang=en`).
 
-Use `--inspect` to verify place resolution and retrieve structured historical metadata (regime, circuit/province, prefecture, modern province, nearest city, and route distance) as JSON without needing to read a screenshot:
+Use `--inspect` to verify place resolution and retrieve structured historical metadata (regime, circuit/province, prefecture, modern province, `nearestCity` with `isCapital` and era-specific `remark`, `lore` with 2,400-year city/pass overview `tag`/`desc`/`tagEn`/`descEn`, and route distance) as JSON without needing to read a screenshot:
 
 ```bash
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 --hover 江州 --inspect
@@ -56,7 +56,7 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 -
 | *"文天祥《过零丁洋》惶恐滩头说惶恐，零丁洋里叹零丁抗元路线？"* | 南宋末文天祥自**赣州**起兵（`1275`），撤退经江西万安**惶恐滩**（`1277`），于珠江口**零丁洋**被俘（`1278`），至**崖山**海战（`1279`） | `https://deanchen.me/jiangshan-map/?year=1275,1277,1278,1279&place=赣州,惶恐滩,零丁洋,崖山` |
 | *"辛弃疾写京口北固亭怀古时天下局势如何？"* | **南宋宁宗开禧元年**（`1205` 年）辛弃疾任镇江知府，登**京口**（今江苏镇江）北固亭北望金朝 | `https://deanchen.me/jiangshan-map/?year=1205&place=京口` |
 | *"苏轼写《记承天寺夜游》时黄州归哪里管？"* | **北宋神宗元丰六年**（`1083` 年）苏轼贬居淮南西路**黄州**（今湖北黄冈），高亮黄州州界 | `https://deanchen.me/jiangshan-map/?year=1083&place=黄州&hover=黄州` |
-| *"Where was Su Shi exiled when he wrote the Red Cliff odes?"* | **Northern Song Yuanfeng 5** (`1082` CE), exiled at **Huangzhou** (`黄州`, modern Huanggang, Hubei), English UI | `https://deanchen.me/jiangshan-map/?year=1082&place=黄州&lang=en` |
+| *"Where was Su Shi exiled when he wrote the Red Cliff odes?"* | **Northern Song Yuanfeng 5** (`1082` CE), exiled at **Huangzhou** (`黄州`, modern Huanggang, Hubei), English UI | `https://deanchen.me/jiangshan-map/?year=1082&place=Huangzhou&lang=en` |
 
 ### Step 3 (Optional): Render a Map Screenshot On-Demand (`--out`)
 
