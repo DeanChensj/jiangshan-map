@@ -165,4 +165,5 @@ Then open `http://localhost:8000` in your browser.
 - **Modern Provincial Reference**: DataV GeoAtlas open administrative boundary data.
 - **Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
 - **Note**: Historical territorial contours and prefecture boundaries in this atlas are schematic approximations intended to illustrate broad historical jurisdictions rather than modern surveyed borders.
+- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) ([中文贡献指南](CONTRIBUTING_ZH.md)) for repository structure, data conventions, and validation checks.
 - **License**: **GPL-3.0**.

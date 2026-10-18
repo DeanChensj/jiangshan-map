@@ -166,4 +166,5 @@ python3 -m http.server 8000
 - **现代省界参考**：DataV GeoAtlas 开放行政边界数据。
 - **古琴雅乐录音**：Wikimedia Commons 公有领域古琴录音（《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》）。
 - **说明**：地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
+- **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
 - **开源协议**：**GPL-3.0**。
