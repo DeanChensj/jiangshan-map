@@ -1,167 +1,152 @@
-# 江山时序 · Chronicles of the Realm
+# Chronicles of the Realm · 江山时序
 
-**一幅可以拖动时间、点城读史、追随古人足迹的中国历史交互舆图（公元前 403 年三家分晋 — 今）**  
-**An Interactive Historical Atlas of China from the Warring States (403 BCE) to the Present**
+<p align="left">
+  <strong>English</strong> · <a href="README_ZH.md">简体中文 (Chinese)</a>
+</p>
 
-[**立即在线把玩 / Play Live Demo → https://deanchen.me/jiangshan-map/**](https://deanchen.me/jiangshan-map/)
+**An Interactive Historical Atlas of China from the Warring States (403 BCE) to the Present — Scrub Through Time, Trace Ancient Cities, and Walk in the Footsteps of History**
 
----
-
-## 这幅地图好玩在哪里？ / Why It's Fun to Explore
-
-读史书、背古诗词时，你是否也常有这样的困惑：
-- *「六朝古都建康、苏东坡被贬的黄州、韩愈勒马的秦岭蓝关、岳飞北伐的朱仙镇，放在今天的地图上到底在哪儿？」*
-- *「长安在两千年里换过多少个名字？这片土地上先后发生过多少场改写国运的大事？」*
-- *「《资治通鉴》开篇的三家分晋与战国七雄、秦王嬴政十年扫六合、汉武帝打通河西走廊、盛唐安西四镇与王玄策破中天竺、元代设宣政院辖西藏、晚清曾纪泽收复伊犁，再到近现代版图从『秋海棠』变为『雄鸡』，疆域是怎么一步步演变的？」*
-
-**「江山时序」** 把从公元前 403 年（《资治通鉴》开篇 · 三家分晋）至今 **两千四百余年**、**18 个历史时期**的**多阶段疆域与州郡政区舆图**、**历代古城**、**天下名关**、**诗词名胜与古战场**、**编年大事**及**帝王年号纪年**装进了一张宣纸设色古舆图里。你不需要翻检厚重的历史地图册，只需拖动滑块、点点城池，就能在时空之间自由穿梭。
+[**Play Live Demo (English UI) → https://deanchen.me/jiangshan-map/?lang=en**](https://deanchen.me/jiangshan-map/?lang=en)
 
 ---
 
-### 玩法一：拉动时间轴看天下分合、查在位帝王、比古今省界
+## Why It's Fun to Explore
 
-- **同屏看多政权对峙**：从战国七雄（秦、楚、齐、燕、赵、魏、韩）与周、越、巴蜀、中山并立，到汉末三国群雄割据（袁绍、曹操、刘备、孙权、公孙氏辽东），再到宋、辽、西夏、大理、金、蒙古，都以高对比度宣纸设色同屏呈现。鼠标移到左下角图例的政权名字上，对应政权立刻高亮；点一下直接聚焦过去。
-- **多阶段疆域演进与「虚线残影」对比**：每一个重大开疆或失地节点——如前 300 年燕将秦开破东胡辟辽东五郡、43 年马援平交趾立铜柱、238 年司马懿平公孙渊收辽东、635 年李靖平吐谷浑、648 年置安西四镇与王玄策破中天竺、1288 年元设宣政院直辖西藏、1643 年大顺大西起兵、1673 年三藩之乱、1881 年曾纪泽签《中俄伊犁条约》收复伊犁、1898 年列强强租胶州湾/旅大/威海卫/九龙新界，乃至 1945 年抗战胜利台湾光复（“秋海棠”重光）与 1946 年外蒙古独立（版图由**“秋海棠”变为“雄鸡”**）——点击编年事件或阶段圆点，版图即刻切换并浮现上一阶段的朱砂虚线残影，盈亏得失一目了然。
-- **当朝在位帝王与年号同步显示**：时间轴实时内联展示当年在位君主（庙号 / 谥号 + 姓名 + 在位起止年，如 `汉武帝 刘彻`、`唐太宗 李世民`、`清圣祖 玄烨`）及历代年号纪年。
-- **历代州府悬停即查 & 古今透视镜**：一级政区采用拓扑去重与宣纸衬底双重描边（Parchment Casing）；放大地图悬停任意州郡（如明代的「应天府」「顺天府」、三国的「荆州」）即可查看政区归属与今省对照，还可打开 **「透视镜」** 在古舆图上直接投射现代省界。
-- **水系古泽与千年工程随年代流转**：拉动时间轴时，黄河历代改道、云梦泽与罗布泊（蒲昌海）等古湖消长，以及战国秦汉明长城、隋唐与京杭大运河、丝绸之路、郑和航线均随当朝版图同步演进。
+Have you ever wondered while reading Chinese history or classical poetry:
+- *"Where exactly on today's map are Jiankang (the Six Dynasties capital), Huangzhou (where Su Dongpo composed the Red Cliffs Rhapsody in exile), Languan Pass in the Qinling Mountains (where Han Yu halted his horse in the snow), or Zhuxianzhen (Yue Fei's northern campaign frontier)?"*
+- *"How many names did Chang'an hold across two millennia, and what pivotal events unfolded on that soil?"*
+- *"How did the realm evolve step by step—from the Partition of Jin and the Seven Warring States at the opening of Sima Guang's Zizhi Tongjian (403 BCE), Qin's unification campaigns, Emperor Wu of Han opening the Hexi Corridor, High Tang's Four Garrisons of Anxi, and Yuan's Xuanzhengyuan jurisdiction over Tibet, to Zeng Jize's recovery of Ili (1881 CE) and the 20th-century shift from the 'Begonia Leaf' (秋海棠) map to the 'Rooster' (雄鸡) map?"*
 
-> [点击直达：大明永乐十三年（1415 年）· 两京十三布政使司与「应天府」府境探查 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C)
-
-![明永乐十三年（1415 年）· 应天府政区悬停预览](assets/preview_1415_ming_yingtian.png)
+**Chronicles of the Realm (`jiangshan-map`)** brings together **2,400+ years** of Chinese history across **18 historical periods** into a single interactive parchment atlas—featuring **multi-stage territorial and prefecture snapshots**, **ancient cities**, **strategic mountain passes**, **poetic and battlefield landmarks**, **chronological milestones**, and **reigning monarchs & imperial eras**. No heavy print atlases required—just drag the timeline and click any city to travel through space and time.
 
 ---
 
-### 玩法二：点开任意一座城或名关，读它两千四百年的身世与风云
+### Feature 1: Scrub the Timeline to Watch Realms Rise & Fall, Track Monarchs, and Compare Ancient & Modern Borders
 
-在地图上**直接点击任意古城、名关**（或者双击地图任意位置），就会展开一张 **「点地溯源」** 卡片：
-- **看古今政区怎么变**：从战国七雄与秦朝的郡、汉朝的刺史部、唐朝的道、宋朝的路，一路看到元明清的行省与府州，直至现代省市；哪几个朝代曾在此建都（`王朝都城` 徽章）一目了然。
-- **看这里发生过什么大事**：每个朝代行下方直接内嵌当年发生在此地的**定点地标大事**（如咸阳的「商鞅变法」「秦王扫六合」、樊城的「关羽水淹七军」、长安的「玄武门之变」、临安的「风波亭岳飞蒙难」）。点一下右上角的 **「史事纪要」** 胶囊，还能一键筛出有大事发生的朝代；点击任意一条事件，时间轴和地图版图立即穿越回那一年！
-- **探访天下名关与诗词名胜**：地图以专属汉阙城楼图标标出函谷关、潼关、剑门关、雁门关、玉门关、阳关、山海关等**天下雄关**（附山脉水系扼守形势详解），并收录赤壁、垓下、五丈原、兰亭、岳阳楼、滕王阁、蓝关、楼兰、蒲昌海（罗布泊）、热海（伊塞克湖）等**诗词名胜与古战场**，支持直接检索落针。
+- **Multi-Polity Confrontations on a Single Canvas**: From the Seven Warring States (Qin, Chu, Qi, Yan, Zhao, Wei, Han) alongside Zhou, Yue, Ba-Shu, Zhongshan, and Yiqu, to the Three Kingdoms warlords (Yuan Shao, Cao Cao, Liu Bei, Sun Quan, Gongsun's Liaodong), Northern & Southern Dynasties, Five Dynasties & Ten Kingdoms, and Song, Liao, Western Xia, Dali, Jin, and the Mongols—all rendered side-by-side in high-contrast traditional parchment hues. Hover over any polity in the bottom-left legend to highlight its territory, or click to zoom straight to it.
+- **Multi-Stage Territorial Evolution & Dashed "Ghost Boundary Diffs"**: At every major territorial milestone—such as Qin's conquest of Ba-Shu (316 BCE), Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), Sima Yi's campaign in Liaodong (238 CE), Li Jing's conquest of Tuyuhun (635 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Ming's Hami & Seven Guards West of Jiayuguan (1404 CE), the 1881 Treaty of Saint Petersburg recovering Ili, the 1898 foreign leased territories, the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—click any milestone or phase dot to switch maps and reveal the previous phase's dashed vermilion **Ghost Boundary Diff** so territorial gains and losses are immediately visible.
+- **Inline Reigning Monarch & Imperial Era Display**: The timeline dynamically displays the reigning monarch (temple/posthumous title + personal name + reign span, e.g., `Emperor Wu of Han · Liu Che`, `Emperor Taizong of Tang · Li Shimin`, `Emperor Shengzu of Qing · Xuanye`) alongside the exact imperial era year.
+- **Ancient Prefecture Hover Inspection & Modern X-Ray Lens**: First-level administrative divisions (Commanderies, Circuits, Routes, and Provinces) are rendered with deduplicated **Parchment Casing** borders. Zoom in and hover over any prefecture (e.g., Ming `Yingtian Prefecture` or Three Kingdoms `Jingzhou`) to inspect its jurisdiction and modern provincial equivalents, or toggle the **X-Ray Lens** to project modern provincial boundaries directly over the historical map.
+- **Dynamic River Courses, Ancient Lakes & Grand Engineering Works**: As you scrub through time, historical shifts of the Yellow River, expanding and shrinking ancient lakes (*Yunmeng Marsh*, *Lop Nur / Puchanghai*), Warring States/Qin/Han/Ming Great Walls, Sui-Tang & Grand Canals, the Silk Road, and Zheng He's maritime routes evolve in lockstep with each era.
 
-> [点击直达：盛唐开元二十九年（741 年）· 点开长安看千年风云 →](https://deanchen.me/jiangshan-map/?year=741&place=长安)
+> [Try It Live: Ming Dynasty Yongle 13 (1415 CE) · Two Capitals, Thirteen Provinces & "Yingtian Prefecture" Inspection →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C&lang=en)
 
-![盛唐 741 年 · 长安点地溯源与史事纪要](assets/preview_741_tang_trace.png)
-
----
-
-### 玩法三：跟着秦始皇、张骞、诸葛亮、玄奘、李白、苏东坡、王阳明走一趟万里青史路
-
-打开顶部工具栏的 **「青史行迹 ▾」**，右侧编年栏会自动收起腾出全幅山河视野，你可以化身历史同路人，沿着七条跨越万里与千载的经典路线逐站巡礼：
-- **秦始皇一统六国行迹（前 238 — 前 221 年）**：从咸阳亲政平乱、王翦攻赵邺城拉开序幕，到内史腾灭韩、王翦克邯郸灭赵、易水破燕拔蓟城、王贲水灌大梁灭魏、王翦六十万大军破楚、远征辽东灭燕平代，直至南下临淄齐王建出降、六国一统——每点下一站，地图上的韩、赵、魏、楚、燕、齐便随之一步步并入大秦版图！
-- **张骞凿空西域行迹（前 138 — 前 126 年）**：从长安出发，被匈奴羁留十余载不改其志，持汉节一路走到大宛、康居、大月氏。
-- **诸葛亮出山北伐行迹（207 — 234 年）**：从襄阳隆中三顾茅庐、柴桑联吴破曹、溯江入蜀、白帝托孤、五月渡泸南征，到进驻汉中上《出师表》、祁山北伐与五丈原秋风星落。
-- **玄奘西行求法行迹（627 — 645 年）**：孤身出玉门关，涉莫贺延碛、越凌山雪隘、渡印度河，抵那烂陀寺求法归唐。
-- **李白仗剑壮游行迹（701 — 762 年）**：自安西碎叶入蜀居青莲，二十四岁仗剑出三峡、漫游扬州散金三十万、酒隐安陆、仰天大笑入长安供奉翰林、洛阳逢杜甫、白帝城遇赦放舟，终老当涂青山。
-- **苏轼宦海贬谪行迹（1056 — 1101 年）**：从出川赴京、密州超然台赏月，到乌台诗案后贬谪黄州写下《赤壁赋》，再到惠州、跨海远谪海南儋州。
-- **王阳明心学立功行迹（1472 — 1529 年）**：从余姚瑞云楼降生、京师抗疏下诏狱，到贬谪贵州修文「龙场悟道」始倡知行合一、庐陵讲学、巡抚南赣破山贼、三十五日生擒宁王朱宸濠、绍兴天泉证道揭出「致良知」，直至总督两广归途舟次南安留下「此心光明，亦复何言」。
-
-每点「下一站」（或按空格键开启自动巡礼），**底下的历史年份、在位君主与年号、王朝版图都会跟着古人的脚步同步流转**，卡片里还会浮现他们当年在此地留下的《史记》《出师表》《传习录》或唐宋千古名篇。
-
-> [点击直达：跟着苏东坡去密州与黄州（1075 — 1082 年）→](https://deanchen.me/jiangshan-map/?journey=sushi&stop=6)
-
-![青史行迹 · 苏轼宦海贬谪行迹](assets/preview_journey_sushi.png)
+![Ming Dynasty 1415 CE · Yingtian Prefecture Hover Preview](assets/preview_1415_ming_yingtian.png)
 
 ---
 
-### 玩法四：彩蛋 · 舆图寻址挑战 —— 测测你在古代能当几品官？
+### Feature 2: Click Any Ancient City or Strategic Pass to Uncover 2,400 Years of History (`Trace Place`)
 
-觉得自己历史地理很熟？打开顶部工具栏 **「青史行迹 ▾」** 菜单底部的彩蛋 **「雅集 · 舆图寻址 · 古地名小试」** 试试身手：
-- **当朝掌故线索 + 舆图盲猜扎针**：地图隐去所有城池标注，题目给出「西汉时期的武威（凉州）」「南宋时期的泉州」或「六朝古都建康」，并附上**当朝掌故与史事线索**（不剧透现代城市名），凭你的山河水系直觉在舆图上扎针（手机端支持「先落针微调、再确认作答」防误触），系统按你的落点与真实古城的球面距离打分！
-- 十道题答完，系统会根据总分授予你 **「太史令 · 舆图大家」「职方郎中」「州郡从事」** 等传统官阶封号。
+**Click any ancient city or mountain pass** on the map (or double-click anywhere on the canvas) to open its **Trace Place** genealogy card:
+- **Bilingual City Lore Banner & 2,400-Year Administrative Genealogy**: At the top of the card, read a curated **poetic epigraph and historical biography** for the city; below, trace how its name and administrative jurisdiction evolved across all 18 historical eras—from Warring States and Qin commanderies, Han regional inspectorates, Tang circuits, and Song routes to Yuan/Ming/Qing provinces and modern municipalities—complete with `Imperial Capital` badges and dynastic seat remarks.
+- **Site-Specific Landmark Events**: Beneath each dynasty row, inspect major historical events that took place right on that spot (e.g., *Shang Yang's Reforms* and *Qin's Unification* at Xianyang, *Guan Yu Flooding the Seven Armies* at Fancheng, the *Xuanwu Gate Incident* at Chang'an, or *Yue Fei's Martyrdom* at Lin'an). Click the **`Key Events`** pill in the top-right of the card to filter for dynasties with major events, and click any event to time-travel straight to that year!
+- **Strategic Mountain Passes & Poetic / Battlefield Landmarks**: Explore famous mountain passes—including *Hangu Pass*, *Tongguan*, *Jianmen Pass*, *Yanmen Pass*, *Yumen Pass*, *Yangguan*, and *Shanhai Pass*—rendered with traditional *Hanque* gatehouse icons and strategic terrain notes, alongside famous battlefields and literary landmarks such as *Red Cliffs (Chibi)*, *Gaixia*, *Wuzhang Plains*, *Orchid Pavilion (Lanting)*, *Yueyang Tower*, *Pavilion of Prince Teng*, *Languan Pass*, *Loulan*, *Lop Nur*, and *Issyk-Kul*.
 
-> [点击直达：西汉武帝元狩二年（前 121 年）· 开启「舆图寻址」挑战模式 →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)
+> [Try It Live: High Tang Kaiyuan 29 (741 CE) · Open Chang'an's 2,400-Year Genealogy Card →](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en)
 
-![西汉前 121 年 · 舆图寻址挑战模式预览](assets/preview_quiz_challenge.png)
+![High Tang 741 CE · Chang'an Trace Place & Key Events](assets/preview_741_tang_trace.png)
 
 ---
 
-## 实用快捷键与任意门（Deep Links）
+### Feature 3: Walk in the Footsteps of Historical Figures (`Journeys ▾`)
 
-### 快捷键一览
+Open **`Journeys ▾`** in the top toolbar to collapse the right sidebar and follow seven curated multi-stop historical routes across millennia:
+- **Qin Shi Huang's Unification Campaigns (238–221 BCE)**: From suppressing the rebellion at Xianyang and Wang Jian's attack on Ye, to the fall of Han, Zhao, Yan, Wei, Chu, and Dai, culminating in the surrender of Qi at Linzi—as you advance stop by stop, watch the six rival kingdoms merge into the Qin Empire right on the map!
+- **Zhang Qian's Mission to the Western Regions (138–126 BCE)**: Depart Chang'an, endure over a decade of Xiongnu captivity without surrendering the Han imperial staff, and blaze the trail to Dayuan (Fergana), Kangju, and the Greater Yuezhi.
+- **Zhuge Liang's Emergence & Northern Expeditions (207–234 CE)**: From the Three Visits at Longzhong and the alliance at Chaisang before Red Cliffs, to entering Shu, the White Emperor City entrustment, the Southern Campaign across the Lu River, Hanzhong's *Memorial on Deploying the Troops*, Mount Qi, and the autumn winds of Wuzhang Plains.
+- **Xuanzang's Pilgrimage to India (627–645 CE)**: Slip past Yumen Pass alone across the Moheyan Desert, scale the icy Bedel Pass, cross the Indus, and study at Nalanda Monastery before returning to Chang'an.
+- **Li Bai's Grand Travels Across Tang China (701–762 CE)**: From Suyab and boyhood in Shu, sailing out through the Three Gorges at twenty-four, scattering gold in Yangzhou, serving in the Hanlin Academy at Chang'an, meeting Du Fu in Luoyang, receiving amnesty at White Emperor City, to his final years at Dangtu.
+- **Su Shi's Literary Exile Across Song China (1056–1101 CE)**: From leaving Meishan for the capital Kaifeng and gazing at the moon in Mizhou, to composing the *Red Cliffs Rhapsody* in Huangzhou exile, Huizhou, and crossing the sea to Danzhou on Hainan Island.
+- **Wang Yangming's Unity of Knowledge & Action (1472–1529 CE)**: From birth in Yuyao and imprisonment in Beijing, to his enlightenment at Longchang in Guizhou, pacifying bandits in Southern Ganzhou, capturing the rebel Prince of Ning in 35 days, teaching at the Tianquan Bridge in Shaoxing, and his final words *"This mind is bright and clear; what more is there to say?"* at Nan'an.
 
-| 操作 / 按键 | 作用 |
+Each time you click **Next Stop** (or press `Space` for auto-pilgrimage), **the timeline year, reigning monarch, imperial era, and dynastic territories evolve in sync with the traveler's footsteps**, accompanied by bilingual primary-source excerpts and poems written at that exact stop.
+
+> [Try It Live: Follow Su Dongpo's Exile to Mizhou & Huangzhou (1075–1082 CE) →](https://deanchen.me/jiangshan-map/?journey=sushi&stop=6&lang=en)
+
+![Historical Journeys · Su Shi's Exile Route](assets/preview_journey_sushi.png)
+
+---
+
+### Feature 4: Easter Egg · Map Pinpoint Challenge — What Imperial Court Rank Would You Earn?
+
+Think you know Chinese historical geography? Open **`Journeys ▾`** in the top toolbar and select **`Quiz · Map Pinpoint · Ancient Place Quiz`** at the bottom of the menu:
+- **Dynastic Historical Clues + Blind Map Pinpointing**: City labels are hidden while the prompt asks you to locate an ancient city—such as *"Wuwei (Liangzhou) in Western Han"*, *"Quanzhou in Southern Song"*, or *"Jiankang in the Six Dynasties"*—accompanied by **dynastic historical clues** (without spoiling the modern city name). Drop your pin based on rivers, mountain ranges, and borders, and earn points based on great-circle distance to the true coordinates!
+- Complete 10 rounds to receive a traditional imperial cartographic title such as **Grand Historian & Master Cartographer (太史令 · 舆图大家)**, **Director of the Bureau of Operations (职方郎中)**, or **Prefectural Retainer (州郡从事)**.
+
+> [Try It Live: Western Han Emperor Wu, Yuanshou 2 (121 BCE) · Start the Map Pinpoint Challenge →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)
+
+![Western Han 121 BCE · Map Pinpoint Challenge Preview](assets/preview_quiz_challenge.png)
+
+---
+
+## Keyboard Shortcuts & Shareable Deep Links
+
+### Keyboard Shortcuts
+
+| Key / Action | Effect |
 | :--- | :--- |
-| **`/`** 或 **`Cmd/Ctrl + K`** | 唤醒左上角**万能搜索框**：支持搜**古今城池**（`咸阳`/`长安`/`洛邑`/`东京汴梁`）、**在位帝王**（`汉武帝`/`刘彻`/`李世民`/`朱元璋`）、**帝王年号**（`元狩二年`/`贞观`/`永乐`）、**诗词名胜与古战场**（`赤壁`/`五丈原`/`蓝关`/`兰亭`）、**天下名关**（`函谷关`/`剑门关`/`玉门关`）、**历史大事**（`长平之战`/`水淹七军`/`玄武门之变`）或**人物行迹** |
-| **`←` / `→`** 或底部 **`‹ / ›`** | 键盘左右键与底部 **`‹ / ›`** 按钮直接跳往上 / 下一关键历史阶段、事件节点或行迹站点（按住 `Shift + ← / →` 进退 `10` 年） |
-| **`Space`（空格键）** | 自动播放 / 暂停历史演进（行迹模式下自动巡礼） |
-| **`Esc`** | 一键关闭弹窗卡片、清除搜索高亮或自定义多站路线 |
-| **`单击古城` / `双击地图`** | 打开该地从战国到近现代的 18 时期「点地溯源 + 史事纪要」卡片 |
-| **`悬停 / 点击图例色块`** | 悬停单独高亮该政权疆域；点击自动缩放聚焦至该政权 |
+| **`/`** or **`Cmd/Ctrl + K`** | Focus the **Universal Search Box**: search **ancient & modern cities** (`Xianyang`/`Chang'an`/`Luoyang`/`Kaifeng`), **reigning monarchs** (`Emperor Wu of Han`/`Taizong of Tang`/`Liu Che`/`Li Shimin`), **imperial eras** (`Zhenguan`/`Yongle`/`Kangxi`), **poetic & battlefield landmarks** (`Red Cliffs`/`Wuzhang Plains`/`Languan`/`Lanting`), **mountain passes** (`Hangu Pass`/`Jianmen Pass`/`Yumen Pass`), **historical events**, or **journeys** |
+| **`←` / `→`** or bottom **`‹ / ›`** | Jump to the previous / next historical phase, milestone event, or journey stop (hold `Shift + ← / →` to step by `10` years) |
+| **`Space`** | Auto-play / pause timeline evolution (or auto-advance stops in Journey mode) |
+| **`Esc`** | Close active popups/cards, clear search highlights, or exit custom multi-stop routes |
+| **`Single-click city` / `Double-click map`** | Open the 18-era **Trace Place & Key Events** genealogy card for that location |
+| **`Hover / Click legend swatch`** | Hover to isolate & highlight that polity's territory; click to auto-zoom to its bounding box |
 
-### 一键直达链接（适合分享给朋友）
+### Shareable Deep Links
 
-你可以直接在网址后面加上参数，把某个特定的历史瞬间分享给朋友：
-- **看某一年或重大疆域变迁**：[`?year=-403`](https://deanchen.me/jiangshan-map/?year=-403)（《资治通鉴》开篇 · 三家分晋） / [`?year=-121`](https://deanchen.me/jiangshan-map/?year=-121)（西汉霍去病开河西） / [`?year=648`](https://deanchen.me/jiangshan-map/?year=648)（唐置安西四镇与王玄策破中天竺） / [`?year=1288`](https://deanchen.me/jiangshan-map/?year=1288)（元改宣政院直辖西藏） / [`?year=1881`](https://deanchen.me/jiangshan-map/?year=1881)（曾纪泽签约收复伊犁） / [`?year=1945`](https://deanchen.me/jiangshan-map/?year=1945)（抗战胜利台湾光复 · “秋海棠”重光）
-- **看某场大战**：[`?year=-260&place=长平`](https://deanchen.me/jiangshan-map/?year=-260&place=长平)（长平之战） / [`?year=208&place=赤壁`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁)（赤壁之战） / [`?year=383&place=淝水`](https://deanchen.me/jiangshan-map/?year=383&place=淝水)（东晋前秦 · 淝水之战）
-- **查某座古城或名胜的千年故事**：[`?year=741&place=长安`](https://deanchen.me/jiangshan-map/?year=741&place=长安)（长安/西安） / [`?year=1415&place=应天府`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府)（建康/应天/南京） / [`?year=819&place=蓝关`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关)（韩愈「雪拥蓝关马不前」）
-- **画一条自定义诗词/行军路线**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)（杜甫《闻官军收河南河北》同年归乡路） / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)（苏轼「黄州惠州儋州」跨年贬谪路）
-- **走一段内置人物行迹**：[`?journey=qinshihuang`](https://deanchen.me/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchen.me/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchen.me/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchen.me/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchen.me/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchen.me/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchen.me/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
-- **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
-- **切换英文版**：[`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)
+Append query parameters to share any historical moment, battle, city genealogy, or multi-stop route:
+- **Jump to a specific year or territorial shift**: [`?year=-403&lang=en`](https://deanchen.me/jiangshan-map/?year=-403&lang=en) (403 BCE · Partition of Jin) / [`?year=-121&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&lang=en) (121 BCE · Huo Qubing opens the Hexi Corridor) / [`?year=648&lang=en`](https://deanchen.me/jiangshan-map/?year=648&lang=en) (648 CE · Four Garrisons of Anxi & Wang Xuance in India) / [`?year=1288&lang=en`](https://deanchen.me/jiangshan-map/?year=1288&lang=en) (1288 CE · Yuan Xuanzhengyuan over Tibet) / [`?year=1881&lang=en`](https://deanchen.me/jiangshan-map/?year=1881&lang=en) (1881 CE · Zeng Jize recovers Ili) / [`?year=1945&lang=en`](https://deanchen.me/jiangshan-map/?year=1945&lang=en) (1945 CE · Retrocession of Taiwan)
+- **Pinpoint a famous battle**: [`?year=-260&place=长平&lang=en`](https://deanchen.me/jiangshan-map/?year=-260&place=长平&lang=en) (Battle of Changping) / [`?year=208&place=赤壁&lang=en`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁&lang=en) (Battle of Red Cliffs) / [`?year=383&place=淝水&lang=en`](https://deanchen.me/jiangshan-map/?year=383&place=淝水&lang=en) (Battle of Fei River)
+- **Inspect a city's 2,400-year genealogy**: [`?year=741&place=长安&lang=en`](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en) (Chang'an / Xi'an) / [`?year=1415&place=应天府&lang=en`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府&lang=en) (Jiankang / Yingtian / Nanjing) / [`?year=819&place=蓝关&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关&lang=en) (Han Yu at Languan Pass)
+- **Plot a custom poetic or campaign route**: [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en) (Du Fu's 763 CE homeward route) / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en) (Su Shi's multi-year exile route across Huzhou, Huangzhou, Huizhou, and Danzhou)
+- **Launch a curated historical journey**: [`?journey=qinshihuang&lang=en`](https://deanchen.me/jiangshan-map/?journey=qinshihuang&lang=en) (Qin Shi Huang) / [`?journey=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?journey=zhangqian&lang=en) (Zhang Qian) / [`?journey=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?journey=zhugeliang&lang=en) (Zhuge Liang) / [`?journey=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?journey=xuanzang&lang=en) (Xuanzang) / [`?journey=libai&lang=en`](https://deanchen.me/jiangshan-map/?journey=libai&lang=en) (Li Bai) / [`?journey=sushi&lang=en`](https://deanchen.me/jiangshan-map/?journey=sushi&lang=en) (Su Shi) / [`?journey=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?journey=wangyangming&lang=en) (Wang Yangming)
+- **Start a quiz round**: [`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en) (Map Pinpoint Challenge)
 
 ---
 
-## AI Agent & LLM 接入指南 / AI Agent & LLM Integration
+## AI Agent & LLM Integration
 
-「江山时序」原生支持作为大语言模型（LLM）与 AI Agent 的**历史地理可视化工具**。模型**无需猜测经纬度坐标**，只需从诗词或史料中提取 **`year`（年份）** 与 **`place`（中英文/拼音古今地名）** 两个语义参数，地图即可自动完成地名解析、镜头聚焦、疆域政区渲染、轨迹连线与「点地溯源」卡片展开：
+**Chronicles of the Realm** works out of the box as a **historical-geography visualization engine for LLMs and AI Agents**. Models **never need to guess latitude/longitude coordinates**—simply extract two semantic parameters from a poem or historical text, **`year`** and **`place`**, and the atlas automatically resolves ancient/modern place names, centers the camera, renders dynastic borders and multi-stop trajectories, and opens the **Trace Place** genealogy card:
 
-- **机器可读说明文档**：[`llms.txt`](llms.txt)
-- **开箱即用 Agent Skill**：[`skills/jiangshan-atlas/SKILL.md`](skills/jiangshan-atlas/SKILL.md)（含零依赖 CLI 渲染脚本 [`skills/jiangshan-atlas/scripts/jiangshan.py`](skills/jiangshan-atlas/scripts/jiangshan.py)）
+- **Machine-Readable Specification**: [`llms.txt`](llms.txt)
+- **Ready-to-Use Agent Skill**: [`skills/jiangshan-atlas/SKILL.md`](skills/jiangshan-atlas/SKILL.md) (includes the zero-dependency CLI renderer [`skills/jiangshan-atlas/scripts/jiangshan.py`](skills/jiangshan-atlas/scripts/jiangshan.py))
   ```bash
-  # 一键安装至 Claude Code / Gemini / Jetski 全局技能目录：
+  # Install into Claude Code / Gemini / Jetski global skills directory:
   mkdir -p ~/.claude/skills ~/.gemini/config/skills && cp -r skills/jiangshan-atlas ~/.claude/skills/ && cp -r skills/jiangshan-atlas ~/.gemini/config/skills/
   ```
 
-### 1. 零坐标双参数 URL 协议（0D 单点 / 1D 同年路线 / 4D 跨年路线）
+### 1. Zero-Coordinate Dual-Parameter URL Protocol (0D Pinpoint / 1D Same-Year Route / 4D Multi-Year Route)
 
-| 模式 | URL 格式示例 | 自动渲染效果 |
+| Mode | Example URL | Automatic Rendering Behavior |
 | :--- | :--- | :--- |
-| **单点寻址 (0D)** | [`?year=819&place=蓝关`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关) 或 [`?year=819&place=Lantian+Pass&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=Lantian+Pass&lang=en)<br>*(韩愈「雪拥蓝关马不前」，原生支持中文与英文/拼音)* | 自动跳转至唐宪宗元和十四年（819 年），精准落针秦岭蓝田关，展开两千四百年政区沿革与名城总览卡片 |
-| **同年多站路线 (1D)** | [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)<br>*(杜甫「即从巴峡穿巫峡，便下襄阳向洛阳」)* | 自动在 763 年唐代版图上绘制 `1` → `5` 朱砂弧线轨迹并自适应缩放视野，点击任意站点即可查看历代沿革 |
-| **跨年多站路线 (4D)** | [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)<br>*(苏轼「问汝平生功业，黄州惠州儋州」)* | `year[i]` 与 `place[i]` 一一对应，地图路标自动标注 **`湖州 (1079)` → `黄州 (1080)` → `惠州 (1094)` → `儋州 (1097)`**，点击任意站点即可同步切换至该年份版图 |
+| **Single-Point Pinpoint (0D)** | [`?year=819&place=蓝关&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关&lang=en)<br>*(Han Yu's 819 CE exile poem at Languan Pass)* | Jumps to Tang Yuanhe 14 (819 CE), drops a pin on Languan Pass in the Qinling Mountains, and opens its 2,400-year administrative genealogy card |
+| **Same-Year Multi-Stop Route (1D)** | [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en)<br>*(Du Fu's 763 CE poem on recapturing Henan & Hebei)* | Plots numbered vermilion arcs `1` → `5` across the 763 CE Tang map and auto-fits the viewport; click any stop to inspect its genealogy |
+| **Multi-Year Space-Time Route (4D)** | [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en)<br>*(Su Shi's career across Huzhou, Huangzhou, Huizhou & Danzhou)* | Pairs `year[i]` with `place[i]`, labeling stops with their historical years and switching the underlying dynastic map whenever you click a stop |
 
-### 2. CLI 一键查史与出图（供 Agent 工具调用）
+### 2. CLI One-Command Screenshot & JSON Lookup (for Agent Tool Calls)
 
 ```bash
-# 极速结构化考据（返回当朝年号、政权、道/路/省、州/府/郡、城池掌故 remark 与两千四百年名城总览 lore JSON）
-python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 --hover 江州 --inspect
-
-# 单点诗境落针截图（支持中文或英文/拼音地名）
+# Single-point poetic landmark screenshot
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 819 --place 蓝关 --out /tmp/languan_819.png
 
-# 同年多站轨迹截图
+# Same-year multi-stop trajectory screenshot
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 763 --place 剑外,巴峡,巫峡,襄阳,洛阳 --out /tmp/dufu_763.png
 
-# 跨年多站轨迹截图
+# Multi-year space-time trajectory screenshot
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 --place 湖州,黄州,惠州,儋州 --out /tmp/sushi_exile.png
 ```
 
-### 3. 浏览器端 JavaScript API（`window.atlasAPI`）
+### 3. Browser JavaScript API (`window.atlasAPI`)
 
-在浏览器自动化环境（Playwright / WebMCP）中可直接调用：
-- `window.atlasAPI.locate({ year, place, zoom? })`：驱动地图跳转并渲染单点落针或跨年轨迹，同时返回结构化历史地理信息。
-- `window.atlasAPI.inspect({ year, place })`：只读查询指定时空点（或多站路线）所属政权、州郡政区、现代省市、当朝城池掌故（`nearestCity.remark`）、两千四百年名城/雄关总览（`lore`）、各站里程与标准分享链接。
-- `window.atlasAPI.resolvePlace(place, year?)`：解析中英文/拼音历代城池、天下名关、诗词名胜与古战场古今地名。
-
----
-
-## English Overview
-
-**Chronicles of the Realm (`jiangshan-map`)** is an interactive historical atlas of China from the opening year of Sima Guang's *Zizhi Tongjian*—the Partition of Jin and the Warring States (403 BCE)—to the present day, crafted in the aesthetic of traditional Chinese parchment cartography.
-
-### What You Can Do
-
-1. **Scrub Through 2,400+ Years, Track Reigning Monarchs & Inspect Ancient Prefectures**: Watch kingdoms and empires rise, split, and reunify across **multi-stage territorial snapshots** and **chronological milestones**—including Yan General Qin Kai's expansion into Liaodong (300 BCE), Ma Yuan's bronze pillars in Jiaozhi (43 CE), the Four Garrisons of Anxi & Wang Xuance's campaign in Central India (648 CE), Yuan's Xuanzhengyuan rule over Tibet (1288 CE), Zeng Jize's recovery of Ili (1881 CE), the 1945 retrocession of Taiwan, and the 1946 transition from the **"Begonia Leaf" (秋海棠)** map to the **"Rooster" (雄鸡)** map—complete with dashed **Ghost Boundary Diffs**, inline **Reigning Monarch & Imperial Era** displays (searchable by temple/posthumous title or personal name), deduplicated **Parchment Casing** borders, an **X-Ray Modern Lens** for comparing ancient prefectures (*Zhou / Fu / Jun*) against modern provinces, and dynamically evolving **Yellow River courses, ancient lakes (Yunmeng Marsh, Lop Nur), Great Walls, Grand Canals, and Silk Road routes**.
-2. **Click Any Ancient City, Strategic Pass, or Landmark to Uncover 2,400 Years of Stories (`Trace Place`)**: Click any **ancient city**, **strategic mountain pass** (rendered with traditional *Hanque* gatehouse icons), or **poetic & battlefield landmark** (or double-click anywhere on the map) to see how its name and administrative jurisdiction evolved across 18 historical eras through the modern day, which kingdoms and empires crowned it as their capital, and the **site-specific landmark events** that unfolded there—click any event to time-travel straight to that year.
-3. **Walk in the Footsteps of Historical Figures (`Historical Journeys`)**: Follow **Qin Shi Huang's Unification Campaigns** (238–221 BCE, watching Han, Zhao, Wei, Chu, Yan, and Qi merge into Qin step by step), **Zhang Qian's** mission to the Western Regions (138–126 BCE), **Zhuge Liang's** emergence from Longzhong and Northern Expeditions (207–234 CE), **Xuanzang's** pilgrimage to India (627–645 CE), **Li Bai's** grand travels across Tang China (701–762 CE), **Su Shi's** literary exile across Song China (1056–1101 CE), or **Wang Yangming's** Philosophy of Mind and campaigns (1472–1529 CE).
-4. **Easter Egg · Play the Map Pinpoint Challenge**: Open the **`Journeys ▾`** menu (`Quiz · Map Pinpoint · Ancient Place Quiz`) to test your historical intuition by pinpointing unlabeled ancient cities on the map using dynastic historical clues across 10 rounds to earn traditional imperial court titles.
+In browser automation environments (Playwright / WebMCP), call `window.atlasAPI` directly:
+- `window.atlasAPI.locate({ year, place, zoom? })`: Drives the map to a single location or multi-stop trajectory and returns structured historical-geographic metadata.
+- `window.atlasAPI.inspect({ year, place })`: Read-only query returning the controlling polity, ancient prefecture, modern province/city, leg distances, and canonical shareable URL.
+- `window.atlasAPI.resolvePlace(place, year?)`: Resolves ancient and modern names for cities, strategic passes, poetic landmarks, and battlefields.
 
 ---
 
-## 本地运行 / Run Locally
+## Run Locally
 
-项目为纯静态网页，无需安装任何依赖或构建工具，克隆后用任意静态服务器打开即可：  
 No dependencies or build steps required. Clone and serve with any static HTTP server:
 
 ```bash
@@ -170,14 +155,15 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-随后在浏览器打开 `http://localhost:8000`。
+Then open `http://localhost:8000` in your browser.
 
 ---
 
-## 致谢与开源协议 / Credits & License
+## Credits & License
 
-- **历史疆域与政区参考 / Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
-- **现代省界参考 / Modern Provincial Reference**: DataV GeoAtlas open boundary data.
-- **古琴雅乐录音 / Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
-- **说明 / Note**: 地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
-- **开源协议 / License**: **GPL-3.0**.
+- **Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard-Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
+- **Modern Provincial Reference**: DataV GeoAtlas open administrative boundary data.
+- **Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
+- **Note**: Historical territorial contours and prefecture boundaries in this atlas are schematic approximations intended to illustrate broad historical jurisdictions rather than modern surveyed borders.
+- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) ([中文贡献指南](CONTRIBUTING_ZH.md)) for repository structure, data conventions, and validation checks.
+- **License**: **GPL-3.0**.
