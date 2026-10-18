@@ -1,58 +1,69 @@
-# 贡献指南 · Contributing to Jiangshan Atlas (江山时序)
+# Contributing to Chronicles of the Realm (江山时序)
 
-感谢你对 **江山时序 (`jiangshan-map`)** 的关注！本项目致力于构建一个零运行时依赖、兼具东方水墨设色美学与历史地理严谨性的中国历代疆域与政区交互地图。
+<p align="left">
+  <strong>English</strong> · <a href="CONTRIBUTING_ZH.md">简体中文 (Chinese)</a>
+</p>
 
-欢迎任何形式的贡献，包括但不限于：
-- **史料校勘与地名订正**：修正古地名经纬度偏差、补充州郡沿革说明或调整政权阶段年份；
-- **重大历史事件补充**：增补各朝代关键历史节点、治所变迁或战役事件；
-- **多语言翻译优化**：完善 [`js/i18n_dict.js`](js/i18n_dict.js) 中的历史专有名词英文译名；
-- **界面交互与性能改进**：优化移动端手势体验、无障碍访问（ARIA）与 SVG 渲染性能。
+Thank you for your interest in **Chronicles of the Realm (`jiangshan-map`)**! This project aims to build a zero-dependency, historically rigorous interactive atlas of Chinese dynastic territories, administrative divisions, ancient cities, and historical journeys crafted in the aesthetic of traditional Chinese parchment cartography.
+
+We welcome contributions of all kinds, including:
+- **Historical & Geographic Corrections**: Fixing ancient place coordinates, refining prefecture/circuit evolution notes (`remark`), or adjusting dynastic phase transition years;
+- **Historical Milestones & Site-Specific Events**: Adding chronological milestones, capital relocations, or site-specific landmark events (`PLACE_LANDMARK_EVENTS`);
+- **Bilingual Translations & City Lore**: Improving English translations of historical proper nouns in [`js/i18n_dict.js`](js/i18n_dict.js) or expanding bilingual city epigraphs (`CITY_LORE`) in [`js/lore_data.js`](js/lore_data.js);
+- **UI/UX, Accessibility & Performance**: Enhancing mobile touch gestures, keyboard accessibility (ARIA), and SVG rendering performance.
 
 ---
 
-## 目录结构说明
+## Repository Structure
 
 ```text
-├── index.html               # 应用主页面与语义化布局结构
-├── css/style.css            # 宣纸水墨主题样式与响应式布局
+├── index.html               # Main application page & semantic layout
+├── llms.txt                 # Machine-readable protocol specification for LLMs & AI Agents
+├── css/style.css            # Traditional parchment theme & responsive styles
 ├── js/
-│   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、挑战模式
-│   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件与交通走廊
-│   ├── atlas_snapshots.js   # 拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（支持按需惰性解码）
-│   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层
-│   └── i18n_dict.js         # 中英双语词典与历史专有名词对照表
+│   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Quiz & window.atlasAPI
+│   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
+│   ├── lore_data.js         # Imperial eras (CHINESE_ERA_SPANS), reigning monarchs, 7 historical journeys, city lore (CITY_LORE), landmark events & gazetteer
+│   ├── atlas_boot.js        # Pre-bundled initial snapshot (s_zhanguo) for instant first-paint rendering
+│   ├── atlas_snapshots.js   # Topology-deduplicated & VLQ delta-encoded historical polity/prefecture polygons (lazy-loaded on demand)
+│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the X-Ray reference layer
+│   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
+├── skills/
+│   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
-    └── validate_atlas.js    # 零依赖自动化数据完整性与拓扑无损校验脚本
+    └── validate_atlas.js    # Zero-dependency automated data integrity, topology & 23-CUJ E2E validation suite
 ```
 
 ---
 
-## 本地开发与验证流程
+## Local Development & Validation Workflow
 
-1. **克隆仓库并启动本地预览**：
-   本项目采用纯原生 ES6 + SVG 构建，无需安装任何 npm 依赖即可直接运行：
+1. **Clone and Serve Locally**:
+   Built with vanilla ES6 and SVG with zero runtime or npm dependencies—simply serve the repository root with any static HTTP server:
    ```bash
    git clone https://github.com/DeanChensj/jiangshan-map.git
    cd jiangshan-map
-   python3 -m http.server 8080
+   python3 -m http.server 8000
    ```
-   随后在浏览器访问 `http://localhost:8080`（或直接双击打开 `index.html`）。
+   Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI).
 
-2. **运行自动化数据与拓扑校验**：
-   在提交 Pull Request 前，请运行内置的校验脚本，确保所有朝代时间轴连续、快照引用有效、经纬度坐标合法且双语词条完整：
+2. **Run the Automated Validation Suite**:
+   Before opening a Pull Request, always run the built-in validation script to verify timeline continuity, snapshot integrity, coordinate validity, polygon topology, and 100% English translation coverage:
    ```bash
    node scripts/validate_atlas.js
    ```
 
 ---
 
-## 史料与数据校勘规范
+## Historical & Cartographic Conventions
 
-1. **古地名点位 (`settlements`)**：
-   - 坐标统一采用 `[经度, 纬度]`（WGS-84 / CGCS2000 近似坐标）；
-   - 层级定义：`isCapital: true` = 王朝/诸侯国都城，无 `tier`（默认一级）= 核心州郡治所 / 雄关重镇，`tier: 2` = 次级州郡 / 边塞据点（随地图放大渐进显隐）；
-   - 若某城池在朝代中后期始建、迁都或废弃，请设置 `appear` / `vanish` 年份字段。
-2. **帝王年号与干支纪年**：
-   - 年号表位于 `js/app.js` 的 `CHINESE_ERA_SPANS`，采用左闭右开年份区间 `[startYear, eraTitle, startOffset]`，新增或校订时请参考《中国历史纪年表》。
-3. **历史疆域说明**：
-   - 古代政权边界（尤其是游牧政权、羁縻州府、吐蕃与西域都护府等）在历史上多为动态过渡带而非现代精确测绘国界，提交边界调整时建议在 PR 中注明参考图集（如谭其骧主编《中国历史地图集》对应分册与图幅）。
+1. **Ancient Settlements (`settlements` in `js/map_data.js`)**:
+   - Coordinates follow `[longitude, latitude]` order (`WGS-84` / `CGCS2000`);
+   - Hierarchy tiers: `isCapital: true` = imperial or regional regime capital; default (`tier` omitted) = major prefecture/circuit seat or strategic garrison; `tier: 2` = secondary prefecture or frontier outpost (progressively revealed on zoom);
+   - If a settlement was founded, renamed, or abandoned mid-dynasty, specify `appear` and/or `vanish` years;
+   - Every pre-modern settlement must include a concise historical `remark` (and its English translation in `js/i18n_dict.js`).
+2. **Imperial Eras & Reigning Monarchs (`js/lore_data.js`)**:
+   - Imperial era spans (`CHINESE_ERA_SPANS`) and reigning monarchs (`REIGNING_MONARCHS`) reside in `js/lore_data.js`. When adding or correcting reign dates, cross-check against standard chronological tables (*Zhongguo Lishi Jinian Biao*).
+3. **Historical Polities & Regional Boundaries (`js/atlas_snapshots.js`)**:
+   - Historical frontiers (especially across steppe confederations, *Jimi* protectorates, Tubo, and the Western Regions) were dynamic transition zones rather than modern surveyed borders. When proposing boundary adjustments, please cite the reference atlas sheet in your PR description (e.g., Tan Qixiang's *The Historical Atlas of China* / 《中国历史地图集》 volume and plate).
+   - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom.
