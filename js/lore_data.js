@@ -5586,6 +5586,966 @@
       "chokepointEn": "Widened across the Dayu Ridge by Chancellor Zhang Jiuling in 716 CE to link the Gan and Pearl river basins across the Five Ridges."
     }
   ],
+  "CITY_LORE": [
+    {
+        "modern": "西安",
+        "coord": [
+            108.94,
+            34.26
+        ],
+        "tagZh": "关中四塞 · 汉唐帝都",
+        "tagEn": "Guanzhong Heartland · Imperial Capital",
+        "descZh": "北濒渭水、南依秦岭，居“八水绕长安”之关中形胜。周、秦、西汉、新、前赵、前秦、后秦、西魏、北周、隋、唐等十余朝建都于此，为丝绸之路东方起点与汉唐国际都会。",
+        "descEn": "Cradled between the Wei River and the Qinling Mountains in the Guanzhong Basin, it served as imperial capital for over ten dynasties including Zhou, Qin, Western Han, Sui, and Tang, and as the eastern terminus of the Silk Road."
+    },
+    {
+        "modern": "咸阳",
+        "coord": [
+            108.71,
+            34.33
+        ],
+        "tagZh": "毕陌渭北 · 大秦帝都",
+        "tagEn": "North Bank of Wei River · Qin Imperial Capital",
+        "descZh": "南临渭水、北依九嵕诸山，山水俱阳故名咸阳。秦孝公十二年自栎阳迁都于此，商鞅变法、秦始皇兼并六国皆以此为中枢，汉唐时为京畿渭北陵邑与丝路西出首驿。",
+        "descEn": "Situated on the northern bank of the Wei River south of the Jiuzong hills, Xianyang became the Qin capital in 350 BCE under Duke Xiao and Shang Yang, serving as the command center for Qin Shi Huang's unification of China."
+    },
+    {
+        "modern": "洛阳",
+        "coord": [
+            112.45,
+            34.62
+        ],
+        "tagZh": "天下之中 · 九朝都会",
+        "tagEn": "Center of the Realm · Nine-Dynasty Capital",
+        "descZh": "居伊洛盆地腹心，北靠邙山、南望伊阙，控河洛水陆枢轴。自东周、东汉、曹魏、西晋、北魏至隋唐五代屡为帝都或东都，素有“河洛都会、天下之中”之称。",
+        "descEn": "Set in the Yi–Luo basin between Mangshan and the Longmen Gorge, Luoyang stood at the geographic center of ancient China, serving as capital or eastern capital for Eastern Zhou, Eastern Han, Cao Wei, Western Jin, Northern Wei, Sui, and Tang."
+    },
+    {
+        "modern": "南京",
+        "coord": [
+            118.8,
+            32.06
+        ],
+        "tagZh": "钟山龙蟠 · 六朝古都",
+        "tagEn": "Yangtze Metropolis · Six Dynasties Capital",
+        "descZh": "北凭大江天堑，东据钟山、西扼石头城，有“钟山龙蟠、石城虎踞”之势。孙吴、东晋与南朝宋齐梁陈、南唐、明初、太平天国及中华民国皆建都于此，为江南文脉与政治中枢。",
+        "descEn": "Anchored by Purple Mountain in the east and Stone City bluff on the Yangtze River, Nanjing was the imperial seat of the Six Dynasties, Southern Tang, early Ming, and the Republic of China."
+    },
+    {
+        "modern": "北京",
+        "coord": [
+            116.4,
+            39.9
+        ],
+        "tagZh": "幽燕锁钥 · 五朝帝都",
+        "tagEn": "Yan–Taihang Pivot · Five-Dynasty Capital",
+        "descZh": "背倚燕山、西屏太行、南俯华北平原，扼居庸与古北诸口，自古为中原与塞北交汇锁钥。自燕蓟故都、唐幽州藩镇，演进为辽南京、金中都、元大都及明清与现代中国首都。",
+        "descEn": "Backed by the Yanshan and Taihang ranges at the northern apex of the North China Plain, Beijing evolved from the Warring States capital of Yan and Tang Youzhou into the imperial capital of Liao, Jin, Yuan, Ming, Qing, and modern China."
+    },
+    {
+        "modern": "开封",
+        "coord": [
+            114.35,
+            34.79
+        ],
+        "tagZh": "八荒争凑 · 汴水都会",
+        "tagEn": "Bian Canal Hub · Northern Song Capital",
+        "descZh": "居豫东平畴，凭鸿沟与通济渠（汴河）连通黄河与江淮漕运。战国魏都大梁，五代梁晋汉周及北宋定鼎东京汴梁，北宋时为“八荒争凑、万国咸通”之天下首善都会。",
+        "descEn": "Linked by the Honggou and Bian canals between the Yellow and Huai rivers, Kaifeng served as the Warring States Wei capital of Daliang and reached its zenith as Bianjing, the bustling metropolis of the Five Dynasties and Northern Song."
+    },
+    {
+        "modern": "杭州",
+        "coord": [
+            120.15,
+            30.27
+        ],
+        "tagZh": "东南形胜 · 三吴都会",
+        "tagEn": "Qiantang Metropolis · Southern Song Capital",
+        "descZh": "西拥西湖群山，东临钱塘江口，北接京杭大运河南端。隋置杭州后随漕运勃兴，五代为吴越国都，南宋定行在于临安府，商贾云集、人文荟萃，号称“东南第一州”。",
+        "descEn": "Situated between West Lake, the Qiantang River estuary, and the southern terminus of the Grand Canal, Hangzhou flourished as the capital of Wuyue and the Southern Song imperial seat of Lin'an."
+    },
+    {
+        "modern": "成都",
+        "coord": [
+            104.07,
+            30.57
+        ],
+        "tagZh": "天府奥区 · 锦官故都",
+        "tagEn": "Sichuan Basin Core · Land of Abundance",
+        "descZh": "居川西成都平原腹心，仰赖李冰都江堰水利而“水旱从人、不知饥馑”。自古蜀王都、秦汉蜀郡、三国蜀汉帝都至唐宋“扬一益二”之西南巨镇，两千余年城址与城名未改。",
+        "descEn": "Irrigated by the Dujiangyan system on the western Sichuan plain, Chengdu has retained its name and site for over two millennia as the capital of Shu-Han and the premier metropolis of southwestern China."
+    },
+    {
+        "modern": "安阳",
+        "coord": [
+            114.39,
+            36.1
+        ],
+        "tagZh": "殷商故都 · 建安霸府",
+        "tagEn": "Shang Heartland · Six-Dynasty Northern Capital",
+        "descZh": "西依太行、东眺河北平原，洹水与漳水横贯其境。殷商盘庚迁殷于此（甲骨文出土地），战国西门豹治邺，汉末曹操营建邺城霸府，后赵、冉魏、前燕、东魏、北齐相继建都于邺。",
+        "descEn": "Set at the eastern foot of the Taihang Mountains along the Huan and Zhang rivers, Anyang encompasses the Late Shang capital of Yin and ancient Ye — seat of Cao Cao and imperial capital of Later Zhao, Former Yan, Eastern Wei, and Northern Qi."
+    },
+    {
+        "modern": "襄阳",
+        "coord": [
+            112.12,
+            32.01
+        ],
+        "tagZh": "汉水咽喉 · 天下腰膂",
+        "tagEn": "Han River Hinge · North–South Strategic Pivot",
+        "descZh": "北通汝洛、南控江陵、西扼武当、东瞰江汉，三面环水、一面傍山。自三国关羽水淹七军、东晋南朝北伐，至南宋孟珙与吕文德坚守抗蒙，历代皆为南北攻守必争之“天下腰膂”。",
+        "descEn": "Guarding the middle Han River at the southern exit of the Nanyang Basin, Xiangyang linked the Central Plains with the middle Yangtze and stood for centuries as the decisive military pivot between north and south."
+    },
+    {
+        "modern": "荆州",
+        "coord": [
+            112.2,
+            30.35
+        ],
+        "tagZh": "荆楚雄都 · 江汉锁钥",
+        "tagEn": "Chu Heartland · Middle Yangtze Citadel",
+        "descZh": "古称郢都、江陵，西控三峡巫巴之险，东接云梦江汉之饶。春秋战国楚国定都纪南城四百余年，三国“借荆州”与六朝荆州都督皆驻江陵，为长江中游第一军政中枢。",
+        "descEn": "Known historically as Ying and Jiangling, Jingzhou commanded the middle Yangtze exit below the Three Gorges, serving as the Warring States Chu capital for four centuries and the key military governor seat of the Six Dynasties."
+    },
+    {
+        "modern": "扬州",
+        "coord": [
+            119.41,
+            32.39
+        ],
+        "tagZh": "淮左名都 · 运河咽喉",
+        "tagEn": "Grand Canal Hub · Salt & Trade Metropolis",
+        "descZh": "古称广陵、江都，扼长江与大运河交汇咽喉。自吴王夫差开邗沟、汉封吴王刘濞，至隋炀帝驻跸江都、唐代“扬一益二”及明清两淮盐运中枢，久为东南漕盐与商贸都会。",
+        "descEn": "Commanding the junction of the Yangtze River and the Grand Canal, Yangzhou (Guangling) thrived under the Sui, Tang, and Qing dynasties as the premier hub of canal grain transport and the Lianghuai salt monopoly."
+    },
+    {
+        "modern": "苏州",
+        "coord": [
+            120.62,
+            31.3
+        ],
+        "tagZh": "吴会首郡 · 东南财赋",
+        "tagEn": "Wu Cultural Core · Taihu Economic Hub",
+        "descZh": "古称姑苏、吴郡、平江，东傍淞沪、西拥太湖，水网纵横。春秋吴国阖闾、夫差建都于此，秦汉为会稽郡治，唐宋以降“苏湖熟、天下足”，为江南农桑丝绸与文教翘楚。",
+        "descEn": "Set between Lake Tai and the lower Yangtze water network, Suzhou (Gusu) was the ancient capital of Wu and rose from the Tang and Song dynasties onward as China's foremost center of grain, silk, and literati culture."
+    },
+    {
+        "modern": "泉州",
+        "coord": [
+            118.67,
+            24.87
+        ],
+        "tagZh": "刺桐古港 · 海丝起点",
+        "tagEn": "Zayton Port · Maritime Silk Road Hub",
+        "descZh": "背倚戴云山、面临泉州湾，扼晋江入海口。唐代开港，北宋置市舶司，南宋至元代以“刺桐港（Zayton）”享誉亚欧，梯航万国、商舶云集，为海上丝绸之路东方第一大港。",
+        "descEn": "At the mouth of the Jin River on the Fujian coast, Quanzhou established a Maritime Trade Superintendency under the Song and became world-famous under the Yuan as Zayton, the largest port of the Maritime Silk Road."
+    },
+    {
+        "modern": "广州",
+        "coord": [
+            113.26,
+            23.13
+        ],
+        "tagZh": "岭南首府 · 千年商都",
+        "tagEn": "Lingnan Metropolis · Millennial Maritime Port",
+        "descZh": "古称番禺，北障五岭、南临南海，控东、西、北三江总汇之珠江口。秦置南海郡，汉初为南越国都，唐设市舶使、明清为十三行通商口岸，两千余年海贸长盛不衰。",
+        "descEn": "Commanding the Pearl River Delta south of the Five Ridges, Guangzhou (Panyu) served as seat of Qin Nanhai Commandery, capital of Nanyue, and China's uninterrupted southern maritime trade gateway for over two millennia."
+    },
+    {
+        "modern": "敦煌",
+        "coord": [
+            94.66,
+            40.14
+        ],
+        "tagZh": "河西咽喉 · 丝路明珠",
+        "tagEn": "Hexi Throat · Silk Road Oasis",
+        "descZh": "古称沙州，处河西走廊最西端党河绿洲，西控阳关与玉门关，扼丝绸之路南北两道总咽喉。汉武帝列置河西四郡，十六国至隋唐莫高窟千佛竞凿，晚唐张议潮于此率归义军复归唐廷。",
+        "descEn": "An oasis at the western end of the Hexi Corridor flanked by Yangguan and Yumen passes, Dunhuang (Shazhou) controlled the bifurcation of the Silk Road and preserved a millennium of Buddhist art at the Mogao Caves."
+    },
+    {
+        "modern": "太原",
+        "coord": [
+            112.55,
+            37.87
+        ],
+        "tagZh": "表里山河 · 龙城重镇",
+        "tagEn": "Fen River Citadel · Northern Bastion",
+        "descZh": "古称晋阳，居太原盆地北端，左带太行、右挟吕梁、中贯汾水。春秋赵简子营晋阳，战国为赵初都，北齐为别都，李渊父子起兵晋阳肇建大唐，五代后唐后晋后汉及北汉皆发祥于此。",
+        "descEn": "Flanked by the Taihang and Lüliang mountains at the head of the Fen River basin, Jinyang (Taiyuan) was the early Zhao capital, launching pad of the Tang Dynasty, and military citadel of northern China."
+    },
+    {
+        "modern": "大同",
+        "coord": [
+            113.3,
+            40.08
+        ],
+        "tagZh": "北魏帝都 · 塞上雄镇",
+        "tagEn": "Northern Wei Capital · Frontier Stronghold",
+        "descZh": "古称平城，处内外长城之间大同盆地，控扼雁门与阴山南北通道。汉高祖白登之围即在此地，北魏定都平城近百年并开凿云冈石窟，辽金尊为西京，明代为九边之首大同镇。",
+        "descEn": "Positioned in the Datong Basin between the Inner and Outer Great Walls, Pingcheng (Datong) served for nearly a century as the Northern Wei imperial capital (home to the Yungang Grottoes), Western Capital of Liao and Jin, and premier Ming frontier garrison."
+    },
+    {
+        "modern": "武汉",
+        "coord": [
+            114.31,
+            30.59
+        ],
+        "tagZh": "江汉交汇 · 九省通衢",
+        "tagEn": "Yangtze–Han Confluence · Thoroughfare of Nine Provinces",
+        "descZh": "古称夏口、江夏、鄂州、武昌，居长江与汉水交汇处，龟蛇锁大江。自三国孙吴筑夏口城、六朝郢州江防，至唐宋鄂州商埠、元明清湖广会城及辛亥武昌首义，为华中水陆总枢纽。",
+        "descEn": "Straddling the confluence of the Yangtze and Han rivers, Wuhan (ancient Xiakou, Ezhou, and Wuchang) grew from a Three Kingdoms river fortress into the provincial capital of Huguang and birthplace of the 1911 Wuchang Uprising."
+    },
+    {
+        "modern": "重庆",
+        "coord": [
+            106.55,
+            29.56
+        ],
+        "tagZh": "巴国故都 · 三江锁钥",
+        "tagEn": "Ancient Ba Capital · Upper Yangtze Fortress",
+        "descZh": "古称江州、渝州、恭州，扼长江与嘉陵江交汇处，山环水绕、层峦耸翠。先秦为巴国都城，秦置巴郡，南宋光宗先封恭王后即位改称重庆府，合州钓鱼城曾坚守三十六年抗击蒙哥汗大军。",
+        "descEn": "Built on a rocky peninsula at the confluence of the Yangtze and Jialing rivers, Chongqing (ancient Jiangzhou and Yuzhou) was the capital of ancient Ba, seat of Qin Ba Commandery, site of the Song fortress Diaoyucheng, and China's wartime capital."
+    },
+    {
+        "modern": "长沙",
+        "coord": [
+            112.94,
+            28.23
+        ],
+        "tagZh": "荆湘都会 · 潇湘文脉",
+        "tagEn": "Xiang River Metropolis · Huxiang Cultural Hub",
+        "descZh": "古称临湘、潭州，居湘江下游河谷，西望岳麓、北接洞庭。战国为楚南重镇，秦置长沙郡，西汉封长沙国（马王堆汉墓所在），五代为马楚都城，宋代岳麓书院倡道南学，文脉绵延千年。",
+        "descEn": "Set on the lower Xiang River between Mount Yuelu and Dongting Lake, Changsha (Tanzhou) served as Qin commandery seat, Western Han kingdom capital, Five Dynasties Ma Chu capital, and home of the famed Yuelu Academy."
+    },
+    {
+        "modern": "南昌",
+        "coord": [
+            115.89,
+            28.68
+        ],
+        "tagZh": "襟江带湖 · 江西首府",
+        "tagEn": "Gan River Metropolis · Poyang Gate",
+        "descZh": "古称豫章、洪州，扼赣江下游、北濒鄱阳湖，有“襟三江而带五湖，控蛮荆而引瓯越”之势。汉高祖时灌婴筑城置豫章郡，唐设江南西道治洪州（滕王阁所在），宋元明清皆为江西首府。",
+        "descEn": "Commanding the lower Gan River southwest of Poyang Lake, Nanchang (Yuzhang / Hongzhou) was founded in the early Western Han, celebrated in Wang Bo's Preface to the Pavilion of Prince Teng, and served as capital of Jiangxi."
+    },
+    {
+        "modern": "福州",
+        "coord": [
+            119.3,
+            26.08
+        ],
+        "tagZh": "八闽首府 · 海滨邹鲁",
+        "tagEn": "Min River Estuary · Capital of Fujian",
+        "descZh": "古称东冶、侯官、晋安，居闽江下游入海盆地，三山鼎峙。秦置闽中郡，汉初为闽越王无诸都城，唐置福建观察使，五代为闽国都城，宋明以降文教昌盛、海贸繁华，为八闽军政首府。",
+        "descEn": "Cradled in the lower Min River basin facing the East China Sea, Fuzhou (Dongye) was the seat of Qin Minzhong Commandery, capital of Minyue and Five Dynasties Min, and long-standing capital of Fujian."
+    },
+    {
+        "modern": "徐州",
+        "coord": [
+            117.18,
+            34.26
+        ],
+        "tagZh": "五省通衢 · 南北兵冲",
+        "tagEn": "Crossroads of Five Provinces · Battleground of Empires",
+        "descZh": "古称彭城，居黄淮平原中枢，北控齐鲁、南屏江淮、西接汴洛。项羽灭秦后自立为西楚霸王定都彭城，刘裕由此起兵北伐，自古为南北水陆要冲与决定中原大局之兵家必争之地。",
+        "descEn": "At the crossroads of the Yellow and Huai plains linking Shandong, Henan, and Jianghuai, Pengcheng (Xuzhou) was Xiang Yu's Western Chu capital and one of Chinese history's most contested military pivots."
+    },
+    {
+        "modern": "南阳",
+        "coord": [
+            112.53,
+            33.0
+        ],
+        "tagZh": "南都形胜 · 宛洛孔道",
+        "tagEn": "Nanyang Basin Hub · Gateway to Jingxiang",
+        "descZh": "古称宛城，居伏牛山与桐柏山环抱之南阳盆地，北通洛阳、西入武关、南下襄汉。战国楚宛邑、秦南阳郡治，东汉光武帝刘秀起兵于此尊为“南都”，诸葛亮躬耕于城西卧龙岗。",
+        "descEn": "Enclosed within the Nanyang Basin between Mount Funiu and the Han River valley, Wancheng (Nanyang) controlled routes to Luoyang, Wuguan, and Xiangyang, serving as Emperor Guangwu's Southern Capital and Zhuge Liang's retreat."
+    },
+    {
+        "modern": "汉中",
+        "coord": [
+            107.02,
+            33.07
+        ],
+        "tagZh": "秦巴锁钥 · 汉家发祥",
+        "tagEn": "Qinling–Bashan Bastion · Cradle of the Han Dynasty",
+        "descZh": "古称南郑、梁州、兴元，居秦岭与大巴山之间汉中盆地，北扼褒斜、陈仓、子午诸栈道，南控金牛蜀道。秦楚争霸要冲，刘邦受封汉王自此定三秦而兴汉室，诸葛亮屯兵于此六出祁山。",
+        "descEn": "Nestled between the Qinling and Daba mountains along the upper Han River, Hanzhong (Nanzheng) guarded the plank roads linking Guanzhong and Sichuan, where Liu Bang launched the Han Dynasty and Zhuge Liang staged his northern campaigns."
+    },
+    {
+        "modern": "济南",
+        "coord": [
+            117.0,
+            36.65
+        ],
+        "tagZh": "岱北重镇 · 泉城名都",
+        "tagEn": "North of Mount Tai · City of Springs",
+        "descZh": "古称历城、齐州，南依泰山、北临黄河（古济水），众泉汇流成大明湖。汉置济南郡，唐为齐州重镇，宋升济南府（李清照、辛弃疾故里），金元明清逐步取代青州成为山东军政首府。",
+        "descEn": "Set between the northern slopes of Mount Tai and the Yellow River (ancient Ji River), Licheng (Jinan) is famed for its artesian springs and rose from the Song, Ming, and Qing eras as the provincial capital of Shandong."
+    },
+    {
+        "modern": "济宁",
+        "coord": [
+            116.99,
+            35.6
+        ],
+        "tagZh": "周鲁故都 · 儒家圣地",
+        "tagEn": "Capital of Lu · Birthplace of Confucius",
+        "descZh": "辖境曲阜古为周公封鲁之都，孔子生于此、葬于洙泗之上，孔庙、孔府、孔林绵延两千余年，为中华儒学圣地；元明清京杭大运河会通河贯通后，济宁更成为鲁西南漕运河道总督重镇。",
+        "descEn": "Home to Qufu — the ancient capital of the State of Lu and birthplace of Confucius — and a major Grand Canal administrative hub under the Yuan, Ming, and Qing dynasties."
+    },
+    {
+        "modern": "淄博",
+        "coord": [
+            118.35,
+            36.82
+        ],
+        "tagZh": "海岱雄都 · 稷下学宫",
+        "tagEn": "Capital of Qi · Jixia Academy Heartland",
+        "descZh": "古称临淄，北临渤海湾平原、南依鲁中山地，淄水穿城而过。姜齐与田齐定都临淄六百余年，战国时城内十万户、车毂击人肩摩，稷下学宫百家争鸣，为先秦东方第一大都会。",
+        "descEn": "Ancient Linzi stood between the northern Shandong mountains and the Bohai plain as capital of the State of Qi for over six centuries, famed for its prosperity and the Jixia Academy where Warring States philosophers debated."
+    },
+    {
+        "modern": "邯郸",
+        "coord": [
+            114.49,
+            36.61
+        ],
+        "tagZh": "赵国雄都 · 燕赵要冲",
+        "tagEn": "Capital of Zhao · Taihang Eastern Foot Hub",
+        "descZh": "西依太行山滏口陉、东临华北平原。战国赵敬侯迁都邯郸，赵武灵王于此胡服骑射，廉颇蔺相如将相和、平原君窃符救赵及秦始皇降生皆在此城；宋代辖境大名府更为河北抗辽陪都北京。",
+        "descEn": "Commanding the eastern exit of the Fukou Pass through the Taihang Mountains, Handan was the Warring States capital of Zhao where King Wuling introduced mounted archery, and later encompassed the Song Northern Capital of Daming."
+    },
+    {
+        "modern": "运城",
+        "coord": [
+            110.95,
+            35.12
+        ],
+        "tagZh": "河东盐池 · 三晋腹地",
+        "tagEn": "Hedong Salt Lake · Cradle of Early Wei",
+        "descZh": "古称安邑、蒲坂、河东，居黄河大曲东岸运城盆地，坐拥解州天然盐池。传说舜都蒲坂、夏都安邑，战国初为魏国都城，秦汉以降为河东郡治与蒲津渡锁钥，唐代尊为中都河中府。",
+        "descEn": "Bounded by the great bend of the Yellow River and the Xiechi Salt Lake, Hedong (Anyi / Puban) was the early capital of Warring States Wei, seat of Hedong Commandery, and site of the strategic Pujin Ferry."
+    },
+    {
+        "modern": "武威",
+        "coord": [
+            102.64,
+            37.93
+        ],
+        "tagZh": "河西首郡 · 五凉古都",
+        "tagEn": "Premier Commandery of Hexi · Capital of Five Liangs",
+        "descZh": "古称姑臧、凉州，北临腾格里沙漠、南依祁连山冷龙岭，为自陇入河西走廊第一大绿洲。汉武帝置武威郡，十六国前凉、后凉、南凉、北凉及大凉相继建都姑臧，号“河西都会”。",
+        "descEn": "The largest oasis at the eastern entrance of the Hexi Corridor north of the Qilian Mountains, Guzang (Liangzhou / Wuwei) served as capital of the Five Liang kingdoms and the military-commercial hub of Hexi."
+    },
+    {
+        "modern": "张掖",
+        "coord": [
+            100.45,
+            38.93
+        ],
+        "tagZh": "塞上江南 · 河西中枢",
+        "tagEn": "Oasis of the Hexi Corridor · Ganzhou Hub",
+        "descZh": "古称甘州，南枕祁连雪峰、北依合黎山，黑河（弱水）贯境滋养沃野，素有“金张掖”之誉。汉武帝取“张国臂掖，以通西域”置张掖郡，隋炀帝于焉支山下大合西域二十七国，西夏与元代皆为甘州重镇。",
+        "descEn": "Watered by the Heihe River beneath the snow-capped Qilian Mountains, Zhangye (Ganzhou) was named by Emperor Wu of Han for 'extending the arm of the realm to the Western Regions' and hosted Emperor Yang of Sui's 609 CE Western Regions Durbar."
+    },
+    {
+        "modern": "酒泉",
+        "coord": [
+            98.49,
+            39.73
+        ],
+        "tagZh": "河西锁钥 · 边塞雄郡",
+        "tagEn": "Western Hexi Stronghold · Gateway to Jade Gate",
+        "descZh": "古称肃州，辖境含瓜州（晋昌），南靠祁连山冰川、北扼马鬃山。汉武帝元狩二年霍去病大破匈奴后始置酒泉郡（传霍去病倾御赐酒于泉与三军共饮），唐代瓜州为玄奘西行出塞之地与安西咽喉。",
+        "descEn": "Established after Huo Qubing's 121 BCE victory over the Xiongnu, Jiuquan (Suzhou) and neighboring Guazhou guarded the western narrows of the Hexi Corridor where Xuanzang crossed outward on his pilgrimage."
+    },
+    {
+        "modern": "天水",
+        "coord": [
+            105.72,
+            34.58
+        ],
+        "tagZh": "陇右门户 · 关陇孔道",
+        "tagEn": "Gateway to Longyou · Wei River Upper Hub",
+        "descZh": "古称上邽、成纪、秦州，居渭河上游河谷，东接关中陇关、南通汉中祁山（街亭所在）。秦人先祖非子牧马发祥之地，汉置天水郡（飞将军李广故里），三国诸葛亮北伐首争天水、街亭，历代为关中经略陇右之门户。",
+        "descEn": "Straddling the upper Wei River valley between Longshan and Qishan, Tianshui (Qinzhou / Shanggui) was the cradle of the early Qin people, hometown of Han general Li Guang, and focal battlefield of Zhuge Liang's northern campaigns."
+    },
+    {
+        "modern": "银川",
+        "coord": [
+            106.23,
+            38.49
+        ],
+        "tagZh": "塞上江南 · 西夏王都",
+        "tagEn": "Helan Mountain Oasis · Western Xia Capital",
+        "descZh": "古称兴庆府、中兴府、宁夏卫，西屏贺兰山以御朔漠寒流，东引黄河秦渠、汉延渠灌溉平畴，号“塞上江南”。党项李元昊定都兴庆府立西夏近两百年，贺兰山东麓留有西夏王陵。",
+        "descEn": "Sheltered on the west by the Helan Mountains and irrigated on the east by Yellow River canals, Yinchuan (Xingqing) flourished for nearly two centuries as the royal capital of the Tangut Western Xia Empire."
+    },
+    {
+        "modern": "拉萨",
+        "coord": [
+            91.11,
+            29.65
+        ],
+        "tagZh": "雪域王都 · 圣城逻些",
+        "tagEn": "Tibetan Plateau Capital · Historic Lhasa",
+        "descZh": "古称逻些（惹萨），坐落于拉萨河（吉曲）谷地。公元7世纪松赞干布统一青藏高原后自雅砻迁都逻些，迎娶唐文成公主并始建布达拉宫与大昭寺（立有唐蕃会盟碑），自此成为雪域高原政教中枢。",
+        "descEn": "Set in the Lhasa River valley at 3,650 meters, Rasa (Lhasa) became the capital of the Tibetan Empire under Songtsen Gampo in the 7th century, home to the Potala Palace, Jokhang Temple, and the 823 CE Tang–Tubo Treaty Pillar."
+    },
+    {
+        "modern": "昆明",
+        "coord": [
+            102.71,
+            25.04
+        ],
+        "tagZh": "滇池明珠 · 西南都会",
+        "tagEn": "Dianchi Basin Metropolis · Capital of Yunnan",
+        "descZh": "古称滇池、拓东、善阐、中庆路、云南府，三面环山、南濒滇池。古滇国中心，汉武帝置益州郡，南诏设拓东城、大理国为善阐府，元代赛典赤·赡思丁移云南行省治中庆路，自此确立为云南首府。",
+        "descEn": "Embracing the northern shore of Dianchi Lake, Kunming evolved from the seat of Han Yizhou Commandery and Dali's Shanchan Prefecture into the provincial capital of Yunnan under Yuan governor Sayyid Ajjal Shams al-Din."
+    },
+    {
+        "modern": "大理",
+        "coord": [
+            100.23,
+            25.59
+        ],
+        "tagZh": "苍洱形胜 · 南诏大理都城",
+        "tagEn": "Cangshan–Erhai Heartland · Nanzhao & Dali Capital",
+        "descZh": "古称太和城、羊苴咩城，西依点苍山十九峰、东临洱海，扼博南古道与滇藏茶马古道交汇处。唐代南诏国与宋代段氏大理国先后立都于此五百余年，崇圣寺三塔巍然屹立。",
+        "descEn": "Framed between the nineteen peaks of Mount Cangshan and Erhai Lake at the crossroads of the Southern Silk Road and Tea-Horse Road, Dali served for over five centuries as the royal capital of Nanzhao and the Kingdom of Dali."
+    },
+    {
+        "modern": "桂林",
+        "coord": [
+            110.29,
+            25.27
+        ],
+        "tagZh": "灵渠锁钥 · 岭西首府",
+        "tagEn": "Lingqu Canal Hub · Historic Capital of Guangxi",
+        "descZh": "古称始安、桂州、静江府，处漓江走廊与越城岭南麓。秦始皇开凿灵渠沟通湘水与漓水，使桂林成为中原入桂越咽喉；唐置桂管经略使，宋升静江府，明清两代五百余年皆为广西省会（靖江王城所在）。",
+        "descEn": "Linked to the Yangtze basin by Qin Shi Huang's Lingqu Canal across the Yuecheng Ridge, Guilin (Guizhou / Jingjiang) guarded the gateway to western Lingnan and served as the provincial capital of Guangxi throughout the Ming and Qing."
+    },
+    {
+        "modern": "绍兴",
+        "coord": [
+            120.58,
+            30.0
+        ],
+        "tagZh": "於越故都 · 浙东文脉",
+        "tagEn": "Capital of Ancient Yue · Cultural Heart of Zhe-Dong",
+        "descZh": "古称会稽、山阴、越州，南屏会稽山、北临钱塘江口。传大禹计功会稽、勾践卧薪尝胆定都于此；东晋王羲之兰亭雅集开山水诗文风气，南宋高宗改元绍兴并升越州为绍兴府（宋六陵所在）。",
+        "descEn": "At the northern foot of Mount Kuaiji, Shaoxing (Kuaiji / Shanyin / Yuezhou) was the capital of King Goujian of Yue, site of Wang Xizhi's 353 CE Orchid Pavilion Gathering, and auxiliary capital of the Southern Song."
+    },
+    {
+        "modern": "宁波",
+        "coord": [
+            121.55,
+            29.87
+        ],
+        "tagZh": "三江门户 · 东海名港",
+        "tagEn": "East China Sea Port · Terminus of the Grand Canal",
+        "descZh": "古称句章、明州、庆元府，居余姚江、奉化江、甬江三江交汇口，与舟山群岛隔海相依。唐开元中置明州，为浙东运河入海口与遣唐使、高丽日本海舶登陆大港，明代取“海定则波宁”改称宁波府（天一阁所在）。",
+        "descEn": "At the confluence of three rivers where the Zhe-Dong Canal meets the East China Sea, Mingzhou (Ningbo) was a premier Tang–Song port for trade with Japan and Korea and home to the Ming Tianyi Pavilion library."
+    },
+    {
+        "modern": "温州",
+        "coord": [
+            120.66,
+            28.01
+        ],
+        "tagZh": "东瓯故都 · 东南名郡",
+        "tagEn": "Capital of Dong'ou · Oujiang Maritime Port",
+        "descZh": "古称东瓯、永嘉，北倚括苍与雁荡、东临东海，控瓯江入海口。汉初封勾践后裔摇为东海王都东瓯，东晋太宁元年郭璞卜筑永嘉郡城，谢灵运任太守创山水诗派，南宋“永嘉学派”倡经世致用之学。",
+        "descEn": "Guarding the mouth of the Ou River between the Yandang Mountains and the East China Sea, Wenzhou (Dong'ou / Yongjia) was the birthplace of Xie Lingyun's landscape poetry and the pragmatic Southern Song Yongjia School."
+    },
+    {
+        "modern": "九江",
+        "coord": [
+            116.0,
+            29.7
+        ],
+        "tagZh": "九派浔阳 · 赣北门户",
+        "tagEn": "Middle–Lower Yangtze Throat · Northern Gate of Jiangxi",
+        "descZh": "古称柴桑、寻阳（浔阳）、江州，背倚庐山、北临长江、东控鄱阳湖口，号“众水汇集、九派浔阳”。三国周瑜驻水军于柴桑，东晋至宋元置江州（陶渊明归隐、白居易《琵琶行》及《水浒》浔阳楼所在）。",
+        "descEn": "Backed by Mount Lu where Poyang Lake empties into the Yangtze River, Jiujiang (Chaisang / Xunyang / Jiangzhou) was Zhou Yu's naval base, Tao Yuanming's homeland, and the setting of Bai Juyi's Pipa Song."
+    },
+    {
+        "modern": "赣州",
+        "coord": [
+            114.93,
+            25.83
+        ],
+        "tagZh": "章贡合流 · 五岭北门",
+        "tagEn": "Confluence of Zhang & Gong · Gateway Over the Meiguan Pass",
+        "descZh": "古称南康、虔州，处章水与贡水合流成赣江之处，南扼大庾岭梅关古道，为江西通往粤闽湘之咽喉。宋代筑建砖石城墙与福寿沟防洪体系（辛弃疾于此写下《菩萨蛮·书江西造口壁》），明代王阳明任南赣巡抚驻节于此。",
+        "descEn": "Where the Zhang and Gong rivers merge to form the Gan River north of Meiguan Pass, Ganzhou (Qianzhou) controlled the main artery between Jiangxi and Guangdong, famed for its Song brick walls and Wang Yangming's governorship."
+    },
+    {
+        "modern": "景德镇",
+        "coord": [
+            117.18,
+            29.27
+        ],
+        "tagZh": "千年瓷都 · 御窑珠山",
+        "tagEn": "Millennial Porcelain Capital · Imperial Kiln Center",
+        "descZh": "古称昌南镇，依傍高岭山瓷土与昌江水运。北宋景德元年真宗诏进御瓷底书“景德年制”遂得今名，元代设浮梁磁局创烧元青花，明清于珠山设御器厂督造宫廷用瓷，白瓷青花行销全球。",
+        "descEn": "Rich in kaolin clay along the Chang River, Jingdezhen received its imperial name in 1004 CE under Emperor Zhenzong of Song and served under the Yuan, Ming, and Qing imperial kilns as the porcelain capital of the world."
+    },
+    {
+        "modern": "黄山",
+        "coord": [
+            118.43,
+            29.87
+        ],
+        "tagZh": "新安形胜 · 文献名邦",
+        "tagEn": "Xin'an River Basin · Homeland of Huizhou Culture",
+        "descZh": "古称新安、歙州、徽州，群山环抱、新安江穿流而过。隋置歙州，北宋宣和三年改称徽州，统领一府六县（歙、休宁、婺源、祁门、黟、绩溪），为朱熹理学故里与明清徽商、徽墨歙砚、新安画派之发祥地。",
+        "descEn": "Cradled in the Xin'an River basin south of Mount Huangshan, Huizhou (Shezhou) was the ancestral homeland of Neo-Confucian philosopher Zhu Xi and the center of Ming–Qing Huizhou merchants, ink-making, and architecture."
+    },
+    {
+        "modern": "淮安",
+        "coord": [
+            119.14,
+            33.5
+        ],
+        "tagZh": "运河之都 · 南北漕运咽喉",
+        "tagEn": "Grand Canal & Huai River Pivot · Grain Transport Capital",
+        "descZh": "古称淮阴、山阳、楚州，处淮河、京杭大运河与洪泽湖交汇枢轴。秦汉淮阴为韩信故里，南宋楚州为韩世忠抗金江淮前哨，明清设漕运总督与南河总督驻节于此，统管天下漕船北上，号“九省通衢、运河之都”。",
+        "descEn": "At the critical junction of the Huai River and the Grand Canal beside Hongze Lake, Huai'an (Huaiyin / Chuzhou) was hometown of Han Xin, a Song frontier fortress, and headquarters of the Ming–Qing Director-General of Grain Transport."
+    },
+    {
+        "modern": "镇江",
+        "coord": [
+            119.45,
+            32.2
+        ],
+        "tagZh": "江河交汇 · 建康门户",
+        "tagEn": "Yangtze–Canal Crossroads · River Shield of Nanjing",
+        "descZh": "古称京口、润州，北临大江、西屏建康，扼长江与江南运河十字交汇口，焦山、金山、北固山三山鼎立江滨。三国孙权初镇京口筑铁瓮城，东晋北府兵由此崛起，南宋韩世忠黄天荡阻金、辛弃疾登北固亭怀古皆在于此。",
+        "descEn": "Commanding the southern bank of the Yangtze where it meets the Grand Canal east of Nanjing, Jingkou (Zhenjiang) was Sun Quan's early citadel, base of the Eastern Jin Northern Garrison Army, and subject of Xin Qiji's Beigu Pavilion lyric."
+    },
+    {
+        "modern": "合肥",
+        "coord": [
+            117.28,
+            31.86
+        ],
+        "tagZh": "江淮首郡 · 魏吴兵冲",
+        "tagEn": "Central Jianghuai Bastion · Three Kingdoms Frontier",
+        "descZh": "古称庐州，居江淮分水岭与巢湖北岸，因东淝河、南淝河交汇得名，左控濡须、右屏寿春。三国时曹操筑合肥新城，张辽威震逍遥津、满宠坚守拒吴，南北朝至宋代久为经略江淮之军事锁钥。",
+        "descEn": "Situated between the Yangtze and Huai rivers north of Chaohu Lake, Hefei (Luzhou) was the central Jianghuai fortress where Cao Wei general Zhang Liao famously defeated Sun Quan at Xiaoyao Ford."
+    },
+    {
+        "modern": "淮南",
+        "coord": [
+            116.78,
+            32.58
+        ],
+        "tagZh": "楚国晚都 · 淝水古战场",
+        "tagEn": "Late Chu Capital · Site of the Battle of Fei River",
+        "descZh": "辖境寿春（寿县）北临淮水、东傍淝水、南濒芍陂，扼淮河中游渡口。战国晚期楚考烈王迁都寿春，汉置淮南国（《淮南子》编纂地），三国“淮南三叛”与东晋太元八年（383年）谢安、谢玄大破前秦苻坚之淝水之战皆决战于此。",
+        "descEn": "Centered on historic Shouchun along the middle Huai and Fei rivers, it served as the final capital of Warring States Chu and the battlefield where Eastern Jin defeated Former Qin at the Battle of Fei River in 383 CE."
+    },
+    {
+        "modern": "岳阳",
+        "coord": [
+            113.13,
+            29.36
+        ],
+        "tagZh": "洞庭湖口 · 江湖锁钥",
+        "tagEn": "Mouth of Dongting Lake · Middle Yangtze Water Gate",
+        "descZh": "古称巴陵、岳州，居洞庭湖汇入长江之城陵矶咽喉，西眺君山、北控荆江。三国鲁肃筑巴丘城屯水军，西晋置巴陵县，唐宋为荆湘水陆门户，范仲淹《岳阳楼记》“先天下之忧而忧，后天下之乐而乐”名传千古。",
+        "descEn": "Guarding the outlet where Dongting Lake meets the Yangtze River, Baling (Yuezhou / Yueyang) grew from Lu Su's Three Kingdoms naval garrison into the gateway of Hunan, immortalized by Fan Zhongyan's Memorial to Yueyang Tower."
+    },
+    {
+        "modern": "宜昌",
+        "coord": [
+            111.29,
+            30.69
+        ],
+        "tagZh": "三峡东口 · 川鄂咽喉",
+        "tagEn": "Eastern Mouth of the Three Gorges · Throat of Chu and Shu",
+        "descZh": "古称夷陵、西陵、峡州，当长江出三峡西陵峡入江汉平原之交界，“上控巴夔、下引荆襄”。战国白起拔郢先烧夷陵，三国刘备东征孙吴败绩于夷陵猇亭，欧阳修曾贬夷陵县令，自古为川鄂水陆锁钥。",
+        "descEn": "At the eastern exit of Xiling Gorge where the Yangtze emerges from the Three Gorges onto the Jianghan Plain, Yiling (Xiazhou / Yichang) was the strategic gateway between Sichuan and Hubei and site of the 222 CE Battle of Yiling."
+    },
+    {
+        "modern": "商丘",
+        "coord": [
+            115.65,
+            34.41
+        ],
+        "tagZh": "微子封宋 · 北宋陪都",
+        "tagEn": "Ancient State of Song · Southern Capital of Northern Song",
+        "descZh": "古称商、宋、睢阳、宋州、归德府，居豫东黄淮平原要冲。商族发祥地与周封微子启于宋之故都，安史之乱张巡、许远死守睢阳保住江淮赋税命脉；宋真宗以宋太祖发祥于宋州归德军，升为陪都南京应天府（1127年赵构即位于此）。",
+        "descEn": "Cradled on the eastern Henan plain as the ancient capital of the State of Song, Suiyang (Shangqiu) withstood the 757 CE Siege of Suiyang protecting the Tang Grand Canal and served as the Southern Capital Yingtian Prefecture of Northern Song."
+    },
+    {
+        "modern": "许昌",
+        "coord": [
+            113.85,
+            34.04
+        ],
+        "tagZh": "汉魏故都 · 中原腹心",
+        "tagEn": "Eastern Han & Wei Capital · Central Plains Hub",
+        "descZh": "古称许、许都、许州，居豫中平原腹地，北通郑洛、南接汝颍。东汉建安元年（196年）曹操奉汉献帝迁都于许，推行屯田、总揽朝政二十五年；曹丕代汉建魏，改许县曰“许昌”（意为“魏基昌于许”），列为曹魏五都之一。",
+        "descEn": "In the heart of the central Henan plain, Xu (Xuchang) became the imperial seat in 196 CE when Cao Cao welcomed Emperor Xian of Han, serving for twenty-five years as the political nerve center of late Han and one of the Five Capitals of Cao Wei."
+    },
+    {
+        "modern": "郑州",
+        "coord": [
+            113.62,
+            34.75
+        ],
+        "tagZh": "虎牢东屏 · 鸿沟枢轴",
+        "tagEn": "Xingyang–Hulao Corridor · Yellow River Canal Hub",
+        "descZh": "辖境含古管城、荥阳，北临黄河、西依嵩山与虎牢关，居天下水陆中枢。商代中期隞都所在，战国魏开鸿沟引河水入淮，楚汉相争刘邦项羽对峙于荥阳成皋、划鸿沟为界，隋唐通济渠由此引黄河东下江淮。",
+        "descEn": "Flanked by the Yellow River to the north and Mount Song and Hulao Pass to the west, Zhengzhou and neighboring Xingyang formed the contested pivot of the Chu–Han Contention and the intake hub of the Honggou and Sui–Tang Bian canals."
+    },
+    {
+        "modern": "宝鸡",
+        "coord": [
+            107.14,
+            34.36
+        ],
+        "tagZh": "周秦肇基 · 陈仓锁钥",
+        "tagEn": "Cradle of Zhou and Qin · Gateway to the Chencang Road",
+        "descZh": "古称陈仓、雍城、凤翔府，居关中平原西端，北倚千山、南屏秦岭大散关、中贯渭水。周人发祥于岐山周原，秦自德公至献公定都雍城近三百年；刘邦“明修栈道、暗度陈仓”由此定三秦，唐肃宗至德二载改陈仓为宝鸡。",
+        "descEn": "At the western head of the Guanzhong Plain above the Wei River and Dasan Pass, Baoji encompasses the Zhou ancestral homeland at Qishan, the early Qin capital of Yongcheng, and Chencang — where Han Xin emerged to conquer the Three Qins."
+    },
+    {
+        "modern": "延安",
+        "coord": [
+            109.49,
+            36.59
+        ],
+        "tagZh": "陕北锁钥 · 革命圣地",
+        "tagEn": "Northern Shaanxi Bastion · Revolutionary Yan'an",
+        "descZh": "古称肤施、延州、延安府，居黄土高原延河与汾川河交汇谷地，宝塔山、清凉山、凤凰山三山鼎峙。秦汉上郡重镇，北宋时范仲淹、沈括先后经略延州以御西夏（沈括取延州“石油”入墨并载入《梦溪笔谈》），近代为中共中央驻地。",
+        "descEn": "Set at the confluence of the Yan River in the Loess Plateau, Yanzhou (Yan'an) was the Northern Song frontier command where Fan Zhongyan and Shen Kuo defended against Western Xia, and later the headquarters of the Chinese Communist Party (1937–1947)."
+    },
+    {
+        "modern": "榆林",
+        "coord": [
+            109.73,
+            38.29
+        ],
+        "tagZh": "九边重镇 · 塞上驼城",
+        "tagEn": "Ming Nine-Garrison Stronghold · Site of Tongwancheng",
+        "descZh": "北临毛乌素沙地、南控无定河谷，辖境含秦汉上郡肤施、夏州统万城及麟州。十六国赫连勃勃筑白色都城“统万城”，北宋杨家将祖籍麟州世代戍边，明代筑榆林卫城列为“九边”重镇之延绥镇，拱卫陕北与河套门户。",
+        "descEn": "On the border of the Mu Us Desert and the Wuding River valley, Yulin encompasses Helian Bobo's white Xiongnu capital of Tongwancheng and served under the Ming Dynasty as the Yansui Garrison among the Nine Frontier Defense Commands."
+    },
+    {
+        "modern": "沈阳",
+        "coord": [
+            123.43,
+            41.8
+        ],
+        "tagZh": "辽左雄藩 · 清初陪都",
+        "tagEn": "Liaodong Metropolis · Early Qing Capital Shengjing",
+        "descZh": "古称沈州、沈阳中卫、盛京、奉天，居辽河平原浑河北岸，东依长白余脉、南通辽东半岛。天命十年（1625年）努尔哈赤自辽阳迁都沈阳，皇太极于此改国号大清、尊为盛京并营建沈阳故宫，入关后定为清代留都。",
+        "descEn": "On the northern bank of the Hun River in the Liao River plain, Shenyang became the Manchu capital under Nurhaci in 1625, where Hong Taiji proclaimed the Qing Dynasty and built the Shengjing Imperial Palace."
+    },
+    {
+        "modern": "辽阳",
+        "coord": [
+            123.17,
+            41.27
+        ],
+        "tagZh": "辽东首郡 · 东北古都",
+        "tagEn": "Millennial Seat of Liaodong · Auxiliary Capital of Liao & Jin",
+        "descZh": "古称襄平、辽东城、东京辽阳府，居太子河畔。自战国燕置辽东郡治襄平，秦汉魏晋隋唐千余年皆为东北军政中心；辽、金两代均定为陪都“东京辽阳府”，明设辽东都指挥使司，素有“东北第一古城”之称。",
+        "descEn": "Founded in the Warring States as Xiangping, seat of Yan's Liaodong Commandery, Liaoyang remained the premier administrative center of the northeast for over a millennium and served as the Eastern Capital of both the Liao and Jin dynasties."
+    },
+    {
+        "modern": "牡丹江",
+        "coord": [
+            129.48,
+            44.58
+        ],
+        "tagZh": "海东盛国 · 宁古塔重镇",
+        "tagEn": "Bohai Upper Capital · Qing Ningguta Garrison",
+        "descZh": "居牡丹江（古忽汗水）中游盆地。唐代靺鞨大祚荣建渤海国，仿唐长安城营建上京龙泉府（今宁安东京城），号“海东盛国”；清初设宁古塔昂邦章京（后改宁古塔将军），统辖松花江、乌苏里江、黑龙江流域及库页岛。",
+        "descEn": "In the middle Mudan River basin, this region housed Upper Capital Longquan Prefecture of the Tang-era Bohai Kingdom and the early Qing garrison of Ningguta, which administered the Amur, Ussuri, and Sakhalin frontiers."
+    },
+    {
+        "modern": "哈尔滨",
+        "coord": [
+            126.96,
+            45.54
+        ],
+        "tagZh": "女真肇兴 · 金朝上京",
+        "tagEn": "Homeland of the Jurchens · Jin Upper Capital Huining",
+        "descZh": "辖境阿城（阿什河流域，古按出虎水）为女真完颜部肇兴之地。1115年完颜阿骨打于此称帝建大金国，定都上京会宁府，先后灭辽、破北宋，历金太祖、太宗、熙宗及海陵王初年四朝三十八载，为12世纪东北亚政治中枢。",
+        "descEn": "Along the Ashi River (ancient Anchuhu Water) southeast of modern Harbin, Wanyan Aguda founded the Jurchen Jin Dynasty in 1115 CE, making Upper Capital Huining Prefecture its imperial seat for thirty-eight years."
+    },
+    {
+        "modern": "呼和浩特",
+        "coord": [
+            111.65,
+            40.82
+        ],
+        "tagZh": "阴山南麓 · 塞北重镇",
+        "tagEn": "Southern Foot of Yinshan · Steppe–Agrarian Crossroads",
+        "descZh": "北依阴山大青山、南濒黄河河套（土默川平原），辖境含战国秦汉云中郡、拓跋北魏早期都城盛乐、北魏六镇之武川镇（隋唐帝室发源地）及明代阿勒坦汗与三娘子所筑“归化城”、清代绥远城。",
+        "descEn": "On the Tumochuan Plain between the Yinshan Mountains and the Yellow River bend, Hohhot encompasses Warring States Yunzhong, early Northern Wei capital Shengle, the Wuchuan Garrison, and Altan Khan's 16th-century Guihua City."
+    },
+    {
+        "modern": "喀什",
+        "coord": [
+            75.99,
+            39.47
+        ],
+        "tagZh": "葱岭东门 · 丝路南北交汇",
+        "tagEn": "Eastern Foot of the Pamirs · Convergence of Silk Road Routes",
+        "descZh": "古称疏勒，居塔里木盆地最西端喀什噶尔绿洲，背倚帕米尔高原（古葱岭），为丝绸之路天山南道与西域南道交汇总枢纽。东汉班超驻守疏勒经营西域，唐列为安西四镇之一，宋元为喀喇汗朝重镇，清设喀什噶尔参赞大臣。",
+        "descEn": "At the western apex of the Tarim Basin beneath the Pamir Mountains, Kashgar (Shule) was where the northern and southern branches of the Silk Road converged, serving as Ban Chao's base and one of the Four Garrisons of Anxi."
+    },
+    {
+        "modern": "吐鲁番",
+        "coord": [
+            89.19,
+            42.95
+        ],
+        "tagZh": "天山南麓 · 西域门户",
+        "tagEn": "Turpan Depression Oasis · Ancient Gaochang & Jiaohe",
+        "descZh": "古称车师前国交河城、高昌、西州，居天山博格达峰南麓吐鲁番盆地。汉置戊己校尉屯田高昌壁，麴氏高昌国与玄奘结坛讲经于此，唐贞观十四年侯君集平高昌置西州及安西都护府初治，后为高昌回鹘王都。",
+        "descEn": "In the Turpan Depression south of Bogda Peak, Turpan preserves the cliff-top ruins of Jiaohe and ancient Gaochang — site of Han military colonies, Tang Xizhou Prefecture, and initial seat of the Anxi Protectorate."
+    },
+    {
+        "modern": "阿克苏",
+        "coord": [
+            82.96,
+            41.72
+        ],
+        "tagZh": "西域北道中枢 · 安西都护府",
+        "tagEn": "Central Oasis of Northern Tarim · Seat of Anxi Protectorate",
+        "descZh": "辖境库车古称龟兹，北依天山南麓、南临塔里木河，控西域北道正中枢轴。两汉西域都护府（乌垒）与西域长史府毗邻于此，鸠摩罗什生于龟兹，唐显庆三年移安西大都护府驻龟兹统辖西域四镇，克孜尔石窟冠绝西域。",
+        "descEn": "Centered on historic Kucha (Qiuci) at the midpoint of the Northern Silk Road along the southern foot of Tianshan, this oasis was birthplace of Kumarajiva and headquarters of the Tang Grand Protectorate of Anxi."
+    },
+    {
+        "modern": "和田",
+        "coord": [
+            79.92,
+            37.11
+        ],
+        "tagZh": "昆仑北麓 · 西域玉都",
+        "tagEn": "Southern Tarim Oasis · Ancient Kingdom of Khotan",
+        "descZh": "古称于阗，南枕昆仑山、北临塔克拉玛干沙漠，玉龙喀什河与喀拉喀什河盛产和田美玉。汉通西域南道大国，东汉班超服于阗，唐列为安西四镇之一（置毗沙都督府），于阗王室自称“唐之宗属”姓李氏，长期护卫丝路南道。",
+        "descEn": "Fed by the White Jade and Black Jade rivers at the northern foot of the Kunlun Mountains, Khotan (Yutian) was a major Buddhist kingdom on the Southern Silk Road and one of the Tang Dynasty's Four Garrisons of Anxi."
+    },
+    {
+        "modern": "伊宁",
+        "coord": [
+            81.33,
+            43.92
+        ],
+        "tagZh": "天山北路 · 伊犁将军驻地",
+        "tagEn": "Ili River Valley · Seat of the Qing General of Ili",
+        "descZh": "居天山北路伊犁河谷沃野，汉代为乌孙国游牧之地，唐属北庭都护府及濛池、昆陵都护府，元为察合台汗国阿力麻里重镇；清乾隆二十七年（1762年）设总统伊犁等处将军驻惠远城，统辖天山南北与巴尔喀什湖以东军政。",
+        "descEn": "In the fertile Ili River valley of northern Xinjiang, Yining (Huiyuan) was homeland of the ancient Wusun, site of Yuan Almaliq, and seat of the Qing General of Ili who governed all of Xinjiang from 1762 onward."
+    },
+    {
+        "modern": "乌鲁木齐",
+        "coord": [
+            87.62,
+            43.82
+        ],
+        "tagZh": "天山北麓 · 新疆首府",
+        "tagEn": "Northern Tianshan Hub · Capital of Xinjiang",
+        "descZh": "古称轮台（唐北庭轮台县）、迪化，居天山博格达峰北麓与准噶尔盆地南缘通道。唐代于乌拉泊筑轮台城征丝路商税（岑参“轮台东门送君去”即此），清乾隆二十八年筑迪化城，光绪十年（1884年）新疆建省定为省会。",
+        "descEn": "Guarding the pass between Bogda Peak and the Dzungarian Basin, Urumqi encompasses Tang-era Luntai (celebrated in Cen Shen's frontier poetry) and Qing Dihua, becoming provincial capital when Xinjiang Province was established in 1884."
+    },
+    {
+        "modern": "贵阳",
+        "coord": [
+            106.63,
+            26.65
+        ],
+        "tagZh": "黔中腹心 · 西南驿道枢纽",
+        "tagEn": "Central Guizhou Hub · Crossroads of Yunnan–Guizhou",
+        "descZh": "古称顺元城、贵阳府，居云贵高原东斜坡苗岭中段，扼湘黔、川黔、滇黔驿道十字中心。元置顺元路宣抚司，明永乐十一年（1413年）设贵州承宣布政使司治此（王阳明贬龙场驿悟道、讲学文明书院即在贵阳），自此为贵州省会。",
+        "descEn": "At the crossroads of imperial post roads across the Yunnan–Guizhou Plateau, Guiyang became provincial capital when Guizhou Province was established in 1413 CE, and was where Wang Yangming attained his philosophical realization at Longchang."
+    },
+    {
+        "modern": "遵义",
+        "coord": [
+            106.93,
+            27.72
+        ],
+        "tagZh": "娄山锁钥 · 播州故都",
+        "tagEn": "Loushan Pass Citadel · Historic Seat of Bozhou",
+        "descZh": "古称播州，北扼大娄山娄山关、南临乌江天险，控川黔通道咽喉。唐贞观十三年置播州，自晚唐乾符三年杨端入播至明万历二十八年（1600年）平播改土归流置遵义府，杨氏世守播州七百余年（海龙屯遗址所在）；1935年遵义会议召开于此。",
+        "descEn": "Guarding Loushan Pass between the Wujiang River and Sichuan, Bozhou (Zunyi) was ruled for over seven centuries by the hereditary Yang chieftains centered on Hailongtun Fortress before becoming Zunyi Prefecture in 1600 CE."
+    },
+    {
+        "modern": "南宁",
+        "coord": [
+            108.37,
+            22.82
+        ],
+        "tagZh": "邕江枢纽 · 岭南西南重镇",
+        "tagEn": "Yong River Basin · Frontier Hub of Southern Guangxi",
+        "descZh": "古称晋兴、邕州、南宁路，居左江与右江汇合后之邕江河谷盆地，南控十万大山与交趾通道、东接珠江水系。东晋大兴元年置晋兴郡，唐设邕管经略使治邕州，北宋狄青夜夺昆仑关平侬智高，元泰定元年取“南疆安宁”改称南宁。",
+        "descEn": "Situated in the Yong River basin below the confluence of the Zuo and You rivers, Yongzhou (Nanning) was the Tang military command for the southwestern frontier, site of Di Qing's 1053 victory at Kunlun Pass, and modern capital of Guangxi."
+    },
+    {
+        "modern": "海口",
+        "coord": [
+            110.33,
+            20.03
+        ],
+        "tagZh": "琼州门户 · 海南首府",
+        "tagEn": "Qiongzhou Strait Port · Historic Seat of Qiongzhou",
+        "descZh": "辖境琼山古称琼州、琼州府，北临琼州海峡与雷州半岛隔海相望，南控南渡江入海口（海口浦）。唐贞观五年置琼州，宋元明清千余年皆为海南全岛军政与文教中心（五公祠及丘濬、海瑞故里）。",
+        "descEn": "Facing the Qiongzhou Strait at the mouth of the Nandu River, Qiongzhou (Haikou) served from the Tang through the Qing dynasties as the administrative and cultural capital of Hainan Island, hometown of Ming statesmen Qiu Jun and Hai Rui."
+    },
+    {
+        "modern": "台北",
+        "coord": [
+            121.56,
+            25.03
+        ],
+        "tagZh": "淡水河枢纽 · 宝岛首府",
+        "tagEn": "Tamsui River Basin · Capital of Taiwan",
+        "descZh": "古称艋舺、大稻埕、台北府，居台湾岛北端台北盆地，控淡水河与基隆河交汇入海通道。清光绪元年（1875年）沈葆桢奏设台北府，光绪十一年台湾建省后刘铭传驻节台北兴筑铁路、近代市政；1945年于台北公会堂接受日本投降，台湾光复。",
+        "descEn": "In the Taipei Basin along the Tamsui River in northern Taiwan, Taipei Prefecture was established in 1875 and modernized under first provincial governor Liu Mingchuan after Taiwan became a province in 1885."
+    },
+    {
+        "modern": "台南",
+        "coord": [
+            120.2,
+            23.0
+        ],
+        "tagZh": "鹿耳门锁钥 · 全台首府",
+        "tagEn": "Lu'ermen Harbor · Historic Capital of Taiwan",
+        "descZh": "古称赤嵌、承天府、台湾府，居台湾西南海岸平原。1661年郑成功自鹿耳门登陆驱逐荷兰殖民者、收复台湾并设承天府；清康熙二十二年（1683年）施琅平台后设台湾府隶福建省，统治全岛二百余年，号“全台首府”。",
+        "descEn": "On Taiwan's southwestern coast, Tainan was where Zheng Chenggong landed at Lu'ermen in 1661 to expel the Dutch East India Company and establish Chengtian Prefecture, serving for over two centuries under the Qing as Taiwan Prefecture."
+    },
+    {
+        "modern": "上海",
+        "coord": [
+            121.47,
+            31.23
+        ],
+        "tagZh": "江海通津 · 远东第一都会",
+        "tagEn": "Mouth of the Yangtze · Premier Modern Metropolis",
+        "descZh": "古属松江府（华亭），扼长江入海口与黄浦江、吴淞江交汇处。唐设华亭县，北宋置上海务，元至元二十八年（1291年）立上海县，明代黄道婆革新棉纺致“松江布衣被天下”，近代开埠后崛起为中国与远东最大工商业及金融航运都会。",
+        "descEn": "At the confluence of the Huangpu River and the Yangtze Estuary, Shanghai grew from Yuan-era Shanghai County and Ming Songjiang's cotton textile center into modern China's largest port, industrial, and financial metropolis."
+    },
+    {
+        "modern": "天津",
+        "coord": [
+            117.2,
+            39.13
+        ],
+        "tagZh": "九河下梢 · 京畿海防门户",
+        "tagEn": "Hai River Estuary · Maritime Gateway to Beijing",
+        "descZh": "古称直沽寨、海津镇、天津卫，处南北大运河与海河五水汇流奔海之枢轴。金元为海运漕粮转输大港“直沽”，明永乐二年（1404年）成祖赐名“天津”（天子津渡）并筑天津卫城拱卫京师，清代及近代为北方第一通商大埠。",
+        "descEn": "Where the North and South Grand Canals meet the Hai River tributaries before entering the Bohai Sea, Zhigu was named Tianjin ('Ford of the Son of Heaven') by the Yongle Emperor in 1404 as the maritime shield of Beijing."
+    },
+    {
+        "modern": "西宁",
+        "coord": [
+            101.78,
+            36.62
+        ],
+        "tagZh": "河湟锁钥 · 唐蕃古道咽喉",
+        "tagEn": "Huangshui Valley Hub · Gateway to the Tibetan Plateau",
+        "descZh": "古称临羌、西平郡、鄯州、青唐城，居湟水谷地，扼河西走廊、陇右与青藏高原交汇咽喉。西汉赵充国于此河湟屯田，十六国南凉建都西平，隋唐为陇右道重镇与唐蕃古道门户，北宋唃厮啰政权都青唐，崇宁三年收复改称西宁州。",
+        "descEn": "Commanding the Huangshui River valley between Longyou and the Tibetan Plateau, Xining (ancient Xiping / Shanzhou / Qingtang) was site of Zhao Chongguo's Han military colonies, capital of Southern Liang and Gusiluo, and hub of the Tang–Tubo Road."
+    },
+    {
+        "modern": "长春",
+        "coord": [
+            125.32,
+            43.88
+        ],
+        "tagZh": "松辽腹心 · 吉林省会",
+        "tagEn": "Songliao Plain Hub · Capital of Jilin",
+        "descZh": "古属扶余国与辽金黄龙府南境，居松辽平原腹地伊通河畔。清嘉庆五年（1800年）设长春厅，光绪十五年升长春府，近代随中东铁路与南满铁路交汇迅速崛起；1954年由吉林市移省会于长春，为中国汽车工业与科教重镇。",
+        "descEn": "In the center of the Songliao Plain along the Yitong River, Changchun grew from a Qing frontier subprefecture established in 1800 and a major railway junction into the modern provincial capital of Jilin."
+    },
+    {
+        "modern": "大连",
+        "coord": [
+            121.62,
+            38.91
+        ],
+        "tagZh": "辽东极南 · 渤海咽喉",
+        "tagEn": "Tip of Liaodong Peninsula · Bohai Strait Sentinel",
+        "descZh": "古称三山浦、青泥洼、旅顺口，居辽东半岛最南端，与山东蓬莱隔渤海海峡相望，共扼京津海上门户。唐代置乌骨、青泥浦为征高句丽水路要冲，明设金州卫与旅顺口水师，清代建旅顺北洋水师基地，今为北方重要国际航运中心。",
+        "descEn": "At the southern tip of the Liaodong Peninsula guarding the Bohai Strait opposite Shandong, Dalian and Lushun served as a Tang naval staging port, Ming Jinzhou Guard, and Qing Beiyang Fleet base."
+    },
+    {
+        "modern": "厦门",
+        "coord": [
+            118.09,
+            24.48
+        ],
+        "tagZh": "鹭岛海门 · 闽南通商大港",
+        "tagEn": "Egret Island Harbor · Southeastern Maritime Hub",
+        "descZh": "古称嘉禾屿、中左所，扼九龙江入海口与台湾海峡西岸要冲，与金门隔海相望。明洪武二十七年筑中左千户所城（属永宁卫），明末郑成功据思明州（厦门）训练水师并由此东征驱荷复台；清设福建水师提督驻节，近代列为五口通商口岸与经济特区。",
+        "descEn": "On an island harbor at the mouth of the Jiulong River facing the Taiwan Strait, Xiamen (Ming Zhongzuosuo) served as Zheng Chenggong's naval base for recovering Taiwan, seat of the Qing Fujian Naval Commander, and a modern Special Economic Zone."
+    },
+    {
+        "modern": "汕头",
+        "coord": [
+            116.68,
+            23.35
+        ],
+        "tagZh": "韩江出海口 · 岭东门户",
+        "tagEn": "Han River Delta Port · Gateway of Eastern Guangdong",
+        "descZh": "古属潮州府揭阳、澄海境（沙汕头），居韩江、榕江、练江三江入海汇流处，南控南澳岛海防锁钥。元代称厦岭，明嘉靖间设沙汕头铳台，清康熙五十六年筑沙汕头炮台，咸丰十年开埠后成为潮汕百载商埠、华侨出入祖庭大港与经济特区。",
+        "descEn": "At the coastal confluence of the Han, Rong, and Lian rivers in eastern Guangdong, Shantou evolved from a Ming–Qing coastal artillery garrison under Chaozhou Prefecture into the primary treaty port and overseas Chinese gateway of Chaoshan."
+    },
+    {
+        "modern": "深圳",
+        "coord": [
+            114.06,
+            22.54
+        ],
+        "tagZh": "南海前哨 · 改革开放窗口",
+        "tagEn": "Pearl River Estuary East Bank · Pioneer Special Economic Zone",
+        "descZh": "古属宝安、东莞、新安县，控珠江口东岸与大鹏湾海防门户。东晋咸和六年置宝安县（治南头城），唐设屯门军镇护卫广州外海航道，明置大鹏守御千户所与东莞守御千户所抗倭，万历元年析置新安县；1980年设立深圳经济特区，崛起为现代创新都会。",
+        "descEn": "Guarding the eastern bank of the Pearl River Estuary around ancient Nantou (Eastern Jin Bao'an County and Ming Xin'an County), Shenzhen transformed after 1980 from a historic coastal defense post into China's flagship Special Economic Zone."
+    },
+    {
+        "modern": "珠海",
+        "coord": [
+            113.58,
+            22.27
+        ],
+        "tagZh": "珠江口西岸 · 香山海门",
+        "tagEn": "West Bank of Lingdingyang · Gateway to Macao",
+        "descZh": "古属香山县（南宋绍兴二十二年置），居珠江口西岸、直面零丁洋，南与澳门陆路相连。南宋末文天祥被俘过零丁洋留下千古绝唱，宋少帝与陆秀夫曾驻跸香山梅蔚；近代唐家湾、翠亨村一带开中西文化风气之先，1980年设为经济特区。",
+        "descEn": "On the western shore of the Pearl River Estuary facing Lingdingyang — where Wen Tianxiang composed his immortal poem in 1279 — Zhuhai (historically part of Song–Qing Xiangshan County) adjoins Macao as a coastal Special Economic Zone."
+    },
+    {
+        "modern": "香港",
+        "coord": [
+            114.17,
+            22.32
+        ],
+        "tagZh": "香江维港 · 东方之珠",
+        "tagEn": "Victoria Harbour · Global Financial & Shipping Hub",
+        "descZh": "古属番禺、宝安、东莞、新安县，拥维多利亚港深水良港，扼珠江口东侧与南海国际航道咽喉。唐代设屯门军镇护航广州海贸，南宋末端宗、少帝曾驻跸九龙官富场（今宋王臺）；1842年后沦为英占殖民地，1997年7月1日中国恢复行使主权，设香港特别行政区。",
+        "descEn": "Part of historic Bao'an and Xin'an counties at the eastern entrance to the Pearl River Estuary, Hong Kong sheltered the Tang Tuen Mun naval garrison and the fleeing Southern Song court before growing around Victoria Harbour and returning to China in 1997."
+    },
+    {
+        "modern": "澳门",
+        "coord": [
+            113.54,
+            22.19
+        ],
+        "tagZh": "濠镜澳口 · 中西交汇门户",
+        "tagEn": "Haojing Peninsula · East–West Maritime Crossroads",
+        "descZh": "古称濠镜澳、香山澳，属广东香山县，居珠江口西侧半岛与离岛。明嘉靖三十二年（1553年）葡萄牙人借口舟触风浪曝晒水渍贡物入居濠镜，明清两代设海防同知、前山寨与关闸严加管辖，为16—18世纪中西海上贸易与西学东渐第一枢纽；1999年12月20日回归祖国。",
+        "descEn": "Historically Haojing'ao of Xiangshan County at the western mouth of the Pearl River, Macao became the earliest permanent hub of Sino-European maritime trade and cultural exchange under the Ming before returning to Chinese sovereignty in 1999."
+    }
+],
+
   "PLACE_GAZETTEER": [
     { "name": "洛邑", "aliases": ["成周", "东周王城", "洛京"], "modern": "河南洛阳", "coord": [112.45, 34.62], "zoom": 2.5 },
     { "name": "汴京", "aliases": ["东京汴梁", "汴梁", "东京", "汴州", "东都开封府", "大梁"], "modern": "河南开封", "coord": [114.35, 34.79], "zoom": 2.5 },

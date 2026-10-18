@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261017g').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261018b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261017g').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261018b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2865,6 +2865,11 @@
       this.activeTraceLabel = '';
       const cardEl = this._id('genealogy-card');
       if (cardEl) cardEl.classList.add('is-hidden');
+      const loreEl = this._id('genealogy-lore');
+      if (loreEl) {
+        loreEl.innerHTML = '';
+        loreEl.classList.add('is-hidden');
+      }
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-genealogy');
       if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
@@ -2924,6 +2929,116 @@
 
     static get PLACE_GAZETTEER() {
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PLACE_GAZETTEER) || [];
+    }
+
+    static get CITY_LORE() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.CITY_LORE) || [];
+    }
+
+    _resolvePlaceLoreBanner(lng, lat, matchedPass, identityModern, rowsData) {
+      if (matchedPass) {
+        return {
+          badge: this.locale === 'en' ? 'Strategic Pass' : '雄关形胜',
+          tag: this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh,
+          desc: this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh,
+        };
+      }
+      let bestCity = null;
+      let bestKm = 28;
+      for (const c of HistoricalAtlasController.CITY_LORE) {
+        if (!Array.isArray(c.coord)) continue;
+        const km = this.projector.greatCircleKm([lng, lat], c.coord);
+        const modMatch =
+          identityModern &&
+          c.modern &&
+          (c.modern === identityModern ||
+            identityModern.startsWith(c.modern) ||
+            c.modern.startsWith(identityModern)) &&
+          km <= 42;
+        if (km <= bestKm || (modMatch && km < bestKm + 15)) {
+          bestKm = Math.min(bestKm, km);
+          bestCity = c;
+        }
+      }
+      if (bestCity) {
+        return {
+          badge: this.locale === 'en' ? 'Historic City' : '名城形胜',
+          tag: this.locale === 'en' ? bestCity.tagEn : bestCity.tagZh,
+          desc: this.locale === 'en' ? bestCity.descEn : bestCity.descZh,
+        };
+      }
+
+      const preModRows = (rowsData || []).filter(
+        (r) => r.d && r.d.key !== 'roc' && r.d.key !== 'prc' && r.near && r.near.km < 25
+      );
+      if (!preModRows.length) return null;
+      const gazHit =
+        HistoricalAtlasController.PLACE_GAZETTEER.find(
+          (g) => Array.isArray(g.coord) && this.projector.greatCircleKm([lng, lat], g.coord) <= 22
+        ) || null;
+
+      const isEn = this.locale === 'en';
+      const modCompare = isEn && identityModern ? this.trModernCity(identityModern) : identityModern;
+      const ancNames = [];
+      const addAncName = (raw) => {
+        if (!raw) return;
+        const localized = isEn ? this.trTerm(String(raw).trim()) : String(raw).trim();
+        const clean = String(localized || '').replace(/（.*?）|\(.*?\)/g, '').trim();
+        if (!clean || (isEn && /[\u4e00-\u9fa5]/.test(clean))) return;
+        if (clean === identityModern || clean === modCompare || ancNames.includes(clean)) return;
+        ancNames.push(clean);
+      };
+      for (const r of preModRows) {
+        addAncName(r.near.s.ancient);
+      }
+      if (gazHit) {
+        addAncName(gazHit.name);
+        for (const al of gazHit.aliases || []) {
+          if (ancNames.length >= 4) break;
+          addAncName(al);
+        }
+      }
+
+      const roleGroups = [];
+      for (const r of preModRows) {
+        if (!r.near.s.remark) continue;
+        const rem = isEn ? this.trTerm(r.near.s.remark) : r.near.s.remark;
+        if (!rem) continue;
+        const dynLbl = this.dynastyName(r.d);
+        const existing = roleGroups.find((g) => g.rem === rem);
+        if (existing) {
+          if (!existing.dyns.includes(dynLbl) && existing.dyns.length < 2) {
+            existing.dyns.push(dynLbl);
+          }
+        } else if (roleGroups.length < 4) {
+          roleGroups.push({ dyns: [dynLbl], rem });
+        }
+      }
+
+      const roleParts = roleGroups.map((g) =>
+        isEn
+          ? `${g.dyns.join('/')}: ${g.rem}`
+          : `${g.dyns.join('·')}：${g.rem}`
+      );
+      if (!roleParts.length) return null;
+
+      const tagStr =
+        isEn
+          ? ancNames.length
+            ? `Historic ${ancNames.slice(0, 3).join(' / ')}`
+            : 'Historical Evolution'
+          : ancNames.length
+            ? `古称${ancNames.slice(0, 4).join('、')}`
+            : '历代建置要览';
+      const descStr =
+        isEn
+          ? `${roleParts.join('; ')}.`
+          : `${roleParts.join('；')}。`;
+      return {
+        badge: isEn ? 'City Profile' : '城池形胜',
+        tag: tagStr,
+        desc: descStr,
+      };
     }
 
     _findNearbyPass(lng, lat, maxKm = 32) {
@@ -3225,12 +3340,25 @@
         HistoricalAtlasController.PLACE_GAZETTEER.find(
           (g) =>
             Array.isArray(g.coord) &&
+            this.projector.greatCircleKm([lng, lat], g.coord) <= IDENTITY_KM &&
             (this.projector.greatCircleKm([lng, lat], g.coord) <= 3 ||
               (labelLower &&
                 [g.name, ...(g.aliases || [])].some((n) => String(n).toLowerCase() === labelLower)))
         ) || null;
-      const raw =
-        gazHit && gazHit.modern
+      const isDirectSettlementHit =
+        closestOverall &&
+        closestOverall.km <= 3 &&
+        closestOverall.s &&
+        closestOverall.s.modern &&
+        (!gazHit ||
+          !labelLower ||
+          String(closestOverall.s.ancient || '').toLowerCase() === labelLower ||
+          String(closestOverall.s.modern || '').toLowerCase() === labelLower ||
+          (String(gazHit.name || '').toLowerCase() !== labelLower &&
+            !(gazHit.aliases || []).some((a) => String(a).toLowerCase() === labelLower)));
+      const raw = isDirectSettlementHit
+        ? closestOverall.s.modern
+        : gazHit && gazHit.modern
           ? gazHit.modern
           : closestOverall && closestOverall.km <= IDENTITY_KM && closestOverall.s.modern
             ? closestOverall.s.modern
@@ -3341,28 +3469,36 @@
         : identityModern
           ? ` · ${this.trModernCity(identityModern)}`
           : '';
-      if (this.activeTraceLabel && this.activeTraceLabel !== titleMain) {
+      const traceLblText = this.activeTraceLabel
+        ? this.locale === 'en'
+          ? this.trTerm(this.activeTraceLabel)
+          : this.activeTraceLabel
+        : '';
+      if (traceLblText && traceLblText !== titleMain) {
         const extraParts = [];
         if (matchedPass) {
           extraParts.push(this.locale === 'en' ? matchedPass.modernEn : '今' + matchedPass.modernZh);
         } else {
           if (modernTitle && modernTitle !== this.activeTraceLabel) {
-            extraParts.push(this.trTerm(modernTitle));
+            const modTitleStr = this.trTerm(modernTitle);
+            if (modTitleStr !== traceLblText) extraParts.push(modTitleStr);
           }
           if (
             identityModern &&
             identityModern !== this.activeTraceLabel &&
             identityModern !== modernTitle
           ) {
-            extraParts.push(
+            const modCityStr =
               this.locale === 'en'
                 ? this.trModernCity(identityModern)
-                : `今${identityModern}`
-            );
+                : `今${identityModern}`;
+            if (modCityStr !== traceLblText && !extraParts.includes(modCityStr)) {
+              extraParts.push(modCityStr);
+            }
           }
         }
         this._id('genealogy-heading').textContent =
-          this.activeTraceLabel + (extraParts.length ? ` · ${extraParts.join(' · ')}` : '');
+          traceLblText + (extraParts.length ? ` · ${extraParts.join(' · ')}` : '');
       } else {
         this._id('genealogy-heading').textContent = titleMain + titleSuffix;
       }
@@ -3461,23 +3597,30 @@
           subEl.textContent = coordText;
         }
 
+        const loreEl = this._id('genealogy-lore');
+        const loreBanner = this._resolvePlaceLoreBanner(
+          lng,
+          lat,
+          matchedPass,
+          identityModern,
+          rowsData
+        );
+        if (loreEl) {
+          if (loreBanner && !this.genealogyEventsOnly) {
+            loreEl.innerHTML =
+              `<div class="pass-lore-head"><span class="pass-lore-badge">${loreBanner.badge}</span><span class="pass-lore-range">${loreBanner.tag}</span></div>` +
+              `<div class="pass-lore-desc">${loreBanner.desc}</div>`;
+            loreEl.classList.remove('is-hidden');
+          } else {
+            loreEl.innerHTML = '';
+            loreEl.classList.add('is-hidden');
+          }
+        }
+
         const listEl = this._id('genealogy-timeline');
         const prevScrollTop = listEl.scrollTop;
         const hadItems = listEl.children.length > 0;
         listEl.innerHTML = '';
-
-        if (matchedPass) {
-          const passBanner = document.createElement('li');
-          passBanner.className = 'pass-lore-banner';
-          const rangeText = this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh;
-          const chokeText =
-            this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh;
-          const badgeLbl = this.locale === 'en' ? 'Strategic Pass' : '雄关形胜';
-          passBanner.innerHTML =
-            `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLbl}</span><span class="pass-lore-range">${rangeText}</span></div>` +
-            `<div class="pass-lore-desc">${chokeText}</div>`;
-          listEl.appendChild(passBanner);
-        }
 
         const visibleRows = this.genealogyEventsOnly
           ? rowsData.filter((r) => r.placeEvents.length > 0 || r.isCapHere)
@@ -3534,6 +3677,14 @@
                 ? `${nearPrefix}${nearCityName} (${distStr})`
                 : `${nearPrefix}${nearCityName}（${distStr}）`
             );
+            const capUsedRemark =
+              isCapHere && this.locale !== 'en' && near.s.remark && near.s.remark.length <= 6;
+            if (near.km < 25 && near.s.remark && !capUsedRemark) {
+              const remStr = this.locale === 'en' ? this.trTerm(near.s.remark) : near.s.remark;
+              if (remStr && !subParts.includes(remStr)) {
+                subParts.push(remStr);
+              }
+            }
           }
 
           let eventsHtml = '';
