@@ -1696,11 +1696,34 @@ function main() {
     ['tang', 698],
     ['ming', 1413],
     ['qing', 1885],
+    ['donghan', 89],
+    ['donghan', 91],
+    ['donghan', 107],
+    ['donghan', 177],
+    ['nanbei', 552],
+    ['nanbei', 580],
+    ['yuan', 1313],
+    ['yuan', 1354],
+    ['yuan', 1358],
+    ['qing', 1645],
+    ['qing', 1729],
+    ['qing', 1757],
+    ['qing', 1826],
+    ['qing', 1842],
+    ['qing', 1865],
+    ['qing', 1887],
+    ['qing', 1905],
   ];
   for (const [dk, yr] of requiredMilestones) {
     const dynObj = dynasties.find((x) => x.key === dk);
     assert(dynObj && dynObj.milestones.some((m) => m.year === yr), `Missing required milestone ${dk}:${yr}`);
   }
+  const donghanMs = dynasties.find((x) => x.key === 'donghan').milestones;
+  assert(
+    donghanMs.find((m) => m.year === 89).headline.includes('燕然') &&
+      donghanMs.find((m) => m.year === 91).headline.includes('金微山'),
+    'donghan: 燕然勒石 must be dated 89 CE and 91 CE must be the Battle of Mt. Jinwei'
+  );
   const jintianEv = dynasties.find((x) => x.key === 'qing').milestones.find((m) => m.year === 1851);
   assert(jintianEv && Math.abs(jintianEv.coord[0] - 110.08) < 0.5 && Math.abs(jintianEv.coord[1] - 23.53) < 0.5, 'qing:1851 Jintian Uprising must be located at Guiping, Guangxi');
   const requiredLandmarks = [
@@ -1728,6 +1751,19 @@ function main() {
     ['qing', 1662],
     ['qing', 1678],
     ['qing', 1684],
+    ['donghan', 166],
+    ['donghan', 207],
+    ['nanbei', 460],
+    ['nanbei', 523],
+    ['nanbei', 546],
+    ['yuan', 1281],
+    ['yuan', 1346],
+    ['yuan', 1352],
+    ['qing', 1776],
+    ['qing', 1793],
+    ['qing', 1842],
+    ['qing', 1884],
+    ['qing', 1895],
   ];
   for (const [dk, yr] of requiredLandmarks) {
     assert(

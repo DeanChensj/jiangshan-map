@@ -3373,6 +3373,162 @@
       "siteEn": "Gutian, Shanghang (Longyan, Fujian)",
       "zh": "红四军在闽西龙岩上杭召开古田会议，确立思想建党、政治建军原则",
       "en": "Gutian Conference in Longyan establishes the foundational principle of political army building"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 166,
+      "coord": [
+        107.2,
+        16.8
+      ],
+      "site": "日南郡（今越南中部）",
+      "siteEn": "Rinan Commandery (Central Vietnam)",
+      "zh": "大秦王安敦遣使自日南徼外献象牙、犀角，中罗首次直接往来",
+      "en": "Envoys of Rome's Marcus Aurelius reach Han via Rinan with ivory and rhino horn"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 207,
+      "coord": [
+        120.45,
+        41.57
+      ],
+      "site": "柳城（今辽宁朝阳）",
+      "siteEn": "Liucheng (Chaoyang, Liaoning)",
+      "zh": "曹操出卢龙塞北征乌桓，张辽白狼山阵斩蹋顿，平定辽西",
+      "en": "Cao Cao marches through Lulong Pass; Zhang Liao slays Tadun at White Wolf Mountain"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 460,
+      "coord": [
+        113.12,
+        40.11
+      ],
+      "site": "平城武州山（今山西大同云冈）",
+      "siteEn": "Wuzhou Hills, Pingcheng (Yungang, Datong, Shanxi)",
+      "zh": "北魏文成帝命沙门昙曜于平城西武州山开凿云冈石窟（昙曜五窟）",
+      "en": "Monk Tanyao begins carving the Yungang Grottoes west of the Northern Wei capital Pingcheng"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 523,
+      "coord": [
+        111.45,
+        41.09
+      ],
+      "site": "武川镇（今内蒙古呼和浩特武川）",
+      "siteEn": "Wuchuan Garrison (Wuchuan, Hohhot, Inner Mongolia)",
+      "zh": "六镇乱起，武川镇军人宇文泰、独孤信、杨忠、李虎由此崛起，开关陇集团",
+      "en": "Wuchuan men Yuwen Tai, Dugu Xin, Yang Zhong and Li Hu rise, seeding the Guanlong elite"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 546,
+      "coord": [
+        110.97,
+        35.6
+      ],
+      "site": "玉壁城（今山西运城稷山）",
+      "siteEn": "Yubi Fortress (Jishan, Yuncheng, Shanxi)",
+      "zh": "韦孝宽死守玉壁五十日，东魏高欢倾国攻城不克，忧愤发病",
+      "en": "Wei Xiaokuan holds Yubi for fifty days; Gao Huan's Eastern Wei siege fails and he falls ill"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1281,
+      "coord": [
+        113.14,
+        34.4
+      ],
+      "site": "阳城告成（今河南郑州登封）",
+      "siteEn": "Gaocheng, Yangcheng (Dengfeng, Zhengzhou, Henan)",
+      "zh": "郭守敬主持四海测验，筑告成观星台测影，编成《授时历》颁行",
+      "en": "Guo Shoujing's empire-wide survey and Gaocheng Observatory yield the Shoushi Calendar"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1346,
+      "coord": [
+        118.59,
+        24.91
+      ],
+      "site": "泉州刺桐港（今福建泉州）",
+      "siteEn": "Zayton Harbor (Quanzhou, Fujian)",
+      "zh": "摩洛哥旅行家伊本·白图泰抵刺桐港，盛赞其为世界最大港口之一",
+      "en": "Moroccan traveler Ibn Battuta reaches Zayton and hails it as one of the greatest ports on earth"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1352,
+      "coord": [
+        117.56,
+        32.87
+      ],
+      "site": "濠州钟离（今安徽滁州凤阳）",
+      "siteEn": "Zhongli, Haozhou (Fengyang, Chuzhou, Anhui)",
+      "zh": "朱元璋自皇觉寺投濠州郭子兴红巾军，娶马氏，起于行伍",
+      "en": "Zhu Yuanzhang leaves Huangjue Temple to join Guo Zixing's Red Turbans at Haozhou"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1776,
+      "coord": [
+        102.07,
+        31.48
+      ],
+      "site": "大小金川（今四川阿坝金川）",
+      "siteEn": "Greater & Lesser Jinchuan (Jinchuan, Aba, Sichuan)",
+      "zh": "阿桂历五年平定大小金川，废土司设屯置厅，改土归流",
+      "en": "After a five-year war Agui subdues Greater and Lesser Jinchuan, abolishing its native chiefdoms"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1793,
+      "coord": [
+        117.94,
+        40.99
+      ],
+      "site": "热河避暑山庄（今河北承德）",
+      "siteEn": "Rehe Mountain Resort (Chengde, Hebei)",
+      "zh": "英使马戛尔尼于热河避暑山庄觐见乾隆，通商请求遭拒",
+      "en": "Lord Macartney meets Qianlong at the Chengde Mountain Resort; British trade requests are refused"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1842,
+      "coord": [
+        114.17,
+        22.28
+      ],
+      "site": "香港岛（今香港）",
+      "siteEn": "Hong Kong Island (Hong Kong)",
+      "zh": "《南京条约》割让香港岛，英人辟维多利亚城开埠",
+      "en": "Under the Treaty of Nanjing, Hong Kong Island is ceded and Victoria City is founded"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1884,
+      "coord": [
+        119.44,
+        25.99
+      ],
+      "site": "马尾船政（今福建福州马尾）",
+      "siteEn": "Mawei Navy Yard (Mawei, Fuzhou, Fujian)",
+      "zh": "中法马江海战：法舰突袭马尾，福建水师覆没，船政局遭炮毁",
+      "en": "Battle of Fuzhou: French warships ambush Mawei, sinking the Fujian Fleet and shelling the yard"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1895,
+      "coord": [
+        122.18,
+        37.5
+      ],
+      "site": "刘公岛（今山东威海）",
+      "siteEn": "Liugong Island (Weihai, Shandong)",
+      "zh": "日军水陆围攻威海卫，丁汝昌于刘公岛殉国，北洋水师覆没",
+      "en": "Japan besieges Weihaiwei; Ding Ruchang dies on Liugong Island as the Beiyang Fleet is destroyed"
     }
   ],
   "GUQIN_TRACKS": [
