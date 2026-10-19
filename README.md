@@ -42,9 +42,9 @@ Have you ever wondered while reading Chinese history or classical poetry:
 - **Site-Specific Landmark Events**: Beneath each dynasty row, inspect major historical events that took place right on that spot (e.g., *Shang Yang's Reforms* and *Qin's Unification* at Xianyang, *Guan Yu Flooding the Seven Armies* at Fancheng, the *Xuanwu Gate Incident* at Chang'an, or *Yue Fei's Martyrdom* at Lin'an). Click the **`Key Events`** pill in the top-right of the card to filter for dynasties with major events, and click any event to time-travel straight to that year!
 - **Strategic Mountain Passes & Poetic / Battlefield Landmarks**: Explore famous mountain passes—including *Hangu Pass*, *Tongguan*, *Jianmen Pass*, *Yanmen Pass*, *Yumen Pass*, *Yangguan*, and *Shanhai Pass*—rendered with traditional *Hanque* gatehouse icons and strategic terrain notes, alongside famous battlefields and literary landmarks such as *Red Cliffs (Chibi)*, *Gaixia*, *Wuzhang Plains*, *Orchid Pavilion (Lanting)*, *Yueyang Tower*, *Pavilion of Prince Teng*, *Languan Pass*, *Loulan*, *Lop Nur*, and *Issyk-Kul*.
 
-> [Try It Live: High Tang Kaiyuan 29 (741 CE) · Open Chang'an's 2,400-Year Genealogy Card →](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en)
+> [Try It Live: High Tang Kaiyuan 29 (741 CE) · Open Chang'an's 2,400-Year Genealogy Card →](https://deanchen.me/jiangshan-map/?year=741&place=Chang'an&lang=en)
 
-![High Tang 741 CE · Chang'an Trace Place & Key Events](assets/preview_741_tang_trace.png)
+![High Tang 741 CE · Chang'an Trace Place & Key Events](assets/preview_741_tang_trace_en.png)
 
 ---
 

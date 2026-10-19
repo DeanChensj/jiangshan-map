@@ -6858,7 +6858,7 @@ window.DYNASTY_DATA = [
         "remark": "开元九年升河中府，置中都；鹳雀楼、蒲津铁牛"
       },
       {
-        "ancient": "澶州（濮阳）",
+        "ancient": "澶州",
         "modern": "濮阳",
         "coord": [
           115.03,
@@ -7080,7 +7080,7 @@ window.DYNASTY_DATA = [
         "remark": "剑南道川南重镇，控扼长江与沱江交汇"
       },
       {
-        "ancient": "通州（达州）",
+        "ancient": "通州",
         "modern": "达州",
         "coord": [
           107.5,
@@ -7221,7 +7221,7 @@ window.DYNASTY_DATA = [
         "remark": "唐代海南岛极南州治，鉴真东渡漂流驻锡处"
       },
       {
-        "ancient": "泾州（平凉）",
+        "ancient": "泾州",
         "modern": "平凉",
         "coord": [
           106.67,
