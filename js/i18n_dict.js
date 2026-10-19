@@ -235,8 +235,8 @@ window.EN_LOCALE = {
       "Ban Chao sent to the Western Regions, reopening the Silk Road",
       "Shanshan"
     ],
-    "donghan:91": [
-      "Dou Xian defeats the Northern Xiongnu and carves an inscription on Mt. Yanran",
+    "donghan:89": [
+      "Dou Xian routs the Northern Xiongnu at Jiluo and carves a victory stele on Mt. Yanran",
       "Mt. Yanran (Khangai)"
     ],
     "donghan:105": [
@@ -244,7 +244,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "donghan:166": [
-      "First Disaster of the Partisan Prohibitions purges scholar-officials",
+      "The Partisan Prohibitions of 166 and 169 ban and execute leading scholar-officials",
       "Luoyang"
     ],
     "donghan:184": [
@@ -711,6 +711,10 @@ window.EN_LOCALE = {
       "Qing armies enter Shanhai Pass and make Beijing the capital",
       "Shanhai Pass"
     ],
+    "qing:1645": [
+      "Qing armies take Yangzhou and Nanjing, ending the Hongguang court; the queue edict sparks revolt",
+      "Nanjing"
+    ],
     "qing:1673": [
       "Kangxi orders abolition of the feudatories; Wu Sangui rebels in Yunnan (Three Feudatories)",
       "Kunming · Hengzhou"
@@ -1135,6 +1139,10 @@ window.EN_LOCALE = {
       "Central Secretariat and Ten Branch Secretariats system consolidated",
       "Dadu"
     ],
+    "yuan:1313": [
+      "Emperor Renzong restores the civil exams with Zhu Xi's Neo-Confucian canon as the standard",
+      "Dadu (Beijing)"
+    ],
     "yuan:1356": [
       "Zhu Yuanzhang captures Jiqing (Nanjing), renaming it Yingtianfu",
       "Jiqing (Nanjing)"
@@ -1531,6 +1539,10 @@ window.EN_LOCALE = {
       "General Ma Yuan suppresses the Trưng sisters in Jiaozhi and erects bronze border pillars",
       "Jiaozhi (Hanoi)"
     ],
+    "donghan:91": [
+      "Geng Kui crushes the Northern Xiongnu at Mt. Jinwei (Altai) and the Chanyu flees west",
+      "Mt. Jinwei (Altai)"
+    ],
     "sanguo:238": [
       "Sima Yi conquers Liaodong and executes Gongsun Yuan, recovering Lelang and Daifang",
       "Xiangping (Liaoyang)"
@@ -1566,6 +1578,10 @@ window.EN_LOCALE = {
     "donghan:92": [
       "Prosperity of Yongyuan: Emperor He ousts Regent Dou Xian and brings Eastern Han to its zenith",
       "Luoyang"
+    ],
+    "donghan:107": [
+      "Qiang uprisings engulf Liangzhou as Han withdraws its Protectorate of the Western Regions",
+      "Liangzhou (Longyou)"
     ],
     "sanguo:260": [
       "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain at the palace gate",
@@ -1663,9 +1679,21 @@ window.EN_LOCALE = {
       "Emperor Huan and five eunuchs overthrow Regent Liang Ji while Duan Jiong crushes the Qiang",
       "Luoyang & Longyou"
     ],
+    "donghan:177": [
+      "Three Han columns against the Xianbei are routed and Tanshihuai dominates the southern steppe",
+      "Gaoliu · Yunzhong · Yanmen"
+    ],
     "nanbei:507": [
       "Battle of Zhongli: Liang generals Wei Rui and Cao Jingzong rout 300,000 Northern Wei troops",
       "Zhongli (Fengyang)"
+    ],
+    "nanbei:552": [
+      "Bumin Qaghan crushes the Rouran north of Huaihuang and founds the First Turkic Khaganate",
+      "North of Huaihuang (Zhangbei)"
+    ],
+    "nanbei:580": [
+      "Regent Yang Jian has Wei Xiaokuan crush Yuchi Jiong and razes the old capital of Ye",
+      "Ye (Xiangzhou)"
     ],
     "tang:868": [
       "Pang Xun leads the Guilin garrison mutiny north to seize Xuzhou and sever the Grand Canal",
@@ -1683,6 +1711,14 @@ window.EN_LOCALE = {
       "Yellow River breaches the Baimaodi dike at Caoxian; Jia Lu’s massive corvée sparks unrest",
       "Baimaodi (Caoxian)"
     ],
+    "yuan:1354": [
+      "Siege of Gaoyou: Toghto is dismissed while besieging Zhang Shicheng and the Yuan host collapses",
+      "Gaoyou"
+    ],
+    "yuan:1358": [
+      "Red Turban armies march north in three columns; the central column sacks and burns Shangdu",
+      "Shangdu (Xanadu)"
+    ],
     "ming:1494": [
       "Liu Daxia seals the Huanglinggang breach and builds the Taihang Dike, fixing the Yellow-Huai",
       "Huanglinggang (Lankao)"
@@ -1699,17 +1735,37 @@ window.EN_LOCALE = {
       "Emperor Kangxi personally leads campaigns into Outer Mongolia, routing Galdan at Jao Modo",
       "Jao Modo (South of Ulaanbaatar)"
     ],
+    "qing:1729": [
+      "Emperor Yongzheng creates the Grand Council, concentrating state power in the throne",
+      "Forbidden City (Beijing)"
+    ],
     "qing:1755": [
       "Qing armies march into Ili in two columns, destroying the Dzungar Khanate and Dawachi",
       "Ili (Huiyuan)"
+    ],
+    "qing:1757": [
+      "Qianlong confines Western trade to Canton under the Thirteen Hongs (the Canton System)",
+      "Canton (Guangzhou)"
     ],
     "qing:1787": [
       "Fuk’anggan crosses the strait to suppress Lin Shuangwen’s uprising; Zhuluo is renamed Jiayi",
       "Jiayi (Zhuluo)"
     ],
+    "qing:1826": [
+      "Jahangir Khoja seizes Kashgar; General Changling marches west and restores Qing rule",
+      "Kashgar"
+    ],
     "qing:1839": [
       "Imperial Commissioner Lin Zexu destroys over 20,000 chests of opium at Humen in Guangdong",
       "Humen (Dongguan)"
+    ],
+    "qing:1842": [
+      "The Treaty of Nanjing cedes Hong Kong Island and opens five treaty ports to British trade",
+      "Jiangning (Nanjing)"
+    ],
+    "qing:1865": [
+      "Zeng Guofan and Li Hongzhang found the Jiangnan Arsenal as Self-Strengthening takes off",
+      "Shanghai"
     ],
     "xihan:-110": [
       "Emperor Wu conquers Minyue and establishes Zhuya and Dan'er commanderies on Hainan Island",
@@ -1742,6 +1798,14 @@ window.EN_LOCALE = {
     "qing:1885": [
       "Battle of Zhennan Pass: General Feng Zicai routs French forces and recaptures Lang Son",
       "Zhennan Pass (Pingxiang, Guangxi)"
+    ],
+    "qing:1887": [
+      "Taiwan becomes a full province under Governor Liu Mingchuan, who builds railways and telegraphs",
+      "Taipei"
+    ],
+    "qing:1905": [
+      "The Qing court abolishes the imperial examinations, ending a 1,300-year institution",
+      "Beijing"
     ],
     "sui:587": [
       "Emperor Wen of Sui abolishes Western Liang at Jiangling and prepares to conquer Chen",
