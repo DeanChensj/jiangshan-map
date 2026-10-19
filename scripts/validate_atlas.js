@@ -921,6 +921,12 @@ function main() {
     { dyn: 'yuan', year: 1288, keyword: '宣政院' },
     { dyn: 'qing', year: 1881, keyword: '伊犁' },
     { dyn: 'qing', year: 1898, keyword: '胶州湾' },
+    { dyn: 'roc', year: 1916, keyword: '袁世凯' },
+    { dyn: 'roc', year: 1920, keyword: '直皖战争' },
+    { dyn: 'roc', year: 1924, keyword: '黄埔军校' },
+    { dyn: 'roc', year: 1926, keyword: '北伐' },
+    { dyn: 'roc', year: 1928, keyword: '北伐完成' },
+    { dyn: 'roc', year: 1931, keyword: '九一八' },
     { dyn: 'roc', year: 1932, keyword: '满洲国' },
     { dyn: 'roc', year: 1945, keyword: '台湾' },
     { dyn: 'roc', year: 1946, keyword: '外蒙古' },
@@ -2631,6 +2637,22 @@ function main() {
     assert(readmeZhSrc.includes(zhAsset), `README_ZH.md must reference Chinese preview ${zhAsset}`);
     assert(fs.existsSync(path.join(ROOT, enAsset)), `Missing preview asset file ${enAsset}`);
     assert(fs.existsSync(path.join(ROOT, zhAsset)), `Missing preview asset file ${zhAsset}`);
+  }
+
+  // 23p. Verify Republic of China Warlord Era (1916–1928) multi-faction snapshots (s_roc_a0, s_roc_w1..w4, s_roc_a)
+  for (const [rk, expectedTitles] of [
+    ['s_roc_a0', ['中华民国', '外蒙古（自治/苏控）']],
+    ['s_roc_w1', ['北洋政府 · 皖系（段祺瑞）', '直系（冯国璋 · 曹锟）', '奉系（张作霖）', '护法军政府 · 西南各系', '晋系（阎锡山）', '西北诸马（甘宁青）', '新疆（杨增新）']],
+    ['s_roc_w2', ['北洋政府 · 直系（曹锟 · 吴佩孚）', '奉系（张作霖）', '皖系（卢永祥 · 浙江）', '广州政府（孙中山）', '西南川滇黔桂各系', '晋系（阎锡山）', '西北诸马（甘宁青）', '新疆（杨增新）']],
+    ['s_roc_w3', ['北洋政府 · 奉系（张作霖）', '五省联军（孙传芳）', '直系（吴佩孚）', '西北国民军（冯玉祥）', '广州国民政府（两广统一）', '川滇黔军阀（刘湘 · 唐继尧）', '晋系（阎锡山）', '新疆（杨增新）']],
+    ['s_roc_w4', ['国民政府（北伐军与冯阎集团）', '安国军政府 · 奉系（张作霖）', '新疆（杨增新）']],
+  ]) {
+    const rs = snapshots[rk];
+    assert(rs, `Missing ROC warlord snapshot ${rk}`);
+    const titles = new Set((rs.polities || []).map((p) => p.title));
+    for (const et of expectedTitles) {
+      assert(titles.has(et), `${rk} must include warlord polity "${et}"`);
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
