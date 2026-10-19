@@ -302,7 +302,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261019b" />
+  <link rel="stylesheet" href="css/style.css?v=20261019c" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -522,17 +522,22 @@
 
         <div id="genealogy-card" class="is-hidden" role="dialog" aria-label="古今地名沿革">
           <div class="genealogy-header">
-            <div>
+            <div class="genealogy-heading-group">
               <div class="genealogy-tag" id="txt-genealogy-kicker">点地溯源 · 古今政区沿革</div>
               <div id="genealogy-heading" class="genealogy-title"></div>
             </div>
-            <button id="act-close-genealogy" class="icon-close" title="关闭" aria-label="关闭">
-              <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            </button>
+            <div class="genealogy-header-actions">
+              <button id="act-expand-genealogy" class="icon-close gen-expand-btn" type="button" title="展开/收起沿革面板" aria-expanded="false" aria-label="展开或收起沿革面板">⤢</button>
+              <button id="act-close-genealogy" class="icon-close" type="button" title="关闭" aria-label="关闭">
+                <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
           </div>
           <div id="genealogy-sub" class="genealogy-sub"></div>
-          <div id="genealogy-lore" class="pass-lore-banner is-hidden"></div>
-          <ol id="genealogy-timeline" class="genealogy-list"></ol>
+          <div id="genealogy-body" class="genealogy-body">
+            <div id="genealogy-lore" class="pass-lore-banner is-hidden"></div>
+            <ol id="genealogy-timeline" class="genealogy-list"></ol>
+          </div>
         </div>
 
         <div id="journey-card" class="is-hidden" role="region" aria-label="青史行迹巡礼"></div>
@@ -738,10 +743,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261019b"></script>
-  <script src="js/atlas_boot.js?v=20261019b"></script>
-  <script src="js/map_data.js?v=20261019b"></script>
-  <script src="js/lore_data.js?v=20261019b"></script>
-  <script src="js/app.js?v=20261019b"></script>
+  <script src="js/china_geo_data.js?v=20261019c"></script>
+  <script src="js/atlas_boot.js?v=20261019c"></script>
+  <script src="js/map_data.js?v=20261019c"></script>
+  <script src="js/lore_data.js?v=20261019c"></script>
+  <script src="js/app.js?v=20261019c"></script>
 </body>
 </html>
