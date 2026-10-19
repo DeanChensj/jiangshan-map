@@ -429,7 +429,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261019b').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261019c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +453,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261019b').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261019c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -462,6 +462,16 @@
         });
       }
       return this._enLocalePromise;
+    }
+
+    _syncMobileOverlayState() {
+      const wb = this._id('workspace-body');
+      if (wb && wb.classList) {
+        wb.classList.toggle(
+          'has-mobile-overlay',
+          Boolean(this.activeJourney || this.activeCustomRoute || this.activeTrace || this.challenge)
+        );
+      }
     }
 
     _syncImmersivePaneState() {
@@ -478,6 +488,7 @@
         this._paneAutoCollapsed = false;
         this.toggleChroniclePane(false);
       }
+      this._syncMobileOverlayState();
     }
 
     _recordGestureMove() {
@@ -2869,9 +2880,28 @@
     }
 
     // ---------------- Place Genealogy (Trace Place) ----------------
+    toggleGenealogySheetExpand(force) {
+      const cardEl = this._id('genealogy-card');
+      const btnEl = this._id('act-expand-genealogy');
+      const next =
+        typeof force === 'boolean'
+          ? force
+          : Boolean(cardEl && !cardEl.classList.contains('is-sheet-expanded'));
+      this.genealogySheetExpanded = next;
+      if (cardEl && cardEl.classList) {
+        cardEl.classList.toggle('is-sheet-expanded', next);
+      }
+      if (btnEl) {
+        btnEl.textContent = next ? '⤡' : '⤢';
+        btnEl.setAttribute('aria-expanded', String(next));
+        if (btnEl.classList) btnEl.classList.toggle('is-active', next);
+      }
+    }
+
     closeGenealogyCard() {
       this.activeTrace = null;
       this.activeTraceLabel = '';
+      this.toggleGenealogySheetExpand(false);
       const cardEl = this._id('genealogy-card');
       if (cardEl) cardEl.classList.add('is-hidden');
       const loreEl = this._id('genealogy-lore');
@@ -2881,6 +2911,7 @@
       }
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-genealogy');
+      this._syncMobileOverlayState();
       if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
       if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
         this.grpSettlements
@@ -3445,6 +3476,7 @@
         this.genealogyEventsOnly = false;
       }
       this.activeTrace = [lng, lat];
+      this._syncMobileOverlayState();
       this.grpGenealogy.innerHTML = '';
       const [sx, sy] = this.projector.toScreen(lng, lat);
       const onCustomRouteStop =
@@ -3468,9 +3500,13 @@
             this.locale === 'en' ? this.trTerm(this.activeTraceLabel) : this.activeTraceLabel;
         }
       }
-      if (!fromYearSync) {
-        if (typeof window !== 'undefined' && window.innerWidth <= 900 && sy > this.camera.y + this.camera.h * 0.44) {
-          this.camera.y = sy - this.camera.h * 0.28;
+      if (!fromYearSync && !onCustomRouteStop) {
+        if (
+          typeof window !== 'undefined' &&
+          window.innerWidth <= 900 &&
+          (sy > this.camera.y + this.camera.h * 0.34 || sy < this.camera.y + this.camera.h * 0.08)
+        ) {
+          this.camera.y = sy - this.camera.h * 0.2;
           this._applyCamera(true);
         } else if (
           typeof window !== 'undefined' &&
@@ -3663,7 +3699,8 @@
         }
 
         const listEl = this._id('genealogy-timeline');
-        const prevScrollTop = listEl.scrollTop;
+        const scrollEl = this._id('genealogy-body') || listEl;
+        const prevScrollTop = scrollEl.scrollTop;
         const hadItems = listEl.children.length > 0;
         listEl.innerHTML = '';
 
@@ -3790,20 +3827,27 @@
         }
 
         const curLi = listEl.querySelector('li.is-current');
-        if (curLi && listEl.scrollHeight > listEl.clientHeight) {
-          const liTop = curLi.offsetTop - listEl.offsetTop;
+        if (curLi && scrollEl.scrollHeight > scrollEl.clientHeight) {
+          const liTop = curLi.offsetTop - (scrollEl === listEl ? listEl.offsetTop : 0);
           const liBottom = liTop + curLi.offsetHeight;
           const alreadyVisible =
             hadItems &&
             isSamePlace &&
             liTop >= prevScrollTop + 8 &&
-            liBottom <= prevScrollTop + listEl.clientHeight - 8;
+            liBottom <= prevScrollTop + scrollEl.clientHeight - 8;
           if (preserveScroll || (fromYearSync && alreadyVisible)) {
-            listEl.scrollTop = prevScrollTop;
+            scrollEl.scrollTop = prevScrollTop;
+          } else if (liTop + Math.min(curLi.offsetHeight, 84) <= scrollEl.clientHeight) {
+            scrollEl.scrollTop = 0;
           } else {
-            const top = Math.max(0, liTop - listEl.clientHeight * 0.35);
-            listEl.scrollTop = top;
+            const lead =
+              typeof window !== 'undefined' && window.innerWidth <= 900
+                ? 4
+                : scrollEl.clientHeight * 0.35;
+            scrollEl.scrollTop = Math.max(0, liTop - lead);
           }
+        } else if (scrollEl) {
+          scrollEl.scrollTop = 0;
         }
       };
 
@@ -5042,6 +5086,7 @@
     }
 
     _animateCameraTo(targetCam) {
+      this._cameraTarget = targetCam;
       const from = { ...this.camera };
       const t0 = performance.now();
       const duration = 650;
@@ -5059,7 +5104,12 @@
           zoom: 1000 / w,
         };
         this._applyCamera();
-        if (k < 1) this.flyRaf = requestAnimationFrame(step);
+        if (k < 1) {
+          this.flyRaf = requestAnimationFrame(step);
+        } else {
+          this.flyRaf = null;
+          this._cameraTarget = null;
+        }
       };
       this.flyRaf = requestAnimationFrame(step);
     }
@@ -5078,6 +5128,7 @@
       }
       const vf = this._id('viewport-frame');
       if (vf && !this.activeJourney) vf.classList.remove('has-active-journey');
+      this._syncMobileOverlayState();
     }
 
     selectCustomRouteStop(idx, panCamera = true) {
@@ -5160,10 +5211,11 @@
         })
         .join('<span class="cr-stop-arrow">→</span>');
 
-      this.journeyCard.classList.remove('is-hidden');
+      this.journeyCard.classList.remove('is-hidden', 'is-collapsed');
       this.journeyCard.classList.add('is-custom-route');
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-active-journey');
+      this._syncMobileOverlayState();
 
       this.journeyCard.innerHTML =
         `<div class="jc-top-bar">` +
@@ -5257,12 +5309,12 @@
       const w = Math.min(this.camera.w, maxW);
       const h = w * (this.camera.h / this.camera.w);
       const genCard = this._id('genealogy-card');
-      const genOpenDesktop =
-        !isMobile && genCard && !genCard.classList.contains('is-hidden');
-      const xFrac = genOpenDesktop ? 0.38 : 0.5;
+      const genOpen = Boolean(genCard && !genCard.classList.contains('is-hidden'));
+      const xFrac = !isMobile && genOpen ? 0.38 : 0.5;
+      const yFrac = isMobile && genOpen ? 0.21 : 0.45;
       this._animateCameraTo({
         x: tx - w * xFrac,
-        y: ty - h * 0.45,
+        y: ty - h * yFrac,
         w,
         h,
       });
@@ -5816,10 +5868,11 @@
       this.activeCustomRoute = null;
       this.customRouteStopIdx = -1;
       this.journeyStopIdx = 0;
+      this.journeyCardCollapsed = false;
       if (this.grpJourney) this.grpJourney.innerHTML = '';
       if (this.journeyCard) {
         this.journeyCard.classList.add('is-hidden');
-        this.journeyCard.classList.remove('is-custom-route');
+        this.journeyCard.classList.remove('is-custom-route', 'is-collapsed');
         this.journeyCard.innerHTML = '';
       }
       const vf = this._id('viewport-frame');
@@ -5880,6 +5933,44 @@
       this._renderJourneyCard();
     }
 
+    _getJourneyVisibleTopFrac() {
+      if (typeof window === 'undefined' || window.innerWidth > 900) {
+        return 1;
+      }
+      const vf = this._id('viewport-frame');
+      if (
+        vf &&
+        this.journeyCard &&
+        typeof vf.getBoundingClientRect === 'function' &&
+        typeof this.journeyCard.getBoundingClientRect === 'function' &&
+        !this.journeyCard.classList.contains('is-hidden')
+      ) {
+        const vfRect = vf.getBoundingClientRect();
+        const jcRect = this.journeyCard.getBoundingClientRect();
+        if (
+          vfRect.height > 80 &&
+          jcRect.height > 20 &&
+          jcRect.top > vfRect.top + vfRect.height * 0.25
+        ) {
+          return Math.max(0.42, Math.min(0.92, (jcRect.top - vfRect.top - 10) / vfRect.height));
+        }
+      }
+      return this.journeyCardCollapsed ? 0.85 : 0.58;
+    }
+
+    toggleJourneyCardCollapse(force) {
+      if (!this.activeJourney) return;
+      this.journeyCardCollapsed =
+        typeof force === 'boolean' ? force : !Boolean(this.journeyCardCollapsed);
+      this._renderJourneyCard();
+      const curStop = this.activeJourney.stops[this.journeyStopIdx];
+      if (this.journeyStopIdx === 0) {
+        this._frameJourneyOverview(this.activeJourney);
+      } else if (curStop) {
+        this._flyToJourneyStop(curStop);
+      }
+    }
+
     _frameJourneyOverview(journey) {
       if (!journey || !journey.stops.length) return;
       let minX = Infinity;
@@ -5896,12 +5987,31 @@
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
       const aspect = this._getViewportAspect();
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      if (!isDesktop) {
+        const visTopFrac = this._getJourneyVisibleTopFrac();
+        const topPadFrac = 0.06;
+        const botPadFrac = 0.05;
+        const availFrac = Math.max(0.32, visTopFrac - topPadFrac - botPadFrac);
+        const midFrac = topPadFrac + availFrac * 0.5;
+        const effAspect = Math.max(0.36, aspect * availFrac);
+        const spanW = Math.max(maxX - minX + 130, (maxY - minY + 92) / effAspect) * 1.12;
+        const w = Math.max(320, Math.min(1380, spanW));
+        const h = w * aspect;
+        this._animateCameraTo({
+          x: cx - w * 0.5,
+          y: cy - h * midFrac,
+          w,
+          h,
+        });
+        return;
+      }
       const spanW = Math.max(maxX - minX + 110, (maxY - minY + 120) / aspect) * 1.18;
       const w = Math.max(320, Math.min(960, spanW));
       const h = w * aspect;
       // Offset camera slightly down/left so the bottom-left journey card never occludes western/southern stops
-      const offsetX = window.innerWidth > 900 ? -w * 0.06 : 0;
-      const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.1;
+      const offsetX = -w * 0.06;
+      const offsetY = h * 0.06;
       this._animateCameraTo({
         x: Math.max(-140, Math.min(1000 - w + 140, cx - w * 0.5 + offsetX)),
         y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5 + offsetY)),
@@ -5914,10 +6024,23 @@
       if (!stop || !stop.coord) return;
       const [tx, ty] = this.projector.toScreen(stop.coord[0], stop.coord[1]);
       const aspect = this._getViewportAspect();
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      if (!isDesktop) {
+        const visTopFrac = this._getJourneyVisibleTopFrac();
+        const w = Math.max(340, Math.min(this.camera.w, 480));
+        const h = w * aspect;
+        this._animateCameraTo({
+          x: tx - w * 0.5,
+          y: ty - h * (visTopFrac * 0.5),
+          w,
+          h,
+        });
+        return;
+      }
       const w = Math.max(360, Math.min(this.camera.w, 540));
       const h = w * aspect;
-      const offsetX = window.innerWidth > 900 ? -w * 0.08 : 0;
-      const offsetY = window.innerWidth > 900 ? h * 0.06 : h * 0.12;
+      const offsetX = -w * 0.08;
+      const offsetY = h * 0.06;
       this._animateCameraTo({
         x: tx - w * 0.5 + offsetX,
         y: ty - h * 0.48 + offsetY,
@@ -6104,14 +6227,19 @@
           ? `${SVG_ICONS.play} Auto Tour`
           : `${SVG_ICONS.play} 自动巡礼`;
 
+      const isCollapsed = Boolean(this.journeyCardCollapsed);
       this.journeyCard.classList.remove('is-custom-route');
+      this.journeyCard.classList.toggle('is-collapsed', isCollapsed);
       this.journeyCard.innerHTML =
         `<div class="jc-top-bar">` +
         `<span class="jc-mobile-person">${isEn ? j.shortEn : j.shortZh}</span>` +
         `<div class="jc-tabs">${tabsHtml}</div>` +
-        `<button type="button" class="jc-close-btn" id="act-journey-overview" title="${isEn ? 'Fit entire route on map' : '全线总览视图'}">${isEn ? 'Full Route' : '全线视图'}</button>` +
+        `<span class="jc-collapsed-summary"><span class="jc-step-badge" style="background:${j.color}">${idx + 1}/${stops.length}</span><span class="jc-collapsed-title">${isEn ? st.titleEn : st.titleZh}</span></span>` +
+        `<button type="button" class="jc-close-btn" id="act-journey-overview" title="${isEn ? 'Fit entire route on map' : '全线总览视图'}">${isEn ? 'Full Route' : '全线'}</button>` +
+        `<button type="button" class="jc-close-btn jc-collapse-btn" id="act-collapse-journey" aria-expanded="${!isCollapsed}" title="${isCollapsed ? (isEn ? 'Expand story card' : '展开行迹详述') : (isEn ? 'Collapse card to inspect map' : '收起卡片看大图')}">${isCollapsed ? (isEn ? 'Story ▲' : '详述 ▲') : (isEn ? 'Map ▾' : '收起 ▾')}</button>` +
         `<button type="button" class="jc-close-btn" id="act-close-journey" title="${isEn ? 'Exit Historical Journey (Esc)' : '退出行迹巡礼 (Esc)'}">${isEn ? 'Exit' : '退出'} ×</button>` +
         `</div>` +
+        `<div class="jc-body">` +
         `<div class="jc-stop-head">` +
         `<span class="jc-step-badge" style="background:${j.color}">${
           isEn ? `Stop ${idx + 1} / ${stops.length}` : `第 ${idx + 1} / ${stops.length} 站`
@@ -6122,6 +6250,7 @@
         `<div class="jc-stop-place">${SVG_ICONS.pin} <span>${placeStr}</span></div>` +
         `<p class="jc-stop-desc">${isEn ? st.descEn : st.descZh}</p>` +
         `<div class="jc-stop-quote">${isEn ? st.quoteEn : st.quoteZh}</div>` +
+        `</div>` +
         `<div class="jc-footer">` +
         `<div class="jc-dots">${dotsHtml}</div>` +
         `<div class="jc-controls">` +
@@ -6142,6 +6271,14 @@
         tabsWrapEl.scrollLeft = Math.max(
           0,
           activeTabEl.offsetLeft - (tabsWrapEl.clientWidth - activeTabEl.offsetWidth) * 0.5
+        );
+      }
+      const activeDotEl = this.journeyCard.querySelector('.jc-dot.is-current');
+      const dotsWrapEl = this.journeyCard.querySelector('.jc-dots');
+      if (activeDotEl && dotsWrapEl && dotsWrapEl.scrollWidth > dotsWrapEl.clientWidth) {
+        dotsWrapEl.scrollLeft = Math.max(
+          0,
+          activeDotEl.offsetLeft - (dotsWrapEl.clientWidth - activeDotEl.offsetWidth) * 0.5
         );
       }
       this.journeyCard.querySelectorAll('.jc-dot').forEach((dot) => {
@@ -6180,6 +6317,10 @@
       const ovBtn = this._id('act-journey-overview');
       if (ovBtn) {
         ovBtn.addEventListener('click', () => this._frameJourneyOverview(j));
+      }
+      const collapseBtn = this._id('act-collapse-journey');
+      if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => this.toggleJourneyCardCollapse());
       }
       const closeBtn = this._id('act-close-journey');
       if (closeBtn) {
@@ -7001,6 +7142,12 @@
           if (window.innerWidth <= 900) {
             this.toggleMobileChronicle();
           }
+        });
+      }
+      const expandGenBtn = this._id('act-expand-genealogy');
+      if (expandGenBtn) {
+        expandGenBtn.addEventListener('click', () => {
+          this.toggleGenealogySheetExpand();
         });
       }
       this._id('act-close-genealogy').addEventListener('click', () => {
@@ -8676,21 +8823,44 @@
         lblTxt.textContent = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
       });
 
+      this._renderCustomRouteCard();
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
       const aspect = this._getViewportAspect();
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
       const hasZoom =
         explicitZoom !== undefined &&
         explicitZoom !== null &&
         explicitZoom !== '' &&
         !Number.isNaN(Number(explicitZoom));
+      if (!isDesktop) {
+        const visTopFrac = this._getJourneyVisibleTopFrac();
+        const topPadFrac = 0.06;
+        const botPadFrac = 0.05;
+        const availFrac = Math.max(0.32, visTopFrac - topPadFrac - botPadFrac);
+        const midFrac = topPadFrac + availFrac * 0.5;
+        const effAspect = Math.max(0.36, aspect * availFrac);
+        const spanW = Math.max(maxX - minX + 140, (maxY - minY + 96) / effAspect) * 1.14;
+        const w = hasZoom
+          ? 1000 / Math.max(1, Math.min(8, Number(explicitZoom)))
+          : Math.max(260, Math.min(1380, spanW));
+        const h = w * aspect;
+        this.camera = {
+          x: cx - w * 0.5,
+          y: cy - h * midFrac,
+          w,
+          h,
+          zoom: 1000 / w,
+        };
+        this._applyCamera(true);
+        return;
+      }
       const spanW = Math.max(maxX - minX + 140, (maxY - minY + 130) / aspect) * 1.25;
       const w = hasZoom
         ? 1000 / Math.max(1, Math.min(8, Number(explicitZoom)))
         : Math.max(260, Math.min(920, spanW));
       const h = w * aspect;
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
-      const offsetY = isDesktop ? h * 0.05 : h * 0.08;
+      const offsetY = h * 0.05;
       this.camera = {
         x: Math.max(-140, Math.min(1000 - w + 140, cx - w * 0.5)),
         y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5 + offsetY)),
@@ -8699,7 +8869,6 @@
         zoom: 1000 / w,
       };
       this._applyCamera(true);
-      this._renderCustomRouteCard();
     }
 
     inspect({ year, place, lng, lat, zoom } = {}) {
@@ -8903,7 +9072,7 @@
         const [tx, ty] = this.projector.toScreen(targetLng, targetLat);
         const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
         const xFrac = isDesktop ? 0.36 : 0.5;
-        const yFrac = isDesktop ? 0.48 : 0.38;
+        const yFrac = isDesktop ? 0.48 : 0.21;
         this.camera = { x: tx - w * xFrac, y: ty - h * yFrac, w, h, zoom: z };
         this._applyCamera();
         this.closeMilestoneBalloon();
