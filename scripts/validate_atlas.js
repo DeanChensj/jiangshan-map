@@ -1246,7 +1246,7 @@ function main() {
     `Expected modern spoilers "山东/淄博" to be scrubbed from clue, got: ${scrubbedZibo}`
   );
   let sawPassInDeck = false;
-  for (let run = 0; run < 15; run++) {
+  for (let run = 0; run < 45; run++) {
     const deck = ctrl._buildChallengeDeck();
     assert.strictEqual(deck.length, 10, `Expected 10 questions in challenge deck, got ${deck.length}`);
     for (let i = 0; i < deck.length; i++) {
@@ -1274,7 +1274,7 @@ function main() {
       }
     }
   }
-  assert(sawPassInDeck, 'Expected STRATEGIC_PASSES to appear in challenge decks across 15 runs');
+  assert(sawPassInDeck, 'Expected STRATEGIC_PASSES to appear in challenge decks across 45 runs');
 
   // CUJ 9q: Onboarding Persistence (#2), Traced Prefecture Highlight (#5), Custom Route Dock (#3) & Mobile/Challenge UX (#6)
   assert(
@@ -2653,6 +2653,106 @@ function main() {
     for (const et of expectedTitles) {
       assert(titles.has(et), `${rk} must include warlord polity "${et}"`);
     }
+  }
+
+  // 23q. Mobile viewport UX & geometry guards (iPhone 13 Pro 390x664 portrait Journey + Place Genealogy + Quiz)
+  assert(
+    indexHtml.includes('id="genealogy-body" class="genealogy-body"') &&
+      indexHtml.includes('id="act-expand-genealogy"') &&
+      styleCss.includes('.genealogy-body {') &&
+      styleCss.includes('.genealogy-body .genealogy-list {') &&
+      !styleCss.includes('max-height: 4.1em;') &&
+      styleCss.includes('#journey-card.is-collapsed') &&
+      styleCss.includes('#workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open)'),
+    'index.html and style.css must unify #genealogy-body scrolling without nested max-height traps, support #journey-card.is-collapsed, and eliminate mobile collapsed-pane empty grid rows'
+  );
+  {
+    const prevWinW = sandbox.window.innerWidth;
+    const prevWinH = sandbox.window.innerHeight;
+    const prevAnimCam = ctrl._animateCameraTo;
+    const prevSvg = ctrl.svg;
+    const prevJC = ctrl.journeyCard;
+    let capturedCam = null;
+    sandbox.window.innerWidth = 390;
+    sandbox.window.innerHeight = 664;
+    ctrl.svg = {
+      getBoundingClientRect: () => ({ top: 45, bottom: 584, left: 0, right: 390, width: 390, height: 539 }),
+      querySelectorAll: () => [],
+      classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+      dataset: {},
+    };
+    const mockVfMobile = {
+      getBoundingClientRect: () => ({ top: 45, bottom: 584, left: 0, right: 390, width: 390, height: 539 }),
+      classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+    };
+    let cardCollapsedMock = false;
+    ctrl.journeyCard = {
+      innerHTML: '',
+      getBoundingClientRect: () =>
+        cardCollapsedMock
+          ? { top: 516, bottom: 578, left: 8, right: 382, width: 374, height: 62 }
+          : { top: 370, bottom: 578, left: 8, right: 382, width: 374, height: 208 },
+      classList: {
+        add() {},
+        remove() {},
+        toggle(cls, force) {
+          if (cls === 'is-collapsed') cardCollapsedMock = Boolean(force);
+        },
+        contains: (cls) => (cls === 'is-collapsed' ? cardCollapsedMock : false),
+      },
+      querySelector: () => null,
+      querySelectorAll: () => [],
+    };
+    const origIdMobile = ctrl._id;
+    ctrl._id = (id) => {
+      if (id === 'viewport-frame') return mockVfMobile;
+      return origIdMobile ? origIdMobile.call(ctrl, id) : null;
+    };
+    ctrl._animateCameraTo = (target) => {
+      capturedCam = target;
+      ctrl.camera = { ...target, zoom: 1000 / target.w };
+    };
+    for (const j of loreData.HISTORICAL_JOURNEYS) {
+      ctrl.activeJourney = j;
+      ctrl.journeyStopIdx = 0;
+      ctrl.journeyCardCollapsed = false;
+      cardCollapsedMock = false;
+      const visFrac = ctrl._getJourneyVisibleTopFrac();
+      assert(
+        visFrac >= 0.5 && visFrac <= 0.65,
+        `Expected expanded mobile _getJourneyVisibleTopFrac() in [0.5, 0.65], got ${visFrac}`
+      );
+      ctrl._frameJourneyOverview(j);
+      assert(capturedCam, `Expected _frameJourneyOverview(${j.key}) to set camera`);
+      const overviewCam = { ...capturedCam };
+      for (const st of j.stops) {
+        const [, sy] = ctrl.projector.toScreen(st.coord[0], st.coord[1]);
+        const screenY = 45 + ((sy - overviewCam.y) / overviewCam.h) * 539;
+        assert(
+          screenY >= 52 && screenY <= 364,
+          `Mobile overview of journey "${j.key}" stop "${st.ancientZh}" landed outside unobscured map window [52..364]: screenY=${screenY.toFixed(1)}`
+        );
+        ctrl._flyToJourneyStop(st);
+        const flyScreenY = 45 + ((sy - capturedCam.y) / capturedCam.h) * 539;
+        assert(
+          flyScreenY >= 140 && flyScreenY <= 260,
+          `Mobile _flyToJourneyStop for "${j.key}" stop "${st.ancientZh}" occluded or off-center: screenY=${flyScreenY.toFixed(1)}`
+        );
+      }
+      ctrl.toggleJourneyCardCollapse(true);
+      assert(
+        ctrl.journeyCardCollapsed === true && ctrl._getJourneyVisibleTopFrac() >= 0.8,
+        'Collapsing mobile journey card must increase unobscured map fraction above 0.80'
+      );
+      ctrl.toggleJourneyCardCollapse(false);
+    }
+    ctrl.activeJourney = null;
+    ctrl._id = origIdMobile;
+    ctrl._animateCameraTo = prevAnimCam;
+    ctrl.svg = prevSvg;
+    ctrl.journeyCard = prevJC;
+    sandbox.window.innerWidth = prevWinW;
+    sandbox.window.innerHeight = prevWinH;
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);

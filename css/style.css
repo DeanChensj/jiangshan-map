@@ -1112,6 +1112,39 @@ h2 {
   gap: 8px;
 }
 
+.genealogy-heading-group {
+  min-width: 0;
+  flex: 1;
+}
+
+.genealogy-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.gen-expand-btn {
+  display: none;
+}
+
+.genealogy-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+.genealogy-body .genealogy-list {
+  overflow-y: visible;
+  flex: none;
+}
+
 .genealogy-tag {
   font-size: 11px;
   color: var(--vermilion);
@@ -2410,22 +2443,65 @@ html[lang="en"] .genealogy-list li {
     left: 8px;
     right: 8px;
     width: auto;
-    max-height: calc(100% - 16px);
-    padding: 10px 12px;
+    max-height: min(44%, 250px);
+    overflow-y: auto;
+    padding: 8px 10px;
     z-index: 14;
   }
   #genealogy-card {
     top: auto;
-    bottom: 8px;
+    bottom: 6px;
     left: 8px;
     right: 8px;
     width: auto;
-    max-height: min(54%, 370px);
-    padding: 9px 11px;
+    max-height: min(62%, 430px);
+    padding: 7px 10px 8px;
     z-index: 14;
   }
+  #genealogy-card.is-sheet-expanded {
+    top: 6px;
+    bottom: 6px;
+    max-height: none;
+  }
+  .genealogy-header {
+    align-items: center;
+    gap: 6px;
+  }
+  .gen-expand-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1;
+    border: 1px solid var(--hairline);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--text-secondary);
+  }
+  .gen-expand-btn.is-active {
+    background: var(--vermilion);
+    border-color: var(--vermilion);
+    color: #fffaf2;
+  }
+  .genealogy-tag {
+    font-size: 9.8px;
+    line-height: 1.15;
+  }
+  .genealogy-title {
+    font-size: 15px;
+    line-height: 1.22;
+    margin-top: 1px;
+  }
+  .genealogy-sub {
+    font-size: 10.6px;
+    margin: 3px 0 5px;
+    padding-bottom: 4px;
+    gap: 4px;
+  }
   #genealogy-lore {
-    padding: 4px 8px;
+    padding: 5px 8px;
     margin-bottom: 5px;
     gap: 2px;
   }
@@ -2438,9 +2514,7 @@ html[lang="en"] .genealogy-list li {
   }
   #genealogy-lore .pass-lore-desc {
     font-size: 11px;
-    line-height: 1.36;
-    max-height: 4.1em;
-    overflow-y: auto;
+    line-height: 1.38;
   }
   #milestone-balloon .ep-place {
     padding: 3.5px 9px;
@@ -3126,6 +3200,66 @@ html[lang="en"] #act-toggle-pane .tp-label {
   color: var(--vermilion);
 }
 
+.jc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jc-collapsed-summary {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+  font-family: var(--serif-stack);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jc-collapsed-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#journey-card.is-collapsed {
+  max-height: none;
+  padding: 7px 10px;
+  gap: 5px;
+}
+
+#journey-card.is-collapsed .jc-tabs,
+#journey-card.is-collapsed .jc-mobile-person,
+#journey-card.is-collapsed .jc-body,
+#journey-card.is-collapsed .jc-dots,
+#journey-card.is-collapsed #act-journey-overview {
+  display: none !important;
+}
+
+#journey-card.is-collapsed .jc-collapsed-summary {
+  display: flex;
+}
+
+#journey-card.is-collapsed .jc-top-bar {
+  padding-bottom: 4px;
+}
+
+#journey-card.is-collapsed .jc-controls {
+  width: 100%;
+  justify-content: space-between;
+  margin-left: 0;
+}
+
+#journey-card.is-collapsed .jc-nav-btn {
+  flex: 1;
+  justify-content: center;
+}
+
 .jc-stop-head {
   display: flex;
   align-items: center;
@@ -3377,21 +3511,75 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 @media (max-width: 900px) {
+  #act-toggle-pane {
+    display: none !important;
+  }
+  #journey-card {
+    left: 8px;
+    right: 8px;
+    bottom: 6px;
+    width: auto;
+    max-height: min(40%, 208px);
+    padding: 7px 9px 7px;
+    gap: 4px;
+    overflow: hidden;
+  }
+  #journey-card.is-custom-route {
+    left: 8px;
+    right: 8px;
+    bottom: 6px;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    padding: 7px 9px;
+    gap: 4px;
+  }
   #viewport-frame.has-active-genealogy #journey-card.is-custom-route {
     top: 8px;
     bottom: auto;
   }
+  #journey-card .jc-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    gap: 3px;
+    padding-right: 2px;
+  }
 }
 
 @media (max-width: 640px) {
+  .challenge-top {
+    margin-bottom: 4px;
+    gap: 5px;
+    font-size: 11px;
+  }
+  .challenge-prompt {
+    font-size: 13px;
+    line-height: 1.36;
+  }
+  .challenge-clue-box {
+    margin-top: 4px;
+    padding: 4px 8px;
+    font-size: 11.2px;
+    line-height: 1.36;
+    max-height: 4.4em;
+    overflow-y: auto;
+  }
   #journey-card,
   #journey-card.is-custom-route {
     left: 8px;
     right: 8px;
-    bottom: 8px;
+    bottom: 6px;
     width: auto;
-    padding: 9px 10px 8px;
-    gap: 5px;
+    padding: 7px 9px 7px;
+    gap: 4px;
+  }
+  .jc-top-bar {
+    gap: 4px;
+    padding-bottom: 4px;
   }
   .jc-tabs {
     display: flex;
@@ -3407,7 +3595,11 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
   .jc-tab-btn {
     flex-shrink: 0;
-    padding: 2.5px 7px;
+    padding: 2px 6.5px;
+    font-size: 10.5px;
+  }
+  .jc-close-btn {
+    padding: 2px 5.5px;
     font-size: 10.5px;
   }
   .jc-mobile-person {
@@ -3422,17 +3614,61 @@ html[lang="en"] #act-toggle-pane .tp-label {
   .cr-stops-list::-webkit-scrollbar {
     display: none;
   }
-  .jc-stop-desc {
-    font-size: 11.8px;
-    line-height: 1.45;
+  .jc-stop-head {
+    gap: 5px;
   }
-  .jc-stop-quote {
+  .jc-step-badge {
+    padding: 1.5px 5.5px;
+    font-size: 10px;
+  }
+  .jc-stop-title {
+    font-size: 13px;
+  }
+  .jc-stop-year {
+    font-size: 10.5px;
+  }
+  .jc-stop-place {
     font-size: 11px;
   }
+  .jc-stop-desc {
+    font-size: 11.4px;
+    line-height: 1.4;
+  }
+  .jc-stop-quote {
+    padding: 3px 7px;
+    font-size: 10.8px;
+    line-height: 1.38;
+  }
+  .jc-footer {
+    flex-wrap: nowrap;
+    gap: 5px;
+    padding-top: 2px;
+  }
+  .jc-dots {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 3px;
+  }
+  .jc-dots::-webkit-scrollbar {
+    display: none;
+  }
   .jc-dot {
-    width: 18px;
-    height: 18px;
-    font-size: 9.5px;
+    flex-shrink: 0;
+    width: 17px;
+    height: 17px;
+    font-size: 9.2px;
+  }
+  .jc-controls {
+    flex-shrink: 0;
+    gap: 4px;
+  }
+  .jc-nav-btn {
+    padding: 3px 7px;
+    font-size: 10.8px;
+    white-space: nowrap;
   }
 }
 
@@ -3449,9 +3685,22 @@ html[lang="en"] #act-toggle-pane .tp-label {
     transition: grid-template-rows 0.22s ease;
   }
 
-  #workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open) {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 0px;
+  #workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open),
+  #workspace-body.has-mobile-overlay:not(.is-mobile-chronicle-open) {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr 0px !important;
+    transition: none;
+  }
+
+  #workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open) #chronicle-pane,
+  #workspace-body.has-mobile-overlay:not(.is-mobile-chronicle-open) #chronicle-pane {
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0;
+    pointer-events: none;
   }
 
   #workspace-body.is-mobile-chronicle-open {
