@@ -2562,6 +2562,41 @@ function main() {
     }
   }
 
+  // 23o. Verify Ming Dynasty (s_ming*) natural curved polity borders & bilingual README preview asset parity
+  for (const mingKey of ['s_ming', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
+    const mingSnap = snapshots[mingKey];
+    assert(mingSnap, `Missing Ming snapshot ${mingKey}`);
+    for (const pol of mingSnap.polities || []) {
+      const polys = pol.shape.type === 'Polygon' ? [pol.shape.coordinates] : pol.shape.coordinates;
+      for (const poly of polys) {
+        const ring = poly[0] || [];
+        for (let i = 0; i < ring.length - 1; i++) {
+          const [x1, y1] = ring[i];
+          const [x2, y2] = ring[i + 1];
+          // Check all segments inside the Ming China frontier box [95.5°E..122°E, 26°N..46.5°N]
+          if (x1 >= 95.5 && x1 <= 122 && x2 >= 95.5 && x2 <= 122 && y1 >= 26 && y1 <= 46.5 && y2 >= 26 && y2 <= 46.5) {
+            const segDeg = Math.hypot(x2 - x1, y2 - y1);
+            assert(
+              segDeg <= 1.5,
+              `${mingKey} polity "${pol.title}" contains artificial ruler-straight interior border segment [${x1},${y1}] -> [${x2},${y2}] (${segDeg.toFixed(2)}°)`
+            );
+          }
+        }
+      }
+    }
+  }
+  for (const [enAsset, zhAsset] of [
+    ['assets/preview_741_tang_trace_en.png', 'assets/preview_741_tang_trace.png'],
+    ['assets/preview_1415_ming_yingtian_en.png', 'assets/preview_1415_ming_yingtian.png'],
+    ['assets/preview_journey_sushi_en.png', 'assets/preview_journey_sushi.png'],
+    ['assets/preview_quiz_challenge_en.png', 'assets/preview_quiz_challenge.png'],
+  ]) {
+    assert(readmeSrc.includes(enAsset), `README.md must reference English preview ${enAsset}`);
+    assert(readmeZhSrc.includes(zhAsset), `README_ZH.md must reference Chinese preview ${zhAsset}`);
+    assert(fs.existsSync(path.join(ROOT, enAsset)), `Missing preview asset file ${enAsset}`);
+    assert(fs.existsSync(path.join(ROOT, zhAsset)), `Missing preview asset file ${zhAsset}`);
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
