@@ -14453,6 +14453,16 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 1916,
+        "headline": "袁世凯病逝，北洋集团分裂为皖、直、奉系，南北军阀割据",
+        "site": "北京 · 广州",
+        "coord": [
+          116.401,
+          39.901
+        ],
+        "isMapChange": true
+      },
+      {
         "year": 1919,
         "headline": "巴黎和会外交失利，北京爆发五四运动",
         "site": "北京",
@@ -14460,6 +14470,16 @@ window.DYNASTY_DATA = [
           116.401,
           39.901
         ]
+      },
+      {
+        "year": 1920,
+        "headline": "直皖战争爆发，曹锟、吴佩孚直系击败段祺瑞皖系控制北京",
+        "site": "涿州 · 北京",
+        "coord": [
+          115.971,
+          39.481
+        ],
+        "isMapChange": true
       },
       {
         "year": 1921,
@@ -14477,7 +14497,8 @@ window.DYNASTY_DATA = [
         "coord": [
           113.431,
           23.091
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1926,
@@ -14486,7 +14507,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           30.591
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1928,
@@ -14495,7 +14517,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1931,
@@ -14504,7 +14527,8 @@ window.DYNASTY_DATA = [
         "coord": [
           123.431,
           41.801
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1932,
@@ -16272,6 +16296,26 @@ window.DYNASTY_DATA = [
       }
     ],
     "phases": [
+      {
+        "until": 1916,
+        "snap": "s_roc_a0"
+      },
+      {
+        "until": 1920,
+        "snap": "s_roc_w1"
+      },
+      {
+        "until": 1924,
+        "snap": "s_roc_w2"
+      },
+      {
+        "until": 1926,
+        "snap": "s_roc_w3"
+      },
+      {
+        "until": 1928,
+        "snap": "s_roc_w4"
+      },
       {
         "until": 1931,
         "snap": "s_roc_a"
