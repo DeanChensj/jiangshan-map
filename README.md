@@ -29,9 +29,9 @@ Have you ever wondered while reading Chinese history or classical poetry:
 - **Ancient Prefecture Hover Inspection & Modern X-Ray Lens**: First-level administrative divisions (Commanderies, Circuits, Routes, and Provinces) are rendered with deduplicated **Parchment Casing** borders. Zoom in and hover over any prefecture (e.g., Ming `Yingtian Prefecture` or Three Kingdoms `Jingzhou`) to inspect its jurisdiction and modern provincial equivalents, or toggle the **X-Ray Lens** to project modern provincial boundaries directly over the historical map.
 - **Dynamic River Courses, Ancient Lakes & Grand Engineering Works**: As you scrub through time, historical shifts of the Yellow River, expanding and shrinking ancient lakes (*Yunmeng Marsh*, *Lop Nur / Puchanghai*), Warring States/Qin/Han/Ming Great Walls, Sui-Tang & Grand Canals, the Silk Road, and Zheng He's maritime routes evolve in lockstep with each era.
 
-> [Try It Live: Ming Dynasty Yongle 13 (1415 CE) · Two Capitals, Thirteen Provinces & "Yingtian Prefecture" Inspection →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C&lang=en)
+> [Try It Live: Ming Dynasty Yongle 13 (1415 CE) · Two Capitals, Thirteen Provinces & "Yingtian Prefecture" Inspection →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=Yingtian%20Prefecture&lang=en)
 
-![Ming Dynasty 1415 CE · Yingtian Prefecture Hover Preview](assets/preview_1415_ming_yingtian.png)
+![Ming Dynasty 1415 CE · Yingtian Prefecture Hover Preview](assets/preview_1415_ming_yingtian_en.png)
 
 ---
 
@@ -63,7 +63,7 @@ Each time you click **Next Stop** (or press `Space` for auto-pilgrimage), **the 
 
 > [Try It Live: Follow Su Dongpo's Exile to Mizhou & Huangzhou (1075–1082 CE) →](https://deanchen.me/jiangshan-map/?journey=sushi&stop=6&lang=en)
 
-![Historical Journeys · Su Shi's Exile Route](assets/preview_journey_sushi.png)
+![Historical Journeys · Su Shi's Exile Route](assets/preview_journey_sushi_en.png)
 
 ---
 
@@ -75,7 +75,7 @@ Think you know Chinese historical geography? Open **`Journeys ▾`** in the top 
 
 > [Try It Live: Western Han Emperor Wu, Yuanshou 2 (121 BCE) · Start the Map Pinpoint Challenge →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)
 
-![Western Han 121 BCE · Map Pinpoint Challenge Preview](assets/preview_quiz_challenge.png)
+![Western Han 121 BCE · Map Pinpoint Challenge Preview](assets/preview_quiz_challenge_en.png)
 
 ---
 

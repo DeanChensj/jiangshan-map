@@ -5337,7 +5337,7 @@
       return out;
     }
 
-    _buildChallengeDeck() {
+    _buildChallengeDeck(preferCurrentDynasty = false) {
       const deck = [];
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
@@ -5379,6 +5379,18 @@
       }
       const chosen = [];
       const seen = new Set();
+      if (preferCurrentDynasty) {
+        const curDyn = this.dynasties[this.dynastyIdx];
+        if (curDyn && curDyn.key !== 'prc') {
+          const firstPick =
+            deck.find((c) => c.dynasty.key === curDyn.key && c.settlement.ancient === '武威') ||
+            deck.find((c) => c.dynasty.key === curDyn.key);
+          if (firstPick) {
+            seen.add(`${firstPick.dynasty.key}:${firstPick.settlement.ancient}`);
+            chosen.push(firstPick);
+          }
+        }
+      }
       while (chosen.length < 10 && deck.length) {
         const idx = Math.floor(Math.random() * deck.length);
         const pick = deck.splice(idx, 1)[0];
@@ -5404,7 +5416,7 @@
       }
     }
 
-    startChallenge() {
+    startChallenge(opts = {}) {
       this._recordGestureClick();
       this.stopAutoplay();
       if (this.activeJourney) this.stopJourney(true);
@@ -5421,7 +5433,7 @@
       this._syncChallengeScrubberState(true);
       this.challenge = {
         variant: 'locate',
-        deck: this._buildChallengeDeck(),
+        deck: this._buildChallengeDeck(Boolean(opts && opts.preferCurrentDynasty)),
         index: 0,
         score: 0,
         answered: false,
@@ -9021,7 +9033,9 @@
       }
       if (q.has('hover')) {
         const targetPref = q.get('hover');
+        this.closeMilestoneBalloon();
         afterFullSnapshots(() => {
+          this.closeMilestoneBalloon();
           let el = this.grpPrefectures.querySelector(
             `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
           );
@@ -9085,7 +9099,7 @@
       if (q.has('quiz')) {
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
-        setTimeout(() => this.startChallenge(), 120);
+        setTimeout(() => this.startChallenge({ preferCurrentDynasty: q.has('year') }), 120);
       }
       if (q.has('journey')) {
         this._paneAutoCollapsed = true;
