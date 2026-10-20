@@ -8,6 +8,12 @@
 
 [**立即在线把玩 → https://deanchen.me/jiangshan-map/**](https://deanchen.me/jiangshan-map/)
 
+<p align="center">
+  <a href="https://deanchen.me/jiangshan-map/">
+    <img src="assets/hero_demo_zh.webp" alt="江山时序 15 秒实机演示：秦扫六合、两千年疆域流转、长安十八朝沿革与苏东坡贬谪行迹" width="100%" />
+  </a>
+</p>
+
 ---
 
 ## 这幅地图好玩在哪里？
