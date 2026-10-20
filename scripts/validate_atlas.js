@@ -974,11 +974,17 @@ function main() {
       typeof lm.zh === 'string' &&
         lm.zh.trim().length >= 10 &&
         lm.zh.trim().length <= 34 &&
+        (lm.zh.match(/“/g) || []).length === (lm.zh.match(/”/g) || []).length &&
+        (lm.zh.match(/《/g) || []).length === (lm.zh.match(/》/g) || []).length &&
         typeof lm.en === 'string' &&
         lm.en.trim().length >= 24 &&
-        lm.en.trim().length <= 96 &&
-        !/[\u4e00-\u9fa5]/.test(lm.en),
-      `Invalid or out-of-bounds bilingual text length in landmark event: ${JSON.stringify(lm)}`
+        lm.en.trim().length <= 108 &&
+        (lm.en.match(/“/g) || []).length === (lm.en.match(/”/g) || []).length &&
+        !/[\u4e00-\u9fa5]/.test(lm.en) &&
+        !/(?:^|\s)(a|an|the|and|or|to|of|in|on|at|by|for|with|from|as|into|is|was|are|were|where|whom|who|which|that|his|her|its|their|over|under|after|before|while)$/i.test(
+          lm.en.trim()
+        ),
+      `Invalid, truncated, or out-of-bounds bilingual text in landmark event: ${JSON.stringify(lm)}`
     );
     assert(
       typeof lm.site === 'string' &&
@@ -2753,6 +2759,99 @@ function main() {
     ctrl.journeyCard = prevJC;
     sandbox.window.innerWidth = prevWinW;
     sandbox.window.innerHeight = prevWinH;
+  }
+
+  // 23r. Person Chronicle Search (点人溯事) Dataset, Bilingual Parity, Dedup & Round-Trip Guard
+  {
+    assert(
+      Array.isArray(loreData.PERSON_PROFILES) && loreData.PERSON_PROFILES.length >= 100,
+      `Expected >=100 PERSON_PROFILES in lore_data.js, got ${loreData.PERSON_PROFILES && loreData.PERSON_PROFILES.length}`
+    );
+    ctrl.searchIndex = null;
+    const sparseProfiles = [];
+    for (const p of loreData.PERSON_PROFILES) {
+      const evs = ctrl._collectPersonEvents(p);
+      if (evs.length < 3) {
+        sparseProfiles.push(`${p.key} (${p.zh}): ${evs.length} -> ${evs.map((e) => e.year + '@' + e.siteZh).join(' | ')}`);
+      }
+    }
+    assert(
+      sparseProfiles.length === 0,
+      `Person profiles with <3 geo-dated events:\n${sparseProfiles.join('\n')}`
+    );
+    for (const p of loreData.PERSON_PROFILES) {
+      const evs = ctrl._collectPersonEvents(p);
+      assert(
+        p.en && !/[\u4e00-\u9fff]/.test(p.en) && p.courtesyEn && !/[\u4e00-\u9fff]/.test(p.courtesyEn),
+        `Person profile "${p.zh}" (${p.key}) must have clean English name & courtesyEn without CJK characters`
+      );
+      ctrl.locale = 'en';
+      const spanEn = ctrl._formatPersonSpan(p.span, false);
+      assert(
+        !/BCE CE/.test(spanEn) && !/[\u4e00-\u9fff（—）]/.test(spanEn),
+        `Broken English lifespan formatting for "${p.zh}": "${spanEn}"`
+      );
+      ctrl.locale = 'zh';
+      for (let i = 0; i < evs.length; i++) {
+        if (i > 0) {
+          assert(
+            evs[i].year >= evs[i - 1].year,
+            `Events for "${p.zh}" must be sorted chronologically (${evs[i - 1].year} -> ${evs[i].year})`
+          );
+        }
+        assert(
+          evs[i].siteEn && !/[\u4e00-\u9fff]/.test(evs[i].siteEn),
+          `Person "${p.zh}" event [${i}] (${evs[i].year}) has untranslated siteEn: "${evs[i].siteEn}" (zh="${evs[i].siteZh}")`
+        );
+        assert(
+          evs[i].textEn && !/[\u4e00-\u9fff]/.test(evs[i].textEn),
+          `Person "${p.zh}" event [${i}] (${evs[i].year}) has untranslated textEn: "${evs[i].textEn}"`
+        );
+      }
+    }
+    const aliasChecks = [
+      ['刘彻', 'hanwudi'],
+      ['汉武帝', 'hanwudi'],
+      ['曹操', 'caocao'],
+      ['Cao Cao', 'caocao'],
+      ['孟德', 'caocao'],
+      ['孔明', 'zhugeliang'],
+      ['Kongming', 'zhugeliang'],
+      ['杜甫', 'dufu'],
+      ['子美', 'dufu'],
+      ['东坡', 'sushi'],
+      ['Su Shi', 'sushi'],
+      ['Su Dongpo', 'sushi'],
+      ['Mencius', 'mengzi'],
+      ['Meng Ke', 'mengzi'],
+      ['Zhao Kuangyin', 'zhaokuangyin'],
+      ['Li Longji', 'tangxuanzong'],
+      ['Koxinga', 'zhengchenggong'],
+      ['Sun Yat-sen', 'sunzhongshan'],
+      ['稼轩', 'xinqiji'],
+      ['王守仁', 'wangyangming'],
+    ];
+    for (const [query, expectedKey] of aliasChecks) {
+      const hits = ctrl._queryQuickSearch(query);
+      assert(
+        hits.length > 0 && hits[0].kind === 'person' && hits[0].personKey === expectedKey,
+        `Expected top quick-search hit for "${query}" to be person "${expectedKey}", got ${JSON.stringify(hits[0])}`
+      );
+    }
+    // Verify Deng Ai keeps both Yinping & Chengdu in 263 CE, and Zhao Kuangyin keeps both 960 & 961 without duplicate 960
+    const dengEvs = ctrl._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'dengai'));
+    assert(
+      dengEvs.filter((e) => e.year === 263).length === 2,
+      `Expected Deng Ai to have 2 distinct 263 CE campaign events (Yinping -> Chengdu), got ${dengEvs.length}`
+    );
+    const zhaoEvs = ctrl._collectPersonEvents(
+      loreData.PERSON_PROFILES.find((p) => p.key === 'zhaokuangyin')
+    );
+    assert(
+      zhaoEvs.filter((e) => e.year === 960).length === 1 &&
+        zhaoEvs.filter((e) => e.year === 961).length === 1,
+      `Expected Zhao Kuangyin to have 1 event in 960 (Chenqiao) and 1 in 961 (Cup of Wine), got ${JSON.stringify(zhaoEvs.map((e) => e.year))}`
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
