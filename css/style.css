@@ -1612,8 +1612,9 @@ h2 {
   transition: width 0.18s ease;
 }
 
-#map-search-box:focus-within {
-  width: min(320px, calc(100% - 28px));
+#map-search-box:focus-within,
+#map-search-box:has(#map-search-results:not(.is-hidden)) {
+  width: min(378px, calc(100% - 28px));
 }
 
 .search-input-wrap {
@@ -1664,7 +1665,7 @@ h2 {
   border-radius: 10px;
   box-shadow: var(--card-shadow);
   backdrop-filter: blur(8px);
-  max-height: 290px;
+  max-height: min(74vh, 420px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -1687,6 +1688,14 @@ h2 {
 .search-results-list li:hover,
 .search-results-list li.is-active {
   background: rgba(181, 69, 47, 0.11);
+}
+
+.search-results-list li > div {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sr-main {
@@ -1712,6 +1721,28 @@ h2 {
   color: var(--vermilion);
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.search-results-list li.sr-quiz-item {
+  margin-top: 3px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--hairline);
+  border-radius: 0 0 7px 7px;
+}
+
+.search-results-list li.sr-quiz-item > div {
+  white-space: normal;
+}
+
+.search-results-list li.sr-quiz-item .sr-sub {
+  display: block;
+  margin-left: 0;
+  margin-top: 1px;
+}
+
+.sr-tag.is-quiz {
+  background: rgba(140, 90, 43, 0.14);
+  color: #7c4d1e;
 }
 
 /* Gesture Hint & Hover Tooltip */
@@ -2399,6 +2430,7 @@ html[lang="en"] .genealogy-list li {
     width: 210px;
   }
   #map-search-box:focus-within,
+  #map-search-box:has(#map-search-results:not(.is-hidden)),
   #map-search-box.is-expanded {
     width: calc(100% - 16px);
   }
@@ -2565,7 +2597,6 @@ html[lang="en"] .genealogy-list li {
   .toolbar-divider,
   .layers-trigger-btn .caret-mark,
   #act-layers-menu .btn-svg,
-  #act-journey-menu .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
   #act-github-star .star-mark,
@@ -2849,10 +2880,6 @@ html[lang="en"] .genealogy-list li {
 }
 
 /* #6 Collapsible Chronicle Sidebar / Full-Map Mode */
-#workspace-body {
-  transition: grid-template-columns 0.22s ease;
-}
-
 #workspace-body.is-pane-collapsed {
   grid-template-columns: minmax(0, 1fr) 0px;
 }
@@ -2923,7 +2950,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   box-shadow: -3px 0 12px rgba(181, 69, 47, 0.16);
 }
 
-/* #7 Historical Journeys (青史行迹 · 人物时空巡礼) */
+/* #7 Trajectory Hairline Overlay & Custom Route Card */
 .journey-chip-btn {
   padding: 5px 10px;
   border-radius: 6px;
@@ -2988,71 +3015,103 @@ html[lang="en"] #act-toggle-pane .tp-label {
   pointer-events: none;
 }
 
-#viewport-frame.has-active-journey #grp-corridors {
+#viewport-frame.has-active-journey #grp-corridors,
+#viewport-frame.has-active-person #grp-corridors {
   opacity: 0.22;
   transition: opacity 0.25s ease;
 }
 
-.journey-track-bg {
+.journey-track-halo,
+.journey-track-thread,
+.journey-track-upcoming,
+.journey-track-passed,
+.journey-track-focus {
   fill: none;
-  stroke: rgba(248, 243, 232, 0.88);
+  vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
+}
+
+.journey-track-halo {
+  stroke: rgba(251, 247, 238, 0.84);
+  stroke-width: 3.6px;
+}
+
+.journey-track-halo.is-focus {
+  stroke: rgba(253, 249, 241, 0.92);
+  stroke-width: 4.6px;
+}
+
+.journey-track-thread {
+  stroke-width: 1.85px;
+  stroke-dasharray: 6.5 4;
+  opacity: 0.9;
 }
 
 .journey-track-upcoming {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 5 4.5;
-  opacity: 0.68;
-  pointer-events: none;
+  stroke: rgba(146, 78, 62, 0.5);
+  stroke-width: 1.3px;
+  stroke-dasharray: 2.2 4.2;
 }
 
 .journey-track-passed {
-  fill: none;
+  stroke-width: 1.5px;
+  stroke-dasharray: 5.8 3.8;
+  opacity: 0.7;
+}
+
+.journey-track-focus {
+  stroke-width: 2.35px;
+  opacity: 0.97;
+}
+
+.journey-dir-mark {
+  pointer-events: none;
+}
+
+.journey-chevron {
+  fill: currentColor;
+  stroke: rgba(252, 248, 240, 0.94);
+  stroke-width: 0.9px;
+  paint-order: stroke fill;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.92;
-  pointer-events: none;
+  opacity: 0.9;
 }
 
-.journey-track-flow {
-  fill: none;
-  stroke: #fffaf0;
-  stroke-linecap: round;
-  stroke-dasharray: 2.5 11;
-  opacity: 0.88;
-  animation: journeyDashFlow 1.6s linear infinite;
-  pointer-events: none;
+.journey-dir-mark.is-muted .journey-chevron {
+  opacity: 0.58;
 }
 
-@keyframes journeyDashFlow {
-  to {
-    stroke-dashoffset: -27;
-  }
+.journey-dir-mark.is-focus .journey-chevron {
+  transform: scale(1.22);
+  opacity: 1;
 }
 
 .journey-node {
   cursor: pointer;
 }
 
+.journey-node.is-upcoming {
+  opacity: 0.78;
+}
+
 .jn-pulse {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8px;
-  opacity: 0.78;
-  animation: journeyPulse 1.8s ease-out infinite;
+  stroke-width: 1.3px;
+  opacity: 0.64;
+  animation: journeyPulse 2.1s ease-out infinite;
 }
 
 @keyframes journeyPulse {
   0% {
-    r: 7px;
-    opacity: 0.85;
+    r: 6.5px;
+    opacity: 0.72;
   }
   100% {
-    r: 16px;
+    r: 14.5px;
     opacity: 0;
   }
 }
@@ -3060,23 +3119,23 @@ html[lang="en"] #act-toggle-pane .tp-label {
 .jn-disc {
   fill: #fffaf2;
   stroke: currentColor;
-  stroke-width: 2.2px;
+  stroke-width: 1.45px;
   transition: transform 0.16s ease, fill 0.16s ease;
 }
 
 .journey-node.is-passed .jn-disc {
-  fill: #f9efe6;
+  fill: #fbf4eb;
 }
 
 .journey-node.is-current .jn-disc {
   fill: currentColor;
   stroke: #fffaf2;
-  stroke-width: 2.2px;
+  stroke-width: 1.8px;
 }
 
 .jn-num {
   font-family: var(--sans-stack);
-  font-size: 8.4px;
+  font-size: 7.9px;
   font-weight: 700;
   text-anchor: middle;
   dominant-baseline: central;
@@ -3086,39 +3145,40 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
 .journey-node.is-current .jn-num {
   fill: #fffaf2;
-  font-size: 9px;
+  font-size: 8.6px;
 }
 
 .jn-label {
   font-family: var(--serif-stack);
-  font-size: 10.4px;
+  font-size: 10.2px;
   font-weight: 700;
   text-anchor: middle;
   fill: #1b1611;
   paint-order: stroke fill;
   stroke: rgba(249, 244, 234, 0.95);
-  stroke-width: 2.5px;
+  stroke-width: 2.4px;
   stroke-linejoin: round;
   stroke-linecap: round;
   pointer-events: none;
 }
 
 .journey-node.is-current .jn-label {
-  font-size: 11.8px;
+  font-size: 11.5px;
   fill: currentColor;
 }
 
 .journey-node.is-upcoming {
-  opacity: 0.88;
+  opacity: 0.84;
 }
 
+/* Custom Multi-Stop Route Control Bar (#journey-card.is-custom-route) */
 #journey-card {
   position: absolute;
   left: 14px;
   bottom: 26px;
   z-index: 8;
-  width: min(492px, calc(100% - 28px));
-  padding: 11px 14px 11px;
+  width: min(540px, calc(100% - 28px));
+  padding: 9px 12px;
   border-radius: 10px;
   border: 1px solid rgba(181, 69, 47, 0.36);
   background: rgba(248, 243, 233, 0.96);
@@ -3126,7 +3186,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   box-shadow: 0 8px 24px rgba(36, 28, 20, 0.18);
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
 }
 
 .jc-top-bar {
@@ -3136,50 +3196,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   gap: 6px;
   border-bottom: 1px solid rgba(90, 74, 58, 0.15);
   padding-bottom: 6px;
-}
-
-.jc-tabs {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  flex: 1;
-}
-
-.jc-mobile-person {
-  display: none;
-  font-family: var(--serif-stack);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--vermilion);
-  margin-right: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.jc-tab-btn {
-  padding: 3px 7.5px;
-  border-radius: 5px;
-  border: 1px solid rgba(90, 74, 58, 0.18);
-  background: rgba(90, 74, 58, 0.06);
-  color: var(--text-secondary);
-  font-family: var(--serif-stack);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.14s;
-}
-
-.jc-tab-btn:hover {
-  color: var(--text-main);
-  background: rgba(90, 74, 58, 0.14);
-}
-
-.jc-tab-btn.is-active {
-  background: var(--vermilion);
-  border-color: var(--vermilion);
-  color: #fffaf2;
 }
 
 .jc-close-btn {
@@ -3200,73 +3216,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   color: var(--vermilion);
 }
 
-.jc-body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.jc-collapsed-summary {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  flex: 1;
-  font-family: var(--serif-stack);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.jc-collapsed-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#journey-card.is-collapsed {
-  max-height: none;
-  padding: 7px 10px;
-  gap: 5px;
-}
-
-#journey-card.is-collapsed .jc-tabs,
-#journey-card.is-collapsed .jc-mobile-person,
-#journey-card.is-collapsed .jc-body,
-#journey-card.is-collapsed .jc-dots,
-#journey-card.is-collapsed #act-journey-overview {
-  display: none !important;
-}
-
-#journey-card.is-collapsed .jc-collapsed-summary {
-  display: flex;
-}
-
-#journey-card.is-collapsed .jc-top-bar {
-  padding-bottom: 4px;
-}
-
-#journey-card.is-collapsed .jc-controls {
-  width: 100%;
-  justify-content: space-between;
-  margin-left: 0;
-}
-
-#journey-card.is-collapsed .jc-nav-btn {
-  flex: 1;
-  justify-content: center;
-}
-
-.jc-stop-head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
 .jc-step-badge {
   display: inline-flex;
   align-items: center;
@@ -3278,105 +3227,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
-}
-
-.jc-stop-title {
-  font-family: var(--serif-stack);
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.jc-stop-year {
-  margin-left: auto;
-  font-family: var(--serif-stack);
-  font-size: 11.5px;
-  color: var(--vermilion);
-  font-weight: 600;
-}
-
-.jc-stop-place {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.jc-stop-place .ico-svg {
-  color: var(--vermilion);
-}
-
-.jc-stop-desc {
-  margin: 0;
-  font-family: var(--serif-stack);
-  font-size: 12.4px;
-  line-height: 1.54;
-  color: var(--text-main);
-}
-
-.jc-stop-quote {
-  margin: 0;
-  padding: 4px 8px;
-  border-left: 2.5px solid var(--vermilion);
-  background: rgba(181, 69, 47, 0.06);
-  border-radius: 0 4px 4px 0;
-  font-family: var(--serif-stack);
-  font-size: 11.6px;
-  color: #5b3b2c;
-  line-height: 1.46;
-}
-
-.jc-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding-top: 3px;
-  flex-wrap: wrap;
-}
-
-.jc-dots {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.jc-dot {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(90, 74, 58, 0.26);
-  background: rgba(255, 252, 246, 0.9);
-  color: var(--text-secondary);
-  font-family: var(--sans-stack);
-  font-size: 10.5px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.14s;
-}
-
-.jc-dot:hover {
-  border-color: var(--vermilion);
-  color: var(--vermilion);
-}
-
-.jc-dot.is-passed {
-  background: rgba(181, 69, 47, 0.12);
-  border-color: rgba(181, 69, 47, 0.36);
-  color: var(--vermilion);
-}
-
-.jc-dot.is-current {
-  background: var(--vermilion);
-  border-color: var(--vermilion);
-  color: #fffaf2;
-  transform: scale(1.08);
 }
 
 .jc-controls {
@@ -3419,7 +3269,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   color: #fffaf2;
 }
 
-/* Custom Multi-Stop Route Control Bar (#journey-card.is-custom-route) */
 #journey-card.is-custom-route {
   width: min(540px, calc(100% - 28px));
   padding: 9px 12px 9px;
@@ -3514,16 +3363,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   #act-toggle-pane {
     display: none !important;
   }
-  #journey-card {
-    left: 8px;
-    right: 8px;
-    bottom: 6px;
-    width: auto;
-    max-height: min(40%, 208px);
-    padding: 7px 9px 7px;
-    gap: 4px;
-    overflow: hidden;
-  }
+  #journey-card,
   #journey-card.is-custom-route {
     left: 8px;
     right: 8px;
@@ -3537,16 +3377,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   #viewport-frame.has-active-genealogy #journey-card.is-custom-route {
     top: 8px;
     bottom: auto;
-  }
-  #journey-card .jc-body {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
-    gap: 3px;
-    padding-right: 2px;
   }
 }
 
@@ -3574,36 +3404,16 @@ html[lang="en"] #act-toggle-pane .tp-label {
     right: 8px;
     bottom: 6px;
     width: auto;
-    padding: 7px 9px 7px;
+    padding: 7px 9px;
     gap: 4px;
   }
   .jc-top-bar {
     gap: 4px;
     padding-bottom: 4px;
   }
-  .jc-tabs {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    min-width: 0;
-    padding-bottom: 1px;
-  }
-  .jc-tabs::-webkit-scrollbar {
-    display: none;
-  }
-  .jc-tab-btn {
-    flex-shrink: 0;
-    padding: 2px 6.5px;
-    font-size: 10.5px;
-  }
   .jc-close-btn {
     padding: 2px 5.5px;
     font-size: 10.5px;
-  }
-  .jc-mobile-person {
-    display: none;
   }
   .cr-stops-list {
     flex-wrap: nowrap;
@@ -3614,52 +3424,9 @@ html[lang="en"] #act-toggle-pane .tp-label {
   .cr-stops-list::-webkit-scrollbar {
     display: none;
   }
-  .jc-stop-head {
-    gap: 5px;
-  }
   .jc-step-badge {
     padding: 1.5px 5.5px;
     font-size: 10px;
-  }
-  .jc-stop-title {
-    font-size: 13px;
-  }
-  .jc-stop-year {
-    font-size: 10.5px;
-  }
-  .jc-stop-place {
-    font-size: 11px;
-  }
-  .jc-stop-desc {
-    font-size: 11.4px;
-    line-height: 1.4;
-  }
-  .jc-stop-quote {
-    padding: 3px 7px;
-    font-size: 10.8px;
-    line-height: 1.38;
-  }
-  .jc-footer {
-    flex-wrap: nowrap;
-    gap: 5px;
-    padding-top: 2px;
-  }
-  .jc-dots {
-    flex: 1;
-    min-width: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 3px;
-  }
-  .jc-dots::-webkit-scrollbar {
-    display: none;
-  }
-  .jc-dot {
-    flex-shrink: 0;
-    width: 17px;
-    height: 17px;
-    font-size: 9.2px;
   }
   .jc-controls {
     flex-shrink: 0;
@@ -3994,125 +3761,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   fill: #fffaf2;
 }
 
-.onboarding-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--vermilion);
-  display: inline-block;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 0 rgba(181, 69, 47, 0.58);
-  animation: toolbarDotPulse 2.4s ease-out infinite;
-}
-
-.onboarding-dot.is-hidden {
-  display: none;
-}
-
-@keyframes toolbarDotPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(181, 69, 47, 0.55);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(181, 69, 47, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(181, 69, 47, 0);
-  }
-}
-
-.journey-popover {
-  width: 318px;
-  max-height: min(78vh, 560px);
-  overflow-y: auto;
-}
-
-.journey-quiz-section {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--hairline);
-}
-
-@media (max-width: 640px) {
-  .journey-popover {
-    width: auto;
-  }
-}
-
-.journey-pop-sub {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin: -2px 0 8px;
-  line-height: 1.4;
-}
-
-.journey-menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.journey-menu-item.journey-chip-btn {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  text-align: left;
-  padding: 7px 9px;
-  border-radius: 8px;
-  border: 1px solid rgba(181, 69, 47, 0.24);
-  background: rgba(255, 252, 246, 0.88);
-  color: var(--text-main);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s;
-}
-
-.journey-menu-item.journey-chip-btn:hover,
-.journey-menu-item.journey-chip-btn.is-active {
-  background: rgba(181, 69, 47, 0.11);
-  border-color: var(--vermilion);
-  color: var(--text-main);
-}
-
-.journey-menu-item.journey-chip-btn.is-active .jm-title {
-  color: var(--vermilion);
-}
-
-.jm-badge {
-  font-family: var(--serif-stack);
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #fffaf2;
-  padding: 2px 6px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  margin-top: 1px;
-  line-height: 1.3;
-}
-
-.jm-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.jm-title {
-  font-family: var(--serif-stack);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--text-main);
-  line-height: 1.25;
-}
-
-.jm-meta {
-  font-family: var(--sans-stack);
-  font-size: 10.8px;
-  color: var(--text-secondary);
-  line-height: 1.3;
-}
-
 @media (max-width: 900px) {
   #milestone-balloon {
     max-width: min(268px, calc(100vw - 20px));
@@ -4414,6 +4062,17 @@ html[lang="en"] .genealogy-list li.person-ev-row {
   font-size: 11.8px;
   line-height: 1.45;
   color: var(--text-secondary);
+}
+
+.person-ev-quote {
+  display: block;
+  margin-top: 3px;
+  padding-left: 6px;
+  border-left: 2px solid rgba(168, 56, 36, 0.42);
+  font-family: var(--serif-stack);
+  font-size: 11.1px;
+  line-height: 1.42;
+  color: #6b4332;
 }
 
 .person-sub-actions {

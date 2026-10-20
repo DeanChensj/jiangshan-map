@@ -937,13 +937,13 @@ ${renderFooter(allDynasties)}
 function buildJourneyPage(j, idx, allJourneys, allDynasties) {
   const slug = `journey-${j.key}`;
   const canonicalUrl = `${BASE_URL}/topics/${slug}.html`;
-  const mapUrl = `${BASE_URL}/?journey=${encodeURIComponent(j.key)}`;
+  const mapUrl = `${BASE_URL}/?person=${encodeURIComponent(j.key)}`;
   const stops = j.stops || [];
   const stopsChainZh = stops.map((s) => `${s.ancientZh}（今${s.modernZh}）`).join(' → ');
   const stopsChainEn = stops.map((s) => `${s.ancientEn} (${s.modernEn})`).join(' → ');
 
-  const cleanSpanZh = j.spanZh.replace(/[（）()]/g, ' · ');
-  const cleanSpanEn = j.spanEn.replace(/[（）()]/g, ' · ');
+  const cleanSpanZh = j.spanZh.replace(/[（）()]/g, ' · ').replace(/\s*·\s*$/, '');
+  const cleanSpanEn = j.spanEn.replace(/[（）()]/g, ' · ').replace(/\s*·\s*$/, '');
 
   const pageTitle = `${j.titleZh}路线图（${cleanSpanZh}）· ${stops.length}站古今地名对照与诗词纪事 | 江山时序`;
   const pageDesc = `${j.titleZh}（${j.titleEn}，${cleanSpanZh}）历史地图时空轨迹，全线共 ${stops.length} 站：${stopsChainZh}。提供逐站帝王年号、古今政区对照、经典史料诗词与交互式路线回放。`;
@@ -1008,7 +1008,7 @@ function buildJourneyPage(j, idx, allJourneys, allDynasties) {
     `${j.shortZh}古今地名对照`,
     `${j.titleEn} map`,
     ...stops.map((s) => s.ancientZh),
-    '青史行迹',
+    '点人溯事',
     '江山时序',
   ];
 
@@ -1029,7 +1029,7 @@ ${renderTopHeader()}
     </nav>
 
     <article class="hero-card">
-      <span class="kicker">青史行迹 · 历史人物时空巡礼专题（第 ${idx + 1} / ${allJourneys.length} 篇）</span>
+      <span class="kicker">点人溯事 · 历史人物生平行迹专题（第 ${idx + 1} / ${allJourneys.length} 篇）</span>
       <h1>${escHtml(j.titleZh)}（${escHtml(cleanSpanZh)}）</h1>
       <p class="en-sub">${escHtml(j.titleEn)} (${escHtml(cleanSpanEn)})</p>
       <div class="meta-pills">
@@ -1366,7 +1366,7 @@ function buildTopicsIndexPage(dynMeta, journeyMeta, featuredMeta, allDynasties) 
       '历代疆域图志',
       '古诗词地理路线图',
       '古今地名对照表',
-      '青史行迹路线图',
+      '点人溯事生平行迹',
       '江山时序',
     ],
     canonicalUrl,
@@ -1382,8 +1382,8 @@ ${renderTopHeader()}
 
     <article class="hero-card">
       <span class="kicker">江山时序 · 历史地理百科与专题索引（共 ${dynMeta.length + journeyMeta.length + featuredMeta.length} 篇静态图志）</span>
-      <h1>中国历代疆域、青史行迹、古诗词路线与历史大战专题图志总览</h1>
-      <p class="en-sub">Complete Directory of Chinese Historical Territory Maps, Biographical Journeys, Classical Poetry Routes &amp; Famous Battles (403 BCE – Present)</p>
+      <h1>中国历代疆域、点人溯事、古诗词路线与历史大战专题图志总览</h1>
+      <p class="en-sub">Complete Directory of Chinese Historical Territory Maps, Person Chronicles, Classical Poetry Routes &amp; Famous Battles (403 BCE – Present)</p>
       <p>本目录汇总「江山时序」全部静态专题图志，每篇均提供完整古今地名对照表、帝王年号编年、两千四百年政区沿革及一键进入交互式古舆图的直达链接。</p>
       <div class="cta-row">
         <a class="cta-btn" href="${BASE_URL}/">进入「江山时序」交互式主地图（前403年—现代）&rarr;</a>
@@ -1427,7 +1427,7 @@ ${dynListHtml}
     </section>
 
     <section class="section-card">
-      <h2>三、青史行迹：历史人物时空巡礼路线图志（${journeyMeta.length} 篇）</h2>
+      <h2>三、点人溯事：历史人物生平行迹图志（${journeyMeta.length} 篇）</h2>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
