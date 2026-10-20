@@ -425,7 +425,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -449,7 +449,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -6781,6 +6781,9 @@
           this.dynasties[0];
         const evCount = this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
+        const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
+        const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
+        const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
         entries.push({
           kind: 'person',
           personKey: p.key,
@@ -6789,9 +6792,9 @@
           year: null,
           aliases,
           titleZh: p.zh,
-          subZh: `${p.courtesyZh || d.title} · 共 ${evCount} 处史事`,
+          subZh: `${briefCourtesyZh} · 共 ${evCount} 处史事`,
           titleEn: p.en,
-          subEn: `${p.courtesyEn || d.title} · ${evCount} events`,
+          subEn: briefCourtesyEn ? `${briefCourtesyEn} · ${evCount} events` : `${evCount} chronicle events`,
           keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 人物 生平 事迹 行迹`.toLowerCase(),
         });
       }
@@ -7324,6 +7327,7 @@
       const searchList = this._id('map-search-results');
       let activeSearchIdx = -1;
       let currentResults = [];
+      let showcaseIdx = 0;
 
       const renderSearchDropdown = () => {
         if (!searchInp || !searchList) return;
@@ -7342,61 +7346,123 @@
         };
         if (!q) {
           const index = this._ensureSearchIndex();
-          const featuredOrder = [
-            'qinshihuang',
-            'zhangqian',
-            'zhugeliang',
-            'xuanzang',
-            'libai',
+          const showcaseOrder = [
             'sushi',
+            'zhugeliang',
+            'huoqubing',
+            'libai',
+            'caocao',
+            'xinqiji',
+            'xuanzang',
             'wangyangming',
+            'zhangqian',
+            'dufu',
           ];
-          const featuredPeople = featuredOrder
+          const showcasePool = showcaseOrder
             .map((key) => index.find((item) => item.kind === 'person' && item.personKey === key))
             .filter(Boolean);
+          const sampleItem = showcasePool.length
+            ? showcasePool[showcaseIdx % showcasePool.length]
+            : null;
           const quizItem = index.find((item) => item.kind === 'quiz');
-          currentResults = quizItem ? [...featuredPeople, quizItem] : featuredPeople;
+          currentResults = sampleItem ? [sampleItem] : [];
           activeSearchIdx = -1;
           searchList.innerHTML = '';
-          const head = document.createElement('li');
-          head.className = 'sr-section-head';
-          head.textContent =
-            this.locale === 'en'
-              ? 'Person Chronicles · Featured Figures (search any figure)'
-              : '点人溯事 · 青史人物行迹（可搜历代帝王名臣）';
-          searchList.appendChild(head);
-          currentResults.forEach((item) => {
+
+          if (sampleItem) {
             const li = document.createElement('li');
-            const isQuiz = item.kind === 'quiz';
-            if (isQuiz) {
-              li.id = 'act-challenge';
-              li.className = 'sr-quiz-item';
-            }
-            const mainText = isQuiz && this.challenge
-              ? this.locale === 'en'
-                ? 'Quiz Active · Click to Exit'
-                : '挑战进行中 · 点击退出'
-              : this.locale === 'en'
-                ? item.titleEn
-                : item.titleZh;
-            const subText = this.locale === 'en' ? item.subEn : item.subZh;
-            const tagText = isQuiz
-              ? this.locale === 'en'
-                ? 'Quiz · 10 Rds'
-                : '雅集 · 挑战'
-              : `${this.dynastyBadge(item.dynasty)} · ${kindLabel.person}`;
+            li.className = 'sr-showcase-row';
+            const mainText = this.locale === 'en' ? sampleItem.titleEn : sampleItem.titleZh;
+            const subText = this.locale === 'en' ? sampleItem.subEn : sampleItem.subZh;
+            const egLabel = this.locale === 'en' ? 'e.g.' : '示例';
+            const cycleTitle = this.locale === 'en' ? 'Try another figure' : '换一位人物示例';
+            const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${kindLabel.person}`;
             li.innerHTML =
-              `<div><span class="sr-main"${isQuiz ? ' id="lbl-challenge"' : ''}>${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
-              `<span class="sr-tag${isQuiz ? ' is-quiz' : ''}">${tagText}</span>`;
-            const pickItem = (e) => {
+              `<div><span class="sr-eg-pill">${egLabel}</span><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
+              `<span class="sr-right-meta"><span class="sr-tag">${tagText}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">↻</button></span>`;
+            const cycleBtn = li.querySelector('.sr-cycle-btn');
+            if (cycleBtn) {
+              cycleBtn.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              });
+              cycleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showcaseIdx = (showcaseIdx + 1) % showcasePool.length;
+                renderSearchDropdown();
+                searchInp.focus();
+              });
+            }
+            const pickSample = (e) => {
               e.preventDefault();
-              this._selectSearchResult(item);
+              this._selectSearchResult(sampleItem);
               searchInp.blur();
             };
-            li.addEventListener('mousedown', pickItem);
-            li.addEventListener('click', pickItem);
+            li.addEventListener('mousedown', pickSample);
+            li.addEventListener('click', pickSample);
             searchList.appendChild(li);
-          });
+          }
+
+          const guideLi = document.createElement('li');
+          guideLi.className = 'sr-search-guide';
+          guideLi.setAttribute('role', 'presentation');
+          const tryLabel = this.locale === 'en' ? 'Try' : '试试搜';
+          const sampleQueries =
+            this.locale === 'en'
+              ? ["Chang'an", 'Chibi', '627', 'Cao Cao']
+              : ['长安', '赤壁', '贞观', '霍去病'];
+          const chipsWrap = document.createElement('div');
+          chipsWrap.className = 'sr-guide-chips';
+          const guideLbl = document.createElement('span');
+          guideLbl.className = 'sr-guide-label';
+          guideLbl.textContent = tryLabel;
+          chipsWrap.appendChild(guideLbl);
+          for (const kw of sampleQueries) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'sr-chip-btn';
+            btn.textContent = kw;
+            btn.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            });
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              searchInp.value = kw;
+              renderSearchDropdown();
+              searchInp.focus();
+            });
+            chipsWrap.appendChild(btn);
+          }
+          guideLi.appendChild(chipsWrap);
+
+          if (quizItem) {
+            const quizBtn = document.createElement('button');
+            quizBtn.type = 'button';
+            quizBtn.id = 'act-challenge';
+            quizBtn.className = 'sr-quiz-link';
+            const quizText = this.challenge
+              ? this.locale === 'en'
+                ? 'Exit Quiz ×'
+                : '退出小试 ×'
+              : this.locale === 'en'
+                ? 'Quiz ›'
+                : '古地名小试 ›';
+            quizBtn.innerHTML = `<span id="lbl-challenge">${quizText}</span>`;
+            const pickQuiz = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this._selectSearchResult(quizItem);
+              searchInp.blur();
+            };
+            quizBtn.addEventListener('mousedown', pickQuiz);
+            quizBtn.addEventListener('click', pickQuiz);
+            guideLi.appendChild(quizBtn);
+          }
+
+          searchList.appendChild(guideLi);
           searchList.classList.remove('is-hidden');
           return;
         }
@@ -7462,7 +7528,9 @@
             e.preventDefault();
             const step = e.key === 'ArrowDown' ? 1 : -1;
             activeSearchIdx = (activeSearchIdx + step + currentResults.length) % currentResults.length;
-            Array.from(searchList.querySelectorAll('li:not(.sr-section-head)')).forEach((el, i) => {
+            Array.from(
+              searchList.querySelectorAll('li:not(.sr-section-head):not(.sr-search-guide)')
+            ).forEach((el, i) => {
               const active = i === activeSearchIdx;
               el.classList.toggle('is-active', active);
               if (active && typeof el.scrollIntoView === 'function') {

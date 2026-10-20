@@ -814,6 +814,14 @@ function main() {
     quizSearch.some((item) => item.kind === 'quiz'),
     'Quick search for "舆图寻址" must return the Map Pinpoint Quiz entry'
   );
+  assert(
+    appCode.includes('sr-showcase-row') &&
+      appCode.includes('sr-cycle-btn') &&
+      appCode.includes('sr-search-guide') &&
+      appCode.includes('sr-chip-btn') &&
+      !appCode.includes("head.className = 'sr-section-head'"),
+    'Empty quick-search dropdown must render a single rotatable showcase row + search guide chips without bulky .sr-section-head banners'
+  );
 
   // CUJ 9j: 7 Historical Journeys Full Stop & Bilingual Completeness Verification
   let totalJourneyStops = 0;
@@ -1858,7 +1866,7 @@ function main() {
       !controlStripMatch[0].includes('id="act-challenge"') &&
       !controlStripMatch[0].includes('id="act-journey-menu"') &&
       !indexHtml.includes('id="journey-popover"') &&
-      appCode.includes('sr-quiz-item'),
+      appCode.includes('sr-quiz-link'),
     '.control-strip must stay minimal without #act-journey-menu or #act-challenge, and Quiz must mount cleanly in the search box dropdown'
   );
   assert(

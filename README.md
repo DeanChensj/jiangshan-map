@@ -56,7 +56,7 @@ Have you ever wondered while reading Chinese history or classical poetry:
 
 ### Feature 3: Person Chronicles — Trace Any Historical Figure Across Time & Space
 
-Click the top-left **Universal Search Box** (or type any monarch, general, statesman, monk, or poet such as `Cao Cao`, `Huo Qubing`, `Sima Qian`, `Yue Fei`, or `Zheng He`) to open **Person Chronicle (`点人溯事`)**, plotting every milestone of their life with delicate cartographic hairline arcs and directional ticks across changing dynastic borders:
+Click the top-left **Universal Search Box** (with a rotatable `e.g.` figure preview and quick-search chips, or type any monarch, general, statesman, monk, or poet such as `Cao Cao`, `Huo Qubing`, `Sima Qian`, `Yue Fei`, or `Zheng He`) to open **Person Chronicle (`点人溯事`)**, plotting every milestone of their life with delicate cartographic hairline arcs and directional ticks across changing dynastic borders:
 - **Qin Shi Huang's Unification Campaigns (238–221 BCE)**: From suppressing the rebellion at Xianyang and Wang Jian's attack on Ye, to the fall of Han, Zhao, Yan, Wei, Chu, and Dai, culminating in the surrender of Qi at Linzi—as you advance stop by stop, watch the six rival kingdoms merge into the Qin Empire right on the map!
 - **Zhang Qian's Mission to the Western Regions (138–126 BCE)**: Depart Chang'an, endure over a decade of Xiongnu captivity without surrendering the Han imperial staff, and blaze the trail to Dayuan (Fergana), Kangju, and the Greater Yuezhi.
 - **Zhuge Liang's Emergence & Northern Expeditions (207–234 CE)**: From the Three Visits at Longzhong and the alliance at Chaisang before Red Cliffs, to entering Shu, the White Emperor City entrustment, the Southern Campaign across the Lu River, Hanzhong's *Memorial on Deploying the Troops*, Mount Qi, and the autumn winds of Wuzhang Plains.
@@ -75,7 +75,7 @@ Each time you step to the next event (`‹ / ›`, `← / →`, or `Space` to au
 
 ### Feature 4: Easter Egg · Map Pinpoint Challenge — What Imperial Court Rank Would You Earn?
 
-Think you know Chinese historical geography? Click the **Universal Search Box** and select **`Quiz · Map Pinpoint · Ancient Place Quiz`** at the bottom of the dropdown (or search `quiz`):
+Think you know Chinese historical geography? Click **`Quiz ›`** in the corner of the **Universal Search Box** guide bar (or type `quiz` for **`Map Pinpoint · Ancient Place Quiz`**):
 - **Dynastic Historical Clues + Blind Map Pinpointing**: City labels are hidden while the prompt asks you to locate an ancient city—such as *"Wuwei (Liangzhou) in Western Han"*, *"Quanzhou in Southern Song"*, or *"Jiankang in the Six Dynasties"*—accompanied by **dynastic historical clues** (without spoiling the modern city name). Drop your pin based on rivers, mountain ranges, and borders, and earn points based on great-circle distance to the true coordinates!
 - Complete 10 rounds to receive a traditional imperial cartographic title such as **Grand Historian & Master Cartographer (太史令 · 舆图大家)**, **Director of the Bureau of Operations (职方郎中)**, or **Prefectural Retainer (州郡从事)**.
 
