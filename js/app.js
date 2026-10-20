@@ -273,6 +273,10 @@
       this.terrainMode = true;
       this.hydroData = window.HYDRO_DATA || { rivers: [], lakes: [] };
       this.activeTrace = null;
+      this.activePerson = null;
+      this.activePersonEventIdx = -1;
+      this.activeReturnPerson = null;
+      this._lastPersonPinZoom = 0;
       this.activeMilestone = null;
       this.activeJourney = null;
       this.activeCustomRoute = null;
@@ -429,7 +433,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261019c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -453,7 +457,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261019c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -469,13 +473,21 @@
       if (wb && wb.classList) {
         wb.classList.toggle(
           'has-mobile-overlay',
-          Boolean(this.activeJourney || this.activeCustomRoute || this.activeTrace || this.challenge)
+          Boolean(
+            this.activeJourney ||
+              this.activeCustomRoute ||
+              this.activeTrace ||
+              this.activePerson ||
+              this.challenge
+          )
         );
       }
     }
 
     _syncImmersivePaneState() {
-      const immersiveActive = Boolean(this.activeJourney || this.challenge);
+      const immersiveActive = Boolean(
+        this.activeJourney || this.activePerson || this.challenge
+      );
       if (immersiveActive) {
         if (!this.paneCollapsed) {
           this._paneAutoCollapsed = true;
@@ -1041,10 +1053,11 @@
           this.locale === 'en' ? 'Historical Atlas of China' : '中国历史地图'
         );
       }
-      this._id('txt-genealogy-kicker').textContent = this.uiStr(
-        'trace_kicker',
-        '点地溯源 · 古今政区沿革'
-      );
+      this._id('txt-genealogy-kicker').textContent = this.activePerson
+        ? this.locale === 'en'
+          ? 'Person Chronicle · Life Across Time & Space'
+          : '点人溯事 · 人物生平纪事'
+        : this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
       const chalKicker = this._id('txt-challenge-kicker');
       if (chalKicker) {
         chalKicker.textContent = this.locale === 'en' ? 'Map Pinpoint' : '舆图寻址';
@@ -1053,8 +1066,8 @@
       if (searchInp) {
         const searchPh =
           this.locale === 'en'
-            ? 'Search city / prefecture / emperor or era / journey'
-            : '搜古今地名 / 州府 / 帝王年号 / 青史行迹';
+            ? 'Search figure / city / prefecture / era'
+            : '搜人物 / 古今地名 / 州府 / 年号';
         searchInp.placeholder = searchPh;
         searchInp.setAttribute('aria-label', searchPh);
       }
@@ -1063,8 +1076,8 @@
         searchBox.setAttribute(
           'aria-label',
           this.locale === 'en'
-            ? 'Quick search for places, prefectures, eras, and journeys'
-            : '快速检索古今地名、州府、帝王年号与青史行迹'
+            ? 'Quick search for historical figures, places, prefectures, eras, and journeys'
+            : '快速检索历史人物、古今地名、州府、帝王年号与青史行迹'
         );
       }
       this._syncTogglePaneButton();
@@ -1104,6 +1117,10 @@
           fromYearSync: true,
           preserveScroll: true,
         });
+      } else if (this.activePerson) {
+        this.activePerson.events = this._collectPersonEvents(this.activePerson.profile);
+        this._renderPersonPinsOverlay();
+        this._renderPersonChronicleCard(true);
       }
       if (this.activeJourney) {
         this._renderJourneyOverlay();
@@ -1729,6 +1746,7 @@
       const showOnboardingTraceHint =
         !this.hasSeenTraceHint &&
         !this.activeJourney &&
+        !this.activePerson &&
         !this.activeCustomRoute &&
         !this.challenge;
       const hintCapital = showOnboardingTraceHint
@@ -2065,6 +2083,7 @@
         this.playing ||
         this.challenge ||
         this.activeJourney ||
+        this.activePerson ||
         mobileOverlayBusy
       ) {
         if (this.activeMilestone && this.activeMilestone.isAuto) {
@@ -2652,6 +2671,16 @@
           ? `Interactive route map of ${jTitle} (${jSpan}) across ${j.stops.length} historical stops in the Jiangshan Atlas of China.`
           : `${jTitle}（${jSpan}）交互式历史行迹路线图，共 ${j.stops.length} 站古今地名、州郡疆域与诗词纪事对照。`;
         canonicalUrl = `${baseSiteUrl}?journey=${encodeURIComponent(j.key)}${isEn ? '&lang=en' : ''}`;
+      } else if (this.activePerson) {
+        const p = this.activePerson.profile;
+        const pName = isEn ? p.en : p.zh;
+        pageTitle = isEn
+          ? `${pName} — Historical Events Map · Jiangshan Atlas of China`
+          : `${pName}生平纪事地图 · 江山时序中国历史地图`;
+        pageDesc = isEn
+          ? `Interactive spatio-temporal chronicle of ${pName} across ${this.activePerson.events.length} historical sites in the Jiangshan Atlas of China.`
+          : `${pName}生平 ${this.activePerson.events.length} 处历史事件时空落点、历代疆域与古今地名对照。`;
+        canonicalUrl = `${baseSiteUrl}?person=${encodeURIComponent(p.key)}${isEn ? '&lang=en' : ''}`;
       } else if (cur && this._bootDone) {
         const dName = this.dynastyName(cur);
         const dSpan = this.formatSpan(cur);
@@ -2899,8 +2928,17 @@
     }
 
     closeGenealogyCard() {
+      const hadPerson = Boolean(this.activePerson);
       this.activeTrace = null;
       this.activeTraceLabel = '';
+      this.activePerson = null;
+      this.activePersonEventIdx = -1;
+      this.activeReturnPerson = null;
+      this._lastPersonPinZoom = 0;
+      const kickerEl = this._id('txt-genealogy-kicker');
+      if (kickerEl) {
+        kickerEl.textContent = this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
+      }
       this.toggleGenealogySheetExpand(false);
       const cardEl = this._id('genealogy-card');
       if (cardEl) cardEl.classList.add('is-hidden');
@@ -2910,9 +2948,12 @@
         loreEl.classList.add('is-hidden');
       }
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('has-active-genealogy');
-      this._syncMobileOverlayState();
+      if (vf) vf.classList.remove('has-active-genealogy', 'has-active-person');
+      this._syncImmersivePaneState();
       if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      if (hadPerson && this.grpJourney && !this.activeJourney && !this.activeCustomRoute) {
+        this.grpJourney.innerHTML = '';
+      }
       if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
         this.grpSettlements
           .querySelectorAll('.settlement-node.is-trace-city')
@@ -2920,6 +2961,685 @@
       }
       this._syncTracedPrefecture();
       if (this.activeMilestone) this._positionMilestoneBalloon();
+    }
+
+    static get PERSON_PROFILES() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PERSON_PROFILES) || [];
+    }
+
+    _personSearchAliases(p) {
+      const out = [p.key, ...(p.aliases || [])].filter(Boolean);
+      if (p.courtesyEn) {
+        const roleRe =
+          /\b(general|marshal|minister|chancellor|historian|statesman|poet|master|author|founder|leader|commander|protector|adviser|strategist|admiral|commissioner|architect|governor|reformer|king|prince|lord|marquis|duke|instigator|recoverer|conqueror|empress\s+regnant)\b/i;
+        for (const seg of p.courtesyEn.split(/[,·/()]+/)) {
+          const clean = seg.trim();
+          if (clean.length >= 4 && !roleRe.test(clean)) out.push(clean);
+        }
+      }
+      return out.map((a) => String(a).toLowerCase());
+    }
+
+    _resolvePersonProfile(personOrQuery) {
+      if (!personOrQuery) return null;
+      if (typeof personOrQuery === 'object' && personOrQuery.zh) return personOrQuery;
+      const raw = String(personOrQuery).trim();
+      if (!raw) return null;
+      const qLow = raw.toLowerCase();
+      const fold = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.\s]+/g, '');
+      const qFold = fold(qLow);
+      const profiles = HistoricalAtlasController.PERSON_PROFILES;
+      const exact = profiles.find((p) => {
+        const aliases = this._personSearchAliases(p);
+        return (
+          p.key === qLow ||
+          p.zh.toLowerCase() === qLow ||
+          (p.en && (p.en.toLowerCase() === qLow || (qFold.length >= 3 && fold(p.en) === qFold))) ||
+          aliases.some((a) => a === qLow || (qFold.length >= 3 && fold(a) === qFold))
+        );
+      });
+      if (exact) return exact;
+      const partial = profiles.find((p) => {
+        const aliases = this._personSearchAliases(p);
+        return (
+          p.zh.includes(raw) ||
+          (p.en && p.en.toLowerCase().includes(qLow)) ||
+          aliases.some((a) => a.includes(qLow))
+        );
+      });
+      if (partial) return partial;
+      // Dynamic zero-config fallback for any historical name in milestones / landmarks / era spans
+      let spanMin = -403;
+      let spanMax = 2026;
+      let courtesyZh = '';
+      let courtesyEn = '';
+      const matchingSpans = HistoricalAtlasController.CHINESE_ERA_SPANS.filter(
+        (sp) => sp[3] && (sp[3] === raw || sp[3].includes(raw))
+      );
+      if (matchingSpans.length) {
+        spanMin = matchingSpans[0][0] - 40;
+        const lastIdx = HistoricalAtlasController.CHINESE_ERA_SPANS.indexOf(
+          matchingSpans[matchingSpans.length - 1]
+        );
+        spanMax =
+          lastIdx + 1 < HistoricalAtlasController.CHINESE_ERA_SPANS.length
+            ? HistoricalAtlasController.CHINESE_ERA_SPANS[lastIdx + 1][0] + 2
+            : 1949;
+        courtesyZh = matchingSpans[0][3];
+        courtesyEn = matchingSpans[0][4] || '';
+      }
+      const adhoc = {
+        key: `adhoc_${raw}`,
+        zh: raw,
+        en: courtesyEn || this.trTerm(raw),
+        courtesyZh: courtesyZh && courtesyZh !== raw ? courtesyZh : '历史人物纪事',
+        courtesyEn: courtesyEn || 'Historical Figure',
+        dynastyKey: null,
+        span: [spanMin, spanMax],
+        aliases: [],
+        tokens: [raw],
+      };
+      return this._collectPersonEvents(adhoc).length ? adhoc : null;
+    }
+
+    _formatPersonSpan(span, isAdhoc = false) {
+      if (!span || isAdhoc || span.length < 2) return '';
+      const [y0, y1] = span;
+      if (y0 === undefined || y1 === undefined) return '';
+      if (this.locale === 'en') {
+        if (y0 <= 0 && y1 <= 0) return ` (${-y0}–${-y1} BCE)`;
+        if (y0 <= 0 && y1 > 0) return ` (${-y0} BCE – ${y1} CE)`;
+        return ` (${y0}–${y1})`;
+      }
+      const fZh = (y) => (y <= 0 ? `前${-y}` : `${y}`);
+      return `（${fZh(y0)}—${fZh(y1)}）`;
+    }
+
+    _collectPersonEvents(profile) {
+      if (!profile) return [];
+      const tokens = Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
+      const [minY, maxY] = profile.span || [-403, 2026];
+      const raw = [];
+
+      if (profile.journeyKey) {
+        const j = HistoricalAtlasController.HISTORICAL_JOURNEYS.find(
+          (item) => item.key === profile.journeyKey
+        );
+        if (j) {
+          j.stops.forEach((st, sIdx) => {
+            const dyn =
+              this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+            raw.push({
+              src: 'J',
+              year: st.year,
+              month: st.month || 6 + sIdx * 0.05,
+              coord: st.coord,
+              dynasty: dyn,
+              siteZh: st.ancientZh,
+              siteEn: st.ancientEn || this._enDict(st.ancientZh),
+              modernZh: st.modernZh || '',
+              modernEn: st.modernEn || '',
+              textZh: `${st.titleZh}：${st.descZh}`,
+              textEn: `${st.titleEn}: ${st.descEn}`,
+              isMapChange: false,
+              journeyStopIdx: sIdx,
+              prio: 3,
+            });
+          });
+        }
+      }
+
+      for (const d of this.dynasties) {
+        for (const m of d.milestones || []) {
+          if (!m.coord || m.year < minY - 2 || m.year > maxY + 3) continue;
+          if (!tokens.some((tok) => m.headline.includes(tok))) continue;
+          const rawSite = m.site || d.seat || '';
+          const mKey = `${d.key}:${m.year}`;
+          const mHit = this.enLocale.milestones && this.enLocale.milestones[mKey];
+          const siteEn =
+            m.siteEn ||
+            (Array.isArray(mHit) && mHit[1]) ||
+            (d.key === 'roc' || d.key === 'prc'
+              ? this._enModernCity(rawSite)
+              : this._enDict(rawSite));
+          raw.push({
+            src: 'M',
+            year: m.year,
+            month: m.month || 6.5,
+            coord: m.coord,
+            dynasty: d,
+            siteZh: rawSite,
+            siteEn,
+            modernZh: '',
+            modernEn: '',
+            textZh: m.headline,
+            textEn: this._enMilestoneHeadline(d, m),
+            isMapChange: Boolean(m.isMapChange),
+            milestone: m,
+            prio: 2,
+          });
+        }
+      }
+
+      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+        if (!lm.coord || !lm.zh || lm.year < minY - 2 || lm.year > maxY + 3) continue;
+        if (!tokens.some((tok) => lm.zh.includes(tok))) continue;
+        const d =
+          this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
+          this.dynasties[this._findDynastyIndex(lm.year)] ||
+          this.dynasties[0];
+        raw.push({
+          src: 'L',
+          year: lm.year,
+          month: lm.month || 6.5,
+          coord: lm.coord,
+          dynasty: d,
+          siteZh: lm.site || '',
+          siteEn: lm.siteEn || this._enDict(lm.site || ''),
+          modernZh: '',
+          modernEn: '',
+          textZh: lm.zh,
+          textEn: lm.en || lm.zh,
+          isMapChange: false,
+          prio: 1,
+        });
+      }
+
+      raw.sort(
+        (a, b) =>
+          a.year - b.year || (a.month || 6.5) - (b.month || 6.5) || b.prio - a.prio
+      );
+      const deduped = [];
+      for (const ev of raw) {
+        const dup = deduped.find((prev) => {
+          const dy = Math.abs(prev.year - ev.year);
+          if (dy > 1) return false;
+          const km = this.projector.greatCircleKm(prev.coord, ev.coord);
+          if (prev.src === ev.src) {
+            if (ev.src === 'J') return false;
+            if (ev.src === 'M') return prev.year === ev.year && km < 45;
+            return prev.year === ev.year && km < 35;
+          }
+          return (prev.year === ev.year && km < 65) || (dy <= 1 && km < 25);
+        });
+        if (dup) {
+          if (ev.isMapChange) dup.isMapChange = true;
+          if (ev.milestone && !dup.milestone) dup.milestone = ev.milestone;
+          continue;
+        }
+        deduped.push(ev);
+      }
+      return deduped;
+    }
+
+    openPersonChronicle(personOrQuery, initialIdx = -1) {
+      const profile = this._resolvePersonProfile(personOrQuery);
+      if (!profile) return false;
+      const events = this._collectPersonEvents(profile);
+      if (!events.length) return false;
+
+      if (!this._fullSnapshotsLoaded) {
+        this._ensureFullSnapshots().then(() => {
+          if (this.activePerson && this.activePerson.profile.key === profile.key) {
+            this._renderPersonChronicleCard(true);
+          }
+        });
+      }
+      if (
+        this.locale === 'en' &&
+        (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
+      ) {
+        this._ensureEnglishLocale().then(() => {
+          if (this.activePerson && this.activePerson.profile.key === profile.key) {
+            this.activePerson.events = this._collectPersonEvents(profile);
+            this._renderPersonPinsOverlay();
+            this._renderPersonChronicleCard(true);
+          }
+        });
+      }
+
+      this._recordGestureClick();
+      this._dismissTraceOnboarding();
+      this.stopAutoplay();
+      if (this.activeJourney) this.stopJourney(true);
+      if (this.challenge) this.stopChallenge(true);
+      this.clearCustomRoute();
+      this.closeMilestoneBalloon();
+
+      this.activeTrace = null;
+      this.activeTraceLabel = '';
+      this.activeReturnPerson = null;
+      if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      if (this.hoverTip) {
+        this.hoverTip.classList.add('is-hidden');
+        this.hoverTip.classList.remove('is-interactive');
+      }
+
+      this.activePerson = { profile, events };
+      this.activePersonEventIdx =
+        initialIdx >= 0 && initialIdx < events.length ? initialIdx : -1;
+
+      const cardEl = this._id('genealogy-card');
+      if (cardEl) cardEl.classList.remove('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-genealogy', 'has-active-person');
+      this._syncImmersivePaneState();
+
+      const anchorEv =
+        this.activePersonEventIdx >= 0 ? events[this.activePersonEventIdx] : events[0];
+      if (anchorEv) {
+        this.jumpToYear(this._clampYearToDynasty(anchorEv.dynasty, anchorEv.year));
+      }
+
+      this._renderPersonPinsOverlay();
+      this._renderPersonChronicleCard();
+      this._syncDocumentSeoMeta();
+
+      if (this.activePersonEventIdx >= 0) {
+        this._flyToPersonEvent(events[this.activePersonEventIdx]);
+      } else {
+        this._framePersonOverview();
+      }
+      return true;
+    }
+
+    selectPersonEvent(idx, panCamera = true) {
+      if (!this.activePerson || !this.activePerson.events.length) return;
+      const events = this.activePerson.events;
+      if (idx < 0) {
+        this.activePersonEventIdx = -1;
+        this._renderPersonPinsOverlay();
+        this._renderPersonChronicleCard(true);
+        if (panCamera) this._framePersonOverview();
+        return;
+      }
+      const clamped = Math.max(0, Math.min(events.length - 1, idx));
+      this.activePersonEventIdx = clamped;
+      const ev = events[clamped];
+      this.closeMilestoneBalloon();
+      this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
+      this._renderPersonPinsOverlay();
+      this._renderPersonChronicleCard(true);
+      if (panCamera) this._flyToPersonEvent(ev);
+    }
+
+    stepPersonEvent(delta) {
+      if (!this.activePerson || !this.activePerson.events.length) return;
+      const len = this.activePerson.events.length;
+      const nextIdx =
+        this.activePersonEventIdx < 0
+          ? delta >= 0
+            ? 0
+            : len - 1
+          : (this.activePersonEventIdx + delta + len) % len;
+      this.selectPersonEvent(nextIdx, true);
+    }
+
+    _getPersonVisibleTopFrac() {
+      if (typeof window === 'undefined' || window.innerWidth > 900) return 1;
+      const vf = this._id('viewport-frame');
+      const cardEl = this._id('genealogy-card');
+      if (
+        vf &&
+        cardEl &&
+        typeof vf.getBoundingClientRect === 'function' &&
+        typeof cardEl.getBoundingClientRect === 'function' &&
+        !cardEl.classList.contains('is-hidden')
+      ) {
+        const vfRect = vf.getBoundingClientRect();
+        const cRect = cardEl.getBoundingClientRect();
+        if (vfRect.height > 80 && cRect.height > 20 && cRect.top > vfRect.top + vfRect.height * 0.2) {
+          return Math.max(0.38, Math.min(0.9, (cRect.top - vfRect.top - 10) / vfRect.height));
+        }
+      }
+      return this.genealogySheetExpanded ? 0.38 : 0.56;
+    }
+
+    _framePersonOverview() {
+      if (!this.activePerson || !this.activePerson.events.length) return;
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (const ev of this.activePerson.events) {
+        const [sx, sy] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
+        if (sx < minX) minX = sx;
+        if (sx > maxX) maxX = sx;
+        if (sy < minY) minY = sy;
+        if (sy > maxY) maxY = sy;
+      }
+      const cx = (minX + maxX) * 0.5;
+      const cy = (minY + maxY) * 0.5;
+      const aspect = this._getViewportAspect();
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      if (!isDesktop) {
+        const visTopFrac = this._getPersonVisibleTopFrac();
+        const availFrac = Math.max(0.32, visTopFrac - 0.1);
+        const midFrac = 0.055 + availFrac * 0.5;
+        const effAspect = Math.max(0.34, aspect * availFrac);
+        const spanW = Math.max(maxX - minX + 125, (maxY - minY + 86) / effAspect) * 1.12;
+        const w = Math.max(300, Math.min(1380, spanW));
+        const h = w * aspect;
+        this._animateCameraTo({ x: cx - w * 0.5, y: cy - h * midFrac, w, h });
+        return;
+      }
+      const spanW =
+        Math.max((maxX - minX + 115) / 0.45, (maxY - minY + 115) / (aspect * 0.84)) * 1.06;
+      const w = Math.max(340, Math.min(1060, spanW));
+      const h = w * aspect;
+      this._animateCameraTo({
+        x: Math.max(-160, Math.min(1000 - w * 0.55, cx - w * 0.475)),
+        y: Math.max(-110, Math.min(700 - h + 130, cy - h * 0.46)),
+        w,
+        h,
+      });
+    }
+
+    _flyToPersonEvent(ev) {
+      if (!ev || !ev.coord) return;
+      const [tx, ty] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
+      const aspect = this._getViewportAspect();
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      if (!isDesktop) {
+        const visTopFrac = this._getPersonVisibleTopFrac();
+        const w = Math.max(320, Math.min(this.camera.w, 460));
+        const h = w * aspect;
+        this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * (visTopFrac * 0.5), w, h });
+        return;
+      }
+      const w = Math.max(340, Math.min(this.camera.w, 500));
+      const h = w * aspect;
+      this._animateCameraTo({ x: tx - w * 0.38, y: ty - h * 0.48, w, h });
+    }
+
+    _findNearestPersonPin(clientX, clientY, maxPx = 26) {
+      if (!this.activePerson || !this.grpJourney || !this.svg) return null;
+      const rect = this.svg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return null;
+      const screenScale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      const padX = (rect.width - this.camera.w * screenScale) * 0.5;
+      const padY = (rect.height - this.camera.h * screenScale) * 0.5;
+      const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
+      const z = 1000 / this.camera.w;
+      const boost = vw <= 640 ? 1.46 : vw <= 900 ? 1.22 : 1.0;
+      const localToPx = Math.max((1 / Math.sqrt(z)) * boost, 0.92 / Math.max(0.12, screenScale)) * screenScale;
+
+      let bestNode = null;
+      let bestDist = maxPx;
+      this.grpJourney.querySelectorAll('.journey-node').forEach((jn) => {
+        const sx = parseFloat(jn.getAttribute('data-x'));
+        const sy = parseFloat(jn.getAttribute('data-y'));
+        const ox = parseFloat(jn.getAttribute('data-ox') || '0');
+        const oy = parseFloat(jn.getAttribute('data-oy') || '0');
+        if (Number.isNaN(sx) || Number.isNaN(sy)) return;
+        const px = rect.left + padX + (sx - this.camera.x) * screenScale + ox * localToPx;
+        const py = rect.top + padY + (sy - this.camera.y) * screenScale + oy * localToPx;
+        const d = Math.hypot(clientX - px, clientY - py);
+        if (d <= bestDist) {
+          bestDist = d;
+          bestNode = jn;
+        }
+      });
+      return bestNode;
+    }
+
+    _renderPersonPinsOverlay() {
+      if (!this.grpJourney) return;
+      this.grpJourney.innerHTML = '';
+      if (!this.activePerson) return;
+
+      const { events } = this.activePerson;
+      const curIdx = this.activePersonEventIdx;
+      const rawPts = events.map((ev) => this.projector.toScreen(ev.coord[0], ev.coord[1]));
+
+      // Compute zoom-invariant screen-space cluster offsets so co-located pins (e.g. Chang'an ① ②)
+      // never overlap at ANY zoom level on Desktop or Mobile while preserving exact data-x/data-y
+      // for _rescaleSvgTypography's automatic city label culling.
+      const clusters = rawPts.map(([sx, sy], i) => {
+        const peers = [];
+        rawPts.forEach(([ox, oy], j) => {
+          if (Math.hypot(ox - sx, oy - sy) < 6.5) peers.push(j);
+        });
+        if (peers.length <= 1) {
+          return { ox: 0, oy: 0, ringR: 0, isPrimary: true, peers };
+        }
+        const pos = peers.indexOf(i);
+        if (peers.length === 2) {
+          return { ox: pos === 0 ? -8.6 : 8.6, oy: 0, ringR: 2, isPrimary: pos === 0, peers };
+        }
+        const ringR = Math.max(9.6, 8.3 / Math.sin(Math.PI / peers.length));
+        const angle = -Math.PI * 0.75 + (pos / peers.length) * Math.PI * 2;
+        return {
+          ox: Math.cos(angle) * ringR,
+          oy: Math.sin(angle) * ringR,
+          ringR,
+          isPrimary: pos === 0,
+          peers,
+        };
+      });
+
+      const order = events
+        .map((_, idx) => idx)
+        .sort((a, b) => (a === curIdx ? 1 : b === curIdx ? -1 : a - b));
+
+      for (const idx of order) {
+        const ev = events[idx];
+        const [sx, sy] = rawPts[idx];
+        const cl = clusters[idx];
+        const isCur = idx === curIdx;
+        const stateCls =
+          curIdx < 0 ? 'is-passed' : isCur ? 'is-current' : idx < curIdx ? 'is-passed' : 'is-upcoming';
+        const g = this._svgNode(
+          'g',
+          {
+            class: `journey-node ${stateCls}`,
+            'data-x': sx.toFixed(1),
+            'data-y': sy.toFixed(1),
+            'data-ox': cl.ox.toFixed(2),
+            'data-oy': cl.oy.toFixed(2),
+            'data-stop-idx': String(idx),
+          },
+          this.grpJourney
+        );
+        g.style.color = '#a83824';
+
+        const inner = this._svgNode(
+          'g',
+          {
+            class: 'jn-pin-shift',
+            transform: `translate(${cl.ox.toFixed(2)},${cl.oy.toFixed(2)})`,
+          },
+          g
+        );
+
+        this._svgNode('circle', { class: 'jn-hit', r: 14, fill: 'transparent' }, inner);
+        if (isCur) {
+          this._svgNode('circle', { class: 'jn-pulse', r: 12.5 }, inner);
+        }
+        this._svgNode('circle', { class: 'jn-disc', r: isCur ? 8.6 : 7.3 }, inner);
+        const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
+        numTxt.textContent = String(idx + 1);
+
+        const clusterHasCur = curIdx >= 0 && cl.peers.includes(curIdx);
+        const ownsClusterLabel = isCur || (!clusterHasCur && cl.isPrimary);
+        if (ownsClusterLabel) {
+          const fullLbl =
+            this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
+          const compactLbl = isCur
+            ? fullLbl
+            : fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
+          const lblTxt = this._svgNode(
+            'text',
+            { class: 'jn-label', x: '0', y: '-12.5' },
+            inner
+          );
+          lblTxt.textContent = compactLbl;
+        }
+      }
+
+      this._rescaleSvgTypography();
+    }
+
+    _setHoveredPersonPin(idx) {
+      if (!this.grpJourney) return;
+      this.grpJourney.querySelectorAll('.journey-node').forEach((jn) => {
+        jn.classList.toggle('is-hover-pin', Number(jn.dataset.stopIdx) === idx);
+      });
+    }
+
+    _renderPersonChronicleCard(preserveScroll = false) {
+      if (!this.activePerson) return;
+      const { profile, events } = this.activePerson;
+      const curIdx = this.activePersonEventIdx;
+      const isEn = this.locale === 'en';
+      const isAdhoc = String(profile.key || '').startsWith('adhoc_');
+
+      const kickerEl = this._id('txt-genealogy-kicker');
+      if (kickerEl) {
+        kickerEl.textContent = isEn
+          ? 'Person Chronicle · Life Across Time & Space'
+          : '点人溯事 · 人物生平纪事';
+      }
+
+      const spanStr = this._formatPersonSpan(profile.span, isAdhoc);
+      const headingEl = this._id('genealogy-heading');
+      if (headingEl) {
+        headingEl.textContent = `${isEn ? profile.en : profile.zh}${spanStr}`;
+      }
+
+      const loreEl = this._id('genealogy-lore');
+      if (loreEl) {
+        const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
+        const enAliases = (profile.aliases || []).filter((a) => !/[\u4e00-\u9fff]/.test(a));
+        const aliasHint = isEn
+          ? enAliases.length
+            ? `Also searched as: ${enAliases.slice(0, 4).join(' · ')}`
+            : ''
+          : profile.aliases && profile.aliases.length
+            ? `字号 / 检索词：${profile.aliases.slice(0, 4).join(' · ')}`
+            : '';
+        if (subTitle || aliasHint) {
+          loreEl.innerHTML =
+            `<div class="pass-lore-head"><span class="pass-lore-badge">${
+              isEn ? 'Biography' : '人物小传'
+            }</span><span class="pass-lore-range">${subTitle}</span></div>` +
+            (aliasHint ? `<div class="pass-lore-desc">${aliasHint}</div>` : '');
+          loreEl.classList.remove('is-hidden');
+        } else {
+          loreEl.innerHTML = '';
+          loreEl.classList.add('is-hidden');
+        }
+      }
+
+      const dynCount = new Set(events.map((e) => e.dynasty.key)).size;
+      const subEl = this._id('genealogy-sub');
+      if (subEl) {
+        const summaryTxt = isEn
+          ? `${events.length} events · ${dynCount} era${dynCount > 1 ? 's' : ''}`
+          : `共 ${events.length} 处史事 · 历 ${dynCount} 朝`;
+        const routeBtn = profile.journeyKey
+          ? `<button type="button" class="ev-journey-btn" id="act-person-route" data-journey="${
+              profile.journeyKey
+            }">${isEn ? 'Route ▸' : '行迹路线 ▸'}</button>`
+          : '';
+        subEl.innerHTML =
+          `<span>${summaryTxt}</span>` +
+          `<span class="person-sub-actions">` +
+          `<button type="button" class="gen-filter-pill" id="act-person-prev" aria-label="${
+            isEn ? 'Previous event' : '上一处史事'
+          }" title="${isEn ? 'Previous event' : '上一处史事'}">${SVG_ICONS.arrowLeft}</button>` +
+          `<button type="button" class="gen-filter-pill${
+            curIdx < 0 ? ' is-active' : ''
+          }" id="act-person-overview">${isEn ? 'Overview' : '全图总览'}</button>` +
+          `<button type="button" class="gen-filter-pill" id="act-person-next" aria-label="${
+            isEn ? 'Next event' : '下一处史事'
+          }" title="${isEn ? 'Next event' : '下一处史事'}">${SVG_ICONS.arrowRight}</button>` +
+          `${routeBtn}</span>`;
+
+        const prevBtn = this._id('act-person-prev');
+        if (prevBtn) prevBtn.addEventListener('click', () => this.stepPersonEvent(-1));
+        const nextBtn = this._id('act-person-next');
+        if (nextBtn) nextBtn.addEventListener('click', () => this.stepPersonEvent(1));
+        const ovBtn = this._id('act-person-overview');
+        if (ovBtn) ovBtn.addEventListener('click', () => this.selectPersonEvent(-1, true));
+        const rBtn = this._id('act-person-route');
+        if (rBtn) {
+          rBtn.addEventListener('click', () => this.startJourney(profile.journeyKey, 0));
+        }
+      }
+
+      const listEl = this._id('genealogy-timeline');
+      const scrollEl = this._id('genealogy-body') || listEl;
+      const prevScroll = scrollEl ? scrollEl.scrollTop : 0;
+      if (!listEl) return;
+      listEl.innerHTML = '';
+
+      let activeLi = null;
+      events.forEach((ev, idx) => {
+        const li = document.createElement('li');
+        li.className = 'person-ev-row' + (idx === curIdx ? ' is-current' : '');
+        if (idx === curIdx) activeLi = li;
+
+        const yrStr = isEn
+          ? this.formatYear(ev.year)
+          : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
+        const siteLabel = isEn
+          ? ev.siteEn || this.trTerm(ev.siteZh)
+          : ev.siteZh + (ev.modernZh && !ev.siteZh.includes(ev.modernZh) ? `（今${ev.modernZh}）` : '');
+        const mapBadge = ev.isMapChange
+          ? `<span class="ev-map-tag" title="${
+              isEn ? 'Territory shift at this year' : '此节点触发版图演变'
+            }">${SVG_ICONS.mapChange}</span>`
+          : '';
+        const traceBtn = `<button type="button" class="ev-journey-btn person-place-btn" data-idx="${idx}">${
+          isEn ? 'Place ›' : '沿革 ›'
+        }</button>`;
+
+        li.innerHTML =
+          `<span class="t-era person-era-col">` +
+          `<span class="person-idx-line"><span class="cr-stop-num">${idx + 1}</span><span>${yrStr}</span></span>` +
+          `<span class="t-sub">${this.dynastyName(ev.dynasty)}</span>` +
+          `</span>` +
+          `<span class="t-val">` +
+          `<span class="person-site-line"><span>${siteLabel}${mapBadge}</span>${traceBtn}</span>` +
+          `<span class="t-sub person-ev-copy">${isEn ? ev.textEn : ev.textZh}</span>` +
+          `</span>`;
+
+        li.addEventListener('pointerenter', (e) => {
+          if (e.pointerType !== 'touch') this._setHoveredPersonPin(idx);
+        });
+        li.addEventListener('pointerleave', (e) => {
+          if (e.pointerType !== 'touch') this._setHoveredPersonPin(-1);
+        });
+        li.addEventListener('click', () => {
+          this.selectPersonEvent(idx, true);
+        });
+        const traceBtnEl = li.querySelector('.person-place-btn');
+        if (traceBtnEl) {
+          traceBtnEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const savedReturn = { profile, eventIdx: idx };
+            this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
+            this.openGenealogyAt(ev.coord[0], ev.coord[1], ev.siteZh, {
+              returnPerson: savedReturn,
+            });
+          });
+        }
+        listEl.appendChild(li);
+      });
+
+      if (scrollEl) {
+        if (activeLi && typeof activeLi.scrollIntoView === 'function') {
+          activeLi.scrollIntoView({ block: 'nearest' });
+        } else if (preserveScroll) {
+          scrollEl.scrollTop = prevScroll;
+        } else {
+          scrollEl.scrollTop = 0;
+        }
+      }
     }
 
     _syncTracedPrefecture() {
@@ -3460,8 +4180,25 @@
           }
         });
       }
+      if (opts && opts.returnPerson) {
+        this.activeReturnPerson = opts.returnPerson;
+      } else if (!fromYearSync && !isSamePlace) {
+        this.activeReturnPerson = null;
+      }
       this._dismissTraceOnboarding();
       if (this.activeJourney) this.stopJourney();
+      if (this.activePerson) {
+        this.activePerson = null;
+        this.activePersonEventIdx = -1;
+        if (this.grpJourney && !this.activeCustomRoute) this.grpJourney.innerHTML = '';
+        const vfPerson = this._id('viewport-frame');
+        if (vfPerson) vfPerson.classList.remove('has-active-person');
+        const kickerEl = this._id('txt-genealogy-kicker');
+        if (kickerEl) {
+          kickerEl.textContent = this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
+        }
+        this._syncImmersivePaneState();
+      }
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
@@ -3653,7 +4390,13 @@
             : ''
         }`;
 
-        if (totalEvents > 0) {
+        const retP = this.activeReturnPerson;
+        const retBtnHtml = retP
+          ? `<button type="button" class="gen-filter-pill" id="act-return-person">‹ ${
+              this.locale === 'en' ? retP.profile.en : retP.profile.zh
+            }</button>`
+          : '';
+        if (totalEvents > 0 || retBtnHtml) {
           const btnLabel = this.genealogyEventsOnly
             ? this.locale === 'en'
               ? 'All Dynasties'
@@ -3661,12 +4404,23 @@
             : this.locale === 'en'
               ? `Chronicles · ${totalEvents}`
               : `史事纪要 · ${totalEvents}`;
+          const filterHtml =
+            totalEvents > 0
+              ? `<button type="button" class="gen-filter-pill gen-ev-toggle ${
+                  this.genealogyEventsOnly ? 'is-active' : ''
+                }">${btnLabel}</button>`
+              : '';
           subEl.innerHTML =
             `<span>${coordText}</span>` +
-            `<button type="button" class="gen-filter-pill ${
-              this.genealogyEventsOnly ? 'is-active' : ''
-            }">${btnLabel}</button>`;
-          const filterBtn = subEl.querySelector('.gen-filter-pill');
+            `<span class="person-sub-actions">${retBtnHtml}${filterHtml}</span>`;
+          const retBtn = this._id('act-return-person');
+          if (retBtn && retP) {
+            retBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.openPersonChronicle(retP.profile, retP.eventIdx);
+            });
+          }
+          const filterBtn = subEl.querySelector('.gen-ev-toggle');
           if (filterBtn) {
             filterBtn.addEventListener('click', (e) => {
               e.stopPropagation();
@@ -4110,7 +4864,9 @@
       if (this.activeMilestone && (this.activeMilestone.year !== y || this.activeMilestone.isAuto)) {
         this.closeMilestoneBalloon();
       }
-      this._syncAutoMilestoneBalloon(cur);
+      if (!this.activePerson) {
+        this._syncAutoMilestoneBalloon(cur);
+      }
       this._renderCorridors();
       this._syncScrubberUi();
       const preserveScroll = Boolean(this._preserveGenealogyScrollOnce);
@@ -4138,6 +4894,10 @@
       }
       if (this.activeCustomRoute) {
         this.stepCustomRoute(dir > 0 ? 1 : -1);
+        return;
+      }
+      if (this.activePerson) {
+        this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
       }
       const ensureCoordInView = (coord) => {
@@ -4569,6 +5329,119 @@
             node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
           }
         });
+
+      // Keep active person numbered pins crisp & non-overlapping in real screen pixels at every zoom level
+      if (this.activePerson && this.grpJourney) {
+        const svgRect =
+          (this.dragState && this.dragState.rect) ||
+          (typeof this.svg.getBoundingClientRect === 'function'
+            ? this.svg.getBoundingClientRect()
+            : null);
+        const rw = (svgRect && svgRect.width) || vw || 1000;
+        const rh = (svgRect && svgRect.height) || rw * 0.7;
+        const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
+        const pinScale = Math.max(s, 0.92 / Math.max(0.12, screenScale));
+        const pinScaleStr = pinScale.toFixed(3);
+        const pxPerLocal = pinScale * screenScale;
+        const nodes = Array.from(this.grpJourney.querySelectorAll('.journey-node')).sort(
+          (a, b) => Number(a.dataset.stopIdx) - Number(b.dataset.stopIdx)
+        );
+        const pts = nodes.map((n) => ({
+          n,
+          x: Number(n.getAttribute('data-x')),
+          y: Number(n.getAttribute('data-y')),
+          ox: 0,
+          oy: 0,
+        }));
+        const minSepPx = 17.2;
+        for (let iter = 0; iter < 12; iter++) {
+          for (let i = 0; i < pts.length; i++) {
+            for (let j = i + 1; j < pts.length; j++) {
+              const pxI = pts[i].x * screenScale + pts[i].ox * pxPerLocal;
+              const pyI = pts[i].y * screenScale + pts[i].oy * pxPerLocal;
+              const pxJ = pts[j].x * screenScale + pts[j].ox * pxPerLocal;
+              const pyJ = pts[j].y * screenScale + pts[j].oy * pxPerLocal;
+              const dx = pxJ - pxI;
+              const dy = pyJ - pyI;
+              const dist = Math.hypot(dx, dy);
+              if (dist < minSepPx) {
+                let ux;
+                let uy;
+                if (dist < 0.05) {
+                  const ang = (j - i - 1) * 1.05;
+                  ux = Math.cos(ang);
+                  uy = Math.sin(ang);
+                } else {
+                  ux = dx / dist;
+                  uy = dy / dist;
+                }
+                const push = (minSepPx - dist) * 0.52 / Math.max(0.2, pxPerLocal);
+                pts[i].ox -= ux * push;
+                pts[i].oy -= uy * push;
+                pts[j].ox += ux * push;
+                pts[j].oy += uy * push;
+              }
+            }
+          }
+        }
+        for (const p of pts) {
+          p.n.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
+          p.n.setAttribute('data-ox', p.ox.toFixed(2));
+          p.n.setAttribute('data-oy', p.oy.toFixed(2));
+          const shiftEl = p.n.querySelector('.jn-pin-shift');
+          if (shiftEl) {
+            shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
+          }
+        }
+        const placedRects = pts
+          .map((p) => p.n.querySelector('.jn-disc'))
+          .filter((el) => el && typeof el.getBoundingClientRect === 'function')
+          .map((el) => el.getBoundingClientRect())
+          .filter((r) => r.width > 0);
+        const candSlots = [
+          { anchor: 'middle', lx: '0', ly: '-12.2' },
+          { anchor: 'middle', lx: '0', ly: '19.8' },
+          { anchor: 'start', lx: '11.2', ly: '3.8' },
+          { anchor: 'end', lx: '-11.2', ly: '3.8' },
+        ];
+        const labelOrder = pts
+          .slice()
+          .sort((a, b) => (a.n.classList.contains('is-current') ? -1 : b.n.classList.contains('is-current') ? 1 : 0));
+        for (const p of labelOrder) {
+          const lbl = p.n.querySelector('.jn-label');
+          if (!lbl || typeof lbl.getBoundingClientRect !== 'function') continue;
+          const isCur = p.n.classList.contains('is-current');
+          lbl.style.display = '';
+          let chosenRect = null;
+          for (const sl of candSlots) {
+            lbl.setAttribute('text-anchor', sl.anchor);
+            lbl.setAttribute('x', sl.lx);
+            lbl.setAttribute('y', sl.ly);
+            const r = lbl.getBoundingClientRect();
+            if (!r.width) {
+              chosenRect = r;
+              break;
+            }
+            const hit = placedRects.some(
+              (o) => r.right > o.left && r.left < o.right && r.bottom > o.top && r.top < o.bottom
+            );
+            if (!hit) {
+              chosenRect = r;
+              break;
+            }
+          }
+          if (chosenRect) {
+            placedRects.push(chosenRect);
+          } else if (isCur) {
+            lbl.setAttribute('text-anchor', 'middle');
+            lbl.setAttribute('x', '0');
+            lbl.setAttribute('y', '-12.2');
+            placedRects.push(lbl.getBoundingClientRect());
+          } else {
+            lbl.style.display = 'none';
+          }
+        }
+      }
       if (this.grpRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
           const x = node.getAttribute('data-x');
@@ -6353,6 +7226,29 @@
         });
       }
 
+      // 0b. Historical Figures Chronicle Index (点人溯事)
+      for (const p of HistoricalAtlasController.PERSON_PROFILES) {
+        const d =
+          this.dynasties.find((item) => item.key === p.dynastyKey) ||
+          this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
+          this.dynasties[0];
+        const evCount = this._collectPersonEvents(p).length;
+        const aliases = this._personSearchAliases(p);
+        entries.push({
+          kind: 'person',
+          personKey: p.key,
+          personProfile: p,
+          dynasty: d,
+          year: null,
+          aliases,
+          titleZh: p.zh,
+          subZh: `${p.courtesyZh || d.title} · 共 ${evCount} 处史事`,
+          titleEn: p.en,
+          subEn: `${p.courtesyEn || d.title} · ${evCount} events`,
+          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 人物 生平 事迹`.toLowerCase(),
+        });
+      }
+
       // 0. Dynasties / Historical Periods
       for (const d of this.dynasties) {
         const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
@@ -6734,9 +7630,46 @@
         }
 
         if (score > 0) {
-          if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
-          if (item.isCapital) score += 2;
+          if (item.kind === 'person') {
+            if (score >= 92) score = 148;
+            else if (score >= 80) score = 114;
+            else score = 72;
+          } else {
+            if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
+            if (item.isCapital) score += 2;
+          }
           results.push({ ...item, score });
+        }
+      }
+
+      // Dynamic zero-config fallback if query matches >=2 historical events for an unlisted figure
+      const rawTrim = rawQuery.trim();
+      if (
+        !results.some((r) => r.kind === 'person') &&
+        !results.some(
+          (r) =>
+            (r.kind === 'city' || r.kind === 'pass' || r.kind === 'gazetteer' || r.kind === 'dynasty') &&
+            r.score >= 92
+        ) &&
+        /^[\u4e00-\u9fa5]{2,4}$/.test(rawTrim)
+      ) {
+        const adhoc = this._resolvePersonProfile(rawTrim);
+        if (adhoc) {
+          const evs = this._collectPersonEvents(adhoc);
+          if (evs.length >= 2) {
+            const d = evs[0].dynasty || this.dynasties[0];
+            results.push({
+              kind: 'person',
+              personProfile: adhoc,
+              dynasty: d,
+              year: null,
+              titleZh: adhoc.zh,
+              subZh: `${adhoc.courtesyZh} · 共 ${evs.length} 处史事`,
+              titleEn: adhoc.en,
+              subEn: `${evs.length} events`,
+              score: 126,
+            });
+          }
         }
       }
 
@@ -6762,6 +7695,11 @@
       this.stopAutoplay();
       this.clearCustomRoute();
       this._clearQuickSearchInput();
+
+      if (item.kind === 'person') {
+        this.openPersonChronicle(item.personProfile || item.personKey || item.titleZh, -1);
+        return;
+      }
 
       if (item.kind === 'journey' && item.journeyKey) {
         this.startJourney(item.journeyKey, 0);
@@ -6831,6 +7769,7 @@
         if (!searchInp || !searchList) return;
         const q = searchInp.value.trim();
         const kindLabel = {
+          person: this.locale === 'en' ? 'Figure' : '人物',
           journey: this.locale === 'en' ? 'Journey' : '行迹',
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
           era: this.locale === 'en' ? 'Era' : '纪年',
@@ -7585,6 +8524,21 @@
             );
             return;
           }
+        } else if (journeyNodeEl && this.activePerson) {
+          const sIdx = Number(journeyNodeEl.dataset.stopIdx);
+          const ev = this.activePerson.events[sIdx];
+          if (ev) {
+            const isEn = this.locale === 'en';
+            const place = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
+            const yr = this.formatYear(ev.year);
+            this._showHoverTip(
+              e,
+              `<b>${sIdx + 1}. ${yr} · ${place}</b><div class="tt-sub">${
+                isEn ? ev.textEn : ev.textZh
+              }</div>`
+            );
+            return;
+          }
         } else if (journeyNodeEl && this.activeJourney) {
           const sIdx = Number(journeyNodeEl.dataset.stopIdx);
           const stop = this.activeJourney.stops[sIdx];
@@ -7830,10 +8784,17 @@
             }
             return null;
           };
-          const journeyNodeEl = findClosest('.journey-node');
+          let journeyNodeEl = findClosest('.journey-node');
+          if (!journeyNodeEl && e.pointerType === 'touch' && this.activePerson) {
+            journeyNodeEl = this._findNearestPersonPin(e.clientX, e.clientY, 26);
+          }
           if (journeyNodeEl && journeyNodeEl.dataset.stopIdx !== undefined) {
             if (this.activeCustomRoute) {
               this.selectCustomRouteStop(Number(journeyNodeEl.dataset.stopIdx), true);
+              return;
+            }
+            if (this.activePerson) {
+              this.selectPersonEvent(Number(journeyNodeEl.dataset.stopIdx), true);
               return;
             }
             if (this.journeyTimer) {
@@ -9113,7 +10074,9 @@
       const q = new URLSearchParams(location.search);
       const needsEn =
         this.locale === 'en' ||
-        /[a-z]/i.test(`${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''}`);
+        /[a-z]/i.test(
+          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''}`
+        );
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
         const tasks = [];
@@ -9270,6 +10233,15 @@
         this.toggleChroniclePane(true);
         setTimeout(() => this.startChallenge({ preferCurrentDynasty: q.has('year') }), 120);
       }
+      if (q.has('person')) {
+        const rawP = (q.get('person') || '').trim();
+        const evIdx = q.has('stop') ? Number(q.get('stop')) : -1;
+        if (rawP) {
+          afterFullSnapshots(() => {
+            this.openPersonChronicle(rawP, Number.isNaN(evIdx) ? -1 : evIdx);
+          }, 80);
+        }
+      }
       if (q.has('journey')) {
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
@@ -9304,6 +10276,7 @@
       locate: (opts) => app.locate(opts),
       resolvePlace: (place, year) => app.resolvePlace(place, year),
       inspect: (opts) => app.inspect(opts),
+      openPerson: (who, idx = -1) => app.openPersonChronicle(who, idx),
     };
   });
 })();

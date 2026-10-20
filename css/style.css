@@ -4336,3 +4336,101 @@ html[lang="en"] #act-toggle-pane .tp-label {
   pointer-events: none !important;
   z-index: -1 !important;
 }
+
+/* Person Chronicle Search (点人溯事): thin layout delta reusing #genealogy-card, .genealogy-list, .cr-stop-num & .ev-journey-btn */
+#viewport-frame.has-active-person #grp-settlements {
+  opacity: 0.25;
+  transition: opacity 0.25s ease;
+}
+
+#viewport-frame.has-active-person #grp-milestones {
+  opacity: 0.14;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.journey-node.is-hover-pin .jn-disc {
+  fill: var(--vermilion);
+  stroke: #fffaf2;
+  transform: scale(1.14);
+}
+
+.journey-node.is-hover-pin .jn-num {
+  fill: #fffaf2;
+}
+
+.genealogy-list li.person-ev-row {
+  grid-template-columns: 78px 1fr;
+}
+
+html[lang="en"] .genealogy-list li.person-ev-row {
+  grid-template-columns: 94px 1fr;
+}
+
+.person-era-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.person-idx-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.person-idx-line .cr-stop-num {
+  min-width: 16px;
+  width: auto;
+  height: 16px;
+  padding: 0 3.5px;
+  flex-shrink: 0;
+}
+
+.genealogy-list li.person-ev-row.is-current .cr-stop-num {
+  background: var(--vermilion);
+  color: #fffaf2;
+}
+
+.person-site-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  font-weight: 700;
+}
+
+.person-place-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.person-ev-copy {
+  margin-top: 2px;
+  font-family: var(--serif-stack);
+  font-size: 11.8px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.person-sub-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (min-width: 901px) {
+  #viewport-frame.has-active-person #genealogy-card {
+    width: 392px;
+  }
+}
+
+@media (max-width: 900px) {
+  #viewport-frame.has-active-person #genealogy-card:not(.is-sheet-expanded) {
+    max-height: min(50%, 360px);
+  }
+}
