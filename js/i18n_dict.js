@@ -328,7 +328,7 @@ window.EN_LOCALE = {
       "Bashang (east of Chang'an)"
     ],
     "dongjin:370": [
-      "Wang Meng captures Ye and destroys Former Yan for Former Qin",
+      "Fu Jian of Former Qin sends Wang Meng to capture Ye and destroy Former Yan",
       "Ye"
     ],
     "dongjin:376": [
@@ -793,7 +793,7 @@ window.EN_LOCALE = {
     ],
     "prc:1978": [
       "Third Plenum of the 11th Central Committee launches Reform and Opening-Up",
-      "Shenzhen"
+      "Beijing"
     ],
     "prc:1997": [
       "China resumes exercise of sovereignty over Hong Kong on July 1",
