@@ -1672,6 +1672,18 @@ function main() {
       );
     }
   }
+  // Verify non-anachronistic historical state translations
+  assert.strictEqual(enDict['魏'], 'Wei', 'dict["魏"] must be "Wei", not anachronistic "Cao Wei"');
+  assert.strictEqual(enDict['齐'], 'Qi', 'dict["齐"] must be "Qi", not anachronistic "Southern Qi"');
+  assert.strictEqual(enDict['吴'], 'Wu', 'dict["吴"] must be "Wu", not anachronistic "Eastern Wu"');
+  assert.strictEqual(enDict['韩'], 'Han', 'dict["韩"] must be "Han", not "Han (Warring States)"');
+  assert.strictEqual(enDict['曹魏'], 'Cao Wei', 'dict["曹魏"] must be "Cao Wei"');
+  assert.strictEqual(enDict['孙吴'], 'Eastern Wu', 'dict["孙吴"] must be "Eastern Wu"');
+  assert.strictEqual(enDict['东吴'], 'Eastern Wu', 'dict["东吴"] must be "Eastern Wu"');
+  assert.strictEqual(enDict['杨吴'], 'Yang Wu', 'dict["杨吴"] must be "Yang Wu"');
+  assert.strictEqual(enDict['南齐'], 'Southern Qi', 'dict["南齐"] must be "Southern Qi"');
+  assert.strictEqual(enDict['刘宋'], 'Liu Song', 'dict["刘宋"] must be "Liu Song"');
+  assert.strictEqual(enDict['南梁'], 'Southern Liang', 'dict["南梁"] must be "Southern Liang"');
   for (const d of dynasties) {
     for (const st of d.settlements || []) {
       assert(
