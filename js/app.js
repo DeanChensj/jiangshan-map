@@ -276,13 +276,11 @@
       this.activePerson = null;
       this.activePersonEventIdx = -1;
       this.activeReturnPerson = null;
+      this.personTimer = null;
       this._lastPersonPinZoom = 0;
       this.activeMilestone = null;
-      this.activeJourney = null;
       this.activeCustomRoute = null;
       this.customRouteStopIdx = -1;
-      this.journeyStopIdx = 0;
-      this.journeyTimer = null;
       this.challenge = null;
       this.paneCollapsed = false;
       this._paneAutoCollapsed = false;
@@ -297,10 +295,8 @@
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
-        this.hasSeenJourneyHint = localStorage.getItem('jiangshan_seen_journey_hint') === '1';
       } catch (_) {
         this.hasSeenTraceHint = false;
-        this.hasSeenJourneyHint = false;
       }
 
       this.camera = this._getDefaultCamera();
@@ -310,10 +306,6 @@
       this.snapshotCache = {};
 
       this._bindDom();
-      if (this.hasSeenJourneyHint) {
-        const dot = this._id('journey-onboarding-dot');
-        if (dot) dot.classList.add('is-hidden');
-      }
       this._applyCamera(true);
       this._buildTerrainRivers();
       this._buildModernProvinces();
@@ -433,7 +425,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -457,7 +449,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -474,20 +466,14 @@
         wb.classList.toggle(
           'has-mobile-overlay',
           Boolean(
-            this.activeJourney ||
-              this.activeCustomRoute ||
-              this.activeTrace ||
-              this.activePerson ||
-              this.challenge
+            this.activeCustomRoute || this.activeTrace || this.activePerson || this.challenge
           )
         );
       }
     }
 
     _syncImmersivePaneState() {
-      const immersiveActive = Boolean(
-        this.activeJourney || this.activePerson || this.challenge
-      );
+      const immersiveActive = Boolean(this.activePerson || this.challenge);
       if (immersiveActive) {
         if (!this.paneCollapsed) {
           this._paneAutoCollapsed = true;
@@ -538,16 +524,6 @@
           .querySelectorAll('.has-trace-hint')
           .forEach((el) => el.classList.remove('has-trace-hint'));
       }
-    }
-
-    _dismissJourneyOnboarding() {
-      if (this.hasSeenJourneyHint) return;
-      this.hasSeenJourneyHint = true;
-      try {
-        localStorage.setItem('jiangshan_seen_journey_hint', '1');
-      } catch (_) {}
-      const dot = this._id('journey-onboarding-dot');
-      if (dot) dot.classList.add('is-hidden');
     }
 
     _getViewportAspect() {
@@ -857,92 +833,6 @@
       if (grpMod) {
         grpMod.textContent = this.uiStr('layer_grp_mod', '山川与现代参照');
       }
-      const lblJourneyBtn = this._id('lbl-journey-btn');
-      if (lblJourneyBtn) {
-        lblJourneyBtn.textContent = this.locale === 'en' ? 'Journeys' : '青史行迹';
-      }
-      const actJourneyBtn = this._id('act-journey-menu');
-      if (actJourneyBtn) {
-        actJourneyBtn.title =
-          this.locale === 'en'
-            ? 'Historical Journeys · Qin Shi Huang / Zhang Qian / Zhuge Liang / Xuanzang / Li Bai / Su Shi / Wang Yangming'
-            : '青史行迹 · 人物时空巡礼（秦始皇 / 张骞 / 诸葛亮 / 玄奘 / 李白 / 苏轼 / 王阳明）';
-      }
-      const jPopHead = this._id('txt-journey-pop-heading');
-      if (jPopHead) {
-        jPopHead.textContent =
-          this.locale === 'en' ? 'Historical Journeys · Interactive Tours' : '青史行迹 · 人物时空巡礼';
-      }
-      const jPopSub = this._id('txt-journey-pop-sub');
-      if (jPopSub) {
-        jPopSub.textContent =
-          this.locale === 'en'
-            ? 'Follow iconic figures across eras, prefectures & classical verse'
-            : '跟随历史人物足迹，跨越年代、州郡与诗词纪事';
-      }
-      const setTxt = (id, zh, en) => {
-        const el = this._id(id);
-        if (el) el.textContent = this.locale === 'en' ? en : zh;
-      };
-      setTxt('lbl-jm-badge-qinshihuang', '战国·秦', 'Qin');
-      setTxt('lbl-jm-title-qinshihuang', '秦始皇一统六国行迹', "Qin Shi Huang's Unification Campaigns");
-      setTxt(
-        'lbl-jm-meta-qinshihuang',
-        '咸阳 → 灭韩 → 灭赵 → 灭魏 → 灭楚 → 灭燕 → 灭齐 · 9站',
-        'Xianyang → Han → Zhao → Wei → Chu → Yan → Qi · 9 stops'
-      );
-      setTxt('lbl-jm-badge-sushi', '北宋', 'N. Song');
-      setTxt('lbl-jm-title-sushi', '苏轼宦海贬谪行迹', "Su Shi's Literary Exile Across Song China");
-      setTxt(
-        'lbl-jm-meta-sushi',
-        '眉州 → 汴京 → 黄州 → 惠州 → 儋州 · 10站',
-        'Meizhou → Kaifeng → Huangzhou → Danzhou · 10 stops'
-      );
-      setTxt('lbl-jm-badge-wangyangming', '明', 'Ming');
-      setTxt(
-        'lbl-jm-title-wangyangming',
-        '王阳明知行悟道行迹',
-        "Wang Yangming's Unity of Knowledge & Action"
-      );
-      setTxt(
-        'lbl-jm-meta-wangyangming',
-        '余姚 → 京师 → 龙场悟道 → 赣州 → 平宁王 → 绍兴 → 南安 · 10站',
-        'Yuyao → Beijing → Longchang → Nanchang → Shaoxing · 10 stops'
-      );
-      setTxt('lbl-jm-badge-libai', '唐', 'Tang');
-      setTxt('lbl-jm-title-libai', '李白仗剑壮游行迹', "Li Bai's Grand Travels Across Tang China");
-      setTxt(
-        'lbl-jm-meta-libai',
-        '碎叶 → 蜀中 → 扬州 → 长安 → 白帝城 · 10站',
-        "Suyab → Shu → Yangzhou → Chang'an → Baidicheng · 10 stops"
-      );
-      setTxt('lbl-jm-badge-xuanzang', '唐', 'Tang');
-      setTxt('lbl-jm-title-xuanzang', '玄奘西行求法行迹', "Xuanzang's Pilgrimage to the Western Regions");
-      setTxt(
-        'lbl-jm-meta-xuanzang',
-        '长安 → 敦煌 → 高昌 → 碎叶 → 天竺 · 10站',
-        "Chang'an → Dunhuang → Suyab → India · 10 stops"
-      );
-      setTxt('lbl-jm-badge-zhugeliang', '三国', '3 Kingdoms');
-      setTxt('lbl-jm-title-zhugeliang', '诸葛亮出山北伐行迹', "Zhuge Liang's Southern & Northern Campaigns");
-      setTxt(
-        'lbl-jm-meta-zhugeliang',
-        '隆中 → 赤壁 → 成都 → 汉中 → 五丈原 · 10站',
-        'Longzhong → Red Cliffs → Chengdu → Wuzhang Plains · 10 stops'
-      );
-      setTxt('lbl-jm-badge-zhangqian', '西汉', 'W. Han');
-      setTxt('lbl-jm-title-zhangqian', '张骞凿空西域行迹', "Zhang Qian's Mission to the Western Regions");
-      setTxt(
-        'lbl-jm-meta-zhangqian',
-        '长安 → 河西 → 大宛 → 大月氏 · 9站',
-        "Chang'an → Hexi → Fergana → Bactria · 9 stops"
-      );
-      setTxt('lbl-jm-badge-quiz', '雅集', 'Quiz');
-      setTxt(
-        'lbl-jm-meta-quiz',
-        '盲图落针标定历代名城与雄关 · 10题计分',
-        'Pinpoint 10 ancient cities & strategic passes on the map'
-      );
       this._id('lbl-provinces').textContent = this.uiStr('toggle_modern', '现代省界');
       this._id('lbl-prov-names').textContent = this.uiStr('toggle_modern_labels', '现代省名');
       this._id('lbl-polities').textContent = this.uiStr('toggle_realms', '历史疆域');
@@ -1076,8 +966,8 @@
         searchBox.setAttribute(
           'aria-label',
           this.locale === 'en'
-            ? 'Quick search for historical figures, places, prefectures, eras, and journeys'
-            : '快速检索历史人物、古今地名、州府、帝王年号与青史行迹'
+            ? 'Quick search for historical figures, places, prefectures, eras, and place quiz'
+            : '快速检索历史人物、古今地名、州府、帝王年号与古地名寻址'
         );
       }
       this._syncTogglePaneButton();
@@ -1122,10 +1012,7 @@
         this._renderPersonPinsOverlay();
         this._renderPersonChronicleCard(true);
       }
-      if (this.activeJourney) {
-        this._renderJourneyOverlay();
-        this._renderJourneyCard();
-      } else if (this.activeCustomRoute) {
+      if (this.activeCustomRoute) {
         this._renderCustomRoute(this.activeCustomRoute, this.camera.zoom);
       }
       if (this.challenge) {
@@ -1745,7 +1632,6 @@
 
       const showOnboardingTraceHint =
         !this.hasSeenTraceHint &&
-        !this.activeJourney &&
         !this.activePerson &&
         !this.activeCustomRoute &&
         !this.challenge;
@@ -2082,7 +1968,6 @@
         milestonesHidden ||
         this.playing ||
         this.challenge ||
-        this.activeJourney ||
         this.activePerson ||
         mobileOverlayBusy
       ) {
@@ -2215,7 +2100,7 @@
       if (jBtn) {
         jBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          this.startJourney(jBtn.dataset.journey);
+          this.openJourneyAsPerson(jBtn.dataset.journey, -1);
         });
       }
       this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
@@ -2660,18 +2545,7 @@
         : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代156幅历史疆域、州郡道省政区、黄河改道水系、476座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
-      if (this.activeJourney) {
-        const j = this.activeJourney;
-        const jTitle = isEn ? j.titleEn : j.titleZh;
-        const jSpan = isEn ? j.spanEn : j.spanZh;
-        pageTitle = isEn
-          ? `${jTitle} (${jSpan}) · Jiangshan Historical Atlas of China`
-          : `${jTitle}（${jSpan}）路线图 · 江山时序中国历史地图`;
-        pageDesc = isEn
-          ? `Interactive route map of ${jTitle} (${jSpan}) across ${j.stops.length} historical stops in the Jiangshan Atlas of China.`
-          : `${jTitle}（${jSpan}）交互式历史行迹路线图，共 ${j.stops.length} 站古今地名、州郡疆域与诗词纪事对照。`;
-        canonicalUrl = `${baseSiteUrl}?journey=${encodeURIComponent(j.key)}${isEn ? '&lang=en' : ''}`;
-      } else if (this.activePerson) {
+      if (this.activePerson) {
         const p = this.activePerson.profile;
         const pName = isEn ? p.en : p.zh;
         pageTitle = isEn
@@ -2721,7 +2595,7 @@
         this._seoDirZhHtml = nav.innerHTML;
       }
       if (this.locale !== 'en') {
-        nav.setAttribute('aria-label', '中国历代疆域、青史行迹与天下名关索引');
+        nav.setAttribute('aria-label', '中国历代疆域、点人溯事与天下名关索引');
         if (nav.dataset.locale === 'en') {
           nav.innerHTML = this._seoDirZhHtml;
           nav.dataset.locale = 'zh';
@@ -2731,7 +2605,7 @@
       if (nav.dataset.locale === 'en') return;
       nav.setAttribute(
         'aria-label',
-        'Historical Dynasties, Biographical Journeys & Strategic Passes Directory'
+        'Historical Dynasties, Person Chronicles & Strategic Passes Directory'
       );
       const baseSiteUrl = 'https://deanchen.me/jiangshan-map/';
       const dynItems = (this.dynasties || [])
@@ -2763,7 +2637,7 @@
           const stopsStr = (j.stops || [])
             .map((s) => `${s.ancientEn} (${s.modernEn})`)
             .join(' → ');
-          return `<li><a href="${baseSiteUrl}?journey=${encodeURIComponent(j.key)}&amp;lang=en"><strong>${j.titleEn} (${j.spanEn})</strong></a> — Route stops: ${stopsStr}.</li>`;
+          return `<li><a href="${baseSiteUrl}?person=${encodeURIComponent(j.key)}&amp;lang=en"><strong>${j.titleEn} (${j.spanEn})</strong></a> — Route stops: ${stopsStr}.</li>`;
         })
         .join('');
       const passItems = (HistoricalAtlasController.STRATEGIC_PASSES || [])
@@ -2778,7 +2652,7 @@
         `<h2>Jiangshan Atlas: Historical Maps of China, Prefectures, Ancient &amp; Modern Place Names, and Major Events (403 BCE – Present)</h2>` +
         `<p>Interactive timeline atlas of Chinese history across 18 major eras—Warring States, Qin, Western Han, Eastern Han, Three Kingdoms, Western Jin, Eastern Jin &amp; Sixteen Kingdoms, Northern &amp; Southern Dynasties, Sui, Tang, Five Dynasties &amp; Ten Kingdoms, Northern Song (Liao &amp; Western Xia), Southern Song (Jin &amp; Mongol), Yuan, Ming, Qing, Republic of China, and People's Republic of China.</p>` +
         `<section><h3>1. Historical Dynasties &amp; Territories Directory</h3><ul>${dynItems}</ul></section>` +
-        `<section><h3>2. Historical Figure Journeys</h3><ul>${journeyItems}</ul></section>` +
+        `<section><h3>2. Person Chronicles &amp; Life Routes</h3><ul>${journeyItems}</ul></section>` +
         `<section><h3>3. 20 Strategic Mountain &amp; River Passes</h3><ul>${passItems}</ul></section>`;
       nav.dataset.locale = 'en';
     }
@@ -2829,7 +2703,7 @@
             if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
               this.toggleMobileChronicle(false);
             }
-            this.startJourney(jBtn.dataset.journey);
+            this.openJourneyAsPerson(jBtn.dataset.journey, -1);
           });
         }
         li.addEventListener('pointerenter', (e) => {
@@ -2947,11 +2821,15 @@
         loreEl.innerHTML = '';
         loreEl.classList.add('is-hidden');
       }
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+      }
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-genealogy', 'has-active-person');
       this._syncImmersivePaneState();
       if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
-      if (hadPerson && this.grpJourney && !this.activeJourney && !this.activeCustomRoute) {
+      if (hadPerson && this.grpJourney && !this.activeCustomRoute) {
         this.grpJourney.innerHTML = '';
       }
       if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
@@ -3077,6 +2955,11 @@
               year: st.year,
               month: st.month || 6 + sIdx * 0.05,
               coord: st.coord,
+              fromCoord: st.fromCoord || null,
+              via: st.via || null,
+              prevStopCoord: sIdx > 0 ? j.stops[sIdx - 1].coord : null,
+              quoteZh: st.quoteZh || '',
+              quoteEn: st.quoteEn || '',
               dynasty: dyn,
               siteZh: st.ancientZh,
               siteEn: st.ancientEn || this._enDict(st.ancientZh),
@@ -3204,7 +3087,10 @@
       this._recordGestureClick();
       this._dismissTraceOnboarding();
       this.stopAutoplay();
-      if (this.activeJourney) this.stopJourney(true);
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+      }
       if (this.challenge) this.stopChallenge(true);
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
@@ -3244,6 +3130,37 @@
         this._framePersonOverview();
       }
       return true;
+    }
+
+    openJourneyAsPerson(journeyKey, stopIdx = -1) {
+      if (!this.openPersonChronicle(journeyKey, -1)) return false;
+      if (stopIdx >= 0 && this.activePerson && this.activePerson.events.length) {
+        const matchIdx = this.activePerson.events.findIndex((ev) => ev.journeyStopIdx === stopIdx);
+        const targetIdx =
+          matchIdx >= 0 ? matchIdx : Math.min(this.activePerson.events.length - 1, stopIdx);
+        this.selectPersonEvent(targetIdx, true);
+      }
+      return true;
+    }
+
+    togglePersonAutoplay() {
+      if (!this.activePerson || !this.activePerson.events.length) return;
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+        return;
+      }
+      if (this.activePersonEventIdx < 0) {
+        this.selectPersonEvent(0, true);
+      }
+      this.personTimer = setInterval(() => {
+        if (!this.activePerson || this.activePersonEventIdx + 1 >= this.activePerson.events.length) {
+          clearInterval(this.personTimer);
+          this.personTimer = null;
+          return;
+        }
+        this.selectPersonEvent(this.activePersonEventIdx + 1, true);
+      }, 2600);
     }
 
     selectPersonEvent(idx, panCamera = true) {
@@ -3421,6 +3338,30 @@
         };
       });
 
+      // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
+      const accentColor = '#bd2d22';
+      const segments = [];
+      for (let i = 0; i < events.length - 1; i++) {
+        const prevEv = events[i];
+        const nextEv = events[i + 1];
+        const keepsCuratedLeg =
+          Boolean(nextEv.via || nextEv.fromCoord) &&
+          nextEv.prevStopCoord &&
+          Math.hypot(
+            prevEv.coord[0] - nextEv.prevStopCoord[0],
+            prevEv.coord[1] - nextEv.prevStopCoord[1]
+          ) < 1.2;
+        const segInfo = this._buildJourneySegmentInfo(
+          keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
+          nextEv.coord,
+          keepsCuratedLeg ? nextEv.via : null
+        );
+        if (segInfo) {
+          segments.push({ ...segInfo, toIdx: i + 1 });
+        }
+      }
+      this._renderCartographicTrajectory(segments, curIdx, accentColor);
+
       const order = events
         .map((_, idx) => idx)
         .sort((a, b) => (a === curIdx ? 1 : b === curIdx ? -1 : a - b));
@@ -3444,7 +3385,7 @@
           },
           this.grpJourney
         );
-        g.style.color = '#a83824';
+        g.style.color = accentColor;
 
         const inner = this._svgNode(
           'g',
@@ -3457,9 +3398,9 @@
 
         this._svgNode('circle', { class: 'jn-hit', r: 14, fill: 'transparent' }, inner);
         if (isCur) {
-          this._svgNode('circle', { class: 'jn-pulse', r: 12.5 }, inner);
+          this._svgNode('circle', { class: 'jn-pulse', r: 11.2 }, inner);
         }
-        this._svgNode('circle', { class: 'jn-disc', r: isCur ? 8.6 : 7.3 }, inner);
+        this._svgNode('circle', { class: 'jn-disc', r: isCur ? 7.6 : 5.8 }, inner);
         const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
         numTxt.textContent = String(idx + 1);
 
@@ -3473,7 +3414,7 @@
             : fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
           const lblTxt = this._svgNode(
             'text',
-            { class: 'jn-label', x: '0', y: '-12.5' },
+            { class: 'jn-label', x: '0', y: '-11.5' },
             inner
           );
           lblTxt.textContent = compactLbl;
@@ -3540,11 +3481,6 @@
         const summaryTxt = isEn
           ? `${events.length} events · ${dynCount} era${dynCount > 1 ? 's' : ''}`
           : `共 ${events.length} 处史事 · 历 ${dynCount} 朝`;
-        const routeBtn = profile.journeyKey
-          ? `<button type="button" class="ev-journey-btn" id="act-person-route" data-journey="${
-              profile.journeyKey
-            }">${isEn ? 'Route ▸' : '行迹路线 ▸'}</button>`
-          : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
@@ -3557,7 +3493,7 @@
           `<button type="button" class="gen-filter-pill" id="act-person-next" aria-label="${
             isEn ? 'Next event' : '下一处史事'
           }" title="${isEn ? 'Next event' : '下一处史事'}">${SVG_ICONS.arrowRight}</button>` +
-          `${routeBtn}</span>`;
+          `</span>`;
 
         const prevBtn = this._id('act-person-prev');
         if (prevBtn) prevBtn.addEventListener('click', () => this.stepPersonEvent(-1));
@@ -3565,10 +3501,6 @@
         if (nextBtn) nextBtn.addEventListener('click', () => this.stepPersonEvent(1));
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) ovBtn.addEventListener('click', () => this.selectPersonEvent(-1, true));
-        const rBtn = this._id('act-person-route');
-        if (rBtn) {
-          rBtn.addEventListener('click', () => this.startJourney(profile.journeyKey, 0));
-        }
       }
 
       const listEl = this._id('genealogy-timeline');
@@ -3598,6 +3530,9 @@
           isEn ? 'Place ›' : '沿革 ›'
         }</button>`;
 
+        const quoteTxt = isEn ? ev.quoteEn || '' : ev.quoteZh || '';
+        const quoteHtml = quoteTxt ? `<span class="person-ev-quote">${quoteTxt}</span>` : '';
+
         li.innerHTML =
           `<span class="t-era person-era-col">` +
           `<span class="person-idx-line"><span class="cr-stop-num">${idx + 1}</span><span>${yrStr}</span></span>` +
@@ -3606,6 +3541,7 @@
           `<span class="t-val">` +
           `<span class="person-site-line"><span>${siteLabel}${mapBadge}</span>${traceBtn}</span>` +
           `<span class="t-sub person-ev-copy">${isEn ? ev.textEn : ev.textZh}</span>` +
+          `${quoteHtml}` +
           `</span>`;
 
         li.addEventListener('pointerenter', (e) => {
@@ -4186,8 +4122,11 @@
         this.activeReturnPerson = null;
       }
       this._dismissTraceOnboarding();
-      if (this.activeJourney) this.stopJourney();
       if (this.activePerson) {
+        if (this.personTimer) {
+          clearInterval(this.personTimer);
+          this.personTimer = null;
+        }
         this.activePerson = null;
         this.activePersonEventIdx = -1;
         if (this.grpJourney && !this.activeCustomRoute) this.grpJourney.innerHTML = '';
@@ -4553,7 +4492,10 @@
           li.querySelectorAll('.ev-journey-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
               e.stopPropagation();
-              this.startJourney(btn.dataset.journey, Number(btn.dataset.stop || 0));
+              this.openJourneyAsPerson(
+                btn.dataset.journey,
+                btn.dataset.stop !== undefined ? Number(btn.dataset.stop) : -1
+              );
             });
           });
 
@@ -4884,19 +4826,15 @@
       if (this.challenge) return;
       this._recordGestureClick();
       this.stopAutoplay();
-      if (this.activeJourney) {
-        if (this.journeyTimer) {
-          clearInterval(this.journeyTimer);
-          this.journeyTimer = null;
-        }
-        this.stepJourney(dir > 0 ? 1 : -1);
-        return;
-      }
       if (this.activeCustomRoute) {
         this.stepCustomRoute(dir > 0 ? 1 : -1);
         return;
       }
       if (this.activePerson) {
+        if (this.personTimer) {
+          clearInterval(this.personTimer);
+          this.personTimer = null;
+        }
         this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
       }
@@ -5235,9 +5173,6 @@
         }
         this.closeMilestoneBalloon();
         this.closeGenealogyCard();
-        if (this.activeJourney && this._isMobileViewport()) {
-          this.stopJourney(true);
-        }
         if (this.challenge && this._isMobileViewport()) {
           this.stopChallenge(true);
         }
@@ -5317,7 +5252,7 @@
       const showPrefectures = !this.grpPrefectures.classList.contains('is-hidden');
       const showMilestones = !this.grpMilestones.classList.contains('is-hidden');
 
-      // Scale static markers (milestones, journey waypoints, challenge pins, genealogy overlays)
+      // Scale static markers (milestones, journey waypoints, directional chevrons, challenge pins, genealogy overlays)
       this.svg
         .querySelectorAll(
           '.neighbor-caption, .milestone-pin, #grp-journey g[data-x], #grp-challenge g[data-x], #grp-genealogy g[data-x]'
@@ -5325,8 +5260,14 @@
         .forEach((node) => {
           const x = node.getAttribute('data-x');
           const y = node.getAttribute('data-y');
+          const rot = node.getAttribute('data-rot');
           if (x !== null) {
-            node.setAttribute('transform', `translate(${x},${y}) scale(${invScale})`);
+            node.setAttribute(
+              'transform',
+              rot !== null
+                ? `translate(${x},${y}) scale(${invScale}) rotate(${rot})`
+                : `translate(${x},${y}) scale(${invScale})`
+            );
           }
         });
 
@@ -5353,7 +5294,7 @@
           ox: 0,
           oy: 0,
         }));
-        const minSepPx = 17.2;
+        const minSepPx = 15.8;
         for (let iter = 0; iter < 12; iter++) {
           for (let i = 0; i < pts.length; i++) {
             for (let j = i + 1; j < pts.length; j++) {
@@ -5453,12 +5394,6 @@
               `translate(${x},${y}) scale(${invScale}) rotate(${rot})`
             );
           }
-        });
-      }
-      if (this.grpJourney && this.grpJourney.firstChild) {
-        this.grpJourney.querySelectorAll('path[data-base-sw]').forEach((p) => {
-          const baseSw = parseFloat(p.getAttribute('data-base-sw') || '3');
-          p.style.strokeWidth = `${(baseSw * s).toFixed(2)}px`;
         });
       }
 
@@ -5991,16 +5926,16 @@
       if (!this.activeCustomRoute) return;
       this.activeCustomRoute = null;
       this.customRouteStopIdx = -1;
-      if (this.grpJourney && !this.activeJourney) {
+      if (this.grpJourney && !this.activePerson) {
         this.grpJourney.innerHTML = '';
       }
-      if (this.journeyCard && !this.activeJourney) {
+      if (this.journeyCard) {
         this.journeyCard.classList.add('is-hidden');
         this.journeyCard.classList.remove('is-custom-route');
         this.journeyCard.innerHTML = '';
       }
       const vf = this._id('viewport-frame');
-      if (vf && !this.activeJourney) vf.classList.remove('has-active-journey');
+      if (vf) vf.classList.remove('has-active-journey');
       this._syncMobileOverlayState();
     }
 
@@ -6014,23 +5949,7 @@
       if (st.year !== undefined && st.year !== this.year) {
         this.jumpToYear(st.year);
       }
-      if (this.grpJourney && typeof this.grpJourney.querySelectorAll === 'function') {
-        this.grpJourney.querySelectorAll('.journey-node').forEach((nodeEl) => {
-          const nIdx = Number(nodeEl.dataset.stopIdx);
-          const isCur = nIdx === clampedIdx;
-          nodeEl.classList.toggle('is-current', isCur);
-          nodeEl.classList.toggle('is-passed', !isCur);
-          const disc = nodeEl.querySelector('.jn-disc');
-          if (disc) disc.setAttribute('r', isCur ? '8.5' : '7.5');
-          const oldPulse = nodeEl.querySelector('.jn-pulse');
-          if (isCur && !oldPulse) {
-            const pulse = this._svgNode('circle', { class: 'jn-pulse', r: 12 });
-            nodeEl.insertBefore(pulse, nodeEl.firstChild);
-          } else if (!isCur && oldPulse) {
-            oldPulse.remove();
-          }
-        });
-      }
+      this._drawCustomRouteOverlay(stops);
       if (panCamera && st.lng !== undefined && st.lat !== undefined) {
         const [tx, ty] = this.projector.toScreen(st.lng, st.lat);
         const aspect = this._getViewportAspect();
@@ -6344,7 +6263,6 @@
     startChallenge(opts = {}) {
       this._recordGestureClick();
       this.stopAutoplay();
-      if (this.activeJourney) this.stopJourney(true);
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();
@@ -6367,8 +6285,6 @@
       this._id('challenge-card').classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
       if (actChal) actChal.classList.add('is-active');
-      const jMenuBtn = this._id('act-journey-menu');
-      if (jMenuBtn) jMenuBtn.classList.add('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
       if (lblChal) {
         lblChal.textContent =
@@ -6392,8 +6308,6 @@
       if (sb) sb.classList.remove('is-hidden');
       const actChal = this._id('act-challenge');
       if (actChal) actChal.classList.remove('is-active');
-      const jMenuBtn = this._id('act-journey-menu');
-      if (jMenuBtn && !this.activeJourney) jMenuBtn.classList.remove('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
       if (lblChal) {
         lblChal.textContent =
@@ -6686,130 +6600,8 @@
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS) || [];
     }
 
-    startJourney(journeyKey, stopIdx = 0) {
-      const journeys = HistoricalAtlasController.HISTORICAL_JOURNEYS;
-      const found = journeys.find((j) => j.key === journeyKey) || journeys[0];
-      if (!found) return;
-
-      this._recordGestureClick();
-      this._dismissJourneyOnboarding();
-      this._dismissTraceOnboarding();
-      this.stopAutoplay();
-      if (this.journeyTimer) {
-        clearInterval(this.journeyTimer);
-        this.journeyTimer = null;
-      }
-      if (this.challenge) this.stopChallenge(true);
-      this.clearCustomRoute();
-      this.closeGenealogyCard();
-      this.closeMilestoneBalloon();
-
-      this.activeJourney = found;
-      this.journeyStopIdx = Math.max(0, Math.min(found.stops.length - 1, stopIdx));
-      this._syncImmersivePaneState();
-
-      const vf = this._id('viewport-frame');
-      if (vf) vf.classList.add('has-active-journey');
-      if (this.journeyCard) this.journeyCard.classList.remove('is-hidden');
-
-      document.querySelectorAll('.journey-chip-btn, .journey-menu-item').forEach((btn) => {
-        btn.classList.toggle('is-active', btn.dataset.journey === found.key);
-      });
-      const jMenuBtn = this._id('act-journey-menu');
-      if (jMenuBtn) jMenuBtn.classList.add('is-active');
-
-      const stop = found.stops[this.journeyStopIdx];
-      if (stop) this.jumpToYear(stop.year);
-
-      this._renderJourneyOverlay();
-      this._renderJourneyCard();
-      this._syncDocumentSeoMeta();
-
-      if (stopIdx === 0) {
-        this._frameJourneyOverview(found);
-      } else if (stop) {
-        this._flyToJourneyStop(stop);
-      }
-    }
-
-    stopJourney(keepPaneState = false) {
-      if (this.journeyTimer) {
-        clearInterval(this.journeyTimer);
-        this.journeyTimer = null;
-      }
-      this.activeJourney = null;
-      this.activeCustomRoute = null;
-      this.customRouteStopIdx = -1;
-      this.journeyStopIdx = 0;
-      this.journeyCardCollapsed = false;
-      if (this.grpJourney) this.grpJourney.innerHTML = '';
-      if (this.journeyCard) {
-        this.journeyCard.classList.add('is-hidden');
-        this.journeyCard.classList.remove('is-custom-route', 'is-collapsed');
-        this.journeyCard.innerHTML = '';
-      }
-      const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('has-active-journey');
-      document.querySelectorAll('.journey-chip-btn, .journey-menu-item').forEach((btn) => {
-        btn.classList.remove('is-active');
-      });
-      const jMenuBtn = this._id('act-journey-menu');
-      if (jMenuBtn) jMenuBtn.classList.remove('is-active');
-      if (!keepPaneState) {
-        this._syncImmersivePaneState();
-      }
-    }
-
-    goToJourneyStop(idx, panCamera = true) {
-      if (!this.activeJourney) return;
-      const stops = this.activeJourney.stops;
-      this.journeyStopIdx = Math.max(0, Math.min(stops.length - 1, idx));
-      const stop = stops[this.journeyStopIdx];
-      if (stop) {
-        this.jumpToYear(stop.year);
-        if (panCamera) this._flyToJourneyStop(stop);
-      }
-      this._renderJourneyOverlay();
-      this._renderJourneyCard();
-    }
-
-    stepJourney(delta) {
-      if (!this.activeJourney) return;
-      const nextIdx =
-        (this.journeyStopIdx + delta + this.activeJourney.stops.length) %
-        this.activeJourney.stops.length;
-      this.goToJourneyStop(nextIdx, true);
-    }
-
-    toggleJourneyAutoplay() {
-      if (!this.activeJourney) return;
-      if (this.journeyTimer) {
-        clearInterval(this.journeyTimer);
-        this.journeyTimer = null;
-        this._renderJourneyCard();
-        return;
-      }
-      this.journeyTimer = setInterval(() => {
-        if (!this.activeJourney) {
-          clearInterval(this.journeyTimer);
-          this.journeyTimer = null;
-          return;
-        }
-        if (this.journeyStopIdx + 1 >= this.activeJourney.stops.length) {
-          clearInterval(this.journeyTimer);
-          this.journeyTimer = null;
-          this._renderJourneyCard();
-          return;
-        }
-        this.goToJourneyStop(this.journeyStopIdx + 1, true);
-      }, 2800);
-      this._renderJourneyCard();
-    }
-
-    _getJourneyVisibleTopFrac() {
-      if (typeof window === 'undefined' || window.innerWidth > 900) {
-        return 1;
-      }
+    _getCustomRouteVisibleTopFrac() {
+      if (typeof window === 'undefined' || window.innerWidth > 900) return 1;
       const vf = this._id('viewport-frame');
       if (
         vf &&
@@ -6828,115 +6620,46 @@
           return Math.max(0.42, Math.min(0.92, (jcRect.top - vfRect.top - 10) / vfRect.height));
         }
       }
-      return this.journeyCardCollapsed ? 0.85 : 0.58;
+      return 0.72;
     }
 
-    toggleJourneyCardCollapse(force) {
-      if (!this.activeJourney) return;
-      this.journeyCardCollapsed =
-        typeof force === 'boolean' ? force : !Boolean(this.journeyCardCollapsed);
-      this._renderJourneyCard();
-      const curStop = this.activeJourney.stops[this.journeyStopIdx];
-      if (this.journeyStopIdx === 0) {
-        this._frameJourneyOverview(this.activeJourney);
-      } else if (curStop) {
-        this._flyToJourneyStop(curStop);
-      }
-    }
-
-    _frameJourneyOverview(journey) {
-      if (!journey || !journey.stops.length) return;
-      let minX = Infinity;
-      let minY = Infinity;
-      let maxX = -Infinity;
-      let maxY = -Infinity;
-      for (const st of journey.stops) {
-        const [sx, sy] = this.projector.toScreen(st.coord[0], st.coord[1]);
-        if (sx < minX) minX = sx;
-        if (sx > maxX) maxX = sx;
-        if (sy < minY) minY = sy;
-        if (sy > maxY) maxY = sy;
-      }
-      const cx = (minX + maxX) * 0.5;
-      const cy = (minY + maxY) * 0.5;
-      const aspect = this._getViewportAspect();
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
-      if (!isDesktop) {
-        const visTopFrac = this._getJourneyVisibleTopFrac();
-        const topPadFrac = 0.06;
-        const botPadFrac = 0.05;
-        const availFrac = Math.max(0.32, visTopFrac - topPadFrac - botPadFrac);
-        const midFrac = topPadFrac + availFrac * 0.5;
-        const effAspect = Math.max(0.36, aspect * availFrac);
-        const spanW = Math.max(maxX - minX + 130, (maxY - minY + 92) / effAspect) * 1.12;
-        const w = Math.max(320, Math.min(1380, spanW));
-        const h = w * aspect;
-        this._animateCameraTo({
-          x: cx - w * 0.5,
-          y: cy - h * midFrac,
-          w,
-          h,
-        });
-        return;
-      }
-      const spanW = Math.max(maxX - minX + 110, (maxY - minY + 120) / aspect) * 1.18;
-      const w = Math.max(320, Math.min(960, spanW));
-      const h = w * aspect;
-      // Offset camera slightly down/left so the bottom-left journey card never occludes western/southern stops
-      const offsetX = -w * 0.06;
-      const offsetY = h * 0.06;
-      this._animateCameraTo({
-        x: Math.max(-140, Math.min(1000 - w + 140, cx - w * 0.5 + offsetX)),
-        y: Math.max(-100, Math.min(700 - h + 120, cy - h * 0.5 + offsetY)),
-        w,
-        h,
-      });
-    }
-
-    _flyToJourneyStop(stop) {
-      if (!stop || !stop.coord) return;
-      const [tx, ty] = this.projector.toScreen(stop.coord[0], stop.coord[1]);
-      const aspect = this._getViewportAspect();
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
-      if (!isDesktop) {
-        const visTopFrac = this._getJourneyVisibleTopFrac();
-        const w = Math.max(340, Math.min(this.camera.w, 480));
-        const h = w * aspect;
-        this._animateCameraTo({
-          x: tx - w * 0.5,
-          y: ty - h * (visTopFrac * 0.5),
-          w,
-          h,
-        });
-        return;
-      }
-      const w = Math.max(360, Math.min(this.camera.w, 540));
-      const h = w * aspect;
-      const offsetX = -w * 0.08;
-      const offsetY = h * 0.06;
-      this._animateCameraTo({
-        x: tx - w * 0.5 + offsetX,
-        y: ty - h * 0.48 + offsetY,
-        w,
-        h,
-      });
-    }
-
-    _buildJourneySegmentSvgPath(c1, c2, viaCoords) {
+    _buildJourneySegmentInfo(c1, c2, viaCoords) {
+      if (!c1 || !c2) return null;
       const geoPts = [c1, ...(viaCoords || []), c2];
       const pts = geoPts.map((pt) => this.projector.toScreen(pt[0], pt[1]));
+      const first = pts[0];
+      const last = pts[pts.length - 1];
+      const chord = Math.hypot(last[0] - first[0], last[1] - first[1]);
+      if (chord < 8) return null;
+
       if (pts.length === 2) {
-        const [x1, y1] = pts[0];
-        const [x2, y2] = pts[1];
+        const [x1, y1] = first;
+        const [x2, y2] = last;
         const dx = x2 - x1;
         const dy = y2 - y1;
-        const len = Math.hypot(dx, dy) || 1;
-        const bend = Math.min(18, len * 0.12);
-        const mx = (x1 + x2) * 0.5 - (dy / len) * bend;
-        const my = (y1 + y2) * 0.5 + (dx / len) * bend;
-        return `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${mx.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+        const bend = Math.max(9, Math.min(34, chord * 0.165));
+        const cx = (x1 + x2) * 0.5 - (dy / chord) * bend;
+        const cy = (y1 + y2) * 0.5 + (dx / chord) * bend;
+        const t = 0.53;
+        const mt = 1 - t;
+        const mx = mt * mt * x1 + 2 * mt * t * cx + t * t * x2;
+        const my = mt * mt * y1 + 2 * mt * t * cy + t * t * y2;
+        const tx = 2 * mt * (cx - x1) + 2 * t * (x2 - cx);
+        const ty = 2 * mt * (cy - y1) + 2 * t * (y2 - cy);
+        return {
+          d: `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`,
+          mx,
+          my,
+          angleDeg: (Math.atan2(ty, tx) * 180) / Math.PI,
+          chord,
+        };
       }
+
       let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+      const midSeg = Math.floor((pts.length - 1) * 0.5);
+      let mx = (first[0] + last[0]) * 0.5;
+      let my = (first[1] + last[1]) * 0.5;
+      let angleDeg = (Math.atan2(last[1] - first[1], last[0] - first[0]) * 180) / Math.PI;
       for (let i = 0; i < pts.length - 1; i++) {
         const p0 = pts[Math.max(0, i - 1)];
         const p1 = pts[i];
@@ -6947,257 +6670,98 @@
         const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
         const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
         d += `C${cp1x.toFixed(1)} ${cp1y.toFixed(1)},${cp2x.toFixed(1)} ${cp2y.toFixed(1)},${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+        if (i === midSeg) {
+          mx = 0.125 * p1[0] + 0.375 * cp1x + 0.375 * cp2x + 0.125 * p2[0];
+          my = 0.125 * p1[1] + 0.375 * cp1y + 0.375 * cp2y + 0.125 * p2[1];
+          const tx = 0.75 * (cp1x - p1[0]) + 1.5 * (cp2x - cp1x) + 0.75 * (p2[0] - cp2x);
+          const ty = 0.75 * (cp1y - p1[1]) + 1.5 * (cp2y - cp1y) + 0.75 * (p2[1] - cp2y);
+          angleDeg = (Math.atan2(ty, tx) * 180) / Math.PI;
+        }
       }
-      return d;
+      return { d, mx, my, angleDeg, chord };
     }
 
-    _renderJourneyOverlay() {
-      if (!this.grpJourney) return;
-      this.grpJourney.innerHTML = '';
-      if (!this.activeJourney) return;
+    _buildJourneySegmentSvgPath(c1, c2, viaCoords) {
+      const info = this._buildJourneySegmentInfo(c1, c2, viaCoords);
+      return info ? info.d : '';
+    }
 
-      const j = this.activeJourney;
-      const stops = j.stops;
-      const curIdx = this.journeyStopIdx;
-
-      const segPaths = [];
-      for (let i = 0; i < stops.length - 1; i++) {
-        segPaths.push(
-          this._buildJourneySegmentSvgPath(
-            stops[i + 1].fromCoord || stops[i].coord,
-            stops[i + 1].coord,
-            stops[i + 1].via
-          )
-        );
-      }
-
-      const fullPathD = segPaths.join(' ');
-      const activeEndSeg = curIdx === 0 ? segPaths.length : curIdx;
-      const passedPathD = segPaths.slice(0, activeEndSeg).join(' ');
-
-      // 1. Parchment casing halo along full route
-      this._svgNode(
-        'path',
-        {
-          d: fullPathD,
-          class: 'journey-track-bg',
-          'data-base-sw': '6.2',
-        },
-        this.grpJourney
-      );
-
-      // 2. Full route baseline so the entire historical route is always visible
-      this._svgNode(
-        'path',
-        {
-          d: fullPathD,
-          class: 'journey-track-upcoming',
-          stroke: j.color,
-          'data-base-sw': '2.4',
-        },
-        this.grpJourney
-      );
-
-      // 3. Passed / active route segment + flowing animated overlay
-      if (passedPathD) {
-        this._svgNode(
-          'path',
-          {
-            d: passedPathD,
-            class: 'journey-track-passed',
-            stroke: j.color,
-            'data-base-sw': '3.5',
-          },
-          this.grpJourney
-        );
-        this._svgNode(
-          'path',
-          {
-            d: passedPathD,
-            class: 'journey-track-flow',
-            'data-base-sw': '1.8',
-          },
-          this.grpJourney
-        );
-      }
-
-      // 4. Numbered waypoint pins (render non-current first, current stop on top)
-      const order = stops.map((_, idx) => idx).sort((a, b) => (a === curIdx ? 1 : b === curIdx ? -1 : a - b));
-      for (const idx of order) {
-        const st = stops[idx];
-        const [sx, sy] = this.projector.toScreen(st.coord[0], st.coord[1]);
-        const stateCls =
-          idx === curIdx ? 'is-current' : idx < curIdx ? 'is-passed' : 'is-upcoming';
+    _renderCartographicTrajectory(segments, curIdx, accentColor = '#bd2d22') {
+      if (!this.grpJourney || !Array.isArray(segments) || !segments.length) return;
+      const appendChevron = (seg, cls) => {
         const g = this._svgNode(
           'g',
           {
-            class: `journey-node ${stateCls}`,
-            'data-x': sx.toFixed(1),
-            'data-y': sy.toFixed(1),
-            'data-stop-idx': String(idx),
+            class: `journey-dir-mark${cls ? ' ' + cls : ''}`,
+            'data-x': seg.mx.toFixed(1),
+            'data-y': seg.my.toFixed(1),
+            'data-rot': seg.angleDeg.toFixed(1),
           },
           this.grpJourney
         );
-        g.style.color = j.color;
+        g.style.color = accentColor;
+        this._svgNode(
+          'path',
+          { d: 'M-3.5 -2.45L2.75 0L-3.5 2.45L-1.85 0Z', class: 'journey-chevron' },
+          g
+        );
+      };
 
-        if (idx === curIdx) {
-          this._svgNode('circle', { class: 'jn-pulse', r: 12 }, g);
+      if (curIdx < 0) {
+        const fullD = segments.map((s) => s.d).join(' ');
+        this._svgNode('path', { d: fullD, class: 'journey-track-halo' }, this.grpJourney);
+        this._svgNode(
+          'path',
+          { d: fullD, class: 'journey-track-thread', stroke: accentColor },
+          this.grpJourney
+        );
+        const placedMarks = [];
+        for (const seg of segments) {
+          if (seg.chord < 20) continue;
+          if (placedMarks.some(([px, py]) => Math.hypot(px - seg.mx, py - seg.my) < 15)) continue;
+          placedMarks.push([seg.mx, seg.my]);
+          appendChevron(seg, '');
         }
-        this._svgNode('circle', { class: 'jn-disc', r: idx === curIdx ? 8.5 : 7.2 }, g);
-        const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
-        numTxt.textContent = String(idx + 1);
-
-        const lblY = st.labelPos === 'bottom' ? '18' : '-11.5';
-        const lblTxt = this._svgNode('text', { class: 'jn-label', x: '0', y: lblY }, g);
-        lblTxt.textContent = this.locale === 'en' ? st.ancientEn : st.ancientZh;
+        return;
       }
 
-      this._rescaleSvgTypography();
-    }
-
-    _renderJourneyCard() {
-      if (!this.journeyCard || !this.activeJourney) return;
-      const j = this.activeJourney;
-      const stops = j.stops;
-      const idx = this.journeyStopIdx;
-      const st = stops[idx];
-      const isEn = this.locale === 'en';
-      const allJourneys = HistoricalAtlasController.HISTORICAL_JOURNEYS;
-
-      const tabsHtml = allJourneys
-        .map(
-          (item) =>
-            `<button type="button" class="jc-tab-btn${item.key === j.key ? ' is-active' : ''}" data-jkey="${item.key}">${
-              isEn ? item.shortEn : item.shortZh
-            }</button>`
-        )
-        .join('');
-
-      const dotsHtml = stops
-        .map((s, i) => {
-          const cls =
-            i === idx ? 'jc-dot is-current' : i < idx ? 'jc-dot is-passed' : 'jc-dot';
-          const tip = `${i + 1}. ${isEn ? s.ancientEn : s.ancientZh} (${this.formatYear(s.year)})`;
-          return `<button type="button" class="${cls}" data-sidx="${i}" title="${tip}">${i + 1}</button>`;
-        })
-        .join('');
-
-      const jDyn =
-        this.dynasties[this._findDynastyIndex(st.year)] ||
-        this.dynasties.find((d) => d.key === j.dynastyKey);
-      const yrStr = isEn
-        ? `${this.formatYear(st.year)}${jDyn ? ' · ' + this.dynastyName(jDyn) : ''}`
-        : `${st.year <= 0 ? '公元前' + -st.year + '年' : '公元' + st.year + '年'} · ${st.eraZh}`;
-      const placeStr = isEn
-        ? `${st.ancientEn} (Now ${st.modernEn})`
-        : `${st.ancientZh}（今${st.modernZh}）`;
-
-      const autoLabel = this.journeyTimer
-        ? isEn
-          ? `${SVG_ICONS.pause} Pause`
-          : `${SVG_ICONS.pause} 暂停巡礼`
-        : isEn
-          ? `${SVG_ICONS.play} Auto Tour`
-          : `${SVG_ICONS.play} 自动巡礼`;
-
-      const isCollapsed = Boolean(this.journeyCardCollapsed);
-      this.journeyCard.classList.remove('is-custom-route');
-      this.journeyCard.classList.toggle('is-collapsed', isCollapsed);
-      this.journeyCard.innerHTML =
-        `<div class="jc-top-bar">` +
-        `<span class="jc-mobile-person">${isEn ? j.shortEn : j.shortZh}</span>` +
-        `<div class="jc-tabs">${tabsHtml}</div>` +
-        `<span class="jc-collapsed-summary"><span class="jc-step-badge" style="background:${j.color}">${idx + 1}/${stops.length}</span><span class="jc-collapsed-title">${isEn ? st.titleEn : st.titleZh}</span></span>` +
-        `<button type="button" class="jc-close-btn" id="act-journey-overview" title="${isEn ? 'Fit entire route on map' : '全线总览视图'}">${isEn ? 'Full Route' : '全线'}</button>` +
-        `<button type="button" class="jc-close-btn jc-collapse-btn" id="act-collapse-journey" aria-expanded="${!isCollapsed}" title="${isCollapsed ? (isEn ? 'Expand story card' : '展开行迹详述') : (isEn ? 'Collapse card to inspect map' : '收起卡片看大图')}">${isCollapsed ? (isEn ? 'Story ▲' : '详述 ▲') : (isEn ? 'Map ▾' : '收起 ▾')}</button>` +
-        `<button type="button" class="jc-close-btn" id="act-close-journey" title="${isEn ? 'Exit Historical Journey (Esc)' : '退出行迹巡礼 (Esc)'}">${isEn ? 'Exit' : '退出'} ×</button>` +
-        `</div>` +
-        `<div class="jc-body">` +
-        `<div class="jc-stop-head">` +
-        `<span class="jc-step-badge" style="background:${j.color}">${
-          isEn ? `Stop ${idx + 1} / ${stops.length}` : `第 ${idx + 1} / ${stops.length} 站`
-        }</span>` +
-        `<span class="jc-stop-title">${isEn ? st.titleEn : st.titleZh}</span>` +
-        `<span class="jc-stop-year">${yrStr}</span>` +
-        `</div>` +
-        `<div class="jc-stop-place">${SVG_ICONS.pin} <span>${placeStr}</span></div>` +
-        `<p class="jc-stop-desc">${isEn ? st.descEn : st.descZh}</p>` +
-        `<div class="jc-stop-quote">${isEn ? st.quoteEn : st.quoteZh}</div>` +
-        `</div>` +
-        `<div class="jc-footer">` +
-        `<div class="jc-dots">${dotsHtml}</div>` +
-        `<div class="jc-controls">` +
-        `<button type="button" class="jc-nav-btn" id="act-journey-prev">${SVG_ICONS.arrowLeft} ${isEn ? 'Prev' : '上一站'}</button>` +
-        `<button type="button" class="jc-nav-btn is-primary" id="act-journey-auto">${autoLabel}</button>` +
-        `<button type="button" class="jc-nav-btn" id="act-journey-next">${isEn ? 'Next' : '下一站'} ${SVG_ICONS.arrowRight}</button>` +
-        `</div>` +
-        `</div>`;
-
-      this.journeyCard.querySelectorAll('.jc-tab-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          this.startJourney(btn.dataset.jkey, 0);
-        });
-      });
-      const activeTabEl = this.journeyCard.querySelector('.jc-tab-btn.is-active');
-      const tabsWrapEl = this.journeyCard.querySelector('.jc-tabs');
-      if (activeTabEl && tabsWrapEl && tabsWrapEl.scrollWidth > tabsWrapEl.clientWidth) {
-        tabsWrapEl.scrollLeft = Math.max(
-          0,
-          activeTabEl.offsetLeft - (tabsWrapEl.clientWidth - activeTabEl.offsetWidth) * 0.5
+      const passedSegs = segments.filter((s) => s.toIdx < curIdx);
+      const passedD = passedSegs.map((s) => s.d).join(' ');
+      const focusSeg = segments.find((s) => s.toIdx === curIdx) || null;
+      const upcomingD = segments.filter((s) => s.toIdx > curIdx).map((s) => s.d).join(' ');
+      const bgD = [passedD, upcomingD].filter(Boolean).join(' ');
+      if (bgD) {
+        this._svgNode('path', { d: bgD, class: 'journey-track-halo' }, this.grpJourney);
+      }
+      if (upcomingD) {
+        this._svgNode('path', { d: upcomingD, class: 'journey-track-upcoming' }, this.grpJourney);
+      }
+      if (passedD) {
+        this._svgNode(
+          'path',
+          { d: passedD, class: 'journey-track-passed', stroke: '#b83327' },
+          this.grpJourney
         );
+        const placedMuted = [];
+        for (const seg of passedSegs) {
+          if (seg.chord < 26) continue;
+          if (placedMuted.some(([px, py]) => Math.hypot(px - seg.mx, py - seg.my) < 18)) continue;
+          placedMuted.push([seg.mx, seg.my]);
+          appendChevron(seg, 'is-muted');
+        }
       }
-      const activeDotEl = this.journeyCard.querySelector('.jc-dot.is-current');
-      const dotsWrapEl = this.journeyCard.querySelector('.jc-dots');
-      if (activeDotEl && dotsWrapEl && dotsWrapEl.scrollWidth > dotsWrapEl.clientWidth) {
-        dotsWrapEl.scrollLeft = Math.max(
-          0,
-          activeDotEl.offsetLeft - (dotsWrapEl.clientWidth - activeDotEl.offsetWidth) * 0.5
+      if (focusSeg) {
+        this._svgNode(
+          'path',
+          { d: focusSeg.d, class: 'journey-track-halo is-focus' },
+          this.grpJourney
         );
-      }
-      this.journeyCard.querySelectorAll('.jc-dot').forEach((dot) => {
-        dot.addEventListener('click', () => {
-          if (this.journeyTimer) {
-            clearInterval(this.journeyTimer);
-            this.journeyTimer = null;
-          }
-          this.goToJourneyStop(Number(dot.dataset.sidx), true);
-        });
-      });
-      const prevBtn = this._id('act-journey-prev');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          if (this.journeyTimer) {
-            clearInterval(this.journeyTimer);
-            this.journeyTimer = null;
-          }
-          this.stepJourney(-1);
-        });
-      }
-      const nextBtn = this._id('act-journey-next');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (this.journeyTimer) {
-            clearInterval(this.journeyTimer);
-            this.journeyTimer = null;
-          }
-          this.stepJourney(1);
-        });
-      }
-      const autoBtn = this._id('act-journey-auto');
-      if (autoBtn) {
-        autoBtn.addEventListener('click', () => this.toggleJourneyAutoplay());
-      }
-      const ovBtn = this._id('act-journey-overview');
-      if (ovBtn) {
-        ovBtn.addEventListener('click', () => this._frameJourneyOverview(j));
-      }
-      const collapseBtn = this._id('act-collapse-journey');
-      if (collapseBtn) {
-        collapseBtn.addEventListener('click', () => this.toggleJourneyCardCollapse());
-      }
-      const closeBtn = this._id('act-close-journey');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => this.stopJourney());
+        this._svgNode(
+          'path',
+          { d: focusSeg.d, class: 'journey-track-focus', stroke: '#c6281c' },
+          this.grpJourney
+        );
+        appendChevron(focusSeg, 'is-focus');
       }
     }
 
@@ -7209,24 +6773,7 @@
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
 
-      // 0a. Curated Historical Journeys (青史行迹)
-      for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
-        const d = this.dynasties.find((item) => item.key === j.dynastyKey) || this.dynasties[0];
-        const stopNames = j.stops.map((s) => `${s.ancientZh} ${s.modernZh} ${s.titleZh}`).join(' ');
-        entries.push({
-          kind: 'journey',
-          journeyKey: j.key,
-          dynasty: d,
-          year: j.stops[0].year,
-          titleZh: j.titleZh,
-          subZh: `${j.spanZh} · 共 ${j.stops.length} 站`,
-          titleEn: j.titleEn,
-          subEn: `${j.spanEn} · ${j.stops.length} stops`,
-          keywords: `${j.shortZh} ${j.titleZh} ${j.shortEn} ${j.titleEn} 青史行迹 行迹 路线 秦始皇 嬴政 秦王 扫六合 一统六国 统一六国 灭六国 王翦 王贲 李信 蒙恬 荆轲 丝绸之路 贬谪 西行 东坡 诸葛亮 孔明 卧龙 出师表 北伐 隆中 李白 太白 青莲 谪仙 壮游 王阳明 王守仁 阳明心学 知行合一 致良知 龙场悟道 ${stopNames}`.toLowerCase(),
-        });
-      }
-
-      // 0b. Historical Figures Chronicle Index (点人溯事)
+      // 0a. Historical Figures Chronicle Index (点人溯事)
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
         const d =
           this.dynasties.find((item) => item.key === p.dynastyKey) ||
@@ -7245,9 +6792,21 @@
           subZh: `${p.courtesyZh || d.title} · 共 ${evCount} 处史事`,
           titleEn: p.en,
           subEn: `${p.courtesyEn || d.title} · ${evCount} events`,
-          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 人物 生平 事迹`.toLowerCase(),
+          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 人物 生平 事迹 行迹`.toLowerCase(),
         });
       }
+
+      // 0b. Map Pinpoint Quiz Mode (舆图寻址 · 古地名小试)
+      entries.push({
+        kind: 'quiz',
+        dynasty: this.dynasties[2] || this.dynasties[0],
+        year: null,
+        titleZh: '舆图寻址 · 古地名小试',
+        subZh: '盲图落针标定历代名城与雄关 · 10题计分',
+        titleEn: 'Map Pinpoint · Ancient Place Quiz',
+        subEn: 'Pinpoint 10 ancient cities & strategic passes on the map',
+        keywords: '舆图寻址 古地名小试 挑战 猜地名 雅集 quiz pinpoint challenge game'.toLowerCase(),
+      });
 
       // 0. Dynasties / Historical Periods
       for (const d of this.dynasties) {
@@ -7696,13 +7255,14 @@
       this.clearCustomRoute();
       this._clearQuickSearchInput();
 
-      if (item.kind === 'person') {
-        this.openPersonChronicle(item.personProfile || item.personKey || item.titleZh, -1);
+      if (item.kind === 'quiz') {
+        if (this.challenge) this.stopChallenge();
+        else this.startChallenge();
         return;
       }
 
-      if (item.kind === 'journey' && item.journeyKey) {
-        this.startJourney(item.journeyKey, 0);
+      if (item.kind === 'person') {
+        this.openPersonChronicle(item.personProfile || item.personKey || item.titleZh, -1);
         return;
       }
 
@@ -7770,7 +7330,7 @@
         const q = searchInp.value.trim();
         const kindLabel = {
           person: this.locale === 'en' ? 'Figure' : '人物',
-          journey: this.locale === 'en' ? 'Journey' : '行迹',
+          quiz: this.locale === 'en' ? 'Quiz' : '雅集',
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
           era: this.locale === 'en' ? 'Era' : '纪年',
           city: this.locale === 'en' ? 'City' : '古城',
@@ -7782,24 +7342,52 @@
         };
         if (!q) {
           const index = this._ensureSearchIndex();
-          currentResults = index.filter((item) => item.kind === 'journey');
+          const featuredOrder = [
+            'qinshihuang',
+            'zhangqian',
+            'zhugeliang',
+            'xuanzang',
+            'libai',
+            'sushi',
+            'wangyangming',
+          ];
+          const featuredPeople = featuredOrder
+            .map((key) => index.find((item) => item.kind === 'person' && item.personKey === key))
+            .filter(Boolean);
+          const quizItem = index.find((item) => item.kind === 'quiz');
+          currentResults = quizItem ? [...featuredPeople, quizItem] : featuredPeople;
           activeSearchIdx = -1;
           searchList.innerHTML = '';
           const head = document.createElement('li');
           head.className = 'sr-section-head';
           head.textContent =
             this.locale === 'en'
-              ? 'Historical Journeys · Quick Launch'
-              : '青史行迹 · 人物时空巡礼';
+              ? 'Person Chronicles · Featured Figures (search any figure)'
+              : '点人溯事 · 青史人物行迹（可搜历代帝王名臣）';
           searchList.appendChild(head);
           currentResults.forEach((item) => {
             const li = document.createElement('li');
-            const mainText = this.locale === 'en' ? item.titleEn : item.titleZh;
+            const isQuiz = item.kind === 'quiz';
+            if (isQuiz) {
+              li.id = 'act-challenge';
+              li.className = 'sr-quiz-item';
+            }
+            const mainText = isQuiz && this.challenge
+              ? this.locale === 'en'
+                ? 'Quiz Active · Click to Exit'
+                : '挑战进行中 · 点击退出'
+              : this.locale === 'en'
+                ? item.titleEn
+                : item.titleZh;
             const subText = this.locale === 'en' ? item.subEn : item.subZh;
-            const tagText = `${this.dynastyBadge(item.dynasty)} · ${kindLabel.journey}`;
+            const tagText = isQuiz
+              ? this.locale === 'en'
+                ? 'Quiz · 10 Rds'
+                : '雅集 · 挑战'
+              : `${this.dynastyBadge(item.dynasty)} · ${kindLabel.person}`;
             li.innerHTML =
-              `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
-              `<span class="sr-tag">${tagText}</span>`;
+              `<div><span class="sr-main"${isQuiz ? ' id="lbl-challenge"' : ''}>${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
+              `<span class="sr-tag${isQuiz ? ' is-quiz' : ''}">${tagText}</span>`;
             const pickItem = (e) => {
               e.preventDefault();
               this._selectSearchResult(item);
@@ -7906,73 +7494,15 @@
       // Layer popover menu & checkboxes
       const layersBtn = this._id('act-layers-menu');
       const layersPopover = this._id('layers-popover');
-      const journeyBtn = this._id('act-journey-menu');
-      const journeyPopover = this._id('journey-popover');
       const closeLayersPopover = () => {
         if (!layersPopover || !layersBtn) return;
         layersPopover.classList.add('is-hidden');
         layersBtn.classList.remove('is-active');
         layersBtn.setAttribute('aria-expanded', 'false');
       };
-      const closeJourneyPopover = () => {
-        if (!journeyPopover || !journeyBtn) return;
-        journeyPopover.classList.add('is-hidden');
-        if (!this.activeJourney && !this.challenge) {
-          journeyBtn.classList.remove('is-active');
-        }
-        journeyBtn.setAttribute('aria-expanded', 'false');
-      };
-      if (journeyBtn && journeyPopover) {
-        journeyBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this._dismissJourneyOnboarding();
-          closeLayersPopover();
-          const willOpen = journeyPopover.classList.contains('is-hidden');
-          if (willOpen) {
-            if (window.innerWidth > 640) {
-              const btnRect = journeyBtn.getBoundingClientRect();
-              const navRect = this._id('nav-bar').getBoundingClientRect();
-              const leftPx = Math.max(
-                12,
-                Math.min(window.innerWidth - 310, btnRect.left - navRect.left)
-              );
-              journeyPopover.style.left = `${leftPx}px`;
-              journeyPopover.style.right = 'auto';
-            } else {
-              journeyPopover.style.left = '';
-              journeyPopover.style.right = '';
-            }
-            journeyPopover.classList.remove('is-hidden');
-            journeyBtn.classList.add('is-active');
-            journeyBtn.setAttribute('aria-expanded', 'true');
-          } else {
-            closeJourneyPopover();
-          }
-        });
-        document.addEventListener('pointerdown', (e) => {
-          if (
-            !journeyPopover.classList.contains('is-hidden') &&
-            !journeyPopover.contains(e.target) &&
-            !journeyBtn.contains(e.target)
-          ) {
-            closeJourneyPopover();
-          }
-        });
-        journeyPopover.querySelectorAll('.journey-menu-item[data-journey]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            closeJourneyPopover();
-            if (this.activeJourney && this.activeJourney.key === btn.dataset.journey) {
-              this.stopJourney();
-            } else {
-              this.startJourney(btn.dataset.journey, 0);
-            }
-          });
-        });
-      }
       if (layersBtn && layersPopover) {
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          closeJourneyPopover();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -8093,11 +7623,6 @@
         this.closeGenealogyCard();
       });
 
-      this._id('act-challenge').addEventListener('click', () => {
-        closeJourneyPopover();
-        if (this.challenge) this.stopChallenge();
-        else this.startChallenge();
-      });
       this._id('act-close-challenge').addEventListener('click', () => this.stopChallenge());
       this._id('act-next-round').addEventListener('click', () => {
         if (!this.challenge || this._id('act-next-round').onclick) return;
@@ -8197,7 +7722,11 @@
             e.preventDefault();
             this._clearQuickSearchInput();
             if (u.searchParams.has('journey')) {
-              this.startJourney(u.searchParams.get('journey'), 0);
+              const st = u.searchParams.has('stop') ? Number(u.searchParams.get('stop')) : -1;
+              this.openJourneyAsPerson(
+                u.searchParams.get('journey'),
+                Number.isNaN(st) ? -1 : st
+              );
               return;
             }
             if (u.searchParams.has('year')) {
@@ -8244,7 +7773,7 @@
             e.preventDefault();
             e.target.blur();
             const dir = e.key === 'ArrowRight' ? 1 : -1;
-            if (e.shiftKey && !this.activeJourney && !this.activeCustomRoute) {
+            if (e.shiftKey && !this.activePerson && !this.activeCustomRoute) {
               this.stopAutoplay();
               this.jumpToYear(this.year + dir * 10);
               return;
@@ -8259,7 +7788,7 @@
           if (this.challenge) return;
           e.preventDefault();
           const dir = e.key === 'ArrowRight' ? 1 : -1;
-          if (e.shiftKey && !this.activeJourney && !this.activeCustomRoute) {
+          if (e.shiftKey && !this.activePerson && !this.activeCustomRoute) {
             this.stopAutoplay();
             this.jumpToYear(this.year + dir * 10);
             return;
@@ -8287,8 +7816,8 @@
           if (nextBtn) nextBtn.click();
         } else if (e.key === ' ' && !this.challenge) {
           e.preventDefault();
-          if (this.activeJourney) {
-            this.toggleJourneyAutoplay();
+          if (this.activePerson) {
+            this.togglePersonAutoplay();
           } else if (this.playing) {
             this.stopAutoplay();
           } else {
@@ -8296,11 +7825,9 @@
           }
         } else if (e.key === 'Escape') {
           closeLayersPopover();
-          closeJourneyPopover();
           this.closeMilestoneBalloon();
           if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
           else if (this.challenge) this.stopChallenge();
-          else if (this.activeJourney) this.stopJourney();
           else if (this.activeCustomRoute) this.clearCustomRoute();
           else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
             this.closeGenealogyCard();
@@ -8535,24 +8062,6 @@
               e,
               `<b>${sIdx + 1}. ${yr} · ${place}</b><div class="tt-sub">${
                 isEn ? ev.textEn : ev.textZh
-              }</div>`
-            );
-            return;
-          }
-        } else if (journeyNodeEl && this.activeJourney) {
-          const sIdx = Number(journeyNodeEl.dataset.stopIdx);
-          const stop = this.activeJourney.stops[sIdx];
-          if (stop) {
-            const title = this.locale === 'en' ? stop.titleEn : stop.titleZh;
-            const place =
-              this.locale === 'en'
-                ? `${stop.ancientEn} (${stop.modernEn})`
-                : `${stop.ancientZh}（今${stop.modernZh}）`;
-            const yr = this.formatYear(stop.year);
-            this._showHoverTip(
-              e,
-              `<b>${sIdx + 1}. ${place} · ${title}</b><div class="tt-sub">${yr} · ${
-                this.locale === 'en' ? 'Click to jump to this stop' : '点击切换至此行迹节点'
               }</div>`
             );
             return;
@@ -8794,15 +8303,13 @@
               return;
             }
             if (this.activePerson) {
+              if (this.personTimer) {
+                clearInterval(this.personTimer);
+                this.personTimer = null;
+              }
               this.selectPersonEvent(Number(journeyNodeEl.dataset.stopIdx), true);
               return;
             }
-            if (this.journeyTimer) {
-              clearInterval(this.journeyTimer);
-              this.journeyTimer = null;
-            }
-            this.goToJourneyStop(Number(journeyNodeEl.dataset.stopIdx), true);
-            return;
           }
           const settlementNameEl = findClosest('.settlement-node .name, .cap-hint-tag');
           let settlementEl = findClosest('.settlement-node');
@@ -9683,49 +9190,16 @@
       };
     }
 
-    _renderCustomRoute(stops, explicitZoom) {
-      if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return;
-      if (this.activeJourney) this.stopJourney(true);
-      this.closeMilestoneBalloon();
-      if (this.activeCustomRoute !== stops) {
-        this.closeGenealogyCard();
-        this.customRouteStopIdx = -1;
-      }
-      this.activeCustomRoute = stops;
+    _drawCustomRouteOverlay(stops) {
+      if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return null;
       this.grpJourney.innerHTML = '';
-      if (this.svg && typeof this.svg.querySelectorAll === 'function') {
-        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
-      }
-
       const routeColor = '#9e2a2b';
-      const segPaths = [];
+      const segments = [];
       for (let i = 0; i < stops.length - 1; i++) {
-        segPaths.push(
-          this._buildJourneySegmentSvgPath(stops[i].coord, stops[i + 1].coord)
-        );
+        const segInfo = this._buildJourneySegmentInfo(stops[i].coord, stops[i + 1].coord);
+        if (segInfo) segments.push({ ...segInfo, toIdx: i + 1 });
       }
-      const fullPathD = segPaths.join(' ');
-
-      this._svgNode(
-        'path',
-        { d: fullPathD, class: 'journey-track-bg', 'data-base-sw': '6.2' },
-        this.grpJourney
-      );
-      this._svgNode(
-        'path',
-        {
-          d: fullPathD,
-          class: 'journey-track-passed',
-          stroke: routeColor,
-          'data-base-sw': '3.5',
-        },
-        this.grpJourney
-      );
-      this._svgNode(
-        'path',
-        { d: fullPathD, class: 'journey-track-flow', 'data-base-sw': '1.8' },
-        this.grpJourney
-      );
+      this._renderCartographicTrajectory(segments, this.customRouteStopIdx, routeColor);
 
       let minX = Infinity;
       let minY = Infinity;
@@ -9760,9 +9234,9 @@
         g.style.color = routeColor;
 
         if (isHighlighted) {
-          this._svgNode('circle', { class: 'jn-pulse', r: 12 }, g);
+          this._svgNode('circle', { class: 'jn-pulse', r: 11.2 }, g);
         }
-        this._svgNode('circle', { class: 'jn-disc', r: isHighlighted ? 8.5 : 7.5 }, g);
+        this._svgNode('circle', { class: 'jn-disc', r: isHighlighted ? 7.8 : 6.6 }, g);
         const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
         numTxt.textContent = String(idx + 1);
 
@@ -9774,7 +9248,7 @@
         prevSy = sy;
         prevBelow = below;
 
-        const lblY = below ? '18.5' : '-11.5';
+        const lblY = below ? '17.5' : '-11';
         const lblTxt = this._svgNode('text', { class: 'jn-label', x: '0', y: lblY }, g);
         const rawLbl = st.query || st.name;
         const isEn = this.locale === 'en';
@@ -9783,6 +9257,25 @@
           st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
         lblTxt.textContent = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
       });
+      this._rescaleSvgTypography();
+      return { minX, minY, maxX, maxY };
+    }
+
+    _renderCustomRoute(stops, explicitZoom) {
+      if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return;
+      this.closeMilestoneBalloon();
+      if (this.activeCustomRoute !== stops) {
+        this.closeGenealogyCard();
+        this.customRouteStopIdx = -1;
+      }
+      this.activeCustomRoute = stops;
+      if (this.svg && typeof this.svg.querySelectorAll === 'function') {
+        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
+      }
+
+      const bounds = this._drawCustomRouteOverlay(stops);
+      if (!bounds) return;
+      const { minX, minY, maxX, maxY } = bounds;
 
       this._renderCustomRouteCard();
       const cx = (minX + maxX) * 0.5;
@@ -9795,7 +9288,7 @@
         explicitZoom !== '' &&
         !Number.isNaN(Number(explicitZoom));
       if (!isDesktop) {
-        const visTopFrac = this._getJourneyVisibleTopFrac();
+        const visTopFrac = this._getCustomRouteVisibleTopFrac();
         const topPadFrac = 0.06;
         const botPadFrac = 0.05;
         const availFrac = Math.max(0.32, visTopFrac - topPadFrac - botPadFrac);
@@ -10075,7 +9568,7 @@
       const needsEn =
         this.locale === 'en' ||
         /[a-z]/i.test(
-          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''}`
+          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('journey') || ''}`
         );
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
@@ -10243,11 +9736,13 @@
         }
       }
       if (q.has('journey')) {
-        this._paneAutoCollapsed = true;
-        this.toggleChroniclePane(true);
-        const jKey = q.get('journey');
-        const stopIdx = q.has('stop') ? Number(q.get('stop')) : 0;
-        setTimeout(() => this.startJourney(jKey, Number.isNaN(stopIdx) ? 0 : stopIdx), 120);
+        const jKey = (q.get('journey') || '').trim();
+        const stopIdx = q.has('stop') ? Number(q.get('stop')) : -1;
+        if (jKey) {
+          afterFullSnapshots(() => {
+            this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
+          }, 80);
+        }
       }
       if (q.has('layers')) {
         setTimeout(() => {
