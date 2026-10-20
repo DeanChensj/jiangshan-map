@@ -48,10 +48,10 @@
 
 ---
 
-### 玩法三：跟着秦始皇、张骞、诸葛亮、玄奘、李白、苏东坡、王阳明走一趟万里青史路
+### 玩法三：点人溯事 —— 搜任意帝王将相与文豪名僧，重走万里青史路
 
-打开顶部工具栏的 **「青史行迹 ▾」**，右侧编年栏会自动收起腾出全幅山河视野，你可以化身历史同路人，沿着七条跨越万里与千载的经典路线逐站巡礼：
-- **秦始皇一统六国行迹（前 238 — 前 221 年）**：从咸阳亲政平乱、王翦攻赵邺城拉开序幕，到内史腾灭韩、王翦克邯郸灭赵、易水破燕拔蓟城、王贲水灌大梁灭魏、王翦六十万大军破楚、远征辽东灭燕平代，直至南下临淄齐王建出降、六国一统——每点下一站，地图上的韩、赵、魏、楚、燕、齐便随之一步步并入大秦版图！
+点开左上角 **万能搜索框**（可直接点选推荐名录，亦可直接输入 `曹操`、`霍去病`、`司马迁`、`岳飞`、`郑和` 等任意历史人物），即可展开 **「点人溯事」** 生平纪事面板，在山河版图上以古籍游丝弧线串起其一生行迹：
+- **秦始皇一统六国行迹（前 238 — 前 221 年）**：从咸阳亲政平乱、王翦攻赵邺城拉开序幕，到内史腾灭韩、王翦克邯郸灭赵、易水破燕拔蓟城、王贲水灌大梁灭魏、王翦六十万大军破楚、远征辽东灭燕平代，直至南下临淄齐王建出降、六国一统——每点下一处史事，地图上的韩、赵、魏、楚、燕、齐便随之一步步并入大秦版图！
 - **张骞凿空西域行迹（前 138 — 前 126 年）**：从长安出发，被匈奴羁留十余载不改其志，持汉节一路走到大宛、康居、大月氏。
 - **诸葛亮出山北伐行迹（207 — 234 年）**：从襄阳隆中三顾茅庐、柴桑联吴破曹、溯江入蜀、白帝托孤、五月渡泸南征，到进驻汉中上《出师表》、祁山北伐与五丈原秋风星落。
 - **玄奘西行求法行迹（627 — 645 年）**：孤身出玉门关，涉莫贺延碛、越凌山雪隘、渡印度河，抵那烂陀寺求法归唐。
@@ -59,17 +59,17 @@
 - **苏轼宦海贬谪行迹（1056 — 1101 年）**：从出川赴京、密州超然台赏月，到乌台诗案后贬谪黄州写下《赤壁赋》，再到惠州、跨海远谪海南儋州。
 - **王阳明心学立功行迹（1472 — 1529 年）**：从余姚瑞云楼降生、京师抗疏下诏狱，到贬谪贵州修文「龙场悟道」始倡知行合一、庐陵讲学、巡抚南赣破山贼、三十五日生擒宁王朱宸濠、绍兴天泉证道揭出「致良知」，直至总督两广归途舟次南安留下「此心光明，亦复何言」。
 
-每点「下一站」（或按空格键开启自动巡礼），**底下的历史年份、在位君主与年号、王朝版图都会跟着古人的脚步同步流转**，卡片里还会浮现他们当年在此地留下的《史记》《出师表》《传习录》或唐宋千古名篇。
+每切换上一处 / 下一处史事（点击面板 **`‹ / ›`**、键盘方向键或按空格键自动演进），**底下的历史年份、在位君主与年号、王朝版图都会跟着古人的脚步同步流转**，单段朱砂飞白弧线精准高亮当前行程，并附有《史记》《出师表》《传习录》或唐宋千古名篇原句。
 
-> [点击直达：跟着苏东坡去密州与黄州（1075 — 1082 年）→](https://deanchen.me/jiangshan-map/?journey=sushi&stop=6)
+> [点击直达：展阅苏东坡宦海贬谪生平与行迹（1037 — 1101 年）→](https://deanchen.me/jiangshan-map/?person=sushi)
 
-![青史行迹 · 苏轼宦海贬谪行迹](assets/preview_journey_sushi.png)
+![点人溯事 · 苏轼生平与宦海行迹](assets/preview_journey_sushi.png)
 
 ---
 
 ### 玩法四：彩蛋 · 舆图寻址挑战 —— 测测你在古代能当几品官？
 
-觉得自己历史地理很熟？打开顶部工具栏 **「青史行迹 ▾」** 菜单底部的彩蛋 **「雅集 · 舆图寻址 · 古地名小试」** 试试身手：
+觉得自己历史地理很熟？点开左上角 **搜索框** 下拉菜单底部的彩蛋 **「雅集 · 舆图寻址 · 古地名小试」**（或直接搜 `寻址` / `quiz`）试试身手：
 - **当朝掌故线索 + 舆图盲猜扎针**：地图隐去所有城池标注，题目给出「西汉时期的武威（凉州）」「南宋时期的泉州」或「六朝古都建康」，并附上**当朝掌故与史事线索**（不剧透现代城市名），凭你的山河水系直觉在舆图上扎针（手机端支持「先落针微调、再确认作答」防误触），系统按你的落点与真实古城的球面距离打分！
 - 十道题答完，系统会根据总分授予你 **「太史令 · 舆图大家」「职方郎中」「州郡从事」** 等传统官阶封号。
 
@@ -99,7 +99,7 @@
 - **看某场大战**：[`?year=-260&place=长平`](https://deanchen.me/jiangshan-map/?year=-260&place=长平)（长平之战） / [`?year=208&place=赤壁`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁)（赤壁之战） / [`?year=383&place=淝水`](https://deanchen.me/jiangshan-map/?year=383&place=淝水)（东晋前秦 · 淝水之战）
 - **查某座古城或名胜的千年故事**：[`?year=741&place=长安`](https://deanchen.me/jiangshan-map/?year=741&place=长安)（长安/西安） / [`?year=1415&place=应天府`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府)（建康/应天/南京） / [`?year=819&place=蓝关`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关)（韩愈「雪拥蓝关马不前」）
 - **画一条自定义诗词/行军路线**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)（杜甫《闻官军收河南河北》同年归乡路） / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)（苏轼「黄州惠州儋州」跨年贬谪路）
-- **走一段内置人物行迹**：[`?journey=qinshihuang`](https://deanchen.me/jiangshan-map/?journey=qinshihuang)（秦始皇一统六国） / [`?journey=zhangqian`](https://deanchen.me/jiangshan-map/?journey=zhangqian)（张骞凿空西域） / [`?journey=zhugeliang`](https://deanchen.me/jiangshan-map/?journey=zhugeliang)（诸葛亮出山北伐） / [`?journey=xuanzang`](https://deanchen.me/jiangshan-map/?journey=xuanzang)（玄奘西行求法） / [`?journey=libai`](https://deanchen.me/jiangshan-map/?journey=libai)（李白仗剑壮游） / [`?journey=sushi`](https://deanchen.me/jiangshan-map/?journey=sushi)（苏轼宦海贬谪） / [`?journey=wangyangming`](https://deanchen.me/jiangshan-map/?journey=wangyangming)（王阳明心学立功）
+- **展阅历史人物生平与行迹**：[`?person=qinshihuang`](https://deanchen.me/jiangshan-map/?person=qinshihuang)（秦始皇一统六国） / [`?person=zhangqian`](https://deanchen.me/jiangshan-map/?person=zhangqian)（张骞凿空西域） / [`?person=zhugeliang`](https://deanchen.me/jiangshan-map/?person=zhugeliang)（诸葛亮出山北伐） / [`?person=xuanzang`](https://deanchen.me/jiangshan-map/?person=xuanzang)（玄奘西行求法） / [`?person=libai`](https://deanchen.me/jiangshan-map/?person=libai)（李白仗剑壮游） / [`?person=sushi`](https://deanchen.me/jiangshan-map/?person=sushi)（苏轼宦海贬谪） / [`?person=wangyangming`](https://deanchen.me/jiangshan-map/?person=wangyangming)（王阳明心学立功）
 - **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换英文版界面**：[`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)
 

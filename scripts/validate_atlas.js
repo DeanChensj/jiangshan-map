@@ -803,10 +803,16 @@ function main() {
     eventSearch.some((item) => item.kind === 'event' && item.year === 383),
     'Quick search for "淝水之战" must return 383 CE milestone event'
   );
-  const journeySearch = ctrl._queryQuickSearch('苏轼');
+  const personJourneySearch = ctrl._queryQuickSearch('苏轼');
   assert(
-    journeySearch.some((item) => item.kind === 'journey' && item.journeyKey === 'sushi'),
-    'Quick search for "苏轼" must return Su Shi historical journey'
+    personJourneySearch.some((item) => item.kind === 'person' && item.personKey === 'sushi') &&
+      !personJourneySearch.some((item) => item.kind === 'journey'),
+    'Quick search for "苏轼" must return unified person chronicle without duplicate journey entries'
+  );
+  const quizSearch = ctrl._queryQuickSearch('舆图寻址');
+  assert(
+    quizSearch.some((item) => item.kind === 'quiz'),
+    'Quick search for "舆图寻址" must return the Map Pinpoint Quiz entry'
   );
 
   // CUJ 9j: 7 Historical Journeys Full Stop & Bilingual Completeness Verification
@@ -1102,8 +1108,8 @@ function main() {
     `Expected cross-dynasty city "长安" to be deduplicated to 1 city row, got ${changanCityHits.length}`
   );
   assert(
-    changanHits.some((h) => h.kind === 'event' || h.kind === 'journey'),
-    'Expected deduplicated "长安" search dropdown to surface related events or journeys'
+    changanHits.some((h) => h.kind === 'event' || h.kind === 'person'),
+    'Expected deduplicated "长安" search dropdown to surface related events or figures'
   );
 
   // Verify English monarch name search in _matchEraResults
@@ -1127,9 +1133,13 @@ function main() {
   const contributingZhSrc = fs.readFileSync(path.join(ROOT, 'CONTRIBUTING_ZH.md'), 'utf8');
   assert(
     !readmeZhSrc.includes('点右上角的 **「开始挑战」**') &&
-      readmeZhSrc.includes('青史行迹 ▾') &&
+      !readmeZhSrc.includes('青史行迹 ▾') &&
+      readmeZhSrc.includes('点人溯事') &&
+      readmeZhSrc.includes('舆图寻址 · 古地名小试') &&
       readmeZhSrc.includes('href="README.md"') &&
-      readmeSrc.includes('Journeys ▾') &&
+      !readmeSrc.includes('Journeys ▾') &&
+      readmeSrc.includes('Person Chronicles') &&
+      readmeSrc.includes('Map Pinpoint · Ancient Place Quiz') &&
       readmeSrc.includes('href="README_ZH.md"') &&
       contributingSrc.includes('href="CONTRIBUTING_ZH.md"') &&
       contributingSrc.includes('lore_data.js') &&
@@ -1139,7 +1149,7 @@ function main() {
       !readmeZhSrc.includes('&event=') &&
       !appCode.includes("q.has('event')") &&
       !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeZhSrc),
-    'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_data.js, document the Journeys dropdown challenge entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
+    'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_data.js, document unified Person Chronicles & search-box Quiz entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
@@ -1427,7 +1437,7 @@ function main() {
     const mPrev = ms[ms.length - 3];
     const mPenult = ms[ms.length - 2];
     const mFinal = ms[ms.length - 1];
-    ctrl.activeJourney = null;
+    ctrl.activePerson = null;
     ctrl.activeCustomRoute = null;
     ctrl.jumpToYear(mPrev.year);
     ctrl.openMilestoneBalloon(dynObj, mPrev);
@@ -1846,9 +1856,10 @@ function main() {
   assert(
     controlStripMatch &&
       !controlStripMatch[0].includes('id="act-challenge"') &&
-      indexHtml.includes('class="journey-quiz-section"') &&
-      indexHtml.includes('id="lbl-jm-badge-quiz"'),
-    '#act-challenge must be tucked inside #journey-popover (.journey-quiz-section), not in the top .control-strip'
+      !controlStripMatch[0].includes('id="act-journey-menu"') &&
+      !indexHtml.includes('id="journey-popover"') &&
+      appCode.includes('sr-quiz-item'),
+    '.control-strip must stay minimal without #act-journey-menu or #act-challenge, and Quiz must mount cleanly in the search box dropdown'
   );
   assert(
     indexHtml.includes('id="scale-label-text">500 km</div>') &&
@@ -2673,23 +2684,26 @@ function main() {
     }
   }
 
-  // 23q. Mobile viewport UX & geometry guards (iPhone 13 Pro 390x664 portrait Journey + Place Genealogy + Quiz)
+  // 23q. Mobile viewport UX & geometry guards (iPhone 13 Pro 390x664 portrait Person Chronicle + Cartographic Hairlines + Custom Route)
   assert(
     indexHtml.includes('id="genealogy-body" class="genealogy-body"') &&
       indexHtml.includes('id="act-expand-genealogy"') &&
       styleCss.includes('.genealogy-body {') &&
       styleCss.includes('.genealogy-body .genealogy-list {') &&
+      styleCss.includes('.journey-track-thread {') &&
+      styleCss.includes('.journey-track-focus {') &&
+      styleCss.includes('.journey-chevron {') &&
+      styleCss.includes('.person-ev-quote {') &&
+      !styleCss.includes('journeyDashFlow') &&
       !styleCss.includes('max-height: 4.1em;') &&
-      styleCss.includes('#journey-card.is-collapsed') &&
       styleCss.includes('#workspace-body.is-pane-collapsed:not(.is-mobile-chronicle-open)'),
-    'index.html and style.css must unify #genealogy-body scrolling without nested max-height traps, support #journey-card.is-collapsed, and eliminate mobile collapsed-pane empty grid rows'
+    'index.html and style.css must unify #genealogy-body scrolling, use non-invasive cartographic hairlines + chevrons without animated dashes, and preserve .person-ev-quote'
   );
   {
     const prevWinW = sandbox.window.innerWidth;
     const prevWinH = sandbox.window.innerHeight;
     const prevAnimCam = ctrl._animateCameraTo;
     const prevSvg = ctrl.svg;
-    const prevJC = ctrl.journeyCard;
     let capturedCam = null;
     sandbox.window.innerWidth = 390;
     sandbox.window.innerHeight = 664;
@@ -2703,27 +2717,25 @@ function main() {
       getBoundingClientRect: () => ({ top: 45, bottom: 584, left: 0, right: 390, width: 390, height: 539 }),
       classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
     };
-    let cardCollapsedMock = false;
-    ctrl.journeyCard = {
-      innerHTML: '',
+    let sheetExpandedMock = false;
+    const mockGenCardMobile = {
       getBoundingClientRect: () =>
-        cardCollapsedMock
-          ? { top: 516, bottom: 578, left: 8, right: 382, width: 374, height: 62 }
-          : { top: 370, bottom: 578, left: 8, right: 382, width: 374, height: 208 },
+        sheetExpandedMock
+          ? { top: 260, bottom: 578, left: 8, right: 382, width: 374, height: 318 }
+          : { top: 356, bottom: 578, left: 8, right: 382, width: 374, height: 222 },
       classList: {
         add() {},
         remove() {},
         toggle(cls, force) {
-          if (cls === 'is-collapsed') cardCollapsedMock = Boolean(force);
+          if (cls === 'is-sheet-expanded') sheetExpandedMock = Boolean(force);
         },
-        contains: (cls) => (cls === 'is-collapsed' ? cardCollapsedMock : false),
+        contains: (cls) => (cls === 'is-sheet-expanded' ? sheetExpandedMock : false),
       },
-      querySelector: () => null,
-      querySelectorAll: () => [],
     };
     const origIdMobile = ctrl._id;
     ctrl._id = (id) => {
       if (id === 'viewport-frame') return mockVfMobile;
+      if (id === 'genealogy-card') return mockGenCardMobile;
       return origIdMobile ? origIdMobile.call(ctrl, id) : null;
     };
     ctrl._animateCameraTo = (target) => {
@@ -2731,44 +2743,47 @@ function main() {
       ctrl.camera = { ...target, zoom: 1000 / target.w };
     };
     for (const j of loreData.HISTORICAL_JOURNEYS) {
-      ctrl.activeJourney = j;
-      ctrl.journeyStopIdx = 0;
-      ctrl.journeyCardCollapsed = false;
-      cardCollapsedMock = false;
-      const visFrac = ctrl._getJourneyVisibleTopFrac();
+      assert(
+        ctrl.openJourneyAsPerson(j.key, -1) && ctrl.activePerson && ctrl.activePerson.profile.key === j.key,
+        `Expected openJourneyAsPerson("${j.key}", -1) to open unified Person Chronicle`
+      );
+      assert(
+        ctrl.activePerson.events.some((ev) => Boolean(ev.quoteZh && ev.quoteEn)),
+        `Expected Person Chronicle "${j.key}" to preserve bilingual quotes from HISTORICAL_JOURNEYS`
+      );
+      const visFrac = ctrl._getPersonVisibleTopFrac();
       assert(
         visFrac >= 0.5 && visFrac <= 0.65,
-        `Expected expanded mobile _getJourneyVisibleTopFrac() in [0.5, 0.65], got ${visFrac}`
+        `Expected mobile _getPersonVisibleTopFrac() in [0.5, 0.65], got ${visFrac}`
       );
-      ctrl._frameJourneyOverview(j);
-      assert(capturedCam, `Expected _frameJourneyOverview(${j.key}) to set camera`);
+      ctrl._framePersonOverview();
+      assert(capturedCam, `Expected _framePersonOverview(${j.key}) to set camera`);
       const overviewCam = { ...capturedCam };
-      for (const st of j.stops) {
-        const [, sy] = ctrl.projector.toScreen(st.coord[0], st.coord[1]);
+      for (const ev of ctrl.activePerson.events) {
+        const [, sy] = ctrl.projector.toScreen(ev.coord[0], ev.coord[1]);
         const screenY = 45 + ((sy - overviewCam.y) / overviewCam.h) * 539;
         assert(
           screenY >= 52 && screenY <= 364,
-          `Mobile overview of journey "${j.key}" stop "${st.ancientZh}" landed outside unobscured map window [52..364]: screenY=${screenY.toFixed(1)}`
+          `Mobile overview of person "${j.key}" site "${ev.siteZh}" landed outside unobscured map window [52..364]: screenY=${screenY.toFixed(1)}`
         );
-        ctrl._flyToJourneyStop(st);
+        ctrl._flyToPersonEvent(ev);
         const flyScreenY = 45 + ((sy - capturedCam.y) / capturedCam.h) * 539;
         assert(
           flyScreenY >= 140 && flyScreenY <= 260,
-          `Mobile _flyToJourneyStop for "${j.key}" stop "${st.ancientZh}" occluded or off-center: screenY=${flyScreenY.toFixed(1)}`
+          `Mobile _flyToPersonEvent for "${j.key}" site "${ev.siteZh}" occluded or off-center: screenY=${flyScreenY.toFixed(1)}`
         );
       }
-      ctrl.toggleJourneyCardCollapse(true);
       assert(
-        ctrl.journeyCardCollapsed === true && ctrl._getJourneyVisibleTopFrac() >= 0.8,
-        'Collapsing mobile journey card must increase unobscured map fraction above 0.80'
+        ctrl.openJourneyAsPerson(j.key, 2) &&
+          ctrl.activePersonEventIdx >= 0 &&
+          ctrl.activePerson.events[ctrl.activePersonEventIdx].journeyStopIdx === 2,
+        `Expected openJourneyAsPerson("${j.key}", 2) to select curated stop #2 accurately`
       );
-      ctrl.toggleJourneyCardCollapse(false);
     }
-    ctrl.activeJourney = null;
+    ctrl.closeGenealogyCard();
     ctrl._id = origIdMobile;
     ctrl._animateCameraTo = prevAnimCam;
     ctrl.svg = prevSvg;
-    ctrl.journeyCard = prevJC;
     sandbox.window.innerWidth = prevWinW;
     sandbox.window.innerHeight = prevWinH;
   }

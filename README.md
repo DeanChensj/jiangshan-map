@@ -48,9 +48,9 @@ Have you ever wondered while reading Chinese history or classical poetry:
 
 ---
 
-### Feature 3: Walk in the Footsteps of Historical Figures (`Journeys ▾`)
+### Feature 3: Person Chronicles — Trace Any Historical Figure Across Time & Space
 
-Open **`Journeys ▾`** in the top toolbar to collapse the right sidebar and follow seven curated multi-stop historical routes across millennia:
+Click the top-left **Universal Search Box** (or type any monarch, general, statesman, monk, or poet such as `Cao Cao`, `Huo Qubing`, `Sima Qian`, `Yue Fei`, or `Zheng He`) to open **Person Chronicle (`点人溯事`)**, plotting every milestone of their life with delicate cartographic hairline arcs and directional ticks across changing dynastic borders:
 - **Qin Shi Huang's Unification Campaigns (238–221 BCE)**: From suppressing the rebellion at Xianyang and Wang Jian's attack on Ye, to the fall of Han, Zhao, Yan, Wei, Chu, and Dai, culminating in the surrender of Qi at Linzi—as you advance stop by stop, watch the six rival kingdoms merge into the Qin Empire right on the map!
 - **Zhang Qian's Mission to the Western Regions (138–126 BCE)**: Depart Chang'an, endure over a decade of Xiongnu captivity without surrendering the Han imperial staff, and blaze the trail to Dayuan (Fergana), Kangju, and the Greater Yuezhi.
 - **Zhuge Liang's Emergence & Northern Expeditions (207–234 CE)**: From the Three Visits at Longzhong and the alliance at Chaisang before Red Cliffs, to entering Shu, the White Emperor City entrustment, the Southern Campaign across the Lu River, Hanzhong's *Memorial on Deploying the Troops*, Mount Qi, and the autumn winds of Wuzhang Plains.
@@ -59,17 +59,17 @@ Open **`Journeys ▾`** in the top toolbar to collapse the right sidebar and fol
 - **Su Shi's Literary Exile Across Song China (1056–1101 CE)**: From leaving Meishan for the capital Kaifeng and gazing at the moon in Mizhou, to composing the *Red Cliffs Rhapsody* in Huangzhou exile, Huizhou, and crossing the sea to Danzhou on Hainan Island.
 - **Wang Yangming's Unity of Knowledge & Action (1472–1529 CE)**: From birth in Yuyao and imprisonment in Beijing, to his enlightenment at Longchang in Guizhou, pacifying bandits in Southern Ganzhou, capturing the rebel Prince of Ning in 35 days, teaching at the Tianquan Bridge in Shaoxing, and his final words *"This mind is bright and clear; what more is there to say?"* at Nan'an.
 
-Each time you click **Next Stop** (or press `Space` for auto-pilgrimage), **the timeline year, reigning monarch, imperial era, and dynastic territories evolve in sync with the traveler's footsteps**, accompanied by bilingual primary-source excerpts and poems written at that exact stop.
+Each time you step to the next event (`‹ / ›`, `← / →`, or `Space` to auto-play), **the timeline year, reigning monarch, imperial era, and dynastic territories evolve in sync with their footsteps**, highlighting the active transition arc alongside bilingual primary-source excerpts and poems written at that exact site.
 
-> [Try It Live: Follow Su Dongpo's Exile to Mizhou & Huangzhou (1075–1082 CE) →](https://deanchen.me/jiangshan-map/?journey=sushi&stop=6&lang=en)
+> [Try It Live: Follow Su Dongpo's Exile to Mizhou & Huangzhou (1075–1082 CE) →](https://deanchen.me/jiangshan-map/?person=sushi&lang=en)
 
-![Historical Journeys · Su Shi's Exile Route](assets/preview_journey_sushi_en.png)
+![Person Chronicle · Su Shi's Life & Exile Route](assets/preview_journey_sushi_en.png)
 
 ---
 
 ### Feature 4: Easter Egg · Map Pinpoint Challenge — What Imperial Court Rank Would You Earn?
 
-Think you know Chinese historical geography? Open **`Journeys ▾`** in the top toolbar and select **`Quiz · Map Pinpoint · Ancient Place Quiz`** at the bottom of the menu:
+Think you know Chinese historical geography? Click the **Universal Search Box** and select **`Quiz · Map Pinpoint · Ancient Place Quiz`** at the bottom of the dropdown (or search `quiz`):
 - **Dynastic Historical Clues + Blind Map Pinpointing**: City labels are hidden while the prompt asks you to locate an ancient city—such as *"Wuwei (Liangzhou) in Western Han"*, *"Quanzhou in Southern Song"*, or *"Jiankang in the Six Dynasties"*—accompanied by **dynastic historical clues** (without spoiling the modern city name). Drop your pin based on rivers, mountain ranges, and borders, and earn points based on great-circle distance to the true coordinates!
 - Complete 10 rounds to receive a traditional imperial cartographic title such as **Grand Historian & Master Cartographer (太史令 · 舆图大家)**, **Director of the Bureau of Operations (职方郎中)**, or **Prefectural Retainer (州郡从事)**.
 
@@ -85,9 +85,9 @@ Think you know Chinese historical geography? Open **`Journeys ▾`** in the top 
 
 | Key / Action | Effect |
 | :--- | :--- |
-| **`/`** or **`Cmd/Ctrl + K`** | Focus the **Universal Search Box**: search **ancient & modern cities** (`Xianyang`/`Chang'an`/`Luoyang`/`Kaifeng`), **reigning monarchs** (`Emperor Wu of Han`/`Taizong of Tang`/`Liu Che`/`Li Shimin`), **imperial eras** (`Zhenguan`/`Yongle`/`Kangxi`), **poetic & battlefield landmarks** (`Red Cliffs`/`Wuzhang Plains`/`Languan`/`Lanting`), **mountain passes** (`Hangu Pass`/`Jianmen Pass`/`Yumen Pass`), **historical events**, or **journeys** |
-| **`←` / `→`** or bottom **`‹ / ›`** | Jump to the previous / next historical phase, milestone event, or journey stop (hold `Shift + ← / →` to step by `10` years) |
-| **`Space`** | Auto-play / pause timeline evolution (or auto-advance stops in Journey mode) |
+| **`/`** or **`Cmd/Ctrl + K`** | Focus the **Universal Search Box**: search **historical figures** (`Qin Shi Huang`/`Zhang Qian`/`Su Shi`), **ancient & modern cities** (`Xianyang`/`Chang'an`/`Luoyang`/`Kaifeng`), **reigning monarchs** (`Emperor Wu of Han`/`Taizong of Tang`/`Liu Che`/`Li Shimin`), **imperial eras** (`Zhenguan`/`Yongle`/`Kangxi`), **poetic & battlefield landmarks** (`Red Cliffs`/`Wuzhang Plains`/`Languan`/`Lanting`), **mountain passes** (`Hangu Pass`/`Jianmen Pass`/`Yumen Pass`), **historical events**, or the **Ancient Place Quiz** |
+| **`←` / `→`** or bottom **`‹ / ›`** | Jump to the previous / next historical phase, milestone event, or person event stop (hold `Shift + ← / →` to step by `10` years) |
+| **`Space`** | Auto-play / pause timeline evolution (or auto-advance stops in Person Chronicle mode) |
 | **`Esc`** | Close active popups/cards, clear search highlights, or exit custom multi-stop routes |
 | **`Single-click city` / `Double-click map`** | Open the 18-era **Trace Place & Key Events** genealogy card for that location |
 | **`Hover / Click legend swatch`** | Hover to isolate & highlight that polity's territory; click to auto-zoom to its bounding box |
@@ -99,7 +99,7 @@ Append query parameters to share any historical moment, battle, city genealogy, 
 - **Pinpoint a famous battle**: [`?year=-260&place=长平&lang=en`](https://deanchen.me/jiangshan-map/?year=-260&place=长平&lang=en) (Battle of Changping) / [`?year=208&place=赤壁&lang=en`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁&lang=en) (Battle of Red Cliffs) / [`?year=383&place=淝水&lang=en`](https://deanchen.me/jiangshan-map/?year=383&place=淝水&lang=en) (Battle of Fei River)
 - **Inspect a city's 2,400-year genealogy**: [`?year=741&place=长安&lang=en`](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en) (Chang'an / Xi'an) / [`?year=1415&place=应天府&lang=en`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府&lang=en) (Jiankang / Yingtian / Nanjing) / [`?year=819&place=蓝关&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关&lang=en) (Han Yu at Languan Pass)
 - **Plot a custom poetic or campaign route**: [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en) (Du Fu's 763 CE homeward route) / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en) (Su Shi's multi-year exile route across Huzhou, Huangzhou, Huizhou, and Danzhou)
-- **Launch a curated historical journey**: [`?journey=qinshihuang&lang=en`](https://deanchen.me/jiangshan-map/?journey=qinshihuang&lang=en) (Qin Shi Huang) / [`?journey=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?journey=zhangqian&lang=en) (Zhang Qian) / [`?journey=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?journey=zhugeliang&lang=en) (Zhuge Liang) / [`?journey=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?journey=xuanzang&lang=en) (Xuanzang) / [`?journey=libai&lang=en`](https://deanchen.me/jiangshan-map/?journey=libai&lang=en) (Li Bai) / [`?journey=sushi&lang=en`](https://deanchen.me/jiangshan-map/?journey=sushi&lang=en) (Su Shi) / [`?journey=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?journey=wangyangming&lang=en) (Wang Yangming)
+- **Open a person's spatio-temporal chronicle**: [`?person=qinshihuang&lang=en`](https://deanchen.me/jiangshan-map/?person=qinshihuang&lang=en) (Qin Shi Huang) / [`?person=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?person=zhangqian&lang=en) (Zhang Qian) / [`?person=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?person=zhugeliang&lang=en) (Zhuge Liang) / [`?person=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?person=xuanzang&lang=en) (Xuanzang) / [`?person=libai&lang=en`](https://deanchen.me/jiangshan-map/?person=libai&lang=en) (Li Bai) / [`?person=sushi&lang=en`](https://deanchen.me/jiangshan-map/?person=sushi&lang=en) (Su Shi) / [`?person=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?person=wangyangming&lang=en) (Wang Yangming)
 - **Start a quiz round**: [`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en) (Map Pinpoint Challenge)
 
 ---
