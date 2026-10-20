@@ -2391,7 +2391,9 @@ window.ATLAS_LORE_DATA = {
     [
       1912,
       "民国",
-      1
+      1,
+      "中华民国",
+      "Republic of China"
     ]
   ],
   "PLACE_LANDMARK_EVENTS": [
@@ -2525,8 +2527,20 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "前秦定都长安，苻坚、王猛励精图治统一北方",
-      "en": "Former Qin governs from Chang'an and unifies northern China under Fu Jian and Wang Meng"
+      "zh": "苻健称天王定都长安，建立前秦政权",
+      "en": "Fu Jian (Emperor Jingming) establishes the Former Qin dynasty at capital Chang'an"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 357,
+      "coord": [
+        108.94,
+        34.26
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "苻坚于长安即前秦天王位，重用王猛变法图强",
+      "en": "Fu Jian ascends in Chang'an as Heavenly King of Former Qin and appoints Wang Meng to reform the state"
     },
     {
       "dynastyKey": "nanbei",
@@ -3466,6 +3480,18 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "dynastyKey": "sanguo",
+      "year": 228,
+      "coord": [
+        105.72,
+        34.58
+      ],
+      "site": "冀城（天水）",
+      "siteEn": "Jicheng (Tianshui)",
+      "zh": "蜀军首次出祁山北伐，天水参军姜维归附获赞“凉州上士”",
+      "en": "During Shu Han's first Qishan expedition, Tianshui officer Jiang Wei joins Zhuge Liang's banner"
+    },
+    {
+      "dynastyKey": "sanguo",
       "year": 263,
       "coord": [
         104.06,
@@ -3476,6 +3502,19 @@ window.ATLAS_LORE_DATA = {
       "zh": "魏将邓艾偷渡阴平直抵成都，刘禅出降，蜀汉灭亡",
       "en": "Wei general Deng Ai marches through Yinping to Chengdu; Liu Shan surrenders",
       "month": 11
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 264,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都",
+      "siteEn": "Chengdu",
+      "zh": "姜维于成都策反钟会图谋复蜀，兵变事败力战殉国",
+      "en": "Jiang Wei incites Zhong Hui to rebel in Chengdu in a bid to restore Shu Han, perishing in battle",
+      "month": 1
     },
     {
       "dynastyKey": "tang",
@@ -7060,7 +7099,7 @@ window.ATLAS_LORE_DATA = {
       "site": "洛阳独乐园",
       "siteEn": "Garden of Solitary Joy, Luoyang",
       "zh": "司马光退居洛阳独乐园十五载，主编成《资治通鉴》二百九十四卷",
-      "en": "After nineteen years of scholarship in Luoyang, Sima Guang completes the Zizhi Tongjian chronicle"
+      "en": "After fifteen years at Luoyang's Garden of Solitary Joy, Sima Guang completes the Zizhi Tongjian"
     },
     {
       "dynastyKey": "beisong",
@@ -8272,7 +8311,7 @@ window.ATLAS_LORE_DATA = {
           "descZh": "二十二岁的秦王政在故都雍城蕲年宫行冠礼亲政，旋即发兵平定长信侯嫪毐之乱，次年罢免相邦吕不韦。随后采纳大梁人尉缭、楚人李斯「远交近攻、先弱后强、各个击破」之策，倾关中与巴蜀之力，蓄势东出函谷关。",
           "descEn": "At age 22, King Zheng of Qin assumed personal rule, crushed Lao Ai’s rebellion, dismissed Chancellor Lü Buwei, and adopted Li Si and Wei Liao’s grand strategy to annex the six eastern states one by one.",
           "quoteZh": "「秦王为人，蜂准，长目，挚鸟膺，豺声，少恩而虎狼之心……诚得志于天下，天下皆为虏矣。」——《史记·秦始皇本纪》引尉缭语",
-          "quoteEn": "“With the resources of Qin and the strategy of annexing the feudal lords, the whole world can be unified under one rule.” — Records of the Grand Historian (Shiji)"
+          "quoteEn": "“The King of Qin is a man with a prominent nose, elongated eyes, the breast of a bird of prey, and the voice of a jackal; he possesses little kindness and the heart of a tiger or wolf... If he truly achieves his ambitions in the realm, all under Heaven will become his captives.” — Records of the Grand Historian (Shiji)"
         },
         {
           "year": -236,
@@ -15000,7 +15039,7 @@ window.ATLAS_LORE_DATA = {
         "唐玄宗",
         "李隆基",
         "开元盛世",
-        "安史之乱"
+        "安史之乱爆发"
       ]
     },
     {
@@ -15670,7 +15709,9 @@ window.ATLAS_LORE_DATA = {
         "康熙",
         "三藩之乱",
         "施琅",
-        "尼布楚条约"
+        "尼布楚条约",
+        "七世达赖",
+        "西藏定局"
       ]
     },
     {
@@ -15936,7 +15977,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "tokens": [
         "姜维",
-        "邓艾偷渡阴平"
+        "剑阁",
+        "剑门关"
       ]
     },
     {
@@ -16251,7 +16293,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "tokens": [
         "乾隆",
-        "准噶尔",
+        "平定准噶尔",
+        "准噶尔汗国",
         "大小和卓",
         "大小金川",
         "马戛尔尼"
