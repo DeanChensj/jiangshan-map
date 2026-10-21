@@ -5636,7 +5636,7 @@ window.ATLAS_LORE_DATA = {
         34.72
       ],
       "site": "栎阳",
-      "siteEn": "Yueyang (Shaanxi)",
+      "siteEn": "Yueyang (Liyang, Shaanxi)",
       "zh": "秦孝公下求贤令，卫鞅（商鞅）入秦于栎阳南门徙木立信，颁垦草令",
       "en": "Shang Yang enters Qin at Yueyang and establishes public trust with the South Gate pole decree"
     },
@@ -5965,7 +5965,7 @@ window.ATLAS_LORE_DATA = {
       "site": "长安长乐宫",
       "siteEn": "Changle Palace (Chang'an)",
       "zh": "吕后与萧何设谋诱淮阴侯韩信入贺，斩韩信于长乐宫钟室",
-      "en": "Empress Lu and Xiao He lure Han Xin into Changle Palace in Chang’an and execute him"
+      "en": "Empress Lü and Xiao He lure Han Xin into Changle Palace in Chang’an and execute him"
     },
     {
       "dynastyKey": "xihan",
@@ -6207,7 +6207,7 @@ window.ATLAS_LORE_DATA = {
       "site": "下邳",
       "siteEn": "Xiapi (Pizhou, Jiangsu)",
       "zh": "下邳之战：曹操荀攸决沂泗水灌城生擒吕布，尽得徐州之地",
-      "en": "Battle of Xiapi: Cao Cao diverts the Yi and Si rivers to flood the city and capture Lu Bu"
+      "en": "Battle of Xiapi: Cao Cao diverts the Yi and Si rivers to flood the city and capture Lü Bu"
     },
     {
       "dynastyKey": "donghan",
@@ -6580,8 +6580,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "浅水原（长武）",
       "siteEn": "Qianshuiyuan (Changwu, Shaanxi)",
-      "zh": "浅水原之战：秦王李世民歼灭西秦薛仁果主力，平定陇右",
-      "en": "Battle of Qianshuiyuan: Li Shimin destroys Xue Renguo's Western Qin army to secure Longyou"
+      "zh": "浅水原之战：秦王李世民歼灭西秦薛仁杲主力，平定陇右",
+      "en": "Battle of Qianshuiyuan: Li Shimin destroys Xue Rengao's Western Qin army to secure Longyou"
     },
     {
       "dynastyKey": "tang",
@@ -7133,7 +7133,7 @@ window.ATLAS_LORE_DATA = {
         29.08
       ],
       "site": "金华→临安",
-      "siteEn": "Jinhua & Lin-an (Hangzhou)",
+      "siteEn": "Jinhua & Lin'an (Hangzhou)",
       "zh": "李清照避金兵流寓婺州金华，登八咏楼浩叹“江山留与后人愁”",
       "en": "Refugeeing in Jinhua, widowed Li Qingzhao climbs Bayong Tower lamenting lost northern rivers"
     },
@@ -7253,7 +7253,7 @@ window.ATLAS_LORE_DATA = {
         39.94
       ],
       "site": "大都柴市口",
-      "siteEn": "Chaisikou, Dadu (Beijing)",
+      "siteEn": "Chaishikou, Dadu (Beijing)",
       "zh": "文天祥囚元大都土室四年作《正气歌》，忽必烈许以宰相不屈",
       "en": "Imprisoned four years in Yuan Dadu composing Song of Righteous Qi, Wen Tianxiang dies unbowed"
     },
@@ -7325,7 +7325,7 @@ window.ATLAS_LORE_DATA = {
         32.06
       ],
       "site": "集庆→应天（南京）",
-      "siteEn": "Jiqing / Ying-tian (Nanjing)",
+      "siteEn": "Jiqing / Yingtian (Nanjing)",
       "zh": "濠州红巾将朱元璋渡长江攻克元集庆路改名应天府",
       "en": "Rebel commander Zhu Yuanzhang captures Nanjing across the Yangtze and makes Yingtian his base"
     },
@@ -7868,7 +7868,7 @@ window.ATLAS_LORE_DATA = {
       "site": "长安未央宫门",
       "siteEn": "Chang'an",
       "zh": "司徒王允设连环计策反中郎将吕布，于未央宫掖门诛杀专权乱政之董卓",
-      "en": "Minister Wang Yun persuades warrior Lu Bu to slay tyrant Dong Zhuo at Weiyang Palace in Chang'an"
+      "en": "Minister Wang Yun persuades warrior Lü Bu to slay tyrant Dong Zhuo at Weiyang Palace in Chang'an"
     },
     {
       "dynastyKey": "donghan",
@@ -7880,7 +7880,7 @@ window.ATLAS_LORE_DATA = {
       "site": "徐州辕门",
       "siteEn": "Xuzhou",
       "zh": "辕门射戟：吕布百五十步外射中戟支，化解纪灵攻刘备之围",
-      "en": "Shooting the Halberd at Camp Gate: Lu Bu hits a halberd prong from 150 paces to save Liu Bei"
+      "en": "Shooting the Halberd at Camp Gate: Lü Bu hits a halberd prong from 150 paces to save Liu Bei"
     },
     {
       "dynastyKey": "donghan",
@@ -7891,7 +7891,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "界桥（威县）",
       "siteEn": "Jieqiao (Hebei)",
-      "zh": "界桥之战：袁绍命麹义以八百先登强弩大破公孙瓒白马义从",
+      "zh": "界桥之战：袁绍命麴义以八百先登强弩大破公孙瓒白马义从",
       "en": "Battle of Jieqiao: Yuan Shao's crossbowmen crush Gongsun Zan's cavalry, winning control of Hebei"
     },
     {
@@ -8996,7 +8996,7 @@ window.ATLAS_LORE_DATA = {
           "descZh": "声东击西由箕谷设疑兵、亲率大军攻祁山，戎阵整齐，南安、天水、安定三郡叛魏应亮，关中震响，收天水俊杰姜维；惜马谡违亮节度于街亭依山不下城，为张郃绝水道所破，亮拔西县千余家还汉中并自贬三等。",
           "descEn": "Debouching from Mount Qi in disciplined array, Zhuge Liang won over three Wei commanderies—shaking all Guanzhong and recruiting Jiang Wei—before Ma Su’s defeat at Jieting forced an orderly withdrawal.",
           "quoteZh": "《三国志·诸葛亮传》：“亮身率诸军攻祁山，戎阵整齐，赏罚肃而号令明，南安、天水、安定三郡叛魏应亮，关中响震。”",
-          "quoteEn": "Records of the Three Kingdoms: \"Zhuge Liang led the armies in person to attack Mount Qi in disciplined ranks; Nanan, Tianshui, and Anding commanderies defected from Wei to join him, shaking all Guanzhong.\""
+          "quoteEn": "Records of the Three Kingdoms: \"Zhuge Liang led the armies in person to attack Mount Qi in disciplined ranks; Nan'an, Tianshui, and Anding commanderies defected from Wei to join him, shaking all Guanzhong.\""
         },
         {
           "year": 231,
@@ -9111,7 +9111,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Guazhou, Gansu",
           "titleZh": "夜渡葫芦河·闯莫贺延碛",
           "titleEn": "Crossing the Gobi of Moheyan",
-          "descZh": "州吏李昌感其诚而暗撕通缉谍文。玄奘夜渡葫芦河、独闯五烽，于八百里莫贺延碛失手覆水，四夜五日滴水未进，绝处逢生终抵伊吾。",
+          "descZh": "州吏李昌感其诚而暗撕通缉牒文。玄奘夜渡葫芦河、独闯五烽，于八百里莫贺延碛失手覆水，四夜五日滴水未进，绝处逢生终抵伊吾。",
           "descEn": "Crossing the Hulu River by night past five watchtowers, Xuanzang survived five days and four nights without water in the 800-li Moheyan Desert.",
           "quoteZh": "《大慈恩寺三藏法师传》：“莫贺延碛长八百余里，古曰沙河，上无飞鸟，下无走兽。”",
           "quoteEn": "Biography of the Tripitaka Master: \"The Moheyan Desert stretches over 800 li—no birds above, no beasts below.\""
@@ -9742,7 +9742,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Huizhou, Guangdong",
           "titleZh": "再贬岭南·寓居惠州",
           "titleEn": "Banished South of the Nanling to Huizhou",
-          "descZh": "元祐更化曾召还翰林学士、知杭州颖州扬州定州；绍圣元年哲宗亲政后新党复起，年近六旬的苏轼远贬岭南惠州安置，捐犀带助修东新桥、西新桥。",
+          "descZh": "元祐更化曾召还翰林学士、知杭州颍州扬州定州；绍圣元年哲宗亲政后新党复起，年近六旬的苏轼远贬岭南惠州安置，捐犀带助修东新桥、西新桥。",
           "descEn": "Following political reversals in 1094, the nearly sixty-year-old Su Shi was banished across the Nanling Mountains to Huizhou in Guangdong.",
           "quoteZh": "苏轼《食荔枝》：“日啖荔枝三百颗，不辞长作岭南人。”",
           "quoteEn": "Su Shi, Eating Lychees: \"Feasting on three hundred lychees a day, I would gladly remain a man of Lingnan forever.\""
@@ -9797,7 +9797,7 @@ window.ATLAS_LORE_DATA = {
           "titleZh": "遇赦北归·终老毗陵",
           "titleEn": "Pardoned Return North & Final Rest in Changzhou",
           "descZh": "元符三年徽宗即位大赦北归，渡海经廉州、永州沿赣江北上；建中靖国元年七月廿八日病逝于常州顾塘桥孙氏馆，享年六十六岁。",
-          "descEn": "Pardoned in 1100, Su Shi traveled north by boat and passed away in Changzhou in July 1101 at age sixty-six, summing up his life in a final self-portrait poem.",
+          "descEn": "Pardoned in 1100, Su Shi traveled north by boat and passed away in Changzhou in August 1101 at age sixty-six, summing up his life in a final self-portrait poem.",
           "quoteZh": "苏轼《自题金山画像》：“心似已灰之木，身如不系之舟。问汝平生功业，黄州惠州儋州。”",
           "quoteEn": "Su Shi, Inscription on My Portrait at Jinshan: \"My heart like ashen wood, my body an unmoored boat. Ask of my life’s achievements: Huangzhou, Huizhou, Danzhou.\""
         }
@@ -10090,7 +10090,7 @@ window.ATLAS_LORE_DATA = {
           "titleZh": "此心光明·亦复何言",
           "titleEn": "Radiant Mind — Final Passing at Qinglongpu",
           "descZh": "嘉靖六年总督两广，不费一兵一卒招抚思恩、田州卢苏王受七万众，继以奇兵荡平断藤峡八寨瑶乱。次年冬肺疾加剧上疏乞归，十一月二十九日（公历1529年1月）舟次江西南安府大余县青龙铺。门人周积问遗言，先生微笑曰：「此心光明，亦复何言！」遂瞑目而逝。",
-          "descEn": "After pacifying Guangxi’s Sien, Tianzhou, and Rattan Gorge rebellions, Wang fell gravely ill on his journey home. Passing away on a boat at Qinglongpu in Nan’an, he spoke his final words: \"This mind is luminous; what more is there to say?\"",
+          "descEn": "After pacifying Guangxi’s Si’en, Tianzhou, and Rattan Gorge rebellions, Wang fell gravely ill on his journey home. Passing away on a boat at Qinglongpu in Nan’an, he spoke his final words: \"This mind is luminous; what more is there to say?\"",
           "quoteZh": "王阳明临终遗言：“此心光明，亦复何言！”——《王阳明先生年谱》",
           "quoteEn": "Wang Yangming’s last words: \"This mind is luminous—what more is there to say!\""
         }
@@ -10795,7 +10795,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "tagZh": "赵国雄都 · 燕赵要冲",
       "tagEn": "Capital of Zhao · Taihang Eastern Foot Hub",
-      "descZh": "西依太行山滏口陉、东临华北平原。战国赵敬侯迁都邯郸，赵武灵王于此胡服骑射，廉颇蔺相如将相和、平原君窃符救赵及秦始皇降生皆在此城；宋代辖境大名府更为河北抗辽陪都北京。",
+      "descZh": "西依太行山滏口陉、东临华北平原。战国赵敬侯迁都邯郸，赵武灵王于此胡服骑射，廉颇蔺相如将相和、信陵君窃符救赵及秦始皇降生皆在此城；宋代辖境大名府更为河北抗辽陪都北京。",
       "descEn": "Commanding the eastern exit of the Fukou Pass through the Taihang Mountains, Handan was the Warring States capital of Zhao where King Wuling introduced mounted archery, and later encompassed the Song Northern Capital of Daming."
     },
     {
@@ -14265,7 +14265,7 @@ window.ATLAS_LORE_DATA = {
       "zh": "白起",
       "en": "Bai Qi",
       "courtesyZh": "秦武安君 · 战国名将",
-      "courtesyEn": "Lord Wu-an of Qin",
+      "courtesyEn": "Lord Wu'an of Qin",
       "dynastyKey": "zhanguo",
       "span": [
         -332,
@@ -14466,7 +14466,7 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "刘彻",
         "汉世宗",
-        "刘猪"
+        "刘彘"
       ],
       "tokens": [
         "汉武帝",
@@ -15887,7 +15887,7 @@ window.ATLAS_LORE_DATA = {
     {
       "key": "lvbu",
       "zh": "吕布",
-      "en": "Lu Bu",
+      "en": "Lü Bu",
       "courtesyZh": "温侯 · 字奉先 · 汉末猛将",
       "courtesyEn": "Fierce Warlord of Late Han",
       "dynastyKey": "donghan",
@@ -15897,7 +15897,9 @@ window.ATLAS_LORE_DATA = {
       ],
       "aliases": [
         "奉先",
-        "吕奉先"
+        "吕奉先",
+        "Lu Bu",
+        "Lv Bu"
       ],
       "tokens": [
         "吕布"
