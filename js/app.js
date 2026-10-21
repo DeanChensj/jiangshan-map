@@ -425,7 +425,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261020d').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261021a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -449,7 +449,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261020d').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261021a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1458,10 +1458,11 @@
       for (const reg of snap.regions || []) {
         if (reg.anchor && reg.title) {
           const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          const isQiao = reg.category === '侨州';
           const rLbl = this._svgNode(
             'text',
             {
-              class: 'region-caption',
+              class: isQiao ? 'region-caption is-qiaozhou' : 'region-caption',
               'data-x': baseX.toFixed(1),
               'data-y': baseY.toFixed(1),
               'data-base-x': baseX.toFixed(1),
@@ -1470,7 +1471,11 @@
             prefGroup
           );
           rLbl._regShape = reg.shape;
-          rLbl.textContent = this.trTerm(reg.title);
+          rLbl.textContent = isQiao
+            ? this.locale === 'en'
+              ? `${this.trTerm(reg.title)} (Emigre)`
+              : `${reg.title}·侨`
+            : this.trTerm(reg.title);
         }
       }
 
@@ -4285,9 +4290,10 @@
           }
         } else {
           for (const item of [...eraHit.regionObjs, ...eraHit.prefObjs]) {
+            const isEmigre = item.category === '侨州' || item.category === '侨郡';
             const label =
               this.locale === 'en'
-                ? this.trTerm(item.title)
+                ? this.trTerm(item.title) + (isEmigre ? ' (Emigre)' : '')
                 : item.title +
                   (item.category && !item.title.endsWith(item.category) ? `（${item.category}）` : '');
             if (!adminHits.includes(label)) adminHits.push(label);
@@ -8226,8 +8232,9 @@
           }
           const formatAdminLabel = (rawTitle, rawCat) => {
             const name = this.trTerm(rawTitle);
+            const isEmigre = rawCat === '侨州' || rawCat === '侨郡';
             return this.locale === 'en'
-              ? name
+              ? name + (isEmigre ? ' (Emigre)' : '')
               : name + (rawCat && !name.endsWith(rawCat) ? '（' + rawCat + '）' : '');
           };
 
@@ -9764,20 +9771,25 @@
             const mainPol = (snap.polities || []).find((p) => p.role === 'main') || (snap.polities || [])[0];
             let provName = '';
             const stack = document.elementsFromPoint(cx, cy);
+            const polEl = stack.find(
+              (node) => node.dataset && node.dataset.polityTitle && node.dataset.polityRole !== 'neighbor'
+            );
+            const resolvedPolTitle = (polEl && polEl.dataset.polityTitle) || (mainPol && mainPol.title) || '';
             const provEl = stack.find((node) => node.dataset && node.dataset.provTitle);
             if (provEl) provName = provEl.dataset.provTitle;
             const pName = this.trTerm(el.dataset.prefTitle);
             const pCat = el.dataset.prefCategory;
+            const pEmigre = pCat === '侨州' || pCat === '侨郡';
             const lines = [
               `<b>${
                 this.locale === 'en'
-                  ? pName
+                  ? pName + (pEmigre ? ' (Emigre)' : '')
                   : pName + (pCat && !pName.endsWith(pCat) ? '（' + pCat + '）' : '')
               }</b>`,
             ];
-            if (mainPol) {
+            if (resolvedPolTitle) {
               lines.push(
-                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(mainPol.title)}</div>`
+                `<div class="tt-sub">${this.uiStr('belongs_to', '属 ')}${this.trTerm(resolvedPolTitle)}</div>`
               );
             }
             if (provName) {
