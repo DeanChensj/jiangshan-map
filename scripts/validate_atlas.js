@@ -3274,6 +3274,29 @@ function main() {
     for (const assetFile of fs.readdirSync(path.join(ROOT, 'assets'))) {
       assert(refCorpus.includes(assetFile), `Unreferenced file in assets/: ${assetFile}`);
     }
+
+    const maShanLinkMatch = indexHtml.match(
+      /<link href="(https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng&text=([^"&]+)&display=swap)" rel="stylesheet" \/>/
+    );
+    assert(maShanLinkMatch, 'Expected synchronous subsetted Ma Shan Zheng stylesheet <link> in index.html');
+    const subsetChars = new Set(decodeURIComponent(maShanLinkMatch[2]));
+    const requiredCalligraphyChars = [
+      '江山时序',
+      ...dynasties.map((d) => d.title || ''),
+      ...dynasties.map((d) => (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || ''),
+    ].join('');
+    for (const ch of requiredCalligraphyChars) {
+      assert(subsetChars.has(ch), `Ma Shan Zheng subset missing glyph "${ch}"`);
+    }
+
+    const pyHelperSrc = fs.readFileSync(
+      path.join(ROOT, 'skills', 'jiangshan-atlas', 'scripts', 'jiangshan.py'),
+      'utf8'
+    );
+    assert(
+      pyHelperSrc.includes('public_url = f"{PUBLIC_BASE_URL.rstrip(\'/\')}/?{query}"'),
+      'jiangshan.py must derive public_url from PUBLIC_BASE_URL'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
