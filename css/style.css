@@ -758,6 +758,11 @@ h2 {
   transition: opacity 0.16s ease;
 }
 
+.region-caption.is-qiaozhou {
+  fill: #7c2d19;
+  letter-spacing: 0.05em;
+}
+
 .region-caption.is-crowded-hidden {
   opacity: 0;
   pointer-events: none;
