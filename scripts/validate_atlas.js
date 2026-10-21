@@ -1486,17 +1486,31 @@ function main() {
       snapshots.s_zhanguo_b0.prefectures.length === 13 &&
       snapshots.s_zhanguo_b.prefectures.length === 18 &&
       snapshots.s_zhanguo_c.prefectures.length === 21 &&
+      snapshots.s_zhanguo_c2.prefectures.length === 22 &&
       snapshots.s_zhanguo_d.prefectures.length === 23 &&
       snapshots.s_zhanguo_e1.prefectures.length === 24 &&
       snapshots.s_zhanguo_e2.prefectures.length === 26 &&
       snapshots.s_zhanguo_e4.prefectures.length === 27 &&
-      snapshots.s_zhanguo_e5.prefectures.length === 33 &&
-      snapshots.s_qin_a.prefectures.length === 36 &&
-      snapshots.s_qin_b.prefectures.length === 37 &&
-      snapshots.s_qin.prefectures.length === 40 &&
+      snapshots.s_zhanguo_e5.prefectures.length === 34 &&
+      snapshots.s_qin_a.prefectures.length === 37 &&
+      snapshots.s_qin_b.prefectures.length === 38 &&
+      snapshots.s_qin.prefectures.length === 41 &&
       snapshots.s_xihan.prefectures.length >= 50 &&
       snapshots.s_donghan.prefectures.length >= 48,
-    'Warring States, Qin, and Han snapshots must reflect chronological commandery (郡) progression up to 36/40 Qin commanderies'
+    'Warring States, Qin, and Han snapshots must reflect chronological commandery (郡) progression including 薛郡'
+  );
+  // Regression guard: State of Lu (鲁) survives until -250 BCE, annexed by Chu in -249 BCE, becomes Qin 薛郡 in -223 BCE
+  assert(
+    snapshots.s_zhanguo_a.polities.some((p) => p.title === '鲁') &&
+      snapshots.s_zhanguo_c.polities.some((p) => p.title === '鲁') &&
+      !snapshots.s_zhanguo_c2.polities.some((p) => p.title === '鲁') &&
+      pointInShape(116.99, 35.6, snapshots.s_zhanguo_c.polities.find((p) => p.title === '鲁').shape) &&
+      pointInShape(116.99, 35.6, snapshots.s_zhanguo_c2.polities.find((p) => p.title === '楚').shape) &&
+      pointInShape(116.99, 35.6, snapshots.s_zhanguo_e5.polities.find((p) => p.title === '秦').shape) &&
+      snapshots.s_qin_a.prefectures.some((p) => p.title === '薛郡') &&
+      loreData.PLACE_LANDMARK_EVENTS.some((ev) => ev.zh.includes('薛仁杲')) &&
+      !loreData.PLACE_LANDMARK_EVENTS.some((ev) => ev.zh.includes('薛仁果')),
+    'State of Lu (鲁) chronology (-403..-250 -> Chu -249 -> Qin 薛郡 -223) and 薛仁杲 spelling must hold'
   );
   for (const anachronistic of ['会稽郡', '鄣郡', '东海郡', '泗水郡']) {
     assert(
