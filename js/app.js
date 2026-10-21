@@ -425,7 +425,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261021c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261021d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -449,7 +449,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261021c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261021d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2515,8 +2515,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 156 territory snapshots, 476 ancient cities, 20 strategic passes, and 7 historical journeys.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代156幅历史疆域、州郡道省政区、黄河改道水系、476座古城古今地名对照（点地溯源）、20座天下名关与7条青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 166 multi-stage territory snapshots, 442 milestones, 536 city landmarks, 20 strategic passes, and 100+ person chronicles.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、166幅多阶段历史疆域与州道政区快照、442条编年大事、536处城池地标、20座天下名关与百余位青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activePerson) {
@@ -6610,11 +6610,6 @@
         }
       }
       return { d, mx, my, angleDeg, chord };
-    }
-
-    _buildJourneySegmentSvgPath(c1, c2, viaCoords) {
-      const info = this._buildJourneySegmentInfo(c1, c2, viaCoords);
-      return info ? info.d : '';
     }
 
     _renderCartographicTrajectory(segments, curIdx, accentColor = '#bd2d22') {

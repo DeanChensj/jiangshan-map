@@ -37,7 +37,7 @@ Have you ever wondered while reading Chinese history or classical poetry:
 
 > [Try It Live: Ming Dynasty Yongle 13 (1415 CE) · Two Capitals, Thirteen Provinces & "Yingtian Prefecture" Inspection →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=Yingtian%20Prefecture&lang=en)
 
-![Ming Dynasty 1415 CE · Yingtian Prefecture Hover Preview](assets/preview_1415_ming_yingtian_en.png)
+![Ming Dynasty 1415 CE · Yingtian Prefecture Hover Preview](assets/preview_1415_ming_yingtian_en.webp)
 
 ---
 
@@ -50,7 +50,7 @@ Have you ever wondered while reading Chinese history or classical poetry:
 
 > [Try It Live: High Tang Kaiyuan 29 (741 CE) · Open Chang'an's 2,400-Year Genealogy Card →](https://deanchen.me/jiangshan-map/?year=741&place=Chang'an&lang=en)
 
-![High Tang 741 CE · Chang'an Trace Place & Key Events](assets/preview_741_tang_trace_en.png)
+![High Tang 741 CE · Chang'an Trace Place & Key Events](assets/preview_741_tang_trace_en.webp)
 
 ---
 
@@ -69,7 +69,7 @@ Each time you step to the next event (`‹ / ›`, `← / →`, or `Space` to au
 
 > [Try It Live: Follow Su Dongpo's Exile to Mizhou & Huangzhou (1075–1082 CE) →](https://deanchen.me/jiangshan-map/?person=sushi&lang=en)
 
-![Person Chronicle · Su Shi's Life & Exile Route](assets/preview_journey_sushi_en.png)
+![Person Chronicle · Su Shi's Life & Exile Route](assets/preview_journey_sushi_en.webp)
 
 ---
 
@@ -81,7 +81,7 @@ Think you know Chinese historical geography? Click **`Quiz ›`** in the corner 
 
 > [Try It Live: Western Han Emperor Wu, Yuanshou 2 (121 BCE) · Start the Map Pinpoint Challenge →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)
 
-![Western Han 121 BCE · Map Pinpoint Challenge Preview](assets/preview_quiz_challenge_en.png)
+![Western Han 121 BCE · Map Pinpoint Challenge Preview](assets/preview_quiz_challenge_en.webp)
 
 ---
 
