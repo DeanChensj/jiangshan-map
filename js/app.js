@@ -425,7 +425,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261021a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261021c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -449,7 +449,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261021a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261021c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -3812,7 +3812,9 @@
           : (lm.year >= d.fromYear && lm.year <= d.toYear);
         if (!dynMatch) continue;
         if (isCloseCoord(lm.coord, 45)) {
-          const dup = results.some((r) => Math.abs(r.year - lm.year) <= 3);
+          const dup = results.some((r) =>
+            r.fromLandmark ? r.year === lm.year : Math.abs(r.year - lm.year) <= 3
+          );
           if (!dup) {
             results.push({
               year: lm.year,
@@ -3825,6 +3827,7 @@
                 siteEn: lm.siteEn,
                 coord: lm.coord,
               },
+              fromLandmark: true,
             });
           }
         }

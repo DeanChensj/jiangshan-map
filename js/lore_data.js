@@ -3587,8 +3587,9 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "鄂州（武昌）",
       "siteEn": "Ezhou (Wuhan)",
-      "zh": "岳飞以鄂州为大本营，挥师北伐收复襄阳六郡",
-      "en": "Yue Fei bases his Northern Expedition forces at Ezhou (Wuchang)"
+      "zh": "岳飞凯旋驻节鄂州大本营，练成精锐“岳家军”经略中原",
+      "en": "Yue Fei garrisons his headquarters at Ezhou, forging the elite Yue Family Army to reclaim the North",
+      "month": 8
     },
     {
       "dynastyKey": "qing",
@@ -6056,8 +6057,8 @@ window.ATLAS_LORE_DATA = {
       "dynastyKey": "xihan",
       "year": -119,
       "coord": [
-        106.9,
-        47.9
+        109.101,
+        48.001
       ],
       "site": "漠北·狼居胥山",
       "siteEn": "Mobei & Mt. Langjuxu (Khentii)",
@@ -7159,7 +7160,8 @@ window.ATLAS_LORE_DATA = {
       "site": "襄阳→鄂州",
       "siteEn": "Xiangyang & Ezhou (Wuchang)",
       "zh": "年三十二岁的岳飞首次北伐两月连克襄阳、信阳等荆襄六郡",
-      "en": "Aged thirty-two, Yue Fei recaptures the six commanderies around Xiangyang in his first northern push"
+      "en": "Aged thirty-two, Yue Fei recaptures the six commanderies around Xiangyang in his first northern push",
+      "month": 5
     },
     {
       "dynastyKey": "nansong",
@@ -7254,8 +7256,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "大都柴市口",
       "siteEn": "Chaishikou, Dadu (Beijing)",
-      "zh": "文天祥囚元大都土室四年作《正气歌》，忽必烈许以宰相不屈",
-      "en": "Imprisoned four years in Yuan Dadu composing Song of Righteous Qi, Wen Tianxiang dies unbowed"
+      "zh": "文天祥囚元大都土室四年作《正气歌》，于柴市口南向再拜从容就义",
+      "en": "Wen Tianxiang composes Song of Righteousness in prison and goes to his death calmly at Dadu Execution Ground"
     },
     {
       "dynastyKey": "nansong",
@@ -7559,15 +7561,16 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "dynastyKey": "qing",
-      "year": 1876,
+      "year": 1878,
       "coord": [
-        93.51,
-        42.82
+        75.99,
+        39.47
       ],
-      "site": "肃州→哈密乌鲁木齐",
-      "siteEn": "Suzhou / Hami / Urumqi",
-      "zh": "六十四岁的左宗棠抬棺出关督师西征，收复新疆南北两路",
-      "en": "Aged sixty-four, Zuo Zongtang marches west carrying his coffin to recover Xinjiang for Qing"
+      "site": "喀什噶尔（今新疆喀什）",
+      "siteEn": "Kashgar (Southern Xinjiang)",
+      "zh": "左宗棠督师南征克复喀什噶尔，天山南北除伊犁外尽数收复",
+      "en": "Under Zuo Zongtang's command, Qing forces retake Kashgar, recovering all Xinjiang save Ili",
+      "month": 1
     },
     {
       "dynastyKey": "qing",
@@ -8248,6 +8251,636 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Zou (Zoucheng, Shandong)",
       "zh": "孟子去齐返故里邹邑讲学终老，与万章诸弟子编撰《孟子》七篇",
       "en": "Returning home to Zou, Mencius teaches disciples and compiles the seven-book classic Mencius"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 208,
+      "month": 6,
+      "coord": [
+        114.61,
+        36.33
+      ],
+      "site": "邺城丞相府（今河北临漳）",
+      "siteEn": "Ye City (Linzhang, Hebei)",
+      "zh": "曹操任丞相辟河内司马懿为文学掾，随幕府参赞军谋",
+      "en": "Chancellor Cao Cao summons Sima Yi of Henei to Ye as literary clerk and military advisor"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 215,
+      "month": 8,
+      "coord": [
+        117.28,
+        31.86
+      ],
+      "site": "合肥逍遥津（今安徽合肥）",
+      "siteEn": "Xiaoyao Ford, Hefei (Anhui)",
+      "zh": "合肥之战：张辽率八百勇士冲阵大破孙权十万军，威震逍遥津",
+      "en": "Battle of Hefei: Zhang Liao leads 800 vanguard riders to rout Sun Quan's army at Xiaoyao Ford"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 228,
+      "month": 1,
+      "coord": [
+        110.23,
+        32.22
+      ],
+      "site": "上庸新城（今湖北竹山）",
+      "siteEn": "Xincheng, Shangyong (Zhushan, Hubei)",
+      "zh": "司马懿自宛城八日急行千二百里，奇袭上庸新城斩叛将孟达",
+      "en": "Sima Yi marches 1,200 li from Wan in eight days, storming Xincheng to capture rebel Meng Da"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 241,
+      "month": 6,
+      "coord": [
+        112.14,
+        32.04
+      ],
+      "site": "樊城（今湖北襄阳）",
+      "siteEn": "Fancheng (Xiangyang, Hubei)",
+      "zh": "东吴四路攻魏，太尉司马懿亲率轻骑疾驰南下解樊城之围",
+      "en": "Grand Commandant Sima Yi leads light cavalry south to relieve besieged Fancheng from Wu forces"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 462,
+      "coord": [
+        118.8,
+        32.05
+      ],
+      "site": "建康（今江苏南京）",
+      "siteEn": "Jiankang (Nanjing, Jiangsu)",
+      "zh": "祖冲之于建康推算圆周率至小数点后七位，创制《大明历》",
+      "en": "Zu Chongzhi calculates pi to seven decimal places in Jiankang and compiles the Daming Calendar"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 534,
+      "coord": [
+        118.48,
+        36.69
+      ],
+      "site": "青州益都（今山东青州）",
+      "siteEn": "Qingzhou (Shandong)",
+      "zh": "高阳太守贾思勰总结北方农牧经验，撰成农学巨著《齐民要术》",
+      "en": "Governor Jia Sixie compiles Qimin Yaoshu in Shandong, the earliest intact Chinese agronomy manual"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 549,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康台城（今江苏南京）",
+      "siteEn": "Taicheng Palace, Jiankang (Nanjing)",
+      "zh": "侯景攻陷建康台城，八十六岁的梁武帝萧衍饥病交加饿死台城",
+      "en": "Rebel general Hou Jing storms Jiankang Palace, where aged Emperor Wu of Liang starves to death"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 564,
+      "coord": [
+        112.6,
+        34.72
+      ],
+      "site": "洛阳金墉城（今河南洛阳）",
+      "siteEn": "Jinyong Fortress, Luoyang",
+      "zh": "邙山之战兰陵王高长恭率五百骑破周军解围，军中作《兰陵王入阵曲》",
+      "en": "Prince of Lanling Gao Changgong breaks the siege of Luoyang with 500 riders, inspiring a battle hymn"
+    },
+    {
+      "dynastyKey": "sui",
+      "year": 617,
+      "month": 2,
+      "coord": [
+        113.38,
+        34.8
+      ],
+      "site": "荥阳洛口仓（今河南郑州巩义）",
+      "siteEn": "Luokou Granary, Xingyang (Henan)",
+      "zh": "瓦岗军翟让、李密攻克兴洛仓开仓赈粮，秦叔宝程咬金归附",
+      "en": "Wagang rebels Zhai Rang and Li Mi seize Luokou Granary to feed the poor as heroes rally to their banner"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 662,
+      "coord": [
+        88.13,
+        47.85
+      ],
+      "site": "天山·金山（今阿尔泰山南麓）",
+      "siteEn": "Altai / Tianshan Frontier",
+      "zh": "薛仁贵北征九姓铁勒“三箭定天山”，军中传唱长歌入汉关",
+      "en": "Xue Rengui fells three Tiele chieftains with three arrows, pacifying the northern steppe frontier"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 675,
+      "coord": [
+        115.88,
+        28.68
+      ],
+      "site": "洪州滕王阁（今江西南昌）",
+      "siteEn": "Pavilion of Prince Teng, Nanchang",
+      "zh": "王勃省亲过洪州登滕王阁，即席挥毫赋千古骈文《滕王阁序》",
+      "en": "Young poet Wang Bo composes the immortal Preface to the Pavilion of Prince Teng at Nanchang banquet"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1047,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京汴梁（今河南开封）",
+      "siteEn": "Dongjing Bianliang (Kaifeng, Henan)",
+      "zh": "布衣毕昇于汴京发明胶泥活字印刷术，载入沈括《梦溪笔谈》",
+      "en": "Artisan Bi Sheng invents ceramic movable-type printing in Kaifeng, recorded in Dream Pool Essays"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1061,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京开封府（今河南开封）",
+      "siteEn": "Kaifeng Prefecture (Henan)",
+      "zh": "包拯权知开封府铁面弹劾权贵，京师号“关节不到，有阎罗包老”",
+      "en": "Incorruptible magistrate Bao Zheng impeaches powerful nobles in Kaifeng, earning legendary renown"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1088,
+      "coord": [
+        119.46,
+        32.2
+      ],
+      "site": "润州梦溪园（今江苏镇江）",
+      "siteEn": "Mengxi Garden, Zhenjiang (Jiangsu)",
+      "zh": "沈括晚年退居润州梦溪园，撰成科学笔记巨著《梦溪笔谈》",
+      "en": "Polymath Shen Kuo retires to Mengxi Garden in Zhenjiang to complete his scientific classic Dream Pool Essays"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1119,
+      "coord": [
+        116.12,
+        35.76
+      ],
+      "site": "梁山泊（今山东济宁梁山）",
+      "siteEn": "Liangshan Marsh (Jining, Shandong)",
+      "zh": "宋江等三十六人于河朔京东起义横行十郡，成《水浒传》原型",
+      "en": "Song Jiang and thirty-six outlaws rise around Liangshan Marsh, inspiring the classic Water Margin"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1122,
+      "coord": [
+        114.36,
+        35.92
+      ],
+      "site": "相州汤阴（今河南安阳汤阴）",
+      "siteEn": "Tangyin, Xiangzhou (Anyang, Henan)",
+      "zh": "二十岁的农家子岳飞自相州汤阴应募从军，母勉以尽忠报国",
+      "en": "Twenty-year-old Yue Fei enlists in the army from his hometown Tangyin, vowed to loyal service"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1133,
+      "coord": [
+        114.93,
+        25.85
+      ],
+      "site": "虔州（今江西赣州）",
+      "siteEn": "Qianzhou (Ganzhou, Jiangxi)",
+      "zh": "岳飞奉诏平定吉虔盗乱，力谏高宗勿屠虔州保全全城百姓",
+      "en": "After pacifying rebels in Ganzhou, Yue Fei pleads with Emperor Gaozong to spare all townspeople"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1136,
+      "coord": [
+        109.94,
+        33.87
+      ],
+      "site": "商州（今陕西商洛）",
+      "siteEn": "Shangzhou (Shangluo, Shaanxi)",
+      "zh": "岳飞自鄂州孤军北伐连克伊阳商州，愤孤军无援矢志收复河山",
+      "en": "Yue Fei launches a northern counteroffensive from Ezhou, retaking Shangzhou on the Qinling frontier"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1578,
+      "coord": [
+        115.43,
+        30.22
+      ],
+      "site": "蕲州（今湖北黄冈蕲春）",
+      "siteEn": "Qizhou (Qichun, Hubei)",
+      "zh": "李时珍历二十七载三易其稿，于蕲州撰成药物学巨著《本草纲目》",
+      "en": "Physician Li Shizhen completes Compendium of Materia Medica in Qizhou after twenty-seven years of work"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1630,
+      "coord": [
+        116.37,
+        39.9
+      ],
+      "site": "北京西市",
+      "siteEn": "Western Market, Beijing",
+      "zh": "崇祯帝中皇太极反间计，于北京西市磔杀督师袁崇焕自毁长城",
+      "en": "Deceived by Hong Taiji's ruse, the Chongzhen Emperor executes commander Yuan Chonghuan in Beijing"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1763,
+      "coord": [
+        116.2,
+        39.99
+      ],
+      "site": "北京西山黄叶村",
+      "siteEn": "Western Hills, Beijing",
+      "zh": "曹雪芹于北京西山贫病交加中逝世，遗千古文学巅峰《红楼梦》",
+      "en": "Cao Xueqin dies in poverty in the Western Hills of Beijing, leaving behind Dream of the Red Chamber"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1852,
+      "month": 9,
+      "coord": [
+        112.97,
+        28.2
+      ],
+      "site": "长沙城（今湖南长沙）",
+      "siteEn": "Changsha (Hunan)",
+      "zh": "四十岁的湘阴举人左宗棠出山入幕长沙，运筹死守孤城退太平军",
+      "en": "At forty, Zuo Zongtang joins the defense staff at Changsha, successfully holding off Taiping forces"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1863,
+      "month": 6,
+      "coord": [
+        102.35,
+        29.26
+      ],
+      "site": "大渡河安顺场（今四川雅安石棉）",
+      "siteEn": "Anshunchang, Dadu River (Sichuan)",
+      "zh": "太平天国翼王石达开抢渡大渡河遇山洪绝境，舍生保部众就义",
+      "en": "Trapped by flash floods along the Dadu River, Taiping Prince Shi Dakai surrenders himself to save his men"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1864,
+      "month": 3,
+      "coord": [
+        120.15,
+        30.25
+      ],
+      "site": "杭州府（今浙江杭州）",
+      "siteEn": "Hangzhou (Zhejiang)",
+      "zh": "闽浙总督左宗棠率楚军收复杭州平定浙江，兴修水利恢复蚕桑",
+      "en": "Viceroy Zuo Zongtang retakes Hangzhou with the Chu Army and restores Zhejiang dikes and sericulture"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1873,
+      "month": 10,
+      "coord": [
+        98.51,
+        39.74
+      ],
+      "site": "肃州（今甘肃酒泉）",
+      "siteEn": "Suzhou (Jiuquan, Gansu)",
+      "zh": "陕甘总督左宗棠攻克肃州肃清关内，沿驿道绵延千里广植左公柳",
+      "en": "Viceroy Zuo Zongtang captures Jiuquan and plants thousands of li of roadside willows across Gansu"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1880,
+      "month": 5,
+      "coord": [
+        93.51,
+        42.83
+      ],
+      "site": "哈密大营（今新疆哈密）",
+      "siteEn": "Hami Camp (Xinjiang)",
+      "zh": "六十八岁的左宗棠再舁榇进驻哈密备战，助曾纪泽争回伊犁九城",
+      "en": "Aged sixty-eight, Zuo Zongtang marches with his coffin to Hami, backing diplomatic recovery of Ili"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1885,
+      "month": 9,
+      "coord": [
+        119.3,
+        26.08
+      ],
+      "site": "福州钦差行辕（今福建福州）",
+      "siteEn": "Imperial Commissioner Headquarters, Fuzhou",
+      "zh": "七十三岁的左宗棠抱病督师福建抗法，中法议和后病逝福州行辕",
+      "en": "Aged seventy-three, Zuo Zongtang oversees coastal defense in Fujian against France and dies in Fuzhou"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1900,
+      "month": 6,
+      "coord": [
+        94.81,
+        40.04
+      ],
+      "site": "敦煌莫高窟（今甘肃敦煌）",
+      "siteEn": "Mogao Caves, Dunhuang (Gansu)",
+      "zh": "道士王圆箓于莫高窟偶然发现藏经洞，五万件中古遗书重见天日",
+      "en": "Taoist Wang Yuanlu uncovers the Library Cave at Mogao, revealing 50,000 medieval manuscripts"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1909,
+      "month": 10,
+      "coord": [
+        116.02,
+        40.35
+      ],
+      "site": "八达岭青龙桥（今北京延庆）",
+      "siteEn": "Badaling / Qinglongqiao (Beijing)",
+      "zh": "詹天佑主持建成中国人自建首条干线京张铁路，创八达岭人字形线",
+      "en": "Chief engineer Zhan Tianyou completes the self-built Beijing-Zhangjiakou Railway with switchback tracks"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1911,
+      "month": 4,
+      "coord": [
+        113.3,
+        23.14
+      ],
+      "site": "广州黄花岗（今广东广州）",
+      "siteEn": "Huanghuagang, Guangzhou",
+      "zh": "黄兴率同盟会敢死队猛攻两广总督署，七十二烈士合葬广州黄花岗",
+      "en": "Huang Xing leads revolutionaries storming the Viceroy Yamen in Guangzhou; 72 martyrs rest at Huanghuagang"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -279,
+      "coord": [
+        114.48,
+        36.61
+      ],
+      "site": "邯郸回车巷（今河北邯郸）",
+      "siteEn": "Huiche Lane, Handan (Hebei)",
+      "zh": "蔺相如完璧归赵、渑池会挫秦王，老将廉颇肉袒负荆请罪成将相和",
+      "en": "Lin Xiangru outwits Qin at Mianchi; general Lian Po bears thorns on his back to reconcile in Handan"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -227,
+      "coord": [
+        115.5,
+        39.35
+      ],
+      "site": "易水岸（今河北保定易县）",
+      "siteEn": "Yi River (Yixian, Hebei)",
+      "zh": "燕太子丹于易水白衣送别荆轲，高渐离击筑歌“风萧萧兮易水寒”",
+      "en": "Crown Prince Dan of Yan bids farewell to assassin Jing Ke by the icy Yi River as music echoes"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -121,
+      "month": 7,
+      "coord": [
+        99.8,
+        38.93
+      ],
+      "site": "祁连山（今甘肃张掖南）",
+      "siteEn": "Qilian Mountains (Zhangye, Gansu)",
+      "zh": "霍去病夏越居延海深入二千里，大破祁连山受浑邪王四万众降",
+      "en": "Huo Qubing marches 2,000 li past Juyan Lake to rout Xiongnu at Mt. Qilian and accept surrender"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -117,
+      "coord": [
+        108.58,
+        34.34
+      ],
+      "site": "茂陵（今陕西咸阳兴平）",
+      "siteEn": "Maoling Mausoleum (Xingping, Shaanxi)",
+      "zh": "二十四岁的冠军侯霍去病病逝长安，武帝筑祁连山冢陪葬茂陵",
+      "en": "Young general Huo Qubing dies at twenty-four; Emperor Wu builds a Qilian-shaped mound beside Maoling"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -100,
+      "coord": [
+        107.3,
+        53.3
+      ],
+      "site": "北海（今贝加尔湖畔）",
+      "siteEn": "Lake Baikal (Northern Steppe)",
+      "zh": "中郎将苏武出使匈奴被扣，持汉节牧羊北海十九载白发归汉",
+      "en": "Han envoy Su Wu is detained by Xiongnu and tends sheep by Lake Baikal for nineteen years unbroken"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 82,
+      "coord": [
+        112.46,
+        34.63
+      ],
+      "site": "洛阳兰台（今河南洛阳）",
+      "siteEn": "Lantai Imperial Library, Luoyang",
+      "zh": "兰台令史班固历二十余载撰成中国第一部纪传体断代史《汉书》",
+      "en": "Court historian Ban Gu completes the Book of Han in Luoyang, inaugurating dynastic history writing"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 100,
+      "coord": [
+        114.12,
+        33.57
+      ],
+      "site": "汝南召陵（今河南漯河）",
+      "siteEn": "Shaoling, Runan (Luohe, Henan)",
+      "zh": "经学家许慎博采篆文古籀，撰成世界首部系统字书《说文解字》",
+      "en": "Scholar Xu Shen compiles Analytical Dictionary of Characters, the foundational lexicon of Chinese script"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 205,
+      "coord": [
+        112.53,
+        33
+      ],
+      "site": "南阳（今河南南阳）",
+      "siteEn": "Nanyang (Henan)",
+      "zh": "南阳名医张仲景总结汉代临床方证，撰成“医圣”经典《伤寒杂病论》",
+      "en": "Master physician Zhang Zhongjing of Nanyang compiles Treatise on Cold Damage and Miscellaneous Diseases"
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 296,
+      "coord": [
+        112.42,
+        34.66
+      ],
+      "site": "洛阳金谷园（今河南洛阳）",
+      "siteEn": "Golden Valley Garden, Luoyang",
+      "zh": "卫尉石崇于洛阳金谷涧筑园雅集二十四友，与王恺斗富传世",
+      "en": "Magnate Shi Chong hosts literati at Golden Valley Garden in Luoyang, vying in lavish wealth"
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 303,
+      "coord": [
+        121.23,
+        31.03
+      ],
+      "site": "华亭（今上海松江）",
+      "siteEn": "Huating (Songjiang, Shanghai)",
+      "zh": "江东才子陆机兵败遇害，临终浩叹“华亭鹤唳，岂可复闻乎”",
+      "en": "Poet-general Lu Ji laments never again hearing the cranes of Huating in Songjiang before execution"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 960,
+      "coord": [
+        118.79,
+        32.04
+      ],
+      "site": "金陵（今江苏南京）",
+      "siteEn": "Jinling (Nanjing)",
+      "zh": "南唐画家顾闳中奉李煜命夜窥韩府，绘成传世名画《韩熙载夜宴图》",
+      "en": "Court painter Gu Hongzhong paints Night Revels of Han Xizai in Jinling for ruler Li Yu"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 965,
+      "coord": [
+        104.07,
+        30.67
+      ],
+      "site": "成都府（今四川成都）",
+      "siteEn": "Chengdu (Sichuan)",
+      "zh": "宋师灭后蜀孟昶降，花蕊夫人赋“十四万人齐解甲，更无一个是男儿”",
+      "en": "Later Shu surrenders to Song at Chengdu as Consort Huarui laments 140,000 troops laying down arms"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1161,
+      "month": 10,
+      "coord": [
+        117.02,
+        36.65
+      ],
+      "site": "济南历城（今山东济南）",
+      "siteEn": "Licheng, Jinan (Shandong)",
+      "zh": "二十二岁的辛弃疾于历城聚两千义军投耿京起兵抗金，掌书记印",
+      "en": "Aged twenty-two, Xin Qiji raises two thousand volunteers in Jinan to join resistance against Jin"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1179,
+      "coord": [
+        116.04,
+        29.52
+      ],
+      "site": "南康白鹿洞书院（今江西九江庐山）",
+      "siteEn": "White Deer Grotto Academy, Mt. Lu",
+      "zh": "朱熹知南康军重兴庐山白鹿洞书院，手订《白鹿洞书院揭示》垂范学林",
+      "en": "Neo-Confucian master Zhu Xi revives White Deer Grotto Academy at Mt. Lu and drafts academy rules"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1180,
+      "coord": [
+        112.98,
+        28.2
+      ],
+      "site": "潭州（今湖南长沙）",
+      "siteEn": "Tanzhou (Changsha, Hunan)",
+      "zh": "辛弃疾知潭州兼湖南安抚使，创建精锐“飞虎军”雄镇荆湖",
+      "en": "Governor Xin Qiji founds the elite Flying Tiger Army in Changsha, securing the middle Yangtze"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1247,
+      "coord": [
+        112.97,
+        28.2
+      ],
+      "site": "潭州提刑司（今湖南长沙）",
+      "siteEn": "Judicial Commissioner Office, Changsha",
+      "zh": "提点刑狱宋慈总结检验经验，撰成世界首部法医学专著《洗冤集录》",
+      "en": "Judicial commissioner Song Ci completes Collected Cases of Injustice Rectified, founding forensic medicine"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1256,
+      "month": 5,
+      "coord": [
+        120.16,
+        30.24
+      ],
+      "site": "临安集英殿（今浙江杭州）",
+      "siteEn": "Jiying Hall, Lin'an (Hangzhou)",
+      "zh": "二十岁的文天祥于临安殿试对策万言，宋理宗亲拔为第一状元",
+      "en": "Aged twenty, Wen Tianxiang tops the palace examination in Hangzhou as Imperially Ranked First Scholar"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1276,
+      "month": 2,
+      "coord": [
+        119.45,
+        32.21
+      ],
+      "site": "京口（今江苏镇江）",
+      "siteEn": "Jingkou (Zhenjiang, Jiangsu)",
+      "zh": "文天祥使元营慷慨抗辞被扣，押赴北上途中于京口乘夜脱险南归",
+      "en": "Detained while parleying in the Yuan camp, Wen Tianxiang escapes under cover of night at Zhenjiang"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1291,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "元大都（今北京）",
+      "siteEn": "Khanbaliq / Dadu (Beijing)",
+      "zh": "元曲大家关汉卿于大都创作杂剧代表作《感天动地窦娥冤》流传千古",
+      "en": "Playwright Guan Hanqing composes the masterpiece tragedy The Injustice to Dou E in Yuan Dadu"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1296,
+      "coord": [
+        121.44,
+        31.12
+      ],
+      "site": "松江乌泥泾（今上海徐汇华泾）",
+      "siteEn": "Wunijing, Songjiang (Shanghai)",
+      "zh": "黄道婆归故里松江乌泥泾传授捍弹纺织新法，松江布遂“衣被天下”",
+      "en": "Huang Daopo returns to Songjiang in Shanghai to innovate cotton spinning and weaving technology"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1350,
+      "coord": [
+        119.95,
+        30.05
+      ],
+      "site": "富春江（今浙江杭州富阳）",
+      "siteEn": "Fuchun River, Fuyang (Zhejiang)",
+      "zh": "八十二岁的“元四家”之首黄公望结庐富春江，绘成旷世《富春山居图》",
+      "en": "Aged eighty-two, master painter Huang Gongwang completes Dwelling in the Fuchun Mountains scroll"
     }
   ],
   "GUQIN_TRACKS": [
