@@ -37,7 +37,7 @@
 
 > [点击直达：大明永乐十三年（1415 年）· 两京十三布政使司与「应天府」府境探查 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C)
 
-![明永乐十三年（1415 年）· 应天府政区悬停预览](assets/preview_1415_ming_yingtian.png)
+![明永乐十三年（1415 年）· 应天府政区悬停预览](assets/preview_1415_ming_yingtian.webp)
 
 ---
 
@@ -50,7 +50,7 @@
 
 > [点击直达：盛唐开元二十九年（741 年）· 点开长安看千年风云 →](https://deanchen.me/jiangshan-map/?year=741&place=长安)
 
-![盛唐 741 年 · 长安点地溯源与史事纪要](assets/preview_741_tang_trace.png)
+![盛唐 741 年 · 长安点地溯源与史事纪要](assets/preview_741_tang_trace.webp)
 
 ---
 
@@ -69,7 +69,7 @@
 
 > [点击直达：展阅苏东坡宦海贬谪生平与行迹（1037 — 1101 年）→](https://deanchen.me/jiangshan-map/?person=sushi)
 
-![点人溯事 · 苏轼生平与宦海行迹](assets/preview_journey_sushi.png)
+![点人溯事 · 苏轼生平与宦海行迹](assets/preview_journey_sushi.webp)
 
 ---
 
@@ -81,7 +81,7 @@
 
 > [点击直达：西汉武帝元狩二年（前 121 年）· 开启「舆图寻址」挑战模式 →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)
 
-![西汉前 121 年 · 舆图寻址挑战模式预览](assets/preview_quiz_challenge.png)
+![西汉前 121 年 · 舆图寻址挑战模式预览](assets/preview_quiz_challenge.webp)
 
 ---
 

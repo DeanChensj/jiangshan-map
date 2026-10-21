@@ -1066,19 +1066,18 @@ function main() {
     's_sanguo',
     's_dongjin_a',
     's_dongjin_c',
-    's_nanbei',
     's_nanbei_b',
     's_nanbei_c',
     's_nanbei_d',
     's_nanbei_e',
     's_sui',
-    's_tang',
-    's_wudai',
-    's_beisong',
-    's_nansong',
+    's_tang_a5',
+    's_wudai_a',
+    's_beisong_b',
+    's_nansong_a',
     's_yuan',
-    's_ming',
-    's_qing',
+    's_ming_a',
+    's_qing_d',
     's_roc',
   ]) {
     const checkSnap = snapshots[checkSnapKey];
@@ -1423,7 +1422,8 @@ function main() {
   assert(
     indexHtml.includes('value="-403"') &&
       indexHtml.includes('公元前403年 · 周威烈王二十三年') &&
-      indexHtml.includes('周威烈王命韩、赵、魏为诸侯，三家分晋') &&
+      indexHtml.includes(dynasties[0].summary) &&
+      indexHtml.includes(dynasties[0].milestones[0].headline) &&
       appCode.includes('fromYearSync: true') &&
       appCode.includes('preserveGenealogyScroll'),
     'Expected index.html pre-rendered initial state to match -403 Warring States opening milestone and app.js to preserve genealogy camera/scroll'
@@ -1500,7 +1500,7 @@ function main() {
       snapshots.s_qin_a.prefectures.length === 37 &&
       snapshots.s_qin_b.prefectures.length === 38 &&
       snapshots.s_qin.prefectures.length === 41 &&
-      snapshots.s_xihan.prefectures.length >= 50 &&
+      snapshots.s_xihan_b.prefectures.length >= 50 &&
       snapshots.s_donghan.prefectures.length >= 48,
     'Warring States, Qin, and Han snapshots must reflect chronological commandery (郡) progression including 薛郡'
   );
@@ -1832,7 +1832,7 @@ function main() {
       `Missing required PLACE_LANDMARK_EVENTS entry ${dk}:${yr}`
     );
   }
-  for (const sk of ['s_ming', 's_ming_b']) {
+  for (const sk of ['s_ming_b']) {
     const mingPol = snapshots[sk].polities.find((p) => p.title === '明');
     assert(
       mingPol && mingPol.shape.type === 'MultiPolygon' && mingPol.shape.coordinates.length === 4,
@@ -2217,7 +2217,6 @@ function main() {
 
   // 23f. Verify Dali (大理, 937–1253 CE), Nanzhao (南诏, 649–936 CE), and unified Tubo (吐蕃, 618–877 CE) vs fragmented Tibetan polities (吐蕃诸部, 880–1246 CE)
   const daliSnapKeys = [
-    's_wudai',
     's_wudai_c0',
     's_wudai_c',
     's_wudai_c2',
@@ -2225,7 +2224,6 @@ function main() {
     's_wudai_e',
     's_wudai_e1',
     's_wudai_e2',
-    's_beisong',
     's_beisong_a0',
     's_beisong_a',
     's_beisong_a2',
@@ -2238,7 +2236,6 @@ function main() {
     's_beisong_b2',
     's_beisong_c',
     's_beisong_d',
-    's_nansong',
     's_nansong_a0',
     's_nansong_a',
     's_nansong_b0',
@@ -2266,7 +2263,7 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 19, `Expected 19 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 18, `Expected 18 s_tang* snapshots, found ${tangSnapKeys.length}`);
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -2430,7 +2427,7 @@ function main() {
   );
 
   // 23i. Verify Ming Hexi Corridor (Jiayuguan & Xining) and contiguous Seven Guards West of Jiayuguan (哈密卫（关西七卫）)
-  for (const sk of ['s_ming', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
+  for (const sk of ['s_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
     const mingPol = (snapshots[sk].polities || []).find((p) => p.title === '明');
     assert(
       mingPol && pointInShape(98.291, 39.771, mingPol.shape) && pointInShape(101.78, 36.62, mingPol.shape),
@@ -2661,7 +2658,7 @@ function main() {
   }
 
   // 23o. Verify Ming Dynasty (s_ming*) natural curved polity borders & bilingual README preview asset parity
-  for (const mingKey of ['s_ming', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
+  for (const mingKey of ['s_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b', 's_ming_c']) {
     const mingSnap = snapshots[mingKey];
     assert(mingSnap, `Missing Ming snapshot ${mingKey}`);
     for (const pol of mingSnap.polities || []) {
@@ -2684,10 +2681,10 @@ function main() {
     }
   }
   for (const [enAsset, zhAsset] of [
-    ['assets/preview_741_tang_trace_en.png', 'assets/preview_741_tang_trace.png'],
-    ['assets/preview_1415_ming_yingtian_en.png', 'assets/preview_1415_ming_yingtian.png'],
-    ['assets/preview_journey_sushi_en.png', 'assets/preview_journey_sushi.png'],
-    ['assets/preview_quiz_challenge_en.png', 'assets/preview_quiz_challenge.png'],
+    ['assets/preview_741_tang_trace_en.webp', 'assets/preview_741_tang_trace.webp'],
+    ['assets/preview_1415_ming_yingtian_en.webp', 'assets/preview_1415_ming_yingtian.webp'],
+    ['assets/preview_journey_sushi_en.webp', 'assets/preview_journey_sushi.webp'],
+    ['assets/preview_quiz_challenge_en.webp', 'assets/preview_quiz_challenge.webp'],
   ]) {
     assert(readmeSrc.includes(enAsset), `README.md must reference English preview ${enAsset}`);
     assert(readmeZhSrc.includes(zhAsset), `README_ZH.md must reference Chinese preview ${zhAsset}`);
@@ -3214,6 +3211,68 @@ function main() {
           `Expected clean English text & site mentioning "${enName}" on ${pKey}:${st.year}, got "${st.siteEn} -> ${st.textEn}"`
         );
       }
+    }
+  }
+
+  // 23w. Hygiene & anti-drift guards: zero unreachable snapshots, zero legacy ?journey= links, zero unreferenced assets, and index.html SSR parity
+  {
+    const liveSnapSet = new Set(['neighbors']);
+    for (const d of dynasties) {
+      for (let y = d.fromYear; y <= d.toYear; y++) {
+        if (y === 0) continue;
+        liveSnapSet.add(ctrl._resolveSnapKey(d, y));
+      }
+      for (const p of d.phases || []) {
+        if (p.snap) liveSnapSet.add(p.snap);
+      }
+    }
+    const snapsRawCheck = fs.readFileSync(path.join(JS_DIR, 'atlas_snapshots.js'), 'utf8');
+    const mRawD = snapsRawCheck.match(/^(\s*const D = )(\{[\s\S]*?\})(;\s*\n\s*const rc =)/m);
+    assert(mRawD, 'Expected compact D block in atlas_snapshots.js');
+    const parsedRawD = JSON.parse(mRawD[2]);
+    let grew = true;
+    while (grew) {
+      grew = false;
+      for (const k of [...liveSnapSet]) {
+        const s = parsedRawD.d[k];
+        if (!s) continue;
+        for (const refField of ['prefRef', 'regionRef']) {
+          const target = s[refField];
+          assert(!target || parsedRawD.d[target], `Dangling ${refField}="${target}" on snapshot ${k}`);
+          if (target && !liveSnapSet.has(target)) {
+            liveSnapSet.add(target);
+            grew = true;
+          }
+        }
+      }
+    }
+    const unreachableSnaps = Object.keys(parsedRawD.d).filter((k) => !liveSnapSet.has(k));
+    assert.strictEqual(
+      unreachableSnaps.length,
+      0,
+      `Found unreachable legacy snapshots in atlas_snapshots.js: ${unreachableSnaps.join(', ')}`
+    );
+
+    const sitemapRaw = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
+    assert(
+      !indexHtml.includes('?journey=') && !sitemapRaw.includes('?journey='),
+      'index.html and sitemap.xml must use canonical ?person= URLs rather than legacy ?journey='
+    );
+    assert(
+      !indexHtml.includes('秦灭东周王室') && !indexHtml.includes('（今江西南安府（今大余））'),
+      'index.html must not contain stale Warring States factual error or nested Nan’an double parentheses'
+    );
+    const ssrMilestoneLis = indexHtml.match(/<ul id="milestone-list">([\s\S]*?)<\/ul>/);
+    const ssrCount = ssrMilestoneLis ? (ssrMilestoneLis[1].match(/<li>/g) || []).length : 0;
+    assert.strictEqual(
+      ssrCount,
+      dynasties[0].milestones.length,
+      `index.html #milestone-list count (${ssrCount}) must match Warring States milestones (${dynasties[0].milestones.length})`
+    );
+
+    const refCorpus = [indexHtml, styleCss, appCode, readmeSrc, readmeZhSrc].join('\n');
+    for (const assetFile of fs.readdirSync(path.join(ROOT, 'assets'))) {
+      assert(refCorpus.includes(assetFile), `Unreferenced file in assets/: ${assetFile}`);
     }
   }
 
