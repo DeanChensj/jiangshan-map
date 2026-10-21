@@ -172,16 +172,16 @@ window.EN_LOCALE = {
       "Jiuyuan (Ordos)"
     ],
     "qin:-214": [
-      "Conquest of Lingnan; Guilin, Xiang, and Nanhai commanderies established",
-      "Panyu (Guangzhou)"
+      "Qin digs the Lingqu Canal and pacifies Lingnan, establishing Guilin, Xiang, and Nanhai",
+      "Lingqu & Panyu"
     ],
     "qin:-209": [
       "Chen Sheng and Wu Guang launch the Dazexiang Uprising",
       "Dazexiang"
     ],
     "xihan:-202": [
-      "Liu Bang claims the throne and establishes the capital at Chang’an",
-      "Chang'an"
+      "Liu Bang defeats Xiang Yu at Gaixia and ascends the throne as Emperor Gaozu of Western Han",
+      "Gaixia & Chang'an"
     ],
     "xihan:-154": [
       "Rebellion of the Seven States suppressed; central authority consolidated",
@@ -192,8 +192,8 @@ window.EN_LOCALE = {
       "Dayuan & Yuezhi"
     ],
     "xihan:-127": [
-      "Wei Qing retakes the Ordos Loop; Shuofang Commandery established",
-      "Shuofang"
+      "Wei Qing recovers the Ordos Loop for Shuofang Commandery; Decree of Extended Grace curbs princes",
+      "Shuofang & Chang'an"
     ],
     "xihan:-121": [
       "Huo Qubing’s Hexi campaigns; the Four Hexi Commanderies founded",
@@ -404,8 +404,8 @@ window.EN_LOCALE = {
       "Ye (Eastern Wei)"
     ],
     "nanbei:548": [
-      "Rebellion of Hou Jing devastates the lower Yangtze",
-      "Jiankang (Taicheng)"
+      "Hou Jing's Rebellion storms Jiankang Palace; aged Emperor Wu starves as Jiangnan is ravaged",
+      "Jiankang (Nanjing)"
     ],
     "nanbei:553": [
       "Western Wei general Yuchi Jiong conquers Chengdu and annexes Sichuan from the Liang dynasty",
@@ -432,7 +432,7 @@ window.EN_LOCALE = {
       "Jiankang"
     ],
     "sui:605": [
-      "Construction of the eastern capital Luoyang and the Tongji Canal begins",
+      "Emperor Yang builds Luoyang, digs the Tongji Canal, and founds the Jinshi civil exam",
       "Luoyang"
     ],
     "sui:610": [
@@ -528,7 +528,7 @@ window.EN_LOCALE = {
       "Jiangling"
     ],
     "beisong:965": [
-      "Wang Quanbin captures Chengdu as Meng Chang surrenders, ending Later Shu",
+      "Song general Wang Quanbin conquers Later Shu in Chengdu; Consort Huarui laments its surrender",
       "Chengdu"
     ],
     "beisong:971": [
@@ -752,7 +752,7 @@ window.EN_LOCALE = {
       "Humen"
     ],
     "qing:1860": [
-      "Convention of Peking cedes Outer Manchuria to Russia",
+      "Anglo-French forces sack the Old Summer Palace; Convention of Peking cedes Outer Manchuria",
       "Beijing"
     ],
     "qing:1864": [
@@ -892,7 +892,7 @@ window.EN_LOCALE = {
       "Yizhou (Taiwan)"
     ],
     "sanguo:234": [
-      "Zhuge Liang dies on the Wuzhang Plains during the 5th expedition",
+      "Sima Yi holds firm for over 100 days; Zhuge Liang dies on Wuzhang Plains and Shu retreats",
       "Wuzhang Plains (Qishan)"
     ],
     "sanguo:249": [
@@ -1576,8 +1576,8 @@ window.EN_LOCALE = {
       "Kulun (Ulaanbaatar)"
     ],
     "xihan:-91": [
-      "Witchcraft Crisis: Jiang Chong frames Crown Prince Liu Ju, who dies after fighting in Chang’an",
-      "Chang'an · Huxian"
+      "Witchcraft Crisis drives Prince Liu Ju to suicide; Sima Qian completes the Shiji chronicle",
+      "Chang'an"
     ],
     "xihan:-74": [
       "Regent Huo Guang deposes Liu He after 27 days and enthrones Emperor Xuan (Zhaoxuan Restoration)",
@@ -1784,8 +1784,8 @@ window.EN_LOCALE = {
       "Linqiang · Huangshui (Xining)"
     ],
     "donghan:215": [
-      "Liu Bei and Sun Quan divide Jing Province along the Xiang River (Xiang River Partition)",
-      "Linxiang · Xiang River (Changsha)"
+      "Sun-Liu Xiang River pact divides Jingzhou; Zhang Liao routs Sun Quan at Xiaoyao Ford",
+      "Linxiang & Hefei"
     ],
     "dongjin:397": [
       "Tufa Wugu founds Southern Liang in the Hehuang valley with capitals at Ledu and Xiping",
@@ -1822,6 +1822,114 @@ window.EN_LOCALE = {
     "zhanguo:-249": [
       "King Kaolie of Chu annexes Lu; Qin extinguishes Eastern Zhou and sets Sanchuan Commandery",
       "Qufu · Luoyang"
+    ],
+    "donghan:207": [
+      "Liu Bei visits Zhuge Liang for the Longzhong Plan; Cao Cao routs the Wuhuan at Mt. Bailang",
+      "Longzhong & Mt. Bailang"
+    ],
+    "donghan:211": [
+      "Battle of Tong Pass: Cao Cao defeats Ma Chao and Han Sui to pacify Guanzhong",
+      "Tong Pass"
+    ],
+    "sanguo:223": [
+      "Liu Bei dies at White Emperor City in Yong'an, entrusting the state to Zhuge Liang",
+      "Yong'an (Baidi City)"
+    ],
+    "dongjin:353": [
+      "Wang Xizhi and Xie An gather at the Orchid Pavilion in Kuaiji, composing Preface to Lanting",
+      "Lanting (Kuaiji)"
+    ],
+    "nanbei:529": [
+      "Liang general Chen Qingzhi leads 7,000 White-Robe troops north, taking 32 cities and Luoyang",
+      "Luoyang"
+    ],
+    "nanbei:546": [
+      "Siege of Yubi: Western Wei general Wei Xiaokuan holds for 50 days, repelling Gao Huan",
+      "Yubi Fortress"
+    ],
+    "tang:645": [
+      "Xuanzang returns to Chang'an with Sanskrit sutras; Emperor Taizong campaigns in Goguryeo",
+      "Chang'an & Liaodong"
+    ],
+    "tang:663": [
+      "Battle of Baekgang: Liu Rengui crushes the Yamato-Baekje fleet, reshaping East Asia",
+      "Baekgang Mouth"
+    ],
+    "beisong:1041": [
+      "Battle of Haoshuichuan: Western Xia ambushes Ren Fu's Song army, spurring court reforms",
+      "Haoshuichuan"
+    ],
+    "beisong:1121": [
+      "Fang La's uprising seizes Hangzhou in the southeast before Tong Guan suppresses the rebels",
+      "Muzhou & Hangzhou"
+    ],
+    "ming:1393": [
+      "Lan Yu Case purges 15,000 officials and generals, decimating Ming's founding military elite",
+      "Yingtian (Nanjing)"
+    ],
+    "ming:1402": [
+      "Jingnan forces breach Nanjing's Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
+      "Yingtian (Nanjing)"
+    ],
+    "ming:1626": [
+      "Victory at Ningyuan: Yuan Chonghuan repels Nurhaci's Later Jin siege with heavy cannon",
+      "Ningyuan"
+    ],
+    "qing:1669": [
+      "Young Kangxi Emperor seizes regent Oboi at Wuying Hall to assume personal rule",
+      "Forbidden City, Beijing"
+    ],
+    "qing:1793": [
+      "British envoy Lord Macartney meets the Qianlong Emperor at Chengde; trade demands refused",
+      "Chengde Mountain Resort"
+    ],
+    "qing:1799": [
+      "Following Qianlong's death, the Jiaqing Emperor executes corrupt minister Heshen",
+      "Beijing"
+    ],
+    "qing:1856": [
+      "Tianjing Incident: internal purge shatters Taiping leadership; Shi Dakai departs Tianjing",
+      "Tianjing (Nanjing)"
+    ],
+    "qing:1894": [
+      "First Sino-Japanese War breaks out; Deng Shichang perishes ramming the enemy in Yellow Sea",
+      "Dadonggou, Yellow Sea"
+    ],
+    "zhanguo:-279": [
+      "Siege of Jimo: Qi general Tian Dan unleashes flaming oxen to rout Yan and retake 70 cities",
+      "Jimo & Linzi"
+    ],
+    "zhanguo:-257": [
+      "Relief of Handan: Lord Xinling seizes the tiger tally to aid Zhao and rout Qin with Chu",
+      "Handan"
+    ],
+    "zhanguo:-246": [
+      "Hydraulic engineer Zheng Guo builds the 300-li Zheng Guo Canal, turning Guanzhong fertile",
+      "Jingyang (Zheng Guo Canal)"
+    ],
+    "qin:-213": [
+      "First Emperor decrees the Burning of Books on Li Si advice, executing scholars next year",
+      "Xianyang"
+    ],
+    "qin:-203": [
+      "Chu-Han stalemate ends in the Hong Canal Pact dividing the realm before Han pursues Chu",
+      "Chenggao & Hong Canal"
+    ],
+    "xihan:-134": [
+      "Emperor Wu adopts Dong Zhongshu plan, elevating Confucianism and founding the Imperial Academy",
+      "Chang'an"
+    ],
+    "nansong:1207": [
+      "Han Tuozhou's Kaixi Northern Expedition fails; Song and Jin conclude the Treaty of Jiading",
+      "Lin'an (Hangzhou)"
+    ],
+    "nansong:1247": [
+      "Liangzhou Accord: Sakya Pandita meets Mongol prince Godan, bringing Tibet into the realm",
+      "Liangzhou (Wuwei)"
+    ],
+    "yuan:1368": [
+      "Ming generals Xu Da and Chang Yuchun capture Dadu as Toghon Temur flees north, ending Yuan",
+      "Dadu (Beijing)"
     ]
   },
   "corridors": {
@@ -4921,7 +5029,7 @@ window.EN_LOCALE = {
     "义熙九年置义安郡": "Yi'an Commandery established in 413 CE",
     "前秦、后秦蒲坂重镇": "Key Puban stronghold under Former and Later Qin",
     "濮阳郡": "Puyang Commandery",
-    "上洛郡": "Shangluo Commandery",
+    "上洛郡": "Shangluo Jun",
     "南北争衡要地": "Strategic borderland contested between Northern and Southern dynasties",
     "前凉置高昌郡": "Gaochang Commandery established by Former Liang",
     "前凉西域长史驻楼兰；五世纪后渐废": "Former Liang Western Regions Chief Clerk at Loulan; abandoned after 5th c.",
@@ -6279,8 +6387,6 @@ window.EN_LOCALE = {
     "延州": "Yan Zhou",
     "申州": "Shen Zhou",
     "闽州": "Min Zhou",
-    "商州": "Shang Zhou",
-    "上洛郡": "Shangluo Jun",
     "平阳郡": "Pingyang Jun",
     "河内郡": "Henei Jun",
     "弘农郡": "Hongnong Jun",
@@ -6325,6 +6431,32 @@ window.EN_LOCALE = {
     "始安郡": "Shi'an Jun",
     "交趾郡": "Jiaozhi Jun",
     "州郡政区：南北析置诸州、侨州与郡级政区": "Prefectures: Subdivided Zhou, Emigre Zhou & Commanderies",
-    "州郡政区：南北朝细置诸州、侨州与郡级政区": "Prefectures: Finely Subdivided Zhou, Emigre Zhou & Commanderies"
+    "州郡政区：南北朝细置诸州、侨州与郡级政区": "Prefectures: Finely Subdivided Zhou, Emigre Zhou & Commanderies",
+    "临湘 · 合肥": "Linxiang & Hefei",
+    "隆中 · 白狼山": "Longzhong & Mt. Bailang",
+    "潼关": "Tong Pass",
+    "永安（白帝城）": "Yong'an (Baidi City)",
+    "会稽兰亭": "Lanting (Kuaiji)",
+    "玉壁城（稷山）": "Yubi Fortress",
+    "长安 · 辽东城": "Chang'an & Liaodong",
+    "白江口": "Baekgang Mouth",
+    "好水川（隆德）": "Haoshuichuan",
+    "睦州 · 杭州": "Muzhou & Hangzhou",
+    "应天（南京）": "Yingtian (Nanjing)",
+    "宁远（兴城）": "Ningyuan",
+    "北京紫禁城": "Forbidden City, Beijing",
+    "热河避暑山庄": "Chengde Mountain Resort",
+    "天京（南京）": "Tianjing (Nanjing)",
+    "黄海大东沟": "Dadonggou, Yellow Sea",
+    "五丈原（岐山）": "Wuzhang Plains (Qishan)",
+    "即墨 · 临淄": "Jimo & Linzi",
+    "泾阳（郑国渠）": "Jingyang (Zheng Guo Canal)",
+    "灵渠 · 番禺": "Lingqu & Panyu",
+    "成皋 · 鸿沟": "Chenggao & Hong Canal",
+    "垓下 · 长安": "Gaixia & Chang'an",
+    "朔方 · 长安": "Shuofang & Chang'an",
+    "长安 · 湖县": "Chang'an",
+    "凉州（武威）": "Liangzhou (Wuwei)",
+    "大都（北京）": "Dadu (Beijing)"
   }
 };
