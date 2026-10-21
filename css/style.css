@@ -3174,10 +3174,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
   cursor: pointer;
 }
 
-.journey-node.is-upcoming {
-  opacity: 0.78;
-}
-
 .jn-pulse {
   fill: none;
   stroke: currentColor;

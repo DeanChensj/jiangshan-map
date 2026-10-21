@@ -20,7 +20,7 @@ const ROOT = path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
 const TOPICS_DIR = path.join(ROOT, 'topics');
 const BASE_URL = 'https://deanchen.me/jiangshan-map';
-const LASTMOD = '2026-10-17';
+const LASTMOD = '2026-10-21';
 
 function escHtml(str) {
   return String(str || '')
@@ -1312,7 +1312,7 @@ function buildTopicsIndexPage(dynMeta, journeyMeta, featuredMeta, allDynasties) 
   const canonicalUrl = `${BASE_URL}/topics/index.html`;
   const pageTitle = '江山时序 · 中国历史地图专题图志总览（18朝代疆域 · 7人物行迹 · 古诗词路线 · 历史战役）';
   const pageDesc =
-    '江山时序（Jiangshan Historical Atlas）静态历史地理专题图志索引：涵盖战国、秦、汉、三国、晋、南北朝、隋、唐、五代、宋、元、明、清、民国与现代18个时期版图政区，秦始皇、张骞、诸葛亮、玄奘、李白、苏轼、王阳明7条人物行迹，以及杜甫、苏轼、文天祥、韩愈、辛弃疾古诗词路线与长平、赤壁、淝水大战地图。';
+    '江山时序（Jiangshan Historical Atlas）静态历史地理专题图志索引：涵盖战国、秦、汉、三国、晋、南北朝、隋、唐、五代、宋、元、明、清、民国与现代18个时期版图政区，秦始皇、张骞、诸葛亮、玄奘、李白、苏轼、王阳明百余位历史人物行迹，以及杜甫、苏轼、文天祥、韩愈、辛弃疾古诗词路线与长平、赤壁、淝水大战地图。';
 
   const featListHtml = featuredMeta
     .map(

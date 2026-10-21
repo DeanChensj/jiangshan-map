@@ -10717,7 +10717,7 @@ window.ATLAS_LORE_DATA = {
           ],
           "labelPos": "left",
           "ancientZh": "南安",
-          "modernZh": "江西南安府（今大余）",
+          "modernZh": "江西赣州大余",
           "ancientEn": "Nan'an",
           "modernEn": "Dayu, Ganzhou, Jiangxi",
           "titleZh": "此心光明·亦复何言",
