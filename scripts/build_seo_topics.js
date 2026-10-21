@@ -1486,9 +1486,96 @@ function updateSitemapXml(dynMeta, journeyMeta, featuredMeta) {
   return topicUrls.length;
 }
 
-function updateIndexHtmlSeoDirectory(dynMeta, journeyMeta, featuredMeta) {
+function computeCalligraphySubsetText(dynasties, enLocale) {
+  const sources = [
+    '江山时序',
+    ...dynasties.map((d) => d.title || ''),
+    ...dynasties.map((d) => (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || ''),
+  ];
+  return Array.from(new Set(sources.join(''))).sort().join('');
+}
+
+function updateIndexHtmlSeoDirectory(dynMeta, journeyMeta, featuredMeta, dynasties, snapshots, loreData, enLocale) {
   const indexPath = path.join(ROOT, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
+
+  // 1. Subset Ma Shan Zheng calligraphy webfont to the exact characters rendered in #txt-seal and #dynasty-title (zero FOUT)
+  const calligraphyChars = computeCalligraphySubsetText(dynasties, enLocale);
+  const encodedCalligraphy = encodeURIComponent(calligraphyChars).replace(/'/g, '%27');
+  const fontLinksBlock = `  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />\n  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=${encodedCalligraphy}&display=swap" rel="stylesheet" />`;
+  const fontRegex = /  <link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Noto\+Serif\+SC[^"]*" rel="stylesheet" \/>(?:\r?\n  <link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng[^"]*" rel="stylesheet" \/>)?/;
+  if (!fontRegex.test(html)) {
+    throw new Error('Could not find Google Fonts stylesheet link block in index.html');
+  }
+  html = html.replace(fontRegex, fontLinksBlock);
+
+  // 2. Synchronize pre-rendered Warring States opening summary & milestone list in #chronicle-pane
+  const openingDyn = dynasties[0];
+  html = html.replace(
+    /<p id="dynasty-summary" class="dynasty-desc">[\s\S]*?<\/p>/,
+    `<p id="dynasty-summary" class="dynasty-desc">${escHtml(openingDyn.summary)}</p>`
+  );
+  const milestoneItemsHtml = (openingDyn.milestones || [])
+    .map(
+      (m) =>
+        `            <li><span class="ev-yr">${escHtml(fmtYearShortZh(m.year))} 年</span><span>${escHtml(m.headline)}</span></li>`
+    )
+    .join('\n');
+  html = html.replace(
+    /<ul id="milestone-list">[\s\S]*?<\/ul>/,
+    `<ul id="milestone-list">\n${milestoneItemsHtml}\n          </ul>`
+  );
+
+  // 3. Synchronize live dataset counts in FAQ JSON-LD and llms.txt
+  const histSnapCount = Object.keys(snapshots).filter((k) => k !== 'neighbors').length;
+  const totalMilestones = dynasties.reduce((sum, d) => sum + (d.milestones || []).length, 0);
+  const totalLandmarks = (loreData.PLACE_LANDMARK_EVENTS || []).length;
+  html = html.replace(
+    /共\d+个历史时期、\d+幅多阶段疆域与州郡政区快照、\d+条编年大事、\d+处城池地标/,
+    `共${dynasties.length}个历史时期、${histSnapCount}幅多阶段疆域与州郡政区快照、${totalMilestones}条编年大事、${totalLandmarks}处城池地标`
+  );
+
+  const llmsPath = path.join(ROOT, 'llms.txt');
+  if (fs.existsSync(llmsPath)) {
+    const llmsSrc = fs.readFileSync(llmsPath, 'utf8');
+    const updatedLlms = llmsSrc.replace(
+      /共 \d+ 个历史时期、\d+ 幅多阶段疆域与州郡政区快照、\d+ 条编年大事、\d+ 处城池地标/,
+      `共 ${dynasties.length} 个历史时期、${histSnapCount} 幅多阶段疆域与州郡政区快照、${totalMilestones} 条编年大事、${totalLandmarks} 处城池地标`
+    );
+    if (updatedLlms !== llmsSrc) {
+      fs.writeFileSync(llmsPath, updatedLlms, 'utf8');
+    }
+  }
+
+  // 4. Synchronize Sections 一, 二, and 五 of #seo-atlas-directory idempotently
+  const sectionOneItems = dynasties
+    .map((d) => {
+      const enName = (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || d.key;
+      const sampleEvs = (d.milestones || [])
+        .slice(0, 4)
+        .map((m) => `${fmtYearShortZh(m.year)}年${m.headline}`)
+        .join('；');
+      const focusYr = d.focusYear !== undefined ? d.focusYear : d.fromYear;
+      return `          <li><a href="${BASE_URL}/?year=${focusYr}"><strong>${escHtml(d.title)}历史地图（${escHtml(fmtYearShortZh(d.fromYear))}—${escHtml(fmtYearShortZh(d.toYear))} · ${escHtml(enName)}）</strong></a> — 都城：${escHtml(d.seat)}。代表事件：${escHtml(sampleEvs)}。</li>`;
+    })
+    .join('\n');
+  html = html.replace(
+    /(<h3>一、历代疆域与州郡政区时间轴目录（Dynasties &amp; Historical Territories）<\/h3>\s*<ul>)[\s\S]*?(<\/ul>)/,
+    `$1\n${sectionOneItems}\n        $2`
+  );
+
+  const sectionTwoItems = (loreData.HISTORICAL_JOURNEYS || [])
+    .map((j) => {
+      const stopsChain = (j.stops || [])
+        .map((s) => `${s.ancientZh}（今${s.modernZh}）`)
+        .join(' → ');
+      return `          <li><a href="${BASE_URL}/?person=${escHtml(j.key)}"><strong>${escHtml(j.titleZh)}（${escHtml(j.titleEn)} · ${escHtml(j.spanZh)}）</strong></a> — ${escHtml(stopsChain)}。</li>`;
+    })
+    .join('\n');
+  html = html.replace(
+    /(<h3>二、点人溯事：历史人物生平行迹图（Person Chronicles）<\/h3>\s*<ul>)[\s\S]*?(<\/ul>)/,
+    `$1\n${sectionTwoItems}\n        $2`
+  );
 
   // Remove any previous Section 五 if re-running idempotently
   html = html.replace(
@@ -1541,7 +1628,15 @@ function main() {
 
   buildTopicsIndexPage(dynMeta, journeyMeta, featuredMeta, dynasties);
   const addedSitemapCount = updateSitemapXml(dynMeta, journeyMeta, featuredMeta);
-  updateIndexHtmlSeoDirectory(dynMeta, journeyMeta, featuredMeta);
+  updateIndexHtmlSeoDirectory(
+    dynMeta,
+    journeyMeta,
+    featuredMeta,
+    dynasties,
+    snapshots,
+    loreData,
+    enLocale
+  );
 
   console.log(
     `✓ Generated ${dynMeta.length} dynasty pages, ${journeyMeta.length} journey pages, ${featuredMeta.length} featured poetry/battle pages, and topics/index.html (${addedSitemapCount} static URLs added to sitemap.xml)`

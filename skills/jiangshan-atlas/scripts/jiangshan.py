@@ -473,7 +473,7 @@ def main():
   args = parser.parse_args()
 
   query = build_query(args)
-  public_url = f"https://deanchen.me/jiangshan-map/?{query}"
+  public_url = f"{PUBLIC_BASE_URL.rstrip('/')}/?{query}"
   print(f"URL: {public_url}")
 
   if args.inspect:
