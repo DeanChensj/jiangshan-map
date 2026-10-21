@@ -1065,7 +1065,12 @@ function main() {
     's_donghan',
     's_sanguo',
     's_dongjin_a',
+    's_dongjin_c',
     's_nanbei',
+    's_nanbei_b',
+    's_nanbei_c',
+    's_nanbei_d',
+    's_nanbei_e',
     's_sui',
     's_tang',
     's_wudai',
@@ -2903,13 +2908,174 @@ function main() {
     );
   }
 
+  // CUJ 24: Eastern Jin & Southern-Northern Dynasties Phased Zhou / Qiaozhou & Commandery Evolution
+  {
+    assert(
+      snapshots.s_dongjin_c.regions.length >= 30 &&
+        snapshots.s_dongjin_c.regions.length < snapshots.s_nanbei_b.regions.length &&
+        snapshots.s_nanbei_b.regions.length >= 55 &&
+        snapshots.s_nanbei_b.regions.length < snapshots.s_nanbei_c.regions.length &&
+        snapshots.s_nanbei_c.regions.length < snapshots.s_nanbei_d.regions.length &&
+        snapshots.s_nanbei_d.regions.length < snapshots.s_nanbei_e.regions.length,
+      `Expected strictly increasing 5-stage Zhou subdivision across Eastern Jin -> Nanbeichao`
+    );
+    assert(
+      snapshots.s_dongjin_c.prefectures.length >= 100 &&
+        snapshots.s_dongjin_c.prefectures.length <= 115 &&
+        snapshots.s_nanbei_b.prefectures.length >= 130 &&
+        snapshots.s_nanbei_b.prefectures.length <= 150 &&
+        !snapshots.s_dongjin_c.prefectures.some((p) => p.title === '毗陵典农校尉'),
+      'Expected deduplicated North+South commanderies without Three Kingdoms anachronisms'
+    );
+
+    const spotCases = [
+      [{ lng: 119.451, lat: 32.18, year: 383 }, '南徐州(侨州)', '南东海郡(侨郡)'],
+      [{ lng: 119.451, lat: 32.18, year: 494 }, '南徐州(侨州)', '南东海郡(侨郡)'],
+      [{ lng: 119.43, lat: 32.42, year: 494 }, '南兖州(侨州)', '广陵郡'],
+      [{ lng: 119.43, lat: 32.42, year: 560 }, '吴州', '广陵郡'],
+      [{ lng: 119.02, lat: 34.55, year: 494 }, '青冀二州(侨州)', '东海郡'],
+      [{ lng: 119.02, lat: 34.55, year: 560 }, '海州', '东海郡'],
+      [{ lng: 114.07, lat: 32.12, year: 494 }, '司州(侨州)', '义阳郡'],
+      [{ lng: 114.07, lat: 32.12, year: 560 }, '申州', '义阳郡'],
+      [{ lng: 112.121, lat: 32.011, year: 383 }, '雍州(侨州)', '襄阳郡'],
+      [{ lng: 112.121, lat: 32.011, year: 494 }, '雍州(侨州)', '襄阳郡'],
+      [{ lng: 112.121, lat: 32.011, year: 560 }, '襄州', '襄阳郡'],
+      [{ lng: 114.311, lat: 30.591, year: 494 }, '郢州', '江夏郡'],
+      [{ lng: 112.451, lat: 34.621, year: 494 }, '司州', '河南尹(郡)'],
+      [{ lng: 112.451, lat: 34.621, year: 560 }, '洛州', '河南郡'],
+      [{ lng: 114.391, lat: 36.101, year: 494 }, '相州', '魏郡'],
+      [{ lng: 114.391, lat: 36.101, year: 560 }, '司州', '魏郡'],
+      [{ lng: 113.301, lat: 40.081, year: 494 }, '恒州', '代郡'],
+      [{ lng: 117.001, lat: 36.651, year: 494 }, '齐州', '济南郡'],
+      [{ lng: 108.871, lat: 37.991, year: 383 }, '夏州', '朔方郡'],
+      [{ lng: 108.871, lat: 37.991, year: 494 }, '夏州', '化政郡'],
+      [{ lng: 110.29, lat: 25.27, year: 520 }, '桂州', '始安郡'],
+      [{ lng: 109.5, lat: 31.02, year: 520 }, '信州', '巴东郡'],
+      [{ lng: 119.3, lat: 26.08, year: 560 }, '闽州', '晋安郡'],
+    ];
+    for (const [opts, expReg, expPref] of spotCases) {
+      const info = ctrl.inspect(opts);
+      assert(
+        info && info.regions.includes(expReg),
+        `inspect(${JSON.stringify(opts)}) expected region "${expReg}", got ${JSON.stringify(info && info.regions)}`
+      );
+      assert(
+        info && info.prefectures.includes(expPref),
+        `inspect(${JSON.stringify(opts)}) expected commandery "${expPref}", got ${JSON.stringify(info && info.prefectures)}`
+      );
+    }
+
+    const capturedNodes = [];
+    ctrl._svgNode = (tag, attrs) => {
+      const n = {
+        tag,
+        attrs,
+        dataset: {},
+        textContent: '',
+        classList: { add() {}, remove() {}, contains: () => false },
+        setAttribute() {},
+        getAttribute: () => null,
+        appendChild() {},
+      };
+      capturedNodes.push({ tag, attrs, n });
+      return n;
+    };
+    const makeMockDomEl = () => {
+      let htmlVal = '';
+      const el = {
+        textContent: '',
+        dataset: {},
+        style: {},
+        scrollTop: 0,
+        scrollHeight: 0,
+        clientHeight: 400,
+        offsetTop: 0,
+        offsetHeight: 40,
+        children: [],
+        get innerHTML() {
+          return htmlVal;
+        },
+        set innerHTML(v) {
+          htmlVal = String(v);
+          if (v === '') el.children.length = 0;
+        },
+        appendChild(c) {
+          el.children.push(c);
+          return c;
+        },
+        addEventListener() {},
+        setAttribute() {},
+        getAttribute: () => null,
+        querySelector: () => null,
+        querySelectorAll: () => [],
+        classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+      };
+      return el;
+    };
+    const mockIds = new Map();
+    const origId = ctrl._id.bind(ctrl);
+    ctrl._id = (id) => {
+      if (!mockIds.has(id)) mockIds.set(id, origId(id) || makeMockDomEl());
+      return mockIds.get(id);
+    };
+    const origDoc = sandbox.document;
+    sandbox.document = { createElement: () => makeMockDomEl() };
+    ctrl.grpPolities = makeMockDomEl();
+    ctrl.grpPrefectures = makeMockDomEl();
+    ctrl.grpProvNames = makeMockDomEl();
+    ctrl.mapKey = makeMockDomEl();
+    ctrl.svg = makeMockDomEl();
+    ctrl._renderLegendBox = () => {};
+    ctrl._rescaleSvgTypography = () => {};
+
+    const nbDynObj = dynasties.find((d) => d.key === 'nanbei');
+    ctrl.locale = 'zh';
+    capturedNodes.length = 0;
+    ctrl.jumpToYear(494);
+    ctrl._renderPolitiesAndPrefectures(nbDynObj, snapshots.s_nanbei_b);
+    const zhQiaoCaps = capturedNodes
+      .filter((x) => x.attrs && String(x.attrs.class || '').includes('is-qiaozhou'))
+      .map((x) => x.n.textContent);
+    assert(
+      zhQiaoCaps.includes('南徐州·侨') && zhQiaoCaps.includes('雍州·侨') && zhQiaoCaps.includes('青冀二州·侨'),
+      `Expected on-map ·侨 badges in ZH at 494 CE, got ${JSON.stringify(zhQiaoCaps)}`
+    );
+    ctrl.openGenealogyAt(112.121, 32.011, '襄阳');
+    const zhGenHtml = ctrl._id('genealogy-timeline').children.map((c) => c.innerHTML).join('\n');
+    assert(
+      zhGenHtml.includes('雍州（侨州）'),
+      `Expected 雍州（侨州） in ZH place genealogy at Xiangyang, got ${zhGenHtml.slice(0, 200)}`
+    );
+
+    ctrl.locale = 'en';
+    capturedNodes.length = 0;
+    ctrl.jumpToYear(494);
+    ctrl._renderPolitiesAndPrefectures(nbDynObj, snapshots.s_nanbei_b);
+    const enQiaoCaps = capturedNodes
+      .filter((x) => x.attrs && String(x.attrs.class || '').includes('is-qiaozhou'))
+      .map((x) => x.n.textContent);
+    assert(
+      enQiaoCaps.includes('Nanxu Zhou (Emigre)') && enQiaoCaps.includes('Yong Zhou (Emigre)'),
+      `Expected on-map (Emigre) badges in EN at 494 CE, got ${JSON.stringify(enQiaoCaps)}`
+    );
+    ctrl.openGenealogyAt(112.121, 32.011, 'Xiangyang');
+    const enGenHtml = ctrl._id('genealogy-timeline').children.map((c) => c.innerHTML).join('\n');
+    assert(
+      enGenHtml.includes('Yong Zhou (Emigre)'),
+      `Expected Yong Zhou (Emigre) in EN place genealogy at Xiangyang, got ${enGenHtml.slice(0, 200)}`
+    );
+    sandbox.document = origDoc;
+    ctrl._id = origId;
+    ctrl.locale = 'zh';
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 23 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 24 E2E CUJs`);
 }
 
 main();
