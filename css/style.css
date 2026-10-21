@@ -3052,26 +3052,6 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 /* #7 Trajectory Hairline Overlay & Custom Route Card */
-.journey-chip-btn {
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(181, 69, 47, 0.32);
-  background: rgba(181, 69, 47, 0.06);
-  color: var(--vermilion);
-  font-family: var(--serif-stack);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.journey-chip-btn:hover,
-.journey-chip-btn.is-active {
-  background: var(--vermilion);
-  border-color: var(--vermilion);
-  color: #fffaf2;
-}
-
 .ev-journey-btn {
   display: inline-block;
   margin-left: 6px;

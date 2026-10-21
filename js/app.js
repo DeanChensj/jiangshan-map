@@ -2075,13 +2075,9 @@
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
-      const jKey = this._journeyKeyForMilestone(dynasty, m);
-      const jBtnHtml = jKey
-        ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
-        : '';
       this.milestoneBalloon.innerHTML =
         `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
-        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}${jBtnHtml}</div>`;
+        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
         placeBtn.addEventListener('click', (e) => {
@@ -2101,37 +2097,10 @@
           this.closeMilestoneBalloon();
         });
       }
-      const jBtn = this.milestoneBalloon.querySelector('.ev-journey-btn');
-      if (jBtn) {
-        jBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.openJourneyAsPerson(jBtn.dataset.journey, -1);
-        });
-      }
       this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-open-milestone-balloon');
       this._positionMilestoneBalloon();
-    }
-
-    _journeyKeyForMilestone(dynasty, m) {
-      if (!dynasty || !m) return null;
-      if (
-        dynasty.key === 'zhanguo' &&
-        [-238, -236, -230, -228, -227, -226, -225, -223, -222].includes(m.year)
-      ) {
-        return 'qinshihuang';
-      }
-      if (dynasty.key === 'qin' && m.year === -221) return 'qinshihuang';
-      if (dynasty.key === 'xihan' && m.year === -138) return 'zhangqian';
-      if (dynasty.key === 'donghan' && m.year === 208) return 'zhugeliang';
-      if (dynasty.key === 'sanguo' && (m.year === 225 || m.year === 228 || m.year === 234)) {
-        return 'zhugeliang';
-      }
-      if (dynasty.key === 'tang' && m.year === 629) return 'xuanzang';
-      if (dynasty.key === 'beisong' && m.year === 1080) return 'sushi';
-      if (dynasty.key === 'ming' && m.year === 1519) return 'wangyangming';
-      return null;
     }
 
     _positionMilestoneBalloon() {
@@ -2696,21 +2665,7 @@
         const badge = isMapChange
           ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory, city, or river course changes at this year' : '此节点触发版图、城池或河道水系变化'}">${SVG_ICONS.mapChange}</span>`
           : '';
-        const jKey = this._journeyKeyForMilestone(dynasty, m);
-        const jBtnHtml = jKey
-          ? `<button type="button" class="ev-journey-btn" data-journey="${jKey}">${this.locale === 'en' ? 'View Route' : '展阅行迹'}</button>`
-          : '';
-        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}${jBtnHtml}</span>`;
-        const jBtn = li.querySelector('.ev-journey-btn');
-        if (jBtn) {
-          jBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
-              this.toggleMobileChronicle(false);
-            }
-            this.openJourneyAsPerson(jBtn.dataset.journey, -1);
-          });
-        }
+        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}</span>`;
         li.addEventListener('pointerenter', (e) => {
           if (e.pointerType === 'touch') return;
           if (targetSnapKey && targetSnapKey !== this.activeSnapKey) {
@@ -3820,46 +3775,32 @@
             year: m.year,
             text: this.milestoneHeadline(d, m),
             milestone: m,
-            journeyKey: this._journeyKeyForMilestone(d, m),
-            journeyStopIdx: 0,
           });
         }
       }
 
-      // 2. Historical journeys (Qin Shi Huang, Zhang Qian, Zhuge Liang, Xuanzang, Li Bai, Su Shi)
+      // 2. Historical journeys
       for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
-        j.stops.forEach((st, sIdx) => {
+        j.stops.forEach((st) => {
           const inDynSpan = st.year >= d.fromYear && st.year <= d.toYear;
           if (!inDynSpan && j.dynastyKey !== d.key) return;
           if ((j.key === 'zhugeliang' || j.key === 'qinshihuang') && !inDynSpan) return;
-          if (isCloseCoord(st.coord, 45)) {
-            const existing = results.find(
-              (r) =>
-                (sIdx === 0 && r.journeyKey === j.key) ||
-                (r.year === st.year && r.journeyKey === j.key)
-            );
-            if (existing) {
-              existing.journeyKey = j.key;
-              existing.journeyStopIdx = sIdx;
-            } else {
-              results.push({
+          if (isCloseCoord(st.coord, 45) && !results.some((r) => r.year === st.year)) {
+            results.push({
+              year: st.year,
+              text:
+                this.locale === 'en'
+                  ? `${st.ancientEn} — ${st.titleEn}`
+                  : `${st.ancientZh} · ${st.titleZh}`,
+              milestone: {
                 year: st.year,
-                text:
-                  this.locale === 'en'
-                    ? `${st.ancientEn} — ${st.titleEn}`
-                    : `${st.ancientZh} · ${st.titleZh}`,
-                milestone: {
-                  year: st.year,
-                  headline: `${st.ancientZh} · ${st.titleZh}：${st.descZh.split(/[；。]/)[0]}`,
-                  headlineEn: `${st.ancientEn} — ${st.titleEn}: ${st.descEn.split('.')[0]}.`,
-                  site: `${st.ancientZh}（今${st.modernZh}）`,
-                  siteEn: `${st.ancientEn} (${st.modernEn})`,
-                  coord: st.coord,
-                },
-                journeyKey: j.key,
-                journeyStopIdx: sIdx,
-              });
-            }
+                headline: `${st.ancientZh} · ${st.titleZh}：${st.descZh.split(/[；。]/)[0]}`,
+                headlineEn: `${st.ancientEn} — ${st.titleEn}: ${st.descEn.split('.')[0]}.`,
+                site: `${st.ancientZh}（今${st.modernZh}）`,
+                siteEn: `${st.ancientEn} (${st.modernEn})`,
+                coord: st.coord,
+              },
+            });
           }
         });
       }
@@ -3884,8 +3825,6 @@
                 siteEn: lm.siteEn,
                 coord: lm.coord,
               },
-              journeyKey: null,
-              journeyStopIdx: 0,
             });
           }
         }
@@ -4476,14 +4415,7 @@
                   this.locale === 'en'
                     ? this.formatYear(ev.year)
                     : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
-                const jBtn = ev.journeyKey
-                  ? `<button type="button" class="ev-journey-btn" data-journey="${
-                      ev.journeyKey
-                    }" data-stop="${ev.journeyStopIdx || 0}">${
-                      this.locale === 'en' ? 'View Route' : '展阅行迹'
-                    }</button>`
-                  : '';
-                return `<div class="t-ev-row" data-ev-idx="${evIdx}"><span class="t-ev-yr">▸ ${yrLabel}</span><span class="t-ev-txt">${ev.text}${jBtn}</span></div>`;
+                return `<div class="t-ev-row" data-ev-idx="${evIdx}"><span class="t-ev-yr">▸ ${yrLabel}</span><span class="t-ev-txt">${ev.text}</span></div>`;
               })
               .join('');
             eventsHtml = `<div class="t-events">${evItems}</div>`;
@@ -4494,16 +4426,6 @@
             `<span class="t-val">${mainStr}${capBadgeHtml}${
               subParts.length ? `<span class="t-sub">${subParts.join(' · ')}</span>` : ''
             }${eventsHtml}</span>`;
-
-          li.querySelectorAll('.ev-journey-btn').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              this.openJourneyAsPerson(
-                btn.dataset.journey,
-                btn.dataset.stop !== undefined ? Number(btn.dataset.stop) : -1
-              );
-            });
-          });
 
           li.querySelectorAll('.t-ev-row').forEach((rowEl) => {
             rowEl.addEventListener('click', (e) => {

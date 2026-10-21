@@ -2813,6 +2813,15 @@ function main() {
     ctrl.svg = prevSvg;
     sandbox.window.innerWidth = prevWinW;
     sandbox.window.innerHeight = prevWinH;
+    assert.strictEqual(
+      typeof ctrl._journeyKeyForMilestone,
+      'undefined',
+      'Legacy _journeyKeyForMilestone helper must remain removed'
+    );
+    assert(
+      !/展阅行迹|View Route/.test(fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8')),
+      'Legacy 展阅行迹 / View Route buttons must not exist in js/app.js'
+    );
   }
 
   // 23r. Person Chronicle Search (点人溯事) Dataset, Bilingual Parity, Dedup & Round-Trip Guard
