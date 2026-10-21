@@ -3078,13 +3078,152 @@ function main() {
     ctrl.locale = 'zh';
   }
 
+  // CUJ 25: Curated Popular Historical Milestones, City Cultural/Battle Landmarks & Strengthened Hero Trajectories (Ancient/Imperial Eras)
+  {
+    const expectedPopularMilestones = [
+      ['zhanguo', -279, '火牛阵'],
+      ['zhanguo', -257, '窃符救赵'],
+      ['zhanguo', -246, '郑国渠'],
+      ['qin', -214, '灵渠'],
+      ['qin', -213, '焚书令'],
+      ['qin', -203, '鸿沟'],
+      ['xihan', -202, '垓下'],
+      ['xihan', -134, '独尊儒术'],
+      ['xihan', -127, '推恩令'],
+      ['xihan', -91, '史记'],
+      ['donghan', 207, '三顾茅庐'],
+      ['donghan', 211, '潼关之战'],
+      ['donghan', 215, '逍遥津'],
+      ['sanguo', 223, '白帝城'],
+      ['sanguo', 234, '司马懿'],
+      ['dongjin', 353, '兰亭集序'],
+      ['nanbei', 529, '陈庆之'],
+      ['nanbei', 546, '玉壁之战'],
+      ['nanbei', 548, '梁武帝'],
+      ['sui', 605, '科举制'],
+      ['tang', 645, '玄奘'],
+      ['tang', 663, '白江口'],
+      ['beisong', 1041, '好水川'],
+      ['beisong', 1121, '方腊'],
+      ['nansong', 1207, '开禧北伐'],
+      ['nansong', 1247, '凉州会盟'],
+      ['yuan', 1368, '大都'],
+      ['ming', 1393, '蓝玉案'],
+      ['ming', 1402, '靖难'],
+      ['ming', 1626, '宁远大捷'],
+      ['qing', 1669, '鳌拜'],
+      ['qing', 1793, '马戛尔尼'],
+      ['qing', 1799, '和珅'],
+      ['qing', 1856, '天京事变'],
+      ['qing', 1860, '圆明园'],
+      ['qing', 1894, '邓世昌'],
+    ];
+    for (const [dynKey, yr, kw] of expectedPopularMilestones) {
+      const d = dynasties.find((x) => x.key === dynKey);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Missing expected milestone ${dynKey}:${yr} containing "${kw}"`);
+      const enEntry = enLocale.milestones[`${dynKey}:${yr}`];
+      assert(
+        Array.isArray(enEntry) && enEntry[0].length >= 24 && !/[\u4e00-\u9fa5]/.test(enEntry[0]),
+        `Missing or invalid English milestone translation for ${dynKey}:${yr}`
+      );
+      const qHits = ctrl._queryQuickSearch(kw);
+      assert(
+        qHits.some((h) => h.year === yr || (h.dynasty && h.dynasty.key === dynKey)),
+        `Expected Quick Search "${kw}" to match ${dynKey}:${yr}`
+      );
+    }
+
+    const expectedCityGems = [
+      ['邯郸', 'zhanguo', [114.48, 36.61], '负荆请罪', 'Lian Po'],
+      ['易水', 'zhanguo', [115.50, 39.35], '易水寒', 'Jing Ke'],
+      ['北海', 'xihan', [107.30, 53.30], '苏武', 'Su Wu'],
+      ['洛阳(汉书)', 'donghan', [112.46, 34.63], '汉书', 'Ban Gu'],
+      ['汝南(说文)', 'donghan', [114.12, 33.57], '说文解字', 'Xu Shen'],
+      ['南阳(伤寒)', 'donghan', [112.53, 33.00], '伤寒杂病论', 'Zhang Zhongjing'],
+      ['合肥', 'donghan', [117.28, 31.86], '逍遥津', 'Xiaoyao Ford'],
+      ['洛阳(金谷)', 'xijin', [112.42, 34.66], '石崇', 'Golden Valley'],
+      ['上海(华亭)', 'xijin', [121.23, 31.03], '华亭鹤唳', 'Lu Ji'],
+      ['建康(祖冲之)', 'nanbei', [118.80, 32.05], '祖冲之', 'Zu Chongzhi'],
+      ['建康(梁武帝)', 'nanbei', [118.80, 32.06], '梁武帝', 'Emperor Wu'],
+      ['青州', 'nanbei', [118.48, 36.69], '齐民要术', 'Qimin Yaoshu'],
+      ['洛阳(邙山)', 'nanbei', [112.60, 34.72], '兰陵王', 'Prince of Lanling'],
+      ['荥阳', 'sui', [113.38, 34.80], '瓦岗军', 'Wagang'],
+      ['天山', 'tang', [88.13, 47.85], '三箭定天山', 'Xue Rengui'],
+      ['南昌', 'tang', [115.88, 28.68], '滕王阁序', 'Pavilion of Prince Teng'],
+      ['金陵(夜宴)', 'wudai', [118.79, 32.04], '韩熙载夜宴图', 'Gu Hongzhong'],
+      ['成都(花蕊)', 'beisong', [104.07, 30.67], '花蕊夫人', 'Consort Huarui'],
+      ['开封(活字)', 'beisong', [114.35, 34.79], '毕昇', 'Bi Sheng'],
+      ['开封(包拯)', 'beisong', [114.35, 34.79], '包拯', 'Bao Zheng'],
+      ['镇江', 'beisong', [119.46, 32.20], '梦溪笔谈', 'Shen Kuo'],
+      ['梁山', 'beisong', [116.12, 35.76], '宋江', 'Song Jiang'],
+      ['庐山(白鹿洞)', 'nansong', [116.04, 29.52], '白鹿洞书院', 'White Deer Grotto'],
+      ['潭州(飞虎军)', 'nansong', [112.98, 28.20], '飞虎军', 'Flying Tiger'],
+      ['潭州(洗冤录)', 'nansong', [112.97, 28.20], '洗冤集录', 'Song Ci'],
+      ['元大都(窦娥)', 'yuan', [116.39, 39.92], '窦娥冤', 'Guan Hanqing'],
+      ['松江(黄道婆)', 'yuan', [121.44, 31.12], '黄道婆', 'Huang Daopo'],
+      ['富阳(富春)', 'yuan', [119.95, 30.05], '富春山居图', 'Huang Gongwang'],
+      ['蕲州', 'ming', [115.43, 30.22], '本草纲目', 'Li Shizhen'],
+      ['北京(1629)', 'ming', [116.37, 39.90], '广渠门', 'Yuan Chonghuan'],
+      ['北京(1630)', 'ming', [116.37, 39.90], '西市', 'Yuan Chonghuan'],
+      ['北京(1763)', 'qing', [116.20, 39.99], '红楼梦', 'Cao Xueqin'],
+      ['大渡河', 'qing', [102.35, 29.26], '石达开', 'Shi Dakai'],
+      ['喀什', 'qing', [75.99, 39.47], '喀什噶尔', 'Kashgar'],
+      ['敦煌', 'qing', [94.81, 40.04], '藏经洞', 'Mogao'],
+      ['八达岭', 'qing', [116.02, 40.35], '詹天佑', 'Zhan Tianyou'],
+      ['福州(1884)', 'qing', [119.30, 26.08], '马江海战', 'Mawei'],
+      ['福州(1885)', 'qing', [119.30, 26.08], '左宗棠', 'Zuo Zongtang'],
+      ['广州', 'qing', [113.30, 23.14], '黄花岗', 'Huanghuagang'],
+    ];
+    for (const [label, dynKey, coord, zhKw, enKw] of expectedCityGems) {
+      const d = dynasties.find((x) => x.key === dynKey);
+      ctrl.locale = 'zh';
+      const zhEvs = ctrl._collectPlaceEventsForDynasty(d, coord[0], coord[1], null);
+      assert(
+        zhEvs.some((e) => e.text.includes(zhKw)),
+        `Expected ZH city event "${zhKw}" at ${label} (${dynKey}), got ${JSON.stringify(zhEvs.map((e) => e.text))}`
+      );
+      ctrl.locale = 'en';
+      const enEvs = ctrl._collectPlaceEventsForDynasty(d, coord[0], coord[1], null);
+      assert(
+        enEvs.some((e) => e.text.includes(enKw) && !/[\u4e00-\u9fa5]/.test(e.text)),
+        `Expected EN city event "${enKw}" at ${label} (${dynKey}), got ${JSON.stringify(enEvs.map((e) => e.text))}`
+      );
+    }
+    ctrl.locale = 'zh';
+
+    const heroSpecs = [
+      ['huoqubing', [-123, -121, -121, -119, -117], 'Huo Qubing'],
+      ['simayi', [208, 228, 234, 238, 241, 249], 'Sima Yi'],
+      ['yuefei', [1122, 1130, 1133, 1134, 1134, 1136, 1140, 1142], 'Yue'],
+      ['xinqiji', [1161, 1162, 1180, 1188, 1196, 1205], 'Xin Qiji'],
+      ['wentianxiang', [1256, 1275, 1276, 1276, 1279, 1283], 'Wen Tianxiang'],
+      ['zuozongtang', [1852, 1864, 1866, 1873, 1876, 1878, 1880, 1885], 'Zuo Zongtang'],
+    ];
+    for (const [pKey, expYears, enName] of heroSpecs) {
+      const prof = loreData.PERSON_PROFILES.find((p) => p.key === pKey);
+      const stops = ctrl._collectPersonEvents(prof);
+      assert.strictEqual(
+        JSON.stringify(stops.map((s) => s.year)),
+        JSON.stringify(expYears),
+        `Unexpected stop years for ${pKey}: got ${JSON.stringify(stops.map((s) => s.year))}`
+      );
+      for (const st of stops) {
+        assert(
+          st.textEn.includes(enName) && !/[\u4e00-\u9fa5]/.test(st.textEn) && !/[\u4e00-\u9fa5]/.test(st.siteEn),
+          `Expected clean English text & site mentioning "${enName}" on ${pKey}:${st.year}, got "${st.siteEn} -> ${st.textEn}"`
+        );
+      }
+    }
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 24 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 25 E2E CUJs`);
 }
 
 main();
