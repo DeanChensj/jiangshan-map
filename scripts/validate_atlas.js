@@ -3445,6 +3445,28 @@ function main() {
       assert.strictEqual(ctrl._eventEraLabel(dynByKey(k), milestoneOf(k, y, kw)), expected, `${k} ${y} ${kw}`);
     }
 
+    // Quick search reaches regional-track eras; a bare regime name lists no era rows.
+    for (const [q, year, titleKw] of [
+      ['太和十八年', 494, '北魏孝文帝'],
+      ['正光四年', 523, '北魏孝明帝'],
+      ['章武元年', 221, '蜀汉昭烈帝'],
+      ['统和二十五年', 1007, '辽圣宗'],
+      ['天授礼法延祚元年', 1038, '西夏景宗'],
+      ['西魏废帝二年', 553, '西魏废帝'],
+      ['普通四年', 523, '南朝梁武帝'],
+    ]) {
+      const hit = ctrl._queryQuickSearch(q).find((h) => h.kind === 'era');
+      assert(hit && hit.year === year && hit.titleZh.includes(titleKw), `Era search "${q}" got ${hit && hit.titleZh}`);
+    }
+    assert.strictEqual(
+      ctrl._queryQuickSearch('太建五年').filter((h) => h.kind === 'era').length,
+      1,
+      'An era shared by the reference and a regional track must be listed once'
+    );
+    for (const q of ['北魏', '金', '南宋', 'liao']) {
+      assert(!ctrl._queryQuickSearch(q).some((h) => h.kind === 'era'), `Bare regime "${q}" must not list era rows`);
+    }
+
     const frontier = loreData.PLACE_LANDMARK_EVENTS.find((lm) => lm.year === 523 && (lm.zh || '').includes('六镇乱起'));
     assert(frontier, 'Missing 523 Six Garrisons landmark event');
     assert.strictEqual(ctrl.formatEraLabel(523, nanbei, frontier.coord), '北魏孝明帝·正光四年');
