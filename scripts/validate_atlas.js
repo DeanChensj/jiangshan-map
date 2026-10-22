@@ -587,7 +587,22 @@ function main() {
       const hitAlias = ctrl.resolvePlace(alias, 750);
       assert(hitAlias, `resolvePlace failed for PLACE_GAZETTEER alias "${alias}" of ${g.name}`);
     }
+    if (g.asciiAliases) {
+      assert(
+        g.asciiAliases.every((a) => /^[a-z]+$/.test(a)),
+        `PLACE_GAZETTEER asciiAliases of ${g.name} must be lowercase ASCII: ${JSON.stringify(g.asciiAliases)}`
+      );
+      const searchHits = ctrl._queryQuickSearch(g.asciiAliases[0]);
+      assert(
+        searchHits.some((r) => r.kind === 'gazetteer' && r.titleZh === g.name),
+        `Quick search must find ${g.name} via ASCII alias "${g.asciiAliases[0]}" (same alias source as resolvePlace)`
+      );
+    }
   }
+  assert(
+    !appCode.includes('gazetteerPinyin'),
+    'ASCII gazetteer aliases must live only in PLACE_GAZETTEER[].asciiAliases, not in an inline app.js table'
+  );
 
   // CUJ 9f: Root Mirror Byte-Level Synchronization Check (if any root mirror files exist)
   const mirrorPairs = [

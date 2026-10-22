@@ -12115,6 +12115,12 @@ window.ATLAS_LORE_DATA = {
         "蓝田",
         "蓝田县"
       ],
+      "asciiAliases": [
+        "lantianguan",
+        "languan",
+        "lantian",
+        "lantianpass"
+      ],
       "modern": "陕西西安蓝田",
       "coord": [
         109.48,
@@ -12129,6 +12135,12 @@ window.ATLAS_LORE_DATA = {
         "马嵬",
         "兴平"
       ],
+      "asciiAliases": [
+        "maweipo",
+        "mawei",
+        "maweiyi",
+        "maweislope"
+      ],
       "modern": "陕西咸阳兴平",
       "coord": [
         108.35,
@@ -12141,6 +12153,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "岐山",
         "眉县"
+      ],
+      "asciiAliases": [
+        "wuzhangyuan",
+        "wuzhangplains",
+        "qishan"
       ],
       "modern": "陕西宝鸡岐山",
       "coord": [
@@ -12167,6 +12184,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "秦安",
         "陇城"
+      ],
+      "asciiAliases": [
+        "jieting",
+        "longxi"
       ],
       "modern": "甘肃天水秦安",
       "coord": [
@@ -12197,6 +12218,13 @@ window.ATLAS_LORE_DATA = {
         "瞿塘峡",
         "夔门"
       ],
+      "asciiAliases": [
+        "baidicheng",
+        "whiteemperorcity",
+        "kuizhou",
+        "qutangxia",
+        "fengjie"
+      ],
       "modern": "重庆奉节",
       "coord": [
         109.57,
@@ -12210,6 +12238,11 @@ window.ATLAS_LORE_DATA = {
         "乌林",
         "赤壁市",
         "蒲圻"
+      ],
+      "asciiAliases": [
+        "chibi",
+        "redcliffs",
+        "wulin"
       ],
       "modern": "湖北咸宁赤壁",
       "coord": [
@@ -12283,6 +12316,11 @@ window.ATLAS_LORE_DATA = {
         "牛渚",
         "马鞍山"
       ],
+      "asciiAliases": [
+        "caishiji",
+        "caishi",
+        "niuzhu"
+      ],
       "modern": "安徽马鞍山",
       "coord": [
         118.46,
@@ -12298,6 +12336,17 @@ window.ATLAS_LORE_DATA = {
         "凤凰台",
         "夫子庙"
       ],
+      "asciiAliases": [
+        "wuyixiang",
+        "blackrobealley",
+        "vermilionbirdbridge",
+        "zhuqueqiao",
+        "qinhuai",
+        "qinhuaihe",
+        "fuzimiao",
+        "shitoucheng",
+        "stonecity"
+      ],
       "modern": "江苏南京",
       "coord": [
         118.79,
@@ -12310,6 +12359,13 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "枫桥",
         "阊门"
+      ],
+      "asciiAliases": [
+        "hanshansi",
+        "hanshantemple",
+        "maplebridge",
+        "fengqiao",
+        "gusu"
       ],
       "modern": "江苏苏州",
       "coord": [
@@ -12325,6 +12381,12 @@ window.ATLAS_LORE_DATA = {
         "会稽山",
         "鉴湖",
         "剡溪"
+      ],
+      "asciiAliases": [
+        "lanting",
+        "orchidpavilion",
+        "kuaiji",
+        "shaoxing"
       ],
       "modern": "浙江绍兴",
       "coord": [
@@ -12390,6 +12452,12 @@ window.ATLAS_LORE_DATA = {
         "琅琊山",
         "滁州"
       ],
+      "asciiAliases": [
+        "zuiwengting",
+        "olddrunkardspavilion",
+        "langyashan",
+        "chuzhou"
+      ],
       "modern": "安徽滁州",
       "coord": [
         118.29,
@@ -12402,6 +12470,13 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "洪都",
         "豫章"
+      ],
+      "asciiAliases": [
+        "tengwangge",
+        "tengwangpavilion",
+        "hongdu",
+        "yuzhang",
+        "hongzhou"
       ],
       "modern": "江西南昌",
       "coord": [
@@ -12420,6 +12495,16 @@ window.ATLAS_LORE_DATA = {
         "江州",
         "九江"
       ],
+      "asciiAliases": [
+        "pipating",
+        "pipapavilion",
+        "xunyangtower",
+        "xunyanglou",
+        "mountlu",
+        "lushan",
+        "jiangzhou",
+        "xunyang"
+      ],
       "modern": "江西九江",
       "coord": [
         115.98,
@@ -12432,6 +12517,12 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "夏口",
         "鹦鹉洲"
+      ],
+      "asciiAliases": [
+        "huanghelou",
+        "yellowcranetower",
+        "xiakou",
+        "yingwuzhou"
       ],
       "modern": "湖北武汉武昌",
       "coord": [
@@ -12448,6 +12539,13 @@ window.ATLAS_LORE_DATA = {
         "岳阳",
         "君山"
       ],
+      "asciiAliases": [
+        "yueyanglou",
+        "yueyangtower",
+        "dongtinghu",
+        "baling",
+        "yuezhou"
+      ],
       "modern": "湖南岳阳",
       "coord": [
         113.09,
@@ -12461,6 +12559,12 @@ window.ATLAS_LORE_DATA = {
         "武陵",
         "朗州",
         "常德"
+      ],
+      "asciiAliases": [
+        "taohuayuan",
+        "peachblossomspring",
+        "wuling",
+        "wulingyuan"
       ],
       "modern": "湖南常德桃源",
       "coord": [
@@ -12476,6 +12580,12 @@ window.ATLAS_LORE_DATA = {
         "蒲坂",
         "河中府",
         "永济"
+      ],
+      "asciiAliases": [
+        "guanquelou",
+        "storktower",
+        "puzhou",
+        "zhongtiaoshan"
       ],
       "modern": "山西运城·永济",
       "coord": [
@@ -12507,6 +12617,11 @@ window.ATLAS_LORE_DATA = {
         "淇县",
         "新乡"
       ],
+      "asciiAliases": [
+        "muye",
+        "zhaoge",
+        "qixian"
+      ],
       "modern": "河南新乡",
       "coord": [
         113.88,
@@ -12522,6 +12637,11 @@ window.ATLAS_LORE_DATA = {
         "泽州",
         "晋城"
       ],
+      "asciiAliases": [
+        "changping",
+        "gaoping",
+        "shangdang"
+      ],
       "modern": "山西晋城高平",
       "coord": [
         112.92,
@@ -12536,6 +12656,10 @@ window.ATLAS_LORE_DATA = {
         "广宗",
         "邢台"
       ],
+      "asciiAliases": [
+        "julu",
+        "pingxiang"
+      ],
       "modern": "河北邢台巨鹿",
       "coord": [
         115.03,
@@ -12548,6 +12672,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "蕲县",
         "宿州"
+      ],
+      "asciiAliases": [
+        "dazexiang",
+        "qixian"
       ],
       "modern": "安徽宿州",
       "coord": [
@@ -12565,6 +12693,10 @@ window.ATLAS_LORE_DATA = {
         "乌江",
         "和县"
       ],
+      "asciiAliases": [
+        "gaixia",
+        "lingbi"
+      ],
       "modern": "安徽蚌埠固镇",
       "coord": [
         117.48,
@@ -12578,6 +12710,10 @@ window.ATLAS_LORE_DATA = {
         "白登山",
         "马邑",
         "朔州"
+      ],
+      "asciiAliases": [
+        "baideng",
+        "baidengshan"
       ],
       "modern": "山西大同",
       "coord": [
@@ -12605,6 +12741,11 @@ window.ATLAS_LORE_DATA = {
         "中牟",
         "乌巢"
       ],
+      "asciiAliases": [
+        "guandu",
+        "wuchao",
+        "zhongmu"
+      ],
       "modern": "河南郑州中牟",
       "coord": [
         114.02,
@@ -12616,6 +12757,10 @@ window.ATLAS_LORE_DATA = {
       "name": "逍遥津",
       "aliases": [
         "合淝"
+      ],
+      "asciiAliases": [
+        "xiaoyaojin",
+        "hefei"
       ],
       "modern": "安徽合肥",
       "coord": [
@@ -12645,6 +12790,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "陈桥",
         "封丘"
+      ],
+      "asciiAliases": [
+        "chenqiaoyi",
+        "chenqiao",
+        "fengqiu"
       ],
       "modern": "河南新乡封丘",
       "coord": [
@@ -12686,6 +12836,10 @@ window.ATLAS_LORE_DATA = {
         "郾城",
         "颍昌"
       ],
+      "asciiAliases": [
+        "zhuxianzhen",
+        "zhuxian"
+      ],
       "modern": "河南开封祥符",
       "coord": [
         114.25,
@@ -12698,6 +12852,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "合州",
         "合川"
+      ],
+      "asciiAliases": [
+        "diaoyucheng",
+        "hezhou",
+        "hechuan"
       ],
       "modern": "重庆合川",
       "coord": [
@@ -12713,6 +12872,11 @@ window.ATLAS_LORE_DATA = {
         "新会",
         "江门"
       ],
+      "asciiAliases": [
+        "yashan",
+        "yamen",
+        "xinhui"
+      ],
       "modern": "广东江门新会",
       "coord": [
         113.06,
@@ -12726,6 +12890,11 @@ window.ATLAS_LORE_DATA = {
         "怀来",
         "宣府",
         "张家口"
+      ],
+      "asciiAliases": [
+        "tumubao",
+        "tumu",
+        "huailai"
       ],
       "modern": "河北张家口怀来",
       "coord": [
@@ -12769,6 +12938,10 @@ window.ATLAS_LORE_DATA = {
         "庭州",
         "吉木萨尔"
       ],
+      "asciiAliases": [
+        "luntai",
+        "bugur"
+      ],
       "modern": "新疆昌吉/乌鲁木齐",
       "coord": [
         87.62,
@@ -12781,6 +12954,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "鄯善",
         "若羌"
+      ],
+      "asciiAliases": [
+        "loulan",
+        "kroran",
+        "lopnur"
       ],
       "modern": "新疆巴音郭楞若羌",
       "coord": [
@@ -12823,6 +13001,11 @@ window.ATLAS_LORE_DATA = {
         "碎叶城",
         "托克马克"
       ],
+      "asciiAliases": [
+        "suiye",
+        "suyab",
+        "tokmok"
+      ],
       "modern": "吉尔吉斯斯坦托克马克",
       "coord": [
         75.29,
@@ -12835,6 +13018,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "燕然",
         "杭爱山"
+      ],
+      "asciiAliases": [
+        "yanranshan",
+        "hangai",
+        "khangai"
       ],
       "modern": "蒙古国杭爱山",
       "coord": [
@@ -12862,6 +13050,11 @@ window.ATLAS_LORE_DATA = {
         "刘公岛",
         "威海"
       ],
+      "asciiAliases": [
+        "weihaiwei",
+        "weihai",
+        "liugongdao"
+      ],
       "modern": "山东威海",
       "coord": [
         122.12,
@@ -12875,6 +13068,12 @@ window.ATLAS_LORE_DATA = {
         "宛平",
         "宛平城"
       ],
+      "asciiAliases": [
+        "lugouqiao",
+        "lugoubridge",
+        "marcopolobridge",
+        "wanping"
+      ],
       "modern": "北京丰台",
       "coord": [
         116.21,
@@ -12887,6 +13086,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "茨坪",
         "宁冈"
+      ],
+      "asciiAliases": [
+        "jinggangshan",
+        "huangyangjie"
       ],
       "modern": "江西吉安井冈山",
       "coord": [
@@ -12944,6 +13147,10 @@ window.ATLAS_LORE_DATA = {
         "忠州",
         "万州"
       ],
+      "asciiAliases": [
+        "baxia",
+        "qutangxia"
+      ],
       "modern": "重庆奉节至忠县峡江",
       "coord": [
         109.1,
@@ -12958,6 +13165,10 @@ window.ATLAS_LORE_DATA = {
         "神女峰",
         "大宁"
       ],
+      "asciiAliases": [
+        "wuxia",
+        "wushan"
+      ],
       "modern": "重庆巫山至湖北巴东",
       "coord": [
         110.05,
@@ -12971,6 +13182,10 @@ window.ATLAS_LORE_DATA = {
         "三峡",
         "秭归",
         "屈原故里"
+      ],
+      "asciiAliases": [
+        "xilingxia",
+        "yichang"
       ],
       "modern": "湖北宜昌秭归",
       "coord": [
@@ -13064,6 +13279,11 @@ window.ATLAS_LORE_DATA = {
         "齐安",
         "黄冈"
       ],
+      "asciiAliases": [
+        "huangzhou",
+        "huangzhouredcliffs",
+        "dongporedcliffs"
+      ],
       "modern": "湖北黄冈",
       "coord": [
         114.88,
@@ -13134,6 +13354,10 @@ window.ATLAS_LORE_DATA = {
         "深圳",
         "珠海"
       ],
+      "asciiAliases": [
+        "lingdingyang",
+        "lingding"
+      ],
       "modern": "广东珠江口伶仃洋",
       "coord": [
         113.8,
@@ -13149,6 +13373,10 @@ window.ATLAS_LORE_DATA = {
         "庐陵",
         "吉安"
       ],
+      "asciiAliases": [
+        "huangkongtan",
+        "wanan"
+      ],
       "modern": "江西吉安万安",
       "coord": [
         114.78,
@@ -13161,6 +13389,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "咸阳",
         "咸阳古渡"
+      ],
+      "asciiAliases": [
+        "weicheng",
+        "xianyang"
       ],
       "modern": "陕西咸阳",
       "coord": [
@@ -13178,6 +13410,11 @@ window.ATLAS_LORE_DATA = {
         "骊山",
         "终南山"
       ],
+      "asciiAliases": [
+        "baqiao",
+        "bashui",
+        "zheliu"
+      ],
       "modern": "陕西西安",
       "coord": [
         109.06,
@@ -13192,6 +13429,10 @@ window.ATLAS_LORE_DATA = {
         "芜湖",
         "当涂"
       ],
+      "asciiAliases": [
+        "tianmenshan",
+        "bowangshan"
+      ],
       "modern": "安徽芜湖/马鞍山",
       "coord": [
         118.35,
@@ -13204,6 +13445,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "瓜步山",
         "六合"
+      ],
+      "asciiAliases": [
+        "guabu",
+        "liuhe"
       ],
       "modern": "江苏南京六合",
       "coord": [
@@ -13299,6 +13544,10 @@ window.ATLAS_LORE_DATA = {
         "莱芜",
         "钢城"
       ],
+      "asciiAliases": [
+        "changshao",
+        "laiwu"
+      ],
       "modern": "山东济南莱芜",
       "coord": [
         117.68,
@@ -13310,6 +13559,10 @@ window.ATLAS_LORE_DATA = {
       "name": "桂陵",
       "aliases": [
         "长垣"
+      ],
+      "asciiAliases": [
+        "guiling",
+        "changyuan"
       ],
       "modern": "河南新乡长垣",
       "coord": [
@@ -13323,6 +13576,11 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "马陵",
         "郯城"
+      ],
+      "asciiAliases": [
+        "malingdao",
+        "maling",
+        "tancheng"
       ],
       "modern": "山东临沂郯城",
       "coord": [
@@ -13339,6 +13597,10 @@ window.ATLAS_LORE_DATA = {
         "三门峡",
         "陕州"
       ],
+      "asciiAliases": [
+        "xiaoshan",
+        "yaoshan"
+      ],
       "modern": "河南三门峡",
       "coord": [
         111.55,
@@ -13352,6 +13614,10 @@ window.ATLAS_LORE_DATA = {
         "麻城",
         "举水"
       ],
+      "asciiAliases": [
+        "boju",
+        "macheng"
+      ],
       "modern": "湖北黄冈麻城",
       "coord": [
         115.01,
@@ -13364,6 +13630,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "背水一战",
         "井陉口"
+      ],
+      "asciiAliases": [
+        "jingxing",
+        "tumenguan"
       ],
       "modern": "河北石家庄井陉",
       "coord": [
@@ -13380,6 +13650,11 @@ window.ATLAS_LORE_DATA = {
         "巢湖",
         "无为"
       ],
+      "asciiAliases": [
+        "ruxukou",
+        "ruxu",
+        "dongguan"
+      ],
       "modern": "安徽马鞍山含山",
       "coord": [
         117.88,
@@ -13394,6 +13669,12 @@ window.ATLAS_LORE_DATA = {
         "成皋",
         "荥阳"
       ],
+      "asciiAliases": [
+        "hulao",
+        "hulaoguan",
+        "hulaopass",
+        "sishuiguan"
+      ],
       "modern": "河南郑州·荥阳",
       "coord": [
         113.24,
@@ -13406,6 +13687,9 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "潏水",
         "神禾原"
+      ],
+      "asciiAliases": [
+        "xiangjisi"
       ],
       "modern": "陕西西安长安区",
       "coord": [
@@ -13422,6 +13706,10 @@ window.ATLAS_LORE_DATA = {
         "应天府",
         "商丘"
       ],
+      "asciiAliases": [
+        "suiyang",
+        "shangqiu"
+      ],
       "modern": "河南商丘",
       "coord": [
         115.65,
@@ -13435,6 +13723,10 @@ window.ATLAS_LORE_DATA = {
         "汝南",
         "驻马店"
       ],
+      "asciiAliases": [
+        "caizhou",
+        "runan"
+      ],
       "modern": "河南驻马店汝南",
       "coord": [
         114.36,
@@ -13447,6 +13739,9 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "万全",
         "张北"
+      ],
+      "asciiAliases": [
+        "yehuling"
       ],
       "modern": "河北张家口万全",
       "coord": [
@@ -13462,6 +13757,11 @@ window.ATLAS_LORE_DATA = {
         "钧州",
         "阳翟"
       ],
+      "asciiAliases": [
+        "sanfengshan",
+        "junzhou",
+        "yuzhou"
+      ],
       "modern": "河南许昌禹州",
       "coord": [
         113.47,
@@ -13476,6 +13776,12 @@ window.ATLAS_LORE_DATA = {
         "都昌",
         "九江口"
       ],
+      "asciiAliases": [
+        "poyanghu",
+        "poyanglake",
+        "lakepoyang",
+        "kangshan"
+      ],
       "modern": "江西九江鄱阳湖",
       "coord": [
         116.25,
@@ -13488,6 +13794,9 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "枣庄",
         "峄县"
+      ],
+      "asciiAliases": [
+        "taierzhuang"
       ],
       "modern": "山东枣庄台儿庄",
       "coord": [
@@ -13504,6 +13813,13 @@ window.ATLAS_LORE_DATA = {
         "奉高",
         "泰安"
       ],
+      "asciiAliases": [
+        "taishan",
+        "mounttai",
+        "mttai",
+        "daizong",
+        "dongyue"
+      ],
       "modern": "山东泰安",
       "coord": [
         117.1,
@@ -13516,6 +13832,13 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "太华山",
         "华阴"
+      ],
+      "asciiAliases": [
+        "huashan",
+        "mounthua",
+        "mthua",
+        "taihuashan",
+        "xiyue"
       ],
       "modern": "陕西渭南华阴",
       "coord": [
@@ -13530,6 +13853,13 @@ window.ATLAS_LORE_DATA = {
         "中岳",
         "少林寺",
         "登封"
+      ],
+      "asciiAliases": [
+        "songshan",
+        "mountsong",
+        "mtsong",
+        "shaolinsi",
+        "zhongyue"
       ],
       "modern": "河南郑州登封",
       "coord": [
@@ -13546,6 +13876,13 @@ window.ATLAS_LORE_DATA = {
         "衡阳",
         "衡州"
       ],
+      "asciiAliases": [
+        "hengshan",
+        "mountheng",
+        "mtheng",
+        "zhurongfeng",
+        "nanyue"
+      ],
       "modern": "湖南衡阳",
       "coord": [
         112.69,
@@ -13559,6 +13896,11 @@ window.ATLAS_LORE_DATA = {
         "北岳",
         "浑源",
         "悬空寺"
+      ],
+      "asciiAliases": [
+        "hengshan",
+        "xuankongsi",
+        "beiyue"
       ],
       "modern": "山西大同浑源",
       "coord": [
@@ -13586,6 +13928,10 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "博望坡",
         "博望"
+      ],
+      "asciiAliases": [
+        "xinye",
+        "bowangpo"
       ],
       "modern": "河南南阳新野",
       "coord": [
@@ -13616,6 +13962,13 @@ window.ATLAS_LORE_DATA = {
         "梁山",
         "蓼儿洼"
       ],
+      "asciiAliases": [
+        "liangshanpo",
+        "liangshan",
+        "mountliang",
+        "mtliang",
+        "shuiboliangshan"
+      ],
       "modern": "山东济宁梁山",
       "coord": [
         116.09,
@@ -13629,6 +13982,10 @@ window.ATLAS_LORE_DATA = {
         "阳谷",
         "阳谷县",
         "狮子楼"
+      ],
+      "asciiAliases": [
+        "jingyanggang",
+        "yanggu"
       ],
       "modern": "山东聊城阳谷",
       "coord": [
@@ -13645,6 +14002,10 @@ window.ATLAS_LORE_DATA = {
         "魏州",
         "天雄军"
       ],
+      "asciiAliases": [
+        "damingfu",
+        "daming"
+      ],
       "modern": "河北邯郸大名",
       "coord": [
         115.15,
@@ -13657,6 +14018,12 @@ window.ATLAS_LORE_DATA = {
       "aliases": [
         "岳王庙",
         "栖霞岭"
+      ],
+      "asciiAliases": [
+        "fengboting",
+        "yuewangmiao",
+        "xihu",
+        "westlake"
       ],
       "modern": "浙江杭州西湖",
       "coord": [
@@ -13727,6 +14094,11 @@ window.ATLAS_LORE_DATA = {
         "西海",
         "额济纳"
       ],
+      "asciiAliases": [
+        "juyanhai",
+        "juyan",
+        "ejin"
+      ],
       "modern": "内蒙古阿拉善额济纳",
       "coord": [
         101.25,
@@ -13744,6 +14116,10 @@ window.ATLAS_LORE_DATA = {
         "孔林",
         "杏坛",
         "阙里"
+      ],
+      "asciiAliases": [
+        "qufu",
+        "kongmiao"
       ],
       "modern": "山东济宁·曲阜",
       "coord": [
@@ -13778,6 +14154,10 @@ window.ATLAS_LORE_DATA = {
         "珠山御窑",
         "御器厂"
       ],
+      "asciiAliases": [
+        "jingdezhen",
+        "changnan"
+      ],
       "modern": "江西景德镇",
       "coord": [
         117.18,
@@ -13792,6 +14172,10 @@ window.ATLAS_LORE_DATA = {
         "宁古塔将军",
         "宁安",
         "旧街"
+      ],
+      "asciiAliases": [
+        "ningguta",
+        "ningan"
       ],
       "modern": "黑龙江牡丹江·海林",
       "coord": [
