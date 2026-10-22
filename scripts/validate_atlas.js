@@ -3784,13 +3784,128 @@ function main() {
     assert.strictEqual(proto._dismissTopOverlay.call(ctrl), false, 'When all overlays are closed, _dismissTopOverlay must return false');
   }
 
+  // CUJ 31: Historical neighboring polities (.polity-caption.neighbor) vs. modern country watermarks (.neighbor-caption)
+  //         must maintain distinct typography/color hierarchy and dodge collisions or deduplicate identical names
+  {
+    const proto = ControllerClass.prototype;
+    assert(
+      /\.polity-caption\.neighbor\s*\{[\s\S]*?font-size:\s*14px;[\s\S]*?font-weight:\s*700;[\s\S]*?fill:\s*#5a2d18;/m.test(
+        styleCss
+      ),
+      'css/style.css .polity-caption.neighbor must use 14px bold (#5a2d18) to distinguish ancient kingdoms from modern country watermarks'
+    );
+    assert(
+      /\.neighbor-caption\s*\{[\s\S]*?font-size:\s*8px;[\s\S]*?font-weight:\s*400;[\s\S]*?fill:\s*#686e73;/m.test(
+        styleCss
+      ),
+      'css/style.css .neighbor-caption must use 8px regular (#686e73) as a subtle background country watermark'
+    );
+
+    const makeCls = (initial = []) => {
+      const s = new Set(initial);
+      return {
+        add: (...items) => items.forEach((x) => s.add(x)),
+        remove: (...items) => items.forEach((x) => s.delete(x)),
+        toggle: (x, f) => {
+          const on = f === undefined ? !s.has(x) : Boolean(f);
+          if (on) s.add(x);
+          else s.delete(x);
+          return on;
+        },
+        contains: (x) => s.has(x),
+      };
+    };
+    const makeCaptionNode = (clsList, text, x, y, dataset = {}) => {
+      const attrs = {
+        'data-x': String(x),
+        'data-y': String(y),
+        'data-base-x': String(x),
+        'data-base-y': String(y),
+      };
+      return {
+        classList: makeCls(clsList),
+        textContent: text,
+        dataset,
+        getAttribute: (k) => (k in attrs ? attrs[k] : null),
+        setAttribute: (k, v) => {
+          attrs[k] = String(v);
+        },
+      };
+    };
+
+    const [fx, fy] = ctrl.projector.toScreen(104.84, 12.38);
+    const [kx, ky] = ctrl.projector.toScreen(105.0, 12.87);
+    const [cx, cy] = ctrl.projector.toScreen(126.85, 40.38);
+    const funanNode = makeCaptionNode(['polity-caption', 'neighbor'], '扶南', fx, fy, {
+      polityTitle: '扶南',
+      polityRole: 'neighbor',
+    });
+    const joseonPolNode = makeCaptionNode(['polity-caption', 'neighbor'], '朝鲜', cx, cy, {
+      polityTitle: '朝鲜',
+      polityRole: 'neighbor',
+    });
+    const cambodiaWatermark = makeCaptionNode(['neighbor-caption'], '柬埔寨', kx, ky, {
+      rawName: '柬埔寨',
+    });
+    const joseonWatermark = makeCaptionNode(['neighbor-caption'], '朝鲜', cx, cy, {
+      rawName: '朝鲜',
+    });
+
+    const mockCtrl = {
+      camera: { x: 200, y: 200, w: 444, h: 311, zoom: 2.25 },
+      projector: ctrl.projector,
+      _estimateLocalTextWidth: proto._estimateLocalTextWidth,
+      svg: {
+        classList: makeCls(),
+        querySelectorAll: () => [],
+      },
+      grpSettlements: { classList: makeCls(), querySelectorAll: () => [] },
+      grpPrefectures: { classList: makeCls(), querySelectorAll: () => [] },
+      grpCorridors: { classList: makeCls(), querySelectorAll: () => [] },
+      grpMilestones: { classList: makeCls(), querySelectorAll: () => [] },
+      grpPolities: {
+        classList: makeCls(),
+        querySelectorAll: (sel) =>
+          sel === '.polity-caption' ? [funanNode, joseonPolNode] : [],
+      },
+      grpNeighbors: {
+        querySelectorAll: (sel) =>
+          sel === '.neighbor-caption' ? [cambodiaWatermark, joseonWatermark] : [],
+      },
+      grpProvNames: { querySelectorAll: () => [] },
+    };
+
+    proto._rescaleSvgTypography.call(mockCtrl);
+
+    // 扶南 stays anchored while 柬埔寨 dodges vertically/horizontally away from 扶南
+    const finalFunanY = parseFloat(funanNode.getAttribute('data-y'));
+    const finalCambodiaY = parseFloat(cambodiaWatermark.getAttribute('data-y'));
+    assert(
+      Math.abs(finalFunanY - fy) < 0.2,
+      'Ancient neighbor polity 扶南 must remain anchored at its historical territory center'
+    );
+    assert(
+      !cambodiaWatermark.classList.contains('is-crowded-hidden') &&
+        Math.hypot(
+          parseFloat(cambodiaWatermark.getAttribute('data-x')) - finalFunanY * 0 - fx,
+          finalCambodiaY - finalFunanY
+        ) >= 9.0,
+      `Modern watermark 柬埔寨 must dodge co-located ancient polity 扶南 (got dy=${(finalCambodiaY - finalFunanY).toFixed(1)})`
+    );
+    // Same-named modern watermark 朝鲜 hides when historical polity 朝鲜 is active
+    assert(
+      joseonWatermark.classList.contains('is-crowded-hidden'),
+      'Modern watermark 朝鲜 must hide when an active historical polity with the identical name (朝鲜) is displayed'
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 30 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 31 E2E CUJs`);
 }
 
 main();
