@@ -303,7 +303,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261021d" />
+  <link rel="stylesheet" href="css/style.css?v=20261021e" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -387,26 +387,25 @@
               </feMerge>
             </filter>
             <linearGradient id="terrain-fade-h" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#000" />
-              <stop offset="4.5%" stop-color="#fff" />
-              <stop offset="94.5%" stop-color="#fff" />
-              <stop offset="100%" stop-color="#000" />
+              <stop offset="0%" class="terrain-edge-stop" />
+              <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
+              <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
+              <stop offset="100%" class="terrain-edge-stop" />
             </linearGradient>
             <linearGradient id="terrain-fade-v" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#000" />
-              <stop offset="4.5%" stop-color="#fff" />
-              <stop offset="94.5%" stop-color="#fff" />
-              <stop offset="100%" stop-color="#000" />
+              <stop offset="0%" class="terrain-edge-stop" />
+              <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
+              <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
+              <stop offset="100%" class="terrain-edge-stop" />
             </linearGradient>
-            <mask id="terrain-edge-fade" maskContentUnits="objectBoundingBox">
-              <rect x="0" y="0" width="1" height="1" fill="url(#terrain-fade-h)" />
-              <rect x="0" y="0" width="1" height="1" fill="url(#terrain-fade-v)" style="mix-blend-mode: multiply" />
-            </mask>
           </defs>
           <rect id="ocean-bg" x="-2000" y="-2000" width="6000" height="6000" />
           <g id="camera-rig">
             <g id="grp-terrain">
-              <image id="terrain-relief-img" href="assets/terrain_relief.webp" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" mask="url(#terrain-edge-fade)" />
+              <image id="terrain-relief-img" href="assets/terrain_relief.webp" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
+              <!-- Match the solid ocean background without an expensive SVG mask during zoom. -->
+              <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-h)" />
+              <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-v)" />
             </g>
             <g id="grp-neighbors"></g>
             <g id="grp-provinces"></g>
@@ -694,10 +693,10 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261021d"></script>
-  <script src="js/atlas_boot.js?v=20261021d"></script>
-  <script src="js/map_data.js?v=20261021d"></script>
-  <script src="js/lore_data.js?v=20261021d"></script>
-  <script src="js/app.js?v=20261021d"></script>
+  <script src="js/china_geo_data.js?v=20261021e"></script>
+  <script src="js/atlas_boot.js?v=20261021e"></script>
+  <script src="js/map_data.js?v=20261021e"></script>
+  <script src="js/lore_data.js?v=20261021e"></script>
+  <script src="js/app.js?v=20261021e"></script>
 </body>
 </html>
