@@ -10,6 +10,7 @@ import shutil
 import struct
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -83,6 +84,8 @@ def find_local_repo_root():
 
 
 def normalize_years(year_str):
+  if not year_str:
+    return ""
   return ",".join(
       str(int(y.strip()))
       for y in re.split(r"[,，、;\s]+", str(year_str).strip())
@@ -101,8 +104,14 @@ def normalize_places(place_str):
 
 
 def build_query(args):
+  params = []
   years = normalize_years(args.year)
-  params = [("year", years)]
+  if years:
+    params.append(("year", years))
+  if getattr(args, "person", ""):
+    params.append(("person", args.person.strip()))
+    if getattr(args, "stop", None) is not None and args.stop >= 0:
+      params.append(("stop", str(args.stop)))
   normalized_place = normalize_places(args.place)
   if normalized_place:
     params.append(("place", normalized_place))
@@ -134,7 +143,6 @@ def _check_remote_reachable(url):
 
 def _write_offline_html(repo_root):
   index_path = os.path.join(repo_root, "index.html")
-  tmp_html = os.path.join(repo_root, f"_snap_skill_tmp_{os.getpid()}.html")
   with open(index_path, "r", encoding="utf-8") as f:
     html = f.read()
   # Strip external stylesheet/preconnect links and external avatar images so
@@ -152,9 +160,22 @@ def _write_offline_html(repo_root):
       '  <script src="js/i18n_dict.js"></script>\n'
       '  <script src="js/app.js',
   )
-  with open(tmp_html, "w", encoding="utf-8") as f:
-    f.write(html_local)
-  return tmp_html
+  tmp_html = os.path.join(repo_root, f"_snap_skill_tmp_{os.getpid()}.html")
+  try:
+    with open(tmp_html, "w", encoding="utf-8") as f:
+      f.write(html_local)
+    return tmp_html
+  except OSError:
+    base_href = f'file://{os.path.abspath(repo_root).rstrip("/")}/'
+    html_with_base = html_local.replace(
+        "<head>", f'<head>\n  <base href="{base_href}">', 1
+    )
+    fd, fallback_html = tempfile.mkstemp(
+        prefix="_snap_skill_tmp_", suffix=".html"
+    )
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+      f.write(html_with_base)
+    return fallback_html
 
 
 def _chrome_env():
@@ -180,6 +201,12 @@ def _chrome_common_flags():
 
 
 def _validate_inspect_result(data, args):
+  if getattr(args, "person", "") and not data.get("person"):
+    raise RuntimeError(
+        f"Could not resolve historical figure '{args.person}' in the atlas. "
+        "Use a canonical Chinese, English, or Pinyin figure name or key "
+        "(e.g. sushi / 苏轼 / Su Shi, zhugeliang / 诸葛亮, libai / 李白)."
+    )
   normalized_place = normalize_places(args.place)
   if not normalized_place:
     return
@@ -256,8 +283,10 @@ ctrl.projector = new sandbox.MercatorProjector(1000, 700, {
 ctrl._hydrateSnapshots();
 ctrl.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
 const res = ctrl.inspect({
-  year: process.env.JS_YEAR,
-  place: process.env.JS_PLACE
+  year: process.env.JS_YEAR || undefined,
+  place: process.env.JS_PLACE || undefined,
+  person: process.env.JS_PERSON || undefined,
+  stop: process.env.JS_STOP !== "" ? Number(process.env.JS_STOP) : undefined
 });
 process.stdout.write(JSON.stringify(res));
 """
@@ -265,6 +294,12 @@ process.stdout.write(JSON.stringify(res));
     env["JS_REPO_ROOT"] = repo_root
     env["JS_YEAR"] = normalized_years
     env["JS_PLACE"] = normalized_place
+    env["JS_PERSON"] = (getattr(args, "person", "") or "").strip()
+    env["JS_STOP"] = (
+        str(args.stop)
+        if getattr(args, "stop", None) is not None and args.stop >= 0
+        else ""
+    )
     env["JS_LANG"] = args.lang
     proc = subprocess.run(
         [node_bin, "-e", node_script],
@@ -433,12 +468,12 @@ def render_screenshot(query, out_path):
 
 def main():
   parser = argparse.ArgumentParser(
-      description="Jiangshan Historical Atlas 2-parameter (year + place/route) CLI"
+      description="Jiangshan Historical Atlas CLI (year + place/route or person chronicle)"
   )
   parser.add_argument(
       "--year",
       type=str,
-      required=True,
+      default="",
       help="Historical year (-403 to 2026, negative for BCE) or comma-separated years for multi-year routes (e.g. 1079,1080,1094,1097)",
   )
   parser.add_argument(
@@ -446,6 +481,18 @@ def main():
       type=str,
       default="",
       help="Single place name or comma-separated route in Chinese, English, or Pinyin (e.g. 蓝关 / Lantian Pass, or 剑外,巴峡,巫峡,襄阳,洛阳 / Huzhou,Huangzhou,Huizhou,Danzhou)",
+  )
+  parser.add_argument(
+      "--person",
+      type=str,
+      default="",
+      help="Historical figure key or name in Chinese, English, or Pinyin (e.g. sushi / 苏轼 / Su Shi, zhugeliang / 诸葛亮, libai / 李白) to open the Person Chronicle trajectory",
+  )
+  parser.add_argument(
+      "--stop",
+      type=int,
+      default=None,
+      help="Optional 0-based event index when using --person (omit for full-map overview)",
   )
   parser.add_argument(
       "--hover",
@@ -462,7 +509,7 @@ def main():
   parser.add_argument(
       "--inspect",
       action="store_true",
-      help="Return structured JSON from atlasAPI.inspect (era, dynasty, polity, regions, prefectures, modernProvince, nearestCity with remark, lore, route) and verify place resolution",
+      help="Return structured JSON from atlasAPI.inspect (era, dynasty, polity, regions, prefectures, modernProvince, nearestCity with remark, lore, route, person) and verify resolution",
   )
   parser.add_argument(
       "--out",
@@ -471,6 +518,8 @@ def main():
       help="Optional output PNG path for rendered map screenshot",
   )
   args = parser.parse_args()
+  if not args.year.strip() and not args.person.strip():
+    parser.error("Either --year or --person is required.")
 
   query = build_query(args)
   public_url = f"{PUBLIC_BASE_URL.rstrip('/')}/?{query}"

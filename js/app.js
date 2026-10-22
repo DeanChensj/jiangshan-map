@@ -8,6 +8,15 @@
   const RAD_TO_DEG = 180 / Math.PI;
   const DEG_TO_RAD = Math.PI / 180;
 
+  function escHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   class MercatorProjector {
     constructor(width, height, bounds) {
       this.width = width;
@@ -1022,7 +1031,16 @@
           'is-hidden',
           !this.challenge.answered || Boolean(chkM && !chkM.checked)
         );
-        if (!this.challenge.answered && this.challenge.index < this.challenge.deck.length) {
+        if (this.challenge.finished || this.challenge.index >= this.challenge.deck.length) {
+          this._finishChallenge();
+        } else if (this.challenge.answered) {
+          this._renderChallengeQuestionText();
+          this._renderChallengeAnsweredVerdict();
+        } else if (this.challenge.pendingGuess) {
+          const savedPin = this.challenge.pendingGuess;
+          this._renderChallengeQuestionText();
+          this._previewLocatePin(savedPin[0], savedPin[1]);
+        } else {
           this.presentChallengeRound();
         }
       }
@@ -1145,11 +1163,6 @@
       }
       if (this.grpTerrain) {
         this.grpTerrain.classList.toggle('is-hidden', !this.terrainMode);
-      }
-      const btn = this._id('act-terrain');
-      if (btn) {
-        btn.classList.toggle('is-active', this.terrainMode);
-        btn.setAttribute('aria-pressed', String(this.terrainMode));
       }
       const chk = this._id('chk-terrain');
       if (chk) {
@@ -3108,7 +3121,11 @@
       if (this.personTimer) {
         clearInterval(this.personTimer);
         this.personTimer = null;
+        this._updateAutoplayUi();
         return;
+      }
+      if (this.playing) {
+        this.stopAutoplay();
       }
       if (this.activePersonEventIdx < 0) {
         this.selectPersonEvent(0, true);
@@ -3117,10 +3134,12 @@
         if (!this.activePerson || this.activePersonEventIdx + 1 >= this.activePerson.events.length) {
           clearInterval(this.personTimer);
           this.personTimer = null;
+          this._updateAutoplayUi();
           return;
         }
         this.selectPersonEvent(this.activePersonEventIdx + 1, true);
       }, 2600);
+      this._updateAutoplayUi();
     }
 
     selectPersonEvent(idx, panCamera = true) {
@@ -4279,9 +4298,9 @@
 
         const retP = this.activeReturnPerson;
         const retBtnHtml = retP
-          ? `<button type="button" class="gen-filter-pill" id="act-return-person">‹ ${
+          ? `<button type="button" class="gen-filter-pill" id="act-return-person">‹ ${escHtml(
               this.locale === 'en' ? retP.profile.en : retP.profile.zh
-            }</button>`
+            )}</button>`
           : '';
         if (totalEvents > 0 || retBtnHtml) {
           const btnLabel = this.genealogyEventsOnly
@@ -4862,10 +4881,11 @@
     _updateAutoplayUi() {
       const btn = this._id('act-autoplay');
       if (!btn) return;
-      btn.innerHTML = this.playing ? SVG_ICONS.pause : SVG_ICONS.play;
-      btn.classList.toggle('is-playing', Boolean(this.playing));
-      btn.setAttribute('aria-pressed', String(Boolean(this.playing)));
-      const actionLbl = this.playing
+      const isPlaying = Boolean(this.playing || this.personTimer);
+      btn.innerHTML = isPlaying ? SVG_ICONS.pause : SVG_ICONS.play;
+      btn.classList.toggle('is-playing', isPlaying);
+      btn.setAttribute('aria-pressed', String(isPlaying));
+      const actionLbl = isPlaying
         ? this.locale === 'en'
           ? 'Pause'
           : '暂停'
@@ -4873,7 +4893,7 @@
           ? 'Play'
           : '播放';
       btn.setAttribute('aria-label', actionLbl);
-      btn.title = this.playing
+      btn.title = isPlaying
         ? this.locale === 'en'
           ? 'Pause timeline autoplay (Space)'
           : '暂停时间轴播放（空格）'
@@ -4882,6 +4902,10 @@
 
     startAutoplay() {
       if (this.challenge) return;
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+      }
       this.playing = true;
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
@@ -4899,11 +4923,15 @@
 
     stopAutoplay() {
       this.playing = false;
-      this._updateAutoplayUi();
       if (this.playInterval) {
         clearInterval(this.playInterval);
         this.playInterval = null;
       }
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+      }
+      this._updateAutoplayUi();
       const cur = this.dynasties[this.dynastyIdx];
       if (cur) this._syncAutoMilestoneBalloon(cur);
     }
@@ -5930,7 +5958,7 @@
             st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
           const lbl = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
           const cls = i === curIdx ? 'cr-stop-pill is-current' : 'cr-stop-pill';
-          return `<button type="button" class="${cls}" data-cidx="${i}"><span class="cr-stop-num">${i + 1}</span><span>${lbl}</span></button>`;
+          return `<button type="button" class="${cls}" data-cidx="${i}"><span class="cr-stop-num">${i + 1}</span><span>${escHtml(lbl)}</span></button>`;
         })
         .join('<span class="cr-stop-arrow">→</span>');
 
@@ -6260,43 +6288,15 @@
       this._syncDocumentSeoMeta();
     }
 
-    presentChallengeRound() {
+    _renderChallengeQuestionText() {
       const q = this.challenge;
-      this.grpChallenge.innerHTML = '';
-      q.answered = false;
-      q.pendingGuess = null;
-      const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('is-challenge-answered');
-      if (this.hoverTip) {
-        this.hoverTip.classList.add('is-hidden');
-        this.hoverTip.classList.remove('is-interactive');
-      }
-      const defCam = this._getDefaultCamera();
-      if (
-        this.camera.w < defCam.w * 0.92 ||
-        Math.hypot(this.camera.x - defCam.x, this.camera.y - defCam.y) > 40
-      ) {
-        this.resetCamera();
-      }
+      if (!q || q.index >= q.deck.length) return;
       const cur = q.deck[q.index];
-      let roundYear =
-        cur.settlement.focusYear !== undefined ? cur.settlement.focusYear : cur.dynasty.focusYear;
-      if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
-        roundYear = cur.settlement.appear;
-      }
-      if (cur.settlement.vanish !== undefined && roundYear > cur.settlement.vanish) {
-        roundYear = cur.settlement.vanish;
-      }
-      this.jumpToYear(this._clampYearToDynasty(cur.dynasty, roundYear));
-      this.grpSettlements.classList.add('is-hidden');
-      if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
-
       this._id('challenge-step').textContent =
         this.locale === 'en'
           ? `Q ${q.index + 1} / ${q.deck.length}`
           : `第 ${q.index + 1} / ${q.deck.length} 题`;
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
-      this._id('challenge-result').classList.add('is-hidden');
 
       const displayAncientZh = this._stripPromptParenthetical(cur.settlement.ancient);
       const rawAncientEn = cur.settlement.ancientEn
@@ -6348,15 +6348,50 @@
           : '当朝掌故';
       const promptHtml = cur.settlement.isPass
         ? this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s strategic pass <b>“${displayAncientEn}”</b>`
-          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的天下名关 <b>「${displayAncientZh}」</b>`
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s strategic pass <b>“${escHtml(displayAncientEn)}”</b>`
+          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的天下名关 <b>「${escHtml(displayAncientZh)}」</b>`
         : this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${displayAncientEn}”</b>`
-          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${displayAncientZh}」</b>`;
+          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${escHtml(displayAncientEn)}”</b>`
+          : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${escHtml(displayAncientZh)}」</b>`;
 
       this._id('challenge-question').innerHTML =
         `<div>${promptHtml}</div>` +
-        `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${baseClue}${extraEventStr}</span></div>`;
+        `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${escHtml(baseClue + extraEventStr)}</span></div>`;
+    }
+
+    presentChallengeRound() {
+      const q = this.challenge;
+      this.grpChallenge.innerHTML = '';
+      q.answered = false;
+      q.finished = false;
+      q.pendingGuess = null;
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('is-challenge-answered');
+      if (this.hoverTip) {
+        this.hoverTip.classList.add('is-hidden');
+        this.hoverTip.classList.remove('is-interactive');
+      }
+      const defCam = this._getDefaultCamera();
+      if (
+        this.camera.w < defCam.w * 0.92 ||
+        Math.hypot(this.camera.x - defCam.x, this.camera.y - defCam.y) > 40
+      ) {
+        this.resetCamera();
+      }
+      const cur = q.deck[q.index];
+      let roundYear =
+        cur.settlement.focusYear !== undefined ? cur.settlement.focusYear : cur.dynasty.focusYear;
+      if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
+        roundYear = cur.settlement.appear;
+      }
+      if (cur.settlement.vanish !== undefined && roundYear > cur.settlement.vanish) {
+        roundYear = cur.settlement.vanish;
+      }
+      this.jumpToYear(this._clampYearToDynasty(cur.dynasty, roundYear));
+      this.grpSettlements.classList.add('is-hidden');
+      if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
+      this._id('challenge-result').classList.add('is-hidden');
+      this._renderChallengeQuestionText();
     }
 
     _previewLocatePin(svgX, svgY) {
@@ -6382,6 +6417,50 @@
         this.locale === 'en'
           ? `Confirm Pin ${SVG_ICONS.arrowRight}`
           : `确认落针 ${SVG_ICONS.arrowRight}`;
+      this._id('challenge-result').classList.remove('is-hidden');
+    }
+
+    _renderChallengeAnsweredVerdict() {
+      const q = this.challenge;
+      if (!q || !q.answered || q.index >= q.deck.length) return;
+      const cur = q.deck[q.index];
+      const km = q.lastKm || 0;
+      const pts = q.lastPts || 0;
+      const ansAncEn = cur.settlement.ancientEn
+        ? cur.settlement.ancientEn
+        : cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
+          ? this.trModernCity(cur.settlement.ancient)
+          : this.trTerm(cur.settlement.ancient);
+      const ansModEn = cur.settlement.modernEn || this.trModernCity(cur.settlement.modern);
+      const aLabelText =
+        this.locale === 'en'
+          ? `${ansAncEn} (${ansModEn})`
+          : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
+      if (this.grpChallenge) {
+        const textNode = this.grpChallenge.querySelector('text');
+        if (textNode) textNode.textContent = aLabelText;
+      }
+      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
+      const comment =
+        pts === 100
+          ? this.uiStr('verdict_100', '正中靶心！')
+          : pts >= 80
+            ? this.uiStr('verdict_80', '非常接近！')
+            : pts >= 55
+              ? this.uiStr('verdict_55', '方位基本正确。')
+              : pts > 0
+                ? this.uiStr('verdict_25', '稍有点远。')
+                : this.uiStr('verdict_0', '偏离较远。');
+
+      this._id('challenge-verdict').innerHTML =
+        this.locale === 'en'
+          ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${escHtml(ansAncEn)} (${escHtml(ansModEn)})`
+          : `${comment} 偏差 <b>${km} 公里</b>（+${pts} 分）· 答案：${escHtml(cur.settlement.ancient)}（今${escHtml(cur.settlement.modern)}）`;
+
+      this._id('act-next-round').innerHTML =
+        q.index + 1 >= q.deck.length
+          ? this.uiStr('quiz_see_result', '查看成绩')
+          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
       this._id('challenge-result').classList.remove('is-hidden');
     }
 
@@ -6415,6 +6494,8 @@
                 ? 25
                 : 0;
       q.score += pts;
+      q.lastKm = km;
+      q.lastPts = pts;
 
       const [ax, ay] = this.projector.toScreen(
         cur.settlement.coord[0],
@@ -6473,33 +6554,12 @@
           ? `${ansAncEn} (${ansModEn})`
           : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
       this._rescaleSvgTypography();
-
-      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
-      const comment =
-        pts === 100
-          ? this.uiStr('verdict_100', '正中靶心！')
-          : pts >= 80
-            ? this.uiStr('verdict_80', '非常接近！')
-            : pts >= 55
-              ? this.uiStr('verdict_55', '方位基本正确。')
-              : pts > 0
-                ? this.uiStr('verdict_25', '稍有点远。')
-                : this.uiStr('verdict_0', '偏离较远。');
-
-      this._id('challenge-verdict').innerHTML =
-        this.locale === 'en'
-          ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${ansAncEn} (${ansModEn})`
-          : `${comment} 偏差 <b>${km} 公里</b>（+${pts} 分）· 答案：${cur.settlement.ancient}（今${cur.settlement.modern}）`;
-
-      this._id('act-next-round').innerHTML =
-        q.index + 1 >= q.deck.length
-          ? this.uiStr('quiz_see_result', '查看成绩')
-          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
-      this._id('challenge-result').classList.remove('is-hidden');
+      this._renderChallengeAnsweredVerdict();
     }
 
     _finishChallenge() {
       const q = this.challenge;
+      q.finished = true;
       const total = q.deck.length * 100;
       const rank =
         q.score >= 850
@@ -6510,10 +6570,11 @@
               ? this.uiStr('title_400', '州郡从事 · 略通古今')
               : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');
 
+      this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
       this._id('challenge-question').innerHTML =
         this.locale === 'en'
-          ? `Challenge complete! Total score <b>${q.score} / ${total}</b> — Rank: <b>${rank}</b>`
-          : `挑战结束！总分 <b>${q.score} / ${total}</b> —— 封号：<b>「${rank}」</b>`;
+          ? `Challenge complete! Total score <b>${q.score} / ${total}</b> — Rank: <b>${escHtml(rank)}</b>`
+          : `挑战结束！总分 <b>${q.score} / ${total}</b> —— 封号：<b>「${escHtml(rank)}」</b>`;
       this._id('challenge-verdict').textContent = this.uiStr(
         'quiz_again_msg',
         '可再战一局，或关闭回到自由浏览。'
@@ -7304,8 +7365,8 @@
             const cycleTitle = this.locale === 'en' ? 'Try another figure' : '换一位人物示例';
             const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${kindLabel.person}`;
             li.innerHTML =
-              `<div><span class="sr-eg-pill">${egLabel}</span><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
-              `<span class="sr-right-meta"><span class="sr-tag">${tagText}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">↻</button></span>`;
+              `<div><span class="sr-eg-pill">${egLabel}</span><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
+              `<span class="sr-right-meta"><span class="sr-tag">${escHtml(tagText)}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">↻</button></span>`;
             const cycleBtn = li.querySelector('.sr-cycle-btn');
             if (cycleBtn) {
               cycleBtn.addEventListener('mousedown', (e) => {
@@ -7320,8 +7381,15 @@
                 searchInp.focus();
               });
             }
+            let samplePicked = false;
             const pickSample = (e) => {
               e.preventDefault();
+              if (samplePicked) return;
+              samplePicked = true;
+              setTimeout(() => {
+                samplePicked = false;
+              }, 250);
+              searchList.classList.add('is-hidden');
               this._selectSearchResult(sampleItem);
               searchInp.blur();
             };
@@ -7377,9 +7445,16 @@
                 ? 'Quiz ›'
                 : '古地名小试 ›';
             quizBtn.innerHTML = `<span id="lbl-challenge">${quizText}</span>`;
+            let quizPicked = false;
             const pickQuiz = (e) => {
               e.preventDefault();
               e.stopPropagation();
+              if (quizPicked) return;
+              quizPicked = true;
+              setTimeout(() => {
+                quizPicked = false;
+              }, 250);
+              searchList.classList.add('is-hidden');
               this._selectSearchResult(quizItem);
               searchInp.blur();
             };
@@ -7416,10 +7491,17 @@
           const subText = this.locale === 'en' ? item.subEn : item.subZh;
           const tagText = `${this.dynastyBadge(item.dynasty)} · ${kindLabel[item.kind] || ''}`;
           li.innerHTML =
-            `<div><span class="sr-main">${mainText}</span>${subText ? `<span class="sr-sub">${subText}</span>` : ''}</div>` +
-            `<span class="sr-tag">${tagText}</span>`;
+            `<div><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
+            `<span class="sr-tag">${escHtml(tagText)}</span>`;
+          let itemPicked = false;
           const pickItem = (e) => {
             e.preventDefault();
+            if (itemPicked) return;
+            itemPicked = true;
+            setTimeout(() => {
+              itemPicked = false;
+            }, 250);
+            searchList.classList.add('is-hidden');
             this._selectSearchResult(item);
             searchInp.blur();
           };
@@ -7450,6 +7532,7 @@
           }, 180);
         });
         searchInp.addEventListener('keydown', (e) => {
+          if (e.isComposing || e.keyCode === 229) return;
           if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && currentResults.length) {
             e.preventDefault();
             const step = e.key === 'ArrowDown' ? 1 : -1;
@@ -7651,8 +7734,13 @@
 
       this._id('act-autoplay').addEventListener('click', () => {
         if (this.challenge) return;
-        if (this.playing) this.stopAutoplay();
-        else this.startAutoplay();
+        if (this.activePerson) {
+          this.togglePersonAutoplay();
+        } else if (this.playing) {
+          this.stopAutoplay();
+        } else {
+          this.startAutoplay();
+        }
       });
 
       this._id('inp-year').addEventListener('change', (e) => {
@@ -7713,14 +7801,36 @@
           if (!a) return;
           try {
             const u = new URL(a.href, window.location.href);
+            const hasSpaParams =
+              u.searchParams.has('journey') ||
+              u.searchParams.has('person') ||
+              u.searchParams.has('year') ||
+              u.searchParams.has('trace') ||
+              u.searchParams.has('place');
+            if (!hasSpaParams) return;
             e.preventDefault();
             this._clearQuickSearchInput();
+            if (u.searchParams.has('person')) {
+              const st = u.searchParams.has('stop') ? Number(u.searchParams.get('stop')) : -1;
+              this.openPersonChronicle(
+                u.searchParams.get('person'),
+                Number.isNaN(st) ? -1 : st
+              );
+              return;
+            }
             if (u.searchParams.has('journey')) {
               const st = u.searchParams.has('stop') ? Number(u.searchParams.get('stop')) : -1;
               this.openJourneyAsPerson(
                 u.searchParams.get('journey'),
                 Number.isNaN(st) ? -1 : st
               );
+              return;
+            }
+            if (u.searchParams.has('place')) {
+              this.locate({
+                year: u.searchParams.has('year') ? u.searchParams.get('year') : undefined,
+                place: u.searchParams.get('place') || '',
+              });
               return;
             }
             if (u.searchParams.has('year')) {
@@ -7739,6 +7849,7 @@
 
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
+        if (e.isComposing || e.keyCode === 229) return;
         if ((e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) && e.target.tagName !== 'INPUT') {
           if (!this.challenge && searchInp) {
             e.preventDefault();
@@ -9126,33 +9237,51 @@
     }
 
     _inspectCoord(cLng, cLat, d, snap) {
+      const isEn = this.locale === 'en';
       const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
-      const modernProvince = eraHit.modernLoc.inModernChina ? eraHit.modernLoc.modernTitle : null;
+      const modernProvince = eraHit.modernLoc.inModernChina
+        ? isEn
+          ? this.trTerm(eraHit.modernLoc.modernTitle)
+          : eraHit.modernLoc.modernTitle
+        : null;
       const nearestCity = eraHit.near
         ? {
-            ancient: eraHit.near.s.ancient,
-            modern: eraHit.near.s.modern || '',
+            ancient: isEn ? this.trTerm(eraHit.near.s.ancient) : eraHit.near.s.ancient,
+            modern: isEn
+              ? this.trModernCity(eraHit.near.s.modern || '')
+              : eraHit.near.s.modern || '',
             distanceKm: Math.round(eraHit.near.km),
             ...(eraHit.near.s.isCapital ? { isCapital: true } : {}),
-            ...(eraHit.near.s.remark ? { remark: eraHit.near.s.remark } : {}),
+            ...(eraHit.near.s.remark
+              ? { remark: isEn ? this.trTerm(eraHit.near.s.remark) : eraHit.near.s.remark }
+              : {}),
           }
         : null;
-      const fmt = (item) =>
-        item.title +
-        (item.category && !item.title.endsWith(item.category) ? `(${item.category})` : '');
+      const fmt = (item) => {
+        if (isEn) {
+          const isEmigre = item.category === '侨州' || item.category === '侨郡';
+          return this.trTerm(item.title) + (isEmigre ? ' (Emigre)' : '');
+        }
+        return (
+          item.title +
+          (item.category && !item.title.endsWith(item.category) ? `(${item.category})` : '')
+        );
+      };
       const regions =
         d && d.key === 'prc'
           ? modernProvince
             ? [modernProvince]
             : []
           : Array.from(new Set(eraHit.regionObjs.map(fmt)));
+      const rawProvTitle = eraHit.modernLoc.inModernChina ? eraHit.modernLoc.modernTitle : null;
+      const rawNearAncient = eraHit.near && eraHit.near.s ? eraHit.near.s.ancient : '';
       const prefectures =
         d && d.key === 'prc'
-          ? modernProvince &&
+          ? rawProvTitle &&
             nearestCity &&
             nearestCity.distanceKm <= 25 &&
-            nearestCity.ancient &&
-            !modernProvince.startsWith(nearestCity.ancient)
+            rawNearAncient &&
+            !rawProvTitle.startsWith(rawNearAncient)
             ? [nearestCity.ancient]
             : []
           : Array.from(new Set(eraHit.prefObjs.map(fmt)));
@@ -9176,7 +9305,7 @@
       );
       const lore = this._resolvePlaceLoreBanner(cLng, cLat, matchedPass, identityModern, null);
       return {
-        polity: eraHit.polity,
+        polity: eraHit.polity ? (isEn ? this.trTerm(eraHit.polity) : eraHit.polity) : null,
         regions,
         prefectures,
         modernProvince,
@@ -9320,9 +9449,52 @@
       this._applyCamera(true);
     }
 
-    inspect({ year, place, lng, lat, zoom } = {}) {
+    inspect({ year, place, lng, lat, zoom, person, stop } = {}) {
+      const isEn = this.locale === 'en';
+      const personProfile = person ? this._resolvePersonProfile(person) : null;
+      const personEvents = personProfile ? this._collectPersonEvents(personProfile) : [];
+      const stopIdx =
+        stop !== undefined && stop !== null && stop !== '' && !Number.isNaN(Number(stop))
+          ? Number(stop)
+          : -1;
+      const activePersonEv =
+        personEvents.length > 0
+          ? personEvents[stopIdx >= 0 && stopIdx < personEvents.length ? stopIdx : 0]
+          : null;
+      const personPayload =
+        personProfile && personEvents.length > 0
+          ? {
+              key: personProfile.key,
+              zh: personProfile.zh,
+              en: personProfile.en,
+              courtesyZh: personProfile.courtesyZh || '',
+              courtesyEn: personProfile.courtesyEn || '',
+              span: personProfile.span,
+              stop: stopIdx,
+              totalEvents: personEvents.length,
+              events: personEvents.map((ev, i) => ({
+                index: i,
+                year: ev.year,
+                dynasty: isEn ? this.dynastyName(ev.dynasty) : ev.dynasty.title,
+                site: isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh,
+                modern: isEn
+                  ? ev.modernEn || this.trModernCity(ev.modernZh || '')
+                  : ev.modernZh || '',
+                coord: ev.coord,
+                text: isEn ? ev.textEn : ev.textZh,
+                ...(ev.quoteZh || ev.quoteEn
+                  ? { quote: isEn ? ev.quoteEn || ev.quoteZh : ev.quoteZh || ev.quoteEn }
+                  : {}),
+              })),
+            }
+          : null;
+
       const yearList = this._parseYearList(year);
-      const yr = yearList.length ? yearList[0] : this.year;
+      const yr = yearList.length
+        ? yearList[0]
+        : activePersonEv
+          ? this._clampYearToDynasty(activePersonEv.dynasty, activePersonEv.year)
+          : this.year;
       const dIdx = this._findDynastyIndex(yr);
       const d = this.dynasties[dIdx] || this.dynasties[0];
       const snapKey = this._resolveSnapKey(d, yr);
@@ -9346,14 +9518,15 @@
             ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
             : 0;
           totalKm += segKm;
+          const cleanPlace = /[<>]/.test(String(tok.place || '')) ? r.name : tok.place;
           route.push({
             step: route.length + 1,
             year: tok.year,
             era: this.formatEraLabel(tok.year, sd),
-            dynasty: sd.title,
-            place: tok.place,
-            resolvedName: r.name,
-            modern: r.modern || '',
+            dynasty: isEn ? this.dynastyName(sd) : sd.title,
+            place: cleanPlace,
+            resolvedName: isEn ? this.trTerm(r.name) : r.name,
+            modern: isEn ? this.trModernCity(r.modern || '') : r.modern || '',
             coord: [Number(r.lng.toFixed(4)), Number(r.lat.toFixed(4))],
             distanceFromPrevKm: segKm,
             ...info,
@@ -9365,6 +9538,7 @@
           const params = new URLSearchParams();
           params.set('year', isMultiYear ? route.map((s) => s.year).join(',') : String(first.year));
           params.set('place', route.map((s) => s.place).join(','));
+          if (isEn) params.set('lang', 'en');
           const basePath =
             typeof location !== 'undefined' ? `${location.origin}${location.pathname}` : '';
           return {
@@ -9373,8 +9547,8 @@
             era: this.formatEraLabel(first.year, d),
             dynasty: {
               key: d.key,
-              title: d.title,
-              seat: d.seat,
+              title: isEn ? this.dynastyName(d) : d.title,
+              seat: isEn ? this.dynastySeat(d) : d.seat,
               span: [d.fromYear, d.toYear],
             },
             place: route.map((s) => s.place).join(','),
@@ -9403,8 +9577,20 @@
         !Number.isNaN(Number(lng)) &&
         !Number.isNaN(Number(lat));
       const resolved = !hasExplicitCoord && singlePlace ? this.resolvePlace(singlePlace, singleYear) : null;
-      const cLng = hasExplicitCoord ? Number(lng) : resolved ? resolved.lng : null;
-      const cLat = hasExplicitCoord ? Number(lat) : resolved ? resolved.lat : null;
+      const cLng = hasExplicitCoord
+        ? Number(lng)
+        : resolved
+          ? resolved.lng
+          : activePersonEv && activePersonEv.coord
+            ? activePersonEv.coord[0]
+            : null;
+      const cLat = hasExplicitCoord
+        ? Number(lat)
+        : resolved
+          ? resolved.lat
+          : activePersonEv && activePersonEv.coord
+            ? activePersonEv.coord[1]
+            : null;
       const hasCoord = cLng !== null && cLat !== null;
 
       const info = hasCoord
@@ -9422,9 +9608,23 @@
         1,
         Math.min(8, Number(zoom) || (resolved && resolved.zoom) || (hasCoord ? 2.5 : this.camera.zoom))
       );
-      const placeLabel = singlePlace ? String(singlePlace).trim() : resolved ? resolved.name : '';
+      const rawPlaceStr = singlePlace ? String(singlePlace).trim() : '';
+      const placeLabel =
+        rawPlaceStr && !/[<>]/.test(rawPlaceStr)
+          ? rawPlaceStr
+          : resolved
+            ? resolved.name
+            : rawPlaceStr.replace(/[<>]/g, '').trim();
       const params = new URLSearchParams();
-      params.set('year', String(singleYear));
+      if (year !== undefined && year !== null && year !== '') {
+        params.set('year', String(singleYear));
+      } else if (!personPayload) {
+        params.set('year', String(singleYear));
+      }
+      if (personPayload) {
+        params.set('person', personPayload.key);
+        if (stopIdx >= 0) params.set('stop', String(stopIdx));
+      }
       if (placeLabel) params.set('place', placeLabel);
       if (hasExplicitCoord) {
         params.set('lng', Number(cLng).toFixed(2));
@@ -9433,6 +9633,7 @@
       if (zoom !== undefined) {
         params.set('zoom', Number(targetZoom.toFixed(2)));
       }
+      if (isEn) params.set('lang', 'en');
       const basePath =
         typeof location !== 'undefined' ? `${location.origin}${location.pathname}` : '';
 
@@ -9441,16 +9642,33 @@
         era: this.formatEraLabel(singleYear, d),
         dynasty: {
           key: d.key,
-          title: d.title,
-          seat: d.seat,
+          title: isEn ? this.dynastyName(d) : d.title,
+          seat: isEn ? this.dynastySeat(d) : d.seat,
           span: [d.fromYear, d.toYear],
         },
         place: placeLabel || null,
-        resolvedName: resolved ? resolved.name : null,
-        modern: resolved ? resolved.modern || '' : null,
+        resolvedName: resolved
+          ? isEn
+            ? this.trTerm(resolved.name)
+            : resolved.name
+          : activePersonEv
+            ? isEn
+              ? activePersonEv.siteEn || this.trTerm(activePersonEv.siteZh)
+              : activePersonEv.siteZh
+            : null,
+        modern: resolved
+          ? isEn
+            ? this.trModernCity(resolved.modern || '')
+            : resolved.modern || ''
+          : activePersonEv
+            ? isEn
+              ? activePersonEv.modernEn || this.trModernCity(activePersonEv.modernZh || '')
+              : activePersonEv.modernZh || ''
+            : null,
         coord: hasCoord ? [Number(cLng.toFixed(4)), Number(cLat.toFixed(4))] : null,
         zoom: Number(targetZoom.toFixed(2)),
         ...info,
+        ...(personPayload ? { person: personPayload } : {}),
         url: `${basePath}?${params.toString()}`,
       };
     }
@@ -9486,7 +9704,9 @@
         const stops = placeTokens
           .map((tok) => {
             const r = this.resolvePlace(tok.place, tok.year);
-            return r ? { query: tok.place, year: tok.year, ...r } : null;
+            if (!r) return null;
+            const cleanQuery = /[<>]/.test(String(tok.place || '')) ? r.name : tok.place;
+            return { query: cleanQuery, year: tok.year, ...r };
           })
           .filter(Boolean);
         if (stops.length >= 2) {
@@ -9525,18 +9745,20 @@
         this.camera = { x: tx - w * xFrac, y: ty - h * yFrac, w, h, zoom: z };
         this._applyCamera();
         this.closeMilestoneBalloon();
-        const rawTrim = singlePlace ? String(singlePlace).trim() : '';
+        const rawTrim = singlePlace
+          ? String(singlePlace).replace(/[<>]/g, '').trim()
+          : '';
         const useResolvedZh =
           this.locale !== 'en' &&
           resolved &&
           resolved.name &&
-          rawTrim &&
-          /^[a-z0-9'’‘`\-_.\s()]+$/i.test(rawTrim) &&
-          (resolved.kind !== 'gazetteer' ||
-            String(this._enDict(resolved.name) || '')
-              .toLowerCase()
-              .replace(/['’‘`\-_.\s]+/g, '') ===
-              rawTrim.toLowerCase().replace(/['’‘`\-_.\s]+/g, ''));
+          (rawTrim !== String(singlePlace || '').trim() ||
+            (/^[a-z0-9'’‘`\-_.\s()]+$/i.test(rawTrim) &&
+              (resolved.kind !== 'gazetteer' ||
+                String(this._enDict(resolved.name) || '')
+                  .toLowerCase()
+                  .replace(/['’‘`\-_.\s]+/g, '') ===
+                  rawTrim.toLowerCase().replace(/['’‘`\-_.\s]+/g, ''))));
         const pinLabel = useResolvedZh
           ? resolved.name
           : rawTrim || (resolved ? resolved.name : '');
@@ -9630,7 +9852,13 @@
           this._applyCamera();
         }
       }
-      if (q.has('year') || q.has('place') || (q.has('lng') && q.has('lat'))) {
+      if (
+        q.has('year') ||
+        q.has('place') ||
+        (q.has('lng') && q.has('lat')) ||
+        q.has('person') ||
+        q.has('journey')
+      ) {
         afterFullSnapshots(() => {
           if (typeof document === 'undefined' || !document.body || !document.createElement) return;
           let node = this._id('atlas-inspect-json');
@@ -9642,11 +9870,13 @@
           }
           node.textContent = JSON.stringify(
             this.inspect({
-              year: q.has('year') ? q.get('year') : this.year,
+              year: q.has('year') ? q.get('year') : undefined,
               place: q.get('place') || '',
               lng: q.has('lng') ? Number(q.get('lng')) : undefined,
               lat: q.has('lat') ? Number(q.get('lat')) : undefined,
               zoom: q.has('zoom') ? Number(q.get('zoom')) : undefined,
+              person: q.get('person') || q.get('journey') || undefined,
+              stop: q.has('stop') ? Number(q.get('stop')) : undefined,
             })
           );
         }, 40);

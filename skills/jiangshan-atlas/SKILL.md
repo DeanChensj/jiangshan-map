@@ -38,13 +38,15 @@ https://deanchen.me/jiangshan-map/?year=<YEAR>&place=<PLACE>
 
 - **Single site (0D pinpoint)**: `year=<INT>&place=<SITE>` in Chinese or English/Pinyin (e.g., `?year=1102&place=浔阳`, `?year=819&place=蓝关`, or `?year=819&place=Lantian+Pass&lang=en`).
 - **Multi-stop route (1D same-year / 4D multi-year trajectory)**: Pass comma-separated place names in chronological order (`place=剑外,巴峡,巫峡,襄阳,洛阳` with `year=763`, or `place=Huzhou,Huangzhou,Huizhou,Danzhou` with `year=1079,1080,1094,1097`). The atlas draws a curved crimson trajectory (`1` → `2` → `3`...), frames the camera bounding box, and lets the user click any numbered stop to jump to its year and open its 2,000-year administrative genealogy card.
+- **Person Chronicle (`person=<FIGURE>&stop=<INDEX>`)**: Opens the curated multi-stop life & poetry trajectory (`点人溯事`) for any of the 23 curated historical figures (`sushi`, `zhugeliang`, `huoqubing`, `libai`, `caocao`, `xinqiji`, `xuanzang`, `wangyangming`, `zhangqian`, `dufu`, `baijuyi`, `hanyu`, `liuyuxi`, `yuefei`, `wentianxiang`, `zhenghe`, `banzhao`, `wangzhaojun`, `wenji`, `mulan`, `liqingzhao`, `qinshihuang`, `xiangyu`) or any figure with ≥2 historical milestones in Chinese, English, or Pinyin (`?person=sushi` or `?person=sushi&stop=2`).
 - **Optional `hover=<PREFECTURE>`**: Highlights one 州/府/郡 polygon of that year's snapshot and pops its tooltip (`江州 · 属 宋 · 今：江西省`). Supports both Chinese and English/Pinyin prefecture titles **in that era** (`hover=江州` or `hover=Jiangzhou` in 1102, `hover=黄州` or `hover=Huangzhou` in 1083, `hover=应天府` or `hover=Yingtian Fu` in 1415). Pair with `place` so the camera frames the prefecture (`?year=1102&place=浔阳&hover=江州`).
-- **Optional `lang=en`**: Renders the English atlas UI when the user writes in English or asks for an English map (`place` and `hover` work in either Chinese or English/Pinyin, e.g., `?year=1082&place=Huangzhou&hover=Huangzhou&lang=en`).
+- **Optional `lang=en`**: Renders the English atlas UI when the user writes in English or asks for an English map (`place`, `person`, and `hover` work in either Chinese or English/Pinyin, e.g., `?year=1082&place=Huangzhou&hover=Huangzhou&lang=en`).
 
-Use `--inspect` to verify place resolution and retrieve structured historical metadata (regime, circuit/province, prefecture, modern province, `nearestCity` with `isCapital` and era-specific `remark`, `lore` with 2,400-year city/pass overview `tag`/`desc`/`tagEn`/`descEn`, and route distance) as JSON without needing to read a screenshot:
+Use `--inspect` to verify place or figure resolution and retrieve structured historical metadata (regime, circuit/province, prefecture, modern province, `nearestCity` with `isCapital` and era-specific `remark`, `lore` with 2,400-year city/pass overview `tag`/`desc`/`tagEn`/`descEn`, route distance, and `person` life events) as JSON without needing to read a screenshot:
 
 ```bash
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 --hover 江州 --inspect
+python3 skills/jiangshan-atlas/scripts/jiangshan.py --person sushi --stop 2 --inspect
 ```
 
 | User Prompt | Step 1: Historical & Geographic Deduction (先考据) | Step 2: Deep-Link URL (后构建 URL) |
