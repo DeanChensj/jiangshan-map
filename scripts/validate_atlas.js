@@ -3299,13 +3299,80 @@ function main() {
     );
   }
 
+  // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
+  {
+    ctrl.locale = 'en';
+    const enInsp = ctrl.inspect({ year: 819, place: 'Lantian Pass' });
+    assert.strictEqual(enInsp.dynasty.title, 'Tang');
+    assert.strictEqual(enInsp.polity, 'Tang');
+    assert(enInsp.regions.includes('Guannei Circuit'));
+    assert.strictEqual(enInsp.modernProvince, 'Shaanxi');
+    assert(enInsp.url.includes('lang=en'));
+
+    const personInsp = ctrl.inspect({ person: 'sushi', stop: 2 });
+    assert(
+      personInsp.person &&
+        personInsp.person.key === 'sushi' &&
+        personInsp.person.totalEvents >= 10 &&
+        personInsp.person.events[2].site === 'Dongjing Kaifeng' &&
+        personInsp.url.includes('person=sushi') &&
+        personInsp.url.includes('stop=2'),
+      `Expected English inspect({ person: 'sushi', stop: 2 }) to return localized person events, got ${JSON.stringify(personInsp.person)}`
+    );
+    ctrl.locale = 'zh';
+
+    const xssInspect = ctrl.inspect({
+      year: 741,
+      place: '长安<img src=x onerror=alert(1)>,洛阳',
+    });
+    assert(
+      xssInspect.route &&
+        xssInspect.route.length === 2 &&
+        !xssInspect.place.includes('<') &&
+        !xssInspect.route[0].place.includes('<'),
+      `Expected XSS angle brackets to be stripped from route place tokens, got ${JSON.stringify(xssInspect.place)}`
+    );
+
+    sandbox.setInterval = setInterval;
+    sandbox.clearInterval = clearInterval;
+    delete ctrl.stopAutoplay;
+    ctrl.activePerson = {
+      profile: ctrl._resolvePersonProfile('sushi'),
+      events: ctrl._collectPersonEvents(ctrl._resolvePersonProfile('sushi')),
+    };
+    ctrl.activePersonEventIdx = 0;
+    ctrl.selectPersonEvent = () => {};
+    ctrl.jumpToYear = () => {};
+    ctrl.closeMilestoneBalloon = () => {};
+    ctrl._syncAutoMilestoneBalloon = () => {};
+    ctrl.togglePersonAutoplay();
+    assert(ctrl.personTimer !== null && !ctrl.playing, 'Expected personTimer to start without timeline playing');
+    ctrl.startAutoplay();
+    assert(
+      ctrl.playing && ctrl.personTimer === null,
+      'Expected startAutoplay() to clear personTimer so both timers never run simultaneously'
+    );
+    ctrl.stopAutoplay();
+    assert(!ctrl.playing && ctrl.personTimer === null, 'Expected stopAutoplay() to clear both timers');
+    ctrl.activePerson = null;
+
+    assert(
+      !fs.existsSync(path.join(ROOT, '.github', 'workflows', 'validate.yml')),
+      'Duplicate validate.yml workflow must not exist'
+    );
+    assert(
+      appCode.includes('e.isComposing || e.keyCode === 229'),
+      'js/app.js keydown handlers must guard against IME composition events'
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 25 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 26 E2E CUJs`);
 }
 
 main();
