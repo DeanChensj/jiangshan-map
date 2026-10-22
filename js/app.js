@@ -7,6 +7,12 @@
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const RAD_TO_DEG = 180 / Math.PI;
   const DEG_TO_RAD = Math.PI / 180;
+  // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
+  const ERA_DYNASTY_PREFIXES = [
+    '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
+    '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
+    '北宋', '南宋', '蜀汉', '西夏', '汉', '魏', '吴', '隋', '唐', '辽', '金', '元', '明', '清',
+  ];
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -836,12 +842,7 @@
       const [startY, prefix, , monarchZh = ''] = sp;
       const numStr = this._toChineseEraNum(targetNum);
       if (startY >= -140 && startY < 1368 && monarchZh) {
-        const dynPrefixes = [
-          '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
-          '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
-          '北宋', '南宋', '蜀汉', '西夏', '汉', '魏', '吴', '隋', '唐', '辽', '金', '元',
-        ];
-        const dynPfx = dynPrefixes.find((dp) => prefix.startsWith(dp)) || '';
+        const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
         const eraName = dynPfx ? prefix.slice(dynPfx.length) : prefix;
         return `${monarchZh}·${eraName}${numStr}年`;
       }
@@ -7107,20 +7108,23 @@
       const isLatinQuery = qLower.length >= 3 && /[a-z]/i.test(qLower);
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
       const seenMonarchOnly = new Set();
+      const seenEraHit = new Set();
+      // [span, lastYear] for the reference track and every regional track, so regimes
+      // like Northern Wei (太和十八年) are searchable alongside the reference eras.
+      const eraSpans = [
+        ...spans.map((sp, idx) => [sp, idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948]),
+        ...HistoricalAtlasController.REGIONAL_ERA_TRACKS.flatMap((t) =>
+          t.spans.map((sp, idx) => [sp, idx + 1 < t.spans.length ? t.spans[idx + 1][0] - 1 : t.until])
+        ),
+      ];
 
-      spans.forEach((sp, idx) => {
+      eraSpans.forEach(([sp, endY]) => {
         const [startY, prefix, baseNum = 1, monarchZh = '', monarchEn = ''] = sp;
-        const endY = idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948;
         if (!prefixQ) return;
         const shortMonarch = monarchZh
           .replace(/^(?:西|东|北|南|南朝|武周)/, '')
           .replace(/^汉高帝$/, '汉高祖');
-        const dynPrefixes = [
-          '南朝宋', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
-          '北魏', '北齐', '北周', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
-          '北宋', '南宋', '汉', '魏', '隋', '唐', '元', '明', '清',
-        ];
-        const dynPfx = dynPrefixes.find((dp) => prefix.startsWith(dp)) || '';
+        const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
         const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
         const fullCombo = monarchZh ? `${monarchZh}${eraOnly}` : prefix;
         const shortCombo = shortMonarch ? `${shortMonarch}${eraOnly}` : prefix;
@@ -7133,18 +7137,26 @@
         const enDynBase = enDynShort.replace(/^[wens]\.\s*/, '');
         const enSearchTarget = `${monarchEnLower} ${monarchEnExpanded} ${monarchEnExpanded} of ${enDynShort} ${monarchEnExpanded} of ${enDynBase} ${monarchBare} of ${enDynBase}`;
 
-        const matchEra =
-          prefix.includes(prefixQ) ||
-          fullCombo.includes(prefixQ) ||
-          shortCombo.includes(prefixQ);
+        // A hit must reach past the regime name into the era or monarch title, so a bare
+        // regime ('北魏', '金', 'liao') does not list every era or emperor of that regime.
+        const reachesTail = (s, tailLen) => {
+          const at = s.lastIndexOf(prefixQ);
+          return at >= 0 && at + prefixQ.length > s.length - tailLen;
+        };
+        const monarchTitleLen =
+          dynPfx && monarchZh.startsWith(dynPfx) ? monarchZh.length - dynPfx.length : monarchZh.length;
+        const [enName, enOwnRegime = ''] = monarchEnExpanded.split(' of ');
+        const enRegimeOnly =
+          !enName.includes(qLower) && `${enOwnRegime} | ${enDynShort} | ${enDynBase}`.includes(qLower);
+        const matchEra = [prefix, fullCombo, shortCombo].some((s) => reachesTail(s, eraOnly.length));
         const matchMonarchOnly =
           !matchEra &&
           yearNum === null &&
           ((monarchZh &&
-            (monarchZh.includes(prefixQ) ||
-              shortMonarch.includes(prefixQ) ||
+            (reachesTail(monarchZh, monarchTitleLen) ||
+              reachesTail(shortMonarch, monarchTitleLen) ||
               (prefixQ === '汉高祖' && prefix === '汉高帝'))) ||
-            (isLatinQuery && enSearchTarget.includes(qLower)));
+            (isLatinQuery && !enRegimeOnly && enSearchTarget.includes(qLower)));
 
         if (matchEra || matchMonarchOnly) {
           const monarchDedupKey = monarchZh || monarchEnLower;
@@ -7165,6 +7177,9 @@
             const dIdx = this._findDynastyIndex(targetY);
             const d = this.dynasties[dIdx];
             const label = this._formatSpanEraZh(sp, targetNum);
+            // Regional tracks repeat some reference spans (e.g. Chen); list each era-year once.
+            if (seenEraHit.has(`${targetY}|${label}`)) return;
+            seenEraHit.add(`${targetY}|${label}`);
             const titleZh =
               startY >= 1368 && startY < 1912 && monarchZh
                 ? `${label} · ${monarchZh}`
