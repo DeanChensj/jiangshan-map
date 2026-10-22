@@ -1401,6 +1401,8 @@
             {
               'data-x': cx.toFixed(1),
               'data-y': cy.toFixed(1),
+              'data-base-x': cx.toFixed(1),
+              'data-base-y': cy.toFixed(1),
               class: 'neighbor-caption',
             },
             this.grpNeighbors
@@ -2536,9 +2538,9 @@
             : '悬停高亮周边政权 · 点击复位全图';
         const sw = document.createElement('i');
         sw.className = 'swatch';
-        sw.style.color = '#6e6256';
+        sw.style.color = '#7a4b2a';
         sw.style.borderStyle = 'dashed';
-        sw.style.background = 'rgba(138, 124, 107, 0.22)';
+        sw.style.background = 'rgba(168, 122, 76, 0.24)';
         entry.appendChild(sw);
         entry.appendChild(
           document.createTextNode(this.uiStr('leg_neighbor', '同期周边政权'))
@@ -5864,7 +5866,7 @@
 
       for (const node of polNodes) {
         const cssFontPx = node.classList.contains('neighbor')
-          ? 11.5
+          ? 14
           : node.classList.contains('protectorate')
             ? 12
             : node.classList.contains('rival')
@@ -5874,7 +5876,7 @@
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
         const ls = node.classList.contains('neighbor')
-          ? 1.2
+          ? 2.0
           : node.classList.contains('protectorate')
             ? 1.4
             : 3.2;
@@ -5936,6 +5938,68 @@
         node.setAttribute('data-y', bestY.toFixed(1));
         node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
         occupied.push(bestBox);
+      }
+
+      // Tier 2b: Modern neighboring country watermarks (dodge ancient polities/cities or hide when same-named historical polity is active)
+      const showPolities = !this.grpPolities.classList.contains('is-hidden');
+      const activePolityNames = new Set();
+      if (showPolities) {
+        for (const pNode of polNodes) {
+          if (pNode.dataset && pNode.dataset.polityTitle) {
+            activePolityNames.add(pNode.dataset.polityTitle);
+          }
+        }
+      }
+      const neighOffsets = [
+        [0, 0],
+        [0, 15],
+        [0, -15],
+        [18, 0],
+        [-18, 0],
+        [15, 13],
+        [-15, 13],
+        [15, -13],
+        [-15, -13],
+        [0, 24],
+        [0, -24],
+        [26, 0],
+        [-26, 0],
+      ];
+      if (this.grpNeighbors && typeof this.grpNeighbors.querySelectorAll === 'function') {
+        this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
+          const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
+          const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
+          if (isNaN(baseX) || isNaN(baseY)) return;
+          if (showPolities && node.dataset && node.dataset.rawName && activePolityNames.has(node.dataset.rawName)) {
+            node.classList.add('is-crowded-hidden');
+            return;
+          }
+          const hw = (this._estimateLocalTextWidth(node.textContent, 8.0, 0.8) * 0.5 + 4) * s;
+          const hh = 5.8 * s;
+          let bestX = baseX;
+          let bestY = baseY;
+          let bestBox = { x1: baseX - hw, y1: baseY - hh, x2: baseX + hw, y2: baseY + hh };
+          let bestOv = Infinity;
+          for (let i = 0; i < neighOffsets.length; i++) {
+            const [ox, oy] = neighOffsets[i];
+            const cx = baseX + ox * s;
+            const cy = baseY + oy * s;
+            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0004;
+            if (ov < bestOv) {
+              bestOv = ov;
+              bestX = cx;
+              bestY = cy;
+              bestBox = candBox;
+              if (ov < 0.05) break;
+            }
+          }
+          node.classList.remove('is-crowded-hidden');
+          node.setAttribute('data-x', bestX.toFixed(1));
+          node.setAttribute('data-y', bestY.toFixed(1));
+          node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
+          occupied.push(bestBox);
+        });
       }
 
       // Tier 3: Corridor captions (dodge or hide if colliding with city/polity labels)
