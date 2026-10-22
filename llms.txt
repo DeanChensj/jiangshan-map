@@ -69,7 +69,7 @@ For browser agents, Playwright scripts, or WebMCP integrations interacting with 
   Resolves a Chinese, English, or Pinyin ancient/modern city, poetic site, strategic pass, prefecture, or province name to `{ kind, name, modern, lng, lat, coord, zoom }` (or `null` if not found).
 - `window.atlasAPI.inspect({ year, place, zoom?, lng?, lat? })`:
   Read-only query that returns the historical context at `(year, place)` without moving the camera:
-  `{ year, era, dynasty, place, resolvedName, modern, coord, zoom, polity, regions, prefectures, modernProvince, nearestCity, lore, route, routeDistanceKm, url }` (where `nearestCity` includes `isCapital` and era-specific `remark`, and `lore` contains the 2,400-year city/pass overview `{ badge, tag, desc, tagEn, descEn }`).
+  `{ year, era, dynasty, place, resolvedName, modern, coord, zoom, polity, regions, prefectures, modernProvince, nearestCity, lore, route, routeDistanceKm, url }` (where `nearestCity` includes `isCapital` and era-specific `remark`, and `lore` contains the 2,400-year city/pass overview `{ badge, tag, desc, tagEn, descEn }`). In periods of co-existing regimes, `era` is the reign era of the regime ruling that place (e.g. `year=523` at 沃野镇 → `北魏孝明帝·正光四年`, while the timeline reference reads `南朝梁武帝·普通四年`).
 
 ## 3. Dynasty Timeline Coverage (`-403` to `2026`)
 

@@ -4914,6 +4914,7 @@ window.DYNASTY_DATA = [
       {
         "year": 546,
         "headline": "玉壁之战：西魏韦孝宽坚守五十日，挫败东魏高欢大军",
+        "eraRegime": "西魏",
         "site": "玉壁城（稷山）",
         "coord": [
           110.981,
@@ -4968,6 +4969,7 @@ window.DYNASTY_DATA = [
       {
         "year": 557,
         "headline": "陈霸先建陈；宇文觉建北周",
+        "eraRegime": "reference",
         "site": "建康",
         "coord": [
           118.801,
@@ -7708,6 +7710,7 @@ window.DYNASTY_DATA = [
       {
         "year": 936,
         "headline": "石敬瑭割燕云十六州予契丹，建后晋",
+        "eraRegime": "reference",
         "site": "幽州",
         "coord": [
           116.401,
@@ -8431,6 +8434,7 @@ window.DYNASTY_DATA = [
       {
         "year": 979,
         "headline": "宋太宗灭北汉结束十国分裂；高梁河之战北伐失利",
+        "eraRegime": "reference",
         "site": "高梁河（幽州城下）",
         "coord": [
           116.351,
@@ -8521,6 +8525,7 @@ window.DYNASTY_DATA = [
       {
         "year": 1044,
         "headline": "庆历和议（宋夏）",
+        "eraRegime": "reference",
         "site": "兴庆府",
         "coord": [
           106.271,
@@ -9566,6 +9571,7 @@ window.DYNASTY_DATA = [
       {
         "year": 1127,
         "headline": "赵构即位于南京应天府，南宋开始",
+        "eraRegime": "reference",
         "site": "南京应天府",
         "coord": [
           115.651,
@@ -9611,6 +9617,7 @@ window.DYNASTY_DATA = [
       {
         "year": 1141,
         "headline": "绍兴和议，以淮河—大散关为界",
+        "eraRegime": "reference",
         "site": "淮河一线",
         "coord": [
           116.501,
@@ -9629,6 +9636,7 @@ window.DYNASTY_DATA = [
       {
         "year": 1163,
         "headline": "宋孝宗隆兴北伐，次年订立隆兴和议",
+        "eraRegime": "reference",
         "site": "宿州 · 符离",
         "coord": [
           116.981,
@@ -9647,6 +9655,7 @@ window.DYNASTY_DATA = [
       {
         "year": 1194,
         "headline": "绍熙内禅赵汝愚拥立宋宁宗；同年黄河阳武决口夺泗入淮",
+        "eraRegime": "reference",
         "site": "临安 · 阳武 · 淮安",
         "coord": [
           117.18,

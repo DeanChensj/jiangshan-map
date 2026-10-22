@@ -733,6 +733,10 @@
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.CHINESE_ERA_SPANS) || [[-403, '周威烈王', 23]];
     }
 
+    static get REGIONAL_ERA_TRACKS() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.REGIONAL_ERA_TRACKS) || [];
+    }
+
     _toChineseEraNum(n) {
       if (n <= 1) return '元';
       const digits = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
@@ -770,14 +774,72 @@
       return match;
     }
 
+    /**
+     * Era span of the regime ruling `coord` in year `y` (or of the named `regime`) when
+     * that regime kept its own chronology, e.g. Northern Wei while CHINESE_ERA_SPANS
+     * follows the Southern Dynasties; null means the reference track applies.
+     */
+    _resolveRegionalEraSpan(y, dynasty, coord, regime = null) {
+      const yr = Math.round(y);
+      const tracks = HistoricalAtlasController.REGIONAL_ERA_TRACKS;
+      let track = null;
+      if (regime) {
+        track = tracks.find((t) => t.regime === regime);
+      } else {
+        if (!dynasty || !Array.isArray(coord) || !this.snapshots) return null;
+        const snap = this.snapshots[this._resolveSnapKey(dynasty, yr)];
+        if (!snap) return null;
+        let polity = this._polityAt(coord[0], coord[1], snap);
+        if (!polity || polity.role === 'neighbor') {
+          polity = this._nearestMainPolity(coord, snap) || polity;
+        }
+        track = polity && tracks.find((t) => t.polities.includes(polity.title) && yr >= t.spans[0][0] && yr <= t.until);
+      }
+      if (!track || yr < track.spans[0][0] || yr > track.until) return null;
+      let match = null;
+      for (const sp of track.spans) {
+        if (sp[0] <= yr) match = sp;
+      }
+      return match;
+    }
+
+    /**
+     * Schematic borders can leave frontier events (e.g. the Six Garrisons of 523) inside
+     * a neighboring steppe polity; take the snapshot's main regime if it lies on the
+     * nearest of four rings (25–100 km) around the point.
+     */
+    _nearestMainPolity([lng, lat], snap) {
+      const kmPerDegLng = 111.32 * Math.cos(lat * DEG_TO_RAD);
+      for (const km of [25, 50, 75, 100]) {
+        for (let i = 0; i < 12; i++) {
+          const a = (i / 12) * 2 * Math.PI;
+          const p = this._polityAt(lng + (km * Math.cos(a)) / kmPerDegLng, lat + (km * Math.sin(a)) / 110.57, snap);
+          if (p && p.role === 'main') return p;
+        }
+      }
+      return null;
+    }
+
+    /**
+     * Era label for a dated event (milestone): an explicit `eraRegime` ("reference" or a
+     * REGIONAL_ERA_TRACKS regime) wins over the regime ruling the event's location. The
+     * override covers events whose subject is not the regime holding that spot, e.g. a
+     * Song–Jin treaty pinned on the Jin side of the border.
+     */
+    _eventEraLabel(dynasty, ev) {
+      if (ev.eraRegime === 'reference') return this.formatEraLabel(ev.year, dynasty);
+      if (ev.eraRegime) return this.formatEraLabel(ev.year, dynasty, null, ev.eraRegime);
+      return this.formatEraLabel(ev.year, dynasty, ev.coord);
+    }
+
     _formatSpanEraZh(sp, targetNum) {
       const [startY, prefix, , monarchZh = ''] = sp;
       const numStr = this._toChineseEraNum(targetNum);
       if (startY >= -140 && startY < 1368 && monarchZh) {
         const dynPrefixes = [
-          '南朝宋', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
-          '北魏', '北齐', '北周', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
-          '北宋', '南宋', '汉', '魏', '隋', '唐', '元',
+          '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
+          '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
+          '北宋', '南宋', '蜀汉', '西夏', '汉', '魏', '吴', '隋', '唐', '辽', '金', '元',
         ];
         const dynPfx = dynPrefixes.find((dp) => prefix.startsWith(dp)) || '';
         const eraName = dynPfx ? prefix.slice(dynPfx.length) : prefix;
@@ -786,12 +848,18 @@
       return `${prefix}${numStr}年`;
     }
 
-    formatEraLabel(y, dynasty) {
+    /**
+     * Era label for year `y`. Without `coord` it follows the reference chronology
+     * (Zizhi Tongjian convention); with `coord` (or an explicit `regime`) it uses the
+     * era of the regime that ruled that place, when it has a REGIONAL_ERA_TRACKS entry.
+     */
+    formatEraLabel(y, dynasty, coord = null, regime = null) {
       const yr = Math.round(y);
+      const regional = coord || regime ? this._resolveRegionalEraSpan(yr, dynasty, coord, regime) : null;
       if (this.locale === 'en') {
         const dynName = dynasty ? this.dynastyName(dynasty) : '';
         if (yr >= 1912) return dynName;
-        const match = this._resolveEraSpan(yr, dynasty);
+        const match = regional || this._resolveEraSpan(yr, dynasty);
         const monarchEn = match && match[4];
         return monarchEn ? `${dynName} · ${monarchEn}` : dynName;
       }
@@ -801,7 +869,7 @@
         }
         return dynasty ? this.dynastyName(dynasty) : '现代';
       }
-      const match = this._resolveEraSpan(yr, dynasty);
+      const match = regional || this._resolveEraSpan(yr, dynasty);
       const [startY, , baseNum = 1] = match;
       const num = yr - startY + baseNum;
       return this._formatSpanEraZh(match, num);
@@ -2089,7 +2157,7 @@
         : '';
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${this.formatEraLabel(m.year, dynasty)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${this._eventEraLabel(dynasty, m)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}</div>`;
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
@@ -3956,6 +4024,16 @@
       return best;
     }
 
+    /** Polity containing the point, preferring Chinese regimes over peripheral neighbors. */
+    _polityAt(lng, lat, snap) {
+      const polities = (snap && snap.polities) || [];
+      return (
+        polities.find((p) => p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) ||
+        polities.find((p) => p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) ||
+        null
+      );
+    }
+
     _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall) {
       const loc = modernLoc || this._resolveModernLocationAt(lng, lat);
       const closest =
@@ -3968,20 +4046,8 @@
       if (d && d.key === 'prc') {
         polity = loc.inModernChina ? '中华人民共和国' : loc.modernTitle || null;
       } else if (snap) {
-        for (const p of snap.polities || []) {
-          if (p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
-            polity = p.title;
-            break;
-          }
-        }
-        if (!polity) {
-          for (const p of snap.polities || []) {
-            if (p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) {
-              polity = p.title;
-              break;
-            }
-          }
-        }
+        const hit = this._polityAt(lng, lat, snap);
+        polity = hit ? hit.title : null;
         for (const reg of snap.regions || []) {
           if (MercatorProjector.pointInShape(lng, lat, reg.shape)) regionObjs.push(reg);
         }
@@ -8173,7 +8239,7 @@
             return;
           }
         } else if (milestoneEl && !settlementNameEl && mHit) {
-          const eraPart = this.locale === 'en' ? '' : ` · ${this.formatEraLabel(mHit.year, cur)}`;
+          const eraPart = this.locale === 'en' ? '' : ` · ${this._eventEraLabel(cur, mHit)}`;
           const alreadyOpen =
             this.activeMilestone &&
             this.activeMilestone.dynastyKey === cur.key &&
@@ -9388,7 +9454,7 @@
           route.push({
             step: route.length + 1,
             year: tok.year,
-            era: this.formatEraLabel(tok.year, sd),
+            era: this.formatEraLabel(tok.year, sd, [r.lng, r.lat]),
             dynasty: isEn ? this.dynastyName(sd) : sd.title,
             place: cleanPlace,
             resolvedName: isEn ? this.trTerm(r.name) : r.name,
@@ -9410,7 +9476,7 @@
           return {
             year: first.year,
             years: route.map((s) => s.year),
-            era: this.formatEraLabel(first.year, d),
+            era: this.formatEraLabel(first.year, d, first.coord),
             dynasty: {
               key: d.key,
               title: isEn ? this.dynastyName(d) : d.title,
@@ -9505,7 +9571,7 @@
 
       return {
         year: singleYear,
-        era: this.formatEraLabel(singleYear, d),
+        era: this.formatEraLabel(singleYear, d, hasCoord ? [cLng, cLat] : null),
         dynasty: {
           key: d.key,
           title: isEn ? this.dynastyName(d) : d.title,
