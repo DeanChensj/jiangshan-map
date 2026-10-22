@@ -3572,13 +3572,96 @@ function main() {
     Object.assign(ctrl, { locale: 'zh', playing: false, activeMilestone: null });
   }
 
+  // CUJ 29: Scrubber drag — pointermove bursts coalesce via requestAnimationFrame, unchanged
+  // years are skipped, pointerup flushes a pending frame, and pointercancel drops it.
+  {
+    const proto = ControllerClass.prototype;
+    let rafFn = null;
+    let rafSeq = 0;
+    const cancelled = new Set();
+    sandbox.requestAnimationFrame = (fn) => {
+      rafFn = fn;
+      return ++rafSeq;
+    };
+    sandbox.cancelAnimationFrame = (id) => {
+      cancelled.add(id);
+      rafFn = null;
+    };
+    const flushRaf = () => {
+      const fn = rafFn;
+      rafFn = null;
+      if (fn) fn();
+    };
+    const handlers = {};
+    let rectReads = 0;
+    const track = {
+      addEventListener(type, fn) {
+        handlers[type] = fn;
+      },
+      setPointerCapture() {},
+      getBoundingClientRect() {
+        rectReads++;
+        return { left: 0, width: 1000 };
+      },
+    };
+    const jumps = [];
+    Object.assign(ctrl, {
+      challenge: null,
+      year: ctrl.minYear,
+      _recordGestureClick: () => {},
+      stopAutoplay: () => {},
+      _clearQuickSearchInput: () => {},
+      jumpToYear(y) {
+        this.year = y;
+        jumps.push(y);
+      },
+    });
+    proto._bindScrubberDrag.call(ctrl, track);
+
+    // 1. pointerdown always jumps (even if already on that year); same year on pointermove is skipped.
+    handlers.pointerdown({ pointerId: 1, clientX: 500 });
+    assert.strictEqual(jumps.length, 1, 'pointerdown must jump immediately');
+    handlers.pointerdown({ pointerId: 1, clientX: 500 });
+    assert.strictEqual(jumps.length, 2, 'pointerdown on the current year must still run jumpToYear');
+    const y500 = ctrl.year;
+    handlers.pointermove({ clientX: 500 });
+    flushRaf();
+    assert.strictEqual(jumps.length, 2, 'Unchanged year on pointermove must not re-run jumpToYear');
+
+    // 2. Burst of 8 pointermoves within one animation frame produces at most 1 jumpToYear.
+    for (const x of [510, 520, 530, 540, 550, 560, 570, 600]) {
+      handlers.pointermove({ clientX: x });
+    }
+    assert.strictEqual(jumps.length, 2, 'pointermove must defer to requestAnimationFrame');
+    flushRaf();
+    assert.strictEqual(jumps.length, 3, 'A burst of pointermoves in one frame must run jumpToYear once');
+    assert.strictEqual(ctrl.year, ctrl._progressToYear(0.6), 'Coalesced frame must land on the latest pointer X');
+    assert.strictEqual(rectReads, 2, 'Track bounding rect must be cached across each drag gesture');
+
+    // 3. pointerup flushes an un-rendered pointermove synchronously and cancels its rAF.
+    handlers.pointermove({ clientX: 800 });
+    const pendingId = rafSeq;
+    handlers.pointerup({});
+    assert(cancelled.has(pendingId) && rafFn === null, 'pointerup must cancel the pending rAF');
+    assert.strictEqual(ctrl.year, ctrl._progressToYear(0.8), 'pointerup must flush the final pointer position');
+    assert.notStrictEqual(y500, ctrl.year);
+
+    // 4. pointercancel drops a pending move without jumping.
+    handlers.pointerdown({ pointerId: 2, clientX: 200 });
+    const y200 = ctrl.year;
+    handlers.pointermove({ clientX: 900 });
+    handlers.pointercancel({});
+    flushRaf();
+    assert.strictEqual(ctrl.year, y200, 'pointercancel must discard any un-flushed move');
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 28 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 29 E2E CUJs`);
 }
 
 main();
