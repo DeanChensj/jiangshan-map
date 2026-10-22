@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+_snap_skill_tmp_*.html
+.DS_Store
