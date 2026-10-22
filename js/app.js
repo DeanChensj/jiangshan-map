@@ -2860,18 +2860,46 @@
       }
     }
 
-    closeGenealogyCard() {
-      const hadPerson = Boolean(this.activePerson);
+    _clearActiveTrace() {
       this.activeTrace = null;
       this.activeTraceLabel = '';
+      this.activeReturnPerson = null;
+      if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
+        this.grpSettlements
+          .querySelectorAll('.settlement-node.is-trace-city')
+          .forEach((el) => el.classList.remove('is-trace-city'));
+      }
+      this._syncTracedPrefecture();
+    }
+
+    _clearActivePerson() {
+      const hadTimer = Boolean(this.personTimer);
+      if (this.personTimer) {
+        clearInterval(this.personTimer);
+        this.personTimer = null;
+      }
+      if (hadTimer) this._updateAutoplayUi();
+      if (!this.activePerson) return;
       this.activePerson = null;
       this.activePersonEventIdx = -1;
-      this.activeReturnPerson = null;
       this._lastPersonPinZoom = 0;
+      if (this.grpJourney && !this.activeCustomRoute) {
+        this.grpJourney.innerHTML = '';
+      }
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-active-person');
       const kickerEl = this._id('txt-genealogy-kicker');
       if (kickerEl) {
         kickerEl.textContent = this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
       }
+      this._syncImmersivePaneState();
+      this._syncDocumentSeoMeta();
+    }
+
+    closeGenealogyCard() {
+      this._clearActiveTrace();
+      this._clearActivePerson();
       this.toggleGenealogySheetExpand(false);
       const cardEl = this._id('genealogy-card');
       if (cardEl) cardEl.classList.add('is-hidden');
@@ -2880,23 +2908,14 @@
         loreEl.innerHTML = '';
         loreEl.classList.add('is-hidden');
       }
-      if (this.personTimer) {
-        clearInterval(this.personTimer);
-        this.personTimer = null;
-      }
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('has-active-genealogy', 'has-active-person');
-      this._syncImmersivePaneState();
-      if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
-      if (hadPerson && this.grpJourney && !this.activeCustomRoute) {
-        this.grpJourney.innerHTML = '';
+      if (vf) vf.classList.remove('has-active-genealogy');
+      this._syncMobileOverlayState();
+      if (Array.isArray(this.activeCustomRoute) && this.customRouteStopIdx >= 0) {
+        this.customRouteStopIdx = -1;
+        this._drawCustomRouteOverlay(this.activeCustomRoute);
+        this._renderCustomRouteCard();
       }
-      if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
-        this.grpSettlements
-          .querySelectorAll('.settlement-node.is-trace-city')
-          .forEach((el) => el.classList.remove('is-trace-city'));
-      }
-      this._syncTracedPrefecture();
       if (this.activeMilestone) this._positionMilestoneBalloon();
     }
 
@@ -3146,18 +3165,10 @@
       this._recordGestureClick();
       this._dismissTraceOnboarding();
       this.stopAutoplay();
-      if (this.personTimer) {
-        clearInterval(this.personTimer);
-        this.personTimer = null;
-      }
       if (this.challenge) this.stopChallenge(true);
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
-
-      this.activeTrace = null;
-      this.activeTraceLabel = '';
-      this.activeReturnPerson = null;
-      if (this.grpGenealogy) this.grpGenealogy.innerHTML = '';
+      this._clearActiveTrace();
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
@@ -4172,22 +4183,10 @@
         this.activeReturnPerson = null;
       }
       this._dismissTraceOnboarding();
-      if (this.activePerson) {
-        if (this.personTimer) {
-          clearInterval(this.personTimer);
-          this.personTimer = null;
-        }
-        this.activePerson = null;
-        this.activePersonEventIdx = -1;
-        if (this.grpJourney && !this.activeCustomRoute) this.grpJourney.innerHTML = '';
-        const vfPerson = this._id('viewport-frame');
-        if (vfPerson) vfPerson.classList.remove('has-active-person');
-        const kickerEl = this._id('txt-genealogy-kicker');
-        if (kickerEl) {
-          kickerEl.textContent = this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
-        }
-        this._syncImmersivePaneState();
+      if (!fromYearSync && this.challenge) {
+        this.stopChallenge(true);
       }
+      this._clearActivePerson();
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
@@ -7526,6 +7525,56 @@
       }
     }
 
+    _closeLayersPopover() {
+      const layersPopover = this._id('layers-popover');
+      const layersBtn = this._id('act-layers-menu');
+      if (!layersPopover || layersPopover.classList.contains('is-hidden')) return false;
+      layersPopover.classList.add('is-hidden');
+      if (layersBtn) {
+        layersBtn.classList.remove('is-active');
+        layersBtn.setAttribute('aria-expanded', 'false');
+      }
+      return true;
+    }
+
+    // Dismiss the topmost active popover, sheet, or mode one layer at a time.
+    _dismissTopOverlay() {
+      if (this._closeLayersPopover()) return true;
+      if (this.playing || this.personTimer) {
+        this.stopAutoplay();
+        return true;
+      }
+      if (this.mobileChronicleOpen) {
+        this.toggleMobileChronicle(false);
+        return true;
+      }
+      const genCard = this._id('genealogy-card');
+      const genOpen =
+        Boolean(this.activePerson || this.activeTrace) ||
+        Boolean(genCard && !genCard.classList.contains('is-hidden'));
+      if (genOpen) {
+        this.closeGenealogyCard();
+        return true;
+      }
+      if (this.activeCustomRoute) {
+        this.clearCustomRoute();
+        return true;
+      }
+      if (this.challenge) {
+        this.stopChallenge();
+        return true;
+      }
+      if (
+        this.activeMilestone &&
+        this.milestoneBalloon &&
+        !this.milestoneBalloon.classList.contains('is-hidden')
+      ) {
+        this.closeMilestoneBalloon();
+        return true;
+      }
+      return false;
+    }
+
     // ---------------- Event Listeners ----------------
     _attachListeners() {
       // Quick Search box
@@ -7790,12 +7839,6 @@
       // Layer popover menu & checkboxes
       const layersBtn = this._id('act-layers-menu');
       const layersPopover = this._id('layers-popover');
-      const closeLayersPopover = () => {
-        if (!layersPopover || !layersBtn) return;
-        layersPopover.classList.add('is-hidden');
-        layersBtn.classList.remove('is-active');
-        layersBtn.setAttribute('aria-expanded', 'false');
-      };
       if (layersBtn && layersPopover) {
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -7818,7 +7861,7 @@
             layersBtn.classList.add('is-active');
             layersBtn.setAttribute('aria-expanded', 'true');
           } else {
-            closeLayersPopover();
+            this._closeLayersPopover();
           }
         });
         document.addEventListener('pointerdown', (e) => {
@@ -7827,7 +7870,7 @@
             !layersPopover.contains(e.target) &&
             !layersBtn.contains(e.target)
           ) {
-            closeLayersPopover();
+            this._closeLayersPopover();
           }
         });
       }
@@ -8131,14 +8174,7 @@
             this.startAutoplay();
           }
         } else if (e.key === 'Escape') {
-          closeLayersPopover();
-          this.closeMilestoneBalloon();
-          if (this.mobileChronicleOpen) this.toggleMobileChronicle(false);
-          else if (this.challenge) this.stopChallenge();
-          else if (this.activeCustomRoute) this.clearCustomRoute();
-          else if (!this._id('genealogy-card').classList.contains('is-hidden')) {
-            this.closeGenealogyCard();
-          }
+          this._dismissTopOverlay();
         }
       });
 
@@ -8614,6 +8650,7 @@
               if (this.personTimer) {
                 clearInterval(this.personTimer);
                 this.personTimer = null;
+                this._updateAutoplayUi();
               }
               this.selectPersonEvent(Number(journeyNodeEl.dataset.stopIdx), true);
               return;
@@ -9454,6 +9491,10 @@
 
     _renderCustomRoute(stops, explicitZoom) {
       if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return;
+      if (this.challenge) this.stopChallenge(true);
+      if (this.mobileChronicleOpen && this._isMobileViewport()) {
+        this.toggleMobileChronicle(false);
+      }
       this.closeMilestoneBalloon();
       if (this.activeCustomRoute !== stops) {
         this.closeGenealogyCard();
