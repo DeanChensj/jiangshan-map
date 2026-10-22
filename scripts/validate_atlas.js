@@ -1690,6 +1690,9 @@ function main() {
     'Closing mobile chronicle must remove is-mobile-chronicle-open and flip #act-toggle-pane back to 史志'
   );
   ctrl._id = prevIdFn;
+  delete ctrl.closeMilestoneBalloon;
+  delete ctrl.closeGenealogyCard;
+  delete ctrl._updateScaleBar;
 
   // CUJ 22: Complete English Dictionary Coverage, Boot Seed Parity & Non-Zero Oriented Fill Rule Guard
   assert(
@@ -3655,13 +3658,139 @@ function main() {
     assert.strictEqual(ctrl.year, y200, 'pointercancel must discard any un-flushed move');
   }
 
+  // CUJ 30: Layered top-down overlay dismissal (_dismissTopOverlay) & custom-route + stop-genealogy teardown.
+  {
+    const proto = ControllerClass.prototype;
+    const makeCls = (initial = []) => ({
+      _s: new Set(initial),
+      add(...cs) {
+        cs.forEach((c) => this._s.add(c));
+      },
+      remove(...cs) {
+        cs.forEach((c) => this._s.delete(c));
+      },
+      toggle(c, f) {
+        if (f === undefined ? !this._s.has(c) : f) this._s.add(c);
+        else this._s.delete(c);
+      },
+      contains(c) {
+        return this._s.has(c);
+      },
+    });
+    const layersPopover = { classList: makeCls() };
+    const layersBtn = { classList: makeCls(['is-active']), setAttribute() {} };
+    const genCard = { classList: makeCls() };
+    const vf = { classList: makeCls(['has-active-genealogy', 'has-active-journey']) };
+    const domMap = {
+      'layers-popover': layersPopover,
+      'act-layers-menu': layersBtn,
+      'genealogy-card': genCard,
+      'viewport-frame': vf,
+    };
+    let routeRedraws = 0;
+    let routeCleared = 0;
+    let challengeStopped = 0;
+    let balloonClosed = 0;
+    Object.assign(ctrl, {
+      _id: (id) => domMap[id] || null,
+      playing: true,
+      personTimer: null,
+      mobileChronicleOpen: true,
+      activePerson: null,
+      activeTrace: [108.94, 34.26],
+      activeTraceLabel: '长安',
+      activeReturnPerson: null,
+      activeCustomRoute: [
+        { lng: 108.94, lat: 34.26, coord: [108.94, 34.26], year: 755, name: '长安' },
+        { lng: 112.45, lat: 34.62, coord: [112.45, 34.62], year: 755, name: '洛阳' },
+      ],
+      customRouteStopIdx: 0,
+      challenge: { variant: 'locate', deck: [], index: 0, score: 0, answered: false },
+      activeMilestone: { dynastyKey: 'tang', milestone: { year: 755, coord: [108.94, 34.26] }, isAuto: true },
+      milestoneBalloon: { classList: makeCls() },
+      grpGenealogy: { innerHTML: '<g/>' },
+      grpSettlements: { querySelectorAll: () => [] },
+      grpPrefectures: { querySelectorAll: () => [] },
+      closeGenealogyCard: proto.closeGenealogyCard,
+      _clearActiveTrace: proto._clearActiveTrace,
+      _clearActivePerson: proto._clearActivePerson,
+      _closeLayersPopover: proto._closeLayersPopover,
+      _syncTracedPrefecture: () => {},
+      _syncDocumentSeoMeta: () => {},
+      _updateAutoplayUi: () => {},
+      stopAutoplay() {
+        this.playing = false;
+      },
+      toggleMobileChronicle(f) {
+        this.mobileChronicleOpen = Boolean(f);
+      },
+      _drawCustomRouteOverlay() {
+        routeRedraws++;
+      },
+      _renderCustomRouteCard() {},
+      clearCustomRoute() {
+        this.activeCustomRoute = null;
+        this.customRouteStopIdx = -1;
+        routeCleared++;
+      },
+      stopChallenge() {
+        this.challenge = null;
+        challengeStopped++;
+      },
+      closeMilestoneBalloon() {
+        this.activeMilestone = null;
+        this.milestoneBalloon.classList.add('is-hidden');
+        balloonClosed++;
+      },
+    });
+
+    // 1. Layers popover dismisses first.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert(layersPopover.classList.contains('is-hidden'), 'Step 1 must close #layers-popover');
+    assert.strictEqual(ctrl.playing, true, 'Closing #layers-popover must not stop autoplay');
+
+    // 2. Active autoplay stops next.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(ctrl.playing, false, 'Step 2 must stop autoplay');
+    assert.strictEqual(ctrl.mobileChronicleOpen, true, 'Stopping autoplay must not close mobile drawer');
+
+    // 3. Mobile chronicle drawer closes next.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(ctrl.mobileChronicleOpen, false, 'Step 3 must close mobile chronicle drawer');
+    assert(ctrl.activeTrace !== null, 'Closing mobile drawer must leave genealogy card intact');
+
+    // 4. Genealogy card on a custom-route stop closes first and resets customRouteStopIdx to -1
+    //    WITHOUT wiping the custom route itself.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(ctrl.activeTrace, null, 'Step 4 must close stop genealogy card');
+    assert(genCard.classList.contains('is-hidden'), '#genealogy-card must be hidden');
+    assert(Array.isArray(ctrl.activeCustomRoute), 'Custom route must remain active when stop genealogy closes');
+    assert.strictEqual(ctrl.customRouteStopIdx, -1, 'Closing stop genealogy must reset customRouteStopIdx to overview (-1)');
+    assert.strictEqual(routeRedraws, 1, 'Custom route overlay must redraw in overview state');
+
+    // 5. Next dismissal clears the custom route.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(ctrl.activeCustomRoute, null, 'Step 5 must clear custom route');
+    assert.strictEqual(routeCleared, 1);
+
+    // 6. Next dismissal exits challenge mode.
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(ctrl.challenge, null, 'Step 6 must stop challenge');
+    assert.strictEqual(challengeStopped, 1);
+
+    // 7. Next dismissal closes the milestone callout; subsequent call is a no-op (false).
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), true);
+    assert.strictEqual(balloonClosed, 1, 'Step 7 must close milestone callout');
+    assert.strictEqual(proto._dismissTopOverlay.call(ctrl), false, 'When all overlays are closed, _dismissTopOverlay must return false');
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 29 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 30 E2E CUJs`);
 }
 
 main();
