@@ -13,6 +13,14 @@
     '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
     '北宋', '南宋', '蜀汉', '西夏', '汉', '魏', '吴', '隋', '唐', '辽', '金', '元', '明', '清',
   ];
+  // Timeline autoplay: the playhead crosses the scrubber bar at a constant speed (each
+  // dynasty gets time in proportion to its band width), lands on every milestone year,
+  // shows each callout for at least ~1 s, and holds on milestones that open a dynasty or
+  // are flagged isMapChange.
+  const AUTOPLAY_TICK_MS = 280;
+  const AUTOPLAY_FULL_RUN_MS = 9 * 60 * 1000;
+  const AUTOPLAY_MIN_SHOW_TICKS = 4;
+  const AUTOPLAY_HOLD_TICKS = Math.round(2500 / AUTOPLAY_TICK_MS);
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -260,17 +268,7 @@
 
       this.minYear = this.dynasties[0].fromYear;
       this.maxYear = this.dynasties[this.dynasties.length - 1].toYear;
-
-      const minSpan = 60;
-      this.bandWeights = this.dynasties.map((d) =>
-        Math.max(d.toYear - d.fromYear, minSpan)
-      );
-      this.totalBandWeight = this.bandWeights.reduce((acc, w) => acc + w, 0);
-      this.bandOffsets = [];
-      this.bandWeights.reduce((acc, w, i) => {
-        this.bandOffsets[i] = acc / this.totalBandWeight;
-        return acc + w;
-      }, 0);
+      this._initTimelineBands();
 
       this.locale =
         new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh';
@@ -282,6 +280,9 @@
       this.lastRenderedSnap = null;
       this.playing = false;
       this.playInterval = null;
+      this.playProgress = 0;
+      this.playHoldTicks = 0;
+      this.playShownTicks = 0;
       this.musicPlaying = false;
       this.musicTrackIdx = 0;
       this.musicAudio = null;
@@ -2053,7 +2054,6 @@
         (this.mobileChronicleOpen || (genCard && !genCard.classList.contains('is-hidden')));
       if (
         milestonesHidden ||
-        this.playing ||
         this.challenge ||
         this.activePerson ||
         mobileOverlayBusy
@@ -2081,6 +2081,22 @@
         (this.dismissedCalloutIds && this.dismissedCalloutIds.has(`${dynasty.key}:${activeIdx}`))
       ) {
         this.closeMilestoneBalloon();
+        return;
+      }
+      // Keep an auto callout that already shows this milestone instead of rebuilding it on
+      // every year step, so a tap that lands mid-playback still reaches its buttons.
+      const am = this.activeMilestone;
+      if (
+        am &&
+        am.isAuto &&
+        am.milestone === m &&
+        am.locale === this.locale &&
+        !this.milestoneBalloon.classList.contains('is-hidden')
+      ) {
+        this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
+          n.classList.toggle('is-active', Number(n.dataset.idx) === am.idx);
+        });
+        this._positionMilestoneBalloon();
         return;
       }
       this.openMilestoneBalloon(dynasty, m, { isAuto: true });
@@ -2136,6 +2152,7 @@
         idx: mIdx,
         year: this.year,
         isAuto,
+        locale: this.locale,
       };
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
         n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
@@ -4576,6 +4593,20 @@
       return 0;
     }
 
+    // Each dynasty gets a scrubber band proportional to its span, floored at 60 years.
+    _initTimelineBands() {
+      const minSpan = 60;
+      this.bandWeights = this.dynasties.map((d) =>
+        Math.max(d.toYear - d.fromYear, minSpan)
+      );
+      this.totalBandWeight = this.bandWeights.reduce((acc, w) => acc + w, 0);
+      this.bandOffsets = [];
+      this.bandWeights.reduce((acc, w, i) => {
+        this.bandOffsets[i] = acc / this.totalBandWeight;
+        return acc + w;
+      }, 0);
+    }
+
     _yearToProgress(y) {
       const idx = this._findDynastyIndex(y);
       const d = this.dynasties[idx];
@@ -4820,7 +4851,9 @@
         this._buildTerrainRivers();
         this._rescaleSvgTypography();
       }
-      if (this.activeMilestone && (this.activeMilestone.year !== y || this.activeMilestone.isAuto)) {
+      // Auto callouts are kept or replaced by _syncAutoMilestoneBalloon below.
+      const am = this.activeMilestone;
+      if (am && (am.isAuto ? this.activePerson : am.year !== y)) {
         this.closeMilestoneBalloon();
       }
       if (!this.activePerson) {
@@ -4977,15 +5010,58 @@
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
-      this.playInterval = setInterval(() => {
-        const cur = this.dynasties[this.dynastyIdx];
-        const delta = Math.max(1, Math.round((cur.toYear - cur.fromYear) / 140));
-        if (this.year >= this.maxYear) {
-          this.stopAutoplay();
+      this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+      this.playProgress = this._yearToProgress(this.year);
+      this.playHoldTicks = 0;
+      this.playShownTicks = AUTOPLAY_MIN_SHOW_TICKS;
+      this.playInterval = setInterval(() => this._autoplayTick(), AUTOPLAY_TICK_MS);
+    }
+
+    // Sorted milestone years the autoplay must land on, with the ones it holds on.
+    _autoplayStops() {
+      if (!this._autoplayStopList) {
+        const holdByYear = new Map();
+        for (const d of this.dynasties) {
+          for (const m of d.milestones || []) {
+            const y = this._clampYearToDynasty(d, m.year);
+            const opensDynasty = m.year === d.fromYear;
+            holdByYear.set(y, Boolean(holdByYear.get(y) || m.isMapChange || opensDynasty));
+          }
+        }
+        this._autoplayStopList = [...holdByYear]
+          .map(([year, hold]) => ({ year, hold }))
+          .sort((a, b) => a.year - b.year);
+      }
+      return this._autoplayStopList;
+    }
+
+    _autoplayTick() {
+      if (this.playHoldTicks > 0) {
+        this.playHoldTicks--;
+        return;
+      }
+      if (this.year >= this.maxYear) {
+        this.stopAutoplay();
+        return;
+      }
+      const step = AUTOPLAY_TICK_MS / AUTOPLAY_FULL_RUN_MS;
+      this.playShownTicks++;
+      this.playProgress += step;
+      let next = this.playProgress >= 1 ? this.maxYear : this._progressToYear(this.playProgress);
+      if (next === 0) next = 1;
+      if (next <= this.year) return;
+      const stop = this._autoplayStops().find((s) => s.year > this.year && s.year <= next);
+      if (stop) {
+        // Let the current callout stay readable before the next milestone replaces it.
+        if (this.playShownTicks < AUTOPLAY_MIN_SHOW_TICKS) {
+          this.playProgress -= step;
           return;
         }
-        this.jumpToYear(this.year + delta);
-      }, 280);
+        next = stop.year;
+        this.playShownTicks = stop.hold ? AUTOPLAY_MIN_SHOW_TICKS : 0;
+        if (stop.hold) this.playHoldTicks = AUTOPLAY_HOLD_TICKS;
+      }
+      this.jumpToYear(next);
     }
 
     stopAutoplay() {
@@ -7863,6 +7939,10 @@
       };
       track.addEventListener('pointerup', stopScrub);
       track.addEventListener('pointercancel', stopScrub);
+      // Touching the event callout ends autoplay, like any other input.
+      this.milestoneBalloon.addEventListener('pointerdown', () => {
+        if (this.playing) this.stopAutoplay();
+      });
       track.addEventListener('click', (e) => {
         if (this.challenge) return;
         this._clearQuickSearchInput();

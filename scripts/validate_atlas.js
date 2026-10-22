@@ -512,6 +512,7 @@ function main() {
       north: 55,
     }),
   });
+  ctrl._initTimelineBands();
 
   // CUJ 9a: 0D Single-Place Resolution & Exact-First Disambiguation (Poems, Passes, Battles, Cities)
   const languan819 = ctrl.inspect({ year: 819, place: '蓝关' });
@@ -3480,13 +3481,104 @@ function main() {
     ctrl.locale = 'zh';
   }
 
+  // CUJ 28: Timeline autoplay — constant playhead speed along the scrubber bar, lands on every
+  // milestone year, holds on dynasty openings and isMapChange milestones, and keeps the event
+  // callout while playing.
+  {
+    const proto = ControllerClass.prototype;
+    let tick = null;
+    sandbox.setInterval = (fn) => {
+      tick = fn;
+      return 1;
+    };
+    sandbox.clearInterval = () => {};
+    delete ctrl.stopAutoplay;
+    Object.assign(ctrl, { activePerson: null, challenge: null, personTimer: null });
+    ctrl.closeMilestoneBalloon = () => {};
+    ctrl._syncAutoMilestoneBalloon = () => {};
+    const visited = new Set();
+    ctrl.jumpToYear = function (y) {
+      this.year = y;
+      this.dynastyIdx = this._findDynastyIndex(y);
+      visited.add(y);
+    };
+    ctrl.year = ctrl.minYear;
+    ctrl.startAutoplay();
+    const stops = proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear);
+    const stopYears = new Set(stops.map((s) => s.year));
+    const yearTicks = new Map();
+    const movingTicks = dynasties.map(() => 0);
+    const landings = [];
+    let totalTicks = 0;
+    while (ctrl.playing && totalTicks < 20000) {
+      const [p0, y0] = [ctrl.playProgress, ctrl.year];
+      tick();
+      totalTicks++;
+      yearTicks.set(ctrl.year, (yearTicks.get(ctrl.year) || 0) + 1);
+      if (ctrl.playProgress > p0) movingTicks[ctrl._findDynastyIndex(ctrl.year)]++;
+      if (ctrl.year !== y0 && stopYears.has(ctrl.year)) landings.push(totalTicks);
+    }
+    assert(!ctrl.playing && ctrl.year === ctrl.maxYear, `Autoplay must stop at ${ctrl.maxYear}, got ${ctrl.year}`);
+
+    const missed = stops.filter((s) => !visited.has(s.year)).map((s) => s.year);
+    assert.strictEqual(missed.length, 0, `Autoplay skipped milestone years ${missed.slice(0, 8).join(', ')}`);
+    const shortest = Math.min(...landings.slice(1).map((t, i) => t - landings[i]));
+    assert(shortest >= 4, `Each autoplay callout must stay at least ~1 s, shortest was ${shortest} ticks`);
+    for (const s of stops.filter((x) => x.hold)) {
+      assert(yearTicks.get(s.year) >= 9, `Autoplay must hold ~2.5 s on map-change milestone ${s.year}`);
+    }
+    for (const y of [-221, 755, 1127]) {
+      assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
+    }
+
+    const moving = movingTicks.reduce((a, b) => a + b, 0);
+    assert(Math.abs(moving - (9 * 60 * 1000) / 280) < 40, `Autoplay full run should take ~9 min of ticks, got ${moving}`);
+    dynasties.forEach((d, i) => {
+      const expected = ctrl.bandWeights[i] / ctrl.totalBandWeight;
+      const share = movingTicks[i] / moving;
+      assert(
+        Math.abs(share - expected) / expected < 0.15,
+        `Autoplay time for ${d.key} must match its scrubber band (${(expected * 100).toFixed(1)}%), got ${(share * 100).toFixed(1)}%`
+      );
+    });
+
+    const tang = dynasties.find((d) => d.key === 'tang');
+    Object.assign(ctrl, {
+      playing: true,
+      year: 755,
+      dynastyIdx: dynasties.indexOf(tang),
+      activeMilestone: null,
+      dismissedCalloutIds: new Set(),
+      milestoneBalloon: {
+        innerHTML: '',
+        classList: { remove() {}, add() {}, contains: () => false },
+        querySelector: () => null,
+      },
+      grpMilestones: { querySelectorAll: () => [], classList: { contains: () => false } },
+      _positionMilestoneBalloon: () => {},
+      _highlightCurrentMilestone: () => {},
+    });
+    proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+    assert(
+      ctrl.activeMilestone && ctrl.activeMilestone.isAuto && ctrl.activeMilestone.milestone.year === 755,
+      'The event callout must follow the current milestone while autoplay runs'
+    );
+    ctrl.milestoneBalloon.innerHTML = 'unchanged';
+    proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+    assert.strictEqual(ctrl.milestoneBalloon.innerHTML, 'unchanged', 'An auto callout already showing the milestone must not be rebuilt');
+    ctrl.locale = 'en';
+    proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+    assert.notStrictEqual(ctrl.milestoneBalloon.innerHTML, 'unchanged', 'A locale switch must rebuild the auto callout');
+    Object.assign(ctrl, { locale: 'zh', playing: false, activeMilestone: null });
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 27 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 28 E2E CUJs`);
 }
 
 main();
