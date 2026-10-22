@@ -6871,6 +6871,7 @@
       for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
         const aliases = (g.aliases || []).map((a) => a.toLowerCase());
         const aliasSub = (g.aliases || []).slice(0, 3).join(' · ');
+        const asciiKeys = (g.asciiAliases || []).join(' ');
         const nameEn = this._enDict(g.name);
         const modEn = this._enModernCity(g.modern || '');
         entries.push({
@@ -6884,7 +6885,7 @@
           subZh: `今${g.modern}${aliasSub ? ' · ' + aliasSub : ''}`,
           titleEn: nameEn,
           subEn: modEn ? `Now ${modEn}` : '',
-          keywords: `${g.name} ${aliases.join(' ')} ${g.modern || ''} ${nameEn} ${modEn} 名胜 古迹 古战场`.toLowerCase(),
+          keywords: `${g.name} ${aliases.join(' ')} ${asciiKeys} ${g.modern || ''} ${nameEn} ${modEn} 名胜 古迹 古战场`.toLowerCase(),
         });
       }
 
@@ -8640,140 +8641,6 @@
         ...this.dynasties.filter((d) => d !== targetDyn),
       ];
 
-      const gazetteerPinyin = {
-        琵琶亭: [
-          'pipating',
-          'pipapavilion',
-          'xunyangtower',
-          'xunyanglou',
-          'mountlu',
-          'lushan',
-          'jiangzhou',
-          'xunyang',
-        ],
-        蓝田关: ['lantianguan', 'languan', 'lantian', 'lantianpass'],
-        赤壁: ['chibi', 'redcliffs', 'wulin'],
-        黄州: ['huangzhou', 'huangzhouredcliffs', 'dongporedcliffs'],
-        马嵬坡: ['maweipo', 'mawei', 'maweiyi', 'maweislope'],
-        白帝城: ['baidicheng', 'whiteemperorcity', 'kuizhou', 'qutangxia', 'fengjie'],
-        五丈原: ['wuzhangyuan', 'wuzhangplains', 'qishan'],
-        街亭: ['jieting', 'longxi'],
-        上方谷: ['shangfanggu', 'hulugu', 'xiegu'],
-        北固楼: ['beigulou', 'beiguting', 'beigupavilion', 'jingkou'],
-        乌衣巷: [
-          'wuyixiang',
-          'blackrobealley',
-          'vermilionbirdbridge',
-          'zhuqueqiao',
-          'qinhuai',
-          'qinhuaihe',
-          'fuzimiao',
-          'shitoucheng',
-          'stonecity',
-        ],
-        寒山寺: ['hanshansi', 'hanshantemple', 'maplebridge', 'fengqiao', 'gusu'],
-        桃花源: ['taohuayuan', 'peachblossomspring', 'wuling', 'wulingyuan'],
-        岳阳楼: ['yueyanglou', 'yueyangtower', 'dongtinghu', 'baling', 'yuezhou'],
-        黄鹤楼: ['huanghelou', 'yellowcranetower', 'xiakou', 'yingwuzhou'],
-        滕王阁: ['tengwangge', 'tengwangpavilion', 'hongdu', 'yuzhang', 'hongzhou'],
-        鹳雀楼: ['guanquelou', 'storktower', 'puzhou', 'zhongtiaoshan'],
-        兰亭: ['lanting', 'orchidpavilion', 'kuaiji', 'shaoxing'],
-        碎叶: ['suiye', 'suyab', 'tokmok'],
-        瓜洲渡: ['guazhoudu', 'guazhou', 'jingkou'],
-        采石矶: ['caishiji', 'caishi', 'niuzhu'],
-        天门山: ['tianmenshan', 'bowangshan'],
-        醉翁亭: ['zuiwengting', 'olddrunkardspavilion', 'langyashan', 'chuzhou'],
-        灞桥: ['baqiao', 'bashui', 'zheliu'],
-        渭城: ['weicheng', 'xianyang'],
-        孟津渡: ['mengjindu', 'mengjin'],
-        风陵渡: ['fenglingdu', 'fengling'],
-        西津渡: ['xijindu', 'jinlingdu'],
-        北邙山: ['beimangshan', 'beimang'],
-        长平: ['changping', 'gaoping', 'shangdang'],
-        大泽乡: ['dazexiang', 'qixian'],
-        巨鹿: ['julu', 'pingxiang'],
-        垓下: ['gaixia', 'lingbi'],
-        乌江亭: ['wujiangting', 'wujiang', 'wujiangpu', 'hezhou'],
-        白登: ['baideng', 'baidengshan'],
-        官渡: ['guandu', 'wuchao', 'zhongmu'],
-        逍遥津: ['xiaoyaojin', 'hefei'],
-        淝水: ['feishui', 'feiriver', 'bagongshan', 'shouchun', 'shouxian'],
-        陈桥驿: ['chenqiaoyi', 'chenqiao', 'fengqiu'],
-        朱仙镇: ['zhuxianzhen', 'zhuxian'],
-        钓鱼城: ['diaoyucheng', 'hezhou', 'hechuan'],
-        崖山: ['yashan', 'yamen', 'xinhui'],
-        土木堡: ['tumubao', 'tumu', 'huailai'],
-        卢沟桥: ['lugouqiao', 'lugoubridge', 'marcopolobridge', 'wanping'],
-        威海卫: ['weihaiwei', 'weihai', 'liugongdao'],
-        井冈山: ['jinggangshan', 'huangyangjie'],
-        牧野: ['muye', 'zhaoge', 'qixian'],
-        长勺: ['changshao', 'laiwu'],
-        桂陵: ['guiling', 'changyuan'],
-        马陵道: ['malingdao', 'maling', 'tancheng'],
-        崤山: ['xiaoshan', 'yaoshan'],
-        琅琊台: ['langyatai', 'langya'],
-        柏举: ['boju', 'macheng'],
-        井陉: ['jingxing', 'tumenguan'],
-        濡须口: ['ruxukou', 'ruxu', 'dongguan'],
-        虎牢: ['hulao', 'hulaoguan', 'hulaopass', 'sishuiguan'],
-        香积寺: ['xiangjisi'],
-        睢阳: ['suiyang', 'shangqiu'],
-        蔡州: ['caizhou', 'runan'],
-        野狐岭: ['yehuling'],
-        三峰山: ['sanfengshan', 'junzhou', 'yuzhou'],
-        鄱阳湖: ['poyanghu', 'poyanglake', 'lakepoyang', 'kangshan'],
-        台儿庄: ['taierzhuang'],
-        泰山: ['taishan', 'mounttai', 'mttai', 'daizong', 'dongyue'],
-        华山: ['huashan', 'mounthua', 'mthua', 'taihuashan', 'xiyue'],
-        嵩山: ['songshan', 'mountsong', 'mtsong', 'shaolinsi', 'zhongyue'],
-        衡山: ['hengshan', 'mountheng', 'mtheng', 'zhurongfeng', 'nanyue'],
-        恒山: ['hengshan', 'xuankongsi', 'beiyue'],
-        新野: ['xinye', 'bowangpo'],
-        樊城: ['fancheng', 'xiangyang'],
-        隆中: ['longzhong', 'gulongzhong'],
-        宛城: ['wancheng', 'wolonggang'],
-        梁山泊: ['liangshanpo', 'liangshan', 'mountliang', 'mtliang', 'shuiboliangshan'],
-        景阳冈: ['jingyanggang', 'yanggu'],
-        大名府: ['damingfu', 'daming'],
-        燕京: ['yanjing', 'xijinfu'],
-        汴梁: ['bianliang', 'bianjing', 'dongjing', 'kaifeng'],
-        风波亭: ['fengboting', 'yuewangmiao', 'xihu', 'westlake'],
-        三峡: ['sanxia', 'threegorges'],
-        巴峡: ['baxia', 'qutangxia'],
-        巫峡: ['wuxia', 'wushan'],
-        西陵峡: ['xilingxia', 'yichang'],
-        惶恐滩: ['huangkongtan', 'wanan'],
-        零丁洋: ['lingdingyang', 'lingding'],
-        终南山: ['zhongnanshan', 'zhongnan', 'taibaishan'],
-        瓜步: ['guabu', 'liuhe'],
-        乌苏里: ['wusuli', 'ussuri'],
-        宁古塔: ['ningguta', 'ningan'],
-        曲阜: ['qufu', 'kongmiao'],
-        景德镇: ['jingdezhen', 'changnan'],
-        苍山洱海: ['cangshanerhai', 'cangshan', 'erhai'],
-        天涯海角: ['tianyahaijiao', 'yazhou'],
-        楼兰: ['loulan', 'kroran', 'lopnur'],
-        轮台: ['luntai', 'bugur'],
-        居延海: ['juyanhai', 'juyan', 'ejin'],
-        燕然山: ['yanranshan', 'hangai', 'khangai'],
-        狼居胥: ['langjuxu', 'khentii'],
-        阴山: ['yinshan', 'yinmountains'],
-        玉门: ['yumen', 'yumenguan', 'jadegate'],
-        阳关: ['yangguan', 'yangpass'],
-        铁门关: ['tiemenguan', 'ironpass'],
-        天山: ['tianshan', 'bogda'],
-        昆仑山: ['kunlunshan', 'kunlun'],
-        祁连山: ['qilianshan', 'qilian', 'yanzhishan'],
-        贺兰山: ['helanshan', 'helan'],
-        黑水: ['heishui', 'amur', 'heilongjiang'],
-        澎湖: ['penghu', 'pescadores'],
-        钓鱼岛: ['diaoyudao', 'diaoyuislands'],
-        曾母暗沙: ['zengmuansha', 'jamesshoal'],
-        黄岩岛: ['huangyandao', 'scarboroughshoal'],
-        华容道: ['huarongdao', 'huarong'],
-        长坂坡: ['changbanpo', 'changban', 'dangyang'],
-      };
-
       const passModes = isAsciiQuery
         ? ['strict', 'folded', 'substring']
         : ['strict', 'substring'];
@@ -8979,8 +8846,7 @@
                   );
                 }
               }
-              const pyExtras = gazetteerPinyin[g.name] || [];
-              const allEn = [...enNames, ...pyExtras].filter(Boolean);
+              const allEn = [...enNames, ...(g.asciiAliases || [])].filter(Boolean);
               if (mode === 'strict') {
                 const qStrippedApos = normApos(qStripped);
                 matched = allEn.some(
