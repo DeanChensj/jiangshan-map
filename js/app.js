@@ -4628,6 +4628,67 @@
       return Math.round(d.fromYear + local * (d.toYear - d.fromYear));
     }
 
+    // Coalesce pointermove into one jumpToYear per animation frame and skip unchanged years.
+    _bindScrubberDrag(track) {
+      let scrubbing = false;
+      let trackRect = null;
+      let pendingX = null;
+      let rafId = null;
+      const cancelRaf = () => {
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        pendingX = null;
+      };
+      const scrubAt = (clientX, skipSameYear = true) => {
+        const r = trackRect && trackRect.width ? trackRect : track.getBoundingClientRect();
+        let y = Math.max(
+          this.minYear,
+          Math.min(this.maxYear, this._progressToYear((clientX - r.left) / r.width))
+        );
+        if (y === 0) y = this.year < 0 ? 1 : -1;
+        if (!skipSameYear || y !== this.year) this.jumpToYear(y);
+      };
+      track.addEventListener('pointerdown', (e) => {
+        if (this.challenge) return;
+        this._recordGestureClick();
+        this.stopAutoplay();
+        this._clearQuickSearchInput();
+        cancelRaf();
+        scrubbing = true;
+        trackRect = track.getBoundingClientRect();
+        track.setPointerCapture(e.pointerId);
+        scrubAt(e.clientX, false);
+      });
+      track.addEventListener('pointermove', (e) => {
+        if (!scrubbing) return;
+        pendingX = e.clientX;
+        if (rafId === null) {
+          rafId = requestAnimationFrame(() => {
+            rafId = null;
+            if (!scrubbing || pendingX === null) return;
+            const x = pendingX;
+            pendingX = null;
+            scrubAt(x);
+          });
+        }
+      });
+      track.addEventListener('pointerup', () => {
+        if (!scrubbing) return;
+        const x = pendingX;
+        cancelRaf();
+        scrubbing = false;
+        trackRect = null;
+        if (x !== null) scrubAt(x);
+      });
+      track.addEventListener('pointercancel', () => {
+        cancelRaf();
+        scrubbing = false;
+        trackRect = null;
+      });
+    }
+
     _buildScrubberBands() {
       const bands = this._id('dynasty-bands');
       const ticks = this._id('scrubber-ticks');
@@ -7917,28 +7978,7 @@
 
       // Scrubber dragging (smooth continuous scrubbing anywhere on the bar)
       const track = this._id('scrubber-track');
-      let scrubbing = false;
-      const scrubAt = (clientX) => {
-        const r = track.getBoundingClientRect();
-        this.jumpToYear(this._progressToYear((clientX - r.left) / r.width));
-      };
-      track.addEventListener('pointerdown', (e) => {
-        if (this.challenge) return;
-        this._recordGestureClick();
-        this.stopAutoplay();
-        this._clearQuickSearchInput();
-        scrubbing = true;
-        track.setPointerCapture(e.pointerId);
-        scrubAt(e.clientX);
-      });
-      track.addEventListener('pointermove', (e) => {
-        if (scrubbing) scrubAt(e.clientX);
-      });
-      const stopScrub = () => {
-        scrubbing = false;
-      };
-      track.addEventListener('pointerup', stopScrub);
-      track.addEventListener('pointercancel', stopScrub);
+      this._bindScrubberDrag(track);
       // Touching the event callout ends autoplay, like any other input.
       this.milestoneBalloon.addEventListener('pointerdown', () => {
         if (this.playing) this.stopAutoplay();
