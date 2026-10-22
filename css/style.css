@@ -392,6 +392,10 @@ h2 {
   pointer-events: none;
 }
 
+.terrain-edge-stop {
+  stop-color: var(--water-fill);
+}
+
 #grp-rivers {
   pointer-events: none;
 }
