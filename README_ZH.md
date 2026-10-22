@@ -173,4 +173,5 @@ python3 -m http.server 8000
 - **古琴雅乐录音**：Wikimedia Commons 公有领域古琴录音（《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》）。
 - **说明**：地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
 - **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
-- **开源协议**：**GPL-3.0**。
+- **开源协议**：采用 **GPL-3.0**（见 [LICENSE](LICENSE)）。Copyright © 2026 DeanChensj。
+  - **例外**：源自 CHGIS V6 与 Hartwell China Historical GIS 的府州郡政区边界及战国疆域数据，仍受其原始条款约束（仅限学术、非商业用途），不适用 GPL-3.0。
