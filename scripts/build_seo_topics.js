@@ -761,7 +761,7 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
     .map((m) => {
       const mk = `${d.key}:${m.year}`;
       const enPair = (enLocale.milestones && enLocale.milestones[mk]) || [];
-      const eraLabel = ctrl.formatEraLabel(m.year, d);
+      const eraLabel = ctrl._eventEraLabel(d, m);
       const mUrl = `${BASE_URL}/?year=${m.year}`;
       return `          <tr>
             <td><strong>${fmtYearShortZh(m.year)}年</strong><br/><small>${escHtml(eraLabel)}</small></td>

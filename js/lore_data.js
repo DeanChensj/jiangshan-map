@@ -1018,17 +1018,66 @@ window.ATLAS_LORE_DATA = {
     ],
     [
       477,
-      "北魏太和",
+      "南朝宋昇明",
       1,
-      "北魏孝文帝",
-      "Emp. Xiaowen of N. Wei"
+      "南朝宋顺帝",
+      "Emp. Shun of Liu Song"
     ],
     [
-      500,
-      "北魏景明",
+      479,
+      "南朝齐建元",
       1,
-      "北魏宣武帝",
-      "Emp. Xuanwu of N. Wei"
+      "南朝齐高帝",
+      "Emp. Gao of S. Qi"
+    ],
+    [
+      483,
+      "南朝齐永明",
+      1,
+      "南朝齐武帝",
+      "Emp. Wu of S. Qi"
+    ],
+    [
+      494,
+      "南朝齐隆昌",
+      1,
+      "南朝齐郁林王",
+      "Xiao Zhaoye of S. Qi"
+    ],
+    [
+      494,
+      "南朝齐延兴",
+      1,
+      "南朝齐海陵王",
+      "Xiao Zhaowen of S. Qi"
+    ],
+    [
+      494,
+      "南朝齐建武",
+      1,
+      "南朝齐明帝",
+      "Emp. Ming of S. Qi"
+    ],
+    [
+      498,
+      "南朝齐永泰",
+      1,
+      "南朝齐明帝",
+      "Emp. Ming of S. Qi"
+    ],
+    [
+      499,
+      "南朝齐永元",
+      1,
+      "南朝齐东昏侯",
+      "Xiao Baojuan of S. Qi"
+    ],
+    [
+      501,
+      "南朝齐中兴",
+      1,
+      "南朝齐和帝",
+      "Emp. He of S. Qi"
     ],
     [
       502,
@@ -1081,10 +1130,31 @@ window.ATLAS_LORE_DATA = {
     ],
     [
       550,
-      "北齐天保",
+      "南朝梁大宝",
       1,
-      "北齐文宣帝",
-      "Emp. Wenxuan of N. Qi"
+      "南朝梁简文帝",
+      "Emp. Jianwen of Liang"
+    ],
+    [
+      552,
+      "南朝梁承圣",
+      1,
+      "南朝梁元帝",
+      "Emp. Yuan of Liang"
+    ],
+    [
+      555,
+      "南朝梁绍泰",
+      1,
+      "南朝梁敬帝",
+      "Emp. Jing of Liang"
+    ],
+    [
+      556,
+      "南朝梁太平",
+      1,
+      "南朝梁敬帝",
+      "Emp. Jing of Liang"
     ],
     [
       557,
@@ -1102,10 +1172,17 @@ window.ATLAS_LORE_DATA = {
     ],
     [
       566,
-      "北周天和",
+      "南朝陈天康",
       1,
-      "北周武帝",
-      "Emp. Wu of N. Zhou"
+      "南朝陈文帝",
+      "Emp. Wen of Chen"
+    ],
+    [
+      567,
+      "南朝陈光大",
+      1,
+      "南朝陈废帝",
+      "Chen Bozong of Chen"
     ],
     [
       569,
@@ -1113,20 +1190,6 @@ window.ATLAS_LORE_DATA = {
       1,
       "南朝陈宣帝",
       "Emp. Xuan of Chen"
-    ],
-    [
-      572,
-      "北周建德",
-      1,
-      "北周武帝",
-      "Emp. Wu of N. Zhou"
-    ],
-    [
-      579,
-      "北周大象",
-      1,
-      "北周静帝",
-      "Emp. Jing of N. Zhou"
     ],
     [
       581,
@@ -2395,6 +2458,1332 @@ window.ATLAS_LORE_DATA = {
       "中华民国",
       "Republic of China"
     ]
+  ],
+  "REGIONAL_ERA_TRACKS": [
+    {
+      "regime": "蜀汉",
+      "polities": [
+        "蜀汉"
+      ],
+      "until": 263,
+      "spans": [
+        [
+          221,
+          "蜀汉章武",
+          1,
+          "蜀汉昭烈帝",
+          "Emp. Zhaolie of Shu Han"
+        ],
+        [
+          223,
+          "蜀汉建兴",
+          1,
+          "蜀汉后主",
+          "Liu Shan of Shu Han"
+        ],
+        [
+          238,
+          "蜀汉延熙",
+          1,
+          "蜀汉后主",
+          "Liu Shan of Shu Han"
+        ],
+        [
+          258,
+          "蜀汉景耀",
+          1,
+          "蜀汉后主",
+          "Liu Shan of Shu Han"
+        ],
+        [
+          263,
+          "蜀汉炎兴",
+          1,
+          "蜀汉后主",
+          "Liu Shan of Shu Han"
+        ]
+      ]
+    },
+    {
+      "regime": "孙吴",
+      "polities": [
+        "吴"
+      ],
+      "until": 280,
+      "spans": [
+        [
+          222,
+          "吴黄武",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          229,
+          "吴黄龙",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          232,
+          "吴嘉禾",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          238,
+          "吴赤乌",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          251,
+          "吴太元",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          252,
+          "吴神凤",
+          1,
+          "吴大帝",
+          "Emp. Da of Wu"
+        ],
+        [
+          252,
+          "吴建兴",
+          1,
+          "吴会稽王",
+          "Sun Liang of Wu"
+        ],
+        [
+          254,
+          "吴五凤",
+          1,
+          "吴会稽王",
+          "Sun Liang of Wu"
+        ],
+        [
+          256,
+          "吴太平",
+          1,
+          "吴会稽王",
+          "Sun Liang of Wu"
+        ],
+        [
+          258,
+          "吴永安",
+          1,
+          "吴景帝",
+          "Emp. Jing of Wu"
+        ],
+        [
+          264,
+          "吴元兴",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          265,
+          "吴甘露",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          266,
+          "吴宝鼎",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          269,
+          "吴建衡",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          272,
+          "吴凤凰",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          275,
+          "吴天册",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          276,
+          "吴天玺",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ],
+        [
+          277,
+          "吴天纪",
+          1,
+          "吴末帝",
+          "Sun Hao of Wu"
+        ]
+      ]
+    },
+    {
+      "regime": "北魏",
+      "polities": [
+        "北魏"
+      ],
+      "until": 534,
+      "spans": [
+        [
+          386,
+          "北魏登国",
+          1,
+          "北魏道武帝",
+          "Emp. Daowu of N. Wei"
+        ],
+        [
+          396,
+          "北魏皇始",
+          1,
+          "北魏道武帝",
+          "Emp. Daowu of N. Wei"
+        ],
+        [
+          398,
+          "北魏天兴",
+          1,
+          "北魏道武帝",
+          "Emp. Daowu of N. Wei"
+        ],
+        [
+          404,
+          "北魏天赐",
+          1,
+          "北魏道武帝",
+          "Emp. Daowu of N. Wei"
+        ],
+        [
+          409,
+          "北魏永兴",
+          1,
+          "北魏明元帝",
+          "Emp. Mingyuan of N. Wei"
+        ],
+        [
+          414,
+          "北魏神瑞",
+          1,
+          "北魏明元帝",
+          "Emp. Mingyuan of N. Wei"
+        ],
+        [
+          416,
+          "北魏泰常",
+          1,
+          "北魏明元帝",
+          "Emp. Mingyuan of N. Wei"
+        ],
+        [
+          424,
+          "北魏始光",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          428,
+          "北魏神䴥",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          432,
+          "北魏延和",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          435,
+          "北魏太延",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          440,
+          "北魏太平真君",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          451,
+          "北魏正平",
+          1,
+          "北魏太武帝",
+          "Emp. Taiwu of N. Wei"
+        ],
+        [
+          452,
+          "北魏兴安",
+          1,
+          "北魏文成帝",
+          "Emp. Wencheng of N. Wei"
+        ],
+        [
+          454,
+          "北魏兴光",
+          1,
+          "北魏文成帝",
+          "Emp. Wencheng of N. Wei"
+        ],
+        [
+          455,
+          "北魏太安",
+          1,
+          "北魏文成帝",
+          "Emp. Wencheng of N. Wei"
+        ],
+        [
+          460,
+          "北魏和平",
+          1,
+          "北魏文成帝",
+          "Emp. Wencheng of N. Wei"
+        ],
+        [
+          466,
+          "北魏天安",
+          1,
+          "北魏献文帝",
+          "Emp. Xianwen of N. Wei"
+        ],
+        [
+          467,
+          "北魏皇兴",
+          1,
+          "北魏献文帝",
+          "Emp. Xianwen of N. Wei"
+        ],
+        [
+          471,
+          "北魏延兴",
+          1,
+          "北魏孝文帝",
+          "Emp. Xiaowen of N. Wei"
+        ],
+        [
+          476,
+          "北魏承明",
+          1,
+          "北魏孝文帝",
+          "Emp. Xiaowen of N. Wei"
+        ],
+        [
+          477,
+          "北魏太和",
+          1,
+          "北魏孝文帝",
+          "Emp. Xiaowen of N. Wei"
+        ],
+        [
+          500,
+          "北魏景明",
+          1,
+          "北魏宣武帝",
+          "Emp. Xuanwu of N. Wei"
+        ],
+        [
+          504,
+          "北魏正始",
+          1,
+          "北魏宣武帝",
+          "Emp. Xuanwu of N. Wei"
+        ],
+        [
+          508,
+          "北魏永平",
+          1,
+          "北魏宣武帝",
+          "Emp. Xuanwu of N. Wei"
+        ],
+        [
+          512,
+          "北魏延昌",
+          1,
+          "北魏宣武帝",
+          "Emp. Xuanwu of N. Wei"
+        ],
+        [
+          516,
+          "北魏熙平",
+          1,
+          "北魏孝明帝",
+          "Emp. Xiaoming of N. Wei"
+        ],
+        [
+          518,
+          "北魏神龟",
+          1,
+          "北魏孝明帝",
+          "Emp. Xiaoming of N. Wei"
+        ],
+        [
+          520,
+          "北魏正光",
+          1,
+          "北魏孝明帝",
+          "Emp. Xiaoming of N. Wei"
+        ],
+        [
+          525,
+          "北魏孝昌",
+          1,
+          "北魏孝明帝",
+          "Emp. Xiaoming of N. Wei"
+        ],
+        [
+          528,
+          "北魏武泰",
+          1,
+          "北魏孝明帝",
+          "Emp. Xiaoming of N. Wei"
+        ],
+        [
+          528,
+          "北魏建义",
+          1,
+          "北魏孝庄帝",
+          "Emp. Xiaozhuang of N. Wei"
+        ],
+        [
+          528,
+          "北魏永安",
+          1,
+          "北魏孝庄帝",
+          "Emp. Xiaozhuang of N. Wei"
+        ],
+        [
+          530,
+          "北魏建明",
+          1,
+          "北魏长广王",
+          "Yuan Ye of N. Wei"
+        ],
+        [
+          531,
+          "北魏普泰",
+          1,
+          "北魏节闵帝",
+          "Emp. Jiemin of N. Wei"
+        ],
+        [
+          532,
+          "北魏太昌",
+          1,
+          "北魏孝武帝",
+          "Emp. Xiaowu of N. Wei"
+        ],
+        [
+          532,
+          "北魏永兴",
+          1,
+          "北魏孝武帝",
+          "Emp. Xiaowu of N. Wei"
+        ],
+        [
+          532,
+          "北魏永熙",
+          1,
+          "北魏孝武帝",
+          "Emp. Xiaowu of N. Wei"
+        ]
+      ]
+    },
+    {
+      "regime": "东魏",
+      "polities": [
+        "东魏"
+      ],
+      "until": 550,
+      "spans": [
+        [
+          534,
+          "东魏天平",
+          1,
+          "东魏孝静帝",
+          "Emp. Xiaojing of E. Wei"
+        ],
+        [
+          538,
+          "东魏元象",
+          1,
+          "东魏孝静帝",
+          "Emp. Xiaojing of E. Wei"
+        ],
+        [
+          539,
+          "东魏兴和",
+          1,
+          "东魏孝静帝",
+          "Emp. Xiaojing of E. Wei"
+        ],
+        [
+          543,
+          "东魏武定",
+          1,
+          "东魏孝静帝",
+          "Emp. Xiaojing of E. Wei"
+        ]
+      ]
+    },
+    {
+      "regime": "西魏",
+      "polities": [
+        "西魏"
+      ],
+      "until": 556,
+      "spans": [
+        [
+          535,
+          "西魏大统",
+          1,
+          "西魏文帝",
+          "Emp. Wen of W. Wei"
+        ],
+        [
+          552,
+          "西魏废帝",
+          1,
+          "",
+          "Emp. Fei of W. Wei"
+        ],
+        [
+          554,
+          "西魏恭帝",
+          1,
+          "",
+          "Emp. Gong of W. Wei"
+        ]
+      ]
+    },
+    {
+      "regime": "北齐",
+      "polities": [
+        "北齐"
+      ],
+      "until": 577,
+      "spans": [
+        [
+          550,
+          "北齐天保",
+          1,
+          "北齐文宣帝",
+          "Emp. Wenxuan of N. Qi"
+        ],
+        [
+          560,
+          "北齐乾明",
+          1,
+          "北齐废帝",
+          "Gao Yin of N. Qi"
+        ],
+        [
+          560,
+          "北齐皇建",
+          1,
+          "北齐孝昭帝",
+          "Emp. Xiaozhao of N. Qi"
+        ],
+        [
+          561,
+          "北齐太宁",
+          1,
+          "北齐武成帝",
+          "Emp. Wucheng of N. Qi"
+        ],
+        [
+          562,
+          "北齐河清",
+          1,
+          "北齐武成帝",
+          "Emp. Wucheng of N. Qi"
+        ],
+        [
+          565,
+          "北齐天统",
+          1,
+          "北齐后主",
+          "Gao Wei of N. Qi"
+        ],
+        [
+          570,
+          "北齐武平",
+          1,
+          "北齐后主",
+          "Gao Wei of N. Qi"
+        ],
+        [
+          576,
+          "北齐隆化",
+          1,
+          "北齐后主",
+          "Gao Wei of N. Qi"
+        ],
+        [
+          577,
+          "北齐承光",
+          1,
+          "北齐幼主",
+          "Gao Heng of N. Qi"
+        ]
+      ]
+    },
+    {
+      "regime": "北周",
+      "polities": [
+        "北周"
+      ],
+      "until": 581,
+      "spans": [
+        [
+          557,
+          "北周孝闵帝",
+          1,
+          "",
+          "Emp. Xiaomin of N. Zhou"
+        ],
+        [
+          557,
+          "北周明帝",
+          1,
+          "",
+          "Emp. Ming of N. Zhou"
+        ],
+        [
+          559,
+          "北周武成",
+          1,
+          "北周明帝",
+          "Emp. Ming of N. Zhou"
+        ],
+        [
+          561,
+          "北周保定",
+          1,
+          "北周武帝",
+          "Emp. Wu of N. Zhou"
+        ],
+        [
+          566,
+          "北周天和",
+          1,
+          "北周武帝",
+          "Emp. Wu of N. Zhou"
+        ],
+        [
+          572,
+          "北周建德",
+          1,
+          "北周武帝",
+          "Emp. Wu of N. Zhou"
+        ],
+        [
+          578,
+          "北周宣政",
+          1,
+          "北周武帝",
+          "Emp. Wu of N. Zhou"
+        ],
+        [
+          579,
+          "北周大成",
+          1,
+          "北周宣帝",
+          "Emp. Xuan of N. Zhou"
+        ],
+        [
+          579,
+          "北周大象",
+          1,
+          "北周静帝",
+          "Emp. Jing of N. Zhou"
+        ],
+        [
+          581,
+          "北周大定",
+          1,
+          "北周静帝",
+          "Emp. Jing of N. Zhou"
+        ]
+      ]
+    },
+    {
+      "regime": "西梁",
+      "polities": [
+        "西梁"
+      ],
+      "until": 587,
+      "spans": [
+        [
+          555,
+          "西梁大定",
+          1,
+          "西梁宣帝",
+          "Emp. Xuan of W. Liang"
+        ],
+        [
+          562,
+          "西梁天保",
+          1,
+          "西梁明帝",
+          "Emp. Ming of W. Liang"
+        ],
+        [
+          586,
+          "西梁广运",
+          1,
+          "西梁莒公",
+          "Xiao Cong of W. Liang"
+        ]
+      ]
+    },
+    {
+      "regime": "陈",
+      "polities": [
+        "陈"
+      ],
+      "until": 589,
+      "spans": [
+        [
+          557,
+          "南朝陈永定",
+          1,
+          "南朝陈武帝",
+          "Emp. Wu of Chen"
+        ],
+        [
+          560,
+          "南朝陈天嘉",
+          1,
+          "南朝陈文帝",
+          "Emp. Wen of Chen"
+        ],
+        [
+          566,
+          "南朝陈天康",
+          1,
+          "南朝陈文帝",
+          "Emp. Wen of Chen"
+        ],
+        [
+          567,
+          "南朝陈光大",
+          1,
+          "南朝陈废帝",
+          "Chen Bozong of Chen"
+        ],
+        [
+          569,
+          "南朝陈太建",
+          1,
+          "南朝陈宣帝",
+          "Emp. Xuan of Chen"
+        ],
+        [
+          583,
+          "南朝陈至德",
+          1,
+          "南朝陈后主",
+          "Chen Shubao of Chen"
+        ],
+        [
+          587,
+          "南朝陈祯明",
+          1,
+          "南朝陈后主",
+          "Chen Shubao of Chen"
+        ]
+      ]
+    },
+    {
+      "regime": "辽",
+      "polities": [
+        "契丹",
+        "辽"
+      ],
+      "until": 1125,
+      "spans": [
+        [
+          916,
+          "辽神册",
+          1,
+          "辽太祖",
+          "Emp. Taizu of Liao"
+        ],
+        [
+          922,
+          "辽天赞",
+          1,
+          "辽太祖",
+          "Emp. Taizu of Liao"
+        ],
+        [
+          926,
+          "辽天显",
+          1,
+          "辽太祖",
+          "Emp. Taizu of Liao"
+        ],
+        [
+          927,
+          "辽天显",
+          2,
+          "辽太宗",
+          "Emp. Taizong of Liao"
+        ],
+        [
+          938,
+          "辽会同",
+          1,
+          "辽太宗",
+          "Emp. Taizong of Liao"
+        ],
+        [
+          947,
+          "辽大同",
+          1,
+          "辽太宗",
+          "Emp. Taizong of Liao"
+        ],
+        [
+          947,
+          "辽天禄",
+          1,
+          "辽世宗",
+          "Emp. Shizong of Liao"
+        ],
+        [
+          951,
+          "辽应历",
+          1,
+          "辽穆宗",
+          "Emp. Muzong of Liao"
+        ],
+        [
+          969,
+          "辽保宁",
+          1,
+          "辽景宗",
+          "Emp. Jingzong of Liao"
+        ],
+        [
+          979,
+          "辽乾亨",
+          1,
+          "辽景宗",
+          "Emp. Jingzong of Liao"
+        ],
+        [
+          983,
+          "辽统和",
+          1,
+          "辽圣宗",
+          "Emp. Shengzong of Liao"
+        ],
+        [
+          1012,
+          "辽开泰",
+          1,
+          "辽圣宗",
+          "Emp. Shengzong of Liao"
+        ],
+        [
+          1021,
+          "辽太平",
+          1,
+          "辽圣宗",
+          "Emp. Shengzong of Liao"
+        ],
+        [
+          1031,
+          "辽景福",
+          1,
+          "辽兴宗",
+          "Emp. Xingzong of Liao"
+        ],
+        [
+          1032,
+          "辽重熙",
+          1,
+          "辽兴宗",
+          "Emp. Xingzong of Liao"
+        ],
+        [
+          1055,
+          "辽清宁",
+          1,
+          "辽道宗",
+          "Emp. Daozong of Liao"
+        ],
+        [
+          1065,
+          "辽咸雍",
+          1,
+          "辽道宗",
+          "Emp. Daozong of Liao"
+        ],
+        [
+          1075,
+          "辽大康",
+          1,
+          "辽道宗",
+          "Emp. Daozong of Liao"
+        ],
+        [
+          1085,
+          "辽大安",
+          1,
+          "辽道宗",
+          "Emp. Daozong of Liao"
+        ],
+        [
+          1095,
+          "辽寿昌",
+          1,
+          "辽道宗",
+          "Emp. Daozong of Liao"
+        ],
+        [
+          1101,
+          "辽乾统",
+          1,
+          "辽天祚帝",
+          "Emp. Tianzuo of Liao"
+        ],
+        [
+          1111,
+          "辽天庆",
+          1,
+          "辽天祚帝",
+          "Emp. Tianzuo of Liao"
+        ],
+        [
+          1121,
+          "辽保大",
+          1,
+          "辽天祚帝",
+          "Emp. Tianzuo of Liao"
+        ]
+      ]
+    },
+    {
+      "regime": "金",
+      "polities": [
+        "金",
+        "金（迁都汴京）"
+      ],
+      "until": 1234,
+      "spans": [
+        [
+          1115,
+          "金收国",
+          1,
+          "金太祖",
+          "Emp. Taizu of Jin"
+        ],
+        [
+          1117,
+          "金天辅",
+          1,
+          "金太祖",
+          "Emp. Taizu of Jin"
+        ],
+        [
+          1123,
+          "金天会",
+          1,
+          "金太宗",
+          "Emp. Taizong of Jin"
+        ],
+        [
+          1135,
+          "金天会",
+          13,
+          "金熙宗",
+          "Emp. Xizong of Jin"
+        ],
+        [
+          1138,
+          "金天眷",
+          1,
+          "金熙宗",
+          "Emp. Xizong of Jin"
+        ],
+        [
+          1141,
+          "金皇统",
+          1,
+          "金熙宗",
+          "Emp. Xizong of Jin"
+        ],
+        [
+          1149,
+          "金天德",
+          1,
+          "金海陵王",
+          "Wanyan Liang of Jin"
+        ],
+        [
+          1153,
+          "金贞元",
+          1,
+          "金海陵王",
+          "Wanyan Liang of Jin"
+        ],
+        [
+          1156,
+          "金正隆",
+          1,
+          "金海陵王",
+          "Wanyan Liang of Jin"
+        ],
+        [
+          1161,
+          "金大定",
+          1,
+          "金世宗",
+          "Emp. Shizong of Jin"
+        ],
+        [
+          1190,
+          "金明昌",
+          1,
+          "金章宗",
+          "Emp. Zhangzong of Jin"
+        ],
+        [
+          1196,
+          "金承安",
+          1,
+          "金章宗",
+          "Emp. Zhangzong of Jin"
+        ],
+        [
+          1201,
+          "金泰和",
+          1,
+          "金章宗",
+          "Emp. Zhangzong of Jin"
+        ],
+        [
+          1209,
+          "金大安",
+          1,
+          "金卫绍王",
+          "Wanyan Yongji of Jin"
+        ],
+        [
+          1212,
+          "金崇庆",
+          1,
+          "金卫绍王",
+          "Wanyan Yongji of Jin"
+        ],
+        [
+          1213,
+          "金至宁",
+          1,
+          "金卫绍王",
+          "Wanyan Yongji of Jin"
+        ],
+        [
+          1213,
+          "金贞祐",
+          1,
+          "金宣宗",
+          "Emp. Xuanzong of Jin"
+        ],
+        [
+          1217,
+          "金兴定",
+          1,
+          "金宣宗",
+          "Emp. Xuanzong of Jin"
+        ],
+        [
+          1222,
+          "金元光",
+          1,
+          "金宣宗",
+          "Emp. Xuanzong of Jin"
+        ],
+        [
+          1224,
+          "金正大",
+          1,
+          "金哀宗",
+          "Emp. Aizong of Jin"
+        ],
+        [
+          1232,
+          "金开兴",
+          1,
+          "金哀宗",
+          "Emp. Aizong of Jin"
+        ],
+        [
+          1232,
+          "金天兴",
+          1,
+          "金哀宗",
+          "Emp. Aizong of Jin"
+        ]
+      ]
+    },
+    {
+      "regime": "西夏",
+      "polities": [
+        "西夏"
+      ],
+      "until": 1227,
+      "spans": [
+        [
+          1038,
+          "西夏天授礼法延祚",
+          1,
+          "西夏景宗",
+          "Emp. Jingzong of W. Xia"
+        ],
+        [
+          1049,
+          "西夏延嗣宁国",
+          1,
+          "西夏毅宗",
+          "Emp. Yizong of W. Xia"
+        ],
+        [
+          1050,
+          "西夏天祐垂圣",
+          1,
+          "西夏毅宗",
+          "Emp. Yizong of W. Xia"
+        ],
+        [
+          1053,
+          "西夏福圣承道",
+          1,
+          "西夏毅宗",
+          "Emp. Yizong of W. Xia"
+        ],
+        [
+          1057,
+          "西夏奲都",
+          1,
+          "西夏毅宗",
+          "Emp. Yizong of W. Xia"
+        ],
+        [
+          1063,
+          "西夏拱化",
+          1,
+          "西夏毅宗",
+          "Emp. Yizong of W. Xia"
+        ],
+        [
+          1068,
+          "西夏乾道",
+          1,
+          "西夏惠宗",
+          "Emp. Huizong of W. Xia"
+        ],
+        [
+          1069,
+          "西夏天赐礼盛国庆",
+          1,
+          "西夏惠宗",
+          "Emp. Huizong of W. Xia"
+        ],
+        [
+          1075,
+          "西夏大安",
+          1,
+          "西夏惠宗",
+          "Emp. Huizong of W. Xia"
+        ],
+        [
+          1085,
+          "西夏天安礼定",
+          1,
+          "西夏惠宗",
+          "Emp. Huizong of W. Xia"
+        ],
+        [
+          1086,
+          "西夏天仪治平",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1090,
+          "西夏天祐民安",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1098,
+          "西夏永安",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1101,
+          "西夏贞观",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1114,
+          "西夏雍宁",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1119,
+          "西夏元德",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1127,
+          "西夏正德",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1135,
+          "西夏大德",
+          1,
+          "西夏崇宗",
+          "Emp. Chongzong of W. Xia"
+        ],
+        [
+          1140,
+          "西夏大庆",
+          1,
+          "西夏仁宗",
+          "Emp. Renzong of W. Xia"
+        ],
+        [
+          1144,
+          "西夏人庆",
+          1,
+          "西夏仁宗",
+          "Emp. Renzong of W. Xia"
+        ],
+        [
+          1149,
+          "西夏天盛",
+          1,
+          "西夏仁宗",
+          "Emp. Renzong of W. Xia"
+        ],
+        [
+          1170,
+          "西夏乾祐",
+          1,
+          "西夏仁宗",
+          "Emp. Renzong of W. Xia"
+        ],
+        [
+          1194,
+          "西夏天庆",
+          1,
+          "西夏桓宗",
+          "Emp. Huanzong of W. Xia"
+        ],
+        [
+          1206,
+          "西夏应天",
+          1,
+          "西夏襄宗",
+          "Emp. Xiangzong of W. Xia"
+        ],
+        [
+          1210,
+          "西夏皇建",
+          1,
+          "西夏襄宗",
+          "Emp. Xiangzong of W. Xia"
+        ],
+        [
+          1211,
+          "西夏光定",
+          1,
+          "西夏神宗",
+          "Emp. Shenzong of W. Xia"
+        ],
+        [
+          1223,
+          "西夏乾定",
+          1,
+          "西夏献宗",
+          "Emp. Xianzong of W. Xia"
+        ],
+        [
+          1226,
+          "西夏宝义",
+          1,
+          "西夏末主",
+          "Li Xian of W. Xia"
+        ]
+      ]
+    },
+    {
+      "regime": "蒙元",
+      "polities": [
+        "大蒙古国",
+        "元"
+      ],
+      "until": 1279,
+      "spans": [
+        [
+          1260,
+          "元中统",
+          1,
+          "元世祖",
+          "Kublai Khan (Shizu)"
+        ],
+        [
+          1264,
+          "元至元",
+          1,
+          "元世祖",
+          "Kublai Khan (Shizu)"
+        ]
+      ]
+    }
   ],
   "PLACE_LANDMARK_EVENTS": [
     {

@@ -3381,13 +3381,90 @@ function main() {
     );
   }
 
+  // CUJ 27: Era labels in periods of co-existing regimes — Zizhi Tongjian reference track + regional tracks by location
+  {
+    ctrl.locale = 'zh';
+    const dynByKey = (k) => dynasties.find((d) => d.key === k);
+    const dynOf = (y) => dynasties[ctrl._findDynastyIndex(y)];
+    const milestoneOf = (k, y, kw) => {
+      const m = dynByKey(k).milestones.find((x) => x.year === y && x.headline.includes(kw));
+      assert(m, `Missing ${k} milestone ${y} "${kw}"`);
+      return m;
+    };
+    const nanbei = dynByKey('nanbei');
+
+    for (let y = nanbei.fromYear; y < nanbei.toYear; y++) {
+      const sp = ctrl._resolveEraSpan(y, nanbei);
+      assert(sp[1].startsWith('南朝'), `Reference era for ${y} must follow the Southern Dynasties, got ${sp[1]}`);
+    }
+    assert.strictEqual(ctrl.formatEraLabel(479, nanbei), '南朝齐高帝·建元元年');
+    assert.strictEqual(ctrl.formatEraLabel(523, nanbei), '南朝梁武帝·普通四年');
+
+    const snapPolityTitles = new Set();
+    for (const s of Object.values(snapshots)) for (const p of (s && s.polities) || []) snapPolityTitles.add(p.title);
+    const regimes = new Set();
+    for (const t of loreData.REGIONAL_ERA_TRACKS) {
+      regimes.add(t.regime);
+      assert(t.polities.length && t.spans.length && t.until >= t.spans[0][0], `Malformed era track ${t.regime}`);
+      for (const title of t.polities) {
+        assert(snapPolityTitles.has(title), `Era track ${t.regime} polity "${title}" matches no snapshot polity`);
+      }
+      t.spans.forEach((sp, i) => {
+        assert(i === 0 || sp[0] >= t.spans[i - 1][0], `Era track ${t.regime} must be sorted at ${sp[1]}`);
+        assert(sp[0] <= t.until && typeof sp[4] === 'string' && sp[4].length >= 3, `Bad span ${JSON.stringify(sp)}`);
+      });
+      for (let y = t.spans[0][0]; y <= t.until; y++) {
+        const lbl = ctrl.formatEraLabel(y, dynOf(y), null, t.regime);
+        assert(/年$/.test(lbl) && !/undefined|NaN|·年/.test(lbl), `Bad ${t.regime} era label for ${y}: ${lbl}`);
+      }
+    }
+
+    for (const d of dynasties) {
+      for (const m of d.milestones || []) {
+        if (m.eraRegime !== undefined) {
+          assert(m.eraRegime === 'reference' || regimes.has(m.eraRegime), `Unknown eraRegime "${m.eraRegime}" on ${d.key} ${m.year}`);
+        }
+      }
+    }
+
+    for (const [k, y, kw, expected] of [
+      ['nanbei', 523, '六镇之乱', '北魏孝明帝·正光四年'],
+      ['sanguo', 221, '刘备在成都称帝', '蜀汉昭烈帝·章武元年'],
+      ['sanguo', 222, '夷陵之战', '吴大帝·黄武元年'],
+      ['nanbei', 479, '萧道成', '南朝齐高帝·建元元年'],
+      ['nanbei', 553, '尉迟迥', '西魏废帝二年'],
+      ['nanbei', 546, '玉壁之战', '西魏文帝·大统十二年'],
+      ['wudai', 916, '耶律阿保机', '辽太祖·神册元年'],
+      ['beisong', 1038, '元昊', '西夏景宗·天授礼法延祚元年'],
+      ['beisong', 1115, '完颜阿骨打', '金太祖·收国元年'],
+      ['beisong', 1104, '河湟开边', '北宋徽宗·崇宁三年'],
+      ['nansong', 1127, '赵构即位', '南宋高宗·建炎元年'],
+      ['nansong', 1141, '绍兴和议', '南宋高宗·绍兴十一年'],
+      ['nansong', 1275, '马可·波罗', '元世祖·至元十二年'],
+    ]) {
+      assert.strictEqual(ctrl._eventEraLabel(dynByKey(k), milestoneOf(k, y, kw)), expected, `${k} ${y} ${kw}`);
+    }
+
+    const frontier = loreData.PLACE_LANDMARK_EVENTS.find((lm) => lm.year === 523 && (lm.zh || '').includes('六镇乱起'));
+    assert(frontier, 'Missing 523 Six Garrisons landmark event');
+    assert.strictEqual(ctrl.formatEraLabel(523, nanbei, frontier.coord), '北魏孝明帝·正光四年');
+    assert.strictEqual(ctrl.inspect({ year: 523, lng: 109.5, lat: 40.95 }).era, '北魏孝明帝·正光四年');
+
+    ctrl.locale = 'en';
+    assert(
+      ctrl.formatEraLabel(523, nanbei, [109.5, 40.95]).endsWith('Emp. Xiaoming of N. Wei'),
+      'English era label must name the regime ruling the location'
+    );
+    ctrl.locale = 'zh';
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 26 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 27 E2E CUJs`);
 }
 
 main();
