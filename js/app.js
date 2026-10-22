@@ -2597,8 +2597,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 166 multi-stage territory snapshots, 442 milestones, 536 city landmarks, 20 strategic passes, and 100+ person chronicles.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、166幅多阶段历史疆域与州道政区快照、442条编年大事、536处城池地标、20座天下名关与百余位青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 166 multi-stage territory snapshots, 442 milestones, 571 city landmarks, 20 strategic passes, and 100+ person chronicles.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、166幅多阶段历史疆域与州道政区快照、442条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activePerson) {

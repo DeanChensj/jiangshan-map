@@ -9403,8 +9403,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "宁远→盛京（兴城沈阳）",
       "siteEn": "Ningyuan & Mukden (Shenyang)",
-      "zh": "努尔哈赤攻宁远受袁崇焕红夷大炮重创病逝",
-      "en": "After Nurhaci falls following the siege of Ningyuan, Hong Taiji succeeds as khan in Shenyang"
+      "zh": "努尔哈赤攻宁远受挫，同年八月病逝于沈阳近郊叆鸡堡",
+      "en": "Repulsed at Ningyuan, Nurhaci dies that August near Mukden (Shenyang)"
     },
     {
       "dynastyKey": "ming",
@@ -9799,8 +9799,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "东京开封府（今河南开封）",
       "siteEn": "Kaifeng Prefecture (Henan)",
-      "zh": "包拯权知开封府铁面弹劾权贵，京师号“关节不到，有阎罗包老”",
-      "en": "Incorruptible magistrate Bao Zheng impeaches powerful nobles in Kaifeng, earning legendary renown"
+      "zh": "包拯拜枢密副使，立朝刚毅，贵戚宦官为之敛手",
+      "en": "Bao Zheng is named Vice Commissioner of Military Affairs; nobles and eunuchs dread his rigor"
     },
     {
       "dynastyKey": "beisong",
@@ -10270,6 +10270,448 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Fuchun River, Fuyang (Zhejiang)",
       "zh": "八十二岁的“元四家”之首黄公望结庐富春江，绘成旷世《富春山居图》",
       "en": "Aged eighty-two, master painter Huang Gongwang completes Dwelling in the Fuchun Mountains scroll"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 757,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "杜甫困居叛军所陷长安赋《春望》“国破山河在”，夏潜奔凤翔",
+      "en": "Trapped in rebel-held Chang'an, Du Fu writes “Spring View”, then escapes to Fengxiang",
+      "month": 3
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 759,
+      "coord": [
+        105.72,
+        34.58
+      ],
+      "site": "秦州（今甘肃天水）",
+      "siteEn": "Qinzhou (Tianshui, Gansu)",
+      "zh": "杜甫途经新安石壕作“三吏”“三别”，秋弃官携家客居秦州",
+      "en": "Du Fu writes the “Three Officials” and “Three Partings”, then resigns and moves his family to Qinzhou",
+      "month": 7
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 763,
+      "coord": [
+        105.09,
+        31.09
+      ],
+      "site": "梓州（今四川三台）",
+      "siteEn": "Zizhou (Santai, Sichuan)",
+      "zh": "杜甫客居梓州闻官军收复河南河北，狂喜赋“便下襄阳向洛阳”",
+      "en": "In Zizhou, Du Fu hears the imperial army has retaken Henan and Hebei and writes his most joyous poem",
+      "month": 3
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 200,
+      "coord": [
+        113.98,
+        34.03
+      ],
+      "site": "许都（今河南许昌）",
+      "siteEn": "Xu (Xuchang, Henan)",
+      "zh": "关羽斩颜良报曹，尽封所赐拜书告辞，北奔袁营寻故主",
+      "en": "Having repaid Cao Cao by slaying Yan Liang, Guan Yu seals away Cao's gifts and leaves to rejoin Liu Bei",
+      "month": 8
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 215,
+      "coord": [
+        112.36,
+        28.55
+      ],
+      "site": "益阳（今湖南益阳）",
+      "siteEn": "Yiyang (Hunan)",
+      "zh": "鲁肃邀关羽于益阳“单刀俱会”争荆州，旋孙刘以湘水为界",
+      "en": "At Yiyang, Lu Su meets Guan Yu “each bearing only a sword”; Jing is then split along the Xiang River",
+      "month": 6
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 214,
+      "coord": [
+        106.55,
+        29.56
+      ],
+      "site": "江州（今重庆）",
+      "siteEn": "Jiangzhou (Chongqing)",
+      "zh": "张飞溯江破江州，生擒严颜，感其“断头将军”之节释为宾客",
+      "en": "Zhang Fei captures Jiangzhou and its governor Yan Yan, then frees him, moved by his refusal to yield",
+      "month": 5
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 221,
+      "coord": [
+        105.97,
+        31.58
+      ],
+      "site": "阆中（今四川阆中）",
+      "siteEn": "Langzhong (Sichuan)",
+      "zh": "张飞将率万人自阆中东伐孙吴，临发为帐下张达、范强所害",
+      "en": "About to lead 10,000 troops from Langzhong against Wu, Zhang Fei is murdered by his own officers",
+      "month": 6
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 195,
+      "coord": [
+        118.36,
+        31.71
+      ],
+      "site": "历阳（今安徽和县）",
+      "siteEn": "Liyang (He County, Anhui)",
+      "zh": "周瑜率兵资粮迎孙策于历阳，助其渡江连克秣陵、曲阿",
+      "en": "Zhou Yu brings troops and grain to Sun Ce at Liyang, helping him cross the Yangtze and take Moling and Qu'e"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 199,
+      "coord": [
+        116.57,
+        30.63
+      ],
+      "site": "皖城（今安徽潜山）",
+      "siteEn": "Wancheng (Qianshan, Anhui)",
+      "zh": "周瑜随孙策攻克皖城，孙策纳大乔、周瑜纳小乔",
+      "en": "Zhou Yu and Sun Ce capture Wancheng; Sun Ce weds the elder Qiao sister and Zhou Yu the younger",
+      "month": 11
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -218,
+      "coord": [
+        117.98,
+        34.1
+      ],
+      "site": "下邳圯桥（今江苏睢宁）",
+      "siteEn": "Xiapi Bridge (Suining, Jiangsu)",
+      "zh": "张良匿居下邳，于圯桥为老父三度纳履，得授《太公兵法》",
+      "en": "Hiding in Xiapi, Zhang Liang fetches an old man's shoe on a bridge and receives a book of strategy",
+      "month": 10
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -206,
+      "coord": [
+        106.92,
+        33.62
+      ],
+      "site": "褒斜栈道（今陕西留坝）",
+      "siteEn": "Baoxie Plank Road (Liuba, Shaanxi)",
+      "zh": "张良送刘邦入汉中，劝烧绝所过栈道以示无东归之意",
+      "en": "Seeing Liu Bang into Hanzhong, Zhang Liang urges him to burn the plank roads to reassure Xiang Yu",
+      "month": 4
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -99,
+      "coord": [
+        108.88,
+        34.3
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "司马迁为降匈奴的李陵辩护获罪，受腐刑后发愤续撰《史记》",
+      "en": "Sima Qian defends the defeated general Li Ling, suffers castration, and resolves to finish his history"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 819,
+      "coord": [
+        116.62,
+        23.66
+      ],
+      "site": "潮州（今广东潮州）",
+      "siteEn": "Chaozhou (Guangdong)",
+      "zh": "韩愈贬潮州刺史作《祭鳄鱼文》、释奴兴学，潮人名山水曰韩山韩江",
+      "en": "Exiled to Chaozhou, Han Yu writes “Address to the Crocodiles”; locals name the Han River after him",
+      "month": 8
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 822,
+      "coord": [
+        109.47,
+        31.02
+      ],
+      "site": "夔州（今重庆奉节）",
+      "siteEn": "Kuizhou (Fengjie, Chongqing)",
+      "zh": "夔州刺史刘禹锡采巴渝民歌作《竹枝词》“东边日出西边雨”",
+      "en": "As prefect of Kuizhou, Liu Yuxi turns Ba folk tunes into his “Bamboo Branch Songs”"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1101,
+      "coord": [
+        114.35,
+        34.8
+      ],
+      "site": "汴京（今河南开封）",
+      "siteEn": "Bianjing (Kaifeng, Henan)",
+      "zh": "李清照于汴京嫁赵明诚，夫妇典衣购碑、共治金石，词名初动京师",
+      "en": "Li Qingzhao marries Zhao Mingcheng in Kaifeng; the couple pawn clothes to buy rubbings and antiquities"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1627,
+      "coord": [
+        121.13,
+        41.1
+      ],
+      "site": "锦州（今辽宁锦州）",
+      "siteEn": "Jinzhou (Liaoning)",
+      "zh": "宁锦大捷：袁崇焕坐镇宁远、赵率教守锦州，击退皇太极",
+      "en": "Ningyuan–Jinzhou victory: Yuan Chonghuan and Zhao Shuaijiao repel Hong Taiji's assault",
+      "month": 5
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 980,
+      "coord": [
+        110.37,
+        31.05
+      ],
+      "site": "巴东（今湖北巴东）",
+      "siteEn": "Badong (Hubei)",
+      "zh": "十九岁的寇准进士及第知巴东，赋“野水无人渡，孤舟尽日横”",
+      "en": "Newly a jinshi at nineteen, Kou Zhun governs Badong and writes “a lone boat drifts all day long”"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -100,
+      "coord": [
+        108.88,
+        34.3
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "中郎将苏武持汉节出使匈奴，护送扣留的匈奴使者北归",
+      "en": "Palace general Su Wu sets out from Chang'an bearing the Han tally as envoy to the Xiongnu",
+      "month": 3
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -81,
+      "coord": [
+        108.88,
+        34.3
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "苏武持节十九载白发归长安，拜典属国，汉节旄尽落",
+      "en": "After nineteen years in captivity, a white-haired Su Wu returns to Chang'an, his envoy's tally bare",
+      "month": 2
+    },
+    {
+      "dynastyKey": "sui",
+      "year": 617,
+      "coord": [
+        113.03,
+        34.73
+      ],
+      "site": "洛口（今河南巩义）",
+      "siteEn": "Luokou (Gongyi, Henan)",
+      "zh": "魏征投瓦岗军首领李密，任元帅府文学参军掌记室",
+      "en": "Wei Zheng joins the Wagang rebel leader Li Mi at Luokou as his secretary"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 626,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "玄武门之变后李世民责问魏征，魏征从容直对，获擢为詹事主簿",
+      "en": "After the Xuanwu Gate coup, Wei Zheng answers Li Shimin's rebuke with candor and is promoted",
+      "month": 7
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 643,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "魏征病逝长安，唐太宗叹“以人为镜，可以明得失”，痛失一镜",
+      "en": "Wei Zheng dies; Emperor Taizong mourns that he has lost the “mirror” that showed his faults",
+      "month": 2
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 676,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "大理丞狄仁杰一年断决积案一万七千人，无一冤诉",
+      "en": "As judge of the Court of Revision, Di Renjie clears 17,000 backlogged cases in a year without complaint"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 692,
+      "coord": [
+        116.55,
+        29.9
+      ],
+      "site": "彭泽（今江西彭泽）",
+      "siteEn": "Pengze (Jiangxi)",
+      "zh": "狄仁杰遭来俊臣诬陷下狱，以帛书申冤得免，贬彭泽令",
+      "en": "Framed by Lai Junchen, Di Renjie smuggles out a plea on silk, escapes death and is demoted to Pengze"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 697,
+      "coord": [
+        115.25,
+        36.35
+      ],
+      "site": "魏州（今河北大名）",
+      "siteEn": "Weizhou (Daming, Hebei)",
+      "zh": "魏州刺史狄仁杰撤守归农安民，契丹闻风退去，百姓立生祠",
+      "en": "Prefect Di Renjie calms Weizhou as the Khitans retreat; grateful locals build him a living shrine"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 700,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "神都洛阳（今河南洛阳）",
+      "siteEn": "Shendu Luoyang (Henan)",
+      "zh": "狄仁杰卒于神都，生前荐张柬之、姚崇等，武则天叹“朝堂空矣”",
+      "en": "Di Renjie dies in Luoyang after recommending Zhang Jianzhi; Empress Wu weeps that “the court is empty”",
+      "month": 9
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1037,
+      "coord": [
+        119,
+        32.69
+      ],
+      "site": "天长（今安徽天长）",
+      "siteEn": "Tianchang (Anhui)",
+      "zh": "包拯知天长县，以“宰牛引告”之计智破割牛舌案",
+      "en": "Magistrate Bao Zheng of Tianchang cleverly unmasks a culprit who cut out a farmer's ox tongue"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1040,
+      "coord": [
+        112.47,
+        23.05
+      ],
+      "site": "端州（今广东肇庆）",
+      "siteEn": "Duanzhou (Zhaoqing, Guangdong)",
+      "zh": "包拯知端州，端砚岁贡之外不多取，任满“不持一砚归”",
+      "en": "Governing Duanzhou, home of famed inkstones, Bao Zheng leaves office without taking a single one"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -237,
+      "coord": [
+        108.71,
+        34.33
+      ],
+      "site": "咸阳（今陕西咸阳）",
+      "siteEn": "Xianyang (Shaanxi)",
+      "zh": "秦下逐客令，李斯上《谏逐客书》“泰山不让土壤”，秦王收回成命",
+      "en": "When Qin expels foreign advisers, Li Si's memorial persuades the King to revoke the order"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -208,
+      "coord": [
+        108.71,
+        34.33
+      ],
+      "site": "咸阳（今陕西咸阳）",
+      "siteEn": "Xianyang (Shaanxi)",
+      "zh": "李斯遭赵高诬陷腰斩咸阳，临刑叹“牵黄犬出上蔡东门”不可得",
+      "en": "Framed by Zhao Gao, Li Si is executed in Xianyang, longing to hunt hares with his son once more",
+      "month": 7
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1613,
+      "coord": [
+        121.1,
+        29.25
+      ],
+      "site": "天台山（今浙江天台）",
+      "siteEn": "Mount Tiantai (Zhejiang)",
+      "zh": "徐霞客游天台山写下游记开篇，首日五月十九日今为中国旅游日",
+      "en": "Xu Xiake explores Mount Tiantai and opens his travel diaries; that May 19 is now China Tourism Day",
+      "month": 5
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1618,
+      "coord": [
+        118.17,
+        30.13
+      ],
+      "site": "黄山（今安徽黄山）",
+      "siteEn": "Mount Huangshan (Anhui)",
+      "zh": "徐霞客再游黄山，攀登天都、莲花二峰，作《游黄山日后记》",
+      "en": "On his second Huangshan trip, Xu Xiake scales Tiandu and Lotus peaks and records the climb",
+      "month": 9
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1639,
+      "coord": [
+        98.49,
+        25.02
+      ],
+      "site": "腾越（今云南腾冲）",
+      "siteEn": "Tengyue (Tengchong, Yunnan)",
+      "zh": "徐霞客万里遐征西抵腾越，考察打鹰山火山与热泉",
+      "en": "Xu Xiake's great southwest journey reaches Tengyue, where he documents volcanic rock and hot springs",
+      "month": 4
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1641,
+      "coord": [
+        120.28,
+        31.92
+      ],
+      "site": "江阴（今江苏江阴）",
+      "siteEn": "Jiangyin (Jiangsu)",
+      "zh": "徐霞客病足归江阴故里而卒，遗游记六十余万字",
+      "en": "Crippled by illness, Xu Xiake dies at home in Jiangyin, leaving over 600,000 characters of travel notes",
+      "month": 3
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1057,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京开封府（今河南开封）",
+      "siteEn": "Kaifeng Prefecture (Henan)",
+      "zh": "包拯权知开封府，开正门许百姓直诉，京师号“关节不到，有阎罗包老”",
+      "en": "As prefect of Kaifeng, Bao Zheng opens the gates to direct petitions and becomes a byword for integrity"
     }
   ],
   "GUQIN_TRACKS": [
@@ -18750,6 +19192,188 @@ window.ATLAS_LORE_DATA = {
         "北洋水师",
         "马关条约",
         "辛丑条约"
+      ]
+    },
+    {
+      "key": "xiaohe",
+      "zh": "萧何",
+      "en": "Xiao He",
+      "courtesyZh": "汉初三杰 · 开国丞相",
+      "courtesyEn": "Founding Chancellor of Han",
+      "dynastyKey": "xihan",
+      "span": [
+        -257,
+        -193
+      ],
+      "aliases": [
+        "酂侯",
+        "萧相国",
+        "萧丞相"
+      ],
+      "tokens": [
+        "萧何"
+      ]
+    },
+    {
+      "key": "suwu",
+      "zh": "苏武",
+      "en": "Su Wu",
+      "courtesyZh": "持节牧羊 · 字子卿",
+      "courtesyEn": "Han Envoy to the Xiongnu",
+      "dynastyKey": "xihan",
+      "span": [
+        -140,
+        -60
+      ],
+      "aliases": [
+        "苏子卿",
+        "典属国苏武"
+      ],
+      "tokens": [
+        "苏武"
+      ]
+    },
+    {
+      "key": "lisi",
+      "zh": "李斯",
+      "en": "Li Si",
+      "courtesyZh": "秦朝丞相",
+      "courtesyEn": "Chancellor of Qin",
+      "dynastyKey": "qin",
+      "span": [
+        -284,
+        -208
+      ],
+      "aliases": [
+        "李丞相"
+      ],
+      "tokens": [
+        "李斯"
+      ]
+    },
+    {
+      "key": "weizheng",
+      "zh": "魏征",
+      "en": "Wei Zheng",
+      "courtesyZh": "贞观谏臣 · 字玄成",
+      "courtesyEn": "Remonstrating Minister of Zhenguan",
+      "dynastyKey": "tang",
+      "span": [
+        580,
+        643
+      ],
+      "aliases": [
+        "魏徵",
+        "魏玄成",
+        "郑国公"
+      ],
+      "tokens": [
+        "魏征",
+        "魏徵"
+      ]
+    },
+    {
+      "key": "direnjie",
+      "zh": "狄仁杰",
+      "en": "Di Renjie",
+      "courtesyZh": "武周名相 · 字怀英",
+      "courtesyEn": "Grand Chancellor of Wu Zhou",
+      "dynastyKey": "tang",
+      "span": [
+        630,
+        700
+      ],
+      "aliases": [
+        "狄怀英",
+        "狄梁公",
+        "狄国老"
+      ],
+      "tokens": [
+        "狄仁杰"
+      ]
+    },
+    {
+      "key": "kouzhun",
+      "zh": "寇准",
+      "en": "Kou Zhun",
+      "courtesyZh": "北宋名相 · 莱国公",
+      "courtesyEn": "Chancellor of Northern Song",
+      "dynastyKey": "beisong",
+      "span": [
+        961,
+        1023
+      ],
+      "aliases": [
+        "寇莱公",
+        "寇平仲",
+        "莱国公"
+      ],
+      "tokens": [
+        "寇准",
+        "澶渊之盟"
+      ]
+    },
+    {
+      "key": "baozheng",
+      "zh": "包拯",
+      "en": "Bao Zheng",
+      "courtesyZh": "包青天 · 字希仁",
+      "courtesyEn": "Upright Prefect of Kaifeng",
+      "dynastyKey": "beisong",
+      "span": [
+        999,
+        1062
+      ],
+      "aliases": [
+        "包公",
+        "包青天",
+        "包孝肃",
+        "包龙图",
+        "包希仁"
+      ],
+      "tokens": [
+        "包拯"
+      ]
+    },
+    {
+      "key": "xuxiake",
+      "zh": "徐霞客",
+      "en": "Xu Xiake",
+      "courtesyZh": "地理学家 · 名弘祖",
+      "courtesyEn": "Geographer and Travel Writer",
+      "dynastyKey": "ming",
+      "span": [
+        1587,
+        1641
+      ],
+      "aliases": [
+        "徐弘祖",
+        "徐振之",
+        "霞客"
+      ],
+      "tokens": [
+        "徐霞客",
+        "徐弘祖"
+      ]
+    },
+    {
+      "key": "yuanchonghuan",
+      "zh": "袁崇焕",
+      "en": "Yuan Chonghuan",
+      "courtesyZh": "蓟辽督师 · 字元素",
+      "courtesyEn": "Supreme Commander of Jizhou and Liaodong",
+      "dynastyKey": "ming",
+      "span": [
+        1584,
+        1630
+      ],
+      "aliases": [
+        "袁督师",
+        "袁元素",
+        "袁自如"
+      ],
+      "tokens": [
+        "袁崇焕"
       ]
     }
   ]
