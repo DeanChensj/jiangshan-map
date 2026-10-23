@@ -6,6 +6,9 @@
  * The output is generated, not committed (see .gitignore): run this after
  * cloning or after changing data in js/.
  *
+ * Coverage ends in 1948: years from 1949 on (the PRC period, s_prc) and the
+ * modern province layer are not exported.
+ *
  * Usage:
  *   node scripts/export_geojson.js [outDir]   # default: geojson/
  */
@@ -27,6 +30,10 @@ const W = ctx.window;
 const SNAPSHOTS = W.ATLAS_SNAPSHOTS;
 const EN = W.EN_LOCALE || {};
 const DICT = EN.dict || {};
+
+// First year left out of the export; 1949 belongs to the PRC under the
+// boundary-year rule of _findDynastyIndex.
+const CUTOFF = 1949;
 
 const LICENSE =
   'GPL-3.0 · jiangshan-map (Chronicles of the Realm). Historical borders are schematic approximations, not survey-grade boundaries.';
@@ -92,7 +99,7 @@ function bbox(features) {
     } else c.forEach(walk);
   };
   features.forEach((f) => f.geometry && walk(f.geometry.coordinates));
-  return b.map(round);
+  return b[0] === Infinity ? undefined : b.map(round);
 }
 
 function clean(obj) {
@@ -123,17 +130,18 @@ const snapUse = {};
 // A boundary year belongs to the later dynasty, as in _findDynastyIndex.
 const dynasties = W.DYNASTY_DATA.map((d, di, all) => {
   const phases = d.phases && d.phases.length ? d.phases : [{ until: d.toYear, snap: `s_${d.key}` }];
-  const end = di < all.length - 1 ? all[di + 1].fromYear - 1 : d.toYear;
+  const end = Math.min(di < all.length - 1 ? all[di + 1].fromYear - 1 : d.toYear, CUTOFF - 1);
   const out = phases.map((ph, i) => {
     const from = i === 0 ? d.fromYear : phases[i - 1].until;
-    const to = i === phases.length - 1 ? end : ph.until - 1;
+    const to = Math.min(i === phases.length - 1 ? end : ph.until - 1, end);
+    if (from > to) return null;
     const p = { snapshot: ph.snap, from, to, file: `snapshots/${ph.snap}.geojson` };
     if (ph.overview) p.overview = ph.overview;
     (snapUse[ph.snap] = snapUse[ph.snap] || []).push({ dynasty: d.key, from, to });
     return p;
-  });
-  return clean({ key: d.key, title: d.title, title_en: dynastyName(d), from: d.fromYear, to: end, tint: d.tint, phases: out });
-});
+  }).filter(Boolean);
+  return out.length ? clean({ key: d.key, title: d.title, title_en: dynastyName(d), from: d.fromYear, to: end, tint: d.tint, phases: out }) : null;
+}).filter(Boolean);
 
 // ---------- build ----------
 
@@ -158,7 +166,7 @@ function snapshotLayer(list, layer) {
 // does: in snapshot key order, so chained references resolve the same way.
 const lists = {};
 for (const [key, s] of Object.entries(SNAPSHOTS)) {
-  if (key !== 'neighbors') lists[key] = { prefectures: s.prefectures, regions: s.regions };
+  if (key !== 'neighbors') lists[key] = { polities: s.polities, prefectures: s.prefectures, regions: s.regions };
 }
 for (const [key, s] of Object.entries(SNAPSHOTS)) {
   if (key === 'neighbors') continue;
@@ -168,17 +176,17 @@ for (const [key, s] of Object.entries(SNAPSHOTS)) {
 }
 
 for (const [key, s] of Object.entries(SNAPSHOTS)) {
-  if (key === 'neighbors') continue;
-  const { prefectures: prefs, regions } = lists[key];
-  const use = snapUse[key] || [];
+  if (key === 'neighbors' || !snapUse[key]) continue; // not shown before CUTOFF
+  const { polities, prefectures: prefs, regions } = lists[key];
+  const use = snapUse[key];
   files[`snapshots/${key}.geojson`] = collection(
     key,
-    [...snapshotLayer(regions, 'region'), ...snapshotLayer(prefs, 'prefecture'), ...snapshotLayer(s.polities, 'polity')],
+    [...snapshotLayer(regions, 'region'), ...snapshotLayer(prefs, 'prefecture'), ...snapshotLayer(polities, 'polity')],
     {
       caption: s.caption,
       note: s.note,
-      from: use.length ? Math.min(...use.map((u) => u.from)) : undefined,
-      to: use.length ? Math.max(...use.map((u) => u.to)) : undefined
+      from: Math.min(...use.map((u) => u.from)),
+      to: Math.max(...use.map((u) => u.to))
     }
   );
 }
@@ -187,17 +195,6 @@ files['neighbors.geojson'] = collection(
   'neighbors',
   SNAPSHOTS.neighbors.map((f) => feature(polygonal(f.shape), { title: f.title, title_en: en(f.title), anchor: anchor(f.anchor) })),
   { note: 'Modern neighbouring countries (context layer)' }
-);
-
-files['modern/provinces.geojson'] = collection(
-  'provinces',
-  W.PROVINCE_OUTLINES.map((p) =>
-    feature(
-      polygonal({ type: 'MultiPolygon', coordinates: p.rings }),
-      { title: p.title, title_en: en(p.title), code: p.code, anchor: anchor(p.hub) }
-    )
-  ),
-  { note: 'Modern first-level administrative divisions (DataV GeoAtlas)' }
 );
 
 const H = W.HYDRO_DATA;
@@ -222,7 +219,7 @@ files['modern/hydro_labels.geojson'] = collection(
 
 files['corridors.geojson'] = collection(
   'corridors',
-  W.CORRIDOR_DATA.map((c) => {
+  W.CORRIDOR_DATA.filter((c) => !c.span || c.span[0] < CUTOFF).map((c) => {
     const e = (EN.corridors && EN.corridors[c.key]) || [];
     return feature(lines(c.segments), {
       key: c.key,
@@ -230,7 +227,7 @@ files['corridors.geojson'] = collection(
       title: c.title,
       title_en: e[0],
       from: c.span && c.span[0],
-      to: c.span && c.span[1],
+      to: c.span && Math.min(c.span[1], CUTOFF - 1),
       summary: c.summary,
       summary_en: e[1],
       label_at: anchor(c.labelAt)
@@ -241,14 +238,14 @@ files['corridors.geojson'] = collection(
 
 const settlements = [];
 const milestones = [];
-for (const d of W.DYNASTY_DATA) {
+for (const d of W.DYNASTY_DATA.filter((d) => d.fromYear < CUTOFF)) {
   for (const s of d.settlements || []) {
     if (!Array.isArray(s.coord)) continue;
     settlements.push(
       feature(point(s.coord), {
         dynasty: d.key,
         from: d.fromYear,
-        to: d.toYear,
+        to: Math.min(d.toYear, CUTOFF - 1),
         ancient: s.ancient,
         ancient_en: en(s.ancient),
         modern: s.modern,
@@ -260,7 +257,7 @@ for (const d of W.DYNASTY_DATA) {
     );
   }
   for (const m of d.milestones || []) {
-    if (!Array.isArray(m.coord)) continue;
+    if (!Array.isArray(m.coord) || m.year >= CUTOFF) continue;
     const e = (EN.milestones && EN.milestones[`${d.key}:${m.year}`]) || [];
     milestones.push(
       feature(point(m.coord), { dynasty: d.key, year: m.year, headline: m.headline, headline_en: e[0], site: m.site, site_en: e[1] })
@@ -277,12 +274,12 @@ files['index.json'] = {
   license: LICENSE,
   crs: 'EPSG:4326 (lon, lat), RFC 7946 winding',
   years: 'Integer years; negative = BCE. There is no year 0 (-1 is 1 BCE, 1 is 1 CE).',
+  coverage: `${W.DYNASTY_DATA[0].fromYear} to ${CUTOFF - 1}; later years and modern provinces are not exported`,
   layers: {
     corridors: 'corridors.geojson',
     settlements: 'settlements.geojson',
     milestones: 'milestones.geojson',
     neighbors: 'neighbors.geojson',
-    provinces: 'modern/provinces.geojson',
     rivers: 'modern/rivers.geojson',
     lakes: 'modern/lakes.geojson',
     hydro_labels: 'modern/hydro_labels.geojson'

@@ -168,7 +168,7 @@ python3 -m http.server 8000
 
 ## GeoJSON 导出（供 Leaflet / MapLibre / QGIS 使用）
 
-程序内置的几何数据是拓扑去重的 VLQ 紧凑编码。如需在其他项目中使用矢量图层，可在本地生成标准 RFC 7946 GeoJSON（EPSG:4326，经度/纬度），输出到 `geojson/`，不纳入版本库：
+程序内置的几何数据是拓扑去重的 VLQ 紧凑编码。如需在其他项目中使用矢量图层，可在本地生成标准 RFC 7946 GeoJSON（EPSG:4326，经度/纬度），输出到 `geojson/`，不纳入版本库。导出范围为公元前 403 年至 1948 年，不含此后年份及现代省界图层：
 
 ```bash
 node scripts/export_geojson.js            # 或：node scripts/export_geojson.js <输出目录>
@@ -176,7 +176,7 @@ node scripts/export_geojson.js            # 或：node scripts/export_geojson.js
 
 - `snapshots/<id>.geojson`：每个疆域阶段一个文件；每个要素带 `bbox`，属性含 `layer`（`polity` 政权 / `region` 一级政区 / `prefecture` 州郡）、`title`、`title_en`、`category`、`tint`、`anchor`。
 - `index.json`：各朝代阶段的起止年份 `from` / `to`（负数为公元前，无公元 0 年）及对应快照文件。
-- `corridors.geojson`（长城、运河、道路、海路）、`settlements.geojson`、`milestones.geojson`、`neighbors.geojson`，以及 `modern/`（现代省界、河流、湖泊、水系注记；`appear` / `vanish` 表示古河道与古湖泊显示的起止年份）。
+- `corridors.geojson`（长城、运河、道路、海路）、`settlements.geojson`、`milestones.geojson`、`neighbors.geojson`，以及 `modern/`（河流、湖泊、水系注记；`appear` / `vanish` 表示古河道与古湖泊显示的起止年份）。
 
 按坐标查询时无需加载全部阶段：[`geojson/jiangshan-locate.js`](geojson/jiangshan-locate.js) 只加载 `index.json` 和覆盖该年份的那一个快照，再用包围盒预筛加点在多边形内判断。
 

@@ -16,7 +16,7 @@
 <body>
   <div id="map"></div>
   <div class="bar">
-    <input id="year" type="range" min="-403" max="2026" value="741" aria-label="Year" />
+    <input id="year" type="range" min="-403" max="1948" value="741" aria-label="Year" />
     <div id="caption"></div>
     <div id="hit">点击地图查询该处所属政权与政区 · Click the map to locate</div>
   </div>
@@ -81,7 +81,12 @@
     });
 
     (async () => {
-      const year = q.has('year') ? +q.get('year') : +input.value;
+      // The slider covers exactly the exported years (index.json), e.g. -403 to 1948.
+      const { dynasties } = await atlas.index();
+      input.min = dynasties[0].from;
+      input.max = dynasties[dynasties.length - 1].to;
+      const asked = q.has('year') ? +q.get('year') : +input.value;
+      const year = Math.min(Math.max(asked || 1, +input.min), +input.max);
       input.value = year;
       await showYear(year);
       if (q.has('lon') && q.has('lat')) {

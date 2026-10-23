@@ -167,7 +167,7 @@ Then open `http://localhost:8000` in your browser.
 
 ## GeoJSON Export (for Leaflet / MapLibre / QGIS)
 
-The app ships its geometry as compact topology-deduplicated VLQ bundles. To use the vector layers in other projects, generate standard RFC 7946 GeoJSON (EPSG:4326, lon/lat) locally; the output goes to `geojson/` and is not committed:
+The app ships its geometry as compact topology-deduplicated VLQ bundles. To use the vector layers in other projects, generate standard RFC 7946 GeoJSON (EPSG:4326, lon/lat) locally; the output goes to `geojson/` and is not committed. The export covers 403 BCE to 1948; later years and the modern province layer are not included.
 
 ```bash
 node scripts/export_geojson.js            # or: node scripts/export_geojson.js <outDir>
@@ -175,7 +175,7 @@ node scripts/export_geojson.js            # or: node scripts/export_geojson.js <
 
 - `snapshots/<id>.geojson` — one file per territorial phase; each feature has a `bbox` and `layer` (`polity` / `region` / `prefecture`), `title`, `title_en`, `category`, `tint`, `anchor`.
 - `index.json` — every dynasty's phases with `from` / `to` years (negative = BCE, no year 0) and the matching snapshot file.
-- `corridors.geojson` (walls, canals, roads, sea routes), `settlements.geojson`, `milestones.geojson`, `neighbors.geojson`, and `modern/` (provinces, rivers, lakes, hydro labels; `appear` / `vanish` give the years historical river courses and lakes are shown).
+- `corridors.geojson` (walls, canals, roads, sea routes), `settlements.geojson`, `milestones.geojson`, `neighbors.geojson`, and `modern/` (rivers, lakes, hydro labels; `appear` / `vanish` give the years historical river courses and lakes are shown).
 
 To look up a point without loading every phase, use [`geojson/jiangshan-locate.js`](geojson/jiangshan-locate.js): it loads `index.json` plus only the snapshot covering the year, then runs a bbox-filtered point-in-polygon test.
 
