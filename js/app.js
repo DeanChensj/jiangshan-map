@@ -736,6 +736,9 @@
     }
 
     formatSpan(d) {
+      if (d && d.key === 'prc') {
+        return `${this.formatYear(d.fromYear, true)} —`;
+      }
       return `${this.formatYear(d.fromYear, true)} — ${this.formatYear(d.toYear, true)}`;
     }
 
@@ -1690,14 +1693,23 @@
       return d;
     }
 
+    _isSettlementCapital(item, year) {
+      if (!item || !item.isCapital) return false;
+      if (!Array.isArray(item.capitalPeriods) || !item.capitalPeriods.length) return true;
+      return item.capitalPeriods.some(([y0, y1]) => year >= y0 && year <= y1);
+    }
+
     _settlementMask(dynasty, year) {
       const sMask = (dynasty.settlements || [])
-        .map((item) =>
-          (item.appear !== undefined && year < item.appear) ||
-          (item.vanish !== undefined && year >= item.vanish)
-            ? '0'
-            : '1'
-        )
+        .map((item) => {
+          if (
+            (item.appear !== undefined && year < item.appear) ||
+            (item.vanish !== undefined && year >= item.vanish)
+          ) {
+            return '0';
+          }
+          return this._isSettlementCapital(item, year) ? '2' : '1';
+        })
         .join('');
       const pMask = HistoricalAtlasController.STRATEGIC_PASSES.map((p) =>
         (p.appear !== undefined && year < p.appear) ||
@@ -1720,7 +1732,7 @@
             (item.vanish === undefined || this.year < item.vanish)
         )
         .sort((a, b) => {
-          const rank = (s) => (s.isCapital ? 2 : s.tier === 2 ? 0 : 1);
+          const rank = (s) => (this._isSettlementCapital(s, this.year) ? 2 : s.tier === 2 ? 0 : 1);
           return rank(a) - rank(b);
         });
 
@@ -1731,19 +1743,23 @@
         !this.challenge;
       const hintCapital = showOnboardingTraceHint
         ? activeList.find(
-            (s) => s.isCapital && dynasty.seat && dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
-          ) || activeList.find((s) => s.isCapital)
+            (s) =>
+              this._isSettlementCapital(s, this.year) &&
+              dynasty.seat &&
+              dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
+          ) || activeList.find((s) => this._isSettlementCapital(s, this.year))
         : null;
 
       for (const item of activeList) {
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
-        const isTier2 = item.tier === 2 && !item.isCapital;
+        const isCapNow = this._isSettlementCapital(item, this.year);
+        const isTier2 = item.tier === 2 && !isCapNow;
         const isHintCap = item === hintCapital;
         const isTracedCity =
           isTier2 &&
           Boolean(this.activeTrace) &&
           this.projector.greatCircleKm(this.activeTrace, item.coord) <= 28;
-        const cls = item.isCapital
+        const cls = isCapNow
           ? isHintCap
             ? 'settlement-node is-capital has-trace-hint'
             : 'settlement-node is-capital'
@@ -1767,9 +1783,9 @@
         node.dataset.lng = String(item.coord[0]);
         node.dataset.lat = String(item.coord[1]);
         node.dataset.prefAlign = item.align || 'r';
-        node.dataset.tier = item.isCapital ? '0' : isTier2 ? '2' : '1';
+        node.dataset.tier = isCapNow ? '0' : isTier2 ? '2' : '1';
 
-        if (item.isCapital) {
+        if (isCapNow) {
           if (isHintCap) {
             this._svgNode('circle', { class: 'cap-breath-ring', r: 6.5 }, node);
             this._svgNode('circle', { class: 'cap-breath-ring is-delayed', r: 6.5 }, node);
@@ -2023,11 +2039,13 @@
       ) {
         return this.activeMilestone.idx;
       }
+      let exactIdx = -1;
       let activeIdx = -1;
       (dynasty.milestones || []).forEach((m, idx) => {
+        if (m.year === this.year) exactIdx = idx;
         if (this._clampYearToDynasty(dynasty, m.year) <= this.year) activeIdx = idx;
       });
-      return activeIdx;
+      return exactIdx >= 0 ? exactIdx : activeIdx;
     }
 
     _updateMilestoneStates(dynasty) {
@@ -7139,8 +7157,14 @@
         const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
         const nameEn = enDyn.name || d.title;
         const shortEn = enDyn.short || d.badge || d.title;
-        const spanZh = `${d.fromYear <= 0 ? '前' + -d.fromYear : d.fromYear}—${d.toYear <= 0 ? '前' + -d.toYear : d.toYear}`;
-        const spanEn = `${d.fromYear <= 0 ? -d.fromYear + ' BCE' : d.fromYear + ' CE'} – ${d.toYear <= 0 ? -d.toYear + ' BCE' : d.toYear + ' CE'}`;
+        const spanZh =
+          d.key === 'prc'
+            ? `${d.fromYear}—`
+            : `${d.fromYear <= 0 ? '前' + -d.fromYear : d.fromYear}—${d.toYear <= 0 ? '前' + -d.toYear : d.toYear}`;
+        const spanEn =
+          d.key === 'prc'
+            ? `${d.fromYear} CE –`
+            : `${d.fromYear <= 0 ? -d.fromYear + ' BCE' : d.fromYear + ' CE'} – ${d.toYear <= 0 ? -d.toYear + ' BCE' : d.toYear + ' CE'}`;
         entries.push({
           kind: 'dynasty',
           dynasty: d,

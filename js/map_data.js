@@ -2379,35 +2379,65 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 189,
-        "headline": "董卓入洛阳，次年迁都长安",
-        "site": "洛阳",
+        "headline": "何进召外兵谋诛宦官遇害，董卓入洛废少帝立献帝，次年焚洛阳西迁长安",
+        "site": "洛阳 · 长安",
         "coord": [
           112.451,
           34.621
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 195,
+        "headline": "孙策渡江创业平定江东；汉献帝自长安东归洛阳",
+        "site": "曲阿 · 历阳",
+        "coord": [
+          119.58,
+          31.99
         ]
       },
       {
         "year": 196,
-        "headline": "曹操迎汉献帝迁都许昌",
+        "headline": "曹操迎汉献帝都许，挟天子以令诸侯；始兴屯田",
         "site": "许（许昌）",
         "coord": [
           113.851,
           34.041
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 198,
+        "headline": "下邳之战：曹操决泗、沂水灌城，擒杀吕布，尽取徐州",
+        "site": "下邳（睢宁）",
+        "coord": [
+          117.95,
+          34.11
         ]
       },
       {
         "year": 200,
-        "headline": "官渡之战，曹操统一北方",
+        "headline": "官渡之战：曹操奇袭乌巢焚粮，大破袁绍主力；孙策遇刺，孙权继立",
         "site": "官渡",
         "coord": [
           114.001,
           34.751
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 204,
+        "headline": "曹操引漳水围破邺城，定冀、青、幽、并四州，迁霸府于邺",
+        "site": "邺（安阳）",
+        "coord": [
+          114.391,
+          36.101
         ]
       },
       {
         "year": 207,
-        "headline": "刘备三顾茅庐定《隆中对》；曹操北征乌桓斩蹋顿",
-        "site": "隆中 · 白狼山",
+        "headline": "刘备三顾茅庐诸葛亮，定《隆中对》跨有荆益之策",
+        "site": "隆中（襄阳）",
         "coord": [
           112.041,
           32.001
@@ -2420,7 +2450,8 @@ window.DYNASTY_DATA = [
         "coord": [
           113.901,
           29.851
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 211,
@@ -2429,7 +2460,8 @@ window.DYNASTY_DATA = [
         "coord": [
           110.291,
           34.611
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 214,
@@ -2438,16 +2470,18 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 215,
-        "headline": "孙刘“湘水划界”分荆州；张辽威震逍遥津大破孙权",
-        "site": "临湘 · 合肥",
+        "headline": "曹操平汉中张鲁；孙刘湘水划界分荆州；张辽威震逍遥津",
+        "site": "南郑 · 临湘 · 合肥",
         "coord": [
           112.971,
           28.201
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 219,
@@ -2456,7 +2490,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           30.801
-        ]
+        ],
+        "isMapChange": true
       }
     ],
     "settlements": [
@@ -2468,7 +2503,13 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
-        "remark": "东汉都城"
+        "capitalPeriods": [
+          [
+            25,
+            189
+          ]
+        ],
+        "remark": "东汉帝都（25–190），初平元年董卓焚洛西迁"
       },
       {
         "ancient": "长安",
@@ -2478,7 +2519,14 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "align": "l",
-        "remark": "西京重镇，献帝初平元年自洛阳西迁都此"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            190,
+            195
+          ]
+        ],
+        "remark": "西京重镇，献帝初平元年至兴平二年（190–195）西迁都此"
       },
       {
         "ancient": "宛",
@@ -2497,7 +2545,7 @@ window.DYNASTY_DATA = [
           114.391,
           36.101
         ],
-        "remark": "冀州治所，建安九年曹操平河北定霸府于此"
+        "remark": "冀州治所，建安九年曹操平河北定霸府，十八年封魏公都邺"
       },
       {
         "ancient": "许",
@@ -2507,7 +2555,14 @@ window.DYNASTY_DATA = [
           34.041
         ],
         "align": "b",
-        "remark": "献帝迁都于此"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            196,
+            220
+          ]
+        ],
+        "remark": "建安元年至二十五年（196–220）曹操奉汉献帝都许"
       },
       {
         "ancient": "成都",
@@ -2965,12 +3020,20 @@ window.DYNASTY_DATA = [
         "snap": "s_donghan_d"
       },
       {
-        "until": 214,
+        "until": 211,
         "snap": "s_donghan_e0"
       },
       {
-        "until": 219,
+        "until": 214,
+        "snap": "s_donghan_e1"
+      },
+      {
+        "until": 215,
         "snap": "s_donghan_e"
+      },
+      {
+        "until": 219,
+        "snap": "s_donghan_e2"
       },
       {
         "until": 220,
@@ -2996,7 +3059,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 221,
@@ -3081,12 +3145,30 @@ window.DYNASTY_DATA = [
         "isMapChange": true
       },
       {
+        "year": 244,
+        "headline": "兴势之战：王平据险拒退曹爽伐蜀大军；毌丘俭东征高句丽克丸都",
+        "site": "兴势（洋县） · 丸都",
+        "coord": [
+          107.55,
+          33.52
+        ]
+      },
+      {
         "year": 249,
         "headline": "高平陵之变，司马懿控制曹魏朝政",
         "site": "洛阳",
         "coord": [
           112.451,
           34.621
+        ]
+      },
+      {
+        "year": 255,
+        "headline": "毌丘俭、文钦寿春起兵讨司马师败亡；姜维北伐洮西大破王经",
+        "site": "寿春 · 狄道",
+        "coord": [
+          116.781,
+          32.581
         ]
       },
       {
@@ -3105,6 +3187,16 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 264,
+        "headline": "钟会、姜维于成都构乱败亡；曹魏分益州置梁州，孙吴分交州置广州",
+        "site": "成都 · 番禺",
+        "coord": [
+          104.071,
+          30.571
         ]
       },
       {
@@ -3114,6 +3206,16 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 272,
+        "headline": "西陵之战：陆抗围城打援大破晋将羊祜、杨肇，斩叛将步阐",
+        "site": "西陵（宜昌）",
+        "coord": [
+          111.286,
+          30.692
         ]
       },
       {
@@ -3132,7 +3234,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       }
     ],
     "settlements": [
@@ -3144,7 +3247,7 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
-        "remark": "曹魏都城"
+        "remark": "曹魏及西晋都城"
       },
       {
         "ancient": "成都",
@@ -3154,7 +3257,13 @@ window.DYNASTY_DATA = [
           30.571
         ],
         "isCapital": true,
-        "remark": "蜀汉都城"
+        "capitalPeriods": [
+          [
+            221,
+            263
+          ]
+        ],
+        "remark": "蜀汉都城（221–263），263年魏灭蜀后为益州治所"
       },
       {
         "ancient": "建业",
@@ -3164,7 +3273,13 @@ window.DYNASTY_DATA = [
           32.061
         ],
         "isCapital": true,
-        "remark": "孙吴都城"
+        "capitalPeriods": [
+          [
+            229,
+            280
+          ]
+        ],
+        "remark": "黄龙元年（229）孙权自武昌迁都于此，孙吴帝都"
       },
       {
         "ancient": "许昌",
@@ -3223,6 +3338,16 @@ window.DYNASTY_DATA = [
           32.011
         ],
         "remark": "曹魏荆州刺史及南征大本营，与吴蜀隔汉水相望"
+      },
+      {
+        "ancient": "宛",
+        "modern": "南阳",
+        "coord": [
+          112.531,
+          32.991
+        ],
+        "align": "l",
+        "remark": "曹魏南阳郡治及荆州军事重镇，诸葛亮《出师表》“宛、洛”所指"
       },
       {
         "ancient": "合肥",
@@ -3311,8 +3436,18 @@ window.DYNASTY_DATA = [
           114.891,
           30.391
         ],
-        "tier": 2,
-        "remark": "孙吴陪都"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            221,
+            228
+          ],
+          [
+            265,
+            266
+          ]
+        ],
+        "remark": "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都"
       },
       {
         "ancient": "吴郡",
@@ -7637,8 +7772,8 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 907,
-        "headline": "朱温代唐建后梁，契丹耶律阿保机称汗",
-        "site": "汴州",
+        "headline": "朱温代唐建后梁；王建在成都称帝建前蜀，契丹耶律阿保机称汗",
+        "site": "汴州 · 成都",
         "coord": [
           114.311,
           34.801
@@ -7646,11 +7781,20 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 909,
-        "headline": "王审知受封闽王，定都福州；王建在蜀称帝",
+        "headline": "后梁册封王审知为闽王，定都福州保境安民",
         "site": "福州（长乐府）",
         "coord": [
           119.301,
           26.081
+        ]
+      },
+      {
+        "year": 911,
+        "headline": "刘守光在幽州称大燕皇帝，晋王李存勖兴兵讨燕（913年灭桀燕）",
+        "site": "幽州",
+        "coord": [
+          116.401,
+          39.901
         ]
       },
       {
@@ -7755,17 +7899,26 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 951,
-        "headline": "郭威建后周；刘崇在太原建北汉",
-        "site": "太原",
+        "headline": "郭威建后周，刘崇在太原建北汉；同年南唐发兵攻灭马楚",
+        "site": "汴州 · 太原 · 潭州",
         "coord": [
           112.551,
           37.871
         ]
       },
       {
+        "year": 954,
+        "headline": "高平之战：周世宗柴荣亲征，赵匡胤死战大破北汉与辽联军",
+        "site": "高平（泽州）",
+        "coord": [
+          112.921,
+          35.801
+        ]
+      },
+      {
         "year": 955,
-        "headline": "周世宗开始南征北伐",
-        "site": "寿州（淮南）",
+        "headline": "周世宗西征后蜀收复秦、凤、成、阶四州，同年冬南征淮南",
+        "site": "秦州 · 寿州（淮南）",
         "coord": [
           116.801,
           32.501

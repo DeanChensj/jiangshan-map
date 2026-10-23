@@ -661,6 +661,13 @@ function main() {
   assert.strictEqual(ctrl.formatEraLabel(1082, dynasties[11]), '北宋神宗·元丰五年');
   assert.strictEqual(ctrl.formatEraLabel(1587, dynasties[14]), '明万历十五年');
   assert.strictEqual(ctrl.formatEraLabel(1683, dynasties[15]), '清康熙二十二年');
+  const prcDynObj = dynasties.find((d) => d.key === 'prc');
+  assert.strictEqual(ctrl.formatSpan(prcDynObj), '1949 —', 'PRC dynasty span must be open-ended (1949 —)');
+  const prcSearchHit = ctrl._queryQuickSearch('中华人民共和国').find((h) => h.kind === 'dynasty' && h.dynasty.key === 'prc');
+  assert(
+    prcSearchHit && prcSearchHit.subZh.startsWith('1949—') && prcSearchHit.subEn.startsWith('1949 CE –'),
+    `Expected PRC quick search subtitle to use open-ended 1949— / 1949 CE –, got ${JSON.stringify(prcSearchHit)}`
+  );
 
   // CUJ 9h: Adjacent / Overlapping Polity Color Collision Guard across all snapshots
   function shapeBbox(shape) {
@@ -2311,7 +2318,7 @@ function main() {
       `${sk} must model post-877 fragmented Tibet as uncolored 吐蕃诸部 (role="neighbor", tint=null)`
     );
   }
-  const nzSnapKeys = [...tangSnapKeys, 's_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2'];
+  const nzSnapKeys = [...tangSnapKeys];
   for (const sk of nzSnapKeys) {
     const nzPol = (snapshots[sk].polities || []).find((p) => p.title === '南诏');
     assert(
@@ -2325,6 +2332,86 @@ function main() {
     assert(
       pointInShape(102.68, 24.82, nzPol.shape),
       `${sk}: 南诏 polygon must contain Dianchi/Kunming ([102.68, 24.82])`
+    );
+  }
+  const dchSnapKeys = ['s_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2'];
+  for (const sk of dchSnapKeys) {
+    const dchPol = (snapshots[sk].polities || []).find((p) => p.title === '大长和');
+    assert(
+      dchPol && dchPol.role === 'rival' && dchPol.tint === '#7a5c91',
+      `${sk} must model post-902 Yunnan regime as 大长和 (role="rival", tint="#7a5c91")`
+    );
+    assert(
+      pointInShape(100.161, 25.691, dchPol.shape),
+      `${sk}: 大长和 polygon must contain Taihecheng/Dali capital ([100.161, 25.691])`
+    );
+    assert(
+      pointInShape(102.68, 24.82, dchPol.shape),
+      `${sk}: 大长和 polygon must contain Dianchi/Kunming ([102.68, 24.82])`
+    );
+  }
+  // Verify Wudai (907-960 CE) territorial invariants against Old History of the Five Dynasties (《旧五代史》):
+  // 1) Yang Wu (吴) holds Yangzhou ([119.42, 32.39]) and Shouzhou ([116.78, 32.58]) north to the Huai River in 907-936
+  for (const sk of ['s_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2', 's_wudai_c0']) {
+    const wuPol = (snapshots[sk].polities || []).find((p) => p.title === '吴');
+    assert(
+      wuPol && pointInShape(119.42, 32.39, wuPol.shape) && pointInShape(116.78, 32.58, wuPol.shape),
+      `${sk}: 吴 polygon must contain Yangzhou ([119.42, 32.39]) and Shouzhou ([116.78, 32.58]) up to the Huai River`
+    );
+  }
+  // 2) Sixteen Prefectures of Yanyun (Yingzhou [116.09, 38.44], Mozhou [116.10, 38.71], Shuozhou [112.43, 39.32]) in Khitan/Liao (936-958),
+  //    then Yingzhou, Mozhou, Yizhou ([115.49, 39.35]), and Waqiao Pass ([116.08, 39.00]) recovered by Later Zhou in 959 (s_wudai_e2)
+  for (const sk of ['s_wudai_c0', 's_wudai_c', 's_wudai_c2', 's_wudai_d', 's_wudai_e', 's_wudai_e1']) {
+    const liaoPol = (snapshots[sk].polities || []).find((p) => p.title === '契丹' || p.title === '辽');
+    assert(
+      liaoPol &&
+        pointInShape(116.09, 38.44, liaoPol.shape) &&
+        pointInShape(116.1, 38.71, liaoPol.shape) &&
+        pointInShape(112.43, 39.32, liaoPol.shape),
+      `${sk}: ${liaoPol ? liaoPol.title : '契丹/辽'} must contain Yanyun prefectures Yingzhou, Mozhou, and Shuozhou`
+    );
+  }
+  {
+    const zhouE2 = (snapshots.s_wudai_e2.polities || []).find((p) => p.title === '后周');
+    const liaoE2 = (snapshots.s_wudai_e2.polities || []).find((p) => p.title === '辽');
+    assert(
+      zhouE2 &&
+        pointInShape(116.09, 38.44, zhouE2.shape) &&
+        pointInShape(116.1, 38.71, zhouE2.shape) &&
+        pointInShape(115.49, 39.35, zhouE2.shape) &&
+        pointInShape(116.08, 39.0, zhouE2.shape) &&
+        liaoE2 &&
+        pointInShape(116.4, 39.9, liaoE2.shape),
+      's_wudai_e2 (959 CE): 后周 must contain recovered Yingzhou, Mozhou, Yizhou, and Waqiao Pass while Youzhou remains in 辽'
+    );
+  }
+  // 3) Datong Basin (Yunzhou [113.30, 40.08], Yingzhou [113.19, 39.55], Huanzhou [112.43, 39.57], Shuozhou [112.43, 39.32]) in Liao,
+  //    while Daizhou ([112.95, 39.06]) and Taiyuan ([112.55, 37.87]) belong to Northern Han (北汉) in 951-960
+  for (const sk of ['s_wudai_e', 's_wudai_e1', 's_wudai_e2']) {
+    const liaoPol = (snapshots[sk].polities || []).find((p) => p.title === '辽');
+    const bhPol = (snapshots[sk].polities || []).find((p) => p.title === '北汉');
+    assert(
+      liaoPol &&
+        pointInShape(113.3, 40.08, liaoPol.shape) &&
+        pointInShape(113.19, 39.55, liaoPol.shape) &&
+        pointInShape(112.43, 39.57, liaoPol.shape) &&
+        pointInShape(112.43, 39.32, liaoPol.shape) &&
+        bhPol &&
+        pointInShape(112.95, 39.06, bhPol.shape) &&
+        pointInShape(112.55, 37.87, bhPol.shape),
+      `${sk}: 辽 must hold Yun, Ying, Huan, Shuo north of Yanmen Pass while 北汉 holds Daizhou and Taiyuan`
+    );
+  }
+  // 4) Fuzhou ([119.30, 26.08]) in Wuyue (吴越) vs Jianzhou ([118.32, 27.02]) in Southern Tang (南唐) after Fall of Min (945-960)
+  for (const sk of ['s_wudai_c2', 's_wudai_d', 's_wudai_e', 's_wudai_e1', 's_wudai_e2']) {
+    const wyPol = (snapshots[sk].polities || []).find((p) => p.title === '吴越');
+    const ntPol = (snapshots[sk].polities || []).find((p) => p.title === '南唐');
+    assert(
+      wyPol &&
+        pointInShape(119.3, 26.08, wyPol.shape) &&
+        ntPol &&
+        pointInShape(118.32, 27.02, ntPol.shape),
+      `${sk}: 吴越 must contain Fuzhou ([119.30, 26.08]) while 南唐 contains Jianzhou ([118.32, 27.02])`
     );
   }
   const tangDynObj = dynasties.find((d) => d.key === 'tang');
@@ -2345,10 +2432,10 @@ function main() {
     }
     return s;
   }
-  for (const sk of [...nzSnapKeys, ...daliSnapKeys]) {
+  for (const sk of [...nzSnapKeys, ...dchSnapKeys, ...daliSnapKeys]) {
     const pols = snapshots[sk].polities || [];
-    const swPol = pols.find((p) => p.title === '南诏' || p.title === '大理');
-    assert(swPol && swPol.shape, `${sk} must contain 南诏 or 大理`);
+    const swPol = pols.find((p) => p.title === '南诏' || p.title === '大长和' || p.title === '大理');
+    assert(swPol && swPol.shape, `${sk} must contain 南诏, 大长和, or 大理`);
     const swVerts = collectVertices(swPol.shape);
     const otherVerts = new Set();
     for (const p of pols) {
@@ -3350,6 +3437,54 @@ function main() {
         !xssInspect.place.includes('<') &&
         !xssInspect.route[0].place.includes('<'),
       `Expected XSS angle brackets to be stripped from route place tokens, got ${JSON.stringify(xssInspect.place)}`
+    );
+
+    // Late Eastern Han & Three Kingdoms (Sanguozhi) territorial & capitalPeriods regression guards
+    const sanguoSpotChecks = [
+      [{ lng: 118.801, lat: 32.061, year: 229 }, '吴'], // Jianye
+      [{ lng: 119.451, lat: 32.201, year: 229 }, '吴'], // Jingkou
+      [{ lng: 112.121, lat: 32.011, year: 208 }, '曹操(北方)'], // Xiangyang post-208
+      [{ lng: 112.121, lat: 32.011, year: 229 }, '魏'], // Xiangyang in Three Kingdoms
+      [{ lng: 123.171, lat: 41.271, year: 196 }, '公孙氏(辽东)'], // Xiangping (Liaodong)
+      [{ lng: 113.261, lat: 23.131, year: 200 }, '士燮(交州)'], // Panyu (Jiaozhou) 189-210
+      [{ lng: 113.261, lat: 23.131, year: 211 }, '孙权(江东)'], // Panyu submits to Sun Quan 211
+      [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾·韩遂(关陇)'], // Guanlong before Tong Pass
+      [{ lng: 103.82, lat: 36.06, year: 211 }, '曹操(北方)'], // Guanlong after Tong Pass (211)
+      [{ lng: 107.021, lat: 33.071, year: 200 }, '张鲁(汉中)'], // Nanzheng (Hanzhong) 196-214
+      [{ lng: 107.021, lat: 33.071, year: 215 }, '曹操(北方)'], // Hanzhong taken by Cao Cao (215)
+      [{ lng: 107.021, lat: 33.071, year: 219 }, '刘备(益州)'], // Hanzhong taken by Liu Bei (219)
+      [{ lng: 111.698, lat: 29.032, year: 215 }, '刘备(荆益)'], // Wuling west of Xiang River (215)
+      [{ lng: 112.941, lat: 28.231, year: 215 }, '孙权(江东)'], // Changsha east of Xiang River (215)
+    ];
+    for (const [opts, expPol] of sanguoSpotChecks) {
+      const info = ctrl.inspect(opts);
+      assert(
+        info && info.polity === expPol,
+        `Sanguozhi guard: inspect(${JSON.stringify(opts)}) expected polity "${expPol}", got ${JSON.stringify(info && info.polity)}`
+      );
+    }
+    const dhDyn = dynasties.find((d) => d.key === 'donghan');
+    const sgDyn = dynasties.find((d) => d.key === 'sanguo');
+    const dhLuoyang = dhDyn.settlements.find((s) => s.ancient === '洛阳');
+    const dhChangan = dhDyn.settlements.find((s) => s.ancient === '长安');
+    const dhXu = dhDyn.settlements.find((s) => s.ancient === '许');
+    assert(
+      ctrl._isSettlementCapital(dhLuoyang, 100) &&
+        !ctrl._isSettlementCapital(dhLuoyang, 196) &&
+        ctrl._isSettlementCapital(dhChangan, 192) &&
+        ctrl._isSettlementCapital(dhXu, 200),
+      'Expected donghan capitalPeriods to switch Luoyang (25-189) -> Chang\'an (190-195) -> Xu (196-220)'
+    );
+    const sgChengdu = sgDyn.settlements.find((s) => s.ancient === '成都');
+    const sgWuchang = sgDyn.settlements.find((s) => s.ancient === '武昌（鄂县）');
+    const sgJianye = sgDyn.settlements.find((s) => s.ancient === '建业');
+    assert(
+      ctrl._isSettlementCapital(sgChengdu, 234) &&
+        !ctrl._isSettlementCapital(sgChengdu, 265) &&
+        ctrl._isSettlementCapital(sgWuchang, 225) &&
+        !ctrl._isSettlementCapital(sgWuchang, 234) &&
+        ctrl._isSettlementCapital(sgJianye, 234),
+      'Expected sanguo capitalPeriods to reflect Chengdu (221-263), Wuchang (221-228, 265-266), and Jianye (229-280)'
     );
 
     sandbox.setInterval = setInterval;
