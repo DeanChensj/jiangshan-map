@@ -3405,6 +3405,109 @@ function main() {
     );
   }
 
+  // 23x. Western Jin and Eastern Jin & Sixteen Kingdoms (Book of Jin / 《晋书》 & Tan Qixiang Vol 4)
+  {
+    const jiankang = [118.801, 32.061];
+    const jingkou = [119.451, 32.201];
+    const dongjinSnaps = [
+      's_dongjin_a0',
+      's_dongjin_a',
+      's_dongjin_a2',
+      's_dongjin_b',
+      's_dongjin_b2',
+      's_dongjin_c',
+      's_dongjin_d0',
+      's_dongjin_d1',
+      's_dongjin_d',
+      's_dongjin_e',
+      's_dongjin_f',
+    ];
+    for (const sk of dongjinSnaps) {
+      const snap = snapshots[sk];
+      assert(snap, `Missing snapshot: ${sk}`);
+      const djPol = snap.polities.find((p) => p.title === '东晋');
+      assert(djPol && djPol.shape, `${sk} must have 东晋 polity with valid shape`);
+      assert(
+        pointInShape(jiankang[0], jiankang[1], djPol.shape),
+        `${sk}: Jiankang ([118.801, 32.061]) must be inside Eastern Jin (东晋)`
+      );
+      assert(
+        pointInShape(jingkou[0], jingkou[1], djPol.shape),
+        `${sk}: Jingkou ([119.451, 32.201]) must be inside Eastern Jin (东晋)`
+      );
+    }
+
+    // Guzang ([102.641, 37.931]) inside Liangzhou polities (Former/Later/Northern Liang or unified Former Qin)
+    const guzang = [102.641, 37.931];
+    const guzangCases = [
+      ['s_dongjin_a0', '前凉'],
+      ['s_dongjin_a', '前凉'],
+      ['s_dongjin_a2', '前凉'],
+      ['s_dongjin_b', '前凉'],
+      ['s_dongjin_b2', '前凉'],
+      ['s_dongjin_c', '前秦（苻坚一统北方）'],
+      ['s_dongjin_d0', '后凉'],
+      ['s_dongjin_d1', '北凉'],
+      ['s_dongjin_d', '北凉'],
+      ['s_dongjin_e', '北凉'],
+      ['s_dongjin_f', '北凉'],
+    ];
+    for (const [sk, expectedTitle] of guzangCases) {
+      const snap = snapshots[sk];
+      const pol = snap.polities.find((p) => p.title === expectedTitle);
+      assert(pol && pol.shape, `${sk} must contain polity "${expectedTitle}"`);
+      assert(
+        pointInShape(guzang[0], guzang[1], pol.shape),
+        `${sk}: Guzang ([102.641, 37.931]) must be inside ${expectedTitle}`
+      );
+    }
+
+    // Western Jin 304-305 CE (s_xijin) must include 晋, 汉赵, and 成汉; Chengdu inside 成汉
+    const chengdu = [104.071, 30.571];
+    const xijinSnap = snapshots.s_xijin;
+    assert(xijinSnap, 'Missing s_xijin snapshot');
+    const chPol = xijinSnap.polities.find((p) => p.title === '成汉');
+    assert(chPol && chPol.shape, 's_xijin must include 成汉 polity');
+    assert(
+      pointInShape(chengdu[0], chengdu[1], chPol.shape),
+      's_xijin: Chengdu ([104.071, 30.571]) must be inside 成汉'
+    );
+    assert(
+      xijinSnap.polities.some((p) => p.title === '晋') &&
+        xijinSnap.polities.some((p) => p.title === '汉赵'),
+      's_xijin must include both 晋 and 汉赵 polities'
+    );
+
+    // Capital periods verification for xijin and dongjin
+    const xjDyn = dynasties.find((d) => d.key === 'xijin');
+    const djDyn = dynasties.find((d) => d.key === 'dongjin');
+    const findSt = (d, ancient) => (d.settlements || []).find((s) => s.ancient === ancient);
+
+    const luoyangXJ = findSt(xjDyn, '洛阳');
+    assert(luoyangXJ && Array.isArray(luoyangXJ.capitalPeriods), 'xijin: 洛阳 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(luoyangXJ.capitalPeriods), JSON.stringify([[280, 311]]), 'xijin: 洛阳 capitalPeriods must be [[280, 311]]');
+
+    const changanXJ = findSt(xjDyn, '长安');
+    assert(changanXJ && Array.isArray(changanXJ.capitalPeriods), 'xijin: 长安 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(changanXJ.capitalPeriods), JSON.stringify([[313, 316]]), 'xijin: 长安 capitalPeriods must be [[313, 316]]');
+
+    const chengduXJ = findSt(xjDyn, '成都');
+    assert(chengduXJ && Array.isArray(chengduXJ.capitalPeriods), 'xijin: 成都 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(chengduXJ.capitalPeriods), JSON.stringify([[306, 316]]), 'xijin: 成都 capitalPeriods must be [[306, 316]]');
+
+    const yeDJ = findSt(djDyn, '邺');
+    assert(yeDJ && Array.isArray(yeDJ.capitalPeriods), 'dongjin: 邺 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(yeDJ.capitalPeriods), JSON.stringify([[335, 370]]), 'dongjin: 邺 capitalPeriods must be [[335, 370]]');
+
+    const pingchengDJ = findSt(djDyn, '平城');
+    assert(pingchengDJ && Array.isArray(pingchengDJ.capitalPeriods), 'dongjin: 平城 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(pingchengDJ.capitalPeriods), JSON.stringify([[398, 420]]), 'dongjin: 平城 capitalPeriods must be [[398, 420]]');
+
+    const guzangDJ = findSt(djDyn, '姑臧（凉州）');
+    assert(guzangDJ && Array.isArray(guzangDJ.capitalPeriods), 'dongjin: 姑臧 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(guzangDJ.capitalPeriods), JSON.stringify([[320, 376], [386, 403], [412, 420]]), 'dongjin: 姑臧 capitalPeriods must match');
+  }
+
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
   {
     ctrl.locale = 'en';

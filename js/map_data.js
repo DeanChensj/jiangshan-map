@@ -3702,6 +3702,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 280,
+        "isMapChange": true,
         "headline": "西晋灭吴，三国归晋",
         "site": "建业",
         "coord": [
@@ -3728,8 +3729,17 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 300,
+        "headline": "贾后杀愍怀太子，司马伦废杀贾后，八王之乱转入宗室兵戎",
+        "site": "洛阳",
+        "coord": [
+          112.451,
+          34.621
+        ]
+      },
+      {
         "year": 301,
-        "headline": "赵王司马伦篡位，八王之乱全面升级",
+        "headline": "赵王司马伦篡位称帝，三王起兵讨伦，八王之乱全面升级",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -3738,8 +3748,9 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 304,
-        "headline": "刘渊称汉王，十六国之始",
-        "site": "左国城（离石）",
+        "isMapChange": true,
+        "headline": "刘渊称汉王建立汉赵，李雄称成都王，十六国之始",
+        "site": "左国城（离石） · 成都",
         "coord": [
           111.101,
           37.501
@@ -3747,7 +3758,8 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 306,
-        "headline": "李雄在成都称帝建大成（成汉）；司马越迎惠帝还洛阳",
+        "isMapChange": true,
+        "headline": "李雄称帝建立成汉；司马越立晋怀帝，八王之乱终结",
         "site": "成都 · 洛阳",
         "coord": [
           104.071,
@@ -3755,8 +3767,18 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 307,
+        "headline": "司马睿用王导谋镇建邺，江东初定，王与马共天下之基立",
+        "site": "建邺",
+        "coord": [
+          118.801,
+          32.061
+        ]
+      },
+      {
         "year": 311,
-        "headline": "永嘉之乱，洛阳陷落",
+        "isMapChange": true,
+        "headline": "永嘉之乱：汉赵刘曜攻陷洛阳，俘晋怀帝",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -3774,7 +3796,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 316,
-        "headline": "长安陷落，西晋亡",
+        "headline": "汉赵刘曜攻陷长安，晋愍帝降，西晋亡",
         "site": "长安",
         "coord": [
           108.941,
@@ -3791,7 +3813,13 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
-        "remark": "西晋都城"
+        "remark": "西晋都城（280–311），311年永嘉之乱陷落",
+        "capitalPeriods": [
+          [
+            280,
+            311
+          ]
+        ]
       },
       {
         "ancient": "长安",
@@ -3801,7 +3829,14 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "align": "l",
-        "remark": "关中及雍州治所重镇，永嘉之乱后晋愍帝即位于此"
+        "remark": "关中及雍州治所重镇；永嘉之乱洛阳沦陷后，晋愍帝建兴元年至四年（313–316）建都于此",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            313,
+            316
+          ]
+        ]
       },
       {
         "ancient": "建邺",
@@ -3819,7 +3854,14 @@ window.DYNASTY_DATA = [
           104.071,
           30.571
         ],
-        "remark": "益州刺史部治所；永兴元年李雄克成都称王，寻建大成国"
+        "remark": "益州治所；永兴元年李雄克成都称王，306年称帝建立大成（成汉）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            306,
+            316
+          ]
+        ]
       },
       {
         "ancient": "邺",
@@ -4179,6 +4221,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 317,
+        "isMapChange": true,
         "headline": "司马睿在建康即晋王位，东晋建立",
         "site": "建康",
         "coord": [
@@ -4205,7 +4248,17 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 328,
+        "headline": "苏峻之乱：历阳内史苏峻反，攻陷建康台城，温峤、陶侃起兵讨平",
+        "site": "建康",
+        "coord": [
+          118.801,
+          32.061
+        ]
+      },
+      {
         "year": 329,
+        "isMapChange": true,
         "headline": "石勒灭前赵，后赵统一北方大部",
         "site": "洛阳",
         "coord": [
@@ -4224,6 +4277,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 347,
+        "isMapChange": true,
         "headline": "桓温西征灭成汉，收复巴蜀",
         "site": "成都",
         "coord": [
@@ -4232,12 +4286,31 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 350,
+        "headline": "冉闵代后赵建立冉魏，颁杀胡令，北方大动荡",
+        "site": "邺城（安阳）",
+        "coord": [
+          114.391,
+          36.101
+        ]
+      },
+      {
         "year": 351,
+        "isMapChange": true,
         "headline": "苻健在长安称天王，建立前秦",
         "site": "长安",
         "coord": [
           108.941,
           34.341
+        ]
+      },
+      {
+        "year": 352,
+        "headline": "前燕慕容儁大败冉闵灭冉魏，迁都邺城正式称帝",
+        "site": "魏昌 · 邺城",
+        "coord": [
+          114.391,
+          36.101
         ]
       },
       {
@@ -4259,7 +4332,26 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 356,
+        "headline": "桓温第二次北伐大破姚襄，进据收复故都洛阳，修复先帝陵墓",
+        "site": "洛阳",
+        "coord": [
+          112.451,
+          34.621
+        ]
+      },
+      {
+        "year": 369,
+        "headline": "枋头之战：桓温北伐受挫，慕容垂大破晋军；垂遭忌投前秦",
+        "site": "枋头（浚县）",
+        "coord": [
+          114.551,
+          35.671
+        ]
+      },
+      {
         "year": 370,
+        "isMapChange": true,
         "headline": "前秦苻坚遣王猛攻破邺城，灭前燕",
         "site": "邺城",
         "coord": [
@@ -4269,6 +4361,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 376,
+        "isMapChange": true,
         "headline": "前秦灭前凉、代国，苻坚统一北方",
         "site": "姑臧（凉州）",
         "coord": [
@@ -4287,6 +4380,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 384,
+        "isMapChange": true,
         "headline": "慕容垂建后燕、姚苌建后秦，北方再度分裂",
         "site": "中山 · 长安",
         "coord": [
@@ -4332,6 +4426,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 398,
+        "isMapChange": true,
         "headline": "拓跋珪自盛乐迁都平城，正式称帝（北魏道武帝）",
         "site": "平城（大同）",
         "coord": [
@@ -4341,8 +4436,8 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 399,
-        "headline": "慕容德据青州建南燕，定都广固",
-        "site": "广固（青州）",
+        "headline": "慕容德建南燕都广固；孙恩五斗米道起事席卷江东八郡，动摇门阀政治",
+        "site": "广固 · 会稽",
         "coord": [
           118.471,
           36.701
@@ -4359,6 +4454,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 407,
+        "isMapChange": true,
         "headline": "赫连勃勃建大夏，筑统万城",
         "site": "统万城",
         "coord": [
@@ -4368,6 +4464,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 410,
+        "isMapChange": true,
         "headline": "刘裕北伐攻破广固，灭南燕",
         "site": "广固（青州）",
         "coord": [
@@ -4376,12 +4473,31 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 413,
+        "headline": "刘裕遣朱龄石西征平定谯蜀，收复巴蜀",
+        "site": "成都",
+        "coord": [
+          104.071,
+          30.571
+        ]
+      },
+      {
         "year": 417,
+        "isMapChange": true,
         "headline": "刘裕北伐灭后秦，收复洛阳、长安",
         "site": "长安",
         "coord": [
           108.941,
           34.341
+        ]
+      },
+      {
+        "year": 420,
+        "headline": "晋恭帝禅位于刘裕，东晋亡，宋齐梁陈南朝开启",
+        "site": "建康",
+        "coord": [
+          118.801,
+          32.061
         ]
       }
     ],
@@ -4395,7 +4511,7 @@ window.DYNASTY_DATA = [
         ],
         "isCapital": true,
         "align": "b",
-        "remark": "东晋都城"
+        "remark": "东晋都城（317–420）"
       },
       {
         "ancient": "长安",
@@ -4405,7 +4521,22 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "align": "l",
-        "remark": "前赵、前秦、后秦都城"
+        "remark": "前赵（319–329）、前秦（351–385）、后秦（386–417）都城；417年刘裕北伐收复",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            319,
+            329
+          ],
+          [
+            351,
+            385
+          ],
+          [
+            386,
+            417
+          ]
+        ]
       },
       {
         "ancient": "襄国",
@@ -4416,7 +4547,14 @@ window.DYNASTY_DATA = [
         ],
         "align": "l",
         "vanish": 335,
-        "remark": "石勒后赵初都（335 年迁邺）"
+        "remark": "石勒后赵初都（319–335，335年迁邺）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            319,
+            335
+          ]
+        ]
       },
       {
         "ancient": "邺",
@@ -4425,7 +4563,14 @@ window.DYNASTY_DATA = [
           114.391,
           36.101
         ],
-        "remark": "后赵、冉魏、前燕都城"
+        "remark": "后赵（335–350）、冉魏（350–352）、前燕（357–370）都城",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            335,
+            370
+          ]
+        ]
       },
       {
         "ancient": "盛乐",
@@ -4436,7 +4581,14 @@ window.DYNASTY_DATA = [
         ],
         "align": "l",
         "vanish": 398,
-        "remark": "代国及北魏早期都城"
+        "remark": "代国及北魏早期都城（386–398）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            386,
+            398
+          ]
+        ]
       },
       {
         "ancient": "平城",
@@ -4446,7 +4598,14 @@ window.DYNASTY_DATA = [
           40.081
         ],
         "appear": 398,
-        "remark": "北魏都城（398 年拓跋珪迁都于此）"
+        "remark": "北魏都城（398年拓跋珪迁都于此）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            398,
+            420
+          ]
+        ]
       },
       {
         "ancient": "中山",
@@ -4457,7 +4616,14 @@ window.DYNASTY_DATA = [
         ],
         "align": "r",
         "appear": 384,
-        "remark": "后燕都城"
+        "remark": "后燕都城（386–397，397年魏攻破后燕迁龙城）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            386,
+            397
+          ]
+        ]
       },
       {
         "ancient": "广固",
@@ -4468,7 +4634,14 @@ window.DYNASTY_DATA = [
         ],
         "align": "r",
         "appear": 399,
-        "remark": "南燕都城"
+        "remark": "南燕都城（399–410），410年刘裕北伐攻灭",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            399,
+            410
+          ]
+        ]
       },
       {
         "ancient": "统万城",
@@ -4479,7 +4652,14 @@ window.DYNASTY_DATA = [
         ],
         "align": "b",
         "appear": 407,
-        "remark": "赫连勃勃胡夏都城"
+        "remark": "赫连勃勃胡夏都城（413–427）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            413,
+            420
+          ]
+        ]
       },
       {
         "ancient": "枹罕",
@@ -4490,7 +4670,18 @@ window.DYNASTY_DATA = [
         ],
         "align": "b",
         "appear": 385,
-        "remark": "乞伏氏西秦都城"
+        "remark": "乞伏氏西秦都城",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            385,
+            400
+          ],
+          [
+            409,
+            420
+          ]
+        ]
       },
       {
         "ancient": "姑臧（凉州）",
@@ -4499,7 +4690,22 @@ window.DYNASTY_DATA = [
           102.641,
           37.931
         ],
-        "remark": "前凉、后凉、北凉都城"
+        "remark": "前凉（320–376）、后凉（386–403）、北凉（412–420...）都城",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            320,
+            376
+          ],
+          [
+            386,
+            403
+          ],
+          [
+            412,
+            420
+          ]
+        ]
       },
       {
         "ancient": "成都",
@@ -4508,7 +4714,14 @@ window.DYNASTY_DATA = [
           104.071,
           30.571
         ],
-        "remark": "成汉都城（304—347）"
+        "remark": "成汉都城（304–347），347年桓温西征收复",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            317,
+            347
+          ]
+        ]
       },
       {
         "ancient": "襄阳",
@@ -4556,7 +4769,18 @@ window.DYNASTY_DATA = [
           120.451,
           41.571
         ],
-        "remark": "前燕、后燕、北燕都城"
+        "remark": "前燕（341–357）、后燕（397–407）、北燕（407–420...）都城",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            341,
+            357
+          ],
+          [
+            397,
+            420
+          ]
+        ]
       },
       {
         "ancient": "洛阳",
@@ -18683,7 +18907,6 @@ window.DYNASTY_DATA = [
     ]
   }
 ];
-
 window.CORRIDOR_DATA = [
   {
     "key": "wall_zhanguo",
