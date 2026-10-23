@@ -480,8 +480,12 @@ window.EN_LOCALE = {
       "Bianzhou"
     ],
     "wudai:907": [
-      "Zhu Wen founds Later Liang; Abaoji becomes Khitan khan",
-      "Bianzhou"
+      "Zhu Wen replaces Tang with Later Liang; Wang Jian founds Former Shu and Abaoji leads Khitan",
+      "Bianzhou · Chengdu"
+    ],
+    "wudai:911": [
+      "Liu Shouguang proclaims Great Yan in Youzhou; Li Cunxu campaigns against Yan (falls in 913)",
+      "Youzhou"
     ],
     "wudai:923": [
       "Li Cunxu destroys Later Liang and founds Later Tang",
@@ -504,12 +508,16 @@ window.EN_LOCALE = {
       "Bianzhou"
     ],
     "wudai:951": [
-      "Guo Wei founds Later Zhou; Liu Chong founds Northern Han at Taiyuan",
-      "Taiyuan"
+      "Guo Wei founds Later Zhou and Liu Chong founds Northern Han; Southern Tang annexes Ma Chu",
+      "Bianzhou · Taiyuan · Tanzhou"
+    ],
+    "wudai:954": [
+      "Battle of Gaoping: Chai Rong and Zhao Kuangyin crush the combined Northern Han and Liao army",
+      "Gaoping (Zezhou)"
     ],
     "wudai:955": [
-      "Emperor Shizong of Later Zhou launches reunification campaigns",
-      "Shouzhou (Huainan)"
+      "Shizong of Later Zhou recovers Qin, Feng, Cheng, and Jie from Later Shu and attacks Huainan",
+      "Qinzhou · Shouzhou (Huainan)"
     ],
     "wudai:958": [
       "Shizong of Later Zhou compels Southern Tang to cede all 14 prefectures north of the Yangtze",
@@ -1040,7 +1048,7 @@ window.EN_LOCALE = {
       "Shazhou / Guazhou"
     ],
     "wudai:909": [
-      "Wang Shenzhi enfeoffed as Prince of Min at Fuzhou",
+      "Later Liang invests Wang Shenzhi as King of Min at Fuzhou",
       "Fuzhou (Changle)"
     ],
     "wudai:916": [
@@ -6181,6 +6189,16 @@ window.EN_LOCALE = {
     "朔方 · 长安": "Shuofang & Chang'an",
     "长安 · 湖县": "Chang'an",
     "凉州（武威）": "Liangzhou (Wuwei)",
-    "大都（北京）": "Dadu (Beijing)"
+    "大都（北京）": "Dadu (Beijing)",
+    "大长和": "Dachanghe",
+    "汴州 · 成都": "Bianzhou · Chengdu",
+    "汴州 · 太原 · 潭州": "Bianzhou · Taiyuan · Tanzhou",
+    "高平（泽州）": "Gaoping (Zezhou)",
+    "秦州 · 寿州（淮南）": "Qinzhou · Shouzhou (Huainan)",
+    "洛阳（兴教门） · 邺都": "Luoyang (Xingjiao Gate) · Yedu",
+    "福州 · 建州": "Fuzhou · Jianzhou",
+    "瓦桥关（雄州）": "Waqiao Pass (Xiongzhou)",
+    "兴王府（广州）": "Xingwangfu (Guangzhou)",
+    "临潢（上京）": "Linhuang (Supreme Capital)"
   }
 };

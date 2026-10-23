@@ -2023,11 +2023,13 @@
       ) {
         return this.activeMilestone.idx;
       }
+      let exactIdx = -1;
       let activeIdx = -1;
       (dynasty.milestones || []).forEach((m, idx) => {
+        if (m.year === this.year) exactIdx = idx;
         if (this._clampYearToDynasty(dynasty, m.year) <= this.year) activeIdx = idx;
       });
-      return activeIdx;
+      return exactIdx >= 0 ? exactIdx : activeIdx;
     }
 
     _updateMilestoneStates(dynasty) {
