@@ -937,6 +937,7 @@ window.DYNASTY_DATA = [
           23.131
         ],
         "align": "l",
+        "appear": -214,
         "remark": "南海郡治所"
       },
       {
@@ -1186,6 +1187,7 @@ window.DYNASTY_DATA = [
           119.3,
           26.08
         ],
+        "appear": -214,
         "remark": "始皇置闽中郡治东冶"
       },
       {
@@ -1352,7 +1354,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -121,
-        "headline": "霍去病两次河西之战，设河西四郡",
+        "headline": "霍去病两次河西之战受降浑邪王，初置武威、酒泉郡",
         "site": "焉支山（河西）",
         "coord": [
           101.001,
@@ -1370,8 +1372,8 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -111,
-        "headline": "平定南越，设九郡",
-        "site": "番禺",
+        "headline": "路博德、杨仆平定南越设九郡；分河西置张掖、敦煌郡",
+        "site": "番禺 · 敦煌",
         "coord": [
           113.261,
           23.131
