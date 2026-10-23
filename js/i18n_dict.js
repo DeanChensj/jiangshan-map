@@ -252,12 +252,24 @@ window.EN_LOCALE = {
       "Julu"
     ],
     "donghan:189": [
-      "Dong Zhuo seizes Luoyang and burns the capital the next year",
-      "Luoyang"
+      "Dong Zhuo seizes Luoyang, deposes Emperor Shao for Emperor Xian, and moves the capital",
+      "Luoyang & Chang'an"
+    ],
+    "donghan:195": [
+      "Sun Ce crosses the Yangtze to conquer Jiangdong; Emperor Xian flees east from Chang'an",
+      "Qu'a & Liyang"
+    ],
+    "donghan:198": [
+      "Battle of Xiapi: Cao Cao floods Xiapi with the Si and Yi rivers, capturing and executing Lu Bu",
+      "Xiapi (Suining)"
     ],
     "donghan:200": [
-      "Battle of Guandu: Cao Cao unifies northern China",
+      "Battle of Guandu: Cao Cao burns Yuan Shao's supply depot at Wuchao; Sun Quan succeeds Sun Ce",
       "Guandu"
+    ],
+    "donghan:204": [
+      "Cao Cao captures Ye City and consolidates control over Hebei's four northern provinces",
+      "Ye (Anyang)"
     ],
     "donghan:208": [
       "Battle of Red Cliffs: Sun-Liu alliance defeats Cao Cao; Liu Bei holds Jingzhou",
@@ -876,7 +888,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "donghan:196": [
-      "Cao Cao escorts Emperor Xian to Xuchang",
+      "Cao Cao welcomes Emperor Xian to Xu (Xuchang) and establishes military-agricultural colonies",
       "Xu (Xuchang)"
     ],
     "donghan:219": [
@@ -903,13 +915,29 @@ window.EN_LOCALE = {
       "Sima Yi holds firm for over 100 days; Zhuge Liang dies on Wuzhang Plains and Shu retreats",
       "Wuzhang Plains (Qishan)"
     ],
+    "sanguo:244": [
+      "Battle of Xingshi: Wang Ping repels Cao Shuang's invasion; Guanqiu Jian sacks Goguryeo's Wandu",
+      "Xingshi (Yangxian) & Wandu"
+    ],
     "sanguo:249": [
       "Incident at the Gaoping Tombs; Sima Yi seizes power in Wei",
       "Luoyang"
     ],
+    "sanguo:255": [
+      "Guanqiu Jian's Shouchun rebellion is crushed by Sima Shi; Jiang Wei routs Wang Jing at Taoxi",
+      "Shouchun & Didao"
+    ],
+    "sanguo:264": [
+      "Zhong Hui and Jiang Wei fall in the Chengdu mutiny; Wei creates Liangzhou, Wu creates Guangzhou",
+      "Chengdu & Panyu"
+    ],
     "sanguo:265": [
       "Sima Yan replaces Cao Wei and establishes Western Jin",
       "Luoyang"
+    ],
+    "sanguo:272": [
+      "Battle of Xiling: Wu commander Lu Kang repels Jin forces under Yang Hu and retakes Xiling",
+      "Xiling (Yichang)"
     ],
     "sanguo:279": [
       "Western Jin launches six-pronged invasion of Eastern Wu",
@@ -1792,8 +1820,8 @@ window.EN_LOCALE = {
       "Linqiang · Huangshui (Xining)"
     ],
     "donghan:215": [
-      "Sun-Liu Xiang River pact divides Jingzhou; Zhang Liao routs Sun Quan at Xiaoyao Ford",
-      "Linxiang & Hefei"
+      "Cao Cao takes Hanzhong; Sun Quan and Liu Bei divide Jingzhou; Zhang Liao holds Xiaoyao Ford",
+      "Nanzheng · Linxiang · Hefei"
     ],
     "dongjin:397": [
       "Tufa Wugu founds Southern Liang in the Hehuang valley with capitals at Ledu and Xiping",
@@ -1832,8 +1860,8 @@ window.EN_LOCALE = {
       "Qufu · Luoyang"
     ],
     "donghan:207": [
-      "Liu Bei visits Zhuge Liang for the Longzhong Plan; Cao Cao routs the Wuhuan at Mt. Bailang",
-      "Longzhong & Mt. Bailang"
+      "Liu Bei makes three visits to Zhuge Liang at Longzhong, adopting the Longzhong Plan",
+      "Longzhong (Xiangyang)"
     ],
     "donghan:211": [
       "Battle of Tong Pass: Cao Cao defeats Ma Chao and Han Sui to pacify Guanzhong",
@@ -6199,6 +6227,30 @@ window.EN_LOCALE = {
     "福州 · 建州": "Fuzhou · Jianzhou",
     "瓦桥关（雄州）": "Waqiao Pass (Xiongzhou)",
     "兴王府（广州）": "Xingwangfu (Guangzhou)",
-    "临潢（上京）": "Linhuang (Supreme Capital)"
+    "临潢（上京）": "Linhuang (Supreme Capital)",
+    "刘繇·孙氏(江东)": "Liu Yao & Sun Clan (Jiangdong)",
+    "士燮(交州)": "Shi Xie (Jiaozhou)",
+    "公孙氏(辽东)": "Gongsun Clan (Liaodong)",
+    "马腾·韩遂(关陇)": "Ma Teng & Han Sui (Guanlong)",
+    "张鲁(汉中)": "Zhang Lu (Hanzhong)",
+    "洛阳 · 长安": "Luoyang & Chang'an",
+    "曲阿 · 历阳": "Qu'a & Liyang",
+    "下邳（睢宁）": "Xiapi (Suining)",
+    "邺（安阳）": "Ye (Anyang)",
+    "隆中（襄阳）": "Longzhong (Xiangyang)",
+    "南郑 · 临湘 · 合肥": "Nanzheng · Linxiang · Hefei",
+    "兴势（洋县） · 丸都": "Xingshi (Yangxian) & Wandu",
+    "寿春 · 狄道": "Shouchun & Didao",
+    "成都 · 番禺": "Chengdu & Panyu",
+    "西陵（宜昌）": "Xiling (Yichang)",
+    "东汉帝都（25–190），初平元年董卓焚洛西迁": "Eastern Han imperial capital (25–190 CE); burned when Dong Zhuo moved the court west in 190 CE",
+    "西京重镇，献帝初平元年至兴平二年（190–195）西迁都此": "Western capital where Emperor Xian held court after relocating from Luoyang (190–195 CE)",
+    "冀州治所，建安九年曹操平河北定霸府，十八年封魏公都邺": "Seat of Ji Province; Cao Cao established his headquarters here in 204 CE and became Duke of Wei at Ye in 213 CE",
+    "建安元年至二十五年（196–220）曹操奉汉献帝都许": "Imperial capital of Emperor Xian under Cao Cao's regency from 196 to 220 CE",
+    "曹魏及西晋都城": "Imperial capital of Cao Wei and Western Jin",
+    "蜀汉都城（221–263），263年魏灭蜀后为益州治所": "Imperial capital of Shu Han (221–263 CE); seat of Yi Province after the Wei conquest in 263 CE",
+    "黄龙元年（229）孙权自武昌迁都于此，孙吴帝都": "Imperial capital of Eastern Wu after Sun Quan moved the court from Wuchang in 229 CE",
+    "曹魏南阳郡治及荆州军事重镇，诸葛亮《出师表》“宛、洛”所指": "Seat of Nanyang Commandery and key Cao Wei northern Jingzhou fortress cited in Zhuge Liang's Northern Memorial",
+    "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都": "Eastern Wu capital under Sun Quan (221–229 CE) and Sun Hao (265–266 CE), serving as Wu's western secondary capital"
   }
 };
