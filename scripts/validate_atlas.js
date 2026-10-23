@@ -3432,6 +3432,54 @@ function main() {
       `Expected XSS angle brackets to be stripped from route place tokens, got ${JSON.stringify(xssInspect.place)}`
     );
 
+    // Late Eastern Han & Three Kingdoms (Sanguozhi) territorial & capitalPeriods regression guards
+    const sanguoSpotChecks = [
+      [{ lng: 118.801, lat: 32.061, year: 229 }, '吴'], // Jianye
+      [{ lng: 119.451, lat: 32.201, year: 229 }, '吴'], // Jingkou
+      [{ lng: 112.121, lat: 32.011, year: 208 }, '曹操(北方)'], // Xiangyang post-208
+      [{ lng: 112.121, lat: 32.011, year: 229 }, '魏'], // Xiangyang in Three Kingdoms
+      [{ lng: 123.171, lat: 41.271, year: 196 }, '公孙氏(辽东)'], // Xiangping (Liaodong)
+      [{ lng: 113.261, lat: 23.131, year: 200 }, '士燮(交州)'], // Panyu (Jiaozhou) 189-210
+      [{ lng: 113.261, lat: 23.131, year: 211 }, '孙权(江东)'], // Panyu submits to Sun Quan 211
+      [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾·韩遂(关陇)'], // Guanlong before Tong Pass
+      [{ lng: 103.82, lat: 36.06, year: 211 }, '曹操(北方)'], // Guanlong after Tong Pass (211)
+      [{ lng: 107.021, lat: 33.071, year: 200 }, '张鲁(汉中)'], // Nanzheng (Hanzhong) 196-214
+      [{ lng: 107.021, lat: 33.071, year: 215 }, '曹操(北方)'], // Hanzhong taken by Cao Cao (215)
+      [{ lng: 107.021, lat: 33.071, year: 219 }, '刘备(益州)'], // Hanzhong taken by Liu Bei (219)
+      [{ lng: 111.698, lat: 29.032, year: 215 }, '刘备(荆益)'], // Wuling west of Xiang River (215)
+      [{ lng: 112.941, lat: 28.231, year: 215 }, '孙权(江东)'], // Changsha east of Xiang River (215)
+    ];
+    for (const [opts, expPol] of sanguoSpotChecks) {
+      const info = ctrl.inspect(opts);
+      assert(
+        info && info.polity === expPol,
+        `Sanguozhi guard: inspect(${JSON.stringify(opts)}) expected polity "${expPol}", got ${JSON.stringify(info && info.polity)}`
+      );
+    }
+    const dhDyn = dynasties.find((d) => d.key === 'donghan');
+    const sgDyn = dynasties.find((d) => d.key === 'sanguo');
+    const dhLuoyang = dhDyn.settlements.find((s) => s.ancient === '洛阳');
+    const dhChangan = dhDyn.settlements.find((s) => s.ancient === '长安');
+    const dhXu = dhDyn.settlements.find((s) => s.ancient === '许');
+    assert(
+      ctrl._isSettlementCapital(dhLuoyang, 100) &&
+        !ctrl._isSettlementCapital(dhLuoyang, 196) &&
+        ctrl._isSettlementCapital(dhChangan, 192) &&
+        ctrl._isSettlementCapital(dhXu, 200),
+      'Expected donghan capitalPeriods to switch Luoyang (25-189) -> Chang\'an (190-195) -> Xu (196-220)'
+    );
+    const sgChengdu = sgDyn.settlements.find((s) => s.ancient === '成都');
+    const sgWuchang = sgDyn.settlements.find((s) => s.ancient === '武昌（鄂县）');
+    const sgJianye = sgDyn.settlements.find((s) => s.ancient === '建业');
+    assert(
+      ctrl._isSettlementCapital(sgChengdu, 234) &&
+        !ctrl._isSettlementCapital(sgChengdu, 265) &&
+        ctrl._isSettlementCapital(sgWuchang, 225) &&
+        !ctrl._isSettlementCapital(sgWuchang, 234) &&
+        ctrl._isSettlementCapital(sgJianye, 234),
+      'Expected sanguo capitalPeriods to reflect Chengdu (221-263), Wuchang (221-228, 265-266), and Jianye (229-280)'
+    );
+
     sandbox.setInterval = setInterval;
     sandbox.clearInterval = clearInterval;
     delete ctrl.stopAutoplay;
