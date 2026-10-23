@@ -4712,13 +4712,123 @@ function main() {
     ctrl.locale = prevLocale;
   }
 
+  // CUJ 35: Yuan Dynasty Historical Accuracy against 《元史》 (History of Yuan)
+  {
+    const hasPolPt = (snapKey, polTitle, lng, lat) => {
+      const pol = snapshots[snapKey].polities.find((p) => p.title === polTitle);
+      return Boolean(pol && pointInShape(lng, lat, pol.shape));
+    };
+    const hasRegPt = (snapKey, regTitle, lng, lat) => {
+      const reg = (snapshots[snapKey].regions || []).find((r) => r.title === regTitle);
+      return Boolean(reg && pointInShape(lng, lat, reg.shape));
+    };
+    const hasPrefPt = (snapKey, prefTitle, lng, lat) => {
+      const pref = (snapshots[snapKey].prefectures || []).find((p) => p.title === prefTitle);
+      return Boolean(pref && pointInShape(lng, lat, pref.shape));
+    };
+
+    // 1. Northwest frontier: Beshbalik ([89.181, 44.001]) & Qocho ([89.53, 42.85]) inside Yuan (not Chagatai)
+    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_b', 's_yuan_c']) {
+      assert(
+        hasPolPt(sk, '元', 89.181, 44.001) &&
+          hasPolPt(sk, '元', 89.53, 42.85) &&
+          !hasPolPt(sk, '察合台汗国', 89.181, 44.001) &&
+          !hasPolPt(sk, '察合台汗国', 89.53, 42.85) &&
+          hasRegPt(sk, '北庭都护府', 89.181, 44.001) &&
+          hasRegPt(sk, '北庭都护府', 89.53, 42.85) &&
+          hasRegPt(sk, '征东行省', 126.55, 37.97),
+        `${sk} must place Beshbalik and Qocho inside Yuan / Beiting Protectorate and Kaesong inside Zhengdong Province`
+      );
+    }
+
+    // 2. 《元史·地理志》 provincial boundaries: Jiqing & Hangzhou in 江浙行省, Kaizhou in 中书省（腹里）, Shanzhou in 河南江北行省, Xiningzhou in 甘肃行省, Hainan in 湖广行省
+    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_b', 's_yuan_c']) {
+      assert(
+        hasRegPt(sk, '江浙行省', 118.801, 32.061) &&
+          !hasRegPt(sk, '河南江北行省', 118.801, 32.061) &&
+          hasRegPt(sk, '河南江北行省', 118.317, 32.301) &&
+          hasRegPt(sk, '江浙行省', 120.151, 30.271) &&
+          hasRegPt(sk, '中书省（腹里）', 115.03, 35.76) &&
+          !hasRegPt(sk, '河南江北行省', 115.03, 35.76) &&
+          hasRegPt(sk, '河南江北行省', 111.17, 34.78) &&
+          !hasRegPt(sk, '中书省（腹里）', 111.17, 34.78) &&
+          hasRegPt(sk, '甘肃行省', 101.78, 36.62) &&
+          hasRegPt(sk, '湖广行省', 109.577, 19.521) &&
+          hasRegPt(sk, '湖广行省', 109.18, 18.36),
+        `${sk} regions must align Jiqing, Hangzhou, Kaizhou, Shanzhou, Xiningzhou, and Hainan with History of Yuan Geography Treatise`
+      );
+    }
+
+    // 3. Circuit (路) chronology between s_yuan_a (1279–1288) and s_yuan (1288–1351) + restored frontier circuits
+    assert(
+      hasPrefPt('s_yuan_a', '安西路', 108.941, 34.341) &&
+        hasPrefPt('s_yuan_a', '鄂州路', 114.311, 30.551) &&
+        hasPrefPt('s_yuan_a', '太原路', 112.551, 37.871) &&
+        hasPrefPt('s_yuan_a', '建康路', 118.801, 32.061) &&
+        hasPrefPt('s_yuan_a', '潭州路', 112.971, 28.201) &&
+        hasPrefPt('s_yuan_a', '南剑路', 118.18, 26.64) &&
+        hasPrefPt('s_yuan', '奉元路', 108.941, 34.341) &&
+        hasPrefPt('s_yuan', '武昌路', 114.311, 30.551) &&
+        hasPrefPt('s_yuan', '冀宁路', 112.551, 37.871) &&
+        hasPrefPt('s_yuan', '集庆路', 118.801, 32.061) &&
+        hasPrefPt('s_yuan', '天临路', 112.971, 28.201) &&
+        hasPrefPt('s_yuan', '延平路', 118.18, 26.64) &&
+        hasPrefPt('s_yuan', '辽阳路', 123.241, 41.271) &&
+        hasPrefPt('s_yuan', '大宁路', 121.13, 41.1) &&
+        hasPrefPt('s_yuan', '和林路', 102.851, 47.201) &&
+        hasPrefPt('s_yuan', '亦集乃路', 101.14, 41.76) &&
+        hasPrefPt('s_yuan', '播州宣慰司', 106.93, 27.72) &&
+        hasPrefPt('s_yuan', '泉州路', 118.681, 24.871) &&
+        hasPrefPt('s_yuan', '汀州路', 117.02, 25.08),
+      's_yuan_a and s_yuan prefectures must reflect pre-1301 vs post-1301 circuit renamings and cover frontier circuits'
+    );
+
+    // 4. Late Yuan Red Turban & warlord territories in s_yuan_b (1351–1363) and s_yuan_c (1363–1368)
+    assert(
+      hasPolPt('s_yuan_b', '宋（韩林儿）', 115.78, 33.87) &&
+        hasPolPt('s_yuan_b', '宋（韩林儿）', 115.801, 32.901) &&
+        hasPolPt('s_yuan_b', '宋（韩林儿）', 116.964, 33.647) &&
+        hasPolPt('s_yuan_b', '宋（韩林儿）', 116.78, 32.58) &&
+        hasPolPt('s_yuan_b', '宋（韩林儿）', 114.311, 34.801) &&
+        hasPolPt('s_yuan_b', '周（张士诚）', 120.62, 31.3) &&
+        hasPolPt('s_yuan_b', '周（张士诚）', 119.45, 32.78) &&
+        hasPolPt('s_yuan_b', '周（张士诚）', 120.087, 30.894) &&
+        hasPolPt('s_yuan_b', '周（张士诚）', 120.151, 30.271) &&
+        hasPolPt('s_yuan_b', '吴（朱元璋）', 118.801, 32.061) &&
+        hasPolPt('s_yuan_b', '吴（朱元璋）', 118.317, 32.301) &&
+        hasPolPt('s_yuan_b', '吴（朱元璋）', 118.497, 31.571) &&
+        hasPolPt('s_yuan_b', '吴（朱元璋）', 119.92, 28.45) &&
+        hasPolPt('s_yuan_b', '方国珍', 121.55, 29.87) &&
+        hasPolPt('s_yuan_b', '方国珍', 120.66, 28.01) &&
+        hasPolPt('s_yuan_b', '天完 · 陈友谅', 114.311, 30.551) &&
+        hasPolPt('s_yuan_b', '天完 · 陈友谅', 115.891, 28.681),
+      's_yuan_b must accurately partition Song (Han Lin\'er), Zhou (Zhang Shicheng), Wu (Zhu Yuanzhang), Fang Guozhen, and Tianwan/Chen Youliang'
+    );
+    assert(
+      hasPolPt('s_yuan_c', '吴（朱元璋）', 118.801, 32.061) &&
+        hasPolPt('s_yuan_c', '吴（朱元璋）', 114.311, 30.551) &&
+        hasPolPt('s_yuan_c', '吴（朱元璋）', 115.891, 28.681) &&
+        hasPolPt('s_yuan_c', '吴（朱元璋）', 116.78, 32.58) &&
+        hasPolPt('s_yuan_c', '周（张士诚）', 120.62, 31.3) &&
+        hasPolPt('s_yuan_c', '方国珍', 121.55, 29.87) &&
+        hasPolPt('s_yuan_c', '陈友定', 119.3, 26.08) &&
+        hasPolPt('s_yuan_c', '陈友定', 118.681, 24.871) &&
+        !hasPolPt('s_yuan_c', '陈友定', 113.261, 23.131) &&
+        !hasPolPt('s_yuan_c', '陈友定', 110.291, 25.271) &&
+        hasPolPt('s_yuan_c', '元', 113.261, 23.131) &&
+        hasPolPt('s_yuan_c', '元', 110.291, 25.271) &&
+        hasPolPt('s_yuan_c', '元', 109.577, 19.521),
+      's_yuan_c must keep Zhou (Zhang Shicheng) and Fang Guozhen until 1367 and restrict Chen Youding strictly to Fujian while Guangdong/Guangxi/Hainan stay in Yuan'
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 34 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 35 E2E CUJs`);
 }
 
 main();
