@@ -736,6 +736,9 @@
     }
 
     formatSpan(d) {
+      if (d && d.key === 'prc') {
+        return `${this.formatYear(d.fromYear, true)} —`;
+      }
       return `${this.formatYear(d.fromYear, true)} — ${this.formatYear(d.toYear, true)}`;
     }
 
@@ -7154,8 +7157,14 @@
         const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
         const nameEn = enDyn.name || d.title;
         const shortEn = enDyn.short || d.badge || d.title;
-        const spanZh = `${d.fromYear <= 0 ? '前' + -d.fromYear : d.fromYear}—${d.toYear <= 0 ? '前' + -d.toYear : d.toYear}`;
-        const spanEn = `${d.fromYear <= 0 ? -d.fromYear + ' BCE' : d.fromYear + ' CE'} – ${d.toYear <= 0 ? -d.toYear + ' BCE' : d.toYear + ' CE'}`;
+        const spanZh =
+          d.key === 'prc'
+            ? `${d.fromYear}—`
+            : `${d.fromYear <= 0 ? '前' + -d.fromYear : d.fromYear}—${d.toYear <= 0 ? '前' + -d.toYear : d.toYear}`;
+        const spanEn =
+          d.key === 'prc'
+            ? `${d.fromYear} CE –`
+            : `${d.fromYear <= 0 ? -d.fromYear + ' BCE' : d.fromYear + ' CE'} – ${d.toYear <= 0 ? -d.toYear + ' BCE' : d.toYear + ' CE'}`;
         entries.push({
           kind: 'dynasty',
           dynasty: d,
