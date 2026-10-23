@@ -3508,6 +3508,152 @@ function main() {
     assert.strictEqual(JSON.stringify(guzangDJ.capitalPeriods), JSON.stringify([[320, 376], [386, 403], [412, 420]]), 'dongjin: 姑臧 capitalPeriods must match');
   }
 
+  // 23y. Southern and Northern Dynasties (Nanbei / Zizhi Tongjian, Nan Shi, Bei Shi & Tan Qixiang Vol 4)
+  {
+    const jiankang = [118.801, 32.061];
+    const jingkou = [119.451, 32.201];
+    const nanbeiSnaps = [
+      ['s_nanbei_0', '宋', '魏'],
+      ['s_nanbei_0b', '宋', '魏'],
+      ['s_nanbei_0c', '宋', '魏'],
+      ['s_nanbei_a', '宋', '魏'],
+      ['s_nanbei_a2', '宋', '魏'],
+      ['s_nanbei_b', '齐', '魏'],
+      ['s_nanbei_c', '梁', '魏'],
+      ['s_nanbei_d', '梁', '东魏'],
+      ['s_nanbei_d1', '梁', '北齐'],
+      ['s_nanbei_d2', '梁', '北齐'],
+      ['s_nanbei_d3', '梁', '北齐'],
+      ['s_nanbei_e', '陈', '北齐'],
+      ['s_nanbei_e2', '陈', '北齐'],
+      ['s_nanbei_f', '陈', '北周'],
+    ];
+
+    for (const [sk, southTitle, northTitle] of nanbeiSnaps) {
+      const snap = snapshots[sk];
+      assert(snap, `Missing snapshot: ${sk}`);
+      const sPol = snap.polities.find((p) => p.title === southTitle);
+      assert(sPol && sPol.shape, `${sk} must have Southern Dynasty polity ${southTitle} with valid shape`);
+      assert(
+        pointInShape(jiankang[0], jiankang[1], sPol.shape),
+        `${sk}: Jiankang ([118.801, 32.061]) must be inside Southern Dynasty (${southTitle})`
+      );
+      assert(
+        pointInShape(jingkou[0], jingkou[1], sPol.shape),
+        `${sk}: Jingkou ([119.451, 32.201]) must be inside Southern Dynasty (${southTitle})`
+      );
+      const nPol = snap.polities.find((p) => p.title === northTitle);
+      if (nPol && nPol.shape) {
+        assert(
+          !pointInShape(jiankang[0], jiankang[1], nPol.shape),
+          `${sk}: Jiankang must NOT be swallowed by Northern Dynasty (${northTitle})`
+        );
+        assert(
+          !pointInShape(jingkou[0], jingkou[1], nPol.shape),
+          `${sk}: Jingkou must NOT be swallowed by Northern Dynasty (${northTitle})`
+        );
+      }
+    }
+
+    // Capital periods & settlement verification for nanbei
+    const nbDyn = dynasties.find((d) => d.key === 'nanbei');
+    assert(nbDyn, 'Missing nanbei dynasty');
+    const findSt = (ancient) => (nbDyn.settlements || []).find((s) => s.ancient === ancient);
+
+    const jiankangNB = findSt('建康');
+    assert(jiankangNB && Array.isArray(jiankangNB.capitalPeriods), 'nanbei: 建康 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(jiankangNB.capitalPeriods),
+      JSON.stringify([[420, 552], [555, 589]]),
+      'nanbei: 建康 capitalPeriods must be [[420, 552], [555, 589]]'
+    );
+
+    const pingchengNB = findSt('平城');
+    assert(pingchengNB && Array.isArray(pingchengNB.capitalPeriods), 'nanbei: 平城 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(pingchengNB.capitalPeriods),
+      JSON.stringify([[420, 494]]),
+      'nanbei: 平城 capitalPeriods must be [[420, 494]]'
+    );
+
+    const luoyangNB = findSt('洛阳');
+    assert(luoyangNB && Array.isArray(luoyangNB.capitalPeriods), 'nanbei: 洛阳 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(luoyangNB.capitalPeriods),
+      JSON.stringify([[494, 534]]),
+      'nanbei: 洛阳 capitalPeriods must be [[494, 534]]'
+    );
+
+    const yeNB = findSt('邺');
+    assert(yeNB && Array.isArray(yeNB.capitalPeriods), 'nanbei: 邺 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(yeNB.capitalPeriods),
+      JSON.stringify([[534, 577]]),
+      'nanbei: 邺 capitalPeriods must be [[534, 577]]'
+    );
+
+    const changanNB = findSt('长安');
+    assert(changanNB && Array.isArray(changanNB.capitalPeriods), 'nanbei: 长安 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(changanNB.capitalPeriods),
+      JSON.stringify([[535, 581]]),
+      'nanbei: 长安 capitalPeriods must be [[535, 581]]'
+    );
+
+    const jianglingNB = findSt('江陵');
+    assert(jianglingNB && Array.isArray(jianglingNB.capitalPeriods), 'nanbei: 江陵 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(jianglingNB.capitalPeriods),
+      JSON.stringify([[552, 587]]),
+      'nanbei: 江陵 capitalPeriods must be [[552, 587]]'
+    );
+
+    const jinyangNB = findSt('晋阳');
+    assert(jinyangNB && Array.isArray(jinyangNB.capitalPeriods), 'nanbei: 晋阳 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(jinyangNB.capitalPeriods),
+      JSON.stringify([[534, 577]]),
+      'nanbei: 晋阳 capitalPeriods must be [[534, 577]]'
+    );
+
+    const tongwanNB = findSt('统万城');
+    assert(tongwanNB && Array.isArray(tongwanNB.capitalPeriods), 'nanbei: 统万城 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(tongwanNB.capitalPeriods),
+      JSON.stringify([[420, 427]]),
+      'nanbei: 统万城 capitalPeriods must be [[420, 427]]'
+    );
+
+    const guzangNB = findSt('姑臧（凉州）');
+    assert(guzangNB && Array.isArray(guzangNB.capitalPeriods), 'nanbei: 姑臧 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(guzangNB.capitalPeriods),
+      JSON.stringify([[420, 439]]),
+      'nanbei: 姑臧 capitalPeriods must be [[420, 439]]'
+    );
+
+    const longchengNB = findSt('龙城');
+    assert(longchengNB && Array.isArray(longchengNB.capitalPeriods), 'nanbei: 龙城 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(longchengNB.capitalPeriods),
+      JSON.stringify([[420, 436]]),
+      'nanbei: 龙城 capitalPeriods must be [[420, 436]]'
+    );
+
+    // Verify settlements added
+    assert(findSt('东阳（青州）'), 'nanbei: must include 东阳（青州）');
+    assert(findSt('钟离（凤阳）'), 'nanbei: must include 钟离（凤阳）');
+
+    // Verify 16 map change milestones
+    const expectedMapChanges = [420, 427, 431, 436, 439, 469, 479, 494, 502, 534, 550, 553, 554, 557, 573, 577];
+    const actualMapChanges = (nbDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    assert.strictEqual(
+      JSON.stringify(actualMapChanges),
+      JSON.stringify(expectedMapChanges),
+      'nanbei: 16 map change milestone years must match'
+    );
+  }
+
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
   {
     ctrl.locale = 'en';

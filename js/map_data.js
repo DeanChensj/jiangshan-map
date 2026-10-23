@@ -5126,7 +5126,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 427,
@@ -5135,7 +5136,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.871,
           37.991
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 431,
@@ -5144,7 +5146,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.871,
           37.991
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 436,
@@ -5153,7 +5156,8 @@ window.DYNASTY_DATA = [
         "coord": [
           120.451,
           41.571
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 439,
@@ -5162,7 +5166,8 @@ window.DYNASTY_DATA = [
         "coord": [
           102.641,
           37.931
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 450,
@@ -5180,7 +5185,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.471,
           36.701
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 479,
@@ -5189,7 +5195,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 485,
@@ -5207,7 +5214,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 502,
@@ -5216,7 +5224,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 507,
@@ -5261,7 +5270,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.351,
           36.301
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 537,
@@ -5298,7 +5308,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.391,
           36.101
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 552,
@@ -5316,7 +5327,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 554,
@@ -5325,7 +5337,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.241,
           30.331
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 557,
@@ -5335,7 +5348,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 573,
@@ -5344,7 +5358,8 @@ window.DYNASTY_DATA = [
         "coord": [
           116.781,
           32.581
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 577,
@@ -5353,7 +5368,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.351,
           36.301
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 580,
@@ -5374,6 +5390,12 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
+        "capitalPeriods": [
+          [
+            494,
+            534
+          ]
+        ],
         "remark": "北魏都城（494—534）；龙门石窟"
       },
       {
@@ -5384,6 +5406,16 @@ window.DYNASTY_DATA = [
           32.061
         ],
         "isCapital": true,
+        "capitalPeriods": [
+          [
+            420,
+            552
+          ],
+          [
+            555,
+            589
+          ]
+        ],
         "remark": "南朝宋、齐、梁、陈都城"
       },
       {
@@ -5392,6 +5424,13 @@ window.DYNASTY_DATA = [
         "coord": [
           113.301,
           40.081
+        ],
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            420,
+            494
+          ]
         ],
         "remark": "北魏494年前都城；云冈石窟"
       },
@@ -5404,6 +5443,13 @@ window.DYNASTY_DATA = [
         ],
         "align": "b",
         "vanish": 431,
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            420,
+            427
+          ]
+        ],
         "remark": "胡夏都城，427 年为北魏攻克"
       },
       {
@@ -5414,6 +5460,13 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "align": "l",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            535,
+            581
+          ]
+        ],
         "remark": "西魏、北周都城"
       },
       {
@@ -5422,6 +5475,13 @@ window.DYNASTY_DATA = [
         "coord": [
           114.391,
           36.101
+        ],
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            534,
+            577
+          ]
         ],
         "remark": "东魏、北齐都城"
       },
@@ -5433,6 +5493,13 @@ window.DYNASTY_DATA = [
           37.871
         ],
         "align": "l",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            534,
+            577
+          ]
+        ],
         "remark": "北齐别都与军事中枢"
       },
       {
@@ -5462,6 +5529,13 @@ window.DYNASTY_DATA = [
           30.331
         ],
         "align": "l",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            552,
+            587
+          ]
+        ],
         "remark": "554 年后为西魏附庸后梁都城"
       },
       {
@@ -5499,7 +5573,51 @@ window.DYNASTY_DATA = [
           102.641,
           37.931
         ],
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            420,
+            439
+          ]
+        ],
         "remark": "北凉都城，439 年北魏克姑臧统一北方"
+      },
+      {
+        "ancient": "龙城",
+        "modern": "朝阳",
+        "coord": [
+          120.451,
+          41.571
+        ],
+        "vanish": 436,
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            420,
+            436
+          ]
+        ],
+        "remark": "北燕都城，436 年为北魏所灭"
+      },
+      {
+        "ancient": "东阳（青州）",
+        "modern": "潍坊·青州",
+        "coord": [
+          118.471,
+          36.701
+        ],
+        "tier": 2,
+        "remark": "南朝青州刺史部治所东阳城，469 年为北魏慕容白曜攻克"
+      },
+      {
+        "ancient": "钟离（凤阳）",
+        "modern": "滁州·凤阳",
+        "coord": [
+          117.56,
+          32.87
+        ],
+        "tier": 2,
+        "remark": "507 年钟离之战所在，南朝淮南御敌要冲"
       },
       {
         "ancient": "彭城（徐州）",
