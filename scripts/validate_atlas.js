@@ -27,6 +27,7 @@ function main() {
     'map_data.js',
     'lore_data.js',
     'i18n_dict.js',
+    'zh_hant.js',
   ];
   let bootSnapshots = null;
   for (const file of dataScripts) {
@@ -4634,13 +4635,90 @@ function main() {
     );
   }
 
+  // CUJ 34: Traditional Chinese (zh-tw) Runtime Conversion, Historical Polysemy Protection & Bidirectional Search
+  {
+    const conv = sandbox.window.ZH_HANT_CONV;
+    assert(conv && typeof conv.toHant === 'function' && typeof conv.toHans === 'function', 'window.ZH_HANT_CONV must be loaded');
+    const polysemyPairs = [
+      ['咸阳', '咸陽'],
+      ['并州刺史', '并州刺史'],
+      ['九州合并', '九州合併'],
+      ['台州与天台山', '台州與天台山'],
+      ['台湾台北', '臺灣臺北'],
+      ['余姚与余杭', '餘姚與餘杭'],
+      ['范仲淹在范阳郡', '范仲淹在范陽郡'],
+      ['钟山与钟繇', '鍾山與鍾繇'],
+      ['吕后、韦后与皇太后', '呂后、韋后與皇太后'],
+      ['后汉与后周', '後漢與後周'],
+      ['诸葛亮北伐与远征', '諸葛亮北伐與遠征'],
+      ['魏征进谏', '魏徵進諫'],
+      ['庆历新政与万历', '慶曆新政與萬曆'],
+      ['中国历史历代', '中國歷史歷代'],
+      ['匈奴单于与于阗、于谦', '匈奴單于與于闐、于謙'],
+      ['陆游与游牧民族', '陸游與游牧民族'],
+      ['岳飞与五岳', '岳飛與五嶽'],
+      ['秃发乌孤与剃发易服', '禿髮烏孤與剃髮易服'],
+      ['韩侂胄与甲胄', '韓侂冑與甲冑'],
+      ['党项羌', '党項羌'],
+    ];
+    for (const [hans, expectedHant] of polysemyPairs) {
+      const actual = conv.toHant(hans);
+      assert.strictEqual(
+        actual,
+        expectedHant,
+        `ZH_HANT_CONV.toHant("${hans}") expected "${expectedHant}", got "${actual}"`
+      );
+      assert.strictEqual(
+        conv.toHant(actual),
+        expectedHant,
+        `ZH_HANT_CONV.toHant must be idempotent on "${actual}"`
+      );
+    }
+
+    const prevLocale = ctrl.locale;
+    ctrl.locale = 'zh-tw';
+    const tangInsp = ctrl.inspect({ year: 741, place: '長安' });
+    assert(
+      tangInsp &&
+        tangInsp.era === '唐玄宗·開元二十九年' &&
+        tangInsp.dynasty.title === '唐' &&
+        tangInsp.resolvedName === '長安' &&
+        tangInsp.polity === '唐' &&
+        tangInsp.regions.includes('關內道') &&
+        tangInsp.modernProvince === '陝西省' &&
+        tangInsp.nearestCity &&
+        tangInsp.nearestCity.remark === '唐都，百萬人口國際都會' &&
+        tangInsp.url.includes('lang=zh-tw'),
+      `Expected Traditional Chinese inspect payload for 741 長安, got ${JSON.stringify(tangInsp)}`
+    );
+
+    // Traditional Chinese search & resolvePlace must work in any UI locale
+    for (const loc of ['zh', 'zh-tw', 'en']) {
+      ctrl.locale = loc;
+      const rChangAn = ctrl.resolvePlace('長安', 741);
+      const rXianYang = ctrl.resolvePlace('咸陽', -221);
+      const rTongGuan = ctrl.resolvePlace('潼關', 756);
+      assert(
+        rChangAn && rChangAn.name === '长安' && rXianYang && rXianYang.name === '咸阳' && rTongGuan && rTongGuan.name === '潼关',
+        `Expected Traditional place resolution to succeed in locale=${loc}`
+      );
+      const qSuShi = ctrl._queryQuickSearch('蘇軾');
+      const qQingLi = ctrl._queryQuickSearch('慶曆四年');
+      assert(
+        qSuShi.length > 0 && qSuShi[0].personKey === 'sushi' && qQingLi.length > 0 && qQingLi[0].year === 1044,
+        `Expected Traditional quick search for 蘇軾 and 慶曆四年 to succeed in locale=${loc}`
+      );
+    }
+    ctrl.locale = prevLocale;
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 33 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 34 E2E CUJs`);
 }
 
 main();

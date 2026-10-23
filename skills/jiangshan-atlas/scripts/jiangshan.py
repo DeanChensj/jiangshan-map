@@ -119,6 +119,8 @@ def build_query(args):
     params.append(("hover", args.hover.strip()))
   if args.lang == "en":
     params.append(("lang", "en"))
+  elif args.lang in ("zh-tw", "tw", "hk", "zh-hk", "zh-hant", "hant"):
+    params.append(("lang", "zh-tw"))
   return urllib.parse.urlencode(params, safe=",")
 
 
@@ -261,6 +263,7 @@ for (const rel of [
   "js/atlas_snapshots.js",
   "js/i18n_dict.js",
   "js/lore_data.js",
+  "js/zh_hant.js",
   "js/app.js"
 ]) {
   vm.runInContext(fs.readFileSync(path.join(root, rel), "utf8"), sandbox);
@@ -269,7 +272,7 @@ const ctrl = Object.create(sandbox.HistoricalAtlasController.prototype);
 ctrl.minYear = -403;
 ctrl.maxYear = 2026;
 ctrl.year = 1102;
-ctrl.locale = process.env.JS_LANG === "en" ? "en" : "zh";
+ctrl.locale = process.env.JS_LANG === "en" ? "en" : process.env.JS_LANG === "zh-tw" ? "zh-tw" : "zh";
 ctrl.enLocale = sandbox.EN_LOCALE;
 ctrl.dynasties = sandbox.DYNASTY_DATA;
 ctrl.snapshots = sandbox.ATLAS_SNAPSHOTS;
@@ -502,9 +505,9 @@ def main():
   )
   parser.add_argument(
       "--lang",
-      choices=["zh", "en"],
+      choices=["zh", "zh-tw", "en"],
       default="zh",
-      help="UI language; 'en' renders the English atlas",
+      help="UI language; 'zh-tw' renders Traditional Chinese, 'en' renders English",
   )
   parser.add_argument(
       "--inspect",
