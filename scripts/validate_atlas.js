@@ -1520,8 +1520,8 @@ function main() {
       snapshots.s_zhanguo_e2.prefectures.length === 26 &&
       snapshots.s_zhanguo_e4.prefectures.length === 27 &&
       snapshots.s_zhanguo_e5.prefectures.length === 34 &&
-      snapshots.s_qin_a.prefectures.length === 37 &&
-      snapshots.s_qin_b.prefectures.length === 38 &&
+      snapshots.s_qin_a.prefectures.length === 36 &&
+      snapshots.s_qin_b.prefectures.length === 37 &&
       snapshots.s_qin.prefectures.length === 41 &&
       snapshots.s_xihan_b.prefectures.length >= 50 &&
       snapshots.s_donghan.prefectures.length >= 48,
@@ -4169,13 +4169,102 @@ function main() {
     assert.strictEqual(speedBtn.disabled, false, 'Unlocking Quiz mode must re-enable #act-play-speed');
   }
 
+  // CUJ 33: Qin & Western Han Historical Accuracy against 《史记》 and 《汉书》
+  {
+    const hasPt = (snapKey, polTitle, lng, lat) => {
+      const pol = snapshots[snapKey].polities.find((p) => p.title === polTitle);
+      return Boolean(pol && pointInShape(lng, lat, pol.shape));
+    };
+
+    // 1. 秦初三十六郡 (-221..-215 BCE): 南海郡 not yet founded; 番禺 & 桂林 in 南越; 肤施 & 陇西 in 秦; 九原 in 匈奴
+    assert(
+      !snapshots.s_qin_a.prefectures.some((p) => p.title === '南海郡') &&
+        !snapshots.s_qin_b.prefectures.some((p) => p.title === '南海郡') &&
+        snapshots.s_qin.prefectures.some((p) => p.title === '南海郡'),
+      '南海郡 must only appear in s_qin (-214 BCE) after Qin conquers Lingnan, restoring 36 commanderies in s_qin_a'
+    );
+    assert(
+      hasPt('s_qin_a', '南越', 113.261, 23.131) &&
+        hasPt('s_qin_a', '南越', 110.291, 25.271) &&
+        !hasPt('s_qin_a', '秦', 113.261, 23.131) &&
+        hasPt('s_qin_b', '南越', 113.261, 23.131) &&
+        hasPt('s_qin', '秦', 113.261, 23.131) &&
+        hasPt('s_qin', '秦', 110.291, 25.271),
+      'Lingnan (Panyu & Guilin) must belong to Nanyue in s_qin_a/s_qin_b (-221..-214 BCE) and Qin in s_qin (-214..-206 BCE)'
+    );
+    assert(
+      hasPt('s_qin_a', '秦', 110.261, 37.501) &&
+        hasPt('s_qin_a', '秦', 111.19, 40.27) &&
+        hasPt('s_qin_a', '秦', 103.861, 35.381) &&
+        hasPt('s_qin_a', '匈奴', 109.841, 40.661) &&
+        hasPt('s_qin_b', '秦', 109.841, 40.661),
+      's_qin_a must keep Fushi (Shangjun), Yunzhong, and Longxi inside Qin while Jiuyuan (Hetao) stays in Xiongnu until Meng Tian (-215 BCE, s_qin_b)'
+    );
+
+    // 2. 楚汉之争 (s_qin_chuhan, -206..-202 BCE): 三川郡、颍川郡、东郡、上郡、陇西 in 汉（刘邦）; 云中 in 赵 · 代; 九原 in 匈奴
+    assert(
+      hasPt('s_qin_chuhan', '汉（刘邦）', 112.451, 34.621) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 113.38, 34.79) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 113.471, 34.151) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 114.311, 34.801) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 115.03, 35.76) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 110.261, 37.501) &&
+        hasPt('s_qin_chuhan', '汉（刘邦）', 103.861, 35.381) &&
+        hasPt('s_qin_chuhan', '赵 · 代', 111.19, 40.27) &&
+        hasPt('s_qin_chuhan', '匈奴', 109.841, 40.661) &&
+        hasPt('s_qin_chuhan', '闽越', 120.66, 28.01) &&
+        hasPt('s_qin_chuhan', '南越（赵佗）', 105.851, 21.031),
+      's_qin_chuhan must cover Sanchuan (Luoyang, Xingyang), Yingchuan (Yangzhai), Dongjun (Daliang, Puyang), Shangjun (Fushi), Longxi, Yunzhong, Jiuyuan, Dongou, and Jiaozhi'
+    );
+
+    // 3. 西汉初 (s_xihan_a, -202..-128 BCE) & 汉武帝北伐南征: 河南地 (朔方) in 匈奴 until -127 BCE; 五岭之南 in 南越 until -111 BCE
+    assert(
+      hasPt('s_xihan_a', '汉（郡国并行）', 110.261, 37.501) &&
+        hasPt('s_xihan_a', '汉（郡国并行）', 111.19, 40.27) &&
+        hasPt('s_xihan_a', '汉（郡国并行）', 103.861, 35.381) &&
+        hasPt('s_xihan_a', '匈奴', 107.401, 40.751) &&
+        hasPt('s_xihan_b1', '汉', 107.401, 40.751),
+      's_xihan_a must keep Fushi, Yunzhong, and Longxi in Han while Shuofang (Hetao) stays in Xiongnu until Wei Qing (-127 BCE, s_xihan_b1)'
+    );
+    assert(
+      hasPt('s_xihan_a', '南越', 113.261, 23.131) &&
+        hasPt('s_xihan_a', '南越', 111.28, 23.48) &&
+        hasPt('s_xihan_a', '南越', 109.416, 24.326) &&
+        hasPt('s_xihan_b2', '南越', 113.261, 23.131) &&
+        hasPt('s_xihan_b3', '汉', 113.261, 23.131) &&
+        hasPt('s_xihan_b3', '汉', 111.28, 23.48),
+      'Panyu, Guangxin (Cangwu), and Tanzhong (Yulin) must stay in Nanyue until -111 BCE (s_xihan_b3)'
+    );
+
+    // 4. 西域都护府 (-60 BCE, s_xihan_c) vs 西域诸国 (-111..-61 BCE, s_xihan_b3/s_xihan_b); 乐浪郡 (-108 BCE); 敦煌 & 居延
+    assert(
+      !snapshots.s_xihan_b3.polities.some((p) => p.title === '西域都护府') &&
+        !snapshots.s_xihan_b.polities.some((p) => p.title === '西域都护府') &&
+        snapshots.s_xihan_b3.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
+        snapshots.s_xihan_b.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
+        snapshots.s_xihan_c.polities.some((p) => p.title === '西域都护府' && p.role === 'protectorate'),
+      'Protectorate of the Western Regions (西域都护府) must not appear before -60 BCE (s_xihan_c)'
+    );
+    assert(
+      !hasPt('s_xihan_b3', '汉', 125.751, 39.031) &&
+        hasPt('s_xihan_b', '汉', 125.751, 39.031) &&
+        hasPt('s_xihan_c', '汉', 125.751, 39.031) &&
+        hasPt('s_xihan_d', '新（王莽）', 125.751, 39.031) &&
+        hasPt('s_xihan_b2', '汉', 94.661, 40.141) &&
+        hasPt('s_xihan_b', '汉', 94.661, 40.141) &&
+        hasPt('s_xihan_b', '汉', 101.06, 41.95) &&
+        hasPt('s_xihan_c', '汉', 101.06, 41.95),
+      'Lelang Commandery (-108 BCE), Dunhuang, and Juyan must lie inside Han/Xin polygons'
+    );
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 32 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 33 E2E CUJs`);
 }
 
 main();
