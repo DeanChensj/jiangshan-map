@@ -43,6 +43,18 @@ function fmtYearEn(y) {
   return y < 0 ? `${Math.abs(y)} BCE` : `${y} CE`;
 }
 
+function fmtDynSpanZh(d) {
+  return d.key === 'prc'
+    ? `${fmtYearShortZh(d.fromYear)}—`
+    : `${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}`;
+}
+
+function fmtDynSpanEn(d) {
+  return d.key === 'prc'
+    ? `${fmtYearEn(d.fromYear)} –`
+    : `${fmtYearEn(d.fromYear)} – ${fmtYearEn(d.toYear)}`;
+}
+
 function loadAtlasRuntime() {
   const sandbox = {
     window: {},
@@ -673,7 +685,7 @@ function renderFooter(allDynasties) {
   const dynLinks = allDynasties
     .map(
       (d) =>
-        `<a class="chip-link" href="${BASE_URL}/topics/${d.key}.html">${escHtml(d.title)}（${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}）</a>`
+        `<a class="chip-link" href="${BASE_URL}/topics/${d.key}.html">${escHtml(d.title)}（${fmtDynSpanZh(d)}）</a>`
     )
     .join('\n        ');
   return `    <section class="section-card">
@@ -696,13 +708,14 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
   ctrl.locale = 'zh';
 
   const focusY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
-  const spanZh = `${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}`;
-  const spanEn = `${fmtYearEn(d.fromYear)} – ${fmtYearEn(d.toYear)}`;
+  const spanZh = fmtDynSpanZh(d);
+  const spanEn = fmtDynSpanEn(d);
   const canonicalUrl = `${BASE_URL}/topics/${d.key}.html`;
   const mapUrl = `${BASE_URL}/?year=${focusY}`;
 
   const pageTitle = `${d.title}历史地图（${spanZh} · ${titleEn}）· 疆域演变、州郡政区、古今地名对照与重大事件 | 江山时序`;
-  const pageDesc = `${d.title}历史地图（${fmtYearZh(d.fromYear)}至${fmtYearZh(d.toYear)}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${(d.settlements || []).length}座城池古今地名对照与${(d.milestones || []).length}项编年重大历史事件。`;
+  const spanFullZh = d.key === 'prc' ? `${fmtYearZh(d.fromYear)}至今` : `${fmtYearZh(d.fromYear)}至${fmtYearZh(d.toYear)}`;
+  const pageDesc = `${d.title}历史地图（${spanFullZh}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${(d.settlements || []).length}座城池古今地名对照与${(d.milestones || []).length}项编年重大历史事件。`;
 
   const phases = d.phases && d.phases.length > 0 ? d.phases : [{ until: d.toYear, snap: d.snapKey }];
   const phaseRowsHtml = phases
@@ -731,9 +744,13 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
       const overviewText = ph.overview
         ? `<br/><small style="color:#5e5346;">${escHtml(ph.overview)}</small>`
         : '';
+      const phaseSpanStr =
+        d.key === 'prc' && pIdx === phases.length - 1
+          ? `${fmtYearShortZh(sy)} —`
+          : `${fmtYearShortZh(sy)} — ${fmtYearShortZh(ey)}`;
       return `          <tr>
             <td>第 ${pIdx + 1} 阶段</td>
-            <td><strong>${fmtYearShortZh(sy)} — ${fmtYearShortZh(ey)}</strong><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
+            <td><strong>${phaseSpanStr}</strong><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
             <td>${escHtml(polities.join('、') || d.title)}</td>
             <td>${escHtml(prefs.slice(0, 14).join('、') || '全境省区')}${prefs.length > 14 ? ` 等 ${prefs.length} 个政区` : ''}</td>
             <td><a href="${BASE_URL}/?year=${midYear}">查看 ${fmtYearShortZh(midYear)}年 舆图 →</a></td>
@@ -840,7 +857,7 @@ ${renderTopHeader()}
       <h1>${escHtml(d.title)}历史地图（${escHtml(spanZh)}）· 疆域演变、州郡政区与古今地名</h1>
       <p class="en-sub">${escHtml(titleEn)} Historical Atlas (${escHtml(spanEn)}) · Capital: ${escHtml(seatEn)}</p>
       <div class="meta-pills">
-        <span class="meta-pill"><strong>起止年代：</strong>${fmtYearZh(d.fromYear)} — ${fmtYearZh(d.toYear)}</span>
+        <span class="meta-pill"><strong>起止年代：</strong>${d.key === 'prc' ? `${fmtYearZh(d.fromYear)} —` : `${fmtYearZh(d.fromYear)} — ${fmtYearZh(d.toYear)}`}</span>
         <span class="meta-pill"><strong>历代都城：</strong>${escHtml(d.seat)}</span>
         <span class="meta-pill"><strong>版图演变阶段：</strong>${phases.length} 个时期快照</span>
         <span class="meta-pill"><strong>收录名城：</strong>${settlements.length} 座古城</span>
@@ -1161,7 +1178,7 @@ ${routeRows}
 
         const rowUrl = `${BASE_URL}/?year=${sampleY}&place=${encodeURIComponent(targetPlace)}`;
         return `          <tr>
-            <td><strong>${escHtml(d.title)}</strong>（${fmtYearShortZh(d.fromYear)}—${fmtYearShortZh(d.toYear)}）</td>
+            <td><strong>${escHtml(d.title)}</strong>（${fmtDynSpanZh(d)}）</td>
             <td>${escHtml(dInfo.era)}</td>
             <td>${escHtml(dInfo.polity || d.title)}</td>
             <td>${escHtml(adminStr)}</td>
@@ -1556,7 +1573,7 @@ function updateIndexHtmlSeoDirectory(dynMeta, journeyMeta, featuredMeta, dynasti
         .map((m) => `${fmtYearShortZh(m.year)}年${m.headline}`)
         .join('；');
       const focusYr = d.focusYear !== undefined ? d.focusYear : d.fromYear;
-      return `          <li><a href="${BASE_URL}/?year=${focusYr}"><strong>${escHtml(d.title)}历史地图（${escHtml(fmtYearShortZh(d.fromYear))}—${escHtml(fmtYearShortZh(d.toYear))} · ${escHtml(enName)}）</strong></a> — 都城：${escHtml(d.seat)}。代表事件：${escHtml(sampleEvs)}。</li>`;
+      return `          <li><a href="${BASE_URL}/?year=${focusYr}"><strong>${escHtml(d.title)}历史地图（${escHtml(fmtDynSpanZh(d))} · ${escHtml(enName)}）</strong></a> — 都城：${escHtml(d.seat)}。代表事件：${escHtml(sampleEvs)}。</li>`;
     })
     .join('\n');
   html = html.replace(

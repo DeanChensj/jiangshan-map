@@ -661,6 +661,13 @@ function main() {
   assert.strictEqual(ctrl.formatEraLabel(1082, dynasties[11]), '北宋神宗·元丰五年');
   assert.strictEqual(ctrl.formatEraLabel(1587, dynasties[14]), '明万历十五年');
   assert.strictEqual(ctrl.formatEraLabel(1683, dynasties[15]), '清康熙二十二年');
+  const prcDynObj = dynasties.find((d) => d.key === 'prc');
+  assert.strictEqual(ctrl.formatSpan(prcDynObj), '1949 —', 'PRC dynasty span must be open-ended (1949 —)');
+  const prcSearchHit = ctrl._queryQuickSearch('中华人民共和国').find((h) => h.kind === 'dynasty' && h.dynasty.key === 'prc');
+  assert(
+    prcSearchHit && prcSearchHit.subZh.startsWith('1949—') && prcSearchHit.subEn.startsWith('1949 CE –'),
+    `Expected PRC quick search subtitle to use open-ended 1949— / 1949 CE –, got ${JSON.stringify(prcSearchHit)}`
+  );
 
   // CUJ 9h: Adjacent / Overlapping Polity Color Collision Guard across all snapshots
   function shapeBbox(shape) {
