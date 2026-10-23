@@ -1,0 +1,17 @@
+{
+  "name": "江山时序 · Chronicles of the Realm",
+  "short_name": "江山时序",
+  "description": "交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览历代疆域、州郡政区、古今地名对照与青史人物行迹。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3eee4",
+  "theme_color": "#f3eee4",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
