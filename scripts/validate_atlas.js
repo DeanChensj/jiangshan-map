@@ -3654,6 +3654,133 @@ function main() {
     );
   }
 
+  // 23z. Sui Dynasty & Tang Dynasty (Zizhi Tongjian, Old/New Book of Tang & Tan Qixiang Vol 5)
+  {
+    const findDyn = (k) => dynasties.find((d) => d.key === k);
+    const suiDyn = findDyn('sui');
+    const tangDyn = findDyn('tang');
+    assert(suiDyn, 'Missing sui dynasty');
+    assert(tangDyn, 'Missing tang dynasty');
+
+    const findSt = (dyn, ancient) => (dyn.settlements || []).find((s) => s.ancient === ancient);
+
+    // Sui capitals & periods
+    const daxingSui = findSt(suiDyn, '大兴');
+    assert(daxingSui && Array.isArray(daxingSui.capitalPeriods), 'sui: 大兴 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(daxingSui.capitalPeriods), JSON.stringify([[581, 618]]), 'sui: 大兴 capitalPeriods must be [[581, 618]]');
+
+    const luoyangSui = findSt(suiDyn, '东都洛阳');
+    assert(luoyangSui && Array.isArray(luoyangSui.capitalPeriods), 'sui: 东都洛阳 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(luoyangSui.capitalPeriods), JSON.stringify([[605, 618]]), 'sui: 东都洛阳 capitalPeriods must be [[605, 618]]');
+
+    const jianglingSui = findSt(suiDyn, '江陵');
+    assert(jianglingSui && Array.isArray(jianglingSui.capitalPeriods), 'sui: 江陵 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(jianglingSui.capitalPeriods), JSON.stringify([[581, 587]]), 'sui: 江陵 capitalPeriods must be [[581, 587]]');
+
+    // Sui warlord settlements
+    for (const w of ['历阳（和县）', '金城（秦都）', '马邑（朔州）']) {
+      assert(findSt(suiDyn, w), `sui: must include late Sui warlord center ${w}`);
+    }
+
+    // Sui 5 map change milestones
+    const expectedSuiMapChanges = [581, 587, 589, 609, 618];
+    const actualSuiMapChanges = (suiDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    assert.strictEqual(
+      JSON.stringify(actualSuiMapChanges),
+      JSON.stringify(expectedSuiMapChanges),
+      'sui: 5 map change milestone years must match'
+    );
+
+    // Tang capitals & periods
+    const changanTang = findSt(tangDyn, '长安');
+    assert(changanTang && Array.isArray(changanTang.capitalPeriods), 'tang: 长安 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(changanTang.capitalPeriods), JSON.stringify([[618, 904]]), 'tang: 长安 capitalPeriods must be [[618, 904]]');
+
+    const luoyangTang = findSt(tangDyn, '东都洛阳');
+    assert(luoyangTang && Array.isArray(luoyangTang.capitalPeriods), 'tang: 东都洛阳 must define capitalPeriods');
+    assert.strictEqual(
+      JSON.stringify(luoyangTang.capitalPeriods),
+      JSON.stringify([[690, 705], [904, 907]]),
+      'tang: 东都洛阳 capitalPeriods must be [[690, 705], [904, 907]]'
+    );
+
+    const taiyuanTang = findSt(tangDyn, '北都太原');
+    assert(taiyuanTang && Array.isArray(taiyuanTang.capitalPeriods), 'tang: 北都太原 must define capitalPeriods');
+    assert.strictEqual(JSON.stringify(taiyuanTang.capitalPeriods), JSON.stringify([[723, 907]]), 'tang: 北都太原 capitalPeriods must be [[723, 907]]');
+
+    // Tang Six Great Protectorates (六大都护府)
+    const sixProtectorates = [
+      '安西都护府（龟兹）',
+      '北庭都护府',
+      '安东都护府',
+      '安南都护府（交州）',
+      '单于大都护府（和林格尔）',
+      '安北都护府',
+    ];
+    for (const prot of sixProtectorates) {
+      assert(findSt(tangDyn, prot), `tang: must include Six Great Protectorate ${prot}`);
+    }
+
+    // Tang warlord settlements
+    for (const w of ['洺州（夏都）', '历阳（吴都）', '金城（兰州）']) {
+      assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
+    }
+
+    // Tang 19 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 755, 757, 763, 764, 790, 848, 881, 907];
+    const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    assert.strictEqual(
+      JSON.stringify(actualTangMapChanges),
+      JSON.stringify(expectedTangMapChanges),
+      'tang: 19 map change milestone years must match'
+    );
+
+    // Spatial checks: s_sui_d and s_tang_0 warlords
+    const suiD = snapshots.s_sui_d;
+    assert(suiD, 'Missing s_sui_d');
+    const findPol = (snap, title) => (snap.polities || []).find((p) => p.title === title);
+
+    const tangInSuiD = findPol(suiD, '唐（李渊）');
+    assert(tangInSuiD && pointInShape(108.941, 34.341, tangInSuiD.shape), 's_sui_d: Chang\'an must be inside 唐（李渊）');
+    assert(tangInSuiD && pointInShape(112.551, 37.871, tangInSuiD.shape), 's_sui_d: Taiyuan must be inside 唐（李渊）');
+
+    const weiInSuiD = findPol(suiD, '魏（李密）');
+    assert(weiInSuiD && pointInShape(112.451, 34.621, weiInSuiD.shape), 's_sui_d: Luoyang must be inside 魏（李密）');
+
+    const liangInSuiD = findPol(suiD, '梁（萧铣）');
+    assert(liangInSuiD && pointInShape(112.241, 30.331, liangInSuiD.shape), 's_sui_d: Jiangling must be inside 梁（萧铣）');
+
+    const tang0 = snapshots.s_tang_0;
+    assert(tang0, 'Missing s_tang_0');
+    const tangPol0 = findPol(tang0, '唐');
+    assert(tangPol0 && pointInShape(108.941, 34.341, tangPol0.shape), 's_tang_0: Chang\'an must be inside 唐');
+
+    const zhengInTang0 = findPol(tang0, '郑（王世充）');
+    assert(zhengInTang0 && pointInShape(112.451, 34.621, zhengInTang0.shape), 's_tang_0: Luoyang must be inside 郑（王世充）');
+
+    const xiaInTang0 = findPol(tang0, '夏（窦建德）');
+    assert(xiaInTang0 && pointInShape(116.12, 38.18, xiaInTang0.shape), 's_tang_0: Letou must be inside 夏（窦建德）');
+
+    const wuInTang0 = findPol(tang0, '吴（杜伏威）');
+    assert(wuInTang0 && pointInShape(119.411, 32.391, wuInTang0.shape), 's_tang_0: Jiangdu must be inside 吴（杜伏威）');
+
+    // High Tang s_tang_a5 core cities inside 唐
+    const tangA5 = snapshots.s_tang_a5;
+    assert(tangA5, 'Missing s_tang_a5');
+    const tangPolA5 = findPol(tangA5, '唐');
+    assert(tangPolA5, 's_tang_a5 must have 唐 polity');
+    for (const [cName, lng, lat] of [
+      ['长安', 108.941, 34.341],
+      ['洛阳', 112.451, 34.621],
+      ['太原', 112.551, 37.871],
+      ['成都', 104.071, 30.571],
+      ['广州', 113.261, 23.131],
+      ['扬州', 119.411, 32.391],
+    ]) {
+      assert(pointInShape(lng, lat, tangPolA5.shape), `s_tang_a5: ${cName} must be inside 唐`);
+    }
+  }
+
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
   {
     ctrl.locale = 'en';
