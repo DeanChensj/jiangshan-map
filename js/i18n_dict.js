@@ -196,12 +196,12 @@ window.EN_LOCALE = {
       "Shuofang & Chang'an"
     ],
     "xihan:-121": [
-      "Huo Qubing’s Hexi campaigns; the Four Hexi Commanderies founded",
+      "Huo Qubing’s Hexi campaigns; Wuwei and Jiuquan commanderies founded",
       "Yanzhi Mts. (Hexi)"
     ],
     "xihan:-111": [
-      "Conquest of Nanyue; nine southern commanderies established",
-      "Panyu"
+      "Conquest of Nanyue (nine commanderies); Zhangye and Dunhuang founded",
+      "Panyu & Dunhuang"
     ],
     "xihan:-108": [
       "Conquest of Wiman Joseon; Lelang and three other commanderies established",
