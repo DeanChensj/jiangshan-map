@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jiangshan GeoJSON · Leaflet</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    .bar { position: absolute; z-index: 1000; top: 10px; left: 54px; right: 10px; background: #fff; padding: 6px 10px;
+      border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.3); font: 13px/1.4 system-ui, sans-serif; }
+    .bar input { width: 100%; }
+    #hit { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="bar">
+    <input id="year" type="range" min="-403" max="1948" value="741" aria-label="Year" />
+    <div id="caption"></div>
+    <div id="hit">点击地图查询该处所属政权与政区 · Click the map to locate</div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="jiangshan-locate.js"></script>
+  <script>
+    // Usage: demo.html?year=1415&lon=118.78&lat=32.06  → loads that year, highlights and zooms to the place.
+    const atlas = JiangshanLocate.create();
+    const q = new URLSearchParams(location.search);
+    const map = L.map('map').setView([34, 108], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors · borders: jiangshan-map (GPL-3.0)'
+    }).addTo(map);
+
+    const input = document.getElementById('year');
+    const fmt = (y) => (y < 0 ? `前 ${-y}` : `${y}`);
+    const style = (f) => {
+      const p = f.properties;
+      if (p.layer === 'polity') return { color: p.tint || '#7c5338', weight: 2, fillColor: p.tint || '#7c5338', fillOpacity: 0.25 };
+      if (p.layer === 'region') return { color: '#5b4636', weight: 1.2, fill: false };
+      return { color: '#8a7560', weight: 0.6, dashArray: '2 3', fill: false };
+    };
+    let base = null, shownFile = null, marker = null;
+    const highlight = L.layerGroup().addTo(map);
+
+    async function showYear(year) {
+      const { dynasty, phase, collection } = await atlas.loadYear(year);
+      document.getElementById('caption').textContent = `${fmt(year)} · ${dynasty.title} · ${collection.caption || ''}`;
+      if (shownFile === phase.file) return;
+      shownFile = phase.file;
+      if (base) base.remove();
+      base = L.geoJSON(collection, {
+        style,
+        onEachFeature: (f, l) => l.bindTooltip(f.properties.title + (f.properties.title_en ? ` · ${f.properties.title_en}` : ''), { sticky: true })
+      }).addTo(map);
+      highlight.clearLayers();
+    }
+
+    async function locate(lon, lat, year, zoom) {
+      const hit = await atlas.locate(lon, lat, year);
+      highlight.clearLayers();
+      if (marker) marker.remove();
+      marker = L.circleMarker([lat, lon], { radius: 5, color: '#b22', weight: 2 }).addTo(map);
+      const best = hit.prefecture || hit.region || hit.polity;
+      if (best) L.geoJSON(best, { style: { color: '#b22', weight: 2.5, fillOpacity: 0.1 }, interactive: false }).addTo(highlight);
+      const name = (f) => (f ? f.properties.title + (f.properties.title_en ? `（${f.properties.title_en}）` : '') : '—');
+      document.getElementById('hit').textContent =
+        `${lat.toFixed(2)}, ${lon.toFixed(2)} · 政权 ${name(hit.polity)} · 一级政区 ${name(hit.region)} · 州郡 ${name(hit.prefecture)}`;
+      if (zoom && best) map.fitBounds(L.geoJSON(best).getBounds(), { maxZoom: 8, padding: [40, 40] });
+      return hit;
+    }
+
+    let current = null;
+    input.addEventListener('input', async () => {
+      const y = +input.value || 1;
+      await showYear(y);
+      if (current) locate(current[0], current[1], y, false);
+    });
+    map.on('click', (e) => {
+      current = [e.latlng.lng, e.latlng.lat];
+      locate(current[0], current[1], +input.value || 1, false);
+    });
+
+    (async () => {
+      // The slider covers exactly the exported years (index.json), e.g. -403 to 1948.
+      const { dynasties } = await atlas.index();
+      input.min = dynasties[0].from;
+      input.max = dynasties[dynasties.length - 1].to;
+      const asked = q.has('year') ? +q.get('year') : +input.value;
+      const year = Math.min(Math.max(asked || 1, +input.min), +input.max);
+      input.value = year;
+      await showYear(year);
+      if (q.has('lon') && q.has('lat')) {
+        current = [+q.get('lon'), +q.get('lat')];
+        await locate(current[0], current[1], year, true);
+      }
+      document.body.dataset.ready = '1';
+    })();
+  </script>
+</body>
+</html>

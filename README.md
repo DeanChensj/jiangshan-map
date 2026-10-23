@@ -165,6 +165,32 @@ Then open `http://localhost:8000` in your browser.
 
 ---
 
+## GeoJSON Export (for Leaflet / MapLibre / QGIS)
+
+The app ships its geometry as compact topology-deduplicated VLQ bundles. To use the vector layers in other projects, generate standard RFC 7946 GeoJSON (EPSG:4326, lon/lat) locally; the output goes to `geojson/` and is not committed. The export covers 403 BCE to 1948; later years and the modern province layer are not included.
+
+```bash
+node scripts/export_geojson.js            # or: node scripts/export_geojson.js <outDir>
+```
+
+- `snapshots/<id>.geojson` — one file per territorial phase; each feature has a `bbox` and `layer` (`polity` / `region` / `prefecture`), `title`, `title_en`, `category`, `tint`, `anchor`.
+- `index.json` — every dynasty's phases with `from` / `to` years (negative = BCE, no year 0) and the matching snapshot file.
+- `corridors.geojson` (walls, canals, roads, sea routes), `settlements.geojson`, `milestones.geojson`, `neighbors.geojson`, and `modern/` (rivers, lakes, hydro labels; `appear` / `vanish` give the years historical river courses and lakes are shown).
+
+To look up a point without loading every phase, use [`geojson/jiangshan-locate.js`](geojson/jiangshan-locate.js): it loads `index.json` plus only the snapshot covering the year, then runs a bbox-filtered point-in-polygon test.
+
+```js
+const atlas = JiangshanLocate.create(); // or create({ base: '<url of geojson/>' })
+const hit = await atlas.locate(118.78, 32.06, 1415); // lon, lat, year
+hit.polity.properties.title;     // 明
+hit.region.properties.title;     // 南直隶
+hit.prefecture.properties.title; // 应天府 (a GeoJSON Feature: L.geoJSON(hit.prefecture))
+```
+
+After exporting, serve the repository (`python3 -m http.server 8000`) and open `http://localhost:8000/geojson/demo.html` for a Leaflet example: drag the year slider, click the map, or open `demo.html?year=1415&lon=118.78&lat=32.06` to load, highlight and zoom automatically. The data is GPL-3.0, and historical borders are schematic approximations.
+
+---
+
 ## Credits & License
 
 - **Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard-Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
