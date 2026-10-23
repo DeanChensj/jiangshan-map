@@ -299,20 +299,44 @@ window.EN_LOCALE = {
       "Western Jin conquers Eastern Wu, reunifying China",
       "Jianye"
     ],
+    "xijin:290": [
+      "Emperor Wu dies; Empress Jia Nanfeng's court intrigues begin",
+      "Luoyang"
+    ],
     "xijin:291": [
       "Empress Jia Nanfeng seizes power, sparking the War of the Eight Princes",
       "Luoyang"
     ],
-    "xijin:304": [
-      "Liu Yuan proclaims the kingdom of Han, opening the Sixteen Kingdoms era",
-      "Zuoguocheng (Lishi)"
-    ],
-    "xijin:311": [
-      "Disaster of Yongjia: Luoyang falls and Emperor Huai is captured",
+    "xijin:300": [
+      "Crown Prince Sima Yu murdered as Sima Lun purges Empress Jia",
       "Luoyang"
     ],
+    "xijin:301": [
+      "Sima Lun usurps the throne; War of the Eight Princes escalates",
+      "Luoyang"
+    ],
+    "xijin:304": [
+      "Liu Yuan proclaims Han Zhao as Li Xiong founds Cheng Han",
+      "Zuoguocheng (Lishi) · Chengdu"
+    ],
+    "xijin:306": [
+      "Li Xiong proclaims Cheng Han emperor as Prince Yue prevails",
+      "Chengdu · Luoyang"
+    ],
+    "xijin:307": [
+      "Sima Rui and Wang Dao assume command of Jianye to stabilize Jiangdong",
+      "Jianye"
+    ],
+    "xijin:311": [
+      "Disaster of Yongjia: Han Zhao captures Luoyang and Emperor Huai",
+      "Luoyang"
+    ],
+    "xijin:313": [
+      "Emperor Min enthroned in Chang'an; Zu Ti launches northern expedition",
+      "Chang'an · Jingkou"
+    ],
     "xijin:316": [
-      "Chang'an falls; end of Western Jin",
+      "Chang'an falls to Han Zhao; Emperor Min surrenders, ending Western Jin",
       "Chang'an"
     ],
     "dongjin:317": [
@@ -323,21 +347,53 @@ window.EN_LOCALE = {
       "Shi Le proclaims himself King of Zhao, founding Later Zhao",
       "Xiangguo (Xingtai)"
     ],
+    "dongjin:322": [
+      "Rebellion of Wang Dun: Wang Dun marches into Jiankang and controls court",
+      "Wuchang · Jiankang"
+    ],
+    "dongjin:328": [
+      "Su Jun Rebellion: rebel forces seize Jiankang palace before defeat",
+      "Jiankang"
+    ],
     "dongjin:329": [
       "Shi Le destroys Former Zhao; Later Zhao unifies most of northern China",
       "Luoyang"
+    ],
+    "dongjin:335": [
+      "Shi Hu moves the Later Zhao capital from Xiangguo to Ye",
+      "Ye (Anyang)"
     ],
     "dongjin:347": [
       "Huan Wen conquers Cheng-Han and recovers Sichuan",
       "Chengdu"
     ],
+    "dongjin:350": [
+      "Ran Min overthrows Later Zhao and founds Ran Wei at Ye",
+      "Ye (Anyang)"
+    ],
     "dongjin:351": [
       "Fu Jian proclaims the Former Qin at Chang’an",
       "Chang'an"
     ],
+    "dongjin:352": [
+      "Former Yan destroys Ran Wei; Murong Jun proclaims emperor at Ye",
+      "Weichang · Ye"
+    ],
+    "dongjin:353": [
+      "Wang Xizhi and Xie An gather at Orchid Pavilion, composing Preface",
+      "Lanting (Kuaiji)"
+    ],
     "dongjin:354": [
-      "Huan Wen’s first northern expedition reaches Bashang; Wang Meng meets Huan Wen",
+      "Huan Wen’s first northern expedition reaches Bashang; Wang Meng meets Huan",
       "Bashang (east of Chang'an)"
+    ],
+    "dongjin:356": [
+      "Huan Wen advances on Luoyang, repairing Jin imperial tombs",
+      "Luoyang"
+    ],
+    "dongjin:369": [
+      "Battle of Fangtou: Murong Chui defeats Huan Wen before fleeing to Qin",
+      "Fangtou (Xunxian)"
     ],
     "dongjin:370": [
       "Fu Jian of Former Qin sends Wang Meng to capture Ye and destroy Former Yan",
@@ -351,6 +407,14 @@ window.EN_LOCALE = {
       "Battle of Fei River: Xie An & Xie Xuan’s Beifu army routs Fu Jian; Former Qin collapses",
       "Fei River (Shouyang · Mt. Bagong)"
     ],
+    "dongjin:384": [
+      "Murong Chui founds Later Yan and Yao Chang founds Later Qin",
+      "Zhongshan · Chang'an"
+    ],
+    "dongjin:385": [
+      "Qifu Guoren founds Western Qin; Lü Guang founds Later Liang",
+      "Fuhan (Linxia)"
+    ],
     "dongjin:386": [
       "Tuoba Gui restores Dai and founds Northern Wei",
       "Shengle"
@@ -358,6 +422,22 @@ window.EN_LOCALE = {
     "dongjin:395": [
       "Battle of Canhe Slope: Northern Wei crushes the Later Yan army",
       "Canhe Slope (east of Datong)"
+    ],
+    "dongjin:397": [
+      "Tufa Wugu founds Southern Liang in Hehuang valley with Ledu & Xiping",
+      "Ledu · Xiping (Qinghai)"
+    ],
+    "dongjin:398": [
+      "Tuoba Gui moves Northern Wei capital to Pingcheng and takes imperial title",
+      "Pingcheng (Datong)"
+    ],
+    "dongjin:399": [
+      "Murong De founds Southern Yan; Sun En uprising shakes Jiangdong",
+      "Guanggu · Kuaiji"
+    ],
+    "dongjin:404": [
+      "Liu Yu rises at Jingkou to crush usurper Huan Xuan and restore Jin",
+      "Jingkou · Jiankang · Jiangling"
     ],
     "dongjin:407": [
       "Helian Bobo founds the Xia kingdom and builds Tongwancheng",
@@ -367,9 +447,17 @@ window.EN_LOCALE = {
       "Liu Yu’s northern expedition captures Guanggu and destroys Southern Yan",
       "Guanggu (Qingzhou)"
     ],
+    "dongjin:413": [
+      "Liu Yu dispatches Zhu Lingshi to conquer Qiao Shu and recover Ba-Shu",
+      "Chengdu"
+    ],
     "dongjin:417": [
       "Liu Yu's northern expedition destroys Later Qin and retakes Luoyang & Chang'an",
       "Chang'an"
+    ],
+    "dongjin:420": [
+      "Emperor Gong abdicates to Liu Yu, ending Eastern Jin and opening Liu Song",
+      "Jiankang"
     ],
     "nanbei:420": [
       "Liu Yu replaces Jin with Liu Song, beginning the Southern Dynasties",
@@ -942,42 +1030,6 @@ window.EN_LOCALE = {
     "sanguo:279": [
       "Western Jin launches six-pronged invasion of Eastern Wu",
       "Jiangling / Jianye"
-    ],
-    "xijin:290": [
-      "Emperor Wu dies; Empress Jia Nanfeng's court intrigues begin",
-      "Luoyang"
-    ],
-    "xijin:301": [
-      "Sima Lun usurps the throne; War of the Eight Princes escalates",
-      "Luoyang"
-    ],
-    "xijin:306": [
-      "Li Xiong proclaims Cheng-Han in Chengdu; Sima Yue controls Luoyang court",
-      "Chengdu / Luoyang"
-    ],
-    "xijin:313": [
-      "Emperor Min enthroned in Chang'an; Zu Ti crosses the Yangtze north",
-      "Chang'an / Jingkou"
-    ],
-    "dongjin:335": [
-      "Shi Hu moves the Later Zhao capital from Xiangguo to Ye",
-      "Ye (Anyang)"
-    ],
-    "dongjin:384": [
-      "Murong Chui founds Later Yan and Yao Chang founds Later Qin",
-      "Zhongshan / Chang'an"
-    ],
-    "dongjin:385": [
-      "Qifu Guoren founds Western Qin; Lü Guang founds Later Liang",
-      "Fuhan (Linxia)"
-    ],
-    "dongjin:398": [
-      "Tuoba Gui moves the Northern Wei capital to Pingcheng and takes imperial title",
-      "Pingcheng (Datong)"
-    ],
-    "dongjin:399": [
-      "Murong De founds Southern Yan in Shandong with Guanggu as capital",
-      "Guanggu (Qingzhou)"
     ],
     "nanbei:431": [
       "Helian Ding captured, Northern Wei conquers Xia; Era of Yuanjia in Liu Song",
@@ -2620,25 +2672,40 @@ window.EN_LOCALE = {
     "诸葛亮北伐基地": "Forward base for Zhuge Liang's northern expeditions",
     "魏吴反复争夺": "Repeatedly contested between Wei and Wu",
     "西晋都城": "Western Jin capital",
+    "西晋都城（280–311），311年永嘉之乱陷落": "Western Jin imperial capital (280–311); sacked in the Yongjia Disaster of 311",
+    "关中及雍州治所重镇；永嘉之乱洛阳沦陷后，晋愍帝建兴元年至四年（313–316）建都于此": "Seat of Guanzhong and Yongzhou; after the fall of Luoyang, capital of Emperor Min (313–316)",
+    "益州治所；永兴元年李雄克成都称王，306年称帝建立大成（成汉）": "Seat of Yizhou; captured by Li Xiong in 304, proclaimed emperor of Cheng-Han in 306",
     "原吴都，后为东晋建康": "Former Wu capital; later Eastern Jin Jiankang",
     "汉赵都城": "Capital of Han-Zhao",
     "东晋都城": "Eastern Jin capital",
+    "东晋都城（317–420）": "Eastern Jin imperial capital (317–420)",
     "前秦、后秦都城": "Capital of Former Qin and Later Qin",
     "前赵、前秦、后秦都城": "Capital of Former Zhao, Former Qin, and Later Qin",
+    "前赵（319–329）、前秦（351–385）、后秦（386–417）都城；417年刘裕北伐收复": "Capital of Former Zhao (319–329), Former Qin (351–385), and Later Qin (386–417); recovered by Liu Yu in 417",
     "石勒后赵初都（335 年迁邺）": "First capital of Shi Le’s Later Zhao (moved to Ye in 335)",
+    "石勒后赵初都（319–335，335年迁邺）": "First capital of Later Zhao under Shi Le (319–335; moved to Ye in 335)",
     "后赵、冉魏、前燕都城": "Capital of Later Zhao, Ran Wei, and Former Yan",
+    "后赵（335–350）、冉魏（350–352）、前燕（357–370）都城": "Capital of Later Zhao (335–350), Ran Wei (350–352), and Former Yan (357–370)",
     "代国及北魏早期都城": "Early capital of Tuoba Dai and Northern Wei",
+    "代国及北魏早期都城（386–398）": "Early capital of Tuoba Dai and Northern Wei (386–398)",
     "北魏都城（398 年拓跋珪迁都于此）": "Northern Wei capital (moved here by Tuoba Gui in 398)",
+    "北魏都城（398年拓跋珪迁都于此）": "Northern Wei imperial capital (established by Tuoba Gui in 398)",
     "后燕都城": "Capital of Later Yan",
+    "后燕都城（386–397，397年魏攻破后燕迁龙城）": "Capital of Later Yan (386–397; fell to Northern Wei in 397 as Yan moved to Longcheng)",
     "南燕都城": "Capital of Southern Yan",
+    "南燕都城（399–410），410年刘裕北伐攻灭": "Capital of Southern Yan (399–410); destroyed by Liu Yu's northern expedition in 410",
     "赫连勃勃胡夏都城": "Capital of Helian Bobo’s Xia kingdom",
+    "赫连勃勃胡夏都城（413–427）": "Capital of Helian Bobo’s Xia kingdom (413–427)",
     "乞伏氏西秦都城": "Capital of Qifu’s Western Qin",
     "前凉、后凉、北凉都城": "Capital of Former Liang, Later Liang, and Northern Liang",
+    "前凉（320–376）、后凉（386–403）、北凉（412–420...）都城": "Capital of Former Liang (320–376), Later Liang (386–403), and Northern Liang (412–420...)",
     "成汉都城（304—347）": "Capital of Cheng-Han (304–347)",
+    "成汉都城（304–347），347年桓温西征收复": "Capital of Cheng-Han (304–347); recovered by Huan Wen's western expedition in 347",
+    "前燕、后燕、北燕都城": "Capital of Former, Later, and Northern Yan",
+    "前燕（341–357）、后燕（397–407）、北燕（407–420...）都城": "Capital of Former Yan (341–357), Later Yan (397–407), and Northern Yan (407–420...)",
     "东晋北伐重镇，379 年一度为前秦攻占": "Key Eastern Jin northern fortress; briefly taken by Former Qin in 379",
     "383 年淝水之战（八公山）所在": "Site of the Battle of Fei River (Mt. Bagong, 383 CE)",
     "谢玄北府兵大本营": "Headquarters of Xie Xuan’s elite Beifu (Northern Headquarters) Army",
-    "前燕、后燕、北燕都城": "Capital of Former, Later, and Northern Yan",
     "北魏都城（494—534）；龙门石窟": "Northern Wei capital (494–534); Longmen Grottoes",
     "南朝宋、齐、梁、陈都城": "Capital of the Southern Dynasties (Song, Qi, Liang, Chen)",
     "北魏494年前都城；云冈石窟": "Northern Wei capital until 494; Yungang Grottoes",
