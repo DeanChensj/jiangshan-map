@@ -1224,19 +1224,27 @@ window.EN_LOCALE = {
       "Liaoyang"
     ],
     "yuan:1307": [
-      "Central Secretariat and Ten Branch Secretariats system consolidated",
-      "Dadu"
+      "Emperor Wuzong establishes Karakorum (Lingbei) Province, finalizing the provincial system",
+      "Dadu · Karakorum"
     ],
     "yuan:1313": [
       "Emperor Renzong restores the civil exams with Zhu Xi's Neo-Confucian canon as the standard",
       "Dadu (Beijing)"
     ],
+    "yuan:1355": [
+      "Liu Futong enthrones Han Lin'er at Bozhou as Emperor of Great Song (Longfeng era)",
+      "Bozhou"
+    ],
     "yuan:1356": [
-      "Zhu Yuanzhang captures Jiqing (Nanjing), renaming it Yingtianfu",
+      "Zhu Yuanzhang takes Jiqing (Yingtianfu); Zhang Shicheng makes Pingjiang his capital",
       "Jiqing (Nanjing)"
     ],
+    "yuan:1360": [
+      "Chen Youliang kills Xu Shouhui at Caishi, proclaims Han, and is repelled at Longwan",
+      "Caishi · Yingtian"
+    ],
     "yuan:1363": [
-      "Battle of Lake Poyang: Zhu Yuanzhang defeats Chen Youliang",
+      "Battle of Lake Poyang: Zhu Yuanzhang defeats Chen Youliang; Ming Yuzhen founds Xia",
       "Lake Poyang"
     ],
     "ming:1442": [
@@ -6349,6 +6357,36 @@ window.EN_LOCALE = {
     "蜀汉都城（221–263），263年魏灭蜀后为益州治所": "Imperial capital of Shu Han (221–263 CE); seat of Yi Province after the Wei conquest in 263 CE",
     "黄龙元年（229）孙权自武昌迁都于此，孙吴帝都": "Imperial capital of Eastern Wu after Sun Quan moved the court from Wuchang in 229 CE",
     "曹魏南阳郡治及荆州军事重镇，诸葛亮《出师表》“宛、洛”所指": "Seat of Nanyang Commandery and key Cao Wei northern Jingzhou fortress cited in Zhuge Liang's Northern Memorial",
-    "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都": "Eastern Wu capital under Sun Quan (221–229 CE) and Sun Hao (265–266 CE), serving as Wu's western secondary capital"
+    "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都": "Eastern Wu capital under Sun Quan (221–229 CE) and Sun Hao (265–266 CE), serving as Wu's western secondary capital",
+    "方国珍": "Fang Guozhen",
+    "天完 · 陈友谅": "Tianwan · Chen Youliang",
+    "征东行省": "Zhengdong Province",
+    "北庭都护府": "Beiting Protectorate",
+    "开京（征东行省）": "Kaesong (Zhengdong Province)",
+    "开城": "Kaesong",
+    "淮南·寿县": "Huainan · Shouxian",
+    "大都 · 和林": "Dadu · Karakorum",
+    "采石 · 应天": "Caishi · Yingtian",
+    "安西路": "Anxi Route",
+    "延安路": "Yan'an Route",
+    "怀庆路": "Huaiqing Route",
+    "顺元路": "Shunyuan Route",
+    "辽阳路": "Liaoyang Route",
+    "沈阳路": "Shenyang Route",
+    "广宁府路": "Guangningfu Route",
+    "大宁路": "Daning Route",
+    "开元路": "Kaiyuan Route",
+    "水达达路": "Shuidada Route",
+    "兴和路": "Xinghe Route",
+    "和林路": "Helin (Karakorum) Route",
+    "冀宁路": "Jining (Taiyuan) Route",
+    "集庆路": "Jiqing (Nanjing) Route",
+    "江浙行省重镇、江南财赋之冠，元末张士诚定都于此": "Premier tax hub of Jiangzhe Province and Jiangnan; capital of Zhang Shicheng's Zhou regime in the late Yuan",
+    "河南江北行省淮西重镇，元末红巾军韩林儿龙凤大宋后期都城": "Key Huaixi stronghold in Henan-Jiangbei Province; later capital of Han Lin'er's Red Turban Song regime",
+    "征东等处行中书省治所，高丽国王兼领征东行省左丞相": "Seat of the Zhengdong Branch Secretariat, where the King of Goryeo concurrently served as Left Grand Councilor",
+    "1279 — 1287 · 崖山灭宋统一全国、置北庭都护府与征东行省，设总制院辖吐蕃": "1279 — 1287 · Reunification at Yashan, Beiting Protectorate & Zhengdong Province established, Zongzhi Yuan over Tibet",
+    "1288 — 1350 · 改总制院为宣政院、置和林（岭北）行省：中书省与诸行省大一统盛世": "1288 — 1350 · Xuanzheng Yuan & Karakorum (Lingbei) Province established: High Yuan under Central & Branch Secretariats",
+    "1351 — 1362 · 红巾大起义与群雄并起：龙凤大宋、徐寿辉（陈友谅）、朱元璋、张士诚、方国珍、明玉珍割据": "1351 — 1362 · Red Turban Uprising & Rival Warlords: Song (Han Lin'er), Tianwan/Chen Youliang, Zhu Yuanzhang, Zhang Shicheng, Fang Guozhen, Ming Yuzhen",
+    "1363 — 1368 · 鄱阳湖决战后群雄兼并：朱元璋灭陈友谅与张士诚、方国珍，陈友定据福建、梁王守云南": "1363 — 1368 · Post-Poyang Consolidation: Zhu Yuanzhang conquers Chen Youliang, Zhang Shicheng & Fang Guozhen; Chen Youding in Fujian, Prince of Liang in Yunnan"
   }
 };
