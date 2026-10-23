@@ -3899,13 +3899,148 @@ function main() {
     );
   }
 
+  // CUJ 32: Timeline & Person Chronicle Playback Speed Control (1x -> 2x -> 0.25x -> 0.5x -> 1x)
+  {
+    const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
+    assert(
+      indexHtml.includes('class="playback-controls-group"') &&
+        indexHtml.includes('id="act-play-speed"') &&
+        indexHtml.includes('id="lbl-play-speed"'),
+      'index.html must include #act-play-speed and #lbl-play-speed inside .playback-controls-group in #scrubber-dock'
+    );
+    assert(
+      styleCss.includes('grid-template-rows: 28px auto;') &&
+        styleCss.includes('grid-column: 1 / -1;'),
+      'style.css must define 2-row mobile timeline layout with full-width #scrubber-rail-wrap under @media (max-width: 640px)'
+    );
+
+    const proto = ControllerClass.prototype;
+    let scheduledMs = [];
+    let clearedIds = [];
+    let nextTimerId = 100;
+    sandbox.setInterval = (fn, ms) => {
+      scheduledMs.push(ms);
+      return ++nextTimerId;
+    };
+    sandbox.clearInterval = (id) => {
+      clearedIds.push(id);
+    };
+
+    const speedBtn = {
+      disabled: false,
+      title: '',
+      _attrs: {},
+      setAttribute(k, v) {
+        this._attrs[k] = String(v);
+      },
+      getAttribute(k) {
+        return this._attrs[k] || null;
+      },
+      classList: {
+        _s: new Set(),
+        toggle(c, f) {
+          if (f === undefined ? !this._s.has(c) : f) this._s.add(c);
+          else this._s.delete(c);
+        },
+        contains(c) {
+          return this._s.has(c);
+        },
+      },
+    };
+    const speedLbl = { textContent: '1×' };
+    const domMap = {
+      'act-play-speed': speedBtn,
+      'lbl-play-speed': speedLbl,
+    };
+    ctrl._id = (id) => domMap[id] || null;
+
+    ctrl.locale = 'zh';
+    ctrl.challenge = null;
+    ctrl.playing = true;
+    ctrl.playInterval = 99;
+    ctrl.playProgress = 0.42;
+    ctrl.playHoldTicks = 3;
+    ctrl.playShownTicks = 2;
+    ctrl.playSpeed = 1;
+    proto._updatePlaySpeedUi.call(ctrl);
+    assert.strictEqual(speedLbl.textContent, '1×', 'Initial speed label must be 1×');
+    assert(
+      !speedBtn.classList.contains('is-custom-speed'),
+      '1× default speed must not have is-custom-speed active highlight'
+    );
+
+    // Cycle 1 -> 2 -> 0.25 -> 0.5 -> 1 while timeline autoplay is running
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 2, 'First click must switch speed to 2×');
+    assert.strictEqual(speedLbl.textContent, '2×', 'Label must update to 2×');
+    assert(
+      speedBtn.classList.contains('is-custom-speed'),
+      'Non-1× speed must highlight #act-play-speed with .is-custom-speed'
+    );
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 140, '2× speed must reschedule tick interval to 140ms');
+    assert.strictEqual(ctrl.playProgress, 0.42, 'Changing speed live must preserve playProgress');
+    assert.strictEqual(ctrl.playHoldTicks, 3, 'Changing speed live must preserve playHoldTicks');
+
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.25, 'Second click must switch speed to 0.25×');
+    assert.strictEqual(speedLbl.textContent, '0.25×', 'Label must update to 0.25×');
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 1120, '0.25× speed must reschedule tick interval to 1120ms');
+
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.5, 'Third click must switch speed to 0.5×');
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 560, '0.5× speed must reschedule tick interval to 560ms');
+
+    ctrl.locale = 'en';
+    proto._updatePlaySpeedUi.call(ctrl);
+    assert(
+      speedBtn.getAttribute('aria-label') === 'Playback speed 0.5×' &&
+        speedBtn.title.includes('Playback speed 0.5×'),
+      'English locale must localize #act-play-speed aria-label and title'
+    );
+
+    ctrl.locale = 'zh';
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 1, 'Fourth click must return speed to 1×');
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 280, '1× speed must restore 280ms tick interval');
+    assert(
+      !speedBtn.classList.contains('is-custom-speed'),
+      'Returning to 1× must remove .is-custom-speed'
+    );
+
+    // Verify Person Chronicle autoplay also respects playSpeed and live rescheduling
+    ctrl.playing = false;
+    ctrl.playInterval = null;
+    ctrl.activePerson = { name: '苏轼', events: [{ year: 1037 }, { year: 1082 }] };
+    ctrl.activePersonEventIdx = 0;
+    ctrl.personTimer = 77;
+    proto.setPlaySpeed.call(ctrl, 2);
+    assert.strictEqual(
+      scheduledMs[scheduledMs.length - 1],
+      1300,
+      '2× speed during Person Chronicle autoplay must reschedule personTimer to 1300ms'
+    );
+    proto.setPlaySpeed.call(ctrl, 1);
+    ctrl.activePerson = null;
+    ctrl.personTimer = null;
+
+    // Verify Quiz Mode lock disables #act-play-speed and blocks cyclePlaySpeed
+    proto._syncChallengeScrubberState.call(ctrl, true);
+    assert.strictEqual(speedBtn.disabled, true, 'Quiz mode lock must disable #act-play-speed');
+    ctrl.challenge = { active: true };
+    assert.strictEqual(
+      proto.cyclePlaySpeed.call(ctrl),
+      1,
+      'cyclePlaySpeed() must be a no-op while Quiz Mode challenge is active'
+    );
+    ctrl.challenge = null;
+    proto._syncChallengeScrubberState.call(ctrl, false);
+    assert.strictEqual(speedBtn.disabled, false, 'Unlocking Quiz mode must re-enable #act-play-speed');
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 31 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 32 E2E CUJs`);
 }
 
 main();
