@@ -6025,7 +6025,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 587,
@@ -6034,7 +6035,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.241,
           30.331
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 589,
@@ -6043,7 +6045,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 599,
@@ -6079,7 +6082,8 @@ window.DYNASTY_DATA = [
         "coord": [
           100.451,
           38.931
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 610,
@@ -6124,7 +6128,8 @@ window.DYNASTY_DATA = [
         "coord": [
           119.411,
           32.391
-        ]
+        ],
+        "isMapChange": true
       }
     ],
     "settlements": [
@@ -6136,6 +6141,12 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "isCapital": true,
+        "capitalPeriods": [
+          [
+            581,
+            618
+          ]
+        ],
         "align": "l",
         "remark": "隋都，唐长安城前身"
       },
@@ -6146,7 +6157,14 @@ window.DYNASTY_DATA = [
           112.451,
           34.621
         ],
-        "remark": "大运河中枢"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            605,
+            618
+          ]
+        ],
+        "remark": "隋东都（605年始建），运河与天下之中"
       },
       {
         "ancient": "江都",
@@ -6268,6 +6286,13 @@ window.DYNASTY_DATA = [
         "coord": [
           112.241,
           30.331
+        ],
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            581,
+            587
+          ]
         ],
         "remark": "西梁都城（587 年隋废西梁置荆州总管府）"
       },
@@ -6549,6 +6574,36 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "隋文帝杨坚受封随国公之地，去“辶”定国号为隋"
+      },
+      {
+        "ancient": "历阳（和县）",
+        "modern": "马鞍山·和县",
+        "coord": [
+          118.36,
+          31.73
+        ],
+        "tier": 2,
+        "remark": "杜伏威据江淮称吴王，治历阳"
+      },
+      {
+        "ancient": "金城（秦都）",
+        "modern": "兰州",
+        "coord": [
+          103.821,
+          36.061
+        ],
+        "tier": 2,
+        "remark": "薛举自称西秦霸王，称帝建都金城"
+      },
+      {
+        "ancient": "马邑（朔州）",
+        "modern": "朔州",
+        "coord": [
+          112.43,
+          39.33
+        ],
+        "tier": 2,
+        "remark": "刘武周依附突厥起兵马邑，自称定阳可汗"
       }
     ],
     "phases": [
@@ -6592,7 +6647,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 621,
@@ -6601,7 +6657,8 @@ window.DYNASTY_DATA = [
         "coord": [
           113.201,
           34.851
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 626,
@@ -6628,7 +6685,8 @@ window.DYNASTY_DATA = [
         "coord": [
           110.501,
           41.201
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 635,
@@ -6647,7 +6705,8 @@ window.DYNASTY_DATA = [
         "coord": [
           89.201,
           42.951
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 641,
@@ -6684,7 +6743,8 @@ window.DYNASTY_DATA = [
         "coord": [
           89.181,
           44.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 663,
@@ -6702,7 +6762,8 @@ window.DYNASTY_DATA = [
         "coord": [
           125.751,
           39.031
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 670,
@@ -6720,7 +6781,8 @@ window.DYNASTY_DATA = [
         "coord": [
           123.171,
           41.271
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 679,
@@ -6738,7 +6800,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.451,
           34.621
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 698,
@@ -6756,7 +6819,8 @@ window.DYNASTY_DATA = [
         "coord": [
           89.181,
           44.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 705,
@@ -6903,7 +6967,8 @@ window.DYNASTY_DATA = [
         "coord": [
           102.641,
           37.931
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 780,
@@ -6930,7 +6995,8 @@ window.DYNASTY_DATA = [
         "coord": [
           89.181,
           44.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 805,
@@ -6975,7 +7041,8 @@ window.DYNASTY_DATA = [
         "coord": [
           94.661,
           40.141
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 868,
@@ -7002,7 +7069,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.931,
           34.261
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 895,
@@ -7020,7 +7088,8 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           34.801
-        ]
+        ],
+        "isMapChange": true
       }
     ],
     "settlements": [
@@ -7052,6 +7121,12 @@ window.DYNASTY_DATA = [
           34.341
         ],
         "isCapital": true,
+        "capitalPeriods": [
+          [
+            618,
+            904
+          ]
+        ],
         "align": "l",
         "remark": "唐都，百万人口国际都会"
       },
@@ -7062,7 +7137,18 @@ window.DYNASTY_DATA = [
           112.451,
           34.621
         ],
-        "remark": "武周时为神都"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            690,
+            705
+          ],
+          [
+            904,
+            907
+          ]
+        ],
+        "remark": "武周时为神都（690—705）；天祐中唐室迁都洛阳（904—907）"
       },
       {
         "ancient": "扬州",
@@ -7108,7 +7194,14 @@ window.DYNASTY_DATA = [
           112.551,
           37.871
         ],
-        "remark": "李唐龙兴之地，河东节度使治所"
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            723,
+            907
+          ]
+        ],
+        "remark": "李唐龙兴之地；开元十一年升为北都，河东节度使治所"
       },
       {
         "ancient": "凉州",
@@ -8026,6 +8119,60 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "垂拱二年（686年）陈元光请置漳州，开漳圣王经营闽南之始"
+      },
+      {
+        "ancient": "单于大都护府（和林格尔）",
+        "modern": "呼和浩特·和林格尔",
+        "coord": [
+          111.821,
+          40.381
+        ],
+        "appear": 650,
+        "vanish": 745,
+        "tier": 2,
+        "remark": "永徽元年设单于都护府于云中金河，统辖漠南突厥诸羁縻府州"
+      },
+      {
+        "ancient": "安北都护府",
+        "modern": "蒙古·哈拉和林",
+        "coord": [
+          102.8,
+          47.2
+        ],
+        "appear": 647,
+        "vanish": 780,
+        "tier": 2,
+        "remark": "贞观二十一年设燕然都护府，总章二年改安北都护府，统领漠北铁勒回纥诸部"
+      },
+      {
+        "ancient": "洺州（夏都）",
+        "modern": "邯郸·永年",
+        "coord": [
+          114.6,
+          36.7
+        ],
+        "tier": 2,
+        "remark": "窦建德迁都洺州，后刘黑闼据此建汉东国"
+      },
+      {
+        "ancient": "历阳（吴都）",
+        "modern": "马鞍山·和县",
+        "coord": [
+          118.36,
+          31.73
+        ],
+        "tier": 2,
+        "remark": "杜伏威建立江淮吴政权，降唐封吴王"
+      },
+      {
+        "ancient": "金城（兰州）",
+        "modern": "兰州",
+        "coord": [
+          103.821,
+          36.061
+        ],
+        "tier": 2,
+        "remark": "薛举西秦都城，唐武德二年平薛仁杲置兰州"
       }
     ],
     "phases": [
