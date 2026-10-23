@@ -308,7 +308,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261021e" />
+  <link rel="stylesheet" href="css/style.css?v=20261023a" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -345,10 +345,15 @@
             </svg>
           </button>
         </div>
-        <button id="act-locale" class="action-btn subtle locale-switch" title="Switch language / 切换中英文">
-          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="8" cy="8" rx="2.8" ry="6.2" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
-          <span id="lbl-locale">EN</span>
-        </button>
+        <div class="locale-pill-group" role="group" aria-label="切换语言 / Switch language">
+          <button id="act-locale-hant" class="action-btn subtle locale-switch locale-pill-left" title="切換繁體中文 / 切换简体中文">
+            <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="8" cy="8" rx="2.8" ry="6.2" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+            <span id="lbl-locale-hant">繁</span>
+          </button>
+          <button id="act-locale" class="action-btn subtle locale-switch locale-pill-right" title="Switch language / 切换语言">
+            <span id="lbl-locale">EN</span>
+          </button>
+        </div>
         <a id="act-github-star" class="action-btn subtle github-star-btn" href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer" title="在 GitHub 上为「江山时序」点亮 Star" aria-label="Star on GitHub">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
           <span class="star-mark" aria-hidden="true">★</span>
@@ -703,10 +708,11 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261021e"></script>
-  <script src="js/atlas_boot.js?v=20261021e"></script>
-  <script src="js/map_data.js?v=20261021e"></script>
-  <script src="js/lore_data.js?v=20261021e"></script>
-  <script src="js/app.js?v=20261021e"></script>
+  <script src="js/china_geo_data.js?v=20261023a"></script>
+  <script src="js/atlas_boot.js?v=20261023a"></script>
+  <script src="js/map_data.js?v=20261023a"></script>
+  <script src="js/lore_data.js?v=20261023a"></script>
+  <script src="js/zh_hant.js?v=20261023a"></script>
+  <script src="js/app.js?v=20261023a"></script>
 </body>
 </html>

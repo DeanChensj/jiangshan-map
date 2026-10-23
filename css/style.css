@@ -258,8 +258,39 @@ h2 {
 .action-btn.locale-switch {
   font-weight: 700;
   letter-spacing: 0.04em;
-  min-width: 52px;
+  min-width: 0;
   text-align: center;
+}
+
+.locale-pill-group {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+.locale-pill-group .locale-pill-left {
+  border: none;
+  border-radius: 999px 0 0 999px;
+  background: transparent;
+  padding-right: 8.5px;
+  gap: 4px;
+}
+
+.locale-pill-group .locale-pill-right {
+  border: none;
+  border-left: 1px solid var(--hairline);
+  border-radius: 0 999px 999px 0;
+  background: transparent;
+  padding-left: 8.5px;
+  padding-right: 10px;
+}
+
+.locale-pill-group .locale-switch:hover {
+  background: #fff;
+  color: var(--text-main);
 }
 
 .github-star-btn {
@@ -2754,6 +2785,7 @@ html[lang="en"] .genealogy-list li {
   .toolbar-divider,
   .layers-trigger-btn .caret-mark,
   #act-layers-menu .btn-svg,
+  #act-locale-hant .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
   #act-github-star .star-mark,
@@ -2769,9 +2801,11 @@ html[lang="en"] .genealogy-list li {
     width: 12.5px;
     height: 12.5px;
   }
-  .action-btn.locale-switch {
+  .action-btn.locale-switch,
+  .locale-pill-group .locale-pill-left,
+  .locale-pill-group .locale-pill-right {
     min-width: 0;
-    padding: 4px 6px;
+    padding: 4px 6.5px;
   }
   .music-pill-group .music-btn,
   #act-github-star {
