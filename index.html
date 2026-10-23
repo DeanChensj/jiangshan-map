@@ -551,9 +551,14 @@
     </main>
 
     <footer id="scrubber-dock" aria-label="历史年份时间轴">
-      <button id="act-autoplay" class="round-btn" type="button" title="自动播放 / 暂停（空格）" aria-label="播放" aria-pressed="false">
-        <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>
-      </button>
+      <div class="playback-controls-group">
+        <button id="act-autoplay" class="round-btn" type="button" title="自动播放 / 暂停（空格）" aria-label="播放" aria-pressed="false">
+          <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>
+        </button>
+        <button id="act-play-speed" class="play-speed-btn" type="button" title="播放倍速 1×（点击切换 0.25× / 0.5× / 1× / 2×）" aria-label="播放倍速 1×">
+          <span id="lbl-play-speed">1×</span>
+        </button>
+      </div>
 
       <div id="scrubber-rail-wrap">
         <div id="scrubber-Bubble" aria-live="polite">

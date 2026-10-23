@@ -21,6 +21,8 @@
   const AUTOPLAY_FULL_RUN_MS = 9 * 60 * 1000;
   const AUTOPLAY_MIN_SHOW_TICKS = 4;
   const AUTOPLAY_HOLD_TICKS = Math.round(2500 / AUTOPLAY_TICK_MS);
+  const PERSON_AUTOPLAY_STEP_MS = 2600;
+  const PLAY_SPEED_STEPS = [1, 2, 0.25, 0.5];
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -279,6 +281,7 @@
       this.activeCorridorMask = null;
       this.lastRenderedSnap = null;
       this.playing = false;
+      this.playSpeed = 1;
       this.playInterval = null;
       this.playProgress = 0;
       this.playHoldTicks = 0;
@@ -954,6 +957,7 @@
       }
       this._updateMusicUi();
       this._updateAutoplayUi();
+      this._updatePlaySpeedUi();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
         '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'
@@ -3215,6 +3219,18 @@
       return true;
     }
 
+    _personAutoplayTick() {
+      if (!this.activePerson || this.activePersonEventIdx + 1 >= this.activePerson.events.length) {
+        if (this.personTimer) {
+          clearInterval(this.personTimer);
+          this.personTimer = null;
+        }
+        this._updateAutoplayUi();
+        return;
+      }
+      this.selectPersonEvent(this.activePersonEventIdx + 1, true);
+    }
+
     togglePersonAutoplay() {
       if (!this.activePerson || !this.activePerson.events.length) return;
       if (this.personTimer) {
@@ -3229,15 +3245,10 @@
       if (this.activePersonEventIdx < 0) {
         this.selectPersonEvent(0, true);
       }
-      this.personTimer = setInterval(() => {
-        if (!this.activePerson || this.activePersonEventIdx + 1 >= this.activePerson.events.length) {
-          clearInterval(this.personTimer);
-          this.personTimer = null;
-          this._updateAutoplayUi();
-          return;
-        }
-        this.selectPersonEvent(this.activePersonEventIdx + 1, true);
-      }, 2600);
+      this.personTimer = setInterval(
+        () => this._personAutoplayTick(),
+        this._personAutoplayIntervalMs()
+      );
       this._updateAutoplayUi();
     }
 
@@ -5040,6 +5051,58 @@
     }
 
     // ---------------- Autoplay ----------------
+    _autoplayIntervalMs() {
+      const speed = Number(this.playSpeed) > 0 ? Number(this.playSpeed) : 1;
+      return Math.max(20, Math.round(AUTOPLAY_TICK_MS / speed));
+    }
+
+    _personAutoplayIntervalMs() {
+      const speed = Number(this.playSpeed) > 0 ? Number(this.playSpeed) : 1;
+      return Math.max(150, Math.round(PERSON_AUTOPLAY_STEP_MS / speed));
+    }
+
+    _updatePlaySpeedUi() {
+      const speed = Number(this.playSpeed) > 0 ? Number(this.playSpeed) : 1;
+      const labelText = `${speed}×`;
+      const lbl = this._id('lbl-play-speed');
+      if (lbl) lbl.textContent = labelText;
+      const btn = this._id('act-play-speed');
+      if (!btn) return;
+      if (!lbl) btn.textContent = labelText;
+      btn.classList.toggle('is-custom-speed', speed !== 1);
+      const isEn = this.locale === 'en';
+      btn.setAttribute('aria-label', isEn ? `Playback speed ${labelText}` : `播放倍速 ${labelText}`);
+      btn.title = isEn
+        ? `Playback speed ${labelText} (click to cycle 0.25× / 0.5× / 1× / 2×)`
+        : `播放倍速 ${labelText}（点击切换 0.25× / 0.5× / 1× / 2×）`;
+    }
+
+    setPlaySpeed(speed) {
+      const numeric = Number(speed);
+      if (!PLAY_SPEED_STEPS.includes(numeric)) return this.playSpeed;
+      this.playSpeed = numeric;
+      this._updatePlaySpeedUi();
+      if (this.playing && this.playInterval) {
+        clearInterval(this.playInterval);
+        this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
+      }
+      if (this.personTimer && this.activePerson) {
+        clearInterval(this.personTimer);
+        this.personTimer = setInterval(
+          () => this._personAutoplayTick(),
+          this._personAutoplayIntervalMs()
+        );
+      }
+      return this.playSpeed;
+    }
+
+    cyclePlaySpeed() {
+      if (this.challenge) return this.playSpeed;
+      const curIdx = PLAY_SPEED_STEPS.indexOf(Number(this.playSpeed));
+      const nextSpeed = PLAY_SPEED_STEPS[(curIdx >= 0 ? curIdx + 1 : 1) % PLAY_SPEED_STEPS.length];
+      return this.setPlaySpeed(nextSpeed);
+    }
+
     _updateAutoplayUi() {
       const btn = this._id('act-autoplay');
       if (!btn) return;
@@ -5076,7 +5139,7 @@
       this.playProgress = this._yearToProgress(this.year);
       this.playHoldTicks = 0;
       this.playShownTicks = AUTOPLAY_MIN_SHOW_TICKS;
-      this.playInterval = setInterval(() => this._autoplayTick(), AUTOPLAY_TICK_MS);
+      this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
     // Sorted milestone years the autoplay must land on, with the ones it holds on.
@@ -6480,7 +6543,13 @@
     _syncChallengeScrubberState(locked) {
       const dock = this._id('scrubber-dock');
       if (dock) dock.classList.toggle('is-challenge-locked', Boolean(locked));
-      for (const id of ['act-autoplay', 'act-step-prev', 'act-step-next', 'inp-year']) {
+      for (const id of [
+        'act-autoplay',
+        'act-play-speed',
+        'act-step-prev',
+        'act-step-next',
+        'inp-year',
+      ]) {
         const el = this._id(id);
         if (el) el.disabled = Boolean(locked);
       }
@@ -8068,6 +8137,10 @@
           this.startAutoplay();
         }
       });
+      const playSpeedBtn = this._id('act-play-speed');
+      if (playSpeedBtn) {
+        playSpeedBtn.addEventListener('click', () => this.cyclePlaySpeed());
+      }
 
       this._id('inp-year').addEventListener('change', (e) => {
         if (this.challenge) return;
