@@ -4820,6 +4820,27 @@ function main() {
         hasPolPt('s_yuan_c', '元', 109.577, 19.521),
       's_yuan_c must keep Zhou (Zhang Shicheng) and Fang Guozhen until 1367 and restrict Chen Youding strictly to Fujian while Guangdong/Guangxi/Hainan stay in Yuan'
     );
+
+    // 5. Mongol Empire & Western Liao / Yuan interior continuity (zero Lop Nor / Qilian hollow cavities or vertical keyhole cuts)
+    assert(
+      hasPolPt('s_nansong_a0', '西辽', 90.5, 40.2) &&
+        hasPolPt('s_nansong_a', '西辽', 90.5, 40.2) &&
+        hasPolPt('s_nansong_b0', '西辽', 90.5, 40.2) &&
+        hasPolPt('s_nansong_c', '大蒙古国', 90.5, 40.2) &&
+        hasPolPt('s_nansong_c', '大蒙古国', 86.0, 40.0) &&
+        hasPolPt('s_nansong_d', '大蒙古国', 90.5, 40.2) &&
+        hasPolPt('s_nansong_d', '大蒙古国', 86.0, 40.0) &&
+        hasPolPt('s_nansong_e', '大蒙古国', 90.5, 40.2) &&
+        hasPolPt('s_nansong_e', '大蒙古国', 86.0, 40.0) &&
+        hasPolPt('s_nansong_e', '大蒙古国', 100.0, 38.0) &&
+        hasPolPt('s_nansong_b', '大蒙古国', 90.5, 40.2) &&
+        hasPolPt('s_nansong_b', '大蒙古国', 100.16, 25.69) &&
+        snapshots.s_nansong_b.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 1 &&
+        hasPolPt('s_nansong_g', '元', 100.0, 28.0) &&
+        hasPolPt('s_yuan_b', '元', 90.5, 40.2) &&
+        hasPolPt('s_yuan_c', '元', 90.5, 40.2),
+      'Mongol Empire, Western Liao, and Yuan snapshots must have zero hollow interior cavities at Lop Nor [90.5, 40.2], Eastern Tarim [86, 40], Qilian [100, 38], or Hengduan [100, 28]'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
