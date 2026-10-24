@@ -1,3 +1,4 @@
+// Auto-generated English localization dictionary for Jiangshan Atlas
 window.EN_LOCALE = {
   "strings": {
     "title": "Chronicles of the Realm · Historical Atlas of China",
@@ -2038,6 +2039,10 @@ window.EN_LOCALE = {
     "yuan:1368": [
       "Ming generals Xu Da and Chang Yuchun capture Dadu as Toghon Temur flees north, ending Yuan",
       "Dadu (Beijing)"
+    ],
+    "zhanguo:-286": [
+      "King Min of Qi annexes Song; Qi, Chu, and Wei partition its territory",
+      "Shangqiu & Dingtao"
     ]
   },
   "corridors": {
@@ -6560,6 +6565,29 @@ window.EN_LOCALE = {
     "府州政区：清控直鲁晋及东北，南明弘光据淮南及江南湖广闽粤云贵，大顺据陕甘，大西据四川": "Prefectures: Qing holds North & Northeast; Southern Ming holds the South; Dashun holds Shaanxi–Gansu; Daxi holds Sichuan",
     "府州政区：清廷经略中原江南，南明永历政权据两广云贵及湘南抗清": "Prefectures: Qing consolidates Central China & Jiangnan while the Southern Ming Yongli court holds the Southwest",
     "府州政区：郑成功复台奉南明永历正朔，永历帝与李定国据滇西最后抗清": "Prefectures: Koxinga establishes Chengtian Fu on Taiwan under the Yongli calendar; Li Dingguo makes a final stand in western Yunnan",
-    "府州政区：覆盖内地十八省及东北，台湾明郑奉南明永历正朔": "Prefectures: covers the 18 interior provinces & Northeast; Ming-Zheng in Taiwan upholds the Southern Ming Yongli calendar"
+    "府州政区：覆盖内地十八省及东北，台湾明郑奉南明永历正朔": "Prefectures: covers the 18 interior provinces & Northeast; Ming-Zheng in Taiwan upholds the Southern Ming Yongli calendar",
+    "蜀": "Shu",
+    "巴": "Ba",
+    "定陶": "Dingtao",
+    "少梁": "Shaoliang",
+    "战国初期（前403—前341年 · 三家分晋、田氏代齐与魏霸中原）": "Early Warring States (403–341 BCE: Partition of Jin, Tian Qi & Hegemony of Wei)",
+    "前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄格局确立；魏文侯、武侯任李悝、吴起率先称雄中原（西跨洛水置河西郡、上郡），宋、巴、蜀、越、中山、义渠与东周王畿并存。": "In 403 BCE King Weilie of Zhou recognized Han, Zhao, and Wei as marquises (opening Zizhi Tongjian), and in 386 BCE the Tian clan took Qi. Marquises Wen and Wu of Wei achieved early hegemony across the Central Plains and Hexi Commandery, alongside Song, Ba, Shu, Yue, Zhongshan, Yiqu, and Eastern Zhou.",
+    "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，宋、巴、蜀、越、中山尚存": "403–341 BCE · Partition of Jin, Tian Qi & Hegemony of Wei: Seven Powers with Song, Ba, Shu, Yue & Zhongshan",
+    "前 340 — 前 317 · 商鞅收河西、魏迁大梁与五国相王：宋、巴、蜀、越、中山、义渠尚存": "340–317 BCE · Shang Yang Recovers Hexi, Wei Moves to Daliang & Five-State Accord: Song, Ba, Shu, Yue, Zhongshan & Yiqu",
+    "前 316 — 前 307 · 秦司马错灭巴蜀、丹阳之战取汉中：宋、越、中山、义渠尚存": "316–307 BCE · Qin Conquers Ba-Shu & Takes Hanzhong at Danyang: Song, Yue, Zhongshan & Yiqu Survive",
+    "前 306 — 前 301 · 楚怀王灭越尽取旧吴之地：宋、中山、义渠尚存，燕尚未东辟辽东": "306–301 BCE · King Huai of Chu Conquers Yue: Song, Zhongshan & Yiqu Survive; Prior to Yan’s Liaodong Expansion",
+    "前 300 — 前 297 · 燕将秦开辟燕北五郡、赵武灵王辟云中：劲宋尚存": "300–297 BCE · Qin Kai Establishes Five Northern Yan Commanderies & King Wuling of Zhao Founds Yunzhong: Song Survives",
+    "前 296 — 前 279 · 赵灭中山、齐湣王灭宋与五国伐齐：齐楚魏三分宋地，乐毅破齐": "296–279 BCE · Zhao Annexes Zhongshan, Qi Annexes Song & Yue Yi’s Coalition Against Qi: Qi, Chu & Wei Partition Song",
+    "宋国都城（前286齐湣王灭宋，魏得商丘）": "Capital of the State of Song (annexed by Qi in 286 BCE; Shangqiu taken by Wei)",
+    "天下之中，范蠡经商陶朱公驻地，后为秦穰侯魏冉封邑": "Commercial hub of the Central Plains where Fan Li settled as Lord Tao Zhu; later fief of Marquis Rang (Wei Ran) of Qin",
+    "魏置河西郡重镇，吴起任西河守拒秦，前340后入秦更名夏阳": "Stronghold of Wei’s Hexi Commandery defended by Wu Qi against Qin; annexed by Qin after 340 BCE and renamed Xiayang",
+    "古陈国故都，楚襄王自郢东迁都此（前278—前241）": "Former capital of Chen; King Qingxiang of Chu moved the Chu capital here after losing Ying (278–241 BCE)",
+    "鲁国都城，孔子故里；前249年楚考烈王灭鲁并入楚境": "Capital of the State of Lu and hometown of Confucius; annexed by King Kaolie of Chu in 249 BCE",
+    "韩成皋荥阳重镇，鸿沟水运枢纽，前249入秦置三川郡": "Strategic Han fortress of Chenggao and Xingyang at the Honggou Canal hub; taken by Qin in 249 BCE to form Sanchuan Commandery",
+    "菏泽·定陶": "Dingtao, Heze",
+    "天下之中商业重镇，范蠡终老之地，前286年齐灭宋后入齐，后入秦为穰侯魏冉封邑": "Major commercial hub at the center of the realm where Fan Li retired; annexed by Qi after the fall of Song in 286 BCE, later fief of Marquis Rang (Wei Ran) of Qin",
+    "渭南·韩城": "Hancheng, Weinan",
+    "河西重镇，前354年魏伐赵围邯郸之际秦乘虚袭取少梁，前327年更名夏阳": "Key Hexi fortress seized by Qin in 354 BCE while Wei besieged Handan; renamed Xiayang in 327 BCE",
+    "韩城": "Hancheng, Shaanxi"
   }
 };

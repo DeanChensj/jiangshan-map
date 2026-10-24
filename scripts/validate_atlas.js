@@ -337,8 +337,10 @@ function main() {
     bootSnaps &&
       Array.isArray(bootSnaps.neighbors) &&
       bootSnaps.s_zhanguo_a &&
-      bootSnaps.s_qin_a,
-    'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a for instant first paint'
+      bootSnaps.s_qin_a &&
+      JSON.stringify(bootSnaps.s_zhanguo_a) === JSON.stringify(snapshots.s_zhanguo_a) &&
+      JSON.stringify(bootSnaps.s_qin_a) === JSON.stringify(snapshots.s_qin_a),
+    'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a identical to atlas_snapshots.js for instant first paint'
   );
   verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');
 
@@ -1085,7 +1087,13 @@ function main() {
   for (const checkSnapKey of [
     's_zhanguo_a',
     's_qin_a',
+    's_qin_b',
     's_qin',
+    's_xihan_a',
+    's_xihan_b1',
+    's_xihan_b2',
+    's_xihan_b3',
+    's_xihan_b',
     's_donghan',
     's_sanguo',
     's_dongjin_a',
@@ -2644,34 +2652,43 @@ function main() {
     );
   }
 
-  // 23j. Verify Warring States (zhanguo) phase transitions align with -323, -316, -306, -300, -296, -278 milestones
+  // 23j. Verify Warring States (zhanguo) phase transitions align with -323, -316, -306, -300, -296, -286, -278 milestones
   const zgDynRef = dynasties.find((d) => d.key === 'zhanguo');
   assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -323), 's_zhanguo_a2', 'zhanguo at -323 BCE must resolve to s_zhanguo_a2');
   assert(
-    snapshots.s_zhanguo_a2.polities.some((p) => p.title === '巴·蜀') &&
+    snapshots.s_zhanguo_a.polities.some((p) => p.title === '蜀') &&
+      snapshots.s_zhanguo_a.polities.some((p) => p.title === '巴') &&
+      snapshots.s_zhanguo_a.polities.some((p) => p.title === '宋') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '蜀') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '巴') &&
+      snapshots.s_zhanguo_a2.polities.some((p) => p.title === '宋') &&
       snapshots.s_zhanguo_a2.polities.some((p) => p.title === '越') &&
       snapshots.s_zhanguo_a2.polities.some((p) => p.title === '中山') &&
       snapshots.s_zhanguo_a2.polities.some((p) => p.title === '义渠'),
-    's_zhanguo_a2 (-340..-317 BCE, including -323 Five-State Accord) must keep 巴·蜀, 越, 中山, and 义渠 independent'
+    's_zhanguo_a & s_zhanguo_a2 (-403..-317 BCE, including -323 Five-State Accord) must keep 蜀, 巴, 宋, 越, 中山, and 义渠 independent'
   );
   assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -316), 's_zhanguo_b0', 'zhanguo at -316 BCE must resolve to s_zhanguo_b0');
   assert(
-    !snapshots.s_zhanguo_b0.polities.some((p) => p.title === '巴·蜀') &&
+    !snapshots.s_zhanguo_b0.polities.some((p) => p.title === '蜀') &&
+      !snapshots.s_zhanguo_b0.polities.some((p) => p.title === '巴') &&
+      snapshots.s_zhanguo_b0.polities.some((p) => p.title === '宋') &&
       snapshots.s_zhanguo_b0.polities.some((p) => p.title === '越') &&
       snapshots.s_zhanguo_b0.polities.some((p) => p.title === '中山'),
-    's_zhanguo_b0 (-316..-307 BCE) must annex 巴·蜀 into 秦 while keeping 越 and 中山 independent'
+    's_zhanguo_b0 (-316..-307 BCE) must annex 巴 & 蜀 into 秦 while keeping 宋, 越, and 中山 independent'
   );
   assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -306), 's_zhanguo_b1', 'zhanguo at -306 BCE must resolve to s_zhanguo_b1');
   assert(
     !snapshots.s_zhanguo_b1.polities.some((p) => p.title === '越') &&
+      snapshots.s_zhanguo_b1.polities.some((p) => p.title === '宋') &&
       snapshots.s_zhanguo_b1.polities.some((p) => p.title === '中山'),
-    's_zhanguo_b1 (-306..-301 BCE) must annex 越 into 楚 while keeping 中山 independent'
+    's_zhanguo_b1 (-306..-301 BCE) must annex 越 into 楚 while keeping 宋 and 中山 independent'
   );
   assert.strictEqual(ctrl._resolveSnapKey(zgDynRef, -296), 's_zhanguo_b2', 'zhanguo at -296 BCE must resolve to s_zhanguo_b2');
   assert(
     !snapshots.s_zhanguo_b2.polities.some((p) => p.title === '中山') &&
+      !snapshots.s_zhanguo_b2.polities.some((p) => p.title === '宋') &&
       pointInShape(112.201, 30.351, snapshots.s_zhanguo_b2.polities.find((p) => p.title === '楚').shape),
-    's_zhanguo_b2 (-296..-279 BCE) must annex 中山 into 赵 while keeping Yingdu ([112.201, 30.351]) inside 楚 prior to -278 BCE'
+    's_zhanguo_b2 (-296..-279 BCE) must annex 中山 into 赵 and partition 宋 while keeping Yingdu ([112.201, 30.351]) inside 楚 prior to -278 BCE'
   );
 
   // 23k. Verify 100% pre-modern settlement remark coverage and curated CITY_LORE bilingual integrity
@@ -5248,6 +5265,81 @@ function main() {
         `${sk} (post-1234 fall of Jin) must replace Jin imperial circuits with Mongol circuits (辽东路, 燕京路, 河南路)`
       );
     }
+
+    // CUJ 37: Warring States (Zizhi Tongjian) territorial & settlement alignment across all 14 snapshots
+    for (const sk of ['s_zhanguo_a', 's_zhanguo_a2']) {
+      assert(
+        hasPolPt(sk, '蜀', 104.071, 30.571) &&
+          hasPolPt(sk, '蜀', 105.84, 32.44) &&
+          hasPolPt(sk, '巴', 106.551, 29.561) &&
+          hasPolPt(sk, '巴', 105.97, 31.58) &&
+          hasPolPt(sk, '楚', 107.021, 33.071) &&
+          !hasPolPt(sk, '楚', 105.84, 32.44),
+        `${sk} must split 蜀 (Chengdu, Jiameng) and 巴 (Jiangzhou, Langzhong) and keep Hanzhong in 楚 without overlapping Jiameng`
+      );
+    }
+    assert(
+      hasPolPt('s_zhanguo_a', '魏', 110.44, 35.48) &&
+        hasPolPt('s_zhanguo_a', '韩', 110.92, 34.63) &&
+        hasPolPt('s_zhanguo_a2', '秦', 110.44, 35.48) &&
+        hasPolPt('s_zhanguo_a2', '秦', 110.92, 34.63),
+      'Shaoliang (Hexi Commandery) must belong to 魏 in s_zhanguo_a (-403..-341 BCE) and transfer with Hangu Pass to 秦 in s_zhanguo_a2 (-340 BCE)'
+    );
+    for (const sk of ['s_zhanguo_a', 's_zhanguo_a2', 's_zhanguo_b0', 's_zhanguo_b1', 's_zhanguo_b']) {
+      assert(
+        hasPolPt(sk, '宋', 115.65, 34.42) &&
+          hasPolPt(sk, '宋', 115.57, 35.07) &&
+          hasPolPt(sk, '宋', 117.18, 34.26),
+        `${sk} (-403..-286 BCE) must include State of Song (宋) covering Shangqiu, Dingtao, and Pengcheng`
+      );
+    }
+    for (const sk of ['s_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1', 's_zhanguo_e2', 's_zhanguo_e3']) {
+      assert(
+        hasPolPt(sk, '魏', 114.351, 34.791) &&
+          hasPolPt(sk, '魏', 115.65, 34.42) &&
+          hasPolPt(sk, '楚', 117.18, 34.26) &&
+          hasPolPt(sk, '楚', 114.881, 33.781) &&
+          !hasPolPt(sk, '秦', 114.881, 33.781),
+        `${sk} (post-286 BCE Song partition) must place Daliang & Shangqiu in 魏 and Pengcheng & Chenying in 楚`
+      );
+    }
+    assert(
+      hasPolPt('s_zhanguo_e4', '秦', 114.351, 34.791) &&
+        hasPolPt('s_zhanguo_e4', '秦', 115.65, 34.42) &&
+        hasPolPt('s_zhanguo_e4', '楚', 114.881, 33.781) &&
+        hasPolPt('s_zhanguo_e4', '楚', 117.18, 34.26) &&
+        !hasPolPt('s_zhanguo_e4', '秦', 114.881, 33.781),
+      's_zhanguo_e4 (-225 BCE fall of Wei) must transfer Daliang & Shangqiu to 秦 while keeping Chenying & Pengcheng in 楚'
+    );
+    for (const sk of ['s_zhanguo_a', 's_zhanguo_a2', 's_zhanguo_b0']) {
+      assert(hasPolPt(sk, '越', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 越`);
+    }
+    for (const sk of ['s_zhanguo_b1', 's_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1', 's_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
+      assert(hasPolPt(sk, '楚', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 楚`);
+    }
+    assert(hasPolPt('s_zhanguo_e5', '秦', 119.98, 35.65), 's_zhanguo_e5 must include Langya ([119.98, 35.65]) inside 秦');
+    for (const sk of ['s_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1']) {
+      assert(
+        hasPolPt(sk, '赵', 111.201, 40.251) && hasPolPt(sk, '赵', 114.551, 40.151),
+        `${sk} (-300..-229 BCE) must include both Yunzhong and Dai inside 赵`
+      );
+    }
+    for (const sk of ['s_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
+      assert(
+        hasPolPt(sk, '秦', 111.201, 40.251) &&
+          hasPolPt(sk, '代', 114.551, 40.151) &&
+          !hasPolPt(sk, '代', 111.201, 40.251),
+        `${sk} (-228..-223 BCE) must place Yunzhong in 秦 and Dai ([114.551, 40.151]) in 代`
+      );
+    }
+    for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
+      const mainPol = snapshots[sk].polities[0];
+      const mainRing = mainPol.shape.type === 'Polygon' ? mainPol.shape.coordinates[0] : mainPol.shape.coordinates[0][0];
+      assert(
+        mainRing.length >= 1200,
+        `${sk} main polity (${mainPol.title}) must use high-resolution outer border aligned with commanderies/provinces (>=1200 vertices, got ${mainRing.length})`
+      );
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
@@ -5256,7 +5348,7 @@ function main() {
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 36 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 37 E2E CUJs`);
 }
 
 main();
