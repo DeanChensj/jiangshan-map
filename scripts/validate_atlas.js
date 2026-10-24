@@ -3782,6 +3782,28 @@ function main() {
     }
   }
 
+  // 23aa. Mountain-range name labels (山川形胜): the twelve ranges that frame China's historical frontiers
+  {
+    const ranges = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'range');
+    const expectedRanges = ['秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭'];
+    assert.strictEqual(
+      JSON.stringify(ranges.map((r) => r.zh).sort()),
+      JSON.stringify([...expectedRanges].sort()),
+      'HYDRO_DATA.labels must contain exactly the 12 curated mountain-range labels'
+    );
+    for (const r of ranges) {
+      assert(
+        typeof r.en === 'string' && r.en.length > 0 && !/[\u4e00-\u9fa5]/.test(r.en),
+        `Mountain range ${r.zh} must have a clean English name, got ${JSON.stringify(r.en)}`
+      );
+      assert(
+        Array.isArray(r.coord) && r.coord[0] > 73 && r.coord[0] < 135 && r.coord[1] > 18 && r.coord[1] < 54,
+        `Mountain range ${r.zh} label coord must sit inside China, got ${JSON.stringify(r.coord)}`
+      );
+      assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
+    }
+  }
+
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
   {
     ctrl.locale = 'en';
