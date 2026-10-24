@@ -3084,7 +3084,8 @@
       if (typeof personOrQuery === 'object' && personOrQuery.zh) return personOrQuery;
       const rawInput = String(personOrQuery).trim();
       if (!rawInput) return null;
-      const raw = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
+      const rawHans = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
+      const raw = rawHans === '海南藏族自治州' ? '海南州' : rawHans;
       const qLow = raw.toLowerCase();
       const fold = (s) =>
         String(s || '')
@@ -3907,7 +3908,6 @@
               near: this._findNearestSettlement(dyn.settlements, lng, lat, 25),
             }))
             .filter((r) => r.near && r.near.km < 25);
-      if (!preModRows.length) return null;
       const gazHit =
         HistoricalAtlasController.PLACE_GAZETTEER.find(
           (g) => Array.isArray(g.coord) && this.projector.greatCircleKm([lng, lat], g.coord) <= 22
@@ -3977,6 +3977,72 @@
           } else if (roleGroupsEn.length < 4) {
             roleGroupsEn.push({ dyns: [dynEn], rem: remEn });
           }
+        }
+      }
+
+      if (!roleGroupsZh.length) {
+        const keyEraSet = new Set(['qin', 'xihan', 'tang', 'beisong', 'yuan', 'ming', 'qing']);
+        const eraRows = rowsData
+          ? rowsData.filter((r) => r.d && keyEraSet.has(r.d.key))
+          : (this.dynasties || [])
+              .filter((dyn) => keyEraSet.has(dyn.key))
+              .map((dyn) => {
+                const sk = this._resolveSnapKey(dyn, dyn.focusYear);
+                const sn = (this.snapshots && this.snapshots[sk]) || {
+                  polities: [],
+                  regions: [],
+                  prefectures: [],
+                };
+                const eh = this._resolveEraPlaceAt(lng, lat, dyn, sn);
+                return {
+                  d: dyn,
+                  polityHit: eh.polity,
+                  regionObjs: eh.regionObjs,
+                  prefObjs: eh.prefObjs,
+                };
+              });
+        for (const r of eraRows) {
+          const regs = r.regionObjs || [];
+          const prefs = r.prefObjs || [];
+          for (const p of prefs) addAncName(p.title);
+          const items = [...regs, ...prefs];
+          if (!items.length && !r.polityHit) continue;
+          const remZh = items.length ? `属${items.map((x) => x.title).join('·')}` : `属${r.polityHit}`;
+          const dynZh = r.d.title;
+          const exZh = roleGroupsZh.find((g) => g.rem === remZh);
+          if (exZh) {
+            if (!exZh.dyns.includes(dynZh) && exZh.dyns.length < 2) exZh.dyns.push(dynZh);
+          } else if (roleGroupsZh.length < 4) {
+            roleGroupsZh.push({ dyns: [dynZh], rem: remZh });
+          }
+
+          const enParts = items
+            .map((x) => this._enDict(x.title))
+            .filter((s) => s && !/[\u4e00-\u9fa5]/.test(s));
+          const polEn = r.polityHit ? this._enDict(r.polityHit) : '';
+          const remEn = enParts.length
+            ? `Administered under ${enParts.join(' · ')}`
+            : polEn && !/[\u4e00-\u9fa5]/.test(polEn)
+              ? `Within ${polEn}`
+              : '';
+          const enDynObj =
+            (this.enLocale && this.enLocale.dynasties && this.enLocale.dynasties[r.d.key]) || {};
+          const dynEn = enDynObj.name || r.d.title;
+          if (remEn) {
+            const exEn = roleGroupsEn.find((g) => g.rem === remEn);
+            if (exEn) {
+              if (!exEn.dyns.includes(dynEn) && exEn.dyns.length < 2) exEn.dyns.push(dynEn);
+            } else if (roleGroupsEn.length < 4) {
+              roleGroupsEn.push({ dyns: [dynEn], rem: remEn });
+            }
+          }
+        }
+        if (!roleGroupsZh.length && identityModern) {
+          roleGroupsZh.push({ dyns: ['现代'], rem: `${identityModern}及南海诸岛海域重镇` });
+          roleGroupsEn.push({
+            dyns: ['Modern'],
+            rem: `Strategic municipality of ${modCompareEn || 'China'}`,
+          });
         }
       }
 
@@ -4162,6 +4228,9 @@
           return { modernTitle: prov.title, inModernChina: true };
         }
       }
+      if (lng >= 109.5 && lng <= 118.5 && lat >= 3.5 && lat <= 18.2) {
+        return { modernTitle: '海南省', inModernChina: true };
+      }
       for (const nb of (this.snapshots && this.snapshots.neighbors) || []) {
         if (MercatorProjector.pointInShape(lng, lat, nb.shape)) {
           return { modernTitle: nb.title, inModernChina: false };
@@ -4215,6 +4284,35 @@
       );
     }
 
+    _shapeAnchorOrCentroid(item) {
+      if (item && Array.isArray(item.anchor) && item.anchor.length === 2) return item.anchor;
+      const shape = item && item.shape;
+      if (!shape || !shape.coordinates) return [0, 0];
+      const ring = shape.type === 'Polygon' ? shape.coordinates[0] : (shape.coordinates[0] && shape.coordinates[0][0]);
+      if (!ring || !ring.length) return [0, 0];
+      let sx = 0, sy = 0;
+      for (const pt of ring) {
+        sx += pt[0];
+        sy += pt[1];
+      }
+      return [sx / ring.length, sy / ring.length];
+    }
+
+    _minVertexDistSq(lng, lat, shape) {
+      if (!shape || !shape.coordinates) return Infinity;
+      const polys = shape.type === 'Polygon' ? [shape.coordinates] : shape.coordinates;
+      let best = Infinity;
+      for (const poly of polys) {
+        const ring = poly && poly[0];
+        if (!ring) continue;
+        for (const pt of ring) {
+          const d2 = (pt[0] - lng) * (pt[0] - lng) + (pt[1] - lat) * (pt[1] - lat);
+          if (d2 < best) best = d2;
+        }
+      }
+      return best;
+    }
+
     _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall) {
       const loc = modernLoc || this._resolveModernLocationAt(lng, lat);
       const closest =
@@ -4230,10 +4328,22 @@
         const hit = this._polityAt(lng, lat, snap);
         polity = hit ? hit.title : null;
         for (const reg of snap.regions || []) {
-          if (MercatorProjector.pointInShape(lng, lat, reg.shape)) regionObjs.push(reg);
+          if (
+            MercatorProjector.pointInShape(lng, lat, reg.shape) &&
+            !regionObjs.some((r) => r.title === reg.title)
+          ) {
+            regionObjs.push(reg);
+          }
         }
-        for (const pref of snap.prefectures || []) {
-          if (MercatorProjector.pointInShape(lng, lat, pref.shape)) prefObjs.push(pref);
+        if (!d || d.key !== 'roc') {
+          for (const pref of snap.prefectures || []) {
+            if (
+              MercatorProjector.pointInShape(lng, lat, pref.shape) &&
+              !prefObjs.some((p) => p.title === pref.title)
+            ) {
+              prefObjs.push(pref);
+            }
+          }
         }
       }
       let near = this._findNearestSettlement(d && d.settlements, lng, lat, 175);
@@ -4269,6 +4379,230 @@
       ) {
         near = null;
       }
+
+      // Prevent cross-Yangtze false-positive settlement matches between Zhenjiang/Nanjing (south) and Yangzhou/Pukou (north)
+      if (
+        near &&
+        near.km <= 25 &&
+        near.s &&
+        Array.isArray(near.s.coord) &&
+        lng >= 118.5 &&
+        lng <= 120.2 &&
+        ((lat <= 32.24 && near.s.coord[1] >= 32.28) || (lat >= 32.28 && near.s.coord[1] <= 32.24))
+      ) {
+        near = null;
+      }
+
+      // Prevent north-of-Yangtze Guangling/Jiangdu prefectures from bleeding south into Zhenjiang (lat <= 32.24)
+      if (
+        lat <= 32.24 &&
+        lng >= 118.8 &&
+        lng <= 120.2 &&
+        prefObjs.some((p) => p.title === '广陵郡' || p.title === '广陵国' || p.title === '江都郡')
+      ) {
+        const filtered = prefObjs.filter(
+          (p) => p.title !== '广陵郡' && p.title !== '广陵国' && p.title !== '江都郡'
+        );
+        prefObjs.length = 0;
+        if (filtered.length > 0) {
+          prefObjs.push(...filtered);
+        } else if (snap && Array.isArray(snap.prefectures)) {
+          const southPref =
+            snap.prefectures.find((p) => p.title === '吴郡' || p.title === '毗陵郡') ||
+            snap.prefectures.find((p) => p.title === '丹阳郡' || p.title === '会稽郡');
+          if (southPref) prefObjs.push(southPref);
+        }
+      }
+
+      // Disambiguate overlapping secondary prefectures at border buffers
+      if (prefObjs.length > 1) {
+        const titles = prefObjs.map((p) => p.title);
+        let picked = null;
+        if (titles.includes('丹阳郡') && titles.includes('九江郡')) {
+          picked = prefObjs.find((p) => p.title === (lat < 31.85 ? '丹阳郡' : '九江郡'));
+        } else if (titles.includes('豫章郡') && titles.includes('九江郡')) {
+          picked = prefObjs.find((p) => p.title === (lat < 30.0 ? '豫章郡' : '九江郡'));
+        } else if (titles.includes('太平府') && titles.includes('和州')) {
+          picked = prefObjs.find((p) => p.title === (lng > 118.35 || lat < 31.45 ? '太平府' : '和州'));
+        } else if (titles.includes('解州') && titles.includes('陕州')) {
+          picked = prefObjs.find((p) => p.title === (lat < 34.85 ? '陕州' : '解州'));
+        } else if (titles.includes('南郡') && (titles.includes('巴陵郡') || titles.includes('长沙郡'))) {
+          picked =
+            lat < 29.55
+              ? prefObjs.find((p) => p.title === '巴陵郡' || p.title === '长沙郡')
+              : prefObjs.find((p) => p.title === '南郡');
+        }
+        if (!picked && near && near.km <= 25 && near.s) {
+          const anc = String(near.s.ancient || '');
+          const rem = String(near.s.remark || '');
+          picked = prefObjs.find((p) => {
+            const stem = String(p.title || '').replace(/(?:郡|府|州|国|军|路|厅|安抚司|行都司)$/, '');
+            return stem.length >= 1 && (anc.includes(stem) || rem.includes(p.title));
+          });
+        }
+        if (!picked) {
+          picked = prefObjs.slice().sort((a, b) => {
+            const ca = this._shapeAnchorOrCentroid(a);
+            const cb = this._shapeAnchorOrCentroid(b);
+            return (
+              Math.hypot(ca[0] - lng, ca[1] - lat) - Math.hypot(cb[0] - lng, cb[1] - lat)
+            );
+          })[0];
+        }
+        if (picked) {
+          prefObjs.length = 0;
+          prefObjs.push(picked);
+        }
+      }
+
+      // Enforce Region <-> Prefecture & Yangtze/Yellow River consistency and fill coastal/frontier gaps
+      if (snap && Array.isArray(snap.regions) && snap.regions.length > 0 && (!d || d.key !== 'prc')) {
+        const setReg = (...names) => {
+          for (const n of names) {
+            const found = snap.regions.find((r) => r.title === n);
+            if (found) {
+              regionObjs.length = 0;
+              regionObjs.push(found);
+              return true;
+            }
+          }
+          return false;
+        };
+        const prefTitle = prefObjs[0] ? prefObjs[0].title : '';
+        const nearAnc = near && near.km <= 25 && near.s ? near.s.ancient : '';
+        const dynKey = d ? d.key : '';
+
+        if (dynKey === 'sui') {
+          if (
+            [
+              '蒋州', '润州', '丹阳郡', '毗陵郡', '吴郡', '吴州', '苏州', '余杭郡', '杭州',
+              '会稽郡', '越州', '宣城郡', '宣州', '新安郡', '歙州', '东阳郡', '婺州',
+              '遂安郡', '睦州', '永嘉郡', '温州', '临海郡', '台州', '豫章郡', '洪州',
+              '九江郡', '江州', '鄱阳郡', '饶州', '临川郡', '抚州', '庐陵郡', '吉州',
+            ].includes(prefTitle) ||
+            (loc.modernTitle === '江苏省' && lat <= 32.24 && lng >= 118.6)
+          ) {
+            setReg('江表诸郡');
+          } else if (
+            [
+              '江都郡', '扬州', '钟离郡', '濠州', '淮南郡', '寿州', '庐江郡', '庐州',
+              '同安郡', '舒州', '历阳郡', '和州', '下邳郡', '东海郡', '海州', '山阳郡',
+              '楚州', '弋阳郡', '光州', '蕲春郡', '蕲州',
+            ].includes(prefTitle)
+          ) {
+            setReg('淮海诸郡');
+          }
+        } else if (dynKey === 'tang') {
+          if (
+            [
+              '润州', '常州', '苏州', '宣州', '杭州', '越州', '湖州', '睦州',
+              '婺州', '衢州', '处州', '温州', '台州', '明州', '池州', '歙州',
+            ].includes(prefTitle) ||
+            (loc.modernTitle === '江苏省' && lat <= 32.24 && lng >= 118.6)
+          ) {
+            setReg('江南东道', '江南道');
+          } else if (
+            [
+              '舒州', '庐州', '和州', '濠州', '寿州', '扬州', '楚州', '滁州',
+              '光州', '蕲州', '安州', '申州',
+            ].includes(prefTitle)
+          ) {
+            setReg('淮南道');
+          } else if (['振州', '儋州', '琼州', '崖州', '万安州'].includes(prefTitle)) {
+            setReg('岭南道');
+          }
+        } else if (dynKey === 'wudai') {
+          if (
+            polity === '吴越' ||
+            [
+              '常州', '苏州', '秀州', '杭州', '湖州', '越州', '明州', '温州',
+              '台州', '婺州', '衢州', '处州', '睦州',
+            ].includes(prefTitle)
+          ) {
+            setReg('两浙');
+          } else if (
+            ['金陵府', '江宁府', '润州', '宣州', '池州', '歙州'].includes(prefTitle) ||
+            nearAnc.includes('金陵') ||
+            nearAnc === '润州' ||
+            (loc.modernTitle === '江苏省' && lat <= 32.24 && lng >= 118.6)
+          ) {
+            setReg('江东', '江南');
+          } else if (
+            ['舒州', '庐州', '和州', '濠州', '寿州', '扬州', '楚州', '滁州', '泰州', '通州'].includes(
+              prefTitle
+            )
+          ) {
+            setReg('淮南');
+          }
+        } else if (dynKey === 'beisong' || dynKey === 'nansong') {
+          if (
+            [
+              '江宁府', '建康府', '太平州', '宣州', '宁国府', '池州', '徽州',
+              '歙州', '饶州', '信州', '南康军', '广德军',
+            ].includes(prefTitle)
+          ) {
+            setReg('江南东路');
+          } else if (
+            [
+              '润州', '镇江府', '常州', '苏州', '平江府', '秀州', '嘉兴府',
+              '湖州', '安吉州', '杭州', '临安府', '越州', '绍兴府', '明州',
+              '庆元府', '温州', '瑞安府', '台州', '婺州', '衢州', '处州',
+              '严州', '睦州', '建德府',
+            ].includes(prefTitle)
+          ) {
+            setReg('两浙路', '两浙西路', '两浙东路');
+          } else if (
+            [
+              '舒州', '安庆府', '庐州', '和州', '无为军', '濠州', '寿州',
+              '扬州', '真州', '泰州', '通州', '楚州', '海州', '泗州', '宿州',
+              '亳州', '光州', '蕲州', '黄州', '安州', '高邮军',
+            ].includes(prefTitle)
+          ) {
+            setReg('淮南路', '淮南东路', '淮南西路');
+          } else if (
+            dynKey === 'beisong' &&
+            ['徐州', '单州', '济州', '兖州', '曹州', '郓州', '东平府', '应天府'].includes(
+              prefTitle
+            )
+          ) {
+            setReg('京东西路', '京东路');
+          } else if (prefTitle === '岳州' || nearAnc === '岳州') {
+            setReg('荆湖北路', '荆湖路');
+          } else if (dynKey === 'beisong' && (prefTitle === '陕州' || nearAnc === '陕州')) {
+            setReg('永兴军路', '陕西路');
+          }
+        }
+
+        if (
+          regionObjs.length === 0 &&
+          polity &&
+          snap.polities &&
+          ((snap.polities[0] && polity === snap.polities[0].title) ||
+            ['魏', '蜀', '吴', '南唐', '吴越', '前蜀', '后蜀', '南汉', '楚', '闽', '荆南', '北汉'].includes(
+              polity
+            ))
+        ) {
+          let bestReg = null;
+          let bestD2 = Infinity;
+          for (const reg of snap.regions) {
+            const d2 = this._minVertexDistSq(lng, lat, reg.shape);
+            if (d2 < bestD2) {
+              bestD2 = d2;
+              bestReg = reg;
+            }
+          }
+          if (bestReg) regionObjs.push(bestReg);
+        } else if (regionObjs.length > 1) {
+          const pickedReg = regionObjs.slice().sort((a, b) => {
+            const ca = this._shapeAnchorOrCentroid(a);
+            const cb = this._shapeAnchorOrCentroid(b);
+            return Math.hypot(ca[0] - lng, ca[1] - lat) - Math.hypot(cb[0] - lng, cb[1] - lat);
+          })[0];
+          regionObjs.length = 0;
+          regionObjs.push(pickedReg);
+        }
+      }
+
       return { polity, regionObjs, prefObjs, near, modernLoc: loc };
     }
 
@@ -4504,6 +4838,8 @@
           d,
           isCurDyn,
           polityHit,
+          regionObjs: eraHit.regionObjs,
+          prefObjs: eraHit.prefObjs,
           adminHits,
           near,
           isCapHere,
@@ -9149,7 +9485,8 @@
       if (!place || typeof place !== 'string') return null;
       const rawInput = place.trim();
       if (!rawInput) return null;
-      const raw = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
+      const rawHans = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
+      const raw = rawHans === '海南藏族自治州' ? '海南州' : rawHans;
 
       const normApos = (s) =>
         String(s || '')
@@ -9188,7 +9525,7 @@
       const isPassSuffix = /(?:关|\s+(?:pass|guan))$/i.test(raw);
       const stripped = raw
         .replace(
-          /(?:省|市|州|郡|府|道|路|县|国|关|城|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/,
+          /(?:省|市|州|郡|府|道|路|县|国|关|城|盟|地区|(?:[一-龥]{1,6}族)*自治州|壮族自治区|回族自治区|维吾尔自治区|自治区|特别行政区)$/,
           ''
         )
         .replace(
