@@ -4865,13 +4865,196 @@ function main() {
     );
   }
 
+  // CUJ 36: Northern & Southern Song Historical Accuracy against 《宋史》《辽史》《金史》
+  {
+    const hasPolPt = (snapKey, polTitle, lng, lat) => {
+      const pol = snapshots[snapKey].polities.find((p) => p.title === polTitle);
+      return Boolean(pol && pointInShape(lng, lat, pol.shape));
+    };
+    const hasRegPt = (snapKey, regTitle, lng, lat) => {
+      const reg = (snapshots[snapKey].regions || []).find((r) => r.title === regTitle);
+      return Boolean(reg && pointInShape(lng, lat, reg.shape));
+    };
+    const hasPrefPt = (snapKey, prefTitle, lng, lat) => {
+      const pref = (snapshots[snapKey].prefectures || []).find((p) => p.title === prefTitle);
+      return Boolean(pref && pointInShape(lng, lat, pref.shape));
+    };
+
+    // 1. Ten Kingdoms unification chronology (960–979): Jingnan vs Wuping (960–963), Southern Tang vs Wuyue vs Qingyuanjun in Fujian (960–978)
+    assert(
+      !snapshots.s_beisong_a0.polities.some((p) => p.title === '湖南') &&
+        hasPolPt('s_beisong_a0', '荆南（南平）', 112.241, 30.331) &&
+        hasPolPt('s_beisong_a0', '武平（湖南）', 112.941, 28.231) &&
+        hasPolPt('s_beisong_a0', '武平（湖南）', 111.698, 29.032) &&
+        hasPolPt('s_beisong_a', '宋', 112.241, 30.331) &&
+        hasPolPt('s_beisong_a', '宋', 112.941, 28.231),
+      's_beisong_a0 (960–963) must distinguish Jingnan (Jiangling) and Wuping (Tanzhou/Langzhou) before the 963 Jinghu campaign'
+    );
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3']) {
+      assert(
+        hasPolPt(sk, '南唐', 118.32, 27.04) &&
+          hasPolPt(sk, '南唐', 116.35, 25.84) &&
+          !hasPolPt(sk, '吴越', 118.32, 27.04) &&
+          hasPolPt(sk, '吴越', 119.301, 26.081) &&
+          hasPolPt(sk, '吴越', 120.151, 30.271) &&
+          hasPolPt(sk, '清源军', 118.681, 24.871) &&
+          hasPolPt(sk, '清源军', 117.65, 24.51),
+        `${sk} (960–975) must place Jianzhou & Tingzhou in Southern Tang, Fuzhou & Hangzhou in Wuyue, and Quanzhou & Zhangzhou in Qingyuanjun`
+      );
+    }
+    assert(
+      hasPolPt('s_beisong_a4', '宋', 118.32, 27.04) &&
+        hasPolPt('s_beisong_a4', '宋', 116.35, 25.84) &&
+        hasPolPt('s_beisong_a4', '吴越', 119.301, 26.081) &&
+        hasPolPt('s_beisong_a4', '清源军', 118.681, 24.871) &&
+        hasPolPt('s_beisong_a5', '宋', 119.301, 26.081) &&
+        hasPolPt('s_beisong_a5', '宋', 120.151, 30.271) &&
+        hasPolPt('s_beisong_a5', '宋', 118.681, 24.871),
+      's_beisong_a4 (975–978) must keep Qingyuanjun and Wuyue independent after Southern Tang falls, and s_beisong_a5 (978–979) must annex both into Song'
+    );
+
+    // 2. Song–Liao & Northern Han border (Sixteen Prefectures of Yanyun: Shuozhou, Yingzhou, Daizhou, Yizhou, Bazhou)
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5']) {
+      assert(
+        hasPolPt(sk, '北汉', 112.96, 39.07) &&
+          hasPolPt(sk, '北汉', 112.551, 37.871) &&
+          hasPolPt(sk, '辽', 112.43, 39.33) &&
+          hasPolPt(sk, '辽', 113.19, 39.55) &&
+          hasPolPt(sk, '宋', 115.49, 39.35) &&
+          hasPolPt(sk, '宋', 116.39, 39.12),
+        `${sk} (960–979) must place Daizhou & Taiyuan in Northern Han, Shuozhou & Yingzhou in Liao, and Yizhou & Bazhou in Song`
+      );
+    }
+    for (const sk of ['s_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c']) {
+      assert(
+        hasPolPt(sk, '宋', 112.96, 39.07) &&
+          hasPolPt(sk, '宋', 116.39, 39.12) &&
+          hasPolPt(sk, '辽', 112.43, 39.33) &&
+          hasPolPt(sk, '辽', 113.19, 39.55) &&
+          hasPolPt(sk, '辽', 115.49, 39.35),
+        `${sk} (979–1125) must place Daizhou & Bazhou in Song and Shuozhou, Yingzhou, & Yizhou in Liao`
+      );
+    }
+
+    // 3. Dingnan Jiedushi / Lingzhou (1002) & Xihe (1072) / Hehuang (1104) expansions + Qilian Mountain seam
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5']) {
+      assert(
+        hasPolPt(sk, '宋', 106.28, 38.09) &&
+          hasPolPt(sk, '党项（定难军）', 108.78, 37.98) &&
+          !hasPolPt(sk, '党项（定难军）', 106.28, 38.09),
+        `${sk} (960–979) must keep Lingzhou inside Song and Xiazhou inside Dingnan Jiedushi`
+      );
+    }
+    assert(
+      hasPolPt('s_beisong_b0', '党项（定难军）', 106.28, 38.09) &&
+        hasPolPt('s_beisong_b0', '党项（定难军）', 106.231, 38.491) &&
+        hasPolPt('s_beisong_b', '吐蕃诸部', 103.861, 35.381) &&
+        hasPolPt('s_beisong_b', '吐蕃诸部', 101.778, 36.617) &&
+        hasPolPt('s_beisong_b1', '宋', 103.861, 35.381) &&
+        hasPolPt('s_beisong_b1', '宋', 103.21, 35.6) &&
+        hasPolPt('s_beisong_b1', '宋', 104.04, 34.43) &&
+        hasPolPt('s_beisong_b1', '宋', 103.83, 36.06) &&
+        !hasPolPt('s_beisong_b1', '吐蕃诸部', 103.861, 35.381) &&
+        hasPolPt('s_beisong_b1', '吐蕃诸部', 101.778, 36.617),
+      's_beisong_b0..b1 must reflect Li Jiqian capturing Lingzhou (1002) and Wang Shao recovering Xihe (Xizhou/Hezhou/Minzhou/Lanzhou) in 1072'
+    );
+    for (const sk of ['s_beisong_b2', 's_beisong_c', 's_beisong_d']) {
+      assert(
+        hasPolPt(sk, '宋', 101.778, 36.617) &&
+          !hasPolPt(sk, '吐蕃诸部', 101.778, 36.617) &&
+          hasRegPt(sk, '熙河路', 101.778, 36.617),
+        `${sk} (1104–1127) must place Xiningzhou (Qingtang) inside Song and Xihe Circuit after the 1104 Hehuang Expansion`
+      );
+    }
+
+    // 4. Late Northern Song (s_beisong_d), Hainan Island circuit (广南西路), and full-phase simplified prefectures
+    assert(
+      hasPolPt('s_beisong_d', '西辽', 81.28, 43.92) &&
+        snapshots.s_beisong_d.regions.some((r) => r.title === '上京路') &&
+        snapshots.s_beisong_d.regions.some((r) => r.title === '燕京路') &&
+        !snapshots.s_beisong_d.regions.some((r) => r.title.endsWith('道')),
+      's_beisong_d (1125–1127) must include Western Liao and rename former Liao circuits from 道 to Jin 路'
+    );
+    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e', 's_nansong_b', 's_nansong_g']) {
+      assert(
+        hasRegPt(sk, '广南西路', 109.577, 19.521),
+        `${sk} must include Hainan Island ([109.577, 19.521]) inside 广南西路`
+      );
+    }
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e', 's_nansong_b', 's_nansong_g']) {
+      const prefs = snapshots[sk].prefectures || [];
+      assert(
+        prefs.length >= 130 &&
+          !prefs.some((p) => p.title.endsWith('道') || p.title === '倒塌岭节度使司' || p.title === '西北路') &&
+          hasPrefPt(sk, '开封府', 114.351, 34.791) &&
+          hasPrefPt(sk, '成都府', 104.061, 30.671),
+        `${sk} prefectures must be populated (>=130), free of macro-circuits, and include Kaifengfu & Chengdufu`
+      );
+    }
+
+    // 5. Southern Song (1127–1279): Treaty of Shaoxing border (Qinzhou, Fengzhou, Chengzhou, Jiezhou, Junzhou), Lintao exclusivity, and Jin capital chronology
+    assert(
+      snapshots.s_nansong_c.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 1 &&
+        hasPolPt('s_nansong_c', '金（迁都汴京）', 103.861, 35.381) &&
+        hasPolPt('s_nansong_c', '金（迁都汴京）', 103.83, 36.06),
+      's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
+    );
+    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d']) {
+      assert(
+        !hasPolPt(sk, '吐蕃诸部', 103.861, 35.381) && !hasPolPt(sk, '吐蕃诸部', 103.83, 36.06),
+        `${sk} must not overlap 吐蕃诸部 onto Lintaofu or Lanzhou`
+      );
+    }
+    assert(
+      hasPolPt('s_nansong_a0', '南宋', 105.721, 34.581) &&
+        hasRegPt('s_nansong_a0', '利州路', 105.721, 34.581) &&
+        snapshots.s_nansong_a0.regions.some((r) => r.title === '燕京路') &&
+        !snapshots.s_nansong_a0.regions.some((r) => r.title === '中都路') &&
+        hasPrefPt('s_nansong_a0', '析津府', 116.401, 39.901),
+      's_nansong_a0 (1127–1141, pre-Shaoxing Treaty & pre-1153 Zhongdu) must keep Qinzhou in Southern Song / Lizhou Circuit and name Beijing as Yanjing Circuit / Xijinfu'
+    );
+    for (const [sk, northPol] of [
+      ['s_nansong_a', '金'],
+      ['s_nansong_b0', '金'],
+      ['s_nansong_c', '金（迁都汴京）'],
+      ['s_nansong_d', '大蒙古国'],
+      ['s_nansong_e', '大蒙古国'],
+      ['s_nansong_b', '大蒙古国'],
+    ]) {
+      assert(
+        hasPolPt(sk, northPol, 105.721, 34.581) &&
+          hasPolPt(sk, northPol, 106.96, 34.28) &&
+          !hasPolPt(sk, '南宋', 105.721, 34.581) &&
+          hasPolPt(sk, '南宋', 106.52, 33.91) &&
+          hasPolPt(sk, '南宋', 105.73, 33.74) &&
+          hasPolPt(sk, '南宋', 104.92, 33.4) &&
+          hasPolPt(sk, '南宋', 104.04, 34.43) &&
+          hasPolPt(sk, '南宋', 111.51, 32.65) &&
+          hasRegPt(sk, '凤翔路', 105.721, 34.581) &&
+          hasRegPt(sk, '利州路', 106.52, 33.91) &&
+          hasRegPt(sk, '利州路', 105.73, 33.74) &&
+          hasRegPt(sk, '利州路', 104.92, 33.4),
+        `${sk} (post-1142 Treaty of Shaoxing) must place Qinzhou & Dasanguan in ${northPol} / Fengxiang Circuit and Fengzhou, Chengzhou, Jiezhou, Minzhou, & Junzhou in Southern Song / Lizhou Circuit`
+      );
+    }
+    for (const sk of ['s_nansong_e', 's_nansong_b']) {
+      assert(
+        snapshots[sk].regions.some((r) => r.title === '辽东路') &&
+          snapshots[sk].regions.some((r) => r.title === '燕京路') &&
+          snapshots[sk].regions.some((r) => r.title === '河南路') &&
+          !snapshots[sk].regions.some((r) => r.title === '上京路' || r.title === '中都路' || r.title === '南京（河南）路'),
+        `${sk} (post-1234 fall of Jin) must replace Jin imperial circuits with Mongol circuits (辽东路, 燕京路, 河南路)`
+      );
+    }
+  }
+
   const elapsed = (performance.now() - t0).toFixed(1);
   console.log(`✓ Jiangshan Atlas validation passed in ${elapsed} ms:`);
   console.log(`  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${referencedSnaps.size} phase-linked), ${sweptYears} timeline years swept`);
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 35 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 36 E2E CUJs`);
 }
 
 main();
