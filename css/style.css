@@ -384,6 +384,12 @@ h2 {
 }
 
 #atlas-svg {
+  /* Keep map glyphs on local fonts: resizing SVG text backed by the segmented
+     CJK web fonts is expensive in Chrome. UI/chronicle fonts stay unchanged. */
+  --serif-stack: 'Songti SC', 'SimSun', serif;
+  --sans-stack: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --calligraphy-stack: 'STKaiti', 'KaiTi', var(--serif-stack);
+  font-family: var(--serif-stack);
   width: 100%;
   height: 100%;
   display: block;
@@ -397,6 +403,12 @@ h2 {
 
 #atlas-svg.is-panning {
   cursor: grabbing;
+}
+
+/* Restore the parchment halos after the camera settles. Re-rasterizing outlined
+   glyphs at every intermediate zoom level is substantially more expensive. */
+#atlas-svg.is-camera-moving text {
+  stroke: none;
 }
 
 #atlas-svg.is-crosshair {
