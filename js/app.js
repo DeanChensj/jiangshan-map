@@ -2301,7 +2301,12 @@
         return;
       }
       const yrText = this.formatYear(m.year);
-      const siteStr = this.milestoneSite(dynasty, m);
+      const rawSiteStr = this.milestoneSite(dynasty, m);
+      const siteStr =
+        rawSiteStr
+          .replace(/\s*（[^）]*）|\s*\([^)]*\)/g, '')
+          .replace(/\s*·\s*/g, ' · ')
+          .trim() || rawSiteStr;
       const traceTitle =
         this.locale === 'en' ? 'Click to trace place history' : '点击查看此地历代沿革（点地溯源）';
       const traceSuffix = this.locale === 'en' ? 'History ›' : '沿革 ›';
