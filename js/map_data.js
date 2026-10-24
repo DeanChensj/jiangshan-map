@@ -12293,7 +12293,8 @@ window.DYNASTY_DATA = [
         "coord": [
           93.511,
           42.821
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1519,
@@ -13687,6 +13688,10 @@ window.DYNASTY_DATA = [
       {
         "until": 1449,
         "snap": "s_ming_a2"
+      },
+      {
+        "until": 1513,
+        "snap": "s_ming_b0"
       },
       {
         "until": 1616,
