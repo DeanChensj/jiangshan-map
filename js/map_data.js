@@ -12439,7 +12439,8 @@ window.DYNASTY_DATA = [
         "coord": [
           123.431,
           41.801
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1643,
@@ -12448,7 +12449,8 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1644,
@@ -13698,8 +13700,16 @@ window.DYNASTY_DATA = [
         "snap": "s_ming_b"
       },
       {
-        "until": 1644,
+        "until": 1636,
+        "snap": "s_ming_c0"
+      },
+      {
+        "until": 1643,
         "snap": "s_ming_c"
+      },
+      {
+        "until": 1644,
+        "snap": "s_ming_c2"
       }
     ]
   },
@@ -13731,7 +13741,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.78,
           32.06
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1661,
@@ -13740,6 +13751,16 @@ window.DYNASTY_DATA = [
         "coord": [
           120.211,
           23.001
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 1662,
+        "headline": "吴三桂于昆明杀南明永历帝，李定国病逝，南明大陆抗清终结",
+        "site": "云南府（昆明）",
+        "coord": [
+          102.831,
+          24.881
         ],
         "isMapChange": true
       },
@@ -15560,8 +15581,16 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {
+        "until": 1645,
+        "snap": "s_qing_a00"
+      },
+      {
         "until": 1661,
         "snap": "s_qing_a0"
+      },
+      {
+        "until": 1662,
+        "snap": "s_qing_a0b"
       },
       {
         "until": 1673,
