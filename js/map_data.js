@@ -13651,10 +13651,10 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "延平府",
-        "modern": "三明",
+        "modern": "南平",
         "coord": [
-          117.64,
-          26.26
+          118.18,
+          26.64
         ],
         "tier": 2,
         "remark": "福建八府之一，辖南平、沙县、尤溪、永安、将乐等县，正统年间邓茂七起义于此"
@@ -13721,7 +13721,8 @@ window.DYNASTY_DATA = [
         "coord": [
           119.751,
           40.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1645,
@@ -13778,7 +13779,8 @@ window.DYNASTY_DATA = [
         "coord": [
           120.201,
           23.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1685,
@@ -13805,7 +13807,8 @@ window.DYNASTY_DATA = [
         "coord": [
           116.501,
           42.201
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1696,
@@ -13823,7 +13826,8 @@ window.DYNASTY_DATA = [
         "coord": [
           91.111,
           29.651
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1722,
@@ -13895,7 +13899,8 @@ window.DYNASTY_DATA = [
         "coord": [
           81.301,
           43.901
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1771,
@@ -13940,7 +13945,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.121,
           32.011
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1799,
@@ -13965,7 +13971,7 @@ window.DYNASTY_DATA = [
         "headline": "张格尔之乱攻陷喀什噶尔，长龄率军西征平定",
         "site": "喀什噶尔（喀什）",
         "coord": [
-          75.99,
+          76.08,
           39.47
         ]
       },
@@ -14003,7 +14009,8 @@ window.DYNASTY_DATA = [
         "coord": [
           110.08,
           23.53
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1855,
@@ -14028,9 +14035,10 @@ window.DYNASTY_DATA = [
         "headline": "沙俄迫签《瑷珲条约》，割占黑龙江以北外兴安岭以南",
         "site": "瑷珲（黑河）",
         "coord": [
-          127.491,
-          50.251
-        ]
+          127.37,
+          50.17
+        ],
+        "isMapChange": true
       },
       {
         "year": 1860,
@@ -14039,7 +14047,8 @@ window.DYNASTY_DATA = [
         "coord": [
           116.301,
           40.008
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1861,
@@ -14057,7 +14066,8 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1865,
@@ -14082,7 +14092,7 @@ window.DYNASTY_DATA = [
         "headline": "曾纪泽使俄订立《中俄伊犁条约》，收复伊犁九城大部",
         "site": "伊犁（霍尔果斯）",
         "coord": [
-          80.42,
+          80.44,
           44.2
         ],
         "isMapChange": true
@@ -14121,7 +14131,8 @@ window.DYNASTY_DATA = [
         "coord": [
           120.211,
           23.001
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1898,
@@ -14166,7 +14177,7 @@ window.DYNASTY_DATA = [
         "ancient": "霍尔果斯",
         "modern": "中俄勘界口岸",
         "coord": [
-          80.42,
+          80.44,
           44.2
         ],
         "appear": 1881,
@@ -14377,8 +14388,8 @@ window.DYNASTY_DATA = [
         "ancient": "瑷珲",
         "modern": "黑河",
         "coord": [
-          127.491,
-          50.251
+          127.37,
+          50.17
         ],
         "remark": "1858 年《瑷珲条约》"
       },
@@ -14780,6 +14791,7 @@ window.DYNASTY_DATA = [
           89.19,
           42.95
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "乾隆间置吐鲁番厅"
       },
@@ -14790,6 +14802,7 @@ window.DYNASTY_DATA = [
           95.78,
           40.52
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "雍正间置安西直隶州"
       },
@@ -14999,6 +15012,7 @@ window.DYNASTY_DATA = [
           80.26,
           41.17
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "乾隆平大小和卓置阿克苏办事大臣，光绪置温宿府"
       },
@@ -15009,6 +15023,7 @@ window.DYNASTY_DATA = [
           79.92,
           37.11
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "清置和阗办事大臣，光绪置和阗直隶州"
       },
@@ -15069,6 +15084,7 @@ window.DYNASTY_DATA = [
           82.96,
           41.72
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "乾隆二十四年置库车办事大臣，光绪置库车直隶州"
       },
@@ -15076,8 +15092,8 @@ window.DYNASTY_DATA = [
         "ancient": "辑安（国内城）",
         "modern": "通化·集安",
         "coord": [
-          126.19,
-          41.12
+          126.13,
+          41.16
         ],
         "tier": 2,
         "remark": "光绪三年重现好太王碑，光绪二十八年置辑安县"
@@ -15346,7 +15362,7 @@ window.DYNASTY_DATA = [
         "ancient": "雷州府",
         "modern": "湛江·雷州",
         "coord": [
-          110.08,
+          110.07,
           20.91
         ],
         "tier": 2,
@@ -15429,6 +15445,7 @@ window.DYNASTY_DATA = [
           91.77,
           29.24
         ],
+        "appear": 1720,
         "tier": 2,
         "remark": "清驻藏大臣巡查山南诸宗要地"
       },
@@ -15436,9 +15453,10 @@ window.DYNASTY_DATA = [
         "ancient": "噶尔（阿里）",
         "modern": "阿里",
         "coord": [
-          80.4,
-          31.15
+          80.5,
+          31.3
         ],
+        "appear": 1720,
         "tier": 2,
         "remark": "西藏噶厦设噶本二员驻噶大克统管阿里三围"
       },
@@ -15449,6 +15467,7 @@ window.DYNASTY_DATA = [
           101.14,
           41.76
         ],
+        "appear": 1759,
         "tier": 2,
         "remark": "乾隆年间安置旧土尔扈特部游牧于额济纳河流域"
       },
@@ -15474,13 +15493,69 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "延平府",
-        "modern": "三明",
+        "modern": "南平",
         "coord": [
-          117.64,
-          26.26
+          118.18,
+          26.64
         ],
         "tier": 2,
-        "remark": "福建省八府之一，连接闽北延建与闽西汀州之水陆咽喉，领南平、沙县、永安等县"
+        "remark": "福建省八府之一，附郭南平县，控扼闽江建溪、富屯溪水陆咽喉"
+      },
+      {
+        "ancient": "喀什噶尔",
+        "modern": "喀什",
+        "coord": [
+          76.08,
+          39.47
+        ],
+        "appear": 1759,
+        "tier": 1,
+        "remark": "南疆八城之首，乾隆设总理回疆事务参赞大臣，光绪建省设喀什噶尔道"
+      },
+      {
+        "ancient": "台北府",
+        "modern": "台北",
+        "coord": [
+          121.51,
+          25.04
+        ],
+        "appear": 1875,
+        "vanish": 1895,
+        "tier": 2,
+        "remark": "光绪元年沈葆桢奏设台北府；光绪十一年台湾建省，为巡抚驻地及省会"
+      },
+      {
+        "ancient": "齐齐哈尔",
+        "modern": "齐齐哈尔",
+        "coord": [
+          123.95,
+          47.34
+        ],
+        "appear": 1699,
+        "tier": 2,
+        "remark": "康熙三十八年黑龙江将军移驻齐齐哈尔城（卜奎），为黑龙江军政首府"
+      },
+      {
+        "ancient": "上海",
+        "modern": "上海",
+        "coord": [
+          121.48,
+          31.23
+        ],
+        "appear": 1843,
+        "tier": 2,
+        "remark": "道光二十三年开埠，设苏松太道（上海道），晚清近代工商业与外贸首埠"
+      },
+      {
+        "ancient": "天津府",
+        "modern": "天津",
+        "coord": [
+          117.2,
+          39.12
+        ],
+        "appear": 1725,
+        "tier": 2,
+        "remark": "直隶海防总汇，雍正三年置天津府，同治后直隶总督兼北洋通商大臣驻地"
       }
     ],
     "phases": [

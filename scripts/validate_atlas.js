@@ -3863,6 +3863,88 @@ function main() {
     );
   }
 
+  // 23ac. Qing snapshots, milestones, and settlements (Draft History of Qing)
+  {
+    const qingD = dynasties.find((d) => d.key === 'qing');
+    assert(qingD, 'qing dynasty definition must exist');
+
+    // s_qing_a1 must have valid caption and note (never undefined)
+    assert(
+      snapshots.s_qing_a1 && snapshots.s_qing_a1.caption && snapshots.s_qing_a1.note,
+      's_qing_a1 must have defined caption and note'
+    );
+    assert(
+      snapshots.s_qing_a1.caption.startsWith('1661'),
+      's_qing_a1 caption must start at 1661'
+    );
+    assert(
+      snapshots.s_qing_a && snapshots.s_qing_a.caption.startsWith('1673'),
+      's_qing_a caption must start at 1673 (Revolt of Three Feudatories), not 1661'
+    );
+    assert(
+      snapshots.s_qing_f0 && snapshots.s_qing_f0.caption.includes('1864 — 1881'),
+      's_qing_f0 caption must cover 1864 — 1881'
+    );
+    assert(
+      snapshots.s_qing_g0 && snapshots.s_qing_g0.caption.includes('1895 — 1898'),
+      's_qing_g0 caption must cover 1895 — 1898'
+    );
+
+    // All phase transition milestones must have isMapChange === true
+    const expectedMapChangeYears = [
+      1644, 1661, 1673, 1681, 1683, 1691, 1720, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
+    ];
+    const actualMapChangeYears = (qingD.milestones || [])
+      .filter((m) => m.isMapChange)
+      .map((m) => m.year);
+    assert.strictEqual(
+      JSON.stringify(actualMapChangeYears),
+      JSON.stringify(expectedMapChangeYears),
+      'qing: all 16 phase transition milestones must have isMapChange === true'
+    );
+
+    // Yanping Fu must be centered at Nanping (not Sanming)
+    const qingSt = (name) => (qingD.settlements || []).find((s) => s.ancient === name);
+    const yanping = qingSt('延平府');
+    assert(yanping && yanping.modern.includes('南平'), 'qing: 延平府 must be centered at Nanping');
+    assert(Math.abs(yanping.coord[0] - 118.18) < 0.1 && Math.abs(yanping.coord[1] - 26.64) < 0.1, 'qing: 延平府 coords near Nanping');
+
+    // Key seats and treaty ports
+    const kashgar = qingSt('喀什噶尔');
+    assert(kashgar && kashgar.appear === 1759, 'qing: 喀什噶尔 must exist from 1759');
+    assert.strictEqual(ctrl.inspect({ year: 1800, place: '喀什噶尔' }).polity, '清', 'qing: 喀什噶尔 must resolve to polity 清 in 1800');
+    assert.strictEqual(ctrl.inspect({ year: 1885, place: '霍尔果斯' }).polity, '清', 'qing: 霍尔果斯 must resolve to polity 清 in 1885');
+    assert.strictEqual(ctrl.inspect({ year: 1870, place: '瑷珲' }).polity, '清', 'qing: 瑷珲 must resolve to polity 清 in 1870');
+    assert.strictEqual(ctrl.inspect({ year: 1800, place: '雷州府' }).polity, '清', 'qing: 雷州府 must resolve to polity 清 in 1800');
+    assert.strictEqual(ctrl.inspect({ year: 1800, place: '辑安（国内城）' }).polity, '清', 'qing: 辑安（国内城） must resolve to polity 清 in 1800');
+
+    for (const [name, expAppear] of [
+      ['吐鲁番', 1759],
+      ['安西州', 1759],
+      ['阿克苏（温宿）', 1759],
+      ['和阗（于阗）', 1759],
+      ['库车（龟兹）', 1759],
+      ['黑城（额济纳）', 1759],
+      ['山南（泽当）', 1720],
+      ['噶尔（阿里）', 1720],
+    ]) {
+      const st = qingSt(name);
+      assert(st && st.appear === expAppear, `qing: ${name} must have appear === ${expAppear}`);
+    }
+
+    const taipei = qingSt('台北府');
+    assert(taipei && taipei.appear === 1875 && taipei.vanish === 1895, 'qing: 台北府 must exist 1875-1895');
+
+    const qiqi = qingSt('齐齐哈尔');
+    assert(qiqi && qiqi.appear === 1699, 'qing: 齐齐哈尔 must exist from 1699');
+
+    const shanghai = qingSt('上海');
+    assert(shanghai && shanghai.appear === 1843, 'qing: 上海 must exist from 1843');
+
+    const tianjin = qingSt('天津府');
+    assert(tianjin && tianjin.appear === 1725, 'qing: 天津府 must exist from 1725');
+  }
+
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
   {
     ctrl.locale = 'en';
