@@ -1594,28 +1594,78 @@ function main() {
     's_tang_d2 must map Late Tang regional warlords (Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi)'
   );
 
-  // CUJ 20: Ming-Qing Transition (1643 still Ming-held Beijing; Dashun takes it only in 1644 under Qing's boundary year) & Early Qing Split (1661-1673 Koxinga Taiwan vs. 1673-1681 Three Feudatories)
+  // CUJ 20: Ming-Qing Transition (1616-1636 Later Jin -> 1636-1643 Qing -> 1643-1644 Dashun & Daxi -> 1644-1645 Qing/Southern Ming/Dashun/Daxi -> 1645-1661 Southern Ming -> 1661-1662 Final Mainland Southern Ming & Ming-Zheng Taiwan -> 1662-1673 Ming-Zheng Taiwan)
   const mingDyn = dynasties.find((d) => d.key === 'ming');
-  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1642), 's_ming_c', 'Ming at 1642 CE must resolve to s_ming_c');
-  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1643), 's_ming_c', 'Ming at 1643 CE must resolve to s_ming_c');
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1620), 's_ming_c0', 'Ming at 1620 CE must resolve to s_ming_c0');
+  assert(
+    snapshots.s_ming_c0.polities.some((p) => p.title === '后金') &&
+      !snapshots.s_ming_c0.polities.some((p) => p.title.includes('1636')),
+    's_ming_c0 (1616-1636) must name the Northeast rival polity 后金'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1640), 's_ming_c', 'Ming at 1640 CE must resolve to s_ming_c');
+  assert(
+    snapshots.s_ming_c.polities.some((p) => p.title === '清') &&
+      !snapshots.s_ming_c.polities.some((p) => p.title.includes('后金')),
+    's_ming_c (1636-1643) must name the Northeast rival polity 清 after Hong Taiji proclaimed the Qing Empire in 1636'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1643), 's_ming_c2', 'Ming at 1643 CE must resolve to s_ming_c2');
   {
-    const ming1643 = snapshots.s_ming_c.polities.find((p) => p.title === '明');
+    const ming1643 = snapshots.s_ming_c2.polities.find((p) => p.title === '明');
+    const dashun1643 = snapshots.s_ming_c2.polities.find((p) => p.title === '大顺（李自成）');
+    const daxi1643 = snapshots.s_ming_c2.polities.find((p) => p.title === '大西（张献忠）');
     assert(
       ming1643 && pointInShape(116.401, 39.901, ming1643.shape) && pointInShape(104.071, 30.571, ming1643.shape),
-      'In 1643 Beijing ([116.401, 39.901]) and Chengdu ([104.071, 30.571]) must still be inside 明 (Beijing fell in 1644, Chengdu in 1644)'
+      'In 1643 Beijing ([116.401, 39.901]) and Chengdu ([104.071, 30.571]) must still be inside 明'
     );
     assert(
-      snapshots.s_ming_c.polities.some((p) => p.title === '后金（1636 年起称清）'),
-      's_ming_c must map the Later Jin / Qing alongside Ming'
+      dashun1643 &&
+        pointInShape(108.941, 34.341, dashun1643.shape) &&
+        pointInShape(114.311, 34.801, dashun1643.shape) &&
+        !pointInShape(108.941, 34.341, ming1643.shape),
+      'In 1643 s_ming_c2 must map Li Zicheng (大顺（李自成）) in Shaanxi (Xi\'an) and Henan (Kaifeng)'
+    );
+    assert(
+      daxi1643 &&
+        pointInShape(114.311, 30.591, daxi1643.shape) &&
+        pointInShape(112.941, 28.231, daxi1643.shape) &&
+        !pointInShape(114.311, 30.591, ming1643.shape),
+      'In 1643 s_ming_c2 must map Zhang Xianzhong (大西（张献忠）) in Wuchang and Changsha'
+    );
+  }
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1644), 's_qing_a00', 'Qing at 1644 CE must resolve to s_qing_a00');
+  {
+    const q1644 = snapshots.s_qing_a00.polities.find((p) => p.title === '清');
+    const nm1644 = snapshots.s_qing_a00.polities.find((p) => p.title === '南明');
+    const ds1644 = snapshots.s_qing_a00.polities.find((p) => p.title === '大顺（李自成）');
+    const dx1644 = snapshots.s_qing_a00.polities.find((p) => p.title === '大西（张献忠）');
+    assert(
+      q1644 &&
+        nm1644 &&
+        ds1644 &&
+        dx1644 &&
+        pointInShape(116.401, 39.901, q1644.shape) &&
+        !pointInShape(118.801, 32.061, q1644.shape) &&
+        !pointInShape(113.261, 23.131, q1644.shape) &&
+        pointInShape(118.801, 32.061, nm1644.shape) &&
+        pointInShape(113.261, 23.131, nm1644.shape) &&
+        pointInShape(108.941, 34.341, ds1644.shape) &&
+        pointInShape(104.071, 30.571, dx1644.shape),
+      'In 1644 s_qing_a00 must confine 清 to North/Northeast while 南明 holds Nanjing & Guangdong, 大顺 holds Xi\'an, and 大西 holds Chengdu'
     );
   }
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1650), 's_qing_a0', 'Qing at 1650 CE must resolve to s_qing_a0');
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1661), 's_qing_a0b', 'Qing at 1661 CE must resolve to s_qing_a0b');
+  assert(
+    snapshots.s_qing_a0b.polities.some((p) => p.title === '南明') &&
+      snapshots.s_qing_a0b.polities.some((p) => p.title === '南明（明郑）'),
+    'In 1661 s_qing_a0b must show both mainland 南明 (Yongli/Li Dingguo in western Yunnan) and 南明（明郑） in Taiwan'
+  );
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1665), 's_qing_a1', 'Qing at 1665 CE must resolve to s_qing_a1');
   assert(
     snapshots.s_qing_a1.polities.some((p) => p.title === '清') &&
-      snapshots.s_qing_a1.polities.some((p) => p.title === '郑氏台湾') &&
+      snapshots.s_qing_a1.polities.some((p) => p.title === '南明（明郑）') &&
       !snapshots.s_qing_a1.polities.some((p) => p.title.includes('三藩')),
-    's_qing_a1 (1661-1673) must map unified mainland Qing and Koxinga Taiwan prior to the Revolt of the Three Feudatories'
+    's_qing_a1 (1662-1673) must map unified mainland Qing and Southern Ming Tungning Taiwan prior to the Revolt of the Three Feudatories'
   );
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1675), 's_qing_a', 'Qing at 1675 CE must resolve to s_qing_a');
   const sanfanPolity = snapshots.s_qing_a.polities.find((p) => p.title === '吴周 · 三藩');
@@ -3832,7 +3882,7 @@ function main() {
     const mcYears = (mingD.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1513, 1616]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1513, 1616, 1636, 1643]),
       'ming: map-change milestones must match the phase transitions'
     );
 
@@ -3874,8 +3924,8 @@ function main() {
       's_qing_a1 must have defined caption and note'
     );
     assert(
-      snapshots.s_qing_a1.caption.startsWith('1661'),
-      's_qing_a1 caption must start at 1661'
+      snapshots.s_qing_a1.caption.startsWith('1662'),
+      's_qing_a1 caption must start at 1662 (after execution of Yongli Emperor)'
     );
     assert(
       snapshots.s_qing_a && snapshots.s_qing_a.caption.startsWith('1673'),
@@ -3892,7 +3942,7 @@ function main() {
 
     // All phase transition milestones must have isMapChange === true
     const expectedMapChangeYears = [
-      1644, 1661, 1673, 1681, 1683, 1691, 1720, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
+      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
       .filter((m) => m.isMapChange)
@@ -3900,7 +3950,7 @@ function main() {
     assert.strictEqual(
       JSON.stringify(actualMapChangeYears),
       JSON.stringify(expectedMapChangeYears),
-      'qing: all 16 phase transition milestones must have isMapChange === true'
+      'qing: all 18 phase transition milestones must have isMapChange === true'
     );
 
     // Yanping Fu must be centered at Nanping (not Sanming)

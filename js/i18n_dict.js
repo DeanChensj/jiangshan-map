@@ -1979,6 +1979,10 @@ window.EN_LOCALE = {
       "Young Kangxi Emperor seizes regent Oboi at Wuying Hall to assume personal rule",
       "Forbidden City, Beijing"
     ],
+    "qing:1662": [
+      "Wu Sangui executes the Southern Ming Yongli Emperor in Kunming; Prince Li Dingguo dies",
+      "Yunnan Fu (Kunming)"
+    ],
     "qing:1793": [
       "British envoy Lord Macartney meets the Qianlong Emperor at Chengde; trade demands refused",
       "Chengde Mountain Resort"
@@ -6562,6 +6566,25 @@ window.EN_LOCALE = {
     "光绪元年沈葆桢奏设台北府；光绪十一年台湾建省，为巡抚驻地及省会": "Established as Taipei Prefecture in 1875; designated as the provincial capital and governor's seat upon Taiwan's elevation to province in 1885",
     "康熙三十八年黑龙江将军移驻齐齐哈尔城（卜奎），为黑龙江军政首府": "Designated in 1699 as the official seat of the Military Governor of Heilongjiang at Bukui (Qiqihar), serving as the regional capital",
     "道光二十三年开埠，设苏松太道（上海道），晚清近代工商业与外贸首埠": "Opened as a treaty port in 1843; seat of the Su-Song-Tai (Shanghai) Circuit, becoming modern China's premier commercial and financial hub",
-    "直隶海防总汇，雍正三年置天津府，同治后直隶总督兼北洋通商大臣驻地": "Major maritime defense hub of Zhili elevated to prefecture in 1725; later seat of the Viceroy of Zhili and Minister of Beiyang"
+    "直隶海防总汇，雍正三年置天津府，同治后直隶总督兼北洋通商大臣驻地": "Major maritime defense hub of Zhili elevated to prefecture in 1725; later seat of the Viceroy of Zhili and Minister of Beiyang",
+    "后金": "Later Jin",
+    "大顺（李自成）": "Dashun (Li Zicheng)",
+    "大西（张献忠）": "Daxi (Zhang Xianzhong)",
+    "南明（明郑）": "Southern Ming (Koxinga / Tungning)",
+    "云南府（昆明）": "Yunnan Fu (Kunming)",
+    "1616 — 1636 · 明末后金崛起：努尔哈赤称汗建后金，萨尔浒之战后明失辽东": "1616–1636 · Rise of Later Jin: Nurhaci Founds Later Jin and Captures Liaodong after Sarhū",
+    "1636 — 1643 · 皇太极改国号大清：清并漠南蒙古频入塞，中原流民起义烽起": "1636–1643 · Hong Taiji Proclaims the Qing Dynasty: Subjugation of Inner Mongolia and Peasant Uprisings in Central China",
+    "1643 — 1644 · 李自成破潼关入秦与张献忠据湖广：大顺据秦豫、大西据湘鄂": "1643–1644 · Li Zicheng Takes Shaanxi & Henan as Zhang Xianzhong Seizes Huguang",
+    "1644 — 1645 · 清军入关与南明、大顺、大西并立：清廷定都北京控制北方，弘光立于南京，李自成据陕甘、张献忠据四川": "1644–1645 · Qing Enters Shanhaiguan: Beijing Made Capital while Southern Ming (Hongguang), Dashun, and Daxi Hold the South and West",
+    "1645 — 1661 · 清军下江南与南明抗清：清军平定陕川江南，南明隆武、永历政权与李定国、郑成功据南方抗清": "1645–1661 · Qing Conquest of Jiangnan & Southern Ming Resistance under the Longwu and Yongli Courts",
+    "1661 — 1662 · 郑成功收复台湾与南明永历终局：明郑设承天府奉永历正朔，李定国于滇西抗清": "1661–1662 · Koxinga Recovers Taiwan (Upholding the Southern Ming Yongli Era) & Final Mainland Resistance in Western Yunnan",
+    "1662 — 1673 · 永历蒙难与康熙亲政：南明大陆抗清终结，台湾明郑奉永历正朔，三藩起兵前夕": "1662–1673 · End of Mainland Southern Ming & Kangxi's Personal Rule: Ming-Zheng Holds Taiwan under the Yongli Calendar",
+    "两京十三布政使司：1616 年努尔哈赤建后金，辽东沦陷": "Two Capitals & Thirteen Provinces: Nurhaci founds Later Jin in 1616 and takes Liaodong",
+    "两京十三布政使司：1636 年皇太极称帝改国号大清": "Two Capitals & Thirteen Provinces: Hong Taiji proclaims the Qing Empire in 1636",
+    "两京十三布政使司：李自成据秦豫鄂北，张献忠据湖广": "Two Capitals & Thirteen Provinces: Li Zicheng holds Shaanxi & Henan; Zhang Xianzhong holds Huguang",
+    "府州政区：清控直鲁晋及东北，南明弘光据淮南及江南湖广闽粤云贵，大顺据陕甘，大西据四川": "Prefectures: Qing holds North & Northeast; Southern Ming holds the South; Dashun holds Shaanxi–Gansu; Daxi holds Sichuan",
+    "府州政区：清廷经略中原江南，南明永历政权据两广云贵及湘南抗清": "Prefectures: Qing consolidates Central China & Jiangnan while the Southern Ming Yongli court holds the Southwest",
+    "府州政区：郑成功复台奉南明永历正朔，永历帝与李定国据滇西最后抗清": "Prefectures: Koxinga establishes Chengtian Fu on Taiwan under the Yongli calendar; Li Dingguo makes a final stand in western Yunnan",
+    "府州政区：覆盖内地十八省及东北，台湾明郑奉南明永历正朔": "Prefectures: covers the 18 interior provinces & Northeast; Ming-Zheng in Taiwan upholds the Southern Ming Yongli calendar"
   }
 };
