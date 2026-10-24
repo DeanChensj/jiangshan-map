@@ -1494,6 +1494,17 @@ function main() {
         ctrl.milestoneBalloon.innerHTML.includes('ep-close'),
       'Expected #milestone-balloon header to stay clean without moving-target .ep-prev / .ep-next stepper buttons'
     );
+    const epPlaceMatch = ctrl.milestoneBalloon.innerHTML.match(/class="ep-place"[^>]*>([\s\S]*?)<\/button>/);
+    assert(
+      !epPlaceMatch || (!epPlaceMatch[1].includes('（') && !epPlaceMatch[1].includes('(')),
+      `Milestone balloon .ep-place button in ${dynKey} must strip parenthetical clutter: ${epPlaceMatch && epPlaceMatch[1]}`
+    );
+    for (const m of ms) {
+      assert(
+        !/得胜堡互市|使节出海|天祚帝被俘|未央宫|玄武门|太极宫|大明宫|万岁殿|礼部贡院|紫禁城|南宫·奉天殿|贵州布政司|宣政院辖地|安东都护府|西域都护府|郑国渠|中山堂/.test(m.site || ''),
+        `Milestone ${dynKey}:${m.year} site "${m.site}" must be a clean geographic place name, not an event/palace/office note`
+      );
+    }
   }
 
   // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
