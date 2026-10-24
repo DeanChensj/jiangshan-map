@@ -1594,16 +1594,21 @@ function main() {
     's_tang_d2 must map Late Tang regional warlords (Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi)'
   );
 
-  // CUJ 20: Ming-Qing Transition (1643-1644 Dashun & Daxi) & Early Qing Split (1661-1673 Koxinga Taiwan vs. 1673-1681 Three Feudatories)
+  // CUJ 20: Ming-Qing Transition (1643 still Ming-held Beijing; Dashun takes it only in 1644 under Qing's boundary year) & Early Qing Split (1661-1673 Koxinga Taiwan vs. 1673-1681 Three Feudatories)
   const mingDyn = dynasties.find((d) => d.key === 'ming');
   assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1642), 's_ming_c', 'Ming at 1642 CE must resolve to s_ming_c');
-  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1643), 's_ming_d', 'Ming at 1643 CE must resolve to s_ming_d');
-  assert(
-    snapshots.s_ming_d.polities.some((p) => p.title === '大顺（李自成）') &&
-      snapshots.s_ming_d.polities.some((p) => p.title === '大西（张献忠）') &&
-      snapshots.s_ming_d.polities.some((p) => p.title === '后金（1636 年起称清）'),
-    's_ming_d must map Li Zicheng Dashun, Zhang Xianzhong Daxi, and Qing alongside Ming'
-  );
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1643), 's_ming_c', 'Ming at 1643 CE must resolve to s_ming_c');
+  {
+    const ming1643 = snapshots.s_ming_c.polities.find((p) => p.title === '明');
+    assert(
+      ming1643 && pointInShape(116.401, 39.901, ming1643.shape) && pointInShape(104.071, 30.571, ming1643.shape),
+      'In 1643 Beijing ([116.401, 39.901]) and Chengdu ([104.071, 30.571]) must still be inside 明 (Beijing fell in 1644, Chengdu in 1644)'
+    );
+    assert(
+      snapshots.s_ming_c.polities.some((p) => p.title === '后金（1636 年起称清）'),
+      's_ming_c must map the Later Jin / Qing alongside Ming'
+    );
+  }
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1650), 's_qing_a0', 'Qing at 1650 CE must resolve to s_qing_a0');
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1665), 's_qing_a1', 'Qing at 1665 CE must resolve to s_qing_a1');
   assert(
@@ -3802,6 +3807,42 @@ function main() {
       );
       assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
     }
+  }
+
+  // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
+  {
+    const mingD = dynasties.find((d) => d.key === 'ming');
+    const mingSt = (name) => (mingD.settlements || []).find((s) => s.ancient === name);
+    const capCases = [
+      ['应天府', [[1368, 1420]]],
+      ['顺天府', [[1421, 1644]]],
+      ['赫图阿拉', [[1616, 1621]]],
+      ['辽阳', [[1621, 1625]]],
+      ['沈阳（盛京）', [[1625, 1644]]],
+    ];
+    for (const [name, periods] of capCases) {
+      const st = mingSt(name);
+      assert(st && st.isCapital, `ming: ${name} must be marked as a capital`);
+      assert.strictEqual(JSON.stringify(st.capitalPeriods), JSON.stringify(periods), `ming: ${name} capitalPeriods must be ${JSON.stringify(periods)}`);
+    }
+    assert(mingSt('辽阳').vanish === undefined, 'ming: 辽阳 must not vanish in 1621 (it became the Later Jin Eastern Capital)');
+    assert.strictEqual(ctrl._isSettlementCapital(mingSt('应天府'), 1400), true, 'Nanjing must be the Ming capital in 1400');
+    assert.strictEqual(ctrl._isSettlementCapital(mingSt('顺天府'), 1400), false, 'Beijing must not be the Ming capital before 1421');
+
+    const mcYears = (mingD.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    assert.strictEqual(
+      JSON.stringify(mcYears),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1616]),
+      'ming: map-change milestones must match the phase transitions'
+    );
+    assert(
+      !(mingD.milestones || []).find((m) => m.year === 1388).headline.includes('收辽东'),
+      'ming 1388: Liaodong was already Ming from 1371; 1387 was the surrender of Naghachu at Jinshan'
+    );
+    assert(
+      !(mingD.milestones || []).find((m) => m.year === 1627).headline.includes('李自成'),
+      'ming 1627: Li Zicheng only joined the rebels in 1629-1630'
+    );
   }
 
   // CUJ 26: Security (Reflected XSS Sanitization), EN inspect(), Person inspect(), Autoplay Mutual Exclusion & IME Guards
