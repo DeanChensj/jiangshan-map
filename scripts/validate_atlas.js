@@ -3832,9 +3832,27 @@ function main() {
     const mcYears = (mingD.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1616]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1513, 1616]),
       'ming: map-change milestones must match the phase transitions'
     );
+
+    // Liaodong was Ming from 1371 (Dingliao Garrison at Liaoyang); Naghachu held only Jinshan to the north.
+    for (const sk of ['s_ming_0c', 's_ming_0d']) {
+      const ming = snapshots[sk].polities.find((p) => p.title === '明');
+      const yuan = snapshots[sk].polities.find((p) => p.title === '北元');
+      for (const [name, x, y] of [['辽阳', 123.171, 41.271], ['沈阳', 123.431, 41.801], ['广宁', 121.8, 41.6]]) {
+        assert(pointInShape(x, y, ming.shape) && !pointInShape(x, y, yuan.shape), `${sk}: ${name} must be inside 明, not 北元`);
+      }
+      assert(pointInShape(124.03, 42.55, yuan.shape), `${sk}: Kaiyuan ([124.03, 42.55]) north of Ming Liaodong must stay 北元`);
+    }
+    // Hami Guard survives until Turpan takes it in 1513.
+    const hamiAt = (year) => {
+      const sk = ctrl._resolveSnapKey(mingD, year);
+      return snapshots[sk].polities.filter((p) => pointInShape(93.511, 42.821, p.shape) && p.role !== 'neighbor').map((p) => p.title);
+    };
+    assert.strictEqual(ctrl._resolveSnapKey(mingD, 1480), 's_ming_b0', 'Ming at 1480 CE must resolve to s_ming_b0');
+    assert.strictEqual(JSON.stringify(hamiAt(1480)), JSON.stringify(['哈密卫（关西七卫）']), 'Hami must be under 哈密卫 in 1480');
+    assert.strictEqual(JSON.stringify(hamiAt(1550)), '[]', 'Hami must no longer be a Ming guard in 1550');
     assert(
       !(mingD.milestones || []).find((m) => m.year === 1388).headline.includes('收辽东'),
       'ming 1388: Liaodong was already Ming from 1371; 1387 was the surrender of Naghachu at Jinshan'
