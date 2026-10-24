@@ -316,6 +316,9 @@
       this._typoDirty = true;
       this._lastTypographyWidth = undefined;
       this._camRaf = null;
+      this._cameraSettleTimer = null;
+      this._cameraViewportRect = null;
+      this._lastCameraViewBox = null;
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -449,7 +452,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261024a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261024b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -473,7 +476,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261024a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261024b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2338,13 +2341,13 @@
       this._positionMilestoneBalloon();
     }
 
-    _positionMilestoneBalloon() {
+    _positionMilestoneBalloon(viewportRect = null) {
       if (!this.activeMilestone || !this.activeMilestone.milestone.coord) return;
       const [sx, sy] = this.projector.toScreen(
         this.activeMilestone.milestone.coord[0],
         this.activeMilestone.milestone.coord[1]
       );
-      const rect = this.svg.getBoundingClientRect();
+      const rect = viewportRect || this.svg.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       const padX = (rect.width - this.camera.w * scale) * 0.5;
@@ -5428,28 +5431,84 @@
       this._typoDirty = true;
     }
 
+    _scheduleCameraUpdate() {
+      if (this._camRaf !== null) return;
+      this._camRaf = requestAnimationFrame(() => {
+        this._camRaf = null;
+        this._applyCamera();
+      });
+    }
+
+    _finishCameraMotion() {
+      clearTimeout(this._cameraSettleTimer);
+      this._cameraSettleTimer = null;
+      this._cameraViewportRect = null;
+      const rect = this.svg.getBoundingClientRect();
+      this.svg.classList.remove('is-camera-moving');
+      if (
+        this._typoDirty ||
+        this._lastTypographyWidth === undefined ||
+        Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05
+      ) {
+        this._rescaleSvgTypography();
+      }
+      this._updateScaleBar(rect);
+      if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+    }
+
     _applyCamera(forceTypography = false) {
-      this.svg.setAttribute(
-        'viewBox',
-        `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`
-      );
-      const zoomChanged =
+      // Direct camera changes (reset, deep links, pointerup) supersede a queued
+      // input frame. Read the viewport before invalidating SVG layout.
+      if (this._camRaf !== null) {
+        cancelAnimationFrame(this._camRaf);
+        this._camRaf = null;
+      }
+      if (forceTypography) this._cameraViewportRect = null;
+      const rect =
+        (this.dragState && this.dragState.rect) ||
+        (this.pinchState && this.pinchState.rect) ||
+        this._cameraViewportRect ||
+        this.svg.getBoundingClientRect();
+      const viewBox = `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`;
+      if (forceTypography) {
+        clearTimeout(this._cameraSettleTimer);
+        this._cameraSettleTimer = null;
+        this.svg.classList.remove('is-camera-moving');
+      } else if (this._lastCameraViewBox !== null && viewBox !== this._lastCameraViewBox) {
+        this._cameraViewportRect = rect;
+        if (this._cameraSettleTimer === null) {
+          this.svg.classList.add('is-camera-moving');
+          this.hoverTip.classList.add('is-hidden');
+          this.grpPrefectures.querySelectorAll('.prefecture-shape.is-hovered')
+            .forEach((el) => el.classList.remove('is-hovered'));
+        }
+        clearTimeout(this._cameraSettleTimer);
+        this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+      }
+      if (viewBox !== this._lastCameraViewBox) {
+        this.svg.setAttribute('viewBox', viewBox);
+        this._lastCameraViewBox = viewBox;
+      }
+      // Rebuild immediately for new content, but defer zoom-only collision
+      // layout until the gesture ends. Coordinates always use the live camera.
+      const needsTypography =
         forceTypography ||
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
-        Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05;
-      if (zoomChanged) {
+        (this._cameraSettleTimer === null &&
+          Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05);
+      if (needsTypography) {
         this._rescaleSvgTypography();
       }
-      this._updateScaleBar();
-      if (this.activeMilestone) this._positionMilestoneBalloon();
+      this._updateScaleBar(rect);
+      if (this.activeMilestone) this._positionMilestoneBalloon(rect);
     }
 
-    _updateScaleBar() {
+    _updateScaleBar(viewportRect = null) {
       const lblEl = this._id('scale-label-text');
       const barEl = this._id('scale-ruler-bar');
       if (!lblEl || !barEl || !this.svg) return;
-      const rect = (this.dragState && this.dragState.rect) || this.svg.getBoundingClientRect();
+      const rect = viewportRect || (this.dragState && this.dragState.rect) || this.svg.getBoundingClientRect();
       const rw = rect.width || 1000;
       const rh = rect.height || 700;
       const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
@@ -5474,8 +5533,10 @@
         }
       }
       const barPx = Math.max(44, Math.min(150, Math.round(bestKm / kmPerCssPx)));
-      barEl.style.width = `${barPx}px`;
-      lblEl.textContent = `${bestKm} km`;
+      const width = `${barPx}px`;
+      const label = `${bestKm} km`;
+      if (barEl.style.width !== width) barEl.style.width = width;
+      if (lblEl.textContent !== label) lblEl.textContent = label;
     }
 
     _isMobileViewport() {
@@ -8532,7 +8593,7 @@
             h: this.camera.h * k,
             zoom: 1000 / nextW,
           };
-          this._applyCamera();
+          this._scheduleCameraUpdate();
         },
         { passive: false }
       );
@@ -8639,7 +8700,7 @@
             h: this.pinchState.camH * k,
             zoom: 1000 / nextW,
           };
-          this._applyCamera();
+          this._scheduleCameraUpdate();
           return;
         }
 
@@ -8660,7 +8721,7 @@
           const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
           this.camera.x = this.dragState.camX - dx / scale;
           this.camera.y = this.dragState.camY - dy / scale;
-          this._applyCamera();
+          this._scheduleCameraUpdate();
         }
       });
 
@@ -8885,6 +8946,8 @@
 
       const endPointer = (e) => {
         clearLongPress();
+        // Preserve the last move even when pointerup/cancel arrives before rAF.
+        if (this._camRaf !== null) this._applyCamera();
         this.activePointers.delete(e.pointerId);
         if (this.activePointers.size < 2) {
           this.pinchState = null;
@@ -9052,6 +9115,7 @@
       const frame = this._id('viewport-frame');
       frame.addEventListener('pointermove', (e) => {
         if (e.pointerType === 'touch') return;
+        if (this.dragState || this.pinchState || this._camRaf !== null || this._cameraSettleTimer !== null) return;
         this.grpPrefectures
           .querySelectorAll('.prefecture-shape.is-hovered')
           .forEach((el) => el.classList.remove('is-hovered'));
@@ -9064,6 +9128,7 @@
       });
 
       window.addEventListener('resize', () => {
+        this._cameraViewportRect = null;
         const vw = window.innerWidth;
         if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
           this._rescaleSvgTypography();
@@ -9071,6 +9136,13 @@
         }
         this._updateScaleBar();
       });
+      // The chronicle pane can resize the map without a window resize.
+      if (typeof ResizeObserver !== 'undefined') {
+        this._cameraResizeObserver = new ResizeObserver(() => {
+          this._cameraViewportRect = null;
+        });
+        this._cameraResizeObserver.observe(this.svg);
+      }
     }
 
     _showHoverTip(e, html) {
