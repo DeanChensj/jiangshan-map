@@ -9095,6 +9095,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 1002,
+        "headline": "李继迁攻陷北宋灵州改西平府，党项尽据河套平原",
+        "site": "灵州（西平府）",
+        "coord": [
+          106.28,
+          38.09
+        ]
+      },
+      {
         "year": 1004,
         "headline": "澶渊之盟，宋辽百年和平",
         "site": "澶州",
@@ -9255,6 +9264,15 @@ window.DYNASTY_DATA = [
         "coord": [
           120.151,
           30.251
+        ]
+      },
+      {
+        "year": 1123,
+        "headline": "金依海上之盟交割燕京六州空城，北宋置燕山府路",
+        "site": "燕山府（北京）",
+        "coord": [
+          116.401,
+          39.901
         ]
       },
       {
@@ -10148,56 +10166,78 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "福建路闽中重镇，将乐杨时“程门立雪”倡道东南，开闽学先河"
+      },
+      {
+        "ancient": "夏州（统万城）",
+        "modern": "榆林·靖边",
+        "coord": [
+          108.78,
+          37.98
+        ],
+        "tier": 2,
+        "remark": "定难军节度使治所，淳化五年毁城迁民"
       }
     ],
     "phases": [
       {
         "until": 963,
-        "snap": "s_beisong_a0"
+        "snap": "s_beisong_a0",
+        "overview": "960 — 963 · 陈桥兵变立宋与杯酒释兵权：十国割据尚存，北宋先取荆湖"
       },
       {
         "until": 965,
-        "snap": "s_beisong_a"
+        "snap": "s_beisong_a",
+        "overview": "963 — 965 · 假道灭虢平荆湖：荆南、武平入宋，继发兵伐后蜀"
       },
       {
         "until": 971,
-        "snap": "s_beisong_a2"
+        "snap": "s_beisong_a2",
+        "overview": "965 — 971 · 王全斌灭后蜀与潘美平南汉：巴蜀、岭南次第归宋"
       },
       {
         "until": 975,
-        "snap": "s_beisong_a3"
+        "snap": "s_beisong_a3",
+        "overview": "971 — 975 · 曹彬浮桥渡江攻灭南唐：江南、江西、闽北入宋"
       },
       {
         "until": 978,
-        "snap": "s_beisong_a4"
+        "snap": "s_beisong_a4",
+        "overview": "975 — 978 · 泉漳清源军陈洪进与吴越王钱俶纳土归宋前夕"
       },
       {
         "until": 979,
-        "snap": "s_beisong_a5"
+        "snap": "s_beisong_a5",
+        "overview": "978 — 979 · 吴越与清源军纳土、太宗灭北汉：中原江南复归统一"
       },
       {
         "until": 1038,
-        "snap": "s_beisong_b0"
+        "snap": "s_beisong_b0",
+        "overview": "979 — 1038 · 高梁河与雍熙北伐、1002 李继迁陷灵州与 1004 澶渊之盟"
       },
       {
         "until": 1072,
-        "snap": "s_beisong_b"
+        "snap": "s_beisong_b",
+        "overview": "1038 — 1072 · 元昊建西夏、宋夏三川口与好水川之战及庆历和议：宋辽夏三足鼎立"
       },
       {
         "until": 1104,
-        "snap": "s_beisong_b1"
+        "snap": "s_beisong_b1",
+        "overview": "1072 — 1104 · 王安石变法与王韶熙河开边：收复熙河洮岷兰，新置熙河路"
       },
       {
         "until": 1115,
-        "snap": "s_beisong_b2"
+        "snap": "s_beisong_b2",
+        "overview": "1104 — 1115 · 崇宁河湟开边：王厚、童贯收复青唐吐蕃，置西宁州、廓州"
       },
       {
         "until": 1125,
-        "snap": "s_beisong_c"
+        "snap": "s_beisong_c",
+        "overview": "1115 — 1125 · 阿骨打建金与海上之盟：金军席卷辽土，北宋宣和伐辽"
       },
       {
         "until": 1127,
-        "snap": "s_beisong_d"
+        "snap": "s_beisong_d",
+        "overview": "1125 — 1127 · 金灭辽、耶律大石西征建西辽与靖康之变：金军两度南下围汴京"
       }
     ]
   },
@@ -10241,6 +10281,15 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 1134,
+        "headline": "岳飞挥师北伐收复襄阳、随、郢、唐、邓、信阳六郡",
+        "site": "襄阳府",
+        "coord": [
+          112.141,
+          32.011
+        ]
+      },
+      {
         "year": 1138,
         "headline": "宋高宗正式定行在于临安府",
         "site": "临安（杭州）",
@@ -10266,6 +10315,15 @@ window.DYNASTY_DATA = [
         "coord": [
           116.501,
           33.201
+        ]
+      },
+      {
+        "year": 1153,
+        "headline": "金海陵王完颜亮自上京迁都燕京，改名中都大兴府",
+        "site": "中都大兴府（北京）",
+        "coord": [
+          116.401,
+          39.901
         ]
       },
       {
@@ -10351,6 +10409,15 @@ window.DYNASTY_DATA = [
           34.79
         ],
         "isMapChange": true
+      },
+      {
+        "year": 1235,
+        "headline": "窝阔台汗分兵三路全面伐宋，川陕、荆襄、江淮战火延烧",
+        "site": "襄阳 · 成都 · 阳平关",
+        "coord": [
+          106.05,
+          33.05
+        ]
       },
       {
         "year": 1247,
@@ -11125,40 +11192,58 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "remark": "闽学四先生源流重地，建炎四年（1130年）朱熹诞生于尤溪县南溪书院"
+      },
+      {
+        "ancient": "均州（武当）",
+        "modern": "十堰·丹江口",
+        "coord": [
+          111.51,
+          32.65
+        ],
+        "tier": 2,
+        "remark": "京西南路汉水重镇，绍兴和议后宋金前哨"
       }
     ],
     "phases": [
       {
         "until": 1141,
-        "snap": "s_nansong_a0"
+        "snap": "s_nansong_a0",
+        "overview": "1127 — 1141 · 康王赵构南渡、岳飞收复襄阳六郡与北伐中原、吴玠和尚原抗金"
       },
       {
         "until": 1206,
-        "snap": "s_nansong_a"
+        "snap": "s_nansong_a",
+        "overview": "1141 — 1206 · 绍兴和议划淮河—大散关为界、1153 金迁都中都与隆兴和议南北对峙"
       },
       {
         "until": 1215,
-        "snap": "s_nansong_b0"
+        "snap": "s_nansong_b0",
+        "overview": "1206 — 1215 · 铁木真统一蒙古建大蒙古国、韩侂胄开禧北伐与嘉定和议"
       },
       {
         "until": 1227,
-        "snap": "s_nansong_c"
+        "snap": "s_nansong_c",
+        "overview": "1215 — 1227 · 蒙古攻陷金中都、金宣宗南迁汴京与成吉思汗西征灭西辽"
       },
       {
         "until": 1234,
-        "snap": "s_nansong_d"
+        "snap": "s_nansong_d",
+        "overview": "1227 — 1234 · 蒙古灭西夏、三峰山之战与宋蒙联军蔡州灭金：金亡于蔡州"
       },
       {
         "until": 1253,
-        "snap": "s_nansong_e"
+        "snap": "s_nansong_e",
+        "overview": "1234 — 1253 · 端平入洛、1235 宋蒙全面战争爆发与 1247 凉州会盟吐蕃归附"
       },
       {
         "until": 1276,
-        "snap": "s_nansong_b"
+        "snap": "s_nansong_b",
+        "overview": "1253 — 1276 · 忽必烈灭大理、1259 钓鱼城蒙哥战死、1273 襄阳陷落与伯颜入临安"
       },
       {
         "until": 1279,
-        "snap": "s_nansong_g"
+        "snap": "s_nansong_g",
+        "overview": "1276 — 1279 · 文天祥陆秀夫张世杰拥二王闽粤抗元与 1279 崖山海战南宋覆亡"
       }
     ]
   },
@@ -19226,6 +19311,7 @@ window.DYNASTY_DATA = [
     ]
   }
 ];
+
 window.CORRIDOR_DATA = [
   {
     "key": "wall_zhanguo",
