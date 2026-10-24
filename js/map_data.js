@@ -12087,7 +12087,18 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
-        ]
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 1369,
+        "headline": "常遇春克元上都，徐达定陕西，北元退居漠北",
+        "site": "开平（上都）· 西安",
+        "coord": [
+          116.18,
+          42.36
+        ],
+        "isMapChange": true
       },
       {
         "year": 1371,
@@ -12096,7 +12107,8 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1380,
@@ -12114,16 +12126,18 @@ window.DYNASTY_DATA = [
         "coord": [
           102.831,
           24.881
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1388,
-        "headline": "冯胜收辽东降纳哈出（1387）；蓝玉捕鱼儿海破北元",
-        "site": "辽阳 · 捕鱼儿海",
+        "headline": "冯胜北征金山降纳哈出（1387）；蓝玉捕鱼儿海破北元",
+        "site": "金山 · 捕鱼儿海",
         "coord": [
           117.801,
           47.801
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1393,
@@ -12168,7 +12182,8 @@ window.DYNASTY_DATA = [
         "coord": [
           105.851,
           21.031
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1413,
@@ -12190,12 +12205,13 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1427,
-        "headline": "明宣宗罢交趾布政使司撤军弃安南，黎利建后黎朝",
+        "headline": "明宣宗罢交趾布政使司撤军弃安南，黎利旋建后黎朝",
         "site": "交趾（河内）",
         "coord": [
           105.851,
           21.031
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1433,
@@ -12222,7 +12238,8 @@ window.DYNASTY_DATA = [
         "coord": [
           115.501,
           40.401
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1457,
@@ -12244,7 +12261,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1479,
-        "headline": "明宪宗设西厂；汪直、朱永联合朝鲜发起“成化犁庭”",
+        "headline": "汪直、朱永会同朝鲜征建州女真，史称“成化犁庭”",
         "site": "北京 · 赫图阿拉",
         "coord": [
           124.75,
@@ -12271,7 +12288,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1513,
-        "headline": "吐鲁番占领哈密卫，明廷闭嘉峪关断绝西域贡路",
+        "headline": "吐鲁番满速儿攻占哈密卫，关西诸卫渐次内迁",
         "site": "哈密卫",
         "coord": [
           93.511,
@@ -12375,7 +12392,8 @@ window.DYNASTY_DATA = [
         "coord": [
           124.801,
           41.701
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 1619,
@@ -12406,7 +12424,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1627,
-        "headline": "陕北民变，李自成起义之始",
+        "headline": "澄城王二起事，陕北民变揭开明末农民战争序幕",
         "site": "米脂",
         "coord": [
           110.201,
@@ -12424,13 +12442,12 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1643,
-        "headline": "李自成克潼关入西安称新顺王；张献忠拔武昌进取巴蜀",
+        "headline": "李自成破潼关入西安，张献忠据武昌称大西王",
         "site": "西安 · 武昌",
         "coord": [
           108.941,
           34.341
-        ],
-        "isMapChange": true
+        ]
       },
       {
         "year": 1644,
@@ -12451,7 +12468,13 @@ window.DYNASTY_DATA = [
           39.901
         ],
         "isCapital": true,
-        "remark": "1421 年起为京师；紫禁城"
+        "remark": "1421 年起为京师；紫禁城",
+        "capitalPeriods": [
+          [
+            1421,
+            1644
+          ]
+        ]
       },
       {
         "ancient": "应天府",
@@ -12460,7 +12483,14 @@ window.DYNASTY_DATA = [
           118.801,
           32.061
         ],
-        "remark": "明初都城，后为留都"
+        "remark": "明初都城，后为留都",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            1368,
+            1420
+          ]
+        ]
       },
       {
         "ancient": "刘家港",
@@ -12662,9 +12692,30 @@ window.DYNASTY_DATA = [
           123.171,
           41.271
         ],
-        "tier": 2,
-        "vanish": 1621,
-        "remark": "辽东都司治所"
+        "remark": "辽东都司治所；1621 年后金攻占并迁都于此（东京）",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            1621,
+            1625
+          ]
+        ]
+      },
+      {
+        "ancient": "沈阳（盛京）",
+        "modern": "沈阳",
+        "coord": [
+          123.431,
+          41.801
+        ],
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            1625,
+            1644
+          ]
+        ],
+        "remark": "1625 年努尔哈赤迁都于此，1634 年改称盛京，1636 年皇太极在此称帝改国号大清"
       },
       {
         "ancient": "大同",
@@ -12987,9 +13038,15 @@ window.DYNASTY_DATA = [
           124.85,
           41.72
         ],
-        "tier": 2,
         "appear": 1603,
-        "remark": "万历三十一年努尔哈赤筑城；1616 年建后金称汗"
+        "remark": "万历三十一年努尔哈赤筑城；1616 年建后金称汗",
+        "isCapital": true,
+        "capitalPeriods": [
+          [
+            1616,
+            1621
+          ]
+        ]
       },
       {
         "ancient": "西宁卫",
@@ -13636,12 +13693,8 @@ window.DYNASTY_DATA = [
         "snap": "s_ming_b"
       },
       {
-        "until": 1643,
-        "snap": "s_ming_c"
-      },
-      {
         "until": 1644,
-        "snap": "s_ming_d"
+        "snap": "s_ming_c"
       }
     ]
   },

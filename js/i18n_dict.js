@@ -751,6 +751,10 @@ window.EN_LOCALE = {
       "Zhu Yuanzhang founds the Ming in Yingtian; Xu Da captures Dadu as Yuan retreats north",
       "Yingtian (Nanjing) · Dadu (Beijing)"
     ],
+    "ming:1369": [
+      "Chang Yuchun takes Shangdu and Xu Da secures Shaanxi as the Northern Yuan retreats north",
+      "Kaiping (Shangdu) · Xi'an"
+    ],
     "ming:1380": [
       "Hu Weiyong case: the office of Grand Chancellor is abolished",
       "Yingtian (Nanjing)"
@@ -804,11 +808,11 @@ window.EN_LOCALE = {
       "Sarhū"
     ],
     "ming:1627": [
-      "Shaanxi peasant uprisings begin; rise of Li Zicheng",
+      "Wang Er rises at Chengcheng; Shaanxi peasant revolts open the late-Ming rebellions",
       "Mizhi"
     ],
     "ming:1643": [
-      "Li Zicheng takes Xi'an as King of Xinshun; Zhang Xianzhong seizes Wuchang and enters Shu",
+      "Li Zicheng breaks through Tongguan into Xi'an; Zhang Xianzhong holds Wuchang as King of Daxi",
       "Xi'an · Wuchang"
     ],
     "ming:1644": [
@@ -1400,11 +1404,11 @@ window.EN_LOCALE = {
       "Yunnan-fu (Kunming)"
     ],
     "ming:1388": [
-      "Feng Sheng pacifies Liaodong (1387); Lan Yu crushes the Northern Yuan court at Lake Buir",
-      "Liaoyang · Lake Buir"
+      "Feng Sheng subdues Naghachu at Jinshan (1387); Lan Yu crushes the Northern Yuan at Lake Buir",
+      "Jinshan · Lake Buir"
     ],
     "ming:1427": [
-      "Emperor Xuanzong abolishes Jiaozhi Province and withdraws from Vietnam; Le Loi founds Later Le",
+      "Emperor Xuanzong abolishes Jiaozhi and withdraws from Vietnam; Le Loi soon founds the Later Le",
       "Jiaozhi (Hanoi)"
     ],
     "tang:727": [
@@ -1436,7 +1440,7 @@ window.EN_LOCALE = {
       "Yansui Garrison (Yulin)"
     ],
     "ming:1513": [
-      "Turpan occupies Hami Guard; the Ming court closes Jiayuguan Pass and halts western tribute",
+      "Mansur of Turpan seizes Hami Guard; the Ming guards west of Jiayuguan gradually withdraw",
       "Hami Guard"
     ],
     "ming:1519": [
@@ -1604,7 +1608,7 @@ window.EN_LOCALE = {
       "Xining (Qingtang)"
     ],
     "ming:1479": [
-      "Emperor Xianzong sets up the Western Depot; Ming-Joseon forces launch the Chenghua Campaign",
+      "Wang Zhi and Zhu Yong join Joseon forces against the Jianzhou Jurchens in the Chenghua Campaign",
       "Beijing · Hetu Ala"
     ],
     "ming:1524": [
@@ -4385,6 +4389,9 @@ window.EN_LOCALE = {
     "辽东京道治所": "Seat of Liao Dongjing Circuit",
     "辽东郡治": "Seat of Liaodong Commandery",
     "辽东都司治所": "Seat of Liaodong Regional Military Commission",
+    "沈阳（盛京）": "Shenyang (Mukden)",
+    "辽东都司治所；1621 年后金攻占并迁都于此（东京）": "Seat of the Liaodong Regional Military Commission; taken by the Later Jin in 1621 and made its Eastern Capital",
+    "1625 年努尔哈赤迁都于此，1634 年改称盛京，1636 年皇太极在此称帝改国号大清": "Nurhaci moved his capital here in 1625; renamed Mukden in 1634, where Hong Taiji proclaimed the Qing in 1636",
     "辽西京道治所": "Seat of Liao Xijing Circuit",
     "金东京路治所": "Seat of Jin Dongjing Circuit",
     "金京兆府路治所": "Seat of Jin Jingzhaofu Circuit",
