@@ -516,6 +516,21 @@ h2 {
   fill: rgba(18, 74, 106, 0.92);
 }
 
+/* Mountain ranges: faint ochre ink with wide tracking so the name reads along the ridge. */
+.hydro-label.is-range {
+  font-size: 7.2px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  fill: rgba(96, 70, 40, 0.82);
+  stroke: rgba(246, 240, 228, 0.8);
+  stroke-width: 2px;
+}
+
+.hydro-label.is-range.is-crowded-hidden {
+  display: none;
+}
+
 /* Map SVG Layers */
 .neighbor-shape {
   fill: #e7dfd0;

@@ -449,7 +449,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261023a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261024a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -473,7 +473,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261023a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261024a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1322,7 +1322,9 @@
             ? 'is-trunk'
             : lb.kind === 'lake'
               ? 'is-lake'
-              : 'is-river';
+              : lb.kind === 'range'
+                ? 'is-range is-crowded-hidden'
+                : 'is-river';
         const rot = lb.rot || 0;
         const tNode = this._svgNode(
           'text',
@@ -5813,6 +5815,8 @@
       }
       if (this.grpRivers && !this.grpRivers.classList.contains('is-hidden')) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((hl) => {
+          // Mountain-range names are background context: city labels must never yield to them.
+          if (hl.classList.contains('is-range')) return;
           const hx = parseFloat(hl.getAttribute('data-x'));
           const hy = parseFloat(hl.getAttribute('data-y'));
           if (!isNaN(hx) && !isNaN(hy)) {
@@ -6308,6 +6312,29 @@
           node.classList.add('is-crowded-hidden');
         }
       });
+
+      // Tier 6: Mountain-range names are the lowest priority; hide rather than cover any label above.
+      // They share the pass zoom threshold so the overview keeps its current density.
+      if (this.grpRivers && !this.grpRivers.classList.contains('is-hidden')) {
+        this.grpRivers.querySelectorAll('.hydro-label.is-range').forEach((node) => {
+          if (!showPasses) {
+            node.classList.add('is-crowded-hidden');
+            return;
+          }
+          const rx = parseFloat(node.getAttribute('data-x'));
+          const ry = parseFloat(node.getAttribute('data-y'));
+          if (isNaN(rx) || isNaN(ry)) return;
+          const rad = (parseFloat(node.getAttribute('data-rot')) || 0) * (Math.PI / 180);
+          const hw = (this._estimateLocalTextWidth(node.textContent, 7.2, 3.6) * 0.5 + 2) * s;
+          const hh = 4.6 * s;
+          const ex = Math.abs(Math.cos(rad)) * hw + Math.abs(Math.sin(rad)) * hh;
+          const ey = Math.abs(Math.sin(rad)) * hw + Math.abs(Math.cos(rad)) * hh;
+          const box = { x1: rx - ex, y1: ry - ey, x2: rx + ex, y2: ry + ey };
+          const crowded = overlapArea(box) > (box.x2 - box.x1) * (box.y2 - box.y1) * 0.03;
+          node.classList.toggle('is-crowded-hidden', crowded);
+          if (!crowded) occupied.push(box);
+        });
+      }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         node.setAttribute('font-size', (9.5 * s).toFixed(1));
