@@ -1309,6 +1309,10 @@ function main() {
   for (let run = 0; run < 45; run++) {
     const deck = ctrl._buildChallengeDeck();
     assert.strictEqual(deck.length, 10, `Expected 10 questions in challenge deck, got ${deck.length}`);
+    assert(
+      deck.every((q, i) => i === 0 || deck[i - 1].tier <= q.tier) && deck[0].tier === 0,
+      `Expected challenge deck to climb from entry to hard tiers, got ${deck.map((q) => q.tier).join(',')}`
+    );
     for (let i = 0; i < deck.length; i++) {
       const q = deck[i];
       if (q.settlement.isPass) sawPassInDeck = true;
