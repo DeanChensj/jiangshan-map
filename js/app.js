@@ -347,6 +347,7 @@
         this._restoreFromQuery();
       });
       this._bootDone = true;
+      this._maybeShowStartGuide();
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
         setTimeout(() => this._ensureFullSnapshots(), 50);
@@ -455,7 +456,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025d').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025e').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -479,7 +480,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025d').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025e').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -505,6 +506,7 @@
     _syncImmersivePaneState() {
       const immersiveActive = Boolean(this.activePerson || this.challenge);
       if (immersiveActive) {
+        this._dismissStartGuide();
         if (!this.paneCollapsed) {
           this._paneAutoCollapsed = true;
           this.toggleChroniclePane(true);
@@ -540,6 +542,86 @@
           if (gg) gg.classList.add('is-dismissed');
         }, 2000);
       }
+    }
+
+    // First-visit guide: three ways in, shown once on a bare homepage visit.
+    // Deep links (?year=, ?person=, topic pages) already carry intent, so skip.
+    _maybeShowStartGuide() {
+      if (typeof location === 'undefined' || !this._id('start-guide')) return;
+      const q = new URLSearchParams(location.search);
+      q.delete('lang');
+      if (Array.from(q.keys()).length) return;
+      try {
+        if (localStorage.getItem('jiangshan_seen_start_guide') === '1') return;
+      } catch (_) {}
+      this._startGuideOpen = true;
+      this._renderStartGuide();
+    }
+
+    _renderStartGuide() {
+      const el = this._id('start-guide');
+      if (!el || !this._startGuideOpen) return;
+      const en = this.locale === 'en';
+      const items = en
+        ? [
+            ['journey', 'Follow Xuanzang west'],
+            ['search', 'Find a place'],
+            ['quiz', 'Map quiz'],
+          ]
+        : [
+            ['journey', '随玄奘西行'],
+            ['search', '寻一处故地'],
+            ['quiz', '古地名小试'],
+          ];
+      const closeLabel = en ? 'Close' : '关闭';
+      el.innerHTML =
+        `<span class="sg-head">${en ? 'New here?' : '初来乍到'}</span>` +
+        items
+          .map(([act, title]) => `<button type="button" class="sg-item" data-act="${act}">${title}</button>`)
+          .join('<span class="sg-sep">·</span>') +
+        `<button type="button" class="sg-close" aria-label="${closeLabel}" title="${closeLabel}">×</button>`;
+      if (this.locale === 'zh-tw') this._applyZhHantDom(el);
+      el.classList.remove('is-hidden');
+      const frame = this._id('viewport-frame');
+      if (frame) frame.classList.add('has-start-guide');
+      el.querySelector('.sg-close').addEventListener('click', () => this._dismissStartGuide());
+      el.querySelectorAll('.sg-item').forEach((btn) => {
+        btn.addEventListener('click', () => this._runStartGuideAction(btn.dataset.act));
+      });
+    }
+
+    _runStartGuideAction(act) {
+      this._dismissStartGuide();
+      if (act === 'journey') {
+        this.openJourneyAsPerson('xuanzang', -1);
+      } else if (act === 'quiz') {
+        this.startChallenge();
+      } else if (act === 'search') {
+        const box = this._id('map-search-box');
+        const inp = this._id('inp-map-search');
+        if (box) box.classList.add('is-expanded');
+        if (inp) {
+          setTimeout(() => {
+            inp.focus();
+            inp.dispatchEvent(new Event('input'));
+          }, 20);
+        }
+      }
+    }
+
+    _dismissStartGuide() {
+      if (!this._startGuideOpen) return;
+      this._startGuideOpen = false;
+      try {
+        localStorage.setItem('jiangshan_seen_start_guide', '1');
+      } catch (_) {}
+      const el = this._id('start-guide');
+      if (el) {
+        el.classList.add('is-hidden');
+        el.innerHTML = '';
+      }
+      const frame = this._id('viewport-frame');
+      if (frame) frame.classList.remove('has-start-guide');
     }
 
     _dismissTraceOnboarding() {
@@ -1078,6 +1160,7 @@
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
+      this._renderStartGuide();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
         '滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放'

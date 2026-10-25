@@ -1965,6 +1965,75 @@ h2 {
   transform: translateY(-4px);
 }
 
+/* First-visit guide: one line of three ways in, in the slot of the gesture hint. */
+#start-guide {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 11px;
+  background: rgba(243, 238, 228, 0.9);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-family: var(--serif-stack);
+}
+
+#start-guide .sg-head {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+#start-guide .sg-item {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--vermilion);
+  cursor: pointer;
+}
+
+#start-guide .sg-item:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+#start-guide .sg-sep {
+  color: var(--text-muted);
+}
+
+#start-guide .sg-close {
+  padding: 0 3px;
+  border: 0;
+  background: none;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+#start-guide .sg-close:hover {
+  color: var(--text-main);
+}
+
+#viewport-frame.has-start-guide #gesture-guide {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  #start-guide {
+    left: 56px;
+    right: 8px;
+    top: 10px;
+    flex-wrap: wrap;
+  }
+}
+
 #hover-tip {
   position: absolute;
   pointer-events: none;
