@@ -2127,37 +2127,64 @@ h2 {
   font-size: 13px;
 }
 
-.guess-pin {
-  fill: #2b6cb0;
-  stroke: #fff;
-  stroke-width: 1.5;
+/* Quiz markers: the guess is a vermilion annotation, the answer an ink circle. */
+.quiz-dot {
+  fill: none;
+  stroke: #b8322a;
+  stroke-width: 1.8;
+  paint-order: stroke;
+  filter: drop-shadow(0 0 1.2px rgba(251, 243, 228, 0.95));
 }
 
-.guess-preview-ring {
-  fill: rgba(43, 108, 176, 0.16);
-  stroke: #2b6cb0;
-  stroke-width: 1.3;
-  stroke-dasharray: 3 2;
+.quiz-mark.is-confirmed .quiz-dot {
+  fill: #b8322a;
+  stroke: #fbf3e4;
+  stroke-width: 1.4;
 }
 
-.answer-pin {
-  fill: #2f855a;
-  stroke: #fff;
-  stroke-width: 1.5;
+.answer-ink {
+  fill: none;
+  stroke: #2b2118;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 40 7;
+}
+
+.answer-dot {
+  fill: #2b2118;
 }
 
 .error-line {
-  stroke: #b5452f;
-  stroke-width: 1.5;
+  stroke: rgba(43, 33, 24, 0.72);
+  stroke-width: 1.3;
   stroke-dasharray: 4 3;
   fill: none;
+  vector-effect: non-scaling-stroke;
 }
 
-.target-ring {
-  fill: rgba(47, 133, 90, 0.12);
-  stroke: #2f855a;
+.score-ring {
+  fill: none;
+  stroke: rgba(43, 33, 24, 0.3);
   stroke-width: 1;
   stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.score-ring.is-hit {
+  fill: rgba(184, 50, 42, 0.07);
+  stroke: rgba(184, 50, 42, 0.55);
+}
+
+.score-ring-label {
+  font-family: var(--serif-stack);
+  font-size: 8.5px;
+  font-weight: 700;
+  fill: rgba(122, 38, 28, 0.82);
+  stroke: rgba(250, 246, 237, 0.9);
+  stroke-width: 2.4px;
+  paint-order: stroke;
+  text-anchor: end;
+  pointer-events: none;
 }
 
 /* Right Chronicle Sidebar */
@@ -4333,6 +4360,64 @@ html[lang="en"] .genealogy-list li.person-ev-row {
   gap: 4px;
 }
 
+.genealogy-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 4px;
+  border-top: 1px solid var(--hairline);
+}
+
+.gen-foot-prev,
+.gen-foot-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 2px;
+  border: 0;
+  background: none;
+  font-family: var(--serif-stack);
+  font-size: 13px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.gen-foot-prev svg,
+.gen-foot-next svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+.gen-foot-prev {
+  flex: none;
+  color: var(--text-muted);
+}
+
+.gen-foot-prev:disabled {
+  visibility: hidden;
+}
+
+.gen-foot-next {
+  color: var(--vermilion);
+  text-align: right;
+}
+
+.gen-foot-next span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gen-foot-prev:hover span,
+.gen-foot-next:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
 @media (min-width: 901px) {
   #viewport-frame.has-active-person #genealogy-card {
     width: 392px;

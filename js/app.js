@@ -455,7 +455,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -479,7 +479,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -3115,6 +3115,7 @@
       if (!this.activePerson) return;
       this.activePerson = null;
       this.activePersonEventIdx = -1;
+      this._hidePersonFooter();
       this._lastPersonPinZoom = 0;
       this._lastPersonCardKey = null;
       if (this.grpJourney && !this.activeCustomRoute) {
@@ -3770,6 +3771,8 @@
       ) {
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) ovBtn.classList.toggle('is-active', curIdx < 0);
+        this._renderPersonFooter(events, curIdx, isEn);
+        if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-foot'));
         let activeLi = null;
         Array.from(listEl.children).forEach((li, idx) => {
           const isCur = idx === curIdx;
@@ -3837,24 +3840,15 @@
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
-          `<button type="button" class="gen-filter-pill" id="act-person-prev" aria-label="${
-            isEn ? 'Previous event' : '上一处史事'
-          }" title="${isEn ? 'Previous event' : '上一处史事'}">${SVG_ICONS.arrowLeft}</button>` +
           `<button type="button" class="gen-filter-pill${
             curIdx < 0 ? ' is-active' : ''
           }" id="act-person-overview">${isEn ? 'Overview' : '全图总览'}</button>` +
-          `<button type="button" class="gen-filter-pill" id="act-person-next" aria-label="${
-            isEn ? 'Next event' : '下一处史事'
-          }" title="${isEn ? 'Next event' : '下一处史事'}">${SVG_ICONS.arrowRight}</button>` +
           `</span>`;
 
-        const prevBtn = this._id('act-person-prev');
-        if (prevBtn) prevBtn.addEventListener('click', () => this.stepPersonEvent(-1));
-        const nextBtn = this._id('act-person-next');
-        if (nextBtn) nextBtn.addEventListener('click', () => this.stepPersonEvent(1));
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) ovBtn.addEventListener('click', () => this.selectPersonEvent(-1, true));
       }
+      this._renderPersonFooter(events, curIdx, isEn);
 
       const scrollEl = this._id('genealogy-body') || listEl;
       const prevScroll = scrollEl && preserveScroll ? scrollEl.scrollTop : 0;
@@ -3929,6 +3923,45 @@
         }
       }
       if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-card'));
+    }
+
+    // Stop navigation lives at the bottom of the card, where the reader finishes
+    // the current entry; naming the next stop gives a reason to keep going.
+    _renderPersonFooter(events, curIdx, isEn) {
+      const footEl = this._id('genealogy-foot');
+      if (!footEl) return;
+      const next = events[curIdx + 1] || null;
+      let nextLabel;
+      if (next) {
+        const site = escHtml(isEn ? next.siteEn || this.trTerm(next.siteZh) : next.siteZh);
+        const yr = isEn
+          ? ` · ${this.formatYear(next.year)}`
+          : ` · ${next.year <= 0 ? '前' + -next.year : next.year}年`;
+        const lead = curIdx < 0 ? (isEn ? 'Start' : '出发') : isEn ? 'Next' : '下一站';
+        nextLabel = `${lead} · ${site}${yr}`;
+      } else {
+        nextLabel = isEn ? 'Back to overview' : '回到全图总览';
+      }
+      const prevTitle = isEn ? 'Prev' : '上一站';
+      footEl.innerHTML =
+        `<button type="button" class="gen-foot-prev" id="act-person-prev" title="${prevTitle}"${
+          curIdx < 0 ? ' disabled' : ''
+        }>${SVG_ICONS.arrowLeft}<span>${prevTitle}</span></button>` +
+        `<button type="button" class="gen-foot-next" id="act-person-next"><span>${nextLabel}</span>${SVG_ICONS.arrowRight}</button>`;
+      footEl.classList.remove('is-hidden');
+      const prevBtn = footEl.querySelector('#act-person-prev');
+      if (prevBtn) prevBtn.addEventListener('click', () => this.selectPersonEvent(curIdx - 1, true));
+      const nextBtn = footEl.querySelector('#act-person-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => this.selectPersonEvent(next ? curIdx + 1 : -1, true));
+      }
+    }
+
+    _hidePersonFooter() {
+      const footEl = this._id('genealogy-foot');
+      if (!footEl) return;
+      footEl.classList.add('is-hidden');
+      footEl.innerHTML = '';
     }
 
     _syncTracedPrefecture() {
@@ -7539,6 +7572,11 @@
         vf.classList.remove('is-challenge-answered');
       }
       this._syncChallengeScrubberState(true);
+      // Remember where the player was so a deliberate exit can return there;
+      // a replay ("再来一局") keeps the original spot.
+      if (!this.challenge) {
+        this._preChallengeView = { year: this.year, camera: { ...this.camera } };
+      }
       this.challenge = {
         variant: 'locate',
         deck: this._buildChallengeDeck(Boolean(opts && opts.preferCurrentDynasty)),
@@ -7590,6 +7628,14 @@
       }
       if (!keepPaneState) {
         this._syncImmersivePaneState();
+      }
+      // keepPaneState marks a hand-off to another view (person, place, route);
+      // only a plain exit returns the player to the pre-quiz year and camera.
+      const back = this._preChallengeView;
+      this._preChallengeView = null;
+      if (back && !keepPaneState) {
+        this.jumpToYear(back.year);
+        this._animateCameraTo(back.camera);
       }
       this._syncDocumentSeoMeta();
     }
@@ -7701,29 +7747,38 @@
       this._renderChallengeQuestionText();
     }
 
+    // The guess is a vermilion mark against the answer's ink circle, like a
+    // teacher's red annotation beside the key. The anchor point stays visible.
+    _drawQuizMark(svgX, svgY, confirmed) {
+      const g = this._svgNode(
+        'g',
+        {
+          class: `quiz-mark${confirmed ? ' is-confirmed' : ''}`,
+          'data-x': svgX.toFixed(1),
+          'data-y': svgY.toFixed(1),
+        },
+        this.grpChallenge
+      );
+      this._svgNode('circle', { class: 'quiz-dot', r: confirmed ? 4.2 : 5 }, g);
+      return g;
+    }
+
     _previewLocatePin(svgX, svgY) {
       const q = this.challenge;
       if (!q || q.answered) return;
       q.pendingGuess = [svgX, svgY];
       this.grpChallenge.innerHTML = '';
-
-      const gPin = this._svgNode(
-        'g',
-        { 'data-x': svgX.toFixed(1), 'data-y': svgY.toFixed(1) },
-        this.grpChallenge
-      );
-      this._svgNode('circle', { class: 'guess-preview-ring', r: 10 }, gPin);
-      this._svgNode('circle', { class: 'guess-pin', r: 4.5 }, gPin);
+      this._drawQuizMark(svgX, svgY, false);
       this._rescaleSvgTypography();
 
       this._id('challenge-verdict').textContent =
         this.locale === 'en'
-          ? 'Pin placed. Tap elsewhere to adjust, or confirm below.'
-          : '已落针，可点击他处微调位置，或点击下方确认作答。';
+          ? 'Marked. Click elsewhere to move it; click it again or confirm below.'
+          : '已标记。点击他处可改，再点一次标记或点下方按钮确认。';
       this._id('act-next-round').innerHTML =
         this.locale === 'en'
-          ? `Confirm Pin ${SVG_ICONS.arrowRight}`
-          : `确认落针 ${SVG_ICONS.arrowRight}`;
+          ? `Confirm ${SVG_ICONS.arrowRight}`
+          : `确认位置 ${SVG_ICONS.arrowRight}`;
       this._id('challenge-result').classList.remove('is-hidden');
       if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-banner'));
     }
@@ -7745,7 +7800,7 @@
           ? `${ansAncEn} (${ansModEn})`
           : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
       if (this.grpChallenge) {
-        const textNode = this.grpChallenge.querySelector('text');
+        const textNode = this.grpChallenge.querySelector('text.answer-label');
         if (textNode) textNode.textContent = aLabelText;
       }
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
@@ -7813,14 +7868,42 @@
         cur.settlement.coord[0],
         cur.settlement.coord[1]
       );
-      const radPx =
-        (200 / (111 * Math.cos(cur.settlement.coord[1] * DEG_TO_RAD))) * this.projector.scale;
-
-      this._svgNode(
-        'circle',
-        { class: 'target-ring', cx: ax.toFixed(1), cy: ay.toFixed(1), r: radPx.toFixed(1) },
-        this.grpChallenge
-      );
+      // Rings mark the scoring tiers, so the reveal doubles as the rules. Radii
+      // come from the projection on both axes so ring edges match the km scoring.
+      const [lng0, lat0] = cur.settlement.coord;
+      for (const [ringKm, ringPts] of [
+        [380, 55],
+        [200, 80],
+        [80, 100],
+      ]) {
+        const [ex] = this.projector.toScreen(lng0 + ringKm / (111 * Math.cos(lat0 * DEG_TO_RAD)), lat0);
+        const [, ny] = this.projector.toScreen(lng0, lat0 + ringKm / 111);
+        const rx = Math.abs(ex - ax);
+        const ry = Math.abs(ay - ny);
+        this._svgNode(
+          'ellipse',
+          {
+            class: `score-ring${ringPts === pts ? ' is-hit' : ''}`,
+            cx: ax.toFixed(1),
+            cy: ay.toFixed(1),
+            rx: rx.toFixed(1),
+            ry: ry.toFixed(1),
+          },
+          this.grpChallenge
+        );
+        // Labels sit on the upper-left of each ring, away from the answer label
+        // on the right and the place names usually centred above the answer.
+        const tag = this._svgNode(
+          'g',
+          {
+            'data-x': (ax - rx * Math.SQRT1_2).toFixed(1),
+            'data-y': (ay - ry * Math.SQRT1_2).toFixed(1),
+          },
+          this.grpChallenge
+        );
+        const tagText = this._svgNode('text', { class: 'score-ring-label', x: -2, y: -2 }, tag);
+        tagText.textContent = `${ringKm} km · +${ringPts}`;
+      }
       this._svgNode(
         'line',
         {
@@ -7833,25 +7916,22 @@
         this.grpChallenge
       );
 
-      const gPin = this._svgNode(
-        'g',
-        { 'data-x': svgX.toFixed(1), 'data-y': svgY.toFixed(1) },
-        this.grpChallenge
-      );
-      this._svgNode('circle', { class: 'guess-pin', r: 4.5 }, gPin);
+      this._drawQuizMark(svgX, svgY, true);
 
       const aPin = this._svgNode(
         'g',
         { 'data-x': ax.toFixed(1), 'data-y': ay.toFixed(1) },
         this.grpChallenge
       );
-      this._svgNode('circle', { class: 'answer-pin', r: 5 }, aPin);
+      this._svgNode('circle', { class: 'answer-ink', r: 7.5, transform: 'rotate(-35)' }, aPin);
+      this._svgNode('circle', { class: 'answer-dot', r: 1.8 }, aPin);
       const aLabel = this._svgNode(
         'text',
         {
-          x: 8,
+          class: 'answer-label',
+          x: 11,
           y: 4,
-          style: 'font-size:12px;font-weight:700;fill:#1f5f3e;filter:url(#label-halo)',
+          style: 'font-size:12px;font-weight:700;fill:#2b2118;filter:url(#label-halo)',
         },
         aPin
       );
@@ -8105,7 +8185,7 @@
         dynasty: this.dynasties[2] || this.dynasties[0],
         year: null,
         titleZh: '舆图寻址 · 古地名小试',
-        subZh: '盲图落针标定历代名城与雄关 · 10题计分',
+        subZh: '盲图标点历代名城与雄关 · 10题计分',
         titleEn: 'Map Pinpoint · Ancient Place Quiz',
         subEn: 'Pinpoint 10 ancient cities & strategic passes on the map',
         keywords: '舆图寻址 古地名小试 挑战 猜地名 雅集 quiz pinpoint challenge game'.toLowerCase(),
@@ -9727,10 +9807,13 @@
           }
           this._recordGestureClick();
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
-          if (e.pointerType === 'touch') {
-            this._previewLocatePin(sx, sy);
+          const pend = this.challenge.pendingGuess;
+          const svgPerPx = this.camera.w / Math.max(1, this.svg.getBoundingClientRect().width);
+          if (pend && Math.hypot(sx - pend[0], sy - pend[1]) <= 14 * svgPerPx) {
+            // Clicking the pending mark again confirms it.
+            this._evaluateLocateClick(pend[0], pend[1]);
           } else {
-            this._evaluateLocateClick(sx, sy);
+            this._previewLocatePin(sx, sy);
           }
         } else if (!wasPan && !this.challenge) {
           this._recordGestureClick();
