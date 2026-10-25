@@ -5633,6 +5633,83 @@ function main() {
         jiangweiEvs.some((e) => e.year === 255 && e.siteZh === '狄道' && Math.abs(e.coord[0] - 104.62) < 1),
         'Jiang Wei 255 CE event must locate at 狄道 in Longxi (not 寿春)'
       );
+
+      // URL address bar preservation & ?lang=en sync on language toggle
+      const origHistory = sandbox.window.history;
+      const origSearch = sandbox.location.search;
+      const origHash = sandbox.location.hash;
+      const origLocale = ctrl.locale;
+      const replacedUrls = [];
+      sandbox.window.history = {
+        state: { page: 1 },
+        replaceState(st, _title, url) {
+          replacedUrls.push(url);
+          const qIdx = url.indexOf('?');
+          const hIdx = url.indexOf('#');
+          sandbox.location.search =
+            qIdx >= 0 ? url.slice(qIdx, hIdx >= 0 ? hIdx : undefined) : '';
+        },
+      };
+      try {
+        // 1. User specifies ?year=317&place=建康: toggling to EN appends lang=en without touching year/place
+        sandbox.location.search = '?year=317&place=%E5%BB%BA%E5%BA%B7';
+        sandbox.location.hash = '';
+        ctrl.locale = 'en';
+        ctrl._syncUrlLangParam();
+        assert.strictEqual(
+          sandbox.location.search,
+          '?year=317&place=%E5%BB%BA%E5%BA%B7&lang=en',
+          'Switching to EN must update address bar with lang=en while preserving user-specified URL params'
+        );
+
+        // 2. Switching to zh-tw updates lang=zh-tw while preserving user-specified URL params
+        ctrl.locale = 'zh-tw';
+        ctrl._syncUrlLangParam();
+        assert.strictEqual(
+          sandbox.location.search,
+          '?year=317&place=%E5%BB%BA%E5%BA%B7&lang=zh-tw',
+          'Switching to zh-tw must update address bar with lang=zh-tw while preserving user-specified URL params'
+        );
+
+        // 3. Switching back to zh removes lang param while keeping user-specified URL params intact
+        ctrl.locale = 'zh';
+        ctrl._syncUrlLangParam();
+        assert.strictEqual(
+          sandbox.location.search,
+          '?year=317&place=%E5%BB%BA%E5%BA%B7',
+          'Switching to zh must remove lang param while preserving user-specified URL params'
+        );
+
+        // 4. Bare homepage: switching to EN sets ?lang=en; switching back to zh restores clean pathname
+        sandbox.location.search = '';
+        ctrl.locale = 'en';
+        ctrl._syncUrlLangParam();
+        assert.strictEqual(sandbox.location.search, '?lang=en', 'Bare URL + EN must set ?lang=en');
+        ctrl.locale = 'zh';
+        ctrl._syncUrlLangParam();
+        assert.strictEqual(sandbox.location.search, '', 'Bare URL + zh must clear query string');
+
+        // 5. _effectiveRenderedLocale distinguishes pending English dict from loaded English dict
+        const savedEnLocale = ctrl.enLocale;
+        ctrl.locale = 'en';
+        ctrl.enLocale = { dict: {} };
+        assert.strictEqual(
+          ctrl._effectiveRenderedLocale(),
+          'en-pending',
+          '_effectiveRenderedLocale must return en-pending when i18n_dict.js has not loaded yet'
+        );
+        ctrl.enLocale = savedEnLocale;
+        assert.strictEqual(
+          ctrl._effectiveRenderedLocale(),
+          'en',
+          '_effectiveRenderedLocale must return en once i18n_dict.js is loaded'
+        );
+      } finally {
+        sandbox.window.history = origHistory;
+        sandbox.location.search = origSearch;
+        sandbox.location.hash = origHash;
+        ctrl.locale = origLocale;
+      }
     }
   }
 
