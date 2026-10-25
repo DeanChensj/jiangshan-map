@@ -60,7 +60,7 @@ Click the top-left **Universal Search Box** (with a rotatable `e.g.` figure prev
 - **Qin Shi Huang's Unification Campaigns (238–221 BCE)**: From suppressing the rebellion at Xianyang and Wang Jian's attack on Ye, to the fall of Han, Zhao, Yan, Wei, Chu, and Dai, culminating in the surrender of Qi at Linzi—as you advance stop by stop, watch the six rival kingdoms merge into the Qin Empire right on the map!
 - **Zhang Qian's Mission to the Western Regions (138–126 BCE)**: Depart Chang'an, endure over a decade of Xiongnu captivity without surrendering the Han imperial staff, and blaze the trail to Dayuan (Fergana), Kangju, and the Greater Yuezhi.
 - **Zhuge Liang's Emergence & Northern Expeditions (207–234 CE)**: From the Three Visits at Longzhong and the alliance at Chaisang before Red Cliffs, to entering Shu, the White Emperor City entrustment, the Southern Campaign across the Lu River, Hanzhong's *Memorial on Deploying the Troops*, Mount Qi, and the autumn winds of Wuzhang Plains.
-- **Xuanzang's Pilgrimage to India (627–645 CE)**: Slip past Yumen Pass alone across the Moheyan Desert, scale the icy Bedel Pass, cross the Indus, and study at Nalanda Monastery before returning to Chang'an.
+- **Xuanzang's Pilgrimage to India (627–645 CE)**: Slip past Yumen Pass alone across the Moheyan Desert, scale the icy Bedel Pass, cross the Indus, study at Nalanda Monastery, and debate at Kanyakubja (Kanauj) before returning to Chang'an.
 - **Li Bai's Grand Travels Across Tang China (701–762 CE)**: From Suyab and boyhood in Shu, sailing out through the Three Gorges at twenty-four, scattering gold in Yangzhou, serving in the Hanlin Academy at Chang'an, meeting Du Fu in Luoyang, receiving amnesty at White Emperor City, to his final years at Dangtu.
 - **Su Shi's Literary Exile Across Song China (1056–1101 CE)**: From leaving Meishan for the capital Kaifeng and gazing at the moon in Mizhou, to composing the *Red Cliffs Rhapsody* in Huangzhou exile, Huizhou, and crossing the sea to Danzhou on Hainan Island.
 - **Wang Yangming's Unity of Knowledge & Action (1472–1529 CE)**: From birth in Yuyao and imprisonment in Beijing, to his enlightenment at Longchang in Guizhou, pacifying bandits in Southern Ganzhou, capturing the rebel Prince of Ning in 35 days, teaching at the Tianquan Bridge in Shaoxing, and his final words *"This mind is bright and clear; what more is there to say?"* at Nan'an.
@@ -76,7 +76,7 @@ Each time you step to the next event (`‹ / ›`, `← / →`, or `Space` to au
 ### Feature 4: Easter Egg · Map Pinpoint Challenge — What Imperial Court Rank Would You Earn?
 
 Think you know Chinese historical geography? Click **`Quiz ›`** in the corner of the **Universal Search Box** guide bar (or type `quiz` for **`Map Pinpoint · Ancient Place Quiz`**):
-- **Dynastic Historical Clues + Blind Map Pinpointing**: City labels are hidden while the prompt asks you to locate an ancient city—such as *"Wuwei (Liangzhou) in Western Han"*, *"Quanzhou in Southern Song"*, or *"Jiankang in the Six Dynasties"*—accompanied by **dynastic historical clues** (without spoiling the modern city name). Drop your pin based on rivers, mountain ranges, and borders, and earn points based on great-circle distance to the true coordinates!
+- **Dynastic Historical Clues + Blind Map Pinpointing**: City labels are hidden while the prompt asks you to locate an ancient city across a 10-round progressive difficulty deck—accompanied by **dynastic historical clues** (without spoiling the modern city name). Drop your pin to preview and adjust, click the on-pin **`✓ Confirm`** button to lock in your answer with concentric distance score rings, and earn points based on great-circle distance to the true coordinates!
 - Complete 10 rounds to receive a traditional imperial cartographic title such as **Grand Historian & Master Cartographer (太史令 · 舆图大家)**, **Director of the Bureau of Operations (职方郎中)**, or **Prefectural Retainer (州郡从事)**.
 
 > [Try It Live: Western Han Emperor Wu, Yuanshou 2 (121 BCE) · Start the Map Pinpoint Challenge →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)
@@ -107,14 +107,30 @@ Append query parameters to share any historical moment, battle, city genealogy, 
 - **Plot a custom poetic or campaign route**: [`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en) (Du Fu's 763 CE homeward route) / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en) (Su Shi's multi-year exile route across Huzhou, Huangzhou, Huizhou, and Danzhou)
 - **Open a person's spatio-temporal chronicle**: [`?person=qinshihuang&lang=en`](https://deanchen.me/jiangshan-map/?person=qinshihuang&lang=en) (Qin Shi Huang) / [`?person=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?person=zhangqian&lang=en) (Zhang Qian) / [`?person=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?person=zhugeliang&lang=en) (Zhuge Liang) / [`?person=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?person=xuanzang&lang=en) (Xuanzang) / [`?person=libai&lang=en`](https://deanchen.me/jiangshan-map/?person=libai&lang=en) (Li Bai) / [`?person=sushi&lang=en`](https://deanchen.me/jiangshan-map/?person=sushi&lang=en) (Su Shi) / [`?person=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?person=wangyangming&lang=en) (Wang Yangming)
 - **Start a quiz round**: [`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en) (Map Pinpoint Challenge)
+- **Switch UI language**: [`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en) (English) / [`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw) (Traditional Chinese) / [`/`](https://deanchen.me/jiangshan-map/) (Simplified Chinese)
 
 ---
 
-## AI Agent & LLM Integration
+## AI Agent, MCP & LLM Integration
 
-**Chronicles of the Realm** works out of the box as a **historical-geography visualization engine for LLMs and AI Agents**. Models **never need to guess latitude/longitude coordinates**—simply extract two semantic parameters from a poem or historical text, **`year`** and **`place`**, and the atlas automatically resolves ancient/modern place names, centers the camera, renders dynastic borders and multi-stop trajectories, and opens the **Trace Place** genealogy card:
+**Chronicles of the Realm** works out of the box as a **historical-geography visualization engine for LLMs, MCP Clients, and AI Agents**. Models **never need to guess latitude/longitude coordinates**—simply extract two semantic parameters from a poem or historical text, **`year`** and **`place`**, and the atlas automatically resolves ancient/modern place names, centers the camera, renders dynastic borders and multi-stop trajectories, and opens the **Trace Place** genealogy card:
 
 - **Machine-Readable Specification**: [`llms.txt`](llms.txt)
+- **Zero-Dependency Local MCP Server (`stdio`)**: [`scripts/mcp_server.js`](scripts/mcp_server.js) — add to Claude Desktop, Cursor, Windsurf, or Gemini CLI `mcpServers`:
+  ```json
+  {
+    "mcpServers": {
+      "jiangshan-atlas": {
+        "command": "node",
+        "args": ["/absolute/path/to/jiangshan-map/scripts/mcp_server.js"]
+      }
+    }
+  }
+  ```
+  Exposes 3 native MCP tools (`<5ms` offline response, zero npm dependencies):
+  - `inspect_place({ year, place, lang? })`: Returns reigning monarch/era, controlling regime (`polity`), macro-region (`dao/lu/province`), prefecture (`jun/zhou/fu`), modern province/city, 2,400-year `lore`, and shareable deep-link URL.
+  - `inspect_person({ person, stop?, lang? })`: Returns a historical figure or monarch's biography, chronological geocoded stops across dynasties, and shareable deep-link URL.
+  - `search_atlas({ query, limit?, lang? })`: Searches across all ancient cities, poetic & battlefield landmarks, mountain passes, historical figures, imperial eras, and chronological milestones.
 - **Ready-to-Use Agent Skill**: [`skills/jiangshan-atlas/SKILL.md`](skills/jiangshan-atlas/SKILL.md) (includes the zero-dependency CLI renderer [`skills/jiangshan-atlas/scripts/jiangshan.py`](skills/jiangshan-atlas/scripts/jiangshan.py))
   ```bash
   # Install into Claude Code / Gemini / Jetski global skills directory:
@@ -142,12 +158,13 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 763 --place 剑外,�
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1079,1080,1094,1097 --place 湖州,黄州,惠州,儋州 --out /tmp/sushi_exile.png
 ```
 
-### 3. Browser JavaScript API (`window.atlasAPI`)
+### 3. Browser JavaScript API (`window.atlasAPI`) & In-Browser WebMCP (`navigator.modelContext`)
 
-In browser automation environments (Playwright / WebMCP), call `window.atlasAPI` directly:
+In browser automation environments (Playwright) or WebMCP-enabled AI browsers (`navigator.modelContext`), the page automatically registers `jiangshan_locate`, `jiangshan_inspect`, and `jiangshan_open_person`, and exposes `window.atlasAPI`:
 - `window.atlasAPI.locate({ year, place, zoom? })`: Drives the map to a single location or multi-stop trajectory and returns structured historical-geographic metadata.
-- `window.atlasAPI.inspect({ year, place })`: Read-only query returning the controlling polity, ancient prefecture, modern province/city, leg distances, and canonical shareable URL.
+- `window.atlasAPI.inspect({ year, place, person?, stop? })`: Read-only query returning the controlling polity, ancient prefecture, modern province/city, leg distances, person events, and canonical shareable URL.
 - `window.atlasAPI.resolvePlace(place, year?)`: Resolves ancient and modern names for cities, strategic passes, poetic landmarks, and battlefields.
+- `window.atlasAPI.openPerson(person, stop?)` & `window.atlasAPI.search(query)`: Opens a person chronicle on the map or searches across the entire atlas.
 
 ---
 

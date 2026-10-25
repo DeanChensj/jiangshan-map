@@ -2959,8 +2959,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 166 multi-stage territory snapshots, 442 milestones, 571 city landmarks, 20 strategic passes, and 100+ person chronicles.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、166幅多阶段历史疆域与州道政区快照、442条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 183 multi-stage territory snapshots, 471 milestones, 571 city landmarks, 20 strategic passes, and 113+ person chronicles.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、183幅多阶段历史疆域与州道政区快照、471条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activePerson) {
@@ -7882,8 +7882,11 @@
         if (curDyn && curDyn.key !== 'prc') {
           const all = tiers.flat();
           const firstPick =
-            all.find((c) => c.dynasty.key === curDyn.key && c.settlement.ancient === '武威') ||
-            all.find((c) => c.dynasty.key === curDyn.key);
+            all.find(
+              (c) =>
+                c.dynasty.key === curDyn.key &&
+                (c.settlement.ancient.startsWith('武威') || c.settlement.ancient.startsWith('姑臧'))
+            ) || all.find((c) => c.dynasty.key === curDyn.key);
           if (firstPick) tryAdd(firstPick);
         }
       }
@@ -10883,66 +10886,79 @@
         }
       }
 
-      // 4. Milestones & Landmark Events
-      for (const d of orderedDynasties) {
-        for (const m of d.milestones || []) {
-          if (!m.coord) continue;
-          const site = (m.site || '').toLowerCase();
-          const head = (m.headline || '').toLowerCase();
-          const enPair =
-            this.enLocale && this.enLocale.milestones && this.enLocale.milestones[`${d.key}:${m.year}`];
-          const headEn = (
-            m.headlineEn ||
-            (Array.isArray(enPair) ? enPair[0] : enPair) ||
-            ''
-          ).toLowerCase();
-          const siteEn = (
-            m.siteEn ||
-            (Array.isArray(enPair) ? enPair[1] : '') ||
-            (m.site ? this._enDict(m.site) : '')
-          ).toLowerCase();
-          const zhHit = (site && (site.includes(q) || q.includes(site))) || head.includes(q);
+      // 4. Milestones & Landmark Events (exact site match first so compound sites do not hijack single sites)
+      for (const exactSite of [true, false]) {
+        for (const d of orderedDynasties) {
+          for (const m of d.milestones || []) {
+            if (!m.coord) continue;
+            const site = (m.site || '').toLowerCase();
+            const head = (m.headline || '').toLowerCase();
+            const enPair =
+              this.enLocale &&
+              this.enLocale.milestones &&
+              this.enLocale.milestones[`${d.key}:${m.year}`];
+            const headEn = (
+              m.headlineEn ||
+              (Array.isArray(enPair) ? enPair[0] : enPair) ||
+              ''
+            ).toLowerCase();
+            const siteEn = (
+              m.siteEn ||
+              (Array.isArray(enPair) ? enPair[1] : '') ||
+              (m.site ? this._enDict(m.site) : '')
+            ).toLowerCase();
+            const zhHit = exactSite
+              ? Boolean(site && (site === q || stripParens(site) === q))
+              : (site && (site.includes(q) || q.includes(site))) || head.includes(q);
+            const enHit =
+              isAsciiQuery &&
+              (exactSite
+                ? Boolean(siteEn && (siteEn === q || foldAscii(siteEn) === qFold))
+                : (siteEn &&
+                    (siteEn.includes(q) ||
+                      (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
+                  (headEn && headEn.includes(q)));
+            if (zhHit || enHit) {
+              return {
+                kind: 'event_site',
+                name: m.site || raw,
+                modern: '',
+                lng: m.coord[0],
+                lat: m.coord[1],
+                coord: m.coord,
+                zoom: 2.5,
+              };
+            }
+          }
+        }
+        for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+          if (!lm.coord) continue;
+          const site = (lm.site || '').toLowerCase();
+          const zh = (lm.zh || '').toLowerCase();
+          const siteEn = (lm.siteEn || '').toLowerCase();
+          const en = (lm.en || '').toLowerCase();
+          const zhHit = exactSite
+            ? Boolean(site && (site === q || stripParens(site) === q))
+            : (site && (site.includes(q) || q.includes(site))) || zh.includes(q);
           const enHit =
             isAsciiQuery &&
-            ((siteEn &&
-              (siteEn.includes(q) ||
-                (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
-              (headEn && headEn.includes(q)));
+            (exactSite
+              ? Boolean(siteEn && (siteEn === q || foldAscii(siteEn) === qFold))
+              : (siteEn &&
+                  (siteEn.includes(q) ||
+                    (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
+                (en && en.includes(q)));
           if (zhHit || enHit) {
             return {
               kind: 'event_site',
-              name: m.site || raw,
+              name: lm.site || raw,
               modern: '',
-              lng: m.coord[0],
-              lat: m.coord[1],
-              coord: m.coord,
+              lng: lm.coord[0],
+              lat: lm.coord[1],
+              coord: lm.coord,
               zoom: 2.5,
             };
           }
-        }
-      }
-      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
-        if (!lm.coord) continue;
-        const site = (lm.site || '').toLowerCase();
-        const zh = (lm.zh || '').toLowerCase();
-        const siteEn = (lm.siteEn || '').toLowerCase();
-        const en = (lm.en || '').toLowerCase();
-        const zhHit = (site && (site.includes(q) || q.includes(site))) || zh.includes(q);
-        const enHit =
-          isAsciiQuery &&
-          ((siteEn &&
-            (siteEn.includes(q) || (qFold.length >= 4 && foldAscii(siteEn).includes(qFold)))) ||
-            (en && en.includes(q)));
-        if (zhHit || enHit) {
-          return {
-            kind: 'event_site',
-            name: lm.site || raw,
-            modern: '',
-            lng: lm.coord[0],
-            lat: lm.coord[1],
-            coord: lm.coord,
-            zoom: 2.5,
-          };
         }
       }
 
@@ -11821,6 +11837,149 @@
         }, 120);
       }
     }
+
+    _registerWebMcpTools() {
+      if (typeof navigator === 'undefined' || !navigator.modelContext) return [];
+      const mc = navigator.modelContext;
+      const applyOptionalLang = (lang) => {
+        if (!lang) return;
+        const norm = String(lang).toLowerCase();
+        const nextLoc =
+          norm === 'en' ? 'en' : /^(zh-tw|zh_tw|tw|hk|zh-hk|zh-hant|hant)$/.test(norm) ? 'zh-tw' : 'zh';
+        if (nextLoc !== this.locale) {
+          this.locale = nextLoc;
+          this._syncUrlLangParam();
+          this.applyLocale();
+        }
+      };
+      const tools = [
+        {
+          name: 'jiangshan_locate',
+          description:
+            'Locate a historical Chinese place, poem site, battle, or multi-stop route on the Jiangshan Historical Atlas (403 BCE – 2026 CE), move the map camera, open the 2,400-year administrative genealogy card, and return structured historical context.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              year: {
+                type: ['integer', 'string'],
+                description:
+                  'Historical year (-403 to 2026, negative for BCE, no year 0) or comma-separated years for multi-year routes.',
+              },
+              place: {
+                type: 'string',
+                description:
+                  'Single canonical ancient/modern place name or comma-separated route stops in Chinese, English, or Pinyin.',
+              },
+              zoom: {
+                type: 'number',
+                description: 'Optional zoom level override (1.0 to 8.0).',
+              },
+              lang: {
+                type: 'string',
+                enum: ['zh', 'zh-tw', 'en'],
+                description: 'Optional UI and response language.',
+              },
+            },
+            required: ['year', 'place'],
+          },
+          execute: async (args = {}) => {
+            applyOptionalLang(args.lang);
+            await this._ensureFullSnapshots();
+            if (this.locale === 'en') await this._ensureEnglishLocale();
+            return this.locate({
+              year: args.year,
+              place: args.place,
+              zoom: args.zoom,
+            });
+          },
+        },
+        {
+          name: 'jiangshan_inspect',
+          description:
+            'Read-only historical geography query returning reigning monarch/era, controlling regime (polity), macro-region (dao/lu/province), prefecture (jun/zhou/fu), modern province/city, 2,400-year city/pass lore, or person chronicle events without moving the camera.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              year: {
+                type: ['integer', 'string'],
+                description: 'Historical year (-403 to 2026) or comma-separated years.',
+              },
+              place: {
+                type: 'string',
+                description: 'Optional ancient/modern place name or comma-separated route stops.',
+              },
+              person: {
+                type: 'string',
+                description: 'Optional historical figure name or key (e.g. sushi, libai, zhugeliang).',
+              },
+              stop: {
+                type: 'integer',
+                description: 'Optional 0-based event stop index for person chronicle.',
+              },
+              lang: {
+                type: 'string',
+                enum: ['zh', 'zh-tw', 'en'],
+                description: 'Optional response language.',
+              },
+            },
+          },
+          execute: async (args = {}) => {
+            applyOptionalLang(args.lang);
+            await this._ensureFullSnapshots();
+            if (this.locale === 'en') await this._ensureEnglishLocale();
+            return this.inspect({
+              year: args.year,
+              place: args.place,
+              person: args.person,
+              stop: args.stop,
+            });
+          },
+        },
+        {
+          name: 'jiangshan_open_person',
+          description:
+            'Open the spatio-temporal life & poetry chronicle (点人溯事) on the map for a Chinese historical figure or monarch and return their geocoded life stops.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              person: {
+                type: 'string',
+                description: 'Historical figure name or key in Chinese, English, or Pinyin.',
+              },
+              stop: {
+                type: 'integer',
+                description: 'Optional 0-based stop index (-1 for full route overview).',
+              },
+              lang: {
+                type: 'string',
+                enum: ['zh', 'zh-tw', 'en'],
+                description: 'Optional UI and response language.',
+              },
+            },
+            required: ['person'],
+          },
+          execute: async (args = {}) => {
+            applyOptionalLang(args.lang);
+            await this._ensureFullSnapshots();
+            if (this.locale === 'en') await this._ensureEnglishLocale();
+            const stopIdx = typeof args.stop === 'number' ? args.stop : -1;
+            this.openPersonChronicle(args.person, stopIdx);
+            return this.inspect({
+              person: args.person,
+              stop: stopIdx >= 0 ? stopIdx : undefined,
+            });
+          },
+        },
+      ];
+      try {
+        if (typeof mc.registerTool === 'function') {
+          for (const t of tools) mc.registerTool(t);
+        } else if (typeof mc.provideContext === 'function') {
+          mc.provideContext({ tools });
+        }
+      } catch (_) {}
+      return tools;
+    }
   }
 
   window.MercatorProjector = MercatorProjector;
@@ -11833,6 +11992,8 @@
       resolvePlace: (place, year) => app.resolvePlace(place, year),
       inspect: (opts) => app.inspect(opts),
       openPerson: (who, idx = -1) => app.openPersonChronicle(who, idx),
+      search: (q) => app._queryQuickSearch(q),
     };
+    app._registerWebMcpTools();
   });
 })();

@@ -5769,6 +5769,90 @@ function main() {
           'en',
           '_effectiveRenderedLocale must return en once i18n_dict.js is loaded'
         );
+        // 6. WebMCP (navigator.modelContext) registration & Stdio MCP server (scripts/mcp_server.js)
+        const registeredWebMcpTools = [];
+        const origNav = sandbox.navigator;
+        sandbox.navigator = {
+          modelContext: {
+            registerTool(t) {
+              registeredWebMcpTools.push(t);
+            },
+          },
+        };
+        const returnedTools = ctrl._registerWebMcpTools();
+        assert.strictEqual(
+          registeredWebMcpTools.length,
+          3,
+          'WebMCP must register 3 tools (jiangshan_locate, jiangshan_inspect, jiangshan_open_person)'
+        );
+        assert.strictEqual(
+          returnedTools.map((t) => t.name).join(','),
+          'jiangshan_locate,jiangshan_inspect,jiangshan_open_person',
+          'WebMCP tool names must match expected list'
+        );
+        sandbox.navigator = origNav;
+
+        const { spawnSync } = require('child_process');
+        const mcpServerPath = path.join(__dirname, 'mcp_server.js');
+        assert(fs.existsSync(mcpServerPath), 'scripts/mcp_server.js must exist');
+        const mcpRequests = [
+          { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2024-11-05' } },
+          { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} },
+          {
+            jsonrpc: '2.0',
+            id: 3,
+            method: 'tools/call',
+            params: { name: 'inspect_place', arguments: { year: 755, place: '范阳' } },
+          },
+          {
+            jsonrpc: '2.0',
+            id: 4,
+            method: 'tools/call',
+            params: { name: 'inspect_person', arguments: { person: '苏轼', stop: 6 } },
+          },
+          {
+            jsonrpc: '2.0',
+            id: 5,
+            method: 'tools/call',
+            params: { name: 'search_atlas', arguments: { query: '长安', limit: 3 } },
+          },
+        ]
+          .map((r) => JSON.stringify(r))
+          .join('\n') + '\n';
+        const mcpProc = spawnSync(process.execPath, [mcpServerPath], {
+          input: mcpRequests,
+          encoding: 'utf8',
+          timeout: 15000,
+        });
+        assert.strictEqual(mcpProc.status, 0, `mcp_server.js exited with ${mcpProc.status}: ${mcpProc.stderr}`);
+        const mcpLines = mcpProc.stdout
+          .trim()
+          .split('\n')
+          .map((line) => JSON.parse(line));
+        assert.strictEqual(mcpLines.length, 5, 'mcp_server.js must return 5 JSON-RPC responses');
+        assert.strictEqual(mcpLines[0].result.serverInfo.name, 'jiangshan-atlas-mcp');
+        assert.deepStrictEqual(
+          mcpLines[1].result.tools.map((t) => t.name),
+          ['inspect_place', 'inspect_person', 'search_atlas']
+        );
+        const fanyangRes = JSON.parse(mcpLines[2].result.content[0].text);
+        assert.strictEqual(fanyangRes.year, 755);
+        assert.strictEqual(fanyangRes.resolvedName, '幽州');
+        assert.strictEqual(fanyangRes.polity, '大燕（安禄山）');
+        assert(fanyangRes.regions.includes('河北道'), 'inspect_place(755, 范阳) must return 河北道');
+        const sushiRes = JSON.parse(mcpLines[3].result.content[0].text);
+        assert.strictEqual(
+          sushiRes.resolvedName,
+          '徐州',
+          'inspect_person(苏轼, stop=6) must return resolvedName="徐州"'
+        );
+        assert.strictEqual(
+          sushiRes.person.events[7].site,
+          '湖州',
+          'inspect_person(苏轼, stop=6) event[7].site must be "湖州"'
+        );
+        const searchRes = JSON.parse(mcpLines[4].result.content[0].text);
+        assert.strictEqual(searchRes.results[0].kind, 'city', 'search_atlas(长安) must rank city #1');
       } finally {
         sandbox.window.history = origHistory;
         sandbox.location.search = origSearch;

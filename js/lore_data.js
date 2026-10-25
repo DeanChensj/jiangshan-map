@@ -14063,7 +14063,15 @@ window.ATLAS_LORE_DATA = {
         "析津府",
         "燕京",
         "蓟城",
-        "幽燕"
+        "幽燕",
+        "范阳",
+        "范阳郡"
+      ],
+      "asciiAliases": [
+        "youzhou",
+        "fanyang",
+        "yanjing",
+        "jicheng"
       ],
       "modern": "北京",
       "coord": [
