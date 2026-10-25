@@ -5345,7 +5345,9 @@ function main() {
     assert(
       indexHtml.includes('<div id="svg-stage-wrap">') &&
         cssSrc.includes('#svg-stage-wrap') &&
+        cssSrc.includes('transform-origin: 0 0;') &&
         cssSrc.includes('contain: layout style;') &&
+        cssSrc.includes('text-rendering: geometricPrecision;') &&
         cssSrc.includes('#atlas-svg.is-camera-moving *') &&
         !cssSrc.includes('#atlas-svg.is-camera-moving text') &&
         /\.neighbor-caption\.is-crowded-hidden[\s\S]*?display:\s*none;/m.test(cssSrc) &&
@@ -5353,9 +5355,13 @@ function main() {
         appCode.includes('_runWithDeferredTypography') &&
         appCode.includes('if (this._camRaf !== null) return;') &&
         appCode.includes('_lastLegendKey') &&
+        appCode.includes('this.isScrubbing') &&
+        appCode.includes('this._zoomScaleNodes') &&
+        appCode.includes('node.dataset.appliedDir') &&
+        !appCode.includes("class: 'fade-enter'") &&
         !appCode.includes("disc.getBoundingClientRect()") &&
         !appCode.includes("label.getBoundingClientRect()"),
-      'Expected #svg-stage-wrap compositor wrapper, deferred typography coalescing, no is-camera-moving text stroke stripping, _camRaf settle guard, _lastLegendKey cache, display:none on crowded captions, and zero .jn-disc/.jn-label getBoundingClientRect calls'
+      'Expected #svg-stage-wrap compositor wrapper, geometricPrecision text rendering, deferred typography coalescing, no is-camera-moving text stroke stripping, _camRaf settle guard, _lastLegendKey cache, display:none on crowded captions, scrubbing flicker guards, and zero .jn-disc/.jn-label getBoundingClientRect calls'
     );
     {
       let typoExecCount = 0;
