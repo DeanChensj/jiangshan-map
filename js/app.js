@@ -319,6 +319,7 @@
       this._cameraSettleTimer = null;
       this._cameraViewportRect = null;
       this._lastCameraViewBox = null;
+      this._baseViewBoxCam = null;
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -333,16 +334,18 @@
       this.snapshotCache = {};
 
       this._bindDom();
-      this._applyCamera(true);
-      this._buildTerrainRivers();
-      this._buildModernProvinces();
-      this._buildNeighborCountries();
-      this._buildScrubberBands();
-      this._attachListeners();
-      this.applyLocale();
+      this._runWithDeferredTypography(() => {
+        this._applyCamera(true);
+        this._buildTerrainRivers();
+        this._buildModernProvinces();
+        this._buildNeighborCountries();
+        this._buildScrubberBands();
+        this._attachListeners();
+        this.applyLocale();
 
-      this.jumpToYear(this.dynasties[0].focusYear);
-      this._restoreFromQuery();
+        this.jumpToYear(this.dynasties[0].focusYear);
+        this._restoreFromQuery();
+      });
       this._bootDone = true;
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
@@ -452,7 +455,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -476,7 +479,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -550,13 +553,15 @@
         this.svg
           .querySelectorAll('.has-trace-hint')
           .forEach((el) => el.classList.remove('has-trace-hint'));
+        this._invalidateTypographyLayout();
       }
     }
 
     _getViewportAspect() {
-      if (this.svg) {
-        const r = this.svg.getBoundingClientRect();
-        if (r.width > 40 && r.height > 40) {
+      if (this.svg && typeof this.svg.getBoundingClientRect === 'function') {
+        const r = this._cameraViewportRect || this._getUnscaledSvgRect();
+        if (r && r.width > 40 && r.height > 40) {
+          this._cameraViewportRect = r;
           return Math.max(0.65, Math.min(1.45, r.height / r.width));
         }
       }
@@ -594,6 +599,7 @@
     }
 
     _bindDom() {
+      this._stageWrap = this._id('svg-stage-wrap');
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
       this.grpRivers = this._id('grp-rivers');
@@ -1189,29 +1195,34 @@
       this._invalidateTypographyLayout();
 
       const cur = this.dynasties[this.dynastyIdx];
-      if (cur) {
-        this._renderChroniclePane(cur);
-        this._renderSettlements(cur);
-        this._renderCorridors();
-        this._renderMilestones(cur);
-        this._fetchSnapshot(this.activeSnapKey || this._resolveSnapKey(cur, this.year)).then(
-          (snap) => this._renderPolitiesAndPrefectures(cur, snap)
-        );
-        this._syncScrubberUi();
-      }
-      if (this.activeTrace) {
-        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
-          fromYearSync: true,
-          preserveScroll: true,
-        });
-      } else if (this.activePerson) {
-        this.activePerson.events = this._collectPersonEvents(this.activePerson.profile);
-        this._renderPersonPinsOverlay();
-        this._renderPersonChronicleCard(true);
-      }
-      if (this.activeCustomRoute) {
-        this._renderCustomRoute(this.activeCustomRoute, this.camera.zoom);
-      }
+      this._runWithDeferredTypography(() => {
+        if (cur) {
+          this._renderChroniclePane(cur);
+          this._renderSettlements(cur);
+          this._renderCorridors();
+          this._renderMilestones(cur);
+          this._withSnapshot(this.activeSnapKey || this._resolveSnapKey(cur, this.year), (snap) =>
+            this._renderPolitiesAndPrefectures(cur, snap)
+          );
+          if (!this.activePerson) {
+            this._syncAutoMilestoneBalloon(cur);
+          }
+          this._syncScrubberUi();
+        }
+        if (this.activeTrace) {
+          this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
+            fromYearSync: true,
+            preserveScroll: true,
+          });
+        } else if (this.activePerson) {
+          this.activePerson.events = this._collectPersonEvents(this.activePerson.profile);
+          this._renderPersonPinsOverlay();
+          this._renderPersonChronicleCard(true);
+        }
+        if (this.activeCustomRoute) {
+          this._renderCustomRoute(this.activeCustomRoute, this.camera.zoom);
+        }
+      });
       if (this.challenge) {
         this.grpSettlements.classList.add('is-hidden');
         const chkM = this._id('chk-milestones');
@@ -1564,6 +1575,18 @@
       });
     }
 
+    _withSnapshot(snapKey, cb) {
+      if (this.snapshots && this.snapshots[snapKey]) {
+        const snap = this.snapshots[snapKey];
+        if (!this.snapshotCache[snapKey]) {
+          this.snapshotCache[snapKey] = Promise.resolve(snap);
+        }
+        cb(snap);
+        return;
+      }
+      this._fetchSnapshot(snapKey).then(cb);
+    }
+
     _renderDynasty(dynasty, prevSnap = null) {
       document.documentElement.style.setProperty('--dynasty-accent', dynasty.tint);
       if (this.svg && dynasty && dynasty.key) {
@@ -1580,7 +1603,7 @@
       this._renderMilestones(dynasty);
       const snapKey = this._resolveSnapKey(dynasty, this.year);
       this.activeSnapKey = snapKey;
-      this._fetchSnapshot(snapKey).then((snap) => {
+      this._withSnapshot(snapKey, (snap) => {
         if (this.dynasties[this.dynastyIdx] !== dynasty || this._resolveSnapKey(dynasty, this.year) !== snapKey) {
           return;
         }
@@ -2132,14 +2155,16 @@
       });
       this._updateMilestoneStates(dynasty);
       this._rescaleSvgTypography();
-      if (
-        this.activeMilestone &&
-        this.activeMilestone.dynastyKey === dynasty.key &&
-        !this.activeMilestone.isAuto
-      ) {
-        this._positionMilestoneBalloon();
-      } else {
-        this._syncAutoMilestoneBalloon(dynasty);
+      if (!this._deferTypographyDepth) {
+        if (
+          this.activeMilestone &&
+          this.activeMilestone.dynastyKey === dynasty.key &&
+          !this.activeMilestone.isAuto
+        ) {
+          this._positionMilestoneBalloon();
+        } else {
+          this._syncAutoMilestoneBalloon(dynasty);
+        }
       }
     }
 
@@ -2295,8 +2320,10 @@
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
         n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
       });
-      this._highlightCurrentMilestone(dynasty);
-      this._updateMilestoneStates(dynasty);
+      if (!isAuto) {
+        this._highlightCurrentMilestone(dynasty);
+        this._updateMilestoneStates(dynasty);
+      }
       if (!m.coord || (opts && opts.fromStep && this.grpMilestones && this.grpMilestones.classList.contains('is-hidden'))) {
         this.milestoneBalloon.classList.add('is-hidden');
         const vf = this._id('viewport-frame');
@@ -2304,6 +2331,8 @@
         return;
       }
       const yrText = this.formatYear(m.year);
+      const eraLabel = this._eventEraLabel(dynasty, m);
+      const headlineText = this.milestoneHeadline(dynasty, m);
       const rawSiteStr = this.milestoneSite(dynasty, m);
       const siteStr =
         rawSiteStr
@@ -2318,8 +2347,23 @@
         : '';
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${this._eventEraLabel(dynasty, m)}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
-        `<div class="ep-text">${this.milestoneHeadline(dynasty, m)}</div>`;
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-text">${headlineText}</div>`;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+      const maxW = isMobile ? Math.min(286, (window.innerWidth || 390) - 16) : 348;
+      const headW =
+        this._estimateLocalTextWidth(
+          `${yrText} · ${eraLabel}${siteStr ? ` ${siteStr} · ${traceSuffix}` : ''}`,
+          11.5,
+          0
+        ) + 52;
+      const textW = this._estimateLocalTextWidth(headlineText, 12.2, 0);
+      const estW = Math.round(
+        Math.max(isMobile ? 190 : 220, Math.min(maxW, Math.max(headW, textW + 24)))
+      );
+      const textLines = Math.max(1, Math.ceil(textW / Math.max(120, estW - 24)));
+      const estH = Math.round(36 + textLines * 17.5);
+      this._milestoneBalloonSize = { w: estW, h: estH };
       const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
       if (placeBtn && m.coord) {
         placeBtn.addEventListener('click', (e) => {
@@ -2352,8 +2396,14 @@
         this.activeMilestone.milestone.coord[0],
         this.activeMilestone.milestone.coord[1]
       );
-      const rect = viewportRect || this.svg.getBoundingClientRect();
+      const rect =
+        viewportRect ||
+        (this.dragState && this.dragState.rect) ||
+        (this.pinchState && this.pinchState.rect) ||
+        this._cameraViewportRect ||
+        this.svg.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
+      this._cameraViewportRect = rect;
       const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       const padX = (rect.width - this.camera.w * scale) * 0.5;
       const padY = (rect.height - this.camera.h * scale) * 0.5;
@@ -2368,8 +2418,14 @@
       const genCard = this._id('genealogy-card');
       const genOpen =
         genCard && !genCard.classList.contains('is-hidden') && !isMobile;
-      const bW = this.milestoneBalloon.offsetWidth || (isMobile ? 228 : 260);
-      const bH = this.milestoneBalloon.offsetHeight || (isMobile ? 54 : 62);
+      const bW =
+        (this._milestoneBalloonSize && this._milestoneBalloonSize.w) ||
+        this.milestoneBalloon.offsetWidth ||
+        (isMobile ? 228 : 260);
+      const bH =
+        (this._milestoneBalloonSize && this._milestoneBalloonSize.h) ||
+        this.milestoneBalloon.offsetHeight ||
+        (isMobile ? 54 : 62);
       const minLeft = isMobile ? 8 : 12;
       const rightLimit = Math.max(
         minLeft,
@@ -2560,18 +2616,35 @@
     }
 
     _renderLegendBox(snap) {
+      const curDyn = this.dynasties[this.dynastyIdx];
+      let pIdx = -1;
+      if (curDyn && Array.isArray(curDyn.phases) && curDyn.phases.length > 1) {
+        pIdx = curDyn.phases.findIndex((ph) => this.year < ph.until);
+        if (pIdx === -1) pIdx = curDyn.phases.length - 1;
+      }
+      const chkCorr = Boolean(this._id('chk-corridors') && this._id('chk-corridors').checked);
+      const zhengHeWindow = this.year >= 1405 && this.year <= 1433 ? 1 : 0;
+      const legendKey = `${this.dynastyIdx}:${pIdx}:${this.locale}:${chkCorr ? 1 : 0}:${
+        this.activeCorridorMask || ''
+      }:${zhengHeWindow}`;
+      if (
+        this._lastLegendSnap === snap &&
+        this._lastLegendKey === legendKey &&
+        this.mapKey.firstChild
+      ) {
+        return;
+      }
+      this._lastLegendSnap = snap;
+      this._lastLegendKey = legendKey;
       this.mapKey.innerHTML = '';
       this.mobileLegendOpen = Boolean(this.mobileLegendOpen);
       this.mapKey.classList.toggle('is-mobile-expanded', this.mobileLegendOpen);
 
-      const curDyn = this.dynasties[this.dynastyIdx];
       const bar = document.createElement('div');
       bar.className = 'key-phase-bar';
 
       if (curDyn && Array.isArray(curDyn.phases) && curDyn.phases.length > 1) {
         const phases = curDyn.phases;
-        let pIdx = phases.findIndex((ph) => this.year < ph.until);
-        if (pIdx === -1) pIdx = phases.length - 1;
         const phaseStart = (idx) => (idx <= 0 ? curDyn.fromYear : phases[idx - 1].until);
         const curSy = phaseStart(pIdx);
         const curEy = phases[pIdx].until - 1;
@@ -2884,6 +2957,7 @@
 
       const ul = this._id('milestone-list');
       ul.innerHTML = '';
+      this._lastHighlightedMilestoneKey = null;
       for (const m of dynasty.milestones || []) {
         const li = document.createElement('li');
         const targetY = this._clampYearToDynasty(dynasty, m.year);
@@ -2964,26 +3038,37 @@
       const items = listEl.children;
       if (!items.length) return;
       const activeIdx = this._activeMilestoneIndex(dynasty);
+      const hlKey = `${dynasty ? dynasty.key : ''}:${activeIdx}`;
+      if (this._lastHighlightedMilestoneKey === hlKey) return;
+      this._lastHighlightedMilestoneKey = hlKey;
       Array.from(items).forEach((el, idx) =>
         el.classList.toggle('is-current', idx === activeIdx)
       );
       const pane = this._id('chronicle-pane');
-      if (!pane) return;
+      if (!pane || this.paneCollapsed) return;
       if (this._isMobileViewport() && !this.mobileChronicleOpen) {
-        pane.scrollTop = 0;
         return;
       }
-      if (activeIdx <= 0) {
-        if (pane.scrollTop > 0) {
-          pane.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        return;
+      if (this._chronicleScrollRaf) {
+        cancelAnimationFrame(this._chronicleScrollRaf);
+        this._chronicleScrollRaf = null;
       }
-      if (activeIdx > 0 && items[activeIdx] && pane.scrollHeight > pane.clientHeight) {
-        const el = items[activeIdx];
-        const elTop = el.offsetTop - pane.offsetTop;
-        const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
-        pane.scrollTo({ top: targetTop, behavior: 'smooth' });
+      if (typeof requestAnimationFrame === 'function') {
+        this._chronicleScrollRaf = requestAnimationFrame(() => {
+          this._chronicleScrollRaf = null;
+          if (activeIdx <= 0) {
+            if (pane.scrollTop > 0) {
+              pane.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            return;
+          }
+          if (items[activeIdx] && pane.scrollHeight > pane.clientHeight) {
+            const el = items[activeIdx];
+            const elTop = el.offsetTop - pane.offsetTop;
+            const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
+            pane.scrollTo({ top: targetTop, behavior: 'smooth' });
+          }
+        });
       }
     }
 
@@ -3030,6 +3115,7 @@
       this.activePerson = null;
       this.activePersonEventIdx = -1;
       this._lastPersonPinZoom = 0;
+      this._lastPersonCardKey = null;
       if (this.grpJourney && !this.activeCustomRoute) {
         this.grpJourney.innerHTML = '';
       }
@@ -3334,11 +3420,12 @@
 
       const anchorEv =
         this.activePersonEventIdx >= 0 ? events[this.activePersonEventIdx] : events[0];
-      if (anchorEv) {
-        this.jumpToYear(this._clampYearToDynasty(anchorEv.dynasty, anchorEv.year));
-      }
-
-      this._renderPersonPinsOverlay();
+      this._runWithDeferredTypography(() => {
+        if (anchorEv) {
+          this.jumpToYear(this._clampYearToDynasty(anchorEv.dynasty, anchorEv.year));
+        }
+        this._renderPersonPinsOverlay();
+      });
       this._renderPersonChronicleCard();
       this._syncDocumentSeoMeta();
 
@@ -3408,8 +3495,10 @@
       this.activePersonEventIdx = clamped;
       const ev = events[clamped];
       this.closeMilestoneBalloon();
-      this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
-      this._renderPersonPinsOverlay();
+      this._runWithDeferredTypography(() => {
+        this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
+        this._renderPersonPinsOverlay();
+      });
       this._renderPersonChronicleCard(true);
       if (panCamera) this._flyToPersonEvent(ev);
     }
@@ -3668,6 +3757,37 @@
       const curIdx = this.activePersonEventIdx;
       const isEn = this.locale === 'en';
       const isAdhoc = String(profile.key || '').startsWith('adhoc_');
+      const listEl = this._id('genealogy-timeline');
+      const personCardKey = `${profile.key}:${this.locale}:${events.length}`;
+      if (
+        preserveScroll &&
+        this._lastPersonCardKey === personCardKey &&
+        listEl &&
+        listEl.children &&
+        listEl.children.length === events.length
+      ) {
+        const ovBtn = this._id('act-person-overview');
+        if (ovBtn) ovBtn.classList.toggle('is-active', curIdx < 0);
+        let activeLi = null;
+        Array.from(listEl.children).forEach((li, idx) => {
+          const isCur = idx === curIdx;
+          li.classList.toggle('is-current', isCur);
+          if (isCur) activeLi = li;
+        });
+        if (activeLi && typeof activeLi.scrollIntoView === 'function') {
+          if (this._personScrollRaf) cancelAnimationFrame(this._personScrollRaf);
+          if (typeof requestAnimationFrame === 'function') {
+            this._personScrollRaf = requestAnimationFrame(() => {
+              this._personScrollRaf = null;
+              if (activeLi) activeLi.scrollIntoView({ block: 'nearest' });
+            });
+          } else {
+            activeLi.scrollIntoView({ block: 'nearest' });
+          }
+        }
+        return;
+      }
+      this._lastPersonCardKey = personCardKey;
 
       const kickerEl = this._id('txt-genealogy-kicker');
       if (kickerEl) {
@@ -3734,9 +3854,8 @@
         if (ovBtn) ovBtn.addEventListener('click', () => this.selectPersonEvent(-1, true));
       }
 
-      const listEl = this._id('genealogy-timeline');
       const scrollEl = this._id('genealogy-body') || listEl;
-      const prevScroll = scrollEl ? scrollEl.scrollTop : 0;
+      const prevScroll = scrollEl && preserveScroll ? scrollEl.scrollTop : 0;
       if (!listEl) return;
       listEl.innerHTML = '';
 
@@ -4713,6 +4832,7 @@
           lbl.textContent = this.trTerm(this.activeTraceLabel);
         }
       }
+      this._invalidateTypographyLayout();
       if (!fromYearSync && !onCustomRouteStop) {
         if (
           typeof window !== 'undefined' &&
@@ -4729,10 +4849,10 @@
           this.camera.x = sx - this.camera.w * 0.38;
           this._applyCamera(true);
         } else {
-          this._rescaleSvgTypography(true);
+          this._rescaleSvgTypography();
         }
       } else {
-        this._rescaleSvgTypography(true);
+        this._rescaleSvgTypography();
       }
 
       const modernLoc = this._resolveModernLocationAt(lng, lat);
@@ -5241,8 +5361,11 @@
       endTick.style.left = '100%';
       endTick.textContent = this.uiStr('tick_now', '今');
       ticks.appendChild(endTick);
+      this._lastActiveBandIdx = -1;
+      this._scrubberRailWidth = 0;
       this._refreshBandLabels();
       window.addEventListener('resize', () => {
+        this._scrubberRailWidth = 0;
         this._fitBandLabels();
         this._updateScaleBar();
         this._syncScrubberUi();
@@ -5302,13 +5425,14 @@
 
     _syncScrubberUi() {
       const pct = this._yearToProgress(this.year) * 100;
-      const handle = this._id('scrubber-handle');
-      if (handle) handle.style.left = `${pct}%`;
-
       const d = this.dynasties[this.dynastyIdx];
       const bubble = this._id('scrubber-Bubble');
       const bubbleText = this._id('bubble-text');
       if (bubble && bubbleText) {
+        if (!this._scrubberRailWidth) {
+          const wrap = this._id('scrubber-rail-wrap');
+          this._scrubberRailWidth = (wrap && wrap.clientWidth) || 300;
+        }
         const eraText = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
         bubbleText.textContent = eraText;
         if (this.year >= 1368 && this.year < 1912) {
@@ -5319,9 +5443,8 @@
         } else {
           bubble.title = eraText;
         }
-        const wrap = this._id('scrubber-rail-wrap');
-        const railW = wrap ? wrap.clientWidth : 300;
-        const bW = bubble.offsetWidth || 180;
+        const railW = this._scrubberRailWidth || 300;
+        const bW = Math.max(84, Math.round(this._estimateLocalTextWidth(eraText, 12, 0) + 20));
         const handleX = (pct / 100) * railW;
         // Clamp bubble strictly inside [0, railW - bW] so text never clips off-screen
         const maxLeft = Math.max(0, railW - bW);
@@ -5334,13 +5457,22 @@
         bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
       }
 
+      const handle = this._id('scrubber-handle');
+      if (handle) handle.style.left = `${pct}%`;
+
       const track = this._id('scrubber-track');
       if (track) track.setAttribute('aria-valuenow', String(this.year));
       const inpYear = this._id('inp-year');
       if (inpYear) inpYear.value = this.year === 0 ? 1 : this.year;
-      Array.from(this._id('dynasty-bands').children).forEach((el, idx) =>
-        el.classList.toggle('is-active', idx === this.dynastyIdx)
-      );
+      if (this._lastActiveBandIdx !== this.dynastyIdx) {
+        const bandsEl = this._id('dynasty-bands');
+        if (bandsEl) {
+          Array.from(bandsEl.children).forEach((el, idx) =>
+            el.classList.toggle('is-active', idx === this.dynastyIdx)
+          );
+          this._lastActiveBandIdx = this.dynastyIdx;
+        }
+      }
     }
 
     _clearQuickSearchInput() {
@@ -5366,42 +5498,45 @@
       const cur = this.dynasties[this.dynastyIdx];
       const nextSnapKey = this._resolveSnapKey(cur, y);
 
-      if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
-        if (prevIdx !== this.dynastyIdx) {
-          this._clearQuickSearchInput();
-        }
-        const prevSnap = this.lastRenderedSnap;
-        this._renderDynasty(cur, prevSnap);
-        this._renderChroniclePane(cur);
-      } else {
-        if (nextSnapKey !== this.activeSnapKey) {
+      this._runWithDeferredTypography(() => {
+        if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
+          if (prevIdx !== this.dynastyIdx) {
+            this._clearQuickSearchInput();
+          }
           const prevSnap = this.lastRenderedSnap;
-          this.activeSnapKey = nextSnapKey;
-          this._fetchSnapshot(nextSnapKey).then((snap) => {
-            if (
-              this.dynasties[this.dynastyIdx] !== cur ||
-              this._resolveSnapKey(cur, this.year) !== nextSnapKey
-            ) {
-              return;
-            }
-            this._renderPolitiesAndPrefectures(cur, snap);
-            if (!this.playing && prevSnap) {
-              this._renderGhostDiff(prevSnap, 'fade');
-            }
-          });
-        } else if (this.lastRenderedSnap) {
-          this._renderLegendBox(this.lastRenderedSnap);
+          this._renderDynasty(cur, prevSnap);
+          this._renderChroniclePane(cur);
+        } else {
+          if (nextSnapKey !== this.activeSnapKey) {
+            const prevSnap = this.lastRenderedSnap;
+            this.activeSnapKey = nextSnapKey;
+            this._withSnapshot(nextSnapKey, (snap) => {
+              if (
+                this.dynasties[this.dynastyIdx] !== cur ||
+                this._resolveSnapKey(cur, this.year) !== nextSnapKey
+              ) {
+                return;
+              }
+              this._renderPolitiesAndPrefectures(cur, snap);
+              if (!this.playing && prevSnap) {
+                this._renderGhostDiff(prevSnap, 'fade');
+              }
+            });
+          } else if (this.lastRenderedSnap) {
+            this._renderLegendBox(this.lastRenderedSnap);
+          }
+          if (this._settlementMask(cur, y) !== this.activeSettlementMask) {
+            this._renderSettlements(cur);
+          }
+          this._highlightCurrentMilestone(cur);
+          this._updateMilestoneStates(cur);
         }
-        if (this._settlementMask(cur, y) !== this.activeSettlementMask) {
-          this._renderSettlements(cur);
+        if (this._hydroMask(y) !== this.activeHydroMask) {
+          this._buildTerrainRivers();
         }
-        this._highlightCurrentMilestone(cur);
-        this._updateMilestoneStates(cur);
-      }
-      if (this._hydroMask(y) !== this.activeHydroMask) {
-        this._buildTerrainRivers();
-        this._rescaleSvgTypography();
-      }
+        this._renderCorridors();
+      });
+
       // Auto callouts are kept or replaced by _syncAutoMilestoneBalloon below.
       const am = this.activeMilestone;
       if (am && (am.isAuto ? this.activePerson : am.year !== y)) {
@@ -5410,7 +5545,6 @@
       if (!this.activePerson) {
         this._syncAutoMilestoneBalloon(cur);
       }
-      this._renderCorridors();
       this._syncScrubberUi();
       const preserveScroll = Boolean(this._preserveGenealogyScrollOnce);
       this._preserveGenealogyScrollOnce = false;
@@ -5772,6 +5906,18 @@
       this._typoDirty = true;
     }
 
+    _runWithDeferredTypography(fn) {
+      this._deferTypographyDepth = (this._deferTypographyDepth || 0) + 1;
+      try {
+        fn();
+      } finally {
+        this._deferTypographyDepth--;
+        if (this._deferTypographyDepth === 0 && this._typoDirty) {
+          this._rescaleSvgTypography();
+        }
+      }
+    }
+
     _scheduleCameraUpdate() {
       if (this._camRaf !== null) return;
       this._camRaf = requestAnimationFrame(() => {
@@ -5780,18 +5926,48 @@
       });
     }
 
+    _commitStageTransform() {
+      if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
+        this._stageWrap.style.transform = '';
+      }
+      if (this.svg && typeof this.svg.setAttribute === 'function') {
+        const vb = `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`;
+        if (vb !== this._lastCameraViewBox) {
+          this.svg.setAttribute('viewBox', vb);
+          this._lastCameraViewBox = vb;
+        }
+      }
+      this._baseViewBoxCam = {
+        x: this.camera.x,
+        y: this.camera.y,
+        w: this.camera.w,
+        h: this.camera.h,
+      };
+    }
+
+    _getUnscaledSvgRect() {
+      if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
+        this._commitStageTransform();
+      }
+      return this.svg.getBoundingClientRect();
+    }
+
     _finishCameraMotion() {
+      if (this._camRaf !== null) return;
       clearTimeout(this._cameraSettleTimer);
       this._cameraSettleTimer = null;
+      this._commitStageTransform();
       this._cameraViewportRect = null;
       const rect = this.svg.getBoundingClientRect();
+      this._cameraViewportRect = rect;
       this.svg.classList.remove('is-camera-moving');
       if (
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
         Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05
       ) {
-        this._rescaleSvgTypography();
+        const zoomOnly = !this._typoDirty && this._lastTypographyWidth !== undefined;
+        this._rescaleSvgTypography({ zoomOnly });
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
@@ -5805,15 +5981,16 @@
         this._camRaf = null;
       }
       if (forceTypography) this._cameraViewportRect = null;
-      const rect =
+      const cachedRect =
         (this.dragState && this.dragState.rect) ||
         (this.pinchState && this.pinchState.rect) ||
-        this._cameraViewportRect ||
-        this.svg.getBoundingClientRect();
+        this._cameraViewportRect;
+      const rect = cachedRect || this._getUnscaledSvgRect();
       const viewBox = `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`;
       const zoomChanged =
         this._lastTypographyWidth !== undefined &&
         Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05;
+      let useStageTransform = false;
       if (forceTypography) {
         clearTimeout(this._cameraSettleTimer);
         this._cameraSettleTimer = null;
@@ -5823,15 +6000,33 @@
         this.hoverTip.classList.add('is-hidden');
         this.grpPrefectures.querySelectorAll('.prefecture-shape.is-hovered')
           .forEach((el) => el.classList.remove('is-hovered'));
-        if (zoomChanged || this._cameraSettleTimer !== null) {
+        if (zoomChanged || this._cameraSettleTimer !== null || this.flyRaf !== null) {
           this.svg.classList.add('is-camera-moving');
-          clearTimeout(this._cameraSettleTimer);
-          this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+          if (!this.flyRaf) {
+            clearTimeout(this._cameraSettleTimer);
+            this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+          }
+          useStageTransform = Boolean(
+            cachedRect && this._stageWrap && this._baseViewBoxCam && rect && rect.width
+          );
         }
       }
-      if (viewBox !== this._lastCameraViewBox) {
-        this.svg.setAttribute('viewBox', viewBox);
-        this._lastCameraViewBox = viewBox;
+      if (useStageTransform) {
+        const b = this._baseViewBoxCam;
+        const rw = rect.width || 1000;
+        const rh = rect.height || 700;
+        const s0 = Math.min(rw / b.w, rh / b.h);
+        const padX0 = (rw - b.w * s0) * 0.5;
+        const padY0 = (rh - b.h * s0) * 0.5;
+        const s1 = Math.min(rw / this.camera.w, rh / this.camera.h);
+        const padX1 = (rw - this.camera.w * s1) * 0.5;
+        const padY1 = (rh - this.camera.h * s1) * 0.5;
+        const k = s1 / s0;
+        const tx = padX1 - k * padX0 + (b.x - this.camera.x) * s1;
+        const ty = padY1 - k * padY0 + (b.y - this.camera.y) * s1;
+        this._stageWrap.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${k.toFixed(5)})`;
+      } else {
+        this._commitStageTransform();
       }
       // Rebuild immediately for new content, but defer zoom-only collision
       // layout until the gesture ends. Coordinates always use the live camera.
@@ -5840,9 +6035,11 @@
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
         (this._cameraSettleTimer === null &&
+          this.flyRaf === null &&
           Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05);
       if (needsTypography) {
-        this._rescaleSvgTypography();
+        const zoomOnly = !this._typoDirty && this._lastTypographyWidth !== undefined;
+        this._rescaleSvgTypography({ zoomOnly });
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
@@ -5992,8 +6189,23 @@
       return w;
     }
 
-    _rescaleSvgTypography() {
+    _rescaleSvgTypography(opts = null) {
+      if (this._deferTypographyDepth > 0) {
+        this._typoDirty = true;
+        return;
+      }
+      if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
+        this._commitStageTransform();
+      }
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
+      const zoomOnly = Boolean(
+        opts &&
+          typeof opts === 'object' &&
+          opts.zoomOnly &&
+          !this._typoDirty &&
+          this._lastTypographyWidth !== undefined &&
+          this._lastViewportWidth === vw
+      );
       this._lastTypographyWidth = this.camera.w;
       this._lastViewportWidth = vw;
       this._typoDirty = false;
@@ -6041,9 +6253,12 @@
       if (this.activePerson && this.grpJourney) {
         const svgRect =
           (this.dragState && this.dragState.rect) ||
+          (this.pinchState && this.pinchState.rect) ||
+          this._cameraViewportRect ||
           (typeof this.svg.getBoundingClientRect === 'function'
             ? this.svg.getBoundingClientRect()
             : null);
+        if (svgRect && svgRect.width) this._cameraViewportRect = svgRect;
         const rw = (svgRect && svgRect.width) || vw || 1000;
         const rh = (svgRect && svgRect.height) || rw * 0.7;
         const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
@@ -6100,50 +6315,88 @@
             shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
           }
         }
-        const placedRects = pts
-          .map((p) => p.n.querySelector('.jn-disc'))
-          .filter((el) => el && typeof el.getBoundingClientRect === 'function')
-          .map((el) => el.getBoundingClientRect())
-          .filter((r) => r.width > 0);
+        const placedRects = pts.map((p) => {
+          const isCur = p.n.classList.contains('is-current');
+          const rPx = (isCur ? 8.5 : 6.6) * pxPerLocal;
+          const cx = p.x * screenScale + p.ox * pxPerLocal;
+          const cy = p.y * screenScale + p.oy * pxPerLocal;
+          return {
+            left: cx - rPx,
+            right: cx + rPx,
+            top: cy - rPx,
+            bottom: cy + rPx,
+          };
+        });
         const candSlots = [
-          { anchor: 'middle', lx: '0', ly: '-12.2' },
-          { anchor: 'middle', lx: '0', ly: '19.8' },
-          { anchor: 'start', lx: '11.2', ly: '3.8' },
-          { anchor: 'end', lx: '-11.2', ly: '3.8' },
+          { idx: 0, anchor: 'middle', lx: '0', ly: '-12.2', nx: 0, ny: -12.2 },
+          { idx: 1, anchor: 'middle', lx: '0', ly: '19.8', nx: 0, ny: 19.8 },
+          { idx: 2, anchor: 'start', lx: '11.2', ly: '3.8', nx: 11.2, ny: 3.8 },
+          { idx: 3, anchor: 'end', lx: '-11.2', ly: '3.8', nx: -11.2, ny: 3.8 },
         ];
         const labelOrder = pts
           .slice()
           .sort((a, b) => (a.n.classList.contains('is-current') ? -1 : b.n.classList.contains('is-current') ? 1 : 0));
         for (const p of labelOrder) {
           const lbl = p.n.querySelector('.jn-label');
-          if (!lbl || typeof lbl.getBoundingClientRect !== 'function') continue;
+          if (!lbl) continue;
           const isCur = p.n.classList.contains('is-current');
-          lbl.style.display = '';
+          const fontPx = isCur ? 11.5 : 10.2;
+          const textW = (this._estimateLocalTextWidth(lbl.textContent, fontPx, 0) + 3.6) * pxPerLocal;
+          const textH = (fontPx * 1.18 + 2.4) * pxPerLocal;
+          const cx = p.x * screenScale + p.ox * pxPerLocal;
+          const cy = p.y * screenScale + p.oy * pxPerLocal;
+          const prevIdx =
+            zoomOnly && lbl.dataset.slotIdx !== undefined ? Number(lbl.dataset.slotIdx) : -1;
+          const orderedSlots =
+            prevIdx >= 0 && candSlots[prevIdx]
+              ? [candSlots[prevIdx], ...candSlots.filter((s0) => s0.idx !== prevIdx)]
+              : candSlots;
+          let chosenSlot = null;
           let chosenRect = null;
-          for (const sl of candSlots) {
-            lbl.setAttribute('text-anchor', sl.anchor);
-            lbl.setAttribute('x', sl.lx);
-            lbl.setAttribute('y', sl.ly);
-            const r = lbl.getBoundingClientRect();
-            if (!r.width) {
-              chosenRect = r;
-              break;
-            }
+          for (const sl of orderedSlots) {
+            const bx = cx + sl.nx * pxPerLocal;
+            const by = cy + sl.ny * pxPerLocal;
+            const left =
+              sl.anchor === 'start' ? bx : sl.anchor === 'end' ? bx - textW : bx - textW * 0.5;
+            const r = {
+              left,
+              right: left + textW,
+              top: by - textH * 0.82,
+              bottom: by + textH * 0.18,
+            };
             const hit = placedRects.some(
               (o) => r.right > o.left && r.left < o.right && r.bottom > o.top && r.top < o.bottom
             );
             if (!hit) {
+              chosenSlot = sl;
               chosenRect = r;
               break;
             }
           }
-          if (chosenRect) {
+          if (!chosenSlot && isCur) {
+            chosenSlot = orderedSlots[0];
+            const bx = cx + chosenSlot.nx * pxPerLocal;
+            const by = cy + chosenSlot.ny * pxPerLocal;
+            const left =
+              chosenSlot.anchor === 'start'
+                ? bx
+                : chosenSlot.anchor === 'end'
+                  ? bx - textW
+                  : bx - textW * 0.5;
+            chosenRect = {
+              left,
+              right: left + textW,
+              top: by - textH * 0.82,
+              bottom: by + textH * 0.18,
+            };
+          }
+          if (chosenSlot) {
+            lbl.style.display = '';
+            lbl.dataset.slotIdx = String(chosenSlot.idx);
+            lbl.setAttribute('text-anchor', chosenSlot.anchor);
+            lbl.setAttribute('x', chosenSlot.lx);
+            lbl.setAttribute('y', chosenSlot.ly);
             placedRects.push(chosenRect);
-          } else if (isCur) {
-            lbl.setAttribute('text-anchor', 'middle');
-            lbl.setAttribute('x', '0');
-            lbl.setAttribute('y', '-12.2');
-            placedRects.push(lbl.getBoundingClientRect());
           } else {
             lbl.style.display = 'none';
           }
@@ -6362,19 +6615,35 @@
         };
 
         let best = null;
+        let bestDir = null;
         let bestOverlap = Infinity;
-        for (let i = 0; i < dirs.length; i++) {
-          const spec = dirSpec(dirs[i]);
-          const ov = overlapArea(spec.box) + i * 0.01;
-          if (ov < bestOverlap) {
-            bestOverlap = ov;
-            best = spec;
-            if (ov < 0.05) break;
+        if (zoomOnly && node.dataset.chosenDir) {
+          bestDir = node.dataset.chosenDir;
+          best = dirSpec(bestDir);
+          bestOverlap = allowCull ? overlapArea(best.box) : 0;
+        } else {
+          for (let i = 0; i < dirs.length; i++) {
+            const spec = dirSpec(dirs[i]);
+            const ov = overlapArea(spec.box) + i * 0.01 * s * s;
+            if (ov < bestOverlap) {
+              bestOverlap = ov;
+              best = spec;
+              bestDir = dirs[i];
+              if (ov < 0.05 * s * s) break;
+            }
           }
+          if (bestDir) node.dataset.chosenDir = bestDir;
         }
 
-        const boxArea = Math.max(1, (best.box.x2 - best.box.x1) * (best.box.y2 - best.box.y1));
-        if (allowCull && bestOverlap > boxArea * maxOverlapRatio) {
+        const boxArea = Math.max(1e-4, (best.box.x2 - best.box.x1) * (best.box.y2 - best.box.y1));
+        const wasCrowded = node.classList.contains('is-label-crowded');
+        const effMaxRatio =
+          zoomOnly && wasCrowded
+            ? maxOverlapRatio * 0.72
+            : zoomOnly
+              ? maxOverlapRatio * 1.35
+              : maxOverlapRatio;
+        if (allowCull && bestOverlap > boxArea * effMaxRatio) {
           node.classList.add('is-label-crowded');
           return;
         }
@@ -6487,6 +6756,22 @@
         const hw = (this._estimateLocalTextWidth(node.textContent, cssFontPx, ls) * 0.5 + 5) * s;
         const hh = (cssFontPx * 0.56 + 3.5) * s;
 
+        if (zoomOnly && node.dataset.placed === '1') {
+          const lockedX = parseFloat(node.getAttribute('data-x'));
+          const lockedY = parseFloat(node.getAttribute('data-y'));
+          node.setAttribute(
+            'transform',
+            `translate(${lockedX.toFixed(1)},${lockedY.toFixed(1)}) scale(${invScale})`
+          );
+          occupied.push({
+            x1: lockedX - hw,
+            y1: lockedY - hh,
+            x2: lockedX + hw,
+            y2: lockedY + hh,
+          });
+          continue;
+        }
+
         let bestX = baseX;
         let bestY = baseY;
         let bestBox = { x1: baseX - hw, y1: baseY - hh, x2: baseX + hw, y2: baseY + hh };
@@ -6509,35 +6794,36 @@
             }
           }
           const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005;
+          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005 * s * s;
           if (ov < bestScore) {
             bestScore = ov;
             bestX = cx;
             bestY = cy;
             bestBox = candBox;
-            if (ov < 0.05) break;
+            if (ov < 0.05 * s * s) break;
           }
         }
 
         // Fallback for very small or narrow polities (e.g., 周, 韩) where strict interior bounds
         // prevented dodging a co-located capital city label
-        if (bestScore > 1.0) {
+        if (bestScore > 1.0 * s * s) {
           for (let i = 1; i < Math.min(18, polOffsets.length); i++) {
             const [ox, oy] = polOffsets[i];
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
             const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002;
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
             if (ov < bestScore) {
               bestScore = ov;
               bestX = cx;
               bestY = cy;
               bestBox = candBox;
-              if (ov < 0.1) break;
+              if (ov < 0.1 * s * s) break;
             }
           }
         }
 
+        node.dataset.placed = '1';
         node.setAttribute('data-x', bestX.toFixed(1));
         node.setAttribute('data-y', bestY.toFixed(1));
         node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
@@ -6580,6 +6866,22 @@
           }
           const hw = (this._estimateLocalTextWidth(node.textContent, 8.0, 0.8) * 0.5 + 4) * s;
           const hh = 5.8 * s;
+          if (zoomOnly && node.dataset.placed === '1') {
+            const lockedX = parseFloat(node.getAttribute('data-x'));
+            const lockedY = parseFloat(node.getAttribute('data-y'));
+            node.classList.remove('is-crowded-hidden');
+            node.setAttribute(
+              'transform',
+              `translate(${lockedX.toFixed(1)},${lockedY.toFixed(1)}) scale(${invScale})`
+            );
+            occupied.push({
+              x1: lockedX - hw,
+              y1: lockedY - hh,
+              x2: lockedX + hw,
+              y2: lockedY + hh,
+            });
+            return;
+          }
           let bestX = baseX;
           let bestY = baseY;
           let bestBox = { x1: baseX - hw, y1: baseY - hh, x2: baseX + hw, y2: baseY + hh };
@@ -6589,15 +6891,16 @@
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
             const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0004;
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0004 * s * s;
             if (ov < bestOv) {
               bestOv = ov;
               bestX = cx;
               bestY = cy;
               bestBox = candBox;
-              if (ov < 0.05) break;
+              if (ov < 0.05 * s * s) break;
             }
           }
+          node.dataset.placed = '1';
           node.classList.remove('is-crowded-hidden');
           node.setAttribute('data-x', bestX.toFixed(1));
           node.setAttribute('data-y', bestY.toFixed(1));
@@ -6628,6 +6931,21 @@
         }
         const hw = (this._estimateLocalTextWidth(node.textContent, 8.2, 1.4) * 0.5 + 3) * s;
         const hh = 5.2 * s;
+        if (zoomOnly && node.dataset.placed === '1') {
+          const cx = parseFloat(node.getAttribute('data-x'));
+          const cy = parseFloat(node.getAttribute('data-y'));
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          const wasHidden = node.classList.contains('is-crowded-hidden');
+          const ratio = wasHidden ? 0.05 : 0.12;
+          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * ratio) {
+            node.classList.remove('is-crowded-hidden');
+            occupied.push(candBox);
+          } else {
+            node.classList.add('is-crowded-hidden');
+          }
+          return;
+        }
         let placed = false;
         for (let i = 0; i < corrOffsets.length; i++) {
           const [ox, oy] = corrOffsets[i];
@@ -6635,6 +6953,7 @@
           const cy = baseY + oy * s;
           const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
           if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.08) {
+            node.dataset.placed = '1';
             node.setAttribute('data-x', cx.toFixed(1));
             node.setAttribute('data-y', cy.toFixed(1));
             node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
@@ -6645,6 +6964,7 @@
           }
         }
         if (!placed) {
+          node.dataset.placed = '0';
           node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
           node.classList.add('is-crowded-hidden');
         }
@@ -6692,6 +7012,21 @@
         }
         const hw = (this._estimateLocalTextWidth(node.textContent, 8.8, 1.8) * 0.5 + 3) * s;
         const hh = 6.2 * s;
+        if (zoomOnly && node.dataset.placed === '1') {
+          const cx = parseFloat(node.getAttribute('data-x'));
+          const cy = parseFloat(node.getAttribute('data-y'));
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          const wasHidden = node.classList.contains('is-crowded-hidden');
+          const ratio = wasHidden ? 0.035 : 0.085;
+          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * ratio) {
+            node.classList.remove('is-crowded-hidden');
+            occupied.push(candBox);
+          } else {
+            node.classList.add('is-crowded-hidden');
+          }
+          return;
+        }
         let placed = false;
         for (let i = 0; i < regOffsets.length; i++) {
           const [ox, oy] = regOffsets[i];
@@ -6703,6 +7038,7 @@
           }
           const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
           if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
+            node.dataset.placed = '1';
             node.setAttribute('data-x', cx.toFixed(1));
             node.setAttribute('data-y', cy.toFixed(1));
             node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
@@ -6713,6 +7049,7 @@
           }
         }
         if (!placed) {
+          node.dataset.placed = '0';
           node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
           node.classList.add('is-crowded-hidden');
         }
@@ -6748,6 +7085,13 @@
 
     _animateCameraTo(targetCam) {
       this._cameraTarget = targetCam;
+      if (
+        !this._cameraViewportRect &&
+        this.svg &&
+        typeof this.svg.getBoundingClientRect === 'function'
+      ) {
+        this._cameraViewportRect = this._getUnscaledSvgRect();
+      }
       const from = { ...this.camera };
       const t0 = performance.now();
       const duration = 650;
@@ -6764,12 +7108,13 @@
           h,
           zoom: 1000 / w,
         };
-        this._applyCamera();
         if (k < 1) {
           this.flyRaf = requestAnimationFrame(step);
+          this._applyCamera(false);
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          this._applyCamera(true);
         }
       };
       this.flyRaf = requestAnimationFrame(step);
@@ -6967,7 +7312,12 @@
     }
 
     _clientToSvgPoint(clientX, clientY) {
-      const rect = this.svg.getBoundingClientRect();
+      const rect =
+        (this.dragState && this.dragState.rect) ||
+        (this.pinchState && this.pinchState.rect) ||
+        this._cameraViewportRect ||
+        this._getUnscaledSvgRect();
+      if (rect && rect.width) this._cameraViewportRect = rect;
       const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       const padX = (rect.width - this.camera.w * scale) * 0.5;
       const padY = (rect.height - this.camera.h * scale) * 0.5;
@@ -8969,7 +9319,7 @@
             startY: e.clientY,
             camX: this.camera.x,
             camY: this.camera.y,
-            rect: this.svg.getBoundingClientRect(),
+            rect: this._cameraViewportRect || this._getUnscaledSvgRect(),
           };
           if (e.pointerType === 'touch' && !this.challenge) {
             const downX = e.clientX;
@@ -9013,7 +9363,7 @@
             camY: this.camera.y,
             camW: this.camera.w,
             camH: this.camera.h,
-            rect: this.svg.getBoundingClientRect(),
+            rect: this._cameraViewportRect || this._getUnscaledSvgRect(),
           };
         }
       });
@@ -9483,7 +9833,11 @@
       // The chronicle pane can resize the map without a window resize.
       if (typeof ResizeObserver !== 'undefined') {
         this._cameraResizeObserver = new ResizeObserver(() => {
+          if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
+            this._commitStageTransform();
+          }
           this._cameraViewportRect = null;
+          this._scrubberRailWidth = 0;
         });
         this._cameraResizeObserver.observe(this.svg);
       }
