@@ -3494,6 +3494,7 @@ function main() {
     const jiankang = [118.801, 32.061];
     const jingkou = [119.451, 32.201];
     const dongjinSnaps = [
+      's_dongjin_317',
       's_dongjin_a0',
       's_dongjin_a',
       's_dongjin_a2',
@@ -3521,18 +3522,96 @@ function main() {
       );
     }
 
+    // 317-318 CE (s_dongjin_317) must keep unified 汉赵 before the 319 CE split into 前赵 and 后赵 (s_dongjin_a0)
+    assert(
+      snapshots.s_dongjin_317.polities.some((p) => p.title === '汉赵') &&
+        !snapshots.s_dongjin_317.polities.some((p) => p.title === '前赵') &&
+        !snapshots.s_dongjin_317.polities.some((p) => p.title === '后赵'),
+      's_dongjin_317 (317-318 CE) must show unified 汉赵 before the 319 CE split into 前赵 and 后赵'
+    );
+    assert(
+      snapshots.s_dongjin_a0.polities.some((p) => p.title === '前赵') &&
+        snapshots.s_dongjin_a0.polities.some((p) => p.title === '后赵') &&
+        !snapshots.s_dongjin_a0.polities.some((p) => p.title === '汉赵'),
+      's_dongjin_a0 (319-328 CE) must split 汉赵 into 前赵 and 后赵'
+    );
+
+    // Shengle ([111.821, 40.381]) inside Dai (代) across 317-376 CE (s_dongjin_317..s_dongjin_b2)
+    const shengle = [111.821, 40.381];
+    for (const sk of ['s_dongjin_317', 's_dongjin_a0', 's_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
+      const daiPol = snapshots[sk].polities.find((p) => p.title === '代');
+      assert(daiPol && daiPol.shape, `${sk} must include 代 polity`);
+      assert(
+        pointInShape(shengle[0], shengle[1], daiPol.shape),
+        `${sk}: Shengle ([111.821, 40.381]) must be inside 代`
+      );
+    }
+
+    // 350 CE (s_dongjin_350) & 351 CE (s_dongjin_351) must show 冉魏, while 351 CE adds 前秦 in Guanzhong and keeps 前燕 in Liaodong
+    assert(
+      snapshots.s_dongjin_350.polities.some((p) => p.title === '冉魏') &&
+        !snapshots.s_dongjin_350.polities.some((p) => p.title === '后赵'),
+      's_dongjin_350 (350-351 CE) must replace 后赵 with 冉魏'
+    );
+    assert(
+      snapshots.s_dongjin_351.polities.some((p) => p.title === '前秦') &&
+        snapshots.s_dongjin_351.polities.some((p) => p.title === '冉魏') &&
+        pointInShape(114.391, 36.101, snapshots.s_dongjin_351.polities.find((p) => p.title === '冉魏').shape),
+      's_dongjin_351 (351-352 CE) must show both 前秦 and 冉魏 (covering Ye)'
+    );
+
+    // 385-417 CE must split 后秦 and 西秦 into two separate polities (never merged as "后秦 · 西秦")
+    const fuhan = [103.211, 35.601];
+    const changan = [108.941, 34.341];
+    for (const sk of ['s_dongjin_385', 's_dongjin_d0', 's_dongjin_397', 's_dongjin_d1', 's_dongjin_399', 's_dongjin_404', 's_dongjin_d', 's_dongjin_410', 's_dongjin_e']) {
+      const hq = snapshots[sk].polities.find((p) => p.title === '后秦');
+      const xq = snapshots[sk].polities.find((p) => p.title === '西秦');
+      assert(hq && xq, `${sk} must have separate 后秦 and 西秦 polities`);
+      assert(pointInShape(changan[0], changan[1], hq.shape), `${sk}: Chang'an must be inside 后秦`);
+      assert(pointInShape(fuhan[0], fuhan[1], xq.shape), `${sk}: Fuhan must be inside 西秦`);
+    }
+
+    // 397-413 CE must include 南凉 (covering Ledu [102.4, 36.48]) alongside 北凉
+    const ledu = [102.4, 36.48];
+    for (const sk of ['s_dongjin_397', 's_dongjin_d1', 's_dongjin_399', 's_dongjin_404', 's_dongjin_d', 's_dongjin_410']) {
+      const nl = snapshots[sk].polities.find((p) => p.title === '南凉');
+      const bl = snapshots[sk].polities.find((p) => p.title === '北凉');
+      assert(nl && bl, `${sk} must include both 南凉 and 北凉 polities`);
+      assert(pointInShape(ledu[0], ledu[1], nl.shape), `${sk}: Ledu ([102.4, 36.48]) must be inside 南凉`);
+    }
+
+    // 404-413 CE (s_dongjin_404, s_dongjin_d, s_dongjin_410) must include 谯蜀 in Ba-Shu (covering Chengdu [104.071, 30.571])
+    for (const sk of ['s_dongjin_404', 's_dongjin_d', 's_dongjin_410']) {
+      const qs = snapshots[sk].polities.find((p) => p.title === '谯蜀');
+      assert(qs && qs.shape, `${sk} must include 谯蜀 polity`);
+      assert(pointInShape(104.071, 30.571, qs.shape), `${sk}: Chengdu ([104.071, 30.571]) must be inside 谯蜀`);
+    }
+    assert(
+      !snapshots.s_dongjin_e.polities.some((p) => p.title === '谯蜀') &&
+        pointInShape(104.071, 30.571, snapshots.s_dongjin_e.polities.find((p) => p.title === '东晋').shape),
+      's_dongjin_e (413-417 CE) must show 谯蜀 recovered by 东晋'
+    );
+
     // Guzang ([102.641, 37.931]) inside Liangzhou polities (Former/Later/Northern Liang or unified Former Qin)
     const guzang = [102.641, 37.931];
     const guzangCases = [
+      ['s_dongjin_317', '前凉'],
       ['s_dongjin_a0', '前凉'],
       ['s_dongjin_a', '前凉'],
       ['s_dongjin_a2', '前凉'],
+      ['s_dongjin_350', '前凉'],
+      ['s_dongjin_351', '前凉'],
       ['s_dongjin_b', '前凉'],
       ['s_dongjin_b2', '前凉'],
-      ['s_dongjin_c', '前秦（苻坚一统北方）'],
+      ['s_dongjin_c', '前秦'],
+      ['s_dongjin_385', '后凉'],
       ['s_dongjin_d0', '后凉'],
+      ['s_dongjin_397', '北凉'],
       ['s_dongjin_d1', '北凉'],
+      ['s_dongjin_399', '北凉'],
+      ['s_dongjin_404', '北凉'],
       ['s_dongjin_d', '北凉'],
+      ['s_dongjin_410', '北凉'],
       ['s_dongjin_e', '北凉'],
       ['s_dongjin_f', '北凉'],
     ];
@@ -3598,6 +3677,7 @@ function main() {
     const jingkou = [119.451, 32.201];
     const nanbeiSnaps = [
       ['s_nanbei_0', '宋', '魏'],
+      ['s_nanbei_427', '宋', '魏'],
       ['s_nanbei_0b', '宋', '魏'],
       ['s_nanbei_0c', '宋', '魏'],
       ['s_nanbei_a', '宋', '魏'],
@@ -3612,6 +3692,31 @@ function main() {
       ['s_nanbei_e2', '陈', '北齐'],
       ['s_nanbei_f', '陈', '北周'],
     ];
+
+    // Seamless 420 CE transition between s_dongjin_f (417-420) and s_nanbei_0 (420-426):
+    // 东晋 and 宋 must have identical shapes, and 北魏, 西秦, 胡夏, 北燕, 北凉 must match 1-to-1
+    assert.strictEqual(
+      JSON.stringify(snapshots.s_dongjin_f.polities.find((p) => p.title === '东晋').shape),
+      JSON.stringify(snapshots.s_nanbei_0.polities.find((p) => p.title === '宋').shape),
+      's_dongjin_f (东晋) and s_nanbei_0 (宋) must share identical polygon geometry at 420 CE'
+    );
+    for (const sharedTitle of ['北魏', '西秦', '胡夏', '北燕', '北凉']) {
+      const pDj = snapshots.s_dongjin_f.polities.find((p) => p.title === sharedTitle);
+      const pNb = snapshots.s_nanbei_0.polities.find((p) => p.title === sharedTitle);
+      assert(pDj && pNb, `Both s_dongjin_f and s_nanbei_0 must include ${sharedTitle} at 420 CE`);
+      assert.strictEqual(
+        JSON.stringify(pDj.shape),
+        JSON.stringify(pNb.shape),
+        `s_dongjin_f and s_nanbei_0 must share identical polygon geometry for ${sharedTitle} at 420 CE`
+      );
+    }
+    // 427-430 CE (s_nanbei_427) must place Tongwancheng ([108.871, 37.991]) inside 北魏 while keeping 胡夏 and 西秦 until 431 CE
+    assert(
+      pointInShape(108.871, 37.991, snapshots.s_nanbei_427.polities.find((p) => p.title === '北魏').shape) &&
+        snapshots.s_nanbei_427.polities.some((p) => p.title === '胡夏') &&
+        snapshots.s_nanbei_427.polities.some((p) => p.title === '西秦'),
+      's_nanbei_427 (427-430 CE) must place Tongwancheng inside 北魏 while keeping 胡夏 (in Longdong) and 西秦 until 431 CE'
+    );
 
     for (const [sk, southTitle, northTitle] of nanbeiSnaps) {
       const snap = snapshots[sk];
