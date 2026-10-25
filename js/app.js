@@ -456,7 +456,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025f').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025g').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -480,7 +480,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025f').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025g').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -6379,6 +6379,9 @@
           if (this.activePerson && this.grpJourney) {
             this._rescaleActivePersonPins(vw, s, true);
           }
+          if (this.challenge && this.grpChallenge) {
+            this._rescaleQuizChip(vw, s);
+          }
         }
         return;
       }
@@ -6411,6 +6414,9 @@
       // Keep active person numbered pins crisp & non-overlapping in real screen pixels at every zoom level
       if (this.activePerson && this.grpJourney) {
         this._rescaleActivePersonPins(vw, s, zoomOnly);
+      }
+      if (this.challenge && this.grpChallenge) {
+        this._rescaleQuizChip(vw, s);
       }
       if (this.grpRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
@@ -7561,8 +7567,17 @@
       return out;
     }
 
+    // A round climbs from household names to deep cuts: 4 entry questions
+    // (capitals, passes, cities with a city chronicle), 4 places with recorded
+    // events, then 2 prefectures known only by a remark. A short tier is topped
+    // up from the next one so the round always has 10 questions.
     _buildChallengeDeck(preferCurrentDynasty = false) {
-      const deck = [];
+      const ROUND = [4, 4, 2];
+      const famousCity = (coord) =>
+        HistoricalAtlasController.CITY_LORE.some(
+          (c) => Array.isArray(c.coord) && this.projector.greatCircleKm(c.coord, coord) < 20
+        );
+      const tiers = [[], [], []];
       for (const d of this.dynasties) {
         if (d.key === 'prc') continue;
         for (const s of d.settlements || []) {
@@ -7571,10 +7586,8 @@
           const hasEvents =
             this._collectPlaceEventsForDynasty(d, s.coord[0], s.coord[1], { s, km: 0 }).length > 0;
           if (!s.isCapital && !s.remark && !hasEvents) continue;
-          const weight = (s.ancient !== s.modern ? 3 : 1) + (hasEvents ? 1 : 0);
-          for (let k = 0; k < weight; k++) {
-            deck.push({ dynasty: d, settlement: s });
-          }
+          const tier = s.isCapital || famousCity(s.coord) ? 0 : hasEvents ? 1 : 2;
+          tiers[tier].push({ dynasty: d, settlement: s, tier });
         }
       }
       for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
@@ -7583,51 +7596,58 @@
         const dIdx = this._findDynastyIndex(focusY);
         const d = this.dynasties[dIdx] || this.dynasties[0];
         if (!d || d.key === 'prc') continue;
-        const passSettlement = {
-          ancient: p.ancientZh,
-          ancientEn: p.ancientEn,
-          modern: p.modernZh,
-          modernEn: p.modernEn,
-          coord: p.coord,
-          appear: p.appear,
-          vanish: p.vanish,
-          focusYear: focusY,
-          isPass: true,
-          passKey: p.key,
-          remark: `${p.rangeZh} · ${p.chokepointZh}`,
-          remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
-        };
-        for (let k = 0; k < 5; k++) {
-          deck.push({ dynasty: d, settlement: passSettlement });
-        }
+        tiers[0].push({
+          dynasty: d,
+          tier: 0,
+          settlement: {
+            ancient: p.ancientZh,
+            ancientEn: p.ancientEn,
+            modern: p.modernZh,
+            modernEn: p.modernEn,
+            coord: p.coord,
+            appear: p.appear,
+            vanish: p.vanish,
+            focusYear: focusY,
+            isPass: true,
+            passKey: p.key,
+            remark: `${p.rangeZh} · ${p.chokepointZh}`,
+            remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
+          },
+        });
       }
       const chosen = [];
       const seen = new Set();
-      if (preferCurrentDynasty) {
-        const curDyn = this.dynasties[this.dynastyIdx];
-        if (curDyn && curDyn.key !== 'prc') {
-          const firstPick =
-            deck.find((c) => c.dynasty.key === curDyn.key && c.settlement.ancient === '武威') ||
-            deck.find((c) => c.dynasty.key === curDyn.key);
-          if (firstPick) {
-            seen.add(`${firstPick.dynasty.key}:${firstPick.settlement.ancient}`);
-            chosen.push(firstPick);
-          }
-        }
-      }
-      while (chosen.length < 10 && deck.length) {
-        const idx = Math.floor(Math.random() * deck.length);
-        const pick = deck.splice(idx, 1)[0];
+      const tryAdd = (pick) => {
         const uid = `${pick.dynasty.key}:${pick.settlement.ancient}`;
-        if (seen.has(uid)) continue;
+        if (seen.has(uid)) return false;
         const tooClose = chosen.some(
           (c) => this.projector.greatCircleKm(c.settlement.coord, pick.settlement.coord) < 35
         );
-        if (!tooClose) {
-          seen.add(uid);
-          chosen.push(pick);
+        if (tooClose) return false;
+        seen.add(uid);
+        chosen.push(pick);
+        return true;
+      };
+      if (preferCurrentDynasty) {
+        const curDyn = this.dynasties[this.dynastyIdx];
+        if (curDyn && curDyn.key !== 'prc') {
+          const all = tiers.flat();
+          const firstPick =
+            all.find((c) => c.dynasty.key === curDyn.key && c.settlement.ancient === '武威') ||
+            all.find((c) => c.dynasty.key === curDyn.key);
+          if (firstPick) tryAdd(firstPick);
         }
       }
+      let quota = 0;
+      ROUND.forEach((size, t) => {
+        quota += size;
+        for (let k = t; k < tiers.length && chosen.length < quota; k++) {
+          const src = tiers[k];
+          while (chosen.length < quota && src.length) {
+            tryAdd(src.splice(Math.floor(Math.random() * src.length), 1)[0]);
+          }
+        }
+      });
       return chosen;
     }
 
@@ -7832,6 +7852,7 @@
       this.grpSettlements.classList.add('is-hidden');
       if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
       this._id('challenge-result').classList.add('is-hidden');
+      this._id('act-next-round').classList.add('is-hidden');
       this._renderChallengeQuestionText();
     }
 
@@ -7851,24 +7872,75 @@
       return g;
     }
 
+    // The action chip sits beside the guess where the eye and pointer already
+    // are; the banner holds only the question and post-reveal verdict.
+    _setQuizChip(label) {
+      if (!this.grpChallenge || typeof this.grpChallenge.querySelector !== 'function') return;
+      const mark = this.grpChallenge.querySelector('.quiz-mark');
+      if (!mark) return;
+      let chip = mark.querySelector('.quiz-chip');
+      if (!chip) {
+        chip = this._svgNode('g', { class: 'quiz-chip' }, mark);
+        this._svgNode('rect', { class: 'quiz-chip-bg', y: -9.5, height: 19, rx: 9.5 }, chip);
+        this._svgNode('text', { class: 'quiz-chip-text', y: 3.8 }, chip);
+      }
+      const text = chip.querySelector('text');
+      text.textContent = this.locale === 'en' ? label : this._zh(label);
+      const w =
+        (typeof text.getComputedTextLength === 'function'
+          ? text.getComputedTextLength()
+          : text.textContent.length * 11) + 18;
+      const q = this.challenge;
+      const gx = Number(mark.getAttribute('data-x'));
+      const gy = Number(mark.getAttribute('data-y'));
+      const edgeSvg =
+        this.camera && this.camera.w
+          ? 68 * (this.camera.w / Math.max(320, (typeof window !== 'undefined' && window.innerWidth) || 1000))
+          : 50;
+      let toLeft = Boolean(this.camera && gx > this.camera.x + this.camera.w - edgeSvg);
+      if (!toLeft && q && q.answered && q.deck[q.index]) {
+        const [ax, ay] = this.projector.toScreen(...q.deck[q.index].settlement.coord);
+        toLeft = Math.abs(ay - gy) < 18 && ax > gx - 12 && ax - gx < w + 20;
+      }
+      const x0 = toLeft ? -(w + 8) : 8;
+      chip.querySelector('rect').setAttribute('x', x0.toFixed(1));
+      chip.querySelector('rect').setAttribute('width', w.toFixed(1));
+      text.setAttribute('x', (x0 + 9).toFixed(1));
+    }
+
+    _rescaleQuizChip(vw, s) {
+      if (!this.grpChallenge || typeof this.grpChallenge.querySelector !== 'function') return;
+      const chip = this.grpChallenge.querySelector('.quiz-chip');
+      if (!chip) return;
+      const r =
+        (this.dragState && this.dragState.rect) ||
+        (this.pinchState && this.pinchState.rect) ||
+        this._cameraViewportRect ||
+        (typeof this.svg.getBoundingClientRect === 'function' ? this.svg.getBoundingClientRect() : null);
+      const rw = (r && r.width) || vw || 1000;
+      const rh = (r && r.height) || rw * 0.7;
+      const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
+      const k = 1 / Math.max(0.25, s * screenScale);
+      chip.setAttribute('transform', `scale(${k.toFixed(3)})`);
+    }
+
+    _quizChipAt(clientX, clientY) {
+      if (!this.grpChallenge || typeof this.grpChallenge.querySelector !== 'function') return false;
+      const bg = this.grpChallenge.querySelector('.quiz-chip-bg');
+      if (!bg || typeof bg.getBoundingClientRect !== 'function') return false;
+      const r = bg.getBoundingClientRect();
+      return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    }
+
     _previewLocatePin(svgX, svgY) {
       const q = this.challenge;
       if (!q || q.answered) return;
       q.pendingGuess = [svgX, svgY];
       this.grpChallenge.innerHTML = '';
       this._drawQuizMark(svgX, svgY, false);
+      this._setQuizChip(this.locale === 'en' ? 'Confirm ↵' : '确认 ↵');
       this._rescaleSvgTypography();
-
-      this._id('challenge-verdict').textContent =
-        this.locale === 'en'
-          ? 'Marked. Click elsewhere to move it; click it again or confirm below.'
-          : '已标记。点击他处可改，再点一次标记或点下方按钮确认。';
-      this._id('act-next-round').innerHTML =
-        this.locale === 'en'
-          ? `Confirm ${SVG_ICONS.arrowRight}`
-          : `确认位置 ${SVG_ICONS.arrowRight}`;
-      this._id('challenge-result').classList.remove('is-hidden');
-      if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-banner'));
+      if (this.locale === 'zh-tw') this._applyZhHantDom(this.grpChallenge);
     }
 
     _renderChallengeAnsweredVerdict() {
@@ -7908,10 +7980,15 @@
           ? `${comment} Off by <b>${km} km</b> (+${pts} pts) · Answer: ${escHtml(ansAncEn)} (${escHtml(ansModEn)})`
           : `${comment} 偏差 <b>${km} 公里</b>（+${pts} 分）· 答案：${escHtml(cur.settlement.ancient)}（今${escHtml(cur.settlement.modern)}）`;
 
-      this._id('act-next-round').innerHTML =
+      this._id('act-next-round').classList.add('is-hidden');
+      this._setQuizChip(
         q.index + 1 >= q.deck.length
-          ? this.uiStr('quiz_see_result', '查看成绩')
-          : `${this.locale === 'en' ? 'Next' : '下一题'} ${SVG_ICONS.arrowRight}`;
+          ? `${this.uiStr('quiz_see_result', '查看成绩')} ›`
+          : this.locale === 'en'
+            ? 'Next ›'
+            : '下一题 ›'
+      );
+      this._rescaleSvgTypography();
       this._id('challenge-result').classList.remove('is-hidden');
       if (this.locale === 'zh-tw') {
         this._applyZhHantDom(this._id('challenge-banner'));
@@ -8004,8 +8081,6 @@
         this.grpChallenge
       );
 
-      this._drawQuizMark(svgX, svgY, true);
-
       const aPin = this._svgNode(
         'g',
         { 'data-x': ax.toFixed(1), 'data-y': ay.toFixed(1) },
@@ -8033,6 +8108,8 @@
         this.locale === 'en'
           ? `${ansAncEn} (${ansModEn})`
           : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
+
+      this._drawQuizMark(svgX, svgY, true);
       this._rescaleSvgTypography();
       this._renderChallengeAnsweredVerdict();
     }
@@ -8040,6 +8117,7 @@
     _finishChallenge() {
       const q = this.challenge;
       q.finished = true;
+      this.grpChallenge.innerHTML = '';
       const total = q.deck.length * 100;
       const rank =
         q.score >= 850
@@ -8060,6 +8138,7 @@
         '可再战一局，或关闭回到自由浏览。'
       );
       const nextBtn = this._id('act-next-round');
+      nextBtn.classList.remove('is-hidden');
       nextBtn.textContent = this.uiStr('quiz_again', '再来一局');
       nextBtn.onclick = () => {
         nextBtn.onclick = null;
@@ -9889,7 +9968,10 @@
         const wasPan = this.didPan;
         this.dragState = null;
         this.svg.classList.remove('is-panning');
-        if (!wasPan && this.challenge && !this.challenge.answered) {
+        if (!wasPan && this.challenge && this._quizChipAt(e.clientX, e.clientY)) {
+          const nextBtn = this._id('act-next-round');
+          if (nextBtn) nextBtn.click();
+        } else if (!wasPan && this.challenge && !this.challenge.answered) {
           if (this.lastPinchTime && Date.now() - this.lastPinchTime < 350) {
             return;
           }

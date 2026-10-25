@@ -2211,6 +2211,29 @@ h2 {
   stroke-width: 1.4;
 }
 
+.quiz-chip {
+  cursor: pointer;
+}
+
+.quiz-chip-bg {
+  fill: rgba(250, 246, 237, 0.96);
+  stroke: rgba(181, 69, 47, 0.45);
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 2px rgba(43, 38, 34, 0.18));
+}
+
+.quiz-chip-text {
+  font-family: var(--serif-stack);
+  font-size: 11.5px;
+  font-weight: 700;
+  fill: var(--vermilion);
+}
+
+.quiz-chip:hover .quiz-chip-bg {
+  fill: #fffaf0;
+  stroke: var(--vermilion);
+}
+
 .answer-ink {
   fill: none;
   stroke: #2b2118;
