@@ -455,7 +455,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025b').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -479,7 +479,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025b').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -4983,8 +4983,8 @@
         const capInfo =
           capDynasties > 0
             ? this.locale === 'en'
-              ? ` · Capital in ${capDynasties} dynasties`
-              : ` · ${capDynasties} 朝都城`
+              ? ` · Capital in ${capDynasties} mapped era${capDynasties > 1 ? 's' : ''}`
+              : ` · 图中 ${capDynasties} 朝建都`
             : '';
         const coordText = `${lng.toFixed(2)}°E, ${lat.toFixed(2)}°N${capInfo}${
           totalEvents === 0

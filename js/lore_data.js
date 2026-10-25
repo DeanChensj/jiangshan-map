@@ -11676,10 +11676,48 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Peshawar, Pakistan",
           "titleZh": "越雪山礼大佛·入天竺求法",
           "titleEn": "Crossing the Hindu Kush into Gandhara & India",
-          "descZh": "翻越大雪山（兴都库什山）、瞻礼梵衍那（巴米扬）石佛，入北天竺健驮逻故地；由此深游五印十余载，于那烂陀寺师从戒贤论师，并在曲女城十八国王大会立“真唯识量”。",
-          "descEn": "Crossing the Hindu Kush past Bamiyan into Gandhara, beginning over a decade across India culminating at Nalanda Monastery and the Grand Assembly of Kanauj.",
+          "descZh": "翻越大雪山（兴都库什山）、瞻礼梵衍那（巴米扬）石佛，入北天竺健驮逻故地；此后经迦湿弥罗驻锡两年研习经论，由此深游五印十余载。",
+          "descEn": "Crossing the Hindu Kush past Bamiyan into Gandhara, then studying two years in Kashmir before journeying deeper into India for over a decade.",
           "quoteZh": "《大唐西域记》：“自古大圣贤，多生此国，作论诸师，亦多出此。”",
           "quoteEn": "Great Tang Records: \"Since antiquity, great sages and treatise-masters have arisen in this land of Gandhara.\""
+        },
+        {
+          "year": 631,
+          "eraZh": "贞观五年",
+          "coord": [
+            85.44,
+            25.14
+          ],
+          "labelPos": "bottom",
+          "ancientZh": "那烂陀寺",
+          "modernZh": "印度比哈尔邦那烂陀",
+          "ancientEn": "Nalanda Monastery",
+          "modernEn": "Nalanda, Bihar, India",
+          "titleZh": "那烂陀寺·师从戒贤学《瑜伽》",
+          "titleEn": "Studying the Yogacara under Silabhadra at Nalanda",
+          "descZh": "抵中天竺摩揭陀国那烂陀寺，礼百余岁的住持戒贤论师为师，从受《瑜伽师地论》前后五年——正是当年立誓西行所求之法；其间兼习《顺正理》《中论》《百论》等诸部经论。",
+          "descEn": "At Nalanda in Magadha, Xuanzang became the disciple of the aged abbot Silabhadra and studied the Yogacarabhumi-sastra for five years, the very text he had left Chang'an to seek.",
+          "quoteZh": "《大唐西域记》：“僧徒数千，并俊才高学也，德重当时，声驰异域者，数百余矣。”",
+          "quoteEn": "Great Tang Records: \"Its monks number several thousand, all of outstanding talent and learning; several hundred are honored in their time and renowned in foreign lands.\""
+        },
+        {
+          "year": 642,
+          "eraZh": "贞观十六年",
+          "coord": [
+            79.92,
+            27.05
+          ],
+          "labelPos": "top",
+          "ancientZh": "曲女城",
+          "modernZh": "印度北方邦卡瑙季",
+          "ancientEn": "Kanyakubja (Kannauj)",
+          "modernEn": "Kannauj, Uttar Pradesh, India",
+          "titleZh": "曲女城大会·十八日无人能难",
+          "titleEn": "The Grand Debate at Kannauj",
+          "descZh": "戒日王于曲女城设无遮大会，五印十八国王与僧俗数千人与会。玄奘为论主，悬所著论于会场门外，十八日间无一人能难，大乘尊为“大乘天”，小乘尊为“解脱天”。",
+          "descEn": "King Harsha convened a great assembly at Kannauj attended by eighteen kings and thousands of scholars. Xuanzang posted his thesis at the gate; for eighteen days no one could refute it.",
+          "quoteZh": "《大慈恩寺三藏法师传》：“若其间有一字无理能难破者，请斩首相谢。”",
+          "quoteEn": "Biography of the Tripitaka Master: \"Should anyone find a single word herein unreasoned and refute it, I offer my head in apology.\""
         },
         {
           "year": 644,
@@ -11690,8 +11728,20 @@ window.ATLAS_LORE_DATA = {
           ],
           "via": [
             [
-              74.8,
-              36.9
+              72.25,
+              33.9
+            ],
+            [
+              68.86,
+              36.73
+            ],
+            [
+              73.5,
+              37.0
+            ],
+            [
+              75.23,
+              37.77
             ]
           ],
           "labelPos": "bottom",
@@ -12960,8 +13010,8 @@ window.ATLAS_LORE_DATA = {
         112.45,
         34.62
       ],
-      "tagZh": "天下之中 · 九朝都会",
-      "tagEn": "Center of the Realm · Nine-Dynasty Capital",
+      "tagZh": "天下之中 · 河洛都会",
+      "tagEn": "Center of the Realm · Heart of Heluo",
       "descZh": "居伊洛盆地腹心，北靠邙山、南望伊阙，控河洛水陆枢轴。自东周、东汉、曹魏、西晋、北魏至隋唐五代屡为帝都或东都，素有“河洛都会、天下之中”之称。",
       "descEn": "Set in the Yi–Luo basin between Mangshan and the Longmen Gorge, Luoyang stood at the geographic center of ancient China, serving as capital or eastern capital for Eastern Zhou, Eastern Han, Cao Wei, Western Jin, Northern Wei, Sui, and Tang."
     },
@@ -12982,8 +13032,8 @@ window.ATLAS_LORE_DATA = {
         116.4,
         39.9
       ],
-      "tagZh": "幽燕锁钥 · 五朝帝都",
-      "tagEn": "Yan–Taihang Pivot · Five-Dynasty Capital",
+      "tagZh": "幽燕锁钥 · 金元明清帝都",
+      "tagEn": "Yan–Taihang Pivot · Capital of Jin, Yuan, Ming & Qing",
       "descZh": "背倚燕山、西屏太行、南俯华北平原，扼居庸与古北诸口，自古为中原与塞北交汇锁钥。自燕蓟故都、唐幽州藩镇，演进为辽南京、金中都、元大都及明清与现代中国首都。",
       "descEn": "Backed by the Yanshan and Taihang ranges at the northern apex of the North China Plain, Beijing evolved from the Warring States capital of Yan and Tang Youzhou into the imperial capital of Liao, Jin, Yuan, Ming, Qing, and modern China."
     },
