@@ -2965,6 +2965,13 @@ function main() {
         ctrl.activePerson.events.some((ev) => Boolean(ev.quoteZh && ev.quoteEn)),
         `Expected Person Chronicle "${j.key}" to preserve bilingual quotes from HISTORICAL_JOURNEYS`
       );
+      const missingStops = j.stops
+        .map((st, sIdx) => (ctrl.activePerson.events.some((ev) => ev.journeyStopIdx === sIdx) ? null : `${st.year} ${st.ancientZh}`))
+        .filter(Boolean);
+      assert(
+        !missingStops.length,
+        `Expected Person Chronicle "${j.key}" to keep every curated journey stop, missing: ${missingStops.join('; ')}`
+      );
       const visFrac = ctrl._getPersonVisibleTopFrac();
       assert(
         visFrac >= 0.5 && visFrac <= 0.65,

@@ -456,7 +456,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025e').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025f').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -480,7 +480,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025e').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025f').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -3446,8 +3446,13 @@
           return (prev.year === ev.year && km < 65) || (dy <= 1 && km < 25);
         });
         if (dup) {
-          if (ev.isMapChange) dup.isMapChange = true;
-          if (ev.milestone && !dup.milestone) dup.milestone = ev.milestone;
+          // A curated journey stop outranks a nearby milestone or landmark that
+          // merely mentions the person, whichever of the two sorted first.
+          const keep = ev.src === 'J' ? ev : dup;
+          const drop = keep === ev ? dup : ev;
+          if (drop.isMapChange) keep.isMapChange = true;
+          if (drop.milestone && !keep.milestone) keep.milestone = drop.milestone;
+          if (keep === ev) deduped[deduped.indexOf(dup)] = ev;
           continue;
         }
         deduped.push(ev);
