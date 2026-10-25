@@ -344,9 +344,9 @@
         this.applyLocale();
 
         this.jumpToYear(this.dynasties[0].focusYear);
+        this._bootDone = true;
         this._restoreFromQuery();
       });
-      this._bootDone = true;
       this._maybeShowStartGuide();
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
@@ -1043,6 +1043,44 @@
       const [startY, , baseNum = 1] = match;
       const num = yr - startY + baseNum;
       return this._zh(this._formatSpanEraZh(match, num));
+    }
+
+    _effectiveRenderedLocale() {
+      if (
+        this.locale === 'en' &&
+        (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
+      ) {
+        return 'en-pending';
+      }
+      return this.locale;
+    }
+
+    _syncUrlLangParam() {
+      if (
+        typeof window === 'undefined' ||
+        typeof location === 'undefined' ||
+        !window.history ||
+        typeof window.history.replaceState !== 'function'
+      ) {
+        return;
+      }
+      try {
+        const params = new URLSearchParams(location.search);
+        if (this.locale === 'en') {
+          params.set('lang', 'en');
+        } else if (this.locale === 'zh-tw') {
+          params.set('lang', 'zh-tw');
+        } else {
+          params.delete('lang');
+        }
+        const qs = params.toString();
+        const nextSearch = qs ? `?${qs}` : '';
+        const nextUrl = `${location.pathname || '/'}${nextSearch}${location.hash || ''}`;
+        const curUrl = `${location.pathname || '/'}${location.search || ''}${location.hash || ''}`;
+        if (nextUrl !== curUrl) {
+          window.history.replaceState(window.history.state || null, '', nextUrl);
+        }
+      } catch (_) {}
     }
 
     applyLocale() {
@@ -2310,6 +2348,7 @@
         }
         return;
       }
+      const renderedLocale = this._effectiveRenderedLocale();
       if (
         this.activeMilestone &&
         !this.activeMilestone.isAuto &&
@@ -2317,7 +2356,11 @@
         this.activeMilestone.year === this.year &&
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
-        this._positionMilestoneBalloon();
+        if (this.activeMilestone.locale !== renderedLocale) {
+          this.openMilestoneBalloon(dynasty, this.activeMilestone.milestone, { isAuto: false });
+        } else {
+          this._positionMilestoneBalloon();
+        }
         return;
       }
       const activeIdx = this._activeMilestoneIndex(dynasty);
@@ -2337,7 +2380,7 @@
         am &&
         am.isAuto &&
         am.milestone === m &&
-        am.locale === this.locale &&
+        am.locale === renderedLocale &&
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
         this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
@@ -2399,7 +2442,7 @@
         idx: mIdx,
         year: this.year,
         isAuto,
-        locale: this.locale,
+        locale: this._effectiveRenderedLocale(),
       };
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
         n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
@@ -9614,6 +9657,7 @@
         actLocHant.addEventListener('click', () => {
           const target = actLocHant.dataset.targetLocale;
           this.locale = target || (this.locale === 'zh' ? 'zh-tw' : 'zh');
+          this._syncUrlLangParam();
           this.applyLocale();
         });
       }
@@ -9621,6 +9665,7 @@
         const btn = this._id('act-locale');
         const target = btn && btn.dataset && btn.dataset.targetLocale;
         this.locale = target || (this.locale === 'en' ? 'zh' : 'en');
+        this._syncUrlLangParam();
         this.applyLocale();
       });
 
@@ -11611,6 +11656,14 @@
         if (q.has('year')) {
           const yList = this._parseYearList(q.get('year'));
           if (yList.length) this.jumpToYear(yList[0]);
+        }
+        if (q.has('trace')) {
+          const parts = (q.get('trace') || '').split(',').map(Number);
+          if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+            afterFullSnapshots(() => {
+              this.openGenealogyAt(parts[0], parts[1]);
+            }, 80);
+          }
         }
         if (q.has('zoom') || q.has('center')) {
           const z = Math.max(1, Math.min(8, Number(q.get('zoom')) || this.camera.zoom));
