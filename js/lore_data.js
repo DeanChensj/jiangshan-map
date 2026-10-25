@@ -11096,7 +11096,7 @@ window.ATLAS_LORE_DATA = {
             37.93
           ],
           "labelPos": "top",
-          "ancientZh": "姑臧·河西",
+          "ancientZh": "姑臧（河西）",
           "modernZh": "甘肃武威",
           "ancientEn": "Guzang (Hexi)",
           "modernEn": "Wuwei, Gansu",
@@ -11121,7 +11121,7 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "焉耆·北道",
+          "ancientZh": "焉耆",
           "modernZh": "新疆焉耆",
           "ancientEn": "Yanqi (Karasahr)",
           "modernEn": "Yanqi, Xinjiang",
@@ -11146,7 +11146,7 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "大宛·贰师城",
+          "ancientZh": "大宛贰师城",
           "modernZh": "费尔干纳盆地",
           "ancientEn": "Dayuan (Fergana)",
           "modernEn": "Fergana Valley",
@@ -11184,7 +11184,7 @@ window.ATLAS_LORE_DATA = {
             36.76
           ],
           "labelPos": "bottom",
-          "ancientZh": "大月氏·蓝氏城",
+          "ancientZh": "大月氏蓝氏城",
           "modernZh": "阿富汗巴尔赫",
           "ancientEn": "Great Yuezhi & Daxia",
           "modernEn": "Balkh, Afghanistan",
@@ -11209,7 +11209,7 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "于阗·南道",
+          "ancientZh": "于阗",
           "modernZh": "新疆和田",
           "ancientEn": "Khotan (Yutian)",
           "modernEn": "Hotan, Xinjiang",
@@ -11283,7 +11283,7 @@ window.ATLAS_LORE_DATA = {
         },
         {
           "year": 208,
-          "eraZh": "建安十三年",
+          "eraZh": "建安十三年秋",
           "coord": [
             115.98,
             29.71
@@ -11295,16 +11295,35 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "柴桑·赤壁",
-          "modernZh": "江西九江 / 湖北赤壁",
-          "ancientEn": "Chaisang & Red Cliffs",
-          "modernEn": "Jiujiang, Jiangxi / Chibi, Hubei",
-          "titleZh": "奉使柴桑·联吴破曹",
-          "titleEn": "Diplomatic Mission to Chaisang & Victory at Red Cliffs",
-          "descZh": "曹操南下荆州、刘备败走当阳长坂，诸葛亮临危请命顺江东下柴桑说孙权，剖析曹军远来疲弊、北人不习水战之弊，促成孙刘同盟；旋于赤壁大破曹军，奠定三分天下之基。",
-          "descEn": "As Cao Cao swept south through Jing Province, Zhuge Liang sailed down the Yangtze to Chaisang to persuade Sun Quan into an alliance; the allied forces burned Cao Cao’s fleet at the Red Cliffs, forging the tripartite balance.",
+          "ancientZh": "柴桑",
+          "modernZh": "江西九江",
+          "ancientEn": "Chaisang",
+          "modernEn": "Jiujiang, Jiangxi",
+          "titleZh": "奉使柴桑·舌战联吴",
+          "titleEn": "Diplomatic Mission to Chaisang — Forging the Wu Alliance",
+          "descZh": "曹操南下荆州、刘备败走当阳长坂，诸葛亮临危请命顺江东下柴桑说孙权，剖析曹军远来疲弊、北人不习水战之弊，促成孙刘同盟共抗曹军。",
+          "descEn": "As Cao Cao swept south through Jing Province, Zhuge Liang sailed down the Yangtze to Chaisang to persuade Sun Quan into an alliance against Cao Cao.",
           "quoteZh": "《三国志·诸葛亮传》：“权大悦，即遣周瑜、程普、鲁肃等水军三万，随亮诣先主，并力拒曹公。”",
           "quoteEn": "Records of the Three Kingdoms: \"Sun Quan was greatly pleased and immediately dispatched Zhou Yu, Cheng Pu, and Lu Su with thirty thousand naval troops to join Liu Bei against Cao Cao.\""
+        },
+        {
+          "year": 208,
+          "eraZh": "建安十三年冬",
+          "coord": [
+            113.94,
+            29.85
+          ],
+          "labelPos": "top",
+          "ancientZh": "赤壁",
+          "modernZh": "湖北赤壁",
+          "ancientEn": "Red Cliffs (Chibi)",
+          "modernEn": "Chibi, Hubei",
+          "titleZh": "赤壁鏖兵·三分奠基",
+          "titleEn": "Allied Victory at the Red Cliffs",
+          "descZh": "孙刘联军溯江西上，与曹军决战于赤壁乌林。周瑜、黄盖借东南风施火攻焚曹军连环战船，刘备、诸葛亮水陆并进追击至南郡，奠定三分天下之基。",
+          "descEn": "The allied forces of Sun Quan and Liu Bei burned Cao Cao’s chained fleet at the Red Cliffs, shattering northern hegemony and forging the tripartite balance.",
+          "quoteZh": "《三国志·诸葛亮传》：“曹公败于赤壁，引军归邺。先主遂收江南，以亮为军师中郎将。”",
+          "quoteEn": "Records of the Three Kingdoms: \"Defeated at the Red Cliffs, Cao Cao withdrew to Ye; Liu Bei secured southern Jing Province and appointed Zhuge Liang General of the Household.\""
         },
         {
           "year": 214,
@@ -11343,7 +11362,7 @@ window.ATLAS_LORE_DATA = {
             30.67
           ],
           "labelPos": "top",
-          "ancientZh": "成都·武担山",
+          "ancientZh": "成都（武担山）",
           "modernZh": "四川成都",
           "ancientEn": "Chengdu (Capital of Shu Han)",
           "modernEn": "Chengdu, Sichuan",
@@ -11441,8 +11460,8 @@ window.ATLAS_LORE_DATA = {
           "year": 228,
           "eraZh": "建兴六年",
           "coord": [
-            105.72,
-            34.58
+            105.32,
+            34.33
           ],
           "via": [
             [
@@ -11451,10 +11470,10 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "祁山·天水",
-          "modernZh": "甘肃礼县 / 天水",
-          "ancientEn": "Mount Qi & Tianshui",
-          "modernEn": "Lixian / Tianshui, Gansu",
+          "ancientZh": "祁山",
+          "modernZh": "甘肃礼县",
+          "ancientEn": "Mount Qi (Qishan)",
+          "modernEn": "Lixian, Gansu",
           "titleZh": "一出祁山·收姜维失街亭",
           "titleEn": "First Expedition from Mount Qi — Recruiting Jiang Wei",
           "descZh": "声东击西由箕谷设疑兵、亲率大军攻祁山，戎阵整齐，南安、天水、安定三郡叛魏应亮，关中震响，收天水俊杰姜维；惜马谡违亮节度于街亭依山不下城，为张郃绝水道所破，亮拔西县千余家还汉中并自贬三等。",
@@ -11470,10 +11489,10 @@ window.ATLAS_LORE_DATA = {
             34.22
           ],
           "labelPos": "bottom",
-          "ancientZh": "卤城·木门道",
-          "modernZh": "甘肃礼县 / 天水秦州",
-          "ancientEn": "Lucheng & Mumen Trail",
-          "modernEn": "Lixian / Tianshui, Gansu",
+          "ancientZh": "木门道（卤城）",
+          "modernZh": "甘肃天水西南",
+          "ancientEn": "Mumen Trail (Lucheng)",
+          "modernEn": "Tianshui SW, Gansu",
           "titleZh": "木牛流马·木门道射杀张郃",
           "titleEn": "Fourth Expedition — Victory at Lucheng & Mumen Ambush",
           "descZh": "始以木牛运粮四出祁山，于卤城大破司马懿主力，获甲首三千级、玄铠五千领；夏六月粮尽退军，司马懿遣名将张郃追至木门道，亮乘高布伏万弩齐发，射杀张郃。",
@@ -11569,9 +11588,9 @@ window.ATLAS_LORE_DATA = {
             40.52
           ],
           "labelPos": "bottom",
-          "ancientZh": "瓜州·玉门关",
+          "ancientZh": "瓜州（玉门关）",
           "modernZh": "甘肃瓜州",
-          "ancientEn": "Guazhou & Jade Gate",
+          "ancientEn": "Guazhou (Jade Gate)",
           "modernEn": "Guazhou, Gansu",
           "titleZh": "夜渡葫芦河·闯莫贺延碛",
           "titleEn": "Crossing the Gobi of Moheyan",
@@ -11854,28 +11873,49 @@ window.ATLAS_LORE_DATA = {
           "year": 724,
           "eraZh": "开元十二年",
           "coord": [
-            111.45,
-            30.69
+            106.55,
+            29.56
           ],
           "via": [
             [
               104.07,
               30.67
-            ],
-            [
-              106.55,
-              29.56
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "渝州·荆门",
-          "modernZh": "重庆 / 湖北宜都",
-          "ancientEn": "Yuzhou & Jingmen Gorge",
-          "modernEn": "Chongqing / Yidu, Hubei",
+          "ancientZh": "渝州",
+          "modernZh": "重庆",
+          "ancientEn": "Yuzhou",
+          "modernEn": "Chongqing",
+          "titleZh": "夜发清溪·思君下渝州",
+          "titleEn": "Sailing Down the Min & Yangtze Rivers to Yuzhou",
+          "descZh": "年二十四的李白自蜀中启程远游，登峨眉山辞别蜀中山水，乘舟自清溪顺平羌江（青衣江）、岷江东下渝州，写下清丽绝伦的《峨眉山月歌》。",
+          "descEn": "At twenty-four, Li Bai set out from Mount Emei and sailed down the Min and Yangtze rivers to Yuzhou (Chongqing), composing the Moon Over Mount Emei.",
+          "quoteZh": "李白《峨眉山月歌》：“峨眉山月半轮秋，影入平羌江水流。夜发清溪向三峡，思君不见下渝州。”",
+          "quoteEn": "Li Bai, Moon Over Mount Emei: \"A half-wheel of autumn moon above Mount Emei casts its reflection into the flowing Pingqiang River; setting out by night from Qingxi toward the Three Gorges, longing for you unseen as I sail down to Yuzhou.\""
+        },
+        {
+          "year": 725,
+          "eraZh": "开元十三年",
+          "coord": [
+            111.45,
+            30.69
+          ],
+          "via": [
+            [
+              109.57,
+              31.04
+            ]
+          ],
+          "labelPos": "bottom",
+          "ancientZh": "荆门（宜都）",
+          "modernZh": "湖北宜都",
+          "ancientEn": "Jingmen (Yidu)",
+          "modernEn": "Yidu, Hubei",
           "titleZh": "仗剑去国·辞亲出三峡",
           "titleEn": "Leaving Shu with Sword in Hand Through the Three Gorges",
-          "descZh": "年二十四的李白怀济世远志“仗剑去国，辞亲远游”，自成都乘舟顺岷江下渝州，穿巫峡、出荆门，初见江汉平原天地壮阔，写下《峨眉山月歌》与《渡荆门送别》。",
-          "descEn": "At twenty-four, Li Bai bade farewell to Sichuan and sailed down the Three Gorges past Jingmen into the vast Jianghan Plain, beginning his lifelong travels across the Tang Empire.",
+          "descZh": "怀济世远志“仗剑去国，辞亲远游”，自渝州穿瞿塘、巫峡、西陵三峡，出荆门山初见江汉平原天地壮阔，写下《渡荆门送别》。",
+          "descEn": "Sailing through the Three Gorges past Jingmen Mountain into the vast Jianghan Plain, Li Bai began his grand travels across the Tang Empire.",
           "quoteZh": "李白《渡荆门送别》：“山随平野尽，江入大荒流。月下飞天镜，云生结海楼。”",
           "quoteEn": "Li Bai, Farewell at Jingmen: \"Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions.\""
         },
@@ -11901,10 +11941,10 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "金陵·扬州",
-          "modernZh": "江苏南京 / 扬州",
-          "ancientEn": "Jinling & Yangzhou",
-          "modernEn": "Nanjing / Yangzhou, Jiangsu",
+          "ancientZh": "扬州（广陵）",
+          "modernZh": "江苏扬州",
+          "ancientEn": "Yangzhou (Guangling)",
+          "modernEn": "Yangzhou, Jiangsu",
           "titleZh": "漫游吴越·散金三十万",
           "titleEn": "Grand Tour of Wu-Yue & Spending 300,000 Cash in Yangzhou",
           "descZh": "顺江东下，登庐山望瀑布、游金陵怀古，转赴繁华甲天下的淮南都会扬州与吴越诸郡，豪爽济困，“不逾一年，散金三十余万”，写就《望庐山瀑布》《静夜思》等千古绝唱。",
@@ -11930,10 +11970,10 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "安陆·江夏",
-          "modernZh": "湖北安陆 / 武汉",
-          "ancientEn": "Anlu & Jiangxia (Yellow Crane Tower)",
-          "modernEn": "Anlu / Wuhan, Hubei",
+          "ancientZh": "安陆",
+          "modernZh": "湖北安陆",
+          "ancientEn": "Anlu",
+          "modernEn": "Anlu, Hubei",
           "titleZh": "酒隐安陆·登临黄鹤楼",
           "titleEn": "Ten Years in Anlu & Farewell at Yellow Crane Tower",
           "descZh": "西归荆楚，赘于安陆故相许圉师孙女家，隐居白兆山桃花岩所谓“酒隐安陆，蹉跎十年”；其间频游江夏与襄阳，结交孟浩然，于黄鹤楼赋诗送其东下广陵。",
@@ -11968,7 +12008,7 @@ window.ATLAS_LORE_DATA = {
         },
         {
           "year": 744,
-          "eraZh": "天宝三载",
+          "eraZh": "天宝三载春",
           "coord": [
             112.45,
             34.62
@@ -11980,16 +12020,41 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "洛阳·梁宋",
-          "modernZh": "河南洛阳 / 商丘开封",
-          "ancientEn": "Luoyang & Liang-Song",
-          "modernEn": "Luoyang / Kaifeng, Henan",
+          "ancientZh": "洛阳",
+          "modernZh": "河南洛阳",
+          "ancientEn": "Luoyang",
+          "modernEn": "Luoyang, Henan",
           "titleZh": "赐金放还·洛阳逢杜甫",
           "titleEn": "Leaving Court & Historic Meeting with Du Fu in Luoyang",
-          "descZh": "因傲岸不羁遭权贵谗毁，玄宗“赐金放还”。李白东出长安至东都洛阳，与年三十三的杜甫初遇定交，复邀高适同游梁宋（开封、商丘），登吹台、猎孟诸，淋漓尽致展现盛唐双子星风采。",
-          "descEn": "Granted gold to leave court in 744 CE, Li Bai traveled east to Luoyang where he met the younger Du Fu—a meeting hailed as the twin peaks of Tang poetry—and roamed the Liang-Song plains with Gao Shi.",
+          "descZh": "因傲岸不羁遭权贵谗毁，玄宗“赐金放还”。李白东出长安至东都洛阳，与年三十三的杜甫初遇定交，中国诗史双子星于此风云际会。",
+          "descEn": "Granted gold to leave court in 744 CE, Li Bai traveled east to Luoyang where he met the younger Du Fu—a historic meeting hailed as the twin peaks of Tang poetry.",
           "quoteZh": "杜甫《寄李十二白二十韵》：“乞归优诏许，遇我宿心亲。醉舞梁园夜，行歌泗水春。”",
           "quoteEn": "Du Fu, Twenty Rhymes Sent to Li Bai: \"Your plea to retire was granted by gracious edict; meeting me, our kindred hearts grew close—dancing drunk in Liang Garden by night, singing along the Si River in spring.\""
+        },
+        {
+          "year": 744,
+          "eraZh": "天宝三载秋",
+          "coord": [
+            115.65,
+            34.44
+          ],
+          "via": [
+            [
+              114.35,
+              34.79
+            ]
+          ],
+          "labelPos": "bottom",
+          "ancientZh": "梁宋（睢阳）",
+          "modernZh": "河南商丘",
+          "ancientEn": "Liang-Song (Suiyang)",
+          "modernEn": "Shangqiu, Henan",
+          "titleZh": "梁园豪游·偕杜甫高适猎孟诸",
+          "titleEn": "Roaming Liang-Song with Du Fu & Gao Shi",
+          "descZh": "秋与杜甫、高适同游梁宋（汴州开封、宋州商丘），登梁王吹台怀古、纵猎孟诸泽，饮酒赋诗，在睢阳梁园挥毫题壁作《梁园吟》。",
+          "descEn": "In autumn 744 CE, Li Bai, Du Fu, and Gao Shi roamed the Liang-Song plains around Kaifeng and Shangqiu, ascending the ancient Liang terrace and hunting on the Mengzhu marshes.",
+          "quoteZh": "李白《梁园吟》：“我浮黄河去京阙，挂席欲进波连山。天长水阔厌远涉，访古始及平台间。”",
+          "quoteEn": "Li Bai, Ballad of Liang Garden: \"Floating down the Yellow River away from the palace towers, I hoisted sail across mountain-high waves until reaching the ancient terrace of Liang.\""
         },
         {
           "year": 745,
@@ -11997,12 +12062,6 @@ window.ATLAS_LORE_DATA = {
           "coord": [
             116.59,
             35.41
-          ],
-          "via": [
-            [
-              114.35,
-              34.79
-            ]
           ],
           "labelPos": "top",
           "ancientZh": "齐鲁（兖州任城）",
@@ -12206,14 +12265,39 @@ window.ATLAS_LORE_DATA = {
             34.26
           ],
           "labelPos": "top",
-          "ancientZh": "徐州·湖州",
+          "ancientZh": "徐州",
           "modernZh": "江苏徐州",
-          "ancientEn": "Xuzhou & Huzhou",
+          "ancientEn": "Xuzhou",
           "modernEn": "Xuzhou, Jiangsu",
-          "titleZh": "徐州抗洪·乌台诗案",
-          "titleEn": "Flood Defense at Xuzhou & the Crow Terrace Case",
-          "descZh": "知徐州时黄河决口迫城，苏轼布衣草履率禁军筑堤死守保住全城；元丰二年调知湖州，旋因诗文遭御史台弹劾逮赴汴京诏狱，史称“乌台诗案”。",
-          "descEn": "After saving Xuzhou from Yellow River floods, Su Shi was arrested in 1079 over alleged satire in his poems and imprisoned in the Imperial Censorate (\"Crow Terrace Case\").",
+          "titleZh": "知徐州·抗洪筑黄楼",
+          "titleEn": "Governor of Xuzhou — Holding the Yellow River Dykes",
+          "descZh": "知徐州时黄河决口于澶州曹村，洪峰直逼徐州城下。苏轼布衣草履庐于城上，亲率禁军与民夫筑长堤死守七十余日保住全城，水退后于东门筑黄楼以镇水患。",
+          "descEn": "When Yellow River floodwaters besieged Xuzhou in 1077, Su Shi slept on the city wall in hemp sandals and led soldiers and citizens to reinforce the dykes, later building the Yellow Tower to commemorate the city's deliverance.",
+          "quoteZh": "苏轼《答范淳甫》：“吾在徐州，与民同患难，水退而筑黄楼以镇之。”",
+          "quoteEn": "Su Shi, Letter to Fan Chunfu: \"In Xuzhou I shared the perils of flood with the people; when the waters receded, we built the Yellow Tower above the eastern gate.\""
+        },
+        {
+          "year": 1079,
+          "eraZh": "元丰二年",
+          "coord": [
+            120.09,
+            30.89
+          ],
+          "via": [
+            [
+              119.45,
+              32.2
+            ]
+          ],
+          "labelPos": "bottom",
+          "ancientZh": "湖州",
+          "modernZh": "浙江湖州",
+          "ancientEn": "Huzhou",
+          "modernEn": "Huzhou, Zhejiang",
+          "titleZh": "移知湖州·乌台诗案",
+          "titleEn": "Transfer to Huzhou & the Crow Terrace Poetry Trial",
+          "descZh": "元丰二年春自徐州移知湖州，上《湖州谢上表》因“知其愚不适时，难以追陪新进”等语遭御史台李定、舒亶等摘句弹劾“讪谤新法”，七月于湖州州衙被皇甫遵逮捕押赴汴京御史台诏狱，史称“乌台诗案”。",
+          "descEn": "Transferred from Xuzhou to Huzhou in spring 1079, Su Shi was impeached by Censorate officials over alleged satire in his Huzhou Memorial of Thanks, arrested at the Huzhou prefectural yamen, and escorted to the Imperial Censorate prison in Kaifeng (\"Crow Terrace Case\").",
           "quoteZh": "苏轼《狱中寄子由》：“是处青山可埋骨，他年夜雨独伤神。与君世世为兄弟，更结来生未了因。”",
           "quoteEn": "Su Shi, From Prison to Ziyou: \"Anywhere the green hills may bury my bones; in future years you will grieve alone in the night rain.\""
         },

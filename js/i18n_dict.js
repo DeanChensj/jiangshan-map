@@ -6796,6 +6796,25 @@ window.EN_LOCALE = {
     "384 — 385 · 慕容垂建后燕、姚苌建后秦：淝水战后东晋收复巴蜀荆襄，北方再度分裂": "384–385 · Founding of Later Yan & Later Qin After Fei River: Eastern Jin Recovers Ba-Shu & Jing-Xiang as North Fragments",
     "420 — 427 · 刘裕代晋建宋：南朝刘宋立国，北方北魏、胡夏、西秦、北燕、北凉并立": "420–427 · Liu Yu Founds Liu Song: Southern Dynasty Song Alongside Northern Wei, Hu Xia, Western Qin, Northern Yan & Northern Liang",
     "427 — 431 · 北魏攻克统万城并取关中河南：胡夏退保陇东，与北魏、刘宋、西秦、北燕、北凉并立": "427–431 · Northern Wei Captures Tongwancheng, Guanzhong & Henan: Hu Xia Retreats to Longdong Alongside Western Qin, Northern Yan & Northern Liang",
-    "431 — 436 · 西秦与胡夏相继败亡：北魏尽取关中陇右，与刘宋、北燕、北凉并立": "431–436 · Fall of Western Qin & Hu Xia: Northern Wei Secures Guanzhong & Longyou Alongside Liu Song, Northern Yan & Northern Liang"
+    "431 — 436 · 西秦与胡夏相继败亡：北魏尽取关中陇右，与刘宋、北燕、北凉并立": "431–436 · Fall of Western Qin & Hu Xia: Northern Wei Secures Guanzhong & Longyou Alongside Liu Song, Northern Yan & Northern Liang",
+    "商邑": "Shangyi (Shangluo)",
+    "狄道": "Didao (Lintao)",
+    "湖县": "Huxian (Lingbao)",
+    "马陵": "Maling (Daming)",
+    "溆浦": "Xupu (Hunan)",
+    "鸿门": "Hongmen (Lintong)",
+    "玉门关": "Yumen Pass",
+    "阳平关": "Yangping Pass",
+    "大利城": "Dalicheng (Horinger)",
+    "辽东": "Liaodong",
+    "定襄": "Dingxiang",
+    "凤翔": "Fengxiang",
+    "思明州（厦门）": "Siming Zhou (Xiamen)",
+    "思明州": "Siming Zhou (Xiamen)",
+    "文家市": "Wenjiashi (Liuyang)",
+    "喜峰口": "Xifengkou Pass",
+    "京师广渠门": "Guangqumen, Beijing",
+    "郾城": "Yancheng (Luohe)",
+    "金田": "Jintian (Guiping)"
   }
 };

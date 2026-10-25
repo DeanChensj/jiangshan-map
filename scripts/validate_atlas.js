@@ -5513,6 +5513,127 @@ function main() {
         'Expected zoomOnly direction/position lock in _rescaleSvgTypography to prevent label flipping during zoom'
       );
     }
+
+    // CUJ 39: Quick Search Anti-Fake-Person, City-vs-Era Ranking, Quiz Clue Integrity & Person Chronicle Site Disentangling
+    {
+      for (const nonPersonQ of [
+        '安史之乱',
+        '靖康',
+        '黄巾起义',
+        '八王之乱',
+        '鸦片战争',
+        '科举',
+        '丝绸之路',
+        '都护府',
+        '突厥',
+        '吐蕃',
+        '契丹',
+        '女真',
+        '红巾军',
+      ]) {
+        assert.strictEqual(
+          ctrl._resolvePersonProfile(nonPersonQ),
+          null,
+          `_resolvePersonProfile("${nonPersonQ}") must not fabricate a fake person profile`
+        );
+        const qHits = ctrl._queryQuickSearch(nonPersonQ);
+        assert(
+          qHits.length > 0 && !qHits.some((h) => h.kind === 'person'),
+          `Quick search for "${nonPersonQ}" must return historical events/regions/eras without fabricating a person hit`
+        );
+      }
+
+      for (const cityQ of [
+        '长安',
+        '建康',
+        '绍兴',
+        '大同',
+        '永嘉',
+        '建安',
+        '保定',
+        '咸宁',
+        '永昌',
+        '建宁',
+        '永安',
+        '兴元',
+        '大庆',
+      ]) {
+        const cHits = ctrl._queryQuickSearch(cityQ);
+        assert(
+          cHits.length > 0 && cHits[0].kind === 'city',
+          `Famous city "${cityQ}" must rank #1 as kind="city" above same-named era, got ${JSON.stringify(cHits[0])}`
+        );
+      }
+      for (const explicitEraQ of ['长安元年', '建康元年', '绍兴元年', '大同元年', '建安元年']) {
+        const eHits = ctrl._queryQuickSearch(explicitEraQ);
+        assert(
+          eHits.length > 0 && eHits[0].kind === 'era',
+          `Explicit era query "${explicitEraQ}" must rank #1 as kind="era", got ${JSON.stringify(eHits[0])}`
+        );
+      }
+
+      const clueChecks = [
+        [{ ancient: '宛（南阳）', modern: '南阳' }, '宛', '秦置南阳郡治', '秦置南阳郡治'],
+        [{ ancient: '晋阳', modern: '太原' }, '晋阳', '秦置太原郡治', '秦置太原郡治'],
+        [{ ancient: '南郑（汉中）', modern: '汉中' }, '南郑', '汉中王刘邦都此 / 东汉汉中郡治', '汉中王刘邦都此 / 东汉汉中郡治'],
+        [{ ancient: '临湘（长沙）', modern: '长沙' }, '临湘', '西汉长沙国都 / 东汉长沙郡治', '西汉长沙国都 / 东汉长沙郡治'],
+        [{ ancient: '穰', modern: '南阳·邓州' }, '穰', '南阳穰县', '南阳穰县'],
+        [{ ancient: '乐浪', modern: '平壤（朝鲜）' }, '乐浪', '朝鲜四郡之一', '朝鲜四郡之一'],
+        [{ ancient: '徐闻', modern: '湛江·雷州' }, '徐闻', '雷州半岛极南重镇，汉代海丝远航始发港', '雷州半岛极南重镇，汉代海丝远航始发港'],
+        [{ ancient: '彭城（徐州）', modern: '徐州' }, '彭城', '徐州治所', '徐州治所'],
+        [{ ancient: '番禺', modern: '广州' }, '番禺', '南海郡治所 / 广州治所', '南海郡治所 / 广州治所'],
+      ];
+      for (const [sMock, disp, rawText, expected] of clueChecks) {
+        assert.strictEqual(
+          ctrl._sanitizeChallengeClue(rawText, sMock, disp),
+          expected,
+          `Quiz clue sanitization for "${disp}" must preserve historical geography "${expected}"`
+        );
+      }
+
+      for (const j of loreData.HISTORICAL_JOURNEYS) {
+        for (const st of j.stops) {
+          assert(
+            !/[·→]/.test(ctrl._stripPromptParenthetical(st.ancientZh)),
+            `Journey "${j.key}" stop "${st.ancientZh}" must not stitch multiple cities onto one coordinate`
+          );
+        }
+      }
+      const sushiJ = loreData.HISTORICAL_JOURNEYS.find((j) => j.key === 'sushi');
+      assert(
+        sushiJ.stops.some((s) => s.ancientZh === '徐州' && s.year === 1077) &&
+          sushiJ.stops.some((s) => s.ancientZh === '湖州' && s.year === 1079),
+        'Su Shi journey must separate Xuzhou (1077) and Huzhou (1079) into distinct geocoded stops'
+      );
+
+      for (const p of loreData.PERSON_PROFILES) {
+        const pEvs = ctrl._collectPersonEvents(p);
+        for (const ev of pEvs) {
+          assert(
+            !/[·→]/.test(ctrl._stripPromptParenthetical(ev.siteZh)),
+            `Person "${p.zh}" event (${ev.year}) must resolve to a single site rather than compound "${ev.siteZh}"`
+          );
+        }
+      }
+      const lijingEvs = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('李靖'));
+      assert.strictEqual(lijingEvs[0].siteZh, '江陵', 'Li Jing 621 CE event must locate at 江陵 (not 虎牢 · 江陵)');
+      const sunbinEvs = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('孙膑'));
+      assert(
+        sunbinEvs.some((e) => e.year === -341 && e.siteZh === '马陵'),
+        'Sun Bin -341 BCE event must locate at 马陵 (not 马陵 · 安邑)'
+      );
+      const shangyangEvs = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('商鞅'));
+      assert(
+        shangyangEvs.some((e) => e.year === -341 && e.siteZh === '安邑') &&
+          shangyangEvs.some((e) => e.year === -338 && e.siteZh === '商邑'),
+        'Shang Yang -341 and -338 BCE events must locate at 安邑 and 商邑'
+      );
+      const jiangweiEvs = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('姜维'));
+      assert(
+        jiangweiEvs.some((e) => e.year === 255 && e.siteZh === '狄道' && Math.abs(e.coord[0] - 104.62) < 1),
+        'Jiang Wei 255 CE event must locate at 狄道 in Longxi (not 寿春)'
+      );
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
@@ -5521,7 +5642,7 @@ function main() {
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 38 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 39 E2E CUJs`);
 }
 
 main();

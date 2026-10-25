@@ -3286,36 +3286,45 @@
         );
       });
       if (partial) return partial;
-      // Dynamic zero-config fallback for any historical name in milestones / landmarks / era spans
-      let spanMin = -403;
-      let spanMax = 2026;
-      let courtesyZh = '';
-      let courtesyEn = '';
-      const matchingSpans = HistoricalAtlasController.CHINESE_ERA_SPANS.filter(
-        (sp) => sp[3] && (sp[3] === raw || sp[3].includes(raw))
-      );
-      if (matchingSpans.length) {
-        spanMin = matchingSpans[0][0] - 40;
-        const lastIdx = HistoricalAtlasController.CHINESE_ERA_SPANS.indexOf(
-          matchingSpans[matchingSpans.length - 1]
+      // Dynamic fallback strictly for historical monarchs in CHINESE_ERA_SPANS / REGIONAL_ERA_TRACKS
+      const allSpans = [
+        ...HistoricalAtlasController.CHINESE_ERA_SPANS,
+        ...HistoricalAtlasController.REGIONAL_ERA_TRACKS.flatMap((t) => t.spans || []),
+      ];
+      const matchingSpans = allSpans.filter((sp) => {
+        if (!sp[3]) return false;
+        const mZh = sp[3];
+        const shortM = mZh
+          .replace(/^(?:西|东|北|南|南朝|武周)/, '')
+          .replace(/^汉高帝$/, '汉高祖');
+        const mEn = (sp[4] || '').toLowerCase();
+        return (
+          mZh === raw ||
+          shortM === raw ||
+          (qLow.length >= 4 && mEn && (mEn === qLow || fold(mEn) === qFold))
         );
-        spanMax =
-          lastIdx + 1 < HistoricalAtlasController.CHINESE_ERA_SPANS.length
-            ? HistoricalAtlasController.CHINESE_ERA_SPANS[lastIdx + 1][0] + 2
-            : 1949;
-        courtesyZh = matchingSpans[0][3];
-        courtesyEn = matchingSpans[0][4] || '';
-      }
+      });
+      if (!matchingSpans.length) return null;
+      const spanMin = matchingSpans[0][0] - 40;
+      const lastSpan = matchingSpans[matchingSpans.length - 1];
+      const mainIdx = HistoricalAtlasController.CHINESE_ERA_SPANS.indexOf(lastSpan);
+      const spanMax =
+        mainIdx >= 0 && mainIdx + 1 < HistoricalAtlasController.CHINESE_ERA_SPANS.length
+          ? HistoricalAtlasController.CHINESE_ERA_SPANS[mainIdx + 1][0] + 2
+          : lastSpan[0] + 45;
+      const courtesyZh = matchingSpans[0][3];
+      const courtesyEn = matchingSpans[0][4] || '';
       const adhoc = {
         key: `adhoc_${raw}`,
         zh: raw,
         en: courtesyEn || this.trTerm(raw),
-        courtesyZh: courtesyZh && courtesyZh !== raw ? courtesyZh : '历史人物纪事',
-        courtesyEn: courtesyEn || 'Historical Figure',
+        courtesyZh: courtesyZh && courtesyZh !== raw ? courtesyZh : '历代帝王纪事',
+        courtesyEn: courtesyEn || 'Historical Monarch',
         dynastyKey: null,
         span: [spanMin, spanMax],
         aliases: [],
-        tokens: [raw],
+        tokens: Array.from(new Set([raw, courtesyZh].filter(Boolean))),
+        isMonarch: true,
       };
       return this._collectPersonEvents(adhoc).length ? adhoc : null;
     }
@@ -3331,6 +3340,177 @@
       }
       const fZh = (y) => (y <= 0 ? `前${-y}` : `${y}`);
       return `（${fZh(y0)}—${fZh(y1)}）`;
+    }
+
+    _tailorPersonEvent(profile, tokens, d, year, rawSite, rawSiteEn, rawCoord, textZh, textEn, src) {
+      let clausesZh = String(textZh || '').split(/；/);
+      let clausesEn = String(textEn || '').split(/;\s*/);
+      let matchedIdxs = [];
+      if (clausesZh.length > 1) {
+        matchedIdxs = clausesZh
+          .map((c, i) => (tokens.some((t) => c.includes(t)) ? i : -1))
+          .filter((i) => i >= 0);
+      } else if (src === 'M' && rawSite.includes('·') && textZh.includes('，')) {
+        const commaParts = textZh.split(/，/);
+        const mComma = commaParts
+          .map((c, i) => (tokens.some((t) => c.includes(t)) ? i : -1))
+          .filter((i) => i >= 0);
+        const siteParts = rawSite.split(/\s*·\s*/);
+        const otherMentionsOtherPersonOrSite = commaParts.some(
+          (c, idx) =>
+            !mComma.includes(idx) &&
+            /^(?:汉高祖刘邦|楚汉两军|常遇春|徐达|北元|张献忠)/.test(c.trim()) &&
+            siteParts.some((sp) =>
+              sp
+                .split(/[（）()]/)
+                .filter((part) => part.length >= 2)
+                .some((part) => c.includes(part))
+            )
+        );
+        if (mComma.length > 0 && mComma.length < commaParts.length && otherMentionsOtherPersonOrSite) {
+          clausesZh = commaParts;
+          clausesEn = String(textEn || '').split(/;\s*|,\s*(?=[A-Z])/);
+          matchedIdxs = mComma;
+        }
+      }
+      // Keep full milestone text if all clauses belong to this monarch (e.g. Yongle 1407/1409)
+      if (
+        matchedIdxs.length > 0 &&
+        matchedIdxs.length < clausesZh.length &&
+        !(profile.key === 'zhudi' && year === 1407)
+      ) {
+        textZh = matchedIdxs.map((i) => clausesZh[i].trim()).join('；');
+        if (clausesEn.length === clausesZh.length) {
+          const candEn = matchedIdxs.map((i) => clausesEn[i].trim()).join('; ');
+          const enTokens = String(profile.en || '')
+            .split(/\s+/)
+            .filter((w) => w.length >= 3 && !/^(?:Emperor|of|the)$/i.test(w));
+          if (!enTokens.length || enTokens.some((w) => candEn.includes(w))) {
+            textEn = candEn;
+          }
+        }
+      }
+
+      let chosenSite = String(rawSite || '').trim();
+      let chosenCoord = rawCoord;
+      if (/[·→]/.test(chosenSite)) {
+        const cleanRawSite = chosenSite.replace(/（[^）]*[·/][^）]*）$/, '');
+        const siteParts = cleanRawSite
+          .split(/\s*[·→]\s*/)
+          .map((s) => s.trim())
+          .filter((s) => Boolean(s) && s !== '全国各省');
+        if (siteParts.length === 1) {
+          chosenSite = siteParts[0];
+        } else if (siteParts.length > 1) {
+          const toCorePlace = (sp) => {
+            const b = this._stripPromptParenthetical(sp);
+            const stripped = b.replace(/(?:郡|州|府|城|关)$/, '');
+            return stripped.length >= 2 ? stripped : b;
+          };
+          const subClauses = textZh.split(/[；，]/);
+          const personSubClause = subClauses
+            .filter((c) => tokens.some((t) => c.includes(t)))
+            .join('，');
+          let hitPart = personSubClause
+            ? siteParts.find((sp) => {
+                const bare = toCorePlace(sp);
+                return (
+                  (bare.length >= 2 && personSubClause.includes(bare)) ||
+                  (sp.length >= 4 && personSubClause.includes(sp.slice(-3)))
+                );
+              })
+            : null;
+          if (!hitPart) {
+            hitPart = siteParts.find((sp) => {
+              const bare = toCorePlace(sp);
+              return bare.length >= 2 && textZh.includes(bare);
+            });
+          }
+          if (!hitPart && clausesZh.length === siteParts.length && matchedIdxs.length === 1) {
+            hitPart = siteParts[matchedIdxs[0]];
+          }
+          if (!hitPart && matchedIdxs.length > 0 && matchedIdxs.length < clausesZh.length) {
+            const unmatchedText = clausesZh.filter((_, i) => !matchedIdxs.includes(i)).join('；');
+            const remaining = siteParts.filter((sp) => {
+              const subTokens = sp
+                .split(/[（）()]/)
+                .map((p) => toCorePlace(p.trim()))
+                .filter((p) => p.length >= 2);
+              return !subTokens.some((st) => unmatchedText.includes(st));
+            });
+            if (remaining.length === 1) hitPart = remaining[0];
+          }
+          if (!hitPart) {
+            let bestDist = Infinity;
+            for (const sp of siteParts) {
+              const r = this.resolvePlace(this._stripPromptParenthetical(sp), year, d);
+              if (r && r.kind !== 'event_site') {
+                const dist = this.projector.greatCircleKm(rawCoord, [r.lng, r.lat]);
+                if (dist < bestDist) {
+                  bestDist = dist;
+                  hitPart = sp;
+                }
+              }
+            }
+            if (!hitPart) hitPart = siteParts[0];
+          }
+          chosenSite = hitPart;
+          const bareChosen = this._stripPromptParenthetical(chosenSite);
+          const fallbackCoords = {
+            狄道: [104.62, 35.58],
+            湖县: [110.68, 34.52],
+            马陵: [115.42, 36.12],
+            珠崖: [110.33, 20.03],
+            喜峰口: [118.33, 40.42],
+            京师广渠门: [116.43, 39.89],
+            虎门: [113.67, 22.82],
+          };
+          if (fallbackCoords[bareChosen]) {
+            chosenCoord = fallbackCoords[bareChosen];
+          } else {
+            const resolved = this.resolvePlace(bareChosen, year, d);
+            if (resolved && resolved.kind !== 'event' && resolved.kind !== 'event_site') {
+              chosenCoord = [resolved.lng, resolved.lat];
+            }
+          }
+        }
+      }
+      let splitEnCandidate = '';
+      if (chosenSite !== rawSite && rawSiteEn && !/[\u4e00-\u9fff]/.test(rawSiteEn)) {
+        const cleanRawSite = String(rawSite || '')
+          .trim()
+          .replace(/（[^）]*[·/][^）]*）$/, '');
+        const zhParts = cleanRawSite
+          .split(/\s*[·→]\s*/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const enParts = String(rawSiteEn)
+          .replace(/\([^)]*[·/][^)]*\)$/, '')
+          .split(/\s*(?:·|&|→)\s*/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const idx = zhParts.indexOf(chosenSite);
+        if (idx >= 0 && enParts.length === zhParts.length) {
+          splitEnCandidate = enParts[idx];
+        }
+      }
+      const bareChosenSite = this._stripPromptParenthetical(chosenSite);
+      const candList = [
+        chosenSite === rawSite ? rawSiteEn : '',
+        this._enDict(chosenSite),
+        this._enDict(bareChosenSite),
+        d && (d.key === 'roc' || d.key === 'prc') ? this._enModernCity(bareChosenSite) : '',
+        splitEnCandidate,
+      ];
+      const chosenSiteEn =
+        candList.find((c) => c && !/[\u4e00-\u9fff]/.test(c)) || this._enDict(bareChosenSite);
+      return {
+        siteZh: chosenSite,
+        siteEn: chosenSiteEn,
+        coord: chosenCoord,
+        textZh,
+        textEn,
+      };
     }
 
     _collectPersonEvents(profile) {
@@ -3350,7 +3530,7 @@
             raw.push({
               src: 'J',
               year: st.year,
-              month: st.month || 6 + sIdx * 0.05,
+              month: st.month || 6 + sIdx * 0.01,
               coord: st.coord,
               fromCoord: st.fromCoord || null,
               via: st.via || null,
@@ -3379,24 +3559,36 @@
           const rawSite = m.site || d.seat || '';
           const mKey = `${d.key}:${m.year}`;
           const mHit = this.enLocale.milestones && this.enLocale.milestones[mKey];
-          const siteEn =
+          const rawSiteEn =
             m.siteEn ||
             (Array.isArray(mHit) && mHit[1]) ||
             (d.key === 'roc' || d.key === 'prc'
               ? this._enModernCity(rawSite)
               : this._enDict(rawSite));
+          const tailored = this._tailorPersonEvent(
+            profile,
+            tokens,
+            d,
+            m.year,
+            rawSite,
+            rawSiteEn,
+            m.coord,
+            m.headline,
+            this._enMilestoneHeadline(d, m),
+            'M'
+          );
           raw.push({
             src: 'M',
             year: m.year,
             month: m.month || 6.5,
-            coord: m.coord,
+            coord: tailored.coord,
             dynasty: d,
-            siteZh: rawSite,
-            siteEn,
+            siteZh: tailored.siteZh,
+            siteEn: tailored.siteEn,
             modernZh: '',
             modernEn: '',
-            textZh: m.headline,
-            textEn: this._enMilestoneHeadline(d, m),
+            textZh: tailored.textZh,
+            textEn: tailored.textEn,
             isMapChange: Boolean(m.isMapChange),
             milestone: m,
             prio: 2,
@@ -3411,18 +3603,32 @@
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
           this.dynasties[0];
+        const rawSite = lm.site || '';
+        const rawSiteEn = lm.siteEn || this._enDict(rawSite);
+        const tailored = this._tailorPersonEvent(
+          profile,
+          tokens,
+          d,
+          lm.year,
+          rawSite,
+          rawSiteEn,
+          lm.coord,
+          lm.zh,
+          lm.en || lm.zh,
+          'L'
+        );
         raw.push({
           src: 'L',
           year: lm.year,
           month: lm.month || 6.5,
-          coord: lm.coord,
+          coord: tailored.coord,
           dynasty: d,
-          siteZh: lm.site || '',
-          siteEn: lm.siteEn || this._enDict(lm.site || ''),
+          siteZh: tailored.siteZh,
+          siteEn: tailored.siteEn,
           modernZh: '',
           modernEn: '',
-          textZh: lm.zh,
-          textEn: lm.en || lm.zh,
+          textZh: tailored.textZh,
+          textEn: tailored.textEn,
           isMapChange: false,
           prio: 1,
         });
@@ -3443,7 +3649,14 @@
             if (ev.src === 'M') return prev.year === ev.year && km < 45;
             return prev.year === ev.year && km < 35;
           }
-          return (prev.year === ev.year && km < 65) || (dy <= 1 && km < 25);
+          const bPrev = this._stripPromptParenthetical(prev.siteZh);
+          const bCur = this._stripPromptParenthetical(ev.siteZh);
+          const sameCoreSite =
+            prev.year === ev.year &&
+            bPrev.length >= 2 &&
+            bCur.length >= 2 &&
+            (bPrev.includes(bCur) || bCur.includes(bPrev));
+          return sameCoreSite || (prev.year === ev.year && km < 65) || (dy <= 1 && km < 25);
         });
         if (dup) {
           // A curated journey stop outranks a nearby milestone or landmark that
@@ -7533,36 +7746,29 @@
       }
 
       const ancCore = String(displayAncient || '').trim();
-      const tokens = new Set();
+      // Only mask explicit modern-leak phrases ("今XX城", "为XX建城") or explicit
+      // multi-tier modern province+prefecture strings (e.g. "山东淄博临淄"), without
+      // clobbering authentic historical commandery, prefecture, county, or landmark names
+      // (such as 南阳郡治, 太原郡治, 汉中郡治, 长沙国都, 徐州治所, 雷州半岛, 朝鲜四郡, 《岳阳楼记》).
+      out = out
+        .replace(/今[\u4e00-\u9fa5]{2,4}城/g, '此城')
+        .replace(/为(?:南京|北京|上海|天津|重庆|杭州|广州|武汉|长沙|成都|西安)建城/g, '为此城建城');
       const provRe =
-        /^(?:黑龙江|内蒙古|新疆|广西|宁夏|西藏|北京|天津|上海|重庆|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)/;
+        /^(?:黑龙江|内蒙古|新疆|广西|宁夏|西藏|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)/;
       const dirRe = /(?:东北|西北|东南|西南|东|西|南|北|境内|一带|附近)$/;
       for (const rawPart of String(settlement.modern || '').split(/[·/、，,\s（）()]+/)) {
-        const p0 = rawPart.replace(/^今/, '').trim();
+        const p0 = rawPart.replace(/^今/, '').replace(dirRe, '').trim();
         if (!p0) continue;
-        tokens.add(p0);
-        const pNoDir = p0.replace(dirRe, '').trim();
-        if (pNoDir.length >= 2) tokens.add(pNoDir);
-        const pNoProv = pNoDir.replace(provRe, '').trim();
-        if (pNoProv.length >= 2) {
-          tokens.add(pNoProv);
-          if (pNoProv.length === 4) {
-            tokens.add(pNoProv.slice(0, 2));
-            tokens.add(pNoProv.slice(2, 4));
+        const provMatch = p0.match(provRe);
+        if (provMatch) {
+          const rest = p0.slice(provMatch[0].length).trim();
+          if (rest.length >= 4 && ancCore && rest.endsWith(ancCore)) {
+            const midPref = rest.slice(0, rest.length - ancCore.length);
+            if (midPref.length >= 2) {
+              out = out.replaceAll(midPref, ancCore);
+            }
           }
         }
-      }
-      const sortedTokens = Array.from(tokens)
-        .filter(
-          (tok) =>
-            tok.length >= 2 &&
-            tok !== ancCore &&
-            !ancCore.includes(tok) &&
-            !tok.includes(ancCore)
-        )
-        .sort((a, b) => b.length - a.length);
-      for (const tok of sortedTokens) {
-        out = out.replaceAll(tok, ancCore || '此地');
       }
       return out;
     }
@@ -7780,7 +7986,7 @@
             : this.locale === 'en'
               ? 'Strategic Prefecture & Hub'
               : '当朝重镇州府';
-      const baseClue = this._sanitizeChallengeClue(rawBaseClue, cur.settlement, displayTarget);
+      let baseClue = this._sanitizeChallengeClue(rawBaseClue, cur.settlement, displayTarget);
 
       const placeEvents = this._collectPlaceEventsForDynasty(
         cur.dynasty,
@@ -7788,15 +7994,43 @@
         cur.settlement.coord[1],
         { s: cur.settlement, km: 0 }
       );
+      const hasClueOverlap = (a, b) => {
+        const na = String(a || '').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '').toLowerCase();
+        const nb = String(b || '').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '').toLowerCase();
+        if (!na || !nb) return false;
+        if (na.includes(nb) || nb.includes(na)) return true;
+        const win = this.locale === 'en' ? 18 : 5;
+        if (na.length < win || nb.length < win) return false;
+        for (let i = 0; i <= na.length - win; i++) {
+          if (nb.includes(na.slice(i, i + win))) return true;
+        }
+        return false;
+      };
       let extraEventStr = '';
       if (placeEvents.length && !cur.settlement.isPass) {
-        const ev = placeEvents[0];
-        const yrLbl =
-          this.locale === 'en'
-            ? this.formatYear(ev.year)
-            : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
-        const cleanEv = this._sanitizeChallengeClue(ev.text, cur.settlement, displayTarget);
-        extraEventStr = ` · ${yrLbl}：${cleanEv}`;
+        let chosenEv = null;
+        let firstClean = null;
+        for (const ev of placeEvents) {
+          const yrLbl =
+            this.locale === 'en'
+              ? this.formatYear(ev.year)
+              : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
+          const cleanEv = this._sanitizeChallengeClue(ev.text, cur.settlement, displayTarget);
+          if (!firstClean) firstClean = { yrLbl, cleanEv };
+          if (!hasClueOverlap(baseClue, cleanEv)) {
+            chosenEv = { yrLbl, cleanEv };
+            break;
+          }
+        }
+        if (chosenEv) {
+          extraEventStr = ` · ${chosenEv.yrLbl}：${chosenEv.cleanEv}`;
+        } else if (
+          firstClean &&
+          !baseClue.includes('；') &&
+          firstClean.cleanEv.length > baseClue.length
+        ) {
+          baseClue = `${firstClean.yrLbl}：${firstClean.cleanEv}`;
+        }
       }
 
       const clueTag = cur.settlement.isPass
@@ -8687,14 +8921,24 @@
             const yrZh = targetY <= 0 ? `公元前${-targetY}年` : `公元 ${targetY} 年`;
             const yrEn = targetY <= 0 ? `${-targetY} BCE` : `${targetY} CE`;
             const enMonarchPart = monarchEn ? ` · ${monarchEn}` : '';
-            const isExactOrSuffix =
-              prefix.endsWith(prefixQ) ||
-              fullCombo.endsWith(prefixQ) ||
-              shortCombo.endsWith(prefixQ) ||
+            const isExplicitEraOrMonarch =
+              yearNum !== null ||
+              isYuanNian ||
+              /[年载]$/.test(trimmed) ||
+              prefix === prefixQ ||
+              fullCombo === prefixQ ||
+              shortCombo === prefixQ ||
               monarchZh === prefixQ ||
               shortMonarch === prefixQ ||
+              (prefixQ === '汉高祖' && prefix === '汉高帝') ||
               (isLatinQuery &&
                 (monarchEnLower.startsWith(qLower) || monarchEnExpanded.startsWith(qLower)));
+            const isBareEraExact =
+              !isExplicitEraOrMonarch &&
+              (eraOnly === prefixQ ||
+                prefix.endsWith(prefixQ) ||
+                fullCombo.endsWith(prefixQ) ||
+                shortCombo.endsWith(prefixQ));
             hits.push({
               kind: 'era',
               dynasty: d,
@@ -8703,7 +8947,7 @@
               subZh: yrZh,
               titleEn: `${label}${enMonarchPart} (${yrEn})`,
               subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
-              score: isExactOrSuffix ? 120 : 95,
+              score: isExplicitEraOrMonarch ? 122 : isBareEraExact ? 94 : 88,
             });
           }
         }
@@ -8730,11 +8974,14 @@
         let score = 0;
         const tZh = item.titleZh.toLowerCase();
         const tEn = item.titleEn.toLowerCase();
+        const bareZh = this._stripPromptParenthetical(item.titleZh).toLowerCase();
+        const bareEn = this._stripPromptParenthetical(item.titleEn).toLowerCase();
         const mZh = (item.modernZh || '').toLowerCase();
         const mEn = (item.modernEn || '').toLowerCase();
         const tEnFold = isAscii ? fold(tEn) : '';
         const mEnFold = isAscii ? fold(mEn) : '';
         if (tZh === q || tEn === q) score = 100;
+        else if (bareZh && (bareZh === q || bareEn === q)) score = 99;
         else if (isAscii && qFold.length >= 3 && tEnFold === qFold) score = 98;
         else if (mZh && (mZh === q || mZh.split(/[·/、]/).includes(q) || mEn === q)) score = 96;
         else if (isAscii && qFold.length >= 3 && mEnFold === qFold) score = 94;
@@ -8748,7 +8995,13 @@
           tEn.startsWith(q) ||
           (isAscii && qFold.length >= 3 && tEnFold.startsWith(qFold))
         ) {
-          score = 80;
+          score = item.kind === 'event' ? 93 : 80;
+        } else if (
+          item.kind === 'event' &&
+          q.length >= 2 &&
+          (tZh.includes(q) || (isAscii && qFold.length >= 4 && tEnFold.includes(qFold)))
+        ) {
+          score = 86;
         } else if (
           mZh &&
           (mZh.startsWith(q) ||
@@ -8776,7 +9029,7 @@
         }
       }
 
-      // Dynamic zero-config fallback if query matches >=2 historical events for an unlisted figure
+      // Dynamic zero-config fallback if query matches a known monarch with >=2 historical events
       if (
         !results.some((r) => r.kind === 'person') &&
         !results.some(
@@ -8784,10 +9037,10 @@
             (r.kind === 'city' || r.kind === 'pass' || r.kind === 'gazetteer' || r.kind === 'dynasty') &&
             r.score >= 92
         ) &&
-        /^[\u4e00-\u9fa5]{2,4}$/.test(normQ)
+        /^[\u4e00-\u9fa5]{2,5}$/.test(normQ)
       ) {
         const adhoc = this._resolvePersonProfile(normQ);
-        if (adhoc) {
+        if (adhoc && adhoc.isMonarch) {
           const evs = this._collectPersonEvents(adhoc);
           if (evs.length >= 2) {
             const d = evs[0].dynasty || this.dynasties[0];
