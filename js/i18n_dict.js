@@ -389,7 +389,7 @@ window.EN_LOCALE = {
       "Bashang (Chang'an)"
     ],
     "dongjin:356": [
-      "Huan Wen advances on Luoyang, repairing Jin imperial tombs",
+      "Huan Wen's second northern expedition recovers Luoyang and repairs imperial tombs",
       "Luoyang"
     ],
     "dongjin:369": [
@@ -833,7 +833,7 @@ window.EN_LOCALE = {
       "Kunming · Hengzhou"
     ],
     "qing:1681": [
-      "Qing forces capture Kunming, suppressing the Revolt of the Three Feudatories",
+      "Qing forces capture Kunming as Kangxi Emperor fully quells Three Feudatories",
       "Kunming"
     ],
     "qing:1683": [
@@ -1273,7 +1273,7 @@ window.EN_LOCALE = {
       "Chengtianfu (Tainan)"
     ],
     "qing:1685": [
-      "Siege of Albazin (Yakesa) against Russian Cossack incursions",
+      "Kangxi orders the Siege of Albazin (Yakesa) against Russian Cossack incursions",
       "Yakesa (Albazin)"
     ],
     "qing:1720": [
@@ -1281,7 +1281,7 @@ window.EN_LOCALE = {
       "Lhasa"
     ],
     "qing:1722": [
-      "Yongzheng Emperor ascends; tax reform and Southwest gaitu guiliu launched",
+      "Kangxi dies; Yongzheng Emperor ascends, launching tax and southwest reforms",
       "Beijing"
     ],
     "qing:1735": [
@@ -1293,7 +1293,7 @@ window.EN_LOCALE = {
       "Ili / Chengde"
     ],
     "qing:1792": [
-      "Gorkha campaign concluded; 29-Article Ordinance and Golden Urn instituted",
+      "Fuk'anggan repels Gorkhas; 29-Article Ordinance and Golden Urn instituted",
       "Lhasa"
     ],
     "qing:1796": [
@@ -1849,7 +1849,7 @@ window.EN_LOCALE = {
       "Canton (Guangzhou)"
     ],
     "qing:1787": [
-      "Fuk’anggan crosses the strait to suppress Lin Shuangwen’s uprising; Zhuluo is renamed Jiayi",
+      "Fuk'anggan suppresses Lin Shuangwen in Taiwan; Qianlong renames Zhuluo to Jiayi",
       "Jiayi (Zhuluo)"
     ],
     "qing:1826": [
