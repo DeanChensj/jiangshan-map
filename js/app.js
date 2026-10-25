@@ -1608,7 +1608,7 @@
           return;
         }
         this._renderPolitiesAndPrefectures(dynasty, snap);
-        if (!this.playing && prevSnap && prevSnap !== snap) {
+        if (!this.playing && !this.isScrubbing && prevSnap && prevSnap !== snap) {
           this._renderGhostDiff(prevSnap, 'fade');
         }
       });
@@ -1619,7 +1619,7 @@
       this.grpPolities.innerHTML = '';
       this.grpPrefectures.innerHTML = '';
 
-      const polGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPolities);
+      const polGroup = this._svgNode('g', {}, this.grpPolities);
       const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
       const sorted = (snap.polities || [])
         .slice()
@@ -1659,7 +1659,7 @@
         }
       }
 
-      const prefGroup = this._svgNode('g', { class: 'fade-enter' }, this.grpPrefectures);
+      const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
       for (const pref of snap.prefectures || []) {
         const path = this._svgNode(
           'path',
@@ -1860,7 +1860,7 @@
     _renderSettlements(dynasty) {
       this.activeSettlementMask = this._settlementMask(dynasty, this.year);
       this.grpSettlements.innerHTML = '';
-      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpSettlements);
+      const group = this._svgNode('g', {}, this.grpSettlements);
       // Paint order: Tier-2 secondary cities first (bottom), Tier-1 cities second, Capitals last (top)
       const activeList = (dynasty.settlements || [])
         .filter(
@@ -1936,9 +1936,10 @@
         }
 
         const align = item.align || 'r';
-        const anchor = align === 'l' ? 'end' : align === 'b' ? 'middle' : 'start';
-        const dx = align === 'l' ? -5.5 : align === 'b' ? 0 : 5.5;
+        const anchor = align === 'l' ? 'end' : align === 'b' || align === 't' ? 'middle' : 'start';
+        const dx = align === 'l' ? -5.5 : align === 'b' || align === 't' ? 0 : 5.5;
         const dy1 = align === 'b' ? 10.2 : align === 't' ? -4.8 : 3.0;
+        node.dataset.appliedDir = align;
 
         const nameEl = this._svgNode(
           'text',
@@ -2069,7 +2070,7 @@
       this.activeCorridorMask = mask;
 
       this.grpCorridors.innerHTML = '';
-      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpCorridors);
+      const group = this._svgNode('g', {}, this.grpCorridors);
       for (const corr of this.corridors) {
         if (corr.span && (y < corr.span[0] || y > corr.span[1])) continue;
 
@@ -2135,7 +2136,7 @@
 
     _renderMilestones(dynasty) {
       this.grpMilestones.innerHTML = '';
-      const group = this._svgNode('g', { class: 'fade-enter' }, this.grpMilestones);
+      const group = this._svgNode('g', {}, this.grpMilestones);
       (dynasty.milestones || []).forEach((m, idx) => {
         if (!m.coord) return;
         const [x, y] = this.projector.toScreen(m.coord[0], m.coord[1]);
@@ -3594,8 +3595,9 @@
 
     _findNearestPersonPin(clientX, clientY, maxPx = 26) {
       if (!this.activePerson || !this.grpJourney || !this.svg) return null;
-      const rect = this.svg.getBoundingClientRect();
+      const rect = this._cameraViewportRect || this.svg.getBoundingClientRect();
       if (!rect.width || !rect.height) return null;
+      this._cameraViewportRect = rect;
       const screenScale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       const padX = (rect.width - this.camera.w * screenScale) * 0.5;
       const padY = (rect.height - this.camera.h * screenScale) * 0.5;
@@ -4294,8 +4296,9 @@
     }
 
     _findNearestTouchNode(clientX, clientY, maxPx = 22) {
-      const rect = this.svg.getBoundingClientRect();
+      const rect = this._cameraViewportRect || this.svg.getBoundingClientRect();
       if (!rect.width || !rect.height) return { settlementEl: null, milestoneEl: null };
+      this._cameraViewportRect = rect;
       const [sx, sy] = this._clientToSvgPoint(clientX, clientY);
       const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
       let bestSettle = null;
@@ -5273,6 +5276,10 @@
       });
       track.addEventListener('pointermove', (e) => {
         if (!scrubbing) return;
+        if (!this.isScrubbing) {
+          this.isScrubbing = true;
+          if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+        }
         pendingX = e.clientX;
         if (rafId === null) {
           rafId = requestAnimationFrame(() => {
@@ -5287,15 +5294,25 @@
       track.addEventListener('pointerup', () => {
         if (!scrubbing) return;
         const x = pendingX;
+        const wasDragging = Boolean(this.isScrubbing);
         cancelRaf();
         scrubbing = false;
         trackRect = null;
         if (x !== null) scrubAt(x);
+        this.isScrubbing = false;
+        if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
+          this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+        }
       });
       track.addEventListener('pointercancel', () => {
+        const wasDragging = Boolean(this.isScrubbing);
         cancelRaf();
         scrubbing = false;
+        this.isScrubbing = false;
         trackRect = null;
+        if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
+          this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+        }
       });
     }
 
@@ -5518,7 +5535,7 @@
                 return;
               }
               this._renderPolitiesAndPrefectures(cur, snap);
-              if (!this.playing && prevSnap) {
+              if (!this.playing && !this.isScrubbing && prevSnap) {
                 this._renderGhostDiff(prevSnap, 'fade');
               }
             });
@@ -5539,10 +5556,10 @@
 
       // Auto callouts are kept or replaced by _syncAutoMilestoneBalloon below.
       const am = this.activeMilestone;
-      if (am && (am.isAuto ? this.activePerson : am.year !== y)) {
+      if (am && (am.isAuto ? (this.activePerson || this.isScrubbing) : am.year !== y)) {
         this.closeMilestoneBalloon();
       }
-      if (!this.activePerson) {
+      if (!this.activePerson && !this.isScrubbing) {
         this._syncAutoMilestoneBalloon(cur);
       }
       this._syncScrubberUi();
@@ -5990,7 +6007,6 @@
       const zoomChanged =
         this._lastTypographyWidth !== undefined &&
         Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05;
-      let useStageTransform = false;
       if (forceTypography) {
         clearTimeout(this._cameraSettleTimer);
         this._cameraSettleTimer = null;
@@ -6006,37 +6022,16 @@
             clearTimeout(this._cameraSettleTimer);
             this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
           }
-          useStageTransform = Boolean(
-            cachedRect && this._stageWrap && this._baseViewBoxCam && rect && rect.width
-          );
         }
       }
-      if (useStageTransform) {
-        const b = this._baseViewBoxCam;
-        const rw = rect.width || 1000;
-        const rh = rect.height || 700;
-        const s0 = Math.min(rw / b.w, rh / b.h);
-        const padX0 = (rw - b.w * s0) * 0.5;
-        const padY0 = (rh - b.h * s0) * 0.5;
-        const s1 = Math.min(rw / this.camera.w, rh / this.camera.h);
-        const padX1 = (rw - this.camera.w * s1) * 0.5;
-        const padY1 = (rh - this.camera.h * s1) * 0.5;
-        const k = s1 / s0;
-        const tx = padX1 - k * padX0 + (b.x - this.camera.x) * s1;
-        const ty = padY1 - k * padY0 + (b.y - this.camera.y) * s1;
-        this._stageWrap.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${k.toFixed(5)})`;
-      } else {
-        this._commitStageTransform();
-      }
-      // Rebuild immediately for new content, but defer zoom-only collision
-      // layout until the gesture ends. Coordinates always use the live camera.
+      this._commitStageTransform();
+      // Keep typography scale(invScale) synchronized on every zoom frame via the
+      // _zoomScaleNodes fast-path so font sizes scale smoothly without stepping.
       const needsTypography =
         forceTypography ||
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
-        (this._cameraSettleTimer === null &&
-          this.flyRaf === null &&
-          Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05);
+        zoomChanged;
       if (needsTypography) {
         const zoomOnly = !this._typoDirty && this._lastTypographyWidth !== undefined;
         this._rescaleSvgTypography({ zoomOnly });
@@ -6194,9 +6189,6 @@
         this._typoDirty = true;
         return;
       }
-      if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
-        this._commitStageTransform();
-      }
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
       const zoomOnly = Boolean(
         opts &&
@@ -6206,6 +6198,9 @@
           this._lastTypographyWidth !== undefined &&
           this._lastViewportWidth === vw
       );
+      if (!zoomOnly && this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
+        this._commitStageTransform();
+      }
       this._lastTypographyWidth = this.camera.w;
       this._lastViewportWidth = vw;
       this._typoDirty = false;
@@ -6228,190 +6223,82 @@
 
       const showSettlements = !this.grpSettlements.classList.contains('is-hidden');
       const showPrefectures = !this.grpPrefectures.classList.contains('is-hidden');
+      const showPolities = !this.grpPolities.classList.contains('is-hidden');
       const showMilestones = !this.grpMilestones.classList.contains('is-hidden');
+      const showRivers = Boolean(
+        this.grpRivers && (!this.grpRivers.classList || !this.grpRivers.classList.contains('is-hidden'))
+      );
+      const showProvNames = Boolean(
+        this.grpProvNames &&
+          (!this.grpProvNames.classList || !this.grpProvNames.classList.contains('is-hidden'))
+      );
+      const narrowMobileCull = isNarrowMobile && z < 3.4;
+      const zoomStateKey = `${showTier2 ? 1 : 0}|${showPasses ? 1 : 0}|${showMobilePrefDetail ? 1 : 0}|${narrowMobileCull ? 1 : 0}|${showCorridors ? 1 : 0}|${showSettlements ? 1 : 0}|${showPrefectures ? 1 : 0}|${showPolities ? 1 : 0}|${showMilestones ? 1 : 0}|${showRivers ? 1 : 0}|${showProvNames ? 1 : 0}`;
+
+      // Fast path for pure zoom frames when no visibility tier threshold crossed:
+      // only update scale(invScale) on visible nodes without re-querying DOM or flipping labels.
+      if (
+        zoomOnly &&
+        this._zoomScaleNodes &&
+        this._lastZoomStateKey === zoomStateKey
+      ) {
+        if (this._lastInvScale !== invScale) {
+          this._lastInvScale = invScale;
+          const items = this._zoomScaleNodes;
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            item.node.setAttribute('transform', item.prefix + invScale + item.suffix);
+          }
+          if (showProvNames) {
+            const fontSize = (9.5 * s).toFixed(1);
+            this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
+              node.setAttribute('font-size', fontSize);
+            });
+          }
+          if (this.activePerson && this.grpJourney) {
+            this._rescaleActivePersonPins(vw, s, true);
+          }
+        }
+        return;
+      }
+
+      const scaleNodes = [];
+      const applyNodeScale = (node, xStr, yStr, rotStr = null) => {
+        const prefix = `translate(${xStr},${yStr}) scale(`;
+        const suffix = rotStr !== null ? `) rotate(${rotStr})` : ')';
+        node.setAttribute('transform', prefix + invScale + suffix);
+        scaleNodes.push({ node, prefix, suffix });
+      };
 
       // Scale static markers (milestones, journey waypoints, directional chevrons, challenge pins, genealogy overlays)
       this.svg
         .querySelectorAll(
-          '.neighbor-caption, .milestone-pin, #grp-journey g[data-x], #grp-challenge g[data-x], #grp-genealogy g[data-x]'
+          '.milestone-pin, #grp-journey g[data-x], #grp-challenge g[data-x], #grp-genealogy g[data-x]'
         )
         .forEach((node) => {
+          if (this.activePerson && node.classList && node.classList.contains('journey-node')) {
+            return;
+          }
           const x = node.getAttribute('data-x');
           const y = node.getAttribute('data-y');
           const rot = node.getAttribute('data-rot');
           if (x !== null) {
-            node.setAttribute(
-              'transform',
-              rot !== null
-                ? `translate(${x},${y}) scale(${invScale}) rotate(${rot})`
-                : `translate(${x},${y}) scale(${invScale})`
-            );
+            applyNodeScale(node, x, y, rot);
           }
         });
 
       // Keep active person numbered pins crisp & non-overlapping in real screen pixels at every zoom level
       if (this.activePerson && this.grpJourney) {
-        const svgRect =
-          (this.dragState && this.dragState.rect) ||
-          (this.pinchState && this.pinchState.rect) ||
-          this._cameraViewportRect ||
-          (typeof this.svg.getBoundingClientRect === 'function'
-            ? this.svg.getBoundingClientRect()
-            : null);
-        if (svgRect && svgRect.width) this._cameraViewportRect = svgRect;
-        const rw = (svgRect && svgRect.width) || vw || 1000;
-        const rh = (svgRect && svgRect.height) || rw * 0.7;
-        const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
-        const pinScale = Math.max(s, 0.92 / Math.max(0.12, screenScale));
-        const pinScaleStr = pinScale.toFixed(3);
-        const pxPerLocal = pinScale * screenScale;
-        const nodes = Array.from(this.grpJourney.querySelectorAll('.journey-node')).sort(
-          (a, b) => Number(a.dataset.stopIdx) - Number(b.dataset.stopIdx)
-        );
-        const pts = nodes.map((n) => ({
-          n,
-          x: Number(n.getAttribute('data-x')),
-          y: Number(n.getAttribute('data-y')),
-          ox: 0,
-          oy: 0,
-        }));
-        const minSepPx = 15.8;
-        for (let iter = 0; iter < 12; iter++) {
-          for (let i = 0; i < pts.length; i++) {
-            for (let j = i + 1; j < pts.length; j++) {
-              const pxI = pts[i].x * screenScale + pts[i].ox * pxPerLocal;
-              const pyI = pts[i].y * screenScale + pts[i].oy * pxPerLocal;
-              const pxJ = pts[j].x * screenScale + pts[j].ox * pxPerLocal;
-              const pyJ = pts[j].y * screenScale + pts[j].oy * pxPerLocal;
-              const dx = pxJ - pxI;
-              const dy = pyJ - pyI;
-              const dist = Math.hypot(dx, dy);
-              if (dist < minSepPx) {
-                let ux;
-                let uy;
-                if (dist < 0.05) {
-                  const ang = (j - i - 1) * 1.05;
-                  ux = Math.cos(ang);
-                  uy = Math.sin(ang);
-                } else {
-                  ux = dx / dist;
-                  uy = dy / dist;
-                }
-                const push = (minSepPx - dist) * 0.52 / Math.max(0.2, pxPerLocal);
-                pts[i].ox -= ux * push;
-                pts[i].oy -= uy * push;
-                pts[j].ox += ux * push;
-                pts[j].oy += uy * push;
-              }
-            }
-          }
-        }
-        for (const p of pts) {
-          p.n.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
-          p.n.setAttribute('data-ox', p.ox.toFixed(2));
-          p.n.setAttribute('data-oy', p.oy.toFixed(2));
-          const shiftEl = p.n.querySelector('.jn-pin-shift');
-          if (shiftEl) {
-            shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
-          }
-        }
-        const placedRects = pts.map((p) => {
-          const isCur = p.n.classList.contains('is-current');
-          const rPx = (isCur ? 8.5 : 6.6) * pxPerLocal;
-          const cx = p.x * screenScale + p.ox * pxPerLocal;
-          const cy = p.y * screenScale + p.oy * pxPerLocal;
-          return {
-            left: cx - rPx,
-            right: cx + rPx,
-            top: cy - rPx,
-            bottom: cy + rPx,
-          };
-        });
-        const candSlots = [
-          { idx: 0, anchor: 'middle', lx: '0', ly: '-12.2', nx: 0, ny: -12.2 },
-          { idx: 1, anchor: 'middle', lx: '0', ly: '19.8', nx: 0, ny: 19.8 },
-          { idx: 2, anchor: 'start', lx: '11.2', ly: '3.8', nx: 11.2, ny: 3.8 },
-          { idx: 3, anchor: 'end', lx: '-11.2', ly: '3.8', nx: -11.2, ny: 3.8 },
-        ];
-        const labelOrder = pts
-          .slice()
-          .sort((a, b) => (a.n.classList.contains('is-current') ? -1 : b.n.classList.contains('is-current') ? 1 : 0));
-        for (const p of labelOrder) {
-          const lbl = p.n.querySelector('.jn-label');
-          if (!lbl) continue;
-          const isCur = p.n.classList.contains('is-current');
-          const fontPx = isCur ? 11.5 : 10.2;
-          const textW = (this._estimateLocalTextWidth(lbl.textContent, fontPx, 0) + 3.6) * pxPerLocal;
-          const textH = (fontPx * 1.18 + 2.4) * pxPerLocal;
-          const cx = p.x * screenScale + p.ox * pxPerLocal;
-          const cy = p.y * screenScale + p.oy * pxPerLocal;
-          const prevIdx =
-            zoomOnly && lbl.dataset.slotIdx !== undefined ? Number(lbl.dataset.slotIdx) : -1;
-          const orderedSlots =
-            prevIdx >= 0 && candSlots[prevIdx]
-              ? [candSlots[prevIdx], ...candSlots.filter((s0) => s0.idx !== prevIdx)]
-              : candSlots;
-          let chosenSlot = null;
-          let chosenRect = null;
-          for (const sl of orderedSlots) {
-            const bx = cx + sl.nx * pxPerLocal;
-            const by = cy + sl.ny * pxPerLocal;
-            const left =
-              sl.anchor === 'start' ? bx : sl.anchor === 'end' ? bx - textW : bx - textW * 0.5;
-            const r = {
-              left,
-              right: left + textW,
-              top: by - textH * 0.82,
-              bottom: by + textH * 0.18,
-            };
-            const hit = placedRects.some(
-              (o) => r.right > o.left && r.left < o.right && r.bottom > o.top && r.top < o.bottom
-            );
-            if (!hit) {
-              chosenSlot = sl;
-              chosenRect = r;
-              break;
-            }
-          }
-          if (!chosenSlot && isCur) {
-            chosenSlot = orderedSlots[0];
-            const bx = cx + chosenSlot.nx * pxPerLocal;
-            const by = cy + chosenSlot.ny * pxPerLocal;
-            const left =
-              chosenSlot.anchor === 'start'
-                ? bx
-                : chosenSlot.anchor === 'end'
-                  ? bx - textW
-                  : bx - textW * 0.5;
-            chosenRect = {
-              left,
-              right: left + textW,
-              top: by - textH * 0.82,
-              bottom: by + textH * 0.18,
-            };
-          }
-          if (chosenSlot) {
-            lbl.style.display = '';
-            lbl.dataset.slotIdx = String(chosenSlot.idx);
-            lbl.setAttribute('text-anchor', chosenSlot.anchor);
-            lbl.setAttribute('x', chosenSlot.lx);
-            lbl.setAttribute('y', chosenSlot.ly);
-            placedRects.push(chosenRect);
-          } else {
-            lbl.style.display = 'none';
-          }
-        }
+        this._rescaleActivePersonPins(vw, s, zoomOnly);
       }
       if (this.grpRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
+          if (node.classList.contains('is-range') && !showPasses) return;
           const x = node.getAttribute('data-x');
           const y = node.getAttribute('data-y');
           const rot = node.getAttribute('data-rot') || '0';
           if (x !== null) {
-            node.setAttribute(
-              'transform',
-              `translate(${x},${y}) scale(${invScale}) rotate(${rot})`
-            );
+            applyNodeScale(node, x, y, rot);
           }
         });
       }
@@ -6433,7 +6320,7 @@
 
       // Sync traced Tier-2 city visibility state and reserve all visible city dots and milestone pins
       for (const node of settlementNodes) {
-        if (node.classList.contains('is-tier2')) {
+        if (!zoomOnly && node.classList.contains('is-tier2')) {
           const nLng = parseFloat(node.dataset.lng);
           const nLat = parseFloat(node.dataset.lat);
           const isTraced =
@@ -6458,7 +6345,6 @@
       }
       if (showMilestones) {
         this.svg.querySelectorAll('.milestone-pin').forEach((pin) => {
-          if (pin.classList.contains('is-future')) return;
           const mx = parseFloat(pin.getAttribute('data-x'));
           const my = parseFloat(pin.getAttribute('data-y'));
           if (!isNaN(mx)) {
@@ -6471,7 +6357,7 @@
           }
         });
       }
-      if (this.grpRivers && !this.grpRivers.classList.contains('is-hidden')) {
+      if (showRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((hl) => {
           // Mountain-range names are background context: city labels must never yield to them.
           if (hl.classList.contains('is-range')) return;
@@ -6485,6 +6371,20 @@
             occupied.push({ x1: hx - hw, y1: hy - hh, x2: hx + hw, y2: hy + hh });
           }
         });
+      }
+      const regionCaptionNodes = Array.from(this.svg.querySelectorAll('.region-caption'));
+      if (zoomOnly && showPrefectures) {
+        for (const node of regionCaptionNodes) {
+          if (node.dataset.placed === '1' && !node.classList.contains('is-crowded-hidden')) {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            if (!isNaN(cx) && !isNaN(cy)) {
+              const hw = (this._estimateLocalTextWidth(node.textContent, 8.8, 1.8) * 0.5 + 3) * s;
+              const hh = 6.2 * s;
+              occupied.push({ x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh });
+            }
+          }
+        }
       }
 
       const pinnedCoords = [];
@@ -6532,7 +6432,7 @@
       const layoutSettlementLabel = (node, allowCull, maxOverlapRatio = 0.14) => {
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
-        node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+        applyNodeScale(node, cx.toFixed(1), cy.toFixed(1));
         const isPass = node.classList.contains('is-pass');
         if (isPass ? !showCorridors : !showSettlements) return;
 
@@ -6614,43 +6514,50 @@
           };
         };
 
+        if (zoomOnly && node.dataset.chosenDir) {
+          const bestDir = node.dataset.chosenDir;
+          const best = dirSpec(bestDir);
+          if (allowCull && node.classList.contains('is-label-crowded')) {
+            return;
+          }
+          node.classList.remove('is-label-crowded');
+          if (node.dataset.appliedDir !== bestDir) {
+            node.dataset.appliedDir = bestDir;
+            nameEl.setAttribute('x', String(best.dx));
+            nameEl.setAttribute('y', String(best.dy1));
+            nameEl.setAttribute('text-anchor', best.anchor);
+          }
+          occupied.push(best.box);
+          return;
+        }
+
         let best = null;
         let bestDir = null;
         let bestOverlap = Infinity;
-        if (zoomOnly && node.dataset.chosenDir) {
-          bestDir = node.dataset.chosenDir;
-          best = dirSpec(bestDir);
-          bestOverlap = allowCull ? overlapArea(best.box) : 0;
-        } else {
-          for (let i = 0; i < dirs.length; i++) {
-            const spec = dirSpec(dirs[i]);
-            const ov = overlapArea(spec.box) + i * 0.01 * s * s;
-            if (ov < bestOverlap) {
-              bestOverlap = ov;
-              best = spec;
-              bestDir = dirs[i];
-              if (ov < 0.05 * s * s) break;
-            }
+        for (let i = 0; i < dirs.length; i++) {
+          const spec = dirSpec(dirs[i]);
+          const ov = overlapArea(spec.box) + i * 0.01 * s * s;
+          if (ov < bestOverlap) {
+            bestOverlap = ov;
+            best = spec;
+            bestDir = dirs[i];
+            if (ov < 0.05 * s * s) break;
           }
-          if (bestDir) node.dataset.chosenDir = bestDir;
         }
+        if (bestDir) node.dataset.chosenDir = bestDir;
 
         const boxArea = Math.max(1e-4, (best.box.x2 - best.box.x1) * (best.box.y2 - best.box.y1));
-        const wasCrowded = node.classList.contains('is-label-crowded');
-        const effMaxRatio =
-          zoomOnly && wasCrowded
-            ? maxOverlapRatio * 0.72
-            : zoomOnly
-              ? maxOverlapRatio * 1.35
-              : maxOverlapRatio;
-        if (allowCull && bestOverlap > boxArea * effMaxRatio) {
+        if (allowCull && bestOverlap > boxArea * maxOverlapRatio) {
           node.classList.add('is-label-crowded');
           return;
         }
         node.classList.remove('is-label-crowded');
-        nameEl.setAttribute('x', String(best.dx));
-        nameEl.setAttribute('y', String(best.dy1));
-        nameEl.setAttribute('text-anchor', best.anchor);
+        if (node.dataset.appliedDir !== bestDir) {
+          node.dataset.appliedDir = bestDir;
+          nameEl.setAttribute('x', String(best.dx));
+          nameEl.setAttribute('y', String(best.dy1));
+          nameEl.setAttribute('text-anchor', best.anchor);
+        }
         occupied.push(best.box);
       };
 
@@ -6664,7 +6571,7 @@
           !node.classList.contains('is-tier2') &&
           !node.classList.contains('is-pass')
         ) {
-          layoutSettlementLabel(node, isNarrowMobile && z < 3.4, 0.26);
+          layoutSettlementLabel(node, narrowMobileCull, 0.26);
         }
       }
 
@@ -6673,10 +6580,8 @@
         if (node.classList.contains('is-pass')) {
           if (showCorridors && (showPasses || node.classList.contains('is-pass-trace'))) {
             layoutSettlementLabel(node, !node.classList.contains('is-pass-trace'), 0.14);
-          } else {
-            const cx = parseFloat(node.getAttribute('data-x'));
-            const cy = parseFloat(node.getAttribute('data-y'));
-            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          } else if (!zoomOnly) {
+            delete node.dataset.chosenDir;
           }
         }
       }
@@ -6759,10 +6664,7 @@
         if (zoomOnly && node.dataset.placed === '1') {
           const lockedX = parseFloat(node.getAttribute('data-x'));
           const lockedY = parseFloat(node.getAttribute('data-y'));
-          node.setAttribute(
-            'transform',
-            `translate(${lockedX.toFixed(1)},${lockedY.toFixed(1)}) scale(${invScale})`
-          );
+          applyNodeScale(node, lockedX.toFixed(1), lockedY.toFixed(1));
           occupied.push({
             x1: lockedX - hw,
             y1: lockedY - hh,
@@ -6824,14 +6726,15 @@
         }
 
         node.dataset.placed = '1';
-        node.setAttribute('data-x', bestX.toFixed(1));
-        node.setAttribute('data-y', bestY.toFixed(1));
-        node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
+        const bestXStr = bestX.toFixed(1);
+        const bestYStr = bestY.toFixed(1);
+        node.setAttribute('data-x', bestXStr);
+        node.setAttribute('data-y', bestYStr);
+        applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
       }
 
       // Tier 2b: Modern neighboring country watermarks (dodge ancient polities/cities or hide when same-named historical polity is active)
-      const showPolities = !this.grpPolities.classList.contains('is-hidden');
       const activePolityNames = new Set();
       if (showPolities) {
         for (const pNode of polNodes) {
@@ -6870,10 +6773,7 @@
             const lockedX = parseFloat(node.getAttribute('data-x'));
             const lockedY = parseFloat(node.getAttribute('data-y'));
             node.classList.remove('is-crowded-hidden');
-            node.setAttribute(
-              'transform',
-              `translate(${lockedX.toFixed(1)},${lockedY.toFixed(1)}) scale(${invScale})`
-            );
+            applyNodeScale(node, lockedX.toFixed(1), lockedY.toFixed(1));
             occupied.push({
               x1: lockedX - hw,
               y1: lockedY - hh,
@@ -6902,9 +6802,11 @@
           }
           node.dataset.placed = '1';
           node.classList.remove('is-crowded-hidden');
-          node.setAttribute('data-x', bestX.toFixed(1));
-          node.setAttribute('data-y', bestY.toFixed(1));
-          node.setAttribute('transform', `translate(${bestX.toFixed(1)},${bestY.toFixed(1)}) scale(${invScale})`);
+          const bestXStr = bestX.toFixed(1);
+          const bestYStr = bestY.toFixed(1);
+          node.setAttribute('data-x', bestXStr);
+          node.setAttribute('data-y', bestYStr);
+          applyNodeScale(node, bestXStr, bestYStr);
           occupied.push(bestBox);
         });
       }
@@ -6925,24 +6827,15 @@
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
         if (isNaN(baseX)) return;
-        if (!showCorridors) {
-          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
-          return;
-        }
+        if (!showCorridors) return;
         const hw = (this._estimateLocalTextWidth(node.textContent, 8.2, 1.4) * 0.5 + 3) * s;
         const hh = 5.2 * s;
         if (zoomOnly && node.dataset.placed === '1') {
           const cx = parseFloat(node.getAttribute('data-x'));
           const cy = parseFloat(node.getAttribute('data-y'));
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          const wasHidden = node.classList.contains('is-crowded-hidden');
-          const ratio = wasHidden ? 0.05 : 0.12;
-          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
-          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * ratio) {
-            node.classList.remove('is-crowded-hidden');
-            occupied.push(candBox);
-          } else {
-            node.classList.add('is-crowded-hidden');
+          if (!node.classList.contains('is-crowded-hidden')) {
+            applyNodeScale(node, cx.toFixed(1), cy.toFixed(1));
+            occupied.push({ x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh });
           }
           return;
         }
@@ -6954,9 +6847,11 @@
           const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
           if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.08) {
             node.dataset.placed = '1';
-            node.setAttribute('data-x', cx.toFixed(1));
-            node.setAttribute('data-y', cy.toFixed(1));
-            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+            const cxStr = cx.toFixed(1);
+            const cyStr = cy.toFixed(1);
+            node.setAttribute('data-x', cxStr);
+            node.setAttribute('data-y', cyStr);
+            applyNodeScale(node, cxStr, cyStr);
             node.classList.remove('is-crowded-hidden');
             occupied.push(candBox);
             placed = true;
@@ -6964,8 +6859,11 @@
           }
         }
         if (!placed) {
-          node.dataset.placed = '0';
-          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          node.dataset.placed = '1';
+          const bxStr = baseX.toFixed(1);
+          const byStr = baseY.toFixed(1);
+          node.setAttribute('data-x', bxStr);
+          node.setAttribute('data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
       });
@@ -6975,10 +6873,8 @@
         if (node.classList.contains('is-tier2')) {
           if (showTier2 || node.classList.contains('is-trace-city')) {
             layoutSettlementLabel(node, !node.classList.contains('is-trace-city'));
-          } else {
-            const cx = parseFloat(node.getAttribute('data-x'));
-            const cy = parseFloat(node.getAttribute('data-y'));
-            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+          } else if (!zoomOnly) {
+            delete node.dataset.chosenDir;
           }
         }
       }
@@ -7003,29 +6899,19 @@
         [-24, 18],
         [24, 18],
       ];
-      this.svg.querySelectorAll('.region-caption').forEach((node) => {
+      for (const node of regionCaptionNodes) {
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
-        if (!showPrefectures) {
-          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
-          return;
-        }
+        if (!showPrefectures) continue;
         const hw = (this._estimateLocalTextWidth(node.textContent, 8.8, 1.8) * 0.5 + 3) * s;
         const hh = 6.2 * s;
         if (zoomOnly && node.dataset.placed === '1') {
-          const cx = parseFloat(node.getAttribute('data-x'));
-          const cy = parseFloat(node.getAttribute('data-y'));
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          const wasHidden = node.classList.contains('is-crowded-hidden');
-          const ratio = wasHidden ? 0.035 : 0.085;
-          node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
-          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * ratio) {
-            node.classList.remove('is-crowded-hidden');
-            occupied.push(candBox);
-          } else {
-            node.classList.add('is-crowded-hidden');
+          if (!node.classList.contains('is-crowded-hidden')) {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            applyNodeScale(node, cx.toFixed(1), cy.toFixed(1));
           }
-          return;
+          continue;
         }
         let placed = false;
         for (let i = 0; i < regOffsets.length; i++) {
@@ -7039,9 +6925,11 @@
           const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
           if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
             node.dataset.placed = '1';
-            node.setAttribute('data-x', cx.toFixed(1));
-            node.setAttribute('data-y', cy.toFixed(1));
-            node.setAttribute('transform', `translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${invScale})`);
+            const cxStr = cx.toFixed(1);
+            const cyStr = cy.toFixed(1);
+            node.setAttribute('data-x', cxStr);
+            node.setAttribute('data-y', cyStr);
+            applyNodeScale(node, cxStr, cyStr);
             node.classList.remove('is-crowded-hidden');
             occupied.push(candBox);
             placed = true;
@@ -7049,18 +6937,25 @@
           }
         }
         if (!placed) {
-          node.dataset.placed = '0';
-          node.setAttribute('transform', `translate(${baseX.toFixed(1)},${baseY.toFixed(1)}) scale(${invScale})`);
+          node.dataset.placed = '1';
+          const bxStr = baseX.toFixed(1);
+          const byStr = baseY.toFixed(1);
+          node.setAttribute('data-x', bxStr);
+          node.setAttribute('data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
-      });
+      }
 
       // Tier 6: Mountain-range names are the lowest priority; hide rather than cover any label above.
       // They share the pass zoom threshold so the overview keeps its current density.
-      if (this.grpRivers && !this.grpRivers.classList.contains('is-hidden')) {
+      if (showRivers) {
         this.grpRivers.querySelectorAll('.hydro-label.is-range').forEach((node) => {
           if (!showPasses) {
             node.classList.add('is-crowded-hidden');
+            if (!zoomOnly) delete node.dataset.placed;
+            return;
+          }
+          if (zoomOnly && node.dataset.placed === '1') {
             return;
           }
           const rx = parseFloat(node.getAttribute('data-x'));
@@ -7073,6 +6968,7 @@
           const ey = Math.abs(Math.sin(rad)) * hw + Math.abs(Math.cos(rad)) * hh;
           const box = { x1: rx - ex, y1: ry - ey, x2: rx + ex, y2: ry + ey };
           const crowded = overlapArea(box) > (box.x2 - box.x1) * (box.y2 - box.y1) * 0.03;
+          node.dataset.placed = '1';
           node.classList.toggle('is-crowded-hidden', crowded);
           if (!crowded) occupied.push(box);
         });
@@ -7081,6 +6977,165 @@
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
         node.setAttribute('font-size', (9.5 * s).toFixed(1));
       });
+      this._zoomScaleNodes = scaleNodes;
+      this._lastZoomStateKey = zoomStateKey;
+      this._lastInvScale = invScale;
+    }
+
+    _rescaleActivePersonPins(vw, s, zoomOnly = false) {
+      if (!this.activePerson || !this.grpJourney) return;
+      const svgRect =
+        (this.dragState && this.dragState.rect) ||
+        (this.pinchState && this.pinchState.rect) ||
+        this._cameraViewportRect ||
+        (typeof this.svg.getBoundingClientRect === 'function'
+          ? this.svg.getBoundingClientRect()
+          : null);
+      if (svgRect && svgRect.width) this._cameraViewportRect = svgRect;
+      const rw = (svgRect && svgRect.width) || vw || 1000;
+      const rh = (svgRect && svgRect.height) || rw * 0.7;
+      const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
+      const pinScale = Math.max(s, 0.92 / Math.max(0.12, screenScale));
+      const pinScaleStr = pinScale.toFixed(3);
+      const pxPerLocal = pinScale * screenScale;
+      const nodes = Array.from(this.grpJourney.querySelectorAll('.journey-node')).sort(
+        (a, b) => Number(a.dataset.stopIdx) - Number(b.dataset.stopIdx)
+      );
+      const pts = nodes.map((n) => ({
+        n,
+        x: Number(n.getAttribute('data-x')),
+        y: Number(n.getAttribute('data-y')),
+        ox: 0,
+        oy: 0,
+      }));
+      const minSepPx = 15.8;
+      for (let iter = 0; iter < 12; iter++) {
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            const pxI = pts[i].x * screenScale + pts[i].ox * pxPerLocal;
+            const pyI = pts[i].y * screenScale + pts[i].oy * pxPerLocal;
+            const pxJ = pts[j].x * screenScale + pts[j].ox * pxPerLocal;
+            const pyJ = pts[j].y * screenScale + pts[j].oy * pxPerLocal;
+            const dx = pxJ - pxI;
+            const dy = pyJ - pyI;
+            const dist = Math.hypot(dx, dy);
+            if (dist < minSepPx) {
+              let ux;
+              let uy;
+              if (dist < 0.05) {
+                const ang = (j - i - 1) * 1.05;
+                ux = Math.cos(ang);
+                uy = Math.sin(ang);
+              } else {
+                ux = dx / dist;
+                uy = dy / dist;
+              }
+              const push = ((minSepPx - dist) * 0.52) / Math.max(0.2, pxPerLocal);
+              pts[i].ox -= ux * push;
+              pts[i].oy -= uy * push;
+              pts[j].ox += ux * push;
+              pts[j].oy += uy * push;
+            }
+          }
+        }
+      }
+      for (const p of pts) {
+        p.n.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
+        p.n.setAttribute('data-ox', p.ox.toFixed(2));
+        p.n.setAttribute('data-oy', p.oy.toFixed(2));
+        const shiftEl = p.n.querySelector('.jn-pin-shift');
+        if (shiftEl) {
+          shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
+        }
+      }
+      const placedRects = pts.map((p) => {
+        const isCur = p.n.classList.contains('is-current');
+        const rPx = (isCur ? 8.5 : 6.6) * pxPerLocal;
+        const cx = p.x * screenScale + p.ox * pxPerLocal;
+        const cy = p.y * screenScale + p.oy * pxPerLocal;
+        return {
+          left: cx - rPx,
+          right: cx + rPx,
+          top: cy - rPx,
+          bottom: cy + rPx,
+        };
+      });
+      const candSlots = [
+        { idx: 0, anchor: 'middle', lx: '0', ly: '-12.2', nx: 0, ny: -12.2 },
+        { idx: 1, anchor: 'middle', lx: '0', ly: '19.8', nx: 0, ny: 19.8 },
+        { idx: 2, anchor: 'start', lx: '11.2', ly: '3.8', nx: 11.2, ny: 3.8 },
+        { idx: 3, anchor: 'end', lx: '-11.2', ly: '3.8', nx: -11.2, ny: 3.8 },
+      ];
+      const labelOrder = pts
+        .slice()
+        .sort((a, b) =>
+          a.n.classList.contains('is-current') ? -1 : b.n.classList.contains('is-current') ? 1 : 0
+        );
+      for (const p of labelOrder) {
+        const lbl = p.n.querySelector('.jn-label');
+        if (!lbl) continue;
+        const isCur = p.n.classList.contains('is-current');
+        const fontPx = isCur ? 11.5 : 10.2;
+        const textW = (this._estimateLocalTextWidth(lbl.textContent, fontPx, 0) + 3.6) * pxPerLocal;
+        const textH = (fontPx * 1.18 + 2.4) * pxPerLocal;
+        const cx = p.x * screenScale + p.ox * pxPerLocal;
+        const cy = p.y * screenScale + p.oy * pxPerLocal;
+        const prevIdx =
+          zoomOnly && lbl.dataset.slotIdx !== undefined ? Number(lbl.dataset.slotIdx) : -1;
+        const orderedSlots =
+          prevIdx >= 0 && candSlots[prevIdx]
+            ? [candSlots[prevIdx], ...candSlots.filter((s0) => s0.idx !== prevIdx)]
+            : candSlots;
+        let chosenSlot = null;
+        let chosenRect = null;
+        for (const sl of orderedSlots) {
+          const bx = cx + sl.nx * pxPerLocal;
+          const by = cy + sl.ny * pxPerLocal;
+          const left =
+            sl.anchor === 'start' ? bx : sl.anchor === 'end' ? bx - textW : bx - textW * 0.5;
+          const r = {
+            left,
+            right: left + textW,
+            top: by - textH * 0.82,
+            bottom: by + textH * 0.18,
+          };
+          const hit = placedRects.some(
+            (o) => r.right > o.left && r.left < o.right && r.bottom > o.top && r.top < o.bottom
+          );
+          if (!hit) {
+            chosenSlot = sl;
+            chosenRect = r;
+            break;
+          }
+        }
+        if (!chosenSlot && isCur) {
+          chosenSlot = orderedSlots[0];
+          const bx = cx + chosenSlot.nx * pxPerLocal;
+          const by = cy + chosenSlot.ny * pxPerLocal;
+          const left =
+            chosenSlot.anchor === 'start'
+              ? bx
+              : chosenSlot.anchor === 'end'
+                ? bx - textW
+                : bx - textW * 0.5;
+          chosenRect = {
+            left,
+            right: left + textW,
+            top: by - textH * 0.82,
+            bottom: by + textH * 0.18,
+          };
+        }
+        if (chosenSlot) {
+          lbl.style.display = '';
+          lbl.dataset.slotIdx = String(chosenSlot.idx);
+          lbl.setAttribute('text-anchor', chosenSlot.anchor);
+          lbl.setAttribute('x', chosenSlot.lx);
+          lbl.setAttribute('y', chosenSlot.ly);
+          placedRects.push(chosenRect);
+        } else {
+          lbl.style.display = 'none';
+        }
+      }
     }
 
     _animateCameraTo(targetCam) {
@@ -9653,6 +9708,7 @@
             startY: rem.y,
             camX: this.camera.x,
             camY: this.camera.y,
+            rect: this._cameraViewportRect || this._getUnscaledSvgRect(),
           };
           return;
         }
