@@ -341,16 +341,16 @@ window.EN_LOCALE = {
       "Chang'an · Jingkou"
     ],
     "xijin:316": [
-      "Chang'an falls to Han Zhao; Emperor Min surrenders, ending Western Jin",
+      "Han-Zhao takes Chang'an, ending Western Jin; Zhang, Tuoba & Murong hold North",
       "Chang'an"
     ],
     "dongjin:317": [
-      "Sima Rui establishes the Eastern Jin court at Jiankang",
+      "Sima Rui founds Eastern Jin at Jiankang alongside Former Liang, Dai & Murong Yan",
       "Jiankang"
     ],
     "dongjin:319": [
-      "Shi Le proclaims himself King of Zhao, founding Later Zhao",
-      "Xiangguo (Xingtai)"
+      "Liu Yao renames Han to Former Zhao at Chang'an; Shi Le founds Later Zhao at Xiangguo",
+      "Chang'an · Xiangguo"
     ],
     "dongjin:322": [
       "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang and controls the court",
@@ -365,8 +365,8 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "dongjin:335": [
-      "Shi Hu moves the Later Zhao capital from Xiangguo to Ye",
-      "Ye (Anyang)"
+      "Shi Hu moves Later Zhao capital to Ye; Murong Huang proclaims Former Yan at Jicheng",
+      "Ye · Jicheng"
     ],
     "dongjin:347": [
       "Huan Wen conquers Cheng-Han and recovers Sichuan",
@@ -405,15 +405,15 @@ window.EN_LOCALE = {
       "Ye"
     ],
     "dongjin:376": [
-      "Former Qin conquers Former Liang and Dai; Fu Jian unifies northern China",
-      "Guzang (Liangzhou)"
+      "Former Qin takes Ba-Shu from Jin and conquers Former Liang & Dai to unify North",
+      "Guzang · Chengdu"
     ],
     "dongjin:383": [
       "Battle of Fei River: Xie An & Xie Xuan’s Beifu army routs Fu Jian; Former Qin collapses",
       "Fei River (Shouyang)"
     ],
     "dongjin:384": [
-      "Murong Chui founds Later Yan and Yao Chang founds Later Qin",
+      "Murong Chui founds Later Yan & Yao Chang founds Later Qin; Jin retakes Ba-Shu",
       "Zhongshan · Chang'an"
     ],
     "dongjin:385": [
@@ -429,8 +429,8 @@ window.EN_LOCALE = {
       "Canhe Slope (Datong)"
     ],
     "dongjin:397": [
-      "Tufa Wugu founds Southern Liang in the Hehuang valley with capitals at Ledu and Xiping",
-      "Ledu · Xiping (Qinghai)"
+      "Tufa Wugu founds Southern Liang at Ledu; Duan Ye & Juqu Mengxun found Northern Liang",
+      "Ledu · Zhangye"
     ],
     "dongjin:398": [
       "Tuoba Gui moves Northern Wei capital to Pingcheng and takes imperial title",
@@ -441,12 +441,12 @@ window.EN_LOCALE = {
       "Guanggu · Kuaiji"
     ],
     "dongjin:404": [
-      "Liu Yu rises at Jingkou to crush usurper Huan Xuan and restore the Eastern Jin court",
-      "Jingkou · Jiankang · Jiangling"
+      "Liu Yu rises at Jingkou to crush usurper Huan Xuan; Qiao Zong founds Qiao Shu in Chengdu",
+      "Jingkou · Jiankang · Chengdu"
     ],
     "dongjin:407": [
-      "Helian Bobo founds the Xia kingdom and builds Tongwancheng",
-      "Tongwancheng"
+      "Helian Bobo founds Hu Xia at Tongwancheng; Feng Ba & Gao Yun found Northern Yan",
+      "Tongwancheng · Longcheng"
     ],
     "dongjin:410": [
       "Liu Yu’s northern expedition captures Guanggu and destroys Southern Yan",
@@ -469,8 +469,12 @@ window.EN_LOCALE = {
       "Jiankang"
     ],
     "nanbei:427": [
-      "Emperor Taiwu of Northern Wei captures Tongwancheng; destroys Xia in 431",
-      "Tongwancheng"
+      "Northern Wei takes Henan & Guanzhong and captures Hu Xia's capital Tongwancheng",
+      "Tongwancheng · Luoyang"
+    ],
+    "nanbei:431": [
+      "After Helian Ding destroys Western Qin, Northern Wei captures him to end Hu Xia",
+      "Tongwancheng · Jiankang"
     ],
     "nanbei:436": [
       "Northern Wei marches into Longcheng, ending Northern Yan",
@@ -6754,6 +6758,44 @@ window.EN_LOCALE = {
     "晋阳 · 洛阳": "Jinyang · Luoyang",
     "长安 · 关中": "Chang'an · Guanzhong",
     "绵竹（成都）": "Mianzhu (Chengdu)",
-    "邺城（安阳）": "Ye (Anyang)"
+    "邺城（安阳）": "Ye (Anyang)",
+    "汉赵都城（309–318），318年靳准之乱后刘曜迁都长安": "Capital of Han-Zhao (309–318 CE); Liu Yao moved the capital to Chang'an in 318 CE",
+    "代国（315–376）及北魏早期（386–398）都城": "Capital of Dai (315–376 CE) and early Northern Wei (386–398 CE)",
+    "棘城": "Jicheng",
+    "锦州·义县": "Jinzhou · Yixian",
+    "慕容部大棘城，337年慕容皝于此称燕王建前燕，342年迁都龙城": "Murong stronghold of Dajicheng where Murong Huang proclaimed Prince of Yan in 337 CE before moving the capital to Longcheng in 342 CE",
+    "317 — 319 · 东晋初立与汉赵、成汉、前凉、代、前燕并立：司马睿建晋于建康，北方汉赵尚未分裂": "317–319 · Founding of Eastern Jin: Sima Rui at Jiankang alongside Han-Zhao, Cheng-Han, Former Liang, Dai & Murong Yan before the Two Zhaos split",
+    "长安 · 襄国": "Chang'an · Xiangguo",
+    "邺城 · 棘城": "Ye · Jicheng",
+    "乐都 · 张掖": "Ledu · Zhangye",
+    "统万城 · 龙城": "Tongwancheng · Longcheng",
+    "京口 · 建康 · 成都": "Jingkou · Jiankang · Chengdu",
+    "冉魏": "Ran Wei",
+    "后秦": "Later Qin",
+    "南凉": "Southern Liang",
+    "谯蜀": "Qiao Shu",
+    "成汉（304–347）、谯蜀（405–413）都城，413年刘裕遣朱龄石收复": "Capital of Cheng-Han (304–347 CE) and Qiao Shu (405–413 CE); recovered by Zhu Lingshi in 413 CE",
+    "秃发乌孤建南凉，定都乐都、西平（397–414）": "Capital of Southern Liang (397–414 CE) founded by Tufa Wugu at Ledu and Xiping",
+    "347 — 350 · 桓温灭成汉：东晋收复巴蜀，北方后赵、前凉、代、前燕并立": "347–350 · Huan Wen Conquers Cheng-Han: Eastern Jin Recovers Ba-Shu Alongside Later Zhao, Former Liang, Dai & Former Yan",
+    "350 — 351 · 冉闵代赵建冉魏：冉闵于邺城灭后赵建冉魏，与东晋、前凉、代、辽东前燕并立": "350–351 · Ran Min Founds Ran Wei at Ye: Overthrow of Later Zhao Alongside Eastern Jin, Former Liang, Dai & Former Yan",
+    "351 — 352 · 苻健建前秦：苻健据长安称天王建前秦，与中原冉魏、辽东前燕、河西前凉、代北代国并立": "351–352 · Fu Jian Founds Former Qin at Chang'an: Former Qin in Guanzhong Alongside Ran Wei, Former Yan, Former Liang & Dai",
+    "352 — 370 · 前燕灭冉魏入据中原：前秦与前燕东西对峙，东晋北伐争衡": "352–370 · Former Yan Destroys Ran Wei: East–West Standoff Between Former Yan and Former Qin",
+    "384 — 385 · 慕容垂建后燕、姚苌建后秦：淝水战后关中河北分裂，前秦余部退保陇右河西": "384–385 · Founding of Later Yan & Later Qin After Fei River: Former Qin Remnants Hold Longyou & Hexi",
+    "385 — 386 · 乞伏国仁建西秦、吕光建后凉：关中后秦与陇西西秦分立，吕光据姑臧建后凉": "385–386 · Qifu Guoren Founds Western Qin & Lü Guang Founds Later Liang Alongside Later Qin and Later Yan",
+    "386 — 397 · 拓跋珪复代建北魏：北魏据代北崛起，与后燕、后秦、西秦、后凉并立": "386–397 · Tuoba Gui Founds Northern Wei in Dai-North Alongside Later Yan, Later Qin, Western Qin & Later Liang",
+    "397 — 398 · 秃发乌孤建南凉、段业与沮渠蒙逊建北凉：河西裂为南凉与北凉，北魏南下中原": "397–398 · Founding of Southern Liang at Ledu & Northern Liang in Hexi as Northern Wei Advances South",
+    "398 — 399 · 北魏迁都平城称帝：拓跋珪入据中原迁都平城，后燕截为南北两部，河西南凉、北凉并立": "398–399 · Northern Wei Moves Capital to Pingcheng: Later Yan Split in Two Alongside Southern & Northern Liang",
+    "399 — 404 · 慕容德据广固建南燕：南燕割据青齐兖，与北魏、后秦、西秦、南凉、北凉、后燕并立": "399–404 · Murong De Founds Southern Yan at Guanggu Alongside Northern Wei, Later Qin, Western Qin, Southern/Northern Liang & Later Yan",
+    "404 — 407 · 刘裕平桓玄与谯纵建谯蜀：刘裕起兵复晋，谯纵据巴蜀建谯蜀": "404–407 · Liu Yu Restores Jin & Qiao Zong Founds Qiao Shu in Ba-Shu",
+    "407 — 410 · 赫连勃勃建胡夏、冯跋建北燕：胡夏据朔方、北燕代后燕，与北魏、后秦、西秦、南燕、南凉、北凉、谯蜀并立": "407–410 · Helian Bobo Founds Hu Xia & Feng Ba Founds Northern Yan Alongside Northern Wei, Later/Western Qin, Southern Yan, Southern/Northern Liang & Qiao Shu",
+    "410 — 413 · 刘裕北伐灭南燕：攻克广固收复山东青齐，巴蜀谯蜀尚存": "410–413 · Liu Yu Conquers Southern Yan: Eastern Jin Recovers Shandong While Qiao Shu Holds Ba-Shu",
+    "413 — 417 · 朱龄石平谯蜀收复巴蜀：东晋尽复四川，北方北魏、后秦、西秦、胡夏、北燕、北凉并立": "413–417 · Zhu Lingshi Conquers Qiao Shu: Eastern Jin Recovers Sichuan Alongside Northern Wei, Later/Western Qin, Hu Xia, Northern Yan & Northern Liang",
+    "姑臧 · 成都": "Guzang · Chengdu",
+    "统万城 · 洛阳": "Tongwancheng · Luoyang",
+    "376 — 384 · 苻坚统一北方并取巴蜀：前秦尽兼北方与巴蜀，与东晋沿淮水—淝水对峙（383 淝水之战）": "376–384 · Fu Jian Unifies North & Takes Ba-Shu: Former Qin Holds Northern China & Sichuan Against Eastern Jin (383 Fei River)",
+    "384 — 385 · 慕容垂建后燕、姚苌建后秦：淝水战后东晋收复巴蜀荆襄，北方再度分裂": "384–385 · Founding of Later Yan & Later Qin After Fei River: Eastern Jin Recovers Ba-Shu & Jing-Xiang as North Fragments",
+    "420 — 427 · 刘裕代晋建宋：南朝刘宋立国，北方北魏、胡夏、西秦、北燕、北凉并立": "420–427 · Liu Yu Founds Liu Song: Southern Dynasty Song Alongside Northern Wei, Hu Xia, Western Qin, Northern Yan & Northern Liang",
+    "427 — 431 · 北魏攻克统万城并取关中河南：胡夏退保陇东，与北魏、刘宋、西秦、北燕、北凉并立": "427–431 · Northern Wei Captures Tongwancheng, Guanzhong & Henan: Hu Xia Retreats to Longdong Alongside Western Qin, Northern Yan & Northern Liang",
+    "431 — 436 · 西秦与胡夏相继败亡：北魏尽取关中陇右，与刘宋、北燕、北凉并立": "431–436 · Fall of Western Qin & Hu Xia: Northern Wei Secures Guanzhong & Longyou Alongside Liu Song, Northern Yan & Northern Liang"
   }
 };
