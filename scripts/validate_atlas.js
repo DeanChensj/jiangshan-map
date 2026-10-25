@@ -5340,6 +5340,57 @@ function main() {
         `${sk} main polity (${mainPol.title}) must use high-resolution outer border aligned with commanderies/provinces (>=1200 vertices, got ${mainRing.length})`
       );
     }
+
+    // CUJ 38: Compositor Stage Wrapper, Deferred Typography Coalescing, Anti-Flicker Zoom & Zero Layout Thrashing Invariants (Issue #158)
+    assert(
+      indexHtml.includes('<div id="svg-stage-wrap">') &&
+        cssSrc.includes('#svg-stage-wrap') &&
+        cssSrc.includes('contain: layout style;') &&
+        cssSrc.includes('#atlas-svg.is-camera-moving *') &&
+        !cssSrc.includes('#atlas-svg.is-camera-moving text') &&
+        /\.neighbor-caption\.is-crowded-hidden[\s\S]*?display:\s*none;/m.test(cssSrc) &&
+        appCode.includes('_commitStageTransform') &&
+        appCode.includes('_runWithDeferredTypography') &&
+        appCode.includes('if (this._camRaf !== null) return;') &&
+        appCode.includes('_lastLegendKey') &&
+        !appCode.includes("disc.getBoundingClientRect()") &&
+        !appCode.includes("label.getBoundingClientRect()"),
+      'Expected #svg-stage-wrap compositor wrapper, deferred typography coalescing, no is-camera-moving text stroke stripping, _camRaf settle guard, _lastLegendKey cache, display:none on crowded captions, and zero .jn-disc/.jn-label getBoundingClientRect calls'
+    );
+    {
+      let typoExecCount = 0;
+      const prevInstanceRescale = ctrl._rescaleSvgTypography;
+      ctrl._deferTypographyDepth = 0;
+      ctrl._typoDirty = false;
+      ctrl._rescaleSvgTypography = function () {
+        if (this._deferTypographyDepth > 0) {
+          this._typoDirty = true;
+          return;
+        }
+        this._typoDirty = false;
+        typoExecCount++;
+      };
+      ctrl._runWithDeferredTypography(() => {
+        ctrl._rescaleSvgTypography();
+        ctrl._runWithDeferredTypography(() => {
+          ctrl._rescaleSvgTypography();
+          ctrl._rescaleSvgTypography();
+        });
+        ctrl._rescaleSvgTypography();
+      });
+      ctrl._rescaleSvgTypography = prevInstanceRescale;
+      assert.strictEqual(
+        typoExecCount,
+        1,
+        `Nested _runWithDeferredTypography blocks must coalesce multiple _rescaleSvgTypography calls into 1 pass, got ${typoExecCount}`
+      );
+      assert(
+        appCode.includes('const zoomOnly = Boolean(') &&
+          appCode.includes('if (zoomOnly && node.dataset.chosenDir)') &&
+          appCode.includes("if (zoomOnly && node.dataset.placed === '1')"),
+        'Expected zoomOnly direction/position lock in _rescaleSvgTypography to prevent label flipping during zoom'
+      );
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
@@ -5348,7 +5399,7 @@ function main() {
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 37 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 38 E2E CUJs`);
 }
 
 main();

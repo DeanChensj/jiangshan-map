@@ -308,7 +308,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261025a" />
+  <link rel="stylesheet" href="css/style.css?v=20261025b" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -385,53 +385,55 @@
 
     <main id="workspace-body">
       <div id="viewport-frame">
-        <svg id="atlas-svg" class="terrain-active" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="中国历史地图">
-          <defs>
-            <filter id="label-halo" x="-20%" y="-20%" width="140%" height="140%">
-              <feMorphology operator="dilate" radius="1.4" in="SourceAlpha" result="dilated" />
-              <feFlood flood-color="#f6f1e6" flood-opacity="0.92" result="bg" />
-              <feComposite in="bg" in2="dilated" operator="in" result="outline" />
-              <feMerge>
-                <feMergeNode in="outline" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <linearGradient id="terrain-fade-h" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" class="terrain-edge-stop" />
-              <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
-              <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
-              <stop offset="100%" class="terrain-edge-stop" />
-            </linearGradient>
-            <linearGradient id="terrain-fade-v" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" class="terrain-edge-stop" />
-              <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
-              <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
-              <stop offset="100%" class="terrain-edge-stop" />
-            </linearGradient>
-          </defs>
-          <rect id="ocean-bg" x="-2000" y="-2000" width="6000" height="6000" />
-          <g id="camera-rig">
-            <g id="grp-terrain">
-              <image id="terrain-relief-img" href="assets/terrain_relief.webp" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
-              <!-- Match the solid ocean background without an expensive SVG mask during zoom. -->
-              <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-h)" />
-              <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-v)" />
+        <div id="svg-stage-wrap">
+          <svg id="atlas-svg" class="terrain-active" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="中国历史地图">
+            <defs>
+              <filter id="label-halo" x="-20%" y="-20%" width="140%" height="140%">
+                <feMorphology operator="dilate" radius="1.4" in="SourceAlpha" result="dilated" />
+                <feFlood flood-color="#f6f1e6" flood-opacity="0.92" result="bg" />
+                <feComposite in="bg" in2="dilated" operator="in" result="outline" />
+                <feMerge>
+                  <feMergeNode in="outline" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="terrain-fade-h" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" class="terrain-edge-stop" />
+                <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
+                <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
+                <stop offset="100%" class="terrain-edge-stop" />
+              </linearGradient>
+              <linearGradient id="terrain-fade-v" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" class="terrain-edge-stop" />
+                <stop offset="4.5%" class="terrain-edge-stop" stop-opacity="0" />
+                <stop offset="94.5%" class="terrain-edge-stop" stop-opacity="0" />
+                <stop offset="100%" class="terrain-edge-stop" />
+              </linearGradient>
+            </defs>
+            <rect id="ocean-bg" x="-2000" y="-2000" width="6000" height="6000" />
+            <g id="camera-rig">
+              <g id="grp-terrain">
+                <image id="terrain-relief-img" href="assets/terrain_relief.webp" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
+                <!-- Match the solid ocean background without an expensive SVG mask during zoom. -->
+                <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-h)" />
+                <rect x="-80" y="-40" width="1160" height="780" fill="url(#terrain-fade-v)" />
+              </g>
+              <g id="grp-neighbors"></g>
+              <g id="grp-provinces"></g>
+              <g id="grp-polities"></g>
+              <g id="grp-prefectures"></g>
+              <g id="grp-rivers"></g>
+              <g id="grp-ghost-diff"></g>
+              <g id="grp-corridors"></g>
+              <g id="grp-prov-names" class="is-hidden"></g>
+              <g id="grp-settlements"></g>
+              <g id="grp-milestones"></g>
+              <g id="grp-journey"></g>
+              <g id="grp-challenge"></g>
+              <g id="grp-genealogy"></g>
             </g>
-            <g id="grp-neighbors"></g>
-            <g id="grp-provinces"></g>
-            <g id="grp-polities"></g>
-            <g id="grp-prefectures"></g>
-            <g id="grp-rivers"></g>
-            <g id="grp-ghost-diff"></g>
-            <g id="grp-corridors"></g>
-            <g id="grp-prov-names" class="is-hidden"></g>
-            <g id="grp-settlements"></g>
-            <g id="grp-milestones"></g>
-            <g id="grp-journey"></g>
-            <g id="grp-challenge"></g>
-            <g id="grp-genealogy"></g>
-          </g>
-        </svg>
+          </svg>
+        </div>
 
         <div id="map-search-box" role="search" aria-label="快速检索历史人物、古今地名、州府、帝王年号与舆图寻址挑战">
           <div class="search-input-wrap">
@@ -709,11 +711,11 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261025a"></script>
-  <script src="js/atlas_boot.js?v=20261025a"></script>
-  <script src="js/map_data.js?v=20261025a"></script>
-  <script src="js/lore_data.js?v=20261025a"></script>
-  <script src="js/zh_hant.js?v=20261025a"></script>
-  <script src="js/app.js?v=20261025a"></script>
+  <script src="js/china_geo_data.js?v=20261025b"></script>
+  <script src="js/atlas_boot.js?v=20261025b"></script>
+  <script src="js/map_data.js?v=20261025b"></script>
+  <script src="js/lore_data.js?v=20261025b"></script>
+  <script src="js/zh_hant.js?v=20261025b"></script>
+  <script src="js/app.js?v=20261025b"></script>
 </body>
 </html>
