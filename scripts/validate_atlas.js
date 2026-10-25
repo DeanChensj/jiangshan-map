@@ -5378,6 +5378,71 @@ function main() {
       );
     }
 
+    // 6. Liao & Jin northeastern and western frontiers beyond modern borders (Issue #167)
+    for (const [sk, polName] of [
+      ['s_wudai_b', '契丹'],
+      ['s_wudai_b2', '契丹'],
+      ['s_wudai_c', '契丹'],
+      ['s_wudai_c0', '契丹'],
+      ['s_wudai_c2', '契丹'],
+      ['s_wudai_d', '辽'],
+      ['s_wudai_e', '辽'],
+      ['s_wudai_e1', '辽'],
+      ['s_wudai_e2', '辽'],
+    ]) {
+      assert(
+        hasPolPt(sk, polName, 133.5, 44.5) &&
+          hasPolPt(sk, polName, 138.0, 49.5) &&
+          hasPolPt(sk, polName, 110.0, 46.5),
+        `${sk} must extend ${polName} east to the Sea of Japan / Lower Amur and west across the Mongolian steppe for a seamless transition into Northern Song`
+      );
+    }
+    for (const [sk, polName, eastReg, northReg] of [
+      ['s_beisong_a0', '辽', '东京道', '上京道'],
+      ['s_beisong_a', '辽', '东京道', '上京道'],
+      ['s_beisong_a2', '辽', '东京道', '上京道'],
+      ['s_beisong_a3', '辽', '东京道', '上京道'],
+      ['s_beisong_a4', '辽', '东京道', '上京道'],
+      ['s_beisong_a5', '辽', '东京道', '上京道'],
+      ['s_beisong_b0', '辽', '东京道', '上京道'],
+      ['s_beisong_b', '辽', '东京道', '上京道'],
+      ['s_beisong_b1', '辽', '东京道', '上京道'],
+      ['s_beisong_b2', '辽', '东京道', '上京道'],
+      ['s_beisong_c', '金', '东京道', '上京道'],
+      ['s_beisong_d', '金', '东京路', '上京路'],
+    ]) {
+      assert(
+        hasPolPt(sk, polName, 134.5, 44.8) &&
+          hasPolPt(sk, polName, 135.5, 48.5) &&
+          hasPolPt(sk, polName, 138.0, 49.5) &&
+          !hasPolPt(sk, '蒙古诸部', 134.5, 44.8) &&
+          !hasPolPt(sk, '蒙古诸部', 135.5, 48.5) &&
+          hasRegPt(sk, eastReg, 134.5, 44.8) &&
+          hasRegPt(sk, northReg, 135.5, 48.5),
+        `${sk} must extend ${polName} (${eastReg} / ${northReg}) beyond the modern Heilongjiang–Ussuri border to the Sea of Japan and Lower Amur without overlapping 蒙古诸部`
+      );
+    }
+    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0']) {
+      assert(
+        hasPolPt(sk, '金', 133.5, 44.8) &&
+          hasPolPt(sk, '金', 136.0, 48.8) &&
+          hasPolPt(sk, '金', 139.0, 51.0) &&
+          hasPolPt(sk, '金', 126.5, 54.0) &&
+          hasPolPt(sk, '金', 132.0, 53.5) &&
+          hasPolPt(sk, '金', 122.0, 50.5) &&
+          !hasPolPt(sk, '金', 112.5, 44.5) &&
+          !hasPolPt(sk, '蒙古诸部', 136.0, 48.8) &&
+          !hasPolPt(sk, '大蒙古国', 136.0, 48.8) &&
+          hasRegPt(sk, '上京路', 136.0, 48.8) &&
+          hasRegPt(sk, '上京路', 126.5, 54.0) &&
+          hasRegPt(sk, '上京路', 122.0, 50.5) &&
+          hasPrefPt(sk, '蒲与路', 126.5, 54.0) &&
+          hasPrefPt(sk, '胡里改路', 136.0, 48.8) &&
+          hasPrefPt(sk, '恤品路', 133.5, 44.8),
+        `${sk} must extend Jin (上京路, 蒲与路, 胡里改路, 恤品路) across the Amur and Ussuri rivers and follow the historical Jin Frontier Trench in the west rather than modern borders`
+      );
+    }
+
     // CUJ 37: Warring States (Zizhi Tongjian) territorial & settlement alignment across all 14 snapshots
     for (const sk of ['s_zhanguo_a', 's_zhanguo_a2']) {
       assert(
