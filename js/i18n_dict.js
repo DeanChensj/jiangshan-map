@@ -297,27 +297,31 @@ window.EN_LOCALE = {
       "Jianye"
     ],
     "xijin:280": [
-      "Western Jin conquers Eastern Wu, reunifying China",
+      "Western Jin conquers Wu to reunify China, enacts land laws, and disarms local commanderies",
       "Jianye"
     ],
-    "xijin:290": [
-      "Emperor Wu dies; Empress Jia Nanfeng's court intrigues begin",
-      "Luoyang"
+    "xijin:289": [
+      "Emperor Wu enfeoffs princes with regional armies and appoints Liu Yuan over Bingzhou Xiongnu",
+      "Jinyang · Luoyang"
     ],
     "xijin:291": [
-      "Empress Jia Nanfeng seizes power, sparking the War of the Eight Princes",
+      "After Emperor Wu dies, Empress Jia Nanfeng purges regents, sparking the War of the Eight Princes",
       "Luoyang"
     ],
-    "xijin:300": [
-      "Crown Prince Sima Yu murdered as Sima Lun purges Empress Jia",
-      "Luoyang"
+    "xijin:299": [
+      "Qi Wannian's uprising triggers Guanzhong famine; Jiang Tong warns of frontier settlement perils",
+      "Chang'an · Guanzhong"
     ],
     "xijin:301": [
-      "Sima Lun usurps the throne; War of the Eight Princes escalates",
-      "Luoyang"
+      "Di leader Li Te leads Guanzhong refugees south into Shu and rises against Jin at Mianzhu",
+      "Mianzhu (Chengdu)"
+    ],
+    "xijin:303": [
+      "After Sima Lun's usurpation, Princes Sima Ying at Ye and Sima Yong at Chang'an march on Luoyang",
+      "Ye (Anyang)"
     ],
     "xijin:304": [
-      "Liu Yuan proclaims Han Zhao as Li Xiong founds Cheng Han",
+      "Released to Bingzhou by Sima Ying, Liu Yuan proclaims Han Zhao as Li Xiong claims Chengdu",
       "Zuoguocheng (Lishi) · Chengdu"
     ],
     "xijin:306": [
@@ -6744,6 +6748,12 @@ window.EN_LOCALE = {
     "江南东道重镇、浙西观察使（镇海军节度使）治所，扼大运河与长江交汇锁钥": "Seat of the Zhexi Military Commissioner in Jiangnan East Circuit, guarding the junction of the Grand Canal and the Yangtze River",
     "杨吴与南唐京口江防重镇，拱卫东都江都与国都金陵之北门": "Yangtze river-defense stronghold of Yang Wu and Southern Tang at Jingkou, shielding the northern approaches to Jinling",
     "两浙路重镇（政和三年升镇江府），王安石瓜洲渡江赋诗与沈括梦溪园所在地": "Major prefecture of Liangzhe Circuit (elevated to Zhenjiang Prefecture in 1113 CE), site of Shen Kuo's Dream Pool Garden",
-    "两浙西路江防要塞，韩世忠黄天荡抗金与辛弃疾北固亭登临处": "Liangzhe West Circuit Yangtze fortress where Han Shizhong fought Jin forces at Huangtiandang and Xin Qiji composed lyrics at Beigu Pavilion"
+    "两浙西路江防要塞，韩世忠黄天荡抗金与辛弃疾北固亭登临处": "Liangzhe West Circuit Yangtze fortress where Han Shizhong fought Jin forces at Huangtiandang and Xin Qiji composed lyrics at Beigu Pavilion",
+    "左国城（离石）": "Zuoguocheng (Lishi)",
+    "并州匈奴五部驻地，永兴元年刘渊自邺归并州于此起兵称汉王": "Seat of the Five Xiongnu Divisions in Bingzhou; Liu Yuan returned from Ye to proclaim King of Han here in 304 CE",
+    "晋阳 · 洛阳": "Jinyang · Luoyang",
+    "长安 · 关中": "Chang'an · Guanzhong",
+    "绵竹（成都）": "Mianzhu (Chengdu)",
+    "邺城（安阳）": "Ye (Anyang)"
   }
 };
