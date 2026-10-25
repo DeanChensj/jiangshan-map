@@ -8,6 +8,8 @@
 
 [**Play Live Demo (English UI) → https://deanchen.me/jiangshan-map/?lang=en**](https://deanchen.me/jiangshan-map/?lang=en)
 
+*The story behind it (in Chinese): [From textbook maps to 1k GitHub stars](https://deanchen.me/history/atlas/2026/10/25/jiangshan-map-story.html)*
+
 <p align="center">
   <a href="https://deanchen.me/jiangshan-map/?lang=en">
     <img src="assets/hero_demo_en.webp" alt="Chronicles of the Realm — 15s Interactive Overview (Warring States Unification, 2,400-Year Dynastic Scrubbing, Chang'an Place Genealogy & Su Shi's Exile Route)" width="100%" />
