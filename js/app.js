@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261025g').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261026a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261025g').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261026a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2607,6 +2607,11 @@
         return;
       }
       this.openMilestoneBalloon(dynasty, m, { isAuto: true });
+      if (this.playing && !this.dragState && !this.pinchState) {
+        if (this._ensureCoordInView(m.coord)) {
+          this.playHoldTicks = Math.max(this.playHoldTicks, 3);
+        }
+      }
     }
 
     _resolvePinMilestone(dynasty, milestoneEl) {
@@ -3354,8 +3359,8 @@
               const outY = sy < defCam.y + defCam.h * 0.16 || sy > defCam.y + defCam.h * 0.84;
               if (outX || outY) {
                 this._animateCameraTo({
-                  x: Math.max(40, Math.min(960 - defCam.w, sx - defCam.w * 0.5)),
-                  y: Math.max(15, Math.min(685 - defCam.h, sy - defCam.h * 0.42)),
+                  x: Math.max(-180, Math.min(1000 - defCam.w + 140, sx - defCam.w * 0.5)),
+                  y: Math.max(-150, Math.min(700 - defCam.h + 120, sy - defCam.h * 0.42)),
                   w: defCam.w,
                   h: defCam.h,
                 });
@@ -6171,6 +6176,24 @@
       }
     }
 
+    _ensureCoordInView(coord) {
+      if (!coord || !this.projector || typeof this._animateCameraTo !== 'function') return false;
+      const cam = this._cameraTarget || this.camera;
+      const [sx, sy] = this.projector.toScreen(coord[0], coord[1]);
+      const outX = sx < cam.x + cam.w * 0.14 || sx > cam.x + cam.w * 0.86;
+      const outY = sy < cam.y + cam.h * 0.16 || sy > cam.y + cam.h * 0.84;
+      if (outX || outY) {
+        this._animateCameraTo({
+          x: Math.max(-180, Math.min(1000 - cam.w + 140, sx - cam.w * 0.5)),
+          y: Math.max(-150, Math.min(700 - cam.h + 120, sy - cam.h * 0.45)),
+          w: cam.w,
+          h: cam.h,
+        });
+        return true;
+      }
+      return false;
+    }
+
     stepTimelineNode(dir) {
       if (this.challenge) return;
       this._recordGestureClick();
@@ -6187,24 +6210,6 @@
         this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
       }
-      const ensureCoordInView = (coord) => {
-        if (!coord || !this.projector || typeof this._animateCameraTo !== 'function') return;
-        const [sx, sy] = this.projector.toScreen(coord[0], coord[1]);
-        const outX =
-          sx < this.camera.x + this.camera.w * 0.14 ||
-          sx > this.camera.x + this.camera.w * 0.86;
-        const outY =
-          sy < this.camera.y + this.camera.h * 0.16 ||
-          sy > this.camera.y + this.camera.h * 0.84;
-        if (outX || outY) {
-          this._animateCameraTo({
-            x: Math.max(-140, Math.min(1000 - this.camera.w + 140, sx - this.camera.w * 0.5)),
-            y: Math.max(-100, Math.min(700 - this.camera.h + 120, sy - this.camera.h * 0.45)),
-            w: this.camera.w,
-            h: this.camera.h,
-          });
-        }
-      };
       const curDyn = this.dynasties[this.dynastyIdx];
       if (curDyn && Array.isArray(curDyn.milestones)) {
         const sameYrIdxs = [];
@@ -6220,7 +6225,7 @@
           if (pos !== -1 && nextPos >= 0 && nextPos < sameYrIdxs.length) {
             const targetM = curDyn.milestones[sameYrIdxs[nextPos]];
             this.openMilestoneBalloon(curDyn, targetM, { fromStep: true });
-            ensureCoordInView(targetM.coord);
+            this._ensureCoordInView(targetM.coord);
             return;
           }
         }
@@ -6271,7 +6276,7 @@
             ? this.activeMilestone.milestone
             : matched[matched.length - 1];
         if (activeM && activeM.coord) {
-          ensureCoordInView(activeM.coord);
+          this._ensureCoordInView(activeM.coord);
         }
       }
     }
@@ -6361,10 +6366,10 @@
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
-      this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
       this.playProgress = this._yearToProgress(this.year);
       this.playHoldTicks = 0;
       this.playShownTicks = AUTOPLAY_MIN_SHOW_TICKS;
+      this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
       this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
