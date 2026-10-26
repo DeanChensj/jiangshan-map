@@ -11,8 +11,50 @@
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
     '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
-    '北宋', '南宋', '蜀汉', '西夏', '汉', '魏', '吴', '隋', '唐', '辽', '金', '元', '明', '清',
+    '北宋', '南宋', '蜀汉', '西夏', '周', '秦', '汉', '魏', '吴', '晋', '宋', '齐', '梁', '陈', '隋', '唐', '辽', '金', '元', '明', '清',
   ];
+  const ERA_CHAR_PINYIN = {
+    威: 'wei', 烈: 'lie', 王: 'wang', 安: 'an', 显: 'xian', 慎: 'shen', 靓: 'jing', 赧: 'nan', 昭: 'zhao', 襄: 'xiang',
+    孝: 'xiao', 文: 'wen', 庄: 'zhuang', 政: 'zheng', 始: 'shi', 皇: 'huang', 二: 'er', 世: 'shi', 高: 'gao', 帝: 'di',
+    惠: 'hui', 后: 'hou', 前: 'qian', 元: 'yuan', 景: 'jing', 中: 'zhong', 建: 'jian', 光: 'guang', 朔: 'shuo', 狩: 'shou',
+    鼎: 'ding', 封: 'feng', 太: 'tai', 初: 'chu', 天: 'tian', 汉: 'han', 征: 'zheng', 和: 'he', 凤: 'feng', 平: 'ping',
+    本: 'ben', 地: 'di', 节: 'jie', 康: 'kang', 神: 'shen', 爵: 'jue', 五: 'wu', 甘: 'gan', 露: 'lu', 黄: 'huang',
+    龙: 'long', 永: 'yong', 竟: 'jing', 宁: 'ning', 河: 'he', 阳: 'yang', 鸿: 'hong', 嘉: 'jia', 延: 'yan', 绥: 'sui',
+    寿: 'shou', 居: 'ju', 摄: 'she', 新: 'xin', 莽: 'mang', 国: 'guo', 更: 'geng', 武: 'wu', 章: 'zhang', 兴: 'xing',
+    憙: 'xi', 熹: 'xi', 青: 'qing', 正: 'zheng', 咸: 'xian', 熙: 'xi', 泰: 'tai', 昌: 'chang', 升: 'sheng', 隆: 'long',
+    义: 'yi', 南: 'nan', 朝: 'chao', 宋: 'song', 大: 'da', 明: 'ming', 豫: 'yu', 徽: 'hui', 昇: 'sheng', 齐: 'qi',
+    梁: 'liang', 监: 'jian', 普: 'pu', 通: 'tong', 同: 'tong', 清: 'qing', 宝: 'bao', 承: 'cheng', 圣: 'sheng', 绍: 'shao',
+    陈: 'chen', 定: 'ding', 开: 'kai', 仁: 'ren', 业: 'ye', 德: 'de', 贞: 'zhen', 观: 'guan', 庆: 'qing', 麟: 'lin',
+    乾: 'qian', 总: 'zong', 亨: 'heng', 上: 'shang', 仪: 'yi', 调: 'tiao', 耀: 'yao', 淳: 'chun', 弘: 'hong', 道: 'dao',
+    嗣: 'si', 垂: 'chui', 拱: 'gong', 授: 'shou', 长: 'chang', 载: 'zai', 册: 'ce', 万: 'wan', 岁: 'sui', 功: 'gong',
+    历: 'li', 久: 'jiu', 视: 'shi', 云: 'yun', 极: 'ji', 至: 'zhi', 应: 'ying', 广: 'guang', 成: 'cheng', 会: 'hui',
+    符: 'fu', 启: 'qi', 纪: 'ji', 顺: 'shun', 福: 'fu', 化: 'hua', 复: 'fu', 祐: 'you', 运: 'yun', 雍: 'yong',
+    端: 'duan', 祥: 'xiang', 禧: 'xi', 治: 'zhi', 丰: 'feng', 靖: 'jing', 崇: 'chong', 重: 'chong', 宣: 'xuan', 炎: 'yan',
+    统: 'tong', 洪: 'hong', 乐: 'le', 祯: 'zhen', 绪: 'xu', 民: 'min', 禾: 'he', 赤: 'chi', 乌: 'wu', 衡: 'heng',
+    凰: 'huang', 玺: 'xi', 登: 'deng', 赐: 'ci', 瑞: 'rui', 常: 'chang', 䴥: 'lu', 真: 'zhen', 君: 'jun', 龟: 'gui',
+    象: 'xiang', 废: 'fei', 恭: 'gong', 保: 'bao', 闵: 'min', 西: 'xi', 赞: 'zan', 禄: 'lu', 收: 'shou', 辅: 'fu',
+    眷: 'juan', 礼: 'li', 法: 'fa', 祚: 'zuo', 奲: 'da', 都: 'du', 盛: 'sheng', 人: 'ren',
+  };
+  const ADMIN_CATEGORY_EN = {
+    刺史部: 'Inspectorate Region',
+    布政使司: 'Provincial Administration Commission',
+    行省: 'Branch Secretariat (Province)',
+    宣政院: 'Bureau of Buddhist and Tibetan Affairs',
+    中书省: 'Central Secretariat',
+    省: 'Province',
+    '道/省': 'Circuit / Province',
+    将军辖区: 'Generalship Jurisdiction',
+    办事大臣: 'Imperial Resident Jurisdiction',
+    驻藏大臣: 'Imperial Resident in Tibet',
+    地方: 'Region',
+    都督区: 'Area Command',
+    郡区: 'Commandery Zone',
+    政区: 'Administrative Region',
+    城: 'City',
+    属国: 'Dependent State',
+    部: 'Tribal Division',
+    侨州: 'Emigre Prefecture',
+  };
   // Timeline autoplay: the playhead crosses the scrubber bar at a constant speed (each
   // dynasty gets time in proportion to its band width), lands on every milestone year,
   // shows each callout for at least ~1 s, and holds on milestones that open a dynasty or
@@ -787,17 +829,109 @@
       return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
     }
 
+    _getExtraEnTermMap() {
+      if (
+        this._extraEnTermMap &&
+        this._extraEnTermMapDictSize ===
+          Object.keys((this.enLocale && this.enLocale.dict) || {}).length
+      ) {
+        return this._extraEnTermMap;
+      }
+      const dict = (this.enLocale && this.enLocale.dict) || {};
+      const map = { ...ADMIN_CATEGORY_EN };
+      // 1. Stripped parenthetical keys from enLocale.dict (e.g. '南郑（汉中）' -> '南郑': 'Nanzheng')
+      for (const [k, v] of Object.entries(dict)) {
+        if (!v) continue;
+        const strippedK = k.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+        if (strippedK && strippedK !== k && !dict[strippedK] && !map[strippedK]) {
+          const strippedV = String(v).replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+          if (strippedV) map[strippedK] = strippedV;
+        }
+      }
+      // 2. Strategic passes
+      for (const p of HistoricalAtlasController.STRATEGIC_PASSES || []) {
+        if (!p) continue;
+        if (p.ancientZh && p.ancientEn) {
+          map[p.ancientZh] = p.ancientEn;
+          const strippedZh = p.ancientZh.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+          const strippedEn = p.ancientEn.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+          if (strippedZh && strippedEn && !map[strippedZh]) map[strippedZh] = strippedEn;
+        }
+        if (p.modernZh && p.modernEn) map[p.modernZh] = p.modernEn;
+        if (p.rangeZh && p.rangeEn) map[p.rangeZh] = p.rangeEn;
+        if (p.chokepointZh && p.chokepointEn) map[p.chokepointZh] = p.chokepointEn;
+      }
+      // 3. Historical journeys stops
+      for (const j of Object.values(HistoricalAtlasController.HISTORICAL_JOURNEYS || {})) {
+        if (j && j.titleZh && j.titleEn) map[j.titleZh] = j.titleEn;
+        for (const st of (j && j.stops) || []) {
+          if (st && st.name && st.nameEn) {
+            map[st.name] = st.nameEn;
+            const strippedZh = st.name.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+            const strippedEn = st.nameEn.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
+            if (strippedZh && strippedEn && !map[strippedZh]) map[strippedZh] = strippedEn;
+          }
+          if (st && st.modern && st.modernEn) map[st.modern] = st.modernEn;
+        }
+      }
+      // 4. Landmark events & milestone sites
+      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS || []) {
+        if (lm && lm.site && lm.siteEn) map[lm.site] = lm.siteEn;
+        if (lm && lm.zh && lm.en) map[lm.zh] = lm.en;
+      }
+      const msDict = (this.enLocale && this.enLocale.milestones) || {};
+      for (const d of this.dynasties || []) {
+        for (const m of (d && d.milestones) || []) {
+          if (!m || !m.site) continue;
+          const hit = msDict[`${d.key}:${m.year}`];
+          const sEn = m.siteEn || (Array.isArray(hit) && hit[1]);
+          if (sEn && !map[m.site]) map[m.site] = sEn;
+        }
+      }
+      // 5. Corridors
+      const corrDict = (this.enLocale && this.enLocale.corridors) || {};
+      for (const c of this.corridors || []) {
+        if (!c || !c.title) continue;
+        const hit = corrDict[c.key];
+        const cEn = (Array.isArray(hit) ? hit[0] : hit && hit.name) || '';
+        if (cEn && !map[c.title]) map[c.title] = cEn;
+      }
+      this._extraEnTermMap = map;
+      this._extraEnTermMapDictSize = Object.keys(dict).length;
+      return map;
+    }
+
     _enDict(text) {
       if (!text) return '';
       if (text === '中华人民共和国') return "People's Republic of China";
       const dict = this.enLocale && this.enLocale.dict;
       if (!dict) return text;
       if (dict[text]) return dict[text];
+      const extra = this._getExtraEnTermMap();
+      if (extra[text]) return extra[text];
       const provMatch = String(text).match(
         /^(黑龙江|内蒙古|新疆|广西|宁夏|西藏|北京|天津|上海|重庆|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)(.+)$/
       );
-      if (provMatch && dict[provMatch[1]] && dict[provMatch[2]]) {
-        return `${dict[provMatch[2]]}, ${dict[provMatch[1]]}`;
+      if (provMatch) {
+        const p1 = dict[provMatch[1]] || extra[provMatch[1]];
+        const p2 = dict[provMatch[2]] || extra[provMatch[2]];
+        if (p1 && p2) return `${p2}, ${p1}`;
+      }
+      const str = String(text);
+      if (str.includes(' · ')) {
+        const parts = str.split(' · ').map((p) => this._enDict(p.trim()));
+        if (parts.some((p, i) => p !== str.split(' · ')[i].trim())) {
+          return parts.join(' · ');
+        }
+      }
+      const parenMatch = str.match(/^([^（(]+)[（(]([^）)]+)[）)]$/);
+      if (parenMatch) {
+        const baseZh = parenMatch[1].trim();
+        const innerZh = parenMatch[2].trim();
+        const baseEn = dict[baseZh] || extra[baseZh];
+        const innerEn = dict[innerZh] || extra[innerZh];
+        if (baseEn && innerEn) return `${baseEn} (${innerEn})`;
+        if (baseEn) return baseEn;
       }
       return text;
     }
@@ -813,6 +947,17 @@
       const hit = this.enLocale.milestones && this.enLocale.milestones[key];
       if (hit) return Array.isArray(hit) ? hit[0] : hit;
       return m.headline;
+    }
+
+    _enMilestoneSite(d, m) {
+      if (!m || !m.site) return '';
+      if (m.siteEn) return m.siteEn;
+      const key = `${d.key}:${m.year}`;
+      const hit = this.enLocale.milestones && this.enLocale.milestones[key];
+      if (Array.isArray(hit) && hit[1]) return hit[1];
+      return d && (d.key === 'roc' || d.key === 'prc')
+        ? this._enModernCity(m.site)
+        : this._enDict(m.site);
     }
 
     _clampYearToDynasty(dynasty, y) {
@@ -861,10 +1006,7 @@
     milestoneSite(d, m) {
       if (!m.site) return '';
       if (this.locale === 'en') {
-        if (m.siteEn) return m.siteEn;
-        const key = `${d.key}:${m.year}`;
-        const hit = this.enLocale.milestones && this.enLocale.milestones[key];
-        if (Array.isArray(hit) && hit[1]) return hit[1];
+        return this._enMilestoneSite(d, m);
       }
       return d && (d.key === 'roc' || d.key === 'prc')
         ? this.trModernCity(m.site)
@@ -1016,6 +1158,44 @@
         return `${monarchZh}·${eraName}${numStr}年`;
       }
       return `${prefix}${numStr}年`;
+    }
+
+    _eraNamePinyin(eraOnly) {
+      if (!eraOnly) return '';
+      const syls = Array.from(String(eraOnly)).map((ch) => ERA_CHAR_PINYIN[ch] || ch);
+      let joined = '';
+      for (let i = 0; i < syls.length; i++) {
+        const s = syls[i];
+        if (i > 0 && /^[aoe]/i.test(s)) joined += "'";
+        joined += s;
+      }
+      return joined ? joined.charAt(0).toUpperCase() + joined.slice(1) : '';
+    }
+
+    _formatSpanEraEn(sp, targetNum) {
+      const [startY, prefix, , monarchZh = '', monarchEn = ''] = sp;
+      if (prefix === '民国') {
+        return `Republic of China · Year ${targetNum}`;
+      }
+      if (startY < -140) {
+        if (monarchZh && prefix.startsWith(monarchZh) && prefix.length > monarchZh.length) {
+          const sub = prefix.slice(monarchZh.length);
+          const subEn =
+            sub === '前元'
+              ? 'Early Reign'
+              : sub === '中元'
+                ? 'Middle Reign'
+                : sub === '后元'
+                  ? 'Late Reign'
+                  : this._eraNamePinyin(sub);
+          return `${monarchEn || monarchZh} · ${subEn} Year ${targetNum}`;
+        }
+        return `${monarchEn || monarchZh || prefix} · Year ${targetNum}`;
+      }
+      const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
+      const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
+      const eraPinyin = this._eraNamePinyin(eraOnly);
+      return `${eraPinyin} Year ${targetNum}${monarchEn ? ' · ' + monarchEn : ''}`;
     }
 
     /**
@@ -1293,6 +1473,43 @@
             ? 'Quick search for historical figures, places, prefectures, eras, and place quiz'
             : '快速检索历史人物、古今地名、州府、帝王年号与古地名寻址'
         );
+      }
+      const closeChalBtn = this._id('act-close-challenge');
+      if (closeChalBtn) {
+        const lbl = this.locale === 'en' ? 'Exit quiz' : '退出挑战';
+        closeChalBtn.title = lbl;
+        if (typeof closeChalBtn.setAttribute === 'function') {
+          closeChalBtn.setAttribute('aria-label', lbl);
+        }
+      }
+      const expandGenBtn = this._id('act-expand-genealogy');
+      if (expandGenBtn) {
+        const lbl = this.locale === 'en' ? 'Expand / collapse genealogy panel' : '展开/收起沿革面板';
+        expandGenBtn.title = lbl;
+        if (typeof expandGenBtn.setAttribute === 'function') {
+          expandGenBtn.setAttribute('aria-label', lbl);
+        }
+      }
+      const closeGenBtn = this._id('act-close-genealogy');
+      if (closeGenBtn) {
+        const lbl = this.locale === 'en' ? 'Close' : '关闭';
+        closeGenBtn.title = lbl;
+        if (typeof closeGenBtn.setAttribute === 'function') {
+          closeGenBtn.setAttribute('aria-label', lbl);
+        }
+      }
+      const ariaMap = [
+        ['layers-popover', 'Map layers', '地图图层开关'],
+        ['challenge-card', 'Ancient Place Quiz', '古地名小试挑战'],
+        ['genealogy-card', 'Place administrative genealogy', '古今地点沿革卡片'],
+        ['journey-card', 'Historical route overlay', '行迹叠图卡片'],
+        ['start-guide', 'Quick start guide', '功能导览'],
+      ];
+      for (const [id, enLbl, zhLbl] of ariaMap) {
+        const el = this._id(id);
+        if (el && typeof el.setAttribute === 'function') {
+          el.setAttribute('aria-label', this.locale === 'en' ? enLbl : zhLbl);
+        }
       }
       this._syncTogglePaneButton();
 
@@ -5774,7 +5991,10 @@
         if (cell) {
           const lbl = cell.querySelector('.band-label') || cell;
           lbl.textContent = this.dynastyBadge(d);
-          const fullLabel = `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
+          const fullLabel =
+            this.locale === 'en'
+              ? `${this.dynastyName(d)} (${this.formatSpan(d)})`
+              : `${this.dynastyName(d)}（${this.formatSpan(d)}）`;
           cell.title = fullLabel;
           cell.setAttribute('aria-label', fullLabel);
         }
@@ -6484,6 +6704,9 @@
         : this.locale === 'en'
           ? 'Collapse chronicle pane (Full-map view)'
           : '收起编年侧栏（全屏看图）';
+      if (typeof btn.setAttribute === 'function') {
+        btn.setAttribute('aria-label', btn.title);
+      }
     }
 
     toggleChroniclePane(force) {
@@ -7776,16 +7999,15 @@
       if (!text) return '';
       let out = String(text).replace(/（今[^）]+）|\(Now [^)]+\)/gi, '');
       if (this.locale === 'en') {
-        const modEn = settlement.modernEn || this.trModernCity(settlement.modern || '');
-        const cleanAncEn = String(displayAncient || '').toLowerCase();
-        for (const rawPart of String(modEn).split(/[,/·]/)) {
-          const part = rawPart.replace(/\b(NW|NE|SW|SE|N|S|E|W)\b/g, '').trim();
-          if (part.length >= 3 && !cleanAncEn.includes(part.toLowerCase())) {
-            const escaped = part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            out = out.replace(new RegExp(`\\b${escaped}\\b`, 'gi'), 'this site');
-          }
-        }
-        return out;
+        return out
+          .replace(
+            /\bmodern\s+(?:Beijing|Nanjing|Shanghai|Tianjin|Chongqing|Hangzhou|Guangzhou|Wuhan|Changsha|Chengdu|Xi'an)\b/gi,
+            'this city'
+          )
+          .replace(
+            /\burban foundation of\s+(?:Nanjing|Beijing|Shanghai|Tianjin|Chongqing|Hangzhou|Guangzhou|Wuhan|Changsha|Chengdu|Xi'an)\b/gi,
+            'urban foundation of this city'
+          );
       }
 
       const ancCore = String(displayAncient || '').trim();
@@ -8014,8 +8236,8 @@
       const rawAncientEn = cur.settlement.ancientEn
         ? cur.settlement.ancientEn
         : cur.dynasty.key === 'roc' || cur.dynasty.key === 'prc'
-          ? this.trModernCity(displayAncientZh)
-          : this.trTerm(displayAncientZh);
+          ? this.trModernCity(cur.settlement.ancient)
+          : this.trTerm(cur.settlement.ancient);
       const displayAncientEn = this._stripPromptParenthetical(rawAncientEn);
       const displayTarget = this.locale === 'en' ? displayAncientEn : displayAncientZh;
 
@@ -8068,14 +8290,15 @@
             break;
           }
         }
+        const sep = this.locale === 'en' ? ': ' : '：';
         if (chosenEv) {
-          extraEventStr = ` · ${chosenEv.yrLbl}：${chosenEv.cleanEv}`;
+          extraEventStr = ` · ${chosenEv.yrLbl}${sep}${chosenEv.cleanEv}`;
         } else if (
           firstClean &&
           !baseClue.includes('；') &&
           firstClean.cleanEv.length > baseClue.length
         ) {
-          baseClue = `${firstClean.yrLbl}：${firstClean.cleanEv}`;
+          baseClue = `${firstClean.yrLbl}${sep}${firstClean.cleanEv}`;
         }
       }
 
@@ -8771,7 +8994,7 @@
       for (const d of this.dynasties) {
         for (const m of d.milestones || []) {
           const enHead = this._enMilestoneHeadline(d, m);
-          const siteEn = m.site ? this._enDict(m.site) : '';
+          const siteEn = m.site ? this._enMilestoneSite(d, m) : '';
           const yrEn = m.year <= 0 ? `${-m.year || 1} BCE` : `${m.year} CE`;
           entries.push({
             kind: 'event',
@@ -8862,6 +9085,7 @@
           const yrZh = this.formatYear(yr);
           this.locale = 'en';
           const yrEn = this.formatYear(yr);
+          const eraEn = this.formatEraLabel(yr, d);
           this.locale = prevLoc;
           hits.push({
             kind: 'era',
@@ -8869,7 +9093,7 @@
             year: yr,
             titleZh: `${yrZh} · ${eraZh}`,
             subZh: d.title,
-            titleEn: `${yrEn} (${eraZh})`,
+            titleEn: `${yrEn} (${eraEn})`,
             subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
             score: 135,
           });
@@ -8928,7 +9152,16 @@
         const [enName, enOwnRegime = ''] = monarchEnExpanded.split(' of ');
         const enRegimeOnly =
           !enName.includes(qLower) && `${enOwnRegime} | ${enDynShort} | ${enDynBase}`.includes(qLower);
-        const matchEra = [prefix, fullCombo, shortCombo].some((s) => reachesTail(s, eraOnly.length));
+        const eraPinyinLower =
+          startY >= -140 && eraOnly ? this._eraNamePinyin(eraOnly).toLowerCase() : '';
+        const eraPinyinFold = eraPinyinLower.replace(/'/g, '');
+        const matchEraPinyin =
+          isLatinQuery &&
+          eraPinyinFold.length >= 4 &&
+          (qLower === eraPinyinLower || qLower.replace(/['’‘`\-_.\s]+/g, '') === eraPinyinFold);
+        const matchEra =
+          [prefix, fullCombo, shortCombo].some((s) => reachesTail(s, eraOnly.length)) ||
+          matchEraPinyin;
         const matchMonarchOnly =
           !matchEra &&
           yearNum === null &&
@@ -8966,7 +9199,7 @@
                 : label;
             const yrZh = targetY <= 0 ? `公元前${-targetY}年` : `公元 ${targetY} 年`;
             const yrEn = targetY <= 0 ? `${-targetY} BCE` : `${targetY} CE`;
-            const enMonarchPart = monarchEn ? ` · ${monarchEn}` : '';
+            const labelEn = this._formatSpanEraEn(sp, targetNum);
             const isExplicitEraOrMonarch =
               yearNum !== null ||
               isYuanNian ||
@@ -8982,6 +9215,7 @@
             const isBareEraExact =
               !isExplicitEraOrMonarch &&
               (eraOnly === prefixQ ||
+                matchEraPinyin ||
                 prefix.endsWith(prefixQ) ||
                 fullCombo.endsWith(prefixQ) ||
                 shortCombo.endsWith(prefixQ));
@@ -8991,7 +9225,7 @@
               year: targetY,
               titleZh,
               subZh: yrZh,
-              titleEn: `${label}${enMonarchPart} (${yrEn})`,
+              titleEn: `${labelEn} (${yrEn})`,
               subEn: (this.enLocale.dynasties[d.key] && this.enLocale.dynasties[d.key].name) || d.title,
               score: isExplicitEraOrMonarch ? 122 : isBareEraExact ? 94 : 88,
             });
@@ -10122,10 +10356,10 @@
           const badge = this.locale === 'en' ? '[Strategic Pass]' : '【天下名关】';
           const traceHint =
             this.locale === 'en' ? 'Click to view pass history & battles ›' : '点击查看关隘形胜与历代战史 ›';
-          const locStr = this.locale === 'en' ? `Now ${pMod}` : `今${pMod}`;
+          const locStr = this.locale === 'en' ? ` (Now ${pMod})` : `（今${pMod}）`;
           this._showHoverTip(
             e,
-            `<b>${badge} ${pName}（${locStr}）</b><div class="tt-sub">${pRange} · ${pChoke}</div><div class="tt-sub">${traceHint}</div>`
+            `<b>${badge} ${pName}${locStr}</b><div class="tt-sub">${pRange} · ${pChoke}</div><div class="tt-sub">${traceHint}</div>`
           );
         } else if (settlementEl || coCity) {
           const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));

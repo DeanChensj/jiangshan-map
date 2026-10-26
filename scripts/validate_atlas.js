@@ -5853,6 +5853,43 @@ function main() {
         );
         const searchRes = JSON.parse(mcpLines[4].result.content[0].text);
         assert.strictEqual(searchRes.results[0].kind, 'city', 'search_atlas(长安) must rank city #1');
+
+        // CUJ 40: English Mode Zero-CJK Leak & Clue Integrity Guard
+        ctrl.locale = 'en';
+        ctrl.searchIndex = null;
+        const enIdx = ctrl._ensureSearchIndex();
+        const cjkIdxLeaks = enIdx.filter(
+          (e) => /[\u4e00-\u9fff]/.test(e.titleEn || '') || /[\u4e00-\u9fff]/.test(e.subEn || '')
+        );
+        assert.strictEqual(
+          cjkIdxLeaks.length,
+          0,
+          `English searchIndex must have 0 CJK leaks in titleEn/subEn, found ${cjkIdxLeaks.length}: ${JSON.stringify(cjkIdxLeaks[0])}`
+        );
+        for (const qStr of ['741', '208 BCE', 'Taizong', 'Yongle', '贞观', '开元二十九年']) {
+          const eraHits = ctrl._matchEraResults(qStr);
+          assert(eraHits.length > 0, `_matchEraResults("${qStr}") must return hits`);
+          for (const h of eraHits) {
+            assert(
+              !/[\u4e00-\u9fff]/.test(h.titleEn || '') && !/[\u4e00-\u9fff]/.test(h.subEn || ''),
+              `Era hit for "${qStr}" leaked CJK in English fields: ${JSON.stringify({ titleEn: h.titleEn, subEn: h.subEn })}`
+            );
+          }
+        }
+        assert.strictEqual(ctrl.trTerm('函谷关'), 'Hangu Pass');
+        assert.strictEqual(ctrl.trTerm('南郑'), 'Nanzheng');
+        assert.strictEqual(ctrl.trTerm('刺史部'), 'Inspectorate Region');
+        const donghanDyn = dynasties.find((d) => d.key === 'donghan');
+        const nanzhengSettle = donghanDyn.settlements.find((s) => s.ancient.startsWith('南郑'));
+        const clueEn = ctrl._sanitizeChallengeClue(
+          ctrl.trTerm(nanzhengSettle.remark),
+          nanzhengSettle,
+          'Nanzheng'
+        );
+        assert(
+          clueEn.includes('Hanzhong Commandery') && !clueEn.includes('this site'),
+          `English quiz clue for Nanzheng must preserve "Hanzhong Commandery", got "${clueEn}"`
+        );
       } finally {
         sandbox.window.history = origHistory;
         sandbox.location.search = origSearch;
