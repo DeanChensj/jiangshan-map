@@ -1376,6 +1376,28 @@ function main() {
     !mockPrefNodes[0].classList.contains('is-traced'),
     'Expected _syncTracedPrefecture to clear .is-traced when activeTrace is null'
   );
+  {
+    let pannedCam = null;
+    const prevAnim = ctrl._animateCameraTo;
+    const prevCam = ctrl.camera;
+    ctrl.camera = { x: 430, y: 225, w: 340, h: 422, zoom: 1000 / 340 };
+    ctrl._animateCameraTo = (c) => {
+      pannedCam = c;
+    };
+    assert.strictEqual(
+      ctrl._ensureCoordInView([108.94, 34.26]),
+      false,
+      'Expected Chang’an to already lie inside default mobile camera'
+    );
+    assert.strictEqual(
+      ctrl._ensureCoordInView([71.8, 40.7]),
+      true,
+      'Expected frontier milestone (Dayuan / Fergana) to trigger camera pan on mobile'
+    );
+    assert(pannedCam && pannedCam.x < 100, 'Expected mobile camera to pan west for frontier milestone');
+    ctrl._animateCameraTo = prevAnim;
+    ctrl.camera = prevCam;
+  }
 
   // 6) Genealogy heading "今 X" must assert identity, never a far-away neighbour (regression: 岳阳楼 -> "今赤壁")
   const nearestAcrossDynasties = (coord) => {
