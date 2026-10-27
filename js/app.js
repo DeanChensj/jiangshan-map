@@ -1448,9 +1448,13 @@
         );
       }
       this._id('txt-genealogy-kicker').textContent = this.activePerson
-        ? this.locale === 'en'
-          ? 'Person Chronicle · Life Across Time & Space'
-          : '点人溯事 · 人物生平纪事'
+        ? this.activePerson.profile && this.activePerson.profile.isRelic
+          ? this.locale === 'en'
+            ? 'Relic Provenance · Across Dynasties'
+            : '点物溯史 · 传世国器流转'
+          : this.locale === 'en'
+            ? 'Person Chronicle · Life Across Time & Space'
+            : '点人溯事 · 人物生平纪事'
         : this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
       const chalKicker = this._id('txt-challenge-kicker');
       if (chalKicker) {
@@ -2640,6 +2644,28 @@
       return pastOrNow.length > 0 ? pastOrNow[pastOrNow.length - 1] : colocated[0];
     }
 
+    _findRelicStopForMilestone(dynasty, m) {
+      if (!dynasty || !m) return null;
+      const map = {
+        'zhanguo:-228': 0,
+        'qin:-221': 1,
+        'qin:-206': 2,
+        'xihan:8': 3,
+        'donghan:25': 4,
+        'donghan:189': 5,
+        'donghan:196': 6,
+        'sanguo:220': 7,
+        'xijin:311': 8,
+        'dongjin:352': 9,
+        'sui:589': 10,
+        'sui:618': 10,
+        'tang:630': 11,
+        'wudai:936': 12,
+      };
+      const idx = map[`${dynasty.key}:${m.year}`];
+      return idx !== undefined ? idx : null;
+    }
+
     openMilestoneBalloon(dynasty, m, opts = {}) {
       const isAuto = Boolean(opts && opts.isAuto);
       if (!isAuto && this.hoverTip) {
@@ -2694,15 +2720,25 @@
       const placeHtml = siteStr
         ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
         : '';
+      const relicStopIdx = this._findRelicStopForMilestone(dynasty, m);
+      const relicTitle =
+        this.locale === 'en'
+          ? 'Trace the Heirloom Seal of the Realm across dynasties'
+          : '点击溯源「传国玉玺」历代流转行迹（和氏璧 → 秦始皇 → 后唐玄武楼）';
+      const relicLabel = this.locale === 'en' ? 'Seal ›' : '传国玺 ›';
+      const relicHtml =
+        relicStopIdx !== null
+          ? `<button type="button" class="ep-relic-seal" title="${relicTitle}"><span class="seal-stamp">玺</span><span>${relicLabel}</span></button>`
+          : '';
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${headlineText}</div>`;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
       const maxW = isMobile ? Math.min(286, (window.innerWidth || 390) - 16) : 348;
       const headW =
         this._estimateLocalTextWidth(
-          `${yrText} · ${eraLabel}${siteStr ? ` ${siteStr} · ${traceSuffix}` : ''}`,
+          `${yrText} · ${eraLabel}${siteStr ? ` ${siteStr} · ${traceSuffix}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}`,
           11.5,
           0
         ) + 52;
@@ -2720,6 +2756,13 @@
           const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
           const targetCoord = coCity ? coCity.coord : m.coord;
           this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+        });
+      }
+      const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal');
+      if (relicBtn && relicStopIdx !== null) {
+        relicBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.openPersonChronicle('yuxi', relicStopIdx);
         });
       }
       const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
@@ -3332,7 +3375,22 @@
         const badge = isMapChange
           ? `<span class="ev-map-tag" title="${this.locale === 'en' ? 'Map territory, city, or river course changes at this year' : '此节点触发版图、城池或河道水系变化'}">${SVG_ICONS.mapChange}</span>`
           : '';
-        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}</span>`;
+        const relicStopIdx = this._findRelicStopForMilestone(dynasty, m);
+        const sealBadge =
+          relicStopIdx !== null
+            ? `<button type="button" class="ev-seal-tag" title="${this.locale === 'en' ? 'Heirloom Seal of the Realm — click to trace across dynasties' : '传国玉玺流转节点 · 点击查看历代流转轨迹'}">${this.locale === 'en' ? 'Seal' : '玺'}</button>`
+            : '';
+        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}${sealBadge}</span>`;
+        const sealBtn = li.querySelector('.ev-seal-tag');
+        if (sealBtn && relicStopIdx !== null) {
+          sealBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
+              this.toggleMobileChronicle(false);
+            }
+            this.openPersonChronicle('yuxi', relicStopIdx);
+          });
+        }
         li.addEventListener('pointerenter', (e) => {
           if (e.pointerType === 'touch') return;
           if (targetSnapKey && targetSnapKey !== this.activeSnapKey) {
@@ -3780,41 +3838,47 @@
 
     _collectPersonEvents(profile) {
       if (!profile) return [];
-      const tokens = Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
+      const tokens = profile.isRelic
+        ? []
+        : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
       const [minY, maxY] = profile.span || [-403, 2026];
       const raw = [];
 
-      if (profile.journeyKey) {
-        const j = HistoricalAtlasController.HISTORICAL_JOURNEYS.find(
-          (item) => item.key === profile.journeyKey
-        );
-        if (j) {
-          j.stops.forEach((st, sIdx) => {
-            const dyn =
-              this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
-            raw.push({
-              src: 'J',
-              year: st.year,
-              month: st.month || 6 + sIdx * 0.01,
-              coord: st.coord,
-              fromCoord: st.fromCoord || null,
-              via: st.via || null,
-              prevStopCoord: sIdx > 0 ? j.stops[sIdx - 1].coord : null,
-              quoteZh: st.quoteZh || '',
-              quoteEn: st.quoteEn || '',
-              dynasty: dyn,
-              siteZh: st.ancientZh,
-              siteEn: st.ancientEn || this._enDict(st.ancientZh),
-              modernZh: st.modernZh || '',
-              modernEn: st.modernEn || '',
-              textZh: `${st.titleZh}：${st.descZh}`,
-              textEn: `${st.titleEn}: ${st.descEn}`,
-              isMapChange: false,
-              journeyStopIdx: sIdx,
-              prio: 3,
-            });
+      const journeyStops = Array.isArray(profile.stops)
+        ? profile.stops
+        : profile.journeyKey
+          ? (
+              HistoricalAtlasController.HISTORICAL_JOURNEYS.find(
+                (item) => item.key === profile.journeyKey
+              ) || {}
+            ).stops
+          : null;
+      if (Array.isArray(journeyStops)) {
+        journeyStops.forEach((st, sIdx) => {
+          const dyn =
+            this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+          raw.push({
+            src: 'J',
+            year: st.year,
+            month: st.month || 6 + sIdx * 0.01,
+            coord: st.coord,
+            fromCoord: st.fromCoord || null,
+            via: st.via || null,
+            prevStopCoord: sIdx > 0 ? journeyStops[sIdx - 1].coord : null,
+            quoteZh: st.quoteZh || '',
+            quoteEn: st.quoteEn || '',
+            dynasty: dyn,
+            siteZh: st.ancientZh,
+            siteEn: st.ancientEn || this._enDict(st.ancientZh),
+            modernZh: st.modernZh || '',
+            modernEn: st.modernEn || '',
+            textZh: st.titleZh ? `${st.titleZh}：${st.descZh}` : st.descZh,
+            textEn: st.titleEn ? `${st.titleEn}: ${st.descEn}` : st.descEn,
+            isMapChange: Boolean(st.isMapChange),
+            journeyStopIdx: sIdx,
+            prio: 3,
           });
-        }
+        });
       }
 
       for (const d of this.dynasties) {
@@ -4362,9 +4426,13 @@
 
       const kickerEl = this._id('txt-genealogy-kicker');
       if (kickerEl) {
-        kickerEl.textContent = isEn
-          ? 'Person Chronicle · Life Across Time & Space'
-          : '点人溯事 · 人物生平纪事';
+        kickerEl.textContent = profile.isRelic
+          ? isEn
+            ? 'Relic Provenance · Across Dynasties'
+            : '点物溯史 · 传世国器流转'
+          : isEn
+            ? 'Person Chronicle · Life Across Time & Space'
+            : '点人溯事 · 人物生平纪事';
       }
 
       const spanStr = this._formatPersonSpan(profile.span, isAdhoc);
@@ -4384,12 +4452,20 @@
           : profile.aliases && profile.aliases.length
             ? `字号 / 检索词：${profile.aliases.slice(0, 4).join(' · ')}`
             : '';
-        if (subTitle || aliasHint) {
+        const badgeLabel = profile.isRelic
+          ? isEn
+            ? 'Imperial Relic'
+            : '国器本纪'
+          : isEn
+            ? 'Biography'
+            : '人物小传';
+        const descText = profile.isRelic
+          ? (isEn ? profile.descEn : profile.descZh) || aliasHint
+          : aliasHint;
+        if (subTitle || descText) {
           loreEl.innerHTML =
-            `<div class="pass-lore-head"><span class="pass-lore-badge">${
-              isEn ? 'Biography' : '人物小传'
-            }</span><span class="pass-lore-range">${subTitle}</span></div>` +
-            (aliasHint ? `<div class="pass-lore-desc">${aliasHint}</div>` : '');
+            `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLabel}</span><span class="pass-lore-range">${subTitle}</span></div>` +
+            (descText ? `<div class="pass-lore-desc">${descText}</div>` : '');
           loreEl.classList.remove('is-hidden');
         } else {
           loreEl.innerHTML = '';
@@ -8847,10 +8923,16 @@
           year: null,
           aliases,
           titleZh: p.zh,
-          subZh: `${briefCourtesyZh} · 共 ${evCount} 处史事`,
+          subZh: p.isRelic
+            ? `${briefCourtesyZh} · 历 10 朝 ${evCount} 站流转`
+            : `${briefCourtesyZh} · 共 ${evCount} 处史事`,
           titleEn: p.en,
-          subEn: briefCourtesyEn ? `${briefCourtesyEn} · ${evCount} events` : `${evCount} chronicle events`,
-          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 人物 生平 事迹 行迹`.toLowerCase(),
+          subEn: p.isRelic
+            ? `${briefCourtesyEn || 'Heshi Bi Jade'} · ${evCount} stops across 10 eras`
+            : briefCourtesyEn
+              ? `${briefCourtesyEn} · ${evCount} events`
+              : `${evCount} chronicle events`,
+          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} ${p.isRelic ? '国器 宝物 传国玉玺 传国玺 玉玺 和氏璧 relic seal' : '人物 生平 事迹 行迹'}`.toLowerCase(),
         });
       }
 
@@ -9662,7 +9744,12 @@
           if (idx === activeSearchIdx) li.classList.add('is-active');
           const mainText = this.locale === 'en' ? item.titleEn : this._zh(item.titleZh);
           const subText = this.locale === 'en' ? item.subEn : this._zh(item.subZh);
-          const tagText = `${this.dynastyBadge(item.dynasty)} · ${this._zh(kindLabel[item.kind] || '')}`;
+          const tagText =
+            item.personProfile && item.personProfile.isRelic
+              ? this.locale === 'en'
+                ? 'Warring–5 Dyn · Relic'
+                : this._zh('战国—五代 · 国器')
+              : `${this.dynastyBadge(item.dynasty)} · ${this._zh(kindLabel[item.kind] || '')}`;
           li.innerHTML =
             `<div><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
             `<span class="sr-tag">${escHtml(tagText)}</span>`;
