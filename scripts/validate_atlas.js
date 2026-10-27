@@ -5720,6 +5720,22 @@ function main() {
         jiangweiEvs.some((e) => e.year === 255 && e.siteZh === '狄道' && Math.abs(e.coord[0] - 104.62) < 1),
         'Jiang Wei 255 CE event must locate at 狄道 in Longxi (not 寿春)'
       );
+      const yuxiProfile = ctrl._resolvePersonProfile('传国玉玺');
+      assert(
+        yuxiProfile && yuxiProfile.isRelic && ctrl._resolvePersonProfile('玉玺') === yuxiProfile && ctrl._resolvePersonProfile('和氏璧') === yuxiProfile,
+        'Heirloom Seal of the Realm (传国玉玺) must resolve by canonical name and aliases (玉玺, 和氏璧)'
+      );
+      const yuxiEvs = ctrl._collectPersonEvents(yuxiProfile);
+      assert.strictEqual(yuxiEvs.length, 13, '传国玉玺 must have 13 curated Zizhi Tongjian stops (-283 to 936)');
+      assert.strictEqual(yuxiEvs[0].year, -283);
+      assert.strictEqual(yuxiEvs[12].year, 936);
+      assert(
+        yuxiEvs.every((e) => e.quoteZh && e.quoteZh.includes('《资治通鉴》') && e.textZh && e.textZh.length <= 54),
+        'Every 传国玉玺 stop must cite Zizhi Tongjian (《资治通鉴》) and keep narrative copy concise'
+      );
+      const qinDynForSeal = dynasties.find((d) => d.key === 'qin');
+      const m221 = qinDynForSeal.milestones.find((m) => m.year === -221);
+      assert.strictEqual(ctrl._findRelicStopForMilestone(qinDynForSeal, m221), 1);
 
       // URL address bar preservation & ?lang=en sync on language toggle
       const origHistory = sandbox.window.history;

@@ -1153,6 +1153,44 @@ h2 {
   border-color: rgba(181, 69, 47, 0.45);
 }
 
+#milestone-balloon .ep-relic-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  padding: 1px 6px 1px 3.5px;
+  border-radius: 999px;
+  border: 1px solid rgba(181, 69, 47, 0.24);
+  background: rgba(181, 69, 47, 0.06);
+  color: var(--text-secondary);
+  font-family: var(--sans-stack);
+  font-size: 10.8px;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+#milestone-balloon .ep-relic-seal:hover {
+  background: rgba(181, 69, 47, 0.16);
+  color: var(--vermilion);
+  border-color: rgba(181, 69, 47, 0.45);
+}
+
+#milestone-balloon .ep-relic-seal .seal-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 1.5px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: currentColor;
+  opacity: 0.82;
+  font-family: var(--serif-stack);
+  font-size: 8.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 #milestone-balloon .ep-close {
   position: absolute;
   top: 6px;
@@ -2385,6 +2423,35 @@ h2 {
   font-size: 11px;
   opacity: 0.82;
   vertical-align: baseline;
+}
+
+#milestone-list .ev-seal-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 0 2.5px;
+  min-width: 13px;
+  height: 13px;
+  border-radius: 1.5px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--text-main);
+  opacity: 0.72;
+  font-family: var(--serif-stack);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: 1px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, color 0.12s, opacity 0.12s;
+}
+
+#milestone-list .ev-seal-tag:hover {
+  border-color: var(--vermilion);
+  background: rgba(181, 69, 47, 0.1);
+  color: var(--vermilion);
+  opacity: 1;
 }
 
 .disclaimer-box {
