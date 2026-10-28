@@ -225,6 +225,10 @@ window.DYNASTY_DATA = [
         "coord": [
           112.2,
           30.35
+        ],
+        "persons": [
+          "baiqi",
+          "quyuan"
         ]
       },
       {
@@ -799,6 +803,12 @@ window.DYNASTY_DATA = [
         "coord": [
           108.711,
           34.331
+        ],
+        "persons": [
+          "qinshihuang",
+          "lisi",
+          "wangjian",
+          "mengtian"
         ]
       },
       {
@@ -808,6 +818,10 @@ window.DYNASTY_DATA = [
         "coord": [
           109.901,
           40.601
+        ],
+        "persons": [
+          "qinshihuang",
+          "mengtian"
         ]
       },
       {
@@ -826,6 +840,10 @@ window.DYNASTY_DATA = [
         "coord": [
           108.711,
           34.331
+        ],
+        "persons": [
+          "qinshihuang",
+          "lisi"
         ]
       },
       {
@@ -844,6 +862,11 @@ window.DYNASTY_DATA = [
         "coord": [
           115.151,
           37.071
+        ],
+        "persons": [
+          "qinshihuang",
+          "lisi",
+          "mengtian"
         ]
       },
       {
@@ -871,7 +894,13 @@ window.DYNASTY_DATA = [
         "coord": [
           109.211,
           34.371
-        ]
+        ],
+        "persons": [
+          "xiangyu",
+          "liubang",
+          "zhangliang"
+        ],
+        "month": 3.0
       },
       {
         "year": -204,
@@ -1407,6 +1436,12 @@ window.DYNASTY_DATA = [
         "coord": [
           101.001,
           38.601
+        ],
+        "persons": [
+          "hanwudi",
+          "huoqubing",
+          "weiqing",
+          "zhangqian"
         ]
       },
       {
@@ -2464,7 +2499,13 @@ window.DYNASTY_DATA = [
           113.851,
           34.041
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "caocao",
+          "liubei",
+          "guanyu"
+        ],
+        "month": 8.0
       },
       {
         "year": 198,
@@ -2473,6 +2514,13 @@ window.DYNASTY_DATA = [
         "coord": [
           117.95,
           34.11
+        ],
+        "persons": [
+          "caocao",
+          "lvbu",
+          "liubei",
+          "guanyu",
+          "zhangfei"
         ]
       },
       {
@@ -2483,7 +2531,12 @@ window.DYNASTY_DATA = [
           114.001,
           34.751
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "caocao",
+          "yuanshao",
+          "guanyu"
+        ]
       },
       {
         "year": 204,
@@ -2501,6 +2554,13 @@ window.DYNASTY_DATA = [
         "coord": [
           112.041,
           32.001
+        ],
+        "persons": [
+          "liubei",
+          "zhugeliang",
+          "guanyu",
+          "zhangfei",
+          "zhaoyun"
         ]
       },
       {
@@ -2531,7 +2591,13 @@ window.DYNASTY_DATA = [
           104.071,
           30.571
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "liubei",
+          "zhugeliang",
+          "zhangfei",
+          "zhaoyun"
+        ]
       },
       {
         "year": 215,
@@ -3139,6 +3205,11 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
+        ],
+        "persons": [
+          "liubei",
+          "zhugeliang",
+          "zhaoyun"
         ]
       },
       {
@@ -3148,6 +3219,12 @@ window.DYNASTY_DATA = [
         "coord": [
           111.291,
           30.691
+        ],
+        "persons": [
+          "liubei",
+          "luxun",
+          "sunquan",
+          "zhaoyun"
         ]
       },
       {
@@ -3157,6 +3234,11 @@ window.DYNASTY_DATA = [
         "coord": [
           109.571,
           31.041
+        ],
+        "persons": [
+          "liubei",
+          "zhugeliang",
+          "zhaoyun"
         ]
       },
       {
@@ -3202,6 +3284,11 @@ window.DYNASTY_DATA = [
         "coord": [
           107.631,
           34.331
+        ],
+        "persons": [
+          "zhugeliang",
+          "simayi",
+          "jiangwei"
         ]
       },
       {
@@ -4410,6 +4497,10 @@ window.DYNASTY_DATA = [
         "coord": [
           120.491,
           29.931
+        ],
+        "persons": [
+          "wangxizhi",
+          "xiean"
         ]
       },
       {
@@ -4437,6 +4528,11 @@ window.DYNASTY_DATA = [
         "coord": [
           114.551,
           35.671
+        ],
+        "persons": [
+          "huanwen",
+          "xiean",
+          "xiexuan"
         ]
       },
       {
@@ -4466,6 +4562,11 @@ window.DYNASTY_DATA = [
         "coord": [
           116.781,
           32.581
+        ],
+        "persons": [
+          "xiean",
+          "xiexuan",
+          "fujian"
         ]
       },
       {
@@ -6215,7 +6316,11 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "yangjian",
+          "yangguang"
+        ]
       },
       {
         "year": 587,
@@ -6235,7 +6340,11 @@ window.DYNASTY_DATA = [
           118.801,
           32.061
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "yangjian",
+          "yangguang"
+        ]
       },
       {
         "year": 599,
@@ -6837,7 +6946,12 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "lishimin",
+          "weizheng",
+          "lijing"
+        ]
       },
       {
         "year": 621,
@@ -6856,6 +6970,11 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
+        ],
+        "persons": [
+          "lishimin",
+          "weizheng",
+          "lijing"
         ]
       },
       {
@@ -6990,7 +7109,11 @@ window.DYNASTY_DATA = [
           112.451,
           34.621
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "wuzetian",
+          "direnjie"
+        ]
       },
       {
         "year": 698,
@@ -7194,6 +7317,12 @@ window.DYNASTY_DATA = [
         "coord": [
           108.941,
           34.341
+        ],
+        "persons": [
+          "liuzongyuan",
+          "liuyuxi",
+          "hanyu",
+          "baijuyi"
         ]
       },
       {
@@ -8613,6 +8742,10 @@ window.DYNASTY_DATA = [
         "coord": [
           112.921,
           35.801
+        ],
+        "persons": [
+          "chairong",
+          "zhaokuangyin"
         ]
       },
       {
@@ -8631,6 +8764,11 @@ window.DYNASTY_DATA = [
         "coord": [
           119.411,
           32.391
+        ],
+        "persons": [
+          "chairong",
+          "zhaokuangyin",
+          "liyu_nt"
         ]
       },
       {
@@ -9274,6 +9412,10 @@ window.DYNASTY_DATA = [
         "coord": [
           118.801,
           32.061
+        ],
+        "persons": [
+          "zhaokuangyin",
+          "liyu_nt"
         ]
       },
       {
@@ -9392,6 +9534,11 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           34.801
+        ],
+        "persons": [
+          "fanzhongyan",
+          "ouyangxiu",
+          "baozheng"
         ]
       },
       {
@@ -9420,6 +9567,11 @@ window.DYNASTY_DATA = [
         "coord": [
           114.35,
           34.79
+        ],
+        "persons": [
+          "ouyangxiu",
+          "sushi",
+          "baozheng"
         ]
       },
       {
@@ -9429,6 +9581,12 @@ window.DYNASTY_DATA = [
         "coord": [
           114.311,
           34.801
+        ],
+        "persons": [
+          "wanganshi",
+          "simaguang",
+          "sushi",
+          "ouyangxiu"
         ]
       },
       {
@@ -9447,6 +9605,10 @@ window.DYNASTY_DATA = [
         "coord": [
           114.35,
           34.79
+        ],
+        "persons": [
+          "simaguang",
+          "sushi"
         ]
       },
       {
@@ -10609,6 +10771,10 @@ window.DYNASTY_DATA = [
         "coord": [
           120.151,
           30.251
+        ],
+        "persons": [
+          "xinqiji",
+          "luyou"
         ]
       },
       {
@@ -12412,6 +12578,10 @@ window.DYNASTY_DATA = [
         "coord": [
           121.101,
           31.501
+        ],
+        "persons": [
+          "zhudi",
+          "zhenghe"
         ]
       },
       {
@@ -12440,6 +12610,11 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
+        ],
+        "persons": [
+          "zhudi",
+          "zhenghe",
+          "yuqian"
         ]
       },
       {
@@ -12660,6 +12835,11 @@ window.DYNASTY_DATA = [
         "coord": [
           120.721,
           40.621
+        ],
+        "persons": [
+          "yuanchonghuan",
+          "nurhaci",
+          "huangtaiji"
         ]
       },
       {
@@ -14096,6 +14276,11 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
+        ],
+        "persons": [
+          "kangxi",
+          "yongzheng",
+          "qianlong"
         ]
       },
       {
@@ -14132,6 +14317,10 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
+        ],
+        "persons": [
+          "yongzheng",
+          "qianlong"
         ]
       },
       {
@@ -14327,7 +14516,13 @@ window.DYNASTY_DATA = [
           118.801,
           32.061
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "zengguofan",
+          "hongxiuquan",
+          "lihongzhang",
+          "zuozongtang"
+        ]
       },
       {
         "year": 1865,
@@ -14336,6 +14531,11 @@ window.DYNASTY_DATA = [
         "coord": [
           121.47,
           31.23
+        ],
+        "persons": [
+          "zengguofan",
+          "lihongzhang",
+          "zuozongtang"
         ]
       },
       {
@@ -15968,7 +16168,12 @@ window.DYNASTY_DATA = [
           113.431,
           23.091
         ],
-        "isMapChange": true
+        "isMapChange": true,
+        "persons": [
+          "sunzhongshan",
+          "jiangjieshi",
+          "maozedong"
+        ]
       },
       {
         "year": 1926,
@@ -16017,6 +16222,10 @@ window.DYNASTY_DATA = [
         "coord": [
           106.921,
           27.701
+        ],
+        "persons": [
+          "maozedong",
+          "dengxiaoping"
         ]
       },
       {
@@ -19302,6 +19511,10 @@ window.DYNASTY_DATA = [
         "coord": [
           116.401,
           39.901
+        ],
+        "persons": [
+          "maozedong",
+          "dengxiaoping"
         ]
       },
       {

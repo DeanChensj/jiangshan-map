@@ -103,13 +103,24 @@ def normalize_places(place_str):
   )
 
 
+def normalize_persons(person_str):
+  if not person_str:
+    return ""
+  return ",".join(
+      p.strip()
+      for p in re.split(r"\s*(?:,|，|、|×|\+|&)\s*", person_str.strip())
+      if p.strip()
+  )
+
+
 def build_query(args):
   params = []
   years = normalize_years(args.year)
   if years:
     params.append(("year", years))
-  if getattr(args, "person", ""):
-    params.append(("person", args.person.strip()))
+  normalized_person = normalize_persons(getattr(args, "person", ""))
+  if normalized_person:
+    params.append(("person", normalized_person))
     if getattr(args, "stop", None) is not None and args.stop >= 0:
       params.append(("stop", str(args.stop)))
   normalized_place = normalize_places(args.place)
@@ -203,12 +214,24 @@ def _chrome_common_flags():
 
 
 def _validate_inspect_result(data, args):
-  if getattr(args, "person", "") and not data.get("person"):
-    raise RuntimeError(
-        f"Could not resolve historical figure '{args.person}' in the atlas. "
-        "Use a canonical Chinese, English, or Pinyin figure name or key "
-        "(e.g. sushi / 苏轼 / Su Shi, zhugeliang / 诸葛亮, libai / 李白)."
-    )
+  normalized_person = normalize_persons(getattr(args, "person", ""))
+  if normalized_person:
+    person_data = data.get("person")
+    if not person_data:
+      raise RuntimeError(
+          f"Could not resolve historical figure '{args.person}' in the atlas. "
+          "Use a canonical Chinese, English, or Pinyin figure name or key "
+          "(e.g. sushi / 苏轼 / Su Shi, zhugeliang / 诸葛亮, libai,dufu / 李白,杜甫)."
+      )
+    req_people = [p for p in normalized_person.split(",") if p]
+    if len(req_people) >= 2 and (
+        not person_data.get("isMulti")
+        or len(person_data.get("profiles") or []) < 2
+    ):
+      raise RuntimeError(
+          f"Could not resolve all figures in '{args.person}'. "
+          "Ensure each comma-separated token is a valid historical figure name or key."
+      )
   normalized_place = normalize_places(args.place)
   if not normalized_place:
     return
@@ -297,7 +320,7 @@ process.stdout.write(JSON.stringify(res));
     env["JS_REPO_ROOT"] = repo_root
     env["JS_YEAR"] = normalized_years
     env["JS_PLACE"] = normalized_place
-    env["JS_PERSON"] = (getattr(args, "person", "") or "").strip()
+    env["JS_PERSON"] = normalize_persons(getattr(args, "person", "") or "")
     env["JS_STOP"] = (
         str(args.stop)
         if getattr(args, "stop", None) is not None and args.stop >= 0
@@ -489,7 +512,7 @@ def main():
       "--person",
       type=str,
       default="",
-      help="Historical figure key or name in Chinese, English, or Pinyin (e.g. sushi / 苏轼 / Su Shi, zhugeliang / 诸葛亮, libai / 李白) to open the Person Chronicle trajectory",
+      help="Single figure or comma-separated figures (2–4) in Chinese, English, or Pinyin (e.g. sushi / 苏轼, or libai,dufu / 李白,杜甫 / zhugeliang,simayi) to open Person Chronicle or Shared Encounters / Parallel Lives comparison",
   )
   parser.add_argument(
       "--stop",

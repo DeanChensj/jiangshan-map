@@ -1156,39 +1156,38 @@ h2 {
 #milestone-balloon .ep-relic-seal {
   display: inline-flex;
   align-items: center;
-  gap: 3.5px;
-  padding: 1px 6px 1px 3.5px;
-  border-radius: 999px;
-  border: 1px solid rgba(181, 69, 47, 0.24);
-  background: rgba(181, 69, 47, 0.06);
-  color: var(--text-secondary);
-  font-family: var(--sans-stack);
+  gap: 4px;
+  padding: 1px 6px 1px 3px;
+  border-radius: 4px;
+  border: 1px solid rgba(180, 40, 30, 0.42);
+  background: rgba(180, 40, 30, 0.08);
+  color: #9e2218;
+  font-family: var(--serif-stack);
   font-size: 10.8px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.14s, color 0.14s, border-color 0.14s;
+  transition: background 0.14s, border-color 0.14s, transform 0.12s;
 }
 
 #milestone-balloon .ep-relic-seal:hover {
-  background: rgba(181, 69, 47, 0.16);
-  color: var(--vermilion);
-  border-color: rgba(181, 69, 47, 0.45);
+  background: rgba(180, 40, 30, 0.16);
+  border-color: #b4281e;
 }
 
 #milestone-balloon .ep-relic-seal .seal-stamp {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 12px;
-  height: 12px;
-  border-radius: 1.5px;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: currentColor;
-  opacity: 0.82;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: #b4281e;
+  color: #fffaf0;
   font-family: var(--serif-stack);
-  font-size: 8.5px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 236, 0.55);
 }
 
 #milestone-balloon .ep-close {
@@ -2430,28 +2429,26 @@ h2 {
   align-items: center;
   justify-content: center;
   margin-left: 5px;
-  padding: 0 2.5px;
-  min-width: 13px;
-  height: 13px;
-  border-radius: 1.5px;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: var(--text-main);
-  opacity: 0.72;
+  padding: 0 3.5px;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  border: 1px solid #9e2218;
+  background: #b4281e;
+  color: #fffaf0;
   font-family: var(--serif-stack);
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 236, 0.52);
   vertical-align: 1px;
   cursor: pointer;
-  transition: border-color 0.12s, background 0.12s, color 0.12s, opacity 0.12s;
+  transition: transform 0.12s, background 0.12s;
 }
 
 #milestone-list .ev-seal-tag:hover {
-  border-color: var(--vermilion);
-  background: rgba(181, 69, 47, 0.1);
-  color: var(--vermilion);
-  opacity: 1;
+  background: #961b12;
+  transform: scale(1.08);
 }
 
 .disclaimer-box {
@@ -4579,7 +4576,7 @@ html[lang="en"] .genealogy-list li.person-ev-row {
 }
 @media (min-width: 901px) {
   #viewport-frame.has-active-person #genealogy-card {
-    width: 392px;
+    width: 406px;
   }
 }
 
@@ -4587,4 +4584,218 @@ html[lang="en"] .genealogy-list li.person-ev-row {
   #viewport-frame.has-active-person #genealogy-card:not(.is-sheet-expanded) {
     max-height: min(50%, 360px);
   }
+}
+
+/* Multi-Person Spacetime Encounters & Multi-Route Semicolon Tracks */
+.journey-node.is-multi-bead .jn-disc.is-waypoint-bead {
+  fill: currentColor;
+  stroke: #fffaf2;
+  stroke-width: 2px;
+  paint-order: stroke fill;
+  opacity: 0.9;
+  transition: transform 0.14s ease, opacity 0.14s ease;
+}
+
+.journey-node.is-multi-bead.is-hover-pin .jn-disc.is-waypoint-bead {
+  transform: scale(1.45);
+  opacity: 1;
+}
+
+.jn-label.is-hover-only-label {
+  display: none;
+}
+
+.journey-node.is-hover-pin .jn-label.is-hover-only-label {
+  display: block;
+}
+
+.jn-meet-pill {
+  fill: #fffaf2;
+  stroke: #3d3126;
+  stroke-width: 1.35px;
+  filter: drop-shadow(0 1px 2.5px rgba(42, 30, 20, 0.22));
+}
+
+.journey-node.is-current .jn-meet-pill,
+.journey-node.is-hover-pin .jn-meet-pill {
+  stroke: #7a1c14;
+  stroke-width: 1.75px;
+  filter: drop-shadow(0 1.5px 3.5px rgba(122, 28, 20, 0.32));
+}
+
+.journey-node .jn-disc.is-meet-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+.jn-pulse-pill {
+  fill: none;
+  stroke: #bd2d22;
+  stroke-width: 1.5px;
+  opacity: 0.55;
+}
+
+.jn-label.is-intersect-label {
+  fill: #7c2414;
+  font-weight: 800;
+}
+
+.mp-title-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mp-title-solo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mp-title-solo:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mp-title-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1.5px rgba(255, 250, 242, 0.92);
+}
+
+.mp-title-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: -1px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(90, 74, 58, 0.1);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.mp-title-remove:hover {
+  background: rgba(181, 69, 47, 0.16);
+  color: var(--vermilion);
+}
+
+.mp-title-sep {
+  margin: 0 6px;
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.86em;
+}
+
+.person-track-tags-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2.5px;
+}
+
+.person-track-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--track-color, #bd2d22);
+  color: #fffaf2;
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.person-yr-sub {
+  font-size: 10.4px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.person-ev-subnote {
+  display: block;
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed rgba(90, 74, 58, 0.14);
+  color: var(--text-secondary);
+}
+
+.person-ev-subnote:first-of-type {
+  margin-top: 2px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.person-ev-dot {
+  display: inline-block;
+  width: 6.5px;
+  height: 6.5px;
+  margin-right: 5px;
+  border-radius: 50%;
+  vertical-align: 1px;
+}
+
+.genealogy-list li.person-ev-row.is-intersect-row {
+  background: rgba(189, 45, 34, 0.035);
+}
+
+.cr-multitrack-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cr-track-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cr-track-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cr-stop-pill[style*="--track-color"] {
+  border-color: color-mix(in srgb, var(--track-color) 38%, transparent);
+}
+
+.cr-stop-pill[style*="--track-color"] .cr-stop-num {
+  background: color-mix(in srgb, var(--track-color) 16%, transparent);
+  color: var(--track-color);
+}
+
+.cr-stop-pill[style*="--track-color"].is-current {
+  background: var(--track-color);
+  border-color: var(--track-color);
+  color: #fffaf2;
+}
+
+.cr-stop-pill[style*="--track-color"].is-current .cr-stop-num {
+  background: rgba(255, 250, 242, 0.25);
+  color: #fffaf2;
+}
+
+.cr-stop-pill.is-converge {
+  box-shadow: 0 0 0 1.4px rgba(189, 45, 34, 0.42);
 }

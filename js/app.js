@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261026a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261026a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1557,7 +1557,13 @@
             preserveScroll: true,
           });
         } else if (this.activePerson) {
-          this.activePerson.events = this._collectPersonEvents(this.activePerson.profile);
+          const rebuilt = this._buildPersonTracksAndEvents(
+            this.activePerson.profiles || [this.activePerson.profile]
+          );
+          if (rebuilt) {
+            rebuilt.intersectOnly = Boolean(this.activePerson.intersectOnly);
+            this.activePerson = rebuilt;
+          }
           this._renderPersonPinsOverlay();
           this._renderPersonChronicleCard(true);
         }
@@ -1950,7 +1956,7 @@
           return;
         }
         this._renderPolitiesAndPrefectures(dynasty, snap);
-        if (!this.playing && !this.isScrubbing && prevSnap && prevSnap !== snap) {
+        if (!this.playing && !this.isScrubbing && !this.activePerson && prevSnap && prevSnap !== snap) {
           this._renderGhostDiff(prevSnap, 'fade');
         }
       });
@@ -3836,8 +3842,17 @@
       };
     }
 
-    _collectPersonEvents(profile) {
+    _collectPersonEvents(profile, opts = {}) {
       if (!profile) return [];
+      const isMulti = Boolean(opts && opts.isMulti);
+      const peerKeys = Array.isArray(opts && opts.peerKeys) ? opts.peerKeys : [];
+      const matchesPersonsTag = (item) =>
+        isMulti &&
+        !profile.isRelic &&
+        Array.isArray(item && item.persons) &&
+        item.persons.includes(profile.key) &&
+        item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk)) &&
+        peerKeys.includes(item.persons[0]);
       const tokens = profile.isRelic
         ? []
         : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
@@ -3872,20 +3887,53 @@
             siteEn: st.ancientEn || this._enDict(st.ancientZh),
             modernZh: st.modernZh || '',
             modernEn: st.modernEn || '',
-            textZh: st.titleZh ? `${st.titleZh}：${st.descZh}` : st.descZh,
-            textEn: st.titleEn ? `${st.titleEn}: ${st.descEn}` : st.descEn,
+            textZh: `${st.titleZh}：${st.descZh}`,
+            textEn: `${st.titleEn}: ${st.descEn}`,
             isMapChange: Boolean(st.isMapChange),
+            byPersonsTag: matchesPersonsTag(st),
             journeyStopIdx: sIdx,
             prio: 3,
           });
         });
       }
+      if (isMulti && !profile.isRelic) {
+        for (const j of HistoricalAtlasController.HISTORICAL_JOURNEYS) {
+          if (j.key === profile.key || j.key === profile.journeyKey) continue;
+          (j.stops || []).forEach((st, sIdx) => {
+            if (!st.coord || st.year < minY - 2 || st.year > maxY + 3) return;
+            if (!matchesPersonsTag(st)) return;
+            const dyn =
+              this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+            raw.push({
+              src: 'J_CO',
+              year: st.year,
+              month: st.month || 6 + sIdx * 0.01,
+              coord: st.coord,
+              quoteZh: st.quoteZh || '',
+              quoteEn: st.quoteEn || '',
+              dynasty: dyn,
+              siteZh: st.ancientZh,
+              siteEn: st.ancientEn || this._enDict(st.ancientZh),
+              modernZh: st.modernZh || '',
+              modernEn: st.modernEn || '',
+              textZh: `${st.titleZh}：${st.descZh}`,
+              textEn: `${st.titleEn}: ${st.descEn}`,
+              isMapChange: Boolean(st.isMapChange),
+              byPersonsTag: true,
+              prio: 2.5,
+            });
+          });
+        }
+      }
 
       for (const d of this.dynasties) {
         for (const m of d.milestones || []) {
           if (!m.coord || m.year < minY - 2 || m.year > maxY + 3) continue;
-          if (!tokens.some((tok) => m.headline.includes(tok))) continue;
+          const byTag = matchesPersonsTag(m);
+          const byToken = tokens.some((tok) => m.headline.includes(tok));
+          if (!byToken && !byTag) continue;
           const rawSite = m.site || d.seat || '';
+          if (profile.key === 'liubang' && m.year === -207 && rawSite.startsWith('巨鹿')) continue;
           const mKey = `${d.key}:${m.year}`;
           const mHit = this.enLocale.milestones && this.enLocale.milestones[mKey];
           const rawSiteEn =
@@ -3896,7 +3944,7 @@
               : this._enDict(rawSite));
           const tailored = this._tailorPersonEvent(
             profile,
-            tokens,
+            byTag && !/[·→]/.test(rawSite) ? [] : tokens,
             d,
             m.year,
             rawSite,
@@ -3909,7 +3957,15 @@
           raw.push({
             src: 'M',
             year: m.year,
-            month: m.month || 6.5,
+            month:
+              m.month ||
+              (isMulti && m.year === 208 && rawSite.includes('赤壁')
+                ? 11.0
+                : isMulti &&
+                    ((m.year === 645 && rawSite.includes('辽东')) ||
+                      (m.year === 219 && rawSite.includes('汉中')))
+                  ? 7.5
+                  : 6.5),
             coord: tailored.coord,
             dynasty: d,
             siteZh: tailored.siteZh,
@@ -3919,6 +3975,7 @@
             textZh: tailored.textZh,
             textEn: tailored.textEn,
             isMapChange: Boolean(m.isMapChange),
+            byPersonsTag: byTag,
             milestone: m,
             prio: 2,
           });
@@ -3927,7 +3984,9 @@
 
       for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
         if (!lm.coord || !lm.zh || lm.year < minY - 2 || lm.year > maxY + 3) continue;
-        if (!tokens.some((tok) => lm.zh.includes(tok))) continue;
+        const byTag = matchesPersonsTag(lm);
+        const byToken = tokens.some((tok) => lm.zh.includes(tok));
+        if (!byToken && !byTag) continue;
         const d =
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
@@ -3936,7 +3995,7 @@
         const rawSiteEn = lm.siteEn || this._enDict(rawSite);
         const tailored = this._tailorPersonEvent(
           profile,
-          tokens,
+          byTag ? [] : tokens,
           d,
           lm.year,
           rawSite,
@@ -3949,7 +4008,9 @@
         raw.push({
           src: 'L',
           year: lm.year,
-          month: lm.month || 6.5,
+          month:
+            lm.month ||
+            (isMulti && lm.year === 208 && rawSite.includes('赤壁') ? 11.0 : 6.5),
           coord: tailored.coord,
           dynasty: d,
           siteZh: tailored.siteZh,
@@ -3959,6 +4020,7 @@
           textZh: tailored.textZh,
           textEn: tailored.textEn,
           isMapChange: false,
+          byPersonsTag: byTag,
           prio: 1,
         });
       }
@@ -3972,9 +4034,10 @@
         const dup = deduped.find((prev) => {
           const dy = Math.abs(prev.year - ev.year);
           if (dy > 1) return false;
+          if (dy > 0 && (ev.byPersonsTag || prev.byPersonsTag)) return false;
           const km = this.projector.greatCircleKm(prev.coord, ev.coord);
           if (prev.src === ev.src) {
-            if (ev.src === 'J') return false;
+            if (ev.src === 'J' || ev.src === 'J_CO') return false;
             if (ev.src === 'M') return prev.year === ev.year && km < 45;
             return prev.year === ev.year && km < 35;
           }
@@ -3990,9 +4053,10 @@
         if (dup) {
           // A curated journey stop outranks a nearby milestone or landmark that
           // merely mentions the person, whichever of the two sorted first.
-          const keep = ev.src === 'J' ? ev : dup;
+          const keep = ev.src === 'J' || (ev.src === 'J_CO' && dup.src !== 'J') ? ev : dup;
           const drop = keep === ev ? dup : ev;
           if (drop.isMapChange) keep.isMapChange = true;
+          if (drop.byPersonsTag) keep.byPersonsTag = true;
           if (drop.milestone && !keep.milestone) keep.milestone = drop.milestone;
           if (keep === ev) deduped[deduped.indexOf(dup)] = ev;
           continue;
@@ -4002,15 +4066,272 @@
       return deduped;
     }
 
+    static get PERSON_TRACK_PALETTE() {
+      return ['#bd2d22', '#1d5a7b', '#2f6b55', '#7a3e65'];
+    }
+
+    _resolvePersonProfiles(personOrQuery) {
+      if (!personOrQuery) return [];
+      if (Array.isArray(personOrQuery)) {
+        const seen = new Set();
+        const out = [];
+        for (const item of personOrQuery) {
+          const p = this._resolvePersonProfile(item);
+          if (p && !seen.has(p.key)) {
+            seen.add(p.key);
+            out.push(p);
+          }
+        }
+        return out.slice(0, 4);
+      }
+      if (typeof personOrQuery === 'object' && personOrQuery.zh) {
+        return [personOrQuery];
+      }
+      const raw = String(personOrQuery || '').trim();
+      if (!raw) return [];
+      const hasExplicitSep =
+        /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(raw) ||
+        /^[\u4e00-\u9fff]{2,4}(?:\s+[\u4e00-\u9fff]{2,4})+$/.test(raw);
+      if (hasExplicitSep) {
+        const parts = raw
+          .split(/\s*(?:[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+|\s+)\s*/i)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (parts.length >= 2) {
+          const seen = new Set();
+          const out = [];
+          for (const part of parts) {
+            const p = this._resolvePersonProfile(part);
+            if (p && !seen.has(p.key)) {
+              seen.add(p.key);
+              out.push(p);
+            }
+          }
+          if (out.length >= 2) return out.slice(0, 4);
+        }
+      }
+      const single = this._resolvePersonProfile(raw);
+      return single ? [single] : [];
+    }
+
+    _eventsSharePlace(evA, evB) {
+      if (!evA || !evB || !evA.coord || !evB.coord) return { hit: false, km: Infinity };
+      const km = this.projector.greatCircleKm(evA.coord, evB.coord);
+      if (km <= 45) return { hit: true, km };
+      const bareA = this._stripPromptParenthetical(evA.siteZh || '').replace(/(?:郡|州|府|县|城|关)$/, '');
+      const bareB = this._stripPromptParenthetical(evB.siteZh || '').replace(/(?:郡|州|府|县|城|关)$/, '');
+      if (bareA.length >= 2 && bareA === bareB && km < 85) {
+        return { hit: true, km };
+      }
+      return { hit: false, km };
+    }
+
+    _buildPersonTracksAndEvents(profiles) {
+      const palette = HistoricalAtlasController.PERSON_TRACK_PALETTE;
+      const isMultiReq = profiles.length >= 2;
+      const peerKeys = profiles.map((p) => p.key);
+      const tracks = [];
+      for (let pIdx = 0; pIdx < profiles.length; pIdx++) {
+        const p = profiles[pIdx];
+        const color = palette[pIdx % palette.length];
+        const rawEvs = this._collectPersonEvents(p, { isMulti: isMultiReq, peerKeys });
+        const pEvents = rawEvs.map((ev, sIdx) => ({
+          ...ev,
+          personIdx: pIdx,
+          personKey: p.key,
+          personZh: p.zh,
+          personEn: p.en,
+          personColor: color,
+          personStepIdx: sIdx,
+          personStepNum: sIdx + 1,
+        }));
+        for (let i = 0; i < pEvents.length; i++) {
+          pEvents[i].prevPersonEv = i > 0 ? pEvents[i - 1] : null;
+        }
+        if (pEvents.length) {
+          tracks.push({ profile: p, color, personIdx: pIdx, events: pEvents });
+        }
+      }
+      if (!tracks.length) return null;
+
+      if (tracks.length === 1) {
+        const singleEvents = tracks[0].events.map((ev, idx) => ({ ...ev, globalIdx: idx }));
+        return {
+          profile: tracks[0].profile,
+          profiles: [tracks[0].profile],
+          isMulti: false,
+          tracks,
+          events: singleEvents,
+          sameTimeCount: 0,
+          crossTimeCount: 0,
+          intersectPlaces: [],
+          intersectOnly: false,
+        };
+      }
+
+      // Only merge & highlight true contemporaneous encounters (same place <= 45km AND |Δyear| <= 3).
+      // Pair closest year/distance matches first so exact same-year meetings are never stolen by an adjacent year.
+      for (let tIdx = 1; tIdx < tracks.length; tIdx++) {
+        const candPairs = [];
+        for (const evA of tracks[0].events) {
+          for (const evB of tracks[tIdx].events) {
+            const dy = Math.abs(evA.year - evB.year);
+            if (dy > 3) continue;
+            const { hit, km } = this._eventsSharePlace(evA, evB);
+            if (!hit) continue;
+            candPairs.push({ evA, evB, dy, km });
+          }
+        }
+        candPairs.sort((a, b) => a.dy - b.dy || a.km - b.km);
+        const usedB = new Set();
+        for (const { evA, evB } of candPairs) {
+          if ((evA._peerMatches && evA._peerMatches[tIdx]) || usedB.has(evB)) continue;
+          if (!evA._peerMatches) evA._peerMatches = {};
+          evA._peerMatches[tIdx] = evB;
+          evB._reservedForPrimary = evA;
+          usedB.add(evB);
+        }
+      }
+
+      const allRaw = tracks
+        .flatMap((t) => t.events)
+        .sort(
+          (a, b) =>
+            a.year - b.year ||
+            (a.month || 6.5) - (b.month || 6.5) ||
+            a.personIdx - b.personIdx
+        );
+
+      const merged = [];
+      let sameTimeCount = 0;
+      for (const evA of allRaw) {
+        if (evA._mergedIntoShared || evA._reservedForPrimary) continue;
+        const group = [evA];
+        if (evA._peerMatches) {
+          for (const evB of Object.values(evA._peerMatches)) {
+            if (evB && !evB._mergedIntoShared) {
+              evB._mergedIntoShared = true;
+              evB.coord = [evA.coord[0], evA.coord[1]];
+              group.push(evB);
+            }
+          }
+        }
+        if (group.length === 1 && evA.personIdx > 0) {
+          for (let tIdx = evA.personIdx + 1; tIdx < tracks.length; tIdx++) {
+            let bestEv = null;
+            let bestDy = Infinity;
+            let bestKm = Infinity;
+            for (const evB of tracks[tIdx].events) {
+              if (evB._mergedIntoShared) continue;
+              const dy = Math.abs(evA.year - evB.year);
+              if (dy > 3) continue;
+              const { hit, km } = this._eventsSharePlace(evA, evB);
+              if (!hit) continue;
+              if (dy < bestDy || (dy === bestDy && km < bestKm)) {
+                bestDy = dy;
+                bestKm = km;
+                bestEv = evB;
+              }
+            }
+            if (bestEv) {
+              bestEv._mergedIntoShared = true;
+              bestEv.coord = [evA.coord[0], evA.coord[1]];
+              group.push(bestEv);
+            }
+          }
+        }
+        if (group.length >= 2) {
+          evA._mergedIntoShared = true;
+          group.sort((a, b) => a.personIdx - b.personIdx);
+          const primary = group[0];
+          const textSource =
+            group.find((gEv) => gEv.src === 'J') ||
+            group.find((gEv) => gEv.src === 'M') ||
+            primary;
+          const participants = group.map((gEv) => ({
+            profile: tracks[gEv.personIdx].profile,
+            personIdx: gEv.personIdx,
+            personKey: gEv.personKey,
+            personZh: gEv.personZh,
+            personEn: gEv.personEn,
+            color: gEv.personColor,
+            stepIdx: gEv.personStepIdx,
+            stepNum: gEv.personStepNum,
+            year: gEv.year,
+            src: gEv.src,
+            byPersonsTag: Boolean(gEv.byPersonsTag),
+            textZh: gEv.textZh,
+            textEn: gEv.textEn,
+            quoteZh: gEv.quoteZh,
+            quoteEn: gEv.quoteEn,
+          }));
+          const uniqueNotes = [];
+          for (const pt of participants) {
+            const norm = String(pt.textZh || '').trim();
+            if (!norm) continue;
+            const dup = uniqueNotes.find(
+              (u) => u.textZh === norm || u.textZh.includes(norm) || norm.includes(u.textZh)
+            );
+            if (!dup) uniqueNotes.push(pt);
+          }
+          const isSameYearSharedEvent =
+            group.every((gEv) => gEv.year === primary.year) &&
+            (group.some((gEv) => gEv.byPersonsTag) ||
+              group.every((gEv) => gEv.src !== 'J'));
+          const qSource = participants.find((pt) => pt.quoteZh || pt.quoteEn) || textSource;
+          const sharedEv = {
+            ...primary,
+            textZh: textSource.textZh,
+            textEn: textSource.textEn,
+            isSharedEncounter: true,
+            isMapChange: group.some((gEv) => gEv.isMapChange),
+            participants,
+            distinctNotes:
+              !isSameYearSharedEvent && uniqueNotes.length > 1 ? uniqueNotes : null,
+            quoteZh: qSource.quoteZh || '',
+            quoteEn: qSource.quoteEn || '',
+            intersection: {
+              kind: 'same_time',
+              peers: participants.slice(1),
+            },
+          };
+          merged.push(sharedEv);
+          sameTimeCount++;
+        } else {
+          merged.push(evA);
+        }
+      }
+
+      merged.forEach((ev, idx) => {
+        ev.globalIdx = idx;
+      });
+
+      return {
+        profile: tracks[0].profile,
+        profiles: tracks.map((t) => t.profile),
+        isMulti: true,
+        tracks,
+        events: merged,
+        sameTimeCount,
+        crossTimeCount: 0,
+        intersectPlaces: merged.filter((e) => e.isSharedEncounter),
+      };
+    }
+
     openPersonChronicle(personOrQuery, initialIdx = -1) {
-      const profile = this._resolvePersonProfile(personOrQuery);
-      if (!profile) return false;
-      const events = this._collectPersonEvents(profile);
-      if (!events.length) return false;
+      const profiles = this._resolvePersonProfiles(personOrQuery);
+      if (!profiles.length) return false;
+      const state = this._buildPersonTracksAndEvents(profiles);
+      if (!state || !state.events.length) return false;
+      const { events } = state;
+      const stateKey = state.profiles.map((p) => p.key).join(',');
 
       if (!this._fullSnapshotsLoaded) {
         this._ensureFullSnapshots().then(() => {
-          if (this.activePerson && this.activePerson.profile.key === profile.key) {
+          if (
+            this.activePerson &&
+            this.activePerson.profiles.map((p) => p.key).join(',') === stateKey
+          ) {
             this._renderPersonChronicleCard(true);
           }
         });
@@ -4020,8 +4341,14 @@
         (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
       ) {
         this._ensureEnglishLocale().then(() => {
-          if (this.activePerson && this.activePerson.profile.key === profile.key) {
-            this.activePerson.events = this._collectPersonEvents(profile);
+          if (
+            this.activePerson &&
+            this.activePerson.profiles.map((p) => p.key).join(',') === stateKey
+          ) {
+            const rebuilt = this._buildPersonTracksAndEvents(profiles);
+            if (rebuilt) {
+              this.activePerson = rebuilt;
+            }
             this._renderPersonPinsOverlay();
             this._renderPersonChronicleCard(true);
           }
@@ -4035,12 +4362,17 @@
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
       this._clearActiveTrace();
+      if (this.ghostTimer) {
+        clearTimeout(this.ghostTimer);
+        this.ghostTimer = null;
+      }
+      if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
       }
 
-      this.activePerson = { profile, events };
+      this.activePerson = state;
       this.activePersonEventIdx =
         initialIdx >= 0 && initialIdx < events.length ? initialIdx : -1;
 
@@ -4050,14 +4382,18 @@
       if (vf) vf.classList.add('has-active-genealogy', 'has-active-person');
       this._syncImmersivePaneState();
 
-      const anchorEv =
-        this.activePersonEventIdx >= 0 ? events[this.activePersonEventIdx] : events[0];
+      const defaultAnchorEv =
+        this.activePersonEventIdx >= 0
+          ? events[this.activePersonEventIdx]
+          : events.find((e) => e.isSharedEncounter) || events[0];
+      this._inPersonSync = true;
       this._runWithDeferredTypography(() => {
-        if (anchorEv) {
-          this.jumpToYear(this._clampYearToDynasty(anchorEv.dynasty, anchorEv.year));
+        if (defaultAnchorEv) {
+          this.jumpToYear(this._clampYearToDynasty(defaultAnchorEv.dynasty, defaultAnchorEv.year));
         }
         this._renderPersonPinsOverlay();
       });
+      this._inPersonSync = false;
       this._renderPersonChronicleCard();
       this._syncDocumentSeoMeta();
 
@@ -4089,7 +4425,7 @@
         this._updateAutoplayUi();
         return;
       }
-      this.selectPersonEvent(this.activePersonEventIdx + 1, true);
+      this.stepPersonEvent(1);
     }
 
     togglePersonAutoplay() {
@@ -4127,10 +4463,12 @@
       this.activePersonEventIdx = clamped;
       const ev = events[clamped];
       this.closeMilestoneBalloon();
+      this._inPersonSync = true;
       this._runWithDeferredTypography(() => {
         this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
         this._renderPersonPinsOverlay();
       });
+      this._inPersonSync = false;
       this._renderPersonChronicleCard(true);
       if (panCamera) this._flyToPersonEvent(ev);
     }
@@ -4138,13 +4476,9 @@
     stepPersonEvent(delta) {
       if (!this.activePerson || !this.activePerson.events.length) return;
       const len = this.activePerson.events.length;
-      const nextIdx =
-        this.activePersonEventIdx < 0
-          ? delta >= 0
-            ? 0
-            : len - 1
-          : (this.activePersonEventIdx + delta + len) % len;
-      this.selectPersonEvent(nextIdx, true);
+      const cur = this.activePersonEventIdx;
+      const next = cur < 0 ? (delta >= 0 ? 0 : len - 1) : (cur + delta + len) % len;
+      this.selectPersonEvent(next, true);
     }
 
     _getPersonVisibleTopFrac() {
@@ -4167,13 +4501,78 @@
       return this.genealogySheetExpanded ? 0.38 : 0.56;
     }
 
+    _getVisiblePersonTracks() {
+      if (!this.activePerson) return [];
+      const { tracks, isMulti, events } = this.activePerson;
+      if (!Array.isArray(tracks) || !tracks.length) {
+        return [{ color: '#bd2d22', personIdx: 0, events: events || [] }];
+      }
+      if (!isMulti || tracks.length <= 1) return tracks;
+
+      const curIdx = this.activePersonEventIdx;
+      const curEv = curIdx >= 0 ? events[curIdx] : null;
+      const curDynKey =
+        (curEv && curEv.dynasty && curEv.dynasty.key) ||
+        (this.dynasties[this.dynastyIdx] && this.dynasties[this.dynastyIdx].key) ||
+        '';
+      const spans = tracks.map((tr) => {
+        const yrs = (tr.events || []).map((e) => e.year);
+        return yrs.length ? [Math.min(...yrs), Math.max(...yrs)] : [this.year, this.year];
+      });
+
+      const primaryIdxs = new Set();
+      if (curEv) {
+        if (curEv.isSharedEncounter && Array.isArray(curEv.participants)) {
+          curEv.participants.forEach((pt) => primaryIdxs.add(pt.personIdx));
+        } else if (curEv.personIdx !== undefined) {
+          primaryIdxs.add(curEv.personIdx);
+        }
+      }
+      if (!primaryIdxs.size && curDynKey) {
+        tracks.forEach((tr, idx) => {
+          if ((tr.events || []).some((e) => e.dynasty && e.dynasty.key === curDynKey)) {
+            primaryIdxs.add(idx);
+          }
+        });
+      }
+      if (!primaryIdxs.size) {
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        spans.forEach(([y0, y1], idx) => {
+          const d = this.year < y0 ? y0 - this.year : this.year > y1 ? this.year - y1 : 0;
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = idx;
+          }
+        });
+        primaryIdxs.add(bestIdx);
+      }
+
+      return tracks.filter((tr, idx) => {
+        if (primaryIdxs.has(idx)) return true;
+        if (
+          curDynKey &&
+          (tr.events || []).some((e) => e.dynasty && e.dynasty.key === curDynKey)
+        ) {
+          return true;
+        }
+        const [b0, b1] = spans[idx];
+        for (const pIdx of primaryIdxs) {
+          const [a0, a1] = spans[pIdx];
+          if (a1 + 30 >= b0 && b1 + 30 >= a0) return true;
+        }
+        return false;
+      });
+    }
+
     _framePersonOverview() {
       if (!this.activePerson || !this.activePerson.events.length) return;
+      const evList = this.activePerson.events;
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
       let maxY = -Infinity;
-      for (const ev of this.activePerson.events) {
+      for (const ev of evList) {
         const [sx, sy] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
         if (sx < minX) minX = sx;
         if (sx > maxX) maxX = sx;
@@ -4261,8 +4660,17 @@
       this.grpJourney.innerHTML = '';
       if (!this.activePerson) return;
 
-      const { events } = this.activePerson;
+      const { events, tracks, isMulti } = this.activePerson;
       const curIdx = this.activePersonEventIdx;
+      const curEv = curIdx >= 0 ? events[curIdx] : null;
+      const allTracks =
+        Array.isArray(tracks) && tracks.length
+          ? tracks
+          : [{ color: '#bd2d22', personIdx: 0, events }];
+      const activeEraTracks = this._getVisiblePersonTracks();
+      const activeEraPersonIdxs = new Set(activeEraTracks.map((t) => t.personIdx));
+      const isTrackDimmed = (pIdx) =>
+        Boolean(isMulti && curIdx >= 0 && !activeEraPersonIdxs.has(pIdx));
       const rawPts = events.map((ev) => this.projector.toScreen(ev.coord[0], ev.coord[1]));
 
       // Compute zoom-invariant screen-space cluster offsets so co-located pins (e.g. Chang'an ① ②)
@@ -4271,14 +4679,69 @@
       const clusters = rawPts.map(([sx, sy], i) => {
         const peers = [];
         rawPts.forEach(([ox, oy], j) => {
-          if (Math.hypot(ox - sx, oy - sy) < 6.5) peers.push(j);
+          const oneSharedOneSolo =
+            isMulti &&
+            Boolean(events[i]?.isSharedEncounter) !== Boolean(events[j]?.isSharedEncounter);
+          const hit = oneSharedOneSolo
+            ? Math.abs(ox - sx) < 14.2 && Math.abs(oy - sy) < 9.5
+            : Math.hypot(ox - sx, oy - sy) < 6.5;
+          if (hit) peers.push(j);
         });
+        if (isMulti) {
+          const sharedPeer = peers.find((pIdx) => events[pIdx] && events[pIdx].isSharedEncounter);
+          if (peers.includes(curIdx)) {
+            return {
+              ox: 0,
+              oy: 0,
+              ringR: 0,
+              isPrimary: i === curIdx,
+              isMultiCanonical: i === curIdx,
+              isCrossEraShared: false,
+              peers,
+            };
+          }
+          if (sharedPeer !== undefined) {
+            return {
+              ox: 0,
+              oy: 0,
+              ringR: 0,
+              isPrimary: i === sharedPeer,
+              isMultiCanonical: i === sharedPeer,
+              isCrossEraShared: false,
+              peers,
+            };
+          }
+          const myPersonIdx = events[i]?.personIdx;
+          const firstForPerson = peers.find((pIdx) => events[pIdx]?.personIdx === myPersonIdx);
+          const distinctPersons = Array.from(
+            new Set(peers.map((pIdx) => events[pIdx]?.personIdx))
+          ).sort((a, b) => a - b);
+          const pPos = distinctPersons.indexOf(myPersonIdx);
+          const ox =
+            distinctPersons.length > 1 ? (pPos - (distinctPersons.length - 1) * 0.5) * 6.4 : 0;
+          return {
+            ox,
+            oy: 0,
+            ringR: 0,
+            isPrimary: i === peers[0],
+            isMultiCanonical: i === firstForPerson,
+            isCrossEraShared: distinctPersons.length > 1,
+            peers,
+          };
+        }
         if (peers.length <= 1) {
-          return { ox: 0, oy: 0, ringR: 0, isPrimary: true, peers };
+          return { ox: 0, oy: 0, ringR: 0, isPrimary: true, isMultiCanonical: true, peers };
         }
         const pos = peers.indexOf(i);
         if (peers.length === 2) {
-          return { ox: pos === 0 ? -8.6 : 8.6, oy: 0, ringR: 2, isPrimary: pos === 0, peers };
+          return {
+            ox: pos === 0 ? -8.6 : 8.6,
+            oy: 0,
+            ringR: 2,
+            isPrimary: pos === 0,
+            isMultiCanonical: true,
+            peers,
+          };
         }
         const ringR = Math.max(9.6, 8.3 / Math.sin(Math.PI / peers.length));
         const angle = -Math.PI * 0.75 + (pos / peers.length) * Math.PI * 2;
@@ -4287,58 +4750,143 @@
           oy: Math.sin(angle) * ringR,
           ringR,
           isPrimary: pos === 0,
+          isMultiCanonical: true,
           peers,
         };
       });
 
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
-      const accentColor = '#bd2d22';
-      const segments = [];
-      for (let i = 0; i < events.length - 1; i++) {
-        const prevEv = events[i];
-        const nextEv = events[i + 1];
-        const keepsCuratedLeg =
-          Boolean(nextEv.via || nextEv.fromCoord) &&
-          nextEv.prevStopCoord &&
-          Math.hypot(
-            prevEv.coord[0] - nextEv.prevStopCoord[0],
-            prevEv.coord[1] - nextEv.prevStopCoord[1]
-          ) < 1.2;
-        const segInfo = this._buildJourneySegmentInfo(
-          keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
-          nextEv.coord,
-          keepsCuratedLeg ? nextEv.via : null
+      // Render dimmed cross-era tracks first so the active era's track sits cleanly on top
+      const orderedTracks = allTracks
+        .slice()
+        .sort((a, b) => (isTrackDimmed(b.personIdx) ? 1 : 0) - (isTrackDimmed(a.personIdx) ? 1 : 0));
+      for (const tr of orderedTracks) {
+        const trEvs = tr.events || [];
+        const segments = [];
+        const bias = isMulti ? (tr.personIdx - (allTracks.length - 1) * 0.5) * 7.5 : 0;
+        for (let i = 0; i < trEvs.length - 1; i++) {
+          const prevEv = trEvs[i];
+          const nextEv = trEvs[i + 1];
+          const keepsCuratedLeg =
+            Boolean(nextEv.via || nextEv.fromCoord) &&
+            nextEv.prevStopCoord &&
+            Math.hypot(
+              prevEv.coord[0] - nextEv.prevStopCoord[0],
+              prevEv.coord[1] - nextEv.prevStopCoord[1]
+            ) < 1.2;
+          const segInfo = this._buildJourneySegmentInfo(
+            keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
+            nextEv.coord,
+            keepsCuratedLeg ? nextEv.via : null,
+            bias
+          );
+          if (segInfo) {
+            segments.push({ ...segInfo, toIdx: i + 1 });
+          }
+        }
+        const dimmed = isTrackDimmed(tr.personIdx);
+        let trCurIdx = -1;
+        if (curEv && !dimmed) {
+          if (!isMulti) {
+            trCurIdx = curIdx;
+          } else if (curEv.isSharedEncounter && Array.isArray(curEv.participants)) {
+            const matchedPt = curEv.participants.find((pt) => pt.personIdx === tr.personIdx);
+            if (matchedPt) trCurIdx = matchedPt.stepIdx;
+          } else if (curEv.personIdx === tr.personIdx) {
+            trCurIdx = curEv.personStepIdx !== undefined ? curEv.personStepIdx : curIdx;
+          }
+        }
+        this._renderCartographicTrajectory(segments, trCurIdx, tr.color || '#bd2d22', dimmed);
+      }
+
+      // Deduplicate city labels so repeated visits to the same city only print its name once
+      const labelOwnerByIdx = new Set();
+      const placedCityLabels = [];
+      const labelPriorityOrder = events
+        .map((_, idx) => idx)
+        .sort((a, b) => {
+          if (a === curIdx) return -1;
+          if (b === curIdx) return 1;
+          const sa = events[a].isSharedEncounter ? 1 : 0;
+          const sb = events[b].isSharedEncounter ? 1 : 0;
+          if (sa !== sb) return sb - sa;
+          return a - b;
+        });
+      for (const idx of labelPriorityOrder) {
+        const ev = events[idx];
+        const [sx, sy] = rawPts[idx];
+        const fullLbl =
+          this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
+        const baseCity = fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
+        const dup = placedCityLabels.some(
+          (item) =>
+            Math.hypot(item.sx - sx, item.sy - sy) < 9 ||
+            (item.baseCity === baseCity && Math.hypot(item.sx - sx, item.sy - sy) < 28)
         );
-        if (segInfo) {
-          segments.push({ ...segInfo, toIdx: i + 1 });
+        if (!dup) {
+          labelOwnerByIdx.add(idx);
+          placedCityLabels.push({ sx, sy, baseCity });
         }
       }
-      this._renderCartographicTrajectory(segments, curIdx, accentColor);
 
       const order = events
         .map((_, idx) => idx)
-        .sort((a, b) => (a === curIdx ? 1 : b === curIdx ? -1 : a - b));
+        .sort((a, b) => {
+          if (a === curIdx) return 1;
+          if (b === curIdx) return -1;
+          if (isMulti) {
+            const da = isTrackDimmed(events[a].personIdx) ? 1 : 0;
+            const db = isTrackDimmed(events[b].personIdx) ? 1 : 0;
+            if (da !== db) return db - da;
+            const sa = events[a].isSharedEncounter ? 1 : 0;
+            const sb = events[b].isSharedEncounter ? 1 : 0;
+            if (sa !== sb) return sa - sb;
+          }
+          return a - b;
+        });
 
       for (const idx of order) {
+        const cl = clusters[idx];
+        if (isMulti && !cl.isMultiCanonical) continue;
         const ev = events[idx];
         const [sx, sy] = rawPts[idx];
-        const cl = clusters[idx];
         const isCur = idx === curIdx;
+        const isShared = Boolean(
+          ev.isSharedEncounter && Array.isArray(ev.participants) && ev.participants.length >= 2
+        );
+        const dimmed = !isShared && !isCur && isTrackDimmed(ev.personIdx);
+        const isPeerPassed =
+          curIdx < 0 || dimmed
+            ? true
+            : isMulti && curEv
+              ? ev.year <= curEv.year
+              : idx < curIdx;
         const stateCls =
-          curIdx < 0 ? 'is-passed' : isCur ? 'is-current' : idx < curIdx ? 'is-passed' : 'is-upcoming';
+          curIdx < 0 ? 'is-passed' : isCur ? 'is-current' : isPeerPassed ? 'is-passed' : 'is-upcoming';
+        const isMultiBead = isMulti && !isShared && !isCur;
+        const intersectCls = isShared ? ' is-intersect' : isMultiBead ? ' is-multi-bead' : '';
+        const dimCls = dimmed ? ' is-other-era' : '';
+        const pinColor = ev.personColor || '#bd2d22';
+
         const g = this._svgNode(
           'g',
           {
-            class: `journey-node ${stateCls}`,
+            class: `journey-node ${stateCls}${intersectCls}${dimCls}`,
             'data-x': sx.toFixed(1),
             'data-y': sy.toFixed(1),
             'data-ox': cl.ox.toFixed(2),
             'data-oy': cl.oy.toFixed(2),
+            'data-base-ox': cl.ox.toFixed(2),
+            'data-base-oy': cl.oy.toFixed(2),
             'data-stop-idx': String(idx),
+            ...(isMulti && cl.peers && cl.peers.length > 1
+              ? { 'data-peer-idxs': `,${cl.peers.join(',')},` }
+              : {}),
           },
           this.grpJourney
         );
-        g.style.color = accentColor;
+        g.style.color = pinColor;
+        if (dimmed) g.style.opacity = '0.36';
 
         const inner = this._svgNode(
           'g',
@@ -4349,63 +4897,141 @@
           g
         );
 
-        this._svgNode('circle', { class: 'jn-hit', r: 14, fill: 'transparent' }, inner);
-        if (isCur) {
-          this._svgNode('circle', { class: 'jn-pulse', r: 11.2 }, inner);
+        this._svgNode(
+          'circle',
+          { class: 'jn-hit', r: isShared ? 15 : isMultiBead ? 10 : 14, fill: 'transparent' },
+          inner
+        );
+        if (isShared) {
+          const parts = ev.participants;
+          const rDot = isCur ? 4.0 : 3.5;
+          const sep = isCur ? 8.6 : 7.6;
+          const pad = isCur ? 3.0 : 2.6;
+          const pillW = (parts.length - 1) * sep + rDot * 2 + pad;
+          const pillH = rDot * 2 + pad;
+          if (isCur) {
+            this._svgNode(
+              'rect',
+              {
+                class: 'jn-pulse-pill',
+                x: (-pillW * 0.5 - 2.2).toFixed(1),
+                y: (-pillH * 0.5 - 2.2).toFixed(1),
+                width: (pillW + 4.4).toFixed(1),
+                height: (pillH + 4.4).toFixed(1),
+                rx: (pillH * 0.5 + 2.2).toFixed(1),
+              },
+              inner
+            );
+          }
+          this._svgNode(
+            'rect',
+            {
+              class: 'jn-meet-pill',
+              x: (-pillW * 0.5).toFixed(1),
+              y: (-pillH * 0.5).toFixed(1),
+              width: pillW.toFixed(1),
+              height: pillH.toFixed(1),
+              rx: (pillH * 0.5).toFixed(1),
+            },
+            inner
+          );
+          parts.forEach((pt, k) => {
+            const dx = (k - (parts.length - 1) * 0.5) * sep;
+            const dot = this._svgNode(
+              'circle',
+              {
+                class: 'jn-disc is-meet-dot',
+                cx: dx.toFixed(1),
+                cy: '0',
+                r: rDot,
+              },
+              inner
+            );
+            dot.style.color = pt.color;
+          });
+        } else if (isMultiBead) {
+          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 3.2 }, inner);
+        } else {
+          if (isCur) {
+            this._svgNode('circle', { class: 'jn-pulse', r: 11.8 }, inner);
+          }
+          this._svgNode('circle', { class: 'jn-disc', r: isCur ? 7.6 : 5.8 }, inner);
+          if (!isMulti) {
+            const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
+            numTxt.textContent = String(ev.personStepNum || idx + 1);
+          }
         }
-        this._svgNode('circle', { class: 'jn-disc', r: isCur ? 7.6 : 5.8 }, inner);
-        const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
-        numTxt.textContent = String(idx + 1);
 
-        const clusterHasCur = curIdx >= 0 && cl.peers.includes(curIdx);
-        const ownsClusterLabel = isCur || (!clusterHasCur && cl.isPrimary);
-        if (ownsClusterLabel) {
+        const showStartLbl = isMulti && ev.personStepIdx === 0 && !dimmed;
+        if (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl))) {
           const fullLbl =
             this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
           const compactLbl = isCur
             ? fullLbl
             : fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
+          const hideUntilHover = isMultiBead && !showStartLbl;
           const lblTxt = this._svgNode(
             'text',
-            { class: 'jn-label', x: '0', y: '-11.5' },
+            {
+              class: `jn-label${isShared ? ' is-intersect-label' : ''}${
+                hideUntilHover ? ' is-hover-only-label' : ''
+              }`,
+              x: '0',
+              y: isShared ? '-9.8' : isMultiBead ? '-8.2' : '-11.5',
+            },
             inner
           );
           lblTxt.textContent = compactLbl;
         }
       }
 
+      this._invalidateTypographyLayout();
       this._rescaleSvgTypography();
     }
 
     _setHoveredPersonPin(idx) {
       if (!this.grpJourney) return;
       this.grpJourney.querySelectorAll('.journey-node').forEach((jn) => {
-        jn.classList.toggle('is-hover-pin', Number(jn.dataset.stopIdx) === idx);
+        const directHit = Number(jn.dataset.stopIdx) === idx;
+        const peerHit =
+          idx >= 0 &&
+          jn.dataset.peerIdxs !== undefined &&
+          jn.dataset.peerIdxs.includes(`,${idx},`);
+        jn.classList.toggle('is-hover-pin', directHit || peerHit);
       });
     }
 
     _renderPersonChronicleCard(preserveScroll = false) {
       if (!this.activePerson) return;
-      const { profile, events } = this.activePerson;
+      const {
+        profile,
+        profiles,
+        isMulti,
+        tracks,
+        events,
+        sameTimeCount,
+      } = this.activePerson;
       const curIdx = this.activePersonEventIdx;
       const isEn = this.locale === 'en';
       const isAdhoc = String(profile.key || '').startsWith('adhoc_');
       const listEl = this._id('genealogy-timeline');
-      const personCardKey = `${profile.key}:${this.locale}:${events.length}`;
+      const stateKey = (profiles || [profile]).map((p) => p.key).join(',');
+      const personCardKey = `${stateKey}:${this.locale}:${events.length}`;
       if (
         preserveScroll &&
         this._lastPersonCardKey === personCardKey &&
         listEl &&
         listEl.children &&
-        listEl.children.length === events.length
+        listEl.children.length > 0
       ) {
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) ovBtn.classList.toggle('is-active', curIdx < 0);
         this._renderPersonFooter(events, curIdx, isEn);
         if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-foot'));
         let activeLi = null;
-        Array.from(listEl.children).forEach((li, idx) => {
-          const isCur = idx === curIdx;
+        Array.from(listEl.children).forEach((li) => {
+          const rowIdx = Number(li.dataset.evIdx);
+          const isCur = rowIdx === curIdx;
           li.classList.toggle('is-current', isCur);
           if (isCur) activeLi = li;
         });
@@ -4435,50 +5061,105 @@
             : '点人溯事 · 人物生平纪事';
       }
 
-      const spanStr = this._formatPersonSpan(profile.span, isAdhoc);
       const headingEl = this._id('genealogy-heading');
       if (headingEl) {
-        headingEl.textContent = `${isEn ? profile.en : profile.zh}${spanStr}`;
+        if (isMulti) {
+          headingEl.innerHTML = tracks
+            .map((tr) => {
+              const name = escHtml(isEn ? tr.profile.en : tr.profile.zh);
+              return (
+                `<span class="mp-title-person" style="--track-color:${tr.color}">` +
+                `<button type="button" class="mp-title-solo" data-solo-key="${escHtml(tr.profile.key)}" title="${
+                  isEn ? 'View solo chronicle' : '单独查看此人行迹'
+                }">` +
+                `<span class="mp-title-dot" style="background:${tr.color}"></span>` +
+                `<span>${name}</span>` +
+                `</button>` +
+                `<button type="button" class="mp-title-remove" data-remove-key="${escHtml(tr.profile.key)}" title="${
+                  isEn ? 'Remove' : '移除'
+                }">×</button>` +
+                `</span>`
+              );
+            })
+            .join('<span class="mp-title-sep">×</span>');
+          headingEl.querySelectorAll('.mp-title-solo').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const soloKey = btn.dataset.soloKey;
+              const visTracks = this._getVisiblePersonTracks();
+              const isAlreadySoleOnMap =
+                visTracks.length === 1 && visTracks[0].profile && visTracks[0].profile.key === soloKey;
+              if (!isAlreadySoleOnMap && visTracks.every((t) => !t.profile || t.profile.key !== soloKey)) {
+                const firstIdx = events.findIndex((e) => e.personKey === soloKey);
+                if (firstIdx >= 0) {
+                  this.selectPersonEvent(firstIdx, true);
+                  return;
+                }
+              }
+              this.openPersonChronicle(soloKey, -1);
+            });
+          });
+          headingEl.querySelectorAll('.mp-title-remove').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const rem = profiles.filter((p) => p.key !== btn.dataset.removeKey);
+              if (rem.length) this.openPersonChronicle(rem, -1);
+            });
+          });
+        } else {
+          const spanStr = this._formatPersonSpan(profile.span, isAdhoc);
+          headingEl.textContent = `${isEn ? profile.en : profile.zh}${spanStr}`;
+        }
       }
 
       const loreEl = this._id('genealogy-lore');
       if (loreEl) {
-        const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
-        const enAliases = (profile.aliases || []).filter((a) => !/[\u4e00-\u9fff]/.test(a));
-        const aliasHint = isEn
-          ? enAliases.length
-            ? `Also searched as: ${enAliases.slice(0, 4).join(' · ')}`
-            : ''
-          : profile.aliases && profile.aliases.length
-            ? `字号 / 检索词：${profile.aliases.slice(0, 4).join(' · ')}`
-            : '';
-        const badgeLabel = profile.isRelic
-          ? isEn
-            ? 'Imperial Relic'
-            : '国器本纪'
-          : isEn
-            ? 'Biography'
-            : '人物小传';
-        const descText = profile.isRelic
-          ? (isEn ? profile.descEn : profile.descZh) || aliasHint
-          : aliasHint;
-        if (subTitle || descText) {
-          loreEl.innerHTML =
-            `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLabel}</span><span class="pass-lore-range">${subTitle}</span></div>` +
-            (descText ? `<div class="pass-lore-desc">${descText}</div>` : '');
-          loreEl.classList.remove('is-hidden');
-        } else {
+        if (isMulti) {
           loreEl.innerHTML = '';
           loreEl.classList.add('is-hidden');
+        } else {
+          const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
+          const enAliases = (profile.aliases || []).filter((a) => !/[\u4e00-\u9fff]/.test(a));
+          const aliasHint = isEn
+            ? enAliases.length
+              ? `Also searched as: ${enAliases.slice(0, 4).join(' · ')}`
+              : ''
+            : profile.aliases && profile.aliases.length
+              ? `字号 / 检索词：${profile.aliases.slice(0, 4).join(' · ')}`
+              : '';
+          const badgeLabel = profile.isRelic
+            ? isEn
+              ? 'Imperial Relic'
+              : '国器本纪'
+            : isEn
+              ? 'Biography'
+              : '人物小传';
+          const descText = profile.isRelic
+            ? (isEn ? profile.descEn : profile.descZh) || aliasHint
+            : aliasHint;
+
+          if (subTitle || descText) {
+            loreEl.innerHTML =
+              `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLabel}</span><span class="pass-lore-range">${subTitle}</span></div>` +
+              (descText ? `<div class="pass-lore-desc">${descText}</div>` : '');
+            loreEl.classList.remove('is-hidden');
+          } else {
+            loreEl.innerHTML = '';
+            loreEl.classList.add('is-hidden');
+          }
         }
       }
 
       const dynCount = new Set(events.map((e) => e.dynasty.key)).size;
       const subEl = this._id('genealogy-sub');
       if (subEl) {
+        const encounterSuffix =
+          isMulti && sameTimeCount > 0
+            ? isEn
+              ? ` · ${sameTimeCount} shared`
+              : ` · ${sameTimeCount} 处同途`
+            : '';
         const summaryTxt = isEn
-          ? `${events.length} events · ${dynCount} era${dynCount > 1 ? 's' : ''}`
-          : `共 ${events.length} 处史事 · 历 ${dynCount} 朝`;
+          ? `${events.length} events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
+          : `共 ${events.length} 处史事 · 历 ${dynCount} 朝${encounterSuffix}`;
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
@@ -4488,7 +5169,11 @@
           `</span>`;
 
         const ovBtn = this._id('act-person-overview');
-        if (ovBtn) ovBtn.addEventListener('click', () => this.selectPersonEvent(-1, true));
+        if (ovBtn) {
+          ovBtn.addEventListener('click', () => {
+            this.selectPersonEvent(-1, true);
+          });
+        }
       }
       this._renderPersonFooter(events, curIdx, isEn);
 
@@ -4498,10 +5183,15 @@
       listEl.innerHTML = '';
 
       let activeLi = null;
+      let firstSharedLi = null;
       events.forEach((ev, idx) => {
+        const isShared = Boolean(ev.isSharedEncounter);
         const li = document.createElement('li');
-        li.className = 'person-ev-row' + (idx === curIdx ? ' is-current' : '');
+        const intersectRowCls = isShared ? ' is-intersect-row' : '';
+        li.className = `person-ev-row${idx === curIdx ? ' is-current' : ''}${intersectRowCls}`;
+        li.dataset.evIdx = String(idx);
         if (idx === curIdx) activeLi = li;
+        if (isShared && !firstSharedLi) firstSharedLi = li;
 
         const yrStr = isEn
           ? this.formatYear(ev.year)
@@ -4521,14 +5211,46 @@
         const quoteTxt = isEn ? ev.quoteEn || '' : ev.quoteZh || '';
         const quoteHtml = quoteTxt ? `<span class="person-ev-quote">${quoteTxt}</span>` : '';
 
+        let leftBadgeHtml;
+        if (isMulti) {
+          const tagItems = isShared && Array.isArray(ev.participants)
+            ? ev.participants
+            : [{ personEn: ev.personEn, personZh: ev.personZh, color: ev.personColor }];
+          const tagsHtml = tagItems
+            .map(
+              (pt) =>
+                `<span class="person-track-tag" style="--track-color:${pt.color}">` +
+                `<span class="pt-name">${escHtml(isEn ? pt.personEn : pt.personZh)}</span>` +
+                `</span>`
+            )
+            .join('');
+          leftBadgeHtml =
+            `<span class="person-track-tags-group">${tagsHtml}</span>` +
+            `<span class="person-yr-sub">${yrStr} · ${this.dynastyName(ev.dynasty)}</span>`;
+        } else {
+          leftBadgeHtml =
+            `<span class="person-idx-line"><span class="cr-stop-num">${idx + 1}</span><span>${yrStr}</span></span>` +
+            `<span class="t-sub">${this.dynastyName(ev.dynasty)}</span>`;
+        }
+
+        const copyHtml =
+          isShared && Array.isArray(ev.distinctNotes) && ev.distinctNotes.length > 1
+            ? ev.distinctNotes
+                .map(
+                  (pt) =>
+                    `<span class="t-sub person-ev-copy person-ev-subnote">` +
+                    `<i class="person-ev-dot" style="background:${pt.color}"></i>` +
+                    `${isEn ? pt.textEn : pt.textZh}` +
+                    `</span>`
+                )
+                .join('')
+            : `<span class="t-sub person-ev-copy">${isEn ? ev.textEn : ev.textZh}</span>`;
+
         li.innerHTML =
-          `<span class="t-era person-era-col">` +
-          `<span class="person-idx-line"><span class="cr-stop-num">${idx + 1}</span><span>${yrStr}</span></span>` +
-          `<span class="t-sub">${this.dynastyName(ev.dynasty)}</span>` +
-          `</span>` +
+          `<span class="t-era person-era-col">${leftBadgeHtml}</span>` +
           `<span class="t-val">` +
           `<span class="person-site-line"><span>${siteLabel}${mapBadge}</span>${traceBtn}</span>` +
-          `<span class="t-sub person-ev-copy">${isEn ? ev.textEn : ev.textZh}</span>` +
+          `${copyHtml}` +
           `${quoteHtml}` +
           `</span>`;
 
@@ -4545,7 +5267,12 @@
         if (traceBtnEl) {
           traceBtnEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            const savedReturn = { profile, eventIdx: idx };
+            const savedReturn = {
+              profile: isMulti ? profiles.map((p) => p.key).join(',') : profile,
+              labelZh: isMulti ? profiles.map((p) => p.zh).join('×') : profile.zh,
+              labelEn: isMulti ? profiles.map((p) => p.en).join(' × ') : profile.en,
+              eventIdx: idx,
+            };
             this.jumpToYear(this._clampYearToDynasty(ev.dynasty, ev.year));
             this.openGenealogyAt(ev.coord[0], ev.coord[1], ev.siteZh, {
               returnPerson: savedReturn,
@@ -4560,6 +5287,8 @@
           activeLi.scrollIntoView({ block: 'nearest' });
         } else if (preserveScroll) {
           scrollEl.scrollTop = prevScroll;
+        } else if (firstSharedLi && typeof firstSharedLi.scrollIntoView === 'function') {
+          firstSharedLi.scrollIntoView({ block: 'center' });
         } else {
           scrollEl.scrollTop = 0;
         }
@@ -4572,15 +5301,22 @@
     _renderPersonFooter(events, curIdx, isEn) {
       const footEl = this._id('genealogy-foot');
       if (!footEl) return;
-      const next = events[curIdx + 1] || null;
+      const isMulti = Boolean(this.activePerson && this.activePerson.isMulti);
+      const nextIdx = curIdx < 0 ? 0 : curIdx + 1 < events.length ? curIdx + 1 : -1;
+      const next = nextIdx >= 0 ? events[nextIdx] : null;
       let nextLabel;
       if (next) {
         const site = escHtml(isEn ? next.siteEn || this.trTerm(next.siteZh) : next.siteZh);
+        const whoPrefix = isMulti
+          ? next.isSharedEncounter && Array.isArray(next.participants)
+            ? `${next.participants.map((p) => escHtml(isEn ? p.personEn : p.personZh)).join('×')} · `
+            : `${escHtml(isEn ? next.personEn : next.personZh)} · `
+          : '';
         const yr = isEn
           ? ` · ${this.formatYear(next.year)}`
           : ` · ${next.year <= 0 ? '前' + -next.year : next.year}年`;
         const lead = curIdx < 0 ? (isEn ? 'Start' : '出发') : isEn ? 'Next' : '下一站';
-        nextLabel = `${lead} · ${site}${yr}`;
+        nextLabel = `${lead} · ${whoPrefix}${site}${yr}`;
       } else {
         nextLabel = isEn ? 'Back to overview' : '回到全图总览';
       }
@@ -4592,10 +5328,15 @@
         `<button type="button" class="gen-foot-next" id="act-person-next"><span>${nextLabel}</span>${SVG_ICONS.arrowRight}</button>`;
       footEl.classList.remove('is-hidden');
       const prevBtn = footEl.querySelector('#act-person-prev');
-      if (prevBtn) prevBtn.addEventListener('click', () => this.selectPersonEvent(curIdx - 1, true));
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          const prevIdx = curIdx > 0 ? curIdx - 1 : -1;
+          this.selectPersonEvent(prevIdx, true);
+        });
+      }
       const nextBtn = footEl.querySelector('#act-person-next');
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => this.selectPersonEvent(next ? curIdx + 1 : -1, true));
+        nextBtn.addEventListener('click', () => this.selectPersonEvent(next ? nextIdx : -1, true));
       }
     }
 
@@ -5670,7 +6411,9 @@
         const retP = this.activeReturnPerson;
         const retBtnHtml = retP
           ? `<button type="button" class="gen-filter-pill" id="act-return-person">‹ ${escHtml(
-              this.locale === 'en' ? retP.profile.en : retP.profile.zh
+              this.locale === 'en'
+                ? retP.labelEn || (retP.profile && retP.profile.en) || ''
+                : retP.labelZh || (retP.profile && retP.profile.zh) || ''
             )}</button>`
           : '';
         if (totalEvents > 0 || retBtnHtml) {
@@ -6213,7 +6956,7 @@
                 return;
               }
               this._renderPolitiesAndPrefectures(cur, snap);
-              if (!this.playing && !this.isScrubbing && prevSnap) {
+              if (!this.playing && !this.isScrubbing && !this.activePerson && prevSnap) {
                 this._renderGhostDiff(prevSnap, 'fade');
               }
             });
@@ -6230,6 +6973,9 @@
           this._buildTerrainRivers();
         }
         this._renderCorridors();
+        if (this.activePerson && !this._inPersonSync && prevIdx !== this.dynastyIdx) {
+          this._renderPersonPinsOverlay();
+        }
       });
 
       // Auto callouts are kept or replaced by _syncAutoMilestoneBalloon below.
@@ -7076,21 +7822,37 @@
 
       const pinnedCoords = [];
       if (this.grpJourney && this.grpJourney.firstChild) {
+        const pScale = this._lastPersonPinScale || s;
         this.grpJourney.querySelectorAll('.journey-node').forEach((jn) => {
           const jx = parseFloat(jn.getAttribute('data-x'));
           const jy = parseFloat(jn.getAttribute('data-y'));
+          const ox = parseFloat(jn.getAttribute('data-ox') || '0');
+          const oy = parseFloat(jn.getAttribute('data-oy') || '0');
           if (!isNaN(jx) && !isNaN(jy)) {
+            const isBead = jn.classList.contains('is-multi-bead');
+            const px = jx + ox * pScale;
+            const py = jy + oy * pScale;
             pinnedCoords.push([jx, jy]);
-            occupied.push({ x1: jx - 10 * s, y1: jy - 10 * s, x2: jx + 10 * s, y2: jy + 10 * s });
+            const padR = (isBead ? 4.2 : 10.5) * pScale;
+            occupied.push({ x1: px - padR, y1: py - padR, x2: px + padR, y2: py + padR });
             const lbl = jn.querySelector('.jn-label');
-            if (lbl && lbl.textContent) {
+            if (
+              lbl &&
+              lbl.textContent &&
+              !lbl.classList.contains('is-hover-only-label') &&
+              lbl.style.display !== 'none'
+            ) {
+              const lx = parseFloat(lbl.getAttribute('x') || '0');
               const ly = parseFloat(lbl.getAttribute('y') || '-11.5');
-              const hw = (this._estimateLocalTextWidth(lbl.textContent, 11.5, 0.5) * 0.5 + 8) * s;
+              const anchor = lbl.getAttribute('text-anchor') || 'middle';
+              const w = (this._estimateLocalTextWidth(lbl.textContent, 11.5, 0.5) + 14) * pScale;
+              const bx = px + lx * pScale;
+              const x1 = anchor === 'start' ? bx : anchor === 'end' ? bx - w : bx - w * 0.5;
               occupied.push({
-                x1: jx - hw,
-                y1: jy + (ly - 8) * s,
-                x2: jx + hw,
-                y2: jy + (ly + 5) * s,
+                x1,
+                y1: py + (ly - 10) * pScale,
+                x2: x1 + w,
+                y2: py + (ly + 5) * pScale,
               });
             }
           }
@@ -7396,7 +8158,7 @@
         // Fallback for very small or narrow polities (e.g., 周, 韩) where strict interior bounds
         // prevented dodging a co-located capital city label
         if (bestScore > 1.0 * s * s) {
-          for (let i = 1; i < Math.min(18, polOffsets.length); i++) {
+          for (let i = 1; i < Math.min(28, polOffsets.length); i++) {
             const [ox, oy] = polOffsets[i];
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
@@ -7683,6 +8445,7 @@
       const rh = (svgRect && svgRect.height) || rw * 0.7;
       const screenScale = Math.min(rw / this.camera.w, rh / this.camera.h);
       const pinScale = Math.max(s, 0.92 / Math.max(0.12, screenScale));
+      this._lastPersonPinScale = pinScale;
       const pinScaleStr = pinScale.toFixed(3);
       const pxPerLocal = pinScale * screenScale;
       const nodes = Array.from(this.grpJourney.querySelectorAll('.journey-node')).sort(
@@ -7692,13 +8455,17 @@
         n,
         x: Number(n.getAttribute('data-x')),
         y: Number(n.getAttribute('data-y')),
-        ox: 0,
-        oy: 0,
+        ox: Number(n.getAttribute('data-base-ox') || 0),
+        oy: Number(n.getAttribute('data-base-oy') || 0),
+        isPill: n.classList.contains('is-intersect'),
+        isBead: n.classList.contains('is-multi-bead'),
       }));
-      const minSepPx = 15.8;
       for (let iter = 0; iter < 12; iter++) {
         for (let i = 0; i < pts.length; i++) {
+          if (pts[i].isBead) continue;
           for (let j = i + 1; j < pts.length; j++) {
+            if (pts[j].isBead) continue;
+            const minSepPx = pts[i].isPill || pts[j].isPill ? 18.5 : 15.8;
             const pxI = pts[i].x * screenScale + pts[i].ox * pxPerLocal;
             const pyI = pts[i].y * screenScale + pts[i].oy * pxPerLocal;
             const pxJ = pts[j].x * screenScale + pts[j].ox * pxPerLocal;
@@ -7710,9 +8477,8 @@
               let ux;
               let uy;
               if (dist < 0.05) {
-                const ang = (j - i - 1) * 1.05;
-                ux = Math.cos(ang);
-                uy = Math.sin(ang);
+                ux = 1;
+                uy = 0;
               } else {
                 ux = dx / dist;
                 uy = dy / dist;
@@ -7737,32 +8503,50 @@
       }
       const placedRects = pts.map((p) => {
         const isCur = p.n.classList.contains('is-current');
-        const rPx = (isCur ? 8.5 : 6.6) * pxPerLocal;
+        const rPxY = p.isBead
+          ? 3.8 * pxPerLocal
+          : p.isPill
+            ? (isCur ? 6.5 : 5.6) * pxPerLocal
+            : (isCur ? 8.5 : 6.6) * pxPerLocal;
+        const rPxX = p.isBead
+          ? 3.8 * pxPerLocal
+          : p.isPill
+            ? (isCur ? 10.6 : 9.4) * pxPerLocal
+            : rPxY;
         const cx = p.x * screenScale + p.ox * pxPerLocal;
         const cy = p.y * screenScale + p.oy * pxPerLocal;
         return {
-          left: cx - rPx,
-          right: cx + rPx,
-          top: cy - rPx,
-          bottom: cy + rPx,
+          left: cx - rPxX,
+          right: cx + rPxX,
+          top: cy - rPxY,
+          bottom: cy + rPxY,
         };
       });
-      const candSlots = [
+      const defaultSlots = [
         { idx: 0, anchor: 'middle', lx: '0', ly: '-12.2', nx: 0, ny: -12.2 },
         { idx: 1, anchor: 'middle', lx: '0', ly: '19.8', nx: 0, ny: 19.8 },
         { idx: 2, anchor: 'start', lx: '11.2', ly: '3.8', nx: 11.2, ny: 3.8 },
         { idx: 3, anchor: 'end', lx: '-11.2', ly: '3.8', nx: -11.2, ny: 3.8 },
       ];
+      const pillSlots = [
+        { idx: 0, anchor: 'middle', lx: '0', ly: '-9.8', nx: 0, ny: -9.8 },
+        { idx: 1, anchor: 'middle', lx: '0', ly: '17.2', nx: 0, ny: 17.2 },
+        { idx: 2, anchor: 'start', lx: '11.8', ly: '3.5', nx: 11.8, ny: 3.5 },
+        { idx: 3, anchor: 'end', lx: '-11.8', ly: '3.5', nx: -11.8, ny: 3.5 },
+      ];
       const labelOrder = pts
         .slice()
-        .sort((a, b) =>
-          a.n.classList.contains('is-current') ? -1 : b.n.classList.contains('is-current') ? 1 : 0
-        );
+        .sort((a, b) => {
+          const rank = (item) =>
+            item.n.classList.contains('is-current') ? 0 : item.isPill ? 1 : 2;
+          return rank(a) - rank(b);
+        });
       for (const p of labelOrder) {
         const lbl = p.n.querySelector('.jn-label');
-        if (!lbl) continue;
+        if (!lbl || lbl.classList.contains('is-hover-only-label')) continue;
         const isCur = p.n.classList.contains('is-current');
-        const fontPx = isCur ? 11.5 : 10.2;
+        const candSlots = p.isPill ? pillSlots : defaultSlots;
+        const fontPx = isCur || p.isPill ? 11.2 : 10.2;
         const textW = (this._estimateLocalTextWidth(lbl.textContent, fontPx, 0) + 3.6) * pxPerLocal;
         const textH = (fontPx * 1.18 + 2.4) * pxPerLocal;
         const cx = p.x * screenScale + p.ox * pxPerLocal;
@@ -7775,6 +8559,9 @@
             : candSlots;
         let chosenSlot = null;
         let chosenRect = null;
+        let leastOverlap = Infinity;
+        let fallbackSlot = null;
+        let fallbackRect = null;
         for (const sl of orderedSlots) {
           const bx = cx + sl.nx * pxPerLocal;
           const by = cy + sl.ny * pxPerLocal;
@@ -7786,34 +8573,30 @@
             top: by - textH * 0.82,
             bottom: by + textH * 0.18,
           };
-          const hit = placedRects.some(
-            (o) => r.right > o.left && r.left < o.right && r.bottom > o.top && r.top < o.bottom
-          );
-          if (!hit) {
+          let ovArea = 0;
+          for (const o of placedRects) {
+            const ox = Math.min(r.right, o.right) - Math.max(r.left, o.left);
+            const oy = Math.min(r.bottom, o.bottom) - Math.max(r.top, o.top);
+            if (ox > 0 && oy > 0) ovArea += ox * oy;
+          }
+          if (ovArea === 0) {
             chosenSlot = sl;
             chosenRect = r;
             break;
           }
+          if (ovArea < leastOverlap) {
+            leastOverlap = ovArea;
+            fallbackSlot = sl;
+            fallbackRect = r;
+          }
         }
-        if (!chosenSlot && isCur) {
-          chosenSlot = orderedSlots[0];
-          const bx = cx + chosenSlot.nx * pxPerLocal;
-          const by = cy + chosenSlot.ny * pxPerLocal;
-          const left =
-            chosenSlot.anchor === 'start'
-              ? bx
-              : chosenSlot.anchor === 'end'
-                ? bx - textW
-                : bx - textW * 0.5;
-          chosenRect = {
-            left,
-            right: left + textW,
-            top: by - textH * 0.82,
-            bottom: by + textH * 0.18,
-          };
+        if (!chosenSlot && (isCur || p.isPill)) {
+          chosenSlot = fallbackSlot || orderedSlots[0];
+          chosenRect = fallbackRect;
         }
         if (chosenSlot) {
           lbl.style.display = '';
+          lbl.style.textAnchor = chosenSlot.anchor;
           lbl.dataset.slotIdx = String(chosenSlot.idx);
           lbl.setAttribute('text-anchor', chosenSlot.anchor);
           lbl.setAttribute('x', chosenSlot.lx);
@@ -7856,6 +8639,7 @@
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          if (this.activePerson) this._invalidateTypographyLayout();
           this._applyCamera(true);
         }
       };
@@ -7920,9 +8704,14 @@
       const curIdx = this.customRouteStopIdx;
       const isEn = this.locale === 'en';
       const isMultiYear = new Set(stops.map((s) => s.year)).size > 1;
+      const trackIds = Array.from(new Set(stops.map((s) => s.trackIdx || 0)));
+      const isMultiTrack = trackIds.length > 1;
+
       let totalKm = 0;
       for (let i = 0; i < stops.length - 1; i++) {
-        totalKm += this.projector.greatCircleKm(stops[i].coord, stops[i + 1].coord);
+        if ((stops[i].trackIdx || 0) === (stops[i + 1].trackIdx || 0)) {
+          totalKm += this.projector.greatCircleKm(stops[i].coord, stops[i + 1].coord);
+        }
       }
       const distStr =
         totalKm > 0
@@ -7931,17 +8720,51 @@
             : `全程约 ${Math.round(totalKm)} km`
           : '';
 
-      const pillsHtml = stops
-        .map((st, i) => {
-          const rawLbl = st.query || st.name;
-          const baseLbl = isEn ? this.trTerm(rawLbl) : this._zh(rawLbl);
-          const yrTag =
-            st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
-          const lbl = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
-          const cls = i === curIdx ? 'cr-stop-pill is-current' : 'cr-stop-pill';
-          return `<button type="button" class="${cls}" data-cidx="${i}"><span class="cr-stop-num">${i + 1}</span><span>${escHtml(lbl)}</span></button>`;
-        })
-        .join('<span class="cr-stop-arrow">→</span>');
+      let stopsBodyHtml = '';
+      if (!isMultiTrack) {
+        const pillsHtml = stops
+          .map((st, i) => {
+            const rawLbl = st.query || st.name;
+            const baseLbl = isEn ? this.trTerm(rawLbl) : this._zh(rawLbl);
+            const yrTag =
+              st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
+            const lbl = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
+            const cls = i === curIdx ? 'cr-stop-pill is-current' : 'cr-stop-pill';
+            return `<button type="button" class="${cls}" data-cidx="${i}"><span class="cr-stop-num">${i + 1}</span><span>${escHtml(lbl)}</span></button>`;
+          })
+          .join('<span class="cr-stop-arrow">→</span>');
+        stopsBodyHtml = `<div class="cr-stops-list">${pillsHtml}</div>`;
+      } else {
+        const palette = HistoricalAtlasController.PERSON_TRACK_PALETTE;
+        const rowsHtml = trackIds
+          .map((tId, tPos) => {
+            const color = palette[tPos % palette.length];
+            const tStops = stops
+              .map((st, globalIdx) => ({ st, globalIdx }))
+              .filter((item) => (item.st.trackIdx || 0) === tId);
+            const pills = tStops
+              .map(({ st, globalIdx }, sPos) => {
+                const rawLbl = st.query || st.name;
+                const baseLbl = isEn ? this.trTerm(rawLbl) : this._zh(rawLbl);
+                const yrTag =
+                  st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
+                const lbl = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
+                const isCur = globalIdx === curIdx;
+                const convCls = st.convergence ? ' is-converge' : '';
+                const cls = `cr-stop-pill${isCur ? ' is-current' : ''}${convCls}`;
+                return `<button type="button" class="${cls}" style="--track-color:${color}" data-cidx="${globalIdx}"><span class="cr-stop-num">${sPos + 1}</span><span>${escHtml(lbl)}</span></button>`;
+              })
+              .join('<span class="cr-stop-arrow">→</span>');
+            return (
+              `<div class="cr-track-row">` +
+              `<span class="cr-track-dot" style="background:${color}"></span>` +
+              `<div class="cr-stops-list">${pills}</div>` +
+              `</div>`
+            );
+          })
+          .join('');
+        stopsBodyHtml = `<div class="cr-multitrack-wrap">${rowsHtml}</div>`;
+      }
 
       this.journeyCard.classList.remove('is-hidden', 'is-collapsed');
       this.journeyCard.classList.add('is-custom-route');
@@ -7951,8 +8774,14 @@
 
       this.journeyCard.innerHTML =
         `<div class="jc-top-bar">` +
-        `<span class="jc-step-badge" style="background:#9e2a2b">${
-          isEn ? `Route · ${stops.length} Stops` : `行迹路线 · 共 ${stops.length} 站`
+        `<span class="jc-step-badge" style="background:${isMultiTrack ? '#bd2d22' : '#9e2a2b'}">${
+          isMultiTrack
+            ? isEn
+              ? `${trackIds.length} Routes · ${stops.length} Stops`
+              : `${trackIds.length} 路行迹 · 共 ${stops.length} 站`
+            : isEn
+              ? `Route · ${stops.length} Stops`
+              : `行迹路线 · 共 ${stops.length} 站`
         }</span>` +
         (distStr ? `<span class="cr-dist-label">${distStr}</span>` : '') +
         `<div class="cr-top-actions">` +
@@ -7965,7 +8794,7 @@
         `</div>` +
         `</div>` +
         `<div class="cr-stops-bar">` +
-        `<div class="cr-stops-list">${pillsHtml}</div>` +
+        `${stopsBodyHtml}` +
         `<div class="jc-controls">` +
         `<button type="button" class="jc-nav-btn" id="act-custom-prev">${SVG_ICONS.arrowLeft} ${
           isEn ? 'Prev' : '上一站'
@@ -8759,7 +9588,7 @@
       return 0.72;
     }
 
-    _buildJourneySegmentInfo(c1, c2, viaCoords) {
+    _buildJourneySegmentInfo(c1, c2, viaCoords, curveBiasOffset = 0) {
       if (!c1 || !c2) return null;
       const geoPts = [c1, ...(viaCoords || []), c2];
       const pts = geoPts.map((pt) => this.projector.toScreen(pt[0], pt[1]));
@@ -8773,7 +9602,7 @@
         const [x2, y2] = last;
         const dx = x2 - x1;
         const dy = y2 - y1;
-        const bend = Math.max(9, Math.min(34, chord * 0.165));
+        const bend = Math.max(9, Math.min(34, chord * 0.165)) + curveBiasOffset;
         const cx = (x1 + x2) * 0.5 - (dy / chord) * bend;
         const cy = (y1 + y2) * 0.5 + (dx / chord) * bend;
         const t = 0.53;
@@ -8817,8 +9646,12 @@
       return { d, mx, my, angleDeg, chord };
     }
 
-    _renderCartographicTrajectory(segments, curIdx, accentColor = '#bd2d22') {
+    _renderCartographicTrajectory(segments, curIdx, accentColor = '#bd2d22', dimmed = false) {
       if (!this.grpJourney || !Array.isArray(segments) || !segments.length) return;
+      const applyDim = (el) => {
+        if (dimmed && el && el.style) el.style.opacity = '0.32';
+        return el;
+      };
       const appendChevron = (seg, cls) => {
         const g = this._svgNode(
           'g',
@@ -8831,6 +9664,7 @@
           this.grpJourney
         );
         g.style.color = accentColor;
+        applyDim(g);
         this._svgNode(
           'path',
           { d: 'M-3.5 -2.45L2.75 0L-3.5 2.45L-1.85 0Z', class: 'journey-chevron' },
@@ -8840,11 +9674,13 @@
 
       if (curIdx < 0) {
         const fullD = segments.map((s) => s.d).join(' ');
-        this._svgNode('path', { d: fullD, class: 'journey-track-halo' }, this.grpJourney);
-        this._svgNode(
-          'path',
-          { d: fullD, class: 'journey-track-thread', stroke: accentColor },
-          this.grpJourney
+        applyDim(this._svgNode('path', { d: fullD, class: 'journey-track-halo' }, this.grpJourney));
+        applyDim(
+          this._svgNode(
+            'path',
+            { d: fullD, class: 'journey-track-thread', stroke: accentColor },
+            this.grpJourney
+          )
         );
         const placedMarks = [];
         for (const seg of segments) {
@@ -8865,12 +9701,16 @@
         this._svgNode('path', { d: bgD, class: 'journey-track-halo' }, this.grpJourney);
       }
       if (upcomingD) {
-        this._svgNode('path', { d: upcomingD, class: 'journey-track-upcoming' }, this.grpJourney);
+        this._svgNode(
+          'path',
+          { d: upcomingD, class: 'journey-track-upcoming', stroke: accentColor },
+          this.grpJourney
+        );
       }
       if (passedD) {
         this._svgNode(
           'path',
-          { d: passedD, class: 'journey-track-passed', stroke: '#b83327' },
+          { d: passedD, class: 'journey-track-passed', stroke: accentColor },
           this.grpJourney
         );
         const placedMuted = [];
@@ -8889,7 +9729,7 @@
         );
         this._svgNode(
           'path',
-          { d: focusSeg.d, class: 'journey-track-focus', stroke: '#c6281c' },
+          { d: focusSeg.d, class: 'journey-track-focus', stroke: accentColor },
           this.grpJourney
         );
         appendChevron(focusSeg, 'is-focus');
@@ -9426,6 +10266,31 @@
         }
       }
 
+      const multiProfiles = this._resolvePersonProfiles(normQ);
+      if (multiProfiles.length >= 2) {
+        const st = this._buildPersonTracksAndEvents(multiProfiles);
+        if (st && st.isMulti) {
+          const d = st.events[0] ? st.events[0].dynasty : this.dynasties[0];
+          results.push({
+            kind: 'multi_person',
+            personProfiles: multiProfiles,
+            dynasty: d,
+            year: null,
+            titleZh: multiProfiles.map((p) => p.zh).join(' × '),
+            subZh:
+              st.sameTimeCount > 0
+                ? `共 ${st.events.length} 处行迹 · ${st.sameTimeCount} 处相逢`
+                : `并行行迹对照 · 共 ${st.events.length} 处行迹`,
+            titleEn: multiProfiles.map((p) => p.en).join(' × '),
+            subEn:
+              st.sameTimeCount > 0
+                ? `${st.events.length} stops · ${st.sameTimeCount} encounters`
+                : `${st.events.length} stops`,
+            score: 165,
+          });
+        }
+      }
+
       results.sort((a, b) => b.score - a.score);
       const deduped = [];
       const seenPlaceKey = new Set();
@@ -9452,6 +10317,11 @@
       if (item.kind === 'quiz') {
         if (this.challenge) this.stopChallenge();
         else this.startChallenge();
+        return;
+      }
+
+      if (item.kind === 'multi_person') {
+        this.openPersonChronicle(item.personProfiles, -1);
         return;
       }
 
@@ -9574,6 +10444,7 @@
         if (!searchInp || !searchList) return;
         const q = searchInp.value.trim();
         const kindLabel = {
+          multi_person: this.locale === 'en' ? 'Intersect' : '交汇',
           person: this.locale === 'en' ? 'Figure' : '人物',
           quiz: this.locale === 'en' ? 'Quiz' : '雅集',
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
@@ -10409,9 +11280,25 @@
             const isEn = this.locale === 'en';
             const place = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
             const yr = this.formatYear(ev.year);
+            const whoPrefix =
+              this.activePerson.isMulti && ev.personZh
+                ? `[${isEn ? ev.personEn : ev.personZh} #${ev.personStepNum}] `
+                : `${sIdx + 1}. `;
+            const intNote =
+              this.activePerson.isMulti && ev.intersection
+                ? `<div class="tt-sub" style="color:#b5452f;font-weight:700">${
+                    ev.intersection.kind === 'same_time'
+                      ? isEn
+                        ? '✦ Contemporaneous Spacetime Intersection'
+                        : '✦ 同代相逢交汇点'
+                      : isEn
+                        ? '◈ Cross-Era Spacetime Co-location'
+                        : '◈ 异代同地交汇点'
+                  }</div>`
+                : '';
             this._showHoverTip(
               e,
-              `<b>${sIdx + 1}. ${yr} · ${place}</b><div class="tt-sub">${
+              `<b>${whoPrefix}${yr} · ${place}</b>${intNote}<div class="tt-sub">${
                 isEn ? ev.textEn : ev.textZh
               }</div>`
             );
@@ -10823,27 +11710,49 @@
     }
 
     _parsePlaceTokens(place, year) {
-      const rawTokens = this._parsePlaceList(place);
+      if (!place || typeof place !== 'string') return [];
+      const rawTracks = place
+        .split(/\s*[;；]\s*/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (!rawTracks.length) return [];
       const yearList = this._parseYearList(year);
       const defaultYear = yearList.length ? yearList[0] : this.year;
-      return rawTokens.map((tok, idx) => {
-        let stopYear = yearList.length
-          ? yearList[Math.min(idx, yearList.length - 1)]
-          : defaultYear;
-        let stopPlace = tok;
-        const m1 = tok.match(/^(-?\d{1,4})\s*[:：]\s*(.+)$/);
-        const m2 = !m1 ? tok.match(/^(.+?)\s*[:：]\s*(-?\d{1,4})$/) : null;
-        if (m1) {
-          const y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(Number(m1[1]))));
-          stopYear = y === 0 ? 1 : y;
-          stopPlace = m1[2].trim();
-        } else if (m2) {
-          const y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(Number(m2[2]))));
-          stopYear = y === 0 ? 1 : y;
-          stopPlace = m2[1].trim();
-        }
-        return { place: stopPlace, year: stopYear };
+      const isPerTrackYear =
+        rawTracks.length > 1 && yearList.length === rawTracks.length;
+      const out = [];
+      let globalIdx = 0;
+      rawTracks.forEach((trackStr, tIdx) => {
+        const rawTokens = this._parsePlaceList(trackStr);
+        rawTokens.forEach((tok, sIdx) => {
+          let stopYear = isPerTrackYear
+            ? yearList[tIdx]
+            : yearList.length
+              ? yearList[Math.min(globalIdx, yearList.length - 1)]
+              : defaultYear;
+          let stopPlace = tok;
+          const m1 = tok.match(/^(-?\d{1,4})\s*[:：]\s*(.+)$/);
+          const m2 = !m1 ? tok.match(/^(.+?)\s*[:：]\s*(-?\d{1,4})$/) : null;
+          if (m1) {
+            const y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(Number(m1[1]))));
+            stopYear = y === 0 ? 1 : y;
+            stopPlace = m1[2].trim();
+          } else if (m2) {
+            const y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(Number(m2[2]))));
+            stopYear = y === 0 ? 1 : y;
+            stopPlace = m2[1].trim();
+          }
+          out.push({
+            place: stopPlace,
+            year: stopYear,
+            trackIdx: tIdx,
+            trackStepIdx: sIdx,
+            trackStepNum: sIdx + 1,
+          });
+          globalIdx++;
+        });
       });
+      return out;
     }
 
     resolvePlace(place, year = this.year) {
@@ -11476,13 +12385,42 @@
     _drawCustomRouteOverlay(stops) {
       if (!this.grpJourney || !Array.isArray(stops) || stops.length < 2) return null;
       this.grpJourney.innerHTML = '';
-      const routeColor = '#9e2a2b';
-      const segments = [];
-      for (let i = 0; i < stops.length - 1; i++) {
-        const segInfo = this._buildJourneySegmentInfo(stops[i].coord, stops[i + 1].coord);
-        if (segInfo) segments.push({ ...segInfo, toIdx: i + 1 });
+      const palette = HistoricalAtlasController.PERSON_TRACK_PALETTE;
+      const trackIds = Array.from(new Set(stops.map((s) => s.trackIdx || 0)));
+      const isMultiTrack = trackIds.length > 1;
+
+      if (isMultiTrack) {
+        for (let i = 0; i < stops.length; i++) {
+          delete stops[i].convergence;
+        }
+        for (let i = 0; i < stops.length; i++) {
+          for (let j = i + 1; j < stops.length; j++) {
+            if ((stops[i].trackIdx || 0) === (stops[j].trackIdx || 0)) continue;
+            const km = this.projector.greatCircleKm(stops[i].coord, stops[j].coord);
+            if (km <= 45) {
+              const colorI = palette[(stops[i].trackIdx || 0) % palette.length];
+              const colorJ = palette[(stops[j].trackIdx || 0) % palette.length];
+              stops[i].convergence = { peerIdx: j, peerColor: colorJ, km };
+              stops[j].convergence = { peerIdx: i, peerColor: colorI, km };
+            }
+          }
+        }
       }
-      this._renderCartographicTrajectory(segments, this.customRouteStopIdx, routeColor);
+
+      for (let tPos = 0; tPos < trackIds.length; tPos++) {
+        const tId = trackIds[tPos];
+        const routeColor = isMultiTrack ? palette[tPos % palette.length] : '#9e2a2b';
+        const segments = [];
+        for (let i = 0; i < stops.length - 1; i++) {
+          if ((stops[i].trackIdx || 0) !== tId || (stops[i + 1].trackIdx || 0) !== tId) continue;
+          const segInfo = this._buildJourneySegmentInfo(stops[i].coord, stops[i + 1].coord);
+          if (segInfo) segments.push({ ...segInfo, toIdx: i + 1 });
+        }
+        const curStop = this.customRouteStopIdx >= 0 ? stops[this.customRouteStopIdx] : null;
+        const trCurIdx =
+          curStop && (curStop.trackIdx || 0) === tId ? this.customRouteStopIdx : -1;
+        this._renderCartographicTrajectory(segments, trCurIdx, routeColor);
+      }
 
       let minX = Infinity;
       let minY = Infinity;
@@ -11493,21 +12431,38 @@
       let prevBelow = false;
 
       const isMultiYear = new Set(stops.map((s) => s.year)).size > 1;
+      const screenCoords = stops.map((st) => this.projector.toScreen(st.lng, st.lat));
       stops.forEach((st, idx) => {
-        const [sx, sy] = this.projector.toScreen(st.lng, st.lat);
+        const [sx, sy] = screenCoords[idx];
         if (sx < minX) minX = sx;
         if (sx > maxX) maxX = sx;
         if (sy < minY) minY = sy;
         if (sy > maxY) maxY = sy;
 
+        const peerIdx = st.convergence ? st.convergence.peerIdx : undefined;
+        const isCoLocatedPeer =
+          isMultiTrack &&
+          peerIdx !== undefined &&
+          screenCoords[peerIdx] &&
+          Math.hypot(sx - screenCoords[peerIdx][0], sy - screenCoords[peerIdx][1]) < 18;
+        if (isCoLocatedPeer && idx > peerIdx) return;
+
+        const tPos = trackIds.indexOf(st.trackIdx || 0);
+        const routeColor = isMultiTrack ? palette[tPos % palette.length] : '#9e2a2b';
+        const isTrackEnd =
+          idx === 0 ||
+          idx === stops.length - 1 ||
+          (stops[idx - 1] && (stops[idx - 1].trackIdx || 0) !== (st.trackIdx || 0)) ||
+          (stops[idx + 1] && (stops[idx + 1].trackIdx || 0) !== (st.trackIdx || 0));
         const isHighlighted =
           this.customRouteStopIdx >= 0
-            ? idx === this.customRouteStopIdx
-            : idx === 0 || idx === stops.length - 1;
+            ? idx === this.customRouteStopIdx || (isCoLocatedPeer && peerIdx === this.customRouteStopIdx)
+            : isTrackEnd || Boolean(st.convergence);
+        const convCls = isCoLocatedPeer ? ' is-intersect' : '';
         const g = this._svgNode(
           'g',
           {
-            class: `journey-node ${isHighlighted ? 'is-current' : 'is-passed'}`,
+            class: `journey-node ${isHighlighted ? 'is-current' : 'is-passed'}${convCls}`,
             'data-x': sx.toFixed(1),
             'data-y': sy.toFixed(1),
             'data-stop-idx': String(idx),
@@ -11516,29 +12471,87 @@
         );
         g.style.color = routeColor;
 
-        if (isHighlighted) {
-          this._svgNode('circle', { class: 'jn-pulse', r: 11.2 }, g);
+        if (isCoLocatedPeer) {
+          const peerStop = stops[peerIdx];
+          const c0 = routeColor;
+          const c1 = st.convergence.peerColor || '#1d5a7b';
+          const n0 = String(st.trackStepNum || idx + 1);
+          const n1 = String((peerStop && peerStop.trackStepNum) || peerIdx + 1);
+          if (isHighlighted) {
+            this._svgNode(
+              'rect',
+              {
+                class: 'jn-pulse jn-pulse-pill',
+                x: '-15.5',
+                y: '-10.5',
+                width: '31',
+                height: '21',
+                rx: '10.5',
+              },
+              g
+            );
+          }
+          this._svgNode(
+            'rect',
+            {
+              class: 'jn-meet-pill',
+              x: '-12.5',
+              y: '-7.6',
+              width: '25',
+              height: '15.2',
+              rx: '7.6',
+            },
+            g
+          );
+          this._svgNode('circle', { class: 'jn-meet-dot', cx: '-5.2', cy: '0', r: '5.5', fill: c0 }, g);
+          const t0 = this._svgNode('text', { class: 'jn-num', x: '-5.2', y: '0.5' }, g);
+          t0.textContent = n0;
+          this._svgNode('circle', { class: 'jn-meet-dot', cx: '5.2', cy: '0', r: '5.5', fill: c1 }, g);
+          const t1 = this._svgNode('text', { class: 'jn-num', x: '5.2', y: '0.5' }, g);
+          t1.textContent = n1;
+        } else {
+          if (isHighlighted) {
+            this._svgNode('circle', { class: 'jn-pulse', r: 11.2 }, g);
+          }
+          this._svgNode('circle', { class: 'jn-disc', r: isHighlighted ? 7.8 : 6.6 }, g);
+          const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
+          numTxt.textContent = String(isMultiTrack && st.trackStepNum ? st.trackStepNum : idx + 1);
         }
-        this._svgNode('circle', { class: 'jn-disc', r: isHighlighted ? 7.8 : 6.6 }, g);
-        const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, g);
-        numTxt.textContent = String(idx + 1);
 
         let below = false;
-        if (prevSx !== null && Math.hypot(sx - prevSx, sy - prevSy) < 90) {
+        let nearestDist = Infinity;
+        let nearestDy = 0;
+        for (let k = 0; k < stops.length; k++) {
+          if (k === idx || (isCoLocatedPeer && k === peerIdx)) continue;
+          const [ksx, ksy] = screenCoords[k];
+          const d = Math.hypot(sx - ksx, sy - ksy);
+          if (d < nearestDist) {
+            nearestDist = d;
+            nearestDy = sy - ksy;
+          }
+        }
+        if (nearestDist < 65) {
+          below = nearestDy >= 0;
+        } else if (prevSx !== null && Math.hypot(sx - prevSx, sy - prevSy) < 90) {
           below = !prevBelow;
         }
         prevSx = sx;
         prevSy = sy;
         prevBelow = below;
 
-        const lblY = below ? '17.5' : '-11';
-        const lblTxt = this._svgNode('text', { class: 'jn-label', x: '0', y: lblY }, g);
+        const lblY = below ? '19.5' : isCoLocatedPeer ? '-11.8' : '-11';
+        const lblTxt = this._svgNode(
+          'text',
+          { class: `jn-label${isCoLocatedPeer ? ' is-intersect-label' : ''}`, x: '0', y: lblY },
+          g
+        );
         const rawLbl = st.query || st.name;
         const isEn = this.locale === 'en';
         const baseLbl = isEn ? this.trTerm(rawLbl) : this._zh(rawLbl);
         const yrTag =
           st.year < 0 ? (isEn ? `${-st.year} BCE` : `前${-st.year}`) : `${st.year}`;
-        lblTxt.textContent = isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
+        lblTxt.textContent =
+          isMultiYear && st.year !== undefined ? `${baseLbl} (${yrTag})` : baseLbl;
       });
       this._rescaleSvgTypography();
       return { minX, minY, maxX, maxY };
@@ -11614,27 +12627,63 @@
 
     inspect({ year, place, lng, lat, zoom, person, stop } = {}) {
       const isEn = this.locale === 'en';
-      const personProfile = person ? this._resolvePersonProfile(person) : null;
-      const personEvents = personProfile ? this._collectPersonEvents(personProfile) : [];
+      const personProfiles = person ? this._resolvePersonProfiles(person) : [];
+      const personProfile = personProfiles[0] || null;
+      const multiState =
+        personProfiles.length >= 2 ? this._buildPersonTracksAndEvents(personProfiles) : null;
+      const personEvents = multiState
+        ? multiState.events
+        : personProfile
+          ? this._collectPersonEvents(personProfile)
+          : [];
       const stopIdx =
         stop !== undefined && stop !== null && stop !== '' && !Number.isNaN(Number(stop))
           ? Number(stop)
           : -1;
       const activePersonEv =
         personEvents.length > 0
-          ? personEvents[stopIdx >= 0 && stopIdx < personEvents.length ? stopIdx : 0]
+          ? stopIdx >= 0 && stopIdx < personEvents.length
+            ? personEvents[stopIdx]
+            : (multiState && personEvents.find((e) => e.isSharedEncounter)) || personEvents[0]
           : null;
       const personPayload =
-        personProfile && personEvents.length > 0
+        multiState && personEvents.length > 0
           ? {
-              key: personProfile.key,
-              zh: this._zh(personProfile.zh),
-              en: personProfile.en,
-              courtesyZh: this._zh(personProfile.courtesyZh || ''),
-              courtesyEn: personProfile.courtesyEn || '',
-              span: personProfile.span,
+              key: multiState.profiles.map((p) => p.key).join(','),
+              zh: multiState.profiles.map((p) => this._zh(p.zh)).join(' × '),
+              en: multiState.profiles.map((p) => p.en).join(' × '),
+              isMulti: true,
+              profiles: multiState.profiles.map((p) => ({
+                key: p.key,
+                zh: this._zh(p.zh),
+                en: p.en,
+                span: p.span,
+              })),
               stop: stopIdx,
               totalEvents: personEvents.length,
+              sameTimeCount: multiState.sameTimeCount,
+              encounters: multiState.intersectPlaces.map((ev) => ({
+                index: ev.globalIdx,
+                year: ev.year,
+                dynasty: isEn ? this.dynastyName(ev.dynasty) : this._zh(ev.dynasty.title),
+                site: isEn ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh),
+                modern: isEn
+                  ? ev.modernEn || this.trModernCity(ev.modernZh || '')
+                  : this._zh(ev.modernZh || ''),
+                coord: ev.coord,
+                participants: (ev.participants || []).map((pt) =>
+                  isEn ? pt.personEn : this._zh(pt.personZh)
+                ),
+                text:
+                  Array.isArray(ev.distinctNotes) && ev.distinctNotes.length > 1
+                    ? ev.distinctNotes.map((pt) => ({
+                        person: isEn ? pt.personEn : this._zh(pt.personZh),
+                        text: isEn ? pt.textEn : this._zh(pt.textZh),
+                      }))
+                    : isEn
+                      ? ev.textEn
+                      : this._zh(ev.textZh),
+              })),
               events: personEvents.map((ev, i) => ({
                 index: i,
                 year: ev.year,
@@ -11644,13 +12693,46 @@
                   ? ev.modernEn || this.trModernCity(ev.modernZh || '')
                   : this._zh(ev.modernZh || ''),
                 coord: ev.coord,
+                isSharedEncounter: Boolean(ev.isSharedEncounter),
+                person: ev.isSharedEncounter
+                  ? (ev.participants || [])
+                      .map((pt) => (isEn ? pt.personEn : this._zh(pt.personZh)))
+                      .join(' × ')
+                  : isEn
+                    ? ev.personEn
+                    : this._zh(ev.personZh),
                 text: isEn ? ev.textEn : this._zh(ev.textZh),
                 ...(ev.quoteZh || ev.quoteEn
                   ? { quote: isEn ? ev.quoteEn || ev.quoteZh : this._zh(ev.quoteZh || ev.quoteEn) }
                   : {}),
               })),
             }
-          : null;
+          : personProfile && personEvents.length > 0
+            ? {
+                key: personProfile.key,
+                zh: this._zh(personProfile.zh),
+                en: personProfile.en,
+                courtesyZh: this._zh(personProfile.courtesyZh || ''),
+                courtesyEn: personProfile.courtesyEn || '',
+                span: personProfile.span,
+                stop: stopIdx,
+                totalEvents: personEvents.length,
+                events: personEvents.map((ev, i) => ({
+                  index: i,
+                  year: ev.year,
+                  dynasty: isEn ? this.dynastyName(ev.dynasty) : this._zh(ev.dynasty.title),
+                  site: isEn ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh),
+                  modern: isEn
+                    ? ev.modernEn || this.trModernCity(ev.modernZh || '')
+                    : this._zh(ev.modernZh || ''),
+                  coord: ev.coord,
+                  text: isEn ? ev.textEn : this._zh(ev.textZh),
+                  ...(ev.quoteZh || ev.quoteEn
+                    ? { quote: isEn ? ev.quoteEn || ev.quoteZh : this._zh(ev.quoteZh || ev.quoteEn) }
+                    : {}),
+                })),
+              }
+            : null;
 
       const yearList = this._parseYearList(year);
       const yr = yearList.length
@@ -11871,10 +12953,25 @@
             const r = this.resolvePlace(tok.place, tok.year);
             if (!r) return null;
             const cleanQuery = /[<>]/.test(String(tok.place || '')) ? r.name : tok.place;
-            return { query: cleanQuery, year: tok.year, ...r };
+            return {
+              query: cleanQuery,
+              year: tok.year,
+              trackIdx: tok.trackIdx || 0,
+              trackStepIdx: tok.trackStepIdx || 0,
+              trackStepNum: tok.trackStepNum || 1,
+              ...r,
+            };
           })
           .filter(Boolean);
         if (stops.length >= 2) {
+          const trackCounters = {};
+          stops.forEach((st) => {
+            const tId = st.trackIdx || 0;
+            const n = (trackCounters[tId] || 0) + 1;
+            trackCounters[tId] = n;
+            st.trackStepIdx = n - 1;
+            st.trackStepNum = n;
+          });
           this._renderCustomRoute(stops, zoom);
           return this.inspect({ year, place, zoom });
         }
