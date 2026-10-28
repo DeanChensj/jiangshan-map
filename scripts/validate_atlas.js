@@ -6032,6 +6032,127 @@ function main() {
         sandbox.location.hash = origHash;
         ctrl.locale = origLocale;
       }
+
+      // CUJ 41: Polity Base Anchor & _rescaleSvgTypography Polygon Containment Invariant
+      for (const [sid, snap] of Object.entries(snapshots)) {
+        for (const pol of snap.polities || []) {
+          if (pol.anchor && pol.shape) {
+            const pName = pol.title || pol.name;
+            assert(
+              sandbox.window.MercatorProjector.pointInShape(pol.anchor[0], pol.anchor[1], pol.shape),
+              `Polity "${pName}" in snapshot "${sid}" has base anchor ${JSON.stringify(pol.anchor)} outside its own polygon`
+            );
+          }
+        }
+      }
+      {
+        const proto = ControllerClass.prototype;
+        const realProj = new sandbox.window.MercatorProjector(1000, 700, {
+          west: 66,
+          east: 142,
+          south: 14,
+          north: 55,
+        });
+        const makeCls = (initial = []) => {
+          const s = new Set(initial);
+          return {
+            add: (...items) => items.forEach((x) => s.add(x)),
+            remove: (...items) => items.forEach((x) => s.delete(x)),
+            toggle: (x, f) => {
+              const on = f === undefined ? !s.has(x) : Boolean(f);
+              if (on) s.add(x);
+              else s.delete(x);
+              return on;
+            },
+            contains: (x) => s.has(x),
+          };
+        };
+        const zgSnap = snapshots.s_zhanguo_a;
+        const zgDyn = dynasties.find((d) => d.key === 'zhanguo');
+        for (const camW of [740, 340]) {
+          const sNodes = (zgDyn.settlements || []).map((st) => {
+            const [sx, sy] = realProj.toScreen(st.coord[0], st.coord[1]);
+            const isCap = st.tier === 1 || st.capital;
+            const isPass = st.tier === 'pass' || st.pass;
+            const isT2 = st.tier === 2;
+            const cls = ['settlement-node'];
+            if (isCap) cls.push('is-capital');
+            if (isPass) cls.push('is-pass');
+            if (isT2) cls.push('is-tier2');
+            const attrs = { 'data-x': String(sx), 'data-y': String(sy) };
+            const nameAttrs = {};
+            const nameEl = {
+              textContent: st.ancient,
+              getAttribute: (k) => nameAttrs[k] || null,
+              setAttribute: (k, v) => { nameAttrs[k] = String(v); },
+            };
+            return {
+              classList: makeCls(cls),
+              dataset: {
+                align: st.align || 'r',
+                explicitAlign: st.align ? '1' : '0',
+                lng: String(st.coord[0]),
+                lat: String(st.coord[1]),
+              },
+              getAttribute: (k) => attrs[k] || null,
+              setAttribute: (k, v) => { attrs[k] = String(v); },
+              querySelector: (sel) => (sel === '.city-name' ? nameEl : null),
+            };
+          });
+          const pNodes = (zgSnap.polities || []).map((pol) => {
+            const [px, py] = realProj.toScreen(pol.anchor[0], pol.anchor[1]);
+            const cls = ['polity-caption'];
+            if (pol.role === 'neighbor') cls.push('neighbor');
+            else if (pol.role === 'vassal' || pol.role === 'protectorate') cls.push('vassal');
+            const attrs = {
+              'data-x': String(px),
+              'data-y': String(py),
+              'data-base-x': String(px),
+              'data-base-y': String(py),
+            };
+            return {
+              classList: makeCls(cls),
+              textContent: pol.title || pol.name,
+              dataset: { polityTitle: pol.title || pol.name, polityRole: pol.role || 'primary' },
+              _polShape: pol.shape,
+              getAttribute: (k) => attrs[k] || null,
+              setAttribute: (k, v) => { attrs[k] = String(v); },
+            };
+          });
+          const mockCtrl = {
+            camera: { x: 395, y: 310, w: camW, h: camW * 0.7, zoom: 1000 / camW },
+            projector: realProj,
+            _estimateLocalTextWidth: proto._estimateLocalTextWidth,
+            svg: {
+              classList: makeCls(),
+              querySelectorAll: (sel) => (sel === '.settlement-node' ? sNodes : []),
+            },
+            grpSettlements: { classList: makeCls(), querySelectorAll: () => [] },
+            grpPrefectures: { classList: makeCls(), querySelectorAll: () => [] },
+            grpCorridors: { classList: makeCls(), querySelectorAll: () => [] },
+            grpMilestones: { classList: makeCls(), querySelectorAll: () => [] },
+            grpPolities: {
+              classList: makeCls(),
+              querySelectorAll: (sel) => (sel === '.polity-caption' ? pNodes : []),
+            },
+            grpNeighbors: { querySelectorAll: () => [] },
+            grpProvNames: { querySelectorAll: () => [] },
+          };
+          proto._rescaleSvgTypography.call(mockCtrl);
+          assert(pNodes.length >= 15, `Expected >= 15 polity captions at -403 BCE, got ${pNodes.length}`);
+          for (const pNode of pNodes) {
+            if (pNode._polShape) {
+              const px = parseFloat(pNode.getAttribute('data-x'));
+              const py = parseFloat(pNode.getAttribute('data-y'));
+              const [lngP, latP] = realProj.toGeo(px, py);
+              assert(
+                sandbox.window.MercatorProjector.pointInShape(lngP, latP, pNode._polShape),
+                `Polity caption "${pNode.textContent}" at -403 BCE (camW=${camW}) jumped outside its territory polygon to [${lngP.toFixed(2)}, ${latP.toFixed(2)}]`
+              );
+            }
+          }
+        }
+      }
     }
   }
 
