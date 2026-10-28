@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028b').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028c').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028b').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028c').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -9985,15 +9985,17 @@
       }
 
       // 3. Historical Milestones / Events
+      const eventEntries = [];
       for (const d of this.dynasties) {
         for (const m of d.milestones || []) {
           const enHead = this._enMilestoneHeadline(d, m);
           const siteEn = m.site ? this._enMilestoneSite(d, m) : '';
           const yrEn = m.year <= 0 ? `${-m.year || 1} BCE` : `${m.year} CE`;
-          entries.push({
+          const evEntry = {
             kind: 'event',
             dynasty: d,
             year: this._clampYearToDynasty(d, m.year),
+            rawYear: m.year,
             milestone: m,
             coord: m.coord,
             titleZh: m.headline,
@@ -10001,7 +10003,9 @@
             titleEn: enHead,
             subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
-          });
+          };
+          entries.push(evEntry);
+          eventEntries.push(evEntry);
         }
       }
 
@@ -10012,6 +10016,24 @@
         const uid = `${lm.year}:${lm.zh.slice(0, 16)}`;
         if (seenLm.has(uid)) continue;
         seenLm.add(uid);
+        const lmKeywords = `${lm.zh} ${lm.site || ''} ${lm.en || ''} ${lm.siteEn || ''} ${lm.year}`.toLowerCase();
+        const existingEv = eventEntries.find(
+          (ev) =>
+            ev.rawYear === lm.year &&
+            ev.coord &&
+            lm.coord &&
+            this.projector.greatCircleKm(ev.coord, lm.coord) <= 65
+        );
+        if (existingEv) {
+          existingEv.keywords += ` ${lmKeywords}`;
+          if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
+          existingEv.altTitlesZh.push(lm.zh.toLowerCase());
+          if (lm.en) {
+            if (!existingEv.altTitlesEn) existingEv.altTitlesEn = [];
+            existingEv.altTitlesEn.push(lm.en.toLowerCase());
+          }
+          continue;
+        }
         const d =
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
@@ -10025,18 +10047,21 @@
           siteEn: lm.siteEn,
           coord: lm.coord,
         };
-        entries.push({
+        const lmEntry = {
           kind: 'event',
           dynasty: d,
           year: this._clampYearToDynasty(d, lm.year),
+          rawYear: lm.year,
           milestone: milestoneObj,
           coord: lm.coord,
           titleZh: lm.zh,
           subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
           titleEn: lm.en || lm.zh,
           subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
-          keywords: `${lm.zh} ${lm.site || ''} ${lm.en || ''} ${lm.siteEn || ''} ${lm.year} 史事 事件 战役 名胜`.toLowerCase(),
-        });
+          keywords: `${lmKeywords} 史事 事件 战役 名胜`,
+        };
+        entries.push(lmEntry);
+        eventEntries.push(lmEntry);
       }
 
       this.searchIndex = entries;
@@ -10273,7 +10298,12 @@
         } else if (
           item.kind === 'event' &&
           q.length >= 2 &&
-          (tZh.includes(q) || (isAscii && qFold.length >= 4 && tEnFold.includes(qFold)))
+          (tZh.includes(q) ||
+            (item.altTitlesZh && item.altTitlesZh.some((at) => at.includes(q))) ||
+            (isAscii &&
+              qFold.length >= 4 &&
+              (tEnFold.includes(qFold) ||
+                (item.altTitlesEn && item.altTitlesEn.some((at) => fold(at).includes(qFold))))))
         ) {
           score = 86;
         } else if (
@@ -10369,6 +10399,17 @@
           const pk = `${item.kind}:${item.titleZh}:${Math.round(item.coord[0])},${Math.round(item.coord[1])}`;
           if (seenPlaceKey.has(pk)) continue;
           seenPlaceKey.add(pk);
+        } else if (item.kind === 'event') {
+          const evYr = item.rawYear !== undefined ? item.rawYear : item.year;
+          const dupEv = deduped.some(
+            (prev) =>
+              prev.kind === 'event' &&
+              (prev.rawYear !== undefined ? prev.rawYear : prev.year) === evYr &&
+              prev.coord &&
+              item.coord &&
+              this.projector.greatCircleKm(prev.coord, item.coord) <= 65
+          );
+          if (dupEv) continue;
         }
         deduped.push(item);
         if (deduped.length >= 12) break;
