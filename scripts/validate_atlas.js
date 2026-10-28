@@ -1070,6 +1070,20 @@ function main() {
     ctrl._queryQuickSearch('乌林').some((h) => h.kind === 'event' && h.year === 208),
     'Expected merged landmark keyword "乌林" to match the 208 CE Battle of Red Cliffs event'
   );
+  const zhenguanHits = ctrl._queryQuickSearch('贞观');
+  assert(
+    zhenguanHits.length > 0 &&
+      zhenguanHits[0].kind === 'era' &&
+      !zhenguanHits.some((h) => h.kind === 'city'),
+    `Expected bare era query "贞观" to rank era first and exclude remark-only city hits, got: ${JSON.stringify(zhenguanHits.map((h) => ({ kind: h.kind, title: h.titleZh })))}`
+  );
+  const yueyangCityHit = ctrl
+    ._queryQuickSearch('岳阳楼')
+    .find((h) => h.kind === 'city' && h.titleZh === '岳州');
+  assert(
+    yueyangCityHit && yueyangCityHit.subZh.includes('岳阳楼'),
+    `Expected remark-matched city "岳州" for query "岳阳楼" to surface remark in subZh, got: ${JSON.stringify(yueyangCityHit)}`
+  );
 
   // CUJ 9o: First-Level Administrative Boundary Deduplication, Search Deduplication & Bilingual Polish
   assert(
