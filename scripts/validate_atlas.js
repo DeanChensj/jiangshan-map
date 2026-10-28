@@ -1115,7 +1115,8 @@ function main() {
     const checkSnap = snapshots[checkSnapKey];
     assert(checkSnap && Array.isArray(checkSnap.regions) && checkSnap.regions.length > 0, `Missing regions on ${checkSnapKey}`);
     const regPath = ctrl._buildRegionBoundaryPath(checkSnap);
-    assert(regPath.length > 500, `Expected non-empty region boundary path on ${checkSnapKey}`);
+    const minPathLen = checkSnapKey === 's_zhanguo_a' ? 150 : 500;
+    assert(regPath.length > minPathLen, `Expected non-empty region boundary path on ${checkSnapKey}`);
     const segRe = /([ML])(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g;
     let m;
     let prevX = NaN;
@@ -1549,17 +1550,26 @@ function main() {
       `Snapshot ${sk} must have non-empty regions after _hydrateSnapshots(), got ${(snap.regions || []).length}`
     );
     const minPref =
-      sk === 's_zhanguo_a' || sk === 's_zhanguo_a2' || sk === 's_zhanguo_b0' || sk === 's_zhanguo_b1' ? 11 : 16;
+      sk === 's_zhanguo_a' || sk === 's_zhanguo_a2'
+        ? 3
+        : sk === 's_zhanguo_b0' || sk === 's_zhanguo_b1'
+          ? 6
+          : sk === 's_zhanguo_b' || sk === 's_zhanguo_b2'
+            ? 14
+            : 16;
     assert(
       Array.isArray(snap.prefectures) && snap.prefectures.length >= minPref,
       `Snapshot ${sk} must have >= ${minPref} prefectures after _hydrateSnapshots(), got ${(snap.prefectures || []).length}`
     );
   }
   assert(
-    snapshots.s_zhanguo_a.prefectures.length === 11 &&
-      snapshots.s_zhanguo_b0.prefectures.length === 13 &&
-      snapshots.s_zhanguo_b.prefectures.length === 18 &&
-      snapshots.s_zhanguo_c.prefectures.length === 21 &&
+    snapshots.s_zhanguo_a.prefectures.length === 3 &&
+      snapshots.s_zhanguo_a2.prefectures.length === 3 &&
+      snapshots.s_zhanguo_b0.prefectures.length === 6 &&
+      snapshots.s_zhanguo_b1.prefectures.length === 6 &&
+      snapshots.s_zhanguo_b.prefectures.length === 14 &&
+      snapshots.s_zhanguo_b2.prefectures.length === 15 &&
+      snapshots.s_zhanguo_c.prefectures.length === 20 &&
       snapshots.s_zhanguo_c2.prefectures.length === 22 &&
       snapshots.s_zhanguo_d.prefectures.length === 23 &&
       snapshots.s_zhanguo_e1.prefectures.length === 24 &&
@@ -1572,6 +1582,31 @@ function main() {
       snapshots.s_xihan_b.prefectures.length >= 50 &&
       snapshots.s_donghan.prefectures.length >= 48,
     'Warring States, Qin, and Han snapshots must reflect chronological commandery (郡) progression including 薛郡'
+  );
+  // Regression guard: Early Warring States (-403..-317 BCE) only has 关中（内史）, 上郡, 上党郡; later commanderies appear at historical establishment phases
+  for (const earlyZgSnap of ['s_zhanguo_a', 's_zhanguo_a2']) {
+    for (const laterCmd of ['汉中郡', '蜀郡', '巴郡', '渔阳郡', '上谷郡', '代郡', '河东郡', '陇西郡', '南阳郡', '太原郡']) {
+      assert(
+        !snapshots[earlyZgSnap].prefectures.some((p) => p.title === laterCmd) &&
+          !snapshots[earlyZgSnap].regions.some((r) => r.title === laterCmd),
+        `${earlyZgSnap} must not include post-316 BCE commandery ${laterCmd}`
+      );
+    }
+  }
+  assert(
+    snapshots.s_zhanguo_b0.prefectures.some((p) => p.title === '汉中郡') &&
+      !snapshots.s_zhanguo_b1.prefectures.some((p) => p.title === '渔阳郡') &&
+      snapshots.s_zhanguo_b.prefectures.some((p) => p.title === '渔阳郡') &&
+      snapshots.s_zhanguo_b.prefectures.some((p) => p.title === '上谷郡') &&
+      snapshots.s_zhanguo_b.prefectures.some((p) => p.title === '代郡') &&
+      !snapshots.s_zhanguo_b.prefectures.some((p) => p.title === '河东郡') &&
+      snapshots.s_zhanguo_b2.prefectures.some((p) => p.title === '河东郡') &&
+      !snapshots.s_zhanguo_b2.prefectures.some((p) => p.title === '陇西郡') &&
+      snapshots.s_zhanguo_c.prefectures.some((p) => p.title === '陇西郡') &&
+      snapshots.s_zhanguo_c.prefectures.some((p) => p.title === '南阳郡') &&
+      !snapshots.s_zhanguo_c.prefectures.some((p) => p.title === '太原郡') &&
+      snapshots.s_zhanguo_c2.prefectures.some((p) => p.title === '太原郡'),
+    'Warring States commanderies (汉中郡 -312, 渔阳/上谷/代郡 -300, 河东郡 -286, 陇西/南阳郡 -272, 太原郡 -247) must appear strictly at their historical snapshots'
   );
   // Regression guard: State of Lu (鲁) survives until -250 BCE, annexed by Chu in -249 BCE, becomes Qin 薛郡 in -223 BCE
   assert(
