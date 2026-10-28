@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028b').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028b').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -2106,7 +2106,10 @@
           polRings.push({ pIdx, minX, maxX, minY, maxY, ring });
         }
       }
-      const hasLargePolity = polAreas.some((a) => a >= 65);
+      const allCommanderyRegions = snap.regions.every(
+        (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
+      );
+      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 65);
       const findPolIdx = (x, y) => {
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
