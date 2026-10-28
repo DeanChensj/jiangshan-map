@@ -2353,6 +2353,7 @@
         node.dataset.lng = String(item.coord[0]);
         node.dataset.lat = String(item.coord[1]);
         node.dataset.prefAlign = item.align || 'r';
+        if (item.align) node.dataset.explicitAlign = '1';
         node.dataset.tier = isCapNow ? '0' : isTier2 ? '2' : '1';
 
         if (isCapNow) {
@@ -7870,28 +7871,29 @@
           node.classList.toggle('is-trace-city', isTraced);
         }
         const isPass = node.classList.contains('is-pass');
+        const isT2 = node.classList.contains('is-tier2');
+        if (isT2) continue;
         if (isPass) {
           if (!showCorridors || (!showPasses && !node.classList.contains('is-pass-trace'))) continue;
         } else if (!showSettlements) {
           continue;
         }
-        const isT2 = node.classList.contains('is-tier2');
-        if (isT2 && !showTier2 && !node.classList.contains('is-trace-city')) continue;
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
-        const r = (node.classList.contains('is-capital') ? 5.2 : isPass ? 3.4 : isT2 ? 3.0 : 3.8) * s;
+        const r = (node.classList.contains('is-capital') ? 5.2 : 3.8) * s;
         occupied.push({ x1: cx - r, y1: cy - r, x2: cx + r, y2: cy + r });
       }
       if (showMilestones) {
         this.svg.querySelectorAll('.milestone-pin').forEach((pin) => {
+          if (pin.classList.contains('is-future')) return;
           const mx = parseFloat(pin.getAttribute('data-x'));
           const my = parseFloat(pin.getAttribute('data-y'));
           if (!isNaN(mx)) {
             occupied.push({
-              x1: mx - 6.2 * s,
-              y1: my - 6.2 * s,
-              x2: mx + 6.2 * s,
-              y2: my + 6.2 * s,
+              x1: mx - 3.6 * s,
+              y1: my - 3.6 * s,
+              x2: mx + 3.6 * s,
+              y2: my + 3.6 * s,
             });
           }
         });
@@ -8004,9 +8006,9 @@
         const hasHintTag = node.classList.contains('has-trace-hint');
         if (hasHintTag) {
           occupied.push({
-            x1: cx - 64 * s,
+            x1: cx - 40 * s,
             y1: cy + 6 * s,
-            x2: cx + 64 * s,
+            x2: cx + 40 * s,
             y2: cy + 28 * s,
           });
         }
@@ -8075,28 +8077,33 @@
           if (allowCull && node.classList.contains('is-label-crowded')) {
             return;
           }
-          node.classList.remove('is-label-crowded');
-          if (node.dataset.appliedDir !== bestDir) {
-            node.dataset.appliedDir = bestDir;
-            nameEl.setAttribute('x', String(best.dx));
-            nameEl.setAttribute('y', String(best.dy1));
-            nameEl.setAttribute('text-anchor', best.anchor);
+          if (overlapArea(best.box) <= 4.0 * s * s) {
+            node.classList.remove('is-label-crowded');
+            if (node.dataset.appliedDir !== bestDir) {
+              node.dataset.appliedDir = bestDir;
+              nameEl.setAttribute('x', String(best.dx));
+              nameEl.setAttribute('y', String(best.dy1));
+              nameEl.setAttribute('text-anchor', best.anchor);
+            }
+            occupied.push(best.box);
+            return;
           }
-          occupied.push(best.box);
-          return;
         }
 
         let best = null;
         let bestDir = null;
+        let bestScore = Infinity;
         let bestOverlap = Infinity;
         for (let i = 0; i < dirs.length; i++) {
           const spec = dirSpec(dirs[i]);
-          const ov = overlapArea(spec.box) + i * 0.01 * s * s;
-          if (ov < bestOverlap) {
-            bestOverlap = ov;
+          const rawOv = overlapArea(spec.box);
+          const score = rawOv + (node.dataset.explicitAlign === '1' ? 24.0 : 0.01) * i * s * s;
+          if (score < bestScore) {
+            bestScore = score;
+            bestOverlap = rawOv;
             best = spec;
             bestDir = dirs[i];
-            if (ov < 0.05 * s * s) break;
+            if (score < 0.05 * s * s) break;
           }
         }
         if (bestDir) node.dataset.chosenDir = bestDir;
@@ -8127,17 +8134,6 @@
           !node.classList.contains('is-pass')
         ) {
           layoutSettlementLabel(node, narrowMobileCull, 0.26);
-        }
-      }
-
-      // Tier 1b: Strategic mountain/river passes (controlled by 关河丝路 layer; only visible when zoomed >= passMinZoom or traced)
-      for (const node of settlementNodes) {
-        if (node.classList.contains('is-pass')) {
-          if (showCorridors && (showPasses || node.classList.contains('is-pass-trace'))) {
-            layoutSettlementLabel(node, !node.classList.contains('is-pass-trace'), 0.14);
-          } else if (!zoomOnly) {
-            delete node.dataset.chosenDir;
-          }
         }
       }
 
@@ -8216,7 +8212,7 @@
         const hw = (this._estimateLocalTextWidth(node.textContent, cssFontPx, ls) * 0.5 + 5) * s;
         const hh = (cssFontPx * 0.56 + 3.5) * s;
 
-        if (zoomOnly && node.dataset.placed === '1') {
+        if (zoomOnly && node.dataset.placed === '1' && this._lastPolityTier2State === showTier2) {
           const lockedX = parseFloat(node.getAttribute('data-x'));
           const lockedY = parseFloat(node.getAttribute('data-y'));
           applyNodeScale(node, lockedX.toFixed(1), lockedY.toFixed(1));
@@ -8241,11 +8237,15 @@
           if ((ox !== 0 || oy !== 0) && node._polShape) {
             const [lngC, latC] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
-            const [lngL, latL] = this.projector.toGeo(cx - hw * 0.5, cy);
-            const [lngR, latR] = this.projector.toGeo(cx + hw * 0.5, cy);
+            const [lngL, latL] = this.projector.toGeo(cx - hw * 0.42, cy);
+            const [lngR, latR] = this.projector.toGeo(cx + hw * 0.42, cy);
+            const [lngT, latT] = this.projector.toGeo(cx, cy - hh * 0.42);
+            const [lngB, latB] = this.projector.toGeo(cx, cy + hh * 0.42);
             if (
               !MercatorProjector.pointInShape(lngL, latL, node._polShape) ||
-              !MercatorProjector.pointInShape(lngR, latR, node._polShape)
+              !MercatorProjector.pointInShape(lngR, latR, node._polShape) ||
+              !MercatorProjector.pointInShape(lngT, latT, node._polShape) ||
+              !MercatorProjector.pointInShape(lngB, latB, node._polShape)
             ) {
               continue;
             }
@@ -8261,13 +8261,37 @@
           }
         }
 
-        // Fallback for very small or narrow polities (e.g., 周, 韩) where strict interior bounds
-        // prevented dodging a co-located capital city label
+        // Fallback for very small or narrow polities (e.g., 周, 韩, 中山) where 4-edge padding
+        // was too tight: relax to center-point containment, but NEVER allow jumping outside _polShape.
         if (bestScore > 1.0 * s * s) {
-          for (let i = 1; i < Math.min(28, polOffsets.length); i++) {
-            const [ox, oy] = polOffsets[i];
+          const fineFallbackOffsets = [
+            [0, 0],
+            [0, -4],
+            [0, 4],
+            [-5, 0],
+            [5, 0],
+            [-5, -4],
+            [5, -4],
+            [-5, 4],
+            [5, 4],
+            [0, -8],
+            [0, 8],
+            [-8, 0],
+            [8, 0],
+            [-7, -6],
+            [7, -6],
+            [-7, 6],
+            [7, 6],
+            ...polOffsets.slice(1, 28),
+          ];
+          for (let i = 0; i < fineFallbackOffsets.length; i++) {
+            const [ox, oy] = fineFallbackOffsets[i];
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
+            if (node._polShape) {
+              const [lngC, latC] = this.projector.toGeo(cx, cy);
+              if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
+            }
             const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
             const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
             if (ov < bestScore) {
@@ -8287,6 +8311,19 @@
         node.setAttribute('data-y', bestYStr);
         applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
+      }
+      this._lastPolityTier2State = showTier2;
+
+      // Reserve Tier-2 city dots now so pass/Tier-2 labels avoid them while primary cities and polities are not displaced by minor dots
+      for (const node of settlementNodes) {
+        if (!node.classList.contains('is-tier2')) continue;
+        if (!showSettlements || (!showTier2 && !node.classList.contains('is-trace-city'))) {
+          continue;
+        }
+        const cx = parseFloat(node.getAttribute('data-x'));
+        const cy = parseFloat(node.getAttribute('data-y'));
+        const r = 3.0 * s;
+        occupied.push({ x1: cx - r, y1: cy - r, x2: cx + r, y2: cy + r });
       }
 
       // Tier 2b: Modern neighboring country watermarks (dodge ancient polities/cities or hide when same-named historical polity is active)
@@ -8364,6 +8401,17 @@
           applyNodeScale(node, bestXStr, bestYStr);
           occupied.push(bestBox);
         });
+      }
+
+      // Tier 2c: Strategic mountain/river passes (controlled by 关河丝路 layer; only visible when zoomed >= passMinZoom or traced)
+      for (const node of settlementNodes) {
+        if (node.classList.contains('is-pass')) {
+          if (showCorridors && (showPasses || node.classList.contains('is-pass-trace'))) {
+            layoutSettlementLabel(node, !node.classList.contains('is-pass-trace'), 0.14);
+          } else if (!zoomOnly) {
+            delete node.dataset.chosenDir;
+          }
+        }
       }
 
       // Tier 3: Corridor captions (dodge or hide if colliding with city/polity labels)

@@ -409,7 +409,7 @@ window.DYNASTY_DATA = [
           34.621
         ],
         "isCapital": true,
-        "align": "t",
+        "align": "b",
         "vanish": -256,
         "remark": "东周王室都城",
         "aliases": [
@@ -590,6 +590,7 @@ window.DYNASTY_DATA = [
           38.311
         ],
         "tier": 2,
+        "align": "b",
         "vanish": -296,
         "remark": "中山国都城（前296赵灭中山）",
         "aliases": [
