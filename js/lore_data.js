@@ -11130,18 +11130,6 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "dynastyKey": "beisong",
-      "year": 993,
-      "coord": [
-        103.61,
-        30.9
-      ],
-      "site": "青城（今四川都江堰）",
-      "siteEn": "Qingcheng (Dujiangyan, Sichuan)",
-      "zh": "王小波、李顺于川西青城起义首倡“均贫富”，攻克成都建大蜀",
-      "en": "Wang Xiaobo and Li Shun rebel at Qingcheng under the banner of equalizing wealth and seize Chengdu"
-    },
-    {
-      "dynastyKey": "beisong",
       "year": 1044,
       "coord": [
         114.35,
