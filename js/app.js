@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028c').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028d').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028c').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028d').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -9900,9 +9900,11 @@
             isCapital: Boolean(s.isCapital),
             titleZh: s.ancient,
             modernZh: s.modern || '',
+            remarkZh: s.remark || '',
             subZh: s.modern && s.modern !== s.ancient ? `今${s.modern}` : s.remark || '',
             titleEn: ancEn,
             modernEn: modEn,
+            remarkEn: remEn || '',
             subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
             keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${d.title} ${dynNameEn} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
           });
@@ -10027,10 +10029,10 @@
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
-          existingEv.altTitlesZh.push(lm.zh.toLowerCase());
+          existingEv.altTitlesZh.push(lm.zh);
           if (lm.en) {
             if (!existingEv.altTitlesEn) existingEv.altTitlesEn = [];
-            existingEv.altTitlesEn.push(lm.en.toLowerCase());
+            existingEv.altTitlesEn.push(lm.en);
           }
           continue;
         }
@@ -10267,10 +10269,15 @@
       const isAscii = /[a-z]/i.test(q) && !/[\u4e00-\u9fa5]/.test(q);
       const qFold = isAscii ? fold(q) : '';
       const index = this._ensureSearchIndex();
-      const results = [...this._matchEraResults(normQ)];
+      const eraResults = this._matchEraResults(normQ);
+      const hasEraMatch = eraResults.length > 0;
+      const results = [...eraResults];
 
       for (const item of index) {
         let score = 0;
+        let matchedAltZh = null;
+        let matchedAltEn = null;
+        let matchedByKeywordOnly = false;
         const tZh = item.titleZh.toLowerCase();
         const tEn = item.titleEn.toLowerCase();
         const bareZh = this._stripPromptParenthetical(item.titleZh).toLowerCase();
@@ -10294,18 +10301,24 @@
           tEn.startsWith(q) ||
           (isAscii && qFold.length >= 3 && tEnFold.startsWith(qFold))
         ) {
-          score = item.kind === 'event' ? 93 : 80;
+          score = item.kind === 'event' ? (hasEraMatch ? 81 : 93) : 80;
         } else if (
           item.kind === 'event' &&
           q.length >= 2 &&
-          (tZh.includes(q) ||
-            (item.altTitlesZh && item.altTitlesZh.some((at) => at.includes(q))) ||
+          (tZh.includes(q) || (isAscii && qFold.length >= 4 && tEnFold.includes(qFold)))
+        ) {
+          score = 81;
+        } else if (
+          item.kind === 'event' &&
+          q.length >= 2 &&
+          ((item.altTitlesZh &&
+            (matchedAltZh = item.altTitlesZh.find((at) => at.toLowerCase().includes(q)))) ||
             (isAscii &&
               qFold.length >= 4 &&
-              (tEnFold.includes(qFold) ||
-                (item.altTitlesEn && item.altTitlesEn.some((at) => fold(at).includes(qFold))))))
+              item.altTitlesEn &&
+              (matchedAltEn = item.altTitlesEn.find((at) => fold(at).includes(qFold)))))
         ) {
-          score = 86;
+          score = 75;
         } else if (
           mZh &&
           (mZh.startsWith(q) ||
@@ -10317,19 +10330,46 @@
           item.keywords.includes(q) ||
           (isAscii && qFold.length >= 4 && fold(item.keywords).includes(qFold))
         ) {
-          score = 55;
+          if (hasEraMatch && (item.kind === 'city' || item.kind === 'event')) {
+            score = 0;
+          } else {
+            score = 55;
+            matchedByKeywordOnly = true;
+          }
         }
 
         if (score > 0) {
-          if (item.kind === 'person') {
+          let resItem = item;
+          if (item.kind === 'event' && (matchedAltZh || matchedAltEn)) {
+            resItem = {
+              ...item,
+              titleZh: matchedAltZh || item.titleZh,
+              titleEn: matchedAltEn || item.titleEn,
+            };
+          } else if (
+            item.kind === 'city' &&
+            matchedByKeywordOnly &&
+            item.remarkZh &&
+            !item.subZh.includes(item.remarkZh)
+          ) {
+            resItem = {
+              ...item,
+              subZh: item.subZh ? `${item.subZh} · ${item.remarkZh}` : item.remarkZh,
+              subEn:
+                item.subEn && item.remarkEn
+                  ? `${item.subEn} · ${item.remarkEn}`
+                  : item.subEn || item.remarkEn,
+            };
+          }
+          if (resItem.kind === 'person') {
             if (score >= 92) score = 148;
             else if (score >= 80) score = 114;
             else score = 72;
           } else {
-            if (item.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
-            if (item.isCapital) score += 2;
+            if (resItem.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
+            if (resItem.isCapital) score += 2;
           }
-          results.push({ ...item, score });
+          results.push({ ...resItem, score });
         }
       }
 
