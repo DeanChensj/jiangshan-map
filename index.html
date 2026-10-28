@@ -308,7 +308,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261028f" />
+  <link rel="stylesheet" href="css/style.css?v=20261028p" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
@@ -441,7 +441,7 @@
               <circle cx="7" cy="7" r="4.8" fill="none" stroke="currentColor" stroke-width="1.5"/>
               <path d="M10.6 10.6L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
-            <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜人物 / 古今地名 / 州府 / 年号" aria-label="搜历史人物、古今地名、州府或帝王年号" />
+            <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜人物 / 双人 / 古今地名 / 年号" aria-label="搜历史人物（支持双人同框如：李白 杜甫）、古今地名、州府或帝王年号" />
           </div>
           <ul id="map-search-results" class="search-results-list is-hidden" role="listbox"></ul>
         </div>
@@ -510,6 +510,7 @@
       </div>
 
       <aside id="chronicle-pane" aria-label="历史时期详情">
+        <button id="polity-backbar" class="polity-backbar is-hidden" type="button"></button>
         <div class="dynasty-banner" id="dynasty-banner-bar">
           <div class="dynasty-title-row">
             <h2 id="dynasty-title">战国</h2>
@@ -523,6 +524,8 @@
         </div>
 
         <p id="dynasty-summary" class="dynasty-desc">公元前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄（秦、楚、齐、燕、赵、魏、韩）并立争雄。各国推行变法、修筑长城、兴修水利，百家争鸣；秦经商鞅变法与并巴蜀后崛起，秦王嬴政自前230年至前221年十年间次第攻灭韩、赵、魏、楚、燕、齐，终结列国纷争（拖动滑块可看十四阶段版图演变、鲁周越中山兴替与秦灭六国进程）。</p>
+
+        <div id="polity-extra" class="polity-extra is-hidden"></div>
 
         <div class="milestone-section">
           <h3 id="txt-milestones-heading">重大事件</h3>
@@ -714,11 +717,11 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=20261028f"></script>
-  <script src="js/atlas_boot.js?v=20261028f"></script>
-  <script src="js/map_data.js?v=20261028f"></script>
-  <script src="js/lore_data.js?v=20261028f"></script>
-  <script src="js/zh_hant.js?v=20261028f"></script>
-  <script src="js/app.js?v=20261028f"></script>
+  <script src="js/china_geo_data.js?v=20261028p"></script>
+  <script src="js/atlas_boot.js?v=20261028p"></script>
+  <script src="js/map_data.js?v=20261028p"></script>
+  <script src="js/lore_data.js?v=20261028p"></script>
+  <script src="js/zh_hant.js?v=20261028p"></script>
+  <script src="js/app.js?v=20261028p"></script>
 </body>
 </html>

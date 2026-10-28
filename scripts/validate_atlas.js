@@ -6176,6 +6176,265 @@ function main() {
           const qHits = ctrl._queryQuickSearch(aliasQ);
           assert(qHits.some((h) => h.titleZh === expAnc), `Expected quick search "${aliasQ}" to hit "${expAnc}"`);
         }
+
+        // CUJ 42: Search Empty-State Solo Preservation + Dual-Person Discovery
+        ctrl.locale = 'zh';
+        ctrl.searchIndex = null;
+        const scPool = ctrl._getSearchShowcasePool();
+        assert(
+          scPool.length === 14 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
+          `Showcase pool must default to solo Su Shi at index 0 and contain 14 entries, got ${scPool.length}`
+        );
+        for (const soloKey of [
+          'sushi',
+          'zhugeliang',
+          'huoqubing',
+          'libai',
+          'caocao',
+          'xinqiji',
+          'xuanzang',
+          'wangyangming',
+          'zhangqian',
+          'dufu',
+        ]) {
+          assert(
+            scPool.some((item) => item.kind === 'person' && item.personKey === soloKey),
+            `Showcase pool must preserve solo figure "${soloKey}"`
+          );
+        }
+        for (const pairKey of ['libai,dufu', 'yanghu,duyu', 'zuti,liukun', 'zhugeliang,simayi']) {
+          const hit = scPool.find(
+            (item) => item.kind === 'multi_person' && item.personKeys.join(',') === pairKey
+          );
+          assert(hit, `Showcase pool must include dual-person encounter "${pairKey}"`);
+          assert(
+            !/[\u4e00-\u9fff]/.test(hit.titleEn) && !/[\u4e00-\u9fff]/.test(hit.subEn),
+            `Dual showcase "${pairKey}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
+          );
+        }
+        const zhChips = Array.from(ctrl._getSearchSampleQueries());
+        assert.deepStrictEqual(zhChips, ['长安', '赤壁', '霍去病', '李白 杜甫']);
+        assert.strictEqual(ctrl._queryQuickSearch('霍去病')[0].kind, 'person');
+        assert.strictEqual(ctrl._queryQuickSearch('李白 杜甫')[0].kind, 'multi_person');
+        assert(
+          ctrl._searchPlaceholder(false).length <= 22 &&
+            ctrl._searchPlaceholder(true).includes('李白 杜甫'),
+          'Chinese compact placeholder must fit 248px pill while expanded placeholder hints dual-person syntax'
+        );
+
+        ctrl.locale = 'en';
+        const enChips = Array.from(ctrl._getSearchSampleQueries());
+        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']);
+        assert.strictEqual(ctrl._queryQuickSearch('Cao Cao')[0].kind, 'person');
+        const enPairHit = ctrl._queryQuickSearch('Li Bai, Du Fu')[0];
+        assert(
+          enPairHit &&
+            enPairHit.kind === 'multi_person' &&
+            enPairHit.titleEn === 'Li Bai × Du Fu',
+          `English dual-person chip "Li Bai, Du Fu" must resolve cleanly to Li Bai × Du Fu, got ${JSON.stringify(enPairHit)}`
+        );
+        assert(
+          !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(false)) &&
+            !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(true)),
+          'English search placeholders must contain zero CJK characters'
+        );
+        ctrl.locale = 'zh';
+
+        // CUJ 43: Polity focus — per-regime profile (割据/并立政权) inside the chronicle pane
+        const polProfiles = loreData.POLITY_PROFILES || [];
+        assert(polProfiles.length >= 60, `Expected >= 60 curated polity profiles, got ${polProfiles.length}`);
+        const polKeySet = new Set();
+        for (const p of polProfiles) {
+          assert(!polKeySet.has(p.key), `Duplicate polity key ${p.key}`);
+          polKeySet.add(p.key);
+          assert(
+            p.zh && p.en && p.seatZh && p.seatEn && p.summaryZh && p.summaryEn && p.from <= p.to,
+            `Polity ${p.key} must define bilingual name, seat, summary and a valid span`
+          );
+          assert(
+            !/[\u4e00-\u9fff]/.test(`${p.en}${p.seatEn}${p.summaryEn}${p.rulersEn || ''}`),
+            `Polity ${p.key} English fields must be CJK-free`
+          );
+          assert(
+            ctrl._polityStages({ ...p, curated: true }).length > 0,
+            `Polity ${p.key} titles ${JSON.stringify(p.titles)} must be drawn on at least one snapshot within its window`
+          );
+          for (const q of polProfiles) {
+            if (q === p) continue;
+            const shared = p.titles.filter((t) => q.titles.includes(t));
+            if (!shared.length) continue;
+            const [pf, pt] = ctrl._polityWindow(p);
+            const [qf, qt] = ctrl._polityWindow(q);
+            assert(pt < qf || qt < pf, `Polities ${p.key}/${q.key} share title ${shared} with overlapping year windows`);
+          }
+        }
+        for (const [title, yr, expKey] of [
+          ['宋', 450, 'liusong'],
+          ['齐', -300, 'qi_state'],
+          ['齐', 490, 'nanqi'],
+          ['吴', 250, 'sunwu'],
+          ['吴', 920, 'yangwu'],
+          ['魏', -350, 'wei_state'],
+          ['魏', 240, 'caowei'],
+          ['晋（河东）', 910, 'houtang'],
+        ]) {
+          const r = ctrl._resolvePolity(title, yr);
+          assert(r.curated && r.key === expKey, `Title "${title}" at ${yr} must resolve to ${expKey}, got ${r.key}`);
+        }
+        const bwDesc = ctrl._resolvePolity('北魏', 450);
+        const bwEvents = ctrl._polityEvents(bwDesc);
+        assert(ctrl._polityStages(bwDesc).length >= 5, 'Northern Wei must expose >= 5 distinct territorial stages');
+        assert(
+          bwEvents.length >= 10 && bwEvents.every((e) => e.year >= 386 && e.year <= 534) && bwEvents.some((e) => e.year === 439),
+          `Northern Wei events must stay within 386–534 and include the 439 unification, got ${bwEvents.map((e) => e.year)}`
+        );
+        assert(ctrl._polityRulers(bwDesc).startsWith('道武帝 → 明元帝'), `Northern Wei rulers must derive from era tracks, got ${ctrl._polityRulers(bwDesc)}`);
+        assert.strictEqual(ctrl._polityRulers(ctrl._resolvePolity('后周', 955)), '太祖郭威 → 世宗柴荣 → 恭帝柴宗训');
+        assert(
+          ctrl._polityRulers(ctrl._resolvePolity('宋', 450)).startsWith('武帝 → 少帝 → 文帝'),
+          `Liu Song rulers must derive from monarchPrefix era spans, got ${ctrl._polityRulers(ctrl._resolvePolity('宋', 450))}`
+        );
+        const ccDesc = ctrl._resolvePolity('曹操(北方)', 205);
+        assert(
+          !ccDesc.curated && ccDesc.from === 200 && ccDesc.to === 219 && ccDesc.keywords.includes('曹操'),
+          `Uncurated warlord must derive its on-map span 200–219 and name keyword, got ${JSON.stringify(ccDesc)}`
+        );
+        assert(ctrl._polityEvents(ccDesc).length >= 5, 'Uncurated warlord must still surface related events');
+        const dynByKey = (k) => ctrl.dynasties.find((d) => d.key === k);
+        for (const [title, dk, expMain] of [
+          ['唐', 'tang', true],
+          ['宋', 'beisong', true],
+          ['汉（郡国并行）', 'xihan', true],
+          ['东晋', 'dongjin', true],
+          ['南宋（闽广行朝）', 'nansong', true],
+          ['中华民国', 'roc', true],
+          ['唐（李渊）', 'sui', false],
+          ['汉（刘邦）', 'qin', false],
+          ['更始（汉）', 'xihan', false],
+          ['南汉', 'beisong', false],
+          ['魏', 'sanguo', false],
+        ]) {
+          assert.strictEqual(
+            ctrl._isEraMainPolity(title, dynByKey(dk)),
+            expMain,
+            `"${title}" in ${dk} must ${expMain ? '' : 'not '}be the era's own regime`
+          );
+        }
+        ctrl.locale = 'en';
+        const xxRulersEn = ctrl._polityRulers(ctrl._resolvePolity('西夏', 1100));
+        assert(
+          xxRulersEn.startsWith('Emp. Jingzong → ') && !xxRulersEn.includes(' of W. Xia'),
+          `English rulers must drop the repeated regime suffix, got ${xxRulersEn}`
+        );
+        ctrl.locale = 'zh';
+
+        const polSaved = {};
+        for (const k of ['_id', 'jumpToYear', '_zoomToPolity', '_renderLegendBox', 'toggleMobileChronicle', 'toggleChroniclePane', '_isMobileViewport', '_syncDocumentSeoMeta', 'year', 'dynastyIdx', 'grpPolities', 'lastRenderedSnap', 'paneCollapsed', 'eraFocus', '_closeLayersPopover', 'activeMilestone', 'playing', 'personTimer', 'mobileChronicleOpen', 'activePerson', 'activeTrace', 'activeCustomRoute', 'challenge']) {
+          polSaved[k] = ctrl[k];
+        }
+        const polDocSaved = sandbox.document;
+        const polMockEl = () => {
+          let html = '';
+          const el = {
+            textContent: '', dataset: {}, scrollTop: 0, children: [],
+            style: { setProperty() {}, removeProperty() {} },
+            get innerHTML() { return html; },
+            set innerHTML(v) { html = String(v); if (v === '') el.children.length = 0; },
+            appendChild(c) { el.children.push(c); return c; },
+            addEventListener() {}, setAttribute() {}, querySelector: () => null, querySelectorAll: () => [],
+            classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+          };
+          return el;
+        };
+        const polEls = new Map();
+        try {
+          ctrl._id = (id) => {
+            if (!polEls.has(id)) polEls.set(id, polMockEl());
+            return polEls.get(id);
+          };
+          sandbox.document = { createElement: () => polMockEl(), title: '' };
+          ctrl.grpPolities = polMockEl();
+          ctrl._zoomToPolity = () => {};
+          ctrl._renderLegendBox = () => {};
+          ctrl.toggleMobileChronicle = () => {};
+          ctrl.toggleChroniclePane = () => {};
+          ctrl._isMobileViewport = () => false;
+          ctrl._syncDocumentSeoMeta = () => {};
+          ctrl.paneCollapsed = false;
+          ctrl._fullSnapshotsLoaded = true;
+          // Mirror jumpToYear's pane contract: full re-render on dynasty change, highlight otherwise.
+          // Call prototype methods directly; earlier CUJs leave instance-level stubs behind.
+          const ctrlProto = Object.getPrototypeOf(ctrl);
+          ctrl.jumpToYear = (y) => {
+            const prev = ctrl.dynastyIdx;
+            ctrl.year = y;
+            ctrl.dynastyIdx = ctrl._findDynastyIndex(y);
+            const cur = ctrl.dynasties[ctrl.dynastyIdx];
+            ctrl.lastRenderedSnap = ctrl.snapshots[ctrl._resolveSnapKey(cur, y)];
+            if (prev !== ctrl.dynastyIdx) ctrlProto._renderChroniclePane.call(ctrl, cur);
+            else ctrlProto._highlightCurrentMilestone.call(ctrl, cur);
+          };
+          ctrl.activePolity = null;
+          ctrl.jumpToYear(100);
+          const ntDesc = ctrl.openPolityByKey('nantang');
+          assert(ntDesc && ctrl.activePolity && ctrl.activePolity.key === 'nantang', 'openPolityByKey(nantang) must activate Southern Tang');
+          assert(ctrl.year >= 937 && ctrl.year <= 975, `openPolityByKey must jump into Southern Tang's reign, got ${ctrl.year}`);
+          assert.strictEqual(polEls.get('dynasty-title').textContent, '南唐');
+          assert(polEls.get('dynasty-summary').textContent.includes('李煜'), 'Pane summary must show the curated Southern Tang history');
+          assert(polEls.get('polity-extra').innerHTML.includes('烈祖李昪'), 'Pane must list Southern Tang rulers');
+          assert(polEls.get('milestone-list').children.length >= 5, 'Pane must list Southern Tang related events');
+          assert.strictEqual(polEls.get('txt-milestones-heading').textContent, '相关大事');
+          ctrl.jumpToYear(970);
+          assert(ctrl.activePolity && ctrl.activePolity.key === 'nantang', 'Polity focus must persist across a dynasty boundary inside its reign (五代 -> 北宋)');
+          ctrl.jumpToYear(990);
+          assert(!ctrl.activePolity, 'Polity focus must auto-exit once the timeline leaves its reign');
+          assert.strictEqual(polEls.get('txt-milestones-heading').textContent, '重大事件');
+          ctrl.jumpToYear(1100);
+          ctrl.openPolity('西夏');
+          assert(ctrl.activePolity.key === 'xixia', 'Legend click on 西夏 must open the Western Xia profile');
+          ctrl.closePolity();
+          assert(!ctrl.activePolity && polEls.get('dynasty-title').textContent === ctrl.dynastyName(ctrl.dynasties[ctrl.dynastyIdx]), 'closePolity must restore the era overview');
+          ctrl.openPolity('西夏');
+          const mainRes = ctrl.openPolity('宋');
+          assert(
+            mainRes === null && !ctrl.activePolity && polEls.get('dynasty-title').textContent === ctrl.dynastyName(ctrl.dynasties[ctrl.dynastyIdx]),
+            'Clicking the era\'s own regime (宋 in 北宋) must return to the era overview, not open a fabricated rival profile'
+          );
+          ctrl.lastRenderedSnap = ctrl.snapshots[ctrl._resolveSnapKey(ctrl.dynasties[ctrl.dynastyIdx], ctrl.year)];
+          assert.strictEqual(ctrl._eraFocusTitle(), '宋', 'Clicking the era regime must focus its realm on the map');
+          ctrl.openPolity('西夏');
+          assert(!ctrl.eraFocus && ctrl.activePolity.key === 'xixia', 'Opening a rival profile must drop the era-regime focus');
+          ctrl.openPolity('宋');
+          ctrl.clearEraFocus();
+          assert(!ctrl.eraFocus && ctrl._eraFocusTitle() === null, 'Second click on the focused era chip must clear the focus');
+          ctrl.openPolity('宋');
+          ctrl.jumpToYear(1300);
+          assert(!ctrl.eraFocus, 'Era-regime focus must not survive leaving its dynasty');
+          ctrl.jumpToYear(1100);
+          ctrl._closeLayersPopover = () => false;
+          Object.assign(ctrl, { activeMilestone: null, playing: false, personTimer: null, mobileChronicleOpen: false, activePerson: null, activeTrace: null, activeCustomRoute: null, challenge: null });
+          polEls.set('genealogy-card', { ...polMockEl(), classList: { add() {}, remove() {}, toggle() {}, contains: (c) => c === 'is-hidden' } });
+          ctrl.openPolity('西夏');
+          assert(ctrl._dismissTopOverlay() === true && !ctrl.activePolity, 'Escape must exit a regime profile');
+          ctrl.openPolity('宋');
+          assert(ctrl._dismissTopOverlay() === true && !ctrl.eraFocus, 'Escape must clear the era-regime focus');
+        } finally {
+          for (const [k, v] of Object.entries(polSaved)) ctrl[k] = v;
+          sandbox.document = polDocSaved;
+          ctrl.activePolity = null;
+        }
+
+        ctrl.searchIndex = null;
+        const ntHit = ctrl._queryQuickSearch('南唐')[0];
+        assert(ntHit && ntHit.kind === 'polity' && ntHit.polityKey === 'nantang', `Search 南唐 must rank the regime first, got ${JSON.stringify(ntHit && ntHit.titleZh)}`);
+        const tbHit = ctrl._queryQuickSearch('拓跋魏').find((h) => h.kind === 'polity');
+        assert(tbHit && tbHit.polityKey === 'beiwei', 'Alias 拓跋魏 must resolve to Northern Wei');
+        ctrl.locale = 'en';
+        ctrl.searchIndex = null;
+        const enPolHit = ctrl._queryQuickSearch('Southern Tang')[0];
+        assert(enPolHit && enPolHit.polityKey === 'nantang', 'English search "Southern Tang" must resolve to the regime');
+        ctrl.locale = 'zh';
+        ctrl.searchIndex = null;
       } finally {
         sandbox.window.history = origHistory;
         sandbox.location.search = origSearch;
@@ -6323,7 +6582,8 @@ function main() {
   console.log(`  - ${decodedPolygons} historical polygons (${totalVertices.toLocaleString()} vertices) verified lossless & collision-free`);
   console.log(`  - ${provinces.length} modern provinces (${provRingCount} rings)`);
   console.log(`  - ${totalSettlements} ancient settlements & ${totalMilestones} historical milestones`);
-  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 39 E2E CUJs`);
+  console.log(`  - ${loreData.HISTORICAL_JOURNEYS.length} journeys (${totalJourneyStops} bilingual stops), ${loreData.CHINESE_ERA_SPANS.length} era spans, ${loreData.PLACE_LANDMARK_EVENTS.length} landmark events & ${loreData.PLACE_GAZETTEER.length} gazetteer landmarks verified across 40 E2E CUJs`);
+  console.log(`  - ${(loreData.POLITY_PROFILES || []).length} curated regional/rival regime profiles verified`);
 }
 
 main();

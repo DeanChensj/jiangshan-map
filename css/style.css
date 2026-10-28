@@ -3229,6 +3229,11 @@ html[lang="en"] .genealogy-list li {
   color: var(--text-main);
 }
 
+.key-entry.is-interactive:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 1px;
+}
+
 #grp-polities.has-polity-focus .polity-shape:not(.is-focused) {
   fill-opacity: 0.08 !important;
   stroke-opacity: 0.22 !important;
@@ -3245,6 +3250,93 @@ html[lang="en"] .genealogy-list li {
 
 #grp-polities.has-polity-focus .polity-caption.is-focused {
   fill-opacity: 1 !important;
+}
+
+.key-entry.is-interactive.is-active {
+  background: rgba(181, 69, 47, 0.14);
+  color: var(--text-main);
+  box-shadow: inset 0 0 0 1px var(--vermilion);
+}
+
+/* Polity focus: one regime's profile inside the chronicle pane */
+.polity-backbar {
+  align-self: flex-start;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.14s, border-color 0.14s;
+}
+
+.polity-backbar:hover {
+  color: var(--vermilion);
+  border-color: var(--vermilion);
+}
+
+.polity-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#chronicle-pane.is-polity-mode #dynasty-title.is-long {
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.polity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.polity-row .seat-tag {
+  flex: none;
+  margin-top: 2px;
+}
+
+.polity-rulers {
+  font-family: var(--serif-stack);
+  color: var(--text-main);
+}
+
+.polity-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.polity-stage-chip {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-family: var(--serif-stack);
+  font-size: 11.5px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.polity-stage-chip:hover,
+.polity-stage-chip.is-current {
+  background: #fff;
+  border-color: var(--dynasty-accent);
+  color: var(--dynasty-accent);
+}
+
+.polity-stage-chip.is-current {
+  font-weight: 600;
+}
+
+#milestone-list li.polity-empty {
+  cursor: default;
+  color: var(--text-secondary);
 }
 
 /* #2 Scrubber Intra-Dynasty Phase Ticks & Event Micro-Dots */
@@ -4090,6 +4182,8 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-summary,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .milestone-section,
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .polity-backbar,
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .polity-extra,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .disclaimer-box {
     display: none;
   }
@@ -4252,6 +4346,16 @@ html[lang="en"] #act-toggle-pane .tp-label {
   #map-key:not(.is-mobile-expanded) .key-polities-grid .key-entry.is-interactive {
     margin: 0;
     padding: 0 2px;
+  }
+
+  /* The scroll row clips the desktop negative margin, cutting off the active outline. */
+  #map-key:not(.is-mobile-expanded) .key-polities-grid {
+    gap: 4px 2px;
+    padding: 2px 0;
+  }
+
+  #map-key:not(.is-mobile-expanded) .key-polities-grid .key-entry.is-interactive {
+    margin: 0;
   }
 
   #map-key.is-mobile-expanded {
