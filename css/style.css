@@ -1663,7 +1663,8 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 3px 6px;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--hairline);
 }
@@ -4279,6 +4280,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   .key-phase-bar {
+    flex-wrap: nowrap;
     gap: 5px;
     padding-bottom: 3px;
   }

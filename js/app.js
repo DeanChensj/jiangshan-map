@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028p').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028q').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028p').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028q').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1540,6 +1540,8 @@
       this._updateScaleBar();
       this.activeSettlementMask = null;
       this.activeCorridorMask = null;
+      this._lastLegendKey = null;
+      this._lastPersonCardKey = null;
       this._invalidateTypographyLayout();
 
       const cur = this.dynasties[this.dynastyIdx];
@@ -3618,9 +3620,11 @@
       }
       const chkCorr = Boolean(this._id('chk-corridors') && this._id('chk-corridors').checked);
       const zhengHeWindow = this.year >= 1405 && this.year <= 1433 ? 1 : 0;
-      const legendKey = `${this.dynastyIdx}:${pIdx}:${this.locale}:${chkCorr ? 1 : 0}:${
-        this.activeCorridorMask || ''
-      }:${zhengHeWindow}:${this.activePolity ? this.activePolity.key : ''}:${this._eraFocusTitle() || ''}`;
+      const legendKey = `${this.dynastyIdx}:${pIdx}:${this._effectiveRenderedLocale()}:${
+        chkCorr ? 1 : 0
+      }:${this.activeCorridorMask || ''}:${zhengHeWindow}:${
+        this.activePolity ? this.activePolity.key : ''
+      }:${this._eraFocusTitle() || ''}`;
       if (
         this._lastLegendSnap === snap &&
         this._lastLegendKey === legendKey &&
@@ -5659,7 +5663,7 @@
       const isAdhoc = String(profile.key || '').startsWith('adhoc_');
       const listEl = this._id('genealogy-timeline');
       const stateKey = (profiles || [profile]).map((p) => p.key).join(',');
-      const personCardKey = `${stateKey}:${this.locale}:${events.length}`;
+      const personCardKey = `${stateKey}:${this._effectiveRenderedLocale()}:${events.length}`;
       if (
         preserveScroll &&
         this._lastPersonCardKey === personCardKey &&

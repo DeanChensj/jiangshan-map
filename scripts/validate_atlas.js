@@ -6042,6 +6042,105 @@ function main() {
           `English quiz clue for Nanzheng must preserve "Hanzhong Commandery", got "${clueEn}"`
         );
 
+        // Verify #map-key legend box re-renders cleanly after async i18n_dict.js load (en-pending -> en) with 0 CJK leaks
+        for (const [sid, snap] of Object.entries(snapshots)) {
+          if (snap.caption) {
+            const capEn = ctrl.trTerm(snap.caption);
+            assert(
+              !/[\u4e00-\u9fff]/.test(capEn),
+              `Snapshot ${sid} caption leaked CJK in English mode: "${capEn}"`
+            );
+          }
+          if (snap.note) {
+            const noteEn = ctrl.trTerm(snap.note);
+            assert(
+              !/[\u4e00-\u9fff]/.test(noteEn),
+              `Snapshot ${sid} note leaked CJK in English mode: "${noteEn}"`
+            );
+          }
+          for (const pol of snap.polities || []) {
+            if (pol.title) {
+              const polEn = ctrl.trTerm(pol.title);
+              assert(
+                !/[\u4e00-\u9fff]/.test(polEn),
+                `Snapshot ${sid} polity "${pol.title}" leaked CJK in English mode: "${polEn}"`
+              );
+            }
+          }
+        }
+        {
+          const savedEn = ctrl.enLocale;
+          const savedDoc = sandbox.document;
+          const savedMapKey = ctrl.mapKey;
+          const makeNode = (tag = 'div', text = '') => {
+            let htmlVal = '';
+            const n = {
+              tag,
+              className: '',
+              textContent: text,
+              style: {},
+              children: [],
+              get innerHTML() {
+                return htmlVal;
+              },
+              set innerHTML(v) {
+                htmlVal = String(v);
+                if (v === '') this.children.length = 0;
+              },
+              get firstChild() {
+                return this.children[0] || null;
+              },
+              appendChild(c) {
+                this.children.push(c);
+                return c;
+              },
+              addEventListener() {},
+              setAttribute() {},
+              classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+            };
+            return n;
+          };
+          sandbox.document = {
+            createElement: (tag) => makeNode(tag),
+            createTextNode: (txt) => makeNode('#text', String(txt)),
+          };
+          ctrl.mapKey = makeNode('div');
+          const zgSnap0 = snapshots.s_zhanguo_a;
+          ctrl.dynastyIdx = 0;
+          ctrl.year = -403;
+          ctrl.locale = 'en';
+          ctrl.enLocale = { strings: {}, dynasties: {}, milestones: {}, corridors: {}, dict: {} };
+          ctrl._lastLegendSnap = null;
+          ctrl._lastLegendKey = null;
+          ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
+          assert(
+            String(ctrl._lastLegendKey).includes(':en-pending:'),
+            `Cold-boot _renderLegendBox before i18n_dict.js loads must tag _lastLegendKey with en-pending, got "${ctrl._lastLegendKey}"`
+          );
+          ctrl.enLocale = savedEn;
+          ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
+          assert(
+            String(ctrl._lastLegendKey).includes(':en:') &&
+              !String(ctrl._lastLegendKey).includes('en-pending'),
+            `Post-i18n _renderLegendBox must update _lastLegendKey to :en:, got "${ctrl._lastLegendKey}"`
+          );
+          const collectText = (n) => {
+            if (!n) return '';
+            let s = (n.textContent || '') + ' ' + (n.innerHTML || '');
+            for (const c of n.children || []) s += ' ' + collectText(c);
+            return s;
+          };
+          const legendRenderedText = collectText(ctrl.mapKey);
+          sandbox.document = savedDoc;
+          ctrl.mapKey = savedMapKey;
+          assert(
+            legendRenderedText.includes('Warring States') &&
+              !legendRenderedText.includes('战国') &&
+              !/[\u4e00-\u9fff]/.test(legendRenderedText),
+            `#map-key after en-pending -> en transition must contain zero CJK characters, got "${legendRenderedText}"`
+          );
+        }
+
         // CUJ 41: Curated Atlas Enrichment (11 Textbook Events, 9 Household Figures & Dual Intersections, 7 Frontier Cities)
         ctrl.locale = 'zh';
         ctrl.searchIndex = null;
