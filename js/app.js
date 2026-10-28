@@ -857,6 +857,9 @@
           const strippedEn = p.ancientEn.replace(/（[^）]+）|\([^)]+\)/g, '').trim();
           if (strippedZh && strippedEn && !map[strippedZh]) map[strippedZh] = strippedEn;
         }
+        for (const en of p.eraNames || []) {
+          if (en && en.zh && en.en) map[en.zh] = en.en;
+        }
         if (p.modernZh && p.modernEn) map[p.modernZh] = p.modernEn;
         if (p.rangeZh && p.rangeEn) map[p.rangeZh] = p.rangeEn;
         if (p.chokepointZh && p.chokepointEn) map[p.chokepointZh] = p.chokepointEn;
@@ -2251,6 +2254,21 @@
       return item.capitalPeriods.some(([y0, y1]) => year >= y0 && year <= y1);
     }
 
+    _passName(p, year = this.year, locale = this.locale) {
+      if (!p) return '';
+      if (Array.isArray(p.eraNames)) {
+        for (const en of p.eraNames) {
+          if (
+            (en.from === undefined || year >= en.from) &&
+            (en.until === undefined || year < en.until)
+          ) {
+            return locale === 'en' ? en.en || p.ancientEn : this._zh(en.zh || p.ancientZh);
+          }
+        }
+      }
+      return locale === 'en' ? p.ancientEn : this._zh(p.ancientZh);
+    }
+
     _settlementMask(dynasty, year) {
       const sMask = (dynasty.settlements || [])
         .map((item) => {
@@ -2267,8 +2285,8 @@
         (p.appear !== undefined && year < p.appear) ||
         (p.vanish !== undefined && year >= p.vanish)
           ? '0'
-          : '1'
-      ).join('');
+          : this._passName(p, year, 'zh')
+      ).join('|');
       return `${sMask}:${pMask}`;
     }
 
@@ -2438,7 +2456,8 @@
             group
           );
           pNode.dataset.passKey = p.key;
-          pNode.dataset.ancient = this.locale === 'en' ? p.ancientEn : this._zh(p.ancientZh);
+          const passDisplay = this._passName(p, this.year, this.locale);
+          pNode.dataset.ancient = passDisplay;
           pNode.dataset.modern = this.locale === 'en' ? p.modernEn : this._zh(p.modernZh);
           pNode.dataset.remark = this.locale === 'en' ? p.rangeEn : this._zh(p.rangeZh);
           pNode.dataset.chokepoint = this.locale === 'en' ? p.chokepointEn : this._zh(p.chokepointZh);
@@ -2464,7 +2483,7 @@
             { class: 'name pass-name', x: dx, y: dy1, 'text-anchor': anchor },
             pNode
           );
-          nameEl.textContent = this.locale === 'en' ? p.ancientEn : this._zh(p.ancientZh);
+          nameEl.textContent = passDisplay;
         }
       }
       group.querySelectorAll('.settlement-node.is-capital').forEach((capNode) => {
@@ -5700,6 +5719,12 @@
         if (!nearCity || !siteStr) return false;
         const cleanAnc = nearCity.ancient.replace(/（.*?）|\(.*?\)/g, '').trim();
         if (cleanAnc.length >= 2 && siteStr.includes(cleanAnc)) return true;
+        if (Array.isArray(nearCity.aliases)) {
+          for (const al of nearCity.aliases) {
+            const cleanAl = String(al || '').replace(/（.*?）|\(.*?\)/g, '').trim();
+            if (cleanAl.length >= 2 && siteStr.includes(cleanAl)) return true;
+          }
+        }
         if (nearCity.modern) {
           const parts = nearCity.modern.split(/[·/、]/).map((s) => s.trim()).filter((s) => s.length >= 2);
           if (parts.some((p) => siteStr.includes(p))) return true;
@@ -5857,13 +5882,25 @@
           const key = `${s.modern}:${Math.round(s.coord[0] * 100)},${Math.round(s.coord[1] * 100)}`;
           if (seen.has(key)) continue;
           seen.add(key);
-          list.push({ ancient: s.ancient, modern: s.modern, coord: s.coord, isCapital: false });
+          list.push({
+            ancient: s.ancient,
+            aliases: s.aliases || [],
+            modern: s.modern,
+            coord: s.coord,
+            isCapital: false,
+          });
         }
       }
       for (const g of HistoricalAtlasController.PLACE_GAZETTEER) {
         if (!g.modern || !Array.isArray(g.coord)) continue;
         if (list.some((p) => this.projector.greatCircleKm(p.coord, g.coord) <= 15)) continue;
-        list.push({ ancient: g.name, modern: g.modern, coord: g.coord, isCapital: false });
+        list.push({
+          ancient: g.name,
+          aliases: g.aliases || [],
+          modern: g.modern,
+          coord: g.coord,
+          isCapital: false,
+        });
       }
       this._canonicalPlaces = list;
       return list;
@@ -6241,6 +6278,8 @@
           !labelLower ||
           String(closestOverall.s.ancient || '').toLowerCase() === labelLower ||
           String(closestOverall.s.modern || '').toLowerCase() === labelLower ||
+          (Array.isArray(closestOverall.s.aliases) &&
+            closestOverall.s.aliases.some((a) => String(a).toLowerCase() === labelLower)) ||
           (String(gazHit.name || '').toLowerCase() !== labelLower &&
             !(gazHit.aliases || []).some((a) => String(a).toLowerCase() === labelLower)));
       const raw = isDirectSettlementHit
@@ -6360,7 +6399,7 @@
           ? matchedPassHit.pass
           : null;
       const titleMain = matchedPass
-        ? (this.locale === 'en' ? matchedPass.ancientEn : matchedPass.ancientZh)
+        ? this._passName(matchedPass, this.year, this.locale)
         : modernTitle
           ? this.trTerm(modernTitle)
           : this.uiStr('outside_modern', '现代省界外 / 海域');
@@ -9048,8 +9087,8 @@
           dynasty: d,
           tier: 0,
           settlement: {
-            ancient: p.ancientZh,
-            ancientEn: p.ancientEn,
+            ancient: this._passName(p, focusY, 'zh'),
+            ancientEn: this._passName(p, focusY, 'en'),
             modern: p.modernZh,
             modernEn: p.modernEn,
             coord: p.coord,
@@ -9891,6 +9930,9 @@
           const ancEn = isModernDyn ? this._enModernCity(s.ancient) : rawAncEn;
           const modEn = this._enModernCity(s.modern || '');
           const remEn = this._enDict(s.remark || '');
+          const sAliases = (s.aliases || [])
+            .flatMap((a) => [String(a || '').toLowerCase(), this._enDict(a).toLowerCase()])
+            .filter(Boolean);
           entries.push({
             kind: 'city',
             dynasty: d,
@@ -9906,7 +9948,8 @@
             modernEn: modEn,
             remarkEn: remEn || '',
             subEn: s.modern && s.modern !== s.ancient ? `Now ${modEn}` : remEn,
-            keywords: `${s.ancient} ${s.modern || ''} ${s.remark || ''} ${d.title} ${dynNameEn} ${rawAncEn} ${ancEn} ${modEn} ${remEn}`.toLowerCase(),
+            aliases: sAliases,
+            keywords: `${s.ancient} ${(s.aliases || []).join(' ')} ${s.modern || ''} ${s.remark || ''} ${d.title} ${dynNameEn} ${rawAncEn} ${ancEn} ${modEn} ${remEn} ${sAliases.join(' ')}`.toLowerCase(),
           });
         }
       }
@@ -11991,6 +12034,7 @@
               allowStrip && bareZh.length >= 2 ? bareZh : '',
               ...(allowStrip ? extractParens(p.ancientZh) : []),
               ...(p.aliases || []),
+              ...((p.eraNames || []).flatMap((en) => [en.zh, en.en])),
               p.ancientEn,
               allowStrip && !hasQueryParens ? cleanEn : '',
               ...(allowStrip ? extractParens(p.ancientEn) : []),
@@ -12049,6 +12093,9 @@
           const anc = (s.ancient || '').toLowerCase();
           const mod = (s.modern || '').toLowerCase();
           const cleanAnc = stripParens(anc);
+          const zhAliases = allowStrip
+            ? (s.aliases || []).map((a) => String(a || '').toLowerCase()).filter(Boolean)
+            : [];
           let hit = false;
           if (!isAsciiQuery) {
             hit = !allowStrip
@@ -12058,16 +12105,36 @@
                   (!hasQueryParens && cleanAnc === q) ||
                   mod === q ||
                   (!hasQueryParens && cleanAnc === qStripped) ||
-                  mod === qStripped
+                  mod === qStripped ||
+                  zhAliases.some(
+                    (a) =>
+                      a === q ||
+                      (!hasQueryParens && stripParens(a) === q) ||
+                      (!hasQueryParens && stripParens(a) === qStripped)
+                  )
                 : anc.includes(q) ||
                   mod.includes(q) ||
+                  zhAliases.some((a) => a.includes(q)) ||
                   (!hasQueryParens &&
                     qStripped.length >= 2 &&
-                    (anc.includes(qStripped) || mod.includes(qStripped)));
+                    (anc.includes(qStripped) ||
+                      mod.includes(qStripped) ||
+                      zhAliases.some((a) => a.includes(qStripped))));
           } else {
             const ancEnRaw = this._enDict(s.ancient || '').toLowerCase();
             const cleanAncEn = stripParens(ancEnRaw);
             const ancParens = extractParens(ancEnRaw);
+            const aliasEnCands = allowStrip
+              ? (s.aliases || []).flatMap((a) => {
+                  const tr = this._enDict(a || '').toLowerCase();
+                  if (!tr || /[\u4e00-\u9fa5]/.test(tr)) return [];
+                  return [
+                    tr,
+                    !hasQueryParens ? stripParens(tr) : '',
+                    ...(!hasQueryParens && mode !== 'strict' ? extractParens(tr) : []),
+                  ];
+                })
+              : [];
             const modEnRaw = this._enModernCity(s.modern || '').toLowerCase();
             const cleanModEn = stripParens(modEnRaw);
             const modCityPart = cleanModEn.split(',')[0].trim();
@@ -12081,6 +12148,7 @@
                 ? [
                     ancEnRaw,
                     !hasQueryParens ? cleanAncEn : '',
+                    ...aliasEnCands,
                     cleanModEn,
                     !hasQueryParens ? modCityPart : '',
                   ].filter(Boolean)
@@ -12088,6 +12156,7 @@
                     ancEnRaw,
                     !hasQueryParens ? cleanAncEn : '',
                     ...(!hasQueryParens ? ancParens : []),
+                    ...aliasEnCands,
                     cleanModEn,
                     !hasQueryParens ? modCityPart : '',
                   ].filter(Boolean);
@@ -12244,9 +12313,16 @@
         for (const st of j.stops || []) {
           const anc = (st.ancientZh || '').toLowerCase();
           const mod = (st.modernZh || '').toLowerCase();
+          const stAliases = (st.aliases || []).map((a) => String(a || '').toLowerCase());
           const ancEn = (st.ancientEn || '').toLowerCase();
           const modEn = (st.modernEn || '').toLowerCase();
-          const zhHit = anc === q || mod === q || anc.includes(q) || mod.includes(q);
+          const zhHit =
+            anc === q ||
+            mod === q ||
+            stAliases.includes(q) ||
+            anc.includes(q) ||
+            mod.includes(q) ||
+            stAliases.some((a) => a.includes(q));
           const enHit =
             isAsciiQuery &&
             (ancEn === q ||

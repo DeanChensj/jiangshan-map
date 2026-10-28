@@ -402,7 +402,7 @@ window.DYNASTY_DATA = [
         "remark": "魏置河西郡重镇，吴起任西河守拒秦，前340后入秦更名夏阳"
       },
       {
-        "ancient": "洛阳（王城）",
+        "ancient": "洛阳",
         "modern": "洛阳",
         "coord": [
           112.451,
@@ -411,7 +411,11 @@ window.DYNASTY_DATA = [
         "isCapital": true,
         "align": "t",
         "vanish": -256,
-        "remark": "东周王室都城"
+        "remark": "东周王室都城",
+        "aliases": [
+          "王城",
+          "洛阳（王城）"
+        ]
       },
       {
         "ancient": "邯郸",
@@ -552,26 +556,34 @@ window.DYNASTY_DATA = [
         "remark": "古蜀国都 · 前316秦灭蜀置郡"
       },
       {
-        "ancient": "吴（姑苏）",
+        "ancient": "吴",
         "modern": "苏州",
         "coord": [
           120.621,
           31.301
         ],
-        "remark": "越国都城 · 后为楚春申君封邑"
+        "remark": "越国都城 · 后为楚春申君封邑",
+        "aliases": [
+          "姑苏",
+          "吴（姑苏）"
+        ]
       },
       {
-        "ancient": "江州（巴）",
+        "ancient": "江州",
         "modern": "重庆",
         "coord": [
           106.551,
           29.561
         ],
         "tier": 2,
-        "remark": "巴国都城 · 秦巴郡治"
+        "remark": "巴国都城 · 秦巴郡治",
+        "aliases": [
+          "巴",
+          "江州（巴）"
+        ]
       },
       {
-        "ancient": "灵寿（中山）",
+        "ancient": "灵寿",
         "modern": "石家庄·平山",
         "coord": [
           114.381,
@@ -579,7 +591,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "vanish": -296,
-        "remark": "中山国都城（前296赵灭中山）"
+        "remark": "中山国都城（前296赵灭中山）",
+        "aliases": [
+          "中山",
+          "灵寿（中山）"
+        ]
       },
       {
         "ancient": "邺城",
@@ -602,24 +618,32 @@ window.DYNASTY_DATA = [
         "remark": "韩赵秦争夺要冲 · 长平之战"
       },
       {
-        "ancient": "南郑（汉中）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "秦楚必争汉中重镇"
+        "remark": "秦楚必争汉中重镇",
+        "aliases": [
+          "汉中",
+          "南郑（汉中）"
+        ]
       },
       {
-        "ancient": "宛（南阳）",
+        "ancient": "宛",
         "modern": "南阳",
         "coord": [
           112.531,
           33.001
         ],
         "tier": 2,
-        "remark": "楚宛邑 · 秦南阳郡治"
+        "remark": "楚宛邑 · 秦南阳郡治",
+        "aliases": [
+          "南阳",
+          "宛（南阳）"
+        ]
       },
       {
         "ancient": "云中",
@@ -683,14 +707,18 @@ window.DYNASTY_DATA = [
         "remark": "魏国蒲坂，蒲津渡口"
       },
       {
-        "ancient": "濮阳（帝丘）",
+        "ancient": "濮阳",
         "modern": "濮阳",
         "coord": [
           115.03,
           35.76
         ],
         "tier": 2,
-        "remark": "卫国都城帝丘"
+        "remark": "卫国都城帝丘",
+        "aliases": [
+          "帝丘",
+          "濮阳（帝丘）"
+        ]
       },
       {
         "ancient": "荥阳",
@@ -713,7 +741,7 @@ window.DYNASTY_DATA = [
         "remark": "韩穰邑；秦穰侯魏冉封地"
       },
       {
-        "ancient": "曲阜（鲁都）",
+        "ancient": "曲阜",
         "modern": "济宁·曲阜",
         "coord": [
           116.99,
@@ -726,7 +754,11 @@ window.DYNASTY_DATA = [
             -249
           ]
         ],
-        "remark": "鲁国都城，孔子故里；前249年楚考烈王灭鲁并入楚境"
+        "remark": "鲁国都城，孔子故里；前249年楚考烈王灭鲁并入楚境",
+        "aliases": [
+          "鲁都",
+          "曲阜（鲁都）"
+        ]
       },
       {
         "ancient": "琅琊",
@@ -739,17 +771,21 @@ window.DYNASTY_DATA = [
         "remark": "越王勾践北徙都此，筑琅琊台望东海"
       },
       {
-        "ancient": "随（曾国）",
+        "ancient": "随",
         "modern": "随州",
         "coord": [
           113.38,
           31.69
         ],
         "tier": 2,
-        "remark": "曾侯乙墓出土六十五件青铜编钟，先秦礼乐重镇"
+        "remark": "曾侯乙墓出土六十五件青铜编钟，先秦礼乐重镇",
+        "aliases": [
+          "曾国",
+          "随（曾国）"
+        ]
       },
       {
-        "ancient": "义渠（北地）",
+        "ancient": "义渠",
         "modern": "庆阳",
         "coord": [
           107.64,
@@ -757,7 +793,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "vanish": -272,
-        "remark": "西戎义渠国都，前272年秦灭义渠置北地郡"
+        "remark": "西戎义渠国都，前272年秦灭义渠置北地郡",
+        "aliases": [
+          "北地",
+          "义渠（北地）"
+        ]
       },
       {
         "ancient": "葭萌",
@@ -770,14 +810,18 @@ window.DYNASTY_DATA = [
         "remark": "古蜀苴侯都邑，秦司马错伐蜀自此南下"
       },
       {
-        "ancient": "之罘（东莱）",
+        "ancient": "之罘",
         "modern": "烟台",
         "coord": [
           121.2,
           37.3
         ],
         "tier": 2,
-        "remark": "齐国胶东海隅重地，齐八神祠“阳主”祠于之罘山"
+        "remark": "齐国胶东海隅重地，齐八神祠“阳主”祠于之罘山",
+        "aliases": [
+          "东莱",
+          "之罘（东莱）"
+        ]
       },
       {
         "ancient": "金陵邑",
@@ -1034,54 +1078,74 @@ window.DYNASTY_DATA = [
         "remark": "长城西起点附近"
       },
       {
-        "ancient": "洛阳（三川）",
+        "ancient": "洛阳",
         "modern": "洛阳",
         "coord": [
           112.451,
           34.621
         ],
         "tier": 2,
-        "remark": "三川郡治"
+        "remark": "三川郡治",
+        "aliases": [
+          "三川",
+          "洛阳（三川）"
+        ]
       },
       {
-        "ancient": "阳翟（颍川）",
+        "ancient": "阳翟",
         "modern": "禹州",
         "coord": [
           113.471,
           34.151
         ],
         "tier": 2,
-        "remark": "颍川郡治"
+        "remark": "颍川郡治",
+        "aliases": [
+          "颍川",
+          "阳翟（颍川）"
+        ]
       },
       {
-        "ancient": "宛（南阳）",
+        "ancient": "宛",
         "modern": "南阳",
         "coord": [
           112.531,
           32.991
         ],
         "tier": 2,
-        "remark": "南阳郡治"
+        "remark": "南阳郡治",
+        "aliases": [
+          "南阳",
+          "宛（南阳）"
+        ]
       },
       {
-        "ancient": "晋阳（太原）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "太原郡治"
+        "remark": "太原郡治",
+        "aliases": [
+          "太原",
+          "晋阳（太原）"
+        ]
       },
       {
-        "ancient": "安邑（河东）",
+        "ancient": "安邑",
         "modern": "运城·夏县",
         "coord": [
           111.221,
           35.141
         ],
         "tier": 2,
-        "remark": "河东郡治"
+        "remark": "河东郡治",
+        "aliases": [
+          "河东",
+          "安邑（河东）"
+        ]
       },
       {
         "ancient": "九原",
@@ -1095,63 +1159,87 @@ window.DYNASTY_DATA = [
         "remark": "九原郡治"
       },
       {
-        "ancient": "肤施（上郡）",
+        "ancient": "肤施",
         "modern": "榆林·绥德",
         "coord": [
           110.261,
           37.501
         ],
         "tier": 2,
-        "remark": "上郡治所"
+        "remark": "上郡治所",
+        "aliases": [
+          "上郡",
+          "肤施（上郡）"
+        ]
       },
       {
-        "ancient": "南郑（汉中）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "汉中郡治"
+        "remark": "汉中郡治",
+        "aliases": [
+          "汉中",
+          "南郑（汉中）"
+        ]
       },
       {
-        "ancient": "江州（巴郡）",
+        "ancient": "江州",
         "modern": "重庆",
         "coord": [
           106.551,
           29.561
         ],
         "tier": 2,
-        "remark": "巴郡治所"
+        "remark": "巴郡治所",
+        "aliases": [
+          "巴郡",
+          "江州（巴郡）"
+        ]
       },
       {
-        "ancient": "寿春（九江）",
+        "ancient": "寿春",
         "modern": "淮南·寿县",
         "coord": [
           116.781,
           32.581
         ],
         "tier": 2,
-        "remark": "九江郡治"
+        "remark": "九江郡治",
+        "aliases": [
+          "九江",
+          "寿春（九江）"
+        ]
       },
       {
-        "ancient": "临湘（长沙）",
+        "ancient": "临湘",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "tier": 2,
-        "remark": "长沙郡治"
+        "remark": "长沙郡治",
+        "aliases": [
+          "长沙",
+          "临湘（长沙）"
+        ]
       },
       {
-        "ancient": "襄平（辽东）",
+        "ancient": "襄平",
         "modern": "辽阳",
         "coord": [
           123.171,
           41.271
         ],
-        "remark": "辽东郡治"
+        "remark": "辽东郡治",
+        "aliases": [
+          "辽东",
+          "襄平（辽东）"
+        ]
       },
       {
         "ancient": "桂林",
@@ -1195,44 +1283,60 @@ window.DYNASTY_DATA = [
         "remark": "泗水郡蕲县，大泽乡起义"
       },
       {
-        "ancient": "蒲坂（河东郡）",
+        "ancient": "蒲坂",
         "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
         ],
         "tier": 2,
-        "remark": "河东郡蒲坂县"
+        "remark": "河东郡蒲坂县",
+        "aliases": [
+          "河东郡",
+          "蒲坂（河东郡）"
+        ]
       },
       {
-        "ancient": "濮阳（东郡）",
+        "ancient": "濮阳",
         "modern": "濮阳",
         "coord": [
           115.03,
           35.76
         ],
         "tier": 2,
-        "remark": "东郡治濮阳"
+        "remark": "东郡治濮阳",
+        "aliases": [
+          "东郡",
+          "濮阳（东郡）"
+        ]
       },
       {
-        "ancient": "荥阳（三川郡）",
+        "ancient": "荥阳",
         "modern": "郑州·荥阳",
         "coord": [
           113.38,
           34.79
         ],
         "tier": 2,
-        "remark": "敖仓所在，三川郡"
+        "remark": "敖仓所在，三川郡",
+        "aliases": [
+          "三川郡",
+          "荥阳（三川郡）"
+        ]
       },
       {
-        "ancient": "巨鹿（巨鹿郡）",
+        "ancient": "巨鹿",
         "modern": "邢台·平乡",
         "coord": [
           115.03,
           37.07
         ],
         "tier": 2,
-        "remark": "巨鹿郡治；沙丘平台始皇崩于此"
+        "remark": "巨鹿郡治；沙丘平台始皇崩于此",
+        "aliases": [
+          "巨鹿郡",
+          "巨鹿（巨鹿郡）"
+        ]
       },
       {
         "ancient": "上洛",
@@ -1245,24 +1349,32 @@ window.DYNASTY_DATA = [
         "remark": "武关道上洛县"
       },
       {
-        "ancient": "穰（南阳郡）",
+        "ancient": "穰",
         "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
         ],
         "tier": 2,
-        "remark": "南阳郡穰县"
+        "remark": "南阳郡穰县",
+        "aliases": [
+          "南阳郡",
+          "穰（南阳郡）"
+        ]
       },
       {
-        "ancient": "东冶（闽中郡）",
+        "ancient": "东冶",
         "modern": "福州",
         "coord": [
           119.3,
           26.08
         ],
         "appear": -214,
-        "remark": "始皇置闽中郡治东冶"
+        "remark": "始皇置闽中郡治东冶",
+        "aliases": [
+          "闽中郡",
+          "东冶（闽中郡）"
+        ]
       },
       {
         "ancient": "琅琊",
@@ -1285,24 +1397,32 @@ window.DYNASTY_DATA = [
         "remark": "秦置淮阴县，韩信故里"
       },
       {
-        "ancient": "郴县（桂阳）",
+        "ancient": "郴县",
         "modern": "郴州",
         "coord": [
           113.01,
           25.77
         ],
         "tier": 2,
-        "remark": "秦置郴县扼五岭骑田岭北口，项羽徙义帝于此"
+        "remark": "秦置郴县扼五岭骑田岭北口，项羽徙义帝于此",
+        "aliases": [
+          "桂阳",
+          "郴县（桂阳）"
+        ]
       },
       {
-        "ancient": "由拳（嘉兴）",
+        "ancient": "由拳",
         "modern": "嘉兴",
         "coord": [
           120.75,
           30.75
         ],
         "tier": 2,
-        "remark": "古槜李地，秦始皇东巡置由拳县"
+        "remark": "古槜李地，秦始皇东巡置由拳县",
+        "aliases": [
+          "嘉兴",
+          "由拳（嘉兴）"
+        ]
       },
       {
         "ancient": "之罘",
@@ -1664,14 +1784,18 @@ window.DYNASTY_DATA = [
         "remark": "河西四郡之一，丝路咽喉"
       },
       {
-        "ancient": "武威（凉州）",
+        "ancient": "武威",
         "modern": "武威",
         "coord": [
           102.641,
           37.931
         ],
         "appear": -121,
-        "remark": "河西四郡"
+        "remark": "河西四郡",
+        "aliases": [
+          "凉州",
+          "武威（凉州）"
+        ]
       },
       {
         "ancient": "乌垒城",
@@ -1762,107 +1886,147 @@ window.DYNASTY_DATA = [
         "remark": "淮南国都，后为九江郡治"
       },
       {
-        "ancient": "蓟（幽州）",
+        "ancient": "蓟",
         "modern": "北京",
         "coord": [
           116.401,
           39.901
         ],
         "tier": 2,
-        "remark": "幽州刺史部"
+        "remark": "幽州刺史部",
+        "aliases": [
+          "幽州",
+          "蓟（幽州）"
+        ]
       },
       {
-        "ancient": "晋阳（并州）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "并州刺史部"
+        "remark": "并州刺史部",
+        "aliases": [
+          "并州",
+          "晋阳（并州）"
+        ]
       },
       {
-        "ancient": "邺（冀州）",
+        "ancient": "邺",
         "modern": "安阳·临漳",
         "coord": [
           114.391,
           36.101
         ],
         "tier": 2,
-        "remark": "冀州重镇"
+        "remark": "冀州重镇",
+        "aliases": [
+          "冀州",
+          "邺（冀州）"
+        ]
       },
       {
-        "ancient": "彭城（徐州）",
+        "ancient": "彭城",
         "modern": "徐州",
         "coord": [
           117.181,
           34.261
         ],
         "tier": 2,
-        "remark": "楚国都城"
+        "remark": "楚国都城",
+        "aliases": [
+          "徐州",
+          "彭城（徐州）"
+        ]
       },
       {
-        "ancient": "宛（南阳）",
+        "ancient": "宛",
         "modern": "南阳",
         "coord": [
           112.531,
           32.991
         ],
         "tier": 2,
-        "remark": "南阳郡治"
+        "remark": "南阳郡治",
+        "aliases": [
+          "南阳",
+          "宛（南阳）"
+        ]
       },
       {
-        "ancient": "江陵（南郡）",
+        "ancient": "江陵",
         "modern": "荆州",
         "coord": [
           112.241,
           30.331
         ],
         "tier": 2,
-        "remark": "荆州南郡治"
+        "remark": "荆州南郡治",
+        "aliases": [
+          "南郡",
+          "江陵（南郡）"
+        ]
       },
       {
-        "ancient": "临湘（长沙）",
+        "ancient": "临湘",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "tier": 2,
-        "remark": "长沙国都"
+        "remark": "长沙国都",
+        "aliases": [
+          "长沙",
+          "临湘（长沙）"
+        ]
       },
       {
-        "ancient": "吴（会稽）",
+        "ancient": "吴",
         "modern": "苏州",
         "coord": [
           120.581,
           31.301
         ],
         "tier": 2,
-        "remark": "会稽郡治"
+        "remark": "会稽郡治",
+        "aliases": [
+          "会稽",
+          "吴（会稽）"
+        ]
       },
       {
-        "ancient": "南昌（豫章）",
+        "ancient": "南昌",
         "modern": "南昌",
         "coord": [
           115.891,
           28.681
         ],
         "tier": 2,
-        "remark": "豫章郡治"
+        "remark": "豫章郡治",
+        "aliases": [
+          "豫章",
+          "南昌（豫章）"
+        ]
       },
       {
-        "ancient": "南郑（汉中）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "汉中郡治"
+        "remark": "汉中郡治",
+        "aliases": [
+          "汉中",
+          "南郑（汉中）"
+        ]
       },
       {
-        "ancient": "滇池（益州郡）",
+        "ancient": "滇池",
         "modern": "昆明·晋宁",
         "coord": [
           102.751,
@@ -1870,7 +2034,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "appear": -109,
-        "remark": "益州郡治"
+        "remark": "益州郡治",
+        "aliases": [
+          "益州郡",
+          "滇池（益州郡）"
+        ]
       },
       {
         "ancient": "张掖",
@@ -1895,14 +2063,18 @@ window.DYNASTY_DATA = [
         "remark": "河西四郡"
       },
       {
-        "ancient": "临沅（武陵郡）",
+        "ancient": "临沅",
         "modern": "常德",
         "coord": [
           111.698,
           29.032
         ],
         "tier": 2,
-        "remark": "武陵郡治"
+        "remark": "武陵郡治",
+        "aliases": [
+          "武陵郡",
+          "临沅（武陵郡）"
+        ]
       },
       {
         "ancient": "夷陵",
@@ -1915,14 +2087,18 @@ window.DYNASTY_DATA = [
         "remark": "南郡夷陵，三峡出口"
       },
       {
-        "ancient": "宛陵（丹阳郡）",
+        "ancient": "宛陵",
         "modern": "宣城",
         "coord": [
           118.759,
           30.94
         ],
         "tier": 2,
-        "remark": "丹阳郡治"
+        "remark": "丹阳郡治",
+        "aliases": [
+          "丹阳郡",
+          "宛陵（丹阳郡）"
+        ]
       },
       {
         "ancient": "乌程",
@@ -1967,14 +2143,18 @@ window.DYNASTY_DATA = [
         "remark": "河东郡蒲坂，黄河蒲津关"
       },
       {
-        "ancient": "濮阳（东郡）",
+        "ancient": "濮阳",
         "modern": "濮阳",
         "coord": [
           115.03,
           35.76
         ],
         "tier": 2,
-        "remark": "东郡治"
+        "remark": "东郡治",
+        "aliases": [
+          "东郡",
+          "濮阳（东郡）"
+        ]
       },
       {
         "ancient": "荥阳",
@@ -1987,14 +2167,18 @@ window.DYNASTY_DATA = [
         "remark": "楚汉荥阳、成皋对峙"
       },
       {
-        "ancient": "奉高（泰山郡）",
+        "ancient": "奉高",
         "modern": "泰安",
         "coord": [
           117.12,
           36.19
         ],
         "tier": 2,
-        "remark": "泰山郡治，汉武帝封禅驻跸"
+        "remark": "泰山郡治，汉武帝封禅驻跸",
+        "aliases": [
+          "泰山郡",
+          "奉高（泰山郡）"
+        ]
       },
       {
         "ancient": "巨鹿",
@@ -2027,52 +2211,72 @@ window.DYNASTY_DATA = [
         "remark": "南阳郡穰县"
       },
       {
-        "ancient": "交河（车师前国）",
+        "ancient": "交河",
         "modern": "吐鲁番",
         "coord": [
           89.07,
           42.95
         ],
         "tier": 2,
-        "remark": "车师前国王庭交河城"
+        "remark": "车师前国王庭交河城",
+        "aliases": [
+          "车师前国",
+          "交河（车师前国）"
+        ]
       },
       {
-        "ancient": "楼兰（鄯善）",
+        "ancient": "楼兰",
         "modern": "若羌",
         "coord": [
           89.84,
           40.52
         ],
         "tier": 2,
-        "remark": "元凤四年傅介子刺楼兰王，更名鄯善"
+        "remark": "元凤四年傅介子刺楼兰王，更名鄯善",
+        "aliases": [
+          "鄯善",
+          "楼兰（鄯善）"
+        ]
       },
       {
-        "ancient": "东冶（闽越）",
+        "ancient": "东冶",
         "modern": "福州",
         "coord": [
           119.3,
           26.08
         ],
-        "remark": "闽越王无诸都东冶；武帝灭闽越置冶县"
+        "remark": "闽越王无诸都东冶；武帝灭闽越置冶县",
+        "aliases": [
+          "闽越",
+          "东冶（闽越）"
+        ]
       },
       {
-        "ancient": "临羌（河湟）",
+        "ancient": "临羌",
         "modern": "西宁",
         "coord": [
           101.78,
           36.62
         ],
-        "remark": "赵充国河湟屯田；王莽置西海郡于青海湖畔"
+        "remark": "赵充国河湟屯田；王莽置西海郡于青海湖畔",
+        "aliases": [
+          "河湟",
+          "临羌（河湟）"
+        ]
       },
       {
-        "ancient": "鲁县（曲阜）",
+        "ancient": "鲁县",
         "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
         ],
         "tier": 2,
-        "remark": "鲁国都城，汉高祖过鲁以太牢祠孔子"
+        "remark": "鲁国都城，汉高祖过鲁以太牢祠孔子",
+        "aliases": [
+          "曲阜",
+          "鲁县（曲阜）"
+        ]
       },
       {
         "ancient": "琅琊",
@@ -2095,14 +2299,18 @@ window.DYNASTY_DATA = [
         "remark": "汉初韩信封淮阴侯，江淮水陆要冲"
       },
       {
-        "ancient": "东瓯（永嘉）",
+        "ancient": "东瓯",
         "modern": "温州",
         "coord": [
           120.66,
           28.01
         ],
         "tier": 2,
-        "remark": "汉初封越王勾践后裔摇为东海王，都东瓯"
+        "remark": "汉初封越王勾践后裔摇为东海王，都东瓯",
+        "aliases": [
+          "永嘉",
+          "东瓯（永嘉）"
+        ]
       },
       {
         "ancient": "汝阴",
@@ -2155,7 +2363,7 @@ window.DYNASTY_DATA = [
         "remark": "汉置犍为郡初治僰道，开西南夷五尺道起点"
       },
       {
-        "ancient": "越嶲（邛都）",
+        "ancient": "越嶲",
         "modern": "凉山·西昌",
         "coord": [
           102.26,
@@ -2163,7 +2371,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "appear": -111,
-        "remark": "元鼎六年置越嶲郡治邛都，控川滇灵关道"
+        "remark": "元鼎六年置越嶲郡治邛都，控川滇灵关道",
+        "aliases": [
+          "邛都",
+          "越嶲（邛都）"
+        ]
       },
       {
         "ancient": "武都",
@@ -2177,7 +2389,7 @@ window.DYNASTY_DATA = [
         "remark": "汉武帝置武都郡，扼秦陇入蜀咽喉"
       },
       {
-        "ancient": "广信（苍梧）",
+        "ancient": "广信",
         "modern": "梧州",
         "coord": [
           111.28,
@@ -2185,7 +2397,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "appear": -106,
-        "remark": "苍梧郡及交趾刺史部治所，两广分界之源"
+        "remark": "苍梧郡及交趾刺史部治所，两广分界之源",
+        "aliases": [
+          "苍梧",
+          "广信（苍梧）"
+        ]
       },
       {
         "ancient": "合浦",
@@ -2241,14 +2457,18 @@ window.DYNASTY_DATA = [
         "remark": "西域南道大国，盛产美玉"
       },
       {
-        "ancient": "东莱（不夜）",
+        "ancient": "东莱",
         "modern": "烟台",
         "coord": [
           121.2,
           37.3
         ],
         "tier": 2,
-        "remark": "汉高帝置东莱郡，汉武帝东巡登之罘山、筑蓬莱城望海求仙"
+        "remark": "汉高帝置东莱郡，汉武帝东巡登之罘山、筑蓬莱城望海求仙",
+        "aliases": [
+          "不夜",
+          "东莱（不夜）"
+        ]
       },
       {
         "ancient": "秣陵",
@@ -2774,114 +2994,158 @@ window.DYNASTY_DATA = [
         "remark": "208 年赤壁之战"
       },
       {
-        "ancient": "蓟（幽州）",
+        "ancient": "蓟",
         "modern": "北京",
         "coord": [
           116.401,
           39.901
         ],
         "tier": 2,
-        "remark": "幽州治所"
+        "remark": "幽州治所",
+        "aliases": [
+          "幽州",
+          "蓟（幽州）"
+        ]
       },
       {
-        "ancient": "晋阳（并州）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "并州治所"
+        "remark": "并州治所",
+        "aliases": [
+          "并州",
+          "晋阳（并州）"
+        ]
       },
       {
-        "ancient": "临淄（青州）",
+        "ancient": "临淄",
         "modern": "淄博",
         "coord": [
           118.301,
           36.831
         ],
         "tier": 2,
-        "remark": "青州治所"
+        "remark": "青州治所",
+        "aliases": [
+          "青州",
+          "临淄（青州）"
+        ]
       },
       {
-        "ancient": "彭城（徐州）",
+        "ancient": "彭城",
         "modern": "徐州",
         "coord": [
           117.181,
           34.261
         ],
         "tier": 2,
-        "remark": "徐州治所"
+        "remark": "徐州治所",
+        "aliases": [
+          "徐州",
+          "彭城（徐州）"
+        ]
       },
       {
-        "ancient": "寿春（扬州）",
+        "ancient": "寿春",
         "modern": "淮南·寿县",
         "coord": [
           116.781,
           32.581
         ],
         "tier": 2,
-        "remark": "扬州重镇"
+        "remark": "扬州重镇",
+        "aliases": [
+          "扬州",
+          "寿春（扬州）"
+        ]
       },
       {
-        "ancient": "吴（会稽）",
+        "ancient": "吴",
         "modern": "苏州",
         "coord": [
           120.581,
           31.301
         ],
         "tier": 2,
-        "remark": "吴郡治所"
+        "remark": "吴郡治所",
+        "aliases": [
+          "会稽",
+          "吴（会稽）"
+        ]
       },
       {
-        "ancient": "山阴（会稽）",
+        "ancient": "山阴",
         "modern": "绍兴",
         "coord": [
           120.581,
           30.001
         ],
         "tier": 2,
-        "remark": "会稽郡治"
+        "remark": "会稽郡治",
+        "aliases": [
+          "会稽",
+          "山阴（会稽）"
+        ]
       },
       {
-        "ancient": "南昌（豫章）",
+        "ancient": "南昌",
         "modern": "南昌",
         "coord": [
           115.891,
           28.681
         ],
         "tier": 2,
-        "remark": "豫章郡治"
+        "remark": "豫章郡治",
+        "aliases": [
+          "豫章",
+          "南昌（豫章）"
+        ]
       },
       {
-        "ancient": "临湘（长沙）",
+        "ancient": "临湘",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "tier": 2,
-        "remark": "长沙郡治"
+        "remark": "长沙郡治",
+        "aliases": [
+          "长沙",
+          "临湘（长沙）"
+        ]
       },
       {
-        "ancient": "南郑（汉中）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "汉中郡治"
+        "remark": "汉中郡治",
+        "aliases": [
+          "汉中",
+          "南郑（汉中）"
+        ]
       },
       {
-        "ancient": "武威（凉州）",
+        "ancient": "武威",
         "modern": "武威",
         "coord": [
           102.641,
           37.931
         ],
         "tier": 2,
-        "remark": "凉州重镇"
+        "remark": "凉州重镇",
+        "aliases": [
+          "凉州",
+          "武威（凉州）"
+        ]
       },
       {
         "ancient": "疏勒",
@@ -2895,24 +3159,32 @@ window.DYNASTY_DATA = [
         "remark": "班超经营西域驻地"
       },
       {
-        "ancient": "临沅（武陵）",
+        "ancient": "临沅",
         "modern": "常德",
         "coord": [
           111.698,
           29.032
         ],
         "tier": 2,
-        "remark": "武陵郡治，五溪蛮门户"
+        "remark": "武陵郡治，五溪蛮门户",
+        "aliases": [
+          "武陵",
+          "临沅（武陵）"
+        ]
       },
       {
-        "ancient": "泉陵（零陵郡）",
+        "ancient": "泉陵",
         "modern": "永州",
         "coord": [
           111.613,
           26.421
         ],
         "tier": 2,
-        "remark": "零陵郡治徙泉陵"
+        "remark": "零陵郡治徙泉陵",
+        "aliases": [
+          "零陵郡",
+          "泉陵（零陵郡）"
+        ]
       },
       {
         "ancient": "夷陵",
@@ -3035,22 +3307,30 @@ window.DYNASTY_DATA = [
         "remark": "丝路南北道分岔，西域长史府驻此"
       },
       {
-        "ancient": "侯官（东冶）",
+        "ancient": "侯官",
         "modern": "福州",
         "coord": [
           119.3,
           26.08
         ],
-        "remark": "会稽郡南部都尉治"
+        "remark": "会稽郡南部都尉治",
+        "aliases": [
+          "东冶",
+          "侯官（东冶）"
+        ]
       },
       {
-        "ancient": "西都（西平郡）",
+        "ancient": "西都",
         "modern": "西宁",
         "coord": [
           101.78,
           36.62
         ],
-        "remark": "建安中析金城郡置西平郡"
+        "remark": "建安中析金城郡置西平郡",
+        "aliases": [
+          "西平郡",
+          "西都（西平郡）"
+        ]
       },
       {
         "ancient": "永昌",
@@ -3074,14 +3354,18 @@ window.DYNASTY_DATA = [
         "remark": "太守孟尝革除采珠弊政，“合浦珠还”典故地"
       },
       {
-        "ancient": "桂阳（郴县）",
+        "ancient": "郴县",
         "modern": "郴州",
         "coord": [
           113.01,
           25.77
         ],
         "tier": 2,
-        "remark": "桂阳郡治郴县，造纸术发明者蔡伦故里"
+        "remark": "桂阳郡治郴县，造纸术发明者蔡伦故里",
+        "aliases": [
+          "桂阳",
+          "桂阳（郴县）"
+        ]
       },
       {
         "ancient": "当阳",
@@ -3094,14 +3378,18 @@ window.DYNASTY_DATA = [
         "remark": "长坂坡与关羽退走麦城古战场"
       },
       {
-        "ancient": "高平（安定）",
+        "ancient": "高平",
         "modern": "平凉",
         "coord": [
           106.67,
           35.54
         ],
         "tier": 2,
-        "remark": "光武帝刘秀亲征陇右隗嚣进驻高平第一城"
+        "remark": "光武帝刘秀亲征陇右隗嚣进驻高平第一城",
+        "aliases": [
+          "安定",
+          "高平（安定）"
+        ]
       },
       {
         "ancient": "于阗",
@@ -3114,14 +3402,18 @@ window.DYNASTY_DATA = [
         "remark": "班超服于阗王广德，复通西域南道"
       },
       {
-        "ancient": "国内城（丸都）",
+        "ancient": "国内城",
         "modern": "通化·集安",
         "coord": [
           126.19,
           41.12
         ],
         "tier": 2,
-        "remark": "高句丽自卒本迁都国内城，筑丸都山城"
+        "remark": "高句丽自卒本迁都国内城，筑丸都山城",
+        "aliases": [
+          "丸都",
+          "国内城（丸都）"
+        ]
       },
       {
         "ancient": "秣陵",
@@ -3543,67 +3835,91 @@ window.DYNASTY_DATA = [
         "remark": "建安十三年孙刘联军火烧赤壁大破曹军古战场"
       },
       {
-        "ancient": "交州（番禺）",
+        "ancient": "番禺",
         "modern": "广州",
         "coord": [
           113.261,
           23.131
         ],
         "align": "l",
-        "remark": "孙吴交州及广州治所，通南海诸国海贸门户"
+        "remark": "孙吴交州及广州治所，通南海诸国海贸门户",
+        "aliases": [
+          "交州",
+          "交州（番禺）"
+        ]
       },
       {
-        "ancient": "蓟（幽州）",
+        "ancient": "蓟",
         "modern": "北京",
         "coord": [
           116.401,
           39.901
         ],
         "tier": 2,
-        "remark": "曹魏幽州治所"
+        "remark": "曹魏幽州治所",
+        "aliases": [
+          "幽州",
+          "蓟（幽州）"
+        ]
       },
       {
-        "ancient": "晋阳（并州）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "曹魏并州治所"
+        "remark": "曹魏并州治所",
+        "aliases": [
+          "并州",
+          "晋阳（并州）"
+        ]
       },
       {
-        "ancient": "彭城（徐州）",
+        "ancient": "彭城",
         "modern": "徐州",
         "coord": [
           117.181,
           34.261
         ],
         "tier": 2,
-        "remark": "曹魏徐州"
+        "remark": "曹魏徐州",
+        "aliases": [
+          "徐州",
+          "彭城（徐州）"
+        ]
       },
       {
-        "ancient": "姑臧（凉州）",
+        "ancient": "姑臧",
         "modern": "武威",
         "coord": [
           102.641,
           37.931
         ],
         "tier": 2,
-        "remark": "曹魏凉州治所"
+        "remark": "曹魏凉州治所",
+        "aliases": [
+          "凉州",
+          "姑臧（凉州）"
+        ]
       },
       {
-        "ancient": "襄平（辽东）",
+        "ancient": "襄平",
         "modern": "辽阳",
         "coord": [
           123.171,
           41.271
         ],
         "appear": 238,
-        "remark": "司马懿平公孙渊"
+        "remark": "司马懿平公孙渊",
+        "aliases": [
+          "辽东",
+          "襄平（辽东）"
+        ]
       },
       {
-        "ancient": "武昌（鄂县）",
+        "ancient": "武昌",
         "modern": "鄂州",
         "coord": [
           114.891,
@@ -3620,7 +3936,11 @@ window.DYNASTY_DATA = [
             266
           ]
         ],
-        "remark": "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都"
+        "remark": "孙权黄武元年（221–229）及孙皓甘露元年（265–266）定都于此，后为孙吴陪都",
+        "aliases": [
+          "鄂县",
+          "武昌（鄂县）"
+        ]
       },
       {
         "ancient": "吴郡",
@@ -3633,14 +3953,18 @@ window.DYNASTY_DATA = [
         "remark": "江东大郡"
       },
       {
-        "ancient": "柴桑（九江）",
+        "ancient": "柴桑",
         "modern": "九江",
         "coord": [
           115.991,
           29.701
         ],
         "tier": 2,
-        "remark": "东吴水军重镇"
+        "remark": "东吴水军重镇",
+        "aliases": [
+          "九江",
+          "柴桑（九江）"
+        ]
       },
       {
         "ancient": "长沙",
@@ -3653,24 +3977,32 @@ window.DYNASTY_DATA = [
         "remark": "荆南重镇"
       },
       {
-        "ancient": "建宁（味县）",
+        "ancient": "建宁",
         "modern": "曲靖",
         "coord": [
           103.801,
           25.491
         ],
         "tier": 2,
-        "remark": "蜀汉庲降都督治所"
+        "remark": "蜀汉庲降都督治所",
+        "aliases": [
+          "味县",
+          "建宁（味县）"
+        ]
       },
       {
-        "ancient": "永安（白帝）",
+        "ancient": "永安",
         "modern": "重庆·奉节",
         "coord": [
           109.461,
           31.021
         ],
         "tier": 2,
-        "remark": "刘备托孤之地"
+        "remark": "刘备托孤之地",
+        "aliases": [
+          "白帝",
+          "永安（白帝）"
+        ]
       },
       {
         "ancient": "武陵",
@@ -3693,14 +4025,18 @@ window.DYNASTY_DATA = [
         "remark": "吴零陵郡"
       },
       {
-        "ancient": "西陵（夷陵）",
+        "ancient": "西陵",
         "modern": "宜昌",
         "coord": [
           111.286,
           30.692
         ],
         "tier": 2,
-        "remark": "章武二年刘备败于夷陵猇亭；吴改名西陵"
+        "remark": "章武二年刘备败于夷陵猇亭；吴改名西陵",
+        "aliases": [
+          "夷陵",
+          "西陵（夷陵）"
+        ]
       },
       {
         "ancient": "宛陵",
@@ -3713,14 +4049,18 @@ window.DYNASTY_DATA = [
         "remark": "吴丹阳郡"
       },
       {
-        "ancient": "乌程（吴兴郡）",
+        "ancient": "乌程",
         "modern": "湖州",
         "coord": [
           120.087,
           30.894
         ],
         "tier": 2,
-        "remark": "宝鼎元年置吴兴郡"
+        "remark": "宝鼎元年置吴兴郡",
+        "aliases": [
+          "吴兴郡",
+          "乌程（吴兴郡）"
+        ]
       },
       {
         "ancient": "濮阳",
@@ -3773,13 +4113,17 @@ window.DYNASTY_DATA = [
         "remark": "魏西域长史府"
       },
       {
-        "ancient": "建安（建安郡）",
+        "ancient": "建安",
         "modern": "南平·建瓯",
         "coord": [
           118.32,
           27.03
         ],
-        "remark": "永安三年吴置建安郡，福建建郡之始"
+        "remark": "永安三年吴置建安郡，福建建郡之始",
+        "aliases": [
+          "建安郡",
+          "建安（建安郡）"
+        ]
       },
       {
         "ancient": "西平",
@@ -3791,34 +4135,46 @@ window.DYNASTY_DATA = [
         "remark": "魏凉州西平郡"
       },
       {
-        "ancient": "谯郡（亳州）",
+        "ancient": "谯郡",
         "modern": "亳州",
         "coord": [
           115.78,
           33.87
         ],
         "tier": 2,
-        "remark": "曹操、华佗故里，曹魏奉谯为先人陪都"
+        "remark": "曹操、华佗故里，曹魏奉谯为先人陪都",
+        "aliases": [
+          "亳州",
+          "谯郡（亳州）"
+        ]
       },
       {
-        "ancient": "阆中（巴西）",
+        "ancient": "阆中",
         "modern": "南充·阆中",
         "coord": [
           105.97,
           31.56
         ],
         "tier": 2,
-        "remark": "张飞领巴西太守镇守阆中七年，保蜀汉北疆"
+        "remark": "张飞领巴西太守镇守阆中七年，保蜀汉北疆",
+        "aliases": [
+          "巴西",
+          "阆中（巴西）"
+        ]
       },
       {
-        "ancient": "江阳（泸州）",
+        "ancient": "江阳",
         "modern": "泸州",
         "coord": [
           105.44,
           28.89
         ],
         "tier": 2,
-        "remark": "蜀汉置江阳郡，诸葛亮南征水师会师之地"
+        "remark": "蜀汉置江阳郡，诸葛亮南征水师会师之地",
+        "aliases": [
+          "泸州",
+          "江阳（泸州）"
+        ]
       },
       {
         "ancient": "武都",
@@ -4064,14 +4420,18 @@ window.DYNASTY_DATA = [
         "remark": "汉赵都城"
       },
       {
-        "ancient": "左国城（离石）",
+        "ancient": "左国城",
         "modern": "吕梁",
         "coord": [
           111.141,
           37.521
         ],
         "tier": 2,
-        "remark": "并州匈奴五部驻地，永兴元年刘渊自邺归并州于此起兵称汉王"
+        "remark": "并州匈奴五部驻地，永兴元年刘渊自邺归并州于此起兵称汉王",
+        "aliases": [
+          "离石",
+          "左国城（离石）"
+        ]
       },
       {
         "ancient": "襄阳",
@@ -4103,13 +4463,17 @@ window.DYNASTY_DATA = [
         "remark": "广州刺史部治所，岭南第一大港"
       },
       {
-        "ancient": "姑臧（凉州）",
+        "ancient": "姑臧",
         "modern": "武威",
         "coord": [
           102.641,
           37.931
         ],
-        "remark": "凉州刺史张轨保境安民，永嘉乱后为前凉都城"
+        "remark": "凉州刺史张轨保境安民，永嘉乱后为前凉都城",
+        "aliases": [
+          "凉州",
+          "姑臧（凉州）"
+        ]
       },
       {
         "ancient": "襄平",
@@ -4121,94 +4485,130 @@ window.DYNASTY_DATA = [
         "remark": "平州及辽东国治所，东北边疆重镇"
       },
       {
-        "ancient": "蓟（幽州）",
+        "ancient": "蓟",
         "modern": "北京",
         "coord": [
           116.401,
           39.901
         ],
         "tier": 2,
-        "remark": "幽州治所"
+        "remark": "幽州治所",
+        "aliases": [
+          "幽州",
+          "蓟（幽州）"
+        ]
       },
       {
-        "ancient": "晋阳（并州）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "刘琨守晋阳"
+        "remark": "刘琨守晋阳",
+        "aliases": [
+          "并州",
+          "晋阳（并州）"
+        ]
       },
       {
-        "ancient": "临淄（青州）",
+        "ancient": "临淄",
         "modern": "淄博",
         "coord": [
           118.301,
           36.831
         ],
         "tier": 2,
-        "remark": "青州治所"
+        "remark": "青州治所",
+        "aliases": [
+          "青州",
+          "临淄（青州）"
+        ]
       },
       {
-        "ancient": "彭城（徐州）",
+        "ancient": "彭城",
         "modern": "徐州",
         "coord": [
           117.181,
           34.261
         ],
         "tier": 2,
-        "remark": "徐州治所"
+        "remark": "徐州治所",
+        "aliases": [
+          "徐州",
+          "彭城（徐州）"
+        ]
       },
       {
-        "ancient": "江陵（荆州）",
+        "ancient": "江陵",
         "modern": "荆州",
         "coord": [
           112.241,
           30.331
         ],
         "tier": 2,
-        "remark": "荆州重镇"
+        "remark": "荆州重镇",
+        "aliases": [
+          "荆州",
+          "江陵（荆州）"
+        ]
       },
       {
-        "ancient": "豫章（江州）",
+        "ancient": "豫章",
         "modern": "南昌",
         "coord": [
           115.891,
           28.681
         ],
         "tier": 2,
-        "remark": "江州治所"
+        "remark": "江州治所",
+        "aliases": [
+          "江州",
+          "豫章（江州）"
+        ]
       },
       {
-        "ancient": "南郑（梁州）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "梁州治所"
+        "remark": "梁州治所",
+        "aliases": [
+          "梁州",
+          "南郑（梁州）"
+        ]
       },
       {
-        "ancient": "上邽（秦州）",
+        "ancient": "上邽",
         "modern": "天水",
         "coord": [
           105.721,
           34.581
         ],
         "tier": 2,
-        "remark": "秦州治所"
+        "remark": "秦州治所",
+        "aliases": [
+          "秦州",
+          "上邽（秦州）"
+        ]
       },
       {
-        "ancient": "滇池（宁州）",
+        "ancient": "滇池",
         "modern": "昆明",
         "coord": [
           102.751,
           24.881
         ],
         "tier": 2,
-        "remark": "宁州治所"
+        "remark": "宁州治所",
+        "aliases": [
+          "宁州",
+          "滇池（宁州）"
+        ]
       },
       {
         "ancient": "巴陵",
@@ -4251,14 +4651,18 @@ window.DYNASTY_DATA = [
         "remark": "西陵督，长江上游锁钥"
       },
       {
-        "ancient": "宛陵（宣城郡）",
+        "ancient": "宛陵",
         "modern": "宣城",
         "coord": [
           118.759,
           30.94
         ],
         "tier": 2,
-        "remark": "太康二年置宣城郡"
+        "remark": "太康二年置宣城郡",
+        "aliases": [
+          "宣城郡",
+          "宛陵（宣城郡）"
+        ]
       },
       {
         "ancient": "吴兴",
@@ -4311,14 +4715,18 @@ window.DYNASTY_DATA = [
         "remark": "泰山郡治"
       },
       {
-        "ancient": "上洛（上洛郡）",
+        "ancient": "上洛",
         "modern": "商洛",
         "coord": [
           109.94,
           33.87
         ],
         "tier": 2,
-        "remark": "泰始二年置上洛郡"
+        "remark": "泰始二年置上洛郡",
+        "aliases": [
+          "上洛郡",
+          "上洛（上洛郡）"
+        ]
       },
       {
         "ancient": "穰",
@@ -4920,7 +5328,7 @@ window.DYNASTY_DATA = [
         ]
       },
       {
-        "ancient": "姑臧（凉州）",
+        "ancient": "姑臧",
         "modern": "武威",
         "coord": [
           102.641,
@@ -4941,6 +5349,10 @@ window.DYNASTY_DATA = [
             412,
             420
           ]
+        ],
+        "aliases": [
+          "凉州",
+          "姑臧（凉州）"
         ]
       },
       {
@@ -5051,64 +5463,88 @@ window.DYNASTY_DATA = [
         "remark": "桓温、刘裕北伐收复故都"
       },
       {
-        "ancient": "晋阳（并州）",
+        "ancient": "晋阳",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "并州重镇"
+        "remark": "并州重镇",
+        "aliases": [
+          "并州",
+          "晋阳（并州）"
+        ]
       },
       {
-        "ancient": "寻阳（江州）",
+        "ancient": "寻阳",
         "modern": "九江",
         "coord": [
           115.991,
           29.701
         ],
         "tier": 2,
-        "remark": "东晋江州治所，陶渊明故里"
+        "remark": "东晋江州治所，陶渊明故里",
+        "aliases": [
+          "江州",
+          "寻阳（江州）"
+        ]
       },
       {
-        "ancient": "会稽（山阴）",
+        "ancient": "山阴",
         "modern": "绍兴",
         "coord": [
           120.581,
           30.001
         ],
         "tier": 2,
-        "remark": "王羲之兰亭雅集之地"
+        "remark": "王羲之兰亭雅集之地",
+        "aliases": [
+          "会稽",
+          "会稽（山阴）"
+        ]
       },
       {
-        "ancient": "长沙（湘州）",
+        "ancient": "长沙",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "tier": 2,
-        "remark": "湘州治所"
+        "remark": "湘州治所",
+        "aliases": [
+          "湘州",
+          "长沙（湘州）"
+        ]
       },
       {
-        "ancient": "番禺（广州）",
+        "ancient": "番禺",
         "modern": "广州",
         "coord": [
           113.261,
           23.131
         ],
         "tier": 2,
-        "remark": "广州治所"
+        "remark": "广州治所",
+        "aliases": [
+          "广州",
+          "番禺（广州）"
+        ]
       },
       {
-        "ancient": "南郑（梁州）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "梁州治所"
+        "remark": "梁州治所",
+        "aliases": [
+          "梁州",
+          "南郑（梁州）"
+        ]
       },
       {
         "ancient": "敦煌",
@@ -5191,34 +5627,46 @@ window.DYNASTY_DATA = [
         "remark": "桓温镇姑孰"
       },
       {
-        "ancient": "赣（南康郡）",
+        "ancient": "赣",
         "modern": "赣州",
         "coord": [
           114.935,
           25.831
         ],
         "tier": 2,
-        "remark": "永和五年南康郡徙治赣县"
+        "remark": "永和五年南康郡徙治赣县",
+        "aliases": [
+          "南康郡",
+          "赣（南康郡）"
+        ]
       },
       {
-        "ancient": "庐陵（石阳）",
+        "ancient": "庐陵",
         "modern": "吉安",
         "coord": [
           114.993,
           27.114
         ],
         "tier": 2,
-        "remark": "庐陵郡治石阳"
+        "remark": "庐陵郡治石阳",
+        "aliases": [
+          "石阳",
+          "庐陵（石阳）"
+        ]
       },
       {
-        "ancient": "义安（海阳）",
+        "ancient": "义安",
         "modern": "潮州",
         "coord": [
           116.623,
           23.657
         ],
         "tier": 2,
-        "remark": "义熙九年置义安郡"
+        "remark": "义熙九年置义安郡",
+        "aliases": [
+          "海阳",
+          "义安（海阳）"
+        ]
       },
       {
         "ancient": "蒲坂",
@@ -5261,14 +5709,18 @@ window.DYNASTY_DATA = [
         "remark": "南北争衡要地"
       },
       {
-        "ancient": "高昌（高昌郡）",
+        "ancient": "高昌",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "前凉置高昌郡"
+        "remark": "前凉置高昌郡",
+        "aliases": [
+          "高昌郡",
+          "高昌（高昌郡）"
+        ]
       },
       {
         "ancient": "楼兰",
@@ -5290,7 +5742,7 @@ window.DYNASTY_DATA = [
         "remark": "衣冠南渡八姓入闽，江州晋安郡"
       },
       {
-        "ancient": "乐都（南凉）",
+        "ancient": "乐都",
         "modern": "海东·乐都",
         "coord": [
           102.4,
@@ -5305,7 +5757,11 @@ window.DYNASTY_DATA = [
             414
           ]
         ],
-        "remark": "秃发乌孤建南凉，定都乐都、西平（397–414）"
+        "remark": "秃发乌孤建南凉，定都乐都、西平（397–414）",
+        "aliases": [
+          "南凉",
+          "乐都（南凉）"
+        ]
       },
       {
         "ancient": "永嘉",
@@ -5870,7 +6326,7 @@ window.DYNASTY_DATA = [
         "remark": "莫高窟开凿"
       },
       {
-        "ancient": "姑臧（凉州）",
+        "ancient": "姑臧",
         "modern": "武威",
         "coord": [
           102.641,
@@ -5883,7 +6339,11 @@ window.DYNASTY_DATA = [
             439
           ]
         ],
-        "remark": "北凉都城，439 年北魏克姑臧统一北方"
+        "remark": "北凉都城，439 年北魏克姑臧统一北方",
+        "aliases": [
+          "凉州",
+          "姑臧（凉州）"
+        ]
       },
       {
         "ancient": "龙城",
@@ -5903,7 +6363,7 @@ window.DYNASTY_DATA = [
         "remark": "北燕都城，436 年为北魏所灭"
       },
       {
-        "ancient": "东阳（青州）",
+        "ancient": "东阳城",
         "modern": "潍坊·青州",
         "coord": [
           118.471,
@@ -5911,97 +6371,137 @@ window.DYNASTY_DATA = [
         ],
         "vanish": 469,
         "tier": 2,
-        "remark": "南朝青州刺史部治所东阳城，469 年为北魏慕容白曜攻克"
+        "remark": "南朝青州刺史部治所东阳城，469 年为北魏慕容白曜攻克",
+        "aliases": [
+          "青州",
+          "东阳（青州）"
+        ]
       },
       {
-        "ancient": "钟离（凤阳）",
+        "ancient": "钟离",
         "modern": "滁州·凤阳",
         "coord": [
           117.56,
           32.87
         ],
         "tier": 2,
-        "remark": "507 年钟离之战所在，南朝淮南御敌要冲"
+        "remark": "507 年钟离之战所在，南朝淮南御敌要冲",
+        "aliases": [
+          "凤阳",
+          "钟离（凤阳）"
+        ]
       },
       {
-        "ancient": "彭城（徐州）",
+        "ancient": "彭城",
         "modern": "徐州",
         "coord": [
           117.181,
           34.261
         ],
         "tier": 2,
-        "remark": "南北争夺咽喉"
+        "remark": "南北争夺咽喉",
+        "aliases": [
+          "徐州",
+          "彭城（徐州）"
+        ]
       },
       {
-        "ancient": "历城（齐州）",
+        "ancient": "历城",
         "modern": "济南",
         "coord": [
           117.001,
           36.651
         ],
         "tier": 2,
-        "remark": "齐州治所"
+        "remark": "齐州治所",
+        "aliases": [
+          "齐州",
+          "历城（齐州）"
+        ]
       },
       {
-        "ancient": "蓟（幽州）",
+        "ancient": "蓟",
         "modern": "北京",
         "coord": [
           116.401,
           39.901
         ],
         "tier": 2,
-        "remark": "北朝幽州"
+        "remark": "北朝幽州",
+        "aliases": [
+          "幽州",
+          "蓟（幽州）"
+        ]
       },
       {
-        "ancient": "悬瓠（豫州）",
+        "ancient": "悬瓠",
         "modern": "驻马店·汝南",
         "coord": [
           114.361,
           33.001
         ],
         "tier": 2,
-        "remark": "南北朝豫州重镇"
+        "remark": "南北朝豫州重镇",
+        "aliases": [
+          "豫州",
+          "悬瓠（豫州）"
+        ]
       },
       {
-        "ancient": "南郑（梁州）",
+        "ancient": "南郑",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "梁州治所"
+        "remark": "梁州治所",
+        "aliases": [
+          "梁州",
+          "南郑（梁州）"
+        ]
       },
       {
-        "ancient": "寻阳（江州）",
+        "ancient": "寻阳",
         "modern": "九江",
         "coord": [
           115.991,
           29.701
         ],
         "tier": 2,
-        "remark": "江州治所"
+        "remark": "江州治所",
+        "aliases": [
+          "江州",
+          "寻阳（江州）"
+        ]
       },
       {
-        "ancient": "夏口（郢州）",
+        "ancient": "夏口",
         "modern": "武汉",
         "coord": [
           114.311,
           30.591
         ],
         "tier": 2,
-        "remark": "南朝郢州治所"
+        "remark": "南朝郢州治所",
+        "aliases": [
+          "郢州",
+          "夏口（郢州）"
+        ]
       },
       {
-        "ancient": "长沙（湘州）",
+        "ancient": "长沙",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "tier": 2,
-        "remark": "湘州治所"
+        "remark": "湘州治所",
+        "aliases": [
+          "湘州",
+          "长沙（湘州）"
+        ]
       },
       {
         "ancient": "会稽",
@@ -6014,14 +6514,18 @@ window.DYNASTY_DATA = [
         "remark": "东扬州治所"
       },
       {
-        "ancient": "巴陵（巴陵郡）",
+        "ancient": "巴陵",
         "modern": "岳阳",
         "coord": [
           113.129,
           29.357
         ],
         "tier": 2,
-        "remark": "刘宋元嘉中置巴陵郡"
+        "remark": "刘宋元嘉中置巴陵郡",
+        "aliases": [
+          "巴陵郡",
+          "巴陵（巴陵郡）"
+        ]
       },
       {
         "ancient": "武陵",
@@ -6114,14 +6618,18 @@ window.DYNASTY_DATA = [
         "remark": "义安郡治海阳"
       },
       {
-        "ancient": "蒲坂（秦州）",
+        "ancient": "蒲坂",
         "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
         ],
         "tier": 2,
-        "remark": "北魏置泰州（秦州）治蒲坂"
+        "remark": "北魏置泰州（秦州）治蒲坂",
+        "aliases": [
+          "秦州",
+          "蒲坂（秦州）"
+        ]
       },
       {
         "ancient": "濮阳",
@@ -6164,43 +6672,59 @@ window.DYNASTY_DATA = [
         "remark": "泰山郡治"
       },
       {
-        "ancient": "上洛（洛州）",
+        "ancient": "上洛",
         "modern": "商洛",
         "coord": [
           109.94,
           33.87
         ],
         "tier": 2,
-        "remark": "北魏置洛州治上洛"
+        "remark": "北魏置洛州治上洛",
+        "aliases": [
+          "洛州",
+          "上洛（洛州）"
+        ]
       },
       {
-        "ancient": "穰（荆州）",
+        "ancient": "穰",
         "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
         ],
         "tier": 2,
-        "remark": "北魏荆州治穰"
+        "remark": "北魏荆州治穰",
+        "aliases": [
+          "荆州",
+          "穰（荆州）"
+        ]
       },
       {
-        "ancient": "高昌（高昌国）",
+        "ancient": "高昌",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "麴氏高昌国都"
+        "remark": "麴氏高昌国都",
+        "aliases": [
+          "高昌国",
+          "高昌（高昌国）"
+        ]
       },
       {
-        "ancient": "晋安（闽州）",
+        "ancient": "晋安",
         "modern": "福州",
         "coord": [
           119.3,
           26.08
         ],
-        "remark": "陈永定元年置闽州，治晋安"
+        "remark": "陈永定元年置闽州，治晋安",
+        "aliases": [
+          "闽州",
+          "晋安（闽州）"
+        ]
       },
       {
         "ancient": "伏俟城",
@@ -6222,14 +6746,18 @@ window.DYNASTY_DATA = [
         "remark": "谢灵运任永嘉太守游历山水，开山水诗派"
       },
       {
-        "ancient": "东阳（金华）",
+        "ancient": "东阳",
         "modern": "金华",
         "coord": [
           119.65,
           29.08
         ],
         "tier": 2,
-        "remark": "沈约任东阳太守筑玄畅楼（八咏楼）赋《八咏诗》"
+        "remark": "沈约任东阳太守筑玄畅楼（八咏楼）赋《八咏诗》",
+        "aliases": [
+          "金华",
+          "东阳（金华）"
+        ]
       },
       {
         "ancient": "怀朔镇",
@@ -6557,24 +7085,32 @@ window.DYNASTY_DATA = [
         "remark": "敦煌郡治，裴矩于河西掌西域通商互市咽喉"
       },
       {
-        "ancient": "邺（相州）",
+        "ancient": "邺",
         "modern": "安阳",
         "coord": [
           114.391,
           36.101
         ],
         "tier": 2,
-        "remark": "魏郡治所"
+        "remark": "魏郡治所",
+        "aliases": [
+          "相州",
+          "邺（相州）"
+        ]
       },
       {
-        "ancient": "历城（齐郡）",
+        "ancient": "历城",
         "modern": "济南",
         "coord": [
           117.001,
           36.651
         ],
         "tier": 2,
-        "remark": "齐郡治所"
+        "remark": "齐郡治所",
+        "aliases": [
+          "齐郡",
+          "历城（齐郡）"
+        ]
       },
       {
         "ancient": "彭城",
@@ -6613,14 +7149,18 @@ window.DYNASTY_DATA = [
         "remark": "西梁都城（587 年隋废西梁置荆州总管府）"
       },
       {
-        "ancient": "豫章（洪州）",
+        "ancient": "豫章",
         "modern": "南昌",
         "coord": [
           115.891,
           28.681
         ],
         "tier": 2,
-        "remark": "豫章郡治"
+        "remark": "豫章郡治",
+        "aliases": [
+          "洪州",
+          "豫章（洪州）"
+        ]
       },
       {
         "ancient": "长沙",
@@ -6633,24 +7173,32 @@ window.DYNASTY_DATA = [
         "remark": "长沙郡治"
       },
       {
-        "ancient": "晋安（泉州）",
+        "ancient": "晋安",
         "modern": "福州",
         "coord": [
           119.301,
           26.081
         ],
         "tier": 2,
-        "remark": "建安郡治"
+        "remark": "建安郡治",
+        "aliases": [
+          "泉州",
+          "晋安（泉州）"
+        ]
       },
       {
-        "ancient": "姑臧（武威）",
+        "ancient": "姑臧",
         "modern": "武威",
         "coord": [
           102.641,
           37.931
         ],
         "tier": 2,
-        "remark": "武威郡治"
+        "remark": "武威郡治",
+        "aliases": [
+          "武威",
+          "姑臧（武威）"
+        ]
       },
       {
         "ancient": "张掖",
@@ -6663,24 +7211,32 @@ window.DYNASTY_DATA = [
         "remark": "609年炀帝西巡万国博览会"
       },
       {
-        "ancient": "岳州（巴陵）",
+        "ancient": "岳州",
         "modern": "岳阳",
         "coord": [
           113.129,
           29.357
         ],
         "tier": 2,
-        "remark": "开皇中置巴州，寻改岳州"
+        "remark": "开皇中置巴州，寻改岳州",
+        "aliases": [
+          "巴陵",
+          "岳州（巴陵）"
+        ]
       },
       {
-        "ancient": "朗州（武陵）",
+        "ancient": "朗州",
         "modern": "常德",
         "coord": [
           111.698,
           29.032
         ],
         "tier": 2,
-        "remark": "开皇九年置朗州"
+        "remark": "开皇九年置朗州",
+        "aliases": [
+          "武陵",
+          "朗州（武陵）"
+        ]
       },
       {
         "ancient": "衡州",
@@ -6693,24 +7249,32 @@ window.DYNASTY_DATA = [
         "remark": "开皇九年置衡州，治衡阳"
       },
       {
-        "ancient": "永州（零陵）",
+        "ancient": "永州",
         "modern": "永州",
         "coord": [
           111.613,
           26.421
         ],
         "tier": 2,
-        "remark": "开皇九年置永州"
+        "remark": "开皇九年置永州",
+        "aliases": [
+          "零陵",
+          "永州（零陵）"
+        ]
       },
       {
-        "ancient": "峡州（夷陵）",
+        "ancient": "峡州",
         "modern": "宜昌",
         "coord": [
           111.286,
           30.692
         ],
         "tier": 2,
-        "remark": "开皇七年置峡州"
+        "remark": "开皇七年置峡州",
+        "aliases": [
+          "夷陵",
+          "峡州（夷陵）"
+        ]
       },
       {
         "ancient": "宣州",
@@ -6783,14 +7347,18 @@ window.DYNASTY_DATA = [
         "remark": "开皇十年置循州，治归善"
       },
       {
-        "ancient": "蒲州（河东郡）",
+        "ancient": "蒲州",
         "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
         ],
         "tier": 2,
-        "remark": "蒲州治河东，蒲津桥"
+        "remark": "蒲州治河东，蒲津桥",
+        "aliases": [
+          "河东郡",
+          "蒲州（河东郡）"
+        ]
       },
       {
         "ancient": "濮阳",
@@ -6813,34 +7381,46 @@ window.DYNASTY_DATA = [
         "remark": "崤函孔道，三门峡漕运"
       },
       {
-        "ancient": "博城（泰山）",
+        "ancient": "博城",
         "modern": "泰安",
         "coord": [
           117.12,
           36.19
         ],
         "tier": 2,
-        "remark": "鲁郡博城"
+        "remark": "鲁郡博城",
+        "aliases": [
+          "泰山",
+          "博城（泰山）"
+        ]
       },
       {
-        "ancient": "商州（上洛）",
+        "ancient": "商州",
         "modern": "商洛",
         "coord": [
           109.94,
           33.87
         ],
         "tier": 2,
-        "remark": "开皇中改洛州为商州"
+        "remark": "开皇中改洛州为商州",
+        "aliases": [
+          "上洛",
+          "商州（上洛）"
+        ]
       },
       {
-        "ancient": "邓州（穰）",
+        "ancient": "邓州",
         "modern": "南阳·邓州",
         "coord": [
           112.09,
           32.69
         ],
         "tier": 2,
-        "remark": "开皇中置邓州"
+        "remark": "开皇中置邓州",
+        "aliases": [
+          "穰",
+          "邓州（穰）"
+        ]
       },
       {
         "ancient": "梓州",
@@ -6863,23 +7443,31 @@ window.DYNASTY_DATA = [
         "remark": "麴氏高昌"
       },
       {
-        "ancient": "西平（鄯州）",
+        "ancient": "西平",
         "modern": "西宁",
         "coord": [
           101.78,
           36.62
         ],
-        "remark": "炀帝西巡破吐谷浑，置西海、河源四郡"
+        "remark": "炀帝西巡破吐谷浑，置西海、河源四郡",
+        "aliases": [
+          "鄯州",
+          "西平（鄯州）"
+        ]
       },
       {
-        "ancient": "高凉（高州）",
+        "ancient": "高凉",
         "modern": "茂名·高州",
         "coord": [
           110.85,
           21.92
         ],
         "tier": 2,
-        "remark": "谯国夫人冼氏统领岭南百越归隋驻地"
+        "remark": "谯国夫人冼氏统领岭南百越归隋驻地",
+        "aliases": [
+          "高州",
+          "高凉（高州）"
+        ]
       },
       {
         "ancient": "随州",
@@ -6892,34 +7480,46 @@ window.DYNASTY_DATA = [
         "remark": "隋文帝杨坚受封随国公之地，去“辶”定国号为隋"
       },
       {
-        "ancient": "历阳（和县）",
+        "ancient": "历阳",
         "modern": "马鞍山·和县",
         "coord": [
           118.36,
           31.73
         ],
         "tier": 2,
-        "remark": "杜伏威据江淮称吴王，治历阳"
+        "remark": "杜伏威据江淮称吴王，治历阳",
+        "aliases": [
+          "和县",
+          "历阳（和县）"
+        ]
       },
       {
-        "ancient": "金城（秦都）",
+        "ancient": "金城",
         "modern": "兰州",
         "coord": [
           103.821,
           36.061
         ],
         "tier": 2,
-        "remark": "薛举自称西秦霸王，称帝建都金城"
+        "remark": "薛举自称西秦霸王，称帝建都金城",
+        "aliases": [
+          "秦都",
+          "金城（秦都）"
+        ]
       },
       {
-        "ancient": "马邑（朔州）",
+        "ancient": "马邑",
         "modern": "朔州",
         "coord": [
           112.43,
           39.33
         ],
         "tier": 2,
-        "remark": "刘武周依附突厥起兵马邑，自称定阳可汗"
+        "remark": "刘武周依附突厥起兵马邑，自称定阳可汗",
+        "aliases": [
+          "朔州",
+          "马邑（朔州）"
+        ]
       }
     ],
     "phases": [
@@ -7559,7 +8159,7 @@ window.DYNASTY_DATA = [
         "remark": "786 年陷于吐蕃；848 年张议潮归义军收复"
       },
       {
-        "ancient": "安西都护府（龟兹）",
+        "ancient": "安西都护府",
         "modern": "阿克苏·库车",
         "coord": [
           82.961,
@@ -7567,7 +8167,11 @@ window.DYNASTY_DATA = [
         ],
         "vanish": 790,
         "appear": 640,
-        "remark": "显庆三年移安西大都护府治龟兹，统辖碎叶、疏勒、于阗、龟兹四镇"
+        "remark": "显庆三年移安西大都护府治龟兹，统辖碎叶、疏勒、于阗、龟兹四镇",
+        "aliases": [
+          "龟兹",
+          "安西都护府（龟兹）"
+        ]
       },
       {
         "ancient": "北庭都护府",
@@ -7592,14 +8196,18 @@ window.DYNASTY_DATA = [
         "remark": "676 年内迁辽东"
       },
       {
-        "ancient": "安南都护府（交州）",
+        "ancient": "安南都护府",
         "modern": "河内（越南）",
         "coord": [
           105.851,
           21.031
         ],
         "appear": 679,
-        "remark": "679 年设"
+        "remark": "679 年设",
+        "aliases": [
+          "交州",
+          "安南都护府（交州）"
+        ]
       },
       {
         "ancient": "逻些",
@@ -7661,14 +8269,18 @@ window.DYNASTY_DATA = [
         "remark": "山南东道治所"
       },
       {
-        "ancient": "兴元（梁州）",
+        "ancient": "兴元",
         "modern": "汉中",
         "coord": [
           107.021,
           33.071
         ],
         "tier": 2,
-        "remark": "山南西道治所"
+        "remark": "山南西道治所",
+        "aliases": [
+          "梁州",
+          "兴元（梁州）"
+        ]
       },
       {
         "ancient": "江陵",
@@ -7833,14 +8445,18 @@ window.DYNASTY_DATA = [
         "remark": "柳宗元贬永州司马十年，作《永州八记》"
       },
       {
-        "ancient": "峡州（夷陵）",
+        "ancient": "峡州",
         "modern": "宜昌",
         "coord": [
           111.286,
           30.692
         ],
         "tier": 2,
-        "remark": "三峡门户，入蜀水路起点"
+        "remark": "三峡门户，入蜀水路起点",
+        "aliases": [
+          "夷陵",
+          "峡州（夷陵）"
+        ]
       },
       {
         "ancient": "宣州",
@@ -7853,14 +8469,18 @@ window.DYNASTY_DATA = [
         "remark": "李白屡登敬亭山、谢朓楼；宣州纸笔"
       },
       {
-        "ancient": "池州（秋浦）",
+        "ancient": "池州",
         "modern": "池州",
         "coord": [
           117.491,
           30.665
         ],
         "tier": 2,
-        "remark": "杜牧刺池州，《清明》杏花村"
+        "remark": "杜牧刺池州，《清明》杏花村",
+        "aliases": [
+          "秋浦",
+          "池州（秋浦）"
+        ]
       },
       {
         "ancient": "滁州",
@@ -7914,14 +8534,18 @@ window.DYNASTY_DATA = [
         "remark": "赣江上游，大庾岭北门"
       },
       {
-        "ancient": "吉州（庐陵）",
+        "ancient": "吉州",
         "modern": "吉安",
         "coord": [
           114.993,
           27.114
         ],
         "tier": 2,
-        "remark": "江南西道吉州"
+        "remark": "江南西道吉州",
+        "aliases": [
+          "庐陵",
+          "吉州（庐陵）"
+        ]
       },
       {
         "ancient": "潮州",
@@ -7965,14 +8589,18 @@ window.DYNASTY_DATA = [
         "remark": "武德五年置儋州"
       },
       {
-        "ancient": "蒲州（河中府）",
+        "ancient": "蒲州",
         "modern": "运城·永济",
         "coord": [
           110.32,
           34.84
         ],
         "tier": 2,
-        "remark": "开元九年升河中府，置中都；鹳雀楼、蒲津铁牛"
+        "remark": "开元九年升河中府，置中都；鹳雀楼、蒲津铁牛",
+        "aliases": [
+          "河中府",
+          "蒲州（河中府）"
+        ]
       },
       {
         "ancient": "澶州",
@@ -7996,14 +8624,18 @@ window.DYNASTY_DATA = [
         "remark": "开元漕运，三门开山置仓"
       },
       {
-        "ancient": "乾封（泰山）",
+        "ancient": "乾封",
         "modern": "泰安",
         "coord": [
           117.12,
           36.19
         ],
         "tier": 2,
-        "remark": "乾封元年高宗封禅，改博城为乾封"
+        "remark": "乾封元年高宗封禅，改博城为乾封",
+        "aliases": [
+          "泰山",
+          "乾封（泰山）"
+        ]
       },
       {
         "ancient": "商州",
@@ -8047,7 +8679,7 @@ window.DYNASTY_DATA = [
         "remark": "贞观十三年置播州"
       },
       {
-        "ancient": "西州（高昌）",
+        "ancient": "西州",
         "modern": "吐鲁番",
         "coord": [
           89.53,
@@ -8055,7 +8687,11 @@ window.DYNASTY_DATA = [
         ],
         "appear": 640,
         "tier": 2,
-        "remark": "贞观十四年灭高昌置西州；玄奘曾驻锡"
+        "remark": "贞观十四年灭高昌置西州；玄奘曾驻锡",
+        "aliases": [
+          "高昌",
+          "西州（高昌）"
+        ]
       },
       {
         "ancient": "碎叶",
@@ -8070,14 +8706,18 @@ window.DYNASTY_DATA = [
         "remark": "调露元年王方翼筑城，安西四镇之一；李白出生地"
       },
       {
-        "ancient": "瓜州（晋昌）",
+        "ancient": "瓜州",
         "modern": "酒泉·瓜州",
         "coord": [
           96.21,
           40.25
         ],
         "tier": 2,
-        "remark": "玄奘夜渡葫芦河西行处；张议潮归义军起兵"
+        "remark": "玄奘夜渡葫芦河西行处；张议潮归义军起兵",
+        "aliases": [
+          "晋昌",
+          "瓜州（晋昌）"
+        ]
       },
       {
         "ancient": "楚州",
@@ -8162,14 +8802,18 @@ window.DYNASTY_DATA = [
         "remark": "河南道滨海重镇，唐代对新罗海路门户"
       },
       {
-        "ancient": "果州（阆州）",
+        "ancient": "果州",
         "modern": "南充·阆中",
         "coord": [
           105.97,
           31.56
         ],
         "tier": 2,
-        "remark": "山南西道重镇，杜甫游历阆州赞“阆中胜事可肠断”"
+        "remark": "山南西道重镇，杜甫游历阆州赞“阆中胜事可肠断”",
+        "aliases": [
+          "阆州",
+          "果州（阆州）"
+        ]
       },
       {
         "ancient": "戎州",
@@ -8293,14 +8937,18 @@ window.DYNASTY_DATA = [
         "remark": "江南西道南境门户，韩愈、刘禹锡曾谪居经行"
       },
       {
-        "ancient": "龙标（巫州）",
+        "ancient": "龙标",
         "modern": "怀化·芷江",
         "coord": [
           109.68,
           27.44
         ],
         "tier": 2,
-        "remark": "王昌龄贬龙标尉，李白赋诗遥寄之地"
+        "remark": "王昌龄贬龙标尉，李白赋诗遥寄之地",
+        "aliases": [
+          "巫州",
+          "龙标（巫州）"
+        ]
       },
       {
         "ancient": "韶州",
@@ -8333,14 +8981,18 @@ window.DYNASTY_DATA = [
         "remark": "岭南道西江与桂江交汇要冲"
       },
       {
-        "ancient": "振州（崖州）",
+        "ancient": "振州",
         "modern": "三亚",
         "coord": [
           109.18,
           18.36
         ],
         "tier": 2,
-        "remark": "唐代海南岛极南州治，鉴真东渡漂流驻锡处"
+        "remark": "唐代海南岛极南州治，鉴真东渡漂流驻锡处",
+        "aliases": [
+          "崖州",
+          "振州（崖州）"
+        ]
       },
       {
         "ancient": "泾州",
@@ -8394,24 +9046,32 @@ window.DYNASTY_DATA = [
         "remark": "渤海国上京，仿唐长安营建号“海东盛国”"
       },
       {
-        "ancient": "雅砻（桑耶）",
+        "ancient": "雅砻",
         "modern": "山南",
         "coord": [
           91.77,
           29.24
         ],
         "tier": 2,
-        "remark": "吐蕃王室发祥地雅砻河谷，赤松德赞建桑耶寺"
+        "remark": "吐蕃王室发祥地雅砻河谷，赤松德赞建桑耶寺",
+        "aliases": [
+          "桑耶",
+          "雅砻（桑耶）"
+        ]
       },
       {
-        "ancient": "象雄（阿里）",
+        "ancient": "象雄",
         "modern": "阿里",
         "coord": [
           80.4,
           31.15
         ],
         "tier": 2,
-        "remark": "古象雄王国都城穹窿银城所在，松赞干布并入吐蕃"
+        "remark": "古象雄王国都城穹窿银城所在，松赞干布并入吐蕃",
+        "aliases": [
+          "阿里",
+          "象雄（阿里）"
+        ]
       },
       {
         "ancient": "登州",
@@ -8467,7 +9127,7 @@ window.DYNASTY_DATA = [
         "remark": "垂拱二年（686年）陈元光请置漳州，开漳圣王经营闽南之始"
       },
       {
-        "ancient": "单于大都护府（和林格尔）",
+        "ancient": "单于大都护府",
         "modern": "呼和浩特·和林格尔",
         "coord": [
           111.821,
@@ -8476,7 +9136,11 @@ window.DYNASTY_DATA = [
         "appear": 650,
         "vanish": 745,
         "tier": 2,
-        "remark": "永徽元年设单于都护府于云中金河，统辖漠南突厥诸羁縻府州"
+        "remark": "永徽元年设单于都护府于云中金河，统辖漠南突厥诸羁縻府州",
+        "aliases": [
+          "和林格尔",
+          "单于大都护府（和林格尔）"
+        ]
       },
       {
         "ancient": "安北都护府",
@@ -8503,27 +9167,35 @@ window.DYNASTY_DATA = [
         "remark": "武德四年置姚州都督府，唐朝经略滇西洱海枢纽"
       },
       {
-        "ancient": "洺州（夏都）",
+        "ancient": "洺州",
         "modern": "邯郸·永年",
         "coord": [
           114.6,
           36.7
         ],
         "tier": 2,
-        "remark": "窦建德迁都洺州，后刘黑闼据此建汉东国"
+        "remark": "窦建德迁都洺州，后刘黑闼据此建汉东国",
+        "aliases": [
+          "夏都",
+          "洺州（夏都）"
+        ]
       },
       {
-        "ancient": "历阳（吴都）",
+        "ancient": "历阳",
         "modern": "马鞍山·和县",
         "coord": [
           118.36,
           31.73
         ],
         "tier": 2,
-        "remark": "杜伏威建立江淮吴政权，降唐封吴王"
+        "remark": "杜伏威建立江淮吴政权，降唐封吴王",
+        "aliases": [
+          "吴都",
+          "历阳（吴都）"
+        ]
       },
       {
-        "ancient": "金城（兰州）",
+        "ancient": "金城",
         "modern": "兰州",
         "coord": [
           103.821,
@@ -8531,17 +9203,25 @@ window.DYNASTY_DATA = [
         ],
         "appear": 619,
         "tier": 2,
-        "remark": "薛举西秦都城，唐武德二年平薛仁杲置兰州"
+        "remark": "薛举西秦都城，唐武德二年平薛仁杲置兰州",
+        "aliases": [
+          "兰州",
+          "金城（兰州）"
+        ]
       },
       {
-        "ancient": "升州（上元）",
+        "ancient": "升州",
         "modern": "南京",
         "coord": [
           118.801,
           32.061
         ],
         "tier": 2,
-        "remark": "唐初为润州上元、江宁县，至德二载置升州，李白刘禹锡金陵怀古之地"
+        "remark": "唐初为润州上元、江宁县，至德二载置升州，李白刘禹锡金陵怀古之地",
+        "aliases": [
+          "上元",
+          "升州（上元）"
+        ]
       },
       {
         "ancient": "润州",
@@ -8880,47 +9560,63 @@ window.DYNASTY_DATA = [
         "remark": "前蜀、后蜀都城"
       },
       {
-        "ancient": "扬州（江都府）",
+        "ancient": "扬州",
         "modern": "扬州",
         "coord": [
           119.411,
           32.391
         ],
         "vanish": 937,
-        "remark": "吴都城"
+        "remark": "吴都城",
+        "aliases": [
+          "江都府",
+          "扬州（江都府）"
+        ]
       },
       {
-        "ancient": "金陵（江宁府）",
+        "ancient": "金陵",
         "modern": "南京",
         "coord": [
           118.801,
           32.061
         ],
         "appear": 937,
-        "remark": "南唐都城"
+        "remark": "南唐都城",
+        "aliases": [
+          "江宁府",
+          "金陵（江宁府）"
+        ]
       },
       {
-        "ancient": "杭州（西府）",
+        "ancient": "杭州",
         "modern": "杭州",
         "coord": [
           120.151,
           30.271
         ],
         "align": "b",
-        "remark": "吴越都城"
+        "remark": "吴越都城",
+        "aliases": [
+          "西府",
+          "杭州（西府）"
+        ]
       },
       {
-        "ancient": "长沙（潭州）",
+        "ancient": "长沙",
         "modern": "长沙",
         "coord": [
           112.941,
           28.231
         ],
         "vanish": 951,
-        "remark": "楚都城"
+        "remark": "楚都城",
+        "aliases": [
+          "潭州",
+          "长沙（潭州）"
+        ]
       },
       {
-        "ancient": "福州（长乐府）",
+        "ancient": "福州",
         "modern": "福州",
         "coord": [
           119.301,
@@ -8928,7 +9624,11 @@ window.DYNASTY_DATA = [
         ],
         "appear": 909,
         "vanish": 945,
-        "remark": "闽都城"
+        "remark": "闽都城",
+        "aliases": [
+          "长乐府",
+          "福州（长乐府）"
+        ]
       },
       {
         "ancient": "江陵",
@@ -8971,24 +9671,32 @@ window.DYNASTY_DATA = [
         "remark": "939 年吴权自立"
       },
       {
-        "ancient": "长安（京兆）",
+        "ancient": "长安",
         "modern": "西安",
         "coord": [
           108.941,
           34.341
         ],
         "tier": 2,
-        "remark": "关中重镇"
+        "remark": "关中重镇",
+        "aliases": [
+          "京兆",
+          "长安（京兆）"
+        ]
       },
       {
-        "ancient": "魏州（兴唐府）",
+        "ancient": "魏州",
         "modern": "邯郸·大名",
         "coord": [
           115.151,
           36.281
         ],
         "tier": 2,
-        "remark": "后唐建号之地"
+        "remark": "后唐建号之地",
+        "aliases": [
+          "兴唐府",
+          "魏州（兴唐府）"
+        ]
       },
       {
         "ancient": "青州",
@@ -9011,14 +9719,18 @@ window.DYNASTY_DATA = [
         "remark": "山南东道重镇"
       },
       {
-        "ancient": "洪州（南昌府）",
+        "ancient": "洪州",
         "modern": "南昌",
         "coord": [
           115.891,
           28.681
         ],
         "tier": 2,
-        "remark": "南唐南都"
+        "remark": "南唐南都",
+        "aliases": [
+          "南昌府",
+          "洪州（南昌府）"
+        ]
       },
       {
         "ancient": "桂州",
@@ -9273,14 +9985,18 @@ window.DYNASTY_DATA = [
         "remark": "前蜀、后蜀东川节度"
       },
       {
-        "ancient": "高昌（西州回鹘）",
+        "ancient": "高昌",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "西州回鹘王都"
+        "remark": "西州回鹘王都",
+        "aliases": [
+          "西州回鹘",
+          "高昌（西州回鹘）"
+        ]
       },
       {
         "ancient": "瓜州",
@@ -9293,13 +10009,17 @@ window.DYNASTY_DATA = [
         "remark": "归义军瓜州"
       },
       {
-        "ancient": "青唐（鄯州）",
+        "ancient": "青唐",
         "modern": "西宁",
         "coord": [
           101.78,
           36.62
         ],
-        "remark": "河湟吐蕃据守鄯州"
+        "remark": "河湟吐蕃据守鄯州",
+        "aliases": [
+          "鄯州",
+          "青唐（鄯州）"
+        ]
       },
       {
         "ancient": "曲阜",
@@ -9322,7 +10042,7 @@ window.DYNASTY_DATA = [
         "remark": "吴越国文穆王钱元瓘析杭州嘉兴县置秀州"
       },
       {
-        "ancient": "通州（南通）",
+        "ancient": "通州",
         "modern": "南通",
         "coord": [
           120.89,
@@ -9330,7 +10050,11 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "appear": 958,
-        "remark": "后周显德五年克江北始置通州，扼长江北口"
+        "remark": "后周显德五年克江北始置通州，扼长江北口",
+        "aliases": [
+          "南通",
+          "通州（南通）"
+        ]
       },
       {
         "ancient": "润州",
@@ -9727,14 +10451,18 @@ window.DYNASTY_DATA = [
     ],
     "settlements": [
       {
-        "ancient": "东京（汴梁）",
+        "ancient": "东京",
         "modern": "开封",
         "coord": [
           114.311,
           34.801
         ],
         "isCapital": true,
-        "remark": "《清明上河图》所绘"
+        "remark": "《清明上河图》所绘",
+        "aliases": [
+          "汴梁",
+          "东京（汴梁）"
+        ]
       },
       {
         "ancient": "西京",
@@ -9914,14 +10642,18 @@ window.DYNASTY_DATA = [
         "remark": "河北西路治所"
       },
       {
-        "ancient": "济南府（齐州）",
+        "ancient": "济南府",
         "modern": "济南",
         "coord": [
           117.001,
           36.651
         ],
         "tier": 2,
-        "remark": "京东路重镇"
+        "remark": "京东路重镇",
+        "aliases": [
+          "齐州",
+          "济南府（齐州）"
+        ]
       },
       {
         "ancient": "扬州",
@@ -9944,14 +10676,18 @@ window.DYNASTY_DATA = [
         "remark": "淮南西路重镇"
       },
       {
-        "ancient": "苏州（平江府）",
+        "ancient": "苏州",
         "modern": "苏州",
         "coord": [
           120.581,
           31.301
         ],
         "tier": 2,
-        "remark": "两浙富庶之地"
+        "remark": "两浙富庶之地",
+        "aliases": [
+          "平江府",
+          "苏州（平江府）"
+        ]
       },
       {
         "ancient": "洪州",
@@ -10047,7 +10783,7 @@ window.DYNASTY_DATA = [
         "remark": "熙河路治所，王韶开边置"
       },
       {
-        "ancient": "西宁州（青唐）",
+        "ancient": "西宁州",
         "modern": "西宁",
         "coord": [
           101.778,
@@ -10056,7 +10792,11 @@ window.DYNASTY_DATA = [
         "tier": 2,
         "appear": 1104,
         "align": "l",
-        "remark": "故青唐城，1104 年收复置陇右都护府"
+        "remark": "故青唐城，1104 年收复置陇右都护府",
+        "aliases": [
+          "青唐",
+          "西宁州（青唐）"
+        ]
       },
       {
         "ancient": "岳州",
@@ -10069,14 +10809,18 @@ window.DYNASTY_DATA = [
         "remark": "庆历五年滕子京重修岳阳楼，六年范仲淹作《岳阳楼记》"
       },
       {
-        "ancient": "鼎州（朗州）",
+        "ancient": "鼎州",
         "modern": "常德",
         "coord": [
           111.698,
           29.032
         ],
         "tier": 2,
-        "remark": "大中祥符五年改朗州为鼎州"
+        "remark": "大中祥符五年改朗州为鼎州",
+        "aliases": [
+          "朗州",
+          "鼎州（朗州）"
+        ]
       },
       {
         "ancient": "衡州",
@@ -10220,14 +10964,18 @@ window.DYNASTY_DATA = [
         "remark": "广南西路柳州"
       },
       {
-        "ancient": "昌化军（儋州）",
+        "ancient": "昌化军",
         "modern": "儋州",
         "coord": [
           109.577,
           19.521
         ],
         "tier": 2,
-        "remark": "绍圣四年苏轼贬儋州，居桄榔庵、讲学载酒堂"
+        "remark": "绍圣四年苏轼贬儋州，居桄榔庵、讲学载酒堂",
+        "aliases": [
+          "儋州",
+          "昌化军（儋州）"
+        ]
       },
       {
         "ancient": "河中府",
@@ -10260,14 +11008,18 @@ window.DYNASTY_DATA = [
         "remark": "永兴军路陕州"
       },
       {
-        "ancient": "奉符（泰山）",
+        "ancient": "奉符",
         "modern": "泰安",
         "coord": [
           117.12,
           36.19
         ],
         "tier": 2,
-        "remark": "大中祥符元年真宗封禅，改乾封为奉符"
+        "remark": "大中祥符元年真宗封禅，改乾封为奉符",
+        "aliases": [
+          "泰山",
+          "奉符（泰山）"
+        ]
       },
       {
         "ancient": "商州",
@@ -10340,24 +11092,32 @@ window.DYNASTY_DATA = [
         "remark": "辽置锦州临海军"
       },
       {
-        "ancient": "曲阜（仙源）",
+        "ancient": "曲阜",
         "modern": "济宁·曲阜",
         "coord": [
           116.99,
           35.6
         ],
         "tier": 2,
-        "remark": "大中祥符元年宋真宗幸曲阜谒孔庙，五年改仙源县"
+        "remark": "大中祥符元年宋真宗幸曲阜谒孔庙，五年改仙源县",
+        "aliases": [
+          "仙源",
+          "曲阜（仙源）"
+        ]
       },
       {
-        "ancient": "景德镇（昌南）",
+        "ancient": "景德镇",
         "modern": "景德镇",
         "coord": [
           117.18,
           29.27
         ],
         "tier": 2,
-        "remark": "宋真宗景德元年诏昌南镇进御瓷书“景德年制”得名"
+        "remark": "宋真宗景德元年诏昌南镇进御瓷书“景德年制”得名",
+        "aliases": [
+          "昌南",
+          "景德镇（昌南）"
+        ]
       },
       {
         "ancient": "青州",
@@ -10420,14 +11180,18 @@ window.DYNASTY_DATA = [
         "remark": "两浙路重镇，抗金名将宗泽故里"
       },
       {
-        "ancient": "徽州（歙州）",
+        "ancient": "徽州",
         "modern": "黄山·歙县",
         "coord": [
           118.43,
           29.87
         ],
         "tier": 2,
-        "remark": "宣和三年平定方腊后改歙州为徽州"
+        "remark": "宣和三年平定方腊后改歙州为徽州",
+        "aliases": [
+          "歙州",
+          "徽州（歙州）"
+        ]
       },
       {
         "ancient": "颍州",
@@ -10470,14 +11234,18 @@ window.DYNASTY_DATA = [
         "remark": "成都府路文献名邦，“三苏”苏洵、苏轼、苏辙故里"
       },
       {
-        "ancient": "叙州（戎州）",
+        "ancient": "叙州",
         "modern": "宜宾",
         "coord": [
           104.64,
           28.77
         ],
         "tier": 2,
-        "remark": "政和四年改戎州为叙州，黄庭坚曾谪居于此"
+        "remark": "政和四年改戎州为叙州，黄庭坚曾谪居于此",
+        "aliases": [
+          "戎州",
+          "叙州（戎州）"
+        ]
       },
       {
         "ancient": "抚州",
@@ -10541,14 +11309,18 @@ window.DYNASTY_DATA = [
         "remark": "泾原路经略安抚使治所，宋夏西线军事重镇"
       },
       {
-        "ancient": "西平府（灵州）",
+        "ancient": "西平府",
         "modern": "吴忠·灵武",
         "coord": [
           106.28,
           38.09
         ],
         "tier": 2,
-        "remark": "咸平五年李继迁攻陷灵州改西平府，为西夏南都"
+        "remark": "咸平五年李继迁攻陷灵州改西平府，为西夏南都",
+        "aliases": [
+          "灵州",
+          "西平府（灵州）"
+        ]
       },
       {
         "ancient": "代州",
@@ -10561,14 +11333,18 @@ window.DYNASTY_DATA = [
         "remark": "河东路北门，杨家将镇守代州大破辽军于雁门"
       },
       {
-        "ancient": "古格（阿里）",
+        "ancient": "古格",
         "modern": "阿里",
         "coord": [
           79.8,
           31.48
         ],
         "tier": 2,
-        "remark": "吐蕃王室后裔建古格王朝，迎阿底峡驻锡托林寺"
+        "remark": "吐蕃王室后裔建古格王朝，迎阿底峡驻锡托林寺",
+        "aliases": [
+          "阿里",
+          "古格（阿里）"
+        ]
       },
       {
         "ancient": "登州",
@@ -10601,7 +11377,7 @@ window.DYNASTY_DATA = [
         "remark": "福建路闽中重镇，将乐杨时“程门立雪”倡道东南，开闽学先河"
       },
       {
-        "ancient": "夏州（统万城）",
+        "ancient": "夏州",
         "modern": "榆林·靖边",
         "coord": [
           108.78,
@@ -10609,7 +11385,11 @@ window.DYNASTY_DATA = [
         ],
         "vanish": 994,
         "tier": 2,
-        "remark": "定难军节度使治所，淳化五年毁城迁民"
+        "remark": "定难军节度使治所，淳化五年毁城迁民",
+        "aliases": [
+          "统万城",
+          "夏州（统万城）"
+        ]
       },
       {
         "ancient": "润州",
@@ -11383,14 +12163,18 @@ window.DYNASTY_DATA = [
         "remark": "金河中府"
       },
       {
-        "ancient": "开德府（澶州）",
+        "ancient": "开德府",
         "modern": "濮阳",
         "coord": [
           115.03,
           35.76
         ],
         "tier": 2,
-        "remark": "金开德府"
+        "remark": "金开德府",
+        "aliases": [
+          "澶州",
+          "开德府（澶州）"
+        ]
       },
       {
         "ancient": "陕州",
@@ -11453,14 +12237,18 @@ window.DYNASTY_DATA = [
         "remark": "杨氏筑海龙屯以御蒙古"
       },
       {
-        "ancient": "高昌（畏兀儿）",
+        "ancient": "高昌",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "畏兀儿亦都护归附蒙古"
+        "remark": "畏兀儿亦都护归附蒙古",
+        "aliases": [
+          "畏兀儿",
+          "高昌（畏兀儿）"
+        ]
       },
       {
         "ancient": "锦州",
@@ -11522,14 +12310,18 @@ window.DYNASTY_DATA = [
         "remark": "建炎南渡衍圣公孔端友奉圣像赐家衢州，成孔氏南宗"
       },
       {
-        "ancient": "顺昌府（颍州）",
+        "ancient": "顺昌府",
         "modern": "阜阳",
         "coord": [
           115.81,
           32.89
         ],
         "tier": 2,
-        "remark": "绍兴十年刘锜率八字军大破金兀术铁浮图之地"
+        "remark": "绍兴十年刘锜率八字军大破金兀术铁浮图之地",
+        "aliases": [
+          "颍州",
+          "顺昌府（颍州）"
+        ]
       },
       {
         "ancient": "信州",
@@ -11552,14 +12344,18 @@ window.DYNASTY_DATA = [
         "remark": "宋宁宗庆元二年升嘉州为嘉定府"
       },
       {
-        "ancient": "泸州（神臂城）",
+        "ancient": "泸州",
         "modern": "泸州",
         "coord": [
           105.44,
           28.89
         ],
         "tier": 2,
-        "remark": "余玠筑神臂城据江险坚守抗蒙三十四年"
+        "remark": "余玠筑神臂城据江险坚守抗蒙三十四年",
+        "aliases": [
+          "神臂城",
+          "泸州（神臂城）"
+        ]
       },
       {
         "ancient": "利州",
@@ -11572,14 +12368,18 @@ window.DYNASTY_DATA = [
         "remark": "利州路治所，吴玠、吴璘经略蜀口大本营"
       },
       {
-        "ancient": "阶州（武都）",
+        "ancient": "阶州",
         "modern": "陇南",
         "coord": [
           104.92,
           33.4
         ],
         "tier": 2,
-        "remark": "南宋西和、阶、成、凤“川陕四州”前线重镇"
+        "remark": "南宋西和、阶、成、凤“川陕四州”前线重镇",
+        "aliases": [
+          "武都",
+          "阶州（武都）"
+        ]
       },
       {
         "ancient": "荆门军",
@@ -11643,14 +12443,18 @@ window.DYNASTY_DATA = [
         "remark": "闽学四先生源流重地，建炎四年（1130年）朱熹诞生于尤溪县南溪书院"
       },
       {
-        "ancient": "均州（武当）",
+        "ancient": "均州",
         "modern": "十堰·丹江口",
         "coord": [
           111.51,
           32.65
         ],
         "tier": 2,
-        "remark": "京西南路汉水重镇，绍兴和议后宋金前哨"
+        "remark": "京西南路汉水重镇，绍兴和议后宋金前哨",
+        "aliases": [
+          "武当",
+          "均州（武当）"
+        ]
       },
       {
         "ancient": "镇江府",
@@ -12057,14 +12861,18 @@ window.DYNASTY_DATA = [
         "remark": "甘肃行省治所"
       },
       {
-        "ancient": "太原（冀宁路）",
+        "ancient": "太原",
         "modern": "太原",
         "coord": [
           112.551,
           37.871
         ],
         "tier": 2,
-        "remark": "河东重镇"
+        "remark": "河东重镇",
+        "aliases": [
+          "冀宁路",
+          "太原（冀宁路）"
+        ]
       },
       {
         "ancient": "济南路",
@@ -12367,14 +13175,18 @@ window.DYNASTY_DATA = [
         "remark": "播州宣慰司"
       },
       {
-        "ancient": "火州（高昌）",
+        "ancient": "火州",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "元火州"
+        "remark": "元火州",
+        "aliases": [
+          "高昌",
+          "火州（高昌）"
+        ]
       },
       {
         "ancient": "瓜州",
@@ -12456,14 +13268,18 @@ window.DYNASTY_DATA = [
         "remark": "黄道婆居崖州水南村习黎族纺织术归传松江"
       },
       {
-        "ancient": "帕竹（泽当）",
+        "ancient": "帕竹",
         "modern": "山南",
         "coord": [
           91.77,
           29.24
         ],
         "tier": 2,
-        "remark": "帕木竹巴绛曲坚赞统一卫藏，以山南泽当为中心"
+        "remark": "帕木竹巴绛曲坚赞统一卫藏，以山南泽当为中心",
+        "aliases": [
+          "泽当",
+          "帕竹（泽当）"
+        ]
       },
       {
         "ancient": "汀州路",
@@ -12506,14 +13322,18 @@ window.DYNASTY_DATA = [
         "remark": "河南江北行省淮西重镇，元末红巾军韩林儿龙凤大宋后期都城"
       },
       {
-        "ancient": "开京（征东行省）",
+        "ancient": "开京",
         "modern": "开城",
         "coord": [
           126.55,
           37.97
         ],
         "tier": 1,
-        "remark": "征东等处行中书省治所，高丽国王兼领征东行省左丞相"
+        "remark": "征东等处行中书省治所，高丽国王兼领征东行省左丞相",
+        "aliases": [
+          "征东行省",
+          "开京（征东行省）"
+        ]
       }
     ],
     "phases": [
@@ -13189,7 +14009,7 @@ window.DYNASTY_DATA = [
         ]
       },
       {
-        "ancient": "沈阳（盛京）",
+        "ancient": "沈阳",
         "modern": "沈阳",
         "coord": [
           123.431,
@@ -13202,7 +14022,11 @@ window.DYNASTY_DATA = [
             1644
           ]
         ],
-        "remark": "1625 年努尔哈赤迁都于此，1634 年改称盛京，1636 年皇太极在此称帝改国号大清"
+        "remark": "1625 年努尔哈赤迁都于此，1634 年改称盛京，1636 年皇太极在此称帝改国号大清",
+        "aliases": [
+          "盛京",
+          "沈阳（盛京）"
+        ]
       },
       {
         "ancient": "大同",
@@ -13488,7 +14312,7 @@ window.DYNASTY_DATA = [
         "remark": "成都府潼川州"
       },
       {
-        "ancient": "播州（宣慰司）",
+        "ancient": "播州",
         "modern": "遵义",
         "coord": [
           106.93,
@@ -13496,7 +14320,11 @@ window.DYNASTY_DATA = [
         ],
         "vanish": 1600,
         "tier": 2,
-        "remark": "万历二十八年平播之役，改土归流"
+        "remark": "万历二十八年平播之役，改土归流",
+        "aliases": [
+          "宣慰司",
+          "播州（宣慰司）"
+        ]
       },
       {
         "ancient": "乌思藏都司",
@@ -13522,7 +14350,7 @@ window.DYNASTY_DATA = [
         "remark": "永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑"
       },
       {
-        "ancient": "大员（赤嵌）",
+        "ancient": "大员",
         "modern": "台南",
         "coord": [
           120.211,
@@ -13530,17 +14358,25 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1624,
         "tier": 2,
-        "remark": "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京"
+        "remark": "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京",
+        "aliases": [
+          "赤嵌",
+          "大员（赤嵌）"
+        ]
       },
       {
-        "ancient": "火州（吐鲁番）",
+        "ancient": "火州",
         "modern": "吐鲁番",
         "coord": [
           89.53,
           42.85
         ],
         "tier": 2,
-        "remark": "吐鲁番地面"
+        "remark": "吐鲁番地面",
+        "aliases": [
+          "吐鲁番",
+          "火州（吐鲁番）"
+        ]
       },
       {
         "ancient": "宁远卫",
@@ -13730,14 +14566,18 @@ window.DYNASTY_DATA = [
         "remark": "戚继光林墩、平海卫大破倭寇收复府城"
       },
       {
-        "ancient": "均州（武当）",
+        "ancient": "均州",
         "modern": "十堰·丹江口",
         "coord": [
           111.08,
           32.54
         ],
         "tier": 2,
-        "remark": "永乐十年敕建武当山宫观群，尊为大岳太和山"
+        "remark": "永乐十年敕建武当山宫观群，尊为大岳太和山",
+        "aliases": [
+          "武当",
+          "均州（武当）"
+        ]
       },
       {
         "ancient": "郧阳府",
@@ -13841,14 +14681,18 @@ window.DYNASTY_DATA = [
         "remark": "青州府属大县，滨海农桑文教重镇"
       },
       {
-        "ancient": "广元（保宁）",
+        "ancient": "广元",
         "modern": "广元",
         "coord": [
           105.84,
           32.44
         ],
         "tier": 2,
-        "remark": "川陕驿道金牛道入蜀首邑，控扼朝天关"
+        "remark": "川陕驿道金牛道入蜀首邑，控扼朝天关",
+        "aliases": [
+          "保宁",
+          "广元（保宁）"
+        ]
       },
       {
         "ancient": "代州",
@@ -13871,14 +14715,18 @@ window.DYNASTY_DATA = [
         "remark": "九边宁夏镇河东重地，设灵州守御千户所与盐课司"
       },
       {
-        "ancient": "龟兹（亦力把里）",
+        "ancient": "龟兹",
         "modern": "阿克苏·库车",
         "coord": [
           82.96,
           41.72
         ],
         "tier": 2,
-        "remark": "西域天山南麓重镇，与明廷屡通朝贡互市"
+        "remark": "西域天山南麓重镇，与明廷屡通朝贡互市",
+        "aliases": [
+          "亦力把里",
+          "龟兹（亦力把里）"
+        ]
       },
       {
         "ancient": "于阗",
@@ -13901,14 +14749,18 @@ window.DYNASTY_DATA = [
         "remark": "明初经营鸭绿江流域女真诸卫要冲"
       },
       {
-        "ancient": "开平卫（上都）",
+        "ancient": "开平卫",
         "modern": "锡林郭勒·正蓝旗",
         "coord": [
           116.18,
           42.36
         ],
         "tier": 2,
-        "remark": "洪武二年常遇春克元上都改置开平卫，成祖北征屡驻于此"
+        "remark": "洪武二年常遇春克元上都改置开平卫，成祖北征屡驻于此",
+        "aliases": [
+          "上都",
+          "开平卫（上都）"
+        ]
       },
       {
         "ancient": "眉州",
@@ -13921,14 +14773,18 @@ window.DYNASTY_DATA = [
         "remark": "洪武九年改眉州直隶州，修葺三苏祠传扬文脉"
       },
       {
-        "ancient": "阶州（武都）",
+        "ancient": "阶州",
         "modern": "陇南",
         "coord": [
           104.92,
           33.4
         ],
         "tier": 2,
-        "remark": "陕西巩昌府南境门户，控扼陇蜀栈道"
+        "remark": "陕西巩昌府南境门户，控扼陇蜀栈道",
+        "aliases": [
+          "武都",
+          "阶州（武都）"
+        ]
       },
       {
         "ancient": "衢州府",
@@ -13981,14 +14837,18 @@ window.DYNASTY_DATA = [
         "remark": "淮安府北境海防重镇，云台山海运要冲"
       },
       {
-        "ancient": "通州（南通）",
+        "ancient": "通州",
         "modern": "南通",
         "coord": [
           120.89,
           31.98
         ],
         "tier": 2,
-        "remark": "扬州府江海门户，嘉靖三十三年倭战狼山大捷地"
+        "remark": "扬州府江海门户，嘉靖三十三年倭战狼山大捷地",
+        "aliases": [
+          "南通",
+          "通州（南通）"
+        ]
       },
       {
         "ancient": "盐城",
@@ -14131,34 +14991,46 @@ window.DYNASTY_DATA = [
         "remark": "陕西东路边防重镇，庆王藩封初驻之地"
       },
       {
-        "ancient": "帕竹（泽当）",
+        "ancient": "帕竹",
         "modern": "山南",
         "coord": [
           91.77,
           29.24
         ],
         "tier": 2,
-        "remark": "永乐四年封帕竹第悉阐化王，世袭统领山南卫藏"
+        "remark": "永乐四年封帕竹第悉阐化王，世袭统领山南卫藏",
+        "aliases": [
+          "泽当",
+          "帕竹（泽当）"
+        ]
       },
       {
-        "ancient": "古格（阿里）",
+        "ancient": "古格",
         "modern": "阿里",
         "coord": [
           79.8,
           31.48
         ],
         "tier": 2,
-        "remark": "古格王国晚期重绘托林寺与札达红白殿壁画"
+        "remark": "古格王国晚期重绘托林寺与札达红白殿壁画",
+        "aliases": [
+          "阿里",
+          "古格（阿里）"
+        ]
       },
       {
-        "ancient": "登州府（奇山所）",
+        "ancient": "登州府",
         "modern": "烟台",
         "coord": [
           121.2,
           37.3
         ],
         "tier": 2,
-        "remark": "洪武九年升登州府；洪武三十一年于芝罘设奇山守御千户所，筑狼烟墩台抗倭，烟台由此得名"
+        "remark": "洪武九年升登州府；洪武三十一年于芝罘设奇山守御千户所，筑狼烟墩台抗倭，烟台由此得名",
+        "aliases": [
+          "奇山所",
+          "登州府（奇山所）"
+        ]
       },
       {
         "ancient": "汀州府",
@@ -14803,7 +15675,7 @@ window.DYNASTY_DATA = [
         "remark": "两江总督驻地（1853 年太平军攻占改称天京）"
       },
       {
-        "ancient": "天京（太平天国）",
+        "ancient": "天京",
         "modern": "南京",
         "coord": [
           118.801,
@@ -14812,7 +15684,11 @@ window.DYNASTY_DATA = [
         "isCapital": true,
         "appear": 1853,
         "vanish": 1864,
-        "remark": "1853—1864 年太平天国都城；1864 年湘军攻破"
+        "remark": "1853—1864 年太平天国都城；1864 年湘军攻破",
+        "aliases": [
+          "太平天国",
+          "天京（太平天国）"
+        ]
       },
       {
         "ancient": "江宁",
@@ -14955,7 +15831,7 @@ window.DYNASTY_DATA = [
         "remark": "1683 年施琅平台后设府；1895 年割让日本"
       },
       {
-        "ancient": "承天府（郑氏）",
+        "ancient": "承天府",
         "modern": "台南",
         "coord": [
           120.211,
@@ -14964,7 +15840,11 @@ window.DYNASTY_DATA = [
         "align": "b",
         "appear": 1661,
         "vanish": 1683,
-        "remark": "郑成功驱逐荷兰人后据台"
+        "remark": "郑成功驱逐荷兰人后据台",
+        "aliases": [
+          "郑氏",
+          "承天府（郑氏）"
+        ]
       },
       {
         "ancient": "瑷珲",
@@ -15399,14 +16279,18 @@ window.DYNASTY_DATA = [
         "remark": "松锦之战后置锦州府"
       },
       {
-        "ancient": "兴京（赫图阿拉）",
+        "ancient": "兴京",
         "modern": "抚顺·新宾",
         "coord": [
           124.85,
           41.72
         ],
         "tier": 2,
-        "remark": "后金肇基之地，清尊为兴京"
+        "remark": "后金肇基之地，清尊为兴京",
+        "aliases": [
+          "赫图阿拉",
+          "兴京（赫图阿拉）"
+        ]
       },
       {
         "ancient": "泉州府",
@@ -15477,14 +16361,18 @@ window.DYNASTY_DATA = [
         "remark": "皖派朴学戴震故里，徽班进京孕育京剧"
       },
       {
-        "ancient": "通州（南通）",
+        "ancient": "通州",
         "modern": "南通",
         "coord": [
           120.89,
           31.98
         ],
         "tier": 2,
-        "remark": "光绪末状元张謇创大生纱厂与通州师范，实业救国典范"
+        "remark": "光绪末状元张謇创大生纱厂与通州师范，实业救国典范",
+        "aliases": [
+          "南通",
+          "通州（南通）"
+        ]
       },
       {
         "ancient": "绥定府",
@@ -15577,7 +16465,7 @@ window.DYNASTY_DATA = [
         "remark": "康熙三十年多伦会盟之地，建汇宗寺统联内外蒙古"
       },
       {
-        "ancient": "定远营（阿拉善）",
+        "ancient": "定远营",
         "modern": "阿拉善",
         "coord": [
           105.73,
@@ -15585,10 +16473,14 @@ window.DYNASTY_DATA = [
         ],
         "tier": 2,
         "appear": 1730,
-        "remark": "雍正八年筑定远营城为阿拉善厄鲁特旗王府驻地"
+        "remark": "雍正八年筑定远营城为阿拉善厄鲁特旗王府驻地",
+        "aliases": [
+          "阿拉善",
+          "定远营（阿拉善）"
+        ]
       },
       {
-        "ancient": "阿克苏（温宿）",
+        "ancient": "阿克苏",
         "modern": "阿克苏",
         "coord": [
           80.26,
@@ -15596,10 +16488,14 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1759,
         "tier": 2,
-        "remark": "乾隆平大小和卓置阿克苏办事大臣，光绪置温宿府"
+        "remark": "乾隆平大小和卓置阿克苏办事大臣，光绪置温宿府",
+        "aliases": [
+          "温宿",
+          "阿克苏（温宿）"
+        ]
       },
       {
-        "ancient": "和阗（于阗）",
+        "ancient": "和阗",
         "modern": "和田",
         "coord": [
           79.92,
@@ -15607,7 +16503,11 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1759,
         "tier": 2,
-        "remark": "清置和阗办事大臣，光绪置和阗直隶州"
+        "remark": "清置和阗办事大臣，光绪置和阗直隶州",
+        "aliases": [
+          "于阗",
+          "和阗（于阗）"
+        ]
       },
       {
         "ancient": "青州府",
@@ -15630,14 +16530,18 @@ window.DYNASTY_DATA = [
         "remark": "清代名相刘统勋、刘墉父子与金石学家刘喜海故里"
       },
       {
-        "ancient": "广元（保宁）",
+        "ancient": "广元",
         "modern": "广元",
         "coord": [
           105.84,
           32.44
         ],
         "tier": 2,
-        "remark": "川北保宁府北门，入蜀咽喉重镇"
+        "remark": "川北保宁府北门，入蜀咽喉重镇",
+        "aliases": [
+          "保宁",
+          "广元（保宁）"
+        ]
       },
       {
         "ancient": "代州",
@@ -15660,7 +16564,7 @@ window.DYNASTY_DATA = [
         "remark": "宁夏府河东重镇，引黄古灌区秦渠、汉延渠要冲"
       },
       {
-        "ancient": "库车（龟兹）",
+        "ancient": "库车",
         "modern": "阿克苏·库车",
         "coord": [
           82.96,
@@ -15668,17 +16572,25 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1759,
         "tier": 2,
-        "remark": "乾隆二十四年置库车办事大臣，光绪置库车直隶州"
+        "remark": "乾隆二十四年置库车办事大臣，光绪置库车直隶州",
+        "aliases": [
+          "龟兹",
+          "库车（龟兹）"
+        ]
       },
       {
-        "ancient": "辑安（国内城）",
+        "ancient": "辑安",
         "modern": "通化·集安",
         "coord": [
           126.13,
           41.16
         ],
         "tier": 2,
-        "remark": "光绪三年重现好太王碑，光绪二十八年置辑安县"
+        "remark": "光绪三年重现好太王碑，光绪二十八年置辑安县",
+        "aliases": [
+          "国内城",
+          "辑安（国内城）"
+        ]
       },
       {
         "ancient": "太平府",
@@ -15711,14 +16623,18 @@ window.DYNASTY_DATA = [
         "remark": "赣东北入浙闽门户，河口镇茶纸商贸繁盛"
       },
       {
-        "ancient": "阶州（武都）",
+        "ancient": "阶州",
         "modern": "陇南",
         "coord": [
           104.92,
           33.4
         ],
         "tier": 2,
-        "remark": "雍正七年升阶州直隶州，陇南茶马要道"
+        "remark": "雍正七年升阶州直隶州，陇南茶马要道",
+        "aliases": [
+          "武都",
+          "阶州（武都）"
+        ]
       },
       {
         "ancient": "温州府",
@@ -15911,14 +16827,18 @@ window.DYNASTY_DATA = [
         "remark": "德安府属州，鄂北粮棉重镇"
       },
       {
-        "ancient": "均州（武当）",
+        "ancient": "均州",
         "modern": "十堰·丹江口",
         "coord": [
           111.08,
           32.54
         ],
         "tier": 2,
-        "remark": "襄阳府属州，控扼汉水与武当山"
+        "remark": "襄阳府属州，控扼汉水与武当山",
+        "aliases": [
+          "武当",
+          "均州（武当）"
+        ]
       },
       {
         "ancient": "郧阳府",
@@ -16021,7 +16941,7 @@ window.DYNASTY_DATA = [
         "remark": "滇南首府，个旧锡矿兴起与滇越铁路支线枢纽"
       },
       {
-        "ancient": "山南（泽当）",
+        "ancient": "山南",
         "modern": "山南",
         "coord": [
           91.77,
@@ -16029,10 +16949,14 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1720,
         "tier": 2,
-        "remark": "清驻藏大臣巡查山南诸宗要地"
+        "remark": "清驻藏大臣巡查山南诸宗要地",
+        "aliases": [
+          "泽当",
+          "山南（泽当）"
+        ]
       },
       {
-        "ancient": "噶尔（阿里）",
+        "ancient": "噶尔",
         "modern": "阿里",
         "coord": [
           80.5,
@@ -16040,10 +16964,14 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1720,
         "tier": 2,
-        "remark": "西藏噶厦设噶本二员驻噶大克统管阿里三围"
+        "remark": "西藏噶厦设噶本二员驻噶大克统管阿里三围",
+        "aliases": [
+          "阿里",
+          "噶尔（阿里）"
+        ]
       },
       {
-        "ancient": "黑城（额济纳）",
+        "ancient": "黑城",
         "modern": "阿拉善·额济纳",
         "coord": [
           101.14,
@@ -16051,17 +16979,25 @@ window.DYNASTY_DATA = [
         ],
         "appear": 1759,
         "tier": 2,
-        "remark": "乾隆年间安置旧土尔扈特部游牧于额济纳河流域"
+        "remark": "乾隆年间安置旧土尔扈特部游牧于额济纳河流域",
+        "aliases": [
+          "额济纳",
+          "黑城（额济纳）"
+        ]
       },
       {
-        "ancient": "登州府（烟台）",
+        "ancient": "登州府",
         "modern": "烟台",
         "coord": [
           121.2,
           37.3
         ],
         "tier": 2,
-        "remark": "1861年烟台（芝罘）开埠，1876年于此签订中英《烟台条约》"
+        "remark": "1861年烟台（芝罘）开埠，1876年于此签订中英《烟台条约》",
+        "aliases": [
+          "烟台",
+          "登州府（烟台）"
+        ]
       },
       {
         "ancient": "龙岩州",

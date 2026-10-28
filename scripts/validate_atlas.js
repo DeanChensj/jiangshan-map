@@ -3765,7 +3765,7 @@ function main() {
     assert(pingchengDJ && Array.isArray(pingchengDJ.capitalPeriods), 'dongjin: 平城 must define capitalPeriods');
     assert.strictEqual(JSON.stringify(pingchengDJ.capitalPeriods), JSON.stringify([[398, 420]]), 'dongjin: 平城 capitalPeriods must be [[398, 420]]');
 
-    const guzangDJ = findSt(djDyn, '姑臧（凉州）');
+    const guzangDJ = findSt(djDyn, '姑臧');
     assert(guzangDJ && Array.isArray(guzangDJ.capitalPeriods), 'dongjin: 姑臧 must define capitalPeriods');
     assert.strictEqual(JSON.stringify(guzangDJ.capitalPeriods), JSON.stringify([[320, 376], [386, 403], [412, 420]]), 'dongjin: 姑臧 capitalPeriods must match');
   }
@@ -3912,7 +3912,7 @@ function main() {
       'nanbei: 统万城 capitalPeriods must be [[420, 427]]'
     );
 
-    const guzangNB = findSt('姑臧（凉州）');
+    const guzangNB = findSt('姑臧');
     assert(guzangNB && Array.isArray(guzangNB.capitalPeriods), 'nanbei: 姑臧 must define capitalPeriods');
     assert.strictEqual(
       JSON.stringify(guzangNB.capitalPeriods),
@@ -3929,8 +3929,9 @@ function main() {
     );
 
     // Verify settlements added
-    assert(findSt('东阳（青州）'), 'nanbei: must include 东阳（青州）');
-    assert(findSt('钟离（凤阳）'), 'nanbei: must include 钟离（凤阳）');
+    assert(findSt('东阳城'), 'nanbei: must include 东阳城 (Shandong Qingzhou seat)');
+    assert(findSt('东阳'), 'nanbei: must include 东阳 (Zhejiang Jinhua seat)');
+    assert(findSt('钟离'), 'nanbei: must include 钟离');
 
     // Verify 16 map change milestones
     const expectedMapChanges = [420, 427, 431, 436, 439, 469, 479, 494, 502, 534, 550, 553, 554, 557, 573, 577];
@@ -3966,7 +3967,7 @@ function main() {
     assert.strictEqual(JSON.stringify(jianglingSui.capitalPeriods), JSON.stringify([[581, 587]]), 'sui: 江陵 capitalPeriods must be [[581, 587]]');
 
     // Sui warlord settlements
-    for (const w of ['历阳（和县）', '金城（秦都）', '马邑（朔州）']) {
+    for (const w of ['历阳', '金城', '马邑']) {
       assert(findSt(suiDyn, w), `sui: must include late Sui warlord center ${w}`);
     }
 
@@ -3998,11 +3999,11 @@ function main() {
 
     // Tang Six Great Protectorates (六大都护府)
     const sixProtectorates = [
-      '安西都护府（龟兹）',
+      '安西都护府',
       '北庭都护府',
       '安东都护府',
-      '安南都护府（交州）',
-      '单于大都护府（和林格尔）',
+      '安南都护府',
+      '单于大都护府',
       '安北都护府',
     ];
     for (const prot of sixProtectorates) {
@@ -4010,7 +4011,7 @@ function main() {
     }
 
     // Tang warlord settlements
-    for (const w of ['洺州（夏都）', '历阳（吴都）', '金城（兰州）']) {
+    for (const w of ['洺州', '历阳', '金城']) {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
@@ -4100,7 +4101,7 @@ function main() {
       ['顺天府', [[1421, 1644]]],
       ['赫图阿拉', [[1616, 1621]]],
       ['辽阳', [[1621, 1625]]],
-      ['沈阳（盛京）', [[1625, 1644]]],
+      ['沈阳', [[1625, 1644]]],
     ];
     for (const [name, periods] of capCases) {
       const st = mingSt(name);
@@ -4203,12 +4204,12 @@ function main() {
     for (const [name, expAppear] of [
       ['吐鲁番', 1759],
       ['安西州', 1759],
-      ['阿克苏（温宿）', 1759],
-      ['和阗（于阗）', 1759],
-      ['库车（龟兹）', 1759],
-      ['黑城（额济纳）', 1759],
-      ['山南（泽当）', 1720],
-      ['噶尔（阿里）', 1720],
+      ['阿克苏', 1759],
+      ['和阗', 1759],
+      ['库车', 1759],
+      ['黑城', 1759],
+      ['山南', 1720],
+      ['噶尔', 1720],
     ]) {
       const st = qingSt(name);
       assert(st && st.appear === expAppear, `qing: ${name} must have appear === ${expAppear}`);
@@ -4298,7 +4299,7 @@ function main() {
       'Expected donghan capitalPeriods to switch Luoyang (25-189) -> Chang\'an (190-195) -> Xu (196-220)'
     );
     const sgChengdu = sgDyn.settlements.find((s) => s.ancient === '成都');
-    const sgWuchang = sgDyn.settlements.find((s) => s.ancient === '武昌（鄂县）');
+    const sgWuchang = sgDyn.settlements.find((s) => s.ancient === '武昌');
     const sgJianye = sgDyn.settlements.find((s) => s.ancient === '建业');
     assert(
       ctrl._isSettlementCapital(sgChengdu, 234) &&
@@ -6101,7 +6102,7 @@ function main() {
           ['yuan', '澎湖巡检司'],
           ['ming', '乌思藏都司'],
           ['ming', '奴儿干都司'],
-          ['ming', '大员（赤嵌）'],
+          ['ming', '大员'],
           ['qing', '乌里雅苏台'],
           ['qing', '科布多'],
         ]) {
@@ -6111,11 +6112,70 @@ function main() {
             `Expected ${dKey} settlements to contain frontier anchor "${ancName}"`
           );
         }
-        const qufuZg = dynasties[0].settlements.find((s) => s.ancient === '曲阜（鲁都）');
+        const qufuZg = dynasties[0].settlements.find((s) => s.ancient === '曲阜');
         assert(
           qufuZg && Array.isArray(qufuZg.capitalPeriods) && qufuZg.capitalPeriods[0][1] === -249,
           'Warring States Qufu must cap capitalPeriods at -249 BCE when Chu annexed Lu'
         );
+
+        // Canonical place-name hygiene: zero parentheticals in s.ancient, STRATEGIC_PASSES.ancientZh, PLACE_GAZETTEER.name, and HISTORICAL_JOURNEYS.ancientZh
+        for (const d of dynasties) {
+          for (const s of d.settlements || []) {
+            assert(
+              !/[（()）]/.test(s.ancient),
+              `Settlement ${d.key}:${s.ancient} must not contain parenthetical disambiguators in canonical ancient name`
+            );
+          }
+        }
+        for (const p of sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES || []) {
+          assert(
+            !/[（()）]/.test(p.ancientZh) && !/[（()）]/.test(p.ancientEn),
+            `Strategic pass ${p.key} (${p.ancientZh} / ${p.ancientEn}) must not contain parentheticals`
+          );
+        }
+        for (const g of sandbox.window.ATLAS_LORE_DATA.PLACE_GAZETTEER || []) {
+          assert(
+            !/[（()）]/.test(g.name),
+            `Gazetteer entry ${g.name} must not contain parentheticals in canonical name`
+          );
+        }
+        for (const j of sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS || []) {
+          for (const st of j.stops || []) {
+            assert(
+              !/[（()）]/.test(st.ancientZh) && !/[（()）]/.test(st.ancientEn),
+              `Journey stop ${j.key}:${st.ancientZh} (${st.ancientEn}) must not contain parentheticals`
+            );
+          }
+        }
+
+        // Era-specific pass names (_passName) and settlement alias resolution
+        const niangzi = sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.find((p) => p.key === 'niangziguan');
+        const wusheng = sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.find((p) => p.key === 'wushengguan');
+        const shanhai = sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.find((p) => p.key === 'shanhaiguan');
+        const meiguan = sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.find((p) => p.key === 'meiguan');
+        assert.strictEqual(ctrl._passName(niangzi, -403, 'zh'), '井陉关');
+        assert.strictEqual(ctrl._passName(niangzi, -403, 'en'), 'Jingxing Pass');
+        assert.strictEqual(ctrl._passName(niangzi, 741, 'zh'), '娘子关');
+        assert.strictEqual(ctrl._passName(wusheng, -403, 'zh'), '冥阨');
+        assert.strictEqual(ctrl._passName(wusheng, 1140, 'zh'), '武阳关');
+        assert.strictEqual(ctrl._passName(wusheng, 1500, 'zh'), '武胜关');
+        assert.strictEqual(ctrl._passName(shanhai, 755, 'zh'), '临渝关');
+        assert.strictEqual(ctrl._passName(shanhai, 1644, 'zh'), '山海关');
+        assert.strictEqual(ctrl._passName(meiguan, -210, 'zh'), '横浦关');
+        assert.strictEqual(ctrl._passName(meiguan, 800, 'zh'), '梅关');
+
+        for (const [aliasQ, yr, expAnc] of [
+          ['鲁都', -403, '曲阜'],
+          ['曾国', -403, '随'],
+          ['东莱', -403, '之罘'],
+          ['平江府', 1080, '苏州'],
+          ['辑安（国内城）', 1800, '辑安'],
+        ]) {
+          const r = ctrl.resolvePlace(aliasQ, yr);
+          assert(r && r.name === expAnc, `Expected alias "${aliasQ}" at ${yr} to resolve to "${expAnc}", got ${JSON.stringify(r)}`);
+          const qHits = ctrl._queryQuickSearch(aliasQ);
+          assert(qHits.some((h) => h.titleZh === expAnc), `Expected quick search "${aliasQ}" to hit "${expAnc}"`);
+        }
       } finally {
         sandbox.window.history = origHistory;
         sandbox.location.search = origSearch;
