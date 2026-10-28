@@ -6303,6 +6303,17 @@ function main() {
           }
         }
       }
+
+      // CUJ 42: Mobile Layout & Collapsed Chronicle Seat Bar Non-Occlusion Invariants
+      assert(
+        !cssSrc.includes('grid-template-rows: 1fr 40px') &&
+          cssSrc.includes('grid-template-rows: 1fr auto') &&
+          cssSrc.includes('#workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-seat') &&
+          cssSrc.includes('flex: 0 0 100%') &&
+          cssSrc.includes('overflow-wrap: anywhere') &&
+          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag'),
+        'css/style.css must use auto-height 2-row mobile chronicle banner with full-width wrapping #dynasty-seat and hide .cap-hint-tag when #milestone-balloon is active'
+      );
     }
   }
 
