@@ -1086,6 +1086,7 @@ function main() {
   );
   for (const checkSnapKey of [
     's_zhanguo_a',
+    's_zhanguo_b0',
     's_qin_a',
     's_qin_b',
     's_qin',

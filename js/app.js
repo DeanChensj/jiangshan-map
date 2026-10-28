@@ -2034,8 +2034,15 @@
 
       for (const reg of snap.regions || []) {
         if (reg.anchor && reg.title) {
-          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
           const isQiao = reg.category === '侨州';
+          if (
+            !isQiao &&
+            snap._allowRegionAnchor &&
+            !snap._allowRegionAnchor(reg.anchor[0], reg.anchor[1])
+          ) {
+            continue;
+          }
+          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
           const rLbl = this._svgNode(
             'text',
             {
@@ -2071,7 +2078,10 @@
       }
 
       const polRings = [];
-      for (const pol of snap.polities || []) {
+      const polList = snap.polities || [];
+      const polAreas = polList.map(() => 0);
+      for (let pIdx = 0; pIdx < polList.length; pIdx++) {
+        const pol = polList[pIdx];
         if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
         const coords = pol.shape.coordinates;
         const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
@@ -2082,19 +2092,25 @@
             maxX = -Infinity,
             minY = Infinity,
             maxY = -Infinity;
-          for (let i = 0; i < ring.length; i++) {
+          let area2 = 0;
+          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
             const x = ring[i][0],
               y = ring[i][1];
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
             if (y < minY) minY = y;
             if (y > maxY) maxY = y;
+            area2 += ring[j][0] * y - x * ring[j][1];
           }
-          polRings.push({ minX, maxX, minY, maxY, ring });
+          polAreas[pIdx] += Math.abs(area2) * 0.5;
+          polRings.push({ pIdx, minX, maxX, minY, maxY, ring });
         }
       }
-      const inPolity = (x, y) => {
-        if (!polRings.length) return true;
+      const allCommanderyRegions = snap.regions.every(
+        (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
+      );
+      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 65);
+      const findPolIdx = (x, y) => {
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
           if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
@@ -2109,10 +2125,54 @@
               inside = !inside;
             }
           }
-          if (inside) return true;
+          if (inside) return b.pIdx;
+        }
+        return -1;
+      };
+      const allowPolIdx = (pIdx) => {
+        if (pIdx < 0) return false;
+        const pol = polList[pIdx];
+        if (!pol) return false;
+        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 55) return false;
+        return true;
+      };
+      const nearPolityBorder = (x, y, margin) => {
+        const m2 = margin * margin;
+        for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+          const b = polRings[rIdx];
+          if (
+            x < b.minX - margin ||
+            x > b.maxX + margin ||
+            y < b.minY - margin ||
+            y > b.maxY + margin
+          ) {
+            continue;
+          }
+          const ring = b.ring;
+          for (let i = 0; i < ring.length - 1; i++) {
+            const x1 = ring[i][0],
+              y1 = ring[i][1];
+            const x2 = ring[i + 1][0],
+              y2 = ring[i + 1][1];
+            const dx = x2 - x1,
+              dy = y2 - y1;
+            const len2 = dx * dx + dy * dy;
+            let t = len2 > 1e-12 ? ((x - x1) * dx + (y - y1) * dy) / len2 : 0;
+            if (t < 0) t = 0;
+            else if (t > 1) t = 1;
+            const px = x1 + t * dx - x,
+              py = y1 + t * dy - y;
+            if (px * px + py * py < m2) return true;
+          }
         }
         return false;
       };
+      Object.defineProperty(snap, '_allowRegionAnchor', {
+        value: (x, y) => !polRings.length || allowPolIdx(findPolIdx(x, y)),
+        writable: true,
+        enumerable: false,
+        configurable: true,
+      });
       const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
       const edgeKey = (p1, p2) => {
         const k1 = ptKey(p1);
@@ -2147,10 +2207,17 @@
           const p1 = ring[i];
           const p2 = ring[i + 1];
           const ek = edgeKey(p1, p2);
+          const mx = (p1[0] + p2[0]) * 0.5;
+          const my = (p1[1] + p2[1]) * 0.5;
+          const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
           if (
             (regEdgeCounts.get(ek) || 0) < 2 ||
             seenEdges.has(ek) ||
-            !inPolity((p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5)
+            (polRings.length &&
+              (!allowPolIdx(pIdxM) ||
+                findPolIdx(p1[0], p1[1]) !== pIdxM ||
+                findPolIdx(p2[0], p2[1]) !== pIdxM ||
+                (hasLargePolity && nearPolityBorder(mx, my, 0.16))))
           ) {
             penX = NaN;
             penY = NaN;
