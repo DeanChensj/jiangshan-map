@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028f').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028p').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028f').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028p').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1465,12 +1465,15 @@
       }
       const searchInp = this._id('inp-map-search');
       if (searchInp) {
-        const searchPh =
+        const isExpanded =
+          typeof document !== 'undefined' && document.activeElement === searchInp;
+        const searchPh = this._searchPlaceholder(isExpanded);
+        const searchAria =
           this.locale === 'en'
-            ? 'Search figure / city / prefecture / era'
-            : '搜人物 / 古今地名 / 州府 / 年号';
+            ? 'Search historical figures (single or pair, e.g. Li Bai, Du Fu), ancient/modern cities, prefectures, or eras'
+            : this._zh('搜历史人物（支持双人同框如：李白 杜甫）、古今地名、州府或帝王年号');
         searchInp.placeholder = searchPh;
-        searchInp.setAttribute('aria-label', searchPh);
+        searchInp.setAttribute('aria-label', searchAria);
       }
       const searchBox = this._id('map-search-box');
       if (searchBox) {
@@ -2067,6 +2070,7 @@
       }
 
       this.lastRenderedSnap = snap;
+      if (this.activePolity || this.eraFocus) this._setPolityFocus(null);
       this._renderLegendBox(snap);
       this._syncTracedPrefecture();
       this._rescaleSvgTypography();
@@ -2961,6 +2965,12 @@
 
     _setPolityFocus(targetTitle) {
       if (!this.grpPolities) return;
+      if (!targetTitle && this.activePolity) {
+        const pol = this._polityPolsInSnap(this.activePolity, this.lastRenderedSnap)[0];
+        if (pol) targetTitle = pol.title;
+      } else if (!targetTitle && this.eraFocus) {
+        targetTitle = this._eraFocusTitle();
+      }
       if (!targetTitle) {
         this.grpPolities.classList.remove('has-polity-focus');
         this.grpPolities
@@ -2980,8 +2990,7 @@
         });
     }
 
-    _zoomToPolity(polityTitle) {
-      const snap = this.lastRenderedSnap;
+    _zoomToPolity(polityTitle, snap = this.lastRenderedSnap) {
       if (!snap || !Array.isArray(snap.polities)) return;
       const matches = snap.polities.filter((p) => p.title === polityTitle && p.shape);
       if (!matches.length) return;
@@ -3019,6 +3028,506 @@
         w,
         h,
       });
+    }
+
+    // ---------------- Polity Focus (regional / rival regimes) ----------------
+    // A macro-era (e.g. 南北朝) contains several co-existing regimes. Polity focus re-targets the
+    // chronicle pane at one regime's own lifeline. Identity is (snapshot title, year window): the same
+    // title (宋, 齐, 吴, 魏) denotes different regimes in different eras.
+    static get POLITY_PROFILES() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.POLITY_PROFILES) || [];
+    }
+
+    _polityWindow(desc) {
+      return [
+        desc.matchFrom !== undefined ? desc.matchFrom : desc.from,
+        desc.matchTo !== undefined ? desc.matchTo : desc.to,
+      ];
+    }
+
+    _polityInRange(desc, year) {
+      if (!desc) return false;
+      const [mf, mt] = this._polityWindow(desc);
+      return year >= mf && year <= mt;
+    }
+
+    _polityPhaseRuns() {
+      if (this._polityRunsCache) return this._polityRunsCache;
+      const runs = [];
+      for (const d of this.dynasties || []) {
+        const phases =
+          Array.isArray(d.phases) && d.phases.length
+            ? d.phases
+            : [{ snap: `s_${d.key}`, until: d.toYear + 1 }];
+        let start = d.fromYear;
+        for (const ph of phases) {
+          runs.push({ dynasty: d, from: start, to: ph.until - 1, snapKey: ph.snap });
+          start = ph.until;
+        }
+      }
+      this._polityRunsCache = runs;
+      return runs;
+    }
+
+    _polityProfileFor(title, year) {
+      if (!title) return null;
+      for (const p of HistoricalAtlasController.POLITY_PROFILES) {
+        if ((p.titles || []).includes(title) && this._polityInRange(p, year)) return p;
+      }
+      return null;
+    }
+
+    _polityPolsInSnap(desc, snap) {
+      if (!desc || !snap) return [];
+      return (snap.polities || []).filter(
+        (p) => p.role !== 'neighbor' && desc.titles.includes(p.title)
+      );
+    }
+
+    _resolvePolity(title, year) {
+      const prof = this._polityProfileFor(title, year);
+      if (prof) return { ...prof, curated: true };
+      // Uncurated regimes (warlords, short-lived rivals) get the contiguous span in which the
+      // title is drawn on the map around `year`.
+      const runs = this._polityPhaseRuns().filter((r) => {
+        const snap = this.snapshots && this.snapshots[r.snapKey];
+        return snap && (snap.polities || []).some((p) => p.role !== 'neighbor' && p.title === title);
+      });
+      let from = year;
+      let to = year;
+      const hit = runs.find((r) => year >= r.from && year <= r.to);
+      if (hit) {
+        from = hit.from;
+        to = hit.to;
+        let grew = true;
+        while (grew) {
+          grew = false;
+          for (const r of runs) {
+            if (r.from < from && r.to >= from - 1) {
+              from = r.from;
+              grew = true;
+            }
+            if (r.to > to && r.from <= to + 1) {
+              to = r.to;
+              grew = true;
+            }
+          }
+        }
+      }
+      const bare = title.replace(/[（(][^）)]*[）)]/g, '').trim();
+      const inner = (title.match(/[（(]([^）)]*)[）)]/) || [])[1] || '';
+      const named = bare.length >= 2 ? [bare] : inner.split(/[·\s、]+/);
+      const keywords = [...new Set([title, ...named].map((s) => s.trim()).filter((s) => s.length >= 2))];
+      return { key: `t:${title}@${from}`, zh: title, en: '', titles: [title], from, to, keywords, curated: false };
+    }
+
+    _polityStages(desc) {
+      const [mf, mt] = this._polityWindow(desc);
+      const stages = [];
+      let lastSig = null;
+      for (const r of this._polityPhaseRuns()) {
+        if (r.to < mf || r.from > mt) continue;
+        const snap = this.snapshots && this.snapshots[r.snapKey];
+        const pols = this._polityPolsInSnap(desc, snap);
+        if (!pols.length) {
+          lastSig = null;
+          continue;
+        }
+        const from = Math.max(r.from, mf);
+        const to = Math.min(r.to, mt);
+        const sig = JSON.stringify(pols.map((p) => p.shape));
+        if (sig === lastSig && stages.length) {
+          stages[stages.length - 1].to = to;
+          continue;
+        }
+        lastSig = sig;
+        stages.push({ from, to, snapKey: r.snapKey, title: pols[0].title, caption: snap.caption || '' });
+      }
+      return stages;
+    }
+
+    _polityEvents(desc) {
+      const [mf, mt] = this._polityWindow(desc);
+      const kws = (desc.keywords || []).filter(Boolean);
+      if (!kws.length) return [];
+      const matches = (text) => kws.some((k) => String(text || '').includes(k));
+      const out = [];
+      const seen = new Set();
+      for (const d of this.dynasties || []) {
+        for (const m of d.milestones || []) {
+          if (m.year < mf || m.year > mt || !matches(m.headline)) continue;
+          const sig = `${m.year}:${m.site || ''}`;
+          if (seen.has(sig)) continue;
+          seen.add(sig);
+          out.push({ year: m.year, dynasty: d, milestone: m, coord: m.coord || null });
+        }
+      }
+      for (const e of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+        if (e.year < mf || e.year > mt || !matches(e.zh)) continue;
+        const sig = `${e.year}:${e.site || ''}`;
+        if (seen.has(sig)) continue;
+        seen.add(sig);
+        const d = (this.dynasties || []).find((x) => x.key === e.dynastyKey) || null;
+        out.push({ year: e.year, dynasty: d, landmark: e, coord: e.coord || null });
+      }
+      out.sort((a, b) => a.year - b.year);
+      return out;
+    }
+
+    _polityRulers(desc) {
+      const en = this.locale === 'en';
+      if (desc.rulersZh) return en ? desc.rulersEn || desc.rulersZh : this._zh(desc.rulersZh);
+      const names = [];
+      const prefixes = [desc.zh, ...(desc.titles || []), ...(desc.monarchPrefix || [])]
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length);
+      const push = (zh, enName) => {
+        if (!zh) return;
+        let v = en ? enName || zh : zh;
+        if (!en) {
+          const px = prefixes.find((p) => v.startsWith(p) && v.length > p.length);
+          if (px) v = v.slice(px.length);
+          v = this._zh(v);
+        }
+        if (v && !names.includes(v)) names.push(v);
+      };
+      const track = (HistoricalAtlasController.REGIONAL_ERA_TRACKS || []).find(
+        (t) =>
+          (t.polities || []).some((p) => desc.titles.includes(p)) &&
+          t.spans.length &&
+          t.spans[0][0] <= desc.to &&
+          t.until >= desc.from
+      );
+      if (track) {
+        prefixes.unshift(track.regime);
+        for (const s of track.spans) if (s[0] >= desc.from && s[0] <= desc.to) push(s[3], s[4]);
+      } else if (Array.isArray(desc.monarchPrefix)) {
+        for (const s of HistoricalAtlasController.CHINESE_ERA_SPANS) {
+          if (s[0] < desc.from || s[0] > desc.to) continue;
+          if (desc.monarchPrefix.some((px) => String(s[3]).startsWith(px))) push(s[3], s[4]);
+        }
+      }
+      // English era tracks repeat the regime on every ruler ("Emp. Jingzong of W. Xia"); show it once.
+      if (en && names.length > 1) {
+        const suffix = (names[0].match(/ of [^→]+$/) || [])[0];
+        if (suffix && names.every((n) => n.endsWith(suffix))) {
+          return names.map((n) => n.slice(0, -suffix.length)).join(' → ');
+        }
+      }
+      return names.join(' → ');
+    }
+
+    // The era's own regime (唐 in 唐, 宋 in 北宋, 汉 in 东汉) is what the era overview already
+    // describes; it is not a "rival regime" and must not get a fabricated fallback profile.
+    _isEraMainPolity(title, dynasty) {
+      if (!dynasty || !title) return false;
+      const t = String(title).replace(/[（(].*$/, '').trim();
+      const eraTitle = String(dynasty.title || '');
+      return (
+        !!t &&
+        (t === eraTitle ||
+          (t.length === 1 && eraTitle.length === 2 && eraTitle.endsWith(t)) ||
+          (t.length >= 2 && eraTitle.startsWith(t)))
+      );
+    }
+
+    openPolity(title, opts = {}) {
+      const desc = this._resolvePolity(title, this.year);
+      const cur = this.dynasties[this.dynastyIdx];
+      const snap = this.snapshots[this._resolveSnapKey(cur, this.year)] || this.lastRenderedSnap;
+      if (this.paneCollapsed) this.toggleChroniclePane(false);
+      // The open event balloon would sit on top of the realm being focused.
+      if (this.activeMilestone && this.milestoneBalloon) this.closeMilestoneBalloon();
+      if (!desc.curated && this._isEraMainPolity(title, cur)) {
+        // The era's own regime: its "profile" is the era overview, so focus the map instead.
+        if (this.activePolity) this.closePolity();
+        // On phones the bottom sheet would hide the very realm being focused.
+        if (this._isMobileViewport() && this.mobileChronicleOpen) this.toggleMobileChronicle(false);
+        this.eraFocus = { dynastyKey: cur.key };
+        if (opts.zoom !== false) this._zoomToPolity(title, snap);
+        this._pinChroniclePaneTop(() => !this.activePolity);
+        this._setPolityFocus(null);
+        this._lastLegendKey = null;
+        if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+        return null;
+      }
+      this.eraFocus = null;
+      if (this._isMobileViewport() && !this.mobileChronicleOpen) this.toggleMobileChronicle(true);
+      const pol = this._polityPolsInSnap(desc, snap)[0];
+      desc.tint = (pol && pol.tint) || '';
+      this.activePolity = desc;
+      if (pol && opts.zoom !== false) this._zoomToPolity(pol.title, snap);
+      if (cur) this._renderChroniclePane(cur);
+      this._pinChroniclePaneTop(() => this.activePolity === desc);
+      this._setPolityFocus(null);
+      this._lastLegendKey = null;
+      if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+      if (!this._fullSnapshotsLoaded) {
+        this._ensureFullSnapshots().then(() => {
+          const c = this.dynasties[this.dynastyIdx];
+          if (this.activePolity === desc && c) this._renderChroniclePane(c);
+        });
+      }
+      return desc;
+    }
+
+    _pinChroniclePaneTop(stillValid) {
+      const paneEl = this._id('chronicle-pane');
+      if (this._chronicleScrollRaf && typeof cancelAnimationFrame === 'function') {
+        cancelAnimationFrame(this._chronicleScrollRaf);
+        this._chronicleScrollRaf = null;
+      }
+      if (!paneEl) return;
+      // An era-mode smooth scroll may still be in flight; only an explicit instant scroll cancels it.
+      if (typeof paneEl.scrollTo !== 'function') {
+        paneEl.scrollTop = 0;
+        return;
+      }
+      paneEl.scrollTo({ top: 0, behavior: 'instant' });
+      // Compositor-driven smooth scrolls can still land one frame later; re-pin for two frames.
+      if (typeof requestAnimationFrame !== 'function') return;
+      const repin = (left) =>
+        requestAnimationFrame(() => {
+          if (!stillValid()) return;
+          if (paneEl.scrollTop > 0) paneEl.scrollTo({ top: 0, behavior: 'instant' });
+          if (left > 1) repin(left - 1);
+        });
+      repin(2);
+    }
+
+    // Title of the era's own regime on the current map while it is focused, else null.
+    _eraFocusTitle() {
+      const cur = this.dynasties[this.dynastyIdx];
+      if (!this.eraFocus || !cur || this.eraFocus.dynastyKey !== cur.key) return null;
+      const snap = this.lastRenderedSnap;
+      const pol = ((snap && snap.polities) || []).find(
+        (p) => p.role !== 'neighbor' && this._isEraMainPolity(p.title, cur)
+      );
+      return pol ? pol.title : null;
+    }
+
+    clearEraFocus() {
+      if (!this.eraFocus) return;
+      this.eraFocus = null;
+      this._setPolityFocus(null);
+      this._lastLegendKey = null;
+      if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+    }
+
+    openPolityByKey(key) {
+      const k = String(key || '').trim().toLowerCase();
+      const prof = HistoricalAtlasController.POLITY_PROFILES.find(
+        (p) => p.key === k || p.zh === key || String(p.en).toLowerCase() === k
+      );
+      if (!prof) return null;
+      const go = () => {
+        const desc = { ...prof, curated: true };
+        let y = this.year;
+        const curSnap = this.snapshots[this._resolveSnapKey(this.dynasties[this.dynastyIdx], y)];
+        if (!this._polityInRange(desc, y) || !this._polityPolsInSnap(desc, curSnap).length) {
+          const stages = this._polityStages(desc);
+          const st = stages.find((s) => s.to >= desc.from) || stages[0];
+          y = st ? Math.max(st.from, Math.min(desc.from, st.to)) : desc.from;
+          this.jumpToYear(y);
+        }
+        const snap = this.snapshots[this._resolveSnapKey(this.dynasties[this.dynastyIdx], this.year)];
+        const pol = this._polityPolsInSnap(desc, snap)[0];
+        return this.openPolity(pol ? pol.title : prof.titles[0]);
+      };
+      if (this._fullSnapshotsLoaded) return go();
+      return this._ensureFullSnapshots().then(go);
+    }
+
+    closePolity() {
+      if (!this.activePolity) return;
+      this.activePolity = null;
+      this._resetPolityPaneChrome();
+      const cur = this.dynasties[this.dynastyIdx];
+      if (cur) this._renderChroniclePane(cur);
+      this._setPolityFocus(null);
+      this._lastLegendKey = null;
+      if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+    }
+
+    _resetPolityPaneChrome() {
+      const pane = this._id('chronicle-pane');
+      if (pane) {
+        if (pane.classList) pane.classList.remove('is-polity-mode');
+        if (pane.style && pane.style.removeProperty) pane.style.removeProperty('--dynasty-accent');
+      }
+      const back = this._id('polity-backbar');
+      if (back && back.classList) back.classList.add('is-hidden');
+      const extra = this._id('polity-extra');
+      if (extra) {
+        extra.innerHTML = '';
+        if (extra.classList) extra.classList.add('is-hidden');
+      }
+      const heading = this._id('txt-milestones-heading');
+      if (heading) heading.textContent = this.uiStr('events_h', '重大事件');
+      const seatLabel = this._id('txt-seat-label');
+      if (seatLabel) seatLabel.textContent = this.uiStr('capital_k', '都城');
+      const titleEl = this._id('dynasty-title');
+      if (titleEl && titleEl.classList) titleEl.classList.remove('is-long');
+    }
+
+    _renderPolityPane(dynasty) {
+      const desc = this.activePolity;
+      const en = this.locale === 'en';
+      const setText = (id, text) => {
+        const el = this._id(id);
+        if (el) el.textContent = text;
+      };
+      const pane = this._id('chronicle-pane');
+      if (pane) {
+        if (pane.classList) pane.classList.add('is-polity-mode');
+        if (pane.style && pane.style.setProperty && desc.tint) {
+          pane.style.setProperty('--dynasty-accent', desc.tint);
+        }
+      }
+      const name = en ? desc.en || this.trTerm(desc.zh) : this._zh(desc.zh);
+      const eraName = this.dynastyName(dynasty);
+      const span = `${this.formatYear(desc.from, true)} — ${this.formatYear(desc.to, true)}`;
+      setText('dynasty-title', name);
+      const titleEl = this._id('dynasty-title');
+      if (titleEl && titleEl.classList) titleEl.classList.toggle('is-long', name.length > (en ? 18 : 4));
+      setText('dynasty-span', desc.curated ? span : `${span}${en ? ' (on map)' : '（图中所见）'}`);
+      // Uncurated regimes have no verified capital; label the row as the era instead.
+      setText('txt-seat-label', desc.curated ? this.uiStr('capital_k', '都城') : en ? 'Era' : this._zh('时代'));
+      setText(
+        'dynasty-seat',
+        desc.curated
+          ? en
+            ? desc.seatEn || desc.seatZh
+            : this._zh(desc.seatZh)
+          : en
+            ? `Regime within ${eraName}`
+            : this._zh(`${eraName} · 并立政权`)
+      );
+      setText(
+        'dynasty-summary',
+        desc.curated
+          ? en
+            ? desc.summaryEn
+            : this._zh(desc.summaryZh)
+          : en
+            ? `${name} is one of the regimes drawn on the map during ${eraName} (${span}). Its territorial stages and related events are listed below.`
+            : this._zh(`「${desc.zh}」为${eraName}时期并立的政权之一，地图上可见于 ${span}。下方列出其疆域变迁与相关史事。`)
+      );
+      setText(
+        'txt-milestones-heading',
+        en ? 'Related Events' : this._zh('相关大事')
+      );
+
+      const back = this._id('polity-backbar');
+      if (back) {
+        back.textContent = en ? `← ${eraName} overview` : this._zh(`← 返回${eraName}全景`);
+        if (back.classList) back.classList.remove('is-hidden');
+        if (!back._polityBound && back.addEventListener) {
+          back._polityBound = true;
+          back.addEventListener('click', () => this.closePolity());
+        }
+      }
+
+      const stages = this._polityStages(desc);
+      const rulers = this._polityRulers(desc);
+      const extra = this._id('polity-extra');
+      if (extra) {
+        const esc = (s) =>
+          String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+        let html = '';
+        if (rulers) {
+          html += `<div class="polity-row"><span class="seat-tag">${en ? 'Rulers' : this._zh('帝系')}</span><span class="polity-rulers">${esc(rulers)}</span></div>`;
+        }
+        if (stages.length) {
+          const chips = stages
+            .map(
+              (s, i) =>
+                `<button type="button" class="polity-stage-chip" data-idx="${i}" title="${esc(this.trTerm(s.caption))}">${esc(this.formatYear(s.from, true))}${s.to > s.from ? `–${esc(this.formatYear(s.to, true))}` : ''}</button>`
+            )
+            .join('');
+          html += `<div class="polity-row polity-stages-row"><span class="seat-tag">${en ? 'Territory' : this._zh('疆域')}</span><span class="polity-stages">${chips}</span></div>`;
+        }
+        extra.innerHTML = html;
+        if (extra.classList) extra.classList.toggle('is-hidden', !html);
+        if (extra.querySelectorAll) {
+          extra.querySelectorAll('.polity-stage-chip').forEach((btn) => {
+            const st = stages[Number(btn.dataset.idx)];
+            if (!st) return;
+            btn.addEventListener('pointerenter', (e) => {
+              if (e.pointerType !== 'touch') this._previewStageGhost(st.snapKey);
+            });
+            btn.addEventListener('pointerleave', (e) => {
+              if (e.pointerType !== 'touch') this._clearPreviewGhost();
+            });
+            btn.addEventListener('click', () => {
+              this.stopAutoplay();
+              // Stages may begin before the formal founding (matchFrom); land on the founding year when possible.
+              this.jumpToYear(desc.from <= st.to ? Math.max(st.from, desc.from) : st.from);
+              const s = this.snapshots[st.snapKey];
+              if (s) this._zoomToPolity(st.title, s);
+            });
+          });
+        }
+      }
+      this._polityStagesCache = stages;
+
+      const ul = this._id('milestone-list');
+      if (ul) {
+        ul.innerHTML = '';
+        this._lastHighlightedMilestoneKey = null;
+        const events = this._polityEvents(desc);
+        this._polityEventsCache = events;
+        for (const ev of events) {
+          const li = document.createElement('li');
+          const yrLabel = en ? this.formatYear(ev.year) : `${ev.year <= 0 ? '前' + -ev.year : ev.year} 年`;
+          const text = ev.milestone
+            ? this.milestoneHeadline(ev.dynasty, ev.milestone)
+            : en
+              ? ev.landmark.en || ev.landmark.zh
+              : this._zh(ev.landmark.zh);
+          li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${text}</span>`;
+          li.addEventListener('click', () => {
+            this.stopAutoplay();
+            if (window.innerWidth <= 900 && this.mobileChronicleOpen) this.toggleMobileChronicle(false);
+            this.jumpToYear(ev.year);
+            if (ev.milestone && ev.dynasty) this.openMilestoneBalloon(ev.dynasty, ev.milestone);
+            if (ev.coord) this._panToward(ev.coord[0], ev.coord[1]);
+          });
+          ul.appendChild(li);
+        }
+        if (!events.length) {
+          const li = document.createElement('li');
+          li.className = 'polity-empty';
+          li.innerHTML = `<span class="ev-yr">—</span><span>${
+            en
+              ? 'No dedicated chronicle entries yet; drag the timeline to watch its territory change.'
+              : this._zh('暂无专属编年条目，可拖动时间轴查看其疆域演变。')
+          }</span>`;
+          ul.appendChild(li);
+        }
+      }
+      this._highlightPolityEvent();
+      if (this.locale === 'zh-tw' && pane) this._applyZhHantDom(pane);
+    }
+
+    _highlightPolityEvent() {
+      const ul = this._id('milestone-list');
+      const events = this._polityEventsCache || [];
+      if (ul && ul.children) {
+        let idx = -1;
+        events.forEach((ev, i) => {
+          if (ev.year <= this.year) idx = i;
+        });
+        Array.from(ul.children).forEach((el, i) => el.classList && el.classList.toggle('is-current', i === idx));
+      }
+      const extra = this._id('polity-extra');
+      if (extra && extra.querySelectorAll) {
+        const stages = this._polityStagesCache || [];
+        extra.querySelectorAll('.polity-stage-chip').forEach((btn) => {
+          const st = stages[Number(btn.dataset.idx)];
+          btn.classList.toggle('is-current', Boolean(st && this.year >= st.from && this.year <= st.to));
+        });
+      }
     }
 
     _renderGhostDiff(refSnap, mode = 'fade') {
@@ -3111,7 +3620,7 @@
       const zhengHeWindow = this.year >= 1405 && this.year <= 1433 ? 1 : 0;
       const legendKey = `${this.dynastyIdx}:${pIdx}:${this.locale}:${chkCorr ? 1 : 0}:${
         this.activeCorridorMask || ''
-      }:${zhengHeWindow}`;
+      }:${zhengHeWindow}:${this.activePolity ? this.activePolity.key : ''}:${this._eraFocusTitle() || ''}`;
       if (
         this._lastLegendSnap === snap &&
         this._lastLegendKey === legendKey &&
@@ -3206,13 +3715,31 @@
       grid.className = 'key-grid key-polities-grid';
       const core = (snap.polities || []).filter((p) => p.role !== 'neighbor');
       const hasNeighbors = (snap.polities || []).some((p) => p.role === 'neighbor');
+      const eraFocusTitle = this.activePolity ? null : this._eraFocusTitle();
+      const curDynForKey = this.dynasties[this.dynastyIdx];
       for (const p of core) {
         const entry = document.createElement('span');
-        entry.className = 'key-entry is-interactive';
-        entry.title =
-          this.locale === 'en'
-            ? 'Hover to highlight · Click to zoom'
-            : '悬停高亮疆域 · 点击聚焦版图';
+        const isEraMain = this._isEraMainPolity(p.title, curDynForKey);
+        const isEraFocused = eraFocusTitle === p.title;
+        const isActive =
+          isEraFocused || Boolean(this.activePolity && this.activePolity.titles.includes(p.title));
+        entry.className = `key-entry is-interactive${isActive ? ' is-active' : ''}`;
+        const en = this.locale === 'en';
+        entry.title = isEraFocused
+          ? en
+            ? 'Click to clear the focus'
+            : '点击取消聚焦'
+          : isActive
+            ? en
+              ? 'Click to return to the era overview'
+              : '点击返回时代全景'
+            : isEraMain
+              ? en
+                ? 'Hover to highlight · Click to focus this era\'s realm'
+                : '悬停高亮疆域 · 点击聚焦本朝疆域'
+              : en
+                ? 'Hover to highlight · Click for this regime\'s profile'
+                : '悬停高亮疆域 · 点击查看该政权档案';
         const sw = document.createElement('i');
         sw.className = 'swatch';
         sw.style.color = p.tint;
@@ -3226,7 +3753,19 @@
         entry.addEventListener('pointerleave', (e) => {
           if (e.pointerType !== 'touch') this._setPolityFocus(null);
         });
-        entry.addEventListener('click', () => this._zoomToPolity(p.title));
+        entry.addEventListener('click', () => {
+          if (isEraFocused) this.clearEraFocus();
+          else if (isActive) this.closePolity();
+          else this.openPolity(p.title);
+        });
+        entry.setAttribute('role', 'button');
+        entry.setAttribute('tabindex', '0');
+        entry.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        entry.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          entry.click();
+        });
         grid.appendChild(entry);
       }
       if (hasNeighbors) {
@@ -3434,6 +3973,16 @@
     }
 
     _renderChroniclePane(dynasty) {
+      if (this.eraFocus && (!dynasty || this.eraFocus.dynastyKey !== dynasty.key)) this.eraFocus = null;
+      if (this.activePolity) {
+        if (this._polityInRange(this.activePolity, this.year)) {
+          this._renderPolityPane(dynasty);
+          return;
+        }
+        this.activePolity = null;
+        this._resetPolityPaneChrome();
+        this._lastLegendKey = null;
+      }
       this._id('dynasty-title').textContent = this.dynastyName(dynasty);
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
       this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
@@ -3533,6 +4082,11 @@
     }
 
     _highlightCurrentMilestone(dynasty) {
+      if (this.activePolity) {
+        if (this._polityInRange(this.activePolity, this.year)) this._highlightPolityEvent();
+        else this.closePolity();
+        return;
+      }
       const listEl = this._id('milestone-list');
       if (!listEl) return;
       const items = listEl.children;
@@ -4176,12 +4730,14 @@
       }
       const raw = String(personOrQuery || '').trim();
       if (!raw) return [];
-      const hasExplicitSep =
-        /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(raw) ||
-        /^[\u4e00-\u9fff]{2,4}(?:\s+[\u4e00-\u9fff]{2,4})+$/.test(raw);
-      if (hasExplicitSep) {
-        const parts = raw
-          .split(/\s*(?:[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+|\s+)\s*/i)
+      const isSpaceCjkPair = /^[\u4e00-\u9fff·]{2,6}(?:\s+[\u4e00-\u9fff·]{2,6})+$/.test(raw);
+      const hasExplicitDelim = /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(raw);
+      if (isSpaceCjkPair || hasExplicitDelim) {
+        const parts = (
+          hasExplicitDelim
+            ? raw.split(/\s*(?:[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+)\s*/i)
+            : raw.split(/\s+/)
+        )
           .map((s) => s.trim())
           .filter(Boolean);
         if (parts.length >= 2) {
@@ -9891,6 +10447,84 @@
     }
 
     // ---------------- Global Quick Search ----------------
+    _searchPlaceholder(expanded = false) {
+      if (this.locale === 'en') {
+        return expanded
+          ? 'Search figure (or pair: Li Bai, Du Fu) / city / era'
+          : 'Search figure / pair / city / era';
+      }
+      return this._zh(
+        expanded
+          ? '搜人物（可搜双人：李白 杜甫）/ 古今地名 / 年号'
+          : '搜人物 / 双人 / 古今地名 / 年号'
+      );
+    }
+
+    _getSearchSampleQueries() {
+      return this.locale === 'en'
+        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
+        : ['长安', '赤壁', '霍去病', '李白 杜甫'].map((s) => this._zh(s));
+    }
+
+    _getSearchShowcasePool() {
+      const index = this._ensureSearchIndex();
+      if (Array.isArray(index._showcasePool)) return index._showcasePool;
+      const showcaseSpecs = [
+        'sushi',
+        ['libai', 'dufu'],
+        'zhugeliang',
+        ['yanghu', 'duyu'],
+        'huoqubing',
+        ['zuti', 'liukun'],
+        'libai',
+        'caocao',
+        ['zhugeliang', 'simayi'],
+        'xinqiji',
+        'xuanzang',
+        'wangyangming',
+        'zhangqian',
+        'dufu',
+      ];
+      const pool = [];
+      for (const spec of showcaseSpecs) {
+        if (Array.isArray(spec)) {
+          const profiles = this._resolvePersonProfiles(spec);
+          if (profiles.length >= 2) {
+            const st = this._buildPersonTracksAndEvents(profiles);
+            if (st && st.isMulti) {
+              const d = st.events[0] ? st.events[0].dynasty : this.dynasties[0];
+              pool.push({
+                kind: 'multi_person',
+                personKeys: profiles.map((p) => p.key),
+                personProfiles: profiles,
+                dynasty: d,
+                year: null,
+                titleZh: profiles.map((p) => p.zh).join(' × '),
+                subZh:
+                  st.sameTimeCount > 0
+                    ? `共 ${st.events.length} 处行迹 · ${st.sameTimeCount} 处相逢`
+                    : `并行行迹对照 · 共 ${st.events.length} 处行迹`,
+                titleEn: profiles.map((p) => p.en).join(' × '),
+                subEn:
+                  st.sameTimeCount > 0
+                    ? `${st.events.length} stops · ${st.sameTimeCount} encounters`
+                    : `${st.events.length} stops`,
+              });
+            }
+          }
+        } else {
+          const hit = index.find((item) => item.kind === 'person' && item.personKey === spec);
+          if (hit) pool.push(hit);
+        }
+      }
+      Object.defineProperty(index, '_showcasePool', {
+        value: pool,
+        enumerable: false,
+        configurable: true,
+      });
+      return pool;
+    }
+
     _ensureSearchIndex() {
       if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
         this._ensureFullSnapshots();
@@ -9964,6 +10598,25 @@
           titleEn: nameEn,
           subEn: `${spanEn} · ${enDyn.capital || d.seat}`,
           keywords: `${d.title} ${d.badge || ''} ${d.seat || ''} ${nameEn} ${shortEn}`.toLowerCase(),
+        });
+      }
+
+      // 0b. Regional & rival regimes (割据 / 并立政权)
+      const yrZh = (y) => (y <= 0 ? `前${-y}` : `${y}`);
+      const yrEn = (y) => (y <= 0 ? `${-y} BCE` : `${y} CE`);
+      for (const p of HistoricalAtlasController.POLITY_PROFILES) {
+        const aliases = [...(p.aliases || []), ...p.titles.filter((t) => t.length >= 2)];
+        entries.push({
+          kind: 'polity',
+          polityKey: p.key,
+          dynasty: this.dynasties[this._findDynastyIndex(Math.max(this.minYear, p.from))],
+          year: null,
+          titleZh: p.zh,
+          subZh: `${yrZh(p.from)}—${yrZh(p.to)} · 都城：${p.seatZh}`,
+          titleEn: p.en,
+          subEn: `${yrEn(p.from)} – ${yrEn(p.to)} · ${p.seatEn}`,
+          aliases: aliases.map((a) => a.toLowerCase()),
+          keywords: `${p.zh} ${p.en} ${aliases.join(' ')}`.toLowerCase(),
         });
       }
 
@@ -10569,6 +11222,11 @@
         return;
       }
 
+      if (item.kind === 'polity') {
+        this.openPolityByKey(item.polityKey);
+        return;
+      }
+
       if (item.year !== null && item.year !== undefined) {
         this.jumpToYear(item.year);
       }
@@ -10667,6 +11325,14 @@
         this.closeMilestoneBalloon();
         return true;
       }
+      if (this.activePolity) {
+        this.closePolity();
+        return true;
+      }
+      if (this.eraFocus) {
+        this.clearEraFocus();
+        return true;
+      }
       return false;
     }
 
@@ -10687,6 +11353,7 @@
           person: this.locale === 'en' ? 'Figure' : '人物',
           quiz: this.locale === 'en' ? 'Quiz' : '雅集',
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
+          polity: this.locale === 'en' ? 'Regime' : '政权',
           era: this.locale === 'en' ? 'Era' : '纪年',
           city: this.locale === 'en' ? 'City' : '古城',
           pass: this.locale === 'en' ? 'Pass' : '雄关',
@@ -10697,21 +11364,7 @@
         };
         if (!q) {
           const index = this._ensureSearchIndex();
-          const showcaseOrder = [
-            'sushi',
-            'zhugeliang',
-            'huoqubing',
-            'libai',
-            'caocao',
-            'xinqiji',
-            'xuanzang',
-            'wangyangming',
-            'zhangqian',
-            'dufu',
-          ];
-          const showcasePool = showcaseOrder
-            .map((key) => index.find((item) => item.kind === 'person' && item.personKey === key))
-            .filter(Boolean);
+          const showcasePool = this._getSearchShowcasePool();
           const sampleItem = showcasePool.length
             ? showcasePool[showcaseIdx % showcasePool.length]
             : null;
@@ -10726,8 +11379,12 @@
             const mainText = this.locale === 'en' ? sampleItem.titleEn : sampleItem.titleZh;
             const subText = this.locale === 'en' ? sampleItem.subEn : sampleItem.subZh;
             const egLabel = this.locale === 'en' ? 'e.g.' : '示例';
-            const cycleTitle = this.locale === 'en' ? 'Try another figure' : '换一位人物示例';
-            const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${kindLabel.person}`;
+            const cycleTitle =
+              this.locale === 'en'
+                ? 'Cycle solo / dual figure examples'
+                : '切换单人 / 双人行迹示例';
+            const tagKind = kindLabel[sampleItem.kind] || kindLabel.person;
+            const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${tagKind}`;
             li.innerHTML =
               `<div><span class="sr-eg-pill">${egLabel}</span><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
               `<span class="sr-right-meta"><span class="sr-tag">${escHtml(tagText)}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">↻</button></span>`;
@@ -10766,10 +11423,7 @@
           guideLi.className = 'sr-search-guide';
           guideLi.setAttribute('role', 'presentation');
           const tryLabel = this.locale === 'en' ? 'Try' : '试试搜';
-          const sampleQueries =
-            this.locale === 'en'
-              ? ["Chang'an", 'Chibi', '627', 'Cao Cao']
-              : ['长安', '赤壁', '贞观', '霍去病'].map((s) => this._zh(s));
+          const sampleQueries = this._getSearchSampleQueries();
           const chipsWrap = document.createElement('div');
           chipsWrap.className = 'sr-guide-chips';
           const guideLbl = document.createElement('span');
@@ -10893,8 +11547,12 @@
           });
         }
         searchInp.addEventListener('input', renderSearchDropdown);
-        searchInp.addEventListener('focus', renderSearchDropdown);
+        searchInp.addEventListener('focus', () => {
+          searchInp.placeholder = this._searchPlaceholder(true);
+          renderSearchDropdown();
+        });
         searchInp.addEventListener('blur', () => {
+          searchInp.placeholder = this._searchPlaceholder(false);
           setTimeout(() => {
             if (searchBox && !searchInp.value.trim()) {
               searchBox.classList.remove('is-expanded');
@@ -13515,6 +14173,10 @@
             this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
           }, 80);
         }
+      }
+      if (q.has('polity')) {
+        const pKey = (q.get('polity') || '').trim();
+        if (pKey) afterFullSnapshots(() => this.openPolityByKey(pKey), 80);
       }
       if (q.has('layers')) {
         setTimeout(() => {
