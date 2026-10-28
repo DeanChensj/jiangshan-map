@@ -10141,7 +10141,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "东京汴梁（今河南开封）",
       "siteEn": "Dongjing Bianliang (Kaifeng, Henan)",
-      "zh": "布衣毕昇于汴京发明胶泥活字印刷术，载入沈括《梦溪笔谈》",
+      "zh": "布衣毕昇于汴京发明胶泥活字印刷术，后载入《梦溪笔谈》传世",
       "en": "Artisan Bi Sheng invents ceramic movable-type printing in Kaifeng, recorded in Dream Pool Essays"
     },
     {
@@ -11102,6 +11102,623 @@ window.ATLAS_LORE_DATA = {
         "baozheng",
         "wanganshi",
         "simaguang"
+      ]
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -118,
+      "coord": [
+        108.94,
+        34.34
+      ],
+      "site": "长安",
+      "siteEn": "Chang'an",
+      "zh": "汉武帝罢三铢钱改铸五铢钱，推行盐铁官营与算缗充实国库",
+      "en": "Emperor Wu standardizes the five-zhu bronze coin and institutes state salt and iron monopolies"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 57,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "汉光武帝赐倭奴国使者“汉委奴国王”金印，开启中日信史交往",
+      "en": "Emperor Guangwu grants the King of Na gold seal to the Wa envoy in Luoyang"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1044,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京汴梁（今河南开封）",
+      "siteEn": "Dongjing Bianliang (Kaifeng, Henan)",
+      "zh": "曾公亮等编成官修兵书《武经总要》，首载火药配方与指南鱼制法",
+      "en": "Zeng Gongliang compiles Wujing Zongyao, first recording gunpowder formulas and compass needles"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1373,
+      "coord": [
+        91.111,
+        29.651
+      ],
+      "site": "乌思藏（拉萨）",
+      "siteEn": "U-Tsang (Lhasa)",
+      "zh": "明太祖设乌思藏、朵甘二都司，以茶马互市与册封维系藏地",
+      "en": "Hongwu Emperor establishes U-Tsang and Dokham regional military commissions and tea-horse trade"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1553,
+      "coord": [
+        113.54,
+        22.19
+      ],
+      "site": "澳门",
+      "siteEn": "Macau",
+      "zh": "葡萄牙商船借口曝晒水渍贡物获准租居澳门，开启中西海贸门户",
+      "en": "Portuguese merchants obtain permission to lease ashore at Macau, opening Sino-European maritime trade"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1718,
+      "coord": [
+        116.3,
+        39.99
+      ],
+      "site": "北京畅春园",
+      "siteEn": "Changchunyuan, Beijing",
+      "zh": "康熙帝历时十年组织全国经纬实测，绘成巨制《皇舆全览图》",
+      "en": "Kangxi Emperor completes the ten-year nationwide geodetic survey for the Huangyu Quanlan Atlas"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1872,
+      "coord": [
+        121.49,
+        31.24
+      ],
+      "site": "上海",
+      "siteEn": "Shanghai",
+      "zh": "李鸿章于上海创办轮船招商局，开中国近代民族航运企业先河",
+      "en": "Li Hongzhang founds the China Merchants Steam Navigation Company in Shanghai, pioneering modern shipping"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1911,
+      "month": 9,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都",
+      "siteEn": "Chengdu",
+      "zh": "四川保路同志会掀动全川保路风潮，清廷调鄂军入川触发武昌起义",
+      "en": "Sichuan Railway Protection Movement erupts in Chengdu, draining Qing garrisons from Wuchang"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 263,
+      "coord": [
+        107.02,
+        33.07
+      ],
+      "site": "汉中",
+      "siteEn": "Hanzhong",
+      "zh": "钟会伐蜀辟杜预为镇西长史，参赞军机进克汉中平定巴蜀",
+      "en": "Serving as Zhong Hui's chief clerk, Du Yu helps direct the conquest of Hanzhong and Shu",
+      "persons": [
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 268,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "晋武帝于洛阳筹议灭吴方略，倚重羊祜与杜预经略荆襄",
+      "en": "Emperor Wu of Jin plans the conquest of Eastern Wu in Luoyang with Yang Hu and Du Yu",
+      "persons": [
+        "yanghu",
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 274,
+      "coord": [
+        112.14,
+        32.02
+      ],
+      "site": "襄阳",
+      "siteEn": "Xiangyang",
+      "zh": "羊祜镇守襄阳垦田八百余顷，与吴将陆抗对境推诚怀柔江汉",
+      "en": "Yang Hu garrisons Xiangyang with vast military farms, winning hearts across the Wu frontier",
+      "persons": [
+        "yanghu"
+      ]
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 274,
+      "coord": [
+        112.58,
+        34.83
+      ],
+      "site": "孟津（今河南孟津）",
+      "siteEn": "Mengjin (Luoyang, Henan)",
+      "zh": "杜预奏请于富平津架设孟津黄河浮桥，贯通南北漕运咽喉",
+      "en": "Du Yu engineers the Fupingjin pontoon bridge at Mengjin, linking Yellow River grain transport",
+      "persons": [
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 278,
+      "month": 11,
+      "coord": [
+        112.15,
+        32
+      ],
+      "site": "襄阳岘山",
+      "siteEn": "Mount Xianshan, Xiangyang",
+      "zh": "羊祜病笃举杜预自代，卒后襄阳百姓于岘山立碑望之堕泪",
+      "en": "Dying Yang Hu recommends Du Yu as successor; mourners erect the Monument of Tears on Mount Xianshan",
+      "persons": [
+        "yanghu",
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 280,
+      "month": 2,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵",
+      "siteEn": "Jiangling",
+      "zh": "镇南大将军杜预自襄阳挥师克江陵，“势如破竹”席卷江南灭吴",
+      "en": "General Du Yu captures Jiangling like splitting bamboo, sweeping down the Yangtze to conquer Wu",
+      "persons": [
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 282,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "“杜武库”杜预于洛阳撰成《春秋左氏经传集解》传世",
+      "en": "Polymath general Du Yu completes his classic commentary on the Zuo Zhuan in Luoyang",
+      "persons": [
+        "duyu"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 298,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "祖逖与刘琨于洛阳共任司州主簿，中夜“闻鸡起舞”砺志匡世",
+      "en": "Fellow clerks Zu Ti and Liu Kun rise at rooster crow in Luoyang to practice swordplay",
+      "persons": [
+        "zuti",
+        "liukun"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 306,
+      "coord": [
+        115.97,
+        39.49
+      ],
+      "site": "范阳（今河北涿州）",
+      "siteEn": "Fanyang (Zhuozhou, Hebei)",
+      "zh": "八王之乱中刘琨北赴范阳乞师得骑兵，合军南下迎晋惠帝还洛阳",
+      "en": "Amid the War of the Eight Princes, Liu Kun rides to Fanyang for cavalry to escort Emperor Hui home",
+      "persons": [
+        "liukun"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 307,
+      "coord": [
+        112.55,
+        37.87
+      ],
+      "site": "晋阳（今山西太原）",
+      "siteEn": "Jinyang (Taiyuan, Shanxi)",
+      "zh": "刘琨出任并州刺史，于晋阳废墟披荆斩棘抚集流亡孤守北疆",
+      "en": "Appointed Inspector of Bingzhou, Liu Kun rebuilds ruined Jinyang and rallies refugees on the frontier",
+      "persons": [
+        "liukun"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 311,
+      "coord": [
+        119.02,
+        33.62
+      ],
+      "site": "淮阴（今江苏淮安）",
+      "siteEn": "Huaiyin (Huai'an, Jiangsu)",
+      "zh": "永嘉丧乱洛阳倾覆，祖逖率亲党数百家避乱南迁屯居泗口淮阴",
+      "en": "After Luoyang falls in the Disaster of Yongjia, Zu Ti leads clansmen south to settle at Huaiyin",
+      "persons": [
+        "zuti"
+      ]
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 314,
+      "coord": [
+        112.55,
+        37.87
+      ],
+      "site": "晋阳（今山西太原）",
+      "siteEn": "Jinyang (Taiyuan, Shanxi)",
+      "zh": "大司马刘琨孤守晋阳抗击石勒，慷慨陈志“吾枕戈待旦，志枭逆虏”",
+      "en": "Grand Marshal Liu Kun defends Jinyang against Shi Le, vowing to sleep on his spear until dawn",
+      "persons": [
+        "liukun"
+      ]
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 317,
+      "coord": [
+        115.78,
+        33.88
+      ],
+      "site": "谯城（今安徽亳州）",
+      "siteEn": "Qiaocheng (Bozhou, Anhui)",
+      "zh": "祖逖北伐进据谯城屯田练兵，屡破石勒收复黄河以南大片故土",
+      "en": "Zu Ti establishes his northern headquarters at Qiaocheng, defeating Shi Le south of the Yellow River",
+      "persons": [
+        "zuti"
+      ]
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 318,
+      "coord": [
+        116.35,
+        39.89
+      ],
+      "site": "蓟城（今北京西南）",
+      "siteEn": "Jicheng (Beijing)",
+      "zh": "刘琨于幽州蓟城蒙冤系狱，临终赋绝命诗“何意百炼钢，化为绕指柔”",
+      "en": "Wrongfully imprisoned at Jicheng, Liu Kun composes his farewell lament on hundred-times-forged steel",
+      "persons": [
+        "liukun"
+      ]
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 320,
+      "coord": [
+        114.78,
+        34.55
+      ],
+      "site": "雍丘（今河南杞县）",
+      "siteEn": "Yongqiu (Qixian, Henan)",
+      "zh": "祖逖进驻雍丘威震黄河两岸，旋忧愤东晋内乱病卒于军中",
+      "en": "Zu Ti advances his garrison to Yongqiu along the Yellow River before dying in camp amid court strife",
+      "persons": [
+        "zuti"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 461,
+      "coord": [
+        119.45,
+        32.2
+      ],
+      "site": "京口（今江苏镇江）",
+      "siteEn": "Jingkou (Zhenjiang, Jiangsu)",
+      "zh": "祖冲之任南徐州从事史驻京口，实测冬至晷影起草《大明历》",
+      "en": "Serving at Jingkou, Zu Chongzhi measures winter solstice gnomon shadows and drafts the Daming Calendar",
+      "persons": [
+        "zuchongzhi"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 466,
+      "coord": [
+        120.98,
+        31.38
+      ],
+      "site": "娄县（今江苏昆山）",
+      "siteEn": "Louxian (Kunshan, Jiangsu)",
+      "zh": "祖冲之出任吴郡娄县令勤政恤民，公务之暇潜心精研算学《缀术》",
+      "en": "As magistrate of Louxian, Zu Chongzhi governs humanely while advancing his mathematical treatise Zhui Shu",
+      "persons": [
+        "zuchongzhi"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 494,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康乐游苑",
+      "siteEn": "Leyou Park, Jiankang (Nanjing)",
+      "zh": "长水校尉祖冲之于建康重造铜机指南车，又试航日行百里千里船",
+      "en": "In Jiankang, Zu Chongzhi reconstructs the bronze south-pointing chariot and tests his paddle-wheel boat",
+      "persons": [
+        "zuchongzhi"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 480,
+      "coord": [
+        118.47,
+        36.7
+      ],
+      "site": "东阳（今山东青州）",
+      "siteEn": "Dongyang (Qingzhou, Shandong)",
+      "zh": "少年郦道元随父宦游青州，踏勘齐鲁山川古迹启蒙地理之志",
+      "en": "Young Li Daoyuan accompanies his father in Qingzhou, surveying Shandong rivers and ancient sites",
+      "persons": [
+        "lidaoyuan"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 494,
+      "month": 2,
+      "coord": [
+        113.3,
+        40.09
+      ],
+      "site": "平城（大同）",
+      "siteEn": "Pingcheng (Datong)",
+      "zh": "尚书主客郎郦道元扈从魏主巡察阴山塞北，旋随朝廷自平城迁洛阳",
+      "en": "Imperial secretary Li Daoyuan inspects the Yinshan frontier before moving south from Pingcheng to Luoyang",
+      "persons": [
+        "lidaoyuan"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 520,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "郦道元于洛阳博考群书参验实地，撰成地理名著《水经注》四十卷",
+      "en": "In Luoyang, Li Daoyuan completes his forty-scroll geographical masterpiece Shuijing Zhu",
+      "persons": [
+        "lidaoyuan"
+      ]
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 527,
+      "coord": [
+        109.21,
+        34.37
+      ],
+      "site": "阴盘驿（今陕西临潼）",
+      "siteEn": "Yinpan Post (Lintong, Shaanxi)",
+      "zh": "关右大使郦道元奉命赴关中，行至阴盘驿遭叛军围困嗔目殉职",
+      "en": "Envoy Li Daoyuan is ambushed by rebels at Yinpan Post in Guanzhong and dies unyielding",
+      "persons": [
+        "lidaoyuan"
+      ]
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1063,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东京开封",
+      "siteEn": "Dongjing Kaifeng",
+      "zh": "钱塘沈括于东京登嘉祐八年进士第，旋入馆阁编校昭文书籍",
+      "en": "Shen Kuo passes the imperial examination in Kaifeng and enters the court academies to collate texts",
+      "persons": [
+        "shenkuo"
+      ]
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1072,
+      "coord": [
+        114.36,
+        34.78
+      ],
+      "site": "东京司天监",
+      "siteEn": "Astronomical Bureau, Kaifeng",
+      "zh": "沈括提举司天监革新浑仪浮漏，主持疏浚汴渠实测分层水准",
+      "en": "Shen Kuo heads the Kaifeng Astronomical Bureau, reforming instruments and surveying Bian Canal",
+      "persons": [
+        "shenkuo"
+      ]
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1075,
+      "coord": [
+        119.35,
+        43.87
+      ],
+      "site": "上京临潢府",
+      "siteEn": "Liao Supreme Capital (Bairin Left Banner)",
+      "zh": "沈括奉使契丹抵辽上京据理折冲，沿途聚米山川绘《使契丹图抄》",
+      "en": "Envoy Shen Kuo negotiates border disputes at the Liao Supreme Capital and compiles raised-relief maps",
+      "persons": [
+        "shenkuo"
+      ]
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1081,
+      "coord": [
+        109.49,
+        36.59
+      ],
+      "site": "延州（延安）",
+      "siteEn": "Yanzhou (Yan'an)",
+      "zh": "鄜延路经略使沈括镇守延州抗夏，首记陕北“石油”并命名传世",
+      "en": "Commanding Yanzhou against Western Xia, Shen Kuo coins the Chinese term shiyou for petroleum",
+      "persons": [
+        "shenkuo"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1218,
+      "coord": [
+        110.5,
+        47.7
+      ],
+      "site": "克鲁伦河幕府",
+      "siteEn": "Kerulen Steppe Ordo",
+      "zh": "成吉思汗于漠北召见辽宗室耶律楚材，赞誉“吾图撒合里”留赞军国",
+      "en": "Genghis Khan summons Khitan scholar Yelu Chucai on the steppe to counsel the Mongol court",
+      "persons": [
+        "yeluchucai",
+        "genghiskhan"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1221,
+      "coord": [
+        66.97,
+        39.65
+      ],
+      "site": "撒马尔罕（河中）",
+      "siteEn": "Samarkand (Transoxiana)",
+      "zh": "耶律楚材随成吉思汗西征驻撒马尔罕，观测月食创制《西征庚午元历》",
+      "en": "Accompanying Genghis Khan to Samarkand, Yelu Chucai observes lunar eclipses and creates a new calendar",
+      "persons": [
+        "yeluchucai",
+        "genghiskhan"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1233,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "汴京（开封）",
+      "siteEn": "Bianjing (Kaifeng)",
+      "zh": "蒙古军围攻金汴京欲屠城，中书令耶律楚材力谏窝阔台汗保全百万生灵",
+      "en": "Chancellor Yelu Chucai persuades Ogedei Khan to spare over a million lives at fallen Kaifeng",
+      "persons": [
+        "yeluchucai"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1236,
+      "coord": [
+        102.85,
+        47.2
+      ],
+      "site": "哈拉和林",
+      "siteEn": "Karakorum",
+      "zh": "耶律楚材于哈拉和林定赋税立制度，倡行戊戌选试拔擢中原儒士",
+      "en": "In Karakorum, Yelu Chucai regularizes taxation and holds civil examinations to recruit Confucian scholars",
+      "persons": [
+        "yeluchucai"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1274,
+      "coord": [
+        94.66,
+        40.14
+      ],
+      "site": "沙州（敦煌）",
+      "siteEn": "Shazhou (Dunhuang)",
+      "zh": "马可·波罗父子越葱岭抵河西沙州，沿丝绸之路东赴元廷",
+      "en": "Venetian traveler Marco Polo crosses the Pamirs to Shazhou and journeys east along the Hexi Corridor",
+      "persons": [
+        "marcopolo"
+      ]
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1275,
+      "month": 5,
+      "coord": [
+        116.18,
+        42.36
+      ],
+      "site": "上都（开平）",
+      "siteEn": "Shangdu (Xanadu)",
+      "zh": "马可·波罗抵滦河上都觐见元世祖忽必烈，奉命入仕出使四方",
+      "en": "Marco Polo reaches the summer capital Shangdu, enters Kublai Khan's service, and undertakes missions",
+      "persons": [
+        "marcopolo",
+        "kublaikhan"
+      ]
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1282,
+      "coord": [
+        119.42,
+        32.39
+      ],
+      "site": "扬州",
+      "siteEn": "Yangzhou",
+      "zh": "马可·波罗旅居运河枢纽扬州，惊叹东南漕运百工与临安繁华",
+      "en": "Marco Polo resides along the Grand Canal at Yangzhou, marveling at Jiangnan's commerce and crafts",
+      "persons": [
+        "marcopolo"
+      ]
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1291,
+      "coord": [
+        118.68,
+        24.87
+      ],
+      "site": "泉州刺桐港",
+      "siteEn": "Zayton Port (Quanzhou)",
+      "zh": "马可·波罗奉命护送阔阔真公主自泉州刺桐港扬帆西归波斯",
+      "en": "Marco Polo sets sail from Quanzhou port escorting Mongol princess Kokechin westward to Persia",
+      "persons": [
+        "marcopolo"
       ]
     }
   ],
@@ -20034,6 +20651,184 @@ window.ATLAS_LORE_DATA = {
       ],
       "tokens": [
         "袁崇焕"
+      ]
+    },
+    {
+      "key": "yanghu",
+      "zh": "羊祜",
+      "en": "Yang Hu",
+      "courtesyZh": "叔子 · 镇南开济 · 岘山堕泪",
+      "courtesyEn": "Shuzi, Jin Strategist on the Han River",
+      "dynastyKey": "xijin",
+      "span": [
+        221,
+        278
+      ],
+      "aliases": [
+        "羊叔子",
+        "太傅羊祜",
+        "堕泪碑"
+      ],
+      "tokens": [
+        "羊祜"
+      ]
+    },
+    {
+      "key": "duyu",
+      "zh": "杜预",
+      "en": "Du Yu",
+      "courtesyZh": "元凯 · 杜武库 · 势如破竹",
+      "courtesyEn": "Yuankai, Polymath General Who Conquered Wu",
+      "dynastyKey": "xijin",
+      "span": [
+        222,
+        285
+      ],
+      "aliases": [
+        "杜元凯",
+        "杜武库",
+        "镇南大将军杜预"
+      ],
+      "tokens": [
+        "杜预"
+      ]
+    },
+    {
+      "key": "zuti",
+      "zh": "祖逖",
+      "en": "Zu Ti",
+      "courtesyZh": "士稚 · 闻鸡起舞 · 中流击楫",
+      "courtesyEn": "Shizhi, Northern Expedition General of Jin",
+      "dynastyKey": "xijin",
+      "span": [
+        266,
+        321
+      ],
+      "aliases": [
+        "祖士稚",
+        "祖豫州"
+      ],
+      "tokens": [
+        "祖逖"
+      ]
+    },
+    {
+      "key": "liukun",
+      "zh": "刘琨",
+      "en": "Liu Kun",
+      "courtesyZh": "越石 · 枕戈待旦 · 百炼成钢",
+      "courtesyEn": "Yueshi, Defender of Bingzhou and Poet-General",
+      "dynastyKey": "xijin",
+      "span": [
+        271,
+        318
+      ],
+      "aliases": [
+        "刘越石",
+        "大司马刘琨"
+      ],
+      "tokens": [
+        "刘琨"
+      ]
+    },
+    {
+      "key": "zuchongzhi",
+      "zh": "祖冲之",
+      "en": "Zu Chongzhi",
+      "courtesyZh": "文远 · 圆周率七位 · 大明历宗师",
+      "courtesyEn": "Wenyuan, Mathematician and Astronomer",
+      "dynastyKey": "nanbei",
+      "span": [
+        429,
+        500
+      ],
+      "aliases": [
+        "祖文远",
+        "大明历",
+        "缀术"
+      ],
+      "tokens": [
+        "祖冲之"
+      ]
+    },
+    {
+      "key": "lidaoyuan",
+      "zh": "郦道元",
+      "en": "Li Daoyuan",
+      "courtesyZh": "善长 · 《水经注》地理巨匠",
+      "courtesyEn": "Shanchang, Geographer and Author of Shuijing Zhu",
+      "dynastyKey": "nanbei",
+      "span": [
+        466,
+        527
+      ],
+      "aliases": [
+        "郦善长",
+        "水经注"
+      ],
+      "tokens": [
+        "郦道元"
+      ]
+    },
+    {
+      "key": "shenkuo",
+      "zh": "沈括",
+      "en": "Shen Kuo",
+      "courtesyZh": "存中 · 梦溪丈人 · 《梦溪笔谈》",
+      "courtesyEn": "Cunzhong, Polymath Scientist and Statesman",
+      "dynastyKey": "beisong",
+      "span": [
+        1031,
+        1095
+      ],
+      "aliases": [
+        "沈存中",
+        "梦溪丈人",
+        "梦溪笔谈"
+      ],
+      "tokens": [
+        "沈括"
+      ]
+    },
+    {
+      "key": "yeluchucai",
+      "zh": "耶律楚材",
+      "en": "Yelu Chucai",
+      "courtesyZh": "晋卿 · 湛然居士 · 止杀定策",
+      "courtesyEn": "Jinqing, Khitan Chancellor of the Mongol Empire",
+      "dynastyKey": "yuan",
+      "span": [
+        1190,
+        1244
+      ],
+      "aliases": [
+        "耶律晋卿",
+        "湛然居士",
+        "吾图撒合里"
+      ],
+      "tokens": [
+        "耶律楚材"
+      ]
+    },
+    {
+      "key": "marcopolo",
+      "zh": "马可·波罗",
+      "en": "Marco Polo",
+      "courtesyZh": "威尼斯旅行家 · 《东方见闻录》",
+      "courtesyEn": "Venetian Traveler at Kublai Khan's Court",
+      "dynastyKey": "yuan",
+      "span": [
+        1254,
+        1324
+      ],
+      "aliases": [
+        "马可波罗",
+        "东方见闻录",
+        "马可·波罗游记"
+      ],
+      "tokens": [
+        "马可·波罗",
+        "马可波罗"
       ]
     },
     {

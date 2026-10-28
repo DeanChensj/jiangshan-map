@@ -2051,6 +2051,14 @@ window.EN_LOCALE = {
     "zhanguo:-286": [
       "King Min of Qi annexes Song; Qi, Chu, and Wei partition its territory",
       "Shangqiu & Dingtao"
+    ],
+    "xihan:-36": [
+      "Chen Tang storms Zhizhi in Kangju and slays Zhizhi Chanyu, proclaiming Han's reach afar",
+      "Zhizhi (Kangju / Taraz)"
+    ],
+    "beisong:997": [
+      "Emperor Taizong divides the realm into Fifteen Circuits, establishing Song circuit rule",
+      "Dongjing Kaifeng Fu"
     ]
   },
   "corridors": {
@@ -6815,6 +6823,25 @@ window.EN_LOCALE = {
     "喜峰口": "Xifengkou Pass",
     "京师广渠门": "Guangqumen, Beijing",
     "郾城": "Yancheng (Luohe)",
-    "金田": "Jintian (Guiping)"
+    "金田": "Jintian (Guiping)",
+    "郅支城（康居）": "Zhizhi (Kangju / Taraz)",
+    "姚州": "Yao Zhou",
+    "楚雄·姚安": "Yao'an, Chuxiong",
+    "姚安": "Yao'an",
+    "武德四年置姚州都督府，唐朝经略滇西洱海枢纽": "Seat of Yao Zhou Area Command founded in 621 CE, Tang's hub for the Erhai region",
+    "澎湖巡检司": "Penghu Patrol Inspectorate",
+    "澎湖": "Penghu",
+    "至元十八年置澎湖巡检司隶泉州路，中央首次于台澎设治": "Penghu Patrol Inspectorate established in 1281 CE under Quanzhou Circuit, first central administration over Penghu and Taiwan",
+    "乌思藏都司": "U-Tsang Regional Military Commission",
+    "洪武六年置乌思藏都指挥使司，统摄卫藏政教朝贡": "U-Tsang Regional Military Commission established in 1373 CE to administer central Tibetan tribute and governance",
+    "特林（俄罗斯）": "Tyr (Lower Amur, Russia)",
+    "永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑": "Nurgan Regional Military Commission founded in 1409 CE; eunuch admiral Yishiha erected the Yongning Temple steles",
+    "大员（赤嵌）": "Tayouan (Chikan)",
+    "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by the Dutch in 1624; recovered by Zheng Chenggong in 1662 as Dongdu",
+    "乌里雅苏台（蒙古国）": "Uliastai (Mongolia)",
+    "雍正十一年设定边左副将军驻节，统辖喀尔喀四部与唐努乌梁海": "Seat of the General for Pacifying the Frontier (1733), governing the Four Khalkha Aimags and Tannu Uriankhai",
+    "科布多": "Khovd",
+    "科布多（蒙古国）": "Khovd (Mongolia)",
+    "乾隆二十七年设科布多参赞大臣，镇抚阿尔泰西北部落": "Seat of the Khovd Imperial Resident (1762), administering the Altai northwestern frontier"
   }
 };

@@ -6040,6 +6040,82 @@ function main() {
           clueEn.includes('Hanzhong Commandery') && !clueEn.includes('this site'),
           `English quiz clue for Nanzheng must preserve "Hanzhong Commandery", got "${clueEn}"`
         );
+
+        // CUJ 41: Curated Atlas Enrichment (11 Textbook Events, 9 Household Figures & Dual Intersections, 7 Frontier Cities)
+        ctrl.locale = 'zh';
+        ctrl.searchIndex = null;
+        for (const [qText, expectedYear] of [
+          ['五铢钱', -118],
+          ['犯强汉者虽远必诛', -36],
+          ['汉委奴国王', 57],
+          ['至道十五路', 997],
+          ['武经总要', 1044],
+          ['葡萄牙', 1553],
+          ['皇舆全览图', 1718],
+          ['轮船招商局', 1872],
+          ['保路', 1911],
+        ]) {
+          const evHits = ctrl._queryQuickSearch(qText);
+          assert(
+            evHits.some((h) => h.kind === 'event' && h.year === expectedYear),
+            `Expected quick search "${qText}" to return event at year ${expectedYear}, got ${JSON.stringify(evHits.slice(0, 3))}`
+          );
+        }
+        for (const [pKey, minStops] of [
+          ['yanghu', 4],
+          ['duyu', 6],
+          ['zuti', 5],
+          ['liukun', 5],
+          ['zuchongzhi', 4],
+          ['lidaoyuan', 4],
+          ['shenkuo', 5],
+          ['yeluchucai', 4],
+          ['marcopolo', 5],
+        ]) {
+          const prof = loreData.PERSON_PROFILES.find((p) => p.key === pKey);
+          assert(prof, `Missing curated PERSON_PROFILE "${pKey}"`);
+          const stops = ctrl._collectPersonEvents(prof);
+          assert(
+            stops.length >= minStops,
+            `Expected "${pKey}" to collect >=${minStops} stops, got ${stops.length}`
+          );
+        }
+        ctrl.openPersonChronicle('羊祜,杜预', -1);
+        assert(
+          ctrl.activePerson &&
+            ctrl.activePerson.isMulti &&
+            ctrl.activePerson.sameTimeCount >= 2 &&
+            ctrl.activePerson.events.filter((e) => e.isSharedEncounter).length >= 2,
+          'openPersonChronicle("羊祜,杜预") must resolve >=2 shared Luoyang/Xiangyang stops'
+        );
+        ctrl.openPersonChronicle('祖逖,刘琨', -1);
+        assert(
+          ctrl.activePerson &&
+            ctrl.activePerson.isMulti &&
+            ctrl.activePerson.events.some((e) => e.isSharedEncounter && e.year === 298),
+          'openPersonChronicle("祖逖,刘琨") must resolve their shared 298 CE Luoyang rooster-crow stop'
+        );
+        ctrl.closeGenealogyCard();
+        for (const [dKey, ancName] of [
+          ['tang', '姚州'],
+          ['yuan', '澎湖巡检司'],
+          ['ming', '乌思藏都司'],
+          ['ming', '奴儿干都司'],
+          ['ming', '大员（赤嵌）'],
+          ['qing', '乌里雅苏台'],
+          ['qing', '科布多'],
+        ]) {
+          const dynObj = dynasties.find((d) => d.key === dKey);
+          assert(
+            dynObj && dynObj.settlements.some((s) => s.ancient === ancName),
+            `Expected ${dKey} settlements to contain frontier anchor "${ancName}"`
+          );
+        }
+        const qufuZg = dynasties[0].settlements.find((s) => s.ancient === '曲阜（鲁都）');
+        assert(
+          qufuZg && Array.isArray(qufuZg.capitalPeriods) && qufuZg.capitalPeriods[0][1] === -249,
+          'Warring States Qufu must cap capitalPeriods at -249 BCE when Chu annexed Lu'
+        );
       } finally {
         sandbox.window.history = origHistory;
         sandbox.location.search = origSearch;
