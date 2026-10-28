@@ -2133,7 +2133,7 @@
         if (pIdx < 0) return false;
         const pol = polList[pIdx];
         if (!pol) return false;
-        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 55) return false;
+        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 68) return false;
         return true;
       };
       const nearPolityBorder = (x, y, margin) => {
