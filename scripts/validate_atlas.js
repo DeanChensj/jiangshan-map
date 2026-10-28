@@ -1054,6 +1054,22 @@ function main() {
       `Expected quick search query "${query}" to return at least one result of kind "${expectedKind}", got: ${JSON.stringify(hits.map((h) => ({ title: h.titleZh, kind: h.kind })))}`
     );
   }
+  for (const dedupQuery of ['赤壁', '鸿门宴', '玄武门', '虎牢', '水淹七军', '北京保卫战']) {
+    const eventHits = ctrl._queryQuickSearch(dedupQuery).filter((h) => h.kind === 'event');
+    const seenYearSite = new Set();
+    for (const h of eventHits) {
+      const key = `${h.year}:${Math.round(h.coord[0])},${Math.round(h.coord[1])}`;
+      assert(
+        !seenYearSite.has(key),
+        `Duplicate quick search event result for "${dedupQuery}" at ${key}: ${JSON.stringify(eventHits.map((e) => ({ year: e.year, title: e.titleZh })))}`
+      );
+      seenYearSite.add(key);
+    }
+  }
+  assert(
+    ctrl._queryQuickSearch('乌林').some((h) => h.kind === 'event' && h.year === 208),
+    'Expected merged landmark keyword "乌林" to match the 208 CE Battle of Red Cliffs event'
+  );
 
   // CUJ 9o: First-Level Administrative Boundary Deduplication, Search Deduplication & Bilingual Polish
   assert(

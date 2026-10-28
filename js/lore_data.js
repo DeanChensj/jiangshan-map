@@ -5027,13 +5027,13 @@ window.ATLAS_LORE_DATA = {
       "dynastyKey": "donghan",
       "year": 208,
       "coord": [
-        113.95,
-        29.95
+        113.94,
+        29.85
       ],
-      "site": "赤壁·江夏",
-      "siteEn": "Red Cliffs / Jiangxia",
-      "zh": "孙刘联军于赤壁火攻大破曹操，奠定三国鼎立之局",
-      "en": "Battle of Red Cliffs: Sun Quan and Liu Bei defeat Cao Cao by fire attack",
+      "site": "赤壁·乌林",
+      "siteEn": "Red Cliffs (Chibi, Hubei)",
+      "zh": "赤壁之战：周瑜黄盖统孙刘联军火烧乌林战船大破曹操，奠定三分之局",
+      "en": "Battle of Red Cliffs: Zhou Yu and Huang Gai lead the Sun-Liu fleet to burn Cao Cao's armada at Wulin",
       "month": 11.0,
       "persons": [
         "caocao",
@@ -7979,29 +7979,6 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Wu Commandery / Jingkou",
       "zh": "孙策遇刺身亡，年十九岁的孙权继领江东六郡",
       "en": "Aged nineteen, Sun Quan succeeds his brother Sun Ce and consolidates rule over Jiangdong"
-    },
-    {
-      "dynastyKey": "donghan",
-      "year": 208,
-      "coord": [
-        113.94,
-        29.85
-      ],
-      "site": "赤壁·乌林",
-      "siteEn": "Red Cliffs (Chibi, Hubei)",
-      "zh": "赤壁之战：周瑜黄盖统孙刘水军借东南风火烧乌林战船",
-      "en": "Battle of Red Cliffs: Zhou Yu and Huang Gai unleash fire ships to burn Cao Cao's armada",
-      "month": 11.0,
-      "persons": [
-        "caocao",
-        "liubei",
-        "sunquan",
-        "zhugeliang",
-        "zhouyu",
-        "guanyu",
-        "zhangfei",
-        "zhaoyun"
-      ]
     },
     {
       "dynastyKey": "donghan",
