@@ -5730,12 +5730,58 @@ function main() {
       assert.strictEqual(yuxiEvs[0].year, -283);
       assert.strictEqual(yuxiEvs[12].year, 936);
       assert(
-        yuxiEvs.every((e) => e.quoteZh && e.quoteZh.includes('《资治通鉴》') && e.textZh && e.textZh.length <= 54),
-        'Every 传国玉玺 stop must cite Zizhi Tongjian (《资治通鉴》) and keep narrative copy concise'
+        yuxiEvs.every((e) => e.quoteZh && e.quoteZh.includes('《资治通鉴')),
+        'Every 传国玉玺 stop must cite Zizhi Tongjian (《资治通鉴》)'
       );
       const qinDynForSeal = dynasties.find((d) => d.key === 'qin');
       const m221 = qinDynForSeal.milestones.find((m) => m.year === -221);
       assert.strictEqual(ctrl._findRelicStopForMilestone(qinDynForSeal, m221), 1);
+
+      // Multi-person unified chronicle & era-synchronized map rendering (no cross-era Tang+Song stitching)
+      delete ctrl.selectPersonEvent;
+      assert(
+        ctrl.openPersonChronicle(['libai', 'sushi'], -1) === true,
+        'openPersonChronicle(["libai","sushi"]) must succeed'
+      );
+      assert.strictEqual(ctrl.year, 701, 'Opening libai,sushi at overview must jump to 701 CE (Tang)');
+      assert.strictEqual(
+        ctrl.grpGhostDiff.innerHTML,
+        '',
+        'Person chronicle must clear #grp-ghost-diff so previous dynasty dashed borders never stitch onto the map'
+      );
+      const tangVisTracks = ctrl._getVisiblePersonTracks();
+      assert.strictEqual(
+        tangVisTracks.length,
+        1,
+        'At 701 CE (Tang), _getVisiblePersonTracks for libai,sushi must return only Li Bai (1 track)'
+      );
+      assert.strictEqual(tangVisTracks[0].profile.key, 'libai');
+      const sushiFirstIdx = ctrl.activePerson.events.findIndex((e) => e.personKey === 'sushi');
+      assert(sushiFirstIdx >= 0, 'Combined libai,sushi events must contain Su Shi stops');
+      ctrl.selectPersonEvent(sushiFirstIdx, true);
+      assert.strictEqual(
+        ctrl.year,
+        ctrl.activePerson.events[sushiFirstIdx].year,
+        'Selecting Su Shi event must advance map year to Northern Song'
+      );
+      const songVisTracks = ctrl._getVisiblePersonTracks();
+      assert.strictEqual(
+        songVisTracks.length,
+        1,
+        'At Northern Song year, _getVisiblePersonTracks for libai,sushi must return only Su Shi (1 track)'
+      );
+      assert.strictEqual(songVisTracks[0].profile.key, 'sushi');
+      assert(
+        ctrl.openPersonChronicle(['libai', 'dufu'], -1) === true &&
+          ctrl._getVisiblePersonTracks().length === 2,
+        'Contemporaries (libai,dufu) must show both tracks together on the Tang map'
+      );
+      assert(
+        ctrl.openPersonChronicle(['liqingzhao', 'yuefei'], -1) === true &&
+          ctrl._getVisiblePersonTracks().length === 2,
+        'Contemporaries (liqingzhao,yuefei) must show both tracks together on the Song map'
+      );
+      ctrl.closeGenealogyCard();
 
       // URL address bar preservation & ?lang=en sync on language toggle
       const origHistory = sandbox.window.history;

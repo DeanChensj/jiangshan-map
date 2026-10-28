@@ -119,14 +119,14 @@ const MCP_TOOLS = [
   {
     name: 'inspect_person',
     description:
-      'Query the spatio-temporal life & poetry chronicle (点人溯事) of a Chinese historical figure or reigning monarch on the Jiangshan Historical Atlas. Returns biographical summary, chronological geocoded stops across dynasties, and a shareable deep-link URL.',
+      'Query the spatio-temporal life & poetry chronicle (点人溯事) of a single Chinese historical figure/monarch, or compare 2–4 figures for shared encounters & parallel lives (同途相逢 / 时空平行对照) on the Jiangshan Historical Atlas. Returns biographical summary, chronological geocoded stops, shared encounter events, and a shareable deep-link URL.',
     inputSchema: {
       type: 'object',
       properties: {
         person: {
           type: 'string',
           description:
-            'Historical figure name or key in Chinese, English, or Pinyin (e.g. "sushi", "苏轼", "李白", "诸葛亮", "玄奘", "霍去病", "汉武帝").',
+            'Single figure or comma-separated figures (2–4) in Chinese, English, or Pinyin (e.g. "sushi", "苏轼", "libai,dufu", "李白,杜甫", "zhugeliang,simayi").',
         },
         stop: {
           type: 'integer',

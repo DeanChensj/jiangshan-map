@@ -1,14 +1,14 @@
 ---
 name: jiangshan-atlas
-description: Locate historical Chinese events, classical poems, battles, and ancient places on the Jiangshan Historical Atlas (江山时序, 403 BCE – 2026 CE) by resolving a question into (year, place), generating an interactive deep-link URL, inspecting structured administrative context, and optionally rendering a high-resolution map screenshot. Use when the user asks about the time, location, territorial context, or administrative genealogy of a Chinese historical event, poem (e.g. "雪拥蓝关马不前"), person, or ancient place.
+description: Locate historical Chinese events, classical poems, battles, ancient places, and single or multi-person life trajectories on the Jiangshan Historical Atlas (江山时序, 403 BCE – 2026 CE) by resolving a question into (year, place) or (--person A,B), generating an interactive deep-link URL, inspecting structured administrative/biographical context, and optionally rendering a high-resolution map screenshot. Use when the user asks about the time, location, territorial context, administrative genealogy, life trajectory, or shared historical encounters of Chinese historical events, poems (e.g. "雪拥蓝关马不前"), figures (e.g. "李白和杜甫在哪里相遇", "诸葛亮与司马懿交锋"), or ancient places.
 ---
 
 # Jiangshan Historical Atlas (`江山时序`) Skill
 
-Use **江山时序 (Jiangshan Atlas)** to turn any question about Chinese history, classical literature, poetry, battles, or ancient geography into:
-1. A clickable **interactive deep-link URL** (`?year=<YEAR>&place=<PLACE>`)
-2. **Structured historical & administrative context (`--inspect`)** returning the exact reign era, regime (`polity`), macro-region (`道/路/行省`), prefecture (`郡/州/府`), modern province, nearest ancient city (with capital status and era-specific historical `remark`), and the 2,400-year city/pass overview (`lore` with bilingual `tag`/`desc` and `tagEn`/`descEn`)
-3. An optional **high-resolution rendered map screenshot (`--out`)** showing dynastic territories, mountains/rivers, red pinpoint marker or multi-stop trajectory, and the 2,000-year administrative genealogy card (`点地溯源 · 古今政区沿革`).
+Use **江山时序 (Jiangshan Atlas)** to turn any question about Chinese history, classical literature, poetry, battles, historical figures, or ancient geography into:
+1. A clickable **interactive deep-link URL** (`?year=<YEAR>&place=<PLACE>` or `?person=<FIGURES>`)
+2. **Structured historical & administrative context (`--inspect`)** returning the exact reign era, regime (`polity`), macro-region (`道/路/行省`), prefecture (`郡/州/府`), modern province, nearest ancient city (with capital status and era-specific historical `remark`), the 2,400-year city/pass overview (`lore` with bilingual `tag`/`desc` and `tagEn`/`descEn`), or single/multi-person life trajectories and shared historical encounters (`person.encounters`)
+3. An optional **high-resolution rendered map screenshot (`--out`)** showing dynastic territories, mountains/rivers, red pinpoint marker, single/multi-person trajectory (`点人溯事 · 同途相逢 / 时空平行对照`), or the 2,000-year administrative genealogy card (`点地溯源 · 古今政区沿革`).
 
 ## Workflow (Deduce Time & Place First → Inspect & Build URL → Optional Screenshot)
 
@@ -38,7 +38,8 @@ https://deanchen.me/jiangshan-map/?year=<YEAR>&place=<PLACE>
 
 - **Single site (0D pinpoint)**: `year=<INT>&place=<SITE>` in Chinese or English/Pinyin (e.g., `?year=1102&place=浔阳`, `?year=819&place=蓝关`, or `?year=819&place=Lantian+Pass&lang=en`).
 - **Multi-stop route (1D same-year / 4D multi-year trajectory)**: Pass comma-separated place names in chronological order (`place=剑外,巴峡,巫峡,襄阳,洛阳` with `year=763`, or `place=Huzhou,Huangzhou,Huizhou,Danzhou` with `year=1079,1080,1094,1097`). The atlas draws a curved crimson trajectory (`1` → `2` → `3`...), frames the camera bounding box, and lets the user click any numbered stop to jump to its year and open its 2,000-year administrative genealogy card.
-- **Person Chronicle (`person=<FIGURE>&stop=<INDEX>`)**: Opens the curated multi-stop life & poetry trajectory (`点人溯事`) for any of the 113 curated historical figures (such as `sushi`, `zhugeliang`, `huoqubing`, `libai`, `caocao`, `xinqiji`, `xuanzang`, `wangyangming`, `zhangqian`, `dufu`, `baijuyi`, `hanyu`, `liuyuxi`, `yuefei`, `wentianxiang`, `zhenghe`, `banzhao`, `wangzhaojun`, `wenji`, `mulan`, `liqingzhao`, `qinshihuang`, `xiangyu`, `simamaqian`, `weiqing`, `banchao`, `zengguofan`, etc.) or any reigning monarch with ≥2 historical milestones in Chinese, English, or Pinyin (`?person=sushi` or `?person=sushi&stop=2`).
+- **Person Chronicle (`person=<FIGURE>&stop=<INDEX>`)**: Opens the curated multi-stop life & poetry trajectory (`点人溯事 · 人物生平纪事`) for any of the 113+ curated historical figures (such as `sushi`, `zhugeliang`, `huoqubing`, `libai`, `caocao`, `xinqiji`, `xuanzang`, `wangyangming`, `zhangqian`, `dufu`, `baijuyi`, `hanyu`, `liuyuxi`, `yuefei`, `wentianxiang`, `zhenghe`, `banzhao`, `wangzhaojun`, `wenji`, `mulan`, `liqingzhao`, `qinshihuang`, `xiangyu`, `simamaqian`, `weiqing`, `banchao`, `zengguofan`, etc.), any reigning monarch with ≥2 historical milestones, or the `传国玉玺` (`yuxi`) relic in Chinese, English, or Pinyin (`?person=sushi` or `?person=sushi&stop=2`).
+- **Multi-Person Chronicle (`person=<FIG1>,<FIG2>`)**: Pass 2–4 comma-separated figures (`?person=libai,dufu`, `?person=zhugeliang,simayi`, `?person=liubei,caocao`, `?person=xiangyu,liubang`, `?person=wanganshi,simaguang`, `?person=xuanzang,lishimin`, `?person=liqingzhao,yuefei`, or `?person=libai,sushi`). Merges all selected figures onto one unified chronological timeline and map layer: solo events carry a single badge (`[🔴 李白]`) and map bead, while co-located / co-participating events ($|\Delta\text{year}| \le 3,\ \le 45\text{ km}$) naturally carry both badges (`[🔴 李白] [🔵 杜甫]`) and a dual-dot capsule `(🔴🔵)` on the map.
 - **Optional `hover=<PREFECTURE>`**: Highlights one 州/府/郡 polygon of that year's snapshot and pops its tooltip (`江州 · 属 宋 · 今：江西省`). Supports both Chinese and English/Pinyin prefecture titles **in that era** (`hover=江州` or `hover=Jiangzhou` in 1102, `hover=黄州` or `hover=Huangzhou` in 1083, `hover=应天府` or `hover=Yingtian Fu` in 1415). Pair with `place` so the camera frames the prefecture (`?year=1102&place=浔阳&hover=江州`).
 - **Optional `lang=zh-tw` / `lang=en`**: Renders the Traditional Chinese (`lang=zh-tw`) or English (`lang=en`) atlas UI when the user writes in Traditional Chinese or English, or asks for a Traditional Chinese / English map (`place`, `person`, and `hover` work in Simplified Chinese, Traditional Chinese, or English/Pinyin, e.g., `?year=741&place=長安&lang=zh-tw` or `?year=1082&place=Huangzhou&hover=Huangzhou&lang=en`).
 
@@ -47,6 +48,7 @@ Use `--inspect` to verify place or figure resolution and retrieve structured his
 ```bash
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --year 1102 --place 浔阳 --hover 江州 --inspect
 python3 skills/jiangshan-atlas/scripts/jiangshan.py --person sushi --stop 2 --inspect
+python3 skills/jiangshan-atlas/scripts/jiangshan.py --person libai,dufu --inspect
 ```
 
 | User Prompt | Step 1: Historical & Geographic Deduction (先考据) | Step 2: Deep-Link URL (后构建 URL) |
@@ -55,6 +57,8 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py --person sushi --stop 2 --in
 | *"雪拥蓝关马不前 当时是什么时间地点？"* | 韩愈于**唐宪宗元和十四年**（`819` 年）贬潮州途中经秦岭**蓝田关（蓝关）**（今陕西西安蓝田） | `https://deanchen.me/jiangshan-map/?year=819&place=蓝关` |
 | *"杜甫《闻官军收河南河北》即从巴峡穿巫峡，便下襄阳向洛阳路线？"* | **唐代宗广德元年**（`763` 年）杜甫在剑外（四川梓州）闻叛乱平定，规划同年水陆返洛阳路线 | `https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳` |
 | *"苏轼问汝平生功业，黄州惠州儋州贬谪路线？"* | 苏轼自乌台诗案（`1079` 湖州）起，历贬**黄州**（`1080`）、**惠州**（`1094`）、**儋州**（`1097`） | `https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州` |
+| *"李白和杜甫一辈子在哪些地方相遇过？"* | 唐天宝三载至四载（`744–745`），李白与杜甫先后于**洛阳**初遇、同游**梁宋（开封）**、齐鲁**兖州**话别 | `https://deanchen.me/jiangshan-map/?person=libai,dufu` |
+| *"诸葛亮北伐与司马懿在哪几处正面交锋？"* | 蜀汉建兴六年至十二年（`228–234`），两人先后于**祁山**、**卤城/木门道**、**五丈原**展开宿命对决 | `https://deanchen.me/jiangshan-map/?person=zhugeliang,simayi` |
 | *"文天祥《过零丁洋》惶恐滩头说惶恐，零丁洋里叹零丁抗元路线？"* | 南宋末文天祥自**赣州**起兵（`1275`），撤退经江西万安**惶恐滩**（`1277`），于珠江口**零丁洋**被俘（`1278`），至**崖山**海战（`1279`） | `https://deanchen.me/jiangshan-map/?year=1275,1277,1278,1279&place=赣州,惶恐滩,零丁洋,崖山` |
 | *"辛弃疾写京口北固亭怀古时天下局势如何？"* | **南宋宁宗开禧元年**（`1205` 年）辛弃疾任镇江知府，登**京口**（今江苏镇江）北固亭北望金朝 | `https://deanchen.me/jiangshan-map/?year=1205&place=京口` |
 | *"苏轼写《记承天寺夜游》时黄州归哪里管？"* | **北宋神宗元丰六年**（`1083` 年）苏轼贬居淮南西路**黄州**（今湖北黄冈），高亮黄州州界 | `https://deanchen.me/jiangshan-map/?year=1083&place=黄州&hover=黄州` |
@@ -89,4 +93,10 @@ python3 skills/jiangshan-atlas/scripts/jiangshan.py \
   --place 湖州,黄州,惠州,儋州 \
   --inspect \
   --out /tmp/jiangshan_sushi_exile_route.png
+
+# 4. Multi-person shared encounters / parallel lives comparison
+python3 skills/jiangshan-atlas/scripts/jiangshan.py \
+  --person libai,dufu \
+  --inspect \
+  --out /tmp/jiangshan_libai_dufu.png
 ```
