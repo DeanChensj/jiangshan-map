@@ -793,22 +793,25 @@ h2 {
 }
 
 .polity-shape.neighbor {
-  fill: rgba(168, 122, 76, 0.16);
+  fill: rgba(168, 122, 76, 0.14);
   fill-opacity: 1;
-  stroke: #7a4b2a;
-  stroke-dasharray: 3 3;
-  stroke-width: 1.15;
+  stroke: none;
 }
 
 #atlas-svg.terrain-active .polity-shape.neighbor {
   mix-blend-mode: normal;
   fill: rgba(168, 122, 76, 0.11);
   fill-opacity: 1;
+  stroke: none;
 }
 
-.polity-shape.neighbor:hover {
+.polity-shape.neighbor:hover,
+#grp-polities.has-polity-focus .polity-shape.neighbor.is-focused {
   fill: rgba(168, 122, 76, 0.28);
   fill-opacity: 1;
+  stroke: rgba(122, 75, 42, 0.65);
+  stroke-dasharray: 4 3;
+  stroke-width: 1.1;
 }
 
 /* First-Level Macro Administrative Regions (道/州/路/行省/布政使司/省) */
@@ -4310,8 +4313,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
   .polity-shape.neighbor,
   #atlas-svg.terrain-active .polity-shape.neighbor {
-    stroke-width: 0.68;
-    stroke-dasharray: 2.5 2.5;
+    stroke: none;
     fill: rgba(138, 124, 107, 0.1);
     fill-opacity: 1;
   }
