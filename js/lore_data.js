@@ -11794,7 +11794,7 @@ window.ATLAS_LORE_DATA = {
           "eraZh": "秦王政十一年",
           "ancientZh": "邺城",
           "modernZh": "河北临漳西南",
-          "ancientEn": "Ye (Yecheng)",
+          "ancientEn": "Ye",
           "modernEn": "Linzhang, Hebei",
           "coord": [
             114.35,
@@ -11897,7 +11897,7 @@ window.ATLAS_LORE_DATA = {
           "eraZh": "秦王政二十一年",
           "ancientZh": "蓟城",
           "modernZh": "北京西南",
-          "ancientEn": "Jicheng (Yan Capital)",
+          "ancientEn": "Jicheng",
           "modernEn": "Beijing",
           "coord": [
             116.32,
@@ -12004,7 +12004,7 @@ window.ATLAS_LORE_DATA = {
           "eraZh": "秦王政二十五年",
           "ancientZh": "襄平",
           "modernZh": "辽宁辽阳",
-          "ancientEn": "Xiangping (Liaodong)",
+          "ancientEn": "Xiangping",
           "modernEn": "Liaoyang, Liaoning",
           "coord": [
             123.17,
@@ -12138,9 +12138,9 @@ window.ATLAS_LORE_DATA = {
             37.93
           ],
           "labelPos": "top",
-          "ancientZh": "姑臧（河西）",
+          "ancientZh": "姑臧",
           "modernZh": "甘肃武威",
-          "ancientEn": "Guzang (Hexi)",
+          "ancientEn": "Guzang",
           "modernEn": "Wuwei, Gansu",
           "titleZh": "羁留匈奴·持节十载",
           "titleEn": "Detained by the Xiongnu for a Decade",
@@ -12151,6 +12151,10 @@ window.ATLAS_LORE_DATA = {
           "persons": [
             "zhangqian",
             "hanwudi"
+          ],
+          "aliases": [
+            "河西",
+            "姑臧（河西）"
           ]
         },
         {
@@ -12169,7 +12173,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "焉耆",
           "modernZh": "新疆焉耆",
-          "ancientEn": "Yanqi (Karasahr)",
+          "ancientEn": "Yanqi",
           "modernEn": "Yanqi, Xinjiang",
           "titleZh": "乘隙脱走·疾驰西域北道",
           "titleEn": "Escape Along the Northern Tarim Oasis Route",
@@ -12194,7 +12198,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "bottom",
           "ancientZh": "大宛贰师城",
           "modernZh": "费尔干纳盆地",
-          "ancientEn": "Dayuan (Fergana)",
+          "ancientEn": "Dayuan",
           "modernEn": "Fergana Valley",
           "titleZh": "越葱岭抵大宛·得发导译",
           "titleEn": "Crossing the Pamirs to Dayuan (Fergana)",
@@ -12213,7 +12217,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "康居",
           "modernZh": "锡尔河中游",
-          "ancientEn": "Kangju (Sogdiana)",
+          "ancientEn": "Kangju",
           "modernEn": "Tashkent / Samarkand region",
           "titleZh": "经康居传致大月氏",
           "titleEn": "Relay Through Kangju to the Oxus",
@@ -12257,7 +12261,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "bottom",
           "ancientZh": "于阗",
           "modernZh": "新疆和田",
-          "ancientEn": "Khotan (Yutian)",
+          "ancientEn": "Khotan",
           "modernEn": "Hotan, Xinjiang",
           "titleZh": "循昆仑南道东归·复陷匈奴",
           "titleEn": "Return via the Southern Tarim Route",
@@ -12284,9 +12288,9 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "长安（归汉）",
+          "ancientZh": "长安",
           "modernZh": "陕西西安",
-          "ancientEn": "Chang'an (Return)",
+          "ancientEn": "Chang'an",
           "modernEn": "Xi'an, Shaanxi",
           "titleZh": "持节归朝·丝路凿空",
           "titleEn": "Return to Chang'an — Opening the Silk Road",
@@ -12298,6 +12302,10 @@ window.ATLAS_LORE_DATA = {
             "zhangqian",
             "hanwudi",
             "weiqing"
+          ],
+          "aliases": [
+            "归汉",
+            "长安（归汉）"
           ]
         }
       ]
@@ -12321,9 +12329,9 @@ window.ATLAS_LORE_DATA = {
             32
           ],
           "labelPos": "top",
-          "ancientZh": "隆中（襄阳）",
+          "ancientZh": "隆中",
           "modernZh": "湖北襄阳",
-          "ancientEn": "Longzhong (Xiangyang)",
+          "ancientEn": "Longzhong",
           "modernEn": "Xiangyang, Hubei",
           "titleZh": "三顾茅庐·隆中决策",
           "titleEn": "Three Visits to the Thatched Cottage — The Longzhong Plan",
@@ -12337,6 +12345,10 @@ window.ATLAS_LORE_DATA = {
             "guanyu",
             "zhangfei",
             "zhaoyun"
+          ],
+          "aliases": [
+            "襄阳",
+            "隆中（襄阳）"
           ]
         },
         {
@@ -12380,7 +12392,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "赤壁",
           "modernZh": "湖北赤壁",
-          "ancientEn": "Red Cliffs (Chibi)",
+          "ancientEn": "Red Cliffs",
           "modernEn": "Chibi, Hubei",
           "titleZh": "赤壁鏖兵·三分奠基",
           "titleEn": "Allied Victory at the Red Cliffs",
@@ -12443,9 +12455,9 @@ window.ATLAS_LORE_DATA = {
             30.67
           ],
           "labelPos": "top",
-          "ancientZh": "成都（武担山）",
+          "ancientZh": "成都",
           "modernZh": "四川成都",
-          "ancientEn": "Chengdu (Capital of Shu Han)",
+          "ancientEn": "Chengdu",
           "modernEn": "Chengdu, Sichuan",
           "titleZh": "劝进昭烈·开府拜相",
           "titleEn": "Founding of Shu Han & Appointment as Imperial Chancellor",
@@ -12457,6 +12469,10 @@ window.ATLAS_LORE_DATA = {
             "zhugeliang",
             "liubei",
             "zhaoyun"
+          ],
+          "aliases": [
+            "武担山",
+            "成都（武担山）"
           ]
         },
         {
@@ -12473,9 +12489,9 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "永安（白帝城）",
+          "ancientZh": "白帝城",
           "modernZh": "重庆奉节",
-          "ancientEn": "Yong'an (Baidicheng)",
+          "ancientEn": "Baidicheng",
           "modernEn": "Fengjie, Chongqing",
           "titleZh": "白帝托孤·受命危难",
           "titleEn": "Entrustment of the Orphan Emperor at Baidicheng",
@@ -12487,6 +12503,10 @@ window.ATLAS_LORE_DATA = {
             "zhugeliang",
             "liubei",
             "zhaoyun"
+          ],
+          "aliases": [
+            "永安",
+            "永安（白帝城）"
           ]
         },
         {
@@ -12507,16 +12527,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "滇池（南中）",
+          "ancientZh": "滇池",
           "modernZh": "云南昆明",
-          "ancientEn": "Dianchi (Nanzhong)",
+          "ancientEn": "Dianchi",
           "modernEn": "Kunming, Yunnan",
           "titleZh": "渡泸南征·七擒孟获",
           "titleEn": "Southern Campaign Across the Lu River — Pacifying Nanzhong",
           "descZh": "为解除北伐后顾之忧，诸葛亮率军自安上水路入越巂，五月渡泸水（金沙江），采马谡“攻心为上”之策，七擒七纵孟获，平定益州、永昌、牂牁、越巂四郡，皆即其渠帅而用之，终亮之世南方不复反。",
           "descEn": "Marching south across the Jinsha (Lu) River in summer 225 CE, Zhuge Liang adopted the strategy of \"winning hearts above all,\" capturing and releasing Meng Huo seven times to secure the southern frontier.",
           "quoteZh": "《汉晋春秋》：“亮笑，纵使更战，七纵七禽，而亮犹遣获。获止不去，曰：‘公，天威也，南人不复反矣。’”",
-          "quoteEn": "Annals of Han and Jin: \"Captured and released seven times, Meng Huo bowed and refused to leave, saying: 'Your Excellency possesses the majesty of Heaven; the south will never rebel again.'\""
+          "quoteEn": "Annals of Han and Jin: \"Captured and released seven times, Meng Huo bowed and refused to leave, saying: 'Your Excellency possesses the majesty of Heaven; the south will never rebel again.'\"",
+          "aliases": [
+            "南中",
+            "滇池（南中）"
+          ]
         },
         {
           "year": 227,
@@ -12536,16 +12560,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "汉中（沔阳）",
+          "ancientZh": "汉中",
           "modernZh": "陕西汉中",
-          "ancientEn": "Hanzhong (Mianyang)",
+          "ancientEn": "Hanzhong",
           "modernEn": "Hanzhong, Shaanxi",
           "titleZh": "进驻汉中·上出师表",
           "titleEn": "Garrisoning Hanzhong & Presenting the Chu Shi Biao",
           "descZh": "南中既定，诸葛亮率诸军北驻汉中沔阳，临发向后主刘禅奏呈千古名篇《出师表》，勉以亲贤臣远小人、兴复汉室还于旧都，以汉中为北伐大本营经略关陇。",
           "descEn": "Establishing his forward headquarters at Hanzhong, Zhuge Liang submitted his immortal Memorial on Deploying the Troops (Chu Shi Biao) to Emperor Liu Shan before marching north.",
           "quoteZh": "诸葛亮《出师表》：“今南方已定，兵甲已足，当奖率三军，北定中原，庶竭驽钝，攘除奸凶，兴复汉室，还于旧都。”",
-          "quoteEn": "Zhuge Liang, Former Chu Shi Biao: \"Now the south is pacified and our armor is sufficient; I ought to lead the Three Armies to secure the Central Plains and restore the House of Han.\""
+          "quoteEn": "Zhuge Liang, Former Chu Shi Biao: \"Now the south is pacified and our armor is sufficient; I ought to lead the Three Armies to secure the Central Plains and restore the House of Han.\"",
+          "aliases": [
+            "沔阳",
+            "汉中（沔阳）"
+          ]
         },
         {
           "year": 228,
@@ -12563,7 +12591,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "祁山",
           "modernZh": "甘肃礼县",
-          "ancientEn": "Mount Qi (Qishan)",
+          "ancientEn": "Mount Qi",
           "modernEn": "Lixian, Gansu",
           "titleZh": "一出祁山·收姜维失街亭",
           "titleEn": "First Expedition from Mount Qi — Recruiting Jiang Wei",
@@ -12586,9 +12614,9 @@ window.ATLAS_LORE_DATA = {
             34.22
           ],
           "labelPos": "bottom",
-          "ancientZh": "木门道（卤城）",
+          "ancientZh": "木门道",
           "modernZh": "甘肃天水西南",
-          "ancientEn": "Mumen Trail (Lucheng)",
+          "ancientEn": "Mumen Trail",
           "modernEn": "Tianshui SW, Gansu",
           "titleZh": "木牛流马·木门道射杀张郃",
           "titleEn": "Fourth Expedition — Victory at Lucheng & Mumen Ambush",
@@ -12600,6 +12628,10 @@ window.ATLAS_LORE_DATA = {
             "zhugeliang",
             "simayi",
             "jiangwei"
+          ],
+          "aliases": [
+            "卤城",
+            "木门道（卤城）"
           ]
         },
         {
@@ -12620,9 +12652,9 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "五丈原（岐山）",
+          "ancientZh": "五丈原",
           "modernZh": "陕西宝鸡岐山",
-          "ancientEn": "Wuzhang Plains (Qishan)",
+          "ancientEn": "Wuzhang Plains",
           "modernEn": "Qishan, Baoji, Shaanxi",
           "titleZh": "出斜谷屯五丈原·秋风星落",
           "titleEn": "Final Stand on the Wuzhang Plains",
@@ -12634,6 +12666,10 @@ window.ATLAS_LORE_DATA = {
             "zhugeliang",
             "simayi",
             "jiangwei"
+          ],
+          "aliases": [
+            "岐山",
+            "五丈原（岐山）"
           ]
         }
       ]
@@ -12695,16 +12731,20 @@ window.ATLAS_LORE_DATA = {
             40.52
           ],
           "labelPos": "bottom",
-          "ancientZh": "瓜州（玉门关）",
+          "ancientZh": "瓜州",
           "modernZh": "甘肃瓜州",
-          "ancientEn": "Guazhou (Jade Gate)",
+          "ancientEn": "Guazhou",
           "modernEn": "Guazhou, Gansu",
           "titleZh": "夜渡葫芦河·闯莫贺延碛",
           "titleEn": "Crossing the Gobi of Moheyan",
           "descZh": "州吏李昌感其诚而暗撕通缉牒文。玄奘夜渡葫芦河、独闯五烽，于八百里莫贺延碛失手覆水，四夜五日滴水未进，绝处逢生终抵伊吾。",
           "descEn": "Crossing the Hulu River by night past five watchtowers, Xuanzang survived five days and four nights without water in the 800-li Moheyan Desert.",
           "quoteZh": "《大慈恩寺三藏法师传》：“莫贺延碛长八百余里，古曰沙河，上无飞鸟，下无走兽。”",
-          "quoteEn": "Biography of the Tripitaka Master: \"The Moheyan Desert stretches over 800 li—no birds above, no beasts below.\""
+          "quoteEn": "Biography of the Tripitaka Master: \"The Moheyan Desert stretches over 800 li—no birds above, no beasts below.\"",
+          "aliases": [
+            "玉门关",
+            "瓜州（玉门关）"
+          ]
         },
         {
           "year": 628,
@@ -12716,7 +12756,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "高昌王城",
           "modernZh": "新疆吐鲁番",
-          "ancientEn": "Gaochang (Qocho)",
+          "ancientEn": "Gaochang",
           "modernEn": "Turpan, Xinjiang",
           "titleZh": "高昌结义·修书通西域",
           "titleEn": "Sworn Brotherhood with the King of Gaochang",
@@ -12733,16 +12773,20 @@ window.ATLAS_LORE_DATA = {
             41.72
           ],
           "labelPos": "bottom",
-          "ancientZh": "屈支（龟兹）",
+          "ancientZh": "龟兹",
           "modernZh": "新疆库车",
-          "ancientEn": "Kucha (Quzhi)",
+          "ancientEn": "Kucha",
           "modernEn": "Kuqa, Xinjiang",
           "titleZh": "驻锡龟兹·翻越凌山雪岭",
           "titleEn": "Kucha Oasis & Crossing the Icy Tian Shan",
           "descZh": "在龟兹与高僧木叉毱多论辩经义，因大雪封山逗留六十余日；开春后翻越积雪千尺的凌山（天山木扎尔特达坂），历经雪崩严寒出天山北麓。",
           "descEn": "Delayed two months in Kucha by winter snows, Xuanzang then scaled the glacial Muzart Pass of the Tian Shan.",
           "quoteZh": "《大唐西域记》：“山谷积雪，春夏合冻，虽时消泮，寻复结冰。”",
-          "quoteEn": "Great Tang Records on the Western Regions: \"The mountain valleys are piled with snow, frozen through spring and summer.\""
+          "quoteEn": "Great Tang Records on the Western Regions: \"The mountain valleys are piled with snow, frozen through spring and summer.\"",
+          "aliases": [
+            "屈支",
+            "屈支（龟兹）"
+          ]
         },
         {
           "year": 628,
@@ -12754,7 +12798,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "碎叶城",
           "modernZh": "吉尔吉斯斯坦托克马克",
-          "ancientEn": "Suyab (Suiye)",
+          "ancientEn": "Suyab",
           "modernEn": "Tokmok, Kyrgyzstan",
           "titleZh": "过大清池·会西突厥叶护可汗",
           "titleEn": "Audience with the Western Turkic Khagan at Suyab",
@@ -12777,16 +12821,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "缚喝（大夏）",
+          "ancientZh": "缚喝",
           "modernZh": "阿富汗巴尔赫",
-          "ancientEn": "Balkh (Fohe)",
+          "ancientEn": "Balkh",
           "modernEn": "Balkh, Afghanistan",
           "titleZh": "过铁门关·参礼小王舍城",
           "titleEn": "Through the Iron Gate to Balkh",
           "descZh": "经赭时（塔什干）、飒秣建（撒马尔罕），穿险峻铁门关，渡缚刍河（阿姆河）抵号称“小王舍城”的缚喝国，与般若羯罗法师切磋毗婆沙论。",
           "descEn": "Passing Samarkand and the Iron Gate Pass across the Oxus to Balkh (\"Little Rajagrha\"), studying Abhidharma texts at Nava Vihara.",
           "quoteZh": "《大唐西域记》：“缚喝国，伽蓝百有余所，僧徒三千余人。”",
-          "quoteEn": "Great Tang Records: \"The Kingdom of Balkh has over a hundred monasteries and more than three thousand monks.\""
+          "quoteEn": "Great Tang Records: \"The Kingdom of Balkh has over a hundred monasteries and more than three thousand monks.\"",
+          "aliases": [
+            "大夏",
+            "缚喝（大夏）"
+          ]
         },
         {
           "year": 629,
@@ -12798,7 +12846,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "bottom",
           "ancientZh": "健驮逻",
           "modernZh": "巴基斯坦白沙瓦",
-          "ancientEn": "Gandhara (Purushapura)",
+          "ancientEn": "Gandhara",
           "modernEn": "Peshawar, Pakistan",
           "titleZh": "越雪山礼大佛·入天竺求法",
           "titleEn": "Crossing the Hindu Kush into Gandhara & India",
@@ -12836,7 +12884,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "曲女城",
           "modernZh": "印度北方邦卡瑙季",
-          "ancientEn": "Kanyakubja (Kannauj)",
+          "ancientEn": "Kanyakubja",
           "modernEn": "Kannauj, Uttar Pradesh, India",
           "titleZh": "曲女城大会·十八日无人能难",
           "titleEn": "The Grand Debate at Kannauj",
@@ -12871,16 +12919,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "于阗（瞿萨旦那）",
+          "ancientZh": "于阗",
           "modernZh": "新疆和田",
-          "ancientEn": "Khotan (Kustana)",
+          "ancientEn": "Khotan",
           "modernEn": "Hotan, Xinjiang",
           "titleZh": "越葱岭载经东归·奉表唐廷",
           "titleEn": "Return via Khotan & Memorial to Emperor Taizong",
           "descZh": "载梵本经论越帕米尔高原东归至于阗，遣使向唐太宗奉表陈情；此时大唐已平定高昌、设安西都护府，太宗降敕欣慰迎归，命沿途州县护送。",
           "descEn": "Returning across the Pamirs to Khotan with Sanskrit scriptures, Xuanzang sent a memorial to Emperor Taizong, who issued an imperial edict welcoming him home.",
           "quoteZh": "《进西域记表》：“冒越宪章，私往天竺……历览周游，一十七载。”",
-          "quoteEn": "Memorial to the Throne: \"Having ventured beyond the border laws to India, I traveled and observed for seventeen years.\""
+          "quoteEn": "Memorial to the Throne: \"Having ventured beyond the border laws to India, I traveled and observed for seventeen years.\"",
+          "aliases": [
+            "瞿萨旦那",
+            "于阗（瞿萨旦那）"
+          ]
         },
         {
           "year": 645,
@@ -12900,9 +12952,9 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "长安（归唐）",
+          "ancientZh": "长安",
           "modernZh": "陕西西安",
-          "ancientEn": "Chang'an (Return)",
+          "ancientEn": "Chang'an",
           "modernEn": "Xi'an, Shaanxi",
           "titleZh": "归至京师·开场译经撰记",
           "titleEn": "Triumphal Return to Chang'an & Translation Bureau",
@@ -12915,7 +12967,11 @@ window.ATLAS_LORE_DATA = {
             "lishimin",
             "wuzetian"
           ],
-          "month": 2.0
+          "month": 2.0,
+          "aliases": [
+            "归唐",
+            "长安（归唐）"
+          ]
         }
       ]
     },
@@ -12940,7 +12996,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "碎叶城",
           "modernZh": "吉尔吉斯斯坦托克马克",
-          "ancientEn": "Suyab (Anxi Protectorate)",
+          "ancientEn": "Suyab",
           "modernEn": "Tokmok, Kyrgyzstan",
           "titleZh": "诞于西域·安西碎叶",
           "titleEn": "Birth at Suyab in the Western Regions",
@@ -12971,7 +13027,7 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "绵州昌隆（青莲）",
+          "ancientZh": "绵州青莲",
           "modernZh": "四川江油青莲镇",
           "ancientEn": "Qinglian, Mianzhou",
           "modernEn": "Jiangyou, Sichuan",
@@ -12980,7 +13036,12 @@ window.ATLAS_LORE_DATA = {
           "descZh": "随父客居剑南道绵州昌隆县青莲乡（自号“青莲居士”）。少时博学广览、好剑术任侠，隐大匡山读书，后游成都、登峨眉，受道士司马承祯赞为“有仙风道骨，可与神游八极之表”，作《大鹏遇希有鸟赋》。",
           "descEn": "Settling in Qinglian in Mianzhou (whence his sobriquet \"Layman of Blue Lotus\"), young Li Bai practiced swordsmanship, studied on Mount Dakuang, climbed Mount Emei, and was praised by Taoist master Sima Chengzhen as having \"immortal bones.\"",
           "quoteZh": "李白《上安州裴长史书》：“五岁诵六甲，十岁观百家……十五观奇书，作赋凌相如。”",
-          "quoteEn": "Li Bai, Letter to Administrator Pei of Anzhou: \"At five I recited the calendar classics; at ten I read the Hundred Schools; at fifteen I composed rhapsodies rivaling Sima Xiangru.\""
+          "quoteEn": "Li Bai, Letter to Administrator Pei of Anzhou: \"At five I recited the calendar classics; at ten I read the Hundred Schools; at fifteen I composed rhapsodies rivaling Sima Xiangru.\"",
+          "aliases": [
+            "绵州昌隆",
+            "青莲",
+            "绵州昌隆（青莲）"
+          ]
         },
         {
           "year": 724,
@@ -13021,16 +13082,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "荆门（宜都）",
+          "ancientZh": "荆门",
           "modernZh": "湖北宜都",
-          "ancientEn": "Jingmen (Yidu)",
+          "ancientEn": "Jingmen",
           "modernEn": "Yidu, Hubei",
           "titleZh": "仗剑去国·辞亲出三峡",
           "titleEn": "Leaving Shu with Sword in Hand Through the Three Gorges",
           "descZh": "怀济世远志“仗剑去国，辞亲远游”，自渝州穿瞿塘、巫峡、西陵三峡，出荆门山初见江汉平原天地壮阔，写下《渡荆门送别》。",
           "descEn": "Sailing through the Three Gorges past Jingmen Mountain into the vast Jianghan Plain, Li Bai began his grand travels across the Tang Empire.",
           "quoteZh": "李白《渡荆门送别》：“山随平野尽，江入大荒流。月下飞天镜，云生结海楼。”",
-          "quoteEn": "Li Bai, Farewell at Jingmen: \"Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions.\""
+          "quoteEn": "Li Bai, Farewell at Jingmen: \"Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions.\"",
+          "aliases": [
+            "宜都",
+            "荆门（宜都）"
+          ]
         },
         {
           "year": 726,
@@ -13054,16 +13119,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "ancientZh": "扬州（广陵）",
+          "ancientZh": "扬州",
           "modernZh": "江苏扬州",
-          "ancientEn": "Yangzhou (Guangling)",
+          "ancientEn": "Yangzhou",
           "modernEn": "Yangzhou, Jiangsu",
           "titleZh": "漫游吴越·散金三十万",
           "titleEn": "Grand Tour of Wu-Yue & Spending 300,000 Cash in Yangzhou",
           "descZh": "顺江东下，登庐山望瀑布、游金陵怀古，转赴繁华甲天下的淮南都会扬州与吴越诸郡，豪爽济困，“不逾一年，散金三十余万”，写就《望庐山瀑布》《静夜思》等千古绝唱。",
           "descEn": "Sailing down the lower Yangtze past Mount Lu and Jinling to prosperous Yangzhou, Li Bai generously aided destitute scholars—giving away over 300,000 coins within a year—and composed Quiet Night Thought.",
           "quoteZh": "李白《上安州裴长史书》：“曩昔东游维扬，不逾一年，散金三十余万，有落魄公子，悉皆济之。”",
-          "quoteEn": "Li Bai: \"Formerly traveling east to Yangzhou, in less than a year I scattered more than three hundred thousand in gold, coming to the aid of every stranded gentleman.\""
+          "quoteEn": "Li Bai: \"Formerly traveling east to Yangzhou, in less than a year I scattered more than three hundred thousand in gold, coming to the aid of every stranded gentleman.\"",
+          "aliases": [
+            "广陵",
+            "扬州（广陵）"
+          ]
         },
         {
           "year": 727,
@@ -13167,9 +13236,9 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "梁宋（睢阳）",
+          "ancientZh": "睢阳",
           "modernZh": "河南商丘",
-          "ancientEn": "Liang-Song (Suiyang)",
+          "ancientEn": "Suiyang",
           "modernEn": "Shangqiu, Henan",
           "titleZh": "梁园豪游·偕杜甫高适猎孟诸",
           "titleEn": "Roaming Liang-Song with Du Fu & Gao Shi",
@@ -13180,6 +13249,10 @@ window.ATLAS_LORE_DATA = {
           "persons": [
             "libai",
             "dufu"
+          ],
+          "aliases": [
+            "梁宋",
+            "梁宋（睢阳）"
           ]
         },
         {
@@ -13190,9 +13263,9 @@ window.ATLAS_LORE_DATA = {
             35.41
           ],
           "labelPos": "top",
-          "ancientZh": "齐鲁（兖州任城）",
+          "ancientZh": "任城",
           "modernZh": "山东济宁",
-          "ancientEn": "Qilu (Rencheng, Yanzhou)",
+          "ancientEn": "Rencheng",
           "modernEn": "Jining, Shandong",
           "titleZh": "东游齐鲁·梦游天姥",
           "titleEn": "Sojourn in Qilu & Dreaming of Mount Tianmu",
@@ -13203,6 +13276,11 @@ window.ATLAS_LORE_DATA = {
           "persons": [
             "libai",
             "dufu"
+          ],
+          "aliases": [
+            "齐鲁",
+            "兖州任城",
+            "齐鲁（兖州任城）"
           ]
         },
         {
@@ -13227,16 +13305,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "白帝城（夔州）",
+          "ancientZh": "白帝城",
           "modernZh": "重庆奉节",
-          "ancientEn": "Baidicheng (Kuizhou)",
+          "ancientEn": "Baidicheng",
           "modernEn": "Fengjie, Chongqing",
           "titleZh": "长流夜郎·白帝遇赦还江陵",
           "titleEn": "Exile to Yelang & Imperial Pardon at Baidicheng",
           "descZh": "安史之乱起，李白怀平胡复国之志入永王李璘幕府，兵败后系浔阳狱，坐长流夜郎（黔中）；乾元二年春溯江行至巫山白帝城，忽逢关内大旱朝廷大赦天下，惊喜放舟东下江陵，写下《早发白帝城》。",
           "descEn": "Implicated in Prince Lin of Yong’s campaign during the An Lushan Rebellion, Li Bai was banished toward distant Yelang; reaching Baidicheng in spring 759 CE, he received an imperial amnesty and raced downstream to Jiangling.",
           "quoteZh": "李白《早发白帝城》：“朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。”",
-          "quoteEn": "Li Bai, Departing Baidicheng at Dawn: \"At dawn I leave Baidicheng amid rainbow clouds; a thousand li to Jiangling I return in a single day. While gibbons on both banks cry without cease, my light skiff has already shot past ten thousand mountains.\""
+          "quoteEn": "Li Bai, Departing Baidicheng at Dawn: \"At dawn I leave Baidicheng amid rainbow clouds; a thousand li to Jiangling I return in a single day. While gibbons on both banks cry without cease, my light skiff has already shot past ten thousand mountains.\"",
+          "aliases": [
+            "夔州",
+            "白帝城（夔州）"
+          ]
         },
         {
           "year": 762,
@@ -13256,16 +13338,20 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "ancientZh": "当涂（宣城郡）",
+          "ancientZh": "当涂",
           "modernZh": "安徽马鞍山·当涂",
-          "ancientEn": "Dangtu (Xuancheng)",
+          "ancientEn": "Dangtu",
           "modernEn": "Dangtu, Ma'anshan, Anhui",
           "titleZh": "赋临路歌·终老当涂青山",
           "titleEn": "Final Song at Dangtu & Resting by Mount Qing",
           "descZh": "晚年漂泊金陵、宣城、秋浦之间，闻太尉李光弼统军讨史朝义，六十一岁仍请缨从军，行至金陵因病折返，依族叔当涂令李阳冰；宝应元年十一月赋《临路歌》绝笔，病逝于当涂，终葬谢朓曾游之青山。",
           "descEn": "After attempting at sixty-one to join Li Guangbi’s army against the rebels, an ailing Li Bai stayed with his kinsman Li Yangbing in Dangtu, composing his final Song Before the Road and passing away in late 762 CE.",
           "quoteZh": "李白《临路歌》：“大鹏飞兮振八裔，中天摧兮力不济。馀风激兮万世，游扶桑兮挂石袂。”",
-          "quoteEn": "Li Bai, Song Before the Road: \"The Great Peng soared and shook the eight horizons; broken in mid-heaven, its strength gave out—yet its lingering wind stirs ten thousand generations.\""
+          "quoteEn": "Li Bai, Song Before the Road: \"The Great Peng soared and shook the eight horizons; broken in mid-heaven, its strength gave out—yet its lingering wind stirs ten thousand generations.\"",
+          "aliases": [
+            "宣城郡",
+            "当涂（宣城郡）"
+          ]
         }
       ]
     },
@@ -13611,7 +13697,7 @@ window.ATLAS_LORE_DATA = {
           "labelPos": "top",
           "ancientZh": "京师",
           "modernZh": "北京",
-          "ancientEn": "Jingshi (Beijing)",
+          "ancientEn": "Jingshi",
           "modernEn": "Beijing",
           "titleZh": "格竹致疾·进士及第",
           "titleEn": "Investigating Bamboo & Passing the Metropolitan Exam",
@@ -14032,14 +14118,15 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "key": "niangziguan",
-      "ancientZh": "娘子关（井陉）",
-      "ancientEn": "Niangzi (Jingxing) Pass",
+      "ancientZh": "娘子关",
+      "ancientEn": "Niangzi Pass",
       "aliases": [
         "井陉关",
         "井陉口",
         "土门关",
         "苇泽关",
-        "井陉"
+        "井陉",
+        "娘子关（井陉）"
       ],
       "modernZh": "山西平定·河北井陉",
       "modernEn": "Pingding / Jingxing",
@@ -14053,11 +14140,18 @@ window.ATLAS_LORE_DATA = {
       "rangeZh": "太行井陉 · 绵河峡谷",
       "rangeEn": "Jingxing Gorge, Taihang Mountains",
       "chokepointZh": "古称苇泽关，扼“太行八陉”第五陉井陉狭道，“车不得方轨，骑不得成列”，韩信背水一战灭赵、唐平阳公主驻兵于此得名。",
-      "chokepointEn": "Commands the narrow Jingxing Gorge through the central Taihang Mountains where Han Xin fought his famous Battle of Jingxing with his back to the river."
+      "chokepointEn": "Commands the narrow Jingxing Gorge through the central Taihang Mountains where Han Xin fought his famous Battle of Jingxing with his back to the river.",
+      "eraNames": [
+        {
+          "until": 618,
+          "zh": "井陉关",
+          "en": "Jingxing Pass"
+        }
+      ]
     },
     {
       "key": "shanhaiguan",
-      "ancientZh": "山海关（渝关）",
+      "ancientZh": "山海关",
       "ancientEn": "Shanhai Pass",
       "modernZh": "河北秦皇岛",
       "modernEn": "Qinhuangdao, Hebei",
@@ -14071,7 +14165,19 @@ window.ATLAS_LORE_DATA = {
       "rangeZh": "燕山东端 · 辽西走廊临海处",
       "rangeEn": "Mount Yan & Bohai Coastal Corridor",
       "chokepointZh": "隋开皇三年筑临渝关，明洪武十四年徐达移建山海关，北倚燕山角山，南接渤海老龙头，扼辽西走廊入关唯一通道，号“天下第一关”。",
-      "chokepointEn": "Wedged in the narrow coastal strip between the Yanshan Mountains and the Bohai Sea, guarding the Liaoxi Corridor as the \"First Pass Under Heaven.\""
+      "chokepointEn": "Wedged in the narrow coastal strip between the Yanshan Mountains and the Bohai Sea, guarding the Liaoxi Corridor as the \"First Pass Under Heaven.\"",
+      "eraNames": [
+        {
+          "until": 1381,
+          "zh": "临渝关",
+          "en": "Linyu Pass"
+        }
+      ],
+      "aliases": [
+        "临渝关",
+        "渝关",
+        "山海关（渝关）"
+      ]
     },
     {
       "key": "gubeikou",
@@ -14147,8 +14253,8 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "key": "wushengguan",
-      "ancientZh": "武胜关（冥阨）",
-      "ancientEn": "Wusheng (Ming'e) Pass",
+      "ancientZh": "武胜关",
+      "ancientEn": "Wusheng Pass",
       "modernZh": "河南信阳·湖北广水",
       "modernEn": "Xinyang / Guangshui",
       "coord": [
@@ -14161,7 +14267,29 @@ window.ATLAS_LORE_DATA = {
       "rangeZh": "大别山 · 桐柏山交界隘口",
       "rangeEn": "Dabie & Tongbai Mountain Saddle",
       "chokepointZh": "春秋称大隧、直辕、冥阨（义阳三关），扼淮河上游与江汉平原分水岭最低山口，历为中原南下武汉、荆襄之兵家必争通道。",
-      "chokepointEn": "One of the Three Passes of Yiyang at the saddle between the Tongbai and Dabie mountains, controlling the north-south corridor between the Central Plains and the middle Yangtze."
+      "chokepointEn": "One of the Three Passes of Yiyang at the saddle between the Tongbai and Dabie mountains, controlling the north-south corridor between the Central Plains and the middle Yangtze.",
+      "eraNames": [
+        {
+          "until": 581,
+          "zh": "冥阨",
+          "en": "Ming'e Pass"
+        },
+        {
+          "from": 581,
+          "until": 1368,
+          "zh": "武阳关",
+          "en": "Wuyang Pass"
+        }
+      ],
+      "aliases": [
+        "冥阨",
+        "武阳关",
+        "礼山关",
+        "大隧",
+        "直辕",
+        "义阳三关",
+        "武胜关（冥阨）"
+      ]
     },
     {
       "key": "xianxiaguan",
@@ -14183,8 +14311,8 @@ window.ATLAS_LORE_DATA = {
     },
     {
       "key": "meiguan",
-      "ancientZh": "梅关（大庾岭）",
-      "ancientEn": "Meiguan (Dayu Ridge) Pass",
+      "ancientZh": "梅关",
+      "ancientEn": "Meiguan Pass",
       "modernZh": "广东南雄·江西大余",
       "modernEn": "Nanxiong / Dayu",
       "coord": [
@@ -14197,7 +14325,21 @@ window.ATLAS_LORE_DATA = {
       "rangeZh": "五岭大庾岭 · 赣粤古驿道",
       "rangeEn": "Dayu Ridge of the Five Ridges",
       "chokepointZh": "秦置横浦关，唐开元四年张九龄奉诏凿辟大庾岭新路，沟通长江水系章水与珠江水系浈水，成为唐宋明清南北商旅与文人迁谪第一驿道。",
-      "chokepointEn": "Widened across the Dayu Ridge by Chancellor Zhang Jiuling in 716 CE to link the Gan and Pearl river basins across the Five Ridges."
+      "chokepointEn": "Widened across the Dayu Ridge by Chancellor Zhang Jiuling in 716 CE to link the Gan and Pearl river basins across the Five Ridges.",
+      "eraNames": [
+        {
+          "until": 716,
+          "zh": "横浦关",
+          "en": "Hengpu Pass"
+        }
+      ],
+      "aliases": [
+        "横浦关",
+        "大庾岭",
+        "梅岭",
+        "秦关",
+        "梅关（大庾岭）"
+      ]
     }
   ],
   "CITY_LORE": [
@@ -17832,7 +17974,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "建昌（西昌）",
+      "name": "建昌",
       "aliases": [
         "凉山",
         "西昌",
@@ -17841,7 +17983,8 @@ window.ATLAS_LORE_DATA = {
         "嶲州",
         "邛都",
         "建昌卫",
-        "宁远府"
+        "宁远府",
+        "建昌（西昌）"
       ],
       "modern": "四川凉山西昌",
       "coord": [
@@ -17883,14 +18026,15 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "兴化（莆田）",
+      "name": "兴化",
       "aliases": [
         "莆田",
         "兴化军",
         "兴化府",
         "莆阳",
         "木兰陂",
-        "湄洲岛"
+        "湄洲岛",
+        "兴化（莆田）"
       ],
       "modern": "福建莆田",
       "coord": [
@@ -17900,7 +18044,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "当阳（荆门）",
+      "name": "当阳",
       "aliases": [
         "荆门",
         "当阳",
@@ -17908,7 +18052,8 @@ window.ATLAS_LORE_DATA = {
         "麦城",
         "荆门军",
         "荆门州",
-        "玉泉寺"
+        "玉泉寺",
+        "当阳（荆门）"
       ],
       "modern": "湖北荆门当阳",
       "coord": [
@@ -17934,14 +18079,16 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "均州（武当）",
+      "name": "均州",
       "aliases": [
         "十堰",
         "均州",
         "武当山",
         "郧阳",
         "郧阳府",
-        "太和山"
+        "太和山",
+        "武当",
+        "均州（武当）"
       ],
       "modern": "湖北十堰丹江口",
       "coord": [
@@ -17951,13 +18098,14 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "宝庆（邵阳）",
+      "name": "宝庆",
       "aliases": [
         "邵阳",
         "邵州",
         "宝庆府",
         "昭陵",
-        "邵陵"
+        "邵陵",
+        "宝庆（邵阳）"
       ],
       "modern": "湖南邵阳",
       "coord": [
@@ -17983,7 +18131,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "沅州（怀化）",
+      "name": "沅州",
       "aliases": [
         "怀化",
         "沅州",
@@ -17991,7 +18139,8 @@ window.ATLAS_LORE_DATA = {
         "龙标",
         "黔阳",
         "沅州府",
-        "芙蓉楼"
+        "芙蓉楼",
+        "沅州（怀化）"
       ],
       "modern": "湖南怀化芷江",
       "coord": [
@@ -18018,14 +18167,15 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "肇庆（端州）",
+      "name": "肇庆",
       "aliases": [
         "肇庆",
         "端州",
         "高要",
         "肇庆府",
         "七星岩",
-        "端溪"
+        "端溪",
+        "肇庆（端州）"
       ],
       "modern": "广东肇庆",
       "coord": [
@@ -18082,14 +18232,15 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "合浦（廉州）",
+      "name": "合浦",
       "aliases": [
         "北海",
         "合浦",
         "合浦郡",
         "廉州",
         "廉州府",
-        "珠官"
+        "珠官",
+        "合浦（廉州）"
       ],
       "modern": "广西北海合浦",
       "coord": [
@@ -18115,7 +18266,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.4
     },
     {
-      "name": "平凉（泾州）",
+      "name": "平凉",
       "aliases": [
         "平凉",
         "泾州",
@@ -18123,7 +18274,8 @@ window.ATLAS_LORE_DATA = {
         "安定郡",
         "渭州",
         "平凉府",
-        "崆峒山"
+        "崆峒山",
+        "平凉（泾州）"
       ],
       "modern": "甘肃平凉",
       "coord": [
@@ -18133,7 +18285,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "庆州（庆阳）",
+      "name": "庆州",
       "aliases": [
         "庆阳",
         "庆州",
@@ -18141,7 +18293,8 @@ window.ATLAS_LORE_DATA = {
         "北地郡",
         "庆阳府",
         "义渠",
-        "大顺城"
+        "大顺城",
+        "庆州（庆阳）"
       ],
       "modern": "甘肃庆阳",
       "coord": [
@@ -18151,7 +18304,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.5
     },
     {
-      "name": "永昌（保山）",
+      "name": "永昌",
       "aliases": [
         "保山",
         "永昌",
@@ -18159,7 +18312,8 @@ window.ATLAS_LORE_DATA = {
         "永昌府",
         "哀牢",
         "不韦",
-        "兰津渡"
+        "兰津渡",
+        "永昌（保山）"
       ],
       "modern": "云南保山",
       "coord": [
@@ -18169,14 +18323,13 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.4
     },
     {
-      "name": "临安府（建水）",
+      "name": "建水",
       "aliases": [
         "红河",
-        "建水",
-        "临安府",
         "临安路",
         "建水州",
-        "步头"
+        "步头",
+        "临安府（建水）"
       ],
       "modern": "云南红河建水",
       "coord": [
@@ -18186,7 +18339,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.4
     },
     {
-      "name": "山南（雅砻）",
+      "name": "山南",
       "aliases": [
         "山南",
         "雅砻",
@@ -18194,7 +18347,8 @@ window.ATLAS_LORE_DATA = {
         "桑耶寺",
         "雍布拉康",
         "乃东",
-        "帕竹"
+        "帕竹",
+        "山南（雅砻）"
       ],
       "modern": "西藏山南乃东",
       "coord": [
@@ -18204,7 +18358,7 @@ window.ATLAS_LORE_DATA = {
       "zoom": 2.3
     },
     {
-      "name": "古格（阿里）",
+      "name": "古格",
       "aliases": [
         "阿里",
         "古格",
@@ -18212,7 +18366,8 @@ window.ATLAS_LORE_DATA = {
         "札达",
         "托林寺",
         "穹窿银城",
-        "古格王朝"
+        "古格王朝",
+        "古格（阿里）"
       ],
       "modern": "西藏阿里札达",
       "coord": [
