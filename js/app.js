@@ -968,6 +968,14 @@
         if (p.rangeZh && p.rangeEn) map[p.rangeZh] = p.rangeEn;
         if (p.chokepointZh && p.chokepointEn) map[p.chokepointZh] = p.chokepointEn;
       }
+      // 2b. Settlement era-dependent names
+      for (const d of this.dynasties || []) {
+        for (const s of (d && d.settlements) || []) {
+          for (const en of (s && s.eraNames) || []) {
+            if (en && en.zh && en.en) map[en.zh] = en.en;
+          }
+        }
+      }
       // 3. Historical journeys stops
       for (const j of Object.values(HistoricalAtlasController.HISTORICAL_JOURNEYS || {})) {
         if (j && j.titleZh && j.titleEn) map[j.titleZh] = j.titleEn;
@@ -1315,9 +1323,12 @@
       const yr = Math.round(y);
       const regional = coord || regime ? this._resolveRegionalEraSpan(yr, dynasty, coord, regime) : null;
       if (this.locale === 'en') {
-        const dynName = dynasty ? this.dynastyName(dynasty) : '';
+        let dynName = dynasty ? this.dynastyName(dynasty) : '';
         if (yr >= 1912) return dynName;
         const match = regional || this._resolveEraSpan(yr, dynasty);
+        const prefix = (match && match[1]) || '';
+        if (!regional && prefix.startsWith('武周')) dynName = 'Wu Zhou';
+        else if (!regional && prefix.startsWith('新莽')) dynName = 'Xin';
         const monarchEn = match && match[4];
         return monarchEn ? `${dynName} · ${monarchEn}` : dynName;
       }
@@ -2460,6 +2471,21 @@
       return locale === 'en' ? p.ancientEn : this._zh(p.ancientZh);
     }
 
+    _settlementAncient(item, year = this.year) {
+      if (!item) return '';
+      if (Array.isArray(item.eraNames)) {
+        for (const en of item.eraNames) {
+          if (
+            (en.from === undefined || year >= en.from) &&
+            (en.until === undefined || year < en.until)
+          ) {
+            return en.zh || item.ancient || '';
+          }
+        }
+      }
+      return item.ancient || '';
+    }
+
     _settlementMask(dynasty, year) {
       const sMask = (dynasty.settlements || [])
         .map((item) => {
@@ -2469,7 +2495,8 @@
           ) {
             return '0';
           }
-          return this._isSettlementCapital(item, year) ? '2' : '1';
+          const base = this._isSettlementCapital(item, year) ? '2' : '1';
+          return item.eraNames ? `${base}${this._settlementAncient(item, year)}` : base;
         })
         .join('');
       const pMask = HistoricalAtlasController.STRATEGIC_PASSES.map((p) =>
@@ -2507,13 +2534,14 @@
             (s) =>
               this._isSettlementCapital(s, this.year) &&
               dynasty.seat &&
-              dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
+              dynasty.seat.includes(this._settlementAncient(s, this.year).split(/[（(]/)[0])
           ) || activeList.find((s) => this._isSettlementCapital(s, this.year))
         : null;
 
       for (const item of activeList) {
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const isCapNow = this._isSettlementCapital(item, this.year);
+        const ancientZh = this._settlementAncient(item, this.year);
         const isTier2 = item.tier === 2 && !isCapNow;
         const isHintCap = item === hintCapital;
         const isTracedCity =
@@ -2538,7 +2566,7 @@
           },
           group
         );
-        node.dataset.ancient = item.ancient;
+        node.dataset.ancient = ancientZh;
         node.dataset.modern = item.modern || '';
         node.dataset.remark = item.remark || '';
         node.dataset.lng = String(item.coord[0]);
@@ -2573,8 +2601,8 @@
         );
         nameEl.textContent =
           dynasty.key === 'roc' || dynasty.key === 'prc'
-            ? this.trModernCity(item.ancient)
-            : this.trTerm(item.ancient);
+            ? this.trModernCity(ancientZh)
+            : this.trTerm(ancientZh);
 
         if (isHintCap) {
           const tagG = this._svgNode(
@@ -4125,8 +4153,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 183 multi-stage territory snapshots, 471 milestones, 571 city landmarks, 20 strategic passes, and 113+ person chronicles.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、183幅多阶段历史疆域与州道政区快照、471条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 185 multi-stage territory snapshots, 471 milestones, 571 city landmarks, 20 strategic passes, and 113+ person chronicles.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、185幅多阶段历史疆域与州道政区快照、471条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activePerson) {
@@ -7343,6 +7371,7 @@
         rowsData.push({
           d,
           isCurDyn,
+          targetYear,
           polityHit,
           regionObjs: eraHit.regionObjs,
           prefObjs: eraHit.prefObjs,
@@ -7474,14 +7503,15 @@
               near.km < 25
                 ? this.uiStr('at_here', '即此地')
                 : `${Math.round(near.km)} km`;
+            const rawNearAnc = this._settlementAncient(near.s, r.targetYear);
             const nearCityName =
               d.key === 'roc' || d.key === 'prc'
                 ? this.locale === 'en' &&
                   near.s.rawModern &&
-                  !(this.enLocale.dict && this.enLocale.dict[near.s.ancient])
+                  !(this.enLocale.dict && this.enLocale.dict[rawNearAnc])
                   ? this.trModernCity(near.s.rawModern)
-                  : this.trModernCity(near.s.ancient)
-                : this.trTerm(near.s.ancient);
+                  : this.trModernCity(rawNearAnc)
+                : this.trTerm(rawNearAnc);
             const nearPrefix =
               d.key === 'prc'
                 ? near.km < 25
@@ -12012,7 +12042,9 @@
           );
         } else if (settlementEl || coCity) {
           const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));
-          const rawAnc = settlementEl ? settlementEl.dataset.ancient : coCity.ancient;
+          const rawAnc = settlementEl
+            ? settlementEl.dataset.ancient
+            : this._settlementAncient(coCity, this.year);
           const rawMod = settlementEl ? settlementEl.dataset.modern : coCity.modern || '';
           const rawRem = settlementEl ? settlementEl.dataset.remark : coCity.remark || '';
           const anc = isModernDyn ? this.trModernCity(rawAnc) : this.trTerm(rawAnc);
@@ -12693,7 +12725,7 @@
           if (!hit) return null;
           return {
             kind: 'city',
-            name: s.ancient,
+            name: this._settlementAncient(s, yr),
             modern: s.modern || '',
             lng: s.coord[0],
             lat: s.coord[1],
@@ -13017,7 +13049,7 @@
       return null;
     }
 
-    _inspectCoord(cLng, cLat, d, snap) {
+    _inspectCoord(cLng, cLat, d, snap, year = this.year) {
       const isEn = this.locale === 'en';
       const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
       const modernProvince = eraHit.modernLoc.inModernChina
@@ -13025,14 +13057,18 @@
           ? this.trTerm(eraHit.modernLoc.modernTitle)
           : this._zh(eraHit.modernLoc.modernTitle)
         : null;
+      const rawNearAncient =
+        eraHit.near && eraHit.near.s ? this._settlementAncient(eraHit.near.s, year) : '';
+      const isCapAtYear =
+        eraHit.near && eraHit.near.s ? this._isSettlementCapital(eraHit.near.s, year) : false;
       const nearestCity = eraHit.near
         ? {
-            ancient: isEn ? this.trTerm(eraHit.near.s.ancient) : this._zh(eraHit.near.s.ancient),
+            ancient: isEn ? this.trTerm(rawNearAncient) : this._zh(rawNearAncient),
             modern: isEn
               ? this.trModernCity(eraHit.near.s.modern || '')
               : this._zh(eraHit.near.s.modern || ''),
             distanceKm: Math.round(eraHit.near.km),
-            ...(eraHit.near.s.isCapital ? { isCapital: true } : {}),
+            ...(isCapAtYear ? { isCapital: true } : {}),
             ...(eraHit.near.s.remark
               ? { remark: isEn ? this.trTerm(eraHit.near.s.remark) : this._zh(eraHit.near.s.remark) }
               : {}),
@@ -13055,7 +13091,6 @@
             : []
           : Array.from(new Set(eraHit.regionObjs.map(fmt)));
       const rawProvTitle = eraHit.modernLoc.inModernChina ? eraHit.modernLoc.modernTitle : null;
-      const rawNearAncient = eraHit.near && eraHit.near.s ? eraHit.near.s.ancient : '';
       const prefectures =
         d && d.key === 'prc'
           ? rawProvTitle &&
@@ -13479,7 +13514,7 @@
           const sd = this.dynasties[sdIdx] || d;
           const sSnapKey = this._resolveSnapKey(sd, tok.year);
           const sSnap = this.snapshots[sSnapKey] || snap;
-          const info = this._inspectCoord(r.lng, r.lat, sd, sSnap);
+          const info = this._inspectCoord(r.lng, r.lat, sd, sSnap, tok.year);
           const prev = route.length ? route[route.length - 1] : null;
           const segKm = prev
             ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
@@ -13562,7 +13597,7 @@
       const hasCoord = cLng !== null && cLat !== null;
 
       const info = hasCoord
-        ? this._inspectCoord(cLng, cLat, d, snap)
+        ? this._inspectCoord(cLng, cLat, d, snap, singleYear)
         : {
             polity: null,
             regions: [],
