@@ -7,6 +7,16 @@
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const RAD_TO_DEG = 180 / Math.PI;
   const DEG_TO_RAD = Math.PI / 180;
+  const APP_SCRIPT_EL =
+    typeof document !== 'undefined' && document
+      ? document.currentScript ||
+        (typeof document.getElementById === 'function'
+          ? document.getElementById('atlas-app-script')
+          : null)
+      : null;
+  const RING_BBOX_WEAK = new WeakMap();
+  const SHAPE_BBOX_WEAK = new WeakMap();
+  const SHAPE_SIG_WEAK = new WeakMap();
   // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
@@ -232,6 +242,27 @@
     }
 
     static pointInRing(lng, lat, ring) {
+      if (!ring || ring.length < 3) return false;
+      let bbox = RING_BBOX_WEAK.get(ring);
+      if (!bbox) {
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for (let i = 0; i < ring.length; i++) {
+          const x = ring[i][0];
+          const y = ring[i][1];
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+        bbox = [minX, minY, maxX, maxY];
+        RING_BBOX_WEAK.set(ring, bbox);
+      }
+      if (lng < bbox[0] || lng > bbox[2] || lat < bbox[1] || lat > bbox[3]) {
+        return false;
+      }
       let inside = false;
       for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
         const [xi, yi] = ring[i];
@@ -259,9 +290,52 @@
         return MercatorProjector.pointInPolygonRings(lng, lat, shapeObj.coordinates);
       }
       if (shapeObj.type === 'MultiPolygon') {
-        return shapeObj.coordinates.some((p) =>
-          MercatorProjector.pointInPolygonRings(lng, lat, p)
-        );
+        const polys = shapeObj.coordinates;
+        if (!polys || !polys.length) return false;
+        if (polys.length === 1) {
+          return MercatorProjector.pointInPolygonRings(lng, lat, polys[0]);
+        }
+        let bbox = SHAPE_BBOX_WEAK.get(shapeObj);
+        if (!bbox) {
+          let minX = Infinity;
+          let minY = Infinity;
+          let maxX = -Infinity;
+          let maxY = -Infinity;
+          for (let pIdx = 0; pIdx < polys.length; pIdx++) {
+            const ring = polys[pIdx] && polys[pIdx][0];
+            if (!ring || ring.length < 3) continue;
+            let rb = RING_BBOX_WEAK.get(ring);
+            if (!rb) {
+              let rMinX = Infinity;
+              let rMinY = Infinity;
+              let rMaxX = -Infinity;
+              let rMaxY = -Infinity;
+              for (let i = 0; i < ring.length; i++) {
+                const x = ring[i][0];
+                const y = ring[i][1];
+                if (x < rMinX) rMinX = x;
+                if (x > rMaxX) rMaxX = x;
+                if (y < rMinY) rMinY = y;
+                if (y > rMaxY) rMaxY = y;
+              }
+              rb = [rMinX, rMinY, rMaxX, rMaxY];
+              RING_BBOX_WEAK.set(ring, rb);
+            }
+            if (rb[0] < minX) minX = rb[0];
+            if (rb[1] < minY) minY = rb[1];
+            if (rb[2] > maxX) maxX = rb[2];
+            if (rb[3] > maxY) maxY = rb[3];
+          }
+          bbox = [minX, minY, maxX, maxY];
+          SHAPE_BBOX_WEAK.set(shapeObj, bbox);
+        }
+        if (lng < bbox[0] || lng > bbox[2] || lat < bbox[1] || lat > bbox[3]) {
+          return false;
+        }
+        for (let pIdx = 0; pIdx < polys.length; pIdx++) {
+          if (MercatorProjector.pointInPolygonRings(lng, lat, polys[pIdx])) return true;
+        }
+        return false;
       }
       return false;
     }
@@ -486,6 +560,23 @@
       });
     }
 
+    _lazyAssetUrl(relPath, datasetKey) {
+      const scriptEl =
+        APP_SCRIPT_EL ||
+        (typeof document !== 'undefined' &&
+        document &&
+        typeof document.getElementById === 'function'
+          ? document.getElementById('atlas-app-script')
+          : null);
+      const v =
+        (scriptEl && scriptEl.dataset && scriptEl.dataset[datasetKey]) ||
+        (typeof window !== 'undefined' &&
+          window.ATLAS_ASSET_VERSIONS &&
+          window.ATLAS_ASSET_VERSIONS[datasetKey]) ||
+        '';
+      return v ? `${relPath}?v=${encodeURIComponent(v)}` : relPath;
+    }
+
     _ensureFullSnapshots() {
       if (this._fullSnapshotsLoaded) return Promise.resolve(this.snapshots);
       if (
@@ -498,7 +589,9 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261029a').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_snapshots.js', 'vSnapshots')
+        ).then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +615,9 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261029a').then(() => {
+        this._enLocalePromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/i18n_dict.js', 'vI18n')
+        ).then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -829,15 +924,24 @@
       return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
     }
 
+    _hasEnDict() {
+      const dict = this.enLocale && this.enLocale.dict;
+      if (!dict) return false;
+      for (const _ in dict) return true;
+      return false;
+    }
+
     _getExtraEnTermMap() {
+      const dictRef = (this.enLocale && this.enLocale.dict) || null;
+      const hasKeys = this._hasEnDict();
       if (
         this._extraEnTermMap &&
-        this._extraEnTermMapDictSize ===
-          Object.keys((this.enLocale && this.enLocale.dict) || {}).length
+        this._extraEnTermMapDictRef === dictRef &&
+        this._extraEnTermMapHasKeys === hasKeys
       ) {
         return this._extraEnTermMap;
       }
-      const dict = (this.enLocale && this.enLocale.dict) || {};
+      const dict = dictRef || {};
       const map = { ...ADMIN_CATEGORY_EN };
       // 1. Stripped parenthetical keys from enLocale.dict (e.g. '南郑（汉中）' -> '南郑': 'Nanzheng')
       for (const [k, v] of Object.entries(dict)) {
@@ -900,7 +1004,8 @@
         if (cEn && !map[c.title]) map[c.title] = cEn;
       }
       this._extraEnTermMap = map;
-      this._extraEnTermMapDictSize = Object.keys(dict).length;
+      this._extraEnTermMapDictRef = dictRef;
+      this._extraEnTermMapHasKeys = hasKeys;
       return map;
     }
 
@@ -1229,10 +1334,7 @@
     }
 
     _effectiveRenderedLocale() {
-      if (
-        this.locale === 'en' &&
-        (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
-      ) {
+      if (this.locale === 'en' && !this._hasEnDict()) {
         return 'en-pending';
       }
       return this.locale;
@@ -1347,10 +1449,7 @@
     }
 
     applyLocale() {
-      if (
-        this.locale === 'en' &&
-        (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
-      ) {
+      if (this.locale === 'en' && !this._hasEnDict()) {
         this._ensureEnglishLocale().then(() => this.applyLocale());
         return;
       }
@@ -3212,23 +3311,53 @@
     _polityStages(desc) {
       const [mf, mt] = this._polityWindow(desc);
       const stages = [];
+      let lastPols = null;
       let lastSig = null;
+      const sigOf = (list) =>
+        list
+          .map((p) => {
+            const sh = p && p.shape;
+            if (!sh || typeof sh !== 'object') return String(sh);
+            let s = SHAPE_SIG_WEAK.get(sh);
+            if (s === undefined) {
+              s = JSON.stringify(sh);
+              SHAPE_SIG_WEAK.set(sh, s);
+            }
+            return s;
+          })
+          .join('\x1f');
       for (const r of this._polityPhaseRuns()) {
         if (r.to < mf || r.from > mt) continue;
         const snap = this.snapshots && this.snapshots[r.snapKey];
         const pols = this._polityPolsInSnap(desc, snap);
         if (!pols.length) {
+          lastPols = null;
           lastSig = null;
           continue;
         }
         const from = Math.max(r.from, mf);
         const to = Math.min(r.to, mt);
-        const sig = JSON.stringify(pols.map((p) => p.shape));
-        if (sig === lastSig && stages.length) {
-          stages[stages.length - 1].to = to;
-          continue;
+        if (lastPols && stages.length) {
+          const sameShapeRef =
+            pols.length === lastPols.length &&
+            pols.every((p, i) => p && lastPols[i] && p.shape === lastPols[i].shape);
+          if (sameShapeRef) {
+            stages[stages.length - 1].to = to;
+            continue;
+          }
+          const prevSig = lastSig !== null ? lastSig : (lastSig = sigOf(lastPols));
+          const curSig = sigOf(pols);
+          if (curSig === prevSig) {
+            stages[stages.length - 1].to = to;
+            lastPols = pols;
+            continue;
+          }
+          lastPols = pols;
+          lastSig = curSig;
+        } else {
+          lastPols = pols;
+          lastSig = null;
         }
-        lastSig = sig;
         stages.push({ from, to, snapKey: r.snapKey, title: pols[0].title, caption: snap.caption || '' });
       }
       return stages;
@@ -4581,6 +4710,24 @@
       if (!profile) return [];
       const isMulti = Boolean(opts && opts.isMulti);
       const peerKeys = Array.isArray(opts && opts.peerKeys) ? opts.peerKeys : [];
+      const canCacheSolo = !isMulti && !peerKeys.length && typeof profile === 'object';
+      const snapRef = canCacheSolo ? this.snapshots : null;
+      const snapFull = Boolean(snapRef && snapRef.s_prc);
+      const hasEn = canCacheSolo ? this._hasEnDict() : false;
+      const enRef = canCacheSolo ? this.enLocale : null;
+      if (canCacheSolo) {
+        if (!this._soloPersonEventsCache) this._soloPersonEventsCache = new WeakMap();
+        const hit = this._soloPersonEventsCache.get(profile);
+        if (
+          hit &&
+          hit.snapRef === snapRef &&
+          hit.snapFull === snapFull &&
+          hit.hasEn === hasEn &&
+          hit.enRef === enRef
+        ) {
+          return hit.events.map((ev) => ({ ...ev }));
+        }
+      }
       const matchesPersonsTag = (item) =>
         isMulti &&
         !profile.isRelic &&
@@ -4797,6 +4944,15 @@
           continue;
         }
         deduped.push(ev);
+      }
+      if (canCacheSolo && this._soloPersonEventsCache) {
+        this._soloPersonEventsCache.set(profile, {
+          snapRef,
+          snapFull,
+          hasEn,
+          enRef,
+          events: deduped.map((ev) => ({ ...ev })),
+        });
       }
       return deduped;
     }
@@ -9763,48 +9919,61 @@
     // up from the next one so the round always has 10 questions.
     _buildChallengeDeck(preferCurrentDynasty = false) {
       const ROUND = [4, 4, 2];
-      const famousCity = (coord) =>
-        HistoricalAtlasController.CITY_LORE.some(
-          (c) => Array.isArray(c.coord) && this.projector.greatCircleKm(c.coord, coord) < 20
-        );
-      const tiers = [[], [], []];
-      for (const d of this.dynasties) {
-        if (d.key === 'prc') continue;
-        for (const s of d.settlements || []) {
-          if (!s.modern || !Array.isArray(s.coord)) continue;
-          if (d.key === 'roc' && !s.isCapital && !s.remark) continue;
-          const hasEvents =
-            this._collectPlaceEventsForDynasty(d, s.coord[0], s.coord[1], { s, km: 0 }).length > 0;
-          if (!s.isCapital && !s.remark && !hasEvents) continue;
-          const tier = s.isCapital || famousCity(s.coord) ? 0 : hasEvents ? 1 : 2;
-          tiers[tier].push({ dynasty: d, settlement: s, tier });
+      const hasEn = this._hasEnDict();
+      if (
+        !this._challengeBaseTiers ||
+        this._challengeBaseTiersDynRef !== this.dynasties ||
+        this._challengeBaseTiersHasEn !== hasEn ||
+        this._challengeBaseTiersLocale !== this.locale
+      ) {
+        const famousCity = (coord) =>
+          HistoricalAtlasController.CITY_LORE.some(
+            (c) => Array.isArray(c.coord) && this.projector.greatCircleKm(c.coord, coord) < 20
+          );
+        const baseTiers = [[], [], []];
+        for (const d of this.dynasties) {
+          if (d.key === 'prc') continue;
+          for (const s of d.settlements || []) {
+            if (!s.modern || !Array.isArray(s.coord)) continue;
+            if (d.key === 'roc' && !s.isCapital && !s.remark) continue;
+            const hasEvents =
+              this._collectPlaceEventsForDynasty(d, s.coord[0], s.coord[1], { s, km: 0 }).length > 0;
+            if (!s.isCapital && !s.remark && !hasEvents) continue;
+            const tier = s.isCapital || famousCity(s.coord) ? 0 : hasEvents ? 1 : 2;
+            baseTiers[tier].push({ dynasty: d, settlement: s, tier });
+          }
         }
+        for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
+          if (!p || !Array.isArray(p.coord)) continue;
+          const focusY = p.focusYear !== undefined ? p.focusYear : p.appear || -221;
+          const dIdx = this._findDynastyIndex(focusY);
+          const d = this.dynasties[dIdx] || this.dynasties[0];
+          if (!d || d.key === 'prc') continue;
+          baseTiers[0].push({
+            dynasty: d,
+            tier: 0,
+            settlement: {
+              ancient: this._passName(p, focusY, 'zh'),
+              ancientEn: this._passName(p, focusY, 'en'),
+              modern: p.modernZh,
+              modernEn: p.modernEn,
+              coord: p.coord,
+              appear: p.appear,
+              vanish: p.vanish,
+              focusYear: focusY,
+              isPass: true,
+              passKey: p.key,
+              remark: `${p.rangeZh} · ${p.chokepointZh}`,
+              remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
+            },
+          });
+        }
+        this._challengeBaseTiers = baseTiers;
+        this._challengeBaseTiersDynRef = this.dynasties;
+        this._challengeBaseTiersHasEn = hasEn;
+        this._challengeBaseTiersLocale = this.locale;
       }
-      for (const p of HistoricalAtlasController.STRATEGIC_PASSES) {
-        if (!p || !Array.isArray(p.coord)) continue;
-        const focusY = p.focusYear !== undefined ? p.focusYear : p.appear || -221;
-        const dIdx = this._findDynastyIndex(focusY);
-        const d = this.dynasties[dIdx] || this.dynasties[0];
-        if (!d || d.key === 'prc') continue;
-        tiers[0].push({
-          dynasty: d,
-          tier: 0,
-          settlement: {
-            ancient: this._passName(p, focusY, 'zh'),
-            ancientEn: this._passName(p, focusY, 'en'),
-            modern: p.modernZh,
-            modernEn: p.modernEn,
-            coord: p.coord,
-            appear: p.appear,
-            vanish: p.vanish,
-            focusYear: focusY,
-            isPass: true,
-            passKey: p.key,
-            remark: `${p.rangeZh} · ${p.chokepointZh}`,
-            remarkEn: `${p.rangeEn} — ${p.chokepointEn}`,
-          },
-        });
-      }
+      const tiers = this._challengeBaseTiers.map((arr) => arr.slice());
       const chosen = [];
       const seen = new Set();
       const tryAdd = (pick) => {
@@ -10807,25 +10976,29 @@
           const midY = Math.round((sy + ph.until - 1) * 0.5);
           const snap = this.snapshots[ph.snap];
           if (!snap) return;
-          for (const item of [...(snap.regions || []), ...(snap.prefectures || [])]) {
-            if (!item.title || !item.anchor) continue;
-            const uid = `${d.key}:${item.title}`;
-            if (seenAdmin.has(uid)) continue;
-            seenAdmin.add(uid);
-            const isPref = (snap.prefectures || []).includes(item);
-            const itemEn = this._enDict(item.title);
-            entries.push({
-              kind: isPref ? 'prefecture' : 'region',
-              dynasty: d,
-              year: midY,
-              coord: item.anchor,
-              prefTitle: isPref ? item.title : null,
-              titleZh: item.title,
-              subZh: item.category && !item.title.endsWith(item.category) ? item.category : '',
-              titleEn: itemEn,
-              subEn: '',
-              keywords: `${item.title} ${itemEn} ${d.title}`.toLowerCase(),
-            });
+          for (const [list, isPref] of [
+            [snap.regions, false],
+            [snap.prefectures, true],
+          ]) {
+            for (const item of list || []) {
+              if (!item.title || !item.anchor) continue;
+              const uid = `${d.key}:${item.title}`;
+              if (seenAdmin.has(uid)) continue;
+              seenAdmin.add(uid);
+              const itemEn = this._enDict(item.title);
+              entries.push({
+                kind: isPref ? 'prefecture' : 'region',
+                dynasty: d,
+                year: midY,
+                coord: item.anchor,
+                prefTitle: isPref ? item.title : null,
+                titleZh: item.title,
+                subZh: item.category && !item.title.endsWith(item.category) ? item.category : '',
+                titleEn: itemEn,
+                subEn: '',
+                keywords: `${item.title} ${itemEn} ${d.title}`.toLowerCase(),
+              });
+            }
           }
         });
       }
@@ -10910,6 +11083,43 @@
         eventEntries.push(lmEntry);
       }
 
+      const foldIdx = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.\s]+/g, '');
+      for (const item of entries) {
+        const tZh = item.titleZh.toLowerCase();
+        const tEn = item.titleEn.toLowerCase();
+        const bareZh = this._stripPromptParenthetical(item.titleZh).toLowerCase();
+        const bareEn = this._stripPromptParenthetical(item.titleEn).toLowerCase();
+        const mZh = (item.modernZh || '').toLowerCase();
+        const mZhParts = mZh ? mZh.split(/[·/、]/) : null;
+        const mEn = (item.modernEn || '').toLowerCase();
+        Object.defineProperty(item, '_q', {
+          value: {
+            tZh,
+            tEn,
+            bareZh,
+            bareEn,
+            mZh,
+            mZhParts,
+            mEn,
+            tEnFold: foldIdx(tEn),
+            mEnFold: mEn ? foldIdx(mEn) : '',
+            aliasesFold: item.aliases ? item.aliases.map(foldIdx) : null,
+            altZhPairs: item.altTitlesZh
+              ? item.altTitlesZh.map((raw) => [raw, raw.toLowerCase()])
+              : null,
+            altEnPairs: item.altTitlesEn
+              ? item.altTitlesEn.map((raw) => [raw, foldIdx(raw)])
+              : null,
+            keywordsFold: foldIdx(item.keywords),
+          },
+          enumerable: false,
+          configurable: true,
+        });
+      }
+
       this.searchIndex = entries;
       return entries;
     }
@@ -10927,6 +11137,75 @@
         return (map[parts[0]] || 0) * 10 + (map[parts[1]] || 0);
       }
       return null;
+    }
+
+    _getCompiledEraSpans() {
+      const enDynMap = (this.enLocale && this.enLocale.dynasties) || null;
+      if (
+        this._compiledEraSpans &&
+        this._compiledEraSpansDynRef === this.dynasties &&
+        this._compiledEraSpansEnRef === enDynMap
+      ) {
+        return this._compiledEraSpans;
+      }
+      const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
+      // [span, lastYear] for the reference track and every regional track, so regimes
+      // like Northern Wei (太和十八年) are searchable alongside the reference eras.
+      const rawEraSpans = [
+        ...spans.map((sp, idx) => [sp, idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948]),
+        ...HistoricalAtlasController.REGIONAL_ERA_TRACKS.flatMap((t) =>
+          t.spans.map((sp, idx) => [sp, idx + 1 < t.spans.length ? t.spans[idx + 1][0] - 1 : t.until])
+        ),
+      ];
+      const compiled = rawEraSpans.map(([sp, endY]) => {
+        const [startY, prefix, baseNum = 1, monarchZh = '', monarchEn = ''] = sp;
+        const shortMonarch = monarchZh
+          .replace(/^(?:西|东|北|南|南朝|武周)/, '')
+          .replace(/^汉高帝$/, '汉高祖');
+        const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
+        const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
+        const fullCombo = monarchZh ? `${monarchZh}${eraOnly}` : prefix;
+        const shortCombo = shortMonarch ? `${shortMonarch}${eraOnly}` : prefix;
+        const monarchEnLower = (monarchEn || '').toLowerCase();
+        const monarchEnExpanded = monarchEnLower.replace(/\bemp\./g, 'emperor');
+        const monarchBare = monarchEnExpanded.replace(/^emperor\s+/, '');
+        const dForSpan = this.dynasties[this._findDynastyIndex(startY)] || this.dynasties[0];
+        const enDynObj = (enDynMap && enDynMap[dForSpan.key]) || {};
+        const enDynShort = (enDynObj.short || enDynObj.name || dForSpan.key || '').toLowerCase();
+        const enDynBase = enDynShort.replace(/^[wens]\.\s*/, '');
+        const enSearchTarget = `${monarchEnLower} ${monarchEnExpanded} ${monarchEnExpanded} of ${enDynShort} ${monarchEnExpanded} of ${enDynBase} ${monarchBare} of ${enDynBase}`;
+        const monarchTitleLen =
+          dynPfx && monarchZh.startsWith(dynPfx) ? monarchZh.length - dynPfx.length : monarchZh.length;
+        const [enName, enOwnRegime = ''] = monarchEnExpanded.split(' of ');
+        const enRegimePool = `${enOwnRegime} | ${enDynShort} | ${enDynBase}`;
+        const eraPinyinLower =
+          startY >= -140 && eraOnly ? this._eraNamePinyin(eraOnly).toLowerCase() : '';
+        const eraPinyinFold = eraPinyinLower.replace(/'/g, '');
+        return {
+          sp,
+          endY,
+          startY,
+          prefix,
+          baseNum,
+          monarchZh,
+          shortMonarch,
+          eraOnly,
+          fullCombo,
+          shortCombo,
+          monarchEnLower,
+          monarchEnExpanded,
+          enSearchTarget,
+          monarchTitleLen,
+          enName,
+          enRegimePool,
+          eraPinyinLower,
+          eraPinyinFold,
+        };
+      });
+      this._compiledEraSpans = compiled;
+      this._compiledEraSpansDynRef = this.dynasties;
+      this._compiledEraSpansEnRef = enDynMap;
+      return compiled;
     }
 
     _matchEraResults(rawQuery) {
@@ -10968,64 +11247,55 @@
       const isYuanNian = /[元][年载]$/.test(trimmed);
       const q = trimmed.replace(/[年载]$/, '');
       if (!q) return hits;
-      const spans = HistoricalAtlasController.CHINESE_ERA_SPANS;
       const numMatch = isYuanNian
         ? [q, q.slice(0, -1), '元']
         : q.match(/^(.*?)([一二三四五六七八九十]+|\d+)$/);
       const prefixQ = (numMatch ? numMatch[1] : q).replace(/[·\s]/g, '');
+      if (!prefixQ) return hits;
       const qLower = trimmed.toLowerCase();
       const isLatinQuery = qLower.length >= 3 && /[a-z]/i.test(qLower);
+      const qFoldEra = isLatinQuery ? qLower.replace(/['’‘`\-_.\s]+/g, '') : '';
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
       const seenMonarchOnly = new Set();
       const seenEraHit = new Set();
-      // [span, lastYear] for the reference track and every regional track, so regimes
-      // like Northern Wei (太和十八年) are searchable alongside the reference eras.
-      const eraSpans = [
-        ...spans.map((sp, idx) => [sp, idx + 1 < spans.length ? spans[idx + 1][0] - 1 : 1948]),
-        ...HistoricalAtlasController.REGIONAL_ERA_TRACKS.flatMap((t) =>
-          t.spans.map((sp, idx) => [sp, idx + 1 < t.spans.length ? t.spans[idx + 1][0] - 1 : t.until])
-        ),
-      ];
+      // A hit must reach past the regime name into the era or monarch title, so a bare
+      // regime ('北魏', '金', 'liao') does not list every era or emperor of that regime.
+      const reachesTail = (s, tailLen) => {
+        const at = s.lastIndexOf(prefixQ);
+        return at >= 0 && at + prefixQ.length > s.length - tailLen;
+      };
 
-      eraSpans.forEach(([sp, endY]) => {
-        const [startY, prefix, baseNum = 1, monarchZh = '', monarchEn = ''] = sp;
-        if (!prefixQ) return;
-        const shortMonarch = monarchZh
-          .replace(/^(?:西|东|北|南|南朝|武周)/, '')
-          .replace(/^汉高帝$/, '汉高祖');
-        const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
-        const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
-        const fullCombo = monarchZh ? `${monarchZh}${eraOnly}` : prefix;
-        const shortCombo = shortMonarch ? `${shortMonarch}${eraOnly}` : prefix;
-        const monarchEnLower = (monarchEn || '').toLowerCase();
-        const monarchEnExpanded = monarchEnLower.replace(/\bemp\./g, 'emperor');
-        const monarchBare = monarchEnExpanded.replace(/^emperor\s+/, '');
-        const dForSpan = this.dynasties[this._findDynastyIndex(startY)] || this.dynasties[0];
-        const enDynObj = (this.enLocale.dynasties && this.enLocale.dynasties[dForSpan.key]) || {};
-        const enDynShort = (enDynObj.short || enDynObj.name || dForSpan.key || '').toLowerCase();
-        const enDynBase = enDynShort.replace(/^[wens]\.\s*/, '');
-        const enSearchTarget = `${monarchEnLower} ${monarchEnExpanded} ${monarchEnExpanded} of ${enDynShort} ${monarchEnExpanded} of ${enDynBase} ${monarchBare} of ${enDynBase}`;
-
-        // A hit must reach past the regime name into the era or monarch title, so a bare
-        // regime ('北魏', '金', 'liao') does not list every era or emperor of that regime.
-        const reachesTail = (s, tailLen) => {
-          const at = s.lastIndexOf(prefixQ);
-          return at >= 0 && at + prefixQ.length > s.length - tailLen;
-        };
-        const monarchTitleLen =
-          dynPfx && monarchZh.startsWith(dynPfx) ? monarchZh.length - dynPfx.length : monarchZh.length;
-        const [enName, enOwnRegime = ''] = monarchEnExpanded.split(' of ');
+      for (const c of this._getCompiledEraSpans()) {
+        const {
+          sp,
+          endY,
+          startY,
+          prefix,
+          baseNum,
+          monarchZh,
+          shortMonarch,
+          eraOnly,
+          fullCombo,
+          shortCombo,
+          monarchEnLower,
+          monarchEnExpanded,
+          enSearchTarget,
+          monarchTitleLen,
+          enName,
+          enRegimePool,
+          eraPinyinLower,
+          eraPinyinFold,
+        } = c;
         const enRegimeOnly =
-          !enName.includes(qLower) && `${enOwnRegime} | ${enDynShort} | ${enDynBase}`.includes(qLower);
-        const eraPinyinLower =
-          startY >= -140 && eraOnly ? this._eraNamePinyin(eraOnly).toLowerCase() : '';
-        const eraPinyinFold = eraPinyinLower.replace(/'/g, '');
+          isLatinQuery && !enName.includes(qLower) && enRegimePool.includes(qLower);
         const matchEraPinyin =
           isLatinQuery &&
           eraPinyinFold.length >= 4 &&
-          (qLower === eraPinyinLower || qLower.replace(/['’‘`\-_.\s]+/g, '') === eraPinyinFold);
+          (qLower === eraPinyinLower || qFoldEra === eraPinyinFold);
         const matchEra =
-          [prefix, fullCombo, shortCombo].some((s) => reachesTail(s, eraOnly.length)) ||
+          reachesTail(prefix, eraOnly.length) ||
+          reachesTail(fullCombo, eraOnly.length) ||
+          reachesTail(shortCombo, eraOnly.length) ||
           matchEraPinyin;
         const matchMonarchOnly =
           !matchEra &&
@@ -11039,14 +11309,14 @@
         if (matchEra || matchMonarchOnly) {
           const monarchDedupKey = monarchZh || monarchEnLower;
           if (matchMonarchOnly) {
-            if (seenMonarchOnly.has(monarchDedupKey)) return;
+            if (seenMonarchOnly.has(monarchDedupKey)) continue;
             seenMonarchOnly.add(monarchDedupKey);
           } else if (
             yearNum === null &&
             monarchZh &&
             (prefixQ === monarchZh || prefixQ === shortMonarch)
           ) {
-            if (seenMonarchOnly.has(monarchDedupKey)) return;
+            if (seenMonarchOnly.has(monarchDedupKey)) continue;
             seenMonarchOnly.add(monarchDedupKey);
           }
           const targetNum = yearNum !== null ? yearNum : baseNum;
@@ -11056,7 +11326,7 @@
             const d = this.dynasties[dIdx];
             const label = this._formatSpanEraZh(sp, targetNum);
             // Regional tracks repeat some reference spans (e.g. Chen); list each era-year once.
-            if (seenEraHit.has(`${targetY}|${label}`)) return;
+            if (seenEraHit.has(`${targetY}|${label}`)) continue;
             seenEraHit.add(`${targetY}|${label}`);
             const titleZh =
               startY >= 1368 && startY < 1912 && monarchZh
@@ -11096,7 +11366,7 @@
             });
           }
         }
-      });
+      }
       return hits;
     }
 
@@ -11122,22 +11392,35 @@
         let matchedAltZh = null;
         let matchedAltEn = null;
         let matchedByKeywordOnly = false;
-        const tZh = item.titleZh.toLowerCase();
-        const tEn = item.titleEn.toLowerCase();
-        const bareZh = this._stripPromptParenthetical(item.titleZh).toLowerCase();
-        const bareEn = this._stripPromptParenthetical(item.titleEn).toLowerCase();
-        const mZh = (item.modernZh || '').toLowerCase();
-        const mEn = (item.modernEn || '').toLowerCase();
-        const tEnFold = isAscii ? fold(tEn) : '';
-        const mEnFold = isAscii ? fold(mEn) : '';
+        const iq = item._q;
+        const tZh = iq ? iq.tZh : item.titleZh.toLowerCase();
+        const tEn = iq ? iq.tEn : item.titleEn.toLowerCase();
+        const bareZh = iq ? iq.bareZh : this._stripPromptParenthetical(item.titleZh).toLowerCase();
+        const bareEn = iq ? iq.bareEn : this._stripPromptParenthetical(item.titleEn).toLowerCase();
+        const mZh = iq ? iq.mZh : (item.modernZh || '').toLowerCase();
+        const mEn = iq ? iq.mEn : (item.modernEn || '').toLowerCase();
+        const tEnFold = isAscii ? (iq ? iq.tEnFold : fold(tEn)) : '';
+        const mEnFold = isAscii ? (iq ? iq.mEnFold : fold(mEn)) : '';
         if (tZh === q || tEn === q) score = 100;
         else if (bareZh && (bareZh === q || bareEn === q)) score = 99;
         else if (isAscii && qFold.length >= 3 && tEnFold === qFold) score = 98;
-        else if (mZh && (mZh === q || mZh.split(/[·/、]/).includes(q) || mEn === q)) score = 96;
-        else if (isAscii && qFold.length >= 3 && mEnFold === qFold) score = 94;
+        else if (
+          mZh &&
+          (mZh === q ||
+            (iq ? iq.mZhParts && iq.mZhParts.includes(q) : mZh.split(/[·/、]/).includes(q)) ||
+            mEn === q)
+        ) {
+          score = 96;
+        } else if (isAscii && qFold.length >= 3 && mEnFold === qFold) score = 94;
         else if (
           item.aliases &&
-          item.aliases.some((a) => a === q || (isAscii && qFold.length >= 3 && fold(a) === qFold))
+          item.aliases.some(
+            (a, idx) =>
+              a === q ||
+              (isAscii &&
+                qFold.length >= 3 &&
+                (iq && iq.aliasesFold ? iq.aliasesFold[idx] : fold(a)) === qFold)
+          )
         ) {
           score = 92;
         } else if (
@@ -11156,11 +11439,15 @@
           item.kind === 'event' &&
           q.length >= 2 &&
           ((item.altTitlesZh &&
-            (matchedAltZh = item.altTitlesZh.find((at) => at.toLowerCase().includes(q)))) ||
+            (matchedAltZh = iq && iq.altZhPairs
+              ? (iq.altZhPairs.find((pair) => pair[1].includes(q)) || [])[0] || null
+              : item.altTitlesZh.find((at) => at.toLowerCase().includes(q)))) ||
             (isAscii &&
               qFold.length >= 4 &&
               item.altTitlesEn &&
-              (matchedAltEn = item.altTitlesEn.find((at) => fold(at).includes(qFold)))))
+              (matchedAltEn = iq && iq.altEnPairs
+                ? (iq.altEnPairs.find((pair) => pair[1].includes(qFold)) || [])[0] || null
+                : item.altTitlesEn.find((at) => fold(at).includes(qFold)))))
         ) {
           score = 75;
         } else if (
@@ -11172,7 +11459,9 @@
           score = 78;
         } else if (
           item.keywords.includes(q) ||
-          (isAscii && qFold.length >= 4 && fold(item.keywords).includes(qFold))
+          (isAscii &&
+            qFold.length >= 4 &&
+            (iq ? iq.keywordsFold : fold(item.keywords)).includes(qFold))
         ) {
           if (hasEraMatch && (item.kind === 'city' || item.kind === 'event')) {
             score = 0;
@@ -11247,7 +11536,10 @@
         }
       }
 
-      const multiProfiles = this._resolvePersonProfiles(normQ);
+      const canBeMultiPerson =
+        /^[\u4e00-\u9fff·]{2,6}(?:\s+[\u4e00-\u9fff·]{2,6})+$/.test(normQ) ||
+        /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(normQ);
+      const multiProfiles = canBeMultiPerson ? this._resolvePersonProfiles(normQ) : [];
       if (multiProfiles.length >= 2) {
         const st = this._buildPersonTracksAndEvents(multiProfiles);
         if (st && st.isMulti) {
@@ -11586,10 +11878,7 @@
           if (this.locale === 'zh-tw') this._applyZhHantDom(searchList);
           return;
         }
-        if (
-          /[a-z]/i.test(q) &&
-          (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
-        ) {
+        if (/[a-z]/i.test(q) && !this._hasEnDict()) {
           this._ensureEnglishLocale().then(renderSearchDropdown);
           return;
         }
@@ -12756,6 +13045,29 @@
       if (!place || typeof place !== 'string') return null;
       const rawInput = place.trim();
       if (!rawInput) return null;
+      const yr =
+        year !== null && year !== '' && Number.isFinite(Number(year)) ? Number(year) : this.year;
+      const targetDynIdx = this._findDynastyIndex(yr);
+      const targetDyn = this.dynasties[targetDynIdx] || this.dynasties[0];
+      const targetSnapKey = this._resolveSnapKey(targetDyn, yr);
+      if (!this._resolvePlaceCache || this._resolvePlaceCacheSnapRef !== this.snapshots) {
+        this._resolvePlaceCache = new Map();
+        this._resolvePlaceCacheSnapRef = this.snapshots;
+      }
+      const snapFull = this.snapshots && this.snapshots.s_prc ? 1 : 0;
+      const hasEn = this._hasEnDict() ? 1 : 0;
+      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}`;
+      if (this._resolvePlaceCache.has(cacheKey)) {
+        const cached = this._resolvePlaceCache.get(cacheKey);
+        return cached ? { ...cached } : null;
+      }
+      const res = this._resolvePlaceUncached(rawInput, yr, targetDyn, targetSnapKey);
+      if (this._resolvePlaceCache.size > 4096) this._resolvePlaceCache.clear();
+      this._resolvePlaceCache.set(cacheKey, res ? { ...res } : null);
+      return res ? { ...res } : null;
+    }
+
+    _resolvePlaceUncached(rawInput, yr, targetDyn, targetSnapKey) {
       const rawHans = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
       const raw = rawHans === '海南藏族自治州' ? '海南州' : rawHans;
 
@@ -12810,9 +13122,6 @@
       const qFold = isAsciiQuery ? foldAscii(q) : '';
       const qStrippedFold = isAsciiQuery ? foldAscii(qStripped) : '';
 
-      const yr = Number.isFinite(Number(year)) ? Number(year) : this.year;
-      const targetDynIdx = this._findDynastyIndex(yr);
-      const targetDyn = this.dynasties[targetDynIdx] || this.dynasties[0];
       const orderedDynasties = [
         targetDyn,
         ...this.dynasties.filter((d) => d !== targetDyn),
@@ -13228,7 +13537,6 @@
       }
 
       // 5. Prefectures & Macro Regions across snapshots (preferring target dynasty snapshot)
-      const targetSnapKey = this._resolveSnapKey(targetDyn, yr);
       const allSnapKeys = [
         targetSnapKey,
         ...Object.keys(this.snapshots).filter((k) => k !== 'neighbors' && k !== targetSnapKey),
@@ -13316,7 +13624,7 @@
           .filter(Boolean);
         if (subParts.length > 1) {
           for (const sp of subParts) {
-            const hit = this.resolvePlace(sp, year);
+            const hit = this.resolvePlace(sp, yr);
             if (hit) return hit;
           }
         }
@@ -13952,9 +14260,7 @@
 
     locate(opts = {}) {
       const { year, place, lng, lat, zoom } = opts || {};
-      const hasEnDict = Boolean(
-        this.enLocale && this.enLocale.dict && Object.keys(this.enLocale.dict).length > 0
-      );
+      const hasEnDict = this._hasEnDict();
       const needsEnDict =
         !hasEnDict && (this.locale === 'en' || (place && /[a-z]/i.test(String(place))));
       if (!this._fullSnapshotsLoaded || needsEnDict) {
@@ -14085,11 +14391,7 @@
         if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
           tasks.push(this._ensureFullSnapshots());
         }
-        if (
-          needsEn &&
-          typeof window !== 'undefined' &&
-          (!this.enLocale || !this.enLocale.dict || !Object.keys(this.enLocale.dict).length)
-        ) {
+        if (needsEn && typeof window !== 'undefined' && !this._hasEnDict()) {
           tasks.push(this._ensureEnglishLocale());
         }
         if (!tasks.length) {
