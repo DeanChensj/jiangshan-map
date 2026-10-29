@@ -31,7 +31,8 @@ We welcome contributions of all kinds, including:
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
-    └── validate_atlas.js    # Zero-dependency automated data integrity, topology & 27-CUJ E2E validation suite
+    ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
+    └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
 ```
 
 ---
@@ -47,10 +48,17 @@ We welcome contributions of all kinds, including:
    ```
    Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI).
 
-2. **Run the Automated Validation Suite**:
-   Before opening a Pull Request, always run the built-in validation script to verify timeline continuity, snapshot integrity, coordinate validity, polygon topology, and 100% English translation coverage:
+2. **Sync Per-Asset Cache-Busting Hashes (After Editing `css/` or `js/`)**:
+   `index.html` stamps each CSS/JS bundle (and lazy-loaded bundle attributes on `#atlas-app-script`) with an 8-character SHA-256 content hash:
    ```bash
-   node scripts/validate_atlas.js
+   node scripts/sync_version.js
+   ```
+
+3. **Run the Automated Validation Suite**:
+   During local iteration on UI, search, or data entries, use `--fast` for ~6-second feedback; before opening a Pull Request, run the full suite to also verify polygon topology, territorial exclusivity, and CLI/MCP smoke tests:
+   ```bash
+   node scripts/validate_atlas.js --fast   # Fast check: syntax, hashes, schemas, i18n & UI CUJs
+   node scripts/validate_atlas.js          # Full suite: includes all polygon topology & subprocess checks
    ```
 
 ---

@@ -31,7 +31,8 @@
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
-    └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与 27 项端到端 CUJ 校验脚本
+    ├── sync_version.js      # 零依赖按文件 SHA-256 内容指纹同步脚本（自动更新 index.html 缓存参数）
+    └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与端到端 CUJ 校验脚本（支持 --fast）
 ```
 
 ---
@@ -47,10 +48,17 @@
    ```
    随后在浏览器访问 `http://localhost:8000`（英文界面可访问 `http://localhost:8000/?lang=en`）。
 
-2. **运行自动化数据与拓扑校验**：
-   在提交 Pull Request 前，请运行内置的校验脚本，确保所有朝代时间轴连续、快照引用有效、经纬度坐标合法、多边形拓扑闭合且中英双语词条 100% 完整：
+2. **同步静态与懒加载资源指纹（修改 `css/` 或 `js/` 后）**：
+   `index.html` 按每个资源文件内容的 8 位 SHA-256 短哈希标记 `?v=` 与 `#atlas-app-script` 上的 `data-v-*` 属性，修改样式或脚本后运行：
    ```bash
-   node scripts/validate_atlas.js
+   node scripts/sync_version.js
+   ```
+
+3. **运行自动化数据与拓扑校验**：
+   日常迭代界面、检索或史料词条时可使用 `--fast` 进行秒级校验；提交 Pull Request 前请运行完整校验，覆盖全部多边形拓扑、疆域互斥采样与 CLI/MCP 冒烟测试：
+   ```bash
+   node scripts/validate_atlas.js --fast   # 秒级校验：语法、资源哈希、数据结构、双语与交互状态机
+   node scripts/validate_atlas.js          # 完整校验：额外覆盖全量历史多边形拓扑与子进程冒烟测试
    ```
 
 ---
