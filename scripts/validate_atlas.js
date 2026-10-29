@@ -586,14 +586,29 @@ function main() {
     );
   }
   {
-    const rawHtmlOrder = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-    const swappedHtml = rawHtmlOrder
-      .replace(/(<script id="atlas-app-script"[^>]*><\/script>)\s*(<script src="js\/atlas_quiz\.js\?v=[^"]+"><\/script>)/, '$2\n  $1');
-    assert.notStrictEqual(swappedHtml, rawHtmlOrder, 'Expected index.html to place #atlas-app-script immediately before js/atlas_quiz.js');
-    assert.throws(
-      () => verifyIndexHtmlAssetHashes(ROOT, swappedHtml, ''),
-      /controller load-order violation/,
-      'verifyIndexHtmlAssetHashes must reject index.html if js/atlas_quiz.js appears before js/app.js'
+    // Controller modules must install correctly in either load order.
+    const orderSandbox = { console, addEventListener: () => {} };
+    orderSandbox.window = orderSandbox;
+    vm.createContext(orderSandbox);
+    for (const b of [...controllerBundles].reverse()) b.script.runInContext(orderSandbox);
+    const ReorderedClass = orderSandbox.window.HistoricalAtlasController;
+    assert(
+      typeof ReorderedClass === 'function' &&
+        typeof ReorderedClass.prototype.startChallenge === 'function' &&
+        typeof ReorderedClass.prototype._evaluateLocateClick === 'function',
+      'atlas_quiz.js loaded before app.js must still attach quiz methods via window.__ATLAS_MIXINS'
+    );
+    assert.strictEqual(
+      orderSandbox.window.__ATLAS_MIXINS.length,
+      0,
+      'app.js must drain window.__ATLAS_MIXINS after defining HistoricalAtlasController'
+    );
+    const reorderedQuiz = Object.create(ReorderedClass.prototype);
+    reorderedQuiz.locale = 'zh';
+    assert.strictEqual(
+      reorderedQuiz._sanitizeChallengeClue('今淄博城（今山东淄博）', { modern: '' }, '临淄'),
+      '此城',
+      'Quiz methods installed through the mixin queue must run against the late-bound controller'
     );
   }
 
