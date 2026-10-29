@@ -3203,6 +3203,10 @@
         }
       }
       if (!Number.isFinite(minX) || !Number.isFinite(minY)) return;
+      if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+        this._fitMobileBox(minX, minY, maxX, maxY);
+        return;
+      }
 
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
@@ -3215,6 +3219,50 @@
         w,
         h,
       });
+    }
+
+    // Phones: a portrait map is taller than wide, so framing with the desktop 0.7 aspect left
+    // wide realms (唐, 元) as a thin strip. Use the real map aspect and keep the box inside the
+    // band not covered by the floating search button (top) and legend (bottom).
+    _fitMobileBox(minX, minY, maxX, maxY) {
+      const fit = (attempt = 0) => {
+        this._cameraViewportRect = null;
+        const r = this._getUnscaledSvgRect();
+        if (!r || r.width < 40) return;
+        // Mid-transition the map can still be a sliver; retry instead of framing against it.
+        if (r.height < 120) {
+          if (attempt < 6 && typeof setTimeout === 'function') setTimeout(() => fit(attempt + 1), 150);
+          return;
+        }
+        const aspect = r.height / r.width;
+        const [top, bottom] = this._mobileMapVisibleBand(r);
+        const band = bottom - top;
+        const spanW = Math.max(maxX - minX, (maxY - minY) / (aspect * band)) * 1.16;
+        const w = Math.max(170, Math.min(1300, spanW));
+        const h = w * aspect;
+        const cx = (minX + maxX) * 0.5;
+        const cy = (minY + maxY) * 0.5;
+        this._animateCameraTo({ x: cx - w * 0.5, y: cy - h * (top + band * 0.5), w, h });
+      };
+      // Measure only after a just-toggled bottom sheet has finished resizing the map.
+      const wait = 260 - (Date.now() - (this._mobileSheetToggledAt || 0));
+      if (wait > 0 && typeof setTimeout === 'function') setTimeout(fit, wait);
+      else fit();
+    }
+
+    // [top, bottom] fractions of the map height left visible by the mobile floating chrome.
+    _mobileMapVisibleBand(svgRect) {
+      // Leave ~56px for the floating search button, but never more than 12% of a short map.
+      const top = Math.min(0.12, 56 / svgRect.height);
+      let bottom = 0.98;
+      const legend = this.mapKey;
+      if (legend && typeof legend.getBoundingClientRect === 'function') {
+        const lr = legend.getBoundingClientRect();
+        if (lr.height > 0 && lr.top > svgRect.top + svgRect.height * 0.35 && lr.top < svgRect.bottom) {
+          bottom = Math.min(bottom, (lr.top - svgRect.top - 8) / svgRect.height);
+        }
+      }
+      return [top, Math.max(top + 0.3, bottom)];
     }
 
     // ---------------- Polity Focus (regional / rival regimes) ----------------
@@ -8466,8 +8514,11 @@
     }
 
     toggleMobileChronicle(force) {
+      const wasOpen = Boolean(this.mobileChronicleOpen);
       this.mobileChronicleOpen =
         force !== undefined ? force : !this.mobileChronicleOpen;
+      // The sheet is a grid row, so toggling it resizes the map over a 0.22s transition.
+      if (wasOpen !== this.mobileChronicleOpen) this._mobileSheetToggledAt = Date.now();
       if (this.mobileChronicleOpen) {
         if (this.paneCollapsed) {
           this.paneCollapsed = false;
