@@ -166,12 +166,14 @@ def _write_offline_html(repo_root):
       rf'\1src="{TRANSPARENT_GIF_DATA_URI}"',
       html_local,
   )
-  html_local = html_local.replace(
-      '<script src="js/app.js',
+  html_local = re.sub(
+      r'(<script\b[^>]*\bsrc="js/app\.js)',
       '<style>.fade-enter { animation: none !important; opacity: 1 !important; }</style>\n'
       '  <script src="js/atlas_snapshots.js"></script>\n'
       '  <script src="js/i18n_dict.js"></script>\n'
-      '  <script src="js/app.js',
+      r'  \1',
+      html_local,
+      count=1,
   )
   tmp_html = os.path.join(repo_root, f"_snap_skill_tmp_{os.getpid()}.html")
   try:
@@ -280,6 +282,13 @@ const sandbox = {
 };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
+let ctrlScripts = ["js/app.js"];
+try {
+  const sv = require(path.join(root, "scripts", "sync_version.js"));
+  if (sv && Array.isArray(sv.CONTROLLER_SCRIPTS) && sv.CONTROLLER_SCRIPTS.length) {
+    ctrlScripts = sv.CONTROLLER_SCRIPTS;
+  }
+} catch (_) {}
 for (const rel of [
   "js/china_geo_data.js",
   "js/map_data.js",
@@ -287,7 +296,7 @@ for (const rel of [
   "js/i18n_dict.js",
   "js/lore_data.js",
   "js/zh_hant.js",
-  "js/app.js"
+  ...ctrlScripts
 ]) {
   vm.runInContext(fs.readFileSync(path.join(root, rel), "utf8"), sandbox);
 }

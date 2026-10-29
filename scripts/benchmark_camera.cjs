@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
+const { CONTROLLER_SCRIPTS } = require('./sync_version');
 
 const url = process.env.ATLAS_URL || 'http://127.0.0.1:8765/';
 const baseRef = process.env.CAMERA_BASE_REF || 'origin/main';
@@ -13,7 +14,16 @@ const repetitions = Number(process.env.CAMERA_RUNS || 3);
 const output = path.resolve(process.env.CAMERA_OUTPUT || '/tmp/jiangshan-camera-benchmark.json');
 const root = path.resolve(__dirname, '..');
 const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' });
-const baseline = Object.fromEntries(['js/app.js', 'css/style.css', 'index.html'].map(file => [file, git('show', `${baseRef}:${file}`)]));
+const trackedAssets = [...CONTROLLER_SCRIPTS, 'css/style.css', 'index.html'];
+const baseline = Object.fromEntries(
+  trackedAssets.map(file => {
+    try {
+      return [file, git('show', `${baseRef}:${file}`)];
+    } catch {
+      return [file, null];
+    }
+  })
+);
 const percentile = (values, q) => [...values].sort((a, b) => a - b)[Math.min(values.length - 1, Math.floor(values.length * q))];
 
 (async () => {
@@ -24,7 +34,7 @@ const percentile = (values, q) => [...values].sort((a, b) => a - b)[Math.min(val
       headless: true, viewport: { width: 1440, height: 900 }, dpr: 2,
       duration, repetitions, baseCommit: git('rev-parse', baseRef).trim(),
       candidateCommit: git('rev-parse', 'HEAD').trim(),
-      candidateDiff: git('diff', 'HEAD', '--', 'js/app.js', 'css/style.css', 'index.html'),
+      candidateDiff: git('diff', 'HEAD', '--', ...trackedAssets),
     },
     runs: [],
   };

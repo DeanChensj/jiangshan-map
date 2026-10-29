@@ -21,7 +21,8 @@
 ├── llms.txt                 # 面向 LLM 与 AI Agent 的机器可读接入协议说明
 ├── css/style.css            # 宣纸水墨设色主题样式与响应式布局
 ├── js/
-│   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、点人溯事、寻址挑战与 window.atlasAPI
+│   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、点人溯事与 window.atlasAPI
+│   ├── atlas_quiz.js        # 古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
 │   ├── lore_data.js         # 历代帝王年号（CHINESE_ERA_SPANS）、在位君主、人物生平行迹、名城风华题记（CITY_LORE）、定点大事与诗词名胜辞典
 │   ├── atlas_boot.js        # 首屏极速启动快照（s_zhanguo），保障首屏零等待渲染

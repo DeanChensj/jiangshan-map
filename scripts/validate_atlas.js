@@ -10,7 +10,7 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { verifyIndexHtmlAssetHashes } = require('./sync_version');
+const { CONTROLLER_SCRIPTS, verifyIndexHtmlAssetHashes } = require('./sync_version');
 
 const ROOT = path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
@@ -64,9 +64,18 @@ function main() {
     }
   }
 
-  // Verify controller syntax
-  const appCode = fs.readFileSync(path.join(JS_DIR, 'app.js'), 'utf8');
-  const appScript = new vm.Script(appCode, { filename: 'app.js' });
+  // Verify controller module syntax & concatenate sources for static guards
+  const controllerBundles = CONTROLLER_SCRIPTS.map((relPath) => {
+    const full = path.join(ROOT, relPath);
+    assert(fs.existsSync(full), `Missing controller module: ${relPath}`);
+    const code = fs.readFileSync(full, 'utf8');
+    return {
+      relPath,
+      code,
+      script: new vm.Script(code, { filename: path.basename(relPath) }),
+    };
+  });
+  const appCode = controllerBundles.map((b) => b.code).join('\n');
 
   const provinces = sandbox.window.PROVINCE_OUTLINES;
   const snapshots = sandbox.window.ATLAS_SNAPSHOTS;
@@ -497,6 +506,7 @@ function main() {
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   for (const strayFile of [
     'app.js',
+    'atlas_quiz.js',
     'lore_data.js',
     'map_data.js',
     'china_geo_data.js',
@@ -547,9 +557,45 @@ function main() {
     pathname: '/jiangshan-map/',
   };
   sandbox.window.location = sandbox.location;
-  appScript.runInContext(sandbox);
+  for (const b of controllerBundles) {
+    b.script.runInContext(sandbox);
+  }
   const ControllerClass = sandbox.window.HistoricalAtlasController;
   assert(typeof ControllerClass === 'function', 'HistoricalAtlasController must be exposed on window');
+  for (const quizMethod of [
+    '_sanitizeChallengeClue',
+    '_buildChallengeDeck',
+    '_syncChallengeScrubberState',
+    'startChallenge',
+    'stopChallenge',
+    '_renderChallengeQuestionText',
+    'presentChallengeRound',
+    '_drawQuizMark',
+    '_setQuizChip',
+    '_rescaleQuizChip',
+    '_quizChipAt',
+    '_previewLocatePin',
+    '_renderChallengeAnsweredVerdict',
+    '_evaluateLocateClick',
+    '_finishChallenge',
+  ]) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, quizMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_quiz.js must attach ${quizMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
+  {
+    const rawHtmlOrder = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    const swappedHtml = rawHtmlOrder
+      .replace(/(<script id="atlas-app-script"[^>]*><\/script>)\s*(<script src="js\/atlas_quiz\.js\?v=[^"]+"><\/script>)/, '$2\n  $1');
+    assert.notStrictEqual(swappedHtml, rawHtmlOrder, 'Expected index.html to place #atlas-app-script immediately before js/atlas_quiz.js');
+    assert.throws(
+      () => verifyIndexHtmlAssetHashes(ROOT, swappedHtml, ''),
+      /controller load-order violation/,
+      'verifyIndexHtmlAssetHashes must reject index.html if js/atlas_quiz.js appears before js/app.js'
+    );
+  }
 
   const DEG_TO_RAD = Math.PI / 180;
   const ctrl = Object.create(ControllerClass.prototype);
@@ -6246,6 +6292,128 @@ function main() {
           const hansPass = ctrl._challengeBaseTiers[0].find((x) => x.settlement.passKey === 'hanguguan');
           assert(hansPass && hansPass.settlement.ancient === '函谷关', 'Expected zh challenge base tier to invalidate zh-tw cache and restore 函谷关');
           ctrl.locale = savedLocDeck;
+        }
+        {
+          const makeQuizEl = (tag = 'div') => {
+            const attrs = new Map();
+            const classes = new Set();
+            const children = [];
+            let html = '';
+            return {
+              tagName: tag.toUpperCase(),
+              textContent: '',
+              disabled: false,
+              checked: true,
+              onclick: null,
+              style: {},
+              dataset: {},
+              children,
+              childNodes: [],
+              get innerHTML() { return html; },
+              set innerHTML(v) { html = String(v); if (v === '') children.length = 0; },
+              classList: {
+                add: (...cs) => cs.forEach((c) => classes.add(c)),
+                remove: (...cs) => cs.forEach((c) => classes.delete(c)),
+                toggle: (c, force) => {
+                  const on = force === undefined ? !classes.has(c) : Boolean(force);
+                  if (on) classes.add(c); else classes.delete(c);
+                  return on;
+                },
+                contains: (c) => classes.has(c),
+              },
+              setAttribute: (k, v) => {
+                attrs.set(k, String(v));
+                if (k === 'class') {
+                  classes.clear();
+                  String(v).split(/\s+/).filter(Boolean).forEach((c) => classes.add(c));
+                }
+              },
+              getAttribute: (k) => (attrs.has(k) ? attrs.get(k) : null),
+              appendChild: (ch) => { children.push(ch); return ch; },
+              getBoundingClientRect: () => ({ left: 10, top: 10, right: 90, bottom: 30, width: 800, height: 600 }),
+              getComputedTextLength: () => 44,
+              querySelector: function (sel) {
+                for (const ch of children) {
+                  const match = sel.startsWith('text.')
+                    ? ch.tagName === 'TEXT' && ch.classList.contains(sel.slice(5))
+                    : sel.startsWith('.')
+                      ? ch.classList.contains(sel.slice(1))
+                      : ch.tagName === sel.toUpperCase();
+                  if (match) return ch;
+                  const sub = ch.querySelector && ch.querySelector(sel);
+                  if (sub) return sub;
+                }
+                return null;
+              },
+            };
+          };
+          const quizEls = new Map();
+          const getQuizEl = (id) => {
+            if (!quizEls.has(id)) quizEls.set(id, makeQuizEl('div'));
+            return quizEls.get(id);
+          };
+          const qCtrl = Object.create(ControllerClass.prototype);
+          Object.assign(qCtrl, {
+            projector: new sandbox.window.MercatorProjector(1000, 700, {
+              west: 66,
+              east: 142,
+              south: 14,
+              north: 55,
+            }),
+            dynasties,
+            snapshots,
+            enLocale,
+            minYear: ctrl.minYear,
+            maxYear: ctrl.maxYear,
+            locale: 'zh',
+            year: -221,
+            dynastyIdx: 1,
+            camera: { x: 0, y: 0, w: 1000, h: 700, zoom: 1 },
+            svg: makeQuizEl('svg'),
+            grpChallenge: makeQuizEl('g'),
+            grpSettlements: makeQuizEl('g'),
+            grpMilestones: makeQuizEl('g'),
+            hoverTip: makeQuizEl('div'),
+            _id: getQuizEl,
+            _svgNode: (tag, attrs = {}, parent = null) => {
+              const n = makeQuizEl(tag);
+              for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+              if (parent) parent.appendChild(n);
+              return n;
+            },
+            _applyZhHantDom: () => {},
+            _recordGestureClick: () => {},
+            stopAutoplay: () => {},
+            clearCustomRoute: () => {},
+            closeMilestoneBalloon: () => {},
+            closeGenealogyCard: () => {},
+            _syncImmersivePaneState: () => {},
+            _scheduleUrlSync: () => {},
+            _syncDocumentSeoMeta: () => {},
+            _animateCameraTo: (cam) => { qCtrl.camera = { ...cam }; },
+            _getDefaultCamera: () => ({ x: 0, y: 0, w: 1000, h: 700, zoom: 1 }),
+            resetCamera: () => {},
+            jumpToYear: (y) => { qCtrl.year = y; },
+            _rescaleSvgTypography: () => { qCtrl._rescaleQuizChip(1000, 1); },
+          });
+          qCtrl._initTimelineBands();
+          for (const loc of ['zh', 'zh-tw', 'en']) {
+            qCtrl.locale = loc;
+            qCtrl.startChallenge({ preferCurrentDynasty: true });
+            assert(qCtrl.challenge && qCtrl.challenge.deck.length === 10, `Quiz deck failed for ${loc}`);
+            qCtrl._previewLocatePin(500, 350);
+            assert(Array.isArray(qCtrl.challenge.pendingGuess), `pendingGuess not set for ${loc}`);
+            assert.strictEqual(qCtrl._quizChipAt(50, 20), true, `_quizChipAt hit failed for ${loc}`);
+            assert.strictEqual(qCtrl._quizChipAt(500, 500), false, `_quizChipAt miss failed for ${loc}`);
+            const [tx, ty] = qCtrl.projector.toScreen(...qCtrl.challenge.deck[0].settlement.coord);
+            qCtrl._evaluateLocateClick(tx, ty);
+            assert.strictEqual(qCtrl.challenge.answered, true);
+            assert.strictEqual(qCtrl.challenge.lastPts, 100);
+            qCtrl._finishChallenge();
+            assert.strictEqual(qCtrl.challenge.finished, true);
+            qCtrl.stopChallenge();
+            assert.strictEqual(qCtrl.challenge, null);
+          }
         }
         assert.strictEqual(ctrl.trTerm('南郑'), 'Nanzheng');
         assert.strictEqual(ctrl.trTerm('刺史部'), 'Inspectorate Region');

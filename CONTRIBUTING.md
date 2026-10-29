@@ -21,7 +21,8 @@ We welcome contributions of all kinds, including:
 ├── llms.txt                 # Machine-readable protocol specification for LLMs & AI Agents
 ├── css/style.css            # Traditional parchment theme & responsive styles
 ├── js/
-│   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Person Chronicle, Quiz & window.atlasAPI
+│   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Person Chronicle & window.atlasAPI
+│   ├── atlas_quiz.js        # Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
 │   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
 │   ├── lore_data.js         # Imperial eras (CHINESE_ERA_SPANS), reigning monarchs, biographical routes, city lore (CITY_LORE), landmark events & gazetteer
 │   ├── atlas_boot.js        # Pre-bundled initial snapshot (s_zhanguo) for instant first-paint rendering
