@@ -436,6 +436,13 @@
       this._cameraViewportRect = null;
       this._lastCameraViewBox = null;
       this._baseViewBoxCam = null;
+      this._hoveredPrefEl = null;
+      this._hoverRaf = null;
+      this._pendingHoverEvent = null;
+      this._deferredPrefectureSnap = null;
+      this._prefShapesGroup = null;
+      this._regOverlayGroup = null;
+      this._renderedPrefecturesRef = null;
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -2155,10 +2162,114 @@
       });
     }
 
+    _setHoveredPrefecture(el) {
+      if (this._hoveredPrefEl === el) return;
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.remove('is-hovered');
+      }
+      this._hoveredPrefEl = el || null;
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.add('is-hovered');
+      }
+    }
+
+    _clearHoveredPrefecture() {
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.remove('is-hovered');
+      }
+      this._hoveredPrefEl = null;
+    }
+
+    _renderPrefecturesLayer(snap) {
+      if (!this.grpPrefectures || !snap) return;
+      const prefs = snap.prefectures || null;
+      const canReusePrefs = Boolean(
+        this._prefShapesGroup &&
+          this._prefShapesGroup.parentNode === this.grpPrefectures &&
+          this._renderedPrefecturesRef === prefs
+      );
+      if (!canReusePrefs) {
+        this.grpPrefectures.innerHTML = '';
+        const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
+        for (const pref of prefs || []) {
+          const path = this._svgNode(
+            'path',
+            { d: this.projector.shapeToSvgPath(pref.shape), class: 'prefecture-shape' },
+            prefGroup
+          );
+          path.dataset.prefTitle = pref.title;
+          path.dataset.prefCategory = pref.category;
+        }
+        this._prefShapesGroup = prefGroup;
+        this._renderedPrefecturesRef = prefs;
+        this._regOverlayGroup = this._svgNode('g', {}, this.grpPrefectures);
+      } else if (this._regOverlayGroup && this._regOverlayGroup.parentNode === this.grpPrefectures) {
+        this._regOverlayGroup.innerHTML = '';
+      } else {
+        this._regOverlayGroup = this._svgNode('g', {}, this.grpPrefectures);
+      }
+
+      const regGroup = this._regOverlayGroup;
+      const regBoundaryPath = this._buildRegionBoundaryPath(snap);
+      if (regBoundaryPath) {
+        this._svgNode(
+          'path',
+          { d: regBoundaryPath, class: 'region-shape-casing' },
+          regGroup
+        );
+        this._svgNode(
+          'path',
+          { d: regBoundaryPath, class: 'region-shape' },
+          regGroup
+        );
+      }
+
+      for (const reg of snap.regions || []) {
+        if (reg.anchor && reg.title) {
+          const isQiao = reg.category === '侨州';
+          if (
+            !isQiao &&
+            snap._allowRegionAnchor &&
+            !snap._allowRegionAnchor(reg.anchor[0], reg.anchor[1])
+          ) {
+            continue;
+          }
+          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          const rLbl = this._svgNode(
+            'text',
+            {
+              class: isQiao ? 'region-caption is-qiaozhou' : 'region-caption',
+              'data-x': baseX.toFixed(1),
+              'data-y': baseY.toFixed(1),
+              'data-base-x': baseX.toFixed(1),
+              'data-base-y': baseY.toFixed(1),
+            },
+            regGroup
+          );
+          rLbl._regShape = reg.shape;
+          rLbl.textContent = isQiao
+            ? this.locale === 'en'
+              ? `${this.trTerm(reg.title)} (Emigre)`
+              : this._zh(`${reg.title}·侨`)
+            : this.trTerm(reg.title);
+        }
+      }
+    }
+
+    _materializeDeferredPrefectures() {
+      if (!this._deferredPrefectureSnap || !this.grpPrefectures) return false;
+      const snap = this._deferredPrefectureSnap;
+      this._deferredPrefectureSnap = null;
+      this._renderPrefecturesLayer(snap);
+      this._syncTracedPrefecture();
+      this._typoDirty = true;
+      return true;
+    }
+
     _renderPolitiesAndPrefectures(dynasty, snap) {
       this._setPolityFocus(null);
+      this._clearHoveredPrefecture();
       this.grpPolities.innerHTML = '';
-      this.grpPrefectures.innerHTML = '';
 
       const polGroup = this._svgNode('g', {}, this.grpPolities);
       const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
@@ -2200,66 +2311,28 @@
         }
       }
 
-      const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
-      for (const pref of snap.prefectures || []) {
-        const path = this._svgNode(
-          'path',
-          { d: this.projector.shapeToSvgPath(pref.shape), class: 'prefecture-shape' },
-          prefGroup
-        );
-        path.dataset.prefTitle = pref.title;
-        path.dataset.prefCategory = pref.category;
-      }
-
-      const regBoundaryPath = this._buildRegionBoundaryPath(snap);
-      if (regBoundaryPath) {
-        this._svgNode(
-          'path',
-          { d: regBoundaryPath, class: 'region-shape-casing' },
-          prefGroup
-        );
-        this._svgNode(
-          'path',
-          { d: regBoundaryPath, class: 'region-shape' },
-          prefGroup
-        );
-      }
-
-      for (const reg of snap.regions || []) {
-        if (reg.anchor && reg.title) {
-          const isQiao = reg.category === '侨州';
-          if (
-            !isQiao &&
-            snap._allowRegionAnchor &&
-            !snap._allowRegionAnchor(reg.anchor[0], reg.anchor[1])
-          ) {
-            continue;
-          }
-          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
-          const rLbl = this._svgNode(
-            'text',
-            {
-              class: isQiao ? 'region-caption is-qiaozhou' : 'region-caption',
-              'data-x': baseX.toFixed(1),
-              'data-y': baseY.toFixed(1),
-              'data-base-x': baseX.toFixed(1),
-              'data-base-y': baseY.toFixed(1),
-            },
-            prefGroup
-          );
-          rLbl._regShape = reg.shape;
-          rLbl.textContent = isQiao
-            ? this.locale === 'en'
-              ? `${this.trTerm(reg.title)} (Emigre)`
-              : this._zh(`${reg.title}·侨`)
-            : this.trTerm(reg.title);
+      const prefHidden = Boolean(
+        this.grpPrefectures &&
+          this.grpPrefectures.classList &&
+          this.grpPrefectures.classList.contains('is-hidden')
+      );
+      if (prefHidden) {
+        if (this._prefShapesGroup || this._regOverlayGroup || this.grpPrefectures.firstChild) {
+          this.grpPrefectures.innerHTML = '';
+          this._prefShapesGroup = null;
+          this._regOverlayGroup = null;
+          this._renderedPrefecturesRef = null;
         }
+        this._deferredPrefectureSnap = snap;
+      } else {
+        this._deferredPrefectureSnap = null;
+        this._renderPrefecturesLayer(snap);
       }
 
       this.lastRenderedSnap = snap;
       if (this.activePolity || this.eraFocus) this._setPolityFocus(null);
       this._renderLegendBox(snap);
-      this._syncTracedPrefecture();
+      if (!prefHidden) this._syncTracedPrefecture();
       this._rescaleSvgTypography();
     }
 
@@ -2401,17 +2474,20 @@
           const p1 = ring[i];
           const p2 = ring[i + 1];
           const ek = edgeKey(p1, p2);
+          if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+            penX = NaN;
+            penY = NaN;
+            continue;
+          }
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
           const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
           if (
-            (regEdgeCounts.get(ek) || 0) < 2 ||
-            seenEdges.has(ek) ||
-            (polRings.length &&
-              (!allowPolIdx(pIdxM) ||
-                findPolIdx(p1[0], p1[1]) !== pIdxM ||
-                findPolIdx(p2[0], p2[1]) !== pIdxM ||
-                (hasLargePolity && nearPolityBorder(mx, my, 0.16))))
+            polRings.length &&
+            (!allowPolIdx(pIdxM) ||
+              findPolIdx(p1[0], p1[1]) !== pIdxM ||
+              findPolIdx(p2[0], p2[1]) !== pIdxM ||
+              (hasLargePolity && nearPolityBorder(mx, my, 0.16)))
           ) {
             penX = NaN;
             penY = NaN;
@@ -7660,6 +7736,7 @@
         if (!scrubbing) return;
         if (!this.isScrubbing) {
           this.isScrubbing = true;
+          if (this.svg && this.svg.classList) this.svg.classList.add('is-scrubbing');
           if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
         }
         pendingX = e.clientX;
@@ -7682,6 +7759,7 @@
         trackRect = null;
         if (x !== null) scrubAt(x);
         this.isScrubbing = false;
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
         }
@@ -7691,6 +7769,7 @@
         cancelRaf();
         scrubbing = false;
         this.isScrubbing = false;
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         trackRect = null;
         if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
@@ -8333,6 +8412,14 @@
       });
     }
 
+    _cancelPendingHover() {
+      if (this._hoverRaf != null) {
+        cancelAnimationFrame(this._hoverRaf);
+        this._hoverRaf = null;
+      }
+      this._pendingHoverEvent = null;
+    }
+
     _commitStageTransform() {
       if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
         this._stageWrap.style.transform = '';
@@ -8387,6 +8474,7 @@
         cancelAnimationFrame(this._camRaf);
         this._camRaf = null;
       }
+      this._cancelPendingHover();
       if (forceTypography) this._cameraViewportRect = null;
       const cachedRect =
         (this.dragState && this.dragState.rect) ||
@@ -8404,14 +8492,11 @@
       } else if (this._lastCameraViewBox !== null && viewBox !== this._lastCameraViewBox) {
         this._cameraViewportRect = rect;
         this.hoverTip.classList.add('is-hidden');
-        this.grpPrefectures.querySelectorAll('.prefecture-shape.is-hovered')
-          .forEach((el) => el.classList.remove('is-hovered'));
-        if (zoomChanged || this._cameraSettleTimer !== null || this.flyRaf !== null) {
-          this.svg.classList.add('is-camera-moving');
-          if (!this.flyRaf) {
-            clearTimeout(this._cameraSettleTimer);
-            this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
-          }
+        this._clearHoveredPrefecture();
+        this.svg.classList.add('is-camera-moving');
+        if (!this.flyRaf) {
+          clearTimeout(this._cameraSettleTimer);
+          this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
         }
       }
       this._commitStageTransform();
@@ -9096,6 +9181,9 @@
           const [ox, oy] = polOffsets[i];
           const cx = baseX + ox * s;
           const cy = baseY + oy * s;
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005 * s * s;
+          if (ov >= bestScore) continue;
           if ((ox !== 0 || oy !== 0) && node._polShape) {
             const [lngC, latC] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
@@ -9112,15 +9200,11 @@
               continue;
             }
           }
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005 * s * s;
-          if (ov < bestScore) {
-            bestScore = ov;
-            bestX = cx;
-            bestY = cy;
-            bestBox = candBox;
-            if (ov < 0.05 * s * s) break;
-          }
+          bestScore = ov;
+          bestX = cx;
+          bestY = cy;
+          bestBox = candBox;
+          if (ov < 0.05 * s * s) break;
         }
 
         // Fallback for very small or narrow polities (e.g., 周, 韩, 中山) where 4-edge padding
@@ -9150,19 +9234,18 @@
             const [ox, oy] = fineFallbackOffsets[i];
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
+            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
+            if (ov >= bestScore) continue;
             if (node._polShape) {
               const [lngC, latC] = this.projector.toGeo(cx, cy);
               if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
             }
-            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
-            if (ov < bestScore) {
-              bestScore = ov;
-              bestX = cx;
-              bestY = cy;
-              bestBox = candBox;
-              if (ov < 0.1 * s * s) break;
-            }
+            bestScore = ov;
+            bestX = cx;
+            bestY = cy;
+            bestBox = candBox;
+            if (ov < 0.1 * s * s) break;
           }
         }
 
@@ -9383,23 +9466,24 @@
           const [ox, oy] = regOffsets[i];
           const cx = baseX + ox;
           const cy = baseY + oy;
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          if (overlapArea(candBox) > (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
+            continue;
+          }
           if ((ox !== 0 || oy !== 0) && node._regShape) {
             const [lng, lat] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lng, lat, node._regShape)) continue;
           }
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
-            node.dataset.placed = '1';
-            const cxStr = cx.toFixed(1);
-            const cyStr = cy.toFixed(1);
-            node.setAttribute('data-x', cxStr);
-            node.setAttribute('data-y', cyStr);
-            applyNodeScale(node, cxStr, cyStr);
-            node.classList.remove('is-crowded-hidden');
-            occupied.push(candBox);
-            placed = true;
-            break;
-          }
+          node.dataset.placed = '1';
+          const cxStr = cx.toFixed(1);
+          const cyStr = cy.toFixed(1);
+          node.setAttribute('data-x', cxStr);
+          node.setAttribute('data-y', cyStr);
+          applyNodeScale(node, cxStr, cyStr);
+          node.classList.remove('is-crowded-hidden');
+          occupied.push(candBox);
+          placed = true;
+          break;
         }
         if (!placed) {
           node.dataset.placed = '1';
@@ -11033,19 +11117,19 @@
           this._id('chk-prefectures').checked = true;
           this.grpPrefectures.classList.remove('is-hidden');
         }
+        if (this._materializeDeferredPrefectures()) {
+          this._rescaleSvgTypography();
+        }
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / 1.95);
         const h = w * this._getViewportAspect();
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.48, w, h });
         if (item.prefTitle) {
           setTimeout(() => {
-            this.grpPrefectures
-              .querySelectorAll('.prefecture-shape.is-hovered')
-              .forEach((el) => el.classList.remove('is-hovered'));
             const el = this.grpPrefectures.querySelector(
               `.prefecture-shape[data-pref-title="${CSS.escape(item.prefTitle)}"]`
             );
-            if (el) el.classList.add('is-hovered');
+            this._setHoveredPrefecture(el);
           }, 80);
         }
       } else if (item.kind === 'event' && item.milestone) {
@@ -11429,7 +11513,12 @@
         }
         this._rescaleSvgTypography();
       });
-      bindToggle('chk-prefectures', this.grpPrefectures);
+      this._id('chk-prefectures').addEventListener('change', (e) => {
+        this.grpPrefectures.classList.toggle('is-hidden', !e.target.checked);
+        if (e.target.checked) this._materializeDeferredPrefectures();
+        else this._clearHoveredPrefecture();
+        this._rescaleSvgTypography();
+      });
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
@@ -11776,6 +11865,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
 
@@ -11896,6 +11986,17 @@
           return;
         }
         const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+        if (
+          !target ||
+          (this.svg && typeof this.svg.contains === 'function' && !this.svg.contains(target)) ||
+          target === this.svg ||
+          target.id === 'ocean-bg' ||
+          target.id === 'terrain-relief-img'
+        ) {
+          this.hoverTip.classList.add('is-hidden');
+          this.hoverTip.classList.remove('is-interactive');
+          return;
+        }
         const rawStack = document.elementsFromPoint
           ? document.elementsFromPoint(e.clientX, e.clientY)
           : [];
@@ -12298,19 +12399,34 @@
         this.openGenealogyAt(lng, lat);
       });
 
-      // Hover tooltips (Desktop pointermove)
+      // Hover tooltips (Desktop pointermove — coalesced to once per animation frame)
       const frame = this._id('viewport-frame');
       frame.addEventListener('pointermove', (e) => {
         if (e.pointerType === 'touch') return;
-        if (this.dragState || this.pinchState || this._camRaf !== null || this._cameraSettleTimer !== null) return;
-        this.grpPrefectures
-          .querySelectorAll('.prefecture-shape.is-hovered')
-          .forEach((el) => el.classList.remove('is-hovered'));
-        inspectPointTooltip(e);
+        if (this.dragState || this.pinchState || this._camRaf != null || this._cameraSettleTimer != null) return;
+        this._clearHoveredPrefecture();
+        this._pendingHoverEvent = {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          pointerType: e.pointerType,
+          target: e.target,
+        };
+        if (this._hoverRaf != null) return;
+        this._hoverRaf = requestAnimationFrame(() => {
+          this._hoverRaf = null;
+          const ev = this._pendingHoverEvent;
+          this._pendingHoverEvent = null;
+          if (!ev || this.dragState || this.pinchState || this._camRaf != null || this._cameraSettleTimer != null) {
+            return;
+          }
+          inspectPointTooltip(ev);
+        });
       });
 
       frame.addEventListener('pointerleave', (e) => {
         if (e.pointerType === 'touch') return;
+        this._cancelPendingHover();
+        this._clearHoveredPrefecture();
         this.hoverTip.classList.add('is-hidden');
       });
 
@@ -13872,6 +13988,15 @@
         this.closeMilestoneBalloon();
         afterFullSnapshots(() => {
           this.closeMilestoneBalloon();
+          if (this._deferredPrefectureSnap) {
+            const prefChk = this._id('chk-prefectures');
+            if (prefChk) prefChk.checked = true;
+            if (this.grpPrefectures && this.grpPrefectures.classList) {
+              this.grpPrefectures.classList.remove('is-hidden');
+            }
+            this._materializeDeferredPrefectures();
+            this._rescaleSvgTypography();
+          }
           let el = this.grpPrefectures.querySelector(
             `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
           );
@@ -13897,7 +14022,7 @@
               }) || null;
           }
           if (el) {
-            el.classList.add('is-hovered');
+            this._setHoveredPrefecture(el);
             const box = el.getBoundingClientRect();
             const cx = box.left + box.width * 0.55;
             const cy = box.top + box.height * 0.45;

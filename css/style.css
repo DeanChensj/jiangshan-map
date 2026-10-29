@@ -428,17 +428,22 @@ h2 {
   cursor: grabbing;
 }
 
-/* Pause infinite SVG pulse animations while the camera is actively moving.
+/* Pause infinite SVG pulse animations while camera or timeline is actively moving.
    Text strokes/halos stay intact so labels never flash during zoom or pan. */
 #atlas-svg.is-camera-moving,
-#atlas-svg.is-camera-moving * {
+#atlas-svg.is-camera-moving *,
+#atlas-svg.is-scrubbing,
+#atlas-svg.is-scrubbing * {
   animation: none !important;
   transition: none !important;
 }
 
 #atlas-svg.is-camera-moving .cap-breath-ring,
 #atlas-svg.is-camera-moving .ev-ring,
-#atlas-svg.is-camera-moving .jn-pulse {
+#atlas-svg.is-camera-moving .jn-pulse,
+#atlas-svg.is-scrubbing .cap-breath-ring,
+#atlas-svg.is-scrubbing .ev-ring,
+#atlas-svg.is-scrubbing .jn-pulse {
   opacity: 0 !important;
 }
 

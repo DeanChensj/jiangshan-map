@@ -7077,6 +7077,210 @@ function main() {
           cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag'),
         'css/style.css must use auto-height 2-row mobile chronicle banner with full-width wrapping #dynasty-seat and hide .cap-hint-tag when #milestone-balloon is active'
       );
+
+      // CUJ 43: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
+      assert(
+        cssSrc.includes('mix-blend-mode: multiply') &&
+          cssSrc.includes('backdrop-filter:') &&
+          cssSrc.includes('#atlas-svg.is-scrubbing *') &&
+          cssSrc.includes('#atlas-svg.is-scrubbing .cap-breath-ring'),
+        'css/style.css must preserve all resting visual styles (multiply blend + backdrop-filter) while suppressing infinite SVG animations/transitions during is-scrubbing'
+      );
+      {
+        const proto = ControllerClass.prototype;
+        const testProj = new sandbox.window.MercatorProjector(1000, 700, {
+          west: 66,
+          east: 142,
+          south: 14,
+          north: 55,
+        });
+        const makeCls = () => {
+          const s = new Set();
+          return {
+            add: (...c) => c.forEach((x) => s.add(x)),
+            remove: (...c) => c.forEach((x) => s.delete(x)),
+            contains: (c) => s.has(c),
+            toggle: (c, f) => {
+              const on = f === undefined ? !s.has(c) : Boolean(f);
+              if (on) s.add(c);
+              else s.delete(c);
+              return on;
+            },
+          };
+        };
+
+        // 43a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
+        let viewBoxWrites = 0;
+        let committedVb = '';
+        const hoveredMockPref = { classList: makeCls() };
+        hoveredMockPref.classList.add('is-hovered');
+        const panCtrl = Object.assign(Object.create(proto), {
+          camera: { x: 100, y: 80, w: 600, h: 420, zoom: 1000 / 600 },
+          projector: testProj,
+          svg: {
+            classList: makeCls(),
+            setAttribute: (k, v) => {
+              if (k === 'viewBox') {
+                viewBoxWrites++;
+                committedVb = v;
+              }
+            },
+            getBoundingClientRect: () => ({ left: 0, top: 0, width: 1200, height: 840 }),
+            querySelectorAll: () => [],
+          },
+          _stageWrap: { style: { transform: '' } },
+          hoverTip: { classList: makeCls() },
+          grpSettlements: { classList: makeCls(), querySelectorAll: () => [] },
+          grpPrefectures: { classList: makeCls(), querySelectorAll: () => [] },
+          grpPolities: { classList: makeCls(), querySelectorAll: () => [] },
+          grpCorridors: { classList: makeCls(), querySelectorAll: () => [] },
+          grpMilestones: { classList: makeCls(), querySelectorAll: () => [] },
+          grpRivers: { classList: makeCls(), querySelectorAll: () => [] },
+          grpProvNames: { classList: makeCls(), querySelectorAll: () => [] },
+          grpNeighbors: { classList: makeCls(), querySelectorAll: () => [] },
+          grpJourney: { querySelectorAll: () => [] },
+          _id: () => null,
+          _camRaf: null,
+          _cameraSettleTimer: null,
+          _cameraViewportRect: null,
+          _lastCameraViewBox: null,
+          _baseViewBoxCam: null,
+          _hoveredPrefEl: hoveredMockPref,
+          _hoverRaf: null,
+          _pendingHoverEvent: null,
+          _typoDirty: true,
+          _lastTypographyWidth: undefined,
+        });
+        panCtrl._applyCamera(true);
+        assert(viewBoxWrites === 1 && panCtrl._stageWrap.style.transform === '', 'Initial _applyCamera(true) must commit baseline viewBox directly');
+        panCtrl.dragState = { rect: { left: 0, top: 0, width: 1200, height: 840 } };
+        for (let step = 1; step <= 5; step++) {
+          panCtrl.camera.x = 100 + step * 3;
+          panCtrl.camera.y = 80 + step * 2;
+          panCtrl._applyCamera(false);
+        }
+        assert(
+          viewBoxWrites === 6 &&
+            committedVb === '115.0 90.0 600.0 420.0' &&
+            panCtrl._stageWrap.style.transform === '' &&
+            panCtrl.svg.classList.contains('is-camera-moving') &&
+            panCtrl._cameraSettleTimer !== null &&
+            !hoveredMockPref.classList.contains('is-hovered'),
+          `Expected pure pan frames to update exact viewBox without CSS translate3d while adding is-camera-moving and clearing hovered prefecture (writes=${viewBoxWrites}, vb="${committedVb}", transform="${panCtrl._stageWrap.style.transform}")`
+        );
+        clearTimeout(panCtrl._cameraSettleTimer);
+        panCtrl.dragState = null;
+        panCtrl._finishCameraMotion();
+        assert(
+          !panCtrl.svg.classList.contains('is-camera-moving'),
+          'Expected _finishCameraMotion to remove is-camera-moving after pan settles'
+        );
+
+        // 43b. Lazy secondary prefecture deferral when hidden + DOM reuse across intra-dynasty phases when visible
+        let prefPathCreates = 0;
+        const makeEl = (tag) => {
+          const el = {
+            tagName: tag,
+            attrs: {},
+            dataset: {},
+            style: {},
+            children: [],
+            parentNode: null,
+            classList: makeCls(),
+            textContent: '',
+            get firstChild() {
+              return this.children[0] || null;
+            },
+            setAttribute(k, v) {
+              this.attrs[k] = String(v);
+              if (k === 'class') {
+                const parts = String(v).split(/\s+/).filter(Boolean);
+                parts.forEach((c) => this.classList.add(c));
+                if (parts.includes('prefecture-shape')) prefPathCreates++;
+              }
+            },
+            getAttribute(k) {
+              return this.attrs[k];
+            },
+            appendChild(ch) {
+              if (ch.parentNode && Array.isArray(ch.parentNode.children)) {
+                const idx = ch.parentNode.children.indexOf(ch);
+                if (idx >= 0) ch.parentNode.children.splice(idx, 1);
+              }
+              ch.parentNode = this;
+              this.children.push(ch);
+              return ch;
+            },
+            querySelectorAll(sel) {
+              const out = [];
+              const want = sel.replace(/^\./, '');
+              const walk = (n) => {
+                for (const c of n.children || []) {
+                  if (c.classList && c.classList.contains(want)) out.push(c);
+                  walk(c);
+                }
+              };
+              walk(this);
+              return out;
+            },
+          };
+          Object.defineProperty(el, 'innerHTML', {
+            get: () => '',
+            set: () => {
+              for (const c of el.children) c.parentNode = null;
+              el.children = [];
+            },
+          });
+          return el;
+        };
+        const grpPol = makeEl('g');
+        const grpPref = makeEl('g');
+        grpPref.classList.add('is-hidden');
+        const lazyCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          enLocale: { terms: {}, dynasties: {} },
+          projector: testProj,
+          grpPolities: grpPol,
+          grpPrefectures: grpPref,
+          _svgNode(tag, attrs, parent) {
+            const n = makeEl(tag);
+            for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v);
+            if (parent) parent.appendChild(n);
+            return n;
+          },
+          _setPolityFocus: () => {},
+          _renderLegendBox: () => {},
+          _syncTracedPrefecture: () => {},
+          _rescaleSvgTypography: () => {},
+        });
+        const tangDyn = dynasties.find((d) => d.key === 'tang') || dynasties[0];
+        const tangPhases = (tangDyn.phases || []).map((ph) => snapshots[ph.snap]).filter(Boolean);
+        const tangSnap0 = tangPhases[0] || snapshots[tangDyn.snapshot] || snapshots[snapKeys[0]];
+        const tangSnap1 =
+          tangPhases.find((s) => s !== tangSnap0 && s.prefectures === tangSnap0.prefectures) || tangSnap0;
+        lazyCtrl._renderPolitiesAndPrefectures(tangDyn, tangSnap0);
+        assert(
+          grpPref.children.length === 0 && lazyCtrl._deferredPrefectureSnap === tangSnap0 && prefPathCreates === 0,
+          'Hidden #grp-prefectures must defer prefecture SVG DOM creation during _renderPolitiesAndPrefectures'
+        );
+        grpPref.classList.remove('is-hidden');
+        const expectedPrefCount = (tangSnap0.prefectures || []).length;
+        assert(
+          lazyCtrl._materializeDeferredPrefectures() === true &&
+            lazyCtrl._deferredPrefectureSnap === null &&
+            grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount &&
+            prefPathCreates === expectedPrefCount,
+          '_materializeDeferredPrefectures must materialize all prefecture paths on demand when layer becomes visible'
+        );
+        const prevShapesGroup = lazyCtrl._prefShapesGroup;
+        lazyCtrl._renderPolitiesAndPrefectures(tangDyn, tangSnap1);
+        assert(
+          lazyCtrl._prefShapesGroup === prevShapesGroup &&
+            prefPathCreates === expectedPrefCount &&
+            grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount,
+          `Scrubbing between intra-dynasty phases sharing snap.prefectures must reuse .prefecture-shape DOM without recreating ${expectedPrefCount} SVG paths (got prefPathCreates=${prefPathCreates})`
+        );
+      }
     }
   }
 
