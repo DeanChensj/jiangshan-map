@@ -498,7 +498,7 @@
         return Promise.resolve(this.snapshots);
       }
       if (!this._fullSnapshotsPromise) {
-        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261028q').then(
+        this._fullSnapshotsPromise = this._loadScriptOnce('js/atlas_snapshots.js?v=20261029a').then(
           () => {
             this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
             this._hydrateSnapshots();
@@ -522,7 +522,7 @@
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
-        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261028q').then(() => {
+        this._enLocalePromise = this._loadScriptOnce('js/i18n_dict.js?v=20261029a').then(() => {
           if (window.EN_LOCALE) {
             this.enLocale = window.EN_LOCALE;
             this.searchIndex = null;
@@ -1239,6 +1239,10 @@
     }
 
     _syncUrlLangParam() {
+      if (this._urlSyncArmed) {
+        this._writeUrlState();
+        return;
+      }
       if (
         typeof window === 'undefined' ||
         typeof location === 'undefined' ||
@@ -1266,6 +1270,82 @@
       } catch (_) {}
     }
 
+    // The URL mirrors what the user is looking at, so refresh and share land on the same view.
+    // Only restorable state is written; one-shot params (q, place, hover, quiz, ...) are dropped
+    // once the user moves on, because they no longer describe the screen.
+    _urlStateParams() {
+      const prev =
+        typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
+      const p = new URLSearchParams();
+      p.set('year', String(this.year));
+      const person = this.activePerson;
+      const personKeys = person && Array.isArray(person.profiles) ? person.profiles.map((pr) => String(pr.key || '')) : [];
+      if (personKeys.length && personKeys.every((k) => k && !k.startsWith('adhoc_'))) {
+        p.set('person', personKeys.join(','));
+        if (this.activePersonEventIdx >= 0) p.set('stop', String(this.activePersonEventIdx));
+      } else {
+        // A place card can stay open on top of a regime profile, so both are restorable together.
+        if (this.activePolity && this.activePolity.curated && this.activePolity.key) {
+          p.set('polity', this.activePolity.key);
+        }
+        if (Array.isArray(this.activeTrace) && this.activeTrace.length === 2) {
+          p.set('trace', this.activeTrace.map((v) => Number(v).toFixed(3)).join(','));
+        }
+      }
+      if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
+      if (this.locale === 'en') p.set('lang', 'en');
+      else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
+      return p;
+    }
+
+    _writeUrlState() {
+      if (
+        typeof window === 'undefined' ||
+        typeof location === 'undefined' ||
+        !window.history ||
+        typeof window.history.replaceState !== 'function'
+      ) {
+        return;
+      }
+      try {
+        // Commas are legal in a query string; keep person=a,b / trace=lng,lat readable.
+        const qs = this._urlStateParams().toString().replace(/%2C/gi, ',');
+        const nextUrl = `${location.pathname || '/'}${qs ? `?${qs}` : ''}${location.hash || ''}`;
+        const curUrl = `${location.pathname || '/'}${location.search || ''}${location.hash || ''}`;
+        // replaceState, not pushState: scrubbing the timeline must not flood the Back button.
+        if (nextUrl !== curUrl) window.history.replaceState(window.history.state || null, '', nextUrl);
+      } catch (_) {}
+    }
+
+    _scheduleUrlSync() {
+      if (!this._urlSyncArmed || typeof setTimeout !== 'function') return;
+      if (this._urlSyncTimer) clearTimeout(this._urlSyncTimer);
+      this._urlSyncTimer = setTimeout(() => {
+        this._urlSyncTimer = null;
+        // Quiz rounds are not restorable; stopChallenge() writes the post-quiz view instead.
+        if (this.challenge) return;
+        // Wait for playback / drag to settle instead of rewriting the URL every frame.
+        if (this.playing || this.isScrubbing) this._scheduleUrlSync();
+        else this._writeUrlState();
+      }, 400);
+    }
+
+    // A clean home load must stay clean even if the intro animates the timeline, so syncing
+    // starts only once the URL already carried state or the user has actually interacted.
+    _armUrlSync(hasDeepLinkState) {
+      if (this._urlSyncArmed || typeof window === 'undefined') return;
+      const arm = () => {
+        if (this._urlSyncArmed) return;
+        this._urlSyncArmed = true;
+        for (const t of ['pointerdown', 'keydown', 'wheel']) window.removeEventListener(t, arm, true);
+      };
+      if (hasDeepLinkState) {
+        arm();
+        return;
+      }
+      for (const t of ['pointerdown', 'keydown', 'wheel']) window.addEventListener(t, arm, true);
+    }
+
     applyLocale() {
       if (
         this.locale === 'en' &&
@@ -1280,6 +1360,12 @@
       this._syncSeoDirectoryLocale();
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
+      const homeLink = this._id('act-home');
+      if (homeLink) {
+        // Home = a clean URL in the current language; this is the "reset" entry point.
+        homeLink.href = this.locale === 'en' ? './?lang=en' : this.locale === 'zh-tw' ? './?lang=zh-tw' : './';
+        homeLink.title = this.locale === 'en' ? 'Back to home' : this._zh('回到首页');
+      }
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
       const lblLayersBtn = this._id('lbl-layers-btn');
       if (lblLayersBtn) {
@@ -3234,6 +3320,7 @@
     }
 
     openPolity(title, opts = {}) {
+      this._scheduleUrlSync();
       const desc = this._resolvePolity(title, this.year);
       const cur = this.dynasties[this.dynastyIdx];
       const snap = this.snapshots[this._resolveSnapKey(cur, this.year)] || this.lastRenderedSnap;
@@ -3343,6 +3430,7 @@
     closePolity() {
       if (!this.activePolity) return;
       this.activePolity = null;
+      this._scheduleUrlSync();
       this._resetPolityPaneChrome();
       const cur = this.dynasties[this.dynastyIdx];
       if (cur) this._renderChroniclePane(cur);
@@ -4150,6 +4238,7 @@
     }
 
     _clearActiveTrace() {
+      if (this.activeTrace) this._scheduleUrlSync();
       this.activeTrace = null;
       this.activeTraceLabel = '';
       this.activeReturnPerson = null;
@@ -4172,6 +4261,7 @@
       if (!this.activePerson) return;
       this.activePerson = null;
       this.activePersonEventIdx = -1;
+      this._scheduleUrlSync();
       this._hidePersonFooter();
       this._lastPersonPinZoom = 0;
       this._lastPersonCardKey = null;
@@ -5022,6 +5112,7 @@
       this.activePerson = state;
       this.activePersonEventIdx =
         initialIdx >= 0 && initialIdx < events.length ? initialIdx : -1;
+      this._scheduleUrlSync();
 
       const cardEl = this._id('genealogy-card');
       if (cardEl) cardEl.classList.remove('is-hidden');
@@ -5098,6 +5189,7 @@
 
     selectPersonEvent(idx, panCamera = true) {
       if (!this.activePerson || !this.activePerson.events.length) return;
+      this._scheduleUrlSync();
       const events = this.activePerson.events;
       if (idx < 0) {
         this.activePersonEventIdx = -1;
@@ -6895,6 +6987,7 @@
         this.genealogyEventsOnly = false;
       }
       this.activeTrace = [lng, lat];
+      this._scheduleUrlSync();
       this._syncMobileOverlayState();
       this.grpGenealogy.innerHTML = '';
       const [sx, sy] = this.projector.toScreen(lng, lat);
@@ -7599,6 +7692,7 @@
       if (y === 0) y = this.year < 0 ? 1 : -1;
       const prevIdx = this.dynastyIdx;
       this.year = y;
+      this._scheduleUrlSync();
       this.dynastyIdx = this._findDynastyIndex(y);
       const cur = this.dynasties[this.dynastyIdx];
       const nextSnapKey = this._resolveSnapKey(cur, y);
@@ -7922,6 +8016,7 @@
       this._updateAutoplayUi();
       const cur = this.dynasties[this.dynastyIdx];
       if (cur) this._syncAutoMilestoneBalloon(cur);
+      this._scheduleUrlSync();
     }
 
     // ---------------- Classical Guqin Music Player ----------------
@@ -9808,6 +9903,7 @@
 
     stopChallenge(keepPaneState = false) {
       this.challenge = null;
+      this._scheduleUrlSync();
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
       const vf = this._id('viewport-frame');
@@ -14197,6 +14293,9 @@
           if (btn) btn.click();
         }, 120);
       }
+      this._armUrlSync(
+        ['year', 'polity', 'person', 'journey', 'trace', 'place', 'lng', 'q'].some((k) => q.has(k))
+      );
     }
 
     _registerWebMcpTools() {

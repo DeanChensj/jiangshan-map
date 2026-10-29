@@ -5905,6 +5905,74 @@ function main() {
         ctrl._syncUrlLangParam();
         assert.strictEqual(sandbox.location.search, '', 'Bare URL + zh must clear query string');
 
+        // 4b. Once armed, the URL mirrors restorable state (refresh/share land on the same view)
+        // and one-shot params (place, q, quiz) are dropped because they no longer describe the screen.
+        const urlSaved = {
+          armed: ctrl._urlSyncArmed,
+          year: ctrl.year,
+          polity: ctrl.activePolity,
+          trace: ctrl.activeTrace,
+          person: ctrl.activePerson,
+          personIdx: ctrl.activePersonEventIdx,
+        };
+        try {
+          ctrl._urlSyncArmed = false;
+          ctrl._scheduleUrlSync();
+          assert(!ctrl._urlSyncTimer, 'A clean home load must not write the URL before the user interacts');
+
+          ctrl._urlSyncArmed = true;
+          Object.assign(ctrl, { activePerson: null, activePolity: null, activeTrace: null, year: 741 });
+          sandbox.location.search = '?year=317&place=%E5%BB%BA%E5%BA%B7&q=x&quiz=1&terrain=0';
+          ctrl.locale = 'en';
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=741&terrain=0&lang=en', 'URL must carry the current year, keep terrain/lang and drop one-shot params');
+
+          ctrl.locale = 'zh';
+          Object.assign(ctrl, { year: 450, activePolity: { key: 'beiwei', curated: true } });
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&polity=beiwei&terrain=0', 'An open curated profile must be shareable via ?polity=');
+
+          ctrl.activePolity = { key: 'fallback_x', curated: false };
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&terrain=0', 'Uncurated fallback profiles are not restorable and must not be written');
+
+          Object.assign(ctrl, { activePolity: null, activeTrace: [108.94, 34.26] });
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&trace=108.940,34.260&terrain=0', 'An open place card must round-trip via ?trace=lng,lat');
+
+          ctrl.activePolity = { key: 'beiwei', curated: true };
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&polity=beiwei&trace=108.940,34.260&terrain=0', 'A place card opened on top of a profile must be kept alongside ?polity=');
+          ctrl.activePolity = null;
+
+          const indexHtml = require('fs').readFileSync(require('path').join(__dirname, '..', 'index.html'), 'utf8');
+          assert(/data-cf-beacon='[^']*"spa":\s*false/.test(indexHtml), 'Cloudflare beacon must keep "spa": false, or every URL state write is counted as a pageview');
+
+          Object.assign(ctrl, { activePerson: { profiles: [{ key: 'libai' }, { key: 'dufu' }] }, activePersonEventIdx: 3 });
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&person=libai,dufu&stop=3&terrain=0', 'Person trajectories (incl. pairs and the current stop) must be shareable');
+
+          Object.assign(ctrl, { activePerson: { profiles: [{ key: 'adhoc_1' }] }, activeTrace: null });
+          ctrl._writeUrlState();
+          assert.strictEqual(sandbox.location.search, '?year=450&terrain=0', 'Ad-hoc people cannot be restored by key and must not be written');
+
+          ctrl.activePerson = null;
+          ctrl.locale = 'en';
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?year=450&terrain=0&lang=en', 'Language toggles go through the same state writer once armed');
+          ctrl.locale = 'zh';
+        } finally {
+          ctrl._urlSyncArmed = urlSaved.armed;
+          ctrl.year = urlSaved.year;
+          ctrl.activePolity = urlSaved.polity;
+          ctrl.activeTrace = urlSaved.trace;
+          ctrl.activePerson = urlSaved.person;
+          ctrl.activePersonEventIdx = urlSaved.personIdx;
+          if (ctrl._urlSyncTimer) clearTimeout(ctrl._urlSyncTimer);
+          ctrl._urlSyncTimer = null;
+          sandbox.location.search = '';
+        }
+
         // 5. _effectiveRenderedLocale distinguishes pending English dict from loaded English dict
         const savedEnLocale = ctrl.enLocale;
         ctrl.locale = 'en';
