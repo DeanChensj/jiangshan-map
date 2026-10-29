@@ -2632,7 +2632,7 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 18, `Expected 18 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 20, `Expected 20 s_tang* snapshots, found ${tangSnapKeys.length}`);
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -4176,14 +4176,18 @@ function main() {
     // Tang capitals & periods
     const changanTang = findSt(tangDyn, '长安');
     assert(changanTang && Array.isArray(changanTang.capitalPeriods), 'tang: 长安 must define capitalPeriods');
-    assert.strictEqual(JSON.stringify(changanTang.capitalPeriods), JSON.stringify([[618, 904]]), 'tang: 长安 capitalPeriods must be [[618, 904]]');
+    assert.strictEqual(
+      JSON.stringify(changanTang.capitalPeriods),
+      JSON.stringify([[618, 689], [705, 904]]),
+      'tang: 长安 capitalPeriods must be [[618, 689], [705, 904]]'
+    );
 
     const luoyangTang = findSt(tangDyn, '东都洛阳');
     assert(luoyangTang && Array.isArray(luoyangTang.capitalPeriods), 'tang: 东都洛阳 must define capitalPeriods');
     assert.strictEqual(
       JSON.stringify(luoyangTang.capitalPeriods),
-      JSON.stringify([[690, 705], [904, 907]]),
-      'tang: 东都洛阳 capitalPeriods must be [[690, 705], [904, 907]]'
+      JSON.stringify([[690, 704], [904, 907]]),
+      'tang: 东都洛阳 capitalPeriods must be [[690, 704], [904, 907]]'
     );
 
     const taiyuanTang = findSt(tangDyn, '北都太原');
@@ -4208,13 +4212,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 19 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 755, 757, 763, 764, 790, 848, 881, 907];
+    // Tang 20 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 19 map change milestone years must match'
+      'tang: 20 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -7078,7 +7082,102 @@ function main() {
         'css/style.css must use auto-height 2-row mobile chronicle banner with full-width wrapping #dynasty-seat and hide .cap-hint-tag when #milestone-balloon is active'
       );
 
-      // CUJ 43: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
+      // CUJ 43: Wu Zhou (武周, 690–705) Interregnum Snapshots, Shendu Luoyang Capital & Polity Profile
+      {
+        const tangDyn = dynasties.find((d) => d.key === 'tang');
+        assert.strictEqual(
+          tangDyn.focusYear,
+          741,
+          'tang.focusYear must sit in Li-Tang High Tang (741) rather than inside Wu Zhou (690–704)'
+        );
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 704), 's_tang_wz2');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5');
+
+        for (const sk of ['s_tang_wz1', 's_tang_wz2']) {
+          const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');
+          assert(
+            wzMain && wzMain.title === '武周' && wzMain.tint === '#9b3b4a',
+            `${sk} main polity must be 武周 (#9b3b4a), got ${JSON.stringify(wzMain && { title: wzMain.title, tint: wzMain.tint })}`
+          );
+          for (const prot of snapshots[sk].polities.filter((p) => p.role === 'protectorate')) {
+            assert.strictEqual(
+              prot.tint,
+              '#9b3b4a',
+              `${sk} protectorate "${prot.title}" must use Wu Zhou tint #9b3b4a`
+            );
+          }
+        }
+        assert(
+          snapshots.s_tang_wz2.polities.some((p) => p.title === '北庭都护府'),
+          's_tang_wz2 (702–705) must include 北庭都护府 established by Wu Zetian in 702 CE'
+        );
+
+        const changAnItem = tangDyn.settlements.find((s) => s.ancient === '长安');
+        const luoyangItem = tangDyn.settlements.find((s) => s.modern === '洛阳');
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 689), true);
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 695), false);
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 705), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 689), false);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 690), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 704), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 705), false);
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 689), '东都洛阳');
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 695), '神都洛阳');
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 705), '东都洛阳');
+
+        ctrl.locale = 'zh';
+        const wzInspZh = ctrl.inspect({ year: 695, place: '洛阳' });
+        assert.strictEqual(wzInspZh.polity, '武周');
+        assert.strictEqual(wzInspZh.resolvedName, '神都洛阳');
+        assert.strictEqual(wzInspZh.nearestCity && wzInspZh.nearestCity.ancient, '神都洛阳');
+        assert.strictEqual(Boolean(wzInspZh.nearestCity && wzInspZh.nearestCity.isCapital), true);
+        const revInspZh = ctrl.inspect({ year: 705, place: '洛阳' });
+        assert.strictEqual(revInspZh.polity, '唐');
+        assert.strictEqual(revInspZh.resolvedName, '东都洛阳');
+
+        ctrl.locale = 'en';
+        assert.strictEqual(ctrl.formatEraLabel(695, tangDyn), 'Wu Zhou · Wu Zetian');
+        assert.strictEqual(ctrl.formatEraLabel(705, tangDyn), 'Tang · Emp. Zhongzong');
+        assert.strictEqual(
+          ctrl.formatEraLabel(15, dynasties.find((d) => d.key === 'xihan')),
+          'Xin · Wang Mang'
+        );
+        const wzInspEn = ctrl.inspect({ year: 695, place: 'Shendu Luoyang' });
+        assert.strictEqual(wzInspEn.polity, 'Wu Zhou');
+        assert.strictEqual(wzInspEn.resolvedName, 'Shendu Luoyang');
+        assert(
+          !/[\u4e00-\u9fff]/.test(JSON.stringify(wzInspEn)),
+          `English inspect(695, Shendu Luoyang) leaked CJK: ${JSON.stringify(wzInspEn)}`
+        );
+
+        const wzHitsZh = ctrl._queryQuickSearch('武周');
+        assert(
+          wzHitsZh.length > 0 && wzHitsZh[0].kind === 'polity' && wzHitsZh[0].polityKey === 'wuzhou',
+          `Quick search for "武周" must rank curated polity wuzhou #1, got ${JSON.stringify(wzHitsZh[0])}`
+        );
+        const wzHitsEn = ctrl._queryQuickSearch('Wu Zhou');
+        assert(
+          wzHitsEn.length > 0 && wzHitsEn[0].kind === 'polity' && wzHitsEn[0].polityKey === 'wuzhou',
+          `Quick search for "Wu Zhou" must rank curated polity wuzhou #1, got ${JSON.stringify(wzHitsEn[0])}`
+        );
+        const wzResolved = ctrl._resolvePolity('武周', 695);
+        assert(
+          wzResolved && wzResolved.curated && wzResolved.key === 'wuzhou' && wzResolved.from === 690 && wzResolved.matchTo === 704,
+          `_resolvePolity("武周", 695) must resolve curated wuzhou profile (690–704), got ${JSON.stringify(wzResolved)}`
+        );
+        const wzStages = ctrl._polityStages(wzResolved);
+        assert(
+          wzStages.length === 2 && wzStages[0].from === 690 && wzStages[0].to === 701 && wzStages[1].from === 702 && wzStages[1].to === 704,
+          `Wu Zhou polity stages must be [690–701, 702–704], got ${JSON.stringify(wzStages)}`
+        );
+        ctrl.locale = 'zh';
+      }
+
+      // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
       assert(
         cssSrc.includes('mix-blend-mode: multiply') &&
           cssSrc.includes('backdrop-filter:') &&
@@ -7109,7 +7208,7 @@ function main() {
           };
         };
 
-        // 43a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
+        // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;
         let committedVb = '';
         const hoveredMockPref = { classList: makeCls() };
@@ -7176,7 +7275,7 @@ function main() {
           'Expected _finishCameraMotion to remove is-camera-moving after pan settles'
         );
 
-        // 43b. Lazy secondary prefecture deferral when hidden + DOM reuse across intra-dynasty phases when visible
+        // 44b. Lazy secondary prefecture deferral when hidden + DOM reuse across intra-dynasty phases when visible
         let prefPathCreates = 0;
         const makeEl = (tag) => {
           const el = {
