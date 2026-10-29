@@ -17,6 +17,11 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 
+const CONTROLLER_SCRIPTS = [
+  'js/app.js',
+  'js/atlas_quiz.js',
+];
+
 const STATIC_TAG_ASSETS = [
   'css/style.css',
   'js/china_geo_data.js',
@@ -24,7 +29,7 @@ const STATIC_TAG_ASSETS = [
   'js/map_data.js',
   'js/lore_data.js',
   'js/zh_hant.js',
-  'js/app.js',
+  ...CONTROLLER_SCRIPTS,
 ];
 
 const LAZY_ATTR_ASSETS = [
@@ -83,14 +88,16 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
 function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCodeInput = null) {
   const indexHtml =
     indexHtmlInput !== null ? indexHtmlInput : fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
-  const appCode =
-    appCodeInput !== null ? appCodeInput : fs.readFileSync(path.join(rootDir, 'js', 'app.js'), 'utf8');
+  const controllerSrc =
+    appCodeInput !== null
+      ? appCodeInput
+      : CONTROLLER_SCRIPTS.map((rel) => fs.readFileSync(path.join(rootDir, rel), 'utf8')).join('\n');
 
-  const hardcodedAppVersions = appCode.match(/\?v=[0-9a-zA-Z_.-]+/g) || [];
+  const hardcodedAppVersions = controllerSrc.match(/\?v=[0-9a-zA-Z_.-]+/g) || [];
   assert.strictEqual(
     hardcodedAppVersions.length,
     0,
-    `js/app.js must not hardcode ?v= query strings (${hardcodedAppVersions.join(', ')}); read hashes from #atlas-app-script data-v-* attributes instead`
+    `Controller scripts (${CONTROLLER_SCRIPTS.join(', ')}) must not hardcode ?v= query strings (${hardcodedAppVersions.join(', ')}); read hashes from #atlas-app-script data-v-* attributes instead`
   );
 
   const hashes = computeAssetHashes(rootDir);
@@ -119,6 +126,21 @@ function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCo
       } else if (m[1] !== hashes[relPath]) {
         mismatches.push(`${relPath} (${attr}): index.html has "${m[1]}", expected "${hashes[relPath]}"`);
       }
+    }
+  }
+
+  let prevCtrlPos = -1;
+  let prevCtrlRel = null;
+  for (const relPath of CONTROLLER_SCRIPTS) {
+    const pos = indexHtml.indexOf(`src="${relPath}?v=`);
+    if (pos !== -1) {
+      if (pos <= prevCtrlPos) {
+        mismatches.push(
+          `controller load-order violation in index.html: ${relPath} must appear after ${prevCtrlRel}`
+        );
+      }
+      prevCtrlPos = pos;
+      prevCtrlRel = relPath;
     }
   }
 
@@ -171,6 +193,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  CONTROLLER_SCRIPTS,
   STATIC_TAG_ASSETS,
   LAZY_ATTR_ASSETS,
   computeAssetHashes,

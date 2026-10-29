@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const vm = require('vm');
+const { CONTROLLER_SCRIPTS } = require('./sync_version');
 
 const ROOT = path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
@@ -54,7 +55,7 @@ function createMcpRuntime() {
     'lore_data.js',
     'i18n_dict.js',
     'zh_hant.js',
-    'app.js',
+    ...CONTROLLER_SCRIPTS.map((rel) => path.basename(rel)),
   ]) {
     const code = fs.readFileSync(path.join(JS_DIR, file), 'utf8');
     vm.runInContext(code, sandbox, { filename: file });
