@@ -6,14 +6,10 @@
 (function () {
   'use strict';
 
-  const HistoricalAtlasController =
-    typeof window !== 'undefined' ? window.HistoricalAtlasController : null;
-  if (!HistoricalAtlasController || typeof HistoricalAtlasController._extendPrototype !== 'function') {
-    return;
-  }
-
+  // Bound at install time so this file may load before or after js/app.js.
+  let HistoricalAtlasController = null;
+  let escHtml = null;
   const DEG_TO_RAD = Math.PI / 180;
-  const escHtml = HistoricalAtlasController._escHtml;
 
   class AtlasQuizMixin {
     _sanitizeChallengeClue(text, settlement, displayAncient) {
@@ -686,5 +682,17 @@
     }
   }
 
-  HistoricalAtlasController._extendPrototype(AtlasQuizMixin);
+  function install(Ctrl) {
+    HistoricalAtlasController = Ctrl;
+    escHtml = Ctrl._escHtml;
+    Ctrl._extendPrototype(AtlasQuizMixin);
+  }
+
+  if (typeof window === 'undefined') return;
+  const readyCtrl = window.HistoricalAtlasController;
+  if (readyCtrl && typeof readyCtrl._extendPrototype === 'function') {
+    install(readyCtrl);
+  } else {
+    (window.__ATLAS_MIXINS = window.__ATLAS_MIXINS || []).push(install);
+  }
 })();

@@ -14189,6 +14189,10 @@
 
   window.MercatorProjector = MercatorProjector;
   window.HistoricalAtlasController = HistoricalAtlasController;
+  // Modules such as js/atlas_quiz.js that loaded before this file queue an installer.
+  if (Array.isArray(window.__ATLAS_MIXINS)) {
+    for (const install of window.__ATLAS_MIXINS.splice(0)) install(HistoricalAtlasController);
+  }
   window.addEventListener('DOMContentLoaded', () => {
     const app = new HistoricalAtlasController();
     window.atlasApp = app;

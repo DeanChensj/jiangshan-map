@@ -129,21 +129,6 @@ function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCo
     }
   }
 
-  let prevCtrlPos = -1;
-  let prevCtrlRel = null;
-  for (const relPath of CONTROLLER_SCRIPTS) {
-    const pos = indexHtml.indexOf(`src="${relPath}?v=`);
-    if (pos !== -1) {
-      if (pos <= prevCtrlPos) {
-        mismatches.push(
-          `controller load-order violation in index.html: ${relPath} must appear after ${prevCtrlRel}`
-        );
-      }
-      prevCtrlPos = pos;
-      prevCtrlRel = relPath;
-    }
-  }
-
   assert.strictEqual(
     mismatches.length,
     0,
