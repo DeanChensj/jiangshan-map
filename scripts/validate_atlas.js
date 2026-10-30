@@ -6839,7 +6839,7 @@ function main() {
 
         // CUJ 43: Polity focus — per-regime profile (割据/并立政权) inside the chronicle pane
         const polProfiles = loreData.POLITY_PROFILES || [];
-        assert(polProfiles.length >= 60, `Expected >= 60 curated polity profiles, got ${polProfiles.length}`);
+        assert(polProfiles.length >= 105, `Expected >= 105 curated polity profiles, got ${polProfiles.length}`);
         const polKeySet = new Set();
         for (const p of polProfiles) {
           assert(!polKeySet.has(p.key), `Duplicate polity key ${p.key}`);
@@ -6851,6 +6851,16 @@ function main() {
           assert(
             !/[\u4e00-\u9fff]/.test(`${p.en}${p.seatEn}${p.summaryEn}${p.rulersEn || ''}`),
             `Polity ${p.key} English fields must be CJK-free`
+          );
+          const pDesc = { ...p, curated: true };
+          assert(
+            Boolean(ctrl._polityRulers(pDesc)),
+            `Polity ${p.key} must expose non-empty ruler lineage via rulersZh/rulersEn or monarchPrefix`
+          );
+          const pEvents = ctrl._polityEvents(pDesc);
+          assert(
+            pEvents.length >= 3,
+            `Curated polity ${p.key} (${p.zh}) must surface >= 3 historical events, got ${pEvents.length}`
           );
           if (!FAST_MODE) {
             assert(

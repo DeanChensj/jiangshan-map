@@ -3827,7 +3827,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Xianyang / Hongmen",
       "zh": "刘邦入关破咸阳约法三章；项羽于鸿门设宴",
       "en": "Liu Bang enters Xianyang; Xiang Yu hosts the Feast at Hongmen",
-      "month": 3.0,
+      "month": 3,
       "persons": [
         "xiangyu",
         "liubang",
@@ -5034,7 +5034,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Red Cliffs (Chibi, Hubei)",
       "zh": "赤壁之战：周瑜黄盖统孙刘联军火烧乌林战船大破曹操，奠定三分之局",
       "en": "Battle of Red Cliffs: Zhou Yu and Huang Gai lead the Sun-Liu fleet to burn Cao Cao's armada at Wulin",
-      "month": 11.0,
+      "month": 11,
       "persons": [
         "caocao",
         "liubei",
@@ -5372,7 +5372,7 @@ window.ATLAS_LORE_DATA = {
         "zhaoyun",
         "zhangfei"
       ],
-      "month": 5.0
+      "month": 5
     },
     {
       "dynastyKey": "sanguo",
@@ -6558,7 +6558,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Changban, Dangyang (Jingmen, Hubei)",
       "zh": "曹操精骑追刘备于当阳长坂，赵云单骑救主、张飞据水断桥",
       "en": "Cao Cao overtakes Liu Bei at Changban in Dangyang (Jingmen), where Zhao Yun rescues Liu Shan",
-      "month": 8.0,
+      "month": 8,
       "persons": [
         "caocao",
         "liubei",
@@ -6584,7 +6584,7 @@ window.ATLAS_LORE_DATA = {
         "sunquan",
         "luxun"
       ],
-      "month": 12.0
+      "month": 12
     },
     {
       "dynastyKey": "zhanguo",
@@ -7390,7 +7390,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Hongmen (Lintong, Xi'an)",
       "zh": "鸿门宴：项羽设宴新丰鸿门，张良樊哙翼蔽刘邦脱险",
       "en": "Feast at Hongmen: Zhang Liang and Fan Kuai help Liu Bang escape Xiang Yu's camp near Xianyang",
-      "month": 3.0,
+      "month": 3,
       "persons": [
         "xiangyu",
         "liubang",
@@ -7470,7 +7470,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Nanzheng (Hanzhong)",
       "zh": "刘邦就封汉王入汉中，萧何月下追韩信",
       "en": "In Hanzhong, Xiao He rides by moonlight to bring back Han Xin as Liu Bang’s Grand General",
-      "month": 8.0,
+      "month": 8,
       "persons": [
         "liubang",
         "hanxin",
@@ -7779,7 +7779,7 @@ window.ATLAS_LORE_DATA = {
         "liubei",
         "guanyu"
       ],
-      "month": 8.0
+      "month": 8
     },
     {
       "dynastyKey": "donghan",
@@ -7864,7 +7864,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Changban (Dangyang, Hubei)",
       "zh": "刘备携荆州十余万百姓南撤，当阳长坂被曹纯虎豹骑追及",
       "en": "At Changban Slope Zhao Yun rescues infant Liu Shan while Zhang Fei holds Changban Bridge alone",
-      "month": 8.0,
+      "month": 8,
       "persons": [
         "caocao",
         "liubei",
@@ -7910,7 +7910,7 @@ window.ATLAS_LORE_DATA = {
         "zhaoyun",
         "zhangfei"
       ],
-      "month": 5.0
+      "month": 5
     },
     {
       "dynastyKey": "donghan",
@@ -7928,7 +7928,7 @@ window.ATLAS_LORE_DATA = {
         "yuanshao",
         "guanyu"
       ],
-      "month": 4.0
+      "month": 4
     },
     {
       "dynastyKey": "donghan",
@@ -7966,7 +7966,7 @@ window.ATLAS_LORE_DATA = {
         "sunquan",
         "luxun"
       ],
-      "month": 12.0
+      "month": 12
     },
     {
       "dynastyKey": "donghan",
@@ -9441,7 +9441,7 @@ window.ATLAS_LORE_DATA = {
         "guanyu",
         "sunquan"
       ],
-      "month": 10.0
+      "month": 10
     },
     {
       "dynastyKey": "sanguo",
@@ -9644,7 +9644,7 @@ window.ATLAS_LORE_DATA = {
         "guanyu",
         "zhangfei"
       ],
-      "month": 4.0
+      "month": 4
     },
     {
       "dynastyKey": "donghan",
@@ -9688,7 +9688,7 @@ window.ATLAS_LORE_DATA = {
         "zhaoyun",
         "zhangfei"
       ],
-      "month": 5.0
+      "month": 5
     },
     {
       "dynastyKey": "sanguo",
@@ -10730,7 +10730,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Xu (Xuchang, Henan)",
       "zh": "关羽斩颜良报曹，尽封所赐拜书告辞，北奔袁营寻故主",
       "en": "Having repaid Cao Cao by slaying Yan Liang, Guan Yu seals away Cao's gifts and leaves to rejoin Liu Bei",
-      "month": 5.0,
+      "month": 5,
       "persons": [
         "guanyu",
         "caocao"
@@ -11775,6 +11775,786 @@ window.ATLAS_LORE_DATA = {
       "persons": [
         "marcopolo"
       ]
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -256,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛邑（成周）",
+      "siteEn": "Luoyi (Luoyang)",
+      "zh": "秦将摎攻入东周洛邑，周赧王卒，秦迁九鼎",
+      "en": "Qin forces capture the Eastern Zhou royal capital Luoyi and carry off the Nine Tripods"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -318,
+      "coord": [
+        115.65,
+        34.44
+      ],
+      "site": "商丘·彭城",
+      "siteEn": "Shangqiu / Pengcheng",
+      "zh": "宋公偃自立为宋康王，东败齐南败楚号“五千乘之劲宋”",
+      "en": "Lord Yan of Song proclaims himself King Kang of Song and defeats Qi, Chu, and Wei"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -369,
+      "coord": [
+        115.98,
+        34.58
+      ],
+      "site": "宋国蒙邑",
+      "siteEn": "Meng (Shangqiu)",
+      "zh": "道家宗师庄周诞于宋国蒙邑，任漆园吏著《庄子》逍遥游",
+      "en": "Daoist philosopher Zhuangzi is born at Meng in the State of Song and authors the Zhuangzi"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -400,
+      "coord": [
+        116.99,
+        35.6
+      ],
+      "site": "曲阜",
+      "siteEn": "Qufu",
+      "zh": "鲁穆公于曲阜推行变法抑三桓，尊礼子思、墨子等大儒名贤",
+      "en": "Duke Mu of Lu reforms the Three Huan clans in Qufu and honors Zisi and Mozi"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -380,
+      "coord": [
+        114.38,
+        38.42
+      ],
+      "site": "灵寿",
+      "siteEn": "Lingshou",
+      "zh": "中山桓公复国迁都灵寿，铸铁足大鼎与兆域图铜版传世",
+      "en": "Duke Huan of Zhongshan restores his state at Lingshou and casts royal bronzes"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -377,
+      "coord": [
+        111.28,
+        30.69
+      ],
+      "site": "捍关（宜昌）",
+      "siteEn": "Hanguan (Yichang)",
+      "zh": "巴国与古蜀联兵东攻楚国兹方，楚肃王筑捍关扼守三峡水道",
+      "en": "Ba and Ancient Shu jointly attack Chu at Zifang, prompting King Su of Chu to fortify Hanguan"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -361,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都",
+      "siteEn": "Chengdu",
+      "zh": "古蜀开明氏九世王始立宗庙定都成都，北取汉中南郑之地",
+      "en": "The Kaiming king of Ancient Shu establishes his ancestral temple at Chengdu and takes Hanzhong"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -330,
+      "coord": [
+        106.55,
+        29.56
+      ],
+      "site": "江州（重庆）",
+      "siteEn": "Jiangzhou (Chongqing)",
+      "zh": "巴国控扼川东三峡盐铁水道，因楚国西逼自江州北徙阆中",
+      "en": "Controlling Three Gorges salt waterways, the State of Ba shifts its seat from Jiangzhou to Langzhong"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -327,
+      "coord": [
+        107.92,
+        35.5
+      ],
+      "site": "义渠城（庆阳）",
+      "siteEn": "Yiqu (Qingyang)",
+      "zh": "秦惠文王征义渠，义渠王始称臣于秦，秦置义渠县",
+      "en": "King Huiwen of Qin campaigns against Yiqu, compelling the King of Yiqu to submit as vassal"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -314,
+      "coord": [
+        107.92,
+        35.5
+      ],
+      "site": "义渠（陇东）",
+      "siteEn": "Yiqu (Eastern Gansu)",
+      "zh": "秦乘义渠内乱发兵攻取义渠二十五城，拓地至泾水上游",
+      "en": "Qin exploits internal strife in Yiqu to capture twenty-five cities along the upper Jing River"
+    },
+    {
+      "dynastyKey": "qin",
+      "year": -204,
+      "coord": [
+        113.26,
+        23.13
+      ],
+      "site": "番禺（广州）",
+      "siteEn": "Panyu (Guangzhou)",
+      "zh": "秦南海郡尉赵佗兼并桂林、象郡，于番禺称南越武王",
+      "en": "Former Qin magistrate Zhao Tuo unites Lingnan and proclaims the Nanyue Kingdom at Panyu"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -196,
+      "coord": [
+        113.26,
+        23.13
+      ],
+      "site": "番禺（广州）",
+      "siteEn": "Panyu (Guangzhou)",
+      "zh": "汉高祖遣大中大夫陆贾使南越，册封赵佗为南越王和集百越",
+      "en": "Emperor Gaozu of Han sends Lu Jia as envoy to invest Zhao Tuo as King of Nanyue"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": 9,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "常安（长安）",
+      "siteEn": "Chang'an",
+      "zh": "新莽始建国元年王莽颁行“王田私属”与五均六筦托古改制",
+      "en": "Wang Mang decrees the King's Fields land system and state monopolies from Chang'an"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": 24,
+      "coord": [
+        109.58,
+        31.05
+      ],
+      "site": "白帝城（鱼复）",
+      "siteEn": "Baidicheng (Fengjie)",
+      "zh": "公孙述据益州自称蜀王，于瞿塘峡口鱼复筑白帝城扼守三峡",
+      "en": "Holding Sichuan, Gongsun Shu fortifies Baidicheng at Qutang Gorge to guard the Three Gorges"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 25,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都",
+      "siteEn": "Chengdu",
+      "zh": "公孙述于成都称成家皇帝建元龙兴，保境息民据蜀十二载",
+      "en": "Gongsun Shu proclaims himself Emperor of Chengjia at Chengdu, ruling Sichuan for twelve years"
+    },
+    {
+      "dynastyKey": "donghan",
+      "year": 190,
+      "coord": [
+        123.17,
+        41.27
+      ],
+      "site": "襄平（辽阳）",
+      "siteEn": "Xiangping (Liaoyang)",
+      "zh": "辽东太守公孙度东伐高句丽、西击乌桓，自立为辽东侯平州牧",
+      "en": "Liaodong Governor Gongsun Du defeats Goguryeo and the Wuhuan, ruling autonomously at Xiangping"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 237,
+      "coord": [
+        123.17,
+        41.27
+      ],
+      "site": "襄平（辽阳）",
+      "siteEn": "Xiangping (Liaoyang)",
+      "zh": "公孙渊于辽东襄平自立为燕王，改元绍汉置百官抗拒曹魏",
+      "en": "Gongsun Yuan proclaims himself King of Yan at Xiangping in defiance of Cao Wei"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 269,
+      "coord": [
+        112.12,
+        32.01
+      ],
+      "site": "襄阳",
+      "siteEn": "Xiangyang",
+      "zh": "晋武帝命羊祜都督荆州诸军事镇襄阳，屯田怀远筹划平吴",
+      "en": "Emperor Wu of Jin appoints Yang Hu to command Xiangyang and prepare the conquest of Wu"
+    },
+    {
+      "dynastyKey": "sanguo",
+      "year": 279,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都·洛阳",
+      "siteEn": "Chengdu / Luoyang",
+      "zh": "晋武帝司马炎采杜预、王濬之议，发兵二十万水陆六路伐吴",
+      "en": "Emperor Wu of Jin launches a 200,000-strong six-column land and naval invasion of Eastern Wu"
+    },
+    {
+      "dynastyKey": "xijin",
+      "year": 301,
+      "coord": [
+        102.64,
+        37.93
+      ],
+      "site": "姑臧（武威）",
+      "siteEn": "Guzang (Wuwei)",
+      "zh": "张轨出任凉州刺史镇姑臧保境安民，奠定河西前凉七十年基业",
+      "en": "Appointed Governor of Liangzhou at Guzang, Zhang Gui lays the foundation of Former Liang"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 351,
+      "coord": [
+        114.49,
+        37.07
+      ],
+      "site": "襄国（邢台）",
+      "siteEn": "Xiangguo (Xingtai)",
+      "zh": "冉闵率冉魏大军攻克襄国，后赵末主石祗被部将所杀，后赵亡",
+      "en": "Ran Min's forces storm Xiangguo and eliminate the last Later Zhao ruler Shi Zhi"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 397,
+      "coord": [
+        115,
+        38.51
+      ],
+      "site": "中山（定州）",
+      "siteEn": "Zhongshan (Dingzhou)",
+      "zh": "北魏道武帝攻克后燕国都中山，慕容宝率部北奔龙城，后燕中衰",
+      "en": "Emperor Daowu of Northern Wei captures the Later Yan capital Zhongshan; Murong Bao flees to Longcheng"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 398,
+      "coord": [
+        114.52,
+        35.58
+      ],
+      "site": "滑台（滑县）",
+      "siteEn": "Huatai (Hua County)",
+      "zh": "后燕范阳王慕容德自邺城南徙滑台称燕王，建立南燕政权",
+      "en": "Murong De leads his followers south from Ye to Huatai and proclaims himself King of Southern Yan"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 401,
+      "coord": [
+        108.94,
+        34.27
+      ],
+      "site": "长安草堂寺",
+      "siteEn": "Chang'an",
+      "zh": "后秦姚兴伐破后凉迎鸠摩罗什入长安，于草堂寺译经三百余卷",
+      "en": "Yao Xing of Later Qin welcomes Kumārajīva from Guzang to Chang'an to translate Buddhist sutras"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 402,
+      "coord": [
+        102.42,
+        36.48
+      ],
+      "site": "乐都",
+      "siteEn": "Ledu",
+      "zh": "南凉秃发利鹿孤、傉檀兄弟据乐都经营河湟，屡破后凉、北凉军",
+      "en": "Southern Liang rulers Tufa Lilugu and Tufa Rutan expand across the Huangshui valley from Ledu"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 405,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都",
+      "siteEn": "Chengdu",
+      "zh": "东晋西征兵哗变推谯纵为主，攻克成都自称成都王建立谯蜀",
+      "en": "Mutinous troops enthrone Qiao Zong as Prince of Chengdu, founding the Western Shu regime"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 409,
+      "coord": [
+        120.45,
+        41.57
+      ],
+      "site": "龙城（朝阳）",
+      "siteEn": "Longcheng (Chaoyang)",
+      "zh": "冯跋于龙城即北燕天王位改元太平，省役薄赋安定辽西二十余载",
+      "en": "Feng Ba ascends as Heavenly King of Northern Yan at Longcheng, bringing two decades of stability"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 412,
+      "coord": [
+        102.64,
+        37.93
+      ],
+      "site": "姑臧（武威）",
+      "siteEn": "Guzang (Wuwei)",
+      "zh": "北凉沮渠蒙逊自张掖迁都姑臧称河西王，开凿凉州天梯山石窟",
+      "en": "Juqu Mengxun of Northern Liang moves his capital to Guzang and initiates the Tiantishan Grottoes"
+    },
+    {
+      "dynastyKey": "dongjin",
+      "year": 414,
+      "coord": [
+        102.42,
+        36.48
+      ],
+      "site": "乐都",
+      "siteEn": "Ledu",
+      "zh": "西秦王乞伏炽盘率军袭破南凉都城乐都，俘秃发傉檀，南凉亡",
+      "en": "Western Qin ruler Qifu Chipan captures the Southern Liang capital Ledu and annexes the state"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 555,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "梁岳阳王萧詧于江陵即皇帝位建立西梁，存续梁室衣冠三十三载",
+      "en": "Liang prince Xiao Cha ascends as emperor at Jiangling, founding the Western Liang court"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 562,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "西梁世宗萧岿于江陵即位，兴办国学、与北周及隋室联姻保境",
+      "en": "Emperor Ming (Xiao Kui) ascends in Jiangling, patronizing classical scholarship and peace with the north"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 618,
+      "coord": [
+        116,
+        38.22
+      ],
+      "site": "乐寿（献县）",
+      "siteEn": "Leshou (Hebei)",
+      "zh": "河北义军首领窦建德于乐寿称夏王建元五凤，次年迁都洺州",
+      "en": "Hebei rebel leader Dou Jiande proclaims himself King of Xia at Leshou and moves his seat to Mingzhou"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 619,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "王世充于洛阳废隋越王杨侗自立为郑帝，与关中李唐争衡中原",
+      "en": "Wang Shichong deposes Sui prince Yang Tong at Luoyang and proclaims the Empire of Zheng"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 618,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "西梁后裔萧铣称梁帝自巴陵迁都江陵，统有荆襄岭南四十万众",
+      "en": "Xiao Xian proclaims the Liang Empire and moves his capital to Jiangling, ruling southern China"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 621,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "唐将李靖乘秋水泛涨率舟师顺三峡直抵江陵，萧铣降唐江南平定",
+      "en": "Tang general Li Jing sails down the Yangtze gorges during autumn floods to receive Xiao Xian's surrender"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 618,
+      "coord": [
+        112.42,
+        34.72
+      ],
+      "site": "洛阳北邙山",
+      "siteEn": "Mount Mang (Luoyang)",
+      "zh": "邙山之战：王世充率东都精兵击败李密瓦岗军，独揽洛阳朝政",
+      "en": "Battle of Mount Mang: Wang Shichong defeats Li Mi's Wagang army north of Luoyang"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 619,
+      "coord": [
+        115.98,
+        36.45
+      ],
+      "site": "聊城",
+      "siteEn": "Liaocheng",
+      "zh": "夏王窦建德率军南下聊城诛宇文化及，尽收河北山东之地",
+      "en": "King of Xia Dou Jiande marches south to Liaocheng and executes the regicide Yuwen Huaji"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 646,
+      "coord": [
+        102.8,
+        47.5
+      ],
+      "site": "郁督军山（漠北）",
+      "siteEn": "Mount Ötüken (Mongolia)",
+      "zh": "唐太宗遣李世勣北破薛延陀汗国，铁勒诸部奉表尊“天可汗”",
+      "en": "Emperor Taizong sends Li Shiji to defeat the Xueyantuo Khanate; Tiele tribes hail the Heavenly Khan"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 692,
+      "coord": [
+        82.96,
+        41.72
+      ],
+      "site": "龟兹（库车）",
+      "siteEn": "Kucha (Anxi)",
+      "zh": "武威道总管王孝杰大破吐蕃收复安西四镇，复置安西都护府于龟兹",
+      "en": "General Wang Xiaojie defeats Tibet to recover the Four Garrisons and restores the Anxi Protectorate at Kucha"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 714,
+      "coord": [
+        89.18,
+        44
+      ],
+      "site": "北庭（庭州）",
+      "siteEn": "Beiting (Jimsar)",
+      "zh": "北庭都护郭虔瓘据守北庭故城，奇兵击斩后突厥同俄特勤固守天山",
+      "en": "Beiting Protector Guo Qianguan defends Beiting and routs the Eastern Turkic siege force"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 754,
+      "coord": [
+        100.23,
+        25.6
+      ],
+      "site": "太和城（大理）",
+      "siteEn": "Taihe (Dali)",
+      "zh": "天宝战争：南诏王阁罗凤于太和城大败唐军，立《南诏德化碑》",
+      "en": "King Geluofeng of Nanzhao defeats the Tang expedition at Taihe and erects the Nanzhao Dehua Stele"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 794,
+      "coord": [
+        100.18,
+        25.7
+      ],
+      "site": "点苍山（大理）",
+      "siteEn": "Mount Diancang (Dali)",
+      "zh": "南诏王异牟寻与唐剑南西川节度使韦皋使者订立点苍山会盟归唐",
+      "en": "King Yimouxun of Nanzhao concludes the Mount Diancang Covenant with Tang governor Wei Gao"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 861,
+      "coord": [
+        102.64,
+        37.93
+      ],
+      "site": "凉州（武威）",
+      "siteEn": "Liangzhou (Wuwei)",
+      "zh": "归义军节度使张议潮率军攻克凉州，河西走廊千里故地尽复归唐",
+      "en": "Guiyi Military Governor Zhang Yichao recovers Liangzhou, restoring the Hexi Corridor to Tang allegiance"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 884,
+      "coord": [
+        117.67,
+        36.19
+      ],
+      "site": "泰山狼虎谷（莱芜）",
+      "siteEn": "Langhugu (Laiwu)",
+      "zh": "李克用沙陀骑兵急追破敌，大齐皇帝黄巢退至泰山狼虎谷兵败自刎",
+      "en": "Pursued by Li Keyong's Shatuo cavalry, Great Qi emperor Huang Chao perishes at Wolf-Tiger Valley"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 902,
+      "coord": [
+        119.42,
+        32.39
+      ],
+      "site": "扬州（广陵）",
+      "siteEn": "Yangzhou (Guangling)",
+      "zh": "唐昭宗册封淮南节度使杨行密为吴王，都广陵，奠定杨吴与南唐基业",
+      "en": "Emperor Zhaozong of Tang invests Huainan governor Yang Xingmi as Prince of Wu at Yangzhou"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 907,
+      "coord": [
+        112.94,
+        28.23
+      ],
+      "site": "潭州（长沙）",
+      "siteEn": "Tanzhou (Changsha)",
+      "zh": "后梁册封武安节度使马殷为楚王都潭州，兴茶贸铸铅铁钱富甲一方",
+      "en": "Later Liang invests Ma Yin as King of Chu at Tanzhou, where tea trade and coinage bring prosperity"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 907,
+      "coord": [
+        100.23,
+        25.6
+      ],
+      "site": "羊苴咩城（大理）",
+      "siteEn": "Yangjumie (Dali)",
+      "zh": "南诏权臣郑买嗣夺位所建大长和国据有云南，都羊苴咩城",
+      "en": "Founded by former Nanzhao regent Zheng Maisi, the Dachanghe Kingdom rules Yunnan from Yangjumie"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 914,
+      "coord": [
+        94.66,
+        40.14
+      ],
+      "site": "沙州（敦煌）",
+      "siteEn": "Shazhou (Dunhuang)",
+      "zh": "沙州长史曹议金继任归义军节度使，保境通商世代营建莫高窟",
+      "en": "Cao Yijin becomes Military Governor of the Guiyi Circuit at Dunhuang, patronizing the Mogao Caves"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 924,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵（荆州）",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "后唐庄宗册封荆南节度使高季兴为南平王，都江陵建立十国之荆南",
+      "en": "Later Tang invests Jingnan governor Gao Jixing as Prince of Nanping at Jiangling"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 928,
+      "coord": [
+        112.2,
+        30.35
+      ],
+      "site": "江陵（荆州）",
+      "siteEn": "Jiangling (Jingzhou)",
+      "zh": "高从诲嗣位荆南奉行“事大保境”，向诸国称臣纳贡转输南北商贸",
+      "en": "Gao Conghui succeeds in Jingnan, paying tribute to all neighboring courts to prosper as a trade hub"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 933,
+      "coord": [
+        119.3,
+        26.08
+      ],
+      "site": "长乐府（福州）",
+      "siteEn": "Changle Fu (Fuzhou)",
+      "zh": "闽王王延钧于福州称帝建国号大闽，改元龙启并升福州为长乐府",
+      "en": "Wang Yanjun proclaims himself Emperor of Great Min and elevates Fuzhou to Changle Prefecture"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 937,
+      "coord": [
+        100.23,
+        25.6
+      ],
+      "site": "羊苴咩城（大理）",
+      "siteEn": "Yangjumie (Dali)",
+      "zh": "通海节度使段思平率滇东三十七部起兵，于羊苴咩城建立大理国",
+      "en": "Duan Siping leads thirty-seven tribes to capture Yangjumie and found the Kingdom of Dali"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 950,
+      "coord": [
+        114.35,
+        34.79
+      ],
+      "site": "东都开封府",
+      "siteEn": "Kaifeng",
+      "zh": "后汉隐帝刘承祐于开封诛枢密使杨邠等并害郭威家眷，郭威自邺举兵",
+      "en": "Later Han emperor Liu Chengyou purges his senior ministers in Kaifeng, provoking Guo Wei's march south"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1080,
+      "coord": [
+        100.23,
+        25.6
+      ],
+      "site": "大理崇圣寺",
+      "siteEn": "Chongsheng Temple (Dali)",
+      "zh": "大理国崇奉佛教定为国教，段氏诸帝多禅位为僧修行于点苍崇圣寺",
+      "en": "Dali venerates Buddhism as state religion, with several Duan kings retiring as monks at Chongsheng Temple"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1274,
+      "coord": [
+        114.3,
+        30.55
+      ],
+      "site": "鄂州（武昌）",
+      "siteEn": "Ezhou (Wuchang)",
+      "zh": "元帅伯颜统大元水陆军自襄阳南下渡江克鄂州，顺长江东取临安",
+      "en": "Yuan commander Bayan crosses the Yangtze to capture Ezhou and advances downstream on Lin'an"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1357,
+      "coord": [
+        106.55,
+        29.56
+      ],
+      "site": "重庆",
+      "siteEn": "Chongqing",
+      "zh": "明玉珍率军自巫峡入蜀攻克重庆、成都，奠定巴蜀明夏立国基业",
+      "en": "Ming Yuzhen sails through the Wu Gorge to capture Chongqing and Chengdu, laying the base for Ming Xia"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1642,
+      "coord": [
+        121.13,
+        41.12
+      ],
+      "site": "松山·锦州",
+      "siteEn": "Songshan / Jinzhou",
+      "zh": "松锦大战：清太宗皇太极击溃明蓟辽总督洪承畴十三万军，尽取关外",
+      "en": "Battle of Song-Jin: Hong Taiji crushes Ming governor Hong Chengchou's army and takes all of Liaoxi"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1643,
+      "coord": [
+        123.43,
+        41.8
+      ],
+      "site": "盛京（沈阳）",
+      "siteEn": "Shengjing (Shenyang)",
+      "zh": "清太宗皇太极崩于盛京，六岁福临即位，多尔衮与济尔哈朗摄政",
+      "en": "Hong Taiji dies at Shengjing; six-year-old Fulin (Shunzhi) succeeds with Dorgon as regent"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1644,
+      "coord": [
+        104.06,
+        30.67
+      ],
+      "site": "成都（西京）",
+      "siteEn": "Chengdu",
+      "zh": "张献忠率军自武昌入蜀攻克成都，称大西皇帝建元大顺，号成都西京",
+      "en": "Zhang Xianzhong captures Chengdu and proclaims the Great Xi Empire with Chengdu as Western Capital"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1645,
+      "coord": [
+        114.52,
+        29.6
+      ],
+      "site": "通山九宫山",
+      "siteEn": "Mount Jiugong (Hubei)",
+      "zh": "大顺帝李自成自西安南撤转战湖广，于湖北通山九宫山遭伏遇害",
+      "en": "Retreating from Xi'an into Hubei, Great Shun emperor Li Zicheng perishes at Mount Jiugong"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1646,
+      "coord": [
+        105.8,
+        31
+      ],
+      "site": "西充凤凰山",
+      "siteEn": "Mount Fenghuang (Xichong)",
+      "zh": "清肃亲王豪格统兵入川，大西帝张献忠于西充凤凰山拒战中箭身亡",
+      "en": "Fighting Qing prince Haoge's invasion of Sichuan, Zhang Xianzhong is killed by an arrow at Mount Fenghuang"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1917,
+      "coord": [
+        113.26,
+        23.13
+      ],
+      "site": "广州",
+      "siteEn": "Guangzhou",
+      "zh": "孙中山率驻沪海军南下广州召开国会非常会议，成立护法军政府",
+      "en": "Sun Yat-sen sails south to Guangzhou and establishes the Constitutional Protection Military Government"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1922,
+      "coord": [
+        116.15,
+        39.82
+      ],
+      "site": "长辛店·山海关",
+      "siteEn": "Changxindian / Shanhaiguan",
+      "zh": "第一次直奉战争：吴佩孚直系军击败张作霖奉系军，独占北京政权",
+      "en": "First Zhili–Fengtian War: Wu Peifu's Zhili forces defeat Zhang Zuolin's Fengtian army to control Beijing"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1924,
+      "coord": [
+        116.4,
+        39.9
+      ],
+      "site": "北京·山海关",
+      "siteEn": "Beijing / Shanhaiguan",
+      "zh": "第二次直奉战争冯玉祥发动北京政变囚曹锟，张作霖、段祺瑞入京执政",
+      "en": "During the Second Zhili–Fengtian War, Feng Yuxiang stages the Beijing Coup and Zhang Zuolin enters Beijing"
+    },
+    {
+      "dynastyKey": "roc",
+      "year": 1928,
+      "coord": [
+        123.4,
+        41.8
+      ],
+      "site": "奉天皇姑屯（沈阳）",
+      "siteEn": "Huanggutun (Shenyang)",
+      "zh": "张作霖退返奉天于皇姑屯遭日军炸死，年底张学良宣布“东北易帜”",
+      "en": "Zhang Zuolin is killed at Huanggutun; Zhang Xueliang declares Northeast Flag Replacement"
     }
   ],
   "GUQIN_TRACKS": [
@@ -12465,7 +13245,7 @@ window.ATLAS_LORE_DATA = {
             "zhangfei",
             "zhaoyun"
           ],
-          "month": 11.0
+          "month": 11
         },
         {
           "year": 214,
@@ -12966,7 +13746,7 @@ window.ATLAS_LORE_DATA = {
             ],
             [
               73.5,
-              37.0
+              37
             ],
             [
               75.23,
@@ -13022,7 +13802,7 @@ window.ATLAS_LORE_DATA = {
             "lishimin",
             "wuzetian"
           ],
-          "month": 2.0,
+          "month": 2,
           "aliases": [
             "归唐",
             "长安（归唐）"
@@ -21403,124 +22183,243 @@ window.ATLAS_LORE_DATA = {
   ],
   "POLITY_PROFILES": [
     {
-      "key": "qin_state",
-      "zh": "秦国",
-      "en": "State of Qin",
+      "key": "shu_state",
+      "zh": "古蜀国",
+      "en": "Ancient Kingdom of Shu",
       "titles": [
-        "秦"
+        "蜀"
       ],
       "from": -403,
-      "to": -222,
-      "seatZh": "栎阳 → 咸阳（前350）",
-      "seatEn": "Yueyang → Xianyang (350 BCE)",
+      "to": -316,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
+      "rulersZh": "开明氏蜀王（九世至十二世芦子霸王）",
+      "rulersEn": "Kaiming Dynasty Kings of Shu",
       "keywords": [
-        "秦",
-        "商鞅",
-        "白起",
-        "嬴政"
+        "灭蜀",
+        "古蜀",
+        "开明氏",
+        "石牛道",
+        "灭巴、蜀"
       ],
       "aliases": [
-        "秦国",
-        "嬴秦"
+        "开明蜀",
+        "蜀国"
       ],
-      "summaryZh": "嬴姓诸侯国。前361年秦孝公即位，任商鞅变法，迁都咸阳；前316年灭巴蜀，前278年白起拔郢，前260年长平之战大破赵军；前230—前221年秦王嬴政次第灭韩、赵、魏、楚、燕、齐，一统天下。",
-      "summaryEn": "Ying-clan state. Duke Xiao (r. 361–338 BCE) empowered Shang Yang's reforms and moved the capital to Xianyang; Qin annexed Ba and Shu (316 BCE), sacked the Chu capital Ying (278 BCE), crushed Zhao at Changping (260 BCE), and under King Zheng conquered the six rival states between 230 and 221 BCE."
+      "summaryZh": "成都平原古国，历经蚕丛、柏灌、鱼凫、杜宇至开明氏立国，都成都。战国中期开明氏北取汉中南郑，与秦、楚接壤；前316年蜀与巴、苴交战求救于秦，秦惠文王采司马错策由石牛道伐蜀，灭蜀王置蜀郡，开启李冰治水与天府之国。",
+      "summaryEn": "Ancient kingdom of the Chengdu plain ruled in the Warring States by the Kaiming dynasty. When war broke out between Shu, Ba and Ju in 316 BCE, King Huiwen of Qin sent Sima Cuo south over the Stone Cattle Road to conquer Shu and establish Shu Commandery."
     },
     {
-      "key": "chu_state",
-      "zh": "楚国",
-      "en": "State of Chu",
+      "key": "ba_state",
+      "zh": "巴国",
+      "en": "State of Ba",
       "titles": [
-        "楚"
+        "巴"
       ],
       "from": -403,
-      "to": -223,
-      "seatZh": "郢 → 陈（前278）→ 寿春（前241）",
-      "seatEn": "Ying → Chen (278 BCE) → Shouchun (241 BCE)",
+      "to": -316,
+      "seatZh": "江州（重庆）→ 阆中",
+      "seatEn": "Jiangzhou (Chongqing) → Langzhong",
+      "rulersZh": "巴国姬姓（或务相氏）诸巴王",
+      "rulersEn": "Kings of Ba",
       "keywords": [
-        "楚",
-        "吴起",
-        "屈原",
-        "项燕"
+        "巴国",
+        "灭巴",
+        "巴、蜀",
+        "江州",
+        "阆中"
       ],
       "aliases": [
-        "楚国",
-        "荆楚"
+        "巴子国"
       ],
-      "summaryZh": "芈姓大国，战国疆域最广。楚悼王任吴起变法；前306年前后灭越，前278年秦将白起拔郢，楚东迁于陈，前241年再迁寿春；前223年秦将王翦破楚，楚亡。",
-      "summaryEn": "Mi-clan great power and the largest Warring State. King Dao backed Wu Qi's reforms; Chu absorbed Yue (c. 306 BCE), lost its capital Ying to Bai Qi in 278 BCE and moved east to Chen and then Shouchun (241 BCE), until Wang Jian's Qin army destroyed it in 223 BCE."
+      "summaryZh": "川东峡江劲国，以虎为图腾，巴师勇锐善舞。都江州（今重庆），后迫于楚国西进迁阆中；前316年与蜀、苴相攻，秦将司马错灭蜀后顺势举巴，虏巴王归秦，以其地置巴郡。",
+      "summaryEn": "A martial kingdom of eastern Sichuan and the Three Gorges, centered at Jiangzhou (Chongqing) and later Langzhong. In 316 BCE, immediately after conquering Shu, Qin general Sima Cuo annexed Ba and established Ba Commandery."
     },
     {
-      "key": "qi_state",
-      "zh": "齐国（田齐）",
-      "en": "State of Qi",
+      "key": "yue_state",
+      "zh": "越国",
+      "en": "State of Yue",
       "titles": [
-        "齐"
+        "越"
       ],
       "from": -403,
-      "to": -221,
-      "seatZh": "临淄",
-      "seatEn": "Linzi",
+      "to": -306,
+      "seatZh": "琅琊 → 吴（姑苏）→ 会稽",
+      "seatEn": "Langya → Wu (Suzhou) → Kuaiji",
+      "rulersZh": "越王翳 → 越王之侯 → 越王无颛 → 越王无疆",
+      "rulersEn": "King Yi → King Zhihou → King Wuzhuan → King Wujiang",
       "keywords": [
-        "齐",
-        "孙膑",
-        "稷下",
-        "田单",
-        "乐毅"
+        "越国",
+        "越王",
+        "灭越",
+        "琅琊",
+        "槜李",
+        "会稽"
       ],
       "aliases": [
-        "齐国",
-        "田齐"
+        "于越",
+        "勾践越国"
       ],
-      "summaryZh": "前386年田和代姜齐为侯，史称田齐，都临淄，稷下学宫盛极一时。齐威王用孙膑于桂陵（前353）、马陵（前341）大破魏军；前284年乐毅率五国伐齐，几至亡国，田单以即墨复国；前221年秦军入临淄，齐王建降。",
-      "summaryEn": "Tian-clan Qi replaced the Jiang lords in 386 BCE and ruled from Linzi, home of the Jixia Academy. Sun Bin's victories at Guiling (353 BCE) and Maling (341 BCE) broke Wei; Yue Yi's five-state invasion of 284 BCE nearly destroyed Qi until Tian Dan's restoration from Jimo; King Jian surrendered to Qin in 221 BCE."
+      "summaryZh": "姒姓诸侯国，勾践灭吴称霸后北迁都琅琊；战国初越王翳畏齐南迁返吴（姑苏）。前306年越王无疆北伐齐，听齐使之说转攻楚国，为楚怀王大败所杀，尽取故吴地至浙江，越国自此分崩为闽越、东瓯等百越诸部。",
+      "summaryEn": "After King Goujian conquered Wu and moved his capital north to Langya, King Yi returned south to Wu (Suzhou). In 306 BCE King Wujiang attacked Chu and was defeated and slain by King Huai of Chu, who annexed Yue lands down to the Qiantang River while Yue remnants dispersed into Minyue and Dong'ou."
     },
     {
-      "key": "yan_state",
-      "zh": "燕国",
-      "en": "State of Yan",
+      "key": "zhongshan",
+      "zh": "中山国",
+      "en": "Zhongshan",
       "titles": [
-        "燕"
+        "中山"
       ],
       "from": -403,
-      "to": -222,
-      "seatZh": "蓟",
-      "seatEn": "Ji (Beijing)",
+      "to": -296,
+      "seatZh": "顾 → 灵寿",
+      "seatEn": "Gu → Lingshou",
       "keywords": [
-        "燕",
-        "乐毅",
-        "秦开",
-        "荆轲"
+        "中山",
+        "五国相王",
+        "灵寿"
       ],
       "aliases": [
-        "燕国"
+        "鲜虞"
       ],
-      "summaryZh": "姬姓诸侯国，都蓟（今北京）。燕昭王筑台招贤，前284年乐毅合五国破齐；燕将秦开却东胡千里，置燕北五郡、筑燕北长城。前227年荆轲刺秦未遂，前226年秦破蓟，前222年燕亡。",
-      "summaryEn": "Ji-clan state ruling from Ji (modern Beijing). King Zhao recruited talent and Yue Yi led the five-state rout of Qi (284 BCE); general Qin Kai drove back the Donghu and built the northern Yan walls. After Jing Ke's failed attempt on King Zheng (227 BCE), Qin took Ji (226 BCE) and ended Yan in 222 BCE."
+      "summaryZh": "白狄鲜虞所建的千乘之国，夹处燕赵之间。前406年曾为魏所灭，约前380年复国，都灵寿；前323年参与五国相王。赵武灵王胡服骑射后屡攻中山，前296年赵灭中山。",
+      "summaryEn": "A 'thousand-chariot' state of the White Di (Xianyu) wedged between Yan and Zhao. Conquered by Wei in 406 BCE, it revived around 380 BCE with its capital at Lingshou and joined the 'Five States Proclaiming Kings' (323 BCE), before Zhao annexed it in 296 BCE.",
+      "rulersZh": "中山桓公 → 成公 → 中山王厝 → 中山王妾子 → 中山王尚",
+      "rulersEn": "Duke Huan → Duke Cheng → King Cuo → King Qiezi → King Shang"
     },
     {
-      "key": "zhao_state",
-      "zh": "赵国",
-      "en": "State of Zhao",
+      "key": "song_state",
+      "zh": "宋国",
+      "en": "State of Song",
       "titles": [
-        "赵"
+        "宋"
       ],
       "from": -403,
-      "to": -222,
-      "seatZh": "中牟 → 邯郸（前386）",
-      "seatEn": "Zhongmou → Handan (386 BCE)",
+      "to": -286,
+      "seatZh": "睢阳（商丘）→ 彭城",
+      "seatEn": "Suiyang (Shangqiu) → Pengcheng",
+      "rulersZh": "宋悼公 → 休公 → 辟公 → 剔成君 → 宋康王（宋王偃）",
+      "rulersEn": "Duke Dao → Duke Xiu → Duke Pi → Lord Ticheng → King Kang (Yan)",
       "keywords": [
-        "赵",
-        "胡服骑射",
-        "长平",
-        "邯郸",
-        "李牧"
+        "宋国",
+        "宋王偃",
+        "宋康王",
+        "灭宋",
+        "商丘",
+        "庄子"
       ],
       "aliases": [
-        "赵国"
+        "子姓宋",
+        "商宋"
       ],
-      "summaryZh": "三家分晋所立，前403年列为诸侯，前386年定都邯郸。赵武灵王推行胡服骑射，前296年灭中山；前260年长平之战惨败于秦；前228年秦破邯郸，公子嘉奔代称王，前222年亡。",
-      "summaryEn": "Founded from the partition of Jin and recognized in 403 BCE, with its capital at Handan from 386 BCE. King Wuling's cavalry reforms let Zhao annex Zhongshan (296 BCE), but it was shattered by Qin at Changping (260 BCE). Handan fell in 228 BCE; Prince Jia held out as King of Dai until 222 BCE."
+      "summaryZh": "周初封殷商后裔微子启于商丘，为礼乐大邦，墨子、庄子皆宋人。战国中期戴氏剔成司城专政；前318年宋王偃自立为王，东败齐、南败楚、西败魏，迁都彭城，号“五千乘之劲宋”。前286年齐湣王合魏、楚之师灭宋，三分其地。",
+      "summaryEn": "Enfeoffed at Shangqiu for the descendants of the Shang royal house and homeland of Mozi and Zhuangzi, Song rose briefly under King Yan (proclaimed 318 BCE), who defeated Qi, Chu and Wei from Pengcheng before a coalition of Qi, Wei and Chu conquered and partitioned Song in 286 BCE."
+    },
+    {
+      "key": "yiqu",
+      "zh": "义渠",
+      "en": "Yiqu Kingdom",
+      "titles": [
+        "义渠"
+      ],
+      "from": -403,
+      "to": -272,
+      "seatZh": "义渠城（今甘肃庆阳宁县）",
+      "seatEn": "Yiqu (Ningxian, Qingyang)",
+      "rulersZh": "义渠王（西戎诸王）",
+      "rulersEn": "Kings of Yiqu (Western Rong)",
+      "keywords": [
+        "义渠",
+        "宣太后",
+        "陇西、北地、上郡"
+      ],
+      "aliases": [
+        "义渠戎"
+      ],
+      "summaryZh": "陇东泾水流域最强盛的西戎方国，控弦善骑，与秦相争数百年。秦惠文王时义渠称臣，前314年秦攻取义渠二十五城；前272年秦宣太后诱杀义渠王于甘泉宫，发兵灭义渠，秦遂于西北置陇西、北地、上郡并筑长城拒胡。",
+      "summaryEn": "The most powerful Western Rong kingdom in the Jing River basin of eastern Gansu, long a rival on Qin's northwestern flank. In 272 BCE Queen Dowager Xuan of Qin lured and killed the King of Yiqu at Ganquan Palace, annexed its territory into Longxi, Beidi and Shang commanderies, and built Qin's northern wall."
+    },
+    {
+      "key": "dongzhou",
+      "zh": "东周（周王室）",
+      "en": "Eastern Zhou Royal Domain",
+      "titles": [
+        "周"
+      ],
+      "from": -403,
+      "to": -256,
+      "matchTo": -249,
+      "seatZh": "洛邑（成周 · 王城）",
+      "seatEn": "Luoyi (Chengzhou / Wangcheng)",
+      "rulersZh": "周威烈王 → 安王 → 烈王 → 显王 → 慎靓王 → 周赧王 → 东周君",
+      "rulersEn": "King Weilie → King An → King Lie → King Xian → King Shenjing → King Nan → Lord of Eastern Zhou",
+      "keywords": [
+        "周威烈王",
+        "周安王",
+        "周显王",
+        "周赧王",
+        "东周",
+        "洛邑",
+        "九鼎"
+      ],
+      "aliases": [
+        "周王室",
+        "东周"
+      ],
+      "summaryZh": "平王东迁后周室衰微，战国时局促于洛邑王畿，分裂为西周公、东周公二小国。前403年威烈王册命韩赵魏为诸侯，前386年安王命田和为齐侯；前256年秦昭襄王攻入洛邑，周赧王卒、九鼎入秦，前249年秦庄襄王灭东周公，周祀遂绝。",
+      "summaryEn": "Reduced to a small royal domain around Luoyi during the Warring States and split between the Dukes of Western and Eastern Zhou, the royal house formally recognized Han, Zhao and Wei (403 BCE) and Tian Qi (386 BCE) before Qin took Luoyi and the Nine Tripods in 256 BCE and extinguished the Eastern Zhou remnant in 249 BCE."
+    },
+    {
+      "key": "lu_state",
+      "zh": "鲁国",
+      "en": "State of Lu",
+      "titles": [
+        "鲁"
+      ],
+      "from": -403,
+      "to": -249,
+      "seatZh": "曲阜",
+      "seatEn": "Qufu",
+      "rulersZh": "鲁穆公 → 共公 → 康公 → 景公 → 平公 → 文公 → 鲁顷公",
+      "rulersEn": "Duke Mu → Duke Gong → Duke Kang → Duke Jing → Duke Ping → Duke Wen → Duke Qing",
+      "keywords": [
+        "鲁国",
+        "鲁穆公",
+        "鲁顷公",
+        "灭鲁",
+        "曲阜",
+        "邹邑"
+      ],
+      "aliases": [
+        "姬姓鲁",
+        "邹鲁"
+      ],
+      "summaryZh": "周公旦长子伯禽受封于曲阜，秉“周礼尽在鲁”之传统，为儒家发源地。战国初鲁穆公礼遇子思、墨子，改革三桓世卿制；后国势日蹙于齐、楚之间，前249年楚考烈王遣春申君黄歇东征灭鲁，鲁顷公迁于莒，鲁亡。",
+      "summaryEn": "Founded at Qufu for Boqin, son of the Duke of Zhou, Lu preserved Zhou ritual traditions and was the cradle of Confucianism. Duke Mu reformed the Three Huan lineages and patronized Zisi, but squeezed between Qi and Chu, Lu was annexed by Chu in 249 BCE."
+    },
+    {
+      "key": "han_state",
+      "zh": "韩国",
+      "en": "State of Han",
+      "titles": [
+        "韩"
+      ],
+      "from": -403,
+      "to": -230,
+      "seatZh": "阳翟 → 新郑（前375）",
+      "seatEn": "Yangzhai → Xinzheng (375 BCE)",
+      "keywords": [
+        "韩",
+        "申不害",
+        "新郑"
+      ],
+      "aliases": [
+        "韩国"
+      ],
+      "summaryZh": "三家分晋所立，七雄中最弱。前375年韩哀侯灭郑，迁都新郑；韩昭侯用申不害，一度国治兵强。地处秦东出要冲，屡遭蚕食；前262年上党降赵引发长平之战，前230年秦破新郑，韩为六国中首亡。",
+      "summaryEn": "The weakest of the seven powers, formed from the partition of Jin. Marquis Ai conquered Zheng and moved to Xinzheng (375 BCE); Marquis Zhao's minister Shen Buhai strengthened the state. Squeezed by Qin's eastward drive, Han ceded Shangdang (262 BCE), triggering Changping, and in 230 BCE became the first of the six states conquered by Qin.",
+      "rulersZh": "韩景侯 → 烈侯 → 文侯 → 哀侯 → 昭侯 → 宣惠王 → 襄王 → 釐王 → 桓惠王 → 韩王安",
+      "rulersEn": "Marquis Jing → Marquis Lie → Marquis Ai → Marquis Zhao → King Xuanhui → King Xiang → King Xi → King Huanhui → King An"
     },
     {
       "key": "wei_state",
@@ -21545,49 +22444,308 @@ window.ATLAS_LORE_DATA = {
         "梁国"
       ],
       "summaryZh": "三家分晋所立，魏文侯任李悝变法、吴起守西河，战国初期称霸中原。魏惠王时迁都大梁，桂陵、马陵两败于齐，河西之地尽入于秦；前225年秦将王贲引河水灌大梁，魏亡。",
-      "summaryEn": "A successor state of Jin; Marquis Wen's minister Li Kui and general Wu Qi made Wei the first hegemon of the Warring States. Under King Hui it moved to Daliang, lost to Qi at Guiling and Maling and ceded Hexi to Qin. In 225 BCE Wang Ben flooded Daliang and Wei fell."
+      "summaryEn": "A successor state of Jin; Marquis Wen's minister Li Kui and general Wu Qi made Wei the first hegemon of the Warring States. Under King Hui it moved to Daliang, lost to Qi at Guiling and Maling and ceded Hexi to Qin. In 225 BCE Wang Ben flooded Daliang and Wei fell.",
+      "rulersZh": "魏文侯 → 武侯 → 惠王 → 襄王 → 昭王 → 安釐王 → 景湣王 → 魏王假",
+      "rulersEn": "Marquis Wen → Marquis Wu → King Hui → King Xiang → King Zhao → King Anxi → King Jingmin → King Jia"
     },
     {
-      "key": "han_state",
-      "zh": "韩国",
-      "en": "State of Han",
+      "key": "chu_state",
+      "zh": "楚国",
+      "en": "State of Chu",
       "titles": [
-        "韩"
+        "楚"
       ],
       "from": -403,
-      "to": -230,
-      "seatZh": "阳翟 → 新郑（前375）",
-      "seatEn": "Yangzhai → Xinzheng (375 BCE)",
+      "to": -223,
+      "seatZh": "郢 → 陈（前278）→ 寿春（前241）",
+      "seatEn": "Ying → Chen (278 BCE) → Shouchun (241 BCE)",
       "keywords": [
-        "韩",
-        "申不害",
-        "新郑"
+        "楚",
+        "吴起",
+        "屈原",
+        "项燕"
       ],
       "aliases": [
-        "韩国"
+        "楚国",
+        "荆楚"
       ],
-      "summaryZh": "三家分晋所立，七雄中最弱。前375年韩哀侯灭郑，迁都新郑；韩昭侯用申不害，一度国治兵强。地处秦东出要冲，屡遭蚕食；前262年上党降赵引发长平之战，前230年秦破新郑，韩为六国中首亡。",
-      "summaryEn": "The weakest of the seven powers, formed from the partition of Jin. Marquis Ai conquered Zheng and moved to Xinzheng (375 BCE); Marquis Zhao's minister Shen Buhai strengthened the state. Squeezed by Qin's eastward drive, Han ceded Shangdang (262 BCE), triggering Changping, and in 230 BCE became the first of the six states conquered by Qin."
+      "summaryZh": "芈姓大国，战国疆域最广。楚悼王任吴起变法；前306年前后灭越，前278年秦将白起拔郢，楚东迁于陈，前241年再迁寿春；前223年秦将王翦破楚，楚亡。",
+      "summaryEn": "Mi-clan great power and the largest Warring State. King Dao backed Wu Qi's reforms; Chu absorbed Yue (c. 306 BCE), lost its capital Ying to Bai Qi in 278 BCE and moved east to Chen and then Shouchun (241 BCE), until Wang Jian's Qin army destroyed it in 223 BCE.",
+      "rulersZh": "楚声王 → 悼王 → 肃王 → 宣王 → 威王 → 怀王 → 顷襄王 → 考烈王 → 幽王 → 负刍",
+      "rulersEn": "King Sheng → King Dao → King Su → King Xuan → King Wei → King Huai → King Qingxiang → King Kaolie → King You → King Fuchu"
     },
     {
-      "key": "zhongshan",
-      "zh": "中山国",
-      "en": "Zhongshan",
+      "key": "qin_state",
+      "zh": "秦国",
+      "en": "State of Qin",
       "titles": [
-        "中山"
+        "秦"
       ],
       "from": -403,
-      "to": -296,
-      "seatZh": "顾 → 灵寿",
-      "seatEn": "Gu → Lingshou",
+      "to": -222,
+      "seatZh": "栎阳 → 咸阳（前350）",
+      "seatEn": "Yueyang → Xianyang (350 BCE)",
       "keywords": [
-        "中山"
+        "秦",
+        "商鞅",
+        "白起",
+        "嬴政"
       ],
       "aliases": [
-        "鲜虞"
+        "秦国",
+        "嬴秦"
       ],
-      "summaryZh": "白狄鲜虞所建的千乘之国，夹处燕赵之间。前406年曾为魏所灭，约前380年复国，都灵寿；前323年参与五国相王。赵武灵王胡服骑射后屡攻中山，前296年赵灭中山。",
-      "summaryEn": "A 'thousand-chariot' state of the White Di (Xianyu) wedged between Yan and Zhao. Conquered by Wei in 406 BCE, it revived around 380 BCE with its capital at Lingshou and joined the 'Five States Proclaiming Kings' (323 BCE), before Zhao annexed it in 296 BCE."
+      "summaryZh": "嬴姓诸侯国。前361年秦孝公即位，任商鞅变法，迁都咸阳；前316年灭巴蜀，前278年白起拔郢，前260年长平之战大破赵军；前230—前221年秦王嬴政次第灭韩、赵、魏、楚、燕、齐，一统天下。",
+      "summaryEn": "Ying-clan state. Duke Xiao (r. 361–338 BCE) empowered Shang Yang's reforms and moved the capital to Xianyang; Qin annexed Ba and Shu (316 BCE), sacked the Chu capital Ying (278 BCE), crushed Zhao at Changping (260 BCE), and under King Zheng conquered the six rival states between 230 and 221 BCE.",
+      "rulersZh": "秦简公 → 孝公 → 惠文王 → 武王 → 昭襄王 → 孝文王 → 庄襄王 → 秦王政",
+      "rulersEn": "Duke Jian → Duke Xiao → King Huiwen → King Wu → King Zhaoxiang → King Xiaowen → King Zhuangxiang → King Zheng"
+    },
+    {
+      "key": "yan_state",
+      "zh": "燕国",
+      "en": "State of Yan",
+      "titles": [
+        "燕"
+      ],
+      "from": -403,
+      "to": -222,
+      "seatZh": "蓟",
+      "seatEn": "Ji (Beijing)",
+      "keywords": [
+        "燕",
+        "乐毅",
+        "秦开",
+        "荆轲"
+      ],
+      "aliases": [
+        "燕国"
+      ],
+      "summaryZh": "姬姓诸侯国，都蓟（今北京）。燕昭王筑台招贤，前284年乐毅合五国破齐；燕将秦开却东胡千里，置燕北五郡、筑燕北长城。前227年荆轲刺秦未遂，前226年秦破蓟，前222年燕亡。",
+      "summaryEn": "Ji-clan state ruling from Ji (modern Beijing). King Zhao recruited talent and Yue Yi led the five-state rout of Qi (284 BCE); general Qin Kai drove back the Donghu and built the northern Yan walls. After Jing Ke's failed attempt on King Zheng (227 BCE), Qin took Ji (226 BCE) and ended Yan in 222 BCE.",
+      "rulersZh": "燕湣公 → 简公 → 桓公 → 文公 → 易王 → 燕王哙 → 昭王 → 惠王 → 武成王 → 孝王 → 燕王喜",
+      "rulersEn": "Duke Min → Duke Wen → King Yi → King Kuai → King Zhao → King Hui → King Wucheng → King Xiao → King Xi"
+    },
+    {
+      "key": "zhao_state",
+      "zh": "赵国",
+      "en": "State of Zhao",
+      "titles": [
+        "赵"
+      ],
+      "from": -403,
+      "to": -222,
+      "seatZh": "中牟 → 邯郸（前386）",
+      "seatEn": "Zhongmou → Handan (386 BCE)",
+      "keywords": [
+        "赵",
+        "胡服骑射",
+        "长平",
+        "邯郸",
+        "李牧"
+      ],
+      "aliases": [
+        "赵国"
+      ],
+      "summaryZh": "三家分晋所立，前403年列为诸侯，前386年定都邯郸。赵武灵王推行胡服骑射，前296年灭中山；前260年长平之战惨败于秦；前228年秦破邯郸，公子嘉奔代称王，前222年亡。",
+      "summaryEn": "Founded from the partition of Jin and recognized in 403 BCE, with its capital at Handan from 386 BCE. King Wuling's cavalry reforms let Zhao annex Zhongshan (296 BCE), but it was shattered by Qin at Changping (260 BCE). Handan fell in 228 BCE; Prince Jia held out as King of Dai until 222 BCE.",
+      "rulersZh": "赵烈侯 → 武公 → 敬侯 → 成侯 → 肃侯 → 武灵王 → 惠文王 → 孝成王 → 悼襄王 → 幽缪王 → 代王嘉",
+      "rulersEn": "Marquis Lie → Marquis Jing → Marquis Cheng → Marquis Su → King Wuling → King Huiwen → King Xiaocheng → King Daoxiang → King Youmiu → King Jia of Dai"
+    },
+    {
+      "key": "qi_state",
+      "zh": "齐国（田齐）",
+      "en": "State of Qi",
+      "titles": [
+        "齐"
+      ],
+      "from": -403,
+      "to": -221,
+      "seatZh": "临淄",
+      "seatEn": "Linzi",
+      "keywords": [
+        "齐",
+        "孙膑",
+        "稷下",
+        "田单",
+        "乐毅"
+      ],
+      "aliases": [
+        "齐国",
+        "田齐"
+      ],
+      "summaryZh": "前386年田和代姜齐为侯，史称田齐，都临淄，稷下学宫盛极一时。齐威王用孙膑于桂陵（前353）、马陵（前341）大破魏军；前284年乐毅率五国伐齐，几至亡国，田单以即墨复国；前221年秦军入临淄，齐王建降。",
+      "summaryEn": "Tian-clan Qi replaced the Jiang lords in 386 BCE and ruled from Linzi, home of the Jixia Academy. Sun Bin's victories at Guiling (353 BCE) and Maling (341 BCE) broke Wei; Yue Yi's five-state invasion of 284 BCE nearly destroyed Qi until Tian Dan's restoration from Jimo; King Jian surrendered to Qin in 221 BCE.",
+      "rulersZh": "齐太公田和 → 桓公午 → 威王 → 宣王 → 湣王 → 襄王 → 齐王建",
+      "rulersEn": "Duke Tai (Tian He) → Duke Huan → King Wei → King Xuan → King Min → King Xiang → King Jian"
+    },
+    {
+      "key": "xichu",
+      "zh": "西楚",
+      "en": "Western Chu",
+      "titles": [
+        "西楚（项羽）"
+      ],
+      "from": -206,
+      "to": -202,
+      "matchFrom": -207,
+      "seatZh": "彭城（徐州）",
+      "seatEn": "Pengcheng (Xuzhou)",
+      "rulersZh": "西楚霸王项羽（项籍）",
+      "rulersEn": "Hegemon-King Xiang Yu",
+      "keywords": [
+        "西楚",
+        "项羽",
+        "鸿门宴",
+        "彭城",
+        "鸿沟",
+        "垓下"
+      ],
+      "aliases": [
+        "西楚霸王",
+        "楚霸王"
+      ],
+      "summaryZh": "前207年项羽巨鹿之战破釜沉舟歼灭秦军主力，前206年入咸阳分封十八诸侯，自立为西楚霸王，王梁楚九郡，定都彭城。楚汉战争中彭城之战以三万骑大破汉军五十六万，然久战失援，前202年垓下之战十面埋伏败亡，乌江自刎。",
+      "summaryEn": "After shattering the main Qin army at Julu (207 BCE), Xiang Yu entered Xianyang in 206 BCE, enfeoffed the Eighteen Kingdoms, and proclaimed himself Hegemon-King of Western Chu at Pengcheng. Despite routing Liu Bang at Pengcheng (205 BCE), he was encircled at Gaixia in 202 BCE and took his own life at the Wu River."
+    },
+    {
+      "key": "nanyue",
+      "zh": "南越国",
+      "en": "Nanyue Kingdom",
+      "titles": [
+        "南越（赵佗）"
+      ],
+      "from": -204,
+      "to": -111,
+      "matchFrom": -206,
+      "seatZh": "番禺（广州）",
+      "seatEn": "Panyu (Guangzhou)",
+      "rulersZh": "武王赵佗 → 文王赵眜 → 明王赵婴齐 → 哀王赵兴 → 赵建德",
+      "rulersEn": "Zhao Tuo → Zhao Mo → Zhao Yingqi → Zhao Xing → Zhao Jiande",
+      "keywords": [
+        "南越",
+        "赵佗",
+        "番禺",
+        "路博德"
+      ],
+      "aliases": [
+        "南越",
+        "赵氏南越"
+      ],
+      "summaryZh": "秦南海郡尉赵佗于秦末绝道聚兵，前204年兼并桂林、象郡建立南越国，定都番禺（今广州），“和集百越”推行汉越融合。汉高祖、汉文帝两遣陆贾使粤，赵佗去帝号奉汉正朔；前111年汉武帝遣路博德、杨仆平南越，置南海等九郡。",
+      "summaryEn": "Founded in 204 BCE by former Qin magistrate Zhao Tuo with its capital at Panyu (Guangzhou), Nanyue united the Baiyue peoples and accepted Han suzerainty after Lu Jia's embassies. In 111 BCE Emperor Wu of Han sent Lu Bode and Yang Pu to conquer Nanyue and establish nine commanderies."
+    },
+    {
+      "key": "xiyu_duhufu",
+      "zh": "西域都护府",
+      "en": "Protectorate of the Western Regions",
+      "titles": [
+        "西域都护府",
+        "西域都护（伊吾·南道）"
+      ],
+      "from": -60,
+      "to": 188,
+      "seatZh": "乌垒城（轮台）→ 它乾城（龟兹）→ 柳中（西域长史府）",
+      "seatEn": "Wulei (Luntai) → Taqian (Kucha) → Liuzhong",
+      "rulersZh": "郑吉（首任都护）→ 段会宗 → 郭舜 → 李崇 → 陈睦 → 班超 → 任尚 → 段禧 → 班勇（西域长史）",
+      "rulersEn": "Zheng Ji (First Protector-General) → Duan Huizong → Ban Chao → Ren Shang → Ban Yong (Chief Clerk)",
+      "keywords": [
+        "西域都护",
+        "郑吉",
+        "乌垒",
+        "段会宗",
+        "班超",
+        "甘英",
+        "班勇"
+      ],
+      "aliases": [
+        "西域都护",
+        "西域长史府"
+      ],
+      "summaryZh": "前60年（汉宣帝神爵二年）匈奴日逐王降汉，郑吉并护车师以西北道与南道，始置西域都护府于乌垒城，统辖西域三十六国，西域正式纳入中国版图。新莽末年中断；东汉永平、永元年间班超“投笔从戎”经营西域三十一年，91年复任西域都护驻龟兹它乾城，遣甘英使大秦；后改由西域长史班勇等驻柳中统辖。",
+      "summaryEn": "Established in 60 BCE under Emperor Xuan with Zheng Ji as first Protector-General at Wulei (Luntai) over both routes of the Tarim Basin, bringing the Western Regions into Han administration. Interrupted after the Xin dynasty, it was restored by Ban Chao during his thirty-one-year mission (appointed Protector-General at Kucha in 91 CE) and continued under his son Ban Yong at Liuzhong."
+    },
+    {
+      "key": "xin_wangmang",
+      "zh": "新朝",
+      "en": "Xin Dynasty",
+      "titles": [
+        "新（王莽）"
+      ],
+      "from": 9,
+      "to": 23,
+      "matchFrom": 8,
+      "seatZh": "常安（长安）",
+      "seatEn": "Chang'an",
+      "rulersZh": "新始建国皇帝王莽",
+      "rulersEn": "Wang Mang",
+      "keywords": [
+        "王莽",
+        "新朝",
+        "昆阳",
+        "绿林",
+        "更始"
+      ],
+      "aliases": [
+        "新莽",
+        "王莽新朝"
+      ],
+      "summaryZh": "西汉外戚大司马王莽于公元8年底（初始元年）逼孺子婴禅让，建国号“新”，改长安曰常安。托古改制推行王田私属、五均六筦、屡改币制，并贬西域、匈奴与高句丽封号引发四夷交怨；天凤、地皇年间绿林、赤眉大起义爆发，23年昆阳之战主力覆灭，绿林军攻入长安诛王莽，新亡。",
+      "summaryEn": "In 8–9 CE the Han regent Wang Mang took the throne and proclaimed the Xin dynasty at Chang'an. His sweeping archaic reforms — nationalizing land as \"King's Fields\", state monopolies and repeated currency overhauls — along with frontier wars provoked the Lulin and Red Eyebrows uprisings; after his main army was crushed by Liu Xiu at Kunyang in 23 CE, rebels stormed Chang'an and killed Wang Mang."
+    },
+    {
+      "key": "chengjia",
+      "zh": "成家",
+      "en": "Chengjia (Gongsun Shu)",
+      "titles": [
+        "成家（公孙述）"
+      ],
+      "from": 25,
+      "to": 36,
+      "matchFrom": 23,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
+      "rulersZh": "成家皇帝公孙述（建元龙兴）",
+      "rulersEn": "Gongsun Shu",
+      "keywords": [
+        "成家",
+        "公孙述",
+        "吴汉",
+        "白帝城"
+      ],
+      "aliases": [
+        "公孙述政权",
+        "大成（公孙述）"
+      ],
+      "summaryZh": "新莽末年导江卒正公孙述据益州保境，24年自称蜀王，於鱼复筑白帝城扼守三峡；25年四月于成都称天子，国号“成家”，建元龙兴，蜀中免于战乱十余年。36年东汉光武帝遣大司马吴汉、岑彭水陆入蜀攻克成都，公孙述重伤战死。",
+      "summaryEn": "Holding Sichuan as the Xin dynasty collapsed, Gongsun Shu fortified Baidicheng at the Three Gorges and proclaimed himself Emperor of Chengjia at Chengdu in 25 CE, keeping Sichuan prosperous for over a decade until Emperor Guangwu's general Wu Han captured Chengdu in 36 CE."
+    },
+    {
+      "key": "gongsun_liaodong",
+      "zh": "辽东公孙氏（燕）",
+      "en": "Gongsun Clan of Liaodong (Yan)",
+      "titles": [
+        "公孙氏(辽东)",
+        "燕（公孙氏辽东）"
+      ],
+      "from": 189,
+      "to": 238,
+      "seatZh": "襄平（辽阳）",
+      "seatEn": "Xiangping (Liaoyang)",
+      "rulersZh": "公孙度 → 公孙康 → 公孙恭 → 燕王公孙渊",
+      "rulersEn": "Gongsun Du → Gongsun Kang → Gongsun Gong → Gongsun Yuan",
+      "keywords": [
+        "公孙度",
+        "公孙康",
+        "公孙渊",
+        "襄平",
+        "远征辽东"
+      ],
+      "aliases": [
+        "辽东公孙氏",
+        "公孙燕"
+      ],
+      "summaryZh": "189年公孙度出任辽东太守，东伐高句丽、西击乌桓，跨海收胶东，辟土设乐浪、带方二郡，割据辽东半世纪。237年公孙渊自称燕王、建元绍汉，周旋于曹魏与孙吴之间；238年太尉司马懿率魏军四万长途奔袭，围破襄平斩公孙渊，辽东平定。",
+      "summaryEn": "Appointed Grand Administrator of Liaodong in 189, Gongsun Du and his heirs held the northeast for half a century from Xiangping (Liaoyang) and established Daifang Commandery. After Gongsun Yuan proclaimed himself King of Yan in 237, Cao Wei grand commander Sima Yi marched north in 238, stormed Xiangping and ended the regime."
     },
     {
       "key": "caowei",
@@ -21676,27 +22834,55 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Built up in Jiangdong by Sun Ce and Sun Quan, Wu joined Liu Bei to defeat Cao Cao at Red Cliffs (208), seized Jing Province (219) and crushed Liu Bei at Yiling (222). Sun Quan became King of Wu in 222 and emperor at Jianye in 229; Sun Hao's misrule ended with Jin's six-pronged invasion and surrender in 280."
     },
     {
-      "key": "chenghan",
-      "zh": "成汉",
-      "en": "Cheng-Han",
+      "key": "xijin_rise",
+      "zh": "西晋（灭吴前）",
+      "en": "Western Jin (Pre-Unification)",
       "titles": [
-        "成汉"
+        "晋"
       ],
-      "from": 304,
-      "to": 347,
-      "seatZh": "成都",
-      "seatEn": "Chengdu",
+      "from": 265,
+      "to": 280,
+      "matchTo": 279,
+      "seatZh": "洛阳",
+      "seatEn": "Luoyang",
+      "rulersZh": "晋武帝司马炎",
+      "rulersEn": "Emperor Wu (Sima Yan)",
       "keywords": [
-        "成汉",
-        "李雄",
-        "李特",
-        "李势"
+        "司马炎",
+        "代魏建晋",
+        "羊祜",
+        "杜预",
+        "王濬",
+        "三国归晋"
       ],
       "aliases": [
-        "大成"
+        "司马晋"
       ],
-      "summaryZh": "賨人李特率流民起事，304年其子李雄据成都称王，306年称帝，国号大成；338年李寿改国号为汉，史称成汉。347年东晋桓温西征，李势出降。",
-      "summaryEn": "Founded by refugees led by the Cong chief Li Te; his son Li Xiong took Chengdu as king (304) and emperor of Great Cheng (306). Li Shou renamed the state Han in 338, and Huan Wen's Eastern Jin expedition forced Li Shi's surrender in 347."
+      "summaryZh": "263年司马昭遣邓艾、钟会灭蜀汉，265年晋王司马炎受魏元帝曹奂禅让称帝，建立西晋，定都洛阳。与江东孙吴南北对峙十五载，命羊祜、杜预镇守襄阳怀柔经略，王濬于益州大造楼船；279年底发兵二十万六路伐吴，280年克建业，三国归晋。",
+      "summaryEn": "After conquering Shu Han in 263, Sima Yan accepted Cao Wei's abdication at Luoyang in 265 to found Western Jin. Preparing for fifteen years under Yang Hu and Du Yu at Xiangyang while Wang Jun built warships in Sichuan, Jin launched a six-column invasion in late 279 and captured Jianye in 280, reunifying China."
+    },
+    {
+      "key": "qianliang",
+      "zh": "前凉",
+      "en": "Former Liang",
+      "titles": [
+        "前凉"
+      ],
+      "from": 301,
+      "to": 376,
+      "seatZh": "姑臧",
+      "seatEn": "Guzang",
+      "keywords": [
+        "前凉",
+        "张轨",
+        "张骏",
+        "张天锡",
+        "张氏据凉州"
+      ],
+      "summaryZh": "301年张轨出任凉州刺史，保境安民，中原士人避乱西奔；张氏奉晋正朔，据河西七十余年，张骏时经营高昌。376年前秦攻姑臧，张天锡出降。",
+      "summaryEn": "From 301 the governor Zhang Gui and his heirs held the Hexi Corridor from Guzang, sheltering refugees from the north and nominally loyal to Jin; Zhang Jun extended control to Gaochang. Former Qin's army took Guzang in 376 and Zhang Tianxi surrendered.",
+      "rulersZh": "武公张轨 → 元公张寔 → 成公张茂 → 文公张骏 → 桓公张重华 → 悼公张曜灵 → 张祚 → 冲公张玄靓 → 悼公张天锡",
+      "rulersEn": "Zhang Gui → Zhang Shi → Zhang Mao → Zhang Jun → Zhang Chonghua → Zhang Yaoling → Zhang Zuo → Zhang Xuanjing → Zhang Tianxi"
     },
     {
       "key": "hanzhao",
@@ -21723,264 +22909,63 @@ window.ATLAS_LORE_DATA = {
         "汉赵"
       ],
       "summaryZh": "匈奴刘渊304年在左国城称汉王，308年称帝都平阳；刘聪时311年攻破洛阳（永嘉之乱），316年陷长安灭西晋。319年刘曜迁都长安改国号赵，史称前赵；328年洛阳之战为石勒所擒，329年亡。",
-      "summaryEn": "The Xiongnu leader Liu Yuan proclaimed himself King of Han at Zuoguocheng (304) and emperor at Pingyang (308). Liu Cong's armies sacked Luoyang (311) and took Chang'an (316), ending Western Jin. Liu Yao moved to Chang'an and renamed the state Zhao (319); captured by Shi Le at Luoyang in 328, the state fell in 329."
+      "summaryEn": "The Xiongnu leader Liu Yuan proclaimed himself King of Han at Zuoguocheng (304) and emperor at Pingyang (308). Liu Cong's armies sacked Luoyang (311) and took Chang'an (316), ending Western Jin. Liu Yao moved to Chang'an and renamed the state Zhao (319); captured by Shi Le at Luoyang in 328, the state fell in 329.",
+      "rulersZh": "光文帝刘渊 → 刘和 → 昭武帝刘聪 → 隐帝刘粲 → 末主刘曜",
+      "rulersEn": "Liu Yuan → Liu He → Liu Cong → Liu Can → Liu Yao"
     },
     {
-      "key": "houzhao",
-      "zh": "后赵",
-      "en": "Later Zhao",
+      "key": "chenghan",
+      "zh": "成汉",
+      "en": "Cheng-Han",
       "titles": [
-        "后赵"
+        "成汉"
       ],
-      "from": 319,
-      "to": 351,
-      "seatZh": "襄国 → 邺（335）",
-      "seatEn": "Xiangguo → Ye (335)",
+      "from": 304,
+      "to": 347,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
       "keywords": [
-        "后赵",
-        "石勒",
-        "石虎",
-        "冉闵"
-      ],
-      "summaryZh": "羯人石勒319年在襄国称赵王，329年灭前赵统一北方大部，330年称帝。石虎335年迁都邺城；349年石虎死后诸子相残，350年冉闵篡立冉魏，351年后赵亡。",
-      "summaryEn": "The Jie warlord Shi Le proclaimed himself King of Zhao at Xiangguo (319), destroyed Former Zhao (329) and became emperor (330). Shi Hu moved the court to Ye (335); after his death (349) his sons fought each other, Ran Min seized power in 350 and Later Zhao ended in 351."
-    },
-    {
-      "key": "qianyan",
-      "zh": "前燕",
-      "en": "Former Yan",
-      "titles": [
-        "前燕"
-      ],
-      "from": 337,
-      "to": 370,
-      "seatZh": "龙城 → 蓟（350）→ 邺（357）",
-      "seatEn": "Longcheng → Ji (350) → Ye (357)",
-      "keywords": [
-        "前燕",
-        "慕容皝",
-        "慕容儁",
-        "慕容恪",
-        "枋头"
-      ],
-      "summaryZh": "鲜卑慕容皝337年称燕王，都龙城；慕容儁350年南下取蓟，352年灭冉魏称帝，357年迁都邺。369年慕容垂枋头大败桓温北伐；370年前秦王猛攻破邺城，前燕亡。",
-      "summaryEn": "Murong Huang of the Xianbei proclaimed himself King of Yan (337); Murong Jun took Ji (350), destroyed Ran Wei and became emperor (352), and moved to Ye (357). Murong Chui routed Huan Wen at Fangtou (369), but Wang Meng's Former Qin army took Ye in 370."
-    },
-    {
-      "key": "qianliang",
-      "zh": "前凉",
-      "en": "Former Liang",
-      "titles": [
-        "前凉"
-      ],
-      "from": 301,
-      "to": 376,
-      "seatZh": "姑臧",
-      "seatEn": "Guzang",
-      "keywords": [
-        "前凉",
-        "张轨",
-        "张骏",
-        "张天锡"
-      ],
-      "summaryZh": "301年张轨出任凉州刺史，保境安民，中原士人避乱西奔；张氏奉晋正朔，据河西七十余年，张骏时经营高昌。376年前秦攻姑臧，张天锡出降。",
-      "summaryEn": "From 301 the governor Zhang Gui and his heirs held the Hexi Corridor from Guzang, sheltering refugees from the north and nominally loyal to Jin; Zhang Jun extended control to Gaochang. Former Qin's army took Guzang in 376 and Zhang Tianxi surrendered."
-    },
-    {
-      "key": "qianqin",
-      "zh": "前秦",
-      "en": "Former Qin",
-      "titles": [
-        "前秦"
-      ],
-      "from": 351,
-      "to": 394,
-      "seatZh": "长安",
-      "seatEn": "Chang'an",
-      "keywords": [
-        "前秦",
-        "苻坚",
-        "苻健",
-        "王猛",
-        "淝水"
-      ],
-      "summaryZh": "氐人苻健351年据长安称天王，352年称帝。苻坚任王猛整顿内政，370年灭前燕、376年灭前凉与代，统一北方。383年淝水之战大败于东晋，北方随即分崩，385年苻坚为姚苌所杀，394年亡。",
-      "summaryEn": "The Di leader Fu Jian (the elder) seized Chang'an in 351. Fu Jian, advised by Wang Meng, destroyed Former Yan (370), Former Liang and Dai (376) to unify the north. The defeat at the Fei River (383) shattered the empire; Fu Jian was killed by Yao Chang (385) and the state ended in 394."
-    },
-    {
-      "key": "houqin",
-      "zh": "后秦",
-      "en": "Later Qin",
-      "titles": [
-        "后秦"
-      ],
-      "from": 384,
-      "to": 417,
-      "seatZh": "长安",
-      "seatEn": "Chang'an",
-      "keywords": [
-        "后秦",
-        "姚苌",
-        "姚兴",
-        "姚泓",
-        "鸠摩罗什"
-      ],
-      "summaryZh": "羌人姚苌384年叛前秦称万年秦王，386年入长安称帝。姚兴时国力最盛，迎鸠摩罗什入长安译经；417年东晋刘裕北伐攻克长安，姚泓出降。",
-      "summaryEn": "The Qiang general Yao Chang rebelled against Former Qin (384) and became emperor at Chang'an (386). Under Yao Xing the state flourished and welcomed Kumārajīva to translate sutras; Liu Yu's Eastern Jin expedition captured Chang'an in 417."
-    },
-    {
-      "key": "houyan",
-      "zh": "后燕",
-      "en": "Later Yan",
-      "titles": [
-        "后燕"
-      ],
-      "from": 384,
-      "to": 407,
-      "seatZh": "中山 → 龙城（397）",
-      "seatEn": "Zhongshan → Longcheng (397)",
-      "keywords": [
-        "后燕",
-        "慕容垂",
-        "参合陂",
-        "慕容宝"
-      ],
-      "summaryZh": "淝水战后慕容垂384年复国称燕王，386年称帝都中山。395年参合陂之战惨败于北魏，397年中山失陷，残部退守龙城，407年为冯跋等所灭。",
-      "summaryEn": "After Fei River, Murong Chui restored Yan (384) and ruled from Zhongshan as emperor (386). The disaster at Canhe Slope against Northern Wei (395) and the fall of Zhongshan (397) drove the court back to Longcheng, where Feng Ba ended it in 407."
-    },
-    {
-      "key": "xiqin",
-      "zh": "西秦",
-      "en": "Western Qin",
-      "titles": [
-        "西秦"
-      ],
-      "from": 385,
-      "to": 431,
-      "seatZh": "苑川 → 枹罕",
-      "seatEn": "Yuanchuan → Fuhan",
-      "keywords": [
-        "西秦",
-        "乞伏"
-      ],
-      "summaryZh": "陇西鲜卑乞伏国仁385年所建，据苑川、枹罕一带；400年一度为后秦所并，409年乞伏乾归复国。431年为胡夏赫连定所灭。",
-      "summaryEn": "Founded in 385 by Qifu Guoren of the Longxi Xianbei around Yuanchuan and Fuhan; absorbed by Later Qin in 400, revived by Qifu Qiangui in 409, and destroyed by Helian Ding of Hu Xia in 431."
-    },
-    {
-      "key": "houliang_lv",
-      "zh": "后凉",
-      "en": "Later Liang (Sixteen Kingdoms)",
-      "titles": [
-        "后凉"
-      ],
-      "from": 386,
-      "to": 403,
-      "seatZh": "姑臧",
-      "seatEn": "Guzang",
-      "keywords": [
-        "后凉",
-        "吕光"
-      ],
-      "summaryZh": "前秦大将吕光西征龟兹归来，闻淝水败报，386年据姑臧自立，史称后凉。境内南凉、北凉相继分立，403年吕隆降后秦。",
-      "summaryEn": "Lü Guang, returning from Former Qin's conquest of Kucha, learned of the Fei River defeat and made himself ruler at Guzang in 386. Southern and Northern Liang broke away, and Lü Long surrendered to Later Qin in 403."
-    },
-    {
-      "key": "nanliang",
-      "zh": "南凉",
-      "en": "Southern Liang",
-      "titles": [
-        "南凉"
-      ],
-      "from": 397,
-      "to": 414,
-      "seatZh": "乐都",
-      "seatEn": "Ledu",
-      "keywords": [
-        "南凉",
-        "秃发"
-      ],
-      "summaryZh": "河西鲜卑秃发乌孤397年所建，据湟水流域，都乐都，406—410年一度据姑臧。414年为西秦所灭。",
-      "summaryEn": "Founded in 397 by Tufa Wugu of the Hexi Xianbei in the Huangshui valley (capital Ledu; Guzang 406–410); destroyed by Western Qin in 414."
-    },
-    {
-      "key": "beiliang",
-      "zh": "北凉",
-      "en": "Northern Liang",
-      "titles": [
-        "北凉"
-      ],
-      "from": 397,
-      "to": 439,
-      "seatZh": "张掖 → 姑臧（412）",
-      "seatEn": "Zhangye → Guzang (412)",
-      "keywords": [
-        "北凉",
-        "沮渠"
-      ],
-      "summaryZh": "397年段业被拥立，401年卢水胡沮渠蒙逊杀段业自立，412年迁都姑臧，421年灭西凉据有河西。439年北魏太武帝攻破姑臧，北方统一，十六国时代结束。",
-      "summaryEn": "Duan Ye was enthroned in 397; Juqu Mengxun of the Lushui Hu killed him (401), moved to Guzang (412) and took Western Liang (421). Emperor Taiwu of Northern Wei captured Guzang in 439, completing the unification of the north and closing the Sixteen Kingdoms era."
-    },
-    {
-      "key": "nanyan",
-      "zh": "南燕",
-      "en": "Southern Yan",
-      "titles": [
-        "南燕"
-      ],
-      "from": 398,
-      "to": 410,
-      "seatZh": "滑台 → 广固",
-      "seatEn": "Huatai → Guanggu",
-      "keywords": [
-        "南燕",
-        "慕容德",
-        "慕容超",
-        "广固"
-      ],
-      "summaryZh": "后燕慕容德398年南迁滑台称燕王，次年移据广固（今青州）。410年东晋刘裕北伐攻破广固，慕容超被俘。",
-      "summaryEn": "Murong De of Later Yan moved south to Huatai (398) and then to Guanggu (modern Qingzhou); Liu Yu's Eastern Jin army stormed Guanggu and captured Murong Chao in 410."
-    },
-    {
-      "key": "beiyan",
-      "zh": "北燕",
-      "en": "Northern Yan",
-      "titles": [
-        "北燕"
-      ],
-      "from": 407,
-      "to": 436,
-      "seatZh": "龙城",
-      "seatEn": "Longcheng",
-      "keywords": [
-        "北燕",
-        "冯跋",
-        "冯弘"
-      ],
-      "summaryZh": "407年冯跋等推高云为主取代后燕，409年冯跋即位，都龙城（今朝阳）。436年北魏来攻，冯弘东奔高句丽，北燕亡。",
-      "summaryEn": "In 407 Feng Ba and allies replaced Later Yan with Gao Yun; Feng Ba ruled from Longcheng (modern Chaoyang) from 409. When Northern Wei attacked in 436, Feng Hong fled to Goguryeo and the state ended."
-    },
-    {
-      "key": "huxia",
-      "zh": "胡夏",
-      "en": "Hu Xia",
-      "titles": [
-        "胡夏"
-      ],
-      "from": 407,
-      "to": 431,
-      "seatZh": "统万城",
-      "seatEn": "Tongwancheng",
-      "keywords": [
-        "胡夏",
-        "赫连",
-        "统万"
+        "成汉",
+        "李雄",
+        "李特",
+        "李势"
       ],
       "aliases": [
-        "大夏",
-        "赫连夏"
+        "大成"
       ],
-      "summaryZh": "匈奴铁弗部赫连勃勃407年称天王大单于，国号大夏，413年筑统万城为都，418年一度攻取长安。427年北魏攻克统万城，431年赫连定为吐谷浑所擒，夏亡。",
-      "summaryEn": "Helian Bobo of the Tiefu Xiongnu proclaimed Great Xia in 407, built the capital Tongwancheng from 413 and briefly took Chang'an (418). Northern Wei captured Tongwan in 427, and Helian Ding was seized by the Tuyuhun in 431."
+      "summaryZh": "賨人李特率流民起事，304年其子李雄据成都称王，306年称帝，国号大成；338年李寿改国号为汉，史称成汉。347年东晋桓温西征，李势出降。",
+      "summaryEn": "Founded by refugees led by the Cong chief Li Te; his son Li Xiong took Chengdu as king (304) and emperor of Great Cheng (306). Li Shou renamed the state Han in 338, and Huan Wen's Eastern Jin expedition forced Li Shi's surrender in 347.",
+      "rulersZh": "景帝李特 → 武帝李雄 → 哀帝李班 → 幽公李期 → 昭文帝李寿 → 末主李势",
+      "rulersEn": "Li Te → Li Xiong → Li Ban → Li Qi → Li Shou → Li Shi"
+    },
+    {
+      "key": "tuyuhun",
+      "zh": "吐谷浑",
+      "en": "Tuyuhun Kingdom",
+      "titles": [
+        "吐谷浑",
+        "吐谷浑（唐册封诺曷钵）"
+      ],
+      "from": 313,
+      "to": 663,
+      "matchTo": 670,
+      "seatZh": "伏俟城（青海湖西）",
+      "seatEn": "Fusi City (west of Qinghai Lake)",
+      "rulersZh": "慕容吐谷浑 → 夸吕 → 伏允 → 慕容顺 → 乌地也拔勒豆可汗诺曷钵",
+      "rulersEn": "Murong Tuyuhun → Kualü → Fuyun → Murong Shun → Nuohebo",
+      "keywords": [
+        "吐谷浑",
+        "伏允",
+        "诺曷钵",
+        "伏俟城",
+        "大非川"
+      ],
+      "aliases": [
+        "阿柴虏",
+        "慕容吐谷浑"
+      ],
+      "summaryZh": "辽东鲜卑慕容吐谷浑西迁甘青草原所建政权，据有青海、柴达木与河湟之地，都伏俟城，扼丝路青海道。609年隋炀帝西征曾置西海等四郡；635年唐将李靖西征迫伏允可汗降唐，唐册封诺曷钵为河源郡王、尚弘化公主。663年为吐蕃所并，670年薛仁贵大非川护送复国失利，诺曷钵率部内迁灵州。",
+      "summaryEn": "Founded by Murong Tuyuhun of the Xianbei on the Qinghai plateau with its capital at Fusi City west of Qinghai Lake, controlling the southern Silk Road bypass. After Li Jing's 635 expedition, Tang invested Khan Nuohebo and married him to Princess Honghua; Tibet conquered Tuyuhun in 663 and defeated Xue Rengui's restoration army at Dafeichuan in 670."
     },
     {
       "key": "daiguo",
@@ -22003,7 +22988,194 @@ window.ATLAS_LORE_DATA = {
         "拓跋代"
       ],
       "summaryZh": "鲜卑拓跋部首领猗卢315年受西晋封为代王；什翼犍时置百官、定都盛乐。376年为前秦所灭，386年其孙拓跋珪复国，改称魏（北魏）。",
-      "summaryEn": "In 315 Western Jin enfeoffed the Tuoba Xianbei chief Yilu as King of Dai; Shiyijian organized a court at Shengle. Former Qin destroyed Dai in 376, and his grandson Tuoba Gui restored it in 386 as Wei (Northern Wei)."
+      "summaryEn": "In 315 Western Jin enfeoffed the Tuoba Xianbei chief Yilu as King of Dai; Shiyijian organized a court at Shengle. Former Qin destroyed Dai in 376, and his grandson Tuoba Gui restored it in 386 as Wei (Northern Wei).",
+      "rulersZh": "代穆帝拓跋猗卢 → 平文帝拓跋郁律 → 惠帝拓跋贺傉 → 炀帝拓跋纥那 → 烈帝拓跋翳槐 → 昭成帝拓跋什翼犍",
+      "rulersEn": "Tuoba Yilu → Tuoba Yulü → Tuoba Heru → Tuoba Hena → Tuoba Yihuai → Tuoba Shiyijian"
+    },
+    {
+      "key": "houzhao",
+      "zh": "后赵",
+      "en": "Later Zhao",
+      "titles": [
+        "后赵"
+      ],
+      "from": 319,
+      "to": 351,
+      "seatZh": "襄国 → 邺（335）",
+      "seatEn": "Xiangguo → Ye (335)",
+      "keywords": [
+        "后赵",
+        "石勒",
+        "石虎",
+        "冉闵"
+      ],
+      "summaryZh": "羯人石勒319年在襄国称赵王，329年灭前赵统一北方大部，330年称帝。石虎335年迁都邺城；349年石虎死后诸子相残，350年冉闵篡立冉魏，351年后赵亡。",
+      "summaryEn": "The Jie warlord Shi Le proclaimed himself King of Zhao at Xiangguo (319), destroyed Former Zhao (329) and became emperor (330). Shi Hu moved the court to Ye (335); after his death (349) his sons fought each other, Ran Min seized power in 350 and Later Zhao ended in 351.",
+      "rulersZh": "明帝石勒 → 海阳王石弘 → 武帝石虎 → 石世 → 石遵 → 石鉴 → 末主石祗",
+      "rulersEn": "Shi Le → Shi Hong → Shi Hu → Shi Shi → Shi Zun → Shi Jian → Shi Zhi"
+    },
+    {
+      "key": "qianyan",
+      "zh": "前燕",
+      "en": "Former Yan",
+      "titles": [
+        "前燕"
+      ],
+      "from": 337,
+      "to": 370,
+      "seatZh": "龙城 → 蓟（350）→ 邺（357）",
+      "seatEn": "Longcheng → Ji (350) → Ye (357)",
+      "keywords": [
+        "前燕",
+        "慕容廆",
+        "慕容皝",
+        "慕容儁",
+        "慕容恪",
+        "枋头"
+      ],
+      "summaryZh": "鲜卑慕容皝337年称燕王，都龙城；慕容儁350年南下取蓟，352年灭冉魏称帝，357年迁都邺。369年慕容垂枋头大败桓温北伐；370年前秦王猛攻破邺城，前燕亡。",
+      "summaryEn": "Murong Huang of the Xianbei proclaimed himself King of Yan (337); Murong Jun took Ji (350), destroyed Ran Wei and became emperor (352), and moved to Ye (357). Murong Chui routed Huan Wen at Fangtou (369), but Wang Meng's Former Qin army took Ye in 370.",
+      "matchFrom": 316,
+      "rulersZh": "武宣帝慕容廆 → 文明帝慕容皝 → 景昭帝慕容儁 → 幽帝慕容暐",
+      "rulersEn": "Murong Hui → Murong Huang → Murong Jun → Murong Wei"
+    },
+    {
+      "key": "ranwei",
+      "zh": "冉魏",
+      "en": "Ran Wei",
+      "titles": [
+        "冉魏"
+      ],
+      "from": 350,
+      "to": 352,
+      "seatZh": "邺（河北临漳）",
+      "seatEn": "Ye",
+      "rulersZh": "武悼天王冉闵",
+      "rulersEn": "Ran Min",
+      "keywords": [
+        "冉魏",
+        "冉闵",
+        "杀胡令",
+        "慕容儁",
+        "传国玺"
+      ],
+      "aliases": [
+        "冉闵政权"
+      ],
+      "summaryZh": "后赵武帝石虎养孙冉闵于349年石氏内乱中掌兵，颁布“杀胡令”；350年于邺城称帝，复姓冉，国号大魏，史称冉魏。351年攻灭后赵残部石祗于襄国；352年与前燕慕容儁、慕容恪决战于廉台被擒遇害，邺城守将奉传国玉玺南归东晋。",
+      "summaryEn": "Adopted into the Later Zhao royal house, general Ran Min seized power amid the 349 succession war and proclaimed the Wei state (Ran Wei) at Ye in 350. He eliminated the last Later Zhao claimant at Xiangguo in 351, but in 352 Former Yan forces under Murong Ke captured him at Liantai and took Ye, while the Heirloom Seal was returned to Eastern Jin."
+    },
+    {
+      "key": "qianqin",
+      "zh": "前秦",
+      "en": "Former Qin",
+      "titles": [
+        "前秦"
+      ],
+      "from": 351,
+      "to": 394,
+      "seatZh": "长安",
+      "seatEn": "Chang'an",
+      "keywords": [
+        "前秦",
+        "苻坚",
+        "苻健",
+        "王猛",
+        "淝水"
+      ],
+      "summaryZh": "氐人苻健351年据长安称天王，352年称帝。苻坚任王猛整顿内政，370年灭前燕、376年灭前凉与代，统一北方。383年淝水之战大败于东晋，北方随即分崩，385年苻坚为姚苌所杀，394年亡。",
+      "summaryEn": "The Di leader Fu Jian (the elder) seized Chang'an in 351. Fu Jian, advised by Wang Meng, destroyed Former Yan (370), Former Liang and Dai (376) to unify the north. The defeat at the Fei River (383) shattered the empire; Fu Jian was killed by Yao Chang (385) and the state ended in 394.",
+      "rulersZh": "景明帝苻健 → 厉王苻生 → 宣昭帝苻坚 → 哀平帝苻丕 → 高帝苻登 → 末主苻崇",
+      "rulersEn": "Fu Jian (elder) → Fu Sheng → Fu Jian → Fu Pi → Fu Deng → Fu Chong"
+    },
+    {
+      "key": "houyan",
+      "zh": "后燕",
+      "en": "Later Yan",
+      "titles": [
+        "后燕"
+      ],
+      "from": 384,
+      "to": 407,
+      "seatZh": "中山 → 龙城（397）",
+      "seatEn": "Zhongshan → Longcheng (397)",
+      "keywords": [
+        "后燕",
+        "慕容垂",
+        "参合陂",
+        "慕容宝",
+        "冯跋"
+      ],
+      "summaryZh": "淝水战后慕容垂384年复国称燕王，386年称帝都中山。395年参合陂之战惨败于北魏，397年中山失陷，残部退守龙城，407年为冯跋等所灭。",
+      "summaryEn": "After Fei River, Murong Chui restored Yan (384) and ruled from Zhongshan as emperor (386). The disaster at Canhe Slope against Northern Wei (395) and the fall of Zhongshan (397) drove the court back to Longcheng, where Feng Ba ended it in 407.",
+      "rulersZh": "成武帝慕容垂 → 惠愍帝慕容宝 → 昭武帝慕容盛 → 昭文帝慕容熙",
+      "rulersEn": "Murong Chui → Murong Bao → Murong Sheng → Murong Xi"
+    },
+    {
+      "key": "houqin",
+      "zh": "后秦",
+      "en": "Later Qin",
+      "titles": [
+        "后秦"
+      ],
+      "from": 384,
+      "to": 417,
+      "seatZh": "长安",
+      "seatEn": "Chang'an",
+      "keywords": [
+        "后秦",
+        "姚苌",
+        "姚兴",
+        "姚泓",
+        "鸠摩罗什"
+      ],
+      "summaryZh": "羌人姚苌384年叛前秦称万年秦王，386年入长安称帝。姚兴时国力最盛，迎鸠摩罗什入长安译经；417年东晋刘裕北伐攻克长安，姚泓出降。",
+      "summaryEn": "The Qiang general Yao Chang rebelled against Former Qin (384) and became emperor at Chang'an (386). Under Yao Xing the state flourished and welcomed Kumārajīva to translate sutras; Liu Yu's Eastern Jin expedition captured Chang'an in 417.",
+      "rulersZh": "武昭帝姚苌 → 文桓帝姚兴 → 末主姚泓",
+      "rulersEn": "Yao Chang → Yao Xing → Yao Hong"
+    },
+    {
+      "key": "xiqin",
+      "zh": "西秦",
+      "en": "Western Qin",
+      "titles": [
+        "西秦"
+      ],
+      "from": 385,
+      "to": 431,
+      "seatZh": "苑川 → 枹罕",
+      "seatEn": "Yuanchuan → Fuhan",
+      "keywords": [
+        "西秦",
+        "乞伏"
+      ],
+      "summaryZh": "陇西鲜卑乞伏国仁385年所建，据苑川、枹罕一带；400年一度为后秦所并，409年乞伏乾归复国。431年为胡夏赫连定所灭。",
+      "summaryEn": "Founded in 385 by Qifu Guoren of the Longxi Xianbei around Yuanchuan and Fuhan; absorbed by Later Qin in 400, revived by Qifu Qiangui in 409, and destroyed by Helian Ding of Hu Xia in 431.",
+      "rulersZh": "宣烈王乞伏国仁 → 武元王乞伏乾归 → 文昭王乞伏炽盘 → 末主乞伏暮末",
+      "rulersEn": "Qifu Guoren → Qifu Qiangui → Qifu Chipan → Qifu Mumo"
+    },
+    {
+      "key": "houliang_lv",
+      "zh": "后凉",
+      "en": "Later Liang (Sixteen Kingdoms)",
+      "titles": [
+        "后凉"
+      ],
+      "from": 386,
+      "to": 403,
+      "seatZh": "姑臧",
+      "seatEn": "Guzang",
+      "keywords": [
+        "后凉",
+        "吕光",
+        "吕隆",
+        "段业"
+      ],
+      "summaryZh": "前秦大将吕光西征龟兹归来，闻淝水败报，386年据姑臧自立，史称后凉。境内南凉、北凉相继分立，403年吕隆降后秦。",
+      "summaryEn": "Lü Guang, returning from Former Qin's conquest of Kucha, learned of the Fei River defeat and made himself ruler at Guzang in 386. Southern and Northern Liang broke away, and Lü Long surrendered to Later Qin in 403.",
+      "matchFrom": 384,
+      "rulersZh": "懿武帝吕光 → 隐王吕绍 → 灵帝吕纂 → 末主吕隆",
+      "rulersEn": "Lü Guang → Lü Shao → Lü Zuan → Lü Long"
     },
     {
       "key": "beiwei",
@@ -22033,84 +23205,141 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Tuoba Gui restored the Tuoba state as Wei in 386 and moved to Pingcheng as emperor (398). Emperor Taiwu conquered Hu Xia, Northern Yan and Northern Liang, unifying the north in 439; Emperor Xiaowen moved the capital to Luoyang (494) and pursued sweeping sinicization. After the Six Garrisons revolt (523) and Erzhu Rong's dominance, Emperor Xiaowu fled west to Yuwen Tai in 534 and the state split into Eastern and Western Wei."
     },
     {
-      "key": "dongwei",
-      "zh": "东魏",
-      "en": "Eastern Wei",
+      "key": "nanliang",
+      "zh": "南凉",
+      "en": "Southern Liang",
       "titles": [
-        "东魏"
+        "南凉"
       ],
-      "from": 534,
-      "to": 550,
-      "seatZh": "邺",
-      "seatEn": "Ye",
+      "from": 397,
+      "to": 414,
+      "seatZh": "乐都",
+      "seatEn": "Ledu",
       "keywords": [
-        "东魏",
-        "高欢",
-        "高澄",
-        "玉璧"
+        "南凉",
+        "秃发"
       ],
-      "summaryZh": "534年高欢立元善见为帝，迁都邺城，实权尽在高氏。与西魏连年交战，沙苑（537）、邙山（543）、玉璧（546）诸役互有胜负；550年高洋废帝自立，建北齐。",
-      "summaryEn": "Gao Huan enthroned Yuan Shanjian at Ye in 534 while keeping real power. Constant war with Western Wei — Shayuan (537), Mangshan (543), Yubi (546) — ended when Gao Yang deposed the emperor and founded Northern Qi in 550."
+      "summaryZh": "河西鲜卑秃发乌孤397年所建，据湟水流域，都乐都，406—410年一度据姑臧。414年为西秦所灭。",
+      "summaryEn": "Founded in 397 by Tufa Wugu of the Hexi Xianbei in the Huangshui valley (capital Ledu; Guzang 406–410); destroyed by Western Qin in 414.",
+      "rulersZh": "武王秃发乌孤 → 康王秃发利鹿孤 → 景王秃发傉檀",
+      "rulersEn": "Tufa Wugu → Tufa Lilugu → Tufa Rutan"
     },
     {
-      "key": "xiwei",
-      "zh": "西魏",
-      "en": "Western Wei",
+      "key": "beiliang",
+      "zh": "北凉",
+      "en": "Northern Liang",
       "titles": [
-        "西魏"
+        "北凉"
       ],
-      "from": 535,
-      "to": 557,
-      "seatZh": "长安",
-      "seatEn": "Chang'an",
+      "from": 397,
+      "to": 439,
+      "seatZh": "张掖 → 姑臧（412）",
+      "seatEn": "Zhangye → Guzang (412)",
       "keywords": [
-        "西魏",
-        "宇文泰",
-        "府兵"
+        "北凉",
+        "沮渠",
+        "段业",
+        "天梯山"
       ],
-      "summaryZh": "535年宇文泰拥立元宝炬于长安，创立府兵制，任苏绰改制，奠定关陇集团基础。553年取巴蜀，554年攻破江陵；557年宇文觉代魏建北周。",
-      "summaryEn": "Yuwen Tai enthroned Yuan Baoju at Chang'an in 535 and built the fubing militia system and Su Chuo's reforms — the foundation of the Guanlong aristocracy. Western Wei took Sichuan (553) and sacked Jiangling (554) before Yuwen Jue founded Northern Zhou in 557."
+      "summaryZh": "397年段业被拥立，401年卢水胡沮渠蒙逊杀段业自立，412年迁都姑臧，421年灭西凉据有河西。439年北魏太武帝攻破姑臧，北方统一，十六国时代结束。",
+      "summaryEn": "Duan Ye was enthroned in 397; Juqu Mengxun of the Lushui Hu killed him (401), moved to Guzang (412) and took Western Liang (421). Emperor Taiwu of Northern Wei captured Guzang in 439, completing the unification of the north and closing the Sixteen Kingdoms era.",
+      "rulersZh": "段业 → 武宣王沮渠蒙逊 → 哀王沮渠牧犍",
+      "rulersEn": "Duan Ye → Juqu Mengxun → Juqu Mujian"
     },
     {
-      "key": "beiqi",
-      "zh": "北齐",
-      "en": "Northern Qi",
+      "key": "nanyan",
+      "zh": "南燕",
+      "en": "Southern Yan",
       "titles": [
-        "北齐"
+        "南燕"
       ],
-      "from": 550,
-      "to": 577,
-      "seatZh": "邺（晋阳为别都）",
-      "seatEn": "Ye (Jinyang as secondary capital)",
+      "from": 398,
+      "to": 410,
+      "seatZh": "滑台 → 广固",
+      "seatEn": "Huatai → Guanggu",
       "keywords": [
-        "北齐",
-        "高洋",
-        "高纬",
-        "兰陵王",
-        "斛律光"
+        "南燕",
+        "慕容德",
+        "慕容超",
+        "广固",
+        "滑台"
       ],
-      "summaryZh": "550年高洋代东魏称帝，都邺，以晋阳为霸府。初期国力强盛，后主高纬昏乱，诛杀斛律光、兰陵王高长恭等名将；577年北周武帝攻破邺城，北齐亡。",
-      "summaryEn": "Gao Yang replaced Eastern Wei in 550, ruling from Ye with Jinyang as the military seat. Strong at first, the state decayed under Gao Wei, who executed the generals Hulü Guang and Gao Changgong (Prince of Lanling); Emperor Wu of Northern Zhou took Ye in 577."
+      "summaryZh": "后燕慕容德398年南迁滑台称燕王，次年移据广固（今青州）。410年东晋刘裕北伐攻破广固，慕容超被俘。",
+      "summaryEn": "Murong De of Later Yan moved south to Huatai (398) and then to Guanggu (modern Qingzhou); Liu Yu's Eastern Jin army stormed Guanggu and captured Murong Chao in 410.",
+      "rulersZh": "献武帝慕容德 → 末主慕容超",
+      "rulersEn": "Murong De → Murong Chao"
     },
     {
-      "key": "beizhou",
-      "zh": "北周",
-      "en": "Northern Zhou",
+      "key": "qiaoshu",
+      "zh": "谯蜀",
+      "en": "Western Shu (Qiao Shu)",
       "titles": [
-        "北周"
+        "谯蜀"
       ],
-      "from": 557,
-      "to": 581,
-      "seatZh": "长安",
-      "seatEn": "Chang'an",
+      "from": 405,
+      "to": 413,
+      "matchFrom": 404,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
+      "rulersZh": "成都王谯纵",
+      "rulersEn": "Qiao Zong",
       "keywords": [
-        "北周",
-        "宇文",
-        "周武帝",
-        "杨坚"
+        "谯蜀",
+        "谯纵",
+        "朱龄石"
       ],
-      "summaryZh": "557年宇文觉代西魏称天王，国号周。周武帝宇文邕诛宇文护亲政，574年禁佛道，577年灭北齐统一北方；宣帝早逝后外戚杨坚辅政，581年受禅建隋。",
-      "summaryEn": "Yuwen Jue replaced Western Wei in 557. Emperor Wu (Yuwen Yong) took power from Yuwen Hu, suppressed Buddhism and Daoism (574) and destroyed Northern Qi in 577, unifying the north; after Emperor Xuan's early death the regent Yang Jian founded Sui in 581."
+      "aliases": [
+        "西蜀（谯纵）"
+      ],
+      "summaryZh": "405年东晋益州兵不愿东下讨桓振而哗变，胁迫安西府参军谯纵为主，攻占成都自称成都王，史称谯蜀，后向后秦姚兴称藩。413年刘裕遣朱龄石以“函中密诏”奇兵直趋成都外水，谯纵兵败自缢，巴蜀复归东晋。",
+      "summaryEn": "In 405 mutinous Eastern Jin troops in Sichuan forced the advisor Qiao Zong to lead them; he seized Chengdu as Prince of Chengdu and became a vassal of Later Qin. In 413 Liu Yu dispatched Zhu Lingshi with sealed orders to strike directly at Chengdu via the Min River, and Qiao Zong took his own life."
+    },
+    {
+      "key": "huxia",
+      "zh": "胡夏",
+      "en": "Hu Xia",
+      "titles": [
+        "胡夏"
+      ],
+      "from": 407,
+      "to": 431,
+      "seatZh": "统万城",
+      "seatEn": "Tongwancheng",
+      "keywords": [
+        "胡夏",
+        "赫连",
+        "统万"
+      ],
+      "aliases": [
+        "大夏",
+        "赫连夏"
+      ],
+      "summaryZh": "匈奴铁弗部赫连勃勃407年称天王大单于，国号大夏，413年筑统万城为都，418年一度攻取长安。427年北魏攻克统万城，431年赫连定为吐谷浑所擒，夏亡。",
+      "summaryEn": "Helian Bobo of the Tiefu Xiongnu proclaimed Great Xia in 407, built the capital Tongwancheng from 413 and briefly took Chang'an (418). Northern Wei captured Tongwan in 427, and Helian Ding was seized by the Tuyuhun in 431.",
+      "rulersZh": "武烈帝赫连勃勃 → 赫连昌 → 赫连定",
+      "rulersEn": "Helian Bobo → Helian Chang → Helian Ding"
+    },
+    {
+      "key": "beiyan",
+      "zh": "北燕",
+      "en": "Northern Yan",
+      "titles": [
+        "北燕"
+      ],
+      "from": 407,
+      "to": 436,
+      "seatZh": "龙城",
+      "seatEn": "Longcheng",
+      "keywords": [
+        "北燕",
+        "冯跋",
+        "冯弘",
+        "高云"
+      ],
+      "summaryZh": "407年冯跋等推高云为主取代后燕，409年冯跋即位，都龙城（今朝阳）。436年北魏来攻，冯弘东奔高句丽，北燕亡。",
+      "summaryEn": "In 407 Feng Ba and allies replaced Later Yan with Gao Yun; Feng Ba ruled from Longcheng (modern Chaoyang) from 409. When Northern Wei attacked in 436, Feng Hong fled to Goguryeo and the state ended.",
+      "rulersZh": "惠懿帝高云 → 文成帝冯跋 → 昭成帝冯弘",
+      "rulersEn": "Gao Yun → Feng Ba → Feng Hong"
     },
     {
       "key": "liusong",
@@ -22195,28 +23424,64 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Xiao Yan founded Liang in 502 and reigned nearly half a century as a patron of Buddhism and learning. Hou Jing's rebellion (548) took Jiankang and the emperor starved in the palace; Emperor Yuan ruled from Jiangling until Western Wei sacked it (554), and Chen Baxian founded Chen in 557."
     },
     {
-      "key": "nanchen",
-      "zh": "陈",
-      "en": "Chen",
+      "key": "dongwei",
+      "zh": "东魏",
+      "en": "Eastern Wei",
       "titles": [
-        "陈"
+        "东魏"
       ],
-      "from": 557,
-      "to": 589,
-      "seatZh": "建康",
-      "seatEn": "Jiankang",
+      "from": 534,
+      "to": 550,
+      "seatZh": "邺",
+      "seatEn": "Ye",
       "keywords": [
-        "陈霸先",
-        "陈后主",
-        "陈宣帝",
-        "太建"
+        "东魏",
+        "高欢",
+        "高澄",
+        "玉璧"
       ],
-      "aliases": [
-        "南朝陈",
-        "南陈"
+      "summaryZh": "534年高欢立元善见为帝，迁都邺城，实权尽在高氏。与西魏连年交战，沙苑（537）、邙山（543）、玉璧（546）诸役互有胜负；550年高洋废帝自立，建北齐。",
+      "summaryEn": "Gao Huan enthroned Yuan Shanjian at Ye in 534 while keeping real power. Constant war with Western Wei — Shayuan (537), Mangshan (543), Yubi (546) — ended when Gao Yang deposed the emperor and founded Northern Qi in 550."
+    },
+    {
+      "key": "xiwei",
+      "zh": "西魏",
+      "en": "Western Wei",
+      "titles": [
+        "西魏"
       ],
-      "summaryZh": "557年陈霸先代梁称帝，国土局促于长江以南。陈宣帝太建年间一度北伐取淮南，旋即失地；589年隋军渡江攻入建康，陈后主出降，南北朝结束。",
-      "summaryEn": "Chen Baxian replaced Liang in 557, ruling a shrunken realm south of the Yangtze. Emperor Xuan briefly retook Huainan in the Taijian era but lost it again; in 589 Sui armies crossed the river, Chen Shubao surrendered and the Southern and Northern Dynasties ended."
+      "from": 535,
+      "to": 557,
+      "seatZh": "长安",
+      "seatEn": "Chang'an",
+      "keywords": [
+        "西魏",
+        "宇文泰",
+        "府兵"
+      ],
+      "summaryZh": "535年宇文泰拥立元宝炬于长安，创立府兵制，任苏绰改制，奠定关陇集团基础。553年取巴蜀，554年攻破江陵；557年宇文觉代魏建北周。",
+      "summaryEn": "Yuwen Tai enthroned Yuan Baoju at Chang'an in 535 and built the fubing militia system and Su Chuo's reforms — the foundation of the Guanlong aristocracy. Western Wei took Sichuan (553) and sacked Jiangling (554) before Yuwen Jue founded Northern Zhou in 557."
+    },
+    {
+      "key": "beiqi",
+      "zh": "北齐",
+      "en": "Northern Qi",
+      "titles": [
+        "北齐"
+      ],
+      "from": 550,
+      "to": 577,
+      "seatZh": "邺（晋阳为别都）",
+      "seatEn": "Ye (Jinyang as secondary capital)",
+      "keywords": [
+        "北齐",
+        "高洋",
+        "高纬",
+        "兰陵王",
+        "斛律光"
+      ],
+      "summaryZh": "550年高洋代东魏称帝，都邺，以晋阳为霸府。初期国力强盛，后主高纬昏乱，诛杀斛律光、兰陵王高长恭等名将；577年北周武帝攻破邺城，北齐亡。",
+      "summaryEn": "Gao Yang replaced Eastern Wei in 550, ruling from Ye with Jinyang as the military seat. Strong at first, the state decayed under Gao Wei, who executed the generals Hulü Guang and Gao Changgong (Prince of Lanling); Emperor Wu of Northern Zhou took Ye in 577."
     },
     {
       "key": "xiliang",
@@ -22231,13 +23496,255 @@ window.ATLAS_LORE_DATA = {
       "seatEn": "Jiangling",
       "keywords": [
         "西梁",
-        "萧詧"
+        "萧詧",
+        "萧岿",
+        "萧琮"
       ],
       "aliases": [
         "后梁（南北朝）"
       ],
       "summaryZh": "554年西魏攻破江陵后，555年扶立梁宗室萧詧为帝，都江陵，史称西梁（后梁），先后为西魏、北周、隋的附庸。587年隋文帝废之。",
-      "summaryEn": "After sacking Jiangling, Western Wei installed the Liang prince Xiao Cha as emperor there in 555. Known as Western (Later) Liang, it served as a vassal of Western Wei, Northern Zhou and Sui until Emperor Wen of Sui abolished it in 587."
+      "summaryEn": "After sacking Jiangling, Western Wei installed the Liang prince Xiao Cha as emperor there in 555. Known as Western (Later) Liang, it served as a vassal of Western Wei, Northern Zhou and Sui until Emperor Wen of Sui abolished it in 587.",
+      "matchFrom": 554,
+      "rulersZh": "宣帝萧詧 → 明帝萧岿 → 靖帝萧琮",
+      "rulersEn": "Xiao Cha → Xiao Kui → Xiao Cong"
+    },
+    {
+      "key": "beizhou",
+      "zh": "北周",
+      "en": "Northern Zhou",
+      "titles": [
+        "北周"
+      ],
+      "from": 557,
+      "to": 581,
+      "seatZh": "长安",
+      "seatEn": "Chang'an",
+      "keywords": [
+        "北周",
+        "宇文",
+        "周武帝",
+        "杨坚"
+      ],
+      "summaryZh": "557年宇文觉代西魏称天王，国号周。周武帝宇文邕诛宇文护亲政，574年禁佛道，577年灭北齐统一北方；宣帝早逝后外戚杨坚辅政，581年受禅建隋。",
+      "summaryEn": "Yuwen Jue replaced Western Wei in 557. Emperor Wu (Yuwen Yong) took power from Yuwen Hu, suppressed Buddhism and Daoism (574) and destroyed Northern Qi in 577, unifying the north; after Emperor Xuan's early death the regent Yang Jian founded Sui in 581."
+    },
+    {
+      "key": "nanchen",
+      "zh": "陈",
+      "en": "Chen",
+      "titles": [
+        "陈"
+      ],
+      "from": 557,
+      "to": 589,
+      "seatZh": "建康",
+      "seatEn": "Jiankang",
+      "keywords": [
+        "陈霸先",
+        "陈后主",
+        "陈宣帝",
+        "太建",
+        "灭陈"
+      ],
+      "aliases": [
+        "南朝陈",
+        "南陈"
+      ],
+      "summaryZh": "557年陈霸先代梁称帝，国土局促于长江以南。陈宣帝太建年间一度北伐取淮南，旋即失地；589年隋军渡江攻入建康，陈后主出降，南北朝结束。",
+      "summaryEn": "Chen Baxian replaced Liang in 557, ruling a shrunken realm south of the Yangtze. Emperor Xuan briefly retook Huainan in the Taijian era but lost it again; in 589 Sui armies crossed the river, Chen Shubao surrendered and the Southern and Northern Dynasties ended."
+    },
+    {
+      "key": "wagang_wei",
+      "zh": "瓦岗军（魏）",
+      "en": "Wagang Army (Wei)",
+      "titles": [
+        "魏（李密）"
+      ],
+      "from": 616,
+      "to": 618,
+      "matchFrom": 614,
+      "seatZh": "洛口仓 → 金墉城（洛阳）",
+      "seatEn": "Luokou Granary → Jinyong (Luoyang)",
+      "rulersZh": "翟让（东都道大元帅）→ 魏公李密",
+      "rulersEn": "Zhai Rang → Li Mi (Duke of Wei)",
+      "keywords": [
+        "李密",
+        "瓦岗",
+        "洛口",
+        "翟让"
+      ],
+      "aliases": [
+        "瓦岗军",
+        "李密魏政权"
+      ],
+      "summaryZh": "隋末翟让于河南滑州瓦岗寨聚众起义，616年纳李密之策大破隋将张须陀；617年攻占兴洛仓（洛口仓）开仓赈粮，推李密为魏公、建元永平，秦琼、程咬金、徐世勣、魏征皆出其麾下，围困东都洛阳。618年邙山之战败于王世充，李密西降唐朝。",
+      "summaryEn": "Founded by Zhai Rang at Wagang in Henan, the rebel army followed Li Mi's strategy to capture the imperial Luokou Granary in 617, proclaiming Li Mi Duke of Wei and besieging Luoyang with future Tang heroes Qin Qiong, Cheng Yaojin, Xu Shiji and Wei Zheng in its ranks. Defeated by Wang Shichong at Mangshan in 618, Li Mi submitted to Tang."
+    },
+    {
+      "key": "douxia",
+      "zh": "夏（窦建德）",
+      "en": "Xia (Dou Jiande)",
+      "titles": [
+        "夏（窦建德）"
+      ],
+      "from": 617,
+      "to": 621,
+      "matchFrom": 614,
+      "seatZh": "乐寿（河间）→ 洺州（邯郸永年）",
+      "seatEn": "Leshou → Mingzhou",
+      "rulersZh": "夏王窦建德",
+      "rulersEn": "Dou Jiande (King of Xia)",
+      "keywords": [
+        "窦建德",
+        "虎牢",
+        "乐寿",
+        "洺州"
+      ],
+      "aliases": [
+        "大夏（窦建德）",
+        "河北夏"
+      ],
+      "summaryZh": "隋末河北起义首领窦建德于617年在乐寿称长乐王，618年改称夏王、建元五凤，619年于聊城诛宇文化及，迁都洺州，尽有河北之地，劝课农桑、政尚宽简。621年率十余万大军西援洛阳王世充，于虎牢关之战为秦王李世民所败被擒，夏亡。",
+      "summaryEn": "Peasant rebel leader Dou Jiande proclaimed himself King of Xia in Hebei (617–618), executed the regicide Yuwen Huaji at Liaocheng (619) and ruled Hebei mild-handedly from Mingzhou. Marching west in 621 to relieve Wang Shichong at Luoyang, he was defeated and captured by Li Shimin at Hulao Pass."
+    },
+    {
+      "key": "xiaoxian_liang",
+      "zh": "梁（萧铣）",
+      "en": "Liang (Xiao Xian)",
+      "titles": [
+        "梁（萧铣）"
+      ],
+      "from": 617,
+      "to": 621,
+      "matchFrom": 614,
+      "seatZh": "巴陵（岳阳）→ 江陵",
+      "seatEn": "Baling (Yueyang) → Jiangling",
+      "rulersZh": "梁帝萧铣",
+      "rulersEn": "Xiao Xian",
+      "keywords": [
+        "萧铣",
+        "李靖平萧铣",
+        "江陵"
+      ],
+      "aliases": [
+        "后梁（萧铣）"
+      ],
+      "summaryZh": "西梁宣帝萧詧曾孙、罗川令萧铣于617年在巴陵起兵称梁王，618年称帝迁都江陵，恢复梁朝衣冠制度，疆域北起汉水、南达交趾、西抵三峡、东及九江，拥兵四十万。621年唐将李靖与李孝恭乘秋汛率战舰顺峡东下直逼江陵，萧铣为免生灵涂炭出降。",
+      "summaryEn": "A great-grandson of Emperor Xuan of Western Liang, Xiao Xian rose at Baling in 617 and proclaimed the Liang Empire at Jiangling in 618, ruling from the Han River and Three Gorges south to Lingnan and Jiaozhi. In autumn 621 Tang general Li Jing sailed down the flooded Yangtze gorges to besiege Jiangling, and Xiao Xian surrendered to spare the city."
+    },
+    {
+      "key": "tubo",
+      "zh": "吐蕃",
+      "en": "Tibetan Empire",
+      "titles": [
+        "吐蕃"
+      ],
+      "from": 618,
+      "to": 842,
+      "matchTo": 879,
+      "seatZh": "逻些（拉萨）",
+      "seatEn": "Rasa (Lhasa)",
+      "keywords": [
+        "吐蕃",
+        "松赞干布",
+        "文成公主",
+        "赤松德赞"
+      ],
+      "aliases": [
+        "Tibet",
+        "Tubo"
+      ],
+      "summaryZh": "7世纪初松赞干布统一青藏高原，都逻些（今拉萨），641年迎娶唐文成公主。663年灭吐谷浑，670年大非川击败唐军，763年一度攻入长安；822年唐蕃会盟。842年朗达玛遇刺后王朝崩解，河陇之地陆续归唐。",
+      "summaryEn": "Songtsen Gampo unified the Tibetan Plateau in the early 7th century, ruling from Rasa (Lhasa), and married Tang's Princess Wencheng in 641. Tibet conquered the Tuyuhun (663), defeated Tang at Dafeichuan (670), briefly occupied Chang'an (763) and concluded the Tang–Tibet treaty of 822; after Langdarma's assassination (842) the empire disintegrated.",
+      "rulersZh": "松赞干布 → 芒松芒赞 → 赤都松赞 → 赤德祖赞 → 赤松德赞 → 赤德松赞 → 赤祖德赞 → 朗达玛",
+      "rulersEn": "Songtsen Gampo → Mangsong Mangtsen → Tridu Songtsen → Me Agtsom → Trisong Detsen → Sadnalegs → Ralpacan → Langdarma"
+    },
+    {
+      "key": "wangzheng",
+      "zh": "郑（王世充）",
+      "en": "Zheng (Wang Shichong)",
+      "titles": [
+        "郑（王世充）"
+      ],
+      "from": 619,
+      "to": 621,
+      "matchFrom": 618,
+      "seatZh": "洛阳",
+      "seatEn": "Luoyang",
+      "rulersZh": "郑帝王世充",
+      "rulersEn": "Wang Shichong",
+      "keywords": [
+        "王世充",
+        "虎牢",
+        "洛阳"
+      ],
+      "aliases": [
+        "王郑"
+      ],
+      "summaryZh": "隋末东都留守王世充于618年江都兵变后拥立越王杨侗，同年九月于邙山击败李密瓦岗军；619年废杨侗自立，国号大郑，建元开明，据守洛阳与河南诸郡。620—621年秦王李世民率唐军合围洛阳，虎牢之战擒夏王窦建德，王世充绝望出降。",
+      "summaryEn": "Holding the Sui eastern capital Luoyang, Wang Shichong defeated Li Mi's Wagang army in 618 and deposed Yang Tong in 619 to proclaim the state of Zheng. Besieged by Li Shimin from 620, Wang surrendered Luoyang in 621 immediately after Dou Jiande's relief army was crushed at Hulao Pass."
+    },
+    {
+      "key": "anxi_duhufu",
+      "zh": "安西都护府",
+      "en": "Anxi Protectorate",
+      "titles": [
+        "安西都护府（西州）",
+        "安西都护府",
+        "安西都护府（孤悬坚守）"
+      ],
+      "from": 640,
+      "to": 790,
+      "seatZh": "西州（交河城）→ 龟兹（648 起统辖安西四镇）",
+      "seatEn": "Xizhou (Jiaohe) → Kucha (Four Garrisons of Anxi)",
+      "rulersZh": "郭孝恪 → 阿史那社尔 → 王孝杰 → 汤嘉惠 → 夫蒙灵詖 → 高仙芝 → 郭昕",
+      "rulersEn": "Guo Xiaoke → Ashina She'er → Wang Xiaojie → Gao Xianzhi → Guo Xin",
+      "keywords": [
+        "安西都护府",
+        "安西四镇",
+        "高昌",
+        "龟兹",
+        "高仙芝",
+        "郭昕"
+      ],
+      "aliases": [
+        "安西大都护府",
+        "安西四镇"
+      ],
+      "summaryZh": "640年唐太宗遣侯君集平定高昌，始置安西都护府于西州交河城；648年平龟兹后移治龟兹，统辖龟兹、于阗、疏勒、碎叶（或焉耆）“安西四镇”，692年王孝杰大破吐蕃复四镇。755年安史之乱后河西陷落，安西大都护郭昕率白发孤军坚守西域四十余年，约790年后始陷。",
+      "summaryEn": "Established by Emperor Taizong at Xizhou after conquering Gaochang in 640 and moved to Kucha in 648, the Anxi Protectorate governed the Tarim Basin through the Four Garrisons of Anxi (Kucha, Khotan, Kashgar, Suyab). Cut off from Chang'an after the An Lushan Rebellion, Grand Protector Guo Xin and his grey-haired garrison held out for over forty years until c. 790."
+    },
+    {
+      "key": "anbei_duhufu",
+      "zh": "安北都护府（燕然）",
+      "en": "Anbei (Yanran) Protectorate",
+      "titles": [
+        "漠北羁縻府州（薛延陀）",
+        "燕然（安北）都护府",
+        "安北都护府"
+      ],
+      "from": 647,
+      "to": 687,
+      "matchFrom": 630,
+      "seatZh": "故单于台（阴山北）→ 回纥本部（鄂尔浑河）→ 同城",
+      "seatEn": "Chanyu Terrace → Orkhon Valley → Tongcheng",
+      "rulersZh": "李素立（首任燕然都护）→ 任雅相 → 萧嗣业 → 王晙",
+      "rulersEn": "Li Suli (First Yanran Protector) → Ren Yaxiang → Xiao Siye → Wang Jun",
+      "keywords": [
+        "燕然都护府",
+        "安北都护府",
+        "薛延陀",
+        "铁勒",
+        "天可汗",
+        "灭东突厥"
+      ],
+      "aliases": [
+        "燕然都护府",
+        "瀚海都护府"
+      ],
+      "summaryZh": "630年唐灭东突厥后于漠北设羁縻州府；646年唐太宗遣李世勣灭薛延陀汗国，铁勒回纥等十一部归附，647年置燕然都护府统辖瀚海、金微等六都督府及七州，开辟“参天可汗道”。663年移治回纥本部改称瀚海都护府，669年改称安北都护府，统辖大漠南北铁勒诸部。",
+      "summaryEn": "After destroying the Xueyantuo Khanate in 646, Emperor Taizong established the Yanran Protectorate in 647 over six Tiele area commands and seven prefectures across the Mongolian steppe along the Heavenly Khan Road; moved to the Orkhon valley in 663 and renamed the Anbei Protectorate in 669."
     },
     {
       "key": "wuzhou",
@@ -22272,29 +23779,30 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "In 690 Wu Zetian deposed Emperor Ruizong and proclaimed the Zhou dynasty (Wu Zhou) with its capital at Shendu Luoyang as China's sole female emperor regnant. She instituted palace and military examinations, promoted officials outside the old aristocracy, dispatched Wang Xiaojie to recover the Four Garrisons of Anxi from Tibet (692), and established the Beiting Protectorate north of the Tianshan (702). In 705 the Shenlong coup restored Emperor Zhongzong and the Tang dynasty."
     },
     {
-      "key": "tubo",
-      "zh": "吐蕃",
-      "en": "Tibetan Empire",
+      "key": "beiting_duhufu",
+      "zh": "北庭都护府",
+      "en": "Beiting Protectorate",
       "titles": [
-        "吐蕃"
+        "北庭都护府",
+        "北庭都护府（孤悬坚守）"
       ],
-      "from": 618,
-      "to": 842,
-      "matchTo": 879,
-      "seatZh": "逻些（拉萨）",
-      "seatEn": "Rasa (Lhasa)",
+      "from": 702,
+      "to": 790,
+      "seatZh": "庭州（今新疆吉木萨尔北庭故城）",
+      "seatEn": "Tingzhou (Jimsar Beiting)",
+      "rulersZh": "解琬 → 郭虔瓘 → 盖嘉运 → 李元忠 → 杨袭古",
+      "rulersEn": "Xie Wan → Guo Qianguan → Gai Jiayun → Li Yuanzhong → Yang Xigu",
       "keywords": [
-        "吐蕃",
-        "松赞干布",
-        "文成公主",
-        "赤松德赞"
+        "北庭都护府",
+        "北庭",
+        "庭州",
+        "天山北路"
       ],
       "aliases": [
-        "Tibet",
-        "Tubo"
+        "北庭大都护府"
       ],
-      "summaryZh": "7世纪初松赞干布统一青藏高原，都逻些（今拉萨），641年迎娶唐文成公主。663年灭吐谷浑，670年大非川击败唐军，763年一度攻入长安；822年唐蕃会盟。842年朗达玛遇刺后王朝崩解，河陇之地陆续归唐。",
-      "summaryEn": "Songtsen Gampo unified the Tibetan Plateau in the early 7th century, ruling from Rasa (Lhasa), and married Tang's Princess Wencheng in 641. Tibet conquered the Tuyuhun (663), defeated Tang at Dafeichuan (670), briefly occupied Chang'an (763) and concluded the Tang–Tibet treaty of 822; after Langdarma's assassination (842) the empire disintegrated."
+      "summaryZh": "702年武则天析安西都护府天山以北辖境，于庭州（今吉木萨尔）设北庭都护府，统辖伊州、西州、庭州与瀚海、天山、伊吾诸军，控扼天山北路、准噶尔盆地至巴尔喀什湖。安史之乱后与安西同陷绝境，李元忠等借回鹘道间关奉表入唐，坚守至790年庭州失陷。",
+      "summaryEn": "Created by Wu Zetian in 702 at Tingzhou (modern Jimsar) to administer the northern Tianshan route, Dzungaria and the Balkhash region alongside the Anxi Protectorate in the south. Isolated after the fall of Hexi in the 760s, Beiting's garrisonunder Li Yuanzhong held out for decades until Tingzhou fell to Tibet in 790."
     },
     {
       "key": "nanzhao",
@@ -22312,10 +23820,126 @@ window.ATLAS_LORE_DATA = {
       "keywords": [
         "南诏",
         "皮逻阁",
-        "阁罗凤"
+        "阁罗凤",
+        "异牟寻",
+        "点苍山"
       ],
       "summaryZh": "738年蒙舍诏皮逻阁在唐朝支持下统一六诏，受封云南王，都太和城（后迁阳苴咩城）。天宝年间两次大败唐军，转而依附吐蕃；794年与唐重订盟约，902年权臣郑买嗣篡位，南诏亡。",
-      "summaryEn": "With Tang backing, Piluoge of Mengshe unified the Six Zhao in 738 and was made King of Yunnan, ruling from Taihe (later Yangjumie). Nanzhao routed Tang armies twice in the Tianbao years and allied with Tibet, renewed its alliance with Tang in 794, and fell when the minister Zheng Maisi usurped the throne in 902."
+      "summaryEn": "With Tang backing, Piluoge of Mengshe unified the Six Zhao in 738 and was made King of Yunnan, ruling from Taihe (later Yangjumie). Nanzhao routed Tang armies twice in the Tianbao years and allied with Tibet, renewed its alliance with Tang in 794, and fell when the minister Zheng Maisi usurped the throne in 902.",
+      "rulersZh": "皮逻阁 → 阁罗凤 → 异牟寻 → 寻阁劝 → 劝龙晟 → 劝利晟 → 劝丰祐 → 世隆 → 隆舜 → 舜化贞",
+      "rulersEn": "Piluoge → Geluofeng → Yimouxun → Xungequan → Quanlongsheng → Quanlisheng → Quanfengyou → Shilong → Longshun → Shunhuazhen"
+    },
+    {
+      "key": "dayan_anshi",
+      "zh": "大燕（安史之乱）",
+      "en": "Yan (An-Shi Rebellion)",
+      "titles": [
+        "大燕（安禄山）",
+        "大燕（史思明）"
+      ],
+      "from": 756,
+      "to": 763,
+      "matchFrom": 755,
+      "seatZh": "洛阳 → 邺城 → 范阳 → 洛阳",
+      "seatEn": "Luoyang → Ye → Fanyang → Luoyang",
+      "rulersZh": "安禄山 → 安庆绪 → 史思明 → 史朝义",
+      "rulersEn": "An Lushan → An Qingxu → Shi Siming → Shi Chaoyi",
+      "keywords": [
+        "安禄山",
+        "史思明",
+        "安庆绪",
+        "安史",
+        "范阳起兵",
+        "邺城之战"
+      ],
+      "aliases": [
+        "安史大燕",
+        "燕朝（安史）"
+      ],
+      "summaryZh": "755年底身兼范阳、平卢、河东三镇节度使的安禄山自范阳起兵南下，756年元旦于洛阳称大燕皇帝、建元圣武，继而攻破潼关陷长安。757年安庆绪弑父自立，唐军收复两京；759年史思明于邺城解围后杀安庆绪称大燕皇帝，再陷洛阳。763年初史朝义兵败自缢，持续八年的安史之乱平定。",
+      "summaryEn": "Rising from Fanyang in late 755, three-circuit military governor An Lushan proclaimed the Great Yan dynasty at Luoyang in 756 and captured Chang'an. After An Qingxu murdered his father (757), Shi Siming slew An Qingxu at Ye in 759 and retook Luoyang as Emperor of Yan; Shi Chaoyi's defeat and suicide in early 763 ended the eight-year rebellion."
+    },
+    {
+      "key": "guiyijun",
+      "zh": "归义军",
+      "en": "Guiyi Circuit (Dunhuang)",
+      "titles": [
+        "归义军（张议潮）"
+      ],
+      "from": 848,
+      "to": 1036,
+      "seatZh": "沙州（敦煌）",
+      "seatEn": "Shazhou (Dunhuang)",
+      "rulersZh": "张议潮 → 张淮深 → 张承奉（金山国）→ 曹议金 → 曹元忠 → 曹延禄 → 曹宗寿 → 曹贤顺",
+      "rulersEn": "Zhang Yichao → Zhang Huaishen → Zhang Chengfeng → Cao Yijin → Cao Yuanzhong → Cao Yanlu → Cao Xianshun",
+      "keywords": [
+        "归义军",
+        "张议潮",
+        "沙州"
+      ],
+      "aliases": [
+        "沙州归义军",
+        "张氏归义军",
+        "曹氏归义军"
+      ],
+      "summaryZh": "848年沙州豪族张议潮乘吐蕃内乱率众起义，驱逐吐蕃守将，接连收复瓜、沙、伊、西、甘、肃、兰、鄯、河、岷、廓十一州，遣使间道入长安献图籍，唐宣宗置归义军节度使治沙州（敦煌）。五代至北宋由曹议金家族世袭，护持莫高窟文化，1036年为西夏李元昊所并。",
+      "summaryEn": "In 848 local leader Zhang Yichao rose at Shazhou (Dunhuang), expelled Tibetan garrisons across eleven Hexi prefectures and restored allegiance to Tang, which established the Guiyi Circuit at Dunhuang. Ruled by the Zhang and later Cao families into the Northern Song while patronizing the Mogao Caves, it was absorbed by Western Xia in 1036."
+    },
+    {
+      "key": "daqi_huangchao",
+      "zh": "大齐（黄巢）",
+      "en": "Great Qi (Huang Chao)",
+      "titles": [
+        "大齐（黄巢）"
+      ],
+      "from": 881,
+      "to": 884,
+      "matchFrom": 875,
+      "seatZh": "长安",
+      "seatEn": "Chang'an",
+      "rulersZh": "冲天太保均平大将军 · 大齐皇帝黄巢",
+      "rulersEn": "Huang Chao",
+      "keywords": [
+        "黄巢",
+        "大齐",
+        "齐帝",
+        "王仙芝"
+      ],
+      "aliases": [
+        "黄巢政权",
+        "黄齐"
+      ],
+      "summaryZh": "875年曹州盐商黄巢响应王仙芝起义，转战大江南北，南下攻克广州；879年自桂州北伐渡江淮，880年底克东都洛阳、破潼关，881年初入长安于含元殿即皇帝位，国号大齐，建元金统。883年李克用率沙陀军败齐军收复长安，884年黄巢退至泰山狼虎谷兵败自刎。",
+      "summaryEn": "Joining Wang Xianzhi's uprising in 875, Huang Chao marched across China to Guangzhou and back north to capture Luoyang and Chang'an, proclaiming the Great Qi dynasty at Hanyuan Hall in early 881. Driven from Chang'an by Li Keyong's Shatuo cavalry in 883, Huang Chao perished at Wolf-Tiger Valley near Mount Tai in 884."
+    },
+    {
+      "key": "yangwu",
+      "zh": "吴（杨吴）",
+      "en": "Wu (Yang Wu)",
+      "titles": [
+        "吴",
+        "淮南（杨行密）"
+      ],
+      "from": 902,
+      "to": 937,
+      "matchFrom": 885,
+      "seatZh": "扬州（江都）",
+      "seatEn": "Yangzhou (Jiangdu)",
+      "keywords": [
+        "杨吴",
+        "杨行密",
+        "徐温",
+        "淮南",
+        "徐知诰"
+      ],
+      "aliases": [
+        "杨吴",
+        "南吴"
+      ],
+      "summaryZh": "淮南节度使杨行密902年受唐封吴王，据江淮，都扬州。其子孙暗弱，权归徐温、徐知诰（李昪）父子；927年杨溥称帝，937年徐知诰受禅建齐（后改唐，即南唐）。",
+      "summaryEn": "Yang Xingmi, military governor of Huainan, was made Prince of Wu by Tang in 902 and held the Yangtze–Huai region from Yangzhou. Power passed to Xu Wen and his adopted son Xu Zhigao (Li Bian); Yang Pu took the imperial title in 927, and Xu Zhigao replaced him in 937 (the later Southern Tang).",
+      "rulersZh": "太祖杨行密 → 烈祖杨渥 → 高祖杨隆演 → 睿帝杨溥",
+      "rulersEn": "Yang Xingmi → Yang Wo → Yang Longyan → Yang Pu"
     },
     {
       "key": "houliang",
@@ -22345,6 +23969,174 @@ window.ATLAS_LORE_DATA = {
       ],
       "summaryZh": "宣武节度使朱温（朱全忠）挟持唐昭宗，907年废唐哀帝称帝，国号梁，都开封。与河东李克用、李存勖父子连年争战，911年柏乡之战大败；923年李存勖攻入开封，梁末帝自杀。",
       "summaryEn": "The Xuanwu military governor Zhu Wen (Zhu Quanzhong) controlled the last Tang emperors and founded Liang at Kaifeng in 907. Its long war with Li Keyong and Li Cunxu of Hedong turned with the defeat at Baixiang (911); in 923 Li Cunxu took Kaifeng and the last Liang emperor killed himself."
+    },
+    {
+      "key": "qianshu",
+      "zh": "前蜀",
+      "en": "Former Shu",
+      "titles": [
+        "前蜀",
+        "西川（王建）"
+      ],
+      "from": 907,
+      "to": 925,
+      "matchFrom": 885,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
+      "keywords": [
+        "前蜀",
+        "王建",
+        "王衍"
+      ],
+      "aliases": [
+        "王蜀"
+      ],
+      "summaryZh": "西川节度使王建据有两川，907年唐亡后称帝，都成都。后主王衍荒淫，925年后唐军入蜀，王衍出降。",
+      "summaryEn": "Wang Jian, military governor of Xichuan, held Sichuan and proclaimed himself emperor at Chengdu after Tang fell in 907. His son Wang Yan's dissipation ended when Later Tang invaded and he surrendered in 925.",
+      "rulersZh": "高祖王建 → 后主王衍",
+      "rulersEn": "Wang Jian → Wang Yan"
+    },
+    {
+      "key": "machu",
+      "zh": "楚（马楚）",
+      "en": "Chu (Ma Chu)",
+      "titles": [
+        "楚 · 荆南",
+        "武安（马殷）"
+      ],
+      "from": 907,
+      "to": 951,
+      "matchFrom": 885,
+      "matchTo": 951,
+      "seatZh": "潭州（长沙）",
+      "seatEn": "Tanzhou (Changsha)",
+      "keywords": [
+        "马楚",
+        "马殷",
+        "南楚",
+        "楚王"
+      ],
+      "aliases": [
+        "马楚",
+        "南楚"
+      ],
+      "summaryZh": "马殷据湖南，907年受后梁封楚王，都潭州（长沙），兴茶业、通商贸。马殷死后诸子争位，951年为南唐所灭（湖南旋由周行逢等据守）。",
+      "summaryEn": "Ma Yin held Hunan and was made King of Chu by Later Liang in 907, ruling from Tanzhou (Changsha) and promoting the tea trade. Succession struggles after his death let Southern Tang conquer Chu in 951 (local commanders soon retook Hunan).",
+      "rulersZh": "武穆王马殷 → 衡阳王马希声 → 文昭王马希范 → 废王马希广 → 恭孝王马希萼 → 马希崇",
+      "rulersEn": "Ma Yin → Ma Xisheng → Ma Xifan → Ma Xiguang → Ma Xi'e → Ma Xichong"
+    },
+    {
+      "key": "wuyue",
+      "zh": "吴越",
+      "en": "Wuyue",
+      "titles": [
+        "吴越",
+        "镇海（钱镠）"
+      ],
+      "from": 907,
+      "to": 978,
+      "matchFrom": 885,
+      "seatZh": "杭州（西府）",
+      "seatEn": "Hangzhou",
+      "rulersZh": "武肃王钱镠 → 文穆王钱元瓘 → 忠献王钱弘佐 → 忠逊王钱弘倧 → 忠懿王钱弘俶",
+      "rulersEn": "Qian Liu → Qian Yuanguan → Qian Hongzuo → Qian Hongzong → Qian Chu",
+      "keywords": [
+        "吴越",
+        "钱镠",
+        "钱弘俶",
+        "钱俶"
+      ],
+      "aliases": [
+        "钱氏吴越"
+      ],
+      "summaryZh": "钱镠据两浙，907年受后梁封吴越王，都杭州。奉中原正朔、保境安民，修筑捍海石塘，两浙富庶；978年钱弘俶纳土归宋，和平并入北宋。",
+      "summaryEn": "Qian Liu held the two Zhe circuits and was made King of Wuyue by Later Liang in 907, ruling from Hangzhou. Deferring to northern courts, protecting its people and building the stone seawall, Wuyue prospered until Qian Chu peacefully surrendered his lands to Song in 978."
+    },
+    {
+      "key": "minguo",
+      "zh": "闽",
+      "en": "Min",
+      "titles": [
+        "闽",
+        "威武（王审知）"
+      ],
+      "from": 909,
+      "to": 945,
+      "matchFrom": 885,
+      "seatZh": "福州（长乐府）",
+      "seatEn": "Fuzhou",
+      "keywords": [
+        "王审知",
+        "王延钧",
+        "闽国",
+        "闽王",
+        "大闽"
+      ],
+      "aliases": [
+        "闽国",
+        "王闽"
+      ],
+      "summaryZh": "王潮、王审知兄弟入闽，909年王审知受后梁封闽王，都福州，劝课农桑、开港通商。933年王延钧称帝，此后宗室内乱，945年为南唐所灭。",
+      "summaryEn": "The brothers Wang Chao and Wang Shenzhi took Fujian; Wang Shenzhi was made Prince of Min by Later Liang in 909 and developed agriculture and maritime trade from Fuzhou. Wang Yanjun took the imperial title in 933; family strife followed and Southern Tang conquered Min in 945.",
+      "rulersZh": "太祖王审知 → 嗣王王延翰 → 惠宗王延钧 → 康宗王昶 → 景宗王曦 → 殷帝王延政",
+      "rulersEn": "Wang Shenzhi → Wang Yanhan → Wang Yanjun → Wang Chang → Wang Xi → Wang Yanzheng"
+    },
+    {
+      "key": "liao",
+      "zh": "辽（契丹）",
+      "en": "Liao (Khitan)",
+      "titles": [
+        "契丹",
+        "辽"
+      ],
+      "from": 916,
+      "to": 1125,
+      "matchFrom": 907,
+      "seatZh": "上京临潢府（五京制）",
+      "seatEn": "Shangjing Linhuang (five capitals)",
+      "keywords": [
+        "辽",
+        "契丹",
+        "耶律",
+        "澶渊"
+      ],
+      "aliases": [
+        "契丹",
+        "辽国",
+        "大辽",
+        "Khitan"
+      ],
+      "summaryZh": "907年耶律阿保机任契丹可汗，916年称帝，都上京临潢府。938年得燕云十六州，947年改国号辽；1004年与北宋订澶渊之盟。行因俗而治的南北面官制，1125年为金所灭，耶律大石西迁建西辽。",
+      "summaryEn": "Abaoji became Khitan khagan in 907 and emperor in 916, ruling from Shangjing. Liao gained the Sixteen Prefectures (938), adopted the dynastic name Liao (947) and concluded the Chanyuan Treaty with Song (1004), governing through a dual northern–southern administration until the Jurchen Jin destroyed it in 1125 and Yelü Dashi founded Western Liao."
+    },
+    {
+      "key": "nanhan",
+      "zh": "南汉",
+      "en": "Southern Han",
+      "titles": [
+        "南汉",
+        "岭南（刘隐）"
+      ],
+      "from": 917,
+      "to": 971,
+      "matchFrom": 885,
+      "seatZh": "兴王府（广州）",
+      "seatEn": "Xingwang Fu (Guangzhou)",
+      "keywords": [
+        "南汉",
+        "刘䶮",
+        "刘龑",
+        "刘隐",
+        "刘鋹",
+        "吴权"
+      ],
+      "aliases": [
+        "刘汉（南汉）"
+      ],
+      "summaryZh": "刘隐据岭南，917年其弟刘䶮在广州称帝，初号大越，次年改汉，史称南汉。以严刑与宦官政治著称，971年宋将潘美攻破广州，刘鋹出降。",
+      "summaryEn": "Liu Yin held Lingnan; his brother Liu Yan proclaimed himself emperor at Guangzhou in 917 (first as Great Yue, then Han). Known for harsh punishments and eunuch government, Southern Han fell when Song general Pan Mei took Guangzhou in 971.",
+      "rulersZh": "烈宗刘隐 → 高祖刘䶮 → 殇帝刘玢 → 中宗刘晟 → 后主刘鋹",
+      "rulersEn": "Liu Yin → Liu Yan → Liu Bin → Liu Sheng → Liu Chang"
     },
     {
       "key": "houtang",
@@ -22377,6 +24169,60 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "The Shatuo leader Li Keyong held Hedong as Prince of Jin; his son Li Cunxu proclaimed Tang in 923, destroyed Later Liang that year, ruled from Luoyang and conquered Former Shu (925). Killed in a mutiny in 926, he was followed by the steadier Mingzong; in 936 Shi Jingtang took Luoyang with Khitan troops."
     },
     {
+      "key": "jingnan",
+      "zh": "荆南（南平）",
+      "en": "Jingnan (Nanping)",
+      "titles": [
+        "荆南（南平）",
+        "武平 · 荆南"
+      ],
+      "from": 924,
+      "to": 963,
+      "matchFrom": 907,
+      "seatZh": "江陵（荆州）",
+      "seatEn": "Jiangling (Jingzhou)",
+      "rulersZh": "武信王高季兴 → 文献王高从诲 → 贞懿王高保融 → 高保勖 → 高继冲",
+      "rulersEn": "Gao Jixing → Gao Conghui → Gao Baorong → Gao Baoxu → Gao Jichong",
+      "keywords": [
+        "荆南",
+        "南平",
+        "高季兴",
+        "高继冲",
+        "假道灭虢"
+      ],
+      "aliases": [
+        "南平",
+        "高氏荆南",
+        "北楚"
+      ],
+      "summaryZh": "五代十国之十国中疆域最小者，仅辖荆、归、峡三州，都江陵。907年高季兴任后梁荆南节度使，924年受后唐封南平王；地处南北水陆冲要，向周边大国称臣纳贡以兴商贸（号“高赖子”）。963年北宋慕容延钊借讨湖南武平军之机“假道灭虢”，高继冲纳土归宋。",
+      "summaryEn": "Smallest of the Ten Kingdoms, holding only three prefectures around Jiangling at the Yangtze–Han crossroads. Founded by Gao Jixing (appointed governor in 907 and Prince of Nanping in 924), Jingnan prospered as a commercial entrepot by paying tribute to all neighboring courts until Song armies annexed it en route to Hunan in 963."
+    },
+    {
+      "key": "houshu",
+      "zh": "后蜀",
+      "en": "Later Shu",
+      "titles": [
+        "后蜀"
+      ],
+      "from": 934,
+      "to": 965,
+      "seatZh": "成都",
+      "seatEn": "Chengdu",
+      "keywords": [
+        "后蜀",
+        "孟知祥",
+        "孟昶"
+      ],
+      "aliases": [
+        "孟蜀"
+      ],
+      "summaryZh": "后唐西川节度使孟知祥934年在成都称帝；后主孟昶在位三十余年，蜀中安定富庶。965年北宋王全斌伐蜀，孟昶出降。",
+      "summaryEn": "Meng Zhixiang, Later Tang's governor of Xichuan, proclaimed himself emperor at Chengdu in 934; under Meng Chang Sichuan enjoyed three decades of peace and wealth until Song general Wang Quanbin's invasion forced his surrender in 965.",
+      "rulersZh": "高祖孟知祥 → 后主孟昶",
+      "rulersEn": "Meng Zhixiang → Meng Chang"
+    },
+    {
       "key": "houjin",
       "zh": "后晋",
       "en": "Later Jin",
@@ -22402,6 +24248,59 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Shi Jingtang of Hedong destroyed Later Tang in 936 with Khitan help, paying with the Sixteen Prefectures of Yan–Yun and the title of 'son emperor', and ruled from Kaifeng. When his successor refused vassalage, the Khitan invaded and took Kaifeng at the start of 947."
     },
     {
+      "key": "nantang",
+      "zh": "南唐",
+      "en": "Southern Tang",
+      "titles": [
+        "南唐"
+      ],
+      "from": 937,
+      "to": 975,
+      "seatZh": "金陵（江宁府）",
+      "seatEn": "Jinling (Nanjing)",
+      "rulersZh": "烈祖李昪 → 元宗李璟 → 后主李煜",
+      "rulersEn": "Li Bian → Li Jing → Li Yu",
+      "keywords": [
+        "南唐",
+        "李昪",
+        "李璟",
+        "李煜"
+      ],
+      "aliases": [
+        "李唐（南唐）"
+      ],
+      "summaryZh": "937年徐知诰代吴称帝，939年复姓李（李昪），国号唐，都金陵，史称南唐。李璟时灭闽、楚，疆域最广，但955—958年为后周夺去淮南，去帝号；后主李煜工于词章，975年宋军攻破金陵，李煜出降。",
+      "summaryEn": "Xu Zhigao replaced Wu in 937, resumed the surname Li (Li Bian) and named his state Tang, ruling from Jinling. Li Jing conquered Min and Chu, but lost Huainan to Later Zhou (955–958) and dropped the imperial title; the poet-king Li Yu surrendered when Song forces took Jinling in 975."
+    },
+    {
+      "key": "dali",
+      "zh": "大理",
+      "en": "Dali Kingdom",
+      "titles": [
+        "大理"
+      ],
+      "from": 937,
+      "to": 1254,
+      "matchFrom": 936,
+      "seatZh": "羊苴咩城（大理）",
+      "seatEn": "Yangjumie (Dali)",
+      "keywords": [
+        "大理",
+        "段思平",
+        "段氏",
+        "段正明",
+        "崇圣寺"
+      ],
+      "aliases": [
+        "大理国",
+        "段氏大理"
+      ],
+      "summaryZh": "937年白蛮段思平建大理国，都羊苴咩城。崇奉佛教，与宋维持朝贡贸易；中后期高氏专权。1253年忽必烈革囊渡江远征，1254年大理亡。",
+      "summaryEn": "Duan Siping founded Dali in 937, ruling from Yangjumie. A Buddhist kingdom trading and exchanging tribute with Song, it was later dominated by the Gao ministerial clan, and fell to Khubilai's expedition across the Jinsha River in 1253–1254.",
+      "rulersZh": "太祖段思平 → 段思英 → 段思良 → 段思聪 → 段素顺 → 段思廉 → 段正明 → 高升泰 → 段正淳 → 段和誉 → 段智兴 → 段兴智",
+      "rulersEn": "Duan Siping → Duan Siying → Duan Siliang → Duan Sicong → Duan Silian → Duan Zhengming → Gao Shengtai → Duan Zhengchun → Duan Heyu → Duan Zhixing → Duan Xingzhi"
+    },
+    {
       "key": "houhan",
       "zh": "后汉",
       "en": "Later Han",
@@ -22417,7 +24316,9 @@ window.ATLAS_LORE_DATA = {
       ],
       "keywords": [
         "后汉",
-        "刘知远"
+        "刘知远",
+        "刘承祐",
+        "郭威建后周"
       ],
       "aliases": [
         "刘汉"
@@ -22456,205 +24357,6 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Guo Wei founded Zhou in 951 and cleaned up the administration. Chai Rong (Emperor Shizong) defeated Northern Han and the Khitan at Gaoping (954), rebuilt the army, took fourteen Huainan prefectures from Southern Tang (955–958) and recovered three passes from Liao (959) before dying. In 960 Zhao Kuangyin's Chenqiao mutiny replaced Zhou with Song."
     },
     {
-      "key": "yangwu",
-      "zh": "吴（杨吴）",
-      "en": "Wu (Yang Wu)",
-      "titles": [
-        "吴",
-        "淮南（杨行密）"
-      ],
-      "from": 902,
-      "to": 937,
-      "matchFrom": 885,
-      "seatZh": "扬州（江都）",
-      "seatEn": "Yangzhou (Jiangdu)",
-      "keywords": [
-        "杨吴",
-        "杨行密",
-        "徐温",
-        "淮南"
-      ],
-      "aliases": [
-        "杨吴",
-        "南吴"
-      ],
-      "summaryZh": "淮南节度使杨行密902年受唐封吴王，据江淮，都扬州。其子孙暗弱，权归徐温、徐知诰（李昪）父子；927年杨溥称帝，937年徐知诰受禅建齐（后改唐，即南唐）。",
-      "summaryEn": "Yang Xingmi, military governor of Huainan, was made Prince of Wu by Tang in 902 and held the Yangtze–Huai region from Yangzhou. Power passed to Xu Wen and his adopted son Xu Zhigao (Li Bian); Yang Pu took the imperial title in 927, and Xu Zhigao replaced him in 937 (the later Southern Tang)."
-    },
-    {
-      "key": "nantang",
-      "zh": "南唐",
-      "en": "Southern Tang",
-      "titles": [
-        "南唐"
-      ],
-      "from": 937,
-      "to": 975,
-      "seatZh": "金陵（江宁府）",
-      "seatEn": "Jinling (Nanjing)",
-      "rulersZh": "烈祖李昪 → 元宗李璟 → 后主李煜",
-      "rulersEn": "Li Bian → Li Jing → Li Yu",
-      "keywords": [
-        "南唐",
-        "李昪",
-        "李璟",
-        "李煜"
-      ],
-      "aliases": [
-        "李唐（南唐）"
-      ],
-      "summaryZh": "937年徐知诰代吴称帝，939年复姓李（李昪），国号唐，都金陵，史称南唐。李璟时灭闽、楚，疆域最广，但955—958年为后周夺去淮南，去帝号；后主李煜工于词章，975年宋军攻破金陵，李煜出降。",
-      "summaryEn": "Xu Zhigao replaced Wu in 937, resumed the surname Li (Li Bian) and named his state Tang, ruling from Jinling. Li Jing conquered Min and Chu, but lost Huainan to Later Zhou (955–958) and dropped the imperial title; the poet-king Li Yu surrendered when Song forces took Jinling in 975."
-    },
-    {
-      "key": "wuyue",
-      "zh": "吴越",
-      "en": "Wuyue",
-      "titles": [
-        "吴越",
-        "镇海（钱镠）"
-      ],
-      "from": 907,
-      "to": 978,
-      "matchFrom": 885,
-      "seatZh": "杭州（西府）",
-      "seatEn": "Hangzhou",
-      "rulersZh": "武肃王钱镠 → 文穆王钱元瓘 → 忠献王钱弘佐 → 忠逊王钱弘倧 → 忠懿王钱弘俶",
-      "rulersEn": "Qian Liu → Qian Yuanguan → Qian Hongzuo → Qian Hongzong → Qian Chu",
-      "keywords": [
-        "吴越",
-        "钱镠",
-        "钱弘俶",
-        "钱俶"
-      ],
-      "aliases": [
-        "钱氏吴越"
-      ],
-      "summaryZh": "钱镠据两浙，907年受后梁封吴越王，都杭州。奉中原正朔、保境安民，修筑捍海石塘，两浙富庶；978年钱弘俶纳土归宋，和平并入北宋。",
-      "summaryEn": "Qian Liu held the two Zhe circuits and was made King of Wuyue by Later Liang in 907, ruling from Hangzhou. Deferring to northern courts, protecting its people and building the stone seawall, Wuyue prospered until Qian Chu peacefully surrendered his lands to Song in 978."
-    },
-    {
-      "key": "qianshu",
-      "zh": "前蜀",
-      "en": "Former Shu",
-      "titles": [
-        "前蜀",
-        "西川（王建）"
-      ],
-      "from": 907,
-      "to": 925,
-      "matchFrom": 885,
-      "seatZh": "成都",
-      "seatEn": "Chengdu",
-      "keywords": [
-        "前蜀",
-        "王建",
-        "王衍"
-      ],
-      "aliases": [
-        "王蜀"
-      ],
-      "summaryZh": "西川节度使王建据有两川，907年唐亡后称帝，都成都。后主王衍荒淫，925年后唐军入蜀，王衍出降。",
-      "summaryEn": "Wang Jian, military governor of Xichuan, held Sichuan and proclaimed himself emperor at Chengdu after Tang fell in 907. His son Wang Yan's dissipation ended when Later Tang invaded and he surrendered in 925."
-    },
-    {
-      "key": "houshu",
-      "zh": "后蜀",
-      "en": "Later Shu",
-      "titles": [
-        "后蜀"
-      ],
-      "from": 934,
-      "to": 965,
-      "seatZh": "成都",
-      "seatEn": "Chengdu",
-      "keywords": [
-        "后蜀",
-        "孟知祥",
-        "孟昶"
-      ],
-      "aliases": [
-        "孟蜀"
-      ],
-      "summaryZh": "后唐西川节度使孟知祥934年在成都称帝；后主孟昶在位三十余年，蜀中安定富庶。965年北宋王全斌伐蜀，孟昶出降。",
-      "summaryEn": "Meng Zhixiang, Later Tang's governor of Xichuan, proclaimed himself emperor at Chengdu in 934; under Meng Chang Sichuan enjoyed three decades of peace and wealth until Song general Wang Quanbin's invasion forced his surrender in 965."
-    },
-    {
-      "key": "minguo",
-      "zh": "闽",
-      "en": "Min",
-      "titles": [
-        "闽",
-        "威武（王审知）"
-      ],
-      "from": 909,
-      "to": 945,
-      "matchFrom": 885,
-      "seatZh": "福州（长乐府）",
-      "seatEn": "Fuzhou",
-      "keywords": [
-        "王审知",
-        "王延钧",
-        "闽国"
-      ],
-      "aliases": [
-        "闽国",
-        "王闽"
-      ],
-      "summaryZh": "王潮、王审知兄弟入闽，909年王审知受后梁封闽王，都福州，劝课农桑、开港通商。933年王延钧称帝，此后宗室内乱，945年为南唐所灭。",
-      "summaryEn": "The brothers Wang Chao and Wang Shenzhi took Fujian; Wang Shenzhi was made Prince of Min by Later Liang in 909 and developed agriculture and maritime trade from Fuzhou. Wang Yanjun took the imperial title in 933; family strife followed and Southern Tang conquered Min in 945."
-    },
-    {
-      "key": "machu",
-      "zh": "楚（马楚）",
-      "en": "Chu (Ma Chu)",
-      "titles": [
-        "楚 · 荆南",
-        "武安（马殷）"
-      ],
-      "from": 907,
-      "to": 951,
-      "matchFrom": 885,
-      "matchTo": 950,
-      "seatZh": "潭州（长沙）",
-      "seatEn": "Tanzhou (Changsha)",
-      "keywords": [
-        "马楚",
-        "马殷"
-      ],
-      "aliases": [
-        "马楚",
-        "南楚"
-      ],
-      "summaryZh": "马殷据湖南，907年受后梁封楚王，都潭州（长沙），兴茶业、通商贸。马殷死后诸子争位，951年为南唐所灭（湖南旋由周行逢等据守）。",
-      "summaryEn": "Ma Yin held Hunan and was made King of Chu by Later Liang in 907, ruling from Tanzhou (Changsha) and promoting the tea trade. Succession struggles after his death let Southern Tang conquer Chu in 951 (local commanders soon retook Hunan)."
-    },
-    {
-      "key": "nanhan",
-      "zh": "南汉",
-      "en": "Southern Han",
-      "titles": [
-        "南汉",
-        "岭南（刘隐）"
-      ],
-      "from": 917,
-      "to": 971,
-      "matchFrom": 885,
-      "seatZh": "兴王府（广州）",
-      "seatEn": "Xingwang Fu (Guangzhou)",
-      "keywords": [
-        "南汉",
-        "刘䶮",
-        "刘隐",
-        "刘鋹"
-      ],
-      "aliases": [
-        "刘汉（南汉）"
-      ],
-      "summaryZh": "刘隐据岭南，917年其弟刘䶮在广州称帝，初号大越，次年改汉，史称南汉。以严刑与宦官政治著称，971年宋将潘美攻破广州，刘鋹出降。",
-      "summaryEn": "Liu Yin held Lingnan; his brother Liu Yan proclaimed himself emperor at Guangzhou in 917 (first as Great Yue, then Han). Known for harsh punishments and eunuch government, Southern Han fell when Song general Pan Mei took Guangzhou in 971."
-    },
-    {
       "key": "beihan",
       "zh": "北汉",
       "en": "Northern Han",
@@ -22670,35 +24372,9 @@ window.ATLAS_LORE_DATA = {
         "刘崇"
       ],
       "summaryZh": "951年郭威建周，后汉宗室刘崇据太原称帝，依附辽朝与周、宋对抗。954年高平之战大败；979年宋太宗亲征攻克太原，北汉亡，十国终结。",
-      "summaryEn": "When Guo Wei founded Zhou in 951, the Later Han prince Liu Chong proclaimed himself emperor at Taiyuan and relied on Liao against Zhou and Song. Defeated at Gaoping (954), it fell when Emperor Taizong of Song captured Taiyuan in 979, ending the Ten Kingdoms."
-    },
-    {
-      "key": "liao",
-      "zh": "辽（契丹）",
-      "en": "Liao (Khitan)",
-      "titles": [
-        "契丹",
-        "辽"
-      ],
-      "from": 916,
-      "to": 1125,
-      "matchFrom": 907,
-      "seatZh": "上京临潢府（五京制）",
-      "seatEn": "Shangjing Linhuang (five capitals)",
-      "keywords": [
-        "辽",
-        "契丹",
-        "耶律",
-        "澶渊"
-      ],
-      "aliases": [
-        "契丹",
-        "辽国",
-        "大辽",
-        "Khitan"
-      ],
-      "summaryZh": "907年耶律阿保机任契丹可汗，916年称帝，都上京临潢府。938年得燕云十六州，947年改国号辽；1004年与北宋订澶渊之盟。行因俗而治的南北面官制，1125年为金所灭，耶律大石西迁建西辽。",
-      "summaryEn": "Abaoji became Khitan khagan in 907 and emperor in 916, ruling from Shangjing. Liao gained the Sixteen Prefectures (938), adopted the dynastic name Liao (947) and concluded the Chanyuan Treaty with Song (1004), governing through a dual northern–southern administration until the Jurchen Jin destroyed it in 1125 and Yelü Dashi founded Western Liao."
+      "summaryEn": "When Guo Wei founded Zhou in 951, the Later Han prince Liu Chong proclaimed himself emperor at Taiyuan and relied on Liao against Zhou and Song. Defeated at Gaoping (954), it fell when Emperor Taizong of Song captured Taiyuan in 979, ending the Ten Kingdoms.",
+      "rulersZh": "世祖刘崇 → 睿宗刘钧 → 少主刘继恩 → 英武帝刘继元",
+      "rulersEn": "Liu Chong → Liu Jun → Liu Ji'en → Liu Jiyuan"
     },
     {
       "key": "xixia",
@@ -22757,30 +24433,6 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Wanyan Aguda founded Jin in 1115; the Jurchens destroyed Liao (1125) and carried off the Song emperors Huizong and Qinzong in the Jingkang Incident (1127). The Shaoxing peace (1142) fixed the Huai River border, and Prince Hailing moved the capital to Zhongdu (Beijing) in 1153. Mongol pressure drove the court to Bianjing (1214); Caizhou fell and Jin ended in 1234."
     },
     {
-      "key": "dali",
-      "zh": "大理",
-      "en": "Dali Kingdom",
-      "titles": [
-        "大理"
-      ],
-      "from": 937,
-      "to": 1254,
-      "matchFrom": 936,
-      "seatZh": "羊苴咩城（大理）",
-      "seatEn": "Yangjumie (Dali)",
-      "keywords": [
-        "大理",
-        "段思平",
-        "段氏"
-      ],
-      "aliases": [
-        "大理国",
-        "段氏大理"
-      ],
-      "summaryZh": "937年白蛮段思平建大理国，都羊苴咩城。崇奉佛教，与宋维持朝贡贸易；中后期高氏专权。1253年忽必烈革囊渡江远征，1254年大理亡。",
-      "summaryEn": "Duan Siping founded Dali in 937, ruling from Yangjumie. A Buddhist kingdom trading and exchanging tribute with Song, it was later dominated by the Gao ministerial clan, and fell to Khubilai's expedition across the Jinsha River in 1253–1254."
-    },
-    {
       "key": "mongol",
       "zh": "大蒙古国",
       "en": "Mongol Empire",
@@ -22809,6 +24461,169 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "Temüjin united the Mongol tribes as Genghis Khan in 1206. Mongol armies swept across Central Asia and Europe, destroyed Western Xia (1227) and, allied with Song, Jin (1234); Ögedei built Karakorum. Möngke died at Diaoyu Fortress (1259), Khubilai became khan in 1260 and adopted the name Great Yuan in 1271."
     },
     {
+      "key": "dayuan_rise",
+      "zh": "大元（灭宋之战）",
+      "en": "Great Yuan (Conquest of Song)",
+      "titles": [
+        "元"
+      ],
+      "from": 1271,
+      "to": 1279,
+      "matchTo": 1278,
+      "seatZh": "大都（北京）· 上都（开平）",
+      "seatEn": "Dadu (Beijing) & Shangdu",
+      "rulersZh": "元世祖忽必烈",
+      "rulersEn": "Kublai Khan (Emperor Shizu)",
+      "keywords": [
+        "大元",
+        "元大都",
+        "伯颜",
+        "襄阳",
+        "临安",
+        "崖山"
+      ],
+      "aliases": [
+        "元朝初立"
+      ],
+      "summaryZh": "1271年忽必烈取《易经》“大哉乾元”改国号为大元，1272年定都大都（今北京）。1273年吕文焕献襄阳降元，长江防线门户洞开；1274年忽必烈命伯颜统军二十万顺汉水入长江，1276年攻占临安俘宋恭帝，1279年张弘范于崖山海战灭南宋行朝，完成全国统一。",
+      "summaryEn": "In 1271 Kublai Khan adopted the dynastic title Great Yuan and established his capital at Dadu (Beijing) in 1272. After the six-year siege of Xiangyang fell in 1273, general Bayan led Yuan forces down the Han and Yangtze rivers (1274), taking the Southern Song capital Lin'an in 1276 before completing unification at Yashan in 1279."
+    },
+    {
+      "key": "chenhan",
+      "zh": "陈汉（天完）",
+      "en": "Chen Han (Tianwan)",
+      "titles": [
+        "天完 · 陈友谅"
+      ],
+      "from": 1351,
+      "to": 1364,
+      "seatZh": "蕲水 → 江州（九江）→ 武昌",
+      "seatEn": "Qishui → Jiangzhou (Jiujiang) → Wuchang",
+      "rulersZh": "天完帝徐寿辉 → 汉帝陈友谅 → 陈理",
+      "rulersEn": "Xu Shouhui (Tianwan) → Chen Youliang (Han) → Chen Li",
+      "keywords": [
+        "天完",
+        "徐寿辉",
+        "陈友谅",
+        "鄱阳湖"
+      ],
+      "aliases": [
+        "天完",
+        "大汉（陈友谅）"
+      ],
+      "summaryZh": "1351年徐寿辉于湖北蕲水响应红巾军称帝，国号天完，据有湖广、江西大部。大将陈友谅掌权后，于1360年在采石江舟中弑徐寿辉自立为帝，国号大汉，都江州（后迁武昌），水师强盛。1363年率巨舰六十万围攻洪都，于鄱阳湖决战败于朱元璋中矢身亡，次年其子陈理降吴。",
+      "summaryEn": "Xu Shouhui proclaimed the Red Turban empire of Tianwan at Qishui in 1351; his commander Chen Youliang killed him at Caishi in 1360 to found the Han Empire across Huguang and Jiangxi. In 1363 Chen besieged Nanchang with a massive fleet but was defeated and killed by a stray arrow against Zhu Yuanzhang on Poyang Lake; his son surrendered in 1364."
+    },
+    {
+      "key": "zhangshicheng_zhou",
+      "zh": "大周（张士诚）",
+      "en": "Zhou / Dongwu (Zhang Shicheng)",
+      "titles": [
+        "周（张士诚）"
+      ],
+      "from": 1354,
+      "to": 1367,
+      "matchFrom": 1351,
+      "seatZh": "高邮 → 平江（苏州，1356）",
+      "seatEn": "Gaoyou → Pingjiang (Suzhou, 1356)",
+      "rulersZh": "诚王 · 吴王张士诚",
+      "rulersEn": "Zhang Shicheng",
+      "keywords": [
+        "张士诚",
+        "高邮",
+        "平江"
+      ],
+      "aliases": [
+        "东吴（张士诚）",
+        "张吴"
+      ],
+      "summaryZh": "1353年盐贩张士诚于泰州白驹场起兵，1354年据高邮称诚王，国号大周，建元天祐；同年元太师脱脱率百万大军围高邮，临阵被罢而溃。1356年渡江南下定都平江（今苏州），富甲太湖、浙西，1363年去元正朔自称吴王。1367年徐达、常遇春攻破平江，张士诚被俘自缢。",
+      "summaryEn": "Salt Boatman Zhang Shicheng rose in 1353 and proclaimed the state of Great Zhou at Gaoyou in 1354, surviving Chancellor Toqto'a's siege when the Yuan court dismissed its commander. Moving south to Pingjiang (Suzhou) in 1356 and proclaiming himself King of Wu in 1363, he ruled the wealthy Taihu basin until Xu Da captured Suzhou in 1367."
+    },
+    {
+      "key": "hanliner_song",
+      "zh": "韩宋（红巾军）",
+      "en": "Han Song (Red Turbans)",
+      "titles": [
+        "宋（韩林儿）"
+      ],
+      "from": 1355,
+      "to": 1366,
+      "matchFrom": 1351,
+      "seatZh": "亳州 → 汴梁（1358）→ 安丰 → 滁州",
+      "seatEn": "Bozhou → Bianliang (Kaifeng) → Anfeng → Chuzhou",
+      "rulersZh": "韩山童 → 刘福通（太保）· 小明王韩林儿",
+      "rulersEn": "Han Shantong → Liu Futong & Han Lin'er (Young Bright King)",
+      "keywords": [
+        "韩山童",
+        "刘福通",
+        "韩林儿",
+        "红巾军"
+      ],
+      "aliases": [
+        "龙凤政权",
+        "大宋（韩林儿）"
+      ],
+      "summaryZh": "1351年韩山童、刘福通于颍州起义，揭开元末红巾军大起义序幕；1355年刘福通迎韩山童之子韩林儿于亳州称帝（号小明王），国号大宋，建元龙凤。1358年攻占汴梁定为国都，分兵三路北伐，中路攻破元上都；1363年安丰被张士诚部围攻，刘福通战死，朱元璋救出韩林儿安置滁州，1366年韩林儿渡江溺死于瓜步。",
+      "summaryEn": "Launched by Han Shantong and Liu Futong in 1351, the northern Red Turbans enthroned Han Lin'er as the \"Young Bright King\" of Great Song (era name Longfeng) at Bozhou in 1355. After taking Kaifeng (1358) and burning Yuan's northern capital Shangdu, Liu Futong fell at Anfeng in 1363 and Han Lin'er drowned at Guabu in 1366 while being escorted to Nanjing."
+    },
+    {
+      "key": "zhuyuanzhang_wu",
+      "zh": "西吴（朱元璋）",
+      "en": "Wu (Zhu Yuanzhang)",
+      "titles": [
+        "吴（朱元璋）"
+      ],
+      "from": 1356,
+      "to": 1368,
+      "matchFrom": 1351,
+      "matchTo": 1367,
+      "seatZh": "应天府（南京）",
+      "seatEn": "Yingtian (Nanjing)",
+      "rulersZh": "吴国公 → 吴王朱元璋",
+      "rulersEn": "Zhu Yuanzhang (Duke & King of Wu)",
+      "keywords": [
+        "朱元璋",
+        "应天",
+        "集庆",
+        "鄱阳湖"
+      ],
+      "aliases": [
+        "吴国公",
+        "西吴"
+      ],
+      "summaryZh": "1352年朱元璋投濠州郭子兴红巾军，1356年渡江攻克集庆路改置应天府（南京），称吴国公，纳朱升“高筑墙、广积粮、缓称王”之策。1363年鄱阳湖水战歼灭陈友谅主力，1364年自立为吴王；1367年攻灭平江张士诚、平定方国珍，命徐达、常遇春誓师北伐，1368年初称帝建明。",
+      "summaryEn": "Rising in the Haozhou Red Turbans from 1352, Zhu Yuanzhang captured Jiqing (renamed Yingtian / Nanjing) in 1356 as Duke of Wu, following the strategy \"build high walls, store ample grain, delay claiming the throne\". After destroying Chen Youliang at Poyang Lake (1363), he became King of Wu (1364), conquered Zhang Shicheng (1367), and proclaimed the Ming dynasty in 1368."
+    },
+    {
+      "key": "mingxia",
+      "zh": "明夏",
+      "en": "Ming Xia",
+      "titles": [
+        "夏（明玉珍）",
+        "明夏（明玉珍）",
+        "明夏（明升）"
+      ],
+      "from": 1363,
+      "to": 1371,
+      "matchFrom": 1351,
+      "seatZh": "重庆",
+      "seatEn": "Chongqing",
+      "rulersZh": "太祖明玉珍 → 归义侯明升",
+      "rulersEn": "Ming Yuzhen → Ming Sheng",
+      "keywords": [
+        "明玉珍",
+        "明夏",
+        "明升",
+        "伐蜀"
+      ],
+      "aliases": [
+        "大夏（明玉珍）"
+      ],
+      "summaryZh": "天完将领明玉珍于1357年溯江入蜀攻占重庆、成都，定有巴蜀；1360年陈友谅弑徐寿辉后，明玉珍断绝东向并立文庙、兴学校，1363年于重庆称帝，国号大夏，建元天统。1366年明玉珍病逝，幼子明升继立；1371年明太祖遣汤和、傅友德水陆分道伐蜀，明升于重庆出降。",
+      "summaryEn": "Tianwan commander Ming Yuzhen marched into Sichuan in 1357, broke with Chen Youliang after 1360, and proclaimed the Great Xia Empire at Chongqing in 1363. His young son Ming Sheng succeeded in 1366 and surrendered Chongqing when Ming generals Tang He and Fu Youde invaded Sichuan in 1371."
+    },
+    {
       "key": "beiyuan",
       "zh": "北元",
       "en": "Northern Yuan",
@@ -22829,7 +24644,9 @@ window.ATLAS_LORE_DATA = {
         "王保保"
       ],
       "summaryZh": "1368年明军攻入大都，元顺帝北走上都，元廷退居漠北，史称北元。扩廓帖木儿（王保保）1372年岭北之战大败明军；1388年蓝玉捕鱼儿海之战大破北元，脱古思帖木儿遇弑，此后蒙古分裂为鞑靼、瓦剌。",
-      "summaryEn": "When Ming armies took Dadu in 1368, Toghon Temür withdrew to Shangdu and the Yuan court continued on the steppe as Northern Yuan. Köke Temür defeated the Ming at Lingbei (1372), but Lan Yu's victory at Buir Lake (1388) and the murder of Tögüs Temür splintered the Mongols into the Tatars and Oirats."
+      "summaryEn": "When Ming armies took Dadu in 1368, Toghon Temür withdrew to Shangdu and the Yuan court continued on the steppe as Northern Yuan. Köke Temür defeated the Ming at Lingbei (1372), but Lan Yu's victory at Buir Lake (1388) and the murder of Tögüs Temür splintered the Mongols into the Tatars and Oirats.",
+      "rulersZh": "惠宗妥懽贴睦尔（元顺帝）→ 昭宗爱猷识理达腊 → 脱古思帖木儿",
+      "rulersEn": "Toghon Temür → Biligtü Khan (Ayushiridara) → Uskhal Khan (Tögüs Temür)"
     },
     {
       "key": "houjin_manchu",
@@ -22852,7 +24669,88 @@ window.ATLAS_LORE_DATA = {
         "大金（后金）"
       ],
       "summaryZh": "1616年努尔哈赤在赫图阿拉称汗，国号大金，史称后金。1618年以七大恨告天攻明，1619年萨尔浒之战大破明军；1621年迁辽阳，1625年迁沈阳。1636年皇太极改国号大清。",
-      "summaryEn": "Nurhaci proclaimed himself khan of Great Jin (Later Jin) at Hetu Ala in 1616, declared war on Ming with the 'Seven Grievances' (1618) and crushed the Ming at Sarhu (1619); the capital moved to Liaoyang (1621) and Shenyang (1625). Hong Taiji renamed the state Great Qing in 1636."
+      "summaryEn": "Nurhaci proclaimed himself khan of Great Jin (Later Jin) at Hetu Ala in 1616, declared war on Ming with the 'Seven Grievances' (1618) and crushed the Ming at Sarhu (1619); the capital moved to Liaoyang (1621) and Shenyang (1625). Hong Taiji renamed the state Great Qing in 1636.",
+      "rulersZh": "太祖努尔哈赤 → 太宗皇太极",
+      "rulersEn": "Nurhaci → Hong Taiji"
+    },
+    {
+      "key": "daqing_rise",
+      "zh": "清（关外兴起）",
+      "en": "Great Qing (Pre-1644 Rise)",
+      "titles": [
+        "清"
+      ],
+      "from": 1636,
+      "to": 1644,
+      "matchTo": 1643,
+      "seatZh": "盛京（沈阳）",
+      "seatEn": "Shengjing (Shenyang)",
+      "rulersZh": "清太宗皇太极 → 清世祖顺治帝（多尔衮摄政）",
+      "rulersEn": "Hong Taiji → Shunzhi Emperor (Regent Dorgon)",
+      "keywords": [
+        "皇太极",
+        "大清",
+        "盛京",
+        "松锦",
+        "入关"
+      ],
+      "aliases": [
+        "关外大清"
+      ],
+      "summaryZh": "1636年皇太极于盛京（沈阳）受满蒙汉尊号称帝，改后金国号为“大清”，改元崇德，建满洲、蒙古、汉军八旗，臣服漠南蒙古与朝鲜。1641—1642年松锦大战击溃洪承畴十万明军，尽取山海关外锦州、松山诸城；1644年李自成破北京后，多尔衮率八旗军入山海关定鼎北京。",
+      "summaryEn": "In 1636 Hong Taiji proclaimed the Great Qing Empire at Shengjing (Shenyang), organizing the Manchu, Mongol and Han Eight Banners and subduing Inner Mongolia and Joseon. The decisive victory at Songshan–Jinzhou (1641–1642) cleared all Ming strongholds outside Shanhai Pass before Dorgon led Qing forces through the pass to Beijing in 1644."
+    },
+    {
+      "key": "dashun",
+      "zh": "大顺",
+      "en": "Great Shun (Li Zicheng)",
+      "titles": [
+        "大顺（李自成）"
+      ],
+      "from": 1644,
+      "to": 1645,
+      "matchFrom": 1642,
+      "seatZh": "西安 → 北京（1644）",
+      "seatEn": "Xi'an → Beijing (1644)",
+      "rulersZh": "大顺永昌皇帝李自成",
+      "rulersEn": "Li Zicheng",
+      "keywords": [
+        "李自成",
+        "大顺",
+        "闯王",
+        "山海关"
+      ],
+      "aliases": [
+        "李自成大顺"
+      ],
+      "summaryZh": "闯王李自成于中原连破洛阳、围开封，1643年于襄阳称新顺王，十月破潼关入据西安；1644年正月于西安称帝，国号大顺，建元永昌，三月十九日攻克北京，明崇祯帝自缢。旋于山海关一片石之战败于吴三桂与多尔衮清军，退回西安再转战湖广，1645年于通山九宫山遇害。",
+      "summaryEn": "After conquering Henan and taking Xi'an in late 1643, \"Dashing King\" Li Zicheng proclaimed the Great Shun dynasty at Xi'an in early 1644 and captured Beijing in the third month, ending the Ming dynasty. Defeated at Shanhai Pass by Wu Sangui and Dorgon's Qing army, he retreated through Xi'an to Hubei and died at Mount Jiugong in 1645."
+    },
+    {
+      "key": "daxi",
+      "zh": "大西",
+      "en": "Great Xi (Zhang Xianzhong)",
+      "titles": [
+        "大西（张献忠）"
+      ],
+      "from": 1644,
+      "to": 1647,
+      "matchFrom": 1643,
+      "seatZh": "武昌 → 成都（西京，1644）",
+      "seatEn": "Wuchang → Chengdu (1644)",
+      "rulersZh": "大西大顺皇帝张献忠（义子孙可望、李定国等）",
+      "rulersEn": "Zhang Xianzhong (succeeded by Sun Kewang & Li Dingguo)",
+      "keywords": [
+        "张献忠",
+        "大西",
+        "李定国",
+        "凤凰山"
+      ],
+      "aliases": [
+        "张献忠大西"
+      ],
+      "summaryZh": "明末农民军领袖“八大王”张献忠于1641年袭破襄阳，1643年攻占武昌称大西王；1644年率军溯江入蜀攻克重庆、成都，于成都称帝，国号大西，建元大顺，改成都为西京。1646年底清肃亲王豪格入川，张献忠于西充凤凰山中箭身亡；余部由李定国、孙可望率领入滇黔联明抗清。",
+      "summaryEn": "Peasant rebel leader Zhang Xianzhong took Wuchang as King of Great Xi in 1643, marched into Sichuan in 1644 and proclaimed the Great Xi Empire at Chengdu. Killed in battle against Qing prince Haoge at Mount Fenghuang in late 1646, his adopted sons Li Dingguo and Sun Kewang led the surviving Great Xi forces into Yunnan and Guizhou to uphold the Southern Ming."
     },
     {
       "key": "nanming",
@@ -22874,7 +24772,9 @@ window.ATLAS_LORE_DATA = {
         "李定国"
       ],
       "summaryZh": "1644年北京陷落后，明宗室先后在南京（弘光）、福州（隆武）、肇庆（永历）等地建立政权。1645年清军破扬州、南京；永历政权得李定国等大西军余部支持坚持抗清，1659年清军入滇，1662年永历帝在昆明被吴三桂所杀。",
-      "summaryEn": "After Beijing fell in 1644, Ming princes set up courts at Nanjing (Hongguang), Fuzhou (Longwu) and Zhaoqing (Yongli). Qing forces took Yangzhou and Nanjing in 1645; the Yongli court, backed by former Great Xi commanders such as Li Dingguo, fought on until Qing armies entered Yunnan (1659) and Wu Sangui executed the emperor at Kunming in 1662."
+      "summaryEn": "After Beijing fell in 1644, Ming princes set up courts at Nanjing (Hongguang), Fuzhou (Longwu) and Zhaoqing (Yongli). Qing forces took Yangzhou and Nanjing in 1645; the Yongli court, backed by former Great Xi commanders such as Li Dingguo, fought on until Qing armies entered Yunnan (1659) and Wu Sangui executed the emperor at Kunming in 1662.",
+      "rulersZh": "弘光帝朱由崧 → 隆武帝朱聿键 → 鲁王朱以海（监国）→ 永历帝朱由榔",
+      "rulersEn": "Hongguang (Zhu Yousong) → Longwu (Zhu Yujian) → Prince of Lu (Regent) → Yongli (Zhu Youlang)"
     },
     {
       "key": "mingzheng",
@@ -22891,14 +24791,18 @@ window.ATLAS_LORE_DATA = {
         "郑成功",
         "明郑",
         "郑经",
-        "施琅"
+        "施琅",
+        "承天府"
       ],
       "aliases": [
         "东宁",
         "郑氏台湾"
       ],
       "summaryZh": "1661年郑成功率军渡海，次年逐荷兰人收复台湾，设承天府，奉永历正朔。其子郑经改称东宁，曾参与三藩之乱；1683年清将施琅攻取澎湖，郑克塽降清。",
-      "summaryEn": "Koxinga (Zheng Chenggong) crossed to Taiwan in 1661 and expelled the Dutch the next year, ruling in the name of the Yongli emperor. His son Zheng Jing renamed it Dongning and joined the Revolt of the Three Feudatories; after Shi Lang took the Penghu Islands in 1683, Zheng Keshuang surrendered to Qing."
+      "summaryEn": "Koxinga (Zheng Chenggong) crossed to Taiwan in 1661 and expelled the Dutch the next year, ruling in the name of the Yongli emperor. His son Zheng Jing renamed it Dongning and joined the Revolt of the Three Feudatories; after Shi Lang took the Penghu Islands in 1683, Zheng Keshuang surrendered to Qing.",
+      "matchFrom": 1659,
+      "rulersZh": "延平王郑成功 → 潮王郑经 → 郑克塽",
+      "rulersEn": "Zheng Chenggong (Koxinga) → Zheng Jing → Zheng Keshuang"
     },
     {
       "key": "sanfan",
@@ -22920,7 +24824,9 @@ window.ATLAS_LORE_DATA = {
         "吴周"
       ],
       "summaryZh": "1673年康熙帝下令撤藩，平西王吴三桂在云南起兵，耿精忠、尚之信响应，一度据有西南与东南半壁。1678年吴三桂在衡州称帝，国号周，同年病死；1681年清军攻克昆明，三藩之乱平定。",
-      "summaryEn": "When the Kangxi Emperor ordered the feudatories abolished in 1673, Wu Sangui rose in Yunnan, joined by Geng Jingzhong and Shang Zhixin, briefly holding much of the south. Wu proclaimed the Zhou dynasty at Hengzhou in 1678 and died that year; Qing forces took Kunming in 1681."
+      "summaryEn": "When the Kangxi Emperor ordered the feudatories abolished in 1673, Wu Sangui rose in Yunnan, joined by Geng Jingzhong and Shang Zhixin, briefly holding much of the south. Wu proclaimed the Zhou dynasty at Hengzhou in 1678 and died that year; Qing forces took Kunming in 1681.",
+      "rulersZh": "周太祖吴三桂 → 吴世璠（并靖南王耿精忠、平南王尚之信）",
+      "rulersEn": "Wu Sangui → Wu Shifan (with Geng Jingzhong & Shang Zhixin)"
     },
     {
       "key": "taiping",
@@ -22940,7 +24846,159 @@ window.ATLAS_LORE_DATA = {
         "湘军"
       ],
       "summaryZh": "1851年洪秀全在广西金田起义，建号太平天国，1853年攻占南京定都天京。北伐、西征一度震动清廷，1856年天京事变内讧元气大伤；1864年湘军攻破天京，太平天国失败。",
-      "summaryEn": "Hong Xiuquan launched the Jintian Uprising in Guangxi in 1851 and made Nanjing his Heavenly Capital in 1853. Northern and western expeditions shook the Qing, but the Tianjing Incident (1856) gutted the leadership, and Zeng Guofan's Xiang Army took the capital in 1864."
+      "summaryEn": "Hong Xiuquan launched the Jintian Uprising in Guangxi in 1851 and made Nanjing his Heavenly Capital in 1853. Northern and western expeditions shook the Qing, but the Tianjing Incident (1856) gutted the leadership, and Zeng Guofan's Xiang Army took the capital in 1864.",
+      "rulersZh": "天王洪秀全 → 幼天王洪天贵福",
+      "rulersEn": "Heavenly King Hong Xiuquan → Young Heavenly King Hong Tianguifu"
+    },
+    {
+      "key": "beiyang_wanxi",
+      "zh": "北洋 · 皖系",
+      "en": "Anhui Clique (Beiyang)",
+      "titles": [
+        "北洋政府 · 皖系（段祺瑞）",
+        "皖系（卢永祥 · 浙江）"
+      ],
+      "from": 1916,
+      "to": 1924,
+      "seatZh": "北京（1916—1920）→ 杭州（1920—1924）",
+      "seatEn": "Beijing (1916–1920) → Hangzhou (1920–1924)",
+      "rulersZh": "国务总理段祺瑞 → 浙江督军卢永祥",
+      "rulersEn": "Duan Qirui → Lu Yongxiang",
+      "keywords": [
+        "皖系",
+        "段祺瑞",
+        "卢永祥",
+        "直皖战争",
+        "皖、直、奉系"
+      ],
+      "aliases": [
+        "皖系军阀"
+      ],
+      "summaryZh": "袁世凯死后北洋军分裂，安徽合肥人段祺瑞以国务总理掌控北京中央政权（1916—1920），拒绝恢复《临时约法》引发孙中山南下护法，并向日本大举借款编练参战军。1920年直皖战争五日即败，段祺瑞下野，皖系仅存卢永祥据守浙江、上海，至1924年江浙战争为孙传芳、齐燮元所败。",
+      "summaryEn": "Led by Premier Duan Qirui after Yuan Shikai's death in 1916, the Anhui Clique dominated the Beijing government until its defeat by the Zhili and Fengtian cliques in the July 1920 Zhili–Anhui War; its last stronghold under Lu Yongxiang in Zhejiang and Shanghai fell in the 1924 Jiangsu–Zhejiang War."
+    },
+    {
+      "key": "beiyang_zhixi",
+      "zh": "北洋 · 直系",
+      "en": "Zhili Clique (Beiyang)",
+      "titles": [
+        "直系（冯国璋 · 曹锟）",
+        "北洋政府 · 直系（曹锟 · 吴佩孚）",
+        "直系（吴佩孚）",
+        "五省联军（孙传芳）"
+      ],
+      "from": 1916,
+      "to": 1927,
+      "seatZh": "南京 · 保定 → 北京 · 洛阳 → 汉口 · 南京",
+      "seatEn": "Baoding & Luoyang → Beijing → Hankou & Nanjing",
+      "rulersZh": "冯国璋 → 曹锟 → 吴佩孚 · 孙传芳（东南五省联军）",
+      "rulersEn": "Feng Guozhang → Cao Kun → Wu Peifu & Sun Chuanfang",
+      "keywords": [
+        "直系",
+        "冯国璋",
+        "曹锟",
+        "吴佩孚",
+        "孙传芳",
+        "直皖战争",
+        "直奉战争",
+        "武昌"
+      ],
+      "aliases": [
+        "直系军阀",
+        "五省联军"
+      ],
+      "summaryZh": "以直隶人冯国璋、曹锟为首的北洋派系。1920年直皖战争、1922年第一次直奉战争连胜后独占北京政权，吴佩孚驻洛阳练兵；1924年第二次直奉战争中冯玉祥发动北京政变，曹锟被囚，直系失势。此后吴佩孚复起于武汉，孙传芳组苏皖赣浙闽“五省联军”，1926—1927年先后为国民革命军北伐击溃。",
+      "summaryEn": "Formed under Feng Guozhang and Cao Kun, the Zhili Clique controlled Beijing after winning the 1920 Zhili–Anhui and 1922 First Zhili–Fengtian wars until Feng Yuxiang's 1924 Beijing Coup. Wu Peifu at Wuhan and Sun Chuanfang's Five-Province Allied Army at Nanjing were subsequently defeated by the 1926–1927 Northern Expedition."
+    },
+    {
+      "key": "beiyang_fengxi",
+      "zh": "北洋 · 奉系",
+      "en": "Fengtian Clique (Beiyang)",
+      "titles": [
+        "奉系（张作霖）",
+        "北洋政府 · 奉系（张作霖）",
+        "安国军政府 · 奉系（张作霖）"
+      ],
+      "from": 1916,
+      "to": 1928,
+      "seatZh": "奉天（沈阳）→ 北京（1924—1928）",
+      "seatEn": "Fengtian (Shenyang) → Beijing (1924–1928)",
+      "rulersZh": "安国军大元帅张作霖 → 东北保安总司令张学良",
+      "rulersEn": "Zhang Zuolin → Zhang Xueliang",
+      "keywords": [
+        "奉系",
+        "张作霖",
+        "张学良",
+        "直奉战争",
+        "皇姑屯"
+      ],
+      "aliases": [
+        "奉系军阀",
+        "安国军政府"
+      ],
+      "summaryZh": "张作霖据奉天、吉林、黑龙江东北三省形成奉系军阀。1922年第一次直奉战争败退关外后整军经武；1924年第二次直奉战争大胜入关，控制北洋政府，1927年于北京就任中华民国陆海军大元帅（安国军政府）。1928年北伐军进逼京津，张作霖退返奉天途中于皇姑屯被日军炸死，年底张学良宣布东北易帜。",
+      "summaryEn": "Based in the three northeastern provinces under Zhang Zuolin, the Fengtian Clique entered Shanhai Pass to take Beijing in the 1924 Second Zhili–Fengtian War, with Zhang becoming Generalissimo of the Beijing government in 1927. Retreating before the Northern Expedition in June 1928, Zhang Zuolin was assassinated by the Kwantung Army at Huanggutun, and his son Zhang Xueliang declared Northeast Flag Replacement that December."
+    },
+    {
+      "key": "guangzhou_gov",
+      "zh": "广州护法 · 国民政府",
+      "en": "Guangzhou Constitutional Protection & Nationalist Government",
+      "titles": [
+        "护法军政府 · 西南各系",
+        "广州政府（孙中山）",
+        "广州国民政府（两广统一）",
+        "国民政府（北伐军与冯阎集团）"
+      ],
+      "from": 1917,
+      "to": 1927,
+      "matchFrom": 1916,
+      "matchTo": 1928,
+      "seatZh": "广州 → 武汉 · 南京（1927）",
+      "seatEn": "Guangzhou → Wuhan & Nanjing (1927)",
+      "rulersZh": "海陆军大元帅 · 非常大总统孙中山 → 汪精卫 · 蒋介石",
+      "rulersEn": "Sun Yat-sen → Wang Jingwei & Chiang Kai-shek",
+      "keywords": [
+        "护法",
+        "孙中山",
+        "广州",
+        "黄埔军校",
+        "北伐"
+      ],
+      "aliases": [
+        "护法军政府",
+        "广州国民政府"
+      ],
+      "summaryZh": "1917年孙中山南下广州召开国会非常会议，成立中华民国军政府展开护法运动；1921年就非常大总统职，1923年重建陆海军大元帅大本营。1924年召开国民党一大实现第一次国共合作、创办黄埔军校；1925年于广州正式成立国民政府并东征南征统一两广，1926年7月誓师北伐，1927—1928年推进至长江与京津。",
+      "summaryEn": "Established by Sun Yat-sen in Guangzhou in 1917 to defend the provisional constitution against Beiyang warlords, reorganized in 1924 with the First United Front and Whampoa Military Academy, and formally inaugurated as the Nationalist Government in 1925. After unifying Guangdong and Guangxi, it launched the Northern Expedition in July 1926."
+    },
+    {
+      "key": "manchukuo",
+      "zh": "伪满洲国（日占）",
+      "en": "Manchukuo (Japanese Occupation)",
+      "titles": [
+        "辽吉（日军侵占）",
+        "伪满洲国（日占）"
+      ],
+      "from": 1932,
+      "to": 1945,
+      "matchFrom": 1931,
+      "seatZh": "新京（长春）",
+      "seatEn": "Xinjing (Changchun)",
+      "rulersZh": "日本关东军殖民统治（傀儡溥仪）",
+      "rulersEn": "Japanese Kwantung Army Occupation (puppet Puyi)",
+      "keywords": [
+        "九一八",
+        "满洲国",
+        "溥仪",
+        "东北抗日联军",
+        "收回台湾"
+      ],
+      "aliases": [
+        "伪满洲国",
+        "满洲国"
+      ],
+      "summaryZh": "1931年9月18日日本关东军发动九一八事变侵占东北三省，1932年3月于长春扶植清逊帝溥仪建立傀儡政权伪“满洲国”，改长春为“新京”，次年侵占热河。东北抗日联军杨靖宇、赵尚志等在白山黑水间浴血抗战十四载；1945年8月日本无条件投降，伪满覆灭，东北光复。",
+      "summaryEn": "After the Kwantung Army seized Manchuria following the Mukden Incident of September 18, 1931, Japan installed the deposed Qing emperor Puyi at Changchun (renamed Xinjing) in March 1932 as a puppet regime. Northeast Anti-Japanese United Army guerrillas fought for fourteen years until Japan's surrender in August 1945 restored the Northeast to China."
     }
   ]
 };

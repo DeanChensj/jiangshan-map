@@ -3613,8 +3613,69 @@
       }
       const bare = title.replace(/[（(][^）)]*[）)]/g, '').trim();
       const inner = (title.match(/[（(]([^）)]*)[）)]/) || [])[1] || '';
-      const named = bare.length >= 2 ? [bare] : inner.split(/[·\s、]+/);
-      const keywords = [...new Set([title, ...named].map((s) => s.trim()).filter((s) => s.length >= 2))];
+      const stopKws = new Set([
+        '北方', '河北', '江东', '荆州', '益州', '荆益', '荆扬', '交州', '兖豫', '幽州', '冀州', '凉州',
+        '关陇', '汉中', '辽东', '西州', '湖南', '云南', '关中', '浙江', '河东', '内附', '日占', '荷占',
+        '德租', '英租', '俄租', '日军侵占', '沙俄侵占', '孤悬坚守', '总制院辖', '驻藏大臣', '两广统一',
+        '自治', '苏控', '北洋政府', '西南各系', '甘宁青',
+      ]);
+      const oneCharKws = {
+        周: ['周威烈王', '周安王', '周室', '东周', '洛邑'],
+        宋: ['宋国', '灭宋', '商丘'],
+        鲁: ['鲁国', '曲阜', '邹邑'],
+        越: ['越王', '越国', '灭越'],
+        蜀: ['灭蜀', '蜀郡', '巴、蜀'],
+        巴: ['灭巴', '巴、蜀', '巴郡'],
+        代: ['代王', '奔代'],
+        赵: ['赵王', '灭赵', '井陉'],
+        齐: ['齐王', '田横', '韩信'],
+        燕: ['燕王', '臧荼', '灭赵'],
+        晋: ['司马炎', '代魏建晋', '三国归晋', '王濬'],
+        元: ['大元', '元大都', '元军', '伯颜', '崖山'],
+        清: ['大清', '皇太极', '松锦', '入关'],
+      };
+      const uncuratedExtraKws = {
+        闽越: ['无诸', '百越', '鸿沟', '垓下'],
+        赤眉军: ['赤眉', '昆阳', '更始', '刘秀'],
+        '隗嚣 · 窦融': ['隗嚣', '窦融', '昆阳', '更始', '刘秀'],
+        '马腾(凉州)': ['董卓', '长安', '凉州'],
+        '刘表(荆州)': ['荆州', '隆中对', '赤壁', '三顾茅庐'],
+        '刘焉(益州)': ['益州', '董卓'],
+        '刘繇·孙氏(江东)': ['孙策', '江东'],
+        '士燮(交州)': ['交州', '赤壁', '荆州'],
+        '吴（杜伏威）': ['杜伏威', '江都', '瓦岗'],
+        '秦（薛举）': ['薛举', '李渊', '大兴'],
+        '凉（李轨）': ['李轨', '河西', '李渊'],
+        '唐 · 岐（关中）': ['李茂贞', '关中', '藩镇'],
+        大长和: ['南诏', '大理', '段思平'],
+        清源军: ['留从效', '陈洪进', '南唐', '纳土归宋'],
+        '武平（湖南）': ['湖南', '假道灭虢'],
+        方国珍: ['方国珍', '张士诚', '集庆'],
+        陈友定: ['陈友定', '北伐', '统一江南'],
+        '威海卫（英租）': ['强租', '胶州湾', '戊戌'],
+        '九龙新界（英租）': ['新界', '强租'],
+        '晋系（阎锡山）': ['南北军阀', '直皖战争', '直奉战争'],
+        '西北诸马（甘宁青）': ['南北军阀', '直皖战争'],
+        '新疆（杨增新）': ['南北军阀', '北伐'],
+        西南川滇黔桂各系: ['护法', '直皖战争', '广州', '孙中山'],
+        '川滇黔军阀（刘湘 · 唐继尧）': ['南北军阀', '北伐'],
+      };
+      const bareTokens = bare.split(/[·/、\s]+/);
+      const parts = [
+        bare,
+        ...bareTokens,
+        ...bareTokens.flatMap((t) => oneCharKws[t] || []),
+        ...inner.split(/[·/、\s]+/),
+        ...(oneCharKws[bare] || []),
+        ...(uncuratedExtraKws[title] || []),
+      ];
+      const keywords = [
+        ...new Set(
+          [title, ...parts]
+            .map((s) => s.trim())
+            .filter((s) => s.length >= 2 && !stopKws.has(s) && !/^\d/.test(s))
+        ),
+      ];
       return { key: `t:${title}@${from}`, zh: title, en: '', titles: [title], from, to, keywords, curated: false };
     }
 
@@ -3674,7 +3735,9 @@
     }
 
     _polityEvents(desc) {
-      const [mf, mt] = this._polityWindow(desc);
+      const [rawMf, rawMt] = this._polityWindow(desc);
+      const mf = desc.curated ? rawMf : rawMf - 1;
+      const mt = desc.curated ? rawMt : rawMt + 1;
       const kws = (desc.keywords || []).filter(Boolean);
       if (!kws.length) return [];
       const matches = (text) => kws.some((k) => String(text || '').includes(k));
@@ -3683,7 +3746,7 @@
       for (const d of this.dynasties || []) {
         for (const m of d.milestones || []) {
           if (m.year < mf || m.year > mt || !matches(m.headline)) continue;
-          const sig = `${m.year}:${m.site || ''}`;
+          const sig = `${m.year}:${m.headline.slice(0, 12)}`;
           if (seen.has(sig)) continue;
           seen.add(sig);
           out.push({ year: m.year, dynasty: d, milestone: m, coord: m.coord || null });
@@ -3693,6 +3756,17 @@
         if (e.year < mf || e.year > mt || !matches(e.zh)) continue;
         const sig = `${e.year}:${e.site || ''}`;
         if (seen.has(sig)) continue;
+        if (
+          out.some(
+            (x) =>
+              x.year === e.year &&
+              x.coord &&
+              e.coord &&
+              Math.hypot(x.coord[0] - e.coord[0], x.coord[1] - e.coord[1]) < 0.6
+          )
+        ) {
+          continue;
+        }
         seen.add(sig);
         const d = (this.dynasties || []).find((x) => x.key === e.dynastyKey) || null;
         out.push({ year: e.year, dynasty: d, landmark: e, coord: e.coord || null });
