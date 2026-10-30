@@ -4889,7 +4889,7 @@
             .split(/\s+/)
             .filter((w) => w.length >= 3 && !/^(?:Emperor|of|the)$/i.test(w));
           if (!enTokens.length || enTokens.some((w) => candEn.includes(w))) {
-            textEn = candEn;
+            textEn = candEn.charAt(0).toUpperCase() + candEn.slice(1);
           }
         }
       }
@@ -4929,9 +4929,6 @@
               return bare.length >= 2 && textZh.includes(bare);
             });
           }
-          if (!hitPart && clausesZh.length === siteParts.length && matchedIdxs.length === 1) {
-            hitPart = siteParts[matchedIdxs[0]];
-          }
           if (!hitPart && matchedIdxs.length > 0 && matchedIdxs.length < clausesZh.length) {
             const unmatchedText = clausesZh.filter((_, i) => !matchedIdxs.includes(i)).join('；');
             const remaining = siteParts.filter((sp) => {
@@ -4942,6 +4939,9 @@
               return !subTokens.some((st) => unmatchedText.includes(st));
             });
             if (remaining.length === 1) hitPart = remaining[0];
+          }
+          if (!hitPart && clausesZh.length === siteParts.length && matchedIdxs.length === 1) {
+            hitPart = siteParts[matchedIdxs[0]];
           }
           if (!hitPart) {
             let bestDist = Infinity;
@@ -4967,6 +4967,7 @@
             喜峰口: [118.33, 40.42],
             京师广渠门: [116.43, 39.89],
             虎门: [113.67, 22.82],
+            六盘山: [106.2, 35.65],
           };
           if (fallbackCoords[bareChosen]) {
             chosenCoord = fallbackCoords[bareChosen];
@@ -5060,7 +5061,10 @@
               ) || {}
             ).stops
           : null;
-      if (Array.isArray(journeyStops)) {
+      const hasJourneyStops = Array.isArray(journeyStops) && journeyStops.length > 0;
+      const jMinY = hasJourneyStops ? Math.min(...journeyStops.map((s) => s.year)) : Infinity;
+      const jMaxY = hasJourneyStops ? Math.max(...journeyStops.map((s) => s.year)) : -Infinity;
+      if (hasJourneyStops) {
         journeyStops.forEach((st, sIdx) => {
           const dyn =
             this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
@@ -5124,6 +5128,14 @@
           const byTag = matchesPersonsTag(m);
           const byToken = tokens.some((tok) => m.headline.includes(tok));
           if (!byToken && !byTag) continue;
+          if (hasJourneyStops && m.year >= jMinY && m.year <= jMaxY && !byTag) {
+            const jHit = raw.find((r) => r.src === 'J' && r.year === m.year);
+            if (jHit) {
+              if (m.isMapChange) jHit.isMapChange = true;
+              if (!jHit.milestone) jHit.milestone = m;
+            }
+            continue;
+          }
           const rawSite = m.site || d.seat || '';
           if (profile.key === 'liubang' && m.year === -207 && rawSite.startsWith('巨鹿')) continue;
           const mKey = `${d.key}:${m.year}`;
@@ -5151,13 +5163,14 @@
             year: m.year,
             month:
               m.month ||
-              (isMulti && m.year === 208 && rawSite.includes('赤壁')
+              (m.year === 208 && rawSite.includes('赤壁')
                 ? 11.0
-                : isMulti &&
-                    ((m.year === 645 && rawSite.includes('辽东')) ||
-                      (m.year === 219 && rawSite.includes('汉中')))
-                  ? 7.5
-                  : 6.5),
+                : m.year === 219 && tailored.siteZh.includes('麦城')
+                  ? 11.5
+                  : (isMulti && m.year === 645 && rawSite.includes('辽东')) ||
+                      (m.year === 219 && tailored.siteZh.includes('汉中'))
+                    ? 7.5
+                    : 6.5),
             coord: tailored.coord,
             dynasty: d,
             siteZh: tailored.siteZh,
@@ -5179,6 +5192,7 @@
         const byTag = matchesPersonsTag(lm);
         const byToken = tokens.some((tok) => lm.zh.includes(tok));
         if (!byToken && !byTag) continue;
+        if (hasJourneyStops && lm.year >= jMinY && lm.year <= jMaxY && !byTag) continue;
         const d =
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||

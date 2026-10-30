@@ -4062,8 +4062,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "长安",
       "siteEn": "Chang'an",
-      "zh": "安史叛军破潼关陷长安，玄宗奔蜀；次年郭子仪收复西京",
-      "en": "An Lushan rebels capture Chang’an, sparking the Mawei Mutiny; Guo Ziyi retakes it in 757"
+      "zh": "安史叛军破潼关陷长安，唐玄宗仓皇奔蜀",
+      "en": "An Lushan rebels capture Chang’an, sparking the Mawei Mutiny as Emperor Xuanzong flees to Shu"
     },
     {
       "dynastyKey": "tang",
@@ -4270,8 +4270,9 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "洛阳",
       "siteEn": "Luoyang",
-      "zh": "李存勖灭后梁建立后唐，定都洛阳",
-      "en": "Li Cunxu founds Later Tang with Luoyang as imperial capital"
+      "zh": "后唐庄宗李存勖灭梁后自魏州迁都洛阳，号为东都",
+      "en": "After toppling Later Liang, Li Cunxu moves the Later Tang imperial capital to Luoyang",
+      "month": 11
     },
     {
       "dynastyKey": "sanguo",
@@ -4993,9 +4994,9 @@ window.ATLAS_LORE_DATA = {
         104.06,
         30.67
       ],
-      "site": "成都府（南京）",
+      "site": "成都府（今四川成都）",
       "siteEn": "Chengdu",
-      "zh": "安史之乱唐玄宗幸蜀驻跸成都，后升益州为成都府",
+      "zh": "安史之乱唐玄宗幸蜀驻跸成都，后升益州为成都府（号南京）",
       "en": "Emperor Xuanzong takes refuge in Chengdu during the An Lushan Rebellion",
       "month": 8
     },
@@ -5340,8 +5341,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "玉门关·阳关（今甘肃敦煌）",
       "siteEn": "Yumen & Yangguan Passes (Dunhuang)",
-      "zh": "汉武帝分置敦煌郡，筑玉门关与阳关，扼控丝绸之路南北咽喉",
-      "en": "Emperor Wu establishes Yumen Pass and Yangguan Pass to command the Silk Road routes"
+      "zh": "西汉于敦煌西境筑玉门关与阳关，扼控丝绸之路南北两道咽喉",
+      "en": "Western Han establishes Yumen Pass and Yangguan Pass to command the Silk Road routes"
     },
     {
       "dynastyKey": "donghan",
@@ -5437,7 +5438,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "蓝田关（今陕西蓝田）",
       "siteEn": "Lantian Pass (Lantian, Shaanxi)",
-      "zh": "韩愈谏迎佛骨贬潮州，风雪逾蓝田关赋“雪拥蓝关马不前”名句",
+      "zh": "韩愈谏迎佛骨贬潮州，逾蓝田关赋“云横秦岭家何在，雪拥蓝关马不前”",
       "en": "Exiled to Chaozhou, Han Yu crosses snowbound Lantian Pass and composes his famous quatrain"
     },
     {
@@ -6448,7 +6449,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "通州（今四川达州）",
       "siteEn": "Tong Zhou (Dazhou, Sichuan)",
-      "zh": "元稹左迁通州（今达州）司马，与江州司马白居易千里寄诗唱和",
+      "zh": "元稹左迁通州（今达州）司马，与江州司马乐天千里寄诗唱和",
       "en": "Poet Yuan Zhen serves in exile as Marshal of Tong Zhou (Dazhou), exchanging poems with Bai Juyi"
     },
     {
@@ -6643,7 +6644,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "宝庆邵阳（今湖南邵阳）",
       "siteEn": "Baoqing / Shaoyang (Hunan)",
-      "zh": "邵阳人魏源据林则徐《四洲志》编成《海国图志》，倡师夷长技",
+      "zh": "邵阳人魏源据《四洲志》编成《海国图志》，倡“师夷长技以制夷”",
       "en": "Shaoyang scholar Wei Yuan compiles the Illustrated Treatise on the Maritime Kingdoms",
       "month": 12
     },
@@ -8470,7 +8471,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "平原郡（陵县）",
       "siteEn": "Pingyuan (Dezhou, Shandong)",
-      "zh": "安禄山叛军南下河北瓦解，平原太守颜真卿首举义旗传檄讨贼",
+      "zh": "范阳叛军南下河北瓦解，平原太守颜真卿首举义旗传檄讨贼",
       "en": "Prefect Yan Zhenqing raises the loyalist banner at Pingyuan, rallying seventeen Hebei commanderies"
     },
     {
@@ -8516,8 +8517,8 @@ window.ATLAS_LORE_DATA = {
         109.52,
         34.02
       ],
-      "site": "蓝田关→潮州",
-      "siteEn": "Blue Pass (Lantian) & Chaozhou",
+      "site": "蓝田关（今陕西蓝田）",
+      "siteEn": "Lantian Pass (Lantian, Shaanxi)",
       "zh": "韩愈谏迎佛骨贬潮州，过蓝田关赋“云横秦岭家何在”",
       "en": "Exiled to Chaozhou over the Buddha-bone memorial, Han Yu crosses snowy Lantian Pass in verse"
     },
@@ -9066,7 +9067,8 @@ window.ATLAS_LORE_DATA = {
       "site": "南海归航道",
       "siteEn": "Maritime Silk Sea Route",
       "zh": "六十二岁的三宝太监郑和第七次下西洋途中病逝于印度西海岸古里",
-      "en": "On his seventh voyage Admiral Zheng He dies at Calicut on the Malabar Coast of India aged 62"
+      "en": "On his seventh voyage Admiral Zheng He dies at Calicut on the Malabar Coast of India aged 62",
+      "month": 8
     },
     {
       "dynastyKey": "ming",
@@ -9640,8 +9642,8 @@ window.ATLAS_LORE_DATA = {
       "dynastyKey": "sanguo",
       "year": 228,
       "coord": [
-        105.72,
-        34.58
+        106.92,
+        33.25
       ],
       "site": "箕谷（褒城北）",
       "siteEn": "Jigu Valley (Shaanxi)",
@@ -9675,6 +9677,7 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Yinping Trail & Mianzhu",
       "zh": "征西将军邓艾率精兵自阴平无人之地裹毡滚崖七百里奇袭江油",
       "en": "Wei general Deng Ai wraps soldiers in felt to roll down sheer cliffs along Yinping Trail",
+      "month": 5,
       "persons": [
         "jiangwei",
         "dengai"
@@ -11778,11 +11781,11 @@ window.ATLAS_LORE_DATA = {
             34.33
           ],
           "labelPos": "bottom",
-          "titleZh": "亲政平乱 · 蓄势东出",
+          "titleZh": "亲政平乱·蓄势东出",
           "titleEn": "Assuming Personal Rule & Grand Strategy",
-          "descZh": "二十二岁的秦王政在故都雍城蕲年宫行冠礼亲政，旋即发兵平定长信侯嫪毐之乱，次年罢免相邦吕不韦。随后采纳大梁人尉缭、楚人李斯「远交近攻、先弱后强、各个击破」之策，倾关中与巴蜀之力，蓄势东出函谷关。",
+          "descZh": "二十二岁的秦王政在故都雍城蕲年宫行冠礼亲政，旋即发兵平定长信侯嫪毐之乱，次年罢免相邦吕不韦。随后采纳大梁人尉缭、楚人李斯“远交近攻、先弱后强、各个击破”之策，倾关中与巴蜀之力，蓄势东出函谷关。",
           "descEn": "At age 22, King Zheng of Qin assumed personal rule, crushed Lao Ai’s rebellion, dismissed Chancellor Lü Buwei, and adopted Li Si and Wei Liao’s grand strategy to annex the six eastern states one by one.",
-          "quoteZh": "「秦王为人，蜂准，长目，挚鸟膺，豺声，少恩而虎狼之心……诚得志于天下，天下皆为虏矣。」——《史记·秦始皇本纪》引尉缭语",
+          "quoteZh": "《史记·秦始皇本纪》引尉缭语：“秦王为人，蜂准，长目，挚鸟膺，豺声，少恩而虎狼之心……诚得志于天下，天下皆为虏矣。”",
           "quoteEn": "“The King of Qin is a man with a prominent nose, elongated eyes, the breast of a bird of prey, and the voice of a jackal; he possesses little kindness and the heart of a tiger or wolf... If he truly achieves his ambitions in the realm, all under Heaven will become his captives.” — Records of the Grand Historian (Shiji)",
           "persons": [
             "qinshihuang",
@@ -11815,11 +11818,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "titleZh": "攻赵取邺 · 灭国序幕",
+          "titleZh": "攻赵取邺·灭国序幕",
           "titleEn": "Capture of Ye — Opening the Unification Wars",
           "descZh": "趁赵燕交兵、赵军主力北上攻燕之际，秦王政命王翦、桓齮、杨端和三路大军东出伐赵，连拔邺城、阏与等九城。此役夺取赵国南部漳水门户，正式拉开秦灭六国十年统一战争的序幕。",
           "descEn": "Exploiting a war between Zhao and Yan, Qin generals Wang Jian, Huan Yi, and Yang Duanhe marched east and captured nine Zhao cities including Ye and Yanyu, opening the unification wars.",
-          "quoteZh": "「十一年，王翦、桓齮、杨端和攻邺，取九城。」——《史记·秦始皇本纪》",
+          "quoteZh": "《史记·秦始皇本纪》：“十一年，王翦、桓齮、杨端和攻邺，取九城。”",
           "quoteEn": "“In the 11th year, Wang Jian, Huan Yi, and Yang Duanhe attacked Ye and took nine cities.” — Shiji",
           "persons": [
             "qinshihuang",
@@ -11852,11 +11855,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "titleZh": "内史腾灭韩 · 六国首灭",
+          "titleZh": "内史腾灭韩·六国首灭",
           "titleEn": "Conquest of Han — First of the Six States to Fall",
           "descZh": "韩国扼守函谷关外，为秦东进首冲。秦内史腾率军渡河急袭韩都新郑，一举俘虏韩王安，尽收其地设立颍川郡（治阳翟）。韩国成为战国七雄中第一个覆灭的诸侯国，秦军由此牢牢扼住中原腹心。",
           "descEn": "Commandery Governor Teng marched on the Han capital Xinzheng, captured King An of Han, and established Yingchuan Commandery. Han became the first of the six states to fall.",
-          "quoteZh": "「十七年，内史腾攻韩，得韩王安，尽纳其地，以其地为郡，命曰颍川。」——《史记·秦始皇本纪》",
+          "quoteZh": "《史记·秦始皇本纪》：“十七年，内史腾攻韩，得韩王安，尽纳其地，以其地为郡，命曰颍川。”",
           "quoteEn": "“In the 17th year, Governor Teng attacked Han, captured King An, and made his territory Yingchuan Commandery.” — Shiji"
         },
         {
@@ -11881,11 +11884,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "titleZh": "王翦克邯郸 · 破灭赵国",
+          "titleZh": "王翦克邯郸·破灭赵国",
           "titleEn": "Fall of Handan — Conquest of Zhao",
           "descZh": "赵国名将李牧屡挫秦军。秦军重金行反间计于赵王宠臣郭开，赵王迁自毁长城冤杀李牧、废司马尚。王翦遂猛攻大破赵军，于前228年攻克赵都邯郸，俘赵王迁；秦王政亲赴邯郸尽坑昔日母家仇人。赵公子嘉率宗族北奔代郡称代王。",
           "descEn": "After a Qin espionage plot induced King Qian of Zhao to execute his brilliant general Li Mu, Wang Jian shattered the Zhao army and captured Handan. Prince Jia fled north to establish the rump state of Dai.",
-          "quoteZh": "「赵葱死，颜聚亡，后三月，王翦因急击，大破赵，杀赵葱，虏赵王迁及其将颜聚，遂灭赵。」——《战国策》及《史记》",
+          "quoteZh": "《战国策》及《史记》：“赵葱死，颜聚亡，后三月，王翦因急击，大破赵，杀赵葱，虏赵王迁及其将颜聚，遂灭赵。”",
           "quoteEn": "“Wang Jian pressed the attack, shattered the Zhao forces, and captured King Qian, extinguishing Zhao.” — Shiji",
           "persons": [
             "qinshihuang",
@@ -11918,11 +11921,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "titleZh": "图穷匕见与易水破燕 · 攻拔蓟城",
+          "titleZh": "图穷匕见与易水破燕·攻拔蓟城",
           "titleEn": "Battle of Yi River & Capture of Jicheng",
-          "descZh": "秦军饮马易水，燕太子丹于前227年遣荆轲歌「风萧萧兮易水寒」入咸阳献督亢地图刺秦，图穷匕见未果。秦王政震怒，命王翦、辛胜率主力北伐，于易水之西大破燕代联军，前226年十月攻拔燕都蓟城。燕王喜斩太子丹首级献秦求和未果，退保辽东襄平。",
+          "descZh": "秦军饮马易水，燕太子丹于前227年遣荆轲歌“风萧萧兮易水寒”入咸阳献督亢地图刺秦，图穷匕见未果。秦王政震怒，命王翦、辛胜率主力北伐，于易水之西大破燕代联军，前226年十月攻拔燕都蓟城。燕王喜斩太子丹首级献秦求和未果，退保辽东襄平。",
           "descEn": "After Jing Ke’s failed assassination attempt in Xianyang (227 BCE), Wang Jian crushed the Yan-Dai army west of the Yi River and captured the Yan capital Jicheng in 226 BCE. King Xi of Yan fled east to Liaodong.",
-          "quoteZh": "「风萧萧兮易水寒，壮士一去兮不复还！」——《战国策·燕策三》",
+          "quoteZh": "《战国策·燕策三》：“风萧萧兮易水寒，壮士一去兮不复还！”",
           "quoteEn": "“The wind blows shrill and the Yi River is cold; once the hero departs, he shall never return!” — Intrigues of the Warring States",
           "persons": [
             "qinshihuang",
@@ -11955,11 +11958,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "titleZh": "王贲水灌大梁 · 荡平魏国",
+          "titleZh": "王贲水灌大梁·荡平魏国",
           "titleEn": "Flooding of Daliang — Conquest of Wei",
           "descZh": "魏都大梁城垣坚厚、护城河深广，易守难攻。王翦之子王贲率军南下攻魏，掘开黄河与鸿沟水渠引水灌城。浸灌三月，大梁城墙崩坏，魏王假出降被杀，秦尽收魏地设砀郡，三晋至此尽入于秦。",
           "descEn": "Facing the heavily fortified Wei capital of Daliang, Wang Ben diverted the Yellow River and Honggou Canal to flood the city for three months until its walls collapsed. King Jia surrendered, ending the state of Wei.",
-          "quoteZh": "「二十二年，王贲攻魏，引河沟灌大梁，大梁城坏，其王请降，尽取其地。」——《史记·秦始皇本纪》",
+          "quoteZh": "《史记·秦始皇本纪》：“二十二年，王贲攻魏，引河沟灌大梁，大梁城坏，其王请降，尽取其地。”",
           "quoteEn": "“In the 22nd year, Wang Ben attacked Wei, channeled the Yellow River to flood Daliang, and took all its land.” — Shiji"
         },
         {
@@ -11988,11 +11991,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "titleZh": "王翦六十万破楚 · 攻克寿春",
+          "titleZh": "王翦六十万破楚·攻克寿春",
           "titleEn": "Six Hundred Thousand Troops — Conquest of Chu",
           "descZh": "李信率二十万秦军伐楚先胜后败，为项燕所乘。秦王政亲赴频阳向老将王翦谢过，倾全国六十万大军托付王翦、蒙武。王翦坚壁不出以老楚师，待楚军东撤之际大举追击，于蕲南击杀项燕，攻克楚都寿春，俘楚王负刍，广袤楚地尽归于秦。",
           "descEn": "After Li Xin’s setback, King Zheng entrusted 600,000 troops to veteran general Wang Jian. Wearing down the Chu forces before striking decisively, Wang Jian captured Shouchun and King Fuchu, conquering Chu.",
-          "quoteZh": "「王翦果代李信击荆……荆数挑战而秦不出。乃引而东。翦因举兵追之，令壮士击，大破荆军。」——《史记·白起王翦列传》",
+          "quoteZh": "《史记·白起王翦列传》：“王翦果代李信击荆……荆数挑战而秦不出。乃引而东。翦因举兵追之，令壮士击，大破荆军。”",
           "quoteEn": "“Chu repeatedly challenged Qin to battle, yet Wang Jian held firm inside his ramparts until Chu retreated east, then struck with full force and routed them.” — Shiji",
           "persons": [
             "qinshihuang",
@@ -12025,11 +12028,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "top",
-          "titleZh": "远征辽东 · 灭燕平代定江南",
+          "titleZh": "远征辽东·灭燕平代定江南",
           "titleEn": "Liaodong Campaign — Extinguishing Yan & Dai",
           "descZh": "王贲、李信挥师东北远征辽东，攻破襄平，俘燕王喜，燕国彻底灭亡；旋即回师北击代郡，俘代王嘉，赵氏余脉亦绝。同年南线王翦大军渡江平定楚国江南旧地，降服越君，置会稽郡。天下六国仅余东海之滨的齐国孤悬。",
           "descEn": "Wang Ben and Li Xin marched into Liaodong to capture King Xi of Yan at Xiangping, then turned west to capture King Jia of Dai, while Wang Jian pacified Jiangnan and established Kuaiji Commandery.",
-          "quoteZh": "「二十五年，大兴兵，使王贲将，攻燕辽东，得燕王喜。还攻代，虏代王嘉。王翦遂定荆江南地。」——《史记·秦始皇本纪》",
+          "quoteZh": "《史记·秦始皇本纪》：“二十五年，大兴兵，使王贲将，攻燕辽东，得燕王喜。还攻代，虏代王嘉。王翦遂定荆江南地。”",
           "quoteEn": "“In the 25th year, Wang Ben attacked Liaodong, captured King Xi of Yan, and returned to capture King Jia of Dai, while Wang Jian pacified Jiangnan.” — Shiji"
         },
         {
@@ -12058,11 +12061,11 @@ window.ATLAS_LORE_DATA = {
             ]
           ],
           "labelPos": "bottom",
-          "titleZh": "六王毕 · 四海一（齐降天下一统）",
+          "titleZh": "六王毕·四海一（齐降天下一统）",
           "titleEn": "Surrender of Qi at Linzi — Empire Unified",
-          "descZh": "齐相后胜受秦重金贿赂，劝齐王建不修战备、不援五国，仅于西界屯兵防秦。前221年，王贲、李信、蒙恬自燕地南下避开齐军西境主力，径直突入齐都临淄，齐王建不战出降。秦王政遂完成统一大业，定尊号「始皇帝」，废分封、设三十六郡，开创中国两千年大一统格局。",
+          "descZh": "齐相后胜受秦重金贿赂，劝齐王建不修战备、不援五国，仅于西界屯兵防秦。前221年，王贲、李信、蒙恬自燕地南下避开齐军西境主力，径直突入齐都临淄，齐王建不战出降。秦王政遂完成统一大业，定尊号“始皇帝”，废分封、设三十六郡，开创中国两千年大一统格局。",
           "descEn": "Bypassing Qi’s western border defenses, Wang Ben, Li Xin, and Meng Tian plunged south from Yan straight into Linzi. King Jian of Qi surrendered without a battle, completing the unification of China under the First Emperor.",
-          "quoteZh": "「六王毕，四海一。」——杜牧《阿房宫赋》 · 「秦初并天下……法令由一统。」——《史记·秦始皇本纪》",
+          "quoteZh": "杜牧《阿房宫赋》：“六王毕，四海一。” · 《史记·秦始皇本纪》：“秦初并天下……法令由一统。”",
           "quoteEn": "“The six kings met their end, and the four seas became one.” — Du Mu, Rhapsody on Epang Palace",
           "persons": [
             "qinshihuang",
@@ -12219,7 +12222,7 @@ window.ATLAS_LORE_DATA = {
           "modernZh": "锡尔河中游",
           "ancientEn": "Kangju",
           "modernEn": "Tashkent / Samarkand region",
-          "titleZh": "经康居传致大月氏",
+          "titleZh": "取道康居·传致大月氏",
           "titleEn": "Relay Through Kangju to the Oxus",
           "descZh": "由大宛导驿护送至康居国，再由康居王庭遣骑护送南下妫水（阿姆河）流域的大月氏王庭。",
           "descEn": "Escorted through Kangju between the Syr Darya and Zeravshan rivers, and relayed southward toward the Amu Darya (Oxus).",
@@ -13647,9 +13650,9 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Yuyao, Ningbo, Zhejiang",
           "titleZh": "降生瑞云·志在圣贤",
           "titleEn": "Birth at Ruiyun Tower & Aspiration for Sagehood",
-          "descZh": "王守仁诞生于浙江绍兴府余姚县瑞云楼，父王华次年高中状元。十一岁随祖父北上京师塾读，问塾师「何为第一等事」，师答「惟读书登第耳」，守仁昂然对曰：「登第恐未为第一等事，或读书学圣贤耳。」自幼立下成圣之志。",
+          "descZh": "王守仁诞生于浙江绍兴府余姚县瑞云楼，父王华次年高中状元。十一岁随祖父北上京师塾读，问塾师“何为第一等事”，师答“惟读书登第耳”，守仁昂然对曰：“登第恐未为第一等事，或读书学圣贤耳。”自幼立下成圣之志。",
           "descEn": "Born at Ruiyun Tower in Yuyao, Wang Shouren asked his tutor at age eleven what the highest pursuit in life was. Told it was passing the imperial exams, he replied: \"Passing exams is surely not the highest pursuit; learning to become a sage is.\"",
-          "quoteZh": "王阳明少时语：“登第恐未为第一等事，或读书学圣贤耳。”——《王阳明先生年谱》",
+          "quoteZh": "《王阳明先生年谱》引少时语：“登第恐未为第一等事，或读书学圣贤耳。”",
           "quoteEn": "Young Wang Yangming: \"Passing the imperial examination is hardly the highest undertaking; reading to become a sage is.\""
         },
         {
@@ -13672,7 +13675,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Shangrao, Jiangxi",
           "titleZh": "谒娄一斋·始闻格物",
           "titleEn": "Meeting Lou Liang at Guangxin & Inquiring into Gewu",
-          "descZh": "十八岁自南昌迎妇归余姚，舟次江西广信（今上饶），特往拜谒崇仁学派大儒娄谅（娄一斋）。娄谅向其阐发宋儒格物穷理之旨，语以「圣人必可学而至」，守仁深相契合，自此笃志圣学，归后遍读考亭朱子遗书。",
+          "descZh": "十八岁自南昌迎妇归余姚，舟次江西广信（今上饶），特往拜谒崇仁学派大儒娄谅（娄一斋）。娄谅向其阐发宋儒格物穷理之旨，语以“圣人必可学而至”，守仁深相契合，自此笃志圣学，归后遍读考亭朱子遗书。",
           "descEn": "Returning from Nanchang at age eighteen, Wang visited Neo-Confucian master Lou Liang at Guangxin, who assured him that sagehood could truly be attained through learning and inquiry.",
           "quoteZh": "《明史·王守仁传》：“过广信，谒娄谅，语以圣人可学而至，遂深契之。”",
           "quoteEn": "History of Ming: \"Passing through Guangxin, he visited Lou Liang, who taught that sagehood can be learned, striking a deep chord in him.\""
@@ -13701,7 +13704,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Beijing",
           "titleZh": "格竹致疾·进士及第",
           "titleEn": "Investigating Bamboo & Passing the Metropolitan Exam",
-          "descZh": "在京师欲依朱熹「即物穷理」之法穷究草木之理，与钱友同坐亭前面竹「格竹」七日七夜，理未得而劳神成疾，始疑外求之弊。弘治十二年（1499）赐进士及第，历任工部、刑部主事，究心兵法韬略与经世之学。",
+          "descZh": "在京师欲依朱熹“即物穷理”之法穷究草木之理，与钱友同坐亭前面竹“格竹”七日七夜，理未得而劳神成疾，始疑外求之弊。弘治十二年（1499）赐进士及第，历任工部、刑部主事，究心兵法韬略与经世之学。",
           "descEn": "In Beijing, Wang meditated before bamboo for seven days trying to grasp its Neo-Confucian principle, falling ill and doubting externalism. In 1499 he passed the palace exam and served in the Ministries of Works and Justice.",
           "quoteZh": "《传习录》：“众人只说格物要依晦翁，何曾把他的说去用？我着实曾用来。”",
           "quoteEn": "Instructions for Practical Living: \"People say we must follow Zhu Xi in investigating things, yet who has truly practiced it? I genuinely tried for seven days.\""
@@ -13763,7 +13766,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Xiuwen, Guiyang, Guizhou",
           "titleZh": "龙场大悟·创立心学",
           "titleEn": "Longchang Enlightenment & Philosophy of Mind",
-          "descZh": "抵达贵州万山丛棘、瘴疠横行之龙场驿。居东洞石棺之中，日夜端居澄默，自问「圣人处此更有何道」。正德三年中夜忽然大悟格物致知之旨，彻见「圣人之道，吾性自足，向之求理于事物者误也」，继而倡「知行合一」，开五百年阳明心学。",
+          "descZh": "抵达贵州万山丛棘、瘴疠横行之龙场驿。居东洞石棺之中，日夜端居澄默，自问“圣人处此更有何道”。正德三年中夜忽然大悟格物致知之旨，彻见“圣人之道，吾性自足，向之求理于事物者误也”，继而倡“知行合一”，开五百年阳明心学。",
           "descEn": "Living in a stone cave in remote Guizhou, Wang meditated day and night on life and death. One midnight in 1508 he achieved sudden enlightenment: \"The Way of the Sages is complete within my own nature; seeking principles in external things was mistaken.\"",
           "quoteZh": "《王阳明年谱》：“圣人之道，吾性自足，向之求理于事物者误也。”",
           "quoteEn": "Chronicle of Wang Yangming: \"The Way of the Sages is self-sufficient within our own mind-nature; seeking principle outside in external things was an error.\""
@@ -13871,7 +13874,7 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Shaoxing, Zhejiang",
           "titleZh": "致良知教·天泉证道",
           "titleEn": "Doctrine of Liangzhi & Tianquan Bridge Discourse",
-          "descZh": "明世宗即位，封守仁新建伯，守仁归越城绍兴，于稽山书院、阳明洞聚徒讲学，正式揭出「致良知」三字教法，四方学者云集。嘉靖六年（1527）奉诏出征两广前夕，于天泉桥与大弟子钱德洪、王畿印证心学「四句教」，成心学传世纲领。",
+          "descZh": "明世宗即位，封守仁新建伯，守仁归越城绍兴，于稽山书院、阳明洞聚徒讲学，正式揭出“致良知”三字教法，四方学者云集。嘉靖六年（1527）奉诏出征两广前夕，于天泉桥与大弟子钱德洪、王畿印证心学“四句教”，成心学传世纲领。",
           "descEn": "Enfeoffed as Earl of Xinjian, Wang lectured at Shaoxing and proclaimed the doctrine of \"Extending Innate Moral Knowledge\" (Zhi Liangzhi). On the eve of his Guangxi campaign in 1527, he delivered the Four-Sentence Teaching at Tianquan Bridge.",
           "quoteZh": "《天泉证道·四句教》：“无善无恶心之体，有善有恶意之动。知善知恶是良知，为善去恶是格物。”",
           "quoteEn": "Four-Sentence Teaching: \"Neither good nor evil is the substance of the mind; good and evil arise with the movement of intention. Knowing good and evil is innate knowledge; doing good and removing evil is the investigation of things.\""
@@ -13908,9 +13911,9 @@ window.ATLAS_LORE_DATA = {
           "modernEn": "Dayu, Ganzhou, Jiangxi",
           "titleZh": "此心光明·亦复何言",
           "titleEn": "Radiant Mind — Final Passing at Qinglongpu",
-          "descZh": "嘉靖六年总督两广，不费一兵一卒招抚思恩、田州卢苏王受七万众，继以奇兵荡平断藤峡八寨瑶乱。次年冬肺疾加剧上疏乞归，十一月二十九日（公历1529年1月）舟次江西南安府大余县青龙铺。门人周积问遗言，先生微笑曰：「此心光明，亦复何言！」遂瞑目而逝。",
+          "descZh": "嘉靖六年总督两广，不费一兵一卒招抚思恩、田州卢苏王受七万众，继以奇兵荡平断藤峡八寨瑶乱。次年冬肺疾加剧上疏乞归，十一月二十九日（公历1529年1月）舟次江西南安府大余县青龙铺。门人周积问遗言，先生微笑曰：“此心光明，亦复何言！”遂瞑目而逝。",
           "descEn": "After pacifying Guangxi’s Si’en, Tianzhou, and Rattan Gorge rebellions, Wang fell gravely ill on his journey home. Passing away on a boat at Qinglongpu in Nan’an, he spoke his final words: \"This mind is luminous; what more is there to say?\"",
-          "quoteZh": "王阳明临终遗言：“此心光明，亦复何言！”——《王阳明先生年谱》",
+          "quoteZh": "《王阳明先生年谱》载临终遗言：“此心光明，亦复何言！”",
           "quoteEn": "Wang Yangming’s last words: \"This mind is luminous—what more is there to say!\""
         }
       ]
@@ -20992,7 +20995,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Heirloom Seal of the Realm",
       "courtesyZh": "和氏之璧 · 秦制汉传 · 受命于天既寿永昌",
       "courtesyEn": "Heshi Bi Jade · Carved by Qin, Passed Through Han to Later Tang",
-      "descZh": "《资治通鉴》卷二百八十载：秦始皇命李斯磨楚和氏璧制之，文曰「受命于天，既寿永昌」。自秦子婴奉玺降汉，历两汉、魏晋、南朝、隋唐凡千余载，至公元936年后唐末帝李从珂登洛阳玄武楼自焚，遂失所在。",
+      "descZh": "《资治通鉴》卷二百八十载：秦始皇命李斯磨楚和氏璧制之，文曰“受命于天，既寿永昌”。自秦子婴奉玺降汉，历两汉、魏晋、南朝、隋唐凡千余载，至公元936年后唐末帝李从珂登洛阳玄武楼自焚，遂失所在。",
       "descEn": "Carved under Qin Shi Huang from the Heshi Bi jade with the eight characters 'Having received the Mandate from Heaven, may the Emperor lead a long and prosperous life', the seal passed from Qin through Han, Wei, Jin, the Southern Dynasties, Sui, and Tang before vanishing in the flames of Xuanwu Tower in 936 CE.",
       "isRelic": true,
       "dynastyKey": "qin",
@@ -21026,11 +21029,11 @@ window.ATLAS_LORE_DATA = {
             114.48,
             36.61
           ],
-          "titleZh": "完璧归赵 · 和氏璧入世",
+          "titleZh": "完璧归赵·和氏璧入世",
           "titleEn": "Returning the Jade Intact to Zhao",
           "descZh": "赵惠文王得楚和氏璧，秦昭王请易以十五城；蔺相如奉璧入秦，廷斥秦王无偿城之意，乃令从者衣褐怀璧从径道亡归邯郸。后秦王政二十年（前228）王翦克邯郸虏赵王迁，和氏璧遂入于秦。",
           "descEn": "King Huiwen of Zhao obtained the Heshi Bi jade; Lin Xiangru brought it back intact from Qin to Handan, until Qin conquered Zhao in 228 BCE and seized the jade.",
-          "quoteZh": "《资治通鉴·周纪四》卷四：「赵王得楚和氏璧，秦昭王欲之，请易以十五城……乃使其从者衣褐，怀其璧，从径道亡，归璧于赵。」",
+          "quoteZh": "《资治通鉴·周纪四》卷四：“赵王得楚和氏璧，秦昭王欲之，请易以十五城……乃使其从者衣褐，怀其璧，从径道亡，归璧于赵。”",
           "quoteEn": "Zizhi Tongjian, Vol. 4: 'The King of Zhao obtained the Heshi Bi of Chu... Lin Xiangru had his attendant dress in coarse cloth, conceal the jade against his chest, and slip back to Zhao by side roads.'"
         },
         {
@@ -21057,11 +21060,11 @@ window.ATLAS_LORE_DATA = {
               34.62
             ]
           ],
-          "titleZh": "始皇制玺 · 受命于天",
+          "titleZh": "始皇制玺·受命于天",
           "titleEn": "Qin Shi Huang Carves the Imperial Seal",
-          "descZh": "秦王政二十六年并吞六国，初称始皇帝；命丞相李斯磨和氏璧作皇帝玉玺，方四寸，虫鸟篆文曰「受命于天，既寿永昌」，由是定为天子正统信物。",
+          "descZh": "秦王政二十六年并吞六国，初称始皇帝；命丞相李斯磨和氏璧作皇帝玉玺，方四寸，虫鸟篆文曰“受命于天，既寿永昌”，由是定为天子正统信物。",
           "descEn": "Upon unifying the Six States in 221 BCE, Qin Shi Huang had Chancellor Li Si carve the Heshi Bi into the Imperial Seal inscribed 'Having received the Mandate from Heaven, may the Emperor lead a long and prosperous life.'",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十胡三省注引崔浩曰：「李斯磨和氏璧作之，汉诸帝世传服之，谓之传国玺……文曰『受命于天，既寿永昌』。」",
+          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十胡三省注引崔浩曰：“李斯磨和氏璧作之，汉诸帝世传服之，谓之传国玺……文曰‘受命于天，既寿永昌’。”",
           "quoteEn": "Zizhi Tongjian, Vol. 280 (Cui Hao note): 'Li Si ground and carved it from the Heshi Bi; the Han emperors wore it through the generations and called it the Heirloom Seal of the Realm.'"
         },
         {
@@ -21074,11 +21077,11 @@ window.ATLAS_LORE_DATA = {
             109.06,
             34.36
           ],
-          "titleZh": "子婴奉玺 · 降于轵道",
+          "titleZh": "子婴奉玺·降于轵道",
           "titleEn": "Ziying Surrenders the Seal at Zhidao",
-          "descZh": "秦二世三年冬十月，沛公刘邦破峣关军至霸上；秦王子婴素车白马，系颈以组，封皇帝玺、符、节降于轵道旁。汉兴，高祖佩之，世名「汉传国玺」。",
+          "descZh": "秦二世三年冬十月，沛公刘邦破峣关军至霸上；秦王子婴素车白马，系颈以组，封皇帝玺、符、节降于轵道旁。汉兴，高祖佩之，世名“汉传国玺”。",
           "descEn": "In the tenth month of 206 BCE, Qin ruler Ziying rode a white-horse cart to Zhidao near Bashang and surrendered the sealed Imperial Jade Seal to Liu Bang, who later wore it as founding Emperor of Han.",
-          "quoteZh": "《资治通鉴·汉纪一》卷九：「冬，十月，沛公至霸上。秦王子婴素车白马，系颈以组，封皇帝玺、符、节，降轵道旁。」",
+          "quoteZh": "《资治通鉴·汉纪一》卷九：“冬，十月，沛公至霸上。秦王子婴素车白马，系颈以组，封皇帝玺、符、节，降轵道旁。”",
           "quoteEn": "Zizhi Tongjian, Vol. 9: 'In winter, the tenth month, the Lord of Pei reached Bashang. King Ziying of Qin, in a plain cart drawn by a white horse, sealed the Imperial Seal, tallies, and staffs, and surrendered beside Zhidao.'"
         },
         {
@@ -21091,11 +21094,11 @@ window.ATLAS_LORE_DATA = {
             108.94,
             34.27
           ],
-          "titleZh": "王莽逼宫 · 投玺崩角",
+          "titleZh": "王莽逼宫·投玺崩角",
           "titleEn": "Empress Dowager Wang Hurls the Seal, Chipping a Horn",
           "descZh": "初始元年冬十二月，王莽篡汉建新，遣安阳侯王舜入未央宫长乐室逼太皇太后王政君索取传国玺；太后怒骂王莽背恩，出汉传国玺投之于地以授王舜，玺上螭一角微崩，后以黄金补之。",
           "descEn": "Usurping the Han throne in 8 CE, Wang Mang sent Wang Shun to demand the seal from Grand Empress Dowager Wang Zhengjun; she hurled the seal to the floor in fury, chipping one of its dragon horns (later mended with gold).",
-          "quoteZh": "《资治通鉴·汉纪二十八》卷三十六：「乃出汉传国玺，投之地以授舜，曰：『我老已死，如而兄弟，今族灭也！』……玺上螭一角微崩。」",
+          "quoteZh": "《资治通鉴·汉纪二十八》卷三十六：“乃出汉传国玺，投之地以授舜，曰：‘我老已死，如而兄弟，今族灭也！’……玺上螭一角微崩。”",
           "quoteEn": "Zizhi Tongjian, Vol. 36: 'She brought out the Han Heirloom Seal and hurled it to the ground for Wang Shun... One horn of the coiled dragon on the seal was slightly chipped.'"
         },
         {
@@ -21118,11 +21121,11 @@ window.ATLAS_LORE_DATA = {
               34.62
             ]
           ],
-          "titleZh": "宜阳受降 · 玺归光武",
+          "titleZh": "宜阳受降·玺归光武",
           "titleEn": "Liu Penzi Surrenders the Seal to Guangwu at Yiyang",
           "descZh": "新莽败亡，传国玺先归更始帝刘玄，赤眉破长安后复立刘盆子；东汉建武三年春正月甲子，冯异破赤眉于崤底，刘盆子与丞相徐宣肉袒降于宜阳，奉上所得传国玺绶，玉玺重归东汉洛阳宫。",
           "descEn": "After Wang Mang's fall, the seal passed to the Gengshi Emperor and the Red Eyebrows; in the first month of 27 CE at Yiyang, Liu Penzi surrendered the Heirloom Seal to Emperor Guangwu (Liu Xiu).",
-          "quoteZh": "《资治通鉴·汉纪三十三》卷四十一：「建武三年春正月，甲子，盆子及丞相徐宣以下三十余人肉袒降，上所得传国玺绶，积兵甲宜阳城西，与熊耳山齐。」",
+          "quoteZh": "《资治通鉴·汉纪三十三》卷四十一：“建武三年春正月，甲子，盆子及丞相徐宣以下三十余人肉袒降，上所得传国玺绶，积兵甲宜阳城西，与熊耳山齐。”",
           "quoteEn": "Zizhi Tongjian, Vol. 41: 'In the first month of the third year of Jianwu, Liu Penzi and Chancellor Xu Xuan bared their shoulders in surrender and presented the Heirloom Seal and ribbon they had captured at Yiyang.'"
         },
         {
@@ -21135,11 +21138,11 @@ window.ATLAS_LORE_DATA = {
             112.45,
             34.62
           ],
-          "titleZh": "洛阳修陵 · 孙坚得玺",
+          "titleZh": "洛阳修陵·孙坚得玺",
           "titleEn": "Sun Jian Retrieves the Seal from the Palace Well in Luoyang",
           "descZh": "初平元年董卓胁献帝西迁长安、焚毁洛阳宫室，中官投传国玺于井；初平二年春二月，破虏将军孙坚进兵洛阳宣阳城门，击走吕布，扫除汉室宗庙祠以太牢，军士于城南甄官井中探得汉传国玺。",
           "descEn": "After Dong Zhuo burned Luoyang and fled west, General Sun Jian entered the ruined capital in early 191 CE, swept the ancestral temples, and recovered the Heirloom Seal from the Zhenguan Well south of the palace.",
-          "quoteZh": "《资治通鉴·汉纪五十二》卷六十：「坚进洛阳宣阳城门，更击吕布，布复破走。坚乃扫除宗庙，祠以太牢；得传国玺于城南甄官井中。」",
+          "quoteZh": "《资治通鉴·汉纪五十二》卷六十：“坚进洛阳宣阳城门，更击吕布，布复破走。坚乃扫除宗庙，祠以太牢；得传国玺于城南甄官井中。”",
           "quoteEn": "Zizhi Tongjian, Vol. 60: 'Sun Jian advanced through the Xuanyang Gate of Luoyang and routed Lü Bu. He swept the ancestral temples, sacrificed with the grand offering, and obtained the Heirloom Seal from the Zhenguan Well south of the city.'"
         },
         {
@@ -21162,11 +21165,11 @@ window.ATLAS_LORE_DATA = {
               33.6
             ]
           ],
-          "titleZh": "袁术僭号 · 徐璆献玺",
+          "titleZh": "袁术僭号·徐璆献玺",
           "titleEn": "Yuan Shu Usurps the Imperial Title; Xu Qiu Returns the Seal",
           "descZh": "袁术拘孙坚妻吴氏夺取传国玺，于建安二年（197）在寿春僭号仲氏，众叛亲离；建安四年六月袁术败亡呕血死，广陵太守徐璆截获其传国玺，亲诣许都献还汉献帝。",
           "descEn": "Warlord Yuan Shu seized the seal from Sun Jian's widow and declared himself emperor at Shouchun in 197 CE; upon his death in 199 CE, Grand Administrator Xu Qiu recovered the seal and presented it back to the Han court at Xu.",
-          "quoteZh": "《资治通鉴·汉纪五十四》卷六十二：「袁术以得传国玺，遂谋称帝。」卷六十三：「广陵太守徐璆得其传国玺，诣许献之。」",
+          "quoteZh": "《资治通鉴·汉纪五十四》卷六十二：“袁术以得传国玺，遂谋称帝。”卷六十三：“广陵太守徐璆得其传国玺，诣许献之。”",
           "quoteEn": "Zizhi Tongjian, Vol. 62–63: 'Having obtained the Heirloom Seal, Yuan Shu plotted to declare himself emperor... Grand Administrator of Guangling Xu Qiu recovered his Heirloom Seal and traveled to Xu to present it to the court.'"
         },
         {
@@ -21183,11 +21186,11 @@ window.ATLAS_LORE_DATA = {
             116.78,
             32.58
           ],
-          "titleZh": "繁阳受禅 · 汉魏易代",
+          "titleZh": "繁阳受禅·汉魏易代",
           "titleEn": "Cao Pi Receives the Seal of Abdication at Fanyang",
           "descZh": "延康元年冬十月乙卯，汉献帝刘协遣行御史大夫张音持节奉传国玺绶诏册禅位于魏；辛未，魏王曹丕于许昌西南繁阳升受禅坛受玺绶即位，改元黄初。景元四年（263）邓艾克成都，蜀汉刘禅亦送玺绶归洛阳；泰始元年（265）司马炎受魏禅，玺归西晋。",
           "descEn": "In the tenth month of 220 CE, Emperor Xian of Han sent Zhang Yin to present the Heirloom Seal to Cao Pi on the Abdication Altar at Fanyang near Xuchang, inaugurating the Wei dynasty (and passing to Western Jin in 265 CE).",
-          "quoteZh": "《资治通鉴·魏纪一》卷六十九：「使行御史大夫事张音持节奉玺绶诏册，禅位于魏……辛未，升坛受玺绶，即皇帝位。」",
+          "quoteZh": "《资治通鉴·魏纪一》卷六十九：“使行御史大夫事张音持节奉玺绶诏册，禅位于魏……辛未，升坛受玺绶，即皇帝位。”",
           "quoteEn": "Zizhi Tongjian, Vol. 69: 'Acting Grandee Secretary Zhang Yin was sent bearing credentials to present the Seal, ribbon, and edict of abdication to Wei... On day Xinwei, Cao Pi ascended the altar, received the Seal and ribbon, and took the imperial throne.'"
         },
         {
@@ -21204,11 +21207,11 @@ window.ATLAS_LORE_DATA = {
             112.45,
             34.62
           ],
-          "titleZh": "永嘉之乱 · 玺没平阳",
+          "titleZh": "永嘉之乱·玺没平阳",
           "titleEn": "Disaster of Yongjia: The Seal Taken to Pingyang",
           "descZh": "西晋永嘉五年夏六月丁酉，汉赵呼延晏、刘曜、王弥攻陷洛阳宣阳门，纵兵大掠，俘晋怀帝司马炽及传国六玺送至平阳（今山西临汾）；后刘曜迁长安，咸和四年（329）石勒灭前赵，玉玺复转入后赵襄国、邺城。",
           "descEn": "In the sixth month of 311 CE during the Disaster of Yongjia, Han-Zhao forces sacked Luoyang and carried Emperor Huai of Jin along with the Heirloom Seal north to Pingyang, whence it later passed to Later Zhao at Ye.",
-          "quoteZh": "《资治通鉴·晋纪九》卷八十七：「曜、弥入自宣阳门，升太极前殿，纵兵大掠……迁帝及惠羊后、传国六玺于平阳。」",
+          "quoteZh": "《资治通鉴·晋纪九》卷八十七：“曜、弥入自宣阳门，升太极前殿，纵兵大掠……迁帝及惠羊后、传国六玺于平阳。”",
           "quoteEn": "Zizhi Tongjian, Vol. 87: 'Liu Yao and Wang Mi entered through the Xuanyang Gate, ascended the Taiji Front Hall... and removed the Emperor, Empress Yang, and the Six Heirloom Seals to Pingyang.'"
         },
         {
@@ -21235,11 +21238,11 @@ window.ATLAS_LORE_DATA = {
               33.6
             ]
           ],
-          "titleZh": "邺城秘迎 · 奉还建康",
+          "titleZh": "邺城秘迎·奉还建康",
           "titleEn": "Returned South from Ye to the Eastern Jin Capital Jiankang",
           "descZh": "东晋永和八年（352）冉魏将蒋干困守邺城，乞师于晋；濮阳太守戴施入邺助守，诡称督护何融迎粮，阴令怀传国玺送至枋头；谢尚遣振武将军胡彬率骑三百迎玺，八月奉致建康，自永嘉陷北四十一载复归晋室，历宋、齐、梁、陈相传。",
           "descEn": "In 352 CE during the siege of Ye, Eastern Jin magistrate Dai Shi secretly smuggled the Heirloom Seal out of Ye to Fangtou; General Xie Shang escorted it with 300 cavalry to Jiankang, where it remained through the Southern Dynasties.",
-          "quoteZh": "《资治通鉴·晋纪二十一》卷九十九：「施宣言使督护何融迎粮，阴令怀玺送于枋头……尚遣振武将军胡彬等骑三百迎玺，致诸建康；百僚毕贺。」",
+          "quoteZh": "《资治通鉴·晋纪二十一》卷九十九：“施宣言使督护何融迎粮，阴令怀玺送于枋头……尚遣振武将军胡彬等骑三百迎玺，致诸建康；百僚毕贺。”",
           "quoteEn": "Zizhi Tongjian, Vol. 99: 'Dai Shi announced that Protector He Rong was going to fetch grain, while secretly ordering him to carry the Seal against his chest to Fangtou... Xie Shang sent General Hu Bin with 300 horsemen to escort the Seal to Jiankang, and all officials offered congratulations.'"
         },
         {
@@ -21256,11 +21259,11 @@ window.ATLAS_LORE_DATA = {
             118.78,
             32.04
           ],
-          "titleZh": "平陈入隋 · 江都流落",
+          "titleZh": "平陈入隋·江都流落",
           "titleEn": "Sui Conquest of Chen and Fall at Jiangdu",
           "descZh": "开皇九年（589）正月隋军入建康灭陈，收传国玺献于大兴宫；大业十四年（618）三月宇文化及于江都发动兵变弑隋炀帝，夺传国玺北还，窦建德破宇文化及于聊城复得之；武德三年（620）突厥处罗可汗迎隋萧后及杨政道入塞北，窦建德遂遣使奉传国玺入于突厥。",
           "descEn": "Captured by Sui when Chen fell in 589 CE, the seal was taken to Jiangdu by Emperor Yang; after the 618 CE Jiangdu coup, Dou Jiande seized it from Yuwen Huaji and sent it with Empress Xiao into the Eastern Turkic Khaganate.",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：「历宋、齐、梁、陈，至于隋。隋亡，萧后携以入突厥。」",
+          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：“历宋、齐、梁、陈，至于隋。隋亡，萧后携以入突厥。”",
           "quoteEn": "Zizhi Tongjian, Vol. 280: 'It passed through Song, Qi, Liang, and Chen down to Sui. When Sui fell, Empress Xiao carried it with her into the Eastern Turks.'"
         },
         {
@@ -21287,11 +21290,11 @@ window.ATLAS_LORE_DATA = {
               38.6
             ]
           ],
-          "titleZh": "李靖破胡 · 萧后归唐",
+          "titleZh": "李靖破胡·萧后归唐",
           "titleEn": "Li Jing Defeats the Eastern Turks; Empress Xiao Returns the Seal to Tang",
           "descZh": "唐太宗贞观四年（630）春正月李靖奇袭定襄，二月大破东突厥于阴山，颉利可汗败走被擒；突厥奉隋萧皇后及杨政道归顺，五月辛未至长安，萧后遂奉传国玺归于大唐，历有唐一代宝藏于大内。",
           "descEn": "In 630 CE, Tang general Li Jing crushed the Eastern Turks at Dingxiang and Yinshan; former Sui Empress Xiao returned to Chang'an in the fifth month and presented the Heirloom Seal to Emperor Taizong of Tang.",
-          "quoteZh": "《资治通鉴·唐纪九》卷一百九十三：「五月，辛未，以隋萧后、政道至京师。」卷二百八十：「太宗贞观四年，李靖破突厥，萧后与政道奉之归于唐。」",
+          "quoteZh": "《资治通鉴·唐纪九》卷一百九十三：“五月，辛未，以隋萧后、政道至京师。”卷二百八十：“太宗贞观四年，李靖破突厥，萧后与政道奉之归于唐。”",
           "quoteEn": "Zizhi Tongjian, Vol. 193 & 280: 'In the fourth year of Zhenguan under Emperor Taizong, Li Jing defeated the Turks, and Empress Xiao with Yang Zhengdao presented the Seal back to Tang.'"
         },
         {
@@ -21314,11 +21317,11 @@ window.ATLAS_LORE_DATA = {
               34.27
             ]
           ],
-          "titleZh": "玄武楼焚 · 千古绝响",
+          "titleZh": "玄武楼焚·千古绝响",
           "titleEn": "Lost in the Flames of Xuanwu Tower in Luoyang",
           "descZh": "五代后唐清泰三年（后晋天福元年，936）闰十一月，石敬瑭引契丹兵南下逼洛阳；辛巳，后唐末帝李从珂聚后妃及传国宝、器玩，登洛阳宫城玄武楼纵火自焚。自秦始皇制玺至此凡一千一百五十七年，传国玉玺自此失其所在。",
           "descEn": "In the intercalary eleventh month of 936 CE, as Shi Jingtang and Khitan troops closed on Luoyang, Later Tang's final emperor Li Congke gathered the Heirloom Seal on Xuanwu Tower and set himself ablaze—whereupon the 1,157-year-old seal vanished from history.",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：「辛巳，唐主聚后妃以下及传国宝、器玩，登玄武楼，纵火自焚……至唐末帝自燔，自是传国宝失所在。」",
+          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：“辛巳，唐主聚后妃以下及传国宝、器玩，登玄武楼，纵火自焚……至唐末帝自燔，自是传国宝失所在。”",
           "quoteEn": "Zizhi Tongjian, Vol. 280: 'On day Xinsi, the Tang ruler gathered the empress, consorts, the Heirloom Seal, and palace treasures, ascended Xuanwu Tower, and set himself on fire... From the time the final Emperor of Later Tang burned himself, the Heirloom Seal of the Realm was lost.'"
         }
       ]
