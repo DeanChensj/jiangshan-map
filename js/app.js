@@ -17,6 +17,7 @@
   const RING_BBOX_WEAK = new WeakMap();
   const SHAPE_BBOX_WEAK = new WeakMap();
   const SHAPE_SIG_WEAK = new WeakMap();
+  const PREF_BOUNDARY_MESH_CACHE = new WeakMap();
   // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
@@ -825,6 +826,7 @@
     }
 
     _bindDom() {
+      this.viewportFrame = this._id('viewport-frame');
       this._stageWrap = this._id('svg-stage-wrap');
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
@@ -1925,9 +1927,16 @@
       if (this.grpTerrain) {
         this.grpTerrain.classList.toggle('is-hidden', !this.terrainMode);
       }
+      if (this.grpRivers && this.grpRivers.classList) {
+        this.grpRivers.classList.toggle('is-hidden', !this.terrainMode);
+      }
       const chk = this._id('chk-terrain');
       if (chk) {
         chk.checked = this.terrainMode;
+      }
+      this._invalidateTypographyLayout();
+      if (this.svg && this.camera && this.grpCorridors && this.grpSettlements) {
+        this._rescaleSvgTypography();
       }
     }
 
@@ -2191,6 +2200,151 @@
       this._hoveredPrefEl = null;
     }
 
+    // Single deduplicated mesh reproducing smoothRingToSvgPath geometry so
+    // idle .prefecture-shape elements need no GPU fill or stroke passes.
+    _buildPrefectureBoundaryPath(prefs) {
+      if (!Array.isArray(prefs) || !prefs.length) return '';
+      const cached = PREF_BOUNDARY_MESH_CACHE.get(prefs);
+      if (cached !== undefined) return cached;
+      const ptKey = (pt) =>
+        (Math.round(pt[0] * 100) + 20000) * 65536 + (Math.round(pt[1] * 100) + 10000);
+      const seen = new Set();
+      let d = '';
+      let penX = '';
+      let penY = '';
+      const emitLine = (x1, y1, x2, y2) => {
+        const x1s = x1.toFixed(1);
+        const y1s = y1.toFixed(1);
+        const x2s = x2.toFixed(1);
+        const y2s = y2.toFixed(1);
+        if (x1s === x2s && y1s === y2s) return;
+        if (x1s !== penX || y1s !== penY) {
+          d += `M${x1s} ${y1s}`;
+        }
+        d += `L${x2s} ${y2s}`;
+        penX = x2s;
+        penY = y2s;
+      };
+      for (const pref of prefs) {
+        if (!pref || !pref.shape) continue;
+        const coords = pref.shape.coordinates;
+        const polys = pref.shape.type === 'Polygon' ? [coords] : coords || [];
+        for (const poly of polys) {
+          if (!poly) continue;
+          for (let rIdx = 0; rIdx < poly.length; rIdx++) {
+            const rawRing = poly[rIdx];
+            if (!rawRing || rawRing.length < 3) continue;
+            const ring = this.projector._orientRing(rawRing, rIdx > 0);
+            let n = ring.length;
+            if (
+              n > 3 &&
+              Math.abs(ring[0][0] - ring[n - 1][0]) < 1e-6 &&
+              Math.abs(ring[0][1] - ring[n - 1][1]) < 1e-6
+            ) {
+              n--;
+            }
+            if (n < 3) {
+              for (let i = 0; i < ring.length - 1; i++) {
+                const k1 = ptKey(ring[i]);
+                const k2 = ptKey(ring[i + 1]);
+                if (k1 === k2) continue;
+                const ek = k1 < k2 ? `E${k1}|${k2}` : `E${k2}|${k1}`;
+                if (seen.has(ek)) continue;
+                seen.add(ek);
+                const [x1, y1] = this.projector.toScreen(ring[i][0], ring[i][1]);
+                const [x2, y2] = this.projector.toScreen(ring[i + 1][0], ring[i + 1][1]);
+                emitLine(x1, y1, x2, y2);
+              }
+              continue;
+            }
+            const pts = new Array(n);
+            const keys = new Float64Array(n);
+            for (let i = 0; i < n; i++) {
+              pts[i] = this.projector.toScreen(ring[i][0], ring[i][1]);
+              keys[i] = ptKey(ring[i]);
+            }
+            const sx = new Float64Array(n);
+            const sy = new Float64Array(n);
+            const ex = new Float64Array(n);
+            const ey = new Float64Array(n);
+            const curved = new Uint8Array(n);
+            for (let i = 0; i < n; i++) {
+              const p0 = pts[i];
+              const p1 = pts[(i + 1) % n];
+              const dx = p1[0] - p0[0];
+              const dy = p1[1] - p0[1];
+              const len = Math.hypot(dx, dy);
+              if (len >= 1.6) {
+                const t = Math.min(0.28, 4.2 / len);
+                sx[i] = p0[0] + dx * t;
+                sy[i] = p0[1] + dy * t;
+                ex[i] = p1[0] - dx * t;
+                ey[i] = p1[1] - dy * t;
+                curved[i] = 1;
+              } else {
+                sx[i] = p0[0];
+                sy[i] = p0[1];
+                ex[i] = p1[0];
+                ey[i] = p1[1];
+              }
+            }
+            for (let i = 0; i < n; i++) {
+              const next = (i + 1) % n;
+              const k0 = keys[i];
+              const k1 = keys[next];
+              if (curved[i] && k0 !== k1) {
+                const ek = k0 < k1 ? `E${k0}|${k1}` : `E${k1}|${k0}`;
+                if (!seen.has(ek)) {
+                  seen.add(ek);
+                  emitLine(sx[i], sy[i], ex[i], ey[i]);
+                }
+              }
+              if (curved[i] && curved[next]) {
+                const k2 = keys[(next + 1) % n];
+                const qa = k0 < k2 ? `${k0}|${k2}` : `${k2}|${k0}`;
+                const qk = `Q${k1}|${qa}`;
+                if (!seen.has(qk)) {
+                  seen.add(qk);
+                  const x1s = ex[i].toFixed(1);
+                  const y1s = ey[i].toFixed(1);
+                  const x2s = sx[next].toFixed(1);
+                  const y2s = sy[next].toFixed(1);
+                  if (x1s !== penX || y1s !== penY) {
+                    d += `M${x1s} ${y1s}`;
+                  }
+                  d += `Q${pts[next][0].toFixed(1)} ${pts[next][1].toFixed(1)} ${x2s} ${y2s}`;
+                  penX = x2s;
+                  penY = y2s;
+                }
+              } else if (!curved[i] && !curved[next]) {
+                if (k0 !== k1) {
+                  const ek = k0 < k1 ? `E${k0}|${k1}` : `E${k1}|${k0}`;
+                  if (!seen.has(ek)) {
+                    seen.add(ek);
+                    emitLine(sx[i], sy[i], sx[next], sy[next]);
+                  }
+                }
+              } else {
+                const cx0 = curved[i] ? ex[i] : sx[i];
+                const cy0 = curved[i] ? ey[i] : sy[i];
+                const aTag = `${cx0.toFixed(1)},${cy0.toFixed(1)}`;
+                const bTag = `${sx[next].toFixed(1)},${sy[next].toFixed(1)}`;
+                if (aTag !== bTag) {
+                  const sk = aTag < bTag ? `S${aTag}|${bTag}` : `S${bTag}|${aTag}`;
+                  if (!seen.has(sk)) {
+                    seen.add(sk);
+                    emitLine(cx0, cy0, sx[next], sy[next]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      PREF_BOUNDARY_MESH_CACHE.set(prefs, d);
+      return d;
+    }
+
     _renderPrefecturesLayer(snap) {
       if (!this.grpPrefectures || !snap) return;
       const prefs = snap.prefectures || null;
@@ -2202,6 +2356,10 @@
       if (!canReusePrefs) {
         this.grpPrefectures.innerHTML = '';
         const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
+        const meshD = this._buildPrefectureBoundaryPath(prefs);
+        if (meshD) {
+          this._svgNode('path', { d: meshD, class: 'prefecture-boundary-mesh' }, prefGroup);
+        }
         for (const pref of prefs || []) {
           const path = this._svgNode(
             'path',
@@ -8485,6 +8643,9 @@
       const rect = this.svg.getBoundingClientRect();
       this._cameraViewportRect = rect;
       this.svg.classList.remove('is-camera-moving');
+      if (this.viewportFrame && this.viewportFrame.classList) {
+        this.viewportFrame.classList.remove('is-camera-moving');
+      }
       if (
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
@@ -8519,11 +8680,17 @@
         clearTimeout(this._cameraSettleTimer);
         this._cameraSettleTimer = null;
         this.svg.classList.remove('is-camera-moving');
+        if (this.viewportFrame && this.viewportFrame.classList) {
+          this.viewportFrame.classList.remove('is-camera-moving');
+        }
       } else if (this._lastCameraViewBox !== null && viewBox !== this._lastCameraViewBox) {
         this._cameraViewportRect = rect;
         this.hoverTip.classList.add('is-hidden');
         this._clearHoveredPrefecture();
         this.svg.classList.add('is-camera-moving');
+        if (this.viewportFrame && this.viewportFrame.classList) {
+          this.viewportFrame.classList.add('is-camera-moving');
+        }
         if (!this.flyRaf) {
           clearTimeout(this._cameraSettleTimer);
           this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);

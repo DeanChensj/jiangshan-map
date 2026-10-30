@@ -7367,17 +7367,102 @@ function main() {
         assert(
           lazyCtrl._materializeDeferredPrefectures() === true &&
             lazyCtrl._deferredPrefectureSnap === null &&
+            grpPref.querySelectorAll('.prefecture-boundary-mesh').length === 1 &&
             grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount &&
             prefPathCreates === expectedPrefCount,
-          '_materializeDeferredPrefectures must materialize all prefecture paths on demand when layer becomes visible'
+          '_materializeDeferredPrefectures must materialize 1 deduplicated .prefecture-boundary-mesh plus all prefecture hit-target paths on demand when layer becomes visible'
         );
         const prevShapesGroup = lazyCtrl._prefShapesGroup;
         lazyCtrl._renderPolitiesAndPrefectures(tangDyn, tangSnap1);
         assert(
           lazyCtrl._prefShapesGroup === prevShapesGroup &&
             prefPathCreates === expectedPrefCount &&
+            grpPref.querySelectorAll('.prefecture-boundary-mesh').length === 1 &&
             grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount,
-          `Scrubbing between intra-dynasty phases sharing snap.prefectures must reuse .prefecture-shape DOM without recreating ${expectedPrefCount} SVG paths (got prefPathCreates=${prefPathCreates})`
+          `Scrubbing between intra-dynasty phases sharing snap.prefectures must reuse .prefecture-boundary-mesh + .prefecture-shape DOM without recreating ${expectedPrefCount} SVG paths (got prefPathCreates=${prefPathCreates})`
+        );
+
+        // 44c. Solution 1 (Issue #196): single smoothed boundary mesh deduplication, idle fill:none/stroke:none hit targets, toggleTerrainMode hides #grp-rivers, and viewportFrame camera-motion class
+        const meshEls = grpPref.querySelectorAll('.prefecture-boundary-mesh');
+        const meshD = meshEls[0].getAttribute('d') || '';
+        const rawCombinedCmds = (tangSnap0.prefectures || []).reduce((acc, p) => {
+          const pd = testProj.shapeToSvgPath(p.shape);
+          const m = pd.match(/[LQ]/g);
+          return acc + (m ? m.length : 0);
+        }, 0);
+        const meshCmds = (meshD.match(/[LQ]/g) || []).length;
+        assert(
+          meshCmds > 0 && meshCmds < rawCombinedCmds,
+          `Deduplicated .prefecture-boundary-mesh must shrink prefecture stroke commands without gaps (got meshCmds=${meshCmds} vs rawCombinedCmds=${rawCombinedCmds})`
+        );
+        assert(
+          lazyCtrl._buildPrefectureBoundaryPath(tangSnap0.prefectures) === meshD,
+          '_buildPrefectureBoundaryPath must return cached WeakMap string identically on repeat calls'
+        );
+
+        const idlePrefRule = cssSrc.match(/(?:^|\n)\.prefecture-shape\s*\{([^}]+)\}/);
+        assert(
+          idlePrefRule &&
+            /fill:\s*none\s*;/.test(idlePrefRule[1]) &&
+            /stroke:\s*none\s*;/.test(idlePrefRule[1]) &&
+            /pointer-events:\s*fill\s*;/.test(idlePrefRule[1]),
+          '.prefecture-shape base CSS must use fill:none, stroke:none, and pointer-events:fill to avoid 300+ GPU fill/stroke draw calls per frame'
+        );
+        assert(
+          !cssSrc.includes('.prefecture-shape:not(:hover):not(.is-hovered)') &&
+            cssSrc.includes('#atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-boundary-mesh') &&
+            cssSrc.includes('#viewport-frame.is-camera-moving #map-key'),
+          'css/style.css must target .prefecture-boundary-mesh on mobile and suspend backdrop-filter under #viewport-frame.is-camera-moving'
+        );
+
+        let typoRescales = 0;
+        const terrainCtrl = Object.assign(Object.create(proto), {
+          terrainMode: true,
+          svg: { classList: makeCls() },
+          camera: { x: 0, y: 0, w: 500, h: 420, zoom: 2 },
+          grpTerrain: { classList: makeCls() },
+          grpRivers: { classList: makeCls() },
+          grpCorridors: { classList: makeCls() },
+          grpSettlements: { classList: makeCls() },
+          _typoDirty: false,
+          _id: () => null,
+          _rescaleSvgTypography() {
+            typoRescales++;
+          },
+        });
+        terrainCtrl.svg.classList.add('terrain-active');
+        terrainCtrl.toggleTerrainMode(false);
+        assert(
+          terrainCtrl.grpTerrain.classList.contains('is-hidden') &&
+            terrainCtrl.grpRivers.classList.contains('is-hidden') &&
+            !terrainCtrl.svg.classList.contains('terrain-active') &&
+            typoRescales === 1,
+          'toggleTerrainMode(false) must hide both #grp-terrain and #grp-rivers and refresh typography collision boxes'
+        );
+        terrainCtrl.toggleTerrainMode(true);
+        assert(
+          !terrainCtrl.grpTerrain.classList.contains('is-hidden') &&
+            !terrainCtrl.grpRivers.classList.contains('is-hidden') &&
+            terrainCtrl.svg.classList.contains('terrain-active') &&
+            typoRescales === 2,
+          'toggleTerrainMode(true) must unhide both #grp-terrain and #grp-rivers'
+        );
+
+        const vpCls = makeCls();
+        panCtrl.viewportFrame = { classList: vpCls };
+        panCtrl.dragState = { rect: { left: 0, top: 0, width: 1200, height: 840 } };
+        panCtrl.camera.x += 5;
+        panCtrl._applyCamera(false);
+        assert(
+          vpCls.contains('is-camera-moving'),
+          '_applyCamera motion frames must add is-camera-moving to #viewport-frame'
+        );
+        clearTimeout(panCtrl._cameraSettleTimer);
+        panCtrl.dragState = null;
+        panCtrl._finishCameraMotion();
+        assert(
+          !vpCls.contains('is-camera-moving'),
+          '_finishCameraMotion must remove is-camera-moving from #viewport-frame'
         );
       }
     }
