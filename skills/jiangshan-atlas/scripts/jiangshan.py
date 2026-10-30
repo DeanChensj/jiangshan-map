@@ -86,21 +86,31 @@ def find_local_repo_root():
 def normalize_years(year_str):
   if not year_str:
     return ""
-  return ",".join(
-      str(int(y.strip()))
-      for y in re.split(r"[,，、;\s]+", str(year_str).strip())
-      if y.strip()
-  )
+  tracks = [
+      ",".join(
+          str(int(y.strip()))
+          for y in re.split(r"[,，、\s]+", seg.strip())
+          if y.strip()
+      )
+      for seg in re.split(r"[;；]+", str(year_str).strip())
+      if seg.strip()
+  ]
+  return ";".join(t for t in tracks if t)
 
 
 def normalize_places(place_str):
   if not place_str:
     return ""
-  return ",".join(
-      p.strip()
-      for p in re.split(r"\s*(?:,|，|、|→|->)\s*", place_str.strip())
-      if p.strip()
-  )
+  tracks = [
+      ",".join(
+          p.strip()
+          for p in re.split(r"\s*(?:,|，|、|→|->)\s*", seg.strip())
+          if p.strip()
+      )
+      for seg in re.split(r"\s*[;；]+\s*", place_str.strip())
+      if seg.strip()
+  ]
+  return ";".join(t for t in tracks if t)
 
 
 def normalize_persons(person_str):
@@ -132,7 +142,7 @@ def build_query(args):
     params.append(("lang", "en"))
   elif args.lang in ("zh-tw", "tw", "hk", "zh-hk", "zh-hant", "hant"):
     params.append(("lang", "zh-tw"))
-  return urllib.parse.urlencode(params, safe=",")
+  return urllib.parse.urlencode(params, safe=",;")
 
 
 def _check_remote_reachable(url):
@@ -237,7 +247,7 @@ def _validate_inspect_result(data, args):
   normalized_place = normalize_places(args.place)
   if not normalized_place:
     return
-  stops = [s for s in normalized_place.split(",") if s]
+  stops = [s for s in re.split(r"[,;]+", normalized_place) if s]
   if len(stops) >= 2:
     resolved_route = data.get("route") or []
     resolved_places = {s.get("place") for s in resolved_route}

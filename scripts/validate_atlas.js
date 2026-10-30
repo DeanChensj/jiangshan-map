@@ -2036,6 +2036,66 @@ function main() {
   delete ctrl.closeGenealogyCard;
   delete ctrl._updateScaleBar;
 
+  // CUJ 22a: Symmetric 3-Person Chronicle Matching (Li Bai × Du Fu × Gao Shi, Cao Cao × Liu Bei × Sun Quan), Monarch Remote-Dispatch Guard & Semicolon Multi-Route Inspect
+  {
+    const gaoshiProf = ctrl._resolvePersonProfile('gaoshi');
+    assert(
+      gaoshiProf && gaoshiProf.zh === '高适' && ctrl._collectPersonEvents(gaoshiProf).length >= 5,
+      'gaoshi (高适) must resolve in PERSON_PROFILES with >= 5 chronological life events'
+    );
+    const ldg3 = ctrl._buildPersonTracksAndEvents(
+      ctrl._resolvePersonProfiles(['libai', 'dufu', 'gaoshi'])
+    );
+    const dg2 = ctrl._buildPersonTracksAndEvents(
+      ctrl._resolvePersonProfiles(['dufu', 'gaoshi'])
+    );
+    const lg2 = ctrl._buildPersonTracksAndEvents(
+      ctrl._resolvePersonProfiles(['libai', 'gaoshi'])
+    );
+    assert(
+      ldg3.sameTimeCount === 5 &&
+        ldg3.events.some(
+          (e) => e.isSharedEncounter && e.year === 744 && e.participants.length === 3
+        ) &&
+        dg2.sameTimeCount === 3 &&
+        lg2.sameTimeCount === 1,
+      `Expected symmetric encounter matching for ['libai','dufu','gaoshi'] (5 shared encounters including 3-way 744 Suiyang), ['dufu','gaoshi'] (3 shared encounters), and ['libai','gaoshi'] (1 shared encounter), got ldg3=${ldg3.sameTimeCount}, dg2=${dg2.sameTimeCount}, lg2=${lg2.sameTimeCount}`
+    );
+    const cls3 = ctrl._buildPersonTracksAndEvents(
+      ctrl._resolvePersonProfiles(['caocao', 'liubei', 'sunquan'])
+    );
+    const ls2 = ctrl._buildPersonTracksAndEvents(
+      ctrl._resolvePersonProfiles(['liubei', 'sunquan'])
+    );
+    assert(
+      cls3.sameTimeCount >= 3 && ls2.sameTimeCount >= 2,
+      `Expected symmetric encounter matching for ['caocao','liubei','sunquan'] (${cls3.sameTimeCount}) and ['liubei','sunquan'] (${ls2.sameTimeCount})`
+    );
+    const xzEvents = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('tangxuanzong'));
+    assert(
+      !xzEvents.some((e) => /范阳|大庾岭|潼关/.test(e.siteZh)),
+      `tangxuanzong trajectory must not jump to remote-dispatch sites (范阳/大庾岭/潼关), got sites: ${xzEvents.map((e) => e.siteZh).join(',')}`
+    );
+    const sqEvents = ctrl._collectPersonEvents(ctrl._resolvePersonProfile('sunquan'));
+    assert(
+      !sqEvents.some((e) => /夷洲/.test(e.siteZh)),
+      `sunquan trajectory must not jump to remote-dispatch site 夷洲, got sites: ${sqEvents.map((e) => e.siteZh).join(',')}`
+    );
+    const multiRouteInspect = ctrl.inspect({
+      year: 208,
+      place: '许昌,江陵,赤壁;柴桑,樊口,赤壁',
+    });
+    assert(
+      multiRouteInspect.place === '许昌,江陵,赤壁;柴桑,樊口,赤壁' &&
+        Array.isArray(multiRouteInspect.route) &&
+        multiRouteInspect.route.length === 6 &&
+        multiRouteInspect.route[3].trackIdx === 1 &&
+        multiRouteInspect.route[3].trackStep === 1 &&
+        multiRouteInspect.route[3].distanceFromPrevKm === 0,
+      `inspect() on semicolon multi-route must preserve ';' separator, trackIdx/trackStep, and reset distanceFromPrevKm=0 at start of track 1, got ${JSON.stringify(multiRouteInspect.route[3])}`
+    );
+  }
+
   // CUJ 22: Complete English Dictionary Coverage, Boot Seed Parity & Non-Zero Oriented Fill Rule Guard
   assert(
     cssSrc.includes('.polity-shape') && /\.polity-shape\s*\{[\s\S]*?fill-rule:\s*nonzero;/m.test(cssSrc),
@@ -6708,12 +6768,12 @@ function main() {
           assert(qHits.some((h) => h.titleZh === expAnc), `Expected quick search "${aliasQ}" to hit "${expAnc}"`);
         }
 
-        // CUJ 42: Search Empty-State Solo Preservation + Dual-Person Discovery
+        // CUJ 42: Search Empty-State Solo Preservation + Multi-Person (2–3 Person) Discovery
         ctrl.locale = 'zh';
         const scPool = ctrl._getSearchShowcasePool();
         assert(
-          scPool.length === 14 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
-          `Showcase pool must default to solo Su Shi at index 0 and contain 14 entries, got ${scPool.length}`
+          scPool.length === 16 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
+          `Showcase pool must default to solo Su Shi at index 0 and contain 16 entries, got ${scPool.length}`
         );
         for (const soloKey of [
           'sushi',
@@ -6732,36 +6792,43 @@ function main() {
             `Showcase pool must preserve solo figure "${soloKey}"`
           );
         }
-        for (const pairKey of ['libai,dufu', 'yanghu,duyu', 'zuti,liukun', 'zhugeliang,simayi']) {
+        for (const pairKey of [
+          'libai,dufu',
+          'libai,dufu,gaoshi',
+          'caocao,liubei,sunquan',
+          'yanghu,duyu',
+          'zuti,liukun',
+          'zhugeliang,simayi',
+        ]) {
           const hit = scPool.find(
             (item) => item.kind === 'multi_person' && item.personKeys.join(',') === pairKey
           );
-          assert(hit, `Showcase pool must include dual-person encounter "${pairKey}"`);
+          assert(hit, `Showcase pool must include multi-person encounter "${pairKey}"`);
           assert(
             !/[\u4e00-\u9fff]/.test(hit.titleEn) && !/[\u4e00-\u9fff]/.test(hit.subEn),
-            `Dual showcase "${pairKey}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
+            `Multi-person showcase "${pairKey}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
           );
         }
         const zhChips = Array.from(ctrl._getSearchSampleQueries());
-        assert.deepStrictEqual(zhChips, ['长安', '赤壁', '霍去病', '李白 杜甫']);
+        assert.deepStrictEqual(zhChips, ['长安', '赤壁', '霍去病', '李白 杜甫 高适']);
         assert.strictEqual(ctrl._queryQuickSearch('霍去病')[0].kind, 'person');
-        assert.strictEqual(ctrl._queryQuickSearch('李白 杜甫')[0].kind, 'multi_person');
+        assert.strictEqual(ctrl._queryQuickSearch('李白 杜甫 高适')[0].kind, 'multi_person');
         assert(
           ctrl._searchPlaceholder(false).length <= 22 &&
-            ctrl._searchPlaceholder(true).includes('李白 杜甫'),
-          'Chinese compact placeholder must fit 248px pill while expanded placeholder hints dual-person syntax'
+            ctrl._searchPlaceholder(true).includes('李白 杜甫 高适'),
+          'Chinese compact placeholder must fit 248px pill while expanded placeholder hints 2–3 person syntax'
         );
 
         ctrl.locale = 'en';
         const enChips = Array.from(ctrl._getSearchSampleQueries());
-        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']);
+        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu, Gao Shi']);
         assert.strictEqual(ctrl._queryQuickSearch('Cao Cao')[0].kind, 'person');
-        const enPairHit = ctrl._queryQuickSearch('Li Bai, Du Fu')[0];
+        const enPairHit = ctrl._queryQuickSearch('Li Bai, Du Fu, Gao Shi')[0];
         assert(
           enPairHit &&
             enPairHit.kind === 'multi_person' &&
-            enPairHit.titleEn === 'Li Bai × Du Fu',
-          `English dual-person chip "Li Bai, Du Fu" must resolve cleanly to Li Bai × Du Fu, got ${JSON.stringify(enPairHit)}`
+            enPairHit.titleEn === 'Li Bai × Du Fu × Gao Shi',
+          `English multi-person chip "Li Bai, Du Fu, Gao Shi" must resolve cleanly to Li Bai × Du Fu × Gao Shi, got ${JSON.stringify(enPairHit)}`
         );
         assert(
           !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(false)) &&
@@ -6786,15 +6853,14 @@ function main() {
             `Polity ${p.key} English fields must be CJK-free`
           );
           const pDesc = { ...p, curated: true };
-          const pRulers = ctrl._polityRulers(pDesc);
           assert(
-            pRulers && pRulers.trim().length > 0,
-            `Polity ${p.key} must expose non-empty ruler lineage`
+            Boolean(ctrl._polityRulers(pDesc)),
+            `Polity ${p.key} must expose non-empty ruler lineage via rulersZh/rulersEn or monarchPrefix`
           );
           const pEvents = ctrl._polityEvents(pDesc);
           assert(
             pEvents.length >= 3,
-            `Curated polity ${p.key} (${p.zh}) must surface >= 3 events, got ${pEvents.length}`
+            `Curated polity ${p.key} (${p.zh}) must surface >= 3 historical events, got ${pEvents.length}`
           );
           if (!FAST_MODE) {
             assert(

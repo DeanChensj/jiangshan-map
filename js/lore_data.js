@@ -4521,8 +4521,7 @@ window.ATLAS_LORE_DATA = {
       "zh": "安禄山于范阳（幽州）起兵反唐，安史之乱爆发",
       "en": "An Lushan launches his rebellion from Fanyang (Youzhou / Beijing)",
       "persons": [
-        "anlushan",
-        "tangxuanzong"
+        "anlushan"
       ]
     },
     {
@@ -5413,7 +5412,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "大庾岭梅关（今广东南雄北）",
       "siteEn": "Meiguan Pass (Dayu Ridge, Guangdong/Jiangxi)",
-      "zh": "唐玄宗纳张九龄之议凿辟大庾岭梅关新路，贯通赣粤南北商道",
+      "zh": "张九龄奉诏主持凿辟大庾岭梅关新路，贯通赣粤南北商道",
       "en": "Chancellor Zhang Jiuling excavates the Meiguan Pass road across Dayu Ridge, linking Gan and Yue"
     },
     {
@@ -5425,8 +5424,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "潼关（今陕西潼关）",
       "siteEn": "Tongguan Pass (Shaanxi)",
-      "zh": "哥舒翰被迫出潼关中伏惨败，潼关失守，唐玄宗仓皇奔蜀",
-      "en": "Geshu Han is ambushed outside Tongguan Pass; the pass falls and Emperor Xuanzong flees to Shu",
+      "zh": "哥舒翰奉诏出潼关中伏惨败，潼关失守，京师门户洞开",
+      "en": "Geshu Han is ambushed outside Tongguan Pass; the pass falls, exposing Chang'an",
       "month": 6
     },
     {
@@ -8392,8 +8391,61 @@ window.ATLAS_LORE_DATA = {
       ],
       "site": "成都浣花溪草堂",
       "siteEn": "Thatched Cottage, Chengdu",
-      "zh": "杜甫避乱越秦岭入蜀，得严武等资助于成都西郊浣花溪畔营建草堂",
-      "en": "Refugeeing across the Qinling Mountains into Sichuan, Du Fu builds his Chengdu Thatched Cottage"
+      "zh": "杜甫入蜀于成都浣花溪畔营建草堂，与彭州刺史高适唱和往还",
+      "en": "Refugeeing in Sichuan, Du Fu builds his Chengdu Thatched Cottage and exchanges verse with Gao Shi",
+      "persons": [
+        "dufu",
+        "gaoshi"
+      ],
+      "month": 4
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 738,
+      "coord": [
+        117.4,
+        40.05
+      ],
+      "site": "蓟州（今天津蓟州）",
+      "siteEn": "Jizhou (Jizhou, Tianjin)",
+      "zh": "高适北游燕赵边塞体察军情，归作千古边塞名篇《燕歌行》",
+      "en": "After touring the Yan-Zhao frontier, Gao Shi composes his famous frontier ballad Song of Yan",
+      "persons": [
+        "gaoshi"
+      ]
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 752,
+      "coord": [
+        108.96,
+        34.22
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an, Shaanxi)",
+      "zh": "高适与杜甫、岑参、薛据同登长安慈恩寺浮图，赋诗凭高抒怀",
+      "en": "Gao Shi, Du Fu, Cen Shen, and Xue Ju ascend the Giant Wild Goose Pagoda in Chang'an and trade poems",
+      "persons": [
+        "gaoshi",
+        "dufu"
+      ],
+      "month": 9
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 757,
+      "coord": [
+        119.41,
+        32.39
+      ],
+      "site": "扬州（今江苏扬州）",
+      "siteEn": "Yangzhou (Yangzhou, Jiangsu)",
+      "zh": "高适擢任淮南节度使坐镇扬州，与来瑱会师平定永王李璘之乱",
+      "en": "Appointed Military Governor of Huainan at Yangzhou, Gao Shi suppresses Prince Li Lin's rebellion",
+      "persons": [
+        "gaoshi"
+      ],
+      "month": 2
     },
     {
       "dynastyKey": "tang",
@@ -14031,7 +14083,8 @@ window.ATLAS_LORE_DATA = {
           "quoteEn": "Li Bai, Ballad of Liang Garden: \"Floating down the Yellow River away from the palace towers, I hoisted sail across mountain-high waves until reaching the ancient terrace of Liang.\"",
           "persons": [
             "libai",
-            "dufu"
+            "dufu",
+            "gaoshi"
           ],
           "aliases": [
             "梁宋",
@@ -17310,12 +17363,14 @@ window.ATLAS_LORE_DATA = {
       "name": "黄州",
       "aliases": [
         "齐安",
-        "黄冈"
+        "黄冈",
+        "樊口"
       ],
       "asciiAliases": [
         "huangzhou",
         "huangzhouredcliffs",
-        "dongporedcliffs"
+        "dongporedcliffs",
+        "fankou"
       ],
       "modern": "湖北黄冈",
       "coord": [
@@ -20101,8 +20156,7 @@ window.ATLAS_LORE_DATA = {
       "tokens": [
         "唐玄宗",
         "李隆基",
-        "开元盛世",
-        "安史之乱爆发"
+        "开元盛世"
       ]
     },
     {
@@ -20174,6 +20228,26 @@ window.ATLAS_LORE_DATA = {
       ],
       "tokens": [
         "杜甫"
+      ]
+    },
+    {
+      "key": "gaoshi",
+      "zh": "高适",
+      "en": "Gao Shi",
+      "courtesyZh": "字达夫 · 渤海县侯 · 边塞诗派代表",
+      "courtesyEn": "Frontier Poet & Military Governor",
+      "dynastyKey": "tang",
+      "span": [
+        704,
+        765
+      ],
+      "aliases": [
+        "高达夫",
+        "高常侍",
+        "高散骑"
+      ],
+      "tokens": [
+        "高适"
       ]
     },
     {
