@@ -5044,8 +5044,7 @@
         !profile.isRelic &&
         Array.isArray(item && item.persons) &&
         item.persons.includes(profile.key) &&
-        item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk)) &&
-        peerKeys.includes(item.persons[0]);
+        item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk));
       const tokens = profile.isRelic
         ? []
         : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
@@ -5138,6 +5137,7 @@
           }
           const rawSite = m.site || d.seat || '';
           if (profile.key === 'liubang' && m.year === -207 && rawSite.startsWith('巨鹿')) continue;
+          if (profile.key === 'sunquan' && m.year === 230 && rawSite.startsWith('夷洲')) continue;
           const mKey = `${d.key}:${m.year}`;
           const mHit = this.enLocale.milestones && this.enLocale.milestones[mKey];
           const rawSiteEn =
@@ -5282,7 +5282,7 @@
     }
 
     static get PERSON_TRACK_PALETTE() {
-      return ['#bd2d22', '#1d5a7b', '#2f6b55', '#7a3e65'];
+      return ['#c4281c', '#233b8e', '#186a4b', '#7a2e68'];
     }
 
     _resolvePersonProfiles(personOrQuery) {
@@ -5387,26 +5387,32 @@
       }
 
       // Only merge & highlight true contemporaneous encounters (same place <= 45km AND |Δyear| <= 3).
-      // Pair closest year/distance matches first so exact same-year meetings are never stolen by an adjacent year.
-      for (let tIdx = 1; tIdx < tracks.length; tIdx++) {
-        const candPairs = [];
-        for (const evA of tracks[0].events) {
-          for (const evB of tracks[tIdx].events) {
-            const dy = Math.abs(evA.year - evB.year);
-            if (dy > 3) continue;
-            const { hit, km } = this._eventsSharePlace(evA, evB);
-            if (!hit) continue;
-            candPairs.push({ evA, evB, dy, km });
+      // Pair closest year/distance matches symmetrically across all track pairs (tA, tB) so 2-person and 3-person
+      // chronicles match with identical precision regardless of which subset of tracks is compared.
+      for (let tA = 0; tA < tracks.length; tA++) {
+        for (let tB = tA + 1; tB < tracks.length; tB++) {
+          const candPairs = [];
+          for (const evA of tracks[tA].events) {
+            for (const evB of tracks[tB].events) {
+              const dy = Math.abs(evA.year - evB.year);
+              if (dy > 3) continue;
+              const { hit, km } = this._eventsSharePlace(evA, evB);
+              if (!hit) continue;
+              candPairs.push({ evA, evB, dy, km });
+            }
           }
-        }
-        candPairs.sort((a, b) => a.dy - b.dy || a.km - b.km);
-        const usedB = new Set();
-        for (const { evA, evB } of candPairs) {
-          if ((evA._peerMatches && evA._peerMatches[tIdx]) || usedB.has(evB)) continue;
-          if (!evA._peerMatches) evA._peerMatches = {};
-          evA._peerMatches[tIdx] = evB;
-          evB._reservedForPrimary = evA;
-          usedB.add(evB);
+          candPairs.sort((a, b) => a.dy - b.dy || a.km - b.km);
+          const usedA = new Set();
+          const usedB = new Set();
+          for (const { evA, evB } of candPairs) {
+            if (usedA.has(evA) || usedB.has(evB)) continue;
+            if (!evA._peerLinks) evA._peerLinks = {};
+            if (!evB._peerLinks) evB._peerLinks = {};
+            evA._peerLinks[tB] = evB;
+            evB._peerLinks[tA] = evA;
+            usedA.add(evA);
+            usedB.add(evB);
+          }
         }
       }
 
@@ -5422,38 +5428,28 @@
       const merged = [];
       let sameTimeCount = 0;
       for (const evA of allRaw) {
-        if (evA._mergedIntoShared || evA._reservedForPrimary) continue;
+        if (evA._mergedIntoShared) continue;
         const group = [evA];
-        if (evA._peerMatches) {
-          for (const evB of Object.values(evA._peerMatches)) {
-            if (evB && !evB._mergedIntoShared) {
-              evB._mergedIntoShared = true;
-              evB.coord = [evA.coord[0], evA.coord[1]];
-              group.push(evB);
-            }
-          }
-        }
-        if (group.length === 1 && evA.personIdx > 0) {
-          for (let tIdx = evA.personIdx + 1; tIdx < tracks.length; tIdx++) {
-            let bestEv = null;
-            let bestDy = Infinity;
-            let bestKm = Infinity;
-            for (const evB of tracks[tIdx].events) {
-              if (evB._mergedIntoShared) continue;
-              const dy = Math.abs(evA.year - evB.year);
-              if (dy > 3) continue;
-              const { hit, km } = this._eventsSharePlace(evA, evB);
-              if (!hit) continue;
-              if (dy < bestDy || (dy === bestDy && km < bestKm)) {
-                bestDy = dy;
-                bestKm = km;
-                bestEv = evB;
-              }
-            }
-            if (bestEv) {
-              bestEv._mergedIntoShared = true;
-              bestEv.coord = [evA.coord[0], evA.coord[1]];
-              group.push(bestEv);
+        const usedTracks = new Set([evA.personIdx]);
+        const queue = [evA];
+        while (queue.length > 0) {
+          const cur = queue.shift();
+          if (!cur._peerLinks) continue;
+          const peerIdxList = Object.keys(cur._peerLinks)
+            .map(Number)
+            .sort((a, b) => a - b);
+          for (const tIdx of peerIdxList) {
+            if (usedTracks.has(tIdx)) continue;
+            const cand = cur._peerLinks[tIdx];
+            if (!cand || cand._mergedIntoShared) continue;
+            if (
+              Math.abs(evA.year - cand.year) <= 3 &&
+              this._eventsSharePlace(evA, cand).hit
+            ) {
+              usedTracks.add(tIdx);
+              cand._mergedIntoShared = true;
+              group.push(cand);
+              queue.push(cand);
             }
           }
         }
@@ -5461,6 +5457,9 @@
           evA._mergedIntoShared = true;
           group.sort((a, b) => a.personIdx - b.personIdx);
           const primary = group[0];
+          for (let gIdx = 1; gIdx < group.length; gIdx++) {
+            group[gIdx].coord = [primary.coord[0], primary.coord[1]];
+          }
           const textSource =
             group.find((gEv) => gEv.src === 'J') ||
             group.find((gEv) => gEv.src === 'M') ||
@@ -6123,9 +6122,9 @@
         );
         if (isShared) {
           const parts = ev.participants;
-          const rDot = isCur ? 4.0 : 3.5;
-          const sep = isCur ? 8.6 : 7.6;
-          const pad = isCur ? 3.0 : 2.6;
+          const rDot = isCur ? 4.3 : 3.8;
+          const sep = isCur ? 9.2 : 8.2;
+          const pad = isCur ? 3.2 : 2.8;
           const pillW = (parts.length - 1) * sep + rDot * 2 + pad;
           const pillH = rDot * 2 + pad;
           if (isCur) {
@@ -6169,7 +6168,7 @@
             dot.style.color = pt.color;
           });
         } else if (isMultiBead) {
-          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 3.2 }, inner);
+          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 4.1 }, inner);
         } else {
           if (isCur) {
             this._svgNode('circle', { class: 'jn-pulse', r: 11.8 }, inner);
@@ -10325,7 +10324,7 @@
         applyDim(g);
         this._svgNode(
           'path',
-          { d: 'M-3.5 -2.45L2.75 0L-3.5 2.45L-1.85 0Z', class: 'journey-chevron' },
+          { d: 'M-4.5 -3.15L3.55 0L-4.5 3.15L-2.3 0Z', class: 'journey-chevron' },
           g
         );
       };
@@ -10398,20 +10397,20 @@
     _searchPlaceholder(expanded = false) {
       if (this.locale === 'en') {
         return expanded
-          ? 'Search figure (or pair: Li Bai, Du Fu) / city / era'
-          : 'Search figure / pair / city / era';
+          ? 'Search figure (or 2–3: Li Bai, Du Fu, Gao Shi) / city / era'
+          : 'Search figure / multi-person / city / era';
       }
       return this._zh(
         expanded
-          ? '搜人物（可搜双人：李白 杜甫）/ 古今地名 / 年号'
-          : '搜人物 / 双人 / 古今地名 / 年号'
+          ? '搜人物（可搜双人/三人：李白 杜甫 高适）/ 古今地名 / 年号'
+          : '搜人物 / 多人同看 / 古今地名 / 年号'
       );
     }
 
     _getSearchSampleQueries() {
       return this.locale === 'en'
-        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
-        : ['长安', '赤壁', '霍去病', '李白 杜甫'].map((s) => this._zh(s));
+        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu, Gao Shi']
+        : ['长安', '赤壁', '霍去病', '李白 杜甫 高适'].map((s) => this._zh(s));
     }
 
     _getSearchShowcasePool() {
@@ -10421,13 +10420,15 @@
         'sushi',
         ['libai', 'dufu'],
         'zhugeliang',
-        ['yanghu', 'duyu'],
+        ['libai', 'dufu', 'gaoshi'],
         'huoqubing',
-        ['zuti', 'liukun'],
+        ['caocao', 'liubei', 'sunquan'],
         'libai',
+        ['yanghu', 'duyu'],
         'caocao',
         ['zhugeliang', 'simayi'],
         'xinqiji',
+        ['zuti', 'liukun'],
         'xuanzang',
         'wangyangming',
         'zhangqian',
@@ -13803,6 +13804,8 @@
       if (placeTokens.length >= 2) {
         const route = [];
         let totalKm = 0;
+        const isMultiTrack = placeTokens.some((t) => (t.trackIdx || 0) > 0);
+        const trackCounters = {};
         for (let i = 0; i < placeTokens.length; i++) {
           const tok = placeTokens[i];
           const r = this.resolvePlace(tok.place, tok.year);
@@ -13813,13 +13816,18 @@
           const sSnap = this.snapshots[sSnapKey] || snap;
           const info = this._inspectCoord(r.lng, r.lat, sd, sSnap, tok.year);
           const prev = route.length ? route[route.length - 1] : null;
-          const segKm = prev
-            ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
-            : 0;
+          const tId = tok.trackIdx || 0;
+          const prevTrackId = prev && prev.trackIdx !== undefined ? prev.trackIdx : 0;
+          const segKm =
+            prev && prevTrackId === tId
+              ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
+              : 0;
           totalKm += segKm;
+          trackCounters[tId] = (trackCounters[tId] || 0) + 1;
           const cleanPlace = /[<>]/.test(String(tok.place || '')) ? r.name : tok.place;
           route.push({
             step: route.length + 1,
+            ...(isMultiTrack ? { trackIdx: tId, trackStep: trackCounters[tId] } : {}),
             year: tok.year,
             era: this.formatEraLabel(tok.year, sd, [r.lng, r.lat]),
             dynasty: isEn ? this.dynastyName(sd) : this._zh(sd.title),
@@ -13834,9 +13842,21 @@
         if (route.length >= 2) {
           const first = route[0];
           const isMultiYear = new Set(route.map((s) => s.year)).size > 1;
+          const formattedPlace = isMultiTrack
+            ? Object.values(
+                route.reduce((acc, s) => {
+                  const k = s.trackIdx || 0;
+                  if (!acc[k]) acc[k] = [];
+                  acc[k].push(s.place);
+                  return acc;
+                }, {})
+              )
+                .map((arr) => arr.join(','))
+                .join(';')
+            : route.map((s) => s.place).join(',');
           const params = new URLSearchParams();
           params.set('year', isMultiYear ? route.map((s) => s.year).join(',') : String(first.year));
-          params.set('place', route.map((s) => s.place).join(','));
+          params.set('place', formattedPlace);
           if (isEn) params.set('lang', 'en');
           else if (this.locale === 'zh-tw') params.set('lang', 'zh-tw');
           const basePath =
@@ -13851,7 +13871,7 @@
               seat: isEn ? this.dynastySeat(d) : this._zh(d.seat),
               span: [d.fromYear, d.toYear],
             },
-            place: route.map((s) => s.place).join(','),
+            place: formattedPlace,
             coord: first.coord,
             zoom: Number(this.camera.zoom.toFixed(2)),
             polity: first.polity,
@@ -14355,7 +14375,7 @@
               place: {
                 type: 'string',
                 description:
-                  'Single canonical ancient/modern place name or comma-separated route stops in Chinese, English, or Pinyin.',
+                  'Single canonical ancient/modern place name, comma-separated route stops, or semicolon-separated converging routes (e.g. "许昌,江陵,赤壁;柴桑,樊口,赤壁") in Chinese, English, or Pinyin.',
               },
               zoom: {
                 type: 'number',
@@ -14393,11 +14413,13 @@
               },
               place: {
                 type: 'string',
-                description: 'Optional ancient/modern place name or comma-separated route stops.',
+                description:
+                  'Optional ancient/modern place name, comma-separated route stops, or semicolon-separated converging routes (e.g. "许昌,江陵,赤壁;柴桑,樊口,赤壁").',
               },
               person: {
                 type: 'string',
-                description: 'Optional historical figure name or key (e.g. sushi, libai, zhugeliang).',
+                description:
+                  'Optional single historical figure or comma-separated 2–4 figures (e.g. "libai,dufu,gaoshi" or "caocao,liubei,sunquan").',
               },
               stop: {
                 type: 'integer',
@@ -14425,13 +14447,14 @@
         {
           name: 'jiangshan_open_person',
           description:
-            'Open the spatio-temporal life & poetry chronicle (点人溯事) on the map for a Chinese historical figure or monarch and return their geocoded life stops.',
+            'Open the spatio-temporal life & poetry chronicle (点人溯事) on the map for 1–4 Chinese historical figures or monarchs and return their geocoded life stops and shared historical encounters.',
           inputSchema: {
             type: 'object',
             properties: {
               person: {
                 type: 'string',
-                description: 'Historical figure name or key in Chinese, English, or Pinyin.',
+                description:
+                  'Single historical figure or comma-separated 2–4 figures (e.g. "libai,dufu,gaoshi" or "李白,杜甫,高适") in Chinese, English, or Pinyin.',
               },
               stop: {
                 type: 'integer',
