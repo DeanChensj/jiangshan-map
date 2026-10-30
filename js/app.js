@@ -17,6 +17,7 @@
   const RING_BBOX_WEAK = new WeakMap();
   const SHAPE_BBOX_WEAK = new WeakMap();
   const SHAPE_SIG_WEAK = new WeakMap();
+  const PREF_BOUNDARY_MESH_CACHE = new WeakMap();
   // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
@@ -436,6 +437,13 @@
       this._cameraViewportRect = null;
       this._lastCameraViewBox = null;
       this._baseViewBoxCam = null;
+      this._hoveredPrefEl = null;
+      this._hoverRaf = null;
+      this._pendingHoverEvent = null;
+      this._deferredPrefectureSnap = null;
+      this._prefShapesGroup = null;
+      this._regOverlayGroup = null;
+      this._renderedPrefecturesRef = null;
       this.dismissedCalloutIds = new Set();
       try {
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
@@ -818,6 +826,7 @@
     }
 
     _bindDom() {
+      this.viewportFrame = this._id('viewport-frame');
       this._stageWrap = this._id('svg-stage-wrap');
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
@@ -967,6 +976,14 @@
         if (p.modernZh && p.modernEn) map[p.modernZh] = p.modernEn;
         if (p.rangeZh && p.rangeEn) map[p.rangeZh] = p.rangeEn;
         if (p.chokepointZh && p.chokepointEn) map[p.chokepointZh] = p.chokepointEn;
+      }
+      // 2b. Settlement era-dependent names
+      for (const d of this.dynasties || []) {
+        for (const s of (d && d.settlements) || []) {
+          for (const en of (s && s.eraNames) || []) {
+            if (en && en.zh && en.en) map[en.zh] = en.en;
+          }
+        }
       }
       // 3. Historical journeys stops
       for (const j of Object.values(HistoricalAtlasController.HISTORICAL_JOURNEYS || {})) {
@@ -1315,9 +1332,12 @@
       const yr = Math.round(y);
       const regional = coord || regime ? this._resolveRegionalEraSpan(yr, dynasty, coord, regime) : null;
       if (this.locale === 'en') {
-        const dynName = dynasty ? this.dynastyName(dynasty) : '';
+        let dynName = dynasty ? this.dynastyName(dynasty) : '';
         if (yr >= 1912) return dynName;
         const match = regional || this._resolveEraSpan(yr, dynasty);
+        const prefix = (match && match[1]) || '';
+        if (!regional && prefix.startsWith('武周')) dynName = 'Wu Zhou';
+        else if (!regional && prefix.startsWith('新莽')) dynName = 'Xin';
         const monarchEn = match && match[4];
         return monarchEn ? `${dynName} · ${monarchEn}` : dynName;
       }
@@ -1907,9 +1927,16 @@
       if (this.grpTerrain) {
         this.grpTerrain.classList.toggle('is-hidden', !this.terrainMode);
       }
+      if (this.grpRivers && this.grpRivers.classList) {
+        this.grpRivers.classList.toggle('is-hidden', !this.terrainMode);
+      }
       const chk = this._id('chk-terrain');
       if (chk) {
         chk.checked = this.terrainMode;
+      }
+      this._invalidateTypographyLayout();
+      if (this.svg && this.camera && this.grpCorridors && this.grpSettlements) {
+        this._rescaleSvgTypography();
       }
     }
 
@@ -2155,10 +2182,263 @@
       });
     }
 
+    _setHoveredPrefecture(el) {
+      if (this._hoveredPrefEl === el) return;
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.remove('is-hovered');
+      }
+      this._hoveredPrefEl = el || null;
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.add('is-hovered');
+      }
+    }
+
+    _clearHoveredPrefecture() {
+      if (this._hoveredPrefEl && this._hoveredPrefEl.classList) {
+        this._hoveredPrefEl.classList.remove('is-hovered');
+      }
+      this._hoveredPrefEl = null;
+    }
+
+    // Single deduplicated mesh reproducing smoothRingToSvgPath geometry so
+    // idle .prefecture-shape elements need no GPU fill or stroke passes.
+    _buildPrefectureBoundaryPath(prefs) {
+      if (!Array.isArray(prefs) || !prefs.length) return '';
+      const cached = PREF_BOUNDARY_MESH_CACHE.get(prefs);
+      if (cached !== undefined) return cached;
+      const ptKey = (pt) =>
+        (Math.round(pt[0] * 100) + 20000) * 65536 + (Math.round(pt[1] * 100) + 10000);
+      const seen = new Set();
+      let d = '';
+      let penX = '';
+      let penY = '';
+      const emitLine = (x1, y1, x2, y2) => {
+        const x1s = x1.toFixed(1);
+        const y1s = y1.toFixed(1);
+        const x2s = x2.toFixed(1);
+        const y2s = y2.toFixed(1);
+        if (x1s === x2s && y1s === y2s) return;
+        if (x1s !== penX || y1s !== penY) {
+          d += `M${x1s} ${y1s}`;
+        }
+        d += `L${x2s} ${y2s}`;
+        penX = x2s;
+        penY = y2s;
+      };
+      for (const pref of prefs) {
+        if (!pref || !pref.shape) continue;
+        const coords = pref.shape.coordinates;
+        const polys = pref.shape.type === 'Polygon' ? [coords] : coords || [];
+        for (const poly of polys) {
+          if (!poly) continue;
+          for (let rIdx = 0; rIdx < poly.length; rIdx++) {
+            const rawRing = poly[rIdx];
+            if (!rawRing || rawRing.length < 3) continue;
+            const ring = this.projector._orientRing(rawRing, rIdx > 0);
+            let n = ring.length;
+            if (
+              n > 3 &&
+              Math.abs(ring[0][0] - ring[n - 1][0]) < 1e-6 &&
+              Math.abs(ring[0][1] - ring[n - 1][1]) < 1e-6
+            ) {
+              n--;
+            }
+            if (n < 3) {
+              for (let i = 0; i < ring.length - 1; i++) {
+                const k1 = ptKey(ring[i]);
+                const k2 = ptKey(ring[i + 1]);
+                if (k1 === k2) continue;
+                const ek = k1 < k2 ? `E${k1}|${k2}` : `E${k2}|${k1}`;
+                if (seen.has(ek)) continue;
+                seen.add(ek);
+                const [x1, y1] = this.projector.toScreen(ring[i][0], ring[i][1]);
+                const [x2, y2] = this.projector.toScreen(ring[i + 1][0], ring[i + 1][1]);
+                emitLine(x1, y1, x2, y2);
+              }
+              continue;
+            }
+            const pts = new Array(n);
+            const keys = new Float64Array(n);
+            for (let i = 0; i < n; i++) {
+              pts[i] = this.projector.toScreen(ring[i][0], ring[i][1]);
+              keys[i] = ptKey(ring[i]);
+            }
+            const sx = new Float64Array(n);
+            const sy = new Float64Array(n);
+            const ex = new Float64Array(n);
+            const ey = new Float64Array(n);
+            const curved = new Uint8Array(n);
+            for (let i = 0; i < n; i++) {
+              const p0 = pts[i];
+              const p1 = pts[(i + 1) % n];
+              const dx = p1[0] - p0[0];
+              const dy = p1[1] - p0[1];
+              const len = Math.hypot(dx, dy);
+              if (len >= 1.6) {
+                const t = Math.min(0.28, 4.2 / len);
+                sx[i] = p0[0] + dx * t;
+                sy[i] = p0[1] + dy * t;
+                ex[i] = p1[0] - dx * t;
+                ey[i] = p1[1] - dy * t;
+                curved[i] = 1;
+              } else {
+                sx[i] = p0[0];
+                sy[i] = p0[1];
+                ex[i] = p1[0];
+                ey[i] = p1[1];
+              }
+            }
+            for (let i = 0; i < n; i++) {
+              const next = (i + 1) % n;
+              const k0 = keys[i];
+              const k1 = keys[next];
+              if (curved[i] && k0 !== k1) {
+                const ek = k0 < k1 ? `E${k0}|${k1}` : `E${k1}|${k0}`;
+                if (!seen.has(ek)) {
+                  seen.add(ek);
+                  emitLine(sx[i], sy[i], ex[i], ey[i]);
+                }
+              }
+              if (curved[i] && curved[next]) {
+                const k2 = keys[(next + 1) % n];
+                const qa = k0 < k2 ? `${k0}|${k2}` : `${k2}|${k0}`;
+                const qk = `Q${k1}|${qa}`;
+                if (!seen.has(qk)) {
+                  seen.add(qk);
+                  const x1s = ex[i].toFixed(1);
+                  const y1s = ey[i].toFixed(1);
+                  const x2s = sx[next].toFixed(1);
+                  const y2s = sy[next].toFixed(1);
+                  if (x1s !== penX || y1s !== penY) {
+                    d += `M${x1s} ${y1s}`;
+                  }
+                  d += `Q${pts[next][0].toFixed(1)} ${pts[next][1].toFixed(1)} ${x2s} ${y2s}`;
+                  penX = x2s;
+                  penY = y2s;
+                }
+              } else if (!curved[i] && !curved[next]) {
+                if (k0 !== k1) {
+                  const ek = k0 < k1 ? `E${k0}|${k1}` : `E${k1}|${k0}`;
+                  if (!seen.has(ek)) {
+                    seen.add(ek);
+                    emitLine(sx[i], sy[i], sx[next], sy[next]);
+                  }
+                }
+              } else {
+                const cx0 = curved[i] ? ex[i] : sx[i];
+                const cy0 = curved[i] ? ey[i] : sy[i];
+                const aTag = `${cx0.toFixed(1)},${cy0.toFixed(1)}`;
+                const bTag = `${sx[next].toFixed(1)},${sy[next].toFixed(1)}`;
+                if (aTag !== bTag) {
+                  const sk = aTag < bTag ? `S${aTag}|${bTag}` : `S${bTag}|${aTag}`;
+                  if (!seen.has(sk)) {
+                    seen.add(sk);
+                    emitLine(cx0, cy0, sx[next], sy[next]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      PREF_BOUNDARY_MESH_CACHE.set(prefs, d);
+      return d;
+    }
+
+    _renderPrefecturesLayer(snap) {
+      if (!this.grpPrefectures || !snap) return;
+      const prefs = snap.prefectures || null;
+      const canReusePrefs = Boolean(
+        this._prefShapesGroup &&
+          this._prefShapesGroup.parentNode === this.grpPrefectures &&
+          this._renderedPrefecturesRef === prefs
+      );
+      if (!canReusePrefs) {
+        this.grpPrefectures.innerHTML = '';
+        const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
+        const meshD = this._buildPrefectureBoundaryPath(prefs);
+        if (meshD) {
+          this._svgNode('path', { d: meshD, class: 'prefecture-boundary-mesh' }, prefGroup);
+        }
+        for (const pref of prefs || []) {
+          const path = this._svgNode(
+            'path',
+            { d: this.projector.shapeToSvgPath(pref.shape), class: 'prefecture-shape' },
+            prefGroup
+          );
+          path.dataset.prefTitle = pref.title;
+          path.dataset.prefCategory = pref.category;
+        }
+        this._prefShapesGroup = prefGroup;
+        this._renderedPrefecturesRef = prefs;
+        this._regOverlayGroup = this._svgNode('g', {}, this.grpPrefectures);
+      } else if (this._regOverlayGroup && this._regOverlayGroup.parentNode === this.grpPrefectures) {
+        this._regOverlayGroup.innerHTML = '';
+      } else {
+        this._regOverlayGroup = this._svgNode('g', {}, this.grpPrefectures);
+      }
+
+      const regGroup = this._regOverlayGroup;
+      const regBoundaryPath = this._buildRegionBoundaryPath(snap);
+      if (regBoundaryPath) {
+        this._svgNode(
+          'path',
+          { d: regBoundaryPath, class: 'region-shape-casing' },
+          regGroup
+        );
+        this._svgNode(
+          'path',
+          { d: regBoundaryPath, class: 'region-shape' },
+          regGroup
+        );
+      }
+
+      for (const reg of snap.regions || []) {
+        if (reg.anchor && reg.title) {
+          const isQiao = reg.category === '侨州';
+          if (
+            !isQiao &&
+            snap._allowRegionAnchor &&
+            !snap._allowRegionAnchor(reg.anchor[0], reg.anchor[1])
+          ) {
+            continue;
+          }
+          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
+          const rLbl = this._svgNode(
+            'text',
+            {
+              class: isQiao ? 'region-caption is-qiaozhou' : 'region-caption',
+              'data-x': baseX.toFixed(1),
+              'data-y': baseY.toFixed(1),
+              'data-base-x': baseX.toFixed(1),
+              'data-base-y': baseY.toFixed(1),
+            },
+            regGroup
+          );
+          rLbl._regShape = reg.shape;
+          rLbl.textContent = isQiao
+            ? this.locale === 'en'
+              ? `${this.trTerm(reg.title)} (Emigre)`
+              : this._zh(`${reg.title}·侨`)
+            : this.trTerm(reg.title);
+        }
+      }
+    }
+
+    _materializeDeferredPrefectures() {
+      if (!this._deferredPrefectureSnap || !this.grpPrefectures) return false;
+      const snap = this._deferredPrefectureSnap;
+      this._deferredPrefectureSnap = null;
+      this._renderPrefecturesLayer(snap);
+      this._syncTracedPrefecture();
+      this._typoDirty = true;
+      return true;
+    }
+
     _renderPolitiesAndPrefectures(dynasty, snap) {
       this._setPolityFocus(null);
+      this._clearHoveredPrefecture();
       this.grpPolities.innerHTML = '';
-      this.grpPrefectures.innerHTML = '';
 
       const polGroup = this._svgNode('g', {}, this.grpPolities);
       const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
@@ -2200,66 +2480,28 @@
         }
       }
 
-      const prefGroup = this._svgNode('g', {}, this.grpPrefectures);
-      for (const pref of snap.prefectures || []) {
-        const path = this._svgNode(
-          'path',
-          { d: this.projector.shapeToSvgPath(pref.shape), class: 'prefecture-shape' },
-          prefGroup
-        );
-        path.dataset.prefTitle = pref.title;
-        path.dataset.prefCategory = pref.category;
-      }
-
-      const regBoundaryPath = this._buildRegionBoundaryPath(snap);
-      if (regBoundaryPath) {
-        this._svgNode(
-          'path',
-          { d: regBoundaryPath, class: 'region-shape-casing' },
-          prefGroup
-        );
-        this._svgNode(
-          'path',
-          { d: regBoundaryPath, class: 'region-shape' },
-          prefGroup
-        );
-      }
-
-      for (const reg of snap.regions || []) {
-        if (reg.anchor && reg.title) {
-          const isQiao = reg.category === '侨州';
-          if (
-            !isQiao &&
-            snap._allowRegionAnchor &&
-            !snap._allowRegionAnchor(reg.anchor[0], reg.anchor[1])
-          ) {
-            continue;
-          }
-          const [baseX, baseY] = this.projector.toScreen(reg.anchor[0], reg.anchor[1]);
-          const rLbl = this._svgNode(
-            'text',
-            {
-              class: isQiao ? 'region-caption is-qiaozhou' : 'region-caption',
-              'data-x': baseX.toFixed(1),
-              'data-y': baseY.toFixed(1),
-              'data-base-x': baseX.toFixed(1),
-              'data-base-y': baseY.toFixed(1),
-            },
-            prefGroup
-          );
-          rLbl._regShape = reg.shape;
-          rLbl.textContent = isQiao
-            ? this.locale === 'en'
-              ? `${this.trTerm(reg.title)} (Emigre)`
-              : this._zh(`${reg.title}·侨`)
-            : this.trTerm(reg.title);
+      const prefHidden = Boolean(
+        this.grpPrefectures &&
+          this.grpPrefectures.classList &&
+          this.grpPrefectures.classList.contains('is-hidden')
+      );
+      if (prefHidden) {
+        if (this._prefShapesGroup || this._regOverlayGroup || this.grpPrefectures.firstChild) {
+          this.grpPrefectures.innerHTML = '';
+          this._prefShapesGroup = null;
+          this._regOverlayGroup = null;
+          this._renderedPrefecturesRef = null;
         }
+        this._deferredPrefectureSnap = snap;
+      } else {
+        this._deferredPrefectureSnap = null;
+        this._renderPrefecturesLayer(snap);
       }
 
       this.lastRenderedSnap = snap;
       if (this.activePolity || this.eraFocus) this._setPolityFocus(null);
       this._renderLegendBox(snap);
-      this._syncTracedPrefecture();
+      if (!prefHidden) this._syncTracedPrefecture();
       this._rescaleSvgTypography();
     }
 
@@ -2401,17 +2643,20 @@
           const p1 = ring[i];
           const p2 = ring[i + 1];
           const ek = edgeKey(p1, p2);
+          if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+            penX = NaN;
+            penY = NaN;
+            continue;
+          }
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
           const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
           if (
-            (regEdgeCounts.get(ek) || 0) < 2 ||
-            seenEdges.has(ek) ||
-            (polRings.length &&
-              (!allowPolIdx(pIdxM) ||
-                findPolIdx(p1[0], p1[1]) !== pIdxM ||
-                findPolIdx(p2[0], p2[1]) !== pIdxM ||
-                (hasLargePolity && nearPolityBorder(mx, my, 0.16))))
+            polRings.length &&
+            (!allowPolIdx(pIdxM) ||
+              findPolIdx(p1[0], p1[1]) !== pIdxM ||
+              findPolIdx(p2[0], p2[1]) !== pIdxM ||
+              (hasLargePolity && nearPolityBorder(mx, my, 0.16)))
           ) {
             penX = NaN;
             penY = NaN;
@@ -2460,6 +2705,21 @@
       return locale === 'en' ? p.ancientEn : this._zh(p.ancientZh);
     }
 
+    _settlementAncient(item, year = this.year) {
+      if (!item) return '';
+      if (Array.isArray(item.eraNames)) {
+        for (const en of item.eraNames) {
+          if (
+            (en.from === undefined || year >= en.from) &&
+            (en.until === undefined || year < en.until)
+          ) {
+            return en.zh || item.ancient || '';
+          }
+        }
+      }
+      return item.ancient || '';
+    }
+
     _settlementMask(dynasty, year) {
       const sMask = (dynasty.settlements || [])
         .map((item) => {
@@ -2469,7 +2729,8 @@
           ) {
             return '0';
           }
-          return this._isSettlementCapital(item, year) ? '2' : '1';
+          const base = this._isSettlementCapital(item, year) ? '2' : '1';
+          return item.eraNames ? `${base}${this._settlementAncient(item, year)}` : base;
         })
         .join('');
       const pMask = HistoricalAtlasController.STRATEGIC_PASSES.map((p) =>
@@ -2507,13 +2768,14 @@
             (s) =>
               this._isSettlementCapital(s, this.year) &&
               dynasty.seat &&
-              dynasty.seat.includes(s.ancient.split(/[（(]/)[0])
+              dynasty.seat.includes(this._settlementAncient(s, this.year).split(/[（(]/)[0])
           ) || activeList.find((s) => this._isSettlementCapital(s, this.year))
         : null;
 
       for (const item of activeList) {
         const [x, y] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const isCapNow = this._isSettlementCapital(item, this.year);
+        const ancientZh = this._settlementAncient(item, this.year);
         const isTier2 = item.tier === 2 && !isCapNow;
         const isHintCap = item === hintCapital;
         const isTracedCity =
@@ -2538,7 +2800,7 @@
           },
           group
         );
-        node.dataset.ancient = item.ancient;
+        node.dataset.ancient = ancientZh;
         node.dataset.modern = item.modern || '';
         node.dataset.remark = item.remark || '';
         node.dataset.lng = String(item.coord[0]);
@@ -2573,8 +2835,8 @@
         );
         nameEl.textContent =
           dynasty.key === 'roc' || dynasty.key === 'prc'
-            ? this.trModernCity(item.ancient)
-            : this.trTerm(item.ancient);
+            ? this.trModernCity(ancientZh)
+            : this.trTerm(ancientZh);
 
         if (isHintCap) {
           const tagG = this._svgNode(
@@ -4125,8 +4387,8 @@
         ? this.uiStr('title', 'Jiangshan Atlas · Interactive Historical Atlas of China (403 BCE – Present)')
         : '江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）';
       let pageDesc = isEn
-        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 183 multi-stage territory snapshots, 471 milestones, 571 city landmarks, 20 strategic passes, and 113+ person chronicles.'
-        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、183幅多阶段历史疆域与州道政区快照、471条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
+        ? 'Explore 2,400+ years of Chinese history from the Warring States (403 BCE) to the present across 18 eras, 185 multi-stage territory snapshots, 471 milestones, 571 city landmarks, 20 strategic passes, and 113+ person chronicles.'
+        : '交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代、185幅多阶段历史疆域与州道政区快照、471条编年大事、571处城池地标、20座天下名关与百余位青史人物行迹。';
       let canonicalUrl = baseSiteUrl;
 
       if (this.activePerson) {
@@ -7357,6 +7619,7 @@
         rowsData.push({
           d,
           isCurDyn,
+          targetYear,
           polityHit,
           regionObjs: eraHit.regionObjs,
           prefObjs: eraHit.prefObjs,
@@ -7488,14 +7751,15 @@
               near.km < 25
                 ? this.uiStr('at_here', '即此地')
                 : `${Math.round(near.km)} km`;
+            const rawNearAnc = this._settlementAncient(near.s, r.targetYear);
             const nearCityName =
               d.key === 'roc' || d.key === 'prc'
                 ? this.locale === 'en' &&
                   near.s.rawModern &&
-                  !(this.enLocale.dict && this.enLocale.dict[near.s.ancient])
+                  !(this.enLocale.dict && this.enLocale.dict[rawNearAnc])
                   ? this.trModernCity(near.s.rawModern)
-                  : this.trModernCity(near.s.ancient)
-                : this.trTerm(near.s.ancient);
+                  : this.trModernCity(rawNearAnc)
+                : this.trTerm(rawNearAnc);
             const nearPrefix =
               d.key === 'prc'
                 ? near.km < 25
@@ -7674,6 +7938,7 @@
         if (!scrubbing) return;
         if (!this.isScrubbing) {
           this.isScrubbing = true;
+          if (this.svg && this.svg.classList) this.svg.classList.add('is-scrubbing');
           if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
         }
         pendingX = e.clientX;
@@ -7696,6 +7961,7 @@
         trackRect = null;
         if (x !== null) scrubAt(x);
         this.isScrubbing = false;
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
         }
@@ -7705,6 +7971,7 @@
         cancelRaf();
         scrubbing = false;
         this.isScrubbing = false;
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         trackRect = null;
         if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
@@ -8347,6 +8614,14 @@
       });
     }
 
+    _cancelPendingHover() {
+      if (this._hoverRaf != null) {
+        cancelAnimationFrame(this._hoverRaf);
+        this._hoverRaf = null;
+      }
+      this._pendingHoverEvent = null;
+    }
+
     _commitStageTransform() {
       if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
         this._stageWrap.style.transform = '';
@@ -8382,6 +8657,9 @@
       const rect = this.svg.getBoundingClientRect();
       this._cameraViewportRect = rect;
       this.svg.classList.remove('is-camera-moving');
+      if (this.viewportFrame && this.viewportFrame.classList) {
+        this.viewportFrame.classList.remove('is-camera-moving');
+      }
       if (
         this._typoDirty ||
         this._lastTypographyWidth === undefined ||
@@ -8401,6 +8679,7 @@
         cancelAnimationFrame(this._camRaf);
         this._camRaf = null;
       }
+      this._cancelPendingHover();
       if (forceTypography) this._cameraViewportRect = null;
       const cachedRect =
         (this.dragState && this.dragState.rect) ||
@@ -8415,17 +8694,20 @@
         clearTimeout(this._cameraSettleTimer);
         this._cameraSettleTimer = null;
         this.svg.classList.remove('is-camera-moving');
+        if (this.viewportFrame && this.viewportFrame.classList) {
+          this.viewportFrame.classList.remove('is-camera-moving');
+        }
       } else if (this._lastCameraViewBox !== null && viewBox !== this._lastCameraViewBox) {
         this._cameraViewportRect = rect;
         this.hoverTip.classList.add('is-hidden');
-        this.grpPrefectures.querySelectorAll('.prefecture-shape.is-hovered')
-          .forEach((el) => el.classList.remove('is-hovered'));
-        if (zoomChanged || this._cameraSettleTimer !== null || this.flyRaf !== null) {
-          this.svg.classList.add('is-camera-moving');
-          if (!this.flyRaf) {
-            clearTimeout(this._cameraSettleTimer);
-            this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
-          }
+        this._clearHoveredPrefecture();
+        this.svg.classList.add('is-camera-moving');
+        if (this.viewportFrame && this.viewportFrame.classList) {
+          this.viewportFrame.classList.add('is-camera-moving');
+        }
+        if (!this.flyRaf) {
+          clearTimeout(this._cameraSettleTimer);
+          this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
         }
       }
       this._commitStageTransform();
@@ -9110,6 +9392,9 @@
           const [ox, oy] = polOffsets[i];
           const cx = baseX + ox * s;
           const cy = baseY + oy * s;
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005 * s * s;
+          if (ov >= bestScore) continue;
           if ((ox !== 0 || oy !== 0) && node._polShape) {
             const [lngC, latC] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
@@ -9126,15 +9411,11 @@
               continue;
             }
           }
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.0005 * s * s;
-          if (ov < bestScore) {
-            bestScore = ov;
-            bestX = cx;
-            bestY = cy;
-            bestBox = candBox;
-            if (ov < 0.05 * s * s) break;
-          }
+          bestScore = ov;
+          bestX = cx;
+          bestY = cy;
+          bestBox = candBox;
+          if (ov < 0.05 * s * s) break;
         }
 
         // Fallback for very small or narrow polities (e.g., 周, 韩, 中山) where 4-edge padding
@@ -9164,19 +9445,18 @@
             const [ox, oy] = fineFallbackOffsets[i];
             const cx = baseX + ox * s;
             const cy = baseY + oy * s;
+            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
+            if (ov >= bestScore) continue;
             if (node._polShape) {
               const [lngC, latC] = this.projector.toGeo(cx, cy);
               if (!MercatorProjector.pointInShape(lngC, latC, node._polShape)) continue;
             }
-            const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-            const ov = overlapArea(candBox) + (ox * ox + oy * oy) * 0.002 * s * s;
-            if (ov < bestScore) {
-              bestScore = ov;
-              bestX = cx;
-              bestY = cy;
-              bestBox = candBox;
-              if (ov < 0.1 * s * s) break;
-            }
+            bestScore = ov;
+            bestX = cx;
+            bestY = cy;
+            bestBox = candBox;
+            if (ov < 0.1 * s * s) break;
           }
         }
 
@@ -9397,23 +9677,24 @@
           const [ox, oy] = regOffsets[i];
           const cx = baseX + ox;
           const cy = baseY + oy;
+          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
+          if (overlapArea(candBox) > (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
+            continue;
+          }
           if ((ox !== 0 || oy !== 0) && node._regShape) {
             const [lng, lat] = this.projector.toGeo(cx, cy);
             if (!MercatorProjector.pointInShape(lng, lat, node._regShape)) continue;
           }
-          const candBox = { x1: cx - hw, y1: cy - hh, x2: cx + hw, y2: cy + hh };
-          if (overlapArea(candBox) <= (candBox.x2 - candBox.x1) * (candBox.y2 - candBox.y1) * 0.05) {
-            node.dataset.placed = '1';
-            const cxStr = cx.toFixed(1);
-            const cyStr = cy.toFixed(1);
-            node.setAttribute('data-x', cxStr);
-            node.setAttribute('data-y', cyStr);
-            applyNodeScale(node, cxStr, cyStr);
-            node.classList.remove('is-crowded-hidden');
-            occupied.push(candBox);
-            placed = true;
-            break;
-          }
+          node.dataset.placed = '1';
+          const cxStr = cx.toFixed(1);
+          const cyStr = cy.toFixed(1);
+          node.setAttribute('data-x', cxStr);
+          node.setAttribute('data-y', cyStr);
+          applyNodeScale(node, cxStr, cyStr);
+          node.classList.remove('is-crowded-hidden');
+          occupied.push(candBox);
+          placed = true;
+          break;
         }
         if (!placed) {
           node.dataset.placed = '1';
@@ -11047,19 +11328,19 @@
           this._id('chk-prefectures').checked = true;
           this.grpPrefectures.classList.remove('is-hidden');
         }
+        if (this._materializeDeferredPrefectures()) {
+          this._rescaleSvgTypography();
+        }
         const [tx, ty] = this.projector.toScreen(item.coord[0], item.coord[1]);
         const w = Math.min(this.camera.w, 1000 / 1.95);
         const h = w * this._getViewportAspect();
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * 0.48, w, h });
         if (item.prefTitle) {
           setTimeout(() => {
-            this.grpPrefectures
-              .querySelectorAll('.prefecture-shape.is-hovered')
-              .forEach((el) => el.classList.remove('is-hovered'));
             const el = this.grpPrefectures.querySelector(
               `.prefecture-shape[data-pref-title="${CSS.escape(item.prefTitle)}"]`
             );
-            if (el) el.classList.add('is-hovered');
+            this._setHoveredPrefecture(el);
           }, 80);
         }
       } else if (item.kind === 'event' && item.milestone) {
@@ -11443,7 +11724,12 @@
         }
         this._rescaleSvgTypography();
       });
-      bindToggle('chk-prefectures', this.grpPrefectures);
+      this._id('chk-prefectures').addEventListener('change', (e) => {
+        this.grpPrefectures.classList.toggle('is-hidden', !e.target.checked);
+        if (e.target.checked) this._materializeDeferredPrefectures();
+        else this._clearHoveredPrefecture();
+        this._rescaleSvgTypography();
+      });
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
@@ -11790,6 +12076,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
 
@@ -11910,6 +12197,17 @@
           return;
         }
         const target = document.elementFromPoint(e.clientX, e.clientY) || e.target;
+        if (
+          !target ||
+          (this.svg && typeof this.svg.contains === 'function' && !this.svg.contains(target)) ||
+          target === this.svg ||
+          target.id === 'ocean-bg' ||
+          target.id === 'terrain-relief-img'
+        ) {
+          this.hoverTip.classList.add('is-hidden');
+          this.hoverTip.classList.remove('is-interactive');
+          return;
+        }
         const rawStack = document.elementsFromPoint
           ? document.elementsFromPoint(e.clientX, e.clientY)
           : [];
@@ -12026,7 +12324,9 @@
           );
         } else if (settlementEl || coCity) {
           const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));
-          const rawAnc = settlementEl ? settlementEl.dataset.ancient : coCity.ancient;
+          const rawAnc = settlementEl
+            ? settlementEl.dataset.ancient
+            : this._settlementAncient(coCity, this.year);
           const rawMod = settlementEl ? settlementEl.dataset.modern : coCity.modern || '';
           const rawRem = settlementEl ? settlementEl.dataset.remark : coCity.remark || '';
           const anc = isModernDyn ? this.trModernCity(rawAnc) : this.trTerm(rawAnc);
@@ -12312,19 +12612,34 @@
         this.openGenealogyAt(lng, lat);
       });
 
-      // Hover tooltips (Desktop pointermove)
+      // Hover tooltips (Desktop pointermove — coalesced to once per animation frame)
       const frame = this._id('viewport-frame');
       frame.addEventListener('pointermove', (e) => {
         if (e.pointerType === 'touch') return;
-        if (this.dragState || this.pinchState || this._camRaf !== null || this._cameraSettleTimer !== null) return;
-        this.grpPrefectures
-          .querySelectorAll('.prefecture-shape.is-hovered')
-          .forEach((el) => el.classList.remove('is-hovered'));
-        inspectPointTooltip(e);
+        if (this.dragState || this.pinchState || this._camRaf != null || this._cameraSettleTimer != null) return;
+        this._clearHoveredPrefecture();
+        this._pendingHoverEvent = {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          pointerType: e.pointerType,
+          target: e.target,
+        };
+        if (this._hoverRaf != null) return;
+        this._hoverRaf = requestAnimationFrame(() => {
+          this._hoverRaf = null;
+          const ev = this._pendingHoverEvent;
+          this._pendingHoverEvent = null;
+          if (!ev || this.dragState || this.pinchState || this._camRaf != null || this._cameraSettleTimer != null) {
+            return;
+          }
+          inspectPointTooltip(ev);
+        });
       });
 
       frame.addEventListener('pointerleave', (e) => {
         if (e.pointerType === 'touch') return;
+        this._cancelPendingHover();
+        this._clearHoveredPrefecture();
         this.hoverTip.classList.add('is-hidden');
       });
 
@@ -12707,7 +13022,7 @@
           if (!hit) return null;
           return {
             kind: 'city',
-            name: s.ancient,
+            name: this._settlementAncient(s, yr),
             modern: s.modern || '',
             lng: s.coord[0],
             lat: s.coord[1],
@@ -13031,7 +13346,7 @@
       return null;
     }
 
-    _inspectCoord(cLng, cLat, d, snap) {
+    _inspectCoord(cLng, cLat, d, snap, year = this.year) {
       const isEn = this.locale === 'en';
       const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
       const modernProvince = eraHit.modernLoc.inModernChina
@@ -13039,14 +13354,18 @@
           ? this.trTerm(eraHit.modernLoc.modernTitle)
           : this._zh(eraHit.modernLoc.modernTitle)
         : null;
+      const rawNearAncient =
+        eraHit.near && eraHit.near.s ? this._settlementAncient(eraHit.near.s, year) : '';
+      const isCapAtYear =
+        eraHit.near && eraHit.near.s ? this._isSettlementCapital(eraHit.near.s, year) : false;
       const nearestCity = eraHit.near
         ? {
-            ancient: isEn ? this.trTerm(eraHit.near.s.ancient) : this._zh(eraHit.near.s.ancient),
+            ancient: isEn ? this.trTerm(rawNearAncient) : this._zh(rawNearAncient),
             modern: isEn
               ? this.trModernCity(eraHit.near.s.modern || '')
               : this._zh(eraHit.near.s.modern || ''),
             distanceKm: Math.round(eraHit.near.km),
-            ...(eraHit.near.s.isCapital ? { isCapital: true } : {}),
+            ...(isCapAtYear ? { isCapital: true } : {}),
             ...(eraHit.near.s.remark
               ? { remark: isEn ? this.trTerm(eraHit.near.s.remark) : this._zh(eraHit.near.s.remark) }
               : {}),
@@ -13069,7 +13388,6 @@
             : []
           : Array.from(new Set(eraHit.regionObjs.map(fmt)));
       const rawProvTitle = eraHit.modernLoc.inModernChina ? eraHit.modernLoc.modernTitle : null;
-      const rawNearAncient = eraHit.near && eraHit.near.s ? eraHit.near.s.ancient : '';
       const prefectures =
         d && d.key === 'prc'
           ? rawProvTitle &&
@@ -13493,7 +13811,7 @@
           const sd = this.dynasties[sdIdx] || d;
           const sSnapKey = this._resolveSnapKey(sd, tok.year);
           const sSnap = this.snapshots[sSnapKey] || snap;
-          const info = this._inspectCoord(r.lng, r.lat, sd, sSnap);
+          const info = this._inspectCoord(r.lng, r.lat, sd, sSnap, tok.year);
           const prev = route.length ? route[route.length - 1] : null;
           const segKm = prev
             ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
@@ -13576,7 +13894,7 @@
       const hasCoord = cLng !== null && cLat !== null;
 
       const info = hasCoord
-        ? this._inspectCoord(cLng, cLat, d, snap)
+        ? this._inspectCoord(cLng, cLat, d, snap, singleYear)
         : {
             polity: null,
             regions: [],
@@ -13886,6 +14204,15 @@
         this.closeMilestoneBalloon();
         afterFullSnapshots(() => {
           this.closeMilestoneBalloon();
+          if (this._deferredPrefectureSnap) {
+            const prefChk = this._id('chk-prefectures');
+            if (prefChk) prefChk.checked = true;
+            if (this.grpPrefectures && this.grpPrefectures.classList) {
+              this.grpPrefectures.classList.remove('is-hidden');
+            }
+            this._materializeDeferredPrefectures();
+            this._rescaleSvgTypography();
+          }
           let el = this.grpPrefectures.querySelector(
             `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
           );
@@ -13911,7 +14238,7 @@
               }) || null;
           }
           if (el) {
-            el.classList.add('is-hovered');
+            this._setHoveredPrefecture(el);
             const box = el.getBoundingClientRect();
             const cx = box.left + box.width * 0.55;
             const cy = box.top + box.height * 0.45;

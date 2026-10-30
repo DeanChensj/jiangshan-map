@@ -428,18 +428,45 @@ h2 {
   cursor: grabbing;
 }
 
-/* Pause infinite SVG pulse animations while the camera is actively moving.
+/* Pause infinite SVG pulse animations while camera or timeline is actively moving.
    Text strokes/halos stay intact so labels never flash during zoom or pan. */
 #atlas-svg.is-camera-moving,
-#atlas-svg.is-camera-moving * {
+#atlas-svg.is-camera-moving *,
+#atlas-svg.is-scrubbing,
+#atlas-svg.is-scrubbing * {
   animation: none !important;
   transition: none !important;
 }
 
 #atlas-svg.is-camera-moving .cap-breath-ring,
 #atlas-svg.is-camera-moving .ev-ring,
-#atlas-svg.is-camera-moving .jn-pulse {
+#atlas-svg.is-camera-moving .jn-pulse,
+#atlas-svg.is-scrubbing .cap-breath-ring,
+#atlas-svg.is-scrubbing .ev-ring,
+#atlas-svg.is-scrubbing .jn-pulse {
   opacity: 0 !important;
+}
+
+#atlas-svg.is-camera-moving .prefecture-shape {
+  pointer-events: none;
+}
+
+/* Suspend GPU backdrop-filter sampling over 88-97% opaque parchment cards
+   during pan/zoom so D3D11 avoids multi-layer blur readbacks per frame. */
+#viewport-frame.is-camera-moving #map-key,
+#viewport-frame.is-camera-moving .search-input-wrap,
+#viewport-frame.is-camera-moving .search-results-list,
+#viewport-frame.is-camera-moving #milestone-balloon,
+#viewport-frame.is-camera-moving #genealogy-card,
+#viewport-frame.is-camera-moving #challenge-card,
+#viewport-frame.is-camera-moving #journey-card,
+#viewport-frame.is-camera-moving .canvas-reset-btn {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+#viewport-frame.is-camera-moving .scale-ruler {
+  transition: none !important;
 }
 
 #atlas-svg.is-crosshair {
@@ -875,11 +902,19 @@ h2 {
 }
 
 /* Secondary Prefectures (郡/州/府/路) */
-.prefecture-shape {
-  fill: rgba(255, 255, 255, 0.001);
+.prefecture-boundary-mesh {
+  fill: none;
   stroke: rgba(43, 38, 34, 0.15);
   stroke-width: 0.42;
   stroke-dasharray: 2 1.5;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.prefecture-shape {
+  fill: none;
+  stroke: none;
+  pointer-events: fill;
   vector-effect: non-scaling-stroke;
 }
 
@@ -4550,12 +4585,12 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   /* Progressive disclosure for 300+ secondary prefecture mesh on mobile */
-  #atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-shape:not(:hover):not(.is-hovered) {
+  #atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-boundary-mesh {
     stroke: rgba(43, 38, 34, 0.08);
     stroke-width: 0.3;
   }
 
-  #atlas-svg.is-mobile-zoomed-detail .prefecture-shape:not(:hover):not(.is-hovered) {
+  #atlas-svg.is-mobile-zoomed-detail .prefecture-boundary-mesh {
     stroke: rgba(43, 38, 34, 0.2);
     stroke-width: 0.42;
   }

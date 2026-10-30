@@ -2632,7 +2632,7 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 18, `Expected 18 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 20, `Expected 20 s_tang* snapshots, found ${tangSnapKeys.length}`);
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -4208,14 +4208,18 @@ function main() {
     // Tang capitals & periods
     const changanTang = findSt(tangDyn, '长安');
     assert(changanTang && Array.isArray(changanTang.capitalPeriods), 'tang: 长安 must define capitalPeriods');
-    assert.strictEqual(JSON.stringify(changanTang.capitalPeriods), JSON.stringify([[618, 904]]), 'tang: 长安 capitalPeriods must be [[618, 904]]');
+    assert.strictEqual(
+      JSON.stringify(changanTang.capitalPeriods),
+      JSON.stringify([[618, 689], [705, 904]]),
+      'tang: 长安 capitalPeriods must be [[618, 689], [705, 904]]'
+    );
 
     const luoyangTang = findSt(tangDyn, '东都洛阳');
     assert(luoyangTang && Array.isArray(luoyangTang.capitalPeriods), 'tang: 东都洛阳 must define capitalPeriods');
     assert.strictEqual(
       JSON.stringify(luoyangTang.capitalPeriods),
-      JSON.stringify([[690, 705], [904, 907]]),
-      'tang: 东都洛阳 capitalPeriods must be [[690, 705], [904, 907]]'
+      JSON.stringify([[690, 704], [904, 907]]),
+      'tang: 东都洛阳 capitalPeriods must be [[690, 704], [904, 907]]'
     );
 
     const taiyuanTang = findSt(tangDyn, '北都太原');
@@ -4240,13 +4244,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 19 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 755, 757, 763, 764, 790, 848, 881, 907];
+    // Tang 20 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 19 map change milestone years must match'
+      'tang: 20 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -7109,6 +7113,390 @@ function main() {
           cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag'),
         'css/style.css must use auto-height 2-row mobile chronicle banner with full-width wrapping #dynasty-seat and hide .cap-hint-tag when #milestone-balloon is active'
       );
+
+      // CUJ 43: Wu Zhou (武周, 690–705) Interregnum Snapshots, Shendu Luoyang Capital & Polity Profile
+      {
+        const tangDyn = dynasties.find((d) => d.key === 'tang');
+        assert.strictEqual(
+          tangDyn.focusYear,
+          741,
+          'tang.focusYear must sit in Li-Tang High Tang (741) rather than inside Wu Zhou (690–704)'
+        );
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 704), 's_tang_wz2');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5');
+
+        for (const sk of ['s_tang_wz1', 's_tang_wz2']) {
+          const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');
+          assert(
+            wzMain && wzMain.title === '武周' && wzMain.tint === '#9b3b4a',
+            `${sk} main polity must be 武周 (#9b3b4a), got ${JSON.stringify(wzMain && { title: wzMain.title, tint: wzMain.tint })}`
+          );
+          for (const prot of snapshots[sk].polities.filter((p) => p.role === 'protectorate')) {
+            assert.strictEqual(
+              prot.tint,
+              '#9b3b4a',
+              `${sk} protectorate "${prot.title}" must use Wu Zhou tint #9b3b4a`
+            );
+          }
+        }
+        assert(
+          snapshots.s_tang_wz2.polities.some((p) => p.title === '北庭都护府'),
+          's_tang_wz2 (702–705) must include 北庭都护府 established by Wu Zetian in 702 CE'
+        );
+
+        const changAnItem = tangDyn.settlements.find((s) => s.ancient === '长安');
+        const luoyangItem = tangDyn.settlements.find((s) => s.modern === '洛阳');
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 689), true);
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 695), false);
+        assert.strictEqual(ctrl._isSettlementCapital(changAnItem, 705), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 689), false);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 690), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 704), true);
+        assert.strictEqual(ctrl._isSettlementCapital(luoyangItem, 705), false);
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 689), '东都洛阳');
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 695), '神都洛阳');
+        assert.strictEqual(ctrl._settlementAncient(luoyangItem, 705), '东都洛阳');
+
+        ctrl.locale = 'zh';
+        const wzInspZh = ctrl.inspect({ year: 695, place: '洛阳' });
+        assert.strictEqual(wzInspZh.polity, '武周');
+        assert.strictEqual(wzInspZh.resolvedName, '神都洛阳');
+        assert.strictEqual(wzInspZh.nearestCity && wzInspZh.nearestCity.ancient, '神都洛阳');
+        assert.strictEqual(Boolean(wzInspZh.nearestCity && wzInspZh.nearestCity.isCapital), true);
+        const revInspZh = ctrl.inspect({ year: 705, place: '洛阳' });
+        assert.strictEqual(revInspZh.polity, '唐');
+        assert.strictEqual(revInspZh.resolvedName, '东都洛阳');
+
+        ctrl.locale = 'en';
+        assert.strictEqual(ctrl.formatEraLabel(695, tangDyn), 'Wu Zhou · Wu Zetian');
+        assert.strictEqual(ctrl.formatEraLabel(705, tangDyn), 'Tang · Emp. Zhongzong');
+        assert.strictEqual(
+          ctrl.formatEraLabel(15, dynasties.find((d) => d.key === 'xihan')),
+          'Xin · Wang Mang'
+        );
+        const wzInspEn = ctrl.inspect({ year: 695, place: 'Shendu Luoyang' });
+        assert.strictEqual(wzInspEn.polity, 'Wu Zhou');
+        assert.strictEqual(wzInspEn.resolvedName, 'Shendu Luoyang');
+        assert(
+          !/[\u4e00-\u9fff]/.test(JSON.stringify(wzInspEn)),
+          `English inspect(695, Shendu Luoyang) leaked CJK: ${JSON.stringify(wzInspEn)}`
+        );
+
+        const wzHitsZh = ctrl._queryQuickSearch('武周');
+        assert(
+          wzHitsZh.length > 0 && wzHitsZh[0].kind === 'polity' && wzHitsZh[0].polityKey === 'wuzhou',
+          `Quick search for "武周" must rank curated polity wuzhou #1, got ${JSON.stringify(wzHitsZh[0])}`
+        );
+        const wzHitsEn = ctrl._queryQuickSearch('Wu Zhou');
+        assert(
+          wzHitsEn.length > 0 && wzHitsEn[0].kind === 'polity' && wzHitsEn[0].polityKey === 'wuzhou',
+          `Quick search for "Wu Zhou" must rank curated polity wuzhou #1, got ${JSON.stringify(wzHitsEn[0])}`
+        );
+        const wzResolved = ctrl._resolvePolity('武周', 695);
+        assert(
+          wzResolved && wzResolved.curated && wzResolved.key === 'wuzhou' && wzResolved.from === 690 && wzResolved.matchTo === 704,
+          `_resolvePolity("武周", 695) must resolve curated wuzhou profile (690–704), got ${JSON.stringify(wzResolved)}`
+        );
+        const wzStages = ctrl._polityStages(wzResolved);
+        assert(
+          wzStages.length === 2 && wzStages[0].from === 690 && wzStages[0].to === 701 && wzStages[1].from === 702 && wzStages[1].to === 704,
+          `Wu Zhou polity stages must be [690–701, 702–704], got ${JSON.stringify(wzStages)}`
+        );
+        ctrl.locale = 'zh';
+      }
+
+      // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
+      assert(
+        cssSrc.includes('mix-blend-mode: multiply') &&
+          cssSrc.includes('backdrop-filter:') &&
+          cssSrc.includes('#atlas-svg.is-scrubbing *') &&
+          cssSrc.includes('#atlas-svg.is-scrubbing .cap-breath-ring'),
+        'css/style.css must preserve all resting visual styles (multiply blend + backdrop-filter) while suppressing infinite SVG animations/transitions during is-scrubbing'
+      );
+      {
+        const proto = ControllerClass.prototype;
+        const testProj = new sandbox.window.MercatorProjector(1000, 700, {
+          west: 66,
+          east: 142,
+          south: 14,
+          north: 55,
+        });
+        const makeCls = () => {
+          const s = new Set();
+          return {
+            add: (...c) => c.forEach((x) => s.add(x)),
+            remove: (...c) => c.forEach((x) => s.delete(x)),
+            contains: (c) => s.has(c),
+            toggle: (c, f) => {
+              const on = f === undefined ? !s.has(c) : Boolean(f);
+              if (on) s.add(c);
+              else s.delete(c);
+              return on;
+            },
+          };
+        };
+
+        // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
+        let viewBoxWrites = 0;
+        let committedVb = '';
+        const hoveredMockPref = { classList: makeCls() };
+        hoveredMockPref.classList.add('is-hovered');
+        const panCtrl = Object.assign(Object.create(proto), {
+          camera: { x: 100, y: 80, w: 600, h: 420, zoom: 1000 / 600 },
+          projector: testProj,
+          svg: {
+            classList: makeCls(),
+            setAttribute: (k, v) => {
+              if (k === 'viewBox') {
+                viewBoxWrites++;
+                committedVb = v;
+              }
+            },
+            getBoundingClientRect: () => ({ left: 0, top: 0, width: 1200, height: 840 }),
+            querySelectorAll: () => [],
+          },
+          _stageWrap: { style: { transform: '' } },
+          hoverTip: { classList: makeCls() },
+          grpSettlements: { classList: makeCls(), querySelectorAll: () => [] },
+          grpPrefectures: { classList: makeCls(), querySelectorAll: () => [] },
+          grpPolities: { classList: makeCls(), querySelectorAll: () => [] },
+          grpCorridors: { classList: makeCls(), querySelectorAll: () => [] },
+          grpMilestones: { classList: makeCls(), querySelectorAll: () => [] },
+          grpRivers: { classList: makeCls(), querySelectorAll: () => [] },
+          grpProvNames: { classList: makeCls(), querySelectorAll: () => [] },
+          grpNeighbors: { classList: makeCls(), querySelectorAll: () => [] },
+          grpJourney: { querySelectorAll: () => [] },
+          _id: () => null,
+          _camRaf: null,
+          _cameraSettleTimer: null,
+          _cameraViewportRect: null,
+          _lastCameraViewBox: null,
+          _baseViewBoxCam: null,
+          _hoveredPrefEl: hoveredMockPref,
+          _hoverRaf: null,
+          _pendingHoverEvent: null,
+          _typoDirty: true,
+          _lastTypographyWidth: undefined,
+        });
+        panCtrl._applyCamera(true);
+        assert(viewBoxWrites === 1 && panCtrl._stageWrap.style.transform === '', 'Initial _applyCamera(true) must commit baseline viewBox directly');
+        panCtrl.dragState = { rect: { left: 0, top: 0, width: 1200, height: 840 } };
+        for (let step = 1; step <= 5; step++) {
+          panCtrl.camera.x = 100 + step * 3;
+          panCtrl.camera.y = 80 + step * 2;
+          panCtrl._applyCamera(false);
+        }
+        assert(
+          viewBoxWrites === 6 &&
+            committedVb === '115.0 90.0 600.0 420.0' &&
+            panCtrl._stageWrap.style.transform === '' &&
+            panCtrl.svg.classList.contains('is-camera-moving') &&
+            panCtrl._cameraSettleTimer !== null &&
+            !hoveredMockPref.classList.contains('is-hovered'),
+          `Expected pure pan frames to update exact viewBox without CSS translate3d while adding is-camera-moving and clearing hovered prefecture (writes=${viewBoxWrites}, vb="${committedVb}", transform="${panCtrl._stageWrap.style.transform}")`
+        );
+        clearTimeout(panCtrl._cameraSettleTimer);
+        panCtrl.dragState = null;
+        panCtrl._finishCameraMotion();
+        assert(
+          !panCtrl.svg.classList.contains('is-camera-moving'),
+          'Expected _finishCameraMotion to remove is-camera-moving after pan settles'
+        );
+
+        // 44b. Lazy secondary prefecture deferral when hidden + DOM reuse across intra-dynasty phases when visible
+        let prefPathCreates = 0;
+        const makeEl = (tag) => {
+          const el = {
+            tagName: tag,
+            attrs: {},
+            dataset: {},
+            style: {},
+            children: [],
+            parentNode: null,
+            classList: makeCls(),
+            textContent: '',
+            get firstChild() {
+              return this.children[0] || null;
+            },
+            setAttribute(k, v) {
+              this.attrs[k] = String(v);
+              if (k === 'class') {
+                const parts = String(v).split(/\s+/).filter(Boolean);
+                parts.forEach((c) => this.classList.add(c));
+                if (parts.includes('prefecture-shape')) prefPathCreates++;
+              }
+            },
+            getAttribute(k) {
+              return this.attrs[k];
+            },
+            appendChild(ch) {
+              if (ch.parentNode && Array.isArray(ch.parentNode.children)) {
+                const idx = ch.parentNode.children.indexOf(ch);
+                if (idx >= 0) ch.parentNode.children.splice(idx, 1);
+              }
+              ch.parentNode = this;
+              this.children.push(ch);
+              return ch;
+            },
+            querySelectorAll(sel) {
+              const out = [];
+              const want = sel.replace(/^\./, '');
+              const walk = (n) => {
+                for (const c of n.children || []) {
+                  if (c.classList && c.classList.contains(want)) out.push(c);
+                  walk(c);
+                }
+              };
+              walk(this);
+              return out;
+            },
+          };
+          Object.defineProperty(el, 'innerHTML', {
+            get: () => '',
+            set: () => {
+              for (const c of el.children) c.parentNode = null;
+              el.children = [];
+            },
+          });
+          return el;
+        };
+        const grpPol = makeEl('g');
+        const grpPref = makeEl('g');
+        grpPref.classList.add('is-hidden');
+        const lazyCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          enLocale: { terms: {}, dynasties: {} },
+          projector: testProj,
+          grpPolities: grpPol,
+          grpPrefectures: grpPref,
+          _svgNode(tag, attrs, parent) {
+            const n = makeEl(tag);
+            for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v);
+            if (parent) parent.appendChild(n);
+            return n;
+          },
+          _setPolityFocus: () => {},
+          _renderLegendBox: () => {},
+          _syncTracedPrefecture: () => {},
+          _rescaleSvgTypography: () => {},
+        });
+        const tangDyn = dynasties.find((d) => d.key === 'tang') || dynasties[0];
+        const tangPhases = (tangDyn.phases || []).map((ph) => snapshots[ph.snap]).filter(Boolean);
+        const tangSnap0 = tangPhases[0] || snapshots[tangDyn.snapshot] || snapshots[snapKeys[0]];
+        const tangSnap1 =
+          tangPhases.find((s) => s !== tangSnap0 && s.prefectures === tangSnap0.prefectures) || tangSnap0;
+        lazyCtrl._renderPolitiesAndPrefectures(tangDyn, tangSnap0);
+        assert(
+          grpPref.children.length === 0 && lazyCtrl._deferredPrefectureSnap === tangSnap0 && prefPathCreates === 0,
+          'Hidden #grp-prefectures must defer prefecture SVG DOM creation during _renderPolitiesAndPrefectures'
+        );
+        grpPref.classList.remove('is-hidden');
+        const expectedPrefCount = (tangSnap0.prefectures || []).length;
+        assert(
+          lazyCtrl._materializeDeferredPrefectures() === true &&
+            lazyCtrl._deferredPrefectureSnap === null &&
+            grpPref.querySelectorAll('.prefecture-boundary-mesh').length === 1 &&
+            grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount &&
+            prefPathCreates === expectedPrefCount,
+          '_materializeDeferredPrefectures must materialize 1 deduplicated .prefecture-boundary-mesh plus all prefecture hit-target paths on demand when layer becomes visible'
+        );
+        const prevShapesGroup = lazyCtrl._prefShapesGroup;
+        lazyCtrl._renderPolitiesAndPrefectures(tangDyn, tangSnap1);
+        assert(
+          lazyCtrl._prefShapesGroup === prevShapesGroup &&
+            prefPathCreates === expectedPrefCount &&
+            grpPref.querySelectorAll('.prefecture-boundary-mesh').length === 1 &&
+            grpPref.querySelectorAll('.prefecture-shape').length === expectedPrefCount,
+          `Scrubbing between intra-dynasty phases sharing snap.prefectures must reuse .prefecture-boundary-mesh + .prefecture-shape DOM without recreating ${expectedPrefCount} SVG paths (got prefPathCreates=${prefPathCreates})`
+        );
+
+        // 44c. Solution 1 (Issue #196): single smoothed boundary mesh deduplication, idle fill:none/stroke:none hit targets, toggleTerrainMode hides #grp-rivers, and viewportFrame camera-motion class
+        const meshEls = grpPref.querySelectorAll('.prefecture-boundary-mesh');
+        const meshD = meshEls[0].getAttribute('d') || '';
+        const rawCombinedCmds = (tangSnap0.prefectures || []).reduce((acc, p) => {
+          const pd = testProj.shapeToSvgPath(p.shape);
+          const m = pd.match(/[LQ]/g);
+          return acc + (m ? m.length : 0);
+        }, 0);
+        const meshCmds = (meshD.match(/[LQ]/g) || []).length;
+        assert(
+          meshCmds > 0 && meshCmds < rawCombinedCmds,
+          `Deduplicated .prefecture-boundary-mesh must shrink prefecture stroke commands without gaps (got meshCmds=${meshCmds} vs rawCombinedCmds=${rawCombinedCmds})`
+        );
+        assert(
+          lazyCtrl._buildPrefectureBoundaryPath(tangSnap0.prefectures) === meshD,
+          '_buildPrefectureBoundaryPath must return cached WeakMap string identically on repeat calls'
+        );
+
+        const idlePrefRule = cssSrc.match(/(?:^|\n)\.prefecture-shape\s*\{([^}]+)\}/);
+        assert(
+          idlePrefRule &&
+            /fill:\s*none\s*;/.test(idlePrefRule[1]) &&
+            /stroke:\s*none\s*;/.test(idlePrefRule[1]) &&
+            /pointer-events:\s*fill\s*;/.test(idlePrefRule[1]),
+          '.prefecture-shape base CSS must use fill:none, stroke:none, and pointer-events:fill to avoid 300+ GPU fill/stroke draw calls per frame'
+        );
+        assert(
+          !cssSrc.includes('.prefecture-shape:not(:hover):not(.is-hovered)') &&
+            cssSrc.includes('#atlas-svg:not(.is-mobile-zoomed-detail) .prefecture-boundary-mesh') &&
+            cssSrc.includes('#viewport-frame.is-camera-moving #map-key'),
+          'css/style.css must target .prefecture-boundary-mesh on mobile and suspend backdrop-filter under #viewport-frame.is-camera-moving'
+        );
+
+        let typoRescales = 0;
+        const terrainCtrl = Object.assign(Object.create(proto), {
+          terrainMode: true,
+          svg: { classList: makeCls() },
+          camera: { x: 0, y: 0, w: 500, h: 420, zoom: 2 },
+          grpTerrain: { classList: makeCls() },
+          grpRivers: { classList: makeCls() },
+          grpCorridors: { classList: makeCls() },
+          grpSettlements: { classList: makeCls() },
+          _typoDirty: false,
+          _id: () => null,
+          _rescaleSvgTypography() {
+            typoRescales++;
+          },
+        });
+        terrainCtrl.svg.classList.add('terrain-active');
+        terrainCtrl.toggleTerrainMode(false);
+        assert(
+          terrainCtrl.grpTerrain.classList.contains('is-hidden') &&
+            terrainCtrl.grpRivers.classList.contains('is-hidden') &&
+            !terrainCtrl.svg.classList.contains('terrain-active') &&
+            typoRescales === 1,
+          'toggleTerrainMode(false) must hide both #grp-terrain and #grp-rivers and refresh typography collision boxes'
+        );
+        terrainCtrl.toggleTerrainMode(true);
+        assert(
+          !terrainCtrl.grpTerrain.classList.contains('is-hidden') &&
+            !terrainCtrl.grpRivers.classList.contains('is-hidden') &&
+            terrainCtrl.svg.classList.contains('terrain-active') &&
+            typoRescales === 2,
+          'toggleTerrainMode(true) must unhide both #grp-terrain and #grp-rivers'
+        );
+
+        const vpCls = makeCls();
+        panCtrl.viewportFrame = { classList: vpCls };
+        panCtrl.dragState = { rect: { left: 0, top: 0, width: 1200, height: 840 } };
+        panCtrl.camera.x += 5;
+        panCtrl._applyCamera(false);
+        assert(
+          vpCls.contains('is-camera-moving'),
+          '_applyCamera motion frames must add is-camera-moving to #viewport-frame'
+        );
+        clearTimeout(panCtrl._cameraSettleTimer);
+        panCtrl.dragState = null;
+        panCtrl._finishCameraMotion();
+        assert(
+          !vpCls.contains('is-camera-moving'),
+          '_finishCameraMotion must remove is-camera-moving from #viewport-frame'
+        );
+      }
     }
   }
 

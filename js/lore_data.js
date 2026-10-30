@@ -22166,6 +22166,38 @@ window.ATLAS_LORE_DATA = {
       "summaryEn": "After sacking Jiangling, Western Wei installed the Liang prince Xiao Cha as emperor there in 555. Known as Western (Later) Liang, it served as a vassal of Western Wei, Northern Zhou and Sui until Emperor Wen of Sui abolished it in 587."
     },
     {
+      "key": "wuzhou",
+      "zh": "武周",
+      "en": "Wu Zhou",
+      "titles": [
+        "武周"
+      ],
+      "from": 690,
+      "to": 705,
+      "matchTo": 704,
+      "seatZh": "神都洛阳",
+      "seatEn": "Shendu Luoyang",
+      "monarchPrefix": [
+        "武周"
+      ],
+      "rulersZh": "圣神皇帝武曌（武则天）",
+      "rulersEn": "Empress Regnant Wu Zetian (Wu Zhao)",
+      "keywords": [
+        "武周",
+        "武则天",
+        "神龙政变",
+        "王孝杰",
+        "北庭都护府",
+        "大祚荣"
+      ],
+      "aliases": [
+        "大周（武周）",
+        "武周朝"
+      ],
+      "summaryZh": "690年武则天废唐睿宗自立，改国号为周，定都神都洛阳，史称武周。在位期间开创殿试与武举、拔擢寒门；692年遣王孝杰大破吐蕃收复安西四镇，702年置北庭都护府分辖天山南北。705年神龙政变后传位唐中宗，唐室复辟。",
+      "summaryEn": "In 690 Wu Zetian deposed Emperor Ruizong and proclaimed the Zhou dynasty (Wu Zhou) with its capital at Shendu Luoyang as China's sole female emperor regnant. She instituted palace and military examinations, promoted officials outside the old aristocracy, dispatched Wang Xiaojie to recover the Four Garrisons of Anxi from Tibet (692), and established the Beiting Protectorate north of the Tianshan (702). In 705 the Shenlong coup restored Emperor Zhongzong and the Tang dynasty."
+    },
+    {
       "key": "tubo",
       "zh": "吐蕃",
       "en": "Tibetan Empire",

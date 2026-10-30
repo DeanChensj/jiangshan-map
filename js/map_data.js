@@ -7552,10 +7552,10 @@ window.DYNASTY_DATA = [
     "badge": "唐",
     "fromYear": 618,
     "toYear": 907,
-    "focusYear": 700,
+    "focusYear": 741,
     "tint": "#c6952b",
     "seat": "长安",
-    "summary": "盛唐设安西、北庭、安北、安东、安南等都护府，长安是当时世界最大的都市。755 年安史之乱后，河西、陇右与西域先后陷于吐蕃，藩镇割据，直至 907 年朱温代唐。拖动底部时间轴可查看各阶段疆域演变。",
+    "summary": "盛唐设安西、北庭、安北、安东、安南等都护府，长安是当时世界最大的都市；690—705 年武则天改唐为周（武周），定都神都洛阳。755 年安史之乱后，河西、陇右与西域先后陷于吐蕃，藩镇割据，直至 907 年朱温代唐。拖动底部时间轴可查看各阶段疆域演变。",
     "milestones": [
       {
         "year": 618,
@@ -7760,7 +7760,8 @@ window.DYNASTY_DATA = [
         "coord": [
           112.45,
           34.62
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 707,
@@ -8061,6 +8062,10 @@ window.DYNASTY_DATA = [
         "capitalPeriods": [
           [
             618,
+            689
+          ],
+          [
+            705,
             904
           ]
         ],
@@ -8070,6 +8075,19 @@ window.DYNASTY_DATA = [
       {
         "ancient": "东都洛阳",
         "modern": "洛阳",
+        "aliases": [
+          "洛阳",
+          "神都",
+          "神都洛阳"
+        ],
+        "eraNames": [
+          {
+            "from": 690,
+            "until": 705,
+            "zh": "神都洛阳",
+            "en": "Shendu Luoyang"
+          }
+        ],
         "coord": [
           112.451,
           34.621
@@ -8078,7 +8096,7 @@ window.DYNASTY_DATA = [
         "capitalPeriods": [
           [
             690,
-            705
+            704
           ],
           [
             904,
@@ -9269,8 +9287,16 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a4"
       },
       {
-        "until": 702,
+        "until": 690,
         "snap": "s_tang_a"
+      },
+      {
+        "until": 702,
+        "snap": "s_tang_wz1"
+      },
+      {
+        "until": 705,
+        "snap": "s_tang_wz2"
       },
       {
         "until": 755,

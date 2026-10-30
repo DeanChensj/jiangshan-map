@@ -112,7 +112,7 @@ window.EN_LOCALE = {
       "name": "Tang",
       "short": "Tang",
       "capital": "Chang'an",
-      "desc": "High Tang established protectorates across the Tarim Basin, Zungharia, Mongolia, Liaodong, and Annam, making Chang’an the world’s largest metropolis. After the An Lushan Rebellion (755), Hexi and the Western Regions fell to the Tibetan Empire and regional military governors dominated until 907."
+      "desc": "High Tang established protectorates across the Tarim Basin, Zungharia, Mongolia, Liaodong, and Annam, making Chang’an the world’s largest metropolis; from 690 to 705 Wu Zetian ruled as the Wu Zhou dynasty from Shendu Luoyang. After the An Lushan Rebellion (755), Hexi and the Western Regions fell to the Tibetan Empire and regional military governors dominated until 907."
     },
     "wudai": {
       "name": "Five Dynasties & Ten Kingdoms",
@@ -1566,7 +1566,7 @@ window.EN_LOCALE = {
     ],
     "tang:705": [
       "Shenlong Coup: Chancellor Zhang Jianzhi restores Emperor Zhongzong in Luoyang, reviving Tang",
-      "Luoyang"
+      "Shendu Luoyang"
     ],
     "tang:840": [
       "Uyghur Khaganate collapses; Emperor Wuzong and Li Deyu defeat Uyghurs and Zelu (Huichang Era)",
@@ -6918,6 +6918,14 @@ window.EN_LOCALE = {
     "建昌": "Jianchang",
     "兴化": "Xinghua",
     "宝庆": "Baoqing",
-    "建水": "Jianshui"
+    "建水": "Jianshui",
+    "武周": "Wu Zhou",
+    "神都": "Shendu",
+    "神都洛阳": "Shendu Luoyang",
+    "州郡政区：武周十道与州府政区": "Prefectures: Wu Zhou Circuits & Prefectures",
+    "676 — 690 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–690 · Andong Moves Inland & Annam Protectorate: Andong Relocated to Liaodong; Annam Founded in 679",
+    "690 — 702 · 武周改制：武则天改唐为周定都神都洛阳，王孝杰大破吐蕃复安西四镇": "690–702 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Wang Xiaojie Recovers Four Garrisons of Anxi",
+    "702 — 705 · 武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北": "702–705 · Wu Zhou Establishes Beiting: Wu Zetian Sets Beiting Protectorate Alongside Anxi Across the Tianshan",
+    "705 — 755 · 神龙复唐与开元盛世：中宗复唐国号，玄宗励精图治，安西、北庭分辖天山南北": "705–755 · Tang Restoration & Kaiyuan Heyday: Zhongzong Restores Tang; High Tang Flourishes Under Xuanzong"
   }
 };
