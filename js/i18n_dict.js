@@ -266,7 +266,7 @@ window.EN_LOCALE = {
     ],
     "donghan:200": [
       "Battle of Guandu: Cao Cao burns Yuan Shao's supply depot at Wuchao; Sun Quan succeeds Sun Ce",
-      "Guandu"
+      "Guandu · Jingkou"
     ],
     "donghan:204": [
       "Cao Cao captures Ye City and consolidates control over Hebei's four northern provinces",
@@ -706,7 +706,7 @@ window.EN_LOCALE = {
     ],
     "nansong:1227": [
       "Genghis Khan dies at Mount Liupan as Mongol forces annihilate Western Xia",
-      "Xingqingfu"
+      "Mount Liupan · Xingqingfu"
     ],
     "nansong:1234": [
       "Song-Mongol forces destroy Jin at Caizhou; failed Duanping Expedition sparks Song-Mongol war",
@@ -825,7 +825,7 @@ window.EN_LOCALE = {
       "Xi'an · Wuchang"
     ],
     "ming:1644": [
-      "Li Zicheng takes Beijing; Qing armies enter Shanhai Pass",
+      "Li Zicheng takes Beijing and topples the Ming; Qing armies enter Shanhai Pass",
       "Beijing"
     ],
     "qing:1644": [

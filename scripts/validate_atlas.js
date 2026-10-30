@@ -3340,8 +3340,8 @@ function main() {
           `Person "${p.zh}" event [${i}] (${evs[i].year}) has untranslated siteEn: "${evs[i].siteEn}" (zh="${evs[i].siteZh}")`
         );
         assert(
-          evs[i].textEn && !/[\u4e00-\u9fff]/.test(evs[i].textEn),
-          `Person "${p.zh}" event [${i}] (${evs[i].year}) has untranslated textEn: "${evs[i].textEn}"`
+          evs[i].textEn && !/[\u4e00-\u9fff]/.test(evs[i].textEn) && !/^[a-z]/.test(evs[i].textEn.trim()),
+          `Person "${p.zh}" event [${i}] (${evs[i].year}) has untranslated or lowercase-leading textEn: "${evs[i].textEn}"`
         );
       }
     }
@@ -3374,11 +3374,43 @@ function main() {
         `Expected top quick-search hit for "${query}" to be person "${expectedKey}", got ${JSON.stringify(hits[0])}`
       );
     }
-    // Verify Deng Ai keeps both Yinping & Chengdu in 263 CE, and Zhao Kuangyin keeps both 960 & 961 without duplicate 960
+    // Verify Deng Ai keeps both Yinping & Chengdu in 263 CE in causal order, and Zhao Kuangyin keeps both 960 & 961 without duplicate 960
     const dengEvs = ctrl._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'dengai'));
+    const deng263 = dengEvs.filter((e) => e.year === 263);
     assert(
-      dengEvs.filter((e) => e.year === 263).length === 2,
-      `Expected Deng Ai to have 2 distinct 263 CE campaign events (Yinping -> Chengdu), got ${dengEvs.length}`
+      deng263.length === 2 && deng263[0].siteZh.includes('阴平') && deng263[1].siteZh.includes('成都'),
+      `Expected Deng Ai to have 2 distinct 263 CE campaign events ordered (Yinping -> Chengdu), got ${JSON.stringify(deng263.map((e) => e.siteZh))}`
+    );
+    const guan219 = ctrl
+      ._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'guanyu'))
+      .filter((e) => e.year === 219);
+    assert(
+      guan219.length === 3 &&
+        guan219[0].siteZh.includes('襄阳') &&
+        guan219[1].siteZh.includes('陆口') &&
+        guan219[2].siteZh.includes('麦城'),
+      `Expected Guan Yu 219 CE events ordered (Xiangyang -> Lukou -> Maicheng), got ${JSON.stringify(guan219.map((e) => e.siteZh))}`
+    );
+    const sun200 = ctrl
+      ._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'sunquan'))
+      .filter((e) => e.year === 200);
+    assert(
+      sun200.length === 1 && sun200[0].siteZh.includes('京口'),
+      `Expected Sun Quan 200 CE succession at Jingkou without Guandu duplicate, got ${JSON.stringify(sun200.map((e) => e.siteZh))}`
+    );
+    const sima91 = ctrl
+      ._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'simaqian'))
+      .filter((e) => e.year === -91);
+    assert(
+      sima91.length === 1 && sima91[0].siteZh.includes('长安'),
+      `Expected Sima Qian -91 BCE Shiji completion at Chang'an without Huxian duplicate, got ${JSON.stringify(sima91.map((e) => e.siteZh))}`
+    );
+    const liu208 = ctrl
+      ._collectPersonEvents(loreData.PERSON_PROFILES.find((p) => p.key === 'liubei'))
+      .filter((e) => e.year === 208);
+    assert(
+      liu208.length === 2 && liu208[0].siteZh.includes('长坂') && liu208[1].siteZh.includes('赤壁'),
+      `Expected Liu Bei 208 CE events ordered (Changban -> Red Cliffs), got ${JSON.stringify(liu208.map((e) => e.siteZh))}`
     );
     const zhaoEvs = ctrl._collectPersonEvents(
       loreData.PERSON_PROFILES.find((p) => p.key === 'zhaokuangyin')
