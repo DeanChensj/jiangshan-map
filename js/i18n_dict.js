@@ -6926,6 +6926,25 @@ window.EN_LOCALE = {
     "676 — 690 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–690 · Andong Moves Inland & Annam Protectorate: Andong Relocated to Liaodong; Annam Founded in 679",
     "690 — 702 · 武周改制：武则天改唐为周定都神都洛阳，王孝杰大破吐蕃复安西四镇": "690–702 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Wang Xiaojie Recovers Four Garrisons of Anxi",
     "702 — 705 · 武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北": "702–705 · Wu Zhou Establishes Beiting: Wu Zetian Sets Beiting Protectorate Alongside Anxi Across the Tianshan",
-    "705 — 755 · 神龙复唐与开元盛世：中宗复唐国号，玄宗励精图治，安西、北庭分辖天山南北": "705–755 · Tang Restoration & Kaiyuan Heyday: Zhongzong Restores Tang; High Tang Flourishes Under Xuanzong"
+    "705 — 755 · 神龙复唐与开元盛世：中宗复唐国号，玄宗励精图治，安西、北庭分辖天山南北": "705–755 · Tang Restoration & Kaiyuan Heyday: Zhongzong Restores Tang; High Tang Flourishes Under Xuanzong",
+    "岛夷诸部": "Island Yi Tribes",
+    "小琉球": "Xiaoliuqiu",
+    "承天府（东宁）": "Chengtian Fu (Dongning)",
+    "承天府（郑氏）": "Chengtian Fu (House of Zheng)",
+    "东宁": "Dongning",
+    "东都": "Dongdu",
+    "赤嵌": "Chikan",
+    "热兰遮城": "Fort Zeelandia",
+    "安平": "Anping",
+    "台湾台南": "Tainan, Taiwan",
+    "夷洲（台湾）": "Yizhou (Taiwan)",
+    "荷属台湾": "Dutch Formosa",
+    "大员（荷占）": "Tayouan (Dutch-ruled)",
+    "郑氏台湾": "Tungning Taiwan",
+    "大员": "Tayouan",
+    "大员（赤嵌）": "Tayouan (Chikan)",
+    "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by Dutch in 1624; retaken by Koxinga as Dongdu Mingjing in 1662",
+    "郑成功驱逐荷兰人后据台": "Held by Koxinga after expelling the Dutch",
+    "1683 年施琅平台后设府；1895 年割让日本": "Prefecture founded after Shi Lang pacified Taiwan in 1683; ceded to Japan in 1895"
   }
 };

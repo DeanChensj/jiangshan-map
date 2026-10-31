@@ -7706,6 +7706,150 @@ function main() {
           'css/style.css must eliminate terrain-mode .province-shape fills, switch boundary caps/joins to butt/bevel, and hide .province-boundary-casing during camera motion'
         );
       }
+
+      // CUJ 45: Issue #205 — Historically accurate Taiwan naming across all 185 snapshots & locales
+      {
+        const conv = sandbox.window.ZH_HANT_CONV;
+        assert.strictEqual(conv.toHant('台湾（荷占）'), '臺灣（荷佔）');
+        assert.strictEqual(conv.toHant('臺灣（荷佔）'), '臺灣（荷佔）');
+        assert.strictEqual(conv.toHans('臺灣（荷佔）'), '台湾（荷占）');
+        assert.strictEqual(conv.toHant('承天府（东宁）'), '承天府（東寧）');
+        assert.strictEqual(conv.toHant('瑠求'), '瑠求');
+
+        for (const [sk, snap] of Object.entries(snapshots)) {
+          if (!snap || Array.isArray(snap)) continue;
+          for (const grp of ['polities', 'regions', 'prefectures']) {
+            for (const f of snap[grp] || []) {
+              assert(
+                f.title !== '台湾原住民' && f.title !== '台湾（日本占领）',
+                `Stale anachronistic Taiwan label "${f.title}" found in ${sk}.${grp}`
+              );
+            }
+          }
+        }
+        for (const bsKey of ['s_zhanguo_a', 's_qin_a']) {
+          for (const f of bootSnapshots[bsKey].polities || []) {
+            assert(f.title !== '台湾原住民', `atlas_boot.js ${bsKey} still contains 台湾原住民`);
+          }
+        }
+
+        const earlyMingSet = new Set([
+          's_ming_0a', 's_ming_0b', 's_ming_0c', 's_ming_0d',
+          's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b0',
+        ]);
+        const lateMingDutchSet = new Set(['s_ming_c0', 's_ming_c', 's_ming_c2']);
+        const qingDutchSet = new Set(['s_qing_a00', 's_qing_a0']);
+        const qingMingZhengSet = new Set(['s_qing_a0b', 's_qing_a1', 's_qing_a', 's_qing_a2']);
+        const qingRuleSet = new Set([
+          's_qing_b1', 's_qing_b', 's_qing_c', 's_qing_d',
+          's_qing_e', 's_qing_e2', 's_qing_e3', 's_qing_e4',
+          's_qing_f0', 's_qing_f',
+        ]);
+        const jpOccSet = new Set([
+          's_qing_g0', 's_qing_g',
+          's_roc_a0', 's_roc_w1', 's_roc_w2', 's_roc_w3', 's_roc_w4',
+          's_roc_a', 's_roc_b0', 's_roc',
+        ]);
+        const rocPost45Set = new Set(['s_roc_c', 's_roc_d']);
+        const ptInShape = sandbox.window.MercatorProjector.pointInShape;
+
+        for (const [sk, snap] of Object.entries(snapshots)) {
+          if (!snap || Array.isArray(snap) || sk === 's_prc') continue;
+          for (const [tx, ty] of [[120.21, 23.0], [120.95, 23.75]]) {
+            const pHits = (snap.polities || []).filter((p) => ptInShape(tx, ty, p.shape)).map((p) => p.title);
+            const rHits = (snap.regions || []).filter((r) => ptInShape(tx, ty, r.shape)).map((r) => r.title);
+            const fHits = (snap.prefectures || []).filter((f) => ptInShape(tx, ty, f.shape)).map((f) => f.title);
+            assert.strictEqual(pHits.length, 1, `${sk} at [${tx},${ty}] must match exactly 1 polity, got [${pHits.join(',')}]`);
+
+            let expPol = null;
+            let expReg = [];
+            let expPref = [];
+            if (/^s_(zhanguo|qin|xihan|donghan)(_|$)/.test(sk)) expPol = '岛夷诸部';
+            else if (/^s_(sanguo|xijin|dongjin|nanbei)(_|$)/.test(sk)) expPol = '夷洲';
+            else if (/^s_(sui|tang|wudai|beisong|nansong)(_|$)/.test(sk)) expPol = '流求';
+            else if (/^s_yuan(_|$)/.test(sk)) expPol = '瑠求';
+            else if (earlyMingSet.has(sk)) expPol = '小琉球';
+            else if (sk === 's_ming_b') expPol = '东番';
+            else if (lateMingDutchSet.has(sk) || qingDutchSet.has(sk)) expPol = '台湾（荷占）';
+            else if (qingMingZhengSet.has(sk)) {
+              expPol = '南明（明郑）';
+              expPref = ['承天府（东宁）'];
+            } else if (qingRuleSet.has(sk)) {
+              expPol = '清';
+              expReg = ['台湾'];
+              expPref = ['台湾府'];
+            } else if (jpOccSet.has(sk)) {
+              expPol = '台湾（日占）';
+            } else if (rocPost45Set.has(sk)) {
+              expPol = '中华民国';
+              expReg = ['台湾'];
+            }
+            assert.strictEqual(pHits[0], expPol, `${sk} Taiwan polity expected "${expPol}", got "${pHits[0]}"`);
+            assert.deepStrictEqual(Array.from(rHits), expReg, `${sk} Taiwan regions expected ${JSON.stringify(expReg)}, got ${JSON.stringify(rHits)}`);
+            assert.deepStrictEqual(Array.from(fHits), expPref, `${sk} Taiwan prefectures expected ${JSON.stringify(expPref)}, got ${JSON.stringify(fHits)}`);
+          }
+        }
+
+        const dutchPol1630 = ctrl._resolvePolity('台湾（荷占）', 1630);
+        const dutchPol1650 = ctrl._resolvePolity('台湾（荷占）', 1650);
+        const mzPol1670 = ctrl._resolvePolity('南明（明郑）', 1670);
+        assert(
+          dutchPol1630 && dutchPol1630.key === 'taiwan_dutch' &&
+          dutchPol1650 && dutchPol1650.key === 'taiwan_dutch' &&
+          mzPol1670 && mzPol1670.key === 'mingzheng',
+          'Expected polity encyclopedia profiles to resolve 台湾（荷占） (1630/1650) and 南明（明郑） (1670)'
+        );
+
+        ctrl._searchIndex = null;
+        for (const q of ['夷洲', '流求', '瑠求', '小琉球', '东番', '东宁', '赤嵌', 'tayouan']) {
+          if (!['tayouan'].includes(q)) {
+            const rp = ctrl.resolvePlace(q, 1650);
+            assert(
+              rp && Math.abs(rp.lng - 120.21) < 0.2 && Math.abs(rp.lat - 23.0) < 0.2,
+              `resolvePlace("${q}") failed: ${JSON.stringify(rp)}`
+            );
+          }
+          const sh = ctrl._queryQuickSearch(q);
+          assert(sh.length > 0, `_queryQuickSearch("${q}") returned empty`);
+        }
+
+        const twEraSamples = [
+          [-300, '岛夷诸部', null, 'Island Yi Tribes', '島夷諸部'],
+          [100, '岛夷诸部', null, 'Island Yi Tribes', '島夷諸部'],
+          [230, '夷洲', null, 'Yizhou', '夷洲'],
+          [700, '流求', null, 'Liuqiu', '流求'],
+          [1300, '瑠求', null, 'Liuqiu', '瑠求'],
+          [1410, '小琉球', null, 'Xiaoliuqiu', '小琉球'],
+          [1603, '东番', null, 'Dongfan', '東番'],
+          [1630, '台湾（荷占）', null, 'Taiwan (Dutch-ruled)', '臺灣（荷佔）'],
+          [1650, '台湾（荷占）', null, 'Taiwan (Dutch-ruled)', '臺灣（荷佔）'],
+          [1670, '南明（明郑）', '承天府（东宁）(府)', 'Southern Ming (Koxinga / Tungning)', '南明（明鄭）'],
+          [1750, '清', '台湾府', 'Qing', '清'],
+          [1900, '台湾（日占）', null, 'Taiwan (Japanese-occupied)', '臺灣（日佔）'],
+          [1920, '台湾（日占）', null, 'Taiwan (Japanese-occupied)', '臺灣（日佔）'],
+          [1947, '中华民国', null, 'Republic of China', '中華民國'],
+          [2026, '中华人民共和国', '台南', "People's Republic of China", '中華人民共和國'],
+        ];
+        const savedLoc = ctrl.locale;
+        for (const [yr, zhPol, zhPref, enPol, twPol] of twEraSamples) {
+          ctrl.locale = 'zh';
+          const izh = ctrl.inspect({ year: yr, lng: 120.21, lat: 23.0 });
+          assert.strictEqual(izh.polity, zhPol, `inspect(${yr}, zh) polity expected "${zhPol}", got "${izh.polity}"`);
+          if (zhPref) {
+            assert(izh.prefectures.includes(zhPref), `inspect(${yr}, zh) expected prefecture "${zhPref}", got ${JSON.stringify(izh.prefectures)}`);
+          } else {
+            assert.strictEqual(izh.prefectures.length, 0, `inspect(${yr}, zh) expected 0 prefectures, got ${JSON.stringify(izh.prefectures)}`);
+          }
+          ctrl.locale = 'en';
+          const ien = ctrl.inspect({ year: yr, lng: 120.21, lat: 23.0 });
+          assert.strictEqual(ien.polity, enPol, `inspect(${yr}, en) polity expected "${enPol}", got "${ien.polity}"`);
+          assert(!/[\u4e00-\u9fff]/.test(JSON.stringify(ien)), `CJK leak in inspect(${yr}, en): ${JSON.stringify(ien)}`);
+          ctrl.locale = 'zh-tw';
+          const itw = ctrl.inspect({ year: yr, lng: 120.21, lat: 23.0 });
+          assert.strictEqual(itw.polity, twPol, `inspect(${yr}, zh-tw) polity expected "${twPol}", got "${itw.polity}"`);
+        }
+        ctrl.locale = savedLoc;
+      }
     }
   }
 

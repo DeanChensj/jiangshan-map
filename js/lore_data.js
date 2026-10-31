@@ -12555,6 +12555,54 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Huanggutun (Shenyang)",
       "zh": "张作霖退返奉天于皇姑屯遭日军炸死，年底张学良宣布“东北易帜”",
       "en": "Zhang Zuolin is killed at Huanggutun; Zhang Xueliang declares Northeast Flag Replacement"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1624,
+      "coord": [
+        120.21,
+        23
+      ],
+      "site": "大员（今台湾台南）",
+      "siteEn": "Tayouan (Tainan, Taiwan)",
+      "zh": "荷兰殖民者退据台湾大员，筑热兰遮城实行殖民统治",
+      "en": "Expelled from Penghu, Dutch VOC forces occupy Tayouan and build Fort Zeelandia"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1642,
+      "coord": [
+        121.43,
+        25.17
+      ],
+      "site": "淡水·鸡笼（今台北基隆）",
+      "siteEn": "Tamsui & Jilong (Northern Taiwan)",
+      "zh": "荷兰殖民军北攻淡水红毛城，驱逐西班牙人独占台湾",
+      "en": "Dutch VOC forces storm Fort Santo Domingo at Tamsui, expelling Spain from northern Taiwan"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1652,
+      "coord": [
+        120.21,
+        23
+      ],
+      "site": "赤嵌（今台湾台南）",
+      "siteEn": "Chikan (Tainan, Taiwan)",
+      "zh": "郭怀一于台湾赤嵌率垦民反抗荷兰殖民暴政起义",
+      "en": "Guo Huaiyi leads Chinese settlers at Chikan in an armed revolt against Dutch rule"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1664,
+      "coord": [
+        120.21,
+        23
+      ],
+      "site": "承天府（今台湾台南）",
+      "siteEn": "Chengtian Fu (Tainan, Taiwan)",
+      "zh": "郑经改台湾东都为东宁，升天兴、万年二县为州",
+      "en": "Zheng Jing renames Dongdu to Dongning and elevates Tianxing and Wannian counties"
     }
   ],
   "GUQIN_TRACKS": [
@@ -16012,8 +16060,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "tagZh": "鹿耳门锁钥 · 全台首府",
       "tagEn": "Lu'ermen Harbor · Historic Capital of Taiwan",
-      "descZh": "古称赤嵌、承天府、台湾府，居台湾西南海岸平原。1661年郑成功自鹿耳门登陆驱逐荷兰殖民者、收复台湾并设承天府；清康熙二十二年（1683年）施琅平台后设台湾府隶福建省，统治全岛二百余年，号“全台首府”。",
-      "descEn": "On Taiwan's southwestern coast, Tainan was where Zheng Chenggong landed at Lu'ermen in 1661 to expel the Dutch East India Company and establish Chengtian Prefecture, serving for over two centuries under the Qing as Taiwan Prefecture."
+      "descZh": "古称大员、赤嵌、东都承天府、台湾府，居台湾西南海岸平原。台湾古籍三国吴称夷洲、隋唐宋称流求、元称瑠求、明称小琉球与东番；1624年荷兰人据大员筑热兰遮城，“台湾”之名遂由大员音转扩指全岛。1661年郑成功自鹿耳门登陆驱荷复台，置东都承天府（郑经改称东宁）；清康熙二十二年（1683年）施琅平台，次年设台湾府隶福建省，统辖全岛二百余年，号“全台首府”。",
+      "descEn": "Historically known as Tayouan, Chikan, Chengtian Fu, and Taiwan Fu on Taiwan's southwestern coastal plain. Recorded as Yizhou under Eastern Wu, Liuqiu from Sui through Yuan, and Xiaoliuqiu or Dongfan under the Ming, the island took the name 'Taiwan' from Tayouan, where the Dutch built Fort Zeelandia in 1624. Koxinga landed at Lu'ermen in 1661 to expel the Dutch and found Chengtian Prefecture (Dongdu, later Dongning); after Shi Lang secured the island in 1683, the Qing established Taiwan Prefecture here in 1684 under Fujian Province for over two centuries."
     },
     {
       "modern": "上海",
@@ -19296,6 +19344,38 @@ window.ATLAS_LORE_DATA = {
         40.66
       ],
       "zoom": 2.3
+    },
+    {
+      "name": "赤嵌",
+      "aliases": [
+        "热兰遮城",
+        "安平",
+        "东都",
+        "东宁",
+        "承天府（东宁）",
+        "夷洲",
+        "流求",
+        "瑠求",
+        "小琉球",
+        "东番"
+      ],
+      "asciiAliases": [
+        "chikan",
+        "tayouan",
+        "zeelandia",
+        "dongning",
+        "tungning",
+        "yizhou",
+        "liuqiu",
+        "xiaoliuqiu",
+        "dongfan"
+      ],
+      "modern": "台湾台南",
+      "coord": [
+        120.21,
+        23.0
+      ],
+      "zoom": 2.4
     }
   ],
   "PERSON_PROFILES": [
@@ -24777,6 +24857,36 @@ window.ATLAS_LORE_DATA = {
       "rulersEn": "Hongguang (Zhu Yousong) → Longwu (Zhu Yujian) → Prince of Lu (Regent) → Yongli (Zhu Youlang)"
     },
     {
+      "key": "taiwan_dutch",
+      "zh": "台湾（荷占）",
+      "en": "Dutch Formosa (Tayouan)",
+      "titles": [
+        "台湾（荷占）"
+      ],
+      "from": 1624,
+      "to": 1662,
+      "matchFrom": 1616,
+      "seatZh": "热兰遮城（大员 / 今台南安平）",
+      "seatEn": "Fort Zeelandia (Tayouan / Anping, Tainan)",
+      "keywords": [
+        "台湾",
+        "大员",
+        "热兰遮城",
+        "赤嵌",
+        "荷占",
+        "荷兰",
+        "郭怀一"
+      ],
+      "aliases": [
+        "荷属台湾",
+        "大员（荷占）"
+      ],
+      "summaryZh": "明天启四年（1624年）荷兰东印度公司自澎湖退据台湾西南大员，筑热兰遮城与普罗民遮城（赤嵌楼）实行殖民统治；1626年西班牙人侵据北部鸡笼、淡水，1642年为荷人所逐。“台湾”之名即由大员（Tayouan）闽南语音转渐扩指全岛。1652年爆发郭怀一抗荷起义；1661年郑成功渡海围攻热兰遮城，次年初荷督揆一投降，台湾光复。",
+      "summaryEn": "In 1624 the Dutch East India Company (VOC), expelled from Penghu by Ming forces, occupied Tayouan on Taiwan's southwestern coast and built Fort Zeelandia and Fort Provintia (Chikan); Spanish forces held northern Jilong and Tamsui (1626–1642) until ousted by the Dutch. The name 'Taiwan' evolved from the Hokkien transcription 'Tayouan' to denote the whole island. After suppressing the Guo Huaiyi uprising in 1652, VOC Governor Frederick Coyett surrendered Fort Zeelandia to Koxinga in early 1662 after a nine-month siege.",
+      "rulersZh": "荷兰东印度公司台湾长官（宋克 → 普特曼斯 → 揆一）",
+      "rulersEn": "VOC Governors of Formosa (Martinus Sonck → Hans Putmans → Frederick Coyett)"
+    },
+    {
       "key": "mingzheng",
       "zh": "明郑",
       "en": "Kingdom of Tungning",
@@ -24785,21 +24895,25 @@ window.ATLAS_LORE_DATA = {
       ],
       "from": 1661,
       "to": 1683,
-      "seatZh": "承天府（台南）",
-      "seatEn": "Chengtian (Tainan)",
+      "seatZh": "东都承天府 → 东宁承天府（台南）",
+      "seatEn": "Dongdu / Dongning Chengtian Fu (Tainan)",
       "keywords": [
         "郑成功",
         "明郑",
         "郑经",
         "施琅",
-        "承天府"
+        "承天府",
+        "东都",
+        "东宁"
       ],
       "aliases": [
         "东宁",
+        "东都",
+        "承天府（东宁）",
         "郑氏台湾"
       ],
-      "summaryZh": "1661年郑成功率军渡海，次年逐荷兰人收复台湾，设承天府，奉永历正朔。其子郑经改称东宁，曾参与三藩之乱；1683年清将施琅攻取澎湖，郑克塽降清。",
-      "summaryEn": "Koxinga (Zheng Chenggong) crossed to Taiwan in 1661 and expelled the Dutch the next year, ruling in the name of the Yongli emperor. His son Zheng Jing renamed it Dongning and joined the Revolt of the Three Feudatories; after Shi Lang took the Penghu Islands in 1683, Zheng Keshuang surrendered to Qing.",
+      "summaryZh": "1661年郑成功率军自鹿耳门渡海登陆，次年初迫降荷督揆一、收复台湾，改赤嵌为东都明京，设一府二县（承天府与天兴、万年二县），奉南明永历正朔。1664年其子郑经改东都为东宁，升天兴、万年为州，并于三藩之乱期间渡海经略闽粤沿海；1683年清靖海将军施琅攻克澎湖，郑克塽降清，次年清廷置台湾府隶福建省。",
+      "summaryEn": "Koxinga (Zheng Chenggong) landed at Lu'ermen in 1661 and forced the Dutch VOC to surrender in early 1662, proclaiming Dongdu Mingjing ('Eastern Capital') with Chengtian Prefecture and Tianxing and Wannian counties under the Southern Ming Yongli calendar. In 1664 his son Zheng Jing renamed Dongdu to Dongning (Tungning) and later campaigned along the Fujian-Guangdong coast during the Revolt of the Three Feudatories; after Qing admiral Shi Lang captured Penghu in 1683, Zheng Keshuang surrendered, and Qing established Taiwan Prefecture under Fujian in 1684.",
       "matchFrom": 1659,
       "rulersZh": "延平王郑成功 → 潮王郑经 → 郑克塽",
       "rulersEn": "Zheng Chenggong (Koxinga) → Zheng Jing → Zheng Keshuang"
