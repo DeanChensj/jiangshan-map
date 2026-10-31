@@ -1873,6 +1873,14 @@ h2 {
   transition: background 0.1s;
 }
 
+.search-results-list li.is-group-start {
+  border-top: 1px dashed var(--hairline);
+  margin-top: 2px;
+  padding-top: 7px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 .search-results-list li:hover,
 .search-results-list li.is-active {
   background: rgba(181, 69, 47, 0.11);
@@ -1909,6 +1917,26 @@ h2 {
   color: var(--vermilion);
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.sr-tag[data-bucket='regime'] {
+  background: rgba(181, 69, 47, 0.13);
+  color: #a63a25;
+}
+
+.sr-tag[data-bucket='person_era'] {
+  background: rgba(140, 90, 43, 0.13);
+  color: #7c4d1e;
+}
+
+.sr-tag[data-bucket='geo'] {
+  background: rgba(58, 95, 111, 0.12);
+  color: #2f5464;
+}
+
+.sr-tag[data-bucket='event'] {
+  background: rgba(93, 85, 76, 0.12);
+  color: #544c43;
 }
 
 .sr-eg-pill {

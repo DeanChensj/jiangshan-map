@@ -5959,6 +5959,55 @@ function main() {
         );
       }
 
+      // First-principles ontological bucket ranking & core regime recall (齐/宋/汉/唐)
+      const qiHits = ctrl._queryQuickSearch('齐');
+      assert(
+        qiHits.length >= 6 &&
+          qiHits[0].bucket === 'regime' &&
+          qiHits[0].titleZh.includes('齐国') &&
+          qiHits.slice(0, 5).some((h) => h.titleZh === '南齐') &&
+          qiHits.slice(0, 5).some((h) => h.titleZh === '北齐'),
+        `"齐" search must prioritize regime hits (齐国/南齐/北齐) in top 5, got ${JSON.stringify(qiHits.slice(0, 5).map((h) => h.titleZh))}`
+      );
+      assert(
+        !qiHits.some((h) => h.kind === 'era'),
+        `"齐" 1-char search must not return false-positive monarch/era substring hits like 魏齐王·正始元年`
+      );
+      assert.strictEqual(
+        qiHits.filter((h) => h.titleZh === '齐郡').length,
+        1,
+        `"齐" search must consolidate cross-dynasty 齐郡 rows into 1 entry`
+      );
+      const qiJunHit = qiHits.find((h) => h.titleZh === '齐郡');
+      assert(
+        qiJunHit && qiJunHit.subZh && qiJunHit.subZh.startsWith('历'),
+        `Consolidated 齐郡 entry must display multi-dynasty subtitle ("历..."), got "${qiJunHit && qiJunHit.subZh}"`
+      );
+      assert(
+        qiHits.some((h) => h.bucket === 'person_era') &&
+          qiHits.some((h) => h.bucket === 'geo') &&
+          qiHits.some((h) => h.bucket === 'event'),
+        `"齐" search must surface diverse ontological buckets (regime, person_era, geo, event)`
+      );
+
+      for (const [regQ, expectedTitles] of [
+        ['宋', ['北宋', '南宋', '宋国', '刘宋']],
+        ['汉', ['西汉', '东汉', '蜀汉']],
+        ['唐', ['唐', '南唐', '后唐']],
+      ]) {
+        const rHits = ctrl._queryQuickSearch(regQ);
+        assert(
+          rHits.length > 0 && rHits[0].bucket === 'regime',
+          `"${regQ}" search must rank regime bucket #1, got ${JSON.stringify(rHits[0])}`
+        );
+        for (const expT of expectedTitles) {
+          assert(
+            rHits.some((h) => h.titleZh.includes(expT)),
+            `"${regQ}" search must recall core regime "${expT}", got ${JSON.stringify(rHits.map((h) => h.titleZh))}`
+          );
+        }
+      }
+
       const clueChecks = [
         [{ ancient: '宛（南阳）', modern: '南阳' }, '宛', '秦置南阳郡治', '秦置南阳郡治'],
         [{ ancient: '晋阳', modern: '太原' }, '晋阳', '秦置太原郡治', '秦置太原郡治'],
