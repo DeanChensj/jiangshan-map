@@ -1473,8 +1473,12 @@ window.EN_LOCALE = {
       "Chengdu · Hanzhong"
     ],
     "zhanguo:-307": [
-      "King Wuling of Zhao adopts cavalry archery and conquers Zhongshan; Chu annexes Yue (306 BCE)",
+      "King Wuling of Zhao adopts cavalry archery and conquers Zhongshan",
       "Handan"
+    ],
+    "zhanguo:-306": [
+      "King Huai of Chu annexes Yue, absorbing the former Wu heartland to the sea",
+      "Kuaiji (Shaoxing)"
     ],
     "zhanguo:-284": [
       "Yan general Yue Yi leads a five-state coalition to crush Qi, capturing over 70 cities",
@@ -1803,6 +1807,10 @@ window.EN_LOCALE = {
     "tang:868": [
       "Pang Xun leads the Guilin garrison mutiny north to seize Xuzhou and sever the Grand Canal",
       "Xuzhou & Guilin"
+    ],
+    "tang:885": [
+      "Emperor Xizong returns to Chang'an as warlords Zhu Wen and Li Keyong carve out rival domains",
+      "Chang'an & Bianzhou"
     ],
     "tang:895": [
       "Li Keyong marches into Guanzhong as Wang Jian and Yang Xingmi carve out warlord regimes",
