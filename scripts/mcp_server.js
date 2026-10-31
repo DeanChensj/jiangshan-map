@@ -106,7 +106,7 @@ const MCP_TOOLS = [
         place: {
           type: 'string',
           description:
-            'Canonical ancient/modern place name in Chinese, English, or Pinyin (e.g. "长安", "蓝关", "浔阳", "Chang\'an"), or comma-separated route stops (e.g. "剑外,巴峡,巫峡,襄阳,洛阳").',
+            'Canonical ancient/modern place name in Chinese, English, or Pinyin (e.g. "长安", "蓝关", "浔阳", "Chang\'an"), comma-separated route stops (e.g. "剑外,巴峡,巫峡,襄阳,洛阳"), or semicolon-separated converging routes (e.g. "许昌,江陵,赤壁;柴桑,樊口,赤壁").',
         },
         lang: {
           type: 'string',
@@ -127,7 +127,7 @@ const MCP_TOOLS = [
         person: {
           type: 'string',
           description:
-            'Single figure or comma-separated figures (2–4) in Chinese, English, or Pinyin (e.g. "sushi", "苏轼", "libai,dufu", "李白,杜甫", "zhugeliang,simayi").',
+            'Single figure or comma-separated figures (2–4) in Chinese, English, or Pinyin (e.g. "sushi", "苏轼", "libai,dufu", "libai,dufu,gaoshi", "caocao,liubei,sunquan", "zhugeliang,simayi").',
         },
         stop: {
           type: 'integer',
@@ -145,7 +145,7 @@ const MCP_TOOLS = [
   {
     name: 'search_atlas',
     description:
-      'Search the Jiangshan Historical Atlas across 1,753 ancient cities, 185 poetic/battlefield landmarks, 20 strategic mountain passes, 113+ historical figures, 351 imperial eras, and 471 chronological milestones.',
+      'Search the Jiangshan Historical Atlas across 1,753 ancient cities, 185 poetic/battlefield landmarks, 20 strategic mountain passes, 125+ historical figures, 351 imperial eras, and 473 chronological milestones.',
     inputSchema: {
       type: 'object',
       properties: {

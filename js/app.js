@@ -1943,103 +1943,368 @@
       }
     }
 
+    _simplifyPolylineRdp(pts, eps) {
+      if (!pts || pts.length <= 2) return pts;
+      const n = pts.length;
+      const keep = new Uint8Array(n);
+      keep[0] = 1;
+      keep[n - 1] = 1;
+      const epsSq = eps * eps;
+      const stack = [0, n - 1];
+      while (stack.length) {
+        const e = stack.pop();
+        const s = stack.pop();
+        if (e - s <= 1) continue;
+        const ax = pts[s][0];
+        const ay = pts[s][1];
+        const bx = pts[e][0];
+        const by = pts[e][1];
+        const dx = bx - ax;
+        const dy = by - ay;
+        const lenSq = dx * dx + dy * dy;
+        let maxSq = -1;
+        let maxIdx = -1;
+        for (let i = s + 1; i < e; i++) {
+          const px = pts[i][0];
+          const py = pts[i][1];
+          let dSq;
+          if (lenSq > 1e-12) {
+            let t = ((px - ax) * dx + (py - ay) * dy) / lenSq;
+            if (t < 0) t = 0;
+            else if (t > 1) t = 1;
+            const qx = ax + dx * t;
+            const qy = ay + dy * t;
+            dSq = (px - qx) * (px - qx) + (py - qy) * (py - qy);
+          } else {
+            dSq = (px - ax) * (px - ax) + (py - ay) * (py - ay);
+          }
+          if (dSq > maxSq) {
+            maxSq = dSq;
+            maxIdx = i;
+          }
+        }
+        if (maxSq > epsSq && maxIdx > s) {
+          keep[maxIdx] = 1;
+          stack.push(maxIdx, e, s, maxIdx);
+        }
+      }
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        if (keep[i]) out.push(pts[i]);
+      }
+      return out;
+    }
+
+    _weldBoundaryChains(chains) {
+      const valid = chains.filter((pts) => pts && pts.length >= 2);
+      const count = valid.length;
+      if (!count) return '';
+      const keyOf = (pt) => `${pt[0].toFixed(1)},${pt[1].toFixed(1)}`;
+      const startMap = new Map();
+      const endMap = new Map();
+      const addIdx = (map, k, idx) => {
+        let arr = map.get(k);
+        if (!arr) {
+          arr = [];
+          map.set(k, arr);
+        }
+        arr.push(idx);
+      };
+      for (let i = 0; i < count; i++) {
+        const pts = valid[i];
+        addIdx(startMap, keyOf(pts[0]), i);
+        addIdx(endMap, keyOf(pts[pts.length - 1]), i);
+      }
+      const used = new Uint8Array(count);
+      const takeMatch = (k) => {
+        const sArr = startMap.get(k);
+        if (sArr) {
+          while (sArr.length) {
+            const idx = sArr.pop();
+            if (!used[idx]) return { idx, rev: false };
+          }
+        }
+        const eArr = endMap.get(k);
+        if (eArr) {
+          while (eArr.length) {
+            const idx = eArr.pop();
+            if (!used[idx]) return { idx, rev: true };
+          }
+        }
+        return null;
+      };
+      let out = '';
+      for (let i = 0; i < count; i++) {
+        if (used[i]) continue;
+        used[i] = 1;
+        const headChunks = [];
+        let headKey = keyOf(valid[i][0]);
+        for (;;) {
+          const hit = takeMatch(headKey);
+          if (!hit) break;
+          used[hit.idx] = 1;
+          const pts = valid[hit.idx];
+          const aligned = hit.rev ? pts : pts.slice().reverse();
+          headChunks.push(aligned);
+          headKey = keyOf(aligned[0]);
+        }
+        const merged = [];
+        for (let h = headChunks.length - 1; h >= 0; h--) {
+          const c = headChunks[h];
+          for (let j = merged.length ? 1 : 0; j < c.length; j++) merged.push(c[j]);
+        }
+        const base = valid[i];
+        for (let j = merged.length ? 1 : 0; j < base.length; j++) merged.push(base[j]);
+        let tailKey = keyOf(merged[merged.length - 1]);
+        for (;;) {
+          const hit = takeMatch(tailKey);
+          if (!hit) break;
+          used[hit.idx] = 1;
+          const pts = valid[hit.idx];
+          if (hit.rev) {
+            for (let j = pts.length - 2; j >= 0; j--) merged.push(pts[j]);
+          } else {
+            for (let j = 1; j < pts.length; j++) merged.push(pts[j]);
+          }
+          tailKey = keyOf(merged[merged.length - 1]);
+        }
+        out += `M${merged[0][0].toFixed(1)} ${merged[0][1].toFixed(1)}`;
+        for (let j = 1; j < merged.length; j++) {
+          out += `L${merged[j][0].toFixed(1)} ${merged[j][1].toFixed(1)}`;
+        }
+      }
+      return out;
+    }
+
     _buildProvinceBoundaryPaths() {
       if (this._cachedProvinceBoundaryPaths) {
         return this._cachedProvinceBoundaryPaths;
       }
       const ptKey = (pt) => Math.round(pt[0] * 100) * 10000 + Math.round(pt[1] * 100);
-      const edgeKey = (p1, p2) => {
-        const k1 = ptKey(p1);
-        const k2 = ptKey(p2);
-        return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
-      };
-      const allRings = [];
+      const edgeKey = (k1, k2) => (k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`);
+
+      const coordByKey = new Map();
       const edgeCounts = new Map();
+      const rawRings = [];
+
       for (const prov of this.provinces || []) {
         if (!prov || String(prov.code).includes('_JD') || !Array.isArray(prov.rings)) continue;
-        for (const poly of prov.rings) {
-          for (const ring of poly || []) {
-            if (!ring || ring.length < 2) continue;
-            allRings.push(ring);
-            for (let i = 0; i < ring.length - 1; i++) {
-              const ek = edgeKey(ring[i], ring[i + 1]);
+        for (let polyIdx = 0; polyIdx < prov.rings.length; polyIdx++) {
+          const poly = prov.rings[polyIdx];
+          if (!Array.isArray(poly)) continue;
+          for (let ringIdx = 0; ringIdx < poly.length; ringIdx++) {
+            const rawRing = poly[ringIdx];
+            if (!Array.isArray(rawRing) || rawRing.length < 3) continue;
+            const oriented = this.projector._orientRing(rawRing, ringIdx > 0);
+            const keys = [];
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            for (let i = 0; i < oriented.length; i++) {
+              const pt = oriented[i];
+              const k = ptKey(pt);
+              if (keys.length && keys[keys.length - 1] === k) continue;
+              keys.push(k);
+              let sc = coordByKey.get(k);
+              if (!sc) {
+                sc = this.projector.toScreen(pt[0], pt[1]);
+                coordByKey.set(k, sc);
+              }
+              if (sc[0] < minX) minX = sc[0];
+              if (sc[0] > maxX) maxX = sc[0];
+              if (sc[1] < minY) minY = sc[1];
+              if (sc[1] > maxY) maxY = sc[1];
+            }
+            while (keys.length > 1 && keys[keys.length - 1] === keys[0]) keys.pop();
+            if (keys.length < 3) continue;
+            for (let i = 0; i < keys.length; i++) {
+              const ek = edgeKey(keys[i], keys[(i + 1) % keys.length]);
               edgeCounts.set(ek, (edgeCounts.get(ek) || 0) + 1);
             }
+            rawRings.push({
+              prov,
+              polyIdx,
+              keys,
+              maxSpan: Math.max(maxX - minX, maxY - minY),
+            });
           }
         }
       }
 
-      const seenInterior = new Set();
-      const seenOuter = new Set();
-      let interior = '';
-      let outer = '';
-
-      for (const ring of allRings) {
-        let intPenX = NaN;
-        let intPenY = NaN;
-        let outPenX = NaN;
-        let outPenY = NaN;
-        for (let i = 0; i < ring.length - 1; i++) {
-          const p1 = ring[i];
-          const p2 = ring[i + 1];
-          const ek = edgeKey(p1, p2);
-          const count = edgeCounts.get(ek) || 0;
-          if (count >= 2) {
-            outPenX = NaN;
-            outPenY = NaN;
-            if (seenInterior.has(ek)) {
-              intPenX = NaN;
-              intPenY = NaN;
-              continue;
-            }
-            seenInterior.add(ek);
-            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
-            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
-            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
-            if (x1 !== intPenX || y1 !== intPenY) {
-              interior += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
-            }
-            interior += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
-            intPenX = x2;
-            intPenY = y2;
-          } else {
-            intPenX = NaN;
-            intPenY = NaN;
-            if (seenOuter.has(ek)) {
-              outPenX = NaN;
-              outPenY = NaN;
-              continue;
-            }
-            seenOuter.add(ek);
-            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
-            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
-            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
-            if (x1 !== outPenX || y1 !== outPenY) {
-              outer += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
-            }
-            outer += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
-            outPenX = x2;
-            outPenY = y2;
+      // Skip secondary sub-pixel offshore reef specks (<0.6 SVG px) while keeping every
+      // primary territory ring, significant island, and shared boundary intact.
+      const activeRings = rawRings.filter((rec) => {
+        if (rec.polyIdx === 0 || rec.maxSpan >= 0.6) return true;
+        const keys = rec.keys;
+        for (let i = 0; i < keys.length; i++) {
+          if ((edgeCounts.get(edgeKey(keys[i], keys[(i + 1) % keys.length])) || 0) >= 2) {
+            return true;
           }
         }
+        return false;
+      });
+
+      const neighborSets = new Map();
+      const addNeighbor = (a, b) => {
+        let s = neighborSets.get(a);
+        if (!s) {
+          s = new Set();
+          neighborSets.set(a, s);
+        }
+        s.add(b);
+      };
+      const pinnedKeys = new Set();
+      for (const rec of activeRings) {
+        const keys = rec.keys;
+        const m = keys.length;
+        pinnedKeys.add(keys[0]);
+        pinnedKeys.add(keys[Math.floor(m / 3)]);
+        pinnedKeys.add(keys[Math.floor((2 * m) / 3)]);
+        for (let i = 0; i < m; i++) {
+          const kp = keys[(i + m - 1) % m];
+          const kc = keys[i];
+          const kn = keys[(i + 1) % m];
+          addNeighbor(kc, kn);
+          addNeighbor(kn, kc);
+          const prevInt = (edgeCounts.get(edgeKey(kp, kc)) || 0) >= 2;
+          const nextInt = (edgeCounts.get(edgeKey(kc, kn)) || 0) >= 2;
+          if (prevInt !== nextInt) pinnedKeys.add(kc);
+        }
+      }
+      for (const [k, nbrs] of neighborSets) {
+        if (nbrs.size !== 2) pinnedKeys.add(k);
+      }
+
+      // Simplify each topological chain once so shared borders stay bit-identical across
+      // neighbor fills and deduplicated boundary tiles.
+      const RDP_EPS = 0.38;
+      const chainCache = new Map();
+      const getSimplifiedChain = (subKeys) => {
+        const len = subKeys.length;
+        let canonKey;
+        let reversed = false;
+        if (len === 2) {
+          const a = subKeys[0];
+          const b = subKeys[1];
+          reversed = a > b;
+          canonKey = reversed ? `${b}|${a}` : `${a}|${b}`;
+        } else {
+          const fwdTag = `${subKeys[0]}>${subKeys[1]}`;
+          const revTag = `${subKeys[len - 1]}>${subKeys[len - 2]}`;
+          reversed = fwdTag > revTag;
+          canonKey = reversed ? `${revTag}|${fwdTag}|${len}` : `${fwdTag}|${revTag}|${len}`;
+        }
+        let canonPts = chainCache.get(canonKey);
+        if (!canonPts) {
+          const rawPts = new Array(len);
+          if (reversed) {
+            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[len - 1 - i]);
+          } else {
+            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[i]);
+          }
+          canonPts = this._simplifyPolylineRdp(rawPts, RDP_EPS);
+          chainCache.set(canonKey, canonPts);
+        }
+        return { canonKey, canonPts, reversed };
+      };
+
+      const seenBoundaryChains = new Set();
+      const tileBuckets = Array.from({ length: 12 }, () => ({ interior: [], outer: [] }));
+      const provPaths = new Map();
+
+      for (const rec of activeRings) {
+        const keys = rec.keys;
+        const m = keys.length;
+        const pinIdx = [];
+        for (let i = 0; i < m; i++) {
+          if (pinnedKeys.has(keys[i])) pinIdx.push(i);
+        }
+        const ringPts = [];
+        for (let p = 0; p < pinIdx.length; p++) {
+          const start = pinIdx[p];
+          const end = pinIdx[(p + 1) % pinIdx.length];
+          const subKeys = [keys[start]];
+          let cursor = start;
+          do {
+            cursor = (cursor + 1) % m;
+            subKeys.push(keys[cursor]);
+          } while (cursor !== end);
+
+          const { canonKey, canonPts, reversed } = getSimplifiedChain(subKeys);
+          if (reversed) {
+            for (let j = canonPts.length - 1; j >= (ringPts.length ? 1 : 0); j--) {
+              ringPts.push(canonPts[j]);
+            }
+          } else {
+            for (let j = ringPts.length ? 1 : 0; j < canonPts.length; j++) {
+              ringPts.push(canonPts[j]);
+            }
+          }
+
+          if (!seenBoundaryChains.has(canonKey)) {
+            seenBoundaryChains.add(canonKey);
+            const midPt = canonPts[canonPts.length >> 1];
+            const tx = Math.max(0, Math.min(3, Math.floor(midPt[0] / 250)));
+            const ty = Math.max(0, Math.min(2, Math.floor(midPt[1] / 234)));
+            const bucket = tileBuckets[ty * 4 + tx];
+            const isInterior = (edgeCounts.get(edgeKey(subKeys[0], subKeys[1])) || 0) >= 2;
+            (isInterior ? bucket.interior : bucket.outer).push(canonPts);
+          }
+        }
+
+        if (ringPts.length >= 3) {
+          let ringD = `M${ringPts[0][0].toFixed(1)} ${ringPts[0][1].toFixed(1)}`;
+          const limit =
+            ringPts[ringPts.length - 1][0] === ringPts[0][0] &&
+            ringPts[ringPts.length - 1][1] === ringPts[0][1]
+              ? ringPts.length - 1
+              : ringPts.length;
+          if (limit >= 3) {
+            for (let i = 1; i < limit; i++) {
+              ringD += `L${ringPts[i][0].toFixed(1)} ${ringPts[i][1].toFixed(1)}`;
+            }
+            ringD += 'Z';
+            provPaths.set(rec.prov, (provPaths.get(rec.prov) || '') + ringD);
+          }
+        }
+      }
+
+      const tiles = [];
+      let interior = '';
+      let outer = '';
+      for (const b of tileBuckets) {
+        const tInt = this._weldBoundaryChains(b.interior);
+        const tOut = this._weldBoundaryChains(b.outer);
+        if (!tInt && !tOut) continue;
+        tiles.push({ interior: tInt, outer: tOut, combined: `${tInt}${tOut}` });
+        interior += tInt;
+        outer += tOut;
       }
 
       this._cachedProvinceBoundaryPaths = {
         interior,
         outer,
         combined: `${interior}${outer}`,
+        tiles,
+        provPaths,
       };
       return this._cachedProvinceBoundaryPaths;
     }
 
     _buildModernProvinces() {
+      const bounds = this._buildProvinceBoundaryPaths();
       const dashPaths = [];
       for (const prov of this.provinces) {
         const isDash = String(prov.code).includes('_JD');
+        const pathD = isDash
+          ? this.projector.multiRingsToSvgPath(prov.rings)
+          : (bounds.provPaths && bounds.provPaths.get(prov)) ||
+            this.projector.multiRingsToSvgPath(prov.rings);
         const path = this._svgNode(
           'path',
           {
-            d: this.projector.multiRingsToSvgPath(prov.rings),
+            d: pathD,
             class: isDash ? 'province-shape maritime-dash' : 'province-shape',
           },
           this.grpProvinces
@@ -2059,27 +2324,33 @@
           lbl.textContent = this.trTerm(rawShort);
         }
       }
-      const bounds = this._buildProvinceBoundaryPaths();
-      if (bounds.combined) {
-        this._svgNode(
-          'path',
-          { d: bounds.combined, class: 'province-boundary-casing' },
-          this.grpProvinces
-        );
+      const tiles = bounds.tiles && bounds.tiles.length ? bounds.tiles : [bounds];
+      for (const tile of tiles) {
+        if (tile.combined) {
+          this._svgNode(
+            'path',
+            { d: tile.combined, class: 'province-boundary-casing' },
+            this.grpProvinces
+          );
+        }
       }
-      if (bounds.interior) {
-        this._svgNode(
-          'path',
-          { d: bounds.interior, class: 'province-boundary-interior' },
-          this.grpProvinces
-        );
+      for (const tile of tiles) {
+        if (tile.interior) {
+          this._svgNode(
+            'path',
+            { d: tile.interior, class: 'province-boundary-interior' },
+            this.grpProvinces
+          );
+        }
       }
-      if (bounds.outer) {
-        this._svgNode(
-          'path',
-          { d: bounds.outer, class: 'province-boundary-outer' },
-          this.grpProvinces
-        );
+      for (const tile of tiles) {
+        if (tile.outer) {
+          this._svgNode(
+            'path',
+            { d: tile.outer, class: 'province-boundary-outer' },
+            this.grpProvinces
+          );
+        }
       }
       for (const dp of dashPaths) {
         if (this.grpProvinces && this.grpProvinces.appendChild) {
@@ -5121,8 +5392,7 @@
         !profile.isRelic &&
         Array.isArray(item && item.persons) &&
         item.persons.includes(profile.key) &&
-        item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk)) &&
-        peerKeys.includes(item.persons[0]);
+        item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk));
       const tokens = profile.isRelic
         ? []
         : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
@@ -5215,6 +5485,7 @@
           }
           const rawSite = m.site || d.seat || '';
           if (profile.key === 'liubang' && m.year === -207 && rawSite.startsWith('巨鹿')) continue;
+          if (profile.key === 'sunquan' && m.year === 230 && rawSite.startsWith('夷洲')) continue;
           const mKey = `${d.key}:${m.year}`;
           const mHit = this.enLocale.milestones && this.enLocale.milestones[mKey];
           const rawSiteEn =
@@ -5359,7 +5630,7 @@
     }
 
     static get PERSON_TRACK_PALETTE() {
-      return ['#bd2d22', '#1d5a7b', '#2f6b55', '#7a3e65'];
+      return ['#c4281c', '#233b8e', '#186a4b', '#7a2e68'];
     }
 
     _resolvePersonProfiles(personOrQuery) {
@@ -5464,26 +5735,32 @@
       }
 
       // Only merge & highlight true contemporaneous encounters (same place <= 45km AND |Δyear| <= 3).
-      // Pair closest year/distance matches first so exact same-year meetings are never stolen by an adjacent year.
-      for (let tIdx = 1; tIdx < tracks.length; tIdx++) {
-        const candPairs = [];
-        for (const evA of tracks[0].events) {
-          for (const evB of tracks[tIdx].events) {
-            const dy = Math.abs(evA.year - evB.year);
-            if (dy > 3) continue;
-            const { hit, km } = this._eventsSharePlace(evA, evB);
-            if (!hit) continue;
-            candPairs.push({ evA, evB, dy, km });
+      // Pair closest year/distance matches symmetrically across all track pairs (tA, tB) so 2-person and 3-person
+      // chronicles match with identical precision regardless of which subset of tracks is compared.
+      for (let tA = 0; tA < tracks.length; tA++) {
+        for (let tB = tA + 1; tB < tracks.length; tB++) {
+          const candPairs = [];
+          for (const evA of tracks[tA].events) {
+            for (const evB of tracks[tB].events) {
+              const dy = Math.abs(evA.year - evB.year);
+              if (dy > 3) continue;
+              const { hit, km } = this._eventsSharePlace(evA, evB);
+              if (!hit) continue;
+              candPairs.push({ evA, evB, dy, km });
+            }
           }
-        }
-        candPairs.sort((a, b) => a.dy - b.dy || a.km - b.km);
-        const usedB = new Set();
-        for (const { evA, evB } of candPairs) {
-          if ((evA._peerMatches && evA._peerMatches[tIdx]) || usedB.has(evB)) continue;
-          if (!evA._peerMatches) evA._peerMatches = {};
-          evA._peerMatches[tIdx] = evB;
-          evB._reservedForPrimary = evA;
-          usedB.add(evB);
+          candPairs.sort((a, b) => a.dy - b.dy || a.km - b.km);
+          const usedA = new Set();
+          const usedB = new Set();
+          for (const { evA, evB } of candPairs) {
+            if (usedA.has(evA) || usedB.has(evB)) continue;
+            if (!evA._peerLinks) evA._peerLinks = {};
+            if (!evB._peerLinks) evB._peerLinks = {};
+            evA._peerLinks[tB] = evB;
+            evB._peerLinks[tA] = evA;
+            usedA.add(evA);
+            usedB.add(evB);
+          }
         }
       }
 
@@ -5499,38 +5776,28 @@
       const merged = [];
       let sameTimeCount = 0;
       for (const evA of allRaw) {
-        if (evA._mergedIntoShared || evA._reservedForPrimary) continue;
+        if (evA._mergedIntoShared) continue;
         const group = [evA];
-        if (evA._peerMatches) {
-          for (const evB of Object.values(evA._peerMatches)) {
-            if (evB && !evB._mergedIntoShared) {
-              evB._mergedIntoShared = true;
-              evB.coord = [evA.coord[0], evA.coord[1]];
-              group.push(evB);
-            }
-          }
-        }
-        if (group.length === 1 && evA.personIdx > 0) {
-          for (let tIdx = evA.personIdx + 1; tIdx < tracks.length; tIdx++) {
-            let bestEv = null;
-            let bestDy = Infinity;
-            let bestKm = Infinity;
-            for (const evB of tracks[tIdx].events) {
-              if (evB._mergedIntoShared) continue;
-              const dy = Math.abs(evA.year - evB.year);
-              if (dy > 3) continue;
-              const { hit, km } = this._eventsSharePlace(evA, evB);
-              if (!hit) continue;
-              if (dy < bestDy || (dy === bestDy && km < bestKm)) {
-                bestDy = dy;
-                bestKm = km;
-                bestEv = evB;
-              }
-            }
-            if (bestEv) {
-              bestEv._mergedIntoShared = true;
-              bestEv.coord = [evA.coord[0], evA.coord[1]];
-              group.push(bestEv);
+        const usedTracks = new Set([evA.personIdx]);
+        const queue = [evA];
+        while (queue.length > 0) {
+          const cur = queue.shift();
+          if (!cur._peerLinks) continue;
+          const peerIdxList = Object.keys(cur._peerLinks)
+            .map(Number)
+            .sort((a, b) => a - b);
+          for (const tIdx of peerIdxList) {
+            if (usedTracks.has(tIdx)) continue;
+            const cand = cur._peerLinks[tIdx];
+            if (!cand || cand._mergedIntoShared) continue;
+            if (
+              Math.abs(evA.year - cand.year) <= 3 &&
+              this._eventsSharePlace(evA, cand).hit
+            ) {
+              usedTracks.add(tIdx);
+              cand._mergedIntoShared = true;
+              group.push(cand);
+              queue.push(cand);
             }
           }
         }
@@ -5538,6 +5805,9 @@
           evA._mergedIntoShared = true;
           group.sort((a, b) => a.personIdx - b.personIdx);
           const primary = group[0];
+          for (let gIdx = 1; gIdx < group.length; gIdx++) {
+            group[gIdx].coord = [primary.coord[0], primary.coord[1]];
+          }
           const textSource =
             group.find((gEv) => gEv.src === 'J') ||
             group.find((gEv) => gEv.src === 'M') ||
@@ -6200,9 +6470,9 @@
         );
         if (isShared) {
           const parts = ev.participants;
-          const rDot = isCur ? 4.0 : 3.5;
-          const sep = isCur ? 8.6 : 7.6;
-          const pad = isCur ? 3.0 : 2.6;
+          const rDot = isCur ? 4.3 : 3.8;
+          const sep = isCur ? 9.2 : 8.2;
+          const pad = isCur ? 3.2 : 2.8;
           const pillW = (parts.length - 1) * sep + rDot * 2 + pad;
           const pillH = rDot * 2 + pad;
           if (isCur) {
@@ -6246,7 +6516,7 @@
             dot.style.color = pt.color;
           });
         } else if (isMultiBead) {
-          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 3.2 }, inner);
+          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 4.1 }, inner);
         } else {
           if (isCur) {
             this._svgNode('circle', { class: 'jn-pulse', r: 11.8 }, inner);
@@ -10402,7 +10672,7 @@
         applyDim(g);
         this._svgNode(
           'path',
-          { d: 'M-3.5 -2.45L2.75 0L-3.5 2.45L-1.85 0Z', class: 'journey-chevron' },
+          { d: 'M-4.5 -3.15L3.55 0L-4.5 3.15L-2.3 0Z', class: 'journey-chevron' },
           g
         );
       };
@@ -10475,20 +10745,20 @@
     _searchPlaceholder(expanded = false) {
       if (this.locale === 'en') {
         return expanded
-          ? 'Search figure (or pair: Li Bai, Du Fu) / city / era'
-          : 'Search figure / pair / city / era';
+          ? 'Search figure (or 2–3: Li Bai, Du Fu, Gao Shi) / city / era'
+          : 'Search figure / multi-person / city / era';
       }
       return this._zh(
         expanded
-          ? '搜人物（可搜双人：李白 杜甫）/ 古今地名 / 年号'
-          : '搜人物 / 双人 / 古今地名 / 年号'
+          ? '搜人物（可搜双人/三人：李白 杜甫 高适）/ 古今地名 / 年号'
+          : '搜人物 / 多人同看 / 古今地名 / 年号'
       );
     }
 
     _getSearchSampleQueries() {
       return this.locale === 'en'
-        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
-        : ['长安', '赤壁', '霍去病', '李白 杜甫'].map((s) => this._zh(s));
+        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu, Gao Shi']
+        : ['长安', '赤壁', '霍去病', '李白 杜甫 高适'].map((s) => this._zh(s));
     }
 
     _getSearchShowcasePool() {
@@ -10498,13 +10768,15 @@
         'sushi',
         ['libai', 'dufu'],
         'zhugeliang',
-        ['yanghu', 'duyu'],
+        ['libai', 'dufu', 'gaoshi'],
         'huoqubing',
-        ['zuti', 'liukun'],
+        ['caocao', 'liubei', 'sunquan'],
         'libai',
+        ['yanghu', 'duyu'],
         'caocao',
         ['zhugeliang', 'simayi'],
         'xinqiji',
+        ['zuti', 'liukun'],
         'xuanzang',
         'wangyangming',
         'zhangqian',
@@ -14138,6 +14410,8 @@
       if (placeTokens.length >= 2) {
         const route = [];
         let totalKm = 0;
+        const isMultiTrack = placeTokens.some((t) => (t.trackIdx || 0) > 0);
+        const trackCounters = {};
         for (let i = 0; i < placeTokens.length; i++) {
           const tok = placeTokens[i];
           const r = this.resolvePlace(tok.place, tok.year);
@@ -14148,13 +14422,18 @@
           const sSnap = this.snapshots[sSnapKey] || snap;
           const info = this._inspectCoord(r.lng, r.lat, sd, sSnap, tok.year);
           const prev = route.length ? route[route.length - 1] : null;
-          const segKm = prev
-            ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
-            : 0;
+          const tId = tok.trackIdx || 0;
+          const prevTrackId = prev && prev.trackIdx !== undefined ? prev.trackIdx : 0;
+          const segKm =
+            prev && prevTrackId === tId
+              ? Math.round(this.projector.greatCircleKm(prev.coord, [r.lng, r.lat]))
+              : 0;
           totalKm += segKm;
+          trackCounters[tId] = (trackCounters[tId] || 0) + 1;
           const cleanPlace = /[<>]/.test(String(tok.place || '')) ? r.name : tok.place;
           route.push({
             step: route.length + 1,
+            ...(isMultiTrack ? { trackIdx: tId, trackStep: trackCounters[tId] } : {}),
             year: tok.year,
             era: this.formatEraLabel(tok.year, sd, [r.lng, r.lat]),
             dynasty: isEn ? this.dynastyName(sd) : this._zh(sd.title),
@@ -14169,9 +14448,21 @@
         if (route.length >= 2) {
           const first = route[0];
           const isMultiYear = new Set(route.map((s) => s.year)).size > 1;
+          const formattedPlace = isMultiTrack
+            ? Object.values(
+                route.reduce((acc, s) => {
+                  const k = s.trackIdx || 0;
+                  if (!acc[k]) acc[k] = [];
+                  acc[k].push(s.place);
+                  return acc;
+                }, {})
+              )
+                .map((arr) => arr.join(','))
+                .join(';')
+            : route.map((s) => s.place).join(',');
           const params = new URLSearchParams();
           params.set('year', isMultiYear ? route.map((s) => s.year).join(',') : String(first.year));
-          params.set('place', route.map((s) => s.place).join(','));
+          params.set('place', formattedPlace);
           if (isEn) params.set('lang', 'en');
           else if (this.locale === 'zh-tw') params.set('lang', 'zh-tw');
           const basePath =
@@ -14186,7 +14477,7 @@
               seat: isEn ? this.dynastySeat(d) : this._zh(d.seat),
               span: [d.fromYear, d.toYear],
             },
-            place: route.map((s) => s.place).join(','),
+            place: formattedPlace,
             coord: first.coord,
             zoom: Number(this.camera.zoom.toFixed(2)),
             polity: first.polity,
@@ -14690,7 +14981,7 @@
               place: {
                 type: 'string',
                 description:
-                  'Single canonical ancient/modern place name or comma-separated route stops in Chinese, English, or Pinyin.',
+                  'Single canonical ancient/modern place name, comma-separated route stops, or semicolon-separated converging routes (e.g. "许昌,江陵,赤壁;柴桑,樊口,赤壁") in Chinese, English, or Pinyin.',
               },
               zoom: {
                 type: 'number',
@@ -14728,11 +15019,13 @@
               },
               place: {
                 type: 'string',
-                description: 'Optional ancient/modern place name or comma-separated route stops.',
+                description:
+                  'Optional ancient/modern place name, comma-separated route stops, or semicolon-separated converging routes (e.g. "许昌,江陵,赤壁;柴桑,樊口,赤壁").',
               },
               person: {
                 type: 'string',
-                description: 'Optional historical figure name or key (e.g. sushi, libai, zhugeliang).',
+                description:
+                  'Optional single historical figure or comma-separated 2–4 figures (e.g. "libai,dufu,gaoshi" or "caocao,liubei,sunquan").',
               },
               stop: {
                 type: 'integer',
@@ -14760,13 +15053,14 @@
         {
           name: 'jiangshan_open_person',
           description:
-            'Open the spatio-temporal life & poetry chronicle (点人溯事) on the map for a Chinese historical figure or monarch and return their geocoded life stops.',
+            'Open the spatio-temporal life & poetry chronicle (点人溯事) on the map for 1–4 Chinese historical figures or monarchs and return their geocoded life stops and shared historical encounters.',
           inputSchema: {
             type: 'object',
             properties: {
               person: {
                 type: 'string',
-                description: 'Historical figure name or key in Chinese, English, or Pinyin.',
+                description:
+                  'Single historical figure or comma-separated 2–4 figures (e.g. "libai,dufu,gaoshi" or "李白,杜甫,高适") in Chinese, English, or Pinyin.',
               },
               stop: {
                 type: 'integer',
