@@ -4309,13 +4309,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 20 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 907];
+    // Tang 21 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 20 map change milestone years must match'
+      'tang: 21 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
