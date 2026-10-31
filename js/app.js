@@ -24,6 +24,9 @@
     '北魏', '东魏', '西魏', '北齐', '北周', '西梁', '武周', '后梁', '后唐', '后晋', '后汉', '后周',
     '北宋', '南宋', '蜀汉', '西夏', '周', '秦', '汉', '魏', '吴', '晋', '宋', '齐', '梁', '陈', '隋', '唐', '辽', '金', '元', '明', '清',
   ];
+  const CORE_REGIME_CHARS = new Set(
+    '齐宋梁陈魏吴楚燕赵韩秦晋鲁巴蜀越周代夏凉唐汉郑顺'.split('')
+  );
   const ERA_CHAR_PINYIN = {
     威: 'wei', 烈: 'lie', 王: 'wang', 安: 'an', 显: 'xian', 慎: 'shen', 靓: 'jing', 赧: 'nan', 昭: 'zhao', 襄: 'xiang',
     孝: 'xiao', 文: 'wen', 庄: 'zhuang', 政: 'zheng', 始: 'shi', 皇: 'huang', 二: 'er', 世: 'shi', 高: 'gao', 帝: 'di',
@@ -10825,6 +10828,48 @@
       }
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
+      const compiledEraSpans = this._getCompiledEraSpans();
+      const DYN_ALIASES_MAP = {
+        zhanguo: ['战国七雄', '春秋战国'],
+        qin: ['秦朝', '大秦', '秦'],
+        xihan: ['汉', '汉朝', '前汉', '两汉'],
+        donghan: ['汉', '汉朝', '两汉'],
+        sanguo: ['魏蜀吴'],
+        xijin: ['晋', '晋朝', '两晋'],
+        dongjin: ['东晋', '晋', '晋朝', '两晋', '十六国', '五胡十六国'],
+        nanbei: ['南朝', '北朝', '六朝'],
+        sui: ['隋朝', '大隋', '隋'],
+        tang: ['唐朝', '大唐', '李唐', '唐'],
+        wudai: ['五代', '十国'],
+        beisong: ['宋', '宋朝', '两宋', '大宋', '赵宋'],
+        nansong: ['宋', '宋朝', '两宋', '大宋', '赵宋'],
+        yuan: ['元朝', '大元', '蒙元', '元'],
+        ming: ['明朝', '大明', '朱明', '明'],
+        qing: ['清朝', '大清', '满清', '清'],
+        roc: ['民国', '国民政府', '北洋政府'],
+        prc: ['中国', '现代', '当代', '新中国'],
+      };
+      const extractCoreRegimes = (zhTitle, titles = []) => {
+        const out = new Set();
+        const addFrom = (s) => {
+          const bare = String(s || '').replace(/[（(][^）)]*[）)]/g, '').trim();
+          if (!bare) return;
+          if (bare.length === 1 && CORE_REGIME_CHARS.has(bare)) out.add(bare);
+          if (bare.endsWith('国') && bare.length === 2 && CORE_REGIME_CHARS.has(bare[0])) {
+            out.add(bare[0]);
+          }
+          const stripped = bare.replace(
+            /^(?:东|西|南|北|前|后|大|成|蜀|季|刘|曹|孙|杨|马|冉|谯|胡|桓|武|明|古|韩)/,
+            ''
+          );
+          if (stripped.length === 1 && CORE_REGIME_CHARS.has(stripped)) {
+            out.add(stripped);
+          }
+        };
+        addFrom(zhTitle);
+        for (const t of titles) addFrom(t);
+        return [...out];
+      };
 
       // 0a. Historical Figures Chronicle Index (点人溯事)
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
@@ -10834,6 +10879,20 @@
           this.dynasties[0];
         const evCount = this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
+        const eraNames = [];
+        if (!p.isRelic) {
+          const pText = `${p.zh} ${p.courtesyZh || ''} ${aliases.join(' ')}`;
+          for (const c of compiledEraSpans) {
+            if (
+              c.monarchZh &&
+              c.monarchZh.length >= 2 &&
+              (pText.includes(c.monarchZh) ||
+                (c.shortMonarch && c.shortMonarch.length >= 3 && pText.includes(c.shortMonarch)))
+            ) {
+              if (c.eraOnly && c.eraOnly.length >= 2) eraNames.push(c.eraOnly);
+            }
+          }
+        }
         const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
         const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
         const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
@@ -10854,7 +10913,7 @@
             : briefCourtesyEn
               ? `${briefCourtesyEn} · ${evCount} events`
               : `${evCount} chronicle events`,
-          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} ${p.isRelic ? '国器 宝物 传国玉玺 传国玺 玉玺 和氏璧 relic seal' : '人物 生平 事迹 行迹'}`.toLowerCase(),
+          keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} ${eraNames.join(' ')} ${p.isRelic ? '国器 宝物 传国玉玺 传国玺 玉玺 和氏璧 relic seal' : '人物 生平 事迹 行迹'}`.toLowerCase(),
         });
       }
 
@@ -10875,6 +10934,8 @@
         const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
         const nameEn = enDyn.name || d.title;
         const shortEn = enDyn.short || d.badge || d.title;
+        const dAliases = (DYN_ALIASES_MAP[d.key] || []).map((a) => a.toLowerCase());
+        const coreRegimes = extractCoreRegimes(d.title, dAliases);
         const spanZh =
           d.key === 'prc'
             ? `${d.fromYear}—`
@@ -10891,7 +10952,9 @@
           subZh: `${spanZh} · 都城：${d.seat}`,
           titleEn: nameEn,
           subEn: `${spanEn} · ${enDyn.capital || d.seat}`,
-          keywords: `${d.title} ${d.badge || ''} ${d.seat || ''} ${nameEn} ${shortEn}`.toLowerCase(),
+          aliases: dAliases,
+          coreRegimes,
+          keywords: `${d.title} ${d.badge || ''} ${d.seat || ''} ${nameEn} ${shortEn} ${dAliases.join(' ')}`.toLowerCase(),
         });
       }
 
@@ -10899,7 +10962,26 @@
       const yrZh = (y) => (y <= 0 ? `前${-y}` : `${y}`);
       const yrEn = (y) => (y <= 0 ? `${-y} BCE` : `${y} CE`);
       for (const p of HistoricalAtlasController.POLITY_PROFILES) {
-        const aliases = [...(p.aliases || []), ...p.titles.filter((t) => t.length >= 2)];
+        const bareZhPol = p.zh.replace(/[（(][^）)]*[）)]/g, '').trim().toLowerCase();
+        const bareTitles = p.titles
+          .map((t) => t.replace(/[（(][^）)]*[）)]/g, '').trim().toLowerCase())
+          .filter(Boolean);
+        const exactPolityTitles = [
+          ...new Set([bareZhPol, ...p.titles.map((t) => t.toLowerCase()), ...bareTitles]),
+        ].filter(Boolean);
+        const aliases = [
+          ...new Set([...(p.aliases || []).map((a) => a.toLowerCase()), ...exactPolityTitles]),
+        ];
+        const coreRegimes = extractCoreRegimes(p.zh, p.titles);
+        const rulersText = this._polityRulers({ ...p, curated: true }) || '';
+        const founderExtra =
+          p.key === 'caowei'
+            ? '曹操 魏武帝'
+            : p.key === 'shuhan'
+              ? '刘备 诸葛亮'
+              : p.key === 'sunwu'
+                ? '孙权 孙策'
+                : '';
         entries.push({
           kind: 'polity',
           polityKey: p.key,
@@ -10909,8 +10991,12 @@
           subZh: `${yrZh(p.from)}—${yrZh(p.to)} · 都城：${p.seatZh}`,
           titleEn: p.en,
           subEn: `${yrEn(p.from)} – ${yrEn(p.to)} · ${p.seatEn}`,
-          aliases: aliases.map((a) => a.toLowerCase()),
-          keywords: `${p.zh} ${p.en} ${aliases.join(' ')}`.toLowerCase(),
+          exactPolityTitles,
+          coreRegimes,
+          politySpan: Math.max(1, (p.to || 0) - (p.from || 0)),
+          polityFrom: p.from || 0,
+          aliases,
+          keywords: `${p.zh} ${p.en} ${aliases.join(' ')} ${p.seatZh || ''} ${p.seatEn || ''} ${rulersText} ${p.rulersEn || ''} ${founderExtra}`.toLowerCase(),
         });
       }
 
@@ -11199,8 +11285,12 @@
         const enDynShort = (enDynObj.short || enDynObj.name || dForSpan.key || '').toLowerCase();
         const enDynBase = enDynShort.replace(/^[wens]\.\s*/, '');
         const enSearchTarget = `${monarchEnLower} ${monarchEnExpanded} ${monarchEnExpanded} of ${enDynShort} ${monarchEnExpanded} of ${enDynBase} ${monarchBare} of ${enDynBase}`;
+        const monarchPfx =
+          ERA_DYNASTY_PREFIXES.find((dp) => monarchZh.startsWith(dp)) || dynPfx;
         const monarchTitleLen =
-          dynPfx && monarchZh.startsWith(dynPfx) ? monarchZh.length - dynPfx.length : monarchZh.length;
+          monarchPfx && monarchZh.startsWith(monarchPfx)
+            ? monarchZh.length - monarchPfx.length
+            : monarchZh.length;
         const [enName, enOwnRegime = ''] = monarchEnExpanded.split(' of ');
         const enRegimePool = `${enOwnRegime} | ${enDynShort} | ${enDynBase}`;
         const eraPinyinLower =
@@ -11281,6 +11371,15 @@
       const isLatinQuery = qLower.length >= 3 && /[a-z]/i.test(qLower);
       const qFoldEra = isLatinQuery ? qLower.replace(/['’‘`\-_.\s]+/g, '') : '';
       const yearNum = numMatch ? this._parseChineseNumber(numMatch[2]) : null;
+      if (
+        !directYrMatch &&
+        yearNum === null &&
+        !isYuanNian &&
+        !/[年载]$/.test(trimmed) &&
+        prefixQ.length < 2
+      ) {
+        return hits;
+      }
       const seenMonarchOnly = new Set();
       const seenEraHit = new Set();
       // A hit must reach past the regime name into the era or monarch title, so a bare
@@ -11395,6 +11494,23 @@
       return hits;
     }
 
+    _searchBucket(item) {
+      if (item.kind === 'dynasty' || item.kind === 'polity') return 'regime';
+      if (item.kind === 'multi_person' || item.kind === 'person' || item.kind === 'era') {
+        return 'person_era';
+      }
+      if (
+        item.kind === 'city' ||
+        item.kind === 'pass' ||
+        item.kind === 'gazetteer' ||
+        item.kind === 'prefecture' ||
+        item.kind === 'region'
+      ) {
+        return 'geo';
+      }
+      return 'event';
+    }
+
     _queryQuickSearch(rawQuery) {
       const rawTrim = rawQuery.trim();
       if (!rawTrim) return [];
@@ -11426,18 +11542,26 @@
         const mEn = iq ? iq.mEn : (item.modernEn || '').toLowerCase();
         const tEnFold = isAscii ? (iq ? iq.tEnFold : fold(tEn)) : '';
         const mEnFold = isAscii ? (iq ? iq.mEnFold : fold(mEn)) : '';
-        if (tZh === q || tEn === q) score = 100;
-        else if (bareZh && (bareZh === q || bareEn === q)) score = 99;
-        else if (isAscii && qFold.length >= 3 && tEnFold === qFold) score = 98;
-        else if (
+        if (tZh === q || tEn === q) {
+          score = item.kind === 'dynasty' ? 108 : item.kind === 'polity' ? 104 : 100;
+        } else if (bareZh && (bareZh === q || bareEn === q)) {
+          score = item.kind === 'dynasty' ? 106 : item.kind === 'polity' ? 101 : 99;
+        } else if (isAscii && qFold.length >= 3 && tEnFold === qFold) {
+          score = 98;
+        } else if (
           mZh &&
           (mZh === q ||
             (iq ? iq.mZhParts && iq.mZhParts.includes(q) : mZh.split(/[·/、]/).includes(q)) ||
             mEn === q)
         ) {
           score = 96;
-        } else if (isAscii && qFold.length >= 3 && mEnFold === qFold) score = 94;
-        else if (
+        } else if (isAscii && qFold.length >= 3 && mEnFold === qFold) {
+          score = 94;
+        } else if (item.exactPolityTitles && item.exactPolityTitles.includes(q)) {
+          score = 100;
+        } else if (item.coreRegimes && item.coreRegimes.includes(q)) {
+          score = item.kind === 'dynasty' ? 105 : 97;
+        } else if (
           item.aliases &&
           item.aliases.some(
             (a, idx) =>
@@ -11447,19 +11571,31 @@
                 (iq && iq.aliasesFold ? iq.aliasesFold[idx] : fold(a)) === qFold)
           )
         ) {
-          score = 92;
+          score = item.kind === 'dynasty' ? 103 : item.kind === 'polity' ? 95 : 92;
         } else if (
           tZh.startsWith(q) ||
           tEn.startsWith(q) ||
           (isAscii && qFold.length >= 3 && tEnFold.startsWith(qFold))
         ) {
-          score = item.kind === 'event' ? (hasEraMatch ? 81 : 93) : 80;
+          if (item.kind === 'event') {
+            score = q.length === 1 ? 66 : hasEraMatch ? 78 : 88;
+          } else if (item.kind === 'dynasty' || item.kind === 'polity') {
+            score = 88;
+          } else if (
+            (item.kind === 'prefecture' || item.kind === 'region') &&
+            tZh.length === q.length + 1 &&
+            /[州郡国府路道省县]$/.test(tZh)
+          ) {
+            score = 84;
+          } else {
+            score = 80;
+          }
         } else if (
           item.kind === 'event' &&
           q.length >= 2 &&
           (tZh.includes(q) || (isAscii && qFold.length >= 4 && tEnFold.includes(qFold)))
         ) {
-          score = 81;
+          score = 78;
         } else if (
           item.kind === 'event' &&
           q.length >= 2 &&
@@ -11474,7 +11610,7 @@
                 ? (iq.altEnPairs.find((pair) => pair[1].includes(qFold)) || [])[0] || null
                 : item.altTitlesEn.find((at) => fold(at).includes(qFold)))))
         ) {
-          score = 75;
+          score = 74;
         } else if (
           mZh &&
           (mZh.startsWith(q) ||
@@ -11488,10 +11624,13 @@
             qFold.length >= 4 &&
             (iq ? iq.keywordsFold : fold(item.keywords)).includes(qFold))
         ) {
-          if (hasEraMatch && (item.kind === 'city' || item.kind === 'event')) {
+          if (
+            (hasEraMatch && (item.kind === 'city' || item.kind === 'event')) ||
+            (q.length === 1 && item.kind !== 'person')
+          ) {
             score = 0;
           } else {
-            score = 55;
+            score = item.kind === 'dynasty' ? 58 : 55;
             matchedByKeywordOnly = true;
           }
         }
@@ -11521,10 +11660,15 @@
           }
           if (resItem.kind === 'person') {
             if (score >= 92) score = 148;
-            else if (score >= 80) score = 114;
+            else if (score >= 80) score = q.length === 1 || CORE_REGIME_CHARS.has(q) ? 86 : 114;
             else score = 72;
+          } else if (resItem.kind === 'dynasty' || resItem.kind === 'polity') {
+            if (resItem.dynasty === this.dynasties[this.dynastyIdx]) score += 4;
+            if (resItem.politySpan >= 18) score += 1;
+          } else if (resItem.kind === 'event') {
+            if (resItem.dynasty === this.dynasties[this.dynastyIdx]) score += 4;
           } else {
-            if (resItem.dynasty === this.dynasties[this.dynastyIdx]) score += 12;
+            if (resItem.dynasty === this.dynasties[this.dynastyIdx]) score += 10;
             if (resItem.isCapital) score += 2;
           }
           results.push({ ...resItem, score });
@@ -11536,7 +11680,11 @@
         !results.some((r) => r.kind === 'person') &&
         !results.some(
           (r) =>
-            (r.kind === 'city' || r.kind === 'pass' || r.kind === 'gazetteer' || r.kind === 'dynasty') &&
+            (r.kind === 'city' ||
+              r.kind === 'pass' ||
+              r.kind === 'gazetteer' ||
+              r.kind === 'dynasty' ||
+              r.kind === 'polity') &&
             r.score >= 92
         ) &&
         /^[\u4e00-\u9fa5]{2,5}$/.test(normQ)
@@ -11589,17 +11737,44 @@
         }
       }
 
-      results.sort((a, b) => b.score - a.score);
+      results.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.polityFrom !== undefined && b.polityFrom !== undefined) {
+          return a.polityFrom - b.polityFrom;
+        }
+        return 0;
+      });
+
       const deduped = [];
-      const seenPlaceKey = new Set();
+      const seenAdminTitle = new Map();
       for (const item of results) {
-        if (
-          (item.kind === 'city' || item.kind === 'prefecture' || item.kind === 'region') &&
-          item.coord
-        ) {
-          const pk = `${item.kind}:${item.titleZh}:${Math.round(item.coord[0])},${Math.round(item.coord[1])}`;
-          if (seenPlaceKey.has(pk)) continue;
-          seenPlaceKey.add(pk);
+        if (item.kind === 'prefecture' || item.kind === 'region') {
+          const ak = item.titleZh;
+          if (seenAdminTitle.has(ak)) {
+            const prev = seenAdminTitle.get(ak);
+            if (item.dynasty && prev.dynasty && item.dynasty.title !== prev.dynasty.title) {
+              const dLabel = item.dynasty.badge || item.dynasty.title;
+              if (!prev._mergedDynasties.includes(dLabel)) prev._mergedDynasties.push(dLabel);
+            }
+            continue;
+          }
+          const copy = {
+            ...item,
+            _mergedDynasties: item.dynasty ? [item.dynasty.badge || item.dynasty.title] : [],
+          };
+          seenAdminTitle.set(ak, copy);
+          deduped.push(copy);
+          continue;
+        }
+        if (item.kind === 'city' && item.coord) {
+          const dupCity = deduped.some(
+            (prev) =>
+              prev.kind === 'city' &&
+              prev.titleZh === item.titleZh &&
+              prev.coord &&
+              this.projector.greatCircleKm(prev.coord, item.coord) <= 120
+          );
+          if (dupCity) continue;
         } else if (item.kind === 'event') {
           const evYr = item.rawYear !== undefined ? item.rawYear : item.year;
           const dupEv = deduped.some(
@@ -11613,9 +11788,90 @@
           if (dupEv) continue;
         }
         deduped.push(item);
-        if (deduped.length >= 12) break;
       }
-      return deduped;
+
+      for (const item of deduped) {
+        if (item._mergedDynasties && item._mergedDynasties.length > 1 && !item.subZh) {
+          const dyns = item._mergedDynasties.slice(0, 4).join('、');
+          item.subZh = `历${dyns}`;
+        }
+        item.bucket = this._searchBucket(item);
+      }
+
+      if (!deduped.length) return [];
+
+      const buckets = {
+        regime: [],
+        person_era: [],
+        geo: [],
+        event: [],
+      };
+      for (const item of deduped) {
+        buckets[item.bucket].push(item);
+      }
+      const hasOtherBuckets =
+        buckets.regime.length + buckets.person_era.length + buckets.event.length > 0;
+      if (hasOtherBuckets && buckets.geo.length > 3) {
+        let adminCount = 0;
+        buckets.geo = buckets.geo.filter((g) => {
+          if (g.kind === 'prefecture' || g.kind === 'region') {
+            adminCount++;
+            return adminCount <= 2;
+          }
+          return true;
+        });
+      }
+
+      const topBucket = deduped[0].bucket;
+      const defaultOrder = ['regime', 'person_era', 'geo', 'event'];
+      const bucketOrder = [topBucket, ...defaultOrder.filter((b) => b !== topBucket)];
+
+      const baseQuotas = {
+        regime: buckets.regime[0] && buckets.regime[0].score < 70 ? 2 : 5,
+        person_era: 3,
+        geo: buckets.geo[0] && buckets.geo[0].score < 70 ? 2 : 3,
+        event: 2,
+      };
+      if (topBucket !== 'regime') {
+        baseQuotas[topBucket] = Math.max(baseQuotas[topBucket], 4);
+      }
+
+      const pickedByBucket = { regime: [], person_era: [], geo: [], event: [] };
+      const overflowByBucket = { regime: [], person_era: [], geo: [], event: [] };
+      let totalPicked = 0;
+
+      for (const b of bucketOrder) {
+        const list = buckets[b];
+        const qLimit = baseQuotas[b];
+        for (let i = 0; i < list.length; i++) {
+          if (i < qLimit && totalPicked < 12) {
+            pickedByBucket[b].push(list[i]);
+            totalPicked++;
+          } else {
+            overflowByBucket[b].push(list[i]);
+          }
+        }
+      }
+
+      if (totalPicked < 12) {
+        for (const minScore of [70, 0]) {
+          for (const b of bucketOrder) {
+            for (const item of overflowByBucket[b]) {
+              if (totalPicked >= 12) break;
+              if (item._picked || item.score < minScore) continue;
+              item._picked = true;
+              pickedByBucket[b].push(item);
+              totalPicked++;
+            }
+          }
+        }
+      }
+
+      const finalResults = [];
+      for (const b of bucketOrder) {
+        finalResults.push(...pickedByBucket[b]);
+      }
+      return finalResults.slice(0, 12);
     }
 
     _selectSearchResult(item) {
@@ -11920,6 +12176,10 @@
         currentResults.forEach((item, idx) => {
           const li = document.createElement('li');
           if (idx === activeSearchIdx) li.classList.add('is-active');
+          const prevBucket = idx > 0 ? currentResults[idx - 1].bucket : null;
+          if (idx > 0 && item.bucket && prevBucket && item.bucket !== prevBucket) {
+            li.classList.add('is-group-start');
+          }
           const mainText = this.locale === 'en' ? item.titleEn : this._zh(item.titleZh);
           const subText = this.locale === 'en' ? item.subEn : this._zh(item.subZh);
           const tagText =
@@ -11928,9 +12188,10 @@
                 ? 'Warring–5 Dyn · Relic'
                 : this._zh('战国—五代 · 国器')
               : `${this.dynastyBadge(item.dynasty)} · ${this._zh(kindLabel[item.kind] || '')}`;
+          const bucketAttr = item.bucket ? ` data-bucket="${escHtml(item.bucket)}"` : '';
           li.innerHTML =
             `<div><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
-            `<span class="sr-tag">${escHtml(tagText)}</span>`;
+            `<span class="sr-tag"${bucketAttr}>${escHtml(tagText)}</span>`;
           let itemPicked = false;
           const pickItem = (e) => {
             e.preventDefault();
