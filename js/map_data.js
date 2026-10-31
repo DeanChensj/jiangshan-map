@@ -165,12 +165,22 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -307,
-        "headline": "赵武灵王推行“胡服骑射”略中山；前306年楚灭越",
+        "headline": "赵武灵王推行“胡服骑射”略中山",
         "site": "邯郸",
         "coord": [
           114.48,
           36.61
         ]
+      },
+      {
+        "year": -306,
+        "headline": "楚怀王发兵灭越，尽取旧吴之地，东扩至海",
+        "site": "会稽（绍兴）",
+        "coord": [
+          120.58,
+          30
+        ],
+        "isMapChange": true
       },
       {
         "year": -300,
@@ -8004,6 +8014,16 @@ window.DYNASTY_DATA = [
         "year": 881,
         "headline": "黄巢破潼关入长安称帝建齐；唐僖宗奔蜀，唐室衰亡",
         "site": "长安",
+        "coord": [
+          108.931,
+          34.261
+        ],
+        "isMapChange": true
+      },
+      {
+        "year": 885,
+        "headline": "唐僖宗还京，朱温、李克用等藩镇并立，唐室政令不出畿辅",
+        "site": "长安 · 汴州",
         "coord": [
           108.931,
           34.261
