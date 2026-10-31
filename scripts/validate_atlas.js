@@ -2556,11 +2556,16 @@ function main() {
     assert(
       provBounds &&
         typeof provBounds.interior === 'string' &&
-        provBounds.interior.length > 50000 &&
+        provBounds.interior.length > 6000 &&
+        provBounds.interior.length < 75000 &&
         typeof provBounds.outer === 'string' &&
-        provBounds.outer.length > 35000 &&
-        provBounds.combined === `${provBounds.interior}${provBounds.outer}`,
-      `Expected _buildProvinceBoundaryPaths to return non-empty deduplicated interior and outer SVG paths, got interior=${provBounds && provBounds.interior && provBounds.interior.length} outer=${provBounds && provBounds.outer && provBounds.outer.length}`
+        provBounds.outer.length > 6000 &&
+        provBounds.outer.length < 75000 &&
+        provBounds.combined === `${provBounds.interior}${provBounds.outer}` &&
+        Array.isArray(provBounds.tiles) &&
+        provBounds.tiles.length >= 4 &&
+        provBounds.tiles.length <= 12,
+      `Expected _buildProvinceBoundaryPaths to return topology-simplified tiled interior/outer SVG paths, got interior=${provBounds && provBounds.interior && provBounds.interior.length} outer=${provBounds && provBounds.outer && provBounds.outer.length} tiles=${provBounds && provBounds.tiles && provBounds.tiles.length}`
     );
     assert.strictEqual(
       ctrl._buildProvinceBoundaryPaths(),
@@ -7572,6 +7577,84 @@ function main() {
         assert(
           !vpCls.contains('is-camera-moving'),
           '_finishCameraMotion must remove is-camera-moving from #viewport-frame'
+        );
+
+        // 44d. Issue #196 follow-up: modern province boundary topology simplification, regional tiling, terrain fill:none hit targets, and butt/bevel caps
+        const grpProv = makeEl('g');
+        const grpProvNames = makeEl('g');
+        const provCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          enLocale: { terms: {}, dynasties: {} },
+          projector: testProj,
+          provinces,
+          grpProvinces: grpProv,
+          grpProvNames,
+          _svgNode(tag, attrs, parent) {
+            const n = makeEl(tag);
+            for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v);
+            if (parent) parent.appendChild(n);
+            return n;
+          },
+        });
+        provCtrl._buildModernProvinces();
+        const pb = provCtrl._buildProvinceBoundaryPaths();
+        let rawFillCmds = 0;
+        let simpFillCmds = 0;
+        const nonDashProvs = provinces.filter((p) => !String(p.code).includes('_JD'));
+        for (const p of nonDashProvs) {
+          const rawD = testProj.multiRingsToSvgPath(p.rings);
+          const simpD = pb.provPaths.get(p) || '';
+          assert(
+            simpD.startsWith('M') && simpD.endsWith('Z'),
+            `Expected topology-simplified polygon path for ${p.title} to be a valid closed SVG path`
+          );
+          rawFillCmds += (rawD.match(/L/g) || []).length;
+          simpFillCmds += (simpD.match(/L/g) || []).length;
+        }
+        assert(
+          pb.provPaths.size === nonDashProvs.length && simpFillCmds < rawFillCmds * 0.5,
+          `Expected province polygon RDP simplification to cover all ${nonDashProvs.length} provinces and shrink vertices by >50% (got simpFillCmds=${simpFillCmds} vs rawFillCmds=${rawFillCmds})`
+        );
+        const boundCmds = (pb.combined.match(/L/g) || []).length;
+        const boundMoves = (pb.combined.match(/M/g) || []).length;
+        assert(
+          boundCmds > 800 && boundCmds < rawFillCmds * 0.35,
+          `Expected deduplicated+simplified province boundary commands to shrink >65% vs raw rings (got boundCmds=${boundCmds} vs rawFillCmds=${rawFillCmds})`
+        );
+        console.log(
+          `  [perf #196] modern provinces: fillL ${rawFillCmds} -> ${simpFillCmds} (-${((1 - simpFillCmds / rawFillCmds) * 100).toFixed(1)}%), boundaryL=${boundCmds} (M=${boundMoves}, intBytes=${pb.interior.length}, outBytes=${pb.outer.length}, tiles=${pb.tiles.length})`
+        );
+        const casingEls = grpProv.querySelectorAll('.province-boundary-casing');
+        const intEls = grpProv.querySelectorAll('.province-boundary-interior');
+        const outEls = grpProv.querySelectorAll('.province-boundary-outer');
+        const dashEls = grpProv.querySelectorAll('.maritime-dash');
+        assert(
+          casingEls.length >= 4 &&
+            intEls.length >= 4 &&
+            outEls.length >= 4 &&
+            dashEls.length >= 1 &&
+            grpProvNames.children.length === nonDashProvs.length,
+          `Expected _buildModernProvinces to emit regional tiled boundary paths plus ${nonDashProvs.length} labels (casing=${casingEls.length}, interior=${intEls.length}, outer=${outEls.length}, dash=${dashEls.length})`
+        );
+        const lastCasingIdx = grpProv.children.indexOf(casingEls[casingEls.length - 1]);
+        const firstIntIdx = grpProv.children.indexOf(intEls[0]);
+        const lastOutIdx = grpProv.children.indexOf(outEls[outEls.length - 1]);
+        const firstDashIdx = grpProv.children.indexOf(dashEls[0]);
+        assert(
+          lastCasingIdx < firstIntIdx && firstIntIdx < lastOutIdx && lastOutIdx < firstDashIdx,
+          'Province z-order must stack casing tiles below interior/outer tiles and maritime-dash on top'
+        );
+        const terrainProvRule = cssSrc.match(
+          /#atlas-svg\.terrain-active\s+\.province-shape:not\(\.maritime-dash\)\s*\{([^}]+)\}/
+        );
+        assert(
+          terrainProvRule &&
+            /fill:\s*none\s*;/.test(terrainProvRule[1]) &&
+            /pointer-events:\s*fill\s*;/.test(terrainProvRule[1]) &&
+            cssSrc.includes('#atlas-svg.is-camera-moving .province-boundary-casing') &&
+            cssSrc.includes('stroke-linecap: butt;') &&
+            cssSrc.includes('stroke-linejoin: bevel;'),
+          'css/style.css must eliminate terrain-mode .province-shape fills, switch boundary caps/joins to butt/bevel, and hide .province-boundary-casing during camera motion'
         );
       }
     }

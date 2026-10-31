@@ -447,8 +447,13 @@ h2 {
   opacity: 0 !important;
 }
 
-#atlas-svg.is-camera-moving .prefecture-shape {
+#atlas-svg.is-camera-moving .prefecture-shape,
+#atlas-svg.is-camera-moving .province-shape {
   pointer-events: none;
+}
+
+#atlas-svg.is-camera-moving .province-boundary-casing {
+  display: none;
 }
 
 /* Suspend GPU backdrop-filter sampling over 88-97% opaque parchment cards
@@ -645,12 +650,12 @@ h2 {
   fill: var(--province-fill);
   stroke: none;
   vector-effect: non-scaling-stroke;
-  transition: fill 0.2s;
 }
 
 #atlas-svg.terrain-active .province-shape:not(.maritime-dash) {
-  fill: rgba(246, 239, 225, 0.04);
+  fill: none;
   stroke: none;
+  pointer-events: fill;
 }
 
 #atlas-svg[data-dynasty="prc"] .province-shape:not(.maritime-dash) {
@@ -673,29 +678,29 @@ h2 {
   fill: none;
   stroke: rgba(250, 245, 234, 0.58);
   stroke-width: 2.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-linecap: butt;
+  stroke-linejoin: bevel;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
 .province-boundary-interior {
   fill: none;
-  stroke: rgba(84, 70, 54, 0.62);
+  stroke: #847766;
   stroke-width: 0.94;
-  stroke-dasharray: 4.5 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-dasharray: 5.2 1.8;
+  stroke-linecap: butt;
+  stroke-linejoin: bevel;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
 .province-boundary-outer {
   fill: none;
-  stroke: rgba(74, 60, 46, 0.58);
+  stroke: #85796a;
   stroke-width: 0.98;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-linecap: butt;
+  stroke-linejoin: bevel;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
@@ -706,13 +711,13 @@ h2 {
 }
 
 #atlas-svg.terrain-active .province-boundary-interior {
-  stroke: rgba(70, 56, 42, 0.68);
+  stroke: #716556;
   stroke-width: 0.96;
-  stroke-dasharray: 4.5 2.2;
+  stroke-dasharray: 5.2 1.8;
 }
 
 #atlas-svg.terrain-active .province-boundary-outer {
-  stroke: rgba(64, 50, 38, 0.62);
+  stroke: #76695b;
   stroke-width: 1.02;
 }
 
@@ -724,14 +729,14 @@ h2 {
 
 #atlas-svg[data-dynasty="prc"] .province-boundary-interior,
 #atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-interior {
-  stroke: rgba(104, 28, 12, 0.88);
+  stroke: #732b1b;
   stroke-width: 1.42;
   stroke-dasharray: 7 3;
 }
 
 #atlas-svg[data-dynasty="prc"] .province-boundary-outer,
 #atlas-svg.terrain-active[data-dynasty="prc"] .province-boundary-outer {
-  stroke: rgba(158, 42, 43, 0.9);
+  stroke: #a43535;
   stroke-width: 1.85;
   stroke-dasharray: none;
 }

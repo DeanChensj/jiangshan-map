@@ -1940,103 +1940,368 @@
       }
     }
 
+    _simplifyPolylineRdp(pts, eps) {
+      if (!pts || pts.length <= 2) return pts;
+      const n = pts.length;
+      const keep = new Uint8Array(n);
+      keep[0] = 1;
+      keep[n - 1] = 1;
+      const epsSq = eps * eps;
+      const stack = [0, n - 1];
+      while (stack.length) {
+        const e = stack.pop();
+        const s = stack.pop();
+        if (e - s <= 1) continue;
+        const ax = pts[s][0];
+        const ay = pts[s][1];
+        const bx = pts[e][0];
+        const by = pts[e][1];
+        const dx = bx - ax;
+        const dy = by - ay;
+        const lenSq = dx * dx + dy * dy;
+        let maxSq = -1;
+        let maxIdx = -1;
+        for (let i = s + 1; i < e; i++) {
+          const px = pts[i][0];
+          const py = pts[i][1];
+          let dSq;
+          if (lenSq > 1e-12) {
+            let t = ((px - ax) * dx + (py - ay) * dy) / lenSq;
+            if (t < 0) t = 0;
+            else if (t > 1) t = 1;
+            const qx = ax + dx * t;
+            const qy = ay + dy * t;
+            dSq = (px - qx) * (px - qx) + (py - qy) * (py - qy);
+          } else {
+            dSq = (px - ax) * (px - ax) + (py - ay) * (py - ay);
+          }
+          if (dSq > maxSq) {
+            maxSq = dSq;
+            maxIdx = i;
+          }
+        }
+        if (maxSq > epsSq && maxIdx > s) {
+          keep[maxIdx] = 1;
+          stack.push(maxIdx, e, s, maxIdx);
+        }
+      }
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        if (keep[i]) out.push(pts[i]);
+      }
+      return out;
+    }
+
+    _weldBoundaryChains(chains) {
+      const valid = chains.filter((pts) => pts && pts.length >= 2);
+      const count = valid.length;
+      if (!count) return '';
+      const keyOf = (pt) => `${pt[0].toFixed(1)},${pt[1].toFixed(1)}`;
+      const startMap = new Map();
+      const endMap = new Map();
+      const addIdx = (map, k, idx) => {
+        let arr = map.get(k);
+        if (!arr) {
+          arr = [];
+          map.set(k, arr);
+        }
+        arr.push(idx);
+      };
+      for (let i = 0; i < count; i++) {
+        const pts = valid[i];
+        addIdx(startMap, keyOf(pts[0]), i);
+        addIdx(endMap, keyOf(pts[pts.length - 1]), i);
+      }
+      const used = new Uint8Array(count);
+      const takeMatch = (k) => {
+        const sArr = startMap.get(k);
+        if (sArr) {
+          while (sArr.length) {
+            const idx = sArr.pop();
+            if (!used[idx]) return { idx, rev: false };
+          }
+        }
+        const eArr = endMap.get(k);
+        if (eArr) {
+          while (eArr.length) {
+            const idx = eArr.pop();
+            if (!used[idx]) return { idx, rev: true };
+          }
+        }
+        return null;
+      };
+      let out = '';
+      for (let i = 0; i < count; i++) {
+        if (used[i]) continue;
+        used[i] = 1;
+        const headChunks = [];
+        let headKey = keyOf(valid[i][0]);
+        for (;;) {
+          const hit = takeMatch(headKey);
+          if (!hit) break;
+          used[hit.idx] = 1;
+          const pts = valid[hit.idx];
+          const aligned = hit.rev ? pts : pts.slice().reverse();
+          headChunks.push(aligned);
+          headKey = keyOf(aligned[0]);
+        }
+        const merged = [];
+        for (let h = headChunks.length - 1; h >= 0; h--) {
+          const c = headChunks[h];
+          for (let j = merged.length ? 1 : 0; j < c.length; j++) merged.push(c[j]);
+        }
+        const base = valid[i];
+        for (let j = merged.length ? 1 : 0; j < base.length; j++) merged.push(base[j]);
+        let tailKey = keyOf(merged[merged.length - 1]);
+        for (;;) {
+          const hit = takeMatch(tailKey);
+          if (!hit) break;
+          used[hit.idx] = 1;
+          const pts = valid[hit.idx];
+          if (hit.rev) {
+            for (let j = pts.length - 2; j >= 0; j--) merged.push(pts[j]);
+          } else {
+            for (let j = 1; j < pts.length; j++) merged.push(pts[j]);
+          }
+          tailKey = keyOf(merged[merged.length - 1]);
+        }
+        out += `M${merged[0][0].toFixed(1)} ${merged[0][1].toFixed(1)}`;
+        for (let j = 1; j < merged.length; j++) {
+          out += `L${merged[j][0].toFixed(1)} ${merged[j][1].toFixed(1)}`;
+        }
+      }
+      return out;
+    }
+
     _buildProvinceBoundaryPaths() {
       if (this._cachedProvinceBoundaryPaths) {
         return this._cachedProvinceBoundaryPaths;
       }
       const ptKey = (pt) => Math.round(pt[0] * 100) * 10000 + Math.round(pt[1] * 100);
-      const edgeKey = (p1, p2) => {
-        const k1 = ptKey(p1);
-        const k2 = ptKey(p2);
-        return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
-      };
-      const allRings = [];
+      const edgeKey = (k1, k2) => (k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`);
+
+      const coordByKey = new Map();
       const edgeCounts = new Map();
+      const rawRings = [];
+
       for (const prov of this.provinces || []) {
         if (!prov || String(prov.code).includes('_JD') || !Array.isArray(prov.rings)) continue;
-        for (const poly of prov.rings) {
-          for (const ring of poly || []) {
-            if (!ring || ring.length < 2) continue;
-            allRings.push(ring);
-            for (let i = 0; i < ring.length - 1; i++) {
-              const ek = edgeKey(ring[i], ring[i + 1]);
+        for (let polyIdx = 0; polyIdx < prov.rings.length; polyIdx++) {
+          const poly = prov.rings[polyIdx];
+          if (!Array.isArray(poly)) continue;
+          for (let ringIdx = 0; ringIdx < poly.length; ringIdx++) {
+            const rawRing = poly[ringIdx];
+            if (!Array.isArray(rawRing) || rawRing.length < 3) continue;
+            const oriented = this.projector._orientRing(rawRing, ringIdx > 0);
+            const keys = [];
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            for (let i = 0; i < oriented.length; i++) {
+              const pt = oriented[i];
+              const k = ptKey(pt);
+              if (keys.length && keys[keys.length - 1] === k) continue;
+              keys.push(k);
+              let sc = coordByKey.get(k);
+              if (!sc) {
+                sc = this.projector.toScreen(pt[0], pt[1]);
+                coordByKey.set(k, sc);
+              }
+              if (sc[0] < minX) minX = sc[0];
+              if (sc[0] > maxX) maxX = sc[0];
+              if (sc[1] < minY) minY = sc[1];
+              if (sc[1] > maxY) maxY = sc[1];
+            }
+            while (keys.length > 1 && keys[keys.length - 1] === keys[0]) keys.pop();
+            if (keys.length < 3) continue;
+            for (let i = 0; i < keys.length; i++) {
+              const ek = edgeKey(keys[i], keys[(i + 1) % keys.length]);
               edgeCounts.set(ek, (edgeCounts.get(ek) || 0) + 1);
             }
+            rawRings.push({
+              prov,
+              polyIdx,
+              keys,
+              maxSpan: Math.max(maxX - minX, maxY - minY),
+            });
           }
         }
       }
 
-      const seenInterior = new Set();
-      const seenOuter = new Set();
-      let interior = '';
-      let outer = '';
-
-      for (const ring of allRings) {
-        let intPenX = NaN;
-        let intPenY = NaN;
-        let outPenX = NaN;
-        let outPenY = NaN;
-        for (let i = 0; i < ring.length - 1; i++) {
-          const p1 = ring[i];
-          const p2 = ring[i + 1];
-          const ek = edgeKey(p1, p2);
-          const count = edgeCounts.get(ek) || 0;
-          if (count >= 2) {
-            outPenX = NaN;
-            outPenY = NaN;
-            if (seenInterior.has(ek)) {
-              intPenX = NaN;
-              intPenY = NaN;
-              continue;
-            }
-            seenInterior.add(ek);
-            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
-            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
-            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
-            if (x1 !== intPenX || y1 !== intPenY) {
-              interior += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
-            }
-            interior += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
-            intPenX = x2;
-            intPenY = y2;
-          } else {
-            intPenX = NaN;
-            intPenY = NaN;
-            if (seenOuter.has(ek)) {
-              outPenX = NaN;
-              outPenY = NaN;
-              continue;
-            }
-            seenOuter.add(ek);
-            const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
-            const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
-            if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
-            if (x1 !== outPenX || y1 !== outPenY) {
-              outer += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
-            }
-            outer += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
-            outPenX = x2;
-            outPenY = y2;
+      // Skip secondary sub-pixel offshore reef specks (<0.6 SVG px) while keeping every
+      // primary territory ring, significant island, and shared boundary intact.
+      const activeRings = rawRings.filter((rec) => {
+        if (rec.polyIdx === 0 || rec.maxSpan >= 0.6) return true;
+        const keys = rec.keys;
+        for (let i = 0; i < keys.length; i++) {
+          if ((edgeCounts.get(edgeKey(keys[i], keys[(i + 1) % keys.length])) || 0) >= 2) {
+            return true;
           }
         }
+        return false;
+      });
+
+      const neighborSets = new Map();
+      const addNeighbor = (a, b) => {
+        let s = neighborSets.get(a);
+        if (!s) {
+          s = new Set();
+          neighborSets.set(a, s);
+        }
+        s.add(b);
+      };
+      const pinnedKeys = new Set();
+      for (const rec of activeRings) {
+        const keys = rec.keys;
+        const m = keys.length;
+        pinnedKeys.add(keys[0]);
+        pinnedKeys.add(keys[Math.floor(m / 3)]);
+        pinnedKeys.add(keys[Math.floor((2 * m) / 3)]);
+        for (let i = 0; i < m; i++) {
+          const kp = keys[(i + m - 1) % m];
+          const kc = keys[i];
+          const kn = keys[(i + 1) % m];
+          addNeighbor(kc, kn);
+          addNeighbor(kn, kc);
+          const prevInt = (edgeCounts.get(edgeKey(kp, kc)) || 0) >= 2;
+          const nextInt = (edgeCounts.get(edgeKey(kc, kn)) || 0) >= 2;
+          if (prevInt !== nextInt) pinnedKeys.add(kc);
+        }
+      }
+      for (const [k, nbrs] of neighborSets) {
+        if (nbrs.size !== 2) pinnedKeys.add(k);
+      }
+
+      // Simplify each topological chain once so shared borders stay bit-identical across
+      // neighbor fills and deduplicated boundary tiles.
+      const RDP_EPS = 0.38;
+      const chainCache = new Map();
+      const getSimplifiedChain = (subKeys) => {
+        const len = subKeys.length;
+        let canonKey;
+        let reversed = false;
+        if (len === 2) {
+          const a = subKeys[0];
+          const b = subKeys[1];
+          reversed = a > b;
+          canonKey = reversed ? `${b}|${a}` : `${a}|${b}`;
+        } else {
+          const fwdTag = `${subKeys[0]}>${subKeys[1]}`;
+          const revTag = `${subKeys[len - 1]}>${subKeys[len - 2]}`;
+          reversed = fwdTag > revTag;
+          canonKey = reversed ? `${revTag}|${fwdTag}|${len}` : `${fwdTag}|${revTag}|${len}`;
+        }
+        let canonPts = chainCache.get(canonKey);
+        if (!canonPts) {
+          const rawPts = new Array(len);
+          if (reversed) {
+            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[len - 1 - i]);
+          } else {
+            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[i]);
+          }
+          canonPts = this._simplifyPolylineRdp(rawPts, RDP_EPS);
+          chainCache.set(canonKey, canonPts);
+        }
+        return { canonKey, canonPts, reversed };
+      };
+
+      const seenBoundaryChains = new Set();
+      const tileBuckets = Array.from({ length: 12 }, () => ({ interior: [], outer: [] }));
+      const provPaths = new Map();
+
+      for (const rec of activeRings) {
+        const keys = rec.keys;
+        const m = keys.length;
+        const pinIdx = [];
+        for (let i = 0; i < m; i++) {
+          if (pinnedKeys.has(keys[i])) pinIdx.push(i);
+        }
+        const ringPts = [];
+        for (let p = 0; p < pinIdx.length; p++) {
+          const start = pinIdx[p];
+          const end = pinIdx[(p + 1) % pinIdx.length];
+          const subKeys = [keys[start]];
+          let cursor = start;
+          do {
+            cursor = (cursor + 1) % m;
+            subKeys.push(keys[cursor]);
+          } while (cursor !== end);
+
+          const { canonKey, canonPts, reversed } = getSimplifiedChain(subKeys);
+          if (reversed) {
+            for (let j = canonPts.length - 1; j >= (ringPts.length ? 1 : 0); j--) {
+              ringPts.push(canonPts[j]);
+            }
+          } else {
+            for (let j = ringPts.length ? 1 : 0; j < canonPts.length; j++) {
+              ringPts.push(canonPts[j]);
+            }
+          }
+
+          if (!seenBoundaryChains.has(canonKey)) {
+            seenBoundaryChains.add(canonKey);
+            const midPt = canonPts[canonPts.length >> 1];
+            const tx = Math.max(0, Math.min(3, Math.floor(midPt[0] / 250)));
+            const ty = Math.max(0, Math.min(2, Math.floor(midPt[1] / 234)));
+            const bucket = tileBuckets[ty * 4 + tx];
+            const isInterior = (edgeCounts.get(edgeKey(subKeys[0], subKeys[1])) || 0) >= 2;
+            (isInterior ? bucket.interior : bucket.outer).push(canonPts);
+          }
+        }
+
+        if (ringPts.length >= 3) {
+          let ringD = `M${ringPts[0][0].toFixed(1)} ${ringPts[0][1].toFixed(1)}`;
+          const limit =
+            ringPts[ringPts.length - 1][0] === ringPts[0][0] &&
+            ringPts[ringPts.length - 1][1] === ringPts[0][1]
+              ? ringPts.length - 1
+              : ringPts.length;
+          if (limit >= 3) {
+            for (let i = 1; i < limit; i++) {
+              ringD += `L${ringPts[i][0].toFixed(1)} ${ringPts[i][1].toFixed(1)}`;
+            }
+            ringD += 'Z';
+            provPaths.set(rec.prov, (provPaths.get(rec.prov) || '') + ringD);
+          }
+        }
+      }
+
+      const tiles = [];
+      let interior = '';
+      let outer = '';
+      for (const b of tileBuckets) {
+        const tInt = this._weldBoundaryChains(b.interior);
+        const tOut = this._weldBoundaryChains(b.outer);
+        if (!tInt && !tOut) continue;
+        tiles.push({ interior: tInt, outer: tOut, combined: `${tInt}${tOut}` });
+        interior += tInt;
+        outer += tOut;
       }
 
       this._cachedProvinceBoundaryPaths = {
         interior,
         outer,
         combined: `${interior}${outer}`,
+        tiles,
+        provPaths,
       };
       return this._cachedProvinceBoundaryPaths;
     }
 
     _buildModernProvinces() {
+      const bounds = this._buildProvinceBoundaryPaths();
       const dashPaths = [];
       for (const prov of this.provinces) {
         const isDash = String(prov.code).includes('_JD');
+        const pathD = isDash
+          ? this.projector.multiRingsToSvgPath(prov.rings)
+          : (bounds.provPaths && bounds.provPaths.get(prov)) ||
+            this.projector.multiRingsToSvgPath(prov.rings);
         const path = this._svgNode(
           'path',
           {
-            d: this.projector.multiRingsToSvgPath(prov.rings),
+            d: pathD,
             class: isDash ? 'province-shape maritime-dash' : 'province-shape',
           },
           this.grpProvinces
@@ -2056,27 +2321,33 @@
           lbl.textContent = this.trTerm(rawShort);
         }
       }
-      const bounds = this._buildProvinceBoundaryPaths();
-      if (bounds.combined) {
-        this._svgNode(
-          'path',
-          { d: bounds.combined, class: 'province-boundary-casing' },
-          this.grpProvinces
-        );
+      const tiles = bounds.tiles && bounds.tiles.length ? bounds.tiles : [bounds];
+      for (const tile of tiles) {
+        if (tile.combined) {
+          this._svgNode(
+            'path',
+            { d: tile.combined, class: 'province-boundary-casing' },
+            this.grpProvinces
+          );
+        }
       }
-      if (bounds.interior) {
-        this._svgNode(
-          'path',
-          { d: bounds.interior, class: 'province-boundary-interior' },
-          this.grpProvinces
-        );
+      for (const tile of tiles) {
+        if (tile.interior) {
+          this._svgNode(
+            'path',
+            { d: tile.interior, class: 'province-boundary-interior' },
+            this.grpProvinces
+          );
+        }
       }
-      if (bounds.outer) {
-        this._svgNode(
-          'path',
-          { d: bounds.outer, class: 'province-boundary-outer' },
-          this.grpProvinces
-        );
+      for (const tile of tiles) {
+        if (tile.outer) {
+          this._svgNode(
+            'path',
+            { d: tile.outer, class: 'province-boundary-outer' },
+            this.grpProvinces
+          );
+        }
       }
       for (const dp of dashPaths) {
         if (this.grpProvinces && this.grpProvinces.appendChild) {
