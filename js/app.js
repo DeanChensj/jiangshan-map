@@ -3160,9 +3160,8 @@
           const [px, py] = this.projector.toScreen(p.coord[0], p.coord[1]);
           const hasNearMilestone = (dynasty.milestones || []).some(
             (m) =>
-              m.coord &&
               Math.abs(m.year - this.year) <= 8 &&
-              this.projector.greatCircleKm(p.coord, m.coord) <= 42
+              this._milestoneCoords(m).some((mc) => this.projector.greatCircleKm(p.coord, mc) <= 42)
           );
           const hasNearTrace =
             this.activeTrace && this.projector.greatCircleKm(p.coord, this.activeTrace) <= 32;
@@ -3300,21 +3299,31 @@
       this.grpMilestones.innerHTML = '';
       const group = this._svgNode('g', {}, this.grpMilestones);
       (dynasty.milestones || []).forEach((m, idx) => {
-        if (!m.coord) return;
-        const [x, y] = this.projector.toScreen(m.coord[0], m.coord[1]);
-        const pin = this._svgNode(
-          'g',
-          {
-            class: 'milestone-pin',
-            'data-x': x.toFixed(1),
-            'data-y': y.toFixed(1),
-            'data-year': m.year,
-            'data-idx': idx,
-          },
-          group
-        );
-        this._svgNode('circle', { class: 'ev-ring', r: 9 }, pin);
-        this._svgNode('polygon', { class: 'ev-core', points: '0,-5.5 5.5,0 0,5.5 -5.5,0' }, pin);
+        const anchors = this._getMilestoneAnchors(dynasty, m);
+        if (!anchors.length) return;
+        const primarySiteIdx = this._defaultAnchorIndex(m, anchors, true);
+        anchors.forEach((anc, siteIdx) => {
+          if (!anc.coord) return;
+          const [x, y] = this.projector.toScreen(anc.coord[0], anc.coord[1]);
+          const isPrimary = siteIdx === primarySiteIdx;
+          const pin = this._svgNode(
+            'g',
+            {
+              class: isPrimary ? 'milestone-pin' : 'milestone-pin is-secondary-pin',
+              'data-x': x.toFixed(1),
+              'data-y': y.toFixed(1),
+              'data-lng': anc.coord[0].toFixed(3),
+              'data-lat': anc.coord[1].toFixed(3),
+              'data-year': m.year,
+              'data-idx': idx,
+              'data-site-idx': siteIdx,
+            },
+            group
+          );
+          this._svgNode('circle', { class: 'ev-hit', r: 7 }, pin);
+          this._svgNode('circle', { class: 'ev-ring', r: 7 }, pin);
+          this._svgNode('polygon', { class: 'ev-core', points: '0,-3.9 3.9,0 0,3.9 -3.9,0' }, pin);
+        });
       });
       this._updateMilestoneStates(dynasty);
       this._rescaleSvgTypography();
@@ -3350,22 +3359,308 @@
       return exactIdx >= 0 ? exactIdx : activeIdx;
     }
 
+    _splitOutsideParens(str, sepRegex) {
+      if (!str) return [];
+      const parts = [];
+      let depth = 0;
+      let cur = '';
+      for (let i = 0; i < str.length; i++) {
+        const ch = str[i];
+        if (ch === '（' || ch === '(') {
+          depth++;
+          cur += ch;
+          continue;
+        }
+        if (ch === '）' || ch === ')') {
+          depth = Math.max(0, depth - 1);
+          cur += ch;
+          continue;
+        }
+        if (depth === 0) {
+          const rest = str.slice(i);
+          const match = rest.match(sepRegex);
+          if (match && match.index === 0) {
+            if (cur.trim()) parts.push(cur.trim());
+            cur = '';
+            i += match[0].length - 1;
+            continue;
+          }
+        }
+        cur += ch;
+      }
+      if (cur.trim()) parts.push(cur.trim());
+      return parts;
+    }
+
+    _milestoneCoords(m) {
+      if (!m) return [];
+      if (Array.isArray(m.siteCoords) && m.siteCoords.length) return m.siteCoords;
+      return m.coord ? [m.coord] : [];
+    }
+
+    _getMilestoneAnchors(dynasty, m) {
+      if (!m) return [];
+      const cleanShort = (s) =>
+        String(s || '')
+          .replace(/\s*（[^）]*）|\s*\([^)]*\)/g, '')
+          .trim() || String(s || '').trim();
+      const zhParts = m.site ? this._splitOutsideParens(m.site, /\s*·\s*/) : [];
+      if (
+        Array.isArray(m.siteCoords) &&
+        m.siteCoords.length >= 2 &&
+        m.siteCoords.length === zhParts.length
+      ) {
+        const isModDyn = Boolean(dynasty && (dynasty.key === 'roc' || dynasty.key === 'prc'));
+        let locParts;
+        if (this.locale === 'en') {
+          const enRaw = this._enMilestoneSite(dynasty, m);
+          const enSplit = this._splitOutsideParens(enRaw, /\s*(?:·|&|\/|,)\s*/);
+          locParts =
+            enSplit.length === zhParts.length
+              ? enSplit
+              : zhParts.map((p) => (isModDyn ? this.trModernCity(p) : this.trTerm(p)));
+        } else {
+          locParts = zhParts.map((p) => (isModDyn ? this.trModernCity(p) : this.trTerm(p)));
+        }
+        const merged = [];
+        for (let i = 0; i < m.siteCoords.length; i++) {
+          const coord = m.siteCoords[i];
+          const fullLabel = locParts[i] || '';
+          const shortLabel = cleanShort(fullLabel);
+          const nearIdx =
+            this.projector && typeof this.projector.greatCircleKm === 'function'
+              ? merged.findIndex((a) => this.projector.greatCircleKm(a.coord, coord) <= 32)
+              : -1;
+          if (nearIdx >= 0) {
+            if (shortLabel && !merged[nearIdx].shortLabel.includes(shortLabel)) {
+              merged[nearIdx].shortLabel += ` · ${shortLabel}`;
+              merged[nearIdx].fullLabel += ` · ${fullLabel}`;
+            }
+          } else {
+            merged.push({ shortLabel, fullLabel, coord });
+          }
+        }
+        return merged;
+      }
+      if (!m.coord) return [];
+      const rawSiteStr = m.site ? this.milestoneSite(dynasty, m) : '';
+      const shortLabel = cleanShort(rawSiteStr).replace(/\s*·\s*/g, ' · ');
+      return [{ shortLabel, fullLabel: rawSiteStr, coord: m.coord }];
+    }
+
+    _defaultAnchorIndex(m, anchors, ignoreActiveTrace = false) {
+      if (!anchors || anchors.length <= 1) return 0;
+      const canDist = Boolean(this.projector && typeof this.projector.greatCircleKm === 'function');
+      if (!ignoreActiveTrace && Array.isArray(this.activeTrace) && canDist) {
+        const tIdx = anchors.findIndex(
+          (a) => a.coord && this.projector.greatCircleKm(this.activeTrace, a.coord) <= 30
+        );
+        if (tIdx >= 0) return tIdx;
+      }
+      if (m && m.coord && canDist) {
+        let bestIdx = 0;
+        let bestKm = Infinity;
+        anchors.forEach((a, i) => {
+          if (!a.coord) return;
+          const km = this.projector.greatCircleKm(m.coord, a.coord);
+          if (km < bestKm) {
+            bestKm = km;
+            bestIdx = i;
+          }
+        });
+        if (bestKm <= 60) return bestIdx;
+      }
+      return 0;
+    }
+
+    _milestoneSpanBounds(anchors, defCam) {
+      let minX = Infinity;
+      let maxX = -Infinity;
+      let minY = Infinity;
+      let maxY = -Infinity;
+      let maxKm = 0;
+      const canDist = Boolean(this.projector && typeof this.projector.greatCircleKm === 'function');
+      for (let i = 0; i < anchors.length; i++) {
+        const a = anchors[i];
+        const [sx, sy] = this.projector.toScreen(a.coord[0], a.coord[1]);
+        if (sx < minX) minX = sx;
+        if (sx > maxX) maxX = sx;
+        if (sy < minY) minY = sy;
+        if (sy > maxY) maxY = sy;
+        if (canDist) {
+          for (let j = i + 1; j < anchors.length; j++) {
+            const km = this.projector.greatCircleKm(a.coord, anchors[j].coord);
+            if (km > maxKm) maxKm = km;
+          }
+        }
+      }
+      const ar = defCam.h / defCam.w;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+      const padX = isMobile ? 74 : 112;
+      const padY = isMobile ? 76 : 96;
+      const reqW = Math.max(maxX - minX + padX * 2, (maxY - minY + padY * 2) / ar);
+      const isContinental = maxKm > 1350 || reqW > defCam.w * 1.04;
+      return { minX, maxX, minY, maxY, ar, isMobile, reqW, maxKm, isContinental };
+    }
+
+    _frameMilestoneAnchors(dynasty, m, opts = {}) {
+      const isMapChange = Boolean(opts && opts.isMapChange);
+      const anchors = this._getMilestoneAnchors(dynasty, m).filter((a) => a.coord);
+      if (!anchors.length || !this.projector || typeof this._animateCameraTo !== 'function') {
+        if (isMapChange && this.camera.w < this._getDefaultCamera().w * 0.85) {
+          this.resetCamera();
+        }
+        return false;
+      }
+      const defCam = this._getDefaultCamera();
+      const frameSingleCoord = (coord) => {
+        if (!coord) return false;
+        if (isMapChange) {
+          const [sx, sy] = this.projector.toScreen(coord[0], coord[1]);
+          const outX = sx < defCam.x + defCam.w * 0.14 || sx > defCam.x + defCam.w * 0.86;
+          const outY = sy < defCam.y + defCam.h * 0.16 || sy > defCam.y + defCam.h * 0.84;
+          if (outX || outY) {
+            this._animateCameraTo({
+              x: Math.max(-180, Math.min(1000 - defCam.w + 140, sx - defCam.w * 0.5)),
+              y: Math.max(-150, Math.min(700 - defCam.h + 120, sy - defCam.h * 0.42)),
+              w: defCam.w,
+              h: defCam.h,
+            });
+            return true;
+          }
+          if (this.camera.w < defCam.w * 0.85) {
+            this.resetCamera();
+            return true;
+          }
+          return false;
+        }
+        this._panToward(coord[0], coord[1]);
+        return true;
+      };
+      if (anchors.length === 1) return frameSingleCoord(anchors[0].coord);
+      const { minX, maxX, minY, maxY, ar, isMobile, reqW, isContinental } =
+        this._milestoneSpanBounds(anchors, defCam);
+      if (isContinental) {
+        const primaryCoord =
+          (this.activeMilestone &&
+            this.activeMilestone.milestone === m &&
+            this.activeMilestone.anchorCoord) ||
+          (anchors[this._defaultAnchorIndex(m, anchors)] || anchors[0]).coord;
+        return frameSingleCoord(primaryCoord);
+      }
+      const minW = isMapChange ? defCam.w : Math.min(defCam.w, isMobile ? 310 : 410);
+      const w = Math.max(minW, Math.min(defCam.w * 1.04, reqW));
+      const h = w * ar;
+      const cx = (minX + maxX) * 0.5;
+      const cy = (minY + maxY) * 0.5;
+      if (
+        isMapChange &&
+        w <= defCam.w * 1.02 &&
+        minX >= defCam.x + defCam.w * 0.12 &&
+        maxX <= defCam.x + defCam.w * 0.88 &&
+        minY >= defCam.y + defCam.h * 0.14 &&
+        maxY <= defCam.y + defCam.h * 0.86
+      ) {
+        if (this.camera.w < defCam.w * 0.85) {
+          this.resetCamera();
+          return true;
+        }
+        return false;
+      }
+      this._animateCameraTo({
+        x: Math.max(-180, Math.min(1000 - w + 140, cx - w * 0.5)),
+        y: Math.max(-150, Math.min(700 - h + 120, cy - h * 0.45)),
+        w,
+        h,
+      });
+      return true;
+    }
+
+    _ensureMilestoneInView(dynasty, m) {
+      if (!m || !this.projector || typeof this._animateCameraTo !== 'function') return false;
+      const anchors = this._getMilestoneAnchors(dynasty, m).filter((a) => a.coord);
+      if (anchors.length <= 1) {
+        return this._ensureCoordInView(anchors[0] ? anchors[0].coord : m.coord);
+      }
+      const defCam = this._getDefaultCamera();
+      const { isContinental } = this._milestoneSpanBounds(anchors, defCam);
+      if (isContinental) {
+        const primaryCoord =
+          (this.activeMilestone &&
+            this.activeMilestone.milestone === m &&
+            this.activeMilestone.anchorCoord) ||
+          (anchors[this._defaultAnchorIndex(m, anchors)] || anchors[0]).coord;
+        return this._ensureCoordInView(primaryCoord);
+      }
+      const cam = this._cameraTarget || this.camera;
+      const anyOut = anchors.some((a) => {
+        const [sx, sy] = this.projector.toScreen(a.coord[0], a.coord[1]);
+        return (
+          sx < cam.x + cam.w * 0.12 ||
+          sx > cam.x + cam.w * 0.88 ||
+          sy < cam.y + cam.h * 0.14 ||
+          sy > cam.y + cam.h * 0.86
+        );
+      });
+      if (!anyOut) return false;
+      return this._frameMilestoneAnchors(dynasty, m, { isMapChange: true });
+    }
+
     _updateMilestoneStates(dynasty) {
       const activeIdx = this._activeMilestoneIndex(dynasty);
-      let currentPin = null;
+      const currentPins = [];
+      const canDist = Boolean(this.projector && typeof this.projector.greatCircleKm === 'function');
+      const settlementsHidden = Boolean(
+        this.grpSettlements &&
+          this.grpSettlements.classList &&
+          this.grpSettlements.classList.contains('is-hidden')
+      );
+      const visibleCities =
+        canDist && !settlementsHidden && dynasty && Array.isArray(dynasty.settlements)
+          ? dynasty.settlements.filter(
+              (s) =>
+                Array.isArray(s.coord) &&
+                (s.appear === undefined || this.year >= s.appear) &&
+                (s.vanish === undefined || this.year < s.vanish) &&
+                (s.tier !== 2 ||
+                  (typeof this._isSettlementCapital === 'function'
+                    ? this._isSettlementCapital(s, this.year)
+                    : Boolean(s.isCapital)))
+            )
+          : [];
+      const seenPastCoords = [];
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
         const idx = Number(pin.dataset.idx);
         const m = (dynasty.milestones || [])[idx];
         const effY = m ? this._clampYearToDynasty(dynasty, m.year) : Number(pin.dataset.year);
         const nextFuture = effY > this.year && idx !== activeIdx;
         const isCurrent = idx === activeIdx;
+        const isPast = effY <= this.year && !isCurrent;
+        let isPastOccluded = false;
+        if (isPast && canDist && !pin.classList.contains('is-secondary-pin')) {
+          const pinCoord =
+            pin.dataset.lng !== undefined && pin.dataset.lat !== undefined
+              ? [Number(pin.dataset.lng), Number(pin.dataset.lat)]
+              : m && m.coord;
+          if (pinCoord) {
+            const onCity = visibleCities.some(
+              (s) => this.projector.greatCircleKm(pinCoord, s.coord) <= 8
+            );
+            const dupPast =
+              !onCity &&
+              seenPastCoords.some((c) => this.projector.greatCircleKm(pinCoord, c) <= 6);
+            isPastOccluded = onCity || dupPast;
+            if (!isPastOccluded) seenPastCoords.push(pinCoord);
+          }
+        }
         pin.classList.toggle('is-future', nextFuture);
-        pin.classList.toggle('is-past', effY <= this.year && !isCurrent);
+        pin.classList.toggle('is-past', isPast);
+        pin.classList.toggle('is-past-occluded', isPastOccluded);
         pin.classList.toggle('is-current', isCurrent);
-        if (isCurrent) currentPin = pin;
+        if (isCurrent) currentPins.push(pin);
       });
-      if (currentPin && currentPin.parentNode) {
-        currentPin.parentNode.appendChild(currentPin);
+      for (const pin of currentPins) {
+        if (pin && pin.parentNode) pin.parentNode.appendChild(pin);
       }
     }
 
@@ -3398,7 +3693,10 @@
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
         if (this.activeMilestone.locale !== renderedLocale) {
-          this.openMilestoneBalloon(dynasty, this.activeMilestone.milestone, { isAuto: false });
+          this.openMilestoneBalloon(dynasty, this.activeMilestone.milestone, {
+            isAuto: false,
+            siteIdx: this.activeMilestone.siteIdx,
+          });
         } else {
           this._positionMilestoneBalloon();
         }
@@ -3425,14 +3723,16 @@
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
         this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
-          n.classList.toggle('is-active', Number(n.dataset.idx) === am.idx);
+          const sameM = Number(n.dataset.idx) === am.idx;
+          n.classList.toggle('is-active', sameM);
+          n.classList.toggle('is-anchor-pin', sameM && Number(n.dataset.siteIdx) === am.siteIdx);
         });
         this._positionMilestoneBalloon();
         return;
       }
       this.openMilestoneBalloon(dynasty, m, { isAuto: true });
       if (this.playing && !this.dragState && !this.pinchState) {
-        if (this._ensureCoordInView(m.coord)) {
+        if (this._ensureMilestoneInView(dynasty, m)) {
           this.playHoldTicks = Math.max(this.playHoldTicks, 3);
         }
       }
@@ -3446,8 +3746,18 @@
         list.find((item) => item.year === Number(milestoneEl.dataset.year)) ||
         null;
       if (!m0 || !m0.coord) return m0;
+      if (
+        milestoneEl.classList &&
+        (milestoneEl.classList.contains('is-current') || milestoneEl.classList.contains('is-active'))
+      ) {
+        return m0;
+      }
+      const pinCoord =
+        milestoneEl.dataset.lng !== undefined && milestoneEl.dataset.lat !== undefined
+          ? [Number(milestoneEl.dataset.lng), Number(milestoneEl.dataset.lat)]
+          : m0.coord;
       const colocated = list.filter(
-        (item) => item.coord && this.projector.greatCircleKm(m0.coord, item.coord) <= 18
+        (item) => item.coord && this.projector.greatCircleKm(pinCoord, item.coord) <= 18
       );
       if (colocated.length <= 1) return m0;
       if (
@@ -3486,6 +3796,78 @@
       return idx !== undefined ? idx : null;
     }
 
+    _milestonePillSpec(anc, isSelected) {
+      const lbl = (anc && anc.shortLabel) || '';
+      const full = (anc && anc.fullLabel) || lbl;
+      const isEn = this.locale === 'en';
+      const traceSuffix = isEn ? 'History ›' : '沿革 ›';
+      const html = isSelected
+        ? `${SVG_ICONS.pin} ${lbl} · ${traceSuffix}`
+        : `${SVG_ICONS.pin} ${lbl} ›`;
+      const title = isSelected
+        ? isEn
+          ? `${full} · Click to trace place history`
+          : `${full} · 再次点击查看历代沿革（点地溯源）`
+        : isEn
+          ? `${full} · Click to focus callout & map here`
+          : `${full} · 点击切换浮签与镜头对焦此处`;
+      return { html, title };
+    }
+
+    _measureMilestoneBalloonSize(estW = 0, estH = 0) {
+      if (this.milestoneBalloon && this.milestoneBalloon.style) {
+        const prevLeft = this.milestoneBalloon.style.left;
+        const prevTop = this.milestoneBalloon.style.top;
+        this.milestoneBalloon.style.left = '0px';
+        this.milestoneBalloon.style.top = '0px';
+        const realW = this.milestoneBalloon.offsetWidth;
+        const realH = this.milestoneBalloon.offsetHeight;
+        this.milestoneBalloon.style.left = prevLeft;
+        this.milestoneBalloon.style.top = prevTop;
+        if (realW > 0 && realH > 0) {
+          this._milestoneBalloonSize = { w: realW, h: realH };
+          return;
+        }
+      }
+      this._milestoneBalloonSize = {
+        w: estW || (this._milestoneBalloonSize && this._milestoneBalloonSize.w) || 260,
+        h: estH || (this._milestoneBalloonSize && this._milestoneBalloonSize.h) || 62,
+      };
+    }
+
+    _selectMilestoneAnchor(siteIdx, anchorsOpt = null) {
+      const am = this.activeMilestone;
+      if (!am || !this.milestoneBalloon) return;
+      const amDyn = this.dynasties.find((d) => d.key === am.dynastyKey);
+      const anchors = anchorsOpt || am.anchors || this._getMilestoneAnchors(amDyn, am.milestone);
+      const anc = anchors[siteIdx];
+      if (!anc || !anc.coord) return;
+      am.siteIdx = siteIdx;
+      am.anchorCoord = anc.coord;
+      am.anchors = anchors;
+      if (anchors.length >= 2 && typeof this.milestoneBalloon.querySelectorAll === 'function') {
+        this.milestoneBalloon.querySelectorAll('.ep-place').forEach((b) => {
+          const k = Number(b.dataset.siteIdx || 0);
+          const curAnc = anchors[k];
+          if (!curAnc) return;
+          const isSel = k === siteIdx;
+          if (isSel) b.setAttribute('data-selected', '1');
+          else b.removeAttribute('data-selected');
+          const spec = this._milestonePillSpec(curAnc, isSel);
+          b.innerHTML = spec.html;
+          b.setAttribute('title', spec.title);
+        });
+        if (this.locale === 'zh-tw') this._applyZhHantDom(this.milestoneBalloon);
+        if (!this.milestoneBalloon.classList.contains('is-hidden')) {
+          this._measureMilestoneBalloonSize();
+        }
+      }
+      this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
+        const sameM = Number(n.dataset.idx) === am.idx;
+        n.classList.toggle('is-anchor-pin', sameM && Number(n.dataset.siteIdx) === siteIdx);
+      });
+    }
+
     openMilestoneBalloon(dynasty, m, opts = {}) {
       const isAuto = Boolean(opts && opts.isAuto);
       if (!isAuto && this.hoverTip) {
@@ -3504,22 +3886,33 @@
       if (!isAuto && this.dismissedCalloutIds && mIdx >= 0) {
         this.dismissedCalloutIds.delete(`${dynasty.key}:${mIdx}`);
       }
+      const anchors = this._getMilestoneAnchors(dynasty, m);
+      const siteIdx =
+        opts && Number.isInteger(opts.siteIdx) && anchors[opts.siteIdx]
+          ? opts.siteIdx
+          : this._defaultAnchorIndex(m, anchors);
+      const anchorCoord = (anchors[siteIdx] && anchors[siteIdx].coord) || m.coord;
       this.activeMilestone = {
         dynastyKey: dynasty.key,
         milestone: m,
         idx: mIdx,
+        siteIdx,
+        anchorCoord,
+        anchors,
         year: this.year,
         isAuto,
         locale: this._effectiveRenderedLocale(),
       };
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
-        n.classList.toggle('is-active', Number(n.dataset.idx) === mIdx);
+        const sameM = Number(n.dataset.idx) === mIdx;
+        n.classList.toggle('is-active', sameM);
+        n.classList.toggle('is-anchor-pin', sameM && Number(n.dataset.siteIdx) === siteIdx);
       });
       if (!isAuto) {
         this._highlightCurrentMilestone(dynasty);
         this._updateMilestoneStates(dynasty);
       }
-      if (!m.coord || (opts && opts.fromStep && this.grpMilestones && this.grpMilestones.classList.contains('is-hidden'))) {
+      if (!anchorCoord || (opts && opts.fromStep && this.grpMilestones && this.grpMilestones.classList.contains('is-hidden'))) {
         this.milestoneBalloon.classList.add('is-hidden');
         const vf = this._id('viewport-frame');
         if (vf) vf.classList.remove('has-open-milestone-balloon');
@@ -3528,18 +3921,31 @@
       const yrText = this.formatYear(m.year);
       const eraLabel = this._eventEraLabel(dynasty, m);
       const headlineText = this.milestoneHeadline(dynasty, m);
-      const rawSiteStr = this.milestoneSite(dynasty, m);
-      const siteStr =
-        rawSiteStr
-          .replace(/\s*（[^）]*）|\s*\([^)]*\)/g, '')
-          .replace(/\s*·\s*/g, ' · ')
-          .trim() || rawSiteStr;
       const traceTitle =
         this.locale === 'en' ? 'Click to trace place history' : '点击查看此地历代沿革（点地溯源）';
       const traceSuffix = this.locale === 'en' ? 'History ›' : '沿革 ›';
-      const placeHtml = siteStr
-        ? `<button type="button" class="ep-place" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
-        : '';
+      const isMultiAnchor = anchors.length >= 2;
+      let placeHtml = '';
+      let placeEstText = '';
+      if (isMultiAnchor) {
+        const pillsInner = anchors
+          .map((anc, k) => {
+            if (!anc.shortLabel) return '';
+            const spec = this._milestonePillSpec(anc, k === siteIdx);
+            return `<button type="button" class="ep-place" data-site-idx="${k}"${k === siteIdx ? ' data-selected="1"' : ''} title="${escHtml(spec.title)}">${spec.html}</button>`;
+          })
+          .join('');
+        placeHtml = pillsInner ? `<span class="ep-places">${pillsInner}</span>` : '';
+        placeEstText = anchors
+          .map((a, k) => (k === siteIdx ? `${a.shortLabel} · ${traceSuffix}` : `${a.shortLabel} ›`))
+          .join('  ');
+      } else {
+        const siteStr = anchors[0] ? anchors[0].shortLabel : '';
+        placeHtml = siteStr
+          ? `<button type="button" class="ep-place" data-site-idx="0" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
+          : '';
+        placeEstText = siteStr ? `${siteStr} · ${traceSuffix}` : '';
+      }
       const relicStopIdx = this._findRelicStopForMilestone(dynasty, m);
       const relicTitle =
         this.locale === 'en'
@@ -3555,29 +3961,70 @@
         `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${headlineText}</div>`;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
-      const maxW = isMobile ? Math.min(286, (window.innerWidth || 390) - 16) : 348;
+      const maxW = isMobile ? Math.min(268, (window.innerWidth || 390) - 20) : 348;
       const headW =
         this._estimateLocalTextWidth(
-          `${yrText} · ${eraLabel}${siteStr ? ` ${siteStr} · ${traceSuffix}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}`,
+          `${yrText} · ${eraLabel}${placeEstText ? ` ${placeEstText}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}`,
           11.5,
           0
-        ) + 52;
-      const textW = this._estimateLocalTextWidth(headlineText, 12.2, 0);
+        ) + (isMultiAnchor ? 40 + anchors.length * 22 : 52);
+      const textW = this._estimateLocalTextWidth(headlineText, isMobile ? 11.5 : 12.2, 0);
       const estW = Math.round(
         Math.max(isMobile ? 190 : 220, Math.min(maxW, Math.max(headW, textW + 24)))
       );
-      const textLines = Math.max(1, Math.ceil(textW / Math.max(120, estW - 24)));
-      const estH = Math.round(36 + textLines * 17.5);
+      const headLines = Math.max(1, Math.ceil(headW / Math.max(120, estW - 28)));
+      const textLines = Math.max(1, Math.ceil(textW / Math.max(120, estW - 22)));
+      const estH = Math.round(16 + headLines * (isMobile ? 22 : 20) + textLines * 17.5);
       this._milestoneBalloonSize = { w: estW, h: estH };
-      const placeBtn = this.milestoneBalloon.querySelector('.ep-place');
-      if (placeBtn && m.coord) {
-        placeBtn.addEventListener('click', (e) => {
+      const placeBtns =
+        typeof this.milestoneBalloon.querySelectorAll === 'function'
+          ? Array.from(this.milestoneBalloon.querySelectorAll('.ep-place'))
+          : [this.milestoneBalloon.querySelector('.ep-place')].filter(Boolean);
+      placeBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const coCity = this._findCoLocatedSettlement(dynasty, m.coord[0], m.coord[1], 28);
-          const targetCoord = coCity ? coCity.coord : m.coord;
-          this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+          const k = Number(btn.dataset.siteIdx || 0);
+          const anc = anchors[k] || anchors[0];
+          const baseCoord = (anc && anc.coord) || m.coord;
+          if (!baseCoord) return;
+          const coCity = this._findCoLocatedSettlement(dynasty, baseCoord[0], baseCoord[1], 28);
+          const targetCoord = coCity ? coCity.coord : baseCoord;
+          const wasSelected = Boolean(
+            !isMultiAnchor ||
+              (this.activeMilestone &&
+                this.activeMilestone.milestone === m &&
+                this.activeMilestone.siteIdx === k)
+          );
+          if (this.activeMilestone && this.activeMilestone.milestone === m) {
+            this.activeMilestone.isAuto = false;
+            this._selectMilestoneAnchor(k, anchors);
+            this._positionMilestoneBalloon();
+          }
+          if (!wasSelected) {
+            this._panToward(targetCoord[0], targetCoord[1]);
+            const genCard = this._id('genealogy-card');
+            if (
+              typeof window !== 'undefined' &&
+              window.innerWidth > 900 &&
+              genCard &&
+              genCard.classList &&
+              !genCard.classList.contains('is-hidden')
+            ) {
+              this.openGenealogyAt(
+                targetCoord[0],
+                targetCoord[1],
+                coCity ? null : anc && anc.shortLabel ? anc.shortLabel : null
+              );
+            }
+            return;
+          }
+          this.openGenealogyAt(
+            targetCoord[0],
+            targetCoord[1],
+            coCity ? null : anc && anc.shortLabel ? anc.shortLabel : null
+          );
         });
-      }
+      });
       const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal');
       if (relicBtn && relicStopIdx !== null) {
         relicBtn.addEventListener('click', (e) => {
@@ -3597,17 +4044,17 @@
       }
       this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.milestoneBalloon);
+      this._measureMilestoneBalloonSize(estW, estH);
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-open-milestone-balloon');
       this._positionMilestoneBalloon();
     }
 
     _positionMilestoneBalloon(viewportRect = null) {
-      if (!this.activeMilestone || !this.activeMilestone.milestone.coord) return;
-      const [sx, sy] = this.projector.toScreen(
-        this.activeMilestone.milestone.coord[0],
-        this.activeMilestone.milestone.coord[1]
-      );
+      const am = this.activeMilestone;
+      const anchorCoord = am && (am.anchorCoord || am.milestone.coord);
+      if (!anchorCoord) return;
+      const [sx, sy] = this.projector.toScreen(anchorCoord[0], anchorCoord[1]);
       const rect =
         viewportRect ||
         (this.dragState && this.dragState.rect) ||
@@ -3645,27 +4092,70 @@
       );
       const minTop = isMobile ? 48 : 12;
       const maxTop = Math.max(minTop, rect.height - bH - (isMobile ? 56 : 16));
+      const safeBelowMaxTop = isMobile ? Math.max(minTop, rect.height - bH - 116) : maxTop;
       const pinGap = isMobile ? 10 : 12;
 
-      let left;
-      let top = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
-      let caretDir = 'left';
+      const sideTop = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
+      const midLeft = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
+      const candidates = [];
       if (px + pinGap <= rightLimit) {
-        left = px + pinGap;
-        caretDir = 'left';
-      } else if (px - bW - pinGap >= minLeft) {
-        left = px - bW - pinGap;
-        caretDir = 'right';
-      } else {
-        left = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
-        if (py - bH - pinGap >= minTop) {
-          top = py - bH - pinGap;
-          caretDir = 'bottom';
-        } else {
-          top = Math.min(maxTop, py + pinGap + 4);
-          caretDir = 'top';
+        candidates.push({ left: px + pinGap, top: sideTop, caretDir: 'left' });
+      }
+      if (px - bW - pinGap >= minLeft) {
+        candidates.push({ left: px - bW - pinGap, top: sideTop, caretDir: 'right' });
+      }
+      if (py - bH - pinGap >= minTop) {
+        candidates.push({ left: midLeft, top: py - bH - pinGap, caretDir: 'bottom' });
+      }
+      if (py + pinGap + 4 <= safeBelowMaxTop) {
+        candidates.push({ left: midLeft, top: py + pinGap + 4, caretDir: 'top' });
+      }
+      if (!candidates.length) {
+        candidates.push({
+          left: midLeft,
+          top: Math.min(maxTop, py + pinGap + 4),
+          caretDir: 'top',
+        });
+      }
+
+      let chosen = candidates[0];
+      if (candidates.length > 1 && am && Array.isArray(am.anchors) && am.anchors.length >= 2) {
+        const siblingPts = [];
+        for (let i = 0; i < am.anchors.length; i++) {
+          if (i === am.siteIdx || !am.anchors[i].coord) continue;
+          const [asx, asy] = this.projector.toScreen(
+            am.anchors[i].coord[0],
+            am.anchors[i].coord[1]
+          );
+          const spx = padX + (asx - this.camera.x) * scale;
+          const spy = padY + (asy - this.camera.y) * scale;
+          if (spx >= 0 && spx <= rect.width && spy >= 0 && spy <= rect.height) {
+            siblingPts.push([spx, spy]);
+          }
+        }
+        if (siblingPts.length) {
+          let bestHits = Infinity;
+          for (const c of candidates) {
+            let hits = 0;
+            for (const [spx, spy] of siblingPts) {
+              if (
+                spx >= c.left - 8 &&
+                spx <= c.left + bW + 8 &&
+                spy >= c.top - 8 &&
+                spy <= c.top + bH + 8
+              ) {
+                hits += 1;
+              }
+            }
+            if (hits < bestHits) {
+              bestHits = hits;
+              chosen = c;
+              if (hits === 0) break;
+            }
+          }
         }
       }
+      const { left, top, caretDir } = chosen;
       const caretX = Math.max(14, Math.min(bW - 14, Math.round(px - left)));
       const caretY = Math.max(12, Math.min(bH - 12, Math.round(py - top)));
       this.milestoneBalloon.dataset.caret = caretDir;
@@ -4930,28 +5420,9 @@
           }
           this.jumpToYear(targetY);
           this.openMilestoneBalloon(dynasty, m);
-          if (snapShift || m.isMapChange) {
-            const defCam = this._getDefaultCamera();
-            if (m.coord) {
-              const [sx, sy] = this.projector.toScreen(m.coord[0], m.coord[1]);
-              const outX = sx < defCam.x + defCam.w * 0.14 || sx > defCam.x + defCam.w * 0.86;
-              const outY = sy < defCam.y + defCam.h * 0.16 || sy > defCam.y + defCam.h * 0.84;
-              if (outX || outY) {
-                this._animateCameraTo({
-                  x: Math.max(-180, Math.min(1000 - defCam.w + 140, sx - defCam.w * 0.5)),
-                  y: Math.max(-150, Math.min(700 - defCam.h + 120, sy - defCam.h * 0.42)),
-                  w: defCam.w,
-                  h: defCam.h,
-                });
-              } else if (this.camera.w < defCam.w * 0.85) {
-                this.resetCamera();
-              }
-            } else if (this.camera.w < defCam.w * 0.85) {
-              this.resetCamera();
-            }
-          } else if (m.coord) {
-            this._panToward(m.coord[0], m.coord[1]);
-          }
+          this._frameMilestoneAnchors(dynasty, m, {
+            isMapChange: Boolean(snapShift || m.isMapChange),
+          });
         });
         ul.appendChild(li);
       }
@@ -7214,9 +7685,10 @@
 
       // 1. Dynasty milestones
       for (const m of d.milestones || []) {
-        const veryClose = isCloseCoord(m.coord, 28);
+        const mCoords = this._milestoneCoords(m);
+        const veryClose = mCoords.some((mc) => isCloseCoord(mc, 28));
         const siteMatch = matchesSiteName(m.site);
-        if (siteMatch || veryClose || (!nearCity && isCloseCoord(m.coord, 48))) {
+        if (siteMatch || veryClose || (!nearCity && mCoords.some((mc) => isCloseCoord(mc, 48)))) {
           results.push({
             year: m.year,
             text: this.milestoneHeadline(d, m),
@@ -7312,7 +7784,15 @@
       let bestMilePx = maxPx;
       if (this.grpMilestones && !this.grpMilestones.classList.contains('is-hidden')) {
         this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
-          if (pin.classList.contains('is-future')) return;
+          if (
+            pin.classList.contains('is-future') ||
+            (pin.classList.contains('is-past-occluded') && !pin.classList.contains('is-active')) ||
+            (pin.classList.contains('is-secondary-pin') &&
+              !pin.classList.contains('is-current') &&
+              !pin.classList.contains('is-active'))
+          ) {
+            return;
+          }
           const dPx = Math.hypot(Number(pin.dataset.x) - sx, Number(pin.dataset.y) - sy) * scale;
           if (dPx <= bestMilePx) {
             bestMilePx = dPx;
@@ -7981,6 +8461,23 @@
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.add('has-active-genealogy');
       this._syncTracedPrefecture();
+      if (
+        this.activeMilestone &&
+        this.milestoneBalloon &&
+        !this.milestoneBalloon.classList.contains('is-hidden') &&
+        this.projector &&
+        typeof this.projector.greatCircleKm === 'function'
+      ) {
+        const amDyn = this.dynasties.find((d) => d.key === this.activeMilestone.dynastyKey);
+        const amAnchors = this._getMilestoneAnchors(amDyn, this.activeMilestone.milestone);
+        const matchIdx = amAnchors.findIndex(
+          (a) => a.coord && this.projector.greatCircleKm([lng, lat], a.coord) <= 30
+        );
+        if (matchIdx >= 0 && matchIdx !== this.activeMilestone.siteIdx) {
+          this._selectMilestoneAnchor(matchIdx, amAnchors);
+        }
+        this._positionMilestoneBalloon();
+      }
 
       const renderSubAndList = () => {
         const subEl = this._id('genealogy-sub');
@@ -8640,7 +9137,7 @@
           if (pos !== -1 && nextPos >= 0 && nextPos < sameYrIdxs.length) {
             const targetM = curDyn.milestones[sameYrIdxs[nextPos]];
             this.openMilestoneBalloon(curDyn, targetM, { fromStep: true });
-            this._ensureCoordInView(targetM.coord);
+            this._ensureMilestoneInView(curDyn, targetM);
             return;
           }
         }
@@ -8691,7 +9188,7 @@
             ? this.activeMilestone.milestone
             : matched[matched.length - 1];
         if (activeM && activeM.coord) {
-          this._ensureCoordInView(activeM.coord);
+          this._ensureMilestoneInView(nextDyn, activeM);
         }
       }
     }
@@ -9390,15 +9887,27 @@
       }
       if (showMilestones) {
         this.svg.querySelectorAll('.milestone-pin').forEach((pin) => {
-          if (pin.classList.contains('is-future')) return;
+          if (
+            pin.classList.contains('is-future') ||
+            (pin.classList.contains('is-past-occluded') && !pin.classList.contains('is-active')) ||
+            (pin.classList.contains('is-secondary-pin') &&
+              !pin.classList.contains('is-current') &&
+              !pin.classList.contains('is-active'))
+          ) {
+            return;
+          }
           const mx = parseFloat(pin.getAttribute('data-x'));
           const my = parseFloat(pin.getAttribute('data-y'));
           if (!isNaN(mx)) {
+            const pr =
+              (pin.classList.contains('is-current') || pin.classList.contains('is-active')
+                ? 3.9
+                : 3.0) * s;
             occupied.push({
-              x1: mx - 3.6 * s,
-              y1: my - 3.6 * s,
-              x2: mx + 3.6 * s,
-              y2: my + 3.6 * s,
+              x1: mx - pr,
+              y1: my - pr,
+              x2: mx + pr,
+              y2: my + pr,
             });
           }
         });
@@ -12340,6 +12849,8 @@
       this._id('chk-settlements').addEventListener('change', (e) => {
         if (this.challenge) return;
         this.grpSettlements.classList.toggle('is-hidden', !e.target.checked);
+        const cur = this.dynasties[this.dynastyIdx];
+        if (cur) this._updateMilestoneStates(cur);
         this._rescaleSvgTypography();
       });
       this._id('chk-corridors').addEventListener('change', (e) => {
@@ -12833,9 +13344,13 @@
         const milestoneEl = findClosest('.milestone-pin');
         const cur = this.dynasties[this.dynastyIdx];
         const mHit = milestoneEl && cur ? this._resolvePinMilestone(cur, milestoneEl) : null;
+        const mHitCoord =
+          milestoneEl && milestoneEl.dataset.lng !== undefined && milestoneEl.dataset.lat !== undefined
+            ? [Number(milestoneEl.dataset.lng), Number(milestoneEl.dataset.lat)]
+            : mHit && mHit.coord;
         const coCity =
-          !settlementEl && mHit && mHit.coord
-            ? this._findCoLocatedSettlement(cur, mHit.coord[0], mHit.coord[1], 28)
+          !settlementEl && mHitCoord
+            ? this._findCoLocatedSettlement(cur, mHitCoord[0], mHitCoord[1], 28)
             : null;
 
         if (journeyNodeEl && this.activeCustomRoute) {
@@ -12895,10 +13410,13 @@
           }
         } else if (milestoneEl && !settlementNameEl && mHit) {
           const eraPart = this.locale === 'en' ? '' : ` · ${this._eventEraLabel(cur, mHit)}`;
+          const pinSiteIdx =
+            milestoneEl.dataset.siteIdx !== undefined ? Number(milestoneEl.dataset.siteIdx) : -1;
           const alreadyOpen =
             this.activeMilestone &&
             this.activeMilestone.dynastyKey === cur.key &&
             this.activeMilestone.milestone === mHit &&
+            (pinSiteIdx < 0 || this.activeMilestone.siteIdx === pinSiteIdx) &&
             !this.milestoneBalloon.classList.contains('is-hidden');
           const hasCity = Boolean(settlementEl || coCity);
           const actionHint = alreadyOpen
@@ -13161,12 +13679,31 @@
           }
           const cur = this.dynasties[this.dynastyIdx];
 
-          // Clicking the city name text (e.g. "长安"), the onboarding whisper tag, or a city dot without an overlapping event pin -> trace place history
+          // Clicking the city name text (e.g. "长安"), the onboarding whisper tag, or a city dot without an overlapping unopened event pin -> trace place history
+          const milestoneAlreadyAnchored =
+            Boolean(milestoneEl && cur) &&
+            (() => {
+              const pm = this._resolvePinMilestone(cur, milestoneEl);
+              const pmIdx = pm ? (cur.milestones || []).indexOf(pm) : -1;
+              const pmSite =
+                milestoneEl.dataset.siteIdx !== undefined
+                  ? Number(milestoneEl.dataset.siteIdx)
+                  : undefined;
+              return Boolean(
+                this.activeMilestone &&
+                  this.activeMilestone.dynastyKey === cur.key &&
+                  this.activeMilestone.idx === pmIdx &&
+                  (pmSite === undefined || this.activeMilestone.siteIdx === pmSite) &&
+                  !this.milestoneBalloon.classList.contains('is-hidden')
+              );
+            })();
           if (
             settlementEl &&
             settlementEl.dataset.lng &&
             settlementEl.dataset.lat &&
-            (settlementNameEl || !milestoneEl || settlementEl.classList.contains('has-trace-hint'))
+            (settlementNameEl ||
+              !milestoneEl ||
+              (settlementEl.classList.contains('has-trace-hint') && milestoneAlreadyAnchored))
           ) {
             this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
             return;
@@ -13177,14 +13714,21 @@
             const m = this._resolvePinMilestone(cur, milestoneEl);
             const mIdx = m ? (cur.milestones || []).indexOf(m) : -1;
             if (m && m.coord) {
+              const pinSiteIdx =
+                milestoneEl.dataset.siteIdx !== undefined ? Number(milestoneEl.dataset.siteIdx) : undefined;
+              const pinCoord =
+                milestoneEl.dataset.lng !== undefined && milestoneEl.dataset.lat !== undefined
+                  ? [Number(milestoneEl.dataset.lng), Number(milestoneEl.dataset.lat)]
+                  : m.coord;
               const coCity = settlementEl
                 ? { coord: [Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat)] }
-                : this._findCoLocatedSettlement(cur, m.coord[0], m.coord[1], 28);
-              const targetCoord = coCity ? coCity.coord : m.coord;
+                : this._findCoLocatedSettlement(cur, pinCoord[0], pinCoord[1], 28);
+              const targetCoord = coCity ? coCity.coord : pinCoord;
               const alreadyOpen =
                 this.activeMilestone &&
                 this.activeMilestone.dynastyKey === cur.key &&
                 this.activeMilestone.idx === mIdx &&
+                (pinSiteIdx === undefined || this.activeMilestone.siteIdx === pinSiteIdx) &&
                 !this.milestoneBalloon.classList.contains('is-hidden');
               if (alreadyOpen) {
                 this.openGenealogyAt(targetCoord[0], targetCoord[1]);
@@ -13192,8 +13736,8 @@
               }
               this.stopAutoplay();
               this.jumpToYear(this._clampYearToDynasty(cur, m.year));
-              this.openMilestoneBalloon(cur, m);
-              this._panToward(m.coord[0], m.coord[1]);
+              this.openMilestoneBalloon(cur, m, { isAuto: false, siteIdx: pinSiteIdx });
+              this._panToward(pinCoord[0], pinCoord[1]);
               if (
                 window.innerWidth > 900 &&
                 !this._id('genealogy-card').classList.contains('is-hidden')
@@ -14766,17 +15310,22 @@
           zoom: q.has('zoom') ? Number(q.get('zoom')) : undefined,
         });
       } else {
+        let traceParts = null;
+        if (q.has('trace')) {
+          const parts = (q.get('trace') || '').split(',').map(Number);
+          if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+            traceParts = parts;
+            this.activeTrace = [parts[0], parts[1]];
+          }
+        }
         if (q.has('year')) {
           const yList = this._parseYearList(q.get('year'));
           if (yList.length) this.jumpToYear(yList[0]);
         }
-        if (q.has('trace')) {
-          const parts = (q.get('trace') || '').split(',').map(Number);
-          if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
-            afterFullSnapshots(() => {
-              this.openGenealogyAt(parts[0], parts[1]);
-            }, 80);
-          }
+        if (traceParts) {
+          afterFullSnapshots(() => {
+            this.openGenealogyAt(traceParts[0], traceParts[1]);
+          }, 80);
         }
         if (q.has('zoom') || q.has('center')) {
           const z = Math.max(1, Math.min(8, Number(q.get('zoom')) || this.camera.zoom));
