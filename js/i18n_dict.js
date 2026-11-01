@@ -165,7 +165,7 @@ window.EN_LOCALE = {
   },
   "milestones": {
     "qin:-221": [
-      "King Ying Zheng unifies the six states as the First Emperor",
+      "First Emperor unifies the six states; commanderies, one script, axle widths and measures",
       "Xianyang"
     ],
     "qin:-215": [
@@ -215,6 +215,10 @@ window.EN_LOCALE = {
     "xihan:8": [
       "Wang Mang usurps the throne and proclaims the Xin dynasty",
       "Chang'an"
+    ],
+    "xihan:17": [
+      "Lülin rebels rise; Red Eyebrows follow in Langya as late-Xin peasant revolts spread",
+      "Mt. Lülin (Jingshan)"
     ],
     "xihan:23": [
       "Battle of Kunyang; collapse of the Xin dynasty",
@@ -533,7 +537,7 @@ window.EN_LOCALE = {
       "Ye"
     ],
     "sui:581": [
-      "Yang Jian founds the Sui dynasty at Daxing",
+      "Yang Jian founds Sui at Daxing; Three Departments, Six Ministries and the Kaihuang Code",
       "Daxing"
     ],
     "sui:589": [
@@ -781,7 +785,7 @@ window.EN_LOCALE = {
       "Jiaozhi"
     ],
     "ming:1421": [
-      "Yongle Emperor formally moves the primary Ming capital to Beijing",
+      "Yongle moves the capital to Beijing; the Eastern Depot (1420) joins the Embroidered Guard",
       "Beijing"
     ],
     "ming:1433": [
@@ -964,6 +968,10 @@ window.EN_LOCALE = {
       "Mobei Campaign; Wei Qing & Huo Qubing rout the Xiongnu",
       "Mt. Langjuxu (Khentii)"
     ],
+    "xihan:-118": [
+      "Emperor Wu mints five-zhu coins, monopolizes salt and iron, and adds price stabilization",
+      "Chang'an"
+    ],
     "xihan:-100": [
       "Li Guangli's Dayuan campaign secures the Southern Tarim Silk Road",
       "Dunhuang / Khotan"
@@ -1116,6 +1124,10 @@ window.EN_LOCALE = {
       "Battle of Talas; papermaking spreads to the Islamic world",
       "Talas"
     ],
+    "tang:753": [
+      "Jianzhen sails from Yangzhou on his sixth voyage, bringing Vinaya and Tang culture to Japan",
+      "Yangzhou"
+    ],
     "tang:764": [
       "Liangzhou falls to Tibet, severing Hexi; Anxi & Beiting hold out as exclaves",
       "Liangzhou (Wuwei)"
@@ -1131,6 +1143,10 @@ window.EN_LOCALE = {
     "tang:817": [
       "Li Su takes Caizhou in a snowy night raid; Yuanhe Restoration",
       "Caizhou (Runan)"
+    ],
+    "tang:822": [
+      "Changqing Treaty sworn again at Lhasa after Chang'an; treaty pillar raised at Jokhang in 823",
+      "Luoxie (Lhasa)"
     ],
     "tang:848": [
       "Zhang Yichao's Guiyi Circuit recovers Dunhuang, Guazhou and eleven Hexi prefectures",
@@ -1165,7 +1181,7 @@ window.EN_LOCALE = {
       "Waqiao Pass (Xiongzhou)"
     ],
     "beisong:961": [
-      "Disarming generals over wine; civil supremacy policy established",
+      "Generals disarmed over wine; vice-prefects and fiscal commissioners curb regional power",
       "Kaifeng"
     ],
     "beisong:978": [
