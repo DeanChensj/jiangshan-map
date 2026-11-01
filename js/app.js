@@ -3796,24 +3796,6 @@
       return idx !== undefined ? idx : null;
     }
 
-    _milestonePillSpec(anc, isSelected) {
-      const lbl = (anc && anc.shortLabel) || '';
-      const full = (anc && anc.fullLabel) || lbl;
-      const isEn = this.locale === 'en';
-      const traceSuffix = isEn ? 'History ›' : '沿革 ›';
-      const html = isSelected
-        ? `${SVG_ICONS.pin} ${lbl} · ${traceSuffix}`
-        : `${SVG_ICONS.pin} ${lbl} ›`;
-      const title = isSelected
-        ? isEn
-          ? `${full} · Click to trace place history`
-          : `${full} · 再次点击查看历代沿革（点地溯源）`
-        : isEn
-          ? `${full} · Click to focus callout & map here`
-          : `${full} · 点击切换浮签与镜头对焦此处`;
-      return { html, title };
-    }
-
     _measureMilestoneBalloonSize(estW = 0, estH = 0) {
       if (this.milestoneBalloon && this.milestoneBalloon.style) {
         const prevLeft = this.milestoneBalloon.style.left;
@@ -3845,23 +3827,6 @@
       am.siteIdx = siteIdx;
       am.anchorCoord = anc.coord;
       am.anchors = anchors;
-      if (anchors.length >= 2 && typeof this.milestoneBalloon.querySelectorAll === 'function') {
-        this.milestoneBalloon.querySelectorAll('.ep-place').forEach((b) => {
-          const k = Number(b.dataset.siteIdx || 0);
-          const curAnc = anchors[k];
-          if (!curAnc) return;
-          const isSel = k === siteIdx;
-          if (isSel) b.setAttribute('data-selected', '1');
-          else b.removeAttribute('data-selected');
-          const spec = this._milestonePillSpec(curAnc, isSel);
-          b.innerHTML = spec.html;
-          b.setAttribute('title', spec.title);
-        });
-        if (this.locale === 'zh-tw') this._applyZhHantDom(this.milestoneBalloon);
-        if (!this.milestoneBalloon.classList.contains('is-hidden')) {
-          this._measureMilestoneBalloonSize();
-        }
-      }
       this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
         const sameM = Number(n.dataset.idx) === am.idx;
         n.classList.toggle('is-anchor-pin', sameM && Number(n.dataset.siteIdx) === siteIdx);
@@ -3923,29 +3888,23 @@
       const headlineText = this.milestoneHeadline(dynasty, m);
       const traceTitle =
         this.locale === 'en' ? 'Click to trace place history' : '点击查看此地历代沿革（点地溯源）';
-      const traceSuffix = this.locale === 'en' ? 'History ›' : '沿革 ›';
       const isMultiAnchor = anchors.length >= 2;
-      let placeHtml = '';
-      let placeEstText = '';
-      if (isMultiAnchor) {
-        const pillsInner = anchors
-          .map((anc, k) => {
-            if (!anc.shortLabel) return '';
-            const spec = this._milestonePillSpec(anc, k === siteIdx);
-            return `<button type="button" class="ep-place" data-site-idx="${k}"${k === siteIdx ? ' data-selected="1"' : ''} title="${escHtml(spec.title)}">${spec.html}</button>`;
-          })
-          .join('');
-        placeHtml = pillsInner ? `<span class="ep-places">${pillsInner}</span>` : '';
-        placeEstText = anchors
-          .map((a, k) => (k === siteIdx ? `${a.shortLabel} · ${traceSuffix}` : `${a.shortLabel} ›`))
-          .join('  ');
-      } else {
-        const siteStr = anchors[0] ? anchors[0].shortLabel : '';
-        placeHtml = siteStr
-          ? `<button type="button" class="ep-place" data-site-idx="0" title="${traceTitle}">${SVG_ICONS.pin} ${siteStr} · ${traceSuffix}</button>`
-          : '';
-        placeEstText = siteStr ? `${siteStr} · ${traceSuffix}` : '';
-      }
+      const pillsInner = anchors
+        .map((anc, k) => {
+          if (!anc || !anc.shortLabel) return '';
+          const tip = `${anc.fullLabel || anc.shortLabel} · ${traceTitle}`;
+          return `<button type="button" class="ep-place" data-site-idx="${k}" title="${escHtml(tip)}">${SVG_ICONS.pin} ${anc.shortLabel} ›</button>`;
+        })
+        .join('');
+      const placeHtml = pillsInner
+        ? isMultiAnchor
+          ? `<span class="ep-places">${pillsInner}</span>`
+          : pillsInner
+        : '';
+      const placeEstText = anchors
+        .map((a) => (a && a.shortLabel ? `${a.shortLabel} ›` : ''))
+        .filter(Boolean)
+        .join('  ');
       const relicStopIdx = this._findRelicStopForMilestone(dynasty, m);
       const relicTitle =
         this.locale === 'en'
@@ -3989,40 +3948,16 @@
           if (!baseCoord) return;
           const coCity = this._findCoLocatedSettlement(dynasty, baseCoord[0], baseCoord[1], 28);
           const targetCoord = coCity ? coCity.coord : baseCoord;
-          const wasSelected = Boolean(
-            !isMultiAnchor ||
-              (this.activeMilestone &&
-                this.activeMilestone.milestone === m &&
-                this.activeMilestone.siteIdx === k)
-          );
           if (this.activeMilestone && this.activeMilestone.milestone === m) {
             this.activeMilestone.isAuto = false;
             this._selectMilestoneAnchor(k, anchors);
-            this._positionMilestoneBalloon();
-          }
-          if (!wasSelected) {
-            this._panToward(targetCoord[0], targetCoord[1]);
-            const genCard = this._id('genealogy-card');
-            if (
-              typeof window !== 'undefined' &&
-              window.innerWidth > 900 &&
-              genCard &&
-              genCard.classList &&
-              !genCard.classList.contains('is-hidden')
-            ) {
-              this.openGenealogyAt(
-                targetCoord[0],
-                targetCoord[1],
-                coCity ? null : anc && anc.shortLabel ? anc.shortLabel : null
-              );
-            }
-            return;
           }
           this.openGenealogyAt(
             targetCoord[0],
             targetCoord[1],
             coCity ? null : anc && anc.shortLabel ? anc.shortLabel : null
           );
+          this._panToward(targetCoord[0], targetCoord[1]);
         });
       });
       const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal');

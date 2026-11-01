@@ -1230,13 +1230,6 @@ h2 {
   flex-wrap: wrap;
 }
 
-#milestone-balloon .ep-place[data-selected="1"] {
-  background: var(--vermilion);
-  color: #fffaf2;
-  border-color: var(--vermilion);
-  font-weight: 600;
-}
-
 #milestone-balloon .ep-place:active {
   transform: scale(0.97);
 }
@@ -1246,12 +1239,6 @@ h2 {
     background: rgba(181, 69, 47, 0.16);
     color: var(--vermilion);
     border-color: rgba(181, 69, 47, 0.45);
-  }
-
-  #milestone-balloon .ep-place[data-selected="1"]:hover {
-    background: #9c3824;
-    color: #fffaf2;
-    border-color: #9c3824;
   }
 }
 
