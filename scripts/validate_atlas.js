@@ -1786,12 +1786,12 @@ function main() {
     const pillCount = (ctrl.milestoneBalloon.innerHTML.match(/class="ep-place"/g) || []).length;
     assert.strictEqual(pillCount, 3, 'donghan:215 balloon must render 3 independent .ep-place pills');
     assert(
-      ctrl.milestoneBalloon.innerHTML.includes('data-selected="1"') &&
-        ctrl.milestoneBalloon.innerHTML.includes('临湘 · 沿革 ›') &&
+      !ctrl.milestoneBalloon.innerHTML.includes('data-selected="1"') &&
+        !ctrl.milestoneBalloon.innerHTML.includes('沿革 ›') &&
         ctrl.milestoneBalloon.innerHTML.includes('南郑 ›') &&
-        ctrl.milestoneBalloon.innerHTML.includes('合肥 ›') &&
-        !ctrl.milestoneBalloon.innerHTML.includes('合肥 · 沿革'),
-      `Expected two-beat pill labels on donghan:215 (selected pill shows · 沿革 ›, siblings show ›), got: ${ctrl.milestoneBalloon.innerHTML}`
+        ctrl.milestoneBalloon.innerHTML.includes('临湘 ›') &&
+        ctrl.milestoneBalloon.innerHTML.includes('合肥 ›'),
+      `Expected uniform .ep-place pill labels without data-selected or 沿革 suffix on donghan:215, got: ${ctrl.milestoneBalloon.innerHTML}`
     );
     const m195 = dhDyn.milestones.find((m) => m.year === 195);
     assert.strictEqual(
