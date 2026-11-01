@@ -177,7 +177,7 @@ window.EN_LOCALE = {
       "Lingqu & Panyu"
     ],
     "qin:-209": [
-      "Chen Sheng and Wu Guang launch the Dazexiang Uprising",
+      "Chen Sheng & Wu Guang rise at Dazexiang; nobles restore the kingdoms of Zhao, Yan, and Qi",
       "Dazexiang"
     ],
     "xihan:-202": [
@@ -221,8 +221,8 @@ window.EN_LOCALE = {
       "Mt. Lülin (Jingshan)"
     ],
     "xihan:23": [
-      "Battle of Kunyang; collapse of the Xin dynasty",
-      "Kunyang"
+      "Lülin rebels crown Gengshi Emperor Liu Xuan; Liu Xiu routs Xin at Kunyang, ending Wang Mang",
+      "Kunyang & Chang'an"
     ],
     "donghan:25": [
       "Liu Xiu (Emperor Guangwu) proclaims the Eastern Han at Luoyang",
@@ -889,8 +889,8 @@ window.EN_LOCALE = {
       "Wuchang"
     ],
     "roc:1912": [
-      "Sun Yat-sen is inaugurated in Nanjing, founding the Republic of China",
-      "Nanjing"
+      "Sun Yat-sen founds the Republic of China in Nanjing; Puyi abdicates, ending imperial rule",
+      "Nanjing · Beijing"
     ],
     "roc:1919": [
       "May Fourth Movement erupts in Beijing over the Treaty of Versailles",
@@ -945,11 +945,11 @@ window.EN_LOCALE = {
       "Shaqiu (Guangzong)"
     ],
     "qin:-207": [
-      "Xiang Yu crushes Qin main forces at Julu; Liu Bang marches on Xianyang",
-      "Julu (Pingxiang)"
+      "Xiang Yu crushes Qin at Julu; Nanhai official Zhao Tuo unites Lingnan as autonomous Nanyue",
+      "Julu & Panyu"
     ],
     "qin:-206": [
-      "Qin ruler Ziying surrenders; Feast at Hong Gate begins Chu–Han Contention",
+      "Ziying surrenders and Qin falls; Xiang Yu enfeoffs 18 Kingdoms as Wuzhu restores Minyue",
       "Hongmen (Xianyang)"
     ],
     "xihan:-200": [
@@ -1620,6 +1620,10 @@ window.EN_LOCALE = {
       "Eight-Nation Alliance occupies Beijing as Cixi flees to Xi’an; southern governors keep peace",
       "Beijing"
     ],
+    "qing:1901": [
+      "Qing signs the Boxer Protocol with 11 powers: 450M-tael indemnity and legation garrisons",
+      "Beijing"
+    ],
     "xihan:-8": [
       "Emperor Cheng establishes Three Excellencies; Wang Mang becomes Grand Marshal",
       "Chang'an"
@@ -1793,7 +1797,7 @@ window.EN_LOCALE = {
       "Chigu (Issyk-Kul)"
     ],
     "xihan:24": [
-      "Gengshi Emperor moves his court to Chang’an while Liu Xiu captures Handan and pacifies Hebei",
+      "Gengshi Emperor enters Chang’an; Liu Xiu crosses north to pacify Hebei and slays Wang Lang",
       "Handan & Chang'an"
     ],
     "donghan:144": [
@@ -4808,10 +4812,11 @@ window.EN_LOCALE = {
     "武安（马殷）": "Wu'an (Ma Yin)",
     "威武（王审知）": "Weiwu (Wang Shenzhi)",
     "岭南（刘隐）": "Lingnan (Liu Yin)",
+    "静海军（交州）": "Jinghai Circuit (Jiaozhou)",
     "前 214 — 前 206 · 秦平百越与大一统鼎盛：设桂林、象、南海三郡，北筑万里长城": "214–206 BCE · Apex of the Qin Empire: Guilin, Xiang & Nanhai Commanderies in Lingnan and the Great Wall",
-    "前 206 — 前 202 · 秦亡与楚汉相争：项羽分封十八诸侯称霸西楚，刘邦自汉中还定三秦，楚汉相争于荥阳成皋": "206–202 BCE · Fall of Qin & Chu–Han Contention: Xiang Yu's Eighteen Kingdoms vs. Liu Bang's Han from Guanzhong to Xingyang",
+    "前 206 — 前 202 · 秦亡与楚汉相争：陈胜起义后赵、燕、齐复国，项羽分封十八诸侯，秦将赵佗据岭南立南越、无诸复立闽越，刘邦还定三秦与项羽争霸": "206–202 BCE · Fall of Qin & Chu–Han Contention: Zhao, Yan & Qi Restored, Xiang Yu's 18 Kingdoms, Zhao Tuo's Nanyue, Wuzhu's Minyue & Liu Bang vs. Xiang Yu",
     "8 — 23 · 王莽代汉建新：托古改制与西域断绝，北疆匈奴复叛，绿林赤眉起兵": "8–23 CE · Wang Mang's Xin Dynasty: Archaisms, Loss of the Western Regions & Lulin–Chimei Uprisings",
-    "23 — 25 · 绿林赤眉起义与更始政权：昆阳大捷诛王莽，更始帝入洛阳长安，赤眉军、河北刘秀与陇蜀群雄并起": "23–25 CE · Fall of Xin & Gengshi Regime: Victory at Kunyang, Chimei Army, Liu Xiu in Hebei & Regional Warlords",
+    "23 — 25 · 绿林赤眉起义与更始政权：绿林军拥立汉宗室刘玄为更始帝入长安，宗室刘秀以大司马徇河北独立发展，赤眉军与陇蜀群雄并起": "23–25 CE · Fall of Xin & Gengshi Regime: Lülin Army Crowns Gengshi Emperor Liu Xuan, Liu Xiu Pacifies Hebei Independently, Chimei Army & Regional Warlords",
     "848 — 880 · 张议潮归义军收复河西：沙州起义驱逐吐蕃，收复瓜沙等十一州归唐": "848–880 CE · Zhang Yichao's Guiyi Circuit Recovers Hexi: Eleven Prefectures Restored to Tang",
     "880 — 884 · 黄巢攻入长安称帝大齐：黄巢大军渡江破洛阳、入长安建国号大齐，唐僖宗奔蜀，李克用等会诸镇收复长安": "880–884 CE · Huang Chao's Rebellion: Huang Chao Captures Chang'an and Proclaims Great Qi; Emperor Xizong Flees to Shu",
     "885 — 907 · 唐末藩镇彻底裂解：朱温据宣武河南、李克用据河东、王建据西川、杨行密据淮南、钱镠据两浙，唐室仅存关中一隅": "885–907 CE · Late Tang Warlord Fragmentation: Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi & Qian Liu Divide the Realm",

@@ -5516,9 +5516,11 @@ function main() {
         hasPt('s_xihan_d', '新（王莽）', 125.751, 39.031) &&
         hasPt('s_xihan_b2', '汉', 94.661, 40.141) &&
         hasPt('s_xihan_b', '汉', 94.661, 40.141) &&
-        hasPt('s_xihan_b', '汉', 101.06, 41.95) &&
-        hasPt('s_xihan_c', '汉', 101.06, 41.95),
-      'Lelang Commandery (-108 BCE), Dunhuang, and Juyan must lie inside Han/Xin polygons'
+        hasPt('s_xihan_b', '汉', 100.45, 38.93) &&
+        hasPt('s_xihan_c', '汉', 100.45, 38.93) &&
+        !hasPt('s_xihan_b', '汉', 101.06, 41.95) &&
+        !hasPt('s_xihan_c', '汉', 101.06, 41.95),
+      'Lelang Commandery (-108 BCE), Dunhuang, and Zhangye must lie inside Han/Xin polygons without the artificial Juyan needle'
     );
   }
 
@@ -7996,6 +7998,36 @@ function main() {
         ctrl.locale = savedLoc;
       }
     }
+  }
+
+  // Verify 1901 Boxer Protocol milestone, Gengshi/Liu Xiu dissolved seams, and Five Dynasties Jiaozhou/Liaoxi/Hetao fixes
+  {
+    const qingDyn = dynasties.find((d) => d.key === 'qing');
+    const m1901 = qingDyn && qingDyn.milestones.find((m) => m.year === 1901);
+    assert(m1901 && m1901.headline.includes('辛丑条约'), 'qing:1901 Boxer Protocol milestone must exist');
+    const rocDyn = dynasties.find((d) => d.key === 'roc');
+    const m1912 = rocDyn && rocDyn.milestones.find((m) => m.year === 1912);
+    assert(m1912 && m1912.headline.includes('清帝溥仪退位'), 'roc:1912 milestone must include Qing abdication');
+
+    const gs23 = snapshots.s_xihan_e.polities.find((p) => p.title === '更始（汉）');
+    const lx23 = snapshots.s_xihan_e.polities.find((p) => p.title === '刘秀（河北）');
+    assert.strictEqual(gs23.shape.coordinates.length, 6, 's_xihan_e 更始（汉） must have dissolved mainland ring (6 rings total)');
+    assert.strictEqual(lx23.shape.type, 'Polygon', 's_xihan_e 刘秀（河北） must be a single dissolved Polygon');
+
+    for (const sid of ['s_tang_d2', 's_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2', 's_wudai_c0']) {
+      assert(
+        snapshots[sid].polities.some((p) => p.title === '静海军（交州）'),
+        `${sid} must include 静海军（交州）`
+      );
+    }
+    for (const sid of ['s_wudai_c', 's_wudai_c2', 's_wudai_d', 's_wudai_e', 's_wudai_e1', 's_wudai_e2']) {
+      assert(
+        snapshots[sid].polities.some((p) => p.title === '安南'),
+        `${sid} must include 安南`
+      );
+    }
+    const chuA = snapshots.s_wudai_a.polities.find((p) => p.title === '楚 · 荆南');
+    assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
