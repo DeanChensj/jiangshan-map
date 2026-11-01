@@ -1922,7 +1922,7 @@
       for (const lb of this.hydroData.labels || []) {
         if (!lb.coord || !this._isHydroVisible(lb, this.year)) continue;
         const [lx, ly] = this.projector.toScreen(lb.coord[0], lb.coord[1]);
-        const tier = lb.tier || (lb.kind === 'range' ? 1 : 0);
+        const tier = lb.tier || (lb.kind === 'range' || lb.kind === 'desert' ? 1 : 0);
         const kindCls =
           lb.kind === 'trunk'
             ? 'is-trunk'
@@ -1930,9 +1930,11 @@
               ? 'is-lake'
               : lb.kind === 'range'
                 ? 'is-range is-crowded-hidden'
-                : tier > 0
-                  ? 'is-river is-detail-hydro is-crowded-hidden'
-                  : 'is-river';
+                : lb.kind === 'desert'
+                  ? 'is-range is-desert is-crowded-hidden'
+                  : tier > 0
+                    ? 'is-river is-detail-hydro is-crowded-hidden'
+                    : 'is-river';
         const rot = lb.rot || 0;
         const { zh, en } = this._hydroLabelPair(lb, this.year);
         const lxStr = lx.toFixed(1);
@@ -10576,8 +10578,10 @@
 
         for (const node of detailHydroNodes) {
           if (!showPasses) {
+            // Below the gate nothing is "placed": dropping the lock lets the label re-seat
+            // itself the moment the user zooms back in, instead of staying hidden.
             node.classList.add('is-crowded-hidden');
-            if (!zoomOnly) delete node.dataset.placed;
+            delete node.dataset.placed;
             continue;
           }
           const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
@@ -10586,30 +10590,31 @@
           const rotStr = node.getAttribute('data-rot') || '0';
           const rad = (parseFloat(rotStr) || 0) * (Math.PI / 180);
           const isRange = node.classList.contains('is-range');
+          const isDesert = node.classList.contains('is-desert');
           const hw =
             (this._estimateLocalTextWidth(
               node.textContent,
-              isRange ? 7.4 : 6.6,
-              isRange ? 2.6 : 1.1
+              isDesert ? 9.0 : isRange ? 7.4 : 6.6,
+              isDesert ? 5.5 : isRange ? 2.6 : 1.1
             ) *
               0.5 +
               2.2) *
             s;
-          const hh = (isRange ? 4.6 : 4.3) * s;
+          const hh = (isDesert ? 5.6 : isRange ? 4.6 : 4.3) * s;
           const ux = Math.cos(rad);
           const uy = Math.sin(rad);
           const nx = -uy;
           const ny = ux;
           const maxOvArea = 4 * hw * hh * 0.045;
 
-          if (zoomOnly && node.dataset.placed === '1') {
-            if (!node.classList.contains('is-crowded-hidden')) {
-              const cx = parseFloat(node.getAttribute('data-x'));
-              const cy = parseFloat(node.getAttribute('data-y'));
-              applyNodeScale(node, cx.toFixed(1), cy.toFixed(1), rotStr);
-              const boxes = rotatedHydroBoxes(cx, cy, hw, hh, ux, uy);
-              for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
-            }
+          // Only a visible placement is worth locking across zoom frames; a label that was
+          // crowded out keeps retrying, since shrinking text frees room as the user zooms in.
+          if (zoomOnly && node.dataset.placed === '1' && !node.classList.contains('is-crowded-hidden')) {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            applyNodeScale(node, cx.toFixed(1), cy.toFixed(1), rotStr);
+            const boxes = rotatedHydroBoxes(cx, cy, hw, hh, ux, uy);
+            for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
             continue;
           }
 
@@ -10638,11 +10643,7 @@
             }
           }
           if (!placed) {
-            node.dataset.placed = '1';
-            const bxStr = baseX.toFixed(1);
-            const byStr = baseY.toFixed(1);
-            node.setAttribute('data-x', bxStr);
-            node.setAttribute('data-y', byStr);
+            delete node.dataset.placed;
             node.classList.add('is-crowded-hidden');
           }
         }
