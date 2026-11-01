@@ -1950,7 +1950,7 @@ function main() {
       `s_zhanguo_a (-403 BCE) must not split State of Yue with post-222 BCE Qin commandery ${anachronistic}`
     );
   }
-  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_chuhan']) {
+  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_c', 's_qin_d', 's_qin_chuhan']) {
     const qSnap = snapshots[qinSnapKey];
     for (const cmdTitle of ['泗水郡', '东海郡', '鄣郡', '会稽郡']) {
       assert(
@@ -8010,6 +8010,23 @@ function main() {
     }
     const chuA = snapshots.s_wudai_a.polities.find((p) => p.title === '楚 · 荆南');
     assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
+
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -210), 's_qin', 'Qin at -210 BCE must resolve to s_qin');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -209), 's_qin_c', 'Qin at -209 BCE must resolve to s_qin_c');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -207), 's_qin_d', 'Qin at -207 BCE must resolve to s_qin_d');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -206), 's_qin_chuhan', 'Qin at -206 BCE must resolve to s_qin_chuhan');
+    assert(
+      snapshots.s_qin_c.polities.some((p) => p.title === '秦') &&
+        snapshots.s_qin_c.polities.some((p) => p.title === '楚（张楚 · 怀王）') &&
+        !snapshots.s_qin_c.polities.some((p) => p.title === '南越（赵佗）'),
+      's_qin_c (-209..-208 BCE) must show Qin (holding Lingnan) and restored Chu/Six Kingdoms before Zhao Tuo secedes'
+    );
+    assert(
+      snapshots.s_qin_d.polities.some((p) => p.title === '秦') &&
+        snapshots.s_qin_d.polities.some((p) => p.title === '楚（怀王 · 项羽）') &&
+        snapshots.s_qin_d.polities.some((p) => p.title === '南越（赵佗）'),
+      's_qin_d (-207 BCE) must show Qin, Chu (King Huai & Xiang Yu), and Zhao Tuo Nanyue in Lingnan'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
