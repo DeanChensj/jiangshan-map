@@ -4491,14 +4491,17 @@ function main() {
     }
   }
 
-  // 23aa. Mountain-range name labels (山川形胜): the twelve ranges that frame China's historical frontiers
+  // 23aa. Mountain-range and boundary-river labels (山川形胜): a deliberately small, household-name set
   {
     const ranges = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'range');
-    const expectedRanges = ['秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭'];
+    const expectedRanges = [
+      '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
+      '长白山', '岷山', '大别山', '陇山',
+    ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 12 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 16 curated mountain-range labels'
     );
     for (const r of ranges) {
       assert(
@@ -4511,6 +4514,21 @@ function main() {
       );
       assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
     }
+    const detailRivers = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'river' && lb.tier >= 1);
+    assert.strictEqual(
+      JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
+      JSON.stringify(['鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江'].sort()),
+      'Zoom-gated boundary rivers must stay limited to the 6 classic frontier rivers'
+    );
+    for (const lb of detailRivers) {
+      for (const en of lb.eraNames || []) {
+        assert(!/[（(]/.test(en.zh), `Boundary river era name must be a single short name, got ${en.zh}`);
+      }
+    }
+    const yaluLabel = detailRivers.find((lb) => lb.zh === '鸭绿江');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, -100).zh, '马訾水', 'Yalu in 100 BCE must resolve to 马訾水');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 668).zh, '鸭绿水', 'Yalu in 668 CE must resolve to 鸭绿水');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 1400).zh, '鸭绿江', 'Yalu in 1400 CE must resolve to 鸭绿江');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)

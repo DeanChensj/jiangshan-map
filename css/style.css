@@ -602,7 +602,13 @@ h2 {
   stroke-width: 2px;
 }
 
-.hydro-label.is-range.is-crowded-hidden {
+/* Zoom-gated boundary rivers share the river ink but stay one step quieter. */
+.hydro-label.is-detail-hydro {
+  font-size: 6.2px;
+  letter-spacing: 0.08em;
+}
+
+.hydro-label.is-crowded-hidden {
   display: none;
 }
 
