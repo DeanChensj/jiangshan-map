@@ -12603,6 +12603,42 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Chengtian Fu (Tainan, Taiwan)",
       "zh": "郑经改台湾东都为东宁，升天兴、万年二县为州",
       "en": "Zheng Jing renames Dongdu to Dongning and elevates Tianxing and Wannian counties"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 866,
+      "coord": [
+        105.85,
+        21.03
+      ],
+      "site": "交州大罗城（今河内）",
+      "siteEn": "Dai La, Jiaozhou (Hanoi)",
+      "zh": "高骈大破南诏收复交州，唐朝升安南都护府为静海军节度使并筑大罗城",
+      "en": "Gao Pian defeats Nanzhao at Jiaozhou; Tang establishes Jinghai Military Circuit at Dai La"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 905,
+      "coord": [
+        105.85,
+        21.03
+      ],
+      "site": "交州（今河内）",
+      "siteEn": "Jiaozhou (Hanoi)",
+      "zh": "交州土豪曲承裕自称静海军节度使，开启交州曲氏三代自主管辖",
+      "en": "Local notable Khúc Thừa Dụ becomes Jinghai Military Governor, beginning Khúc clan rule"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 931,
+      "coord": [
+        105.85,
+        21.03
+      ],
+      "site": "交州大罗城（今河内）",
+      "siteEn": "Dai La, Jiaozhou (Hanoi)",
+      "zh": "曲氏旧将杨廷艺自爱州起兵攻克大罗城，驱逐南汉守将自称静海军节度使",
+      "en": "Former Khúc general Dương Đình Nghệ retakes Dai La and expels the Southern Han garrison"
     }
   ],
   "GUQIN_TRACKS": [
@@ -25113,6 +25149,37 @@ window.ATLAS_LORE_DATA = {
       ],
       "summaryZh": "1931年9月18日日本关东军发动九一八事变侵占东北三省，1932年3月于长春扶植清逊帝溥仪建立傀儡政权伪“满洲国”，改长春为“新京”，次年侵占热河。东北抗日联军杨靖宇、赵尚志等在白山黑水间浴血抗战十四载；1945年8月日本无条件投降，伪满覆灭，东北光复。",
       "summaryEn": "After the Kwantung Army seized Manchuria following the Mukden Incident of September 18, 1931, Japan installed the deposed Qing emperor Puyi at Changchun (renamed Xinjing) in March 1932 as a puppet regime. Northeast Anti-Japanese United Army guerrillas fought for fourteen years until Japan's surrender in August 1945 restored the Northeast to China."
+    },
+    {
+      "key": "jinghai_jiaozhou",
+      "zh": "静海军（交州）",
+      "en": "Jinghai Circuit (Jiaozhou)",
+      "titles": [
+        "静海军（交州）"
+      ],
+      "from": 905,
+      "to": 938,
+      "matchFrom": 866,
+      "matchTo": 939,
+      "seatZh": "大罗城（交州，今河内）",
+      "seatEn": "Dai La (Jiaozhou, modern Hanoi)",
+      "rulersZh": "曲承裕 → 曲颢 → 曲承美 → 杨廷艺 → 矫公羡",
+      "rulersEn": "Khúc Thừa Dụ → Khúc Hạo → Khúc Thừa Mỹ → Dương Đình Nghệ → Kiều Công Tiễn",
+      "keywords": [
+        "静海军",
+        "交州",
+        "安南",
+        "曲承裕",
+        "杨廷艺",
+        "吴权",
+        "白藤江"
+      ],
+      "aliases": [
+        "静海军节度使",
+        "交州曲氏"
+      ],
+      "summaryZh": "唐咸通七年（866年）高骈击败南诏收复交州，升安南都护府为静海军节度使。905年交州土豪曲承裕自称静海军节度使，开启曲氏三代（曲承裕、曲颢、曲承美）自主管辖；930年南汉刘龑攻灭曲承美，931年牙将杨廷艺驱逐南汉守军复据交州。938年杨廷艺旧将吴权于白藤江大败南汉水军，939年称王建吴朝，安南自此脱离中国直接郡县统辖。",
+      "summaryEn": "Upgraded from the Annam Protectorate to Jinghai Military Circuit after Gao Pian recaptured Jiaozhou in 866. From 905 the local Khúc clan (Khúc Thừa Dụ, Khúc Hạo, Khúc Thừa Mỹ) and general Dương Đình Nghệ governed Jiaozhou autonomously as military governors until Ngô Quyền defeated the Southern Han fleet at Bạch Đằng River in 938 and proclaimed himself king in 939."
     }
   ]
 };
