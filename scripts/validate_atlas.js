@@ -1735,6 +1735,133 @@ function main() {
       );
     }
   }
+  {
+    let multiSiteCount = 0;
+    for (const d of dynasties) {
+      for (const m of d.milestones || []) {
+        if (!m.site || !m.site.includes('·')) continue;
+        const zhParts = ctrl._splitOutsideParens(m.site, /\s*·\s*/);
+        if (zhParts.length < 2) continue;
+        multiSiteCount++;
+        assert(
+          Array.isArray(m.siteCoords) && m.siteCoords.length === zhParts.length,
+          `Multi-site milestone ${d.key}:${m.year} [${m.site}] must have siteCoords of length ${zhParts.length}, got ${m.siteCoords && m.siteCoords.length}`
+        );
+        for (const sc of m.siteCoords) {
+          assert(
+            Array.isArray(sc) && sc.length === 2 && sc[0] >= 60 && sc[0] <= 145 && sc[1] >= 10 && sc[1] <= 60,
+            `Invalid siteCoord ${JSON.stringify(sc)} on ${d.key}:${m.year}`
+          );
+        }
+        const enEntry = enLocale.milestones[`${d.key}:${m.year}`];
+        const enParts = ctrl._splitOutsideParens(enEntry && enEntry[1], /\s*(?:·|&|\/|,)\s*/);
+        assert.strictEqual(
+          enParts.length,
+          zhParts.length,
+          `EN multi-site count mismatch on ${d.key}:${m.year}: zh=${JSON.stringify(zhParts)} vs en=${JSON.stringify(enParts)}`
+        );
+      }
+    }
+    assert(multiSiteCount >= 115, `Expected >=115 multi-site milestones verified, got ${multiSiteCount}`);
+    const dhDyn = dynasties.find((d) => d.key === 'donghan');
+    const m144 = dhDyn.milestones.find((m) => m.year === 144);
+    const m215 = dhDyn.milestones.find((m) => m.year === 215);
+    assert.strictEqual(ctrl._getMilestoneAnchors(dhDyn, m144).length, 2, 'donghan:144 must resolve 2 anchors');
+    assert.strictEqual(ctrl._getMilestoneAnchors(dhDyn, m215).length, 3, 'donghan:215 must resolve 3 anchors');
+    const xhDyn = dynasties.find((d) => d.key === 'xihan');
+    const mn110 = xhDyn.milestones.find((m) => m.year === -110);
+    assert.strictEqual(
+      ctrl._getMilestoneAnchors(xhDyn, mn110).map((a) => a.shortLabel).join('|'),
+      '东冶|珠崖',
+      'xihan:-110 must split outside parentheses cleanly into 东冶 & 珠崖'
+    );
+    const xjDyn = dynasties.find((d) => d.key === 'xijin');
+    const m299 = xjDyn.milestones.find((m) => m.year === 299);
+    assert.strictEqual(
+      ctrl._getMilestoneAnchors(xjDyn, m299).length,
+      1,
+      'xijin:299 [长安 · 关中] must merge co-located region anchor into 1 pin/pill'
+    );
+    ctrl.openMilestoneBalloon(dhDyn, m215);
+    const pillCount = (ctrl.milestoneBalloon.innerHTML.match(/class="ep-place"/g) || []).length;
+    assert.strictEqual(pillCount, 3, 'donghan:215 balloon must render 3 independent .ep-place pills');
+    assert(
+      ctrl.milestoneBalloon.innerHTML.includes('data-selected="1"') &&
+        ctrl.milestoneBalloon.innerHTML.includes('临湘 · 沿革 ›') &&
+        ctrl.milestoneBalloon.innerHTML.includes('南郑 ›') &&
+        ctrl.milestoneBalloon.innerHTML.includes('合肥 ›') &&
+        !ctrl.milestoneBalloon.innerHTML.includes('合肥 · 沿革'),
+      `Expected two-beat pill labels on donghan:215 (selected pill shows · 沿革 ›, siblings show ›), got: ${ctrl.milestoneBalloon.innerHTML}`
+    );
+    const m195 = dhDyn.milestones.find((m) => m.year === 195);
+    assert.strictEqual(
+      ctrl._getMilestoneAnchors(dhDyn, m195).map((a) => a.shortLabel).join('|'),
+      '曲阿|洛阳',
+      'donghan:195 must pair Sun Ce in Qu’a with Emperor Xian returning to Luoyang'
+    );
+    const mn61 = xhDyn.milestones.find((m) => m.year === -61);
+    assert.strictEqual(
+      ctrl._getMilestoneAnchors(xhDyn, mn61).length,
+      1,
+      'xihan:-61 [临羌 · 湟水] (28 km apart) must merge into 1 anchor under <=32 km rule'
+    );
+    const qingDyn = dynasties.find((d) => d.key === 'qing');
+    const m1771 = qingDyn.milestones.find((m) => m.year === 1771);
+    const tangDyn = dynasties.find((d) => d.key === 'tang');
+    const m713 = tangDyn.milestones.find((m) => m.year === 713);
+    const prevAnim = ctrl._animateCameraTo;
+    const prevDefCam = ctrl._getDefaultCamera;
+    const prevCam = ctrl.camera;
+    let capturedCam = null;
+    ctrl._animateCameraTo = (c) => {
+      capturedCam = c;
+    };
+    ctrl._getDefaultCamera = () => ({ x: 350, y: 215, w: 500, h: 420, zoom: 2 });
+    ctrl.camera = { x: 350, y: 215, w: 500, h: 420, zoom: 2 };
+    ctrl.openMilestoneBalloon(qingDyn, m1771);
+    ctrl._frameMilestoneAnchors(qingDyn, m1771, { isMapChange: true });
+    assert(
+      !capturedCam || capturedCam.w <= 500 * 1.04,
+      `Continental multi-site qing:1771 [伊犁 · 承德] must NOT blow out camera.w > defCam.w*1.04, got ${capturedCam && capturedCam.w}`
+    );
+    capturedCam = null;
+    ctrl.openMilestoneBalloon(tangDyn, m713);
+    ctrl._frameMilestoneAnchors(tangDyn, m713, { isMapChange: false });
+    assert(
+      capturedCam && capturedCam.w <= 380,
+      `Continental multi-site tang:713 [长安 · 忽汗城] click must focus primary anchor (w<=380) rather than continent zoom, got ${capturedCam && capturedCam.w}`
+    );
+    // Mobile measurement & sibling-pin avoidance checks
+    ctrl.milestoneBalloon.offsetWidth = 264;
+    ctrl.milestoneBalloon.offsetHeight = 96;
+    ctrl.milestoneBalloon.style = {
+      left: '310px',
+      top: '180px',
+      setProperty() {},
+    };
+    ctrl.milestoneBalloon.dataset = {};
+    ctrl._measureMilestoneBalloonSize(190, 54);
+    assert.strictEqual(ctrl._milestoneBalloonSize.w, 264, 'Real mobile offsetWidth must be cached');
+    assert.strictEqual(ctrl._milestoneBalloonSize.h, 96, 'Real mobile offsetHeight must be cached');
+    assert.strictEqual(ctrl.milestoneBalloon.style.left, '310px', 'Measurement must restore prior left');
+    ctrl.openMilestoneBalloon(dhDyn, m215);
+    ctrl._milestoneBalloonSize = { w: 264, h: 92 };
+    ctrl.camera = { x: 430, y: 225, w: 340, h: 610, zoom: 1000 / 340 };
+    const prevWinW = sandbox.window.innerWidth;
+    sandbox.window.innerWidth = 390;
+    Object.getPrototypeOf(ctrl)._positionMilestoneBalloon.call(ctrl, { width: 390, height: 700 });
+    sandbox.window.innerWidth = prevWinW;
+    assert.strictEqual(
+      ctrl.milestoneBalloon.dataset.caret,
+      'top',
+      `Mobile 390x700 donghan:215 balloon must flip below Linxiang (caret=top) to avoid covering northern sibling pins, got ${ctrl.milestoneBalloon.dataset.caret}`
+    );
+    delete ctrl.milestoneBalloon.offsetWidth;
+    delete ctrl.milestoneBalloon.offsetHeight;
+    ctrl._animateCameraTo = prevAnim;
+    ctrl._getDefaultCamera = prevDefCam;
+    ctrl.camera = prevCam;
+  }
 
   // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
   for (const [sk, snap] of Object.entries(snapshots)) {

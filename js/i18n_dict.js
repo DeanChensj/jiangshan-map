@@ -258,7 +258,7 @@ window.EN_LOCALE = {
     ],
     "donghan:195": [
       "Sun Ce crosses the Yangtze to conquer Jiangdong; Emperor Xian flees east from Chang'an",
-      "Qu'a & Liyang"
+      "Qu'a & Luoyang"
     ],
     "donghan:198": [
       "Battle of Xiapi: Cao Cao floods Xiapi with the Si and Yi rivers, capturing and executing Lu Bu",
@@ -1082,7 +1082,7 @@ window.EN_LOCALE = {
     ],
     "tang:630": [
       "Li Jing conquers Eastern Tujue; Taizong hailed as Heavenly Qaghan",
-      "Yin Mountains"
+      "Yin Mountains · Dingxiang"
     ],
     "tang:641": [
       "Princess Wencheng enters Tibet to marry Songtsen Gampo",
@@ -1214,7 +1214,7 @@ window.EN_LOCALE = {
     ],
     "nansong:1163": [
       "Emperor Xiaozong's Longxing Northern Expedition and Peace Accord",
-      "Suzhou (Fuli)"
+      "Suzhou · Fuli"
     ],
     "nansong:1215": [
       "Mongols capture Jin capital Zhongdu; Jin moves south to Bianjing, losing half its territory",
@@ -1686,7 +1686,7 @@ window.EN_LOCALE = {
     ],
     "xihan:-91": [
       "Witchcraft Crisis drives Prince Liu Ju to suicide; Sima Qian completes the Shiji chronicle",
-      "Chang'an"
+      "Huxian · Chang'an"
     ],
     "xihan:-74": [
       "Regent Huo Guang deposes Liu He after 27 days and enthrones Emperor Xuan (Zhaoxuan Restoration)",
