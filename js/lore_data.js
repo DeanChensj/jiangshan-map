@@ -19409,7 +19409,7 @@ window.ATLAS_LORE_DATA = {
       "modern": "台湾台南",
       "coord": [
         120.21,
-        23.0
+        23
       ],
       "zoom": 2.4
     }
@@ -22699,11 +22699,13 @@ window.ATLAS_LORE_DATA = {
       "zh": "西楚",
       "en": "Western Chu",
       "titles": [
-        "西楚（项羽）"
+        "西楚（项羽）",
+        "楚（张楚 · 怀王）",
+        "楚（怀王 · 项羽）"
       ],
       "from": -206,
       "to": -202,
-      "matchFrom": -207,
+      "matchFrom": -209,
       "seatZh": "彭城（徐州）",
       "seatEn": "Pengcheng (Xuzhou)",
       "rulersZh": "西楚霸王项羽（项籍）",
@@ -22732,7 +22734,7 @@ window.ATLAS_LORE_DATA = {
       ],
       "from": -204,
       "to": -111,
-      "matchFrom": -206,
+      "matchFrom": -207,
       "seatZh": "番禺（广州）",
       "seatEn": "Panyu (Guangzhou)",
       "rulersZh": "武王赵佗 → 文王赵眜 → 明王赵婴齐 → 哀王赵兴 → 赵建德",
