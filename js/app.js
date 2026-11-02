@@ -1819,7 +1819,23 @@
       return true;
     }
 
-    _hydroMask(year) {
+    _hydroLabelPair(lb, year = this.year) {
+      if (!lb) return { zh: '', en: '' };
+      if (Array.isArray(lb.eraNames)) {
+        const y = year !== undefined ? year : this.year;
+        for (const en of lb.eraNames) {
+          if (
+            (en.from === undefined || y >= en.from) &&
+            (en.until === undefined || y < en.until)
+          ) {
+            return { zh: en.zh || lb.zh || '', en: en.en || lb.en || '' };
+          }
+        }
+      }
+      return { zh: lb.zh || '', en: lb.en || '' };
+    }
+
+    _hydroCourseMask(year) {
       if (!this.hydroData) return '';
       const y = year !== undefined ? year : this.year;
       const rMask = (this.hydroData.rivers || [])
@@ -1831,10 +1847,21 @@
         .map((l) => (this._isHydroVisible(l, y) ? '1' : '0'))
         .join('');
       const tMask = (this.hydroData.labels || [])
-        .filter((t) => t.appear !== undefined || t.vanish !== undefined)
+        .filter((t) => (t.appear !== undefined || t.vanish !== undefined) && !t.tier)
         .map((t) => (this._isHydroVisible(t, y) ? '1' : '0'))
         .join('');
       return `${rMask}:${lMask}:${tMask}`;
+    }
+
+    _hydroMask(year) {
+      if (!this.hydroData) return '';
+      const y = year !== undefined ? year : this.year;
+      const base = this._hydroCourseMask(y);
+      const eMask = (this.hydroData.labels || [])
+        .filter((t) => t.eraNames || (t.tier && (t.appear !== undefined || t.vanish !== undefined)))
+        .map((t) => (this._isHydroVisible(t, y) ? this._hydroLabelPair(t, y).zh : '0'))
+        .join('|');
+      return `${base}:${eMask}`;
     }
 
     _buildTerrainRivers() {
@@ -1891,10 +1918,11 @@
         );
       }
 
-      // 4. Render classical & bilingual water captions
+      // 4. Render classical & bilingual water and mountain-range captions
       for (const lb of this.hydroData.labels || []) {
         if (!lb.coord || !this._isHydroVisible(lb, this.year)) continue;
         const [lx, ly] = this.projector.toScreen(lb.coord[0], lb.coord[1]);
+        const tier = lb.tier || (lb.kind === 'range' || lb.kind === 'desert' ? 1 : 0);
         const kindCls =
           lb.kind === 'trunk'
             ? 'is-trunk'
@@ -1902,22 +1930,32 @@
               ? 'is-lake'
               : lb.kind === 'range'
                 ? 'is-range is-crowded-hidden'
-                : 'is-river';
+                : lb.kind === 'desert'
+                  ? 'is-range is-desert is-crowded-hidden'
+                  : tier > 0
+                    ? 'is-river is-detail-hydro is-crowded-hidden'
+                    : 'is-river';
         const rot = lb.rot || 0;
+        const { zh, en } = this._hydroLabelPair(lb, this.year);
+        const lxStr = lx.toFixed(1);
+        const lyStr = ly.toFixed(1);
         const tNode = this._svgNode(
           'text',
           {
             class: `hydro-label ${kindCls}`,
-            'data-x': lx.toFixed(1),
-            'data-y': ly.toFixed(1),
+            'data-x': lxStr,
+            'data-y': lyStr,
+            'data-base-x': lxStr,
+            'data-base-y': lyStr,
             'data-rot': String(rot),
-            'data-zh': lb.zh || '',
-            'data-en': lb.en || '',
-            transform: `translate(${lx.toFixed(1)},${ly.toFixed(1)}) rotate(${rot})`,
+            'data-tier': String(tier),
+            'data-zh': zh,
+            'data-en': en,
+            transform: `translate(${lxStr},${lyStr}) rotate(${rot})`,
           },
           this.grpRivers
         );
-        tNode.textContent = this.locale === 'en' ? lb.en || '' : this._zh(lb.zh || '');
+        tNode.textContent = this.locale === 'en' ? en : this._zh(zh);
       }
     }
 
@@ -5312,7 +5350,7 @@
         const cityShift =
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
-        const hydroShift = this._hydroMask(targetY) !== this._hydroMask(prevY);
+        const hydroShift = this._hydroCourseMask(targetY) !== this._hydroCourseMask(prevY);
         const isMapChange = Boolean(m.isMapChange) || snapShift || cityShift || corrShift || hydroShift;
         const yrLabel =
           this.locale === 'en'
@@ -9770,7 +9808,9 @@
       }
       if (this.grpRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
-          if (node.classList.contains('is-range') && !showPasses) return;
+          if (node.classList.contains('is-range') || node.classList.contains('is-detail-hydro')) {
+            return;
+          }
           const x = node.getAttribute('data-x');
           const y = node.getAttribute('data-y');
           const rot = node.getAttribute('data-rot') || '0';
@@ -9847,10 +9887,27 @@
           }
         });
       }
+      const rotatedHydroBoxes = (cx, cy, hw, hh, ux, uy) => {
+        if (Math.abs(uy) <= 0.25) {
+          const ex = Math.abs(ux) * hw + Math.abs(uy) * hh;
+          const ey = Math.abs(uy) * hw + Math.abs(ux) * hh;
+          return [{ x1: cx - ex, y1: cy - ey, x2: cx + ex, y2: cy + ey }];
+        }
+        const segHw = hw * 0.36;
+        const ex = Math.abs(ux) * segHw + Math.abs(uy) * hh;
+        const ey = Math.abs(uy) * segHw + Math.abs(ux) * hh;
+        const step = hw * 0.62;
+        return [-step, 0, step].map((t) => {
+          const sx = cx + t * ux;
+          const sy = cy + t * uy;
+          return { x1: sx - ex, y1: sy - ey, x2: sx + ex, y2: sy + ey };
+        });
+      };
       if (showRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((hl) => {
-          // Mountain-range names are background context: city labels must never yield to them.
-          if (hl.classList.contains('is-range')) return;
+          // Mountain-range and zoom-gated boundary-river names are background context:
+          // city, polity, pass, and region labels must never yield to them.
+          if (hl.classList.contains('is-range') || hl.classList.contains('is-detail-hydro')) return;
           const hx = parseFloat(hl.getAttribute('data-x'));
           const hy = parseFloat(hl.getAttribute('data-y'));
           if (!isNaN(hx) && !isNaN(hy)) {
@@ -9858,7 +9915,9 @@
             const fPx = isLake ? 8.2 : hl.classList.contains('is-trunk') ? 8.6 : 7.4;
             const hw = (this._estimateLocalTextWidth(hl.textContent, fPx, 1.5) * 0.5 + (isLake ? 8 : 4)) * s;
             const hh = (isLake ? 8.5 : 5.5) * s;
-            occupied.push({ x1: hx - hw, y1: hy - hh, x2: hx + hw, y2: hy + hh });
+            const rad = (parseFloat(hl.getAttribute('data-rot') || '0') || 0) * (Math.PI / 180);
+            const boxes = rotatedHydroBoxes(hx, hy, hw, hh, Math.cos(rad), Math.sin(rad));
+            for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
           }
         });
       }
@@ -10497,32 +10556,97 @@
         }
       }
 
-      // Tier 6: Mountain-range names are the lowest priority; hide rather than cover any label above.
-      // They share the pass zoom threshold so the overview keeps its current density.
+      // Tier 6: Mountain-range and boundary-river names share the pass/tier-2 zoom gate and
+      // are lowest priority: slide along the ridge/channel tangent to dodge other labels, else hide.
       if (showRivers) {
-        this.grpRivers.querySelectorAll('.hydro-label.is-range').forEach((node) => {
+        const hydroOffsets = [
+          [0, 0],
+          [14, 0],
+          [-14, 0],
+          [26, 0],
+          [-26, 0],
+          [0, -7],
+          [0, 7],
+          [16, -6],
+          [-16, 6],
+          [38, 0],
+          [-38, 0],
+        ];
+        const detailHydroNodes = this.grpRivers.querySelectorAll(
+          '.hydro-label.is-range, .hydro-label.is-detail-hydro'
+        );
+
+        for (const node of detailHydroNodes) {
           if (!showPasses) {
+            // Below the gate nothing is "placed": dropping the lock lets the label re-seat
+            // itself the moment the user zooms back in, instead of staying hidden.
             node.classList.add('is-crowded-hidden');
-            if (!zoomOnly) delete node.dataset.placed;
-            return;
+            delete node.dataset.placed;
+            continue;
           }
-          if (zoomOnly && node.dataset.placed === '1') {
-            return;
+          const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
+          const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
+          if (isNaN(baseX) || isNaN(baseY)) continue;
+          const rotStr = node.getAttribute('data-rot') || '0';
+          const rad = (parseFloat(rotStr) || 0) * (Math.PI / 180);
+          const isRange = node.classList.contains('is-range');
+          const isDesert = node.classList.contains('is-desert');
+          const hw =
+            (this._estimateLocalTextWidth(
+              node.textContent,
+              isDesert ? 9.0 : isRange ? 7.4 : 6.6,
+              isDesert ? 5.5 : isRange ? 2.6 : 1.1
+            ) *
+              0.5 +
+              2.2) *
+            s;
+          const hh = (isDesert ? 5.6 : isRange ? 4.6 : 4.3) * s;
+          const ux = Math.cos(rad);
+          const uy = Math.sin(rad);
+          const nx = -uy;
+          const ny = ux;
+          const maxOvArea = 4 * hw * hh * 0.045;
+
+          // Only a visible placement is worth locking across zoom frames; a label that was
+          // crowded out keeps retrying, since shrinking text frees room as the user zooms in.
+          if (zoomOnly && node.dataset.placed === '1' && !node.classList.contains('is-crowded-hidden')) {
+            const cx = parseFloat(node.getAttribute('data-x'));
+            const cy = parseFloat(node.getAttribute('data-y'));
+            applyNodeScale(node, cx.toFixed(1), cy.toFixed(1), rotStr);
+            const boxes = rotatedHydroBoxes(cx, cy, hw, hh, ux, uy);
+            for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
+            continue;
           }
-          const rx = parseFloat(node.getAttribute('data-x'));
-          const ry = parseFloat(node.getAttribute('data-y'));
-          if (isNaN(rx) || isNaN(ry)) return;
-          const rad = (parseFloat(node.getAttribute('data-rot')) || 0) * (Math.PI / 180);
-          const hw = (this._estimateLocalTextWidth(node.textContent, 7.2, 3.6) * 0.5 + 2) * s;
-          const hh = 4.6 * s;
-          const ex = Math.abs(Math.cos(rad)) * hw + Math.abs(Math.sin(rad)) * hh;
-          const ey = Math.abs(Math.sin(rad)) * hw + Math.abs(Math.cos(rad)) * hh;
-          const box = { x1: rx - ex, y1: ry - ey, x2: rx + ex, y2: ry + ey };
-          const crowded = overlapArea(box) > (box.x2 - box.x1) * (box.y2 - box.y1) * 0.03;
-          node.dataset.placed = '1';
-          node.classList.toggle('is-crowded-hidden', crowded);
-          if (!crowded) occupied.push(box);
-        });
+
+          let placed = false;
+          for (let i = 0; i < hydroOffsets.length; i++) {
+            const [along, perp] = hydroOffsets[i];
+            const cx = baseX + (along * ux + perp * nx) * s;
+            const cy = baseY + (along * uy + perp * ny) * s;
+            const boxes = rotatedHydroBoxes(cx, cy, hw, hh, ux, uy);
+            let totalOv = 0;
+            for (let k = 0; k < boxes.length; k++) {
+              totalOv += overlapArea(boxes[k]);
+              if (totalOv > maxOvArea) break;
+            }
+            if (totalOv <= maxOvArea) {
+              node.dataset.placed = '1';
+              const cxStr = cx.toFixed(1);
+              const cyStr = cy.toFixed(1);
+              node.setAttribute('data-x', cxStr);
+              node.setAttribute('data-y', cyStr);
+              applyNodeScale(node, cxStr, cyStr, rotStr);
+              node.classList.remove('is-crowded-hidden');
+              for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
+              placed = true;
+              break;
+            }
+          }
+          if (!placed) {
+            delete node.dataset.placed;
+            node.classList.add('is-crowded-hidden');
+          }
+        }
       }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {

@@ -4491,15 +4491,23 @@ function main() {
     }
   }
 
-  // 23aa. Mountain-range name labels (山川形胜): the twelve ranges that frame China's historical frontiers
+  // 23aa. Mountain-range and boundary-river labels (山川形胜): a deliberately small, household-name set
   {
     const ranges = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'range');
-    const expectedRanges = ['秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭'];
+    const expectedRanges = [
+      '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
+      '长白山', '岷山', '大别山', '陇山', '巫山', '葱岭', '燕然山',
+    ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 12 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 19 curated mountain-range labels'
     );
+    const deserts = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'desert');
+    assert.strictEqual(JSON.stringify(deserts.map((d) => d.zh)), JSON.stringify(['大 漠']), 'Exactly one Gobi watermark label');
+    const pamirs = ranges.find((r) => r.zh === '葱岭');
+    assert.strictEqual(ctrl._hydroLabelPair(pamirs, 640).zh, '葱岭', 'Pamirs in 640 CE must read 葱岭');
+    assert.strictEqual(ctrl._hydroLabelPair(pamirs, 1800).zh, '帕米尔', 'Pamirs in 1800 CE must read 帕米尔');
     for (const r of ranges) {
       assert(
         typeof r.en === 'string' && r.en.length > 0 && !/[\u4e00-\u9fa5]/.test(r.en),
@@ -4511,6 +4519,21 @@ function main() {
       );
       assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
     }
+    const detailRivers = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'river' && lb.tier >= 1);
+    assert.strictEqual(
+      JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
+      JSON.stringify(['鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江'].sort()),
+      'Zoom-gated boundary rivers must stay limited to the 6 classic frontier rivers'
+    );
+    for (const lb of detailRivers) {
+      for (const en of lb.eraNames || []) {
+        assert(!/[（(]/.test(en.zh), `Boundary river era name must be a single short name, got ${en.zh}`);
+      }
+    }
+    const yaluLabel = detailRivers.find((lb) => lb.zh === '鸭绿江');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, -100).zh, '马訾水', 'Yalu in 100 BCE must resolve to 马訾水');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 668).zh, '鸭绿水', 'Yalu in 668 CE must resolve to 鸭绿水');
+    assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 1400).zh, '鸭绿江', 'Yalu in 1400 CE must resolve to 鸭绿江');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
@@ -5277,6 +5300,32 @@ function main() {
     assert(
       joseonWatermark.classList.contains('is-crowded-hidden'),
       'Modern watermark 朝鲜 must hide when an active historical polity with the identical name (朝鲜) is displayed'
+    );
+
+    // CUJ 31b: a zoom-gated range label must reappear after zooming out past the gate and back in
+    //          (regression: the hidden state used to stay locked across zoomOnly frames).
+    const [qx, qy] = ctrl.projector.toScreen(107.4, 33.62);
+    const qinlingNode = makeCaptionNode(['hydro-label', 'is-range', 'is-crowded-hidden'], '秦岭', qx, qy, {});
+    const rangeAttrs = { 'data-rot': '-2' };
+    const baseGet = qinlingNode.getAttribute;
+    qinlingNode.getAttribute = (k) => (k in rangeAttrs ? rangeAttrs[k] : baseGet(k));
+    const hydroCtrl = {
+      ...mockCtrl,
+      camera: { x: 300, y: 200, w: 400, h: 280, zoom: 2.5 },
+      grpPolities: { classList: makeCls(), querySelectorAll: () => [] },
+      grpNeighbors: { querySelectorAll: () => [] },
+      grpRivers: { classList: makeCls(), querySelectorAll: () => [qinlingNode] },
+    };
+    proto._rescaleSvgTypography.call(hydroCtrl);
+    assert(!qinlingNode.classList.contains('is-crowded-hidden'), '秦岭 must be visible on first landing at zoom 2.5');
+    hydroCtrl.camera = { x: 0, y: 0, w: 1000, h: 700, zoom: 1 };
+    proto._rescaleSvgTypography.call(hydroCtrl, { zoomOnly: true });
+    assert(qinlingNode.classList.contains('is-crowded-hidden'), '秦岭 must hide below the pass gate');
+    hydroCtrl.camera = { x: 300, y: 200, w: 400, h: 280, zoom: 2.5 };
+    proto._rescaleSvgTypography.call(hydroCtrl, { zoomOnly: true });
+    assert(
+      !qinlingNode.classList.contains('is-crowded-hidden'),
+      '秦岭 must reappear after zooming back in past the pass gate (zoomOnly frame)'
     );
   }
 
