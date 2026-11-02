@@ -6518,6 +6518,77 @@ function main() {
           sandbox.location.search = '';
         }
 
+        // 4c. Embed mode (?embed=1): README-only feature, so the main site must stay untouched.
+        const embedSaved = {
+          embed: ctrl.embed,
+          minYear: ctrl.minYear,
+          maxYear: ctrl.maxYear,
+          bandClip: ctrl._bandClip,
+          armed: ctrl._urlSyncArmed,
+          year: ctrl.year,
+          trace: ctrl.activeTrace,
+          polity: ctrl.activePolity,
+          person: ctrl.activePerson,
+        };
+        try {
+          assert.strictEqual(ctrl._parseEmbedParams(new URLSearchParams('year=1104')), null, 'Without embed=1 the site must not enter embed mode');
+          // Compare as JSON: the object comes from the vm sandbox, whose Object.prototype differs.
+          assert.strictEqual(
+            JSON.stringify(ctrl._parseEmbedParams(new URLSearchParams('embed=1&year=1104&from=1072&to=1126&autoplay=1'))),
+            JSON.stringify({ from: 1072, to: 1126, lock: false, autoplay: true, year: 1104 }),
+            'Embed params must parse from/to/lock/autoplay/year'
+          );
+
+          const fullLo = ctrl.dynasties[0].fromYear;
+          const fullHi = ctrl.dynasties[ctrl.dynasties.length - 1].toYear;
+          const applyRange = (qs) => {
+            Object.assign(ctrl, { minYear: fullLo, maxYear: fullHi, _bandClip: undefined });
+            ctrl.embed = ctrl._parseEmbedParams(new URLSearchParams(qs));
+            ctrl._applyEmbedYearRange();
+          };
+          applyRange('embed=1&from=1126&to=1072');
+          assert(ctrl.minYear === 1072 && ctrl.maxYear === 1126, 'A reversed from/to must be swapped into a valid range');
+          applyRange('embed=1&from=-9999&to=99999');
+          assert(ctrl.minYear === fullLo && ctrl.maxYear === fullHi && !ctrl._bandClip, 'from/to beyond the atlas must clamp and leave the timeline unzoomed');
+          applyRange('embed=1&year=1104&lock=1');
+          assert(ctrl.minYear === 1104 && ctrl.maxYear === 1104, 'lock=1 must freeze the year bounds at year');
+
+          applyRange('embed=1&from=1072&to=1126');
+          ctrl._initTimelineBands();
+          assert(Math.abs(ctrl._yearToProgress(1072)) < 1e-9, 'A zoomed embed timeline must start at from');
+          assert(Math.abs(ctrl._yearToProgress(1099) - 0.5) < 0.02, 'A zoomed embed timeline must be linear over [from, to]');
+          assert(Math.abs(ctrl._progressToYear(0.5) - 1099) <= 1, 'Scrubbing a zoomed embed timeline must map back to years inside [from, to]');
+          assert(ctrl.bandWeights.filter((w) => w > 0).length === 1, 'Only dynasties overlapping [from, to] may take room on the zoomed timeline');
+
+          ctrl._urlSyncArmed = true;
+          Object.assign(ctrl, { year: 1104, activeTrace: [101.778, 36.617], activePolity: null, activePerson: null });
+          sandbox.location.search = '?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126';
+          ctrl._writeUrlState();
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126', 'An embed must never rewrite the URL (the host page owns its address bar)');
+          const openUrl = ctrl._embedOpenUrl();
+          assert(openUrl.endsWith('?year=1104&trace=101.778,36.617'), `The "open in atlas" link must carry the view without embed params, got ${openUrl}`);
+
+          for (const readme of ['README.md', 'README_ZH.md']) {
+            const text = require('fs').readFileSync(require('path').join(__dirname, '..', readme), 'utf8');
+            assert(text.includes('embed=1') && text.includes('from=1072&to=1126'), `${readme} must document embed mode`);
+          }
+        } finally {
+          Object.assign(ctrl, {
+            embed: embedSaved.embed,
+            minYear: embedSaved.minYear,
+            maxYear: embedSaved.maxYear,
+            _bandClip: embedSaved.bandClip,
+            _urlSyncArmed: embedSaved.armed,
+            year: embedSaved.year,
+            activeTrace: embedSaved.trace,
+            activePolity: embedSaved.polity,
+            activePerson: embedSaved.person,
+          });
+          ctrl._initTimelineBands();
+          sandbox.location.search = '';
+        }
+
         // 5. _effectiveRenderedLocale distinguishes pending English dict from loaded English dict
         const savedEnLocale = ctrl.enLocale;
         ctrl.locale = 'en';
