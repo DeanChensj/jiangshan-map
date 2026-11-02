@@ -2645,7 +2645,7 @@ window.DYNASTY_DATA = [
           27.89
         ],
         "tier": 2,
-        "appear": -111,
+        "appear": -109,
         "remark": "元鼎六年置越嶲郡治邛都，控川滇灵关道",
         "aliases": [
           "邛都",
@@ -2768,6 +2768,14 @@ window.DYNASTY_DATA = [
       {
         "until": -111,
         "snap": "s_xihan_b2"
+      },
+      {
+        "until": -110,
+        "snap": "s_xihan_b3a"
+      },
+      {
+        "until": -109,
+        "snap": "s_xihan_b3b"
       },
       {
         "until": -108,
