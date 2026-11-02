@@ -111,6 +111,33 @@ Append query parameters to share any historical moment, battle, city genealogy, 
 - **Start a quiz round**: [`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en) (Map Pinpoint Challenge)
 - **Switch UI language**: [`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en) (English) / [`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw) (Traditional Chinese) / [`/`](https://deanchen.me/jiangshan-map/) (Simplified Chinese)
 
+### Embed in Your Page
+
+Put any view of the atlas into a blog post, Notion page, or course site:
+
+1. Open the atlas and set up the view you want (a year, a regime profile, a place card, or a person's trajectory). The address bar always mirrors what you see.
+2. Copy the URL and add `&embed=1`.
+3. Paste it into an `<iframe>`:
+
+```html
+<iframe
+  src="https://deanchen.me/jiangshan-map/?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126&lang=en"
+  width="100%" height="480" loading="lazy" style="border:0"
+  title="Chronicles of the Realm · 1104 CE, Northern Song"></iframe>
+```
+
+The embedded map hides the site chrome and keeps only the map, a compact timeline, a title chip, an "Open in Jiangshan Atlas ↗" link, and a note that historical borders are approximate. Readers click once to start panning and zooming, so scrolling your page never gets stuck on the map.
+
+| Parameter | Effect |
+|---|---|
+| `embed=1` | Turn on embed mode (required) |
+| `year`, `polity`, `person`, `stop`, `trace`, `lang` | Same as the share links above |
+| `from=1072&to=1126` | Limit the timeline to this range; the timeline zooms to show only it |
+| `lock=1` | Freeze the map at `year` and hide the timeline |
+| `autoplay=1` | Play a person's trajectory stop by stop (with `person`), or play the timeline |
+
+WeChat Official Accounts, Zhihu, and Xiaohongshu do not allow iframes; share the plain link there instead.
+
 ---
 
 ## AI Agent, MCP & LLM Integration

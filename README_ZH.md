@@ -111,6 +111,33 @@
 - **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换繁简与英文界面**：[`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw)（繁体中文） / [`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)（英文版）
 
+### 嵌入到你的网页
+
+把地图的任意画面放进博客文章、Notion 页面或课程网站：
+
+1. 打开江山时序，调到你想展示的画面（某一年、某个政权档案、某个地点卡片或某个人物的轨迹）。地址栏会实时反映当前画面。
+2. 复制网址，在后面加上 `&embed=1`。
+3. 放进 `<iframe>`：
+
+```html
+<iframe
+  src="https://deanchen.me/jiangshan-map/?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126"
+  width="100%" height="480" loading="lazy" style="border:0"
+  title="江山时序 · 公元1104年 北宋"></iframe>
+```
+
+嵌入后的地图会隐藏网站的导航和侧栏，只保留地图、精简时间轴、左上角的标题牌、右上角的「在江山时序中打开 ↗」链接，以及「历史疆域为示意性近似」的说明。读者需要先点一下地图才能拖动和缩放，滚动文章时不会被地图卡住。
+
+| 参数 | 作用 |
+|---|---|
+| `embed=1` | 开启嵌入模式（必填） |
+| `year`、`polity`、`person`、`stop`、`trace`、`lang` | 和上面的分享链接相同 |
+| `from=1072&to=1126` | 把时间轴限定在这个范围，时间轴会放大到只显示这一段 |
+| `lock=1` | 把地图固定在 `year` 指定的年份，并隐藏时间轴 |
+| `autoplay=1` | 自动逐站播放人物轨迹（配合 `person`），或自动播放时间轴 |
+
+微信公众号、知乎、小红书不支持网页嵌入，在这些平台请直接分享链接。
+
 ---
 
 ## AI Agent、MCP & LLM 接入指南
