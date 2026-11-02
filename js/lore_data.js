@@ -19409,7 +19409,7 @@ window.ATLAS_LORE_DATA = {
       "modern": "台湾台南",
       "coord": [
         120.21,
-        23.0
+        23
       ],
       "zoom": 2.4
     }
@@ -22699,11 +22699,13 @@ window.ATLAS_LORE_DATA = {
       "zh": "西楚",
       "en": "Western Chu",
       "titles": [
-        "西楚（项羽）"
+        "西楚（项羽）",
+        "楚（张楚 · 怀王）",
+        "楚（怀王 · 项羽）"
       ],
       "from": -206,
       "to": -202,
-      "matchFrom": -207,
+      "matchFrom": -209,
       "seatZh": "彭城（徐州）",
       "seatEn": "Pengcheng (Xuzhou)",
       "rulersZh": "西楚霸王项羽（项籍）",
@@ -22728,11 +22730,12 @@ window.ATLAS_LORE_DATA = {
       "zh": "南越国",
       "en": "Nanyue Kingdom",
       "titles": [
-        "南越（赵佗）"
+        "南越（赵佗）",
+        "南越"
       ],
       "from": -204,
       "to": -111,
-      "matchFrom": -206,
+      "matchFrom": -207,
       "seatZh": "番禺（广州）",
       "seatEn": "Panyu (Guangzhou)",
       "rulersZh": "武王赵佗 → 文王赵眜 → 明王赵婴齐 → 哀王赵兴 → 赵建德",
@@ -22749,6 +22752,34 @@ window.ATLAS_LORE_DATA = {
       ],
       "summaryZh": "秦南海郡尉赵佗于秦末绝道聚兵，前204年兼并桂林、象郡建立南越国，定都番禺（今广州），“和集百越”推行汉越融合。汉高祖、汉文帝两遣陆贾使粤，赵佗去帝号奉汉正朔；前111年汉武帝遣路博德、杨仆平南越，置南海等九郡。",
       "summaryEn": "Founded in 204 BCE by former Qin magistrate Zhao Tuo with its capital at Panyu (Guangzhou), Nanyue united the Baiyue peoples and accepted Han suzerainty after Lu Jia's embassies. In 111 BCE Emperor Wu of Han sent Lu Bode and Yang Pu to conquer Nanyue and establish nine commanderies."
+    },
+    {
+      "key": "minyue",
+      "zh": "闽越国",
+      "en": "Minyue Kingdom",
+      "titles": [
+        "闽越"
+      ],
+      "from": -202,
+      "to": -110,
+      "matchFrom": -209,
+      "seatZh": "东治（福州）",
+      "seatEn": "Dongye (Fuzhou)",
+      "rulersZh": "闽越王无诸 → 闽越王郢 → 繇君丑 / 东越王余善",
+      "rulersEn": "Wuzhu → Ying → Chou / Yushan",
+      "keywords": [
+        "闽越",
+        "无诸",
+        "东越",
+        "东治",
+        "东瓯"
+      ],
+      "aliases": [
+        "闽越",
+        "东越"
+      ],
+      "summaryZh": "越王勾践后裔无诸于秦末率闽中百越起兵反秦、佐汉灭楚；前202年汉高祖复封无诸为闽越王，都东治（今福州）。汉武帝时闽越屡攻东瓯、南越，余善自立为东越武帝；前110年汉武帝发兵平定闽越，迁其民于江淮之间。",
+      "summaryEn": "Led by King Goujian's descendant Wuzhu, Minyue joined the anti-Qin uprising and aided Liu Bang against Xiang Yu. Re-enfeoffed as King of Minyue in 202 BCE at Dongye (Fuzhou), the kingdom later attacked Dong'ou and Nanyue until Emperor Wu of Han conquered it in 110 BCE and resettled its population between the Yangtze and Huai."
     },
     {
       "key": "xiyu_duhufu",

@@ -1950,7 +1950,7 @@ function main() {
       `s_zhanguo_a (-403 BCE) must not split State of Yue with post-222 BCE Qin commandery ${anachronistic}`
     );
   }
-  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_chuhan']) {
+  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_c', 's_qin_d', 's_qin_chuhan']) {
     const qSnap = snapshots[qinSnapKey];
     for (const cmdTitle of ['泗水郡', '东海郡', '鄣郡', '会稽郡']) {
       assert(
@@ -5530,6 +5530,26 @@ function main() {
         hasPt('s_xihan_b3', '汉', 111.28, 23.48),
       'Panyu, Guangxin (Cangwu), and Tanzhong (Yulin) must stay in Nanyue until -111 BCE (s_xihan_b3)'
     );
+    assert(
+      hasPt('s_qin_a', '秦', 115.5, 27.5) &&
+        hasPt('s_qin_b', '秦', 115.5, 27.5) &&
+        hasPt('s_qin', '秦', 115.5, 27.5) &&
+        hasPt('s_qin_c', '楚（张楚 · 怀王）', 115.5, 27.5) &&
+        hasPt('s_qin_d', '楚（怀王 · 项羽）', 115.5, 27.5) &&
+        hasPt('s_qin_chuhan', '西楚（项羽）', 115.5, 27.5) &&
+        hasPt('s_xihan_a', '汉（郡国并行）', 115.0, 25.8) &&
+        hasPt('s_xihan_b1', '汉', 115.0, 25.8) &&
+        hasPt('s_xihan_b2', '汉', 115.0, 25.8),
+      'Central and southern Jiangxi (Gan River basin) must not leave a hollow gap between Qin/Chu/Han and Nanyue/Minyue'
+    );
+    for (const sk of ['s_qin_d', 's_qin_chuhan', 's_xihan_a', 's_xihan_b1', 's_xihan_b2']) {
+      const ny = snapshots[sk].polities.find((p) => p.title === '南越' || p.title === '南越（赵佗）');
+      const my = snapshots[sk].polities.find((p) => p.title === '闽越');
+      assert(
+        ny && ny.role === 'rival' && ny.tint === '#7d5a38' && my && my.role === 'rival' && my.tint === '#9b7653',
+        `${sk} must keep Nanyue and Minyue as rival polities with unified tints (#7d5a38 / #9b7653)`
+      );
+    }
 
     // 4. 西域都护府 (-60 BCE, s_xihan_c) vs 西域诸国 (-111..-61 BCE, s_xihan_b3/s_xihan_b); 乐浪郡 (-108 BCE); 敦煌 & 居延
     assert(
@@ -6495,6 +6515,77 @@ function main() {
           ctrl.activePersonEventIdx = urlSaved.personIdx;
           if (ctrl._urlSyncTimer) clearTimeout(ctrl._urlSyncTimer);
           ctrl._urlSyncTimer = null;
+          sandbox.location.search = '';
+        }
+
+        // 4c. Embed mode (?embed=1): README-only feature, so the main site must stay untouched.
+        const embedSaved = {
+          embed: ctrl.embed,
+          minYear: ctrl.minYear,
+          maxYear: ctrl.maxYear,
+          bandClip: ctrl._bandClip,
+          armed: ctrl._urlSyncArmed,
+          year: ctrl.year,
+          trace: ctrl.activeTrace,
+          polity: ctrl.activePolity,
+          person: ctrl.activePerson,
+        };
+        try {
+          assert.strictEqual(ctrl._parseEmbedParams(new URLSearchParams('year=1104')), null, 'Without embed=1 the site must not enter embed mode');
+          // Compare as JSON: the object comes from the vm sandbox, whose Object.prototype differs.
+          assert.strictEqual(
+            JSON.stringify(ctrl._parseEmbedParams(new URLSearchParams('embed=1&year=1104&from=1072&to=1126&autoplay=1'))),
+            JSON.stringify({ from: 1072, to: 1126, lock: false, autoplay: true, year: 1104 }),
+            'Embed params must parse from/to/lock/autoplay/year'
+          );
+
+          const fullLo = ctrl.dynasties[0].fromYear;
+          const fullHi = ctrl.dynasties[ctrl.dynasties.length - 1].toYear;
+          const applyRange = (qs) => {
+            Object.assign(ctrl, { minYear: fullLo, maxYear: fullHi, _bandClip: undefined });
+            ctrl.embed = ctrl._parseEmbedParams(new URLSearchParams(qs));
+            ctrl._applyEmbedYearRange();
+          };
+          applyRange('embed=1&from=1126&to=1072');
+          assert(ctrl.minYear === 1072 && ctrl.maxYear === 1126, 'A reversed from/to must be swapped into a valid range');
+          applyRange('embed=1&from=-9999&to=99999');
+          assert(ctrl.minYear === fullLo && ctrl.maxYear === fullHi && !ctrl._bandClip, 'from/to beyond the atlas must clamp and leave the timeline unzoomed');
+          applyRange('embed=1&year=1104&lock=1');
+          assert(ctrl.minYear === 1104 && ctrl.maxYear === 1104, 'lock=1 must freeze the year bounds at year');
+
+          applyRange('embed=1&from=1072&to=1126');
+          ctrl._initTimelineBands();
+          assert(Math.abs(ctrl._yearToProgress(1072)) < 1e-9, 'A zoomed embed timeline must start at from');
+          assert(Math.abs(ctrl._yearToProgress(1099) - 0.5) < 0.02, 'A zoomed embed timeline must be linear over [from, to]');
+          assert(Math.abs(ctrl._progressToYear(0.5) - 1099) <= 1, 'Scrubbing a zoomed embed timeline must map back to years inside [from, to]');
+          assert(ctrl.bandWeights.filter((w) => w > 0).length === 1, 'Only dynasties overlapping [from, to] may take room on the zoomed timeline');
+
+          ctrl._urlSyncArmed = true;
+          Object.assign(ctrl, { year: 1104, activeTrace: [101.778, 36.617], activePolity: null, activePerson: null });
+          sandbox.location.search = '?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126';
+          ctrl._writeUrlState();
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?embed=1&year=1104&trace=101.778,36.617&from=1072&to=1126', 'An embed must never rewrite the URL (the host page owns its address bar)');
+          const openUrl = ctrl._embedOpenUrl();
+          assert(openUrl.endsWith('?year=1104&trace=101.778,36.617'), `The "open in atlas" link must carry the view without embed params, got ${openUrl}`);
+
+          for (const readme of ['README.md', 'README_ZH.md']) {
+            const text = require('fs').readFileSync(require('path').join(__dirname, '..', readme), 'utf8');
+            assert(text.includes('embed=1') && text.includes('from=1072&to=1126'), `${readme} must document embed mode`);
+          }
+        } finally {
+          Object.assign(ctrl, {
+            embed: embedSaved.embed,
+            minYear: embedSaved.minYear,
+            maxYear: embedSaved.maxYear,
+            _bandClip: embedSaved.bandClip,
+            _urlSyncArmed: embedSaved.armed,
+            year: embedSaved.year,
+            activeTrace: embedSaved.trace,
+            activePolity: embedSaved.polity,
+            activePerson: embedSaved.person,
+          });
+          ctrl._initTimelineBands();
           sandbox.location.search = '';
         }
 
@@ -8078,6 +8169,22 @@ function main() {
       const pieces = pol.shape.type === 'MultiPolygon' ? pol.shape.coordinates.length : 1;
       assert(pieces <= maxPieces, `${sid} ${title} must be dissolved to <= ${maxPieces} pieces (got ${pieces})`);
     }
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -210), 's_qin', 'Qin at -210 BCE must resolve to s_qin');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -209), 's_qin_c', 'Qin at -209 BCE must resolve to s_qin_c');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -207), 's_qin_d', 'Qin at -207 BCE must resolve to s_qin_d');
+    assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -206), 's_qin_chuhan', 'Qin at -206 BCE must resolve to s_qin_chuhan');
+    assert(
+      snapshots.s_qin_c.polities.some((p) => p.title === '秦') &&
+        snapshots.s_qin_c.polities.some((p) => p.title === '楚（张楚 · 怀王）') &&
+        !snapshots.s_qin_c.polities.some((p) => p.title === '南越（赵佗）'),
+      's_qin_c (-209..-208 BCE) must show Qin (holding Lingnan) and restored Chu/Six Kingdoms before Zhao Tuo secedes'
+    );
+    assert(
+      snapshots.s_qin_d.polities.some((p) => p.title === '秦') &&
+        snapshots.s_qin_d.polities.some((p) => p.title === '楚（怀王 · 项羽）') &&
+        snapshots.s_qin_d.polities.some((p) => p.title === '南越（赵佗）'),
+      's_qin_d (-207 BCE) must show Qin, Chu (King Huai & Xiang Yu), and Zhao Tuo Nanyue in Lingnan'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);

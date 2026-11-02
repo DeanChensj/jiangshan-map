@@ -390,6 +390,10 @@
 
       this.minYear = this.dynasties[0].fromYear;
       this.maxYear = this.dynasties[this.dynasties.length - 1].toYear;
+      this.embed = this._parseEmbedParams(
+        typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams()
+      );
+      if (this.embed) this._applyEmbedYearRange();
       this._initTimelineBands();
 
       const rawLang = (new URLSearchParams(location.search).get('lang') || '').toLowerCase();
@@ -473,8 +477,9 @@
         this.jumpToYear(this.dynasties[0].focusYear);
         this._bootDone = true;
         this._restoreFromQuery();
+        if (this.embed) this._initEmbedChrome();
       });
-      this._maybeShowStartGuide();
+      if (!this.embed) this._maybeShowStartGuide();
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
         setTimeout(() => this._ensureFullSnapshots(), 50);
@@ -1364,6 +1369,7 @@
     }
 
     _syncUrlLangParam() {
+      if (this.embed) return;
       if (this._urlSyncArmed) {
         this._writeUrlState();
         return;
@@ -1425,6 +1431,7 @@
 
     _writeUrlState() {
       if (
+        this.embed ||
         typeof window === 'undefined' ||
         typeof location === 'undefined' ||
         !window.history ||
@@ -1458,7 +1465,7 @@
     // A clean home load must stay clean even if the intro animates the timeline, so syncing
     // starts only once the URL already carried state or the user has actually interacted.
     _armUrlSync(hasDeepLinkState) {
-      if (this._urlSyncArmed || typeof window === 'undefined') return;
+      if (this.embed || this._urlSyncArmed || typeof window === 'undefined') return;
       const arm = () => {
         if (this._urlSyncArmed) return;
         this._urlSyncArmed = true;
@@ -1469,6 +1476,165 @@
         return;
       }
       for (const t of ['pointerdown', 'keydown', 'wheel']) window.addEventListener(t, arm, true);
+    }
+
+    // ---------------- Embed mode (?embed=1) ----------------
+    // Other sites iframe the atlas with the same state params as share links. The main site gets
+    // no UI for this (it is documented in the README); everything below only runs inside an embed.
+    _parseEmbedParams(q) {
+      if (!q || q.get('embed') !== '1') return null;
+      const num = (k) => {
+        if (!q.has(k) || q.get(k) === '') return null;
+        const n = Math.round(Number(String(q.get(k)).split(',')[0]));
+        return Number.isFinite(n) ? n : null;
+      };
+      return {
+        from: num('from'),
+        to: num('to'),
+        lock: q.get('lock') === '1',
+        autoplay: q.get('autoplay') === '1',
+        year: num('year'),
+      };
+    }
+
+    // Narrow the global year bounds; every scrub, step, autoplay and deep link already clamps to them.
+    _applyEmbedYearRange() {
+      const lo = this.minYear;
+      const hi = this.maxYear;
+      const clamp = (y) => Math.max(lo, Math.min(hi, y));
+      let { from, to } = this.embed;
+      if (this.embed.lock && this.embed.year !== null) {
+        from = this.embed.year;
+        to = this.embed.year;
+      }
+      if (from === null && to === null) return;
+      from = clamp(from === null ? lo : from);
+      to = clamp(to === null ? hi : to);
+      if (from > to) [from, to] = [to, from];
+      this.minYear = from;
+      this.maxYear = to;
+      if (from > lo || to < hi) this._bandClip = [from, to];
+    }
+
+    // The host page's address bar is not ours, and the link out must drop the embed params.
+    _embedOpenUrl() {
+      const qs = this._urlStateParams().toString().replace(/%2C/gi, ',');
+      const base = typeof location !== 'undefined' ? `${location.origin}${location.pathname}` : '';
+      return `${base}${qs ? `?${qs}` : ''}`;
+    }
+
+    _syncEmbedBadge() {
+      if (!this.embed) return;
+      const titleEl = this._id('embed-badge-title');
+      if (!titleEl) return;
+      const en = this.locale === 'en';
+      const person = this.activePerson;
+      let title;
+      if (person && Array.isArray(person.profiles) && person.profiles.length) {
+        title = person.profiles.map((p) => (en ? p.en : this._zh(p.zh))).join(en ? ' & ' : ' × ');
+      } else if (this.activePolity && this.activePolity.curated) {
+        const name = en ? this.activePolity.en : this._zh(this.activePolity.zh);
+        title = `${this.formatYear(this.year)} · ${name}`;
+      } else {
+        title = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, this.dynasties[this.dynastyIdx])}`;
+      }
+      titleEl.textContent = title;
+    }
+
+    _initEmbedChrome() {
+      if (typeof document === 'undefined') return;
+      const root = document.documentElement;
+      root.classList.add('is-embed');
+      if (this.embed.lock) {
+        root.classList.add('is-embed-locked');
+        if (this.embed.year === null) {
+          this.minYear = this.year;
+          this.maxYear = this.year;
+        }
+      }
+      const frame = this._id('viewport-frame');
+      if (!frame) return;
+      const en = this.locale === 'en';
+      const make = (tag, id, cls, text) => {
+        const el = document.createElement(tag);
+        el.id = id;
+        if (cls) el.className = cls;
+        if (text) el.textContent = text;
+        return el;
+      };
+
+      // Until clicked, the shield keeps map gestures away from the atlas but leaves default
+      // scrolling alone, so a reader scrolling the host article never gets stuck zooming the map.
+      const shield = make('div', 'embed-shield', '');
+      shield.setAttribute('role', 'button');
+      shield.tabIndex = 0;
+      shield.appendChild(
+        make('span', '', 'embed-shield-hint', en ? 'Click to interact with the map' : this._zh('点击以操作地图'))
+      );
+      const swallow = (e) => e.stopPropagation();
+      for (const t of ['pointerdown', 'pointermove', 'pointerup', 'mousedown', 'touchstart', 'touchmove', 'wheel', 'dblclick']) {
+        shield.addEventListener(t, swallow);
+      }
+      const activate = () => {
+        this._embedActive = true;
+        shield.classList.add('is-hidden');
+      };
+      shield.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activate();
+      });
+      shield.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        activate();
+      });
+      root.addEventListener('mouseleave', () => {
+        this._embedActive = false;
+        shield.classList.remove('is-hidden');
+      });
+      frame.appendChild(shield);
+
+      const badge = make('div', 'embed-badge', 'embed-chip');
+      badge.appendChild(make('span', '', 'embed-seal', this.uiStr('brand_seal', '江山时序')));
+      badge.appendChild(make('span', '', 'embed-sep'));
+      badge.appendChild(make('span', 'embed-badge-title', 'embed-title'));
+      frame.appendChild(badge);
+
+      const open = make('a', 'embed-open', 'embed-chip', en ? 'Open in Jiangshan Atlas ↗' : this._zh('在江山时序中打开 ↗'));
+      open.target = '_blank';
+      open.rel = 'noopener';
+      const refreshHref = () => {
+        open.href = this._embedOpenUrl();
+      };
+      for (const t of ['pointerenter', 'focus', 'click']) open.addEventListener(t, refreshHref);
+      refreshHref();
+      frame.appendChild(open);
+
+      frame.appendChild(
+        make('div', 'embed-disclaimer', '', en ? 'Historical borders are approximate' : this._zh('历史疆域为示意性近似'))
+      );
+
+      this._syncEmbedBadge();
+
+      if (this.embed.autoplay && !this.embed.lock) {
+        const q = new URLSearchParams(location.search);
+        if (q.has('person') || q.has('journey')) {
+          // The trajectory opens asynchronously after the full snapshots load.
+          let tries = 0;
+          const timer = setInterval(() => {
+            if (this.activePerson) {
+              clearInterval(timer);
+              if (!this.personTimer) this.togglePersonAutoplay();
+            } else if (++tries > 60) {
+              clearInterval(timer);
+            }
+          }, 150);
+        } else {
+          setTimeout(() => {
+            if (!this.playing) this.startAutoplay();
+          }, 600);
+        }
+      }
     }
 
     applyLocale() {
@@ -4591,10 +4757,12 @@
         return null;
       }
       this.eraFocus = null;
-      if (this._isMobileViewport() && !this.mobileChronicleOpen) this.toggleMobileChronicle(true);
+      // An embed has no chronicle pane, so never open the mobile bottom sheet over the map.
+      if (!this.embed && this._isMobileViewport() && !this.mobileChronicleOpen) this.toggleMobileChronicle(true);
       const pol = this._polityPolsInSnap(desc, snap)[0];
       desc.tint = (pol && pol.tint) || '';
       this.activePolity = desc;
+      if (this.embed) this._syncEmbedBadge();
       if (pol && opts.zoom !== false) this._zoomToPolity(pol.title, snap);
       if (cur) this._renderChroniclePane(cur);
       this._pinChroniclePaneTop(() => this.activePolity === desc);
@@ -4681,6 +4849,7 @@
       if (!this.activePolity) return;
       this.activePolity = null;
       this._scheduleUrlSync();
+      if (this.embed) this._syncEmbedBadge();
       this._resetPolityPaneChrome();
       const cur = this.dynasties[this.dynastyIdx];
       if (cur) this._renderChroniclePane(cur);
@@ -5493,6 +5662,7 @@
       this.activePerson = null;
       this.activePersonEventIdx = -1;
       this._scheduleUrlSync();
+      if (this.embed) this._syncEmbedBadge();
       this._hidePersonFooter();
       this._lastPersonPinZoom = 0;
       this._lastPersonCardKey = null;
@@ -6592,7 +6762,8 @@
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
       const aspect = this._getViewportAspect();
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
       if (!isDesktop) {
         const visTopFrac = this._getPersonVisibleTopFrac();
         const availFrac = Math.max(0.32, visTopFrac - 0.1);
@@ -6620,7 +6791,8 @@
       if (!ev || !ev.coord) return;
       const [tx, ty] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
       const aspect = this._getViewportAspect();
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
       if (!isDesktop) {
         const visTopFrac = this._getPersonVisibleTopFrac();
         const w = Math.max(320, Math.min(this.camera.w, 460));
@@ -8686,10 +8858,15 @@
     // Each dynasty gets a scrubber band proportional to its span, floored at 60 years.
     _initTimelineBands() {
       const minSpan = 60;
+      // An embed restricted to [from, to] shows only that window, linearly, so a 50-year range is
+      // as easy to scrub as the full 2,400 years; otherwise short dynasties get a minimum width.
+      const clip = this._bandClip;
       this.bandWeights = this.dynasties.map((d) =>
-        Math.max(d.toYear - d.fromYear, minSpan)
+        clip
+          ? Math.max(0, Math.min(clip[1], d.toYear) - Math.max(clip[0], d.fromYear))
+          : Math.max(d.toYear - d.fromYear, minSpan)
       );
-      this.totalBandWeight = this.bandWeights.reduce((acc, w) => acc + w, 0);
+      this.totalBandWeight = this.bandWeights.reduce((acc, w) => acc + w, 0) || 1;
       this.bandOffsets = [];
       this.bandWeights.reduce((acc, w, i) => {
         this.bandOffsets[i] = acc / this.totalBandWeight;
@@ -8697,11 +8874,18 @@
       }, 0);
     }
 
+    // [lo, hi] years of a dynasty's band, clipped to the embed window when there is one.
+    _bandYearSpan(d) {
+      const clip = this._bandClip;
+      return clip ? [Math.max(clip[0], d.fromYear), Math.min(clip[1], d.toYear)] : [d.fromYear, d.toYear];
+    }
+
     _yearToProgress(y) {
       const idx = this._findDynastyIndex(y);
       const d = this.dynasties[idx];
-      const span = Math.max(1, d.toYear - d.fromYear);
-      const local = Math.max(0, Math.min(1, (y - d.fromYear) / span));
+      const [lo, hi] = this._bandYearSpan(d);
+      const span = Math.max(1, hi - lo);
+      const local = Math.max(0, Math.min(1, (y - lo) / span));
       return (
         this.bandOffsets[idx] +
         local * (this.bandWeights[idx] / this.totalBandWeight)
@@ -8713,9 +8897,11 @@
       let idx = this.dynasties.length - 1;
       while (idx > 0 && this.bandOffsets[idx] > clamped) idx--;
       const d = this.dynasties[idx];
+      const [lo, hi] = this._bandYearSpan(d);
       const weightFrac = this.bandWeights[idx] / this.totalBandWeight;
+      if (!weightFrac) return lo;
       const local = (clamped - this.bandOffsets[idx]) / weightFrac;
-      return Math.round(d.fromYear + local * (d.toYear - d.fromYear));
+      return Math.round(lo + local * (hi - lo));
     }
 
     // Coalesce pointermove into one jumpToYear per animation frame and skip unchanged years.
@@ -8805,6 +8991,8 @@
         const cell = document.createElement('div');
         cell.className = 'band-cell';
         cell.style.flex = `${this.bandWeights[idx]} 1 0`;
+        // Dynasties outside an embed's [from, to] window take no room on its timeline.
+        if (!this.bandWeights[idx]) cell.style.display = 'none';
         cell.style.background = d.tint;
         cell.dataset.dynastyIdx = idx;
         cell.setAttribute('role', 'button');
@@ -8823,14 +9011,15 @@
         lbl.className = 'band-label';
         cell.appendChild(lbl);
 
-        const span = Math.max(1, d.toYear - d.fromYear);
+        const [bandLo, bandHi] = this._bandYearSpan(d);
+        const span = Math.max(1, bandHi - bandLo);
         if (Array.isArray(d.phases) && d.phases.length > 1) {
           for (let i = 0; i < d.phases.length - 1; i++) {
             const u = d.phases[i].until;
-            if (u > d.fromYear && u < d.toYear) {
+            if (u > bandLo && u < bandHi) {
               const pt = document.createElement('i');
               pt.className = 'band-phase-tick';
-              pt.style.left = `${(((u - d.fromYear) / span) * 100).toFixed(2)}%`;
+              pt.style.left = `${(((u - bandLo) / span) * 100).toFixed(2)}%`;
               cell.appendChild(pt);
             }
           }
@@ -8838,7 +9027,8 @@
         const seenEvPct = new Set();
         for (const m of d.milestones || []) {
           const my = this._clampYearToDynasty(d, m.year);
-          const pct = Math.max(3, Math.min(97, Math.round(((my - d.fromYear) / span) * 100)));
+          if (my < bandLo || my > bandHi) continue;
+          const pct = Math.max(3, Math.min(97, Math.round(((my - bandLo) / span) * 100)));
           if (seenEvPct.has(pct)) continue;
           seenEvPct.add(pct);
           const dot = document.createElement('i');
@@ -8851,6 +9041,7 @@
 
         const tick = document.createElement('span');
         tick.style.left = `${(this.bandOffsets[idx] * 100).toFixed(3)}%`;
+        if (!this.bandWeights[idx]) tick.style.display = 'none';
         ticks.appendChild(tick);
       });
       const endTick = document.createElement('span');
@@ -8886,16 +9077,23 @@
         }
         const tk = tickNodes[idx];
         if (tk) {
-          tk.textContent =
-            d.fromYear <= 0
-              ? this.locale === 'en'
-                ? `${-d.fromYear} BCE`
-                : `前${-d.fromYear}`
-              : `${d.fromYear}`;
+          const y = this._bandYearSpan(d)[0];
+          tk.textContent = y <= 0 ? (this.locale === 'en' ? `${-y} BCE` : `前${-y}`) : `${y}`;
         }
       });
       const endTick = this._id('tick-present');
-      if (endTick) endTick.textContent = this.uiStr('tick_now', '今');
+      if (endTick) {
+        // A clipped embed timeline ends at its `to` year, not at the present day.
+        const end = this._bandClip ? this._bandClip[1] : null;
+        endTick.textContent =
+          end === null
+            ? this.uiStr('tick_now', '今')
+            : end <= 0
+              ? this.locale === 'en'
+                ? `${-end} BCE`
+                : `前${-end}`
+              : `${end}`;
+      }
       this._fitBandLabels();
     }
 
@@ -8964,6 +9162,7 @@
       if (track) track.setAttribute('aria-valuenow', String(this.year));
       const inpYear = this._id('inp-year');
       if (inpYear) inpYear.value = this.year === 0 ? 1 : this.year;
+      if (this.embed) this._syncEmbedBadge();
       if (this._lastActiveBandIdx !== this.dynastyIdx) {
         const bandsEl = this._id('dynasty-bands');
         if (bandsEl) {
@@ -10905,7 +11104,8 @@
         const aspect = this._getViewportAspect();
         const w = Math.max(320, Math.min(this.camera.w, 480));
         const h = w * aspect;
-        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
         const xFrac = isDesktop ? 0.38 : 0.5;
         const yFrac = isDesktop ? 0.44 : 0.3;
         this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
@@ -12477,7 +12677,8 @@
           this._id('chk-settlements').checked = true;
           this.grpSettlements.classList.remove('is-hidden');
         }
-        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
         const minCityZoom = isDesktop ? 2.4 : 3.25;
         const rawZoom = item.zoom || (item.kind === 'pass' ? 2.35 : item.tier === 2 ? 2.4 : 1.85);
         const targetZoom =
@@ -14845,7 +15046,8 @@
       const cx = (minX + maxX) * 0.5;
       const cy = (minY + maxY) * 0.5;
       const aspect = this._getViewportAspect();
-      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+      // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+      const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
       const hasZoom =
         explicitZoom !== undefined &&
         explicitZoom !== null &&
@@ -15282,7 +15484,8 @@
         const w = 1000 / z;
         const h = w * this._getViewportAspect();
         const [tx, ty] = this.projector.toScreen(targetLng, targetLat);
-        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900;
+        // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
+        const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
         const xFrac = isDesktop ? 0.36 : 0.5;
         const yFrac = isDesktop ? 0.48 : 0.21;
         this.camera = { x: tx - w * xFrac, y: ty - h * yFrac, w, h, zoom: z };

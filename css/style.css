@@ -5212,3 +5212,222 @@ html[lang="en"] .genealogy-list li.person-ev-row {
 .cr-stop-pill.is-converge {
   box-shadow: 0 0 0 1.4px rgba(189, 45, 34, 0.42);
 }
+
+/* ---------------- Embed mode (?embed=1) ----------------
+   Only applies inside an iframe embed; the main site never gets the is-embed class. */
+html.is-embed,
+html.is-embed body {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.is-embed #atlas-shell {
+  grid-template-rows: 0 minmax(0, 1fr) auto;
+}
+
+html.is-embed #nav-bar {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+}
+
+html.is-embed #workspace-body {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
+html.is-embed #viewport-frame {
+  border-right: 0;
+}
+
+html.is-embed #chronicle-pane,
+html.is-embed #map-search-box,
+html.is-embed #start-guide,
+html.is-embed #gesture-guide,
+html.is-embed #challenge-card,
+html.is-embed #act-play-speed,
+html.is-embed #seo-atlas-directory,
+html.is-embed #seo-static-topics-section {
+  display: none !important;
+}
+
+/* Compact legend: just the polity chips. */
+html.is-embed #map-key > :not(.key-polities-grid) {
+  display: none !important;
+}
+
+html.is-embed #map-key {
+  padding: 6px 10px;
+}
+
+/* Leave room under the open-link chip for the place / person card. All four edges are set because
+   the <=900px layout turns the card into a full-width bottom sheet, and embeds are often that narrow. */
+html.is-embed #genealogy-card,
+html.is-embed #genealogy-card.is-sheet-expanded {
+  top: 52px;
+  right: 12px;
+  bottom: auto;
+  left: auto;
+  width: min(320px, calc(100% - 24px));
+  max-height: calc(100% - 66px);
+  /* Above the click-to-interact shield, so the card is usable before the map is activated. */
+  z-index: 30;
+}
+
+html.is-embed #scrubber-dock {
+  padding: 8px 12px 10px;
+  gap: 10px;
+}
+
+html.is-embed.is-embed-locked #scrubber-dock {
+  display: none;
+}
+
+.embed-chip {
+  position: absolute;
+  top: 12px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(50% - 24px);
+  padding: 6px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(246, 241, 231, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+#embed-badge {
+  left: 12px;
+}
+
+#embed-badge .embed-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#embed-badge .embed-seal {
+  font-family: var(--serif-stack);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--vermilion);
+}
+
+#embed-badge .embed-sep {
+  width: 1px;
+  height: 13px;
+  background: var(--hairline);
+  flex-shrink: 0;
+}
+
+#embed-open {
+  right: 12px;
+  color: var(--vermilion);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#embed-open:hover,
+#embed-open:focus-visible {
+  background: #fff;
+  outline: none;
+}
+
+#embed-disclaimer {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(246, 241, 231, 0.8);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Click-to-interact shield: transparent, sits above the map but below the chips and cards. */
+#embed-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+#embed-shield.is-hidden {
+  display: none;
+}
+
+#embed-shield .embed-shield-hint {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(40, 30, 20, 0.72);
+  color: #fff;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+
+#embed-shield:hover,
+#embed-shield:focus-visible {
+  background: rgba(40, 30, 20, 0.06);
+  outline: none;
+}
+
+#embed-shield:hover .embed-shield-hint,
+#embed-shield:focus-visible .embed-shield-hint {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  /* Touch devices cannot hover, so keep the hint visible. */
+  #embed-shield .embed-shield-hint {
+    opacity: 0.85;
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .embed-chip {
+    font-size: 11.5px;
+    padding: 5px 9px;
+  }
+
+  /* Phone-width embeds: the open link shrinks to an icon so it can stay top right beside the badge. */
+  #embed-badge {
+    max-width: calc(100% - 68px);
+  }
+
+  #embed-open {
+    font-size: 0;
+    padding: 5px 10px;
+  }
+
+  #embed-open::after {
+    content: '↗';
+    font-size: 14px;
+  }
+
+  /* Leave part of the map visible under the card. */
+  html.is-embed #genealogy-card,
+  html.is-embed #genealogy-card.is-sheet-expanded {
+    max-height: 55%;
+  }
+}

@@ -173,7 +173,7 @@ window.EN_LOCALE = {
       "Jiuyuan (Ordos)"
     ],
     "qin:-214": [
-      "Qin digs the Lingqu Canal and pacifies Lingnan, establishing Guilin, Xiang, and Nanhai",
+      "First Emperor digs the Lingqu Canal and pacifies Lingnan, founding Guilin, Xiang, and Nanhai",
       "Lingqu & Panyu"
     ],
     "qin:-209": [
@@ -181,11 +181,11 @@ window.EN_LOCALE = {
       "Dazexiang"
     ],
     "xihan:-202": [
-      "Liu Bang defeats Xiang Yu at Gaixia and ascends the throne as Emperor Gaozu of Western Han",
+      "Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han",
       "Gaixia & Chang'an"
     ],
     "xihan:-154": [
-      "Rebellion of the Seven States suppressed; central authority consolidated",
+      "Emperor Jing's fief cuts spark the Rebellion of the Seven States; Zhou Yafu crushes the revolt",
       "Suiyang (Shangqiu)"
     ],
     "xihan:-138": [
@@ -205,11 +205,11 @@ window.EN_LOCALE = {
       "Panyu & Dunhuang"
     ],
     "xihan:-108": [
-      "Conquest of Wiman Joseon; Lelang and three other commanderies established",
+      "Emperor Wu conquers Wiman Joseon and establishes Lelang, Xuantu, and two other commanderies",
       "Wanggeom-seong (Lelang)"
     ],
     "xihan:-60": [
-      "Protectorate of the Western Regions established at Wulei",
+      "Emperor Xuan establishes the Protectorate of the Western Regions under Zheng Ji at Wulei",
       "Wulei (Luntai)"
     ],
     "xihan:8": [
@@ -229,7 +229,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "donghan:36": [
-      "Defeat of Gongsun Shu in Sichuan completes reunification",
+      "Wu Han takes Chengdu and destroys Gongsun Shu; Emperor Guangwu (Liu Xiu) reunifies the empire",
       "Chengdu"
     ],
     "donghan:48": [
@@ -673,7 +673,7 @@ window.EN_LOCALE = {
       "Xingqingfu"
     ],
     "beisong:1044": [
-      "Qingli Peace Accord between Song and Western Xia",
+      "Song and Western Xia sign the Qingli Peace Accord: Yuanhao submits in return for annual gifts",
       "Xingqingfu"
     ],
     "beisong:1069": [
@@ -745,7 +745,7 @@ window.EN_LOCALE = {
       "Yashan"
     ],
     "yuan:1279": [
-      "Battle of Yashan destroys Southern Song; Yuan reunifies China",
+      "Zhang Hongfan destroys the Southern Song fleet at the Battle of Yashan; Yuan reunifies China",
       "Yashan"
     ],
     "yuan:1288": [
@@ -769,7 +769,7 @@ window.EN_LOCALE = {
       "Kaiping (Shangdu) · Xi'an"
     ],
     "ming:1380": [
-      "Hu Weiyong case: the office of Grand Chancellor is abolished",
+      "Hongwu Emperor purges Chancellor Hu Weiyong and abolishes the Secretariat and chancellorship",
       "Yingtian (Nanjing)"
     ],
     "ming:1399": [
@@ -781,7 +781,7 @@ window.EN_LOCALE = {
       "Liujiagang (Taicang)"
     ],
     "ming:1407": [
-      "Jiaozhi Province established in Vietnam; Nurgan Commandery established in 1409",
+      "Yongle Emperor establishes Jiaozhi Province in Annam and founds the Nurgan Commandery in 1409",
       "Jiaozhi"
     ],
     "ming:1421": [
@@ -805,7 +805,7 @@ window.EN_LOCALE = {
       "Taizhou"
     ],
     "ming:1571": [
-      "Longqing Peace Accord opens frontier horse markets with the Mongols",
+      "Longqing Peace Accord: Ming invests Altan Khan as Prince Shunyi and opens Datong horse markets",
       "Datong"
     ],
     "ming:1592": [
@@ -865,11 +865,11 @@ window.EN_LOCALE = {
       "Xining"
     ],
     "qing:1727": [
-      "Imperial Resident in Tibet established; Treaty of Kyakhta signed",
+      "Yongzheng Emperor establishes Imperial Resident in Tibet; Qing and Russia sign Treaty of Kyakhta",
       "Lhasa"
     ],
     "qing:1759": [
-      "Pacification of the Dzungars and Altishahr; General of Ili established",
+      "Qianlong Emperor pacifies the Dzungars and Altishahr Khojas, establishing the General of Ili",
       "Ili"
     ],
     "qing:1840": [
@@ -897,7 +897,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "roc:1928": [
-      "Northern Expedition completed; Nationalist government at Nanjing",
+      "NRA completes the Northern Expedition; Zhang Xueliang's Flag Replacement nominally unifies China",
       "Nanjing"
     ],
     "roc:1931": [
@@ -937,7 +937,7 @@ window.EN_LOCALE = {
       "Shanghai"
     ],
     "qin:-212": [
-      "Meng Tian builds the 700 km Qin Direct Road from Xianyang to Jiuyuan",
+      "First Emperor orders Meng Tian to build the 700 km Qin Direct Road from Xianyang to Jiuyuan",
       "Xianyang / Jiuyuan"
     ],
     "qin:-210": [
@@ -953,7 +953,7 @@ window.EN_LOCALE = {
       "Hongmen (Xianyang)"
     ],
     "xihan:-200": [
-      "Siege of Baideng; Han adopts Heqin marriage-alliance policy",
+      "Emperor Gaozu is besieged at Baideng; early Han adopts the Heqin marriage-alliance policy",
       "Pingcheng (Datong)"
     ],
     "xihan:-180": [
@@ -1089,7 +1089,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "tang:630": [
-      "Li Jing conquers Eastern Tujue; Taizong hailed as Heavenly Qaghan",
+      "Li Jing conquers Eastern Tujue; steppe rulers hail Emperor Taizong as Heavenly Qaghan",
       "Yin Mountains · Dingxiang"
     ],
     "tang:641": [
@@ -1109,7 +1109,7 @@ window.EN_LOCALE = {
       "Liaodong (Liaoyang)"
     ],
     "tang:679": [
-      "Protectorate General to Pacify the South (Annam) established at Jiaozhou",
+      "Emperor Gaozong reorganizes Jiaozhou Area Command into the Annam Protectorate General",
       "Jiaozhou (Hanoi)"
     ],
     "tang:690": [
@@ -1181,7 +1181,7 @@ window.EN_LOCALE = {
       "Waqiao Pass (Xiongzhou)"
     ],
     "beisong:961": [
-      "Generals disarmed over wine; vice-prefects and fiscal commissioners curb regional power",
+      "Emperor Taizu disarms generals over wine and appoints vice-prefects and fiscal commissioners",
       "Kaifeng"
     ],
     "beisong:978": [
@@ -1201,7 +1201,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "beisong:1042": [
-      "Damingfu elevated to Northern Capital to guard against Liao",
+      "Song and Liao conclude Chongxi silver-silk increase; Renzong makes Damingfu Northern Capital",
       "Beijing Damingfu"
     ],
     "beisong:1043": [
@@ -1241,7 +1241,7 @@ window.EN_LOCALE = {
       "Diaoyu Fortress (Hechuan)"
     ],
     "yuan:1281": [
-      "Penghu Inspection Office established; second eastern campaign to Japan",
+      "Kublai Khan sets up Penghu Inspection Office over Penghu and Ryukyu and launches 2nd Japan raid",
       "Penghu / Quanzhou"
     ],
     "yuan:1287": [
@@ -1277,7 +1277,7 @@ window.EN_LOCALE = {
       "Liaoyang / Guangning"
     ],
     "ming:1567": [
-      "Longqing Opening lifts maritime ban at Yuegang in Fujian",
+      "Longqing Emperor lifts the maritime trade ban at Yuegang in Fujian (the Longqing Opening)",
       "Yuegang (Zhangzhou)"
     ],
     "ming:1581": [
@@ -1333,7 +1333,7 @@ window.EN_LOCALE = {
       "Dihua (Ürümqi)"
     ],
     "qing:1895": [
-      "Treaty of Shimonoseki cedes Taiwan and Penghu to Japan",
+      "Defeated in the First Sino-Japanese War, Qing signs Treaty of Shimonoseki ceding Taiwan & Penghu",
       "Taiwanfu (Tainan)"
     ],
     "roc:1915": [
@@ -1377,11 +1377,11 @@ window.EN_LOCALE = {
       "Jinzhou / Xuzhou / Beiping"
     ],
     "roc:1949": [
-      "Yangtze River Crossing Campaign takes Nanjing",
+      "PLA crosses the Yangtze and captures Nanjing; the Nationalist government retreats to Taipei",
       "Nanjing"
     ],
     "prc:1951": [
-      "Seventeen-Point Agreement signed; peaceful liberation of Tibet",
+      "Central Government and Tibet sign the 17-Point Agreement for the peaceful liberation of Tibet",
       "Lhasa"
     ],
     "prc:1964": [
@@ -1389,15 +1389,15 @@ window.EN_LOCALE = {
       "Lop Nur"
     ],
     "prc:1971": [
-      "UN General Assembly Resolution 2758 restores PRC's lawful seat",
+      "26th UN General Assembly adopts Resolution 2758, restoring the PRC's lawful seat in the UN",
       "Beijing"
     ],
     "prc:1980": [
-      "Shenzhen, Zhuhai, Shantou, and Xiamen Special Economic Zones established",
+      "Central government establishes the Shenzhen, Zhuhai, Shantou, and Xiamen Special Economic Zones",
       "Shenzhen"
     ],
     "prc:1990": [
-      "Development and opening of Pudong New Area in Shanghai",
+      "Central government announces the development and opening of Shanghai's Pudong New Area",
       "Shanghai"
     ],
     "prc:2001": [
@@ -1445,7 +1445,7 @@ window.EN_LOCALE = {
       "Taihecheng (Dali)"
     ],
     "tang:742": [
-      "Tianbao era begins; Ten Frontier Military Commands (Jiedushi) established along the borders",
+      "Emperor Xuanzong inaugurates the Tianbao era and establishes the Ten Frontier Military Commands",
       "Chang'an · Fanyang"
     ],
     "tang:744": [
@@ -1561,7 +1561,7 @@ window.EN_LOCALE = {
       "Dianchi (Kunming)"
     ],
     "xihan:-51": [
-      "Chanyu Huhanye pays homage to Emperor Xuan; 11 ministers honored in Qilin Pavilion",
+      "Chanyu Huhanye pays homage at Chang'an; Emperor Xuan honors 11 ministers in the Qilin Pavilion",
       "Chang'an"
     ],
     "donghan:123": [
@@ -2033,7 +2033,7 @@ window.EN_LOCALE = {
       "Xianyang"
     ],
     "qin:-203": [
-      "Chu-Han stalemate ends in the Hong Canal Pact dividing the realm before Han pursues Chu",
+      "After a long stalemate, the Hong Canal Pact divides the realm before Liu Bang pursues Xiang Yu",
       "Chenggao & Hong Canal"
     ],
     "xihan:-134": [
@@ -2318,7 +2318,7 @@ window.EN_LOCALE = {
     "交趾布政司（1407—1427）": "Jiaozhi Prov. (1407–27)",
     "后金（1636 年起称清）": "Later Jin (Qing from 1636)",
     "清": "Qing",
-    "郑氏台湾": "Kingdom of Tungning (Koxinga)",
+    "郑氏台湾": "Tungning Taiwan",
     "西藏（驻藏大臣）": "Tibet (Qing Amban)",
     "中华民国": "Republic of China",
     "伪满洲国（日占）": "Manchukuo (Japanese puppet)",
@@ -2642,7 +2642,7 @@ window.EN_LOCALE = {
     "拉萨": "Lhasa",
     "库伦": "Kulun (Urga)",
     "台湾府": "Taiwan Fu",
-    "承天府（郑氏）": "Chengtian Fu (Koxinga)",
+    "承天府（郑氏）": "Chengtian Fu (House of Zheng)",
     "瑷珲": "Aigun",
     "雅克萨": "Albazin (Yakesa)",
     "南京": "Nanjing",
@@ -2861,8 +2861,8 @@ window.EN_LOCALE = {
     "伊犁将军驻地（1762 年设）": "Seat of the General of Ili (est. 1762)",
     "1727 年设驻藏大臣": "Seat of the Qing Imperial Resident in Tibet (from 1727)",
     "库伦办事大臣": "Seat of the Imperial Resident at Urga",
-    "1683 年施琅平台后设府；1895 年割让日本": "Conquered 1683, prefecture est. 1684; ceded to Japan in 1895",
-    "郑成功驱逐荷兰人后据台": "Seat of Koxinga’s regime after expelling the Dutch in 1662",
+    "1683 年施琅平台后设府；1895 年割让日本": "Prefecture founded after Shi Lang pacified Taiwan in 1683; ceded to Japan in 1895",
+    "郑成功驱逐荷兰人后据台": "Held by Koxinga after expelling the Dutch",
     "1858 年《瑷珲条约》": "Site of the 1858 Treaty of Aigun",
     "1685—86 年雅克萨之战": "Site of the Sino-Russian Siege of Albazin (1685–86)",
     "国民政府首都": "Capital of the Nationalist Government",
@@ -6860,7 +6860,7 @@ window.EN_LOCALE = {
     "特林（俄罗斯）": "Tyr (Lower Amur, Russia)",
     "永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑": "Nurgan Regional Military Commission founded in 1409 CE; eunuch admiral Yishiha erected the Yongning Temple steles",
     "大员（赤嵌）": "Tayouan (Chikan)",
-    "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by the Dutch in 1624; recovered by Zheng Chenggong in 1662 as Dongdu",
+    "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by Dutch in 1624; retaken by Koxinga as Dongdu Mingjing in 1662",
     "乌里雅苏台（蒙古国）": "Uliastai (Mongolia)",
     "雍正十一年设定边左副将军驻节，统辖喀尔喀四部与唐努乌梁海": "Seat of the General for Pacifying the Frontier (1733), governing the Four Khalkha Aimags and Tannu Uriankhai",
     "科布多": "Khovd",
@@ -6959,7 +6959,6 @@ window.EN_LOCALE = {
     "岛夷诸部": "Island Yi Tribes",
     "小琉球": "Xiaoliuqiu",
     "承天府（东宁）": "Chengtian Fu (Dongning)",
-    "承天府（郑氏）": "Chengtian Fu (House of Zheng)",
     "东宁": "Dongning",
     "东都": "Dongdu",
     "赤嵌": "Chikan",
@@ -6969,11 +6968,10 @@ window.EN_LOCALE = {
     "夷洲（台湾）": "Yizhou (Taiwan)",
     "荷属台湾": "Dutch Formosa",
     "大员（荷占）": "Tayouan (Dutch-ruled)",
-    "郑氏台湾": "Tungning Taiwan",
-    "大员": "Tayouan",
-    "大员（赤嵌）": "Tayouan (Chikan)",
-    "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by Dutch in 1624; retaken by Koxinga as Dongdu Mingjing in 1662",
-    "郑成功驱逐荷兰人后据台": "Held by Koxinga after expelling the Dutch",
-    "1683 年施琅平台后设府；1895 年割让日本": "Prefecture founded after Shi Lang pacified Taiwan in 1683; ceded to Japan in 1895"
+    "前 214 — 前 210 · 秦平百越与大一统鼎盛：设桂林、象、南海三郡，北筑万里长城": "214–210 BCE · Apex of the Qin Empire: Guilin, Xiang & Nanhai Commanderies in Lingnan and the Great Wall",
+    "前 209 — 前 208 · 大泽乡起义与六国复立：陈胜建张楚，楚、赵、燕、齐复国反秦，秦廷退守关中河洛与巴蜀岭南": "209–208 BCE · Dazexiang Uprising & Six Kingdoms Restored: Chen Sheng’s Zhangchu, Restored Chu, Zhao, Yan & Qi vs. Qin",
+    "前 207 · 巨鹿之战与赵佗据岭南：项羽巨鹿破秦主力，南海尉赵佗绝秦道并桂林、象郡自立": "207 BCE · Battle of Julu & Zhao Tuo’s Lingnan Secession: Xiang Yu Shatters the Qin Army While Zhao Tuo Seizes Lingnan",
+    "楚（张楚 · 怀王）": "Chu (Zhangchu & King Huai)",
+    "楚（怀王 · 项羽）": "Chu (King Huai & Xiang Yu)"
   }
 };

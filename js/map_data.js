@@ -954,11 +954,12 @@ window.DYNASTY_DATA = [
         "persons": [
           "qinshihuang",
           "mengtian"
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": -214,
-        "headline": "开凿灵渠通湘漓，平定岭南置桂林、象、南海三郡",
+        "headline": "秦军开凿灵渠通湘漓，平定岭南置桂林、象、南海三郡",
         "site": "灵渠 · 番禺",
         "coord": [
           113.261,
@@ -973,7 +974,8 @@ window.DYNASTY_DATA = [
             113.261,
             23.131
           ]
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": -213,
@@ -990,7 +992,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -212,
-        "headline": "命蒙恬修筑秦直道（咸阳至九原）",
+        "headline": "蒙恬奉诏修筑秦直道（咸阳至九原）",
         "site": "咸阳 · 九原",
         "coord": [
           109.201,
@@ -1028,7 +1030,8 @@ window.DYNASTY_DATA = [
         "coord": [
           116.601,
           33.601
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": -207,
@@ -1047,7 +1050,8 @@ window.DYNASTY_DATA = [
             113.261,
             23.131
           ]
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": -206,
@@ -1062,7 +1066,8 @@ window.DYNASTY_DATA = [
           "liubang",
           "zhangliang"
         ],
-        "month": 3.0
+        "month": 3,
+        "isMapChange": true
       },
       {
         "year": -204,
@@ -1085,7 +1090,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -203,
-        "headline": "楚汉荥阳成皋相持，“鸿沟议和”中分天下旋追击项羽",
+        "headline": "楚汉久持后“鸿沟议和”中分天下，刘邦旋毁约东追项羽",
         "site": "成皋 · 鸿沟",
         "coord": [
           113.381,
@@ -1586,8 +1591,16 @@ window.DYNASTY_DATA = [
         "snap": "s_qin_b"
       },
       {
-        "until": -206,
+        "until": -209,
         "snap": "s_qin"
+      },
+      {
+        "until": -207,
+        "snap": "s_qin_c"
+      },
+      {
+        "until": -206,
+        "snap": "s_qin_d"
       },
       {
         "until": -202,
@@ -1608,7 +1621,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": -202,
-        "headline": "垓下之战十面埋伏灭项羽，汉高祖刘邦称帝定都长安",
+        "headline": "韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝定都长安",
         "site": "垓下 · 长安",
         "coord": [
           108.941,
@@ -1627,7 +1640,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -200,
-        "headline": "白登之围，汉初行和亲之策",
+        "headline": "汉高祖亲征匈奴困于白登，汉初遂行和亲之策",
         "site": "平城（大同）",
         "coord": [
           113.301,
@@ -1654,7 +1667,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -154,
-        "headline": "七国之乱，削藩后中央集权确立",
+        "headline": "汉景帝削藩引发七国之乱，周亚夫三月平叛固集权",
         "site": "睢阳（商丘）",
         "coord": [
           115.651,
@@ -1802,7 +1815,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -108,
-        "headline": "灭卫氏朝鲜，设乐浪等四郡",
+        "headline": "汉军攻灭卫氏朝鲜，设乐浪、玄菟、真番、临屯四郡",
         "site": "王险城（乐浪）",
         "coord": [
           125.751,
@@ -1886,7 +1899,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -60,
-        "headline": "设西域都护府，西域正式纳入版图",
+        "headline": "汉廷设西域都护府（郑吉首任），西域正式纳入版图",
         "site": "乌垒城（轮台）",
         "coord": [
           84.251,
@@ -1895,7 +1908,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -51,
-        "headline": "呼韩邪单于朝觐汉宣帝，画麒麟阁十一功臣",
+        "headline": "呼韩邪单于入长安朝觐，汉宣帝画麒麟阁十一功臣",
         "site": "长安",
         "coord": [
           108.94,
@@ -2800,7 +2813,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 36,
-        "headline": "平公孙述，光武统一全国",
+        "headline": "吴汉攻克成都灭公孙述，光武帝刘秀统一全国",
         "site": "成都",
         "coord": [
           104.071,
@@ -3067,7 +3080,7 @@ window.DYNASTY_DATA = [
           "liubei",
           "guanyu"
         ],
-        "month": 8.0
+        "month": 8
       },
       {
         "year": 198,
@@ -8270,7 +8283,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 630,
-        "headline": "李靖灭东突厥，尊太宗为“天可汗”，置定襄、云中都督府",
+        "headline": "李靖灭东突厥，西北诸君尊唐太宗为“天可汗”，置定襄、云中都督府",
         "site": "阴山 · 定襄",
         "coord": [
           110.501,
@@ -8406,7 +8419,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 679,
-        "headline": "调露元年改交州都督府为安南都护府",
+        "headline": "唐廷于调露元年改交州都督府为安南都护府",
         "site": "安南都护府（交州）",
         "coord": [
           105.851,
@@ -8532,7 +8545,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 742,
-        "headline": "改元天宝，沿边常设安西、范阳等十节度使，外重内轻",
+        "headline": "唐廷改元天宝，沿边常设安西、范阳等十节度使，外重内轻",
         "site": "长安 · 范阳",
         "coord": [
           108.941,
@@ -11048,7 +11061,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 961,
-        "headline": "杯酒释兵权，确立重文轻武国策；继设通判、转运使收地方行政与财权",
+        "headline": "宋太祖“杯酒释兵权”定重文轻武，继设通判、转运使收地方权",
         "site": "开封",
         "coord": [
           114.311,
@@ -11206,7 +11219,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1042,
-        "headline": "重熙增币；建大名府为北京陪都以备御辽",
+        "headline": "宋辽达成“重熙增币”；宋仁宗建大名府为北京陪都以备御辽",
         "site": "北京大名府",
         "coord": [
           115.151,
@@ -11229,7 +11242,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1044,
-        "headline": "庆历和议（宋夏）",
+        "headline": "宋夏订立“庆历和议”，元昊称臣、北宋岁赐银绢茶",
         "eraRegime": "reference",
         "site": "兴庆府",
         "coord": [
@@ -13563,7 +13576,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 1279,
-        "headline": "崖山海战灭南宋，元朝统一全国",
+        "headline": "张弘范于崖山海战灭南宋，元朝统一全国",
         "site": "崖山",
         "coord": [
           113.101,
@@ -13572,7 +13585,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1281,
-        "headline": "置澎湖巡检司管辖澎湖与琉球；第二次东征日本",
+        "headline": "元廷置澎湖巡检司管辖澎湖与琉球，并第二次东征日本",
         "site": "澎湖 · 泉州",
         "coord": [
           119.581,
@@ -14522,7 +14535,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1380,
-        "headline": "胡惟庸案，废丞相",
+        "headline": "明太祖兴胡惟庸案诛权臣，罢中书省、永废丞相制",
         "site": "应天",
         "coord": [
           118.801,
@@ -14601,7 +14614,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1407,
-        "headline": "设交趾布政司；1409 年设奴儿干都司",
+        "headline": "明军平安南设交趾布政司；1409 年设奴儿干都司",
         "site": "交趾",
         "coord": [
           105.851,
@@ -14792,7 +14805,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1567,
-        "headline": "隆庆开关，于福建漳州月港开放海外贸易",
+        "headline": "明廷实行“隆庆开关”，于福建漳州月港开放海外贸易",
         "site": "月港（漳州）",
         "coord": [
           117.651,
@@ -14801,7 +14814,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1571,
-        "headline": "隆庆和议：封俺答汗，于大同得胜堡开互市",
+        "headline": "隆庆和议：明廷封俺答汗为顺义王，于大同得胜堡开互市",
         "site": "大同",
         "coord": [
           113.301,
@@ -16436,7 +16449,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1727,
-        "headline": "设驻藏大臣；《恰克图条约》",
+        "headline": "清廷始设驻藏大臣督办藏务；中俄签订《恰克图条约》",
         "site": "拉萨",
         "coord": [
           91.111,
@@ -16485,7 +16498,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1759,
-        "headline": "平定准噶尔、回部，设伊犁将军",
+        "headline": "清军平定准噶尔与大小和卓，统合西域并设伊犁将军",
         "site": "伊犁",
         "coord": [
           81.301,
@@ -16768,7 +16781,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1895,
-        "headline": "甲午战败，被迫签订《马关条约》割让台湾、澎湖",
+        "headline": "清廷甲午战败，被迫与日本签订《马关条约》割让台湾、澎湖",
         "site": "台湾府（台南）",
         "coord": [
           120.211,
@@ -18527,7 +18540,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1928,
-        "headline": "北伐完成，定都南京",
+        "headline": "国民革命军北伐完成，张学良东北易帜，南京国民政府形式统一",
         "site": "南京",
         "coord": [
           118.801,
@@ -18660,7 +18673,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1949,
-        "headline": "渡江战役攻克南京，国民政府退往台北",
+        "headline": "解放军发起渡江战役攻克南京，国民政府退往台北",
         "site": "南京",
         "coord": [
           118.801,
@@ -21893,7 +21906,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1951,
-        "headline": "签订《十七条协议》，西藏和平解放",
+        "headline": "中央政府与西藏地方签订《十七条协议》，西藏和平解放",
         "site": "拉萨",
         "coord": [
           91.111,
@@ -21911,7 +21924,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1971,
-        "headline": "第26届联大通过第2758号决议，恢复联合国合法席位",
+        "headline": "第26届联大通过第2758号决议，中华人民共和国恢复合法席位",
         "site": "北京",
         "coord": [
           116.401,
@@ -21929,7 +21942,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1980,
-        "headline": "设立深圳、珠海、汕头、厦门四大经济特区",
+        "headline": "中央决定设立深圳、珠海、汕头、厦门四大经济特区",
         "site": "深圳",
         "coord": [
           114.061,
@@ -21938,7 +21951,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1990,
-        "headline": "开发开放上海浦东新区",
+        "headline": "中央宣布开发开放上海浦东新区",
         "site": "上海",
         "coord": [
           121.501,
@@ -25270,7 +25283,6 @@ window.DYNASTY_DATA = [
     ]
   }
 ];
-
 window.CORRIDOR_DATA = [
   {
     "key": "wall_zhanguo",
