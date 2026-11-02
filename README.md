@@ -209,6 +209,24 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000` in your browser.
 
+## Run with Docker
+
+No local dependency needed. Build and start with Docker Compose:
+
+```bash
+docker compose up -d --build
+```
+
+Then open `http://localhost:8008` (the port mapping `8008:80` is set in `docker-compose.yml`).
+
+The image is a plain `nginx:alpine` that serves this repository as static files: `Dockerfile` copies the working tree into `/usr/share/nginx/html`, and `.dockerignore` keeps the build context small by excluding `.git`, `.github`, `docs/`, `scripts/`, `skills/`, Markdown files and `geojson/demo.html` — the site does not need any of them at runtime.
+
+To use another port, change the `ports` mapping in `docker-compose.yml` (e.g. `"9000:80"`) and run `docker compose up -d` again.
+
+After pulling upstream changes, rebuild with `docker compose up -d --build`. Without Compose: `docker build -t jiangshan-map:latest .` then `docker run -d -p 8008:80 --name jiangshan-map jiangshan-map:latest`.
+
+Note: the image is built locally; it is not published to any registry.
+
 ---
 
 ## GeoJSON Export (for Leaflet / MapLibre / QGIS)

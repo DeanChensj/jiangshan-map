@@ -209,6 +209,24 @@ python3 -m http.server 8000
 
 随后在浏览器打开 `http://localhost:8000`。
 
+## 使用 Docker 运行
+
+无需本地依赖，用 Docker Compose 一条命令构建并启动：
+
+```bash
+docker compose up -d --build
+```
+
+随后在浏览器打开 `http://localhost:8008`（端口映射为 `docker-compose.yml` 中的 `8008:80`）。
+
+镜像基于 `nginx:alpine` 做静态托管：`Dockerfile` 把整个仓库复制到 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`docs/`、`scripts/`、`skills/`、Markdown 文件与 `geojson/demo.html`，以减小构建上下文，页面运行不依赖这些内容。
+
+要换端口：修改 `docker-compose.yml` 的 `ports`（如 `"9000:80"`），再执行 `docker compose up -d`。
+
+拉取上游更新后重新构建：`docker compose up -d --build`。不用 Compose 时：`docker build -t jiangshan-map:latest .`，再 `docker run -d -p 8008:80 --name jiangshan-map jiangshan-map:latest`。
+
+说明：镜像在本地构建，未发布到任何镜像仓库。
+
 ---
 
 ## GeoJSON 导出（供 Leaflet / MapLibre / QGIS 使用）
