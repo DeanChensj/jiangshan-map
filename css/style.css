@@ -608,13 +608,14 @@ h2 {
   letter-spacing: 0.08em;
 }
 
-/* The Gobi is an area, not a line: a pale sand watermark with very wide tracking. */
+/* The Gobi is an area, not a line: sand-brown ink with very wide tracking and a soft halo. */
 .hydro-label.is-desert {
   font-size: 9px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 1.1em;
-  fill: rgba(140, 112, 72, 0.5);
-  stroke: none;
+  fill: rgba(96, 70, 36, 0.82);
+  stroke: rgba(250, 245, 234, 0.75);
+  stroke-width: 1.8px;
 }
 
 .hydro-label.is-crowded-hidden {

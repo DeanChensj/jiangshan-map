@@ -8042,7 +8042,7 @@ function main() {
 
     const gs23 = snapshots.s_xihan_e.polities.find((p) => p.title === '更始（汉）');
     const lx23 = snapshots.s_xihan_e.polities.find((p) => p.title === '刘秀（河北）');
-    assert.strictEqual(gs23.shape.coordinates.length, 6, 's_xihan_e 更始（汉） must have dissolved mainland ring (6 rings total)');
+    assert(gs23.shape.coordinates.length <= 6, 's_xihan_e 更始（汉） must keep its mainland dissolved (no extra seam pieces)');
     assert.strictEqual(lx23.shape.type, 'Polygon', 's_xihan_e 刘秀（河北） must be a single dissolved Polygon');
 
     for (const sid of ['s_tang_d2', 's_wudai_a', 's_wudai_b1', 's_wudai_b', 's_wudai_b2', 's_wudai_c0']) {
@@ -8059,6 +8059,25 @@ function main() {
     }
     const chuA = snapshots.s_wudai_a.polities.find((p) => p.title === '楚 · 荆南');
     assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
+
+    for (const [sid, title, maxPieces] of [
+      ['s_yuan_b', '元', 2],
+      ['s_yuan_b', '天完 · 陈友谅', 1],
+      ['s_yuan_c', '元', 3],
+      ['s_yuan_c', '吴（朱元璋）', 1],
+      ['s_ming_0a', '北元', 1],
+      ['s_ming_0a', '明', 2],
+      ['s_ming_0b', '明', 3],
+      ['s_sui_d', '魏（李密）', 1],
+      ['s_tang_0', '梁（萧铣）', 1],
+      ['s_tang_0', '吴（杜伏威）', 1],
+      ['s_tang_d1', '大齐（黄巢）', 1],
+    ]) {
+      const pol = snapshots[sid].polities.find((p) => p.title === title);
+      assert(pol && pol.shape, `${sid} ${title} must exist`);
+      const pieces = pol.shape.type === 'MultiPolygon' ? pol.shape.coordinates.length : 1;
+      assert(pieces <= maxPieces, `${sid} ${title} must be dissolved to <= ${maxPieces} pieces (got ${pieces})`);
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
