@@ -2083,6 +2083,26 @@ window.EN_LOCALE = {
     "beisong:997": [
       "Emperor Taizong divides the realm into Fifteen Circuits, establishing Song circuit rule",
       "Dongjing Kaifeng Fu"
+    ],
+    "nanbei:551": [
+      "Wang Sengbian and Chen Baxian crush Hou Jing; Emperor Yuan ascends at Jiangling",
+      "Jiankang · Jiangling"
+    ],
+    "nanbei:578": [
+      "Northern Zhou captures Wu Mingche at Luliang and seizes Huainan north of the Yangtze",
+      "Pengcheng · Shouyang"
+    ],
+    "tang:783": [
+      "Jingyuan Mutiny besieges Emperor Dezong at Fengtian; Penitential Edict appeases garrisons",
+      "Fengtian (Qianxian) · Chang'an"
+    ],
+    "wudai:910": [
+      "Qian Liu builds Qiantang sea walls in Wuyue; Xu Wen consolidates Yang Wu in Jianghuai",
+      "Hangzhou · Yangzhou"
+    ],
+    "wudai:927": [
+      "Later Tang invests Ma Yin as King of Chu alongside Jingnan astride middle Yangtze trade",
+      "Tanzhou · Jiangling"
     ]
   },
   "corridors": {
