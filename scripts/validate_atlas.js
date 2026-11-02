@@ -1274,6 +1274,8 @@ function main() {
       's_xihan_a',
       's_xihan_b1',
       's_xihan_b2',
+      's_xihan_b3a',
+      's_xihan_b3b',
       's_xihan_b3',
       's_xihan_b',
       's_donghan',
@@ -5526,9 +5528,17 @@ function main() {
         hasPt('s_xihan_a', '南越', 111.28, 23.48) &&
         hasPt('s_xihan_a', '南越', 109.416, 24.326) &&
         hasPt('s_xihan_b2', '南越', 113.261, 23.131) &&
-        hasPt('s_xihan_b3', '汉', 113.261, 23.131) &&
-        hasPt('s_xihan_b3', '汉', 111.28, 23.48),
-      'Panyu, Guangxin (Cangwu), and Tanzhong (Yulin) must stay in Nanyue until -111 BCE (s_xihan_b3)'
+        hasPt('s_xihan_b3a', '汉', 113.261, 23.131) &&
+        hasPt('s_xihan_b3a', '汉', 111.28, 23.48) &&
+        hasPt('s_xihan_b3a', '闽越', 119.3, 26.08) &&
+        !hasPt('s_xihan_b3a', '汉', 109.577, 19.521) &&
+        hasPt('s_xihan_b3a', '西南夷（滇 · 夜郎）', 102.751, 24.671) &&
+        hasPt('s_xihan_b3b', '汉', 119.3, 26.08) &&
+        hasPt('s_xihan_b3b', '汉', 109.577, 19.521) &&
+        hasPt('s_xihan_b3b', '西南夷（滇 · 夜郎）', 102.751, 24.671) &&
+        hasPt('s_xihan_b3', '汉', 102.751, 24.671) &&
+        hasPt('s_xihan_b3', '汉', 102.26, 27.89),
+      '4-stage Western Han expansion (-111 Nanyue -> -110 Minyue & Hainan -> -109 Southwest Yi/Yizhou -> -108 Wiman Joseon) must match milestones'
     );
     assert(
       hasPt('s_qin_a', '秦', 115.5, 27.5) &&
@@ -5539,7 +5549,8 @@ function main() {
         hasPt('s_qin_chuhan', '西楚（项羽）', 115.5, 27.5) &&
         hasPt('s_xihan_a', '汉（郡国并行）', 115.0, 25.8) &&
         hasPt('s_xihan_b1', '汉', 115.0, 25.8) &&
-        hasPt('s_xihan_b2', '汉', 115.0, 25.8),
+        hasPt('s_xihan_b2', '汉', 115.0, 25.8) &&
+        hasPt('s_xihan_b3a', '汉', 115.0, 25.8),
       'Central and southern Jiangxi (Gan River basin) must not leave a hollow gap between Qin/Chu/Han and Nanyue/Minyue'
     );
     for (const sk of ['s_qin_d', 's_qin_chuhan', 's_xihan_a', 's_xihan_b1', 's_xihan_b2']) {
@@ -5550,11 +5561,23 @@ function main() {
         `${sk} must keep Nanyue and Minyue as rival polities with unified tints (#7d5a38 / #9b7653)`
       );
     }
+    {
+      const myB3a = snapshots.s_xihan_b3a.polities.find((p) => p.title === '闽越');
+      assert(
+        myB3a && myB3a.role === 'rival' && myB3a.tint === '#9b7653' &&
+          !snapshots.s_xihan_b3b.polities.some((p) => p.title === '闽越'),
+        's_xihan_b3a (-111 BCE) must keep Minyue as a rival polity until its -110 BCE annexation in s_xihan_b3b'
+      );
+    }
 
-    // 4. 西域都护府 (-60 BCE, s_xihan_c) vs 西域诸国 (-111..-61 BCE, s_xihan_b3/s_xihan_b); 乐浪郡 (-108 BCE); 敦煌 & 居延
+    // 4. 西域都护府 (-60 BCE, s_xihan_c) vs 西域诸国 (-111..-61 BCE, s_xihan_b3a..s_xihan_b); 乐浪郡 (-108 BCE); 敦煌 & 居延
     assert(
-      !snapshots.s_xihan_b3.polities.some((p) => p.title === '西域都护府') &&
+      !snapshots.s_xihan_b3a.polities.some((p) => p.title === '西域都护府') &&
+        !snapshots.s_xihan_b3b.polities.some((p) => p.title === '西域都护府') &&
+        !snapshots.s_xihan_b3.polities.some((p) => p.title === '西域都护府') &&
         !snapshots.s_xihan_b.polities.some((p) => p.title === '西域都护府') &&
+        snapshots.s_xihan_b3a.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
+        snapshots.s_xihan_b3b.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
         snapshots.s_xihan_b3.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
         snapshots.s_xihan_b.polities.some((p) => p.title === '西域诸国' && p.role === 'neighbor') &&
         snapshots.s_xihan_c.polities.some((p) => p.title === '西域都护府' && p.role === 'protectorate'),
@@ -6097,7 +6120,7 @@ function main() {
         `${sk} (-228..-223 BCE) must place Yunzhong in 秦 and Dai ([114.551, 40.151]) in 代`
       );
     }
-    for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
+    for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
       const mainPol = snapshots[sk].polities[0];
       const mainRing = mainPol.shape.type === 'Polygon' ? mainPol.shape.coordinates[0] : mainPol.shape.coordinates[0][0];
       assert(
