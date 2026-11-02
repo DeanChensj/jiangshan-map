@@ -8208,6 +8208,28 @@ function main() {
         snapshots.s_qin_d.polities.some((p) => p.title === '南越（赵佗）'),
       's_qin_d (-207 BCE) must show Qin, Chu (King Huai & Xiang Yu), and Zhao Tuo Nanyue in Lingnan'
     );
+
+    // Southern Dynasties, Ten Kingdoms, Late Tang & Western Han curated milestone/landmark split
+    for (const [dk, yr, kw] of [
+      ['nanbei', 551, '陈霸先'],
+      ['nanbei', 578, '吕梁之战'],
+      ['tang', 783, '泾原兵变'],
+      ['wudai', 910, '钱镠'],
+      ['wudai', 927, '马殷'],
+    ]) {
+      const d = dynasties.find((x) => x.key === dk);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Expected timeline milestone ${dk}:${yr} containing "${kw}"`);
+      assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, 2, `Expected 2 spatial anchors on ${dk}:${yr}`);
+    }
+    const xihanDyn = dynasties.find((x) => x.key === 'xihan');
+    const changanXihanEvs = ctrl._collectPlaceEventsForDynasty(xihanDyn, 108.941, 34.341, null);
+    assert(
+      changanXihanEvs.some((e) => e.year === -81 && e.text.includes('苏武')) &&
+        changanXihanEvs.some((e) => e.year === -81 && e.text.includes('盐铁会议')) &&
+        changanXihanEvs.some((e) => e.year === -2 && e.text.includes('浮屠经')),
+      'Western Han Chang\'an place events must preserve both 81 BCE landmarks (Su Wu & Salt-and-Iron Debate) and 2 BCE Buddhist transmission'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
