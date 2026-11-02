@@ -1,0 +1,10 @@
+services:
+  jiangshan-map:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jiangshan-map:latest
+    container_name: jiangshan-map
+    ports:
+      - "8008:80"
+    restart: unless-stopped

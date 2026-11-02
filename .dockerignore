@@ -1,0 +1,8 @@
+.git
+.github
+docs
+scripts
+skills
+geojson/demo.html
+*.md
+.gitignore
