@@ -5530,6 +5530,26 @@ function main() {
         hasPt('s_xihan_b3', '汉', 111.28, 23.48),
       'Panyu, Guangxin (Cangwu), and Tanzhong (Yulin) must stay in Nanyue until -111 BCE (s_xihan_b3)'
     );
+    assert(
+      hasPt('s_qin_a', '秦', 115.5, 27.5) &&
+        hasPt('s_qin_b', '秦', 115.5, 27.5) &&
+        hasPt('s_qin', '秦', 115.5, 27.5) &&
+        hasPt('s_qin_c', '楚（张楚 · 怀王）', 115.5, 27.5) &&
+        hasPt('s_qin_d', '楚（怀王 · 项羽）', 115.5, 27.5) &&
+        hasPt('s_qin_chuhan', '西楚（项羽）', 115.5, 27.5) &&
+        hasPt('s_xihan_a', '汉（郡国并行）', 115.0, 25.8) &&
+        hasPt('s_xihan_b1', '汉', 115.0, 25.8) &&
+        hasPt('s_xihan_b2', '汉', 115.0, 25.8),
+      'Central and southern Jiangxi (Gan River basin) must not leave a hollow gap between Qin/Chu/Han and Nanyue/Minyue'
+    );
+    for (const sk of ['s_qin_d', 's_qin_chuhan', 's_xihan_a', 's_xihan_b1', 's_xihan_b2']) {
+      const ny = snapshots[sk].polities.find((p) => p.title === '南越' || p.title === '南越（赵佗）');
+      const my = snapshots[sk].polities.find((p) => p.title === '闽越');
+      assert(
+        ny && ny.role === 'rival' && ny.tint === '#7d5a38' && my && my.role === 'rival' && my.tint === '#9b7653',
+        `${sk} must keep Nanyue and Minyue as rival polities with unified tints (#7d5a38 / #9b7653)`
+      );
+    }
 
     // 4. 西域都护府 (-60 BCE, s_xihan_c) vs 西域诸国 (-111..-61 BCE, s_xihan_b3/s_xihan_b); 乐浪郡 (-108 BCE); 敦煌 & 居延
     assert(
