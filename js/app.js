@@ -15528,6 +15528,16 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      if (
+        q.has('year') ||
+        q.has('place') ||
+        (q.has('lng') && q.has('lat')) ||
+        q.has('person') ||
+        q.has('journey')
+      ) {
+        this.lastRenderedSnap = null;
+        if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
+      }
       const needsEn =
         this.locale === 'en' ||
         /[a-z]/i.test(
