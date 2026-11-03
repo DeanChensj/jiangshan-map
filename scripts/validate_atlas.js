@@ -4890,9 +4890,9 @@ function main() {
     ctrl.locale = 'zh';
   }
 
-  // CUJ 28: Timeline autoplay — constant playhead speed along the scrubber bar, lands on every
-  // milestone year, holds on dynasty openings and isMapChange milestones, and keeps the event
-  // callout while playing.
+  // CUJ 28: Timeline autoplay is event-driven — the playhead lands only on event nodes
+  // (milestone years + territory-snapshot boundaries), never on empty calendar years, dwells
+  // one beat on ordinary events and longer on map-changing nodes, and keeps the event callout.
   {
     const proto = ControllerClass.prototype;
     let tick = null;
@@ -4905,51 +4905,45 @@ function main() {
     Object.assign(ctrl, { activePerson: null, challenge: null, personTimer: null });
     ctrl.closeMilestoneBalloon = () => {};
     ctrl._syncAutoMilestoneBalloon = () => {};
-    const visited = new Set();
+    const visited = [];
     ctrl.jumpToYear = function (y) {
       this.year = y;
       this.dynastyIdx = this._findDynastyIndex(y);
-      visited.add(y);
+      visited.push(y);
     };
     ctrl.year = ctrl.minYear;
     ctrl.startAutoplay();
     const stops = proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear);
     const stopYears = new Set(stops.map((s) => s.year));
     const yearTicks = new Map();
-    const movingTicks = dynasties.map(() => 0);
-    const landings = [];
     let totalTicks = 0;
     while (ctrl.playing && totalTicks < 20000) {
-      const [p0, y0] = [ctrl.playProgress, ctrl.year];
       tick();
       totalTicks++;
       yearTicks.set(ctrl.year, (yearTicks.get(ctrl.year) || 0) + 1);
-      if (ctrl.playProgress > p0) movingTicks[ctrl._findDynastyIndex(ctrl.year)]++;
-      if (ctrl.year !== y0 && stopYears.has(ctrl.year)) landings.push(totalTicks);
     }
     assert(!ctrl.playing && ctrl.year === ctrl.maxYear, `Autoplay must stop at ${ctrl.maxYear}, got ${ctrl.year}`);
 
-    const missed = stops.filter((s) => !visited.has(s.year)).map((s) => s.year);
-    assert.strictEqual(missed.length, 0, `Autoplay skipped milestone years ${missed.slice(0, 8).join(', ')}`);
-    const shortest = Math.min(...landings.slice(1).map((t, i) => t - landings[i]));
-    assert(shortest >= 4, `Each autoplay callout must stay at least ~1 s, shortest was ${shortest} ticks`);
-    for (const s of stops.filter((x) => x.hold)) {
-      assert(yearTicks.get(s.year) >= 9, `Autoplay must hold ~2.5 s on map-change milestone ${s.year}`);
+    const missed = stops.filter((s) => !visited.includes(s.year)).map((s) => s.year);
+    assert.strictEqual(missed.length, 0, `Autoplay skipped event nodes ${missed.slice(0, 8).join(', ')}`);
+    const strays = visited.filter((y) => !stopYears.has(y) && y !== ctrl.maxYear);
+    assert.strictEqual(strays.length, 0, `Autoplay must jump node-to-node, but landed on empty years ${strays.slice(0, 8).join(', ')}`);
+    for (const s of stops) {
+      const dwell = yearTicks.get(s.year) || 0;
+      if (s.hold) assert(dwell >= 10, `Autoplay must hold ~2.8 s on map-changing node ${s.year}, got ${dwell} ticks`);
+      else assert(dwell >= 4, `Autoplay must show ordinary event ${s.year} for ~1.1 s, got ${dwell} ticks`);
     }
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-
-    const moving = movingTicks.reduce((a, b) => a + b, 0);
-    assert(Math.abs(moving - (9 * 60 * 1000) / 280) < 40, `Autoplay full run should take ~9 min of ticks, got ${moving}`);
-    dynasties.forEach((d, i) => {
-      const expected = ctrl.bandWeights[i] / ctrl.totalBandWeight;
-      const share = movingTicks[i] / moving;
-      assert(
-        Math.abs(share - expected) / expected < 0.15,
-        `Autoplay time for ${d.key} must match its scrubber band (${(expected * 100).toFixed(1)}%), got ${(share * 100).toFixed(1)}%`
-      );
-    });
+    // Snapshot boundaries without a same-year milestone are still nodes (Shang Yang's Hexi, Sui collapse, Huang Chao).
+    for (const y of [-340, 614, 880]) {
+      assert(stops.some((s) => s.year === y && s.hold), `Autoplay must land and hold on the territory-snapshot boundary ${y}`);
+    }
+    const holdCount = stops.filter((s) => s.hold).length;
+    assert(holdCount >= 180 && holdCount < stops.length, `Expected ~180+ map-changing nodes among ${stops.length}, got ${holdCount}`);
+    const runMin = (totalTicks * 280) / 60000;
+    assert(runMin > 12 && runMin < 16, `A 1× full run should take ~14 min (≈190 map nodes × 2.8 s + ≈290 events × 1.1 s), got ${runMin.toFixed(1)} min`);
 
     const tang = dynasties.find((d) => d.key === 'tang');
     Object.assign(ctrl, {
@@ -5391,9 +5385,7 @@ function main() {
     ctrl.challenge = null;
     ctrl.playing = true;
     ctrl.playInterval = 99;
-    ctrl.playProgress = 0.42;
     ctrl.playHoldTicks = 3;
-    ctrl.playShownTicks = 2;
     ctrl.playSpeed = 1;
     proto._updatePlaySpeedUi.call(ctrl);
     assert.strictEqual(speedLbl.textContent, '1×', 'Initial speed label must be 1×');
@@ -5402,7 +5394,7 @@ function main() {
       '1× default speed must not have is-custom-speed active highlight'
     );
 
-    // Cycle 1 -> 2 -> 0.25 -> 0.5 -> 1 while timeline autoplay is running
+    // Cycle 1 -> 2 -> 4 -> 0.5 -> 1 while timeline autoplay is running
     assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 2, 'First click must switch speed to 2×');
     assert.strictEqual(speedLbl.textContent, '2×', 'Label must update to 2×');
     assert(
@@ -5410,12 +5402,11 @@ function main() {
       'Non-1× speed must highlight #act-play-speed with .is-custom-speed'
     );
     assert.strictEqual(scheduledMs[scheduledMs.length - 1], 140, '2× speed must reschedule tick interval to 140ms');
-    assert.strictEqual(ctrl.playProgress, 0.42, 'Changing speed live must preserve playProgress');
-    assert.strictEqual(ctrl.playHoldTicks, 3, 'Changing speed live must preserve playHoldTicks');
+    assert.strictEqual(ctrl.playHoldTicks, 3, 'Changing speed live must preserve the current dwell (playHoldTicks)');
 
-    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.25, 'Second click must switch speed to 0.25×');
-    assert.strictEqual(speedLbl.textContent, '0.25×', 'Label must update to 0.25×');
-    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 1120, '0.25× speed must reschedule tick interval to 1120ms');
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 4, 'Second click must switch speed to 4×');
+    assert.strictEqual(speedLbl.textContent, '4×', 'Label must update to 4×');
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 70, '4× speed must reschedule tick interval to 70ms');
 
     assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.5, 'Third click must switch speed to 0.5×');
     assert.strictEqual(scheduledMs[scheduledMs.length - 1], 560, '0.5× speed must reschedule tick interval to 560ms');

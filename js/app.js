@@ -69,16 +69,16 @@
     部: 'Tribal Division',
     侨州: 'Emigre Prefecture',
   };
-  // Timeline autoplay: the playhead crosses the scrubber bar at a constant speed (each
-  // dynasty gets time in proportion to its band width), lands on every milestone year,
-  // shows each callout for at least ~1 s, and holds on milestones that open a dynasty or
-  // are flagged isMapChange.
+  // Timeline autoplay is event-driven: the playhead jumps from one node to the next (every
+  // milestone year plus every territory-snapshot boundary) instead of crawling through the
+  // ~1,950 calendar years where nothing changes. An ordinary event stays up long enough to
+  // read its headline; a node that redraws the map (isMapChange, dynasty opening, snapshot
+  // switch) holds longer so the border diff can be seen. Playback speed scales the tick.
   const AUTOPLAY_TICK_MS = 280;
-  const AUTOPLAY_FULL_RUN_MS = 9 * 60 * 1000;
-  const AUTOPLAY_MIN_SHOW_TICKS = 4;
-  const AUTOPLAY_HOLD_TICKS = Math.round(2500 / AUTOPLAY_TICK_MS);
+  const AUTOPLAY_EVENT_TICKS = 4;
+  const AUTOPLAY_MAP_CHANGE_TICKS = 10;
   const PERSON_AUTOPLAY_STEP_MS = 2600;
-  const PLAY_SPEED_STEPS = [1, 2, 0.25, 0.5];
+  const PLAY_SPEED_STEPS = [1, 2, 4, 0.5];
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -412,9 +412,7 @@
       this.playing = false;
       this.playSpeed = 1;
       this.playInterval = null;
-      this.playProgress = 0;
       this.playHoldTicks = 0;
-      this.playShownTicks = 0;
       this.musicPlaying = false;
       this.musicTrackIdx = 0;
       this.musicAudio = null;
@@ -9406,8 +9404,8 @@
       const isEn = this.locale === 'en';
       btn.setAttribute('aria-label', isEn ? `Playback speed ${labelText}` : `播放倍速 ${labelText}`);
       btn.title = isEn
-        ? `Playback speed ${labelText} (click to cycle 0.25× / 0.5× / 1× / 2×)`
-        : `播放倍速 ${labelText}（点击切换 0.25× / 0.5× / 1× / 2×）`;
+        ? `Playback speed ${labelText} (click to cycle 0.5× / 1× / 2× / 4×)`
+        : `播放倍速 ${labelText}（点击切换 0.5× / 1× / 2× / 4×）`;
     }
 
     setPlaySpeed(speed) {
@@ -9440,6 +9438,8 @@
       const btn = this._id('act-autoplay');
       if (!btn) return;
       const isPlaying = Boolean(this.playing || this.personTimer);
+      const dock = this._id('scrubber-dock');
+      if (dock && dock.classList) dock.classList.toggle('is-autoplaying', Boolean(this.playing));
       btn.innerHTML = isPlaying ? SVG_ICONS.pause : SVG_ICONS.play;
       btn.classList.toggle('is-playing', isPlaying);
       btn.setAttribute('aria-pressed', String(isPlaying));
@@ -9468,22 +9468,28 @@
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
-      this.playProgress = this._yearToProgress(this.year);
-      this.playHoldTicks = 0;
-      this.playShownTicks = AUTOPLAY_MIN_SHOW_TICKS;
+      // Leave the starting frame on screen for one event beat before the first jump.
+      this.playHoldTicks = AUTOPLAY_EVENT_TICKS;
       this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
       this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
-    // Sorted milestone years the autoplay must land on, with the ones it holds on.
+    // Sorted years the autoplay lands on: every milestone year plus every territory-snapshot
+    // boundary. `hold` marks the nodes that redraw the map (border change, dynasty opening,
+    // snapshot switch) so the border diff gets the longer dwell.
     _autoplayStops() {
       if (!this._autoplayStopList) {
         const holdByYear = new Map();
+        const mark = (year, hold) => holdByYear.set(year, Boolean(holdByYear.get(year) || hold));
         for (const d of this.dynasties) {
+          mark(d.fromYear, true);
+          if (Array.isArray(d.phases)) {
+            for (const ph of d.phases) {
+              if (ph.until > d.fromYear && ph.until < d.toYear) mark(ph.until, true);
+            }
+          }
           for (const m of d.milestones || []) {
-            const y = this._clampYearToDynasty(d, m.year);
-            const opensDynasty = m.year === d.fromYear;
-            holdByYear.set(y, Boolean(holdByYear.get(y) || m.isMapChange || opensDynasty));
+            mark(this._clampYearToDynasty(d, m.year), m.isMapChange);
           }
         }
         this._autoplayStopList = [...holdByYear]
@@ -9502,24 +9508,12 @@
         this.stopAutoplay();
         return;
       }
-      const step = AUTOPLAY_TICK_MS / AUTOPLAY_FULL_RUN_MS;
-      this.playShownTicks++;
-      this.playProgress += step;
-      let next = this.playProgress >= 1 ? this.maxYear : this._progressToYear(this.playProgress);
-      if (next === 0) next = 1;
-      if (next <= this.year) return;
-      const stop = this._autoplayStops().find((s) => s.year > this.year && s.year <= next);
-      if (stop) {
-        // Let the current callout stay readable before the next milestone replaces it.
-        if (this.playShownTicks < AUTOPLAY_MIN_SHOW_TICKS) {
-          this.playProgress -= step;
-          return;
-        }
-        next = stop.year;
-        this.playShownTicks = stop.hold ? AUTOPLAY_MIN_SHOW_TICKS : 0;
-        if (stop.hold) this.playHoldTicks = AUTOPLAY_HOLD_TICKS;
-      }
-      this.jumpToYear(next);
+      const stop = this._autoplayStops().find((s) => s.year > this.year);
+      const next = stop ? Math.min(stop.year, this.maxYear) : this.maxYear;
+      // This tick already counts as the first beat on the new node; a camera pan inside
+      // jumpToYear may raise playHoldTicks further (see _syncAutoMilestoneBalloon).
+      this.playHoldTicks = (stop && stop.hold ? AUTOPLAY_MAP_CHANGE_TICKS : AUTOPLAY_EVENT_TICKS) - 1;
+      this.jumpToYear(next === 0 ? 1 : next);
     }
 
     stopAutoplay() {
