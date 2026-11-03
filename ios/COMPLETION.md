@@ -8,7 +8,7 @@ The original iPhone/iPad functional port is implemented, with the renderer and n
 - Confirmed the bundled catalog contains 18 periods, 188 territorial stages, 124 listed people and seven curated journeys after updating to the latest upstream data. Verified snapshot, mesh and label files exist for every stage.
 - Ran 17 focused queries against the bundled engine: simplified/traditional/English search, people and encounters, the Imperial Seal, a curated journey, 18-period genealogy in all three languages, parallel routes, per-stop dates, polity stages and a quiz deck retained across a language change. All passed.
 - Built and launched on iPhone and iPad simulators. Checked the restored Imperial Seal entry on both layouts, iPhone detail-sheet dismissal into the journey, and named event locations. Previous UI checks cover the main playback, route, quiz, inspector, layer and historical-site flows.
-- Rechecked the production Vercel share page and app-association endpoint: HTTP 200, with the configured app identifier present. This does not replace physical-device universal-link testing already recorded in PARITY.md.
+- Canonical web shares now use the official `https://deanchen.me/jiangshan-map/` address directly. At the follow-up check, the official root app-association URL returned HTTP 404, so automatic iOS opening from that domain awaits the website owner's setup. The legacy Vercel association was verified previously; web sharing does not depend on either association endpoint.
 - Built a signed Release for installation on the paired iPhone 18 Pro Max. No new test suite or performance profile was added to this audit; earlier performance evidence is in PERFORMANCE.md.
 
 Three issues found and corrected:
@@ -21,7 +21,7 @@ No further missing core port feature was identified in this focused audit. Some 
 
 ## Follow-up regression tests
 
-The draft PR adds 20 Node query/link checks, ten native state tests and two event-navigation UI tests. All passed locally, together with the existing atlas integrity validation. The tests also identified and fixed a weighted-timeline boundary alias: dynasty-start years could map back to the preceding dynasty's end year. Progress/year conversions now round-trip every mapped nonzero year. A hardcoded Xcode target bundle identifier was also corrected so the generated configuration controls the app and test identities. See TESTING.md for commands, isolation and CI details.
+The draft PR adds 21 Node query/link checks, ten native state tests and two event-navigation UI tests. All passed locally, together with the existing atlas integrity validation. The tests also identified and fixed a weighted-timeline boundary alias: dynasty-start years could map back to the preceding dynasty's end year. Progress/year conversions now round-trip every mapped nonzero year. A hardcoded Xcode target bundle identifier was also corrected so the generated configuration controls the app and test identities. See TESTING.md for commands, isolation and CI details.
 
 ## Separate work
 

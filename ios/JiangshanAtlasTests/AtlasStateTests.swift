@@ -95,6 +95,9 @@ import XCTest
         try await withStore { store,defaults in
             store.setYear(750);store.linkYearRange=700...800;store.english=true
             store.cameraLongitude=112.45;store.cameraLatitude=34.62;store.cameraZoom=8.25
+            XCTAssertEqual(store.shareURL.scheme,"https")
+            XCTAssertEqual(store.shareURL.host,"deanchen.me")
+            XCTAssertEqual(URLComponents(url:store.shareURL,resolvingAgainstBaseURL:false)?.path,"/jiangshan-map/")
             let url=store.nativeShareURL
             let restored=AtlasStore(preferences:defaults)
             await restored.load();await restored.openLink(url)

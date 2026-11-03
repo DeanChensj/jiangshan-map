@@ -10,6 +10,15 @@ The automated capture settles for six seconds, then runs ten seconds each of pan
 
 These rates count MapLibre render callbacks during the 30-second capture. They are workload measurements, not display-presentation guarantees or a benchmark of every gesture/device.
 
+The raw final capture is committed at [benchmarks/2026-11-02/immersive-camera.json](benchmarks/2026-11-02/immersive-camera.json), with derived metrics and capture provenance in [summary.json](benchmarks/2026-11-02/summary.json). This earlier development Release capture predates the PR test suite, current official-link changes and latest upstream data refresh; no Git SHA was recorded. It is not a new profile of the latest PR commit. The automated native camera sweep does not measure touch latency.
+
+| Final capture phase | Window | SDK callbacks / second | Median SDK encoding |
+|---|---:|---:|---:|
+| Pan | 10 s | 110.5 | 1.81 ms |
+| Zoom | 10 s | 119.8 | 2.29 ms |
+| Pan + zoom | 10 s | 119.5 | 2.64 ms |
+| Overall | 30 s | 116.6 | 2.24 ms |
+
 | Capture | Render callbacks / second | Median SDK encoding time |
 |---|---:|---:|
 | Original parity build, per-frame camera setters, run 1 | 31.5 | 26.58 ms |
@@ -28,7 +37,7 @@ The native-animation run measured 36.7, 35.1 and 32.2 callbacks/second in the th
 - Custom routes previously rebuilt their GeoJSON paths and pins after every camera change. They now rebuild for route/state changes or when a convergence pair crosses its merge threshold. Panning and zooming within the same merge state retain the existing map source.
 - Settlement and event source updates now check their input keys before filtering the catalog, calculating duplicate-event visibility, constructing labels, and allocating map features.
 - The zoom buttons previously waited 180 ms before starting every camera transition. They now start immediately. Navigation that changes card layout keeps the short settling delay needed to avoid interrupted camera transitions.
-- The preferred and fallback share addresses use the stable production alias `https://jiangshan-atlas-links.vercel.app/jiangshan-map/`. The generated signing entitlement contains that host only.
+- Canonical web sharing now uses the official `https://deanchen.me/jiangshan-map/` URL directly. The official domain and legacy Vercel host are both listed in associated domains; website app association is separate from web sharing.
 
 The immersive iteration also retains settlement/event GeoJSON when its visible content is unchanged across year changes, indexes catalog rows by period, reuses event-distance inputs, and prefetches the next stage into the existing four-entry cache. This removes repeated uploads during playback. These code changes alone do not establish the cause of the difference between the old and new captures.
 

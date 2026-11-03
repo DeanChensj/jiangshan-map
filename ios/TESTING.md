@@ -11,7 +11,7 @@ node --test tests/*.test.cjs
 node scripts/validate_atlas.js
 ```
 
-The 20 Node tests use the real web data and native query adapter. They cover localized search, people/encounters, every curated journey, the Imperial Seal, parallel routes and dates, genealogy, polity stages/events, quiz translation, historical-site dates and generated link-service files. Link tests use temporary directories and example domains; they do not contact or modify a deployment. The existing atlas integrity workflow runs these tests on Linux.
+The 21 Node tests use the real web data and native query adapter. They cover localized search, people/encounters, every curated journey, the Imperial Seal, parallel routes and dates, genealogy, polity stages/events, quiz translation, historical-site dates and generated link-service files. Link tests use temporary directories and example domains; they do not contact or modify a deployment. The existing atlas integrity workflow runs these tests on Linux.
 
 ## Native tests
 

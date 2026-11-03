@@ -1,8 +1,9 @@
 {
-  "shareBaseURL": "https://jiangshan-atlas-links.vercel.app/jiangshan-map/",
-  "fallbackShareBaseURL": "https://jiangshan-atlas-links.vercel.app/jiangshan-map/",
+  "shareBaseURL": "https://deanchen.me/jiangshan-map/",
+  "fallbackShareBaseURL": "https://deanchen.me/jiangshan-map/",
   "webFallbackURL": "https://deanchen.me/jiangshan-map/",
   "associatedDomains": [
+    "deanchen.me",
     "jiangshan-atlas-links.vercel.app"
   ],
   "developmentTeam": "5736QK4NZX",

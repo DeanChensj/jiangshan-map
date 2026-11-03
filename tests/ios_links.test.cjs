@@ -8,6 +8,13 @@ const {spawnSync} = require('node:child_process');
 const root=path.resolve(__dirname,'..');
 const config={shareBaseURL:'https://atlas.example.test/jiangshan-map/',fallbackShareBaseURL:'https://atlas.example.test/jiangshan-map/',webFallbackURL:'https://web.example.test/map/',associatedDomains:['atlas.example.test'],developmentTeam:'ABCDEFGHIJ',bundleIdentifier:'org.example.atlas'};
 
+test('canonical web shares use the official atlas address',()=> {
+  const actual=JSON.parse(fs.readFileSync(path.join(root,'ios/links.json'),'utf8'));
+  assert.equal(actual.shareBaseURL,'https://deanchen.me/jiangshan-map/');
+  assert.equal(actual.fallbackShareBaseURL,actual.shareBaseURL);
+  assert.ok(actual.associatedDomains.includes('deanchen.me'));
+});
+
 function generate(t,changes={}) {
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),'atlas-links-'));
   t.after(()=>fs.rmSync(temp,{recursive:true,force:true}));

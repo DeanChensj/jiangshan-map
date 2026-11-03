@@ -1,0 +1,44 @@
+{
+  "sourceFile": "immersive-camera.json",
+  "runID": "FF4454AB-CA51-4798-9BFD-7261F90BEDE4",
+  "startedAtUTC": "2026-11-03T01:00:44Z",
+  "deviceModel": "iPhone 18 Pro Max",
+  "os": "27.2",
+  "requestedFPS": 120,
+  "motionDriver": "native camera animation",
+  "scene": "1415, Chinese, boundaries/rivers/events/detail on, modern province/Today reference off",
+  "lowPowerMode": false,
+  "thermalState": 0,
+  "revisionNote": "Earlier immersive/detail development Release capture. No git SHA was recorded. Predates the PR test suite, current official-link changes, and latest upstream data refresh.",
+  "metricsNote": "SDK rendering callbacks are not measured presented frames or touch latency. Encoding time is an SDK measurement, not total frame time.",
+  "phases": [
+    {
+      "phase": "pan",
+      "seconds": 10,
+      "renderCallbacks": 1105,
+      "renderCallbacksPerSecond": 110.5,
+      "medianSDKEncodingMs": 1.807
+    },
+    {
+      "phase": "zoom",
+      "seconds": 10,
+      "renderCallbacks": 1198,
+      "renderCallbacksPerSecond": 119.8,
+      "medianSDKEncodingMs": 2.286
+    },
+    {
+      "phase": "pan+zoom",
+      "seconds": 10,
+      "renderCallbacks": 1195,
+      "renderCallbacksPerSecond": 119.5,
+      "medianSDKEncodingMs": 2.638
+    }
+  ],
+  "overall": {
+    "phase": "overall",
+    "seconds": 30,
+    "renderCallbacks": 3498,
+    "renderCallbacksPerSecond": 116.6,
+    "medianSDKEncodingMs": 2.24
+  }
+}

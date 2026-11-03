@@ -6,7 +6,6 @@ import CoreLocation
 final class AtlasStore {
     @ObservationIgnored let preferences:UserDefaults
     var catalog: AtlasCatalog?
-    var shareBaseOverride:URL?
     var error: String?
     var year: Int {
         didSet { preferences.set(year, forKey: "atlas.year") }
@@ -126,7 +125,6 @@ final class AtlasStore {
             }.value
             applyCatalog(loaded)
             focusSites=(try? JSONDecoder().decode([AtlasFocusSite].self,from:Data(contentsOf:AtlasResources.url("focus-sites.json")))) ?? []
-            Task { await resolveShareDomain() }
             hydroLabels = (try? JSONDecoder().decode([HydroLabel].self, from: Data(contentsOf: AtlasResources.url("hydro-labels.json")))) ?? []
             setYear(year)
             if let url = pendingURL { pendingURL = nil; open(url) }
@@ -175,7 +173,7 @@ final class AtlasStore {
     var mapRevision: String {
         "\(mapNote?.title ?? "")|\(showHistoricalDetail)|\(showTodayReference)|\(mapRightWidth)|\(activeEventID ?? "")|\(autoEvent?.id ?? "")|\(capitalHintSeen)|\(mapTopHeight)|\(mapBottomHeight)|\(showProvinceNames)|\(playing)|\(mapCardHeight)|\(routeRevision)|\(encountersOnly)|\(historicalDetail?.adminTitles?.joined() ?? "")|\(previewSnapshot ?? "")|\(year)|\(language)|\(showTerritories)|\(showPlaces)|\(showCorridors)|\(showTerrain)|\(showGhost)|\(focusedPolity)|\(experience?.id ?? "")|\(experienceIndex)|\(quiz?.revision ?? "")|\(showBoundaries)|\(showWater)|\(showEvents)|\(showModern)|\(journey?.id ?? "")|\(journeyIndex)|\(selection?.id ?? "")|\(destination?.id.uuidString ?? "")"
     }
-    var webBaseURL: URL { shareBaseOverride ?? URL(string:Bundle.main.object(forInfoDictionaryKey:"AtlasFallbackShareURL") as? String ?? Bundle.main.object(forInfoDictionaryKey:"AtlasWebURL") as? String ?? "https://deanchen.me/jiangshan-map/")! }
+    var webBaseURL: URL { URL(string:Bundle.main.object(forInfoDictionaryKey:"AtlasWebURL") as? String ?? Bundle.main.object(forInfoDictionaryKey:"AtlasFallbackShareURL") as? String ?? "https://deanchen.me/jiangshan-map/")! }
     var shareURL: URL {
         var components=URLComponents(url:webBaseURL,resolvingAgainstBaseURL:false)!
         var items=[URLQueryItem(name:"year",value:String(year)),URLQueryItem(name:"lang",value:language)]

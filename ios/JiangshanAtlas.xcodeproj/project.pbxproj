@@ -10,7 +10,6 @@
 		0A09B10A94E8BE94A5F3CBD8 /* AtlasNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D14682E2163B2CBC2B76543 /* AtlasNavigation.swift */; };
 		0C902F3FFFC4EC4C131B97CD /* AtlasPulseOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B377070338111DDACF2165B /* AtlasPulseOverlay.swift */; };
 		0DE28D7CE7ED75F9CEC8F610 /* EventNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5CE2B115730FBAEE49216E /* EventNavigationTests.swift */; };
-		1332A894BAFA85CA6E87D834 /* AtlasAppLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACE113ED0B2E0E7E30B1E37 /* AtlasAppLinks.swift */; };
 		1B533024DFD2D221A54F1B1D /* AtlasPlaybackViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51635A66E3BFF76F6D3BA86 /* AtlasPlaybackViews.swift */; };
 		2874AC6C9A7AE13E6F24B187 /* AtlasEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378A30256F92274F573DED8B /* AtlasEngine.swift */; };
 		326C4BC192A946A8B84EED66 /* AtlasGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC598AA0FBB2FC3649975F /* AtlasGeometry.swift */; };
@@ -53,7 +52,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2ACE113ED0B2E0E7E30B1E37 /* AtlasAppLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasAppLinks.swift; sourceTree = "<group>"; };
 		3658891C6F174E83448C4155 /* Glyphs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Glyphs; path = JiangshanAtlas/Resources/Glyphs; sourceTree = SOURCE_ROOT; };
 		378A30256F92274F573DED8B /* AtlasEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasEngine.swift; sourceTree = "<group>"; };
 		3FE72746ACFD2500BD707E3E /* AtlasCartography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasCartography.swift; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 		8E78DD22E294ED995FDAC5E3 /* JiangshanAtlas */ = {
 			isa = PBXGroup;
 			children = (
-				2ACE113ED0B2E0E7E30B1E37 /* AtlasAppLinks.swift */,
 				43D4FE519074AA3585C84EFA /* AtlasCameraProfile.swift */,
 				3FE72746ACFD2500BD707E3E /* AtlasCartography.swift */,
 				C64EA0CB96CF01B9397CEA6E /* AtlasDetailViews.swift */,
@@ -285,7 +282,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1332A894BAFA85CA6E87D834 /* AtlasAppLinks.swift in Sources */,
 				E0592262838B30E99F80E092 /* AtlasCameraProfile.swift in Sources */,
 				F05ED6360BDE982B83EC6D73 /* AtlasCartography.swift in Sources */,
 				E275494DB7AAD6D910226F95 /* AtlasDetailViews.swift in Sources */,
@@ -364,8 +360,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ATLAS_APPLE_TEAM = 5736QK4NZX;
 				ATLAS_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
-				ATLAS_FALLBACK_SHARE_URL = "https://jiangshan-atlas-links.vercel.app/jiangshan-map/";
-				ATLAS_WEB_URL = "https://jiangshan-atlas-links.vercel.app/jiangshan-map/";
+				ATLAS_FALLBACK_SHARE_URL = "https://deanchen.me/jiangshan-map/";
+				ATLAS_WEB_URL = "https://deanchen.me/jiangshan-map/";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -493,8 +489,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ATLAS_APPLE_TEAM = 5736QK4NZX;
 				ATLAS_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
-				ATLAS_FALLBACK_SHARE_URL = "https://jiangshan-atlas-links.vercel.app/jiangshan-map/";
-				ATLAS_WEB_URL = "https://jiangshan-atlas-links.vercel.app/jiangshan-map/";
+				ATLAS_FALLBACK_SHARE_URL = "https://deanchen.me/jiangshan-map/";
+				ATLAS_WEB_URL = "https://deanchen.me/jiangshan-map/";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

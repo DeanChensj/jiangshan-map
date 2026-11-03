@@ -38,7 +38,9 @@ The interface adapts web interactions to native sheets, menus and an iPad inspec
 
 Edit `ios/links.json` to change the preferred share URL, working fallback share URL, web fallback, associated domains or Apple team/bundle identifier. `bash ios/prepare.sh` generates the Xcode build settings, signing entitlement and a minimal static Vercel link service under `ios/.build/link-site`. Rebuild/reinstall the app after changing associated domains, and redeploy the generated site to the intended Vercel project. Keep old associated domains during a migration so previously shared links keep working.
 
-The current link service is [jiangshan-atlas-links.vercel.app](https://jiangshan-atlas-links.vercel.app). Its `/jiangshan-map/` links open the installed native app or continue to the original web atlas with all query parameters preserved. The preferred share address is the Vercel domain, so no custom DNS changes are required. The generated deployment includes a real `jiangshan-map/index.html` page for browser fallback. The production Vercel project is `prj_JR65AmwXeiYVKkSpin837jJ1zbz6` in team `team_KOR4nEw8LDQMuEVA1FV5vO9n`.
+Web shares use the official [deanchen.me/jiangshan-map/](https://deanchen.me/jiangshan-map/) address, including when offline or the website's app-association file is unavailable. Automatic opening in iOS requires the website owner to publish the generated `apple-app-site-association` file at `https://deanchen.me/.well-known/apple-app-site-association`, using the agreed final Apple team and bundle identifier. Ordinary web sharing works before that setup.
+
+The legacy [jiangshan-atlas-links.vercel.app](https://jiangshan-atlas-links.vercel.app) host remains in associated domains for previously shared links. It is an optional link service, not the canonical share address. Its generated deployment includes a real `jiangshan-map/index.html` fallback page that preserves query parameters. No deployment or DNS changes are made by this PR.
 
 Changing this configuration does not reconfigure DNS or publish a deployment by itself. Apple may cache association files after a domain change. Both HTTPS app links and `jiangshan://atlas?...` links use the same native parser.
 
@@ -51,7 +53,7 @@ Changing this configuration does not reconfigure DNS or publish a deployment by 
 - `ContentView.swift`, `AtlasDetailViews.swift`, `AtlasFeatureViews.swift`: native SwiftUI interface.
 - `AtlasCartography.swift`, `AtlasGeometry.swift`, `AtlasPulseOverlay.swift`: map styling, trajectories and idle marker animations.
 - `AtlasPlayback.swift`, `AtlasPlaybackViews.swift`, `AtlasNavigation.swift`: weighted timeline, event cards and exploration navigation.
-- `AtlasAppLinks.swift`, `../scripts/prepare_ios_links.js`: configurable universal links and a working fallback domain.
+- `../scripts/prepare_ios_links.js`: configurable universal links and optional link-service generation; canonical sharing reads the configured official URL directly.
 - `../scripts/export_ios.js`: native resource generator. `prepare_ios_terrain.swift` bakes the existing web edge fade into a PNG for the native renderer.
 
 See [FONTS.md](FONTS.md) for bundled font sources, licenses and optional regeneration.
