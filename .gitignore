@@ -7,3 +7,9 @@ _snap_skill_tmp_*.html
 /geojson/*
 !/geojson/demo.html
 !/geojson/jiangshan-locate.js
+
+# Native atlas build products and generated geographic bundles
+/ios/.build/
+/ios/JiangshanAtlas/Resources/Atlas/
+/ios/**/*.xcuserstate
+/ios/**/xcuserdata/
