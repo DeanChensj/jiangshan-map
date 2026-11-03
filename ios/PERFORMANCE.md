@@ -1,5 +1,24 @@
 # iOS performance check — 2026-11-02
 
+## Direct presentation measurement
+
+The signed Release of `bef202be3521ae38f5c661ad258c84005340b9a0` was measured on the physical iPhone 18 Pro Max, iOS 27.2, with Instruments 27 **Game Performance Overview + Display + Points of Interest**. Low Power Mode was off, thermal state was nominal, and the app requested 120 FPS. This run settles for six seconds, then uses the same 1415 bundled scene and automated native camera workload described below.
+
+These numbers count the map CAMetalLayer's actual **On Display** interval starts, not SDK callbacks. FPS is new drawable presentations divided by the fixed window; P95 is the 95th percentile of the drawables' on-display durations.
+
+| Phase | Window | Presented frames | Presented FPS | P95 on display |
+|---|---:|---:|---:|---:|
+| Pan | 10 s | 549 | 54.9 | 25.00 ms |
+| Zoom | 10 s | 599 | 59.9 | 25.00 ms |
+| Pan + zoom | 10 s | 600 | 60.0 | 25.00 ms |
+| Overall | 30 s | 1,748 | 58.3 | 25.00 ms |
+
+The pan window includes 0.826 seconds before its first new displayed frame, because the sweep's first animated target matches the initial camera. Its active presentation cadence is 59.8 FPS. The overall median on-display duration is 16.67 ms and P99 is 25.00 ms. The app requested 120 FPS; the observed movement cadence in this instrumented run was about 60 FPS. This does not establish an uninstrumented frame rate or the cause of that cadence.
+
+Raw frame timing, phase anchors, source revision, calculation method and limitations are committed under [direct-presentation](benchmarks/2026-11-02/direct-presentation/README.md). The capture window is anchored to the phase-1 signpost minus 10 seconds; the phase-2 signpost agrees within 0.044 ms. The same run emitted 1,751 SDK render callbacks, which are a separate metric. An earlier full Metal System Trace attempt failed while saving due to disk space and is excluded. No touch-latency, battery, Today-layer or broader-device claim is made.
+
+The older SDK-only captures below are retained as development history. They must not be interpreted as displayed FPS or as a controlled before/after comparison with this instrumented run.
+
 ## Device and workload
 
 Physical iPhone 18 Pro Max, iOS 27.2, signed Release builds. Screen maximum 120 Hz; MapLibre requested 120 FPS. Low Power Mode was off and reported thermal state was nominal in every capture below.
