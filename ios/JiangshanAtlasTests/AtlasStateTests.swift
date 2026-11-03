@@ -1,4 +1,6 @@
 import XCTest
+import SwiftUI
+import MapLibre
 @testable import JiangshanAtlas
 
 @MainActor final class AtlasStateTests:XCTestCase {
@@ -72,6 +74,46 @@ import XCTest
             XCTAssertTrue(store.stepSameYearEvent(1))
             XCTAssertEqual(store.activeEventID,events[1].id)
             XCTAssertEqual(store.year,year)
+        }
+    }
+
+    func testScrubbingAcrossEventsKeepsMapProjectionStable() async throws {
+        try await withStore { store,_ in
+            store.setYear(1415)
+            let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let previousWindow=scene.keyWindow
+            let window=UIWindow(windowScene:scene)
+            window.rootViewController=UIHostingController(rootView:ContentView(store:store))
+            window.makeKeyAndVisible()
+            defer { window.isHidden=true;window.rootViewController=nil;previousWindow?.makeKey() }
+            @MainActor func mapView(in view:UIView)->MLNMapView? {
+                if let map=view as? MLNMapView { return map }
+                return view.subviews.lazy.compactMap { mapView(in:$0) }.first
+            }
+            var loadedMap:MLNMapView?
+            for _ in 0..<100 {
+                window.layoutIfNeeded()
+                loadedMap=mapView(in:window)
+                if loadedMap?.style?.layer(withIdentifier:"realms") != nil,store.mapBottomHeight > 0 { break }
+                try await Task.sleep(for:.milliseconds(50))
+            }
+            let map=try XCTUnwrap(loadedMap)
+            XCTAssertNotNil(map.style?.layer(withIdentifier:"realms"))
+            try await Task.sleep(for:.milliseconds(200))
+            let coordinate=CLLocationCoordinate2D(latitude:34,longitude:106.5)
+            let point=map.convert(coordinate,toPointTo:map),inset=map.contentInset
+            let chromeHeight=store.mapBottomHeight
+            store.isScrubbing=true
+            for year in [-403,-402,-397,-221,750,1415] {
+                store.setYear(year)
+                try await Task.sleep(for:.milliseconds(180))
+                window.layoutIfNeeded()
+                let updated=map.convert(coordinate,toPointTo:map)
+                XCTAssertEqual(store.mapBottomHeight,chromeHeight,accuracy:0.5,"Bottom chrome changed at \(year)")
+                XCTAssertEqual(map.contentInset,inset,"Event changes must not change the map viewport")
+                XCTAssertEqual(updated.x,point.x,accuracy:0.5)
+                XCTAssertEqual(updated.y,point.y,accuracy:0.5,"Map jumped while scrubbing to \(year)")
+            }
         }
     }
 

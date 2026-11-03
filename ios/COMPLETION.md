@@ -21,7 +21,9 @@ No further missing core port feature was identified in this focused audit. Some 
 
 ## Follow-up regression tests
 
-The draft PR adds 21 Node query/link checks, ten native state tests and two event-navigation UI tests. All passed locally, together with the existing atlas integrity validation. The tests also identified and fixed a weighted-timeline boundary alias: dynasty-start years could map back to the preceding dynasty's end year. Progress/year conversions now round-trip every mapped nonzero year. A hardcoded Xcode target bundle identifier was also corrected so the generated configuration controls the app and test identities. See TESTING.md for commands, isolation and CI details.
+The draft PR adds 21 Node query/link checks, eleven native state/layout tests and four interaction UI tests. All passed locally, together with the existing atlas integrity validation. The tests also identified and fixed a weighted-timeline boundary alias: dynasty-start years could map back to the preceding dynasty's end year. Progress/year conversions now round-trip every mapped nonzero year. A hardcoded Xcode target bundle identifier was also corrected so the generated configuration controls the app and test identities. See TESTING.md for commands, isolation and CI details.
+
+The timeline follow-up keeps a stable event-card footprint even when no event is shown, reserves the year/era text rows, and updates event text without replacing or sliding the whole card. Scrubbing no longer changes the map's logical viewport as events appear, disappear or change text length. Opening the exploration menu pauses playback through its native pressed state; presenting other sheets also pauses it.
 
 ## Separate work
 

@@ -43,7 +43,7 @@ struct ContentView: View {
         .foregroundStyle(AtlasTheme.ink).background(AtlasTheme.paper)
         .focusable().focused($mapFocused).focusEffectDisabled()
         .onAppear { mapFocused=true }
-        .onChange(of:sheet) { _,value in if value == nil { mapFocused=true } }
+        .onChange(of:sheet) { _,value in if value == nil { mapFocused=true } else { playing=false } }
         .sheet(item: $sheet) { destination in
             NavigationStack {
                 sheetContent(destination).background(AtlasTheme.paper)
@@ -68,6 +68,7 @@ struct ContentView: View {
             store.beginPlayback()
             while !Task.isCancelled {
                 do { try await Task.sleep(for: .milliseconds(store.playbackInterval)) } catch { return }
+                guard playing, !Task.isCancelled else { return }
                 if !store.advancePlayback() { playing = false; return }
             }
         }
@@ -117,10 +118,18 @@ struct ContentView: View {
                             }.font(AtlasFonts.ui(9))
                         }.font(AtlasFonts.ui(11)).padding(7).background(AtlasTheme.paper.opacity(0.94),in:RoundedRectangle(cornerRadius:12))
                     }
-                    if let event=store.autoEvent, !store.autoEventDismissed,store.selection == nil,store.experience == nil,store.quiz == nil { AtlasEventPeek(store:store,event:event) { select(.event(event)) }.id(event.id).transition(.opacity.combined(with:.move(edge:.bottom))) }
+                    // Keep the same space when an event changes or is dismissed, so
+                    // the map's logical viewport never shifts during a scrub.
+                    if store.selection == nil,store.experience == nil,store.quiz == nil,let event=store.autoEvent ?? store.catalog?.events.first {
+                        let visible=store.autoEvent != nil && !store.autoEventDismissed
+                        AtlasEventPeek(store:store,event:event) { select(.event(event)) }
+                            .opacity(visible ? 1 : 0).allowsHitTesting(visible).accessibilityHidden(!visible)
+                            .transaction { $0.animation=nil }
+                    }
                     if store.quiz != nil { AtlasQuizPanel(store: store) }
                     else { timeline }
-                }.animation(reduceMotion ? nil : .easeInOut(duration:0.24),value:store.autoEvent?.id).onGeometryChange(for:Double.self) { Double($0.size.height) } action: { store.mapBottomHeight=$0 }
+                }
+                .onGeometryChange(for:Double.self) { Double($0.size.height) } action: { store.mapBottomHeight=$0 }
             }
         }
     }
@@ -131,7 +140,7 @@ struct ContentView: View {
                 .accessibilityLabel(store.text("搜索地点与人物","Search places and people")).disabled(store.quiz != nil)
             Spacer()
             if isWide { Button { withAnimation(reduceMotion ? nil : .easeInOut(duration:0.25)) { store.sidebarVisible.toggle() } } label:{Image(systemName:"sidebar.right").frame(width:44,height:44)}.accessibilityLabel(store.text("收起或展开编年侧栏","Toggle chronicle sidebar")) }
-            Button { sheet = .options } label:{Image(systemName:"square.3.layers.3d").frame(width:44,height:44)}.accessibilityLabel(store.text("图层与时间设置","Layers and timeline")).disabled(store.quiz != nil)
+            Button { playing=false;sheet = .options } label:{Image(systemName:"square.3.layers.3d").frame(width:44,height:44)}.accessibilityLabel(store.text("图层与时间设置","Layers and timeline")).disabled(store.quiz != nil)
             Menu {
                 Section(store.localChinese("江山时序")) {
                     Button(store.text("人物与同行", "People & encounters"), systemImage: "person.2") { playing = false; sheet = .journeys }
@@ -162,6 +171,8 @@ struct ContentView: View {
                 Button(store.text("关于江山时序", "About the atlas"), systemImage: "info.circle") { sheet = .about }
             } label: { Image(systemName: "ellipsis").frame(width:44,height:44) }
             .accessibilityLabel(store.text("探索菜单", "Explore menu"))
+            .accessibilityIdentifier("atlas.explore.menu")
+            .buttonStyle(AtlasPausingMenuStyle(store:store))
         }.buttonStyle(.glass).buttonBorderShape(.circle).tint(AtlasTheme.ink) }
         .padding(.horizontal,16).padding(.top,8).padding(.bottom,4)
     }
@@ -178,20 +189,22 @@ struct ContentView: View {
             HStack {
                 Button { yearInput = String(store.year); enteringYear = true } label: {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(store.yearLabel()).font(AtlasFonts.serif(timelineExpanded ? 25 : 20, weight: .regular)).monospacedDigit().contentTransition(.numericText(value:Double(store.year))).animation(reduceMotion || store.isScrubbing ? nil : .easeOut(duration:0.3),value:store.year)
-                        Text(store.eraLabel.isEmpty ? store.dynasty.map { store.text($0.title, $0.titleEn) } ?? "" : store.eraLabel).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.vermilion).lineLimit(1)
+                        Text(store.yearLabel()).font(AtlasFonts.serif(timelineExpanded ? 25 : 20, weight: .regular)).monospacedDigit().lineLimit(1,reservesSpace:true).minimumScaleFactor(0.75).accessibilityIdentifier("atlas.timeline.year")
+                        Text(store.eraLabel.isEmpty ? store.dynasty.map { store.text($0.title, $0.titleEn) } ?? "" : store.eraLabel).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.vermilion).lineLimit(1,reservesSpace:true)
                     }.multilineTextAlignment(.leading)
                 }.buttonStyle(.plain)
                 Spacer(minLength: 4)
                 if timelineExpanded { Button { playing = false; store.step(-1) } label: { Image(systemName: "backward.end").frame(width: 32, height: 40) }.accessibilityLabel(store.text("上一阶段", "Previous stage")) }
                 Button { playing.toggle() } label: { Image(systemName: playing ? "pause.fill" : "play.fill").frame(width: 40, height: 40) }
                     .foregroundStyle(AtlasTheme.paper).background(AtlasTheme.vermilion, in: Circle()).accessibilityLabel(playing ? store.text("暂停", "Pause") : store.text("播放", "Play"))
+                    .accessibilityIdentifier("atlas.playback.toggle")
                 if timelineExpanded { Button { playing = false; store.step(1) } label: { Image(systemName: "forward.end").frame(width: 32, height: 40) }.accessibilityLabel(store.text("下一阶段", "Next stage")) }
                 Button { withAnimation(reduceMotion ? nil : .spring(response:0.38,dampingFraction:0.88)) { timelineExpanded.toggle() } } label:{Image(systemName:"chevron.up").rotationEffect(.degrees(timelineExpanded ? 180 : 0)).frame(width:36,height:40)}.accessibilityLabel(store.text(timelineExpanded ? "收起时间轴" : "展开时间轴",timelineExpanded ? "Collapse timeline" : "Expand timeline"))
             }
             if let range=store.linkYearRange { HStack { Text(store.yearLabel(range.lowerBound) + " — " + store.yearLabel(range.upperBound));Spacer();Button(store.text("完整时间轴","Full timeline")) { store.linkYearRange=nil } }.font(AtlasFonts.ui(10)) }
             Slider(value: Binding(get: { store.timelineProgress(store.year) }, set: { store.setYear(store.year(atProgress:$0)) }), in: 0...1, onEditingChanged: { moving in store.isScrubbing=moving;if moving { playing = false; store.journey = nil; store.experience = nil } })
                 .accessibilityLabel(store.text("历史年份", "Historical year")).accessibilityValue(store.yearLabel())
+                .accessibilityIdentifier("atlas.timeline.slider")
             if timelineExpanded {
             AtlasTimelineBands(store:store) { dynasty in playing=false;store.lockPeriod=false;store.choose(dynasty) }
             ScrollViewReader { proxy in
@@ -263,5 +276,14 @@ struct ContentView: View {
         case .guide: AtlasWelcomeView(store:store) { sheet=nil }
         case .about: AtlasAboutView(store: store)
         }
+    }
+}
+
+private struct AtlasPausingMenuStyle: ButtonStyle {
+    let store:AtlasStore
+    func makeBody(configuration:Configuration)->some View {
+        configuration.label.padding(6)
+            .glassEffect(.regular.interactive(),in:.circle)
+            .onChange(of:configuration.isPressed) { _,pressed in if pressed { store.playing=false } }
     }
 }

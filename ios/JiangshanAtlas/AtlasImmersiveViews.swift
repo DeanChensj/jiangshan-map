@@ -11,7 +11,7 @@ struct AtlasEventPeek: View {
                     Image(systemName:event.major ? "map" : "sparkle").font(.system(size:14)).foregroundStyle(AtlasTheme.vermilion).padding(.top,2)
                     VStack(alignment:.leading,spacing:4) {
                         Text(store.yearLabel(event.year)).font(AtlasFonts.ui(10,weight:.medium)).foregroundStyle(AtlasTheme.vermilion)
-                        Text(store.text(event.title,event.titleEn)).font(AtlasFonts.serif(13,weight:.semibold)).lineLimit(2).foregroundStyle(AtlasTheme.ink)
+                        Text(store.text(event.title,event.titleEn)).font(AtlasFonts.serif(13,weight:.semibold)).lineLimit(2,reservesSpace:true).foregroundStyle(AtlasTheme.ink)
                     }.frame(maxWidth:.infinity,alignment:.leading)
                     Image(systemName:"chevron.right").font(.caption2).foregroundStyle(AtlasTheme.secondary).padding(.top,4)
                 }.contentShape(Rectangle())
