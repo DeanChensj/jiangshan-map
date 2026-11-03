@@ -91,6 +91,7 @@ extension AtlasStore {
         do {
             let value: AtlasExperience = try await engine.query("route", arguments(["place": places, "years": years]))
             guard isCurrentNavigation(request), !value.stops.isEmpty else { return false }
+            encountersOnly=false
             playing=false;journey = nil; selection = nil; quiz = nil; experience = value;clearPolityContext();historicalDetail=nil;linkYearRange=nil;lockPeriod=false; experienceIndex = -1;routeRevision += 1;setYear(value.stops[0].effectiveYear);fitExperience()
             return true
         } catch { if isCurrentNavigation(request) { actionError = error.localizedDescription }; return false }

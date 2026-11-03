@@ -109,7 +109,8 @@ for (const [index, d] of w.DYNASTY_DATA.entries()) {
   }
 }
 for (const [i, e] of lore.PLACE_LANDMARK_EVENTS.entries()) {
-  catalog.events.push({ id: `landmark-${i}`, dynasty: e.dynastyKey, year: e.year, title: e.zh, titleEn: e.en || e.zh, site: e.site || '', siteEn: e.siteEn || english(e.site), coord: e.coord, source: 'landmark', major: false });
+  const dynasty = w.DYNASTY_DATA.find(d => d.key === e.dynastyKey);
+  catalog.events.push({ id: `landmark-${i}`, dynasty: e.dynastyKey, year: e.year, navigationYear: dynasty ? atlas._clampYearToDynasty(dynasty, e.year) : e.year, title: e.zh, titleEn: e.en || e.zh, site: e.site || '', siteEn: e.siteEn || english(e.site), coord: e.coord, source: 'landmark', major: false });
 }
 catalog.journeys = lore.HISTORICAL_JOURNEYS.map(j => ({ id: j.key, title: j.titleZh, titleEn: j.titleEn, short: j.shortZh, shortEn: j.shortEn, color: j.color, stops: j.stops.map((s, i) => ({ id: `${j.key}-${i}`, year: s.year, title: s.titleZh, titleEn: s.titleEn, site: s.ancientZh, siteEn: s.ancientEn, detail: s.descZh, detailEn: s.descEn, quote: s.quoteZh || '', quoteEn: s.quoteEn || '', via: [s.fromCoord,...(s.via||[])].filter(c=>Array.isArray(c)&&c.length===2), coord: s.coord })) }));
 for (const key of usedSnapshots) {

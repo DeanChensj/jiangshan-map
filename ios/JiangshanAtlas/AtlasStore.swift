@@ -245,8 +245,15 @@ final class AtlasStore {
         if journey != nil { stepJourney(direction); return }
         if stepSameYearEvent(direction) { return }
         let dates = timelineNodeYears
-        if direction > 0 { if let next = dates.first(where: { $0 > year }) { setYear(next); if let event=currentMilestone, event.effectiveYear == year { frameMilestone(event) } } }
-        else if let previous = dates.last(where: { $0 < year }) { setYear(previous); if let event=currentMilestone, event.effectiveYear == year { frameMilestone(event) } }
+        let target=direction > 0 ? dates.first(where: { $0 > year }) : dates.last(where: { $0 < year })
+        guard let target else { return }
+        let previousYear=year
+        setYear(target)
+        guard year != previousYear else { return }
+        let matches=events.filter { $0.source == "milestone" && $0.effectiveYear == year }
+        if let event=direction > 0 ? matches.first : matches.last {
+            activeEventID=event.id;syncMilestone();frameMilestone(event)
+        }
     }
     func select(_ place: AtlasPlace) {
         beginNavigation();playing=false
@@ -304,7 +311,12 @@ final class AtlasStore {
         journey = nil; selection = nil; setYear(bookmark.year)
         destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom)
         if let raw = bookmark.url, let url = URL(string: raw) {
-            Task { await openLink(url,navigation:revision);guard isCurrentNavigation(revision) else { return };destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom) }
+            Task {
+                await openLink(url,navigation:revision)
+                guard isCurrentNavigation(revision) else { return }
+                setYear(bookmark.year)
+                destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom)
+            }
         }
     }
     func saveCamera() {

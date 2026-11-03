@@ -77,6 +77,82 @@ import MapLibre
         }
     }
 
+    func testForwardAndBackwardSteppingVisitsEverySharedYearEvent() async throws {
+        try await withStore { store,_ in
+            store.setYear(616)
+            let matches=try XCTUnwrap(store.catalog?.events.filter { $0.dynasty == "sui" && $0.source == "milestone" && $0.effectiveYear == 617 }.sorted { $0.year < $1.year })
+            XCTAssertEqual(matches.count,2)
+            store.step(1)
+            XCTAssertEqual(store.year,617);XCTAssertEqual(store.currentMilestone?.id,matches.first?.id)
+            store.step(1)
+            XCTAssertEqual(store.year,617);XCTAssertEqual(store.currentMilestone?.id,matches.last?.id)
+            store.step(1)
+            XCTAssertEqual(store.year,618)
+            store.step(-1)
+            XCTAssertEqual(store.year,617);XCTAssertEqual(store.currentMilestone?.id,matches.last?.id)
+            store.step(-1)
+            XCTAssertEqual(store.year,617);XCTAssertEqual(store.currentMilestone?.id,matches.first?.id)
+            store.step(1);store.lockPeriod=true;store.step(1)
+            XCTAssertEqual(store.year,617);XCTAssertEqual(store.currentMilestone?.id,matches.last?.id)
+        }
+    }
+
+    func testLandmarkSearchKeepsItsOwningHistoricalPeriod() async throws {
+        try await withStore { store,_ in
+            for (query,displayYear,navigationYear,dynasty) in [
+                ("韩熙载夜宴图",960,959,"wudai"),
+                ("文天祥潮阳",1279,1278,"nansong"),
+                ("张献忠率军自武昌",1644,1643,"ming")
+            ] {
+                let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":query]))
+                let hit=try XCTUnwrap(hits.first { $0.eventID != nil })
+                await store.handle(hit)
+                XCTAssertEqual(store.year,navigationYear,query);XCTAssertEqual(store.year,hit.year,query)
+                XCTAssertEqual(store.dynasty?.id,dynasty,query)
+                if case .event(let event)=store.selection { XCTAssertEqual(event.year,displayYear,query) }
+                else { XCTFail("The landmark must remain selected") }
+            }
+        }
+    }
+
+    func testCustomRouteClearsThePreviousPeopleEncounterFilter() async throws {
+        try await withStore { store,_ in
+            await store.startPeople("李白,杜甫")
+            store.encountersOnly=true
+            let started=await store.startRoute("长安,洛阳,金陵",years:"750")
+            XCTAssertTrue(started);XCTAssertFalse(store.encountersOnly)
+            XCTAssertEqual(store.experience?.kind,"route");XCTAssertEqual(store.experience?.stops.count,3)
+        }
+    }
+
+    func testJourneyBookmarksRestoreTheInspectedYearAndCamera() async throws {
+        try await withStore { store,_ in
+            for person in [true,false] {
+                if person { await store.startPeople("sushi",stop:2) }
+                else {
+                    let started=await store.startRoute("长安,洛阳,金陵",years:"744,745,746")
+                    XCTAssertTrue(started);store.experienceIndex=1;store.showExperienceStop()
+                }
+                let experienceID=store.experience?.id,index=store.experienceIndex
+                store.inspect([108.94,34.27]);store.navigateToYear(1415)
+                store.cameraLongitude=112.45;store.cameraLatitude=34.62;store.cameraZoom=6
+                store.saveBookmark()
+                let bookmark=try XCTUnwrap(store.bookmarks.first)
+                XCTAssertEqual(bookmark.year,1415)
+                store.experience=nil;store.navigateToYear(750);store.destination=nil
+                store.restore(bookmark)
+                for _ in 0..<200 {
+                    if store.experience?.id == experienceID,store.selectedCoordinate == [108.94,34.27],store.year == bookmark.year,store.destination?.zoom == bookmark.zoom { break }
+                    try await Task.sleep(for:.milliseconds(10))
+                }
+                XCTAssertEqual(store.experience?.id,experienceID);XCTAssertEqual(store.experienceIndex,index)
+                XCTAssertEqual(store.selectedCoordinate,[108.94,34.27]);XCTAssertEqual(store.year,bookmark.year)
+                XCTAssertEqual(store.destination?.longitude,bookmark.longitude)
+                XCTAssertEqual(store.destination?.latitude,bookmark.latitude);XCTAssertEqual(store.destination?.zoom,bookmark.zoom)
+            }
+        }
+    }
+
     func testScrubbingAcrossEventsKeepsMapProjectionStable() async throws {
         try await withStore { store,_ in
             store.setYear(1415)
