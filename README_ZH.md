@@ -263,4 +263,4 @@ hit.prefecture.properties.title; // 应天府（本身是 GeoJSON Feature，可�
 - **说明**：地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
 - **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
 - **开源协议**：采用 **GPL-3.0**（见 [LICENSE](LICENSE)）。Copyright © 2026 DeanChensj。
-  - **例外**：源自 CHGIS V6 与 Hartwell China Historical GIS 的府州郡政区边界及战国疆域数据，仍受其原始条款约束（仅限学术、非商业用途），不适用 GPL-3.0。数据来源与引用格式见 [data/atlas/README.md](data/atlas/README.md)。
+  - **例外**：源自 CHGIS V6 与 Hartwell China Historical GIS 的郡 / 州 / 府级政区边界（含战国与秦的郡），仍受其原始条款约束（仅限学术、非商业用途），不适用 GPL-3.0。数据来源与引用格式见 [data/atlas/README.md](data/atlas/README.md)。

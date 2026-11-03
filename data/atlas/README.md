@@ -6,10 +6,14 @@ This directory is the editable source of `js/atlas_snapshots.js` and `js/atlas_b
 
 ## Provenance · 数据来源
 
+The original import scripts are not in this repository, so provenance is reconstructed from the project's early documentation:
+
+- **Prefecture-level boundaries** (`prefectures`: commanderies, prefectures and superior prefectures, i.e. 郡 / 州 / 府) are derived from **CHGIS V6** (Fairbank Center for Chinese Studies, Harvard University & Center for Historical Geographical Studies, Fudan University) and the **Robert M. Hartwell China Historical GIS** datasets.
 - **Polity outlines** (`polities`) are derived from [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
-- **Prefecture-level boundaries** (`prefectures`, `regions`) and **Warring States territories** are derived from **CHGIS V6** (Fairbank Center for Chinese Studies, Harvard University & Center for Historical Geographical Studies, Fudan University) and the **Robert M. Hartwell China Historical GIS** datasets.
-- All geometry has since been simplified (0.01° precision) and hand-adjusted, with Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》) as the main reference. Boundaries are schematic approximations, not surveyed borders.
-- The source of each individual feature is not yet recorded.
+- **First-level divisions** (`regions`: 刺史部 / 道 / 路 / 省, etc.) have no recorded source; most do not share boundaries with the prefecture layer.
+- All geometry has since been simplified (0.01° precision) and hand-adjusted, with Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》) as the main reference. Boundaries are schematic approximations, not surveyed borders. The source of each individual feature is not recorded.
+
+原始导入脚本不在仓库中，以上来源依据项目早期文档整理：郡 / 州 / 府级边界（`prefectures`）源自 CHGIS V6 与 Hartwell 数据；政权轮廓（`polities`）源自 historical-basemaps（GPL-3.0）；一级政区（`regions`）来源未记录。所有几何此后均经过简化与手工调整。
 
 ## License · 许可
 
