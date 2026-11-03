@@ -2,6 +2,8 @@
 
 The website remains the behavior and content reference. These are the 44 items from the parity audit, grouped by implementation. “Native” means an iOS interaction or renderer equivalent; it does not claim identical pixels across browsers and MapLibre.
 
+The subsequent completion audit, regressions corrected and remaining release work are recorded in [COMPLETION.md](COMPLETION.md). Detailed historical city cartography is a separate task; the site-marker additions do not constitute that work.
+
 | # | Audit item | Implementation |
 |---|---|---|
 | 1 | Title typeface | Bundled Ma Shan Zheng |

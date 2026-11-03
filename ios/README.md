@@ -2,6 +2,8 @@
 
 SwiftUI and MapLibre Native 7.0.0 for iPhone and iPad. Requires Xcode 27 and iOS/iPadOS 26 or later. Compact and expanded layouts share the same features. Dedicated macOS, visionOS and fold-specific arrangements are deferred.
 
+See [COMPLETION.md](COMPLETION.md) for the native port's completion audit, corrected regressions and the distinction between implemented functionality, historical cartography and release preparation.
+
 ## Run
 
 ```sh

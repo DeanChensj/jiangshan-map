@@ -25,8 +25,17 @@ struct AtlasInspector: View {
                 if case .event(let event) = selection {
                     Text(store.yearLabel(event.year) + " · " + store.localChinese(store.text(event.site,event.siteEn ?? event.site))).font(AtlasFonts.ui(15)).foregroundStyle(AtlasTheme.vermilion)
                     Button(store.text("回到事件发生年", "Show event year")) { store.select(event) }.buttonStyle(.bordered)
-                    ForEach(Array((event.coords ?? []).enumerated()), id: \.offset) { i, coord in
-                        Button(store.text("地点 \(i + 1)", "Location \(i + 1)"), systemImage: "mappin") { store.fly(coord, zoom: 6); store.inspect(coord, title: event.site) }
+                    if let seal=event.sealStop {
+                        Button(store.text("追随传国玺行迹","Follow the Imperial Seal"),systemImage:"seal") { Task { await store.startPeople("yuxi",stop:seal) } }.buttonStyle(.bordered)
+                    }
+                    if let anchors=event.anchors,!anchors.isEmpty {
+                        ForEach(Array(anchors.enumerated()),id:\.offset) { _,anchor in
+                            Button(store.text(anchor.title,anchor.titleEn),systemImage:"mappin") { store.fly(anchor.coord,zoom:store.nativeZoom(forWebScale:3.25)) }
+                        }
+                    } else {
+                        ForEach(Array((event.coords ?? []).enumerated()), id: \.offset) { i, coord in
+                            Button(store.text("地点 \(i + 1)", "Location \(i + 1)"), systemImage: "mappin") { store.fly(coord, zoom: 6) }
+                        }
                     }
                 }
                 if let note = store.mapNote {
