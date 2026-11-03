@@ -8199,6 +8199,73 @@ function main() {
         snapshots.s_qin_d.polities.some((p) => p.title === '南越（赵佗）'),
       's_qin_d (-207 BCE) must show Qin, Chu (King Huai & Xiang Yu), and Zhao Tuo Nanyue in Lingnan'
     );
+
+    // Southern Dynasties, Ten Kingdoms, Late Tang & Western Han curated milestone/landmark split
+    for (const [dk, yr, kw] of [
+      ['nanbei', 551, '陈霸先'],
+      ['nanbei', 578, '吕梁之战'],
+      ['tang', 783, '泾原兵变'],
+      ['wudai', 910, '钱镠'],
+      ['wudai', 927, '马殷'],
+    ]) {
+      const d = dynasties.find((x) => x.key === dk);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Expected timeline milestone ${dk}:${yr} containing "${kw}"`);
+      assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, 2, `Expected 2 spatial anchors on ${dk}:${yr}`);
+    }
+    const xihanDyn = dynasties.find((x) => x.key === 'xihan');
+    const changanXihanEvs = ctrl._collectPlaceEventsForDynasty(xihanDyn, 108.941, 34.341, null);
+    assert(
+      changanXihanEvs.some((e) => e.year === -81 && e.text.includes('苏武')) &&
+        changanXihanEvs.some((e) => e.year === -81 && e.text.includes('盐铁会议')) &&
+        changanXihanEvs.some((e) => e.year === -2 && e.text.includes('浮屠经')),
+      'Western Han Chang\'an place events must preserve both 81 BCE landmarks (Su Wu & Salt-and-Iron Debate) and 2 BCE Buddhist transmission'
+    );
+
+    // Issue #222: Zero-widening compact timeline band fallback (_fitBandLabels)
+    const makeBandCell = (clientWidth, regularWidth, compactWidth) => {
+      const classes = new Set();
+      const clsList = {
+        add: (...names) => names.forEach((n) => classes.add(n)),
+        remove: (...names) => names.forEach((n) => classes.delete(n)),
+        toggle: (n, force) => (force === undefined ? (classes.has(n) ? classes.delete(n) : classes.add(n)) : force ? classes.add(n) : classes.delete(n)),
+        contains: (n) => classes.has(n),
+      };
+      const lbl = {
+        get scrollWidth() {
+          return classes.has('is-compact') ? compactWidth : regularWidth;
+        },
+      };
+      return {
+        clientWidth,
+        scrollWidth: regularWidth,
+        classList: clsList,
+        querySelector: (sel) => (sel === '.band-label' ? lbl : null),
+      };
+    };
+    const cell1440 = makeBandCell(27, 25, 21); // 1440px laptop: fits at full 12px
+    const cell1280 = makeBandCell(23, 25, 21); // 1280px laptop: fits via .is-compact
+    const cellMob = makeBandCell(9, 25, 21);   // 390px mobile: cleanly hides via .is-narrow
+    const prevIdFn = ctrl._id;
+    ctrl._id = (id) => {
+      if (id === 'dynasty-bands') return { children: [cell1440, cell1280, cellMob] };
+      if (id === 'scrubber-ticks') return { children: [] };
+      return null;
+    };
+    ctrl._fitBandLabels();
+    ctrl._id = prevIdFn;
+    assert(
+      !cell1440.classList.contains('is-compact') && !cell1440.classList.contains('is-narrow'),
+      '1440px short dynasty cell (27px vs 25px text) must render at full 12px without hiding'
+    );
+    assert(
+      cell1280.classList.contains('is-compact') && !cell1280.classList.contains('is-narrow'),
+      '1280px short dynasty cell (23px) must step into .is-compact (21px) without hiding'
+    );
+    assert(
+      !cellMob.classList.contains('is-compact') && cellMob.classList.contains('is-narrow'),
+      'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);

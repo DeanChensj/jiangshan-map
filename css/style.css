@@ -2825,6 +2825,11 @@ h2 {
   filter: saturate(1.1);
 }
 
+.band-cell.is-compact {
+  font-size: 10.5px;
+  letter-spacing: -0.02em;
+}
+
 .band-cell.is-narrow {
   color: transparent;
   text-shadow: none;
@@ -2969,6 +2974,11 @@ html[lang="en"] .band-cell {
   font-family: var(--sans-stack);
   font-size: 10px;
   letter-spacing: -0.01em;
+}
+
+html[lang="en"] .band-cell.is-compact {
+  font-size: 9.5px;
+  letter-spacing: -0.03em;
 }
 
 html[lang="en"] #milestone-list li {

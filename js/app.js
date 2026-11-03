@@ -7867,6 +7867,15 @@
       }
 
       // 3. Curated landmark events
+      const sharesCjkBigram = (a, b) => {
+        const s1 = String(a || '');
+        const s2 = String(b || '');
+        for (let i = 0; i < s1.length - 1; i++) {
+          const bg = s1.slice(i, i + 2);
+          if (/^[\u4e00-\u9fa5]{2}$/.test(bg) && s2.includes(bg)) return true;
+        }
+        return false;
+      };
       for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
         const dynMatch = lm.dynastyKey
           ? (lm.dynastyKey === d.key || (lm.dynastyKey === 'nanbeichao' && d.key === 'nanbei'))
@@ -7874,7 +7883,9 @@
         if (!dynMatch) continue;
         if (isCloseCoord(lm.coord, 45)) {
           const dup = results.some((r) =>
-            r.fromLandmark ? r.year === lm.year : Math.abs(r.year - lm.year) <= 3
+            r.fromLandmark
+              ? r.year === lm.year && sharesCjkBigram(r.milestone && r.milestone.headline, lm.zh)
+              : Math.abs(r.year - lm.year) <= 3
           );
           if (!dup) {
             results.push({
@@ -9103,12 +9114,19 @@
       let lastRight = -Infinity;
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
-        cell.classList.remove('is-narrow');
+        cell.classList.remove('is-narrow', 'is-compact');
         const lbl = cell.querySelector('.band-label');
-        const narrow = lbl
-          ? lbl.scrollWidth > cell.clientWidth - 4
-          : cell.scrollWidth > cell.clientWidth + 1;
-        cell.classList.toggle('is-narrow', narrow);
+        if (lbl) {
+          if (lbl.scrollWidth > cell.clientWidth - 2) {
+            cell.classList.add('is-compact');
+            if (lbl.scrollWidth > cell.clientWidth - 2) {
+              cell.classList.remove('is-compact');
+              cell.classList.add('is-narrow');
+            }
+          }
+        } else if (cell.scrollWidth > cell.clientWidth + 1) {
+          cell.classList.add('is-narrow');
+        }
         const tk = tickNodes[i];
         if (tk) {
           const rect = tk.getBoundingClientRect();
