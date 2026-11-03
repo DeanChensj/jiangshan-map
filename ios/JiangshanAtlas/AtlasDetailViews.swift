@@ -12,7 +12,7 @@ struct AtlasInspector: View {
                 HStack {
                     Label(store.text("点地溯源", "PLACE & HISTORY"), systemImage: "mappin.and.ellipse").font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.vermilion)
                     Spacer()
-                    Button { store.selection = nil; store.historicalDetail = nil; store.polityDetail = nil } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(store.text("取消选择", "Clear selection"))
+                    Button { store.clearSelection() } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(store.text("取消选择", "Clear selection"))
                 }
                 Text(store.selectionTitle).font(AtlasFonts.serif(29, weight: .medium)).accessibilityIdentifier("atlas.selection.title")
                 if store.experience != nil {
@@ -76,7 +76,7 @@ struct AtlasInspector: View {
                                     }
                                 }
                                 if row.events.isEmpty { Text(store.text("此地暂无收录史事", "No recorded events at this location")).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary) }
-                                Button(store.text("查看此时代", "Show this era")) { store.setYear(row.year) }.font(AtlasFonts.ui(15)).padding(.top, 4)
+                                Button(store.text("查看此时代", "Show this era")) { store.navigateToYear(row.year) }.font(AtlasFonts.ui(15)).padding(.top, 4)
                             } label: {
                                 VStack(alignment: .leading, spacing: 5) {
                                     HStack { Text(row.title).font(AtlasFonts.ui(15, weight: .semibold)); if row.capital { Image(systemName: "building.columns").foregroundStyle(AtlasTheme.vermilion) }; Spacer(); Text("\(row.events.count)").font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary) }
@@ -96,7 +96,7 @@ struct AtlasInspector: View {
                         Text(detail.rulers).font(AtlasFonts.ui(15)).lineSpacing(5)
                         DisclosureGroup(store.text("疆域阶段", "Territorial stages")) {
                             ForEach(detail.stages) { stage in
-                                Button { store.previewSnapshot=nil;store.setYear(max(stage.from,detail.from));store.focusedPolity=stage.rawTitle ?? stage.title;store.fitPolity(stage.rawTitle ?? stage.title) } label: {
+                                Button { store.previewSnapshot=nil;store.navigateToYear(max(stage.from,detail.from));store.focusedPolity=stage.rawTitle ?? stage.title;store.fitPolity(stage.rawTitle ?? stage.title) } label: {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(store.yearLabel(stage.from) + " — " + store.yearLabel(stage.to)).font(AtlasFonts.ui(15))
                                         if !stage.caption.isEmpty { Text(stage.caption).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary) }
@@ -107,7 +107,7 @@ struct AtlasInspector: View {
                         if store.previewSnapshot != nil { Button(store.text("关闭疆域预览","Close boundary preview")) { store.previewSnapshot=nil } }
                         DisclosureGroup(store.text("相关史事", "Related events")) {
                             ForEach(detail.events) { event in
-                                Button { if let match=store.catalog?.events.first(where:{ $0.year == event.year && ($0.title == event.title || store.text($0.title,$0.titleEn) == event.title) }) { store.presentEvent(match) } else { store.setYear(event.year);if let coord=event.coord { store.fly(coord,zoom:store.nativeZoom(forWebScale:3.25)) } } } label: {
+                                Button { if let match=store.catalog?.events.first(where:{ $0.year == event.year && ($0.title == event.title || store.text($0.title,$0.titleEn) == event.title) }) { store.presentEvent(match) } else { store.navigateToYear(event.year);if let coord=event.coord { store.fly(coord,zoom:store.nativeZoom(forWebScale:3.25)) } } } label: {
                                     VStack(alignment: .leading, spacing: 5) {
                                         Text(store.yearLabel(event.year)).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.vermilion)
                                         Text(event.title).font(AtlasFonts.ui(15)).foregroundStyle(AtlasTheme.ink).multilineTextAlignment(.leading)

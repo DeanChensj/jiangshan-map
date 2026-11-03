@@ -121,6 +121,7 @@ struct GenealogyEvent: Decodable, Identifiable, Sendable {
 struct PolityDetail: Decodable, Sendable {
     let key: String, title: String, summary: String, seat: String, rulers: String
     let from: Int, to: Int
+    var navigationYear:Int? = nil
     let titles: [String]
     let stages: [PolityStage]
     let events: [PolityEvent]

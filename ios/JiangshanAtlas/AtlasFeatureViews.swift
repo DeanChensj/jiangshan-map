@@ -127,7 +127,7 @@ struct AtlasChronicleView: View {
             } else if let journey = store.journey {
                 ForEach(Array(journey.stops.enumerated()), id: \.element.id) { index, stop in
                     Section {
-                        Button(store.yearLabel(stop.year) + " · " + store.text(stop.title, stop.titleEn)) { store.journeyIndex = index; store.setYear(stop.year); store.fly(stop.coord, zoom: 5) }
+                        Button(store.yearLabel(stop.year) + " · " + store.text(stop.title, stop.titleEn)) { store.journeyIndex = index; store.navigateToYear(stop.year); store.fly(stop.coord, zoom: 5) }
                         Text(store.text(stop.detail, stop.detailEn)).font(AtlasFonts.ui(15)).lineSpacing(5)
                         if !stop.quote.isEmpty { Text(store.text(stop.quote, stop.quoteEn)).font(AtlasFonts.serif(15)).foregroundStyle(AtlasTheme.secondary).textSelection(.enabled) }
                     }
@@ -183,7 +183,7 @@ struct AtlasOptionsView: View {
                 Toggle(store.text("锁定当前时代", "Stay within this period"), isOn: $store.lockPeriod)
                 Picker(store.text("播放速度", "Playback speed"), selection: $store.playbackSpeed) { ForEach([0.25,0.5,1.0,2.0,4.0], id: \.self) { Text(String(format: "%g×", $0)).tag($0) } }
                 ForEach(store.dynasty?.phases ?? []) { phase in
-                    Button { store.setYear(phase.from) } label: { VStack(alignment: .leading, spacing: 5) { Text(store.yearLabel(phase.from)); if !store.english { Text(store.localChinese(phase.overview)).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary) } } }
+                    Button { store.navigateToYear(phase.from) } label: { VStack(alignment: .leading, spacing: 5) { Text(store.yearLabel(phase.from)); if !store.english { Text(store.localChinese(phase.overview)).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary) } } }
                 }
             }
             if store.linkYearRange != nil { Section { Button(store.text("解除链接的年份范围","Remove link year range")) { store.linkYearRange=nil } } }

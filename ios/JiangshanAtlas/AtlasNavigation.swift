@@ -1,8 +1,18 @@
 import Foundation
 
 extension AtlasStore {
+    func clearPolityContext() {
+        focusedPolity="";polityDetail=nil;pendingPolityFit=nil;previewSnapshot=nil
+    }
+    func clearSelection() {
+        beginNavigation();selection=nil;historicalDetail=nil;clearPolityContext()
+    }
+    func navigateToYear(_ value:Int) {
+        beginNavigation();playing=false;setYear(value)
+    }
     func exploreFocusCity(_ city:String) {
         beginNavigation()
+        clearPolityContext()
         playing=false;selection=nil;historicalDetail=nil;mapNote=nil;experience=nil;journey=nil
         lockPeriod=false;linkYearRange=nil
         showHistoricalDetail=true;showPlaces=true;setYear(750);autoEventDismissed=true
@@ -12,6 +22,7 @@ extension AtlasStore {
         destination = .init(longitude:first.coord[0],latitude:first.coord[1],zoom:9,bounds:[xs.min()!-0.015,ys.min()!-0.015,xs.max()!+0.015,ys.max()!+0.015])
     }
     func selectFocusSite(_ site:AtlasFocusSite,move:Bool=false) {
+        clearPolityContext()
         playing=false;experience=nil;journey=nil
         if !site.isVisible(at:year) { lockPeriod=false;linkYearRange=nil;setYear(min(site.until,max(site.from,750))) }
         inspect(site.coord,title:text(site.title,site.titleEn))
@@ -61,11 +72,11 @@ extension AtlasStore {
         else { experienceIndex += 1;showExperienceStop() }
     }
     func fitPolity(_ title: String) {
-        if let entry=mapPolities.first(where:{ ($0.title == title || polityDetail?.titles.contains($0.title) == true) && $0.id.hasPrefix(phase?.id ?? "\0") }), let bounds=entry.bounds {
+        if let entry=mapPolities.first(where:{ ($0.title == title || polityDetail?.titles.contains($0.title) == true) && $0.id.hasPrefix((phase?.id ?? "\0")+"-polity-") }), let bounds=entry.bounds {
             destination = .init(longitude:entry.coord[0],latitude:entry.coord[1],zoom:3,bounds:bounds);pendingPolityFit=nil
         } else { pendingPolityFit=title }
     }
-    func closePolity() { beginNavigation();pendingPolityFit=nil;focusedPolity="";polityDetail=nil;previewSnapshot=nil;selection=nil;resetCamera() }
+    func closePolity() { clearSelection();resetCamera() }
     func dismissOnboarding() { onboarding=false;preferences.set(true,forKey:"atlas.guided") }
     func openGenealogyEvent(_ event: GenealogyEvent) {
         playing=false

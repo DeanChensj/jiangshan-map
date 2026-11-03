@@ -39,6 +39,7 @@ extension AtlasStore {
         let request=navigation ?? beginNavigation()
         guard isCurrentNavigation(request) else { return }
         playing=false
+        clearPolityContext()
         mapNote = nil
         selection = .coordinate(id: UUID().uuidString, title: title.isEmpty ? text("此地沿革", "History of this place") : title, coord: coord)
         selectedAdminTitle=adminTitle
@@ -77,7 +78,7 @@ extension AtlasStore {
             let value: AtlasExperience = try await engine.query("people", arguments(["query": query]))
             guard isCurrentNavigation(request), !value.stops.isEmpty else { return }
             playing=false
-            journey = nil; selection = nil; quiz = nil; experience = value;focusedPolity="";polityDetail=nil;historicalDetail=nil;linkYearRange=nil;lockPeriod=false
+            journey = nil; selection = nil; quiz = nil; experience = value;clearPolityContext();historicalDetail=nil;linkYearRange=nil;lockPeriod=false
             encountersOnly=false;routeRevision += 1
             experienceIndex = max(-1,min(value.stops.count-1,stop))
             if experienceIndex < 0 { let anchor=value.encounters.first ?? 0;setYear(value.stops[anchor].effectiveYear);fitExperience() } else { showExperienceStop() }
@@ -90,7 +91,7 @@ extension AtlasStore {
         do {
             let value: AtlasExperience = try await engine.query("route", arguments(["place": places, "years": years]))
             guard isCurrentNavigation(request), !value.stops.isEmpty else { return false }
-            playing=false;journey = nil; selection = nil; quiz = nil; experience = value;focusedPolity="";polityDetail=nil;historicalDetail=nil;linkYearRange=nil;lockPeriod=false; experienceIndex = -1;routeRevision += 1;setYear(value.stops[0].effectiveYear);fitExperience()
+            playing=false;journey = nil; selection = nil; quiz = nil; experience = value;clearPolityContext();historicalDetail=nil;linkYearRange=nil;lockPeriod=false; experienceIndex = -1;routeRevision += 1;setYear(value.stops[0].effectiveYear);fitExperience()
             return true
         } catch { if isCurrentNavigation(request) { actionError = error.localizedDescription }; return false }
     }
@@ -107,20 +108,22 @@ extension AtlasStore {
     func handle(_ hit: SearchHit, preserveYear: Bool = false, navigation:Int? = nil) async {
         let request=navigation ?? beginNavigation()
         guard isCurrentNavigation(request) else { return }
-        playing=false;experience=nil;journey=nil;selection=nil;historicalDetail=nil;focusedPolity="";polityDetail=nil
+        playing=false;experience=nil;journey=nil;selection=nil;historicalDetail=nil;clearPolityContext()
         if hit.kind == "quiz" { await startQuiz(navigation:request); return }
         if !hit.person.isEmpty { await startPeople(hit.person,navigation:request); return }
         if let id=hit.eventID,let event=catalog?.events.first(where:{ $0.id == id }) { presentEvent(event,navigation:request);return }
-        if !preserveYear { setYear(hit.year) }
         if !hit.polity.isEmpty {
             let value: PolityDetail? = try? await engine.query("polity", arguments(["key": hit.polity]))
             guard isCurrentNavigation(request) else { return }
+            guard let value else { return }
+            lockPeriod=false;linkYearRange=nil;setYear(value.navigationYear ?? hit.year)
             polityDetail = value
             selection = .territory(id: hit.polity, title: hit.title, subtitle: hit.title)
-            focusedPolity = value?.titles.first ?? hit.title
+            focusedPolity = value.titles.first ?? hit.title
             fitPolity(focusedPolity)
             return
         }
+        if !preserveYear { setYear(hit.year) }
         if let coord=hit.coord { inspect(coord,title:hit.title,move:true,adminTitle:hit.prefTitle,navigation:request) }
     }
     func setLanguage(_ language: String, navigation:Int? = nil) {
@@ -156,7 +159,7 @@ extension AtlasStore {
             let questions: [QuizQuestion] = try await engine.query("quiz", arguments())
             guard isCurrentNavigation(request), !questions.isEmpty else { return }
             if quiz == nil { preQuizCamera=[cameraLongitude,cameraLatitude,cameraZoom];preQuizYear=year;preQuizLock=lockPeriod;preQuizRange=linkYearRange }
-            playing=false;journey=nil;experience=nil;selection=nil;focusedPolity="";lockPeriod=false;linkYearRange=nil
+            playing=false;journey=nil;experience=nil;selection=nil;clearPolityContext();lockPeriod=false;linkYearRange=nil
             quiz=AtlasQuizState(questions:questions,originalYear:preQuizYear ?? year)
             setYear(questions[0].year); resetCamera()
         } catch { if isCurrentNavigation(request) { actionError = error.localizedDescription } }
@@ -201,7 +204,7 @@ extension AtlasStore {
         else { explicitLocation=nil }
         let cameraCenter=explicitLocation ?? coordinate(value("center"))
         if quiz != nil { closeQuiz() }
-        playing=false;experience=nil;journey=nil;selection=nil;polityDetail=nil;historicalDetail=nil;focusedPolity="";pendingPolityFit=nil;previewSnapshot=nil;lockPeriod=false;linkYearRange=nil
+        playing=false;experience=nil;journey=nil;selection=nil;historicalDetail=nil;clearPolityContext();lockPeriod=false;linkYearRange=nil
         if let language=value("lang") { setLanguage(language,navigation:request) }
         if let terrain=value("terrain") { showTerrain=terrain != "0" && terrain != "false" }
         if let y=value("year")?.components(separatedBy:",").first.flatMap(Int.init) { setYear(y) }
@@ -210,7 +213,7 @@ extension AtlasStore {
             guard isCurrentNavigation(request) else { return }
             if let detail {
                 polityDetail=detail;focusedPolity=detail.titles.first ?? detail.title
-                if year < detail.from || year > detail.to { setYear(detail.from) }
+                setYear(detail.navigationYear ?? min(detail.to,max(detail.from,year)))
                 selection = .territory(id:detail.key,title:detail.title,subtitle:detail.title);fitPolity(focusedPolity)
             }
         }
@@ -244,7 +247,7 @@ extension AtlasStore {
         if let raw=value("nativeZoom").flatMap(Double.init),raw.isFinite { fly(target,zoom:min(14,max(1,raw))) }
         else if let scale=value("zoom").flatMap(Double.init),scale.isFinite,scale > 0 { fly(target,zoom:nativeZoom(forWebScale:scale)) }
         else if let cameraCenter { fly(cameraCenter,zoom:cameraZoom) }
-        if value("quiz") == "1" { await startQuiz(navigation:request) }
+        if items.contains(where:{ $0.name == "quiz" }) { await startQuiz(navigation:request) }
         guard isCurrentNavigation(request) else { return }
         if let from=value("from").flatMap(Int.init),let to=value("to").flatMap(Int.init),from <= to,to >= minYear,from <= maxYear { linkYearRange=max(minYear,from)...min(maxYear,to);setYear(year) }
         else { linkYearRange=nil }

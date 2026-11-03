@@ -152,3 +152,40 @@ test('person stop navigation dates stay in their recorded dynasty',()=> {
   const terminal=query('people',{query:'caocao'}).stops[14];
   assert.equal(terminal.year,220);assert.equal(terminal.navigationYear,219);
 });
+
+
+test('administrative meshes preserve the web boundary curves and short subpaths',()=> {
+  const {svgPathLines}=require('../scripts/ios_geometry.cjs');
+  const w=context.window,a=Object.create(w.HistoricalAtlasController.prototype);
+  Object.assign(a,{dynasties:w.DYNASTY_DATA,snapshots:w.ATLAS_SNAPSHOTS,provinces:w.PROVINCE_OUTLINES,
+    projector:new w.MercatorProjector(1000,700,{west:66,east:142,south:14,north:55})});
+  const svg=a._buildPrefectureBoundaryPath(a.snapshots.s_ming_b.prefectures);
+  const lines=svgPathLines(svg),points=new Set(lines.flat().map(p=>p.join(',')));
+  const curves=[...svg.matchAll(/Q(-?[\d.]+)[ ,]+(-?[\d.]+)[ ,]+(-?[\d.]+)[ ,]+(-?[\d.]+)/g)];
+  assert.ok(curves.length>3000);
+  for(const q of curves)assert.ok(points.has([Number(q[3]),Number(q[4])].join(',')),'Missing curve endpoint '+q[0]);
+  const short=svg.split(/(?=M)/).filter(p=>p.includes('Q')&&!p.includes('L'));
+  assert.ok(short.length>0);
+  for(const path of short)assert.ok(svgPathLines(path)[0].length>2,'Dropped short boundary '+path);
+});
+test('every curated polity search navigates within its mapped lifespan',()=> {
+  for(const profile of context.window.ATLAS_LORE_DATA.POLITY_PROFILES) {
+    const hit=query('search',{query:profile.zh}).find(hit=>hit.polity===profile.key);
+    assert.ok(hit,profile.key);
+    assert.ok(profile.from<=hit.year && hit.year<=profile.to,profile.zh+' year '+hit.year);
+    const detail=query('polity',{key:profile.key,year:hit.year});
+    assert.ok(detail.stages.some(stage=>stage.from<=hit.year&&hit.year<=stage.to),profile.zh);
+  }
+});
+test('uncurated polity identifiers survive translation and a later query year',()=> {
+  for(const [name,year] of [['秦',-214],['秦（薛举）',617],['明',1415]]) {
+    const first=query('polity',{key:name,year});
+    assert.ok(first.key.startsWith('t:'));assert.ok(first.stages.length>0);
+    for(const lang of ['zh','en','zh-tw']) {
+      const reopened=query('polity',{key:first.key,year:2026,lang});
+      assert.equal(reopened.key,first.key);assert.equal(reopened.from,first.from);assert.equal(reopened.to,first.to);
+      assert.equal(reopened.stages.length,first.stages.length);
+      assert.ok(!reopened.title.startsWith('t:'));
+    }
+  }
+});

@@ -98,7 +98,7 @@ extension AtlasStore {
     func presentEvent(_ event: AtlasEvent, navigation:Int? = nil) {
         let request=navigation ?? beginNavigation()
         guard isCurrentNavigation(request) else { return }
-        playing=false;experience=nil;journey=nil;quiz=nil;focusedPolity="";polityDetail=nil;pendingPolityFit=nil
+        playing=false;experience=nil;journey=nil;quiz=nil;clearPolityContext()
         lockPeriod=false;linkYearRange=nil;activeEventID=event.id
         setYear(event.effectiveYear);autoEvent=event;autoEventDismissed=false
         selection = .event(event);refreshDetail()

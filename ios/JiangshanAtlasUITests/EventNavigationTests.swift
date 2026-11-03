@@ -78,4 +78,25 @@ final class EventNavigationTests:XCTestCase {
             }
         }
     }
+    func testPolitySearchOpensAStageWithinItsLifespan() {
+        let app=launch(year:750)
+        app.buttons["Search places and people"].tap()
+        let field=app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout:10));field.tap();field.typeText("Later Tang")
+        let hit=app.buttons.matching(NSPredicate(format:"label CONTAINS %@","Later Tang")).firstMatch
+        XCTAssertTrue(hit.waitForExistence(timeout:10));hit.tap()
+        let year=app.buttons["atlas.timeline.year"]
+        let changed=XCTNSPredicateExpectation(predicate:NSPredicate(format:"label CONTAINS %@","923 CE"),object:year)
+        XCTAssertEqual(XCTWaiter.wait(for:[changed],timeout:10),.completed)
+    }
+
+    func testDocumentedWebQuizLinkStartsTheChallenge() {
+        continueAfterFailure=false
+        let app=XCUIApplication();app.launchArguments=["-atlas.guided","YES"]
+        app.launchEnvironment["ATLAS_UI_TEST_URL"]="jiangshan://atlas?year=-121&quiz=locate&lang=en"
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Tap the map to place your guess"].waitForExistence(timeout:20))
+        XCTAssertFalse(app.buttons["atlas.playback.toggle"].exists)
+    }
+
 }

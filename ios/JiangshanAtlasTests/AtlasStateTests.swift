@@ -401,4 +401,120 @@ import MapLibre
         }
     }
 
+    func testPolitySearchUsesMappedStageOutsidePreviousConstraints() async throws {
+        try await withStore { store,_ in
+            for query in ["后唐","后秦","郑"] {
+                store.setYear(750);store.lockPeriod=true;store.linkYearRange=700...800
+                let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":query]))
+                await store.handle(try XCTUnwrap(hits.first { !$0.polity.isEmpty }))
+                let detail=try XCTUnwrap(store.polityDetail)
+                XCTAssertTrue((detail.from...detail.to).contains(store.year),query)
+                XCTAssertTrue(detail.stages.contains { $0.from<=store.year && store.year<=$0.to },query)
+                XCTAssertFalse(store.lockPeriod);XCTAssertNil(store.linkYearRange)
+            }
+        }
+    }
+
+    func testUncuratedPolitySurvivesLanguageAndShareRestoration() async throws {
+        try await withStore { store,_ in
+            await store.openLink(URL(string:"jiangshan://atlas?year=617&polity=秦（薛举）")!)
+            let original=try XCTUnwrap(store.polityDetail)
+            let expected:PolityDetail=try await store.engine.query("polity",store.arguments(["key":original.key,"lang":"en"]))
+            store.setLanguage("en")
+            for _ in 0..<100 where store.polityDetail?.title != expected.title { try await Task.sleep(for:.milliseconds(10)) }
+            XCTAssertEqual(store.polityDetail?.title,expected.title)
+            XCTAssertEqual(store.polityDetail?.key,original.key)
+            let url=store.nativeShareURL
+            await store.openLink(url)
+            XCTAssertEqual(store.polityDetail?.key,original.key)
+            XCTAssertEqual(store.polityDetail?.stages.count,original.stages.count)
+            XCTAssertEqual(store.year,617)
+        }
+    }
+
+    func testLeavingPolityClearsPreviewAndCitySharesKeepTheirYear() async throws {
+        try await withStore { store,_ in
+            await store.openLink(URL(string:"jiangshan://atlas?year=230&polity=caowei")!)
+            store.previewSnapshot=store.polityDetail?.stages.first?.snapKey
+            store.exploreFocusCity("changan")
+            XCTAssertNil(store.polityDetail);XCTAssertEqual(store.focusedPolity,"")
+            XCTAssertNil(store.previewSnapshot);XCTAssertNil(store.pendingPolityFit)
+            let url=store.nativeShareURL
+            XCTAssertFalse(URLComponents(url:url,resolvingAgainstBaseURL:false)!.queryItems!.contains { $0.name == "polity" })
+            await store.openLink(url);XCTAssertEqual(store.year,750)
+            store.previewSnapshot="s_tang_b0a"
+            store.choose(try XCTUnwrap(store.catalog?.dynasties.first { $0.id == "ming" }))
+            XCTAssertNil(store.previewSnapshot)
+            store.previewSnapshot="s_tang_b0a"
+            store.presentEvent(try XCTUnwrap(store.catalog?.events.first { $0.year == 208 && $0.source == "milestone" }))
+            XCTAssertNil(store.previewSnapshot)
+        }
+    }
+
+    private func mapPolities(_ key:String) throws -> [MapPolity] {
+        let data=try JSONSerialization.jsonObject(with:Data(contentsOf:AtlasResources.url("labels/\(key).geojson"))) as! [String:Any]
+        return (data["features"] as! [[String:Any]]).compactMap { feature in
+            let p=feature["properties"] as! [String:Any]
+            guard p["layer"] as? String == "polity" else { return nil }
+            let coord=(feature["geometry"] as! [String:Any])["coordinates"] as! [Double]
+            return MapPolity(id:p["id"] as! String,title:p["title"] as! String,titleEn:p["titleEn"] as! String,tint:p["tint"] as! String,coord:coord,bounds:p["bounds"] as? [Double],role:p["role"] as? String)
+        }
+    }
+    func testPolityFittingWaitsForTheExactTerritorialStage() async throws {
+        try await withStore { store,_ in
+            store.mapPolities=try mapPolities("s_qin_d")
+            store.setYear(-214);store.destination=nil;store.fitPolity("秦")
+            XCTAssertNil(store.destination);XCTAssertEqual(store.pendingPolityFit,"秦")
+            store.mapPolities=try mapPolities("s_qin")
+            store.fitPolity("秦")
+            XCTAssertEqual(store.destination?.bounds,store.mapPolities.first { $0.title == "秦" }?.bounds)
+            XCTAssertNil(store.pendingPolityFit)
+        }
+    }
+
+    func testManualTimelineAndSelectionActionsInvalidatePendingNavigation() async throws {
+        try await withStore { store,_ in
+            let pending=Task { await store.startPeople("sushi") }
+            for _ in 0..<1000 where !store.busy { await Task.yield() }
+            XCTAssertTrue(store.busy)
+            store.isScrubbing=true;store.experience=nil;store.journey=nil;store.navigateToYear(1415)
+            await pending.value
+            XCTAssertEqual(store.year,1415);XCTAssertNil(store.experience)
+            store.selectTerritory("唐")
+            store.selection = .territory(id:"test",title:"唐",subtitle:"Tang")
+            store.clearSelection()
+            try await Task.sleep(for:.milliseconds(200))
+            XCTAssertNil(store.selection);XCTAssertNil(store.polityDetail)
+            XCTAssertEqual(store.focusedPolity,"");XCTAssertNil(store.pendingPolityFit)
+        }
+    }
+
+    func testFloatingInspectorReleasesItsMapInsetDuringQuiz() async throws {
+        let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        guard scene.screen.bounds.width>=760 else { throw XCTSkip("Requires the iPad simulator layout") }
+        try await withStore { store,_ in
+            let previous=scene.keyWindow,window=UIWindow(windowScene:scene)
+            store.sidebarVisible=true;store.inspectorDocked=false
+            window.rootViewController=UIHostingController(rootView:ContentView(store:store));window.makeKeyAndVisible()
+            defer { window.isHidden=true;window.rootViewController=nil;previous?.makeKey() }
+            @MainActor func mapView(in view:UIView)->MLNMapView? {
+                if let map=view as? MLNMapView { return map }
+                return view.subviews.lazy.compactMap { mapView(in:$0) }.first
+            }
+            var map:MLNMapView?
+            for _ in 0..<100 {
+                window.layoutIfNeeded();map=mapView(in:window)
+                if map?.style?.layer(withIdentifier:"realms") != nil,store.mapRightWidth > 0 { break }
+                try await Task.sleep(for:.milliseconds(50))
+            }
+            let loaded=try XCTUnwrap(map)
+            try await Task.sleep(for:.milliseconds(200))
+            XCTAssertGreaterThan(loaded.contentInset.right,300)
+            await store.startQuiz()
+            try await Task.sleep(for:.milliseconds(300));window.layoutIfNeeded()
+            XCTAssertNotNil(store.quiz);XCTAssertEqual(store.mapRightWidth,0)
+            XCTAssertEqual(loaded.contentInset.right,0,accuracy:0.1)
+        }
+    }
+
 }

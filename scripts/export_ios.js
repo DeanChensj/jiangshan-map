@@ -6,12 +6,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
+const {svgPathLines} = require('./ios_geometry.cjs');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, 'ios/JiangshanAtlas/Resources/Atlas');
 const sources = ['map_data.js', 'china_geo_data.js', 'atlas_snapshots.js', 'lore_data.js', 'i18n_dict.js', 'zh_hant.js', 'app.js', 'atlas_quiz.js'];
 const hash = crypto.createHash('sha256').update(fs.readFileSync(__filename));
 for (const file of sources) hash.update(fs.readFileSync(path.join(root, 'js', file)));
 hash.update(fs.readFileSync(path.join(__dirname, 'ios_engine.js')));
+hash.update(fs.readFileSync(path.join(__dirname, 'ios_geometry.cjs')));
 hash.update(fs.readFileSync(path.join(__dirname, 'prepare_ios_terrain.swift')));
 hash.update(fs.readFileSync(path.join(root, 'assets/terrain_relief.webp')));
 hash.update(fs.readFileSync(path.join(root, 'css/style.css')));
@@ -72,12 +74,7 @@ Object.assign(atlas,{dynasties:w.DYNASTY_DATA,snapshots,provinces:w.PROVINCE_OUT
 atlas._hydrateSnapshots();
 catalog.playbackStops = atlas._autoplayStops();
 function pathLines(svg, properties) {
-  const lines=[]; let line=[];
-  for (const m of svg.matchAll(/([ML])(-?[\d.]+)[ ,]+(-?[\d.]+)/g)) {
-    if(m[1]==='M'){ if(line.length>1)lines.push(line);line=[]; }
-    line.push(atlas.projector.toGeo(Number(m[2]),Number(m[3])).map(v=>Math.round(v*1e4)/1e4));
-  }
-  if(line.length>1)lines.push(line);
+  const lines=svgPathLines(svg,point=>atlas.projector.toGeo(...point).map(v=>Math.round(v*1e4)/1e4));
   return {type:'Feature',geometry:{type:'MultiLineString',coordinates:lines},properties};
 }
 function boundsOf(shape) {

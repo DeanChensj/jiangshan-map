@@ -9,6 +9,25 @@
     camera:{x:0,y:0,w:1000,h:700,zoom:1}});
   a._hydrateSnapshots();
   const tr = (zh,en) => a.locale === 'en' ? en || a.trTerm(zh || '') : a._zh(zh || '');
+  function resolvePolity(key) {
+    const profile=w.ATLAS_LORE_DATA.POLITY_PROFILES.find(x=>x.key===key||x.zh===key);
+    if(profile)return {...profile,curated:true};
+    const identity=/^t:(.+)@(-?\d+)$/.exec(String(key||''));
+    const year=identity?Number(identity[2]):a.year;
+    if(!Number.isSafeInteger(year)||year<a.minYear||year>a.maxYear)return null;
+    // A generated identity describes an uncurated contiguous run. Its first
+    // year may share a title with a different curated regime (for example Qin).
+    const resolver=identity?Object.create(a):a;
+    if(identity)resolver._polityProfileFor=()=>null;
+    return resolver._resolvePolity(identity?identity[1]:key,year);
+  }
+  function polityNavigationYear(desc) {
+    const dynasty=a.dynasties[a._findDynastyIndex(a.year)];
+    const snap=a.snapshots[a._resolveSnapKey(dynasty,a.year)];
+    if(a._polityInRange(desc,a.year)&&a._polityPolsInSnap(desc,snap).length)return a.year;
+    const stages=a._polityStages(desc),stage=stages.find(s=>s.to>=desc.from)||stages[0];
+    return stage?Math.max(stage.from,Math.min(desc.from,stage.to)):desc.from;
+  }
   const stop = (e,i,color) => ({id:String(i),year:e.year,navigationYear:e.dynasty?a._clampYearToDynasty(e.dynasty,e.year):e.year,coord:e.coord,
     site:tr(e.siteZh,e.siteEn),modern:tr(e.modernZh,e.modernEn),text:tr(e.textZh,e.textEn),
     quote:tr(e.quoteZh,e.quoteEn),color:e.personColor || color || '#bd2d22',number:e.isSharedEncounter?(e.participants||[]).map(p=>p.stepNum||p.stepIdx+1).join('·'):String(e.personStepNum||i+1),journeyStopIndex:e.journeyStopIdx??null,
@@ -60,7 +79,7 @@
     if(op==='people')return people(p.query);
     if(op==='search')return a._queryQuickSearch(p.query).slice(0,65).map((h,i)=>({
       id:String(i),kind:h.kind,title:tr(h.titleZh,h.titleEn),subtitle:tr(h.subZh,h.subEn),
-      year:h.year||h.dynasty?.focusYear||a.year,coord:h.coord||null,
+      year:h.polityKey?polityNavigationYear(resolvePolity(h.polityKey)):h.year||h.dynasty?.focusYear||a.year,coord:h.coord||null,
       person:h.personProfiles?.map(p=>p.zh).join(',')||h.personProfile?.zh||h.personKey||'',polity:h.polityKey||'',eventID:eventID(h),prefTitle:h.prefTitle||null,badge:tr(a._quickSearchKindLabel?a._quickSearchKindLabel(h.kind):'',h.kind)}));
     if(op==='detail') {
       const d=a.dynasties[a.dynastyIdx],snap=a.snapshots[a._resolveSnapKey(d,a.year)],hit=a._resolveEraPlaceAt(...p.coord,d,snap);
@@ -99,9 +118,9 @@
       return {id:String(i),year:y,dynasty:a.dynastyName(d),title:name,modern:tr(s.modern,s.modernEn||a.trModernCity(s.modern)),clue,coord:s.coord,tier:q.tier};
     });
     if(op==='polity') {
-      const profile=w.ATLAS_LORE_DATA.POLITY_PROFILES.find(x=>x.key===p.key||x.zh===p.key);
-      const p2=profile?{...profile,curated:true}:a._resolvePolity(p.key,a.year);
+      const p2=resolvePolity(p.key);
       return p2?{key:p2.key,title:tr(p2.zh,p2.en),summary:tr(p2.summaryZh||'',p2.summaryEn||''),seat:tr(p2.seatZh||'',p2.seatEn||''),rulers:a._polityRulers(p2),from:p2.from,to:p2.to,titles:p2.titles,
+        navigationYear:polityNavigationYear(p2),
         stages:a._polityStages(p2).map((st,i)=>({id:String(i),from:st.from,to:st.to,title:tr(st.title),caption:tr(st.caption),rawTitle:st.title,snapKey:st.snapKey})),
         events:a._polityEvents(p2).map((e,i)=>({id:String(i),year:e.year,title:e.milestone?a.milestoneHeadline(e.dynasty,e.milestone):tr(e.landmark.zh,e.landmark.en),coord:e.coord||null}))}:null;
     }

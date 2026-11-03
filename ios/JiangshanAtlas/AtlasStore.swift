@@ -228,11 +228,13 @@ final class AtlasStore {
     }
     func choose(_ dynasty: Dynasty) {
         beginNavigation()
+        clearPolityContext()
         if dynasty.to < timelineStart || dynasty.from > timelineEnd { linkYearRange=nil }
-        journey = nil; experience = nil; selection = nil; focusedPolity = ""; polityDetail=nil; historicalDetail=nil
+        journey = nil; experience = nil; selection = nil; historicalDetail=nil
         setYear(min(dynasty.to, max(dynasty.from, dynasty.focus)))
     }
     func step(_ direction: Int) {
+        beginNavigation()
         if experience != nil { stepExperience(direction); return }
         if journey != nil { stepJourney(direction); return }
         if stepSameYearEvent(direction) { return }
@@ -242,6 +244,7 @@ final class AtlasStore {
     }
     func select(_ place: AtlasPlace) {
         beginNavigation();playing=false
+        clearPolityContext()
         if place.isCapital(at:year) { capitalHintSeen=true }
         mapNote = nil
         if year < place.from || year > place.to { setYear(place.from) }
@@ -261,6 +264,7 @@ final class AtlasStore {
         destination = .init(longitude: 106.5, latitude: 34, zoom: 2.4, bounds: bounds)
     }
     func beginPlayback() {
+        beginNavigation()
         if let experience {
             if experienceIndex < 0 { experienceIndex=0;showExperienceStop() }
             if experienceIndex >= experience.stops.count { experienceIndex=0;showExperienceStop() }

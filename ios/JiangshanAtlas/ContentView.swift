@@ -20,12 +20,13 @@ struct ContentView: View {
         GeometryReader { geometry in
             let wide = geometry.size.width >= 760
             let panelWidth=min(350,geometry.size.width*0.34)
+            let floatingInspector=wide && store.sidebarVisible && !store.inspectorDocked && store.catalog != nil && store.quiz == nil
             ZStack(alignment:.trailing) {
                 HStack(spacing:0) {
                     mapScreen.frame(maxWidth:.infinity,maxHeight:.infinity)
                     if wide,store.sidebarVisible,store.inspectorDocked,store.catalog != nil,store.quiz == nil { inspector.frame(width:panelWidth).background(AtlasTheme.paper) }
                 }
-                if wide,store.sidebarVisible,!store.inspectorDocked,store.catalog != nil,store.quiz == nil {
+                if floatingInspector {
                     inspector.frame(width:panelWidth)
                         .background(AtlasTheme.paper,in:RoundedRectangle(cornerRadius:22))
                         .overlay { RoundedRectangle(cornerRadius:22).stroke(AtlasTheme.ink.opacity(0.09)) }
@@ -34,8 +35,8 @@ struct ContentView: View {
                         .transition(.move(edge:.trailing).combined(with:.opacity))
                 }
             }
-            .onChange(of:wide && store.sidebarVisible && !store.inspectorDocked,initial:true) { _,floating in store.mapRightWidth=floating ? panelWidth+24 : 0 }
-            .onChange(of:geometry.size.width) { _,_ in store.mapRightWidth=wide && store.sidebarVisible && !store.inspectorDocked ? panelWidth+24 : 0 }
+            .onChange(of:floatingInspector,initial:true) { _,floating in store.mapRightWidth=floating ? panelWidth+24 : 0 }
+            .onChange(of:geometry.size.width) { _,_ in store.mapRightWidth=floatingInspector ? panelWidth+24 : 0 }
 
             .onAppear { isWide = wide }
             .onChange(of: wide) { _, value in isWide = value; if value && sheet == .details { sheet = nil } }
@@ -56,7 +57,7 @@ struct ContentView: View {
         }
         .alert(store.text("历史年份", "Historical year"), isPresented: $enteringYear) {
             TextField(store.text("公元前年份用负数", "Use negative years for BCE"), text: $yearInput).keyboardType(.numbersAndPunctuation)
-            Button(store.text("前往", "Go")) { if let year = Int(yearInput) { playing = false; store.setYear(year) } }
+            Button(store.text("前往", "Go")) { if let year = Int(yearInput) { playing = false; store.navigateToYear(year) } }
             Button(store.text("取消", "Cancel"), role: .cancel) { }
         }
         .alert(store.text("提示", "Atlas"), isPresented: Binding(get: { store.actionError != nil }, set: { if !$0 { store.actionError = nil } })) {
@@ -80,11 +81,11 @@ struct ContentView: View {
             guard sheet == nil,!enteringYear else { return .ignored }
             switch press.key {
             case .space: if store.quiz != nil { if store.quiz?.answered == true { store.nextQuiz() } else { store.confirmQuiz() } } else { playing.toggle() };return .handled
-            case .leftArrow: playing=false;if press.modifiers.contains(.shift) { store.setYear(store.year-10) } else { store.step(-1) };return .handled
-            case .rightArrow: playing=false;if press.modifiers.contains(.shift) { store.setYear(store.year+10) } else { store.step(1) };return .handled
-            case .home: playing=false;store.setYear(store.minYear);return .handled
-            case .end: playing=false;store.setYear(store.maxYear);return .handled
-            case .escape: store.selection=nil;store.experience=nil;store.closeQuiz();return .handled
+            case .leftArrow: playing=false;if press.modifiers.contains(.shift) { store.navigateToYear(store.year-10) } else { store.step(-1) };return .handled
+            case .rightArrow: playing=false;if press.modifiers.contains(.shift) { store.navigateToYear(store.year+10) } else { store.step(1) };return .handled
+            case .home: playing=false;store.navigateToYear(store.minYear);return .handled
+            case .end: playing=false;store.navigateToYear(store.maxYear);return .handled
+            case .escape: store.clearSelection();store.experience=nil;store.closeQuiz();return .handled
             default:return .ignored
             }
         }
@@ -202,7 +203,7 @@ struct ContentView: View {
                 Button { withAnimation(reduceMotion ? nil : .spring(response:0.38,dampingFraction:0.88)) { timelineExpanded.toggle() } } label:{Image(systemName:"chevron.up").rotationEffect(.degrees(timelineExpanded ? 180 : 0)).frame(width:36,height:40)}.accessibilityLabel(store.text(timelineExpanded ? "收起时间轴" : "展开时间轴",timelineExpanded ? "Collapse timeline" : "Expand timeline"))
             }
             if let range=store.linkYearRange { HStack { Text(store.yearLabel(range.lowerBound) + " — " + store.yearLabel(range.upperBound));Spacer();Button(store.text("完整时间轴","Full timeline")) { store.linkYearRange=nil } }.font(AtlasFonts.ui(10)) }
-            Slider(value: Binding(get: { store.timelineProgress(store.year) }, set: { store.setYear(store.year(atProgress:$0)) }), in: 0...1, onEditingChanged: { moving in store.isScrubbing=moving;if moving { playing = false; store.journey = nil; store.experience = nil } })
+            Slider(value: Binding(get: { store.timelineProgress(store.year) }, set: { store.navigateToYear(store.year(atProgress:$0)) }), in: 0...1, onEditingChanged: { moving in store.isScrubbing=moving;if moving { playing = false; store.journey = nil; store.experience = nil } })
                 .accessibilityLabel(store.text("历史年份", "Historical year")).accessibilityValue(store.yearLabel())
                 .accessibilityIdentifier("atlas.timeline.slider")
             if timelineExpanded {
