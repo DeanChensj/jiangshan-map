@@ -104,7 +104,7 @@ struct AtlasChronicleView: View {
                 }
                 ForEach(Array(experience.stops.enumerated()).filter { !encountersOnly || $0.element.encounter }, id: \.element.id) { index, stop in
                     Section {
-                        Button { store.experienceIndex = index; store.showExperienceStop() } label: {
+                        Button { store.selectExperienceStop(index) } label: {
                             HStack {
                                 Circle().fill(Color(atlasHex: stop.color)).frame(width: 8, height: 8)
                                 Text(store.yearLabel(stop.year) + " · " + stop.site).font(AtlasFonts.ui(17))

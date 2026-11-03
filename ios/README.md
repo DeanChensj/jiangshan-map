@@ -42,6 +42,8 @@ Web shares use the official [deanchen.me/jiangshan-map/](https://deanchen.me/jia
 
 The legacy [jiangshan-atlas-links.vercel.app](https://jiangshan-atlas-links.vercel.app) host remains in associated domains for previously shared links. It is an optional link service, not the canonical share address. Its generated deployment includes a real `jiangshan-map/index.html` fallback page that preserves query parameters. No deployment or DNS changes are made by this PR.
 
+When inspecting a place during a journey, web sharing preserves the inspected place and current year. App links and bookmarks also retain the background journey so “Return to journey” restores its stop or overview. Native `returnPerson`/`returnPlace`, `returnYears` and `returnStop` metadata keep that context separate from the primary web view; ordinary person and route parameters retain their existing website behavior.
+
 Changing this configuration does not reconfigure DNS or publish a deployment by itself. Apple may cache association files after a domain change. Both HTTPS app links and `jiangshan://atlas?...` links use the same native parser.
 
 ## Implementation

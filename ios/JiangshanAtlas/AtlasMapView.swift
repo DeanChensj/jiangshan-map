@@ -207,11 +207,12 @@ struct AtlasMapView: UIViewRepresentable {
                     (style.layer(withIdentifier:name) as? MLNSymbolStyleLayer)?.text = NSExpression(forKeyPath:store.english ? "titleEn" : store.traditional ? "titleHant" : "title")
                 }
             }
-            let nextFocusKey = "\(store.focusedPolity)|\(store.showTerrain)"
+            let focusTitles=store.focusedPolityTitles
+            let nextFocusKey = "\(focusTitles)|\(store.showTerrain)"
             if focusKey != nextFocusKey {
                 focusKey = nextFocusKey
                 let normal = store.showTerrain ? 0.3 : 0.38
-                let expression = store.focusedPolity.isEmpty ? NSExpression(mglJSONObject:["match",["get","role"],"neighbor",0.11,"protectorate",store.showTerrain ? 0.2 : 0.24,"rival",store.showTerrain ? 0.28 : 0.35,normal]) : NSExpression(forConditional:NSPredicate(format:"title == %@",store.focusedPolity),trueExpression:NSExpression(forConstantValue:0.55),falseExpression:NSExpression(forConstantValue:0.08))
+                let expression = focusTitles.isEmpty ? NSExpression(mglJSONObject:["match",["get","role"],"neighbor",0.11,"protectorate",store.showTerrain ? 0.2 : 0.24,"rival",store.showTerrain ? 0.28 : 0.35,normal]) : NSExpression(forConditional:NSPredicate(format:"title IN %@",focusTitles),trueExpression:NSExpression(forConstantValue:0.55),falseExpression:NSExpression(forConstantValue:0.08))
                 (style.layer(withIdentifier:"realms") as? MLNFillStyleLayer)?.fillOpacity = expression
                 (style.layer(withIdentifier:"land") as? MLNFillStyleLayer)?.fillOpacity = NSExpression(forConstantValue:store.showTerrain ? 0 : 1)
                 (style.layer(withIdentifier:"neighbors") as? MLNFillStyleLayer)?.fillOpacity = NSExpression(forConstantValue:store.showTerrain ? 0.08 : 1)
@@ -540,7 +541,7 @@ struct AtlasMapView: UIViewRepresentable {
                     store.selectFocusSite(site);return
                 }
                 if let pass = store.catalog?.passes.first(where: { $0.id == id }) { store.inspect(pass.coord, title: store.text(pass.ancientZh, pass.ancientEn)); return }
-                if let index = store.experience?.stops.firstIndex(where: { $0.id == id }) { store.experienceIndex = index; store.showExperienceStop(); return }
+                if let index = store.experience?.stops.firstIndex(where: { $0.id == id }) { store.selectExperienceStop(index); return }
                 if let place = store.catalog?.places.first(where: { $0.id == id }) { onSelect(.place(place)); return }
                 if let event = store.catalog?.events.first(where: { $0.id == id }) {
                     var selected=event;selected.coord=[point.coordinate.longitude,point.coordinate.latitude]

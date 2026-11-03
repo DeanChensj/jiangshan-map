@@ -218,6 +218,17 @@ extension AtlasStore {
         playing=false;experience=nil;journey=nil;selection=nil;historicalDetail=nil;clearPolityContext();lockPeriod=false;linkYearRange=nil
         if let language=value("lang") { setLanguage(language,navigation:request) }
         if let terrain=value("terrain") { showTerrain=terrain != "0" && terrain != "false" }
+        // Native links keep the journey behind an independent inspection.
+        // Standard web person/route parameters retain their existing precedence.
+        if let person=value("returnPerson") {
+            await startPeople(person,stop:value("returnStop").flatMap(Int.init) ?? -1,navigation:request)
+        } else if let place=value("returnPlace") {
+            let restored=await startRoute(place,years:value("returnYears") ?? String(year),navigation:request)
+            if restored,let index=value("returnStop").flatMap(Int.init),let experience,index >= 0 {
+                experienceIndex=min(experience.stops.count-1,index);showExperienceStop()
+            }
+        }
+        guard isCurrentNavigation(request) else { return }
         if let y=value("year")?.components(separatedBy:",").first.flatMap(Int.init) { setYear(y) }
         if let key=value("polity") {
             let detail=try? await engine.query("polity",arguments(["key":key]),as:PolityDetail?.self)

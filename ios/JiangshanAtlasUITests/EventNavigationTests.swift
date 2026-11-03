@@ -110,4 +110,17 @@ final class EventNavigationTests:XCTestCase {
         XCTAssertFalse(app.buttons["atlas.playback.toggle"].exists)
     }
 
+    func testReturnToJourneyDismissesInspectionAndRevealsOverview() {
+        continueAfterFailure=false
+        let app=XCUIApplication();app.launchArguments=["-atlas.guided","YES"]
+        app.launchEnvironment["ATLAS_UI_TEST_URL"]="jiangshan://atlas?year=1415&lang=en&trace=108.94,34.27&returnPerson=sushi&returnStop=-1"
+        app.launch()
+        let returnButton=app.buttons["atlas.journey.return"]
+        XCTAssertTrue(returnButton.waitForExistence(timeout:20));returnButton.tap()
+        let journey=app.buttons["atlas.journey.open"]
+        XCTAssertTrue(journey.waitForExistence(timeout:10));XCTAssertTrue(journey.isHittable)
+        XCTAssertFalse(returnButton.exists)
+        XCTAssertTrue(journey.label.contains("Journey overview"))
+    }
+
 }

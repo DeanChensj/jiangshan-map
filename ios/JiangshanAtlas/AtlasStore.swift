@@ -186,13 +186,14 @@ final class AtlasStore {
         return stops[journeyIndex]
     }
     var mapRevision: String {
+        focusedPolityTitles.joined(separator:"|") +
         "\(mapNote?.title ?? "")|\(showHistoricalDetail)|\(showTodayReference)|\(mapRightWidth)|\(activeEventID ?? "")|\(autoEvent?.id ?? "")|\(capitalHintSeen)|\(mapTopHeight)|\(mapBottomHeight)|\(showProvinceNames)|\(playing)|\(mapCardHeight)|\(routeRevision)|\(encountersOnly)|\(historicalDetail?.adminTitles?.joined() ?? "")|\(previewSnapshot ?? "")|\(year)|\(language)|\(showTerritories)|\(showPlaces)|\(showCorridors)|\(showTerrain)|\(showGhost)|\(focusedPolity)|\(experience?.id ?? "")|\(experienceIndex)|\(quiz?.revision ?? "")|\(showBoundaries)|\(showWater)|\(showEvents)|\(showModern)|\(journey?.id ?? "")|\(journeyIndex)|\(selection?.id ?? "")|\(selectedCoordinate ?? [])|\(destination?.id.uuidString ?? "")"
     }
     var webBaseURL: URL { URL(string:Bundle.main.object(forInfoDictionaryKey:"AtlasWebURL") as? String ?? Bundle.main.object(forInfoDictionaryKey:"AtlasFallbackShareURL") as? String ?? "https://deanchen.me/jiangshan-map/")! }
     var shareURL: URL {
         var components=URLComponents(url:webBaseURL,resolvingAgainstBaseURL:false)!
         var items=[URLQueryItem(name:"year",value:String(year)),URLQueryItem(name:"lang",value:language)]
-        if let experience {
+        if selection == nil,let experience {
             if experience.kind == "person" {
                 items.append(.init(name:"person",value:experience.query ?? experience.id))
                 if experienceIndex >= 0 { items.append(.init(name:"stop",value:String(experienceIndex))) }
@@ -206,7 +207,16 @@ final class AtlasStore {
         components.queryItems=items;return components.url!
     }
     var nativeShareURL: URL {
-        var c=URLComponents(url:shareURL,resolvingAgainstBaseURL:false)!;c.scheme="jiangshan";c.host="atlas";c.path="";return c.url!
+        var c=URLComponents(url:shareURL,resolvingAgainstBaseURL:false)!
+        c.scheme="jiangshan";c.host="atlas";c.path=""
+        if selection != nil,let experience {
+            var items=c.queryItems ?? []
+            if experience.kind == "person" { items.append(.init(name:"returnPerson",value:experience.query ?? experience.id)) }
+            else { items += [.init(name:"returnPlace",value:experience.place),.init(name:"returnYears",value:experience.years)] }
+            items.append(.init(name:"returnStop",value:String(experienceIndex)))
+            c.queryItems=items
+        }
+        return c.url!
     }
 
     var language: String { english ? "en" : traditional ? "zh-tw" : "zh" }
@@ -301,7 +311,7 @@ final class AtlasStore {
     }
     func saveBookmark() {
         let title = selection?.title(english: english,year:year) ?? dynasty.map { english ? $0.titleEn : $0.title } ?? "江山"
-        bookmarkLibrary.insert(.init(id: UUID(), title: title, year: year, longitude: cameraLongitude, latitude: cameraLatitude, zoom: cameraZoom, url: shareURL.absoluteString))
+        bookmarkLibrary.insert(.init(id: UUID(), title: title, year: year, longitude: cameraLongitude, latitude: cameraLatitude, zoom: cameraZoom, url: nativeShareURL.absoluteString))
     }
     func deleteBookmarks(at offsets: IndexSet) {
         bookmarkLibrary.delete(ids:Set(offsets.compactMap { bookmarks.indices.contains($0) ? bookmarks[$0].id : nil }))

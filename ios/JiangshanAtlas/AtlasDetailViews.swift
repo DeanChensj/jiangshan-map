@@ -16,7 +16,7 @@ struct AtlasInspector: View {
                 }
                 Text(store.selectionTitle).font(AtlasFonts.serif(29, weight: .medium)).accessibilityIdentifier("atlas.selection.title")
                 if store.experience != nil {
-                    Button(store.text("返回人物行迹","Return to journey"),systemImage:"arrow.uturn.backward") { store.selection=nil;store.historicalDetail=nil;store.showExperienceStop() }.font(AtlasFonts.ui(12))
+                    Button(store.text("返回人物行迹","Return to journey"),systemImage:"arrow.uturn.backward") { store.returnToExperience() }.font(AtlasFonts.ui(12)).accessibilityIdentifier("atlas.journey.return")
                 }
                 if case .place(let place) = selection {
                     Text(store.text("今 ", "Today: ") + store.text(place.modern, place.modernEn)).font(AtlasFonts.ui(15)).foregroundStyle(AtlasTheme.secondary)

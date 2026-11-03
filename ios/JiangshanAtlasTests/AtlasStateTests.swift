@@ -445,17 +445,115 @@ import MapLibre
                 let started=await store.startRoute(place,years:"750");XCTAssertTrue(started)
                 store.experienceIndex=1;store.showExperienceStop()
                 store.inspect([108.94,34.27])
-                let url=store.shareURL
+                let url=store.nativeShareURL
                 await store.openLink(url)
                 XCTAssertEqual(store.experience?.stops.count,2)
                 XCTAssertEqual(store.experienceIndex,1)
                 XCTAssertEqual(store.selectedCoordinate,[108.94,34.27])
             }
             await store.startPeople("sushi",stop:2)
-            store.inspect([112.45,34.62]);let url=store.shareURL
+            store.inspect([112.45,34.62]);let url=store.nativeShareURL
             await store.openLink(url)
             XCTAssertEqual(store.experience?.kind,"person");XCTAssertEqual(store.experienceIndex,2)
             XCTAssertEqual(store.selectedCoordinate,[112.45,34.62])
+        }
+    }
+
+    func testGenealogyEventsEscapePeriodLocksAndLinkRanges() async throws {
+        try await withStore { store,_ in
+            store.setYear(750)
+            let detail:HistoricalDetail=try await store.engine.query("detail",store.arguments(["coord":[108.94,34.27]]))
+            let row=try XCTUnwrap(detail.rows.first { $0.id == "xihan" })
+            let event=try XCTUnwrap(row.events.first { $0.year == -138 })
+            for locked in [true,false] {
+                store.lockPeriod=false;store.linkYearRange=nil;store.setYear(750)
+                store.inspect([108.94,34.27]);store.lockPeriod=locked
+                if !locked { store.linkYearRange=700...800 }
+                let previousRequest=store.beginNavigation()
+                store.openGenealogyEvent(event)
+                XCTAssertEqual(store.year,-138);XCTAssertEqual(store.dynasty?.id,"xihan")
+                XCTAssertFalse(store.lockPeriod);XCTAssertNil(store.linkYearRange)
+                XCTAssertFalse(store.isCurrentNavigation(previousRequest))
+                XCTAssertEqual(store.destination?.longitude,event.coord[0])
+            }
+        }
+    }
+
+    func testPolityFocusIncludesTheCurrentStageAcrossHistoricalNames() async throws {
+        try await withStore { store,_ in
+            for (key,year) in [("anbei_duhufu",647),("yangwu",902),("jingnan",951),("mingxia",1363),("manchukuo",1932),("liao",916),("liao",947)] {
+                if key == "liao",store.polityDetail?.key == key { store.navigateToYear(year) }
+                else { await store.openLink(URL(string:"jiangshan://atlas?year=\(year)&polity=\(key)")!) }
+                let phase=try XCTUnwrap(store.phase)
+                let data=try XCTUnwrap(JSONSerialization.jsonObject(with:Data(contentsOf:AtlasResources.url("labels/\(phase.id).geojson"))) as? [String:Any])
+                let features=try XCTUnwrap(data["features"] as? [[String:Any]])
+                let mapped=Set(features.compactMap { feature -> String? in
+                    guard let p=feature["properties"] as? [String:Any],p["layer"] as? String == "polity" else { return nil }
+                    return p["title"] as? String
+                })
+                XCTAssertFalse(mapped.intersection(Set(store.focusedPolityTitles)).isEmpty,"\(key) at \(year)")
+                store.togglePolityFocus();XCTAssertTrue(store.focusedPolityTitles.isEmpty)
+                store.togglePolityFocus()
+                XCTAssertFalse(mapped.intersection(Set(store.focusedPolityTitles)).isEmpty)
+            }
+        }
+    }
+
+    func testInspectionSharesPreserveTheViewAndNativeJourneyReturn() async throws {
+        try await withStore { store,_ in
+            for person in [true,false] {
+                if person { await store.startPeople("sushi",stop:2) }
+                else {
+                    let started=await store.startRoute("长安,洛阳,金陵",years:"744,745,746")
+                    XCTAssertTrue(started);store.selectExperienceStop(1)
+                }
+                let id=store.experience?.id,index=store.experienceIndex,stopYear=store.activeStop?.effectiveYear
+                store.inspect([108.94,34.27]);store.navigateToYear(1415)
+                let web=store.shareURL,native=store.nativeShareURL
+                let items=URLComponents(url:web,resolvingAgainstBaseURL:false)!.queryItems!
+                XCTAssertEqual(items.first { $0.name == "year" }?.value,"1415")
+                XCTAssertFalse(items.contains { ["person","place","stop","routeStop","returnPerson","returnPlace"].contains($0.name) })
+                await store.openLink(web)
+                XCTAssertEqual(store.year,1415);XCTAssertEqual(store.selectedCoordinate,[108.94,34.27]);XCTAssertNil(store.experience)
+                await store.openLink(native)
+                XCTAssertEqual(store.year,1415);XCTAssertEqual(store.selectedCoordinate,[108.94,34.27])
+                XCTAssertEqual(store.experience?.id,id);XCTAssertEqual(store.experienceIndex,index)
+                store.returnToExperience()
+                XCTAssertNil(store.selection);XCTAssertEqual(store.year,stopYear)
+            }
+        }
+    }
+
+    func testReturnToJourneyRestoresOverviewOrTheActiveStop() async throws {
+        try await withStore { store,_ in
+            for index in [-1,2] {
+                await store.startPeople("sushi",stop:index)
+                let bounds=store.destination?.bounds,stop=store.activeStop
+                store.inspect([108.94,34.27],move:true)
+                store.returnToExperience()
+                XCTAssertNil(store.selection);XCTAssertNil(store.historicalDetail)
+                XCTAssertEqual(store.experienceIndex,index)
+                if let stop {
+                    XCTAssertEqual(store.year,stop.effectiveYear);XCTAssertEqual(store.destination?.longitude,stop.coord[0])
+                } else {
+                    XCTAssertNotNil(bounds);XCTAssertEqual(store.destination?.bounds,bounds)
+                }
+            }
+        }
+    }
+
+    func testManualJourneyStopSelectionPausesButAutoplayContinues() async throws {
+        try await withStore { store,_ in
+            await store.startPeople("libai",stop:2)
+            store.playing=true;store.beginPlayback()
+            store.selectExperienceStop(0)
+            XCTAssertFalse(store.playing);XCTAssertEqual(store.experienceIndex,0)
+            XCTAssertEqual(store.year,store.activeStop?.effectiveYear)
+            store.playing=true;store.beginPlayback()
+            store.mapStageLoading=false;store.mapTransitionUntil = .distantPast
+            XCTAssertTrue(store.advancePlayback());XCTAssertTrue(store.playing)
+            XCTAssertEqual(store.experienceIndex,1)
+            store.experienceFooterNext();XCTAssertFalse(store.playing)
         }
     }
 

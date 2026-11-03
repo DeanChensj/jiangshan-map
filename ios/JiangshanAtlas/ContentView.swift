@@ -90,8 +90,11 @@ struct ContentView: View {
             default:return .ignored
             }
         }
-        .onChange(of: store.selection?.id) { _, id in if id != nil { store.playing=false;if isWide { store.sidebarVisible=true } else { sheet = .details } } }
-        .onChange(of:store.experience?.id) { _,id in if id != nil && sheet == .details { sheet=nil } }
+        .onChange(of: store.selection?.id) { _, id in
+            if id != nil { store.playing=false;if isWide { store.sidebarVisible=true } else { sheet = .details } }
+            else if sheet == .details { sheet=nil }
+        }
+        .onChange(of:store.experience?.id) { _,id in if id != nil && store.selection == nil && sheet == .details { sheet=nil } }
         .onChange(of: store.quiz != nil) { _, active in if active { playing = false; sheet = nil } }
     }
 

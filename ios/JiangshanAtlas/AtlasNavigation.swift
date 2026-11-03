@@ -1,6 +1,11 @@
 import Foundation
 
 extension AtlasStore {
+    var focusedPolityTitles:[String] {
+        guard !focusedPolity.isEmpty else { return [] }
+        if let detail=polityDetail,detail.titles.contains(focusedPolity) { return detail.titles }
+        return [focusedPolity]
+    }
     func clearPolityContext() {
         focusedPolity="";polityDetail=nil;pendingPolityFit=nil;previewSnapshot=nil
     }
@@ -74,10 +79,20 @@ extension AtlasStore {
     func experienceOverview() {
         playing=false;selection=nil;historicalDetail=nil;experienceIndex = -1;routeRevision += 1;fitExperience()
     }
+    func selectExperienceStop(_ index:Int) {
+        guard let experience,experience.stops.indices.contains(index) else { return }
+        beginNavigation();playing=false;clearPolityContext()
+        experienceIndex=index;showExperienceStop()
+    }
+    func returnToExperience() {
+        guard experience != nil else { return }
+        if experienceIndex >= 0 { selectExperienceStop(experienceIndex) }
+        else { beginNavigation();clearPolityContext();experienceOverview() }
+    }
     func experienceFooterNext() {
         guard let experience else { return }
         if experienceIndex+1 >= experience.stops.count { experienceOverview() }
-        else { experienceIndex += 1;showExperienceStop() }
+        else { selectExperienceStop(experienceIndex+1) }
     }
     func fitPolity(_ title: String) {
         if let entry=mapPolities.first(where:{ ($0.title == title || polityDetail?.titles.contains($0.title) == true) && $0.id.hasPrefix((phase?.id ?? "\0")+"-polity-") }), let bounds=entry.bounds {
@@ -87,8 +102,9 @@ extension AtlasStore {
     func closePolity() { clearSelection();resetCamera() }
     func dismissOnboarding() { onboarding=false;preferences.set(true,forKey:"atlas.guided") }
     func openGenealogyEvent(_ event: GenealogyEvent) {
-        playing=false
-        if let match=catalog?.events.first(where:{ $0.year == event.year && (text($0.title,$0.titleEn) == event.title || $0.title == event.title) }) { presentEvent(match) }
+        let request=beginNavigation()
+        playing=false;lockPeriod=false;linkYearRange=nil
+        if let match=catalog?.events.first(where:{ $0.year == event.year && (text($0.title,$0.titleEn) == event.title || $0.title == event.title) }) { presentEvent(match,navigation:request) }
         else { setYear(event.year);fly(event.coord,zoom:nativeZoom(forWebScale:3.25)) }
     }
 }
