@@ -1,6 +1,29 @@
-# iOS performance check — 2026-11-02
+# iOS performance checks — updated 2026-11-03
 
-## Direct presentation measurement
+## Latest direct presentation measurement — verified 120 FPS request
+
+The signed Release of `3b5fca7d31d2ad97c515b8e4baff957555d6ee78` was recorded on the physical **iPhone 17 Pro Max**, iOS 27.2, on November 3, 2026 (America/New_York), using Instruments 27 **Game Performance Overview + Display + Points of Interest**. The launch included `--atlas-camera-profile --atlas-profile-animated --atlas-profile-120fps`.
+
+The requested **120 FPS setting was verified**, rather than inferred: `mapPreferredFPSAtStart` and the final `mapPreferredFPS` both read back 120, the attached screen reported a 120 Hz maximum at both ends, and Low Power Mode was off at both ends. The report records `verified120FPSRequest: true`; thermal state was nominal at completion. The animation driver's median display-link target interval was 8.334 ms. That interval verifies the driver schedule and is not used to calculate presented FPS. Normal map setup now resolves its display preference after window attachment, avoiding the earlier pre-attachment 60 FPS fallback.
+
+The workload settles for six seconds, then runs ten seconds each of native camera pan, zoom and combined movement over the bundled 1415 Chinese scene, with boundaries/rivers/events/historical detail on and modern province/Today reference off.
+
+These numbers count the map CAMetalLayer's **On Display** interval starts from `metal-perf-overview-layer-per-frame-interval-metric`, filtered to the target app process and its single map layer. Presented FPS is new displayed drawables divided by the full fixed phase window. It is separate from SDK render callbacks and display-link callbacks. P95 describes how long those drawables remained on display.
+
+| Phase | Window | Presented frames | Presented FPS | P95 on display |
+|---|---:|---:|---:|---:|
+| Pan | 10 s | 1,077 | 107.7 | 8.33 ms |
+| Zoom | 10 s | 1,194 | 119.4 | 8.33 ms |
+| Pan + zoom | 10 s | 1,200 | 120.0 | 8.33 ms |
+| Overall | 30 s | 3,471 | 115.7 | 8.33 ms |
+
+Pan includes a 0.817-second initial hold because the first animated target matches the initial camera. Its active presentation cadence is 117.3 FPS. A further 200.02 ms on-display interval occurs at 3.409 seconds; zoom has a 33.34 ms interval at 13.176 seconds. These outliers remain in the results. Overall median and P99 on-display durations are both 8.334 ms. This is not a claim of uninterrupted 120 FPS or touch latency.
+
+Deferred logging omitted phase 0. The capture starts at the phase-1 event minus ten seconds, with phase 2 agreeing within 4.467 ms. The 3,471 published presentation rows were independently recounted in the three fixed windows. The same run emitted 3,477 SDK callbacks; those are not the presented-frame metric.
+
+[Raw timing, configuration verification, provenance and reproduction](benchmarks/2026-11-03/iphone17-120fps/README.md). The full trace remains local; only sanitized map-frame timing and this run’s SDK report are committed. This is one instrumented run, not a controlled before/after comparison. The app was relaunched normally after recording.
+
+## Earlier direct presentation measurement — 60 FPS preference (November 2)
 
 The signed Release of `bef202be3521ae38f5c661ad258c84005340b9a0` was measured on the physical iPhone 18 Pro Max, iOS 27.2, with Instruments 27 **Game Performance Overview + Display + Points of Interest**. Low Power Mode was off, thermal state was nominal, and the recorded map preference was 60 FPS (screen maximum 120 Hz). This run settles for six seconds, then uses the same 1415 bundled scene and automated native camera workload described below.
 
@@ -21,7 +44,7 @@ The older SDK-only captures below are retained as development history. They must
 
 ## Device and workload
 
-Physical iPhone 18 Pro Max, iOS 27.2, signed Release builds. Screen maximum 120 Hz; MapLibre requested 120 FPS. Low Power Mode was off and reported thermal state was nominal in every capture below.
+Physical iPhone 18 Pro Max, iOS 27.2, signed Release builds. Screen maximum 120 Hz; individual frame-rate preferences are listed with the captures. Low Power Mode was off and reported thermal state was nominal in every capture below.
 
 The automated capture settles for six seconds, then runs ten seconds each of panning, zooming, and combined movement in the 1415 map. Historical boundaries, water, events, Chinese labels and terrain remain enabled; modern province boundaries are disabled for a repeatable scene. The app restores the previous view afterward. Production features and map detail were retained.
 
@@ -60,7 +83,7 @@ The native-animation run measured 36.7, 35.1 and 32.2 callbacks/second in the th
 
 The immersive iteration also retains settlement/event GeoJSON when its visible content is unchanged across year changes, indexes catalog rows by period, reuses event-distance inputs, and prefetches the next stage into the existing four-entry cache. This removes repeated uploads during playback. These code changes alone do not establish the cause of the difference between the old and new captures.
 
-## Current result and limits
+## Earlier SDK-only result and limits
 
 The earlier slowdown did not reproduce in the latest two 120 FPS captures. The final run measured 110.5, 119.8 and 119.5 callbacks/second in pan, zoom and combined phases, with nominal thermal state. ProMotion remains enabled: the repeat at 120 FPS ruled out a permanent 60 FPS cap as necessary. The first phase includes roughly 0.75 seconds before the first render callback. These are SDK callback rates, not measured presented-frame rates. Subsequent delivery refinements corrected site headings/localization, Today road widths, iPad panel spacing and the post-gesture camera grace period; they do not change this automated historical sweep's scene or camera driver.
 
@@ -72,4 +95,4 @@ An earlier simulator sample showed `MTKView.currentDrawable` → `CAMetalLayer.n
 - Captures: `ios/.build/performance-current/baseline-camera.json`, `baseline-camera-repeat.json`, `unclipped-camera.json`, `clipped-camera.json`, `animated-camera.json`.
 - Latest captures: `frame-pacing-60.json`, `frame-pacing-120.json`, `immersive-camera.json` in the same directory. The 60 FPS diagnostic adds `--atlas-profile-60fps`; it does not change the production default.
 - Simulator sample: `ios/.build/performance-current/simulator-camera-sample.txt`.
-- Build, signing, normal launch, and focused map UI checks were used for delivery. No new test suite was added.
+- Build, signing, normal launch, and focused map UI checks were used for delivery. The PR now also includes the native and query regression checks described in TESTING.md.
