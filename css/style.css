@@ -2842,6 +2842,12 @@ h2 {
   pointer-events: none;
 }
 
+/* Autoplay jumps between event nodes; the thumb glides so a 75-year hop reads as time passing.
+   Manual scrubbing keeps the instant follow. */
+#scrubber-dock.is-autoplaying #scrubber-handle {
+  transition: left 0.22s ease-out;
+}
+
 #scrubber-ticks {
   position: relative;
   height: 14px;
