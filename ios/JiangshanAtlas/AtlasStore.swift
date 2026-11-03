@@ -4,16 +4,17 @@ import CoreLocation
 
 @MainActor @Observable
 final class AtlasStore {
+    @ObservationIgnored let preferences:UserDefaults
     var catalog: AtlasCatalog?
     var shareBaseOverride:URL?
     var error: String?
     var year: Int {
-        didSet { UserDefaults.standard.set(year, forKey: "atlas.year") }
+        didSet { preferences.set(year, forKey: "atlas.year") }
     }
     var english: Bool {
-        didSet { UserDefaults.standard.set(english, forKey: "atlas.english") }
+        didSet { preferences.set(english, forKey: "atlas.english") }
     }
-    var traditional = UserDefaults.standard.bool(forKey: "atlas.traditional") { didSet { UserDefaults.standard.set(traditional, forKey: "atlas.traditional") } }
+    var traditional = false { didSet { preferences.set(traditional, forKey: "atlas.traditional") } }
     var showTerritories = true
     var showPlaces = true
     var showCorridors = true
@@ -44,8 +45,8 @@ final class AtlasStore {
     var activeEventID: String?
     var pendingPolityFit: String?
     var previewSnapshot: String?
-    var capitalHintSeen=UserDefaults.standard.bool(forKey:"atlas.capitalHintSeen") { didSet { UserDefaults.standard.set(capitalHintSeen,forKey:"atlas.capitalHintSeen") } }
-    var onboarding = !UserDefaults.standard.bool(forKey: "atlas.guided")
+    var capitalHintSeen=false { didSet { preferences.set(capitalHintSeen,forKey:"atlas.capitalHintSeen") } }
+    var onboarding = true
     var selection: AtlasSelection?
     var destination: CameraDestination?
     var journey: AtlasJourney?
@@ -89,10 +90,14 @@ final class AtlasStore {
     @ObservationIgnored private var pendingURL: URL?
     @ObservationIgnored private var lastSavedCamera: [Double]?
 
-    init() {
-        let defaults = UserDefaults.standard
+    init(preferences:UserDefaults = .standard) {
+        self.preferences=preferences
+        let defaults = preferences
         year = defaults.object(forKey: "atlas.year") as? Int ?? 1415
         english = defaults.bool(forKey: "atlas.english")
+        traditional=defaults.bool(forKey:"atlas.traditional")
+        capitalHintSeen=defaults.bool(forKey:"atlas.capitalHintSeen")
+        onboarding = !defaults.bool(forKey:"atlas.guided")
         if let data = defaults.data(forKey: "atlas.bookmarks") {
             bookmarks = (try? JSONDecoder().decode([AtlasBookmark].self, from: data)) ?? []
         }
@@ -119,9 +124,7 @@ final class AtlasStore {
             let loaded = try await Task.detached(priority: .userInitiated) {
                 try JSONDecoder().decode(AtlasCatalog.self, from: Data(contentsOf: url))
             }.value
-            placesByDynasty=Dictionary(grouping:loaded.places,by:\.dynasty)
-            eventsByDynasty=Dictionary(grouping:loaded.events,by:\.dynasty).mapValues { $0.sorted { $0.year < $1.year } }
-            catalog = loaded
+            applyCatalog(loaded)
             focusSites=(try? JSONDecoder().decode([AtlasFocusSite].self,from:Data(contentsOf:AtlasResources.url("focus-sites.json")))) ?? []
             Task { await resolveShareDomain() }
             hydroLabels = (try? JSONDecoder().decode([HydroLabel].self, from: Data(contentsOf: AtlasResources.url("hydro-labels.json")))) ?? []
@@ -132,6 +135,12 @@ final class AtlasStore {
 
     var dynasty: Dynasty? {
         catalog?.dynasties.last { year >= $0.from } ?? catalog?.dynasties.first
+    }
+
+    func applyCatalog(_ loaded:AtlasCatalog) {
+        placesByDynasty=Dictionary(grouping:loaded.places,by:\.dynasty)
+        eventsByDynasty=Dictionary(grouping:loaded.events,by:\.dynasty).mapValues { $0.sorted { $0.year < $1.year } }
+        catalog=loaded
     }
     var phase: AtlasPhase? { dynasty?.phase(at: year) }
     var places: [AtlasPlace] {
@@ -270,7 +279,7 @@ final class AtlasStore {
         saveBookmarks()
     }
     private func saveBookmarks() {
-        if let data = try? JSONEncoder().encode(bookmarks) { UserDefaults.standard.set(data, forKey: "atlas.bookmarks") }
+        if let data = try? JSONEncoder().encode(bookmarks) { preferences.set(data, forKey: "atlas.bookmarks") }
     }
     func restore(_ bookmark: AtlasBookmark) {
         journey = nil; selection = nil; setYear(bookmark.year)
@@ -280,11 +289,11 @@ final class AtlasStore {
         }
     }
     func saveCamera() {
-        let preferences = ["territories": showTerritories, "places": showPlaces, "corridors": showCorridors, "terrain": showTerrain, "boundaries": showBoundaries, "water": showWater, "events": showEvents, "modern": showModern, "provinceNames": showProvinceNames, "ghost": showGhost, "historicalDetail":showHistoricalDetail, "todayReference":showTodayReference]
-        if UserDefaults.standard.dictionary(forKey: "atlas.layers") as? [String: Bool] != preferences { UserDefaults.standard.set(preferences, forKey: "atlas.layers") }
+        let layers = ["territories": showTerritories, "places": showPlaces, "corridors": showCorridors, "terrain": showTerrain, "boundaries": showBoundaries, "water": showWater, "events": showEvents, "modern": showModern, "provinceNames": showProvinceNames, "ghost": showGhost, "historicalDetail":showHistoricalDetail, "todayReference":showTodayReference]
+        if preferences.dictionary(forKey: "atlas.layers") as? [String: Bool] != layers { preferences.set(layers, forKey: "atlas.layers") }
         let camera = [cameraLongitude, cameraLatitude, cameraZoom]
         guard camera != lastSavedCamera else { return }
-        UserDefaults.standard.set(camera, forKey: "atlas.camera")
+        preferences.set(camera, forKey: "atlas.camera")
         lastSavedCamera = camera
     }
     func open(_ url: URL) {

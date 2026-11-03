@@ -64,7 +64,7 @@ extension AtlasStore {
         } else { pendingPolityFit=title }
     }
     func closePolity() { pendingPolityFit=nil;focusedPolity="";polityDetail=nil;previewSnapshot=nil;selection=nil;resetCamera() }
-    func dismissOnboarding() { onboarding=false;UserDefaults.standard.set(true,forKey:"atlas.guided") }
+    func dismissOnboarding() { onboarding=false;preferences.set(true,forKey:"atlas.guided") }
     func openGenealogyEvent(_ event: GenealogyEvent) {
         playing=false
         if let match=catalog?.events.first(where:{ $0.year == event.year && (text($0.title,$0.titleEn) == event.title || $0.title == event.title) }) { presentEvent(match) }

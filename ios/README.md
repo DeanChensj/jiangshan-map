@@ -1,6 +1,6 @@
 # 江山时序 · Native iOS app
 
-SwiftUI and MapLibre Native 7.0.0 for iPhone and iPad. Requires Xcode 27 and iOS/iPadOS 26 or later. Compact and expanded layouts share the same features. Dedicated macOS, visionOS and fold-specific arrangements are deferred.
+SwiftUI and MapLibre Native 7.0.0 for iPhone and iPad, targeting iOS/iPadOS 26 or later. Local build and test checks use Xcode 27. Compact and expanded layouts share the same features. Dedicated macOS, visionOS and fold-specific arrangements are deferred.
 
 See [COMPLETION.md](COMPLETION.md) for the native port's completion audit, corrected regressions and the distinction between implemented functionality, historical cartography and release preparation.
 
@@ -56,6 +56,6 @@ Changing this configuration does not reconfigure DNS or publish a deployment by 
 
 See [FONTS.md](FONTS.md) for bundled font sources, licenses and optional regeneration.
 
-This port bundles the full web query data in addition to the native map stage files. Memory/storage optimization remains separate work. See [PERFORMANCE.md](PERFORMANCE.md) for physical-device camera captures and their limits. There are no new test suites or test targets. The signed release build was installed on the paired iPhone 18 Pro Max. Focused simulator checks covered the immersive iPhone/iPad layouts, expanded timeline, floating/docked inspector, playback overview, site details/source links, and the modern reference layer. Earlier query checks covered search, person comparisons, genealogy, routes, polities and quiz generation.
+This port bundles the full web query data in addition to the native map stage files. Memory/storage optimization remains separate work. See [PERFORMANCE.md](PERFORMANCE.md) for physical-device camera captures and their limits, and [TESTING.md](TESTING.md) for the Node, native state and UI regression tests and CI. The signed release build was installed on the paired iPhone 18 Pro Max. Focused simulator checks covered the immersive iPhone/iPad layouts, expanded timeline, floating/docked inspector, playback overview, site details/source links, and the modern reference layer.
 
 Content licenses and historical-source restrictions remain applicable; see the repository README and bundled notices.

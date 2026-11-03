@@ -1,0 +1,64 @@
+name: Native iOS checks
+
+on:
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'js/**'
+      - 'assets/tang_focus.json'
+      - 'scripts/*ios*'
+      - 'tests/**'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  simulator:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install XcodeGen
+        run: |
+          if ! command -v xcodegen >/dev/null; then
+            brew install xcodegen
+          fi
+      - name: Prepare native resources and project
+        run: bash ios/prepare.sh
+      - name: Select an available iPhone simulator
+        id: simulator
+        run: |
+          xcrun simctl list devices available --json > "$RUNNER_TEMP/atlas-simulators.json"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, re
+          data=json.load(open(os.path.join(os.environ['RUNNER_TEMP'],'atlas-simulators.json')))
+          runtimes=sorted(data['devices'],reverse=True)
+          for runtime in runtimes:
+              match=re.search(r'\.iOS-(\d+)',runtime)
+              if not match or int(match[1]) < 26:
+                  continue
+              phones=[d for d in data['devices'][runtime] if d['name'].startswith('iPhone') and d.get('isAvailable')]
+              if phones:
+                  print('id='+phones[0]['udid'])
+                  break
+          else:
+              raise SystemExit('An iOS 26 or newer iPhone simulator is required')
+          PY
+      - name: Run native state and event navigation tests
+        run: |
+          xcodebuild -project ios/JiangshanAtlas.xcodeproj -scheme JiangshanAtlas \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}' \
+            -derivedDataPath ios/.build/DerivedData -resultBundlePath ios/.build/Tests.xcresult \
+            -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO \
+            ATLAS_BUNDLE_IDENTIFIER=org.example.jiangshan.ci test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ios-test-results
+          path: ios/.build/Tests.xcresult
+          if-no-files-found: ignore

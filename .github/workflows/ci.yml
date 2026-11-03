@@ -21,3 +21,6 @@ jobs:
 
       - name: Run Atlas Validation Suite
         run: node scripts/validate_atlas.js
+
+      - name: Test native query bridge and link generation
+        run: node --test tests/*.test.cjs

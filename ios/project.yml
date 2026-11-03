@@ -55,17 +55,39 @@ targets:
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
         CFBundleURLTypes:
-          - CFBundleURLName: me.jiangshan.atlas
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER)
             CFBundleURLSchemes: [jiangshan]
         MLNIdeographicFontFamilyName: Noto Serif SC
         CADisableMinimumFrameDurationOnPhone: true
         UIBackgroundModes: [audio]
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: me.jiangshan.atlas
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER)
         GENERATE_INFOPLIST_FILE: NO
         SUPPORTS_MACCATALYST: NO
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: YES
+  JiangshanAtlasTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [JiangshanAtlasTests]
+    dependencies:
+      - target: JiangshanAtlas
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER).tests
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: YES
+  JiangshanAtlasUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [JiangshanAtlasUITests]
+    dependencies:
+      - target: JiangshanAtlas
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER).uitests
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: YES
 schemes:
   JiangshanAtlas:
     build:
@@ -73,3 +95,8 @@ schemes:
         JiangshanAtlas: all
     run:
       config: Debug
+    test:
+      config: Debug
+      targets:
+        - JiangshanAtlasTests
+        - JiangshanAtlasUITests

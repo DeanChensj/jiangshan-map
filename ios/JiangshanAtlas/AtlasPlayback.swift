@@ -22,7 +22,10 @@ extension AtlasStore {
         let weights=timelineWeights, total=weights.reduce(0) { $0+$1.1 };var offset=0.0
         for (d,w) in weights {
             let range=timelineBandRange(d)
-            if target <= range.upperBound { return min(1,max(0,(offset+w*Double(max(0,target-range.lowerBound))/Double(max(1,range.upperBound-range.lowerBound)))/max(1,total))) }
+            if target <= range.upperBound {
+                if target >= timelineEnd { return 1 }
+                return min(1,max(0,(offset+w*Double(max(0,target-range.lowerBound))/Double(range.upperBound-range.lowerBound+1))/max(1,total)))
+            }
             offset += w
         };return 1
     }
@@ -30,7 +33,11 @@ extension AtlasStore {
         let weights=timelineWeights,total=weights.reduce(0) { $0+$1.1 };var left=min(1,max(0,progress))*total
         for (d,w) in weights {
             let range=timelineBandRange(d)
-            if left <= w { let value=range.lowerBound+Int((left/max(0.001,w)*Double(range.upperBound-range.lowerBound)).rounded());return value == 0 ? (range.upperBound >= 1 ? 1 : -1) : value }
+            if left < w-1e-9 {
+                let fraction=max(0,left)/max(0.001,w)
+                let value=min(range.upperBound,range.lowerBound+Int(floor(fraction*Double(range.upperBound-range.lowerBound+1)+1e-9)))
+                return value == 0 ? (range.upperBound >= 1 ? 1 : -1) : value
+            }
             left -= w
         };return timelineEnd
     }

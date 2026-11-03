@@ -137,6 +137,10 @@ struct PersonProfile: Decodable, Identifiable, Sendable {
     var aliases: [String]? = nil
     var isRelic: Bool? = nil
     var id: String { key }
+    func matches(_ query:String)->Bool {
+        let text=zh+" "+en+" "+(courtesyZh ?? "")+" "+(courtesyEn ?? "")+" "+(aliases ?? []).joined(separator:" ")
+        return query.isEmpty || (text+" "+AtlasChinese.traditional(text)).localizedCaseInsensitiveContains(query)
+    }
 }
 struct StrategicPass: Decodable, Identifiable, Sendable {
     let key: String, ancientZh: String, ancientEn: String, modernZh: String, modernEn: String

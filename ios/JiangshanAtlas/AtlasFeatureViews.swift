@@ -6,10 +6,7 @@ struct AtlasPeopleView: View {
     @State private var query = ""
     @State private var selected: [String] = []
     private var filteredPeople:[PersonProfile] {
-        (store.catalog?.people ?? []).filter { person in
-            let text=person.zh+" "+person.en+" "+(person.courtesyZh ?? "")+" "+(person.courtesyEn ?? "")+" "+(person.aliases ?? []).joined(separator:" ")
-            return query.isEmpty || (text+" "+AtlasChinese.traditional(text)).localizedCaseInsensitiveContains(query)
-        }
+        (store.catalog?.people ?? []).filter { $0.matches(query) }
     }
     var body: some View {
         List {

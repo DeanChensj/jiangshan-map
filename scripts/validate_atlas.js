@@ -3976,7 +3976,8 @@ function main() {
       `index.html #milestone-list count (${ssrCount}) must match Warring States milestones (${dynasties[0].milestones.length})`
     );
 
-    const refCorpus = [indexHtml, styleCss, appCode, readmeSrc, readmeZhSrc].join('\n');
+    const nativeExport = fs.readFileSync(path.join(ROOT, 'scripts/export_ios.js'), 'utf8');
+    const refCorpus = [indexHtml, styleCss, appCode, readmeSrc, readmeZhSrc, nativeExport].join('\n');
     for (const assetFile of fs.readdirSync(path.join(ROOT, 'assets'))) {
       assert(refCorpus.includes(assetFile), `Unreferenced file in assets/: ${assetFile}`);
     }

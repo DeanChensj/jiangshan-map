@@ -14,7 +14,7 @@ for(const host of config.associatedDomains)if(!/^(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,
 const out=path.join(root,'ios/.build'),site=path.join(out,'link-site');
 fs.mkdirSync(path.join(site,'.well-known'),{recursive:true});
 const write=(name,data)=>{const file=path.join(out,name);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,data);};
-write('links.yml',JSON.stringify({settings:{base:{ATLAS_WEB_URL:config.shareBaseURL,ATLAS_FALLBACK_SHARE_URL:config.fallbackShareBaseURL,ATLAS_APPLE_TEAM:config.developmentTeam,PRODUCT_BUNDLE_IDENTIFIER:config.bundleIdentifier,DEVELOPMENT_TEAM:config.developmentTeam,CODE_SIGN_ENTITLEMENTS:'$(SRCROOT)/.build/Atlas.entitlements'}}},null,2));
+write('links.yml',JSON.stringify({settings:{base:{ATLAS_WEB_URL:config.shareBaseURL,ATLAS_FALLBACK_SHARE_URL:config.fallbackShareBaseURL,ATLAS_APPLE_TEAM:config.developmentTeam,ATLAS_BUNDLE_IDENTIFIER:config.bundleIdentifier,PRODUCT_BUNDLE_IDENTIFIER:config.bundleIdentifier,DEVELOPMENT_TEAM:config.developmentTeam,CODE_SIGN_ENTITLEMENTS:'$(SRCROOT)/.build/Atlas.entitlements'}}},null,2));
 write('Atlas.entitlements',`<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>com.apple.developer.associated-domains</key><array>${config.associatedDomains.map(h=>`<string>applinks:${h}</string>`).join('')}</array></dict></plist>\n`);
 const appID=`${config.developmentTeam}.${config.bundleIdentifier}`;
 const prefix=new URL(config.shareBaseURL).pathname.replace(/\/$/,'');

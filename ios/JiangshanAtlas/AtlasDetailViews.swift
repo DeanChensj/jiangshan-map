@@ -14,7 +14,7 @@ struct AtlasInspector: View {
                     Spacer()
                     Button { store.selection = nil; store.historicalDetail = nil; store.polityDetail = nil } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(store.text("取消选择", "Clear selection"))
                 }
-                Text(store.selectionTitle).font(AtlasFonts.serif(29, weight: .medium))
+                Text(store.selectionTitle).font(AtlasFonts.serif(29, weight: .medium)).accessibilityIdentifier("atlas.selection.title")
                 if store.experience != nil {
                     Button(store.text("返回人物行迹","Return to journey"),systemImage:"arrow.uturn.backward") { store.selection=nil;store.historicalDetail=nil;store.showExperienceStop() }.font(AtlasFonts.ui(12))
                 }
@@ -26,11 +26,11 @@ struct AtlasInspector: View {
                     Text(store.yearLabel(event.year) + " · " + store.localChinese(store.text(event.site,event.siteEn ?? event.site))).font(AtlasFonts.ui(15)).foregroundStyle(AtlasTheme.vermilion)
                     Button(store.text("回到事件发生年", "Show event year")) { store.select(event) }.buttonStyle(.bordered)
                     if let seal=event.sealStop {
-                        Button(store.text("追随传国玺行迹","Follow the Imperial Seal"),systemImage:"seal") { Task { await store.startPeople("yuxi",stop:seal) } }.buttonStyle(.bordered)
+                        Button(store.text("追随传国玺行迹","Follow the Imperial Seal"),systemImage:"seal") { Task { await store.startPeople("yuxi",stop:seal) } }.buttonStyle(.bordered).accessibilityIdentifier("atlas.event.imperial-seal")
                     }
                     if let anchors=event.anchors,!anchors.isEmpty {
-                        ForEach(Array(anchors.enumerated()),id:\.offset) { _,anchor in
-                            Button(store.text(anchor.title,anchor.titleEn),systemImage:"mappin") { store.fly(anchor.coord,zoom:store.nativeZoom(forWebScale:3.25)) }
+                        ForEach(Array(anchors.enumerated()),id:\.offset) { index,anchor in
+                            Button(store.text(anchor.title,anchor.titleEn),systemImage:"mappin") { store.fly(anchor.coord,zoom:store.nativeZoom(forWebScale:3.25)) }.accessibilityIdentifier("atlas.event.anchor.\(index)")
                         }
                     } else {
                         ForEach(Array((event.coords ?? []).enumerated()), id: \.offset) { i, coord in

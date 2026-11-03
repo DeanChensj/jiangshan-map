@@ -39,7 +39,31 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "520F638611C1A7BF53BB1F72"
+               BuildableName = "JiangshanAtlasTests.xctest"
+               BlueprintName = "JiangshanAtlasTests"
+               ReferencedContainer = "container:JiangshanAtlas.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BB82D9CA46407DCCBFDF42B3"
+               BuildableName = "JiangshanAtlasUITests.xctest"
+               BlueprintName = "JiangshanAtlasUITests"
+               ReferencedContainer = "container:JiangshanAtlas.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <CommandLineArguments>
+      </CommandLineArguments>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

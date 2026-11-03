@@ -19,6 +19,10 @@ Three issues found and corrected:
 
 No further missing core port feature was identified in this focused audit. Some browser-only integrations intentionally remain on the web, and native text layout/compositing is not pixel-identical to browser SVG.
 
+## Follow-up regression tests
+
+The draft PR adds 20 Node query/link checks, ten native state tests and two event-navigation UI tests. All passed locally, together with the existing atlas integrity validation. The tests also identified and fixed a weighted-timeline boundary alias: dynasty-start years could map back to the preceding dynasty's end year. Progress/year conversions now round-trip every mapped nonzero year. A hardcoded Xcode target bundle identifier was also corrected so the generated configuration controls the app and test identities. See TESTING.md for commands, isolation and CI details.
+
 ## Separate work
 
 - Detailed historical city cartography: the existing 12-site pack is approximate markers. Ancient city walls, palace/ward areas, streets and finer waterways require a separate sourced data implementation, now being pursued in the historical-map chat. More markers alone do not complete that task.
