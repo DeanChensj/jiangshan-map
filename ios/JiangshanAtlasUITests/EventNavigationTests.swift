@@ -88,6 +88,17 @@ final class EventNavigationTests:XCTestCase {
         let year=app.buttons["atlas.timeline.year"]
         let changed=XCTNSPredicateExpectation(predicate:NSPredicate(format:"label CONTAINS %@","923 CE"),object:year)
         XCTAssertEqual(XCTWaiter.wait(for:[changed],timeout:10),.completed)
+        XCTAssertTrue(app.staticTexts["atlas.selection.title"].waitForExistence(timeout:10))
+        let showAll=app.buttons["Show all polities"]
+        for _ in 0..<4 {
+            if showAll.exists && showAll.isHittable { break }
+            app.scrollViews.firstMatch.swipeUp()
+        }
+        XCTAssertTrue(showAll.exists);showAll.tap()
+        let focus=app.buttons["Focus polity"]
+        XCTAssertTrue(focus.waitForExistence(timeout:5))
+        XCTAssertEqual(app.staticTexts["atlas.selection.title"].label,"Later Tang")
+        focus.tap();XCTAssertTrue(showAll.waitForExistence(timeout:5))
     }
 
     func testDocumentedWebQuizLinkStartsTheChallenge() {

@@ -8,7 +8,15 @@ extension AtlasStore {
         beginNavigation();selection=nil;historicalDetail=nil;clearPolityContext()
     }
     func navigateToYear(_ value:Int) {
+        guard quiz == nil else { return }
         beginNavigation();playing=false;setYear(value)
+    }
+    func togglePolityFocus() {
+        guard let detail=polityDetail else { return }
+        beginNavigation();playing=false;pendingPolityFit=nil
+        if !focusedPolity.isEmpty { focusedPolity="";return }
+        guard let title=detail.titles.first else { return }
+        focusedPolity=title;fitPolity(title)
     }
     func exploreFocusCity(_ city:String) {
         beginNavigation()
@@ -34,7 +42,7 @@ extension AtlasStore {
         if case .coordinate = selection, let note=mapNote { return text(note.title,note.titleEn ?? note.title) }
         if case .coordinate = selection, let heading=historicalDetail?.heading, !heading.isEmpty { return heading }
         if case .territory = selection, let detail=polityDetail { return detail.title }
-        return localChinese(selection?.title(english:english) ?? "")
+        return localChinese(selection?.title(english:english,year:year) ?? "")
     }
     var visibleTrackIDs: Set<String> {
         guard let experience else { return [] }

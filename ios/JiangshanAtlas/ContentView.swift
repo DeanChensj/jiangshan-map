@@ -79,6 +79,7 @@ struct ContentView: View {
         .onChange(of:store.catalog?.version) { _,version in if version != nil && store.onboarding { sheet = .guide } }
         .onKeyPress { press in
             guard sheet == nil,!enteringYear else { return .ignored }
+            if store.quiz != nil,[KeyEquivalent.leftArrow,.rightArrow,.home,.end].contains(press.key) { return .ignored }
             switch press.key {
             case .space: if store.quiz != nil { if store.quiz?.answered == true { store.nextQuiz() } else { store.confirmQuiz() } } else { playing.toggle() };return .handled
             case .leftArrow: playing=false;if press.modifiers.contains(.shift) { store.navigateToYear(store.year-10) } else { store.step(-1) };return .handled

@@ -420,7 +420,7 @@ struct AtlasMapView: UIViewRepresentable {
                     for track in experience.tracks {
                         let dimmed=store.experienceIndex >= 0 && !visible.contains(track.id)
                         for (i,stop) in track.stops.enumerated() {
-                            guard i > 0 || stop.fromCoord != nil else { continue }
+                            guard i > 0, stop.hasLeg != false else { continue }
                             let start=stop.fromCoord ?? track.stops[max(0,i-1)].coord
                             var coords=AtlasGeometry.curve([start]+stop.via+[stop.coord])
                             let future=store.experienceIndex >= 0 && (Int(stop.id) ?? 0) > store.experienceIndex
@@ -445,17 +445,13 @@ struct AtlasMapView: UIViewRepresentable {
                 }
                 set(shapes,source:"journey",style:style)
             }
-            let nextSelectionKey = "\(store.experience?.id ?? "")|\(store.language)|\(store.selectionTitle)|\(store.selection?.id ?? "")|\(store.currentStop?.id ?? "")|\(store.experienceIndex)"
+            let selectionGeometry=store.selectedCoordinate ?? store.currentStop?.coord ?? (store.selection == nil ? store.activeStop?.coord : nil) ?? []
+            let nextSelectionKey = "\(store.experience?.id ?? "")|\(store.language)|\(store.selectionTitle)|\(store.selection?.id ?? "")|\(store.currentStop?.id ?? "")|\(store.experienceIndex)|\(selectionGeometry)"
             guard selectionKey != nextSelectionKey else { return }
             selectionKey = nextSelectionKey
             var selected: [MLNShape & MLNFeature] = []
-            var coordinate: CLLocationCoordinate2D?
-            if case .place(let place) = store.selection { coordinate = place.coordinate }
-            if case .event(let event) = store.selection { coordinate = event.coordinate }
-            if let stop = store.currentStop { coordinate = .init(latitude: stop.coord[1], longitude: stop.coord[0]) }
-            if let coord = store.selectedCoordinate { coordinate = .init(latitude: coord[1], longitude: coord[0]) }
-            if store.selection == nil, let stop = store.activeStop { coordinate = .init(latitude: stop.coord[1], longitude: stop.coord[0]) }
-            if let coordinate {
+            if selectionGeometry.count == 2 {
+                let coordinate=CLLocationCoordinate2D(latitude:selectionGeometry[1],longitude:selectionGeometry[0])
                 let point=MLNPointFeature();point.coordinate=coordinate
                 let zh: String, en: String
                 if store.selection != nil { zh=store.selectionTitle;en=store.selectionTitle }

@@ -155,10 +155,10 @@ enum AtlasSelection: Identifiable {
         case .territory(let id, _, _): id
         }
     }
-    func title(english: Bool) -> String {
+    func title(english: Bool, year:Int? = nil) -> String {
         switch self {
         case .coordinate(_, let title, _): title
-        case .place(let place): english ? place.titleEn : place.title
+        case .place(let place): year.map { place.name(at:$0,english:english) } ?? (english ? place.titleEn : place.title)
         case .event(let event): english ? event.titleEn : event.title
         case .territory(_, let title, let subtitle): english ? subtitle : title
         }

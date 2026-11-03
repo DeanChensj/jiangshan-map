@@ -189,3 +189,17 @@ test('uncurated polity identifiers survive translation and a later query year',(
     }
   }
 });
+
+
+test('comparison tracks discard campaign legs whose preceding stop changed',()=> {
+  const result=query('people',{query:'qinshihuang,wangjian'});
+  const track=result.tracks.find(track=>track.id==='qinshihuang');
+  const index=track.stops.findIndex(stop=>stop.year===-228&&stop.site==='邯郸');
+  assert.ok(index>0);
+  assert.equal(track.stops[index-1].year,-229);
+  assert.deepEqual(track.stops[index].fromCoord,track.stops[index-1].coord);
+  assert.deepEqual(track.stops[index].via,[]);
+  assert.equal(track.stops[index].hasLeg,false);
+  assert.ok(track.stops.some(stop=>stop.hasLeg&&stop.via.length),'Keep applicable curated legs');
+  for(const track of result.tracks)assert.equal(track.stops[0].hasLeg,false);
+});

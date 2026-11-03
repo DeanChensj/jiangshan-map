@@ -186,7 +186,7 @@ final class AtlasStore {
         return stops[journeyIndex]
     }
     var mapRevision: String {
-        "\(mapNote?.title ?? "")|\(showHistoricalDetail)|\(showTodayReference)|\(mapRightWidth)|\(activeEventID ?? "")|\(autoEvent?.id ?? "")|\(capitalHintSeen)|\(mapTopHeight)|\(mapBottomHeight)|\(showProvinceNames)|\(playing)|\(mapCardHeight)|\(routeRevision)|\(encountersOnly)|\(historicalDetail?.adminTitles?.joined() ?? "")|\(previewSnapshot ?? "")|\(year)|\(language)|\(showTerritories)|\(showPlaces)|\(showCorridors)|\(showTerrain)|\(showGhost)|\(focusedPolity)|\(experience?.id ?? "")|\(experienceIndex)|\(quiz?.revision ?? "")|\(showBoundaries)|\(showWater)|\(showEvents)|\(showModern)|\(journey?.id ?? "")|\(journeyIndex)|\(selection?.id ?? "")|\(destination?.id.uuidString ?? "")"
+        "\(mapNote?.title ?? "")|\(showHistoricalDetail)|\(showTodayReference)|\(mapRightWidth)|\(activeEventID ?? "")|\(autoEvent?.id ?? "")|\(capitalHintSeen)|\(mapTopHeight)|\(mapBottomHeight)|\(showProvinceNames)|\(playing)|\(mapCardHeight)|\(routeRevision)|\(encountersOnly)|\(historicalDetail?.adminTitles?.joined() ?? "")|\(previewSnapshot ?? "")|\(year)|\(language)|\(showTerritories)|\(showPlaces)|\(showCorridors)|\(showTerrain)|\(showGhost)|\(focusedPolity)|\(experience?.id ?? "")|\(experienceIndex)|\(quiz?.revision ?? "")|\(showBoundaries)|\(showWater)|\(showEvents)|\(showModern)|\(journey?.id ?? "")|\(journeyIndex)|\(selection?.id ?? "")|\(selectedCoordinate ?? [])|\(destination?.id.uuidString ?? "")"
     }
     var webBaseURL: URL { URL(string:Bundle.main.object(forInfoDictionaryKey:"AtlasWebURL") as? String ?? Bundle.main.object(forInfoDictionaryKey:"AtlasFallbackShareURL") as? String ?? "https://deanchen.me/jiangshan-map/")! }
     var shareURL: URL {
@@ -220,6 +220,11 @@ final class AtlasStore {
         let bounded = min(timelineEnd,max(timelineStart,value))
         var target = bounded == 0 ? (year < 0 ? 1 : -1) : bounded
         if lockPeriod, let dynasty { target = min(dynasty.to, max(dynasty.from, target)) }
+        let leavesPolity=polityDetail.map { target < $0.from || target > $0.to } ?? (target != year && !focusedPolity.isEmpty)
+        if leavesPolity {
+            clearPolityContext()
+            if case .territory = selection { selection=nil }
+        }
         if let activeEventID,catalog?.events.first(where:{ $0.id == activeEventID })?.effectiveYear != target { self.activeEventID=nil }
         year = target
         syncMilestone()
@@ -234,6 +239,7 @@ final class AtlasStore {
         setYear(min(dynasty.to, max(dynasty.from, dynasty.focus)))
     }
     func step(_ direction: Int) {
+        guard quiz == nil else { return }
         beginNavigation()
         if experience != nil { stepExperience(direction); return }
         if journey != nil { stepJourney(direction); return }
@@ -264,6 +270,7 @@ final class AtlasStore {
         destination = .init(longitude: 106.5, latitude: 34, zoom: 2.4, bounds: bounds)
     }
     func beginPlayback() {
+        guard quiz == nil else { return }
         beginNavigation()
         if let experience {
             if experienceIndex < 0 { experienceIndex=0;showExperienceStop() }
@@ -286,7 +293,7 @@ final class AtlasStore {
         setYear(stop.year); fly(stop.coord, zoom: 5.0)
     }
     func saveBookmark() {
-        let title = selection?.title(english: english) ?? dynasty.map { english ? $0.titleEn : $0.title } ?? "江山"
+        let title = selection?.title(english: english,year:year) ?? dynasty.map { english ? $0.titleEn : $0.title } ?? "江山"
         bookmarkLibrary.insert(.init(id: UUID(), title: title, year: year, longitude: cameraLongitude, latitude: cameraLatitude, zoom: cameraZoom, url: shareURL.absoluteString))
     }
     func deleteBookmarks(at offsets: IndexSet) {

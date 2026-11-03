@@ -517,4 +517,165 @@ import MapLibre
         }
     }
 
+    func testScrubbingOutOfPolityClearsContextAndPreservesSharedYear() async throws {
+        try await withStore { store,_ in
+            await store.openLink(URL(string:"jiangshan://atlas?year=230&polity=caowei")!)
+            store.previewSnapshot=store.polityDetail?.stages.first?.snapKey
+            store.isScrubbing=true;store.navigateToYear(1415);store.isScrubbing=false
+            XCTAssertEqual(store.year,1415);XCTAssertNil(store.polityDetail)
+            XCTAssertEqual(store.focusedPolity,"");XCTAssertNil(store.selection)
+            XCTAssertNil(store.previewSnapshot);XCTAssertNil(store.pendingPolityFit)
+            let url=store.nativeShareURL
+            XCTAssertFalse(URLComponents(url:url,resolvingAgainstBaseURL:false)!.queryItems!.contains { $0.name == "polity" })
+            await store.openLink(url);XCTAssertEqual(store.year,1415)
+        }
+    }
+
+    func testEnglishPolityFocusToggleKeepsTheDossierAndRawIdentity() async throws {
+        try await withStore { store,_ in
+            store.setLanguage("en");store.setYear(750)
+            let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"Later Tang"]))
+            await store.handle(try XCTUnwrap(hits.first { !$0.polity.isEmpty }))
+            let detail=try XCTUnwrap(store.polityDetail)
+            XCTAssertEqual(detail.key,"houtang");XCTAssertGreaterThan(detail.stages.count,0)
+            store.mapPolities=try mapPolities(try XCTUnwrap(store.phase?.id))
+            store.togglePolityFocus()
+            XCTAssertEqual(store.focusedPolity,"");XCTAssertNil(store.pendingPolityFit)
+            XCTAssertEqual(store.polityDetail?.key,detail.key)
+            XCTAssertEqual(store.polityDetail?.stages.count,detail.stages.count)
+            store.togglePolityFocus()
+            XCTAssertEqual(store.focusedPolity,detail.titles.first)
+            XCTAssertNotNil(store.destination?.bounds)
+            XCTAssertEqual(store.polityDetail?.key,"houtang")
+        }
+    }
+
+    func testEraDynastyAndPlaceSearchEscapeConflictingLocks() async throws {
+        try await withStore { store,_ in
+            for query in ["开元","秦","云中郡","建康"] {
+                store.lockPeriod=false;store.linkYearRange=nil;store.setYear(1415)
+                let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":query]))
+                let hit=try XCTUnwrap(hits.first { $0.person.isEmpty && $0.polity.isEmpty && $0.eventID == nil })
+                store.lockPeriod=true;store.linkYearRange=1400...1500
+                await store.handle(hit)
+                XCTAssertEqual(store.year,hit.year,query)
+                XCTAssertFalse(store.lockPeriod);XCTAssertNil(store.linkYearRange)
+            }
+            store.setYear(1415);store.lockPeriod=true;store.linkYearRange=1400...1500
+            let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"建康"]))
+            await store.handle(try XCTUnwrap(hits.first),preserveYear:true)
+            XCTAssertEqual(store.year,1415);XCTAssertTrue(store.lockPeriod)
+            XCTAssertEqual(store.linkYearRange,1400...1500)
+        }
+    }
+
+    func testLanguageChangesPreserveJourneyExplorationAndNewerStopSelection() async throws {
+        try await withStore { store,_ in
+            for person in [true,false] {
+                store.lockPeriod=false;store.linkYearRange=nil;store.setLanguage("zh")
+                if person { await store.startPeople("sushi",stop:2) }
+                else { let started=await store.startRoute("长安,洛阳,金陵",years:"744,745,746");XCTAssertTrue(started);store.experienceIndex=1;store.showExperienceStop() }
+                let source=try XCTUnwrap(store.experience),originalYear=store.year,index=store.experienceIndex
+                store.inspect([112.45,34.62],title:"洛阳")
+                let selectionID=store.selection?.id,range=(originalYear-5)...(originalYear+5),cameraID=store.destination?.id
+                store.linkYearRange=range;store.lockPeriod=true;store.encountersOnly=true
+                store.cameraLongitude=112.45;store.cameraLatitude=34.62;store.cameraZoom=8
+                let args=person ? store.arguments(["query":source.query ?? source.id,"lang":"en"]) : store.arguments(["place":source.place!,"years":source.years!,"lang":"en"])
+                let expected:AtlasExperience=try await store.engine.query(person ? "people":"route",args)
+                store.setLanguage("en")
+                for _ in 0..<100 where store.experience?.title != expected.title { try await Task.sleep(for:.milliseconds(10)) }
+                XCTAssertEqual(store.experience?.title,expected.title)
+                XCTAssertEqual(store.experienceIndex,index);XCTAssertEqual(store.year,originalYear)
+                XCTAssertEqual(store.selection?.id,selectionID);XCTAssertEqual(store.selectedCoordinate,[112.45,34.62])
+                XCTAssertEqual(store.linkYearRange,range);XCTAssertTrue(store.lockPeriod);XCTAssertTrue(store.encountersOnly)
+                XCTAssertEqual(store.destination?.id,cameraID);XCTAssertEqual(store.cameraZoom,8)
+                store.setLanguage("zh");store.experienceFooterNext()
+                let nextIndex=store.experienceIndex,nextYear=store.year
+                for _ in 0..<100 where store.experience?.title != source.title { try await Task.sleep(for:.milliseconds(10)) }
+                XCTAssertEqual(store.experience?.title,source.title)
+                XCTAssertEqual(store.experienceIndex,nextIndex);XCTAssertEqual(store.year,nextYear)
+                XCTAssertEqual(store.linkYearRange,range)
+            }
+        }
+    }
+
+    func testComparisonSegmentsFollowTheActualPreviousEvent() async throws {
+        try await withStore { store,_ in
+            let value:AtlasExperience=try await store.engine.query("people",store.arguments(["query":"qinshihuang,wangjian"]))
+            let track=try XCTUnwrap(value.tracks.first { $0.id == "qinshihuang" })
+            let index=try XCTUnwrap(track.stops.firstIndex { $0.year == -228 && $0.site == "邯郸" })
+            XCTAssertGreaterThan(index,0);XCTAssertEqual(track.stops[index-1].year,-229)
+            XCTAssertEqual(track.stops[index].hasLeg,false)
+            XCTAssertEqual(track.stops[index].fromCoord,track.stops[index-1].coord)
+            XCTAssertTrue(track.stops[index].via.isEmpty)
+            XCTAssertTrue(track.stops.contains { $0.hasLeg == true && !$0.via.isEmpty })
+        }
+    }
+
+    func testQuizRejectsTimelineNavigationButAllowsQuestionProgression() async throws {
+        try await withStore { store,_ in
+            await store.startQuiz()
+            let question=try XCTUnwrap(store.quiz?.current),year=store.year
+            for target in [store.minYear,store.maxYear,year+10] {
+                store.navigateToYear(target);XCTAssertEqual(store.year,year)
+            }
+            for direction in [-1,1] { store.step(direction);XCTAssertEqual(store.year,year) }
+            store.beginPlayback();XCTAssertEqual(store.year,year)
+            XCTAssertEqual(store.quiz?.current?.id,question.id)
+            store.guess(question.coord);store.confirmQuiz();store.nextQuiz()
+            XCTAssertEqual(store.quiz?.index,1);XCTAssertEqual(store.year,store.quiz?.current?.year)
+            store.closeQuiz();XCTAssertNil(store.quiz)
+        }
+    }
+
+    func testSelectedSettlementAndBookmarkUseTheDatedName() async throws {
+        try await withStore { store,_ in
+            let place=try XCTUnwrap(store.catalog?.places.first { $0.id == "tang-place-3" })
+            store.setYear(700);store.select(place)
+            XCTAssertEqual(store.selectionTitle,"神都洛阳")
+            store.saveBookmark();XCTAssertEqual(store.bookmarks.first?.title,"神都洛阳")
+            store.setLanguage("en");XCTAssertEqual(store.selectionTitle,"Shendu Luoyang")
+            store.saveBookmark();XCTAssertEqual(store.bookmarks.first?.title,"Shendu Luoyang")
+            store.setYear(705);XCTAssertEqual(store.selectionTitle,"Eastern Capital Luoyang")
+        }
+    }
+
+    func testSameEventAnchorUpdatesTheRenderedSelectionSource() async throws {
+        try await withStore { store,_ in
+            let event=try XCTUnwrap(store.catalog?.events.first { ($0.anchors?.count ?? 0)>1 })
+            store.setYear(event.effectiveYear)
+            let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let previous=scene.keyWindow,window=UIWindow(windowScene:scene)
+            window.rootViewController=UIHostingController(rootView:ContentView(store:store));window.makeKeyAndVisible()
+            defer { window.isHidden=true;window.rootViewController=nil;previous?.makeKey() }
+            @MainActor func findMap(_ view:UIView)->MLNMapView? {
+                if let map=view as? MLNMapView { return map }
+                return view.subviews.lazy.compactMap { findMap($0) }.first
+            }
+            var map:MLNMapView?
+            for _ in 0..<100 {
+                window.layoutIfNeeded();map=findMap(window)
+                if map?.style?.layer(withIdentifier:"realms") != nil { break }
+                try await Task.sleep(for:.milliseconds(50))
+            }
+            let loaded=try XCTUnwrap(map)
+            for anchor in event.anchors!.prefix(2) {
+                var selected=event;selected.coord=anchor.coord;store.select(selected)
+                try await Task.sleep(for:.milliseconds(250));window.layoutIfNeeded()
+                let source=try XCTUnwrap(loaded.style?.source(withIdentifier:"selection") as? MLNShapeSource)
+                // Style-created source wrappers need not retain a Swift shape.
+                // Query the tiled features actually used by the map renderer.
+                var reachedAnchor=false
+                for _ in 0..<60 {
+                    reachedAnchor=source.features(matching:nil).contains { point in
+                        abs(point.coordinate.longitude-anchor.coord[0])<0.03 && abs(point.coordinate.latitude-anchor.coord[1])<0.03
+                    }
+                    if reachedAnchor { break }
+                    try await Task.sleep(for:.milliseconds(50))
+                }
+                XCTAssertTrue(reachedAnchor,"The selection source must move to the selected event anchor")
+            }
+        }
+    }
+
 }

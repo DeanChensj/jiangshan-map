@@ -116,7 +116,7 @@ struct AtlasInspector: View {
                             }
                         }
                     } else { periodSummary }
-                    Button(store.focusedPolity.isEmpty ? store.text("聚焦此政权", "Focus polity") : store.text("显示全部政权", "Show all polities")) { store.selectTerritory(selection.title(english: false)) }.buttonStyle(.bordered)
+                    Button(store.focusedPolity.isEmpty ? store.text("聚焦此政权", "Focus polity") : store.text("显示全部政权", "Show all polities")) { store.togglePolityFocus() }.buttonStyle(.bordered).disabled(store.polityDetail == nil)
                 }
                 HStack { Button(store.text("收藏", "Bookmark"), systemImage: "bookmark") { store.saveBookmark() }; Spacer(); ShareLink(item: store.shareURL) { Label(store.text("分享", "Share"), systemImage: "square.and.arrow.up") } }.font(AtlasFonts.ui(15))
             } else {
@@ -157,7 +157,7 @@ struct AtlasSearchView: View {
                 }
                 Section(store.text("当代都城", "Capitals in this era")) {
                     ForEach(store.places.filter { $0.isCapital(at: store.year) }) { place in
-                        Button(store.text(place.title, place.titleEn)) { onClose(); store.select(place) }
+                        Button(store.localChinese(place.name(at:store.year,english:store.english))) { onClose(); store.select(place) }
                     }
                 }
             }

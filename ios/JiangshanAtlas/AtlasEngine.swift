@@ -81,6 +81,7 @@ struct ExperienceStop: Decodable, Identifiable, Sendable {
     let encounter: Bool
     let via: [[Double]]
     var fromCoord: [Double]? = nil
+    var hasLeg:Bool? = nil
     var number: String? = nil
     var convergencePeer: Int? = nil
     var journeyStopIndex: Int? = nil

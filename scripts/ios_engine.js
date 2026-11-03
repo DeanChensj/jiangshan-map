@@ -33,6 +33,18 @@
     quote:tr(e.quoteZh,e.quoteEn),color:e.personColor || color || '#bd2d22',number:e.isSharedEncounter?(e.participants||[]).map(p=>p.stepNum||p.stepIdx+1).join('·'):String(e.personStepNum||i+1),journeyStopIndex:e.journeyStopIdx??null,
     person:e.isSharedEncounter?(e.participants||[]).map(p=>tr(p.personZh,p.personEn)).join(" × "):tr(e.personZh,e.personEn),encounter:!!e.isSharedEncounter,
     dynastyID:e.dynasty?.key||'',major:!!e.isMapChange,notes:Array.isArray(e.distinctNotes)?e.distinctNotes.map(n=>({person:tr(n.personZh,n.personEn),text:tr(n.textZh,n.textEn),color:n.color||'#b5452f'})):[],fromCoord:e.fromCoord||null,via:(e.via||[]).filter(c=>Array.isArray(c)&&c.length===2)});
+  function trackStops(events,color,idOf=(_,i)=>i) {
+    return events.map((event,index)=>{
+      const value=stop(event,idOf(event,index),color),previous=events[index-1];
+      if(!previous)return {...value,hasLeg:false};
+      const keepsCuratedLeg=Boolean(event.via||event.fromCoord)&&event.prevStopCoord&&
+        Math.hypot(previous.coord[0]-event.prevStopCoord[0],previous.coord[1]-event.prevStopCoord[1])<1.2;
+      const from=keepsCuratedLeg&&event.fromCoord?event.fromCoord:previous.coord;
+      const via=keepsCuratedLeg?event.via:null;
+      return {...value,fromCoord:from,via:(via||[]).filter(c=>Array.isArray(c)&&c.length===2),
+        hasLeg:!!a._buildJourneySegmentInfo(from,event.coord,via)};
+    });
+  }
   function people(query) {
     const ps=a._resolvePersonProfiles(query);
     if (!ps.length) throw Error(tr('未找到人物。','No matching person.'));
@@ -41,8 +53,8 @@
     if(!es.length) throw Error(tr('此人物暂无可定位的史事。','No mapped events for this person.'));
     return {id:ps.map(p=>p.key).join(','),kind:'person',title:ps.map(p=>tr(p.zh,p.en)).join(' × '),
       subtitle:ps.map(p=>tr(p.courtesyZh,p.courtesyEn)).filter(Boolean).join(' · '),
-      stops:es.map((e,i)=>stop(e,i)),tracks:multi?multi.tracks.map(t=>({id:t.profile.key,title:tr(t.profile.zh,t.profile.en),color:t.color,stops:t.events.map((e,i)=>stop(e,e.globalIdx??multi.events.findIndex(m=>m.isSharedEncounter&&(m.participants||[]).some(p=>p.personKey===e.personKey&&p.stepIdx===e.personStepIdx)),t.color))})):
-      [{id:ps[0].key,title:tr(ps[0].zh,ps[0].en),color:'#bd2d22',stops:es.map((e,i)=>stop(e,i))}],
+      stops:es.map((e,i)=>stop(e,i)),tracks:multi?multi.tracks.map(t=>({id:t.profile.key,title:tr(t.profile.zh,t.profile.en),color:t.color,stops:trackStops(t.events,t.color,(e,i)=>e.globalIdx??multi.events.findIndex(m=>m.isSharedEncounter&&(m.participants||[]).some(p=>p.personKey===e.personKey&&p.stepIdx===e.personStepIdx)))})):
+      [{id:ps[0].key,title:tr(ps[0].zh,ps[0].en),color:'#bd2d22',stops:trackStops(es,'#bd2d22')}],
       profiles:ps.map(p=>({id:p.key,title:tr(p.zh,p.en),span:p.span||[],relic:!!p.isRelic})),eraCount:new Set(es.map(e=>e.dynasty?.key)).size,query,encounters:es.map((e,i)=>e.isSharedEncounter?i:-1).filter(i=>i>=0),distance:0};
   }
   function genealogy(lng,lat) {

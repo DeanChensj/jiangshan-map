@@ -49,7 +49,7 @@ extension AtlasStore {
     func refreshDetail() {
         detailTask?.cancel()
         guard let coord = selectedCoordinate else { return }
-        let args = arguments(["coord":coord,"label":selection?.title(english:english) ?? "","adminTitle":selectedAdminTitle ?? ""])
+        let args = arguments(["coord":coord,"label":selection?.title(english:english,year:year) ?? "","adminTitle":selectedAdminTitle ?? ""])
         detailTask = Task {
             do {
                 let result: HistoricalDetail = try await engine.query("detail", args)
@@ -123,7 +123,7 @@ extension AtlasStore {
             fitPolity(focusedPolity)
             return
         }
-        if !preserveYear { setYear(hit.year) }
+        if !preserveYear { lockPeriod=false;linkYearRange=nil;setYear(hit.year) }
         if let coord=hit.coord { inspect(coord,title:hit.title,move:true,adminTitle:hit.prefTitle,navigation:request) }
     }
     func setLanguage(_ language: String, navigation:Int? = nil) {
@@ -136,18 +136,28 @@ extension AtlasStore {
             Task { if let questions:[QuizQuestion]=try? await engine.query("quiz",arguments(["reuse":true])),isCurrentNavigation(request),locale == self.language { self.quiz?.questions=questions } }
         }
         if let key=polityDetail?.key {
-            Task { let result=try? await engine.query("polity",arguments(["key":key]),as:PolityDetail?.self);if isCurrentNavigation(request) { polityDetail=result } }
-        }
-        if let experience {
-            let index = experienceIndex,filter=encountersOnly,camera=[cameraLongitude,cameraLatitude,cameraZoom]
+            let locale=self.language,args=arguments(["key":key])
             Task {
-                if experience.kind == "person" { await startPeople(experience.query ?? experience.id, stop: index,navigation:request) }
-                else if await startRoute(experience.place ?? "", years: experience.years ?? String(year),navigation:request) {
-                    guard isCurrentNavigation(request) else { return }
-                    experienceIndex = min(index,(self.experience?.stops.count ?? 1)-1); if index < 0 { fitExperience() } else { showExperienceStop() }
+                let result=try? await engine.query("polity",args,as:PolityDetail?.self)
+                if let result,locale == self.language,polityDetail?.key == key { polityDetail=result }
+            }
+        }
+        if let source=experience {
+            let locale=self.language
+            let operation=source.kind == "person" ? "people" : "route"
+            let args=source.kind == "person" ? arguments(["query":source.query ?? source.id]) : arguments(["place":source.place ?? "","years":source.years ?? String(year)])
+            Task {
+                do {
+                    let translated:AtlasExperience=try await engine.query(operation,args)
+                    guard locale == self.language,translated.id == source.id,
+                          self.experience?.id == source.id,self.experience?.query == source.query,
+                          self.experience?.place == source.place,self.experience?.years == source.years else { return }
+                    // Localization replaces content, not the user's current stop,
+                    // inspection, date restrictions, playback or camera.
+                    self.experience=translated;routeRevision += 1
+                } catch {
+                    if locale == self.language,self.experience?.id == source.id { actionError=error.localizedDescription }
                 }
-                guard isCurrentNavigation(request) else { return }
-                encountersOnly=filter;routeRevision += 1;fly(Array(camera.prefix(2)),zoom:camera[2])
             }
         }
     }
