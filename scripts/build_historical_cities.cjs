@@ -163,8 +163,8 @@ L('hanjia','granary','含嘉仓城','Hanjia granary',rect(1100,6100,1700,7000),{
 L('north-enclosure','precinct','北部重城（概位）','Northern palace enclosure (approx.)',rect(-1060,6300,1060,6800),{rank:2,sources:['su-1978','luoyang-2014'],locator:'Su Bai 1978 fig. 6 (PDF p. 11), northern palace enclosure marked 圆璧城; generalized within the overall palace envelope, not a precise sub-wall survey.',properties:{uncertaintyM:500}});
 const named = { '0-3':['宁人坊','Ningren Ward'],'0-4':['明教坊','Mingjiao Ward'],'0-5':['乐和坊','Lehe Ward'],
   '1-4':['宜人坊','Yiren Ward'],'1-5':['正平坊','Zhengping Ward'],'1-6':['敦行坊','Dunxing Ward'],
-  '1-11':['履道坊','Lüdao Ward'],'3-4':['宣范坊','Xuanfan Ward'],'3-5':['道化坊','Daohua Ward'],
-  '4-4':['恭安坊','Gong’an Ward'],'4-5':['温柔坊','Wenrou Ward'],'4-6':['思顺坊','Sishun Ward'],
+  '1-11':['履道坊','Lüdao Ward'],'3-6':['宣范坊','Xuanfan Ward'],'3-7':['道化坊','Daohua Ward'],
+  '4-6':['恭安坊','Gong’an Ward'],'4-7':['温柔坊','Wenrou Ward'],'4-8':['思顺坊','Sishun Ward'],
   '5-2':['雒滨坊','Luobin Ward'],'5-3':['积善坊','Jishan Ward'],'5-4':['尚善坊','Shangshan Ward'],
   '5-5':['旌善坊','Jingshan Ward'],'5-6':['劝善坊','Quanshan Ward'],'5-7':['择善坊','Zeshan Ward'],'5-8':['福善坊','Fushan Ward'] };
 const lyXs=[-2200,-1650,-1100,-550,0,550,1100,1650,2200,2750,3300,3850,4400,5050];
@@ -181,8 +181,8 @@ for(let y of [590,1140,1690,2240,2790,3340]) {
 }
 L('south-market','market','南市','South Market',rect(2785,2275,3265,3305),{rank:0,sources:['su-1978','luoyang-2014'],locator:'Su Bai 1978 p. 422: Sui Fengdu/South Market location retained; CASS 2014 plan reproduced in Palace Museum PDF p. 12 for ward relationship.',detail:'南市为隋丰都市延续而来。范围依据考古复原图概括；未复原市场内部街道与店铺。',detailEn:'The South Market continued the Sui Fengdu Market. Generalized precinct from the archaeological plan; its internal streets and shops are omitted.'});
 // Reconstruct selected northern wards, leaving the Chan corridor and unresolved edge cells blank.
-const neRows=[['承福坊','玉鸡坊','铜驼坊','上林坊','温雅坊'],['立德坊','归义坊','景行坊','时邕坊','积德坊'],['清化坊','思恭坊','北市','立行坊','敦业坊'],['道光坊','履顺坊','敦厚坊','殖业坊','兴艺坊'],['道政坊','进德坊','修义坊','丰财坊','通远坊']];
-const neRoman=[['Chengfu','Yuji','Tongtuo','Shanglin','Wenya'],['Lide','Guiyi','Jingxing','Shiyong','Jide'],['Qinghua','Sigong','North Market','Lixing','Dunye'],['Daoguang','Lüshun','Dunhou','Zhiye','Xingyi'],['Daozheng','Jinde','Xiuyi','Fengcai','Tongyuan']];
+const neRows=[['承福坊','玉鸡坊','铜驼坊','上林坊','温雅坊'],['立德坊','归义坊','景行坊','时邕坊','积德坊'],['清化坊','思恭坊','北市','立行坊','教业坊'],['道光坊','履顺坊','敦厚坊','殖业坊','兴艺坊'],['道政坊','进德坊','修义坊','丰财坊','通远坊']];
+const neRoman=[['Chengfu','Yuji','Tongtuo','Shanglin','Wenya'],['Lide','Guiyi','Jingxing','Shiyong','Jide'],['Qinghua','Sigong','North Market','Lixing','Jiaoye'],['Daoguang','Lüshun','Dunhou','Zhiye','Xingyi'],['Daozheng','Jinde','Xiuyi','Fengcai','Tongyuan']];
 const neCols=[[1700,2250],[2250,2800],[2800,3350],[3750,4300],[4500,5050]];
 for(let row=0;row<5;row++)for(let col=0;col<neCols.length;col++) {
   const [w,e]=neCols[col],s=4550+row*500,n=s+500,isMarket=row===2&&col===2;

@@ -4836,7 +4836,7 @@
       if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
     }
 
-    openPolityByKey(key) {
+    openPolityByKey(key, opts = {}) {
       const k = String(key || '').trim().toLowerCase();
       const prof = HistoricalAtlasController.POLITY_PROFILES.find(
         (p) => p.key === k || p.zh === key || String(p.en).toLowerCase() === k
@@ -4846,7 +4846,7 @@
         const desc = { ...prof, curated: true };
         let y = this.year;
         const curSnap = this.snapshots[this._resolveSnapKey(this.dynasties[this.dynastyIdx], y)];
-        if (!this._polityInRange(desc, y) || !this._polityPolsInSnap(desc, curSnap).length) {
+        if (!opts.preserveView && (!this._polityInRange(desc, y) || !this._polityPolsInSnap(desc, curSnap).length)) {
           const stages = this._polityStages(desc);
           const st = stages.find((s) => s.to >= desc.from) || stages[0];
           y = st ? Math.max(st.from, Math.min(desc.from, st.to)) : desc.from;
@@ -4854,7 +4854,7 @@
         }
         const snap = this.snapshots[this._resolveSnapKey(this.dynasties[this.dynastyIdx], this.year)];
         const pol = this._polityPolsInSnap(desc, snap)[0];
-        return this.openPolity(pol ? pol.title : prof.titles[0]);
+        return this.openPolity(pol ? pol.title : prof.titles[0], { ...opts, zoom: opts.preserveView ? false : opts.zoom });
       };
       if (this._fullSnapshotsLoaded) return go();
       return this._ensureFullSnapshots().then(go);
@@ -6511,7 +6511,7 @@
       };
     }
 
-    openPersonChronicle(personOrQuery, initialIdx = -1) {
+    openPersonChronicle(personOrQuery, initialIdx = -1, opts = {}) {
       const profiles = this._resolvePersonProfiles(personOrQuery);
       if (!profiles.length) return false;
       const state = this._buildPersonTracksAndEvents(profiles);
@@ -6582,7 +6582,7 @@
           : events.find((e) => e.isSharedEncounter) || events[0];
       this._inPersonSync = true;
       this._runWithDeferredTypography(() => {
-        if (defaultAnchorEv) {
+        if (defaultAnchorEv && !opts.preserveView) {
           this.jumpToYear(this._clampYearToDynasty(defaultAnchorEv.dynasty, defaultAnchorEv.year));
         }
         this._renderPersonPinsOverlay();
@@ -6591,21 +6591,29 @@
       this._renderPersonChronicleCard();
       this._syncDocumentSeoMeta();
 
-      if (this.activePersonEventIdx >= 0) {
-        this._flyToPersonEvent(events[this.activePersonEventIdx]);
-      } else {
-        this._framePersonOverview();
+      if (!opts.preserveView) {
+        if (this.activePersonEventIdx >= 0) {
+          this._flyToPersonEvent(events[this.activePersonEventIdx]);
+        } else {
+          this._framePersonOverview();
+        }
       }
       return true;
     }
 
-    openJourneyAsPerson(journeyKey, stopIdx = -1) {
-      if (!this.openPersonChronicle(journeyKey, -1)) return false;
+    openJourneyAsPerson(journeyKey, stopIdx = -1, opts = {}) {
+      if (!this.openPersonChronicle(journeyKey, -1, opts)) return false;
       if (stopIdx >= 0 && this.activePerson && this.activePerson.events.length) {
         const matchIdx = this.activePerson.events.findIndex((ev) => ev.journeyStopIdx === stopIdx);
         const targetIdx =
           matchIdx >= 0 ? matchIdx : Math.min(this.activePerson.events.length - 1, stopIdx);
-        this.selectPersonEvent(targetIdx, true);
+        if (opts.preserveView) {
+          this.activePersonEventIdx = targetIdx;
+          this._renderPersonPinsOverlay();
+          this._renderPersonChronicleCard(true);
+        } else {
+          this.selectPersonEvent(targetIdx, true);
+        }
       }
       return true;
     }
@@ -8425,6 +8433,7 @@
 
     openGenealogyAt(lng, lat, customLabel = null, opts = {}) {
       const fromYearSync = Boolean(opts && opts.fromYearSync);
+      if (!fromYearSync) this._cancelPendingCityFocus();
       const preserveScroll = Boolean(opts && opts.preserveScroll);
       const isSamePlace =
         this.activeTrace &&
@@ -8490,7 +8499,7 @@
         }
       }
       this._invalidateTypographyLayout();
-      if (!fromYearSync && !onCustomRouteStop) {
+      if (!fromYearSync && !opts.preserveCamera && !onCustomRouteStop) {
         if (
           typeof window !== 'undefined' &&
           window.innerWidth <= 900 &&
@@ -15603,6 +15612,10 @@
 
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
+      const centerParts = (q.get('center') || '').split(',').map(Number);
+      // Restore open cards without reframing an explicitly saved city view.
+      const preserveView = q.has('year') && Number(q.get('zoom')) > 10 &&
+        centerParts.length === 2 && centerParts.every(Number.isFinite);
       if (
         q.has('year') ||
         q.has('place') ||
@@ -15671,7 +15684,7 @@
         }
         if (traceParts) {
           afterFullSnapshots(() => {
-            this.openGenealogyAt(traceParts[0], traceParts[1]);
+            this.openGenealogyAt(traceParts[0], traceParts[1], null, { preserveCamera: preserveView });
           }, 80);
         }
         if (q.has('zoom') || q.has('center')) {
@@ -15812,7 +15825,7 @@
         const evIdx = q.has('stop') ? Number(q.get('stop')) : -1;
         if (rawP) {
           afterFullSnapshots(() => {
-            this.openPersonChronicle(rawP, Number.isNaN(evIdx) ? -1 : evIdx);
+            this.openPersonChronicle(rawP, Number.isNaN(evIdx) ? -1 : evIdx, { preserveView });
           }, 80);
         }
       }
@@ -15821,13 +15834,13 @@
         const stopIdx = q.has('stop') ? Number(q.get('stop')) : -1;
         if (jKey) {
           afterFullSnapshots(() => {
-            this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
+            this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx, { preserveView });
           }, 80);
         }
       }
       if (q.has('polity')) {
         const pKey = (q.get('polity') || '').trim();
-        if (pKey) afterFullSnapshots(() => this.openPolityByKey(pKey), 80);
+        if (pKey) afterFullSnapshots(() => this.openPolityByKey(pKey, { preserveView }), 80);
       }
       if (q.has('layers')) {
         setTimeout(() => {

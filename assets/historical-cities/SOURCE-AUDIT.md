@@ -18,6 +18,8 @@ In Chang’an fig. 3, East Market occupies the second broad ward column east of 
 
 The selected Chang’an ward names were checked cell by cell against that figure: Guanglu and Xingdao flank Zhuque Avenue; Qinren, Anyi (安邑) and Jinggong occupy the row south of Xuanyang and East Market; Xuanping is one row farther south and Changle is east of East Market. The southernmost named cells include Anyi (安义) and Tongji. Luoyang’s Xuanfan (宣范) is checked against the CASS 2014 plan reproduced in [Palace Museum Journal 2021, PDF p. 12 / printed p. 79, fig. 9](https://www.dpm.org.cn/Uploads/File/2021/01/20/u6007f09329708.pdf).
 
+All 43 selected named Luoyang wards were compared with that plan. Gong’an, Wenrou and Sishun lie directly south of Quanshan, Zeshan and Fushan; Xuanfan and Daohua are one row farther south of Gong’an and Wenrou. The selected northeastern ward east of Lixing is Jiaoye (教业). Omitted intervening or irregular edge cells are not filled with guessed names.
+
 ## Details that must not be copied into the circa-750 layer
 
 - **Modern context in fig. 6:** its legend distinguishes archaeological remains/reconstruction, inferred ward subdivisions, present streets and present villages. Railway lines, village blocks such as Anle, and current roads are orientation aids, not Tang streets or buildings. The modern Luo/Jian river drawings must not silently become exact ancient banks.
