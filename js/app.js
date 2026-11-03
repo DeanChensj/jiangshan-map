@@ -3021,7 +3021,8 @@
       const allCommanderyRegions = snap.regions.every(
         (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
       );
-      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 65);
+      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
+      const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
       const findPolIdx = (x, y) => {
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
@@ -3045,7 +3046,7 @@
         if (pIdx < 0) return false;
         const pol = polList[pIdx];
         if (!pol) return false;
-        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 68) return false;
+        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 35) return false;
         return true;
       };
       const nearPolityBorder = (x, y, margin) => {
@@ -3127,12 +3128,16 @@
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
           const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
+          const borderMargin = isMultiRegime ? 0.55 : 0.16;
           if (
             polRings.length &&
             (!allowPolIdx(pIdxM) ||
               findPolIdx(p1[0], p1[1]) !== pIdxM ||
               findPolIdx(p2[0], p2[1]) !== pIdxM ||
-              (hasLargePolity && nearPolityBorder(mx, my, 0.16)))
+              (hasLargePolity &&
+                (nearPolityBorder(mx, my, borderMargin) ||
+                  (isMultiRegime &&
+                    (nearPolityBorder(p1[0], p1[1], 0.38) || nearPolityBorder(p2[0], p2[1], 0.38))))))
           ) {
             penX = NaN;
             penY = NaN;

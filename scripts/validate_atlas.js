@@ -8266,6 +8266,31 @@ function main() {
       !cellMob.classList.contains('is-compact') && cellMob.classList.contains('is-narrow'),
       'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
     );
+
+    // 6-era boundary & gap regression checks (195 Donghan, 322 Dongjin, 676 Tang, 1410 Ming, 1650 Qing, 1918 ROC)
+    const ptIn = sandbox.window.MercatorProjector.pointInShape;
+    const dz195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '董卓(长安)');
+    const mt195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '马腾(凉州)');
+    assert(
+      !ptIn(106.5, 38.0, dz195.shape) && ptIn(106.5, 38.0, mt195.shape),
+      's_donghan_d1 (195 CE): Northern Ningxia [106.5, 38.0] must belong to 马腾(凉州), not a Dong Zhuo horn'
+    );
+    for (const [sk, mainTitle] of [['s_tang_a', '唐'], ['s_tang_wz1', '武周']]) {
+      const mPol = snapshots[sk].polities.find((p) => p.title === mainTitle);
+      assert(ptIn(120.5, 41.2, mPol.shape), `${sk}: Yingzhou / Liaoxi Corridor [120.5, 41.2] must be inside ${mainTitle}`);
+    }
+    for (const [sk, fengTitle] of [
+      ['s_roc_w1', '奉系（张作霖）'],
+      ['s_roc_w2', '奉系（张作霖）'],
+      ['s_roc_w3', '北洋政府 · 奉系（张作霖）'],
+      ['s_roc_w4', '安国军政府 · 奉系（张作霖）'],
+    ]) {
+      const fPol = snapshots[sk].polities.find((p) => p.title === fengTitle);
+      assert(
+        fPol && ptIn(120.0, 49.2, fPol.shape) && ptIn(121.5, 46.0, fPol.shape),
+        `${sk}: Hulunbuir [120.0, 49.2] and Hinggan [121.5, 46.0] must be covered by ${fengTitle} (no hollow gap)`
+      );
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
