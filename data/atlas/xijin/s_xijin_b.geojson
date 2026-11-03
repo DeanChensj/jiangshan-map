@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
+  "snapshot": {
+    "caption": "311 — 316 · 永嘉之乱：匈奴汉赵攻陷洛阳与长安，西晋名存实亡",
+    "note": "州郡政区：仅覆盖东南核心诸郡",
+    "prefRef": "s_xijin",
+    "polities": [
+      "s_xijin/晋",
+      "s_xijin/汉赵",
+      "s_xijin/成汉",
+      "s_xihan_b3a/塞种诸国",
+      "s_xijin_a/笈多帝国",
+      "s_xihan_b3a/狮子国",
+      "s_xijin_a/安息",
+      "s_xihan_b3a/楚蒂亚王国",
+      "s_donghan_a/悦般",
+      "s_zhanguo_a/阿伊努",
+      "s_zhanguo_a/北亚林中诸部",
+      "s_xijin_a/高句丽",
+      "s_xijin_a/百济",
+      "s_xijin_a/新罗",
+      "s_xihan_b3a/象雄",
+      "s_donghan_a/鲜卑",
+      "s_donghan_c/西域诸国",
+      "s_sanguo_a/夷洲"
+    ],
+    "regions": [
+      "s_xijin_a/司州",
+      "s_xijin_a/雍州",
+      "s_xijin_a/秦州",
+      "s_sanguo_a/凉州",
+      "s_xijin_a/并州",
+      "s_xijin_a/冀州",
+      "s_xijin_a/幽州",
+      "s_xijin_a/平州",
+      "s_xijin_a/兖州",
+      "s_xijin_a/豫州",
+      "s_xijin_a/青州",
+      "s_xijin_a/徐州",
+      "s_xijin_a/梁州",
+      "s_xijin_a/益州",
+      "s_xijin_a/宁州",
+      "s_xijin_a/荆州",
+      "s_xijin_a/湘州",
+      "s_xijin_a/江州",
+      "s_xijin_a/扬州",
+      "s_xijin_a/广州",
+      "s_xijin_a/交州"
+    ]
+  },
+  "features": []
+}
