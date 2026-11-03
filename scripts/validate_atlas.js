@@ -8230,6 +8230,51 @@ function main() {
         changanXihanEvs.some((e) => e.year === -2 && e.text.includes('浮屠经')),
       'Western Han Chang\'an place events must preserve both 81 BCE landmarks (Su Wu & Salt-and-Iron Debate) and 2 BCE Buddhist transmission'
     );
+
+    // Issue #222: Zero-widening compact timeline band fallback (_fitBandLabels)
+    const makeBandCell = (clientWidth, regularWidth, compactWidth) => {
+      const classes = new Set();
+      const clsList = {
+        add: (...names) => names.forEach((n) => classes.add(n)),
+        remove: (...names) => names.forEach((n) => classes.delete(n)),
+        toggle: (n, force) => (force === undefined ? (classes.has(n) ? classes.delete(n) : classes.add(n)) : force ? classes.add(n) : classes.delete(n)),
+        contains: (n) => classes.has(n),
+      };
+      const lbl = {
+        get scrollWidth() {
+          return classes.has('is-compact') ? compactWidth : regularWidth;
+        },
+      };
+      return {
+        clientWidth,
+        scrollWidth: regularWidth,
+        classList: clsList,
+        querySelector: (sel) => (sel === '.band-label' ? lbl : null),
+      };
+    };
+    const cell1440 = makeBandCell(27, 25, 21); // 1440px laptop: fits at full 12px
+    const cell1280 = makeBandCell(23, 25, 21); // 1280px laptop: fits via .is-compact
+    const cellMob = makeBandCell(9, 25, 21);   // 390px mobile: cleanly hides via .is-narrow
+    const prevIdFn = ctrl._id;
+    ctrl._id = (id) => {
+      if (id === 'dynasty-bands') return { children: [cell1440, cell1280, cellMob] };
+      if (id === 'scrubber-ticks') return { children: [] };
+      return null;
+    };
+    ctrl._fitBandLabels();
+    ctrl._id = prevIdFn;
+    assert(
+      !cell1440.classList.contains('is-compact') && !cell1440.classList.contains('is-narrow'),
+      '1440px short dynasty cell (27px vs 25px text) must render at full 12px without hiding'
+    );
+    assert(
+      cell1280.classList.contains('is-compact') && !cell1280.classList.contains('is-narrow'),
+      '1280px short dynasty cell (23px) must step into .is-compact (21px) without hiding'
+    );
+    assert(
+      !cellMob.classList.contains('is-compact') && cellMob.classList.contains('is-narrow'),
+      'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
+    );
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
