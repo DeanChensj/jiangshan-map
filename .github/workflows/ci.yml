@@ -19,5 +19,8 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Verify polygon bundles are canonical encodings
+        run: node scripts/build_atlas.js --check
+
       - name: Run Atlas Validation Suite
         run: node scripts/validate_atlas.js
