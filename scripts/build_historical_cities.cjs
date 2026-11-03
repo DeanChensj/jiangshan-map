@@ -64,12 +64,12 @@ A('taiye','water-area','太液池（概略）','Taiye Pool (schematic)',[[1720,1
 const xs=[-4860.5,-3700,-2550,-1410,-700,0,700,1410,2550,3700,4860.5];
 const ys=[0,590,1180,1770,2360,2950,3540,4130,4720,5316];
 // Selected legible names in Su Bai fig. 3. Unreadable/phase-uncertain names stay unnamed.
-const caWardNames={'8-3':['太平坊','Taiping Ward'],'8-4':['兴道坊','Xingdao Ward'],'8-5':['平康坊','Pingkang Ward'],'8-6':['宣阳坊','Xuanyang Ward'],'8-8':['崇仁坊','Chongren Ward'],
+const caWardNames={'8-3':['太平坊','Taiping Ward'],'8-4':['兴道坊','Xingdao Ward'],'8-7':['平康坊','Pingkang Ward'],'7-7':['宣阳坊','Xuanyang Ward'],
   '6-0':['崇化坊','Chonghua Ward'],'6-1':['怀远坊','Huaiyuan Ward'],'6-2':['延康坊','Yankang Ward'],'6-3':['兴化坊','Xinghua Ward'],'6-5':['安仁坊','Anren Ward'],
   '6-6':['长兴坊','Changxing Ward'],'6-7':['常乐坊','Changle Ward'],'6-8':['宣平坊','Xuanping Ward'],'6-9':['奉祥坊','Fengxiang Ward'],
   '0-3':['安乐坊','Anle Ward'],'0-4':['延祚坊','Yanzuo Ward'],'0-5':['文安坊','Wen’an Ward'],'0-6':['安德坊','Ande Ward'],'0-7':['昌乐坊','Changle Ward']};
 for(let row=0;row<9;row++) for(let col=0;col<10;col++) {
-  if ((row>=7 && (col===1 || col===7)) || (row<2 && col>=8) || (row===8 && col===9)) continue;
+  if ((row>=7 && (col===1 || col===8)) || (row<2 && col>=8) || (row===8 && col===9)) continue;
   const name=caWardNames[`${row}-${col}`] || ['',''];
   A(`ward-s-${row}-${col}`,'ward',...name,rect(xs[col]+45,ys[row]+35,xs[col+1]-45,ys[row+1]-35),{properties:{title:name[0]||'里坊（示意）',titleEn:name[1]||'Ward (schematic)',titleHant:hant(name[0]||'里坊（示意）')},label:!!name[0],locator:'Su Bai 1978 fig. 3, reproduced in Yau PDF p. 25; rounded ward envelope, plan name rather than a year-by-year name history.'});
 }
@@ -77,7 +77,8 @@ for(let row=0;row<4;row++) for(let side of [-1,1]) for(let col=0;col<3;col++) {
   // Eastern palace expansion/split wards are left blank rather than guessed.
   if(side===1 && (col===2 && row<2 || col===0 && row===3)) continue;
   const w=side===-1?xs[col]:xs[col+7], e=side===-1?xs[col+1]:xs[col+8];
-  A(`ward-n-${side}-${row}-${col}`,'ward','','',rect(w+45,5316+row*834+40,e-45,5316+(row+1)*834-40),{label:false,properties:{title:'里坊（示意）',titleEn:'Ward (schematic)',titleHant:'里坊（示意）'}});
+  const name=side===1 && row===0 && col===0 ? ['崇仁坊','Chongren Ward'] : ['',''];
+  A(`ward-n-${side}-${row}-${col}`,'ward',...name,rect(w+45,5316+row*834+40,e-45,5316+(row+1)*834-40),{label:!!name[0],locator:name[0]?'Su Bai 1978 fig. 3, reproduced in Yau PDF p. 25; Chongren lies north of Chunming–Jinguang Avenue.':undefined,properties:{title:name[0]||'里坊（示意）',titleEn:name[1]||'Ward (schematic)',titleHant:hant(name[0]||'里坊（示意）')}});
 }
 for(let i=1;i<xs.length-1;i++) {
   if(xs[i]===0) continue;
@@ -86,14 +87,14 @@ for(let i=1;i<xs.length-1;i++) {
 }
 for(let i=1;i<ys.length;i++) {
   const marketBand=i===8;
-  const ranges=marketBand?[[-4800,-3700],[-2550,1410],[2550,4800]]:[[-4800,4800]];
+  const ranges=marketBand?[[-4800,-3700],[-2550,2550],[3700,4800]]:[[-4800,4800]];
   ranges.forEach(([w,e],part)=>A(`street-ew-${i}-${part}`,'street',i===9?'春明门—金光门大街':i===5?'延兴门—延平门大街':'',i===9?'Chunming–Jinguang Avenue':i===5?'Yanxing–Yanping Avenue':'',[[w,ys[i]],[e,ys[i]]],{rank:i===9||i===5?1:3,label:part===0 && (i===9||i===5),at:[-3200,ys[i]]}));
 }
 for(let y of [6150,6984,7818]) for(let side of [-1,1]) A(`street-north-${y}-${side}`,'street',y===6984?'开远门—通化门大街':'',y===6984?'Kaiyuan–Tonghua Avenue':'',side<0?[[-4800,y],[-1450,y]]:[[1450,y],[y===6150?3650:4800,y]],{rank:y===6984?1:3,label:y===6984,at:[side*3200,y]});
 A('zhuque','street','朱雀大街','Zhuque Avenue',[[0,90],[0,5316]],{rank:0,at:[0,2700]});
 A('chengtian','street','承天门街','Chengtian Avenue',[[0,5316],[0,7160]],{rank:1,at:[0,6100]});
 A('danfeng-avenue','street','丹凤门街','Danfeng Avenue',[[1900,6984],[1900,8652]],{rank:1,at:[1900,7750]});
-for(let [key,name,en,w] of [['west-market','西市','West Market',-3625],['east-market','东市','East Market',1515]]) {
+for(let [key,name,en,w] of [['west-market','西市','West Market',-3625],['east-market','东市','East Market',2655]]) {
   const s=4200,e=w+927,n=s+1031;
   A(key,'market',name,en,rect(w,s,e,n),{rank:0,at:[w+463,s+515],sources:['su-1978','yau-1986']});
   for(let t of [1/3,2/3]) {

@@ -20,7 +20,10 @@
       this.toggle = document.getElementById('chk-city-plans');
       this.badge = document.getElementById('city-plan-status');
       this.card = document.getElementById('city-plan-card');
-      this.toggle.addEventListener('change', () => this.update());
+      this.toggle.addEventListener('change', () => {
+        if (!this.toggle.checked) this.cancelFocus();
+        this.update();
+      });
       document.getElementById('act-close-city-plan').addEventListener('click', () => this.close());
       this.badge.addEventListener('click', () => {
         if (this.error) {
@@ -76,9 +79,18 @@
       return this.pending;
     }
 
+    cancelFocus() {
+      if (!this.pendingFocus) return;
+      this.focusToken++;
+      this.pendingFocus = null;
+      this.retryCity = null;
+    }
+
     async focus(id) {
+      this.cancelFocus();
       const token = this.focusToken = (this.focusToken || 0) + 1;
       this.app.stopAutoplay();
+      if (this.app.challenge) this.app.stopChallenge(true);
       this.toggle.checked = true;
       if (!this.inPeriod()) this.app.jumpToYear(750);
       this.app._closeLayersPopover();
@@ -88,18 +100,25 @@
       if (this.error) this.pending = null;
       this.error = null;
       this.retryCity = id;
+      this.pendingFocus = { token };
       try {
         const loading = this.load();
         this.showStatus();
         await loading;
-        if (this.focusToken !== token || this.app.year !== year) return;
+        if (this.focusToken !== token || this.app.year !== year || !this.toggle.checked) return;
         this.retryCity = null;
         const view = this.views.find(v => v.city.id === id);
         const [x1, y1, x2, y2] = view.bounds;
         const aspect = this.app._getViewportAspect();
         const w = Math.max((x2 - x1) / .86, (y2 - y1) / aspect / .86);
+        this.pendingFocus = null;
         this.app._animateCameraTo({ x: (x1 + x2 - w) / 2, y: (y1 + y2 - w * aspect) / 2, w, h: w * aspect });
-      } catch (error) { this.error = error; this.showStatus(); }
+      } catch (error) {
+        if (this.focusToken === token) this.error = error;
+      } finally {
+        if (this.pendingFocus && this.pendingFocus.token === token) this.pendingFocus = null;
+        this.showStatus();
+      }
     }
 
     path(geometry) {

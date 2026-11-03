@@ -1461,8 +1461,10 @@
         this._urlSyncTimer = null;
         // Quiz rounds are not restorable; stopChallenge() writes the post-quiz view instead.
         if (this.challenge) return;
-        // Wait for playback / drag to settle instead of rewriting the URL every frame.
-        if (this.playing || this.isScrubbing) this._scheduleUrlSync();
+        // Wait for playback, navigation and camera motion instead of saving an intermediate view.
+        if (this.playing || this.isScrubbing || this.flyRaf || this.dragState || this.pinchState ||
+            this._camRaf != null || this._cameraSettleTimer != null ||
+            (this.cityPlans && this.cityPlans.pendingFocus)) this._scheduleUrlSync();
         else this._writeUrlState();
       }, 400);
     }
@@ -9630,6 +9632,16 @@
     }
 
     // ---------------- Camera Pan & Zoom ----------------
+    _cancelPendingCityFocus() {
+      if (this.cityPlans) this.cityPlans.cancelFocus();
+    }
+
+    _scheduleCameraUrlSync() {
+      // Preserve the existing regional URL behavior; city views also need their camera.
+      const previousZoom = typeof location !== 'undefined' ? Number(new URLSearchParams(location.search).get('zoom')) : 0;
+      if (this.camera.zoom > 10 || previousZoom > 10) this._scheduleUrlSync();
+    }
+
     _invalidateTypographyLayout() {
       this._typoDirty = true;
     }
@@ -9715,6 +9727,7 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      this._scheduleCameraUrlSync();
     }
 
     _applyCamera(forceTypography = false) {
@@ -9770,6 +9783,7 @@
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
       if (this.cityPlans) this.cityPlans.update(rect);
+      if (forceTypography) this._scheduleCameraUrlSync();
     }
 
     _updateScaleBar(viewportRect = null) {
@@ -11065,6 +11079,7 @@
     }
 
     _animateCameraTo(targetCam) {
+      this._cancelPendingCityFocus();
       this._cameraTarget = targetCam;
       if (
         !this._cameraViewportRect &&
@@ -11317,6 +11332,7 @@
       if (animate && typeof this._animateCameraTo === 'function') {
         this._animateCameraTo(targetCam);
       } else {
+        this._cancelPendingCityFocus();
         this.camera = targetCam;
         this._applyCamera();
       }
@@ -13453,6 +13469,7 @@
             return;
           }
           e.preventDefault();
+          this._cancelPendingCityFocus();
           this._recordGestureMove();
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const rawDelta =
@@ -13558,6 +13575,7 @@
         }
 
         if (this.activePointers.size === 2 && this.pinchState) {
+          this._cancelPendingCityFocus();
           this._recordGestureMove();
           this.lastPinchTime = Date.now();
           const pts = Array.from(this.activePointers.values());
@@ -13596,6 +13614,7 @@
           }
         }
         if (this.didPan) {
+          this._cancelPendingCityFocus();
           const rect = this.dragState.rect || this.svg.getBoundingClientRect();
           const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
           this.camera.x = this.dragState.camX - dx / scale;
@@ -15452,6 +15471,7 @@
     }
 
     locate(opts = {}) {
+      this._cancelPendingCityFocus();
       const { year, place, lng, lat, zoom } = opts || {};
       const hasEnDict = this._hasEnDict();
       const needsEnDict =
