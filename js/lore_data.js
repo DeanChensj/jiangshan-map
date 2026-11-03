@@ -12639,6 +12639,93 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Dai La, Jiaozhou (Hanoi)",
       "zh": "曲氏旧将杨廷艺自爱州起兵攻克大罗城，驱逐南汉守将自称静海军节度使",
       "en": "Former Khúc general Dương Đình Nghệ retakes Dai La and expels the Southern Han garrison"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 453,
+      "coord": [
+        118.801,
+        32.061
+      ],
+      "site": "建康（今江苏南京）",
+      "siteEn": "Jiankang (Nanjing)",
+      "zh": "太子刘劭弑宋文帝夺位，武陵王刘骏起兵讨平即位，元嘉之治终结",
+      "en": "Prince Liu Jun suppresses Crown Prince Liu Shao's parricidal coup at Jiankang, ending Yuanjia rule"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 545,
+      "coord": [
+        105.851,
+        21.031
+      ],
+      "site": "交州龙编（今越南河内）",
+      "siteEn": "Long Bien, Jiaozhou (Hanoi)",
+      "zh": "交州李贲称帝建万春国，梁将杨瞟、陈霸先率军南征破敌平叛",
+      "en": "Liang commanders Yang Piao and Chen Baxian march south to Jiaozhou and defeat Ly Bi's Van Xuan regime"
+    },
+    {
+      "dynastyKey": "wudai",
+      "year": 932,
+      "coord": [
+        112.451,
+        34.621
+      ],
+      "site": "洛阳国子监",
+      "siteEn": "Imperial Directorate, Luoyang",
+      "zh": "后唐宰相冯道奏请国子监校勘《九经》雕版印行，官刻儒经自此大兴",
+      "en": "Later Tang chancellor Feng Dao commissions woodblock editions of the Nine Classics at Luoyang"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 764,
+      "coord": [
+        119.411,
+        32.391
+      ],
+      "site": "扬州（广陵）",
+      "siteEn": "Yangzhou (Guangling)",
+      "zh": "刘晏领东都江淮转运使驻节扬州，疏浚汴水漕运、改榷盐法充盈国库",
+      "en": "Commissioner Liu Yan reforms Grand Canal grain transport and salt monopolies from Yangzhou"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -104,
+      "coord": [
+        110.08,
+        20.91
+      ],
+      "site": "徐闻（今广东湛江徐闻）",
+      "siteEn": "Xuwen (Zhanjiang, Guangdong)",
+      "zh": "汉武帝遣译长率使团自徐闻、合浦启航远赴黄支国，开辟南海远洋商路",
+      "en": "Han envoys set sail from Xuwen and Hepu across the South China Sea to Huangzhi in southern India",
+      "persons": [
+        "hanwudi"
+      ]
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -81,
+      "coord": [
+        108.941,
+        34.341
+      ],
+      "site": "长安未央宫",
+      "siteEn": "Weiyang Palace, Chang'an",
+      "zh": "汉昭帝召集盐铁会议，桑弘羊与贤良文学辩论国策成《盐铁论》",
+      "en": "Court holds the Salt and Iron Debate in Chang'an as Sang Hongyang and scholars contest state monopolies"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -2,
+      "coord": [
+        108.941,
+        34.341
+      ],
+      "site": "长安（今陕西西安）",
+      "siteEn": "Chang'an (Xi'an)",
+      "zh": "大月氏使臣伊存于长安向博士弟子景卢口授《浮屠经》，佛教初传中原",
+      "en": "Yuezhi envoy Yi Cun orally transmits Buddhist sutras to Jing Lu in Chang'an, introducing Buddhism"
     }
   ],
   "GUQIN_TRACKS": [
