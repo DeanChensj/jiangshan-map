@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "秦王扫六合 · 水灌大梁灭魏（前225年 · 三晋尽入于秦）",
     "note": "前225年（秦王政二十二年），王贲引黄河、鸿沟之水灌魏都大梁，三月城坏，魏王假出降，魏国灭亡，三晋故地尽归于秦。",

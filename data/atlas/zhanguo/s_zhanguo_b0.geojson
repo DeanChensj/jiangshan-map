@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "战国中期前叶（前316 — 前307 · 秦灭巴蜀与丹阳之战取汉中）",
     "note": "前316年秦惠文王遣司马错灭巴、蜀置巴郡与蜀郡，前312年丹阳、蓝田之战大破楚军取汉中郡；此时江南越国、河北中山国及陇东义渠尚存。",

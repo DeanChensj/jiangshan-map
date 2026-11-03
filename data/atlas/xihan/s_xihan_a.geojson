@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "前 202 — 前 127 · 汉初：郡国并行与文景之治，匈奴据河套河西，南越自立",
     "note": "州郡政区：历代州部与郡级政区",

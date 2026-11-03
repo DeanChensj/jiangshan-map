@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "1916 — 1919 · 袁世凯病逝与北洋军阀割据：皖系段祺瑞掌北京中枢，直系、奉系兴起，孙中山于广州护法南北对峙",
     "note": "府州政区（清末 1911 年）",

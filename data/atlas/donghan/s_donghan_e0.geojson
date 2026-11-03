@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "208—213 年 · 赤壁之战：孙刘破曹与刘备据荆州",
     "note": "208 年曹操南下荆州，孙权、刘备联军于赤壁大破曹军；战后刘备收江南荆州四郡并向孙权“借荆州”（南郡），据有荆州，此时巴蜀益州仍由刘璋割据，直至 214 年刘备入成都。",
