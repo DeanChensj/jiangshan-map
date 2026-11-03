@@ -5431,3 +5431,74 @@ html.is-embed.is-embed-locked #scrubber-dock {
     max-height: 55%;
   }
 }
+
+/* Tang capital detail uses the same geographic SVG and camera as the atlas. */
+.has-city-plan #atlas-svg :is(#grp-terrain, #grp-settlements, #grp-milestones, #grp-corridors, #grp-rivers, #grp-prov-names, #grp-provinces, #grp-prefectures, #grp-ghost-diff),
+.has-city-plan #atlas-svg #grp-polities text,
+.has-city-plan #map-key,
+.has-city-inspector #genealogy-card,
+.has-city-inspector #milestone-balloon {
+  visibility: hidden;
+  pointer-events: none;
+}
+.has-city-plan #ocean-bg { fill: var(--bg-parchment); }
+.has-city-plan #grp-polities { visibility: hidden; }
+.city-feature {
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  stroke-linejoin: round;
+}
+.city-ward { fill: #c9bd9a; fill-opacity: .32; stroke: #a39474; stroke-width: .7; stroke-dasharray: 3 2; }
+.city-palace { fill: #b85b43; fill-opacity: .24; stroke: #943f30; }
+.city-imperial { fill: #c89f62; fill-opacity: .24; stroke: #8e6d40; }
+.city-precinct { fill: #b85b43; fill-opacity: .18; stroke: #ac7968; }
+.city-market, .city-granary { fill: #ba9846; fill-opacity: .24; stroke: #9a782f; }
+.city-garden { fill: #9ea97d; fill-opacity: .22; stroke: #83916d; stroke-width: 1; stroke-dasharray: 4 3; }
+.city-wall { fill: none; stroke: #6f5840; }
+:is(.city-wall, .city-palace, .city-imperial, .city-precinct, .city-market, .city-granary) { stroke-width: 1.8; stroke-dasharray: 8 2; }
+.city-water-area { fill: #6b9daa; fill-opacity: .55; stroke: none; }
+.city-waterway, .city-canal { fill: none; stroke: #5e8f9c; stroke-width: 2; stroke-dasharray: 7 4; }
+.city-canal { stroke: #397f93; stroke-width: 1.6; stroke-dasharray: 4 3; }
+.city-street { fill: none; stroke: #fff6df; stroke-width: 2; }
+.city-street[data-rank="0"] { stroke: #b49b70; stroke-width: 3.5; }
+.city-street[data-rank="1"] { stroke: #b4a078; stroke-width: 2.3; }
+.city-street[data-rank="4"] { stroke: #b4a078; stroke-width: .7; }
+:is(.city-gate, .city-bridge) circle { fill: #376472; stroke: #fff8e9; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.city-monument circle { fill: #a24c38; }
+.city-temple circle { fill: #a1742c; }
+.city-site circle { fill: #78865f; }
+:is(.city-monument, .city-temple, .city-site) circle { stroke: #fff8e9; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.city-feature .city-point-hit { fill: transparent; stroke: none; }
+.city-feature.is-selected, .city-feature.is-selected circle:not(.city-point-hit) { stroke: var(--vermilion); stroke-width: 3; }
+.city-label { fill: #6b5941; stroke: #faf6ed; stroke-width: 2; paint-order: stroke; cursor: pointer; }
+:is(.city-label-palace, .city-label-market, .city-label-imperial, .city-label-granary, .city-label-precinct) { fill: #783c2b; }
+:is(.city-label-gate, .city-label-bridge, .city-label-waterway, .city-label-canal, .city-label-water-area) { fill: #305767; }
+#city-plan-status {
+  position: absolute; left: 14px; bottom: 14px; z-index: 5; max-width: calc(100% - 200px);
+  padding: 8px 12px; border: 1px solid var(--hairline); border-radius: 8px;
+  color: var(--text-main); background: rgba(250, 246, 237, .96); box-shadow: var(--card-shadow);
+  font: 12px/1.6 var(--sans-stack); text-align: left; cursor: pointer;
+}
+#city-plan-card {
+  position: absolute; top: 64px; right: 14px; z-index: 8; width: 310px; max-width: calc(100% - 28px);
+  max-height: calc(100% - 132px); overflow: auto; padding: 12px 14px;
+  background: rgba(250, 246, 237, .97); border: 1px solid var(--hairline); border-radius: var(--corner-radius);
+  box-shadow: var(--card-shadow); font: 12px/1.65 var(--sans-stack); color: var(--text-main);
+}
+.city-plan-card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.city-plan-card-header h3 { margin: 0; font: 20px/1.5 var(--serif-stack); }
+#city-plan-description { white-space: pre-line; color: var(--text-secondary); overflow-wrap: anywhere; }
+#city-plan-sources a { display: block; margin: 8px 0; color: var(--vermilion); font-size: 11px; }
+.city-plan-card-footer { border-top: 1px solid var(--hairline); padding-top: 9px; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 11px; }
+.city-plan-card-footer a { color: var(--vermilion); }
+#city-plan-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; font-size: 11px; }
+#city-plan-legend span { display: flex; align-items: center; gap: 7px; }
+#city-plan-legend i { display: inline-block; width: 17px; height: 9px; border: 1px dashed #8e6d40; }
+.city-key-palace { background: #d6a28b; }.city-key-market { background: #d9c58f; }.city-key-ward { background: #ded4ba; }
+#city-plan-legend .city-key-street { height: 4px; background: #fff6df; border: 1px solid #b4a078; }
+.city-key-water { background: #a6c3c5; }#city-plan-legend .city-key-gate { width: 7px; height: 7px; margin: 0 5px; border: 0; border-radius: 50%; background: #376472; }
+#city-plan-legend .city-key-site { width: 7px; height: 7px; margin: 0 5px; border: 0; border-radius: 50%; background: #a1742c; }.city-key-garden { background: #cbd1ba; }
+@media (max-width: 900px) {
+  #city-plan-card { top: auto; bottom: 70px; left: 12px; right: 12px; width: auto; max-width: none; max-height: 42%; }
+  #city-plan-status { left: 10px; max-width: calc(100% - 145px); padding: 5px 8px; font-size: 10px; }
+}

@@ -211,6 +211,19 @@ python3 -m http.server 8000
 
 ---
 
+## 盛唐两京城坊图 · 约公元750年
+
+在**主舆图中将年份设为742–755年，并放大至长安或洛阳**，即可自动查看约750年的城墙、城门、宫苑、街道、部分里坊、市与水系。从 **图层 → 长安 / 洛阳城坊图** 可直接聚焦两京，也可单独关闭城坊图层。点选要素可查看史料来源和位置不确定性，支持简体中文、繁體中文与 English。
+
+![长安城坊图](assets/preview_city_changan.webp)
+![洛阳城坊图](assets/preview_city_luoyang.webp)
+
+[数据与覆盖说明](assets/historical-cities/README.md)及[史料核对记录](assets/historical-cities/SOURCE-AUDIT.md)列出概略复原方法和实际缺项。新增几何与原创说明采用CC0，原有舆图的协议不变。运行 `node scripts/build_historical_cities.cjs` 后再运行 `node scripts/sync_version.js` 可重建数据并更新缓存版本。城坊沿用主舆图的SVG地图，仅在需要时载入。本次网页功能独立于iOS移植，原生接入另行推进。
+
+[点选史料示例](assets/preview_city_changan_detail.webp)：查看要素所据文献、页码及位置误差参考。
+
+---
+
 ## GeoJSON 导出（供 Leaflet / MapLibre / QGIS 使用）
 
 程序内置的几何数据是拓扑去重的 VLQ 紧凑编码。如需在其他项目中使用矢量图层，可在本地生成标准 RFC 7946 GeoJSON（EPSG:4326，经度/纬度），输出到 `geojson/`，不纳入版本库。导出范围为公元前 403 年至 1948 年，不含此后年份及现代省界图层：

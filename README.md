@@ -211,6 +211,19 @@ Then open `http://localhost:8000` in your browser.
 
 ---
 
+## Tang City Plans · circa 750
+
+Zoom into **Chang’an or Luoyang on the main atlas during 742–755** to reveal walls, gates, palace precincts, streets, selected wards, markets and waterways around 750 CE. **Layers → Chang’an / Luoyang city detail** focuses the map directly; the city-detail checkbox controls visibility. Select a feature for its source links and placement uncertainty. Simplified Chinese, Traditional Chinese and English are supported.
+
+![Chang’an city plan](assets/preview_city_changan.webp)
+![Luoyang city plan](assets/preview_city_luoyang.webp)
+
+The [data and coverage guide](assets/historical-cities/README.md) and [source audit](assets/historical-cities/SOURCE-AUDIT.md) explain the generalized geometry and omitted details. The new geometry and original summaries are CC0; existing atlas licenses are unchanged. Rebuild with `node scripts/build_historical_cities.cjs`, then `node scripts/sync_version.js`. The detail uses the atlas's existing SVG map and loads only when needed. This web change is independent of the iOS port; native adoption is a separate follow-up.
+
+[Source inspector example](assets/preview_city_changan_detail.webp): selecting a feature shows its publication/page evidence and placement allowance.
+
+---
+
 ## GeoJSON Export (for Leaflet / MapLibre / QGIS)
 
 The app ships its geometry as compact topology-deduplicated VLQ bundles. To use the vector layers in other projects, generate standard RFC 7946 GeoJSON (EPSG:4326, lon/lat) locally; the output goes to `geojson/` and is not committed. The export covers 403 BCE to 1948; later years and the modern province layer are not included.

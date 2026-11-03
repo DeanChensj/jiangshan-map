@@ -465,6 +465,7 @@
       this.snapshotCache = {};
 
       this._bindDom();
+      this.cityPlans = window.HistoricalCityPlans ? new window.HistoricalCityPlans(this) : null;
       this._runWithDeferredTypography(() => {
         this._applyCamera(true);
         this._buildTerrainRivers();
@@ -1424,6 +1425,10 @@
         }
       }
       if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
+      if (this.camera && this.camera.zoom > 10) {
+        p.set('zoom', Number(this.camera.zoom.toFixed(3)));
+        p.set('center', this.projector.toGeo(this.camera.x + this.camera.w / 2, this.camera.y + this.camera.h / 2).map(v => v.toFixed(5)).join(','));
+      }
       if (this.locale === 'en') p.set('lang', 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
       return p;
@@ -1656,6 +1661,12 @@
       }
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
       const lblLayersBtn = this._id('lbl-layers-btn');
+      for (const [city,zh,en] of [['changan','长安','Chang’an'],['luoyang','洛阳','Luoyang']]) {
+        const link = this._id('city-plan-' + city);
+        if (link) {
+          link.textContent = this.locale === 'en' ? en + ' · City detail' : this._zh(zh + ' · 城坊图');
+        }
+      }
       if (lblLayersBtn) {
         lblLayersBtn.textContent = this.uiStr('btn_layers', '图层');
       }
@@ -1911,6 +1922,7 @@
       }
 
       this._refreshBandLabels();
+      if (this.cityPlans) this.cityPlans.localize();
       this._updateScaleBar();
       this.activeSettlementMask = null;
       this.activeCorridorMask = null;
@@ -9269,6 +9281,7 @@
           preserveScroll,
         });
       }
+      if (this.cityPlans) this.cityPlans.update();
     }
 
     _ensureCoordInView(coord) {
@@ -9649,12 +9662,17 @@
       this._pendingHoverEvent = null;
     }
 
+    _cameraViewBox() {
+      const precision = this.camera.w < 100 ? 5 : 1;
+      return [this.camera.x, this.camera.y, this.camera.w, this.camera.h].map(v => v.toFixed(precision)).join(' ');
+    }
+
     _commitStageTransform() {
       if (this._stageWrap && this._stageWrap.style && this._stageWrap.style.transform) {
         this._stageWrap.style.transform = '';
       }
       if (this.svg && typeof this.svg.setAttribute === 'function') {
-        const vb = `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`;
+        const vb = this._cameraViewBox();
         if (vb !== this._lastCameraViewBox) {
           this.svg.setAttribute('viewBox', vb);
           this._lastCameraViewBox = vb;
@@ -9713,7 +9731,7 @@
         (this.pinchState && this.pinchState.rect) ||
         this._cameraViewportRect;
       const rect = cachedRect || this._getUnscaledSvgRect();
-      const viewBox = `${this.camera.x.toFixed(1)} ${this.camera.y.toFixed(1)} ${this.camera.w.toFixed(1)} ${this.camera.h.toFixed(1)}`;
+      const viewBox = this._cameraViewBox();
       const zoomChanged =
         this._lastTypographyWidth !== undefined &&
         Math.abs(this.camera.w - this._lastTypographyWidth) > 0.05;
@@ -9751,6 +9769,7 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      if (this.cityPlans) this.cityPlans.update(rect);
     }
 
     _updateScaleBar(viewportRect = null) {
@@ -9770,7 +9789,7 @@
         (111.32 * Math.cos(clampedLat * DEG_TO_RAD)) / this.projector.scale;
       const kmPerCssPx = kmPerSvgUnit / Math.max(0.05, screenScale);
 
-      const candidates = [20, 50, 100, 200, 500, 1000, 1500];
+      const candidates = [.1, .2, .5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 1500];
       let bestKm = 500;
       let bestDiff = Infinity;
       for (const km of candidates) {
@@ -9783,7 +9802,7 @@
       }
       const barPx = Math.max(44, Math.min(150, Math.round(bestKm / kmPerCssPx)));
       const width = `${barPx}px`;
-      const label = `${bestKm} km`;
+      const label = bestKm < 1 ? `${bestKm * 1000} m` : `${bestKm} km`;
       if (barEl.style.width !== width) barEl.style.width = width;
       if (lblEl.textContent !== label) lblEl.textContent = label;
     }
@@ -9927,8 +9946,9 @@
       const isNarrowMobile = vw <= 640;
       const isMobile = vw <= 900;
       const mobileTypoBoost = isNarrowMobile ? 1.46 : isMobile ? 1.22 : 1.0;
-      const s = (1 / Math.sqrt(z)) * mobileTypoBoost;
-      const invScale = s.toFixed(3);
+      // Keep regional markers readable when the city camera goes beyond its old 10× limit.
+      const s = (1 / Math.sqrt(Math.min(z, 10))) * Math.min(1, 10 / z) * mobileTypoBoost;
+      const invScale = s.toFixed(z > 10 ? 6 : 3);
       const tier2MinZoom = isMobile ? 3.15 : 2.18;
       const showTier2 = z >= tier2MinZoom;
       const passMinZoom = isMobile ? 3.25 : 2.28;
@@ -11284,7 +11304,8 @@
         clientX !== undefined && clientY !== undefined
           ? this._clientToSvgPoint(clientX, clientY)
           : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
-      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+      const minW = this.cityPlans ? this.cityPlans.minCameraWidth(mx, my) : 100;
+      const nextW = Math.max(minW, Math.min(1300, this.camera.w / factor));
       const k = nextW / this.camera.w;
       const targetCam = {
         x: mx - (mx - this.camera.x) * k,
@@ -12746,6 +12767,7 @@
     // Dismiss the topmost active popover, sheet, or mode one layer at a time.
     _dismissTopOverlay() {
       if (this._closeLayersPopover()) return true;
+      if (this.cityPlans && this.cityPlans.close()) return true;
       if (this.playing || this.personTimer) {
         this.stopAutoplay();
         return true;
@@ -13425,7 +13447,7 @@
             e.target &&
             e.target.closest &&
             e.target.closest(
-              '#genealogy-card, #journey-card, #milestone-balloon, #map-search-results, #challenge-card'
+              '#genealogy-card, #journey-card, #milestone-balloon, #map-search-results, #challenge-card, #city-plan-card'
             )
           ) {
             return;
@@ -13437,7 +13459,8 @@
             e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
           const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
           const factor = Math.exp(-clampedDelta * 0.002);
-          const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+          const minW = this.cityPlans ? this.cityPlans.minCameraWidth(mx, my) : 100;
+          const nextW = Math.max(minW, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
             x: mx - (mx - this.camera.x) * k,
@@ -13488,6 +13511,7 @@
               this.longPressTimer = null;
               if (!this.didPan && this.activePointers.size === 1 && !this.challenge) {
                 this.longPressTriggered = true;
+                if (this.cityPlans && this.cityPlans.tap(downX, downY)) return;
                 const near = this._findNearestTouchNode(downX, downY, 24);
                 if (
                   near.settlementEl &&
@@ -13539,7 +13563,8 @@
           const pts = Array.from(this.activePointers.values());
           const dist = Math.max(10, Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y));
           const factor = dist / this.pinchState.startDist;
-          const nextW = Math.max(100, Math.min(1300, this.pinchState.camW / factor));
+          const minW = this.cityPlans ? this.cityPlans.minCameraWidth(this.pinchState.svgMidX, this.pinchState.svgMidY) : 100;
+          const nextW = Math.max(minW, Math.min(1300, this.pinchState.camW / factor));
           const k = nextW / this.pinchState.camW;
           const midX = (pts[0].x + pts[1].x) * 0.5;
           const midY = (pts[0].y + pts[1].y) * 0.5;
@@ -13580,6 +13605,10 @@
       });
 
       const inspectPointTooltip = (e) => {
+        if (this.cityPlans && this.cityPlans.hit(e.clientX, e.clientY)) {
+          this.hoverTip.classList.add('is-hidden');
+          return;
+        }
         if (this.challenge && !this.challenge.answered) {
           this.hoverTip.classList.add('is-hidden');
           this.hoverTip.classList.remove('is-interactive');
@@ -13881,6 +13910,10 @@
           }
         } else if (!wasPan && !this.challenge) {
           this._recordGestureClick();
+          if (this.cityPlans && this.cityPlans.tap(e.clientX, e.clientY)) {
+            this.lastTouchTap = null;
+            return;
+          }
           if (e.pointerType === 'touch') {
             const now = Date.now();
             if (
@@ -14028,6 +14061,7 @@
       this.svg.addEventListener('pointercancel', endPointer);
       this.svg.addEventListener('dblclick', (e) => {
         if (this.challenge) return;
+        if (this.cityPlans && this.cityPlans.hit(e.clientX, e.clientY)) return;
         this._recordGestureClick();
         const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
         const [lng, lat] = this.projector.toGeo(sx, sy);
@@ -14082,6 +14116,7 @@
           }
           this._cameraViewportRect = null;
           this._scrubberRailWidth = 0;
+          if (this.cityPlans) this.cityPlans.update();
         });
         this._cameraResizeObserver.observe(this.svg);
       }
@@ -15611,9 +15646,9 @@
           }, 80);
         }
         if (q.has('zoom') || q.has('center')) {
-          const z = Math.max(1, Math.min(8, Number(q.get('zoom')) || this.camera.zoom));
+          const z = Math.max(1, Math.min(1500, Number(q.get('zoom')) || this.camera.zoom));
           const w = 1000 / z;
-          const h = 700 / z;
+          const h = z > 10 ? w * this._getViewportAspect() : 700 / z;
           let x = this.camera.x;
           let y = this.camera.y;
           if (q.has('center')) {

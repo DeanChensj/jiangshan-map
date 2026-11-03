@@ -1,0 +1,37 @@
+{
+  "coordinateSystem": "WGS84 longitude, latitude",
+  "license": "CC0-1.0",
+  "source": "Wikidata P625, rounded location facts reviewed 2026-11-02. Approximate archaeological-area locations; not survey control.",
+  "points": [
+    {
+      "id": "tang-taiji",
+      "title": "太极宫",
+      "coord": [
+        108.938889,
+        34.278889
+      ],
+      "wikidata": "Q10038732",
+      "sourceURL": "https://www.wikidata.org/wiki/Q10038732"
+    },
+    {
+      "id": "tang-dingding",
+      "title": "定鼎门遗址",
+      "coord": [
+        112.46067,
+        34.63291
+      ],
+      "wikidata": "Q10948766",
+      "sourceURL": "https://www.wikidata.org/wiki/Q10948766"
+    },
+    {
+      "id": "tang-yingtian",
+      "title": "应天门遗址",
+      "coord": [
+        112.4547,
+        34.6771
+      ],
+      "wikidata": "Q11491257",
+      "sourceURL": "https://www.wikidata.org/wiki/Q11491257"
+    }
+  ]
+}

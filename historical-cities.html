@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>城坊图 · 江山时序</title>
+<p><a href="index.html?year=750&amp;zoom=350&amp;center=108.938,34.258">在江山时序中查看城坊图 · Open city detail in the atlas</a></p>
+<script>
+  // Preserve prototype bookmarks while city detail now lives on the main map.
+  const query = new URLSearchParams(location.search);
+  const center = query.get('city') === 'luoyang' ? '112.47425,34.66829' : '108.938,34.258';
+  const url = new URL('index.html', location.href);
+  url.searchParams.set('year', '750');
+  url.searchParams.set('zoom', '350');
+  url.searchParams.set('center', center);
+  if (['en', 'zh-tw'].includes(query.get('lang'))) url.searchParams.set('lang', query.get('lang'));
+  location.replace(url);
+</script>
+</html>

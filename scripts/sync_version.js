@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Deterministic Per-Asset Content Hash Synchronizer for Jiangshan Atlas (江山时序)
- * Zero external dependencies — computes 8-char SHA-256 digests for all CSS/JS bundles
+ * Zero external dependencies — computes 8-char SHA-256 digests for CSS/JS and city data
  * and stamps/verifies index.html cache-busting query strings + lazy-bundle data attributes.
  *
  * Usage:
@@ -29,12 +29,16 @@ const STATIC_TAG_ASSETS = [
   'js/map_data.js',
   'js/lore_data.js',
   'js/zh_hant.js',
+  'js/city_plans.js',
   ...CONTROLLER_SCRIPTS,
 ];
 
 const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-snapshots', datasetKey: 'vSnapshots', relPath: 'js/atlas_snapshots.js' },
   { attr: 'data-v-i18n', datasetKey: 'vI18n', relPath: 'js/i18n_dict.js' },
+  { attr: 'data-v-city-catalog', datasetKey: 'vCityCatalog', relPath: 'assets/historical-cities/catalog.json' },
+  { attr: 'data-v-city-data', datasetKey: 'vCityData', relPath: 'assets/historical-cities/cities.geojson' },
+  { attr: 'data-v-city-labels', datasetKey: 'vCityLabels', relPath: 'assets/historical-cities/labels.geojson' },
 ];
 
 function shortSha256(filePath) {
@@ -79,8 +83,8 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
   assert(appTagMatch, 'Expected <script ... src="js/app.js?v=..."> tag in index.html');
   const expectedAppTag =
     `<script id="atlas-app-script" src="js/app.js?v=${hashes['js/app.js']}"` +
-    ` data-v-snapshots="${hashes['js/atlas_snapshots.js']}"` +
-    ` data-v-i18n="${hashes['js/i18n_dict.js']}"></script>`;
+    LAZY_ATTR_ASSETS.map(asset => ` ${asset.attr}="${hashes[asset.relPath]}"`).join('') +
+    `></script>`;
   out = out.replace(appTagRe, expectedAppTag);
   return out;
 }
