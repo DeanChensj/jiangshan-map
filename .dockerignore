@@ -6,3 +6,7 @@ skills
 geojson/demo.html
 *.md
 .gitignore
+Dockerfile
+docker-compose.yml
+.dockerignore
+.DS_Store
