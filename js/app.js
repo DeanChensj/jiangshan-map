@@ -11114,7 +11114,7 @@
       const duration = 650;
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
       const step = (now) => {
-        const k = Math.min(1, (now - t0) / duration);
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
