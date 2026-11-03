@@ -80,10 +80,20 @@
     }
 
     cancelFocus() {
-      if (!this.pendingFocus) return;
-      this.focusToken++;
-      this.pendingFocus = null;
-      this.retryCity = null;
+      if (this.pendingFocus) {
+        this.focusToken++;
+        this.pendingFocus = null;
+        this.retryCity = null;
+      }
+      // A gesture or later navigation also supersedes a city flight already in progress.
+      const ownsFlight = this.focusFlight && this.focusFlight === this.app._cameraTarget;
+      this.focusFlight = null;
+      if (ownsFlight && this.app.flyRaf != null) {
+        cancelAnimationFrame(this.app.flyRaf);
+        this.app.flyRaf = null;
+        this.app._cameraTarget = null;
+        this.app._applyCamera(true);
+      }
     }
 
     async focus(id) {
@@ -96,6 +106,9 @@
       this.app._closeLayersPopover();
       this.app.closeGenealogyCard();
       this.app.closeMilestoneBalloon();
+      this.app.clearCustomRoute();
+      this.app.closePolity();
+      this.app.clearEraFocus();
       const year = this.app.year;
       if (this.error) this.pending = null;
       this.error = null;
@@ -112,7 +125,9 @@
         const aspect = this.app._getViewportAspect();
         const w = Math.max((x2 - x1) / .86, (y2 - y1) / aspect / .86);
         this.pendingFocus = null;
-        this.app._animateCameraTo({ x: (x1 + x2 - w) / 2, y: (y1 + y2 - w * aspect) / 2, w, h: w * aspect });
+        const target = { x: (x1 + x2 - w) / 2, y: (y1 + y2 - w * aspect) / 2, w, h: w * aspect };
+        this.app._animateCameraTo(target);
+        this.focusFlight = target;
       } catch (error) {
         if (this.focusToken === token) this.error = error;
       } finally {

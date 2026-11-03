@@ -1428,6 +1428,7 @@
       if (this.camera && this.camera.zoom > 10) {
         p.set('zoom', Number(this.camera.zoom.toFixed(3)));
         p.set('center', this.projector.toGeo(this.camera.x + this.camera.w / 2, this.camera.y + this.camera.h / 2).map(v => v.toFixed(5)).join(','));
+        p.set('aspect', Number((this.camera.h / this.camera.w).toFixed(6)));
       }
       if (this.locale === 'en') p.set('lang', 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
@@ -9214,6 +9215,7 @@
     }
 
     jumpToYear(targetYear) {
+      this._cancelPendingCityFocus();
       let y = Math.max(this.minYear, Math.min(this.maxYear, Math.round(targetYear)));
       if (y === 0) y = this.year < 0 ? 1 : -1;
       const prevIdx = this.dynastyIdx;
@@ -15668,7 +15670,9 @@
         if (q.has('zoom') || q.has('center')) {
           const z = Math.max(1, Math.min(1500, Number(q.get('zoom')) || this.camera.zoom));
           const w = 1000 / z;
-          const h = z > 10 ? w * this._getViewportAspect() : 700 / z;
+          const savedAspect = Number(q.get('aspect'));
+          const aspect = Number.isFinite(savedAspect) && savedAspect > 0 ? savedAspect : this._getViewportAspect();
+          const h = z > 10 ? w * aspect : 700 / z;
           let x = this.camera.x;
           let y = this.camera.y;
           if (q.has('center')) {

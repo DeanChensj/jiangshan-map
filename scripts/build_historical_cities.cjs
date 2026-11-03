@@ -64,10 +64,11 @@ A('taiye','water-area','太液池（概略）','Taiye Pool (schematic)',[[1720,1
 const xs=[-4860.5,-3700,-2550,-1410,-700,0,700,1410,2550,3700,4860.5];
 const ys=[0,590,1180,1770,2360,2950,3540,4130,4720,5316];
 // Selected legible names in Su Bai fig. 3. Unreadable/phase-uncertain names stay unnamed.
-const caWardNames={'8-3':['太平坊','Taiping Ward'],'8-4':['兴道坊','Xingdao Ward'],'8-7':['平康坊','Pingkang Ward'],'7-7':['宣阳坊','Xuanyang Ward'],
+const caWardNames={'8-3':['太平坊','Taiping Ward'],'8-4':['光禄坊','Guanglu Ward'],'8-5':['兴道坊','Xingdao Ward'],'8-7':['平康坊','Pingkang Ward'],'7-7':['宣阳坊','Xuanyang Ward'],
   '6-0':['崇化坊','Chonghua Ward'],'6-1':['怀远坊','Huaiyuan Ward'],'6-2':['延康坊','Yankang Ward'],'6-3':['兴化坊','Xinghua Ward'],'6-5':['安仁坊','Anren Ward'],
-  '6-6':['长兴坊','Changxing Ward'],'6-7':['常乐坊','Changle Ward'],'6-8':['宣平坊','Xuanping Ward'],'6-9':['奉祥坊','Fengxiang Ward'],
-  '0-3':['安乐坊','Anle Ward'],'0-4':['延祚坊','Yanzuo Ward'],'0-5':['文安坊','Wen’an Ward'],'0-6':['安德坊','Ande Ward'],'0-7':['昌乐坊','Changle Ward']};
+  '6-6':['长兴坊','Changxing Ward'],'6-7':['亲仁坊','Qinren Ward'],'6-8':['安邑坊','Anyi Ward'],'6-9':['靖恭坊','Jinggong Ward'],
+  '5-8':['宣平坊','Xuanping Ward'],'7-9':['常乐坊','Changle Ward'],
+  '0-3':['安乐坊','Anle Ward'],'0-4':['延祚坊','Yanzuo Ward'],'0-5':['安义坊','Anyi Ward'],'0-6':['安德坊','Ande Ward'],'0-7':['通济坊','Tongji Ward']};
 for(let row=0;row<9;row++) for(let col=0;col<10;col++) {
   if ((row>=7 && (col===1 || col===8)) || (row<2 && col>=8) || (row===8 && col===9)) continue;
   const name=caWardNames[`${row}-${col}`] || ['',''];
@@ -162,7 +163,7 @@ L('hanjia','granary','含嘉仓城','Hanjia granary',rect(1100,6100,1700,7000),{
 L('north-enclosure','precinct','北部重城（概位）','Northern palace enclosure (approx.)',rect(-1060,6300,1060,6800),{rank:2,sources:['su-1978','luoyang-2014'],locator:'Su Bai 1978 fig. 6 (PDF p. 11), northern palace enclosure marked 圆璧城; generalized within the overall palace envelope, not a precise sub-wall survey.',properties:{uncertaintyM:500}});
 const named = { '0-3':['宁人坊','Ningren Ward'],'0-4':['明教坊','Mingjiao Ward'],'0-5':['乐和坊','Lehe Ward'],
   '1-4':['宜人坊','Yiren Ward'],'1-5':['正平坊','Zhengping Ward'],'1-6':['敦行坊','Dunxing Ward'],
-  '1-11':['履道坊','Lüdao Ward'],'3-4':['宜苗坊','Yimiao Ward'],'3-5':['道化坊','Daohua Ward'],
+  '1-11':['履道坊','Lüdao Ward'],'3-4':['宣范坊','Xuanfan Ward'],'3-5':['道化坊','Daohua Ward'],
   '4-4':['恭安坊','Gong’an Ward'],'4-5':['温柔坊','Wenrou Ward'],'4-6':['思顺坊','Sishun Ward'],
   '5-2':['雒滨坊','Luobin Ward'],'5-3':['积善坊','Jishan Ward'],'5-4':['尚善坊','Shangshan Ward'],
   '5-5':['旌善坊','Jingshan Ward'],'5-6':['劝善坊','Quanshan Ward'],'5-7':['择善坊','Zeshan Ward'],'5-8':['福善坊','Fushan Ward'] };

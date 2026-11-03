@@ -16,6 +16,8 @@ The following evidence determines which details can be included without copying 
 
 In Chang’an fig. 3, East Market occupies the second broad ward column east of the imperial precinct. Pingkang and Xuanyang are immediately west of the market, with Xuanyang directly south of Pingkang. Chongren is north of Chunming–Jinguang Avenue. These source-cell relationships govern the market, ward labels and gaps in the surrounding streets.
 
+The selected Chang’an ward names were checked cell by cell against that figure: Guanglu and Xingdao flank Zhuque Avenue; Qinren, Anyi (安邑) and Jinggong occupy the row south of Xuanyang and East Market; Xuanping is one row farther south and Changle is east of East Market. The southernmost named cells include Anyi (安义) and Tongji. Luoyang’s Xuanfan (宣范) is checked against the CASS 2014 plan reproduced in [Palace Museum Journal 2021, PDF p. 12 / printed p. 79, fig. 9](https://www.dpm.org.cn/Uploads/File/2021/01/20/u6007f09329708.pdf).
+
 ## Details that must not be copied into the circa-750 layer
 
 - **Modern context in fig. 6:** its legend distinguishes archaeological remains/reconstruction, inferred ward subdivisions, present streets and present villages. Railway lines, village blocks such as Anle, and current roads are orientation aids, not Tang streets or buildings. The modern Luo/Jian river drawings must not silently become exact ancient banks.
