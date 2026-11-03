@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 /**
- * Snapshot Bundle Codec for Jiangshan Atlas (江山时序)
- * Zero external dependencies. Decodes and re-encodes the VLQ delta-encoded polygon bundles
- * js/atlas_snapshots.js (full, lazy-loaded) and js/atlas_boot.js (first-paint seed).
+ * Polygon Bundle Builder for Jiangshan Atlas (江山时序)
+ * Zero external dependencies. Builds the VLQ delta-encoded polygon bundles js/atlas_snapshots.js
+ * (full, lazy-loaded) and js/atlas_boot.js (first-paint seed) from the sources in data/atlas/.
  *
- * Decoded format (JSON):
- *   {
- *     "features":  [ { "title": ..., "shape": { "type": "Polygon"|"MultiPolygon", "coordinates": [...] } }, ... ],
- *     "snapshots": { "<key>": { "caption": ..., "polities": [<featureIndex>, ...], ... } | [<featureIndex>, ...] }
- *   }
- * A feature referenced by several snapshots is stored once, so editing it changes every
- * snapshot that shares it. Coordinates are degrees with at most two decimals.
+ * Source layout:
+ *   data/atlas/index.json  { "boot": [snapshot keys], "order": [every snapshot key, in bundle order] }
+ *   data/atlas/<group>/<snapshotKey>.geojson
+ *     A GeoJSON FeatureCollection. Its "snapshot" member holds the snapshot fields; the
+ *     polities / prefectures / regions lists name features by id. A bare id is a feature in the
+ *     same file; "<snapshotKey>/<id>" is a feature defined in another snapshot file (ids never
+ *     contain "/"). Each feature is
+ *     stored once, so editing it changes every snapshot that references it. Coordinates are
+ *     [longitude, latitude] with at most two decimals. Directories are only for grouping.
  *
- * Encoding is canonical: features and rings are numbered in first-seen order while walking
- * snapshots in key order, and identical rings are stored once. The boot seed is the BOOT_KEYS
- * subset of the full bundle.
+ * Encoding is canonical: features and rings are numbered in first-seen order while walking the
+ * snapshots in index order, and identical rings are stored once.
  *
  * Usage:
- *   node scripts/build_atlas.js decode [--out FILE]  # Bundle -> JSON (default build/atlas/snapshots.json)
- *   node scripts/build_atlas.js encode [--in FILE]   # JSON -> both bundles, then refresh index.html hashes
- *   node scripts/build_atlas.js --check              # Verify committed bundles are canonical encodings
+ *   node scripts/build_atlas.js          # Normalize source formatting, rebuild both bundles, refresh index.html hashes
+ *   node scripts/build_atlas.js --check  # Verify formatting and that both bundles are up to date (no writes)
  */
 'use strict';
 
@@ -27,17 +27,14 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
+const DATA_DIR = 'data/atlas';
+const INDEX_PATH = `${DATA_DIR}/index.json`;
 const FULL_PATH = 'js/atlas_snapshots.js';
 const BOOT_PATH = 'js/atlas_boot.js';
-const DEFAULT_JSON = 'build/atlas/snapshots.json';
 
-// Snapshots needed for first paint; validate_atlas.js asserts they match the full bundle.
-const BOOT_KEYS = ['neighbors', 's_zhanguo_a', 's_qin_a'];
 const FEATURE_LISTS = new Set(['polities', 'prefectures', 'regions']);
 const SCALE = 100;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-';
-const LOOKUP = new Uint8Array(128);
-for (let i = 0; i < ALPHABET.length; i++) LOOKUP[ALPHABET.charCodeAt(i)] = i;
 
 const DATA_START = '  const D = ';
 const DATA_END = ';\n  const rc = new Array(D.r.length);';
@@ -132,26 +129,6 @@ function bundleSuffix(isBoot) {
   );
 }
 
-function decodeRing(str) {
-  const ring = [];
-  let i = 0;
-  let x = 0;
-  let y = 0;
-  while (i < str.length) {
-    let b;
-    let sh = 0;
-    let v = 0;
-    do { b = LOOKUP[str.charCodeAt(i++)]; v |= (b & 31) << sh; sh += 5; } while (b >= 32);
-    x += (v & 1) ? ~(v >>> 1) : (v >>> 1);
-    sh = 0;
-    v = 0;
-    do { b = LOOKUP[str.charCodeAt(i++)]; v |= (b & 31) << sh; sh += 5; } while (b >= 32);
-    y += (v & 1) ? ~(v >>> 1) : (v >>> 1);
-    ring.push([x / SCALE, y / SCALE]);
-  }
-  return ring;
-}
-
 function encodeVarint(delta) {
   let v = delta < 0 ? (~delta << 1) | 1 : delta << 1;
   let out = '';
@@ -182,34 +159,6 @@ function encodeRing(ring, where) {
     py = y;
   }
   return out;
-}
-
-function extractData(source, label) {
-  const start = source.indexOf(DATA_START);
-  const end = source.indexOf(DATA_END, start);
-  if (start < 0 || end < 0) throw new Error(`${label}: could not locate the encoded D block`);
-  return JSON.parse(source.slice(start + DATA_START.length, end));
-}
-
-/** Decodes a bundle's source text into the { features, snapshots } JSON format. */
-function decodeBundle(source, label = 'bundle') {
-  const D = extractData(source, label);
-  const features = D.f.map((raw) => {
-    const feature = {};
-    for (const [key, value] of Object.entries(raw)) {
-      if (key !== 'shape' || !value) {
-        feature[key] = value;
-      } else if (value._p) {
-        feature.shape = { type: 'Polygon', coordinates: value._p.map((r) => decodeRing(D.r[r])) };
-      } else if (value._m) {
-        feature.shape = { type: 'MultiPolygon', coordinates: value._m.map((p) => p.map((r) => decodeRing(D.r[r]))) };
-      } else {
-        throw new Error(`${label}: feature "${raw.title}" has an unrecognized shape encoding`);
-      }
-    }
-    return feature;
-  });
-  return { features, snapshots: D.d };
 }
 
 /** Encodes the given snapshot keys of a { features, snapshots } document into bundle source text. */
@@ -278,121 +227,182 @@ function encodeBundle(doc, { keys = Object.keys(doc.snapshots), isBoot = false }
   return bundlePrefix(title) + JSON.stringify({ r: rings, f: feats, d }) + bundleSuffix(isBoot);
 }
 
-function encodeAll(doc) {
-  return {
-    [FULL_PATH]: encodeBundle(doc),
-    [BOOT_PATH]: encodeBundle(doc, { keys: BOOT_KEYS, isBoot: true }),
+/** Canonical source formatting: two-space JSON with each [lng, lat] pair on its own line. */
+function formatSource(value) {
+  return JSON.stringify(value, null, 2).replace(/\[\s+(-?[\d.e+-]+),\s+(-?[\d.e+-]+)\s+\]/g, '[$1, $2]') + '\n';
+}
+
+function listSourceFiles(dir, rootDir) {
+  const out = [];
+  for (const entry of fs.readdirSync(path.join(rootDir, dir), { withFileTypes: true })) {
+    const rel = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) out.push(...listSourceFiles(rel, rootDir));
+    else if (entry.name.endsWith('.geojson')) out.push(rel);
+  }
+  return out.sort();
+}
+
+/** Reads data/atlas into { index, files, doc }, where doc is the encoder's { features, snapshots } input. */
+function loadSources(rootDir = ROOT) {
+  const errors = [];
+  const readJson = (rel) => {
+    const text = fs.readFileSync(path.join(rootDir, rel), 'utf8');
+    try {
+      return { rel, text, json: JSON.parse(text) };
+    } catch (err) {
+      throw new Error(`${rel}: invalid JSON (${err.message})`);
+    }
   };
-}
+  const indexFile = readJson(INDEX_PATH);
+  const index = indexFile.json;
+  const files = [indexFile];
 
-function readText(relPath, rootDir = ROOT) {
-  return fs.readFileSync(path.join(rootDir, relPath), 'utf8');
-}
+  const byKey = new Map();
+  for (const rel of listSourceFiles(DATA_DIR, rootDir)) {
+    const key = path.basename(rel, '.geojson');
+    if (byKey.has(key)) errors.push(`${rel}: snapshot "${key}" is also defined in ${byKey.get(key).rel}`);
+    else byKey.set(key, readJson(rel));
+  }
+  const order = Array.isArray(index.order) ? index.order : [];
+  const boot = Array.isArray(index.boot) ? index.boot : [];
+  const seen = new Set();
+  for (const key of order) {
+    if (seen.has(key)) errors.push(`${INDEX_PATH}: "${key}" appears more than once in "order"`);
+    seen.add(key);
+    if (!byKey.has(key)) errors.push(`${INDEX_PATH}: no ${DATA_DIR}/**/${key}.geojson for "${key}"`);
+  }
+  for (const key of byKey.keys()) if (!seen.has(key)) errors.push(`${byKey.get(key).rel}: add "${key}" to "order" in ${INDEX_PATH}`);
+  for (const key of boot) if (!seen.has(key)) errors.push(`${INDEX_PATH}: boot snapshot "${key}" is not in "order"`);
+  if (errors.length) throw new Error(errors.join('\n'));
 
-function firstDifference(a, b) {
-  const n = Math.min(a.length, b.length);
-  for (let i = 0; i < n; i++) if (a[i] !== b[i]) return i;
-  return a.length === b.length ? -1 : n;
-}
+  // Pass 1: register every feature under "<snapshotKey>/<id>".
+  const features = [];
+  const featureIndex = new Map();
+  const referenced = new Set();
+  for (const key of order) {
+    const file = byKey.get(key);
+    files.push(file);
+    const { json, rel } = file;
+    if (json.type !== 'FeatureCollection' || !Array.isArray(json.features) || json.snapshot === undefined) {
+      errors.push(`${rel}: expected a FeatureCollection with "snapshot" and "features"`);
+      continue;
+    }
+    json.features.forEach((f, i) => {
+      const ref = `${key}/${f && f.id}`;
+      if (!f || f.type !== 'Feature' || typeof f.id !== 'string' || !f.properties || typeof f.properties !== 'object') {
+        errors.push(`${rel}: features[${i}] needs "type": "Feature", a string "id" and "properties"`);
+      } else if (!f.id || f.id.includes('/')) {
+        errors.push(`${rel}: feature id "${f.id}" must be non-empty and must not contain "/"`);
+      } else if (featureIndex.has(ref)) {
+        errors.push(`${rel}: duplicate feature id "${f.id}"`);
+      } else {
+        featureIndex.set(ref, features.length);
+        features.push(f.geometry ? { ...f.properties, shape: f.geometry } : { ...f.properties });
+      }
+    });
+  }
 
-/** Returns a list of human-readable problems; empty when both bundles are canonical. */
-function checkBundles(rootDir = ROOT) {
-  const doc = decodeBundle(readText(FULL_PATH, rootDir), FULL_PATH);
-  const expected = encodeAll(doc);
-  const problems = [];
-  for (const [relPath, want] of Object.entries(expected)) {
-    const have = readText(relPath, rootDir);
-    const at = firstDifference(have, want);
-    if (at >= 0) {
-      problems.push(
-        `${relPath} is not the canonical encoding of ${FULL_PATH} (first difference at byte ${at}). ` +
-          'Edit the decoded JSON and run `node scripts/build_atlas.js encode` instead of editing bundles by hand.'
+  // Pass 2: resolve snapshot feature lists to indices.
+  const resolve = (ref, key, rel) => {
+    const qualified = typeof ref === 'string' && ref.includes('/') ? ref : `${key}/${ref}`;
+    const idx = featureIndex.get(qualified);
+    if (idx === undefined) {
+      errors.push(`${rel}: unknown feature "${ref}"`);
+      return -1;
+    }
+    referenced.add(qualified);
+    return idx;
+  };
+  const snapshots = {};
+  for (const key of order) {
+    const { json, rel } = byKey.get(key);
+    const snap = json.snapshot;
+    if (Array.isArray(snap)) {
+      snapshots[key] = snap.map((ref) => resolve(ref, key, rel));
+    } else if (snap && typeof snap === 'object') {
+      snapshots[key] = Object.fromEntries(
+        Object.entries(snap).map(([k, v]) => [k, FEATURE_LISTS.has(k) && Array.isArray(v) ? v.map((ref) => resolve(ref, key, rel)) : v])
       );
+    } else {
+      errors.push(`${rel}: "snapshot" must be an object or a list of feature ids`);
+    }
+  }
+  for (const ref of featureIndex.keys()) {
+    if (!referenced.has(ref)) errors.push(`${byKey.get(ref.slice(0, ref.indexOf('/'))).rel}: feature "${ref.slice(ref.indexOf('/') + 1)}" is not referenced by any snapshot`);
+  }
+  if (errors.length) throw new Error(errors.join('\n'));
+  return { index: { order, boot }, files, doc: { features, snapshots } };
+}
+
+/** Returns the expected contents of every generated or normalized file, keyed by repo-relative path. */
+function buildOutputs(rootDir = ROOT) {
+  const { index, files, doc } = loadSources(rootDir);
+  const outputs = {};
+  for (const { rel, json } of files) outputs[rel] = formatSource(json);
+  outputs[FULL_PATH] = encodeBundle(doc, { keys: index.order });
+  outputs[BOOT_PATH] = encodeBundle(doc, { keys: index.boot, isBoot: true });
+  return outputs;
+}
+
+/** Returns a list of human-readable problems; empty when sources are formatted and bundles are up to date. */
+function checkOutputs(rootDir = ROOT) {
+  const problems = [];
+  for (const [rel, want] of Object.entries(buildOutputs(rootDir))) {
+    if (fs.readFileSync(path.join(rootDir, rel), 'utf8') !== want) {
+      problems.push(rel.startsWith(DATA_DIR) ? `${rel} is not canonically formatted` : `${rel} is out of date with ${DATA_DIR}/`);
     }
   }
   return problems;
 }
 
-/** Pretty-prints the document with one feature per block and coordinates kept on one line. */
-function formatDocument(doc) {
-  const lines = ['{', '  "features": ['];
-  doc.features.forEach((feature, i) => {
-    const fields = Object.entries(feature).map(([key, value]) => {
-      if (key === 'shape' && value) {
-        return `      "shape": {\n        "type": ${JSON.stringify(value.type)},\n        "coordinates": ${JSON.stringify(value.coordinates)}\n      }`;
-      }
-      return `      ${JSON.stringify(key)}: ${JSON.stringify(value)}`;
-    });
-    lines.push(`    {\n${fields.join(',\n')}\n    }${i < doc.features.length - 1 ? ',' : ''}`);
-  });
-  lines.push('  ],', '  "snapshots": {');
-  const keys = Object.keys(doc.snapshots);
-  keys.forEach((key, i) => {
-    lines.push(`    ${JSON.stringify(key)}: ${JSON.stringify(doc.snapshots[key])}${i < keys.length - 1 ? ',' : ''}`);
-  });
-  lines.push('  }', '}', '');
-  return lines.join('\n');
-}
-
-function optionValue(args, flag, fallback) {
-  const i = args.indexOf(flag);
-  return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
-}
-
 function main(argv) {
   const args = argv.slice(2);
-  const command = args[0];
-  if (!command || command === '--help' || command === '-h') {
+  if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      'Usage: node scripts/build_atlas.js <decode|encode|--check>\n' +
-        `  decode [--out FILE]  Write ${FULL_PATH} as editable JSON (default ${DEFAULT_JSON})\n` +
-        `  encode [--in FILE]   Rebuild ${FULL_PATH} and ${BOOT_PATH}, then refresh index.html hashes\n` +
-        '  --check              Verify both bundles are canonical encodings without writing'
+      'Usage: node scripts/build_atlas.js [--check]\n' +
+        `  (default)  Normalize ${DATA_DIR}/ formatting, rebuild ${FULL_PATH} and ${BOOT_PATH}, refresh index.html hashes\n` +
+        '  --check    Verify formatting and bundles without writing'
     );
     return 0;
   }
-  if (command === '--check') {
-    const problems = checkBundles();
+  if (args.includes('--check')) {
+    const problems = checkOutputs();
     if (problems.length) {
       for (const p of problems) console.error(`✗ ${p}`);
+      console.error('Run `node scripts/build_atlas.js` and commit the result.');
       return 1;
     }
-    console.log(`✓ ${FULL_PATH} and ${BOOT_PATH} are canonical encodings`);
+    console.log(`✓ ${DATA_DIR}/ is formatted and ${FULL_PATH} / ${BOOT_PATH} are up to date`);
     return 0;
   }
-  if (command === 'decode') {
-    const out = path.resolve(ROOT, optionValue(args, '--out', DEFAULT_JSON));
-    const doc = decodeBundle(readText(FULL_PATH), FULL_PATH);
-    fs.mkdirSync(path.dirname(out), { recursive: true });
-    fs.writeFileSync(out, formatDocument(doc));
-    console.log(`✓ Decoded ${doc.features.length} features across ${Object.keys(doc.snapshots).length} snapshots → ${path.relative(ROOT, out)}`);
-    return 0;
-  }
-  if (command === 'encode') {
-    const input = path.resolve(ROOT, optionValue(args, '--in', DEFAULT_JSON));
-    const doc = JSON.parse(fs.readFileSync(input, 'utf8'));
-    for (const [relPath, text] of Object.entries(encodeAll(doc))) {
-      fs.writeFileSync(path.join(ROOT, relPath), text);
-      console.log(`✓ Wrote ${relPath} (${text.length} bytes)`);
+  let written = 0;
+  for (const [rel, text] of Object.entries(buildOutputs())) {
+    const full = path.join(ROOT, rel);
+    if (fs.readFileSync(full, 'utf8') !== text) {
+      fs.writeFileSync(full, text);
+      console.log(`✓ Wrote ${rel}`);
+      written++;
     }
-    const { syncIndexHtmlAssetHashes } = require('./sync_version');
-    const { changed } = syncIndexHtmlAssetHashes(ROOT);
-    console.log(`✓ ${changed ? 'Updated' : 'Already up-to-date:'} index.html asset hashes`);
-    return 0;
   }
-  console.error(`Unknown command: ${command} (see --help)`);
-  return 2;
+  const { syncIndexHtmlAssetHashes } = require('./sync_version');
+  const { changed } = syncIndexHtmlAssetHashes(ROOT);
+  console.log(`✓ ${written ? `${written} file(s) updated` : 'Bundles already up to date'}; index.html hashes ${changed ? 'updated' : 'unchanged'}`);
+  return 0;
 }
 
 if (require.main === module) {
-  process.exitCode = main(process.argv);
+  try {
+    process.exitCode = main(process.argv);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exitCode = 1;
+  }
 }
 
 module.exports = {
-  BOOT_KEYS,
-  decodeBundle,
+  formatSource,
+  loadSources,
   encodeBundle,
-  encodeAll,
-  checkBundles,
-  formatDocument,
+  buildOutputs,
+  checkOutputs,
 };
