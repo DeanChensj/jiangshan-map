@@ -9116,12 +9116,19 @@
       let lastRight = -Infinity;
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
-        cell.classList.remove('is-narrow');
+        cell.classList.remove('is-narrow', 'is-compact');
         const lbl = cell.querySelector('.band-label');
-        const narrow = lbl
-          ? lbl.scrollWidth > cell.clientWidth - 4
-          : cell.scrollWidth > cell.clientWidth + 1;
-        cell.classList.toggle('is-narrow', narrow);
+        if (lbl) {
+          if (lbl.scrollWidth > cell.clientWidth - 2) {
+            cell.classList.add('is-compact');
+            if (lbl.scrollWidth > cell.clientWidth - 2) {
+              cell.classList.remove('is-compact');
+              cell.classList.add('is-narrow');
+            }
+          }
+        } else if (cell.scrollWidth > cell.clientWidth + 1) {
+          cell.classList.add('is-narrow');
+        }
         const tk = tickNodes[i];
         if (tk) {
           const rect = tk.getBoundingClientRect();
