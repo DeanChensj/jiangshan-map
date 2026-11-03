@@ -5,7 +5,7 @@ The original iPhone/iPad functional port is implemented, with the renderer and n
 ## Completion audit
 
 - Reviewed the 44-item parity inventory against current native navigation, views, playback, map sources and shared query bridge.
-- Confirmed the bundled catalog contains 18 periods, 186 territorial stages, 124 listed people and seven curated journeys. Verified snapshot, mesh and label files exist for every stage.
+- Confirmed the bundled catalog contains 18 periods, 188 territorial stages, 124 listed people and seven curated journeys after updating to the latest upstream data. Verified snapshot, mesh and label files exist for every stage.
 - Ran 17 focused queries against the bundled engine: simplified/traditional/English search, people and encounters, the Imperial Seal, a curated journey, 18-period genealogy in all three languages, parallel routes, per-stop dates, polity stages and a quiz deck retained across a language change. All passed.
 - Built and launched on iPhone and iPad simulators. Checked the restored Imperial Seal entry on both layouts, iPhone detail-sheet dismissal into the journey, and named event locations. Previous UI checks cover the main playback, route, quiz, inspector, layer and historical-site flows.
 - Rechecked the production Vercel share page and app-association endpoint: HTTP 200, with the configured app identifier present. This does not replace physical-device universal-link testing already recorded in PARITY.md.

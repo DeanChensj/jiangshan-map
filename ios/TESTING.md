@@ -41,4 +41,4 @@ Please confirm with the original author:
 
 Choose ownership and the identifier before the first upload: Apple documents that a bundle identifier cannot be changed after uploading to App Store Connect. [Apple bundle identifier documentation](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleidentifier)
 
-TestFlight can be a later beta step; external testing can require beta review. No TestFlight upload, public distribution or app registration is part of this draft. The historical-data restrictions in the repository's Credits & License section also remain applicable. [Apple TestFlight overview](https://developer.apple.com/help/app-store-connect/test-a-beta-version/testflight-overview/)
+TestFlight can be a later beta step; external testing can require beta review. No TestFlight upload, public app distribution or App Store Connect app-record creation is part of this draft. The historical-data restrictions in the repository's Credits & License section also remain applicable. [Apple TestFlight overview](https://developer.apple.com/help/app-store-connect/test-a-beta-version/testflight-overview/)

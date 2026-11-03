@@ -15,7 +15,7 @@ Preparation requires Node.js and XcodeGen (`brew install xcodegen`). It generate
 
 ## Features
 
-- All 18 periods, 186 territorial stages, full source boundary geometry, and zoom-dependent regional/prefectural/city labels.
+- All 18 periods, 188 territorial stages, full source boundary geometry, and zoom-dependent regional/prefectural/city labels.
 - Terrain relief with the web map's edge fade; historical rivers and lakes, 67 landscape labels, 16 corridors, 20 strategic passes, modern province/name overlays, and fading previous boundaries.
 - Timeline scrubbing, direct year entry, dynasty/stage stepping, playback speed, period locking, and individual map layer controls. General timeline playback fits the full territorial stage on start and at territorial changes; person/route playback follows its stops. Overview framing uses native viewport bounds so it adapts to iPhone and iPad.
 - The web search index: places and aliases, events, people, rulers, era names, polities, passes and gazetteer entries, in simplified/traditional Chinese and English.
