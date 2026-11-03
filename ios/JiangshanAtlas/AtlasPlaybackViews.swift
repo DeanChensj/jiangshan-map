@@ -19,7 +19,7 @@ struct AtlasMilestoneCard: View {
             }
             if let anchors=event.anchors,anchors.count > 1 {
                 ScrollView(.horizontal){HStack { ForEach(Array(anchors.enumerated()),id:\.offset) { _,anchor in
-                    Button(store.text(anchor.title,anchor.titleEn)) { store.fly(anchor.coord,zoom:store.nativeZoom(forWebScale:3.25)) }.font(AtlasFonts.ui(11)).buttonStyle(.bordered)
+                    Button(store.text(anchor.title,anchor.titleEn)) { store.fly(anchor.coord,webScale:3.25) }.font(AtlasFonts.ui(11)).buttonStyle(.bordered)
                 } }}.scrollIndicators(.hidden)
             }
         }.padding(14).background(AtlasTheme.paper.opacity(0.97),in:RoundedRectangle(cornerRadius:14))

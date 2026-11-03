@@ -44,7 +44,7 @@ extension AtlasStore {
         selection = .coordinate(id: UUID().uuidString, title: title.isEmpty ? text("此地沿革", "History of this place") : title, coord: coord)
         selectedAdminTitle=adminTitle
         refreshDetail()
-        if move { fly(coord, zoom:nativeZoom(forWebScale:3.25)) }
+        if move { fly(coord,webScale:3.25) }
     }
     func refreshDetail() {
         detailTask?.cancel()
@@ -104,7 +104,7 @@ extension AtlasStore {
     }
     func showExperienceStop() {
         guard let stop = activeStop else { return }
-        selection=nil;historicalDetail=nil;setYear(stop.effectiveYear);routeRevision += 1;fly(stop.coord,zoom:nativeZoom(forWebScale:3.25))
+        selection=nil;historicalDetail=nil;setYear(stop.effectiveYear);routeRevision += 1;fly(stop.coord,webScale:3.25)
     }
     func handle(_ hit: SearchHit, preserveYear: Bool = false, navigation:Int? = nil) async {
         let request=navigation ?? beginNavigation()
@@ -202,7 +202,11 @@ extension AtlasStore {
     func openLink(_ url: URL, navigation:Int? = nil) async {
         let request=navigation ?? beginNavigation()
         guard isCurrentNavigation(request) else { return }
-        let items=URLComponents(url:url,resolvingAgainstBaseURL:false)?.queryItems ?? []
+        var components=URLComponents(url:url,resolvingAgainstBaseURL:false)
+        if let query=components?.percentEncodedQuery {
+            components?.percentEncodedQuery=query.replacingOccurrences(of:"+",with:"%20")
+        }
+        let items=components?.queryItems ?? []
         func value(_ key:String)->String? { items.first { $0.name == key }?.value }
         func coordinate(_ raw:String?) -> [Double]? {
             guard let raw else { return nil }
@@ -267,7 +271,7 @@ extension AtlasStore {
         else if let explicitLocation { inspect(explicitLocation,navigation:request) }
         let target=cameraCenter ?? selectedCoordinate ?? activeStop?.coord ?? destination.map { [$0.longitude,$0.latitude] } ?? [cameraLongitude,cameraLatitude]
         if let raw=value("nativeZoom").flatMap(Double.init),raw.isFinite { fly(target,zoom:min(14,max(1,raw))) }
-        else if let scale=value("zoom").flatMap(Double.init),scale.isFinite,scale > 0 { fly(target,zoom:nativeZoom(forWebScale:scale)) }
+        else if let scale=value("zoom").flatMap(Double.init),scale.isFinite,scale > 0 { fly(target,webScale:scale) }
         else if let cameraCenter { fly(cameraCenter,zoom:cameraZoom) }
         if items.contains(where:{ $0.name == "quiz" }) { await startQuiz(navigation:request) }
         guard isCurrentNavigation(request) else { return }

@@ -180,9 +180,18 @@ struct CameraDestination {
     let longitude: Double
     let latitude: Double
     let zoom: Double
+    var webScale:Double? = nil
     var bounds: [Double]? = nil
     var ensureVisible = false
     var waitsForLayout = true
+
+    func resolvedZoom(viewportWidth:Double) -> Double {
+        guard let webScale else { return zoom }
+        return Self.nativeZoom(forWebScale:webScale,viewportWidth:viewportWidth)
+    }
+    static func nativeZoom(forWebScale scale:Double,viewportWidth:Double) -> Double {
+        max(1,min(14,log2(scale*360*max(1,viewportWidth)/(76*512))))
+    }
 }
 
 enum AtlasResources {

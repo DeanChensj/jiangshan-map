@@ -30,7 +30,7 @@ struct AtlasInspector: View {
                     }
                     if let anchors=event.anchors,!anchors.isEmpty {
                         ForEach(Array(anchors.enumerated()),id:\.offset) { index,anchor in
-                            Button(store.text(anchor.title,anchor.titleEn),systemImage:"mappin") { store.fly(anchor.coord,zoom:store.nativeZoom(forWebScale:3.25)) }.accessibilityIdentifier("atlas.event.anchor.\(index)")
+                            Button(store.text(anchor.title,anchor.titleEn),systemImage:"mappin") { store.fly(anchor.coord,webScale:3.25) }.accessibilityIdentifier("atlas.event.anchor.\(index)")
                         }
                     } else {
                         ForEach(Array((event.coords ?? []).enumerated()), id: \.offset) { i, coord in
@@ -107,7 +107,7 @@ struct AtlasInspector: View {
                         if store.previewSnapshot != nil { Button(store.text("关闭疆域预览","Close boundary preview")) { store.previewSnapshot=nil } }
                         DisclosureGroup(store.text("相关史事", "Related events")) {
                             ForEach(detail.events) { event in
-                                Button { if let match=store.catalog?.events.first(where:{ $0.year == event.year && ($0.title == event.title || store.text($0.title,$0.titleEn) == event.title) }) { store.presentEvent(match) } else { store.navigateToYear(event.year);if let coord=event.coord { store.fly(coord,zoom:store.nativeZoom(forWebScale:3.25)) } } } label: {
+                                Button { if let match=store.catalog?.events.first(where:{ $0.year == event.year && ($0.title == event.title || store.text($0.title,$0.titleEn) == event.title) }) { store.presentEvent(match) } else { store.navigateToYear(event.year);if let coord=event.coord { store.fly(coord,webScale:3.25) } } } label: {
                                     VStack(alignment: .leading, spacing: 5) {
                                         Text(store.yearLabel(event.year)).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.vermilion)
                                         Text(event.title).font(AtlasFonts.ui(15)).foregroundStyle(AtlasTheme.ink).multilineTextAlignment(.leading)

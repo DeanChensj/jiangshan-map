@@ -36,6 +36,9 @@ struct AtlasMapView: UIViewRepresentable {
         map.setCenter(.init(latitude: store.cameraLatitude, longitude: store.cameraLongitude), zoomLevel: store.cameraZoom, animated: false)
         map.delegate = context.coordinator
         map.accessibilityLabel = store.text("历史地图", "Historical map")
+        for recognizer in map.gestureRecognizers ?? [] {
+            recognizer.addTarget(context.coordinator,action:#selector(Coordinator.cameraGestureChanged(_:)))
+        }
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.tapped(_:)))
         tap.cancelsTouchesInView = false
         for case let zoomTap as UITapGestureRecognizer in map.gestureRecognizers ?? [] where zoomTap.numberOfTapsRequired > 1 {
@@ -125,6 +128,7 @@ struct AtlasMapView: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             guard hasLoadedStyle else { return }
+            synchronizeGestureState(mapView)
             store.cameraLongitude = mapView.centerCoordinate.longitude
             store.cameraLatitude = mapView.centerCoordinate.latitude
             store.cameraZoom = mapView.zoomLevel
@@ -145,14 +149,23 @@ struct AtlasMapView: UIViewRepresentable {
         func stopGhost() { ghostTask?.cancel();previewTask?.cancel();prefetchTask?.cancel();store.mapStageLoading=false;pulses?.removeFromSuperview() }
 
         func mapViewDidBecomeIdle(_ mapView: MLNMapView) {
-            if store.isGestureActive { store.cameraInteractionUntil=Date().addingTimeInterval(3) }
-            store.isGestureActive=false;store.saveCamera();refreshPulses()
+            synchronizeGestureState(mapView)
+            store.saveCamera();refreshPulses()
         }
         func mapView(_ mapView: MLNMapView, regionWillChangeAnimated animated: Bool) {
             pulses?.isHidden=true
-            if (mapView.gestureRecognizers ?? []).contains(where:{ $0.state == .began || $0.state == .changed }) {
-                store.isGestureActive=true;store.cameraInteractionUntil=Date().addingTimeInterval(3);cameraTask?.cancel()
-            }
+            synchronizeGestureState(mapView)
+        }
+        @objc func cameraGestureChanged(_ recognizer:UIGestureRecognizer) {
+            if let map { synchronizeGestureState(map) }
+        }
+        private func synchronizeGestureState(_ map:MLNMapView) {
+            let active=(map.gestureRecognizers ?? []).contains { $0.state == .began || $0.state == .changed }
+            if active {
+                if !store.isGestureActive { cameraTask?.cancel() }
+                store.cameraInteractionUntil=Date().addingTimeInterval(3)
+            } else if store.isGestureActive { store.cameraInteractionUntil=Date().addingTimeInterval(3) }
+            store.isGestureActive=active
         }
 
         func mapViewDidFailLoadingMap(_ mapView: MLNMapView, withError error: Error) {
@@ -256,10 +269,12 @@ struct AtlasMapView: UIViewRepresentable {
                     if destination.waitsForLayout {
                         do {
                             try await Task.sleep(for:.milliseconds(180))
-                            while let self,CACurrentMediaTime()-self.layoutChangedAt < 0.12 { try await Task.sleep(for:.milliseconds(40)) }
+                            while let self,let map=self.map,map.bounds.width <= 0 || map.bounds.height <= 0 || CACurrentMediaTime()-self.layoutChangedAt < 0.12 { try await Task.sleep(for:.milliseconds(40)) }
                         } catch { return }
                     }
-                    guard let self,let map=self.map,!self.store.isGestureActive,self.store.destination?.id == destination.id else { return }
+                    guard let self,let map=self.map,self.store.destination?.id == destination.id else { return }
+                    self.synchronizeGestureState(map)
+                    guard !self.store.isGestureActive else { return }
                     if destination.ensureVisible {
                         let point=map.convert(.init(latitude:destination.latitude,longitude:destination.longitude),toPointTo:map)
                         if map.bounds.inset(by:map.contentInset).insetBy(dx:map.bounds.width*0.14,dy:24).contains(point) { return }
@@ -270,7 +285,8 @@ struct AtlasMapView: UIViewRepresentable {
                         camera=map.cameraThatFitsCoordinateBounds(.init(sw:.init(latitude:bounds[1],longitude:bounds[0]),ne:.init(latitude:bounds[3],longitude:bounds[2])),edgePadding:.init(top:28,left:24,bottom:36,right:24))
                     } else {
                         let center=CLLocationCoordinate2D(latitude:destination.latitude,longitude:destination.longitude)
-                        camera=MLNMapCamera(lookingAtCenter:center,altitude:MLNAltitudeForZoomLevel(destination.zoom,0,center.latitude,map.bounds.size),pitch:0,heading:0)
+                        let zoom=destination.resolvedZoom(viewportWidth:Double(map.bounds.width))
+                        camera=MLNMapCamera(lookingAtCenter:center,altitude:MLNAltitudeForZoomLevel(zoom,0,center.latitude,map.bounds.size),pitch:0,heading:0)
                     }
                     let duration=UIAccessibility.isReduceMotionEnabled || self.store.isScrubbing ? 0 : destination.waitsForLayout ? 0.7 : 0.3
                     map.setCamera(camera,withDuration:duration,animationTimingFunction:CAMediaTimingFunction(name:.easeInEaseOut),completionHandler:nil)
@@ -551,8 +567,7 @@ struct AtlasMapView: UIViewRepresentable {
             if let hit = map.visibleFeatures(in: hitBox, styleLayerIdentifiers: ["corridor-wall","corridor-canal","corridor-silk","corridor-road","corridor-sea"]).first,
                let id = hit.attribute(forKey: "id") as? String,
                let corridor = store.catalog?.corridors.first(where: { $0.id == id }) {
-                store.inspect(corridor.labelAt, title: store.text(corridor.title, corridor.titleEn))
-                store.mapNote = .init(title: store.text(corridor.title, corridor.titleEn), detail: store.text(corridor.summary, corridor.summaryEn)); return
+                store.selectCorridor(corridor); return
             }
             if let admin = map.visibleFeatures(at: location, styleLayerIdentifiers: ["admin-hit"]).first,
                let title = admin.attribute(forKey: "title") as? String {

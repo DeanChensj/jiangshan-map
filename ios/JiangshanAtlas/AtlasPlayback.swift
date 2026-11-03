@@ -94,7 +94,6 @@ extension AtlasStore {
         return true
     }
     var playbackInterval: Int { Int((experience == nil ? 280.0 : 2600.0)/playbackSpeed) }
-    func nativeZoom(forWebScale scale: Double) -> Double { max(1,min(14,log2(scale*360*cameraViewportWidth/(76*512)))) }
     func presentEvent(_ event: AtlasEvent, navigation:Int? = nil) {
         let request=navigation ?? beginNavigation()
         guard isCurrentNavigation(request) else { return }

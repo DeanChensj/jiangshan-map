@@ -23,6 +23,99 @@ import MapLibre
         try await body(store,defaults)
     }
 
+    private func withRenderedMap(_ store:AtlasStore,_ body:(MLNMapView,AtlasMapView.Coordinator) async throws -> Void) async throws {
+        let scene=try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previous=scene.keyWindow,window=UIWindow(windowScene:scene)
+        window.rootViewController=UIHostingController(rootView:ContentView(store:store));window.makeKeyAndVisible()
+        defer { window.isHidden=true;window.rootViewController=nil;previous?.makeKey() }
+        @MainActor func findMap(_ view:UIView)->MLNMapView? {
+            if let map=view as? MLNMapView { return map }
+            return view.subviews.lazy.compactMap { findMap($0) }.first
+        }
+        var map:MLNMapView?
+        for _ in 0..<100 {
+            window.layoutIfNeeded();map=findMap(window)
+            if map?.style?.layer(withIdentifier:"realms") != nil,!store.mapStageLoading { break }
+            try await Task.sleep(for:.milliseconds(50))
+        }
+        let loaded=try XCTUnwrap(map)
+        let coordinator=try XCTUnwrap(loaded.delegate as? AtlasMapView.Coordinator)
+        try await Task.sleep(for:.milliseconds(200))
+        try await body(loaded,coordinator)
+    }
+
+    func testFormEncodedWebsiteLinksAndLiteralPlusRoundTrip() async throws {
+        try await withStore { store,_ in
+            await store.openLink(URL(string:"https://deanchen.me/jiangshan-map/?year=750&place=Chang%27an%2CRed+Cliffs&lang=en")!)
+            XCTAssertNil(store.actionError);XCTAssertEqual(store.experience?.stops.count,2)
+            await store.openLink(URL(string:"https://deanchen.me/jiangshan-map/?year=750&place=Red+Cliffs&lang=en")!)
+            XCTAssertEqual(store.selectedCoordinate,[113.9,29.88])
+            await store.openLink(URL(string:"jiangshan://atlas?year=%2B750&trace=%2B108.94,%2B34.27")!)
+            XCTAssertEqual(store.year,750);XCTAssertEqual(store.selectedCoordinate,[108.94,34.27])
+            let started=await store.startRoute("长安,洛阳",years:"+744,+745")
+            XCTAssertTrue(started)
+            let shared=store.nativeShareURL
+            XCTAssertTrue(shared.absoluteString.contains("%2B744"))
+            await store.openLink(shared)
+            XCTAssertEqual(store.experience?.stops.map(\.year),[744,745])
+        }
+    }
+
+    func testExplicitCameraNavigationRecoversWithoutRenderIdle() async throws {
+        try await withStore { store,_ in
+            try await withRenderedMap(store) { map,coordinator in
+                // Rendering can still be busy after every recognizer has ended.
+                store.isGestureActive=true
+                store.fly([112.45,34.62],zoom:5,waitsForLayout:false)
+                coordinator.refresh()
+                for _ in 0..<100 {
+                    if abs(map.centerCoordinate.longitude-112.45)<0.01,abs(map.zoomLevel-5)<0.01 { break }
+                    try await Task.sleep(for:.milliseconds(20))
+                }
+                XCTAssertFalse(store.isGestureActive)
+                XCTAssertEqual(map.centerCoordinate.longitude,112.45,accuracy:0.01)
+                XCTAssertEqual(map.zoomLevel,5,accuracy:0.01)
+            }
+        }
+    }
+
+    func testWebsiteZoomUsesTheLaidOutMapViewport() async throws {
+        try await withStore { store,_ in
+            // Simulate receiving a link before the map has supplied its width.
+            store.cameraViewportWidth=100
+            await store.openLink(URL(string:"https://deanchen.me/jiangshan-map/?year=750&center=108.94,34.27&zoom=3.25")!)
+            let destination=try XCTUnwrap(store.destination)
+            XCTAssertEqual(destination.webScale,3.25)
+            XCTAssertEqual(destination.resolvedZoom(viewportWidth:1024),4.944365301027181,accuracy:0.000001)
+            await store.openLink(URL(string:"https://deanchen.me/jiangshan-map/?year=750&place=Chang%27an&lang=en")!)
+            XCTAssertEqual(store.destination?.webScale,3.25)
+            try await withRenderedMap(store) { map,coordinator in
+                coordinator.refresh()
+                for _ in 0..<150 {
+                    let span=map.visibleCoordinateBounds.ne.longitude-map.visibleCoordinateBounds.sw.longitude
+                    if abs(span-76/3.25)<0.03 { break }
+                    try await Task.sleep(for:.milliseconds(20))
+                }
+                let span=map.visibleCoordinateBounds.ne.longitude-map.visibleCoordinateBounds.sw.longitude
+                XCTAssertEqual(span,76/3.25,accuracy:0.03)
+            }
+        }
+    }
+
+    func testSelectedCorridorRetainsTranslationsAcrossLanguageChanges() async throws {
+        try await withStore { store,_ in
+            let corridor=try XCTUnwrap(store.catalog?.corridors.first { $0.kind == "canal" })
+            store.setLanguage("zh");store.selectCorridor(corridor)
+            XCTAssertEqual(store.selectionTitle,corridor.title)
+            store.setLanguage("en")
+            XCTAssertEqual(store.selectionTitle,corridor.titleEn)
+            let note=try XCTUnwrap(store.mapNote)
+            XCTAssertEqual(store.text(note.detail,note.detailEn ?? note.detail),corridor.summaryEn)
+            store.setLanguage("zh-tw")
+            XCTAssertEqual(store.selectionTitle,store.localChinese(corridor.title))
+        }
+    }
+
     func testTimelineRoundTripsAndSkipsYearZero() async throws {
         try await withStore { store,_ in
             for year in store.minYear...store.maxYear where year != 0 {

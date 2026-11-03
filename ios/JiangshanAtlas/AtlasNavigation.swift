@@ -42,6 +42,10 @@ extension AtlasStore {
         mapNote = .init(title:site.title,detail:site.detail+"\n\n唐代专题 · 遗址约略位置，非建筑轮廓。图层年代不代表遗址完整存续期。",sourceURL:URL(string:site.sourceURL),titleEn:site.titleEn,detailEn:site.detailEn+"\n\nTang focus · approximate site marker, not a building footprint. Layer dates do not describe the site's entire lifetime.",focusSiteID:site.id)
         if move { fly(site.coord,zoom:11) }
     }
+    func selectCorridor(_ corridor:HistoricalCorridor) {
+        inspect(corridor.labelAt,title:text(corridor.title,corridor.titleEn))
+        mapNote = .init(title:corridor.title,detail:corridor.summary,titleEn:corridor.titleEn,detailEn:corridor.summaryEn)
+    }
     var selectionTitle: String {
         if case .coordinate = selection,let id=mapNote?.focusSiteID,let site=focusSites.first(where:{$0.id == id}) { return localChinese(site.name(at:year,english:english)) }
         if case .coordinate = selection, let note=mapNote { return text(note.title,note.titleEn ?? note.title) }
@@ -105,6 +109,6 @@ extension AtlasStore {
         let request=beginNavigation()
         playing=false;lockPeriod=false;linkYearRange=nil
         if let match=catalog?.events.first(where:{ $0.year == event.year && (text($0.title,$0.titleEn) == event.title || $0.title == event.title) }) { presentEvent(match,navigation:request) }
-        else { setYear(event.year);fly(event.coord,zoom:nativeZoom(forWebScale:3.25)) }
+        else { setYear(event.year);fly(event.coord,webScale:3.25) }
     }
 }

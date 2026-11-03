@@ -204,7 +204,9 @@ final class AtlasStore {
         if let coord=selectedCoordinate { items.append(.init(name:"trace",value:coord.map(String.init(describing:)).joined(separator:","))) }
         let scale=76*512*pow(2,cameraZoom)/(360*cameraViewportWidth)
         items += [.init(name:"terrain",value:showTerrain ? "1":"0"),.init(name:"center",value:"\(cameraLongitude),\(cameraLatitude)"),.init(name:"zoom",value:String(min(8,max(1,scale)))),.init(name:"nativeZoom",value:String(cameraZoom))]
-        components.queryItems=items;return components.url!
+        components.queryItems=items
+        components.percentEncodedQuery=components.percentEncodedQuery?.replacingOccurrences(of:"+",with:"%2B")
+        return components.url!
     }
     var nativeShareURL: URL {
         var c=URLComponents(url:shareURL,resolvingAgainstBaseURL:false)!
@@ -216,6 +218,7 @@ final class AtlasStore {
             items.append(.init(name:"returnStop",value:String(experienceIndex)))
             c.queryItems=items
         }
+        c.percentEncodedQuery=c.percentEncodedQuery?.replacingOccurrences(of:"+",with:"%2B")
         return c.url!
     }
 
@@ -273,14 +276,17 @@ final class AtlasStore {
         if year < place.from || year > place.to { setYear(place.from) }
         selection = .place(place)
         refreshDetail()
-        fly(place.coord, zoom: nativeZoom(forWebScale:3.25))
+        fly(place.coord,webScale:3.25)
     }
     func select(_ event: AtlasEvent) {
         presentEvent(event)
     }
-    func fly(_ coord: [Double], zoom: Double, waitsForLayout: Bool = true) {
+    func fly(_ coord: [Double], zoom: Double, waitsForLayout: Bool = true, webScale:Double? = nil) {
         guard coord.count == 2,coord.allSatisfy(\.isFinite),zoom.isFinite else { return }
-        destination = .init(longitude: min(180,max(-180,coord[0])), latitude: min(85,max(-85,coord[1])), zoom: min(14,max(1,zoom)), waitsForLayout:waitsForLayout)
+        destination = .init(longitude: min(180,max(-180,coord[0])), latitude: min(85,max(-85,coord[1])), zoom: min(14,max(1,zoom)), webScale:webScale, waitsForLayout:waitsForLayout)
+    }
+    func fly(_ coord:[Double],webScale:Double) {
+        fly(coord,zoom:cameraZoom,webScale:webScale)
     }
     func resetCamera() {
         let bounds = phase.flatMap { catalog?.cameraBounds[$0.id] } ?? [66, 14, 142, 55]
