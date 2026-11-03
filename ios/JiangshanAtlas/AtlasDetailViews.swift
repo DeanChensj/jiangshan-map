@@ -138,7 +138,7 @@ struct AtlasSearchView: View {
     @State private var loading = false
     @State private var error: String?
     private var focusHits:[AtlasFocusSite] {
-        store.focusSites.filter { query.isEmpty || ($0.title+AtlasChinese.traditional($0.title)+$0.titleEn).localizedStandardContains(query) }
+        store.focusSites.filter { query.isEmpty || ($0.searchText+AtlasChinese.traditional($0.searchText)).localizedStandardContains(query) }
     }
     var body: some View {
         List {
@@ -153,10 +153,23 @@ struct AtlasSearchView: View {
                 }
             }
             if loading { ProgressView().frame(maxWidth: .infinity) }
-            if !focusHits.isEmpty {
-                Section(store.text("唐代长安—洛阳 · 遗址专题","Tang Chang’an–Luoyang · historical sites")) {
-                    ForEach(focusHits) { site in
-                        Button(store.text(site.title,site.titleEn)) { onClose();store.selectFocusSite(site,move:true) }
+            ForEach(["changan","luoyang"],id:\.self) { city in
+                let sites=focusHits.filter { $0.city == city }
+                if !sites.isEmpty {
+                    Section(store.text(city == "changan" ? "唐长安 · 宫苑与寺院" : "唐洛阳 · 城门与寺窟",city == "changan" ? "Tang Chang’an · palaces & temples" : "Tang Luoyang · gates & sacred sites")) {
+                        ForEach(sites) { site in
+                            Button { onClose();store.selectFocusSite(site,move:true) } label:{
+                                HStack(spacing:12) {
+                                    Image(systemName:site.kind == "palace" ? "building.columns" : site.kind == "gate" ? "door.left.hand.open" : "mappin").frame(width:22).foregroundStyle(AtlasTheme.vermilion).accessibilityHidden(true)
+                                    VStack(alignment:.leading,spacing:4) {
+                                        Text(store.localChinese(site.name(at:store.year,english:store.english)))
+                                        Text(store.yearLabel(site.from)+" — "+store.yearLabel(site.until)).font(AtlasFonts.ui(11)).foregroundStyle(AtlasTheme.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName:site.isVisible(at:store.year) ? "circle.fill" : "clock").font(.system(size:8)).foregroundStyle(AtlasTheme.secondary).accessibilityHidden(true)
+                                }.padding(.vertical,3)
+                            }.accessibilityHint(site.isVisible(at:store.year) ? store.text("在地图上查看","Locate on the map") : store.text("切换至遗址对应年代并定位","Switch to an available year and locate the site"))
+                        }
                     }
                 }
             }

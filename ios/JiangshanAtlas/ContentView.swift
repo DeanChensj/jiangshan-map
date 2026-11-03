@@ -141,8 +141,8 @@ struct ContentView: View {
                     Button(store.text("古琴音乐", "Guqin music"), systemImage: "music.note") { sheet = .music }
                 }.disabled(store.quiz != nil)
                 Section(store.text("地图","Map")) {
-                    Button(store.text("细看唐代长安","Explore Tang Chang’an"),systemImage:"building.columns") { playing=false;store.setYear(750);store.fly([108.95,34.255],zoom:10) }
-                    Button(store.text("细看唐代洛阳","Explore Tang Luoyang"),systemImage:"building.columns") { playing=false;store.setYear(750);store.fly([112.52,34.64],zoom:9) }
+                    Button(store.text("细看唐代长安","Explore Tang Chang’an"),systemImage:"building.columns") { store.exploreFocusCity("changan") }
+                    Button(store.text("细看唐代洛阳","Explore Tang Luoyang"),systemImage:"building.columns") { store.exploreFocusCity("luoyang") }
                     Button(store.text("查看地图中心沿革","Inspect map center"),systemImage:"mappin.and.ellipse") { store.inspect([store.cameraLongitude,store.cameraLatitude]) }
                     Button(store.text("复位地图","Reset map"),systemImage:"arrow.up.left.and.arrow.down.right") { store.resetCamera() }
                     Button(store.text("放大","Zoom in"),systemImage:"plus") { store.fly([store.cameraLongitude,store.cameraLatitude],zoom:store.cameraZoom+1,waitsForLayout:false) }

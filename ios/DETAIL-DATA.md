@@ -1,6 +1,10 @@
 # Native close-up detail
 
-The first regional expansion is Tang Chang’an–Luoyang: Taiji Palace, Daming Palace, Giant and Small Wild Goose Pagodas, White Horse Temple and Longmen Grottoes. These are approximate site markers, not reconstructed building footprints or ancient street geometry. Intervals describe the pilot layer's historical coverage, not each site's complete lifetime. Daming Palace's marker ends in 896; the remaining pilot coverage ends in 907. Later historical periods still use the original web atlas data.
+The Tang Chang’an–Luoyang regional pack contains 12 approximate site markers. Chang’an has Taiji Palace, Daming Palace, Xingqing Palace, Huaqing Palace, the Giant and Small Wild Goose Pagodas, Qinglong Temple and Xingjiao Temple. Luoyang has Yingtian Gate, Dingding Gate, White Horse Temple and Longmen Grottoes. These are site locations, not reconstructed building footprints or ancient street geometry. Intervals describe the layer's coverage, not each site's complete lifetime. Later historical periods still use the original web atlas data.
+
+Search groups the sites by city and searches current names, historical aliases and city names in simplified/traditional Chinese and English. Selecting a site outside its available periods moves to an available year. The two city Explore actions frame the full regional pack at 750. Markers distinguish palaces (vermilion), gates (blue) and temples/grottoes (ochre), with a map legend.
+
+Huaqing uses Tangquan Palace in 644–670, Wenquan Palace in 671–746 and Huaqing Palace in 747–755. Its palace-period marker ends before destruction in 756. Qinglong uses Linggan Temple in 618–620, Guanyin Temple in 662–710, Qinglong Temple in 711–844, Huguo Temple in 846–854 and Qinglong Temple in 855–907. The closure intervals 621–661 and 845 have no marker. Yingtian Gate uses the site's familiar name across the covered Tang years; its description explains historical renamings. Daming Palace's marker ends in 896.
 
 The editable source is `assets/tang_focus.json`. The native exporter includes it in the data-version hash and produces `focus-sites.json` and GeoJSON. Add future regional packs through this source pipeline, with dates and an individual historical source for every site. Do not infer ancient streets from today's roads.
 
@@ -12,6 +16,14 @@ Coordinates are rounded Wikidata P625 facts (CC0), retrieved November 2, 2026. E
 - [Small Wild Goose Pagoda, China Culture](https://en.chinaculture.org/library/2008-02/15/content_34684.htm)
 - [White Horse Temple, China Culture](https://en.chinaculture.org/library/2008-02/15/content_34384.htm)
 - [Longmen Grottoes, UNESCO](https://whc.unesco.org/en/list/1003/)
+- [Xingqing Palace, National Museum of China](https://www.chnmuseum.cn/zp/zpml/gjwxbt/202008/t20200824_247155.shtml). Its coordinate uses the Wikidata point for today's park on the palace site, not an inferred ancient footprint.
+- [Huaqing Palace, Shaanxi provincial gazetteer, Construction volume](https://dfz.shaanxi.gov.cn/zslm/fzzlk/xbsxsz/szdylpdf/201404/P020240923623109161543.pdf)
+- [Qinglong Temple, Xi’an Cultural Heritage Administration](https://wwj.xa.gov.cn/xwzx/tzgg/1902288108237918209.html)
+- Xingjiao Temple uses the Ministry of External Affairs encyclopedia linked above.
+- [Yingtian Gate, Henan government cultural site](https://ytsc.rootinhenan.gov.cn/sitesources/ytsc/page_pc/hnly/fjms/article37896e9dc2fb4df6a6df0ff306b79ff2.html)
+- [Dingding Gate, China National Silk Museum](https://iidos.cn/en/SilkRoadHeritage/info.aspx?itemid=10158&lcid=212)
+
+Focused expansion checks: resource generation, 12 unique site IDs, 18 dated marker records, non-overlapping name intervals, Qinglong closure/name boundaries, glyph coverage and a native build/UI check. No new test suite or performance profile was added for this content expansion.
 
 Prefecture labels use anchors already present in the web snapshots. Their display follows historical stage, layer settings, zoom and quiz visibility. Existing source restrictions in the root README remain applicable. No additional CHGIS county dataset is bundled in this iteration.
 

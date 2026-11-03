@@ -195,6 +195,14 @@ struct AtlasLegendView: View {
     let store: AtlasStore
     var body: some View {
         List {
+            if store.showHistoricalDetail {
+                Section(store.text("历史遗址","Historical sites")) {
+                    ForEach(["palace","gate","temple"],id:\.self) { kind in
+                        HStack { Circle().fill(Color(atlasHex:kind == "palace" ? "#b5452f" : kind == "gate" ? "#36637a" : "#9c6317")).frame(width:10,height:10);Text(store.text(kind == "palace" ? "宫苑" : kind == "gate" ? "城门" : "寺院与石窟",kind == "palace" ? "Palaces" : kind == "gate" ? "Gates" : "Temples & grottoes")) }
+                    }
+                    Text(store.text("放大查看；名称与可见年代依据史料。点位表示遗址约略位置。","Zoom in to view. Names and visibility follow historical records; markers locate sites approximately.")).font(AtlasFonts.ui(12)).foregroundStyle(AtlasTheme.secondary)
+                }
+            }
             Section(store.text("当前疆域 · 轻点聚焦", "Current polities · tap to focus")) {
                 Button(store.text("显示全部政权", "Show all polities")) { store.focusedPolity = "" }
                 ForEach(store.mapPolities.filter { $0.role != "neighbor" }) { polity in

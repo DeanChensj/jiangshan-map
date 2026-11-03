@@ -205,13 +205,27 @@ struct AtlasMapNote {
     var sourceURL:URL? = nil
     var titleEn:String? = nil
     var detailEn:String? = nil
+    var focusSiteID:String? = nil
 }
 
 struct AtlasFocusSite:Decodable,Identifiable {
     let id:String,title:String,titleEn:String,detail:String,detailEn:String,sourceURL:String
     let coord:[Double]
     let from:Int,until:Int
+    let city:String
+    let kind:String
+    let names:[AtlasFocusName]?
+    func isVisible(at year:Int)->Bool {
+        year >= from && year <= until && (names == nil || names!.contains { year >= $0.from && year <= $0.until })
+    }
+    func name(at year:Int,english:Bool)->String {
+        if let name=names?.first(where:{ year >= $0.from && year <= $0.until }) { return english ? name.titleEn : name.title }
+        return english ? titleEn : title
+    }
+    var searchText:String { ([title,titleEn,city == "changan" ? "长安 西安 Chang’an Changan Xi’an Xian" : "洛阳 Luoyang"]+(names ?? []).flatMap { [$0.title,$0.titleEn] }).joined(separator:" ") }
 }
+
+struct AtlasFocusName:Decodable { let from:Int,until:Int;let title:String,titleEn:String }
 
 struct AtlasPlaybackStop: Decodable, Sendable { let year: Int; let hold: Bool }
 

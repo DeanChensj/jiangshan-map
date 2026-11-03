@@ -60,7 +60,7 @@ enum AtlasCartography {
             layer("town-dots","circle","places",["circle-radius":1.7,"circle-color":"#f6efe2","circle-stroke-color":"#4e453d","circle-stroke-width":0.95],filter:["all",["==","tier",2],["==","capital",false]]),
             layer("town-labels","symbol","places",halo,filter:["all",["==","tier",2],["==","capital",false]],layout:city),
             layer("prefecture-labels","symbol","labels",["text-color":"#785944","text-halo-color":"#f8f3e8","text-halo-width":1],filter:["==","layer","prefecture"],layout:labels(10)),
-            layer("focus-dots","circle","focusSites",["circle-radius":4,"circle-color":"#9c6317","circle-stroke-color":"#fff8e7","circle-stroke-width":1.5]),
+            layer("focus-dots","circle","focusSites",["circle-radius":4,"circle-color":["match",["get","kind"],"palace","#b5452f","gate","#36637a","#9c6317"],"circle-stroke-color":"#fff8e7","circle-stroke-width":1.5]),
             layer("focus-labels","symbol","focusSites",["text-color":"#684012","text-halo-color":"#fff8e7","text-halo-width":1.5],layout:labels(13).merging(["text-variable-anchor":["top","bottom","left","right"],"text-radial-offset":0.7]) { _,new in new }),
             layer("pass-labels","symbol","passes",["text-color":"#6b4830","text-halo-color":"#f8f3e8","text-halo-width":1],layout:pass),
             layer("capital-hint","symbol","places",["text-color":"#b5452f"],filter:["==","hintCapital",true],layout:["text-field":["get","hint"],"text-font":[font],"text-size":10,"text-offset":[0,-2.3],"icon-image":"hint-pill","icon-text-fit":"both","icon-text-fit-padding":[4,7,4,7],"text-allow-overlap":true,"icon-allow-overlap":true]),

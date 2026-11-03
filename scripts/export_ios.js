@@ -35,7 +35,12 @@ const collection = features => ({ type: 'FeatureCollection', features });
 const point = (coord, properties) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: coord }, properties });
 const focus = JSON.parse(fs.readFileSync(path.join(root, 'assets/tang_focus.json'), 'utf8'));
 write('focus-sites.json', focus.sites);
-write('focus-sites.geojson', collection(focus.sites.map(site => point(site.coord, {...site, titleHant:w.ZH_HANT_CONV.toHant(site.title)}))));
+write('focus-sites.geojson', collection(focus.sites.flatMap(site => (site.names || [site]).map(period => {
+  const properties = {...site, title:period.title, titleEn:period.titleEn, from:period.from, until:period.until,
+    titleHant:w.ZH_HANT_CONV.toHant(period.title), sort:site.kind === 'palace' ? 0 : site.kind === 'gate' ? 1 : 2};
+  delete properties.names;
+  return point(site.coord, properties);
+}))));
 function geometry(shape) {
   if (!shape) return null;
   const ring = r => {

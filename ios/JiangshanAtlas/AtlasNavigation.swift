@@ -1,14 +1,23 @@
 import Foundation
 
 extension AtlasStore {
+    func exploreFocusCity(_ city:String) {
+        playing=false;selection=nil;historicalDetail=nil;mapNote=nil
+        showHistoricalDetail=true;showPlaces=true;setYear(750);autoEventDismissed=true
+        let sites=focusSites.filter { $0.city == city && $0.isVisible(at:year) }
+        guard let first=sites.first else { return }
+        let xs=sites.map { $0.coord[0] },ys=sites.map { $0.coord[1] }
+        destination = .init(longitude:first.coord[0],latitude:first.coord[1],zoom:9,bounds:[xs.min()!-0.015,ys.min()!-0.015,xs.max()!+0.015,ys.max()!+0.015])
+    }
     func selectFocusSite(_ site:AtlasFocusSite,move:Bool=false) {
         playing=false
-        if year < site.from || year > site.until { setYear(min(site.until,max(site.from,750))) }
+        if !site.isVisible(at:year) { setYear(min(site.until,max(site.from,750))) }
         inspect(site.coord,title:text(site.title,site.titleEn))
-        mapNote = .init(title:site.title,detail:site.detail+"\n\n唐代专题 · 遗址约略位置，非建筑轮廓。图层年代不代表遗址完整存续期。",sourceURL:URL(string:site.sourceURL),titleEn:site.titleEn,detailEn:site.detailEn+"\n\nTang focus · approximate site marker, not a building footprint. Layer dates do not describe the site's entire lifetime.")
+        mapNote = .init(title:site.title,detail:site.detail+"\n\n唐代专题 · 遗址约略位置，非建筑轮廓。图层年代不代表遗址完整存续期。",sourceURL:URL(string:site.sourceURL),titleEn:site.titleEn,detailEn:site.detailEn+"\n\nTang focus · approximate site marker, not a building footprint. Layer dates do not describe the site's entire lifetime.",focusSiteID:site.id)
         if move { fly(site.coord,zoom:11) }
     }
     var selectionTitle: String {
+        if case .coordinate = selection,let id=mapNote?.focusSiteID,let site=focusSites.first(where:{$0.id == id}) { return localChinese(site.name(at:year,english:english)) }
         if case .coordinate = selection, let note=mapNote { return text(note.title,note.titleEn ?? note.title) }
         if case .coordinate = selection, let heading=historicalDetail?.heading, !heading.isEmpty { return heading }
         if case .territory = selection, let detail=polityDetail { return detail.title }
