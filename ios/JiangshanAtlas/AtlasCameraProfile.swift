@@ -1,6 +1,7 @@
 import Foundation
 import QuartzCore
 import MapLibre
+import os
 
 /// Opt-in developer capture: launch with --atlas-camera-profile.
 /// Drives the production map camera, saves a report, and restores the user's view.
@@ -30,6 +31,8 @@ import MapLibre
     private let startedAt=ISO8601DateFormatter().string(from:Date())
     private let animatedSweep=ProcessInfo.processInfo.arguments.contains("--atlas-profile-animated")
     private var nextAnimatedTarget=0.0
+    private var capturePhase = -1
+    private let log=OSLog(subsystem:"me.jiangshan.atlas",category:.pointsOfInterest)
 
     init(map: MLNMapView, store: AtlasStore) {
         self.map = map; self.store = store
@@ -62,10 +65,17 @@ import MapLibre
 
     @objc private func tick(_ link: CADisplayLink) {
         guard let map else { stop(); return }
-        if startTime == nil { startTime = link.timestamp }
+        if startTime == nil {
+            startTime = link.timestamp
+            os_signpost(.begin,log:log,name:"Atlas Camera Capture")
+        }
         let time = link.timestamp - (startTime ?? link.timestamp)
         guard time < 30 else { finish(); return }
         let phase = Int(time / 10)
+        if phase != capturePhase {
+            capturePhase=phase
+            os_signpost(.event,log:log,name:"Atlas Camera Phase","phase=%{public}d",phase)
+        }
         let progress = time.truncatingRemainder(dividingBy: 10) / 10
         let wave = sin(progress * .pi * 4)
         let coordinate: CLLocationCoordinate2D
@@ -101,8 +111,11 @@ import MapLibre
     private func finish() {
         guard !finished else { return }
         finished = true; stop()
+        os_signpost(.end,log:log,name:"Atlas Camera Capture")
         let report: [String: Any] = [
             "runID":runID,"startedAt":startedAt,
+            "sourceRevision":Bundle.main.object(forInfoDictionaryKey:"AtlasSourceRevision") as? String ?? "unrecorded",
+            "captureStartHostTime":startTime ?? 0,
             "motionDriver":animatedSweep ? "native camera animation" : "per-frame camera setters",
             "device": UIDevice.current.model, "os": UIDevice.current.systemVersion,
             "screenMaximumFPS": map?.window?.windowScene?.screen.maximumFramesPerSecond ?? 0,

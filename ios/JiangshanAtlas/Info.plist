@@ -6,6 +6,8 @@
 	<string>$(ATLAS_APPLE_TEAM)</string>
 	<key>AtlasFallbackShareURL</key>
 	<string>$(ATLAS_FALLBACK_SHARE_URL)</string>
+	<key>AtlasSourceRevision</key>
+	<string>$(ATLAS_SOURCE_REVISION)</string>
 	<key>AtlasWebURL</key>
 	<string>$(ATLAS_WEB_URL)</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

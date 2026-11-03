@@ -42,6 +42,7 @@ targets:
         AtlasAppleTeam: $(ATLAS_APPLE_TEAM)
         AtlasWebURL: $(ATLAS_WEB_URL)
         AtlasFallbackShareURL: $(ATLAS_FALLBACK_SHARE_URL)
+        AtlasSourceRevision: $(ATLAS_SOURCE_REVISION)
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: true

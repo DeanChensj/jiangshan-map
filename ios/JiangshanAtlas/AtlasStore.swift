@@ -5,6 +5,7 @@ import CoreLocation
 @MainActor @Observable
 final class AtlasStore {
     @ObservationIgnored let preferences:UserDefaults
+    @ObservationIgnored let engine=AtlasEngine()
     var catalog: AtlasCatalog?
     var error: String?
     var year: Int {
@@ -46,7 +47,14 @@ final class AtlasStore {
     var previewSnapshot: String?
     var capitalHintSeen=false { didSet { preferences.set(capitalHintSeen,forKey:"atlas.capitalHintSeen") } }
     var onboarding = true
-    var selection: AtlasSelection?
+    var selection: AtlasSelection? {
+        didSet {
+            if selection?.id != oldValue?.id {
+                mapNote=nil;selectedAdminTitle=nil;historicalDetail=nil;detailTask?.cancel()
+            }
+        }
+    }
+    var selectedAdminTitle:String?
     var destination: CameraDestination?
     var journey: AtlasJourney?
     var journeyIndex = 0
@@ -150,7 +158,7 @@ final class AtlasStore {
         return eventsByDynasty[dynasty.id] ?? []
     }
     var mappedEvents: [AtlasEvent] {
-        let milestones = events.filter { $0.source == "milestone" && $0.year <= year && $0.coord.count == 2 }
+        let milestones = events.filter { $0.source == "milestone" && $0.effectiveYear <= year && $0.coord.count == 2 }
         let current = currentMilestone
         let settlementLocations=places.map { CLLocation(latitude:$0.coord[1],longitude:$0.coord[0]) }
         var occupied: [CLLocation] = []
@@ -179,7 +187,7 @@ final class AtlasStore {
         var items=[URLQueryItem(name:"year",value:String(year)),URLQueryItem(name:"lang",value:language)]
         if let experience {
             if experience.kind == "person" {
-                items.append(.init(name:"person",value:experience.id.hasPrefix("adhoc_") ? experience.query ?? experience.title : experience.id))
+                items.append(.init(name:"person",value:experience.query ?? experience.id))
                 if experienceIndex >= 0 { items.append(.init(name:"stop",value:String(experienceIndex))) }
             } else { items.removeFirst();items += [.init(name:"place",value:experience.place),.init(name:"year",value:experience.years)];if experienceIndex >= 0 { items.append(.init(name:"routeStop",value:String(experienceIndex))) } }
         }
@@ -187,7 +195,7 @@ final class AtlasStore {
         if let polityDetail { items.append(.init(name:"polity",value:polityDetail.key)) }
         if let coord=selectedCoordinate { items.append(.init(name:"trace",value:coord.map(String.init(describing:)).joined(separator:","))) }
         let scale=76*512*pow(2,cameraZoom)/(360*cameraViewportWidth)
-        items += [.init(name:"terrain",value:showTerrain ? "1":"0"),.init(name:"lng",value:String(cameraLongitude)),.init(name:"lat",value:String(cameraLatitude)),.init(name:"zoom",value:String(min(8,max(1,scale)))),.init(name:"nativeZoom",value:String(cameraZoom))]
+        items += [.init(name:"terrain",value:showTerrain ? "1":"0"),.init(name:"center",value:"\(cameraLongitude),\(cameraLatitude)"),.init(name:"zoom",value:String(min(8,max(1,scale)))),.init(name:"nativeZoom",value:String(cameraZoom))]
         components.queryItems=items;return components.url!
     }
     var nativeShareURL: URL {
@@ -205,7 +213,7 @@ final class AtlasStore {
         let bounded = min(timelineEnd,max(timelineStart,value))
         var target = bounded == 0 ? (year < 0 ? 1 : -1) : bounded
         if lockPeriod, let dynasty { target = min(dynasty.to, max(dynasty.from, target)) }
-        if let activeEventID,catalog?.events.first(where:{ $0.id == activeEventID })?.year != target { self.activeEventID=nil }
+        if let activeEventID,catalog?.events.first(where:{ $0.id == activeEventID })?.effectiveYear != target { self.activeEventID=nil }
         year = target
         syncMilestone()
         refreshEra()
@@ -221,8 +229,8 @@ final class AtlasStore {
         if journey != nil { stepJourney(direction); return }
         if stepSameYearEvent(direction) { return }
         let dates = timelineNodeYears
-        if direction > 0 { if let next = dates.first(where: { $0 > year }) { setYear(next); if let event=currentMilestone, event.year == year { frameMilestone(event) } } }
-        else if let previous = dates.last(where: { $0 < year }) { setYear(previous); if let event=currentMilestone, event.year == year { frameMilestone(event) } }
+        if direction > 0 { if let next = dates.first(where: { $0 > year }) { setYear(next); if let event=currentMilestone, event.effectiveYear == year { frameMilestone(event) } } }
+        else if let previous = dates.last(where: { $0 < year }) { setYear(previous); if let event=currentMilestone, event.effectiveYear == year { frameMilestone(event) } }
     }
     func select(_ place: AtlasPlace) {
         if place.isCapital(at:year) { capitalHintSeen=true }
@@ -234,7 +242,7 @@ final class AtlasStore {
     }
     func select(_ event: AtlasEvent) {
         mapNote = nil; activeEventID = event.id
-        setYear(event.year); selection = .event(event)
+        setYear(event.effectiveYear); selection = .event(event)
         refreshDetail()
         frameMilestone(event)
     }

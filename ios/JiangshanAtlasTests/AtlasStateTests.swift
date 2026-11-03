@@ -152,6 +152,113 @@ import MapLibre
         }
     }
 
+    func testWebsiteCameraLinksAndSelectedPlaceSharesRestoreBothCenters() async throws {
+        try await withStore { store,_ in
+            for query in ["lng=120&lat=30","center=120,30"] {
+                store.cameraLongitude=106.5;store.cameraLatitude=34
+                await store.openLink(URL(string:"https://deanchen.me/jiangshan-map/?year=750&\(query)&zoom=4")!)
+                XCTAssertEqual(store.destination?.longitude,120)
+                XCTAssertEqual(store.destination?.latitude,30)
+            }
+            store.inspect([108.94,34.27]);store.cameraLongitude=112.45;store.cameraLatitude=34.62;store.cameraZoom=8
+            let shared=store.shareURL
+            let items=URLComponents(url:shared,resolvingAgainstBaseURL:false)!.queryItems!
+            XCTAssertNil(items.first { $0.name == "lng" },"Camera coordinates must not override the web trace")
+            XCTAssertEqual(items.first { $0.name == "center" }?.value,"112.45,34.62")
+            await store.openLink(shared)
+            XCTAssertEqual(store.selectedCoordinate,[108.94,34.27])
+            XCTAssertEqual(store.destination?.longitude,112.45)
+            XCTAssertEqual(store.destination?.latitude,34.62)
+            XCTAssertEqual(store.destination?.zoom,8)
+        }
+    }
+
+    func testDynamicRulerLanguageAndMixedComparisonShares() async throws {
+        try await withStore { store,_ in
+            await store.startPeople("汉和帝")
+            store.setLanguage("en")
+            for _ in 0..<100 {
+                if store.experience?.title == "Emp. He" || store.actionError != nil { break }
+                try await Task.sleep(for:.milliseconds(20))
+            }
+            XCTAssertNil(store.actionError)
+            XCTAssertEqual(store.experience?.title,"Emp. He")
+            await store.startPeople("苏轼,汉宣帝")
+            let original=store.experience?.id
+            await store.openLink(store.nativeShareURL)
+            XCTAssertNil(store.actionError)
+            XCTAssertEqual(store.experience?.id,original)
+        }
+    }
+
+    func testSearchOpensLandmarkAndKeepsAdministrativeIdentity() async throws {
+        try await withStore { store,_ in
+            let events:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"萧何营建未央宫成"]))
+            await store.handle(try XCTUnwrap(events.first))
+            XCTAssertEqual(store.activeEventID,"landmark-3")
+            XCTAssertEqual(store.autoEvent?.id,"landmark-3")
+            XCTAssertEqual(store.year,-200)
+            XCTAssertNil(store.selection,"Search should present the event peek, not unrelated coordinate history")
+            store.setYear(-218)
+            let admins:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"云中郡"]))
+            await store.handle(try XCTUnwrap(admins.first))
+            for _ in 0..<100 {
+                if store.historicalDetail != nil { break }
+                try await Task.sleep(for:.milliseconds(20))
+            }
+            XCTAssertEqual(store.historicalDetail?.adminTitles,["云中郡"])
+        }
+    }
+
+    func testTerminalMilestonesUseNavigationDatesAndRetainDisplayDates() async throws {
+        try await withStore { store,_ in
+            store.setYear(906)
+            let event=try XCTUnwrap(store.currentMilestone)
+            XCTAssertEqual(event.id,"tang-event-51")
+            XCTAssertEqual(event.year,907)
+            XCTAssertTrue(store.mappedEvents.contains { $0.id == event.id })
+            store.presentEvent(event)
+            XCTAssertEqual(store.year,906);XCTAssertEqual(store.dynasty?.id,"tang")
+            for event in store.catalog!.events where event.source == "milestone" {
+                let dynasty=try XCTUnwrap(store.catalog!.dynasties.first { $0.id == event.dynasty })
+                XCTAssertTrue((dynasty.from...dynasty.to).contains(event.effectiveYear))
+            }
+        }
+    }
+
+    func testHistoricalSiteNavigationEscapesLocksAndClearsNotesForNewSelections() async throws {
+        try await withStore { store,_ in
+            let site=try XCTUnwrap(store.focusSites.first { $0.id == "tang-dayan" })
+            store.setYear(1415);store.lockPeriod=true;store.linkYearRange=1400...1500
+            store.selectFocusSite(site,move:true)
+            XCTAssertTrue(site.isVisible(at:store.year));XCTAssertFalse(store.lockPeriod);XCTAssertNil(store.linkYearRange)
+            let hits:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"南诏"]))
+            await store.handle(try XCTUnwrap(hits.first { !$0.polity.isEmpty }))
+            XCTAssertNil(store.mapNote)
+            XCTAssertNotNil(store.polityDetail)
+            store.setYear(1415);store.lockPeriod=true;store.linkYearRange=1400...1500
+            store.destination=nil;store.exploreFocusCity("changan")
+            XCTAssertEqual(store.year,750);XCTAssertNotNil(store.destination)
+        }
+    }
+
+    func testIndependentWindowStoresKeepPlaybackAndQuizDecksSeparate() async throws {
+        try await withStore { first,defaults in
+            let second=AtlasStore(preferences:defaults);await second.load()
+            defer { second.detailTask?.cancel();second.eraTask?.cancel() }
+            first.setYear(750);second.setYear(1415)
+            first.beginPlayback();_ = first.advancePlayback()
+            XCTAssertEqual(second.year,1415);XCTAssertFalse(second.playing)
+            await first.startQuiz()
+            let questions=try XCTUnwrap(first.quiz?.questions)
+            await second.startQuiz()
+            first.setLanguage("en")
+            try await Task.sleep(for:.milliseconds(200))
+            XCTAssertEqual(first.quiz?.questions.map(\.coord),questions.map(\.coord))
+            XCTAssertEqual(first.quiz?.questions.map(\.id),questions.map(\.id))
+        }
+    }
+
     func testPreferencesAndBookmarksPersistInAnIsolatedStore() async throws {
         try await withStore { store,defaults in
             store.setYear(750);store.traditional=true;store.dismissOnboarding()

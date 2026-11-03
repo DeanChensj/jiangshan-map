@@ -2,7 +2,8 @@ import Foundation
 
 extension AtlasStore {
     func exploreFocusCity(_ city:String) {
-        playing=false;selection=nil;historicalDetail=nil;mapNote=nil
+        playing=false;selection=nil;historicalDetail=nil;mapNote=nil;experience=nil;journey=nil
+        lockPeriod=false;linkYearRange=nil
         showHistoricalDetail=true;showPlaces=true;setYear(750);autoEventDismissed=true
         let sites=focusSites.filter { $0.city == city && $0.isVisible(at:year) }
         guard let first=sites.first else { return }
@@ -10,8 +11,8 @@ extension AtlasStore {
         destination = .init(longitude:first.coord[0],latitude:first.coord[1],zoom:9,bounds:[xs.min()!-0.015,ys.min()!-0.015,xs.max()!+0.015,ys.max()!+0.015])
     }
     func selectFocusSite(_ site:AtlasFocusSite,move:Bool=false) {
-        playing=false
-        if !site.isVisible(at:year) { setYear(min(site.until,max(site.from,750))) }
+        playing=false;experience=nil;journey=nil
+        if !site.isVisible(at:year) { lockPeriod=false;linkYearRange=nil;setYear(min(site.until,max(site.from,750))) }
         inspect(site.coord,title:text(site.title,site.titleEn))
         mapNote = .init(title:site.title,detail:site.detail+"\n\n唐代专题 · 遗址约略位置，非建筑轮廓。图层年代不代表遗址完整存续期。",sourceURL:URL(string:site.sourceURL),titleEn:site.titleEn,detailEn:site.detailEn+"\n\nTang focus · approximate site marker, not a building footprint. Layer dates do not describe the site's entire lifetime.",focusSiteID:site.id)
         if move { fly(site.coord,zoom:11) }

@@ -27,6 +27,33 @@ test('era and polity searches retain actionable results',()=> {
   assert.ok(query('search',{query:'开元'}).some(hit=>hit.year>=713 && hit.year<=741));
   assert.ok(query('search',{query:'南诏'}).some(hit=>hit.polity));
 });
+test('landmark search IDs identify exported landmark records',()=> {
+  const records=context.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS;
+  const index=records.findIndex(event=>event.zh.startsWith('萧何营建未央宫成'));
+  const hit=query('search',{query:'萧何营建未央宫成'}).find(hit=>hit.kind==='event');
+  assert.equal(hit.eventID,`landmark-${index}`);
+});
+test('administrative search preserves the chosen region when its label anchor is outside',()=> {
+  const hit=query('search',{year:-218,query:'云中郡'})[0];
+  const detail=query('detail',{year:hit.year,coord:hit.coord,label:hit.title,adminTitle:hit.prefTitle});
+  assert.deepEqual(detail.adminTitles,['云中郡']);
+});
+test('selected-place links restore the trace separately from the camera center on the web',()=> {
+  const a=Object.create(context.window.HistoricalAtlasController.prototype);
+  const calls=[];
+  Object.assign(a,{locale:'zh',_fullSnapshotsLoaded:true,camera:{x:0,y:0,w:1000,h:700,zoom:1},
+    projector:new context.window.MercatorProjector(1000,700,{west:66,east:142,south:14,north:55}),
+    _armUrlSync(){},jumpToYear(){},_applyCamera(){},openGenealogyAt(...coord){calls.push(coord)}});
+  const oldTimer=context.setTimeout;
+  context.setTimeout=fn=>{fn();return 0};
+  context.location={search:'?year=750&trace=108.94,34.27&center=112.45,34.62&zoom=3'};
+  try {
+    a._restoreFromQuery();
+    assert.deepEqual(calls,[[108.94,34.27]]);
+    const center=a.projector.toGeo(a.camera.x+a.camera.w/2,a.camera.y+a.camera.h/2);
+    assert.ok(Math.abs(center[0]-112.45)<1e-8 && Math.abs(center[1]-34.62)<1e-8);
+  } finally {context.setTimeout=oldTimer;delete context.location;}
+});
 test('person comparisons retain tracks and mapped encounters',()=> {
   const result=query('people',{query:'李白,杜甫'});
   assert.equal(result.tracks.length,2);

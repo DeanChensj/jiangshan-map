@@ -48,7 +48,7 @@ Changing this configuration does not reconfigure DNS or publish a deployment by 
 
 - `AtlasMapView.swift`: native map, background stage preparation, bounded stage cache, labels, routes, quiz overlays and hit selection. Camera gestures stay inside MapLibre.
 - `AtlasStore.swift`, `AtlasFeatures.swift`, `AtlasModels.swift`: native state, navigation, persistence, music and shared data models.
-- `AtlasEngine.swift`: a serial JavaScriptCore context for historical queries, off the main thread. It loads the existing web data and controller without creating a DOM or running the web UI.
+- `AtlasEngine.swift`: a per-window serial JavaScriptCore context for historical queries, off the main thread. It loads the existing web data and controller without creating a DOM or running the web UI.
 - `../scripts/ios_engine.js`: small pure-query adapter using the original search, person, encounter, route, genealogy, polity and quiz rules.
 - `ContentView.swift`, `AtlasDetailViews.swift`, `AtlasFeatureViews.swift`: native SwiftUI interface.
 - `AtlasCartography.swift`, `AtlasGeometry.swift`, `AtlasPulseOverlay.swift`: map styling, trajectories and idle marker animations.

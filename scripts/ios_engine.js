@@ -42,6 +42,13 @@
           coord:e.coord||e.milestone?.coord||[lng,lat]}))};
     });
   }
+  function eventID(hit) {
+    if(!hit.milestone||!hit.dynasty)return null;
+    const index=hit.dynasty.milestones.indexOf(hit.milestone);
+    if(index>=0)return `${hit.dynasty.key}-event-${index}`;
+    const landmark=w.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS.findIndex(e=>e.year===hit.milestone.year&&e.zh===hit.milestone.headline);
+    return landmark>=0?`landmark-${landmark}`:null;
+  }
   window.AtlasNative = function(op,p) {
     a.year=Number(p.year)||a.year;a.locale=p.lang||'zh';a.dynastyIdx=a._findDynastyIndex(a.year);
     if(op==='locate')return a.inspect({year:a.year,place:p.place});
@@ -50,11 +57,12 @@
     if(op==='search')return a._queryQuickSearch(p.query).slice(0,65).map((h,i)=>({
       id:String(i),kind:h.kind,title:tr(h.titleZh,h.titleEn),subtitle:tr(h.subZh,h.subEn),
       year:h.year||h.dynasty?.focusYear||a.year,coord:h.coord||null,
-      person:h.personProfiles?.map(p=>p.zh).join(',')||h.personProfile?.zh||h.personKey||'',polity:h.polityKey||'',eventID:h.milestone&&h.dynasty?`${h.dynasty.key}-event-${h.dynasty.milestones.indexOf(h.milestone)}`:null,prefTitle:h.prefTitle||null,badge:tr(a._quickSearchKindLabel?a._quickSearchKindLabel(h.kind):'',h.kind)}));
+      person:h.personProfiles?.map(p=>p.zh).join(',')||h.personProfile?.zh||h.personKey||'',polity:h.polityKey||'',eventID:eventID(h),prefTitle:h.prefTitle||null,badge:tr(a._quickSearchKindLabel?a._quickSearchKindLabel(h.kind):'',h.kind)}));
     if(op==='detail') {
       const d=a.dynasties[a.dynastyIdx],snap=a.snapshots[a._resolveSnapKey(d,a.year)],hit=a._resolveEraPlaceAt(...p.coord,d,snap);
       const info=a.inspect({year:a.year,lng:p.coord[0],lat:p.coord[1]});
-      return {info,rows:genealogy(...p.coord),adminTitles:hit.prefObjs.concat(hit.regionObjs).map(p=>p.title),heading:(p.label&&a.resolvePlace(p.label,a.year))?tr(a.resolvePlace(p.label,a.year).name):[info.modernProvince,info.nearestCity?.modern].filter(Boolean).join(' · ')};
+      const selectedAdmin=p.adminTitle&&[...(snap.prefectures||[]),...(snap.regions||[])].some(f=>f.title===p.adminTitle);
+      return {info,rows:genealogy(...p.coord),adminTitles:selectedAdmin?[p.adminTitle]:hit.prefObjs.concat(hit.regionObjs).map(p=>p.title),heading:(p.label&&a.resolvePlace(p.label,a.year))?tr(a.resolvePlace(p.label,a.year).name):[info.modernProvince,info.nearestCity?.modern].filter(Boolean).join(' · ')};
     }
     if(op==='route') {
       const tokens=a._parsePlaceTokens(p.place,p.years||a.year);

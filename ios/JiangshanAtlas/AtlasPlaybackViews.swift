@@ -103,8 +103,8 @@ struct AtlasTimelineBands: View {
                                 Rectangle().fill(AtlasTheme.paper.opacity(0.65)).frame(width:1).offset(x:width*CGFloat(phase.from-range.lowerBound)/CGFloat(max(1,range.upperBound-range.lowerBound))-width/2)
                             }
                             if width > 21 { Text(store.text(dynasty.title,dynasty.titleEn)).font(AtlasFonts.ui(8)).lineLimit(1).minimumScaleFactor(0.6).padding(.horizontal,2) }
-                            ForEach((store.catalog?.events ?? []).filter { $0.dynasty == dynasty.id && $0.source == "milestone" && range.contains($0.year) }) { event in
-                                Circle().fill(AtlasTheme.vermilion.opacity(0.65)).frame(width:2,height:2).offset(x:width*CGFloat(event.year-range.lowerBound)/CGFloat(max(1,range.upperBound-range.lowerBound))-width/2,y:7)
+                            ForEach((store.catalog?.events ?? []).filter { $0.dynasty == dynasty.id && $0.source == "milestone" && range.contains($0.effectiveYear) }) { event in
+                                Circle().fill(AtlasTheme.vermilion.opacity(0.65)).frame(width:2,height:2).offset(x:width*CGFloat(event.effectiveYear-range.lowerBound)/CGFloat(max(1,range.upperBound-range.lowerBound))-width/2,y:7)
                             }
                         }.frame(width:max(1,width-1),height:22)
                     }.buttonStyle(.plain).accessibilityLabel(store.text(dynasty.title,dynasty.titleEn))

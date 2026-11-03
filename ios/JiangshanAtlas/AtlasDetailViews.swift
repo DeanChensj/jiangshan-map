@@ -203,11 +203,11 @@ struct AtlasSearchView: View {
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: store.text("城邑、人物、君主、年号、战役…", "Places, people, rulers, eras, battles…"))
         .textInputAutocapitalization(.never).autocorrectionDisabled()
         .task(id: query + store.language) {
-            guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { hits = []; return }
+            guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { hits = []; loading=false;error=nil;return }
             loading = true; error = nil
             do {
                 try await Task.sleep(for: .milliseconds(180))
-                let results: [SearchHit] = try await AtlasEngine.shared.query("search", store.arguments(["query": query]))
+                let results: [SearchHit] = try await store.engine.query("search", store.arguments(["query": query]))
                 guard !Task.isCancelled else { return }; hits = results; loading = false
             } catch is CancellationError { }
             catch { if !Task.isCancelled { self.error = error.localizedDescription; loading = false } }

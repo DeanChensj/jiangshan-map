@@ -9,7 +9,7 @@ extension AtlasStore {
     var timelineNodeYears: [Int] {
         var years = [minYear,maxYear]
         for dynasty in catalog?.dynasties ?? [] { years += [dynasty.from,dynasty.focus]; years += dynasty.phases.map(\.from) }
-        years += (catalog?.events ?? []).filter { $0.source == "milestone" }.map(\.year)
+        years += (catalog?.events ?? []).filter { $0.source == "milestone" }.map(\.effectiveYear)
         return Array(Set(years + [timelineStart,timelineEnd])).filter { $0 >= timelineStart && $0 <= timelineEnd }.sorted()
     }
     var timelineWeights: [(Dynasty,Double)] {
@@ -42,8 +42,8 @@ extension AtlasStore {
         };return timelineEnd
     }
     var currentMilestone: AtlasEvent? {
-        let list=events.filter { $0.source == "milestone" && $0.year <= year }
-        if let active=list.first(where:{ $0.id == activeEventID && $0.year == year }) { return active }
+        let list=events.filter { $0.source == "milestone" && $0.effectiveYear <= year }
+        if let active=list.first(where:{ $0.id == activeEventID && $0.effectiveYear == year }) { return active }
         return list.last
     }
     func syncMilestone() {
@@ -52,7 +52,7 @@ extension AtlasStore {
         if autoEvent?.id != event?.id { autoEventDismissed=false;autoEvent=event }
     }
     func stepSameYearEvent(_ direction: Int) -> Bool {
-        let matches=events.filter { $0.source == "milestone" && $0.year == year }
+        let matches=events.filter { $0.source == "milestone" && $0.effectiveYear == year }
         guard matches.count > 1 else { return false }
         let index=matches.firstIndex { $0.id == (activeEventID ?? currentMilestone?.id) } ?? 0
         let next=index+direction
@@ -95,7 +95,7 @@ extension AtlasStore {
     func nativeZoom(forWebScale scale: Double) -> Double { max(1,min(14,log2(scale*360*cameraViewportWidth/(76*512)))) }
     func presentEvent(_ event: AtlasEvent) {
         playing=false;experience=nil;journey=nil;activeEventID=event.id
-        setYear(event.year);autoEvent=event;autoEventDismissed=false
+        setYear(event.effectiveYear);autoEvent=event;autoEventDismissed=false
         frameMilestone(event)
     }
 }

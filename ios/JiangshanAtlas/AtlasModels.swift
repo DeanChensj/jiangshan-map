@@ -102,6 +102,8 @@ struct AtlasEvent: Decodable, Identifiable, Sendable {
     var source: String? = nil
     var sealStop: Int? = nil
     var anchors: [AtlasAnchor]? = nil
+    var navigationYear:Int? = nil
+    var effectiveYear:Int { navigationYear ?? year }
     var coordinate: CLLocationCoordinate2D { .init(latitude: coord[1], longitude: coord[0]) }
 }
 

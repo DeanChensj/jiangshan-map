@@ -3,27 +3,31 @@ import SwiftUI
 @main
 struct JiangshanAtlasApp: App {
     init() { AtlasFonts.register() }
+    var body: some Scene {
+        WindowGroup { AtlasSceneView() }
+    }
+}
+
+struct AtlasSceneView:View {
     @State private var store = AtlasStore()
     @Environment(\.scenePhase) private var scenePhase
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView(store: store)
-                .tint(AtlasTheme.vermilion)
-                .preferredColorScheme(.light)
-                .font(AtlasFonts.ui(15))
-                .task {
-                    await store.load()
-                    #if DEBUG
-                    // Exercise the real link parser with deterministic UI-test state.
-                    if let raw=ProcessInfo.processInfo.environment["ATLAS_UI_TEST_URL"],let url=URL(string:raw) { await store.openLink(url) }
-                    #endif
-                }
-                .onOpenURL { store.open($0) }
-                .onChange(of: scenePhase) { _, phase in
-                    if phase != .active { store.saveCamera() }
-                }
-        }
+    var body: some View {
+        ContentView(store: store)
+            .tint(AtlasTheme.vermilion)
+            .preferredColorScheme(.light)
+            .font(AtlasFonts.ui(15))
+            .task {
+                await store.load()
+                #if DEBUG
+                // Exercise the real link parser with deterministic UI-test state.
+                if let raw=ProcessInfo.processInfo.environment["ATLAS_UI_TEST_URL"],let url=URL(string:raw) { await store.openLink(url) }
+                #endif
+            }
+            .onOpenURL { store.open($0) }
+            .onChange(of: scenePhase) { _, phase in
+                if phase != .active { store.saveCamera() }
+            }
     }
 }
 

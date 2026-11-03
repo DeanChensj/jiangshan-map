@@ -11,7 +11,7 @@ node --test tests/*.test.cjs
 node scripts/validate_atlas.js
 ```
 
-The 21 Node tests use the real web data and native query adapter. They cover localized search, people/encounters, every curated journey, the Imperial Seal, parallel routes and dates, genealogy, polity stages/events, quiz translation, historical-site dates and generated link-service files. Link tests use temporary directories and example domains; they do not contact or modify a deployment. The existing atlas integrity workflow runs these tests on Linux.
+The 24 Node tests use the real web data and native query adapter. They cover localized search, people/encounters, every curated journey, the Imperial Seal, parallel routes and dates, genealogy, polity stages/events, quiz translation, historical-site dates and generated link-service files. Additional regression checks cover landmark event IDs, administrative search identity and selected-place/camera restoration by the web parser. Link tests use temporary directories and example domains; they do not contact or modify a deployment. The existing atlas integrity workflow runs these tests on Linux.
 
 ## Native tests
 
@@ -22,7 +22,7 @@ xcodebuild -project ios/JiangshanAtlas.xcodeproj -scheme JiangshanAtlas \
   -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO test
 ```
 
-Choose an installed iPhone simulator if that name is unavailable. Eleven native tests cover year/progress round trips for every mapped year, period/range clamps, playback loading/transition waits, same-year events, quiz restoration, share links, isolated saved preferences, Traditional Chinese people filtering, dated site names and stable map projection across event/year changes. The projection test hosts the real SwiftUI screen and checks a coordinate's screen position and the map's content insets while scrubbing across periods. Four UI tests cover the Imperial Seal shortcut/sheet dismissal, named event anchors retaining their event context, playback pausing when the exploration menu opens, and stable timeline/event positions during playback and slider interaction.
+Choose an installed iPhone simulator if that name is unavailable. Seventeen native tests cover year/progress round trips for every mapped year, period/range clamps, playback loading/transition waits, same-year events, quiz restoration, share links, isolated saved preferences, Traditional Chinese people filtering, dated site names and stable map projection across event/year changes. The projection test hosts the real SwiftUI screen and checks a coordinate's screen position and the map's content insets while scrubbing across periods. Native regressions also exercise website camera URLs, selected-place shares, dynamic ruler translation/comparison links, terminal milestone dates, period-locked site navigation, stale site-note cleanup and separate window quiz engines. Four UI tests cover the Imperial Seal shortcut/sheet dismissal, named event anchors retaining their event context, playback pausing when the exploration menu opens, and stable timeline/event positions during playback and slider interaction.
 
 State tests use temporary UserDefaults suites. UI tests use a Debug-only `ATLAS_UI_TEST_URL` launch environment value to seed the app through its real deep-link parser; this hook is excluded from Release builds. Accessibility identifiers identify event and journey controls without relying on translated labels. A synthetic same-year milestone exercises the stepping behavior even when a source-data revision contains no duplicate-year milestones.
 

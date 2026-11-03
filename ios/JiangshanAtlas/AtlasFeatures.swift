@@ -25,25 +25,26 @@ extension AtlasStore {
         eraTask = Task {
             do {
                 try await Task.sleep(for: .milliseconds(100))
-                let label: String = try await AtlasEngine.shared.query("era", args)
+                let label: String = try await engine.query("era", args)
                 guard !Task.isCancelled else { return }
                 eraLabel = label
             } catch { }
         }
     }
-    func inspect(_ coord: [Double], title: String = "", move: Bool = false) {
+    func inspect(_ coord: [Double], title: String = "", move: Bool = false, adminTitle:String? = nil) {
         mapNote = nil
         selection = .coordinate(id: UUID().uuidString, title: title.isEmpty ? text("此地沿革", "History of this place") : title, coord: coord)
+        selectedAdminTitle=adminTitle
         refreshDetail()
         if move { fly(coord, zoom:nativeZoom(forWebScale:3.25)) }
     }
     func refreshDetail() {
         detailTask?.cancel()
         guard let coord = selectedCoordinate else { return }
-        let args = arguments(["coord":coord,"label":selection?.title(english:english) ?? ""])
+        let args = arguments(["coord":coord,"label":selection?.title(english:english) ?? "","adminTitle":selectedAdminTitle ?? ""])
         detailTask = Task {
             do {
-                let result: HistoricalDetail = try await AtlasEngine.shared.query("detail", args)
+                let result: HistoricalDetail = try await engine.query("detail", args)
                 guard !Task.isCancelled else { return }
                 historicalDetail = result
             } catch { if !Task.isCancelled { actionError = error.localizedDescription } }
@@ -52,14 +53,14 @@ extension AtlasStore {
     func selectTerritory(_ title: String) {
         focusedPolity = focusedPolity == title ? "" : title
         Task {
-            do { polityDetail = try await AtlasEngine.shared.query("polity", arguments(["key": title]), as: PolityDetail?.self);if !focusedPolity.isEmpty { fitPolity(title) } }
+            do { polityDetail = try await engine.query("polity", arguments(["key": title]), as: PolityDetail?.self);if !focusedPolity.isEmpty { fitPolity(title) } }
             catch { actionError = error.localizedDescription }
         }
     }
     func startPeople(_ query: String, stop: Int = -1) async {
         busy = true; defer { busy = false }
         do {
-            let value: AtlasExperience = try await AtlasEngine.shared.query("people", arguments(["query": query]))
+            let value: AtlasExperience = try await engine.query("people", arguments(["query": query]))
             journey = nil; selection = nil; quiz = nil; experience = value;focusedPolity="";polityDetail=nil;historicalDetail=nil;linkYearRange=nil;lockPeriod=false
             encountersOnly=false;routeRevision += 1
             experienceIndex = max(-1,min(value.stops.count-1,stop))
@@ -69,7 +70,7 @@ extension AtlasStore {
     func startRoute(_ places: String, years: String) async -> Bool {
         busy = true; defer { busy = false }
         do {
-            let value: AtlasExperience = try await AtlasEngine.shared.query("route", arguments(["place": places, "years": years]))
+            let value: AtlasExperience = try await engine.query("route", arguments(["place": places, "years": years]))
             journey = nil; selection = nil; quiz = nil; experience = value;focusedPolity="";polityDetail=nil;historicalDetail=nil;linkYearRange=nil;lockPeriod=false; experienceIndex = -1;routeRevision += 1;setYear(value.stops[0].year);fitExperience()
             return true
         } catch { actionError = error.localizedDescription; return false }
@@ -91,29 +92,29 @@ extension AtlasStore {
         if let id=hit.eventID,let event=catalog?.events.first(where:{ $0.id == id }) { presentEvent(event);return }
         if !preserveYear { setYear(hit.year) }
         if !hit.polity.isEmpty {
-            let value: PolityDetail? = try? await AtlasEngine.shared.query("polity", arguments(["key": hit.polity]))
+            let value: PolityDetail? = try? await engine.query("polity", arguments(["key": hit.polity]))
             polityDetail = value
             selection = .territory(id: hit.polity, title: hit.title, subtitle: hit.title)
             focusedPolity = value?.titles.first ?? hit.title
             fitPolity(focusedPolity)
             return
         }
-        if let coord=hit.coord { inspect(coord,title:hit.title,move:true) }
+        if let coord=hit.coord { inspect(coord,title:hit.title,move:true,adminTitle:hit.prefTitle) }
     }
     func setLanguage(_ language: String) {
         english = language == "en"; traditional = language == "zh-tw"
         refreshEra(); refreshDetail()
         if quiz != nil {
             let locale=language
-            Task { if let questions:[QuizQuestion]=try? await AtlasEngine.shared.query("quiz",arguments(["reuse":true])),locale == self.language { self.quiz?.questions=questions } }
+            Task { if let questions:[QuizQuestion]=try? await engine.query("quiz",arguments(["reuse":true])),locale == self.language { self.quiz?.questions=questions } }
         }
         if let key=polityDetail?.key {
-            Task { polityDetail=try? await AtlasEngine.shared.query("polity",arguments(["key":key]),as:PolityDetail?.self) }
+            Task { polityDetail=try? await engine.query("polity",arguments(["key":key]),as:PolityDetail?.self) }
         }
         if let experience {
             Task {
                 let index = experienceIndex,filter=encountersOnly,camera=[cameraLongitude,cameraLatitude,cameraZoom]
-                if experience.kind == "person" { await startPeople(experience.id, stop: index) }
+                if experience.kind == "person" { await startPeople(experience.query ?? experience.id, stop: index) }
                 else if await startRoute(experience.place ?? "", years: experience.years ?? String(year)) {
                     experienceIndex = min(index,(self.experience?.stops.count ?? 1)-1); if index < 0 { fitExperience() } else { showExperienceStop() }
                 }
@@ -124,7 +125,7 @@ extension AtlasStore {
     func startQuiz() async {
         busy = true; defer { busy = false }
         do {
-            let questions: [QuizQuestion] = try await AtlasEngine.shared.query("quiz", arguments())
+            let questions: [QuizQuestion] = try await engine.query("quiz", arguments())
             guard !questions.isEmpty else { return }
             if quiz == nil { preQuizCamera=[cameraLongitude,cameraLatitude,cameraZoom];preQuizYear=year;preQuizLock=lockPeriod;preQuizRange=linkYearRange }
             playing=false;journey=nil;experience=nil;selection=nil;focusedPolity="";lockPeriod=false;linkYearRange=nil
@@ -159,13 +160,19 @@ extension AtlasStore {
     func openLink(_ url: URL) async {
         let items=URLComponents(url:url,resolvingAgainstBaseURL:false)?.queryItems ?? []
         func value(_ key:String)->String? { items.first { $0.name == key }?.value }
+        func coordinate(_ values:[Double])->[Double]? {
+            values.count == 2 && values.allSatisfy(\.isFinite) ? values : nil
+        }
+        let cameraCenter: [Double]?
+        if let lng=value("lng").flatMap(Double.init),let lat=value("lat").flatMap(Double.init) { cameraCenter=coordinate([lng,lat]) }
+        else { cameraCenter=value("center").flatMap { coordinate($0.split(separator:",").compactMap { Double($0) }) } }
         if quiz != nil { closeQuiz() }
         playing=false;experience=nil;journey=nil;selection=nil;polityDetail=nil;historicalDetail=nil;focusedPolity="";pendingPolityFit=nil;previewSnapshot=nil;lockPeriod=false;linkYearRange=nil
         if let language=value("lang") { setLanguage(language) }
         if let terrain=value("terrain") { showTerrain=terrain != "0" && terrain != "false" }
         if let y=value("year")?.components(separatedBy:",").first.flatMap(Int.init) { setYear(y) }
         if let key=value("polity") {
-            if let detail=try? await AtlasEngine.shared.query("polity",arguments(["key":key]),as:PolityDetail?.self) {
+            if let detail=try? await engine.query("polity",arguments(["key":key]),as:PolityDetail?.self) {
                 polityDetail=detail;focusedPolity=detail.titles.first ?? detail.title
                 if year < detail.from || year > detail.to { setYear(detail.from) }
                 selection = .territory(id:detail.key,title:detail.title,subtitle:detail.title);fitPolity(focusedPolity)
@@ -180,17 +187,17 @@ extension AtlasStore {
             if place.contains(where:{ tokens.contains($0) }) {
                 if await startRoute(place,years:value("year") ?? String(year)),let index=value("routeStop").flatMap(Int.init),let experience { experienceIndex=max(0,min(experience.stops.count-1,index));showExperienceStop() }
             } else {
-                let result:NativePlace?=try? await AtlasEngine.shared.query("locate",arguments(["place":place]))
+                let result:NativePlace?=try? await engine.query("locate",arguments(["place":place]))
                 if let result,let coord=result.coord { inspect(coord,title:result.resolvedName ?? place,move:true) }
             }
         } else if let query=value("q") ?? value("hover") {
-            let hits:[SearchHit]=(try? await AtlasEngine.shared.query("search",arguments(["query":query]))) ?? []
+            let hits:[SearchHit]=(try? await engine.query("search",arguments(["query":query]))) ?? []
             if let hit=hits.first { await handle(hit,preserveYear:value("year") != nil) }
         } else if let trace=value("trace")?.split(separator:",").compactMap({ Double($0) }),trace.count == 2 { inspect(trace,move:true) }
-        else if let lng=value("lng").flatMap(Double.init),let lat=value("lat").flatMap(Double.init),value("polity") == nil { fly([lng,lat],zoom:cameraZoom) }
-        else if let center=value("center")?.split(separator:",").compactMap({ Double($0) }),center.count == 2 { fly(center,zoom:cameraZoom) }
-        if let raw=value("nativeZoom").flatMap(Double.init),raw.isFinite,let lon=value("lng").flatMap(Double.init),let lat=value("lat").flatMap(Double.init) { fly([lon,lat],zoom:min(14,max(1,raw))) }
-        else if let scale=value("zoom").flatMap(Double.init),scale.isFinite,scale > 0 { fly(selectedCoordinate ?? activeStop?.coord ?? [cameraLongitude,cameraLatitude],zoom:nativeZoom(forWebScale:scale)) }
+        let target=cameraCenter ?? selectedCoordinate ?? activeStop?.coord ?? destination.map { [$0.longitude,$0.latitude] } ?? [cameraLongitude,cameraLatitude]
+        if let raw=value("nativeZoom").flatMap(Double.init),raw.isFinite { fly(target,zoom:min(14,max(1,raw))) }
+        else if let scale=value("zoom").flatMap(Double.init),scale.isFinite,scale > 0 { fly(target,zoom:nativeZoom(forWebScale:scale)) }
+        else if let cameraCenter { fly(cameraCenter,zoom:cameraZoom) }
         if value("quiz") == "1" { await startQuiz() }
         if let from=value("from").flatMap(Int.init),let to=value("to").flatMap(Int.init),from <= to,to >= minYear,from <= maxYear { linkYearRange=max(minYear,from)...min(maxYear,to);setYear(year) }
         else { linkYearRange=nil }
