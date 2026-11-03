@@ -8433,7 +8433,10 @@
 
     openGenealogyAt(lng, lat, customLabel = null, opts = {}) {
       const fromYearSync = Boolean(opts && opts.fromYearSync);
-      if (!fromYearSync) this._cancelPendingCityFocus();
+      if (!fromYearSync) {
+        this._cancelPendingCityFocus();
+        if (this.cityPlans) this.cityPlans.close();
+      }
       const preserveScroll = Boolean(opts && opts.preserveScroll);
       const isSamePlace =
         this.activeTrace &&
