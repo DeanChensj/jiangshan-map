@@ -86,7 +86,7 @@ struct ContentView: View {
             case .rightArrow: playing=false;if press.modifiers.contains(.shift) { store.navigateToYear(store.year+10) } else { store.step(1) };return .handled
             case .home: playing=false;store.navigateToYear(store.minYear);return .handled
             case .end: playing=false;store.navigateToYear(store.maxYear);return .handled
-            case .escape: store.clearSelection();store.experience=nil;store.closeQuiz();return .handled
+            case .escape: store.dismissCurrentMode();return .handled
             default:return .ignored
             }
         }

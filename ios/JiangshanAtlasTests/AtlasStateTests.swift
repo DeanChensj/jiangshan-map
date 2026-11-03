@@ -1,6 +1,8 @@
 import XCTest
 import SwiftUI
 import MapLibre
+import Observation
+import os
 @testable import JiangshanAtlas
 
 @MainActor final class AtlasStateTests:XCTestCase {
@@ -42,6 +44,71 @@ import MapLibre
         let coordinator=try XCTUnwrap(loaded.delegate as? AtlasMapView.Coordinator)
         try await Task.sleep(for:.milliseconds(200))
         try await body(loaded,coordinator)
+    }
+
+    func testDismissCurrentModePausesJourneyTimelineAndQuiz() async throws {
+        try await withStore { store,_ in
+            await store.startPeople("libai")
+            store.playing=true;store.beginPlayback()
+            let year=store.year
+            store.dismissCurrentMode()
+            XCTAssertFalse(store.playing);XCTAssertNil(store.experience)
+            XCTAssertEqual(store.year,year);XCTAssertNotNil(store.autoEvent)
+            store.playing=true;store.beginPlayback()
+            XCTAssertEqual(store.playbackProgress,store.timelineProgress(year),accuracy:0.000001)
+            store.dismissCurrentMode();XCTAssertFalse(store.playing)
+            await store.startQuiz();store.dismissCurrentMode()
+            XCTAssertNil(store.quiz);XCTAssertFalse(store.playing);XCTAssertEqual(store.year,year)
+        }
+    }
+
+    func testRenderedCameraEndRefreshesShareLinksWithoutPublishingRawMovement() async throws {
+        try await withStore { store,_ in
+            try await withRenderedMap(store) { map,_ in
+                let changed=OSAllocatedUnfairLock(initialState:false)
+                let previous=withObservationTracking { store.shareURL } onChange:{ changed.withLock { $0=true } }
+                store.cameraLongitude=120;store.cameraLatitude=30;store.cameraZoom=7
+                store.saveCamera()
+                XCTAssertFalse(changed.withLock { $0 },"Raw camera changes must not refresh SwiftUI on each frame")
+                map.setCenter(.init(latitude:31.5,longitude:121.25),zoomLevel:6,animated:false)
+                for _ in 0..<100 {
+                    if changed.withLock({$0}) { break }
+                    try await Task.sleep(for:.milliseconds(20))
+                }
+                XCTAssertTrue(changed.withLock { $0 },"Finishing a camera move must refresh existing ShareLink values")
+                let current=store.shareURL
+                XCTAssertNotEqual(previous,current)
+                let items=try XCTUnwrap(URLComponents(url:current,resolvingAgainstBaseURL:false)?.queryItems)
+                let center=try XCTUnwrap(items.first { $0.name == "center" }?.value).split(separator:",").compactMap { Double($0) }
+                XCTAssertEqual(center.count,2)
+                XCTAssertEqual(center[0],121.25,accuracy:0.0001);XCTAssertEqual(center[1],31.5,accuracy:0.0001)
+                XCTAssertEqual(try XCTUnwrap(items.first { $0.name == "nativeZoom" }?.value.flatMap(Double.init)),6,accuracy:0.01)
+                let duplicate=OSAllocatedUnfairLock(initialState:false)
+                withObservationTracking { _=store.shareURL } onChange:{ duplicate.withLock { $0=true } }
+                store.publishCameraForSharing()
+                XCTAssertFalse(duplicate.withLock { $0 },"Identical camera snapshots must not invalidate sharing again")
+            }
+        }
+    }
+
+    func testGenealogyUsesOwnerNavigationYearAndStableCatalogIdentity() async throws {
+        try await withStore { store,_ in
+            for language in ["zh","en","zh-tw"] {
+                store.setLanguage(language)
+                let detail:HistoricalDetail=try await store.engine.query("detail",store.arguments(["coord":[118.35,36.82]]))
+                let row=try XCTUnwrap(detail.rows.first { $0.id == "zhanguo" })
+                let event=try XCTUnwrap(row.events.first { $0.year == -221 })
+                XCTAssertEqual(event.dynastyID,row.id);XCTAssertEqual(event.navigationYear,-222)
+                store.inspect([118.35,36.82]);store.openGenealogyEvent(event)
+                XCTAssertEqual(store.year,-222);XCTAssertEqual(store.dynasty?.id,row.id)
+                let changan:HistoricalDetail=try await store.engine.query("detail",store.arguments(["coord":[108.94,34.27]]))
+                let catalogEvent=try XCTUnwrap(changan.rows.flatMap(\.events).first { $0.eventID != nil })
+                store.openGenealogyEvent(catalogEvent)
+                if case .event(let selected)=store.selection { XCTAssertEqual(selected.id,catalogEvent.eventID) }
+                else { XCTFail("A catalog event must open by identity regardless of its displayed language") }
+                XCTAssertEqual(store.year,catalogEvent.navigationYear)
+            }
+        }
     }
 
     func testFormEncodedWebsiteLinksAndLiteralPlusRoundTrip() async throws {

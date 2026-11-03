@@ -129,10 +129,7 @@ struct AtlasMapView: UIViewRepresentable {
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             guard hasLoadedStyle else { return }
             synchronizeGestureState(mapView)
-            store.cameraLongitude = mapView.centerCoordinate.longitude
-            store.cameraLatitude = mapView.centerCoordinate.latitude
-            store.cameraZoom = mapView.zoomLevel
-            store.cameraViewportWidth = Double(mapView.bounds.width)
+            captureCamera(mapView)
             if let experience=store.experience,experience.kind == "route" {
                 let joins=experience.stops.enumerated().compactMap { index,stop -> String? in
                     guard let peer=stop.convergencePeer,peer > index,experience.stops.indices.contains(peer) else { return nil }
@@ -150,6 +147,7 @@ struct AtlasMapView: UIViewRepresentable {
 
         func mapViewDidBecomeIdle(_ mapView: MLNMapView) {
             synchronizeGestureState(mapView)
+            captureCamera(mapView)
             store.saveCamera();refreshPulses()
         }
         func mapView(_ mapView: MLNMapView, regionWillChangeAnimated animated: Bool) {
@@ -157,7 +155,18 @@ struct AtlasMapView: UIViewRepresentable {
             synchronizeGestureState(mapView)
         }
         @objc func cameraGestureChanged(_ recognizer:UIGestureRecognizer) {
-            if let map { synchronizeGestureState(map) }
+            if let map {
+                synchronizeGestureState(map)
+                if !store.isGestureActive { captureCamera(map) }
+            }
+        }
+        private func captureCamera(_ map:MLNMapView) {
+            guard hasLoadedStyle,map.bounds.width > 0 else { return }
+            store.cameraLongitude=map.centerCoordinate.longitude
+            store.cameraLatitude=map.centerCoordinate.latitude
+            store.cameraZoom=map.zoomLevel
+            store.cameraViewportWidth=Double(map.bounds.width)
+            if !store.isGestureActive { store.publishCameraForSharing() }
         }
         private func synchronizeGestureState(_ map:MLNMapView) {
             let active=(map.gestureRecognizers ?? []).contains { $0.state == .began || $0.state == .changed }

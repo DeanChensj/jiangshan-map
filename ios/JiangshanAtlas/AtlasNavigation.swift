@@ -12,6 +12,9 @@ extension AtlasStore {
     func clearSelection() {
         beginNavigation();selection=nil;historicalDetail=nil;clearPolityContext()
     }
+    func dismissCurrentMode() {
+        playing=false;clearSelection();experience=nil;journey=nil;closeQuiz();syncMilestone()
+    }
     func navigateToYear(_ value:Int) {
         guard quiz == nil else { return }
         beginNavigation();playing=false;setYear(value)
@@ -108,7 +111,7 @@ extension AtlasStore {
     func openGenealogyEvent(_ event: GenealogyEvent) {
         let request=beginNavigation()
         playing=false;lockPeriod=false;linkYearRange=nil
-        if let match=catalog?.events.first(where:{ $0.year == event.year && (text($0.title,$0.titleEn) == event.title || $0.title == event.title) }) { presentEvent(match,navigation:request) }
-        else { setYear(event.year);fly(event.coord,webScale:3.25) }
+        if let id=event.eventID,let match=catalog?.events.first(where:{ $0.id == id }) { presentEvent(match,navigation:request) }
+        else { setYear(event.navigationYear);fly(event.coord,webScale:3.25) }
     }
 }

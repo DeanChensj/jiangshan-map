@@ -203,3 +203,20 @@ test('comparison tracks discard campaign legs whose preceding stop changed',()=>
   assert.ok(track.stops.some(stop=>stop.hasLeg&&stop.via.length),'Keep applicable curated legs');
   for(const track of result.tracks)assert.equal(track.stops[0].hasLeg,false);
 });
+
+test('genealogy retains owner periods, navigation dates and catalog event identities',()=> {
+  for(const lang of ['zh','en','zh-tw']) {
+    const detail=query('detail',{lang,coord:[118.35,36.82]});
+    const row=detail.rows.find(row=>row.id==='zhanguo');
+    const terminal=row.events.find(event=>event.year===-221);
+    assert.ok(terminal);assert.equal(terminal.dynastyID,row.id);assert.equal(terminal.navigationYear,-222);
+    assert.equal(terminal.eventID,null);
+    for(const row of detail.rows)for(const event of row.events) {
+      const owner=context.window.DYNASTY_DATA.find(d=>d.key===row.id);
+      assert.equal(event.dynastyID,row.id);
+      assert.ok(event.navigationYear>=owner.fromYear && event.navigationYear<owner.toYear);
+    }
+    const changan=query('detail',{lang,coord:[108.94,34.27]});
+    assert.ok(changan.rows.some(row=>row.events.some(event=>event.eventID?.includes('-event-'))));
+  }
+});

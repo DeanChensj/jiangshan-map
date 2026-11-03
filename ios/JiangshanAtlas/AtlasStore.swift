@@ -95,6 +95,7 @@ final class AtlasStore {
     @ObservationIgnored var cameraLongitude = 106.5
     @ObservationIgnored var cameraLatitude = 34.0
     @ObservationIgnored var cameraZoom = 2.4
+    private var cameraForSharing:[Double] = []
     @ObservationIgnored private var pendingURL: URL?
     @ObservationIgnored private var lastSavedCamera: [Double]?
     @ObservationIgnored private var navigationRevision = 0
@@ -191,6 +192,8 @@ final class AtlasStore {
     }
     var webBaseURL: URL { URL(string:Bundle.main.object(forInfoDictionaryKey:"AtlasWebURL") as? String ?? Bundle.main.object(forInfoDictionaryKey:"AtlasFallbackShareURL") as? String ?? "https://deanchen.me/jiangshan-map/")! }
     var shareURL: URL {
+        // Refresh ShareLink values at camera endpoints, not on every frame.
+        _ = cameraForSharing
         var components=URLComponents(url:webBaseURL,resolvingAgainstBaseURL:false)!
         var items=[URLQueryItem(name:"year",value:String(year)),URLQueryItem(name:"lang",value:language)]
         if selection == nil,let experience {
@@ -342,6 +345,10 @@ final class AtlasStore {
         guard camera != lastSavedCamera else { return }
         preferences.set(camera, forKey: "atlas.camera")
         lastSavedCamera = camera
+    }
+    func publishCameraForSharing() {
+        let snapshot=[cameraLongitude,cameraLatitude,cameraZoom,cameraViewportWidth]
+        if cameraForSharing != snapshot { cameraForSharing=snapshot }
     }
     func open(_ url: URL) {
         guard catalog != nil else { pendingURL = url; return }

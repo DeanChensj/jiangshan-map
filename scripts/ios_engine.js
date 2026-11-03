@@ -69,13 +69,14 @@
         place:near?tr(a._settlementAncient(near.s,year)):'',
         capital:!!(near&&near.km<=38&&near.s.isCapital),
         events:a._collectPlaceEventsForDynasty(d,lng,lat,near).map((e,i)=>({
-          id:d.key+'-'+i,year:e.year,title:tr(e.text||e.zh||e.headline||e.textZh,e.en||e.headlineEn||e.textEn),
+          id:d.key+'-'+i,year:e.year,dynastyID:d.key,navigationYear:a._clampYearToDynasty(d,e.year),
+          eventID:eventID({dynasty:d,milestone:e.milestone}),title:tr(e.text||e.zh||e.headline||e.textZh,e.en||e.headlineEn||e.textEn),
           coord:e.coord||e.milestone?.coord||[lng,lat]}))};
     });
   }
   function eventID(hit) {
     if(!hit.milestone||!hit.dynasty)return null;
-    const index=hit.dynasty.milestones.indexOf(hit.milestone);
+    const index=(hit.dynasty.milestones||[]).indexOf(hit.milestone);
     if(index>=0)return `${hit.dynasty.key}-event-${index}`;
     const landmark=w.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS.findIndex(e=>e.year===hit.milestone.year&&e.zh===hit.milestone.headline);
     return landmark>=0?`landmark-${landmark}`:null;

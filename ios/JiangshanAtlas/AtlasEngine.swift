@@ -118,6 +118,9 @@ struct GenealogyEvent: Decodable, Identifiable, Sendable {
     let year: Int
     let title: String
     let coord: [Double]
+    let dynastyID:String
+    let navigationYear:Int
+    var eventID:String? = nil
 }
 struct PolityDetail: Decodable, Sendable {
     let key: String, title: String, summary: String, seat: String, rulers: String
