@@ -198,7 +198,7 @@ import MapLibre
             XCTAssertEqual(store.activeEventID,"landmark-3")
             XCTAssertEqual(store.autoEvent?.id,"landmark-3")
             XCTAssertEqual(store.year,-200)
-            XCTAssertNil(store.selection,"Search should present the event peek, not unrelated coordinate history")
+            if case .event(let event)=store.selection { XCTAssertEqual(event.id,"landmark-3") } else { XCTFail("Expected event details") }
             store.setYear(-218)
             let admins:[SearchHit]=try await store.engine.query("search",store.arguments(["query":"云中郡"]))
             await store.handle(try XCTUnwrap(admins.first))
@@ -293,4 +293,112 @@ import MapLibre
             XCTAssertEqual(temple.name(at:846,english:true),"Huguo Temple")
         }
     }
+    func testWindowsMergeBookmarkSavesAndDeletes() async throws {
+        try await withStore { first,defaults in
+            let second=AtlasStore(preferences:defaults)
+            first.saveBookmark();second.saveBookmark()
+            XCTAssertEqual(first.bookmarks.count,2);XCTAssertEqual(second.bookmarks.count,2)
+            let kept=first.bookmarks[1].id
+            second.deleteBookmarks(at:IndexSet(integer:0))
+            first.saveBookmark()
+            let restored=AtlasStore(preferences:defaults)
+            XCTAssertEqual(restored.bookmarks.count,2)
+            XCTAssertTrue(restored.bookmarks.contains { $0.id == kept })
+        }
+    }
+
+    func testInvalidCoordinatesAreRejectedBeforeQuerySerialization() async throws {
+        try await withStore { store,_ in
+            for raw in ["nan,nan","inf,30","181,30","120,91","120,,30"] {
+                await store.openLink(URL(string:"jiangshan://atlas?trace=\(raw)")!)
+                XCTAssertNil(store.selection,raw)
+            }
+            do {
+                let _:String=try await store.engine.query("era",["coord":[Double.nan,30]])
+                XCTFail("Nonfinite JSON must throw")
+            } catch { XCTAssertTrue(error.localizedDescription.contains("Invalid historical query")) }
+        }
+    }
+
+    func testNewLinkSupersedesSuspendedPersonNavigation() async throws {
+        try await withStore { store,_ in
+            let first=Task { await store.openLink(URL(string:"jiangshan://atlas?person=sushi")!) }
+            // The cold JavaScript context suspends the first request here.
+            for _ in 0..<100 where !store.busy { await Task.yield() }
+            XCTAssertTrue(store.busy)
+            await store.openLink(URL(string:"jiangshan://atlas?year=1415&center=120,30&nativeZoom=9")!)
+            await first.value
+            XCTAssertEqual(store.year,1415);XCTAssertNil(store.experience)
+            XCTAssertEqual(store.destination?.longitude,120);XCTAssertEqual(store.destination?.zoom,9)
+            XCTAssertFalse(store.busy)
+        }
+    }
+
+    func testExplicitEventEscapesConstraintsReplacesInspectorAndFramesDuringGestureGrace() async throws {
+        try await withStore { store,_ in
+            let event=try XCTUnwrap(store.catalog?.events.first { $0.year == 208 && $0.source == "milestone" })
+            for locked in [true,false] {
+                store.setYear(750);store.lockPeriod=locked;store.linkYearRange=700...800
+                store.inspect([108.94,34.27]);store.destination=nil
+                store.cameraInteractionUntil=Date().addingTimeInterval(30);store.isGestureActive=true
+                store.presentEvent(event)
+                XCTAssertEqual(store.year,event.effectiveYear)
+                XCTAssertEqual(store.activeEventID,event.id)
+                XCTAssertFalse(store.lockPeriod);XCTAssertNil(store.linkYearRange)
+                if case .event(let selected)=store.selection { XCTAssertEqual(selected.id,event.id) }
+                else { XCTFail("Old inspector must be replaced") }
+                XCTAssertNotNil(store.destination,"Explicit navigation must frame immediately")
+                store.destination=nil;store.cameraInteractionUntil=Date().addingTimeInterval(30);store.frameMilestone(event,automatic:true)
+                XCTAssertNil(store.destination,"Automatic framing still respects the user's gesture")
+            }
+        }
+    }
+
+    func testBoundaryPersonStopsRetainDisplayDateAndNavigateInTheirDynasty() async throws {
+        try await withStore { store,_ in
+            await store.startPeople("caocao",stop:14)
+            let stop=try XCTUnwrap(store.activeStop)
+            XCTAssertEqual(stop.year,220);XCTAssertEqual(stop.effectiveYear,219)
+            XCTAssertEqual(store.year,219);XCTAssertEqual(store.dynasty?.id,"donghan")
+        }
+    }
+
+    func testRouteDelimitersAndInspectionRoundTrip() async throws {
+        try await withStore { store,_ in
+            for place in ["长安->洛阳","长安；洛阳"] {
+                let started=await store.startRoute(place,years:"750");XCTAssertTrue(started)
+                store.experienceIndex=1;store.showExperienceStop()
+                store.inspect([108.94,34.27])
+                let url=store.shareURL
+                await store.openLink(url)
+                XCTAssertEqual(store.experience?.stops.count,2)
+                XCTAssertEqual(store.experienceIndex,1)
+                XCTAssertEqual(store.selectedCoordinate,[108.94,34.27])
+            }
+            await store.startPeople("sushi",stop:2)
+            store.inspect([112.45,34.62]);let url=store.shareURL
+            await store.openLink(url)
+            XCTAssertEqual(store.experience?.kind,"person");XCTAssertEqual(store.experienceIndex,2)
+            XCTAssertEqual(store.selectedCoordinate,[112.45,34.62])
+        }
+    }
+
+    func testWebsiteCoordinatesInspectButCameraCenterDoesNotAndInlinePlaceYearWins() async throws {
+        try await withStore { store,_ in
+            await store.openLink(URL(string:"jiangshan://atlas?year=750&lng=120&lat=30")!)
+            XCTAssertEqual(store.selectedCoordinate,[120,30])
+            await store.openLink(URL(string:"jiangshan://atlas?year=750&center=120,30")!)
+            XCTAssertNil(store.selection)
+            await store.openLink(URL(string:"jiangshan://atlas?year=1415&place=750:长安")!)
+            XCTAssertEqual(store.year,750);XCTAssertNotNil(store.selectedCoordinate)
+        }
+    }
+
+    func testManualInspectionPausesPlayback() async throws {
+        try await withStore { store,_ in
+            store.playing=true;store.inspect([120,30])
+            XCTAssertFalse(store.playing)
+        }
+    }
+
 }

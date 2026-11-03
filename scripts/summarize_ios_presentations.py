@@ -39,6 +39,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     sdk = json.loads(args.sdk.read_text())
+    if sdk.get('explicitRequestedFPS') == 120 and not sdk.get('verified120FPSRequest'):
+        raise ValueError('The requested 120 FPS setting was not verified at both ends of capture')
     info = ET.parse(args.toc).getroot().find('.//run/info')
     device = info.find('target/device')
     target_pid = info.find('target/process').attrib['pid']
@@ -87,6 +89,8 @@ def main():
     summary = dict(sourceRevision=sdk['sourceRevision'], runID=sdk['runID'],
                    startedAtUTC=sdk['startedAt'], deviceModel=device.attrib['model'], os=sdk['os'],
                    configuration='signed Release', requestedFPS=sdk['mapPreferredFPS'],
+                   verified120FPSRequest=sdk.get('verified120FPSRequest', False),
+                   mapPreferredFPSAtStart=sdk.get('mapPreferredFPSAtStart'),
                    screenMaximumFPS=sdk['screenMaximumFPS'], lowPowerMode=sdk['lowPowerMode'],
                    thermalState=sdk['thermalState'], scene=sdk['scene'],
                    tool='Instruments '+info.find('summary/instruments-version').text+', Game Performance Overview + Display + Points of Interest',
@@ -98,10 +102,10 @@ def main():
                            for i, name in enumerate(sdk['phases'])],
                    overall=summarize('overall', start, start+3*step),
                    limits=['One instrumented automated sweep, not a touch-latency or battery test.',
-                           'Requested 120 FPS is not a measured presentation rate.',
+                           f"Recorded map preference {sdk['mapPreferredFPS']} FPS is not a measured presentation rate.",
                            'Initial same-camera target produces a hold before the first new pan frame.',
                            'No claim of uninstrumented FPS or cause of the observed cadence.',
-                           'The full Metal System Trace attempt failed while saving and is excluded.'],
+                           'Only the successful map-layer presentation export is included.'],
                    inputSHA256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in [args.intervals, args.events, args.sdk, args.toc]})
     args.output.mkdir(parents=True, exist_ok=True)

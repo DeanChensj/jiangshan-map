@@ -10,7 +10,7 @@ The workload settles for six seconds, then runs 10 seconds each of native camera
 
 `summary.json` contains counts, percentiles, provenance and hashes of the input exports. `camera-sdk.json` is the same run's separate SDK report, identifying the source revision and workload. Its callback count is not used to calculate presented FPS.
 
-The app requested 120 FPS, while observed movement cadence in this instrumented run was about 60 FPS. This single capture does not establish uninstrumented FPS, a permanent cap, touch latency, battery use, or why that cadence occurred. An earlier full Metal System Trace attempt failed while saving due to disk space and is excluded.
+The recorded map preference was 60 FPS, while observed movement cadence in this instrumented run was about 60 FPS. This single capture does not establish uninstrumented FPS, a permanent cap, touch latency, battery use, or why that cadence occurred. An earlier full Metal System Trace attempt failed while saving due to disk space and is excluded.
 
 The complete device trace and unfiltered exports remain local under ignored `ios/.build/performance-direct-fps/`; they are not published because they contain unrelated device/process metadata. The CSV files retain the measured map-frame and phase timing needed to recalculate the reported numbers.
 

@@ -58,7 +58,8 @@ final class AtlasStore {
     var destination: CameraDestination?
     var journey: AtlasJourney?
     var journeyIndex = 0
-    var bookmarks: [AtlasBookmark] = []
+    let bookmarkLibrary: AtlasBookmarkLibrary
+    var bookmarks: [AtlasBookmark] { bookmarkLibrary.items }
     var mapNote: AtlasMapNote?
     var mapError: String?
     var actionError: String?
@@ -96,18 +97,24 @@ final class AtlasStore {
     @ObservationIgnored var cameraZoom = 2.4
     @ObservationIgnored private var pendingURL: URL?
     @ObservationIgnored private var lastSavedCamera: [Double]?
+    @ObservationIgnored private var navigationRevision = 0
+
+    @discardableResult func beginNavigation() -> Int {
+        navigationRevision += 1
+        busy=false
+        return navigationRevision
+    }
+    func isCurrentNavigation(_ revision:Int) -> Bool { revision == navigationRevision && !Task.isCancelled }
 
     init(preferences:UserDefaults = .standard) {
         self.preferences=preferences
+        bookmarkLibrary=AtlasBookmarkLibrary.library(for:preferences)
         let defaults = preferences
         year = defaults.object(forKey: "atlas.year") as? Int ?? 1415
         english = defaults.bool(forKey: "atlas.english")
         traditional=defaults.bool(forKey:"atlas.traditional")
         capitalHintSeen=defaults.bool(forKey:"atlas.capitalHintSeen")
         onboarding = !defaults.bool(forKey:"atlas.guided")
-        if let data = defaults.data(forKey: "atlas.bookmarks") {
-            bookmarks = (try? JSONDecoder().decode([AtlasBookmark].self, from: data)) ?? []
-        }
         if let camera = defaults.array(forKey: "atlas.camera") as? [Double], camera.count == 3 {
             cameraLongitude = camera[0]; cameraLatitude = camera[1]; cameraZoom = camera[2]
             lastSavedCamera = camera
@@ -220,6 +227,7 @@ final class AtlasStore {
         if selection != nil { refreshDetail() }
     }
     func choose(_ dynasty: Dynasty) {
+        beginNavigation()
         if dynasty.to < timelineStart || dynasty.from > timelineEnd { linkYearRange=nil }
         journey = nil; experience = nil; selection = nil; focusedPolity = ""; polityDetail=nil; historicalDetail=nil
         setYear(min(dynasty.to, max(dynasty.from, dynasty.focus)))
@@ -233,6 +241,7 @@ final class AtlasStore {
         else if let previous = dates.last(where: { $0 < year }) { setYear(previous); if let event=currentMilestone, event.effectiveYear == year { frameMilestone(event) } }
     }
     func select(_ place: AtlasPlace) {
+        beginNavigation();playing=false
         if place.isCapital(at:year) { capitalHintSeen=true }
         mapNote = nil
         if year < place.from || year > place.to { setYear(place.from) }
@@ -241,10 +250,7 @@ final class AtlasStore {
         fly(place.coord, zoom: nativeZoom(forWebScale:3.25))
     }
     func select(_ event: AtlasEvent) {
-        mapNote = nil; activeEventID = event.id
-        setYear(event.effectiveYear); selection = .event(event)
-        refreshDetail()
-        frameMilestone(event)
+        presentEvent(event)
     }
     func fly(_ coord: [Double], zoom: Double, waitsForLayout: Bool = true) {
         guard coord.count == 2,coord.allSatisfy(\.isFinite),zoom.isFinite else { return }
@@ -265,7 +271,7 @@ final class AtlasStore {
         syncMilestone();autoEventDismissed=false;resetCamera()
     }
     func advancePlayback() -> Bool { playbackTick() }
-    func startJourney(_ value: AtlasJourney) { Task { await startPeople(value.id, stop: -1) } }
+    func startJourney(_ value: AtlasJourney) { let request=beginNavigation();Task { await startPeople(value.id, stop: -1,navigation:request) } }
     func stepJourney(_ direction: Int) {
         guard let journey else { return }
         journeyIndex = min(journey.stops.count - 1, max(0, journeyIndex + direction))
@@ -277,21 +283,17 @@ final class AtlasStore {
     }
     func saveBookmark() {
         let title = selection?.title(english: english) ?? dynasty.map { english ? $0.titleEn : $0.title } ?? "江山"
-        bookmarks.insert(.init(id: UUID(), title: title, year: year, longitude: cameraLongitude, latitude: cameraLatitude, zoom: cameraZoom, url: shareURL.absoluteString), at: 0)
-        saveBookmarks()
+        bookmarkLibrary.insert(.init(id: UUID(), title: title, year: year, longitude: cameraLongitude, latitude: cameraLatitude, zoom: cameraZoom, url: shareURL.absoluteString))
     }
     func deleteBookmarks(at offsets: IndexSet) {
-        for index in offsets.sorted(by: >) { bookmarks.remove(at: index) }
-        saveBookmarks()
-    }
-    private func saveBookmarks() {
-        if let data = try? JSONEncoder().encode(bookmarks) { preferences.set(data, forKey: "atlas.bookmarks") }
+        bookmarkLibrary.delete(ids:Set(offsets.compactMap { bookmarks.indices.contains($0) ? bookmarks[$0].id : nil }))
     }
     func restore(_ bookmark: AtlasBookmark) {
+        let revision=beginNavigation()
         journey = nil; selection = nil; setYear(bookmark.year)
         destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom)
         if let raw = bookmark.url, let url = URL(string: raw) {
-            Task { await openLink(url); destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom) }
+            Task { await openLink(url,navigation:revision);guard isCurrentNavigation(revision) else { return };destination = .init(longitude: bookmark.longitude, latitude: bookmark.latitude, zoom: bookmark.zoom) }
         }
     }
     func saveCamera() {
@@ -304,6 +306,31 @@ final class AtlasStore {
     }
     func open(_ url: URL) {
         guard catalog != nil else { pendingURL = url; return }
-        Task { await openLink(url) }
+        let revision=beginNavigation()
+        Task { await openLink(url,navigation:revision) }
     }
+}
+
+/// Shared by windows using the same preferences object. Mutations also merge
+/// against persisted data, so separately constructed suites cannot lose writes.
+@MainActor @Observable final class AtlasBookmarkLibrary {
+    private static let libraries=NSMapTable<UserDefaults,AtlasBookmarkLibrary>(keyOptions:.weakMemory,valueOptions:.weakMemory)
+    @ObservationIgnored private let preferences:UserDefaults
+    private(set) var items:[AtlasBookmark]
+    static func library(for preferences:UserDefaults) -> AtlasBookmarkLibrary {
+        if let library=libraries.object(forKey:preferences) { return library }
+        let library=AtlasBookmarkLibrary(preferences)
+        libraries.setObject(library,forKey:preferences)
+        return library
+    }
+    private init(_ preferences:UserDefaults) {
+        self.preferences=preferences
+        items=Self.read(preferences)
+    }
+    private static func read(_ preferences:UserDefaults) -> [AtlasBookmark] {
+        preferences.data(forKey:"atlas.bookmarks").flatMap { try? JSONDecoder().decode([AtlasBookmark].self,from:$0) } ?? []
+    }
+    func insert(_ bookmark:AtlasBookmark) { items=Self.read(preferences);items.insert(bookmark,at:0);save() }
+    func delete(ids:Set<UUID>) { items=Self.read(preferences).filter { !ids.contains($0.id) };save() }
+    private func save() { if let data=try? JSONEncoder().encode(items) { preferences.set(data,forKey:"atlas.bookmarks") } }
 }

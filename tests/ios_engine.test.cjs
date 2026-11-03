@@ -131,3 +131,24 @@ test('dated site names do not overlap and closure years stay hidden',()=> {
   assert.equal(at(710),'观音寺');assert.equal(at(711),'青龙寺');
   assert.equal(at(845),undefined);assert.equal(at(846),'护国寺');assert.equal(at(855),'青龙寺');
 });
+
+
+test('native place classification uses every web route delimiter and inline dates',()=> {
+  for (const place of ['长安->洛阳','长安；洛阳']) {
+    assert.equal(query('locate',{place,years:'750'}).tokenCount,2);
+    assert.equal(query('route',{place,years:'750'}).stops.length,2);
+  }
+  const place=query('locate',{year:1415,place:'750:长安'});
+  assert.equal(place.tokenCount,1);assert.equal(place.year,750);
+});
+test('person stop navigation dates stay in their recorded dynasty',()=> {
+  for (const person of context.window.ATLAS_LORE_DATA.PERSON_PROFILES) {
+    const result=query('people',{query:person.key});
+    for (const stop of result.stops) {
+      const dynasty=context.window.DYNASTY_DATA.find(d=>d.key===stop.dynastyID);
+      assert.ok(stop.navigationYear>=dynasty.fromYear && stop.navigationYear<=dynasty.toYear,person.key);
+    }
+  }
+  const terminal=query('people',{query:'caocao'}).stops[14];
+  assert.equal(terminal.year,220);assert.equal(terminal.navigationYear,219);
+});

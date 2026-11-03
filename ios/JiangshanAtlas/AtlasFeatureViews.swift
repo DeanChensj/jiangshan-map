@@ -188,7 +188,7 @@ struct AtlasOptionsView: View {
             }
             if store.linkYearRange != nil { Section { Button(store.text("解除链接的年份范围","Remove link year range")) { store.linkYearRange=nil } } }
             Section {
-                Picker(store.text("语言", "Language"), selection: Binding(get: { store.language }, set: store.setLanguage)) { Text("简体中文").tag("zh"); Text("繁體中文").tag("zh-tw"); Text("English").tag("en") }
+                Picker(store.text("语言", "Language"), selection: Binding(get: { store.language }, set: { store.setLanguage($0) })) { Text("简体中文").tag("zh"); Text("繁體中文").tag("zh-tw"); Text("English").tag("en") }
             }
         }.scrollContentBackground(.hidden).navigationTitle(store.text("图层与时间设置", "Layers & timeline"))
     }

@@ -9,7 +9,9 @@ final class AtlasEngine: @unchecked Sendable {
     private var context: JSContext?
 
     func query<T: Decodable & Sendable>(_ operation: String, _ arguments: [String: Any], as type: T.Type = T.self) async throws -> T {
-        let request = try JSONSerialization.data(withJSONObject: ["op": operation, "args": arguments])
+        let object:[String:Any] = ["op": operation, "args": arguments]
+        guard JSONSerialization.isValidJSONObject(object) else { throw EngineError.message("Invalid historical query arguments") }
+        let request = try JSONSerialization.data(withJSONObject: object)
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 do {
@@ -72,6 +74,8 @@ struct ExperienceTrack: Decodable, Identifiable, Sendable {
 struct ExperienceStop: Decodable, Identifiable, Sendable {
     let id: String
     let year: Int
+    var navigationYear:Int? = nil
+    var effectiveYear:Int { navigationYear ?? year }
     let coord: [Double]
     let site: String, modern: String, text: String, quote: String, color: String, person: String
     let encounter: Bool
@@ -188,4 +192,4 @@ struct AtlasChinese {
 struct ExperiencePerson: Decodable, Identifiable, Sendable { let id: String, title: String; let span: [Int]; let relic: Bool }
 struct ExperienceNote: Decodable, Sendable { let person: String, text: String, color: String }
 
-struct NativePlace:Decodable,Sendable { let coord:[Double]?;let resolvedName:String? }
+struct NativePlace:Decodable,Sendable { let coord:[Double]?;let resolvedName:String?;let year:Int?;let tokenCount:Int }

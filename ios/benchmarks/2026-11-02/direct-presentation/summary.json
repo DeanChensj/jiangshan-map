@@ -67,7 +67,7 @@
   },
   "limits": [
     "One instrumented automated sweep, not a touch-latency or battery test.",
-    "Requested 120 FPS is not a measured presentation rate.",
+    "Recorded map preference 60 FPS is not a measured presentation rate.",
     "Initial same-camera target produces a hold before the first new pan frame.",
     "No claim of uninstrumented FPS or cause of the observed cadence.",
     "The full Metal System Trace attempt failed while saving and is excluded."

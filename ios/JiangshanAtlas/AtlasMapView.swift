@@ -1,6 +1,20 @@
 import SwiftUI
 import MapLibre
 
+/// Style loading can finish before SwiftUI attaches the map to a window.
+/// Resolve the display rate when the actual screen becomes available.
+final class AtlasProMotionMapView: MLNMapView {
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        updateDisplayPreference()
+    }
+    func updateDisplayPreference() {
+        guard let screen=window?.windowScene?.screen else { return }
+        let maximum=screen.maximumFramesPerSecond
+        preferredFramesPerSecond = .init(rawValue:ProcessInfo.processInfo.isLowPowerModeEnabled ? min(60,maximum) : maximum)
+    }
+}
+
 struct AtlasMapView: UIViewRepresentable {
     let store: AtlasStore
     let revision: String
@@ -9,7 +23,7 @@ struct AtlasMapView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(store: store, onSelect: onSelect) }
 
     func makeUIView(context: Context) -> MLNMapView {
-        let map = MLNMapView(frame: .zero, styleURL: Self.styleURL())
+        let map = AtlasProMotionMapView(frame: .zero, styleURL: Self.styleURL())
         map.automaticallyAdjustsContentInset=false
         map.minimumZoomLevel = 1
         map.maximumZoomLevel = 14
@@ -96,9 +110,7 @@ struct AtlasMapView: UIViewRepresentable {
         func mapView(_ mapView: MLNMapView, didFinishLoading style: MLNStyle) {
             hasLoadedStyle = true
             AtlasCartography.installSymbols(style)
-            let maximumFPS = mapView.window?.windowScene?.screen.maximumFramesPerSecond ?? 60
-            let requestedFPS = ProcessInfo.processInfo.isLowPowerModeEnabled ? min(60, maximumFPS) : maximumFPS
-            mapView.preferredFramesPerSecond = .init(rawValue: requestedFPS)
+            (mapView as? AtlasProMotionMapView)?.updateDisplayPreference()
             mapView.setCenter(.init(latitude: initialCamera.latitude, longitude: initialCamera.longitude), zoomLevel: initialCamera.zoom, animated: false)
             refresh()
             if ProcessInfo.processInfo.arguments.contains("--atlas-camera-profile"), cameraProfile == nil {

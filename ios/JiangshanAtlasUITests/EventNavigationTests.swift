@@ -5,7 +5,7 @@ final class EventNavigationTests:XCTestCase {
         continueAfterFailure=false
         let app=XCUIApplication()
         app.launchArguments=["-atlas.guided","YES"]
-        app.launchEnvironment["ATLAS_UI_TEST_URL"]="jiangshan://atlas?year=\(year)&lang=en&lng=106.5&lat=34&nativeZoom=3.5"
+        app.launchEnvironment["ATLAS_UI_TEST_URL"]="jiangshan://atlas?year=\(year)&lang=en&center=106.5,34&nativeZoom=3.5"
         app.launch()
         XCTAssertTrue(app.buttons["atlas.event.peek"].waitForExistence(timeout:30))
         return app

@@ -88,7 +88,7 @@ struct ContentView: View {
             default:return .ignored
             }
         }
-        .onChange(of: store.selection?.id) { _, id in if id != nil { if isWide { store.sidebarVisible=true } else { sheet = .details } } }
+        .onChange(of: store.selection?.id) { _, id in if id != nil { store.playing=false;if isWide { store.sidebarVisible=true } else { sheet = .details } } }
         .onChange(of:store.experience?.id) { _,id in if id != nil && sheet == .details { sheet=nil } }
         .onChange(of: store.quiz != nil) { _, active in if active { playing = false; sheet = nil } }
     }
@@ -139,7 +139,7 @@ struct ContentView: View {
             Button { playing=false;sheet = .search } label:{ Image(systemName:"magnifyingglass").frame(width:44,height:44) }
                 .accessibilityLabel(store.text("搜索地点与人物","Search places and people")).disabled(store.quiz != nil)
             Spacer()
-            if isWide { Button { withAnimation(reduceMotion ? nil : .easeInOut(duration:0.25)) { store.sidebarVisible.toggle() } } label:{Image(systemName:"sidebar.right").frame(width:44,height:44)}.accessibilityLabel(store.text("收起或展开编年侧栏","Toggle chronicle sidebar")) }
+            if isWide { Button { if !store.sidebarVisible { store.playing=false };withAnimation(reduceMotion ? nil : .easeInOut(duration:0.25)) { store.sidebarVisible.toggle() } } label:{Image(systemName:"sidebar.right").frame(width:44,height:44)}.accessibilityLabel(store.text("收起或展开编年侧栏","Toggle chronicle sidebar")) }
             Button { playing=false;sheet = .options } label:{Image(systemName:"square.3.layers.3d").frame(width:44,height:44)}.accessibilityLabel(store.text("图层与时间设置","Layers and timeline")).disabled(store.quiz != nil)
             Menu {
                 Section(store.localChinese("江山时序")) {
@@ -165,7 +165,7 @@ struct ContentView: View {
                     ShareLink(item:store.shareURL) { Label(store.text("分享网页链接","Share web link"),systemImage:"square.and.arrow.up") }
                     ShareLink(item:store.nativeShareURL) { Label(store.text("分享应用链接","Share app link"),systemImage:"app.badge") }
                 }.disabled(store.quiz != nil)
-                Picker(store.text("语言", "Language"), selection: Binding(get: { store.language }, set: store.setLanguage)) {
+                Picker(store.text("语言", "Language"), selection: Binding(get: { store.language }, set: { store.setLanguage($0) })) {
                     Text("简体中文").tag("zh"); Text("繁體中文").tag("zh-tw"); Text("English").tag("en")
                 }
                 Button(store.text("关于江山时序", "About the atlas"), systemImage: "info.circle") { sheet = .about }

@@ -30,6 +30,10 @@ import os
     private let runID=UUID().uuidString
     private let startedAt=ISO8601DateFormatter().string(from:Date())
     private let animatedSweep=ProcessInfo.processInfo.arguments.contains("--atlas-profile-animated")
+    private let requestedFPS=ProcessInfo.processInfo.arguments.contains("--atlas-profile-120fps") ? 120 : ProcessInfo.processInfo.arguments.contains("--atlas-profile-60fps") ? 60 : 0
+    private var preferenceAtStart=0
+    private var maximumAtStart=0
+    private var lowPowerAtStart=false
     private var nextAnimatedTarget=0.0
     private var capturePhase = -1
     private let log=OSLog(subsystem:"me.jiangshan.atlas",category:.pointsOfInterest)
@@ -40,7 +44,6 @@ import os
 
     func start() {
         guard let map else { return }
-        if ProcessInfo.processInfo.arguments.contains("--atlas-profile-60fps") { map.preferredFramesPerSecond = .init(rawValue:60) }
         beforeYear = store.year; beforeSelection = store.selection
         beforeJourney = store.journey; beforeJourneyIndex = store.journeyIndex
         beforeCamera = map.centerCoordinate; beforeZoom = map.zoomLevel
@@ -54,7 +57,16 @@ import os
         map.setCenter(.init(latitude: 33.2, longitude: 115.8), zoomLevel: 5.8, animated: false)
         Task { [weak self] in
             try? await Task.sleep(for: .seconds(6))
-            guard let self, self.map != nil else { return }
+            guard let self, let map=self.map else { return }
+            guard let screen=map.window?.windowScene?.screen else { print("ATLAS_PROFILE_ERROR no attached screen");return }
+            if self.requestedFPS > 0 { map.preferredFramesPerSecond = .init(rawValue:self.requestedFPS) }
+            self.preferenceAtStart=Int(map.preferredFramesPerSecond.rawValue)
+            self.maximumAtStart=screen.maximumFramesPerSecond
+            self.lowPowerAtStart=ProcessInfo.processInfo.isLowPowerModeEnabled
+            if self.requestedFPS == 120 && (self.preferenceAtStart != 120 || self.maximumAtStart < 120 || self.lowPowerAtStart) {
+                print("ATLAS_PROFILE_ERROR 120 FPS request not verified");return
+            }
+            print("ATLAS_PROFILE_CONFIGURATION requested=\(self.requestedFPS) actualPreference=\(self.preferenceAtStart) screenMaximum=\(self.maximumAtStart) lowPower=\(self.lowPowerAtStart)")
             let displayLink = CADisplayLink(target: self, selector: #selector(self.tick(_:)))
             displayLink.preferredFrameRateRange = .init(minimum: 30, maximum: 120, preferred: 120)
             self.link = displayLink
@@ -120,6 +132,11 @@ import os
             "device": UIDevice.current.model, "os": UIDevice.current.systemVersion,
             "screenMaximumFPS": map?.window?.windowScene?.screen.maximumFramesPerSecond ?? 0,
             "mapPreferredFPS": map?.preferredFramesPerSecond ?? 0,
+            "explicitRequestedFPS":requestedFPS,
+            "mapPreferredFPSAtStart":preferenceAtStart,
+            "screenMaximumFPSAtStart":maximumAtStart,
+            "lowPowerModeAtStart":lowPowerAtStart,
+            "verified120FPSRequest":requestedFPS == 120 && preferenceAtStart == 120 && map?.preferredFramesPerSecond.rawValue == 120 && maximumAtStart >= 120 && !lowPowerAtStart && !ProcessInfo.processInfo.isLowPowerModeEnabled,
             "lowPowerMode": ProcessInfo.processInfo.isLowPowerModeEnabled,
             "thermalState": ProcessInfo.processInfo.thermalState.rawValue,
             "scene": "1415, Chinese, boundaries/rivers/events/detail on, modern province/Today reference off",

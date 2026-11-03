@@ -2,6 +2,7 @@ import Foundation
 
 extension AtlasStore {
     func exploreFocusCity(_ city:String) {
+        beginNavigation()
         playing=false;selection=nil;historicalDetail=nil;mapNote=nil;experience=nil;journey=nil
         lockPeriod=false;linkYearRange=nil
         showHistoricalDetail=true;showPlaces=true;setYear(750);autoEventDismissed=true
@@ -64,7 +65,7 @@ extension AtlasStore {
             destination = .init(longitude:entry.coord[0],latitude:entry.coord[1],zoom:3,bounds:bounds);pendingPolityFit=nil
         } else { pendingPolityFit=title }
     }
-    func closePolity() { pendingPolityFit=nil;focusedPolity="";polityDetail=nil;previewSnapshot=nil;selection=nil;resetCamera() }
+    func closePolity() { beginNavigation();pendingPolityFit=nil;focusedPolity="";polityDetail=nil;previewSnapshot=nil;selection=nil;resetCamera() }
     func dismissOnboarding() { onboarding=false;preferences.set(true,forKey:"atlas.guided") }
     func openGenealogyEvent(_ event: GenealogyEvent) {
         playing=false

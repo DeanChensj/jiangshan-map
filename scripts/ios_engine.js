@@ -9,7 +9,7 @@
     camera:{x:0,y:0,w:1000,h:700,zoom:1}});
   a._hydrateSnapshots();
   const tr = (zh,en) => a.locale === 'en' ? en || a.trTerm(zh || '') : a._zh(zh || '');
-  const stop = (e,i,color) => ({id:String(i),year:e.year,coord:e.coord,
+  const stop = (e,i,color) => ({id:String(i),year:e.year,navigationYear:e.dynasty?a._clampYearToDynasty(e.dynasty,e.year):e.year,coord:e.coord,
     site:tr(e.siteZh,e.siteEn),modern:tr(e.modernZh,e.modernEn),text:tr(e.textZh,e.textEn),
     quote:tr(e.quoteZh,e.quoteEn),color:e.personColor || color || '#bd2d22',number:e.isSharedEncounter?(e.participants||[]).map(p=>p.stepNum||p.stepIdx+1).join('·'):String(e.personStepNum||i+1),journeyStopIndex:e.journeyStopIdx??null,
     person:e.isSharedEncounter?(e.participants||[]).map(p=>tr(p.personZh,p.personEn)).join(" × "):tr(e.personZh,e.personEn),encounter:!!e.isSharedEncounter,
@@ -51,7 +51,11 @@
   }
   window.AtlasNative = function(op,p) {
     a.year=Number(p.year)||a.year;a.locale=p.lang||'zh';a.dynastyIdx=a._findDynastyIndex(a.year);
-    if(op==='locate')return a.inspect({year:a.year,place:p.place});
+    if(op==='locate') {
+      const tokens=a._parsePlaceTokens(p.place,p.years||a.year);
+      if(tokens.length>1)return {tokenCount:tokens.length};
+      return {...a.inspect({year:p.years||a.year,place:p.place}),tokenCount:tokens.length};
+    }
     if(op==='era') return a.formatEraLabel(a.year,a.dynasties[a.dynastyIdx],p.coord||null);
     if(op==='people')return people(p.query);
     if(op==='search')return a._queryQuickSearch(p.query).slice(0,65).map((h,i)=>({
