@@ -32,6 +32,7 @@
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
+    ├── build_atlas.js       # 零依赖编解码脚本：把 atlas_snapshots.js 解码为可编辑 JSON，并重新编码两个多边形产物
     ├── sync_version.js      # 零依赖按文件 SHA-256 内容指纹同步脚本（自动更新 index.html 缓存参数）
     └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与端到端 CUJ 校验脚本（支持 --fast）
 ```
@@ -76,5 +77,12 @@
    - `CHINESE_ERA_SPANS` 是时间轴使用的唯一参考纪年，按《资治通鉴》惯例：三国用曹魏，东晋十六国用东晋，南北朝用南朝，五代用中原五代，宋辽金夏用宋。同时存在、自行纪年的政权（蜀汉、孙吴、北朝诸政权、西梁、581 年后的陈、辽、金、西夏、忽必烈的元）的年号表放在 `REGIONAL_ERA_TRACKS`；事件按事发地所属政权取年号。
    - 若某条大事的主角并非其定位点所属政权（例如宋金和议定位在金一侧边境），请在 `js/map_data.js` 中给这条大事加上 `"eraRegime": "reference"`，或填写 `REGIONAL_ERA_TRACKS` 中的政权名。
 3. **历史疆域与政区多边形（`js/atlas_snapshots.js`）**：
+   - `js/atlas_snapshots.js` 与 `js/atlas_boot.js` 是生成文件，请勿手工编辑。先解码、修改 JSON，再重新编码（会同时刷新 `index.html` 中的哈希）：
+     ```bash
+     node scripts/build_atlas.js decode    # → build/atlas/snapshots.json（已在 .gitignore 中忽略）
+     node scripts/build_atlas.js encode    # → js/atlas_snapshots.js + js/atlas_boot.js
+     node scripts/build_atlas.js --check   # CI：两个产物必须是规范编码
+     ```
+     JSON 中每个快照记录的是要素序号；被多个快照共用的要素只存一份，修改它会同时影响所有引用它的快照。坐标为 `[经度, 纬度]`，最多保留两位小数。
    - 古代政权边界（尤其是草原游牧政权、羁縻都护府、吐蕃与西域等）在历史上多为依山川走势延伸的动态过渡带，提交边界调整时建议在 PR 中注明参考图集（如谭其骧主编《中国历史地图集》对应分册与图幅）。
    - 相邻政权与外围道/州级政区交界处应共用同一组自然曲线顶点链，确保放大检视时零缝隙、零重叠咬合。

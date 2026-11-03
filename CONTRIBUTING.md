@@ -32,6 +32,7 @@ We welcome contributions of all kinds, including:
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
+    ├── build_atlas.js       # Zero-dependency codec: decodes atlas_snapshots.js to editable JSON and re-encodes both polygon bundles
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
     └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
 ```
@@ -76,5 +77,12 @@ We welcome contributions of all kinds, including:
    - `CHINESE_ERA_SPANS` is the single reference chronology shown on the timeline and follows the *Zizhi Tongjian* convention (Cao Wei for the Three Kingdoms, Eastern Jin for the Sixteen Kingdoms, the Southern Dynasties for the Northern & Southern Dynasties, the Central Plains Five Dynasties, and Song alongside Liao/Jin/Xia). Co-existing regimes that kept their own eras (Shu Han, Sun Wu, the Northern Dynasties, Western Liang, Chen after 581, Liao, Jin, Western Xia, and Kublai's Yuan) live in `REGIONAL_ERA_TRACKS`; events are labeled with the era of the regime ruling their location.
    - If a milestone's subject is not the regime holding its pinned location (e.g. a Song–Jin treaty pinned on the Jin side of the border), set `"eraRegime": "reference"` or a `REGIONAL_ERA_TRACKS` regime name on that milestone in `js/map_data.js`.
 3. **Historical Polities & Regional Boundaries (`js/atlas_snapshots.js`)**:
+   - `js/atlas_snapshots.js` and `js/atlas_boot.js` are generated files; do not edit them by hand. Decode, edit the JSON, and re-encode (this also refreshes the `index.html` hashes):
+     ```bash
+     node scripts/build_atlas.js decode    # → build/atlas/snapshots.json (git-ignored)
+     node scripts/build_atlas.js encode    # → js/atlas_snapshots.js + js/atlas_boot.js
+     node scripts/build_atlas.js --check   # CI: both bundles must be canonical encodings
+     ```
+     In the JSON, each snapshot lists feature indices; a feature shared by several snapshots is stored once, so editing it changes all of them. Coordinates are `[longitude, latitude]` with at most two decimals.
    - Historical frontiers (especially across steppe confederations, *Jimi* protectorates, Tubo, and the Western Regions) were dynamic transition zones rather than modern surveyed borders. When proposing boundary adjustments, please cite the reference atlas sheet in your PR description (e.g., Tan Qixiang's *The Historical Atlas of China* / 《中国历史地图集》 volume and plate).
    - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom.
