@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1643 — 1644 · 李自成破潼关入秦与张献忠据湖广：大顺据秦豫、大西据湘鄂",
     "note": "两京十三布政使司：李自成据秦豫鄂北，张献忠据湖广",

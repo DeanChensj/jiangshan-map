@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "848 — 880 · 张议潮归义军收复河西：沙州起义驱逐吐蕃，收复瓜沙等十一州归唐",
     "note": "州郡政区：唐代道州与边疆都护政区",

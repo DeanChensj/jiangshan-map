@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1368—1369 年 · 朱元璋建明与徐达北伐克大都",
     "note": "1368 年正月朱元璋于应天称帝建明，南征闽广、北取山东河南；八月徐达攻克元大都（改北平府），元顺帝北走上都。此时晋陕陇右、辽东、四川明夏与云南梁王尚待平定。",

@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "386 — 397 · 拓跋珪复代建北魏：北魏据代北崛起，与后燕、后秦、西秦、后凉并立",
     "note": "州郡政区：南北析置诸州、侨州与郡级政区",

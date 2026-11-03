@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1860 — 1864 · 《北京条约》失乌苏里江以东；太平天国与湘淮军决战江南（安庆、天京之战）",
     "note": "府州政区：覆盖内地十八省及东北",

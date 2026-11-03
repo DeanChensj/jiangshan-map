@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "757 — 763 · 两京光复与史思明再起：郭子仪借回纥兵收复长安、洛阳，史思明据河北再叛并一度复陷洛阳",
     "note": "州郡政区：唐代道州与边疆都护政区",

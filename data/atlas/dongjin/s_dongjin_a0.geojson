@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "317 — 329 · 东晋初立与两赵并立：司马睿建晋于建康，北方前赵（汉赵）与石勒后赵分据关陇河北",
     "note": "州郡政区：南北析置诸州、侨州与郡级政区",

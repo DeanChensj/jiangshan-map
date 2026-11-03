@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1351—1363 年 · 元末红巾大起义与群雄逐鹿",
     "note": "1351 年韩山童、刘福通发动红巾军起义；徐寿辉、陈友谅据湖广江西，张士诚据平江（浙西），朱元璋渡江取集庆（应天），明玉珍入据巴蜀。",

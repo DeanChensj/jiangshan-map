@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "427 — 431 · 北魏攻克统万城并取关中河南：胡夏退保陇东，与北魏、刘宋、西秦、北燕、北凉并立",
     "polities": [

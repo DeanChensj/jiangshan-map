@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1691 — 1720 · 多伦会盟定漠北：喀尔喀蒙古正式内附纳入清朝版图",
     "note": "府州政区：覆盖内地十八省及东北",

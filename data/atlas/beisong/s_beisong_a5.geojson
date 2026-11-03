@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "978 — 979 · 吴越纳土：钱俶与陈洪进纳土归宋，唯余河东北汉",
     "note": "州郡政区：宋初路州与十国政区",

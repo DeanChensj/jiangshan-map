@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "676 — 690 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府",
     "note": "州郡政区：唐代十道/十五道与州府政区",

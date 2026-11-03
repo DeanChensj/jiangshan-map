@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "秦王扫六合 · 易水破燕拔蓟城（前226年 · 燕王喜东保辽东）",
     "note": "前227年荆轲刺秦不果，王翦、辛胜大破燕代联军于易水之西，前226年十月攻拔燕都蓟城，燕王喜斩太子丹首级献秦，退保辽东襄平。",

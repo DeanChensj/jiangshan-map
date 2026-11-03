@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "前 202 — 前 127 · 汉初：郡国并行与文景之治，匈奴据河套河西，南越自立",
     "note": "州郡政区：历代州部与郡级政区",

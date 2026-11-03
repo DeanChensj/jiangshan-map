@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "战国晚期（前249年 · 楚考烈王灭鲁与秦灭两周置三川郡）",
     "note": "前256—前249年秦灭西周国与东周公国置三川郡；前249年楚考烈王伐鲁灭之、迁鲁顷公于莒，春申君黄歇徙封兰陵，礼乐宗邦鲁国并入楚境。",

@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "630 — 634 · 李靖灭东突厥：尊太宗为“天可汗”，囊括阴山漠南并置羁縻府州",
     "note": "州郡政区：唐代十道/十五道与州府政区",

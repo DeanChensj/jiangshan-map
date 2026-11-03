@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "350 — 351 · 冉闵代赵建冉魏：冉闵于邺城灭后赵建冉魏，与东晋、前凉、代、辽东前燕并立",
     "polities": [

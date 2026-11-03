@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "秦王扫六合 · 攻克邯郸灭赵（前228年 · 王翦破赵，公子嘉奔代）",
     "note": "前228年（秦王政十九年），王翦大破赵军攻克邯郸，俘赵王迁；赵公子嘉率宗族奔代称代王，与燕联兵拒秦。",

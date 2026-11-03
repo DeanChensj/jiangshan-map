@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1928 — 1930 · 东北易帜与北伐完成：张学良通电易帜，南京国民政府完成形式统一",
     "note": "府州政区（清末 1911 年）",

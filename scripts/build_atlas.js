@@ -12,7 +12,8 @@
  *     same file; "<snapshotKey>/<id>" is a feature defined in another snapshot file (ids never
  *     contain "/"). Each feature is
  *     stored once, so editing it changes every snapshot that references it. Coordinates are
- *     [longitude, latitude] with at most two decimals. Directories are only for grouping.
+ *     [longitude, latitude] with at most two decimals. Directories are only for grouping. The build
+ *     stamps a "license" member into every file; see data/atlas/README.md for data provenance.
  *
  * Encoding is canonical: features and rings are numbered in first-seen order while walking the
  * snapshots in index order, and identical rings are stored once.
@@ -33,6 +34,10 @@ const FULL_PATH = 'js/atlas_snapshots.js';
 const BOOT_PATH = 'js/atlas_boot.js';
 
 const FEATURE_LISTS = new Set(['polities', 'prefectures', 'regions']);
+// Stamped into every snapshot file so the terms travel with files copied out of the repo.
+const LICENSE_NOTICE =
+  'Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for ' +
+  'academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.';
 const SCALE = 100;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-';
 
@@ -338,7 +343,10 @@ function loadSources(rootDir = ROOT) {
 function buildOutputs(rootDir = ROOT) {
   const { index, files, doc } = loadSources(rootDir);
   const outputs = {};
-  for (const { rel, json } of files) outputs[rel] = formatSource(json);
+  for (const { rel, json } of files) {
+    const normalized = rel === INDEX_PATH ? json : (({ type, license, ...rest }) => ({ type, license: LICENSE_NOTICE, ...rest }))(json);
+    outputs[rel] = formatSource(normalized);
+  }
   outputs[FULL_PATH] = encodeBundle(doc, { keys: index.order });
   outputs[BOOT_PATH] = encodeBundle(doc, { keys: index.boot, isBoot: true });
   return outputs;

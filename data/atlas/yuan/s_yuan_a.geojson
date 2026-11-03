@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1279 — 1287 · 崖山灭宋与元初创制：灭南宋统一全国，置总制院统辖吐蕃军政",
     "note": "路府政区：覆盖内地行省",

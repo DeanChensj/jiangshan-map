@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "48 — 73 · 南匈奴内附：匈奴南北分裂，南单于居河套美稷",
     "note": "州郡政区：历代州部与郡级政区",

@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "306 — 311 · 八王之乱终局与成汉称帝：李雄在蜀称帝建大成（成汉），刘渊汉赵据并州",
     "note": "州郡政区：仅覆盖东南核心诸郡",

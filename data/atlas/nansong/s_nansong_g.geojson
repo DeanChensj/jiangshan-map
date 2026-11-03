@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1276 — 1279 · 临安陷落与闽广行朝：元军入临安，宋室退保福州、广州至崖山",
     "note": "府州政区：南宋东部诸路与金十九路",

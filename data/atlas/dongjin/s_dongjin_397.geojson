@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "397 — 398 · 秃发乌孤建南凉、段业与沮渠蒙逊建北凉：河西裂为南凉与北凉，北魏南下中原",
     "polities": [

@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "554 — 557 · 西魏于谨克江陵立萧詧为西梁主，北齐南拓江淮",
     "note": "州郡政区：南北朝细置诸州、侨州与郡级政区",

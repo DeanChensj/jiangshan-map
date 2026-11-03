@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "370 — 376 · 前秦灭前燕：苻坚、王猛攻灭前燕尽吞华北，河西前凉与塞北代国尚存",
     "note": "州郡政区：南北析置诸州、侨州与郡级政区",

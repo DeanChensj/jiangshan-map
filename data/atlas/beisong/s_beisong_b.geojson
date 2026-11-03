@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1038 — 1071 · 宋、辽、西夏三足并立：1038 年李元昊称帝建大夏",
     "note": "府州政区：北宋东部诸路与辽五京道",

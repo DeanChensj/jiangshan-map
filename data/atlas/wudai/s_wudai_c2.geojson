@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "945 — 947 · 南唐灭闽：南唐攻灭闽国，与吴越瓜分福建之地",
     "note": "州郡政区：五代十国州府与割据政区",

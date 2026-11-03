@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "战国中期（前306 — 前301 · 楚怀王灭越与胡服骑射）",
     "note": "前306年楚怀王乘越国内乱攻灭越国，尽取旧吴之地并置江东；北方赵武灵王推行胡服骑射，中山与义渠尚存，燕国尚未东辟辽东。",

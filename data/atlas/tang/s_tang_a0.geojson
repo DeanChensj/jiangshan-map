@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "621—630 年 · 虎牢决战与武德一统",
     "note": "621 年李世民于虎牢之战一举擒窦建德、降王世充，李孝恭、李靖平定江南萧铣，唐朝基本统一全国，北与东突厥对峙于阴山一线。",

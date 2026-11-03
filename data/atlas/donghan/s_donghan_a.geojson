@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "25 — 36 · 光武建武初年：刘秀定都洛阳，削平陇蜀公孙述割据",
     "note": "州郡政区：历代州部与郡级政区",

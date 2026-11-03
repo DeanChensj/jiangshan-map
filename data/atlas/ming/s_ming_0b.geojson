@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1369—1371 年 · 徐达克定晋陕与北元南北对峙",
     "note": "徐达、常遇春西下太原、关中与陇右，李文忠克应昌；元廷退居漠北史称“北元”，故元平章纳哈出仍盘踞辽东，西南四川为明夏政权、云南为元梁王据守。",

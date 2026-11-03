@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "963 — 965 · 平定荆湖：宋军假途灭虢平荆南与湖南",
     "note": "州郡政区：宋初路州与十国政区",

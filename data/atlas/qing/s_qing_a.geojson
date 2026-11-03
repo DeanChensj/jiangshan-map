@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1673 — 1681 · 三藩之乱与明郑抗清：吴三桂起兵建立吴周据西南，耿精忠、尚之信及郑经响应",
     "note": "府州政区：覆盖内地十八省及东北",

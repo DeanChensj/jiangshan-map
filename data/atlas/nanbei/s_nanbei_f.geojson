@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "577 — 581 · 北周灭北齐：周武帝宇文邕统一北方，与江南陈朝南北对峙",
     "note": "州郡政区：南北朝细置诸州、侨州与郡级政区",

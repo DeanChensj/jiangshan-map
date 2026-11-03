@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1681 — 1683 · 平定三藩：西南全境入清，施琅攻台前夕",
     "note": "府州政区：覆盖内地十八省及东北",

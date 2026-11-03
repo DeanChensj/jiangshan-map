@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1920 — 1923 · 直皖与第一次直奉战争：曹锟、吴佩孚直系独霸北京与长江，张作霖退守关外，孙中山重建广州大元帅府",
     "note": "府州政区（清末 1911 年）",

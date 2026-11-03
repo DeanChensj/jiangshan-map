@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1851 — 1858 · 太平天国运动：洪秀全定都天京（南京），与清廷沿江对峙",
     "note": "府州政区：覆盖内地十八省及东北",

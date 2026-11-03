@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1288 — 1351 · 大元大一统：1288 年改总制院为宣政院，西藏正式纳入中央宣政院直辖",
     "note": "路府政区：覆盖内地行省",

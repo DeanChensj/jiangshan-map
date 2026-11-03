@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "635 — 639 · 李靖平吐谷浑：六总管远征青海，慕容顺归降、册封诺曷钵为河源郡王",
     "note": "州郡政区：唐代十道/十五道与州府政区",

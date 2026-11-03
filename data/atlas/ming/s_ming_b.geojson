@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1513 — 1616 · 吐鲁番据哈密，关西诸卫内迁，北边收缩至长城、辽东",
     "note": "府州政区：覆盖两京十三布政使司",

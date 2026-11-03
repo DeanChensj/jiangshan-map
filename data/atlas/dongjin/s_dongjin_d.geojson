@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "407 — 410 · 赫连勃勃建胡夏、冯跋建北燕：胡夏据朔方、北燕代后燕，与北魏、后秦、西秦、南燕、南凉、北凉、谯蜀并立",
     "note": "州郡政区：南北析置诸州、侨州与郡级政区",

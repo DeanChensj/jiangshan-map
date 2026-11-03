@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1926 — 1927 · 国民革命军北伐：攻克武昌、定都南京，冯玉祥与阎锡山响应，与奉系张作霖安国军隔河对峙",
     "note": "府州政区（清末 1911 年）",

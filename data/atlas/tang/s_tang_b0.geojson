@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "763 — 764 · 安史之乱平定：史朝义败亡，降将田承嗣、李怀仙、李宝臣分领魏博、幽州、成德，藩镇割据肇端",
     "note": "州郡政区：唐代道州与边疆都护政区",

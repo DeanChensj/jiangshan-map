@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "609 — 618 · 隋炀帝西巡开边：破吐谷浑，置西海、河源、鄯善、且末四郡",
     "note": "州郡政区：历代州郡政区",

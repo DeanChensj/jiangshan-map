@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "648 — 656 · 阿史那社尔平龟兹置安西四镇与王玄策破中天竺：西域尽入安西都护府，天竺震动",
     "note": "州郡政区：唐代十道/十五道与州府政区",

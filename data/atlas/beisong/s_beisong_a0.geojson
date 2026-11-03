@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "960 — 963 · 北宋立国初年：陈桥兵变建宋，南方诸国与北汉尚未平定",
     "note": "州郡政区：宋初路州与十国政区",

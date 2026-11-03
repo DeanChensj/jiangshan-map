@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1864 — 1881 · 同治平乱与左宗棠西征：1871 沙俄强占伊犁，1876 左宗棠收复新疆南北路",
     "note": "府州政区：覆盖内地十八省及东北",

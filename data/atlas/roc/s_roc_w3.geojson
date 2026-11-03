@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1924 — 1925 · 北伐前夕六大派系：奉系张作霖入关、孙传芳五省联军、直系吴佩孚、冯玉祥国民军与两广国民政府对峙",
     "note": "府州政区（清末 1911 年）",

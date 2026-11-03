@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "前 214 — 前 210 · 秦平百越与大一统鼎盛：设桂林、象、南海三郡，北筑万里长城",
     "note": "州郡政区：历代州部与郡级政区",

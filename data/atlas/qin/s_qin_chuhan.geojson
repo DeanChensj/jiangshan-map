@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "前 206 — 前 202 · 秦亡与楚汉相争：陈胜起义后赵、燕、齐复国，项羽分封十八诸侯，秦将赵佗据岭南立南越、无诸复立闽越，刘邦还定三秦与项羽争霸",
     "note": "州郡政区：历代州部与郡级政区",

@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "219—220 年 · 刘备取汉中与吕蒙白衣渡江袭荆州",
     "note": "219 年刘备定军山破夏侯渊取得汉中，进位汉中王；同年冬孙权遣吕蒙白衣渡江袭取荆州，关羽败走麦城，荆州尽归孙权，刘备退保益州与汉中。",

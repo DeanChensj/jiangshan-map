@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "1636 — 1643 · 皇太极改国号大清：清并漠南蒙古频入塞，中原流民起义烽起",
     "note": "两京十三布政使司：1636 年皇太极称帝改国号大清",

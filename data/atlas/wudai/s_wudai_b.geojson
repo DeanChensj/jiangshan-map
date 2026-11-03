@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "925 — 934 · 后唐灭前蜀：巴蜀并入后唐版图；926 年契丹灭渤海国",
     "note": "州郡政区：五代十国州府与割据政区",

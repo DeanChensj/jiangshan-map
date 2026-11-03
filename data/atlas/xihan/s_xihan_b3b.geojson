@@ -1,5 +1,6 @@
 {
   "type": "FeatureCollection",
+  "license": "Some boundaries in this file derive from CHGIS V6 and the Hartwell China Historical GIS; those are for academic, non-commercial use only and are not licensed under GPL-3.0. See data/atlas/README.md.",
   "snapshot": {
     "caption": "前 110 — 前 109 · 东平闽越与经略琼州：灭闽越迁民江淮，于海南岛置珠崖、儋耳二郡",
     "note": "州郡政区：历代州部与郡级政区",
