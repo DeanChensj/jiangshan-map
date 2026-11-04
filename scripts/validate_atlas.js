@@ -8294,9 +8294,12 @@ function main() {
 
     // Dynasty transition & usurpation causality chain checks
     for (const [dk, yr, kw, expAnchors] of [
+      ['zhanguo', -272, '义渠', 2],
       ['qin', -221, '王贲受齐王建降', 1],
       ['xihan', 6, '假皇帝', 1],
       ['donghan', 216, '魏王', 2],
+      ['dongjin', 350, '石虎', 1],
+      ['dongjin', 414, '南凉', 2],
       ['nanbei', 474, '新亭', 2],
       ['nanbei', 479, '萧道成', 1],
       ['nanbei', 500, '东昏侯', 2],
@@ -8309,8 +8312,13 @@ function main() {
       ['nanbei', 557, '王僧辩', 2],
       ['tang', 684, '徐敬业', 2],
       ['tang', 904, '朱温劫唐昭宗', 2],
+      ['wudai', 923, '魏州', 1],
+      ['wudai', 942, '称孙不称臣', 1],
       ['wudai', 947, '石重贵', 2],
       ['wudai', 951, '后汉隐帝', 3],
+      ['nansong', 1141, '岳武穆', 1],
+      ['nansong', 1271, '阿里不哥', 1],
+      ['nansong', 1279, '陆秀夫', 1],
     ]) {
       const d = dynasties.find((x) => x.key === dk);
       const m = d && d.milestones.find((x) => x.year === yr);
