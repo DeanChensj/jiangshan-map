@@ -8165,9 +8165,9 @@ function main() {
     assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
 
     for (const [sid, title, maxPieces] of [
-      ['s_yuan_b', '元', 2],
+      ['s_yuan_b', '元', 3],
       ['s_yuan_b', '天完 · 陈友谅', 1],
-      ['s_yuan_c', '元', 3],
+      ['s_yuan_c', '元', 4],
       ['s_yuan_c', '吴（朱元璋）', 1],
       ['s_ming_0a', '北元', 1],
       ['s_ming_0a', '明', 2],
