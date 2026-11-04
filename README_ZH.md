@@ -219,7 +219,7 @@ docker compose up -d --build
 
 随后在浏览器打开 `http://localhost:8008`（端口映射为 `docker-compose.yml` 中的 `8008:80`）。
 
-镜像基于 `nginx:alpine` 做静态托管：`Dockerfile` 把整个仓库复制到 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`docs/`、`scripts/`、`skills/`、Markdown 文件与 `geojson/demo.html`，以减小构建上下文，页面运行不依赖这些内容。
+镜像基于 `nginx:alpine` 做静态托管：`Dockerfile` 把整个仓库复制到 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`data/`、`docs/`、`scripts/`、`skills/`、Markdown 文件与 `geojson/demo.html`，以减小构建上下文，页面运行不依赖这些内容。
 
 要换端口：修改 `docker-compose.yml` 的 `ports`（如 `"9000:80"`），再执行 `docker compose up -d`。
 
@@ -251,7 +251,7 @@ hit.region.properties.title;     // 南直隶
 hit.prefecture.properties.title; // 应天府（本身是 GeoJSON Feature，可直接 L.geoJSON(hit.prefecture)）
 ```
 
-导出后启动本地服务（`python3 -m http.server 8000`），打开 `http://localhost:8000/geojson/demo.html` 即可查看 Leaflet 示例：拖动年份滑块、点击地图，或打开 `demo.html?year=1415&lon=118.78&lat=32.06` 自动加载、高亮并缩放到该处。数据采用 GPL-3.0 协议，历史疆域为示意性近似。
+导出后启动本地服务（`python3 -m http.server 8000`），打开 `http://localhost:8000/geojson/demo.html` 即可查看 Leaflet 示例：拖动年份滑块、点击地图，或打开 `demo.html?year=1415&lon=118.78&lat=32.06` 自动加载、高亮并缩放到该处。历史疆域为示意性近似，并非测绘边界。数据采用 GPL-3.0 协议，但「致谢与许可」中注明的郡 / 州 / 府级边界除外。
 
 ---
 
@@ -260,7 +260,8 @@ hit.prefecture.properties.title; // 应天府（本身是 GeoJSON Feature，可�
 - **历史疆域与政区参考**：谭其骧主编《中国历史地图集》、**CHGIS**（哈佛燕京学社与复旦大学中国历史地理信息系统）、**Robert M. Hartwell** 历史 GIS 数据集，以及 [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps)（GPL-3.0）。
 - **现代省界参考**：DataV GeoAtlas 开放行政边界数据。
 - **古琴雅乐录音**：Wikimedia Commons 公有领域古琴录音（《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》）。
-- **说明**：地图中的历史疆域轮廓与州郡政区边界为示意性近似，旨在直观呈现各时期大致统治与管辖范围，非精确现代测绘边界。
+- **近似边界**：地图中的历史疆域轮廓与政区边界为示意性近似，旨在直观呈现各时期大致的统治与管辖范围，并非科学测绘成果，请勿作为精确或权威的边界依据引用。
+- **转载请注明出处**：转载或引用本项目的地图、截图或数据时，请注明「江山时序 Jiangshan Atlas」并附上 https://github.com/DeanChensj/jiangshan-map ，同时注明上文所列的原始数据来源。
 - **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
 - **开源协议**：采用 **GPL-3.0**（见 [LICENSE](LICENSE)）。Copyright © 2026 DeanChensj。
-  - **例外**：源自 CHGIS V6 与 Hartwell China Historical GIS 的府州郡政区边界及战国疆域数据，仍受其原始条款约束（仅限学术、非商业用途），不适用 GPL-3.0。
+  - **例外**：源自 CHGIS V6 与 Hartwell China Historical GIS 的郡 / 州 / 府级政区边界（含战国与秦的郡），仍受其原始条款约束（仅限学术、非商业用途），不适用 GPL-3.0。数据来源与引用格式见 [data/atlas/README.md](data/atlas/README.md)。

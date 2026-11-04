@@ -219,7 +219,7 @@ docker compose up -d --build
 
 Then open `http://localhost:8008` (the port mapping `8008:80` is set in `docker-compose.yml`).
 
-The image is a plain `nginx:alpine` that serves this repository as static files: `Dockerfile` copies the working tree into `/usr/share/nginx/html`, and `.dockerignore` keeps the build context small by excluding `.git`, `.github`, `docs/`, `scripts/`, `skills/`, Markdown files and `geojson/demo.html` — the site does not need any of them at runtime.
+The image is a plain `nginx:alpine` that serves this repository as static files: `Dockerfile` copies the working tree into `/usr/share/nginx/html`, and `.dockerignore` keeps the build context small by excluding `.git`, `.github`, `data/`, `docs/`, `scripts/`, `skills/`, Markdown files and `geojson/demo.html` — the site does not need any of them at runtime.
 
 To use another port, change the `ports` mapping in `docker-compose.yml` (e.g. `"9000:80"`) and run `docker compose up -d` again.
 
@@ -251,7 +251,7 @@ hit.region.properties.title;     // 南直隶
 hit.prefecture.properties.title; // 应天府 (a GeoJSON Feature: L.geoJSON(hit.prefecture))
 ```
 
-After exporting, serve the repository (`python3 -m http.server 8000`) and open `http://localhost:8000/geojson/demo.html` for a Leaflet example: drag the year slider, click the map, or open `demo.html?year=1415&lon=118.78&lat=32.06` to load, highlight and zoom automatically. The data is GPL-3.0, and historical borders are schematic approximations.
+After exporting, serve the repository (`python3 -m http.server 8000`) and open `http://localhost:8000/geojson/demo.html` for a Leaflet example: drag the year slider, click the map, or open `demo.html?year=1415&lon=118.78&lat=32.06` to load, highlight and zoom automatically. Historical borders are schematic approximations, not surveyed boundaries. The data is GPL-3.0 except the prefecture-level boundaries noted under [Credits & License](#credits--license).
 
 ---
 
@@ -260,7 +260,8 @@ After exporting, serve the repository (`python3 -m http.server 8000`) and open `
 - **Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard-Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
 - **Modern Provincial Reference**: DataV GeoAtlas open administrative boundary data.
 - **Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
-- **Note**: Historical territorial contours and prefecture boundaries in this atlas are schematic approximations intended to illustrate broad historical jurisdictions rather than modern surveyed borders.
+- **Approximate boundaries**: Historical territorial contours and administrative boundaries in this atlas are schematic approximations that illustrate broad historical jurisdictions. They are not the product of scientific surveying and should not be cited as precise or authoritative borders.
+- **Attribution**: When reusing maps, screenshots or data from this project, please credit **江山时序 Jiangshan Atlas** with a link to https://github.com/DeanChensj/jiangshan-map, and cite the upstream sources listed above.
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) ([中文贡献指南](CONTRIBUTING_ZH.md)) for repository structure, data conventions, and validation checks.
 - **License**: Released under **GPL-3.0** (see [LICENSE](LICENSE)). Copyright © 2026 DeanChensj.
-  - **Exception**: Prefecture-level boundaries and Warring States territories derived from CHGIS V6 and the Hartwell China Historical GIS remain subject to their original terms (academic, non-commercial use only) and are not relicensed under GPL-3.0.
+  - **Exception**: Prefecture-level boundaries (commanderies, prefectures and superior prefectures, i.e. 郡 / 州 / 府, including the Warring States and Qin commanderies) derived from CHGIS V6 and the Hartwell China Historical GIS remain subject to their original terms (academic, non-commercial use only) and are not relicensed under GPL-3.0. See [data/atlas/README.md](data/atlas/README.md) for provenance and citation.

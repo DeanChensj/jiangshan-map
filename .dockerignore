@@ -3,6 +3,7 @@
 docs
 scripts
 skills
+data
 geojson/demo.html
 *.md
 .gitignore
