@@ -406,7 +406,6 @@ h2 {
   height: 100%;
   transform-origin: 0 0;
   contain: layout style;
-  will-change: transform;
 }
 
 #atlas-svg {
