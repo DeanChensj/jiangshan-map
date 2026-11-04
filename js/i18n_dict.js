@@ -165,7 +165,7 @@ window.EN_LOCALE = {
   },
   "milestones": {
     "qin:-221": [
-      "First Emperor unifies the six states; commanderies, one script, axle widths and measures",
+      "Wang Ben takes Qi's surrender; First Emperor unifies China with commanderies and one script",
       "Xianyang"
     ],
     "qin:-215": [
@@ -497,7 +497,7 @@ window.EN_LOCALE = {
       "Dongyang (Qingzhou)"
     ],
     "nanbei:479": [
-      "Xiao Daocheng deposes Liu Song and founds the Southern Qi dynasty",
+      "Having deposed Emperor Houfei, Xiao Daocheng forces Emperor Shun to abdicate and founds Qi",
       "Jiankang"
     ],
     "nanbei:494": [
@@ -505,16 +505,16 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "nanbei:502": [
-      "Xiao Yan deposes Southern Qi and founds the Liang dynasty at Jiankang",
-      "Jiankang"
+      "Marching east from Xiangyang to take Jiankang, Xiao Yan deposes Southern Qi and founds Liang",
+      "Xiangyang · Jiankang"
     ],
     "nanbei:528": [
-      "Heyin Incident plunges Northern Wei into civil war",
-      "Heyin (Luoyang)"
+      "Erzhu Rong stages the Heyin Massacre under Yuan Ziyou, then routs Ge Rong with 7,000 riders",
+      "Heyin (Luoyang) · Ye"
     ],
     "nanbei:534": [
-      "Northern Wei splits into Eastern Wei and Western Wei",
-      "Ye (Anyang)"
+      "Emperor Xiaowu flees to Yuwen Tai in Chang'an while Gao Huan installs Eastern Wei at Ye",
+      "Luoyang · Ye · Chang'an"
     ],
     "nanbei:548": [
       "Hou Jing's Rebellion storms Jiankang Palace; aged Emperor Wu starves as Jiangnan is ravaged",
@@ -525,8 +525,8 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "nanbei:557": [
-      "Chen Baxian founds Chen; Yuwen Jue founds Northern Zhou",
-      "Jiankang"
+      "After slaying Wang Sengbian, Chen Baxian founds Chen; Yuwen Tai's son Yuwen Jue founds Zhou",
+      "Jiankang · Chang'an"
     ],
     "nanbei:573": [
       "Taijian Northern Expedition: Chen general Wu Mingche defeats Northern Qi and recovers Huainan",
@@ -617,11 +617,11 @@ window.EN_LOCALE = {
       "Jiaozhou"
     ],
     "wudai:947": [
-      "Khitan destroys Later Jin and adopts the dynastic name Liao; Liu Zhiyuan founds Later Han",
-      "Bianzhou"
+      "Khitan captures Shi Chonggui to end Later Jin and proclaims Liao; Liu Zhiyuan founds Later Han",
+      "Bianzhou · Taiyuan"
     ],
     "wudai:951": [
-      "Guo Wei founds Later Zhou and Liu Chong founds Northern Han; Southern Tang annexes Ma Chu",
+      "Driven to mutiny by Later Han, Guo Wei founds Later Zhou; Northern Han rises and Ma Chu falls",
       "Bianzhou · Taiyuan · Tanzhou"
     ],
     "wudai:954": [
@@ -1053,8 +1053,8 @@ window.EN_LOCALE = {
       "Jiangling / Jianye"
     ],
     "nanbei:550": [
-      "Gao Yang replaces Eastern Wei and establishes Northern Qi",
-      "Ye"
+      "Gao Yang founds Northern Qi at Ye; Yuwen Tai institutes the Eight Pillars system in Western Wei",
+      "Ye · Chang'an"
     ],
     "nanbei:554": [
       "Western Wei captures Jiangling and installs Western Liang",
@@ -2103,6 +2103,38 @@ window.EN_LOCALE = {
     "wudai:927": [
       "Later Tang invests Ma Yin as King of Chu alongside Jingnan astride middle Yangtze trade",
       "Tanzhou · Jiangling"
+    ],
+    "xihan:6": [
+      "Made Duke of Anhan, Wang Mang seizes power and rules as Acting Emperor over Young Prince Ying",
+      "Chang'an"
+    ],
+    "donghan:216": [
+      "Elevated to King of Wei at Ye after the Nine Bestowals, Cao Cao lays the foundation of Wei",
+      "Ye · Xu"
+    ],
+    "tang:684": [
+      "Empress Dowager Wu Zetian deposes Zhongzong at Luoyang and crushes Xu Jingye's Yangzhou revolt",
+      "Eastern Capital Luoyang · Yangzhou"
+    ],
+    "tang:904": [
+      "Zhu Wen forces Emperor Zhaozong from ruined Chang'an to Luoyang, then assassinates him",
+      "Chang'an · Eastern Capital Luoyang"
+    ],
+    "nanbei:474": [
+      "Prince of Guiyang rebels from Xunyang; Xiao Daocheng defends Xinting and seizes Liu Song power",
+      "Xunyang · Jiankang"
+    ],
+    "nanbei:500": [
+      "After bloody court purges under Marquis Donghun, governor Xiao Yan rises in Xiangyang",
+      "Jiankang · Xiangyang"
+    ],
+    "nanbei:530": [
+      "Emperor Xiaozhuang Yuan Ziyou slays warlord Erzhu Rong in Luoyang; Erzhu Zhao storms the city",
+      "Luoyang · Jinyang"
+    ],
+    "nanbei:532": [
+      "Battle of Hanling: Gao Huan routs the 200,000-strong Erzhu coalition and seizes court power",
+      "Hanling (Ye) · Luoyang"
     ]
   },
   "corridors": {

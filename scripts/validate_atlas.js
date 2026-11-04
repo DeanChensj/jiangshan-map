@@ -8291,6 +8291,32 @@ function main() {
         `${sk}: Hulunbuir [120.0, 49.2] and Hinggan [121.5, 46.0] must be covered by ${fengTitle} (no hollow gap)`
       );
     }
+
+    // Dynasty transition & usurpation causality chain checks
+    for (const [dk, yr, kw, expAnchors] of [
+      ['qin', -221, '王贲受齐王建降', 1],
+      ['xihan', 6, '假皇帝', 1],
+      ['donghan', 216, '魏王', 2],
+      ['nanbei', 474, '新亭', 2],
+      ['nanbei', 479, '萧道成', 1],
+      ['nanbei', 500, '东昏侯', 2],
+      ['nanbei', 502, '襄阳', 2],
+      ['nanbei', 528, '尔朱荣', 2],
+      ['nanbei', 530, '元子攸', 2],
+      ['nanbei', 532, '韩陵之战', 2],
+      ['nanbei', 534, '宇文泰', 3],
+      ['nanbei', 550, '八柱国', 2],
+      ['nanbei', 557, '王僧辩', 2],
+      ['tang', 684, '徐敬业', 2],
+      ['tang', 904, '朱温劫唐昭宗', 2],
+      ['wudai', 947, '石重贵', 2],
+      ['wudai', 951, '后汉隐帝', 3],
+    ]) {
+      const d = dynasties.find((x) => x.key === dk);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Expected transition milestone ${dk}:${yr} containing "${kw}"`);
+      assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, expAnchors, `Expected ${expAnchors} anchors on ${dk}:${yr}`);
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
