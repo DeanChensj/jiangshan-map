@@ -195,7 +195,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": -307,
-        "headline": "赵武灵王推行“胡服骑射”略中山",
+        "headline": "赵武灵王推行“胡服骑射”强兵，连年略中山，北破林胡楼烦辟云中九原",
         "site": "邯郸",
         "coord": [
           114.48,
@@ -289,6 +289,25 @@ window.DYNASTY_DATA = [
         "persons": [
           "baiqi",
           "quyuan"
+        ]
+      },
+      {
+        "year": -272,
+        "headline": "秦宣太后诱杀义渠戎王于甘泉宫，起兵灭义渠，置陇西、北地、上郡",
+        "site": "咸阳 · 义渠",
+        "coord": [
+          107.64,
+          35.71
+        ],
+        "siteCoords": [
+          [
+            108.701,
+            34.331
+          ],
+          [
+            107.64,
+            35.71
+          ]
         ]
       },
       {
@@ -1972,7 +1991,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 8,
-        "headline": "王莽代汉，建国号新",
+        "headline": "外戚王莽迫孺子婴禅让，于未央宫即真天子位，改国号“新”，西汉亡",
         "site": "长安",
         "coord": [
           108.941,
@@ -2821,7 +2840,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 25,
-        "headline": "刘秀称帝，定都洛阳",
+        "headline": "赤眉军入长安覆灭更始政权；萧王刘秀于鄗城称帝兴复汉室，定都洛阳",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -2849,7 +2868,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 48,
-        "headline": "匈奴分裂，南匈奴内附",
+        "headline": "匈奴日逐王比南附东汉称呼韩邪单于，匈奴分裂为南北二部，驻美稷",
         "site": "美稷（鄂尔多斯）",
         "coord": [
           110.401,
@@ -3917,7 +3936,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 220,
-        "headline": "曹丕代汉称帝，国号魏",
+        "headline": "魏王操卒，子曹丕袭位后迫汉献帝刘协禅让称帝，建立曹魏，东汉亡",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -3927,7 +3946,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 221,
-        "headline": "刘备在成都称帝，国号汉",
+        "headline": "闻汉献帝遭废传言，刘备在成都称帝延续汉室正统，国号汉（蜀汉）",
         "site": "成都",
         "coord": [
           104.071,
@@ -3988,7 +4007,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 229,
-        "headline": "孙权称帝，迁都建业",
+        "headline": "吴王孙权于武昌称帝建国号吴，旋东迁建业（南京），三国鼎立定型",
         "site": "建业",
         "coord": [
           118.801,
@@ -4115,7 +4134,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 265,
-        "headline": "司马炎代魏称帝，建立西晋",
+        "headline": "晋王司马昭卒，子司马炎嗣位后迫魏元帝禅让称帝，建立西晋，曹魏亡",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -4153,7 +4172,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 280,
-        "headline": "西晋灭吴，三国归晋",
+        "headline": "王濬楼船水师顺流直捣建业石头城，吴主孙皓出降，西晋灭吴统一全国",
         "site": "建业",
         "coord": [
           118.801,
@@ -5388,7 +5407,7 @@ window.DYNASTY_DATA = [
       {
         "year": 329,
         "isMapChange": true,
-        "headline": "石勒灭前赵，后赵统一北方大部",
+        "headline": "石勒于洛阳生擒前赵主刘曜，次年克长安灭前赵，后赵统一北方大部",
         "site": "洛阳",
         "coord": [
           112.451,
@@ -5427,7 +5446,7 @@ window.DYNASTY_DATA = [
       {
         "year": 350,
         "isMapChange": true,
-        "headline": "冉闵代后赵建立冉魏，颁杀胡令，北方大动荡",
+        "headline": "后赵石虎崩后诸子争位自残，大将军冉闵尽诛石氏建冉魏，颁杀胡令",
         "site": "邺城（安阳）",
         "coord": [
           114.391,
@@ -5437,7 +5456,7 @@ window.DYNASTY_DATA = [
       {
         "year": 351,
         "isMapChange": true,
-        "headline": "苻健在长安称天王，建立前秦",
+        "headline": "略阳氐帅苻洪子苻健率部自枋头西入潼关克长安，称天王建立前秦",
         "site": "长安",
         "coord": [
           108.941,
@@ -5512,7 +5531,7 @@ window.DYNASTY_DATA = [
       {
         "year": 370,
         "isMapChange": true,
-        "headline": "前秦苻坚遣王猛攻破邺城，灭前燕",
+        "headline": "王猛于潞川大破前燕三十万主力，乘胜攻克邺城俘慕容暐，前燕亡",
         "site": "邺城",
         "coord": [
           114.391,
@@ -5586,7 +5605,7 @@ window.DYNASTY_DATA = [
       {
         "year": 386,
         "isMapChange": true,
-        "headline": "拓跋珪复代称王，建立北魏",
+        "headline": "代王什翼犍孙拓跋珪乘前秦瓦解于牛川即代王位，旋改国号魏（北魏）",
         "site": "盛乐",
         "coord": [
           111.821,
@@ -5655,7 +5674,7 @@ window.DYNASTY_DATA = [
       {
         "year": 404,
         "isMapChange": true,
-        "headline": "桓玄篡晋建楚，刘裕自京口起兵复晋；谯纵据成都建谯蜀",
+        "headline": "桓玄篡晋建楚，刘裕京口起兵复晋；谯纵建谯蜀，前岁后凉降于后秦",
         "site": "京口 · 建康 · 成都",
         "coord": [
           119.451,
@@ -5679,7 +5698,7 @@ window.DYNASTY_DATA = [
       {
         "year": 407,
         "isMapChange": true,
-        "headline": "赫连勃勃在朔方建胡夏筑统万城；冯跋、高云于龙城建北燕",
+        "headline": "赫连勃勃于朔方建胡夏；冯跋兄弟于龙城弑后燕慕容熙，拥高云建北燕",
         "site": "统万城 · 龙城",
         "coord": [
           108.871,
@@ -5714,6 +5733,25 @@ window.DYNASTY_DATA = [
         "coord": [
           104.071,
           30.571
+        ]
+      },
+      {
+        "year": 414,
+        "headline": "西秦乞伏炽磐袭破乐都灭南凉；北凉沮渠蒙逊迁都姑臧称河西王",
+        "site": "乐都 · 姑臧",
+        "coord": [
+          102.4,
+          36.48
+        ],
+        "siteCoords": [
+          [
+            102.4,
+            36.48
+          ],
+          [
+            102.641,
+            37.931
+          ]
         ]
       },
       {
@@ -7691,7 +7729,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 589,
-        "headline": "隋灭陈，统一全国",
+        "headline": "晋王杨广统军渡江，韩擒虎、贺若弼攻克建康擒陈后主，隋灭陈统一全国",
         "site": "建康",
         "coord": [
           118.801,
@@ -8429,7 +8467,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 618,
-        "headline": "李渊在长安称帝，建立唐朝",
+        "headline": "隋炀帝江都遇弑后，唐王李渊迫隋恭帝杨侑禅让，于长安称帝建立唐朝",
         "site": "长安",
         "coord": [
           108.941,
@@ -8464,7 +8502,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 626,
-        "headline": "玄武门之变，李世民即位",
+        "headline": "玄武门之变：秦王李世民伏兵诛太子建成、齐王元吉，唐高祖退位禅让",
         "site": "长安",
         "coord": [
           108.941,
@@ -8939,7 +8977,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 790,
-        "headline": "北庭陷落，唐与西域隔绝",
+        "headline": "吐蕃联结葛逻禄攻陷北庭都护府，安西四镇孤悬绝域，唐廷与西域隔绝",
         "site": "北庭",
         "coord": [
           89.181,
@@ -10528,7 +10566,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 923,
-        "headline": "李存勖灭后梁，建后唐",
+        "headline": "晋王李存勖于魏州称帝建后唐，旋遣奇兵渡河袭破汴州，后梁末帝自尽",
         "site": "汴州",
         "coord": [
           114.311,
@@ -10584,7 +10622,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 934,
-        "headline": "孟知祥在成都称帝，建立后蜀",
+        "headline": "后唐西川节度使孟知祥兼并东川据有全蜀，趁唐乱于成都称帝建后蜀",
         "site": "成都",
         "coord": [
           104.071,
@@ -10593,7 +10631,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 936,
-        "headline": "石敬瑭割燕云十六州予契丹，建后晋",
+        "headline": "河东节度使石敬瑭反后唐，认契丹主为父帝割燕云十六州，灭唐建后晋",
         "eraRegime": "reference",
         "site": "幽州",
         "coord": [
@@ -10612,11 +10650,20 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 939,
-        "headline": "吴权自立，安南脱离中原王朝",
+        "headline": "吴权于白藤江设桩大破南汉水军，于交州称王自立，安南脱离中原王朝",
         "site": "交州",
         "coord": [
           105.851,
           21.031
+        ]
+      },
+      {
+        "year": 942,
+        "headline": "后晋高祖石敬瑭卒，出帝石重贵即位，用景延广议对契丹“称孙不称臣”",
+        "site": "汴州",
+        "coord": [
+          114.311,
+          34.801
         ]
       },
       {
@@ -10737,7 +10784,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 960,
-        "headline": "陈桥兵变，赵匡胤建宋",
+        "headline": "周世宗崩后幼主柴宗训嗣位，殿前都点检赵匡胤陈桥兵变，受禅建宋",
         "site": "陈桥驿",
         "coord": [
           114.501,
@@ -11361,7 +11408,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 960,
-        "headline": "陈桥兵变，赵匡胤建宋",
+        "headline": "殿前都点检赵匡胤发动陈桥兵变，回师开封受后周恭帝禅位，建立北宋",
         "site": "陈桥驿",
         "coord": [
           114.501,
@@ -11474,7 +11521,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1004,
-        "headline": "澶渊之盟，宋辽百年和平",
+        "headline": "辽萧太后与圣宗统军南下抵澶州，寇准力劝宋真宗亲征，订立澶渊之盟",
         "site": "澶州",
         "coord": [
           115.001,
@@ -11649,7 +11696,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1120,
-        "headline": "宋金海上之盟，约攻辽",
+        "headline": "北宋遣马政、赵良嗣自登州泛海使金，订立“海上之盟”约夹攻辽朝",
         "site": "登州（蓬莱）",
         "coord": [
           120.751,
@@ -11695,7 +11742,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1127,
-        "headline": "靖康之变，北宋亡",
+        "headline": "靖康之变：金军二围东京攻陷汴梁，掳宋徽宗、钦宗二帝北去，北宋亡",
         "site": "开封",
         "coord": [
           114.311,
@@ -12769,7 +12816,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1138,
-        "headline": "宋高宗正式定行在于临安府",
+        "headline": "宋高宗赵构结束巡幸正式定行在于临安府（杭州），秦桧复相主持议和",
         "site": "临安（杭州）",
         "coord": [
           120.151,
@@ -12797,7 +12844,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1141,
-        "headline": "绍兴和议，以淮河—大散关为界",
+        "headline": "秦桧构陷冤杀岳武穆，宋金订立《绍兴和议》，划淮河—大散关为界",
         "eraRegime": "reference",
         "site": "淮河一线",
         "coord": [
@@ -12888,7 +12935,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1206,
-        "headline": "铁木真统一蒙古，称成吉思汗",
+        "headline": "铁木真相继攻灭克烈、乃蛮等部统一漠北草原，于斡难河源称成吉思汗",
         "site": "斡难河源",
         "coord": [
           110.501,
@@ -13037,7 +13084,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1271,
-        "headline": "忽必烈定国号“大元”",
+        "headline": "忽必烈击败幼弟阿里不哥争位后，采《易经》“大哉乾元”改国号为大元",
         "site": "大都",
         "coord": [
           116.401,
@@ -13083,7 +13130,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1279,
-        "headline": "崖山海战，南宋亡",
+        "headline": "陆秀夫等奉宋室退保闽广，崖山海战张世杰覆师，陆秀夫负帝投海宋亡",
         "site": "崖山",
         "coord": [
           113.101,
@@ -16599,7 +16646,7 @@ window.DYNASTY_DATA = [
     "milestones": [
       {
         "year": 1644,
-        "headline": "清军入关，定都北京",
+        "headline": "山海关总兵吴三桂降清开关，多尔衮率清军大败李自成大顺军，定都北京",
         "site": "山海关",
         "coord": [
           119.751,
@@ -16678,7 +16725,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 1683,
-        "headline": "施琅收台湾，设台湾府",
+        "headline": "福建水师提督施琅于澎湖大破明郑水师，郑克塽出降，清廷设台湾府",
         "site": "台湾府（台南）",
         "coord": [
           120.201,
