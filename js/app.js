@@ -10046,7 +10046,7 @@
           const items = this._zoomScaleNodes;
           for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            setSvgAttribute(item.node, 'transform', item.prefix + invScale + item.suffix);
+            item.node.setAttribute('transform', item.prefix + invScale + item.suffix);
           }
           if (showProvNames) {
             const fontSize = (9.5 * s).toFixed(1);
