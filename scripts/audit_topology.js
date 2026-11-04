@@ -133,6 +133,11 @@ const bboxesTouch = (a, b) =>
 /** Audits every snapshot. Returns [{ key, overlap, gap, pairs: [{ a, b, overlap, gap }] }] in index order. */
 function auditTopology(rootDir = ROOT) {
   const { index, doc } = loadSources(rootDir);
+  return auditDoc(doc, index.order);
+}
+
+/** Audits the given snapshot keys of a loaded { features, snapshots } document. */
+function auditDoc(doc, keys) {
   const shapes = new Map();
   const shapeOf = (idx) => {
     if (!shapes.has(idx)) shapes.set(idx, indexShape(doc.features[idx].shape));
@@ -140,7 +145,7 @@ function auditTopology(rootDir = ROOT) {
   };
   const pairCache = new Map();
   const report = [];
-  for (const key of index.order) {
+  for (const key of keys) {
     const snap = doc.snapshots[key];
     const polities = Array.isArray(snap) || !Array.isArray(snap.polities) ? [] : snap.polities;
     const core = [...new Set(polities)].filter((idx) => CORE_ROLES.has(doc.features[idx].role) && doc.features[idx].shape);
@@ -172,6 +177,10 @@ function toBaseline(report) {
 function formatBaseline(baseline) {
   const lines = Object.entries(baseline).map(([key, v]) => `  ${JSON.stringify(key)}: { "overlap": ${v.overlap}, "gap": ${v.gap} }`);
   return `{\n${lines.join(',\n')}\n}\n`;
+}
+
+function writeBaseline(report, rootDir = ROOT) {
+  fs.writeFileSync(path.join(rootDir, BASELINE_PATH), formatBaseline(toBaseline(report)));
 }
 
 function readBaseline(rootDir = ROOT) {
@@ -234,7 +243,7 @@ function main(argv) {
         console.error('Refusing to raise the baseline; fix the borders or pass --allow-increase.');
         return 1;
       }
-      fs.writeFileSync(path.join(ROOT, BASELINE_PATH), formatBaseline(toBaseline(report)));
+      writeBaseline(report);
       console.log(`✓ Wrote ${BASELINE_PATH} (${summary})`);
       return 0;
     }
@@ -263,4 +272,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { auditTopology, compareWithBaseline, toBaseline };
+module.exports = { auditTopology, auditDoc, compareWithBaseline, toBaseline, readBaseline, writeBaseline, CORE_ROLES };

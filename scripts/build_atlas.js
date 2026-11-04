@@ -316,6 +316,7 @@ function loadSources(rootDir = ROOT) {
 
   // Pass 1: register every feature under "<snapshotKey>/<id>".
   const features = [];
+  const featureFiles = [];
   const featureIndex = new Map();
   const referenced = new Set();
   for (const key of order) {
@@ -338,6 +339,7 @@ function loadSources(rootDir = ROOT) {
         const problem = f.geometry ? normalizeGeometry(f.geometry) : null;
         if (problem) errors.push(`${rel}: feature "${f.id}": ${problem}`);
         featureIndex.set(ref, features.length);
+        featureFiles.push(file);
         features.push(f.geometry ? { ...f.properties, shape: f.geometry } : { ...f.properties });
       }
     });
@@ -372,7 +374,9 @@ function loadSources(rootDir = ROOT) {
     if (!referenced.has(ref)) errors.push(`${byKey.get(ref.slice(0, ref.indexOf('/'))).rel}: feature "${ref.slice(ref.indexOf('/') + 1)}" is not referenced by any snapshot`);
   }
   if (errors.length) throw new Error(errors.join('\n'));
-  return { index: { order, boot }, files, doc: { features, snapshots } };
+  // featureFiles[i] is the source file entry ({ rel, json }) that defines doc.features[i]; the
+  // feature's shape is the same object as that file's geometry, so edits to it can be written back.
+  return { index: { order, boot }, files, doc: { features, snapshots }, featureFiles };
 }
 
 /** Returns the expected contents of every generated or normalized file, keyed by repo-relative path. */
@@ -419,19 +423,25 @@ function main(argv) {
     console.log(`✓ ${DATA_DIR}/ is formatted and ${FULL_PATH} / ${BOOT_PATH} are up to date`);
     return 0;
   }
+  const { written, hashesChanged } = writeOutputs();
+  console.log(`✓ ${written ? `${written} file(s) updated` : 'Bundles already up to date'}; index.html hashes ${hashesChanged ? 'updated' : 'unchanged'}`);
+  return 0;
+}
+
+/** Writes every generated or normalized file that differs, then refreshes index.html hashes. */
+function writeOutputs(rootDir = ROOT, log = console.log) {
   let written = 0;
-  for (const [rel, text] of Object.entries(buildOutputs())) {
-    const full = path.join(ROOT, rel);
+  for (const [rel, text] of Object.entries(buildOutputs(rootDir))) {
+    const full = path.join(rootDir, rel);
     if (fs.readFileSync(full, 'utf8') !== text) {
       fs.writeFileSync(full, text);
-      console.log(`✓ Wrote ${rel}`);
+      log(`✓ Wrote ${rel}`);
       written++;
     }
   }
   const { syncIndexHtmlAssetHashes } = require('./sync_version');
-  const { changed } = syncIndexHtmlAssetHashes(ROOT);
-  console.log(`✓ ${written ? `${written} file(s) updated` : 'Bundles already up to date'}; index.html hashes ${changed ? 'updated' : 'unchanged'}`);
-  return 0;
+  const { changed } = syncIndexHtmlAssetHashes(rootDir);
+  return { written, hashesChanged: changed };
 }
 
 if (require.main === module) {
@@ -449,4 +459,5 @@ module.exports = {
   encodeBundle,
   buildOutputs,
   checkOutputs,
+  writeOutputs,
 };
