@@ -77,13 +77,18 @@ h2 {
 
 .brand-group h1 {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+  font-size: 1rem;
+  line-height: 1;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .brand-group .home-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
   color: inherit;
   text-decoration: none;
 }
@@ -2992,7 +2997,7 @@ html[lang="en"] .genealogy-list li {
 @media (max-width: 900px) {
   #nav-bar {
     gap: 8px;
-    padding: 8px 10px;
+    padding: 4px 10px;
   }
   .brand-group .seal-mark {
     font-size: 22px;
@@ -3200,7 +3205,7 @@ html[lang="en"] .genealogy-list li {
 
 @media (max-width: 640px) {
   #nav-bar {
-    padding: 6px 7px;
+    padding: 3.5px 7px;
     gap: 4px;
   }
   .brand-group .seal-mark {
@@ -3220,8 +3225,9 @@ html[lang="en"] .genealogy-list li {
     display: none !important;
   }
   .action-btn {
-    padding: 4px 6.5px;
+    padding: 3.5px 6.5px;
     font-size: 11px;
+    line-height: 1.15;
     gap: 2.5px;
   }
   .action-btn .btn-svg {
@@ -3282,9 +3288,9 @@ html[lang="en"] .genealogy-list li {
   #scrubber-dock {
     grid-template-columns: auto 1fr auto;
     grid-template-rows: 28px auto;
-    row-gap: 7px;
+    row-gap: 5px;
     column-gap: 6px;
-    padding: 8px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+    padding: 6px 10px calc(7px + env(safe-area-inset-bottom, 0px));
   }
   .playback-controls-group {
     grid-column: 1;
@@ -3332,7 +3338,7 @@ html[lang="en"] .genealogy-list li {
     height: 28px;
   }
   #scrubber-Bubble {
-    top: -32px;
+    top: -30px;
     left: 70px !important;
     right: 58px !important;
     width: fit-content;
@@ -3340,7 +3346,7 @@ html[lang="en"] .genealogy-list li {
     margin: 0 auto;
     transform: none !important;
     font-size: 10.8px;
-    padding: 3px 8px;
+    padding: 2.5px 8px;
     border-radius: 999px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -4237,7 +4243,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane {
-    padding: 6px 12px 7px;
+    padding: 5px 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -4299,34 +4305,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
     flex-shrink: 0;
   }
 
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
-    min-width: 0;
-    margin-top: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    font-size: 11.5px;
-    white-space: normal;
-    overflow: visible;
-  }
-
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-tag {
-    flex-shrink: 0;
-    white-space: nowrap;
-    font-size: 10.5px;
-    padding: 1px 6px;
-  }
-
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-seat {
-    flex: 1 1 auto;
-    min-width: 0;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-  }
-
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-summary,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .milestone-section,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .polity-backbar,
