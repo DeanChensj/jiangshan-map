@@ -33,6 +33,7 @@ We welcome contributions of all kinds, including:
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
+    ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
     ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
     └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
@@ -84,6 +85,11 @@ We welcome contributions of all kinds, including:
      node scripts/build_atlas.js --check   # CI: sources formatted and bundles up to date
      ```
    - Each snapshot is `data/atlas/<dynasty>/<snapshotKey>.geojson` (e.g. `zhanguo/s_zhanguo_b.geojson`): a FeatureCollection whose `snapshot` member holds the caption, note and the `polities` / `prefectures` / `regions` feature lists, in display order. A bare id such as `"燕"` names a feature in the same file; `"s_zhanguo_a/齐"` names a feature defined in another snapshot (ids therefore never contain `/`). Each feature is stored once, in the earliest snapshot that uses it, so editing it changes every snapshot that references it; to change a border for one phase only, copy the feature into that snapshot's file under a new id and point the list at it.
-   - Coordinates are `[longitude, latitude]` with at most two decimals. A new snapshot must also be added to `order` in `data/atlas/index.json` (`boot` lists the snapshots bundled for first paint).
+   - Coordinates are `[longitude, latitude]` with at most two decimals; the build closes rings and drops repeated points. A new snapshot must also be added to `order` in `data/atlas/index.json` (`boot` lists the snapshots bundled for first paint).
    - Historical frontiers (especially across steppe confederations, *Jimi* protectorates, Tubo, and the Western Regions) were dynamic transition zones rather than modern surveyed borders. When proposing boundary adjustments, please cite the reference atlas sheet in your PR description (e.g., Tan Qixiang's *The Historical Atlas of China* / 《中国历史地图集》 volume and plate).
-   - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom.
+   - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom. CI counts, per snapshot, the vertices where core polities (`main` / `rival` / `protectorate`; `neighbor` is excluded) overlap or leave a gap of under ~4 km, and fails if any count rises above `data/atlas/topology_baseline.json`. The baseline only goes down:
+     ```bash
+     node scripts/audit_topology.js                       # Worst snapshots
+     node scripts/audit_topology.js --details s_tang_d2   # Mismatched polity pairs in one snapshot
+     node scripts/audit_topology.js --update              # After fixing borders: lower the baseline and commit it
+     ```

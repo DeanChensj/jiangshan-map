@@ -12,7 +12,8 @@
  *     same file; "<snapshotKey>/<id>" is a feature defined in another snapshot file (ids never
  *     contain "/"). Each feature is
  *     stored once, so editing it changes every snapshot that references it. Coordinates are
- *     [longitude, latitude] with at most two decimals. Directories are only for grouping. The build
+ *     [longitude, latitude] with at most two decimals. The build closes every ring and drops
+ *     repeated consecutive points. Directories are only for grouping. The build
  *     stamps a "license" member into every file; see data/atlas/README.md for data provenance.
  *
  * Encoding is canonical: features and rings are numbered in first-seen order while walking the
@@ -239,6 +240,37 @@ function formatSource(value) {
   return JSON.stringify(value, null, 2).replace(/\[\s+(-?[\d.e+-]+),\s+(-?[\d.e+-]+)\s+\]/g, '[$1, $2]') + '\n';
 }
 
+/**
+ * Normalizes a GeoJSON geometry in place: drops repeated consecutive points, closes every ring
+ * (first point == last point) and drops rings that collapse to fewer than three distinct points
+ * (a collapsed outer ring drops its whole MultiPolygon part). Returns an error message for
+ * geometries it cannot normalize.
+ */
+function normalizeGeometry(geometry) {
+  const multi = geometry.type === 'MultiPolygon';
+  if (!multi && geometry.type !== 'Polygon') return `unsupported geometry type ${geometry.type}`;
+  const polygons = multi ? geometry.coordinates : [geometry.coordinates];
+  if (!Array.isArray(polygons)) return 'coordinates must be a list';
+  const kept = [];
+  for (const polygon of polygons) {
+    if (!Array.isArray(polygon) || !polygon.length) return 'polygon must be a non-empty list of rings';
+    const rings = [];
+    for (const ring of polygon) {
+      if (!Array.isArray(ring) || !ring.every((pt) => Array.isArray(pt) && pt.length === 2)) return 'ring must be a list of [lng, lat] pairs';
+      const out = ring.filter((pt, j) => j === 0 || pt[0] !== ring[j - 1][0] || pt[1] !== ring[j - 1][1]);
+      const first = out[0];
+      const last = out[out.length - 1];
+      if (out.length && (first[0] !== last[0] || first[1] !== last[1])) out.push([first[0], first[1]]);
+      if (out.length >= 4) rings.push(out);
+      else if (!rings.length) break; // collapsed outer ring: drop the part with its holes
+    }
+    if (rings.length) kept.push(rings);
+  }
+  if (!kept.length) return 'geometry has no ring with at least three distinct points';
+  geometry.coordinates = multi ? kept : kept[0];
+  return null;
+}
+
 function listSourceFiles(dir, rootDir) {
   const out = [];
   for (const entry of fs.readdirSync(path.join(rootDir, dir), { withFileTypes: true })) {
@@ -303,6 +335,8 @@ function loadSources(rootDir = ROOT) {
       } else if (featureIndex.has(ref)) {
         errors.push(`${rel}: duplicate feature id "${f.id}"`);
       } else {
+        const problem = f.geometry ? normalizeGeometry(f.geometry) : null;
+        if (problem) errors.push(`${rel}: feature "${f.id}": ${problem}`);
         featureIndex.set(ref, features.length);
         features.push(f.geometry ? { ...f.properties, shape: f.geometry } : { ...f.properties });
       }
