@@ -25,6 +25,194 @@ if (CLI_ARGS.has('--help') || CLI_ARGS.has('-h')) {
 }
 const FAST_MODE = CLI_ARGS.has('--fast') || CLI_ARGS.has('-f');
 
+// Frozen copy of _buildRegionBoundaryPath before #255 added edge bins and point
+// caches. The equivalence check below proves the optimized version draws the same
+// paths and anchors. If you change the boundary rules on purpose, delete this
+// function and that check rather than editing both.
+function buildRegionBoundaryReference(snap) {
+  if (!snap || snap._skipRegionBoundaryStroke || !Array.isArray(snap.regions) || !snap.regions.length) {
+    return '';
+  }
+  if (snap._cachedRegionBoundaryPath !== undefined) {
+    return snap._cachedRegionBoundaryPath;
+  }
+
+  const polRings = [];
+  const polList = snap.polities || [];
+  const polAreas = polList.map(() => 0);
+  for (let pIdx = 0; pIdx < polList.length; pIdx++) {
+    const pol = polList[pIdx];
+    if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
+    const coords = pol.shape.coordinates;
+    const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
+    for (const poly of polys) {
+      const ring = poly && poly[0];
+      if (!ring || ring.length < 3) continue;
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
+      let area2 = 0;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const x = ring[i][0],
+          y = ring[i][1];
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        area2 += ring[j][0] * y - x * ring[j][1];
+      }
+      polAreas[pIdx] += Math.abs(area2) * 0.5;
+      polRings.push({ pIdx, minX, maxX, minY, maxY, ring });
+    }
+  }
+  const allCommanderyRegions = snap.regions.every(
+    (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
+  );
+  const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
+  const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
+  const findPolIdx = (x, y) => {
+    for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+      const b = polRings[rIdx];
+      if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
+      const ring = b.ring;
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0],
+          yi = ring[i][1];
+        const xj = ring[j][0],
+          yj = ring[j][1];
+        if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+          inside = !inside;
+        }
+      }
+      if (inside) return b.pIdx;
+    }
+    return -1;
+  };
+  const allowPolIdx = (pIdx) => {
+    if (pIdx < 0) return false;
+    const pol = polList[pIdx];
+    if (!pol) return false;
+    if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 35) return false;
+    return true;
+  };
+  const nearPolityBorder = (x, y, margin) => {
+    const m2 = margin * margin;
+    for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+      const b = polRings[rIdx];
+      if (
+        x < b.minX - margin ||
+        x > b.maxX + margin ||
+        y < b.minY - margin ||
+        y > b.maxY + margin
+      ) {
+        continue;
+      }
+      const ring = b.ring;
+      for (let i = 0; i < ring.length - 1; i++) {
+        const x1 = ring[i][0],
+          y1 = ring[i][1];
+        const x2 = ring[i + 1][0],
+          y2 = ring[i + 1][1];
+        const dx = x2 - x1,
+          dy = y2 - y1;
+        const len2 = dx * dx + dy * dy;
+        let t = len2 > 1e-12 ? ((x - x1) * dx + (y - y1) * dy) / len2 : 0;
+        if (t < 0) t = 0;
+        else if (t > 1) t = 1;
+        const px = x1 + t * dx - x,
+          py = y1 + t * dy - y;
+        if (px * px + py * py < m2) return true;
+      }
+    }
+    return false;
+  };
+  Object.defineProperty(snap, '_allowRegionAnchor', {
+    value: (x, y) => !polRings.length || allowPolIdx(findPolIdx(x, y)),
+    writable: true,
+    enumerable: false,
+    configurable: true,
+  });
+  const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
+  const edgeKey = (p1, p2) => {
+    const k1 = ptKey(p1);
+    const k2 = ptKey(p2);
+    return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
+  };
+
+  const allRings = [];
+  const regEdgeCounts = new Map();
+  for (const reg of snap.regions) {
+    if (!reg || !reg.shape) continue;
+    const coords = reg.shape.coordinates;
+    const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
+    for (const poly of polys) {
+      for (const ring of poly || []) {
+        if (!ring || ring.length < 2) continue;
+        allRings.push(ring);
+        for (let i = 0; i < ring.length - 1; i++) {
+          const ek = edgeKey(ring[i], ring[i + 1]);
+          regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+        }
+      }
+    }
+  }
+
+  const seenEdges = new Set();
+  let d = '';
+  for (const ring of allRings) {
+    let penX = NaN;
+    let penY = NaN;
+    for (let i = 0; i < ring.length - 1; i++) {
+      const p1 = ring[i];
+      const p2 = ring[i + 1];
+      const ek = edgeKey(p1, p2);
+      if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+        penX = NaN;
+        penY = NaN;
+        continue;
+      }
+      const mx = (p1[0] + p2[0]) * 0.5;
+      const my = (p1[1] + p2[1]) * 0.5;
+      const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
+      const borderMargin = isMultiRegime ? 0.55 : 0.16;
+      if (
+        polRings.length &&
+        (!allowPolIdx(pIdxM) ||
+          findPolIdx(p1[0], p1[1]) !== pIdxM ||
+          findPolIdx(p2[0], p2[1]) !== pIdxM ||
+          (hasLargePolity &&
+            (nearPolityBorder(mx, my, borderMargin) ||
+              (isMultiRegime &&
+                (nearPolityBorder(p1[0], p1[1], 0.38) || nearPolityBorder(p2[0], p2[1], 0.38))))))
+      ) {
+        penX = NaN;
+        penY = NaN;
+        continue;
+      }
+      seenEdges.add(ek);
+      const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
+      const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
+      if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
+      if (x1 !== penX || y1 !== penY) {
+        d += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
+      }
+      d += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
+      penX = x2;
+      penY = y2;
+    }
+  }
+
+  Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
+    value: d,
+    writable: true,
+    enumerable: false,
+    configurable: true,
+  });
+  return d;
+}
+
 function main() {
   const t0 = performance.now();
   const sandbox = { window: {} };
@@ -632,7 +820,23 @@ function main() {
       north: 55,
     }),
   });
+  ctrl._setEnglishLocale(enLocale);
   ctrl._initTimelineBands();
+  {
+    const probe = Object.create(ControllerClass.prototype);
+    let enumerations = 0;
+    const dict = new Proxy({ sample: 'translation' }, {
+      ownKeys(target) { enumerations++; return Reflect.ownKeys(target); },
+    });
+    probe._setEnglishLocale({ dict });
+    assert.strictEqual(probe._hasEnDict(), true, 'A loaded dictionary must be available');
+    for (let i = 0; i < 20; i++) assert.strictEqual(probe._hasEnDict(), true);
+    assert.strictEqual(enumerations, 1, 'Dictionary availability must not rescan on the hot path');
+    probe._setEnglishLocale({ dict: {} });
+    assert.strictEqual(probe._hasEnDict(), false, 'Replacing with an empty dictionary resets the flag');
+    probe._setEnglishLocale(null);
+    assert.strictEqual(probe._hasEnDict(), false, 'A missing locale remains supported');
+  }
   assert.strictEqual(
     typeof ctrl._lazyAssetUrl,
     'function',
@@ -1242,6 +1446,88 @@ function main() {
   );
   ctrl.projector.toScreen = (lng, lat) => [(lng - 66) * 13.15, (55 - lat) * 17.07];
   ctrl._hydrateSnapshots();
+  {
+    let snapshotsChecked = 0;
+    let anchorsChecked = 0;
+    const checkBoundary = (snapshot, name) => {
+      const before = { ...snapshot };
+      const after = { ...snapshot };
+      const expected = buildRegionBoundaryReference.call(ctrl, before);
+      const actual = ctrl._buildRegionBoundaryPath(after);
+      assert.strictEqual(actual, expected, `Region boundary geometry changed: ${name}`);
+      assert.strictEqual(ctrl._buildRegionBoundaryPath(after), actual, `Boundary cache changed: ${name}`);
+      assert.strictEqual(typeof after._allowRegionAnchor, typeof before._allowRegionAnchor);
+      if (before._allowRegionAnchor) {
+        const points = [];
+        for (let lng = 66; lng <= 142; lng += 9.5) {
+          for (let lat = 14; lat <= 55; lat += 6.8) points.push([lng, lat]);
+        }
+        for (const region of snapshot.regions || []) if (region.anchor) points.push(region.anchor);
+        for (const point of points) {
+          assert.strictEqual(after._allowRegionAnchor(...point), before._allowRegionAnchor(...point),
+            `Region label-anchor classification changed: ${name}`);
+          anchorsChecked++;
+        }
+      }
+      return { before, after, expected };
+    };
+    for (const [key, snapshot] of Object.entries(ctrl.snapshots)) {
+      if (Array.isArray(snapshot)) continue;
+      checkBoundary(snapshot, key);
+      snapshotsChecked++;
+    }
+    assert(snapshotsChecked > 180 && anchorsChecked > 16000,
+      'Boundary equivalence must cover the full atlas');
+
+    const rectangle = (x0, y0, x1, y1) => ({
+      type: 'Polygon', coordinates: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]],
+    });
+    const dense = points => {
+      const ring = [];
+      for (let i = 0; i < points.length; i++) {
+        const a = points[i], b = points[(i + 1) % points.length];
+        for (let k = 0; k < 20; k++) {
+          ring.push([a[0] + (b[0] - a[0]) * k / 20, a[1] + (b[1] - a[1]) * k / 20]);
+        }
+      }
+      ring.push(ring[0]);
+      return { type: 'Polygon', coordinates: [ring] };
+    };
+    const regions = (x0, x1, y) => [
+      { title: 'north', shape: rectangle(x0, y, x1, y + 1) },
+      { title: 'south', shape: rectangle(x0, y - 1, x1, y) },
+    ];
+    const main = { title: 'main', role: 'main', shape: rectangle(0, -20, 70, 30) };
+    const notched = {
+      title: 'rival', role: 'rival',
+      shape: dense([[10, 0], [60, 0], [60, 10], [40, 10], [40, 5], [20, 5], [20, 10], [10, 10]]),
+    };
+    const rivals = [
+      { title: 'east', role: 'rival', shape: rectangle(80, 0, 90, 10) },
+      { title: 'west', role: 'rival', shape: rectangle(-40, 0, -30, 10) },
+    ];
+    for (const [name, polities, regionList, draws, anchor] of [
+      ['multi-regime 0.55 midpoint exclusion', [main, notched, ...rivals], regions(25, 35, 5.5), false, null],
+      ['three-regime midpoint control', [main, notched, rivals[0]], regions(25, 35, 5.5), true, null],
+      ['multi-regime 0.38 endpoint exclusion', [main, notched, ...rivals], regions(20.3, 30, 7), false, null],
+      ['three-regime endpoint control', [main, notched, rivals[0]], regions(20.3, 30, 7), true, null],
+      ['rival area 50 remains eligible', [
+        { title: 'rival', role: 'rival', shape: rectangle(20, 5, 30, 10) }, rivals[0],
+      ], regions(22, 28, 7), true, [25, 8, true]],
+      ['area-50 main activates area-30 rival suppression', [
+        { title: 'rival', role: 'rival', shape: rectangle(0, 0, 6, 5) },
+        { title: 'main', role: 'main', shape: rectangle(10, 0, 20, 5) },
+      ], regions(1, 5, 2.5), false, [3, 2, false]],
+    ]) {
+      const { before, after, expected } = checkBoundary({ regions: regionList, polities }, name);
+      assert.strictEqual(Boolean(expected), draws, `Vacuous reference fixture: ${name}`);
+      if (anchor) {
+        assert.strictEqual(before._allowRegionAnchor(anchor[0], anchor[1]), anchor[2]);
+        assert.strictEqual(after._allowRegionAnchor(anchor[0], anchor[1]), anchor[2]);
+      }
+    }
+    console.log(`  [boundary equivalence] ${snapshotsChecked} snapshots, ${anchorsChecked} anchors, 6 margin/threshold fixtures`);
+  }
   const tangDyn = dynasties.find((d) => d.key === 'tang');
   const tang780Key = ctrl._resolveSnapKey(tangDyn, 780);
   const tang780Snap = snapshots[tang780Key];
@@ -6606,13 +6892,13 @@ function main() {
         // 5. _effectiveRenderedLocale distinguishes pending English dict from loaded English dict
         const savedEnLocale = ctrl.enLocale;
         ctrl.locale = 'en';
-        ctrl.enLocale = { dict: {} };
+        ctrl._setEnglishLocale({ dict: {} });
         assert.strictEqual(
           ctrl._effectiveRenderedLocale(),
           'en-pending',
           '_effectiveRenderedLocale must return en-pending when i18n_dict.js has not loaded yet'
         );
-        ctrl.enLocale = savedEnLocale;
+        ctrl._setEnglishLocale(savedEnLocale);
         assert.strictEqual(
           ctrl._effectiveRenderedLocale(),
           'en',
@@ -6939,7 +7225,7 @@ function main() {
           ctrl.dynastyIdx = 0;
           ctrl.year = -403;
           ctrl.locale = 'en';
-          ctrl.enLocale = { strings: {}, dynasties: {}, milestones: {}, corridors: {}, dict: {} };
+          ctrl._setEnglishLocale({ strings: {}, dynasties: {}, milestones: {}, corridors: {}, dict: {} });
           ctrl._lastLegendSnap = null;
           ctrl._lastLegendKey = null;
           ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
@@ -6947,7 +7233,7 @@ function main() {
             String(ctrl._lastLegendKey).includes(':en-pending:'),
             `Cold-boot _renderLegendBox before i18n_dict.js loads must tag _lastLegendKey with en-pending, got "${ctrl._lastLegendKey}"`
           );
-          ctrl.enLocale = savedEn;
+          ctrl._setEnglishLocale(savedEn);
           ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
           assert(
             String(ctrl._lastLegendKey).includes(':en:') &&
