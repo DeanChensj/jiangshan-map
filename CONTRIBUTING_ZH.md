@@ -94,7 +94,7 @@
      node scripts/audit_topology.js --details s_tang_d2   # 查看某个快照中有问题的政权对
      node scripts/audit_topology.js --update              # 修完边界后下调基线并一起提交
      ```
-   - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，或给边界新增尖刺、自相接触的点，则跳过并报告；更深的错位会列出来留待人工修正。
+   - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，给边界新增尖刺、自相接触的点，或挪动宽于约 6 公里的一块领土，则跳过并报告；更深的错位会列出来留待人工修正。
      ```bash
      node scripts/repair_topology.js wudai           # 对某个朝代目录（或快照键）试运行，只输出报告
      node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
