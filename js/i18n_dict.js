@@ -1,4 +1,3 @@
-// Auto-generated English localization dictionary for Jiangshan Atlas
 window.EN_LOCALE = {
   "strings": {
     "title": "Chronicles of the Realm · Historical Atlas of China",
@@ -165,7 +164,7 @@ window.EN_LOCALE = {
   },
   "milestones": {
     "qin:-221": [
-      "First Emperor unifies the six states; commanderies, one script, axle widths and measures",
+      "Wang Ben takes Qi's surrender; First Emperor unifies China with commanderies and one script",
       "Xianyang"
     ],
     "qin:-215": [
@@ -213,7 +212,7 @@ window.EN_LOCALE = {
       "Wulei (Luntai)"
     ],
     "xihan:8": [
-      "Wang Mang usurps the throne and proclaims the Xin dynasty",
+      "Regent Wang Mang forces Young Prince Ying to abdicate and proclaims the Xin dynasty, ending Han",
       "Chang'an"
     ],
     "xihan:17": [
@@ -225,7 +224,7 @@ window.EN_LOCALE = {
       "Kunyang & Chang'an"
     ],
     "donghan:25": [
-      "Liu Xiu (Emperor Guangwu) proclaims the Eastern Han at Luoyang",
+      "Red Eyebrows topple Gengshi in Chang’an; Liu Xiu ascends at Haocheng and makes Luoyang capital",
       "Luoyang"
     ],
     "donghan:36": [
@@ -233,7 +232,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "donghan:48": [
-      "Xiongnu split; the Southern Xiongnu submit and settle inside the frontier",
+      "Southern Xiongnu claimant Bi submits to Eastern Han at Meiji, splitting the Xiongnu in two",
       "Meiji (Ordos)"
     ],
     "donghan:73": [
@@ -281,15 +280,15 @@ window.EN_LOCALE = {
       "Red Cliffs · Jiangling"
     ],
     "sanguo:220": [
-      "Cao Pi forces Emperor Xian to abdicate and proclaims Cao Wei",
+      "Succeeding his father, Cao Pi forces Emperor Xian of Han to abdicate and establishes Cao Wei",
       "Luoyang"
     ],
     "sanguo:221": [
-      "Liu Bei proclaims himself emperor of Shu Han at Chengdu",
+      "Hearing of Emperor Xian’s deposition, Liu Bei proclaims himself Emperor of Shu Han at Chengdu",
       "Chengdu"
     ],
     "sanguo:229": [
-      "Sun Quan proclaims himself emperor of Wu and moves the capital to Jianye",
+      "Sun Quan proclaims himself Emperor of Wu at Wuchang and moves the capital to Jianye (Nanjing)",
       "Jianye"
     ],
     "sanguo:263": [
@@ -297,7 +296,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "sanguo:280": [
-      "Western Jin conquers Eastern Wu, ending the Three Kingdoms",
+      "Jin armies storm Jianye and receive Sun Hao’s surrender, conquering Wu and reunifying China",
       "Jianye"
     ],
     "xijin:280": [
@@ -345,7 +344,7 @@ window.EN_LOCALE = {
       "Chang'an · Jingkou"
     ],
     "xijin:316": [
-      "Han-Zhao takes Chang'an, ending Western Jin; Zhang, Tuoba & Murong hold North",
+      "Liu Yao captures Chang’an and Emperor Min, ending Western Jin as northern states fragment",
       "Chang'an"
     ],
     "dongjin:317": [
@@ -365,7 +364,7 @@ window.EN_LOCALE = {
       "Jiankang"
     ],
     "dongjin:329": [
-      "Shi Le destroys Former Zhao; Later Zhao unifies most of northern China",
+      "Shi Le captures Former Zhao ruler Liu Yao at Luoyang and takes Chang’an, unifying the north",
       "Luoyang"
     ],
     "dongjin:335": [
@@ -377,11 +376,11 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "dongjin:350": [
-      "Ran Min overthrows Later Zhao and founds Ran Wei at Ye",
+      "Amid bloody strife after Shi Hu’s death, Ran Min exterminates the Shi clan and founds Ran Wei",
       "Ye (Anyang)"
     ],
     "dongjin:351": [
-      "Fu Jian proclaims the Former Qin at Chang’an",
+      "Di leader Fu Jian marches west through Tong Pass to take Chang’an and founds Former Qin",
       "Chang'an"
     ],
     "dongjin:352": [
@@ -405,7 +404,7 @@ window.EN_LOCALE = {
       "Fangtou (Xunxian)"
     ],
     "dongjin:370": [
-      "Fu Jian of Former Qin sends Wang Meng to capture Ye and destroy Former Yan",
+      "Wang Meng routs 300,000 Former Yan troops at Luchuan and captures Ye, destroying Former Yan",
       "Ye"
     ],
     "dongjin:376": [
@@ -425,7 +424,7 @@ window.EN_LOCALE = {
       "Fuhan (Linxia)"
     ],
     "dongjin:386": [
-      "Tuoba Gui restores Dai and founds Northern Wei",
+      "Tuoba Gui rallies his clan at Niuchuan to restore the Kingdom of Dai and renames it Northern Wei",
       "Shengle"
     ],
     "dongjin:395": [
@@ -445,11 +444,11 @@ window.EN_LOCALE = {
       "Guanggu · Kuaiji"
     ],
     "dongjin:404": [
-      "Liu Yu rises at Jingkou to crush usurper Huan Xuan; Qiao Zong founds Qiao Shu in Chengdu",
+      "Liu Yu rises at Jingkou against usurper Huan Xuan; Qiao Shu rises as Later Liang yields to Qin",
       "Jingkou · Jiankang · Chengdu"
     ],
     "dongjin:407": [
-      "Helian Bobo founds Hu Xia at Tongwancheng; Feng Ba & Gao Yun found Northern Yan",
+      "Helian Bobo founds Hu Xia; Feng Ba overthrows Later Yan ruler Murong Xi to found Northern Yan",
       "Tongwancheng · Longcheng"
     ],
     "dongjin:410": [
@@ -497,7 +496,7 @@ window.EN_LOCALE = {
       "Dongyang (Qingzhou)"
     ],
     "nanbei:479": [
-      "Xiao Daocheng deposes Liu Song and founds the Southern Qi dynasty",
+      "Having deposed Emperor Houfei, Xiao Daocheng forces Emperor Shun to abdicate and founds Qi",
       "Jiankang"
     ],
     "nanbei:494": [
@@ -505,16 +504,16 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "nanbei:502": [
-      "Xiao Yan deposes Southern Qi and founds the Liang dynasty at Jiankang",
+      "Xiao Yan marches down the Yangtze to take Jiankang, deposing Southern Qi to found Liang",
       "Jiankang"
     ],
     "nanbei:528": [
-      "Heyin Incident plunges Northern Wei into civil war",
+      "Heyin Massacre: Erzhu Rong installs Yuan Ziyou, drowns Empress Hu, and slays 2,000 court nobles",
       "Heyin (Luoyang)"
     ],
     "nanbei:534": [
-      "Northern Wei splits into Eastern Wei and Western Wei",
-      "Ye (Anyang)"
+      "Emperor Xiaowu flees to Yuwen Tai in Chang'an while Gao Huan installs Eastern Wei at Ye",
+      "Luoyang · Ye · Chang'an"
     ],
     "nanbei:548": [
       "Hou Jing's Rebellion storms Jiankang Palace; aged Emperor Wu starves as Jiangnan is ravaged",
@@ -525,8 +524,8 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "nanbei:557": [
-      "Chen Baxian founds Chen; Yuwen Jue founds Northern Zhou",
-      "Jiankang"
+      "After slaying Wang Sengbian, Chen Baxian founds Chen; Yuwen Tai's son Yuwen Jue founds Zhou",
+      "Jiankang · Chang'an"
     ],
     "nanbei:573": [
       "Taijian Northern Expedition: Chen general Wu Mingche defeats Northern Qi and recovers Huainan",
@@ -541,7 +540,7 @@ window.EN_LOCALE = {
       "Daxing"
     ],
     "sui:589": [
-      "Sui conquers Chen, reunifying China after nearly 300 years",
+      "Commanded by Yang Guang, Sui armies cross the Yangtze and capture Jiankang, reunifying China",
       "Jiankang"
     ],
     "sui:605": [
@@ -557,7 +556,7 @@ window.EN_LOCALE = {
       "Jiangdu"
     ],
     "tang:627": [
-      "Emperor Taizong (Li Shimin) inaugurates the prosperous Reign of Zhenguan",
+      "Emperor Taizong inaugurates the Reign of Zhenguan with Fang Xuanling and Du Ruhui",
       "Chang'an"
     ],
     "tang:640": [
@@ -581,7 +580,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "tang:790": [
-      "Beiting falls; Tang is cut off from the Western Regions",
+      "Tibetan and Karluk forces capture Beiting, cutting the Tang court off from the Western Regions",
       "Beiting"
     ],
     "tang:875": [
@@ -601,11 +600,11 @@ window.EN_LOCALE = {
       "Youzhou"
     ],
     "wudai:923": [
-      "Li Cunxu destroys Later Liang and founds Later Tang",
+      "Proclaiming Later Tang at Weizhou, Li Cunxu launches a surprise crossing to take Bianzhou",
       "Bianzhou"
     ],
     "wudai:936": [
-      "Shi Jingtang cedes the Sixteen Prefectures to the Khitan and founds Later Jin",
+      "Rebelling at Taiyuan, Shi Jingtang cedes the Sixteen Prefectures to Khitan and founds Later Jin",
       "Youzhou"
     ],
     "wudai:937": [
@@ -613,15 +612,15 @@ window.EN_LOCALE = {
       "Jinling"
     ],
     "wudai:939": [
-      "Ngo Quyen defeats Southern Han; Annam becomes independent",
+      "Ngo Quyen defeats the Southern Han fleet on the Bach Dang River and rules Jiaozhou independently",
       "Jiaozhou"
     ],
     "wudai:947": [
-      "Khitan destroys Later Jin and adopts the dynastic name Liao; Liu Zhiyuan founds Later Han",
-      "Bianzhou"
+      "Khitan captures Shi Chonggui to end Later Jin and proclaims Liao; Liu Zhiyuan founds Later Han",
+      "Bianzhou · Taiyuan"
     ],
     "wudai:951": [
-      "Guo Wei founds Later Zhou and Liu Chong founds Northern Han; Southern Tang annexes Ma Chu",
+      "Driven to mutiny by Later Han, Guo Wei founds Later Zhou; Northern Han rises and Ma Chu falls",
       "Bianzhou · Taiyuan · Tanzhou"
     ],
     "wudai:954": [
@@ -637,11 +636,11 @@ window.EN_LOCALE = {
       "Yangzhou (Jiangdu)"
     ],
     "wudai:960": [
-      "Mutiny at Chenqiao: Zhao Kuangyin founds the Song dynasty",
+      "After Chai Rong leaves a child heir, commander Zhao Kuangyin stages the Chenqiao Mutiny",
       "Chenqiao Post"
     ],
     "beisong:960": [
-      "Mutiny at Chenqiao: Zhao Kuangyin founds the Song dynasty",
+      "Palace commander Zhao Kuangyin stages the Chenqiao Mutiny and receives the Later Zhou abdication",
       "Chenqiao Post"
     ],
     "beisong:963": [
@@ -665,7 +664,7 @@ window.EN_LOCALE = {
       "Gaoliang R. (Youzhou)"
     ],
     "beisong:1004": [
-      "Chanyuan Treaty inaugurates a century of peace between Song and Liao",
+      "Liao forces reach Chanzhou; Kou Zhun urges Zhenzong to the front, sealing the Chanyuan Treaty",
       "Chanzhou"
     ],
     "beisong:1038": [
@@ -685,7 +684,7 @@ window.EN_LOCALE = {
       "Xizhou & Hezhou"
     ],
     "beisong:1120": [
-      "Alliance on the Sea between Song and Jin against Liao",
+      "Song envoys sail from Dengzhou to conclude the Alliance on the Sea with Jin against Liao",
       "Dengzhou (Penglai)"
     ],
     "beisong:1125": [
@@ -693,7 +692,7 @@ window.EN_LOCALE = {
       "Yingzhou"
     ],
     "beisong:1127": [
-      "Jingkang Incident: Jin captures Kaifeng, ending Northern Song",
+      "Jingkang Incident: Jin armies storm Kaifeng and abduct Emperors Huizong and Qinzong, ending Song",
       "Kaifeng"
     ],
     "nansong:1127": [
@@ -701,11 +700,11 @@ window.EN_LOCALE = {
       "Nanjing Yingtianfu"
     ],
     "nansong:1141": [
-      "Treaty of Shaoxing fixes the Song–Jin border along the Huai River and Dasan Pass",
+      "Qin Hui executes Yue Fei and concludes the Treaty of Shaoxing along the Huai and Dasan Pass",
       "Huai River Line"
     ],
     "nansong:1206": [
-      "Temüjin unites the Mongol tribes as Genghis Khan",
+      "Having defeated the Kereit and Naiman to unite the steppe, Temüjin is proclaimed Genghis Khan",
       "Onon River"
     ],
     "nansong:1227": [
@@ -725,7 +724,7 @@ window.EN_LOCALE = {
       "Dadu / Sakya"
     ],
     "nansong:1271": [
-      "Kublai Khan proclaims the Great Yuan dynasty",
+      "After defeating Ariq Böke in the succession war, Kublai Khan proclaims the Great Yuan at Dadu",
       "Dadu"
     ],
     "nansong:1273": [
@@ -741,7 +740,7 @@ window.EN_LOCALE = {
       "Lin'an / Zhongqing"
     ],
     "nansong:1279": [
-      "Battle of Yashan: end of the Song dynasty",
+      "Retreating to Guangdong, Lu Xiufu leaps into the sea with child emperor Zhao Bing at Yashan",
       "Yashan"
     ],
     "yuan:1279": [
@@ -797,7 +796,7 @@ window.EN_LOCALE = {
       "Tumu Fort"
     ],
     "ming:1550": [
-      "Gengxu Incident: Altan Khan raids the suburbs of Beijing",
+      "Gengxu Incident: refused border trade, Altan Khan breaches Gubeikou and besieges Beijing",
       "Beijing"
     ],
     "ming:1561": [
@@ -833,7 +832,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "qing:1644": [
-      "Qing armies enter Shanhai Pass and make Beijing the capital",
+      "Wu Sangui opens Shanhai Pass to Dorgon’s Qing army, which routs Li Zicheng and takes Beijing",
       "Shanhai Pass"
     ],
     "qing:1645": [
@@ -849,7 +848,7 @@ window.EN_LOCALE = {
       "Kunming"
     ],
     "qing:1683": [
-      "Shi Lang takes Taiwan; Taiwan Prefecture established under Fujian",
+      "Admiral Shi Lang defeats the Zheng fleet at Penghu; Zheng Keshuang yields and Taiwanfu is set",
       "Taiwanfu (Tainan)"
     ],
     "qing:1689": [
@@ -905,7 +904,7 @@ window.EN_LOCALE = {
       "Shenyang"
     ],
     "roc:1937": [
-      "Marco Polo Bridge Incident begins the full-scale War of Resistance",
+      "Marco Polo Bridge Incident: Japanese forces shell Wanping and Lugou Bridge, igniting total war",
       "Marco Polo Bridge"
     ],
     "roc:1945": [
@@ -961,7 +960,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "xihan:-133": [
-      "Plot of Mayi; full-scale Han–Xiongnu war begins",
+      "Mayi Ambush: Emperor Wu sets a trap for the Xiongnu Chanyu at Mayi, sparking full-scale war",
       "Mayi (Shuozhou)"
     ],
     "xihan:-119": [
@@ -1029,7 +1028,7 @@ window.EN_LOCALE = {
       "Xingshi (Yangxian) & Wandu"
     ],
     "sanguo:249": [
-      "Incident at the Gaoping Tombs; Sima Yi seizes power in Wei",
+      "Gaoping Tombs Incident: Sima Yi seizes Luoyang while Cao Shuang is away and takes control of Wei",
       "Luoyang"
     ],
     "sanguo:255": [
@@ -1041,7 +1040,7 @@ window.EN_LOCALE = {
       "Chengdu & Panyu"
     ],
     "sanguo:265": [
-      "Sima Yan replaces Cao Wei and establishes Western Jin",
+      "Following Sima Zhao’s death, Sima Yan forces the Wei emperor to abdicate and founds Western Jin",
       "Luoyang"
     ],
     "sanguo:272": [
@@ -1053,8 +1052,8 @@ window.EN_LOCALE = {
       "Jiangling / Jianye"
     ],
     "nanbei:550": [
-      "Gao Yang replaces Eastern Wei and establishes Northern Qi",
-      "Ye"
+      "Gao Yang founds Northern Qi at Ye; Yuwen Tai institutes the Eight Pillars system in Western Wei",
+      "Ye · Chang'an"
     ],
     "nanbei:554": [
       "Western Wei captures Jiangling and installs Western Liang",
@@ -1081,11 +1080,11 @@ window.EN_LOCALE = {
       "Taiyuan / Daxing"
     ],
     "tang:618": [
-      "Li Yuan proclaims himself emperor in Chang'an, founding Tang",
+      "After Emperor Yang is slain at Jiangdu, Li Yuan receives the Sui abdication and founds Tang",
       "Chang'an"
     ],
     "tang:626": [
-      "Xuanwu Gate Incident; Li Shimin (Taizong) ascends the throne",
+      "Xuanwu Gate Incident: Prince Li Shimin ambushes Crown Prince Jiancheng and ascends as Taizong",
       "Chang'an"
     ],
     "tang:630": [
@@ -1169,7 +1168,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "wudai:934": [
-      "Meng Zhixiang proclaims Later Shu in Chengdu",
+      "After annexing Dongchuan to control Sichuan, governor Meng Zhixiang proclaims Later Shu",
       "Chengdu"
     ],
     "wudai:945": [
@@ -1217,7 +1216,7 @@ window.EN_LOCALE = {
       "Huangtiandang (Zhenjiang)"
     ],
     "nansong:1138": [
-      "Emperor Gaozong formally establishes Lin'an as the temporary capital",
+      "Emperor Gaozong settles his temporary capital at Lin’an (Hangzhou) as Qin Hui leads peace talks",
       "Lin'an (Hangzhou)"
     ],
     "nansong:1140": [
@@ -1489,7 +1488,7 @@ window.EN_LOCALE = {
       "Chengdu · Hanzhong"
     ],
     "zhanguo:-307": [
-      "King Wuling of Zhao adopts cavalry archery and conquers Zhongshan",
+      "King Wuling of Zhao adopts cavalry archery, campaigns against Zhongshan, and opens Yunzhong",
       "Handan"
     ],
     "zhanguo:-306": [
@@ -1985,7 +1984,7 @@ window.EN_LOCALE = {
       "Yingtian (Nanjing)"
     ],
     "ming:1402": [
-      "Jingnan forces breach Nanjing's Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
+      "Jingnan forces breach Nanjing’s Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
       "Yingtian (Nanjing)"
     ],
     "ming:1626": [
@@ -2005,7 +2004,7 @@ window.EN_LOCALE = {
       "Chengde (Jehol)"
     ],
     "qing:1799": [
-      "Following Qianlong's death, the Jiaqing Emperor executes corrupt minister Heshen",
+      "Upon Qianlong’s death, the Jiaqing Emperor assumes personal rule and executes Heshen",
       "Beijing"
     ],
     "qing:1856": [
@@ -2089,7 +2088,7 @@ window.EN_LOCALE = {
       "Jiankang · Jiangling"
     ],
     "nanbei:578": [
-      "Northern Zhou captures Wu Mingche at Luliang and seizes Huainan north of the Yangtze",
+      "Northern Zhou captures Wu Mingche at Luliang and seizes all of Huainan north of the Yangtze",
       "Pengcheng · Shouyang"
     ],
     "tang:783": [
@@ -2103,6 +2102,50 @@ window.EN_LOCALE = {
     "wudai:927": [
       "Later Tang invests Ma Yin as King of Chu alongside Jingnan astride middle Yangtze trade",
       "Tanzhou · Jiangling"
+    ],
+    "xihan:6": [
+      "Made Duke of Anhan, Wang Mang seizes power and rules as Acting Emperor over Young Prince Ying",
+      "Chang'an"
+    ],
+    "donghan:216": [
+      "Elevated to King of Wei at Ye after the Nine Bestowals, Cao Cao lays the foundation of Wei",
+      "Ye · Xu"
+    ],
+    "tang:684": [
+      "Empress Dowager Wu Zetian deposes Zhongzong at Luoyang and crushes Xu Jingye's Yangzhou revolt",
+      "Eastern Capital Luoyang · Yangzhou"
+    ],
+    "tang:904": [
+      "Zhu Wen forces Emperor Zhaozong from ruined Chang'an to Luoyang, then assassinates him",
+      "Chang'an · Eastern Capital Luoyang"
+    ],
+    "nanbei:474": [
+      "Prince of Guiyang rebels from Xunyang; Xiao Daocheng defends Xinting and seizes Liu Song power",
+      "Xunyang · Jiankang"
+    ],
+    "nanbei:500": [
+      "After bloody court purges under Marquis Donghun, governor Xiao Yan rises in Xiangyang",
+      "Jiankang · Xiangyang"
+    ],
+    "nanbei:530": [
+      "Emperor Xiaozhuang ambushes and slays warlord Erzhu Rong in Luoyang; Erzhu Zhao storms the city",
+      "Luoyang · Jinyang"
+    ],
+    "nanbei:532": [
+      "Battle of Hanling: Gao Huan routs the 200,000-strong Erzhu coalition and seizes court power",
+      "Hanling (Ye) · Luoyang"
+    ],
+    "zhanguo:-272": [
+      "Queen Dowager Xuan slays the Yiqu king at Ganquan, annexing Yiqu and setting 3 commanderies",
+      "Xianyang · Yiqu"
+    ],
+    "dongjin:414": [
+      "Western Qin captures Ledu to destroy Southern Liang; Northern Liang moves its capital to Guzang",
+      "Ledu · Guzang"
+    ],
+    "wudai:942": [
+      "After Shi Jingtang dies, successor Shi Chonggui refuses to submit as a vassal to the Khitan",
+      "Bianzhou"
     ]
   },
   "corridors": {

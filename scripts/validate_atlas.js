@@ -8291,6 +8291,40 @@ function main() {
         `${sk}: Hulunbuir [120.0, 49.2] and Hinggan [121.5, 46.0] must be covered by ${fengTitle} (no hollow gap)`
       );
     }
+
+    // Dynasty transition & usurpation causality chain checks
+    for (const [dk, yr, kw, expAnchors] of [
+      ['zhanguo', -272, '义渠', 2],
+      ['qin', -221, '王贲受齐王建降', 1],
+      ['xihan', 6, '假皇帝', 1],
+      ['donghan', 216, '魏王', 2],
+      ['dongjin', 350, '石虎', 1],
+      ['dongjin', 414, '南凉', 2],
+      ['nanbei', 474, '新亭', 2],
+      ['nanbei', 479, '萧道成', 1],
+      ['nanbei', 500, '东昏侯', 2],
+      ['nanbei', 502, '萧衍', 1],
+      ['nanbei', 528, '尔朱荣', 1],
+      ['nanbei', 530, '孝庄帝', 2],
+      ['nanbei', 532, '韩陵之战', 2],
+      ['nanbei', 534, '宇文泰', 3],
+      ['nanbei', 550, '八柱国', 2],
+      ['nanbei', 557, '王僧辩', 2],
+      ['tang', 684, '徐敬业', 2],
+      ['tang', 904, '朱温劫唐昭宗', 2],
+      ['wudai', 923, '魏州', 1],
+      ['wudai', 942, '称孙不称臣', 1],
+      ['wudai', 947, '石重贵', 2],
+      ['wudai', 951, '后汉隐帝', 3],
+      ['nansong', 1141, '岳武穆', 1],
+      ['nansong', 1271, '阿里不哥', 1],
+      ['nansong', 1279, '陆秀夫', 1],
+    ]) {
+      const d = dynasties.find((x) => x.key === dk);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Expected transition milestone ${dk}:${yr} containing "${kw}"`);
+      assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, expAnchors, `Expected ${expAnchors} anchors on ${dk}:${yr}`);
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);
