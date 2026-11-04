@@ -2,10 +2,11 @@
 /**
  * Polity Border Topology Audit for Jiangshan Atlas (江山时序)
  * Zero external dependencies. Counts, per snapshot, the places where two core polities
- * (role main, rival or protectorate) fail to share a border cleanly:
+ * (role main, rival or protectorate) fail to share a border cleanly. Each vertex and each edge
+ * midpoint of one polity is a sample point:
  *
- *   overlap  a vertex of one polity lies strictly inside another polity
- *   gap      a vertex of one polity lies outside another polity but within GAP_DEG of its
+ *   overlap  a sample point of one polity lies strictly inside another polity
+ *   gap      a sample point of one polity lies outside another polity but within GAP_DEG of its
  *            border without sitting on it (sliver gaps and 0.01° rounding drift)
  *
  * Neighbor polities (role "neighbor") are drawn as fuzzy context and are not audited.
@@ -110,18 +111,28 @@ function borderDistance(shape, px, py) {
 }
 
 /** Counts overlap and gap vertices of shape a against shape b. */
+/**
+ * Counts overlap and gap sample points of shape a against shape b. Samples are a's vertices and
+ * the midpoints of a's edges: a sliver whose corners all sit on b's border still has an edge
+ * running through b or beside it.
+ */
 function compareShapes(a, b) {
   const result = { overlap: 0, gap: 0 };
   const [bx0, by0, bx1, by1] = b.bbox;
+  const sample = (x, y, isVertex) => {
+    if (x < bx0 - GAP_DEG || x > bx1 + GAP_DEG || y < by0 - GAP_DEG || y > by1 + GAP_DEG) return;
+    if (isVertex && b.vertices.has(pointKey(x, y))) return;
+    const d = borderDistance(b, x, y);
+    if (d <= ON_BORDER_DEG) return;
+    if (contains(b, x, y)) result.overlap++;
+    else if (d !== Infinity) result.gap++;
+  };
   for (const ring of a.rings) {
     for (let i = 0; i < ring.length - 1; i++) {
       const [x, y] = ring[i];
-      if (x < bx0 - GAP_DEG || x > bx1 + GAP_DEG || y < by0 - GAP_DEG || y > by1 + GAP_DEG) continue;
-      if (b.vertices.has(pointKey(x, y))) continue;
-      const d = borderDistance(b, x, y);
-      if (d <= ON_BORDER_DEG) continue;
-      if (contains(b, x, y)) result.overlap++;
-      else if (d !== Infinity) result.gap++;
+      const [nx, ny] = ring[i + 1];
+      sample(x, y, true);
+      sample((x + nx) / 2, (y + ny) / 2, false);
     }
   }
   return result;

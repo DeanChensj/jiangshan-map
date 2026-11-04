@@ -88,13 +88,13 @@
    - 每个快照对应 `data/atlas/<朝代>/<快照键>.geojson`（如 `zhanguo/s_zhanguo_b.geojson`）：这是一个 FeatureCollection，其 `snapshot` 字段保存标题、说明以及 `polities` / `prefectures` / `regions` 要素列表（按显示顺序）。裸 id（如 `"燕"`）指同一文件中的要素；`"s_zhanguo_a/齐"` 指定义在其他快照中的要素（因此 id 中不能含 `/`）。每个要素只存一份，放在最早使用它的快照里，修改它会同时影响所有引用它的快照；若只想改某一阶段的边界，请把该要素复制到对应快照文件中、换一个新 id，再让列表指向它。
    - 坐标为 `[经度, 纬度]`，最多两位小数；构建时会自动闭合 ring、去掉相邻重复点。新增快照时还需把它加入 `data/atlas/index.json` 的 `order`（`boot` 列出首屏内置的快照）。
    - 古代政权边界（尤其是草原游牧政权、羁縻都护府、吐蕃与西域等）在历史上多为依山川走势延伸的动态过渡带，提交边界调整时建议在 PR 中注明参考图集（如谭其骧主编《中国历史地图集》对应分册与图幅）。
-   - 相邻政权与外围道/州级政区交界处应共用同一组自然曲线顶点链，确保放大检视时零缝隙、零重叠咬合。CI 会按快照统计核心政权（`main` / `rival` / `protectorate`，不含 `neighbor`）之间互相重叠或留有约 4 公里以内缝隙的顶点数，任一快照超过 `data/atlas/topology_baseline.json` 即失败。基线只降不升：
+   - 相邻政权与外围道/州级政区交界处应共用同一组自然曲线顶点链，确保放大检视时零缝隙、零重叠咬合。CI 会按快照统计核心政权（`main` / `rival` / `protectorate`，不含 `neighbor`）之间互相重叠或留有约 4 公里以内缝隙的顶点与边中点数，任一快照超过 `data/atlas/topology_baseline.json` 即失败。基线只降不升：
      ```bash
      node scripts/audit_topology.js                       # 列出问题最多的快照
      node scripts/audit_topology.js --details s_tang_d2   # 查看某个快照中有问题的政权对
      node scripts/audit_topology.js --update              # 修完边界后下调基线并一起提交
      ```
-   - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，则跳过并报告；更深的错位会列出来留待人工修正。
+   - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，或给边界新增尖刺、自相接触的点，则跳过并报告；更深的错位会列出来留待人工修正。
      ```bash
      node scripts/repair_topology.js wudai           # 对某个朝代目录（或快照键）试运行，只输出报告
      node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
