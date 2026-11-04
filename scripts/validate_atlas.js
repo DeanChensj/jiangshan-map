@@ -25,7 +25,10 @@ if (CLI_ARGS.has('--help') || CLI_ARGS.has('-h')) {
 }
 const FAST_MODE = CLI_ARGS.has('--fast') || CLI_ARGS.has('-f');
 
-// Unindexed upstream ae8a422 reference; CI compares exact paths and anchor predicates.
+// Frozen copy of _buildRegionBoundaryPath before #255 added edge bins and point
+// caches. The equivalence check below proves the optimized version draws the same
+// paths and anchors. If you change the boundary rules on purpose, delete this
+// function and that check rather than editing both.
 function buildRegionBoundaryReference(snap) {
   if (!snap || snap._skipRegionBoundaryStroke || !Array.isArray(snap.regions) || !snap.regions.length) {
     return '';
