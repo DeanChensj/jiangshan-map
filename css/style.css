@@ -2656,15 +2656,34 @@ h2 {
 
 /* Bottom Scrubber Timeline */
 #scrubber-dock {
+  --scrubber-surface: rgba(235, 228, 214, 0.9);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
   padding: 12px 20px 16px;
   border-top: 1px solid var(--hairline);
-  background: rgba(235, 228, 214, 0.9);
+  background: var(--scrubber-surface);
   backdrop-filter: blur(6px);
   transition: opacity 0.2s ease;
+}
+
+/* Keep the frosted surface separate from the changing timeline content. */
+#scrubber-dock.is-autoplaying {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+#scrubber-dock.is-autoplaying::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--scrubber-surface);
+  backdrop-filter: blur(6px);
 }
 
 #scrubber-dock.is-challenge-locked {
@@ -2751,6 +2770,7 @@ h2 {
 #scrubber-Bubble {
   position: absolute;
   top: 0;
+  left: 0;
   transform: translateX(-50%);
   background: var(--text-main);
   color: #f8f3e8;
@@ -2840,8 +2860,15 @@ h2 {
   text-shadow: none;
 }
 
+#scrubber-motion {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 #scrubber-handle {
   position: absolute;
+  left: 0;
   top: -6px;
   bottom: -6px;
   width: 4px;
@@ -2852,10 +2879,19 @@ h2 {
   pointer-events: none;
 }
 
+/* Year text and input changes stay on small surfaces while playback is active.
+   Release these promotion hints when playback stops. */
+#scrubber-dock.is-autoplaying #scrubber-rail-wrap,
+#scrubber-dock.is-autoplaying #scrubber-Bubble,
+#scrubber-dock.is-autoplaying .year-stepper {
+  will-change: transform;
+}
+
 /* Autoplay jumps between event nodes; the thumb glides so a 75-year hop reads as time passing.
    Manual scrubbing keeps the instant follow. */
-#scrubber-dock.is-autoplaying #scrubber-handle {
-  transition: left 0.22s ease-out;
+#scrubber-dock.is-autoplaying #scrubber-motion {
+  will-change: transform;
+  transition: transform 0.22s ease-out;
 }
 
 #scrubber-ticks {
@@ -4804,9 +4840,11 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
   /* Boost UI surface contrast on mobile chrome */
   #nav-bar,
-  #scrubber-dock,
   #chronicle-pane {
     background: rgba(243, 238, 228, 0.96);
+  }
+  #scrubber-dock {
+    --scrubber-surface: rgba(243, 238, 228, 0.96);
   }
 }
 
