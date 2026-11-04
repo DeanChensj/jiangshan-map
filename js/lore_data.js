@@ -7679,16 +7679,16 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
-      "dynastyKey": "xihan",
-      "year": 9,
+      "dynastyKey": "qin",
+      "year": -221,
       "coord": [
-        108.93,
-        34.28
+        118.301,
+        36.831
       ],
-      "site": "长安",
-      "siteEn": "Chang'an",
-      "zh": "王莽废孺子婴代汉建“新”，改王田奴婢币制并频改地名",
-      "en": "Wang Mang proclaims the Xin Dynasty in Chang'an, enacting sweeping land and currency reforms"
+      "site": "临淄（今山东淄博）",
+      "siteEn": "Linzi (Zibo, Shandong)",
+      "zh": "秦将王贲自燕南下袭齐入临淄，齐王建不战出降，六国尽并置齐郡",
+      "en": "Qin general Wang Ben marches south from Yan into Linzi; King Jian of Qi surrenders, ending Six Kingdoms"
     },
     {
       "dynastyKey": "xihan",
