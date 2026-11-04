@@ -11,6 +11,16 @@
 *作者自述：[从历史课本里的插图，到 GitHub 1k star：「江山时序」背后的故事](https://deanchen.me/history/atlas/2026/10/25/jiangshan-map-story.html)*
 
 <p align="center">
+  <a href="https://www.star-history.com/deanchensj/jiangshan-map">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending" />
+      <img alt="GitHub Trending 每日项目第 2 名" src="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending" height="56" />
+    </picture>
+  </a>
+</p>
+
+<p align="center">
   <a href="https://deanchen.me/jiangshan-map/">
     <img src="assets/hero_demo_zh.webp" alt="江山时序 15 秒实机演示：秦扫六合、两千年疆域流转、长安十八朝沿革与苏东坡贬谪行迹" width="100%" />
   </a>
