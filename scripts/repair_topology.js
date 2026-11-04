@@ -12,11 +12,14 @@
  *   3. A rounded point that lands on a segment is also inserted into that segment of every
  *      polity sharing it, and border vertices lying on the polity's segments are inserted into
  *      the polity, so both sides of a shared border end up with the same vertex chain.
+ *   4. Back-and-forth spikes and small pinched loops left by steps 2–3 are removed.
  * Neighbor polities (role "neighbor") are never moved and never used as a reference.
  *
  * Features are shared across snapshots. After repairing a snapshot, every snapshot that uses a
- * changed feature is re-audited; a change that makes any of them worse is reverted and reported
- * as a shared-feature conflict. Overlaps deeper than the tolerance are left alone and listed.
+ * changed feature is re-audited; a feature whose change makes any of them worse, or adds spikes
+ * or loops to the feature, is frozen (kept as is and used as a fixed reference), the snapshot is
+ * repaired again, and the frozen feature is reported. Overlaps deeper than the tolerance are left
+ * alone and listed.
  *
  * Usage:
  *   node scripts/repair_topology.js <snapshotKey|group>...          # Dry run: report what would change
@@ -38,6 +41,8 @@ const PRIORITY = { main: 0, rival: 1, protectorate: 2 };
 const VERTEX_SNAP_DEG = 0.015; // prefer an existing border vertex this close to the projection
 const MAX_CHAIN_VERTICES = 60;
 const MAX_AREA_CHANGE = 0.03; // reject a polity whose area would change by more than 3%
+const MAX_LOOP_VERTICES = 30;
+const MAX_LOOP_AREA = 0.01; // deg² (~100 km²): larger pinched loops are treated as real territory
 const CELL_DEG = 0.25;
 
 const round2 = (v) => Math.round(v * 100) / 100;
@@ -215,13 +220,12 @@ function applyPending(pending, refs) {
   for (const [ref, segs] of pending) {
     const n = ref.pts.length;
     const next = [];
+    // A point the ring already visits elsewhere would pinch it into a loop: never insert it twice.
+    const seen = new Set(ref.pts.map(pointKey));
     for (let i = 0; i < n; i++) {
       next.push(ref.pts[i]);
       const items = segs.get(i);
       if (!items) continue;
-      const a = ref.pts[i];
-      const b = ref.pts[(i + 1) % n];
-      const seen = new Set([pointKey(a), pointKey(b)]);
       for (const { q } of items.sort((x, y) => x.t - y.t)) {
         if (seen.has(pointKey(q))) continue;
         seen.add(pointKey(q));
@@ -245,6 +249,7 @@ function insertReferenceVertices(pts, refs, tol) {
     }
   }
   const out = [];
+  const onRing = new Set(pts.map(pointKey));
   for (let i = 0; i < pts.length; i++) {
     const a = pts[i];
     const b = pts[(i + 1) % pts.length];
@@ -253,7 +258,7 @@ function insertReferenceVertices(pts, refs, tol) {
     for (let cy = cellOf(Math.min(a[1], b[1]) - tol); cy <= cellOf(Math.max(a[1], b[1]) + tol); cy++) {
       for (let cx = cellOf(Math.min(a[0], b[0]) - tol); cx <= cellOf(Math.max(a[0], b[0]) + tol); cx++) {
         for (const q of grid.get(`${cx},${cy}`) || []) {
-          if (samePoint(q, a) || samePoint(q, b)) continue;
+          if (onRing.has(pointKey(q))) continue;
           const s = nearestOnSegment(q, a, b);
           if (s.d <= tol && s.t > 1e-9 && s.t < 1 - 1e-9) hits.set(pointKey(q), { t: s.t, q });
         }
@@ -267,6 +272,57 @@ function insertReferenceVertices(pts, refs, tol) {
 function dedupe(pts) {
   const out = pts.filter((p, i) => i === 0 || !samePoint(p, pts[i - 1]));
   while (out.length > 1 && samePoint(out[0], out[out.length - 1])) out.pop();
+  return out;
+}
+
+/** True when the ring turns back on itself at b (a → b → c runs back along the same line). */
+function isSpike(a, b, c) {
+  const cross = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+  const dot = (b[0] - a[0]) * (c[0] - b[0]) + (b[1] - a[1]) * (c[1] - b[1]);
+  return Math.abs(cross) < 1e-12 && dot < 0;
+}
+
+/** Index pairs [j, i] where an open ring returns to vertex j within a few steps, enclosing a sliver. */
+function findSmallLoop(pts) {
+  const seen = new Map();
+  for (let i = 0; i < pts.length; i++) {
+    const k = pointKey(pts[i]);
+    const j = seen.get(k);
+    if (j !== undefined && i - j <= MAX_LOOP_VERTICES && ringArea(pts.slice(j, i)) <= MAX_LOOP_AREA) return [j, i];
+    seen.set(k, i);
+  }
+  return null;
+}
+
+/** Number of spikes and repeated vertices (pinch points) in an open ring. */
+function countDefects(pts) {
+  const n = pts.length;
+  let count = 0;
+  for (let i = 0; i < n; i++) if (isSpike(pts[(i - 1 + n) % n], pts[i], pts[(i + 1) % n])) count++;
+  return count + n - new Set(pts.map(pointKey)).size;
+}
+
+/**
+ * Removes the back-and-forth spikes and pinched sliver loops that following a neighbor's
+ * vertex chain can leave behind when consecutive vertices project out of order onto it.
+ */
+function cleanRing(pts) {
+  let out = dedupe(pts);
+  for (let changed = true; changed && out.length >= 3; ) {
+    changed = false;
+    const kept = [];
+    for (let i = 0; i < out.length; i++) {
+      const prev = kept.length ? kept[kept.length - 1] : out[out.length - 1];
+      if (isSpike(prev, out[i], out[(i + 1) % out.length])) changed = true;
+      else kept.push(out[i]);
+    }
+    out = dedupe(kept);
+    const loop = findSmallLoop(out);
+    if (loop) {
+      out.splice(loop[0] + 1, loop[1] - loop[0]);
+      changed = true;
+    }
+  }
   return out;
 }
 
@@ -298,7 +354,7 @@ function repairSnapshot(doc, key, tol, frozen = new Set()) {
     if (refs.length && !frozen.has(idx)) {
       const grid = segmentGrid(refs);
       const pending = new Map();
-      snapped = original.map((rings) => rings.map((pts) => snapRing(pts, grid, tol, pending)));
+      snapped = original.map((rings) => rings.map((pts) => cleanRing(snapRing(pts, grid, tol, pending))));
       const newArea = snapped.reduce((s, rings) => s + polygonArea(rings), 0);
       const tooSmall = snapped.some((rings) => rings.some((pts) => pts.length < 3));
       if (tooSmall || Math.abs(newArea - area.get(idx)) > MAX_AREA_CHANGE * area.get(idx)) {
@@ -306,7 +362,7 @@ function repairSnapshot(doc, key, tol, frozen = new Set()) {
         snapped = original;
       } else {
         applyPending(pending, refs);
-        snapped = snapped.map((rings) => rings.map((pts) => insertReferenceVertices(pts, refs, tol)));
+        snapped = snapped.map((rings) => rings.map((pts) => cleanRing(insertReferenceVertices(pts, refs, tol))));
       }
     }
     const polys = snapped.map((rings) => rings.map((pts) => ({ owner: idx, pts, bb: bboxOf(pts), frozen: frozen.has(idx) })));
@@ -368,16 +424,26 @@ function repairTargets(doc, order, targets, tol) {
       for (const idx of changes.keys()) for (const k of usedBy.get(idx)) affected.add(k);
       const after = auditDoc(doc, order.filter((k) => affected.has(k)));
       const worse = after.filter((e) => e.overlap > current.get(e.key).overlap || e.gap > current.get(e.key).gap);
-      if (!worse.length) {
+      // A change must not add spikes or pinched loops to a feature, even where the audit cannot see them.
+      const defects = (coords, type) => polygonsOf(coords, type).flat().reduce((s, r) => s + countDefects(openRing(r)), 0);
+      const spiky = [...changes.keys()].filter((idx) => {
+        const type = doc.features[idx].shape.type;
+        return defects(doc.features[idx].shape.coordinates, type) > defects(originals.get(idx), type);
+      });
+      if (!worse.length && !spiky.length) {
         const score = (e) => e.overlap + e.gap;
         const gain = after.reduce((s, e) => s + score(current.get(e.key)) - score(e), 0);
         if (gain > 0) outcome = { applied: new Set(changes.keys()), after, rejected };
         else for (const [idx, coords] of originals) doc.features[idx].shape.coordinates = coords; // no gain: avoid churn
         break;
       }
-      // Undo, freeze the shared features that made another snapshot worse, and try again.
+      // Undo, freeze the features that made another snapshot worse or gained spikes, and try again.
       for (const [idx, coords] of originals) doc.features[idx].shape.coordinates = coords;
       const blamed = new Set();
+      for (const idx of spiky) {
+        blamed.add(idx);
+        conflicts.push(`${doc.features[idx].title} (would add spikes or pinched loops)`);
+      }
       for (const w of worse) {
         if (w.key === key) continue;
         const was = current.get(w.key);
