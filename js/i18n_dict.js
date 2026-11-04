@@ -296,7 +296,7 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "sanguo:280": [
-      "Wang Jun’s fleet storms Jianye and receives Sun Hao’s surrender, reunifying China under Jin",
+      "Jin armies storm Jianye and receive Sun Hao’s surrender, conquering Wu and reunifying China",
       "Jianye"
     ],
     "xijin:280": [
@@ -344,7 +344,7 @@ window.EN_LOCALE = {
       "Chang'an · Jingkou"
     ],
     "xijin:316": [
-      "Han-Zhao takes Chang'an, ending Western Jin; Zhang, Tuoba & Murong hold North",
+      "Liu Yao captures Chang’an and Emperor Min, ending Western Jin as northern states fragment",
       "Chang'an"
     ],
     "dongjin:317": [
@@ -424,7 +424,7 @@ window.EN_LOCALE = {
       "Fuhan (Linxia)"
     ],
     "dongjin:386": [
-      "Grandson of the last Dai king, Tuoba Gui restores Dai at Niuchuan and renames his state Wei",
+      "Tuoba Gui rallies his clan at Niuchuan to restore the Kingdom of Dai and renames it Northern Wei",
       "Shengle"
     ],
     "dongjin:395": [
@@ -504,12 +504,12 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "nanbei:502": [
-      "Marching east from Xiangyang to take Jiankang, Xiao Yan deposes Southern Qi and founds Liang",
-      "Xiangyang · Jiankang"
+      "Xiao Yan marches down the Yangtze to take Jiankang, deposing Southern Qi to found Liang",
+      "Jiankang"
     ],
     "nanbei:528": [
-      "Erzhu Rong stages the Heyin Massacre under Yuan Ziyou, then routs Ge Rong with 7,000 riders",
-      "Heyin (Luoyang) · Ye"
+      "Heyin Massacre: Erzhu Rong installs Yuan Ziyou, drowns Empress Hu, and slays 2,000 court nobles",
+      "Heyin (Luoyang)"
     ],
     "nanbei:534": [
       "Emperor Xiaowu flees to Yuwen Tai in Chang'an while Gao Huan installs Eastern Wei at Ye",
@@ -556,7 +556,7 @@ window.EN_LOCALE = {
       "Jiangdu"
     ],
     "tang:627": [
-      "Emperor Taizong (Li Shimin) inaugurates the prosperous Reign of Zhenguan",
+      "Emperor Taizong inaugurates the Reign of Zhenguan with Fang Xuanling and Du Ruhui",
       "Chang'an"
     ],
     "tang:640": [
@@ -796,7 +796,7 @@ window.EN_LOCALE = {
       "Tumu Fort"
     ],
     "ming:1550": [
-      "Gengxu Incident: Altan Khan raids the suburbs of Beijing",
+      "Gengxu Incident: refused border trade, Altan Khan breaches Gubeikou and besieges Beijing",
       "Beijing"
     ],
     "ming:1561": [
@@ -904,7 +904,7 @@ window.EN_LOCALE = {
       "Shenyang"
     ],
     "roc:1937": [
-      "Marco Polo Bridge Incident begins the full-scale War of Resistance",
+      "Marco Polo Bridge Incident: Japanese forces shell Wanping and Lugou Bridge, igniting total war",
       "Marco Polo Bridge"
     ],
     "roc:1945": [
@@ -960,7 +960,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "xihan:-133": [
-      "Plot of Mayi; full-scale Han–Xiongnu war begins",
+      "Mayi Ambush: Emperor Wu sets a trap for the Xiongnu Chanyu at Mayi, sparking full-scale war",
       "Mayi (Shuozhou)"
     ],
     "xihan:-119": [
@@ -1028,7 +1028,7 @@ window.EN_LOCALE = {
       "Xingshi (Yangxian) & Wandu"
     ],
     "sanguo:249": [
-      "Incident at the Gaoping Tombs; Sima Yi seizes power in Wei",
+      "Gaoping Tombs Incident: Sima Yi seizes Luoyang while Cao Shuang is away and takes control of Wei",
       "Luoyang"
     ],
     "sanguo:255": [
@@ -1984,7 +1984,7 @@ window.EN_LOCALE = {
       "Yingtian (Nanjing)"
     ],
     "ming:1402": [
-      "Jingnan forces breach Nanjing's Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
+      "Jingnan forces breach Nanjing’s Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
       "Yingtian (Nanjing)"
     ],
     "ming:1626": [
@@ -2004,7 +2004,7 @@ window.EN_LOCALE = {
       "Chengde (Jehol)"
     ],
     "qing:1799": [
-      "Following Qianlong's death, the Jiaqing Emperor executes corrupt minister Heshen",
+      "Upon Qianlong’s death, the Jiaqing Emperor assumes personal rule and executes Heshen",
       "Beijing"
     ],
     "qing:1856": [
@@ -2088,7 +2088,7 @@ window.EN_LOCALE = {
       "Jiankang · Jiangling"
     ],
     "nanbei:578": [
-      "Northern Zhou captures Wu Mingche at Luliang and seizes Huainan north of the Yangtze",
+      "Northern Zhou captures Wu Mingche at Luliang and seizes all of Huainan north of the Yangtze",
       "Pengcheng · Shouyang"
     ],
     "tang:783": [
@@ -2128,7 +2128,7 @@ window.EN_LOCALE = {
       "Jiankang · Xiangyang"
     ],
     "nanbei:530": [
-      "Emperor Xiaozhuang Yuan Ziyou slays warlord Erzhu Rong in Luoyang; Erzhu Zhao storms the city",
+      "Emperor Xiaozhuang ambushes and slays warlord Erzhu Rong in Luoyang; Erzhu Zhao storms the city",
       "Luoyang · Jinyang"
     ],
     "nanbei:532": [
