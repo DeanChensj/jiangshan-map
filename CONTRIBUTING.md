@@ -94,7 +94,7 @@ We welcome contributions of all kinds, including:
      node scripts/audit_topology.js --details s_tang_d2   # Mismatched polity pairs in one snapshot
      node scripts/audit_topology.js --update              # After fixing borders: lower the baseline and commit it
      ```
-   - `scripts/repair_topology.js` fixes sliver gaps and shallow overlaps (under ~3 km) automatically. Polities are ranked `main` > `rival` > `protectorate`, then by area; lower-ranked borders snap onto higher-ranked ones and both sides get the same vertex chain. A change that would make any other snapshot sharing the feature worse, or add spikes or pinch points to a border, is skipped and reported. Deeper mismatches are listed for manual fixing.
+   - `scripts/repair_topology.js` fixes sliver gaps and shallow overlaps (under ~3 km) automatically. Polities are ranked `main` > `rival` > `protectorate`, then by area; lower-ranked borders snap onto higher-ranked ones and both sides get the same vertex chain. A change that would make any other snapshot sharing the feature worse, add spikes or pinch points to a border, or move a piece of territory wider than ~6 km, is skipped and reported. Deeper mismatches are listed for manual fixing.
      ```bash
      node scripts/repair_topology.js wudai           # Dry run for a dynasty directory (or snapshot keys)
      node scripts/repair_topology.js wudai --write   # Rewrite sources, rebuild bundles, lower the baseline

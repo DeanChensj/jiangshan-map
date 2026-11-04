@@ -16,10 +16,10 @@
  * Neighbor polities (role "neighbor") are never moved and never used as a reference.
  *
  * Features are shared across snapshots. After repairing a snapshot, every snapshot that uses a
- * changed feature is re-audited; a feature whose change makes any of them worse, or adds spikes
- * or loops to the feature, is frozen (kept as is and used as a fixed reference), the snapshot is
- * repaired again, and the frozen feature is reported. Overlaps deeper than the tolerance are left
- * alone and listed.
+ * changed feature is re-audited; a feature whose change makes any of them worse, adds spikes
+ * or loops to the feature, or moves a piece of territory wider than ~6 km, is frozen (kept as is
+ * and used as a fixed reference), the snapshot is repaired again, and the frozen feature is
+ * reported. Overlaps deeper than the tolerance are left alone and listed.
  *
  * Usage:
  *   node scripts/repair_topology.js <snapshotKey|group>...          # Dry run: report what would change
@@ -34,6 +34,7 @@ const path = require('path');
 const fs = require('fs');
 const { loadSources, formatSource, writeOutputs } = require('./build_atlas');
 const { auditDoc, readBaseline, writeBaseline, compareWithBaseline, CORE_ROLES } = require('./audit_topology');
+const { makeGrid, rasterize, erode } = require('./topology_raster');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TOLERANCE = 0.03;
@@ -44,6 +45,8 @@ const MAX_AREA_CHANGE = 0.03; // reject a polity whose area would change by more
 const MAX_LOOP_VERTICES = 30;
 const MAX_LOOP_AREA = 0.01; // deg² (~100 km²): larger pinched loops are treated as real territory
 const CELL_DEG = 0.25;
+const RASTER_DEG = 0.01; // ~1 km cells for the thick-change check
+const THIN_CELLS = 3; // a change must vanish after eroding 3 cells, i.e. be under ~6 km wide
 
 const round2 = (v) => Math.round(v * 100) / 100;
 const samePoint = (a, b) => a[0] === b[0] && a[1] === b[1];
@@ -381,6 +384,36 @@ function repairSnapshot(doc, key, tol, frozen = new Set()) {
   return { changes, rejected };
 }
 
+/**
+ * True when two versions of a geometry differ by a region wider than ~6 km anywhere: a piece of
+ * territory moved rather than a border being snapped. A net area check misses this when land is
+ * lost in one place and gained in another. Only the area around edges that differ is rasterized.
+ */
+function hasThickChange(before, after, type) {
+  const edges = (coords) => {
+    const set = new Map();
+    for (const r of polygonsOf(coords, type).flat()) {
+      for (let i = 0; i < r.length - 1; i++) {
+        const [a, b] = [pointKey(r[i]), pointKey(r[i + 1])];
+        set.set(a < b ? `${a}|${b}` : `${b}|${a}`, [r[i], r[i + 1]]);
+      }
+    }
+    return set;
+  };
+  const eb = edges(before);
+  const ea = edges(after);
+  const diff = [];
+  for (const [k, e] of eb) if (!ea.has(k)) diff.push(...e);
+  for (const [k, e] of ea) if (!eb.has(k)) diff.push(...e);
+  if (!diff.length) return false;
+  const [x0, y0, x1, y1] = bboxOf(diff);
+  const grid = makeGrid([x0 - 0.05, y0 - 0.05, x1 + 0.05, y1 + 0.05], RASTER_DEG);
+  const mb = rasterize(grid, polygonsOf(before, type));
+  const ma = rasterize(grid, polygonsOf(after, type));
+  for (let i = 0; i < mb.length; i++) mb[i] ^= ma[i];
+  return erode(mb, grid.w, grid.h, THIN_CELLS).some((v) => v);
+}
+
 function resolveTargets(names, index, files) {
   const keys = new Set();
   for (const name of names) {
@@ -430,7 +463,10 @@ function repairTargets(doc, order, targets, tol) {
         const type = doc.features[idx].shape.type;
         return defects(doc.features[idx].shape.coordinates, type) > defects(originals.get(idx), type);
       });
-      if (!worse.length && !spiky.length) {
+      const thick = [...changes.keys()].filter(
+        (idx) => !spiky.includes(idx) && hasThickChange(originals.get(idx), doc.features[idx].shape.coordinates, doc.features[idx].shape.type)
+      );
+      if (!worse.length && !spiky.length && !thick.length) {
         const score = (e) => e.overlap + e.gap;
         const gain = after.reduce((s, e) => s + score(current.get(e.key)) - score(e), 0);
         if (gain > 0) outcome = { applied: new Set(changes.keys()), after, rejected };
@@ -443,6 +479,10 @@ function repairTargets(doc, order, targets, tol) {
       for (const idx of spiky) {
         blamed.add(idx);
         conflicts.push(`${doc.features[idx].title} (would add spikes or pinched loops)`);
+      }
+      for (const idx of thick) {
+        blamed.add(idx);
+        conflicts.push(`${doc.features[idx].title} (would move territory: change wider than ~6 km)`);
       }
       for (const w of worse) {
         if (w.key === key) continue;
