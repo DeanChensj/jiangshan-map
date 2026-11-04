@@ -2023,6 +2023,14 @@ window.EN_LOCALE = {
       "Relief of Handan: Lord Xinling seizes the tiger tally to aid Zhao and rout Qin with Chu",
       "Handan"
     ],
+    "zhanguo:-247": [
+      "Meng Ao takes Jinyang and 36 more Zhao towns; Qin establishes Taiyuan Commandery",
+      "Jinyang"
+    ],
+    "zhanguo:-242": [
+      "Meng Ao seizes twenty Wei towns and founds Dongjun, pushing Qin's border east to Qi",
+      "Puyang"
+    ],
     "zhanguo:-246": [
       "Hydraulic engineer Zheng Guo builds the 300-li Zheng Guo Canal, turning Guanzhong fertile",
       "Jingyang"
@@ -4706,7 +4714,9 @@ window.EN_LOCALE = {
     "前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄格局确立；魏文侯、武侯任李悝、吴起率先称雄中原，巴、蜀、越、中山与东周王畿并存。": "In 403 BCE King Weilie of Zhou recognized Han, Zhao, and Wei as feudal lords (opening Zizhi Tongjian), and in 386 BCE the Tian house became Marquis of Qi. Wei initially dominated the Central Plains while Ba, Shu, Yue, Zhongshan, and Royal Zhou coexisted.",
     "战国后期（前260年 · 白起拔郢与长平之战）": "Late Warring States (260 BCE · Capture of Ying & Battle of Changping)",
     "前284年乐毅率五国联军破齐；前278年秦将白起拔楚都郢置南郡，楚东迁陈郢；前260年秦赵长平决战，白起坑赵卒四十万，山东六国再难独力抗秦。": "In 284 BCE Yue Yi led a five-state coalition to rout Qi; in 278 BCE Bai Qi captured the Chu capital Ying, forcing Chu east to Chen; in 260 BCE Bai Qi destroyed 400,000 Zhao troops at Changping, leaving no eastern state able to match Qin alone.",
-    "秦王政亲政前夕（前238年 · 灭周置三川、东郡与六国合纵终结）": "Eve of Unification (238 BCE · King Zheng Assumes Personal Rule)",
+    "秦王政亲政前夕（前242年 · 灭周置三川、东郡与六国合纵终结）": "Eve of Unification (242 BCE · Qin Establishes Dongjun and Severs the Alliance)",
+    "战国晚期（前247年 · 秦取赵晋阳、置太原郡）": "Late Warring States (247 BCE · Qin Takes Jinyang and Establishes Taiyuan Commandery)",
+    "前248—前247年蒙骜攻赵，取榆次、新城、狼孟等三十七城，秦置太原郡，赵国晋阳旧都入秦。": "248–247 BCE: Meng Ao takes Yuci, Xincheng, Langmeng and 34 more Zhao towns; Qin establishes Taiyuan Commandery and Zhao loses its old seat of Jinyang.",
     "秦王扫六合 · 首灭韩国（前230年 · 内史腾俘韩王安，置颍川郡）": "Qin Unification · Conquest of Han (230 BCE · Yingchuan Commandery Established)",
     "前230年（秦王政十七年），秦内史腾攻韩，俘韩王安，尽纳其地置颍川郡。韩国成为六国中第一个覆灭的诸侯国。": "In 230 BCE Qin Governor Teng captured King An of Han at Xinzheng and established Yingchuan Commandery, making Han the first of the six states to fall.",
     "秦王扫六合 · 攻克邯郸灭赵（前228年 · 王翦破赵，公子嘉奔代）": "Qin Unification · Fall of Handan & Conquest of Zhao (228 BCE)",
@@ -6338,8 +6348,9 @@ window.EN_LOCALE = {
     "战国晚期（前249年 · 楚考烈王灭鲁与秦灭两周置三川郡）": "Late Warring States (249 BCE · Chu Annexes Lu & Qin Establishes Sanchuan Commandery)",
     "前256—前249年秦灭西周国与东周公国置三川郡；前249年楚考烈王伐鲁灭之、迁鲁顷公于莒，春申君黄歇徙封兰陵，礼乐宗邦鲁国并入楚境。": "Between 256 and 249 BCE Qin extinguished Western and Eastern Zhou to establish Sanchuan Commandery; in 249 BCE King Kaolie of Chu annexed the ancient ritual state of Lu at Qufu, relocating Duke Qing to Ju while Lord Chunshen took Lanling as his fief.",
     "前 278 — 前 250 · 白起拔郢、秦灭义渠与长平之战：秦取南郡上党北地，鲁周尚存": "278–250 BCE · Fall of Ying, Conquest of Yiqu & Battle of Changping: Qin Dominates the West while Lu and Zhou Survive",
-    "前 249 — 前 239 · 楚考烈王灭鲁与秦灭两周：鲁国并入楚境，秦置三川郡": "249–239 BCE · Chu Annexes Lu & Qin Extinguishes Zhou: State of Lu Merged into Chu; Qin Establishes Sanchuan",
-    "前 238 — 前 231 · 秦王政亲政与灭六国前夕：秦增置太原、东郡，腰斩六国合纵": "238–231 BCE · King Zheng Assumes Personal Rule: Qin Adds Taiyuan & Dongjun, Bisecting the Six States",
+    "前 249 — 前 248 · 楚考烈王灭鲁与秦灭两周：鲁国并入楚境，秦置三川郡": "249–248 BCE · Chu Annexes Lu & Qin Extinguishes Zhou: State of Lu Merged into Chu; Qin Establishes Sanchuan",
+    "前 247 — 前 243 · 蒙骜攻赵取晋阳：秦置太原郡，赵失发祥旧地": "247–243 BCE · Meng Ao Takes Jinyang: Qin Establishes Taiyuan and Zhao Loses Its Homeland",
+    "前 242 — 前 231 · 秦置东郡与秦王政亲政：秦地东接齐境，腰斩六国合纵": "242–231 BCE · Qin Founds Dongjun & King Zheng Rules: Qin Reaches Qi, Bisecting the Six States",
     "燕将秦开大破东胡却地千里，筑北长城置燕北五郡": "Yan general Qin Kai routs the Donghu, builds the northern Great Wall, and establishes the Five Northern Frontier Commanderies",
     "秦灭西周国迁九鼎；蜀守李冰修筑都江堰": "Qin extinguishes Western Zhou and seizes the Nine Tripods; Governor Li Bing builds Dujiangyan",
     "都江堰 · 王城（洛阳）": "Dujiangyan · Wangcheng (Luoyang)",
