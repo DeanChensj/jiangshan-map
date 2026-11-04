@@ -127,7 +127,7 @@
   "s_tang_a2b": { "overlap": 5, "gap": 23 },
   "s_qing_f0": { "overlap": 4, "gap": 1 },
   "s_roc_b0": { "overlap": 141, "gap": 526 },
-  "s_qin_chuhan": { "overlap": 180, "gap": 245 },
+  "s_qin_chuhan": { "overlap": 40, "gap": 103 },
   "s_xihan_e": { "overlap": 18, "gap": 35 },
   "s_tang_d1": { "overlap": 74, "gap": 37 },
   "s_tang_d2": { "overlap": 466, "gap": 544 },
@@ -153,7 +153,7 @@
   "s_dongjin_404": { "overlap": 12, "gap": 15 },
   "s_dongjin_410": { "overlap": 12, "gap": 15 },
   "s_nanbei_427": { "overlap": 0, "gap": 2 },
-  "s_qin_c": { "overlap": 138, "gap": 218 },
-  "s_qin_d": { "overlap": 180, "gap": 245 },
+  "s_qin_c": { "overlap": 29, "gap": 64 },
+  "s_qin_d": { "overlap": 28, "gap": 59 },
   "s_xihan_b3a": { "overlap": 3, "gap": 30 }
 }
