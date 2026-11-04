@@ -35,6 +35,7 @@ We welcome contributions of all kinds, including:
 └── scripts/
     ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
     ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
+    ├── repair_topology.js   # Zero-dependency border repair: snaps core polity borders together and rewrites data/atlas/
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
     └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
 ```
@@ -92,4 +93,9 @@ We welcome contributions of all kinds, including:
      node scripts/audit_topology.js                       # Worst snapshots
      node scripts/audit_topology.js --details s_tang_d2   # Mismatched polity pairs in one snapshot
      node scripts/audit_topology.js --update              # After fixing borders: lower the baseline and commit it
+     ```
+   - `scripts/repair_topology.js` fixes sliver gaps and shallow overlaps (under ~3 km) automatically. Polities are ranked `main` > `rival` > `protectorate`, then by area; lower-ranked borders snap onto higher-ranked ones and both sides get the same vertex chain. A change that would make any other snapshot sharing the feature worse is skipped and reported. Deeper mismatches are listed for manual fixing.
+     ```bash
+     node scripts/repair_topology.js wudai           # Dry run for a dynasty directory (or snapshot keys)
+     node scripts/repair_topology.js wudai --write   # Rewrite sources, rebuild bundles, lower the baseline
      ```

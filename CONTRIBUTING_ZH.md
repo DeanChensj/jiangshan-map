@@ -34,6 +34,7 @@
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
     ├── audit_topology.js    # 零依赖政权边界缝隙/重叠审计，与 data/atlas/topology_baseline.json 比对（CI 中运行 --check）
+    ├── repair_topology.js   # 零依赖边界修复：把核心政权边界吸附对齐并改写 data/atlas/
     ├── build_atlas.js       # 零依赖构建脚本：data/atlas/ → atlas_snapshots.js + atlas_boot.js（CI 中运行 --check）
     ├── sync_version.js      # 零依赖按文件 SHA-256 内容指纹同步脚本（自动更新 index.html 缓存参数）
     └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与端到端 CUJ 校验脚本（支持 --fast）
@@ -92,4 +93,9 @@
      node scripts/audit_topology.js                       # 列出问题最多的快照
      node scripts/audit_topology.js --details s_tang_d2   # 查看某个快照中有问题的政权对
      node scripts/audit_topology.js --update              # 修完边界后下调基线并一起提交
+     ```
+   - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，则跳过并报告；更深的错位会列出来留待人工修正。
+     ```bash
+     node scripts/repair_topology.js wudai           # 对某个朝代目录（或快照键）试运行，只输出报告
+     node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
      ```
