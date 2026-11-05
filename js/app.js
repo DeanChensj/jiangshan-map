@@ -14528,7 +14528,12 @@
       this.hoverTip.style.left = '8px';
       const { width, height } = this.hoverTip.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
-      const gap = 12, belowGap = 56, padding = 8;
+      // Enlarged grab hands extend above the hotspot; pointing hands extend
+      // farther below it. Touch has no desktop cursor to clear.
+      const cursor = e.pointerType === 'touch' ? '' : e.target
+        ? window.getComputedStyle(e.target).cursor : avoidEl ? 'pointer' : 'grab';
+      const gap = cursor === 'grab' ? 48 : 12;
+      const belowGap = cursor === 'pointer' ? 90 : 56, padding = 8;
       // Center above the hovered point, keeping the pointing-hand cursor clear.
       // Use the actual size to shift/flip wrapped cards at the map edges.
       const preferredLeft = x - width * 0.5;

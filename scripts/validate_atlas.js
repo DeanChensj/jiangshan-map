@@ -8046,10 +8046,17 @@ function main() {
           };
         };
 
-        // Hover cards must avoid the cursor and fit using their measured size.
-        // A pointing hand may extend right/down from its fingertip hotspot.
+        // Hover cards must fit and clear both enlarged native cursor shapes.
+        // The open grab hand extends above its hotspot; the pointing hand
+        // extends farther below it. Touch keeps its original spacing.
         const frameRect = { left: 100, top: 50, width: 800, height: 600 };
         let tipSize = { width: 240, height: 70 };
+        const priorComputedStyle = sandbox.window.getComputedStyle;
+        let hoverStyleReads = 0;
+        sandbox.window.getComputedStyle = (el) => {
+          hoverStyleReads++;
+          return { cursor: el.cursor };
+        };
         const hoverCtrl = Object.assign(Object.create(proto), {
           locale: 'zh',
           _id: () => ({ getBoundingClientRect: () => frameRect }),
@@ -8059,13 +8066,21 @@ function main() {
             getBoundingClientRect: () => tipSize,
           },
         });
-        for (const [x, y, width, height] of [
+        for (const [cursor, pointerType, gap, belowGap] of [
+          ['grab', 'mouse', 48, 56], ['pointer', 'mouse', 12, 90], ['pointer', 'touch', 12, 56],
+        ]) for (const [x, y, width, height] of [
           [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
           [12, 12, 240, 70], [788, 12, 240, 70],
           [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
         ]) {
           tipSize = { width, height };
-          hoverCtrl._showHoverTip({ clientX: x + frameRect.left, clientY: y + frameRect.top }, '<b>亳州</b>');
+          const readsBefore = hoverStyleReads;
+          hoverCtrl._showHoverTip({
+            clientX: x + frameRect.left, clientY: y + frameRect.top,
+            pointerType, target: { cursor },
+          }, '<b>开封府</b>');
+          if (pointerType === 'touch') assert.strictEqual(hoverStyleReads, readsBefore,
+            'Touch placement must not depend on the desktop cursor');
           const left = parseFloat(hoverCtrl.hoverTip.style.left);
           const top = parseFloat(hoverCtrl.hoverTip.style.top);
           assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
@@ -8074,14 +8089,15 @@ function main() {
             assert(Math.abs(left + width * 0.5 - x) < 1e-7,
               'Hover cards must center over their hovered point when there is room');
           }
-          const cursorOverlap = left < x + 32 && left + width > x - 8 &&
-            top < y + 48 && top + height > y - 8;
-          assert(!cursorOverlap, 'Hover text must leave room for the pointing-hand cursor');
-          if (y - 12 - height >= 8) {
-            assert(Math.abs(top + height - (y - 12)) < 1e-7,
-              'Above-pointer cards must keep the requested 12 px gap');
+          if (y - gap - height >= 8) {
+            assert(Math.abs(top + height - (y - gap)) < 1e-7,
+              `${cursor}/${pointerType} must keep its above-pointer gap`);
+            if (pointerType === 'mouse') assert(y - (cursor === 'grab' ? 39 : 4) - (top + height) >= 8,
+              'Above-pointer cards must leave at least 8 px beyond the enlarged cursor');
           } else {
-            assert(top >= y + 56, 'Below-pointer fallback must clear the full hand cursor');
+            assert.strictEqual(top, y + belowGap, `${cursor}/${pointerType} must keep its below-pointer gap`);
+            if (pointerType === 'mouse') assert(top - y - (cursor === 'grab' ? 46 : 81) >= 8,
+              'Below-pointer cards must leave at least 8 px beyond the enlarged cursor');
           }
         }
         // City labels can move above, beside or below the dot as zoom changes.
@@ -8101,9 +8117,11 @@ function main() {
             assert(Math.abs(top + tipSize.height - (anchorTop - 12)) < 1e-7,
               `City name ${placement} must use the higher anchor`);
           } else {
-            assert.strictEqual(top, y + 56, 'High city names must preserve the below-pointer fallback');
+            assert.strictEqual(top, y + 90, 'High city names must clear the pointing hand below the hotspot');
           }
         }
+        if (priorComputedStyle === undefined) delete sandbox.window.getComputedStyle;
+        else sandbox.window.getComputedStyle = priorComputedStyle;
 
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;
