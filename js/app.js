@@ -9620,38 +9620,57 @@
       if (this.musicAudio) return this.musicAudio;
       const audio = new Audio();
       audio.preload = 'auto';
+      audio.playsInline = true;
       audio.volume = 0.48;
       audio.addEventListener('ended', () => {
         if (this.musicPlaying) this.nextMusicTrack();
       });
       audio.addEventListener('error', () => {
-        if (!this.musicPlaying) return;
-        const t = HistoricalAtlasController.GUQIN_TRACKS[this.musicTrackIdx];
-        if (audio.src !== t.ogg) {
-          audio.src = t.ogg;
-          audio.play().catch(() => {});
-        }
+        this._handleMusicLoadError(this._musicPlaySeq);
       });
       this.musicAudio = audio;
       return audio;
     }
 
+    _handleMusicLoadError(seq) {
+      if (!this.musicPlaying || seq !== this._musicPlaySeq) return;
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      const t = tracks[this.musicTrackIdx % tracks.length];
+      const audio = this.musicAudio;
+      if (audio && t && t.ogg && !audio._triedFallback) {
+        audio._triedFallback = true;
+        audio.src = t.ogg;
+        audio.play().catch((err) => {
+          if (err && err.name === 'AbortError') return;
+          if (seq !== this._musicPlaySeq) return;
+          this.musicPlaying = false;
+          this._updateMusicUi();
+        });
+      } else {
+        this.musicPlaying = false;
+        this._updateMusicUi();
+      }
+    }
+
     _playCurrentMusicTrack() {
       const tracks = HistoricalAtlasController.GUQIN_TRACKS;
       const t = tracks[this.musicTrackIdx % tracks.length];
+      if (!t) return;
+      const seq = (this._musicPlaySeq = (this._musicPlaySeq || 0) + 1);
       const audio = this._ensureMusicAudio();
+      audio._triedFallback = false;
       audio.src = t.mp3;
       this.musicPlaying = true;
       this._updateMusicUi();
-      audio.play().catch(() => {
-        if (!this.musicPlaying) return;
-        audio.src = t.ogg;
-        audio.play().catch(() => {});
+      audio.play().catch((err) => {
+        if (err && err.name === 'AbortError') return;
+        this._handleMusicLoadError(seq);
       });
     }
 
     toggleMusic() {
       if (this.musicPlaying) {
+        this._musicPlaySeq = (this._musicPlaySeq || 0) + 1;
         this.musicPlaying = false;
         if (this.musicAudio) this.musicAudio.pause();
         this._updateMusicUi();
@@ -11124,8 +11143,21 @@
       }
     }
 
-    _animateCameraTo(targetCam) {
+    _cancelCameraAnimation() {
+      this._cameraTarget = null;
+      this._cameraTargetIsZoom = false;
+      if (this.flyRaf == null) return;
+      cancelAnimationFrame(this.flyRaf);
+      this.flyRaf = null;
+      // Cancellation skips the flight's final frame, including its cleanup.
+      if (this.activePerson) this._invalidateTypographyLayout();
+      clearTimeout(this._cameraSettleTimer);
+      this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+    }
+
+    _animateCameraTo(targetCam, { duration = 650, zoomInput = false } = {}) {
       this._cameraTarget = targetCam;
+      this._cameraTargetIsZoom = zoomInput;
       if (
         !this._cameraViewportRect &&
         this.svg &&
@@ -11135,10 +11167,9 @@
       }
       const from = { ...this.camera };
       const t0 = performance.now();
-      const duration = 650;
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
       const step = (now) => {
-        const k = Math.min(1, (now - t0) / duration);
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
@@ -11155,6 +11186,7 @@
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          this._cameraTargetIsZoom = false;
           if (this.activePerson) this._invalidateTypographyLayout();
           this._applyCamera(true);
         }
@@ -11359,23 +11391,28 @@
     }
 
     zoomBy(factor, clientX, clientY, animate = true) {
+      if (!Number.isFinite(factor) || factor <= 0) return;
       this._recordGestureMove();
+      // Repeated key presses accumulate against the pending zoom destination.
+      // A navigation flight is interrupted from its current visible camera.
+      const cam = (animate && this._cameraTargetIsZoom && this._cameraTarget) || this.camera;
       const [mx, my] =
         clientX !== undefined && clientY !== undefined
-          ? this._clientToSvgPoint(clientX, clientY)
-          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
-      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
-      const k = nextW / this.camera.w;
+          ? this._clientToSvgPoint(clientX, clientY, cam)
+          : [cam.x + cam.w * 0.5, cam.y + cam.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, cam.w / factor));
+      const k = nextW / cam.w;
       const targetCam = {
-        x: mx - (mx - this.camera.x) * k,
-        y: my - (my - this.camera.y) * k,
+        x: mx - (mx - cam.x) * k,
+        y: my - (my - cam.y) * k,
         w: nextW,
-        h: this.camera.h * k,
+        h: cam.h * k,
         zoom: 1000 / nextW,
       };
       if (animate && typeof this._animateCameraTo === 'function') {
-        this._animateCameraTo(targetCam);
+        this._animateCameraTo(targetCam, { duration: 120, zoomInput: true });
       } else {
+        this._cancelCameraAnimation();
         this.camera = targetCam;
         this._applyCamera();
       }
@@ -11399,19 +11436,19 @@
       });
     }
 
-    _clientToSvgPoint(clientX, clientY) {
+    _clientToSvgPoint(clientX, clientY, cam = this.camera) {
       const rect =
         (this.dragState && this.dragState.rect) ||
         (this.pinchState && this.pinchState.rect) ||
         this._cameraViewportRect ||
         this._getUnscaledSvgRect();
       if (rect && rect.width) this._cameraViewportRect = rect;
-      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
-      const padX = (rect.width - this.camera.w * scale) * 0.5;
-      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      const scale = Math.min(rect.width / cam.w, rect.height / cam.h);
+      const padX = (rect.width - cam.w * scale) * 0.5;
+      const padY = (rect.height - cam.h * scale) * 0.5;
       return [
-        this.camera.x + (clientX - rect.left - padX) / scale,
-        this.camera.y + (clientY - rect.top - padY) / scale,
+        cam.x + (clientX - rect.left - padX) / scale,
+        cam.y + (clientY - rect.top - padY) / scale,
       ];
     }
 
@@ -13511,12 +13548,17 @@
             return;
           }
           e.preventDefault();
-          this._recordGestureMove();
-          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const rawDelta =
             e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
-          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
-          const factor = Math.exp(-clampedDelta * 0.002);
+          if (!Number.isFinite(rawDelta) || rawDelta === 0) return;
+          this._cancelCameraAnimation();
+          this._recordGestureMove();
+          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
+          // Trackpad pinch is encoded as ctrl+wheel with deltaY = -100*log(scale).
+          // Decode pinch directly; ordinary wheel/two-finger scrolling retains
+          // its existing sensitivity and per-event limit.
+          const delta = e.ctrlKey ? rawDelta : Math.max(-220, Math.min(220, rawDelta));
+          const factor = Math.exp(-delta * (e.ctrlKey ? 0.01 : 0.002));
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
@@ -13545,6 +13587,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelCameraAnimation();
         this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
