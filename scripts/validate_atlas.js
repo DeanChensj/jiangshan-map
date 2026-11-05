@@ -8001,6 +8001,59 @@ function main() {
         ctrl.locale = 'zh';
       }
 
+      // CUJ 45: High-resolution terrain tiles — reset view stays on the base relief, Data Saver is
+      // respected, every indexed tile exists, and the base relief shares the tiles' projection.
+      {
+        assert(
+          indexHtml.includes('<g id="terrain-relief-layer">') &&
+            indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;'),
+          'index.html must wrap #terrain-relief-img and #grp-terrain-tiles in #terrain-relief-layer, which owns the 0.48 relief opacity'
+        );
+        const terrainIdx = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'terrain', 'index.json'), 'utf8'));
+        assert(
+          terrainIdx.tileSize === 512 && Object.keys(terrainIdx.levels).length > 0,
+          'assets/terrain/index.json must declare 512 px tiles and at least one level'
+        );
+        for (const [z, list] of Object.entries(terrainIdx.levels)) {
+          for (const xy of list) {
+            const [x, y] = xy.split('_');
+            assert(
+              fs.existsSync(path.join(ROOT, 'assets', 'terrain', z, x, `${y}.webp`)),
+              `assets/terrain/index.json lists ${z}/${x}/${y}.webp but the file is missing`
+            );
+          }
+        }
+        const buildPy = fs.readFileSync(path.join(ROOT, 'scripts', 'build_terrain_tiles.py'), 'utf8');
+        assert(
+          buildPy.includes('PROJ_W, PROJ_H, WEST, EAST, SOUTH, NORTH = 1000, 700, 66, 142, 14, 55') &&
+            buildPy.includes('BASE_RECT = (-80, -40, 1160, 780)') &&
+            indexHtml.includes('x="-80" y="-40" width="1160" height="780"') &&
+            appCode.includes('new MercatorProjector(1000, 700, {\n        west: 66,\n        east: 142,\n        south: 14,\n        north: 55,'),
+          'scripts/build_terrain_tiles.py base-relief constants must mirror the app projector and the #terrain-relief-img rect'
+        );
+        const proto = ControllerClass.prototype;
+        const tCtrl = {
+          projector: new sandbox.window.MercatorProjector(1000, 700, { west: 66, east: 142, south: 14, north: 55 }),
+          _terrainTileSize: terrainIdx.tileSize,
+          _terrainIndex: new Map(Object.entries(terrainIdx.levels).map(([z, l]) => [Number(z), new Set(l)])),
+          _getDefaultCamera: () => ({ x: 350, y: 215, w: 500, h: 420, zoom: 2 }),
+          _isMobileViewport: () => false,
+        };
+        // Camera width in SVG units on a ~1400 CSS px wide map.
+        const level = (w) => proto._terrainTileLevel.call(tCtrl, { w }, 1400 / w, 'free');
+        assert.strictEqual(level(500), null, 'The default (reset) camera must stay on the base relief without loading tiles');
+        const zDeep = level(125);
+        assert(zDeep !== null && tCtrl._terrainIndex.has(zDeep), `Max zoom must select an indexed tile level, got ${zDeep}`);
+        assert(level(300) !== null && level(300) <= zDeep, 'Zooming in must never select a coarser tile level');
+        const origNav = sandbox.navigator;
+        sandbox.navigator = { connection: { saveData: true } };
+        assert.strictEqual(level(125), null, 'Data Saver must skip terrain tiles');
+        sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
+        assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
+        sandbox.navigator = origNav;
+      }
+
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
       assert(
         cssSrc.includes('mix-blend-mode: multiply') &&
@@ -8031,6 +8084,71 @@ function main() {
             },
           };
         };
+
+        // Hover cards are measured, centred above the pointer with one 16 px gap
+        // for every pointer type, flip 56 px below near the top edge, and stay
+        // inside the map. Placement must not read computed styles on hover.
+        const frameRect = { left: 100, top: 50, width: 800, height: 600 };
+        let tipSize = { width: 240, height: 70 };
+        const priorComputedStyle = sandbox.window.getComputedStyle;
+        sandbox.window.getComputedStyle = () => {
+          throw new Error('Hover placement must not read computed styles');
+        };
+        const hoverCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          _id: () => ({ getBoundingClientRect: () => frameRect }),
+          hoverTip: {
+            innerHTML: '', style: {}, classList: makeCls(),
+            querySelector: () => null,
+            getBoundingClientRect: () => tipSize,
+          },
+        });
+        for (const pointerType of ['mouse', 'touch']) for (const [x, y, width, height] of [
+          [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
+          [12, 12, 240, 70], [788, 12, 240, 70],
+          [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
+        ]) {
+          tipSize = { width, height };
+          hoverCtrl._showHoverTip({
+            clientX: x + frameRect.left, clientY: y + frameRect.top, pointerType, target: {},
+          }, '<b>开封府</b>');
+          const left = parseFloat(hoverCtrl.hoverTip.style.left);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
+            'Wrapped hover cards must fit inside the map');
+          if (x - width * 0.5 >= 8 && x + width * 0.5 <= 792) {
+            assert(Math.abs(left + width * 0.5 - x) < 1e-7,
+              'Hover cards must center over their hovered point when there is room');
+          }
+          if (y - 16 - height >= 8) {
+            assert(Math.abs(top + height - (y - 16)) < 1e-7,
+              `${pointerType} hover cards must sit 16 px above the pointer`);
+          } else {
+            assert.strictEqual(top, y + 56, `${pointerType} hover cards must flip 56 px below the pointer near the top edge`);
+          }
+        }
+        // City labels can move above, beside or below the dot as zoom changes.
+        // A high label must remain readable; near the top, keep the fallback.
+        tipSize = { width: 240, height: 70 };
+        for (const [placement, y, labelTop] of [
+          ['above', 300, 260], ['beside', 300, 294], ['below', 300, 320],
+          ['near the top edge', 100, 12],
+        ]) {
+          const nameEl = { getBoundingClientRect: () => ({ top: frameRect.top + labelTop }) };
+          hoverCtrl._showHoverTip({ clientX: 400 + frameRect.left, clientY: y + frameRect.top }, '<b>开封府</b>', nameEl);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          const anchorTop = Math.min(y, labelTop);
+          if (anchorTop - 16 - tipSize.height >= 8) {
+            assert(top + tipSize.height <= labelTop - 16,
+              `Tooltip must stay at least 16 px above a city name ${placement}`);
+            assert(Math.abs(top + tipSize.height - (anchorTop - 16)) < 1e-7,
+              `City name ${placement} must use the higher anchor`);
+          } else {
+            assert.strictEqual(top, y + 56, 'High city names must fall back 56 px below the pointer');
+          }
+        }
+        if (priorComputedStyle === undefined) delete sandbox.window.getComputedStyle;
+        else sandbox.window.getComputedStyle = priorComputedStyle;
 
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;

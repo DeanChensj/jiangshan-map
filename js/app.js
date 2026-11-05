@@ -840,6 +840,7 @@
       this._stageWrap = this._id('svg-stage-wrap');
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
+      this.terrainTileLayer = this._id('grp-terrain-tiles');
       this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
       this.grpProvinces = this._id('grp-provinces');
@@ -1768,7 +1769,7 @@
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
         'caveat',
-        '历史疆域与政区为示意性近似，非精确测绘边界。'
+        '历史疆域与政区为示意性近似，非精确测绘边界。地形晕渲据 SRTM、GMTED2010 公开高程数据。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
       const stepPrevBtn = this._id('act-step-prev');
@@ -2145,6 +2146,7 @@
       if (chk) {
         chk.checked = this.terrainMode;
       }
+      if (this.terrainMode) this._scheduleTerrainTiles();
       this._invalidateTypographyLayout();
       if (this.svg && this.camera && this.grpCorridors && this.grpSettlements) {
         this._rescaleSvgTypography();
@@ -9847,6 +9849,7 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      this._scheduleTerrainTiles();
     }
 
     _applyCamera(forceTypography = false) {
@@ -9901,6 +9904,236 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      if (forceTypography) this._scheduleTerrainTiles();
+    }
+
+    // ---------------- High-Resolution Terrain Tiles ----------------
+    // The base relief (assets/terrain_relief.webp, 2 px per SVG unit) covers the
+    // default view. Once the camera magnifies it past ~1 CSS px per image px,
+    // Web Mercator hillshade tiles from assets/terrain/ fade in on top; the
+    // base stays underneath so a slow tile never leaves a hole.
+    _scheduleTerrainTiles() {
+      if (!this.terrainTileLayer) return;
+      clearTimeout(this._terrainTileTimer);
+      this._terrainTileTimer = setTimeout(() => this._updateTerrainTiles(), 40);
+    }
+
+    _terrainReady() {
+      return Boolean(
+        this.terrainTileLayer &&
+          this.svg &&
+          typeof document !== 'undefined' &&
+          typeof document.createElementNS === 'function' &&
+          typeof fetch === 'function'
+      );
+    }
+
+    _loadTerrainIndex() {
+      if (!this._terrainIndexPromise) {
+        this._terrainIndexPromise = fetch('assets/terrain/index.json')
+          .then((r) => (r.ok ? r.json() : null))
+          .then((idx) => {
+            if (!idx || !idx.levels) return null;
+            const levels = new Map();
+            for (const [z, list] of Object.entries(idx.levels)) levels.set(Number(z), new Set(list));
+            this._terrainTileSize = idx.tileSize || 256;
+            this._terrainIndex = levels.size ? levels : null;
+            return this._terrainIndex;
+          })
+          .catch(() => null);
+      }
+      return this._terrainIndexPromise;
+    }
+
+    // mode: 'commit' applies and stores level hysteresis (the rendered view), 'peek' applies it
+    // without storing (predicting a flight's destination), 'free' ignores it (idle prefetch).
+    _terrainTileLevel(cam, pxPerUnit, mode) {
+      // Keep the default (reset) view on the base image; detail starts once the user zooms in.
+      if (cam.w > this._getDefaultCamera().w * 0.8) return null;
+      // Data Saver or a 2G/slow-3G link: the base relief is enough.
+      const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
+      if (conn && (conn.saveData || /(^|-)2g$|^3g$/.test(conn.effectiveType || ''))) return null;
+      // Sized for CSS pixels, not device pixels: the relief is a 48%-opacity backdrop, and
+      // matching retina density would quadruple the tiles per screen.
+      const need = pxPerUnit * this.projector.scale;
+      // Base image: 2 px per SVG unit; no gain while it is not being upscaled.
+      if (need <= 2 * this.projector.scale * 0.85) return null;
+      const ppd = (lz) => (this._terrainTileSize * 2 ** lz) / 360;
+      const levels = [...this._terrainIndex.keys()].sort((a, b) => a - b);
+      const maxPpd = this._isMobileViewport() ? 190 : Infinity;
+      let z = levels[0];
+      for (const lz of levels) {
+        if (ppd(lz) > maxPpd) break;
+        z = lz;
+        if (ppd(lz) >= need * 0.8) break;
+      }
+      if (mode !== 'free') {
+        // Hysteresis: small zoom steps keep the current level instead of refetching a screenful.
+        const cur = this._terrainTileZ;
+        if (cur !== undefined && levels.includes(cur) && ppd(cur) <= maxPpd) {
+          if (ppd(cur) >= need * 0.65 && ppd(cur) <= need * 2.4) z = cur;
+        }
+        if (mode === 'commit') this._terrainTileZ = z;
+      }
+      return z;
+    }
+
+    // Tiles covering what `cam` shows, nearest to the viewport centre first.
+    _terrainTilesFor(cam, mode) {
+      const rect = this._cameraViewportRect || this.svg.getBoundingClientRect();
+      // The SVG letterboxes the camera box (xMidYMid meet), so the visible area can exceed it.
+      const pxPerUnit = rect.width && rect.height ? Math.min(rect.width / cam.w, rect.height / cam.h) : 0;
+      const z = this.terrainMode && pxPerUnit ? this._terrainTileLevel(cam, pxPerUnit, mode) : null;
+      if (z === null) return [];
+      const visW = rect.width / pxPerUnit;
+      const visH = rect.height / pxPerUnit;
+      const cx = cam.x + cam.w / 2;
+      const cy = cam.y + cam.h / 2;
+      const [west, north] = this.projector.toGeo(cx - visW / 2, cy - visH / 2);
+      const [east, south] = this.projector.toGeo(cx + visW / 2, cy + visH / 2);
+      const [lonC, latC] = this.projector.toGeo(cx, cy);
+      const n = 2 ** z;
+      const tileX = (lon) => ((lon + 180) / 360) * n;
+      const tileY = (lat) => {
+        const r = Math.max(-85, Math.min(85, lat)) * DEG_TO_RAD;
+        return ((1 - Math.log(Math.tan(Math.PI / 4 + r / 2)) / Math.PI) / 2) * n;
+      };
+      const x0 = Math.max(0, Math.floor(tileX(west)));
+      const x1 = Math.min(n - 1, Math.floor(tileX(east)));
+      const y0 = Math.max(0, Math.floor(tileY(north)));
+      const y1 = Math.min(n - 1, Math.floor(tileY(south)));
+      const fx = tileX(lonC);
+      const fy = tileY(latC);
+      const minZ = Math.min(...this._terrainIndex.keys());
+      const out = new Map();
+      for (let x = x0; x <= x1; x++) {
+        for (let y = y0; y <= y1; y++) {
+          const dist = Math.hypot(x + 0.5 - fx, y + 0.5 - fy);
+          // Fall back to the nearest coarser level where the finest one was not built.
+          for (let lz = z; lz >= minZ; lz--) {
+            const d = z - lz;
+            const t = { z: lz, x: x >> d, y: y >> d, dist, top: lz === z };
+            if (this._terrainIndex.get(lz).has(`${t.x}_${t.y}`)) {
+              const key = `${t.z}/${t.x}/${t.y}`;
+              const prev = out.get(key);
+              if (!prev || prev.dist > dist) out.set(key, t);
+              break;
+            }
+          }
+        }
+      }
+      return [...out].sort((a, b) => a[1].dist - b[1].dist);
+    }
+
+    // Warm the HTTP cache without touching the DOM.
+    _prefetchTerrainTiles(tiles, limit) {
+      if (typeof Image !== 'function') return;
+      if (!this._terrainPrefetched) this._terrainPrefetched = new Set();
+      let sent = 0;
+      for (const [key, t] of tiles) {
+        if (sent >= limit) break;
+        if (this._terrainPrefetched.has(key) || (this._terrainTiles && this._terrainTiles.has(key))) continue;
+        this._terrainPrefetched.add(key);
+        const img = new Image();
+        img.decoding = 'async';
+        if ('fetchPriority' in img) img.fetchPriority = 'low';
+        img.src = `assets/terrain/${t.z}/${t.x}/${t.y}.webp`;
+        sent++;
+      }
+    }
+
+    // A camera flight is starting: fetch the destination's tiles while it is in the air.
+    _prefetchTerrainForTarget(targetCam, zoomInput) {
+      if (!this._terrainReady() || !this._terrainIndex) return;
+      clearTimeout(this._terrainTargetTimer);
+      const run = () => this._prefetchTerrainTiles(this._terrainTilesFor(targetCam, 'peek'), 48);
+      // Wheel ticks retarget every few ms; wait for the target to stop moving.
+      if (zoomInput) this._terrainTargetTimer = setTimeout(run, 60);
+      else run();
+    }
+
+    // The screen is complete: quietly fetch the centre of the next zoom-in and zoom-out views.
+    _prefetchTerrainNeighbours() {
+      const cam = this.camera;
+      const cx = cam.x + cam.w / 2;
+      const cy = cam.y + cam.h / 2;
+      const zin = { x: cx - cam.w / 4, y: cy - cam.h / 4, w: cam.w / 2, h: cam.h / 2 };
+      const zout = { x: cx - cam.w, y: cy - cam.h, w: cam.w * 2, h: cam.h * 2 };
+      this._prefetchTerrainTiles(
+        [...this._terrainTilesFor(zin, 'free').slice(0, 6), ...this._terrainTilesFor(zout, 'free').slice(0, 9)],
+        15
+      );
+    }
+
+    _updateTerrainTiles() {
+      const layer = this.terrainTileLayer;
+      if (!this._terrainReady()) return;
+      if (!this._terrainIndex) {
+        this._loadTerrainIndex().then((idx) => {
+          if (idx) this._updateTerrainTiles();
+        });
+        return;
+      }
+      if (!this._terrainTiles) this._terrainTiles = new Map();
+      const want = new Map(this._terrainTilesFor(this.camera, 'commit'));
+
+      const stale = [...this._terrainTiles.keys()].filter((k) => !want.has(k));
+      const dropStale = () => {
+        for (const k of stale) {
+          if (want.has(k)) continue;
+          const el = this._terrainTiles.get(k);
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+          this._terrainTiles.delete(k);
+        }
+      };
+      const fresh = [...want].filter(([k]) => !this._terrainTiles.has(k));
+      if (!fresh.length) {
+        dropStale();
+        return;
+      }
+      let pending = fresh.length;
+      const gen = (this._terrainTileGen = (this._terrainTileGen || 0) + 1);
+      const settle = () => {
+        if (--pending > 0 || gen !== this._terrainTileGen) return;
+        dropStale();
+        const idle = typeof requestIdleCallback === 'function' ? requestIdleCallback : (fn) => setTimeout(fn, 200);
+        idle(() => {
+          if (gen === this._terrainTileGen) this._prefetchTerrainNeighbours();
+        });
+      };
+      clearTimeout(this._terrainStaleTimer);
+      this._terrainStaleTimer = setTimeout(() => {
+        if (gen === this._terrainTileGen) dropStale();
+      }, 2500);
+      const NS = 'http://www.w3.org/2000/svg';
+      // `fresh` is centre-out, so the tiles the user is looking at are requested first.
+      for (const [key, t] of fresh) {
+        const n = 2 ** t.z;
+        const lonW = (t.x / n) * 360 - 180;
+        const lonE = ((t.x + 1) / n) * 360 - 180;
+        const latN = Math.atan(Math.sinh(Math.PI * (1 - (2 * t.y) / n))) * RAD_TO_DEG;
+        const latS = Math.atan(Math.sinh(Math.PI * (1 - (2 * (t.y + 1)) / n))) * RAD_TO_DEG;
+        const [px0, py0] = this.projector.toScreen(lonW, latN);
+        const [px1, py1] = this.projector.toScreen(lonE, latS);
+        const img = document.createElementNS(NS, 'image');
+        img.setAttribute('class', 'terrain-tile');
+        // A hair of overlap hides anti-aliased seams between neighbours.
+        img.setAttribute('x', (px0 - 0.02).toFixed(3));
+        img.setAttribute('y', (py0 - 0.02).toFixed(3));
+        img.setAttribute('width', (px1 - px0 + 0.04).toFixed(3));
+        img.setAttribute('height', (py1 - py0 + 0.04).toFixed(3));
+        img.setAttribute('preserveAspectRatio', 'none');
+        img.addEventListener('load', () => {
+          img.classList.add('is-loaded');
+          settle();
+        });
+        img.addEventListener('error', settle);
+        img.setAttribute('href', `assets/terrain/${t.z}/${t.x}/${t.y}.webp`);
+        // Coarser fallback tiles sit beneath finer neighbours they overlap.
+        if (t.top) layer.appendChild(img);
+        else layer.insertBefore(img, layer.firstChild);
+        this._terrainTiles.set(key, img);
+      }
     }
 
     _updateScaleBar(viewportRect = null) {
@@ -11224,6 +11457,7 @@
       const from = { ...this.camera };
       const t0 = performance.now();
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
+      this._prefetchTerrainForTarget(targetCam, zoomInput);
       const step = (now) => {
         const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
@@ -13919,7 +14153,11 @@
             this.locale === 'en'
               ? `${hasDiffMod ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
               : `${hasDiffMod ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
-          this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
+          this._showHoverTip(
+            e,
+            `<b>${anc}</b><div class="tt-sub">${sub}</div>`,
+            settlementEl ? settlementEl.querySelector('.name') : null
+          );
         } else if (corridorEl) {
           this._showHoverTip(
             e,
@@ -14272,7 +14510,7 @@
       }
     }
 
-    _showHoverTip(e, html) {
+    _showHoverTip(e, html, avoidEl = null) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.hoverTip);
@@ -14285,8 +14523,27 @@
         });
       }
       this.hoverTip.classList.remove('is-hidden');
-      const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
-      const top = Math.max(8, Math.min(rect.height - 90, e.clientY - rect.top - 12));
+      // Measure at a stable origin so the previous position cannot squeeze a
+      // newly longer card before its final placement is chosen.
+      this.hoverTip.style.left = '8px';
+      const { width, height } = this.hoverTip.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // One spacing for every pointer: 16 px clears the top of a default-size
+      // grab hand (its palm sits on the hotspot) without leaving the card
+      // detached, and the pointing hand only extends below its fingertip.
+      const gap = 16;
+      const belowGap = 56;
+      const padding = 8;
+      // Center above the hovered point; the measured size lets wrapped cards
+      // shift or flip at the map edges.
+      const preferredLeft = x - width * 0.5;
+      // City names can sit above the dot; leave the name readable too.
+      const anchorTop = avoidEl ? Math.min(y, avoidEl.getBoundingClientRect().top - rect.top) : y;
+      const preferredTop = anchorTop - gap - height >= padding
+        ? anchorTop - gap - height : y + belowGap;
+      const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
+      const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;
       this.hoverTip.style.top = `${top}px`;
     }

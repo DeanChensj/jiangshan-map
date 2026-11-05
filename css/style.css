@@ -497,9 +497,23 @@ h2 {
   pointer-events: none;
 }
 
-#terrain-relief-img {
+#terrain-relief-layer {
   opacity: 0.48;
   pointer-events: none;
+}
+
+#terrain-relief-img {
+  pointer-events: none;
+}
+
+.terrain-tile {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.terrain-tile.is-loaded {
+  opacity: 1;
 }
 
 .terrain-edge-stop {
@@ -4731,7 +4745,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 @media (max-width: 640px) {
-  #terrain-relief-img {
+  #terrain-relief-layer {
     opacity: 0.48;
   }
 
