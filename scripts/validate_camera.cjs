@@ -61,7 +61,7 @@ async function load(page, query = '?year=1415') {
       return { before: anchor, after: a._clientToSvgPoint(x, y), width, nextWidth: a.camera.w, calls: cameraChecks.apply };
     });
     assert.equal(burst.calls, 0);
-    assert(Math.abs(burst.nextWidth - Math.max(100, burst.width * 2 ** -1.2)) < 1e-7);
+    assert(Math.abs(burst.nextWidth - Math.max(100, burst.width * Math.exp(-120 * 0.002))) < 1e-7);
     assert(Math.hypot(...burst.before.map((n, i) => n - burst.after[i])) < 1e-7, `Wheel anchor drifted: ${JSON.stringify(burst)}`);
     await page.waitForFunction(() => cameraChecks.apply === 1);
     // Merged main keeps text scale current in the coalesced zoom frame.
@@ -155,8 +155,8 @@ async function load(page, query = '?year=1415') {
       fs.mkdirSync(output, { recursive: true });
       await page.screenshot({ path: path.join(output, 'desktop-rest.png') });
     }
-    // Equal wheel distances must give equal zoom, irrespective of grouping or
-    // units, with the cursor anchor preserved even through large changes.
+    // Preserve the existing wheel units, speed and per-event clamp. Native
+    // ctrl+wheel pinch keeps its full scale, regardless of event grouping.
     const resetPose = async () => {
       await page.evaluate(() => {
         const a = atlasApp;
@@ -167,9 +167,20 @@ async function load(page, query = '?year=1415') {
       await settled(page);
     };
     const pinchDelta = -100 * Math.log(2);
-    for (const [count, deltaY, deltaMode, ctrlKey = false] of [
-      [1, -100, 0], [4, -25, 0], [40, -2.5, 0], [1, -3, 1], [1, -100 / 240, 2],
-      [1, pinchDelta, 0, true], [4, pinchDelta / 4, 0, true], [40, pinchDelta / 40, 0, true],
+    for (const [count, deltaY, deltaMode, ctrlKey, expected] of [
+      [1, -100, 0, false, 1000 * Math.exp(-0.2)],
+      [4, -25, 0, false, 1000 * Math.exp(-0.2)],
+      [40, -2.5, 0, false, 1000 * Math.exp(-0.2)],
+      [1, -3, 1, false, 1000 * Math.exp(-0.108)],
+      [1, -100 / 240, 2, false, 1000 * Math.exp(-0.2)],
+      [1, -440, 0, false, 1000 * Math.exp(-0.44)],
+      [2, -220, 0, false, 1000 * Math.exp(-0.88)],
+      [1, -20, 1, false, 1000 * Math.exp(-0.44)],
+      [1, -2, 2, false, 1000 * Math.exp(-0.44)],
+      [1, pinchDelta, 0, true, 500],
+      [4, pinchDelta / 4, 0, true, 500],
+      [40, pinchDelta / 40, 0, true, 500],
+      [1, -100 * Math.log(10), 0, true, 100],
     ]) {
       await resetPose();
       const result = await page.evaluate(({ count, deltaY, deltaMode, ctrlKey, x, y }) => {
@@ -179,7 +190,7 @@ async function load(page, query = '?year=1415') {
         }));
         return { w: a.camera.w, before: anchor, after: a._clientToSvgPoint(x, y) };
       }, { count, deltaY, deltaMode, ctrlKey, x: Math.round(x), y: Math.round(y) });
-      assert(Math.abs(result.w - 500) < 1e-7, 'Wheel/pinch grouping or units lost zoom distance');
+      assert(Math.abs(result.w - expected) < 1e-7, 'Wheel/pinch mapping changed');
       assert(Math.hypot(...result.before.map((v, i) => v - result.after[i])) < 1e-7, 'Large wheel event moved the cursor anchor');
       await settled(page);
     }
@@ -194,14 +205,16 @@ async function load(page, query = '?year=1415') {
       send(0.5);
       return { halfway, final: atlasApp.camera.w };
     }, { x: Math.round(x), y: Math.round(y) });
-    assert(Math.abs(fractional.halfway - 1000 * 2 ** -0.005) < 1e-7);
+    assert(Math.abs(fractional.halfway - 1000 * Math.exp(-0.001)) < 1e-7);
     assert(Math.abs(fractional.final - 1000) < 1e-7);
     await settled(page);
-    // Extreme finite inputs stop at the supported range and reverse normally.
-    for (const [deltaY, expected] of [[-1e6, 100], [1e6, 1300], [-100, 650]]) {
-      await page.evaluate(({ deltaY, x, y }) => atlasApp.svg.dispatchEvent(new WheelEvent('wheel', {
-        bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY,
-      })), { deltaY, x: Math.round(x), y: Math.round(y) });
+    // Repeated clamped wheel inputs reach the bounds and reverse normally.
+    for (const [count, deltaY, expected] of [[20, -1e6, 100], [20, 1e6, 1300], [1, -100, 1300 * Math.exp(-0.2)]]) {
+      await page.evaluate(({ count, deltaY, x, y }) => {
+        for (let i = 0; i < count; i++) atlasApp.svg.dispatchEvent(new WheelEvent('wheel', {
+          bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY,
+        }));
+      }, { count, deltaY, x: Math.round(x), y: Math.round(y) });
       await settled(page);
       assert(Math.abs(await page.evaluate(() => atlasApp.camera.w) - expected) < 1e-7);
       assert(await page.evaluate(() => Object.values(atlasApp.camera).every(Number.isFinite)));
@@ -230,6 +243,9 @@ async function load(page, query = '?year=1415') {
     for (const input of ['wheel', 'direct', 'pointer']) {
       await resetPose();
       await page.evaluate(() => atlasApp._animateCameraTo({ x: 200, y: 140, w: 500, h: 350 }));
+      // Let the flight enter its moving state before interrupting it. A click
+      // without a drag must still run the cleanup normally done at flight end.
+      await page.waitForFunction(() => atlasApp.flyRaf !== null && atlasApp.svg.classList.contains('is-camera-moving'));
       if (input === 'pointer') {
         await page.mouse.move(x, y);await page.mouse.down();
       } else if (input === 'direct') {
@@ -243,6 +259,22 @@ async function load(page, query = '?year=1415') {
       if (input === 'pointer') await page.mouse.up();
       await page.waitForTimeout(180);await settled(page);
       assert.equal(await page.evaluate(() => atlasApp.camera.w), width, `${input} was overwritten by a stale flight`);
+      const restored = await page.evaluate(() => {
+        const a = atlasApp;
+        return {
+          moving: a.svg.classList.contains('is-camera-moving') || a.viewportFrame.classList.contains('is-camera-moving'),
+          prefectureEvents: getComputedStyle(a.svg.querySelector('.prefecture-shape')).pointerEvents,
+          casingDisplay: getComputedStyle(a.svg.querySelector('.province-boundary-casing')).display,
+          typographyWidth: a._lastTypographyWidth,
+        };
+      });
+      assert(!restored.moving, `${input} left the map stuck in its moving state`);
+      assert.notEqual(restored.prefectureEvents, 'none', `${input} left prefecture hover disabled`);
+      assert.notEqual(restored.casingDisplay, 'none', `${input} left boundary casings hidden`);
+      assert(Math.abs(restored.typographyWidth - width) < 0.05, `${input} left label scaling stale`);
+      await page.evaluate(() => { cameraChecks.hit = 0; });
+      await page.mouse.move(x + 7, y + 7);
+      await page.waitForFunction(() => cameraChecks.hit > 0);
     }
     // Keys interrupt navigation from the visible camera, rather than adding
     // their zoom to an unrelated navigation destination.

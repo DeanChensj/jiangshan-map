@@ -11125,10 +11125,15 @@
     }
 
     _cancelCameraAnimation() {
-      if (this.flyRaf != null) cancelAnimationFrame(this.flyRaf);
-      this.flyRaf = null;
       this._cameraTarget = null;
       this._cameraTargetIsZoom = false;
+      if (this.flyRaf == null) return;
+      cancelAnimationFrame(this.flyRaf);
+      this.flyRaf = null;
+      // Cancellation skips the flight's final frame, including its cleanup.
+      if (this.activePerson) this._invalidateTypographyLayout();
+      clearTimeout(this._cameraSettleTimer);
+      this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
     }
 
     _animateCameraTo(targetCam, { duration = 650, zoomInput = false } = {}) {
@@ -13525,18 +13530,17 @@
           }
           e.preventDefault();
           const rawDelta =
-            e.deltaMode === 1 ? e.deltaY * (100 / 3) : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
+            e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
           if (!Number.isFinite(rawDelta) || rawDelta === 0) return;
           this._cancelCameraAnimation();
           this._recordGestureMove();
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
-          // Preserve the full normalized wheel distance, including large or
-          // coalesced events. Only the supported camera range limits zoom.
           // Trackpad pinch is encoded as ctrl+wheel with deltaY = -100*log(scale).
-          // Decode pinch directly; ordinary wheel input doubles per 100 pixels
-          // (a nominal three-line notch), retaining fractional input precision.
-          const zoomRate = e.ctrlKey ? 0.01 : Math.LN2 / 100;
-          const nextW = Math.max(100, Math.min(1300, this.camera.w * Math.exp(rawDelta * zoomRate)));
+          // Decode pinch directly; ordinary wheel/two-finger scrolling retains
+          // its existing sensitivity and per-event limit.
+          const delta = e.ctrlKey ? rawDelta : Math.max(-220, Math.min(220, rawDelta));
+          const factor = Math.exp(-delta * (e.ctrlKey ? 0.01 : 0.002));
+          const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
             x: mx - (mx - this.camera.x) * k,
