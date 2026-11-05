@@ -61,7 +61,7 @@ async function load(page, query = '?year=1415') {
       return { before: anchor, after: a._clientToSvgPoint(x, y), width, nextWidth: a.camera.w, calls: cameraChecks.apply };
     });
     assert.equal(burst.calls, 0);
-    assert(Math.abs(burst.nextWidth - burst.width * Math.exp(-0.24)) < 1e-7);
+    assert(Math.abs(burst.nextWidth - Math.max(100, burst.width * 2 ** -1.2)) < 1e-7);
     assert(Math.hypot(...burst.before.map((n, i) => n - burst.after[i])) < 1e-7, `Wheel anchor drifted: ${JSON.stringify(burst)}`);
     await page.waitForFunction(() => cameraChecks.apply === 1);
     // Merged main keeps text scale current in the coalesced zoom frame.
@@ -168,7 +168,7 @@ async function load(page, query = '?year=1415') {
     };
     const pinchDelta = -100 * Math.log(2);
     for (const [count, deltaY, deltaMode, ctrlKey = false] of [
-      [1, -400, 0], [4, -100, 0], [40, -10, 0], [1, -400 / 18, 1], [1, -400 / 240, 2],
+      [1, -100, 0], [4, -25, 0], [40, -2.5, 0], [1, -3, 1], [1, -100 / 240, 2],
       [1, pinchDelta, 0, true], [4, pinchDelta / 4, 0, true], [40, pinchDelta / 40, 0, true],
     ]) {
       await resetPose();
@@ -179,13 +179,26 @@ async function load(page, query = '?year=1415') {
         }));
         return { w: a.camera.w, before: anchor, after: a._clientToSvgPoint(x, y) };
       }, { count, deltaY, deltaMode, ctrlKey, x: Math.round(x), y: Math.round(y) });
-      const expected = ctrlKey ? 500 : 1000 * Math.exp(-0.8);
-      assert(Math.abs(result.w - expected) < 1e-7, 'Wheel/pinch grouping or units lost zoom distance');
+      assert(Math.abs(result.w - 500) < 1e-7, 'Wheel/pinch grouping or units lost zoom distance');
       assert(Math.hypot(...result.before.map((v, i) => v - result.after[i])) < 1e-7, 'Large wheel event moved the cursor anchor');
       await settled(page);
     }
+    // High-resolution wheels retain sub-notch precision and reverse exactly.
+    await resetPose();
+    const fractional = await page.evaluate(({ x, y }) => {
+      const send = deltaY => atlasApp.svg.dispatchEvent(new WheelEvent('wheel', {
+        bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY,
+      }));
+      send(-0.5);
+      const halfway = atlasApp.camera.w;
+      send(0.5);
+      return { halfway, final: atlasApp.camera.w };
+    }, { x: Math.round(x), y: Math.round(y) });
+    assert(Math.abs(fractional.halfway - 1000 * 2 ** -0.005) < 1e-7);
+    assert(Math.abs(fractional.final - 1000) < 1e-7);
+    await settled(page);
     // Extreme finite inputs stop at the supported range and reverse normally.
-    for (const [deltaY, expected] of [[-1e6, 100], [1e6, 1300], [-100, 1300 * Math.exp(-0.2)]]) {
+    for (const [deltaY, expected] of [[-1e6, 100], [1e6, 1300], [-100, 650]]) {
       await page.evaluate(({ deltaY, x, y }) => atlasApp.svg.dispatchEvent(new WheelEvent('wheel', {
         bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY,
       })), { deltaY, x: Math.round(x), y: Math.round(y) });
