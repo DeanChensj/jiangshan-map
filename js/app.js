@@ -13863,7 +13863,11 @@
             this.locale === 'en'
               ? `${hasDiffMod ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
               : `${hasDiffMod ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
-          this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
+          this._showHoverTip(
+            e,
+            `<b>${anc}</b><div class="tt-sub">${sub}</div>`,
+            settlementEl ? settlementEl.querySelector('.name') : null
+          );
         } else if (corridorEl) {
           this._showHoverTip(
             e,
@@ -14216,7 +14220,7 @@
       }
     }
 
-    _showHoverTip(e, html) {
+    _showHoverTip(e, html, avoidEl = null) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.hoverTip);
@@ -14234,13 +14238,15 @@
       this.hoverTip.style.left = '8px';
       const { width, height } = this.hoverTip.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
-      const gap = 32, belowGap = 56, padding = 8;
+      const gap = 12, belowGap = 56, padding = 8;
       // Center above the hovered point, keeping the pointing-hand cursor clear.
       // Use the actual size to shift/flip wrapped cards at the map edges.
       const preferredLeft = x - width * 0.5;
+      // City names can sit above the dot; leave the name readable too.
+      const anchorTop = avoidEl ? Math.min(y, avoidEl.getBoundingClientRect().top - rect.top) : y;
       // The hand extends farther below its fingertip than above it.
-      const preferredTop = y - gap - height >= padding
-        ? y - gap - height : y + belowGap;
+      const preferredTop = anchorTop - gap - height >= padding
+        ? anchorTop - gap - height : y + belowGap;
       const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
       const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;

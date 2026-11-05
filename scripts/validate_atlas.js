@@ -7986,8 +7986,31 @@ function main() {
           const cursorOverlap = left < x + 32 && left + width > x - 8 &&
             top < y + 48 && top + height > y - 8;
           assert(!cursorOverlap, 'Hover text must leave room for the pointing-hand cursor');
-          if (y - 32 - height < 8) {
+          if (y - 12 - height >= 8) {
+            assert(Math.abs(top + height - (y - 12)) < 1e-7,
+              'Above-pointer cards must keep the requested 12 px gap');
+          } else {
             assert(top >= y + 56, 'Below-pointer fallback must clear the full hand cursor');
+          }
+        }
+        // City labels can move above, beside or below the dot as zoom changes.
+        // A high label must remain readable; near the top, keep the fallback.
+        tipSize = { width: 240, height: 70 };
+        for (const [placement, y, labelTop] of [
+          ['above', 300, 260], ['beside', 300, 294], ['below', 300, 320],
+          ['near the top edge', 100, 12],
+        ]) {
+          const nameEl = { getBoundingClientRect: () => ({ top: frameRect.top + labelTop }) };
+          hoverCtrl._showHoverTip({ clientX: 400 + frameRect.left, clientY: y + frameRect.top }, '<b>开封府</b>', nameEl);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          const anchorTop = Math.min(y, labelTop);
+          if (anchorTop - 12 - tipSize.height >= 8) {
+            assert(top + tipSize.height <= labelTop - 12,
+              `Tooltip must stay at least 12 px above a city name ${placement}`);
+            assert(Math.abs(top + tipSize.height - (anchorTop - 12)) < 1e-7,
+              `City name ${placement} must use the higher anchor`);
+          } else {
+            assert.strictEqual(top, y + 56, 'High city names must preserve the below-pointer fallback');
           }
         }
 
