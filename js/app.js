@@ -9546,38 +9546,57 @@
       if (this.musicAudio) return this.musicAudio;
       const audio = new Audio();
       audio.preload = 'auto';
+      audio.playsInline = true;
       audio.volume = 0.48;
       audio.addEventListener('ended', () => {
         if (this.musicPlaying) this.nextMusicTrack();
       });
       audio.addEventListener('error', () => {
-        if (!this.musicPlaying) return;
-        const t = HistoricalAtlasController.GUQIN_TRACKS[this.musicTrackIdx];
-        if (audio.src !== t.ogg) {
-          audio.src = t.ogg;
-          audio.play().catch(() => {});
-        }
+        this._handleMusicLoadError(this._musicPlaySeq);
       });
       this.musicAudio = audio;
       return audio;
     }
 
+    _handleMusicLoadError(seq) {
+      if (!this.musicPlaying || seq !== this._musicPlaySeq) return;
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      const t = tracks[this.musicTrackIdx % tracks.length];
+      const audio = this.musicAudio;
+      if (audio && t && t.ogg && !audio._triedFallback) {
+        audio._triedFallback = true;
+        audio.src = t.ogg;
+        audio.play().catch((err) => {
+          if (err && err.name === 'AbortError') return;
+          if (seq !== this._musicPlaySeq) return;
+          this.musicPlaying = false;
+          this._updateMusicUi();
+        });
+      } else {
+        this.musicPlaying = false;
+        this._updateMusicUi();
+      }
+    }
+
     _playCurrentMusicTrack() {
       const tracks = HistoricalAtlasController.GUQIN_TRACKS;
       const t = tracks[this.musicTrackIdx % tracks.length];
+      if (!t) return;
+      const seq = (this._musicPlaySeq = (this._musicPlaySeq || 0) + 1);
       const audio = this._ensureMusicAudio();
+      audio._triedFallback = false;
       audio.src = t.mp3;
       this.musicPlaying = true;
       this._updateMusicUi();
-      audio.play().catch(() => {
-        if (!this.musicPlaying) return;
-        audio.src = t.ogg;
-        audio.play().catch(() => {});
+      audio.play().catch((err) => {
+        if (err && err.name === 'AbortError') return;
+        this._handleMusicLoadError(seq);
       });
     }
 
     toggleMusic() {
       if (this.musicPlaying) {
+        this._musicPlaySeq = (this._musicPlaySeq || 0) + 1;
         this.musicPlaying = false;
         if (this.musicAudio) this.musicAudio.pause();
         this._updateMusicUi();
