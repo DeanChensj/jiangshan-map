@@ -14185,12 +14185,13 @@
       this.hoverTip.style.left = '8px';
       const { width, height } = this.hoverTip.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
-      const gap = 32, padding = 8;
+      const gap = 32, belowGap = 56, padding = 8;
       // Center above the hovered point, keeping the pointing-hand cursor clear.
       // Use the actual size to shift/flip wrapped cards at the map edges.
       const preferredLeft = x - width * 0.5;
+      // The hand extends farther below its fingertip than above it.
       const preferredTop = y - gap - height >= padding
-        ? y - gap - height : y + gap;
+        ? y - gap - height : y + belowGap;
       const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
       const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;

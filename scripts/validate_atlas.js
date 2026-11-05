@@ -7953,7 +7953,8 @@ function main() {
           },
         });
         for (const [x, y, width, height] of [
-          [400, 300, 240, 70], [12, 12, 240, 70], [788, 12, 240, 70],
+          [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
+          [12, 12, 240, 70], [788, 12, 240, 70],
           [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
         ]) {
           tipSize = { width, height };
@@ -7967,8 +7968,11 @@ function main() {
               'Hover cards must center over their hovered point when there is room');
           }
           const cursorOverlap = left < x + 32 && left + width > x - 8 &&
-            top < y + 32 && top + height > y - 8;
+            top < y + 48 && top + height > y - 8;
           assert(!cursorOverlap, 'Hover text must leave room for the pointing-hand cursor');
+          if (y - 32 - height < 8) {
+            assert(top >= y + 56, 'Below-pointer fallback must clear the full hand cursor');
+          }
         }
 
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
