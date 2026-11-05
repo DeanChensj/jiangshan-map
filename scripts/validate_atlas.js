@@ -617,6 +617,20 @@ function main() {
     'app.js & index.html must unify event callouts under #chk-milestones (_syncAutoMilestoneBalloon, ep-close) and remove dead code (chk-event-callouts, toggleEventCallouts, toggleGenealogyMode, _startGuqinSynthFallback)'
   );
 
+  // 6b. Verify Guqin audio tracks are self-hosted same-origin MP3s in assets/audio/ (reachable on mainland China Wi-Fi without upload.wikimedia.org DNS blocking)
+  const guqinTracks = (sandbox.window.ATLAS_LORE_DATA && sandbox.window.ATLAS_LORE_DATA.GUQIN_TRACKS) || [];
+  assert(guqinTracks.length >= 5, `Expected at least 5 GUQIN_TRACKS, got ${guqinTracks.length}`);
+  for (const gt of guqinTracks) {
+    assert(
+      typeof gt.mp3 === 'string' && gt.mp3.startsWith('assets/audio/') && gt.mp3.endsWith('.mp3'),
+      `GUQIN_TRACKS (${gt.zh}) primary mp3 must be a same-origin assets/audio/*.mp3 path, got ${gt.mp3}`
+    );
+    const audioPath = path.join(ROOT, gt.mp3);
+    assert(fs.existsSync(audioPath), `Missing self-hosted Guqin audio file: ${gt.mp3}`);
+    const audioSize = fs.statSync(audioPath).size;
+    assert(audioSize > 100000, `Self-hosted Guqin audio file ${gt.mp3} is unexpectedly small (${audioSize} bytes)`);
+  }
+
   // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
   const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(
