@@ -18,6 +18,10 @@
   const SHAPE_BBOX_WEAK = new WeakMap();
   const SHAPE_SIG_WEAK = new WeakMap();
   const PREF_BOUNDARY_MESH_CACHE = new WeakMap();
+  const setSvgAttribute = (node, name, value) => {
+    const text = String(value);
+    if (node.getAttribute(name) !== text) node.setAttribute(name, text);
+  };
   // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
@@ -373,13 +377,13 @@
       this._enLocalePromise = null;
       this._hydrateSnapshots();
 
-      this.enLocale = window.EN_LOCALE || {
+      this._setEnglishLocale(window.EN_LOCALE || {
         strings: {},
         dynasties: {},
         milestones: {},
         corridors: {},
         dict: {},
-      };
+      });
 
       this.projector = new MercatorProjector(1000, 700, {
         west: 66,
@@ -625,7 +629,7 @@
         window.EN_LOCALE.dict &&
         Object.keys(window.EN_LOCALE.dict).length > 0
       ) {
-        this.enLocale = window.EN_LOCALE;
+        this._setEnglishLocale(window.EN_LOCALE);
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
@@ -633,7 +637,7 @@
           this._lazyAssetUrl('js/i18n_dict.js', 'vI18n')
         ).then(() => {
           if (window.EN_LOCALE) {
-            this.enLocale = window.EN_LOCALE;
+            this._setEnglishLocale(window.EN_LOCALE);
             this.searchIndex = null;
           }
           return this.enLocale;
@@ -939,11 +943,13 @@
       return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
     }
 
+    _setEnglishLocale(locale) {
+      this.enLocale = locale;
+      this._enDictReady = Boolean(locale && locale.dict && Object.keys(locale.dict).length);
+    }
+
     _hasEnDict() {
-      const dict = this.enLocale && this.enLocale.dict;
-      if (!dict) return false;
-      for (const _ in dict) return true;
-      return false;
+      return this._enDictReady === true;
     }
 
     _getExtraEnTermMap() {
@@ -3023,13 +3029,45 @@
       );
       const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
       const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
-      const findPolIdx = (x, y) => {
+      // The boundary build queries many points against the same long rings.
+      // Index candidate edges by latitude; all geometric predicates below stay
+      // exact. The margin also covers nearPolityBorder's distance test.
+      const ringEdgeBins = new Map();
+      // The bins must cover the widest upstream distance query, including
+      // multi-regime midpoint (0.55) and endpoint (0.38) exclusions.
+      const borderMargin = isMultiRegime ? 0.55 : 0.16, binCount = 64;
+      const candidateEdges = (b, y) => {
+        if (b.ring.length < 128 || b.maxY <= b.minY) return null;
+        let index = ringEdgeBins.get(b);
+        if (!index) {
+          const bins = Array.from({ length: binCount }, () => []);
+          const scale = binCount / (b.maxY - b.minY);
+          for (let i = 0, j = b.ring.length - 1; i < b.ring.length; j = i++) {
+            const y1 = b.ring[i][1], y2 = b.ring[j][1];
+            // Extra neighboring bins make the filter conservative at floating
+            // point bucket boundaries. They never change the final predicates.
+            const lo = Math.max(0, Math.floor((Math.min(y1, y2) - borderMargin - b.minY) * scale) - 1);
+            const hi = Math.min(binCount - 1, Math.floor((Math.max(y1, y2) + borderMargin - b.minY) * scale) + 1);
+            for (let k = lo; k <= hi; k++) bins[k].push(i);
+          }
+          index = { bins, scale }; ringEdgeBins.set(b, index);
+        }
+        return index.bins[Math.max(0, Math.min(binCount - 1, Math.floor((y - b.minY) * index.scale)))];
+      };
+      const findPolIdx = (x, y, cache) => {
+        const key = cache ? `${x},${y}` : null;
+        if (cache) {
+          const hit = cache.get(key);
+          if (hit !== undefined) return hit;
+        }
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
           if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
           const ring = b.ring;
+          const edges = cache ? candidateEdges(b, y) : null;
           let inside = false;
-          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
+            const i = edges ? edges[k] : k, j = i === 0 ? ring.length - 1 : i - 1;
             const xi = ring[i][0],
               yi = ring[i][1];
             const xj = ring[j][0],
@@ -3038,8 +3076,12 @@
               inside = !inside;
             }
           }
-          if (inside) return b.pIdx;
+          if (inside) {
+            if (cache) cache.set(key, b.pIdx);
+            return b.pIdx;
+          }
         }
+        if (cache) cache.set(key, -1);
         return -1;
       };
       const allowPolIdx = (pIdx) => {
@@ -3062,11 +3104,18 @@
             continue;
           }
           const ring = b.ring;
-          for (let i = 0; i < ring.length - 1; i++) {
+          const edges = candidateEdges(b, y);
+          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
+            // Ray edge 0 closes the ring implicitly; the original distance
+            // test only considers explicitly consecutive coordinate pairs.
+            const end = edges ? edges[k] : k;
+            if (end === 0) continue;
+            const i = end - 1;
             const x1 = ring[i][0],
               y1 = ring[i][1];
             const x2 = ring[i + 1][0],
               y2 = ring[i + 1][1];
+            if (x < Math.min(x1, x2) - margin || x > Math.max(x1, x2) + margin) continue;
             const dx = x2 - x1,
               dy = y2 - y1;
             const len2 = dx * dx + dy * dy;
@@ -3093,47 +3142,62 @@
         return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
       };
 
-      const allRings = [];
-      const regEdgeCounts = new Map();
-      for (const reg of snap.regions) {
-        if (!reg || !reg.shape) continue;
-        const coords = reg.shape.coordinates;
-        const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
-        for (const poly of polys) {
-          for (const ring of poly || []) {
-            if (!ring || ring.length < 2) continue;
-            allRings.push(ring);
-            for (let i = 0; i < ring.length - 1; i++) {
-              const ek = edgeKey(ring[i], ring[i + 1]);
-              regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+      // Adjacent phases frequently share the same administrative regions.
+      // Keep only the latest topology, so visiting history does not accumulate
+      // edge maps. Polity-dependent filtering still runs for every snapshot.
+      let topology = this._regionBoundaryTopology;
+      if (!topology || topology.regions !== snap.regions) {
+        const allRings = [];
+        const regEdgeCounts = new Map();
+        for (const reg of snap.regions) {
+          if (!reg || !reg.shape) continue;
+          const coords = reg.shape.coordinates;
+          const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
+          for (const poly of polys) {
+            for (const ring of poly || []) {
+              if (!ring || ring.length < 2) continue;
+              allRings.push(ring);
+              for (let i = 0; i < ring.length - 1; i++) {
+                const ek = edgeKey(ring[i], ring[i + 1]);
+                regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+              }
             }
           }
         }
+        const rings = [];
+        for (const ring of allRings) {
+          const edges = [];
+          for (let i = 0; i < ring.length - 1; i++) {
+            const p1 = ring[i], p2 = ring[i + 1], key = edgeKey(p1, p2);
+            if ((regEdgeCounts.get(key) || 0) >= 2) edges.push({ p1, p2, key });
+            else if (edges.length && edges[edges.length - 1] !== null) edges.push(null);
+          }
+          if (edges.length) rings.push(edges);
+        }
+        topology = this._regionBoundaryTopology = { regions: snap.regions, rings };
       }
 
       const seenEdges = new Set();
+      const pointPolities = new Map();
       let d = '';
-      for (const ring of allRings) {
+      for (const edges of topology.rings) {
         let penX = NaN;
         let penY = NaN;
-        for (let i = 0; i < ring.length - 1; i++) {
-          const p1 = ring[i];
-          const p2 = ring[i + 1];
-          const ek = edgeKey(p1, p2);
-          if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+        for (const edge of edges) {
+          if (!edge || seenEdges.has(edge.key)) {
             penX = NaN;
             penY = NaN;
             continue;
           }
+          const { p1, p2, key: ek } = edge;
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
-          const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
-          const borderMargin = isMultiRegime ? 0.55 : 0.16;
+          const pIdxM = polRings.length ? findPolIdx(mx, my, pointPolities) : 0;
           if (
             polRings.length &&
             (!allowPolIdx(pIdxM) ||
-              findPolIdx(p1[0], p1[1]) !== pIdxM ||
-              findPolIdx(p2[0], p2[1]) !== pIdxM ||
+              findPolIdx(p1[0], p1[1], pointPolities) !== pIdxM ||
+              findPolIdx(p2[0], p2[1], pointPolities) !== pIdxM ||
               (hasLargePolity &&
                 (nearPolityBorder(mx, my, borderMargin) ||
                   (isMultiRegime &&
@@ -3156,6 +3220,9 @@
         }
       }
 
+      // The label-anchor predicate outlives this build; retain no point cache.
+      pointPolities.clear();
+      ringEdgeBins.clear();
       Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
         value: d,
         writable: true,
@@ -9168,16 +9235,23 @@
         // Clamp bubble strictly inside [0, railW - bW] so text never clips off-screen
         const maxLeft = Math.max(0, railW - bW);
         const leftPx = Math.max(0, Math.min(maxLeft, handleX - bW * 0.5));
-        bubble.style.left = `${leftPx.toFixed(1)}px`;
-        bubble.style.transform = 'none';
+        bubble.style.left = '0px';
+        bubble.style.transform = `translateX(${leftPx.toFixed(1)}px)`;
 
         // Direct caret arrow to point straight at the timeline thumb
         const arrowX = Math.max(8, Math.min(bW - 8, handleX - leftPx));
         bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
       }
 
-      const handle = this._id('scrubber-handle');
-      if (handle) handle.style.left = `${pct}%`;
+      const motion = this._id('scrubber-motion');
+      if (motion) {
+        // The wrapper spans the rail, so percentage transforms use the same
+        // reference width as the previous absolute-positioned thumb.
+        motion.style.transform = `translateX(${pct}%)`;
+      } else {
+        const handle = this._id('scrubber-handle');
+        if (handle) handle.style.left = `${pct}%`;
+      }
 
       const track = this._id('scrubber-track');
       if (track) track.setAttribute('aria-valuenow', String(this.year));
@@ -9996,7 +10070,7 @@
           if (showProvNames) {
             const fontSize = (9.5 * s).toFixed(1);
             this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-              node.setAttribute('font-size', fontSize);
+              setSvgAttribute(node, 'font-size', fontSize);
             });
           }
           if (this.activePerson && this.grpJourney) {
@@ -10013,7 +10087,7 @@
       const applyNodeScale = (node, xStr, yStr, rotStr = null) => {
         const prefix = `translate(${xStr},${yStr}) scale(`;
         const suffix = rotStr !== null ? `) rotate(${rotStr})` : ')';
-        node.setAttribute('transform', prefix + invScale + suffix);
+        setSvgAttribute(node, 'transform', prefix + invScale + suffix);
         scaleNodes.push({ node, prefix, suffix });
       };
 
@@ -10324,9 +10398,9 @@
             node.classList.remove('is-label-crowded');
             if (node.dataset.appliedDir !== bestDir) {
               node.dataset.appliedDir = bestDir;
-              nameEl.setAttribute('x', String(best.dx));
-              nameEl.setAttribute('y', String(best.dy1));
-              nameEl.setAttribute('text-anchor', best.anchor);
+              setSvgAttribute(nameEl, 'x', String(best.dx));
+              setSvgAttribute(nameEl, 'y', String(best.dy1));
+              setSvgAttribute(nameEl, 'text-anchor', best.anchor);
             }
             occupied.push(best.box);
             return;
@@ -10359,9 +10433,9 @@
         node.classList.remove('is-label-crowded');
         if (node.dataset.appliedDir !== bestDir) {
           node.dataset.appliedDir = bestDir;
-          nameEl.setAttribute('x', String(best.dx));
-          nameEl.setAttribute('y', String(best.dy1));
-          nameEl.setAttribute('text-anchor', best.anchor);
+          setSvgAttribute(nameEl, 'x', String(best.dx));
+          setSvgAttribute(nameEl, 'y', String(best.dy1));
+          setSvgAttribute(nameEl, 'text-anchor', best.anchor);
         }
         occupied.push(best.box);
       };
@@ -10548,8 +10622,8 @@
         node.dataset.placed = '1';
         const bestXStr = bestX.toFixed(1);
         const bestYStr = bestY.toFixed(1);
-        node.setAttribute('data-x', bestXStr);
-        node.setAttribute('data-y', bestYStr);
+        setSvgAttribute(node, 'data-x', bestXStr);
+        setSvgAttribute(node, 'data-y', bestYStr);
         applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
       }
@@ -10637,8 +10711,8 @@
           node.classList.remove('is-crowded-hidden');
           const bestXStr = bestX.toFixed(1);
           const bestYStr = bestY.toFixed(1);
-          node.setAttribute('data-x', bestXStr);
-          node.setAttribute('data-y', bestYStr);
+          setSvgAttribute(node, 'data-x', bestXStr);
+          setSvgAttribute(node, 'data-y', bestYStr);
           applyNodeScale(node, bestXStr, bestYStr);
           occupied.push(bestBox);
         });
@@ -10693,8 +10767,8 @@
             node.dataset.placed = '1';
             const cxStr = cx.toFixed(1);
             const cyStr = cy.toFixed(1);
-            node.setAttribute('data-x', cxStr);
-            node.setAttribute('data-y', cyStr);
+            setSvgAttribute(node, 'data-x', cxStr);
+            setSvgAttribute(node, 'data-y', cyStr);
             applyNodeScale(node, cxStr, cyStr);
             node.classList.remove('is-crowded-hidden');
             occupied.push(candBox);
@@ -10706,8 +10780,8 @@
           node.dataset.placed = '1';
           const bxStr = baseX.toFixed(1);
           const byStr = baseY.toFixed(1);
-          node.setAttribute('data-x', bxStr);
-          node.setAttribute('data-y', byStr);
+          setSvgAttribute(node, 'data-x', bxStr);
+          setSvgAttribute(node, 'data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
       });
@@ -10773,8 +10847,8 @@
           node.dataset.placed = '1';
           const cxStr = cx.toFixed(1);
           const cyStr = cy.toFixed(1);
-          node.setAttribute('data-x', cxStr);
-          node.setAttribute('data-y', cyStr);
+          setSvgAttribute(node, 'data-x', cxStr);
+          setSvgAttribute(node, 'data-y', cyStr);
           applyNodeScale(node, cxStr, cyStr);
           node.classList.remove('is-crowded-hidden');
           occupied.push(candBox);
@@ -10785,8 +10859,8 @@
           node.dataset.placed = '1';
           const bxStr = baseX.toFixed(1);
           const byStr = baseY.toFixed(1);
-          node.setAttribute('data-x', bxStr);
-          node.setAttribute('data-y', byStr);
+          setSvgAttribute(node, 'data-x', bxStr);
+          setSvgAttribute(node, 'data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
       }
@@ -10868,8 +10942,8 @@
               node.dataset.placed = '1';
               const cxStr = cx.toFixed(1);
               const cyStr = cy.toFixed(1);
-              node.setAttribute('data-x', cxStr);
-              node.setAttribute('data-y', cyStr);
+              setSvgAttribute(node, 'data-x', cxStr);
+              setSvgAttribute(node, 'data-y', cyStr);
               applyNodeScale(node, cxStr, cyStr, rotStr);
               node.classList.remove('is-crowded-hidden');
               for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
@@ -10885,7 +10959,7 @@
       }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-        node.setAttribute('font-size', (9.5 * s).toFixed(1));
+        setSvgAttribute(node, 'font-size', (9.5 * s).toFixed(1));
       });
       this._zoomScaleNodes = scaleNodes;
       this._lastZoomStateKey = zoomStateKey;
@@ -10954,12 +11028,12 @@
         }
       }
       for (const p of pts) {
-        p.n.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
-        p.n.setAttribute('data-ox', p.ox.toFixed(2));
-        p.n.setAttribute('data-oy', p.oy.toFixed(2));
+        setSvgAttribute(p.n, 'transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
+        setSvgAttribute(p.n, 'data-ox', p.ox.toFixed(2));
+        setSvgAttribute(p.n, 'data-oy', p.oy.toFixed(2));
         const shiftEl = p.n.querySelector('.jn-pin-shift');
         if (shiftEl) {
-          shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
+          setSvgAttribute(shiftEl, 'transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
         }
       }
       const placedRects = pts.map((p) => {
@@ -11059,9 +11133,9 @@
           lbl.style.display = '';
           lbl.style.textAnchor = chosenSlot.anchor;
           lbl.dataset.slotIdx = String(chosenSlot.idx);
-          lbl.setAttribute('text-anchor', chosenSlot.anchor);
-          lbl.setAttribute('x', chosenSlot.lx);
-          lbl.setAttribute('y', chosenSlot.ly);
+          setSvgAttribute(lbl, 'text-anchor', chosenSlot.anchor);
+          setSvgAttribute(lbl, 'x', chosenSlot.lx);
+          setSvgAttribute(lbl, 'y', chosenSlot.ly);
           placedRects.push(chosenRect);
         } else {
           lbl.style.display = 'none';
@@ -11069,8 +11143,21 @@
       }
     }
 
-    _animateCameraTo(targetCam) {
+    _cancelCameraAnimation() {
+      this._cameraTarget = null;
+      this._cameraTargetIsZoom = false;
+      if (this.flyRaf == null) return;
+      cancelAnimationFrame(this.flyRaf);
+      this.flyRaf = null;
+      // Cancellation skips the flight's final frame, including its cleanup.
+      if (this.activePerson) this._invalidateTypographyLayout();
+      clearTimeout(this._cameraSettleTimer);
+      this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+    }
+
+    _animateCameraTo(targetCam, { duration = 650, zoomInput = false } = {}) {
       this._cameraTarget = targetCam;
+      this._cameraTargetIsZoom = zoomInput;
       if (
         !this._cameraViewportRect &&
         this.svg &&
@@ -11080,10 +11167,9 @@
       }
       const from = { ...this.camera };
       const t0 = performance.now();
-      const duration = 650;
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
       const step = (now) => {
-        const k = Math.min(1, (now - t0) / duration);
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
@@ -11100,6 +11186,7 @@
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          this._cameraTargetIsZoom = false;
           if (this.activePerson) this._invalidateTypographyLayout();
           this._applyCamera(true);
         }
@@ -11304,23 +11391,28 @@
     }
 
     zoomBy(factor, clientX, clientY, animate = true) {
+      if (!Number.isFinite(factor) || factor <= 0) return;
       this._recordGestureMove();
+      // Repeated key presses accumulate against the pending zoom destination.
+      // A navigation flight is interrupted from its current visible camera.
+      const cam = (animate && this._cameraTargetIsZoom && this._cameraTarget) || this.camera;
       const [mx, my] =
         clientX !== undefined && clientY !== undefined
-          ? this._clientToSvgPoint(clientX, clientY)
-          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
-      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
-      const k = nextW / this.camera.w;
+          ? this._clientToSvgPoint(clientX, clientY, cam)
+          : [cam.x + cam.w * 0.5, cam.y + cam.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, cam.w / factor));
+      const k = nextW / cam.w;
       const targetCam = {
-        x: mx - (mx - this.camera.x) * k,
-        y: my - (my - this.camera.y) * k,
+        x: mx - (mx - cam.x) * k,
+        y: my - (my - cam.y) * k,
         w: nextW,
-        h: this.camera.h * k,
+        h: cam.h * k,
         zoom: 1000 / nextW,
       };
       if (animate && typeof this._animateCameraTo === 'function') {
-        this._animateCameraTo(targetCam);
+        this._animateCameraTo(targetCam, { duration: 120, zoomInput: true });
       } else {
+        this._cancelCameraAnimation();
         this.camera = targetCam;
         this._applyCamera();
       }
@@ -11344,19 +11436,19 @@
       });
     }
 
-    _clientToSvgPoint(clientX, clientY) {
+    _clientToSvgPoint(clientX, clientY, cam = this.camera) {
       const rect =
         (this.dragState && this.dragState.rect) ||
         (this.pinchState && this.pinchState.rect) ||
         this._cameraViewportRect ||
         this._getUnscaledSvgRect();
       if (rect && rect.width) this._cameraViewportRect = rect;
-      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
-      const padX = (rect.width - this.camera.w * scale) * 0.5;
-      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      const scale = Math.min(rect.width / cam.w, rect.height / cam.h);
+      const padX = (rect.width - cam.w * scale) * 0.5;
+      const padY = (rect.height - cam.h * scale) * 0.5;
       return [
-        this.camera.x + (clientX - rect.left - padX) / scale,
-        this.camera.y + (clientY - rect.top - padY) / scale,
+        cam.x + (clientX - rect.left - padX) / scale,
+        cam.y + (clientY - rect.top - padY) / scale,
       ];
     }
 
@@ -13456,12 +13548,17 @@
             return;
           }
           e.preventDefault();
-          this._recordGestureMove();
-          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const rawDelta =
             e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
-          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
-          const factor = Math.exp(-clampedDelta * 0.002);
+          if (!Number.isFinite(rawDelta) || rawDelta === 0) return;
+          this._cancelCameraAnimation();
+          this._recordGestureMove();
+          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
+          // Trackpad pinch is encoded as ctrl+wheel with deltaY = -100*log(scale).
+          // Decode pinch directly; ordinary wheel/two-finger scrolling retains
+          // its existing sensitivity and per-event limit.
+          const delta = e.ctrlKey ? rawDelta : Math.max(-220, Math.min(220, rawDelta));
+          const factor = Math.exp(-delta * (e.ctrlKey ? 0.01 : 0.002));
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
@@ -13490,6 +13587,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelCameraAnimation();
         this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
