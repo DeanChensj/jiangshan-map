@@ -7817,14 +7817,16 @@ function main() {
         }
       }
 
-      // CUJ 42: Mobile Layout & Single-Row Collapsed Chronicle Bar Non-Occlusion Invariants
+      // CUJ 42: Mobile Layout, Single-Row Collapsed Chronicle Bar & iOS Search Input Auto-Zoom Prevention
       assert(
         !cssSrc.includes('grid-template-rows: 1fr 40px') &&
           cssSrc.includes('grid-template-rows: 1fr auto') &&
           cssSrc.includes('#workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row') &&
           cssSrc.includes('#workspace-body.is-mobile-chronicle-open #chronicle-pane #dynasty-seat') &&
-          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag'),
-        'css/style.css must use single-row collapsed mobile chronicle bar (hiding .seat-row until expanded) and hide .cap-hint-tag when #milestone-balloon is active'
+          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag') &&
+          cssSrc.includes('#inp-map-search,\n  #inp-year {\n    font-size: 16px;') &&
+          appCode.includes('if (!this._isMobileViewport()) searchInp.focus();'),
+        'css/style.css & js/app.js must use single-row collapsed mobile chronicle bar, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), and avoid synchronous searchInp.focus() on mobile chip clicks'
       );
 
       // CUJ 43: Wu Zhou (武周, 690–705) Interregnum Snapshots, Shendu Luoyang Capital & Polity Profile
