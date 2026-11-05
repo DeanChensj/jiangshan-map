@@ -14180,8 +14180,20 @@
         });
       }
       this.hoverTip.classList.remove('is-hidden');
-      const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
-      const top = Math.max(8, Math.min(rect.height - 90, e.clientY - rect.top - 12));
+      // Measure at a stable origin so the previous position cannot squeeze a
+      // newly longer card before its final placement is chosen.
+      this.hoverTip.style.left = '8px';
+      const { width, height } = this.hoverTip.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const gap = 32, padding = 8;
+      // Leave room for the pointing-hand cursor, and use the actual tooltip
+      // size so wrapped text can flip away from the map's right/bottom edges.
+      const preferredLeft = x + gap + width <= rect.width - padding
+        ? x + gap : x - gap - width;
+      const preferredTop = y - gap - height >= padding
+        ? y - gap - height : y + gap;
+      const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
+      const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;
       this.hoverTip.style.top = `${top}px`;
     }

@@ -7939,6 +7939,34 @@ function main() {
           };
         };
 
+        // Hover cards must avoid the cursor and fit using their measured size.
+        // A pointing hand may extend right/down from its fingertip hotspot.
+        const frameRect = { left: 100, top: 50, width: 800, height: 600 };
+        let tipSize = { width: 240, height: 70 };
+        const hoverCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          _id: () => ({ getBoundingClientRect: () => frameRect }),
+          hoverTip: {
+            innerHTML: '', style: {}, classList: makeCls(),
+            querySelector: () => null,
+            getBoundingClientRect: () => tipSize,
+          },
+        });
+        for (const [x, y, width, height] of [
+          [400, 300, 240, 70], [12, 12, 240, 70], [788, 12, 240, 70],
+          [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
+        ]) {
+          tipSize = { width, height };
+          hoverCtrl._showHoverTip({ clientX: x + frameRect.left, clientY: y + frameRect.top }, '<b>亳州</b>');
+          const left = parseFloat(hoverCtrl.hoverTip.style.left);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
+            'Wrapped hover cards must fit inside the map');
+          const cursorOverlap = left < x + 32 && left + width > x - 8 &&
+            top < y + 32 && top + height > y - 8;
+          assert(!cursorOverlap, 'Hover text must leave room for the pointing-hand cursor');
+        }
+
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;
         let committedVb = '';
