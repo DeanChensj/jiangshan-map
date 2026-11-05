@@ -7962,6 +7962,59 @@ function main() {
         ctrl.locale = 'zh';
       }
 
+      // CUJ 45: High-resolution terrain tiles — reset view stays on the base relief, Data Saver is
+      // respected, every indexed tile exists, and the base relief shares the tiles' projection.
+      {
+        assert(
+          indexHtml.includes('<g id="terrain-relief-layer">') &&
+            indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;'),
+          'index.html must wrap #terrain-relief-img and #grp-terrain-tiles in #terrain-relief-layer, which owns the 0.48 relief opacity'
+        );
+        const terrainIdx = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'terrain', 'index.json'), 'utf8'));
+        assert(
+          terrainIdx.tileSize === 512 && Object.keys(terrainIdx.levels).length > 0,
+          'assets/terrain/index.json must declare 512 px tiles and at least one level'
+        );
+        for (const [z, list] of Object.entries(terrainIdx.levels)) {
+          for (const xy of list) {
+            const [x, y] = xy.split('_');
+            assert(
+              fs.existsSync(path.join(ROOT, 'assets', 'terrain', z, x, `${y}.webp`)),
+              `assets/terrain/index.json lists ${z}/${x}/${y}.webp but the file is missing`
+            );
+          }
+        }
+        const buildPy = fs.readFileSync(path.join(ROOT, 'scripts', 'build_terrain_tiles.py'), 'utf8');
+        assert(
+          buildPy.includes('PROJ_W, PROJ_H, WEST, EAST, SOUTH, NORTH = 1000, 700, 66, 142, 14, 55') &&
+            buildPy.includes('BASE_RECT = (-80, -40, 1160, 780)') &&
+            indexHtml.includes('x="-80" y="-40" width="1160" height="780"') &&
+            appCode.includes('new MercatorProjector(1000, 700, {\n        west: 66,\n        east: 142,\n        south: 14,\n        north: 55,'),
+          'scripts/build_terrain_tiles.py base-relief constants must mirror the app projector and the #terrain-relief-img rect'
+        );
+        const proto = ControllerClass.prototype;
+        const tCtrl = {
+          projector: new sandbox.window.MercatorProjector(1000, 700, { west: 66, east: 142, south: 14, north: 55 }),
+          _terrainTileSize: terrainIdx.tileSize,
+          _terrainIndex: new Map(Object.entries(terrainIdx.levels).map(([z, l]) => [Number(z), new Set(l)])),
+          _getDefaultCamera: () => ({ x: 350, y: 215, w: 500, h: 420, zoom: 2 }),
+          _isMobileViewport: () => false,
+        };
+        // Camera width in SVG units on a ~1400 CSS px wide map.
+        const level = (w) => proto._terrainTileLevel.call(tCtrl, { w }, 1400 / w, 'free');
+        assert.strictEqual(level(500), null, 'The default (reset) camera must stay on the base relief without loading tiles');
+        const zDeep = level(125);
+        assert(zDeep !== null && tCtrl._terrainIndex.has(zDeep), `Max zoom must select an indexed tile level, got ${zDeep}`);
+        assert(level(300) !== null && level(300) <= zDeep, 'Zooming in must never select a coarser tile level');
+        const origNav = sandbox.navigator;
+        sandbox.navigator = { connection: { saveData: true } };
+        assert.strictEqual(level(125), null, 'Data Saver must skip terrain tiles');
+        sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
+        assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
+        sandbox.navigator = origNav;
+      }
+
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
       assert(
         cssSrc.includes('mix-blend-mode: multiply') &&
