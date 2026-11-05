@@ -2165,6 +2165,44 @@ function main() {
     ctrl.camera = prevCam;
   }
 
+  // The event balloon must not cover the event city's own name (e.g. 长安, 徐州).
+  {
+    const proto = Object.getPrototypeOf(ctrl);
+    const viewport = { left: 0, top: 0, width: 1000, height: 700 };
+    let nameBox = { left: 506, right: 546, top: 292, bottom: 308, width: 40, height: 16 };
+    const city = {
+      dataset: { x: '502', y: '297' },
+      classList: { contains: () => false },
+      querySelector: () => (nameBox ? { getBoundingClientRect: () => nameBox } : null),
+    };
+    const place = () => {
+      const probe = Object.assign(Object.create(proto), {
+        activeMilestone: { anchorCoord: [108.94, 34.27], milestone: {} },
+        projector: { toScreen: () => [500, 300] },
+        camera: { x: 0, y: 0, w: 1000, h: 700 },
+        svg: { classList: { contains: () => false }, querySelectorAll: () => [city] },
+        milestoneBalloon: { classList: { add() {}, remove() {} }, dataset: {}, style: { setProperty() {} } },
+        _milestoneBalloonSize: { w: 260, h: 62 },
+        _id: () => null,
+      });
+      proto._positionMilestoneBalloon.call(probe, viewport);
+      return probe.milestoneBalloon;
+    };
+    // Name right of the pin: the default right-hand balloon would cover it.
+    let b = place();
+    let left = parseFloat(b.style.left), top = parseFloat(b.style.top);
+    assert(
+      left >= nameBox.right || left + 260 <= nameBox.left || top >= nameBox.bottom || top + 62 <= nameBox.top,
+      `Event balloon must not cover the event city's name, got caret=${b.dataset.caret} at ${left},${top}`
+    );
+    // Name left of the pin: the right-hand default stays.
+    nameBox = { left: 454, right: 494, top: 292, bottom: 308, width: 40, height: 16 };
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default when the name is elsewhere');
+    // No visible name: the right-hand default stays.
+    nameBox = null;
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default without a city name');
+  }
+
   // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
   for (const [sk, snap] of Object.entries(snapshots)) {
     if (!snap || Array.isArray(snap) || sk === 's_prc') continue;

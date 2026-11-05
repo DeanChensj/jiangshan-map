@@ -4259,6 +4259,48 @@
       this._positionMilestoneBalloon();
     }
 
+    // Box of the event city's name, in the same coordinates as the balloon. The event
+    // city is the nearest settlement within 10 CSS px of the pin (event and city
+    // coordinates often differ by a few hundredths of a degree). The name's offset from
+    // the pin is measured only while the camera is still (on open and after each move
+    // settles), so pan and zoom frames reuse it without layout reads.
+    _milestoneAnchorLabel(am, sx, sy, scale, rect, px, py) {
+      if (!am || !this.svg) return null;
+      const moving = Boolean(this.svg.classList && this.svg.classList.contains('is-camera-moving'));
+      const key = `${sx.toFixed(1)},${sy.toFixed(1)}:${this.camera.w.toFixed(1)}`;
+      if (!moving && am._labelKey !== key && typeof this.svg.querySelectorAll === 'function') {
+        am._labelKey = key;
+        am._labelOffset = null;
+        let city = null;
+        let best = 10 / scale;
+        for (const node of this.svg.querySelectorAll('.settlement-node')) {
+          const d = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy);
+          if (d <= best) {
+            best = d;
+            city = node;
+          }
+        }
+        const name = city && !city.classList.contains('is-crowded-hidden') ? city.querySelector('.name') : null;
+        const b = name && name.getBoundingClientRect();
+        const x0 = (rect.left || 0) + px, y0 = (rect.top || 0) + py;
+        // A name far from its dot has not been laid out yet; measure again after layout.
+        if (b && b.width && Math.hypot((b.left + b.right) / 2 - x0, (b.top + b.bottom) / 2 - y0) > 80) {
+          am._labelKey = null;
+        } else if (b && b.width) {
+          // Text boxes include some leading; a balloon that only touches the glyphs is fine.
+          const pad = -2;
+          am._labelOffset = {
+            left: b.left - x0 - pad,
+            right: b.right - x0 + pad,
+            top: b.top - y0 - pad,
+            bottom: b.bottom - y0 + pad,
+          };
+        }
+      }
+      const o = am._labelOffset;
+      return o ? { left: px + o.left, right: px + o.right, top: py + o.top, bottom: py + o.bottom } : null;
+    }
+
     _positionMilestoneBalloon(viewportRect = null) {
       const am = this.activeMilestone;
       const anchorCoord = am && (am.anchorCoord || am.milestone.coord);
@@ -4306,7 +4348,7 @@
 
       const sideTop = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
       const midLeft = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
-      const candidates = [];
+      let candidates = [];
       if (px + pinGap <= rightLimit) {
         candidates.push({ left: px + pinGap, top: sideTop, caretDir: 'left' });
       }
@@ -4325,6 +4367,15 @@
           top: Math.min(maxTop, py + pinGap + 4),
           caretDir: 'top',
         });
+      }
+      // Keep the event city's own name readable: drop placements that cover it.
+      const label = this._milestoneAnchorLabel(am, sx, sy, scale, rect, px, py);
+      if (label) {
+        const clear = candidates.filter(
+          (c) =>
+            c.left >= label.right || c.left + bW <= label.left || c.top >= label.bottom || c.top + bH <= label.top
+        );
+        if (clear.length) candidates = clear;
       }
 
       let chosen = candidates[0];
@@ -10964,6 +11015,11 @@
       this._zoomScaleNodes = scaleNodes;
       this._lastZoomStateKey = zoomStateKey;
       this._lastInvScale = invScale;
+      // City names may have moved or appeared: let an open event balloon re-check them.
+      if (this.activeMilestone && this.milestoneBalloon && !this.milestoneBalloon.classList.contains('is-hidden')) {
+        this.activeMilestone._labelKey = null;
+        this._positionMilestoneBalloon();
+      }
     }
 
     _rescaleActivePersonPins(vw, s, zoomOnly = false) {
