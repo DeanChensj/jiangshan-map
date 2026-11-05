@@ -14186,10 +14186,9 @@
       const { width, height } = this.hoverTip.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
       const gap = 32, padding = 8;
-      // Leave room for the pointing-hand cursor, and use the actual tooltip
-      // size so wrapped text can flip away from the map's right/bottom edges.
-      const preferredLeft = x + gap + width <= rect.width - padding
-        ? x + gap : x - gap - width;
+      // Center above the hovered point, keeping the pointing-hand cursor clear.
+      // Use the actual size to shift/flip wrapped cards at the map edges.
+      const preferredLeft = x - width * 0.5;
       const preferredTop = y - gap - height >= padding
         ? y - gap - height : y + gap;
       const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));

@@ -7962,6 +7962,10 @@ function main() {
           const top = parseFloat(hoverCtrl.hoverTip.style.top);
           assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
             'Wrapped hover cards must fit inside the map');
+          if (x - width * 0.5 >= 8 && x + width * 0.5 <= 792) {
+            assert(Math.abs(left + width * 0.5 - x) < 1e-7,
+              'Hover cards must center over their hovered point when there is room');
+          }
           const cursorOverlap = left < x + 32 && left + width > x - 8 &&
             top < y + 32 && top + height > y - 8;
           assert(!cursorOverlap, 'Hover text must leave room for the pointing-hand cursor');
