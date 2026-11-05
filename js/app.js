@@ -14527,19 +14527,19 @@
       // newly longer card before its final placement is chosen.
       this.hoverTip.style.left = '8px';
       const { width, height } = this.hoverTip.getBoundingClientRect();
-      const x = e.clientX - rect.left, y = e.clientY - rect.top;
-      // Enlarged grab hands extend above the hotspot; pointing hands extend
-      // farther below it. Touch has no desktop cursor to clear.
-      const cursor = e.pointerType === 'touch' ? '' : e.target
-        ? window.getComputedStyle(e.target).cursor : avoidEl ? 'pointer' : 'grab';
-      const gap = cursor === 'grab' ? 48 : 12;
-      const belowGap = cursor === 'pointer' ? 90 : 56, padding = 8;
-      // Center above the hovered point, keeping the pointing-hand cursor clear.
-      // Use the actual size to shift/flip wrapped cards at the map edges.
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // One spacing for every pointer: 16 px clears the top of a default-size
+      // grab hand (its palm sits on the hotspot) without leaving the card
+      // detached, and the pointing hand only extends below its fingertip.
+      const gap = 16;
+      const belowGap = 56;
+      const padding = 8;
+      // Center above the hovered point; the measured size lets wrapped cards
+      // shift or flip at the map edges.
       const preferredLeft = x - width * 0.5;
       // City names can sit above the dot; leave the name readable too.
       const anchorTop = avoidEl ? Math.min(y, avoidEl.getBoundingClientRect().top - rect.top) : y;
-      // The hand extends farther below its fingertip than above it.
       const preferredTop = anchorTop - gap - height >= padding
         ? anchorTop - gap - height : y + belowGap;
       const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));

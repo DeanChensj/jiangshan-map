@@ -8046,16 +8046,14 @@ function main() {
           };
         };
 
-        // Hover cards must fit and clear both enlarged native cursor shapes.
-        // The open grab hand extends above its hotspot; the pointing hand
-        // extends farther below it. Touch keeps its original spacing.
+        // Hover cards are measured, centred above the pointer with one 16 px gap
+        // for every pointer type, flip 56 px below near the top edge, and stay
+        // inside the map. Placement must not read computed styles on hover.
         const frameRect = { left: 100, top: 50, width: 800, height: 600 };
         let tipSize = { width: 240, height: 70 };
         const priorComputedStyle = sandbox.window.getComputedStyle;
-        let hoverStyleReads = 0;
-        sandbox.window.getComputedStyle = (el) => {
-          hoverStyleReads++;
-          return { cursor: el.cursor };
+        sandbox.window.getComputedStyle = () => {
+          throw new Error('Hover placement must not read computed styles');
         };
         const hoverCtrl = Object.assign(Object.create(proto), {
           locale: 'zh',
@@ -8066,21 +8064,15 @@ function main() {
             getBoundingClientRect: () => tipSize,
           },
         });
-        for (const [cursor, pointerType, gap, belowGap] of [
-          ['grab', 'mouse', 48, 56], ['pointer', 'mouse', 12, 90], ['pointer', 'touch', 12, 56],
-        ]) for (const [x, y, width, height] of [
+        for (const pointerType of ['mouse', 'touch']) for (const [x, y, width, height] of [
           [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
           [12, 12, 240, 70], [788, 12, 240, 70],
           [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
         ]) {
           tipSize = { width, height };
-          const readsBefore = hoverStyleReads;
           hoverCtrl._showHoverTip({
-            clientX: x + frameRect.left, clientY: y + frameRect.top,
-            pointerType, target: { cursor },
+            clientX: x + frameRect.left, clientY: y + frameRect.top, pointerType, target: {},
           }, '<b>开封府</b>');
-          if (pointerType === 'touch') assert.strictEqual(hoverStyleReads, readsBefore,
-            'Touch placement must not depend on the desktop cursor');
           const left = parseFloat(hoverCtrl.hoverTip.style.left);
           const top = parseFloat(hoverCtrl.hoverTip.style.top);
           assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
@@ -8089,15 +8081,11 @@ function main() {
             assert(Math.abs(left + width * 0.5 - x) < 1e-7,
               'Hover cards must center over their hovered point when there is room');
           }
-          if (y - gap - height >= 8) {
-            assert(Math.abs(top + height - (y - gap)) < 1e-7,
-              `${cursor}/${pointerType} must keep its above-pointer gap`);
-            if (pointerType === 'mouse') assert(y - (cursor === 'grab' ? 39 : 4) - (top + height) >= 8,
-              'Above-pointer cards must leave at least 8 px beyond the enlarged cursor');
+          if (y - 16 - height >= 8) {
+            assert(Math.abs(top + height - (y - 16)) < 1e-7,
+              `${pointerType} hover cards must sit 16 px above the pointer`);
           } else {
-            assert.strictEqual(top, y + belowGap, `${cursor}/${pointerType} must keep its below-pointer gap`);
-            if (pointerType === 'mouse') assert(top - y - (cursor === 'grab' ? 46 : 81) >= 8,
-              'Below-pointer cards must leave at least 8 px beyond the enlarged cursor');
+            assert.strictEqual(top, y + 56, `${pointerType} hover cards must flip 56 px below the pointer near the top edge`);
           }
         }
         // City labels can move above, beside or below the dot as zoom changes.
@@ -8111,13 +8099,13 @@ function main() {
           hoverCtrl._showHoverTip({ clientX: 400 + frameRect.left, clientY: y + frameRect.top }, '<b>开封府</b>', nameEl);
           const top = parseFloat(hoverCtrl.hoverTip.style.top);
           const anchorTop = Math.min(y, labelTop);
-          if (anchorTop - 12 - tipSize.height >= 8) {
-            assert(top + tipSize.height <= labelTop - 12,
-              `Tooltip must stay at least 12 px above a city name ${placement}`);
-            assert(Math.abs(top + tipSize.height - (anchorTop - 12)) < 1e-7,
+          if (anchorTop - 16 - tipSize.height >= 8) {
+            assert(top + tipSize.height <= labelTop - 16,
+              `Tooltip must stay at least 16 px above a city name ${placement}`);
+            assert(Math.abs(top + tipSize.height - (anchorTop - 16)) < 1e-7,
               `City name ${placement} must use the higher anchor`);
           } else {
-            assert.strictEqual(top, y + 90, 'High city names must clear the pointing hand below the hotspot');
+            assert.strictEqual(top, y + 56, 'High city names must fall back 56 px below the pointer');
           }
         }
         if (priorComputedStyle === undefined) delete sandbox.window.getComputedStyle;
