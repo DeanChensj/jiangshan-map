@@ -13532,7 +13532,10 @@
           const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           // Preserve the full normalized wheel distance, including large or
           // coalesced events. Only the supported camera range limits zoom.
-          const nextW = Math.max(100, Math.min(1300, this.camera.w * Math.exp(rawDelta * 0.002)));
+          // Trackpad pinch is encoded as ctrl+wheel with deltaY = -100*log(scale).
+          // Decode that scale directly; the ordinary scroll rate attenuates it 5x.
+          const zoomRate = e.ctrlKey ? 0.01 : 0.002;
+          const nextW = Math.max(100, Math.min(1300, this.camera.w * Math.exp(rawDelta * zoomRate)));
           const k = nextW / this.camera.w;
           this.camera = {
             x: mx - (mx - this.camera.x) * k,

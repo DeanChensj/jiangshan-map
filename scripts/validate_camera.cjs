@@ -166,16 +166,21 @@ async function load(page, query = '?year=1415') {
       });
       await settled(page);
     };
-    for (const [count, deltaY, deltaMode] of [[1, -400, 0], [4, -100, 0], [40, -10, 0], [1, -400 / 18, 1], [1, -400 / 240, 2]]) {
+    const pinchDelta = -100 * Math.log(2);
+    for (const [count, deltaY, deltaMode, ctrlKey = false] of [
+      [1, -400, 0], [4, -100, 0], [40, -10, 0], [1, -400 / 18, 1], [1, -400 / 240, 2],
+      [1, pinchDelta, 0, true], [4, pinchDelta / 4, 0, true], [40, pinchDelta / 40, 0, true],
+    ]) {
       await resetPose();
-      const result = await page.evaluate(({ count, deltaY, deltaMode, x, y }) => {
+      const result = await page.evaluate(({ count, deltaY, deltaMode, ctrlKey, x, y }) => {
         const a = atlasApp, anchor = a._clientToSvgPoint(x, y);
         for (let i = 0; i < count; i++) a.svg.dispatchEvent(new WheelEvent('wheel', {
-          bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY, deltaMode,
+          bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY, deltaMode, ctrlKey,
         }));
         return { w: a.camera.w, before: anchor, after: a._clientToSvgPoint(x, y) };
-      }, { count, deltaY, deltaMode, x: Math.round(x), y: Math.round(y) });
-      assert(Math.abs(result.w - 1000 * Math.exp(-0.8)) < 1e-7, 'Wheel grouping or units lost zoom distance');
+      }, { count, deltaY, deltaMode, ctrlKey, x: Math.round(x), y: Math.round(y) });
+      const expected = ctrlKey ? 500 : 1000 * Math.exp(-0.8);
+      assert(Math.abs(result.w - expected) < 1e-7, 'Wheel/pinch grouping or units lost zoom distance');
       assert(Math.hypot(...result.before.map((v, i) => v - result.after[i])) < 1e-7, 'Large wheel event moved the cursor anchor');
       await settled(page);
     }
