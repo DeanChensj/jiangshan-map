@@ -2619,6 +2619,7 @@ window.EN_LOCALE = {
     "许": "Xu",
     "襄阳": "Xiangyang",
     "龟兹": "Kucha",
+    "乌孙": "Wusun",
     "赤壁": "Red Cliffs",
     "建业": "Jianye",
     "许昌": "Xuchang",
