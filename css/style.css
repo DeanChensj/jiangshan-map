@@ -3084,6 +3084,11 @@ html[lang="en"] .genealogy-list li {
     top: 8px;
     width: 210px;
   }
+  #inp-map-search,
+  #inp-year {
+    font-size: 16px;
+    line-height: 1.2;
+  }
   #map-search-box:focus-within,
   #map-search-box:has(#map-search-results:not(.is-hidden)),
   #map-search-box.is-expanded {

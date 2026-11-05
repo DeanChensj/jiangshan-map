@@ -12969,7 +12969,7 @@
                 e.stopPropagation();
                 showcaseIdx = (showcaseIdx + 1) % showcasePool.length;
                 renderSearchDropdown();
-                searchInp.focus();
+                if (!this._isMobileViewport()) searchInp.focus();
               });
             }
             let samplePicked = false;
@@ -13012,9 +13012,11 @@
             btn.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
+              const sb = this._id('map-search-box');
+              if (sb) sb.classList.add('is-expanded');
               searchInp.value = kw;
               renderSearchDropdown();
-              searchInp.focus();
+              if (!this._isMobileViewport()) searchInp.focus();
             });
             chipsWrap.appendChild(btn);
           }
@@ -13126,7 +13128,11 @@
         searchInp.addEventListener('blur', () => {
           searchInp.placeholder = this._searchPlaceholder(false);
           setTimeout(() => {
-            if (searchBox && !searchInp.value.trim()) {
+            if (
+              searchBox &&
+              !searchInp.value.trim() &&
+              searchList.classList.contains('is-hidden')
+            ) {
               searchBox.classList.remove('is-expanded');
             }
           }, 180);
