@@ -11124,8 +11124,16 @@
       }
     }
 
-    _animateCameraTo(targetCam) {
+    _cancelCameraAnimation() {
+      if (this.flyRaf != null) cancelAnimationFrame(this.flyRaf);
+      this.flyRaf = null;
+      this._cameraTarget = null;
+      this._cameraTargetIsZoom = false;
+    }
+
+    _animateCameraTo(targetCam, { duration = 650, zoomInput = false } = {}) {
       this._cameraTarget = targetCam;
+      this._cameraTargetIsZoom = zoomInput;
       if (
         !this._cameraViewportRect &&
         this.svg &&
@@ -11135,10 +11143,9 @@
       }
       const from = { ...this.camera };
       const t0 = performance.now();
-      const duration = 650;
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
       const step = (now) => {
-        const k = Math.min(1, (now - t0) / duration);
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
@@ -11155,6 +11162,7 @@
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          this._cameraTargetIsZoom = false;
           if (this.activePerson) this._invalidateTypographyLayout();
           this._applyCamera(true);
         }
@@ -11359,23 +11367,28 @@
     }
 
     zoomBy(factor, clientX, clientY, animate = true) {
+      if (!Number.isFinite(factor) || factor <= 0) return;
       this._recordGestureMove();
+      // Repeated key presses accumulate against the pending zoom destination.
+      // A navigation flight is interrupted from its current visible camera.
+      const cam = (animate && this._cameraTargetIsZoom && this._cameraTarget) || this.camera;
       const [mx, my] =
         clientX !== undefined && clientY !== undefined
-          ? this._clientToSvgPoint(clientX, clientY)
-          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
-      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
-      const k = nextW / this.camera.w;
+          ? this._clientToSvgPoint(clientX, clientY, cam)
+          : [cam.x + cam.w * 0.5, cam.y + cam.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, cam.w / factor));
+      const k = nextW / cam.w;
       const targetCam = {
-        x: mx - (mx - this.camera.x) * k,
-        y: my - (my - this.camera.y) * k,
+        x: mx - (mx - cam.x) * k,
+        y: my - (my - cam.y) * k,
         w: nextW,
-        h: this.camera.h * k,
+        h: cam.h * k,
         zoom: 1000 / nextW,
       };
       if (animate && typeof this._animateCameraTo === 'function') {
-        this._animateCameraTo(targetCam);
+        this._animateCameraTo(targetCam, { duration: 120, zoomInput: true });
       } else {
+        this._cancelCameraAnimation();
         this.camera = targetCam;
         this._applyCamera();
       }
@@ -11399,19 +11412,19 @@
       });
     }
 
-    _clientToSvgPoint(clientX, clientY) {
+    _clientToSvgPoint(clientX, clientY, cam = this.camera) {
       const rect =
         (this.dragState && this.dragState.rect) ||
         (this.pinchState && this.pinchState.rect) ||
         this._cameraViewportRect ||
         this._getUnscaledSvgRect();
       if (rect && rect.width) this._cameraViewportRect = rect;
-      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
-      const padX = (rect.width - this.camera.w * scale) * 0.5;
-      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      const scale = Math.min(rect.width / cam.w, rect.height / cam.h);
+      const padX = (rect.width - cam.w * scale) * 0.5;
+      const padY = (rect.height - cam.h * scale) * 0.5;
       return [
-        this.camera.x + (clientX - rect.left - padX) / scale,
-        this.camera.y + (clientY - rect.top - padY) / scale,
+        cam.x + (clientX - rect.left - padX) / scale,
+        cam.y + (clientY - rect.top - padY) / scale,
       ];
     }
 
@@ -13511,13 +13524,15 @@
             return;
           }
           e.preventDefault();
-          this._recordGestureMove();
-          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const rawDelta =
             e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
-          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
-          const factor = Math.exp(-clampedDelta * 0.002);
-          const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
+          if (!Number.isFinite(rawDelta) || rawDelta === 0) return;
+          this._cancelCameraAnimation();
+          this._recordGestureMove();
+          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
+          // Preserve the full normalized wheel distance, including large or
+          // coalesced events. Only the supported camera range limits zoom.
+          const nextW = Math.max(100, Math.min(1300, this.camera.w * Math.exp(rawDelta * 0.002)));
           const k = nextW / this.camera.w;
           this.camera = {
             x: mx - (mx - this.camera.x) * k,
@@ -13545,6 +13560,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelCameraAnimation();
         this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
