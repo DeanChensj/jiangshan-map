@@ -359,6 +359,10 @@ window.EN_LOCALE = {
       "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang and controls the court",
       "Wuchang · Jiankang"
     ],
+    "dongjin:327": [
+      "Zhang Jun of Former Liang ousts Wuji Colonel Zhao Zhen and founds Gaochang Commandery",
+      "Gaochang (Turpan)"
+    ],
     "dongjin:328": [
       "Su Jun Rebellion: rebel forces seize Jiankang palace before defeat",
       "Jiankang"
@@ -2488,6 +2492,7 @@ window.EN_LOCALE = {
     "百济": "Baekje",
     "新罗": "Silla",
     "渤海": "Balhae (Bohai)",
+    "震国": "Zhen (early Balhae)",
     "高丽": "Goryeo",
     "倭（弥生）": "Wa (Yayoi Japan)",
     "大和（日本）": "Yamato Japan",
@@ -5080,6 +5085,7 @@ window.EN_LOCALE = {
     "荥阳郡治": "Seat of Xingyang Commandery",
     "泰始二年置上洛郡": "Shangluo Commandery established in 266 CE",
     "西域长史府驻海头": "Chief Clerk of the Western Regions stationed at Haitou (Loulan)",
+    "戊己校尉驻高昌壁": "Wuji Colonel stationed at Gaochang Citadel",
     "洞庭湖口，湘州北门": "Mouth of Dongting Lake and northern gateway of Xiang Province",
     "陶渊明《桃花源记》所称武陵": "Wuling, famed setting of Tao Yuanming's Peach Blossom Spring",
     "湘州零陵郡": "Lingling Commandery of Xiang Province",
@@ -7031,9 +7037,11 @@ window.EN_LOCALE = {
     "神都洛阳": "Shendu Luoyang",
     "州郡政区：武周十道与州府政区": "Prefectures: Wu Zhou Circuits & Prefectures",
     "676 — 690 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–690 · Andong Moves Inland & Annam Protectorate: Andong Relocated to Liaodong; Annam Founded in 679",
-    "690 — 702 · 武周改制：武则天改唐为周定都神都洛阳，王孝杰大破吐蕃复安西四镇": "690–702 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Wang Xiaojie Recovers Four Garrisons of Anxi",
+    "690 — 698 · 武周改制：武则天改唐为周定都神都洛阳，王孝杰大破吐蕃复安西四镇": "690–698 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Wang Xiaojie Recovers Four Garrisons of Anxi",
+    "698 — 702 · 大祚荣立震国：粟末靺鞨据东牟山自立，武周东北退守辽东": "698–702 · Dae Jo-yeong Founds Zhen: The Sumo Mohe Break Away at Mt. Dongmou as Wu Zhou Falls Back to Liaodong",
     "702 — 705 · 武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北": "702–705 · Wu Zhou Establishes Beiting: Wu Zetian Sets Beiting Protectorate Alongside Anxi Across the Tianshan",
-    "705 — 755 · 神龙复唐与开元盛世：中宗复唐国号，玄宗励精图治，安西、北庭分辖天山南北": "705–755 · Tang Restoration & Kaiyuan Heyday: Zhongzong Restores Tang; High Tang Flourishes Under Xuanzong",
+    "705 — 713 · 神龙复唐：中宗复唐国号，震国大祚荣尚未受唐册封": "705–713 · Shenlong Restoration: Zhongzong Restores Tang; Dae Jo-yeong's Zhen Not Yet Invested by Tang",
+    "713 — 755 · 开元盛世：玄宗册封大祚荣为渤海郡王，安西、北庭分辖天山南北": "713–755 · Kaiyuan Heyday: Xuanzong Invests Dae Jo-yeong as Prince of Bohai; Anxi and Beiting Govern Both Sides of the Tianshan",
     "岛夷诸部": "Island Yi Tribes",
     "小琉球": "Xiaoliuqiu",
     "承天府（东宁）": "Chengtian Fu (Dongning)",

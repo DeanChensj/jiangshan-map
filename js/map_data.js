@@ -5302,6 +5302,19 @@ window.DYNASTY_DATA = [
         "remark": "西域长史府驻海头"
       },
       {
+        "ancient": "高昌",
+        "modern": "吐鲁番",
+        "coord": [
+          89.53,
+          42.85
+        ],
+        "tier": 2,
+        "remark": "戊己校尉驻高昌壁",
+        "aliases": [
+          "高昌壁"
+        ]
+      },
+      {
         "ancient": "晋安",
         "modern": "福州",
         "coord": [
@@ -5418,6 +5431,15 @@ window.DYNASTY_DATA = [
             118.801,
             32.061
           ]
+        ]
+      },
+      {
+        "year": 327,
+        "headline": "前凉张骏擒戊己校尉赵贞，以其地置高昌郡",
+        "site": "高昌（吐鲁番）",
+        "coord": [
+          89.53,
+          42.85
         ]
       },
       {
@@ -8713,7 +8735,8 @@ window.DYNASTY_DATA = [
         "coord": [
           128.23,
           43.37
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 702,
@@ -8761,6 +8784,7 @@ window.DYNASTY_DATA = [
           108.941,
           34.341
         ],
+        "isMapChange": true,
         "siteCoords": [
           [
             108.941,
@@ -10439,12 +10463,20 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a"
       },
       {
-        "until": 702,
+        "until": 698,
         "snap": "s_tang_wz1"
+      },
+      {
+        "until": 702,
+        "snap": "s_tang_wz1b"
       },
       {
         "until": 705,
         "snap": "s_tang_wz2"
+      },
+      {
+        "until": 713,
+        "snap": "s_tang_a5z"
       },
       {
         "until": 755,
