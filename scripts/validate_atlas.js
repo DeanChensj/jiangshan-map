@@ -8046,6 +8046,71 @@ function main() {
           };
         };
 
+        // Hover cards are measured, centred above the pointer with one 16 px gap
+        // for every pointer type, flip 56 px below near the top edge, and stay
+        // inside the map. Placement must not read computed styles on hover.
+        const frameRect = { left: 100, top: 50, width: 800, height: 600 };
+        let tipSize = { width: 240, height: 70 };
+        const priorComputedStyle = sandbox.window.getComputedStyle;
+        sandbox.window.getComputedStyle = () => {
+          throw new Error('Hover placement must not read computed styles');
+        };
+        const hoverCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          _id: () => ({ getBoundingClientRect: () => frameRect }),
+          hoverTip: {
+            innerHTML: '', style: {}, classList: makeCls(),
+            querySelector: () => null,
+            getBoundingClientRect: () => tipSize,
+          },
+        });
+        for (const pointerType of ['mouse', 'touch']) for (const [x, y, width, height] of [
+          [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
+          [12, 12, 240, 70], [788, 12, 240, 70],
+          [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
+        ]) {
+          tipSize = { width, height };
+          hoverCtrl._showHoverTip({
+            clientX: x + frameRect.left, clientY: y + frameRect.top, pointerType, target: {},
+          }, '<b>开封府</b>');
+          const left = parseFloat(hoverCtrl.hoverTip.style.left);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
+            'Wrapped hover cards must fit inside the map');
+          if (x - width * 0.5 >= 8 && x + width * 0.5 <= 792) {
+            assert(Math.abs(left + width * 0.5 - x) < 1e-7,
+              'Hover cards must center over their hovered point when there is room');
+          }
+          if (y - 16 - height >= 8) {
+            assert(Math.abs(top + height - (y - 16)) < 1e-7,
+              `${pointerType} hover cards must sit 16 px above the pointer`);
+          } else {
+            assert.strictEqual(top, y + 56, `${pointerType} hover cards must flip 56 px below the pointer near the top edge`);
+          }
+        }
+        // City labels can move above, beside or below the dot as zoom changes.
+        // A high label must remain readable; near the top, keep the fallback.
+        tipSize = { width: 240, height: 70 };
+        for (const [placement, y, labelTop] of [
+          ['above', 300, 260], ['beside', 300, 294], ['below', 300, 320],
+          ['near the top edge', 100, 12],
+        ]) {
+          const nameEl = { getBoundingClientRect: () => ({ top: frameRect.top + labelTop }) };
+          hoverCtrl._showHoverTip({ clientX: 400 + frameRect.left, clientY: y + frameRect.top }, '<b>开封府</b>', nameEl);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          const anchorTop = Math.min(y, labelTop);
+          if (anchorTop - 16 - tipSize.height >= 8) {
+            assert(top + tipSize.height <= labelTop - 16,
+              `Tooltip must stay at least 16 px above a city name ${placement}`);
+            assert(Math.abs(top + tipSize.height - (anchorTop - 16)) < 1e-7,
+              `City name ${placement} must use the higher anchor`);
+          } else {
+            assert.strictEqual(top, y + 56, 'High city names must fall back 56 px below the pointer');
+          }
+        }
+        if (priorComputedStyle === undefined) delete sandbox.window.getComputedStyle;
+        else sandbox.window.getComputedStyle = priorComputedStyle;
+
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;
         let committedVb = '';

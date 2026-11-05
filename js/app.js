@@ -14153,7 +14153,11 @@
             this.locale === 'en'
               ? `${hasDiffMod ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
               : `${hasDiffMod ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
-          this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
+          this._showHoverTip(
+            e,
+            `<b>${anc}</b><div class="tt-sub">${sub}</div>`,
+            settlementEl ? settlementEl.querySelector('.name') : null
+          );
         } else if (corridorEl) {
           this._showHoverTip(
             e,
@@ -14506,7 +14510,7 @@
       }
     }
 
-    _showHoverTip(e, html) {
+    _showHoverTip(e, html, avoidEl = null) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.hoverTip);
@@ -14519,8 +14523,27 @@
         });
       }
       this.hoverTip.classList.remove('is-hidden');
-      const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
-      const top = Math.max(8, Math.min(rect.height - 90, e.clientY - rect.top - 12));
+      // Measure at a stable origin so the previous position cannot squeeze a
+      // newly longer card before its final placement is chosen.
+      this.hoverTip.style.left = '8px';
+      const { width, height } = this.hoverTip.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // One spacing for every pointer: 16 px clears the top of a default-size
+      // grab hand (its palm sits on the hotspot) without leaving the card
+      // detached, and the pointing hand only extends below its fingertip.
+      const gap = 16;
+      const belowGap = 56;
+      const padding = 8;
+      // Center above the hovered point; the measured size lets wrapped cards
+      // shift or flip at the map edges.
+      const preferredLeft = x - width * 0.5;
+      // City names can sit above the dot; leave the name readable too.
+      const anchorTop = avoidEl ? Math.min(y, avoidEl.getBoundingClientRect().top - rect.top) : y;
+      const preferredTop = anchorTop - gap - height >= padding
+        ? anchorTop - gap - height : y + belowGap;
+      const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
+      const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;
       this.hoverTip.style.top = `${top}px`;
     }
