@@ -2165,6 +2165,44 @@ function main() {
     ctrl.camera = prevCam;
   }
 
+  // The event balloon must not cover the event city's own name (e.g. 长安, 徐州).
+  {
+    const proto = Object.getPrototypeOf(ctrl);
+    const viewport = { left: 0, top: 0, width: 1000, height: 700 };
+    let nameBox = { left: 506, right: 546, top: 292, bottom: 308, width: 40, height: 16 };
+    const city = {
+      dataset: { x: '502', y: '297' },
+      classList: { contains: () => false },
+      querySelector: () => (nameBox ? { getBoundingClientRect: () => nameBox } : null),
+    };
+    const place = () => {
+      const probe = Object.assign(Object.create(proto), {
+        activeMilestone: { anchorCoord: [108.94, 34.27], milestone: {} },
+        projector: { toScreen: () => [500, 300] },
+        camera: { x: 0, y: 0, w: 1000, h: 700 },
+        svg: { classList: { contains: () => false }, querySelectorAll: () => [city] },
+        milestoneBalloon: { classList: { add() {}, remove() {} }, dataset: {}, style: { setProperty() {} } },
+        _milestoneBalloonSize: { w: 260, h: 62 },
+        _id: () => null,
+      });
+      proto._positionMilestoneBalloon.call(probe, viewport);
+      return probe.milestoneBalloon;
+    };
+    // Name right of the pin: the default right-hand balloon would cover it.
+    let b = place();
+    let left = parseFloat(b.style.left), top = parseFloat(b.style.top);
+    assert(
+      left >= nameBox.right || left + 260 <= nameBox.left || top >= nameBox.bottom || top + 62 <= nameBox.top,
+      `Event balloon must not cover the event city's name, got caret=${b.dataset.caret} at ${left},${top}`
+    );
+    // Name left of the pin: the right-hand default stays.
+    nameBox = { left: 454, right: 494, top: 292, bottom: 308, width: 40, height: 16 };
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default when the name is elsewhere');
+    // No visible name: the right-hand default stays.
+    nameBox = null;
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default without a city name');
+  }
+
   // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
   for (const [sk, snap] of Object.entries(snapshots)) {
     if (!snap || Array.isArray(snap) || sk === 's_prc') continue;
@@ -7922,6 +7960,59 @@ function main() {
           `Wu Zhou polity stages must be [690–701, 702–704], got ${JSON.stringify(wzStages)}`
         );
         ctrl.locale = 'zh';
+      }
+
+      // CUJ 45: High-resolution terrain tiles — reset view stays on the base relief, Data Saver is
+      // respected, every indexed tile exists, and the base relief shares the tiles' projection.
+      {
+        assert(
+          indexHtml.includes('<g id="terrain-relief-layer">') &&
+            indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;'),
+          'index.html must wrap #terrain-relief-img and #grp-terrain-tiles in #terrain-relief-layer, which owns the 0.48 relief opacity'
+        );
+        const terrainIdx = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'terrain', 'index.json'), 'utf8'));
+        assert(
+          terrainIdx.tileSize === 512 && Object.keys(terrainIdx.levels).length > 0,
+          'assets/terrain/index.json must declare 512 px tiles and at least one level'
+        );
+        for (const [z, list] of Object.entries(terrainIdx.levels)) {
+          for (const xy of list) {
+            const [x, y] = xy.split('_');
+            assert(
+              fs.existsSync(path.join(ROOT, 'assets', 'terrain', z, x, `${y}.webp`)),
+              `assets/terrain/index.json lists ${z}/${x}/${y}.webp but the file is missing`
+            );
+          }
+        }
+        const buildPy = fs.readFileSync(path.join(ROOT, 'scripts', 'build_terrain_tiles.py'), 'utf8');
+        assert(
+          buildPy.includes('PROJ_W, PROJ_H, WEST, EAST, SOUTH, NORTH = 1000, 700, 66, 142, 14, 55') &&
+            buildPy.includes('BASE_RECT = (-80, -40, 1160, 780)') &&
+            indexHtml.includes('x="-80" y="-40" width="1160" height="780"') &&
+            appCode.includes('new MercatorProjector(1000, 700, {\n        west: 66,\n        east: 142,\n        south: 14,\n        north: 55,'),
+          'scripts/build_terrain_tiles.py base-relief constants must mirror the app projector and the #terrain-relief-img rect'
+        );
+        const proto = ControllerClass.prototype;
+        const tCtrl = {
+          projector: new sandbox.window.MercatorProjector(1000, 700, { west: 66, east: 142, south: 14, north: 55 }),
+          _terrainTileSize: terrainIdx.tileSize,
+          _terrainIndex: new Map(Object.entries(terrainIdx.levels).map(([z, l]) => [Number(z), new Set(l)])),
+          _getDefaultCamera: () => ({ x: 350, y: 215, w: 500, h: 420, zoom: 2 }),
+          _isMobileViewport: () => false,
+        };
+        // Camera width in SVG units on a ~1400 CSS px wide map.
+        const level = (w) => proto._terrainTileLevel.call(tCtrl, { w }, 1400 / w, 'free');
+        assert.strictEqual(level(500), null, 'The default (reset) camera must stay on the base relief without loading tiles');
+        const zDeep = level(125);
+        assert(zDeep !== null && tCtrl._terrainIndex.has(zDeep), `Max zoom must select an indexed tile level, got ${zDeep}`);
+        assert(level(300) !== null && level(300) <= zDeep, 'Zooming in must never select a coarser tile level');
+        const origNav = sandbox.navigator;
+        sandbox.navigator = { connection: { saveData: true } };
+        assert.strictEqual(level(125), null, 'Data Saver must skip terrain tiles');
+        sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
+        assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
+        sandbox.navigator = origNav;
       }
 
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)

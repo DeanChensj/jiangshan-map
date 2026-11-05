@@ -269,6 +269,7 @@ hit.prefecture.properties.title; // 应天府（本身是 GeoJSON Feature，可�
 
 - **历史疆域与政区参考**：谭其骧主编《中国历史地图集》、**CHGIS**（哈佛燕京学社与复旦大学中国历史地理信息系统）、**Robert M. Hartwell** 历史 GIS 数据集，以及 [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps)（GPL-3.0）。
 - **现代省界参考**：DataV GeoAtlas 开放行政边界数据。
+- **地形晕渲**：由 `scripts/build_terrain_tiles.py` 基于 [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) 渲染；该数据集汇编自公有领域的 **SRTM**（NASA/USGS）、**GMTED2010**（USGS）与 **ETOPO1**（NOAA）高程数据。仓库只发布渲染后的晕渲图片，最细约 1 km/像素。
 - **古琴雅乐录音**：Wikimedia Commons 公有领域古琴录音（《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》）。
 - **近似边界**：地图中的历史疆域轮廓与政区边界为示意性近似，旨在直观呈现各时期大致的统治与管辖范围，并非科学测绘成果，请勿作为精确或权威的边界依据引用。
 - **转载请注明出处**：转载或引用本项目的地图、截图或数据时，请注明「江山时序 Jiangshan Atlas」并附上 https://github.com/DeanChensj/jiangshan-map ，同时注明上文所列的原始数据来源。

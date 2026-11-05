@@ -269,6 +269,7 @@ After exporting, serve the repository (`python3 -m http.server 8000`) and open `
 
 - **Historical GIS References**: Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》), **CHGIS** (Harvard-Yenching Institute & Fudan University), **Robert M. Hartwell** historical GIS datasets, and [aourednik/historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPL-3.0).
 - **Modern Provincial Reference**: DataV GeoAtlas open administrative boundary data.
+- **Terrain Shading**: Hillshade rendered by `scripts/build_terrain_tiles.py` from [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/), which compile public-domain **SRTM** (NASA/USGS), **GMTED2010** (USGS) and **ETOPO1** (NOAA) elevation data. Only the shaded images are published, at no finer than about 1 km per pixel.
 - **Classical Guqin Audio**: Wikimedia Commons public-domain recordings (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*).
 - **Approximate boundaries**: Historical territorial contours and administrative boundaries in this atlas are schematic approximations that illustrate broad historical jurisdictions. They are not the product of scientific surveying and should not be cited as precise or authoritative borders.
 - **Attribution**: When reusing maps, screenshots or data from this project, please credit **江山时序 Jiangshan Atlas** with a link to https://github.com/DeanChensj/jiangshan-map, and cite the upstream sources listed above.
