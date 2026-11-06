@@ -1775,8 +1775,6 @@
       setMoreCopy('sub-more-story', 'From textbook maps to Jiangshan', '从课本插图到开源历史地图');
       setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
       setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
-      setMoreCopy('lbl-more-github', 'GitHub Repository', 'GitHub 开源仓库');
-      setMoreCopy('sub-more-github', 'Star · Issues & contributions', 'Star · 捉虫与贡献代码');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
