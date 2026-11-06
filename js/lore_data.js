@@ -1,4 +1,3 @@
-/* Auto-bundled Lore Data for Jiangshan Historical Atlas */
 window.ATLAS_LORE_DATA = {
   "CHINESE_ERA_SPANS": [
     [
@@ -12726,6 +12725,630 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Chang'an (Xi'an)",
       "zh": "大月氏使臣伊存于长安向博士弟子景卢口授《浮屠经》，佛教初传中原",
       "en": "Yuezhi envoy Yi Cun orally transmits Buddhist sutras to Jing Lu in Chang'an, introducing Buddhism"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1214,
+      "coord": [
+        117.2,
+        39.13
+      ],
+      "site": "直沽寨",
+      "siteEn": "Zhigu Stockade",
+      "zh": "金廷于三岔河口设直沽寨屯兵护漕，成为天津最早军事建置",
+      "en": "The Jin court establishes Zhigu Stockade at the Three Rivers confluence to guard grain transport"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1316,
+      "coord": [
+        117.2,
+        39.13
+      ],
+      "site": "海津镇",
+      "siteEn": "Haijin Town",
+      "zh": "元廷升直沽为海津镇，江南海运漕粮经此转输大都",
+      "en": "The Yuan court elevates Zhigu to Haijin Town as the maritime grain transshipment hub for Dadu"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1404,
+      "coord": [
+        117.2,
+        39.13
+      ],
+      "site": "天津卫",
+      "siteEn": "Tianjin Garrison",
+      "zh": "明成祖赐名“天津”意为天子渡口，筑城设天津卫拱卫京畿",
+      "en": "The Yongle Emperor names Tianjin the Imperial Ford and builds Tianjin Garrison to guard the capital"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1858,
+      "coord": [
+        117.2,
+        39.13
+      ],
+      "site": "天津",
+      "siteEn": "Tianjin",
+      "zh": "第二次鸦片战争英法联军攻占大沽炮台，迫清廷签订《天津条约》",
+      "en": "Anglo-French forces seize the Taku Forts and compel the Qing court to sign the Treaty of Tianjin"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1870,
+      "coord": [
+        117.2,
+        39.13
+      ],
+      "site": "天津",
+      "siteEn": "Tianjin",
+      "zh": "李鸿章任直隶总督驻节天津，扩建天津机器局并筹办北洋海防",
+      "en": "Li Hongzhang stations in Tianjin as Viceroy of Zhili, expanding the Tianjin Machine Factory"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1138,
+      "coord": [
+        126.96,
+        45.54
+      ],
+      "site": "上京会宁府",
+      "siteEn": "Shangjing Huining Prefecture",
+      "zh": "金熙宗升会宁府为上京，按中原汴京规制大规模营建皇城宫殿",
+      "en": "Emperor Xizong of Jin elevates Huining Prefecture to the Supreme Capital and builds imperial palaces"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1744,
+      "coord": [
+        126.96,
+        45.54
+      ],
+      "site": "阿勒楚喀",
+      "siteEn": "Alcuka",
+      "zh": "清廷于阿什河畔设阿勒楚喀副都统驻防，筑城控扼松花江中游",
+      "en": "The Qing court appoints the Alcuka Deputy Lieutenant-General to garrison the middle Songhua River"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1898,
+      "coord": [
+        126.96,
+        45.54
+      ],
+      "site": "哈尔滨",
+      "siteEn": "Harbin",
+      "zh": "中东铁路于松花江畔设哈尔滨枢纽站，近代商埠城区由此兴起",
+      "en": "Construction of the Chinese Eastern Railway hub on the Songhua River spurs the rise of modern Harbin"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1114,
+      "coord": [
+        125.32,
+        43.95
+      ],
+      "site": "黄龙府",
+      "siteEn": "Huanglong Prefecture",
+      "zh": "完颜阿骨打率女真军渡混同江攻克辽朝东北军事重镇黄龙府",
+      "en": "Wanyan Aguda leads Jurchen forces across the Songhua River to capture the Liao stronghold of Huanglong"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1800,
+      "coord": [
+        125.32,
+        43.88
+      ],
+      "site": "长春厅",
+      "siteEn": "Changchun Subprefecture",
+      "zh": "清廷于郭尔罗斯前旗游牧地设长春厅抚民通判，招民开垦松辽平原",
+      "en": "The Qing court establishes Changchun Subprefecture to administer agrarian settlement on the Songliao Plain"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1889,
+      "coord": [
+        125.32,
+        43.88
+      ],
+      "site": "长春府",
+      "siteEn": "Changchun Prefecture",
+      "zh": "清廷升长春厅为长春府，跃升为松辽平原南北谷物商贸重镇",
+      "en": "The Qing court elevates Changchun to a prefecture as a major grain trading hub on the Songliao Plain"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 645,
+      "coord": [
+        121.72,
+        39.06
+      ],
+      "site": "卑沙城",
+      "siteEn": "Bisa Fortress",
+      "zh": "唐太宗东征高句丽，水师自莱州渡海奇袭攻克辽东门户卑沙城",
+      "en": "Tang naval forces cross the sea from Laizhou to capture Bisa Fortress during the Goguryeo campaign"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1371,
+      "coord": [
+        121.25,
+        38.81
+      ],
+      "site": "旅顺口",
+      "siteEn": "Lüshunkou",
+      "zh": "明将马云、叶旺率水师自登州跨海收复辽东，设金州卫扼守旅顺口",
+      "en": "Ming commanders cross the Bohai Sea to recover Liaodong and establish Jinzhou Garrison at Lüshunkou"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1880,
+      "coord": [
+        121.25,
+        38.81
+      ],
+      "site": "旅顺口",
+      "siteEn": "Lüshunkou",
+      "zh": "李鸿章奏准于旅顺口修筑军港船坞与海岸炮台，建北洋水师基地",
+      "en": "Li Hongzhang builds naval drydocks and coastal forts at Lüshunkou as a primary Beiyang Fleet base"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 825,
+      "coord": [
+        110.29,
+        25.27
+      ],
+      "site": "桂州",
+      "siteEn": "Guizhou",
+      "zh": "桂管观察使李渤于桂州浚治灵渠铧嘴、开凿桂林西湖以利农桑",
+      "en": "Regional Inspector Li Bo dredges the Lingqu Canal and excavates West Lake in Guilin to aid irrigation"
+    },
+    {
+      "dynastyKey": "nansong",
+      "year": 1277,
+      "coord": [
+        110.29,
+        25.27
+      ],
+      "site": "静江府",
+      "siteEn": "Jingjiang Prefecture",
+      "zh": "元军主力围攻静江府三月，守将马暨率部苦战巷战至死殉国",
+      "en": "Song commander Ma Ji defends Jingjiang Prefecture for three months against Yuan forces until falling"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1393,
+      "coord": [
+        110.29,
+        25.27
+      ],
+      "site": "桂林府",
+      "siteEn": "Guilin Prefecture",
+      "zh": "明廷于桂林府独秀峰下建成靖江王城，藩封传袭长达两百余年",
+      "en": "The Ming court completes the Prince of Jingjiang Palace beneath Solitary Beauty Peak in Guilin"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1650,
+      "coord": [
+        110.29,
+        25.27
+      ],
+      "site": "桂林府",
+      "siteEn": "Guilin Prefecture",
+      "zh": "南明留守瞿式耜、总督张同敞死守桂林抗清，城陷从容就义",
+      "en": "Southern Ming loyalists Qu Shisi and Zhang Tongchang defend Guilin against Qing forces and die as martyrs"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -60,
+      "coord": [
+        89.06,
+        42.95
+      ],
+      "site": "交河城",
+      "siteEn": "Jiaohe City",
+      "zh": "汉设西域都护府，以车师前国交河城为戊己校尉屯田重镇",
+      "en": "Western Han establishes the Protectorate of the Western Regions with garrison farms centered at Jiaohe"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 502,
+      "coord": [
+        89.52,
+        42.85
+      ],
+      "site": "高昌城",
+      "siteEn": "Gaochang City",
+      "zh": "曲嘉于高昌城建曲氏高昌王国，设官立学奉行中原汉制百余年",
+      "en": "Qu Jia founds the Qu-clan Kingdom of Gaochang, adopting Chinese bureaucratic and Confucian institutions"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1778,
+      "coord": [
+        89.19,
+        42.95
+      ],
+      "site": "吐鲁番",
+      "siteEn": "Turpan",
+      "zh": "吐鲁番郡王之子苏赉曼建成苏公塔，绿洲广修坎儿井引水兴农",
+      "en": "Suleiman completes the Emin Minaret in Turpan as karez underground aqueducts expand oasis agriculture"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 658,
+      "coord": [
+        87.65,
+        43.78
+      ],
+      "site": "轮台",
+      "siteEn": "Luntai",
+      "zh": "唐平贺鲁后于天山北麓庭州轮台县置守捉驻军，控扼丝路北道",
+      "en": "Following the defeat of Ashina Helu, Tang garrisons Luntai County to secure the northern Silk Road"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 754,
+      "coord": [
+        87.65,
+        43.78
+      ],
+      "site": "轮台",
+      "siteEn": "Luntai",
+      "zh": "岑参赴北庭幕府驻守轮台，赋边塞名篇《白雪歌送武判官归京》",
+      "en": "Frontier poet Cen Shen serves at Luntai under Beiting Protectorate and composes Song of White Snow"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1763,
+      "coord": [
+        87.62,
+        43.82
+      ],
+      "site": "迪化",
+      "siteEn": "Dihua",
+      "zh": "乾隆帝平定准部后于红山麓扩筑城垣，赐名“迪化”成为北疆重镇",
+      "en": "The Qianlong Emperor expands the fortress beneath Red Hill and names it Dihua as a northern stronghold"
+    },
+    {
+      "dynastyKey": "xihan",
+      "year": -111,
+      "coord": [
+        100.45,
+        38.93
+      ],
+      "site": "张掖",
+      "siteEn": "Zhangye",
+      "zh": "汉武帝分酒泉郡置张掖郡，取“张国臂掖，以通西域”之意",
+      "en": "Emperor Wu of Han carves Zhangye Commandery out of Jiuquan to extend the arm of the empire westward"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1028,
+      "coord": [
+        100.45,
+        38.93
+      ],
+      "site": "甘州",
+      "siteEn": "Ganzhou",
+      "zh": "党项李元昊击败甘州回鹘夺取甘州，后营建宏伟西夏大佛寺",
+      "en": "Tangut prince Li Yuanhao captures Ganzhou from the Ganzhou Uyghurs, later founding the Giant Buddha Temple"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1372,
+      "coord": [
+        100.45,
+        38.93
+      ],
+      "site": "甘州卫",
+      "siteEn": "Ganzhou Garrison",
+      "zh": "冯胜率明军西征平定河西，设甘州卫并置陕西行都司统辖河西",
+      "en": "Ming general Feng Sheng pacifies the Hexi Corridor and establishes Ganzhou Garrison as regional headquarters"
+    },
+    {
+      "dynastyKey": "zhanguo",
+      "year": -299,
+      "coord": [
+        109.73,
+        38.2
+      ],
+      "site": "上郡肤施",
+      "siteEn": "Fushi, Shang Commandery",
+      "zh": "秦昭王置上郡治肤施，修筑战国秦长城控扼河套南缘与陕北高原",
+      "en": "King Zhaoxiang of Qin establishes Shang Commandery at Fushi and builds the northern Qin Great Wall"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1403,
+      "coord": [
+        109.73,
+        38.29
+      ],
+      "site": "榆林寨",
+      "siteEn": "Yulin Stockade",
+      "zh": "明成祖经略塞北始设榆林寨，后成为九边重镇延绥镇驻防中枢",
+      "en": "The Yongle Emperor establishes Yulin Stockade, later headquarters of the Yansui Nine Garrisons"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1643,
+      "coord": [
+        109.73,
+        38.29
+      ],
+      "site": "榆林卫",
+      "siteEn": "Yulin Garrison",
+      "zh": "大顺军挥师北攻榆林卫，总兵尤世威率全城将士巷战殉城",
+      "en": "Dashun rebel forces storm Yulin Garrison after fierce street fighting against Ming commander You Shiwei"
+    },
+    {
+      "dynastyKey": "tang",
+      "year": 627,
+      "coord": [
+        110.35,
+        19.99
+      ],
+      "site": "琼州",
+      "siteEn": "Qiongzhou",
+      "zh": "唐太宗析崖州始置琼州，治琼山，奠定海南岛北部军政中枢",
+      "en": "Emperor Taizong of Tang establishes Qiongzhou at Qiongshan as the administrative seat of northern Hainan"
+    },
+    {
+      "dynastyKey": "beisong",
+      "year": 1100,
+      "coord": [
+        110.33,
+        20.03
+      ],
+      "site": "海口浦",
+      "siteEn": "Haikoupu",
+      "zh": "苏轼遇赦自儋州北归于海口浦渡海，赋诗“九死南荒吾不恨”",
+      "en": "Pardoned from exile in Danzhou, Su Shi crosses the strait from Haikoupu and composes his farewell verse"
+    },
+    {
+      "dynastyKey": "ming",
+      "year": 1487,
+      "coord": [
+        110.35,
+        19.99
+      ],
+      "site": "琼州府",
+      "siteEn": "Qiongzhou Prefecture",
+      "zh": "琼山名儒丘浚进呈经世巨著《大学衍义补》，旋入阁拜相泽被桑梓",
+      "en": "Qiongshan scholar Qiu Jun presents his statecraft compendium to the throne and enters the Grand Secretariat"
+    },
+    {
+      "dynastyKey": "qing",
+      "year": 1876,
+      "coord": [
+        110.33,
+        20.03
+      ],
+      "site": "琼州海口",
+      "siteEn": "Qiongzhou Port",
+      "zh": "清廷依约正式辟琼州海口为通商口岸，设立琼海关开启近代海贸",
+      "en": "The Qing court opens Qiongzhou Port to foreign trade and establishes the Qiong Maritime Customs"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1285,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元世祖诏依周礼规画大都城制五十坊，钟鼓楼与太液池宫苑落成",
+      "en": "Kublai Khan lays out Dadu into fifty wards with the Drum and Bell Towers and Taiye Pool palaces"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1289,
+      "coord": [
+        116.55,
+        35.42
+      ],
+      "site": "济州",
+      "siteEn": "Jizhou",
+      "zh": "元廷开凿自安山至临清的会通河河段，连通南北漕运水路主干",
+      "en": "The Yuan court excavates the Huitong Canal from Anshan to Linqing to link the Grand Canal"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1290,
+      "coord": [
+        102.71,
+        25.04
+      ],
+      "site": "中庆路",
+      "siteEn": "Zhongqing Circuit",
+      "zh": "云南行省于中庆路兴建文庙与儒学，浚治滇池海口水利以惠农桑",
+      "en": "Yunnan Branch Secretariat builds Confucian schools and dredges Dianchi Lake canals at Zhongqing"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1297,
+      "coord": [
+        115.9,
+        28.68
+      ],
+      "site": "龙兴路",
+      "siteEn": "Longxing Circuit",
+      "zh": "王祯任永丰县尹期间撰成《农书》，首创木活字转轮排字盘",
+      "en": "Agronomist Wang Zhen compiles the Book of Agriculture and invents the rotating wooden movable-type table"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1302,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元成宗于大都崇仁门内建成太庙与国子监，兴办官学尊崇儒术",
+      "en": "Emperor Chengzong of Yuan completes the Imperial Directorate of Education in Dadu for Confucian learning"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1318,
+      "coord": [
+        120.15,
+        30.27
+      ],
+      "site": "杭州路",
+      "siteEn": "Hangzhou Circuit",
+      "zh": "赵孟頫、黄公望等书画名家雅集杭州，引领元代文人山水画风",
+      "en": "Calligrapher Zhao Mengfu and painter Huang Gongwang gather in Hangzhou, shaping Yuan literati painting"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1322,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元英宗颁行完备政书《大元通制》，整饬台察纲纪与行省法度",
+      "en": "Emperor Yingzong of Yuan promulgates the Comprehensive Institutions of the Great Yuan legal code"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1324,
+      "coord": [
+        121.55,
+        29.87
+      ],
+      "site": "庆元路",
+      "siteEn": "Qingyuan Circuit",
+      "zh": "元廷重开庆元市舶司，与高丽、日本及南洋商船贸易往来繁盛",
+      "en": "The Yuan court reopens the Qingyuan Maritime Trade Office for commerce with Goryeo and Japan"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1330,
+      "coord": [
+        117.2,
+        29.29
+      ],
+      "site": "景德镇",
+      "siteEn": "Jingdezhen",
+      "zh": "景德镇浮梁磁局采用苏麻离青料烧造元青花瓷，远销西亚与欧洲",
+      "en": "The Fuliang Porcelain Bureau in Jingdezhen perfects cobalt blue-and-white porcelain for global export"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 439,
+      "coord": [
+        113.3,
+        40.08
+      ],
+      "site": "平城",
+      "siteEn": "Pingcheng",
+      "zh": "北魏灭北凉后徙凉州僧侣工匠三万户至平城，促成北朝石窟兴盛",
+      "en": "Northern Wei relocates 30,000 households of Liangzhou monks and artisans to Pingcheng, spurring cave art"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 440,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "宋文帝于建康鸡笼山立儒、玄、史、文四学馆，元嘉文化大盛",
+      "en": "Emperor Wen of Liu Song establishes the Four Academies of Confucianism, Metaphysics, History, and Literature"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 487,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "竟陵王萧子良于建康鸡笼山开西邸招揽“竟陵八友”，创永明体诗风",
+      "en": "Xiao Ziliang gathers the Eight Friends of Jingling in Jiankang, pioneering the tonal Yongming poetic style"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 512,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "梁武帝于建康设五经博士广开馆宇，四方寒门学子云集京师",
+      "en": "Emperor Wu of Liang appoints Erudites of the Five Classics in Jiankang to train humble scholars"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 516,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "北魏胡太后于洛阳营建永宁寺九层木塔，百里之外犹见塔刹",
+      "en": "Empress Dowager Hu constructs the nine-story wooden pagoda of Yongning Temple in Luoyang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 536,
+      "coord": [
+        112.55,
+        37.87
+      ],
+      "site": "晋阳",
+      "siteEn": "Jinyang",
+      "zh": "高欢于晋阳设大丞相府与晋阳宫，以并州劲旅遥控东魏北齐朝政",
+      "en": "Gao Huan establishes the Grand Chancellor headquarters in Jinyang to command Eastern Wei military power"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 543,
+      "coord": [
+        112.45,
+        34.72
+      ],
+      "site": "洛阳邙山",
+      "siteEn": "Mount Mang, Luoyang",
+      "zh": "邙山之战：高欢与宇文泰统东西魏二十万大军于洛阳北邙决战",
+      "en": "Gao Huan and Yuwen Tai clash with 200,000 Eastern and Western Wei troops at the Battle of Mount Mang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 547,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "杨衒之重访荒废的故都洛阳，追述佛寺盛景撰成《洛阳伽蓝记》",
+      "en": "Yang Xuanzhi revisits war-torn Luoyang and compiles A Record of Buddhist Monasteries in Luoyang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 568,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "陈宣帝于建康整饬吏治、劝课江南农桑，蓄力筹备太建北伐",
+      "en": "Emperor Xuan of Chen reforms administration and promotes Jiangnan farming before his northern campaign"
     }
   ],
   "GUQIN_TRACKS": [
