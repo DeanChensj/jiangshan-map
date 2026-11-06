@@ -5997,12 +5997,17 @@
         }
       }
       // Keep full milestone text if all clauses belong to this monarch (e.g. Yongle 1407/1409)
+      // or if slicing would leave a headless relative-year fragment ("次年…", "同年…").
+      const candZh =
+        matchedIdxs.length > 0 && matchedIdxs.length < clausesZh.length
+          ? matchedIdxs.map((i) => clausesZh[i].trim()).join('；')
+          : '';
       if (
-        matchedIdxs.length > 0 &&
-        matchedIdxs.length < clausesZh.length &&
+        candZh &&
+        !/^(?:次年|同年|旋即)/.test(candZh) &&
         !(profile.key === 'zhudi' && year === 1407)
       ) {
-        textZh = matchedIdxs.map((i) => clausesZh[i].trim()).join('；');
+        textZh = candZh;
         if (clausesEn.length === clausesZh.length) {
           const candEn = matchedIdxs.map((i) => clausesEn[i].trim()).join('; ');
           const enTokens = String(profile.en || '')
@@ -6241,11 +6246,29 @@
         }
       }
 
+      const isBackdropOnlyMention = (txt) => {
+        if (!tokens.length) return false;
+        const backdropRe = /(?:崩后|卒后|死后|遇弑后|没后|代晋建宋后)/;
+        if (!backdropRe.test(txt)) return false;
+        const cleaned = tokens.reduce((acc, tok) => {
+          if (!acc.includes(tok)) return acc;
+          const escaped = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return acc.replace(
+            new RegExp(escaped + '[^，；。]{0,4}(?:崩后|卒后|死后|遇弑后|没后|代晋建宋后)', 'g'),
+            ''
+          );
+        }, String(txt || ''));
+        return !tokens.some((tok) => cleaned.includes(tok));
+      };
+
       for (const d of this.dynasties) {
         for (const m of d.milestones || []) {
-          if (!m.coord || m.year < minY - 2 || m.year > maxY + 3) continue;
+          if (!m.coord) continue;
           const byTag = matchesPersonsTag(m);
-          const byToken = tokens.some((tok) => m.headline.includes(tok));
+          if (!byTag && (m.year < minY || m.year > maxY)) continue;
+          if (byTag && (m.year < minY - 2 || m.year > maxY + 3)) continue;
+          const byToken =
+            tokens.some((tok) => m.headline.includes(tok)) && !isBackdropOnlyMention(m.headline);
           if (!byToken && !byTag) continue;
           if (hasJourneyStops && m.year >= jMinY && m.year <= jMaxY && !byTag) {
             const jHit = raw.find((r) => r.src === 'J' && r.year === m.year);
@@ -6308,9 +6331,11 @@
       }
 
       for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
-        if (!lm.coord || !lm.zh || lm.year < minY - 2 || lm.year > maxY + 3) continue;
+        if (!lm.coord || !lm.zh) continue;
         const byTag = matchesPersonsTag(lm);
-        const byToken = tokens.some((tok) => lm.zh.includes(tok));
+        if (!byTag && (lm.year < minY || lm.year > maxY)) continue;
+        if (byTag && (lm.year < minY - 2 || lm.year > maxY + 3)) continue;
+        const byToken = tokens.some((tok) => lm.zh.includes(tok)) && !isBackdropOnlyMention(lm.zh);
         if (!byToken && !byTag) continue;
         if (hasJourneyStops && lm.year >= jMinY && lm.year <= jMaxY && !byTag) continue;
         const d =
@@ -6378,8 +6403,18 @@
         });
         if (dup) {
           // A curated journey stop outranks a nearby milestone or landmark that
-          // merely mentions the person, whichever of the two sorted first.
-          const keep = ev.src === 'J' || (ev.src === 'J_CO' && dup.src !== 'J') ? ev : dup;
+          // merely mentions the person, and a full landmark sentence upgrades a
+          // short multi-clause milestone fragment (e.g. "李靖平萧铣").
+          const upgradeStubToLandmark =
+            dup.src === 'M' &&
+            ev.src === 'L' &&
+            (!dup.byPersonsTag || ev.byPersonsTag) &&
+            dup.textZh.length <= 9 &&
+            ev.textZh.length >= dup.textZh.length + 6;
+          const keep =
+            ev.src === 'J' || (ev.src === 'J_CO' && dup.src !== 'J') || upgradeStubToLandmark
+              ? ev
+              : dup;
           const drop = keep === ev ? dup : ev;
           if (drop.isMapChange) keep.isMapChange = true;
           if (drop.byPersonsTag) keep.byPersonsTag = true;
