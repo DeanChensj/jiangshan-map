@@ -631,6 +631,16 @@ function main() {
     assert(audioSize > 100000, `Self-hosted Guqin audio file ${gt.mp3} is unexpectedly small (${audioSize} bytes)`);
   }
 
+  // 6c. Prefecture and first-level region lines are clipped to the snapshot's own polities (#234),
+  // so a second coastline or a commandery drawn in lost territory never shows.
+  assert(
+    indexHtml.includes('<clipPath id="prefecture-clip" clipPathUnits="userSpaceOnUse"><path id="prefecture-clip-path" /></clipPath>') &&
+      appCode.includes("shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)')") &&
+      appCode.includes("{ 'clip-path': 'url(#prefecture-clip)' }") &&
+      appCode.includes("clipPath.setAttribute('d', ownPaths.join(''))"),
+    'index.html & app.js must clip the prefecture layer and region lines to #prefecture-clip (the non-neighbor polities)'
+  );
+
   // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
   const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(
@@ -3164,7 +3174,35 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 20, `Expected 20 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 22, `Expected 22 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
+  // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790.
+  {
+    const pol = (sk, title) => (snapshots[sk].polities || []).find((p) => p.title === title);
+    const pyongyang = [125.75, 39.02];
+    const dunhua = [128.2, 43.37];
+    assert(pointInShape(...pyongyang, pol('s_tang_a4', '安东都护府').shape), 's_tang_a4: 平壤 must be inside 安东都护府');
+    for (const sk of ['s_tang_a4', 's_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+      assert(!pointInShape(...pyongyang, pol(sk, '新罗').shape), `${sk}: 平壤 must not be inside 新罗`);
+    }
+    for (const sk of ['s_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+      assert(!pointInShape(...pyongyang, pol(sk, '安东都护府').shape), `${sk}: 安东都护府 must have left 平壤 (676)`);
+    }
+    for (const sk of ['s_tang_wz1b', 's_tang_wz2', 's_tang_a5z']) {
+      const zhen = pol(sk, '震国');
+      assert(zhen && !pol(sk, '渤海') && pointInShape(...dunhua, zhen.shape), `${sk}: 敦化 must be inside 震国, not 渤海`);
+    }
+    assert(!pointInShape(...dunhua, pol('s_tang_wz1b', '安东都护府').shape), 's_tang_wz1b: 敦化 must not be inside 安东都护府');
+    assert(pol('s_tang_a5', '渤海') && !pol('s_tang_a5', '震国'), 's_tang_a5 (713–755) must show 渤海');
+    const anxi = pol('s_tang_b1', '安西都护府（孤悬坚守）').shape;
+    const beiting = pol('s_tang_b1', '北庭都护府（孤悬坚守）').shape;
+    for (const [name, pt] of [['龟兹', [82.96, 41.72]], ['于阗', [79.93, 37.11]], ['疏勒', [75.99, 39.47]], ['西州', [89.18, 42.95]]]) {
+      assert(pointInShape(...pt, anxi), `s_tang_b1: ${name} must be inside 安西都护府`);
+    }
+    assert(pointInShape(89.18, 44.0, beiting), 's_tang_b1: 北庭 must be inside 北庭都护府');
+    assert(!pointInShape(81.3, 43.9, beiting), 's_tang_b1: 伊犁 (lost to the Karluks in 766) must not be inside 北庭都护府');
+    assert(pointInShape(79.4, 35.6, pol('s_tang_b1', '吐蕃').shape), 's_tang_b1: the Kunlun strip must belong to 吐蕃');
+  }
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -4403,6 +4441,15 @@ function main() {
       );
     }
 
+    // 沙州 (issue #267): Gaochang Commandery (327 CE) and the 西域长史 at Haitou (Loulan) belong
+    // to 前凉 from 329 CE until 376 CE, and no other polity of those snapshots covers them.
+    for (const sk of ['s_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
+      for (const [name, x, y] of [['高昌', 89.53, 42.85], ['楼兰', 89.84, 40.52]]) {
+        const holders = snapshots[sk].polities.filter((p) => p.shape && pointInShape(x, y, p.shape)).map((p) => p.title);
+        assert(holders.length === 1 && holders[0] === '前凉', `${sk}: ${name} must be inside 前凉 only, found ${holders.join('+')}`);
+      }
+    }
+
     // 350 CE (s_dongjin_350) & 351 CE (s_dongjin_351) must show 冉魏, while 351 CE adds 前秦 in Guanzhong and keeps 前燕 in Liaodong
     assert(
       snapshots.s_dongjin_350.polities.some((p) => p.title === '冉魏') &&
@@ -4776,13 +4823,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 21 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    // Tang 23 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 698, 702, 705, 713, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 21 map change milestone years must match'
+      'tang: 23 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -7877,10 +7924,12 @@ function main() {
         );
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz1');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 697), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1b');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 704), 's_tang_wz2');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5z');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 713), 's_tang_a5');
 
         for (const sk of ['s_tang_wz1', 's_tang_wz2']) {
           const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');

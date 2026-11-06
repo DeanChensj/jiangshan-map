@@ -847,6 +847,7 @@
       this.grpProvNames = this._id('grp-prov-names');
       this.grpPolities = this._id('grp-polities');
       this.grpPrefectures = this._id('grp-prefectures');
+      this.prefClipPath = this._id('prefecture-clip-path');
       this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
       this.grpJourney = this._id('grp-journey');
@@ -1755,8 +1756,25 @@
         ghBtn.title =
           this.locale === 'en'
             ? 'Star DeanChensj/jiangshan-map on GitHub'
-            : '在 GitHub 上为「江山时序」点亮 Star';
+            : this._zh('在 GitHub 上为「江山时序」点亮 Star');
       }
+      const moreBtn = this._id('act-more-menu');
+      if (moreBtn) {
+        const moreLbl =
+          this.locale === 'en' ? 'Story & author links' : this._zh('创作手记与更多链接');
+        moreBtn.title = moreLbl;
+        if (typeof moreBtn.setAttribute === 'function') {
+          moreBtn.setAttribute('aria-label', moreLbl);
+        }
+      }
+      const setMoreCopy = (id, enTxt, zhTxt) => {
+        const el = this._id(id);
+        if (el) el.textContent = this.locale === 'en' ? enTxt : this._zh(zhTxt);
+      };
+      setMoreCopy('lbl-more-story', 'Making-Of Essay (ZH)', '创作手记 · 幕后故事');
+      setMoreCopy('sub-more-story', 'From textbook maps to Jiangshan', '从课本插图到开源历史地图');
+      setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
+      setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
@@ -1889,6 +1907,7 @@
       }
       const ariaMap = [
         ['layers-popover', 'Map layers', '地图图层开关'],
+        ['more-popover', 'Story & author links', '创作手记与更多链接'],
         ['challenge-card', 'Ancient Place Quiz', '古地名小试挑战'],
         ['genealogy-card', 'Place administrative genealogy', '古今地点沿革卡片'],
         ['journey-card', 'Historical route overlay', '行迹叠图卡片'],
@@ -2863,16 +2882,23 @@
       }
 
       const regGroup = this._regOverlayGroup;
+      // Captions stay unclipped; only the lines and hover shapes are cut to the polities.
+      const clipAttr = this._prefClipActive ? { 'clip-path': 'url(#prefecture-clip)' } : {};
+      const shapesGroup = this._prefShapesGroup;
+      if (shapesGroup && typeof shapesGroup.setAttribute === 'function') {
+        if (this._prefClipActive) shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)');
+        else if (typeof shapesGroup.removeAttribute === 'function') shapesGroup.removeAttribute('clip-path');
+      }
       const regBoundaryPath = this._buildRegionBoundaryPath(snap);
       if (regBoundaryPath) {
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape-casing' },
+          { d: regBoundaryPath, class: 'region-shape-casing', ...clipAttr },
           regGroup
         );
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape' },
+          { d: regBoundaryPath, class: 'region-shape', ...clipAttr },
           regGroup
         );
       }
@@ -2929,6 +2955,7 @@
       const sorted = (snap.polities || [])
         .slice()
         .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
+      const ownPaths = [];
 
       for (const pol of sorted) {
         const isN = pol.role === 'neighbor';
@@ -2939,6 +2966,7 @@
         if (!isN) {
           attrs.fill = pol.tint;
           attrs.stroke = pol.tint;
+          ownPaths.push(attrs.d);
         }
         const path = this._svgNode('path', attrs, polGroup);
         path.dataset.polityTitle = pol.title;
@@ -2963,6 +2991,13 @@
           lbl.textContent = this.trTerm(pol.title);
         }
       }
+      // Prefectures and first-level regions come from a different base map than the polity
+      // outlines, so their coastlines and outer edges disagree with the polity borders. Their
+      // lines are clipped to the snapshot's own (non-neighbor) polities, which leaves the polity
+      // outline as the only border and coastline drawn.
+      this._prefClipActive = ownPaths.length > 0;
+      const clipPath = this.prefClipPath;
+      if (clipPath && typeof clipPath.setAttribute === 'function') clipPath.setAttribute('d', ownPaths.join(''));
 
       const prefHidden = Boolean(
         this.grpPrefectures &&
@@ -13150,8 +13185,26 @@
       return true;
     }
 
+    _closeMorePopover() {
+      const morePopover = this._id('more-popover');
+      const moreBtn = this._id('act-more-menu');
+      if (
+        !morePopover ||
+        morePopover.classList.contains('is-hidden') ||
+        !moreBtn ||
+        !moreBtn.classList.contains('is-active')
+      ) {
+        return false;
+      }
+      morePopover.classList.add('is-hidden');
+      moreBtn.classList.remove('is-active');
+      moreBtn.setAttribute('aria-expanded', 'false');
+      return true;
+    }
+
     // Dismiss the topmost active popover, sheet, or mode one layer at a time.
     _dismissTopOverlay() {
+      if (this._closeMorePopover && this._closeMorePopover()) return true;
       if (this._closeLayersPopover()) return true;
       if (this.playing || this.personTimer) {
         this.stopAutoplay();
@@ -13470,6 +13523,7 @@
       if (layersBtn && layersPopover) {
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          this._closeMorePopover();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -13499,6 +13553,35 @@
             !layersBtn.contains(e.target)
           ) {
             this._closeLayersPopover();
+          }
+        });
+      }
+
+      const moreBtn = this._id('act-more-menu');
+      const morePopover = this._id('more-popover');
+      if (moreBtn && morePopover) {
+        moreBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._closeLayersPopover();
+          const willOpen = morePopover.classList.contains('is-hidden');
+          if (willOpen) {
+            morePopover.classList.remove('is-hidden');
+            moreBtn.classList.add('is-active');
+            moreBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            this._closeMorePopover();
+          }
+        });
+        morePopover.addEventListener('click', () => {
+          this._closeMorePopover();
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (
+            !morePopover.classList.contains('is-hidden') &&
+            !morePopover.contains(e.target) &&
+            !moreBtn.contains(e.target)
+          ) {
+            this._closeMorePopover();
           }
         });
       }
