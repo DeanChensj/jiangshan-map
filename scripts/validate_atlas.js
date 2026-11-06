@@ -3204,6 +3204,7 @@ function main() {
     for (const sk of ['s_tang_a4b', 's_tang_a6', 's_tang_a7', 's_tang_wz0']) {
       const lostAnxi = pol(sk, '安西都护府（西州）');
       assert(lostAnxi && pointInShape(...xizhou, lostAnxi.shape), `${sk}: 西州 must be inside 安西都护府（西州）`);
+      assert(pointInShape(88.17, 39.02, lostAnxi.shape), `${sk}: 石城镇 (under 沙州 from 675) must stay inside 安西都护府（西州）`);
       assert(!pointInShape(...kucha, lostAnxi.shape), `${sk}: 龟兹 must not be inside 安西都护府 (lost to 吐蕃)`);
       for (const pt of [kucha, [79.93, 37.11], [75.99, 39.47], [86.57, 42.06]]) {
         assert(pointInShape(...pt, pol(sk, '吐蕃').shape), `${sk}: ${pt} (a Four Garrisons town) must be inside 吐蕃`);
