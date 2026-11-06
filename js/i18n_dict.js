@@ -1112,8 +1112,12 @@ window.EN_LOCALE = {
       "Liaodong (Liaoyang)"
     ],
     "tang:679": [
-      "Emperor Gaozong reorganizes Jiaozhou Area Command into the Annam Protectorate General",
-      "Jiaozhou (Hanoi)"
+      "Pei Xingjian restores the Four Garrisons of Anxi; Jiaozhou becomes the Annam Protectorate",
+      "Suyab · Jiaozhou (Hanoi)"
+    ],
+    "tang:686": [
+      "Wu Zetian withdraws from the Four Garrisons of Anxi, which fall to Tibet again",
+      "Kucha (Kuqa, Xinjiang)"
     ],
     "tang:690": [
       "Wu Zetian proclaims the Zhou dynasty at Shendu Luoyang",
@@ -1916,8 +1920,12 @@ window.EN_LOCALE = {
       "Nanzheng · Linxiang · Hefei"
     ],
     "tang:670": [
-      "Battle of Dafeichuan: Xue Rengui's Tang army is defeated by Tibet, which annexes Tuyuhun",
-      "Dafeichuan (Gonghe, Qinghai)"
+      "Battle of Dafeichuan: Tang defeated; Tibet annexes Tuyuhun and takes the Four Garrisons of Anxi",
+      "Dafeichuan (Gonghe, Qinghai) · Kucha"
+    ],
+    "tang:692": [
+      "Wang Xiaojie routs Tibet, recovers the Four Garrisons and restores the Anxi seat at Kucha",
+      "Kucha (Kuqa, Xinjiang)"
     ],
     "tang:698": [
       "Dae Jo-yeong founds the state of Balhae (Bohai) at Mount Dongmou in Jilin",
@@ -4199,7 +4207,8 @@ window.EN_LOCALE = {
     "589 — 609 · 隋灭陈一统全国：结束三百年分裂，开凿南北大运河": "589–609 · Sui Conquers Chen & Reunifies China",
     "609 — 618 · 隋炀帝西巡开边：破吐谷浑，置西海、河源、鄯善、且末四郡": "609–618 · Emperor Yang Defeats Tuyuhun & Establishes Four Western Commanderies",
     "657 — 668 · 苏定方灭西突厥：置昆陵、濛池都护府，唐朝西疆极于咸海": "657–668 · Conquest of Western Tujue; Tang Protectorates Reach the Aral Sea",
-    "668 — 676 · 李勣灭高句丽：于平壤置安东都护府，盛唐六大都护府极盛疆域": "668–676 · Conquest of Goguryeo; Andong Protectorate at Pyongyang (Tang Zenith)",
+    "668 — 670 · 李勣灭高句丽：于平壤置安东都护府，盛唐六大都护府极盛疆域": "668–670 · Conquest of Goguryeo; Andong Protectorate at Pyongyang (Tang Zenith)",
+    "670 — 676 · 吐蕃陷安西四镇：大非川兵败，唐罢龟兹、于阗、焉耆、疏勒四镇，安西都护府退治西州": "670–676 · Tibet Takes the Four Garrisons: After Dafeichuan, Tang Gives Up Kucha, Khotan, Karashahr and Kashgar; Anxi Falls Back to Xizhou",
     "676 — 702 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–702 · Andong Protectorate Relocated to Liaodong; Annam Protectorate Set Up",
     "702 — 755 · 开元盛世：武则天设北庭都护府，与安西都护府分辖天山南北": "702–755 · Beiting & Anxi Protectorates Govern North and South Tianshan",
     "790 — 848 · 河西与西域失陷：沙州、北庭相继陷落，陇右河西尽入吐蕃": "790–848 · Fall of Dunhuang & Beiting; Hexi and Tarim Under Tibetan Control",
@@ -7132,8 +7141,11 @@ window.EN_LOCALE = {
     "神都": "Shendu",
     "神都洛阳": "Shendu Luoyang",
     "州郡政区：武周十道与州府政区": "Prefectures: Wu Zhou Circuits & Prefectures",
-    "676 — 690 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–690 · Andong Moves Inland & Annam Protectorate: Andong Relocated to Liaodong; Annam Founded in 679",
-    "690 — 698 · 武周改制：武则天改唐为周定都神都洛阳，王孝杰大破吐蕃复安西四镇": "690–698 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Wang Xiaojie Recovers Four Garrisons of Anxi",
+    "676 — 679 · 安东内迁辽东：安东都护府移驻辽东故城，安西四镇仍陷吐蕃": "676–679 · Andong Moves Inland: Andong Protectorate Relocated to Liaodong; Four Garrisons Still Held by Tibet",
+    "679 — 686 · 裴行俭复四镇：碎叶代焉耆为四镇之一，调露元年设安南都护府": "679–686 · Pei Xingjian Restores the Four Garrisons: Suyab Replaces Karashahr; Annam Protectorate Founded",
+    "686 — 690 · 武后拔四镇：垂拱二年弃龟兹、于阗、疏勒、碎叶四镇，四镇复陷吐蕃": "686–690 · Empress Wu Withdraws from the Four Garrisons: Kucha, Khotan, Kashgar and Suyab Fall to Tibet Again",
+    "690 — 692 · 武周改制：武则天改唐为周定都神都洛阳，安西四镇仍陷吐蕃": "690–692 · Wu Zhou Dynasty: Wu Zetian Proclaims Zhou at Shendu Luoyang; Four Garrisons Still Held by Tibet",
+    "692 — 698 · 王孝杰复四镇：大破吐蕃收复龟兹等四镇，安西都护府还治龟兹": "692–698 · Wang Xiaojie Recovers the Four Garrisons: Tibet Routed; Anxi Protectorate Returns to Kucha",
     "698 — 702 · 大祚荣立震国：粟末靺鞨据东牟山自立，武周东北退守辽东": "698–702 · Dae Jo-yeong Founds Zhen: The Sumo Mohe Break Away at Mt. Dongmou as Wu Zhou Falls Back to Liaodong",
     "702 — 705 · 武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北": "702–705 · Wu Zhou Establishes Beiting: Wu Zetian Sets Beiting Protectorate Alongside Anxi Across the Tianshan",
     "705 — 713 · 神龙复唐：中宗复唐国号，震国大祚荣尚未受唐册封": "705–713 · Shenlong Restoration: Zhongzong Restores Tang; Dae Jo-yeong's Zhen Not Yet Invested by Tang",
