@@ -847,6 +847,7 @@
       this.grpProvNames = this._id('grp-prov-names');
       this.grpPolities = this._id('grp-polities');
       this.grpPrefectures = this._id('grp-prefectures');
+      this.prefClipPath = this._id('prefecture-clip-path');
       this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
       this.grpJourney = this._id('grp-journey');
@@ -2883,16 +2884,23 @@
       }
 
       const regGroup = this._regOverlayGroup;
+      // Captions stay unclipped; only the lines and hover shapes are cut to the polities.
+      const clipAttr = this._prefClipActive ? { 'clip-path': 'url(#prefecture-clip)' } : {};
+      const shapesGroup = this._prefShapesGroup;
+      if (shapesGroup && typeof shapesGroup.setAttribute === 'function') {
+        if (this._prefClipActive) shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)');
+        else if (typeof shapesGroup.removeAttribute === 'function') shapesGroup.removeAttribute('clip-path');
+      }
       const regBoundaryPath = this._buildRegionBoundaryPath(snap);
       if (regBoundaryPath) {
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape-casing' },
+          { d: regBoundaryPath, class: 'region-shape-casing', ...clipAttr },
           regGroup
         );
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape' },
+          { d: regBoundaryPath, class: 'region-shape', ...clipAttr },
           regGroup
         );
       }
@@ -2949,6 +2957,7 @@
       const sorted = (snap.polities || [])
         .slice()
         .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
+      const ownPaths = [];
 
       for (const pol of sorted) {
         const isN = pol.role === 'neighbor';
@@ -2959,6 +2968,7 @@
         if (!isN) {
           attrs.fill = pol.tint;
           attrs.stroke = pol.tint;
+          ownPaths.push(attrs.d);
         }
         const path = this._svgNode('path', attrs, polGroup);
         path.dataset.polityTitle = pol.title;
@@ -2983,6 +2993,13 @@
           lbl.textContent = this.trTerm(pol.title);
         }
       }
+      // Prefectures and first-level regions come from a different base map than the polity
+      // outlines, so their coastlines and outer edges disagree with the polity borders. Their
+      // lines are clipped to the snapshot's own (non-neighbor) polities, which leaves the polity
+      // outline as the only border and coastline drawn.
+      this._prefClipActive = ownPaths.length > 0;
+      const clipPath = this.prefClipPath;
+      if (clipPath && typeof clipPath.setAttribute === 'function') clipPath.setAttribute('d', ownPaths.join(''));
 
       const prefHidden = Boolean(
         this.grpPrefectures &&
