@@ -7182,6 +7182,8 @@ window.EN_LOCALE = {
     "前秦（苻氏）": "Former Qin (Fu Clan)",
     "沙州归义军": "Guiyi Circuit (Shazhou)",
     "甘州回鹘": "Ganzhou Uyghurs",
-    "凉州（六谷部）": "Liangzhou (Liugu)"
+    "凉州（六谷部）": "Liangzhou (Liugu)",
+    "西羌": "Western Qiang",
+    "青海蒙古": "Qinghai Mongols"
   }
 };
