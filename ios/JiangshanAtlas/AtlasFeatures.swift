@@ -307,7 +307,9 @@ struct AtlasQuizState {
     func play(_ index: Int, _ tracks: [MusicTrack]) {
         guard !tracks.isEmpty else { return }
         self.index = (index + tracks.count) % tracks.count; error = nil
-        guard let url = URL(string: tracks[self.index].mp3) else { return }
+        guard let url = tracks[self.index].playbackURL else {
+            error = "Audio file unavailable"; playing = false; return
+        }
         do { try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers]); try AVAudioSession.sharedInstance().setActive(true) }
         catch { self.error = error.localizedDescription; return }
         if let endedObserver { NotificationCenter.default.removeObserver(endedObserver) }

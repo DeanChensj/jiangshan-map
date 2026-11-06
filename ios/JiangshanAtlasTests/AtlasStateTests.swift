@@ -3,6 +3,7 @@ import SwiftUI
 import MapLibre
 import Observation
 import os
+import AVFoundation
 @testable import JiangshanAtlas
 
 @MainActor final class AtlasStateTests:XCTestCase {
@@ -215,7 +216,67 @@ import os
             store.mapStageLoading=false;store.mapTransitionUntil=Date().addingTimeInterval(10)
             XCTAssertTrue(store.advancePlayback());XCTAssertEqual(store.year,year)
             store.mapTransitionUntil = .distantPast
+            for _ in 0..<4 {
+                XCTAssertTrue(store.advancePlayback());XCTAssertEqual(store.year,year)
+            }
             XCTAssertTrue(store.advancePlayback());XCTAssertGreaterThan(store.playbackProgress,progress)
+            XCTAssertEqual(store.year,store.catalog?.playbackStops.first { $0.year > year }?.year)
+        }
+    }
+
+    func testPlaybackUsesEventStopsAndLongerMapChangeHoldsWithinPeriodLock() async throws {
+        try await withStore { store,_ in
+            XCTAssertEqual(store.playbackSpeed,4)
+            store.setYear(750);store.lockPeriod=true;store.beginPlayback()
+            let end=try XCTUnwrap(store.dynasty?.to)
+            while store.year < end {
+                let before=store.year
+                let next=store.catalog?.playbackStops.first { $0.year > before && $0.year <= end }
+                store.playbackHold=0;store.mapStageLoading=false;store.mapTransitionUntil = .distantPast
+                XCTAssertTrue(store.advancePlayback())
+                XCTAssertEqual(store.year,next?.year ?? end)
+                XCTAssertEqual(store.playbackHold,(next?.hold == true ? 10 : 4)-1)
+                XCTAssertEqual(store.playbackProgress,store.timelineProgress(store.year))
+            }
+            store.playbackHold=0;store.mapStageLoading=false;store.mapTransitionUntil = .distantPast
+            XCTAssertFalse(store.advancePlayback());XCTAssertEqual(store.year,end)
+        }
+    }
+
+    func testBundledMusicTracksArePlayableOfflineAndRemoteURLsRemainSupported() async throws {
+        try await withStore { store,_ in
+            let tracks=try XCTUnwrap(store.catalog?.music)
+            XCTAssertEqual(tracks.count,5)
+            for track in tracks {
+                let url=try XCTUnwrap(track.playbackURL)
+                XCTAssertTrue(url.isFileURL)
+                let duration=try await AVURLAsset(url:url).load(.duration)
+                XCTAssertGreaterThan(duration.seconds,0)
+            }
+            let legacy=MusicTrack(zh:"古琴",en:"Guqin",mp3:"https://example.com/music.mp3")
+            XCTAssertEqual(legacy.playbackURL?.scheme,"https")
+        }
+    }
+
+    func testTerrainDetailTilesLoadAndFollowTheExistingLayerToggle() async throws {
+        try await withStore { store,_ in
+            let data=try Data(contentsOf:AtlasCartography.styleURL())
+            let style=try XCTUnwrap(JSONSerialization.jsonObject(with:data) as? [String:Any])
+            let sources=try XCTUnwrap(style["sources"] as? [String:[String:Any]])
+            let tiles=try XCTUnwrap(sources["reliefTiles"])
+            XCTAssertEqual(tiles["minzoom"] as? Int,5);XCTAssertEqual(tiles["maxzoom"] as? Int,6)
+            let template=try XCTUnwrap((tiles["tiles"] as? [String])?.first)
+            let tileURL=try XCTUnwrap(URL(string:template.replacingOccurrences(of:"{z}",with:"6").replacingOccurrences(of:"{x}",with:"51").replacingOccurrences(of:"{y}",with:"25")))
+            XCTAssertNotNil(UIImage(contentsOfFile:tileURL.path))
+            try await withRenderedMap(store) { map,coordinator in
+                XCTAssertTrue(map.style?.source(withIdentifier:"reliefTiles") is MLNRasterTileSource)
+                for visible in [false,true] {
+                    store.showTerrain=visible;coordinator.refresh()
+                    for id in ["relief","relief-detail"] {
+                        XCTAssertEqual(map.style?.layer(withIdentifier:id)?.isVisible,visible)
+                    }
+                }
+            }
         }
     }
 
@@ -450,7 +511,7 @@ import os
         try await withStore { store,_ in
             store.setYear(906)
             let event=try XCTUnwrap(store.currentMilestone)
-            XCTAssertEqual(event.id,"tang-event-51")
+            XCTAssertEqual(event.dynasty,"tang");XCTAssertEqual(event.source,"milestone")
             XCTAssertEqual(event.year,907)
             XCTAssertTrue(store.mappedEvents.contains { $0.id == event.id })
             store.presentEvent(event)
@@ -592,7 +653,9 @@ import os
 
     func testBoundaryPersonStopsRetainDisplayDateAndNavigateInTheirDynasty() async throws {
         try await withStore { store,_ in
-            await store.startPeople("caocao",stop:14)
+            let chronicle:AtlasExperience=try await store.engine.query("people",store.arguments(["query":"caocao"]))
+            let terminal=try XCTUnwrap(chronicle.stops.lastIndex { $0.year == 220 })
+            await store.startPeople("caocao",stop:terminal)
             let stop=try XCTUnwrap(store.activeStop)
             XCTAssertEqual(stop.year,220);XCTAssertEqual(stop.effectiveYear,219)
             XCTAssertEqual(store.year,219);XCTAssertEqual(store.dynasty?.id,"donghan")

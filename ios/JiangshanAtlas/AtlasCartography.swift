@@ -90,8 +90,17 @@ enum AtlasCartography {
         }
         let glyph = Bundle.main.url(forResource:"Glyphs",withExtension:nil)!
         let style: [String:Any] = ["version":8,"name":"江山 · web cartography","glyphs":glyph.absoluteString+"/{fontstack}/{range}.pbf","sources":["focusSites":source("focus-sites.geojson"),"atlas":source(),"labels":source(),"mesh":source(),"places":source(),"events":source(),"journey":source(),"selection":source(),"ghost":source(),"passes":source(),"hydroLabels":source(),"quiz":source(),"neighbors":source("neighbors.geojson"),"neighborLabels":source("neighbor-labels.geojson"),"provinces":source("provinces.geojson"),"provinceMesh":source("province-mesh.geojson"),"modernLabels":source("modern-labels.geojson"),"water":source("water.geojson"),"corridors":source("corridors.geojson"),"corridorLabels":source("corridor-labels.geojson"),"relief":["type":"image","url":AtlasResources.url("terrain.png").absoluteString,"coordinates":[[59.92,57.03634564],[148.08,57.03634564],[148.08,10.43886278],[59.92,10.43886278]]]],"layers":layers]
+        var updatedStyle = style
+        if let data = try? Data(contentsOf: AtlasResources.url("terrain.json")),
+           let terrain = try? JSONSerialization.jsonObject(with: data) as? [String:Any] {
+            var sources = style["sources"] as! [String:Any]
+            sources["reliefTiles"] = ["type":"raster", "tiles":[AtlasResources.url("terrain").absoluteString + "/{z}/{x}/{y}.png"], "tileSize":terrain["tileSize"]!, "minzoom":terrain["minZoom"]!, "maxzoom":terrain["maxZoom"]!, "bounds":terrain["bounds"]!]
+            updatedStyle["sources"] = sources
+            layers.insert(layer("relief-detail", "raster", "reliefTiles", ["raster-opacity":1, "raster-fade-duration":0]), at:2)
+            updatedStyle["layers"] = layers
+        }
         let url=FileManager.default.urls(for:.cachesDirectory,in:.userDomainMask)[0].appendingPathComponent("atlas-style.json")
-        try! JSONSerialization.data(withJSONObject:style).write(to:url,options:.atomic)
+        try! JSONSerialization.data(withJSONObject:updatedStyle).write(to:url,options:.atomic)
         return url
     }
     static func journeyPin(_ style: MLNStyle,color:String,encounter:Bool,relic:Bool)->String {

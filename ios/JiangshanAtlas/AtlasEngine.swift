@@ -172,6 +172,11 @@ struct HydroLabel: Decodable, Sendable {
 struct MusicTrack: Decodable, Identifiable, Sendable {
     let zh: String, en: String, mp3: String
     var id: String { mp3 }
+    var playbackURL: URL? {
+        if let url = URL(string: mp3), url.scheme != nil { return url }
+        let url = AtlasResources.url(mp3)
+        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+    }
 }
 
 struct AtlasChinese {

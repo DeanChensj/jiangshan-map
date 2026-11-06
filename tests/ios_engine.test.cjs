@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const {execFileSync} = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const context = {window:{addEventListener(){}}, console, URL, URLSearchParams,
   setTimeout(){ return 0; }, clearTimeout(){}};
@@ -15,6 +16,10 @@ vm.runInContext(fs.readFileSync(path.join(root,'scripts/ios_engine.js'),'utf8'),
 // JSON crosses the same serialization boundary as JavaScriptCore -> Swift.
 const query = (op,args={}) => JSON.parse(JSON.stringify(context.window.AtlasNative(op,{year:750,lang:'zh',...args})));
 const validCoordinate = coord => Array.isArray(coord) && coord.length===2 && coord.every(Number.isFinite);
+
+test('native administrative clipping preserves holes, islands and boundary fragments', {skip:process.platform !== 'darwin'},()=> {
+  assert.match(execFileSync('/usr/bin/swift',[path.join(root,'scripts/clip_ios_geometry.swift'),'--test'],{encoding:'utf8'}),/fixtures passed/);
+});
 
 for (const [lang,term] of [['zh','苏轼'],['zh-tw','蘇軾'],['en','Su Shi']]) {
   test(`search resolves Su Shi in ${lang}`,()=> {
@@ -149,7 +154,8 @@ test('person stop navigation dates stay in their recorded dynasty',()=> {
       assert.ok(stop.navigationYear>=dynasty.fromYear && stop.navigationYear<=dynasty.toYear,person.key);
     }
   }
-  const terminal=query('people',{query:'caocao'}).stops[14];
+  const terminal=query('people',{query:'caocao'}).stops.findLast(stop=>stop.year===220);
+  assert.ok(terminal,'Cao Cao retains the recorded terminal event');
   assert.equal(terminal.year,220);assert.equal(terminal.navigationYear,219);
 });
 

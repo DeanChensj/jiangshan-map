@@ -7,6 +7,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
 const {svgPathLines} = require('./ios_geometry.cjs');
+const {execFileSync} = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, 'ios/JiangshanAtlas/Resources/Atlas');
 const sources = ['map_data.js', 'china_geo_data.js', 'atlas_snapshots.js', 'lore_data.js', 'i18n_dict.js', 'zh_hant.js', 'app.js', 'atlas_quiz.js'];
@@ -15,9 +16,19 @@ for (const file of sources) hash.update(fs.readFileSync(path.join(root, 'js', fi
 hash.update(fs.readFileSync(path.join(__dirname, 'ios_engine.js')));
 hash.update(fs.readFileSync(path.join(__dirname, 'ios_geometry.cjs')));
 hash.update(fs.readFileSync(path.join(__dirname, 'prepare_ios_terrain.swift')));
+hash.update(fs.readFileSync(path.join(__dirname, 'clip_ios_geometry.swift')));
 hash.update(fs.readFileSync(path.join(root, 'assets/terrain_relief.webp')));
 hash.update(fs.readFileSync(path.join(root, 'css/style.css')));
 hash.update(fs.readFileSync(path.join(root, 'assets/tang_focus.json')));
+function hashAssets(directory) {
+  for (const entry of fs.readdirSync(directory, {withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))) {
+    const file=path.join(directory,entry.name);
+    if (entry.isDirectory()) hashAssets(file);
+    else { hash.update(path.relative(root,file));hash.update(fs.readFileSync(file)); }
+  }
+}
+hashAssets(path.join(root,'assets/audio'));
+hashAssets(path.join(root,'assets/terrain'));
 const version = hash.digest('hex').slice(0, 16);
 if (fs.existsSync(path.join(out, 'version.txt')) && fs.readFileSync(path.join(out, 'version.txt'), 'utf8') === version) {
   console.log('iOS atlas data is current.');
@@ -155,7 +166,14 @@ write('water.geojson', collection(water));
 
 catalog.people = lore.PERSON_PROFILES;
 catalog.polities = lore.POLITY_PROFILES;
-catalog.music = lore.GUQIN_TRACKS;
+catalog.music = lore.GUQIN_TRACKS.map(track=> {
+  if (/^https?:\/\//.test(track.mp3)) return track;
+  const file=path.resolve(root,track.mp3),audio=path.join(root,'assets/audio')+path.sep;
+  if (!file.startsWith(audio)||path.extname(file)!=='.mp3'||!fs.existsSync(file)) throw new Error(`Invalid native audio asset: ${track.mp3}`);
+  const nativePath='audio/'+path.basename(file);
+  fs.mkdirSync(path.join(out,'audio'),{recursive:true});fs.copyFileSync(file,path.join(out,nativePath));
+  return {...track,mp3:nativePath};
+});
 catalog.passes = lore.STRATEGIC_PASSES;
 catalog.corridors = w.CORRIDOR_DATA.map(c=>({...c,titleEn:en.corridors?.[c.key]?.[0]||c.title,summaryEn:en.corridors?.[c.key]?.[1]||c.summary}));
 write('hant.json', {chars:w.ZH_HANT_CONV.CHAR_S2T, phrases:w.ZH_HANT_CONV.PHRASES_S2T});
@@ -164,7 +182,19 @@ const corridorFeatures = w.CORRIDOR_DATA.map(c=>({type:'Feature',geometry:{type:
 write('corridors.geojson',collection(corridorFeatures));
 write('corridor-labels.geojson',collection(w.CORRIDOR_DATA.map(c=>point(c.labelAt,{id:c.key,title:c.title,titleEn:en.corridors?.[c.key]?.[0]||c.title,titleHant:w.ZH_HANT_CONV.toHant(c.title),from:c.span[0],until:c.span[1],rotation:0}))));
 write('modern-labels.geojson',collection(snapshots.s_prc.regions.filter(p=>p.anchor).map(p=>point(p.anchor,{title:p.title,titleEn:english(p.title),titleHant:w.ZH_HANT_CONV.toHant(p.title)}))));
-require('node:child_process').execFileSync('/usr/bin/swift',[path.join(__dirname,'prepare_ios_terrain.swift'),path.join(root,'assets/terrain_relief.webp'),path.join(out,'terrain.png')]);
+execFileSync('/usr/bin/swift',[path.join(__dirname,'prepare_ios_terrain.swift'),path.join(root,'assets/terrain_relief.webp'),path.join(out,'terrain.png')]);
+execFileSync('/usr/bin/swift',[path.join(__dirname,'prepare_ios_terrain.swift'),'--tiles',path.join(root,'assets/terrain'),path.join(out,'terrain')],{stdio:'inherit'});
+const terrain=JSON.parse(fs.readFileSync(path.join(root,'assets/terrain/index.json'),'utf8'));
+const levels=Object.keys(terrain.levels).map(Number),tileBounds=[Infinity,Infinity,-Infinity,-Infinity];
+for (const z of levels) for (const key of terrain.levels[z]) {
+  const [x,y]=key.split('_').map(Number),n=2**z,latitude=v=>Math.atan(Math.sinh(Math.PI*(1-2*v/n)))*180/Math.PI;
+  tileBounds[0]=Math.min(tileBounds[0],x/n*360-180);tileBounds[1]=Math.min(tileBounds[1],latitude(y+1));
+  tileBounds[2]=Math.max(tileBounds[2],(x+1)/n*360-180);tileBounds[3]=Math.max(tileBounds[3],latitude(y));
+}
+write('terrain.json',{tileSize:terrain.tileSize,minZoom:Math.min(...levels),maxZoom:Math.max(...levels),bounds:tileBounds});
+const clipper=path.join(root,'ios/.build/clip-geometry');fs.mkdirSync(path.dirname(clipper),{recursive:true});
+execFileSync('/usr/bin/swiftc',['-O',path.join(__dirname,'clip_ios_geometry.swift'),'-o',clipper]);
+execFileSync(clipper,[out],{stdio:'inherit'});
 for(const file of sources) write('Engine/'+file,fs.readFileSync(path.join(root,'js',file),'utf8'));
 write('Engine/native.js',fs.readFileSync(path.join(__dirname,'ios_engine.js'),'utf8'));
 write('catalog.json', catalog);

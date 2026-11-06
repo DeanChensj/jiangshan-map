@@ -69,7 +69,7 @@ final class AtlasStore {
     var historicalDetail: HistoricalDetail?
     var polityDetail: PolityDetail?
     var eraLabel = ""
-    var playbackSpeed = 1.0
+    var playbackSpeed = 4.0
     var lockPeriod = false
     var linkYearRange: ClosedRange<Int>?
     var quiz: AtlasQuizState?
@@ -86,7 +86,6 @@ final class AtlasStore {
     // Camera changes don't publish to the SwiftUI view tree on every gesture frame.
     @ObservationIgnored var playbackProgress = 0.0
     @ObservationIgnored var playbackHold = 0
-    @ObservationIgnored var playbackShown = 4
     @ObservationIgnored var mapStageLoading = false
     @ObservationIgnored var mapTransitionUntil = Date.distantPast
     @ObservationIgnored var cameraInteractionUntil = Date.distantPast
@@ -304,7 +303,7 @@ final class AtlasStore {
             return
         }
         if year >= timelineEnd { setYear(lockPeriod ? dynasty?.from ?? timelineStart : timelineStart) }
-        playbackProgress=timelineProgress(year);playbackHold=0;playbackShown=4
+        playbackProgress=timelineProgress(year);playbackHold=4
         syncMilestone();autoEventDismissed=false;resetCamera()
     }
     func advancePlayback() -> Bool { playbackTick() }

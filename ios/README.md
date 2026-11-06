@@ -15,15 +15,15 @@ Preparation requires Node.js and XcodeGen (`brew install xcodegen`). It generate
 
 ## Features
 
-- All 18 periods, 188 territorial stages, full source boundary geometry, and zoom-dependent regional/prefectural/city labels.
-- Terrain relief with the web map's edge fade; historical rivers and lakes, 67 landscape labels, 16 corridors, 20 strategic passes, modern province/name overlays, and fading previous boundaries.
-- Timeline scrubbing, direct year entry, dynasty/stage stepping, playback speed, period locking, and individual map layer controls. General timeline playback fits the full territorial stage on start and at territorial changes; person/route playback follows its stops. Overview framing uses native viewport bounds so it adapts to iPhone and iPad.
+- All 18 periods, 191 territorial stages, full source boundary geometry, and zoom-dependent regional/prefectural/city labels.
+- Terrain relief with the web map's edge fade and 144 bundled detail tiles; historical rivers and lakes, 67 landscape labels, 16 corridors, 20 strategic passes, modern province/name overlays, and fading previous boundaries.
+- Timeline scrubbing, direct year entry, dynasty/stage stepping, playback speed, period locking, and individual map layer controls. General playback follows milestone/stage stops with longer holds for territorial changes, starting at 4× as on the web. It fits the full territorial stage on start and at territorial changes; person/route playback follows its stops. Overview framing uses native viewport bounds so it adapts to iPhone and iPad.
 - The web search index: places and aliases, events, people, rulers, era names, polities, passes and gazetteer entries, in simplified/traditional Chinese and English.
 - 124 listed people plus dynamically resolved ruler chronicles, seven curated journeys, comparisons of up to four people, contemporary encounters, and quoted source/poetry text.
 - Custom routes with one year or per-stop years, multiple parallel tracks, distances, map pins, and stop-by-stop navigation.
 - Exact administrative genealogy queries at any coordinate across all 18 mapped periods, related local events, city/pass lore, polity dossiers, rulers, territorial stages and related events.
 - Ten-question place challenge with the web question tiers, clue sanitization, distance scoring, answer rings, ranks and sharing.
-- Five guqin streams with track selection, pause/resume, automatic next track, volume and playback errors. Music requires internet; historical content is bundled offline.
+- Five bundled guqin recordings with track selection, pause/resume, automatic next track, volume and playback errors. Music and historical content work offline.
 - Bookmarks including active person/route and exact native camera, saved year/camera/layer preferences, web-compatible sharing, `jiangshan://atlas?...` links, and pasted web links in the route panel.
 
 Touch and hold any map location, or choose “Inspect map center” in the exploration menu, to inspect its history. Floating search, layers and exploration controls replace the persistent title bar. The compact timeline expands to reveal all period and stepping controls. Tap the year to enter a date; use negative numbers for BCE. The iPad inspector can float, dock or close; playback closes it automatically.
@@ -56,7 +56,7 @@ Changing this configuration does not reconfigure DNS or publish a deployment by 
 - `AtlasCartography.swift`, `AtlasGeometry.swift`, `AtlasPulseOverlay.swift`: map styling, trajectories and idle marker animations.
 - `AtlasPlayback.swift`, `AtlasPlaybackViews.swift`, `AtlasNavigation.swift`: weighted timeline, event cards and exploration navigation.
 - `../scripts/prepare_ios_links.js`: configurable universal links and optional link-service generation; canonical sharing reads the configured official URL directly.
-- `../scripts/export_ios.js`: native resource generator. `prepare_ios_terrain.swift` bakes the existing web edge fade into a PNG for the native renderer.
+- `../scripts/export_ios.js`: native resource generator. `prepare_ios_terrain.swift` converts the base relief and detail tiles for the native renderer. `clip_ios_geometry.swift` clips rendered administrative geometry and meshes to the active polities, matching the web mask without changing query geometry or label anchors.
 
 See [FONTS.md](FONTS.md) for bundled font sources, licenses and optional regeneration.
 

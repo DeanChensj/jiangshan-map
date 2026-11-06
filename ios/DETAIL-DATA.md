@@ -29,6 +29,6 @@ Prefecture labels use anchors already present in the web snapshots. Their displa
 
 ## Today reference
 
-OpenFreeMap's public [TileJSON](https://tiles.openfreemap.org/planet) supplies vector tiles using the OpenMapTiles schema. The source is installed only on first enable; hidden layers do not replace the historical base. Roads begin at zoom 8, locality names at 9 and building footprints at 12. Coverage and accuracy depend on current OpenStreetMap data. Existing offline terrain remains the original relief image and becomes soft at city zoom.
+OpenFreeMap's public [TileJSON](https://tiles.openfreemap.org/planet) supplies vector tiles using the OpenMapTiles schema. The source is installed only on first enable; hidden layers do not replace the historical base. Roads begin at zoom 8, locality names at 9 and building footprints at 12. Coverage and accuracy depend on current OpenStreetMap data. Offline terrain uses the web relief image and its zoom 5–6 detail tiles; it still becomes soft at city zoom.
 
 The map visibly distinguishes and labels this layer as present-day reference. Links credit OpenFreeMap, © OpenMapTiles, and data from OpenStreetMap, including the copyright link. See the provider's [mobile integration guide](https://openfreemap.org/quick_start/) and [attribution requirements](https://openfreemap.org/). No bulk offline download is implemented.

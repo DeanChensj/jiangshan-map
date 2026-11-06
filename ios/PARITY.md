@@ -14,7 +14,7 @@ The subsequent completion audit, regressions corrected and remaining release wor
 | 6 | Territory opacity and blending | Source role/terrain opacity; native alpha composition |
 | 7 | Semantic territory roles | Main, rival, protectorate and neighbor styling |
 | 8 | Curved outlines | Original web corner rounding flattened for native rendering |
-| 9 | Administrative meshes | Original mesh builders, filtering and boundary casings |
+| 9 | Administrative meshes | Original mesh builders and casings, clipped with administrative fills to active non-neighbor polities |
 | 10 | Selected administrative area | Coordinate query supplies highlighted region/prefecture titles |
 | 11 | Detail thresholds | Web thresholds for towns, passes and prefecture detail |
 | 12 | Label placement | Original anchors, source priority, native collision and variable anchors |
@@ -23,7 +23,7 @@ The subsequent completion audit, regressions corrected and remaining release wor
 | 15 | Rivers and lakes | Source ranks, widths, casings, dates and lake outlines |
 | 16 | Landscape labels | Rotation, kind, spacing, historical names and detail thresholds |
 | 17 | Corridors | Wall/canal/road/silk/sea styles and original label anchors |
-| 18 | Terrain composition | Bundled relief with source edge fade and terrain toggle |
+| 18 | Terrain composition | Bundled base relief and zoom 5–6 detail tiles with source edge fade, group opacity and terrain toggle |
 | 19 | Neighbor labels | Source background geography and localized names |
 | 20 | Modern period | Hydrated modern regions; no synthetic historical polities |
 | 21 | Province overlays | Separate boundary/name controls and real province label anchors |

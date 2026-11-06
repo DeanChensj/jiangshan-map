@@ -6,6 +6,10 @@ on:
       - 'ios/**'
       - 'js/**'
       - 'assets/tang_focus.json'
+      - 'assets/audio/**'
+      - 'assets/terrain/**'
+      - 'assets/terrain_relief.webp'
+      - 'css/style.css'
       - 'scripts/*ios*'
       - 'tests/**'
       - '.github/workflows/ios.yml'
@@ -30,6 +34,8 @@ jobs:
           fi
       - name: Prepare native resources and project
         run: bash ios/prepare.sh
+      - name: Check shared queries and native clipping fixtures
+        run: node --test tests/*.test.cjs
       - name: Select an available iPhone simulator
         id: simulator
         run: |

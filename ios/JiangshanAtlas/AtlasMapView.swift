@@ -329,7 +329,7 @@ struct AtlasMapView: UIViewRepresentable {
                 visible(["pass-labels"],store.showCorridors && quizHidden && pass && store.dynasty?.id != "prc")
                 visible(["corridor-wall","corridor-canal","corridor-silk","corridor-road","corridor-sea","corridor-labels"],store.showCorridors && quizHidden)
                 visible(["event-dots"],store.showEvents && (quizHidden || answered))
-                visible(["relief"],store.showTerrain);visible(["ghost","ghost-fill"],store.showGhost || store.previewSnapshot != nil)
+                visible(["relief","relief-detail"],store.showTerrain);visible(["ghost","ghost-fill"],store.showGhost || store.previewSnapshot != nil)
                 (style.layer(withIdentifier:"hydro-labels") as? MLNVectorStyleLayer)?.predicate=pass ? nil : NSPredicate(format:"tier == 0")
             }
             // Pixel-size expressions follow the web's inverse-square-root marker scaling.

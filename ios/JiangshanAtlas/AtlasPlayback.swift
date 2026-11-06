@@ -77,18 +77,17 @@ extension AtlasStore {
             stepExperience(1);return true
         }
         if playbackHold > 0 { playbackHold -= 1;return true }
-        guard year < timelineEnd, !lockPeriod || year < (dynasty?.to ?? timelineEnd) else { return false }
-        let delta=280.0/(9*60*1000), previousPhase=phase?.id
-        playbackShown += 1;playbackProgress += delta
-        var next=year(atProgress:playbackProgress)
-        guard next > year else { return true }
-        if let stop=catalog?.playbackStops.first(where:{ $0.year > year && $0.year <= next }) {
-            if playbackShown < 4 { playbackProgress -= delta;return true }
-            next=stop.year;playbackShown=stop.hold ? 4 : 0
-            if stop.hold { playbackHold=9 }
-        }
+        let end=lockPeriod ? min(timelineEnd,dynasty?.to ?? timelineEnd) : timelineEnd
+        guard year < end else { return false }
+        let previousPhase=phase?.id
+        let stop=catalog?.playbackStops.first(where:{ $0.year > year && $0.year <= end })
+        let next=stop?.year ?? end
+        // Match the web's event-driven playback: four beats for an event and
+        // ten for a territorial change, with this tick counting as the first.
+        playbackHold=(stop?.hold == true ? 10 : 4)-1
         let previousID=autoEvent?.id
         setYear(next)
+        playbackProgress=timelineProgress(year)
         if phase?.id != previousPhase, !isGestureActive, Date() >= cameraInteractionUntil { resetCamera() }
         else if previousID != autoEvent?.id, let event=autoEvent { frameMilestone(event,automatic:true) }
         return true

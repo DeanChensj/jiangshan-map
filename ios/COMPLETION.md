@@ -1,8 +1,14 @@
-# iOS implementation status — November 2, 2026
+# iOS implementation status — November 5, 2026
 
 The original iPhone/iPad functional port is implemented, with the renderer and native interaction differences listed in PARITY.md. This is an implementation checkpoint, not App Store release certification or a claim of exhaustive device testing.
 
-## Completion audit
+## Main-branch reconciliation
+
+Merged main through `b6c6ee8` and regenerated all 18 periods / 191 territorial stages from its current lossless data. Native rendering now applies main's administrative polity mask, bundles its five local audio tracks and 144 terrain detail tiles, and follows event-driven playback with a 4× default. Web controls remain the web implementation; the native onboarding and existing app-link/distribution configuration are unchanged. Physical-device performance figures below remain historical and were not remeasured for this reconciliation.
+
+Validation: canonical bundles, topology/prefecture audits, full atlas integrity and 32 Node checks passed. On Xcode 27 / iOS 27 simulators, 57 state checks passed on iPhone (one iPad-only skip), all 58 passed on iPad, and all seven iPhone UI checks passed. Data-sensitive assertions now select the terminal historical date instead of a positional stop/event index.
+
+## Original completion audit
 
 - Reviewed the 44-item parity inventory against current native navigation, views, playback, map sources and shared query bridge.
 - Confirmed the bundled catalog contains 18 periods, 188 territorial stages, 124 listed people and seven curated journeys after updating to the latest upstream data. Verified snapshot, mesh and label files exist for every stage.
