@@ -1,7 +1,7 @@
 # Chronicles of the Realm · 江山时序
 
 <p align="left">
-  <strong>English</strong> · <a href="README_ZH.md">简体中文 (Chinese)</a>
+  <strong>English</strong> · <a href="README_ZH.md">简体中文 (Chinese)</a> · <a href="README_JA.md">日本語 (Japanese)</a>
 </p>
 
 **An Interactive Historical Atlas of China from the Warring States (403 BCE) to the Present — Scrub Through Time, Trace Ancient Cities, and Walk in the Footsteps of History**
