@@ -8738,7 +8738,7 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 686,
-        "headline": "武则天弃安西四镇，吐蕃据有塔里木，安西都护府退治西州",
+        "headline": "垂拱二年武则天弃安西四镇，四镇复陷吐蕃",
         "site": "龟兹（新疆库车）",
         "coord": [
           82.96,
@@ -9931,12 +9931,6 @@ window.DYNASTY_DATA = [
           {
             "from": 670,
             "until": 679,
-            "zh": "西州（安西都护府）",
-            "en": "Xizhou (Anxi Protectorate)"
-          },
-          {
-            "from": 686,
-            "until": 692,
             "zh": "西州（安西都护府）",
             "en": "Xizhou (Anxi Protectorate)"
           }

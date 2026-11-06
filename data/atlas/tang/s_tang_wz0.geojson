@@ -40,7 +40,7 @@
       "type": "Feature",
       "id": "安西都护府",
       "properties": {
-        "title": "安西都护府（西州）",
+        "title": "安西都护府",
         "tint": "#9b3b4a",
         "role": "protectorate",
         "anchor": [91.6, 41.6]

@@ -3201,10 +3201,10 @@ function main() {
     for (const sk of ['s_tang_a4', 's_tang_a', 's_tang_wz1']) {
       assert(pointInShape(...kucha, pol(sk, '安西都护府').shape), `${sk}: 龟兹 must be inside 安西都护府`);
     }
-    for (const sk of ['s_tang_a4b', 's_tang_a6', 's_tang_a7', 's_tang_wz0']) {
-      const lostAnxi = pol(sk, '安西都护府（西州）');
-      assert(lostAnxi && pointInShape(...xizhou, lostAnxi.shape), `${sk}: 西州 must be inside 安西都护府（西州）`);
-      assert(pointInShape(88.17, 39.02, lostAnxi.shape), `${sk}: 石城镇 (under 沙州 from 675) must stay inside 安西都护府（西州）`);
+    for (const [sk, title] of [['s_tang_a4b', '安西都护府（西州）'], ['s_tang_a6', '安西都护府（西州）'], ['s_tang_a7', '安西都护府'], ['s_tang_wz0', '安西都护府']]) {
+      const lostAnxi = pol(sk, title);
+      assert(lostAnxi && pointInShape(...xizhou, lostAnxi.shape), `${sk}: 西州 must be inside ${title}`);
+      assert(pointInShape(88.17, 39.02, lostAnxi.shape), `${sk}: 石城镇 (under 沙州 from 675) must stay inside ${title}`);
       assert(!pointInShape(...kucha, lostAnxi.shape), `${sk}: 龟兹 must not be inside 安西都护府 (lost to 吐蕃)`);
       for (const pt of [kucha, [79.93, 37.11], [75.99, 39.47], [86.57, 42.06]]) {
         assert(pointInShape(...pt, pol(sk, '吐蕃').shape), `${sk}: ${pt} (a Four Garrisons town) must be inside 吐蕃`);
@@ -7984,10 +7984,11 @@ function main() {
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 689), '东都洛阳');
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 695), '神都洛阳');
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 705), '东都洛阳');
-        // The Anxi seat leaves 龟兹 for 西州 while the Four Garrisons are lost (670–679, 686–692).
+        // 龟兹 is not the Anxi seat while the Four Garrisons are lost (670–679, 686–692); the seat is
+        // labelled at 西州 only for 670–679 (whether it moved there again in 686 is disputed).
         const anxiSeat = tangDyn.settlements.find((s) => s.ancient === '安西都护府');
         const xizhouItem = tangDyn.settlements.find((s) => s.ancient === '西州');
-        for (const [yr, kucha, xizhou] of [[669, '安西都护府', '西州'], [673, '龟兹', '西州（安西都护府）'], [681, '安西都护府', '西州'], [688, '龟兹', '西州（安西都护府）'], [692, '安西都护府', '西州']]) {
+        for (const [yr, kucha, xizhou] of [[669, '安西都护府', '西州'], [673, '龟兹', '西州（安西都护府）'], [681, '安西都护府', '西州'], [688, '龟兹', '西州'], [692, '安西都护府', '西州']]) {
           assert.strictEqual(ctrl._settlementAncient(anxiSeat, yr), kucha);
           assert.strictEqual(ctrl._settlementAncient(xizhouItem, yr), xizhou);
         }
