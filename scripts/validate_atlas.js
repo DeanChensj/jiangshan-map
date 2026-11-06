@@ -4842,6 +4842,93 @@ function main() {
         );
       }
     }
+
+    // P1 Northwest Frontier (Eastern Han Juyan & Southern Xiongnu, Riyue Mountain Divide, Wang Mang Xihai, Ming NW) invariants
+    {
+      const hasPolAt = (sk, title, x, y) => {
+        const p = (snapshots[sk].polities || []).find((it) => it.title === title);
+        return Boolean(p && p.shape && pointInShape(x, y, p.shape));
+      };
+      // 1) Eastern Han (25-214 CE): Juyan Oasis ([101.05, 41.95]) & Lingzhou ([106.28, 38.09]) in Han/Liangzhou; Badain Jaran ([102.20, 40.50]) & Yinshan-north ([108.50, 41.80]) in steppe
+      for (const [sk, hexiPol, steppePol] of [
+        ['s_donghan_a', '东汉', '匈奴'],
+        ['s_donghan_b2', '东汉', '北匈奴'],
+        ['s_donghan_c', '东汉', '北匈奴'],
+        ['s_donghan', '东汉', '鲜卑'],
+        ['s_donghan_d1', '马腾(凉州)', '鲜卑'],
+        ['s_donghan_d2', '马腾·韩遂(关陇)', '鲜卑'],
+        ['s_donghan_e1', '曹操(北方)', '鲜卑'],
+      ]) {
+        assert(
+          hasPolAt(sk, hexiPol, 101.05, 41.95) &&
+            hasPolAt(sk, hexiPol, 98.90, 39.98) &&
+            hasPolAt(sk, hexiPol, 106.28, 38.09) &&
+            !hasPolAt(sk, hexiPol, 102.20, 40.50) &&
+            hasPolAt(sk, steppePol, 102.20, 40.50) &&
+            hasPolAt(sk, steppePol, 108.50, 41.80),
+          `${sk}: Juyan, Jinta, & Lingzhou must belong to ${hexiPol} while Badain Jaran & Yinshan-north belong to ${steppePol}`
+        );
+      }
+      // 2) Southern Xiongnu Tributary (南匈奴（内附）, 48-214 CE) in Meiji ([111.05, 39.85]) & Wuyuan ([108.27, 41.10]), excluding Lingzhou ([106.28, 38.09])
+      for (const sk of ['s_donghan_b2', 's_donghan_c', 's_donghan', 's_donghan_d1', 's_donghan_d2', 's_donghan_d', 's_donghan_e0', 's_donghan_e1']) {
+        assert(
+          hasPolAt(sk, '南匈奴（内附）', 111.05, 39.85) &&
+            hasPolAt(sk, '南匈奴（内附）', 108.27, 41.10) &&
+            !hasPolAt(sk, '南匈奴（内附）', 106.28, 38.09),
+          `${sk}: Meiji & Wuyuan must belong to 南匈奴（内附） while Lingzhou stays in Central/Hexi administration`
+        );
+      }
+      // 3) Riyue Mountain — Linqiang divide & Wang Mang Xihai Commandery (西海郡, 8-23 CE)
+      assert(
+        hasPolAt('s_xihan_d', '新（王莽）', 100.99, 36.90) && hasPolAt('s_xihan_d', '新（王莽）', 99.85, 36.85),
+        's_xihan_d (8-23 CE): Wang Mang Xihai Commandery must encompass Haiyan and Qinghai Lake'
+      );
+      for (const [sk, corePol] of [
+        ['s_xihan_b3a', '汉'],
+        ['s_xihan_b', '汉'],
+        ['s_donghan_a', '东汉'],
+        ['s_donghan', '东汉'],
+        ['s_sanguo', '魏'],
+        ['s_xijin_a', '晋'],
+      ]) {
+        assert(
+          hasPolAt(sk, corePol, 101.78, 36.62) &&
+            hasPolAt(sk, corePol, 101.26, 36.68) &&
+            !hasPolAt(sk, corePol, 100.99, 36.90) &&
+            hasPolAt(sk, '西羌', 100.99, 36.90) &&
+            hasPolAt(sk, '西羌', 99.85, 36.85),
+          `${sk}: Xining & Linqiang must belong to ${corePol} while Haiyan & Qinghai Lake belong to 西羌`
+        );
+      }
+      // 4) Ming Dynasty (1368-1644 CE): 1369-1371 pre-Hexi, 1371-1403 Dongsheng Guard, zero Hami/Dunhuang/Xining ∅ holes, 1513-1644 青海蒙古
+      assert(
+        hasPolAt('s_ming_0b', '明', 103.83, 36.06) &&
+          hasPolAt('s_ming_0b', '北元', 102.64, 37.93) &&
+          hasPolAt('s_ming_0b', '北元', 98.51, 39.74),
+        's_ming_0b (1369-1371): Lanzhou in 明 while Hexi stays in 北元 before 1372 Feng Sheng campaign'
+      );
+      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0']) {
+        assert(
+          hasPolAt(sk, '明', 101.78, 36.62) && hasPolAt(sk, '明', 111.19, 40.28),
+          `${sk}: Xining Guard and front-Hetao Dongsheng Guard ([111.19, 40.28]) must belong to 明`
+        );
+      }
+      for (const sk of Object.keys(snapshots).filter((k) => k.startsWith('s_ming'))) {
+        assert(
+          snapshots[sk].polities.some((p) => p.shape && pointInShape(93.51, 42.82, p.shape)) &&
+            snapshots[sk].polities.some((p) => p.shape && pointInShape(94.66, 40.14, p.shape)) &&
+            snapshots[sk].polities.some((p) => p.shape && pointInShape(101.78, 36.62, p.shape)) &&
+            !hasPolAt(sk, '明', 100.99, 36.90),
+          `${sk}: Hami, Dunhuang, and Xining must have polity coverage and Haiyan must lie west of Ming Riyue border`
+        );
+      }
+      for (const sk of ['s_ming_b', 's_ming_c0', 's_ming_c', 's_ming_c2']) {
+        assert(
+          hasPolAt(sk, '青海蒙古', 98.85, 36.85) && hasPolAt(sk, '青海蒙古', 100.99, 36.90),
+          `${sk}: Qinghai Lake & Qaidam must belong to 青海蒙古 in 1513-1644`
+        );
+      }
+    }
     // 427-430 CE (s_nanbei_427) must place Tongwancheng ([108.871, 37.991]) inside 北魏 while keeping 胡夏 and 西秦 until 431 CE
     assert(
       pointInShape(108.871, 37.991, snapshots.s_nanbei_427.polities.find((p) => p.title === '北魏').shape) &&
