@@ -4700,13 +4700,14 @@ function main() {
     ];
 
     // Seamless 420 CE transition between s_dongjin_f (417-420) and s_nanbei_0 (420-426):
-    // 东晋 and 宋 must have identical shapes, and 北魏, 西秦, 胡夏, 北燕, 北凉 must match 1-to-1
+    // 东晋 and 宋 must have identical shapes, 北魏, 西秦, 胡夏, 北燕, 吐谷浑 match 1-to-1,
+    // and s_dongjin_f (西凉 + 北凉) merges into unified 北凉 in s_nanbei_0 (420-421 conquest of Western Liang).
     assert.strictEqual(
       JSON.stringify(snapshots.s_dongjin_f.polities.find((p) => p.title === '东晋').shape),
       JSON.stringify(snapshots.s_nanbei_0.polities.find((p) => p.title === '宋').shape),
       's_dongjin_f (东晋) and s_nanbei_0 (宋) must share identical polygon geometry at 420 CE'
     );
-    for (const sharedTitle of ['北魏', '西秦', '胡夏', '北燕', '北凉']) {
+    for (const sharedTitle of ['北魏', '西秦', '胡夏', '北燕', '吐谷浑']) {
       const pDj = snapshots.s_dongjin_f.polities.find((p) => p.title === sharedTitle);
       const pNb = snapshots.s_nanbei_0.polities.find((p) => p.title === sharedTitle);
       assert(pDj && pNb, `Both s_dongjin_f and s_nanbei_0 must include ${sharedTitle} at 420 CE`);
@@ -4715,6 +4716,131 @@ function main() {
         JSON.stringify(pNb.shape),
         `s_dongjin_f and s_nanbei_0 must share identical polygon geometry for ${sharedTitle} at 420 CE`
       );
+    }
+    {
+      const xl417 = snapshots.s_dongjin_f.polities.find((p) => p.title === '西凉');
+      const bl417 = snapshots.s_dongjin_f.polities.find((p) => p.title === '北凉');
+      const bl420 = snapshots.s_nanbei_0.polities.find((p) => p.title === '北凉');
+      assert(
+        xl417 &&
+          bl417 &&
+          bl420 &&
+          !snapshots.s_nanbei_0.polities.some((p) => p.title === '西凉') &&
+          pointInShape(94.66, 40.14, xl417.shape) &&
+          pointInShape(94.66, 40.14, bl420.shape) &&
+          pointInShape(102.64, 37.93, bl417.shape) &&
+          pointInShape(102.64, 37.93, bl420.shape),
+        's_dongjin_f must split Western Liang (Dunhuang) and Northern Liang (Guzang), merging into Northern Liang in s_nanbei_0'
+      );
+    }
+
+    // P0 Northwest Frontier (Hexi Corridor, Longyou/Hehuang, Hetao/Ordos) historical invariants (189-960 CE)
+    {
+      const hasPolAt = (sk, title, x, y) => {
+        const p = (snapshots[sk].polities || []).find((it) => it.title === title);
+        return Boolean(p && p.shape && pointInShape(x, y, p.shape));
+      };
+      // 1) Dunhuang ([94.66, 40.14]) & Yangguan ([94.13, 39.93]) inside Hexi / regular prefectures (25-880 CE)
+      for (const [sk, title] of [
+        ['s_donghan_a', '东汉'],
+        ['s_donghan_d1', '马腾(凉州)'],
+        ['s_donghan_f', '曹操(北方)'],
+        ['s_sanguo', '魏'],
+        ['s_xijin_a', '晋'],
+        ['s_dongjin_a', '前凉'],
+        ['s_dongjin_c', '前秦'],
+        ['s_dongjin_385', '后凉'],
+        ['s_dongjin_399', '西凉'],
+        ['s_nanbei_0', '北凉'],
+        ['s_nanbei_a', '北魏'],
+        ['s_nanbei_d', '西魏'],
+        ['s_nanbei_e', '北周'],
+        ['s_sui', '隋'],
+        ['s_sui_d', '凉（李轨）'],
+        ['s_tang_a1', '唐'],
+        ['s_tang_a5y', '唐'],
+        ['s_tang_a5', '唐'],
+        ['s_tang_c', '归义军（张议潮）'],
+      ]) {
+        assert(
+          hasPolAt(sk, title, 94.66, 40.14) && hasPolAt(sk, title, 94.13, 39.93),
+          `${sk}: Dunhuang ([94.66, 40.14]) and Yangguan ([94.13, 39.93]) must belong to ${title}`
+        );
+      }
+      // 2) Post-215 CE Hetao & Alashan contraction (Jian'an 20): Jiuyuan/Wuyuan ([108.27, 41.10]), Shengle ([111.82, 40.48]), Alashan ([105.60, 39.50]), & Gobi north of Yinshan ([108.50, 42.00]) in Xianbei; Zhongwei ([105.19, 37.51]) & Xinzhou ([112.73, 38.42]) kept
+      for (const [sk, coreTitle] of [
+        ['s_donghan_e', '曹操(北方)'],
+        ['s_sanguo', '魏'],
+        ['s_xijin_a', '晋'],
+      ]) {
+        assert(
+          hasPolAt(sk, '鲜卑', 108.27, 41.1) &&
+            hasPolAt(sk, '鲜卑', 111.82, 40.48) &&
+            hasPolAt(sk, '鲜卑', 105.6, 39.5) &&
+            hasPolAt(sk, '鲜卑', 108.5, 42.0) &&
+            !hasPolAt(sk, coreTitle, 108.27, 41.1) &&
+            !hasPolAt(sk, coreTitle, 105.6, 39.5) &&
+            !hasPolAt(sk, coreTitle, 108.5, 42.0) &&
+            hasPolAt(sk, coreTitle, 105.19, 37.51) &&
+            hasPolAt(sk, coreTitle, 112.73, 38.42),
+          `${sk}: Wuyuan, Shengle, Alashan, & Yinshan-north must belong to 鲜卑 after 215 CE while Zhongwei & Xinzhou remain in ${coreTitle}`
+        );
+      }
+      // 3) 311-316 CE Yongjia (s_xijin_b): Luoyang & Chang'an in Han-Zhao; 350 CE (s_dongjin_350): Chang'an in 前秦（苻氏）, Ye in 冉魏
+      assert(
+        hasPolAt('s_xijin_b', '汉赵', 112.45, 34.62) && hasPolAt('s_xijin_b', '汉赵', 108.94, 34.34),
+        's_xijin_b (311-316 CE): Luoyang and Chang\'an must belong to 汉赵'
+      );
+      assert(
+        hasPolAt('s_dongjin_350', '前秦（苻氏）', 108.94, 34.34) &&
+          hasPolAt('s_dongjin_350', '冉魏', 114.35, 36.6) &&
+          !hasPolAt('s_dongjin_350', '冉魏', 108.94, 34.34),
+        's_dongjin_350 (350 CE): Chang\'an must belong to 前秦（苻氏） while Ye belongs to 冉魏'
+      );
+      // 4) Tuyuhun (吐谷浑) present across Eastern Jin, Northern & Southern Dynasties, Sui, and Early Tang (317-634 CE)
+      for (const sk of ['s_dongjin_317', 's_dongjin_c', 's_nanbei_0', 's_nanbei_a', 's_nanbei_e', 's_sui_a', 's_sui', 's_sui_d', 's_tang_0']) {
+        assert(
+          hasPolAt(sk, '吐谷浑', 99.82, 36.85),
+          `${sk}: Qinghai Lake / Fusicheng ([99.82, 36.85]) must belong to 吐谷浑`
+        );
+      }
+      assert(
+        hasPolAt('s_sui_c', '隋', 93.51, 42.82) && hasPolAt('s_sui_c', '西海·鄯善等四郡', 99.82, 36.85),
+        's_sui_c (609-618 CE): Hami (Yiwu) must belong to 隋 and Qinghai Lake (Xihai) to 西海·鄯善等四郡'
+      );
+      // 5) Post-763 Eastern Longyou (Qinzhou [105.72, 34.58], Weizhou [104.63, 35.00], Yuanzhou [106.28, 36.01]) in Tubo, Longzhou ([106.86, 34.89]) & Lingzhou in Tang
+      for (const sk of ['s_tang_b1', 's_tang_b']) {
+        assert(
+          hasPolAt(sk, '吐蕃', 105.72, 34.58) &&
+            hasPolAt(sk, '吐蕃', 104.63, 35.0) &&
+            hasPolAt(sk, '吐蕃', 106.28, 36.01) &&
+            hasPolAt(sk, '唐', 106.86, 34.89) &&
+            hasPolAt(sk, '唐', 106.28, 38.09),
+          `${sk}: Qinzhou, Weizhou, and Yuanzhou must belong to 吐蕃 while Longzhou and Lingzhou stay in 唐`
+        );
+      }
+      // 6) Five Dynasties (907-960 CE): 3 Hexi polities + Dingnan (Xiazhou) vs Shuofang (Lingzhou in Central Plains) + Lanzhou in 吐蕃诸部
+      for (const [sk, cpTitle] of [
+        ['s_wudai_a', '后梁'],
+        ['s_wudai_b1', '后唐'],
+        ['s_wudai_b', '后唐'],
+        ['s_wudai_c0', '后晋'],
+        ['s_wudai_d', '后汉'],
+        ['s_wudai_e', '后周'],
+        ['s_wudai_e2', '后周'],
+      ]) {
+        assert(
+          hasPolAt(sk, '沙州归义军', 94.66, 40.14) &&
+            hasPolAt(sk, '甘州回鹘', 100.45, 38.93) &&
+            hasPolAt(sk, '凉州（六谷部）', 102.64, 37.93) &&
+            hasPolAt(sk, '吐蕃诸部', 103.83, 36.06) &&
+            hasPolAt(sk, '党项（定难军）', 108.78, 37.98) &&
+            !hasPolAt(sk, '党项（定难军）', 106.28, 38.09) &&
+            hasPolAt(sk, cpTitle, 106.28, 38.09) &&
+            hasPolAt(sk, cpTitle, 104.63, 35.0),
+          `${sk}: Five Dynasties NW must map Shazhou, Ganzhou Uyghurs, Liangzhou Liugu, Tibetan Lanzhou, Dingnan Xiazhou, and ${cpTitle} Lingzhou/Weizhou`
+        );
+      }
     }
     // 427-430 CE (s_nanbei_427) must place Tongwancheng ([108.871, 37.991]) inside 北魏 while keeping 胡夏 and 西秦 until 431 CE
     assert(
