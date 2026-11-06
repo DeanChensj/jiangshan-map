@@ -6811,8 +6811,8 @@ window.ATLAS_LORE_DATA = {
       "dynastyKey": "qing",
       "year": 1876,
       "coord": [
-        121.2,
-        37.3
+        121.45,
+        37.46
       ],
       "site": "烟台芝罘",
       "siteEn": "Chefoo, Yantai",
@@ -19770,8 +19770,8 @@ window.ATLAS_LORE_DATA = {
       ],
       "modern": "山东烟台",
       "coord": [
-        121.2,
-        37.3
+        121.45,
+        37.46
       ],
       "zoom": 2.3
     },
