@@ -1,4 +1,3 @@
-/* Auto-bundled Lore Data for Jiangshan Historical Atlas */
 window.ATLAS_LORE_DATA = {
   "CHINESE_ERA_SPANS": [
     [
@@ -13134,6 +13133,222 @@ window.ATLAS_LORE_DATA = {
       "siteEn": "Qiongzhou Port",
       "zh": "清廷依约正式辟琼州海口为通商口岸，设立琼海关开启近代海贸",
       "en": "The Qing court opens Qiongzhou Port to foreign trade and establishes the Qiong Maritime Customs"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1285,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元世祖诏依周礼规画大都城制五十坊，钟鼓楼与太液池宫苑落成",
+      "en": "Kublai Khan lays out Dadu into fifty wards with the Drum and Bell Towers and Taiye Pool palaces"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1289,
+      "coord": [
+        116.55,
+        35.42
+      ],
+      "site": "济州",
+      "siteEn": "Jizhou",
+      "zh": "元廷开凿自安山至临清的会通河河段，连通南北漕运水路主干",
+      "en": "The Yuan court excavates the Huitong Canal from Anshan to Linqing to link the Grand Canal"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1290,
+      "coord": [
+        102.71,
+        25.04
+      ],
+      "site": "中庆路",
+      "siteEn": "Zhongqing Circuit",
+      "zh": "云南行省于中庆路兴建文庙与儒学，浚治滇池海口水利以惠农桑",
+      "en": "Yunnan Branch Secretariat builds Confucian schools and dredges Dianchi Lake canals at Zhongqing"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1297,
+      "coord": [
+        115.9,
+        28.68
+      ],
+      "site": "龙兴路",
+      "siteEn": "Longxing Circuit",
+      "zh": "王祯任永丰县尹期间撰成《农书》，首创木活字转轮排字盘",
+      "en": "Agronomist Wang Zhen compiles the Book of Agriculture and invents the rotating wooden movable-type table"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1302,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元成宗于大都崇仁门内建成太庙与国子监，兴办官学尊崇儒术",
+      "en": "Emperor Chengzong of Yuan completes the Imperial Directorate of Education in Dadu for Confucian learning"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1318,
+      "coord": [
+        120.15,
+        30.27
+      ],
+      "site": "杭州路",
+      "siteEn": "Hangzhou Circuit",
+      "zh": "赵孟頫、黄公望等书画名家雅集杭州，引领元代文人山水画风",
+      "en": "Calligrapher Zhao Mengfu and painter Huang Gongwang gather in Hangzhou, shaping Yuan literati painting"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1322,
+      "coord": [
+        116.39,
+        39.92
+      ],
+      "site": "大都",
+      "siteEn": "Dadu",
+      "zh": "元英宗颁行完备政书《大元通制》，整饬台察纲纪与行省法度",
+      "en": "Emperor Yingzong of Yuan promulgates the Comprehensive Institutions of the Great Yuan legal code"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1324,
+      "coord": [
+        121.55,
+        29.87
+      ],
+      "site": "庆元路",
+      "siteEn": "Qingyuan Circuit",
+      "zh": "元廷重开庆元市舶司，与高丽、日本及南洋商船贸易往来繁盛",
+      "en": "The Yuan court reopens the Qingyuan Maritime Trade Office for commerce with Goryeo and Japan"
+    },
+    {
+      "dynastyKey": "yuan",
+      "year": 1330,
+      "coord": [
+        117.2,
+        29.29
+      ],
+      "site": "景德镇",
+      "siteEn": "Jingdezhen",
+      "zh": "景德镇浮梁磁局采用苏麻离青料烧造元青花瓷，远销西亚与欧洲",
+      "en": "The Fuliang Porcelain Bureau in Jingdezhen perfects cobalt blue-and-white porcelain for global export"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 439,
+      "coord": [
+        113.3,
+        40.08
+      ],
+      "site": "平城",
+      "siteEn": "Pingcheng",
+      "zh": "北魏灭北凉后徙凉州僧侣工匠三万户至平城，促成北朝石窟兴盛",
+      "en": "Northern Wei relocates 30,000 households of Liangzhou monks and artisans to Pingcheng, spurring cave art"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 440,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "宋文帝于建康鸡笼山立儒、玄、史、文四学馆，元嘉文化大盛",
+      "en": "Emperor Wen of Liu Song establishes the Four Academies of Confucianism, Metaphysics, History, and Literature"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 487,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "竟陵王萧子良于建康鸡笼山开西邸招揽“竟陵八友”，创永明体诗风",
+      "en": "Xiao Ziliang gathers the Eight Friends of Jingling in Jiankang, pioneering the tonal Yongming poetic style"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 512,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "梁武帝于建康设五经博士广开馆宇，四方寒门学子云集京师",
+      "en": "Emperor Wu of Liang appoints Erudites of the Five Classics in Jiankang to train humble scholars"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 516,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "北魏胡太后于洛阳营建永宁寺九层木塔，百里之外犹见塔刹",
+      "en": "Empress Dowager Hu constructs the nine-story wooden pagoda of Yongning Temple in Luoyang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 536,
+      "coord": [
+        112.55,
+        37.87
+      ],
+      "site": "晋阳",
+      "siteEn": "Jinyang",
+      "zh": "高欢于晋阳设大丞相府与晋阳宫，以并州劲旅遥控东魏北齐朝政",
+      "en": "Gao Huan establishes the Grand Chancellor headquarters in Jinyang to command Eastern Wei military power"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 543,
+      "coord": [
+        112.45,
+        34.72
+      ],
+      "site": "洛阳邙山",
+      "siteEn": "Mount Mang, Luoyang",
+      "zh": "邙山之战：高欢与宇文泰统东西魏二十万大军于洛阳北邙决战",
+      "en": "Gao Huan and Yuwen Tai clash with 200,000 Eastern and Western Wei troops at the Battle of Mount Mang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 547,
+      "coord": [
+        112.45,
+        34.62
+      ],
+      "site": "洛阳",
+      "siteEn": "Luoyang",
+      "zh": "杨衒之重访荒废的故都洛阳，追述佛寺盛景撰成《洛阳伽蓝记》",
+      "en": "Yang Xuanzhi revisits war-torn Luoyang and compiles A Record of Buddhist Monasteries in Luoyang"
+    },
+    {
+      "dynastyKey": "nanbei",
+      "year": 568,
+      "coord": [
+        118.8,
+        32.06
+      ],
+      "site": "建康",
+      "siteEn": "Jiankang",
+      "zh": "陈宣帝于建康整饬吏治、劝课江南农桑，蓄力筹备太建北伐",
+      "en": "Emperor Xuan of Chen reforms administration and promotes Jiangnan farming before his northern campaign"
     }
   ],
   "GUQIN_TRACKS": [
