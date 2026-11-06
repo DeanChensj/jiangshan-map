@@ -1291,6 +1291,34 @@ function main() {
     );
   }
 
+  // CUJ 9k2: GeoJSON export keeps the CHGIS-derived prefecture layer out by default, and any exported
+  // file that does contain it (--with-prefectures) carries the CHGIS terms instead of GPL-3.0.
+  if (!FAST_MODE) {
+    const exportScript = path.join(ROOT, 'scripts', 'export_geojson.js');
+    const exportRoot = fs.mkdtempSync(path.join(require('os').tmpdir(), 'jiangshan-export-'));
+    try {
+      for (const withPref of [false, true]) {
+        const outDir = path.join(exportRoot, withPref ? 'with' : 'default');
+        execFileSync(process.execPath, [exportScript, outDir, ...(withPref ? ['--with-prefectures'] : [])], { encoding: 'utf8' });
+        let prefFiles = 0;
+        for (const f of fs.readdirSync(path.join(outDir, 'snapshots'))) {
+          const fc = JSON.parse(fs.readFileSync(path.join(outDir, 'snapshots', f), 'utf8'));
+          const hasPref = fc.features.some((ft) => ft.properties.layer === 'prefecture');
+          if (hasPref) prefFiles++;
+          assert(!hasPref || withPref, `Default GeoJSON export must not include the CHGIS prefecture layer (${f})`);
+          assert.strictEqual(
+            fc.license.includes('CHGIS'),
+            hasPref,
+            `Export ${f}: the license must name CHGIS exactly when the file contains prefecture features`
+          );
+        }
+        assert(!withPref || prefFiles > 150, `--with-prefectures must export the prefecture layer, got ${prefFiles} files`);
+      }
+    } finally {
+      fs.rmSync(exportRoot, { recursive: true, force: true });
+    }
+  }
+
   // CUJ 9l: Neighbor Polity Clean Fill & Stray Full-China Ring Guard
   const cssSrc = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(

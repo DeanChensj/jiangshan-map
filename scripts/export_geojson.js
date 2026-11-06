@@ -9,8 +9,13 @@
  * Coverage ends in 1948: years from 1949 on (the PRC period, s_prc) and the
  * modern province layer are not exported.
  *
+ * The prefecture layer (郡 / 州 / 府) is left out by default: it derives from
+ * CHGIS V6 and the Hartwell China Historical GIS, whose terms allow academic,
+ * non-commercial use only and forbid redistribution. --with-prefectures adds
+ * it for local academic use; files that then contain it carry those terms.
+ *
  * Usage:
- *   node scripts/export_geojson.js [outDir]   # default: geojson/
+ *   node scripts/export_geojson.js [outDir] [--with-prefectures]   # default outDir: geojson/
  */
 'use strict';
 
@@ -19,7 +24,9 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT = path.resolve(ROOT, process.argv[2] || 'geojson');
+const ARGS = process.argv.slice(2);
+const WITH_PREFECTURES = ARGS.includes('--with-prefectures');
+const OUT = path.resolve(ROOT, ARGS.find((a) => !a.startsWith('--')) || 'geojson');
 
 const ctx = { window: {} };
 vm.createContext(ctx);
@@ -37,6 +44,10 @@ const CUTOFF = 1949;
 
 const LICENSE =
   'GPL-3.0 · jiangshan-map (Chronicles of the Realm). Historical borders are schematic approximations, not survey-grade boundaries.';
+const PREFECTURE_LICENSE =
+  'Contains prefecture-level (郡/州/府) boundaries derived from CHGIS V6 and the Hartwell China Historical GIS: ' +
+  'academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0. Other layers: ' +
+  LICENSE;
 
 // ---------- geometry helpers ----------
 
@@ -117,7 +128,8 @@ function feature(geometry, props) {
 
 function collection(name, features, meta = {}) {
   const fs_ = features.filter(Boolean);
-  return { type: 'FeatureCollection', name, ...clean(meta), license: LICENSE, bbox: bbox(fs_), features: fs_ };
+  const license = fs_.some((f) => f.properties.layer === 'prefecture') ? PREFECTURE_LICENSE : LICENSE;
+  return { type: 'FeatureCollection', name, ...clean(meta), license, bbox: bbox(fs_), features: fs_ };
 }
 
 const en = (zh) => (zh && DICT[zh]) || undefined;
@@ -181,7 +193,11 @@ for (const [key, s] of Object.entries(SNAPSHOTS)) {
   const use = snapUse[key];
   files[`snapshots/${key}.geojson`] = collection(
     key,
-    [...snapshotLayer(regions, 'region'), ...snapshotLayer(prefs, 'prefecture'), ...snapshotLayer(polities, 'polity')],
+    [
+      ...snapshotLayer(regions, 'region'),
+      ...(WITH_PREFECTURES ? snapshotLayer(prefs, 'prefecture') : []),
+      ...snapshotLayer(polities, 'polity')
+    ],
     {
       caption: s.caption,
       note: s.note,
@@ -271,10 +287,13 @@ files['milestones.geojson'] = collection('milestones', milestones);
 
 files['index.json'] = {
   name: 'jiangshan-map GeoJSON export',
-  license: LICENSE,
+  license: WITH_PREFECTURES ? PREFECTURE_LICENSE : LICENSE,
   crs: 'EPSG:4326 (lon, lat), RFC 7946 winding',
   years: 'Integer years; negative = BCE. There is no year 0 (-1 is 1 BCE, 1 is 1 CE).',
   coverage: `${W.DYNASTY_DATA[0].fromYear} to ${CUTOFF - 1}; later years and modern provinces are not exported`,
+  prefecture_layer: WITH_PREFECTURES
+    ? 'included (--with-prefectures): CHGIS-derived, academic non-commercial use only, do not redistribute'
+    : 'not exported (CHGIS terms); rerun with --with-prefectures for local academic use',
   layers: {
     corridors: 'corridors.geojson',
     settlements: 'settlements.geojson',
