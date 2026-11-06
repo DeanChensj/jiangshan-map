@@ -7174,6 +7174,11 @@ window.EN_LOCALE = {
     "当阳麦城": "Maicheng, Dangyang",
     "虎门": "Humen",
     "松山": "Songshan",
-    "阴平摩天岭": "Yinping Trail"
+    "阴平摩天岭": "Yinping Trail",
+    "西凉": "Western Liang",
+    "前秦（苻氏）": "Former Qin (Fu Clan)",
+    "沙州归义军": "Guiyi Circuit (Shazhou)",
+    "甘州回鹘": "Ganzhou Uyghurs",
+    "凉州（六谷部）": "Liangzhou (Liugu)"
   }
 };

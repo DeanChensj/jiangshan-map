@@ -25,7 +25,7 @@
       "s_wudai_a/大和（日本）",
       "s_wudai_a/阿伊努",
       "s_wudai_a/马来诸国",
-      "s_wudai_a/回鹘",
+      "s_wudai_c0/回鹘",
       "s_wudai_a/通古斯诸部",
       "s_dongjin_a2/北亚林中诸部",
       "s_wudai_a/新罗",
@@ -42,11 +42,15 @@
       "s_wudai_a/萨曼王朝",
       "s_wudai_a/萨法尔王朝",
       "s_wudai_a/流求",
-      "s_wudai_a/静海军（交州）"
+      "s_wudai_a/静海军（交州）",
+      "s_wudai_b1/党项（定难军）",
+      "s_wudai_a/沙州归义军",
+      "s_wudai_a/甘州回鹘",
+      "s_wudai_a/凉州（六谷部）"
     ],
     "regions": [
       "s_wudai_b1/河南道",
-      "s_wudai_a/关西道",
+      "s_wudai_c0/关西道",
       "s_wudai_b1/河东道",
       "s_wudai_b1/河北道",
       "s_wudai_a/燕云十六州",
