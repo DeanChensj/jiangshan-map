@@ -3245,6 +3245,10 @@ function main() {
       assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 (永昌郡) must belong to ${main}`);
     }
     for (const sk of ['s_sui', 's_sui_c']) assert.strictEqual(ownerAt(sk, KUNMING), '隋', `${sk}: 昆明 must belong to 隋, not 泰人诸邦`);
+    // No hole between 益州 / 蜀 and 交州 south of 蒙自 and 文山 (兴古郡), 189–413.
+    for (const sk of ['s_donghan_d2', 's_sanguo', 's_sanguo_c', 's_dongjin_a', 's_dongjin_b', 's_dongjin_d']) {
+      for (const pt of [[104.3, 22.75], [103.3, 22.3], [104.62, 24.5]]) assert(ownerAt(sk, pt), `${sk}: ${pt} must not be a hole between 益州 and 交州`);
+    }
     for (const [sk, main] of [['s_yuan', '元'], ['s_ming_a0', '明'], ['s_ming_b', '明']]) {
       assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 must belong to ${main}`);
     }
