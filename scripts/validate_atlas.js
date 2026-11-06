@@ -1291,6 +1291,34 @@ function main() {
     );
   }
 
+  // CUJ 9k2: GeoJSON export keeps the CHGIS-derived prefecture layer out by default, and any exported
+  // file that does contain it (--with-prefectures) carries the CHGIS terms instead of GPL-3.0.
+  if (!FAST_MODE) {
+    const exportScript = path.join(ROOT, 'scripts', 'export_geojson.js');
+    const exportRoot = fs.mkdtempSync(path.join(require('os').tmpdir(), 'jiangshan-export-'));
+    try {
+      for (const withPref of [false, true]) {
+        const outDir = path.join(exportRoot, withPref ? 'with' : 'default');
+        execFileSync(process.execPath, [exportScript, outDir, ...(withPref ? ['--with-prefectures'] : [])], { encoding: 'utf8' });
+        let prefFiles = 0;
+        for (const f of fs.readdirSync(path.join(outDir, 'snapshots'))) {
+          const fc = JSON.parse(fs.readFileSync(path.join(outDir, 'snapshots', f), 'utf8'));
+          const hasPref = fc.features.some((ft) => ft.properties.layer === 'prefecture');
+          if (hasPref) prefFiles++;
+          assert(!hasPref || withPref, `Default GeoJSON export must not include the CHGIS prefecture layer (${f})`);
+          assert.strictEqual(
+            fc.license.includes('CHGIS'),
+            hasPref,
+            `Export ${f}: the license must name CHGIS exactly when the file contains prefecture features`
+          );
+        }
+        assert(!withPref || prefFiles > 150, `--with-prefectures must export the prefecture layer, got ${prefFiles} files`);
+      }
+    } finally {
+      fs.rmSync(exportRoot, { recursive: true, force: true });
+    }
+  }
+
   // CUJ 9l: Neighbor Polity Clean Fill & Stray Full-China Ring Guard
   const cssSrc = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(
@@ -3174,7 +3202,7 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 26, `Expected 26 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 27, `Expected 27 s_tang* snapshots, found ${tangSnapKeys.length}`);
   // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
   // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790;
   // the Four Garrisons fall to 吐蕃 in 670–679 and 686–692, when 安西 falls back to 西州.
@@ -3219,6 +3247,61 @@ function main() {
     assert(!pointInShape(81.3, 43.9, beiting), 's_tang_b1: 伊犁 (lost to the Karluks in 766) must not be inside 北庭都护府');
     assert(pointInShape(79.4, 35.6, pol('s_tang_b1', '吐蕃').shape), 's_tang_b1: the Kunlun strip must belong to 吐蕃');
   }
+  // Southwest frontier 25–1644: 蜀 / 宋 stop at the 岷山–大渡河 line (雅州 inside, 康定 outside),
+  // 建昌 (西昌) belongs to 大长和 / 大理, and 腾冲 is inside 大理, 元 and 明.
+  {
+    const ownerAt = (sk, pt) => {
+      const p = (snapshots[sk].polities || []).find((q) => q.role && pointInShape(...pt, q.shape));
+      return p ? p.title : null;
+    };
+    const YAAN = [103.0, 29.98], KANGDING = [101.96, 30.05], XICHANG = [102.26, 27.9], TENGCHONG = [98.49, 25.02];
+    for (const [sk, shu, dali] of [['s_wudai_c', '后蜀', '大理'], ['s_beisong_a0', '后蜀', '大理'], ['s_beisong_b0', '宋', '大理'], ['s_nansong_a', '南宋', '大理']]) {
+      assert.strictEqual(ownerAt(sk, YAAN), shu, `${sk}: 雅州 (雅安) must belong to ${shu}`);
+      const k = ownerAt(sk, KANGDING);
+      assert(k && k !== shu, `${sk}: 康定 (west of the 大渡河) must belong to the Tibetan side, got ${k}`);
+      assert.strictEqual(ownerAt(sk, XICHANG), dali, `${sk}: 建昌 (西昌) must belong to ${dali}`);
+      assert.strictEqual(ownerAt(sk, TENGCHONG), dali, `${sk}: 腾冲 must belong to ${dali}`);
+    }
+    // 唐 621–738: no 南诏 yet (六诏 + 唐 羁縻 in 滇东); 南诏 from 738.
+    for (const sk of ['s_tang_a0', 's_tang_a', 's_tang_wz1', 's_tang_a5y']) {
+      assert(!(snapshots[sk].polities || []).some((p) => p.title === '南诏'), `${sk}: 南诏 must not exist before 738`);
+      assert.strictEqual(ownerAt(sk, [100.23, 25.6]), '六诏', `${sk}: 洱海 must belong to 六诏 before 738`);
+      assert(['唐', '武周'].includes(ownerAt(sk, [102.71, 25.04])), `${sk}: 昆州 (昆明) must belong to 唐 / 武周 before 738`);
+    }
+    assert.strictEqual(ownerAt('s_tang_a5', [100.23, 25.6]), '南诏', 's_tang_a5 (738–755): 大理 must belong to 南诏');
+    // 唐 764–907: 南诏 stops at the 南盘江 (贵阳 / 安顺 are 唐); 雅州 stays 唐 / 西川; 嶲州 follows
+    // 吐蕃 (764–790) → 唐 (790–880) → 南诏 (880–907).
+    for (const sk of ['s_tang_b1', 's_tang_b', 's_tang_c', 's_tang_d1']) {
+      for (const pt of [[106.71, 26.58], [105.95, 26.25]]) assert.strictEqual(ownerAt(sk, pt), '唐', `${sk}: ${pt} (黔中) must belong to 唐, not 南诏`);
+      assert.strictEqual(ownerAt(sk, [103.0, 29.98]), '唐', `${sk}: 雅州 (雅安) must belong to 唐`);
+    }
+    assert.strictEqual(ownerAt('s_tang_d2', [103.0, 29.98]), '西川（王建）', 's_tang_d2: 雅州 must belong to 西川（王建）');
+    for (const [sk, who] of [['s_tang_b1', '吐蕃'], ['s_tang_b', '唐'], ['s_tang_c', '唐'], ['s_tang_d1', '南诏'], ['s_tang_d2', '南诏']]) {
+      assert.strictEqual(ownerAt(sk, [102.26, 27.9]), who, `${sk}: 嶲州 (西昌) must belong to ${who}`);
+    }
+    // 1351–1388: northern 越南 is 大越 / 安南, not blank.
+    for (const sk of ['s_yuan_b', 's_yuan_c', 's_ming_0a', 's_ming_0c', 's_ming_0d']) {
+      assert(ownerAt(sk, [104.5, 22.1]) || (snapshots[sk].polities || []).some((q) => q.role === 'neighbor' && pointInShape(104.5, 22.1, q.shape)), `${sk}: 104.5,22.1 must not be blank`);
+    }
+    // 东汉–隋: 叶榆 (大理) and 不韦 (保山) are Han counties; 永昌郡 (69 CE) adds 腾冲 for 73–347;
+    // 隋 keeps 昆明 (南宁州) in 589–614.
+    const DALI = [100.23, 25.6], BAOSHAN = [99.16, 25.11], KUNMING = [102.71, 25.04];
+    for (const [sk, main] of [['s_donghan_b2', '东汉'], ['s_donghan', '东汉'], ['s_sanguo', '蜀汉'], ['s_dongjin_a', '成汉'], ['s_dongjin_b', '东晋'], ['s_nanbei_c', '梁'], ['s_sui_a', '隋'], ['s_sui', '隋']]) {
+      assert.strictEqual(ownerAt(sk, DALI), main, `${sk}: 叶榆 (大理) must belong to ${main}`);
+      assert.strictEqual(ownerAt(sk, BAOSHAN), main, `${sk}: 不韦 (保山) must belong to ${main}`);
+    }
+    for (const [sk, main] of [['s_donghan', '东汉'], ['s_sanguo', '蜀汉'], ['s_dongjin_a', '成汉']]) {
+      assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 (永昌郡) must belong to ${main}`);
+    }
+    for (const sk of ['s_sui', 's_sui_c']) assert.strictEqual(ownerAt(sk, KUNMING), '隋', `${sk}: 昆明 must belong to 隋, not 泰人诸邦`);
+    // No hole between 益州 / 蜀 and 交州 south of 蒙自 and 文山 (兴古郡), 189–413.
+    for (const sk of ['s_donghan_d2', 's_sanguo', 's_sanguo_c', 's_dongjin_a', 's_dongjin_b', 's_dongjin_d']) {
+      for (const pt of [[104.3, 22.75], [103.3, 22.3], [104.62, 24.5]]) assert(ownerAt(sk, pt), `${sk}: ${pt} must not be a hole between 益州 and 交州`);
+    }
+    for (const [sk, main] of [['s_yuan', '元'], ['s_ming_a0', '明'], ['s_ming_b', '明']]) {
+      assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 must belong to ${main}`);
+    }
+  }
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -3247,7 +3330,11 @@ function main() {
       `${sk} must model post-877 fragmented Tibet as uncolored 吐蕃诸部 (role="neighbor", tint=null)`
     );
   }
-  const nzSnapKeys = [...tangSnapKeys];
+  // 南诏 exists from 738 (before that: 六诏 plus 唐 羁縻 in 滇东; 618–621 爨 · 六诏).
+  const preNanzhao = new Set(['s_tang_0', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a4', 's_tang_a4b',
+    's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y']);
+  const nzSnapKeys = tangSnapKeys.filter((k) => !preNanzhao.has(k));
+  assert.strictEqual(nzSnapKeys.length, tangSnapKeys.length - preNanzhao.size, 'every pre-738 Tang snapshot key must exist');
   for (const sk of nzSnapKeys) {
     const nzPol = (snapshots[sk].polities || []).find((p) => p.title === '南诏');
     assert(
@@ -4671,6 +4758,7 @@ function main() {
         ['s_sui', '隋'],
         ['s_sui_d', '凉（李轨）'],
         ['s_tang_a1', '唐'],
+        ['s_tang_a5y', '唐'],
         ['s_tang_a5', '唐'],
         ['s_tang_c', '归义军（张议潮）'],
       ]) {
@@ -4965,7 +5053,7 @@ function main() {
     }
 
     // Tang 23 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
@@ -8076,7 +8164,8 @@ function main() {
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 704), 's_tang_wz2');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5z');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 713), 's_tang_a5');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 713), 's_tang_a5y');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 738), 's_tang_a5');
 
         for (const sk of ['s_tang_wz0', 's_tang_wz1', 's_tang_wz2']) {
           const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');

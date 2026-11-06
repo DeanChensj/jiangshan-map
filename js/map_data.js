@@ -8954,7 +8954,8 @@ window.DYNASTY_DATA = [
         "coord": [
           100.161,
           25.691
-        ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 742,
@@ -10656,6 +10657,10 @@ window.DYNASTY_DATA = [
       {
         "until": 713,
         "snap": "s_tang_a5z"
+      },
+      {
+        "until": 738,
+        "snap": "s_tang_a5y"
       },
       {
         "until": 755,

@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "679 — 686 · 裴行俭复四镇：碎叶代焉耆为四镇之一，调露元年设安南都护府",
     "note": "州郡政区：唐代十道/十五道与州府政区",
@@ -124,7 +124,7 @@
       "s_tang_a4/唐",
       "安东都护府",
       "s_tang_a4/吐蕃",
-      "s_tang_a0/南诏",
+      "s_tang_a0/六诏",
       "安西都护府",
       "s_tang_a0/占城",
       "s_sui_a/狮子国",

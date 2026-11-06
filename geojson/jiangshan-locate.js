@@ -6,7 +6,8 @@
  * Browser:  <script src=".../geojson/jiangshan-locate.js"></script>
  *           const atlas = JiangshanLocate.create();            // base = this script's folder
  *           const hit = await atlas.locate(108.94, 34.26, 741);
- *           hit.prefecture.properties.title                     // "京兆府"
+ *           hit.region.properties.title                         // "关内道"
+ *           hit.prefecture                                      // null unless exported with --with-prefectures
  * Node/ESM: const { create } = require('./jiangshan-locate.js');
  *           create({ base, fetchJSON: (url) => ... })
  *
