@@ -33,6 +33,7 @@ We welcome contributions of all kinds, including:
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
+    ├── audit_prefectures.js # Zero-dependency prefecture-layer overlap / outside-polity audit against data/atlas/prefecture_baseline.json (--check in CI)
     ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
     ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
     ├── repair_topology.js   # Zero-dependency border repair: snaps core polity borders together and rewrites data/atlas/
@@ -93,6 +94,12 @@ We welcome contributions of all kinds, including:
      node scripts/audit_topology.js                       # Worst snapshots
      node scripts/audit_topology.js --details s_tang_d2   # Mismatched polity pairs in one snapshot
      node scripts/audit_topology.js --update              # After fixing borders: lower the baseline and commit it
+     ```
+   - Prefectures (郡 / 州 / 府) of one snapshot should not overlap each other and should stay inside the snapshot's core polities. The map clips prefecture and first-level region lines to those polities, so overreach never shows, but CI still counts it on a 0.05° grid (overlapping cells, cells outside every core polity) and fails if any count rises above `data/atlas/prefecture_baseline.json`:
+     ```bash
+     node scripts/audit_prefectures.js                      # Worst snapshots
+     node scripts/audit_prefectures.js --details s_xihan_a  # Overlapping pairs and prefectures outside the polities
+     node scripts/audit_prefectures.js --update             # After fixing prefectures: lower the baseline and commit it
      ```
    - `scripts/repair_topology.js` fixes sliver gaps and shallow overlaps (under ~3 km) automatically. Polities are ranked `main` > `rival` > `protectorate`, then by area; lower-ranked borders snap onto higher-ranked ones and both sides get the same vertex chain. A change that would make any other snapshot sharing the feature worse, add spikes or pinch points to a border, or move a piece of territory wider than ~6 km, is skipped and reported. Deeper mismatches are listed for manual fixing.
      ```bash

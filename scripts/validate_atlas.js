@@ -631,6 +631,16 @@ function main() {
     assert(audioSize > 100000, `Self-hosted Guqin audio file ${gt.mp3} is unexpectedly small (${audioSize} bytes)`);
   }
 
+  // 6c. Prefecture and first-level region lines are clipped to the snapshot's own polities (#234),
+  // so a second coastline or a commandery drawn in lost territory never shows.
+  assert(
+    indexHtml.includes('<clipPath id="prefecture-clip" clipPathUnits="userSpaceOnUse"><path id="prefecture-clip-path" /></clipPath>') &&
+      appCode.includes("shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)')") &&
+      appCode.includes("{ 'clip-path': 'url(#prefecture-clip)' }") &&
+      appCode.includes("clipPath.setAttribute('d', ownPaths.join(''))"),
+    'index.html & app.js must clip the prefecture layer and region lines to #prefecture-clip (the non-neighbor polities)'
+  );
+
   // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
   const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(

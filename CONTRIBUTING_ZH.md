@@ -33,6 +33,7 @@
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
+    ├── audit_prefectures.js # 零依赖郡县层审计（郡与郡重叠、郡出国界），与 data/atlas/prefecture_baseline.json 比对（CI 中运行 --check）
     ├── audit_topology.js    # 零依赖政权边界缝隙/重叠审计，与 data/atlas/topology_baseline.json 比对（CI 中运行 --check）
     ├── repair_topology.js   # 零依赖边界修复：把核心政权边界吸附对齐并改写 data/atlas/
     ├── build_atlas.js       # 零依赖构建脚本：data/atlas/ → atlas_snapshots.js + atlas_boot.js（CI 中运行 --check）
@@ -93,6 +94,12 @@
      node scripts/audit_topology.js                       # 列出问题最多的快照
      node scripts/audit_topology.js --details s_tang_d2   # 查看某个快照中有问题的政权对
      node scripts/audit_topology.js --update              # 修完边界后下调基线并一起提交
+     ```
+   - 同一快照内的郡 / 州 / 府彼此不应重叠，也应落在该快照的核心政权之内。地图会把郡界和一级政区界裁剪到这些政权范围内，越界部分不会显示；但 CI 仍按 0.05° 网格统计重叠格数和落在所有核心政权之外的格数，任一快照超过 `data/atlas/prefecture_baseline.json` 即失败：
+     ```bash
+     node scripts/audit_prefectures.js                      # 列出问题最多的快照
+     node scripts/audit_prefectures.js --details s_xihan_a  # 查看重叠的郡对与出界的郡
+     node scripts/audit_prefectures.js --update             # 修完后下调基线并一起提交
      ```
    - `scripts/repair_topology.js` 可自动修复约 3 公里以内的细缝与浅重叠：政权按 `main` > `rival` > `protectorate`、再按面积排序，低优先级边界吸附到高优先级边界上，双方共用同一组顶点。若某处改动会让共用该要素的其他快照变差，给边界新增尖刺、自相接触的点，或挪动宽于约 6 公里的一块领土，则跳过并报告；更深的错位会列出来留待人工修正。
      ```bash
