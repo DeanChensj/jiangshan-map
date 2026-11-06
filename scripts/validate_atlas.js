@@ -3174,18 +3174,20 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 22, `Expected 22 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 26, `Expected 26 s_tang* snapshots, found ${tangSnapKeys.length}`);
   // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
-  // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790.
+  // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790;
+  // the Four Garrisons fall to 吐蕃 in 670–679 and 686–692, when 安西 falls back to 西州.
   {
     const pol = (sk, title) => (snapshots[sk].polities || []).find((p) => p.title === title);
     const pyongyang = [125.75, 39.02];
     const dunhua = [128.2, 43.37];
     assert(pointInShape(...pyongyang, pol('s_tang_a4', '安东都护府').shape), 's_tang_a4: 平壤 must be inside 安东都护府');
-    for (const sk of ['s_tang_a4', 's_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+    assert(pointInShape(...pyongyang, pol('s_tang_a4b', '安东都护府').shape), 's_tang_a4b: 平壤 must be inside 安东都护府');
+    for (const sk of ['s_tang_a4', 's_tang_a4b', 's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b']) {
       assert(!pointInShape(...pyongyang, pol(sk, '新罗').shape), `${sk}: 平壤 must not be inside 新罗`);
     }
-    for (const sk of ['s_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+    for (const sk of ['s_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b']) {
       assert(!pointInShape(...pyongyang, pol(sk, '安东都护府').shape), `${sk}: 安东都护府 must have left 平壤 (676)`);
     }
     for (const sk of ['s_tang_wz1b', 's_tang_wz2', 's_tang_a5z']) {
@@ -3194,6 +3196,19 @@ function main() {
     }
     assert(!pointInShape(...dunhua, pol('s_tang_wz1b', '安东都护府').shape), 's_tang_wz1b: 敦化 must not be inside 安东都护府');
     assert(pol('s_tang_a5', '渤海') && !pol('s_tang_a5', '震国'), 's_tang_a5 (713–755) must show 渤海');
+    const kucha = [82.96, 41.72];
+    const xizhou = [89.18, 42.95];
+    for (const sk of ['s_tang_a4', 's_tang_a', 's_tang_wz1']) {
+      assert(pointInShape(...kucha, pol(sk, '安西都护府').shape), `${sk}: 龟兹 must be inside 安西都护府`);
+    }
+    for (const sk of ['s_tang_a4b', 's_tang_a6', 's_tang_a7', 's_tang_wz0']) {
+      const lostAnxi = pol(sk, '安西都护府（西州）');
+      assert(lostAnxi && pointInShape(...xizhou, lostAnxi.shape), `${sk}: 西州 must be inside 安西都护府（西州）`);
+      assert(!pointInShape(...kucha, lostAnxi.shape), `${sk}: 龟兹 must not be inside 安西都护府 (lost to 吐蕃)`);
+      for (const pt of [kucha, [79.93, 37.11], [75.99, 39.47], [86.57, 42.06]]) {
+        assert(pointInShape(...pt, pol(sk, '吐蕃').shape), `${sk}: ${pt} (a Four Garrisons town) must be inside 吐蕃`);
+      }
+    }
     const anxi = pol('s_tang_b1', '安西都护府（孤悬坚守）').shape;
     const beiting = pol('s_tang_b1', '北庭都护府（孤悬坚守）').shape;
     for (const [name, pt] of [['龟兹', [82.96, 41.72]], ['于阗', [79.93, 37.11]], ['疏勒', [75.99, 39.47]], ['西州', [89.18, 42.95]]]) {
@@ -4824,7 +4839,7 @@ function main() {
     }
 
     // Tang 23 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 698, 702, 705, 713, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
@@ -7922,8 +7937,14 @@ function main() {
           741,
           'tang.focusYear must sit in Li-Tang High Tang (741) rather than inside Wu Zhou (690–704)'
         );
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 669), 's_tang_a4');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 670), 's_tang_a4b');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 676), 's_tang_a6');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 679), 's_tang_a');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 685), 's_tang_a');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a7');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz0');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 692), 's_tang_wz1');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 697), 's_tang_wz1');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1b');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
@@ -7931,7 +7952,7 @@ function main() {
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5z');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 713), 's_tang_a5');
 
-        for (const sk of ['s_tang_wz1', 's_tang_wz2']) {
+        for (const sk of ['s_tang_wz0', 's_tang_wz1', 's_tang_wz2']) {
           const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');
           assert(
             wzMain && wzMain.title === '武周' && wzMain.tint === '#9b3b4a',
@@ -7962,6 +7983,13 @@ function main() {
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 689), '东都洛阳');
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 695), '神都洛阳');
         assert.strictEqual(ctrl._settlementAncient(luoyangItem, 705), '东都洛阳');
+        // The Anxi seat leaves 龟兹 for 西州 while the Four Garrisons are lost (670–679, 686–692).
+        const anxiSeat = tangDyn.settlements.find((s) => s.ancient === '安西都护府');
+        const xizhouItem = tangDyn.settlements.find((s) => s.ancient === '西州');
+        for (const [yr, kucha, xizhou] of [[669, '安西都护府', '西州'], [673, '龟兹', '西州（安西都护府）'], [681, '安西都护府', '西州'], [688, '龟兹', '西州（安西都护府）'], [692, '安西都护府', '西州']]) {
+          assert.strictEqual(ctrl._settlementAncient(anxiSeat, yr), kucha);
+          assert.strictEqual(ctrl._settlementAncient(xizhouItem, yr), xizhou);
+        }
 
         ctrl.locale = 'zh';
         const wzInspZh = ctrl.inspect({ year: 695, place: '洛阳' });

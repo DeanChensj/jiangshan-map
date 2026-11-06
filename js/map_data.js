@@ -8669,12 +8669,23 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 670,
-        "headline": "大非川之战：薛仁贵护送吐谷浑复国败于吐蕃，吐谷浑入吐蕃",
-        "site": "大非川（青海共和）",
+        "headline": "大非川之战：薛仁贵败于吐蕃，吐谷浑入吐蕃；吐蕃陷安西四镇",
+        "site": "大非川（青海共和）· 龟兹",
         "coord": [
           99.82,
           36.28
-        ]
+        ],
+        "siteCoords": [
+          [
+            99.82,
+            36.28
+          ],
+          [
+            82.96,
+            41.72
+          ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 676,
@@ -8688,12 +8699,23 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 679,
-        "headline": "唐廷于调露元年改交州都督府为安南都护府",
-        "site": "安南都护府（交州）",
+        "headline": "裴行俭擒阿史那都支，复置安西四镇；改交州都督府为安南都护府",
+        "site": "碎叶 · 安南都护府（交州）",
         "coord": [
-          105.851,
-          21.031
-        ]
+          75.29,
+          42.83
+        ],
+        "siteCoords": [
+          [
+            75.29,
+            42.83
+          ],
+          [
+            105.851,
+            21.031
+          ]
+        ],
+        "isMapChange": true
       },
       {
         "year": 684,
@@ -8715,6 +8737,16 @@ window.DYNASTY_DATA = [
         ]
       },
       {
+        "year": 686,
+        "headline": "武则天弃安西四镇，吐蕃据有塔里木，安西都护府退治西州",
+        "site": "龟兹（新疆库车）",
+        "coord": [
+          82.96,
+          41.72
+        ],
+        "isMapChange": true
+      },
+      {
         "year": 690,
         "headline": "武则天改唐为周，定都神都洛阳",
         "site": "神都洛阳",
@@ -8727,6 +8759,16 @@ window.DYNASTY_DATA = [
           "wuzetian",
           "direnjie"
         ]
+      },
+      {
+        "year": 692,
+        "headline": "王孝杰大破吐蕃收复安西四镇，复置安西都护府于龟兹",
+        "site": "龟兹（新疆库车）",
+        "coord": [
+          82.96,
+          41.72
+        ],
+        "isMapChange": true
       },
       {
         "year": 698,
@@ -9351,6 +9393,20 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "安西都护府",
+        "eraNames": [
+          {
+            "from": 670,
+            "until": 679,
+            "zh": "龟兹",
+            "en": "Kucha"
+          },
+          {
+            "from": 686,
+            "until": 692,
+            "zh": "龟兹",
+            "en": "Kucha"
+          }
+        ],
         "modern": "阿克苏·库车",
         "coord": [
           82.961,
@@ -9871,6 +9927,20 @@ window.DYNASTY_DATA = [
       },
       {
         "ancient": "西州",
+        "eraNames": [
+          {
+            "from": 670,
+            "until": 679,
+            "zh": "西州（安西都护府）",
+            "en": "Xizhou (Anxi Protectorate)"
+          },
+          {
+            "from": 686,
+            "until": 692,
+            "zh": "西州（安西都护府）",
+            "en": "Xizhou (Anxi Protectorate)"
+          }
+        ],
         "modern": "吐鲁番",
         "coord": [
           89.53,
@@ -10455,12 +10525,28 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a3"
       },
       {
-        "until": 676,
+        "until": 670,
         "snap": "s_tang_a4"
       },
       {
-        "until": 690,
+        "until": 676,
+        "snap": "s_tang_a4b"
+      },
+      {
+        "until": 679,
+        "snap": "s_tang_a6"
+      },
+      {
+        "until": 686,
         "snap": "s_tang_a"
+      },
+      {
+        "until": 690,
+        "snap": "s_tang_a7"
+      },
+      {
+        "until": 692,
+        "snap": "s_tang_wz0"
       },
       {
         "until": 698,
