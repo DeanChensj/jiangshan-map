@@ -3778,9 +3778,9 @@
       "type": "Feature",
       "id": "南诏",
       "properties": {
-        "title": "南诏",
-        "tint": "#7a5c91",
-        "role": "rival",
+        "title": "爨 · 六诏",
+        "tint": null,
+        "role": "neighbor",
         "anchor": [101.5, 24.5]
       },
       "geometry": {
