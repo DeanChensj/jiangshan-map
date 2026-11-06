@@ -1,0 +1,262 @@
+{
+  "coverage": "Tang Chang'an–Luoyang regional detail. Intervals describe layer coverage, not a site's entire lifetime. Named periods can omit closures. Coordinates are approximate site markers; no reconstructed footprints are implied.",
+  "coordinateSource": "Wikidata P625, CC0, retrieved 2026-11-02. Descriptions are original summaries of linked historical sources.",
+  "sites": [
+    {
+      "id": "tang-taiji",
+      "title": "太极宫",
+      "titleEn": "Taiji Palace site",
+      "coord": [
+        108.938889,
+        34.278889
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "palace",
+      "detail": "隋代宫城，唐初继续使用。此点表示宫城遗址的大致位置。",
+      "detailEn": "A Sui palace complex used by the early Tang court. The marker identifies the approximate archaeological area.",
+      "sourceURL": "https://www.wikidata.org/wiki/Q10038732",
+      "wikidata": "Q10038732",
+      "city": "changan"
+    },
+    {
+      "id": "tang-daming",
+      "title": "大明宫",
+      "titleEn": "Daming Palace site",
+      "coord": [
+        108.959444,
+        34.291389
+      ],
+      "from": 634,
+      "until": 896,
+      "kind": "palace",
+      "detail": "始建于634年，后成为唐代重要宫廷与政务中心，896年毁于战火。",
+      "detailEn": "Construction began in 634. The palace became a Tang court and government center and was destroyed in 896.",
+      "sourceURL": "https://en.chinaculture.org/library/2008-02/15/content_36814.htm",
+      "wikidata": "Q1158530",
+      "city": "changan"
+    },
+    {
+      "id": "tang-dayan",
+      "title": "大雁塔",
+      "titleEn": "Giant Wild Goose Pagoda",
+      "coord": [
+        108.959335,
+        34.219769
+      ],
+      "from": 652,
+      "until": 907,
+      "kind": "temple",
+      "detail": "652年由玄奘主持兴建，用于保存从印度带回的经卷。现存建筑经历后世修缮。",
+      "detailEn": "Built in 652 under Xuanzang to house scriptures brought from India. The surviving structure includes later alterations.",
+      "sourceURL": "https://www.mea.gov.in/images/pdf/India-ChinaEncyclopedia_Vol-1.pdf",
+      "wikidata": "Q1047061",
+      "city": "changan"
+    },
+    {
+      "id": "tang-xiaoyan",
+      "title": "小雁塔",
+      "titleEn": "Small Wild Goose Pagoda",
+      "coord": [
+        108.937358,
+        34.240803
+      ],
+      "from": 707,
+      "until": 907,
+      "kind": "temple",
+      "detail": "荐福寺塔，始建于707年，是唐代长安佛教建筑的重要遗存。",
+      "detailEn": "The Jianfu Temple pagoda was begun in 707 and survives as a major monument of Tang Chang'an.",
+      "sourceURL": "https://en.chinaculture.org/library/2008-02/15/content_34684.htm",
+      "wikidata": "Q1194818",
+      "city": "changan"
+    },
+    {
+      "id": "tang-baima",
+      "title": "白马寺",
+      "titleEn": "White Horse Temple",
+      "coord": [
+        112.599722,
+        34.723889
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "temple",
+      "detail": "始建于东汉68年的佛寺。此图层标示其唐代时期的位置，非现存建筑的年代。",
+      "detailEn": "Founded in 68 during the Eastern Han. This layer marks the Tang-era site, rather than dating today's buildings to the Tang.",
+      "sourceURL": "https://en.chinaculture.org/library/2008-02/15/content_34384.htm",
+      "wikidata": "Q1264618",
+      "city": "luoyang"
+    },
+    {
+      "id": "tang-longmen",
+      "title": "龙门石窟",
+      "titleEn": "Longmen Grottoes",
+      "coord": [
+        112.469722,
+        34.555556
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "grotto",
+      "detail": "伊河两岸的石窟群，北魏至唐代持续营造，唐代造像是其中的重要部分。",
+      "detailEn": "Caves along the Yi River were carved from the Northern Wei through the Tang, including major Tang Buddhist sculptures.",
+      "sourceURL": "https://whc.unesco.org/en/list/1003/",
+      "wikidata": "Q273834",
+      "city": "luoyang"
+    },
+    {
+      "id": "tang-xingqing",
+      "title": "兴庆宫遗址",
+      "titleEn": "Xingqing Palace site",
+      "coord": [
+        108.978889,
+        34.255
+      ],
+      "from": 714,
+      "until": 907,
+      "kind": "palace",
+      "city": "changan",
+      "detail": "714年由唐玄宗藩邸改为离宫，后扩建朝堂并成为听政之所。点位取今遗址公园区域，不表示唐代宫墙范围。",
+      "detailEn": "Xuanzong’s former residence became a palace in 714 and later a government center. The marker lies within today’s heritage park; it does not trace Tang palace walls.",
+      "sourceURL": "https://www.chnmuseum.cn/zp/zpml/gjwxbt/202008/t20200824_247155.shtml",
+      "wikidata": "Q10894249"
+    },
+    {
+      "id": "tang-huaqing",
+      "title": "华清宫遗址",
+      "titleEn": "Huaqing Palace site",
+      "coord": [
+        109.20744,
+        34.36531
+      ],
+      "from": 644,
+      "until": 755,
+      "kind": "palace",
+      "city": "changan",
+      "detail": "644年在骊山营建汤泉宫，671年改称温泉宫，747年扩建并改称华清宫。756年遭兵火，本图层仅显示此前的宫苑时期。",
+      "detailEn": "The Lishan retreat was established as Tangquan Palace in 644, renamed Wenquan Palace in 671 and Huaqing Palace in 747. This layer ends before its destruction in 756.",
+      "sourceURL": "https://dfz.shaanxi.gov.cn/zslm/fzzlk/xbsxsz/szdylpdf/201404/P020240923623109161543.pdf",
+      "wikidata": "Q10905823",
+      "names": [
+        {
+          "from": 644,
+          "until": 670,
+          "title": "汤泉宫",
+          "titleEn": "Tangquan Palace"
+        },
+        {
+          "from": 671,
+          "until": 746,
+          "title": "温泉宫",
+          "titleEn": "Wenquan Palace"
+        },
+        {
+          "from": 747,
+          "until": 755,
+          "title": "华清宫",
+          "titleEn": "Huaqing Palace"
+        }
+      ]
+    },
+    {
+      "id": "tang-qinglong",
+      "title": "青龙寺遗址",
+      "titleEn": "Qinglong Temple site",
+      "coord": [
+        108.98461,
+        34.23385
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "temple",
+      "city": "changan",
+      "detail": "隋代始建，621年寺废，662年复立为观音寺，711年改称青龙寺。804—806年空海在此学习。845年寺废，846年称护国寺，855年恢复青龙寺名；图上名称随年份变化。",
+      "detailEn": "Founded under the Sui, the temple closed in 621 and reopened in 662. Kūkai studied here in 804–806. Labels follow its documented names and omit the closure periods.",
+      "sourceURL": "https://wwj.xa.gov.cn/xwzx/tzgg/1902288108237918209.html",
+      "wikidata": "Q10565990",
+      "names": [
+        {
+          "from": 618,
+          "until": 620,
+          "title": "灵感寺",
+          "titleEn": "Linggan Temple"
+        },
+        {
+          "from": 662,
+          "until": 710,
+          "title": "观音寺",
+          "titleEn": "Guanyin Temple"
+        },
+        {
+          "from": 711,
+          "until": 844,
+          "title": "青龙寺",
+          "titleEn": "Qinglong Temple"
+        },
+        {
+          "from": 846,
+          "until": 854,
+          "title": "护国寺",
+          "titleEn": "Huguo Temple"
+        },
+        {
+          "from": 855,
+          "until": 907,
+          "title": "青龙寺",
+          "titleEn": "Qinglong Temple"
+        }
+      ]
+    },
+    {
+      "id": "tang-xingjiao",
+      "title": "兴教寺",
+      "titleEn": "Xingjiao Temple",
+      "coord": [
+        109.033889,
+        34.091389
+      ],
+      "from": 669,
+      "until": 907,
+      "kind": "temple",
+      "city": "changan",
+      "detail": "669年为安奉玄奘遗骨而建，寺内有玄奘及弟子相关塔院。此点表示寺址，不代表现存殿宇均建于唐代。",
+      "detailEn": "Established in 669 to house Xuanzang’s remains. The marker locates the temple site; surviving halls are not all Tang buildings.",
+      "sourceURL": "https://www.mea.gov.in/images/pdf/India-ChinaEncyclopedia_Vol-1.pdf",
+      "wikidata": "Q1538662"
+    },
+    {
+      "id": "tang-yingtian",
+      "title": "应天门遗址",
+      "titleEn": "Yingtian Gate site",
+      "coord": [
+        112.4547,
+        34.6771
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "gate",
+      "city": "luoyang",
+      "detail": "隋唐洛阳宫城正南门，始建于605年，是宫廷礼仪与庆典的重要场所。历史上曾用则天门、神龙门等名称；本图层以遗址通称标示，今展示建筑为现代保护工程。",
+      "detailEn": "The southern gate of Luoyang’s palace city was founded in 605 and hosted court ceremonies. It had several historical names; this marker uses the site’s familiar name. Today’s display building is modern.",
+      "sourceURL": "https://ytsc.rootinhenan.gov.cn/sitesources/ytsc/page_pc/hnly/fjms/article37896e9dc2fb4df6a6df0ff306b79ff2.html",
+      "wikidata": "Q11491257"
+    },
+    {
+      "id": "tang-dingding",
+      "title": "定鼎门遗址",
+      "titleEn": "Dingding Gate site",
+      "coord": [
+        112.46067,
+        34.63291
+      ],
+      "from": 618,
+      "until": 907,
+      "kind": "gate",
+      "city": "luoyang",
+      "detail": "隋唐洛阳外郭城南门，与宫城南门应天门分属不同城垣。遗址保存门址、里坊及水系等遗存，可见丝绸之路东端都城的城市结构。",
+      "detailEn": "The southern gate of Luoyang’s outer city stood separately from the palace gate. Excavated gate, neighborhood and water-system remains illuminate the Silk Road capital’s urban layout.",
+      "sourceURL": "https://iidos.cn/en/SilkRoadHeritage/info.aspx?itemid=10158&lcid=212",
+      "wikidata": "Q10948766"
+    }
+  ]
+}

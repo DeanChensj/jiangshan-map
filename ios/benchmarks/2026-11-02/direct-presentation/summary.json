@@ -1,0 +1,81 @@
+{
+  "sourceRevision": "bef202be3521ae38f5c661ad258c84005340b9a0",
+  "runID": "EB7CACE3-7ECF-40C8-8D5B-673353ED8502",
+  "startedAtUTC": "2026-11-03T04:34:29Z",
+  "deviceModel": "iPhone 18 Pro Max",
+  "os": "27.2",
+  "configuration": "signed Release",
+  "requestedFPS": 60,
+  "screenMaximumFPS": 120,
+  "lowPowerMode": false,
+  "thermalState": 0,
+  "scene": "1415, Chinese, boundaries/rivers/events/detail on, modern province/Today reference off",
+  "tool": "Instruments 27.0 (27A266a), Game Performance Overview + Display + Points of Interest",
+  "metric": "Map CAMetalLayer drawable On Display interval starts; actual presentations",
+  "anchorTraceNanoseconds": 7352086708,
+  "phaseAnchorDisagreementMs": 0.043625,
+  "recordedPhaseIndices": [
+    1,
+    2
+  ],
+  "firstNewPresentationSeconds": 0.82593925,
+  "phases": [
+    {
+      "phase": "pan",
+      "seconds": 10.0,
+      "presentedFrames": 549,
+      "presentedFPS": 54.9,
+      "activePresentationCadenceFPS": 59.781818453553726,
+      "onDisplayP50Ms": 16.666625,
+      "onDisplayP95Ms": 24.998875,
+      "onDisplayP99Ms": 25.0,
+      "onDisplayMaxMs": 49.999958
+    },
+    {
+      "phase": "zoom",
+      "seconds": 10.0,
+      "presentedFrames": 599,
+      "presentedFPS": 59.9,
+      "activePresentationCadenceFPS": 59.899832805092515,
+      "onDisplayP50Ms": 16.666625,
+      "onDisplayP95Ms": 24.998833,
+      "onDisplayP99Ms": 24.999833,
+      "onDisplayMaxMs": 33.334458
+    },
+    {
+      "phase": "pan+zoom",
+      "seconds": 10.0,
+      "presentedFrames": 600,
+      "presentedFPS": 60.0,
+      "activePresentationCadenceFPS": 59.99999899833056,
+      "onDisplayP50Ms": 16.666625,
+      "onDisplayP95Ms": 24.998792,
+      "onDisplayP99Ms": 24.998875,
+      "onDisplayMaxMs": 25.0
+    }
+  ],
+  "overall": {
+    "phase": "overall",
+    "seconds": 30.0,
+    "presentedFrames": 1748,
+    "presentedFPS": 58.266666666666666,
+    "activePresentationCadenceFPS": 59.89714277226005,
+    "onDisplayP50Ms": 16.666625,
+    "onDisplayP95Ms": 24.998833,
+    "onDisplayP99Ms": 24.999917,
+    "onDisplayMaxMs": 49.999958
+  },
+  "limits": [
+    "One instrumented automated sweep, not a touch-latency or battery test.",
+    "Recorded map preference 60 FPS is not a measured presentation rate.",
+    "Initial same-camera target produces a hold before the first new pan frame.",
+    "No claim of uninstrumented FPS or cause of the observed cadence.",
+    "The full Metal System Trace attempt failed while saving and is excluded."
+  ],
+  "inputSHA256": {
+    "metal-frame-intervals.xml": "6a3e13c68bc0e0e3b15d2b1b5ae4014df7435e28d8be2386c5fdbf2c1b93a32c",
+    "raw-signposts.xml": "14a93032fee65b94db5cedddec91b150e1c9a12deef6b6d01cbadbb75054fa94",
+    "camera-display-sdk.json": "03c192a147c111684d96ed0e5fb3ccc67fdf9a618231f4df4028f1fc0570fae6",
+    "toc.xml": "0f3a44e968b6610ddbe9460df48732083b1a73f8543a6fb35cb52b44b916dfdb"
+  }
+}

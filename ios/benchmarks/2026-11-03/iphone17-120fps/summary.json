@@ -1,0 +1,83 @@
+{
+  "sourceRevision": "3b5fca7d31d2ad97c515b8e4baff957555d6ee78",
+  "runID": "D6B6B164-7B72-494D-A150-C205DBC83B6A",
+  "startedAtUTC": "2026-11-03T05:23:40Z",
+  "deviceModel": "iPhone 17 Pro Max",
+  "os": "27.2",
+  "configuration": "signed Release",
+  "requestedFPS": 120,
+  "verified120FPSRequest": true,
+  "mapPreferredFPSAtStart": 120,
+  "screenMaximumFPS": 120,
+  "lowPowerMode": false,
+  "thermalState": 0,
+  "scene": "1415, Chinese, boundaries/rivers/events/detail on, modern province/Today reference off",
+  "tool": "Instruments 27.0 (27A266a), Game Performance Overview + Display + Points of Interest",
+  "metric": "Map CAMetalLayer drawable On Display interval starts; actual presentations",
+  "anchorTraceNanoseconds": 7499219000,
+  "phaseAnchorDisagreementMs": 4.466875,
+  "recordedPhaseIndices": [
+    1,
+    2
+  ],
+  "firstNewPresentationSeconds": 0.816701666,
+  "phases": [
+    {
+      "phase": "pan",
+      "seconds": 10.0,
+      "presentedFrames": 1077,
+      "presentedFPS": 107.7,
+      "activePresentationCadenceFPS": 117.26443860232962,
+      "onDisplayP50Ms": 8.334042,
+      "onDisplayP95Ms": 8.334125,
+      "onDisplayP99Ms": 8.334125,
+      "onDisplayMaxMs": 200.017
+    },
+    {
+      "phase": "zoom",
+      "seconds": 10.0,
+      "presentedFrames": 1194,
+      "presentedFPS": 119.4,
+      "activePresentationCadenceFPS": 119.3885395318417,
+      "onDisplayP50Ms": 8.334042,
+      "onDisplayP95Ms": 8.334125,
+      "onDisplayP99Ms": 8.334125,
+      "onDisplayMaxMs": 33.335084
+    },
+    {
+      "phase": "pan+zoom",
+      "seconds": 10.0,
+      "presentedFrames": 1200,
+      "presentedFPS": 120.0,
+      "activePresentationCadenceFPS": 119.98898483906413,
+      "onDisplayP50Ms": 8.334042,
+      "onDisplayP95Ms": 8.334084,
+      "onDisplayP99Ms": 8.334125,
+      "onDisplayMaxMs": 8.334167
+    }
+  ],
+  "overall": {
+    "phase": "overall",
+    "seconds": 30.0,
+    "presentedFrames": 3471,
+    "presentedFPS": 115.7,
+    "activePresentationCadenceFPS": 118.9265285401584,
+    "onDisplayP50Ms": 8.334042,
+    "onDisplayP95Ms": 8.334125,
+    "onDisplayP99Ms": 8.334125,
+    "onDisplayMaxMs": 200.017
+  },
+  "limits": [
+    "One instrumented automated sweep, not a touch-latency or battery test.",
+    "Recorded map preference 120 FPS is not a measured presentation rate.",
+    "Initial same-camera target produces a hold before the first new pan frame.",
+    "No claim of uninstrumented FPS or cause of the observed cadence.",
+    "Only the successful map-layer presentation export is included."
+  ],
+  "inputSHA256": {
+    "metal-frame-intervals.xml": "22c3bb049866cdaee5db7bf4981fc1ee2748aacd70b0b82355116a9c2c545f4f",
+    "raw-signposts.xml": "b0f1ce8d446c5484981c5f62a4dd7964ce5b82c491fb5ae889b7ec41a6f2f35e",
+    "camera-sdk.json": "660b834654095e45bc22d0cd3f3100cb6e90b115856f698b4b92987427dba0dd",
+    "toc.xml": "a9f04dd88e138e2355e225d6f0c284b75da10c17166be3a818ef84e920f9aee9"
+  }
+}

@@ -1,0 +1,103 @@
+name: JiangshanAtlas
+include:
+  - .build/links.yml
+options:
+  bundleIdPrefix: me.jiangshan
+  deploymentTarget:
+    iOS: "26.0"
+packages:
+  MapLibre:
+    url: https://github.com/maplibre/maplibre-gl-native-distribution.git
+    exactVersion: 7.0.0
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  JiangshanAtlas:
+    type: application
+    platform: iOS
+    sources:
+      - path: JiangshanAtlas
+        excludes:
+          - Resources
+      - path: JiangshanAtlas/Resources/Atlas
+        type: folder
+        buildPhase: resources
+      - path: JiangshanAtlas/Resources/Glyphs
+        type: folder
+        buildPhase: resources
+      - path: JiangshanAtlas/Resources/Fonts
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: MapLibre
+        product: MapLibre
+    info:
+      path: JiangshanAtlas/Info.plist
+      properties:
+        CFBundleDisplayName: 江山时序
+        AtlasAppleTeam: $(ATLAS_APPLE_TEAM)
+        AtlasWebURL: $(ATLAS_WEB_URL)
+        AtlasFallbackShareURL: $(ATLAS_FALLBACK_SHARE_URL)
+        AtlasSourceRevision: $(ATLAS_SOURCE_REVISION)
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        CFBundleURLTypes:
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER)
+            CFBundleURLSchemes: [jiangshan]
+        MLNIdeographicFontFamilyName: Noto Serif SC
+        CADisableMinimumFrameDurationOnPhone: true
+        UIBackgroundModes: [audio]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER)
+        GENERATE_INFOPLIST_FILE: NO
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: YES
+  JiangshanAtlasTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [JiangshanAtlasTests]
+    dependencies:
+      - target: JiangshanAtlas
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER).tests
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: YES
+  JiangshanAtlasUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [JiangshanAtlasUITests]
+    dependencies:
+      - target: JiangshanAtlas
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(ATLAS_BUNDLE_IDENTIFIER).uitests
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  JiangshanAtlas:
+    build:
+      targets:
+        JiangshanAtlas: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - JiangshanAtlasTests
+        - JiangshanAtlasUITests
