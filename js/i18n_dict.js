@@ -280,7 +280,7 @@ window.EN_LOCALE = {
       "Red Cliffs · Jiangling"
     ],
     "sanguo:220": [
-      "Succeeding his father, Cao Pi forces Emperor Xian of Han to abdicate and establishes Cao Wei",
+      "Cao Pi adopts the Nine-Rank System, forces Emperor Xian of Han to abdicate, and founds Cao Wei",
       "Luoyang"
     ],
     "sanguo:221": [
@@ -1060,7 +1060,7 @@ window.EN_LOCALE = {
       "Ye · Chang'an"
     ],
     "nanbei:554": [
-      "Western Wei captures Jiangling and installs Western Liang",
+      "Western Wei takes Jiangling as Emperor Yuan burns 140,000 scrolls; Western Liang is installed",
       "Jiangling (Jingzhou)"
     ],
     "sui:599": [
@@ -1988,7 +1988,7 @@ window.EN_LOCALE = {
       "Yingtian (Nanjing)"
     ],
     "ming:1402": [
-      "Jingnan forces breach Nanjing’s Jinchuan Gate; Zhu Di ascends the throne as Yongle Emperor",
+      "Jingnan forces take Nanjing; the Yongle Emperor ascends the throne and establishes the Cabinet",
       "Yingtian (Nanjing)"
     ],
     "ming:1626": [
@@ -2048,7 +2048,7 @@ window.EN_LOCALE = {
       "Chenggao & Hong Canal"
     ],
     "xihan:-134": [
-      "Emperor Wu adopts Dong Zhongshu plan, elevating Confucianism and founding the Imperial Academy",
+      "Emperor Wu elevates Confucianism, founds the Academy, and begins Filial-Incorrupt selection",
       "Chang'an"
     ],
     "nansong:1207": [
@@ -2158,6 +2158,102 @@ window.EN_LOCALE = {
     "wudai:942": [
       "After Shi Jingtang dies, successor Shi Chonggui refuses to submit as a vassal to the Khitan",
       "Bianzhou"
+    ],
+    "xihan:-81": [
+      "Su Wu returns after 19 years in captivity; Emperor Zhao convenes the Salt and Iron Debate",
+      "Chang'an"
+    ],
+    "xihan:9": [
+      "Wang Mang enforces archaic land, currency, and monopoly reforms, sparking widespread unrest",
+      "Chang'an"
+    ],
+    "donghan:39": [
+      "Emperor Guangwu decrees an empire-wide land and household survey to curb estate tax evasion",
+      "Luoyang"
+    ],
+    "donghan:79": [
+      "Emperor Zhang convenes the White Tiger Hall council; Ban Gu compiles the Book of Han",
+      "Luoyang"
+    ],
+    "dongjin:364": [
+      "Huan Wen enforces the Gengxu Residence Registration to tax northern émigré households",
+      "Jiankang"
+    ],
+    "nanbei:446": [
+      "Emperor Taiwu of Northern Wei orders the suppression of Buddhism at Cui Hao’s urging",
+      "Pingcheng"
+    ],
+    "nanbei:574": [
+      "Emperor Wu of Northern Zhou proscribes Buddhism and Daoism, returning monks to farms and armies",
+      "Chang'an"
+    ],
+    "tang:624": [
+      "Emperor Gaozu promulgates the Wude Statutes establishing equal-field and tripartite tax systems",
+      "Chang'an"
+    ],
+    "tang:653": [
+      "Zhangsun Wuji completes the Tang Code with Commentary, the pinnacle of classical Chinese law",
+      "Chang'an"
+    ],
+    "tang:821": [
+      "The Changqing examination scandal ignites forty years of Niu-Li factional strife at court",
+      "Chang'an"
+    ],
+    "tang:845": [
+      "Emperor Wuzong orders the Huichang suppression of Buddhism, secularizing 260,000 monastics",
+      "Chang'an"
+    ],
+    "beisong:1084": [
+      "Sima Guang completes the 294-scroll Comprehensive Mirror in Aid of Governance after 19 years",
+      "Kaifeng"
+    ],
+    "beisong:1105": [
+      "Emperor Huizong and Cai Jing launch the Flower-and-Rock Convoy, draining the southeast",
+      "Kaifeng · Suzhou"
+    ],
+    "nansong:1197": [
+      "Han Tuozhou proscribes Zhu Xi’s Neo-Confucianism as False Learning in the Qingyuan Partisan Ban",
+      "Lin'an"
+    ],
+    "nansong:1263": [
+      "Chancellor Jia Sidao enforces the Public Field Law in Zhexi, alienating Jiangnan landowners",
+      "Lin'an"
+    ],
+    "nansong:1277": [
+      "Yuan armies press into Fujian and Guangdong as Zhang Shijie and Lu Xiufu escort the court to sea",
+      "Fuzhou · Gangzhou"
+    ],
+    "yuan:1283": [
+      "The Yuan court inaugurates the sea grain transport route from Taicang north to Zhigu and Dadu",
+      "Taicang · Zhigu"
+    ],
+    "yuan:1341": [
+      "Chancellor Toqto’a restores civil examinations and commissions the Song, Liao, and Jin histories",
+      "Dadu"
+    ],
+    "ming:1408": [
+      "Xie Jin and Yao Guangxiao complete the 22,877-scroll Yongle Encyclopedia in Nanjing",
+      "Yingtian"
+    ],
+    "ming:1624": [
+      "Yang Lian impeaches Wei Zhongxian for 24 crimes, sparking a purge of Donglin scholars",
+      "Beijing"
+    ],
+    "ming:1642": [
+      "Hong Taiji crushes Hong Chengchou’s 130,000 Ming troops at Song-Jin outside Shanhaiguan",
+      "Songshan · Jinzhou"
+    ],
+    "qing:1773": [
+      "The Qianlong Emperor commissions the Complete Library of the Four Treasuries and purges texts",
+      "Beijing"
+    ],
+    "qing:1908": [
+      "The Qing court issues the Outline of Imperial Constitution; Guangxu and Cixi die within days",
+      "Beijing"
+    ],
+    "yuan:1295": [
+      "Emperor Chengzong halts overseas campaigns, honors Confucius, and consolidates Yuan governance",
+      "Dadu"
     ]
   },
   "corridors": {
