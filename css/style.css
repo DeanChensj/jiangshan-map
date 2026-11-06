@@ -77,13 +77,18 @@ h2 {
 
 .brand-group h1 {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+  font-size: 1rem;
+  line-height: 1;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .brand-group .home-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
   color: inherit;
   text-decoration: none;
 }
@@ -304,7 +309,20 @@ h2 {
   color: var(--text-main);
 }
 
-.github-star-btn {
+.github-pill-group {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+.github-pill-group .github-star-btn {
+  border: none;
+  border-radius: 999px 0 0 999px;
+  background: transparent;
+  padding-right: 8.5px;
   text-decoration: none;
   font-weight: 600;
   gap: 4px;
@@ -317,14 +335,128 @@ h2 {
   transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.github-star-btn:hover {
-  border-color: var(--vermilion);
-  color: var(--vermilion);
+.github-pill-group .github-star-btn:hover {
+  background: #fff;
+  color: var(--text-main);
 }
 
 .github-star-btn:hover .star-mark {
   color: #d9821b;
-  transform: scale(1.18);
+  transform: scale(1.15);
+}
+
+.github-pill-group .github-more-btn {
+  border: none;
+  border-left: 1px solid var(--hairline) !important;
+  border-radius: 0 999px 999px 0;
+  background: transparent;
+  padding: 5.5px 8px 5.5px 7px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.github-pill-group .github-more-btn .caret-mark {
+  font-size: 9.5px;
+  line-height: 1;
+  opacity: 0.65;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.github-pill-group .github-more-btn:hover {
+  background: #fff;
+  color: var(--text-main);
+}
+
+.github-pill-group .github-more-btn:hover .caret-mark {
+  opacity: 0.95;
+}
+
+.github-pill-group .github-more-btn.is-active {
+  background: #fff !important;
+  color: var(--text-main) !important;
+  border-left-color: var(--hairline) !important;
+}
+
+.github-pill-group .github-more-btn.is-active .caret-mark {
+  opacity: 0.95;
+  transform: rotate(180deg);
+}
+
+.more-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 12px;
+  width: 268px;
+  background: rgba(251, 248, 241, 0.98);
+  border: 1px solid rgba(181, 69, 47, 0.32);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(43, 38, 34, 0.18);
+  padding: 6px;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.more-pop-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-main);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.more-pop-link:hover {
+  background: rgba(181, 69, 47, 0.09);
+  color: var(--vermilion);
+}
+
+.more-pop-link .btn-svg {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.more-pop-link:hover .btn-svg {
+  color: var(--vermilion);
+}
+
+.more-link-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  gap: 1px;
+}
+
+.more-link-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.more-link-sub {
+  font-size: 10.8px;
+  color: var(--text-muted);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more-ext-mark {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.more-pop-link:hover .more-ext-mark {
+  color: var(--vermilion);
+  opacity: 1;
 }
 
 .music-pill-group {
@@ -401,7 +533,6 @@ h2 {
   height: 100%;
   transform-origin: 0 0;
   contain: layout style;
-  will-change: transform;
 }
 
 #atlas-svg {
@@ -493,9 +624,23 @@ h2 {
   pointer-events: none;
 }
 
-#terrain-relief-img {
+#terrain-relief-layer {
   opacity: 0.48;
   pointer-events: none;
+}
+
+#terrain-relief-img {
+  pointer-events: none;
+}
+
+.terrain-tile {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.terrain-tile.is-loaded {
+  opacity: 1;
 }
 
 .terrain-edge-stop {
@@ -2651,15 +2796,34 @@ h2 {
 
 /* Bottom Scrubber Timeline */
 #scrubber-dock {
+  --scrubber-surface: rgba(235, 228, 214, 0.9);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
   padding: 12px 20px 16px;
   border-top: 1px solid var(--hairline);
-  background: rgba(235, 228, 214, 0.9);
+  background: var(--scrubber-surface);
   backdrop-filter: blur(6px);
   transition: opacity 0.2s ease;
+}
+
+/* Keep the frosted surface separate from the changing timeline content. */
+#scrubber-dock.is-autoplaying {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+#scrubber-dock.is-autoplaying::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--scrubber-surface);
+  backdrop-filter: blur(6px);
 }
 
 #scrubber-dock.is-challenge-locked {
@@ -2746,6 +2910,7 @@ h2 {
 #scrubber-Bubble {
   position: absolute;
   top: 0;
+  left: 0;
   transform: translateX(-50%);
   background: var(--text-main);
   color: #f8f3e8;
@@ -2825,13 +2990,25 @@ h2 {
   filter: saturate(1.1);
 }
 
+.band-cell.is-compact {
+  font-size: 10.5px;
+  letter-spacing: -0.02em;
+}
+
 .band-cell.is-narrow {
   color: transparent;
   text-shadow: none;
 }
 
+#scrubber-motion {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 #scrubber-handle {
   position: absolute;
+  left: 0;
   top: -6px;
   bottom: -6px;
   width: 4px;
@@ -2840,6 +3017,21 @@ h2 {
   border-radius: 2px;
   box-shadow: 0 0 0 2px rgba(243, 238, 228, 0.9);
   pointer-events: none;
+}
+
+/* Year text and input changes stay on small surfaces while playback is active.
+   Release these promotion hints when playback stops. */
+#scrubber-dock.is-autoplaying #scrubber-rail-wrap,
+#scrubber-dock.is-autoplaying #scrubber-Bubble,
+#scrubber-dock.is-autoplaying .year-stepper {
+  will-change: transform;
+}
+
+/* Autoplay jumps between event nodes; the thumb glides so a 75-year hop reads as time passing.
+   Manual scrubbing keeps the instant follow. */
+#scrubber-dock.is-autoplaying #scrubber-motion {
+  will-change: transform;
+  transition: transform 0.22s ease-out;
 }
 
 #scrubber-ticks {
@@ -2965,6 +3157,11 @@ html[lang="en"] .band-cell {
   letter-spacing: -0.01em;
 }
 
+html[lang="en"] .band-cell.is-compact {
+  font-size: 9.5px;
+  letter-spacing: -0.03em;
+}
+
 html[lang="en"] #milestone-list li {
   grid-template-columns: 78px 1fr;
 }
@@ -2976,7 +3173,7 @@ html[lang="en"] .genealogy-list li {
 @media (max-width: 900px) {
   #nav-bar {
     gap: 8px;
-    padding: 8px 10px;
+    padding: 4px 10px;
   }
   .brand-group .seal-mark {
     font-size: 22px;
@@ -3027,6 +3224,11 @@ html[lang="en"] .genealogy-list li {
     left: 8px;
     top: 8px;
     width: 210px;
+  }
+  #inp-map-search,
+  #inp-year {
+    font-size: 16px;
+    line-height: 1.2;
   }
   #map-search-box:focus-within,
   #map-search-box:has(#map-search-results:not(.is-hidden)),
@@ -3184,7 +3386,7 @@ html[lang="en"] .genealogy-list li {
 
 @media (max-width: 640px) {
   #nav-bar {
-    padding: 6px 7px;
+    padding: 3.5px 7px;
     gap: 4px;
   }
   .brand-group .seal-mark {
@@ -3204,8 +3406,9 @@ html[lang="en"] .genealogy-list li {
     display: none !important;
   }
   .action-btn {
-    padding: 4px 6.5px;
+    padding: 3.5px 6.5px;
     font-size: 11px;
+    line-height: 1.15;
     gap: 2.5px;
   }
   .action-btn .btn-svg {
@@ -3222,10 +3425,17 @@ html[lang="en"] .genealogy-list li {
   #act-github-star {
     padding: 4px 6.5px;
   }
+  .github-pill-group .github-more-btn {
+    padding: 4px 5.5px 4px 4.5px;
+  }
   .layers-popover {
     left: 8px;
     right: 8px;
     width: auto;
+  }
+  .more-popover {
+    right: 8px;
+    width: min(268px, calc(100vw - 16px));
   }
   /* Collapsible 34x34px Search Button on Mobile (<= 640px) */
   #map-search-box:not(:focus-within):not(.is-expanded) {
@@ -3266,9 +3476,9 @@ html[lang="en"] .genealogy-list li {
   #scrubber-dock {
     grid-template-columns: auto 1fr auto;
     grid-template-rows: 28px auto;
-    row-gap: 7px;
+    row-gap: 5px;
     column-gap: 6px;
-    padding: 8px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+    padding: 6px 10px calc(7px + env(safe-area-inset-bottom, 0px));
   }
   .playback-controls-group {
     grid-column: 1;
@@ -3316,7 +3526,7 @@ html[lang="en"] .genealogy-list li {
     height: 28px;
   }
   #scrubber-Bubble {
-    top: -32px;
+    top: -30px;
     left: 70px !important;
     right: 58px !important;
     width: fit-content;
@@ -3324,7 +3534,7 @@ html[lang="en"] .genealogy-list li {
     margin: 0 auto;
     transform: none !important;
     font-size: 10.8px;
-    padding: 3px 8px;
+    padding: 2.5px 8px;
     border-radius: 999px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -4221,7 +4431,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane {
-    padding: 6px 12px 7px;
+    padding: 5px 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -4283,34 +4493,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
     flex-shrink: 0;
   }
 
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
-    min-width: 0;
-    margin-top: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    font-size: 11.5px;
-    white-space: normal;
-    overflow: visible;
-  }
-
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-tag {
-    flex-shrink: 0;
-    white-space: nowrap;
-    font-size: 10.5px;
-    padding: 1px 6px;
-  }
-
-  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-seat {
-    flex: 1 1 auto;
-    min-width: 0;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-  }
-
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-summary,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .milestone-section,
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .polity-backbar,
@@ -4696,7 +4879,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 @media (max-width: 640px) {
-  #terrain-relief-img {
+  #terrain-relief-layer {
     opacity: 0.48;
   }
 
@@ -4809,9 +4992,11 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
   /* Boost UI surface contrast on mobile chrome */
   #nav-bar,
-  #scrubber-dock,
   #chronicle-pane {
     background: rgba(243, 238, 228, 0.96);
+  }
+  #scrubber-dock {
+    --scrubber-surface: rgba(243, 238, 228, 0.96);
   }
 }
 

@@ -20,18 +20,23 @@ We welcome contributions of all kinds, including:
 ├── index.html               # Main application page & semantic layout
 ├── llms.txt                 # Machine-readable protocol specification for LLMs & AI Agents
 ├── css/style.css            # Traditional parchment theme & responsive styles
+├── data/atlas/              # Editable source of the polygon bundles: one GeoJSON file per snapshot, grouped by dynasty, plus index.json
 ├── js/
 │   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Person Chronicle & window.atlasAPI
 │   ├── atlas_quiz.js        # Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
 │   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
 │   ├── lore_data.js         # Imperial eras (CHINESE_ERA_SPANS), reigning monarchs, biographical routes, city lore (CITY_LORE), landmark events & gazetteer
-│   ├── atlas_boot.js        # Pre-bundled initial snapshot (s_zhanguo) for instant first-paint rendering
-│   ├── atlas_snapshots.js   # Topology-deduplicated & VLQ delta-encoded historical polity/prefecture polygons (lazy-loaded on demand)
+│   ├── atlas_boot.js        # Generated from data/atlas/: initial snapshots for instant first-paint rendering
+│   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
 │   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the X-Ray reference layer
 │   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/
+    ├── audit_prefectures.js # Zero-dependency prefecture-layer overlap / outside-polity audit against data/atlas/prefecture_baseline.json (--check in CI)
+    ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
+    ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
+    ├── repair_topology.js   # Zero-dependency border repair: snaps core polity borders together and rewrites data/atlas/
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
     └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
 ```
@@ -75,6 +80,29 @@ We welcome contributions of all kinds, including:
    - Imperial era spans (`CHINESE_ERA_SPANS`) and reigning monarchs (`REIGNING_MONARCHS`) reside in `js/lore_data.js`. When adding or correcting reign dates, cross-check against standard chronological tables (*Zhongguo Lishi Jinian Biao*).
    - `CHINESE_ERA_SPANS` is the single reference chronology shown on the timeline and follows the *Zizhi Tongjian* convention (Cao Wei for the Three Kingdoms, Eastern Jin for the Sixteen Kingdoms, the Southern Dynasties for the Northern & Southern Dynasties, the Central Plains Five Dynasties, and Song alongside Liao/Jin/Xia). Co-existing regimes that kept their own eras (Shu Han, Sun Wu, the Northern Dynasties, Western Liang, Chen after 581, Liao, Jin, Western Xia, and Kublai's Yuan) live in `REGIONAL_ERA_TRACKS`; events are labeled with the era of the regime ruling their location.
    - If a milestone's subject is not the regime holding its pinned location (e.g. a Song–Jin treaty pinned on the Jin side of the border), set `"eraRegime": "reference"` or a `REGIONAL_ERA_TRACKS` regime name on that milestone in `js/map_data.js`.
-3. **Historical Polities & Regional Boundaries (`js/atlas_snapshots.js`)**:
+3. **Historical Polities & Regional Boundaries (`data/atlas/`)**:
+   - Edit the GeoJSON sources in `data/atlas/`, then rebuild. `js/atlas_snapshots.js` and `js/atlas_boot.js` are generated; do not edit them by hand.
+     ```bash
+     node scripts/build_atlas.js           # Normalize formatting, rebuild both bundles, refresh index.html hashes
+     node scripts/build_atlas.js --check   # CI: sources formatted and bundles up to date
+     ```
+   - Each snapshot is `data/atlas/<dynasty>/<snapshotKey>.geojson` (e.g. `zhanguo/s_zhanguo_b.geojson`): a FeatureCollection whose `snapshot` member holds the caption, note and the `polities` / `prefectures` / `regions` feature lists, in display order. A bare id such as `"燕"` names a feature in the same file; `"s_zhanguo_a/齐"` names a feature defined in another snapshot (ids therefore never contain `/`). Each feature is stored once, in the earliest snapshot that uses it, so editing it changes every snapshot that references it; to change a border for one phase only, copy the feature into that snapshot's file under a new id and point the list at it.
+   - Coordinates are `[longitude, latitude]` with at most two decimals; the build closes rings and drops repeated points. A new snapshot must also be added to `order` in `data/atlas/index.json` (`boot` lists the snapshots bundled for first paint).
    - Historical frontiers (especially across steppe confederations, *Jimi* protectorates, Tubo, and the Western Regions) were dynamic transition zones rather than modern surveyed borders. When proposing boundary adjustments, please cite the reference atlas sheet in your PR description (e.g., Tan Qixiang's *The Historical Atlas of China* / 《中国历史地图集》 volume and plate).
-   - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom.
+   - Shared borders between adjacent polities or circuits should share vertex chains so boundaries remain gap-free and overlap-free at high zoom. CI counts, per snapshot, the vertices and edge midpoints where core polities (`main` / `rival` / `protectorate`; `neighbor` is excluded) overlap or leave a gap of under ~4 km, and fails if any count rises above `data/atlas/topology_baseline.json`. The baseline only goes down:
+     ```bash
+     node scripts/audit_topology.js                       # Worst snapshots
+     node scripts/audit_topology.js --details s_tang_d2   # Mismatched polity pairs in one snapshot
+     node scripts/audit_topology.js --update              # After fixing borders: lower the baseline and commit it
+     ```
+   - Prefectures (郡 / 州 / 府) of one snapshot should not overlap each other and should stay inside the snapshot's core polities. The map clips prefecture and first-level region lines to those polities, so overreach never shows, but CI still counts it on a 0.05° grid (overlapping cells, cells outside every core polity) and fails if any count rises above `data/atlas/prefecture_baseline.json`:
+     ```bash
+     node scripts/audit_prefectures.js                      # Worst snapshots
+     node scripts/audit_prefectures.js --details s_xihan_a  # Overlapping pairs and prefectures outside the polities
+     node scripts/audit_prefectures.js --update             # After fixing prefectures: lower the baseline and commit it
+     ```
+   - `scripts/repair_topology.js` fixes sliver gaps and shallow overlaps (under ~3 km) automatically. Polities are ranked `main` > `rival` > `protectorate`, then by area; lower-ranked borders snap onto higher-ranked ones and both sides get the same vertex chain. A change that would make any other snapshot sharing the feature worse, add spikes or pinch points to a border, or move a piece of territory wider than ~6 km, is skipped and reported. Deeper mismatches are listed for manual fixing.
+     ```bash
+     node scripts/repair_topology.js wudai           # Dry run for a dynasty directory (or snapshot keys)
+     node scripts/repair_topology.js wudai --write   # Rewrite sources, rebuild bundles, lower the baseline
+     ```

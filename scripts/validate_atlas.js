@@ -25,6 +25,194 @@ if (CLI_ARGS.has('--help') || CLI_ARGS.has('-h')) {
 }
 const FAST_MODE = CLI_ARGS.has('--fast') || CLI_ARGS.has('-f');
 
+// Frozen copy of _buildRegionBoundaryPath before #255 added edge bins and point
+// caches. The equivalence check below proves the optimized version draws the same
+// paths and anchors. If you change the boundary rules on purpose, delete this
+// function and that check rather than editing both.
+function buildRegionBoundaryReference(snap) {
+  if (!snap || snap._skipRegionBoundaryStroke || !Array.isArray(snap.regions) || !snap.regions.length) {
+    return '';
+  }
+  if (snap._cachedRegionBoundaryPath !== undefined) {
+    return snap._cachedRegionBoundaryPath;
+  }
+
+  const polRings = [];
+  const polList = snap.polities || [];
+  const polAreas = polList.map(() => 0);
+  for (let pIdx = 0; pIdx < polList.length; pIdx++) {
+    const pol = polList[pIdx];
+    if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
+    const coords = pol.shape.coordinates;
+    const polys = pol.shape.type === 'Polygon' ? [coords] : coords || [];
+    for (const poly of polys) {
+      const ring = poly && poly[0];
+      if (!ring || ring.length < 3) continue;
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
+      let area2 = 0;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const x = ring[i][0],
+          y = ring[i][1];
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        area2 += ring[j][0] * y - x * ring[j][1];
+      }
+      polAreas[pIdx] += Math.abs(area2) * 0.5;
+      polRings.push({ pIdx, minX, maxX, minY, maxY, ring });
+    }
+  }
+  const allCommanderyRegions = snap.regions.every(
+    (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
+  );
+  const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
+  const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
+  const findPolIdx = (x, y) => {
+    for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+      const b = polRings[rIdx];
+      if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
+      const ring = b.ring;
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0],
+          yi = ring[i][1];
+        const xj = ring[j][0],
+          yj = ring[j][1];
+        if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+          inside = !inside;
+        }
+      }
+      if (inside) return b.pIdx;
+    }
+    return -1;
+  };
+  const allowPolIdx = (pIdx) => {
+    if (pIdx < 0) return false;
+    const pol = polList[pIdx];
+    if (!pol) return false;
+    if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 35) return false;
+    return true;
+  };
+  const nearPolityBorder = (x, y, margin) => {
+    const m2 = margin * margin;
+    for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+      const b = polRings[rIdx];
+      if (
+        x < b.minX - margin ||
+        x > b.maxX + margin ||
+        y < b.minY - margin ||
+        y > b.maxY + margin
+      ) {
+        continue;
+      }
+      const ring = b.ring;
+      for (let i = 0; i < ring.length - 1; i++) {
+        const x1 = ring[i][0],
+          y1 = ring[i][1];
+        const x2 = ring[i + 1][0],
+          y2 = ring[i + 1][1];
+        const dx = x2 - x1,
+          dy = y2 - y1;
+        const len2 = dx * dx + dy * dy;
+        let t = len2 > 1e-12 ? ((x - x1) * dx + (y - y1) * dy) / len2 : 0;
+        if (t < 0) t = 0;
+        else if (t > 1) t = 1;
+        const px = x1 + t * dx - x,
+          py = y1 + t * dy - y;
+        if (px * px + py * py < m2) return true;
+      }
+    }
+    return false;
+  };
+  Object.defineProperty(snap, '_allowRegionAnchor', {
+    value: (x, y) => !polRings.length || allowPolIdx(findPolIdx(x, y)),
+    writable: true,
+    enumerable: false,
+    configurable: true,
+  });
+  const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
+  const edgeKey = (p1, p2) => {
+    const k1 = ptKey(p1);
+    const k2 = ptKey(p2);
+    return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
+  };
+
+  const allRings = [];
+  const regEdgeCounts = new Map();
+  for (const reg of snap.regions) {
+    if (!reg || !reg.shape) continue;
+    const coords = reg.shape.coordinates;
+    const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
+    for (const poly of polys) {
+      for (const ring of poly || []) {
+        if (!ring || ring.length < 2) continue;
+        allRings.push(ring);
+        for (let i = 0; i < ring.length - 1; i++) {
+          const ek = edgeKey(ring[i], ring[i + 1]);
+          regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+        }
+      }
+    }
+  }
+
+  const seenEdges = new Set();
+  let d = '';
+  for (const ring of allRings) {
+    let penX = NaN;
+    let penY = NaN;
+    for (let i = 0; i < ring.length - 1; i++) {
+      const p1 = ring[i];
+      const p2 = ring[i + 1];
+      const ek = edgeKey(p1, p2);
+      if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+        penX = NaN;
+        penY = NaN;
+        continue;
+      }
+      const mx = (p1[0] + p2[0]) * 0.5;
+      const my = (p1[1] + p2[1]) * 0.5;
+      const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
+      const borderMargin = isMultiRegime ? 0.55 : 0.16;
+      if (
+        polRings.length &&
+        (!allowPolIdx(pIdxM) ||
+          findPolIdx(p1[0], p1[1]) !== pIdxM ||
+          findPolIdx(p2[0], p2[1]) !== pIdxM ||
+          (hasLargePolity &&
+            (nearPolityBorder(mx, my, borderMargin) ||
+              (isMultiRegime &&
+                (nearPolityBorder(p1[0], p1[1], 0.38) || nearPolityBorder(p2[0], p2[1], 0.38))))))
+      ) {
+        penX = NaN;
+        penY = NaN;
+        continue;
+      }
+      seenEdges.add(ek);
+      const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
+      const [x2, y2] = this.projector.toScreen(p2[0], p2[1]);
+      if (Math.hypot(x2 - x1, y2 - y1) < 0.05) continue;
+      if (x1 !== penX || y1 !== penY) {
+        d += `M${x1.toFixed(1)} ${y1.toFixed(1)}`;
+      }
+      d += `L${x2.toFixed(1)} ${y2.toFixed(1)}`;
+      penX = x2;
+      penY = y2;
+    }
+  }
+
+  Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
+    value: d,
+    writable: true,
+    enumerable: false,
+    configurable: true,
+  });
+  return d;
+}
+
 function main() {
   const t0 = performance.now();
   const sandbox = { window: {} };
@@ -429,6 +617,30 @@ function main() {
     'app.js & index.html must unify event callouts under #chk-milestones (_syncAutoMilestoneBalloon, ep-close) and remove dead code (chk-event-callouts, toggleEventCallouts, toggleGenealogyMode, _startGuqinSynthFallback)'
   );
 
+  // 6b. Verify Guqin audio tracks are self-hosted same-origin MP3s in assets/audio/ (reachable on mainland China Wi-Fi without upload.wikimedia.org DNS blocking)
+  const guqinTracks = (sandbox.window.ATLAS_LORE_DATA && sandbox.window.ATLAS_LORE_DATA.GUQIN_TRACKS) || [];
+  assert(guqinTracks.length >= 5, `Expected at least 5 GUQIN_TRACKS, got ${guqinTracks.length}`);
+  for (const gt of guqinTracks) {
+    assert(
+      typeof gt.mp3 === 'string' && gt.mp3.startsWith('assets/audio/') && gt.mp3.endsWith('.mp3'),
+      `GUQIN_TRACKS (${gt.zh}) primary mp3 must be a same-origin assets/audio/*.mp3 path, got ${gt.mp3}`
+    );
+    const audioPath = path.join(ROOT, gt.mp3);
+    assert(fs.existsSync(audioPath), `Missing self-hosted Guqin audio file: ${gt.mp3}`);
+    const audioSize = fs.statSync(audioPath).size;
+    assert(audioSize > 100000, `Self-hosted Guqin audio file ${gt.mp3} is unexpectedly small (${audioSize} bytes)`);
+  }
+
+  // 6c. Prefecture and first-level region lines are clipped to the snapshot's own polities (#234),
+  // so a second coastline or a commandery drawn in lost territory never shows.
+  assert(
+    indexHtml.includes('<clipPath id="prefecture-clip" clipPathUnits="userSpaceOnUse"><path id="prefecture-clip-path" /></clipPath>') &&
+      appCode.includes("shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)')") &&
+      appCode.includes("{ 'clip-path': 'url(#prefecture-clip)' }") &&
+      appCode.includes("clipPath.setAttribute('d', ownPaths.join(''))"),
+    'index.html & app.js must clip the prefecture layer and region lines to #prefecture-clip (the non-neighbor polities)'
+  );
+
   // 7. Validate PR #7 (pass icon), PR #8 (balloon caret & bookmark toggle tab), and PR #10 (SEO metadata & sitemap)
   const styleCss = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
   assert(
@@ -632,7 +844,23 @@ function main() {
       north: 55,
     }),
   });
+  ctrl._setEnglishLocale(enLocale);
   ctrl._initTimelineBands();
+  {
+    const probe = Object.create(ControllerClass.prototype);
+    let enumerations = 0;
+    const dict = new Proxy({ sample: 'translation' }, {
+      ownKeys(target) { enumerations++; return Reflect.ownKeys(target); },
+    });
+    probe._setEnglishLocale({ dict });
+    assert.strictEqual(probe._hasEnDict(), true, 'A loaded dictionary must be available');
+    for (let i = 0; i < 20; i++) assert.strictEqual(probe._hasEnDict(), true);
+    assert.strictEqual(enumerations, 1, 'Dictionary availability must not rescan on the hot path');
+    probe._setEnglishLocale({ dict: {} });
+    assert.strictEqual(probe._hasEnDict(), false, 'Replacing with an empty dictionary resets the flag');
+    probe._setEnglishLocale(null);
+    assert.strictEqual(probe._hasEnDict(), false, 'A missing locale remains supported');
+  }
   assert.strictEqual(
     typeof ctrl._lazyAssetUrl,
     'function',
@@ -1242,6 +1470,88 @@ function main() {
   );
   ctrl.projector.toScreen = (lng, lat) => [(lng - 66) * 13.15, (55 - lat) * 17.07];
   ctrl._hydrateSnapshots();
+  {
+    let snapshotsChecked = 0;
+    let anchorsChecked = 0;
+    const checkBoundary = (snapshot, name) => {
+      const before = { ...snapshot };
+      const after = { ...snapshot };
+      const expected = buildRegionBoundaryReference.call(ctrl, before);
+      const actual = ctrl._buildRegionBoundaryPath(after);
+      assert.strictEqual(actual, expected, `Region boundary geometry changed: ${name}`);
+      assert.strictEqual(ctrl._buildRegionBoundaryPath(after), actual, `Boundary cache changed: ${name}`);
+      assert.strictEqual(typeof after._allowRegionAnchor, typeof before._allowRegionAnchor);
+      if (before._allowRegionAnchor) {
+        const points = [];
+        for (let lng = 66; lng <= 142; lng += 9.5) {
+          for (let lat = 14; lat <= 55; lat += 6.8) points.push([lng, lat]);
+        }
+        for (const region of snapshot.regions || []) if (region.anchor) points.push(region.anchor);
+        for (const point of points) {
+          assert.strictEqual(after._allowRegionAnchor(...point), before._allowRegionAnchor(...point),
+            `Region label-anchor classification changed: ${name}`);
+          anchorsChecked++;
+        }
+      }
+      return { before, after, expected };
+    };
+    for (const [key, snapshot] of Object.entries(ctrl.snapshots)) {
+      if (Array.isArray(snapshot)) continue;
+      checkBoundary(snapshot, key);
+      snapshotsChecked++;
+    }
+    assert(snapshotsChecked > 180 && anchorsChecked > 16000,
+      'Boundary equivalence must cover the full atlas');
+
+    const rectangle = (x0, y0, x1, y1) => ({
+      type: 'Polygon', coordinates: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]],
+    });
+    const dense = points => {
+      const ring = [];
+      for (let i = 0; i < points.length; i++) {
+        const a = points[i], b = points[(i + 1) % points.length];
+        for (let k = 0; k < 20; k++) {
+          ring.push([a[0] + (b[0] - a[0]) * k / 20, a[1] + (b[1] - a[1]) * k / 20]);
+        }
+      }
+      ring.push(ring[0]);
+      return { type: 'Polygon', coordinates: [ring] };
+    };
+    const regions = (x0, x1, y) => [
+      { title: 'north', shape: rectangle(x0, y, x1, y + 1) },
+      { title: 'south', shape: rectangle(x0, y - 1, x1, y) },
+    ];
+    const main = { title: 'main', role: 'main', shape: rectangle(0, -20, 70, 30) };
+    const notched = {
+      title: 'rival', role: 'rival',
+      shape: dense([[10, 0], [60, 0], [60, 10], [40, 10], [40, 5], [20, 5], [20, 10], [10, 10]]),
+    };
+    const rivals = [
+      { title: 'east', role: 'rival', shape: rectangle(80, 0, 90, 10) },
+      { title: 'west', role: 'rival', shape: rectangle(-40, 0, -30, 10) },
+    ];
+    for (const [name, polities, regionList, draws, anchor] of [
+      ['multi-regime 0.55 midpoint exclusion', [main, notched, ...rivals], regions(25, 35, 5.5), false, null],
+      ['three-regime midpoint control', [main, notched, rivals[0]], regions(25, 35, 5.5), true, null],
+      ['multi-regime 0.38 endpoint exclusion', [main, notched, ...rivals], regions(20.3, 30, 7), false, null],
+      ['three-regime endpoint control', [main, notched, rivals[0]], regions(20.3, 30, 7), true, null],
+      ['rival area 50 remains eligible', [
+        { title: 'rival', role: 'rival', shape: rectangle(20, 5, 30, 10) }, rivals[0],
+      ], regions(22, 28, 7), true, [25, 8, true]],
+      ['area-50 main activates area-30 rival suppression', [
+        { title: 'rival', role: 'rival', shape: rectangle(0, 0, 6, 5) },
+        { title: 'main', role: 'main', shape: rectangle(10, 0, 20, 5) },
+      ], regions(1, 5, 2.5), false, [3, 2, false]],
+    ]) {
+      const { before, after, expected } = checkBoundary({ regions: regionList, polities }, name);
+      assert.strictEqual(Boolean(expected), draws, `Vacuous reference fixture: ${name}`);
+      if (anchor) {
+        assert.strictEqual(before._allowRegionAnchor(anchor[0], anchor[1]), anchor[2]);
+        assert.strictEqual(after._allowRegionAnchor(anchor[0], anchor[1]), anchor[2]);
+      }
+    }
+    console.log(`  [boundary equivalence] ${snapshotsChecked} snapshots, ${anchorsChecked} anchors, 6 margin/threshold fixtures`);
+  }
   const tangDyn = dynasties.find((d) => d.key === 'tang');
   const tang780Key = ctrl._resolveSnapKey(tangDyn, 780);
   const tang780Snap = snapshots[tang780Key];
@@ -1863,6 +2173,44 @@ function main() {
     ctrl._animateCameraTo = prevAnim;
     ctrl._getDefaultCamera = prevDefCam;
     ctrl.camera = prevCam;
+  }
+
+  // The event balloon must not cover the event city's own name (e.g. 长安, 徐州).
+  {
+    const proto = Object.getPrototypeOf(ctrl);
+    const viewport = { left: 0, top: 0, width: 1000, height: 700 };
+    let nameBox = { left: 506, right: 546, top: 292, bottom: 308, width: 40, height: 16 };
+    const city = {
+      dataset: { x: '502', y: '297' },
+      classList: { contains: () => false },
+      querySelector: () => (nameBox ? { getBoundingClientRect: () => nameBox } : null),
+    };
+    const place = () => {
+      const probe = Object.assign(Object.create(proto), {
+        activeMilestone: { anchorCoord: [108.94, 34.27], milestone: {} },
+        projector: { toScreen: () => [500, 300] },
+        camera: { x: 0, y: 0, w: 1000, h: 700 },
+        svg: { classList: { contains: () => false }, querySelectorAll: () => [city] },
+        milestoneBalloon: { classList: { add() {}, remove() {} }, dataset: {}, style: { setProperty() {} } },
+        _milestoneBalloonSize: { w: 260, h: 62 },
+        _id: () => null,
+      });
+      proto._positionMilestoneBalloon.call(probe, viewport);
+      return probe.milestoneBalloon;
+    };
+    // Name right of the pin: the default right-hand balloon would cover it.
+    let b = place();
+    let left = parseFloat(b.style.left), top = parseFloat(b.style.top);
+    assert(
+      left >= nameBox.right || left + 260 <= nameBox.left || top >= nameBox.bottom || top + 62 <= nameBox.top,
+      `Event balloon must not cover the event city's name, got caret=${b.dataset.caret} at ${left},${top}`
+    );
+    // Name left of the pin: the right-hand default stays.
+    nameBox = { left: 454, right: 494, top: 292, bottom: 308, width: 40, height: 16 };
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default when the name is elsewhere');
+    // No visible name: the right-hand default stays.
+    nameBox = null;
+    assert.strictEqual(place().dataset.caret, 'left', 'Balloon keeps the right-hand default without a city name');
   }
 
   // CUJ 19: Complete Region/Prefecture Hydration & Transition Era Snapshots (Chu-Han, Gengshi/Chimei, Huang Chao & Late Tang Warlords)
@@ -2826,7 +3174,35 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 20, `Expected 20 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 22, `Expected 22 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
+  // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790.
+  {
+    const pol = (sk, title) => (snapshots[sk].polities || []).find((p) => p.title === title);
+    const pyongyang = [125.75, 39.02];
+    const dunhua = [128.2, 43.37];
+    assert(pointInShape(...pyongyang, pol('s_tang_a4', '安东都护府').shape), 's_tang_a4: 平壤 must be inside 安东都护府');
+    for (const sk of ['s_tang_a4', 's_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+      assert(!pointInShape(...pyongyang, pol(sk, '新罗').shape), `${sk}: 平壤 must not be inside 新罗`);
+    }
+    for (const sk of ['s_tang_a', 's_tang_wz1', 's_tang_wz1b']) {
+      assert(!pointInShape(...pyongyang, pol(sk, '安东都护府').shape), `${sk}: 安东都护府 must have left 平壤 (676)`);
+    }
+    for (const sk of ['s_tang_wz1b', 's_tang_wz2', 's_tang_a5z']) {
+      const zhen = pol(sk, '震国');
+      assert(zhen && !pol(sk, '渤海') && pointInShape(...dunhua, zhen.shape), `${sk}: 敦化 must be inside 震国, not 渤海`);
+    }
+    assert(!pointInShape(...dunhua, pol('s_tang_wz1b', '安东都护府').shape), 's_tang_wz1b: 敦化 must not be inside 安东都护府');
+    assert(pol('s_tang_a5', '渤海') && !pol('s_tang_a5', '震国'), 's_tang_a5 (713–755) must show 渤海');
+    const anxi = pol('s_tang_b1', '安西都护府（孤悬坚守）').shape;
+    const beiting = pol('s_tang_b1', '北庭都护府（孤悬坚守）').shape;
+    for (const [name, pt] of [['龟兹', [82.96, 41.72]], ['于阗', [79.93, 37.11]], ['疏勒', [75.99, 39.47]], ['西州', [89.18, 42.95]]]) {
+      assert(pointInShape(...pt, anxi), `s_tang_b1: ${name} must be inside 安西都护府`);
+    }
+    assert(pointInShape(89.18, 44.0, beiting), 's_tang_b1: 北庭 must be inside 北庭都护府');
+    assert(!pointInShape(81.3, 43.9, beiting), 's_tang_b1: 伊犁 (lost to the Karluks in 766) must not be inside 北庭都护府');
+    assert(pointInShape(79.4, 35.6, pol('s_tang_b1', '吐蕃').shape), 's_tang_b1: the Kunlun strip must belong to 吐蕃');
+  }
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
@@ -4066,6 +4442,15 @@ function main() {
       );
     }
 
+    // 沙州 (issue #267): Gaochang Commandery (327 CE) and the 西域长史 at Haitou (Loulan) belong
+    // to 前凉 from 329 CE until 376 CE, and no other polity of those snapshots covers them.
+    for (const sk of ['s_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
+      for (const [name, x, y] of [['高昌', 89.53, 42.85], ['楼兰', 89.84, 40.52]]) {
+        const holders = snapshots[sk].polities.filter((p) => p.shape && pointInShape(x, y, p.shape)).map((p) => p.title);
+        assert(holders.length === 1 && holders[0] === '前凉', `${sk}: ${name} must be inside 前凉 only, found ${holders.join('+')}`);
+      }
+    }
+
     // 350 CE (s_dongjin_350) & 351 CE (s_dongjin_351) must show 冉魏, while 351 CE adds 前秦 in Guanzhong and keeps 前燕 in Liaodong
     assert(
       snapshots.s_dongjin_350.polities.some((p) => p.title === '冉魏') &&
@@ -4439,13 +4824,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 21 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 702, 705, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    // Tang 23 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 676, 690, 698, 702, 705, 713, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 21 map change milestone years must match'
+      'tang: 23 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -4891,9 +5276,9 @@ function main() {
     ctrl.locale = 'zh';
   }
 
-  // CUJ 28: Timeline autoplay — constant playhead speed along the scrubber bar, lands on every
-  // milestone year, holds on dynasty openings and isMapChange milestones, and keeps the event
-  // callout while playing.
+  // CUJ 28: Timeline autoplay is event-driven — the playhead lands only on event nodes
+  // (milestone years + territory-snapshot boundaries), never on empty calendar years, dwells
+  // one beat on ordinary events and longer on map-changing nodes, and keeps the event callout.
   {
     const proto = ControllerClass.prototype;
     let tick = null;
@@ -4906,51 +5291,45 @@ function main() {
     Object.assign(ctrl, { activePerson: null, challenge: null, personTimer: null });
     ctrl.closeMilestoneBalloon = () => {};
     ctrl._syncAutoMilestoneBalloon = () => {};
-    const visited = new Set();
+    const visited = [];
     ctrl.jumpToYear = function (y) {
       this.year = y;
       this.dynastyIdx = this._findDynastyIndex(y);
-      visited.add(y);
+      visited.push(y);
     };
     ctrl.year = ctrl.minYear;
     ctrl.startAutoplay();
     const stops = proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear);
     const stopYears = new Set(stops.map((s) => s.year));
     const yearTicks = new Map();
-    const movingTicks = dynasties.map(() => 0);
-    const landings = [];
     let totalTicks = 0;
     while (ctrl.playing && totalTicks < 20000) {
-      const [p0, y0] = [ctrl.playProgress, ctrl.year];
       tick();
       totalTicks++;
       yearTicks.set(ctrl.year, (yearTicks.get(ctrl.year) || 0) + 1);
-      if (ctrl.playProgress > p0) movingTicks[ctrl._findDynastyIndex(ctrl.year)]++;
-      if (ctrl.year !== y0 && stopYears.has(ctrl.year)) landings.push(totalTicks);
     }
     assert(!ctrl.playing && ctrl.year === ctrl.maxYear, `Autoplay must stop at ${ctrl.maxYear}, got ${ctrl.year}`);
 
-    const missed = stops.filter((s) => !visited.has(s.year)).map((s) => s.year);
-    assert.strictEqual(missed.length, 0, `Autoplay skipped milestone years ${missed.slice(0, 8).join(', ')}`);
-    const shortest = Math.min(...landings.slice(1).map((t, i) => t - landings[i]));
-    assert(shortest >= 4, `Each autoplay callout must stay at least ~1 s, shortest was ${shortest} ticks`);
-    for (const s of stops.filter((x) => x.hold)) {
-      assert(yearTicks.get(s.year) >= 9, `Autoplay must hold ~2.5 s on map-change milestone ${s.year}`);
+    const missed = stops.filter((s) => !visited.includes(s.year)).map((s) => s.year);
+    assert.strictEqual(missed.length, 0, `Autoplay skipped event nodes ${missed.slice(0, 8).join(', ')}`);
+    const strays = visited.filter((y) => !stopYears.has(y) && y !== ctrl.maxYear);
+    assert.strictEqual(strays.length, 0, `Autoplay must jump node-to-node, but landed on empty years ${strays.slice(0, 8).join(', ')}`);
+    for (const s of stops) {
+      const dwell = yearTicks.get(s.year) || 0;
+      if (s.hold) assert(dwell >= 10, `Autoplay must hold ~2.8 s on map-changing node ${s.year}, got ${dwell} ticks`);
+      else assert(dwell >= 4, `Autoplay must show ordinary event ${s.year} for ~1.1 s, got ${dwell} ticks`);
     }
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-
-    const moving = movingTicks.reduce((a, b) => a + b, 0);
-    assert(Math.abs(moving - (9 * 60 * 1000) / 280) < 40, `Autoplay full run should take ~9 min of ticks, got ${moving}`);
-    dynasties.forEach((d, i) => {
-      const expected = ctrl.bandWeights[i] / ctrl.totalBandWeight;
-      const share = movingTicks[i] / moving;
-      assert(
-        Math.abs(share - expected) / expected < 0.15,
-        `Autoplay time for ${d.key} must match its scrubber band (${(expected * 100).toFixed(1)}%), got ${(share * 100).toFixed(1)}%`
-      );
-    });
+    // Snapshot boundaries without a same-year milestone are still nodes (Shang Yang's Hexi, Sui collapse, Huang Chao).
+    for (const y of [-340, 614, 880]) {
+      assert(stops.some((s) => s.year === y && s.hold), `Autoplay must land and hold on the territory-snapshot boundary ${y}`);
+    }
+    const holdCount = stops.filter((s) => s.hold).length;
+    assert(holdCount >= 180 && holdCount < stops.length, `Expected ~180+ map-changing nodes among ${stops.length}, got ${holdCount}`);
+    const runMin = (totalTicks * 280) / 60000;
+    assert(runMin > 12 && runMin < 16, `A 1× full run should take ~14 min (≈190 map nodes × 2.8 s + ≈290 events × 1.1 s), got ${runMin.toFixed(1)} min`);
 
     const tang = dynasties.find((d) => d.key === 'tang');
     Object.assign(ctrl, {
@@ -5392,9 +5771,7 @@ function main() {
     ctrl.challenge = null;
     ctrl.playing = true;
     ctrl.playInterval = 99;
-    ctrl.playProgress = 0.42;
     ctrl.playHoldTicks = 3;
-    ctrl.playShownTicks = 2;
     ctrl.playSpeed = 1;
     proto._updatePlaySpeedUi.call(ctrl);
     assert.strictEqual(speedLbl.textContent, '1×', 'Initial speed label must be 1×');
@@ -5403,7 +5780,7 @@ function main() {
       '1× default speed must not have is-custom-speed active highlight'
     );
 
-    // Cycle 1 -> 2 -> 0.25 -> 0.5 -> 1 while timeline autoplay is running
+    // Cycle 1 -> 2 -> 4 -> 0.5 -> 1 while timeline autoplay is running
     assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 2, 'First click must switch speed to 2×');
     assert.strictEqual(speedLbl.textContent, '2×', 'Label must update to 2×');
     assert(
@@ -5411,12 +5788,11 @@ function main() {
       'Non-1× speed must highlight #act-play-speed with .is-custom-speed'
     );
     assert.strictEqual(scheduledMs[scheduledMs.length - 1], 140, '2× speed must reschedule tick interval to 140ms');
-    assert.strictEqual(ctrl.playProgress, 0.42, 'Changing speed live must preserve playProgress');
-    assert.strictEqual(ctrl.playHoldTicks, 3, 'Changing speed live must preserve playHoldTicks');
+    assert.strictEqual(ctrl.playHoldTicks, 3, 'Changing speed live must preserve the current dwell (playHoldTicks)');
 
-    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.25, 'Second click must switch speed to 0.25×');
-    assert.strictEqual(speedLbl.textContent, '0.25×', 'Label must update to 0.25×');
-    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 1120, '0.25× speed must reschedule tick interval to 1120ms');
+    assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 4, 'Second click must switch speed to 4×');
+    assert.strictEqual(speedLbl.textContent, '4×', 'Label must update to 4×');
+    assert.strictEqual(scheduledMs[scheduledMs.length - 1], 70, '4× speed must reschedule tick interval to 70ms');
 
     assert.strictEqual(proto.cyclePlaySpeed.call(ctrl), 0.5, 'Third click must switch speed to 0.5×');
     assert.strictEqual(scheduledMs[scheduledMs.length - 1], 560, '0.5× speed must reschedule tick interval to 560ms');
@@ -6616,13 +6992,13 @@ function main() {
         // 5. _effectiveRenderedLocale distinguishes pending English dict from loaded English dict
         const savedEnLocale = ctrl.enLocale;
         ctrl.locale = 'en';
-        ctrl.enLocale = { dict: {} };
+        ctrl._setEnglishLocale({ dict: {} });
         assert.strictEqual(
           ctrl._effectiveRenderedLocale(),
           'en-pending',
           '_effectiveRenderedLocale must return en-pending when i18n_dict.js has not loaded yet'
         );
-        ctrl.enLocale = savedEnLocale;
+        ctrl._setEnglishLocale(savedEnLocale);
         assert.strictEqual(
           ctrl._effectiveRenderedLocale(),
           'en',
@@ -6949,7 +7325,7 @@ function main() {
           ctrl.dynastyIdx = 0;
           ctrl.year = -403;
           ctrl.locale = 'en';
-          ctrl.enLocale = { strings: {}, dynasties: {}, milestones: {}, corridors: {}, dict: {} };
+          ctrl._setEnglishLocale({ strings: {}, dynasties: {}, milestones: {}, corridors: {}, dict: {} });
           ctrl._lastLegendSnap = null;
           ctrl._lastLegendKey = null;
           ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
@@ -6957,7 +7333,7 @@ function main() {
             String(ctrl._lastLegendKey).includes(':en-pending:'),
             `Cold-boot _renderLegendBox before i18n_dict.js loads must tag _lastLegendKey with en-pending, got "${ctrl._lastLegendKey}"`
           );
-          ctrl.enLocale = savedEn;
+          ctrl._setEnglishLocale(savedEn);
           ControllerClass.prototype._renderLegendBox.call(ctrl, zgSnap0);
           assert(
             String(ctrl._lastLegendKey).includes(':en:') &&
@@ -7527,15 +7903,16 @@ function main() {
         }
       }
 
-      // CUJ 42: Mobile Layout & Collapsed Chronicle Seat Bar Non-Occlusion Invariants
+      // CUJ 42: Mobile Layout, Single-Row Collapsed Chronicle Bar & iOS Search Input Auto-Zoom Prevention
       assert(
         !cssSrc.includes('grid-template-rows: 1fr 40px') &&
           cssSrc.includes('grid-template-rows: 1fr auto') &&
-          cssSrc.includes('#workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-seat') &&
-          cssSrc.includes('flex: 0 0 100%') &&
-          cssSrc.includes('overflow-wrap: anywhere') &&
-          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag'),
-        'css/style.css must use auto-height 2-row mobile chronicle banner with full-width wrapping #dynasty-seat and hide .cap-hint-tag when #milestone-balloon is active'
+          cssSrc.includes('#workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row') &&
+          cssSrc.includes('#workspace-body.is-mobile-chronicle-open #chronicle-pane #dynasty-seat') &&
+          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag') &&
+          cssSrc.includes('#inp-map-search,\n  #inp-year {\n    font-size: 16px;') &&
+          appCode.includes('if (!this._isMobileViewport()) searchInp.focus();'),
+        'css/style.css & js/app.js must use single-row collapsed mobile chronicle bar, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), and avoid synchronous searchInp.focus() on mobile chip clicks'
       );
 
       // CUJ 43: Wu Zhou (武周, 690–705) Interregnum Snapshots, Shendu Luoyang Capital & Polity Profile
@@ -7548,10 +7925,12 @@ function main() {
         );
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 689), 's_tang_a');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 690), 's_tang_wz1');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 697), 's_tang_wz1');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 700), 's_tang_wz1b');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 702), 's_tang_wz2');
         assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 704), 's_tang_wz2');
-        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 705), 's_tang_a5z');
+        assert.strictEqual(ctrl._resolveSnapKey(tangDyn, 713), 's_tang_a5');
 
         for (const sk of ['s_tang_wz1', 's_tang_wz2']) {
           const wzMain = snapshots[sk].polities.find((p) => p.role === 'main');
@@ -7633,6 +8012,59 @@ function main() {
         ctrl.locale = 'zh';
       }
 
+      // CUJ 45: High-resolution terrain tiles — reset view stays on the base relief, Data Saver is
+      // respected, every indexed tile exists, and the base relief shares the tiles' projection.
+      {
+        assert(
+          indexHtml.includes('<g id="terrain-relief-layer">') &&
+            indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;'),
+          'index.html must wrap #terrain-relief-img and #grp-terrain-tiles in #terrain-relief-layer, which owns the 0.48 relief opacity'
+        );
+        const terrainIdx = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'terrain', 'index.json'), 'utf8'));
+        assert(
+          terrainIdx.tileSize === 512 && Object.keys(terrainIdx.levels).length > 0,
+          'assets/terrain/index.json must declare 512 px tiles and at least one level'
+        );
+        for (const [z, list] of Object.entries(terrainIdx.levels)) {
+          for (const xy of list) {
+            const [x, y] = xy.split('_');
+            assert(
+              fs.existsSync(path.join(ROOT, 'assets', 'terrain', z, x, `${y}.webp`)),
+              `assets/terrain/index.json lists ${z}/${x}/${y}.webp but the file is missing`
+            );
+          }
+        }
+        const buildPy = fs.readFileSync(path.join(ROOT, 'scripts', 'build_terrain_tiles.py'), 'utf8');
+        assert(
+          buildPy.includes('PROJ_W, PROJ_H, WEST, EAST, SOUTH, NORTH = 1000, 700, 66, 142, 14, 55') &&
+            buildPy.includes('BASE_RECT = (-80, -40, 1160, 780)') &&
+            indexHtml.includes('x="-80" y="-40" width="1160" height="780"') &&
+            appCode.includes('new MercatorProjector(1000, 700, {\n        west: 66,\n        east: 142,\n        south: 14,\n        north: 55,'),
+          'scripts/build_terrain_tiles.py base-relief constants must mirror the app projector and the #terrain-relief-img rect'
+        );
+        const proto = ControllerClass.prototype;
+        const tCtrl = {
+          projector: new sandbox.window.MercatorProjector(1000, 700, { west: 66, east: 142, south: 14, north: 55 }),
+          _terrainTileSize: terrainIdx.tileSize,
+          _terrainIndex: new Map(Object.entries(terrainIdx.levels).map(([z, l]) => [Number(z), new Set(l)])),
+          _getDefaultCamera: () => ({ x: 350, y: 215, w: 500, h: 420, zoom: 2 }),
+          _isMobileViewport: () => false,
+        };
+        // Camera width in SVG units on a ~1400 CSS px wide map.
+        const level = (w) => proto._terrainTileLevel.call(tCtrl, { w }, 1400 / w, 'free');
+        assert.strictEqual(level(500), null, 'The default (reset) camera must stay on the base relief without loading tiles');
+        const zDeep = level(125);
+        assert(zDeep !== null && tCtrl._terrainIndex.has(zDeep), `Max zoom must select an indexed tile level, got ${zDeep}`);
+        assert(level(300) !== null && level(300) <= zDeep, 'Zooming in must never select a coarser tile level');
+        const origNav = sandbox.navigator;
+        sandbox.navigator = { connection: { saveData: true } };
+        assert.strictEqual(level(125), null, 'Data Saver must skip terrain tiles');
+        sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
+        assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
+        sandbox.navigator = origNav;
+      }
+
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
       assert(
         cssSrc.includes('mix-blend-mode: multiply') &&
@@ -7663,6 +8095,71 @@ function main() {
             },
           };
         };
+
+        // Hover cards are measured, centred above the pointer with one 16 px gap
+        // for every pointer type, flip 56 px below near the top edge, and stay
+        // inside the map. Placement must not read computed styles on hover.
+        const frameRect = { left: 100, top: 50, width: 800, height: 600 };
+        let tipSize = { width: 240, height: 70 };
+        const priorComputedStyle = sandbox.window.getComputedStyle;
+        sandbox.window.getComputedStyle = () => {
+          throw new Error('Hover placement must not read computed styles');
+        };
+        const hoverCtrl = Object.assign(Object.create(proto), {
+          locale: 'zh',
+          _id: () => ({ getBoundingClientRect: () => frameRect }),
+          hoverTip: {
+            innerHTML: '', style: {}, classList: makeCls(),
+            querySelector: () => null,
+            getBoundingClientRect: () => tipSize,
+          },
+        });
+        for (const pointerType of ['mouse', 'touch']) for (const [x, y, width, height] of [
+          [400, 300, 240, 70], [400, 12, 240, 70], [400, 100, 240, 70],
+          [12, 12, 240, 70], [788, 12, 240, 70],
+          [12, 588, 240, 70], [788, 588, 240, 70], [700, 300, 300, 160],
+        ]) {
+          tipSize = { width, height };
+          hoverCtrl._showHoverTip({
+            clientX: x + frameRect.left, clientY: y + frameRect.top, pointerType, target: {},
+          }, '<b>开封府</b>');
+          const left = parseFloat(hoverCtrl.hoverTip.style.left);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          assert(left >= 8 && top >= 8 && left + width <= 792 && top + height <= 592,
+            'Wrapped hover cards must fit inside the map');
+          if (x - width * 0.5 >= 8 && x + width * 0.5 <= 792) {
+            assert(Math.abs(left + width * 0.5 - x) < 1e-7,
+              'Hover cards must center over their hovered point when there is room');
+          }
+          if (y - 16 - height >= 8) {
+            assert(Math.abs(top + height - (y - 16)) < 1e-7,
+              `${pointerType} hover cards must sit 16 px above the pointer`);
+          } else {
+            assert.strictEqual(top, y + 56, `${pointerType} hover cards must flip 56 px below the pointer near the top edge`);
+          }
+        }
+        // City labels can move above, beside or below the dot as zoom changes.
+        // A high label must remain readable; near the top, keep the fallback.
+        tipSize = { width: 240, height: 70 };
+        for (const [placement, y, labelTop] of [
+          ['above', 300, 260], ['beside', 300, 294], ['below', 300, 320],
+          ['near the top edge', 100, 12],
+        ]) {
+          const nameEl = { getBoundingClientRect: () => ({ top: frameRect.top + labelTop }) };
+          hoverCtrl._showHoverTip({ clientX: 400 + frameRect.left, clientY: y + frameRect.top }, '<b>开封府</b>', nameEl);
+          const top = parseFloat(hoverCtrl.hoverTip.style.top);
+          const anchorTop = Math.min(y, labelTop);
+          if (anchorTop - 16 - tipSize.height >= 8) {
+            assert(top + tipSize.height <= labelTop - 16,
+              `Tooltip must stay at least 16 px above a city name ${placement}`);
+            assert(Math.abs(top + tipSize.height - (anchorTop - 16)) < 1e-7,
+              `City name ${placement} must use the higher anchor`);
+          } else {
+            assert.strictEqual(top, y + 56, 'High city names must fall back 56 px below the pointer');
+          }
+        }
+        if (priorComputedStyle === undefined) delete sandbox.window.getComputedStyle;
+        else sandbox.window.getComputedStyle = priorComputedStyle;
 
         // 44a. Pure camera pan commits exact viewBox (no stage CSS transform checkerboarding) and suppresses infinite pulse animations via is-camera-moving
         let viewBoxWrites = 0;
@@ -8176,9 +8673,9 @@ function main() {
     assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
 
     for (const [sid, title, maxPieces] of [
-      ['s_yuan_b', '元', 2],
+      ['s_yuan_b', '元', 3],
       ['s_yuan_b', '天完 · 陈友谅', 1],
-      ['s_yuan_c', '元', 3],
+      ['s_yuan_c', '元', 4],
       ['s_yuan_c', '吴（朱元璋）', 1],
       ['s_ming_0a', '北元', 1],
       ['s_ming_0a', '明', 2],
@@ -8231,6 +8728,110 @@ function main() {
         changanXihanEvs.some((e) => e.year === -2 && e.text.includes('浮屠经')),
       'Western Han Chang\'an place events must preserve both 81 BCE landmarks (Su Wu & Salt-and-Iron Debate) and 2 BCE Buddhist transmission'
     );
+
+    // Issue #222: Zero-widening compact timeline band fallback (_fitBandLabels)
+    const makeBandCell = (clientWidth, regularWidth, compactWidth) => {
+      const classes = new Set();
+      const clsList = {
+        add: (...names) => names.forEach((n) => classes.add(n)),
+        remove: (...names) => names.forEach((n) => classes.delete(n)),
+        toggle: (n, force) => (force === undefined ? (classes.has(n) ? classes.delete(n) : classes.add(n)) : force ? classes.add(n) : classes.delete(n)),
+        contains: (n) => classes.has(n),
+      };
+      const lbl = {
+        get scrollWidth() {
+          return classes.has('is-compact') ? compactWidth : regularWidth;
+        },
+      };
+      return {
+        clientWidth,
+        scrollWidth: regularWidth,
+        classList: clsList,
+        querySelector: (sel) => (sel === '.band-label' ? lbl : null),
+      };
+    };
+    const cell1440 = makeBandCell(27, 25, 21); // 1440px laptop: fits at full 12px
+    const cell1280 = makeBandCell(23, 25, 21); // 1280px laptop: fits via .is-compact
+    const cellMob = makeBandCell(9, 25, 21);   // 390px mobile: cleanly hides via .is-narrow
+    const prevIdFn = ctrl._id;
+    ctrl._id = (id) => {
+      if (id === 'dynasty-bands') return { children: [cell1440, cell1280, cellMob] };
+      if (id === 'scrubber-ticks') return { children: [] };
+      return null;
+    };
+    ctrl._fitBandLabels();
+    ctrl._id = prevIdFn;
+    assert(
+      !cell1440.classList.contains('is-compact') && !cell1440.classList.contains('is-narrow'),
+      '1440px short dynasty cell (27px vs 25px text) must render at full 12px without hiding'
+    );
+    assert(
+      cell1280.classList.contains('is-compact') && !cell1280.classList.contains('is-narrow'),
+      '1280px short dynasty cell (23px) must step into .is-compact (21px) without hiding'
+    );
+    assert(
+      !cellMob.classList.contains('is-compact') && cellMob.classList.contains('is-narrow'),
+      'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
+    );
+
+    // 6-era boundary & gap regression checks (195 Donghan, 322 Dongjin, 676 Tang, 1410 Ming, 1650 Qing, 1918 ROC)
+    const ptIn = sandbox.window.MercatorProjector.pointInShape;
+    const dz195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '董卓(长安)');
+    const mt195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '马腾(凉州)');
+    assert(
+      !ptIn(106.5, 38.0, dz195.shape) && ptIn(106.5, 38.0, mt195.shape),
+      's_donghan_d1 (195 CE): Northern Ningxia [106.5, 38.0] must belong to 马腾(凉州), not a Dong Zhuo horn'
+    );
+    for (const [sk, mainTitle] of [['s_tang_a', '唐'], ['s_tang_wz1', '武周']]) {
+      const mPol = snapshots[sk].polities.find((p) => p.title === mainTitle);
+      assert(ptIn(120.5, 41.2, mPol.shape), `${sk}: Yingzhou / Liaoxi Corridor [120.5, 41.2] must be inside ${mainTitle}`);
+    }
+    for (const [sk, fengTitle] of [
+      ['s_roc_w1', '奉系（张作霖）'],
+      ['s_roc_w2', '奉系（张作霖）'],
+      ['s_roc_w3', '北洋政府 · 奉系（张作霖）'],
+      ['s_roc_w4', '安国军政府 · 奉系（张作霖）'],
+    ]) {
+      const fPol = snapshots[sk].polities.find((p) => p.title === fengTitle);
+      assert(
+        fPol && ptIn(120.0, 49.2, fPol.shape) && ptIn(121.5, 46.0, fPol.shape),
+        `${sk}: Hulunbuir [120.0, 49.2] and Hinggan [121.5, 46.0] must be covered by ${fengTitle} (no hollow gap)`
+      );
+    }
+
+    // Dynasty transition & usurpation causality chain checks
+    for (const [dk, yr, kw, expAnchors] of [
+      ['zhanguo', -272, '义渠', 2],
+      ['qin', -221, '王贲受齐王建降', 1],
+      ['xihan', 6, '假皇帝', 1],
+      ['donghan', 216, '魏王', 2],
+      ['dongjin', 350, '石虎', 1],
+      ['dongjin', 414, '南凉', 2],
+      ['nanbei', 474, '新亭', 2],
+      ['nanbei', 479, '萧道成', 1],
+      ['nanbei', 500, '东昏侯', 2],
+      ['nanbei', 502, '萧衍', 1],
+      ['nanbei', 528, '尔朱荣', 1],
+      ['nanbei', 530, '孝庄帝', 2],
+      ['nanbei', 532, '韩陵之战', 2],
+      ['nanbei', 534, '宇文泰', 3],
+      ['nanbei', 550, '八柱国', 2],
+      ['nanbei', 557, '王僧辩', 2],
+      ['tang', 684, '徐敬业', 2],
+      ['tang', 904, '朱温劫唐昭宗', 2],
+      ['wudai', 923, '魏州', 1],
+      ['wudai', 942, '称孙不称臣', 1],
+      ['wudai', 947, '石重贵', 2],
+      ['wudai', 951, '后汉隐帝', 3],
+      ['nansong', 1141, '岳武穆', 1],
+      ['nansong', 1271, '阿里不哥', 1],
+      ['nansong', 1279, '陆秀夫', 1],
+    ]) {
+      const d = dynasties.find((x) => x.key === dk);
+      const m = d && d.milestones.find((x) => x.year === yr);
+      assert(m && m.headline.includes(kw), `Expected transition milestone ${dk}:${yr} containing "${kw}"`);
+      assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, expAnchors, `Expected ${expAnchors} anchors on ${dk}:${yr}`);
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);

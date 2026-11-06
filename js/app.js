@@ -18,6 +18,10 @@
   const SHAPE_BBOX_WEAK = new WeakMap();
   const SHAPE_SIG_WEAK = new WeakMap();
   const PREF_BOUNDARY_MESH_CACHE = new WeakMap();
+  const setSvgAttribute = (node, name, value) => {
+    const text = String(value);
+    if (node.getAttribute(name) !== text) node.setAttribute(name, text);
+  };
   // Regime prefixes carried by era-span names, e.g. '北魏正光' = '北魏' + era '正光'.
   const ERA_DYNASTY_PREFIXES = [
     '南朝宋', '南朝齐', '南朝梁', '南朝陈', '西汉', '东汉', '新莽', '西晋', '东晋',
@@ -69,16 +73,16 @@
     部: 'Tribal Division',
     侨州: 'Emigre Prefecture',
   };
-  // Timeline autoplay: the playhead crosses the scrubber bar at a constant speed (each
-  // dynasty gets time in proportion to its band width), lands on every milestone year,
-  // shows each callout for at least ~1 s, and holds on milestones that open a dynasty or
-  // are flagged isMapChange.
+  // Timeline autoplay is event-driven: the playhead jumps from one node to the next (every
+  // milestone year plus every territory-snapshot boundary) instead of crawling through the
+  // ~1,950 calendar years where nothing changes. An ordinary event stays up long enough to
+  // read its headline; a node that redraws the map (isMapChange, dynasty opening, snapshot
+  // switch) holds longer so the border diff can be seen. Playback speed scales the tick.
   const AUTOPLAY_TICK_MS = 280;
-  const AUTOPLAY_FULL_RUN_MS = 9 * 60 * 1000;
-  const AUTOPLAY_MIN_SHOW_TICKS = 4;
-  const AUTOPLAY_HOLD_TICKS = Math.round(2500 / AUTOPLAY_TICK_MS);
+  const AUTOPLAY_EVENT_TICKS = 4;
+  const AUTOPLAY_MAP_CHANGE_TICKS = 10;
   const PERSON_AUTOPLAY_STEP_MS = 2600;
-  const PLAY_SPEED_STEPS = [1, 2, 0.25, 0.5];
+  const PLAY_SPEED_STEPS = [1, 2, 4, 0.5];
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -373,13 +377,13 @@
       this._enLocalePromise = null;
       this._hydrateSnapshots();
 
-      this.enLocale = window.EN_LOCALE || {
+      this._setEnglishLocale(window.EN_LOCALE || {
         strings: {},
         dynasties: {},
         milestones: {},
         corridors: {},
         dict: {},
-      };
+      });
 
       this.projector = new MercatorProjector(1000, 700, {
         west: 66,
@@ -412,9 +416,7 @@
       this.playing = false;
       this.playSpeed = 1;
       this.playInterval = null;
-      this.playProgress = 0;
       this.playHoldTicks = 0;
-      this.playShownTicks = 0;
       this.musicPlaying = false;
       this.musicTrackIdx = 0;
       this.musicAudio = null;
@@ -627,7 +629,7 @@
         window.EN_LOCALE.dict &&
         Object.keys(window.EN_LOCALE.dict).length > 0
       ) {
-        this.enLocale = window.EN_LOCALE;
+        this._setEnglishLocale(window.EN_LOCALE);
         return Promise.resolve(this.enLocale);
       }
       if (!this._enLocalePromise) {
@@ -635,7 +637,7 @@
           this._lazyAssetUrl('js/i18n_dict.js', 'vI18n')
         ).then(() => {
           if (window.EN_LOCALE) {
-            this.enLocale = window.EN_LOCALE;
+            this._setEnglishLocale(window.EN_LOCALE);
             this.searchIndex = null;
           }
           return this.enLocale;
@@ -838,12 +840,14 @@
       this._stageWrap = this._id('svg-stage-wrap');
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
+      this.terrainTileLayer = this._id('grp-terrain-tiles');
       this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
       this.grpProvinces = this._id('grp-provinces');
       this.grpProvNames = this._id('grp-prov-names');
       this.grpPolities = this._id('grp-polities');
       this.grpPrefectures = this._id('grp-prefectures');
+      this.prefClipPath = this._id('prefecture-clip-path');
       this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
       this.grpJourney = this._id('grp-journey');
@@ -941,11 +945,13 @@
       return typeof res === 'string' ? res.replace(/\b([A-Z][a-z]+)\s+Zhou\b/g, '$1zhou') : res;
     }
 
+    _setEnglishLocale(locale) {
+      this.enLocale = locale;
+      this._enDictReady = Boolean(locale && locale.dict && Object.keys(locale.dict).length);
+    }
+
     _hasEnDict() {
-      const dict = this.enLocale && this.enLocale.dict;
-      if (!dict) return false;
-      for (const _ in dict) return true;
-      return false;
+      return this._enDictReady === true;
     }
 
     _getExtraEnTermMap() {
@@ -1750,8 +1756,27 @@
         ghBtn.title =
           this.locale === 'en'
             ? 'Star DeanChensj/jiangshan-map on GitHub'
-            : '在 GitHub 上为「江山时序」点亮 Star';
+            : this._zh('在 GitHub 上为「江山时序」点亮 Star');
       }
+      const moreBtn = this._id('act-more-menu');
+      if (moreBtn) {
+        const moreLbl =
+          this.locale === 'en' ? 'Story & author links' : this._zh('创作手记与更多链接');
+        moreBtn.title = moreLbl;
+        if (typeof moreBtn.setAttribute === 'function') {
+          moreBtn.setAttribute('aria-label', moreLbl);
+        }
+      }
+      const setMoreCopy = (id, enTxt, zhTxt) => {
+        const el = this._id(id);
+        if (el) el.textContent = this.locale === 'en' ? enTxt : this._zh(zhTxt);
+      };
+      setMoreCopy('lbl-more-story', 'Making-Of Essay (ZH)', '创作手记 · 幕后故事');
+      setMoreCopy('sub-more-story', 'From textbook maps to Jiangshan', '从课本插图到开源历史地图');
+      setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
+      setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
+      setMoreCopy('lbl-more-github', 'GitHub Repository', 'GitHub 开源仓库');
+      setMoreCopy('sub-more-github', 'Star · Issues & contributions', 'Star · 捉虫与贡献代码');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
@@ -1764,7 +1789,7 @@
       this._id('txt-milestones-heading').textContent = this.uiStr('events_h', '重大事件');
       this._id('txt-disclaimer').textContent = this.uiStr(
         'caveat',
-        '历史疆域与政区为示意性近似，非精确测绘边界。'
+        '历史疆域与政区为示意性近似，非精确测绘边界。地形晕渲据 SRTM、GMTED2010 公开高程数据。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
       const stepPrevBtn = this._id('act-step-prev');
@@ -1884,6 +1909,7 @@
       }
       const ariaMap = [
         ['layers-popover', 'Map layers', '地图图层开关'],
+        ['more-popover', 'Story & author links', '创作手记与更多链接'],
         ['challenge-card', 'Ancient Place Quiz', '古地名小试挑战'],
         ['genealogy-card', 'Place administrative genealogy', '古今地点沿革卡片'],
         ['journey-card', 'Historical route overlay', '行迹叠图卡片'],
@@ -2141,6 +2167,7 @@
       if (chk) {
         chk.checked = this.terrainMode;
       }
+      if (this.terrainMode) this._scheduleTerrainTiles();
       this._invalidateTypographyLayout();
       if (this.svg && this.camera && this.grpCorridors && this.grpSettlements) {
         this._rescaleSvgTypography();
@@ -2857,16 +2884,23 @@
       }
 
       const regGroup = this._regOverlayGroup;
+      // Captions stay unclipped; only the lines and hover shapes are cut to the polities.
+      const clipAttr = this._prefClipActive ? { 'clip-path': 'url(#prefecture-clip)' } : {};
+      const shapesGroup = this._prefShapesGroup;
+      if (shapesGroup && typeof shapesGroup.setAttribute === 'function') {
+        if (this._prefClipActive) shapesGroup.setAttribute('clip-path', 'url(#prefecture-clip)');
+        else if (typeof shapesGroup.removeAttribute === 'function') shapesGroup.removeAttribute('clip-path');
+      }
       const regBoundaryPath = this._buildRegionBoundaryPath(snap);
       if (regBoundaryPath) {
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape-casing' },
+          { d: regBoundaryPath, class: 'region-shape-casing', ...clipAttr },
           regGroup
         );
         this._svgNode(
           'path',
-          { d: regBoundaryPath, class: 'region-shape' },
+          { d: regBoundaryPath, class: 'region-shape', ...clipAttr },
           regGroup
         );
       }
@@ -2923,6 +2957,7 @@
       const sorted = (snap.polities || [])
         .slice()
         .sort((a, b) => (zOrder[a.role] || 0) - (zOrder[b.role] || 0));
+      const ownPaths = [];
 
       for (const pol of sorted) {
         const isN = pol.role === 'neighbor';
@@ -2933,6 +2968,7 @@
         if (!isN) {
           attrs.fill = pol.tint;
           attrs.stroke = pol.tint;
+          ownPaths.push(attrs.d);
         }
         const path = this._svgNode('path', attrs, polGroup);
         path.dataset.polityTitle = pol.title;
@@ -2957,6 +2993,13 @@
           lbl.textContent = this.trTerm(pol.title);
         }
       }
+      // Prefectures and first-level regions come from a different base map than the polity
+      // outlines, so their coastlines and outer edges disagree with the polity borders. Their
+      // lines are clipped to the snapshot's own (non-neighbor) polities, which leaves the polity
+      // outline as the only border and coastline drawn.
+      this._prefClipActive = ownPaths.length > 0;
+      const clipPath = this.prefClipPath;
+      if (clipPath && typeof clipPath.setAttribute === 'function') clipPath.setAttribute('d', ownPaths.join(''));
 
       const prefHidden = Boolean(
         this.grpPrefectures &&
@@ -3023,14 +3066,47 @@
       const allCommanderyRegions = snap.regions.every(
         (r) => r && r.title && (r.title.endsWith('郡') || r.title.includes('内史'))
       );
-      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 65);
-      const findPolIdx = (x, y) => {
+      const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
+      const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
+      // The boundary build queries many points against the same long rings.
+      // Index candidate edges by latitude; all geometric predicates below stay
+      // exact. The margin also covers nearPolityBorder's distance test.
+      const ringEdgeBins = new Map();
+      // The bins must cover the widest upstream distance query, including
+      // multi-regime midpoint (0.55) and endpoint (0.38) exclusions.
+      const borderMargin = isMultiRegime ? 0.55 : 0.16, binCount = 64;
+      const candidateEdges = (b, y) => {
+        if (b.ring.length < 128 || b.maxY <= b.minY) return null;
+        let index = ringEdgeBins.get(b);
+        if (!index) {
+          const bins = Array.from({ length: binCount }, () => []);
+          const scale = binCount / (b.maxY - b.minY);
+          for (let i = 0, j = b.ring.length - 1; i < b.ring.length; j = i++) {
+            const y1 = b.ring[i][1], y2 = b.ring[j][1];
+            // Extra neighboring bins make the filter conservative at floating
+            // point bucket boundaries. They never change the final predicates.
+            const lo = Math.max(0, Math.floor((Math.min(y1, y2) - borderMargin - b.minY) * scale) - 1);
+            const hi = Math.min(binCount - 1, Math.floor((Math.max(y1, y2) + borderMargin - b.minY) * scale) + 1);
+            for (let k = lo; k <= hi; k++) bins[k].push(i);
+          }
+          index = { bins, scale }; ringEdgeBins.set(b, index);
+        }
+        return index.bins[Math.max(0, Math.min(binCount - 1, Math.floor((y - b.minY) * index.scale)))];
+      };
+      const findPolIdx = (x, y, cache) => {
+        const key = cache ? `${x},${y}` : null;
+        if (cache) {
+          const hit = cache.get(key);
+          if (hit !== undefined) return hit;
+        }
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
           if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
           const ring = b.ring;
+          const edges = cache ? candidateEdges(b, y) : null;
           let inside = false;
-          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
+            const i = edges ? edges[k] : k, j = i === 0 ? ring.length - 1 : i - 1;
             const xi = ring[i][0],
               yi = ring[i][1];
             const xj = ring[j][0],
@@ -3039,15 +3115,19 @@
               inside = !inside;
             }
           }
-          if (inside) return b.pIdx;
+          if (inside) {
+            if (cache) cache.set(key, b.pIdx);
+            return b.pIdx;
+          }
         }
+        if (cache) cache.set(key, -1);
         return -1;
       };
       const allowPolIdx = (pIdx) => {
         if (pIdx < 0) return false;
         const pol = polList[pIdx];
         if (!pol) return false;
-        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 68) return false;
+        if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 35) return false;
         return true;
       };
       const nearPolityBorder = (x, y, margin) => {
@@ -3063,11 +3143,18 @@
             continue;
           }
           const ring = b.ring;
-          for (let i = 0; i < ring.length - 1; i++) {
+          const edges = candidateEdges(b, y);
+          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
+            // Ray edge 0 closes the ring implicitly; the original distance
+            // test only considers explicitly consecutive coordinate pairs.
+            const end = edges ? edges[k] : k;
+            if (end === 0) continue;
+            const i = end - 1;
             const x1 = ring[i][0],
               y1 = ring[i][1];
             const x2 = ring[i + 1][0],
               y2 = ring[i + 1][1];
+            if (x < Math.min(x1, x2) - margin || x > Math.max(x1, x2) + margin) continue;
             const dx = x2 - x1,
               dy = y2 - y1;
             const len2 = dx * dx + dy * dy;
@@ -3094,47 +3181,66 @@
         return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
       };
 
-      const allRings = [];
-      const regEdgeCounts = new Map();
-      for (const reg of snap.regions) {
-        if (!reg || !reg.shape) continue;
-        const coords = reg.shape.coordinates;
-        const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
-        for (const poly of polys) {
-          for (const ring of poly || []) {
-            if (!ring || ring.length < 2) continue;
-            allRings.push(ring);
-            for (let i = 0; i < ring.length - 1; i++) {
-              const ek = edgeKey(ring[i], ring[i + 1]);
-              regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+      // Adjacent phases frequently share the same administrative regions.
+      // Keep only the latest topology, so visiting history does not accumulate
+      // edge maps. Polity-dependent filtering still runs for every snapshot.
+      let topology = this._regionBoundaryTopology;
+      if (!topology || topology.regions !== snap.regions) {
+        const allRings = [];
+        const regEdgeCounts = new Map();
+        for (const reg of snap.regions) {
+          if (!reg || !reg.shape) continue;
+          const coords = reg.shape.coordinates;
+          const polys = reg.shape.type === 'Polygon' ? [coords] : coords || [];
+          for (const poly of polys) {
+            for (const ring of poly || []) {
+              if (!ring || ring.length < 2) continue;
+              allRings.push(ring);
+              for (let i = 0; i < ring.length - 1; i++) {
+                const ek = edgeKey(ring[i], ring[i + 1]);
+                regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
+              }
             }
           }
         }
+        const rings = [];
+        for (const ring of allRings) {
+          const edges = [];
+          for (let i = 0; i < ring.length - 1; i++) {
+            const p1 = ring[i], p2 = ring[i + 1], key = edgeKey(p1, p2);
+            if ((regEdgeCounts.get(key) || 0) >= 2) edges.push({ p1, p2, key });
+            else if (edges.length && edges[edges.length - 1] !== null) edges.push(null);
+          }
+          if (edges.length) rings.push(edges);
+        }
+        topology = this._regionBoundaryTopology = { regions: snap.regions, rings };
       }
 
       const seenEdges = new Set();
+      const pointPolities = new Map();
       let d = '';
-      for (const ring of allRings) {
+      for (const edges of topology.rings) {
         let penX = NaN;
         let penY = NaN;
-        for (let i = 0; i < ring.length - 1; i++) {
-          const p1 = ring[i];
-          const p2 = ring[i + 1];
-          const ek = edgeKey(p1, p2);
-          if ((regEdgeCounts.get(ek) || 0) < 2 || seenEdges.has(ek)) {
+        for (const edge of edges) {
+          if (!edge || seenEdges.has(edge.key)) {
             penX = NaN;
             penY = NaN;
             continue;
           }
+          const { p1, p2, key: ek } = edge;
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
-          const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
+          const pIdxM = polRings.length ? findPolIdx(mx, my, pointPolities) : 0;
           if (
             polRings.length &&
             (!allowPolIdx(pIdxM) ||
-              findPolIdx(p1[0], p1[1]) !== pIdxM ||
-              findPolIdx(p2[0], p2[1]) !== pIdxM ||
-              (hasLargePolity && nearPolityBorder(mx, my, 0.16)))
+              findPolIdx(p1[0], p1[1], pointPolities) !== pIdxM ||
+              findPolIdx(p2[0], p2[1], pointPolities) !== pIdxM ||
+              (hasLargePolity &&
+                (nearPolityBorder(mx, my, borderMargin) ||
+                  (isMultiRegime &&
+                    (nearPolityBorder(p1[0], p1[1], 0.38) || nearPolityBorder(p2[0], p2[1], 0.38))))))
           ) {
             penX = NaN;
             penY = NaN;
@@ -3153,6 +3259,9 @@
         }
       }
 
+      // The label-anchor predicate outlives this build; retain no point cache.
+      pointPolities.clear();
+      ringEdgeBins.clear();
       Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
         value: d,
         writable: true,
@@ -4189,6 +4298,48 @@
       this._positionMilestoneBalloon();
     }
 
+    // Box of the event city's name, in the same coordinates as the balloon. The event
+    // city is the nearest settlement within 10 CSS px of the pin (event and city
+    // coordinates often differ by a few hundredths of a degree). The name's offset from
+    // the pin is measured only while the camera is still (on open and after each move
+    // settles), so pan and zoom frames reuse it without layout reads.
+    _milestoneAnchorLabel(am, sx, sy, scale, rect, px, py) {
+      if (!am || !this.svg) return null;
+      const moving = Boolean(this.svg.classList && this.svg.classList.contains('is-camera-moving'));
+      const key = `${sx.toFixed(1)},${sy.toFixed(1)}:${this.camera.w.toFixed(1)}`;
+      if (!moving && am._labelKey !== key && typeof this.svg.querySelectorAll === 'function') {
+        am._labelKey = key;
+        am._labelOffset = null;
+        let city = null;
+        let best = 10 / scale;
+        for (const node of this.svg.querySelectorAll('.settlement-node')) {
+          const d = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy);
+          if (d <= best) {
+            best = d;
+            city = node;
+          }
+        }
+        const name = city && !city.classList.contains('is-crowded-hidden') ? city.querySelector('.name') : null;
+        const b = name && name.getBoundingClientRect();
+        const x0 = (rect.left || 0) + px, y0 = (rect.top || 0) + py;
+        // A name far from its dot has not been laid out yet; measure again after layout.
+        if (b && b.width && Math.hypot((b.left + b.right) / 2 - x0, (b.top + b.bottom) / 2 - y0) > 80) {
+          am._labelKey = null;
+        } else if (b && b.width) {
+          // Text boxes include some leading; a balloon that only touches the glyphs is fine.
+          const pad = -2;
+          am._labelOffset = {
+            left: b.left - x0 - pad,
+            right: b.right - x0 + pad,
+            top: b.top - y0 - pad,
+            bottom: b.bottom - y0 + pad,
+          };
+        }
+      }
+      const o = am._labelOffset;
+      return o ? { left: px + o.left, right: px + o.right, top: py + o.top, bottom: py + o.bottom } : null;
+    }
+
     _positionMilestoneBalloon(viewportRect = null) {
       const am = this.activeMilestone;
       const anchorCoord = am && (am.anchorCoord || am.milestone.coord);
@@ -4236,7 +4387,7 @@
 
       const sideTop = Math.max(minTop, Math.min(maxTop, py - bH * 0.42));
       const midLeft = Math.max(minLeft, Math.min(rightLimit, px - bW * 0.5));
-      const candidates = [];
+      let candidates = [];
       if (px + pinGap <= rightLimit) {
         candidates.push({ left: px + pinGap, top: sideTop, caretDir: 'left' });
       }
@@ -4255,6 +4406,15 @@
           top: Math.min(maxTop, py + pinGap + 4),
           caretDir: 'top',
         });
+      }
+      // Keep the event city's own name readable: drop placements that cover it.
+      const label = this._milestoneAnchorLabel(am, sx, sy, scale, rect, px, py);
+      if (label) {
+        const clear = candidates.filter(
+          (c) =>
+            c.left >= label.right || c.left + bW <= label.left || c.top >= label.bottom || c.top + bH <= label.top
+        );
+        if (clear.length) candidates = clear;
       }
 
       let chosen = candidates[0];
@@ -9116,12 +9276,19 @@
       let lastRight = -Infinity;
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
-        cell.classList.remove('is-narrow');
+        cell.classList.remove('is-narrow', 'is-compact');
         const lbl = cell.querySelector('.band-label');
-        const narrow = lbl
-          ? lbl.scrollWidth > cell.clientWidth - 4
-          : cell.scrollWidth > cell.clientWidth + 1;
-        cell.classList.toggle('is-narrow', narrow);
+        if (lbl) {
+          if (lbl.scrollWidth > cell.clientWidth - 2) {
+            cell.classList.add('is-compact');
+            if (lbl.scrollWidth > cell.clientWidth - 2) {
+              cell.classList.remove('is-compact');
+              cell.classList.add('is-narrow');
+            }
+          }
+        } else if (cell.scrollWidth > cell.clientWidth + 1) {
+          cell.classList.add('is-narrow');
+        }
         const tk = tickNodes[i];
         if (tk) {
           const rect = tk.getBoundingClientRect();
@@ -9158,16 +9325,23 @@
         // Clamp bubble strictly inside [0, railW - bW] so text never clips off-screen
         const maxLeft = Math.max(0, railW - bW);
         const leftPx = Math.max(0, Math.min(maxLeft, handleX - bW * 0.5));
-        bubble.style.left = `${leftPx.toFixed(1)}px`;
-        bubble.style.transform = 'none';
+        bubble.style.left = '0px';
+        bubble.style.transform = `translateX(${leftPx.toFixed(1)}px)`;
 
         // Direct caret arrow to point straight at the timeline thumb
         const arrowX = Math.max(8, Math.min(bW - 8, handleX - leftPx));
         bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
       }
 
-      const handle = this._id('scrubber-handle');
-      if (handle) handle.style.left = `${pct}%`;
+      const motion = this._id('scrubber-motion');
+      if (motion) {
+        // The wrapper spans the rail, so percentage transforms use the same
+        // reference width as the previous absolute-positioned thumb.
+        motion.style.transform = `translateX(${pct}%)`;
+      } else {
+        const handle = this._id('scrubber-handle');
+        if (handle) handle.style.left = `${pct}%`;
+      }
 
       const track = this._id('scrubber-track');
       if (track) track.setAttribute('aria-valuenow', String(this.year));
@@ -9399,8 +9573,8 @@
       const isEn = this.locale === 'en';
       btn.setAttribute('aria-label', isEn ? `Playback speed ${labelText}` : `播放倍速 ${labelText}`);
       btn.title = isEn
-        ? `Playback speed ${labelText} (click to cycle 0.25× / 0.5× / 1× / 2×)`
-        : `播放倍速 ${labelText}（点击切换 0.25× / 0.5× / 1× / 2×）`;
+        ? `Playback speed ${labelText} (click to cycle 0.5× / 1× / 2× / 4×)`
+        : `播放倍速 ${labelText}（点击切换 0.5× / 1× / 2× / 4×）`;
     }
 
     setPlaySpeed(speed) {
@@ -9433,6 +9607,8 @@
       const btn = this._id('act-autoplay');
       if (!btn) return;
       const isPlaying = Boolean(this.playing || this.personTimer);
+      const dock = this._id('scrubber-dock');
+      if (dock && dock.classList) dock.classList.toggle('is-autoplaying', Boolean(this.playing));
       btn.innerHTML = isPlaying ? SVG_ICONS.pause : SVG_ICONS.play;
       btn.classList.toggle('is-playing', isPlaying);
       btn.setAttribute('aria-pressed', String(isPlaying));
@@ -9461,22 +9637,28 @@
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
       if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
-      this.playProgress = this._yearToProgress(this.year);
-      this.playHoldTicks = 0;
-      this.playShownTicks = AUTOPLAY_MIN_SHOW_TICKS;
+      // Leave the starting frame on screen for one event beat before the first jump.
+      this.playHoldTicks = AUTOPLAY_EVENT_TICKS;
       this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
       this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
-    // Sorted milestone years the autoplay must land on, with the ones it holds on.
+    // Sorted years the autoplay lands on: every milestone year plus every territory-snapshot
+    // boundary. `hold` marks the nodes that redraw the map (border change, dynasty opening,
+    // snapshot switch) so the border diff gets the longer dwell.
     _autoplayStops() {
       if (!this._autoplayStopList) {
         const holdByYear = new Map();
+        const mark = (year, hold) => holdByYear.set(year, Boolean(holdByYear.get(year) || hold));
         for (const d of this.dynasties) {
+          mark(d.fromYear, true);
+          if (Array.isArray(d.phases)) {
+            for (const ph of d.phases) {
+              if (ph.until > d.fromYear && ph.until < d.toYear) mark(ph.until, true);
+            }
+          }
           for (const m of d.milestones || []) {
-            const y = this._clampYearToDynasty(d, m.year);
-            const opensDynasty = m.year === d.fromYear;
-            holdByYear.set(y, Boolean(holdByYear.get(y) || m.isMapChange || opensDynasty));
+            mark(this._clampYearToDynasty(d, m.year), m.isMapChange);
           }
         }
         this._autoplayStopList = [...holdByYear]
@@ -9495,24 +9677,12 @@
         this.stopAutoplay();
         return;
       }
-      const step = AUTOPLAY_TICK_MS / AUTOPLAY_FULL_RUN_MS;
-      this.playShownTicks++;
-      this.playProgress += step;
-      let next = this.playProgress >= 1 ? this.maxYear : this._progressToYear(this.playProgress);
-      if (next === 0) next = 1;
-      if (next <= this.year) return;
-      const stop = this._autoplayStops().find((s) => s.year > this.year && s.year <= next);
-      if (stop) {
-        // Let the current callout stay readable before the next milestone replaces it.
-        if (this.playShownTicks < AUTOPLAY_MIN_SHOW_TICKS) {
-          this.playProgress -= step;
-          return;
-        }
-        next = stop.year;
-        this.playShownTicks = stop.hold ? AUTOPLAY_MIN_SHOW_TICKS : 0;
-        if (stop.hold) this.playHoldTicks = AUTOPLAY_HOLD_TICKS;
-      }
-      this.jumpToYear(next);
+      const stop = this._autoplayStops().find((s) => s.year > this.year);
+      const next = stop ? Math.min(stop.year, this.maxYear) : this.maxYear;
+      // This tick already counts as the first beat on the new node; a camera pan inside
+      // jumpToYear may raise playHoldTicks further (see _syncAutoMilestoneBalloon).
+      this.playHoldTicks = (stop && stop.hold ? AUTOPLAY_MAP_CHANGE_TICKS : AUTOPLAY_EVENT_TICKS) - 1;
+      this.jumpToYear(next === 0 ? 1 : next);
     }
 
     stopAutoplay() {
@@ -9540,38 +9710,57 @@
       if (this.musicAudio) return this.musicAudio;
       const audio = new Audio();
       audio.preload = 'auto';
+      audio.playsInline = true;
       audio.volume = 0.48;
       audio.addEventListener('ended', () => {
         if (this.musicPlaying) this.nextMusicTrack();
       });
       audio.addEventListener('error', () => {
-        if (!this.musicPlaying) return;
-        const t = HistoricalAtlasController.GUQIN_TRACKS[this.musicTrackIdx];
-        if (audio.src !== t.ogg) {
-          audio.src = t.ogg;
-          audio.play().catch(() => {});
-        }
+        this._handleMusicLoadError(this._musicPlaySeq);
       });
       this.musicAudio = audio;
       return audio;
     }
 
+    _handleMusicLoadError(seq) {
+      if (!this.musicPlaying || seq !== this._musicPlaySeq) return;
+      const tracks = HistoricalAtlasController.GUQIN_TRACKS;
+      const t = tracks[this.musicTrackIdx % tracks.length];
+      const audio = this.musicAudio;
+      if (audio && t && t.ogg && !audio._triedFallback) {
+        audio._triedFallback = true;
+        audio.src = t.ogg;
+        audio.play().catch((err) => {
+          if (err && err.name === 'AbortError') return;
+          if (seq !== this._musicPlaySeq) return;
+          this.musicPlaying = false;
+          this._updateMusicUi();
+        });
+      } else {
+        this.musicPlaying = false;
+        this._updateMusicUi();
+      }
+    }
+
     _playCurrentMusicTrack() {
       const tracks = HistoricalAtlasController.GUQIN_TRACKS;
       const t = tracks[this.musicTrackIdx % tracks.length];
+      if (!t) return;
+      const seq = (this._musicPlaySeq = (this._musicPlaySeq || 0) + 1);
       const audio = this._ensureMusicAudio();
+      audio._triedFallback = false;
       audio.src = t.mp3;
       this.musicPlaying = true;
       this._updateMusicUi();
-      audio.play().catch(() => {
-        if (!this.musicPlaying) return;
-        audio.src = t.ogg;
-        audio.play().catch(() => {});
+      audio.play().catch((err) => {
+        if (err && err.name === 'AbortError') return;
+        this._handleMusicLoadError(seq);
       });
     }
 
     toggleMusic() {
       if (this.musicPlaying) {
+        this._musicPlaySeq = (this._musicPlaySeq || 0) + 1;
         this.musicPlaying = false;
         if (this.musicAudio) this.musicAudio.pause();
         this._updateMusicUi();
@@ -9697,6 +9886,7 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      this._scheduleTerrainTiles();
     }
 
     _applyCamera(forceTypography = false) {
@@ -9751,6 +9941,236 @@
       }
       this._updateScaleBar(rect);
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
+      if (forceTypography) this._scheduleTerrainTiles();
+    }
+
+    // ---------------- High-Resolution Terrain Tiles ----------------
+    // The base relief (assets/terrain_relief.webp, 2 px per SVG unit) covers the
+    // default view. Once the camera magnifies it past ~1 CSS px per image px,
+    // Web Mercator hillshade tiles from assets/terrain/ fade in on top; the
+    // base stays underneath so a slow tile never leaves a hole.
+    _scheduleTerrainTiles() {
+      if (!this.terrainTileLayer) return;
+      clearTimeout(this._terrainTileTimer);
+      this._terrainTileTimer = setTimeout(() => this._updateTerrainTiles(), 40);
+    }
+
+    _terrainReady() {
+      return Boolean(
+        this.terrainTileLayer &&
+          this.svg &&
+          typeof document !== 'undefined' &&
+          typeof document.createElementNS === 'function' &&
+          typeof fetch === 'function'
+      );
+    }
+
+    _loadTerrainIndex() {
+      if (!this._terrainIndexPromise) {
+        this._terrainIndexPromise = fetch('assets/terrain/index.json')
+          .then((r) => (r.ok ? r.json() : null))
+          .then((idx) => {
+            if (!idx || !idx.levels) return null;
+            const levels = new Map();
+            for (const [z, list] of Object.entries(idx.levels)) levels.set(Number(z), new Set(list));
+            this._terrainTileSize = idx.tileSize || 256;
+            this._terrainIndex = levels.size ? levels : null;
+            return this._terrainIndex;
+          })
+          .catch(() => null);
+      }
+      return this._terrainIndexPromise;
+    }
+
+    // mode: 'commit' applies and stores level hysteresis (the rendered view), 'peek' applies it
+    // without storing (predicting a flight's destination), 'free' ignores it (idle prefetch).
+    _terrainTileLevel(cam, pxPerUnit, mode) {
+      // Keep the default (reset) view on the base image; detail starts once the user zooms in.
+      if (cam.w > this._getDefaultCamera().w * 0.8) return null;
+      // Data Saver or a 2G/slow-3G link: the base relief is enough.
+      const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
+      if (conn && (conn.saveData || /(^|-)2g$|^3g$/.test(conn.effectiveType || ''))) return null;
+      // Sized for CSS pixels, not device pixels: the relief is a 48%-opacity backdrop, and
+      // matching retina density would quadruple the tiles per screen.
+      const need = pxPerUnit * this.projector.scale;
+      // Base image: 2 px per SVG unit; no gain while it is not being upscaled.
+      if (need <= 2 * this.projector.scale * 0.85) return null;
+      const ppd = (lz) => (this._terrainTileSize * 2 ** lz) / 360;
+      const levels = [...this._terrainIndex.keys()].sort((a, b) => a - b);
+      const maxPpd = this._isMobileViewport() ? 190 : Infinity;
+      let z = levels[0];
+      for (const lz of levels) {
+        if (ppd(lz) > maxPpd) break;
+        z = lz;
+        if (ppd(lz) >= need * 0.8) break;
+      }
+      if (mode !== 'free') {
+        // Hysteresis: small zoom steps keep the current level instead of refetching a screenful.
+        const cur = this._terrainTileZ;
+        if (cur !== undefined && levels.includes(cur) && ppd(cur) <= maxPpd) {
+          if (ppd(cur) >= need * 0.65 && ppd(cur) <= need * 2.4) z = cur;
+        }
+        if (mode === 'commit') this._terrainTileZ = z;
+      }
+      return z;
+    }
+
+    // Tiles covering what `cam` shows, nearest to the viewport centre first.
+    _terrainTilesFor(cam, mode) {
+      const rect = this._cameraViewportRect || this.svg.getBoundingClientRect();
+      // The SVG letterboxes the camera box (xMidYMid meet), so the visible area can exceed it.
+      const pxPerUnit = rect.width && rect.height ? Math.min(rect.width / cam.w, rect.height / cam.h) : 0;
+      const z = this.terrainMode && pxPerUnit ? this._terrainTileLevel(cam, pxPerUnit, mode) : null;
+      if (z === null) return [];
+      const visW = rect.width / pxPerUnit;
+      const visH = rect.height / pxPerUnit;
+      const cx = cam.x + cam.w / 2;
+      const cy = cam.y + cam.h / 2;
+      const [west, north] = this.projector.toGeo(cx - visW / 2, cy - visH / 2);
+      const [east, south] = this.projector.toGeo(cx + visW / 2, cy + visH / 2);
+      const [lonC, latC] = this.projector.toGeo(cx, cy);
+      const n = 2 ** z;
+      const tileX = (lon) => ((lon + 180) / 360) * n;
+      const tileY = (lat) => {
+        const r = Math.max(-85, Math.min(85, lat)) * DEG_TO_RAD;
+        return ((1 - Math.log(Math.tan(Math.PI / 4 + r / 2)) / Math.PI) / 2) * n;
+      };
+      const x0 = Math.max(0, Math.floor(tileX(west)));
+      const x1 = Math.min(n - 1, Math.floor(tileX(east)));
+      const y0 = Math.max(0, Math.floor(tileY(north)));
+      const y1 = Math.min(n - 1, Math.floor(tileY(south)));
+      const fx = tileX(lonC);
+      const fy = tileY(latC);
+      const minZ = Math.min(...this._terrainIndex.keys());
+      const out = new Map();
+      for (let x = x0; x <= x1; x++) {
+        for (let y = y0; y <= y1; y++) {
+          const dist = Math.hypot(x + 0.5 - fx, y + 0.5 - fy);
+          // Fall back to the nearest coarser level where the finest one was not built.
+          for (let lz = z; lz >= minZ; lz--) {
+            const d = z - lz;
+            const t = { z: lz, x: x >> d, y: y >> d, dist, top: lz === z };
+            if (this._terrainIndex.get(lz).has(`${t.x}_${t.y}`)) {
+              const key = `${t.z}/${t.x}/${t.y}`;
+              const prev = out.get(key);
+              if (!prev || prev.dist > dist) out.set(key, t);
+              break;
+            }
+          }
+        }
+      }
+      return [...out].sort((a, b) => a[1].dist - b[1].dist);
+    }
+
+    // Warm the HTTP cache without touching the DOM.
+    _prefetchTerrainTiles(tiles, limit) {
+      if (typeof Image !== 'function') return;
+      if (!this._terrainPrefetched) this._terrainPrefetched = new Set();
+      let sent = 0;
+      for (const [key, t] of tiles) {
+        if (sent >= limit) break;
+        if (this._terrainPrefetched.has(key) || (this._terrainTiles && this._terrainTiles.has(key))) continue;
+        this._terrainPrefetched.add(key);
+        const img = new Image();
+        img.decoding = 'async';
+        if ('fetchPriority' in img) img.fetchPriority = 'low';
+        img.src = `assets/terrain/${t.z}/${t.x}/${t.y}.webp`;
+        sent++;
+      }
+    }
+
+    // A camera flight is starting: fetch the destination's tiles while it is in the air.
+    _prefetchTerrainForTarget(targetCam, zoomInput) {
+      if (!this._terrainReady() || !this._terrainIndex) return;
+      clearTimeout(this._terrainTargetTimer);
+      const run = () => this._prefetchTerrainTiles(this._terrainTilesFor(targetCam, 'peek'), 48);
+      // Wheel ticks retarget every few ms; wait for the target to stop moving.
+      if (zoomInput) this._terrainTargetTimer = setTimeout(run, 60);
+      else run();
+    }
+
+    // The screen is complete: quietly fetch the centre of the next zoom-in and zoom-out views.
+    _prefetchTerrainNeighbours() {
+      const cam = this.camera;
+      const cx = cam.x + cam.w / 2;
+      const cy = cam.y + cam.h / 2;
+      const zin = { x: cx - cam.w / 4, y: cy - cam.h / 4, w: cam.w / 2, h: cam.h / 2 };
+      const zout = { x: cx - cam.w, y: cy - cam.h, w: cam.w * 2, h: cam.h * 2 };
+      this._prefetchTerrainTiles(
+        [...this._terrainTilesFor(zin, 'free').slice(0, 6), ...this._terrainTilesFor(zout, 'free').slice(0, 9)],
+        15
+      );
+    }
+
+    _updateTerrainTiles() {
+      const layer = this.terrainTileLayer;
+      if (!this._terrainReady()) return;
+      if (!this._terrainIndex) {
+        this._loadTerrainIndex().then((idx) => {
+          if (idx) this._updateTerrainTiles();
+        });
+        return;
+      }
+      if (!this._terrainTiles) this._terrainTiles = new Map();
+      const want = new Map(this._terrainTilesFor(this.camera, 'commit'));
+
+      const stale = [...this._terrainTiles.keys()].filter((k) => !want.has(k));
+      const dropStale = () => {
+        for (const k of stale) {
+          if (want.has(k)) continue;
+          const el = this._terrainTiles.get(k);
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+          this._terrainTiles.delete(k);
+        }
+      };
+      const fresh = [...want].filter(([k]) => !this._terrainTiles.has(k));
+      if (!fresh.length) {
+        dropStale();
+        return;
+      }
+      let pending = fresh.length;
+      const gen = (this._terrainTileGen = (this._terrainTileGen || 0) + 1);
+      const settle = () => {
+        if (--pending > 0 || gen !== this._terrainTileGen) return;
+        dropStale();
+        const idle = typeof requestIdleCallback === 'function' ? requestIdleCallback : (fn) => setTimeout(fn, 200);
+        idle(() => {
+          if (gen === this._terrainTileGen) this._prefetchTerrainNeighbours();
+        });
+      };
+      clearTimeout(this._terrainStaleTimer);
+      this._terrainStaleTimer = setTimeout(() => {
+        if (gen === this._terrainTileGen) dropStale();
+      }, 2500);
+      const NS = 'http://www.w3.org/2000/svg';
+      // `fresh` is centre-out, so the tiles the user is looking at are requested first.
+      for (const [key, t] of fresh) {
+        const n = 2 ** t.z;
+        const lonW = (t.x / n) * 360 - 180;
+        const lonE = ((t.x + 1) / n) * 360 - 180;
+        const latN = Math.atan(Math.sinh(Math.PI * (1 - (2 * t.y) / n))) * RAD_TO_DEG;
+        const latS = Math.atan(Math.sinh(Math.PI * (1 - (2 * (t.y + 1)) / n))) * RAD_TO_DEG;
+        const [px0, py0] = this.projector.toScreen(lonW, latN);
+        const [px1, py1] = this.projector.toScreen(lonE, latS);
+        const img = document.createElementNS(NS, 'image');
+        img.setAttribute('class', 'terrain-tile');
+        // A hair of overlap hides anti-aliased seams between neighbours.
+        img.setAttribute('x', (px0 - 0.02).toFixed(3));
+        img.setAttribute('y', (py0 - 0.02).toFixed(3));
+        img.setAttribute('width', (px1 - px0 + 0.04).toFixed(3));
+        img.setAttribute('height', (py1 - py0 + 0.04).toFixed(3));
+        img.setAttribute('preserveAspectRatio', 'none');
+        img.addEventListener('load', () => {
+          img.classList.add('is-loaded');
+          settle();
+        });
+        img.addEventListener('error', settle);
+        img.setAttribute('href', `assets/terrain/${t.z}/${t.x}/${t.y}.webp`);
+        // Coarser fallback tiles sit beneath finer neighbours they overlap.
+        if (t.top) layer.appendChild(img);
+        else layer.insertBefore(img, layer.firstChild);
+        this._terrainTiles.set(key, img);
+      }
     }
 
     _updateScaleBar(viewportRect = null) {
@@ -9971,7 +10391,7 @@
           if (showProvNames) {
             const fontSize = (9.5 * s).toFixed(1);
             this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-              node.setAttribute('font-size', fontSize);
+              setSvgAttribute(node, 'font-size', fontSize);
             });
           }
           if (this.activePerson && this.grpJourney) {
@@ -9988,7 +10408,7 @@
       const applyNodeScale = (node, xStr, yStr, rotStr = null) => {
         const prefix = `translate(${xStr},${yStr}) scale(`;
         const suffix = rotStr !== null ? `) rotate(${rotStr})` : ')';
-        node.setAttribute('transform', prefix + invScale + suffix);
+        setSvgAttribute(node, 'transform', prefix + invScale + suffix);
         scaleNodes.push({ node, prefix, suffix });
       };
 
@@ -10299,9 +10719,9 @@
             node.classList.remove('is-label-crowded');
             if (node.dataset.appliedDir !== bestDir) {
               node.dataset.appliedDir = bestDir;
-              nameEl.setAttribute('x', String(best.dx));
-              nameEl.setAttribute('y', String(best.dy1));
-              nameEl.setAttribute('text-anchor', best.anchor);
+              setSvgAttribute(nameEl, 'x', String(best.dx));
+              setSvgAttribute(nameEl, 'y', String(best.dy1));
+              setSvgAttribute(nameEl, 'text-anchor', best.anchor);
             }
             occupied.push(best.box);
             return;
@@ -10334,9 +10754,9 @@
         node.classList.remove('is-label-crowded');
         if (node.dataset.appliedDir !== bestDir) {
           node.dataset.appliedDir = bestDir;
-          nameEl.setAttribute('x', String(best.dx));
-          nameEl.setAttribute('y', String(best.dy1));
-          nameEl.setAttribute('text-anchor', best.anchor);
+          setSvgAttribute(nameEl, 'x', String(best.dx));
+          setSvgAttribute(nameEl, 'y', String(best.dy1));
+          setSvgAttribute(nameEl, 'text-anchor', best.anchor);
         }
         occupied.push(best.box);
       };
@@ -10523,8 +10943,8 @@
         node.dataset.placed = '1';
         const bestXStr = bestX.toFixed(1);
         const bestYStr = bestY.toFixed(1);
-        node.setAttribute('data-x', bestXStr);
-        node.setAttribute('data-y', bestYStr);
+        setSvgAttribute(node, 'data-x', bestXStr);
+        setSvgAttribute(node, 'data-y', bestYStr);
         applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
       }
@@ -10612,8 +11032,8 @@
           node.classList.remove('is-crowded-hidden');
           const bestXStr = bestX.toFixed(1);
           const bestYStr = bestY.toFixed(1);
-          node.setAttribute('data-x', bestXStr);
-          node.setAttribute('data-y', bestYStr);
+          setSvgAttribute(node, 'data-x', bestXStr);
+          setSvgAttribute(node, 'data-y', bestYStr);
           applyNodeScale(node, bestXStr, bestYStr);
           occupied.push(bestBox);
         });
@@ -10668,8 +11088,8 @@
             node.dataset.placed = '1';
             const cxStr = cx.toFixed(1);
             const cyStr = cy.toFixed(1);
-            node.setAttribute('data-x', cxStr);
-            node.setAttribute('data-y', cyStr);
+            setSvgAttribute(node, 'data-x', cxStr);
+            setSvgAttribute(node, 'data-y', cyStr);
             applyNodeScale(node, cxStr, cyStr);
             node.classList.remove('is-crowded-hidden');
             occupied.push(candBox);
@@ -10681,8 +11101,8 @@
           node.dataset.placed = '1';
           const bxStr = baseX.toFixed(1);
           const byStr = baseY.toFixed(1);
-          node.setAttribute('data-x', bxStr);
-          node.setAttribute('data-y', byStr);
+          setSvgAttribute(node, 'data-x', bxStr);
+          setSvgAttribute(node, 'data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
       });
@@ -10748,8 +11168,8 @@
           node.dataset.placed = '1';
           const cxStr = cx.toFixed(1);
           const cyStr = cy.toFixed(1);
-          node.setAttribute('data-x', cxStr);
-          node.setAttribute('data-y', cyStr);
+          setSvgAttribute(node, 'data-x', cxStr);
+          setSvgAttribute(node, 'data-y', cyStr);
           applyNodeScale(node, cxStr, cyStr);
           node.classList.remove('is-crowded-hidden');
           occupied.push(candBox);
@@ -10760,8 +11180,8 @@
           node.dataset.placed = '1';
           const bxStr = baseX.toFixed(1);
           const byStr = baseY.toFixed(1);
-          node.setAttribute('data-x', bxStr);
-          node.setAttribute('data-y', byStr);
+          setSvgAttribute(node, 'data-x', bxStr);
+          setSvgAttribute(node, 'data-y', byStr);
           node.classList.add('is-crowded-hidden');
         }
       }
@@ -10843,8 +11263,8 @@
               node.dataset.placed = '1';
               const cxStr = cx.toFixed(1);
               const cyStr = cy.toFixed(1);
-              node.setAttribute('data-x', cxStr);
-              node.setAttribute('data-y', cyStr);
+              setSvgAttribute(node, 'data-x', cxStr);
+              setSvgAttribute(node, 'data-y', cyStr);
               applyNodeScale(node, cxStr, cyStr, rotStr);
               node.classList.remove('is-crowded-hidden');
               for (let k = 0; k < boxes.length; k++) occupied.push(boxes[k]);
@@ -10860,11 +11280,16 @@
       }
 
       this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-        node.setAttribute('font-size', (9.5 * s).toFixed(1));
+        setSvgAttribute(node, 'font-size', (9.5 * s).toFixed(1));
       });
       this._zoomScaleNodes = scaleNodes;
       this._lastZoomStateKey = zoomStateKey;
       this._lastInvScale = invScale;
+      // City names may have moved or appeared: let an open event balloon re-check them.
+      if (this.activeMilestone && this.milestoneBalloon && !this.milestoneBalloon.classList.contains('is-hidden')) {
+        this.activeMilestone._labelKey = null;
+        this._positionMilestoneBalloon();
+      }
     }
 
     _rescaleActivePersonPins(vw, s, zoomOnly = false) {
@@ -10929,12 +11354,12 @@
         }
       }
       for (const p of pts) {
-        p.n.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
-        p.n.setAttribute('data-ox', p.ox.toFixed(2));
-        p.n.setAttribute('data-oy', p.oy.toFixed(2));
+        setSvgAttribute(p.n, 'transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${pinScaleStr})`);
+        setSvgAttribute(p.n, 'data-ox', p.ox.toFixed(2));
+        setSvgAttribute(p.n, 'data-oy', p.oy.toFixed(2));
         const shiftEl = p.n.querySelector('.jn-pin-shift');
         if (shiftEl) {
-          shiftEl.setAttribute('transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
+          setSvgAttribute(shiftEl, 'transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
         }
       }
       const placedRects = pts.map((p) => {
@@ -11034,9 +11459,9 @@
           lbl.style.display = '';
           lbl.style.textAnchor = chosenSlot.anchor;
           lbl.dataset.slotIdx = String(chosenSlot.idx);
-          lbl.setAttribute('text-anchor', chosenSlot.anchor);
-          lbl.setAttribute('x', chosenSlot.lx);
-          lbl.setAttribute('y', chosenSlot.ly);
+          setSvgAttribute(lbl, 'text-anchor', chosenSlot.anchor);
+          setSvgAttribute(lbl, 'x', chosenSlot.lx);
+          setSvgAttribute(lbl, 'y', chosenSlot.ly);
           placedRects.push(chosenRect);
         } else {
           lbl.style.display = 'none';
@@ -11044,8 +11469,21 @@
       }
     }
 
-    _animateCameraTo(targetCam) {
+    _cancelCameraAnimation() {
+      this._cameraTarget = null;
+      this._cameraTargetIsZoom = false;
+      if (this.flyRaf == null) return;
+      cancelAnimationFrame(this.flyRaf);
+      this.flyRaf = null;
+      // Cancellation skips the flight's final frame, including its cleanup.
+      if (this.activePerson) this._invalidateTypographyLayout();
+      clearTimeout(this._cameraSettleTimer);
+      this._cameraSettleTimer = setTimeout(() => this._finishCameraMotion(), 120);
+    }
+
+    _animateCameraTo(targetCam, { duration = 650, zoomInput = false } = {}) {
       this._cameraTarget = targetCam;
+      this._cameraTargetIsZoom = zoomInput;
       if (
         !this._cameraViewportRect &&
         this.svg &&
@@ -11055,10 +11493,10 @@
       }
       const from = { ...this.camera };
       const t0 = performance.now();
-      const duration = 650;
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
+      this._prefetchTerrainForTarget(targetCam, zoomInput);
       const step = (now) => {
-        const k = Math.min(1, (now - t0) / duration);
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
         const ease = 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
@@ -11075,6 +11513,7 @@
         } else {
           this.flyRaf = null;
           this._cameraTarget = null;
+          this._cameraTargetIsZoom = false;
           if (this.activePerson) this._invalidateTypographyLayout();
           this._applyCamera(true);
         }
@@ -11279,23 +11718,28 @@
     }
 
     zoomBy(factor, clientX, clientY, animate = true) {
+      if (!Number.isFinite(factor) || factor <= 0) return;
       this._recordGestureMove();
+      // Repeated key presses accumulate against the pending zoom destination.
+      // A navigation flight is interrupted from its current visible camera.
+      const cam = (animate && this._cameraTargetIsZoom && this._cameraTarget) || this.camera;
       const [mx, my] =
         clientX !== undefined && clientY !== undefined
-          ? this._clientToSvgPoint(clientX, clientY)
-          : [this.camera.x + this.camera.w * 0.5, this.camera.y + this.camera.h * 0.5];
-      const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
-      const k = nextW / this.camera.w;
+          ? this._clientToSvgPoint(clientX, clientY, cam)
+          : [cam.x + cam.w * 0.5, cam.y + cam.h * 0.5];
+      const nextW = Math.max(100, Math.min(1300, cam.w / factor));
+      const k = nextW / cam.w;
       const targetCam = {
-        x: mx - (mx - this.camera.x) * k,
-        y: my - (my - this.camera.y) * k,
+        x: mx - (mx - cam.x) * k,
+        y: my - (my - cam.y) * k,
         w: nextW,
-        h: this.camera.h * k,
+        h: cam.h * k,
         zoom: 1000 / nextW,
       };
       if (animate && typeof this._animateCameraTo === 'function') {
-        this._animateCameraTo(targetCam);
+        this._animateCameraTo(targetCam, { duration: 120, zoomInput: true });
       } else {
+        this._cancelCameraAnimation();
         this.camera = targetCam;
         this._applyCamera();
       }
@@ -11319,19 +11763,19 @@
       });
     }
 
-    _clientToSvgPoint(clientX, clientY) {
+    _clientToSvgPoint(clientX, clientY, cam = this.camera) {
       const rect =
         (this.dragState && this.dragState.rect) ||
         (this.pinchState && this.pinchState.rect) ||
         this._cameraViewportRect ||
         this._getUnscaledSvgRect();
       if (rect && rect.width) this._cameraViewportRect = rect;
-      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
-      const padX = (rect.width - this.camera.w * scale) * 0.5;
-      const padY = (rect.height - this.camera.h * scale) * 0.5;
+      const scale = Math.min(rect.width / cam.w, rect.height / cam.h);
+      const padX = (rect.width - cam.w * scale) * 0.5;
+      const padY = (rect.height - cam.h * scale) * 0.5;
       return [
-        this.camera.x + (clientX - rect.left - padX) / scale,
-        this.camera.y + (clientY - rect.top - padY) / scale,
+        cam.x + (clientX - rect.left - padX) / scale,
+        cam.y + (clientY - rect.top - padY) / scale,
       ];
     }
 
@@ -12743,8 +13187,26 @@
       return true;
     }
 
+    _closeMorePopover() {
+      const morePopover = this._id('more-popover');
+      const moreBtn = this._id('act-more-menu');
+      if (
+        !morePopover ||
+        morePopover.classList.contains('is-hidden') ||
+        !moreBtn ||
+        !moreBtn.classList.contains('is-active')
+      ) {
+        return false;
+      }
+      morePopover.classList.add('is-hidden');
+      moreBtn.classList.remove('is-active');
+      moreBtn.setAttribute('aria-expanded', 'false');
+      return true;
+    }
+
     // Dismiss the topmost active popover, sheet, or mode one layer at a time.
     _dismissTopOverlay() {
+      if (this._closeMorePopover && this._closeMorePopover()) return true;
       if (this._closeLayersPopover()) return true;
       if (this.playing || this.personTimer) {
         this.stopAutoplay();
@@ -12852,7 +13314,7 @@
                 e.stopPropagation();
                 showcaseIdx = (showcaseIdx + 1) % showcasePool.length;
                 renderSearchDropdown();
-                searchInp.focus();
+                if (!this._isMobileViewport()) searchInp.focus();
               });
             }
             let samplePicked = false;
@@ -12895,9 +13357,11 @@
             btn.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
+              const sb = this._id('map-search-box');
+              if (sb) sb.classList.add('is-expanded');
               searchInp.value = kw;
               renderSearchDropdown();
-              searchInp.focus();
+              if (!this._isMobileViewport()) searchInp.focus();
             });
             chipsWrap.appendChild(btn);
           }
@@ -13009,7 +13473,11 @@
         searchInp.addEventListener('blur', () => {
           searchInp.placeholder = this._searchPlaceholder(false);
           setTimeout(() => {
-            if (searchBox && !searchInp.value.trim()) {
+            if (
+              searchBox &&
+              !searchInp.value.trim() &&
+              searchList.classList.contains('is-hidden')
+            ) {
               searchBox.classList.remove('is-expanded');
             }
           }, 180);
@@ -13057,6 +13525,7 @@
       if (layersBtn && layersPopover) {
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          this._closeMorePopover();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -13086,6 +13555,35 @@
             !layersBtn.contains(e.target)
           ) {
             this._closeLayersPopover();
+          }
+        });
+      }
+
+      const moreBtn = this._id('act-more-menu');
+      const morePopover = this._id('more-popover');
+      if (moreBtn && morePopover) {
+        moreBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._closeLayersPopover();
+          const willOpen = morePopover.classList.contains('is-hidden');
+          if (willOpen) {
+            morePopover.classList.remove('is-hidden');
+            moreBtn.classList.add('is-active');
+            moreBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            this._closeMorePopover();
+          }
+        });
+        morePopover.addEventListener('click', () => {
+          this._closeMorePopover();
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (
+            !morePopover.classList.contains('is-hidden') &&
+            !morePopover.contains(e.target) &&
+            !moreBtn.contains(e.target)
+          ) {
+            this._closeMorePopover();
           }
         });
       }
@@ -13431,12 +13929,17 @@
             return;
           }
           e.preventDefault();
-          this._recordGestureMove();
-          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
           const rawDelta =
             e.deltaMode === 1 ? e.deltaY * 18 : e.deltaMode === 2 ? e.deltaY * 240 : e.deltaY;
-          const clampedDelta = Math.max(-220, Math.min(220, rawDelta || 0));
-          const factor = Math.exp(-clampedDelta * 0.002);
+          if (!Number.isFinite(rawDelta) || rawDelta === 0) return;
+          this._cancelCameraAnimation();
+          this._recordGestureMove();
+          const [mx, my] = this._clientToSvgPoint(e.clientX, e.clientY);
+          // Trackpad pinch is encoded as ctrl+wheel with deltaY = -100*log(scale).
+          // Decode pinch directly; ordinary wheel/two-finger scrolling retains
+          // its existing sensitivity and per-event limit.
+          const delta = e.ctrlKey ? rawDelta : Math.max(-220, Math.min(220, rawDelta));
+          const factor = Math.exp(-delta * (e.ctrlKey ? 0.01 : 0.002));
           const nextW = Math.max(100, Math.min(1300, this.camera.w / factor));
           const k = nextW / this.camera.w;
           this.camera = {
@@ -13465,6 +13968,7 @@
 
       this.svg.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
+        this._cancelCameraAnimation();
         this._cancelPendingHover();
         this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         this.svg.setPointerCapture(e.pointerId);
@@ -13734,7 +14238,11 @@
             this.locale === 'en'
               ? `${hasDiffMod ? 'Now ' + mod : 'Same modern name'}${rem ? ' · ' + rem : ''}${traceHint}`
               : `${hasDiffMod ? '今 ' + mod : '古今同名'}${rem ? ' · ' + rem : ''}${traceHint}`;
-          this._showHoverTip(e, `<b>${anc}</b><div class="tt-sub">${sub}</div>`);
+          this._showHoverTip(
+            e,
+            `<b>${anc}</b><div class="tt-sub">${sub}</div>`,
+            settlementEl ? settlementEl.querySelector('.name') : null
+          );
         } else if (corridorEl) {
           this._showHoverTip(
             e,
@@ -14087,7 +14595,7 @@
       }
     }
 
-    _showHoverTip(e, html) {
+    _showHoverTip(e, html, avoidEl = null) {
       const rect = this._id('viewport-frame').getBoundingClientRect();
       this.hoverTip.innerHTML = html;
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.hoverTip);
@@ -14100,8 +14608,27 @@
         });
       }
       this.hoverTip.classList.remove('is-hidden');
-      const left = Math.max(8, Math.min(rect.width - 190, e.clientX - rect.left + 12));
-      const top = Math.max(8, Math.min(rect.height - 90, e.clientY - rect.top - 12));
+      // Measure at a stable origin so the previous position cannot squeeze a
+      // newly longer card before its final placement is chosen.
+      this.hoverTip.style.left = '8px';
+      const { width, height } = this.hoverTip.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // One spacing for every pointer: 16 px clears the top of a default-size
+      // grab hand (its palm sits on the hotspot) without leaving the card
+      // detached, and the pointing hand only extends below its fingertip.
+      const gap = 16;
+      const belowGap = 56;
+      const padding = 8;
+      // Center above the hovered point; the measured size lets wrapped cards
+      // shift or flip at the map edges.
+      const preferredLeft = x - width * 0.5;
+      // City names can sit above the dot; leave the name readable too.
+      const anchorTop = avoidEl ? Math.min(y, avoidEl.getBoundingClientRect().top - rect.top) : y;
+      const preferredTop = anchorTop - gap - height >= padding
+        ? anchorTop - gap - height : y + belowGap;
+      const left = Math.max(padding, Math.min(rect.width - width - padding, preferredLeft));
+      const top = Math.max(padding, Math.min(rect.height - height - padding, preferredTop));
       this.hoverTip.style.left = `${left}px`;
       this.hoverTip.style.top = `${top}px`;
     }

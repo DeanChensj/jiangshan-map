@@ -7679,16 +7679,16 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
-      "dynastyKey": "xihan",
-      "year": 9,
+      "dynastyKey": "qin",
+      "year": -221,
       "coord": [
-        108.93,
-        34.28
+        118.301,
+        36.831
       ],
-      "site": "长安",
-      "siteEn": "Chang'an",
-      "zh": "王莽废孺子婴代汉建“新”，改王田奴婢币制并频改地名",
-      "en": "Wang Mang proclaims the Xin Dynasty in Chang'an, enacting sweeping land and currency reforms"
+      "site": "临淄（今山东淄博）",
+      "siteEn": "Linzi (Zibo, Shandong)",
+      "zh": "秦将王贲自燕南下袭齐入临淄，齐王建不战出降，六国尽并置齐郡",
+      "en": "Qin general Wang Ben marches south from Yan into Linzi; King Jian of Qi surrenders, ending Six Kingdoms"
     },
     {
       "dynastyKey": "xihan",
@@ -12732,31 +12732,31 @@ window.ATLAS_LORE_DATA = {
     {
       "zh": "流水",
       "en": "Flowing Water",
-      "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e0/Liu_Shui.ogg/Liu_Shui.ogg.mp3",
+      "mp3": "assets/audio/liu_shui.mp3",
       "ogg": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Liu_Shui.ogg"
     },
     {
       "zh": "平沙落雁",
       "en": "Wild Geese on the Sandbank",
-      "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5a/Pingsha_Luoyan.ogg/Pingsha_Luoyan.ogg.mp3",
+      "mp3": "assets/audio/pingsha_luoyan.mp3",
       "ogg": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Pingsha_Luoyan.ogg"
     },
     {
       "zh": "阳关三叠",
       "en": "Parting at Yangguan",
-      "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/60/Guqin-Yangguan_Sandie.ogg/Guqin-Yangguan_Sandie.ogg.mp3",
+      "mp3": "assets/audio/yangguan_sandie.mp3",
       "ogg": "https://upload.wikimedia.org/wikipedia/commons/6/60/Guqin-Yangguan_Sandie.ogg"
     },
     {
       "zh": "醉渔唱晚",
       "en": "Drunken Fisherman",
-      "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/52/Guqin-Zuiyu_Changwan.ogg/Guqin-Zuiyu_Changwan.ogg.mp3",
+      "mp3": "assets/audio/zuiyu_changwan.mp3",
       "ogg": "https://upload.wikimedia.org/wikipedia/commons/5/52/Guqin-Zuiyu_Changwan.ogg"
     },
     {
       "zh": "酒狂",
       "en": "Wine Madness",
-      "mp3": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/8f/Jiu_Kuang.ogg/Jiu_Kuang.ogg.mp3",
+      "mp3": "assets/audio/jiu_kuang.mp3",
       "ogg": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Jiu_Kuang.ogg"
     }
   ],

@@ -1,0 +1,13 @@
+.git
+.github
+docs
+scripts
+skills
+data
+geojson/demo.html
+*.md
+.gitignore
+Dockerfile
+docker-compose.yml
+.dockerignore
+.DS_Store
