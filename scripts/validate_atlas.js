@@ -3219,7 +3219,7 @@ function main() {
     assert(!pointInShape(81.3, 43.9, beiting), 's_tang_b1: 伊犁 (lost to the Karluks in 766) must not be inside 北庭都护府');
     assert(pointInShape(79.4, 35.6, pol('s_tang_b1', '吐蕃').shape), 's_tang_b1: the Kunlun strip must belong to 吐蕃');
   }
-  // Southwest frontier 907–1644: 蜀 / 宋 stop at the 岷山–大渡河 line (雅州 inside, 康定 outside),
+  // Southwest frontier 25–1644: 蜀 / 宋 stop at the 岷山–大渡河 line (雅州 inside, 康定 outside),
   // 建昌 (西昌) belongs to 大长和 / 大理, and 腾冲 is inside 大理, 元 and 明.
   {
     const ownerAt = (sk, pt) => {
@@ -3233,6 +3233,21 @@ function main() {
       assert(k && k !== shu, `${sk}: 康定 (west of the 大渡河) must belong to the Tibetan side, got ${k}`);
       assert.strictEqual(ownerAt(sk, XICHANG), dali, `${sk}: 建昌 (西昌) must belong to ${dali}`);
       assert.strictEqual(ownerAt(sk, TENGCHONG), dali, `${sk}: 腾冲 must belong to ${dali}`);
+    }
+    // 东汉–隋: 叶榆 (大理) and 不韦 (保山) are Han counties; 永昌郡 (69 CE) adds 腾冲 for 73–347;
+    // 隋 keeps 昆明 (南宁州) in 589–614.
+    const DALI = [100.23, 25.6], BAOSHAN = [99.16, 25.11], KUNMING = [102.71, 25.04];
+    for (const [sk, main] of [['s_donghan_b2', '东汉'], ['s_donghan', '东汉'], ['s_sanguo', '蜀汉'], ['s_dongjin_a', '成汉'], ['s_dongjin_b', '东晋'], ['s_nanbei_c', '梁'], ['s_sui_a', '隋'], ['s_sui', '隋']]) {
+      assert.strictEqual(ownerAt(sk, DALI), main, `${sk}: 叶榆 (大理) must belong to ${main}`);
+      assert.strictEqual(ownerAt(sk, BAOSHAN), main, `${sk}: 不韦 (保山) must belong to ${main}`);
+    }
+    for (const [sk, main] of [['s_donghan', '东汉'], ['s_sanguo', '蜀汉'], ['s_dongjin_a', '成汉']]) {
+      assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 (永昌郡) must belong to ${main}`);
+    }
+    for (const sk of ['s_sui', 's_sui_c']) assert.strictEqual(ownerAt(sk, KUNMING), '隋', `${sk}: 昆明 must belong to 隋, not 泰人诸邦`);
+    // No hole between 益州 / 蜀 and 交州 south of 蒙自 and 文山 (兴古郡), 189–413.
+    for (const sk of ['s_donghan_d2', 's_sanguo', 's_sanguo_c', 's_dongjin_a', 's_dongjin_b', 's_dongjin_d']) {
+      for (const pt of [[104.3, 22.75], [103.3, 22.3], [104.62, 24.5]]) assert(ownerAt(sk, pt), `${sk}: ${pt} must not be a hole between 益州 and 交州`);
     }
     for (const [sk, main] of [['s_yuan', '元'], ['s_ming_a0', '明'], ['s_ming_b', '明']]) {
       assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 must belong to ${main}`);
