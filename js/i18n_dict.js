@@ -280,7 +280,7 @@ window.EN_LOCALE = {
       "Red Cliffs · Jiangling"
     ],
     "sanguo:220": [
-      "Cao Pi adopts the Nine-Rank System, forces Emperor Xian of Han to abdicate, and founds Cao Wei",
+      "Cao Cao dies in Luoyang; Cao Pi enacts the Nine-Rank System and founds Cao Wei",
       "Luoyang"
     ],
     "sanguo:221": [
@@ -288,8 +288,8 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "sanguo:229": [
-      "Sun Quan proclaims himself Emperor of Wu at Wuchang and moves the capital to Jianye (Nanjing)",
-      "Jianye"
+      "Sun Quan proclaims himself Emperor of Wu at Wuchang and moves the capital to Jianye",
+      "Jianye (Nanjing)"
     ],
     "sanguo:263": [
       "Wei generals Deng Ai and Zhong Hui conquer Shu Han at Chengdu",
@@ -481,7 +481,7 @@ window.EN_LOCALE = {
     ],
     "nanbei:431": [
       "Helian Ding captured, Northern Wei conquers Xia; Era of Yuanjia in Liu Song",
-      "Tongwancheng / Jiankang"
+      "Tongwancheng · Jiankang"
     ],
     "nanbei:436": [
       "Northern Wei marches into Longcheng, ending Northern Yan",
@@ -725,7 +725,7 @@ window.EN_LOCALE = {
     ],
     "nansong:1264": [
       "Kublai establishes the Bureau of Buddhist and Tibetan Affairs (Zongzhiyuan)",
-      "Dadu / Sakya"
+      "Dadu · Sakya"
     ],
     "nansong:1271": [
       "After defeating Ariq Böke in the succession war, Kublai Khan proclaims the Great Yuan at Dadu",
@@ -736,12 +736,12 @@ window.EN_LOCALE = {
       "Xiangyang"
     ],
     "nansong:1275": [
-      "Marco Polo arrives at Dadu",
+      "Marco Polo accompanies the Yuan court to the winter capital Dadu, beginning 17 years in China",
       "Dadu"
     ],
     "nansong:1276": [
       "Bayan captures Lin'an, Emperor Gong surrenders; Yuan sets Yunnan Branch Secretariat at Zhongqing",
-      "Lin'an / Zhongqing"
+      "Lin'an · Zhongqing (Kunming)"
     ],
     "nansong:1279": [
       "Retreating to Guangdong, Lu Xiufu leaps into the sea with child emperor Zhao Bing at Yashan",
@@ -756,7 +756,7 @@ window.EN_LOCALE = {
       "Sakya"
     ],
     "yuan:1293": [
-      "Beijing–Hangzhou Grand Canal fully opened via Shandong",
+      "Kublai Khan and Guo Shoujing open the Tonghui Canal, completing the Beijing–Hangzhou Grand Canal",
       "Huitong Canal (Linqing)"
     ],
     "yuan:1351": [
@@ -852,11 +852,11 @@ window.EN_LOCALE = {
       "Kunming"
     ],
     "qing:1683": [
-      "Admiral Shi Lang defeats the Zheng fleet at Penghu; Zheng Keshuang yields and Taiwanfu is set",
+      "Kangxi Emperor sends Admiral Shi Lang to take Penghu; Zheng Keshuang yields and Taiwanfu is set",
       "Taiwanfu (Tainan)"
     ],
     "qing:1689": [
-      "Treaty of Nerchinsk defines the eastern Sino-Russian border",
+      "Kangxi Emperor's envoys sign the Treaty of Nerchinsk, defining the eastern Sino-Russian border",
       "Nerchinsk"
     ],
     "qing:1691": [
@@ -941,7 +941,7 @@ window.EN_LOCALE = {
     ],
     "qin:-212": [
       "First Emperor orders Meng Tian to build the 700 km Qin Direct Road from Xianyang to Jiuyuan",
-      "Xianyang / Jiuyuan"
+      "Xianyang · Jiuyuan"
     ],
     "qin:-210": [
       "Shaqiu Coup: First Emperor dies; Zhao Gao and Li Si forge an edict to enthrone Huhai",
@@ -952,8 +952,8 @@ window.EN_LOCALE = {
       "Julu & Panyu"
     ],
     "qin:-206": [
-      "Ziying surrenders and Qin falls; Xiang Yu enfeoffs 18 Kingdoms as Wuzhu restores Minyue",
-      "Hongmen (Xianyang)"
+      "Ziying yields to Liu Bang and Qin falls; Xiang Yu holds Hongmen Feast and enfeoffs 18 Kingdoms",
+      "Hongmen (Lintong)"
     ],
     "xihan:-200": [
       "Emperor Gaozu is besieged at Baideng; early Han adopts the Heqin marriage-alliance policy",
@@ -977,7 +977,7 @@ window.EN_LOCALE = {
     ],
     "xihan:-100": [
       "Li Guangli's Dayuan campaign secures the Southern Tarim Silk Road",
-      "Dunhuang / Khotan"
+      "Dunhuang · Khotan"
     ],
     "xihan:-89": [
       "Emperor Wu issues the Luntai Edict of Repentance",
@@ -985,7 +985,7 @@ window.EN_LOCALE = {
     ],
     "xihan:-33": [
       "Wang Zhaojun marries Xiongnu Chanyu Huhanye",
-      "Chang'an / Shuofang"
+      "Chang'an · Shuofang"
     ],
     "donghan:68": [
       "Emperor Ming founds White Horse Temple; Buddhism takes root",
@@ -1004,7 +1004,7 @@ window.EN_LOCALE = {
       "Xu (Xuchang)"
     ],
     "donghan:219": [
-      "Liu Bei takes Hanzhong; in winter Lü Meng seizes Jingzhou and Guan Yu falls",
+      "Liu Bei proclaims himself King of Hanzhong; in winter Lü Meng seizes Jingzhou and Guan Yu falls",
       "Hanzhong · Maicheng"
     ],
     "sanguo:222": [
@@ -1020,7 +1020,7 @@ window.EN_LOCALE = {
       "Jieting (Qin'an)"
     ],
     "sanguo:230": [
-      "Sun Quan dispatches Wei Wen's fleet to Yizhou (Taiwan)",
+      "Sun Quan dispatches Wei Wen and Zhuge Zhi by sea to Yizhou",
       "Yizhou (Taiwan)"
     ],
     "sanguo:234": [
@@ -1053,7 +1053,7 @@ window.EN_LOCALE = {
     ],
     "sanguo:279": [
       "Western Jin launches six-pronged invasion of Eastern Wu",
-      "Jiangling / Jianye"
+      "Jiangling · Jianye"
     ],
     "nanbei:550": [
       "Gao Yang founds Northern Qi at Ye; Yuwen Tai institutes the Eight Pillars system in Western Wei",
@@ -1065,23 +1065,23 @@ window.EN_LOCALE = {
     ],
     "sui:599": [
       "Eastern Tujue Qimin Qaghan submits to Sui",
-      "Shuozhou / Dalicheng"
+      "Shuozhou · Dalicheng"
     ],
     "sui:608": [
       "Emperor Yang constructs the Yongji Canal north to Zhuo Commandery",
-      "Zhuo / Luoyang"
+      "Zhuo · Luoyang"
     ],
     "sui:609": [
       "Emperor Yang defeats Tuyuhun and establishes Xihai and three other western commanderies",
-      "Zhangye / Xihai"
+      "Zhangye · Xihai"
     ],
     "sui:612": [
       "Emperor Yang launches his first grand campaign against Goguryeo",
-      "Zhuo / Liaodong"
+      "Zhuo · Liaodong"
     ],
     "sui:617": [
       "Li Yuan rises in Taiyuan and captures Daxing (Chang'an)",
-      "Taiyuan / Daxing"
+      "Taiyuan · Daxing"
     ],
     "tang:618": [
       "After Emperor Yang is slain at Jiangdu, Li Yuan receives the Sui abdication and founds Tang",
@@ -1101,7 +1101,7 @@ window.EN_LOCALE = {
     ],
     "tang:657": [
       "Su Dingfang defeats Western Tujue; Kunling & Mengchi Protectorates reach the Aral Sea",
-      "Beshbalik / Suyab"
+      "Beshbalik · Suyab"
     ],
     "tang:668": [
       "Li Ji captures Pyongyang, conquering Goguryeo; Andong Protectorate set up",
@@ -1140,7 +1140,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "tang:786": [
-      "Shazhou (Dunhuang) falls to the Tibetan Empire",
+      "Shazhou falls to the Tibetan Empire as Tang loses Longyou and Hexi",
       "Shazhou (Dunhuang)"
     ],
     "tang:817": [
@@ -1153,7 +1153,7 @@ window.EN_LOCALE = {
     ],
     "tang:848": [
       "Zhang Yichao's Guiyi Circuit recovers Dunhuang, Guazhou and eleven Hexi prefectures",
-      "Shazhou / Guazhou"
+      "Shazhou · Guazhou"
     ],
     "wudai:909": [
       "Later Liang invests Wang Shenzhi as King of Min at Fuzhou",
@@ -1177,7 +1177,7 @@ window.EN_LOCALE = {
     ],
     "wudai:945": [
       "Southern Tang conquers Min and partitions its territory with Wuyue",
-      "Fuzhou / Jianzhou"
+      "Fuzhou · Jianzhou"
     ],
     "wudai:959": [
       "Northern campaign of Zhou Shizong recovers Three Passes and Three Prefectures",
@@ -1196,8 +1196,8 @@ window.EN_LOCALE = {
       "Shuozhou"
     ],
     "beisong:1014": [
-      "Yingtianfu (Shangqiu) elevated to Southern Capital of Song",
-      "Nanjing Yingtianfu"
+      "Emperor Zhenzong elevates Yingtianfu of Songzhou to Southern Capital of Song",
+      "Nanjing Yingtianfu (Shangqiu)"
     ],
     "beisong:1023": [
       "Official Jiaozi Bureau established in Chengdu, issuing first paper money",
@@ -1220,12 +1220,12 @@ window.EN_LOCALE = {
       "Huangtiandang (Zhenjiang)"
     ],
     "nansong:1138": [
-      "Emperor Gaozong settles his temporary capital at Lin’an (Hangzhou) as Qin Hui leads peace talks",
+      "Emperor Gaozong settles his temporary capital at Lin'an Prefecture as Qin Hui leads peace talks",
       "Lin'an (Hangzhou)"
     ],
     "nansong:1140": [
       "Yue Fei's northern campaign wins victories at Yancheng and Zhuxianzhen",
-      "Yancheng / Zhuxianzhen"
+      "Yancheng · Zhuxianzhen"
     ],
     "nansong:1161": [
       "Yu Yunwen defeats Jin Emperor Wanyan Liang at the Battle of Caishi",
@@ -1237,7 +1237,7 @@ window.EN_LOCALE = {
     ],
     "nansong:1215": [
       "Mongols capture Jin capital Zhongdu; Jin moves south to Bianjing, losing half its territory",
-      "Zhongdu / Bianjing"
+      "Zhongdu · Bianjing"
     ],
     "nansong:1259": [
       "Siege of Diaoyu Fortress; Möngke Khan dies in campaign",
@@ -1245,7 +1245,7 @@ window.EN_LOCALE = {
     ],
     "yuan:1281": [
       "Kublai Khan sets up Penghu Inspection Office over Penghu and Ryukyu and launches 2nd Japan raid",
-      "Penghu / Quanzhou"
+      "Penghu · Quanzhou"
     ],
     "yuan:1287": [
       "Kublai suppresses Nayan's revolt in Manchuria; Liaoyang Province established",
@@ -1264,7 +1264,7 @@ window.EN_LOCALE = {
       "Bozhou"
     ],
     "yuan:1356": [
-      "Zhu Yuanzhang takes Jiqing (Yingtianfu); Zhang Shicheng makes Pingjiang his capital",
+      "Zhu Yuanzhang takes Jiqing and makes it Yingtianfu; Zhang Shicheng rules from Pingjiang",
       "Jiqing (Nanjing)"
     ],
     "yuan:1360": [
@@ -1277,7 +1277,7 @@ window.EN_LOCALE = {
     ],
     "ming:1442": [
       "Ming begins constructing the Liaodong Wall to defend the northeast",
-      "Liaoyang / Guangning"
+      "Liaoyang · Guangning"
     ],
     "ming:1567": [
       "Longqing Emperor lifts the maritime trade ban at Yuegang in Fujian (the Longqing Opening)",
@@ -1300,7 +1300,7 @@ window.EN_LOCALE = {
       "Yakesa (Albazin)"
     ],
     "qing:1720": [
-      "Qing forces expel Dzungars from Lhasa and install the 7th Dalai Lama",
+      "Kangxi Emperor sends Qing forces to expel Dzungars from Lhasa and install the 7th Dalai Lama",
       "Lhasa"
     ],
     "qing:1722": [
@@ -1313,7 +1313,7 @@ window.EN_LOCALE = {
     ],
     "qing:1771": [
       "Torghut Mongols under Ubashi Khan return from the Volga to Ili",
-      "Ili / Chengde"
+      "Ili · Chengde"
     ],
     "qing:1792": [
       "Fuk'anggan repels Gorkhas; 29-Article Ordinance and Golden Urn instituted",
@@ -1321,11 +1321,11 @@ window.EN_LOCALE = {
     ],
     "qing:1796": [
       "Qianlong abdicates to Jiaqing; White Lotus Rebellion breaks out",
-      "Beijing / Xiangyang"
+      "Beijing · Xiangyang"
     ],
     "qing:1851": [
-      "Jintian Uprising launches the Taiping Heavenly Kingdom across the Yangtze",
-      "Jintian / Nanjing"
+      "Hong Xiuquan launches the Jintian Uprising, founding the Taiping Heavenly Kingdom",
+      "Jintian · Jiangning"
     ],
     "qing:1858": [
       "Treaty of Aigun cedes territory north of the Amur River to Russia",
@@ -1336,7 +1336,7 @@ window.EN_LOCALE = {
       "Dihua (Ürümqi)"
     ],
     "qing:1895": [
-      "Defeated in the First Sino-Japanese War, Qing signs Treaty of Shimonoseki ceding Taiwan & Penghu",
+      "Defeated by Japan, Qing sends Li Hongzhang to sign the Treaty of Shimonoseki, ceding Taiwan",
       "Taiwanfu (Tainan)"
     ],
     "roc:1915": [
@@ -1504,7 +1504,7 @@ window.EN_LOCALE = {
       "Linzi"
     ],
     "zhanguo:-278": [
-      "Bai Qi captures Chu capital Ying as Qu Yuan drowns; Tian Dan restores Qi (279 BCE)",
+      "Qin general Bai Qi captures Chu capital Ying; Chu moves to Chen as Qu Yuan drowns in the Miluo",
       "Ying (Jiangling)"
     ],
     "zhanguo:-260": [
@@ -1624,7 +1624,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "qing:1901": [
-      "Qing signs the Boxer Protocol with 11 powers: 450M-tael indemnity and legation garrisons",
+      "Yikuang and Li Hongzhang sign the Boxer Protocol with 11 powers (450M-tael indemnity)",
       "Beijing"
     ],
     "xihan:-8": [
@@ -1876,7 +1876,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "qing:1755": [
-      "Qing armies march into Ili in two columns, destroying the Dzungar Khanate and Dawachi",
+      "Qianlong Emperor sends two Qing columns to Ili, destroying the Dzungar Khanate and Dawachi",
       "Ili (Huiyuan)"
     ],
     "qing:1757": [
@@ -1912,7 +1912,7 @@ window.EN_LOCALE = {
       "Linqiang · Huangshui (Xining)"
     ],
     "donghan:215": [
-      "Cao Cao takes Hanzhong; Sun Quan and Liu Bei divide Jingzhou; Zhang Liao holds Xiaoyao Ford",
+      "Cao Cao takes Hanzhong from Zhang Lu; Sun and Liu split Jingzhou; Zhang Liao holds Xiaoyao Ford",
       "Nanzheng · Linxiang · Hefei"
     ],
     "tang:670": [
@@ -7154,6 +7154,14 @@ window.EN_LOCALE = {
     "前 209 — 前 208 · 大泽乡起义与六国复立：陈胜建张楚，楚、赵、燕、齐复国反秦，秦廷退守关中河洛与巴蜀岭南": "209–208 BCE · Dazexiang Uprising & Six Kingdoms Restored: Chen Sheng’s Zhangchu, Restored Chu, Zhao, Yan & Qi vs. Qin",
     "前 207 · 巨鹿之战与赵佗据岭南：项羽巨鹿破秦主力，南海尉赵佗绝秦道并桂林、象郡自立": "207 BCE · Battle of Julu & Zhao Tuo’s Lingnan Secession: Xiang Yu Shatters the Qin Army While Zhao Tuo Seizes Lingnan",
     "楚（张楚 · 怀王）": "Chu (Zhangchu & King Huai)",
-    "楚（怀王 · 项羽）": "Chu (King Huai & Xiang Yu)"
+    "楚（怀王 · 项羽）": "Chu (King Huai & Xiang Yu)",
+    "中庆（昆明）": "Zhongqing (Kunming)",
+    "南京应天府（商丘）": "Nanjing Yingtianfu (Shangqiu)",
+    "建业（南京）": "Jianye (Nanjing)",
+    "当阳长坂": "Changban, Dangyang",
+    "当阳麦城": "Maicheng, Dangyang",
+    "虎门": "Humen",
+    "松山": "Songshan",
+    "阴平摩天岭": "Yinping Trail"
   }
 };

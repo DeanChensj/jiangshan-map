@@ -14,7 +14,26 @@
   class AtlasQuizMixin {
     _sanitizeChallengeClue(text, settlement, displayAncient) {
       if (!text) return '';
-      let out = String(text).replace(/（今[^）]+）|\(Now [^)]+\)/gi, '');
+      let out = String(text).replace(/（(?:今|治今|故址在今)[^）]+）|\(Now [^)]+\)/gi, '');
+      if (settlement && settlement.modern) {
+        const modTokens = String(settlement.modern)
+          .split(/[·/、，,\s（）()]+/)
+          .map((s) =>
+            s
+              .replace(/^今/, '')
+              .replace(
+                /^(?:黑龙江|内蒙古|新疆|广西|宁夏|西藏|河北|山西|辽宁|吉林|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾)/,
+                ''
+              )
+              .replace(/(?:东北|西北|东南|西南|东|西|南|北|境内|一带|附近|市|县|区)$/, '')
+              .trim()
+          )
+          .filter((s) => s.length >= 2);
+        for (const mt of modTokens) {
+          const esc = mt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          out = out.replace(new RegExp(`（(?:治)?${esc}）`, 'g'), '');
+        }
+      }
       if (this.locale === 'en') {
         return out
           .replace(
