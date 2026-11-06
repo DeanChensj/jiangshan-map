@@ -3219,6 +3219,25 @@ function main() {
     assert(!pointInShape(81.3, 43.9, beiting), 's_tang_b1: 伊犁 (lost to the Karluks in 766) must not be inside 北庭都护府');
     assert(pointInShape(79.4, 35.6, pol('s_tang_b1', '吐蕃').shape), 's_tang_b1: the Kunlun strip must belong to 吐蕃');
   }
+  // Southwest frontier 907–1644: 蜀 / 宋 stop at the 岷山–大渡河 line (雅州 inside, 康定 outside),
+  // 建昌 (西昌) belongs to 大长和 / 大理, and 腾冲 is inside 大理, 元 and 明.
+  {
+    const ownerAt = (sk, pt) => {
+      const p = (snapshots[sk].polities || []).find((q) => q.role && pointInShape(...pt, q.shape));
+      return p ? p.title : null;
+    };
+    const YAAN = [103.0, 29.98], KANGDING = [101.96, 30.05], XICHANG = [102.26, 27.9], TENGCHONG = [98.49, 25.02];
+    for (const [sk, shu, dali] of [['s_wudai_c', '后蜀', '大理'], ['s_beisong_a0', '后蜀', '大理'], ['s_beisong_b0', '宋', '大理'], ['s_nansong_a', '南宋', '大理']]) {
+      assert.strictEqual(ownerAt(sk, YAAN), shu, `${sk}: 雅州 (雅安) must belong to ${shu}`);
+      const k = ownerAt(sk, KANGDING);
+      assert(k && k !== shu, `${sk}: 康定 (west of the 大渡河) must belong to the Tibetan side, got ${k}`);
+      assert.strictEqual(ownerAt(sk, XICHANG), dali, `${sk}: 建昌 (西昌) must belong to ${dali}`);
+      assert.strictEqual(ownerAt(sk, TENGCHONG), dali, `${sk}: 腾冲 must belong to ${dali}`);
+    }
+    for (const [sk, main] of [['s_yuan', '元'], ['s_ming_a0', '明'], ['s_ming_b', '明']]) {
+      assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 must belong to ${main}`);
+    }
+  }
   const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
