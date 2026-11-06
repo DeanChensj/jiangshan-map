@@ -4950,7 +4950,7 @@ window.ATLAS_LORE_DATA = {
         29.85
       ],
       "site": "赤壁 · 乌林",
-      "siteEn": "Red Cliffs (Chibi, Hubei)",
+      "siteEn": "Chibi · Wulin",
       "zh": "赤壁之战：周瑜黄盖统孙刘联军火烧乌林战船大破曹操，奠定三分之局",
       "en": "Battle of Red Cliffs: Zhou Yu and Huang Gai lead the Sun-Liu fleet to burn Cao Cao's armada at Wulin",
       "month": 11,
@@ -4998,7 +4998,7 @@ window.ATLAS_LORE_DATA = {
         32.01
       ],
       "site": "襄阳 · 隆中",
-      "siteEn": "Xiangyang",
+      "siteEn": "Xiangyang · Longzhong",
       "zh": "刘备三顾茅庐请诸葛亮于襄阳隆中出山，定《隆中对》",
       "en": "Liu Bei visits Zhuge Liang three times at Longzhong near Xiangyang",
       "persons": [
@@ -6996,7 +6996,7 @@ window.ATLAS_LORE_DATA = {
         34.72
       ],
       "site": "栎阳",
-      "siteEn": "Yueyang (Liyang, Shaanxi)",
+      "siteEn": "Yueyang (Liyang)",
       "zh": "秦孝公下求贤令，卫鞅（商鞅）入秦于栎阳南门徙木立信，颁垦草令",
       "en": "Shang Yang enters Qin at Yueyang and establishes public trust with the South Gate pole decree"
     },
@@ -7008,7 +7008,7 @@ window.ATLAS_LORE_DATA = {
         35.15
       ],
       "site": "河西吴城",
-      "siteEn": "Hexi (Weinan / Hancheng)",
+      "siteEn": "Wucheng, Hexi",
       "zh": "商鞅率秦军大破魏军，虏魏公子卬，收复河西受封商君十五邑",
       "en": "Shang Yang defeats Wei forces west of the Yellow River and is enfeoffed as Lord of Shang"
     },
@@ -7020,7 +7020,7 @@ window.ATLAS_LORE_DATA = {
         33.87
       ],
       "site": "商邑 · 彤地",
-      "siteEn": "Shangyi (Danfeng / Huaxian)",
+      "siteEn": "Shangyi · Tongdi",
       "zh": "秦惠文王即位，商鞅出奔商邑起兵败亡于彤地，然“秦法未败”",
       "en": "Shang Yang falls after Duke Xiao dies, yet his legalist institutions endure in Qin"
     },
@@ -7068,7 +7068,7 @@ window.ATLAS_LORE_DATA = {
         27.91
       ],
       "site": "溆浦 · 沧浪",
-      "siteEn": "Xupu (Western Hunan)",
+      "siteEn": "Xupu · Canglang",
       "zh": "屈原流放沅湘行吟泽畔，作《九歌》《涉江》《天问》",
       "en": "Exiled south of the Yangtze, Qu Yuan wanders along the Yuan and Xiang rivers composing Nine Songs"
     },
@@ -7128,7 +7128,7 @@ window.ATLAS_LORE_DATA = {
         38.04
       ],
       "site": "肥下（宜安）",
-      "siteEn": "Fei (Gaocheng, Hebei)",
+      "siteEn": "Fei (Gaocheng)",
       "zh": "肥之战：李牧统赵军奇袭秦大营，大破秦将桓齮十万军，受封武安君",
       "en": "Battle of Fei: Li Mu routs Qin general Huan Yi and is enfeoffed as Lord Wu'an"
     },
@@ -7181,7 +7181,7 @@ window.ATLAS_LORE_DATA = {
         37.5
       ],
       "site": "上郡（绥德）",
-      "siteEn": "Shangjun (Suide, Shaanxi)",
+      "siteEn": "Shangjun (Suide)",
       "zh": "胡亥赵高矫诏赐死公子扶苏与大将蒙恬于上郡",
       "en": "Prince Fusu and General Meng Tian are forced to die by forged edict at frontier Shangjun",
       "persons": [
@@ -7210,7 +7210,7 @@ window.ATLAS_LORE_DATA = {
         37.07
       ],
       "site": "巨鹿",
-      "siteEn": "Julu (Pingxiang, Hebei)",
+      "siteEn": "Julu (Pingxiang)",
       "zh": "巨鹿之战：项羽破釜沉舟渡漳水，九战九捷大破章邯王离秦军主力",
       "en": "Battle of Julu: Xiang Yu smashes his cooking pots and crushes the main Qin army in nine battles"
     },
@@ -7388,7 +7388,7 @@ window.ATLAS_LORE_DATA = {
         35.03
       ],
       "site": "博浪沙（原阳）",
-      "siteEn": "Bolangsha (Yuanyang, Henan)",
+      "siteEn": "Bolangsha (Yuanyang)",
       "zh": "韩贵族张良散尽家财求力士，于博浪沙狙击东巡秦始皇误中副车",
       "en": "Zhang Liang ambushes Qin Shi Huang’s convoy at Bolangsha and flees into hiding at Xiapi"
     },
@@ -7399,8 +7399,8 @@ window.ATLAS_LORE_DATA = {
         108.73,
         34.33
       ],
-      "site": "细柳营（咸阳西南）",
-      "siteEn": "Xiliu Camp (Near Chang'an)",
+      "site": "咸阳细柳营",
+      "siteEn": "Xiliu Camp, Xianyang",
       "zh": "匈奴寇边，汉文帝劳军细柳营按辔徐行，赞周亚夫真将军",
       "en": "Emperor Wen inspects Xiliu Camp at a walk, praising strict commander Zhou Yafu as a true general"
     },
@@ -7533,7 +7533,7 @@ window.ATLAS_LORE_DATA = {
         33.63
       ],
       "site": "昆阳（叶县）",
-      "siteEn": "Kunyang (Yexian, Henan)",
+      "siteEn": "Kunyang (Yexian)",
       "zh": "昆阳之战：刘秀率敢死队冲阵大破王莽四十二万大军",
       "en": "Battle of Kunyang: Liu Xiu leads 3,000 shock troops to rout Wang Mang's 420,000-man army"
     },
@@ -7594,7 +7594,7 @@ window.ATLAS_LORE_DATA = {
         35.55
       ],
       "site": "兖州昌邑",
-      "siteEn": "Yanzhou (Jining, Shandong)",
+      "siteEn": "Yanzhou (Jining)",
       "zh": "曹操入主兖州击败青州黄巾百万众，收编精锐三十余万为“青州兵”",
       "en": "Cao Cao takes Yanzhou and integrates Yellow Turban veterans into his elite Qingzhou Army"
     },
@@ -7624,7 +7624,7 @@ window.ATLAS_LORE_DATA = {
         34.31
       ],
       "site": "下邳",
-      "siteEn": "Xiapi (Pizhou, Jiangsu)",
+      "siteEn": "Xiapi (Pizhou)",
       "zh": "下邳之战：曹操荀攸决沂泗水灌城生擒吕布，尽得徐州之地",
       "en": "Battle of Xiapi: Cao Cao diverts the Yi and Si rivers to flood the city and capture Lü Bu",
       "persons": [
@@ -7684,7 +7684,7 @@ window.ATLAS_LORE_DATA = {
         30.82
       ],
       "site": "当阳长坂坡",
-      "siteEn": "Changban (Dangyang, Hubei)",
+      "siteEn": "Changban (Dangyang)",
       "zh": "刘备携荆州十余万百姓南撤，当阳长坂被曹纯虎豹骑追及",
       "en": "At Changban Slope Zhao Yun rescues infant Liu Shan while Zhang Fei holds Changban Bridge alone",
       "month": 8,
@@ -7743,7 +7743,7 @@ window.ATLAS_LORE_DATA = {
         35.61
       ],
       "site": "白马坡（滑县）",
-      "siteEn": "Baima (Huaxian, Henan)",
+      "siteEn": "Baima (Huaxian)",
       "zh": "白马之战：关羽策马刺颜良于万众之中斩首而还，解白马之围受封汉寿亭侯",
       "en": "Battle of Baima: Guan Yu slays Yuan Shao's vanguard general Yan Liang amidst enemy ranks",
       "persons": [
@@ -7861,7 +7861,7 @@ window.ATLAS_LORE_DATA = {
         32.63
       ],
       "site": "淝水（寿春）",
-      "siteEn": "Feishui River (Shouxian, Anhui)",
+      "siteEn": "Feishui River (Shouxian)",
       "zh": "淝水之战：谢安运筹建康，谢玄率北府兵大破苻坚南征军",
       "en": "Battle of Fei River: Directed by Xie An, Xie Xuan leads 80,000 troops to rout Fu Jian’s host",
       "persons": [
@@ -7902,7 +7902,7 @@ window.ATLAS_LORE_DATA = {
         36.68
       ],
       "site": "广固（青州）",
-      "siteEn": "Guanggu (Qingzhou, Shandong)",
+      "siteEn": "Guanggu (Qingzhou)",
       "zh": "刘裕率晋军北伐攻克南燕都城广固，生擒慕容超，收复齐鲁故地",
       "en": "Liu Yu leads an Eastern Jin northern expedition that storms Guanggu and destroys Southern Yan"
     },
@@ -7974,7 +7974,7 @@ window.ATLAS_LORE_DATA = {
         35.19
       ],
       "site": "浅水原（长武）",
-      "siteEn": "Qianshuiyuan (Changwu, Shaanxi)",
+      "siteEn": "Qianshuiyuan (Changwu)",
       "zh": "浅水原之战：秦王李世民歼灭西秦薛仁杲主力，平定陇右",
       "en": "Battle of Qianshuiyuan: Li Shimin destroys Xue Rengao's Western Qin army to secure Longyou"
     },
@@ -8046,7 +8046,7 @@ window.ATLAS_LORE_DATA = {
         34.27
       ],
       "site": "马嵬驿（兴平）",
-      "siteEn": "Mawei Post (Xingping, Shaanxi)",
+      "siteEn": "Mawei Post (Xingping)",
       "zh": "潼关失守唐玄宗弃长安奔蜀，至马嵬驿禁军哗变诛宰相杨国忠",
       "en": "Fleeing toward Sichuan, imperial guards mutiny at Mawei and slay Chancellor Yang Guozhong",
       "month": 6.5
@@ -8271,7 +8271,7 @@ window.ATLAS_LORE_DATA = {
         37.16
       ],
       "site": "平原郡（陵县）",
-      "siteEn": "Pingyuan (Dezhou, Shandong)",
+      "siteEn": "Pingyuan (Dezhou)",
       "zh": "范阳叛军南下河北瓦解，平原太守颜真卿首举义旗传檄讨贼",
       "en": "Prefect Yan Zhenqing raises the loyalist banner at Pingyuan, rallying seventeen Hebei commanderies"
     },
@@ -8295,7 +8295,7 @@ window.ATLAS_LORE_DATA = {
         33
       ],
       "site": "蔡州（汝南）",
-      "siteEn": "Caizhou (Runan, Henan)",
+      "siteEn": "Caizhou (Runan)",
       "zh": "七十七岁的太师颜真卿奉命孤身赴蔡州宣慰叛将李希烈，囚禁逾年凛然不屈",
       "en": "Seventy-seven-year-old elder statesman Yan Zhenqing defies warlord Li Xilie at Caizhou unto death"
     },
@@ -8307,7 +8307,7 @@ window.ATLAS_LORE_DATA = {
         33
       ],
       "site": "蔡州（汝南）",
-      "siteEn": "Caizhou (Runan, Henan)",
+      "siteEn": "Caizhou (Runan)",
       "zh": "韩愈任行军司马随宰相裴度督师淮西，李愬雪夜入蔡州擒吴元济",
       "en": "Serving under Pei Du, Han Yu witnesses the snow-night capture of Caizhou and writes its stele"
     },
@@ -8391,7 +8391,7 @@ window.ATLAS_LORE_DATA = {
         29.05
       ],
       "site": "朗州（常德）",
-      "siteEn": "Langzhou (Changde, Hunan)",
+      "siteEn": "Langzhou (Changde)",
       "zh": "刘禹锡坐永贞革新贬朗州司马十年",
       "en": "Exiled for ten years to Langzhou, poet Liu Yuxi adapts folk songs into Bamboo Branch Lyrics"
     },
@@ -8402,8 +8402,8 @@ window.ATLAS_LORE_DATA = {
         118.36,
         31.72
       ],
-      "site": "和州（马鞍山和县）",
-      "siteEn": "Hezhou (Hexian, Anhui)",
+      "site": "和州（和县）",
+      "siteEn": "Hezhou (Hexian)",
       "zh": "和州刺史刘禹锡居斗室泰然处之，撰铭《陋室铭》传世",
       "en": "As Prefect of Hezhou, Liu Yuxi writes Inscription on My Humble Room celebrating inner virtue"
     },
@@ -8581,7 +8581,7 @@ window.ATLAS_LORE_DATA = {
         31.38
       ],
       "site": "乌江（和县）",
-      "siteEn": "Wujiang (Hexian, Anhui)",
+      "siteEn": "Wujiang (Hexian)",
       "zh": "靖康乱后李清照南渡过乌江，赋“生当作人杰，死亦为鬼雄”",
       "en": "Crossing south past Wujiang, Li Qingzhao writes “In life be a hero,” chiding the fleeing court"
     },
@@ -8646,7 +8646,7 @@ window.ATLAS_LORE_DATA = {
         28.31
       ],
       "site": "铅山鹅湖寺",
-      "siteEn": "Goose Lake Temple (Qianshan, Jiangxi)",
+      "siteEn": "Goose Lake Temple, Yanshan",
       "zh": "辛弃疾与思想家陈亮于江西铅山鹅湖十日纵论恢复大略",
       "en": "Xin Qiji and Chen Liang meet for ten days at Goose Lake in Jiangxi planning northern recovery"
     },
@@ -8742,7 +8742,7 @@ window.ATLAS_LORE_DATA = {
         41.05
       ],
       "site": "野狐岭（张北）",
-      "siteEn": "Yehuling Ridge (Zhangbei, Hebei)",
+      "siteEn": "Yehuling Ridge (Zhangbei)",
       "zh": "野狐岭之战：成吉思汗集中铁骑冲阵，歼灭金军四十万主力",
       "en": "Battle of Yehuling: Genghis Khan smashes a 400,000-man Jin army north of Zhangjiakou Pass"
     },
@@ -8754,7 +8754,7 @@ window.ATLAS_LORE_DATA = {
         35.65
       ],
       "site": "六盘山",
-      "siteEn": "Mount Liupan (Ningxia / Gansu)",
+      "siteEn": "Mount Liupan",
       "zh": "成吉思汗东征西夏围困中兴府，盛夏避暑于六盘山病逝",
       "en": "Genghis Khan dies at Mount Liupan during his final campaign crushing the Western Xia Kingdom"
     },
@@ -8814,7 +8814,7 @@ window.ATLAS_LORE_DATA = {
         31.52
       ],
       "site": "苏州太仓刘家港",
-      "siteEn": "Liujiagang Port (Taicang, Jiangsu)",
+      "siteEn": "Liujiagang Port (Taicang)",
       "zh": "明成祖命郑和率巨型宝船队自太仓刘家港扬帆首下西洋",
       "en": "Admiral Zheng He sets sail from Liujiagang with 27,000 men aboard treasure ships on his first voyage",
       "persons": [
@@ -8841,8 +8841,8 @@ window.ATLAS_LORE_DATA = {
         116.85,
         42.35
       ],
-      "site": "榆木川（多伦西北）",
-      "siteEn": "Yumuchuan (Inner Mongolia)",
+      "site": "榆木川（多伦）",
+      "siteEn": "Yumuchuan (Duolun)",
       "zh": "六十五岁的明成祖朱棣第五次亲征漠北阿鲁台班师途中，病逝于塞外榆木川",
       "en": "Returning from his fifth expedition across the Gobi Steppe, Yongle Emperor Zhu Di dies at Yumuchuan"
     },
@@ -8891,7 +8891,7 @@ window.ATLAS_LORE_DATA = {
         40.04
       ],
       "site": "蓟镇古北口",
-      "siteEn": "Jizhou Great Wall (Hebei / Beijing)",
+      "siteEn": "Gubeikou, Jizhou",
       "zh": "戚继光镇守蓟镇北方十六年，增筑空心敌台重修明长城",
       "en": "Guarding the northern frontier sixteen years, Qi Jiguang builds hollow watchtowers along the Wall"
     },
@@ -8950,8 +8950,8 @@ window.ATLAS_LORE_DATA = {
         107.3,
         47.72
       ],
-      "site": "昭莫多（乌兰巴托东）",
-      "siteEn": "Jao Modo (Mongolia)",
+      "site": "昭莫多（乌兰巴托）",
+      "siteEn": "Jao Modo (Ulaanbaatar)",
       "zh": "康熙帝亲征朔漠，昭莫多之战清军火器大破准噶尔噶尔丹主力",
       "en": "Battle of Jao Modo: Kangxi leads Qing forces across the Gobi to crush Zunghar khan Galdan"
     },
@@ -9129,7 +9129,7 @@ window.ATLAS_LORE_DATA = {
         35.48
       ],
       "site": "夏阳龙门（韩城）",
-      "siteEn": "Longmen (Hancheng, Shaanxi)",
+      "siteEn": "Longmen (Hancheng)",
       "zh": "司马迁生于黄河龙门之阳，早年耕牧诵读承父太史遗志",
       "en": "Sima Qian is born at Longmen overlooking the Yellow River in Shaanxi"
     },
@@ -9200,7 +9200,7 @@ window.ATLAS_LORE_DATA = {
         29.59
       ],
       "site": "剡县金庭（嵊州）",
-      "siteEn": "Jinting (Shengzhou, Zhejiang)",
+      "siteEn": "Jinting (Shengzhou)",
       "zh": "王羲之誓墓辞官退居剡县金庭，遍游浙东山水安度晚年",
       "en": "Swearing at his parents’ tomb never to serve again, Wang Xizhi retires among Zhejiang hills"
     },
@@ -9224,7 +9224,7 @@ window.ATLAS_LORE_DATA = {
         35.14
       ],
       "site": "陕州夏县涑水",
-      "siteEn": "Xiaxian (Yuncheng, Shanxi)",
+      "siteEn": "Xiaxian (Yuncheng)",
       "zh": "少年司马光于庭院击破大瓮救出溺水幼童，“司马光砸缸”机智沉着传为美谈",
       "en": "Young Sima Guang smashes a giant water vat with a stone to save a drowning playmate in Shanxi"
     },
@@ -9263,8 +9263,8 @@ window.ATLAS_LORE_DATA = {
         103.77,
         29.55
       ],
-      "site": "嘉州 · 蜀州（乐山崇州）",
-      "siteEn": "Jiazhou · Shuzhou (Sichuan)",
+      "site": "嘉州 · 蜀州（乐山 · 崇州）",
+      "siteEn": "Jiazhou · Shuzhou (Leshan · Chongzhou)",
       "zh": "陆游权知嘉州、通判蜀州纵览巴蜀奇山异水，诗风雄放自号“放翁”",
       "en": "Serving across western Sichuan, Lu You embraces a bold poetic style and takes the name Fangweng"
     },
@@ -9276,7 +9276,7 @@ window.ATLAS_LORE_DATA = {
         30.35
       ],
       "site": "荆州江陵",
-      "siteEn": "Jiangling (Jingzhou, Hubei)",
+      "siteEn": "Jiangling (Jingzhou)",
       "zh": "张居正生于湖广江陵，十二岁考中秀才荆州知府李士翱奇之赐名“居正”",
       "en": "Child prodigy Zhang Juzheng passes the prefectural exam at twelve in his native Jiangling"
     },
@@ -9288,7 +9288,7 @@ window.ATLAS_LORE_DATA = {
         30.35
       ],
       "site": "江陵张文忠公祠",
-      "siteEn": "Jiangling, Hubei",
+      "siteEn": "Zhang Juzheng Shrine, Jiangling",
       "zh": "首辅张居正病逝归葬江陵，两年后遭清算抄家削谥",
       "en": "Buried in Jiangling, Zhang Juzheng suffers posthumous impeachment as his reforms begin to unravel"
     },
@@ -9324,7 +9324,7 @@ window.ATLAS_LORE_DATA = {
         33.74
       ],
       "site": "陈县（淮阳）",
-      "siteEn": "Chenxian (Huaiyang, Henan)",
+      "siteEn": "Chenxian (Huaiyang)",
       "zh": "陈胜率起义军攻克楚故都陈县自立为王，国号“张楚”",
       "en": "Chen Sheng captures ancient Chu capital Chenxian and proclaims the Kingdom of Rising Chu"
     },
@@ -9379,7 +9379,7 @@ window.ATLAS_LORE_DATA = {
         40.1
       ],
       "site": "易京（雄县）",
-      "siteEn": "Yijing (Xiongxian, Hebei)",
+      "siteEn": "Yijing (Xiongxian)",
       "zh": "袁绍掘地道攻破公孙瓒易京铁楼，尽并幽冀青并四州带甲百万",
       "en": "Yuan Shao storms Gongsun Zan's fortress at Yijing, uniting the four northern provinces of Han"
     },
@@ -9426,8 +9426,8 @@ window.ATLAS_LORE_DATA = {
         104.62,
         35.58
       ],
-      "site": "洮西（临洮）",
-      "siteEn": "Taoxi (Lintao, Gansu)",
+      "site": "狄道（临洮）",
+      "siteEn": "Didao (Lintao)",
       "zh": "洮西之战：姜维背水列阵大破曹魏雍州刺史王经斩首数万",
       "en": "Battle of Taoxi: Shu general Jiang Wei wins a major victory routing Wei governor Wang Jing"
     },
@@ -9456,7 +9456,7 @@ window.ATLAS_LORE_DATA = {
         32.2
       ],
       "site": "广陵 · 京口",
-      "siteEn": "Guangling & Jingkou (Yangzhou / Zhenjiang)",
+      "siteEn": "Guangling · Jingkou",
       "zh": "兖州刺史谢玄于广陵京口募北方流民劲卒组建“北府兵”",
       "en": "Xie Xuan recruits northern refugees at Guangling and Jingkou to forge the elite Northern Garrison"
     },
@@ -9533,7 +9533,7 @@ window.ATLAS_LORE_DATA = {
         26.57
       ],
       "site": "云贵川边区",
-      "siteEn": "Yunnan, Guizhou & Guangxi",
+      "siteEn": "Yunnan, Guizhou & Sichuan Frontier",
       "zh": "雍正帝重用鄂尔泰于西南大规模推行“改土归流”",
       "en": "Yongzheng Emperor empowers Ortai to replace hereditary chieftains with regular prefectures"
     },
@@ -9575,7 +9575,7 @@ window.ATLAS_LORE_DATA = {
         117.16,
         34.62
       ],
-      "site": "留县（沛县东南）",
+      "site": "留县（沛县）",
       "siteEn": "Liu County (Peixian)",
       "zh": "刘邦赞张良“运筹帷帐之中，决胜千里之外”，封为留侯",
       "en": "Liu Bang praises Zhang Liang for winning battles a thousand li away and enfeoffs him at Liu"
