@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "431 — 436 · 西秦与胡夏相继败亡：北魏尽取关中陇右，与刘宋、北燕、北凉并立",
     "note": "州郡政区：南北朝细置诸州、侨州与郡级政区",
@@ -8,7 +8,7 @@
       "北魏",
       "s_nanbei_427/宋",
       "s_dongjin_e/北燕",
-      "s_dongjin_e/北凉",
+      "s_nanbei_0/北凉",
       "s_nanbei_0/狮子国",
       "s_nanbei_0/百济",
       "s_nanbei_0/新罗",
@@ -24,7 +24,8 @@
       "s_nanbei_0/骨利干",
       "s_nanbei_0/扶南",
       "s_nanbei_0/罗涡",
-      "s_xihan_b3a/象雄",
+      "s_dongjin_e/吐谷浑~6",
+      "s_dongjin_317/象雄",
       "s_donghan_c/西域诸国",
       "s_sanguo_a/夷洲"
     ],

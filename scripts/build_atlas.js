@@ -40,7 +40,7 @@ const LICENSE_NOTICE =
   'Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas ' +
   '(https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level ' +
   '(郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use ' +
-  'only, not licensed under GPL-3.0.';
+  'only; do not redistribute; not licensed under GPL-3.0.';
 const SCALE = 100;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-';
 

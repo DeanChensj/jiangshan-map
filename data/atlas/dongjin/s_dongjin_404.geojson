@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only, not licensed under GPL-3.0.",
+  "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
     "caption": "404 — 407 · 刘裕平桓玄与谯纵建谯蜀：刘裕起兵复晋，谯纵据巴蜀建谯蜀",
     "polities": [
@@ -10,7 +10,8 @@
       "s_dongjin_d1/后秦",
       "s_dongjin_397/西秦",
       "s_dongjin_397/南凉",
-      "s_dongjin_397/北凉",
+      "s_dongjin_399/北凉",
+      "s_dongjin_399/西凉",
       "s_dongjin_399/后燕",
       "s_dongjin_399/南燕",
       "s_donghan_d1/百济",
@@ -24,7 +25,8 @@
       "s_qin/北亚林中诸部",
       "s_dongjin_317/笈多帝国",
       "s_dongjin_317/楚蒂亚王国",
-      "s_xihan_b3a/象雄",
+      "s_dongjin_d/吐谷浑~3",
+      "s_dongjin_317/象雄",
       "s_donghan_c/西域诸国",
       "s_sanguo_a/夷洲"
     ],
@@ -1081,6 +1083,7 @@
             [103.74, 33.43],
             [103.65, 33.35],
             [103.64, 33.26],
+            [103.64, 33.23],
             [103.63, 33.17],
             [103.61, 33.07],
             [103.58, 32.98],
