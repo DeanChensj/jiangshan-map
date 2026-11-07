@@ -27,7 +27,7 @@ const STATIC_TAG_ASSETS = [
   'js/china_geo_data.js',
   'js/atlas_boot.js',
   'js/map_data.js',
-  'js/lore_data.js',
+  'js/lore_core.js',
   'js/zh_hant.js',
   ...CONTROLLER_SCRIPTS,
 ];
@@ -35,6 +35,7 @@ const STATIC_TAG_ASSETS = [
 const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-snapshots', datasetKey: 'vSnapshots', relPath: 'js/atlas_snapshots.js' },
   { attr: 'data-v-i18n', datasetKey: 'vI18n', relPath: 'js/i18n_dict.js' },
+  { attr: 'data-v-lore', datasetKey: 'vLore', relPath: 'js/lore_detail.js' },
 ];
 
 function shortSha256(filePath) {
@@ -80,7 +81,8 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
   const expectedAppTag =
     `<script id="atlas-app-script" src="js/app.js?v=${hashes['js/app.js']}"` +
     ` data-v-snapshots="${hashes['js/atlas_snapshots.js']}"` +
-    ` data-v-i18n="${hashes['js/i18n_dict.js']}"></script>`;
+    ` data-v-i18n="${hashes['js/i18n_dict.js']}"` +
+    ` data-v-lore="${hashes['js/lore_detail.js']}"></script>`;
   out = out.replace(appTagRe, expectedAppTag);
   return out;
 }

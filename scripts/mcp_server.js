@@ -52,7 +52,8 @@ function createMcpRuntime() {
     'atlas_boot.js',
     'atlas_snapshots.js',
     'map_data.js',
-    'lore_data.js',
+    'lore_core.js',
+    'lore_detail.js',
     'i18n_dict.js',
     'zh_hant.js',
     ...CONTROLLER_SCRIPTS.map((rel) => path.basename(rel)),
@@ -83,6 +84,7 @@ function createMcpRuntime() {
       north: 55,
     }),
     _fullSnapshotsLoaded: true,
+    _loreDetailLoaded: true,
     snapshotCache: {},
     searchIndex: null,
   });

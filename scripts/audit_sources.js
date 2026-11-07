@@ -47,7 +47,7 @@ const warnings = [];
 // ---- records ---------------------------------------------------------------------------------
 function loadRecords() {
   const ctx = { window: {} };
-  for (const f of ['js/map_data.js', 'js/lore_data.js']) {
+  for (const f of ['js/map_data.js', 'js/lore_core.js', 'js/lore_detail.js']) {
     vm.runInNewContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx);
   }
   const D = ctx.window.DYNASTY_DATA;
@@ -78,7 +78,7 @@ function loadRecords() {
   for (const e of L.PLACE_LANDMARK_EVENTS) {
     if (typeof e.id !== 'string' || !EVENT_ID.test(e.id)) {
       errors.push(
-        `js/lore_data.js: landmark event "${e.zh}" needs an "id" like "${e.dynastyKey}:${e.year}" ` +
+        `js/lore_detail.js: landmark event "${e.zh}" needs an "id" like "${e.dynastyKey}:${e.year}" ` +
           '(add a letter b, c, … if that id is taken; never change an existing id)'
       );
       continue;

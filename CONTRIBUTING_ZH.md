@@ -9,7 +9,7 @@
 欢迎任何形式的贡献，包括但不限于：
 - **史料校勘与地名订正**：修正古地名经纬度偏差、补充州郡治所沿革说明（`remark`）或调整政权阶段起止年份；
 - **重大历史事件与定点掌故补充**：增补各朝代编年节点、都城迁徙或城池定点历史大事（`PLACE_LANDMARK_EVENTS`）；
-- **名城题记与多语言翻译优化**：扩充 [`js/lore_data.js`](js/lore_data.js) 中的名城风华判词（`CITY_LORE`），或完善 [`js/i18n_dict.js`](js/i18n_dict.js) 中的历史专有名词英文译名；
+- **名城题记与多语言翻译优化**：扩充 [`js/lore_detail.js`](js/lore_detail.js) 中的名城风华判词（`CITY_LORE`），或完善 [`js/i18n_dict.js`](js/i18n_dict.js) 中的历史专有名词英文译名；
 - **界面交互与性能改进**：优化移动端手势体验、键盘无障碍访问（ARIA）与 SVG 渲染性能。
 
 ---
@@ -26,7 +26,8 @@
 │   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、点人溯事与 window.atlasAPI
 │   ├── atlas_quiz.js        # 古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
-│   ├── lore_data.js         # 历代帝王年号（CHINESE_ERA_SPANS）、在位君主、人物生平行迹、名城风华题记（CITY_LORE）、定点大事与诗词名胜辞典
+│   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目
+│   ├── lore_detail.js       # 按需懒加载人文详情：城池定点大事（PLACE_LANDMARK_EVENTS）、人物长程行迹、名城风华题记（CITY_LORE）与割据政权小传
 │   ├── atlas_boot.js        # 由 data/atlas/ 生成：首屏启动快照，保障首屏零等待渲染
 │   ├── atlas_snapshots.js   # 由 data/atlas/ 生成：拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（按需惰性加载与解码）
 │   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（古今透视镜）
@@ -39,6 +40,7 @@
     ├── audit_topology.js    # 零依赖政权边界缝隙/重叠审计，与 data/atlas/topology_baseline.json 比对（CI 中运行 --check）
     ├── repair_topology.js   # 零依赖边界修复：把核心政权边界吸附对齐并改写 data/atlas/
     ├── build_atlas.js       # 零依赖构建脚本：data/atlas/ → atlas_snapshots.js + atlas_boot.js（CI 中运行 --check）
+    ├── perf_budget.js       # 零依赖首屏同步脚本 gzip 体积预算检查，与 data/atlas/perf_baseline.json 比对（CI 中运行 --check）
     ├── sync_version.js      # 零依赖按文件 SHA-256 内容指纹同步脚本（自动更新 index.html 缓存参数）
     └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与端到端 CUJ 校验脚本（支持 --fast）
 ```
@@ -78,8 +80,8 @@
    - 层级定义：`isCapital: true` = 王朝/割据政权都城，无 `tier`（默认一级）= 核心州郡治所 / 雄关重镇，`tier: 2` = 次级州郡 / 边塞据点（随地图放大渐进显隐）；
    - 若某城池在朝代中后期始建、迁都或废弃，请设置 `appear` / `vanish` 年份字段；
    - 古代城池点位均需提供简明的 `remark` 治所沿革掌故，并在 `js/i18n_dict.js` 中补充对应英文翻译。
-2. **帝王年号与在位君主（`js/lore_data.js`）**：
-   - 年号表（`CHINESE_ERA_SPANS`）与在位君主世系表（`REIGNING_MONARCHS`）统一维护在 `js/lore_data.js` 中，新增或校订时请参考《中国历史纪年表》。
+2. **帝王年号与在位君主（`js/lore_core.js`）**：
+   - 年号表（`CHINESE_ERA_SPANS`）与并立政权纪年表（`REGIONAL_ERA_TRACKS`）维护在 `js/lore_core.js` 中（城池定点大事、长程行迹、名城题记与政权小传维护在 `js/lore_detail.js` 中），新增或校订时请参考《中国历史纪年表》。
    - `CHINESE_ERA_SPANS` 是时间轴使用的唯一参考纪年，按《资治通鉴》惯例：三国用曹魏，东晋十六国用东晋，南北朝用南朝，五代用中原五代，宋辽金夏用宋。同时存在、自行纪年的政权（蜀汉、孙吴、北朝诸政权、西梁、581 年后的陈、辽、金、西夏、忽必烈的元）的年号表放在 `REGIONAL_ERA_TRACKS`；事件按事发地所属政权取年号。
    - 若某条大事的主角并非其定位点所属政权（例如宋金和议定位在金一侧边境），请在 `js/map_data.js` 中给这条大事加上 `"eraRegime": "reference"`，或填写 `REGIONAL_ERA_TRACKS` 中的政权名。
 3. **历史疆域与政区多边形（`data/atlas/`）**：
