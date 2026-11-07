@@ -224,7 +224,8 @@ function main() {
     'atlas_boot.js',
     'atlas_snapshots.js',
     'map_data.js',
-    'lore_data.js',
+    'lore_core.js',
+    'lore_detail.js',
     'i18n_dict.js',
     'zh_hant.js',
   ];
@@ -248,6 +249,30 @@ function main() {
         sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED === true &&
           Boolean(sandbox.window.ATLAS_SNAPSHOTS.s_prc),
         'atlas_snapshots.js must set window.ATLAS_FULL_SNAPSHOTS_LOADED = true'
+      );
+    }
+    if (file === 'lore_core.js') {
+      assert(
+        !sandbox.window.ATLAS_LORE_DETAIL_LOADED &&
+          !sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS &&
+          !sandbox.window.ATLAS_LORE_DATA.CITY_LORE &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.CHINESE_ERA_SPANS) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.PLACE_GAZETTEER) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.PERSON_PROFILES) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES) &&
+          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every((p) => !p.summaryZh && !p.summaryEn),
+        'lore_core.js must provide core first-paint & search lore (including POLITY_PROFILES index without summary prose) and must not set ATLAS_LORE_DETAIL_LOADED'
+      );
+    }
+    if (file === 'lore_detail.js') {
+      assert(
+        sandbox.window.ATLAS_LORE_DETAIL_LOADED === true &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.CITY_LORE) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS) &&
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES) &&
+          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every((p) => p.summaryZh && p.summaryEn),
+        'lore_detail.js must set window.ATLAS_LORE_DETAIL_LOADED = true, merge detail arrays, and hydrate summaryZh/summaryEn onto POLITY_PROFILES'
       );
     }
   }
@@ -720,6 +745,8 @@ function main() {
     'app.js',
     'atlas_quiz.js',
     'lore_data.js',
+    'lore_core.js',
+    'lore_detail.js',
     'map_data.js',
     'china_geo_data.js',
     'atlas_boot.js',
@@ -732,6 +759,10 @@ function main() {
       `Stray duplicate file "${strayFile}" found at repository root; all runtime scripts and styles must live exclusively under js/ or css/`
     );
   }
+  assert(
+    !fs.existsSync(path.join(JS_DIR, 'lore_data.js')),
+    'Legacy monolithic js/lore_data.js must not exist; lore data is split into js/lore_core.js and js/lore_detail.js'
+  );
   const llmsTxtPath = path.join(ROOT, 'llms.txt');
   const skillMdPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'SKILL.md');
   const skillPyPath = path.join(ROOT, 'skills', 'jiangshan-atlas', 'scripts', 'jiangshan.py');
@@ -872,7 +903,7 @@ function main() {
     sandbox.document = {
       getElementById: (id) =>
         id === 'atlas-app-script'
-          ? { dataset: { vSnapshots: 'a1b2c3d4', vI18n: 'e5f60718' } }
+          ? { dataset: { vSnapshots: 'a1b2c3d4', vI18n: 'e5f60718', vLore: '11223344' } }
           : null,
     };
     assert.strictEqual(
@@ -884,6 +915,11 @@ function main() {
       ctrl._lazyAssetUrl('js/i18n_dict.js', 'vI18n'),
       'js/i18n_dict.js?v=e5f60718',
       '_lazyAssetUrl must read data-v-i18n from #atlas-app-script'
+    );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/lore_detail.js', 'vLore'),
+      'js/lore_detail.js?v=11223344',
+      '_lazyAssetUrl must read data-v-lore from #atlas-app-script'
     );
     sandbox.document = undefined;
     sandbox.window.ATLAS_ASSET_VERSIONS = { vSnapshots: 'deadbeef' };
@@ -900,6 +936,25 @@ function main() {
     );
     sandbox.document = savedDocLazy;
     sandbox.window.ATLAS_ASSET_VERSIONS = savedWinVers;
+
+    // Verify perf_budget.js first-paint synchronous script gzip budget
+    const { measurePerfBudget, readBaseline: readPerfBaseline } = require('./perf_budget');
+    const perfReport = measurePerfBudget(ROOT);
+    const perfBaseline = readPerfBaseline(ROOT);
+    assert(
+      perfBaseline && typeof perfBaseline.maxSyncScriptsGzipBytes === 'number',
+      'data/atlas/perf_baseline.json must exist and define maxSyncScriptsGzipBytes'
+    );
+    assert(
+      perfReport.syncScriptsGzipBytes <= perfBaseline.maxSyncScriptsGzipBytes,
+      `Synchronous first-paint script gzip sum (${perfReport.syncScriptsGzipBytes} B) exceeds budget ceiling (${perfBaseline.maxSyncScriptsGzipBytes} B)`
+    );
+    assert(
+      perfReport.syncScripts.some((s) => s.relPath === 'js/lore_core.js') &&
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/lore_detail.js'),
+      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js as a lazy bundle'
+    );
   }
 
   // CUJ 9a: 0D Single-Place Resolution & Exact-First Disambiguation (Poems, Passes, Battles, Cities)
@@ -1001,7 +1056,8 @@ function main() {
   // CUJ 9f: Root Mirror Byte-Level Synchronization Check (if any root mirror files exist)
   const mirrorPairs = [
     ['js/app.js', 'app.js'],
-    ['js/lore_data.js', 'lore_data.js'],
+    ['js/lore_core.js', 'lore_core.js'],
+    ['js/lore_detail.js', 'lore_detail.js'],
     ['css/style.css', 'style.css'],
   ];
   for (const [srcRel, dstRel] of mirrorPairs) {
@@ -1710,14 +1766,16 @@ function main() {
       readmeSrc.includes('Map Pinpoint · Ancient Place Quiz') &&
       readmeSrc.includes('href="README_ZH.md"') &&
       contributingSrc.includes('href="CONTRIBUTING_ZH.md"') &&
-      contributingSrc.includes('lore_data.js') &&
+      contributingSrc.includes('lore_core.js') &&
+      contributingSrc.includes('lore_detail.js') &&
       contributingZhSrc.includes('href="CONTRIBUTING.md"') &&
-      contributingZhSrc.includes('lore_data.js') &&
+      contributingZhSrc.includes('lore_core.js') &&
+      contributingZhSrc.includes('lore_detail.js') &&
       !readmeSrc.includes('&event=') &&
       !readmeZhSrc.includes('&event=') &&
       !appCode.includes("q.has('event')") &&
       !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeZhSrc),
-    'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_data.js, document unified Person Chronicles & search-box Quiz entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
+    'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_core.js & lore_detail.js, document unified Person Chronicles & search-box Quiz entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
   const llmsSrc = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
   for (const d of dynasties) {
@@ -7398,6 +7456,100 @@ function main() {
           'en',
           '_effectiveRenderedLocale must return en once i18n_dict.js is loaded'
         );
+
+        // 5b. Lazy lore detail loading (_isLoreDetailLoaded / _ensureLoreDetail) & zero-jump cold-boot search
+        {
+          for (const p of loreData.PERSON_PROFILES) {
+            const actualEvCount = ctrl._collectPersonEvents(p).length;
+            assert.strictEqual(
+              p.evCount,
+              actualEvCount,
+              `PERSON_PROFILES[${p.key}].evCount (${p.evCount}) in js/lore_core.js must match _collectPersonEvents (${actualEvCount})`
+            );
+          }
+          const fullShowcaseSig = ctrl
+            ._getSearchShowcasePool()
+            .map((x) => `${x.titleZh}|${x.subZh}|${x.titleEn}|${x.subEn}`)
+            .join('\n');
+          const fullSushiSubZh = ctrl._queryQuickSearch('苏轼')[0].subZh;
+          const savedLoreSentinel = sandbox.window.ATLAS_LORE_DETAIL_LOADED;
+          const savedLandmarks = sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS;
+          const savedJourneys = sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS;
+          const savedLoreLoaded = ctrl._loreDetailLoaded;
+          const savedLorePromise = ctrl._loreDetailPromise;
+          const savedLoadScriptOnce = ctrl._loadScriptOnce;
+          let requestedSrc = null;
+          try {
+            sandbox.window.ATLAS_LORE_DETAIL_LOADED = false;
+            delete sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS;
+            delete sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS;
+            ctrl._loreDetailLoaded = false;
+            ctrl._loreDetailPromise = null;
+            ctrl.searchIndex = null;
+            ctrl._loadScriptOnce = () => ({ then() { return this; } });
+            assert.strictEqual(
+              ctrl._isLoreDetailLoaded(),
+              false,
+              '_isLoreDetailLoaded() must return false when lore_detail.js has not loaded yet'
+            );
+            const coldShowcaseSig = ctrl
+              ._getSearchShowcasePool()
+              .map((x) => `${x.titleZh}|${x.subZh}|${x.titleEn}|${x.subEn}`)
+              .join('\n');
+            assert.strictEqual(
+              coldShowcaseSig,
+              fullShowcaseSig,
+              'Cold-boot search showcase pool before lore_detail.js loads must match post-load showcase pool with zero count jump'
+            );
+            const coldSushi = ctrl._queryQuickSearch('苏轼')[0];
+            assert.strictEqual(
+              coldSushi && coldSushi.subZh,
+              fullSushiSubZh,
+              `Cold-boot search for 苏轼 must match post-load subtitle (${fullSushiSubZh}), got ${coldSushi && coldSushi.subZh}`
+            );
+            const coldShuhan = ctrl._queryQuickSearch('蜀汉')[0];
+            assert(
+              coldShuhan && coldShuhan.kind === 'polity' && coldShuhan.polityKey === 'shuhan',
+              'Cold-boot search for 蜀汉 must resolve polity shuhan from lore_core.js before lore_detail.js loads'
+            );
+            ctrl._loreDetailPromise = null;
+            ctrl.searchIndex = [{ dummy: true }];
+            ctrl._loadScriptOnce = (src) => {
+              requestedSrc = src;
+              sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS = savedLandmarks;
+              sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS = savedJourneys;
+              sandbox.window.ATLAS_LORE_DETAIL_LOADED = true;
+              return {
+                then(cb) {
+                  return Promise.resolve(cb());
+                },
+              };
+            };
+            ctrl._ensureLoreDetail();
+            assert(
+              requestedSrc && requestedSrc.startsWith('js/lore_detail.js'),
+              `_ensureLoreDetail() must request js/lore_detail.js, got ${requestedSrc}`
+            );
+            assert.strictEqual(
+              ctrl._isLoreDetailLoaded(),
+              true,
+              '_isLoreDetailLoaded() must return true after _ensureLoreDetail() resolves'
+            );
+            assert.strictEqual(
+              ctrl.searchIndex,
+              null,
+              '_ensureLoreDetail() must invalidate searchIndex so newly loaded landmarks/polities are indexed'
+            );
+          } finally {
+            sandbox.window.ATLAS_LORE_DETAIL_LOADED = savedLoreSentinel;
+            sandbox.window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS = savedLandmarks;
+            sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS = savedJourneys;
+            ctrl._loreDetailLoaded = savedLoreLoaded;
+            ctrl._loreDetailPromise = savedLorePromise;
+            ctrl._loadScriptOnce = savedLoadScriptOnce;
+            ctrl.searchIndex = null;
+          }
+        }
         // 6. WebMCP (navigator.modelContext) registration & Stdio MCP server (scripts/mcp_server.js)
         const registeredWebMcpTools = [];
         const origNav = sandbox.navigator;

@@ -375,6 +375,13 @@
       );
       this._fullSnapshotsPromise = null;
       this._enLocalePromise = null;
+      this._loreDetailLoaded = Boolean(
+        window.ATLAS_LORE_DETAIL_LOADED ||
+          (window.ATLAS_LORE_DATA &&
+            Array.isArray(window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS) &&
+            window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS.length > 0)
+      );
+      this._loreDetailPromise = null;
       this._hydrateSnapshots();
 
       this._setEnglishLocale(window.EN_LOCALE || {
@@ -485,6 +492,13 @@
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
         setTimeout(() => this._ensureFullSnapshots(), 50);
+      }
+      if (typeof window !== 'undefined' && !this._isLoreDetailLoaded()) {
+        const scheduleIdle =
+          typeof window.requestIdleCallback === 'function'
+            ? (fn) => window.requestIdleCallback(fn, { timeout: 200 })
+            : (fn) => setTimeout(fn, 80);
+        scheduleIdle(() => this._ensureLoreDetail());
       }
     }
 
@@ -644,6 +658,40 @@
         });
       }
       return this._enLocalePromise;
+    }
+
+    _isLoreDetailLoaded() {
+      if (this._loreDetailLoaded) return true;
+      if (
+        typeof window !== 'undefined' &&
+        (window.ATLAS_LORE_DETAIL_LOADED ||
+          (window.ATLAS_LORE_DATA &&
+            Array.isArray(window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS) &&
+            window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS.length > 0))
+      ) {
+        this._loreDetailLoaded = true;
+        return true;
+      }
+      return false;
+    }
+
+    _ensureLoreDetail() {
+      if (this._isLoreDetailLoaded()) {
+        return Promise.resolve((typeof window !== 'undefined' && window.ATLAS_LORE_DATA) || {});
+      }
+      if (!this._loreDetailPromise) {
+        this._loreDetailPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/lore_detail.js', 'vLore')
+        ).then(() => {
+          this._loreDetailLoaded = true;
+          this.searchIndex = null;
+          this._soloPersonEventsCache = null;
+          this._extraEnTermMap = null;
+          this._challengeBaseTiers = null;
+          return (typeof window !== 'undefined' && window.ATLAS_LORE_DATA) || {};
+        });
+      }
+      return this._loreDetailPromise;
     }
 
     _syncMobileOverlayState() {
@@ -957,10 +1005,12 @@
     _getExtraEnTermMap() {
       const dictRef = (this.enLocale && this.enLocale.dict) || null;
       const hasKeys = this._hasEnDict();
+      const loreLoaded = this._isLoreDetailLoaded();
       if (
         this._extraEnTermMap &&
         this._extraEnTermMapDictRef === dictRef &&
-        this._extraEnTermMapHasKeys === hasKeys
+        this._extraEnTermMapHasKeys === hasKeys &&
+        this._extraEnTermMapLoreLoaded === loreLoaded
       ) {
         return this._extraEnTermMap;
       }
@@ -1037,6 +1087,7 @@
       this._extraEnTermMap = map;
       this._extraEnTermMapDictRef = dictRef;
       this._extraEnTermMapHasKeys = hasKeys;
+      this._extraEnTermMapLoreLoaded = loreLoaded;
       return map;
     }
 
@@ -4912,6 +4963,13 @@
         this._setPolityFocus(null);
         this._lastLegendKey = null;
         if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+        if (!this._isLoreDetailLoaded()) {
+          this._ensureLoreDetail().then(() => {
+            if (this.eraFocus && cur && this.eraFocus.dynastyKey === cur.key && !this.activePolity) {
+              this.openPolity(title, { ...opts, zoom: false });
+            }
+          });
+        }
         return null;
       }
       this.eraFocus = null;
@@ -4931,6 +4989,13 @@
         this._ensureFullSnapshots().then(() => {
           const c = this.dynasties[this.dynastyIdx];
           if (this.activePolity === desc && c) this._renderChroniclePane(c);
+        });
+      }
+      if (!this._isLoreDetailLoaded()) {
+        this._ensureLoreDetail().then(() => {
+          if (this.activePolity === desc) {
+            this.openPolity(title, { ...opts, zoom: false });
+          }
         });
       }
       return desc;
@@ -4984,7 +5049,12 @@
       const prof = HistoricalAtlasController.POLITY_PROFILES.find(
         (p) => p.key === k || p.zh === key || String(p.en).toLowerCase() === k
       );
-      if (!prof) return null;
+      if (!prof) {
+        if (!this._isLoreDetailLoaded()) {
+          return this._ensureLoreDetail().then(() => this.openPolityByKey(key));
+        }
+        return null;
+      }
       const go = () => {
         const desc = { ...prof, curated: true };
         let y = this.year;
@@ -6151,6 +6221,7 @@
       const snapFull = Boolean(snapRef && snapRef.s_prc);
       const hasEn = canCacheSolo ? this._hasEnDict() : false;
       const enRef = canCacheSolo ? this.enLocale : null;
+      const loreLoaded = canCacheSolo ? this._isLoreDetailLoaded() : false;
       if (canCacheSolo) {
         if (!this._soloPersonEventsCache) this._soloPersonEventsCache = new WeakMap();
         const hit = this._soloPersonEventsCache.get(profile);
@@ -6159,7 +6230,8 @@
           hit.snapRef === snapRef &&
           hit.snapFull === snapFull &&
           hit.hasEn === hasEn &&
-          hit.enRef === enRef
+          hit.enRef === enRef &&
+          hit.loreLoaded === loreLoaded
         ) {
           return hit.events.map((ev) => ({ ...ev }));
         }
@@ -6430,6 +6502,7 @@
           snapFull,
           hasEn,
           enRef,
+          loreLoaded,
           events: deduped.map((ev) => ({ ...ev })),
         });
       }
@@ -6693,7 +6766,15 @@
       const profiles = this._resolvePersonProfiles(personOrQuery);
       if (!profiles.length) return false;
       const state = this._buildPersonTracksAndEvents(profiles);
-      if (!state || !state.events.length) return false;
+      if (!state || !state.events.length) {
+        if (!this._isLoreDetailLoaded()) {
+          this._ensureLoreDetail().then(() => {
+            this.openPersonChronicle(personOrQuery, initialIdx);
+          });
+          return true;
+        }
+        return false;
+      }
       const { events } = state;
       const stateKey = state.profiles.map((p) => p.key).join(',');
 
@@ -6703,6 +6784,24 @@
             this.activePerson &&
             this.activePerson.profiles.map((p) => p.key).join(',') === stateKey
           ) {
+            this._renderPersonChronicleCard(true);
+          }
+        });
+      }
+      if (!this._isLoreDetailLoaded()) {
+        this._ensureLoreDetail().then(() => {
+          if (
+            this.activePerson &&
+            this.activePerson.profiles.map((p) => p.key).join(',') === stateKey
+          ) {
+            const rebuilt = this._buildPersonTracksAndEvents(profiles);
+            if (rebuilt && rebuilt.events.length) {
+              this.activePerson = rebuilt;
+              if (initialIdx >= 0 && initialIdx < rebuilt.events.length) {
+                this.activePersonEventIdx = initialIdx;
+              }
+            }
+            this._renderPersonPinsOverlay();
             this._renderPersonChronicleCard(true);
           }
         });
@@ -6778,6 +6877,11 @@
     }
 
     openJourneyAsPerson(journeyKey, stopIdx = -1) {
+      if (!this._isLoreDetailLoaded()) {
+        this._ensureLoreDetail().then(() => {
+          this.openJourneyAsPerson(journeyKey, stopIdx);
+        });
+      }
       if (!this.openPersonChronicle(journeyKey, -1)) return false;
       if (stopIdx >= 0 && this.activePerson && this.activePerson.events.length) {
         const matchIdx = this.activePerson.events.findIndex((ev) => ev.journeyStopIdx === stopIdx);
@@ -8614,6 +8718,13 @@
       }
       if (!this._fullSnapshotsLoaded) {
         this._ensureFullSnapshots().then(() => {
+          if (this.activeTrace && Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01) {
+            this.openGenealogyAt(lng, lat, this.activeTraceLabel, opts);
+          }
+        });
+      }
+      if (!this._isLoreDetailLoaded()) {
+        this._ensureLoreDetail().then(() => {
           if (this.activeTrace && Math.hypot(this.activeTrace[0] - lng, this.activeTrace[1] - lat) < 0.01) {
             this.openGenealogyAt(lng, lat, this.activeTraceLabel, opts);
           }
@@ -12038,14 +12149,30 @@
         'zhangqian',
         'dufu',
       ];
+      const multiShowcaseFallback = {
+        'libai,dufu': { events: 21, sameTime: 3, dynastyKey: 'tang' },
+        'libai,dufu,gaoshi': { events: 23, sameTime: 5, dynastyKey: 'tang' },
+        'caocao,liubei,sunquan': { events: 32, sameTime: 8, dynastyKey: 'donghan' },
+        'yanghu,duyu': { events: 10, sameTime: 2, dynastyKey: 'sanguo' },
+        'zhugeliang,simayi': { events: 16, sameTime: 3, dynastyKey: 'donghan' },
+        'zuti,liukun': { events: 9, sameTime: 1, dynastyKey: 'xijin' },
+      };
+      const loreReady = this._isLoreDetailLoaded();
       const pool = [];
       for (const spec of showcaseSpecs) {
         if (Array.isArray(spec)) {
           const profiles = this._resolvePersonProfiles(spec);
           if (profiles.length >= 2) {
-            const st = this._buildPersonTracksAndEvents(profiles);
-            if (st && st.isMulti) {
-              const d = st.events[0] ? st.events[0].dynasty : this.dynasties[0];
+            const fb = !loreReady ? multiShowcaseFallback[spec.join(',')] : null;
+            const st = fb ? null : this._buildPersonTracksAndEvents(profiles);
+            if (fb || (st && st.isMulti)) {
+              const evLen = fb ? fb.events : st.events.length;
+              const sameTimeCount = fb ? fb.sameTime : st.sameTimeCount;
+              const d = fb
+                ? this.dynasties.find((dyn) => dyn.key === fb.dynastyKey) || this.dynasties[0]
+                : st.events[0]
+                  ? st.events[0].dynasty
+                  : this.dynasties[0];
               pool.push({
                 kind: 'multi_person',
                 personKeys: profiles.map((p) => p.key),
@@ -12054,14 +12181,14 @@
                 year: null,
                 titleZh: profiles.map((p) => p.zh).join(' × '),
                 subZh:
-                  st.sameTimeCount > 0
-                    ? `共 ${st.events.length} 处行迹 · ${st.sameTimeCount} 处相逢`
-                    : `并行行迹对照 · 共 ${st.events.length} 处行迹`,
+                  sameTimeCount > 0
+                    ? `共 ${evLen} 处行迹 · ${sameTimeCount} 处相逢`
+                    : `并行行迹对照 · 共 ${evLen} 处行迹`,
                 titleEn: profiles.map((p) => p.en).join(' × '),
                 subEn:
-                  st.sameTimeCount > 0
-                    ? `${st.events.length} stops · ${st.sameTimeCount} encounters`
-                    : `${st.events.length} stops`,
+                  sameTimeCount > 0
+                    ? `${evLen} stops · ${sameTimeCount} encounters`
+                    : `${evLen} stops`,
               });
             }
           }
@@ -12081,6 +12208,9 @@
     _ensureSearchIndex() {
       if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
         this._ensureFullSnapshots();
+      }
+      if (!this._isLoreDetailLoaded() && typeof window !== 'undefined') {
+        this._ensureLoreDetail();
       }
       if (this.searchIndex) return this.searchIndex;
       const entries = [];
@@ -12128,12 +12258,17 @@
       };
 
       // 0a. Historical Figures Chronicle Index (点人溯事)
+      const loreLoaded = this._isLoreDetailLoaded();
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
         const d =
           this.dynasties.find((item) => item.key === p.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
           this.dynasties[0];
-        const evCount = this._collectPersonEvents(p).length;
+        const evCount = loreLoaded
+          ? this._collectPersonEvents(p).length
+          : typeof p.evCount === 'number'
+            ? p.evCount
+            : this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
         const eraNames = [];
         if (!p.isRelic) {
@@ -13434,6 +13569,9 @@
           searchList.appendChild(guideLi);
           searchList.classList.remove('is-hidden');
           if (this.locale === 'zh-tw') this._applyZhHantDom(searchList);
+          if (!this._isLoreDetailLoaded()) {
+            this._ensureLoreDetail();
+          }
           return;
         }
         if (/[a-z]/i.test(q) && !this._hasEnDict()) {
@@ -13441,6 +13579,15 @@
           return;
         }
         currentResults = this._queryQuickSearch(q);
+        if (!this._isLoreDetailLoaded()) {
+          const prevSig = currentResults.map((r) => `${r.kind}:${r.titleZh}:${r.subZh}`).join('|');
+          this._ensureLoreDetail().then(() => {
+            if (searchList.classList.contains('is-hidden') || searchInp.value.trim() !== q) return;
+            const nextResults = this._queryQuickSearch(q);
+            const nextSig = nextResults.map((r) => `${r.kind}:${r.titleZh}:${r.subZh}`).join('|');
+            if (nextSig !== prevSig) renderSearchDropdown();
+          });
+        }
         activeSearchIdx = currentResults.length ? 0 : -1;
         searchList.innerHTML = '';
         if (!currentResults.length) {
@@ -15981,10 +16128,12 @@
       const hasEnDict = this._hasEnDict();
       const needsEnDict =
         !hasEnDict && (this.locale === 'en' || (place && /[a-z]/i.test(String(place))));
-      if (!this._fullSnapshotsLoaded || needsEnDict) {
+      const needsLoreDetail = !this._isLoreDetailLoaded();
+      if (!this._fullSnapshotsLoaded || needsEnDict || needsLoreDetail) {
         Promise.all([
           this._fullSnapshotsLoaded ? Promise.resolve() : this._ensureFullSnapshots(),
           needsEnDict ? this._ensureEnglishLocale() : Promise.resolve(),
+          needsLoreDetail ? this._ensureLoreDetail() : Promise.resolve(),
         ]).then(() => {
           this.locate(opts);
         });
@@ -16119,6 +16268,9 @@
         const tasks = [];
         if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
           tasks.push(this._ensureFullSnapshots());
+        }
+        if (!this._isLoreDetailLoaded() && typeof window !== 'undefined') {
+          tasks.push(this._ensureLoreDetail());
         }
         if (needsEn && typeof window !== 'undefined' && !this._hasEnDict()) {
           tasks.push(this._ensureEnglishLocale());
@@ -16390,6 +16542,7 @@
           execute: async (args = {}) => {
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
+            await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
             return this.locate({
               year: args.year,
@@ -16433,6 +16586,7 @@
           execute: async (args = {}) => {
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
+            await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
             return this.inspect({
               year: args.year,
@@ -16469,6 +16623,7 @@
           execute: async (args = {}) => {
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
+            await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
             const stopIdx = typeof args.stop === 'number' ? args.stop : -1;
             this.openPersonChronicle(args.person, stopIdx);
