@@ -109,7 +109,7 @@
      node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
      ```
 4. **出处（`data/sources/`）**：
-   - 出处写在 `data/sources/` 中，按记录键索引（`milestone:tang:630`、`event:tang:692b`、`settlement:tang:长安`、`journey:<key>:<year>`、`person:<key>`），书目在 `data/sources/works.json` 中登记一次。网站不加载这些文件，补出处不影响加载速度。格式见 [`data/sources/README.md`](data/sources/README.md)。
+   - 出处写在 `data/sources/` 中，按记录键索引（`milestone:tang:630`、`event:tang:692b`、`settlement:tang:长安`、`journey:<key>:<year>`、`person:<key>`），书目在 `data/sources/works.json` 中登记一次。网站不加载这些文件，补出处不影响加载速度。格式见 [`data/sources/README_ZH.md`](data/sources/README_ZH.md)。
    - 审计上线前已有的记录登记在 `data/sources/baseline.json` 中，暂不要求出处；**新增的大事、地标事件、城邑、行迹站点或人物必须至少附一条出处**，否则 CI 不通过。每个地标事件有固定的 `id`（`<朝代>:<年份>`，重复时加字母 b、c……），已有的 id 不要改。
    - **每条出处都须由人对照原书核实。** 不要直接提交 AI 工具生成、未经核对的出处：卷次写错比不写更糟。只注明书名与卷次 / 页码，不要摘抄原文。
      ```bash
