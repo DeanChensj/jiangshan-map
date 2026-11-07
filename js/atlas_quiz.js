@@ -81,11 +81,14 @@
     _buildChallengeDeck(preferCurrentDynasty = false) {
       const ROUND = [4, 4, 2];
       const hasEn = this._hasEnDict();
+      const loreLoaded =
+        typeof this._isLoreDetailLoaded === 'function' ? this._isLoreDetailLoaded() : true;
       if (
         !this._challengeBaseTiers ||
         this._challengeBaseTiersDynRef !== this.dynasties ||
         this._challengeBaseTiersHasEn !== hasEn ||
-        this._challengeBaseTiersLocale !== this.locale
+        this._challengeBaseTiersLocale !== this.locale ||
+        this._challengeBaseTiersLoreLoaded !== loreLoaded
       ) {
         const famousCity = (coord) =>
           HistoricalAtlasController.CITY_LORE.some(
@@ -133,6 +136,7 @@
         this._challengeBaseTiersDynRef = this.dynasties;
         this._challengeBaseTiersHasEn = hasEn;
         this._challengeBaseTiersLocale = this.locale;
+        this._challengeBaseTiersLoreLoaded = loreLoaded;
       }
       const tiers = this._challengeBaseTiers.map((arr) => arr.slice());
       const chosen = [];
@@ -229,6 +233,13 @@
       if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
       this.presentChallengeRound();
+      if (typeof this._isLoreDetailLoaded === 'function' && !this._isLoreDetailLoaded()) {
+        this._ensureLoreDetail().then(() => {
+          if (this.challenge && !this.challenge.answered) {
+            this._renderChallengeQuestionText();
+          }
+        });
+      }
     }
 
     stopChallenge(keepPaneState = false) {

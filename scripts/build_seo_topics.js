@@ -78,7 +78,8 @@ function loadAtlasRuntime() {
     'atlas_boot.js',
     'atlas_snapshots.js',
     'map_data.js',
-    'lore_data.js',
+    'lore_core.js',
+    'lore_detail.js',
     'i18n_dict.js',
     ...CONTROLLER_SCRIPTS.map((rel) => path.basename(rel)),
   ]) {

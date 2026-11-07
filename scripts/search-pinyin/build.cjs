@@ -320,7 +320,7 @@ const LEADING_CONTEXTS = new RegExp([
 
 function loadSources(root = ROOT) {
   const context = vm.createContext({window: {}});
-  for (const file of ['js/map_data.js', 'js/lore_data.js']) {
+  for (const file of ['js/map_data.js', 'js/lore_core.js', 'js/lore_detail.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
   }
   const lore = context.window.ATLAS_LORE_DATA;

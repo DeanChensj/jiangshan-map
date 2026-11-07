@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, '../..');
 const context = vm.createContext({window: {addEventListener() {}}, clearTimeout, URLSearchParams});
 context.location = {search: '', origin: 'https://deanchen.me', pathname: '/jiangshan-map/'};
 context.window.location = context.location;
-for (const name of ['china_geo_data.js', 'atlas_snapshots.js', 'map_data.js', 'lore_data.js',
+for (const name of ['china_geo_data.js', 'atlas_snapshots.js', 'map_data.js', 'lore_core.js', 'lore_detail.js',
   'i18n_dict.js', 'zh_hant.js', 'event_pinyin.js', 'app.js']) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', name), 'utf8'), context, {filename: name});
 }

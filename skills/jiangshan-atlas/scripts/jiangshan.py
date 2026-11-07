@@ -304,7 +304,8 @@ for (const rel of [
   "js/map_data.js",
   "js/atlas_snapshots.js",
   "js/i18n_dict.js",
-  "js/lore_data.js",
+  "js/lore_core.js",
+  "js/lore_detail.js",
   "js/zh_hant.js",
   ...ctrlScripts
 ]) {

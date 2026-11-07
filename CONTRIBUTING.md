@@ -9,7 +9,7 @@ Thank you for your interest in **Chronicles of the Realm (`jiangshan-map`)**! Th
 We welcome contributions of all kinds, including:
 - **Historical & Geographic Corrections**: Fixing ancient place coordinates, refining prefecture/circuit evolution notes (`remark`), or adjusting dynastic phase transition years;
 - **Historical Milestones & Site-Specific Events**: Adding chronological milestones, capital relocations, or site-specific landmark events (`PLACE_LANDMARK_EVENTS`);
-- **Bilingual Translations & City Lore**: Improving English translations of historical proper nouns in [`js/i18n_dict.js`](js/i18n_dict.js) or expanding bilingual city epigraphs (`CITY_LORE`) in [`js/lore_data.js`](js/lore_data.js);
+- **Bilingual Translations & City Lore**: Improving English translations of historical proper nouns in [`js/i18n_dict.js`](js/i18n_dict.js) or expanding bilingual city epigraphs (`CITY_LORE`) in [`js/lore_detail.js`](js/lore_detail.js);
 - **UI/UX, Accessibility & Performance**: Enhancing mobile touch gestures, keyboard accessibility (ARIA), and SVG rendering performance.
 
 ---
@@ -26,7 +26,8 @@ We welcome contributions of all kinds, including:
 │   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Person Chronicle & window.atlasAPI
 │   ├── atlas_quiz.js        # Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
 │   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
-│   ├── lore_data.js         # Imperial eras (CHINESE_ERA_SPANS), reigning monarchs, biographical routes, city lore (CITY_LORE), landmark events & gazetteer
+│   ├── lore_core.js         # First-paint & search lore: imperial eras (CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS), passes, gazetteer, person profiles & guqin tracks
+│   ├── lore_detail.js       # Lazy-loaded lore detail: landmark events (PLACE_LANDMARK_EVENTS), biographical journeys, city lore (CITY_LORE) & polity profiles
 │   ├── atlas_boot.js        # Generated from data/atlas/: initial snapshots for instant first-paint rendering
 │   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
 │   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the X-Ray reference layer
@@ -38,6 +39,7 @@ We welcome contributions of all kinds, including:
     ├── audit_sources.js     # Zero-dependency reference audit for data/sources/ against data/sources/baseline.json (--check in CI)
     ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
     ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
+    ├── perf_budget.js       # Zero-dependency synchronous script gzip budget check against data/atlas/perf_baseline.json (--check in CI)
     ├── repair_topology.js   # Zero-dependency border repair: snaps core polity borders together and rewrites data/atlas/
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
     └── validate_atlas.js    # Zero-dependency automated data integrity, topology & E2E validation suite (--fast / full)
@@ -73,7 +75,7 @@ We welcome contributions of all kinds, including:
 
 ### Rebuilding Event Pinyin Search Keys
 
-After editing milestone titles/sites in `js/map_data.js` or landmark titles/sites in `js/lore_data.js`, regenerate the checked-in `js/event_pinyin.js`:
+After editing milestone titles/sites in `js/map_data.js` or landmark titles/sites in `js/lore_detail.js`, regenerate the checked-in `js/event_pinyin.js`:
 
 ```bash
 npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund
@@ -82,7 +84,7 @@ npm run check --prefix scripts/search-pinyin
 npm test --prefix scripts/search-pinyin
 ```
 
-The isolated build tool pins `pinyin-pro`; the browser only loads generated strings. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations (e.g. `njty`, `nbcty`, `aszl`) are also generated for complete title/location phrases and existing curated names found inside headlines. Headline pinyin keys also span punctuation within titles. Exact pinyin keys rank ahead of partial pinyin matches, followed by exact initials of at least four letters. If a search has no results, prefixes of at least two letters can return up to four event suggestions. Curated names win ties between equally short completions. The normal atlas validation still runs without npm dependencies.
+The isolated build tool pins `pinyin-pro`; the browser loads the generated index on demand when searching. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations (e.g. `njty`, `nbcty`, `aszl`) are also generated for complete title/location phrases and existing curated names found inside headlines. Headline pinyin keys also span punctuation within titles. Exact pinyin keys rank ahead of partial pinyin matches, followed by exact initials of at least four letters. If a search has no results, prefixes of at least two letters can return up to four event suggestions. Curated names win ties between equally short completions. The normal atlas validation still runs without npm dependencies.
 
 The build tool's `EVENT_NAMES` and `EVENT_NAME_SYNONYMS` cover the sixteen audited abbreviation gaps (`jybsb`, `wsyd`, `nmzz`, `krzz`, `xmzzygm`, `flqy`, `wcqy`, `jwzz`, `qsqy`, `dycypzz`, `xhgm`, `jtqy`, `ypzz`, `hcqy`, `hjqy`, `tmzb`). `EVENT_NAMES` supplies concise names embedded in longer prose; `EVENT_NAME_SYNONYMS` maps alternate names to the source phrase: 土木之变 generates `tmzb` for 土木堡之变, alongside `tmbzb`. Extend these Chinese name lists and add an independent search regression for each addition; the initial strings themselves are generated. Broad names such as 鸦片战争 can match multiple dated events.
 
@@ -93,8 +95,8 @@ The build tool's `EVENT_NAMES` and `EVENT_NAME_SYNONYMS` cover the sixteen audit
    - Hierarchy tiers: `isCapital: true` = imperial or regional regime capital; default (`tier` omitted) = major prefecture/circuit seat or strategic garrison; `tier: 2` = secondary prefecture or frontier outpost (progressively revealed on zoom);
    - If a settlement was founded, renamed, or abandoned mid-dynasty, specify `appear` and/or `vanish` years;
    - Every pre-modern settlement must include a concise historical `remark` (and its English translation in `js/i18n_dict.js`).
-2. **Imperial Eras & Reigning Monarchs (`js/lore_data.js`)**:
-   - Imperial era spans (`CHINESE_ERA_SPANS`) and reigning monarchs (`REIGNING_MONARCHS`) reside in `js/lore_data.js`. When adding or correcting reign dates, cross-check against standard chronological tables (*Zhongguo Lishi Jinian Biao*).
+2. **Imperial Eras & Reigning Monarchs (`js/lore_core.js`)**:
+   - Imperial era spans (`CHINESE_ERA_SPANS`) and regional era tracks (`REGIONAL_ERA_TRACKS`) reside in `js/lore_core.js` (while landmark events, journeys, city lore, and polity profiles reside in `js/lore_detail.js`). When adding or correcting reign dates, cross-check against standard chronological tables (*Zhongguo Lishi Jinian Biao*).
    - `CHINESE_ERA_SPANS` is the single reference chronology shown on the timeline and follows the *Zizhi Tongjian* convention (Cao Wei for the Three Kingdoms, Eastern Jin for the Sixteen Kingdoms, the Southern Dynasties for the Northern & Southern Dynasties, the Central Plains Five Dynasties, and Song alongside Liao/Jin/Xia). Co-existing regimes that kept their own eras (Shu Han, Sun Wu, the Northern Dynasties, Western Liang, Chen after 581, Liao, Jin, Western Xia, and Kublai's Yuan) live in `REGIONAL_ERA_TRACKS`; events are labeled with the era of the regime ruling their location.
    - If a milestone's subject is not the regime holding its pinned location (e.g. a Song–Jin treaty pinned on the Jin side of the border), set `"eraRegime": "reference"` or a `REGIONAL_ERA_TRACKS` regime name on that milestone in `js/map_data.js`.
 3. **Historical Polities & Regional Boundaries (`data/atlas/`)**:
