@@ -1,0 +1,51 @@
+name: 数据纠错 / Data correction
+description: 年份、地点、人物或事件描述有误 / A wrong year, place, person or event description
+title: "[纠错] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢指正。请尽量附上出处（书名 + 卷次或页码），我们会对照原书核实后修改。
+        Thanks for the correction. Please cite a source (work + chapter or page) so we can check it.
+  - type: input
+    id: year
+    attributes:
+      label: 年份 / Year
+      description: 地图上的年份，公元前用负数或注明“前” / The year on the map; BCE as negative or "BCE"
+      placeholder: "692"
+    validations:
+      required: true
+  - type: input
+    id: subject
+    attributes:
+      label: 地点或人物 / Place or person
+      placeholder: "龟兹 / 王孝杰"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: 现在显示的内容 / What the atlas shows now
+      description: 可直接粘贴文字，或附截图 / Paste the text or attach a screenshot
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: 应改为 / What it should be
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 出处 / Source
+      description: 书名与卷次或页码，有链接可附上 / Work and chapter or page, with a link if available
+      placeholder: "《资治通鉴》卷205 唐纪二十一 长寿元年十月"
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: 地图链接（可选）/ Atlas link (optional)
+      description: 浏览器地址栏中的链接会带上年份与位置 / The address bar URL keeps the year and view
