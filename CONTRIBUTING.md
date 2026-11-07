@@ -80,7 +80,7 @@ npm run check --prefix scripts/search-pinyin
 npm test --prefix scripts/search-pinyin
 ```
 
-The isolated build tool pins `pinyin-pro`; the browser only loads generated strings. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations are not generated. The normal atlas validation still runs without npm dependencies.
+The isolated build tool pins `pinyin-pro`; the browser only loads generated strings. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations (e.g. `njty`, `nbcty`, `aszl`) are also generated for complete title/location phrases and existing curated names found inside headlines. They require an exact key of at least four letters, rank below full pinyin, and can return multiple candidates. Partial initials are not matched. The normal atlas validation still runs without npm dependencies.
 
 ## Historical & Cartographic Conventions
 

@@ -1209,6 +1209,9 @@ function main() {
     ['ni bu chu tiao yue', 1689, '尼布楚条约'],
     ['nanjingtiaoyue', 1842, '南京条约'],
     ['nan jing tiao yue', 1842, '南京条约'],
+    ['njty', 1842, '南京条约'],
+    ['nbcty', 1689, '尼布楚条约'],
+    ['aszl', 755, '安史之乱'],
   ]) {
     assert(ctrl._queryQuickSearch(query).some(item => item.kind === 'event' &&
       item.rawYear === year && item.titleZh.includes(title)), `Event pinyin search failed: ${query}`);

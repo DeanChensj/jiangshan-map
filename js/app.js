@@ -12373,6 +12373,7 @@
       // 3. Historical Milestones / Events
       const eventEntries = [];
       const eventPinyin = window.ATLAS_EVENT_PINYIN || {};
+      const eventInitials = eventPinyin.initials || {};
       for (const d of this.dynasties) {
         for (const [eventIdx, m] of (d.milestones || []).entries()) {
           const enHead = this._enMilestoneHeadline(d, m);
@@ -12390,6 +12391,7 @@
             titleEn: enHead,
             subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
             pinyinKeys: [...(eventPinyin.milestones?.[d.key]?.[eventIdx] || [])],
+            initialKeys: [...(eventInitials.milestones?.[d.key]?.[eventIdx] || [])],
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           };
           entries.push(evEntry);
@@ -12415,6 +12417,7 @@
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
           existingEv.pinyinKeys.push(...(eventPinyin.landmarks?.[eventIdx] || []));
+          existingEv.initialKeys.push(...(eventInitials.landmarks?.[eventIdx] || []));
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
           existingEv.altTitlesZh.push(lm.zh);
           if (lm.en) {
@@ -12448,6 +12451,7 @@
           titleEn: lm.en || lm.zh,
           subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
           pinyinKeys: [...(eventPinyin.landmarks?.[eventIdx] || [])],
+          initialKeys: [...(eventInitials.landmarks?.[eventIdx] || [])],
           keywords: `${lmKeywords} 史事 事件 战役 名胜`,
         };
         entries.push(lmEntry);
@@ -12904,6 +12908,12 @@
         ) {
           // Below all existing text/alias matches, including keyword-only results.
           score = 45;
+        } else if (
+          canMatchPinyin && !hasEraMatch && item.kind === 'event' &&
+          item.initialKeys && item.initialKeys.includes(pinyinQuery)
+        ) {
+          // Whole generated phrases only; abbreviations stay below full pinyin.
+          score = 40;
         }
 
         if (score > 0) {
