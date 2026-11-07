@@ -294,4 +294,6 @@ hit.prefecture;                  // 默认为 null；加 --with-prefectures 导�
 
 **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
 
+**数据纠错**：发现年份、地点或描述有误，请[提交纠错 issue](https://github.com/DeanChensj/jiangshan-map/issues/new?template=data-error.yml)，最好附上出处。
+
 Copyright © 2026 DeanChensj。除上文注明的例外，采用 GPL-3.0（见 [LICENSE](LICENSE)）。

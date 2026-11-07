@@ -294,4 +294,6 @@ Code and the data created by this project are released under **GPL-3.0**. One la
 
 **Contributing**: see [CONTRIBUTING.md](CONTRIBUTING.md) ([中文贡献指南](CONTRIBUTING_ZH.md)) for repository structure, data conventions, and validation checks.
 
+**Report a data error**: found a wrong year, place or description? [Open a data correction issue](https://github.com/DeanChensj/jiangshan-map/issues/new?template=data-error.yml) and cite a source if you can.
+
 Copyright © 2026 DeanChensj. Licensed under GPL-3.0 (see [LICENSE](LICENSE)), except as noted above.

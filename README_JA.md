@@ -294,4 +294,6 @@ hit.prefecture;                  // null unless exported with --with-prefectures
 
 **コントリビュート**：リポジトリの構成、データの規約、検証のチェックについては [CONTRIBUTING.md](CONTRIBUTING.md)（[中文贡献指南](CONTRIBUTING_ZH.md)）をご覧ください。
 
+**データの誤りの報告**：年代・地名・記述の誤りを見つけたら、[データ修正の issue](https://github.com/DeanChensj/jiangshan-map/issues/new?template=data-error.yml) を作成してください。出典があれば添えてください。
+
 Copyright © 2026 DeanChensj. 上記の例外を除き、GPL-3.0 で公開しています（[LICENSE](LICENSE) をご覧ください）。

@@ -33,5 +33,8 @@ jobs:
       - name: Check prefecture layer against baseline
         run: node scripts/audit_prefectures.js --check
 
+      - name: Check data references against baseline
+        run: node scripts/audit_sources.js --check
+
       - name: Run Atlas Validation Suite
         run: node scripts/validate_atlas.js

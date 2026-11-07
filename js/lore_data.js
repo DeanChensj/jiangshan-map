@@ -3786,6 +3786,7 @@ window.ATLAS_LORE_DATA = {
   ],
   "PLACE_LANDMARK_EVENTS": [
     {
+      "id": "zhanguo:-350",
       "dynastyKey": "zhanguo",
       "year": -350,
       "coord": [
@@ -3798,6 +3799,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Duke Xiao of Qin and Shang Yang move the capital to Xianyang and launch the Second Reform"
     },
     {
+      "id": "qin:-221",
       "dynastyKey": "qin",
       "year": -221,
       "coord": [
@@ -3816,6 +3818,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-206",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -3832,6 +3835,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-200",
       "dynastyKey": "xihan",
       "year": -200,
       "coord": [
@@ -3849,6 +3853,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-91",
       "dynastyKey": "xihan",
       "year": -91,
       "coord": [
@@ -3861,6 +3866,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Witchcraft Crisis (Wugu Affair) in Chang’an drives Crown Prince Liu Ju to rebellion and suicide"
     },
     {
+      "id": "xihan:-74",
       "dynastyKey": "xihan",
       "year": -74,
       "coord": [
@@ -3873,6 +3879,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Regent Huo Guang deposes Liu He at Weiyang Palace and enthrones Emperor Xuan of Han"
     },
     {
+      "id": "xihan:8",
       "dynastyKey": "xihan",
       "year": 8,
       "coord": [
@@ -3885,6 +3892,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Mang forces Young Prince Ying to abdicate in Chang'an and founds the Xin Dynasty"
     },
     {
+      "id": "donghan:190",
       "dynastyKey": "donghan",
       "year": 190,
       "coord": [
@@ -3897,6 +3905,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Dong Zhuo forcibly relocates Emperor Xian to Chang'an"
     },
     {
+      "id": "sanguo:228",
       "dynastyKey": "sanguo",
       "year": 228,
       "coord": [
@@ -3909,6 +3918,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shu Han marches from Mount Qi shaking Guanzhong; Wei Emperor Cao Rui commands defense from Chang'an"
     },
     {
+      "id": "xijin:316",
       "dynastyKey": "xijin",
       "year": 316,
       "coord": [
@@ -3921,6 +3931,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Yao captures Chang'an; Emperor Min surrenders, ending the Western Jin"
     },
     {
+      "id": "dongjin:351",
       "dynastyKey": "dongjin",
       "year": 351,
       "coord": [
@@ -3933,6 +3944,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fu Jian (Emperor Jingming) establishes the Former Qin dynasty at capital Chang'an"
     },
     {
+      "id": "dongjin:357",
       "dynastyKey": "dongjin",
       "year": 357,
       "coord": [
@@ -3945,6 +3957,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fu Jian ascends in Chang'an as Heavenly King of Former Qin and appoints Wang Meng to reform the state"
     },
     {
+      "id": "nanbei:534",
       "dynastyKey": "nanbei",
       "year": 534,
       "coord": [
@@ -3957,6 +3970,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yuwen Tai establishes Western Wei at Chang'an, laying the foundation for Sui and Tang"
     },
     {
+      "id": "sui:582",
       "dynastyKey": "sui",
       "year": 582,
       "coord": [
@@ -3969,6 +3983,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wen of Sui (Yang Jian) commissions Yuwen Kai to build the new capital Daxing City"
     },
     {
+      "id": "tang:618",
       "dynastyKey": "tang",
       "year": 618,
       "coord": [
@@ -3986,6 +4001,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:626",
       "dynastyKey": "tang",
       "year": 626,
       "coord": [
@@ -4003,6 +4019,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:756",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -4015,6 +4032,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yan Gaoqing and Yan Zhenqing raise 17 Hebei commanderies; Changshan falls, the Yan clan dies"
     },
     {
+      "id": "tang:757",
       "dynastyKey": "tang",
       "year": 757,
       "coord": [
@@ -4027,6 +4045,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Siege of Suiyang: Zhang Xun and Xu Yuan hold out ten months, shielding the Jianghuai tax base"
     },
     {
+      "id": "tang:759",
       "dynastyKey": "tang",
       "year": 759,
       "coord": [
@@ -4039,6 +4058,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Yecheng: Shi Siming routs nine Tang governors, kills An Qingxu, takes the Yan throne"
     },
     {
+      "id": "tang:756b",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -4051,6 +4071,7 @@ window.ATLAS_LORE_DATA = {
       "en": "An Lushan rebels capture Chang’an, sparking the Mawei Mutiny as Emperor Xuanzong flees to Shu"
     },
     {
+      "id": "tang:835",
       "dynastyKey": "tang",
       "year": 835,
       "coord": [
@@ -4063,6 +4084,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sweet Dew Incident in Daming Palace: failed plot against Qiu Shiliang leads to court purge"
     },
     {
+      "id": "tang:881",
       "dynastyKey": "tang",
       "year": 881,
       "coord": [
@@ -4075,6 +4097,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Huang Chao captures Chang'an and proclaims the Qi regime"
     },
     {
+      "id": "ming:1369",
       "dynastyKey": "ming",
       "year": 1369,
       "coord": [
@@ -4087,6 +4110,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming general Xu Da captures Fengyuan and renames the prefecture Xi'an"
     },
     {
+      "id": "ming:1643",
       "dynastyKey": "ming",
       "year": 1643,
       "coord": [
@@ -4099,6 +4123,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Zicheng captures Xi'an and proclaims the Dashun Dynasty"
     },
     {
+      "id": "roc:1936",
       "dynastyKey": "roc",
       "year": 1936,
       "coord": [
@@ -4111,6 +4136,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xi'an Incident sparks the Second United Front against Japanese aggression"
     },
     {
+      "id": "zhanguo:-403",
       "dynastyKey": "zhanguo",
       "year": -403,
       "coord": [
@@ -4123,6 +4149,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Weilie of Zhou formally recognizes Wei, Zhao, and Han as marquises at Luoyi"
     },
     {
+      "id": "donghan:25",
       "dynastyKey": "donghan",
       "year": 25,
       "coord": [
@@ -4135,6 +4162,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Xiu establishes the Eastern Han with Luoyang as imperial capital"
     },
     {
+      "id": "donghan:68",
       "dynastyKey": "donghan",
       "year": 68,
       "coord": [
@@ -4147,6 +4175,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Ming of Han establishes White Horse Temple in Luoyang"
     },
     {
+      "id": "donghan:92",
       "dynastyKey": "donghan",
       "year": 92,
       "coord": [
@@ -4159,6 +4188,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prosperity of Yongyuan: Emperor He overthrows Dou Xian’s clan in Luoyang, reaching Han zenith"
     },
     {
+      "id": "sanguo:260",
       "dynastyKey": "sanguo",
       "year": 260,
       "coord": [
@@ -4171,6 +4201,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain in Luoyang"
     },
     {
+      "id": "sanguo:265",
       "dynastyKey": "sanguo",
       "year": 265,
       "coord": [
@@ -4183,6 +4214,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Yan accepts Wei's abdication in Luoyang and founds the Western Jin"
     },
     {
+      "id": "xijin:311",
       "dynastyKey": "xijin",
       "year": 311,
       "coord": [
@@ -4195,6 +4227,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Disaster of Yongjia: sack of Luoyang triggers the southward migration"
     },
     {
+      "id": "nanbei:493",
       "dynastyKey": "nanbei",
       "year": 493,
       "coord": [
@@ -4207,6 +4240,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xiaowen of Northern Wei moves the capital from Pingcheng to Luoyang for Sinicization"
     },
     {
+      "id": "sui:605",
       "dynastyKey": "sui",
       "year": 605,
       "coord": [
@@ -4219,6 +4253,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Yang of Sui builds the Eastern Capital Luoyang and launches the Grand Canal"
     },
     {
+      "id": "tang:690",
       "dynastyKey": "tang",
       "year": 690,
       "coord": [
@@ -4235,6 +4270,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "wudai:923",
       "dynastyKey": "wudai",
       "year": 923,
       "coord": [
@@ -4248,6 +4284,7 @@ window.ATLAS_LORE_DATA = {
       "month": 11
     },
     {
+      "id": "sanguo:229",
       "dynastyKey": "sanguo",
       "year": 229,
       "coord": [
@@ -4260,6 +4297,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Quan moves his capital to Jianye (Nanjing) and proclaims the Eastern Wu Empire"
     },
     {
+      "id": "xijin:280",
       "dynastyKey": "xijin",
       "year": 280,
       "coord": [
@@ -4272,6 +4310,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jin naval forces under Wang Jun capture Jianye, ending the Three Kingdoms"
     },
     {
+      "id": "wudai:926",
       "dynastyKey": "wudai",
       "year": 926,
       "coord": [
@@ -4284,6 +4323,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xingjiao Gate Incident in Luoyang: Emperor Zhuangzong falls in mutiny and Li Siyuan ascends"
     },
     {
+      "id": "dongjin:317",
       "dynastyKey": "dongjin",
       "year": 317,
       "coord": [
@@ -4296,6 +4336,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Rui establishes the Eastern Jin in Jiankang (Nanjing)"
     },
     {
+      "id": "dongjin:322",
       "dynastyKey": "dongjin",
       "year": 322,
       "coord": [
@@ -4308,6 +4349,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Rebellion of Wang Dun: Wang Dun marches from Wuchang into Jiankang to control the Jin court"
     },
     {
+      "id": "dongjin:404",
       "dynastyKey": "dongjin",
       "year": 404,
       "coord": [
@@ -4324,6 +4366,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:420",
       "dynastyKey": "nanbei",
       "year": 420,
       "coord": [
@@ -4336,6 +4379,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Yu founds Liu Song; Jiankang serves as capital of all four Southern Dynasties"
     },
     {
+      "id": "sui:589",
       "dynastyKey": "sui",
       "year": 589,
       "coord": [
@@ -4352,6 +4396,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "wudai:937",
       "dynastyKey": "wudai",
       "year": 937,
       "coord": [
@@ -4364,6 +4409,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Bian founds Southern Tang in Jinling, cultural heart of the Ten Kingdoms"
     },
     {
+      "id": "nansong:1129",
       "dynastyKey": "nansong",
       "year": 1129,
       "coord": [
@@ -4376,6 +4422,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jiankang serves as auxiliary capital and Yangtze defense hub of Southern Song"
     },
     {
+      "id": "ming:1368",
       "dynastyKey": "ming",
       "year": 1368,
       "coord": [
@@ -4393,6 +4440,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "ming:1402",
       "dynastyKey": "ming",
       "year": 1402,
       "coord": [
@@ -4405,6 +4453,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jingnan Campaign: Zhu Di captures Nanjing and ascends as the Yongle Emperor"
     },
     {
+      "id": "qing:1842",
       "dynastyKey": "qing",
       "year": 1842,
       "coord": [
@@ -4417,6 +4466,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Treaty of Nanjing signed after the First Opium War"
     },
     {
+      "id": "roc:1912",
       "dynastyKey": "roc",
       "year": 1912,
       "coord": [
@@ -4429,6 +4479,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Yat-sen inaugurated in Nanjing as Provisional President of the Republic of China"
     },
     {
+      "id": "zhanguo:-226",
       "dynastyKey": "zhanguo",
       "year": -226,
       "coord": [
@@ -4441,6 +4492,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin generals Wang Jian and Wang Ben capture the Yan capital Ji; King Xi flees to Liaodong"
     },
     {
+      "id": "tang:755",
       "dynastyKey": "tang",
       "year": 755,
       "coord": [
@@ -4456,6 +4508,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "wudai:938",
       "dynastyKey": "wudai",
       "year": 938,
       "coord": [
@@ -4468,6 +4521,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liao elevates Youzhou to its Southern Capital, Nanjing Xijin Fu"
     },
     {
+      "id": "nansong:1153",
       "dynastyKey": "nansong",
       "year": 1153,
       "coord": [
@@ -4480,6 +4534,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jin ruler Wanyan Liang moves the imperial capital to Yanjing, renaming it Zhongdu"
     },
     {
+      "id": "nansong:1215",
       "dynastyKey": "nansong",
       "year": 1215,
       "coord": [
@@ -4492,6 +4547,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Genghis Khan's Mongol forces capture Jin Zhongdu"
     },
     {
+      "id": "nansong:1272",
       "dynastyKey": "nansong",
       "year": 1272,
       "coord": [
@@ -4504,6 +4560,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Kublai Khan establishes Dadu (Khanbaliq) as capital of the Yuan Dynasty"
     },
     {
+      "id": "ming:1421",
       "dynastyKey": "ming",
       "year": 1421,
       "coord": [
@@ -4521,6 +4578,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "ming:1457",
       "dynastyKey": "ming",
       "year": 1457,
       "coord": [
@@ -4533,6 +4591,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wresting the Gate Coup: Emperor Yingzong is restored from the Southern Palace; Yu Qian is slain"
     },
     {
+      "id": "ming:1542",
       "dynastyKey": "ming",
       "year": 1542,
       "coord": [
@@ -4545,6 +4604,7 @@ window.ATLAS_LORE_DATA = {
       "en": "RenYin Palace Rebellion: palace women led by Yang Jinying attempt to strangle Emperor Jiajing"
     },
     {
+      "id": "qing:1861",
       "dynastyKey": "qing",
       "year": 1861,
       "coord": [
@@ -4557,6 +4617,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xinyou Coup in Beijing: Cixi and Ci’an ally with Prince Gong to oust the Eight Regents"
     },
     {
+      "id": "qing:1898",
       "dynastyKey": "qing",
       "year": 1898,
       "coord": [
@@ -4569,6 +4630,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wuxu Coup in Beijing: Empress Dowager Cixi confines Emperor Guangxu and executes Six Gentlemen"
     },
     {
+      "id": "beisong:976",
       "dynastyKey": "beisong",
       "year": 976,
       "coord": [
@@ -4581,6 +4643,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Candlelight and Axe-Sound Mystery at Wansui Hall: Emperor Taizu dies and Taizong ascends"
     },
     {
+      "id": "nansong:1129b",
       "dynastyKey": "nansong",
       "year": 1129,
       "coord": [
@@ -4598,6 +4661,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1194",
       "dynastyKey": "nansong",
       "year": 1194,
       "coord": [
@@ -4610,6 +4674,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shaoxi Abdication in Lin’an: Zhao Ruyu and Han Tuozhou compel Guangzong to yield to Ningzong"
     },
     {
+      "id": "ming:1644",
       "dynastyKey": "ming",
       "year": 1644,
       "coord": [
@@ -4622,6 +4687,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Zicheng captures Beijing; Qing forces soon enter and make Beijing their capital"
     },
     {
+      "id": "qing:1860",
       "dynastyKey": "qing",
       "year": 1860,
       "coord": [
@@ -4634,6 +4700,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Anglo-French forces enter Beijing and burn the Old Summer Palace (Yuanmingyuan)"
     },
     {
+      "id": "roc:1919",
       "dynastyKey": "roc",
       "year": 1919,
       "coord": [
@@ -4646,6 +4713,7 @@ window.ATLAS_LORE_DATA = {
       "en": "May Fourth Movement erupts in Beijing"
     },
     {
+      "id": "roc:1949",
       "dynastyKey": "roc",
       "year": 1949,
       "coord": [
@@ -4662,6 +4730,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "zhanguo:-364",
       "dynastyKey": "zhanguo",
       "year": -364,
       "coord": [
@@ -4674,6 +4743,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Hui of Wei moves his capital to Daliang and excavates the Honggou Canal"
     },
     {
+      "id": "zhanguo:-225",
       "dynastyKey": "zhanguo",
       "year": -225,
       "coord": [
@@ -4686,6 +4756,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin general Wang Ben floods Daliang to conquer the state of Wei"
     },
     {
+      "id": "sui:605b",
       "dynastyKey": "sui",
       "year": 605,
       "coord": [
@@ -4698,6 +4769,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Grand Canal makes Bianzhou (Kaifeng) the premier north-south waterway hub"
     },
     {
+      "id": "wudai:907",
       "dynastyKey": "wudai",
       "year": 907,
       "coord": [
@@ -4710,6 +4782,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhu Wen founds Later Liang in Kaifeng; four of the Five Dynasties make it their capital"
     },
     {
+      "id": "beisong:960",
       "dynastyKey": "beisong",
       "year": 960,
       "coord": [
@@ -4722,6 +4795,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhao Kuangyin founds the Northern Song Dynasty with Dongjing (Kaifeng) as capital"
     },
     {
+      "id": "beisong:1127",
       "dynastyKey": "beisong",
       "year": 1127,
       "coord": [
@@ -4734,6 +4808,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jingkang Incident: Jurchen Jin forces capture Kaifeng, ending the Northern Song"
     },
     {
+      "id": "nansong:1214",
       "dynastyKey": "nansong",
       "year": 1214,
       "coord": [
@@ -4746,6 +4821,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xuanzong of Jin relocates the Jurchen capital south to Bianjing"
     },
     {
+      "id": "ming:1642",
       "dynastyKey": "ming",
       "year": 1642,
       "coord": [
@@ -4758,6 +4834,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yellow River dike breach during the 1642 Siege of Kaifeng submerges the city"
     },
     {
+      "id": "sui:610",
       "dynastyKey": "sui",
       "year": 610,
       "coord": [
@@ -4770,6 +4847,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Completion of the Jiangnan Canal makes Yuhang (Hangzhou) the southern terminus of the Grand Canal"
     },
     {
+      "id": "wudai:907b",
       "dynastyKey": "wudai",
       "year": 907,
       "coord": [
@@ -4782,6 +4860,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qian Liu establishes the Wuyue Kingdom in Hangzhou and builds the Qiantang seawall"
     },
     {
+      "id": "nansong:1138",
       "dynastyKey": "nansong",
       "year": 1138,
       "coord": [
@@ -4794,6 +4873,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Gaozong establishes Lin'an (Hangzhou) as capital of the Southern Song"
     },
     {
+      "id": "nansong:1142",
       "dynastyKey": "nansong",
       "year": 1142,
       "coord": [
@@ -4806,6 +4886,7 @@ window.ATLAS_LORE_DATA = {
       "en": "General Yue Fei is executed at Fengbo Pavilion in Lin'an"
     },
     {
+      "id": "nansong:1276",
       "dynastyKey": "nansong",
       "year": 1276,
       "coord": [
@@ -4818,6 +4899,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yuan forces under Bayan reach Lin'an; the Southern Song court surrenders"
     },
     {
+      "id": "zhanguo:-316",
       "dynastyKey": "zhanguo",
       "year": -316,
       "coord": [
@@ -4830,6 +4912,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin envoys Zhang Yi and Sima Cuo march down the Stone Cattle Road to conquer Shu"
     },
     {
+      "id": "zhanguo:-256",
       "dynastyKey": "zhanguo",
       "year": -256,
       "coord": [
@@ -4842,6 +4925,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shu Governor Li Bing builds the Dujiangyan Irrigation System, making Chengdu the Land of Plenty"
     },
     {
+      "id": "sanguo:221",
       "dynastyKey": "sanguo",
       "year": 221,
       "coord": [
@@ -4859,6 +4943,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:228b",
       "dynastyKey": "sanguo",
       "year": 228,
       "coord": [
@@ -4876,6 +4961,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:263",
       "dynastyKey": "sanguo",
       "year": 263,
       "coord": [
@@ -4893,6 +4979,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:264",
       "dynastyKey": "sanguo",
       "year": 264,
       "coord": [
@@ -4906,6 +4993,7 @@ window.ATLAS_LORE_DATA = {
       "month": 1
     },
     {
+      "id": "tang:756c",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -4919,6 +5007,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "wudai:907c",
       "dynastyKey": "wudai",
       "year": 907,
       "coord": [
@@ -4931,6 +5020,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Military governor Wang Jian proclaims the Former Shu Kingdom with Chengdu as capital"
     },
     {
+      "id": "beisong:1023",
       "dynastyKey": "beisong",
       "year": 1023,
       "coord": [
@@ -4943,6 +5033,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Northern Song establishes the Jiaozi Bureau in Chengdu, issuing the world’s first paper money"
     },
     {
+      "id": "donghan:208",
       "dynastyKey": "donghan",
       "year": 208,
       "coord": [
@@ -4966,6 +5057,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:221b",
       "dynastyKey": "sanguo",
       "year": 221,
       "coord": [
@@ -4978,6 +5070,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Quan establishes Wuchang as his military and political capital on the Yangtze"
     },
     {
+      "id": "nansong:1134",
       "dynastyKey": "nansong",
       "year": 1134,
       "coord": [
@@ -4991,6 +5084,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "donghan:207",
       "dynastyKey": "donghan",
       "year": 207,
       "coord": [
@@ -5010,6 +5104,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:219",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -5030,6 +5125,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8.5
     },
     {
+      "id": "xihan:-111",
       "dynastyKey": "xihan",
       "year": -111,
       "coord": [
@@ -5042,6 +5138,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Han establishes Dunhuang Commandery and the Yumen and Yangguan passes"
     },
     {
+      "id": "dongjin:366",
       "dynastyKey": "dongjin",
       "year": 366,
       "coord": [
@@ -5054,6 +5151,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Monk Yuezun carves the first cave at the Mogao Grottoes in Dunhuang"
     },
     {
+      "id": "tang:848",
       "dynastyKey": "tang",
       "year": 848,
       "coord": [
@@ -5066,6 +5164,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhang Yichao leads the Dunhuang uprising and restores Tang rule as the Guiyi Circuit"
     },
     {
+      "id": "xihan:-200b",
       "dynastyKey": "xihan",
       "year": -200,
       "coord": [
@@ -5078,6 +5177,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Siege of Baideng: Emperor Gaozu of Han is besieged by Modu Chanyu at Pingcheng"
     },
     {
+      "id": "dongjin:398",
       "dynastyKey": "dongjin",
       "year": 398,
       "coord": [
@@ -5090,6 +5190,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tuoba Gui moves the Northern Wei capital to Pingcheng and initiates the Yungang Grottoes"
     },
     {
+      "id": "tang:753",
       "dynastyKey": "tang",
       "year": 753,
       "coord": [
@@ -5102,6 +5203,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Monk Jianzhen sets sail from Yangzhou on his successful sixth voyage to Japan"
     },
     {
+      "id": "qing:1645",
       "dynastyKey": "qing",
       "year": 1645,
       "coord": [
@@ -5114,6 +5216,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming loyalist Shi Kefa defends Yangzhou to the death against Qing forces"
     },
     {
+      "id": "tang:714",
       "dynastyKey": "tang",
       "year": 714,
       "coord": [
@@ -5126,6 +5229,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tang establishes the first Maritime Trade Commissioner (Shibosi) in Guangzhou"
     },
     {
+      "id": "zhanguo:-318",
       "dynastyKey": "zhanguo",
       "year": -318,
       "coord": [
@@ -5138,6 +5242,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Coalition of Chu, Zhao, Wei, Han, and Yan marches on Hangu Pass but is repulsed by Qin forces"
     },
     {
+      "id": "zhanguo:-298",
       "dynastyKey": "zhanguo",
       "year": -298,
       "coord": [
@@ -5150,6 +5255,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Lord Mengchang of Qi leads a Qi-Han-Wei coalition that storms Hangu Pass after three years"
     },
     {
+      "id": "qin:-207",
       "dynastyKey": "qin",
       "year": -207,
       "coord": [
@@ -5163,6 +5269,7 @@ window.ATLAS_LORE_DATA = {
       "month": 10
     },
     {
+      "id": "qin:-204",
       "dynastyKey": "qin",
       "year": -204,
       "coord": [
@@ -5179,6 +5286,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-166",
       "dynastyKey": "xihan",
       "year": -166,
       "coord": [
@@ -5191,6 +5299,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xiongnu Chanyu Laoshang breaches Xiaoguan Pass with 140,000 cavalry, alarming Chang’an"
     },
     {
+      "id": "xihan:-111b",
       "dynastyKey": "xihan",
       "year": -111,
       "coord": [
@@ -5203,6 +5312,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Western Han establishes Yumen Pass and Yangguan Pass to command the Silk Road routes"
     },
     {
+      "id": "donghan:211",
       "dynastyKey": "donghan",
       "year": 211,
       "coord": [
@@ -5215,6 +5325,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Tongguan: Cao Cao outflanks the pass and defeats the coalition of Ma Chao and Han Sui"
     },
     {
+      "id": "donghan:219b",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -5234,6 +5345,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "sanguo:263b",
       "dynastyKey": "sanguo",
       "year": 263,
       "coord": [
@@ -5251,6 +5363,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:621",
       "dynastyKey": "tang",
       "year": 621,
       "coord": [
@@ -5263,6 +5376,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Hulao: Li Shimin captures Dou Jiande at Hulao Pass, forcing Wang Shichong to yield"
     },
     {
+      "id": "tang:716",
       "dynastyKey": "tang",
       "year": 716,
       "coord": [
@@ -5275,6 +5389,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chancellor Zhang Jiuling excavates the Meiguan Pass road across Dayu Ridge, linking Gan and Yue"
     },
     {
+      "id": "tang:756d",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -5288,6 +5403,7 @@ window.ATLAS_LORE_DATA = {
       "month": 6
     },
     {
+      "id": "tang:819",
       "dynastyKey": "tang",
       "year": 819,
       "coord": [
@@ -5300,6 +5416,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Exiled to Chaozhou, Han Yu crosses snowbound Lantian Pass and composes his famous quatrain"
     },
     {
+      "id": "beisong:980",
       "dynastyKey": "beisong",
       "year": 980,
       "coord": [
@@ -5312,6 +5429,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Yanmen Pass: Song general Yang Ye leads a flanking cavalry strike to rout Liao forces"
     },
     {
+      "id": "ming:1372",
       "dynastyKey": "ming",
       "year": 1372,
       "coord": [
@@ -5324,6 +5442,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming general Feng Sheng builds Jiayuguan Pass in the Hexi Corridor as the Great Wall’s west end"
     },
     {
+      "id": "ming:1449",
       "dynastyKey": "ming",
       "year": 1449,
       "coord": [
@@ -5336,6 +5455,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After the Tumu Crisis, Yu Qian fortifies Juyong and Zijing passes and repels Oirat forces"
     },
     {
+      "id": "ming:1644b",
       "dynastyKey": "ming",
       "year": 1644,
       "coord": [
@@ -5348,6 +5468,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Shanhai Pass: Wu Sangui opens the gates to Dorgon’s Qing army, defeating Li Zicheng"
     },
     {
+      "id": "xihan:4",
       "dynastyKey": "xihan",
       "year": 4,
       "coord": [
@@ -5360,6 +5481,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Mang establishes Xihai Commandery east of Qinghai Lake with its seat at Longyi"
     },
     {
+      "id": "sanguo:260b",
       "dynastyKey": "sanguo",
       "year": 260,
       "coord": [
@@ -5372,6 +5494,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Xiu of Eastern Wu carves Jian'an Commandery from southern Kuaiji in northern Fujian"
     },
     {
+      "id": "nanbei:540",
       "dynastyKey": "nanbei",
       "year": 540,
       "coord": [
@@ -5384,6 +5507,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tuyuhun ruler Kualu proclaims himself Khagan and builds his royal capital at Fusi City"
     },
     {
+      "id": "wudai:927",
       "dynastyKey": "wudai",
       "year": 927,
       "coord": [
@@ -5396,6 +5520,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Tang invests Ma Yin as King of Chu at Tan Zhou, founding the Southern Chu kingdom"
     },
     {
+      "id": "beisong:1032",
       "dynastyKey": "beisong",
       "year": 1032,
       "coord": [
@@ -5408,6 +5533,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tibetan ruler Gusiluo moves his capital to Qingtang (Xining) on the Qinghai Silk Road"
     },
     {
+      "id": "beisong:1053",
       "dynastyKey": "beisong",
       "year": 1053,
       "coord": [
@@ -5420,6 +5546,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Song general Di Qing launches a night raid through Kunlun Pass to defeat Nong Zhigao"
     },
     {
+      "id": "nansong:1276b",
       "dynastyKey": "nansong",
       "year": 1276,
       "coord": [
@@ -5432,6 +5559,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wen Tianxiang, Zhang Shijie, and Lu Xiufu enthrone Emperor Duanzong at Fuzhou against Yuan"
     },
     {
+      "id": "ming:1600",
       "dynastyKey": "ming",
       "year": 1600,
       "coord": [
@@ -5444,6 +5572,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Bozhou Campaign: Ming commander Li Hualong storms Hailongtun Fortress, ending Yang tusi rule"
     },
     {
+      "id": "qing:1678",
       "dynastyKey": "qing",
       "year": 1678,
       "coord": [
@@ -5456,6 +5585,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wu Sangui proclaims the Zhou dynasty at Heng Zhou shortly before dying, turning the war"
     },
     {
+      "id": "zhanguo:-249",
       "dynastyKey": "zhanguo",
       "year": -249,
       "coord": [
@@ -5468,6 +5598,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Kaolie of Chu annexes Lu at Qufu, ending the 800-year state founded by the Duke of Zhou"
     },
     {
+      "id": "xihan:-195",
       "dynastyKey": "xihan",
       "year": -195,
       "coord": [
@@ -5481,6 +5612,7 @@ window.ATLAS_LORE_DATA = {
       "month": 11
     },
     {
+      "id": "beisong:1008",
       "dynastyKey": "beisong",
       "year": 1008,
       "coord": [
@@ -5493,6 +5625,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Zhenzong visits the Temple of Confucius at Qufu after the Mount Tai Fengshan rites"
     },
     {
+      "id": "wudai:952",
       "dynastyKey": "wudai",
       "year": 952,
       "coord": [
@@ -5505,6 +5638,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Zhou Emperor Guo Wei visits Qufu and bows to Confucius as Teacher of Emperors for All Ages"
     },
     {
+      "id": "qing:1684",
       "dynastyKey": "qing",
       "year": 1684,
       "coord": [
@@ -5517,6 +5651,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Kangxi visits Qufu Temple of Confucius, performing full imperial rites and calligraphy"
     },
     {
+      "id": "zhanguo:-375",
       "dynastyKey": "zhanguo",
       "year": -375,
       "coord": [
@@ -5529,6 +5664,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Yi of Yue moves his capital south from Langya, ending Yue's northern maritime court era"
     },
     {
+      "id": "qin:-219",
       "dynastyKey": "qin",
       "year": -219,
       "coord": [
@@ -5541,6 +5677,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin Shi Huang ascends Mount Langya, moving 30,000 households to build Langya Terrace and stele"
     },
     {
+      "id": "qin:-210",
       "dynastyKey": "qin",
       "year": -210,
       "coord": [
@@ -5554,6 +5691,7 @@ window.ATLAS_LORE_DATA = {
       "month": 3
     },
     {
+      "id": "xihan:-106",
       "dynastyKey": "xihan",
       "year": -106,
       "coord": [
@@ -5566,6 +5704,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Han tours the coast to Langya, sacrificing at Langya Terrace and seeking Penglai"
     },
     {
+      "id": "xihan:18",
       "dynastyKey": "xihan",
       "year": 18,
       "coord": [
@@ -5578,6 +5717,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fan Chong of Langya launches the Red Eyebrows uprising against Wang Mang's Xin dynasty"
     },
     {
+      "id": "xijin:307",
       "dynastyKey": "xijin",
       "year": 307,
       "coord": [
@@ -5590,6 +5730,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Rui, Prince of Langya, crosses south to Jianye with Wang Dao, founding the Eastern Jin"
     },
     {
+      "id": "beisong:1004",
       "dynastyKey": "beisong",
       "year": 1004,
       "coord": [
@@ -5602,6 +5743,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Zhenzong decrees Changnan imperial porcelain bear the Jingde mark, naming Jingdezhen"
     },
     {
+      "id": "ming:1402b",
       "dynastyKey": "ming",
       "year": 1402,
       "coord": [
@@ -5614,6 +5756,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Ming court establishes the Zhushan Imperial Kiln Factory at Jingdezhen for royal porcelain"
     },
     {
+      "id": "qing:1658",
       "dynastyKey": "qing",
       "year": 1658,
       "coord": [
@@ -5626,6 +5769,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After the 1657 exam scandal, Jiangnan literati like Wu Zhaoqian are exiled to frontier Ningguta"
     },
     {
+      "id": "qing:1662",
       "dynastyKey": "qing",
       "year": 1662,
       "coord": [
@@ -5638,6 +5782,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qing court appoints the General of Ningguta to govern the frontier to Ussuri and Sakhalin"
     },
     {
+      "id": "beisong:1048",
       "dynastyKey": "beisong",
       "year": 1048,
       "coord": [
@@ -5650,6 +5795,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prefect Fu Bi organizes relief in Qing Zhou for Hebei flood refugees, saving over 500,000 lives"
     },
     {
+      "id": "beisong:1076",
       "dynastyKey": "beisong",
       "year": 1076,
       "coord": [
@@ -5662,6 +5808,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Su Shi governs Mi Zhou, composing his Mid-Autumn masterpiece Prelude to Water Melody"
     },
     {
+      "id": "donghan:212",
       "dynastyKey": "donghan",
       "year": 212,
       "coord": [
@@ -5674,6 +5821,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Bei marches south from Jiameng to break with Liu Zhang, launching his Yi Province campaign"
     },
     {
+      "id": "tang:624",
       "dynastyKey": "tang",
       "year": 624,
       "coord": [
@@ -5686,6 +5834,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Empress Wu Zetian is traditionally born at Li Zhou while her father Wu Shiyue governs there"
     },
     {
+      "id": "tang:756e",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -5698,6 +5847,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Crown Prince Li Heng ascends the throne as Emperor Suzong at Lingwu to rally Tang forces"
     },
     {
+      "id": "beisong:1002",
       "dynastyKey": "beisong",
       "year": 1002,
       "coord": [
@@ -5710,6 +5860,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tangut leader Li Jiqian captures Ling Zhou, renaming it Xiping Prefecture as a Xia capital"
     },
     {
+      "id": "dongjin:384",
       "dynastyKey": "dongjin",
       "year": 384,
       "coord": [
@@ -5722,6 +5873,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Former Qin general Lü Guang captures Kucha and escorts Buddhist master Kumarajiva east"
     },
     {
+      "id": "tang:648",
       "dynastyKey": "tang",
       "year": 648,
       "coord": [
@@ -5734,6 +5886,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tang general Ashina She'er pacifies Kucha, where the Anxi Protectorate is relocated"
     },
     {
+      "id": "donghan:73",
       "dynastyKey": "donghan",
       "year": 73,
       "coord": [
@@ -5747,6 +5900,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "tang:675",
       "dynastyKey": "tang",
       "year": 675,
       "coord": [
@@ -5759,6 +5913,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Tang court establishes the Pisha Area Command at Khotan among the Four Garrisons of Anxi"
     },
     {
+      "id": "tang:755b",
       "dynastyKey": "tang",
       "year": 755,
       "coord": [
@@ -5771,6 +5926,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Mun of Balhae moves his capital to Shangjing Longquanfu, modeled on Tang Chang'an"
     },
     {
+      "id": "wudai:926b",
       "dynastyKey": "wudai",
       "year": 926,
       "coord": [
@@ -5783,6 +5939,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liao founder Abaoji captures Huhancheng (Shangjing), ending Balhae and establishing Dongdan"
     },
     {
+      "id": "sanguo:244",
       "dynastyKey": "sanguo",
       "year": 244,
       "coord": [
@@ -5795,6 +5952,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Wei general Guanqiu Jian storms the Goguryeo capital at Wandu and carves a victory stele"
     },
     {
+      "id": "dongjin:414",
       "dynastyKey": "dongjin",
       "year": 414,
       "coord": [
@@ -5807,6 +5965,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Jangsu of Goguryeo erects the Gwanggaeto Stele at Guonei City in modern Ji'an, Tonghua"
     },
     {
+      "id": "ming:1406",
       "dynastyKey": "ming",
       "year": 1406,
       "coord": [
@@ -5819,6 +5978,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming general Zhang Fu marches from Taiping Prefecture through Pingxiang Pass into Jiaozhi"
     },
     {
+      "id": "nansong:1260",
       "dynastyKey": "nansong",
       "year": 1260,
       "coord": [
@@ -5831,6 +5991,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Kublai Khan is enthroned as Great Khan at Kaiping, soon elevated to summer capital Shangdu"
     },
     {
+      "id": "qing:1691",
       "dynastyKey": "qing",
       "year": 1691,
       "coord": [
@@ -5843,6 +6004,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Kangxi convenes the Dolon Nor Assembly, integrating the Khalkha Mongols into banners"
     },
     {
+      "id": "xihan:-102",
       "dynastyKey": "xihan",
       "year": -102,
       "coord": [
@@ -5855,6 +6017,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu dispatches Lu Bode to build the Juyan frontier forts, leaving 10,000 Han slips"
     },
     {
+      "id": "nansong:1226",
       "dynastyKey": "nansong",
       "year": 1226,
       "coord": [
@@ -5867,6 +6030,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Genghis Khan captures the Western Xia fortress of Khara-Khoto on his final campaign"
     },
     {
+      "id": "beisong:1037",
       "dynastyKey": "beisong",
       "year": 1037,
       "coord": [
@@ -5879,6 +6043,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Su Shi is born in Mei Zhou (Meishan), home to the Three Su literary masters of Northern Song"
     },
     {
+      "id": "nansong:1175",
       "dynastyKey": "nansong",
       "year": 1175,
       "coord": [
@@ -5891,6 +6056,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhu Xi and Lu Jiuyuan debate Neo-Confucian philosophy at Goose Lake Temple in Shangrao"
     },
     {
+      "id": "nansong:1196",
       "dynastyKey": "nansong",
       "year": 1196,
       "coord": [
@@ -5903,6 +6069,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Patriotic poet Xin Qiji resides in Shangrao for two decades, composing his greatest poems"
     },
     {
+      "id": "sanguo:229b",
       "dynastyKey": "sanguo",
       "year": 229,
       "coord": [
@@ -5915,6 +6082,7 @@ window.ATLAS_LORE_DATA = {
       "en": "On his third northern expedition, Zhuge Liang captures Wudu and Yinping in modern Longnan"
     },
     {
+      "id": "qin:-209",
       "dynastyKey": "qin",
       "year": -209,
       "coord": [
@@ -5927,6 +6095,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Han Xin endures early hardship in Huaiyin before rising to become Han's supreme commander"
     },
     {
+      "id": "nansong:1135",
       "dynastyKey": "nansong",
       "year": 1135,
       "coord": [
@@ -5939,6 +6108,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Han Shizhong and Liang Hongyu garrison Chu Zhou (Huai'an), defending the Huai frontier"
     },
     {
+      "id": "ming:1451",
       "dynastyKey": "ming",
       "year": 1451,
       "coord": [
@@ -5951,6 +6121,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Ming court establishes the Viceroy of Grain Transport at Huai'an on the Grand Canal"
     },
     {
+      "id": "xihan:-138",
       "dynastyKey": "xihan",
       "year": -138,
       "coord": [
@@ -5963,6 +6134,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Han dispatches naval forces from Kuaiji to relieve Dong'ou (Wenzhou)"
     },
     {
+      "id": "nanbei:422",
       "dynastyKey": "nanbei",
       "year": 422,
       "coord": [
@@ -5975,6 +6147,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xie Lingyun governs Yongjia (Wenzhou), pioneering classical Chinese landscape poetry"
     },
     {
+      "id": "nansong:1130",
       "dynastyKey": "nansong",
       "year": 1130,
       "coord": [
@@ -5987,6 +6160,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fleeing Jurchen Jin pursuit by sea, Emperor Gaozong of Song holds court at Wenzhou"
     },
     {
+      "id": "zhanguo:-403b",
       "dynastyKey": "zhanguo",
       "year": -403,
       "coord": [
@@ -5999,6 +6173,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Site of the classic Wu-Yue battle of Zuili, Jiaxing guards the fertile northern Zhejiang plain"
     },
     {
+      "id": "ming:1555",
       "dynastyKey": "ming",
       "year": 1555,
       "coord": [
@@ -6011,6 +6186,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming commanders Zhang Jing and Yu Dayou crush Wokou pirates at Wangjiangjing in Jiaxing"
     },
     {
+      "id": "roc:1921",
       "dynastyKey": "roc",
       "year": 1921,
       "coord": [
@@ -6023,6 +6199,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The First National Congress concludes aboard the Red Boat on South Lake in Jiaxing"
     },
     {
+      "id": "yuan:1358",
       "dynastyKey": "yuan",
       "year": 1358,
       "coord": [
@@ -6035,6 +6212,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhu Yuanzhang captures Wu Zhou (Jinhua), recruiting Neo-Confucian scholars Song Lian and Wang Yi"
     },
     {
+      "id": "nansong:1129c",
       "dynastyKey": "nansong",
       "year": 1129,
       "coord": [
@@ -6047,6 +6225,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Duke Yansheng Kong Duanyou escorts sacred Confucian heirlooms south and settles in Quzhou"
     },
     {
+      "id": "yuan:1359",
       "dynastyKey": "yuan",
       "year": 1359,
       "coord": [
@@ -6059,6 +6238,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After capturing Chu Zhou (Lishui), Zhu Yuanzhang invites Liu Bowen of Qingtian to his court"
     },
     {
+      "id": "sanguo:220",
       "dynastyKey": "sanguo",
       "year": 220,
       "coord": [
@@ -6071,6 +6251,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Pi designates the Cao clan's ancestral home of Qiao (Bozhou) among the Five Capitals of Wei"
     },
     {
+      "id": "yuan:1355",
       "dynastyKey": "yuan",
       "year": 1355,
       "coord": [
@@ -6083,6 +6264,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Futong enthrones Han Lin'er at Bozhou as Emperor of the restored Song Red Turban regime"
     },
     {
+      "id": "beisong:1121",
       "dynastyKey": "beisong",
       "year": 1121,
       "coord": [
@@ -6095,6 +6277,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After suppressing Fang La's uprising, the Song court renames She Zhou to Hui Zhou"
     },
     {
+      "id": "yuan:1357",
       "dynastyKey": "yuan",
       "year": 1357,
       "coord": [
@@ -6107,6 +6290,7 @@ window.ATLAS_LORE_DATA = {
       "en": "At Huizhou, scholar Zhu Sheng counsels Zhu Yuanzhang to build high walls and store grain"
     },
     {
+      "id": "beisong:1071",
       "dynastyKey": "beisong",
       "year": 1071,
       "coord": [
@@ -6119,6 +6303,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ouyang Xiu retires beside West Lake in Ying Zhou (Fuyang) as the Six-One Lay Buddhist"
     },
     {
+      "id": "nansong:1140",
       "dynastyKey": "nansong",
       "year": 1140,
       "coord": [
@@ -6131,6 +6316,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Song general Liu Qi defends Shunchang (Fuyang), routing Wuzhu's elite Jin iron cavalry"
     },
     {
+      "id": "nansong:1161",
       "dynastyKey": "nansong",
       "year": 1161,
       "coord": [
@@ -6143,6 +6329,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Loyalist commander Wei Sheng recovers Hai Zhou (Lianyungang) and repels Jin forces"
     },
     {
+      "id": "wudai:958",
       "dynastyKey": "wudai",
       "year": 958,
       "coord": [
@@ -6155,6 +6342,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Zhou Emperor Chai Rong establishes Tong Zhou (Nantong) at the mouth of the Yangtze"
     },
     {
+      "id": "qing:1899",
       "dynastyKey": "qing",
       "year": 1899,
       "coord": [
@@ -6167,6 +6355,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Optimus scholar Zhang Jian opens the Dasheng Cotton Mill in Nantong, pioneering industry"
     },
     {
+      "id": "beisong:1024",
       "dynastyKey": "beisong",
       "year": 1024,
       "coord": [
@@ -6179,6 +6368,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fan Zhongyan initiates construction of the coastal Fan Gong Dike at Yancheng"
     },
     {
+      "id": "roc:1941",
       "dynastyKey": "roc",
       "year": 1941,
       "coord": [
@@ -6191,6 +6381,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After the Southern Anhui Incident, the New Fourth Army rebuilds its headquarters at Yancheng"
     },
     {
+      "id": "ming:1604",
       "dynastyKey": "ming",
       "year": 1604,
       "coord": [
@@ -6203,6 +6394,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gu Xiancheng and Gao Panlong restore the Donglin Academy in Wuxi as a center of reform"
     },
     {
+      "id": "xihan:-104",
       "dynastyKey": "xihan",
       "year": -104,
       "coord": [
@@ -6215,6 +6407,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Astronomer Luoxia Hong of Langzhong authors the Taichu Calendar under Emperor Wu of Han"
     },
     {
+      "id": "donghan:214",
       "dynastyKey": "donghan",
       "year": 214,
       "coord": [
@@ -6227,6 +6420,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhang Fei governs Baxi Commandery from Langzhong for seven years and defeats Zhang He"
     },
     {
+      "id": "beisong:1114",
       "dynastyKey": "beisong",
       "year": 1114,
       "coord": [
@@ -6239,6 +6433,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Song court renames Rong Zhou to Xu Zhou (Yibin) at the headwaters of the Yangtze River"
     },
     {
+      "id": "tang:713",
       "dynastyKey": "tang",
       "year": 713,
       "coord": [
@@ -6251,6 +6446,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Monk Haitong begins carving the 71-meter Leshan Giant Buddha at the confluence in Jia Zhou"
     },
     {
+      "id": "sanguo:225",
       "dynastyKey": "sanguo",
       "year": 225,
       "coord": [
@@ -6263,6 +6459,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhuge Liang sails down the Min River to Jiangyang (Luzhou) to assemble his southern expedition"
     },
     {
+      "id": "nansong:1243",
       "dynastyKey": "nansong",
       "year": 1243,
       "coord": [
@@ -6275,6 +6472,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Song commander Yu Jie fortifies Shenbicheng at Luzhou, resisting Mongol sieges for 34 years"
     },
     {
+      "id": "tang:815",
       "dynastyKey": "tang",
       "year": 815,
       "coord": [
@@ -6287,6 +6485,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Poet Yuan Zhen serves in exile as Marshal of Tong Zhou (Dazhou), exchanging poems with Bai Juyi"
     },
     {
+      "id": "xihan:-111c",
       "dynastyKey": "xihan",
       "year": -111,
       "coord": [
@@ -6299,6 +6498,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu establishes Yuexi Commandery at Qiongdu (Xichang), opening the Sichuan-Yunnan road"
     },
     {
+      "id": "ming:1392",
       "dynastyKey": "ming",
       "year": 1392,
       "coord": [
@@ -6311,6 +6511,7 @@ window.ATLAS_LORE_DATA = {
       "en": "General Lan Yu pacifies Jianchang (Xichang), seat of the Sichuan Branch Military Commission"
     },
     {
+      "id": "beisong:1021",
       "dynastyKey": "beisong",
       "year": 1021,
       "coord": [
@@ -6323,6 +6524,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Reformist statesman and poet Wang Anshi is born in Linchuan, Fuzhou (Jiangxi)"
     },
     {
+      "id": "ming:1598",
       "dynastyKey": "ming",
       "year": 1598,
       "coord": [
@@ -6335,6 +6537,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Playwright Tang Xianzu completes The Peony Pavilion at Yuming Hall in Linchuan, Fuzhou"
     },
     {
+      "id": "tang:820",
       "dynastyKey": "tang",
       "year": 820,
       "coord": [
@@ -6347,6 +6550,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Governing Yuan Zhou (Yichun), Han Yu frees over 700 bonded servants and promotes schooling"
     },
     {
+      "id": "ming:1637",
       "dynastyKey": "ming",
       "year": 1637,
       "coord": [
@@ -6359,6 +6563,7 @@ window.ATLAS_LORE_DATA = {
       "en": "While teaching in Yuanzhou Prefecture (Yichun), Song Yingxing publishes Tiangong Kaiwu"
     },
     {
+      "id": "beisong:1083",
       "dynastyKey": "beisong",
       "year": 1083,
       "coord": [
@@ -6371,6 +6576,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Mulan Weir irrigation project is completed in Putian, turning the plain into fertile fields"
     },
     {
+      "id": "ming:1562",
       "dynastyKey": "ming",
       "year": 1562,
       "coord": [
@@ -6383,6 +6589,7 @@ window.ATLAS_LORE_DATA = {
       "en": "General Qi Jiguang leads his army into Fujian, routing Wokou pirates to recover Putian"
     },
     {
+      "id": "donghan:208b",
       "dynastyKey": "donghan",
       "year": 208,
       "coord": [
@@ -6404,6 +6611,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:219c",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -6422,6 +6630,7 @@ window.ATLAS_LORE_DATA = {
       "month": 12
     },
     {
+      "id": "zhanguo:-400",
       "dynastyKey": "zhanguo",
       "year": -400,
       "coord": [
@@ -6434,6 +6643,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Marquis Yi of Zeng bronze chime bells at Suizhou showcase pre-Qin ritual music mastery"
     },
     {
+      "id": "ming:1412",
       "dynastyKey": "ming",
       "year": 1412,
       "coord": [
@@ -6446,6 +6656,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Yongle mobilizes 300,000 artisans over twelve years to build Mount Wudang's temples"
     },
     {
+      "id": "ming:1476",
       "dynastyKey": "ming",
       "year": 1476,
       "coord": [
@@ -6458,6 +6669,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Imperial Commissioner Yuan Jie establishes Yunyang Prefecture at Shiyan to settle migrants"
     },
     {
+      "id": "nansong:1225",
       "dynastyKey": "nansong",
       "year": 1225,
       "coord": [
@@ -6470,6 +6682,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Lizong of Song elevates his former fief Shao Zhou to Baoqing Prefecture (Shaoyang)"
     },
     {
+      "id": "qing:1842b",
       "dynastyKey": "qing",
       "year": 1842,
       "coord": [
@@ -6483,6 +6696,7 @@ window.ATLAS_LORE_DATA = {
       "month": 12
     },
     {
+      "id": "qin:-206b",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -6496,6 +6710,7 @@ window.ATLAS_LORE_DATA = {
       "month": 10
     },
     {
+      "id": "donghan:105",
       "dynastyKey": "donghan",
       "year": 105,
       "coord": [
@@ -6508,6 +6723,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cai Lun of Guiyang Commandery (Chenzhou) presents his improved papermaking process to the court"
     },
     {
+      "id": "tang:748",
       "dynastyKey": "tang",
       "year": 748,
       "coord": [
@@ -6520,6 +6736,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Poet Wang Changling is exiled to Longbiao (Huaihua), inspiring Li Bai's famous farewell poem"
     },
     {
+      "id": "roc:1945",
       "dynastyKey": "roc",
       "year": 1945,
       "coord": [
@@ -6532,6 +6749,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chinese forces accept the preliminary surrender of Japanese troops in China at Zhijiang"
     },
     {
+      "id": "tang:677",
       "dynastyKey": "tang",
       "year": 677,
       "coord": [
@@ -6544,6 +6762,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sixth Patriarch Huineng teaches Chan Buddhism for 37 years at Baolin Temple in Shaoguan"
     },
     {
+      "id": "tang:716b",
       "dynastyKey": "tang",
       "year": 716,
       "coord": [
@@ -6556,6 +6775,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chancellor Zhang Jiuling of Qujiang (Shaoguan) cuts the Meiguan Pass road over Dayu Ridge"
     },
     {
+      "id": "beisong:1118",
       "dynastyKey": "beisong",
       "year": 1118,
       "coord": [
@@ -6568,6 +6788,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Huizong elevates his former fief Duan Zhou to Zhaoqing Prefecture and inscribes its name"
     },
     {
+      "id": "ming:1583",
       "dynastyKey": "ming",
       "year": 1583,
       "coord": [
@@ -6580,6 +6801,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jesuit Matteo Ricci settles at Zhaoqing and produces the first Chinese world map"
     },
     {
+      "id": "qing:1646",
       "dynastyKey": "qing",
       "year": 1646,
       "coord": [
@@ -6592,6 +6814,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhu Youlang, Prince of Gui, is proclaimed the Yongli Emperor at Zhaoqing to resist the Qing"
     },
     {
+      "id": "beisong:1023b",
       "dynastyKey": "beisong",
       "year": 1023,
       "coord": [
@@ -6604,6 +6827,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Former Song Chancellor Kou Zhun dies in exile at Lei Zhou (Zhanjiang), honored by a local shrine"
     },
     {
+      "id": "sui:589b",
       "dynastyKey": "sui",
       "year": 589,
       "coord": [
@@ -6616,6 +6840,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Lady Xian of Gaoliang (Maoming) leads Lingnan into peaceful reunification under the Sui"
     },
     {
+      "id": "xihan:-106b",
       "dynastyKey": "xihan",
       "year": -106,
       "coord": [
@@ -6628,6 +6853,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu places the Jiaozhi Inspector at Guangxin (Wuzhou), dividing Guangdong and Guangxi"
     },
     {
+      "id": "ming:1470",
       "dynastyKey": "ming",
       "year": 1470,
       "coord": [
@@ -6640,6 +6866,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Ming court establishes the Viceroy of Liangguang at Wuzhou to govern Guangdong and Guangxi"
     },
     {
+      "id": "xihan:-111d",
       "dynastyKey": "xihan",
       "year": -111,
       "coord": [
@@ -6652,6 +6879,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu establishes Hepu Commandery (Beihai), a primary port of the Han Maritime Silk Road"
     },
     {
+      "id": "donghan:103",
       "dynastyKey": "donghan",
       "year": 103,
       "coord": [
@@ -6664,6 +6892,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Grand Administrator Meng Chang reforms pearl-harvesting in Hepu, restoring the pearl beds"
     },
     {
+      "id": "tang:748b",
       "dynastyKey": "tang",
       "year": 748,
       "coord": [
@@ -6676,6 +6905,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Blown off course by a typhoon, Monk Jianzhen lands at Zhen Zhou (Sanya) and teaches for a year"
     },
     {
+      "id": "yuan:1295",
       "dynastyKey": "yuan",
       "year": 1295,
       "coord": [
@@ -6688,6 +6918,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After learning Li textile skills in Ya Zhou (Sanya), Huang Daopo revolutionizes cotton weaving"
     },
     {
+      "id": "donghan:32",
       "dynastyKey": "donghan",
       "year": 32,
       "coord": [
@@ -6700,6 +6931,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Guangwu marches to Gaoping (Pingliang), joining Dou Rong's forces against Wei Xiao"
     },
     {
+      "id": "tang:787",
       "dynastyKey": "tang",
       "year": 787,
       "coord": [
@@ -6712,6 +6944,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tibetan forces ambush Tang envoy Hun Jian during treaty talks in the Ambush of Pingliang"
     },
     {
+      "id": "zhanguo:-272",
       "dynastyKey": "zhanguo",
       "year": -272,
       "coord": [
@@ -6724,6 +6957,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Queen Dowager Xuan of Qin eliminates Yiqu, establishing Beidi Commandery at Qingyang"
     },
     {
+      "id": "beisong:1041",
       "dynastyKey": "beisong",
       "year": 1041,
       "coord": [
@@ -6736,6 +6970,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fan Zhongyan governs Qing Zhou (Qingyang) and builds Dashun Fortress against Western Xia"
     },
     {
+      "id": "donghan:69",
       "dynastyKey": "donghan",
       "year": 69,
       "coord": [
@@ -6748,6 +6983,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Liumao of Ailao submits to Eastern Han, which establishes Yongchang Commandery at Baoshan"
     },
     {
+      "id": "ming:1382",
       "dynastyKey": "ming",
       "year": 1382,
       "coord": [
@@ -6760,6 +6996,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Ming court establishes Lin'an Prefecture at Jianshui (Honghe) and builds its brick walls"
     },
     {
+      "id": "tang:779",
       "dynastyKey": "tang",
       "year": 779,
       "coord": [
@@ -6772,6 +7009,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tibetan Emperor Trisong Detsen completes Samye Monastery in Shannan, Tibet's first monastery"
     },
     {
+      "id": "yuan:1354",
       "dynastyKey": "yuan",
       "year": 1354,
       "coord": [
@@ -6784,6 +7022,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Jangchub Gyaltsen unifies Central Tibet from Nedong in Shannan, founding the Phagmodrupa rule"
     },
     {
+      "id": "tang:644",
       "dynastyKey": "tang",
       "year": 644,
       "coord": [
@@ -6796,6 +7035,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tibetan Emperor Songtsen Gampo conquers Zhangzhung, incorporating Ngari into the Tibetan Empire"
     },
     {
+      "id": "beisong:1042",
       "dynastyKey": "beisong",
       "year": 1042,
       "coord": [
@@ -6808,6 +7048,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Guge court welcomes Indian master Atisha to Tholing Monastery in Ngari to translate sutras"
     },
     {
+      "id": "qing:1876",
       "dynastyKey": "qing",
       "year": 1876,
       "coord": [
@@ -6820,6 +7061,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Hongzhang signs the Chefoo Convention at Yantai, opening four more treaty ports"
     },
     {
+      "id": "roc:1929",
       "dynastyKey": "roc",
       "year": 1929,
       "coord": [
@@ -6832,6 +7074,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gutian Conference in Longyan establishes the foundational principle of political army building"
     },
     {
+      "id": "donghan:166",
       "dynastyKey": "donghan",
       "year": 166,
       "coord": [
@@ -6844,6 +7087,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Envoys of Rome's Marcus Aurelius reach Han via Rinan with ivory and rhino horn"
     },
     {
+      "id": "donghan:207b",
       "dynastyKey": "donghan",
       "year": 207,
       "coord": [
@@ -6856,6 +7100,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Cao marches through Lulong Pass; Zhang Liao slays Tadun at White Wolf Mountain"
     },
     {
+      "id": "nanbei:460",
       "dynastyKey": "nanbei",
       "year": 460,
       "coord": [
@@ -6868,6 +7113,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Monk Tanyao begins carving the Yungang Grottoes west of the Northern Wei capital Pingcheng"
     },
     {
+      "id": "nanbei:523",
       "dynastyKey": "nanbei",
       "year": 523,
       "coord": [
@@ -6880,6 +7126,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wuchuan men Yuwen Tai, Dugu Xin, Yang Zhong and Li Hu rise, seeding the Guanlong elite"
     },
     {
+      "id": "nanbei:546",
       "dynastyKey": "nanbei",
       "year": 546,
       "coord": [
@@ -6892,6 +7139,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wei Xiaokuan holds Yubi for fifty days; Gao Huan's Eastern Wei siege fails and he falls ill"
     },
     {
+      "id": "yuan:1281",
       "dynastyKey": "yuan",
       "year": 1281,
       "coord": [
@@ -6904,6 +7152,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Guo Shoujing's empire-wide survey and Gaocheng Observatory yield the Shoushi Calendar"
     },
     {
+      "id": "yuan:1346",
       "dynastyKey": "yuan",
       "year": 1346,
       "coord": [
@@ -6916,6 +7165,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Moroccan traveler Ibn Battuta reaches Zayton and hails it as one of the greatest ports on earth"
     },
     {
+      "id": "yuan:1352",
       "dynastyKey": "yuan",
       "year": 1352,
       "coord": [
@@ -6928,6 +7178,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhu Yuanzhang leaves Huangjue Temple to join Guo Zixing's Red Turbans at Haozhou"
     },
     {
+      "id": "qing:1776",
       "dynastyKey": "qing",
       "year": 1776,
       "coord": [
@@ -6940,6 +7191,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qianlong Emperor's general Agui subdues Greater and Lesser Jinchuan, replacing native chieftains"
     },
     {
+      "id": "qing:1793",
       "dynastyKey": "qing",
       "year": 1793,
       "coord": [
@@ -6952,6 +7204,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Lord Macartney meets Qianlong at the Chengde Mountain Resort; British trade requests are refused"
     },
     {
+      "id": "qing:1842c",
       "dynastyKey": "qing",
       "year": 1842,
       "coord": [
@@ -6964,6 +7217,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Under the Treaty of Nanjing, Hong Kong Island is ceded and Victoria City is founded"
     },
     {
+      "id": "qing:1884",
       "dynastyKey": "qing",
       "year": 1884,
       "coord": [
@@ -6976,6 +7230,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Fuzhou: French warships ambush Mawei, sinking the Fujian Fleet and shelling the yard"
     },
     {
+      "id": "qing:1895",
       "dynastyKey": "qing",
       "year": 1895,
       "coord": [
@@ -6989,6 +7244,7 @@ window.ATLAS_LORE_DATA = {
       "month": 2
     },
     {
+      "id": "zhanguo:-359",
       "dynastyKey": "zhanguo",
       "year": -359,
       "coord": [
@@ -7001,6 +7257,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shang Yang enters Qin at Yueyang and establishes public trust with the South Gate pole decree"
     },
     {
+      "id": "zhanguo:-340",
       "dynastyKey": "zhanguo",
       "year": -340,
       "coord": [
@@ -7013,6 +7270,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shang Yang defeats Wei forces west of the Yellow River and is enfeoffed as Lord of Shang"
     },
     {
+      "id": "zhanguo:-338",
       "dynastyKey": "zhanguo",
       "year": -338,
       "coord": [
@@ -7025,6 +7283,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shang Yang falls after Duke Xiao dies, yet his legalist institutions endure in Qin"
     },
     {
+      "id": "zhanguo:-357",
       "dynastyKey": "zhanguo",
       "year": -357,
       "coord": [
@@ -7037,6 +7296,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Bin arrives in Linzi and becomes chief strategist to King Wei of Qi"
     },
     {
+      "id": "zhanguo:-313",
       "dynastyKey": "zhanguo",
       "year": -313,
       "coord": [
@@ -7049,6 +7309,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qu Yuan drafts reforms at Ying and composes Li Sao after being sidelined at court"
     },
     {
+      "id": "zhanguo:-299",
       "dynastyKey": "zhanguo",
       "year": -299,
       "coord": [
@@ -7061,6 +7322,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Despite Qu Yuan warning against it, King Huai of Chu enters Wu Pass and is detained by Qin"
     },
     {
+      "id": "zhanguo:-285",
       "dynastyKey": "zhanguo",
       "year": -285,
       "coord": [
@@ -7073,6 +7335,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Exiled south of the Yangtze, Qu Yuan wanders along the Yuan and Xiang rivers composing Nine Songs"
     },
     {
+      "id": "zhanguo:-293",
       "dynastyKey": "zhanguo",
       "year": -293,
       "coord": [
@@ -7085,6 +7348,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Yique: Qin general Bai Qi annihilates 240,000 Han-Wei coalition troops"
     },
     {
+      "id": "zhanguo:-273",
       "dynastyKey": "zhanguo",
       "year": -273,
       "coord": [
@@ -7097,6 +7361,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Huayang: Bai Qi routs Zhao-Wei forces on a forced march"
     },
     {
+      "id": "zhanguo:-257",
       "dynastyKey": "zhanguo",
       "year": -257,
       "coord": [
@@ -7109,6 +7374,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Bai Qi refuses to command the siege of Handan and is ordered to take his own life at Duyou"
     },
     {
+      "id": "zhanguo:-244",
       "dynastyKey": "zhanguo",
       "year": -244,
       "coord": [
@@ -7121,6 +7387,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhao general Li Mu lures Xiongnu raiders deep past Yanmen Pass and crushes 100,000 horsemen"
     },
     {
+      "id": "zhanguo:-233",
       "dynastyKey": "zhanguo",
       "year": -233,
       "coord": [
@@ -7133,6 +7400,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Fei: Li Mu routs Qin general Huan Yi and is enfeoffed as Lord Wu'an"
     },
     {
+      "id": "zhanguo:-229",
       "dynastyKey": "zhanguo",
       "year": -229,
       "coord": [
@@ -7150,6 +7418,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "zhanguo:-259",
       "dynastyKey": "zhanguo",
       "year": -259,
       "coord": [
@@ -7162,6 +7431,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ying Zheng (future Qin Shi Huang) is born in Handan as son of a Qin royal hostage"
     },
     {
+      "id": "qin:-214",
       "dynastyKey": "qin",
       "year": -214,
       "coord": [
@@ -7174,6 +7444,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin Shi Huang orders the Lingqu Canal dug to link the Xiang and Li rivers and conquer Lingnan"
     },
     {
+      "id": "qin:-210b",
       "dynastyKey": "qin",
       "year": -210,
       "coord": [
@@ -7191,6 +7462,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-209b",
       "dynastyKey": "qin",
       "year": -209,
       "coord": [
@@ -7203,6 +7475,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xiang Liang and Xiang Yu raise 8,000 Jiangdong warriors in Suzhou against the Qin Empire"
     },
     {
+      "id": "qin:-207b",
       "dynastyKey": "qin",
       "year": -207,
       "coord": [
@@ -7215,6 +7488,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Julu: Xiang Yu smashes his cooking pots and crushes the main Qin army in nine battles"
     },
     {
+      "id": "qin:-206c",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -7233,6 +7507,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-205",
       "dynastyKey": "qin",
       "year": -205,
       "coord": [
@@ -7251,6 +7526,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-203",
       "dynastyKey": "qin",
       "year": -203,
       "coord": [
@@ -7263,6 +7539,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xiang Yu and Liu Bang divide the realm along the Hong Canal before Han launches the final push"
     },
     {
+      "id": "xihan:-202",
       "dynastyKey": "xihan",
       "year": -202,
       "coord": [
@@ -7283,6 +7560,7 @@ window.ATLAS_LORE_DATA = {
       "month": 1.5
     },
     {
+      "id": "qin:-209c",
       "dynastyKey": "qin",
       "year": -209,
       "coord": [
@@ -7295,6 +7573,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Pavilion chief Liu Bang rises in rebellion at Peixian backed by Xiao He, Cao Shen, and Fan Kuai"
     },
     {
+      "id": "qin:-206d",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -7314,6 +7593,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-206e",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -7327,6 +7607,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "qin:-205b",
       "dynastyKey": "qin",
       "year": -205,
       "coord": [
@@ -7339,6 +7620,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Han Xin crosses the Yellow River using wooden jars to outflank and capture King Bao of Wei"
     },
     {
+      "id": "qin:-204b",
       "dynastyKey": "qin",
       "year": -204,
       "coord": [
@@ -7351,6 +7633,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of the Wei River: Han Xin dams the river with sandbags to defeat Chu general Long Ju"
     },
     {
+      "id": "xihan:-196",
       "dynastyKey": "xihan",
       "year": -196,
       "coord": [
@@ -7368,6 +7651,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-195b",
       "dynastyKey": "xihan",
       "year": -195,
       "coord": [
@@ -7381,6 +7665,7 @@ window.ATLAS_LORE_DATA = {
       "month": 10
     },
     {
+      "id": "qin:-218",
       "dynastyKey": "qin",
       "year": -218,
       "coord": [
@@ -7393,6 +7678,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhang Liang ambushes Qin Shi Huang’s convoy at Bolangsha and flees into hiding at Xiapi"
     },
     {
+      "id": "xihan:-158",
       "dynastyKey": "xihan",
       "year": -158,
       "coord": [
@@ -7405,6 +7691,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wen inspects Xiliu Camp at a walk, praising strict commander Zhou Yafu as a true general"
     },
     {
+      "id": "xihan:-127",
       "dynastyKey": "xihan",
       "year": -127,
       "coord": [
@@ -7421,6 +7708,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-124",
       "dynastyKey": "xihan",
       "year": -124,
       "coord": [
@@ -7433,6 +7721,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wei Qing launches a night raid routing the Right Tuqi King and becomes General-in-Chief"
     },
     {
+      "id": "xihan:-123",
       "dynastyKey": "xihan",
       "year": -123,
       "coord": [
@@ -7445,6 +7734,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Eighteen-year-old Huo Qubing leads 800 light cavalry deep into Xiongnu lines as Marquis Guanjun"
     },
     {
+      "id": "xihan:-121",
       "dynastyKey": "xihan",
       "year": -121,
       "coord": [
@@ -7457,6 +7747,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Hexi Campaign: Huo Qubing sweeps past Mt. Yanzhi and opens the Hexi Corridor to the West"
     },
     {
+      "id": "xihan:-119",
       "dynastyKey": "xihan",
       "year": -119,
       "coord": [
@@ -7474,6 +7765,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-89",
       "dynastyKey": "xihan",
       "year": -89,
       "coord": [
@@ -7486,6 +7778,7 @@ window.ATLAS_LORE_DATA = {
       "en": "In his late reign Emperor Wu issues the Luntai Edict of Self-Reproach, pivoting toward peace"
     },
     {
+      "id": "xihan:-126",
       "dynastyKey": "xihan",
       "year": -126,
       "coord": [
@@ -7498,6 +7791,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Twenty-year-old Sima Qian travels across Jianghuai, Kuaiji, and Xiang gathering historical lore"
     },
     {
+      "id": "xihan:-91b",
       "dynastyKey": "xihan",
       "year": -91,
       "coord": [
@@ -7514,6 +7808,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-221b",
       "dynastyKey": "qin",
       "year": -221,
       "coord": [
@@ -7526,6 +7821,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin general Wang Ben marches south from Yan into Linzi; King Jian of Qi surrenders, ending Six Kingdoms"
     },
     {
+      "id": "xihan:23",
       "dynastyKey": "xihan",
       "year": 23,
       "coord": [
@@ -7538,6 +7834,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Kunyang: Liu Xiu leads 3,000 shock troops to rout Wang Mang's 420,000-man army"
     },
     {
+      "id": "xihan:24",
       "dynastyKey": "xihan",
       "year": 24,
       "coord": [
@@ -7550,6 +7847,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Xiu captures Handan and absorbs northern peasant armies, securing Hebei as his base"
     },
     {
+      "id": "donghan:73b",
       "dynastyKey": "donghan",
       "year": 73,
       "coord": [
@@ -7563,6 +7861,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "donghan:94",
       "dynastyKey": "donghan",
       "year": 94,
       "coord": [
@@ -7575,6 +7874,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Protector-General Ban Chao subdues Yanqi as fifty Western Regions states submit to Eastern Han"
     },
     {
+      "id": "donghan:102",
       "dynastyKey": "donghan",
       "year": 102,
       "coord": [
@@ -7587,6 +7887,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged seventy, Ban Chao petitions to return alive through Yumen Pass and dies back in Luoyang"
     },
     {
+      "id": "donghan:192",
       "dynastyKey": "donghan",
       "year": 192,
       "coord": [
@@ -7599,6 +7900,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Cao takes Yanzhou and integrates Yellow Turban veterans into his elite Qingzhou Army"
     },
     {
+      "id": "donghan:196",
       "dynastyKey": "donghan",
       "year": 196,
       "coord": [
@@ -7617,6 +7919,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "donghan:198",
       "dynastyKey": "donghan",
       "year": 198,
       "coord": [
@@ -7636,6 +7939,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:207c",
       "dynastyKey": "donghan",
       "year": 207,
       "coord": [
@@ -7648,6 +7952,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Marching home along the Bohai coast, Cao Cao ascends Mount Jieshi and writes Gazing on the Sea"
     },
     {
+      "id": "donghan:220",
       "dynastyKey": "donghan",
       "year": 220,
       "coord": [
@@ -7660,6 +7965,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Cao dies in Luoyang ordering a simple burial; that winter his son Cao Pi founds Cao Wei"
     },
     {
+      "id": "donghan:184",
       "dynastyKey": "donghan",
       "year": 184,
       "coord": [
@@ -7677,6 +7983,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:208c",
       "dynastyKey": "donghan",
       "year": 208,
       "coord": [
@@ -7698,6 +8005,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:214b",
       "dynastyKey": "donghan",
       "year": 214,
       "coord": [
@@ -7716,6 +8024,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:219d",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -7736,6 +8045,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "donghan:200",
       "dynastyKey": "donghan",
       "year": 200,
       "coord": [
@@ -7754,6 +8064,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "donghan:200b",
       "dynastyKey": "donghan",
       "year": 200,
       "coord": [
@@ -7766,6 +8077,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged nineteen, Sun Quan succeeds his brother Sun Ce and consolidates rule over Jiangdong"
     },
     {
+      "id": "donghan:209",
       "dynastyKey": "donghan",
       "year": 209,
       "coord": [
@@ -7778,6 +8090,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhou Yu captures strategic Jiangling after a year-long siege and serves as Governor of Nanjun"
     },
     {
+      "id": "donghan:217",
       "dynastyKey": "donghan",
       "year": 217,
       "coord": [
@@ -7790,6 +8103,7 @@ window.ATLAS_LORE_DATA = {
       "en": "At Ruxukou Sun Quan sails boldly past Wei lines; Cao Cao sighs that sons should be like Sun"
     },
     {
+      "id": "sanguo:228c",
       "dynastyKey": "sanguo",
       "year": 228,
       "coord": [
@@ -7802,6 +8116,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Shiting: Eastern Wu commander Lu Xun lures Wei general Cao Xiu deep and routs him"
     },
     {
+      "id": "sanguo:238",
       "dynastyKey": "sanguo",
       "year": 238,
       "coord": [
@@ -7814,6 +8129,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Yi leads a rapid campaign to conquer Liaodong and crush warlord Gongsun Yuan at Xiangping"
     },
     {
+      "id": "sanguo:249",
       "dynastyKey": "sanguo",
       "year": 249,
       "coord": [
@@ -7826,6 +8142,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gaoping Tombs Coup: Sima Yi seizes Luoyang arsenals while regent Cao Shuang is outside the city"
     },
     {
+      "id": "dongjin:353",
       "dynastyKey": "dongjin",
       "year": 353,
       "coord": [
@@ -7842,6 +8159,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:360",
       "dynastyKey": "dongjin",
       "year": 360,
       "coord": [
@@ -7854,6 +8172,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xie An emerges from forty years of seclusion at Mt. Dongshan to steady the Eastern Jin court"
     },
     {
+      "id": "dongjin:383",
       "dynastyKey": "dongjin",
       "year": 383,
       "coord": [
@@ -7871,6 +8190,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:405",
       "dynastyKey": "dongjin",
       "year": 405,
       "coord": [
@@ -7883,6 +8203,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Refusing to bow for five pecks of grain, Tao Yuanming resigns at Pengze for quiet farm life"
     },
     {
+      "id": "nanbei:421",
       "dynastyKey": "nanbei",
       "year": 421,
       "coord": [
@@ -7895,6 +8216,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Living in seclusion at Xunyang after Jin falls, Tao Yuanming writes Peach Blossom Spring"
     },
     {
+      "id": "dongjin:410",
       "dynastyKey": "dongjin",
       "year": 410,
       "coord": [
@@ -7907,6 +8229,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Yu leads an Eastern Jin northern expedition that storms Guanggu and destroys Southern Yan"
     },
     {
+      "id": "dongjin:417",
       "dynastyKey": "dongjin",
       "year": 417,
       "coord": [
@@ -7919,6 +8242,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Yu retakes Luoyang and Chang'an, destroying Later Qin in the grandest southern expedition"
     },
     {
+      "id": "nanbei:485",
       "dynastyKey": "nanbei",
       "year": 485,
       "coord": [
@@ -7931,6 +8255,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xiaowen of Northern Wei promulgates the Equal-Field land system at Pingcheng"
     },
     {
+      "id": "nanbei:495",
       "dynastyKey": "nanbei",
       "year": 495,
       "coord": [
@@ -7943,6 +8268,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xiaowen initiates carving the monumental Longmen Grottoes at Yique south of Luoyang"
     },
     {
+      "id": "sui:618",
       "dynastyKey": "sui",
       "year": 618,
       "coord": [
@@ -7955,6 +8281,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Amid nationwide rebellions, mutinous guards under Yuwen Huaji strangle Emperor Yang in Jiangdu"
     },
     {
+      "id": "sui:617",
       "dynastyKey": "sui",
       "year": 617,
       "coord": [
@@ -7967,6 +8294,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Shimin persuades his father Li Yuan to rise in Taiyuan and march west to capture Chang'an"
     },
     {
+      "id": "tang:618b",
       "dynastyKey": "tang",
       "year": 618,
       "coord": [
@@ -7979,6 +8307,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Qianshuiyuan: Li Shimin destroys Xue Rengao's Western Qin army to secure Longyou"
     },
     {
+      "id": "tang:635",
       "dynastyKey": "tang",
       "year": 635,
       "coord": [
@@ -7991,6 +8320,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sixty-four-year-old Marshal Li Jing leads a Tang expedition past Lake Qinghai to subdue Tuyuhun"
     },
     {
+      "id": "tang:684",
       "dynastyKey": "tang",
       "year": 684,
       "coord": [
@@ -8003,6 +8333,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xu Jingye rebels in Yangzhou with Luo Binwang’s manifesto; Empress Wu praises its literary force"
     },
     {
+      "id": "tang:705",
       "dynastyKey": "tang",
       "year": 705,
       "coord": [
@@ -8015,6 +8346,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Shenlong Coup: Zhang Jianzhi restores the Tang house in Luoyang shortly before Empress Wu dies"
     },
     {
+      "id": "tang:710",
       "dynastyKey": "tang",
       "year": 710,
       "coord": [
@@ -8027,6 +8359,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prince Li Longji leads palace guards to overthrow Empress Wei in Chang'an, stabilizing Tang"
     },
     {
+      "id": "tang:725",
       "dynastyKey": "tang",
       "year": 725,
       "coord": [
@@ -8039,6 +8372,7 @@ window.ATLAS_LORE_DATA = {
       "en": "At the height of Kaiyuan prosperity, Emperor Xuanzong performs Feng-Shan rites atop Mount Tai"
     },
     {
+      "id": "tang:756f",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -8052,6 +8386,7 @@ window.ATLAS_LORE_DATA = {
       "month": 6.5
     },
     {
+      "id": "tang:737",
       "dynastyKey": "tang",
       "year": 737,
       "coord": [
@@ -8064,6 +8399,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Envoy Wang Wei crosses the Juyan desert frontier, writing A solitary plume rises over desert"
     },
     {
+      "id": "tang:750",
       "dynastyKey": "tang",
       "year": 750,
       "coord": [
@@ -8076,6 +8412,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Wei retreats to his Wangchuan mountain estate near Lantian, composing the Wangchuan River poems"
     },
     {
+      "id": "tang:756g",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -8091,6 +8428,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:736",
       "dynastyKey": "tang",
       "year": 736,
       "coord": [
@@ -8103,6 +8441,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young Du Fu travels Shandong and composes Gazing on Mount Tai, vowing to scale its highest peak"
     },
     {
+      "id": "tang:744",
       "dynastyKey": "tang",
       "year": 744,
       "coord": [
@@ -8120,6 +8459,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "tang:755c",
       "dynastyKey": "tang",
       "year": 755,
       "coord": [
@@ -8132,6 +8472,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After ten poor years in Chang'an, Du Fu journeys to Fengxian and laments pre-rebellion inequality"
     },
     {
+      "id": "tang:760",
       "dynastyKey": "tang",
       "year": 760,
       "coord": [
@@ -8149,6 +8490,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "tang:738",
       "dynastyKey": "tang",
       "year": 738,
       "coord": [
@@ -8164,6 +8506,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:752",
       "dynastyKey": "tang",
       "year": 752,
       "coord": [
@@ -8181,6 +8524,7 @@ window.ATLAS_LORE_DATA = {
       "month": 9
     },
     {
+      "id": "tang:757b",
       "dynastyKey": "tang",
       "year": 757,
       "coord": [
@@ -8197,6 +8541,7 @@ window.ATLAS_LORE_DATA = {
       "month": 2
     },
     {
+      "id": "tang:767",
       "dynastyKey": "tang",
       "year": 767,
       "coord": [
@@ -8209,6 +8554,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Living at Kuizhou above the Three Gorges, aging Du Fu composes his autumn masterpiece Climbing High"
     },
     {
+      "id": "tang:770",
       "dynastyKey": "tang",
       "year": 770,
       "coord": [
@@ -8221,6 +8567,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sailing past Yueyang Tower out of the gorges, Du Fu spends his final days drifting on the Xiang River"
     },
     {
+      "id": "tang:756h",
       "dynastyKey": "tang",
       "year": 756,
       "coord": [
@@ -8234,6 +8581,7 @@ window.ATLAS_LORE_DATA = {
       "month": 7
     },
     {
+      "id": "tang:757c",
       "dynastyKey": "tang",
       "year": 757,
       "coord": [
@@ -8252,6 +8600,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:765",
       "dynastyKey": "tang",
       "year": 765,
       "coord": [
@@ -8264,6 +8613,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged nearly seventy, Guo Ziyi rides unarmored alone into the Uyghur camp at Jingyang to win peace"
     },
     {
+      "id": "tang:755d",
       "dynastyKey": "tang",
       "year": 755,
       "coord": [
@@ -8276,6 +8626,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prefect Yan Zhenqing raises the loyalist banner at Pingyuan, rallying seventeen Hebei commanderies"
     },
     {
+      "id": "tang:758",
       "dynastyKey": "tang",
       "year": 758,
       "coord": [
@@ -8288,6 +8639,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Mourning his martyred nephew, Yan Zhenqing brushes the immortal Draft of a Requiem to My Nephew"
     },
     {
+      "id": "tang:785",
       "dynastyKey": "tang",
       "year": 785,
       "coord": [
@@ -8300,6 +8652,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Seventy-seven-year-old elder statesman Yan Zhenqing defies warlord Li Xilie at Caizhou unto death"
     },
     {
+      "id": "tang:817",
       "dynastyKey": "tang",
       "year": 817,
       "coord": [
@@ -8312,6 +8665,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Serving under Pei Du, Han Yu witnesses the snow-night capture of Caizhou and writes its stele"
     },
     {
+      "id": "tang:806",
       "dynastyKey": "tang",
       "year": 806,
       "coord": [
@@ -8324,6 +8678,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young magistrate Bai Juyi composes the narrative poem Song of Everlasting Regret west of Chang’an"
     },
     {
+      "id": "tang:816",
       "dynastyKey": "tang",
       "year": 816,
       "coord": [
@@ -8336,6 +8691,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Exiled to Jiangzhou on the Yangtze, Bai Juyi hears a former capital lute player and writes Pipa Song"
     },
     {
+      "id": "tang:822",
       "dynastyKey": "tang",
       "year": 822,
       "coord": [
@@ -8348,6 +8704,7 @@ window.ATLAS_LORE_DATA = {
       "en": "As Prefect of Hangzhou, Bai Juyi dredges West Lake and builds causeways irrigating vast farmland"
     },
     {
+      "id": "tang:832",
       "dynastyKey": "tang",
       "year": 832,
       "coord": [
@@ -8360,6 +8717,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Retiring in Luoyang, Bai Juyi takes the name Layman of Xiangshan by Longmen Fragrant Mountain"
     },
     {
+      "id": "tang:805",
       "dynastyKey": "tang",
       "year": 805,
       "coord": [
@@ -8372,6 +8730,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After the Yongzhen Reform fails, Liu Zongyuan spends ten years in Yongzhou writing Eight Records"
     },
     {
+      "id": "tang:815b",
       "dynastyKey": "tang",
       "year": 815,
       "coord": [
@@ -8384,6 +8743,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Appointed Prefect of Liuzhou, Liu Zongyuan frees debt slaves, digs wells, and plants orchards"
     },
     {
+      "id": "tang:805b",
       "dynastyKey": "tang",
       "year": 805,
       "coord": [
@@ -8396,6 +8756,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Exiled for ten years to Langzhou, poet Liu Yuxi adapts folk songs into Bamboo Branch Lyrics"
     },
     {
+      "id": "tang:824",
       "dynastyKey": "tang",
       "year": 824,
       "coord": [
@@ -8408,6 +8769,7 @@ window.ATLAS_LORE_DATA = {
       "en": "As Prefect of Hezhou, Liu Yuxi writes Inscription on My Humble Room celebrating inner virtue"
     },
     {
+      "id": "tang:826",
       "dynastyKey": "tang",
       "year": 826,
       "coord": [
@@ -8424,6 +8786,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "wudai:954",
       "dynastyKey": "wudai",
       "year": 954,
       "coord": [
@@ -8440,6 +8803,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:975",
       "dynastyKey": "beisong",
       "year": 975,
       "coord": [
@@ -8456,6 +8820,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1040",
       "dynastyKey": "beisong",
       "year": 1040,
       "coord": [
@@ -8468,6 +8833,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Guarding frontier Yan'an against Western Xia, Fan Zhongyan fortifies forts and writes autumn ci"
     },
     {
+      "id": "beisong:1043",
       "dynastyKey": "beisong",
       "year": 1043,
       "coord": [
@@ -8485,6 +8851,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1046",
       "dynastyKey": "beisong",
       "year": 1046,
       "coord": [
@@ -8497,6 +8864,7 @@ window.ATLAS_LORE_DATA = {
       "en": "In Dengzhou, Fan Zhongyan writes Memorial to Yueyang Tower: “Worry before the world worries”"
     },
     {
+      "id": "beisong:1046b",
       "dynastyKey": "beisong",
       "year": 1046,
       "coord": [
@@ -8509,6 +8877,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prefect Ouyang Xiu governs Chuzhou lightly and writes Pavilion of the Old Drunkard on Mt. Langya"
     },
     {
+      "id": "beisong:1057",
       "dynastyKey": "beisong",
       "year": 1057,
       "coord": [
@@ -8526,6 +8895,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1047",
       "dynastyKey": "beisong",
       "year": 1047,
       "coord": [
@@ -8538,6 +8908,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young magistrate Wang Anshi dredges lakes and pioneers low-interest grain loans in Ningbo"
     },
     {
+      "id": "beisong:1076b",
       "dynastyKey": "beisong",
       "year": 1076,
       "coord": [
@@ -8550,6 +8921,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Retiring twice from office to Banshan Garden in Nanjing, Wang Anshi roams Bell Mountain writing verse"
     },
     {
+      "id": "beisong:1073",
       "dynastyKey": "beisong",
       "year": 1073,
       "coord": [
@@ -8562,6 +8934,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Retiring to his Garden of Solitary Joy in Luoyang, Sima Guang leads the compilation of Zizhi Tongjian"
     },
     {
+      "id": "beisong:1121b",
       "dynastyKey": "beisong",
       "year": 1121,
       "coord": [
@@ -8574,6 +8947,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Poet Li Qingzhao and husband Zhao Mingcheng spend ten peaceful years in Qingzhou cataloguing bronzes"
     },
     {
+      "id": "nansong:1128",
       "dynastyKey": "nansong",
       "year": 1128,
       "coord": [
@@ -8586,6 +8960,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Crossing south past Wujiang, Li Qingzhao writes “In life be a hero,” chiding the fleeing court"
     },
     {
+      "id": "nansong:1134b",
       "dynastyKey": "nansong",
       "year": 1134,
       "coord": [
@@ -8598,6 +8973,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Refugeeing in Jinhua, widowed Li Qingzhao climbs Bayong Tower lamenting lost northern rivers"
     },
     {
+      "id": "nansong:1130b",
       "dynastyKey": "nansong",
       "year": 1130,
       "coord": [
@@ -8614,6 +8990,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1134c",
       "dynastyKey": "nansong",
       "year": 1134,
       "coord": [
@@ -8627,6 +9004,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "nansong:1162",
       "dynastyKey": "nansong",
       "year": 1162,
       "coord": [
@@ -8639,6 +9017,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged twenty-three, Xin Qiji raids a Jin camp with fifty riders and delivers the traitor to Jiankang"
     },
     {
+      "id": "nansong:1188",
       "dynastyKey": "nansong",
       "year": 1188,
       "coord": [
@@ -8651,6 +9030,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xin Qiji and Chen Liang meet for ten days at Goose Lake in Jiangxi planning northern recovery"
     },
     {
+      "id": "nansong:1205",
       "dynastyKey": "nansong",
       "year": 1205,
       "coord": [
@@ -8663,6 +9043,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sixty-six-year-old Xin Qiji gazes north from Beigu Pavilion in Zhenjiang composing Yongyule"
     },
     {
+      "id": "nansong:1172",
       "dynastyKey": "nansong",
       "year": 1172,
       "coord": [
@@ -8675,6 +9056,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Poet Lu You serves on the Hanzhong frontier against Jin before riding south through Sword Gate Pass"
     },
     {
+      "id": "nansong:1210",
       "dynastyKey": "nansong",
       "year": 1210,
       "coord": [
@@ -8687,6 +9069,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Dying at eighty-six in Shaoxing, patriot poet Lu You leaves his final testament poem To My Sons"
     },
     {
+      "id": "nansong:1275",
       "dynastyKey": "nansong",
       "year": 1275,
       "coord": [
@@ -8699,6 +9082,7 @@ window.ATLAS_LORE_DATA = {
       "en": "As Yuan armies cross the Yangtze, prefect Wen Tianxiang sells his estate in Ganzhou to raise troops"
     },
     {
+      "id": "nansong:1279",
       "dynastyKey": "nansong",
       "year": 1279,
       "coord": [
@@ -8711,6 +9095,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Captive crossing Lingdingyang Sea, Wen Tianxiang writes Let my loyal heart shine in history"
     },
     {
+      "id": "yuan:1283",
       "dynastyKey": "yuan",
       "year": 1283,
       "coord": [
@@ -8723,6 +9108,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wen Tianxiang composes Song of Righteousness in prison and goes to his death calmly at Dadu Execution Ground"
     },
     {
+      "id": "nansong:1206",
       "dynastyKey": "nansong",
       "year": 1206,
       "coord": [
@@ -8735,6 +9121,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Temujin unites the Mongol tribes at an Onon River kurultai and takes the title Genghis Khan"
     },
     {
+      "id": "nansong:1211",
       "dynastyKey": "nansong",
       "year": 1211,
       "coord": [
@@ -8747,6 +9134,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Yehuling: Genghis Khan smashes a 400,000-man Jin army north of Zhangjiakou Pass"
     },
     {
+      "id": "nansong:1227",
       "dynastyKey": "nansong",
       "year": 1227,
       "coord": [
@@ -8759,6 +9147,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Genghis Khan dies at Mount Liupan during his final campaign crushing the Western Xia Kingdom"
     },
     {
+      "id": "nansong:1253",
       "dynastyKey": "nansong",
       "year": 1253,
       "coord": [
@@ -8771,6 +9160,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Kublai Khan crosses the Jinsha River on inflated sheepskin rafts to conquer Dali in Yunnan"
     },
     {
+      "id": "nansong:1273",
       "dynastyKey": "nansong",
       "year": 1273,
       "coord": [
@@ -8783,6 +9173,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After a six-year siege Kublai Khan uses counterweight trebuchets to breach Fancheng and Xiangyang"
     },
     {
+      "id": "yuan:1356",
       "dynastyKey": "yuan",
       "year": 1356,
       "coord": [
@@ -8795,6 +9186,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Rebel commander Zhu Yuanzhang captures Nanjing across the Yangtze and makes Yingtian his base"
     },
     {
+      "id": "yuan:1363",
       "dynastyKey": "yuan",
       "year": 1363,
       "coord": [
@@ -8807,6 +9199,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Lake Poyang: Zhu Yuanzhang uses fire ships over 36 days to defeat rival Chen Youliang"
     },
     {
+      "id": "ming:1405",
       "dynastyKey": "ming",
       "year": 1405,
       "coord": [
@@ -8823,6 +9216,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "ming:1411",
       "dynastyKey": "ming",
       "year": 1411,
       "coord": [
@@ -8835,6 +9229,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zheng He builds a maritime depot at Malacca and erects the trilingual Galle Stele in Sri Lanka"
     },
     {
+      "id": "ming:1424",
       "dynastyKey": "ming",
       "year": 1424,
       "coord": [
@@ -8847,6 +9242,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Returning from his fifth expedition across the Gobi Steppe, Yongle Emperor Zhu Di dies at Yumuchuan"
     },
     {
+      "id": "ming:1433",
       "dynastyKey": "ming",
       "year": 1433,
       "coord": [
@@ -8860,6 +9256,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "ming:1561",
       "dynastyKey": "ming",
       "year": 1561,
       "coord": [
@@ -8872,6 +9269,7 @@ window.ATLAS_LORE_DATA = {
       "en": "General Qi Jiguang trains Yiwu miners into his Mandarin-Duck Formation army, winning nine battles"
     },
     {
+      "id": "ming:1563",
       "dynastyKey": "ming",
       "year": 1563,
       "coord": [
@@ -8884,6 +9282,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qi Jiguang and Yu Dayou storm the pirate stronghold at Putian, restoring peace to Fujian coasts"
     },
     {
+      "id": "ming:1569",
       "dynastyKey": "ming",
       "year": 1569,
       "coord": [
@@ -8896,6 +9295,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Guarding the northern frontier sixteen years, Qi Jiguang builds hollow watchtowers along the Wall"
     },
     {
+      "id": "ming:1573",
       "dynastyKey": "ming",
       "year": 1573,
       "coord": [
@@ -8908,6 +9308,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Grand Secretary Zhang Juzheng enacts strict administrative audits under the young Wanli Emperor"
     },
     {
+      "id": "ming:1581",
       "dynastyKey": "ming",
       "year": 1581,
       "coord": [
@@ -8920,6 +9321,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After a nationwide land survey, Zhang Juzheng enacts the Single Whip tax reform in silver"
     },
     {
+      "id": "qing:1659",
       "dynastyKey": "qing",
       "year": 1659,
       "coord": [
@@ -8932,6 +9334,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zheng Chenggong leads a massive fleet up the Yangtze, capturing Zhenjiang and besieging Nanjing"
     },
     {
+      "id": "qing:1669",
       "dynastyKey": "qing",
       "year": 1669,
       "coord": [
@@ -8944,6 +9347,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sixteen-year-old Kangxi Emperor Xuanye uses palace wrestlers to arrest overbearing regent Oboi"
     },
     {
+      "id": "qing:1696",
       "dynastyKey": "qing",
       "year": 1696,
       "coord": [
@@ -8956,6 +9360,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Jao Modo: Kangxi leads Qing forces across the Gobi to crush Zunghar khan Galdan"
     },
     {
+      "id": "qing:1839",
       "dynastyKey": "qing",
       "year": 1839,
       "coord": [
@@ -8968,6 +9373,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Imperial Commissioner Lin Zexu destroys over 20,000 chests of opium in lime pits at Humen Beach"
     },
     {
+      "id": "qing:1842d",
       "dynastyKey": "qing",
       "year": 1842,
       "coord": [
@@ -8980,6 +9386,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Exiled to Yili after the Opium War, Lin Zexu builds irrigation canals and warns of border threats"
     },
     {
+      "id": "qing:1854",
       "dynastyKey": "qing",
       "year": 1854,
       "coord": [
@@ -8992,6 +9399,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zeng Guofan organizes the regional Xiang Army and flotilla at Hengyang, retaking Wuchang and Hanyang"
     },
     {
+      "id": "qing:1861b",
       "dynastyKey": "qing",
       "year": 1861,
       "coord": [
@@ -9004,6 +9412,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Siege of Anqing: Zeng Guofan and Zeng Guoquan capture strategic Anqing and found an ordnance works"
     },
     {
+      "id": "qing:1866",
       "dynastyKey": "qing",
       "year": 1866,
       "coord": [
@@ -9016,6 +9425,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Viceroy Zuo Zongtang founds the Fuzhou Navy Yard and Academy at Mawei, cradle of modern Chinese sea power"
     },
     {
+      "id": "qing:1878",
       "dynastyKey": "qing",
       "year": 1878,
       "coord": [
@@ -9029,6 +9439,7 @@ window.ATLAS_LORE_DATA = {
       "month": 1
     },
     {
+      "id": "qing:1895b",
       "dynastyKey": "qing",
       "year": 1895,
       "coord": [
@@ -9041,6 +9452,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Yat-sen launches the first armed Guangzhou Uprising of the Revive China Society"
     },
     {
+      "id": "qing:1911",
       "dynastyKey": "qing",
       "year": 1911,
       "coord": [
@@ -9053,6 +9465,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wuchang Uprising: New Army engineers seize Wuchang sparking nationwide provincial secessions"
     },
     {
+      "id": "roc:1925",
       "dynastyKey": "roc",
       "year": 1925,
       "coord": [
@@ -9065,6 +9478,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Traveling north for national reunification talks, Sun Yat-sen dies in Beijing leaving his Will"
     },
     {
+      "id": "roc:1927",
       "dynastyKey": "roc",
       "year": 1927,
       "coord": [
@@ -9077,6 +9491,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Following the Autumn Harvest Uprising, Mao Zedong leads forces into the Jinggang Mountains"
     },
     {
+      "id": "roc:1935",
       "dynastyKey": "roc",
       "year": 1935,
       "coord": [
@@ -9093,6 +9508,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "roc:1938",
       "dynastyKey": "roc",
       "year": 1938,
       "coord": [
@@ -9105,6 +9521,7 @@ window.ATLAS_LORE_DATA = {
       "en": "In Yan'an cave dwellings, Mao Zedong writes On Protracted War outlining China's strategy"
     },
     {
+      "id": "roc:1948",
       "dynastyKey": "roc",
       "year": 1948,
       "coord": [
@@ -9122,6 +9539,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-145",
       "dynastyKey": "xihan",
       "year": -145,
       "coord": [
@@ -9134,6 +9552,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Qian is born at Longmen overlooking the Yellow River in Shaanxi"
     },
     {
+      "id": "xihan:-110",
       "dynastyKey": "xihan",
       "year": -110,
       "coord": [
@@ -9151,6 +9570,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:219e",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -9169,6 +9589,7 @@ window.ATLAS_LORE_DATA = {
       "month": 10
     },
     {
+      "id": "sanguo:244b",
       "dynastyKey": "sanguo",
       "year": 244,
       "coord": [
@@ -9181,6 +9602,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Appointed Chancellor of Eastern Wu in Nanjing, Lu Xun remonstrates over the succession dispute"
     },
     {
+      "id": "xijin:307b",
       "dynastyKey": "xijin",
       "year": 307,
       "coord": [
@@ -9193,6 +9615,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Migrating south with the aristocratic Wang clan of Langya, young Wang Xizhi masters calligraphy"
     },
     {
+      "id": "dongjin:355",
       "dynastyKey": "dongjin",
       "year": 355,
       "coord": [
@@ -9205,6 +9628,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Swearing at his parents’ tomb never to serve again, Wang Xizhi retires among Zhejiang hills"
     },
     {
+      "id": "dongjin:393",
       "dynastyKey": "dongjin",
       "year": 393,
       "coord": [
@@ -9217,6 +9641,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tao Yuanming farms beneath Mount Lu, writing Picking chrysanthemums by the eastern hedge"
     },
     {
+      "id": "beisong:1026",
       "dynastyKey": "beisong",
       "year": 1026,
       "coord": [
@@ -9229,6 +9654,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young Sima Guang smashes a giant water vat with a stone to save a drowning playmate in Shanxi"
     },
     {
+      "id": "beisong:1070",
       "dynastyKey": "beisong",
       "year": 1070,
       "coord": [
@@ -9245,6 +9671,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1155",
       "dynastyKey": "nansong",
       "year": 1155,
       "coord": [
@@ -9257,6 +9684,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Revisiting Shen Garden in Shaoxing, Lu You meets former wife Tang Wan and brushes Phoenix Hairpin"
     },
     {
+      "id": "nansong:1173",
       "dynastyKey": "nansong",
       "year": 1173,
       "coord": [
@@ -9269,6 +9697,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Serving across western Sichuan, Lu You embraces a bold poetic style and takes the name Fangweng"
     },
     {
+      "id": "ming:1525",
       "dynastyKey": "ming",
       "year": 1525,
       "coord": [
@@ -9281,6 +9710,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Child prodigy Zhang Juzheng passes the prefectural exam at twelve in his native Jiangling"
     },
     {
+      "id": "ming:1582",
       "dynastyKey": "ming",
       "year": 1582,
       "coord": [
@@ -9293,6 +9723,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Buried in Jiangling, Zhang Juzheng suffers posthumous impeachment as his reforms begin to unravel"
     },
     {
+      "id": "qing:1646b",
       "dynastyKey": "qing",
       "year": 1646,
       "coord": [
@@ -9305,6 +9736,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After his father submits to Qing, young Zheng Chenggong burns his scholar robes and raises a fleet"
     },
     {
+      "id": "qing:1650",
       "dynastyKey": "qing",
       "year": 1650,
       "coord": [
@@ -9317,6 +9749,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zheng Chenggong bases his naval command at Xiamen, renaming it Siming Prefecture for overseas trade"
     },
     {
+      "id": "qin:-209d",
       "dynastyKey": "qin",
       "year": -209,
       "coord": [
@@ -9329,6 +9762,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chen Sheng captures ancient Chu capital Chenxian and proclaims the Kingdom of Rising Chu"
     },
     {
+      "id": "donghan:192b",
       "dynastyKey": "donghan",
       "year": 192,
       "coord": [
@@ -9341,6 +9775,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Minister Wang Yun persuades warrior Lü Bu to slay tyrant Dong Zhuo at Weiyang Palace in Chang'an"
     },
     {
+      "id": "donghan:196b",
       "dynastyKey": "donghan",
       "year": 196,
       "coord": [
@@ -9360,6 +9795,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "donghan:191",
       "dynastyKey": "donghan",
       "year": 191,
       "coord": [
@@ -9372,6 +9808,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Jieqiao: Yuan Shao's crossbowmen crush Gongsun Zan's cavalry, winning control of Hebei"
     },
     {
+      "id": "donghan:199",
       "dynastyKey": "donghan",
       "year": 199,
       "coord": [
@@ -9384,6 +9821,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yuan Shao storms Gongsun Zan's fortress at Yijing, uniting the four northern provinces of Han"
     },
     {
+      "id": "donghan:219f",
       "dynastyKey": "donghan",
       "year": 219,
       "coord": [
@@ -9404,6 +9842,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "sanguo:228d",
       "dynastyKey": "sanguo",
       "year": 228,
       "coord": [
@@ -9420,6 +9859,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:255",
       "dynastyKey": "sanguo",
       "year": 255,
       "coord": [
@@ -9432,6 +9872,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Taoxi: Shu general Jiang Wei wins a major victory routing Wei governor Wang Jing"
     },
     {
+      "id": "sanguo:263c",
       "dynastyKey": "sanguo",
       "year": 263,
       "coord": [
@@ -9449,6 +9890,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:377",
       "dynastyKey": "dongjin",
       "year": 377,
       "coord": [
@@ -9461,6 +9903,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xie Xuan recruits northern refugees at Guangling and Jingkou to forge the elite Northern Garrison"
     },
     {
+      "id": "dongjin:384b",
       "dynastyKey": "dongjin",
       "year": 384,
       "coord": [
@@ -9473,6 +9916,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Pressing his Fei River triumph, Xie Xuan marches north to recover Henan, Shandong, and Luoyang"
     },
     {
+      "id": "tang:879",
       "dynastyKey": "tang",
       "year": 879,
       "coord": [
@@ -9485,6 +9929,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Rebel commander Huang Chao captures Guangzhou in the far south before rafting north into Hubei"
     },
     {
+      "id": "ming:1368b",
       "dynastyKey": "ming",
       "year": 1368,
       "coord": [
@@ -9497,6 +9942,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming generals Xu Da and Chang Yuchun capture Yuan capital Dadu and rename it Beiping Prefecture"
     },
     {
+      "id": "ming:1626",
       "dynastyKey": "ming",
       "year": 1626,
       "coord": [
@@ -9514,6 +9960,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "ming:1642b",
       "dynastyKey": "ming",
       "year": 1642,
       "coord": [
@@ -9526,6 +9973,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Song-Jin: Hong Taiji crushes Ming governor Hong Chengchou's army outside Shanhaiguan"
     },
     {
+      "id": "qing:1726",
       "dynastyKey": "qing",
       "year": 1726,
       "coord": [
@@ -9538,6 +9986,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yongzheng Emperor empowers Ortai to replace hereditary chieftains with regular prefectures"
     },
     {
+      "id": "qing:1853",
       "dynastyKey": "qing",
       "year": 1853,
       "coord": [
@@ -9550,6 +9999,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Hong Xiuquan captures Nanjing, renames it Heavenly Capital Tianjing, and proclaims land reform"
     },
     {
+      "id": "qing:1864",
       "dynastyKey": "qing",
       "year": 1864,
       "coord": [
@@ -9568,6 +10018,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-201",
       "dynastyKey": "xihan",
       "year": -201,
       "month": 1,
@@ -9581,6 +10032,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liu Bang praises Zhang Liang for winning battles a thousand li away and enfeoffs him at Liu"
     },
     {
+      "id": "donghan:210",
       "dynastyKey": "donghan",
       "year": 210,
       "coord": [
@@ -9593,6 +10045,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Eastern Wu commander Zhou Yu dies aged 36 at Baqiu on the march to Shu, recommending Lu Su"
     },
     {
+      "id": "sanguo:243",
       "dynastyKey": "sanguo",
       "year": 243,
       "coord": [
@@ -9605,6 +10058,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Deng Ai authors On Canal Irrigation and builds vast military-farm colonies across Huainan"
     },
     {
+      "id": "dongjin:369",
       "dynastyKey": "dongjin",
       "year": 369,
       "coord": [
@@ -9622,6 +10076,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "ming:1629",
       "dynastyKey": "ming",
       "year": 1629,
       "month": 11,
@@ -9639,6 +10094,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:757d",
       "dynastyKey": "tang",
       "year": 757,
       "month": 1,
@@ -9652,6 +10108,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Blind and tyrannical in Luoyang, Yan emperor An Lushan is assassinated at night by his son"
     },
     {
+      "id": "beisong:961",
       "dynastyKey": "beisong",
       "year": 961,
       "month": 7,
@@ -9665,6 +10122,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Yu ascends the Southern Tang throne in Jinling, presiding over a refined court of poetry and art"
     },
     {
+      "id": "beisong:978",
       "dynastyKey": "beisong",
       "year": 978,
       "month": 7,
@@ -9678,6 +10136,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Captive in Kaifeng on Qixi night, Li Yu composes his immortal lyric Yu Meiren before his death"
     },
     {
+      "id": "qin:-208",
       "dynastyKey": "qin",
       "year": -208,
       "month": 12,
@@ -9691,6 +10150,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Defeated by Qin general Zhang Han, rebel king Chen Sheng is slain by his driver at Xiachengfu"
     },
     {
+      "id": "ming:1430",
       "dynastyKey": "ming",
       "year": 1430,
       "coord": [
@@ -9703,6 +10163,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yu Qian governs Henan and Shanxi nineteen years with incorruptible integrity and famine relief"
     },
     {
+      "id": "ming:1449b",
       "dynastyKey": "ming",
       "year": 1449,
       "month": 10,
@@ -9716,6 +10177,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Defense of Beijing: War Minister Yu Qian enthrones Jingtai and routs Esen's Oirats at Deshengmen"
     },
     {
+      "id": "qing:1847",
       "dynastyKey": "qing",
       "year": 1847,
       "coord": [
@@ -9728,6 +10190,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Appointed Viceroy of Yun-Gui in Kunming, Lin Zexu pacifies frontier unrest and strengthens defenses"
     },
     {
+      "id": "zhanguo:-320",
       "dynastyKey": "zhanguo",
       "year": -320,
       "coord": [
@@ -9740,6 +10203,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Mencius visits King Hui of Liang in Daliang, advocating benevolent governance over narrow profit"
     },
     {
+      "id": "zhanguo:-319",
       "dynastyKey": "zhanguo",
       "year": -319,
       "coord": [
@@ -9752,6 +10216,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Serving as senior scholar at Linzi's Jixia Academy, Mencius expounds humane kingship to King Xuan"
     },
     {
+      "id": "zhanguo:-312",
       "dynastyKey": "zhanguo",
       "year": -312,
       "coord": [
@@ -9764,6 +10229,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Returning home to Zou, Mencius teaches disciples and compiles the seven-book classic Mencius"
     },
     {
+      "id": "donghan:208d",
       "dynastyKey": "donghan",
       "year": 208,
       "month": 6,
@@ -9777,6 +10243,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chancellor Cao Cao summons Sima Yi of Henei to Ye as literary clerk and military advisor"
     },
     {
+      "id": "donghan:215",
       "dynastyKey": "donghan",
       "year": 215,
       "month": 8,
@@ -9790,6 +10257,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Hefei: Zhang Liao leads 800 vanguard riders to rout Sun Quan's army at Xiaoyao Ford"
     },
     {
+      "id": "sanguo:228e",
       "dynastyKey": "sanguo",
       "year": 228,
       "month": 1,
@@ -9803,6 +10271,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sima Yi marches 1,200 li from Wan in eight days, storming Xincheng to capture rebel Meng Da"
     },
     {
+      "id": "sanguo:241",
       "dynastyKey": "sanguo",
       "year": 241,
       "month": 6,
@@ -9816,6 +10285,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Grand Commandant Sima Yi leads light cavalry south to relieve besieged Fancheng from Wu forces"
     },
     {
+      "id": "nanbei:462",
       "dynastyKey": "nanbei",
       "year": 462,
       "coord": [
@@ -9828,6 +10298,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zu Chongzhi calculates pi to seven decimal places in Jiankang and compiles the Daming Calendar"
     },
     {
+      "id": "nanbei:534b",
       "dynastyKey": "nanbei",
       "year": 534,
       "coord": [
@@ -9840,6 +10311,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Governor Jia Sixie compiles Qimin Yaoshu in Shandong, the earliest intact Chinese agronomy manual"
     },
     {
+      "id": "nanbei:549",
       "dynastyKey": "nanbei",
       "year": 549,
       "coord": [
@@ -9852,6 +10324,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Rebel general Hou Jing storms Jiankang Palace, where aged Emperor Wu of Liang starves to death"
     },
     {
+      "id": "nanbei:564",
       "dynastyKey": "nanbei",
       "year": 564,
       "coord": [
@@ -9864,6 +10337,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prince of Lanling Gao Changgong breaks the siege of Luoyang with 500 riders, inspiring a battle hymn"
     },
     {
+      "id": "sui:617b",
       "dynastyKey": "sui",
       "year": 617,
       "month": 2,
@@ -9877,6 +10351,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wagang rebels Zhai Rang and Li Mi seize Luokou Granary to feed the poor as heroes rally to their banner"
     },
     {
+      "id": "tang:662",
       "dynastyKey": "tang",
       "year": 662,
       "coord": [
@@ -9889,6 +10364,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xue Rengui fells three Tiele chieftains with three arrows, pacifying the northern steppe frontier"
     },
     {
+      "id": "tang:675b",
       "dynastyKey": "tang",
       "year": 675,
       "coord": [
@@ -9901,6 +10377,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young poet Wang Bo composes the immortal Preface to the Pavilion of Prince Teng at Nanchang banquet"
     },
     {
+      "id": "beisong:1047b",
       "dynastyKey": "beisong",
       "year": 1047,
       "coord": [
@@ -9913,6 +10390,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Artisan Bi Sheng invents ceramic movable-type printing in Kaifeng, recorded in Dream Pool Essays"
     },
     {
+      "id": "beisong:1061",
       "dynastyKey": "beisong",
       "year": 1061,
       "coord": [
@@ -9925,6 +10403,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Bao Zheng is named Vice Commissioner of Military Affairs; nobles and eunuchs dread his rigor"
     },
     {
+      "id": "beisong:1088",
       "dynastyKey": "beisong",
       "year": 1088,
       "coord": [
@@ -9937,6 +10416,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Polymath Shen Kuo retires to Mengxi Garden in Zhenjiang to complete his scientific classic Dream Pool Essays"
     },
     {
+      "id": "beisong:1119",
       "dynastyKey": "beisong",
       "year": 1119,
       "coord": [
@@ -9949,6 +10429,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Song Jiang and thirty-six outlaws rise around Liangshan Marsh, inspiring the classic Water Margin"
     },
     {
+      "id": "beisong:1122",
       "dynastyKey": "beisong",
       "year": 1122,
       "coord": [
@@ -9961,6 +10442,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Twenty-year-old Yue Fei enlists in the army from his hometown Tangyin, vowed to loyal service"
     },
     {
+      "id": "nansong:1133",
       "dynastyKey": "nansong",
       "year": 1133,
       "coord": [
@@ -9973,6 +10455,7 @@ window.ATLAS_LORE_DATA = {
       "en": "After pacifying rebels in Ganzhou, Yue Fei pleads with Emperor Gaozong to spare all townspeople"
     },
     {
+      "id": "nansong:1136",
       "dynastyKey": "nansong",
       "year": 1136,
       "coord": [
@@ -9985,6 +10468,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yue Fei launches a northern counteroffensive from Ezhou, retaking Shangzhou on the Qinling frontier"
     },
     {
+      "id": "ming:1578",
       "dynastyKey": "ming",
       "year": 1578,
       "coord": [
@@ -9997,6 +10481,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Physician Li Shizhen completes Compendium of Materia Medica in Qizhou after twenty-seven years of work"
     },
     {
+      "id": "ming:1630",
       "dynastyKey": "ming",
       "year": 1630,
       "coord": [
@@ -10009,6 +10494,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Deceived by Hong Taiji's ruse, the Chongzhen Emperor executes commander Yuan Chonghuan in Beijing"
     },
     {
+      "id": "qing:1763",
       "dynastyKey": "qing",
       "year": 1763,
       "coord": [
@@ -10021,6 +10507,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Xueqin dies in poverty in the Western Hills of Beijing, leaving behind Dream of the Red Chamber"
     },
     {
+      "id": "qing:1852",
       "dynastyKey": "qing",
       "year": 1852,
       "month": 9,
@@ -10034,6 +10521,7 @@ window.ATLAS_LORE_DATA = {
       "en": "At forty, Zuo Zongtang joins the defense staff at Changsha, successfully holding off Taiping forces"
     },
     {
+      "id": "qing:1863",
       "dynastyKey": "qing",
       "year": 1863,
       "month": 6,
@@ -10047,6 +10535,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Trapped by flash floods along the Dadu River, Taiping Prince Shi Dakai surrenders himself to save his men"
     },
     {
+      "id": "qing:1864b",
       "dynastyKey": "qing",
       "year": 1864,
       "month": 3,
@@ -10060,6 +10549,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Viceroy Zuo Zongtang retakes Hangzhou with the Chu Army and restores Zhejiang dikes and sericulture"
     },
     {
+      "id": "qing:1873",
       "dynastyKey": "qing",
       "year": 1873,
       "month": 10,
@@ -10073,6 +10563,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Viceroy Zuo Zongtang captures Jiuquan and plants thousands of li of roadside willows across Gansu"
     },
     {
+      "id": "qing:1880",
       "dynastyKey": "qing",
       "year": 1880,
       "month": 5,
@@ -10086,6 +10577,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged sixty-eight, Zuo Zongtang marches with his coffin to Hami, backing diplomatic recovery of Ili"
     },
     {
+      "id": "qing:1885",
       "dynastyKey": "qing",
       "year": 1885,
       "month": 9,
@@ -10099,6 +10591,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged seventy-three, Zuo Zongtang oversees coastal defense in Fujian against France and dies in Fuzhou"
     },
     {
+      "id": "qing:1900",
       "dynastyKey": "qing",
       "year": 1900,
       "month": 6,
@@ -10112,6 +10605,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Taoist Wang Yuanlu uncovers the Library Cave at Mogao, revealing 50,000 medieval manuscripts"
     },
     {
+      "id": "qing:1909",
       "dynastyKey": "qing",
       "year": 1909,
       "month": 10,
@@ -10125,6 +10619,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Chief engineer Zhan Tianyou completes the self-built Beijing-Zhangjiakou Railway with switchback tracks"
     },
     {
+      "id": "qing:1911b",
       "dynastyKey": "qing",
       "year": 1911,
       "month": 4,
@@ -10138,6 +10633,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Huang Xing leads revolutionaries storming the Viceroy Yamen in Guangzhou; 72 martyrs rest at Huanghuagang"
     },
     {
+      "id": "zhanguo:-279",
       "dynastyKey": "zhanguo",
       "year": -279,
       "coord": [
@@ -10150,6 +10646,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Lin Xiangru outwits Qin at Mianchi; general Lian Po bears thorns on his back to reconcile in Handan"
     },
     {
+      "id": "zhanguo:-227",
       "dynastyKey": "zhanguo",
       "year": -227,
       "coord": [
@@ -10162,6 +10659,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Crown Prince Dan of Yan bids farewell to assassin Jing Ke by the icy Yi River as music echoes"
     },
     {
+      "id": "xihan:-121b",
       "dynastyKey": "xihan",
       "year": -121,
       "month": 7,
@@ -10175,6 +10673,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Huo Qubing marches 2,000 li past Juyan Lake to rout Xiongnu at Mt. Qilian and accept surrender"
     },
     {
+      "id": "xihan:-117",
       "dynastyKey": "xihan",
       "year": -117,
       "coord": [
@@ -10187,6 +10686,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Young general Huo Qubing dies at twenty-four; Emperor Wu builds a Qilian-shaped mound beside Maoling"
     },
     {
+      "id": "xihan:-99",
       "dynastyKey": "xihan",
       "year": -99,
       "coord": [
@@ -10199,6 +10699,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Refusing to defect, Han envoy Su Wu tends male sheep by Lake Baikal clutching his imperial staff"
     },
     {
+      "id": "donghan:82",
       "dynastyKey": "donghan",
       "year": 82,
       "coord": [
@@ -10211,6 +10712,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Court historian Ban Gu completes the Book of Han in Luoyang, inaugurating dynastic history writing"
     },
     {
+      "id": "donghan:100",
       "dynastyKey": "donghan",
       "year": 100,
       "coord": [
@@ -10223,6 +10725,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Scholar Xu Shen compiles Analytical Dictionary of Characters, the foundational lexicon of Chinese script"
     },
     {
+      "id": "donghan:205",
       "dynastyKey": "donghan",
       "year": 205,
       "coord": [
@@ -10235,6 +10738,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Master physician Zhang Zhongjing of Nanyang compiles Treatise on Cold Damage and Miscellaneous Diseases"
     },
     {
+      "id": "xijin:296",
       "dynastyKey": "xijin",
       "year": 296,
       "coord": [
@@ -10247,6 +10751,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Magnate Shi Chong hosts literati at Golden Valley Garden in Luoyang, vying in lavish wealth"
     },
     {
+      "id": "xijin:303",
       "dynastyKey": "xijin",
       "year": 303,
       "coord": [
@@ -10259,6 +10764,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Poet-general Lu Ji laments never again hearing the cranes of Huating in Songjiang before execution"
     },
     {
+      "id": "wudai:960",
       "dynastyKey": "wudai",
       "year": 960,
       "coord": [
@@ -10271,6 +10777,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Court painter Gu Hongzhong paints Night Revels of Han Xizai in Jinling for ruler Li Yu"
     },
     {
+      "id": "beisong:965",
       "dynastyKey": "beisong",
       "year": 965,
       "coord": [
@@ -10283,6 +10790,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Shu surrenders to Song at Chengdu as Consort Huarui laments 140,000 troops laying down arms"
     },
     {
+      "id": "nansong:1161b",
       "dynastyKey": "nansong",
       "year": 1161,
       "month": 10,
@@ -10296,6 +10804,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged twenty-two, Xin Qiji raises two thousand volunteers in Jinan to join resistance against Jin"
     },
     {
+      "id": "nansong:1179",
       "dynastyKey": "nansong",
       "year": 1179,
       "coord": [
@@ -10308,6 +10817,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Neo-Confucian master Zhu Xi revives White Deer Grotto Academy at Mt. Lu and drafts academy rules"
     },
     {
+      "id": "nansong:1180",
       "dynastyKey": "nansong",
       "year": 1180,
       "coord": [
@@ -10320,6 +10830,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Governor Xin Qiji founds the elite Flying Tiger Army in Changsha, securing the middle Yangtze"
     },
     {
+      "id": "nansong:1247",
       "dynastyKey": "nansong",
       "year": 1247,
       "coord": [
@@ -10332,6 +10843,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Judicial commissioner Song Ci completes Collected Cases of Injustice Rectified, founding forensic medicine"
     },
     {
+      "id": "nansong:1256",
       "dynastyKey": "nansong",
       "year": 1256,
       "month": 5,
@@ -10345,6 +10857,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged twenty, Wen Tianxiang tops the palace examination in Hangzhou as Imperially Ranked First Scholar"
     },
     {
+      "id": "nansong:1276c",
       "dynastyKey": "nansong",
       "year": 1276,
       "month": 2,
@@ -10358,6 +10871,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Detained while parleying in the Yuan camp, Wen Tianxiang escapes under cover of night at Zhenjiang"
     },
     {
+      "id": "yuan:1291",
       "dynastyKey": "yuan",
       "year": 1291,
       "coord": [
@@ -10370,6 +10884,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Playwright Guan Hanqing composes the masterpiece tragedy The Injustice to Dou E in Yuan Dadu"
     },
     {
+      "id": "yuan:1296",
       "dynastyKey": "yuan",
       "year": 1296,
       "coord": [
@@ -10382,6 +10897,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Huang Daopo returns to Songjiang in Shanghai to innovate cotton spinning and weaving technology"
     },
     {
+      "id": "yuan:1350",
       "dynastyKey": "yuan",
       "year": 1350,
       "coord": [
@@ -10394,6 +10910,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Aged eighty-two, master painter Huang Gongwang completes Dwelling in the Fuchun Mountains scroll"
     },
     {
+      "id": "tang:757e",
       "dynastyKey": "tang",
       "year": 757,
       "coord": [
@@ -10407,6 +10924,7 @@ window.ATLAS_LORE_DATA = {
       "month": 3
     },
     {
+      "id": "tang:759b",
       "dynastyKey": "tang",
       "year": 759,
       "coord": [
@@ -10420,6 +10938,7 @@ window.ATLAS_LORE_DATA = {
       "month": 7
     },
     {
+      "id": "tang:763",
       "dynastyKey": "tang",
       "year": 763,
       "coord": [
@@ -10433,6 +10952,7 @@ window.ATLAS_LORE_DATA = {
       "month": 3
     },
     {
+      "id": "donghan:200c",
       "dynastyKey": "donghan",
       "year": 200,
       "coord": [
@@ -10450,6 +10970,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "donghan:215b",
       "dynastyKey": "donghan",
       "year": 215,
       "coord": [
@@ -10463,6 +10984,7 @@ window.ATLAS_LORE_DATA = {
       "month": 6
     },
     {
+      "id": "donghan:214c",
       "dynastyKey": "donghan",
       "year": 214,
       "coord": [
@@ -10476,6 +10998,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "sanguo:221c",
       "dynastyKey": "sanguo",
       "year": 221,
       "coord": [
@@ -10489,6 +11012,7 @@ window.ATLAS_LORE_DATA = {
       "month": 6
     },
     {
+      "id": "donghan:195",
       "dynastyKey": "donghan",
       "year": 195,
       "coord": [
@@ -10501,6 +11025,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhou Yu brings troops and grain to Sun Ce at Liyang, helping him cross the Yangtze and take Moling and Qu'e"
     },
     {
+      "id": "donghan:199b",
       "dynastyKey": "donghan",
       "year": 199,
       "coord": [
@@ -10514,6 +11039,7 @@ window.ATLAS_LORE_DATA = {
       "month": 11
     },
     {
+      "id": "qin:-218b",
       "dynastyKey": "qin",
       "year": -218,
       "coord": [
@@ -10527,6 +11053,7 @@ window.ATLAS_LORE_DATA = {
       "month": 10
     },
     {
+      "id": "qin:-206f",
       "dynastyKey": "qin",
       "year": -206,
       "coord": [
@@ -10540,6 +11067,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "xihan:-99b",
       "dynastyKey": "xihan",
       "year": -99,
       "coord": [
@@ -10556,6 +11084,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:819b",
       "dynastyKey": "tang",
       "year": 819,
       "coord": [
@@ -10569,6 +11098,7 @@ window.ATLAS_LORE_DATA = {
       "month": 8
     },
     {
+      "id": "tang:822b",
       "dynastyKey": "tang",
       "year": 822,
       "coord": [
@@ -10581,6 +11111,7 @@ window.ATLAS_LORE_DATA = {
       "en": "As prefect of Kuizhou, Liu Yuxi turns Ba folk tunes into his “Bamboo Branch Songs”"
     },
     {
+      "id": "beisong:1101",
       "dynastyKey": "beisong",
       "year": 1101,
       "coord": [
@@ -10593,6 +11124,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Qingzhao marries Zhao Mingcheng in Kaifeng; the couple pawn clothes to buy rubbings and antiquities"
     },
     {
+      "id": "ming:1627",
       "dynastyKey": "ming",
       "year": 1627,
       "coord": [
@@ -10610,6 +11142,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:980b",
       "dynastyKey": "beisong",
       "year": 980,
       "coord": [
@@ -10622,6 +11155,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Newly a jinshi at nineteen, Kou Zhun governs Badong and writes “a lone boat drifts all day long”"
     },
     {
+      "id": "xihan:-100",
       "dynastyKey": "xihan",
       "year": -100,
       "coord": [
@@ -10640,6 +11174,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-81",
       "dynastyKey": "xihan",
       "year": -81,
       "coord": [
@@ -10653,6 +11188,7 @@ window.ATLAS_LORE_DATA = {
       "month": 2
     },
     {
+      "id": "sui:617c",
       "dynastyKey": "sui",
       "year": 617,
       "coord": [
@@ -10665,6 +11201,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wei Zheng joins the Wagang rebel leader Li Mi at Luokou as his secretary"
     },
     {
+      "id": "tang:626b",
       "dynastyKey": "tang",
       "year": 626,
       "coord": [
@@ -10683,6 +11220,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "tang:643",
       "dynastyKey": "tang",
       "year": 643,
       "coord": [
@@ -10696,6 +11234,7 @@ window.ATLAS_LORE_DATA = {
       "month": 2
     },
     {
+      "id": "tang:676",
       "dynastyKey": "tang",
       "year": 676,
       "coord": [
@@ -10708,6 +11247,7 @@ window.ATLAS_LORE_DATA = {
       "en": "As judge of the Court of Revision, Di Renjie clears 17,000 backlogged cases in a year without complaint"
     },
     {
+      "id": "tang:692",
       "dynastyKey": "tang",
       "year": 692,
       "coord": [
@@ -10720,6 +11260,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Framed by Lai Junchen, Di Renjie smuggles out a plea on silk, escapes death and is demoted to Pengze"
     },
     {
+      "id": "tang:697",
       "dynastyKey": "tang",
       "year": 697,
       "coord": [
@@ -10732,6 +11273,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prefect Di Renjie calms Weizhou as the Khitans retreat; grateful locals build him a living shrine"
     },
     {
+      "id": "tang:700",
       "dynastyKey": "tang",
       "year": 700,
       "coord": [
@@ -10749,6 +11291,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1037b",
       "dynastyKey": "beisong",
       "year": 1037,
       "coord": [
@@ -10761,6 +11304,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Magistrate Bao Zheng of Tianchang cleverly unmasks a culprit who cut out a farmer's ox tongue"
     },
     {
+      "id": "beisong:1040b",
       "dynastyKey": "beisong",
       "year": 1040,
       "coord": [
@@ -10773,6 +11317,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Governing Duanzhou, home of famed inkstones, Bao Zheng leaves office without taking a single one"
     },
     {
+      "id": "zhanguo:-237",
       "dynastyKey": "zhanguo",
       "year": -237,
       "coord": [
@@ -10789,6 +11334,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "qin:-208b",
       "dynastyKey": "qin",
       "year": -208,
       "coord": [
@@ -10802,6 +11348,7 @@ window.ATLAS_LORE_DATA = {
       "month": 7
     },
     {
+      "id": "ming:1613",
       "dynastyKey": "ming",
       "year": 1613,
       "coord": [
@@ -10815,6 +11362,7 @@ window.ATLAS_LORE_DATA = {
       "month": 5
     },
     {
+      "id": "ming:1618",
       "dynastyKey": "ming",
       "year": 1618,
       "coord": [
@@ -10828,6 +11376,7 @@ window.ATLAS_LORE_DATA = {
       "month": 9
     },
     {
+      "id": "ming:1639",
       "dynastyKey": "ming",
       "year": 1639,
       "coord": [
@@ -10841,6 +11390,7 @@ window.ATLAS_LORE_DATA = {
       "month": 4
     },
     {
+      "id": "ming:1641",
       "dynastyKey": "ming",
       "year": 1641,
       "coord": [
@@ -10854,6 +11404,7 @@ window.ATLAS_LORE_DATA = {
       "month": 3
     },
     {
+      "id": "beisong:1057b",
       "dynastyKey": "beisong",
       "year": 1057,
       "coord": [
@@ -10873,6 +11424,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-118",
       "dynastyKey": "xihan",
       "year": -118,
       "coord": [
@@ -10885,6 +11437,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu standardizes the five-zhu bronze coin and institutes state salt and iron monopolies"
     },
     {
+      "id": "donghan:57",
       "dynastyKey": "donghan",
       "year": 57,
       "coord": [
@@ -10897,6 +11450,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Guangwu grants the King of Na gold seal to the Wa envoy in Luoyang"
     },
     {
+      "id": "beisong:1044",
       "dynastyKey": "beisong",
       "year": 1044,
       "coord": [
@@ -10909,6 +11463,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zeng Gongliang compiles Wujing Zongyao, first recording gunpowder formulas and compass needles"
     },
     {
+      "id": "ming:1373",
       "dynastyKey": "ming",
       "year": 1373,
       "coord": [
@@ -10921,6 +11476,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Hongwu Emperor establishes U-Tsang and Dokham regional military commissions and tea-horse trade"
     },
     {
+      "id": "ming:1553",
       "dynastyKey": "ming",
       "year": 1553,
       "coord": [
@@ -10933,6 +11489,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Portuguese merchants obtain permission to lease ashore at Macau, opening Sino-European maritime trade"
     },
     {
+      "id": "qing:1718",
       "dynastyKey": "qing",
       "year": 1718,
       "coord": [
@@ -10945,6 +11502,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Kangxi Emperor completes the ten-year nationwide geodetic survey for the Huangyu Quanlan Atlas"
     },
     {
+      "id": "qing:1872",
       "dynastyKey": "qing",
       "year": 1872,
       "coord": [
@@ -10957,6 +11515,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Hongzhang founds the China Merchants Steam Navigation Company in Shanghai, pioneering modern shipping"
     },
     {
+      "id": "qing:1911c",
       "dynastyKey": "qing",
       "year": 1911,
       "month": 9,
@@ -10970,6 +11529,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sichuan Railway Protection Movement erupts in Chengdu, draining Qing garrisons from Wuchang"
     },
     {
+      "id": "sanguo:263d",
       "dynastyKey": "sanguo",
       "year": 263,
       "coord": [
@@ -10985,6 +11545,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:268",
       "dynastyKey": "sanguo",
       "year": 268,
       "coord": [
@@ -11001,6 +11562,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:274",
       "dynastyKey": "sanguo",
       "year": 274,
       "coord": [
@@ -11016,6 +11578,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:274b",
       "dynastyKey": "sanguo",
       "year": 274,
       "coord": [
@@ -11031,6 +11594,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "sanguo:278",
       "dynastyKey": "sanguo",
       "year": 278,
       "month": 11,
@@ -11048,6 +11612,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:280b",
       "dynastyKey": "xijin",
       "year": 280,
       "month": 2,
@@ -11064,6 +11629,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:282",
       "dynastyKey": "xijin",
       "year": 282,
       "coord": [
@@ -11079,6 +11645,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:298",
       "dynastyKey": "xijin",
       "year": 298,
       "coord": [
@@ -11095,6 +11662,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:306",
       "dynastyKey": "xijin",
       "year": 306,
       "coord": [
@@ -11110,6 +11678,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:307c",
       "dynastyKey": "xijin",
       "year": 307,
       "coord": [
@@ -11125,6 +11694,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:311b",
       "dynastyKey": "xijin",
       "year": 311,
       "coord": [
@@ -11140,6 +11710,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xijin:314",
       "dynastyKey": "xijin",
       "year": 314,
       "coord": [
@@ -11155,6 +11726,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:317b",
       "dynastyKey": "dongjin",
       "year": 317,
       "coord": [
@@ -11170,6 +11742,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:318",
       "dynastyKey": "dongjin",
       "year": 318,
       "coord": [
@@ -11185,6 +11758,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "dongjin:320",
       "dynastyKey": "dongjin",
       "year": 320,
       "coord": [
@@ -11200,6 +11774,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:461",
       "dynastyKey": "nanbei",
       "year": 461,
       "coord": [
@@ -11215,6 +11790,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:466",
       "dynastyKey": "nanbei",
       "year": 466,
       "coord": [
@@ -11230,6 +11806,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:494",
       "dynastyKey": "nanbei",
       "year": 494,
       "coord": [
@@ -11245,6 +11822,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:480",
       "dynastyKey": "nanbei",
       "year": 480,
       "coord": [
@@ -11260,6 +11838,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:494b",
       "dynastyKey": "nanbei",
       "year": 494,
       "month": 2,
@@ -11276,6 +11855,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:520",
       "dynastyKey": "nanbei",
       "year": 520,
       "coord": [
@@ -11291,6 +11871,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nanbei:527",
       "dynastyKey": "nanbei",
       "year": 527,
       "coord": [
@@ -11306,6 +11887,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1063",
       "dynastyKey": "beisong",
       "year": 1063,
       "coord": [
@@ -11321,6 +11903,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1072",
       "dynastyKey": "beisong",
       "year": 1072,
       "coord": [
@@ -11336,6 +11919,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1075",
       "dynastyKey": "beisong",
       "year": 1075,
       "coord": [
@@ -11351,6 +11935,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "beisong:1081",
       "dynastyKey": "beisong",
       "year": 1081,
       "coord": [
@@ -11366,6 +11951,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1218",
       "dynastyKey": "nansong",
       "year": 1218,
       "coord": [
@@ -11382,6 +11968,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1221",
       "dynastyKey": "nansong",
       "year": 1221,
       "coord": [
@@ -11398,6 +11985,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1233",
       "dynastyKey": "nansong",
       "year": 1233,
       "coord": [
@@ -11413,6 +12001,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1236",
       "dynastyKey": "nansong",
       "year": 1236,
       "coord": [
@@ -11428,6 +12017,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1274",
       "dynastyKey": "nansong",
       "year": 1274,
       "coord": [
@@ -11443,6 +12033,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "nansong:1275b",
       "dynastyKey": "nansong",
       "year": 1275,
       "month": 5,
@@ -11460,6 +12051,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "yuan:1282",
       "dynastyKey": "yuan",
       "year": 1282,
       "coord": [
@@ -11475,6 +12067,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "yuan:1291b",
       "dynastyKey": "yuan",
       "year": 1291,
       "coord": [
@@ -11490,6 +12083,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "zhanguo:-256b",
       "dynastyKey": "zhanguo",
       "year": -256,
       "coord": [
@@ -11502,6 +12096,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin forces capture the Eastern Zhou royal capital Luoyi and carry off the Nine Tripods"
     },
     {
+      "id": "zhanguo:-318b",
       "dynastyKey": "zhanguo",
       "year": -318,
       "coord": [
@@ -11514,6 +12109,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Lord Yan of Song proclaims himself King Kang of Song and defeats Qi, Chu, and Wei"
     },
     {
+      "id": "zhanguo:-369",
       "dynastyKey": "zhanguo",
       "year": -369,
       "coord": [
@@ -11526,6 +12122,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Daoist philosopher Zhuangzi is born at Meng in the State of Song and authors the Zhuangzi"
     },
     {
+      "id": "zhanguo:-400b",
       "dynastyKey": "zhanguo",
       "year": -400,
       "coord": [
@@ -11538,6 +12135,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Duke Mu of Lu reforms the Three Huan clans in Qufu and honors Zisi and Mozi"
     },
     {
+      "id": "zhanguo:-380",
       "dynastyKey": "zhanguo",
       "year": -380,
       "coord": [
@@ -11550,6 +12148,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Duke Huan of Zhongshan restores his state at Lingshou and casts royal bronzes"
     },
     {
+      "id": "zhanguo:-377",
       "dynastyKey": "zhanguo",
       "year": -377,
       "coord": [
@@ -11562,6 +12161,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ba and Ancient Shu jointly attack Chu at Zifang, prompting King Su of Chu to fortify Hanguan"
     },
     {
+      "id": "zhanguo:-361",
       "dynastyKey": "zhanguo",
       "year": -361,
       "coord": [
@@ -11574,6 +12174,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Kaiming king of Ancient Shu establishes his ancestral temple at Chengdu and takes Hanzhong"
     },
     {
+      "id": "zhanguo:-330",
       "dynastyKey": "zhanguo",
       "year": -330,
       "coord": [
@@ -11586,6 +12187,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Controlling Three Gorges salt waterways, the State of Ba shifts its seat from Jiangzhou to Langzhong"
     },
     {
+      "id": "zhanguo:-327",
       "dynastyKey": "zhanguo",
       "year": -327,
       "coord": [
@@ -11598,6 +12200,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Huiwen of Qin campaigns against Yiqu, compelling the King of Yiqu to submit as vassal"
     },
     {
+      "id": "zhanguo:-314",
       "dynastyKey": "zhanguo",
       "year": -314,
       "coord": [
@@ -11610,6 +12213,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qin exploits internal strife in Yiqu to capture twenty-five cities along the upper Jing River"
     },
     {
+      "id": "qin:-204c",
       "dynastyKey": "qin",
       "year": -204,
       "coord": [
@@ -11622,6 +12226,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Former Qin magistrate Zhao Tuo unites Lingnan and proclaims the Nanyue Kingdom at Panyu"
     },
     {
+      "id": "xihan:-196b",
       "dynastyKey": "xihan",
       "year": -196,
       "coord": [
@@ -11634,6 +12239,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Gaozu of Han sends Lu Jia as envoy to invest Zhao Tuo as King of Nanyue"
     },
     {
+      "id": "xihan:9",
       "dynastyKey": "xihan",
       "year": 9,
       "coord": [
@@ -11646,6 +12252,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Mang decrees the King's Fields land system and state monopolies from Chang'an"
     },
     {
+      "id": "xihan:24b",
       "dynastyKey": "xihan",
       "year": 24,
       "coord": [
@@ -11658,6 +12265,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Holding Sichuan, Gongsun Shu fortifies Baidicheng at Qutang Gorge to guard the Three Gorges"
     },
     {
+      "id": "donghan:25b",
       "dynastyKey": "donghan",
       "year": 25,
       "coord": [
@@ -11670,6 +12278,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gongsun Shu proclaims himself Emperor of Chengjia at Chengdu, ruling Sichuan for twelve years"
     },
     {
+      "id": "donghan:190b",
       "dynastyKey": "donghan",
       "year": 190,
       "coord": [
@@ -11682,6 +12291,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liaodong Governor Gongsun Du defeats Goguryeo and the Wuhuan, ruling autonomously at Xiangping"
     },
     {
+      "id": "sanguo:237",
       "dynastyKey": "sanguo",
       "year": 237,
       "coord": [
@@ -11694,6 +12304,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gongsun Yuan proclaims himself King of Yan at Xiangping in defiance of Cao Wei"
     },
     {
+      "id": "sanguo:269",
       "dynastyKey": "sanguo",
       "year": 269,
       "coord": [
@@ -11706,6 +12317,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Jin appoints Yang Hu to command Xiangyang and prepare the conquest of Wu"
     },
     {
+      "id": "sanguo:279",
       "dynastyKey": "sanguo",
       "year": 279,
       "coord": [
@@ -11718,6 +12330,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Jin launches a 200,000-strong six-column land and naval invasion of Eastern Wu"
     },
     {
+      "id": "xijin:301",
       "dynastyKey": "xijin",
       "year": 301,
       "coord": [
@@ -11730,6 +12343,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Appointed Governor of Liangzhou at Guzang, Zhang Gui lays the foundation of Former Liang"
     },
     {
+      "id": "dongjin:351b",
       "dynastyKey": "dongjin",
       "year": 351,
       "coord": [
@@ -11742,6 +12356,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ran Min's forces storm Xiangguo and eliminate the last Later Zhao ruler Shi Zhi"
     },
     {
+      "id": "dongjin:397",
       "dynastyKey": "dongjin",
       "year": 397,
       "coord": [
@@ -11754,6 +12369,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Daowu of Northern Wei captures the Later Yan capital Zhongshan; Murong Bao flees to Longcheng"
     },
     {
+      "id": "dongjin:398b",
       "dynastyKey": "dongjin",
       "year": 398,
       "coord": [
@@ -11766,6 +12382,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Murong De leads his followers south from Ye to Huatai and proclaims himself King of Southern Yan"
     },
     {
+      "id": "dongjin:401",
       "dynastyKey": "dongjin",
       "year": 401,
       "coord": [
@@ -11778,6 +12395,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yao Xing of Later Qin welcomes Kumārajīva from Guzang to Chang'an to translate Buddhist sutras"
     },
     {
+      "id": "dongjin:402",
       "dynastyKey": "dongjin",
       "year": 402,
       "coord": [
@@ -11790,6 +12408,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Southern Liang rulers Tufa Lilugu and Tufa Rutan expand across the Huangshui valley from Ledu"
     },
     {
+      "id": "dongjin:405b",
       "dynastyKey": "dongjin",
       "year": 405,
       "coord": [
@@ -11802,6 +12421,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Mutinous troops enthrone Qiao Zong as Prince of Chengdu, founding the Western Shu regime"
     },
     {
+      "id": "dongjin:409",
       "dynastyKey": "dongjin",
       "year": 409,
       "coord": [
@@ -11814,6 +12434,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Feng Ba ascends as Heavenly King of Northern Yan at Longcheng, bringing two decades of stability"
     },
     {
+      "id": "dongjin:412",
       "dynastyKey": "dongjin",
       "year": 412,
       "coord": [
@@ -11826,6 +12447,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Juqu Mengxun of Northern Liang moves his capital to Guzang and initiates the Tiantishan Grottoes"
     },
     {
+      "id": "dongjin:414b",
       "dynastyKey": "dongjin",
       "year": 414,
       "coord": [
@@ -11838,6 +12460,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Western Qin ruler Qifu Chipan captures the Southern Liang capital Ledu and annexes the state"
     },
     {
+      "id": "nanbei:555",
       "dynastyKey": "nanbei",
       "year": 555,
       "coord": [
@@ -11850,6 +12473,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liang prince Xiao Cha ascends as emperor at Jiangling, founding the Western Liang court"
     },
     {
+      "id": "nanbei:562",
       "dynastyKey": "nanbei",
       "year": 562,
       "coord": [
@@ -11862,6 +12486,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Ming (Xiao Kui) ascends in Jiangling, patronizing classical scholarship and peace with the north"
     },
     {
+      "id": "tang:618c",
       "dynastyKey": "tang",
       "year": 618,
       "coord": [
@@ -11874,6 +12499,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Hebei rebel leader Dou Jiande proclaims himself King of Xia at Leshou and moves his seat to Mingzhou"
     },
     {
+      "id": "tang:619",
       "dynastyKey": "tang",
       "year": 619,
       "coord": [
@@ -11886,6 +12512,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Shichong deposes Sui prince Yang Tong at Luoyang and proclaims the Empire of Zheng"
     },
     {
+      "id": "tang:618d",
       "dynastyKey": "tang",
       "year": 618,
       "coord": [
@@ -11898,6 +12525,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xiao Xian proclaims the Liang Empire and moves his capital to Jiangling, ruling southern China"
     },
     {
+      "id": "tang:621b",
       "dynastyKey": "tang",
       "year": 621,
       "coord": [
@@ -11910,6 +12538,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tang general Li Jing sails down the Yangtze gorges during autumn floods to receive Xiao Xian's surrender"
     },
     {
+      "id": "tang:618e",
       "dynastyKey": "tang",
       "year": 618,
       "coord": [
@@ -11922,6 +12551,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Battle of Mount Mang: Wang Shichong defeats Li Mi's Wagang army north of Luoyang"
     },
     {
+      "id": "tang:619b",
       "dynastyKey": "tang",
       "year": 619,
       "coord": [
@@ -11934,6 +12564,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King of Xia Dou Jiande marches south to Liaocheng and executes the regicide Yuwen Huaji"
     },
     {
+      "id": "tang:646",
       "dynastyKey": "tang",
       "year": 646,
       "coord": [
@@ -11946,6 +12577,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Taizong sends Li Shiji to defeat the Xueyantuo Khanate; Tiele tribes hail the Heavenly Khan"
     },
     {
+      "id": "tang:692b",
       "dynastyKey": "tang",
       "year": 692,
       "coord": [
@@ -11958,6 +12590,7 @@ window.ATLAS_LORE_DATA = {
       "en": "General Wang Xiaojie defeats Tibet to recover the Four Garrisons and restores the Anxi Protectorate at Kucha"
     },
     {
+      "id": "tang:714b",
       "dynastyKey": "tang",
       "year": 714,
       "coord": [
@@ -11970,6 +12603,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Beiting Protector Guo Qianguan defends Beiting and routs the Eastern Turkic siege force"
     },
     {
+      "id": "tang:754",
       "dynastyKey": "tang",
       "year": 754,
       "coord": [
@@ -11982,6 +12616,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Geluofeng of Nanzhao defeats the Tang expedition at Taihe and erects the Nanzhao Dehua Stele"
     },
     {
+      "id": "tang:794",
       "dynastyKey": "tang",
       "year": 794,
       "coord": [
@@ -11994,6 +12629,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Yimouxun of Nanzhao concludes the Mount Diancang Covenant with Tang governor Wei Gao"
     },
     {
+      "id": "tang:861",
       "dynastyKey": "tang",
       "year": 861,
       "coord": [
@@ -12006,6 +12642,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Guiyi Military Governor Zhang Yichao recovers Liangzhou, restoring the Hexi Corridor to Tang allegiance"
     },
     {
+      "id": "tang:884",
       "dynastyKey": "tang",
       "year": 884,
       "coord": [
@@ -12018,6 +12655,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Pursued by Li Keyong's Shatuo cavalry, Great Qi emperor Huang Chao perishes at Wolf-Tiger Valley"
     },
     {
+      "id": "tang:902",
       "dynastyKey": "tang",
       "year": 902,
       "coord": [
@@ -12030,6 +12668,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Zhaozong of Tang invests Huainan governor Yang Xingmi as Prince of Wu at Yangzhou"
     },
     {
+      "id": "wudai:907d",
       "dynastyKey": "wudai",
       "year": 907,
       "coord": [
@@ -12042,6 +12681,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Liang invests Ma Yin as King of Chu at Tanzhou, where tea trade and coinage bring prosperity"
     },
     {
+      "id": "wudai:907e",
       "dynastyKey": "wudai",
       "year": 907,
       "coord": [
@@ -12054,6 +12694,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Founded by former Nanzhao regent Zheng Maisi, the Dachanghe Kingdom rules Yunnan from Yangjumie"
     },
     {
+      "id": "wudai:914",
       "dynastyKey": "wudai",
       "year": 914,
       "coord": [
@@ -12066,6 +12707,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Cao Yijin becomes Military Governor of the Guiyi Circuit at Dunhuang, patronizing the Mogao Caves"
     },
     {
+      "id": "wudai:924",
       "dynastyKey": "wudai",
       "year": 924,
       "coord": [
@@ -12078,6 +12720,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Tang invests Jingnan governor Gao Jixing as Prince of Nanping at Jiangling"
     },
     {
+      "id": "wudai:928",
       "dynastyKey": "wudai",
       "year": 928,
       "coord": [
@@ -12090,6 +12733,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gao Conghui succeeds in Jingnan, paying tribute to all neighboring courts to prosper as a trade hub"
     },
     {
+      "id": "wudai:933",
       "dynastyKey": "wudai",
       "year": 933,
       "coord": [
@@ -12102,6 +12746,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wang Yanjun proclaims himself Emperor of Great Min and elevates Fuzhou to Changle Prefecture"
     },
     {
+      "id": "wudai:937b",
       "dynastyKey": "wudai",
       "year": 937,
       "coord": [
@@ -12114,6 +12759,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Duan Siping leads thirty-seven tribes to capture Yangjumie and found the Kingdom of Dali"
     },
     {
+      "id": "wudai:950",
       "dynastyKey": "wudai",
       "year": 950,
       "coord": [
@@ -12126,6 +12772,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Han emperor Liu Chengyou purges his senior ministers in Kaifeng, provoking Guo Wei's march south"
     },
     {
+      "id": "beisong:1080",
       "dynastyKey": "beisong",
       "year": 1080,
       "coord": [
@@ -12138,6 +12785,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Dali venerates Buddhism as state religion, with several Duan kings retiring as monks at Chongsheng Temple"
     },
     {
+      "id": "nansong:1274b",
       "dynastyKey": "nansong",
       "year": 1274,
       "coord": [
@@ -12150,6 +12798,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yuan commander Bayan crosses the Yangtze to capture Ezhou and advances downstream on Lin'an"
     },
     {
+      "id": "yuan:1357b",
       "dynastyKey": "yuan",
       "year": 1357,
       "coord": [
@@ -12162,6 +12811,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming Yuzhen sails through the Wu Gorge to capture Chongqing and Chengdu, laying the base for Ming Xia"
     },
     {
+      "id": "ming:1643b",
       "dynastyKey": "ming",
       "year": 1643,
       "coord": [
@@ -12174,6 +12824,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Hong Taiji dies at Shengjing; six-year-old Fulin (Shunzhi) succeeds with Dorgon as regent"
     },
     {
+      "id": "ming:1644c",
       "dynastyKey": "ming",
       "year": 1644,
       "coord": [
@@ -12186,6 +12837,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhang Xianzhong captures Chengdu and proclaims the Great Xi Empire with Chengdu as Western Capital"
     },
     {
+      "id": "qing:1645b",
       "dynastyKey": "qing",
       "year": 1645,
       "coord": [
@@ -12198,6 +12850,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Retreating from Xi'an into Hubei, Great Shun emperor Li Zicheng perishes at Mount Jiugong"
     },
     {
+      "id": "qing:1646c",
       "dynastyKey": "qing",
       "year": 1646,
       "coord": [
@@ -12210,6 +12863,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Fighting Qing prince Haoge's invasion of Sichuan, Zhang Xianzhong is killed by an arrow at Mount Fenghuang"
     },
     {
+      "id": "roc:1917",
       "dynastyKey": "roc",
       "year": 1917,
       "coord": [
@@ -12222,6 +12876,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Sun Yat-sen sails south to Guangzhou and establishes the Constitutional Protection Military Government"
     },
     {
+      "id": "roc:1922",
       "dynastyKey": "roc",
       "year": 1922,
       "coord": [
@@ -12234,6 +12889,7 @@ window.ATLAS_LORE_DATA = {
       "en": "First Zhili–Fengtian War: Wu Peifu's Zhili forces defeat Zhang Zuolin's Fengtian army to control Beijing"
     },
     {
+      "id": "roc:1924",
       "dynastyKey": "roc",
       "year": 1924,
       "coord": [
@@ -12246,6 +12902,7 @@ window.ATLAS_LORE_DATA = {
       "en": "During the Second Zhili–Fengtian War, Feng Yuxiang stages the Beijing Coup and Zhang Zuolin enters Beijing"
     },
     {
+      "id": "roc:1928",
       "dynastyKey": "roc",
       "year": 1928,
       "coord": [
@@ -12258,6 +12915,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zhang Zuolin is killed at Huanggutun; Zhang Xueliang declares Northeast Flag Replacement"
     },
     {
+      "id": "ming:1624",
       "dynastyKey": "ming",
       "year": 1624,
       "coord": [
@@ -12270,6 +12928,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Expelled from Penghu, Dutch VOC forces occupy Tayouan and build Fort Zeelandia"
     },
     {
+      "id": "ming:1642c",
       "dynastyKey": "ming",
       "year": 1642,
       "coord": [
@@ -12282,6 +12941,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Dutch VOC forces storm Fort Santo Domingo at Tamsui, expelling Spain from northern Taiwan"
     },
     {
+      "id": "qing:1652",
       "dynastyKey": "qing",
       "year": 1652,
       "coord": [
@@ -12294,6 +12954,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Guo Huaiyi leads Chinese settlers at Chikan in an armed revolt against Dutch rule"
     },
     {
+      "id": "qing:1664",
       "dynastyKey": "qing",
       "year": 1664,
       "coord": [
@@ -12306,6 +12967,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Zheng Jing renames Dongdu to Dongning and elevates Tianxing and Wannian counties"
     },
     {
+      "id": "tang:866",
       "dynastyKey": "tang",
       "year": 866,
       "coord": [
@@ -12318,6 +12980,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gao Pian defeats Nanzhao at Jiaozhou; Tang establishes Jinghai Military Circuit at Dai La"
     },
     {
+      "id": "tang:905",
       "dynastyKey": "tang",
       "year": 905,
       "coord": [
@@ -12330,6 +12993,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Local notable Khúc Thừa Dụ becomes Jinghai Military Governor, beginning Khúc clan rule"
     },
     {
+      "id": "wudai:931",
       "dynastyKey": "wudai",
       "year": 931,
       "coord": [
@@ -12342,6 +13006,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Former Khúc general Dương Đình Nghệ retakes Dai La and expels the Southern Han garrison"
     },
     {
+      "id": "nanbei:453",
       "dynastyKey": "nanbei",
       "year": 453,
       "coord": [
@@ -12354,6 +13019,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Prince Liu Jun suppresses Crown Prince Liu Shao's parricidal coup at Jiankang, ending Yuanjia rule"
     },
     {
+      "id": "nanbei:545",
       "dynastyKey": "nanbei",
       "year": 545,
       "coord": [
@@ -12366,6 +13032,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Liang commanders Yang Piao and Chen Baxian march south to Jiaozhou and defeat Ly Bi's Van Xuan regime"
     },
     {
+      "id": "wudai:932",
       "dynastyKey": "wudai",
       "year": 932,
       "coord": [
@@ -12378,6 +13045,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Later Tang chancellor Feng Dao commissions woodblock editions of the Nine Classics at Luoyang"
     },
     {
+      "id": "tang:764",
       "dynastyKey": "tang",
       "year": 764,
       "coord": [
@@ -12390,6 +13058,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Commissioner Liu Yan reforms Grand Canal grain transport and salt monopolies from Yangzhou"
     },
     {
+      "id": "xihan:-104b",
       "dynastyKey": "xihan",
       "year": -104,
       "coord": [
@@ -12405,6 +13074,7 @@ window.ATLAS_LORE_DATA = {
       ]
     },
     {
+      "id": "xihan:-81b",
       "dynastyKey": "xihan",
       "year": -81,
       "coord": [
@@ -12417,6 +13087,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Court holds the Salt and Iron Debate in Chang'an as Sang Hongyang and scholars contest state monopolies"
     },
     {
+      "id": "xihan:-2",
       "dynastyKey": "xihan",
       "year": -2,
       "coord": [
@@ -12429,6 +13100,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yuezhi envoy Yi Cun orally transmits Buddhist sutras to Jing Lu in Chang'an, introducing Buddhism"
     },
     {
+      "id": "nansong:1214b",
       "dynastyKey": "nansong",
       "year": 1214,
       "coord": [
@@ -12441,6 +13113,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Jin court establishes Zhigu Stockade at the Three Rivers confluence to guard grain transport"
     },
     {
+      "id": "yuan:1316",
       "dynastyKey": "yuan",
       "year": 1316,
       "coord": [
@@ -12453,6 +13126,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Yuan court elevates Zhigu to Haijin Town as the maritime grain transshipment hub for Dadu"
     },
     {
+      "id": "ming:1404",
       "dynastyKey": "ming",
       "year": 1404,
       "coord": [
@@ -12465,6 +13139,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Yongle Emperor names Tianjin the Imperial Ford and builds Tianjin Garrison to guard the capital"
     },
     {
+      "id": "qing:1858",
       "dynastyKey": "qing",
       "year": 1858,
       "coord": [
@@ -12477,6 +13152,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Anglo-French forces seize the Taku Forts and compel the Qing court to sign the Treaty of Tianjin"
     },
     {
+      "id": "qing:1870",
       "dynastyKey": "qing",
       "year": 1870,
       "coord": [
@@ -12489,6 +13165,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Hongzhang stations in Tianjin as Viceroy of Zhili, expanding the Tianjin Machine Factory"
     },
     {
+      "id": "nansong:1138b",
       "dynastyKey": "nansong",
       "year": 1138,
       "coord": [
@@ -12501,6 +13178,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xizong of Jin elevates Huining Prefecture to the Supreme Capital and builds imperial palaces"
     },
     {
+      "id": "qing:1744",
       "dynastyKey": "qing",
       "year": 1744,
       "coord": [
@@ -12513,6 +13191,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qing court appoints the Alcuka Deputy Lieutenant-General to garrison the middle Songhua River"
     },
     {
+      "id": "qing:1898b",
       "dynastyKey": "qing",
       "year": 1898,
       "coord": [
@@ -12525,6 +13204,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Construction of the Chinese Eastern Railway hub on the Songhua River spurs the rise of modern Harbin"
     },
     {
+      "id": "beisong:1114b",
       "dynastyKey": "beisong",
       "year": 1114,
       "coord": [
@@ -12537,6 +13217,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Wanyan Aguda leads Jurchen forces across the Songhua River to capture the Liao stronghold of Huanglong"
     },
     {
+      "id": "qing:1800",
       "dynastyKey": "qing",
       "year": 1800,
       "coord": [
@@ -12549,6 +13230,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qing court establishes Changchun Subprefecture to administer agrarian settlement on the Songliao Plain"
     },
     {
+      "id": "qing:1889",
       "dynastyKey": "qing",
       "year": 1889,
       "coord": [
@@ -12561,6 +13243,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qing court elevates Changchun to a prefecture as a major grain trading hub on the Songliao Plain"
     },
     {
+      "id": "tang:645",
       "dynastyKey": "tang",
       "year": 645,
       "coord": [
@@ -12573,6 +13256,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tang admiral Zhang Liang sails across the Bohai Sea from Laizhou to storm Bisa Fortress"
     },
     {
+      "id": "ming:1371",
       "dynastyKey": "ming",
       "year": 1371,
       "coord": [
@@ -12585,6 +13269,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming commanders cross the Bohai Sea to recover Liaodong and establish Jinzhou Garrison at Lüshunkou"
     },
     {
+      "id": "qing:1880b",
       "dynastyKey": "qing",
       "year": 1880,
       "coord": [
@@ -12597,6 +13282,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Hongzhang builds naval drydocks and coastal forts at Lüshunkou as a primary Beiyang Fleet base"
     },
     {
+      "id": "tang:825",
       "dynastyKey": "tang",
       "year": 825,
       "coord": [
@@ -12609,6 +13295,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Regional Inspector Li Bo dredges the Lingqu Canal and excavates West Lake in Guilin to aid irrigation"
     },
     {
+      "id": "nansong:1277",
       "dynastyKey": "nansong",
       "year": 1277,
       "coord": [
@@ -12621,6 +13308,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Song commander Ma Ji defends Jingjiang Prefecture for three months against Yuan forces until falling"
     },
     {
+      "id": "ming:1393",
       "dynastyKey": "ming",
       "year": 1393,
       "coord": [
@@ -12633,6 +13321,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Ming court completes the Prince of Jingjiang Palace beneath Solitary Beauty Peak in Guilin"
     },
     {
+      "id": "qing:1650b",
       "dynastyKey": "qing",
       "year": 1650,
       "coord": [
@@ -12645,6 +13334,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Southern Ming loyalists Qu Shisi and Zhang Tongchang defend Guilin against Qing forces and die as martyrs"
     },
     {
+      "id": "xihan:-60",
       "dynastyKey": "xihan",
       "year": -60,
       "coord": [
@@ -12657,6 +13347,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Western Han establishes the Protectorate of the Western Regions with garrison farms centered at Jiaohe"
     },
     {
+      "id": "nanbei:502",
       "dynastyKey": "nanbei",
       "year": 502,
       "coord": [
@@ -12669,6 +13360,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qu Jia founds the Qu-clan Kingdom of Gaochang, adopting Chinese bureaucratic and Confucian institutions"
     },
     {
+      "id": "qing:1778",
       "dynastyKey": "qing",
       "year": 1778,
       "coord": [
@@ -12681,6 +13373,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Suleiman completes the Emin Minaret in Turpan as karez underground aqueducts expand oasis agriculture"
     },
     {
+      "id": "tang:658",
       "dynastyKey": "tang",
       "year": 658,
       "coord": [
@@ -12693,6 +13386,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Following the defeat of Ashina Helu, Tang garrisons Luntai County to secure the northern Silk Road"
     },
     {
+      "id": "tang:754b",
       "dynastyKey": "tang",
       "year": 754,
       "coord": [
@@ -12705,6 +13399,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Frontier poet Cen Shen serves at Luntai under Beiting Protectorate and composes Song of White Snow"
     },
     {
+      "id": "qing:1763b",
       "dynastyKey": "qing",
       "year": 1763,
       "coord": [
@@ -12717,6 +13412,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qianlong Emperor expands the fortress beneath Red Hill and names it Dihua as a northern stronghold"
     },
     {
+      "id": "xihan:-111e",
       "dynastyKey": "xihan",
       "year": -111,
       "coord": [
@@ -12729,6 +13425,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Han carves Zhangye Commandery out of Jiuquan to extend the arm of the empire westward"
     },
     {
+      "id": "beisong:1028",
       "dynastyKey": "beisong",
       "year": 1028,
       "coord": [
@@ -12741,6 +13438,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Tangut prince Li Yuanhao captures Ganzhou from the Ganzhou Uyghurs, later founding the Giant Buddha Temple"
     },
     {
+      "id": "ming:1372b",
       "dynastyKey": "ming",
       "year": 1372,
       "coord": [
@@ -12753,6 +13451,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Ming general Feng Sheng pacifies the Hexi Corridor and establishes Ganzhou Garrison as regional headquarters"
     },
     {
+      "id": "zhanguo:-299b",
       "dynastyKey": "zhanguo",
       "year": -299,
       "coord": [
@@ -12765,6 +13464,7 @@ window.ATLAS_LORE_DATA = {
       "en": "King Zhaoxiang of Qin establishes Shang Commandery at Fushi and builds the northern Qin Great Wall"
     },
     {
+      "id": "ming:1403",
       "dynastyKey": "ming",
       "year": 1403,
       "coord": [
@@ -12777,6 +13477,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Yongle Emperor establishes Yulin Stockade, later headquarters of the Yansui Nine Garrisons"
     },
     {
+      "id": "ming:1643c",
       "dynastyKey": "ming",
       "year": 1643,
       "coord": [
@@ -12789,6 +13490,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Dashun rebel forces storm Yulin Garrison after fierce street fighting against Ming commander You Shiwei"
     },
     {
+      "id": "tang:627",
       "dynastyKey": "tang",
       "year": 627,
       "coord": [
@@ -12801,6 +13503,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Taizong of Tang establishes Qiongzhou at Qiongshan as the administrative seat of northern Hainan"
     },
     {
+      "id": "beisong:1100",
       "dynastyKey": "beisong",
       "year": 1100,
       "coord": [
@@ -12813,6 +13516,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Pardoned from exile in Danzhou, Su Shi crosses the strait from Haikoupu and composes his farewell verse"
     },
     {
+      "id": "ming:1487",
       "dynastyKey": "ming",
       "year": 1487,
       "coord": [
@@ -12825,6 +13529,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Qiongshan scholar Qiu Jun presents his statecraft compendium to the throne and enters the Grand Secretariat"
     },
     {
+      "id": "qing:1876b",
       "dynastyKey": "qing",
       "year": 1876,
       "coord": [
@@ -12837,6 +13542,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Qing court opens Qiongzhou Port to foreign trade and establishes the Qiong Maritime Customs"
     },
     {
+      "id": "yuan:1285",
       "dynastyKey": "yuan",
       "year": 1285,
       "coord": [
@@ -12849,6 +13555,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Kublai Khan lays out Dadu into fifty wards with the Drum and Bell Towers and Taiye Pool palaces"
     },
     {
+      "id": "yuan:1289",
       "dynastyKey": "yuan",
       "year": 1289,
       "coord": [
@@ -12861,6 +13568,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Yuan court excavates the Huitong Canal from Anshan to Linqing to link the Grand Canal"
     },
     {
+      "id": "yuan:1290",
       "dynastyKey": "yuan",
       "year": 1290,
       "coord": [
@@ -12873,6 +13581,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yunnan Branch Secretariat builds Confucian schools and dredges Dianchi Lake canals at Zhongqing"
     },
     {
+      "id": "yuan:1297",
       "dynastyKey": "yuan",
       "year": 1297,
       "coord": [
@@ -12885,6 +13594,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Agronomist Wang Zhen compiles the Book of Agriculture and invents the rotating wooden movable-type table"
     },
     {
+      "id": "yuan:1302",
       "dynastyKey": "yuan",
       "year": 1302,
       "coord": [
@@ -12897,6 +13607,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Chengzong of Yuan completes the Imperial Directorate of Education in Dadu for Confucian learning"
     },
     {
+      "id": "yuan:1318",
       "dynastyKey": "yuan",
       "year": 1318,
       "coord": [
@@ -12909,6 +13620,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Calligrapher Zhao Mengfu and painter Huang Gongwang gather in Hangzhou, shaping Yuan literati painting"
     },
     {
+      "id": "yuan:1322",
       "dynastyKey": "yuan",
       "year": 1322,
       "coord": [
@@ -12921,6 +13633,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Yingzong of Yuan promulgates the Comprehensive Institutions of the Great Yuan legal code"
     },
     {
+      "id": "yuan:1324",
       "dynastyKey": "yuan",
       "year": 1324,
       "coord": [
@@ -12933,6 +13646,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Yuan court reopens the Qingyuan Maritime Trade Office for commerce with Goryeo and Japan"
     },
     {
+      "id": "yuan:1330",
       "dynastyKey": "yuan",
       "year": 1330,
       "coord": [
@@ -12945,6 +13659,7 @@ window.ATLAS_LORE_DATA = {
       "en": "The Fuliang Porcelain Bureau in Jingdezhen perfects cobalt blue-and-white porcelain for global export"
     },
     {
+      "id": "nanbei:439",
       "dynastyKey": "nanbei",
       "year": 439,
       "coord": [
@@ -12957,6 +13672,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Northern Wei relocates 30,000 households of Liangzhou monks and artisans to Pingcheng, spurring cave art"
     },
     {
+      "id": "nanbei:440",
       "dynastyKey": "nanbei",
       "year": 440,
       "coord": [
@@ -12969,6 +13685,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wen of Liu Song establishes the Four Academies of Confucianism, Metaphysics, History, and Literature"
     },
     {
+      "id": "nanbei:487",
       "dynastyKey": "nanbei",
       "year": 487,
       "coord": [
@@ -12981,6 +13698,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Xiao Ziliang gathers the Eight Friends of Jingling in Jiankang, pioneering the tonal Yongming poetic style"
     },
     {
+      "id": "nanbei:512",
       "dynastyKey": "nanbei",
       "year": 512,
       "coord": [
@@ -12993,6 +13711,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Wu of Liang appoints Erudites of the Five Classics in Jiankang to train humble scholars"
     },
     {
+      "id": "nanbei:516",
       "dynastyKey": "nanbei",
       "year": 516,
       "coord": [
@@ -13005,6 +13724,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Empress Dowager Hu constructs the nine-story wooden pagoda of Yongning Temple in Luoyang"
     },
     {
+      "id": "nanbei:536",
       "dynastyKey": "nanbei",
       "year": 536,
       "coord": [
@@ -13017,6 +13737,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gao Huan establishes the Grand Chancellor headquarters in Jinyang to command Eastern Wei military power"
     },
     {
+      "id": "nanbei:543",
       "dynastyKey": "nanbei",
       "year": 543,
       "coord": [
@@ -13029,6 +13750,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Gao Huan and Yuwen Tai clash with 200,000 Eastern and Western Wei troops at the Battle of Mount Mang"
     },
     {
+      "id": "nanbei:547",
       "dynastyKey": "nanbei",
       "year": 547,
       "coord": [
@@ -13041,6 +13763,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Yang Xuanzhi revisits war-torn Luoyang and compiles A Record of Buddhist Monasteries in Luoyang"
     },
     {
+      "id": "nanbei:568",
       "dynastyKey": "nanbei",
       "year": 568,
       "coord": [
@@ -13053,6 +13776,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Xuan of Chen reforms administration and promotes Jiangnan farming before his northern campaign"
     },
     {
+      "id": "tang:744b",
       "dynastyKey": "tang",
       "year": 744,
       "month": 9,
@@ -13071,6 +13795,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Li Bai, Du Fu, and Gao Shi roam Liang-Song around Suiyang, hunting at Mengzhu and writing verse"
     },
     {
+      "id": "xihan:-202b",
       "dynastyKey": "xihan",
       "year": -202,
       "coord": [
@@ -13083,6 +13808,7 @@ window.ATLAS_LORE_DATA = {
       "en": "Emperor Gaozu of Han restores Wuzhu as King of Minyue for his anti-Chu aid, with seat at Dongye"
     },
     {
+      "id": "tang:756i",
       "dynastyKey": "tang",
       "year": 756,
       "month": 1,
