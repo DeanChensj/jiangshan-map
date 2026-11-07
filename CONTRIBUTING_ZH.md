@@ -21,6 +21,7 @@
 ├── llms.txt                 # 面向 LLM 与 AI Agent 的机器可读接入协议说明
 ├── css/style.css            # 宣纸水墨设色主题样式与响应式布局
 ├── data/atlas/              # 多边形产物的可编辑源数据：每个快照一个 GeoJSON 文件，按朝代分目录，另含 index.json
+├── data/sources/            # 大事、事件、城邑、行迹与人物的出处（只存于仓库，网站不加载）
 ├── js/
 │   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、点人溯事与 window.atlasAPI
 │   ├── atlas_quiz.js        # 古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
@@ -34,6 +35,7 @@
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
     ├── audit_prefectures.js # 零依赖郡县层审计（郡与郡重叠、郡出国界），与 data/atlas/prefecture_baseline.json 比对（CI 中运行 --check）
+    ├── audit_sources.js     # 零依赖出处审计，与 data/sources/baseline.json 比对（CI 中运行 --check）
     ├── audit_topology.js    # 零依赖政权边界缝隙/重叠审计，与 data/atlas/topology_baseline.json 比对（CI 中运行 --check）
     ├── repair_topology.js   # 零依赖边界修复：把核心政权边界吸附对齐并改写 data/atlas/
     ├── build_atlas.js       # 零依赖构建脚本：data/atlas/ → atlas_snapshots.js + atlas_boot.js（CI 中运行 --check）
@@ -105,4 +107,14 @@
      ```bash
      node scripts/repair_topology.js wudai           # 对某个朝代目录（或快照键）试运行，只输出报告
      node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
+     ```
+4. **出处（`data/sources/`）**：
+   - 出处写在 `data/sources/` 中，按记录键索引（`milestone:tang:630`、`event:tang:692b`、`settlement:tang:长安`、`journey:<key>:<year>`、`person:<key>`），书目在 `data/sources/works.json` 中登记一次。网站不加载这些文件，补出处不影响加载速度。格式见 [`data/sources/README.md`](data/sources/README.md)。
+   - 审计上线前已有的记录登记在 `data/sources/baseline.json` 中，暂不要求出处；**新增的大事、地标事件、城邑、行迹站点或人物必须至少附一条出处**，否则 CI 不通过。每个地标事件有固定的 `id`（`<朝代>:<年份>`，重复时加字母 b、c……），已有的 id 不要改。
+   - **每条出处都须由人对照原书核实。** 不要直接提交 AI 工具生成、未经核对的出处：卷次写错比不写更糟。只注明书名与卷次 / 页码，不要摘抄原文。
+     ```bash
+     node scripts/audit_sources.js                # 覆盖率
+     node scripts/audit_sources.js --by-dynasty   # 按朝代查看覆盖率
+     node scripts/audit_sources.js --fix          # 按规范格式排序
+     node scripts/audit_sources.js --update       # 补出处后下调基线并提交
      ```

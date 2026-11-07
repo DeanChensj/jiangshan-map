@@ -274,5 +274,6 @@ hit.prefecture.properties.title; // 应天府 (a GeoJSON Feature: L.geoJSON(hit.
 - **おおよその境界**：この地図の歴史上の領土の輪郭と行政境界は、歴史上の大まかな管轄を示す概略的な近似です。科学的な測量によるものではなく、正確な、あるいは権威ある境界として引用しないでください。
 - **帰属の表示**：このプロジェクトの地図、スクリーンショット、データを再利用するときは、https://github.com/DeanChensj/jiangshan-map へのリンクとともに **江山时序 Jiangshan Atlas** のクレジットを記し、上に挙げた上流の出典も引用してください。
 - **コントリビュート**：リポジトリの構成、データの規約、検証のチェックについては [CONTRIBUTING.md](CONTRIBUTING.md)（[中文贡献指南](CONTRIBUTING_ZH.md)）をご覧ください。
+- **データの誤りの報告**：年代・地名・記述の誤りを見つけたら、[データ修正の issue](https://github.com/DeanChensj/jiangshan-map/issues/new?template=data-error.yml) を作成してください。出典があれば添えてください。
 - **ライセンス**：**GPL-3.0** のもとで公開しています（[LICENSE](LICENSE) をご覧ください）。Copyright © 2026 DeanChensj.
   - **例外**：CHGIS V6 と Hartwell China Historical GIS から派生した行政区画レベルの境界（郡、州、府、すなわち 郡 / 州 / 府。戦国と秦の郡を含みます）は、元の条件（学術的・非商用の利用に限る）に従い、GPL-3.0 で再ライセンスされていません。来歴と引用については [data/atlas/README.md](data/atlas/README.md) をご覧ください。
