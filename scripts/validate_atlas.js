@@ -225,6 +225,7 @@ function main() {
     'atlas_snapshots.js',
     'map_data.js',
     'lore_data.js',
+    'event_pinyin.js',
     'i18n_dict.js',
     'zh_hant.js',
   ];
@@ -1203,6 +1204,15 @@ function main() {
     eventSearch.some((item) => item.kind === 'event' && item.year === 383),
     'Quick search for "淝水之战" must return 383 CE milestone event'
   );
+  for (const [query, year, title] of [
+    ['nibuchutiaoyue', 1689, '尼布楚条约'],
+    ['ni bu chu tiao yue', 1689, '尼布楚条约'],
+    ['nanjingtiaoyue', 1842, '南京条约'],
+    ['nan jing tiao yue', 1842, '南京条约'],
+  ]) {
+    assert(ctrl._queryQuickSearch(query).some(item => item.kind === 'event' &&
+      item.rawYear === year && item.titleZh.includes(title)), `Event pinyin search failed: ${query}`);
+  }
   const personJourneySearch = ctrl._queryQuickSearch('苏轼');
   assert(
     personJourneySearch.some((item) => item.kind === 'person' && item.personKey === 'sushi') &&

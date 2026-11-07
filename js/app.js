@@ -12372,8 +12372,9 @@
 
       // 3. Historical Milestones / Events
       const eventEntries = [];
+      const eventPinyin = window.ATLAS_EVENT_PINYIN || {};
       for (const d of this.dynasties) {
-        for (const m of d.milestones || []) {
+        for (const [eventIdx, m] of (d.milestones || []).entries()) {
           const enHead = this._enMilestoneHeadline(d, m);
           const siteEn = m.site ? this._enMilestoneSite(d, m) : '';
           const yrEn = m.year <= 0 ? `${-m.year || 1} BCE` : `${m.year} CE`;
@@ -12388,6 +12389,7 @@
             subZh: `${m.year <= 0 ? '前' + -m.year : m.year}年${m.site ? ' · ' + m.site : ''}`,
             titleEn: enHead,
             subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
+            pinyinKeys: [...(eventPinyin.milestones?.[d.key]?.[eventIdx] || [])],
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           };
           entries.push(evEntry);
@@ -12397,7 +12399,7 @@
 
       // 3b. Curated Place Landmark Events (名胜史事 · 战役古迹)
       const seenLm = new Set();
-      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+      for (const [eventIdx, lm] of HistoricalAtlasController.PLACE_LANDMARK_EVENTS.entries()) {
         if (!lm.zh) continue;
         const uid = `${lm.year}:${lm.zh.slice(0, 16)}`;
         if (seenLm.has(uid)) continue;
@@ -12412,6 +12414,7 @@
         );
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
+          existingEv.pinyinKeys.push(...(eventPinyin.landmarks?.[eventIdx] || []));
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
           existingEv.altTitlesZh.push(lm.zh);
           if (lm.en) {
@@ -12444,6 +12447,7 @@
           subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
           titleEn: lm.en || lm.zh,
           subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
+          pinyinKeys: [...(eventPinyin.landmarks?.[eventIdx] || [])],
           keywords: `${lmKeywords} 史事 事件 战役 名胜`,
         };
         entries.push(lmEntry);
@@ -12779,6 +12783,11 @@
           .replace(/['’‘`\-_.\s]+/g, '');
       const isAscii = /[a-z]/i.test(q) && !/[\u4e00-\u9fa5]/.test(q);
       const qFold = isAscii ? fold(q) : '';
+      // Additional event fallback only; existing query normalization and scores stay intact.
+      const pinyinQuery = fold(
+        q.normalize('NFD').replace(/u\u0308/g, 'v').replace(/[\u0300-\u036f]/g, '')
+      );
+      const canMatchPinyin = /^[a-z]{4,}$/.test(pinyinQuery);
       const index = this._ensureSearchIndex();
       const eraResults = this._matchEraResults(normQ);
       const hasEraMatch = eraResults.length > 0;
@@ -12889,6 +12898,12 @@
             score = item.kind === 'dynasty' ? 58 : 55;
             matchedByKeywordOnly = true;
           }
+        } else if (
+          canMatchPinyin && !hasEraMatch && item.kind === 'event' &&
+          item.pinyinKeys && item.pinyinKeys.some(key => key.includes(pinyinQuery))
+        ) {
+          // Below all existing text/alias matches, including keyword-only results.
+          score = 45;
         }
 
         if (score > 0) {

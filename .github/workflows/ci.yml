@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Verify generated event pinyin and search regressions
+        run: |
+          npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund
+          npm run check --prefix scripts/search-pinyin
+          npm test --prefix scripts/search-pinyin
+
       - name: Verify polygon bundles are canonical encodings
         run: node scripts/build_atlas.js --check
 
