@@ -10,16 +10,6 @@ const {version} = require('pinyin-pro/package.json');
 
 const ROOT = path.resolve(__dirname, '../..');
 const OUTPUT = 'js/event_pinyin.js';
-// Concise event and person names found inside longer descriptions. Initials are generated
-// from these Chinese names, with the same pronunciation rules as the full index.
-const EVENT_NAMES = [
-  '九一八事变', '五四运动', '农民战争', '抗日战争', '新民主主义革命',
-  '方腊起义', '武昌起义', '甲午战争', '秋收起义', '第一次鸦片战争',
-  '辛亥革命', '金田起义', '鸦片战争', '黄巢起义', '黄巾起义',
-  '伊本·白图泰',
-];
-// Alternate search name -> canonical phrase used in source event descriptions.
-const EVENT_NAME_SYNONYMS = {土木之变: '土木堡之变'};
 // Historical place reading missed by the converter's default dictionary:
 // https://www.ezhejiang.gov.cn/2020-06/03/c_497595.htm
 // 大宛 / 高句丽: https://ling.ccnu.edu.cn/info/1047/1762.htm and
@@ -265,7 +255,6 @@ customPinyin({
   调鄂军入川: 'diào è jūn rù chuān',
 });
 
-const joinNameParts = text => (text || '').replace(/(?<=\p{Script=Han})[·・‧](?=\p{Script=Han})/gu, '');
 // These readings apply only to a complete phrase, not to adjacent words.
 const COMPLETE_READINGS = new Map([
   ['国都', ['guo', 'du']], ['徙都', ['xi', 'du']], ['江都', ['jiang', 'du']],
@@ -320,24 +309,14 @@ const LEADING_CONTEXTS = new RegExp([
 
 function loadSources(root = ROOT) {
   const context = vm.createContext({window: {}});
-  for (const file of ['js/map_data.js', 'js/lore_core.js', 'js/lore_detail.js']) {
+  for (const file of ['js/map_data.js', 'js/lore_detail.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, {filename: file});
   }
   const lore = context.window.ATLAS_LORE_DATA;
-  // Existing curated names supply phrase boundaries inside longer headlines,
-  // e.g. 大燕（安史之乱） contributes 安史之乱. Never guess arbitrary substrings.
-  const names = [...new Set([
-    ...lore.PERSON_PROFILES, ...lore.POLITY_PROFILES,
-    ...lore.PLACE_GAZETTEER, ...lore.STRATEGIC_PASSES,
-  ].flatMap(item => [item.zh, item.name, item.ancientZh, ...(item.aliases || []), ...(item.tokens || [])])
-    .flatMap(text => joinNameParts(text).match(/\p{Script=Han}{4,}/gu) || []))].sort();
-  return {dynasties: context.window.DYNASTY_DATA, landmarks: lore.PLACE_LANDMARK_EVENTS, names};
+  return {dynasties: context.window.DYNASTY_DATA, landmarks: lore.PLACE_LANDMARK_EVENTS};
 }
 
-function buildIndex(dynasties, landmarks, names = []) {
-  const eventNames = [...new Set([...names, ...EVENT_NAMES].map(joinNameParts))];
-  const synonyms = Object.entries(EVENT_NAME_SYNONYMS)
-    .map(([name, canonical]) => [joinNameParts(name), joinNameParts(canonical)]);
+function buildIndex(dynasties, landmarks) {
   const cache = new Map();
   const syllables = phrase => {
     if (!cache.has(phrase)) {
@@ -386,52 +365,30 @@ function buildIndex(dynasties, landmarks, names = []) {
     }
     return parts;
   };
-  const initialKeys = phrases => phrases
-    .flatMap(phrase => readingVariants(phrase).map(reading => reading.map(syllable => syllable[0]).join('')))
-    .filter(key => key.length >= 4);
-  const curatedKeys = (text, isSite) => {
-    const namesText = isSite ? text || '' : joinNameParts(text);
-    return initialKeys([...eventNames.filter(name => namesText.includes(name)),
-      ...synonyms.filter(([, canonical]) => namesText.includes(canonical)).map(([name]) => name)]);
-  };
-  const rows = convert => {
-    const eventKeys = (title, site) => [...new Set([...convert(title, false), ...convert(site, true)])];
-    return {
-      milestones: Object.fromEntries(dynasties.map(d => [d.key,
-        (d.milestones || []).map(e => eventKeys(e.headline, e.site))])),
-      landmarks: landmarks.map(e => eventKeys(e.zh, e.site)),
-    };
-  };
+  const eventKeys = (title, site) => [...new Set([...keys(title, false), ...keys(site, true)])];
   // Rows follow source event order. CI's --check rejects edits/reordering without regeneration.
   return {
-    ...rows(keys),
-    initials: rows((text, isSite) => {
-      const clauses = phrases(text);
-      const joined = joinNameParts(text);
-      if (joined !== text) clauses.push(...phrases(joined));
-      return [...initialKeys(clauses), ...curatedKeys(text, isSite)];
-    }),
-    curatedInitials: rows(curatedKeys),
+    milestones: Object.fromEntries(dynasties.map(d => [d.key,
+      (d.milestones || []).map(e => eventKeys(e.headline, e.site))])),
+    landmarks: landmarks.map(e => eventKeys(e.zh, e.site)),
   };
 }
 
 function renderBundle(index) {
-  const section = (data, indent) => indent + 'milestones: {\n' +
-    Object.entries(data.milestones).map(([key, rows]) =>
-      indent + '  ' + JSON.stringify(key) + ': [\n' +
-      rows.map(row => indent + '    ' + JSON.stringify(row)).join(',\n') + '\n' + indent + '  ]')
-      .join(',\n') + '\n' + indent + '},\n' + indent + 'landmarks: [\n' +
-    data.landmarks.map(row => indent + '  ' + JSON.stringify(row)).join(',\n') + '\n' + indent + ']';
+  const milestones = Object.entries(index.milestones).map(([key, rows]) =>
+    '    ' + JSON.stringify(key) + ': [\n' +
+    rows.map(row => '      ' + JSON.stringify(row)).join(',\n') + '\n    ]'
+  ).join(',\n');
+  const landmarks = index.landmarks.map(row => '    ' + JSON.stringify(row)).join(',\n');
   return '/** Generated by scripts/search-pinyin/build.cjs using pinyin-pro ' + version + '. Do not edit. */\n' +
     '// Rows match DYNASTY_DATA milestones and PLACE_LANDMARK_EVENTS; regenerate after editing either.\n' +
-    'window.ATLAS_EVENT_PINYIN = {\n' + section(index, '  ') +
-    ',\n  initials: {\n' + section(index.initials, '    ') + '\n  }' +
-    ',\n  curatedInitials: {\n' + section(index.curatedInitials, '    ') + '\n  }\n};\n';
+    'window.ATLAS_EVENT_PINYIN = {\n  milestones: {\n' + milestones + '\n  },\n' +
+    '  landmarks: [\n' + landmarks + '\n  ]\n};\n';
 }
 
 if (require.main === module) {
-  const {dynasties, landmarks, names} = loadSources();
-  const index = buildIndex(dynasties, landmarks, names), output = renderBundle(index);
+  const {dynasties, landmarks} = loadSources();
+  const index = buildIndex(dynasties, landmarks), output = renderBundle(index);
   if (process.argv.includes('--check')) {
     if (!fs.existsSync(path.join(ROOT, OUTPUT)) || fs.readFileSync(path.join(ROOT, OUTPUT), 'utf8') !== output) {
       console.error(OUTPUT + ' is stale. Run: npm run build --prefix scripts/search-pinyin');

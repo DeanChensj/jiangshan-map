@@ -1262,7 +1262,7 @@ function main() {
   );
   for (const [query, year, title] of [
     ['nanjingtiaoyue', 1842, '南京条约'],
-    ['nbcty', 1689, '尼布楚条约'],
+    ['nibuchutiaoyue', 1689, '尼布楚条约'],
   ]) {
     assert(
       ctrl._queryQuickSearch(query).some(item => item.kind === 'event' &&
