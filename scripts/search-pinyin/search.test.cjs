@@ -133,6 +133,58 @@ for (const [alias, name, year, full] of [
     }
   });
 }
+const additionalAliases = [
+  ['jybsb', '九一八事变', '九一八事变', [1931]],
+  ['wsyd', '五四运动', '五四运动', [1919]],
+  ['nmzz', '农民战争', '农民战争', [1627]],
+  ['krzz', '抗日战争', '抗日战争', [1945]],
+  ['xmzzygm', '新民主主义革命', '新民主主义革命', [1919]],
+  ['flqy', '方腊起义', '方腊起义', [1121]],
+  ['wcqy', '武昌起义', '武昌起义', [1911]],
+  ['jwzz', '甲午战争', '甲午战争', [1894]],
+  ['qsqy', '秋收起义', '秋收起义', [1927]],
+  ['dycypzz', '第一次鸦片战争', '第一次鸦片战争', [1840, 1842]],
+  ['xhgm', '辛亥革命', '辛亥革命', [1911]],
+  ['jtqy', '金田起义', '金田起义', [1851]],
+  ['ypzz', '鸦片战争', '鸦片战争', [1840, 1842, 1858, 1860]],
+  ['hcqy', '黄巢起义', '黄巢起义', [881]],
+  ['hjqy', '黄巾起义', '黄巾起义', [184]],
+  ['tmzb', '土木之变', '土木堡之变', [1449]],
+];
+for (const [alias, name, canonical, years] of additionalAliases) {
+  test(alias + ' finds ' + name + ' and retains its existing event context', () => {
+    const ctrl = controller();
+    const expected = ctrl._queryQuickSearch(canonical).filter(hit => hit.kind === 'event');
+    assert(expected.length, canonical + ': expected source event is missing');
+    for (const query of [alias, alias.toUpperCase(), alias.split('').join(' ')]) {
+      const hits = ctrl._queryQuickSearch(query).filter(hit => hit.kind === 'event' &&
+        expected.some(source => source.milestone === hit.milestone));
+      for (const year of years) assert(hits.some(hit => hit.rawYear === year), query + ': missing year ' + year);
+      for (const hit of hits) {
+        const source = expected.find(source => source.milestone === hit.milestone);
+        assert.deepEqual(copy(hit.coord), copy(source.coord));
+        assert.equal(hit.year, source.year);assert(hit.score < source.score, 'Chinese name must retain priority');
+      }
+    }
+    for (const partial of [alias.slice(0, -1), alias + 'x']) {
+      assert(!ctrl._queryQuickSearch(partial).some(hit => hit.kind === 'event' &&
+        expected.some(source => source.milestone === hit.milestone)), partial + ': partial initials must not match');
+    }
+  });
+}
+test('both 土木之变 and 土木堡之变 initials resolve to the same canonical event', () => {
+  const ctrl = controller();
+  const shorter = ctrl._queryQuickSearch('tmzb').find(hit => hit.kind === 'event' && hit.rawYear === 1449);
+  const existing = ctrl._queryQuickSearch('tmbzb').find(hit => hit.kind === 'event' && hit.rawYear === 1449);
+  assert(shorter);assert(existing);assert.equal(shorter.milestone, existing.milestone);
+});
+test('broad war initials keep first- and second-war candidates while specific initials stay specific', () => {
+  const ctrl = controller();
+  const broad = ctrl._queryQuickSearch('ypzz').filter(hit => hit.kind === 'event');
+  assert(broad.some(hit => hit.rawYear === 1840));assert(broad.some(hit => hit.rawYear === 1860));
+  const first = ctrl._queryQuickSearch('dycypzz').filter(hit => hit.kind === 'event');
+  assert(first.length);assert(first.every(hit => hit.rawYear === 1840 || hit.rawYear === 1842));
+});
 test('initial collisions retain multiple event candidates', () => {
   const ctrl = controller();
   const treaty = ctrl._queryQuickSearch('njty').filter(h => h.kind === 'event' && h.rawYear === 1842 && h.titleZh.includes('南京条约'));

@@ -82,6 +82,8 @@ npm test --prefix scripts/search-pinyin
 
 The isolated build tool pins `pinyin-pro`; the browser only loads generated strings. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations (e.g. `njty`, `nbcty`, `aszl`) are also generated for complete title/location phrases and existing curated names found inside headlines. They require an exact key of at least four letters, rank below full pinyin, and can return multiple candidates. Partial initials are not matched. The normal atlas validation still runs without npm dependencies.
 
+The build tool's `EVENT_NAMES` and `EVENT_NAME_SYNONYMS` cover the sixteen audited abbreviation gaps (`jybsb`, `wsyd`, `nmzz`, `krzz`, `xmzzygm`, `flqy`, `wcqy`, `jwzz`, `qsqy`, `dycypzz`, `xhgm`, `jtqy`, `ypzz`, `hcqy`, `hjqy`, `tmzb`). `EVENT_NAMES` supplies concise names embedded in longer prose; `EVENT_NAME_SYNONYMS` maps alternate names to the source phrase: 土木之变 generates `tmzb` for 土木堡之变, alongside `tmbzb`. Extend these Chinese name lists and add an independent search regression for each addition; the initial strings themselves are generated. Broad names such as 鸦片战争 can match multiple dated events.
+
 ## Historical & Cartographic Conventions
 
 1. **Ancient Settlements (`settlements` in `js/map_data.js`)**:

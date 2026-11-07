@@ -10,6 +10,15 @@ const {version} = require('pinyin-pro/package.json');
 
 const ROOT = path.resolve(__dirname, '../..');
 const OUTPUT = 'js/event_pinyin.js';
+// Concise event names found inside longer descriptions. Initials are generated
+// from these Chinese names, with the same pronunciation rules as the full index.
+const EVENT_NAMES = [
+  '九一八事变', '五四运动', '农民战争', '抗日战争', '新民主主义革命',
+  '方腊起义', '武昌起义', '甲午战争', '秋收起义', '第一次鸦片战争',
+  '辛亥革命', '金田起义', '鸦片战争', '黄巢起义', '黄巾起义',
+];
+// Alternate search name -> canonical phrase used in source event descriptions.
+const EVENT_NAME_SYNONYMS = {土木之变: '土木堡之变'};
 // Historical place reading missed by the converter's default dictionary:
 // https://www.ezhejiang.gov.cn/2020-06/03/c_497595.htm
 // 大宛 / 高句丽: https://ling.ccnu.edu.cn/info/1047/1762.htm and
@@ -34,6 +43,8 @@ function loadSources(root = ROOT) {
 }
 
 function buildIndex(dynasties, landmarks, names = []) {
+  const eventNames = [...new Set([...names, ...EVENT_NAMES])];
+  const synonyms = Object.entries(EVENT_NAME_SYNONYMS);
   const cache = new Map();
   const syllables = phrase => {
     if (!cache.has(phrase)) {
@@ -45,7 +56,8 @@ function buildIndex(dynasties, landmarks, names = []) {
   };
   const phrases = text => text?.match(/\p{Script=Han}+/gu) || [];
   const keys = text => phrases(text).map(phrase => syllables(phrase).join(''));
-  const initials = text => [...phrases(text), ...names.filter(name => text?.includes(name))]
+  const initials = text => [...phrases(text), ...eventNames.filter(name => text?.includes(name)),
+    ...synonyms.filter(([, canonical]) => text?.includes(canonical)).map(([name]) => name)]
     .map(phrase => syllables(phrase).map(syllable => syllable[0]).join(''))
     .filter(key => key.length >= 4);
   const rows = convert => {
