@@ -12416,8 +12416,16 @@
         );
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
-          existingEv.pinyinKeys.push(...(eventPinyin.landmarks?.[eventIdx] || []));
-          existingEv.initialKeys.push(...(eventInitials.landmarks?.[eventIdx] || []));
+          const pinyinKeys = eventPinyin.landmarks?.[eventIdx] || [];
+          const initialKeys = eventInitials.landmarks?.[eventIdx] || [];
+          if (pinyinKeys.length || initialKeys.length) {
+            (existingEv.altPinyin ||= []).push({
+              titleZh: lm.zh,
+              titleEn: lm.en,
+              pinyinKeys,
+              initialKeys,
+            });
+          }
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
           existingEv.altTitlesZh.push(lm.zh);
           if (lm.en) {
@@ -12791,7 +12799,6 @@
       const pinyinQuery = fold(
         q.normalize('NFD').replace(/u\u0308/g, 'v').replace(/[\u0300-\u036f]/g, '')
       );
-      const canMatchPinyin = /^[a-z]{4,}$/.test(pinyinQuery);
       const index = this._ensureSearchIndex();
       const eraResults = this._matchEraResults(normQ);
       const hasEraMatch = eraResults.length > 0;
@@ -12902,18 +12909,6 @@
             score = item.kind === 'dynasty' ? 58 : 55;
             matchedByKeywordOnly = true;
           }
-        } else if (
-          canMatchPinyin && !hasEraMatch && item.kind === 'event' &&
-          item.pinyinKeys && item.pinyinKeys.some(key => key.includes(pinyinQuery))
-        ) {
-          // Below all existing text/alias matches, including keyword-only results.
-          score = 45;
-        } else if (
-          canMatchPinyin && !hasEraMatch && item.kind === 'event' &&
-          item.initialKeys && item.initialKeys.includes(pinyinQuery)
-        ) {
-          // Whole generated phrases only; abbreviations stay below full pinyin.
-          score = 40;
         }
 
         if (score > 0) {
@@ -13018,6 +13013,79 @@
         }
       }
 
+      // Finish legacy ranking before pinyin candidates can affect bucket quotas or deduplication.
+      const ranked = this._rankQuickSearchResults(results);
+      if (
+        ranked.length === 12 ||
+        !/^[a-z]{2,}$/.test(pinyinQuery) ||
+        (ranked.length > 0 && pinyinQuery.length < 4)
+      ) return ranked;
+      return this._appendEventPinyinResults(ranked, index, pinyinQuery, hasEraMatch);
+    }
+
+    _isDuplicateSearchEvent(item, previous) {
+      const year = item.rawYear !== undefined ? item.rawYear : item.year;
+      const previousYear = previous.rawYear !== undefined ? previous.rawYear : previous.year;
+      return previous.kind === 'event' && previousYear === year && previous.coord && item.coord &&
+        this.projector.greatCircleKm(previous.coord, item.coord) <= 65;
+    }
+
+    _appendEventPinyinResults(ranked, index, query, hasEraMatch) {
+      const matches = [];
+      const prefixes = [];
+      for (const item of index) {
+        if (item.kind !== 'event') continue;
+        const sources = [item, ...(item.altPinyin || [])];
+        let source;
+        let score = 0;
+        let completionLength = Infinity;
+        if (query.length >= 4) {
+          source = sources.find(entry => entry.pinyinKeys?.includes(query));
+          if (!source && !hasEraMatch) {
+            source = sources.find(entry => entry.pinyinKeys?.some(key => key.includes(query)));
+          }
+          if (source) {
+            score = 45;
+          } else {
+            source = sources.find(entry => entry.initialKeys?.includes(query));
+            if (source) score = 40;
+          }
+        }
+        if (!source && ranked.length === 0 && matches.length === 0) {
+          for (const entry of sources) {
+            for (const key of entry.initialKeys || []) {
+              if (key.length > query.length && key.length < completionLength && key.startsWith(query)) {
+                completionLength = key.length;
+                source = entry;
+              }
+            }
+          }
+          if (source) score = 35;
+        }
+        if (!source) continue;
+        const result = {
+          ...item,
+          titleZh: source.titleZh,
+          titleEn: source.titleEn || item.titleEn,
+          score: score + (item.dynasty === this.dynasties[this.dynastyIdx] ? 4 : 0),
+          bucket: 'event',
+        };
+        if (completionLength === Infinity) matches.push(result);
+        else prefixes.push({result, completionLength});
+      }
+      const candidates = matches.length
+        ? matches.sort((a, b) => b.score - a.score)
+        : prefixes.sort((a, b) => a.completionLength - b.completionLength || b.result.score - a.result.score)
+          .map(entry => entry.result);
+      const limit = matches.length ? 12 : 4;
+      for (const item of candidates) {
+        if (ranked.length >= limit) break;
+        if (!ranked.some(previous => this._isDuplicateSearchEvent(item, previous))) ranked.push(item);
+      }
+      return ranked;
+    }
+
+    _rankQuickSearchResults(results) {
       results.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         if (a.polityFrom !== undefined && b.polityFrom !== undefined) {
@@ -13057,15 +13125,7 @@
           );
           if (dupCity) continue;
         } else if (item.kind === 'event') {
-          const evYr = item.rawYear !== undefined ? item.rawYear : item.year;
-          const dupEv = deduped.some(
-            (prev) =>
-              prev.kind === 'event' &&
-              (prev.rawYear !== undefined ? prev.rawYear : prev.year) === evYr &&
-              prev.coord &&
-              item.coord &&
-              this.projector.greatCircleKm(prev.coord, item.coord) <= 65
-          );
+          const dupEv = deduped.some(previous => this._isDuplicateSearchEvent(item, previous));
           if (dupEv) continue;
         }
         deduped.push(item);

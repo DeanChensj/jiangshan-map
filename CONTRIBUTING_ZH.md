@@ -80,7 +80,7 @@ npm run check --prefix scripts/search-pinyin
 npm test --prefix scripts/search-pinyin
 ```
 
-独立的构建工具固定 `pinyin-pro` 版本，浏览器只加载生成的字符串。索引行与源数据中的史事顺序一致，CI 会检查修改或重排后未更新的产物。历史专名读音修正在 `scripts/search-pinyin/build.cjs` 中维护。新增的史事拼音兜底匹配支持连写、空格、声调符号和 `ü`/`v`（至少四个字母），原有中英文、别名和年号匹配仍优先。同时为完整标题、地点短语及标题中已有的专名生成首字母缩写（如 `njty`、`nbcty`、`aszl`），至少四个字母且必须完整匹配，优先级低于全拼，允许返回多个候选；不匹配缩写片段。直接运行网站及原有地图校验均无需安装 npm 依赖。
+独立的构建工具固定 `pinyin-pro` 版本，浏览器只加载生成的字符串。索引行与源数据中的史事顺序一致，CI 会检查修改或重排后未更新的产物。历史专名读音修正在 `scripts/search-pinyin/build.cjs` 中维护。新增的史事拼音兜底匹配支持连写、空格、声调符号和 `ü`/`v`（至少四个字母），原有中英文、别名和年号匹配仍优先。同时为完整标题、地点短语及标题中已有的专名生成首字母缩写（如 `njty`、`nbcty`、`aszl`），完整缩写至少四个字母，优先级低于全拼。检索无结果时，至少两个字母的缩写前缀可返回最多四条史事建议。直接运行网站及原有地图校验均无需安装 npm 依赖。
 
 构建工具中的 `EVENT_NAMES` 和 `EVENT_NAME_SYNONYMS` 共同覆盖审计发现的十六个缩写缺口：`jybsb`、`wsyd`、`nmzz`、`krzz`、`xmzzygm`、`flqy`、`wcqy`、`jwzz`、`qsqy`、`dycypzz`、`xhgm`、`jtqy`、`ypzz`、`hcqy`、`hjqy`、`tmzb`。`EVENT_NAMES` 补充长句里的简明史事名称，`EVENT_NAME_SYNONYMS` 将别名映射到源数据中的名称，例如“土木之变”生成 `tmzb`，与“土木堡之变”的 `tmbzb` 指向同一史事。新增名称时维护中文名称列表，并为每项新增独立的搜索回归测试，缩写字符串由工具生成。“鸦片战争”等宽泛名称可以返回多个年份的候选史事。
 

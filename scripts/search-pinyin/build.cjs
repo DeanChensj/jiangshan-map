@@ -24,7 +24,27 @@ const EVENT_NAME_SYNONYMS = {土木之变: '土木堡之变'};
 // 大宛 / 高句丽: https://ling.ccnu.edu.cn/info/1047/1762.htm and
 // https://www.gojilin.gov.cn/2020/05/29/c_1140.htm; 㚟: Unihan U+369F kMandarin
 // in https://www.unicode.org/Public/UNIDATA/Unihan.zip.
-customPinyin({会稽: 'kuài jī', 大宛: 'dà yuān', 高句丽: 'gāo gōu lí', 㚟: 'chuò'});
+customPinyin({
+  会稽: 'kuài jī',
+  大宛: 'dà yuān',
+  高句丽: 'gāo gōu lí',
+  㚟: 'chuò',
+  // Historical names follow the readings in the atlas's English event data.
+  郢都: 'yǐng dū',
+  尉迟迥: 'yù chí jiǒng',
+  金兀术: 'jīn wù zhú',
+  刘禅: 'liú shàn',
+  冒顿单于: 'mò dú chán yú',
+  // Keep the capital's reading local to historical place phrases.
+  元大都: 'yuán dà dū',
+  大都柴市口: 'dà dū chái shì kǒu',
+  冬都大都: 'dōng dū dà dū',
+  攻克大都: 'gōng kè dà dū',
+  北伐克大都: 'běi fá kè dà dū',
+  于大都: 'yú dà dū',
+  转输大都: 'zhuǎn shū dà dū',
+  大都城制: 'dà dū chéng zhì',
+});
 
 function loadSources(root = ROOT) {
   const context = vm.createContext({window: {}});
@@ -55,13 +75,14 @@ function buildIndex(dynasties, landmarks, names = []) {
     return cache.get(phrase);
   };
   const phrases = text => text?.match(/\p{Script=Han}+/gu) || [];
-  const keys = text => phrases(text).map(phrase => syllables(phrase).join(''));
+  const keys = (text, isSite) => phrases(text).map(phrase =>
+    isSite && phrase === '大都' ? 'dadu' : syllables(phrase).join(''));
   const initials = text => [...phrases(text), ...eventNames.filter(name => text?.includes(name)),
     ...synonyms.filter(([, canonical]) => text?.includes(canonical)).map(([name]) => name)]
     .map(phrase => syllables(phrase).map(syllable => syllable[0]).join(''))
     .filter(key => key.length >= 4);
   const rows = convert => {
-    const eventKeys = (title, site) => [...new Set([...convert(title), ...convert(site)])];
+    const eventKeys = (title, site) => [...new Set([...convert(title, false), ...convert(site, true)])];
     return {
       milestones: Object.fromEntries(dynasties.map(d => [d.key,
         (d.milestones || []).map(e => eventKeys(e.headline, e.site))])),
