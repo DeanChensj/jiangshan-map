@@ -2738,10 +2738,14 @@ h2 {
   transition: background 0.15s, border-color 0.15s;
 }
 
-#milestone-list li:hover,
+#milestone-list li:not(.polity-empty):not(.is-current):hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
 #milestone-list li.is-current {
   background: #fff;
   border-color: var(--vermilion);
+  box-shadow: inset 3px 0 0 var(--vermilion);
 }
 
 #milestone-list .ev-yr {
@@ -3664,14 +3668,14 @@ html[lang="en"] .genealogy-list li {
   cursor: pointer;
 }
 
-.polity-stage-chip:hover,
+.polity-stage-chip:not(.is-current):hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
 .polity-stage-chip.is-current {
   background: #fff;
   border-color: var(--dynasty-accent);
   color: var(--dynasty-accent);
-}
-
-.polity-stage-chip.is-current {
   font-weight: 600;
 }
 

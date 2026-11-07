@@ -9393,6 +9393,27 @@ function main() {
       assert(m && m.headline.includes(kw), `Expected transition milestone ${dk}:${yr} containing "${kw}"`);
       assert.strictEqual(ctrl._getMilestoneAnchors(d, m).length, expAnchors, `Expected ${expAnchors} anchors on ${dk}:${yr}`);
     }
+
+    // Issue #299 regression check: #milestone-list hover style must be distinct from .is-current,
+    // and clicking a visible milestone item must not force-scroll #chronicle-pane to 42% height.
+    {
+      const cssSrc = fs.readFileSync(path.join(ROOT, 'css', 'style.css'), 'utf8');
+      assert(
+        !cssSrc.includes('#milestone-list li:hover,\n#milestone-list li.is-current'),
+        'css/style.css must not share identical styles between #milestone-list li:hover and #milestone-list li.is-current (#299)'
+      );
+      assert(
+        cssSrc.includes('#milestone-list li:not(.polity-empty):not(.is-current):hover') &&
+          cssSrc.includes('box-shadow: inset 3px 0 0 var(--vermilion)'),
+        'css/style.css must differentiate #milestone-list li hover from .is-current (#299)'
+      );
+      const appSrc = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
+      assert(
+        appSrc.includes('this._suppressChronicleAutoScroll = true') &&
+          appSrc.includes('const suppressCenterScroll = Boolean(this._suppressChronicleAutoScroll)'),
+        'js/app.js must suppress forced center-scrolling when clicking a visible item in #milestone-list (#299)'
+      );
+    }
   }
 
   const elapsed = (performance.now() - t0).toFixed(1);

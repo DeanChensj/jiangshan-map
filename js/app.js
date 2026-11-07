@@ -5788,8 +5788,13 @@
           if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
             this.toggleMobileChronicle(false);
           }
-          this.jumpToYear(targetY);
-          this.openMilestoneBalloon(dynasty, m);
+          this._suppressChronicleAutoScroll = true;
+          try {
+            this.jumpToYear(targetY);
+            this.openMilestoneBalloon(dynasty, m);
+          } finally {
+            this._suppressChronicleAutoScroll = false;
+          }
           this._frameMilestoneAnchors(dynasty, m, {
             isMapChange: Boolean(snapShift || m.isMapChange),
           });
@@ -5823,6 +5828,7 @@
       if (this._isMobileViewport() && !this.mobileChronicleOpen) {
         return;
       }
+      const suppressCenterScroll = Boolean(this._suppressChronicleAutoScroll);
       if (this._chronicleScrollRaf) {
         cancelAnimationFrame(this._chronicleScrollRaf);
         this._chronicleScrollRaf = null;
@@ -5830,6 +5836,24 @@
       if (typeof requestAnimationFrame === 'function') {
         this._chronicleScrollRaf = requestAnimationFrame(() => {
           this._chronicleScrollRaf = null;
+          if (suppressCenterScroll) {
+            if (items[activeIdx] && pane.scrollHeight > pane.clientHeight) {
+              const el = items[activeIdx];
+              const elTop = el.offsetTop - pane.offsetTop;
+              const elBottom = elTop + el.offsetHeight;
+              const viewTop = pane.scrollTop;
+              const viewBottom = viewTop + pane.clientHeight;
+              if (elTop < viewTop) {
+                pane.scrollTo({ top: Math.max(0, elTop - 8), behavior: 'smooth' });
+              } else if (elBottom > viewBottom) {
+                pane.scrollTo({
+                  top: Math.max(0, elBottom - pane.clientHeight + 8),
+                  behavior: 'smooth',
+                });
+              }
+            }
+            return;
+          }
           if (activeIdx <= 0) {
             if (pane.scrollTop > 0) {
               pane.scrollTo({ top: 0, behavior: 'smooth' });
