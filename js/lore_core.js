@@ -8700,7 +8700,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
         "苏轼",
         "苏东坡"
       ],
-      "evCount": 12
+      "evCount": 14
     },
     {
       "key": "liqingzhao",

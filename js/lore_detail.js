@@ -11668,8 +11668,8 @@
           "modernEn": "Meishan, Sichuan",
           "titleZh": "弱冠出蜀·仗剑远游",
           "titleEn": "Leaving Meizhou for the Imperial Capital",
-          "descZh": "年二十一的苏轼与弟苏辙随父苏洵自蜀中眉州启程，乘舟循岷江入长江，复由褒斜道越秦岭赴东京汴梁应试。",
-          "descEn": "At age twenty-one, Su Shi set out from Meizhou in Sichuan with his father Su Xun and brother Su Zhe to take the imperial examinations in Kaifeng.",
+          "descZh": "年二十一与弟苏辙随父苏洵自眉州启程，出岷江、越秦岭赴汴梁应试。",
+          "descEn": "At twenty-one, Su Shi set out from Meizhou with his father Su Xun and brother Su Zhe for the imperial exams in Kaifeng.",
           "quoteZh": "苏轼《初发嘉州》：“朝发鼓阗阗，西风猎画旃。故乡飘已远，往意浩无边。”",
           "quoteEn": "Su Shi, Departing Jiazhou: \"Morning drums thunder as the west wind snaps our painted banner; home drifts far behind, our aspirations boundless.\""
         },
@@ -11693,8 +11693,8 @@
           "modernEn": "Kaifeng, Henan",
           "titleZh": "金榜题名·名动京师",
           "titleEn": "Triumph at the Kaifeng Imperial Court",
-          "descZh": "嘉祐二年春闱，主考官欧阳修读苏轼《刑赏忠厚之至论》惊喜击节，苏氏兄弟同科进士及第，文名震动汴京。",
-          "descEn": "Chief examiner Ouyang Xiu marveled at Su Shi’s essay in the 1057 examination, proclaiming that the older generation must make way for this rising genius.",
+          "descZh": "嘉祐二年春闱，欧阳修读其《刑赏忠厚之至论》击节叹赏，兄弟同科及第。",
+          "descEn": "Examiner Ouyang Xiu marveled at Su Shi’s 1057 examination essay as the Su brothers passed together to instant fame.",
           "quoteZh": "欧阳修《与梅圣俞书》：“读轼书，不觉汗出，快哉快哉！老夫当避路，放他出一头地也。”",
           "quoteEn": "Ouyang Xiu: \"Reading Su Shi’s essay brought beads of sweat in sheer delight—this old man must step aside and let him stand a head above!\"",
           "persons": [
@@ -11717,8 +11717,8 @@
           "modernEn": "Fengxiang, Shaanxi",
           "titleZh": "初仕关中·签判凤翔",
           "titleEn": "First Official Post in Fengxiang",
-          "descZh": "制科入第三等，授大理评事、签书凤翔府判官。初历地方吏治，兴修东湖、革除衙前弊政，作《喜雨亭记》《石鼓歌》。",
-          "descEn": "Appointed magistrate-assessor in Fengxiang in Guanzhong, where he reformed corvée transport and composed Pavilion of Joyful Rain.",
+          "descZh": "制科入三等，任签书凤翔府判官，兴修东湖、革衙前弊政，作《喜雨亭记》。",
+          "descEn": "Appointed magistrate-assessor in Fengxiang, where he dredged East Lake, reformed corvée, and wrote Pavilion of Joyful Rain.",
           "quoteZh": "苏轼《喜雨亭记》：“使天而雨珠，寒者不得以为襦；使天而雨玉，饥者不得以为粟。”",
           "quoteEn": "Su Shi, Pavilion of Joyful Rain: \"Were Heaven to rain pearls, the cold could not wear them as coats; were it to rain jade, the hungry could not eat it as grain.\""
         },
@@ -11742,8 +11742,8 @@
           "modernEn": "Hangzhou, Zhejiang",
           "titleZh": "外放通判·寄情西湖",
           "titleEn": "Vice-Prefect of Hangzhou & West Lake",
-          "descZh": "因上书直陈王安石新法之弊，自请外放任杭州通判（后于元祐四年再知杭州浚湖筑苏堤），巡行属县、赈济灾荒，留下无数西湖诗篇。",
-          "descEn": "Opposing Wang Anshi’s New Policies, Su Shi requested provincial assignment as Vice-Prefect of Hangzhou, immortalizing West Lake in verse.",
+          "descZh": "因上书直陈新法之弊自请外放任杭州通判，巡行属县赈灾，赋西湖诗篇。",
+          "descEn": "Opposing Wang Anshi’s New Policies, he served as Vice-Prefect of Hangzhou, relieving famine and immortalizing West Lake in verse.",
           "quoteZh": "苏轼《饮湖上初晴后雨》：“欲把西湖比西子，淡妆浓抹总相宜。”",
           "quoteEn": "Su Shi: \"If I may compare West Lake to Lady Xishi, in light makeup or rich adornment she is equally peerless.\""
         },
@@ -11761,8 +11761,8 @@
           "modernEn": "Zhucheng, Shandong",
           "titleZh": "知密州·超然豪放",
           "titleEn": "Governor of Mizhou — Birth of the Heroic Style",
-          "descZh": "主动求调密州知州，抗旱捕蝗、收养弃婴；于超然台思念胞弟苏辙，写就《水调歌头·明月几时有》与《江城子·密州出猎》，开宋词豪放一派。",
-          "descEn": "As Governor of Mizhou in Shandong, Su Shi pioneered the heroic ci-poetry style with \"When Will the Bright Moon Be\" and \"Hunting at Mizhou.\"",
+          "descZh": "知密州抗旱捕蝗，于超然台赋《水调歌头》《江城子·密州出猎》，开豪放词风。",
+          "descEn": "As Governor of Mizhou, he pioneered heroic ci-poetry with \"When Will the Bright Moon Be\" and \"Hunting at Mizhou.\"",
           "quoteZh": "苏轼《水调歌头》：“人有悲欢离合，月有阴晴圆缺，此事古难全。但愿人长久，千里共婵娟。”",
           "quoteEn": "Su Shi, Prelude to Water Melody: \"Men have sorrow and joy, parting and reunion; the moon has clouds and clear skies, waxing and waning.\""
         },
@@ -11780,8 +11780,8 @@
           "modernEn": "Xuzhou, Jiangsu",
           "titleZh": "知徐州·抗洪筑黄楼",
           "titleEn": "Governor of Xuzhou — Holding the Yellow River Dykes",
-          "descZh": "知徐州时黄河决口于澶州曹村，洪峰直逼徐州城下。苏轼布衣草履庐于城上，亲率禁军与民夫筑长堤死守七十余日保住全城，水退后于东门筑黄楼以镇水患。",
-          "descEn": "When Yellow River floodwaters besieged Xuzhou in 1077, Su Shi slept on the city wall in hemp sandals and led soldiers and citizens to reinforce the dykes, later building the Yellow Tower to commemorate the city's deliverance.",
+          "descZh": "黄河决口逼城，苏轼布衣草履庐于城上，率军民筑堤死守七十余日，水退筑黄楼。",
+          "descEn": "When Yellow River floods besieged Xuzhou, he camped on the wall for seventy days to hold the dykes, later building the Yellow Tower.",
           "quoteZh": "苏轼《答范淳甫》：“吾在徐州，与民同患难，水退而筑黄楼以镇之。”",
           "quoteEn": "Su Shi, Letter to Fan Chunfu: \"In Xuzhou I shared the perils of flood with the people; when the waters receded, we built the Yellow Tower above the eastern gate.\""
         },
@@ -11805,8 +11805,8 @@
           "modernEn": "Huzhou, Zhejiang",
           "titleZh": "移知湖州·乌台诗案",
           "titleEn": "Transfer to Huzhou & the Crow Terrace Poetry Trial",
-          "descZh": "元丰二年春自徐州移知湖州，上《湖州谢上表》因“知其愚不适时，难以追陪新进”等语遭御史台李定、舒亶等摘句弹劾“讪谤新法”，七月于湖州州衙被皇甫遵逮捕押赴汴京御史台诏狱，史称“乌台诗案”。",
-          "descEn": "Transferred from Xuzhou to Huzhou in spring 1079, Su Shi was impeached by Censorate officials over alleged satire in his Huzhou Memorial of Thanks, arrested at the Huzhou prefectural yamen, and escorted to the Imperial Censorate prison in Kaifeng (\"Crow Terrace Case\").",
+          "descZh": "移知湖州上《谢上表》，遭御史台李定等摘句弹劾“讪谤新法”，被逮赴汴京诏狱。",
+          "descEn": "Impeached over his Huzhou Memorial of Thanks for allegedly satirizing the New Policies, he was arrested and jailed in the Censorate (\"Crow Terrace Case\").",
           "quoteZh": "苏轼《狱中寄子由》：“是处青山可埋骨，他年夜雨独伤神。与君世世为兄弟，更结来生未了因。”",
           "quoteEn": "Su Shi, From Prison to Ziyou: \"Anywhere the green hills may bury my bones; in future years you will grieve alone in the night rain.\""
         },
@@ -11824,10 +11824,54 @@
           "modernEn": "Huanggang, Hubei",
           "titleZh": "贬谪黄州·东坡赤壁",
           "titleEn": "Exile in Huangzhou — Dongpo & the Red Cliffs",
-          "descZh": "出狱后责授检校水部员外郎、黄州团练副使。躬耕城东荒坡自号“东坡居士”，于困顿中完成了精神蜕变，写出《定风波》《念奴娇·赤壁怀古》、前后《赤壁赋》与《寒食帖》。",
-          "descEn": "Banished to Huangzhou on the Yangtze, he farmed the \"Eastern Slope\" (taking the name Dongpo) and composed his greatest masterpieces at the Red Cliffs.",
+          "descZh": "出狱贬黄州团练副使，躬耕东坡，赋《赤壁赋》《念奴娇》、书《寒食帖》。",
+          "descEn": "Banished to Huangzhou, he farmed the Eastern Slope (\"Dongpo\") and wrote the Red Cliff Odes and Cold Food Observance.",
           "quoteZh": "苏轼《定风波》：“竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。”",
           "quoteEn": "Su Shi, Calming the Waves: \"Bamboo staff and straw sandals lighter than a steed—who fears? One straw cloak in misty rain for a lifetime.\""
+        },
+        {
+          "year": 1085,
+          "eraZh": "元丰八年",
+          "coord": [
+            121.2,
+            37.3
+          ],
+          "via": [
+            [
+              117.5,
+              32.5
+            ]
+          ],
+          "labelPos": "top",
+          "ancientZh": "登州",
+          "modernZh": "山东烟台蓬莱",
+          "ancientEn": "Dengzhou",
+          "modernEn": "Penglai, Yantai, Shandong",
+          "titleZh": "量移北上·登州海市",
+          "titleEn": "Prefect of Dengzhou & Recalled to the Academy",
+          "descZh": "量移汝州过庐山赋《题西林壁》；哲宗即位知登州五日观海市，旋召还任翰林学士。",
+          "descEn": "Transferred north past Mount Lu, he served five days as Prefect of Dengzhou witnessing the Penglai sea mirage before his recall as Hanlin Academician.",
+          "quoteZh": "苏轼《登州海市》：“东方云海空复空，群仙出没空明中。”",
+          "quoteEn": "Su Shi, Mirage at Dengzhou: \"Eastern clouds and sea, void upon void; immortals appear and vanish in the luminous sky.\""
+        },
+        {
+          "year": 1089,
+          "eraZh": "元祐四年",
+          "coord": [
+            120.15,
+            30.28
+          ],
+          "labelPos": "bottom",
+          "ancientZh": "杭州",
+          "modernZh": "浙江杭州",
+          "ancientEn": "Hangzhou",
+          "modernEn": "Hangzhou, Zhejiang",
+          "titleZh": "再知杭州·浚湖筑苏堤",
+          "titleEn": "Governor of Hangzhou — Building the Su Causeway",
+          "descZh": "再知杭州疏浚西湖、筑三十里“苏公堤”，设安济坊救疫（后历知颍、扬、定州）。",
+          "descEn": "Returning as Governor of Hangzhou, he dredged West Lake, built the Su Causeway, and founded the Anji public infirmary (later governing Yingzhou, Yangzhou, and Dingzhou).",
+          "quoteZh": "《宋史·苏轼传》：“轼取葑田积湖中，南北径三十里，为长堤以通行者，吴人种菱，歌之曰‘苏公堤’。”",
+          "quoteEn": "History of Song: \"Su Shi piled the cleared lake silt into a thirty-li causeway across West Lake, which the people of Wu gratefully named the Su Causeway.\""
         },
         {
           "year": 1094,
@@ -11849,8 +11893,8 @@
           "modernEn": "Huizhou, Guangdong",
           "titleZh": "再贬岭南·寓居惠州",
           "titleEn": "Banished South of the Nanling to Huizhou",
-          "descZh": "元祐更化曾召还翰林学士、知杭州颍州扬州定州；绍圣元年哲宗亲政后新党复起，年近六旬的苏轼远贬岭南惠州安置，捐犀带助修东新桥、西新桥。",
-          "descEn": "Following political reversals in 1094, the nearly sixty-year-old Su Shi was banished across the Nanling Mountains to Huizhou in Guangdong.",
+          "descZh": "绍圣初哲宗亲政新党复起，年近六旬自定州远贬岭南惠州安置，捐犀带助修东西新桥。",
+          "descEn": "When the New Faction returned to power in 1094, the nearly sixty-year-old Su Shi was banished from Dingzhou across the Nanling to Huizhou.",
           "quoteZh": "苏轼《食荔枝》：“日啖荔枝三百颗，不辞长作岭南人。”",
           "quoteEn": "Su Shi, Eating Lychees: \"Feasting on three hundred lychees a day, I would gladly remain a man of Lingnan forever.\""
         },
@@ -11874,8 +11918,8 @@
           "modernEn": "Danzhou, Hainan",
           "titleZh": "渡海琼州·敷文儋耳",
           "titleEn": "Across the Sea to Danzhou (Hainan Island)",
-          "descZh": "六十二岁再贬琼州别驾、昌化军（儋州）安置。跨海抵天涯绝岛，居桄榔庵、食芋饮水、讲学授徒，开启琼州文教之风，培养出海南首位举人姜唐佐。",
-          "descEn": "At sixty-two, banished across the Qiongzhou Strait to Hainan Island, where he lived in a palm-thatched hut and mentored Hainan’s first provincial graduate.",
+          "descZh": "六十二岁再贬琼州昌化军（儋州），居桄榔庵讲学授徒，培养出海南首位举人姜唐佐。",
+          "descEn": "Banished at sixty-two across the strait to Danzhou on Hainan Island, he taught in a palm-thatched hut and mentored Hainan’s first graduate.",
           "quoteZh": "苏轼《六月二十日夜渡海》：“九死南荒吾不恨，兹游奇绝冠平生。”",
           "quoteEn": "Su Shi, Crossing the Sea at Night: \"Nine deaths in the southern wilds leave me no regret—this wondrous journey crowns my entire life.\""
         },
@@ -11903,8 +11947,8 @@
           "modernEn": "Changzhou, Jiangsu",
           "titleZh": "遇赦北归·终老毗陵",
           "titleEn": "Pardoned Return North & Final Rest in Changzhou",
-          "descZh": "元符三年徽宗即位大赦北归，渡海经廉州、永州沿赣江北上；建中靖国元年七月廿八日病逝于常州顾塘桥孙氏馆，享年六十六岁。",
-          "descEn": "Pardoned in 1100, Su Shi traveled north by boat and passed away in Changzhou in August 1101 at age sixty-six, summing up his life in a final self-portrait poem.",
+          "descZh": "徽宗即位大赦北归，渡海沿赣江北上，建中靖国元年七月病逝于常州，年六十六。",
+          "descEn": "Pardoned upon Emperor Huizong’s accession, he journeyed north by boat and passed away in Changzhou in August 1101 at age sixty-six.",
           "quoteZh": "苏轼《自题金山画像》：“心似已灰之木，身如不系之舟。问汝平生功业，黄州惠州儋州。”",
           "quoteEn": "Su Shi, Inscription on My Portrait at Jinshan: \"My heart like ashen wood, my body an unmoored boat. Ask of my life’s achievements: Huangzhou, Huizhou, Danzhou.\""
         }

@@ -1921,8 +1921,8 @@
             ? 'Relic Provenance · Across Dynasties'
             : '点物溯史 · 传世国器流转'
           : this.locale === 'en'
-            ? 'Person Chronicle · Life Across Time & Space'
-            : '点人溯事 · 人物生平纪事'
+            ? 'Person Chronicle · Key Life Milestones'
+            : '点人溯事 · 生平大事记'
         : this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
       const chalKicker = this._id('txt-challenge-kicker');
       if (chalKicker) {
@@ -7577,8 +7577,8 @@
             ? 'Relic Provenance · Across Dynasties'
             : '点物溯史 · 传世国器流转'
           : isEn
-            ? 'Person Chronicle · Life Across Time & Space'
-            : '点人溯事 · 人物生平纪事';
+            ? 'Person Chronicle · Key Life Milestones'
+            : '点人溯事 · 生平大事记';
       }
 
       const headingEl = this._id('genealogy-heading');
@@ -7678,8 +7678,8 @@
               : ` · ${sameTimeCount} 处同途`
             : '';
         const summaryTxt = isEn
-          ? `${events.length} events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
-          : `共 ${events.length} 处史事 · 历 ${dynCount} 朝${encounterSuffix}`;
+          ? `${events.length} key events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
+          : `${isMulti ? '共' : '精选'} ${events.length} 处${isMulti ? '史事' : '代表史事'} · 历 ${dynCount} 朝${encounterSuffix}`;
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
@@ -7716,9 +7716,22 @@
         const yrStr = isEn
           ? this.formatYear(ev.year)
           : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
+        const coreSite = String(ev.siteZh || '').replace(/(?:府|寺|城)$/, '');
+        const modNoProv = String(ev.modernZh || '').replace(
+          /^(?:河北|山西|辽宁|吉林|黑龙江|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾|内蒙古|广西|西藏|宁夏|新疆)/,
+          ''
+        );
+        const isSameSite =
+          !ev.modernZh ||
+          ev.siteZh.includes(ev.modernZh) ||
+          ev.modernZh.includes(ev.siteZh) ||
+          (coreSite.length >= 2 && ev.modernZh.includes(coreSite)) ||
+          (modNoProv.length >= 2 && ev.siteZh.includes(modNoProv));
         const siteLabel = isEn
           ? ev.siteEn || this.trTerm(ev.siteZh)
-          : ev.siteZh + (ev.modernZh && !ev.siteZh.includes(ev.modernZh) ? `（今${ev.modernZh}）` : '');
+          : isSameSite
+            ? ev.siteZh
+            : `${ev.siteZh}（今${ev.modernZh}）`;
         const mapBadge = ev.isMapChange
           ? `<span class="ev-map-tag" title="${
               isEn ? 'Territory shift at this year' : '此节点触发版图演变'
