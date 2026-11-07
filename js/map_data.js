@@ -8731,11 +8731,22 @@ window.DYNASTY_DATA = [
       },
       {
         "year": 663,
-        "headline": "白江口海战：刘仁轨大破日本、百济水军，奠定东亚格局",
-        "site": "白江口",
+        "headline": "白江口海战大破日济水军；同年吐蕃禄东赞攻灭吐谷浑，诺曷钵奔凉州",
+        "site": "白江口 · 青海",
         "coord": [
           126.701,
           36.001
+        ],
+        "isMapChange": true,
+        "siteCoords": [
+          [
+            126.701,
+            36.001
+          ],
+          [
+            99.8,
+            36.9
+          ]
         ]
       },
       {
@@ -10615,8 +10626,12 @@ window.DYNASTY_DATA = [
         "snap": "s_tang_a2b"
       },
       {
-        "until": 668,
+        "until": 663,
         "snap": "s_tang_a3"
+      },
+      {
+        "until": 668,
+        "snap": "s_tang_a3b"
       },
       {
         "until": 670,

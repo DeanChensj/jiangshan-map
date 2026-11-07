@@ -1980,8 +1980,8 @@ window.EN_LOCALE = {
       "Chang'an & Liaodong"
     ],
     "tang:663": [
-      "Battle of Baekgang: Liu Rengui crushes the Yamato-Baekje fleet, reshaping East Asia",
-      "Baekgang Mouth"
+      "Battle of Baekgang crushes Yamato-Baekje fleet; Tubo annexes Tuyuhun & takes Qinghai",
+      "Baekgang Mouth & Qinghai"
     ],
     "beisong:1041": [
       "Battle of Haoshuichuan: Western Xia ambushes Ren Fu's Song army, spurring court reforms",
@@ -4208,7 +4208,8 @@ window.EN_LOCALE = {
     "577 — 581 · 北周灭北齐：周武帝宇文邕统一北方，与江南陈朝南北对峙": "577–581 · Northern Zhou Conquers Northern Qi and Unifies the North vs. Chen",
     "589 — 609 · 隋灭陈一统全国：结束三百年分裂，开凿南北大运河": "589–609 · Sui Conquers Chen & Reunifies China",
     "609 — 618 · 隋炀帝西巡开边：破吐谷浑，置西海、河源、鄯善、且末四郡": "609–618 · Emperor Yang Defeats Tuyuhun & Establishes Four Western Commanderies",
-    "657 — 668 · 苏定方灭西突厥：置昆陵、濛池都护府，唐朝西疆极于咸海": "657–668 · Conquest of Western Tujue; Tang Protectorates Reach the Aral Sea",
+    "657 — 662 · 苏定方灭西突厥：置昆陵、濛池都护府，唐朝西疆极于咸海": "657–662 · Conquest of Western Tujue; Tang Protectorates Reach the Aral Sea",
+    "663 — 668 · 吐蕃并吞吐谷浑：禄东赞攻灭吐谷浑，诺曷钵率残部内附凉州，青海高原入吐蕃": "663–668 · Tubo Annexes Tuyuhun; Nuohebo Retreats to Liangzhou & Qinghai Enters Tubo",
     "668 — 670 · 李勣灭高句丽：于平壤置安东都护府，盛唐六大都护府极盛疆域": "668–670 · Conquest of Goguryeo; Andong Protectorate at Pyongyang (Tang Zenith)",
     "670 — 676 · 吐蕃陷安西四镇：大非川兵败，唐罢龟兹、于阗、焉耆、疏勒四镇，安西都护府退治西州": "670–676 · Tibet Takes the Four Garrisons: After Dafeichuan, Tang Gives Up Kucha, Khotan, Karashahr and Kashgar; Anxi Falls Back to Xizhou",
     "676 — 702 · 安东内迁与设安南都护府：安东都护府移驻辽东，调露元年设安南都护府": "676–702 · Andong Protectorate Relocated to Liaodong; Annam Protectorate Set Up",
