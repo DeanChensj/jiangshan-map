@@ -10106,8 +10106,8 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
       "en": "Heirloom Seal of the Realm",
       "courtesyZh": "和氏之璧 · 秦制汉传 · 受命于天既寿永昌",
       "courtesyEn": "Heshi Bi Jade · Carved by Qin, Passed Through Han to Later Tang",
-      "descZh": "《资治通鉴》卷二百八十载：秦始皇命李斯磨楚和氏璧制之，文曰“受命于天，既寿永昌”。自秦子婴奉玺降汉，历两汉、魏晋、南朝、隋唐凡千余载，至公元936年后唐末帝李从珂登洛阳玄武楼自焚，遂失所在。",
-      "descEn": "Carved under Qin Shi Huang from the Heshi Bi jade with the eight characters 'Having received the Mandate from Heaven, may the Emperor lead a long and prosperous life', the seal passed from Qin through Han, Wei, Jin, the Southern Dynasties, Sui, and Tang before vanishing in the flames of Xuanwu Tower in 936 CE.",
+      "descZh": "秦始皇命李斯磨楚和氏璧所制，历两汉、魏晋、南朝、隋唐千余载，936年于洛阳玄武楼失传。",
+      "descEn": "Carved under Qin Shi Huang from the Heshi Bi jade, it passed from Qin and Han through Sui and Tang until vanishing at Xuanwu Tower in 936 CE.",
       "isRelic": true,
       "dynastyKey": "qin",
       "span": [
@@ -10142,10 +10142,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "完璧归赵·和氏璧入世",
           "titleEn": "Returning the Jade Intact to Zhao",
-          "descZh": "赵惠文王得楚和氏璧，秦昭王请易以十五城；蔺相如奉璧入秦，廷斥秦王无偿城之意，乃令从者衣褐怀璧从径道亡归邯郸。后秦王政二十年（前228年）王翦克邯郸虏赵王迁，和氏璧遂入于秦。",
-          "descEn": "King Huiwen of Zhao obtained the Heshi Bi jade; Lin Xiangru brought it back intact from Qin to Handan, until Qin conquered Zhao in 228 BCE and seized the jade.",
-          "quoteZh": "《资治通鉴·周纪四》卷四：“赵王得楚和氏璧，秦昭王欲之，请易以十五城……乃使其从者衣褐，怀其璧，从径道亡，归璧于赵。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 4: 'The King of Zhao obtained the Heshi Bi of Chu... Lin Xiangru had his attendant dress in coarse cloth, conceal the jade against his chest, and slip back to Zhao by side roads.'"
+          "descZh": "赵惠文王得楚和氏璧，蔺相如奉璧入秦完璧归赵；前228年秦破邯郸灭赵，璧入于秦。",
+          "descEn": "King Huiwen of Zhao obtained the Heshi Bi jade; Lin Xiangru returned it intact from Qin to Handan until Qin conquered Zhao in 228 BCE.",
+          "quoteZh": "《资治通鉴》：“乃使其从者衣褐，怀其璧，从径道亡，归璧于赵。”",
+          "quoteEn": "Zizhi Tongjian: 'Lin Xiangru had his attendant dress in coarse cloth, conceal the jade, and slip back to Zhao by side roads.'"
         },
         {
           "year": -221,
@@ -10173,10 +10173,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "始皇制玺·受命于天",
           "titleEn": "Qin Shi Huang Carves the Imperial Seal",
-          "descZh": "秦王政二十六年并吞六国，初称始皇帝；命丞相李斯磨和氏璧作皇帝玉玺，方四寸，虫鸟篆文曰“受命于天，既寿永昌”，由是定为天子正统信物。",
-          "descEn": "Upon unifying the Six States in 221 BCE, Qin Shi Huang had Chancellor Li Si carve the Heshi Bi into the Imperial Seal inscribed 'Having received the Mandate from Heaven, may the Emperor lead a long and prosperous life.'",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十胡三省注引崔浩曰：“李斯磨和氏璧作之，汉诸帝世传服之，谓之传国玺……文曰‘受命于天，既寿永昌’。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 280 (Cui Hao note): 'Li Si ground and carved it from the Heshi Bi; the Han emperors wore it through the generations and called it the Heirloom Seal of the Realm.'"
+          "descZh": "秦始皇并六国称帝，命李斯磨和氏璧作皇帝玉玺，篆文“受命于天，既寿永昌”，定为正统信物。",
+          "descEn": "Unifying the Six States in 221 BCE, Qin Shi Huang had Li Si carve the Heshi Bi into the Imperial Seal inscribed with eight characters of Heaven’s Mandate.",
+          "quoteZh": "《资治通鉴》胡注引崔浩：“李斯磨和氏璧作之，文曰‘受命于天，既寿永昌’。”",
+          "quoteEn": "Zizhi Tongjian (Cui Hao note): 'Li Si carved it from the Heshi Bi; the Han emperors wore it through the generations as the Heirloom Seal.'"
         },
         {
           "year": -206,
@@ -10190,10 +10190,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "子婴奉玺·降于轵道",
           "titleEn": "Ziying Surrenders the Seal at Zhidao",
-          "descZh": "秦二世三年冬十月，沛公刘邦破峣关军至霸上；秦王子婴素车白马，系颈以组，封皇帝玺、符、节降于轵道旁。汉兴，高祖佩之，世名“汉传国玺”。",
-          "descEn": "In the tenth month of 206 BCE, Qin ruler Ziying rode a white-horse cart to Zhidao near Bashang and surrendered the sealed Imperial Jade Seal to Liu Bang, who later wore it as founding Emperor of Han.",
-          "quoteZh": "《资治通鉴·汉纪一》卷九：“冬，十月，沛公至霸上。秦王子婴素车白马，系颈以组，封皇帝玺、符、节，降轵道旁。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 9: 'In winter, the tenth month, the Lord of Pei reached Bashang. King Ziying of Qin, in a plain cart drawn by a white horse, sealed the Imperial Seal, tallies, and staffs, and surrendered beside Zhidao.'"
+          "descZh": "刘邦破峣关至霸上，秦王子婴素车白马封皇帝玺符节降于轵道旁；汉高祖佩之，称“汉传国玺”。",
+          "descEn": "In 206 BCE, Qin ruler Ziying rode a white-horse cart to Zhidao near Bashang and surrendered the Imperial Seal to Liu Bang, founding Emperor of Han.",
+          "quoteZh": "《资治通鉴》：“秦王子婴素车白马，系颈以组，封皇帝玺、符、节，降轵道旁。”",
+          "quoteEn": "Zizhi Tongjian: 'King Ziying of Qin, in a plain cart drawn by a white horse, sealed the Imperial Seal and tallies and surrendered beside Zhidao.'"
         },
         {
           "year": 8,
@@ -10207,10 +10207,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "王莽逼宫·投玺崩角",
           "titleEn": "Empress Dowager Wang Hurls the Seal, Chipping a Horn",
-          "descZh": "初始元年冬十二月，王莽篡汉建新，遣安阳侯王舜入未央宫长乐室逼太皇太后王政君索取传国玺；太后怒骂王莽背恩，出汉传国玺投之于地以授王舜，玺上螭一角微崩，后以黄金补之。",
-          "descEn": "Usurping the Han throne in 8 CE, Wang Mang sent Wang Shun to demand the seal from Grand Empress Dowager Wang Zhengjun; she hurled the seal to the floor in fury, chipping one of its dragon horns (later mended with gold).",
-          "quoteZh": "《资治通鉴·汉纪二十八》卷三十六：“乃出汉传国玺，投之地以授舜，曰：‘我老已死，如而兄弟，今族灭也！’……玺上螭一角微崩。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 36: 'She brought out the Han Heirloom Seal and hurled it to the ground for Wang Shun... One horn of the coiled dragon on the seal was slightly chipped.'"
+          "descZh": "王莽篡汉遣王舜入未央宫索玺，太皇太后王政君怒投传国玺于地，螭一角微崩，后以金补之。",
+          "descEn": "Usurping the Han throne in 8 CE, Wang Mang demanded the seal from Grand Empress Dowager Wang, who hurled it down and chipped a dragon horn.",
+          "quoteZh": "《资治通鉴》：“乃出汉传国玺，投之地以授舜……玺上螭一角微崩。”",
+          "quoteEn": "Zizhi Tongjian: 'She brought out the Han Heirloom Seal and hurled it to the ground for Wang Shun; one horn of the dragon was slightly chipped.'"
         },
         {
           "year": 27,
@@ -10234,10 +10234,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "宜阳受降·玺归光武",
           "titleEn": "Liu Penzi Surrenders the Seal to Guangwu at Yiyang",
-          "descZh": "新莽败亡，传国玺先归更始帝刘玄，赤眉破长安后复立刘盆子；东汉建武三年春正月甲子，冯异破赤眉于崤底，刘盆子与丞相徐宣肉袒降于宜阳，奉上所得传国玺绶，玉玺重归东汉洛阳宫。",
-          "descEn": "After Wang Mang's fall, the seal passed to the Gengshi Emperor and the Red Eyebrows; in the first month of 27 CE at Yiyang, Liu Penzi surrendered the Heirloom Seal to Emperor Guangwu (Liu Xiu).",
-          "quoteZh": "《资治通鉴·汉纪三十三》卷四十一：“建武三年春正月，甲子，盆子及丞相徐宣以下三十余人肉袒降，上所得传国玺绶，积兵甲宜阳城西，与熊耳山齐。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 41: 'In the first month of the third year of Jianwu, Liu Penzi and Chancellor Xu Xuan bared their shoulders in surrender and presented the Heirloom Seal and ribbon they had captured at Yiyang.'"
+          "descZh": "新莽亡后玉玺转入赤眉军；建武三年冯异破赤眉于崤底，刘盆子肉袒降于宜阳，奉玺归光武帝。",
+          "descEn": "After Wang Mang’s fall the seal passed to the Red Eyebrows; in 27 CE at Yiyang, Liu Penzi surrendered the Heirloom Seal to Emperor Guangwu.",
+          "quoteZh": "《资治通鉴》：“盆子及丞相徐宣以下三十余人肉袒降，上所得传国玺绶。”",
+          "quoteEn": "Zizhi Tongjian: 'Liu Penzi and Chancellor Xu Xuan bared their shoulders in surrender at Yiyang and presented the Heirloom Seal and ribbon.'"
         },
         {
           "year": 191,
@@ -10251,10 +10251,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "洛阳修陵·孙坚得玺",
           "titleEn": "Sun Jian Retrieves the Seal from the Palace Well in Luoyang",
-          "descZh": "初平元年董卓胁献帝西迁长安、焚毁洛阳宫室，中官投传国玺于井；初平二年春二月，破虏将军孙坚进兵洛阳宣阳城门，击走吕布，扫除汉室宗庙祠以太牢，军士于城南甄官井中探得汉传国玺。",
-          "descEn": "After Dong Zhuo burned Luoyang and fled west, General Sun Jian entered the ruined capital in early 191 CE, swept the ancestral temples, and recovered the Heirloom Seal from the Zhenguan Well south of the palace.",
-          "quoteZh": "《资治通鉴·汉纪五十二》卷六十：“坚进洛阳宣阳城门，更击吕布，布复破走。坚乃扫除宗庙，祠以太牢；得传国玺于城南甄官井中。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 60: 'Sun Jian advanced through the Xuanyang Gate of Luoyang and routed Lü Bu. He swept the ancestral temples, sacrificed with the grand offering, and obtained the Heirloom Seal from the Zhenguan Well south of the city.'"
+          "descZh": "董卓焚洛阳西迁时中官投玺于井；初平二年孙坚进兵洛阳扫除汉宗庙，于城南甄官井探得传国玺。",
+          "descEn": "After Dong Zhuo burned Luoyang, General Sun Jian entered the ruined capital in 191 CE, swept the Han temples, and recovered the seal from Zhenguan Well.",
+          "quoteZh": "《资治通鉴》：“坚乃扫除宗庙，祠以太牢；得传国玺于城南甄官井中。”",
+          "quoteEn": "Zizhi Tongjian: 'Sun Jian swept the ancestral temples, sacrificed with the grand offering, and obtained the Heirloom Seal from the Zhenguan Well.'"
         },
         {
           "year": 199,
@@ -10278,10 +10278,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "袁术僭号·徐璆献玺",
           "titleEn": "Yuan Shu Usurps the Imperial Title; Xu Qiu Returns the Seal",
-          "descZh": "袁术拘孙坚妻吴氏夺取传国玺，于建安二年（197年）在寿春僭号仲氏，众叛亲离；建安四年六月袁术败亡呕血死，广陵太守徐璆截获其传国玺，亲诣许都献还汉献帝。",
-          "descEn": "Warlord Yuan Shu seized the seal from Sun Jian's widow and declared himself emperor at Shouchun in 197 CE; upon his death in 199 CE, Grand Administrator Xu Qiu recovered the seal and presented it back to the Han court at Xu.",
-          "quoteZh": "《资治通鉴·汉纪五十四》卷六十二：“袁术以得传国玺，遂谋称帝。”卷六十三：“广陵太守徐璆得其传国玺，诣许献之。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 62–63: 'Having obtained the Heirloom Seal, Yuan Shu plotted to declare himself emperor... Grand Administrator of Guangling Xu Qiu recovered his Heirloom Seal and traveled to Xu to present it to the court.'"
+          "descZh": "袁术夺孙坚妻传国玺于寿春僭号仲氏；建安四年袁术败死，广陵太守徐璆得玺献还汉献帝于许都。",
+          "descEn": "Warlord Yuan Shu seized the seal and declared himself emperor at Shouchun; upon his death in 199 CE, Xu Qiu recovered and returned it to the Han court.",
+          "quoteZh": "《资治通鉴》：“袁术以得传国玺，遂谋称帝……广陵太守徐璆得其传国玺，诣许献之。”",
+          "quoteEn": "Zizhi Tongjian: 'Having obtained the Heirloom Seal, Yuan Shu plotted to declare himself emperor... Xu Qiu recovered the Seal and presented it at Xu.'"
         },
         {
           "year": 220,
@@ -10299,10 +10299,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "繁阳受禅·汉魏易代",
           "titleEn": "Cao Pi Receives the Seal of Abdication at Fanyang",
-          "descZh": "延康元年冬十月乙卯，汉献帝刘协遣行御史大夫张音持节奉传国玺绶诏册禅位于魏；辛未，魏王曹丕于许昌西南繁阳升受禅坛受玺绶即位，改元黄初。景元四年（263年）邓艾克成都，蜀汉刘禅亦送玺绶归洛阳；泰始元年（265年）司马炎受魏禅，玺归西晋。",
-          "descEn": "In the tenth month of 220 CE, Emperor Xian of Han sent Zhang Yin to present the Heirloom Seal to Cao Pi on the Abdication Altar at Fanyang near Xuchang, inaugurating the Wei dynasty (and passing to Western Jin in 265 CE).",
-          "quoteZh": "《资治通鉴·魏纪一》卷六十九：“使行御史大夫事张音持节奉玺绶诏册，禅位于魏……辛未，升坛受玺绶，即皇帝位。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 69: 'Acting Grandee Secretary Zhang Yin was sent bearing credentials to present the Seal, ribbon, and edict of abdication to Wei... On day Xinwei, Cao Pi ascended the altar, received the Seal and ribbon, and took the imperial throne.'"
+          "descZh": "汉献帝遣张音持节奉玺绶禅位于魏，曹丕于许昌繁阳升受禅坛受玺即位（265年司马炎受禅归晋）。",
+          "descEn": "In 220 CE Emperor Xian sent the Heirloom Seal to Cao Pi at the Fanyang Abdication Altar to found Cao Wei (later passing to Western Jin in 265 CE).",
+          "quoteZh": "《资治通鉴》：“使行御史大夫事张音持节奉玺绶诏册，禅位于魏……升坛受玺绶。”",
+          "quoteEn": "Zizhi Tongjian: 'Zhang Yin was sent bearing credentials to present the Seal and edict of abdication to Wei; Cao Pi ascended the altar and received it.'"
         },
         {
           "year": 311,
@@ -10320,10 +10320,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "永嘉之乱·玺没平阳",
           "titleEn": "Disaster of Yongjia: The Seal Taken to Pingyang",
-          "descZh": "西晋永嘉五年夏六月丁酉，汉赵呼延晏、刘曜、王弥攻陷洛阳宣阳门，纵兵大掠，俘晋怀帝司马炽及传国六玺送至平阳；后刘曜迁长安，咸和四年（329年）石勒灭前赵，玉玺复转入后赵襄国、邺城。",
-          "descEn": "In the sixth month of 311 CE during the Disaster of Yongjia, Han-Zhao forces sacked Luoyang and carried Emperor Huai of Jin along with the Heirloom Seal north to Pingyang, whence it later passed to Later Zhao at Ye.",
-          "quoteZh": "《资治通鉴·晋纪九》卷八十七：“曜、弥入自宣阳门，升太极前殿，纵兵大掠……迁帝及惠羊后、传国六玺于平阳。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 87: 'Liu Yao and Wang Mi entered through the Xuanyang Gate, ascended the Taiji Front Hall... and removed the Emperor, Empress Yang, and the Six Heirloom Seals to Pingyang.'"
+          "descZh": "永嘉五年汉赵刘曜、王弥攻陷洛阳，俘晋怀帝及传国六玺北迁平阳；后石勒灭前赵，玺入后赵邺城。",
+          "descEn": "During the 311 CE Disaster of Yongjia, Han-Zhao forces sacked Luoyang and carried Emperor Huai and the Seal to Pingyang (later passing to Later Zhao).",
+          "quoteZh": "《资治通鉴》：“曜、弥入自宣阳门……迁帝及惠羊后、传国六玺于平阳。”",
+          "quoteEn": "Zizhi Tongjian: 'Liu Yao and Wang Mi entered through Xuanyang Gate and removed the Emperor and the Six Heirloom Seals to Pingyang.'"
         },
         {
           "year": 352,
@@ -10351,10 +10351,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "邺城秘迎·奉还建康",
           "titleEn": "Returned South from Ye to the Eastern Jin Capital Jiankang",
-          "descZh": "东晋永和八年（352年）冉魏将蒋干困守邺城，乞师于晋；濮阳太守戴施入邺助守，诡称督护何融迎粮，阴令怀传国玺送至枋头；谢尚遣振武将军胡彬率骑三百迎玺，八月奉致建康，自永嘉陷北四十一载复归晋室，历宋、齐、梁、陈相传。",
-          "descEn": "In 352 CE during the siege of Ye, Eastern Jin magistrate Dai Shi secretly smuggled the Heirloom Seal out of Ye to Fangtou; General Xie Shang escorted it with 300 cavalry to Jiankang, where it remained through the Southern Dynasties.",
-          "quoteZh": "《资治通鉴·晋纪二十一》卷九十九：“施宣言使督护何融迎粮，阴令怀玺送于枋头……尚遣振武将军胡彬等骑三百迎玺，致诸建康；百僚毕贺。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 99: 'Dai Shi announced that Protector He Rong was going to fetch grain, while secretly ordering him to carry the Seal against his chest to Fangtou... Xie Shang sent General Hu Bin with 300 horsemen to escort the Seal to Jiankang, and all officials offered congratulations.'"
+          "descZh": "冉魏困守邺城时，晋太守戴施秘令怀玺送枋头，谢尚遣骑迎归建康，历宋齐梁陈相传。",
+          "descEn": "During the 352 CE siege of Ye, Jin magistrate Dai Shi smuggled the Seal out to Fangtou; General Xie Shang escorted it to Jiankang for the Southern Dynasties.",
+          "quoteZh": "《资治通鉴》：“阴令怀玺送于枋头……尚遣振武将军胡彬等骑三百迎玺，致诸建康。”",
+          "quoteEn": "Zizhi Tongjian: 'Dai Shi secretly ordered him to carry the Seal to Fangtou; Xie Shang sent 300 horsemen to escort the Seal to Jiankang.'"
         },
         {
           "year": 589,
@@ -10372,10 +10372,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "平陈入隋·江都流落",
           "titleEn": "Sui Conquest of Chen and Fall at Jiangdu",
-          "descZh": "开皇九年（589年）正月隋军入建康灭陈，收传国玺献于大兴宫；大业十四年（618年）三月宇文化及于江都发动兵变弑隋炀帝，夺传国玺北还，窦建德破宇文化及于聊城复得之；武德三年（620年）突厥处罗可汗迎隋萧后及杨政道入塞北，窦建德遂遣使奉传国玺入于突厥。",
-          "descEn": "Captured by Sui when Chen fell in 589 CE, the seal was taken to Jiangdu by Emperor Yang; after the 618 CE Jiangdu coup, Dou Jiande seized it from Yuwen Huaji and sent it with Empress Xiao into the Eastern Turkic Khaganate.",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：“历宋、齐、梁、陈，至于隋。隋亡，萧后携以入突厥。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 280: 'It passed through Song, Qi, Liang, and Chen down to Sui. When Sui fell, Empress Xiao carried it with her into the Eastern Turks.'"
+          "descZh": "隋灭陈收传国玺入大兴宫；618年江都兵变宇文化及夺玺北还，窦建德复得之，后随隋萧后入东突厥。",
+          "descEn": "Taken by Sui when Chen fell in 589 CE, the Seal was seized at Jiangdu in 618 CE, recovered by Dou Jiande, and carried with Empress Xiao into the Eastern Turks.",
+          "quoteZh": "《资治通鉴》：“历宋、齐、梁、陈，至于隋。隋亡，萧后携以入突厥。”",
+          "quoteEn": "Zizhi Tongjian: 'It passed through Song, Qi, Liang, and Chen down to Sui. When Sui fell, Empress Xiao carried it into the Eastern Turks.'"
         },
         {
           "year": 630,
@@ -10403,10 +10403,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "李靖破胡·萧后归唐",
           "titleEn": "Li Jing Defeats the Eastern Turks; Empress Xiao Returns the Seal to Tang",
-          "descZh": "唐太宗贞观四年（630年）春正月李靖奇袭定襄，二月大破东突厥于阴山，颉利可汗败走被擒；突厥奉隋萧皇后及杨政道归顺，五月辛未至长安，萧后遂奉传国玺归于大唐，历有唐一代宝藏于大内。",
-          "descEn": "In 630 CE, Tang general Li Jing crushed the Eastern Turks at Dingxiang and Yinshan; former Sui Empress Xiao returned to Chang'an in the fifth month and presented the Heirloom Seal to Emperor Taizong of Tang.",
-          "quoteZh": "《资治通鉴·唐纪九》卷一百九十三：“五月，辛未，以隋萧后、政道至京师。”卷二百八十：“太宗贞观四年，李靖破突厥，萧后与政道奉之归于唐。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 193 & 280: 'In the fourth year of Zhenguan under Emperor Taizong, Li Jing defeated the Turks, and Empress Xiao with Yang Zhengdao presented the Seal back to Tang.'"
+          "descZh": "贞观四年李靖奇袭定襄、大破东突厥于阴山，隋萧后与杨政道归顺至长安，奉传国玺归于大唐。",
+          "descEn": "In 630 CE, Tang general Li Jing crushed the Eastern Turks at Dingxiang; former Sui Empress Xiao returned to Chang’an and presented the Seal to Emperor Taizong.",
+          "quoteZh": "《资治通鉴》：“太宗贞观四年，李靖破突厥，萧后与政道奉之归于唐。”",
+          "quoteEn": "Zizhi Tongjian: 'In the fourth year of Zhenguan, Li Jing defeated the Turks, and Empress Xiao with Yang Zhengdao presented the Seal back to Tang.'"
         },
         {
           "year": 936,
@@ -10430,10 +10430,10 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
           ],
           "titleZh": "玄武楼焚·千古绝响",
           "titleEn": "Lost in the Flames of Xuanwu Tower in Luoyang",
-          "descZh": "五代后唐清泰三年（后晋天福元年，936年）闰十一月，石敬瑭引契丹兵南下逼洛阳；辛巳，后唐末帝李从珂聚后妃及传国宝、器玩，登洛阳宫城玄武楼纵火自焚。自秦始皇制玺至此凡一千一百五十七年，传国玉玺自此失其所在。",
-          "descEn": "In the intercalary eleventh month of 936 CE, as Shi Jingtang and Khitan troops closed on Luoyang, Later Tang's final emperor Li Congke gathered the Heirloom Seal on Xuanwu Tower and set himself ablaze—whereupon the 1,157-year-old seal vanished from history.",
-          "quoteZh": "《资治通鉴·后晋纪一》卷二百八十：“辛巳，唐主聚后妃以下及传国宝、器玩，登玄武楼，纵火自焚……至唐末帝自燔，自是传国宝失所在。”",
-          "quoteEn": "Zizhi Tongjian, Vol. 280: 'On day Xinsi, the Tang ruler gathered the empress, consorts, the Heirloom Seal, and palace treasures, ascended Xuanwu Tower, and set himself on fire... From the time the final Emperor of Later Tang burned himself, the Heirloom Seal of the Realm was lost.'"
+          "descZh": "石敬瑭引契丹兵逼洛阳，后唐末帝李从珂携传国宝登洛阳玄武楼自焚，传世千余载之秦玺自此失传。",
+          "descEn": "As Shi Jingtang and Khitan troops closed on Luoyang in 936 CE, Later Tang’s final emperor Li Congke burned himself with the Seal on Xuanwu Tower, and it vanished.",
+          "quoteZh": "《资治通鉴》：“唐主聚后妃以下及传国宝、器玩，登玄武楼，纵火自焚……自是传国宝失所在。”",
+          "quoteEn": "Zizhi Tongjian: 'The Tang ruler gathered the empress, consorts, and the Heirloom Seal, ascended Xuanwu Tower, and set himself on fire; thereafter the Seal was lost.'"
         }
       ],
       "evCount": 13
