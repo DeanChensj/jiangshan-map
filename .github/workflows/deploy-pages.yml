@@ -1,0 +1,79 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'skills/**'
+      - 'data/**'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Stage Runtime Static Bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Stage runtime static files
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='_site/' \
+            --exclude='data/' \
+            --exclude='docs/' \
+            --exclude='scripts/' \
+            --exclude='skills/' \
+            --exclude='geojson/demo.html' \
+            --exclude='assets/hero_demo_*.webp' \
+            --exclude='assets/preview_*.webp' \
+            --exclude='/*.md' \
+            --exclude='/Dockerfile' \
+            --exclude='/docker-compose.yml' \
+            --exclude='/.dockerignore' \
+            --exclude='/.gitignore' \
+            --exclude='/.gitattributes' \
+            --exclude='.DS_Store' \
+            ./ _site/
+          du -sh _site
+          echo "Staged file count: $(find _site -type f | wc -l)"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1200000
