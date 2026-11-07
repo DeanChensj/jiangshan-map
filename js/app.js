@@ -7637,14 +7637,6 @@
           loreEl.classList.add('is-hidden');
         } else {
           const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
-          const enAliases = (profile.aliases || []).filter((a) => !/[\u4e00-\u9fff]/.test(a));
-          const aliasHint = isEn
-            ? enAliases.length
-              ? `Also searched as: ${enAliases.slice(0, 4).join(' · ')}`
-              : ''
-            : profile.aliases && profile.aliases.length
-              ? `字号 / 检索词：${profile.aliases.slice(0, 4).join(' · ')}`
-              : '';
           const badgeLabel = profile.isRelic
             ? isEn
               ? 'Imperial Relic'
@@ -7652,9 +7644,7 @@
             : isEn
               ? 'Biography'
               : '人物小传';
-          const descText = profile.isRelic
-            ? (isEn ? profile.descEn : profile.descZh) || aliasHint
-            : aliasHint;
+          const descText = profile.isRelic ? (isEn ? profile.descEn : profile.descZh) || '' : '';
 
           if (subTitle || descText) {
             loreEl.innerHTML =
