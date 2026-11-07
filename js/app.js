@@ -12374,6 +12374,7 @@
       const eventEntries = [];
       const eventPinyin = window.ATLAS_EVENT_PINYIN || {};
       const eventInitials = eventPinyin.initials || {};
+      const curatedInitials = eventPinyin.curatedInitials || {};
       for (const d of this.dynasties) {
         for (const [eventIdx, m] of (d.milestones || []).entries()) {
           const enHead = this._enMilestoneHeadline(d, m);
@@ -12392,6 +12393,7 @@
             subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
             pinyinKeys: [...(eventPinyin.milestones?.[d.key]?.[eventIdx] || [])],
             initialKeys: [...(eventInitials.milestones?.[d.key]?.[eventIdx] || [])],
+            curatedInitialKeys: curatedInitials.milestones?.[d.key]?.[eventIdx] || [],
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           };
           entries.push(evEntry);
@@ -12407,6 +12409,24 @@
         if (seenLm.has(uid)) continue;
         seenLm.add(uid);
         const lmKeywords = `${lm.zh} ${lm.site || ''} ${lm.en || ''} ${lm.siteEn || ''} ${lm.year}`.toLowerCase();
+        const yrEn = lm.year <= 0 ? `${-lm.year || 1} BCE` : `${lm.year} CE`;
+        const landmark = {
+          milestone: {
+            year: lm.year,
+            headline: lm.zh,
+            headlineEn: lm.en,
+            site: lm.site,
+            siteEn: lm.siteEn,
+            coord: lm.coord,
+          },
+          titleZh: lm.zh,
+          subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
+          titleEn: lm.en || lm.zh,
+          subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
+          pinyinKeys: eventPinyin.landmarks?.[eventIdx] || [],
+          initialKeys: eventInitials.landmarks?.[eventIdx] || [],
+          curatedInitialKeys: curatedInitials.landmarks?.[eventIdx] || [],
+        };
         const existingEv = eventEntries.find(
           (ev) =>
             ev.rawYear === lm.year &&
@@ -12416,15 +12436,8 @@
         );
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
-          const pinyinKeys = eventPinyin.landmarks?.[eventIdx] || [];
-          const initialKeys = eventInitials.landmarks?.[eventIdx] || [];
-          if (pinyinKeys.length || initialKeys.length) {
-            (existingEv.altPinyin ||= []).push({
-              titleZh: lm.zh,
-              titleEn: lm.en,
-              pinyinKeys,
-              initialKeys,
-            });
+          if (landmark.pinyinKeys.length || landmark.initialKeys.length) {
+            (existingEv.altPinyin ||= []).push(landmark);
           }
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
           existingEv.altTitlesZh.push(lm.zh);
@@ -12438,28 +12451,13 @@
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
           this.dynasties[0];
-        const yrEn = lm.year <= 0 ? `${-lm.year || 1} BCE` : `${lm.year} CE`;
-        const milestoneObj = {
-          year: lm.year,
-          headline: lm.zh,
-          headlineEn: lm.en,
-          site: lm.site,
-          siteEn: lm.siteEn,
-          coord: lm.coord,
-        };
         const lmEntry = {
+          ...landmark,
           kind: 'event',
           dynasty: d,
           year: this._clampYearToDynasty(d, lm.year),
           rawYear: lm.year,
-          milestone: milestoneObj,
           coord: lm.coord,
-          titleZh: lm.zh,
-          subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
-          titleEn: lm.en || lm.zh,
-          subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
-          pinyinKeys: [...(eventPinyin.landmarks?.[eventIdx] || [])],
-          initialKeys: [...(eventInitials.landmarks?.[eventIdx] || [])],
           keywords: `${lmKeywords} 史事 事件 战役 名胜`,
         };
         entries.push(lmEntry);
@@ -12797,7 +12795,10 @@
       const qFold = isAscii ? fold(q) : '';
       // Additional event fallback only; existing query normalization and scores stay intact.
       const pinyinQuery = fold(
-        q.normalize('NFD').replace(/u\u0308/g, 'v').replace(/[\u0300-\u036f]/g, '')
+        q.normalize('NFD')
+          .replace(/u\u0308/g, 'v')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\p{Punctuation}/gu, '')
       );
       const index = this._ensureSearchIndex();
       const eraResults = this._matchEraResults(normQ);
@@ -13039,14 +13040,16 @@
         let source;
         let score = 0;
         let completionLength = Infinity;
+        let curatedCompletion = false;
         if (query.length >= 4) {
           source = sources.find(entry => entry.pinyinKeys?.includes(query));
-          if (!source && !hasEraMatch) {
-            source = sources.find(entry => entry.pinyinKeys?.some(key => key.includes(query)));
-          }
           if (source) {
-            score = 45;
-          } else {
+            score = 50;
+          } else if (!hasEraMatch) {
+            source = sources.find(entry => entry.pinyinKeys?.some(key => key.includes(query)));
+            if (source) score = 45;
+          }
+          if (!source) {
             source = sources.find(entry => entry.initialKeys?.includes(query));
             if (source) score = 40;
           }
@@ -13054,10 +13057,12 @@
         if (!source && ranked.length === 0 && matches.length === 0) {
           for (const entry of sources) {
             for (const key of entry.initialKeys || []) {
-              if (key.length > query.length && key.length < completionLength && key.startsWith(query)) {
-                completionLength = key.length;
-                source = entry;
-              }
+              if (key.length <= query.length || key.length > completionLength || !key.startsWith(query)) continue;
+              const curated = entry.curatedInitialKeys?.includes(key) || false;
+              if (key.length === completionLength && (!curated || curatedCompletion)) continue;
+              completionLength = key.length;
+              curatedCompletion = curated;
+              source = entry;
             }
           }
           if (source) score = 35;
@@ -13065,17 +13070,21 @@
         if (!source) continue;
         const result = {
           ...item,
+          milestone: source.milestone,
           titleZh: source.titleZh,
-          titleEn: source.titleEn || item.titleEn,
+          titleEn: source.titleEn,
+          subZh: source.subZh,
+          subEn: source.subEn,
           score: score + (item.dynasty === this.dynasties[this.dynastyIdx] ? 4 : 0),
           bucket: 'event',
         };
         if (completionLength === Infinity) matches.push(result);
-        else prefixes.push({result, completionLength});
+        else prefixes.push({result, completionLength, curatedCompletion});
       }
       const candidates = matches.length
         ? matches.sort((a, b) => b.score - a.score)
-        : prefixes.sort((a, b) => a.completionLength - b.completionLength || b.result.score - a.result.score)
+        : prefixes.sort((a, b) => a.completionLength - b.completionLength ||
+          Number(b.curatedCompletion) - Number(a.curatedCompletion) || b.result.score - a.result.score)
           .map(entry => entry.result);
       const limit = matches.length ? 12 : 4;
       for (const item of candidates) {

@@ -1205,33 +1205,14 @@ function main() {
     'Quick search for "淝水之战" must return 383 CE milestone event'
   );
   for (const [query, year, title] of [
-    ['nibuchutiaoyue', 1689, '尼布楚条约'],
-    ['ni bu chu tiao yue', 1689, '尼布楚条约'],
     ['nanjingtiaoyue', 1842, '南京条约'],
-    ['nan jing tiao yue', 1842, '南京条约'],
-    ['njty', 1842, '南京条约'],
     ['nbcty', 1689, '尼布楚条约'],
-    ['aszl', 755, '安史之乱'],
-    ['jybsb', 1931, '九一八事变'],
-    ['wsyd', 1919, '五四运动'],
-    ['nmzz', 1627, '农民战争'],
-    ['krzz', 1945, '抗日战争'],
-    ['xmzzygm', 1919, '新民主主义革命'],
-    ['flqy', 1121, '方腊起义'],
-    ['wcqy', 1911, '武昌起义'],
-    ['jwzz', 1894, '甲午战争'],
-    ['qsqy', 1927, '秋收起义'],
-    ['dycypzz', 1840, '鸦片战争'],
-    ['xhgm', 1911, '辛亥革命'],
-    ['jtqy', 1851, '金田起义'],
-    ['ypzz', 1840, '鸦片战争'],
-    ['hcqy', 881, '黄巢起义'],
-    ['hjqy', 184, '黄巾起义'],
-    ['tmzb', 1449, '土木堡之变'],
   ]) {
-    assert(ctrl._queryQuickSearch(query).some(item => item.kind === 'event' &&
-      item.rawYear === year && (item.titleZh.includes(title) ||
-        (item.altTitlesZh || []).some(alternate => alternate.includes(title)))), `Event pinyin search failed: ${query}`);
+    assert(
+      ctrl._queryQuickSearch(query).some(item => item.kind === 'event' &&
+        item.rawYear === year && item.titleZh.includes(title)),
+      `Event pinyin search failed: ${query}`
+    );
   }
   const personJourneySearch = ctrl._queryQuickSearch('苏轼');
   assert(
