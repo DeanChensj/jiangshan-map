@@ -362,6 +362,32 @@ function main() {
       !hydro.lakes.some((l) => l.name === 'Juye Ze' && isHydroActive(l, 1400)),
     'Juye Ze / Liangshan Marsh should vanish after 1280 CE'
   );
+  assert(
+    Array.isArray(hydro.paleoSea) && hydro.paleoSea.length >= 3,
+    'HYDRO_DATA.paleoSea must contain historical paleo-sea shoreline masks'
+  );
+  assert(
+    hydro.paleoSea.filter((p) => isHydroActive(p, -210)).length >= 1 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 741)).length >= 1 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 1500)).length >= 1 &&
+      hydro.paleoSea.filter((p) => p.name.startsWith('Bohai') && isHydroActive(p, 1900)).length === 0,
+    'Bohai & Yellow River Delta paleo-sea masks must cover <220, 220–1128, and 1128–1855, and vanish from 1855 CE onward'
+  );
+  const wangJing = hydro.rivers.find((r) => r.name === 'Huang' && r.appear === 11 && r.vanish === 1048);
+  assert(
+    wangJing &&
+      JSON.stringify(wangJing.lines[0][wangJing.lines[0].length - 1]) === JSON.stringify([118.09, 37.56]),
+    'Wang Jing Yellow River course (11–1048 CE) must terminate at the Qiancheng/Lijin estuary [118.09, 37.56]'
+  );
+  const jiEarly = hydro.rivers.find((r) => r.name === 'Ji' && r.vanish === 1128);
+  const jiLate = hydro.rivers.find((r) => r.name === 'Ji' && r.appear === 1128 && r.vanish === 1855);
+  assert(
+    jiEarly &&
+      JSON.stringify(jiEarly.lines[0][jiEarly.lines[0].length - 1]) === JSON.stringify([118.14, 37.5]) &&
+      jiLate &&
+      JSON.stringify(jiLate.lines[0][jiLate.lines[0].length - 1]) === JSON.stringify([118.46, 37.68]),
+    'Ji / Daqing River must be split into <1128 ([118.14, 37.5]) and 1128–1855 ([118.46, 37.68]) estuaries'
+  );
 
   // 2. Validate modern provincial outlines
   assert(Array.isArray(provinces) && provinces.length >= 34, 'PROVINCE_OUTLINES must contain >= 34 provinces');
@@ -581,6 +607,38 @@ function main() {
       }
     }
   }
+
+  // 4a. Validate P0-B Bohai Bay & Yellow River Delta shoreline calibration & Dengzhou coastal seat
+  const qinPol = snapshots.s_qin_a.polities.find((p) => p.title === '秦');
+  const tangPol = snapshots.s_tang_b.polities.find((p) => p.title === '唐');
+  const mingPol = snapshots.s_ming_a.polities.find((p) => p.title === '明');
+  const qingEarlyPol = snapshots.s_qing_d.polities.find((p) => p.title === '清');
+  const qingLatePol = snapshots.s_qing_e2.polities.find((p) => p.title === '清');
+  assert(
+    qinPol &&
+      tangPol &&
+      mingPol &&
+      qingEarlyPol &&
+      qingLatePol &&
+      !pointInShape(118.95, 37.8, qinPol.shape) &&
+      !pointInShape(118.95, 37.8, tangPol.shape) &&
+      !pointInShape(118.95, 37.8, mingPol.shape) &&
+      !pointInShape(118.95, 37.8, qingEarlyPol.shape) &&
+      pointInShape(118.95, 37.8, qingLatePol.shape),
+    'Pre-1855 polities must not wrap the post-1855 Dongying Yellow River delta lobe ([118.95, 37.8]), whereas post-1855 polities must cover it'
+  );
+  assert(
+    !pointInShape(117.3, 38.8, qinPol.shape) && pointInShape(117.3, 38.8, tangPol.shape),
+    'Pre-220 CE polities must reflect the western Bohai Bay marine transgression ([117.3, 38.8]), whereas post-220 CE polities cover the prograded shore'
+  );
+  const tangDynForDengzhou = dynasties.find((d) => d.key === 'tang');
+  const dengzhouSettle = tangDynForDengzhou && tangDynForDengzhou.settlements.find((s) => s.ancient === '登州');
+  assert(
+    dengzhouSettle &&
+      JSON.stringify(dengzhouSettle.coord) === JSON.stringify([120.76, 37.8]) &&
+      pointInShape(120.76, 37.8, tangPol.shape),
+    'Dengzhou (Penglai) settlement must sit at [120.76, 37.8] on the northern Jiaodong coast inside the calibrated Tang polygon'
+  );
 
   // 4b. Validate split-era intermediate phase granularity (donghan, xijin, dongjin, nanbei, wudai)
   assert(
@@ -8602,8 +8660,10 @@ function main() {
         assert(
           indexHtml.includes('<g id="terrain-relief-layer">') &&
             indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
-            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;'),
-          'index.html must wrap #terrain-relief-img and #grp-terrain-tiles in #terrain-relief-layer, which owns the 0.48 relief opacity'
+            indexHtml.includes('<g id="grp-paleo-sea"></g>') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;') &&
+            cssSrc.includes('.paleo-sea {\n  fill: #e6dfd1;'),
+          'index.html must wrap #terrain-relief-img, #grp-terrain-tiles, and #grp-paleo-sea in #terrain-relief-layer so .paleo-sea (#e6dfd1) composites seamlessly with open water'
         );
         const terrainIdx = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'terrain', 'index.json'), 'utf8'));
         assert(
