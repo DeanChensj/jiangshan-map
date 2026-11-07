@@ -7333,8 +7333,8 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
       ],
       "modern": "山东烟台",
       "coord": [
-        121.2,
-        37.3
+        120.76,
+        37.8
       ],
       "zoom": 2.3
     },

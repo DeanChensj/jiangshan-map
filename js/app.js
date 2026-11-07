@@ -906,6 +906,7 @@
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
       this.terrainTileLayer = this._id('grp-terrain-tiles');
+      this.grpPaleoSea = this._id('grp-paleo-sea');
       this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
       this.grpProvinces = this._id('grp-provinces');
@@ -2108,7 +2109,11 @@
         .filter((t) => (t.appear !== undefined || t.vanish !== undefined) && !t.tier)
         .map((t) => (this._isHydroVisible(t, y) ? '1' : '0'))
         .join('');
-      return `${rMask}:${lMask}:${tMask}`;
+      const pMask = (this.hydroData.paleoSea || [])
+        .filter((p) => p.appear !== undefined || p.vanish !== undefined)
+        .map((p) => (this._isHydroVisible(p, y) ? '1' : '0'))
+        .join('');
+      return `${rMask}:${lMask}:${tMask}:${pMask}`;
     }
 
     _hydroMask(year) {
@@ -2123,8 +2128,22 @@
     }
 
     _buildTerrainRivers() {
-      if (!this.grpRivers || !this.hydroData) return;
+      if (!this.hydroData) return;
       this.activeHydroMask = this._hydroMask(this.year);
+      if (this.grpPaleoSea) {
+        this.grpPaleoSea.innerHTML = '';
+        for (const ps of this.hydroData.paleoSea || []) {
+          if (!this._isHydroVisible(ps, this.year)) continue;
+          const d = this.projector.multiRingsToSvgPath(ps.polys || []);
+          if (!d) continue;
+          this._svgNode(
+            'path',
+            { d, class: 'paleo-sea', 'fill-rule': 'evenodd' },
+            this.grpPaleoSea
+          );
+        }
+      }
+      if (!this.grpRivers) return;
       this.grpRivers.innerHTML = '';
 
       // 1. Render lakes first (underneath river inflows/outflows)
