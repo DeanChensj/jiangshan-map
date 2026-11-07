@@ -4928,6 +4928,82 @@ function main() {
           `${sk}: Qinghai Lake & Qaidam must belong to 青海蒙古 in 1513-1644`
         );
       }
+
+      // P2 Northwest Frontier & Northern Hexi De-Provincialization invariants
+      for (const sk of Object.keys(snapshots).filter((k) => /^(s_xihan|s_donghan|s_sanguo|s_xijin|s_dongjin)/.test(k))) {
+        const lintanOwners = (snapshots[sk].polities || []).filter((p) => p.shape && pointInShape(103.35, 34.69, p.shape));
+        assert.strictEqual(
+          lintanOwners.length,
+          1,
+          `${sk}: Lintan/Zhuoni ([103.35, 34.69], ancient Lintao west) must belong to exactly 1 polity`
+        );
+      }
+      for (const sk of ['s_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3']) {
+        assert(
+          hasPolAt(sk, '匈奴', 101.05, 41.95) && !hasPolAt(sk, '汉', 101.05, 41.95),
+          `${sk}: pre-102 BCE Juyan ([101.05, 41.95]) must belong to 匈奴 prior to Lu Bode's 102 BCE fortification`
+        );
+      }
+      for (const [sk, hexiPol] of [
+        ['s_xihan_b', '汉'],
+        ['s_xihan_c', '汉'],
+        ['s_xihan_d', '新（王莽）'],
+        ['s_xihan_e', '隗嚣 · 窦融'],
+        ['s_donghan_a', '东汉'],
+        ['s_donghan', '东汉'],
+        ['s_tang_a5y', '唐'],
+        ['s_tang_a5', '唐'],
+        ['s_tang_a', '唐'],
+        ['s_tang_a6', '唐'],
+        ['s_tang_a7', '唐'],
+      ]) {
+        assert(
+          hasPolAt(sk, hexiPol, 101.05, 41.95) &&
+            hasPolAt(sk, hexiPol, 101.25, 42.27) &&
+            !hasPolAt(sk, hexiPol, 101.05, 42.80) &&
+            !hasPolAt(sk, hexiPol, 99.80, 42.10) &&
+            !hasPolAt(sk, hexiPol, 102.20, 40.50),
+          `${sk}: narrow Ruoshui-Juyan corridor ([101.05, 41.95] & Juyan Hai [101.25, 42.27]) must belong to ${hexiPol} while Mongolia border ([101.05, 42.80]), west Ejina ([99.80, 42.10]), and Badain Jaran ([102.20, 40.50]) stay outside`
+        );
+      }
+      // De-provincialize modern Gansu Mazongshan ([96.80, 41.80]) & modern Minqin-Tengger spike ([103.90, 39.30]) across Han–Five Dynasties + Ming
+      const deProvCoreSet = new Set([
+        '汉（郡国并行）', '汉', '新（王莽）', '隗嚣 · 窦融', '东汉', '马腾(凉州)', '马腾·韩遂(关陇)', '曹操(北方)',
+        '魏', '晋', '汉赵', '前赵', '后赵', '前凉', '前秦（苻氏）', '前秦', '后凉', '西凉', '北凉',
+        '北魏', '西魏', '北周', '隋', '凉（李轨）', '唐', '武周', '吐蕃', '归义军（张议潮）',
+        '沙州归义军', '甘州回鹘', '凉州（六谷部）', '明', '哈密卫（关西七卫）', '大顺（李自成）',
+      ]);
+      for (const sk of Object.keys(snapshots).filter((k) => /^s_(xihan|donghan|sanguo|xijin|dongjin|nanbei|sui|tang|wudai|ming)(_|$)/.test(k))) {
+        const leak = (snapshots[sk].polities || []).find(
+          (p) =>
+            p.shape &&
+            deProvCoreSet.has(p.title) &&
+            (pointInShape(96.80, 41.80, p.shape) ||
+              pointInShape(103.90, 39.30, p.shape) ||
+              pointInShape(102.10, 39.12, p.shape) ||
+              pointInShape(105.00, 39.80, p.shape))
+        );
+        assert(!leak, `${sk}: ${leak ? leak.title : ''} must not inherit modern Gansu Mazongshan ([96.80, 41.80]), Jinchang ([102.10, 39.12]), Minqin-Tengger spike ([103.90, 39.30]), or Helan-west 90-degree desert box ([105.00, 39.80])`);
+      }
+      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b0', 's_ming_b', 's_ming_c0', 's_ming_c']) {
+        assert(
+          hasPolAt(sk, '明', 103.09, 38.62) && !hasPolAt(sk, '明', 102.00, 38.90),
+          `${sk}: Ming must retain Zhenfan Guard ([103.09, 38.62]) while retracting south of [102.00, 38.90] along Yongchang Guard & Ming Great Wall`
+        );
+      }
+      assert(
+        hasPolAt('s_xihan_b1', '匈奴', 98.51, 39.74) &&
+          hasPolAt('s_xihan_b2', '汉', 98.51, 39.74) &&
+          !hasPolAt('s_xihan_b2', '月氏', 98.51, 39.74) &&
+          !hasPolAt('s_xihan_e', '刘秀（河北）', 108.50, 40.80) &&
+          hasPolAt('s_xihan_e', '匈奴', 108.50, 40.80) &&
+          hasPolAt('s_xihan_e', '更始（汉）', 112.55, 37.87) &&
+          !hasPolAt('s_sui_c', '吐蕃', 99.82, 36.85) &&
+          !hasPolAt('s_sui_c', '吐谷浑', 99.82, 36.85) &&
+          hasPolAt('s_tang_a4', '安北都护府', 101.05, 41.95) &&
+          !hasPolAt('s_tang_a4', '唐', 101.05, 41.95),
+        'P2: pre-121 BCE Xiongnu Hexi, zero s_xihan_b2 Han+Yuezhi overlap, 23-25 CE Liu Xiu out of Hetao, zero s_sui_c Xihai+Tubo/Tuyuhun overlap, and 679-689 Anbei Protectorate at Juyan'
+      );
     }
     // 427-430 CE (s_nanbei_427) must place Tongwancheng ([108.871, 37.991]) inside 北魏 while keeping 胡夏 and 西秦 until 431 CE
     assert(
@@ -6284,9 +6360,12 @@ function main() {
         hasPt('s_xihan_b', '汉', 94.661, 40.141) &&
         hasPt('s_xihan_b', '汉', 100.45, 38.93) &&
         hasPt('s_xihan_c', '汉', 100.45, 38.93) &&
-        !hasPt('s_xihan_b', '汉', 101.06, 41.95) &&
-        !hasPt('s_xihan_c', '汉', 101.06, 41.95),
-      'Lelang Commandery (-108 BCE), Dunhuang, and Zhangye must lie inside Han/Xin polygons without the artificial Juyan needle'
+        !hasPt('s_xihan_b3', '汉', 101.05, 41.95) &&
+        hasPt('s_xihan_b', '汉', 101.05, 41.95) &&
+        hasPt('s_xihan_c', '汉', 101.05, 41.95) &&
+        hasPt('s_xihan_d', '新（王莽）', 101.05, 41.95) &&
+        !hasPt('s_xihan_b', '汉', 102.20, 40.50),
+      'Lelang Commandery (-108 BCE), Dunhuang, Zhangye, and post-102 BCE CHGIS Juyan oasis must lie inside Han/Xin while Badain Jaran desert stays outside'
     );
   }
 
