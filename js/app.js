@@ -12372,8 +12372,11 @@
 
       // 3. Historical Milestones / Events
       const eventEntries = [];
+      const eventPinyin = window.ATLAS_EVENT_PINYIN || {};
+      const eventInitials = eventPinyin.initials || {};
+      const curatedInitials = eventPinyin.curatedInitials || {};
       for (const d of this.dynasties) {
-        for (const m of d.milestones || []) {
+        for (const [eventIdx, m] of (d.milestones || []).entries()) {
           const enHead = this._enMilestoneHeadline(d, m);
           const siteEn = m.site ? this._enMilestoneSite(d, m) : '';
           const yrEn = m.year <= 0 ? `${-m.year || 1} BCE` : `${m.year} CE`;
@@ -12388,6 +12391,9 @@
             subZh: `${m.year <= 0 ? '前' + -m.year : m.year}年${m.site ? ' · ' + m.site : ''}`,
             titleEn: enHead,
             subEn: `${yrEn}${siteEn ? ' · ' + siteEn : ''}`,
+            pinyinKeys: [...(eventPinyin.milestones?.[d.key]?.[eventIdx] || [])],
+            initialKeys: [...(eventInitials.milestones?.[d.key]?.[eventIdx] || [])],
+            curatedInitialKeys: curatedInitials.milestones?.[d.key]?.[eventIdx] || [],
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           };
           entries.push(evEntry);
@@ -12397,12 +12403,30 @@
 
       // 3b. Curated Place Landmark Events (名胜史事 · 战役古迹)
       const seenLm = new Set();
-      for (const lm of HistoricalAtlasController.PLACE_LANDMARK_EVENTS) {
+      for (const [eventIdx, lm] of HistoricalAtlasController.PLACE_LANDMARK_EVENTS.entries()) {
         if (!lm.zh) continue;
         const uid = `${lm.year}:${lm.zh.slice(0, 16)}`;
         if (seenLm.has(uid)) continue;
         seenLm.add(uid);
         const lmKeywords = `${lm.zh} ${lm.site || ''} ${lm.en || ''} ${lm.siteEn || ''} ${lm.year}`.toLowerCase();
+        const yrEn = lm.year <= 0 ? `${-lm.year || 1} BCE` : `${lm.year} CE`;
+        const landmark = {
+          milestone: {
+            year: lm.year,
+            headline: lm.zh,
+            headlineEn: lm.en,
+            site: lm.site,
+            siteEn: lm.siteEn,
+            coord: lm.coord,
+          },
+          titleZh: lm.zh,
+          subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
+          titleEn: lm.en || lm.zh,
+          subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
+          pinyinKeys: eventPinyin.landmarks?.[eventIdx] || [],
+          initialKeys: eventInitials.landmarks?.[eventIdx] || [],
+          curatedInitialKeys: curatedInitials.landmarks?.[eventIdx] || [],
+        };
         const existingEv = eventEntries.find(
           (ev) =>
             ev.rawYear === lm.year &&
@@ -12412,6 +12436,9 @@
         );
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
+          if (landmark.pinyinKeys.length || landmark.initialKeys.length) {
+            (existingEv.altPinyin ||= []).push(landmark);
+          }
           if (!existingEv.altTitlesZh) existingEv.altTitlesZh = [];
           existingEv.altTitlesZh.push(lm.zh);
           if (lm.en) {
@@ -12424,26 +12451,13 @@
           this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
           this.dynasties[0];
-        const yrEn = lm.year <= 0 ? `${-lm.year || 1} BCE` : `${lm.year} CE`;
-        const milestoneObj = {
-          year: lm.year,
-          headline: lm.zh,
-          headlineEn: lm.en,
-          site: lm.site,
-          siteEn: lm.siteEn,
-          coord: lm.coord,
-        };
         const lmEntry = {
+          ...landmark,
           kind: 'event',
           dynasty: d,
           year: this._clampYearToDynasty(d, lm.year),
           rawYear: lm.year,
-          milestone: milestoneObj,
           coord: lm.coord,
-          titleZh: lm.zh,
-          subZh: `${lm.year <= 0 ? '前' + -lm.year : lm.year}年${lm.site ? ' · ' + lm.site : ''}`,
-          titleEn: lm.en || lm.zh,
-          subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
           keywords: `${lmKeywords} 史事 事件 战役 名胜`,
         };
         entries.push(lmEntry);
@@ -12779,6 +12793,13 @@
           .replace(/['’‘`\-_.\s]+/g, '');
       const isAscii = /[a-z]/i.test(q) && !/[\u4e00-\u9fa5]/.test(q);
       const qFold = isAscii ? fold(q) : '';
+      // Additional event fallback only; existing query normalization and scores stay intact.
+      const pinyinQuery = fold(
+        q.normalize('NFD')
+          .replace(/u\u0308/g, 'v')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\p{Punctuation}/gu, '')
+      );
       const index = this._ensureSearchIndex();
       const eraResults = this._matchEraResults(normQ);
       const hasEraMatch = eraResults.length > 0;
@@ -12993,6 +13014,87 @@
         }
       }
 
+      // Finish legacy ranking before pinyin candidates can affect bucket quotas or deduplication.
+      const ranked = this._rankQuickSearchResults(results);
+      if (
+        ranked.length === 12 ||
+        !/^[a-z]{2,}$/.test(pinyinQuery) ||
+        (ranked.length > 0 && pinyinQuery.length < 4)
+      ) return ranked;
+      return this._appendEventPinyinResults(ranked, index, pinyinQuery, hasEraMatch);
+    }
+
+    _isDuplicateSearchEvent(item, previous) {
+      const year = item.rawYear !== undefined ? item.rawYear : item.year;
+      const previousYear = previous.rawYear !== undefined ? previous.rawYear : previous.year;
+      return previous.kind === 'event' && previousYear === year && previous.coord && item.coord &&
+        this.projector.greatCircleKm(previous.coord, item.coord) <= 65;
+    }
+
+    _appendEventPinyinResults(ranked, index, query, hasEraMatch) {
+      const matches = [];
+      const prefixes = [];
+      for (const item of index) {
+        if (item.kind !== 'event') continue;
+        const sources = [item, ...(item.altPinyin || [])];
+        let source;
+        let score = 0;
+        let completionLength = Infinity;
+        let curatedCompletion = false;
+        if (query.length >= 4) {
+          source = sources.find(entry => entry.pinyinKeys?.includes(query));
+          if (source) {
+            score = 50;
+          } else if (!hasEraMatch) {
+            source = sources.find(entry => entry.pinyinKeys?.some(key => key.includes(query)));
+            if (source) score = 45;
+          }
+          if (!source) {
+            source = sources.find(entry => entry.initialKeys?.includes(query));
+            if (source) score = 40;
+          }
+        }
+        if (!source && ranked.length === 0 && matches.length === 0) {
+          for (const entry of sources) {
+            for (const key of entry.initialKeys || []) {
+              if (key.length <= query.length || key.length > completionLength || !key.startsWith(query)) continue;
+              const curated = entry.curatedInitialKeys?.includes(key) || false;
+              if (key.length === completionLength && (!curated || curatedCompletion)) continue;
+              completionLength = key.length;
+              curatedCompletion = curated;
+              source = entry;
+            }
+          }
+          if (source) score = 35;
+        }
+        if (!source) continue;
+        const result = {
+          ...item,
+          milestone: source.milestone,
+          titleZh: source.titleZh,
+          titleEn: source.titleEn,
+          subZh: source.subZh,
+          subEn: source.subEn,
+          score: score + (item.dynasty === this.dynasties[this.dynastyIdx] ? 4 : 0),
+          bucket: 'event',
+        };
+        if (completionLength === Infinity) matches.push(result);
+        else prefixes.push({result, completionLength, curatedCompletion});
+      }
+      const candidates = matches.length
+        ? matches.sort((a, b) => b.score - a.score)
+        : prefixes.sort((a, b) => a.completionLength - b.completionLength ||
+          Number(b.curatedCompletion) - Number(a.curatedCompletion) || b.result.score - a.result.score)
+          .map(entry => entry.result);
+      const limit = matches.length ? 12 : 4;
+      for (const item of candidates) {
+        if (ranked.length >= limit) break;
+        if (!ranked.some(previous => this._isDuplicateSearchEvent(item, previous))) ranked.push(item);
+      }
+      return ranked;
+    }
+
+    _rankQuickSearchResults(results) {
       results.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         if (a.polityFrom !== undefined && b.polityFrom !== undefined) {
@@ -13032,15 +13134,7 @@
           );
           if (dupCity) continue;
         } else if (item.kind === 'event') {
-          const evYr = item.rawYear !== undefined ? item.rawYear : item.year;
-          const dupEv = deduped.some(
-            (prev) =>
-              prev.kind === 'event' &&
-              (prev.rawYear !== undefined ? prev.rawYear : prev.year) === evYr &&
-              prev.coord &&
-              item.coord &&
-              this.projector.greatCircleKm(prev.coord, item.coord) <= 65
-          );
+          const dupEv = deduped.some(previous => this._isDuplicateSearchEvent(item, previous));
           if (dupEv) continue;
         }
         deduped.push(item);

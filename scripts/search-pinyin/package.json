@@ -1,0 +1,12 @@
+{
+  "name": "jiangshan-event-search-build",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs",
+    "check": "node build.cjs --check",
+    "test": "node --test search.test.cjs"
+  },
+  "devDependencies": {
+    "pinyin-pro": "3.29.5"
+  }
+}

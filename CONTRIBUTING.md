@@ -48,7 +48,7 @@ We welcome contributions of all kinds, including:
 ## Local Development & Validation Workflow
 
 1. **Clone and Serve Locally**:
-   Built with vanilla ES6 and SVG with zero runtime or npm dependencies—simply serve the repository root with any static HTTP server:
+   Built with vanilla ES6 and SVG with zero runtime dependencies—simply serve the repository root with any static HTTP server. No npm install is needed to serve the checked-in site:
    ```bash
    git clone https://github.com/DeanChensj/jiangshan-map.git
    cd jiangshan-map
@@ -70,6 +70,21 @@ We welcome contributions of all kinds, including:
    ```
 
 ---
+
+### Rebuilding Event Pinyin Search Keys
+
+After editing milestone titles/sites in `js/map_data.js` or landmark titles/sites in `js/lore_data.js`, regenerate the checked-in `js/event_pinyin.js`:
+
+```bash
+npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund
+npm run build --prefix scripts/search-pinyin
+npm run check --prefix scripts/search-pinyin
+npm test --prefix scripts/search-pinyin
+```
+
+The isolated build tool pins `pinyin-pro`; the browser only loads generated strings. Rows follow the source event order, and CI rejects stale output after edits or reordering. Historical pronunciation overrides live in `scripts/search-pinyin/build.cjs`. Full or spaced pinyin, tone marks and `ü`/`v` are normalized only for the added event fallback (minimum four letters); Chinese/English, curated aliases and reign matching retain priority. Initial abbreviations (e.g. `njty`, `nbcty`, `aszl`) are also generated for complete title/location phrases and existing curated names found inside headlines. Headline pinyin keys also span punctuation within titles. Exact pinyin keys rank ahead of partial pinyin matches, followed by exact initials of at least four letters. If a search has no results, prefixes of at least two letters can return up to four event suggestions. Curated names win ties between equally short completions. The normal atlas validation still runs without npm dependencies.
+
+The build tool's `EVENT_NAMES` and `EVENT_NAME_SYNONYMS` cover the sixteen audited abbreviation gaps (`jybsb`, `wsyd`, `nmzz`, `krzz`, `xmzzygm`, `flqy`, `wcqy`, `jwzz`, `qsqy`, `dycypzz`, `xhgm`, `jtqy`, `ypzz`, `hcqy`, `hjqy`, `tmzb`). `EVENT_NAMES` supplies concise names embedded in longer prose; `EVENT_NAME_SYNONYMS` maps alternate names to the source phrase: 土木之变 generates `tmzb` for 土木堡之变, alongside `tmbzb`. Extend these Chinese name lists and add an independent search regression for each addition; the initial strings themselves are generated. Broad names such as 鸦片战争 can match multiple dated events.
 
 ## Historical & Cartographic Conventions
 
