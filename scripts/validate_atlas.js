@@ -3271,7 +3271,7 @@ function main() {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 27, `Expected 27 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 28, `Expected 28 s_tang* snapshots, found ${tangSnapKeys.length}`);
   // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
   // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790;
   // the Four Garrisons fall to 吐蕃 in 670–679 and 686–692, when 安西 falls back to 西州.
@@ -3400,7 +3400,7 @@ function main() {
     );
   }
   // 南诏 exists from 738 (before that: 六诏 plus 唐 羁縻 in 滇东; 618–621 爨 · 六诏).
-  const preNanzhao = new Set(['s_tang_0', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a4', 's_tang_a4b',
+  const preNanzhao = new Set(['s_tang_0', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a3b', 's_tang_a4', 's_tang_a4b',
     's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y']);
   const nzSnapKeys = tangSnapKeys.filter((k) => !preNanzhao.has(k));
   assert.strictEqual(nzSnapKeys.length, tangSnapKeys.length - preNanzhao.size, 'every pre-738 Tang snapshot key must exist');
@@ -4869,13 +4869,25 @@ function main() {
       // 4) Tuyuhun (吐谷浑) present across Eastern Jin, Northern & Southern Dynasties, Sui, and Early Tang (317-634 CE)
       for (const sk of ['s_dongjin_317', 's_dongjin_c', 's_nanbei_0', 's_nanbei_a', 's_nanbei_e', 's_sui_a', 's_sui', 's_sui_d', 's_tang_0']) {
         assert(
-          hasPolAt(sk, '吐谷浑', 99.82, 36.85),
-          `${sk}: Qinghai Lake / Fusicheng ([99.82, 36.85]) must belong to 吐谷浑`
+          hasPolAt(sk, '吐谷浑', 99.82, 36.85) &&
+            !hasPolAt(sk, '吐谷浑', 96.6, 33.0) &&
+            !hasPolAt(sk, '吐谷浑', 91.0, 34.5),
+          `${sk}: Qinghai Lake / Fusicheng ([99.82, 36.85]) must belong to 吐谷浑 while Yushu ([96.6, 33.0]) and Hoh Xil ([91.0, 34.5]) stay outside`
         );
       }
       assert(
-        hasPolAt('s_sui_c', '隋', 93.51, 42.82) && hasPolAt('s_sui_c', '西海·鄯善等四郡', 99.82, 36.85),
-        's_sui_c (609-618 CE): Hami (Yiwu) must belong to 隋 and Qinghai Lake (Xihai) to 西海·鄯善等四郡'
+        hasPolAt('s_sui_c', '隋', 93.51, 42.82) &&
+          hasPolAt('s_sui_c', '西海·鄯善等四郡', 99.82, 36.85) &&
+          hasPolAt('s_sui_c', '吐谷浑', 99.2, 34.1) &&
+          !hasPolAt('s_sui_c', '吐谷浑', 92.0, 34.0),
+        's_sui_c (609-618 CE): Hami must belong to 隋, Qinghai Lake to 西海·鄯善等四郡, and Fuyun remnant to southeastern Bayan Har / Hequ ([99.2, 34.1])'
+      );
+      assert(
+        hasPolAt('s_tang_a1b', '吐谷浑（唐册封诺曷钵）', 99.82, 36.85) &&
+          hasPolAt('s_tang_a1b', '吐蕃', 97.5, 34.8) &&
+          hasPolAt('s_tang_a3b', '吐蕃', 99.82, 36.85) &&
+          !hasPolAt('s_tang_a3b', '吐谷浑（唐册封诺曷钵）', 99.82, 36.85),
+        's_tang_a1b..a3 (635-662 CE) must contract 吐谷浑（唐册封诺曷钵） north of Bayan Har, and s_tang_a3b (663-668 CE) must transfer Qinghai Lake to 吐蕃'
       );
       // 5) Post-763 Eastern Longyou (Qinzhou [105.72, 34.58], Weizhou [104.63, 35.00], Yuanzhou [106.28, 36.01]) in Tubo, Longzhou ([106.86, 34.89]) & Lingzhou in Tang
       for (const sk of ['s_tang_b1', 's_tang_b']) {
@@ -5284,13 +5296,13 @@ function main() {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 23 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    // Tang 29 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 23 map change milestone years must match'
+      'tang: 29 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
