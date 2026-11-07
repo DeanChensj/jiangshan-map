@@ -73,6 +73,19 @@
 
 ---
 
+### 重新生成史事拼音检索词
+
+修改 `js/map_data.js` 中的史事标题、地点，或 `js/lore_detail.js` 中名胜史事的标题、地点后，重新生成已提交的 `js/event_pinyin.js`：
+
+```bash
+npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund
+npm run build --prefix scripts/search-pinyin
+npm run check --prefix scripts/search-pinyin
+npm test --prefix scripts/search-pinyin
+```
+
+独立的构建工具固定 `pinyin-pro` 版本，浏览器在检索需要时按需加载生成的索引。索引行与源数据中的史事顺序一致，CI 会检查修改或重排后未更新的产物。历史专名读音修正在 `scripts/search-pinyin/build.cjs` 中维护。新增的史事拼音兜底匹配支持连写、空格、声调符号和 `ü`/`v`（至少四个字母），原有中英文、别名和年号匹配仍优先。标题的全拼也可跨标点匹配。全拼完整匹配优先于部分匹配。直接运行网站及原有地图校验均无需安装 npm 依赖。
+
 ## 史料与数据校勘规范
 
 1. **古地名点位（`js/map_data.js` 中的 `settlements`）**：
