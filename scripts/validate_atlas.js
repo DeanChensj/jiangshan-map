@@ -379,15 +379,21 @@ function main() {
     'Juye Ze / Liangshan Marsh should vanish after 1280 CE'
   );
   assert(
-    Array.isArray(hydro.paleoSea) && hydro.paleoSea.length >= 3,
-    'HYDRO_DATA.paleoSea must contain historical paleo-sea shoreline masks'
+    Array.isArray(hydro.paleoSea) && hydro.paleoSea.length >= 6,
+    'HYDRO_DATA.paleoSea must contain P0 (Bohai) and P1 (East China) historical paleo-sea shoreline masks'
   );
   assert(
-    hydro.paleoSea.filter((p) => isHydroActive(p, -210)).length >= 1 &&
-      hydro.paleoSea.filter((p) => isHydroActive(p, 741)).length >= 1 &&
-      hydro.paleoSea.filter((p) => isHydroActive(p, 1500)).length >= 1 &&
-      hydro.paleoSea.filter((p) => p.name.startsWith('Bohai') && isHydroActive(p, 1900)).length === 0,
-    'Bohai & Yellow River Delta paleo-sea masks must cover <220, 220–1128, and 1128–1855, and vanish from 1855 CE onward'
+    hydro.paleoSea.filter((p) => isHydroActive(p, -210)).length >= 2 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 741)).length >= 2 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 1500)).length >= 2 &&
+      hydro.paleoSea.filter((p) => (p.name.startsWith('Bohai') || p.name.startsWith('East China')) && isHydroActive(p, 1900)).length === 0,
+    'Bohai & East China paleo-sea masks must cover <220, 220–1128, and 1128–1855, and vanish from 1855 CE onward'
+  );
+  assert(
+    hydro.paleoSea[3].polys[0].length === 2 &&
+      hydro.paleoSea[4].polys[0].length === 3 &&
+      hydro.paleoSea[5].polys[0].length === 3,
+    'East China paleo-sea masks must include inner holes for Yuzhou Island (PS[3..5]) and Dongsha / Chongming Island (PS[4..5])'
   );
   const wangJing = hydro.rivers.find((r) => r.name === 'Huang' && r.appear === 11 && r.vanish === 1048);
   assert(
@@ -403,6 +409,18 @@ function main() {
       jiLate &&
       JSON.stringify(jiLate.lines[0][jiLate.lines[0].length - 1]) === JSON.stringify([118.46, 37.68]),
     'Ji / Daqing River must be split into <1128 ([118.14, 37.5]) and 1128–1855 ([118.46, 37.68]) estuaries'
+  );
+  const huaiEarly = hydro.rivers.find((r) => r.name === 'Huai' && r.vanish === 1194);
+  const huangDuohuai = hydro.rivers.find((r) => r.name === 'Huang' && r.appear === 1194 && r.vanish === 1855 && r.lines[0][r.lines[0].length - 1][0] > 119);
+  const cjEstuary = hydro.rivers.find((r) => r.name === 'Yangtze Estuary');
+  assert(
+    huaiEarly &&
+      JSON.stringify(huaiEarly.lines[0][huaiEarly.lines[0].length - 1]) === JSON.stringify([119.49, 34.08]) &&
+      huangDuohuai &&
+      JSON.stringify(huangDuohuai.lines[0][huangDuohuai.lines[0].length - 1]) === JSON.stringify([119.95, 34.14]) &&
+      cjEstuary &&
+      JSON.stringify(cjEstuary.lines[0][cjEstuary.lines[0].length - 1]) === JSON.stringify([121.15, 31.75]),
+    'Huai (<1194), Yellow-Huai (1194–1855), and Yangtze Estuary ([121.15, 31.75]) river mouths must terminate on their respective paleo-coastlines'
   );
 
   // 2. Validate modern provincial outlines
@@ -654,6 +672,37 @@ function main() {
       JSON.stringify(dengzhouSettle.coord) === JSON.stringify([120.76, 37.8]) &&
       pointInShape(120.76, 37.8, tangPol.shape),
     'Dengzhou (Penglai) settlement must sit at [120.76, 37.8] on the northern Jiaodong coast inside the calibrated Tang polygon'
+  );
+  // Validate P1 East China Coast & Yangtze Estuary progradation (Northern Jiangsu, Yuzhou Island, Dongsha/Chongming, Shanghai)
+  assert(
+    !pointInShape(120.45, 33.2, qinPol.shape) &&
+      !pointInShape(120.45, 33.2, tangPol.shape) &&
+      pointInShape(120.45, 33.2, mingPol.shape) &&
+      pointInShape(120.45, 33.2, qingEarlyPol.shape),
+    'Pre-1128 polities must follow the Fan Gong Dike shoreline in Northern Jiangsu (excluding [120.45, 33.2]), whereas post-1128 polities cover the prograded Yellow-Huai plain'
+  );
+  assert(
+    !pointInShape(121.7, 31.1, qinPol.shape) &&
+      !pointInShape(121.7, 31.1, tangPol.shape) &&
+      pointInShape(121.7, 31.1, mingPol.shape) &&
+      !pointInShape(121.88, 31.0, mingPol.shape) &&
+      pointInShape(121.88, 31.0, qingLatePol.shape),
+    'Shanghai coast must prograde from Gu Gangshen / Hanhaitang (<1128) to Qingongtang (1128–1855) to modern Nanhui (>=1855)'
+  );
+  assert(
+    pointInShape(119.42, 34.73, qinPol.shape) &&
+      pointInShape(119.42, 34.73, tangPol.shape) &&
+      pointInShape(119.42, 34.73, mingPol.shape) &&
+      !pointInShape(119.28, 34.72, tangPol.shape) &&
+      pointInShape(119.28, 34.72, qingLatePol.shape),
+    'Yuzhou Island ([119.42, 34.73]) must remain an offshore island separated by the Haizhou Bay strait ([119.28, 34.72]) prior to 1855 CE'
+  );
+  assert(
+    !pointInShape(121.5, 31.62, qinPol.shape) &&
+      pointInShape(121.5, 31.62, tangPol.shape) &&
+      pointInShape(121.55, 31.62, mingPol.shape) &&
+      pointInShape(121.55, 31.62, qingLatePol.shape),
+    'Yangtze Estuary must transition from open funnel (<220) to Dongsha shoal (220–1128) to Chongming Island (>=1128)'
   );
 
   // 4b. Validate split-era intermediate phase granularity (donghan, xijin, dongjin, nanbei, wudai)
@@ -3046,8 +3095,11 @@ function main() {
   for (const sk of ['s_ming_b']) {
     const mingPol = snapshots[sk].polities.find((p) => p.title === '明');
     assert(
-      mingPol && mingPol.shape.type === 'MultiPolygon' && mingPol.shape.coordinates.length === 4,
-      `${sk} Ming polity must have 4 disjoint sub-polygons (no duplicate overlapping mainland polygon)`
+      mingPol &&
+        mingPol.shape.type === 'MultiPolygon' &&
+        mingPol.shape.coordinates.length === 6 &&
+        mingPol.shape.coordinates.filter((p) => p[0].length > 50).length === 1,
+      `${sk} Ming polity must have 6 disjoint sub-polygons including Yuzhou & Chongming islands (no duplicate overlapping mainland polygon)`
     );
     const jurchenPol = snapshots[sk].polities.find((p) => p.title === '女真诸部');
     assert(jurchenPol && jurchenPol.role === 'neighbor', `${sk} must include 女真诸部 neighbor polity in the Northeast`);
@@ -6866,7 +6918,7 @@ function main() {
         hasPolPt('s_nansong_e', '大蒙古国', 100.0, 38.0) &&
         hasPolPt('s_nansong_b', '大蒙古国', 90.5, 40.2) &&
         hasPolPt('s_nansong_b', '大蒙古国', 100.16, 25.69) &&
-        snapshots.s_nansong_b.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 1 &&
+        snapshots.s_nansong_b.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 2 &&
         hasPolPt('s_nansong_g', '元', 100.0, 28.0) &&
         hasPolPt('s_yuan_b', '元', 90.5, 40.2) &&
         hasPolPt('s_yuan_c', '元', 90.5, 40.2),
@@ -7003,8 +7055,10 @@ function main() {
     }
 
     // 5. Southern Song (1127–1279): Treaty of Shaoxing border (Qinzhou, Fengzhou, Chengzhou, Jiezhou, Junzhou), Lintao exclusivity, and Jin capital chronology
+    const mcPol = snapshots.s_nansong_c.polities.find((p) => p.title === '大蒙古国');
     assert(
-      snapshots.s_nansong_c.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 1 &&
+      mcPol &&
+        (mcPol.shape.type === 'Polygon' || mcPol.shape.coordinates.length === 1) &&
         hasPolPt('s_nansong_c', '金（迁都汴京）', 103.861, 35.381) &&
         hasPolPt('s_nansong_c', '金（迁都汴京）', 103.83, 36.06),
       's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
@@ -9480,12 +9534,12 @@ function main() {
       ['s_yuan_c', '元', 4],
       ['s_yuan_c', '吴（朱元璋）', 1],
       ['s_ming_0a', '北元', 1],
-      ['s_ming_0a', '明', 2],
-      ['s_ming_0b', '明', 3],
+      ['s_ming_0a', '明', 4],
+      ['s_ming_0b', '明', 4],
       ['s_sui_d', '魏（李密）', 1],
       ['s_tang_0', '梁（萧铣）', 1],
-      ['s_tang_0', '吴（杜伏威）', 1],
-      ['s_tang_d1', '大齐（黄巢）', 1],
+      ['s_tang_0', '吴（杜伏威）', 2],
+      ['s_tang_d1', '大齐（黄巢）', 2],
     ]) {
       const pol = snapshots[sid].polities.find((p) => p.title === title);
       assert(pol && pol.shape, `${sid} ${title} must exist`);
