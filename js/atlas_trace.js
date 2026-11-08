@@ -56,6 +56,7 @@
       if (!this.activePerson) return;
       this.activePerson = null;
       this.activePersonEventIdx = -1;
+      this.personSharedOnly = false;
       this._scheduleUrlSync();
       if (this.embed) this._syncEmbedBadge();
       this._hidePersonFooter();
@@ -1056,6 +1057,7 @@
       }
 
       this.activePerson = state;
+      this.personSharedOnly = false;
       if (state.profile && state.profile.isStory) {
         this._returnStoryState = null;
       }
@@ -1086,10 +1088,28 @@
 
       if (this.activePersonEventIdx >= 0) {
         const initEv = events[this.activePersonEventIdx];
-        if (state.profile && state.profile.isStory && Array.isArray(initEv.fromCoord)) {
-          this._framePersonOverview([{ coord: initEv.fromCoord }, initEv]);
+        if (state.isMulti) {
+          const multiLegs = this._getMultiStepLegs(state, this.activePersonEventIdx, initEv);
+          if (multiLegs.length) {
+            this._framePersonOverview([
+              ...multiLegs.map((l) => ({ coord: l.fromCoord })),
+              initEv,
+            ]);
+          } else {
+            this._flyToPersonEvent(initEv);
+          }
         } else {
-          this._flyToPersonEvent(initEv);
+          const legOrigin = this._getSoloStepOriginCoord(
+            state,
+            events,
+            this.activePersonEventIdx,
+            initEv
+          );
+          if (legOrigin) {
+            this._framePersonOverview([{ coord: legOrigin }, initEv]);
+          } else {
+            this._flyToPersonEvent(initEv);
+          }
         }
       } else {
         this._framePersonOverview();
@@ -1154,7 +1174,15 @@
         this.activePersonEventIdx = -1;
         this._renderPersonPinsOverlay();
         this._renderPersonChronicleCard(true);
-        if (panCamera) this._framePersonOverview();
+        if (panCamera) {
+          const ovEvents =
+            this.activePerson.isMulti &&
+            this.personSharedOnly &&
+            this.activePerson.sameTimeCount > 0
+              ? events.filter((e) => e.isSharedEncounter)
+              : null;
+          this._framePersonOverview(ovEvents);
+        }
         return;
       }
       const clamped = Math.max(0, Math.min(events.length - 1, idx));
@@ -1169,16 +1197,25 @@
       this._inPersonSync = false;
       this._renderPersonChronicleCard(true);
       if (panCamera) {
-        const legOrigin = this._getSoloStepOriginCoord(
-          this.activePerson,
-          events,
-          clamped,
-          ev
-        );
-        if (legOrigin) {
-          this._framePersonOverview([{ coord: legOrigin }, ev]);
+        if (this.activePerson.isMulti) {
+          const multiLegs = this._getMultiStepLegs(this.activePerson, clamped, ev);
+          if (multiLegs.length) {
+            this._framePersonOverview([...multiLegs.map((l) => ({ coord: l.fromCoord })), ev]);
+          } else {
+            this._flyToPersonEvent(ev);
+          }
         } else {
-          this._flyToPersonEvent(ev);
+          const legOrigin = this._getSoloStepOriginCoord(
+            this.activePerson,
+            events,
+            clamped,
+            ev
+          );
+          if (legOrigin) {
+            this._framePersonOverview([{ coord: legOrigin }, ev]);
+          } else {
+            this._flyToPersonEvent(ev);
+          }
         }
       }
     }
@@ -1209,11 +1246,119 @@
       return null;
     }
 
+    _getMultiStepLegs(activePerson, curIdx, curEv) {
+      if (!activePerson || !activePerson.isMulti || curIdx < 0 || !curEv) return [];
+      const allTracks = Array.isArray(activePerson.tracks) ? activePerson.tracks : [];
+      const parts =
+        curEv.isSharedEncounter && Array.isArray(curEv.participants)
+          ? curEv.participants
+          : [
+              {
+                personIdx: curEv.personIdx,
+                stepIdx: curEv.personStepIdx,
+                color: curEv.personColor || '#bd2d22',
+              },
+            ];
+      const rawLegs = [];
+      for (const pt of parts) {
+        if (pt.stepIdx === undefined || pt.stepIdx <= 0) continue;
+        const tr = allTracks.find((t) => t.personIdx === pt.personIdx);
+        if (!tr || !Array.isArray(tr.events)) continue;
+        const prevTrackEv = tr.events[pt.stepIdx - 1];
+        const curTrackEv = tr.events[pt.stepIdx] || curEv;
+        if (
+          !prevTrackEv ||
+          !Array.isArray(prevTrackEv.coord) ||
+          Math.hypot(
+            prevTrackEv.coord[0] - curEv.coord[0],
+            prevTrackEv.coord[1] - curEv.coord[1]
+          ) <= 0.08
+        ) {
+          continue;
+        }
+        const keepsCuratedLeg =
+          Boolean(curTrackEv.via || curTrackEv.fromCoord) &&
+          curTrackEv.prevStopCoord &&
+          Math.hypot(
+            prevTrackEv.coord[0] - curTrackEv.prevStopCoord[0],
+            prevTrackEv.coord[1] - curTrackEv.prevStopCoord[1]
+          ) < 1.2;
+        const fromCoord =
+          keepsCuratedLeg && Array.isArray(curTrackEv.fromCoord)
+            ? curTrackEv.fromCoord
+            : prevTrackEv.coord;
+        const evList = Array.isArray(activePerson.events) ? activePerson.events : [];
+        let originIdx = evList.indexOf(prevTrackEv);
+        if (originIdx < 0) {
+          originIdx = evList.findIndex(
+            (e, idx) =>
+              idx !== curIdx &&
+              e.isSharedEncounter &&
+              Array.isArray(e.participants) &&
+              e.participants.some(
+                (p) => p.personIdx === pt.personIdx && p.stepIdx === pt.stepIdx - 1
+              )
+          );
+        }
+        if (originIdx < 0) {
+          originIdx = evList.findIndex(
+            (e, idx) =>
+              idx !== curIdx &&
+              e.personIdx === pt.personIdx &&
+              Math.hypot(e.coord[0] - fromCoord[0], e.coord[1] - fromCoord[1]) < 0.35
+          );
+        }
+        rawLegs.push({
+          personIdx: pt.personIdx,
+          originIdx,
+          color: pt.color || tr.color || '#bd2d22',
+          fromCoord,
+          toCoord: curEv.coord,
+          via: keepsCuratedLeg ? curTrackEv.via || null : null,
+        });
+      }
+      for (let i = 0; i < rawLegs.length; i++) {
+        const leg = rawLegs[i];
+        const sameOriginPeers = rawLegs.filter(
+          (other) =>
+            Math.hypot(
+              other.fromCoord[0] - leg.fromCoord[0],
+              other.fromCoord[1] - leg.fromCoord[1]
+            ) < 0.35
+        );
+        const peerPos = sameOriginPeers.indexOf(leg);
+        leg.bias =
+          sameOriginPeers.length > 1
+            ? (peerPos - (sameOriginPeers.length - 1) * 0.5) * 9.5
+            : 0;
+      }
+      return rawLegs;
+    }
+
+    _getNavigablePersonEventIdxs() {
+      if (!this.activePerson || !Array.isArray(this.activePerson.events)) return [];
+      const { events, isMulti, sameTimeCount } = this.activePerson;
+      if (isMulti && this.personSharedOnly && sameTimeCount > 0) {
+        const sharedIdxs = [];
+        events.forEach((ev, idx) => {
+          if (ev.isSharedEncounter) sharedIdxs.push(idx);
+        });
+        if (sharedIdxs.length) return sharedIdxs;
+      }
+      return events.map((_, idx) => idx);
+    }
+
     stepPersonEvent(delta) {
-      if (!this.activePerson || !this.activePerson.events.length) return;
-      const len = this.activePerson.events.length;
-      const cur = this.activePersonEventIdx;
-      const next = cur < 0 ? (delta >= 0 ? 0 : len - 1) : (cur + delta + len) % len;
+      const navIdxs = this._getNavigablePersonEventIdxs();
+      if (!navIdxs.length) return;
+      const len = navIdxs.length;
+      const pos = navIdxs.indexOf(this.activePersonEventIdx);
+      const next =
+        pos < 0
+          ? delta >= 0
+            ? navIdxs[0]
+            : navIdxs[len - 1]
+          : navIdxs[(pos + delta + len) % len];
       this.selectPersonEvent(next, true);
     }
 
@@ -1423,10 +1568,15 @@
           );
         }
       }
-      const allTracks =
-        Array.isArray(tracks) && tracks.length
-          ? tracks
-          : [{ color: '#bd2d22', personIdx: 0, events }];
+      const multiLegs = isMulti ? this._getMultiStepLegs(this.activePerson, curIdx, curEv) : [];
+      const stepOriginIdxSet = new Set(
+        isMulti
+          ? multiLegs.map((l) => l.originIdx).filter((idx) => idx >= 0)
+          : stepOriginIdx >= 0
+            ? [stepOriginIdx]
+            : []
+      );
+      const isOriginIdx = (i) => stepOriginIdxSet.has(i);
       const activeEraTracks = this._getVisiblePersonTracks();
       const activeEraPersonIdxs = new Set(activeEraTracks.map((t) => t.personIdx));
       const isTrackDimmed = (pIdx) =>
@@ -1456,6 +1606,19 @@
               ringR: 0,
               isPrimary: i === curIdx,
               isMultiCanonical: i === curIdx,
+              isCrossEraShared: false,
+              peers,
+            };
+          }
+          const originPeer =
+            curIdx >= 0 ? peers.find((pIdx) => stepOriginIdxSet.has(pIdx)) : undefined;
+          if (originPeer !== undefined) {
+            return {
+              ox: 0,
+              oy: 0,
+              ringR: 0,
+              isPrimary: i === originPeer,
+              isMultiCanonical: i === originPeer,
               isCrossEraShared: false,
               peers,
             };
@@ -1516,9 +1679,8 @@
       });
 
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
-      // For solo chronicles (!isMulti):
       // - Overview (curIdx < 0): render pins only (no crisscrossing full-life cobweb)
-      // - Single step (curIdx >= 0): render ONLY that step's movement vector (prevStop ──► curStop)
+      // - Single step (curIdx >= 0): render ONLY that step's movement vector(s) (prevStop ──► curStop)
       if (!isMulti) {
         if (curIdx >= 0 && curEv && soloOriginCoord) {
           const prevEv = curIdx > 0 ? events[curIdx - 1] : null;
@@ -1546,50 +1708,22 @@
             );
           }
         }
-      } else {
-        // Render dimmed cross-era tracks first so the active era's track sits cleanly on top
-        const orderedTracks = allTracks
-          .slice()
-          .sort(
-            (a, b) => (isTrackDimmed(b.personIdx) ? 1 : 0) - (isTrackDimmed(a.personIdx) ? 1 : 0)
+      } else if (curIdx >= 0 && multiLegs.length > 0) {
+        for (const leg of multiLegs) {
+          const segInfo = this._buildJourneySegmentInfo(
+            leg.fromCoord,
+            leg.toCoord,
+            leg.via,
+            leg.bias
           );
-        for (const tr of orderedTracks) {
-          const trEvs = tr.events || [];
-          const segments = [];
-          const bias = isMulti ? (tr.personIdx - (allTracks.length - 1) * 0.5) * 7.5 : 0;
-          for (let i = 0; i < trEvs.length - 1; i++) {
-            const prevEv = trEvs[i];
-            const nextEv = trEvs[i + 1];
-            const keepsCuratedLeg =
-              Boolean(nextEv.via || nextEv.fromCoord) &&
-              nextEv.prevStopCoord &&
-              Math.hypot(
-                prevEv.coord[0] - nextEv.prevStopCoord[0],
-                prevEv.coord[1] - nextEv.prevStopCoord[1]
-              ) < 1.2;
-            const segInfo = this._buildJourneySegmentInfo(
-              keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
-              nextEv.coord,
-              keepsCuratedLeg ? nextEv.via : null,
-              bias
+          if (segInfo) {
+            this._renderCartographicTrajectory(
+              [{ ...segInfo, toIdx: curIdx }],
+              curIdx,
+              leg.color,
+              false
             );
-            if (segInfo) {
-              segments.push({ ...segInfo, toIdx: i + 1 });
-            }
           }
-          const dimmed = isTrackDimmed(tr.personIdx);
-          let trCurIdx = -1;
-          if (curEv && !dimmed) {
-            if (!isMulti) {
-              trCurIdx = curIdx;
-            } else if (curEv.isSharedEncounter && Array.isArray(curEv.participants)) {
-              const matchedPt = curEv.participants.find((pt) => pt.personIdx === tr.personIdx);
-              if (matchedPt) trCurIdx = matchedPt.stepIdx;
-            } else if (curEv.personIdx === tr.personIdx) {
-              trCurIdx = curEv.personStepIdx !== undefined ? curEv.personStepIdx : curIdx;
-            }
-          }
-          this._renderCartographicTrajectory(segments, trCurIdx, tr.color || '#bd2d22', dimmed);
         }
       }
 
@@ -1601,8 +1735,9 @@
         .sort((a, b) => {
           if (a === curIdx) return -1;
           if (b === curIdx) return 1;
-          if (a === stepOriginIdx) return -1;
-          if (b === stepOriginIdx) return 1;
+          const oa = isOriginIdx(a) ? 1 : 0;
+          const ob = isOriginIdx(b) ? 1 : 0;
+          if (oa !== ob) return ob - oa;
           const sa = events[a].isSharedEncounter ? 1 : 0;
           const sb = events[b].isSharedEncounter ? 1 : 0;
           if (sa !== sb) return sb - sa;
@@ -1630,8 +1765,9 @@
         .sort((a, b) => {
           if (a === curIdx) return 1;
           if (b === curIdx) return -1;
-          if (a === stepOriginIdx) return 1;
-          if (b === stepOriginIdx) return -1;
+          const oa = isOriginIdx(a) ? 1 : 0;
+          const ob = isOriginIdx(b) ? 1 : 0;
+          if (oa !== ob) return oa - ob;
           if (isMulti) {
             const da = isTrackDimmed(events[a].personIdx) ? 1 : 0;
             const db = isTrackDimmed(events[b].personIdx) ? 1 : 0;
@@ -1652,9 +1788,19 @@
         const isShared = Boolean(
           ev.isSharedEncounter && Array.isArray(ev.participants) && ev.participants.length >= 2
         );
-        const isStepOrigin = Boolean(!isMulti && curIdx >= 0 && idx === stepOriginIdx);
-        const isOtherStep = Boolean(!isMulti && curIdx >= 0 && !isCur && !isStepOrigin);
-        const dimmed = (!isShared && !isCur && isTrackDimmed(ev.personIdx)) || isOtherStep;
+        const isStepOrigin = Boolean(curIdx >= 0 && isOriginIdx(idx));
+        const isOtherStep = Boolean(curIdx >= 0 && !isCur && !isStepOrigin);
+        const isFilteredOutInOverview = Boolean(
+          isMulti &&
+            curIdx < 0 &&
+            this.personSharedOnly &&
+            this.activePerson.sameTimeCount > 0 &&
+            !isShared
+        );
+        const dimmed =
+          (!isShared && !isCur && isTrackDimmed(ev.personIdx)) ||
+          isOtherStep ||
+          isFilteredOutInOverview;
         const isPeerPassed =
           curIdx < 0 || dimmed || isStepOrigin
             ? true
@@ -1690,7 +1836,7 @@
           this.grpJourney
         );
         g.style.color = pinColor;
-        if (dimmed) g.style.opacity = isOtherStep ? '0.28' : '0.36';
+        if (dimmed) g.style.opacity = isOtherStep || isFilteredOutInOverview ? '0.26' : '0.36';
 
         const inner = this._svgNode(
           'g',
@@ -1754,7 +1900,11 @@
             dot.style.color = pt.color;
           });
         } else if (isMultiBead) {
-          this._svgNode('circle', { class: 'jn-disc is-waypoint-bead', r: 4.1 }, inner);
+          this._svgNode(
+            'circle',
+            { class: 'jn-disc is-waypoint-bead', r: isStepOrigin ? 5.2 : 4.1 },
+            inner
+          );
         } else {
           if (isCur) {
             this._svgNode('circle', { class: 'jn-pulse', r: 11.8 }, inner);
@@ -1766,8 +1916,12 @@
           }
         }
 
-        const showStartLbl = isMulti && ev.personStepIdx === 0 && !dimmed;
-        if (!isOtherStep && (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl)))) {
+        const showStartLbl = isMulti && (ev.personStepIdx === 0 || isStepOrigin) && !dimmed;
+        if (
+          !isOtherStep &&
+          !isFilteredOutInOverview &&
+          (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl)))
+        ) {
           const fullLbl =
             this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
           const compactLbl = isCur
@@ -1820,7 +1974,9 @@
       const isAdhoc = String(profile.key || '').startsWith('adhoc_');
       const listEl = this._id('genealogy-timeline');
       const stateKey = (profiles || [profile]).map((p) => p.key).join(',');
-      const personCardKey = `${stateKey}:${this._effectiveRenderedLocale()}:${events.length}`;
+      const personCardKey = `${stateKey}:${this._effectiveRenderedLocale()}:${events.length}:${Boolean(
+        this.personSharedOnly
+      )}`;
       if (
         preserveScroll &&
         this._lastPersonCardKey === personCardKey &&
@@ -1830,6 +1986,8 @@
       ) {
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) ovBtn.classList.toggle('is-active', curIdx < 0);
+        const shBtn = this._id('act-person-shared-only');
+        if (shBtn) shBtn.classList.toggle('is-active', Boolean(this.personSharedOnly));
         this._renderPersonFooter(events, curIdx, isEn);
         if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-foot'));
         let activeLi = null;
@@ -1956,12 +2114,6 @@
       const dynCount = new Set(events.map((e) => e.dynasty.key)).size;
       const subEl = this._id('genealogy-sub');
       if (subEl) {
-        const encounterSuffix =
-          isMulti && sameTimeCount > 0
-            ? isEn
-              ? ` · ${sameTimeCount} shared`
-              : ` · ${sameTimeCount} 处同途`
-            : '';
         let summaryTxt;
         if (profile.isStory) {
           const spanYears = Array.isArray(profile.span)
@@ -1972,8 +2124,8 @@
             : `精选 ${events.length} 处关键节点 · 历 ${spanYears} 年`;
         } else {
           summaryTxt = isEn
-            ? `${events.length} key events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
-            : `${isMulti ? '共' : '精选'} ${events.length} 处${isMulti ? '史事' : '代表史事'} · 历 ${dynCount} 朝${encounterSuffix}`;
+            ? `${events.length} key events · ${dynCount} era${dynCount > 1 ? 's' : ''}`
+            : `${isMulti ? '共' : '精选'} ${events.length} 处${isMulti ? '史事' : '代表史事'} · 历 ${dynCount} 朝`;
         }
         const returnStoryBtn =
           !profile.isStory && this._returnStoryState
@@ -1983,10 +2135,19 @@
                   : `返回${this._returnStoryState.zh}`
               )}</button>`
             : '';
+        const sharedFilterBtn =
+          isMulti && sameTimeCount > 0
+            ? `<button type="button" class="gen-filter-pill${
+                this.personSharedOnly ? ' is-active' : ''
+              }" id="act-person-shared-only" title="${
+                isEn ? 'Filter to shared encounters only' : '仅看多人同途交汇节点'
+              }">${isEn ? `Shared ${sameTimeCount}` : `同途 ${sameTimeCount}`}</button>`
+            : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
           `${returnStoryBtn}` +
+          `${sharedFilterBtn}` +
           `<button type="button" class="gen-filter-pill${
             curIdx < 0 ? ' is-active' : ''
           }" id="act-person-overview">${isEn ? 'Overview' : '全图总览'}</button>` +
@@ -1998,6 +2159,27 @@
             const ret = this._returnStoryState;
             this._returnStoryState = null;
             this.openPersonChronicle(ret.key, ret.stopIdx);
+          });
+        }
+        const shBtn = this._id('act-person-shared-only');
+        if (shBtn) {
+          shBtn.addEventListener('click', () => {
+            this.personSharedOnly = !this.personSharedOnly;
+            if (
+              this.personSharedOnly &&
+              this.activePersonEventIdx >= 0 &&
+              !events[this.activePersonEventIdx]?.isSharedEncounter
+            ) {
+              this.activePersonEventIdx = -1;
+              this._scheduleUrlSync();
+            }
+            this._renderPersonPinsOverlay();
+            this._renderPersonChronicleCard(false);
+            if (this.activePersonEventIdx < 0) {
+              this._framePersonOverview(
+                this.personSharedOnly ? events.filter((e) => e.isSharedEncounter) : null
+              );
+            }
           });
         }
         const ovBtn = this._id('act-person-overview');
@@ -2020,7 +2202,9 @@
         const isShared = Boolean(ev.isSharedEncounter);
         const li = document.createElement('li');
         const intersectRowCls = isShared ? ' is-intersect-row' : '';
-        li.className = `person-ev-row${idx === curIdx ? ' is-current' : ''}${intersectRowCls}`;
+        const hiddenCls =
+          this.personSharedOnly && isMulti && sameTimeCount > 0 && !isShared ? ' is-hidden' : '';
+        li.className = `person-ev-row${idx === curIdx ? ' is-current' : ''}${intersectRowCls}${hiddenCls}`;
         li.dataset.evIdx = String(idx);
         if (idx === curIdx) activeLi = li;
         if (isShared && !firstSharedLi) firstSharedLi = li;
@@ -2028,7 +2212,8 @@
         const yrStr = isEn
           ? this.formatYear(ev.year)
           : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
-        const siteLabel = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
+        const rawSite = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
+        const siteLabel = rawSite.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || rawSite;
         const mapBadge = ev.isMapChange
           ? `<span class="ev-map-tag" title="${
               isEn ? 'Territory shift at this year' : '此节点触发版图演变'
@@ -2171,11 +2356,27 @@
       const footEl = this._id('genealogy-foot');
       if (!footEl) return;
       const isMulti = Boolean(this.activePerson && this.activePerson.isMulti);
-      const nextIdx = curIdx < 0 ? 0 : curIdx + 1 < events.length ? curIdx + 1 : -1;
+      const navIdxs = this._getNavigablePersonEventIdxs();
+      const navPos = navIdxs.indexOf(curIdx);
+      const nextIdx =
+        curIdx < 0
+          ? navIdxs.length
+            ? navIdxs[0]
+            : -1
+          : navPos >= 0 && navPos + 1 < navIdxs.length
+            ? navIdxs[navPos + 1]
+            : curIdx + 1 < events.length && !this.personSharedOnly
+              ? curIdx + 1
+              : -1;
+      const prevIdx =
+        navPos > 0 ? navIdxs[navPos - 1] : !this.personSharedOnly && curIdx > 0 ? curIdx - 1 : -1;
       const next = nextIdx >= 0 ? events[nextIdx] : null;
       let nextLabel;
       if (next) {
-        const site = escHtml(isEn ? next.siteEn || this.trTerm(next.siteZh) : next.siteZh);
+        const rawNextSite = isEn ? next.siteEn || this.trTerm(next.siteZh) : next.siteZh;
+        const site = escHtml(
+          rawNextSite.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || rawNextSite
+        );
         const whoPrefix = isMulti
           ? next.isSharedEncounter && Array.isArray(next.participants)
             ? `${next.participants.map((p) => escHtml(isEn ? p.personEn : p.personZh)).join('×')} · `
@@ -2199,7 +2400,6 @@
       const prevBtn = footEl.querySelector('#act-person-prev');
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-          const prevIdx = curIdx > 0 ? curIdx - 1 : -1;
           this.selectPersonEvent(prevIdx, true);
         });
       }
