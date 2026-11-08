@@ -9688,6 +9688,20 @@ function main() {
       assert.strictEqual(stParams.get('stop'), '2', 'Storyline active stop must serialize 0-based ?stop=2 (#297)');
       assert.strictEqual(stParams.has('person'), false, 'Storyline deep-link must not emit ?person=anshi (#297)');
       ctrl.closeGenealogyCard();
+
+      ctrl.openPersonChronicle('sushi', 5);
+      const sushiEvs = ctrl.activePerson.events;
+      assert.strictEqual(
+        ctrl._getSoloStepOriginCoord(ctrl.activePerson, sushiEvs, 1, sushiEvs[1]),
+        null,
+        'Co-located consecutive stops (Meizhou #1 -> Meizhou #2) must not draw a redundant movement vector'
+      );
+      const mizhouOrigin = ctrl._getSoloStepOriginCoord(ctrl.activePerson, sushiEvs, 5, sushiEvs[5]);
+      assert(
+        Array.isArray(mizhouOrigin) && mizhouOrigin[0] === sushiEvs[4].coord[0] && mizhouOrigin[1] === sushiEvs[4].coord[1],
+        'Solo person step 6 (Mizhou) must resolve step 5 (Hangzhou) as its single-step movement origin'
+      );
+      ctrl.closeGenealogyCard();
     }
   }
 
