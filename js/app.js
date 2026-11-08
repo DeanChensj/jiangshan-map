@@ -705,6 +705,19 @@
           this._soloPersonEventsCache = null;
           this._extraEnTermMap = null;
           this._challengeBaseTiers = null;
+          if (this.grpSettlements && typeof this.grpSettlements.querySelectorAll === 'function') {
+            for (const el of this.grpSettlements.querySelectorAll('.settlement-node.is-pass')) {
+              const pk = el.dataset && el.dataset.passKey;
+              const pObj =
+                pk &&
+                (HistoricalAtlasController.STRATEGIC_PASSES || []).find((p) => p.key === pk);
+              if (pObj) {
+                el.dataset.chokepoint =
+                  (this.locale === 'en' ? pObj.chokepointEn : this._zh(pObj.chokepointZh || '')) ||
+                  '';
+              }
+            }
+          }
           return (typeof window !== 'undefined' && window.ATLAS_LORE_DATA) || {};
         });
       }
@@ -3585,7 +3598,8 @@
           pNode.dataset.ancient = passDisplay;
           pNode.dataset.modern = this.locale === 'en' ? p.modernEn : this._zh(p.modernZh);
           pNode.dataset.remark = this.locale === 'en' ? p.rangeEn : this._zh(p.rangeZh);
-          pNode.dataset.chokepoint = this.locale === 'en' ? p.chokepointEn : this._zh(p.chokepointZh);
+          pNode.dataset.chokepoint =
+            (this.locale === 'en' ? p.chokepointEn : this._zh(p.chokepointZh || '')) || '';
           pNode.dataset.lng = String(p.coord[0]);
           pNode.dataset.lat = String(p.coord[1]);
           pNode.dataset.prefAlign = p.align || 'r';
@@ -7946,10 +7960,10 @@
       if (matchedPass) {
         return {
           badge: this.locale === 'en' ? 'Strategic Pass' : '雄关形胜',
-          tag: this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh,
-          desc: this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh,
-          tagEn: matchedPass.rangeEn,
-          descEn: matchedPass.chokepointEn,
+          tag: (this.locale === 'en' ? matchedPass.rangeEn : matchedPass.rangeZh) || '',
+          desc: (this.locale === 'en' ? matchedPass.chokepointEn : matchedPass.chokepointZh) || '',
+          tagEn: matchedPass.rangeEn || '',
+          descEn: matchedPass.chokepointEn || '',
         };
       }
       let bestCity = null;
@@ -14521,14 +14535,26 @@
           const pName = settlementEl.dataset.ancient;
           const pMod = settlementEl.dataset.modern;
           const pRange = settlementEl.dataset.remark;
-          const pChoke = settlementEl.dataset.chokepoint || '';
+          const passObj =
+            settlementEl.dataset.passKey &&
+            (HistoricalAtlasController.STRATEGIC_PASSES || []).find(
+              (p) => p.key === settlementEl.dataset.passKey
+            );
+          const pChoke =
+            settlementEl.dataset.chokepoint ||
+            (passObj
+              ? this.locale === 'en'
+                ? passObj.chokepointEn
+                : this._zh(passObj.chokepointZh || '')
+              : '') ||
+            '';
           const badge = this.locale === 'en' ? '[Strategic Pass]' : '【天下名关】';
           const traceHint =
             this.locale === 'en' ? 'Click to view pass history & battles ›' : '点击查看关隘形胜与历代战史 ›';
           const locStr = this.locale === 'en' ? ` (Now ${pMod})` : `（今${pMod}）`;
           this._showHoverTip(
             e,
-            `<b>${badge} ${pName}${locStr}</b><div class="tt-sub">${pRange} · ${pChoke}</div><div class="tt-sub">${traceHint}</div>`
+            `<b>${badge} ${pName}${locStr}</b><div class="tt-sub">${pRange}${pChoke ? ' · ' + pChoke : ''}</div><div class="tt-sub">${traceHint}</div>`
           );
         } else if (settlementEl || coCity) {
           const isModernDyn = Boolean(cur && (cur.key === 'roc' || cur.key === 'prc'));
