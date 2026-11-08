@@ -818,6 +818,7 @@ function main() {
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   for (const strayFile of [
     'app.js',
+    'atlas_trace.js',
     'atlas_quiz.js',
     'lore_data.js',
     'lore_core.js',
@@ -880,6 +881,38 @@ function main() {
   }
   const ControllerClass = sandbox.window.HistoricalAtlasController;
   assert(typeof ControllerClass === 'function', 'HistoricalAtlasController must be exposed on window');
+  for (const traceMethod of [
+    'toggleGenealogySheetExpand',
+    'closeGenealogyCard',
+    'openGenealogyAt',
+    'openPersonChronicle',
+    'openJourneyAsPerson',
+    '_collectPersonEvents',
+    '_buildPersonTracksAndEvents',
+    '_resolveEraPlaceAt',
+    '_renderCustomRoute',
+    '_buildJourneySegmentInfo',
+    '_renderCartographicTrajectory',
+  ]) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, traceMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_trace.js must attach ${traceMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
+  for (const traceStaticGetter of [
+    'PERSON_PROFILES',
+    'PLACE_LANDMARK_EVENTS',
+    'STRATEGIC_PASSES',
+    'CITY_LORE',
+    'HISTORICAL_JOURNEYS',
+  ]) {
+    const sDesc = Object.getOwnPropertyDescriptor(ControllerClass, traceStaticGetter);
+    assert(
+      sDesc && typeof sDesc.get === 'function',
+      `atlas_trace.js must attach static getter ${traceStaticGetter} onto HistoricalAtlasController`
+    );
+  }
   for (const quizMethod of [
     '_sanitizeChallengeClue',
     '_buildChallengeDeck',
@@ -912,9 +945,12 @@ function main() {
     const ReorderedClass = orderSandbox.window.HistoricalAtlasController;
     assert(
       typeof ReorderedClass === 'function' &&
+        typeof ReorderedClass.prototype.openGenealogyAt === 'function' &&
+        typeof ReorderedClass.prototype.openPersonChronicle === 'function' &&
+        typeof ReorderedClass.prototype._renderCartographicTrajectory === 'function' &&
         typeof ReorderedClass.prototype.startChallenge === 'function' &&
         typeof ReorderedClass.prototype._evaluateLocateClick === 'function',
-      'atlas_quiz.js loaded before app.js must still attach quiz methods via window.__ATLAS_MIXINS'
+      'atlas_trace.js and atlas_quiz.js loaded before app.js must still attach trace and quiz methods via window.__ATLAS_MIXINS'
     );
     assert.strictEqual(
       orderSandbox.window.__ATLAS_MIXINS.length,
