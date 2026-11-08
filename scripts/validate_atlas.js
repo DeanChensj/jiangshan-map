@@ -379,21 +379,23 @@ function main() {
     'Juye Ze / Liangshan Marsh should vanish after 1280 CE'
   );
   assert(
-    Array.isArray(hydro.paleoSea) && hydro.paleoSea.length >= 6,
-    'HYDRO_DATA.paleoSea must contain P0 (Bohai) and P1 (East China) historical paleo-sea shoreline masks'
+    Array.isArray(hydro.paleoSea) && hydro.paleoSea.length >= 9,
+    'HYDRO_DATA.paleoSea must contain P0 (Bohai), P1 (East China), and P2 (Pearl River Delta & Taijiang Inner Sea) historical paleo-sea shoreline masks'
   );
   assert(
-    hydro.paleoSea.filter((p) => isHydroActive(p, -210)).length >= 2 &&
-      hydro.paleoSea.filter((p) => isHydroActive(p, 741)).length >= 2 &&
-      hydro.paleoSea.filter((p) => isHydroActive(p, 1500)).length >= 2 &&
-      hydro.paleoSea.filter((p) => (p.name.startsWith('Bohai') || p.name.startsWith('East China')) && isHydroActive(p, 1900)).length === 0,
-    'Bohai & East China paleo-sea masks must cover <220, 220–1128, and 1128–1855, and vanish from 1855 CE onward'
+    hydro.paleoSea.filter((p) => isHydroActive(p, -210)).length >= 4 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 741)).length >= 4 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 1500)).length >= 4 &&
+      hydro.paleoSea.filter((p) => isHydroActive(p, 1900)).length === 0,
+    'All paleo-sea masks must cover their historical epochs (<220, 220–1128, 1128–1823/1855) and vanish in the modern era'
   );
   assert(
     hydro.paleoSea[3].polys[0].length === 2 &&
       hydro.paleoSea[4].polys[0].length === 3 &&
-      hydro.paleoSea[5].polys[0].length === 3,
-    'East China paleo-sea masks must include inner holes for Yuzhou Island (PS[3..5]) and Dongsha / Chongming Island (PS[4..5])'
+      hydro.paleoSea[5].polys[0].length === 3 &&
+      hydro.paleoSea[6].polys[0].length === 2 &&
+      hydro.paleoSea[8].vanish === 1823,
+    'Paleo-sea masks must include inner holes for Yuzhou Island (PS[3..5]), Dongsha / Chongming Island (PS[4..5]), and Xiangshan Island (PS[6]), plus the pre-1823 Taijiang Inner Sea (PS[8])'
   );
   const wangJing = hydro.rivers.find((r) => r.name === 'Huang' && r.appear === 11 && r.vanish === 1048);
   assert(
@@ -704,6 +706,44 @@ function main() {
       pointInShape(121.55, 31.62, qingLatePol.shape),
     'Yangtze Estuary must transition from open funnel (<220) to Dongsha shoal (220–1128) to Chongming Island (>=1128)'
   );
+  // Validate P2 Southeast & South China Coast (Pearl River Delta / Xiangshan Island, Tainan Taijiang Inner Sea, and coastal settlements)
+  const qinFullPol = snapshots.s_qin.polities.find((p) => p.title === '秦');
+  assert(
+    qinFullPol &&
+      !pointInShape(113.42, 22.58, qinFullPol.shape) &&
+      !pointInShape(113.42, 22.58, tangPol.shape) &&
+      pointInShape(113.48, 22.32, qinFullPol.shape) &&
+      pointInShape(113.48, 22.32, tangPol.shape) &&
+      pointInShape(113.42, 22.58, mingPol.shape) &&
+      pointInShape(113.42, 22.58, qingEarlyPol.shape) &&
+      !pointInShape(113.62, 22.55, mingPol.shape) &&
+      !pointInShape(113.62, 22.55, qingEarlyPol.shape) &&
+      pointInShape(113.62, 22.55, qingLatePol.shape),
+    'Pearl River Delta must transition from open inner estuarine bay with offshore Xiangshan Island (<1128) to reclaimed Shatian plain (1128–1855) to modern Nansha/Wanqingsha shoreline (>=1855)'
+  );
+  const qingEarlyTw = snapshots.s_qing_d.regions.find((r) => r.title === '台湾');
+  const qingLateTw = snapshots.s_qing_e2.regions.find((r) => r.title === '台湾');
+  assert(
+    qingEarlyTw &&
+      qingLateTw &&
+      !pointInShape(120.12, 23.08, qingEarlyPol.shape) &&
+      !pointInShape(120.12, 23.08, qingEarlyTw.shape) &&
+      pointInShape(120.12, 23.08, qingLatePol.shape) &&
+      pointInShape(120.12, 23.08, qingLateTw.shape),
+    'Tainan Taijiang Inner Sea ([120.12, 23.08]) must remain an open coastal lagoon prior to 1823 CE and silt into land in s_qing_e2 (>=1823)'
+  );
+  for (const d of dynasties) {
+    const snap = snapshots[d.snapKey];
+    if (!snap || !Array.isArray(snap.polities)) continue;
+    for (const s of d.settlements || []) {
+      const [sx, sy] = s.coord;
+      const insideAny = snap.polities.some((p) => pointInShape(sx, sy, p.shape));
+      assert(
+        insideAny,
+        `Settlement ${s.ancient} (${s.modern}) at [${sx}, ${sy}] in dynasty ${d.key} (${d.snapKey}) lies in the sea / outside all polities`
+      );
+    }
+  }
 
   // 4b. Validate split-era intermediate phase granularity (donghan, xijin, dongjin, nanbei, wudai)
   assert(
@@ -3156,9 +3196,9 @@ function main() {
     assert(
       mingPol &&
         mingPol.shape.type === 'MultiPolygon' &&
-        mingPol.shape.coordinates.length === 6 &&
-        mingPol.shape.coordinates.filter((p) => p[0].length > 50).length === 1,
-      `${sk} Ming polity must have 6 disjoint sub-polygons including Yuzhou & Chongming islands (no duplicate overlapping mainland polygon)`
+        mingPol.shape.coordinates.length === 4 &&
+        mingPol.shape.coordinates.filter((p) => p[0].length > 200).length === 1,
+      `${sk} Ming polity must have 4 disjoint sub-polygons (Mainland, Hainan, Yuzhou & Chongming islands; no duplicate overlapping mainland polygon)`
     );
     const jurchenPol = snapshots[sk].polities.find((p) => p.title === '女真诸部');
     assert(jurchenPol && jurchenPol.role === 'neighbor', `${sk} must include 女真诸部 neighbor polity in the Northeast`);
@@ -9733,7 +9773,7 @@ function main() {
       ['s_ming_0a', '明', 4],
       ['s_ming_0b', '明', 4],
       ['s_sui_d', '魏（李密）', 1],
-      ['s_tang_0', '梁（萧铣）', 1],
+      ['s_tang_0', '梁（萧铣）', 2],
       ['s_tang_0', '吴（杜伏威）', 2],
       ['s_tang_d1', '大齐（黄巢）', 2],
     ]) {
