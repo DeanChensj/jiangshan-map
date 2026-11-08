@@ -308,7 +308,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=dd3b504a" />
+  <link rel="stylesheet" href="css/style.css?v=65a7b2ca" />
   <!-- Analytics: Vercount & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635", "spa": false}'></script>
@@ -618,11 +618,23 @@
         <div id="scrubber-Bubble" aria-live="polite">
           <span id="bubble-text">公元前403年 · 周威烈王二十三年</span>
         </div>
-        <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-403" aria-valuemax="2026" aria-valuenow="-403" aria-label="年份滑块">
-          <div id="dynasty-bands"></div>
-          <div id="scrubber-motion"><div id="scrubber-handle"></div></div>
+        <div id="scrubber-viewport">
+          <div id="scrubber-content">
+            <div id="scrubber-track" role="slider" tabindex="0" aria-valuemin="-403" aria-valuemax="2026" aria-valuenow="-403" aria-label="年份滑块">
+              <div id="dynasty-bands"></div>
+              <div id="scrubber-motion"><div id="scrubber-handle"></div></div>
+            </div>
+            <div id="scrubber-ticks"></div>
+          </div>
         </div>
-        <div id="scrubber-ticks"></div>
+        <div id="timeline-navigator" class="timeline-navigator" role="group" aria-label="时间轴可见范围" title="拖动两端缩放，拖动中间平移；双击显示全部">
+          <div id="timeline-window" class="timeline-window">
+            <div id="timeline-pan" class="timeline-pan" data-timeline-part="pan" role="slider" tabindex="0" aria-orientation="horizontal" aria-label="平移时间轴" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"></div>
+            <div id="timeline-start" class="timeline-edge timeline-edge-start" data-timeline-part="start" role="slider" tabindex="0" aria-orientation="horizontal" aria-label="可见范围起点" aria-valuemin="0" aria-valuemax="938" aria-valuenow="0"></div>
+            <div id="timeline-end" class="timeline-edge timeline-edge-end" data-timeline-part="end" role="slider" tabindex="0" aria-orientation="horizontal" aria-label="可见范围终点" aria-valuemin="63" aria-valuemax="1000" aria-valuenow="1000"></div>
+          </div>
+          <span id="timeline-position" class="timeline-position" aria-hidden="true"></span>
+        </div>
       </div>
 
       <div class="year-stepper">
@@ -757,7 +769,7 @@
   <script src="js/map_data.js?v=a580f5c2"></script>
   <script src="js/lore_core.js?v=e1cf716c"></script>
   <script src="js/zh_hant.js?v=e97ea63f"></script>
-  <script id="atlas-app-script" src="js/app.js?v=388570bc" data-v-snapshots="c31d4537" data-v-i18n="b1a4bc8f" data-v-lore="8e28da5c" data-v-pinyin="69cbae0e"></script>
+  <script id="atlas-app-script" src="js/app.js?v=c089b652" data-v-snapshots="c31d4537" data-v-i18n="b1a4bc8f" data-v-lore="8e28da5c" data-v-pinyin="69cbae0e"></script>
   <script src="js/atlas_trace.js?v=6ea75048"></script>
   <script src="js/atlas_search.js?v=cd5acda0"></script>
   <script src="js/atlas_quiz.js?v=822befe6"></script>

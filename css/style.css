@@ -2920,6 +2920,143 @@ h2 {
   min-width: 0;
 }
 
+#scrubber-viewport.is-zoomed {
+  overflow-x: auto;
+  padding-top: 6px;
+  margin-top: -6px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+#scrubber-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+#scrubber-viewport.is-zoomed #scrubber-content {
+  /* The translated playhead wrapper must not extend the scroll range. */
+  overflow-x: clip;
+}
+
+#scrubber-viewport.is-zoomed #scrubber-ticks span:first-child {
+  transform: none;
+}
+
+#scrubber-viewport.is-zoomed #tick-present {
+  transform: translateX(-100%);
+}
+
+.timeline-navigator {
+  position: relative;
+  height: 24px;
+  margin-bottom: -12px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.timeline-navigator::before {
+  content: '';
+  position: absolute;
+  inset: 11px 0;
+  border-radius: 1px;
+  background: var(--hairline);
+}
+
+.timeline-window {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.timeline-window::before {
+  content: '';
+  position: absolute;
+  inset: 8px 0;
+  border: 1px solid rgba(90, 74, 58, 0.18);
+  border-radius: 4px;
+  background: rgba(90, 74, 58, 0.18);
+  transition: background 0.12s;
+}
+
+.timeline-window:hover::before,
+.timeline-window:focus-within::before,
+.timeline-navigator.is-dragging .timeline-window::before {
+  background: rgba(90, 74, 58, 0.3);
+}
+
+.timeline-pan,
+.timeline-edge {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  outline: none;
+}
+
+.timeline-pan {
+  left: 10px;
+  right: 10px;
+  cursor: grab;
+}
+
+.timeline-navigator.is-dragging .timeline-pan {
+  cursor: grabbing;
+}
+
+.timeline-edge {
+  width: 20px;
+  cursor: ew-resize;
+}
+
+.timeline-edge-start {
+  left: -10px;
+}
+
+.timeline-edge-end {
+  right: -10px;
+}
+
+.timeline-edge::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 9px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--text-secondary);
+}
+
+.timeline-pan:focus-visible,
+.timeline-edge:focus-visible {
+  outline: 1px solid var(--vermilion);
+  outline-offset: -3px;
+  border-radius: 4px;
+}
+
+.timeline-position {
+  position: absolute;
+  top: 8px;
+  height: 8px;
+  width: 1px;
+  background: var(--vermilion);
+  pointer-events: none;
+}
+
+#scrubber-dock.is-challenge-locked .timeline-navigator {
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .timeline-navigator {
+    display: none;
+  }
+}
+
+html.is-embed .timeline-navigator {
+  display: none;
+}
+
 #scrubber-Bubble {
   position: absolute;
   top: 0;
@@ -3108,7 +3245,7 @@ h2 {
   transform: scale(0.95);
 }
 
-.year-stepper input {
+#inp-year {
   width: 60px;
   border: none;
   outline: none;
@@ -3520,7 +3657,7 @@ html[lang="en"] .genealogy-list li {
     gap: 2px;
     border-radius: 6px;
   }
-  .year-stepper input,
+  #inp-year,
   .year-stepper .unit-label {
     display: none;
   }

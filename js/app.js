@@ -1915,6 +1915,7 @@
           this.locale === 'en' ? 'Year slider' : '年份滑块'
         );
       }
+      this._syncScrubberNavigator();
       const chroniclePane = this._id('chronicle-pane');
       if (chroniclePane) {
         chroniclePane.setAttribute(
@@ -6084,6 +6085,7 @@
         if (x !== null) scrubAt(x);
         this.isScrubbing = false;
         if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
+        this._revealScrubberYear();
         if (wasDragging && !this.activePerson && this.dynasties && this.dynasties[this.dynastyIdx]) {
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
         }
@@ -6099,6 +6101,161 @@
           this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
         }
       });
+    }
+
+    _bindScrubberNavigator() {
+      if (this.embed) return;
+      const navigator = this._id('timeline-navigator');
+      const viewport = this._id('scrubber-viewport');
+      const content = this._id('scrubber-content');
+      const desktop = window.matchMedia('(min-width: 901px)');
+      const minSpan = 1 / 16;
+      let drag = null;
+      this._scrubberView = { start: 0, end: 1 };
+      this._syncScrubberNavigator();
+
+      navigator.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 || this.challenge || !desktop.matches || drag) return;
+        const rect = navigator.getBoundingClientRect();
+        if (!rect.width) return;
+        e.preventDefault();
+        this.stopAutoplay();
+        const control = e.target.closest('[data-timeline-part]');
+        const part = control ? control.dataset.timelinePart : 'pan';
+        if (!control) {
+          const span = this._scrubberView.end - this._scrubberView.start;
+          const start = (e.clientX - rect.left) / rect.width - span / 2;
+          this._setScrubberView(start, start + span);
+        }
+        (control || this._id('timeline-pan')).focus({ preventScroll: true });
+        drag = { ...this._scrubberView, part, x: e.clientX, width: rect.width, pointerId: e.pointerId };
+        navigator.setPointerCapture(e.pointerId);
+        navigator.classList.add('is-dragging');
+      });
+      const move = (e) => {
+        if (!drag || e.pointerId !== drag.pointerId) return;
+        const delta = (e.clientX - drag.x) / drag.width;
+        if (drag.part === 'start') {
+          this._setScrubberView(Math.max(0, Math.min(drag.end - minSpan, drag.start + delta)), drag.end);
+        } else if (drag.part === 'end') {
+          this._setScrubberView(drag.start, Math.max(drag.start + minSpan, Math.min(1, drag.end + delta)));
+        } else {
+          this._setScrubberView(drag.start + delta, drag.end + delta);
+        }
+      };
+      const finish = (e) => {
+        if (e && drag && e.pointerId !== drag.pointerId) return;
+        drag = null;
+        navigator.classList.remove('is-dragging');
+      };
+      navigator.addEventListener('pointermove', move);
+      navigator.addEventListener('pointerup', (e) => {
+        move(e);
+        finish(e);
+      });
+      navigator.addEventListener('pointercancel', finish);
+      navigator.addEventListener('lostpointercapture', finish);
+      navigator.addEventListener('dblclick', () => {
+        if (!this.challenge) this._setScrubberView(0, 1);
+      });
+      navigator.addEventListener('keydown', (e) => {
+        // Keep navigation keys local: they must not change the map year or camera.
+        e.stopPropagation();
+        if (e.isComposing || this.challenge) return;
+        const part = e.target.dataset.timelinePart;
+        if (!part || !['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter'].includes(e.key)) return;
+        e.preventDefault();
+        this.stopAutoplay();
+        const { start, end } = this._scrubberView;
+        const span = end - start;
+        const delta = span * (e.shiftKey ? 0.2 : 0.02) * (e.key === 'ArrowLeft' ? -1 : 1);
+        if (e.key === 'Enter') {
+          this._setScrubberView(0, 1);
+        } else if (part === 'start') {
+          const next = e.key === 'Home' ? 0 : e.key === 'End' ? end - minSpan : start + delta;
+          this._setScrubberView(Math.max(0, Math.min(end - minSpan, next)), end);
+        } else if (part === 'end') {
+          const next = e.key === 'Home' ? start + minSpan : e.key === 'End' ? 1 : end + delta;
+          this._setScrubberView(start, Math.max(start + minSpan, Math.min(1, next)));
+        } else {
+          const next = e.key === 'Home' ? 0 : e.key === 'End' ? 1 - span : start + delta;
+          this._setScrubberView(next, next + span);
+        }
+      });
+      viewport.addEventListener('scroll', () => {
+        const span = this._scrubberView.end - this._scrubberView.start;
+        const start = Math.max(0, Math.min(1 - span, viewport.scrollLeft / content.clientWidth));
+        this._scrubberView = { start, end: start + span };
+        this._syncScrubberNavigator();
+        this._positionScrubberBubble(this._yearToProgress(this.year));
+      });
+      viewport.addEventListener('wheel', (e) => {
+        if (!viewport.classList.contains('is-zoomed') || !e.shiftKey || !e.deltaY || e.deltaX) return;
+        e.preventDefault();
+        const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? viewport.clientWidth : 1;
+        viewport.scrollLeft += e.deltaY * unit;
+      }, { passive: false });
+      desktop.addEventListener('change', () => {
+        if (!desktop.matches) {
+          finish();
+          this._setScrubberView(0, 1);
+        }
+      });
+    }
+
+    _setScrubberView(start, end) {
+      // Use the existing dynasty-weighted progress scale for both the rail and navigator.
+      const span = Math.max(1 / 16, Math.min(1, end - start));
+      start = Math.max(0, Math.min(1 - span, start));
+      const oldSpan = this._scrubberView ? this._scrubberView.end - this._scrubberView.start : 1;
+      this._scrubberView = { start, end: start + span };
+      const viewport = this._id('scrubber-viewport');
+      const content = this._id('scrubber-content');
+      viewport.classList.toggle('is-zoomed', span < 1);
+      content.style.width = span < 1 ? `${100 / span}%` : '';
+      viewport.scrollLeft = start * content.clientWidth;
+      if (Math.abs(span - oldSpan) > 0.000001) this._fitBandLabels();
+      this._syncScrubberNavigator();
+      this._positionScrubberBubble(this._yearToProgress(this.year));
+    }
+
+    _syncScrubberNavigator() {
+      if (!this._scrubberView) return;
+      const { start, end } = this._scrubberView;
+      const range = this._id('timeline-window');
+      range.style.left = `${start * 100}%`;
+      range.style.width = `${(end - start) * 100}%`;
+      this._id('timeline-position').style.left = `${this._yearToProgress(this.year) * 100}%`;
+      const en = this.locale === 'en';
+      const navigator = this._id('timeline-navigator');
+      navigator.setAttribute('aria-label', en ? 'Timeline visible range' : this._zh('时间轴可见范围'));
+      navigator.title = en
+        ? 'Drag the ends to zoom, drag the middle to pan; double-click to show all'
+        : this._zh('拖动两端缩放，拖动中间平移；双击显示全部');
+      const from = this.formatYear(this._progressToYear(start));
+      const to = this.formatYear(end >= 1 ? this.maxYear : this._progressToYear(end));
+      for (const [part, min, max, value, label, valueText] of [
+        ['start', 0, end - 1 / 16, start, en ? 'Visible range start' : this._zh('可见范围起点'), from],
+        ['pan', 0, 1 - (end - start), start, en ? 'Pan timeline' : this._zh('平移时间轴'), `${from} — ${to}`],
+        ['end', start + 1 / 16, 1, end, en ? 'Visible range end' : this._zh('可见范围终点'), to],
+      ]) {
+        const el = this._id(`timeline-${part}`);
+        el.setAttribute('aria-label', label);
+        el.setAttribute('aria-valuemin', String(Math.round(min * 1000)));
+        el.setAttribute('aria-valuemax', String(Math.round(max * 1000)));
+        el.setAttribute('aria-valuenow', String(Math.round(value * 1000)));
+        el.setAttribute('aria-valuetext', valueText);
+      }
+    }
+
+    _revealScrubberYear() {
+      if (!this._scrubberView || this.isScrubbing) return;
+      const { start, end } = this._scrubberView;
+      const progress = this._yearToProgress(this.year);
+      if (progress < start || progress > end) {
+        const span = end - start;
+        this._setScrubberView(progress - span / 2, progress + span / 2);
+      }
     }
 
     _buildScrubberBands() {
@@ -6173,6 +6330,7 @@
       this._refreshBandLabels();
       window.addEventListener('resize', () => {
         this._scrubberRailWidth = 0;
+        if (this._scrubberView) this._setScrubberView(this._scrubberView.start, this._scrubberView.end);
         this._fitBandLabels();
         this._updateScaleBar();
         this._syncScrubberUi();
@@ -6247,16 +6405,30 @@
       }
     }
 
+    _positionScrubberBubble(progress) {
+      const viewport = this._id('scrubber-viewport');
+      const content = this._id('scrubber-content');
+      const bubble = this._id('scrubber-Bubble');
+      const bubbleText = this._id('bubble-text');
+      const zoomed = viewport.classList.contains('is-zoomed');
+      const railW = this._scrubberRailWidth || (this._scrubberRailWidth = viewport.clientWidth || 300);
+      const handleX = progress * (zoomed ? content.clientWidth : railW) - viewport.scrollLeft;
+      bubble.style.visibility = zoomed && (handleX < -1 || handleX > railW + 1) ? 'hidden' : '';
+      const bW = Math.max(84, Math.round(this._estimateLocalTextWidth(bubbleText.textContent, 12, 0) + 20));
+      const maxLeft = Math.max(0, railW - bW);
+      const leftPx = Math.max(0, Math.min(maxLeft, handleX - bW * 0.5));
+      bubble.style.left = '0px';
+      bubble.style.transform = `translateX(${leftPx.toFixed(1)}px)`;
+      const arrowX = Math.max(8, Math.min(bW - 8, handleX - leftPx));
+      bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
+    }
+
     _syncScrubberUi() {
       const pct = this._yearToProgress(this.year) * 100;
       const d = this.dynasties[this.dynastyIdx];
       const bubble = this._id('scrubber-Bubble');
       const bubbleText = this._id('bubble-text');
       if (bubble && bubbleText) {
-        if (!this._scrubberRailWidth) {
-          const wrap = this._id('scrubber-rail-wrap');
-          this._scrubberRailWidth = (wrap && wrap.clientWidth) || 300;
-        }
         const eraText = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
         bubbleText.textContent = eraText;
         if (this.year >= 1368 && this.year < 1912) {
@@ -6267,18 +6439,7 @@
         } else {
           bubble.title = eraText;
         }
-        const railW = this._scrubberRailWidth || 300;
-        const bW = Math.max(84, Math.round(this._estimateLocalTextWidth(eraText, 12, 0) + 20));
-        const handleX = (pct / 100) * railW;
-        // Clamp bubble strictly inside [0, railW - bW] so text never clips off-screen
-        const maxLeft = Math.max(0, railW - bW);
-        const leftPx = Math.max(0, Math.min(maxLeft, handleX - bW * 0.5));
-        bubble.style.left = '0px';
-        bubble.style.transform = `translateX(${leftPx.toFixed(1)}px)`;
-
-        // Direct caret arrow to point straight at the timeline thumb
-        const arrowX = Math.max(8, Math.min(bW - 8, handleX - leftPx));
-        bubble.style.setProperty('--arrow-left', `${arrowX.toFixed(1)}px`);
+        this._positionScrubberBubble(pct / 100);
       }
 
       const motion = this._id('scrubber-motion');
@@ -6295,6 +6456,7 @@
       if (track) track.setAttribute('aria-valuenow', String(this.year));
       const inpYear = this._id('inp-year');
       if (inpYear) inpYear.value = this.year === 0 ? 1 : this.year;
+      this._syncScrubberNavigator();
       if (this.embed) this._syncEmbedBadge();
       if (this._lastActiveBandIdx !== this.dynastyIdx) {
         const bandsEl = this._id('dynasty-bands');
@@ -6381,6 +6543,7 @@
       if (!this.activePerson && !this.isScrubbing) {
         this._syncAutoMilestoneBalloon(cur);
       }
+      this._revealScrubberYear();
       this._syncScrubberUi();
       const preserveScroll = Boolean(this._preserveGenealogyScrollOnce);
       this._preserveGenealogyScrollOnce = false;
@@ -9342,6 +9505,7 @@
       // Scrubber dragging (smooth continuous scrubbing anywhere on the bar)
       const track = this._id('scrubber-track');
       this._bindScrubberDrag(track);
+      this._bindScrubberNavigator();
       // Touching the event callout ends autoplay, like any other input.
       this.milestoneBalloon.addEventListener('pointerdown', () => {
         if (this.playing) this.stopAutoplay();

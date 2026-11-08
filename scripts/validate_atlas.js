@@ -6132,6 +6132,192 @@ function main() {
     assert.strictEqual(ctrl.year, y200, 'pointercancel must discard any un-flushed move');
   }
 
+  // CUJ 29b: Timeline navigator — zoom/pan bounds, pointer ownership, and year-jump follow.
+  // Exercise production handlers and jumpToYear with a layout fixture; map rendering is isolated.
+  {
+    const makeNode = () => {
+      const classes = new Set();
+      return {
+        style: { setProperty() {} }, attributes: {}, handlers: {}, textContent: '',
+        classList: {
+          add: (name) => classes.add(name),
+          remove: (name) => classes.delete(name),
+          contains: (name) => classes.has(name),
+          toggle: (name, on) => on ? classes.add(name) : classes.delete(name),
+        },
+        setAttribute(name, value) { this.attributes[name] = value; },
+        addEventListener(type, fn) { this.handlers[type] = fn; },
+        getBoundingClientRect: () => ({ left: 0, width: 1000 }),
+        setPointerCapture() {}, focus() {},
+      };
+    };
+    const nodes = Object.fromEntries([
+      'timeline-navigator', 'timeline-window', 'timeline-position', 'timeline-start',
+      'timeline-pan', 'timeline-end', 'scrubber-viewport', 'scrubber-content',
+      'scrubber-Bubble', 'bubble-text', 'scrubber-motion', 'scrubber-track',
+      'inp-year', 'dynasty-bands',
+    ].map((id) => [id, makeNode()]));
+    for (const part of ['start', 'pan', 'end']) {
+      const node = nodes[`timeline-${part}`];
+      node.dataset = { timelinePart: part };
+      node.closest = () => node;
+    }
+    const viewport = nodes['scrubber-viewport'];
+    viewport.clientWidth = 1000;
+    viewport.scrollLeft = 0;
+    const content = nodes['scrubber-content'];
+    Object.defineProperty(content, 'clientWidth', {
+      get: () => viewport.clientWidth * (parseFloat(content.style.width) || 100) / 100,
+    });
+    nodes['dynasty-bands'].children = ctrl.dynasties.map(makeNode);
+    let mapUpdates = 0;
+    const navCtrl = Object.assign(Object.create(ControllerClass.prototype), {
+      dynasties: ctrl.dynasties, minYear: ctrl.minYear, maxYear: ctrl.maxYear,
+      year: 755, locale: 'zh',
+      _id: (id) => nodes[id] || null,
+      _zh: (text) => text,
+      _fitBandLabels() {},
+      _estimateLocalTextWidth: () => 100,
+      formatEraLabel: () => '测试年号',
+      stopAutoplay() {},
+      _scheduleUrlSync() {},
+      _runWithDeferredTypography() { mapUpdates++; },
+      _syncAutoMilestoneBalloon() {},
+    });
+    navCtrl.dynastyIdx = navCtrl._findDynastyIndex(755);
+    navCtrl._initTimelineBands();
+    const desktop = { matches: true, addEventListener(type, fn) { this[type] = fn; } };
+    const oldMatchMedia = sandbox.window.matchMedia;
+    sandbox.window.matchMedia = () => desktop;
+    try {
+      navCtrl._bindScrubberNavigator();
+      navCtrl._syncScrubberUi();
+      const handlers = nodes['timeline-navigator'].handlers;
+      const emit = (type, part, x, pointerId = 1) => handlers[type]({
+        button: 0, pointerId, clientX: x, target: nodes[`timeline-${part}`], preventDefault() {},
+      });
+      const drag = (part, from, to) => {
+        emit('pointerdown', part, from);
+        emit('pointermove', part, to);
+        emit('pointerup', part, to);
+      };
+      const checkView = (start, end, message) => {
+        assert(Math.abs(navCtrl._scrubberView.start - start) < 1e-9, `${message}: start`);
+        assert(Math.abs(navCtrl._scrubberView.end - end) < 1e-9, `${message}: end`);
+      };
+      const key = (part, value) => {
+        let stopped = false;
+        handlers.keydown({
+          target: nodes[`timeline-${part}`], key: value, preventDefault() {},
+          stopPropagation() { stopped = true; },
+        });
+        assert(stopped, 'Navigator keys must not reach the global year/camera shortcuts');
+      };
+
+      // Dragging either edge keeps the opposite edge fixed, including crossed/outside pointers.
+      drag('end', 1000, 600);
+      checkView(0, 0.6, 'Right edge zoom');
+      drag('start', 0, 200);
+      checkView(0.2, 0.6, 'Left edge zoom');
+      assert(Math.abs(parseFloat(content.style.width) - 250) < 1e-9, 'Zoom must expand the main rail');
+      assert(Math.abs(viewport.scrollLeft - 500) < 1e-9, 'Zoom must align the main rail with the selected range');
+      drag('start', 200, 900);
+      checkView(0.5375, 0.6, 'Crossing the left edge stops at 16×');
+      navCtrl._setScrubberView(0.2, 0.6);
+      drag('end', 600, 0);
+      checkView(0.2, 0.2625, 'Crossing the right edge stops at 16×');
+      drag('start', 200, -1000);
+      checkView(0, 0.2625, 'Left edge stops at the timeline beginning');
+      drag('end', 262.5, 2000);
+      checkView(0, 1, 'Right edge stops at the timeline end');
+
+      navCtrl._setScrubberView(0.2, 0.6);
+      drag('pan', 400, 600);
+      checkView(0.4, 0.8, 'Pan preserves the visible span');
+      drag('pan', 600, 2000);
+      checkView(0.6, 1, 'Pan clamps at the right boundary');
+      drag('pan', 800, -1000);
+      checkView(0, 0.4, 'Pan clamps at the left boundary');
+      assert.strictEqual(navCtrl.year, 755, 'Zoom and pan must not change the selected year');
+      assert.strictEqual(nodes['inp-year'].value, 755, 'Zoom and pan must preserve the year input');
+      assert.strictEqual(mapUpdates, 0, 'Navigation alone must not render a different map');
+
+      // Other pointers cannot finish a captured drag; cancellation allows a fresh gesture.
+      navCtrl._setScrubberView(0.2, 0.6);
+      emit('pointerdown', 'pan', 400);
+      emit('pointerup', 'pan', 900, 2);
+      emit('pointermove', 'pan', 500);
+      checkView(0.3, 0.7, 'Unrelated pointerup must not terminate the active drag');
+      emit('pointercancel', 'pan', 500);
+      emit('pointermove', 'pan', 900);
+      checkView(0.3, 0.7, 'Cancelled drag ignores later moves');
+      drag('pan', 500, 600);
+      checkView(0.4, 0.8, 'A new drag works after cancellation');
+      emit('pointerdown', 'pan', 600);
+      emit('lostpointercapture', 'pan', 600);
+      emit('pointermove', 'pan', 900);
+      checkView(0.4, 0.8, 'Lost capture ends the drag');
+
+      key('pan', 'End');
+      checkView(0.6, 1, 'Keyboard pan to end');
+      key('pan', 'Home');
+      checkView(0, 0.4, 'Keyboard pan to beginning');
+      key('pan', 'Enter');
+      checkView(0, 1, 'Keyboard overview');
+      key('end', 'ArrowLeft');
+      checkView(0, 0.98, 'Keyboard edge resize');
+      assert.strictEqual(navCtrl.year, 755, 'Navigator keyboard controls must not step the year');
+      handlers.dblclick();
+      checkView(0, 1, 'Double-click overview');
+      assert.strictEqual(content.style.width, '', 'Overview restores the original rail width');
+      assert.strictEqual(viewport.scrollLeft, 0, 'Overview resets horizontal scroll');
+
+      // Follow through the real jumpToYear path used by inputs, event stepping and playback.
+      navCtrl._setScrubberView(0, 0.25);
+      assert.strictEqual(nodes['scrubber-Bubble'].style.visibility, 'hidden', 'Offscreen year bubble is hidden');
+      navCtrl.jumpToYear(1415);
+      const p1415 = navCtrl._yearToProgress(1415);
+      checkView(p1415 - 0.125, p1415 + 0.125, 'A year jump brings the target into view without changing scale');
+      assert.strictEqual(nodes['inp-year'].value, 1415, 'A year jump updates the input');
+      assert.strictEqual(nodes['scrubber-Bubble'].style.visibility, '', 'The target year bubble becomes visible');
+      navCtrl.jumpToYear(1416);
+      checkView(p1415 - 0.125, p1415 + 0.125, 'A nearby visible year does not shift the viewport');
+      navCtrl.jumpToYear(navCtrl.minYear);
+      checkView(0, 0.25, 'Following the first year clamps the viewport');
+      navCtrl.jumpToYear(navCtrl.maxYear);
+      checkView(0.75, 1, 'Following the final year clamps the viewport');
+      navCtrl.isScrubbing = true;
+      navCtrl.jumpToYear(755);
+      checkView(0.75, 1, 'A captured year scrub keeps its coordinate system steady');
+      navCtrl.isScrubbing = false;
+      navCtrl._revealScrubberYear();
+      const p755 = navCtrl._yearToProgress(755);
+      checkView(p755 - 0.125, p755 + 0.125, 'Releasing the scrub reveals its selected year');
+
+      viewport.scrollLeft = content.clientWidth * 0.1;
+      viewport.handlers.scroll();
+      checkView(0.1, 0.35, 'Native horizontal scrolling updates the navigator');
+      assert.strictEqual(nodes['timeline-pan'].attributes['aria-valuenow'], '100', 'Accessible range follows scrolling');
+      navCtrl.challenge = {};
+      drag('pan', 225, 600);
+      key('pan', 'End');
+      handlers.dblclick();
+      checkView(0.1, 0.35, 'Challenge mode locks navigator interactions');
+      navCtrl.challenge = null;
+      emit('pointerdown', 'pan', 225);
+      desktop.matches = false;
+      desktop.change();
+      emit('pointermove', 'pan', 600);
+      checkView(0, 1, 'Narrow layout resets zoom and cancels an active gesture');
+      const embedCtrl = Object.assign(Object.create(ControllerClass.prototype), { embed: true });
+      embedCtrl._bindScrubberNavigator();
+      assert.strictEqual(embedCtrl._scrubberView, undefined, 'Embeds do not bind desktop navigation');
+      console.log('  [timeline navigator] zoom/pan limits, pointer/keyboard, year follow, scroll, challenge and responsive guards');
+    } finally {
+      sandbox.window.matchMedia = oldMatchMedia;
+    }
+  }
+
   // CUJ 30: Layered top-down overlay dismissal (_dismissTopOverlay) & custom-route + stop-genealogy teardown.
   {
     const proto = ControllerClass.prototype;
