@@ -26,10 +26,11 @@
 │   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、镜头控制与 window.atlasAPI
 │   ├── atlas_trace.js       # 点地溯源、点人溯事、双/三人同屏对比与青史行迹子模块
 │   ├── atlas_search.js      # 全局快搜、帝王年号解析、事件拼音匹配与排序子模块
-│   ├── atlas_quiz.js        # 古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
+│   ├── atlas_quiz.js        # 按需懒加载古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
 │   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目
 │   ├── lore_detail.js       # 按需懒加载人文详情：城池定点大事（PLACE_LANDMARK_EVENTS）、人物长程行迹、名城风华题记（CITY_LORE）与割据政权小传
+│   ├── zh_hant.js           # 按需懒加载繁体中文（zh-Hant）运行时转换器与历史专名消歧词表
 │   ├── atlas_boot.js        # 由 data/atlas/ 生成：首屏启动快照，保障首屏零等待渲染
 │   ├── atlas_snapshots.js   # 由 data/atlas/ 生成：拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（按需惰性加载与解码）
 │   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（古今透视镜）

@@ -24,14 +24,19 @@ const CONTROLLER_SCRIPTS = [
   'js/atlas_quiz.js',
 ];
 
+const SYNC_CONTROLLER_SCRIPTS = [
+  'js/app.js',
+  'js/atlas_trace.js',
+  'js/atlas_search.js',
+];
+
 const STATIC_TAG_ASSETS = [
   'css/style.css',
   'js/china_geo_data.js',
   'js/atlas_boot.js',
   'js/map_data.js',
   'js/lore_core.js',
-  'js/zh_hant.js',
-  ...CONTROLLER_SCRIPTS,
+  ...SYNC_CONTROLLER_SCRIPTS,
 ];
 
 const LAZY_ATTR_ASSETS = [
@@ -39,6 +44,8 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-i18n', datasetKey: 'vI18n', relPath: 'js/i18n_dict.js' },
   { attr: 'data-v-lore', datasetKey: 'vLore', relPath: 'js/lore_detail.js' },
   { attr: 'data-v-pinyin', datasetKey: 'vPinyin', relPath: 'js/event_pinyin.js' },
+  { attr: 'data-v-hant', datasetKey: 'vHant', relPath: 'js/zh_hant.js' },
+  { attr: 'data-v-quiz', datasetKey: 'vQuiz', relPath: 'js/atlas_quiz.js' },
 ];
 
 function shortSha256(filePath) {

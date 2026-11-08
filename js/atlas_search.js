@@ -1238,7 +1238,7 @@
 
       if (item.kind === 'quiz') {
         if (this.challenge) this.stopChallenge();
-        else this.startChallenge();
+        else this._openChallenge();
         return;
       }
 
