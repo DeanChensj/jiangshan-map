@@ -164,10 +164,9 @@
         return [...out];
       };
 
-      // 0a. Historical Figures Chronicle Index (点人溯事)
+      // 0a. Historical Figures Chronicle & Event Storyline Index (点人溯事 · 点事溯局)
       const loreLoaded = this._isLoreDetailLoaded();
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
-        if (p.isStory) continue;
         const d =
           this.dynasties.find((item) => item.key === p.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
@@ -178,6 +177,23 @@
             ? p.evCount
             : this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
+        if (p.isStory) {
+          const spanStr = Array.isArray(p.span) ? `${p.span[0]}—${p.span[1]}` : '';
+          entries.push({
+            kind: 'story',
+            storyKey: p.key,
+            personProfile: p,
+            dynasty: d,
+            year: Array.isArray(p.span) ? p.span[0] : d.focusYear,
+            aliases,
+            titleZh: p.zh,
+            subZh: `${spanStr ? spanStr + ' · ' : ''}史事始末 · 共 ${evCount} 处关键节点`,
+            titleEn: p.en,
+            subEn: `${spanStr ? spanStr + ' · ' : ''}Storyline · ${evCount} key scenes`,
+            keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 史事 始末 本末 全脉络 storyline`.toLowerCase(),
+          });
+          continue;
+        }
         const eraNames = [];
         if (!p.isRelic) {
           const pText = `${p.zh} ${p.courtesyZh || ''} ${aliases.join(' ')}`;
@@ -978,7 +994,11 @@
                   : item.subEn || item.remarkEn,
             };
           }
-          if (resItem.kind === 'person') {
+          if (resItem.kind === 'story') {
+            if (score >= 92) score = 152;
+            else if (score >= 80) score = 118;
+            else score = 74;
+          } else if (resItem.kind === 'person') {
             if (score >= 92) score = 148;
             else if (score >= 80) score = q.length === 1 || CORE_REGIME_CHARS.has(q) ? 86 : 114;
             else score = 72;
@@ -1247,8 +1267,11 @@
         return;
       }
 
-      if (item.kind === 'person') {
-        this.openPersonChronicle(item.personProfile || item.personKey || item.titleZh, -1);
+      if (item.kind === 'person' || item.kind === 'story') {
+        this.openPersonChronicle(
+          item.personProfile || item.storyKey || item.personKey || item.titleZh,
+          -1
+        );
         return;
       }
 
