@@ -6243,6 +6243,143 @@ function main() {
     assert.strictEqual(ctrl.year, y200, 'pointercancel must discard any un-flushed move');
   }
 
+  // CUJ 29b: Timeline edge crop-zoom — iPhone Photos style edge trim, year clamping, double-tap/double-click reset, and year-jump follow.
+  {
+    const makeNode = () => {
+      const classes = new Set();
+      return {
+        style: { setProperty() {} }, attributes: {}, handlers: {}, textContent: '',
+        classList: {
+          add: (name) => classes.add(name),
+          remove: (name) => classes.delete(name),
+          contains: (name) => classes.has(name),
+          toggle: (name, on) => on ? classes.add(name) : classes.delete(name),
+        },
+        setAttribute(name, value) { this.attributes[name] = value; },
+        addEventListener(type, fn) { this.handlers[type] = fn; },
+        getBoundingClientRect: () => ({ left: 0, width: 1000 }),
+        setPointerCapture() {}, focus() {},
+        closest: () => null,
+      };
+    };
+    const nodes = Object.fromEntries([
+      'scrubber-rail-wrap', 'timeline-start', 'timeline-end',
+      'timeline-crop-mask-left', 'timeline-crop-mask-right',
+      'scrubber-viewport', 'scrubber-content',
+      'scrubber-Bubble', 'bubble-text', 'scrubber-motion', 'scrubber-track',
+      'inp-year', 'dynasty-bands',
+    ].map((id) => [id, makeNode()]));
+    for (const part of ['start', 'end']) {
+      const node = nodes[`timeline-${part}`];
+      node.dataset = { timelinePart: part };
+      node.closest = () => node;
+    }
+    const viewport = nodes['scrubber-viewport'];
+    viewport.clientWidth = 1000;
+    viewport.scrollLeft = 0;
+    const content = nodes['scrubber-content'];
+    Object.defineProperty(content, 'clientWidth', {
+      get: () => viewport.clientWidth * (parseFloat(content.style.width) || 100) / 100,
+    });
+    nodes['dynasty-bands'].children = ctrl.dynasties.map(makeNode);
+    const navCtrl = Object.assign(Object.create(ControllerClass.prototype), {
+      dynasties: ctrl.dynasties, minYear: ctrl.minYear, maxYear: ctrl.maxYear,
+      year: 755, locale: 'zh',
+      _id: (id) => nodes[id] || null,
+      _zh: (text) => text,
+      _fitBandLabels() {},
+      _estimateLocalTextWidth: () => 100,
+      formatEraLabel: () => '测试年号',
+      stopAutoplay() {},
+      _scheduleUrlSync() {},
+      _runWithDeferredTypography() {},
+      _syncAutoMilestoneBalloon() {},
+    });
+    navCtrl.dynastyIdx = navCtrl._findDynastyIndex(755);
+    navCtrl._initTimelineBands();
+    navCtrl._bindScrubberNavigator();
+    navCtrl._syncScrubberUi();
+
+    const emit = (type, part, x, pointerId = 1) => {
+      const el = nodes[`timeline-${part}`];
+      el.handlers[type]({
+        button: 0, pointerId, clientX: x, target: el,
+        preventDefault() {}, stopPropagation() {},
+      });
+    };
+    const drag = (part, from, to) => {
+      emit('pointerdown', part, from);
+      emit('pointermove', part, to);
+      emit('pointerup', part, to);
+    };
+    const checkView = (start, end, message) => {
+      assert(Math.abs(navCtrl._scrubberView.start - start) < 1e-4, `${message}: start (${navCtrl._scrubberView.start} vs ${start})`);
+      assert(Math.abs(navCtrl._scrubberView.end - end) < 1e-4, `${message}: end (${navCtrl._scrubberView.end} vs ${end})`);
+    };
+    const key = (part, value) => {
+      let stopped = false;
+      nodes[`timeline-${part}`].handlers.keydown({
+        target: nodes[`timeline-${part}`], key: value, preventDefault() {},
+        stopPropagation() { stopped = true; },
+      });
+      assert(stopped, 'Edge handle keys must not reach global year/camera shortcuts');
+    };
+
+    // 1. Progressive inward edge crop-and-zoom (iPhone Photos style)
+    drag('end', 1000, 800);
+    checkView(0, 0.8, 'Right edge inward crop zooms to [0, 0.8]');
+    // Second drag on left edge trims relative to current [0, 0.8] span (25% of 0.8 = 0.2)
+    drag('start', 0, 250);
+    checkView(0.2, 0.8, 'Left edge inward crop zooms to [0.2, 0.8]');
+    assert(parseFloat(content.style.width) > 160, 'Zoom must expand the main rail');
+
+    // 2. Cropping past current year clamps playhead to cropped edge without centering jump
+    navCtrl._setScrubberView(0, 1);
+    navCtrl.jumpToYear(150);
+    drag('start', 0, 600);
+    assert(navCtrl.year >= navCtrl._progressToYear(0.6) - 1, 'Left crop past current year must advance playhead to left boundary');
+    assert(Math.abs(navCtrl._yearToProgress(navCtrl.year) - navCtrl._scrubberView.start) < 0.005, 'Playhead must stay at left edge after left crop');
+
+    navCtrl._setScrubberView(0, 1);
+    navCtrl.jumpToYear(1900);
+    drag('end', 1000, 500);
+    assert(navCtrl.year <= navCtrl._progressToYear(0.5) + 1, 'Right crop past current year must clamp playhead to right boundary');
+    assert(Math.abs(navCtrl._yearToProgress(navCtrl.year) - navCtrl._scrubberView.end) < 0.005, 'Playhead must stay at right edge after right crop');
+
+    // 3. Double-click resets full 1× timeline
+    nodes['scrubber-rail-wrap'].handlers.dblclick();
+    checkView(0, 1, 'Double-click on timeline restores full 1× overview');
+    assert.strictEqual(content.style.width, '', 'Overview restores original rail width');
+    assert.strictEqual(viewport.scrollLeft, 0, 'Overview resets horizontal scroll');
+
+    // 4. Keyboard resize & Enter reset
+    key('end', 'ArrowLeft');
+    checkView(0, 0.96, 'Keyboard edge resize');
+    key('end', 'Enter');
+    checkView(0, 1, 'Keyboard Enter restores overview');
+
+    // 5. Year jump reveals target year and keeps bubble visible at all times
+    navCtrl._setScrubberView(0, 0.25);
+    assert.strictEqual(nodes['scrubber-Bubble'].style.visibility, '', 'Year bubble remains visible even when playhead is outside view');
+    navCtrl.jumpToYear(1415);
+    const p1415 = navCtrl._yearToProgress(1415);
+    checkView(p1415 - 0.125, p1415 + 0.125, 'A year jump brings the target into view without changing scale');
+
+    // 6. Native horizontal scroll & challenge lock
+    viewport.scrollLeft = content.clientWidth * 0.1;
+    viewport.handlers.scroll();
+    checkView(0.1, 0.35, 'Native horizontal scrolling updates visible window');
+    navCtrl.challenge = {};
+    nodes['scrubber-rail-wrap'].handlers.dblclick();
+    checkView(0.1, 0.35, 'Challenge mode locks timeline zoom reset');
+    navCtrl.challenge = null;
+
+    const embedCtrl = Object.assign(Object.create(ControllerClass.prototype), { embed: true });
+    embedCtrl._bindScrubberNavigator();
+    assert.strictEqual(embedCtrl._scrubberView, undefined, 'Embeds do not bind timeline edge zoom');
+    console.log('  [timeline edge zoom] iPhone Photos style crop-to-zoom, playhead boundary clamp, double-tap/dblclick reset, keyboard & scroll verified');
+  }
+
   // CUJ 30: Layered top-down overlay dismissal (_dismissTopOverlay) & custom-route + stop-genealogy teardown.
   {
     const proto = ControllerClass.prototype;

@@ -2920,6 +2920,173 @@ h2 {
   min-width: 0;
 }
 
+#scrubber-viewport {
+  position: relative;
+}
+
+#scrubber-viewport.is-zoomed {
+  overflow-x: auto;
+  padding-top: 6px;
+  margin-top: -6px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+#scrubber-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+#scrubber-viewport.is-zoomed #scrubber-content {
+  /* The translated playhead wrapper must not extend the scroll range. */
+  overflow-x: clip;
+}
+
+#scrubber-viewport.is-zoomed #scrubber-ticks span:first-child {
+  transform: none;
+}
+
+#scrubber-viewport.is-zoomed #tick-present {
+  transform: translateX(-100%);
+}
+
+/* iPhone Photos style edge trim handles directly on the main timeline */
+.timeline-crop-mask {
+  position: absolute;
+  top: 22px;
+  height: 34px;
+  background: rgba(37, 30, 24, 0.46);
+  backdrop-filter: grayscale(0.65);
+  pointer-events: none;
+  z-index: 6;
+  display: none;
+}
+
+#scrubber-rail-wrap.is-cropping .timeline-crop-mask {
+  display: block;
+}
+
+#timeline-crop-mask-left {
+  left: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+#timeline-crop-mask-right {
+  right: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.timeline-edge {
+  position: absolute;
+  top: 20px;
+  height: 38px;
+  width: 18px;
+  cursor: ew-resize;
+  z-index: 8;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-edge-start {
+  left: -8px;
+}
+
+.timeline-edge-end {
+  right: -8px;
+}
+
+.timeline-edge::before {
+  content: '';
+  width: 10px;
+  height: 38px;
+  background: #5a4a3a;
+  border: 1.5px solid rgba(247, 240, 226, 0.92);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
+  transition: background 0.14s, transform 0.14s, box-shadow 0.14s;
+}
+
+.timeline-edge-start::before {
+  border-radius: 7px 2px 2px 7px;
+}
+
+.timeline-edge-end::before {
+  border-radius: 2px 7px 7px 2px;
+}
+
+.timeline-edge::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  width: 1.5px;
+  border-radius: 1px;
+  background: rgba(247, 240, 226, 0.9);
+}
+
+.timeline-edge:hover::before,
+.timeline-edge.is-active::before,
+#scrubber-viewport.is-zoomed ~ .timeline-edge::before {
+  background: var(--vermilion);
+}
+
+.timeline-edge:hover::before,
+.timeline-edge.is-active::before {
+  transform: scaleX(1.12);
+}
+
+#scrubber-dock.is-challenge-locked .timeline-edge {
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+@media (max-width: 900px) {
+  .timeline-crop-mask {
+    top: 22px;
+    height: 30px;
+  }
+  .timeline-edge {
+    top: 20px;
+    height: 34px;
+    width: 24px;
+  }
+  .timeline-edge-start {
+    left: -11px;
+  }
+  .timeline-edge-end {
+    right: -11px;
+  }
+  .timeline-edge::before {
+    height: 34px;
+  }
+}
+
+@media (max-width: 640px) {
+  .timeline-crop-mask {
+    top: 0;
+    height: 28px;
+  }
+  .timeline-edge {
+    top: -2px;
+    height: 32px;
+    width: 24px;
+  }
+  .timeline-edge::before {
+    height: 32px;
+  }
+  .timeline-edge::after {
+    top: 8px;
+    bottom: 8px;
+  }
+}
+
+html.is-embed .timeline-edge,
+html.is-embed .timeline-crop-mask {
+  display: none !important;
+}
+
 #scrubber-Bubble {
   position: absolute;
   top: 0;
@@ -3108,7 +3275,7 @@ h2 {
   transform: scale(0.95);
 }
 
-.year-stepper input {
+#inp-year {
   width: 60px;
   border: none;
   outline: none;
@@ -3520,7 +3687,7 @@ html[lang="en"] .genealogy-list li {
     gap: 2px;
     border-radius: 6px;
   }
-  .year-stepper input,
+  #inp-year,
   .year-stepper .unit-label {
     display: none;
   }
