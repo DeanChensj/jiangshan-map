@@ -819,6 +819,7 @@ function main() {
   for (const strayFile of [
     'app.js',
     'atlas_trace.js',
+    'atlas_search.js',
     'atlas_quiz.js',
     'lore_data.js',
     'lore_core.js',
@@ -938,6 +939,23 @@ function main() {
     'CITY_LORE',
     'HISTORICAL_JOURNEYS',
   ];
+  const SEARCH_METHODS = [
+    '_searchPlaceholder',
+    '_getSearchSampleQueries',
+    '_getSearchShowcasePool',
+    '_ensureSearchIndex',
+    '_parseChineseNumber',
+    '_getCompiledEraSpans',
+    '_matchEraResults',
+    '_searchBucket',
+    '_eventPinyinQuery',
+    '_canMatchEventPinyin',
+    '_queryQuickSearch',
+    '_isDuplicateSearchEvent',
+    '_appendEventPinyinResults',
+    '_rankQuickSearchResults',
+    '_selectSearchResult',
+  ];
   const QUIZ_METHODS = [
     '_sanitizeChallengeClue',
     '_buildChallengeDeck',
@@ -969,6 +987,13 @@ function main() {
       `atlas_trace.js must attach static property ${traceStaticProp} onto HistoricalAtlasController`
     );
   }
+  for (const searchMethod of SEARCH_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, searchMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_search.js must attach ${searchMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
   for (const quizMethod of QUIZ_METHODS) {
     const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, quizMethod);
     assert(
@@ -977,13 +1002,13 @@ function main() {
     );
   }
   {
-    // Verify clean separation: app.js alone must not define any trace or quiz mixin methods.
+    // Verify clean separation: app.js alone must not define any trace, search, or quiz mixin methods.
     const appOnlySandbox = { console, addEventListener: () => {} };
     appOnlySandbox.window = appOnlySandbox;
     vm.createContext(appOnlySandbox);
     controllerBundles[0].script.runInContext(appOnlySandbox);
     const BaseClass = appOnlySandbox.window.HistoricalAtlasController;
-    for (const m of [...TRACE_METHODS, ...QUIZ_METHODS]) {
+    for (const m of [...TRACE_METHODS, ...SEARCH_METHODS, ...QUIZ_METHODS]) {
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(BaseClass.prototype, m),
         false,
@@ -1000,10 +1025,11 @@ function main() {
     assert(
       typeof ReorderedClass === 'function' &&
         TRACE_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        SEARCH_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         QUIZ_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         Array.isArray(ReorderedClass.PERSON_TRACK_PALETTE) &&
         ReorderedClass.PERSON_TRACK_PALETTE.length >= 3,
-      'atlas_trace.js and atlas_quiz.js loaded before app.js must attach all trace and quiz methods via window.__ATLAS_MIXINS'
+      'atlas_trace.js, atlas_search.js, and atlas_quiz.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
     );
     assert.strictEqual(
       orderSandbox.window.__ATLAS_MIXINS.length,
@@ -1038,6 +1064,11 @@ function main() {
         ._personSearchAliases({ zh: '苏轼', en: 'Su Shi', aliases: ['苏东坡'] })
         .includes('苏东坡'),
       'Trace methods installed through the mixin queue must execute person alias resolution cleanly'
+    );
+    assert.strictEqual(
+      reorderedInst._parseChineseNumber('二十三'),
+      23,
+      'Search methods installed through the mixin queue must parse Chinese numerals cleanly'
     );
   }
 
