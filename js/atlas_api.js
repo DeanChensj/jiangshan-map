@@ -288,7 +288,8 @@
       }
       const snapFull = this.snapshots && this.snapshots.s_prc ? 1 : 0;
       const hasEn = this._hasEnDict() ? 1 : 0;
-      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}`;
+      const hasHant = this._hasZhHant() ? 1 : 0;
+      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}\0${hasHant}`;
       if (this._resolvePlaceCache.has(cacheKey)) {
         const cached = this._resolvePlaceCache.get(cacheKey);
         return cached ? { ...cached } : null;
@@ -1519,11 +1520,17 @@
       const hasEnDict = this._hasEnDict();
       const needsEnDict =
         !hasEnDict && (this.locale === 'en' || (place && /[a-z]/i.test(String(place))));
+      const needsZhHant =
+        !this._hasZhHant() &&
+        (this.locale === 'zh-tw' ||
+          (place && /[\u4e00-\u9fff]/.test(String(place))) ||
+          (year && /[\u4e00-\u9fff]/.test(String(year))));
       const needsLoreDetail = !this._isLoreDetailLoaded();
-      if (!this._fullSnapshotsLoaded || needsEnDict || needsLoreDetail) {
+      if (!this._fullSnapshotsLoaded || needsEnDict || needsZhHant || needsLoreDetail) {
         Promise.all([
           this._fullSnapshotsLoaded ? Promise.resolve() : this._ensureFullSnapshots(),
           needsEnDict ? this._ensureEnglishLocale() : Promise.resolve(),
+          needsZhHant ? this._ensureZhHant() : Promise.resolve(),
           needsLoreDetail ? this._ensureLoreDetail() : Promise.resolve(),
         ]).then(() => {
           this.locate(opts);
@@ -1650,11 +1657,9 @@
         this.lastRenderedSnap = null;
         if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       }
-      const needsEn =
-        this.locale === 'en' ||
-        /[a-z]/i.test(
-          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('event') || ''} ${q.get('journey') || ''}`
-        );
+      const queryBag = `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('event') || ''} ${q.get('journey') || ''} ${q.get('year') || ''}`;
+      const needsEn = this.locale === 'en' || /[a-z]/i.test(queryBag);
+      const needsHant = this.locale === 'zh-tw' || /[\u4e00-\u9fff]/.test(queryBag);
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
         const tasks = [];
@@ -1666,6 +1671,9 @@
         }
         if (needsEn && typeof window !== 'undefined' && !this._hasEnDict()) {
           tasks.push(this._ensureEnglishLocale());
+        }
+        if (needsHant && typeof window !== 'undefined' && !this._hasZhHant()) {
+          tasks.push(this._ensureZhHant());
         }
         if (!tasks.length) {
           run();
@@ -1712,8 +1720,16 @@
           }
         }
         if (q.has('year')) {
-          const yList = this._parseYearList(q.get('year'));
-          if (yList.length) this.jumpToYear(yList[0]);
+          const rawYr = q.get('year') || '';
+          const yList = this._parseYearList(rawYr);
+          if (yList.length) {
+            this.jumpToYear(yList[0]);
+          } else if (/[\u4e00-\u9fff]/.test(rawYr) && !this._hasZhHant()) {
+            this._ensureZhHant().then(() => {
+              const retryList = this._parseYearList(rawYr);
+              if (retryList.length) this.jumpToYear(retryList[0]);
+            });
+          }
         }
         if (traceParts) {
           afterFullSnapshots(() => {
@@ -1850,7 +1866,7 @@
       if (q.has('quiz')) {
         this._paneAutoCollapsed = true;
         this.toggleChroniclePane(true);
-        setTimeout(() => this.startChallenge({ preferCurrentDynasty: q.has('year') }), 120);
+        setTimeout(() => this._openChallenge({ preferCurrentDynasty: q.has('year') }), 120);
       }
       if (q.has('person')) {
         const rawP = (q.get('person') || '').trim();
@@ -1952,6 +1968,7 @@
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
+            if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             return this.locate({
               year: args.year,
               place: args.place,
@@ -1996,6 +2013,7 @@
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
+            if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             return this.inspect({
               year: args.year,
               place: args.place,
@@ -2033,6 +2051,7 @@
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
             if (this.locale === 'en') await this._ensureEnglishLocale();
+            if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             const stopIdx = typeof args.stop === 'number' ? args.stop : -1;
             this.openPersonChronicle(args.person, stopIdx);
             return this.inspect({

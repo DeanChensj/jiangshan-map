@@ -674,6 +674,65 @@
       return this._eventPinyinPromise;
     }
 
+    _hasZhHant() {
+      return Boolean(
+        typeof window !== 'undefined' &&
+          window.ZH_HANT_CONV &&
+          typeof window.ZH_HANT_CONV.toHant === 'function' &&
+          typeof window.ZH_HANT_CONV.toHans === 'function'
+      );
+    }
+
+    _ensureZhHant() {
+      if (this._hasZhHant()) {
+        return Promise.resolve(window.ZH_HANT_CONV);
+      }
+      if (!this._zhHantPromise) {
+        this._zhHantPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/zh_hant.js', 'vHant')
+        ).then(() => {
+          if (this._hasZhHant()) {
+            this.searchIndex = null;
+            return window.ZH_HANT_CONV;
+          }
+          this._zhHantPromise = null;
+          return null;
+        });
+      }
+      return this._zhHantPromise;
+    }
+
+    _isQuizLoaded() {
+      return typeof this._buildChallengeDeck === 'function';
+    }
+
+    _ensureQuiz() {
+      if (this._isQuizLoaded()) return Promise.resolve(true);
+      if (!this._quizPromise) {
+        this._quizPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_quiz.js', 'vQuiz')
+        ).then(() => {
+          if (this._isQuizLoaded()) return true;
+          this._quizPromise = null;
+          return false;
+        });
+      }
+      return this._quizPromise;
+    }
+
+    _openChallenge(opts = {}) {
+      if (this._isQuizLoaded()) {
+        this.startChallenge(opts);
+        return Promise.resolve(true);
+      }
+      return this._ensureQuiz().then((ok) => {
+        if (ok && typeof this.startChallenge === 'function') {
+          this.startChallenge(opts);
+        }
+        return ok;
+      });
+    }
+
     _isLoreDetailLoaded() {
       if (this._loreDetailLoaded) return true;
       if (
@@ -825,7 +884,7 @@
       if (act === 'journey') {
         this.openJourneyAsPerson('xuanzang', -1);
       } else if (act === 'quiz') {
-        this.startChallenge();
+        this._openChallenge();
       } else if (act === 'search') {
         const box = this._id('map-search-box');
         const inp = this._id('inp-map-search');
@@ -1728,6 +1787,10 @@
     applyLocale() {
       if (this.locale === 'en' && !this._hasEnDict()) {
         this._ensureEnglishLocale().then(() => this.applyLocale());
+        return;
+      }
+      if (this.locale === 'zh-tw' && !this._hasZhHant()) {
+        this._ensureZhHant().then(() => this.applyLocale());
         return;
       }
       document.documentElement.lang =
@@ -8780,6 +8843,9 @@
           if (!this._isLoreDetailLoaded()) {
             this._ensureLoreDetail();
           }
+          if (!this._hasZhHant()) {
+            this._ensureZhHant();
+          }
           return;
         }
         const pinyinQuery = this._eventPinyinQuery(q);
@@ -8791,6 +8857,9 @@
         currentResults = this._queryQuickSearch(q);
         const pendingSearchData = [];
         if (!this._isLoreDetailLoaded()) pendingSearchData.push(this._ensureLoreDetail());
+        if (/[\u4e00-\u9fff]/.test(q) && !this._hasZhHant()) {
+          pendingSearchData.push(this._ensureZhHant());
+        }
         if (!window.ATLAS_EVENT_PINYIN && this._canMatchEventPinyin(pinyinQuery, currentResults.length)) {
           pendingSearchData.push(this._ensureEventPinyin());
         }

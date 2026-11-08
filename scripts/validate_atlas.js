@@ -1201,7 +1201,15 @@ function main() {
     sandbox.document = {
       getElementById: (id) =>
         id === 'atlas-app-script'
-          ? { dataset: { vSnapshots: 'a1b2c3d4', vI18n: 'e5f60718', vLore: '11223344' } }
+          ? {
+              dataset: {
+                vSnapshots: 'a1b2c3d4',
+                vI18n: 'e5f60718',
+                vLore: '11223344',
+                vHant: '55667788',
+                vQuiz: '99aabbcc',
+              },
+            }
           : null,
     };
     assert.strictEqual(
@@ -1219,6 +1227,18 @@ function main() {
       'js/lore_detail.js?v=11223344',
       '_lazyAssetUrl must read data-v-lore from #atlas-app-script'
     );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/zh_hant.js', 'vHant'),
+      'js/zh_hant.js?v=55667788',
+      '_lazyAssetUrl must read data-v-hant from #atlas-app-script'
+    );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/atlas_quiz.js', 'vQuiz'),
+      'js/atlas_quiz.js?v=99aabbcc',
+      '_lazyAssetUrl must read data-v-quiz from #atlas-app-script'
+    );
+    assert.strictEqual(ctrl._hasZhHant(), true, '_hasZhHant must detect loaded ZH_HANT_CONV');
+    assert.strictEqual(ctrl._isQuizLoaded(), true, '_isQuizLoaded must detect installed AtlasQuizMixin');
     sandbox.document = undefined;
     sandbox.window.ATLAS_ASSET_VERSIONS = { vSnapshots: 'deadbeef' };
     assert.strictEqual(
@@ -1250,8 +1270,12 @@ function main() {
     assert(
       perfReport.syncScripts.some((s) => s.relPath === 'js/lore_core.js') &&
         !perfReport.syncScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
-        perfReport.lazyScripts.some((s) => s.relPath === 'js/lore_detail.js'),
-      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js as a lazy bundle'
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_quiz.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_quiz.js'),
+      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js, js/zh_hant.js, and js/atlas_quiz.js as lazy bundles'
     );
   }
 
