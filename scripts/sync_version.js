@@ -21,6 +21,7 @@ const CONTROLLER_SCRIPTS = [
   'js/app.js',
   'js/atlas_trace.js',
   'js/atlas_search.js',
+  'js/atlas_api.js',
   'js/atlas_quiz.js',
 ];
 
@@ -28,6 +29,7 @@ const SYNC_CONTROLLER_SCRIPTS = [
   'js/app.js',
   'js/atlas_trace.js',
   'js/atlas_search.js',
+  'js/atlas_api.js',
 ];
 
 const STATIC_TAG_ASSETS = [
