@@ -21,6 +21,7 @@ const CONTROLLER_SCRIPTS = [
   'js/app.js',
   'js/atlas_trace.js',
   'js/atlas_search.js',
+  'js/atlas_api.js',
   'js/atlas_quiz.js',
 ];
 

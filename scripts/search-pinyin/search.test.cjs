@@ -10,7 +10,7 @@ const context = vm.createContext({window: {addEventListener() {}}, clearTimeout,
 context.location = {search: '', origin: 'https://deanchen.me', pathname: '/jiangshan-map/'};
 context.window.location = context.location;
 for (const name of ['china_geo_data.js', 'atlas_snapshots.js', 'map_data.js', 'lore_core.js', 'lore_detail.js',
-  'i18n_dict.js', 'zh_hant.js', 'event_pinyin.js', 'app.js', 'atlas_trace.js', 'atlas_search.js']) {
+  'i18n_dict.js', 'zh_hant.js', 'event_pinyin.js', 'app.js', 'atlas_trace.js', 'atlas_search.js', 'atlas_api.js']) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', name), 'utf8'), context, {filename: name});
 }
 const w = context.window, generated = w.ATLAS_EVENT_PINYIN;
