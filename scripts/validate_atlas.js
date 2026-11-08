@@ -950,6 +950,9 @@ function main() {
     '_personAutoplayTick',
     'togglePersonAutoplay',
     'selectPersonEvent',
+    '_getSoloStepOriginCoord',
+    '_getMultiStepLegs',
+    '_getNavigablePersonEventIdxs',
     'stepPersonEvent',
     '_getPersonVisibleTopFrac',
     '_getVisiblePersonTracks',
@@ -9810,6 +9813,43 @@ function main() {
       assert(
         Array.isArray(mizhouOrigin) && mizhouOrigin[0] === sushiEvs[4].coord[0] && mizhouOrigin[1] === sushiEvs[4].coord[1],
         'Solo person step 6 (Mizhou) must resolve step 5 (Hangzhou) as its single-step movement origin'
+      );
+      ctrl.closeGenealogyCard();
+
+      ctrl.openPersonChronicle(['libai', 'dufu', 'gaoshi'], 9);
+      const ldgEvs = ctrl.activePerson.events;
+      const luoyangLegs = ctrl._getMultiStepLegs(ctrl.activePerson, 9, ldgEvs[9]);
+      assert.strictEqual(
+        luoyangLegs.length,
+        2,
+        '744 Luoyang shared encounter (Li Bai x Du Fu) must resolve 2 converging single-step legs'
+      );
+      assert(
+        luoyangLegs[0].originIdx >= 0 &&
+          !ldgEvs[luoyangLegs[0].originIdx].isSharedEncounter &&
+          ldgEvs[luoyangLegs[0].originIdx].personKey === 'libai',
+        'Li Bai leg into 744 Luoyang must anchor to his solo 742 Chang’an pin rather than the later 752 Du Fu x Gao Shi shared pin'
+      );
+      const suiyangLegs = ctrl._getMultiStepLegs(ctrl.activePerson, 10, ldgEvs[10]);
+      assert.strictEqual(
+        suiyangLegs.length,
+        3,
+        '744 Suiyang 3-way encounter (Li Bai x Du Fu x Gao Shi) must resolve 3 converging legs'
+      );
+      assert(
+        suiyangLegs[0].bias < 0 && suiyangLegs[1].bias > 0 && suiyangLegs[2].bias === 0,
+        'Co-origin legs (Li Bai & Du Fu from Luoyang -> Suiyang) must have opposite curve bias while Gao Shi (from Jizhou) has 0 bias'
+      );
+      assert.strictEqual(
+        ctrl._getNavigablePersonEventIdxs().length,
+        ldgEvs.length,
+        'By default _getNavigablePersonEventIdxs must include all multi-person events'
+      );
+      ctrl.personSharedOnly = true;
+      assert.strictEqual(
+        ctrl._getNavigablePersonEventIdxs().length,
+        ctrl.activePerson.sameTimeCount,
+        'When personSharedOnly is active, _getNavigablePersonEventIdxs must step strictly across shared encounters'
       );
       ctrl.closeGenealogyCard();
     }
