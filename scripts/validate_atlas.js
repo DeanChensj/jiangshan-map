@@ -1969,7 +1969,7 @@ function main() {
       contributingZhSrc.includes('lore_detail.js') &&
       !readmeSrc.includes('&event=') &&
       !readmeZhSrc.includes('&event=') &&
-      !appCode.includes("q.has('event')") &&
+      appCode.includes("q.has('event')") &&
       !/\b\d{3}\s*(幅|座|处|条|桩|段)/.test(readmeZhSrc),
     'README.md, README_ZH.md, CONTRIBUTING.md, CONTRIBUTING_ZH.md, and app.js must cross-link between English and Chinese docs, reference lore_core.js & lore_detail.js, document unified Person Chronicles & search-box Quiz entry point, avoid redundant &event= query params, and avoid hardcoded 3-digit entity counts'
   );
@@ -9623,6 +9623,40 @@ function main() {
           appSrc.includes('const suppressCenterScroll = Boolean(this._suppressChronicleAutoScroll)'),
         'js/app.js must suppress forced center-scrolling when clicking a visible item in #milestone-list (#299)'
       );
+    }
+
+    // Discussion #297 regression check: Event Storyline Mod (点事溯局 · ?event=anshi)
+    {
+      const anshiProf = ctrl._resolvePersonProfile('anshi');
+      assert(
+        anshiProf && anshiProf.isStory === true && Array.isArray(anshiProf.stops) && anshiProf.stops.length === 10,
+        'anshi must resolve as an Event Storyline (isStory: true) with 10 chronological stops (#297)'
+      );
+      const anshiEvs = ctrl._collectPersonEvents(anshiProf);
+      assert.strictEqual(anshiEvs.length, 10, 'anshi storyline must collect all 10 stops');
+      assert(
+        anshiEvs[6].siteZh === '睢阳' && !anshiEvs[6].fromCoord && Array.isArray(anshiEvs[7].fromCoord),
+        'Stop 7 (Suiyang siege) must be stationary while Stop 8 (Lingwu -> Chang’an) has fromCoord (#297)'
+      );
+      const tangDyn = dynasties.find((d) => d.key === 'tang');
+      const m755 = tangDyn.milestones.find((m) => m.year === 755);
+      const m756 = tangDyn.milestones.find((m) => m.year === 756);
+      const st755 = ctrl._findStoryForMilestone(tangDyn, m755);
+      assert(
+        st755 && st755.key === 'anshi' && st755.stopIdx === -1,
+        'Only the 755 outbreak milestone should expose the canonical [始末] storyline entry (#297)'
+      );
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(tangDyn, m756),
+        null,
+        'Subsequent An-Shi milestones (e.g., 756) must not repeat the [始末] badge (#297)'
+      );
+      ctrl.openPersonChronicle('anshi', 2);
+      const stParams = ctrl._urlStateParams();
+      assert.strictEqual(stParams.get('event'), 'anshi', 'Storyline deep-link must use ?event=anshi (#297)');
+      assert.strictEqual(stParams.get('stop'), '2', 'Storyline active stop must serialize 0-based ?stop=2 (#297)');
+      assert.strictEqual(stParams.has('person'), false, 'Storyline deep-link must not emit ?person=anshi (#297)');
+      ctrl.closeGenealogyCard();
     }
   }
 

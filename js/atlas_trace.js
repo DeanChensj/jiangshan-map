@@ -128,6 +128,7 @@
       const qFold = fold(qLow);
       const profiles = HistoricalAtlasController.PERSON_PROFILES;
       const exact = profiles.find((p) => {
+        if (p.isStory) return p.key === qLow;
         const aliases = this._personSearchAliases(p);
         return (
           p.key === qLow ||
@@ -138,6 +139,7 @@
       });
       if (exact) return exact;
       const partial = profiles.find((p) => {
+        if (p.isStory) return false;
         const aliases = this._personSearchAliases(p);
         return (
           p.zh.includes(raw) ||
@@ -406,12 +408,56 @@
       const matchesPersonsTag = (item) =>
         isMulti &&
         !profile.isRelic &&
+        !profile.isStory &&
         Array.isArray(item && item.persons) &&
         item.persons.includes(profile.key) &&
         item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk));
-      const tokens = profile.isRelic
-        ? []
-        : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
+      if ((profile.isRelic || profile.isStory) && Array.isArray(profile.stops)) {
+        const out = profile.stops.map((st, sIdx) => {
+          const dyn =
+            this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+          return {
+            src: 'J',
+            year: st.year,
+            month: st.month || 6 + sIdx * 0.01,
+            subEraZh: st.subEraZh || '',
+            subEraEn: st.subEraEn || '',
+            actors: Array.isArray(st.actors) ? st.actors : [],
+            coord: st.coord,
+            fromCoord: st.fromCoord || null,
+            via: st.via || null,
+            prevStopCoord: sIdx > 0 ? profile.stops[sIdx - 1].coord : null,
+            quoteZh: st.quoteZh || '',
+            quoteEn: st.quoteEn || '',
+            dynasty: dyn,
+            siteZh: st.ancientZh,
+            siteEn: st.ancientEn || this._enDict(st.ancientZh),
+            modernZh: st.modernZh || '',
+            modernEn: st.modernEn || '',
+            textZh: `${st.titleZh}：${st.descZh}`,
+            textEn: `${st.titleEn}: ${st.descEn}`,
+            isMapChange: Boolean(st.isMapChange),
+            byPersonsTag: false,
+            journeyStopIdx: sIdx,
+            prio: 3,
+          };
+        });
+        if (canCacheSolo && this._soloPersonEventsCache) {
+          this._soloPersonEventsCache.set(profile, {
+            snapRef,
+            snapFull,
+            hasEn,
+            enRef,
+            loreLoaded,
+            events: out.map((ev) => ({ ...ev })),
+          });
+        }
+        return out;
+      }
+      const tokens =
+        profile.isRelic || profile.isStory
+          ? []
+          : Array.from(new Set([profile.zh, ...(profile.tokens || [])].filter(Boolean)));
       const [minY, maxY] = profile.span || [-403, 2026];
       const raw = [];
 
@@ -1010,6 +1056,9 @@
       }
 
       this.activePerson = state;
+      if (state.profile && state.profile.isStory) {
+        this._returnStoryState = null;
+      }
       this.activePersonEventIdx =
         initialIdx >= 0 && initialIdx < events.length ? initialIdx : -1;
       this._scheduleUrlSync();
@@ -1036,7 +1085,12 @@
       this._syncDocumentSeoMeta();
 
       if (this.activePersonEventIdx >= 0) {
-        this._flyToPersonEvent(events[this.activePersonEventIdx]);
+        const initEv = events[this.activePersonEventIdx];
+        if (state.profile && state.profile.isStory && Array.isArray(initEv.fromCoord)) {
+          this._framePersonOverview([{ coord: initEv.fromCoord }, initEv]);
+        } else {
+          this._flyToPersonEvent(initEv);
+        }
       } else {
         this._framePersonOverview();
       }
@@ -1114,7 +1168,13 @@
       });
       this._inPersonSync = false;
       this._renderPersonChronicleCard(true);
-      if (panCamera) this._flyToPersonEvent(ev);
+      if (panCamera) {
+        if (this.activePerson.profile && this.activePerson.profile.isStory && Array.isArray(ev.fromCoord)) {
+          this._framePersonOverview([{ coord: ev.fromCoord }, ev]);
+        } else {
+          this._flyToPersonEvent(ev);
+        }
+      }
     }
 
     stepPersonEvent(delta) {
@@ -1209,9 +1269,12 @@
       });
     }
 
-    _framePersonOverview() {
+    _framePersonOverview(subsetEvents = null) {
       if (!this.activePerson || !this.activePerson.events.length) return;
-      const evList = this.activePerson.events;
+      const evList =
+        Array.isArray(subsetEvents) && subsetEvents.length
+          ? subsetEvents
+          : this.activePerson.events;
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
@@ -1306,9 +1369,18 @@
       this.grpJourney.innerHTML = '';
       if (!this.activePerson) return;
 
-      const { events, tracks, isMulti } = this.activePerson;
+      const { events, tracks, isMulti, profile } = this.activePerson;
+      const isStory = Boolean(profile && profile.isStory);
       const curIdx = this.activePersonEventIdx;
       const curEv = curIdx >= 0 ? events[curIdx] : null;
+      let stepOriginIdx = -1;
+      if (isStory && curIdx >= 0 && curEv && Array.isArray(curEv.fromCoord)) {
+        stepOriginIdx = events.findIndex(
+          (e, i) =>
+            i !== curIdx &&
+            Math.hypot(e.coord[0] - curEv.fromCoord[0], e.coord[1] - curEv.fromCoord[1]) < 0.35
+        );
+      }
       const allTracks =
         Array.isArray(tracks) && tracks.length
           ? tracks
@@ -1402,47 +1474,71 @@
       });
 
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
-      // Render dimmed cross-era tracks first so the active era's track sits cleanly on top
-      const orderedTracks = allTracks
-        .slice()
-        .sort((a, b) => (isTrackDimmed(b.personIdx) ? 1 : 0) - (isTrackDimmed(a.personIdx) ? 1 : 0));
-      for (const tr of orderedTracks) {
-        const trEvs = tr.events || [];
-        const segments = [];
-        const bias = isMulti ? (tr.personIdx - (allTracks.length - 1) * 0.5) * 7.5 : 0;
-        for (let i = 0; i < trEvs.length - 1; i++) {
-          const prevEv = trEvs[i];
-          const nextEv = trEvs[i + 1];
-          const keepsCuratedLeg =
-            Boolean(nextEv.via || nextEv.fromCoord) &&
-            nextEv.prevStopCoord &&
-            Math.hypot(
-              prevEv.coord[0] - nextEv.prevStopCoord[0],
-              prevEv.coord[1] - nextEv.prevStopCoord[1]
-            ) < 1.2;
+      // For multi-actor stories (isStory):
+      // - Overview (curIdx < 0): render pins only (no crisscrossing full-war cobweb)
+      // - Single step (curIdx >= 0): render ONLY that step's movement vector if fromCoord is present
+      if (isStory) {
+        if (curIdx >= 0 && curEv && Array.isArray(curEv.fromCoord)) {
           const segInfo = this._buildJourneySegmentInfo(
-            keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
-            nextEv.coord,
-            keepsCuratedLeg ? nextEv.via : null,
-            bias
+            curEv.fromCoord,
+            curEv.coord,
+            curEv.via || null,
+            0
           );
           if (segInfo) {
-            segments.push({ ...segInfo, toIdx: i + 1 });
+            this._renderCartographicTrajectory(
+              [{ ...segInfo, toIdx: curIdx }],
+              curIdx,
+              '#b53826',
+              false
+            );
           }
         }
-        const dimmed = isTrackDimmed(tr.personIdx);
-        let trCurIdx = -1;
-        if (curEv && !dimmed) {
-          if (!isMulti) {
-            trCurIdx = curIdx;
-          } else if (curEv.isSharedEncounter && Array.isArray(curEv.participants)) {
-            const matchedPt = curEv.participants.find((pt) => pt.personIdx === tr.personIdx);
-            if (matchedPt) trCurIdx = matchedPt.stepIdx;
-          } else if (curEv.personIdx === tr.personIdx) {
-            trCurIdx = curEv.personStepIdx !== undefined ? curEv.personStepIdx : curIdx;
+      } else {
+        // Render dimmed cross-era tracks first so the active era's track sits cleanly on top
+        const orderedTracks = allTracks
+          .slice()
+          .sort(
+            (a, b) => (isTrackDimmed(b.personIdx) ? 1 : 0) - (isTrackDimmed(a.personIdx) ? 1 : 0)
+          );
+        for (const tr of orderedTracks) {
+          const trEvs = tr.events || [];
+          const segments = [];
+          const bias = isMulti ? (tr.personIdx - (allTracks.length - 1) * 0.5) * 7.5 : 0;
+          for (let i = 0; i < trEvs.length - 1; i++) {
+            const prevEv = trEvs[i];
+            const nextEv = trEvs[i + 1];
+            const keepsCuratedLeg =
+              Boolean(nextEv.via || nextEv.fromCoord) &&
+              nextEv.prevStopCoord &&
+              Math.hypot(
+                prevEv.coord[0] - nextEv.prevStopCoord[0],
+                prevEv.coord[1] - nextEv.prevStopCoord[1]
+              ) < 1.2;
+            const segInfo = this._buildJourneySegmentInfo(
+              keepsCuratedLeg && nextEv.fromCoord ? nextEv.fromCoord : prevEv.coord,
+              nextEv.coord,
+              keepsCuratedLeg ? nextEv.via : null,
+              bias
+            );
+            if (segInfo) {
+              segments.push({ ...segInfo, toIdx: i + 1 });
+            }
           }
+          const dimmed = isTrackDimmed(tr.personIdx);
+          let trCurIdx = -1;
+          if (curEv && !dimmed) {
+            if (!isMulti) {
+              trCurIdx = curIdx;
+            } else if (curEv.isSharedEncounter && Array.isArray(curEv.participants)) {
+              const matchedPt = curEv.participants.find((pt) => pt.personIdx === tr.personIdx);
+              if (matchedPt) trCurIdx = matchedPt.stepIdx;
+            } else if (curEv.personIdx === tr.personIdx) {
+              trCurIdx = curEv.personStepIdx !== undefined ? curEv.personStepIdx : curIdx;
+            }
+          }
+          this._renderCartographicTrajectory(segments, trCurIdx, tr.color || '#bd2d22', dimmed);
         }
-        this._renderCartographicTrajectory(segments, trCurIdx, tr.color || '#bd2d22', dimmed);
       }
 
       // Deduplicate city labels so repeated visits to the same city only print its name once
@@ -1453,6 +1549,8 @@
         .sort((a, b) => {
           if (a === curIdx) return -1;
           if (b === curIdx) return 1;
+          if (a === stepOriginIdx) return -1;
+          if (b === stepOriginIdx) return 1;
           const sa = events[a].isSharedEncounter ? 1 : 0;
           const sb = events[b].isSharedEncounter ? 1 : 0;
           if (sa !== sb) return sb - sa;
@@ -1480,6 +1578,8 @@
         .sort((a, b) => {
           if (a === curIdx) return 1;
           if (b === curIdx) return -1;
+          if (a === stepOriginIdx) return 1;
+          if (b === stepOriginIdx) return -1;
           if (isMulti) {
             const da = isTrackDimmed(events[a].personIdx) ? 1 : 0;
             const db = isTrackDimmed(events[b].personIdx) ? 1 : 0;
@@ -1500,9 +1600,11 @@
         const isShared = Boolean(
           ev.isSharedEncounter && Array.isArray(ev.participants) && ev.participants.length >= 2
         );
-        const dimmed = !isShared && !isCur && isTrackDimmed(ev.personIdx);
+        const isStepOrigin = Boolean(isStory && curIdx >= 0 && idx === stepOriginIdx);
+        const isOtherStep = Boolean(isStory && curIdx >= 0 && !isCur && !isStepOrigin);
+        const dimmed = (!isShared && !isCur && isTrackDimmed(ev.personIdx)) || isOtherStep;
         const isPeerPassed =
-          curIdx < 0 || dimmed
+          curIdx < 0 || dimmed || isStepOrigin
             ? true
             : isMulti && curEv
               ? ev.year <= curEv.year
@@ -1512,7 +1614,11 @@
         const isMultiBead = isMulti && !isShared && !isCur;
         const intersectCls = isShared ? ' is-intersect' : isMultiBead ? ' is-multi-bead' : '';
         const dimCls = dimmed ? ' is-other-era' : '';
-        const pinColor = ev.personColor || '#bd2d22';
+        const pinColor = isStory
+          ? isCur
+            ? '#b53826'
+            : '#7d4b36'
+          : ev.personColor || '#bd2d22';
 
         const g = this._svgNode(
           'g',
@@ -1532,7 +1638,7 @@
           this.grpJourney
         );
         g.style.color = pinColor;
-        if (dimmed) g.style.opacity = '0.36';
+        if (dimmed) g.style.opacity = isOtherStep ? '0.28' : '0.36';
 
         const inner = this._svgNode(
           'g',
@@ -1609,7 +1715,7 @@
         }
 
         const showStartLbl = isMulti && ev.personStepIdx === 0 && !dimmed;
-        if (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl))) {
+        if (!isOtherStep && (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl)))) {
           const fullLbl =
             this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
           const compactLbl = isCur
@@ -1664,6 +1770,7 @@
       const stateKey = (profiles || [profile]).map((p) => p.key).join(',');
       const personCardKey = `${stateKey}:${this._effectiveRenderedLocale()}:${events.length}`;
       if (
+        !profile.isStory &&
         preserveScroll &&
         this._lastPersonCardKey === personCardKey &&
         listEl &&
@@ -1698,13 +1805,17 @@
 
       const kickerEl = this._id('txt-genealogy-kicker');
       if (kickerEl) {
-        kickerEl.textContent = profile.isRelic
+        kickerEl.textContent = profile.isStory
           ? isEn
-            ? 'Relic Provenance · Across Dynasties'
-            : '点物溯史 · 传世国器流转'
-          : isEn
-            ? 'Person Chronicle · Key Life Milestones'
-            : '点人溯事 · 生平大事记';
+            ? 'Event Storyline · Multi-Act Chronicle'
+            : '点事溯局 · 历史大事件全脉络'
+          : profile.isRelic
+            ? isEn
+              ? 'Relic Provenance · Across Dynasties'
+              : '点物溯史 · 传世国器流转'
+            : isEn
+              ? 'Person Chronicle · Key Life Milestones'
+              : '点人溯事 · 生平大事记';
       }
 
       const headingEl = this._id('genealogy-heading');
@@ -1763,14 +1874,21 @@
           loreEl.classList.add('is-hidden');
         } else {
           const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
-          const badgeLabel = profile.isRelic
+          const badgeLabel = profile.isStory
             ? isEn
-              ? 'Imperial Relic'
-              : '国器本纪'
-            : isEn
-              ? 'Biography'
-              : '人物小传';
-          const descText = profile.isRelic ? (isEn ? profile.descEn : profile.descZh) || '' : '';
+              ? 'Storyline'
+              : '史事本末'
+            : profile.isRelic
+              ? isEn
+                ? 'Imperial Relic'
+                : '国器本纪'
+              : isEn
+                ? 'Biography'
+                : '人物小传';
+          const descText =
+            profile.isRelic || profile.isStory
+              ? (isEn ? profile.descEn : profile.descZh) || ''
+              : '';
 
           if (subTitle || descText) {
             loreEl.innerHTML =
@@ -1793,17 +1911,44 @@
               ? ` · ${sameTimeCount} shared`
               : ` · ${sameTimeCount} 处同途`
             : '';
-        const summaryTxt = isEn
-          ? `${events.length} key events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
-          : `${isMulti ? '共' : '精选'} ${events.length} 处${isMulti ? '史事' : '代表史事'} · 历 ${dynCount} 朝${encounterSuffix}`;
+        let summaryTxt;
+        if (profile.isStory) {
+          const spanYears = Array.isArray(profile.span)
+            ? Math.max(1, profile.span[1] - profile.span[0] + 1)
+            : 1;
+          summaryTxt = isEn
+            ? `${events.length} key scenes · ${spanYears} yrs`
+            : `精选 ${events.length} 处关键节点 · 历 ${spanYears} 年`;
+        } else {
+          summaryTxt = isEn
+            ? `${events.length} key events · ${dynCount} era${dynCount > 1 ? 's' : ''}${encounterSuffix}`
+            : `${isMulti ? '共' : '精选'} ${events.length} 处${isMulti ? '史事' : '代表史事'} · 历 ${dynCount} 朝${encounterSuffix}`;
+        }
+        const returnStoryBtn =
+          !profile.isStory && this._returnStoryState
+            ? `<button type="button" class="gen-filter-pill" id="act-return-story">← ${escHtml(
+                isEn
+                  ? `Back to ${this._returnStoryState.en}`
+                  : `返回${this._returnStoryState.zh}`
+              )}</button>`
+            : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
+          `${returnStoryBtn}` +
           `<button type="button" class="gen-filter-pill${
             curIdx < 0 ? ' is-active' : ''
           }" id="act-person-overview">${isEn ? 'Overview' : '全图总览'}</button>` +
           `</span>`;
 
+        const retBtn = this._id('act-return-story');
+        if (retBtn && this._returnStoryState) {
+          retBtn.addEventListener('click', () => {
+            const ret = this._returnStoryState;
+            this._returnStoryState = null;
+            this.openPersonChronicle(ret.key, ret.stopIdx);
+          });
+        }
         const ovBtn = this._id('act-person-overview');
         if (ovBtn) {
           ovBtn.addEventListener('click', () => {
@@ -1832,22 +1977,7 @@
         const yrStr = isEn
           ? this.formatYear(ev.year)
           : `${ev.year <= 0 ? '前' + -ev.year : ev.year}年`;
-        const coreSite = String(ev.siteZh || '').replace(/(?:府|寺|城)$/, '');
-        const modNoProv = String(ev.modernZh || '').replace(
-          /^(?:河北|山西|辽宁|吉林|黑龙江|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾|内蒙古|广西|西藏|宁夏|新疆)/,
-          ''
-        );
-        const isSameSite =
-          !ev.modernZh ||
-          ev.siteZh.includes(ev.modernZh) ||
-          ev.modernZh.includes(ev.siteZh) ||
-          (coreSite.length >= 2 && ev.modernZh.includes(coreSite)) ||
-          (modNoProv.length >= 2 && ev.siteZh.includes(modNoProv));
-        const siteLabel = isEn
-          ? ev.siteEn || this.trTerm(ev.siteZh)
-          : isSameSite
-            ? ev.siteZh
-            : `${ev.siteZh}（今${ev.modernZh}）`;
+        const siteLabel = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
         const mapBadge = ev.isMapChange
           ? `<span class="ev-map-tag" title="${
               isEn ? 'Territory shift at this year' : '此节点触发版图演变'
@@ -1877,9 +2007,32 @@
             `<span class="person-track-tags-group">${tagsHtml}</span>` +
             `<span class="person-yr-sub">${yrStr} · ${this.dynastyName(ev.dynasty)}</span>`;
         } else {
+          const subTimeLbl =
+            (isEn ? ev.subEraEn : ev.subEraZh) || this.dynastyName(ev.dynasty);
           leftBadgeHtml =
             `<span class="person-idx-line"><span class="cr-stop-num">${idx + 1}</span><span>${yrStr}</span></span>` +
-            `<span class="t-sub">${this.dynastyName(ev.dynasty)}</span>`;
+            `<span class="t-sub">${escHtml(subTimeLbl)}</span>`;
+        }
+
+        let storyLinkedCopy = isEn ? ev.textEn : ev.textZh;
+        if (profile.isStory && Array.isArray(ev.actors) && ev.actors.length) {
+          for (const ac of ev.actors) {
+            const targetKey = ac.key || ac.zh;
+            const cands = isEn
+              ? [ac.en].filter(Boolean)
+              : [ac.zh, ac.zh && ac.zh.replace(/^唐/, '')].filter(Boolean);
+            for (const term of cands) {
+              if (term && storyLinkedCopy.includes(term)) {
+                storyLinkedCopy = storyLinkedCopy.replace(
+                  term,
+                  `<button type="button" class="story-inline-person" data-actor-key="${escHtml(
+                    targetKey
+                  )}" title="${isEn ? 'Open person chronicle' : '点击查看此人生平大事记'}">${term}</button>`
+                );
+                break;
+              }
+            }
+          }
         }
 
         const copyHtml =
@@ -1893,7 +2046,7 @@
                     `</span>`
                 )
                 .join('')
-            : `<span class="t-sub person-ev-copy">${isEn ? ev.textEn : ev.textZh}</span>`;
+            : `<span class="t-sub person-ev-copy">${storyLinkedCopy}</span>`;
 
         li.innerHTML =
           `<span class="t-era person-era-col">${leftBadgeHtml}</span>` +
@@ -1902,6 +2055,22 @@
           `${copyHtml}` +
           `${quoteHtml}` +
           `</span>`;
+
+        li.querySelectorAll('.story-inline-person').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const aKey = btn.dataset.actorKey;
+            if (aKey) {
+              this._returnStoryState = {
+                key: profile.key,
+                zh: profile.zh,
+                en: profile.en,
+                stopIdx: curIdx >= 0 ? curIdx : idx,
+              };
+              this.openPersonChronicle(aKey, -1);
+            }
+          });
+        });
 
         li.addEventListener('pointerenter', (e) => {
           if (e.pointerType !== 'touch') this._setHoveredPersonPin(idx);
