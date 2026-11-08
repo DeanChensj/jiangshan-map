@@ -1169,12 +1169,44 @@
       this._inPersonSync = false;
       this._renderPersonChronicleCard(true);
       if (panCamera) {
-        if (this.activePerson.profile && this.activePerson.profile.isStory && Array.isArray(ev.fromCoord)) {
-          this._framePersonOverview([{ coord: ev.fromCoord }, ev]);
+        const legOrigin = this._getSoloStepOriginCoord(
+          this.activePerson,
+          events,
+          clamped,
+          ev
+        );
+        if (legOrigin) {
+          this._framePersonOverview([{ coord: legOrigin }, ev]);
         } else {
           this._flyToPersonEvent(ev);
         }
       }
+    }
+
+    _getSoloStepOriginCoord(activePerson, events, curIdx, curEv) {
+      if (!activePerson || activePerson.isMulti || curIdx < 0 || !curEv) return null;
+      const isStory = Boolean(activePerson.profile && activePerson.profile.isStory);
+      if (isStory) {
+        return Array.isArray(curEv.fromCoord) ? curEv.fromCoord : null;
+      }
+      if (curIdx > 0) {
+        const prevEv = events[curIdx - 1];
+        if (
+          prevEv &&
+          Array.isArray(prevEv.coord) &&
+          Math.hypot(prevEv.coord[0] - curEv.coord[0], prevEv.coord[1] - curEv.coord[1]) > 0.08
+        ) {
+          const keepsCuratedLeg =
+            Boolean(curEv.via || curEv.fromCoord) &&
+            curEv.prevStopCoord &&
+            Math.hypot(
+              prevEv.coord[0] - curEv.prevStopCoord[0],
+              prevEv.coord[1] - curEv.prevStopCoord[1]
+            ) < 1.2;
+          return keepsCuratedLeg && Array.isArray(curEv.fromCoord) ? curEv.fromCoord : prevEv.coord;
+        }
+      }
+      return null;
     }
 
     stepPersonEvent(delta) {
@@ -1373,13 +1405,23 @@
       const isStory = Boolean(profile && profile.isStory);
       const curIdx = this.activePersonEventIdx;
       const curEv = curIdx >= 0 ? events[curIdx] : null;
+      const soloOriginCoord = this._getSoloStepOriginCoord(
+        this.activePerson,
+        events,
+        curIdx,
+        curEv
+      );
       let stepOriginIdx = -1;
-      if (isStory && curIdx >= 0 && curEv && Array.isArray(curEv.fromCoord)) {
-        stepOriginIdx = events.findIndex(
-          (e, i) =>
-            i !== curIdx &&
-            Math.hypot(e.coord[0] - curEv.fromCoord[0], e.coord[1] - curEv.fromCoord[1]) < 0.35
-        );
+      if (!isMulti && curIdx >= 0 && curEv && soloOriginCoord) {
+        if (!isStory && curIdx > 0) {
+          stepOriginIdx = curIdx - 1;
+        } else {
+          stepOriginIdx = events.findIndex(
+            (e, i) =>
+              i !== curIdx &&
+              Math.hypot(e.coord[0] - soloOriginCoord[0], e.coord[1] - soloOriginCoord[1]) < 0.35
+          );
+        }
       }
       const allTracks =
         Array.isArray(tracks) && tracks.length
@@ -1474,15 +1516,25 @@
       });
 
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
-      // For multi-actor stories (isStory):
-      // - Overview (curIdx < 0): render pins only (no crisscrossing full-war cobweb)
-      // - Single step (curIdx >= 0): render ONLY that step's movement vector if fromCoord is present
-      if (isStory) {
-        if (curIdx >= 0 && curEv && Array.isArray(curEv.fromCoord)) {
+      // For solo chronicles (!isMulti):
+      // - Overview (curIdx < 0): render pins only (no crisscrossing full-life cobweb)
+      // - Single step (curIdx >= 0): render ONLY that step's movement vector (prevStop ──► curStop)
+      if (!isMulti) {
+        if (curIdx >= 0 && curEv && soloOriginCoord) {
+          const prevEv = curIdx > 0 ? events[curIdx - 1] : null;
+          const keepsCuratedVia =
+            isStory ||
+            (Boolean(curEv.via) &&
+              prevEv &&
+              curEv.prevStopCoord &&
+              Math.hypot(
+                prevEv.coord[0] - curEv.prevStopCoord[0],
+                prevEv.coord[1] - curEv.prevStopCoord[1]
+              ) < 1.2);
           const segInfo = this._buildJourneySegmentInfo(
-            curEv.fromCoord,
+            soloOriginCoord,
             curEv.coord,
-            curEv.via || null,
+            keepsCuratedVia ? curEv.via || null : null,
             0
           );
           if (segInfo) {
@@ -1600,8 +1652,8 @@
         const isShared = Boolean(
           ev.isSharedEncounter && Array.isArray(ev.participants) && ev.participants.length >= 2
         );
-        const isStepOrigin = Boolean(isStory && curIdx >= 0 && idx === stepOriginIdx);
-        const isOtherStep = Boolean(isStory && curIdx >= 0 && !isCur && !isStepOrigin);
+        const isStepOrigin = Boolean(!isMulti && curIdx >= 0 && idx === stepOriginIdx);
+        const isOtherStep = Boolean(!isMulti && curIdx >= 0 && !isCur && !isStepOrigin);
         const dimmed = (!isShared && !isCur && isTrackDimmed(ev.personIdx)) || isOtherStep;
         const isPeerPassed =
           curIdx < 0 || dimmed || isStepOrigin
@@ -1614,7 +1666,7 @@
         const isMultiBead = isMulti && !isShared && !isCur;
         const intersectCls = isShared ? ' is-intersect' : isMultiBead ? ' is-multi-bead' : '';
         const dimCls = dimmed ? ' is-other-era' : '';
-        const pinColor = isStory
+        const pinColor = !isMulti
           ? isCur
             ? '#b53826'
             : '#7d4b36'
@@ -1770,7 +1822,6 @@
       const stateKey = (profiles || [profile]).map((p) => p.key).join(',');
       const personCardKey = `${stateKey}:${this._effectiveRenderedLocale()}:${events.length}`;
       if (
-        !profile.isStory &&
         preserveScroll &&
         this._lastPersonCardKey === personCardKey &&
         listEl &&
