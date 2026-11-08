@@ -7548,7 +7548,6 @@ function main() {
     // CUJ 39: Quick Search Anti-Fake-Person, City-vs-Era Ranking, Quiz Clue Integrity & Person Chronicle Site Disentangling
     {
       for (const nonPersonQ of [
-        '安史之乱',
         '靖康',
         '黄巾起义',
         '八王之乱',
@@ -9953,6 +9952,18 @@ function main() {
         anshiProf && anshiProf.isStory === true && Array.isArray(anshiProf.stops) && anshiProf.stops.length === 10,
         'anshi must resolve as an Event Storyline (isStory: true) with 10 chronological stops (#297)'
       );
+      assert.strictEqual(
+        ctrl._resolvePersonProfile('安史之乱')?.key,
+        'anshi',
+        '_resolvePersonProfile("安史之乱") must resolve to the anshi storyline profile'
+      );
+      for (const sq of ['安史之乱', '安史', 'An Lushan Rebellion', 'anshizhiluan']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'anshi',
+          `Quick search for "${sq}" must surface the An-Shi storyline (kind="story") at index 0`
+        );
+      }
       const anshiEvs = ctrl._collectPersonEvents(anshiProf);
       assert.strictEqual(anshiEvs.length, 10, 'anshi storyline must collect all 10 stops');
       assert(

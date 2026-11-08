@@ -8993,6 +8993,7 @@
         const kindLabel = {
           multi_person: this.locale === 'en' ? 'Intersect' : '交汇',
           person: this.locale === 'en' ? 'Figure' : '人物',
+          story: this.locale === 'en' ? 'Storyline' : '始末',
           quiz: this.locale === 'en' ? 'Quiz' : '雅集',
           dynasty: this.locale === 'en' ? 'Dynasty' : '朝代',
           polity: this.locale === 'en' ? 'Regime' : '政权',

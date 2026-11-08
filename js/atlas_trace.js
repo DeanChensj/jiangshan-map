@@ -129,7 +129,6 @@
       const qFold = fold(qLow);
       const profiles = HistoricalAtlasController.PERSON_PROFILES;
       const exact = profiles.find((p) => {
-        if (p.isStory) return p.key === qLow;
         const aliases = this._personSearchAliases(p);
         return (
           p.key === qLow ||
