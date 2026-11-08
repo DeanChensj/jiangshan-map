@@ -23,7 +23,8 @@
 ├── data/atlas/              # 多边形产物的可编辑源数据：每个快照一个 GeoJSON 文件，按朝代分目录，另含 index.json
 ├── data/sources/            # 大事、事件、城邑、行迹与人物的出处（只存于仓库，网站不加载）
 ├── js/
-│   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、点地溯源、点人溯事与 window.atlasAPI
+│   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、全局快搜与 window.atlasAPI
+│   ├── atlas_trace.js       # 点地溯源、点人溯事、双/三人同屏对比与青史行迹子模块
 │   ├── atlas_quiz.js        # 古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
 │   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目

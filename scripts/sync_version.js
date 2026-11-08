@@ -19,6 +19,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 const CONTROLLER_SCRIPTS = [
   'js/app.js',
+  'js/atlas_trace.js',
   'js/atlas_quiz.js',
 ];
 

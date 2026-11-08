@@ -818,6 +818,7 @@ function main() {
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   for (const strayFile of [
     'app.js',
+    'atlas_trace.js',
     'atlas_quiz.js',
     'lore_data.js',
     'lore_core.js',
@@ -880,7 +881,64 @@ function main() {
   }
   const ControllerClass = sandbox.window.HistoricalAtlasController;
   assert(typeof ControllerClass === 'function', 'HistoricalAtlasController must be exposed on window');
-  for (const quizMethod of [
+  const TRACE_METHODS = [
+    'toggleGenealogySheetExpand',
+    '_clearActiveTrace',
+    '_clearActivePerson',
+    'closeGenealogyCard',
+    '_personSearchAliases',
+    '_resolvePersonProfile',
+    '_formatPersonSpan',
+    '_tailorPersonEvent',
+    '_collectPersonEvents',
+    '_resolvePersonProfiles',
+    '_eventsSharePlace',
+    '_buildPersonTracksAndEvents',
+    'openPersonChronicle',
+    'openJourneyAsPerson',
+    '_personAutoplayTick',
+    'togglePersonAutoplay',
+    'selectPersonEvent',
+    'stepPersonEvent',
+    '_getPersonVisibleTopFrac',
+    '_getVisiblePersonTracks',
+    '_framePersonOverview',
+    '_flyToPersonEvent',
+    '_findNearestPersonPin',
+    '_renderPersonPinsOverlay',
+    '_setHoveredPersonPin',
+    '_renderPersonChronicleCard',
+    '_renderPersonFooter',
+    '_hidePersonFooter',
+    '_syncTracedPrefecture',
+    '_resolvePlaceLoreBanner',
+    '_findNearbyPass',
+    '_collectPlaceEventsForDynasty',
+    '_findNearestTouchNode',
+    '_stripModernProvincePrefix',
+    '_resolveModernLocationAt',
+    '_getCanonicalPlaces',
+    '_findNearestSettlement',
+    '_polityAt',
+    '_shapeAnchorOrCentroid',
+    '_minVertexDistSq',
+    '_resolveEraPlaceAt',
+    '_resolveModernIdentity',
+    'openGenealogyAt',
+    '_getCustomRouteVisibleTopFrac',
+    '_buildJourneySegmentInfo',
+    '_renderCartographicTrajectory',
+  ];
+  const TRACE_STATIC_PROPS = [
+    'PERSON_PROFILES',
+    'PERSON_TRACK_PALETTE',
+    'PLACE_LANDMARK_EVENTS',
+    'STRATEGIC_PASSES',
+    'PLACE_GAZETTEER',
+    'CITY_LORE',
+    'HISTORICAL_JOURNEYS',
+  ];
+  const QUIZ_METHODS = [
     '_sanitizeChallengeClue',
     '_buildChallengeDeck',
     '_syncChallengeScrubberState',
@@ -896,7 +954,22 @@ function main() {
     '_renderChallengeAnsweredVerdict',
     '_evaluateLocateClick',
     '_finishChallenge',
-  ]) {
+  ];
+  for (const traceMethod of TRACE_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, traceMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_trace.js must attach ${traceMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
+  for (const traceStaticProp of TRACE_STATIC_PROPS) {
+    const sDesc = Object.getOwnPropertyDescriptor(ControllerClass, traceStaticProp);
+    assert(
+      sDesc && (typeof sDesc.get === 'function' || Array.isArray(sDesc.value)),
+      `atlas_trace.js must attach static property ${traceStaticProp} onto HistoricalAtlasController`
+    );
+  }
+  for (const quizMethod of QUIZ_METHODS) {
     const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, quizMethod);
     assert(
       desc && typeof desc.value === 'function' && desc.enumerable === false,
@@ -904,6 +977,20 @@ function main() {
     );
   }
   {
+    // Verify clean separation: app.js alone must not define any trace or quiz mixin methods.
+    const appOnlySandbox = { console, addEventListener: () => {} };
+    appOnlySandbox.window = appOnlySandbox;
+    vm.createContext(appOnlySandbox);
+    controllerBundles[0].script.runInContext(appOnlySandbox);
+    const BaseClass = appOnlySandbox.window.HistoricalAtlasController;
+    for (const m of [...TRACE_METHODS, ...QUIZ_METHODS]) {
+      assert.strictEqual(
+        Object.prototype.hasOwnProperty.call(BaseClass.prototype, m),
+        false,
+        `Method ${m} must live in its dedicated mixin module, not in js/app.js`
+      );
+    }
+
     // Controller modules must install correctly in either load order.
     const orderSandbox = { console, addEventListener: () => {} };
     orderSandbox.window = orderSandbox;
@@ -912,21 +999,45 @@ function main() {
     const ReorderedClass = orderSandbox.window.HistoricalAtlasController;
     assert(
       typeof ReorderedClass === 'function' &&
-        typeof ReorderedClass.prototype.startChallenge === 'function' &&
-        typeof ReorderedClass.prototype._evaluateLocateClick === 'function',
-      'atlas_quiz.js loaded before app.js must still attach quiz methods via window.__ATLAS_MIXINS'
+        TRACE_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        QUIZ_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        Array.isArray(ReorderedClass.PERSON_TRACK_PALETTE) &&
+        ReorderedClass.PERSON_TRACK_PALETTE.length >= 3,
+      'atlas_trace.js and atlas_quiz.js loaded before app.js must attach all trace and quiz methods via window.__ATLAS_MIXINS'
     );
     assert.strictEqual(
       orderSandbox.window.__ATLAS_MIXINS.length,
       0,
       'app.js must drain window.__ATLAS_MIXINS after defining HistoricalAtlasController'
     );
-    const reorderedQuiz = Object.create(ReorderedClass.prototype);
-    reorderedQuiz.locale = 'zh';
+    const reorderedInst = Object.create(ReorderedClass.prototype);
+    reorderedInst.locale = 'zh';
     assert.strictEqual(
-      reorderedQuiz._sanitizeChallengeClue('今淄博城（今山东淄博）', { modern: '' }, '临淄'),
+      reorderedInst._sanitizeChallengeClue('今淄博城（今山东淄博）', { modern: '' }, '临淄'),
       '此城',
       'Quiz methods installed through the mixin queue must run against the late-bound controller'
+    );
+    const hitPolity = reorderedInst._polityAt(108.9, 34.2, {
+      polities: [
+        {
+          name: '秦',
+          role: 'empire',
+          shape: {
+            type: 'Polygon',
+            coordinates: [[[105, 30], [112, 30], [112, 38], [105, 38], [105, 30]]],
+          },
+        },
+      ],
+    });
+    assert(
+      hitPolity && hitPolity.name === '秦',
+      'Trace methods installed through the mixin queue must bind MercatorProjector from the late-bound controller'
+    );
+    assert(
+      reorderedInst
+        ._personSearchAliases({ zh: '苏轼', en: 'Su Shi', aliases: ['苏东坡'] })
+        .includes('苏东坡'),
+      'Trace methods installed through the mixin queue must execute person alias resolution cleanly'
     );
   }
 

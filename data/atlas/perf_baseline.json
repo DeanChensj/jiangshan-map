@@ -1,13 +1,14 @@
 {
   "maxSyncScriptsGzipBytes": 405094,
-  "syncScriptsGzipBytes": 394854,
+  "syncScriptsGzipBytes": 396013,
   "scripts": {
     "js/china_geo_data.js": 48315,
     "js/atlas_boot.js": 33331,
     "js/map_data.js": 85546,
     "js/lore_core.js": 36642,
     "js/zh_hant.js": 17820,
-    "js/app.js": 164308,
+    "js/app.js": 130149,
+    "js/atlas_trace.js": 35318,
     "js/atlas_quiz.js": 8892
   },
   "lazy": {
