@@ -1499,7 +1499,10 @@
       p.set('year', String(this.year));
       const person = this.activePerson;
       const personKeys = person && Array.isArray(person.profiles) ? person.profiles.map((pr) => String(pr.key || '')) : [];
-      if (personKeys.length && personKeys.every((k) => k && !k.startsWith('adhoc_'))) {
+      if (person && person.profile && person.profile.isStory && person.profile.key) {
+        p.set('event', String(person.profile.key));
+        if (this.activePersonEventIdx >= 0) p.set('stop', String(this.activePersonEventIdx));
+      } else if (personKeys.length && personKeys.every((k) => k && !k.startsWith('adhoc_'))) {
         p.set('person', personKeys.join(','));
         if (this.activePersonEventIdx >= 0) p.set('stop', String(this.activePersonEventIdx));
       } else {
@@ -1706,7 +1709,7 @@
 
       if (this.embed.autoplay && !this.embed.lock) {
         const q = new URLSearchParams(location.search);
-        if (q.has('person') || q.has('journey')) {
+        if (q.has('person') || q.has('event') || q.has('journey')) {
           // The trajectory opens asynchronously after the full snapshots load.
           let tries = 0;
           const timer = setInterval(() => {
@@ -1934,9 +1937,13 @@
           ? this.locale === 'en'
             ? 'Relic Provenance · Across Dynasties'
             : '点物溯史 · 传世国器流转'
-          : this.locale === 'en'
-            ? 'Person Chronicle · Key Life Milestones'
-            : '点人溯事 · 生平大事记'
+          : this.activePerson.profile && this.activePerson.profile.isStory
+            ? this.locale === 'en'
+              ? 'Event Storyline · Multi-Act Chronicle'
+              : '点事溯局 · 历史大事件全脉络'
+            : this.locale === 'en'
+              ? 'Person Chronicle · Key Life Milestones'
+              : '点人溯事 · 生平大事记'
         : this.uiStr('trace_kicker', '点地溯源 · 古今政区沿革');
       const chalKicker = this._id('txt-challenge-kicker');
       if (chalKicker) {
@@ -4208,6 +4215,14 @@
       return idx !== undefined ? idx : null;
     }
 
+    _findStoryForMilestone(dynasty, m) {
+      if (!dynasty || !m) return null;
+      const map = {
+        'tang:755': { key: 'anshi', stopIdx: -1 },
+      };
+      return map[`${dynasty.key}:${m.year}`] || null;
+    }
+
     _measureMilestoneBalloonSize(estW = 0, estH = 0) {
       if (this.milestoneBalloon && this.milestoneBalloon.style) {
         const prevLeft = this.milestoneBalloon.style.left;
@@ -4327,15 +4342,24 @@
         relicStopIdx !== null
           ? `<button type="button" class="ep-relic-seal" title="${relicTitle}"><span class="seal-stamp">玺</span><span>${relicLabel}</span></button>`
           : '';
+      const storyHit = this._findStoryForMilestone(dynasty, m);
+      const storyTitle =
+        this.locale === 'en'
+          ? 'Open the full multi-act historical storyline on the map'
+          : '点击展开「安史之乱」八年全脉络时空推演';
+      const storyLabel = this.locale === 'en' ? 'Story ›' : '始末 ›';
+      const storyHtml = storyHit
+        ? `<button type="button" class="ep-relic-seal ep-story-seal" title="${storyTitle}"><span class="seal-stamp">事</span><span>${storyLabel}</span></button>`
+        : '';
       const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
       this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}${storyHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
         `<div class="ep-text">${headlineText}</div>`;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
       const maxW = isMobile ? Math.min(268, (window.innerWidth || 390) - 20) : 348;
       const headW =
         this._estimateLocalTextWidth(
-          `${yrText} · ${eraLabel}${placeEstText ? ` ${placeEstText}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}`,
+          `${yrText} · ${eraLabel}${placeEstText ? ` ${placeEstText}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}${storyHit ? ` 事 ${storyLabel}` : ''}`,
           11.5,
           0
         ) + (isMultiAnchor ? 40 + anchors.length * 22 : 52);
@@ -4372,11 +4396,18 @@
           this._panToward(targetCoord[0], targetCoord[1]);
         });
       });
-      const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal');
+      const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal:not(.ep-story-seal)');
       if (relicBtn && relicStopIdx !== null) {
         relicBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.openPersonChronicle('yuxi', relicStopIdx);
+        });
+      }
+      const storyBtn = this.milestoneBalloon.querySelector('.ep-story-seal');
+      if (storyBtn && storyHit) {
+        storyBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.openPersonChronicle(storyHit.key, storyHit.stopIdx);
         });
       }
       const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
@@ -5652,13 +5683,15 @@
       if (this.activePerson) {
         const p = this.activePerson.profile;
         const pName = isEn ? p.en : p.zh;
+        const isStory = Boolean(p && p.isStory);
+        const paramKey = isStory ? 'event' : 'person';
         pageTitle = isEn
-          ? `${pName} — Historical Events Map · Jiangshan Atlas of China`
-          : `${pName}生平纪事地图 · 江山时序中国历史地图`;
+          ? `${pName} — ${isStory ? 'Event Storyline' : 'Historical Events'} Map · Jiangshan Atlas of China`
+          : `${pName}${isStory ? '历史大事件全脉络' : '生平纪事地图'} · 江山时序中国历史地图`;
         pageDesc = isEn
           ? `Interactive spatio-temporal chronicle of ${pName} across ${this.activePerson.events.length} historical sites in the Jiangshan Atlas of China.`
-          : `${pName}生平 ${this.activePerson.events.length} 处历史事件时空落点、历代疆域与古今地名对照。`;
-        canonicalUrl = `${baseSiteUrl}?person=${encodeURIComponent(p.key)}${isEn ? '&lang=en' : ''}`;
+          : `${pName}${isStory ? '' : '生平'} ${this.activePerson.events.length} 处历史事件时空落点、历代疆域与古今地名对照。`;
+        canonicalUrl = `${baseSiteUrl}?${paramKey}=${encodeURIComponent(p.key)}${isEn ? '&lang=en' : ''}`;
       } else if (cur && this._bootDone) {
         const dName = this.dynastyName(cur);
         const dSpan = this.formatSpan(cur);
@@ -5811,8 +5844,12 @@
           relicStopIdx !== null
             ? `<button type="button" class="ev-seal-tag" title="${this.locale === 'en' ? 'Heirloom Seal of the Realm — click to trace across dynasties' : '传国玉玺流转节点 · 点击查看历代流转轨迹'}">${this.locale === 'en' ? 'Seal' : '玺'}</button>`
             : '';
-        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}${sealBadge}</span>`;
-        const sealBtn = li.querySelector('.ev-seal-tag');
+        const storyHit = this._findStoryForMilestone(dynasty, m);
+        const storyBadge = storyHit
+          ? `<button type="button" class="ev-seal-tag ev-story-tag" title="${this.locale === 'en' ? 'Event Storyline — click to trace the full multi-act campaign' : '大事件全脉络 · 点击展开安史之乱八年兴亡推演'}">${this.locale === 'en' ? 'Story' : '始末'}</button>`
+          : '';
+        li.innerHTML = `<span class="ev-yr">${yrLabel}</span><span>${this.milestoneHeadline(dynasty, m)}${badge}${sealBadge}${storyBadge}</span>`;
+        const sealBtn = li.querySelector('.ev-seal-tag:not(.ev-story-tag)');
         if (sealBtn && relicStopIdx !== null) {
           sealBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -5820,6 +5857,16 @@
               this.toggleMobileChronicle(false);
             }
             this.openPersonChronicle('yuxi', relicStopIdx);
+          });
+        }
+        const storyBtn = li.querySelector('.ev-story-tag');
+        if (storyBtn && storyHit) {
+          storyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
+              this.toggleMobileChronicle(false);
+            }
+            this.openPersonChronicle(storyHit.key, storyHit.stopIdx);
           });
         }
         li.addEventListener('pointerenter', (e) => {
@@ -8846,6 +8893,7 @@
       // 0a. Historical Figures Chronicle Index (点人溯事)
       const loreLoaded = this._isLoreDetailLoaded();
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
+        if (p.isStory) continue;
         const d =
           this.dynasties.find((item) => item.key === p.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
@@ -9982,6 +10030,11 @@
           }, 80);
         }
       } else if (item.kind === 'event' && item.milestone) {
+        const storyHit = this._findStoryForMilestone(item.dynasty, item.milestone);
+        if (storyHit) {
+          this.openPersonChronicle(storyHit.key, -1);
+          return;
+        }
         this.openMilestoneBalloon(item.dynasty, item.milestone);
         if (item.coord) this._panToward(item.coord[0], item.coord[1]);
       }
@@ -12734,7 +12787,8 @@
         params.set('year', String(singleYear));
       }
       if (personPayload) {
-        params.set('person', personPayload.key);
+        const isStoryParam = Boolean(personProfile && personProfile.isStory && !multiState);
+        params.set(isStoryParam ? 'event' : 'person', personPayload.key);
         if (stopIdx >= 0) params.set('stop', String(stopIdx));
       }
       if (placeLabel) params.set('place', placeLabel);
@@ -12916,6 +12970,7 @@
         q.has('place') ||
         (q.has('lng') && q.has('lat')) ||
         q.has('person') ||
+        q.has('event') ||
         q.has('journey')
       ) {
         this.lastRenderedSnap = null;
@@ -12924,7 +12979,7 @@
       const needsEn =
         this.locale === 'en' ||
         /[a-z]/i.test(
-          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('journey') || ''}`
+          `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('event') || ''} ${q.get('journey') || ''}`
         );
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
@@ -13014,6 +13069,7 @@
         q.has('place') ||
         (q.has('lng') && q.has('lat')) ||
         q.has('person') ||
+        q.has('event') ||
         q.has('journey')
       ) {
         afterFullSnapshots(() => {
@@ -13032,7 +13088,7 @@
               lng: q.has('lng') ? Number(q.get('lng')) : undefined,
               lat: q.has('lat') ? Number(q.get('lat')) : undefined,
               zoom: q.has('zoom') ? Number(q.get('zoom')) : undefined,
-              person: q.get('person') || q.get('journey') || undefined,
+              person: q.get('person') || q.get('event') || q.get('journey') || undefined,
               stop: q.has('stop') ? Number(q.get('stop')) : undefined,
             })
           );
@@ -13131,6 +13187,15 @@
           }, 80);
         }
       }
+      if (q.has('event')) {
+        const rawEv = (q.get('event') || '').trim();
+        const evIdx = q.has('stop') ? Number(q.get('stop')) : -1;
+        if (rawEv) {
+          afterFullSnapshots(() => {
+            this.openPersonChronicle(rawEv, Number.isNaN(evIdx) ? -1 : evIdx);
+          }, 80);
+        }
+      }
       if (q.has('journey')) {
         const jKey = (q.get('journey') || '').trim();
         const stopIdx = q.has('stop') ? Number(q.get('stop')) : -1;
@@ -13160,7 +13225,7 @@
         }, 120);
       }
       this._armUrlSync(
-        ['year', 'polity', 'person', 'journey', 'trace', 'place', 'lng', 'q'].some((k) => q.has(k))
+        ['year', 'polity', 'person', 'event', 'journey', 'trace', 'place', 'lng', 'q'].some((k) => q.has(k))
       );
     }
 

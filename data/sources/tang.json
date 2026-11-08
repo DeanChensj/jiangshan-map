@@ -7,5 +7,6 @@
   "milestone:tang:670": [{ "w": "zztj", "loc": "卷201 唐纪十七 咸亨元年四月" }],
   "milestone:tang:679": [{ "w": "zztj", "loc": "卷202 唐纪十八 调露元年" }],
   "milestone:tang:692": [{ "w": "zztj", "loc": "卷205 唐纪二十一 长寿元年十月" }],
-  "milestone:tang:738": [{ "w": "zztj", "loc": "卷214 唐纪三十 开元二十六年" }]
+  "milestone:tang:738": [{ "w": "zztj", "loc": "卷214 唐纪三十 开元二十六年" }],
+  "person:anshi": [{ "w": "zztj", "loc": "卷217–222 唐纪三十三至三十八" }]
 }

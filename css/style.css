@@ -5043,13 +5043,18 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 .journey-node.is-hover-pin .jn-disc {
-  fill: var(--vermilion);
-  stroke: #fffaf2;
-  transform: scale(1.14);
+  transform: scale(1.12);
 }
 
-.journey-node.is-hover-pin .jn-num {
-  fill: #fffaf2;
+.journey-node.is-hover-pin:not(.is-current) .jn-disc {
+  fill: #fdf7ed;
+  stroke: currentColor;
+  stroke-width: 2.2px;
+}
+
+.journey-node.is-current.is-hover-pin .jn-disc {
+  fill: currentColor;
+  stroke: #fffaf2;
 }
 
 .genealogy-list li.person-ev-row {
@@ -5628,4 +5633,40 @@ html.is-embed.is-embed-locked #scrubber-dock {
   html.is-embed #genealogy-card.is-sheet-expanded {
     max-height: 55%;
   }
+}
+
+/* Event Storyline Mod (点事溯局 · #297) */
+.ev-seal-tag.ev-story-tag {
+  background: rgba(181, 56, 38, 0.1);
+  border-color: rgba(181, 56, 38, 0.35);
+  color: #9e2a2b;
+}
+
+.ev-seal-tag.ev-story-tag:hover {
+  background: #9e2a2b;
+  border-color: #9e2a2b;
+  color: #fffaf2;
+}
+
+button.story-inline-person {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0 1px;
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  color: #8c2d19;
+  text-decoration: underline;
+  text-decoration-color: rgba(158, 42, 43, 0.45);
+  text-underline-offset: 2.5px;
+  cursor: pointer;
+  transition: color 0.14s, background 0.14s;
+  border-radius: 2px;
+}
+
+button.story-inline-person:hover {
+  color: #b53826;
+  background: rgba(181, 56, 38, 0.09);
+  text-decoration-color: #b53826;
 }
