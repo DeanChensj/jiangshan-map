@@ -1,0 +1,649 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0A09B10A94E8BE94A5F3CBD8 /* AtlasNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D14682E2163B2CBC2B76543 /* AtlasNavigation.swift */; };
+		0C902F3FFFC4EC4C131B97CD /* AtlasPulseOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B377070338111DDACF2165B /* AtlasPulseOverlay.swift */; };
+		0DE28D7CE7ED75F9CEC8F610 /* EventNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5CE2B115730FBAEE49216E /* EventNavigationTests.swift */; };
+		1B533024DFD2D221A54F1B1D /* AtlasPlaybackViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51635A66E3BFF76F6D3BA86 /* AtlasPlaybackViews.swift */; };
+		2874AC6C9A7AE13E6F24B187 /* AtlasEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378A30256F92274F573DED8B /* AtlasEngine.swift */; };
+		326C4BC192A946A8B84EED66 /* AtlasGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC598AA0FBB2FC3649975F /* AtlasGeometry.swift */; };
+		352FF832968194DC13C9D04F /* AtlasStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E161491B75FD257051541489 /* AtlasStore.swift */; };
+		406DE802E417403F954167F5 /* AtlasPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE42E5700A0D0055F6222E3 /* AtlasPlayback.swift */; };
+		4B9C06797CBDD2432B977201 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759E254A3E2B077B15C16A38 /* ContentView.swift */; };
+		4FC6E00C1CF036A5BA54FE4E /* AtlasFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41F5D874E1E86C43D248650 /* AtlasFeatures.swift */; };
+		522A0188E566FCC0E3D25F20 /* AtlasImmersiveViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233CFD0C21E375F0A7D1C7B /* AtlasImmersiveViews.swift */; };
+		789E81D01ADD11EB654FA138 /* Glyphs in Resources */ = {isa = PBXBuildFile; fileRef = 3658891C6F174E83448C4155 /* Glyphs */; };
+		842FDE66F833E9500C2BBB8A /* AtlasStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D7669AC0484F1CAF32A2AF /* AtlasStateTests.swift */; };
+		8549583D8C8800D0A5F09CB1 /* JiangshanAtlasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4FF44AA942BAE7EFFC99A7 /* JiangshanAtlasApp.swift */; };
+		8A48F1DC76D0B0771FAB9458 /* AtlasFeatureViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922404A568CE19325A2019D7 /* AtlasFeatureViews.swift */; };
+		9A05B90B3ED151C9DB447551 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = BB75769ADD2550A5FCC2F0B2 /* Fonts */; };
+		9CD2DB351BBA9F515614FEC9 /* Atlas in Resources */ = {isa = PBXBuildFile; fileRef = 8E9848DA4C951F7F8CC1BB03 /* Atlas */; };
+		A445C2AEA2968059B85BD367 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 4042999F5954DD6EB2B07339 /* MapLibre */; };
+		C99EAE48715412ADAA11245C /* AtlasMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4222C86050F70E71E3D771C /* AtlasMapView.swift */; };
+		E0592262838B30E99F80E092 /* AtlasCameraProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4FE519074AA3585C84EFA /* AtlasCameraProfile.swift */; };
+		E275494DB7AAD6D910226F95 /* AtlasDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64EA0CB96CF01B9397CEA6E /* AtlasDetailViews.swift */; };
+		E310388660C01430EE86B0B0 /* AtlasModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89B076B32256B8D4E22EC49 /* AtlasModels.swift */; };
+		E63689D372E55CF0DA5B58B5 /* AtlasTodayReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA7936E4740863512E6F75D /* AtlasTodayReference.swift */; };
+		F05ED6360BDE982B83EC6D73 /* AtlasCartography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE72746ACFD2500BD707E3E /* AtlasCartography.swift */; };
+		F96A04F60B7976F3F8278E81 /* AtlasFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F085556940FDF1A535CC0957 /* AtlasFonts.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		806494FBCFF96408C4525348 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FC415D489A38229533B5679 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C22284505156C29FABD5F85B;
+			remoteInfo = JiangshanAtlas;
+		};
+		96FC48B626844959C3ACAC54 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FC415D489A38229533B5679 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C22284505156C29FABD5F85B;
+			remoteInfo = JiangshanAtlas;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3658891C6F174E83448C4155 /* Glyphs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Glyphs; path = JiangshanAtlas/Resources/Glyphs; sourceTree = SOURCE_ROOT; };
+		378A30256F92274F573DED8B /* AtlasEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasEngine.swift; sourceTree = "<group>"; };
+		3FE72746ACFD2500BD707E3E /* AtlasCartography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasCartography.swift; sourceTree = "<group>"; };
+		43D4FE519074AA3585C84EFA /* AtlasCameraProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasCameraProfile.swift; sourceTree = "<group>"; };
+		475B402DE2C2E45BFD309D57 /* JiangshanAtlasTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JiangshanAtlasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D163E15B75337D668953FB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		759E254A3E2B077B15C16A38 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		79D7669AC0484F1CAF32A2AF /* AtlasStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasStateTests.swift; sourceTree = "<group>"; };
+		7B377070338111DDACF2165B /* AtlasPulseOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasPulseOverlay.swift; sourceTree = "<group>"; };
+		7EDC598AA0FBB2FC3649975F /* AtlasGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasGeometry.swift; sourceTree = "<group>"; };
+		897E202625FB062CE673CB91 /* JiangshanAtlasUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JiangshanAtlasUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D14682E2163B2CBC2B76543 /* AtlasNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasNavigation.swift; sourceTree = "<group>"; };
+		8E9848DA4C951F7F8CC1BB03 /* Atlas */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Atlas; path = JiangshanAtlas/Resources/Atlas; sourceTree = SOURCE_ROOT; };
+		922404A568CE19325A2019D7 /* AtlasFeatureViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasFeatureViews.swift; sourceTree = "<group>"; };
+		A41F5D874E1E86C43D248650 /* AtlasFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasFeatures.swift; sourceTree = "<group>"; };
+		B233CFD0C21E375F0A7D1C7B /* AtlasImmersiveViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasImmersiveViews.swift; sourceTree = "<group>"; };
+		B4222C86050F70E71E3D771C /* AtlasMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasMapView.swift; sourceTree = "<group>"; };
+		BB75769ADD2550A5FCC2F0B2 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = JiangshanAtlas/Resources/Fonts; sourceTree = SOURCE_ROOT; };
+		BBA7936E4740863512E6F75D /* AtlasTodayReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasTodayReference.swift; sourceTree = "<group>"; };
+		BD4FF44AA942BAE7EFFC99A7 /* JiangshanAtlasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JiangshanAtlasApp.swift; sourceTree = "<group>"; };
+		C64EA0CB96CF01B9397CEA6E /* AtlasDetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasDetailViews.swift; sourceTree = "<group>"; };
+		D51635A66E3BFF76F6D3BA86 /* AtlasPlaybackViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasPlaybackViews.swift; sourceTree = "<group>"; };
+		D89B076B32256B8D4E22EC49 /* AtlasModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasModels.swift; sourceTree = "<group>"; };
+		DB61BD3528D9EE57EA2C6D2C /* JiangshanAtlas.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = JiangshanAtlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E161491B75FD257051541489 /* AtlasStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasStore.swift; sourceTree = "<group>"; };
+		F085556940FDF1A535CC0957 /* AtlasFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasFonts.swift; sourceTree = "<group>"; };
+		FB5CE2B115730FBAEE49216E /* EventNavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNavigationTests.swift; sourceTree = "<group>"; };
+		FBE42E5700A0D0055F6222E3 /* AtlasPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasPlayback.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7885731CA0113DFEC3F3DF0B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A445C2AEA2968059B85BD367 /* MapLibre in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		23EAE81CCBE14F70C33CD1CF /* JiangshanAtlasTests */ = {
+			isa = PBXGroup;
+			children = (
+				79D7669AC0484F1CAF32A2AF /* AtlasStateTests.swift */,
+			);
+			path = JiangshanAtlasTests;
+			sourceTree = "<group>";
+		};
+		7220FD099B39C6B6882286D1 = {
+			isa = PBXGroup;
+			children = (
+				8E9848DA4C951F7F8CC1BB03 /* Atlas */,
+				BB75769ADD2550A5FCC2F0B2 /* Fonts */,
+				3658891C6F174E83448C4155 /* Glyphs */,
+				8E78DD22E294ED995FDAC5E3 /* JiangshanAtlas */,
+				23EAE81CCBE14F70C33CD1CF /* JiangshanAtlasTests */,
+				8E928F3EF6D09D5E16EF77EE /* JiangshanAtlasUITests */,
+				98C985A5FEA15B98BAC3F0D2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8E78DD22E294ED995FDAC5E3 /* JiangshanAtlas */ = {
+			isa = PBXGroup;
+			children = (
+				43D4FE519074AA3585C84EFA /* AtlasCameraProfile.swift */,
+				3FE72746ACFD2500BD707E3E /* AtlasCartography.swift */,
+				C64EA0CB96CF01B9397CEA6E /* AtlasDetailViews.swift */,
+				378A30256F92274F573DED8B /* AtlasEngine.swift */,
+				A41F5D874E1E86C43D248650 /* AtlasFeatures.swift */,
+				922404A568CE19325A2019D7 /* AtlasFeatureViews.swift */,
+				F085556940FDF1A535CC0957 /* AtlasFonts.swift */,
+				7EDC598AA0FBB2FC3649975F /* AtlasGeometry.swift */,
+				B233CFD0C21E375F0A7D1C7B /* AtlasImmersiveViews.swift */,
+				B4222C86050F70E71E3D771C /* AtlasMapView.swift */,
+				D89B076B32256B8D4E22EC49 /* AtlasModels.swift */,
+				8D14682E2163B2CBC2B76543 /* AtlasNavigation.swift */,
+				FBE42E5700A0D0055F6222E3 /* AtlasPlayback.swift */,
+				D51635A66E3BFF76F6D3BA86 /* AtlasPlaybackViews.swift */,
+				7B377070338111DDACF2165B /* AtlasPulseOverlay.swift */,
+				E161491B75FD257051541489 /* AtlasStore.swift */,
+				BBA7936E4740863512E6F75D /* AtlasTodayReference.swift */,
+				759E254A3E2B077B15C16A38 /* ContentView.swift */,
+				4D163E15B75337D668953FB8 /* Info.plist */,
+				BD4FF44AA942BAE7EFFC99A7 /* JiangshanAtlasApp.swift */,
+			);
+			path = JiangshanAtlas;
+			sourceTree = "<group>";
+		};
+		8E928F3EF6D09D5E16EF77EE /* JiangshanAtlasUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FB5CE2B115730FBAEE49216E /* EventNavigationTests.swift */,
+			);
+			path = JiangshanAtlasUITests;
+			sourceTree = "<group>";
+		};
+		98C985A5FEA15B98BAC3F0D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB61BD3528D9EE57EA2C6D2C /* JiangshanAtlas.app */,
+				475B402DE2C2E45BFD309D57 /* JiangshanAtlasTests.xctest */,
+				897E202625FB062CE673CB91 /* JiangshanAtlasUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		520F638611C1A7BF53BB1F72 /* JiangshanAtlasTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8929E3E8D9C08B5FC8DE5BE /* Build configuration list for PBXNativeTarget "JiangshanAtlasTests" */;
+			buildPhases = (
+				C3A94FE92518C86DCD339C99 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				34BCC840F9A321FE4FCF13B5 /* PBXTargetDependency */,
+			);
+			name = JiangshanAtlasTests;
+			packageProductDependencies = (
+			);
+			productName = JiangshanAtlasTests;
+			productReference = 475B402DE2C2E45BFD309D57 /* JiangshanAtlasTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BB82D9CA46407DCCBFDF42B3 /* JiangshanAtlasUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A280C108767481F9A7B9BFEE /* Build configuration list for PBXNativeTarget "JiangshanAtlasUITests" */;
+			buildPhases = (
+				78DC7607996775BAF74E9DAE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9815E78121DB79355DEB559F /* PBXTargetDependency */,
+			);
+			name = JiangshanAtlasUITests;
+			packageProductDependencies = (
+			);
+			productName = JiangshanAtlasUITests;
+			productReference = 897E202625FB062CE673CB91 /* JiangshanAtlasUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		C22284505156C29FABD5F85B /* JiangshanAtlas */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E1533F3F65A4F6461B64148 /* Build configuration list for PBXNativeTarget "JiangshanAtlas" */;
+			buildPhases = (
+				2D9A54D0BD09501B09471EFE /* Sources */,
+				1806199D9CB17AF305E72944 /* Resources */,
+				7885731CA0113DFEC3F3DF0B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JiangshanAtlas;
+			packageProductDependencies = (
+				4042999F5954DD6EB2B07339 /* MapLibre */,
+			);
+			productName = JiangshanAtlas;
+			productReference = DB61BD3528D9EE57EA2C6D2C /* JiangshanAtlas.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6FC415D489A38229533B5679 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					520F638611C1A7BF53BB1F72 = {
+						DevelopmentTeam = 5736QK4NZX;
+					};
+					BB82D9CA46407DCCBFDF42B3 = {
+						DevelopmentTeam = 5736QK4NZX;
+						TestTargetID = C22284505156C29FABD5F85B;
+					};
+					C22284505156C29FABD5F85B = {
+						DevelopmentTeam = 5736QK4NZX;
+					};
+				};
+			};
+			buildConfigurationList = 5BEBCD7F9F07D4389470D9CD /* Build configuration list for PBXProject "JiangshanAtlas" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7220FD099B39C6B6882286D1;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				786D7D74608F1423FBD25B1F /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 98C985A5FEA15B98BAC3F0D2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C22284505156C29FABD5F85B /* JiangshanAtlas */,
+				520F638611C1A7BF53BB1F72 /* JiangshanAtlasTests */,
+				BB82D9CA46407DCCBFDF42B3 /* JiangshanAtlasUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1806199D9CB17AF305E72944 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD2DB351BBA9F515614FEC9 /* Atlas in Resources */,
+				9A05B90B3ED151C9DB447551 /* Fonts in Resources */,
+				789E81D01ADD11EB654FA138 /* Glyphs in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2D9A54D0BD09501B09471EFE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0592262838B30E99F80E092 /* AtlasCameraProfile.swift in Sources */,
+				F05ED6360BDE982B83EC6D73 /* AtlasCartography.swift in Sources */,
+				E275494DB7AAD6D910226F95 /* AtlasDetailViews.swift in Sources */,
+				2874AC6C9A7AE13E6F24B187 /* AtlasEngine.swift in Sources */,
+				8A48F1DC76D0B0771FAB9458 /* AtlasFeatureViews.swift in Sources */,
+				4FC6E00C1CF036A5BA54FE4E /* AtlasFeatures.swift in Sources */,
+				F96A04F60B7976F3F8278E81 /* AtlasFonts.swift in Sources */,
+				326C4BC192A946A8B84EED66 /* AtlasGeometry.swift in Sources */,
+				522A0188E566FCC0E3D25F20 /* AtlasImmersiveViews.swift in Sources */,
+				C99EAE48715412ADAA11245C /* AtlasMapView.swift in Sources */,
+				E310388660C01430EE86B0B0 /* AtlasModels.swift in Sources */,
+				0A09B10A94E8BE94A5F3CBD8 /* AtlasNavigation.swift in Sources */,
+				406DE802E417403F954167F5 /* AtlasPlayback.swift in Sources */,
+				1B533024DFD2D221A54F1B1D /* AtlasPlaybackViews.swift in Sources */,
+				0C902F3FFFC4EC4C131B97CD /* AtlasPulseOverlay.swift in Sources */,
+				352FF832968194DC13C9D04F /* AtlasStore.swift in Sources */,
+				E63689D372E55CF0DA5B58B5 /* AtlasTodayReference.swift in Sources */,
+				4B9C06797CBDD2432B977201 /* ContentView.swift in Sources */,
+				8549583D8C8800D0A5F09CB1 /* JiangshanAtlasApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78DC7607996775BAF74E9DAE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0DE28D7CE7ED75F9CEC8F610 /* EventNavigationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3A94FE92518C86DCD339C99 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				842FDE66F833E9500C2BBB8A /* AtlasStateTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		34BCC840F9A321FE4FCF13B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C22284505156C29FABD5F85B /* JiangshanAtlas */;
+			targetProxy = 96FC48B626844959C3ACAC54 /* PBXContainerItemProxy */;
+		};
+		9815E78121DB79355DEB559F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C22284505156C29FABD5F85B /* JiangshanAtlas */;
+			targetProxy = 806494FBCFF96408C4525348 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DBA2D521BF4525AECD52B83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER).uitests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = JiangshanAtlas;
+			};
+			name = Release;
+		};
+		4422B5C718C4DB9E6306ADB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ATLAS_APPLE_TEAM = 5736QK4NZX;
+				ATLAS_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
+				ATLAS_FALLBACK_SHARE_URL = "https://deanchen.me/jiangshan-map/";
+				ATLAS_WEB_URL = "https://deanchen.me/jiangshan-map/";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/.build/Atlas.entitlements";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 5736QK4NZX;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		515773BBBE1F03322FAAEB37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER).uitests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = JiangshanAtlas;
+			};
+			name = Debug;
+		};
+		680D22BB9D740EEC6F2B86CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = JiangshanAtlas/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7DDCEB20E7A09D555AD88C65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = JiangshanAtlas/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		98BB690694D4C43B9352BF2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ATLAS_APPLE_TEAM = 5736QK4NZX;
+				ATLAS_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
+				ATLAS_FALLBACK_SHARE_URL = "https://deanchen.me/jiangshan-map/";
+				ATLAS_WEB_URL = "https://deanchen.me/jiangshan-map/";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/.build/Atlas.entitlements";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 5736QK4NZX;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = me.jiangshan.atlas;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AB4E8D1E4B1F8197A04DA55D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER).tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JiangshanAtlas.app/JiangshanAtlas";
+			};
+			name = Debug;
+		};
+		FCBFAAD1AEEC530B12279522 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(ATLAS_BUNDLE_IDENTIFIER).tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JiangshanAtlas.app/JiangshanAtlas";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5BEBCD7F9F07D4389470D9CD /* Build configuration list for PBXProject "JiangshanAtlas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4422B5C718C4DB9E6306ADB3 /* Debug */,
+				98BB690694D4C43B9352BF2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8E1533F3F65A4F6461B64148 /* Build configuration list for PBXNativeTarget "JiangshanAtlas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DDCEB20E7A09D555AD88C65 /* Debug */,
+				680D22BB9D740EEC6F2B86CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A280C108767481F9A7B9BFEE /* Build configuration list for PBXNativeTarget "JiangshanAtlasUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				515773BBBE1F03322FAAEB37 /* Debug */,
+				1DBA2D521BF4525AECD52B83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F8929E3E8D9C08B5FC8DE5BE /* Build configuration list for PBXNativeTarget "JiangshanAtlasTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB4E8D1E4B1F8197A04DA55D /* Debug */,
+				FCBFAAD1AEEC530B12279522 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		786D7D74608F1423FBD25B1F /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4042999F5954DD6EB2B07339 /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 786D7D74608F1423FBD25B1F /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 6FC415D489A38229533B5679 /* Project object */;
+}
