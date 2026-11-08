@@ -261,8 +261,17 @@ function main() {
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.PLACE_GAZETTEER) &&
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.PERSON_PROFILES) &&
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES) &&
-          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every((p) => !p.summaryZh && !p.summaryEn),
-        'lore_core.js must provide core first-paint & search lore (including POLITY_PROFILES index without summary prose) and must not set ATLAS_LORE_DETAIL_LOADED'
+          Array.isArray(sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES) &&
+          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every(
+            (p) => !p.summaryZh && !p.summaryEn && !p.rulersZh && !p.rulersEn && !p.keywords
+          ) &&
+          sandbox.window.ATLAS_LORE_DATA.PERSON_PROFILES.every(
+            (p) => !p.stops && !p.tokens && !p.descZh && !p.descEn
+          ) &&
+          sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.every(
+            (p) => !p.chokepointZh && !p.chokepointEn
+          ),
+        'lore_core.js must provide lightweight first-paint & search lore (deferring polity/person/pass detail prose to lore_detail.js) and must not set ATLAS_LORE_DETAIL_LOADED'
       );
     }
     if (file === 'lore_detail.js') {
@@ -272,8 +281,15 @@ function main() {
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.CITY_LORE) &&
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS) &&
           Array.isArray(sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES) &&
-          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every((p) => p.summaryZh && p.summaryEn),
-        'lore_detail.js must set window.ATLAS_LORE_DETAIL_LOADED = true, merge detail arrays, and hydrate summaryZh/summaryEn onto POLITY_PROFILES'
+          sandbox.window.ATLAS_LORE_DATA.POLITY_PROFILES.every((p) => p.summaryZh && p.summaryEn) &&
+          sandbox.window.ATLAS_LORE_DATA.STRATEGIC_PASSES.every(
+            (p) => p.chokepointZh && p.chokepointEn
+          ) &&
+          Boolean(
+            (sandbox.window.ATLAS_LORE_DATA.PERSON_PROFILES.find((p) => p.key === 'yuxi') || {})
+              .stops
+          ),
+        'lore_detail.js must set window.ATLAS_LORE_DETAIL_LOADED = true, merge detail arrays, and hydrate POLITY_SUMMARIES, PERSON_DETAILS, and PASS_DETAILS'
       );
     }
   }
