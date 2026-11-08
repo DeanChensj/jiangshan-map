@@ -23,7 +23,8 @@ We welcome contributions of all kinds, including:
 ├── data/atlas/              # Editable source of the polygon bundles: one GeoJSON file per snapshot, grouped by dynasty, plus index.json
 ├── data/sources/            # References for milestones, events, settlements, journeys and people (repository only; never loaded by the site)
 ├── js/
-│   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, Trace Place, Person Chronicle & window.atlasAPI
+│   ├── app.js               # Core controller: Mercator projection, collision-free label layout, timeline, global search & window.atlasAPI
+│   ├── atlas_trace.js       # Place Genealogy (点地溯源), Person Chronicles (点人溯事), multi-person comparison & Historical Journeys module
 │   ├── atlas_quiz.js        # Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
 │   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
 │   ├── lore_core.js         # First-paint & search lore: imperial eras (CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS), passes, gazetteer, person profiles & guqin tracks
