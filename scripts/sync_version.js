@@ -5,12 +5,14 @@
  * and stamps/verifies index.html cache-busting query strings + lazy-bundle data attributes.
  *
  * Usage:
- *   node scripts/sync_version.js          # Update index.html in place
- *   node scripts/sync_version.js --check  # Verify index.html & js/app.js without writing
+ *   node scripts/sync_version.js                            # Update index.html in place & configure git merge driver
+ *   node scripts/sync_version.js --check                    # Verify index.html & controller scripts without writing
+ *   node scripts/sync_version.js --merge-driver %O %A %B    # Git custom merge driver for index.html ?v= conflicts
  */
 'use strict';
 
 const assert = require('assert');
+const { execFileSync, spawnSync } = require('child_process');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -98,6 +100,57 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
   return out;
 }
 
+function normalizeIndexHtmlHashes(indexHtml) {
+  const zeroHashes = {};
+  for (const relPath of STATIC_TAG_ASSETS) zeroHashes[relPath] = '00000000';
+  for (const { relPath } of LAZY_ATTR_ASSETS) zeroHashes[relPath] = '00000000';
+  return applyHashesToIndexHtml(indexHtml, zeroHashes);
+}
+
+function runIndexHtmlMergeDriver(ancestorPath, currentPath, otherPath, rootDir = ROOT) {
+  for (const p of [ancestorPath, currentPath, otherPath]) {
+    const raw = fs.readFileSync(p, 'utf8');
+    fs.writeFileSync(p, normalizeIndexHtmlHashes(raw), 'utf8');
+  }
+  const mergeRes = spawnSync('git', ['merge-file', '-q', currentPath, ancestorPath, otherPath], {
+    cwd: rootDir,
+    stdio: 'inherit',
+  });
+  const merged = fs.readFileSync(currentPath, 'utf8');
+  const hashes = computeAssetHashes(rootDir);
+  if (mergeRes.status === 0) {
+    fs.writeFileSync(currentPath, applyHashesToIndexHtml(merged, hashes), 'utf8');
+  }
+  return mergeRes.status || 0;
+}
+
+function ensureGitMergeDriverConfig(rootDir = ROOT) {
+  try {
+    const driverCmd = 'node scripts/sync_version.js --merge-driver %O %A %B';
+    const cur = execFileSync('git', ['config', '--get', 'merge.sync-version.driver'], {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    if (cur === driverCmd) return true;
+  } catch (_) {}
+  try {
+    execFileSync(
+      'git',
+      ['config', 'merge.sync-version.name', 'Jiangshan index.html asset hash auto-merge driver'],
+      { cwd: rootDir, stdio: 'ignore' }
+    );
+    execFileSync(
+      'git',
+      ['config', 'merge.sync-version.driver', 'node scripts/sync_version.js --merge-driver %O %A %B'],
+      { cwd: rootDir, stdio: 'ignore' }
+    );
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCodeInput = null) {
   const indexHtml =
     indexHtmlInput !== null ? indexHtmlInput : fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
@@ -160,18 +213,27 @@ function syncIndexHtmlAssetHashes(rootDir = ROOT) {
   if (changed) {
     fs.writeFileSync(indexPath, after, 'utf8');
   }
+  ensureGitMergeDriverConfig(rootDir);
   return { changed, hashes };
 }
 
 if (require.main === module) {
-  const args = new Set(process.argv.slice(2));
+  const rawArgs = process.argv.slice(2);
+  const args = new Set(rawArgs);
   if (args.has('--help') || args.has('-h')) {
     console.log(
-      'Usage: node scripts/sync_version.js [--check]\n' +
-        '  (default)  Compute SHA-256 short hashes for CSS/JS assets and update index.html\n' +
-        '  --check    Verify index.html & js/app.js asset hashes without modifying files'
+      'Usage: node scripts/sync_version.js [--check | --merge-driver %O %A %B]\n' +
+        '  (default)                   Compute SHA-256 short hashes for CSS/JS assets and update index.html\n' +
+        '  --check                     Verify index.html & controller asset hashes without modifying files\n' +
+        '  --merge-driver %O %A %B     Git merge driver to auto-resolve index.html ?v= hash conflicts'
     );
     process.exit(0);
+  }
+  const mdIdx = rawArgs.indexOf('--merge-driver');
+  if (mdIdx !== -1) {
+    const [anc, cur, oth] = rawArgs.slice(mdIdx + 1, mdIdx + 4);
+    assert(anc && cur && oth, 'Expected 3 file paths (%O %A %B) after --merge-driver');
+    process.exit(runIndexHtmlMergeDriver(anc, cur, oth, ROOT));
   }
   if (args.has('--check')) {
     const hashes = verifyIndexHtmlAssetHashes(ROOT);
@@ -196,6 +258,8 @@ module.exports = {
   LAZY_ATTR_ASSETS,
   computeAssetHashes,
   applyHashesToIndexHtml,
+  normalizeIndexHtmlHashes,
+  runIndexHtmlMergeDriver,
   verifyIndexHtmlAssetHashes,
   syncIndexHtmlAssetHashes,
 };
