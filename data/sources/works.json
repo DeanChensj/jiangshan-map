@@ -1,4 +1,8 @@
 {
+  "jiutangshu": { "zh": "刘昫等《旧唐书》", "en": "Liu Xu et al., Old Book of Tang (Jiu Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/舊唐書" },
   "songshi": { "zh": "脱脱等《宋史》", "en": "Tuotuo et al., History of Song (Song Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/宋史" },
+  "suishu": { "zh": "魏徵等《隋书》", "en": "Wei Zheng et al., Book of Sui (Sui Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/隋書" },
+  "tangzhiyan": { "zh": "王定保《唐摭言》", "en": "Wang Dingbao, Tang Zhiyan", "kind": "primary", "url": "https://zh.wikisource.org/wiki/唐摭言" },
+  "tongdian": { "zh": "杜佑《通典》", "en": "Du You, Tongdian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/通典" },
   "zztj": { "zh": "司马光《资治通鉴》", "en": "Sima Guang, Zizhi Tongjian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/資治通鑑" }
 }
