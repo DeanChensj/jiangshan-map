@@ -5823,9 +5823,9 @@ button.story-inline-person {
   margin: 0;
   font: inherit;
   font-weight: 700;
-  color: #8c2d19;
+  color: var(--actor-color, #8c2d19);
   text-decoration: underline;
-  text-decoration-color: rgba(158, 42, 43, 0.45);
+  text-decoration-color: color-mix(in srgb, var(--actor-color, #9e2a2b) 48%, transparent);
   text-underline-offset: 2.5px;
   cursor: pointer;
   transition: color 0.14s, background 0.14s;
@@ -5833,7 +5833,88 @@ button.story-inline-person {
 }
 
 button.story-inline-person:hover {
-  color: #b53826;
-  background: rgba(181, 56, 38, 0.09);
-  text-decoration-color: #b53826;
+  color: var(--actor-color, #b53826);
+  background: color-mix(in srgb, var(--actor-color, #b53826) 11%, transparent);
+  text-decoration-color: var(--actor-color, #b53826);
+}
+
+.story-camp-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px dashed rgba(120, 92, 68, 0.22);
+  font-family: var(--serif-stack);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.story-camp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  color: var(--camp-color, #8c2d19);
+}
+
+.story-camp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--camp-color, #b53826);
+  box-shadow: 0 0 0 1.5px rgba(255, 250, 240, 0.9);
+  flex-shrink: 0;
+}
+
+.story-camp-vs {
+  font-size: 10.5px;
+  color: rgba(110, 86, 66, 0.72);
+  user-select: none;
+}
+
+.genealogy-list li.story-act-row {
+  display: block;
+  padding: 5px 8px 2px;
+  margin-top: 2px;
+  border-bottom: none;
+  background: transparent !important;
+  cursor: default;
+  pointer-events: none;
+}
+
+.story-act-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2.5px 7px;
+  border-radius: 3px;
+  background: rgba(122, 92, 67, 0.085);
+  border-left: 2.5px solid rgba(140, 62, 42, 0.55);
+  font-family: var(--serif-stack);
+  font-size: 10.8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #5b3e2b;
+}
+
+.genealogy-list li.person-ev-row[style*="--camp-color"] .cr-stop-num {
+  color: var(--camp-color);
+  border-color: color-mix(in srgb, var(--camp-color) 42%, transparent);
+  background: color-mix(in srgb, var(--camp-color) 11%, rgba(255, 250, 240, 0.92));
+}
+
+.genealogy-list li.person-ev-row[style*="--camp-color"].is-current {
+  background: color-mix(in srgb, var(--camp-color) 11%, transparent);
+  box-shadow: inset 3px 0 0 var(--camp-color);
+}
+
+.genealogy-list li.person-ev-row[style*="--camp-color"].is-current .cr-stop-num {
+  background: var(--camp-color);
+  border-color: var(--camp-color);
+  color: #fffaf2;
+}
+
+.genealogy-list li.person-ev-row[style*="--camp-color"] .person-ev-quote {
+  border-left-color: color-mix(in srgb, var(--camp-color) 42%, transparent);
 }

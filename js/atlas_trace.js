@@ -413,16 +413,48 @@
         item.persons.includes(profile.key) &&
         item.persons.some((pk) => pk !== profile.key && peerKeys.includes(pk));
       if ((profile.isRelic || profile.isStory) && Array.isArray(profile.stops)) {
+        const campMap = new Map(
+          Array.isArray(profile.camps) ? profile.camps.map((c) => [c.key, c]) : []
+        );
         const out = profile.stops.map((st, sIdx) => {
           const dyn =
             this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+          const campInfo = st.camp ? campMap.get(st.camp) : null;
+          const vecCampInfo = st.campVector ? campMap.get(st.campVector) : campInfo;
+          const prongs = Array.isArray(st.prongs)
+            ? st.prongs.map((pr) => {
+                const pCamp = pr.camp ? campMap.get(pr.camp) : campInfo;
+                return {
+                  ...pr,
+                  color: pr.color || (pCamp && pCamp.color) || '#b53826',
+                };
+              })
+            : null;
           return {
             src: 'J',
             year: st.year,
             month: st.month || 6 + sIdx * 0.01,
             subEraZh: st.subEraZh || '',
             subEraEn: st.subEraEn || '',
-            actors: Array.isArray(st.actors) ? st.actors : [],
+            actZh: st.actZh || '',
+            actEn: st.actEn || '',
+            camp: st.camp || '',
+            campColor: (campInfo && campInfo.color) || '',
+            campCalmColor: (campInfo && campInfo.calmColor) || '',
+            vectorColor: (vecCampInfo && vecCampInfo.color) || '',
+            fromStopIdx: typeof st.fromStopIdx === 'number' ? st.fromStopIdx : -1,
+            fromLabelZh: st.fromLabelZh || '',
+            fromLabelEn: st.fromLabelEn || '',
+            prongs,
+            actors: Array.isArray(st.actors)
+              ? st.actors.map((ac) => {
+                  const aCamp = ac.camp ? campMap.get(ac.camp) : null;
+                  return {
+                    ...ac,
+                    color: ac.color || (aCamp && aCamp.color) || '',
+                  };
+                })
+              : [],
             coord: st.coord,
             fromCoord: st.fromCoord || null,
             via: st.via || null,
@@ -1104,8 +1136,17 @@
             this.activePersonEventIdx,
             initEv
           );
-          if (legOrigin) {
-            this._framePersonOverview([{ coord: legOrigin }, initEv]);
+          const prongPts = Array.isArray(initEv.prongs)
+            ? initEv.prongs
+                .filter((p) => p && Array.isArray(p.fromCoord))
+                .map((p) => ({ coord: p.fromCoord }))
+            : [];
+          if (legOrigin || prongPts.length) {
+            this._framePersonOverview([
+              ...(legOrigin ? [{ coord: legOrigin }] : []),
+              ...prongPts,
+              initEv,
+            ]);
           } else {
             this._flyToPersonEvent(initEv);
           }
@@ -1210,8 +1251,17 @@
             clamped,
             ev
           );
-          if (legOrigin) {
-            this._framePersonOverview([{ coord: legOrigin }, ev]);
+          const prongPts = Array.isArray(ev.prongs)
+            ? ev.prongs
+                .filter((p) => p && Array.isArray(p.fromCoord))
+                .map((p) => ({ coord: p.fromCoord }))
+            : [];
+          if (legOrigin || prongPts.length) {
+            this._framePersonOverview([
+              ...(legOrigin ? [{ coord: legOrigin }] : []),
+              ...prongPts,
+              ev,
+            ]);
           } else {
             this._flyToPersonEvent(ev);
           }
@@ -1492,20 +1542,48 @@
 
     _flyToPersonEvent(ev) {
       if (!ev || !ev.coord) return;
-      const [tx, ty] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
+      const isStory = Boolean(
+        this.activePerson && this.activePerson.profile && this.activePerson.profile.isStory
+      );
+      const pts = [this.projector.toScreen(ev.coord[0], ev.coord[1])];
+      if (isStory && Array.isArray(ev.fromCoord)) {
+        pts.push(this.projector.toScreen(ev.fromCoord[0], ev.fromCoord[1]));
+      }
+      let minX = pts[0][0];
+      let maxX = pts[0][0];
+      let minY = pts[0][1];
+      let maxY = pts[0][1];
+      for (const [px, py] of pts) {
+        if (px < minX) minX = px;
+        if (px > maxX) maxX = px;
+        if (py < minY) minY = py;
+        if (py > maxY) maxY = py;
+      }
+      const tx = (minX + maxX) * 0.5;
+      const ty = (minY + maxY) * 0.5;
+      const spanX = maxX - minX;
+      const spanY = maxY - minY;
       const aspect = this._getViewportAspect();
       // Embeds keep the place/person card at the top right like desktop, not as a bottom sheet.
       const isDesktop = typeof window === 'undefined' || window.innerWidth > 900 || Boolean(this.embed);
       if (!isDesktop) {
         const visTopFrac = this._getPersonVisibleTopFrac();
-        const w = Math.max(320, Math.min(this.camera.w, 460));
+        const fitW =
+          pts.length > 1
+            ? Math.max((spanX + 96) * 1.15, (spanY + 76) / Math.max(0.32, aspect * visTopFrac * 0.78))
+            : 0;
+        const w = Math.max(320, Math.min(620, Math.max(Math.min(this.camera.w, 460), fitW)));
         const h = w * aspect;
         this._animateCameraTo({ x: tx - w * 0.5, y: ty - h * (visTopFrac * 0.5), w, h });
         return;
       }
-      const w = Math.max(340, Math.min(this.camera.w, 500));
+      const fitW =
+        pts.length > 1
+          ? Math.max((spanX + 115) / 0.48, (spanY + 95) / (aspect * 0.78))
+          : 0;
+      const w = Math.max(340, Math.min(640, Math.max(Math.min(this.camera.w, 480), fitW)));
       const h = w * aspect;
-      this._animateCameraTo({ x: tx - w * 0.38, y: ty - h * 0.48, w, h });
+      this._animateCameraTo({ x: tx - w * 0.39, y: ty - h * 0.48, w, h });
     }
 
     _findNearestPersonPin(clientX, clientY, maxPx = 26) {
@@ -1557,7 +1635,12 @@
       );
       let stepOriginIdx = -1;
       if (!isMulti && curIdx >= 0 && curEv && soloOriginCoord) {
-        if (!isStory && curIdx > 0) {
+        if (isStory) {
+          stepOriginIdx =
+            typeof curEv.fromStopIdx === 'number' && curEv.fromStopIdx >= 0
+              ? curEv.fromStopIdx
+              : -1;
+        } else if (curIdx > 0) {
           stepOriginIdx = curIdx - 1;
         } else {
           stepOriginIdx = events.findIndex(
@@ -1680,31 +1763,101 @@
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
       // - Overview (curIdx < 0): render pins only (no crisscrossing full-life cobweb)
       // - Single step (curIdx >= 0): render ONLY that step's movement vector(s) (prevStop ──► curStop)
+      const unnumberedOriginCoords = [];
+      const renderOriginBead = (coord, labelZh, labelEn, color) => {
+        unnumberedOriginCoords.push(coord);
+        const [ox, oy] = this.projector.toScreen(coord[0], coord[1]);
+        const og = this._svgNode(
+          'g',
+          {
+            class: 'journey-node is-passed is-multi-bead',
+            'data-x': ox.toFixed(1),
+            'data-y': oy.toFixed(1),
+            'data-ox': '0',
+            'data-oy': '0',
+            'data-base-ox': '0',
+            'data-base-oy': '0',
+          },
+          this.grpJourney
+        );
+        og.style.color = color || '#7d4b36';
+        const oInner = this._svgNode('g', { class: 'jn-pin-shift' }, og);
+        this._svgNode(
+          'circle',
+          { class: 'jn-disc is-waypoint-bead', r: 4.6 },
+          oInner
+        );
+        const oLbl = this._svgNode(
+          'text',
+          { class: 'jn-label', x: '0', y: '-8.2' },
+          oInner
+        );
+        oLbl.textContent =
+          this.locale === 'en'
+            ? labelEn || this.trTerm(labelZh)
+            : this._zh(labelZh);
+      };
       if (!isMulti) {
-        if (curIdx >= 0 && curEv && soloOriginCoord) {
-          const prevEv = curIdx > 0 ? events[curIdx - 1] : null;
-          const keepsCuratedVia =
-            isStory ||
-            (Boolean(curEv.via) &&
-              prevEv &&
-              curEv.prevStopCoord &&
-              Math.hypot(
-                prevEv.coord[0] - curEv.prevStopCoord[0],
-                prevEv.coord[1] - curEv.prevStopCoord[1]
-              ) < 1.2);
-          const segInfo = this._buildJourneySegmentInfo(
-            soloOriginCoord,
-            curEv.coord,
-            keepsCuratedVia ? curEv.via || null : null,
-            0
-          );
-          if (segInfo) {
-            this._renderCartographicTrajectory(
-              [{ ...segInfo, toIdx: curIdx }],
-              curIdx,
-              '#b53826',
-              false
+        if (curIdx >= 0 && curEv) {
+          if (soloOriginCoord) {
+            const prevEv = !isStory && curIdx > 0 ? events[curIdx - 1] : null;
+            const keepsCuratedVia =
+              Boolean(curEv.via) &&
+              (isStory ||
+                (prevEv &&
+                  curEv.prevStopCoord &&
+                  Math.hypot(
+                    prevEv.coord[0] - curEv.prevStopCoord[0],
+                    prevEv.coord[1] - curEv.prevStopCoord[1]
+                  ) < 1.2));
+            const segInfo = this._buildJourneySegmentInfo(
+              soloOriginCoord,
+              curEv.coord,
+              keepsCuratedVia ? curEv.via || null : null,
+              0
             );
+            const mainVecColor = isStory
+              ? curEv.vectorColor || curEv.campColor || '#b53826'
+              : '#b53826';
+            if (segInfo) {
+              this._renderCartographicTrajectory(
+                [{ ...segInfo, toIdx: curIdx }],
+                curIdx,
+                mainVecColor,
+                false
+              );
+              if (isStory && stepOriginIdx < 0 && (curEv.fromLabelZh || curEv.fromLabelEn)) {
+                renderOriginBead(
+                  soloOriginCoord,
+                  curEv.fromLabelZh,
+                  curEv.fromLabelEn,
+                  mainVecColor
+                );
+              }
+            }
+          }
+          if (isStory && Array.isArray(curEv.prongs)) {
+            for (const pr of curEv.prongs) {
+              if (!pr || !Array.isArray(pr.fromCoord)) continue;
+              const pSeg = this._buildJourneySegmentInfo(
+                pr.fromCoord,
+                curEv.coord,
+                pr.via || null,
+                pr.bias || 0
+              );
+              const pColor = pr.color || curEv.campColor || '#b53826';
+              if (pSeg) {
+                this._renderCartographicTrajectory(
+                  [{ ...pSeg, toIdx: curIdx }],
+                  curIdx,
+                  pColor,
+                  false
+                );
+                if (pr.fromLabelZh || pr.fromLabelEn) {
+                  renderOriginBead(pr.fromCoord, pr.fromLabelZh, pr.fromLabelEn, pColor);
+                }
+              }
+            }
           }
         }
       } else if (curIdx >= 0 && multiLegs.length > 0) {
@@ -1750,7 +1903,7 @@
         const baseCity = fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
         const dup = placedCityLabels.some(
           (item) =>
-            Math.hypot(item.sx - sx, item.sy - sy) < 9 ||
+            Math.hypot(item.sx - sx, item.sy - sy) < 3.5 ||
             (item.baseCity === baseCity && Math.hypot(item.sx - sx, item.sy - sy) < 28)
         );
         if (!dup) {
@@ -1789,6 +1942,14 @@
         );
         const isStepOrigin = Boolean(curIdx >= 0 && isOriginIdx(idx));
         const isOtherStep = Boolean(curIdx >= 0 && !isCur && !isStepOrigin);
+        if (
+          isOtherStep &&
+          unnumberedOriginCoords.some(
+            (oc) => Math.hypot(ev.coord[0] - oc[0], ev.coord[1] - oc[1]) < 0.25
+          )
+        ) {
+          continue;
+        }
         const isFilteredOutInOverview = Boolean(
           isMulti &&
             curIdx < 0 &&
@@ -1812,9 +1973,13 @@
         const intersectCls = isShared ? ' is-intersect' : isMultiBead ? ' is-multi-bead' : '';
         const dimCls = dimmed ? ' is-other-era' : '';
         const pinColor = !isMulti
-          ? isCur
-            ? '#b53826'
-            : '#7d4b36'
+          ? isStory
+            ? isCur || isStepOrigin
+              ? ev.campColor || '#b53826'
+              : ev.campCalmColor || '#7d4b36'
+            : isCur
+              ? '#b53826'
+              : '#7d4b36'
           : ev.personColor || '#bd2d22';
 
         const g = this._svgNode(
@@ -1991,6 +2156,7 @@
         if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-foot'));
         let activeLi = null;
         Array.from(listEl.children).forEach((li) => {
+          if (!li.dataset || li.dataset.evIdx === undefined) return;
           const rowIdx = Number(li.dataset.evIdx);
           const isCur = rowIdx === curIdx;
           li.classList.toggle('is-current', isCur);
@@ -2099,9 +2265,22 @@
               : '';
 
           if (subTitle || descText) {
+            let campLegendHtml = '';
+            if (profile.isStory && Array.isArray(profile.camps) && profile.camps.length >= 2) {
+              const cItems = profile.camps
+                .map(
+                  (c) =>
+                    `<span class="story-camp-chip" style="--camp-color:${c.color}"><i class="story-camp-dot"></i><span>${escHtml(
+                      isEn ? c.en : c.zh
+                    )}</span></span>`
+                )
+                .join('<span class="story-camp-vs">⚔</span>');
+              campLegendHtml = `<div class="story-camp-legend">${cItems}</div>`;
+            }
             loreEl.innerHTML =
               `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLabel}</span><span class="pass-lore-range">${subTitle}</span></div>` +
-              (descText ? `<div class="pass-lore-desc">${descText}</div>` : '');
+              (descText ? `<div class="pass-lore-desc">${descText}</div>` : '') +
+              campLegendHtml;
             loreEl.classList.remove('is-hidden');
           } else {
             loreEl.innerHTML = '';
@@ -2203,7 +2382,17 @@
         const intersectRowCls = isShared ? ' is-intersect-row' : '';
         const hiddenCls =
           this.personSharedOnly && isMulti && sameTimeCount > 0 && !isShared ? ' is-hidden' : '';
+        const actTitle = profile.isStory ? (isEn ? ev.actEn : ev.actZh) || '' : '';
+        if (actTitle) {
+          const actLi = document.createElement('li');
+          actLi.className = 'story-act-row';
+          actLi.innerHTML = `<span class="story-act-head">${escHtml(actTitle)}</span>`;
+          listEl.appendChild(actLi);
+        }
         li.className = `person-ev-row${idx === curIdx ? ' is-current' : ''}${intersectRowCls}${hiddenCls}`;
+        if (profile.isStory && ev.campColor) {
+          li.style.setProperty('--camp-color', ev.campColor);
+        }
         li.dataset.evIdx = String(idx);
         if (idx === curIdx) activeLi = li;
         if (isShared && !firstSharedLi) firstSharedLi = li;
@@ -2256,11 +2445,12 @@
             const cands = isEn
               ? [ac.en].filter(Boolean)
               : [ac.zh, ac.zh && ac.zh.replace(/^唐/, '')].filter(Boolean);
+            const actorStyle = ac.color ? ` style="--actor-color:${ac.color}"` : '';
             for (const term of cands) {
               if (term && storyLinkedCopy.includes(term)) {
                 storyLinkedCopy = storyLinkedCopy.replace(
                   term,
-                  `<button type="button" class="story-inline-person" data-actor-key="${escHtml(
+                  `<button type="button" class="story-inline-person"${actorStyle} data-actor-key="${escHtml(
                     targetKey
                   )}" title="${isEn ? 'Open person chronicle' : '点击查看此人生平大事记'}">${term}</button>`
                 );

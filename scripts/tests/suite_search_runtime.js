@@ -2516,8 +2516,23 @@ async function runSearchRuntimeSuite(ctx) {
       const anshiEvs = ctrl._collectPersonEvents(anshiProf);
       assert.strictEqual(anshiEvs.length, 10, 'anshi storyline must collect all 10 stops');
       assert(
+        Array.isArray(anshiProf.camps) &&
+          anshiProf.camps.length === 2 &&
+          anshiEvs.filter((e) => Boolean(e.actZh)).length === 3,
+        'anshi storyline must define 2 opposing camps and 3 act section dividers'
+      );
+      assert(
         anshiEvs[6].siteZh === '睢阳' && !anshiEvs[6].fromCoord && Array.isArray(anshiEvs[7].fromCoord),
         'Stop 7 (Suiyang siege) must be stationary while Stop 8 (Lingwu -> Chang’an) has fromCoord (#297)'
+      );
+      assert(
+        Array.isArray(anshiEvs[2].prongs) &&
+          anshiEvs[2].fromStopIdx === 1 &&
+          Array.isArray(anshiEvs[7].prongs) &&
+          anshiEvs[7].fromStopIdx === 5 &&
+          Array.isArray(anshiEvs[8].prongs) &&
+          anshiEvs[8].fromStopIdx === -1,
+        'Two-camp battle stops (Tongguan, Chang’an, Yecheng) must distinguish explicit predecessor stops from unnumbered camp beads'
       );
       const tangDyn = dynasties.find((d) => d.key === 'tang');
       const m755 = tangDyn.milestones.find((m) => m.year === 755);
