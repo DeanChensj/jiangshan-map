@@ -45,7 +45,8 @@
 - **多段階の領土の変遷と、破線の「Ghost Boundary Diff」**：秦の巴蜀の征服（紀元前 316 年）、燕の将軍・秦開による遼東への拡大（紀元前 300 年）、交趾に立てた馬援の銅柱（43 年）、司馬懿の遼東遠征（238 年）、李靖による吐谷渾の征服（635 年）、安西四鎮と王玄策の中天竺への遠征（648 年）、元の宣政院によるチベットの統治（1288 年）、明の哈密と嘉峪関以西の七衛（1404 年）、イリを回復した 1881 年のサンクトペテルブルク条約、1898 年の外国の租借地、1945 年の台湾の返還、そして 1946 年の **「秋海棠」（秋海棠）** の地図から **「雄鶏」（雄鸡）** の地図への移行など、領土の大きな節目ごとに、出来事や時期の点をクリックすると地図が切り替わり、前の時期の朱色の破線の **Ghost Boundary Diff** が表示されるので、領土の増減がひと目でわかります。
 - **在位中の君主と元号のインライン表示**：タイムラインには、在位中の君主（廟号・諡号 + 名 + 在位期間。例：`Emperor Wu of Han · Liu Che`、`Emperor Taizong of Tang · Li Shimin`、`Emperor Shengzu of Qing · Xuanye`）と、その正確な元号の年が動的に表示されます。
 - **古代の行政区画のホバーでの確認と、現代の X-Ray Lens**：第一級の行政区画（郡、道、路、省）は、重複を除いた **Parchment Casing** の境界線で描かれます。ズームしてどの行政区画（例：明の `Yingtian Prefecture` や三国時代の `Jingzhou`）にカーソルを合わせても、その管轄と対応する現代の省を確認できます。**X-Ray Lens** を切り替えると、現代の省の境界線を歴史地図の上に直接重ねられます。
-- **動く河道、古代の湖、大規模な土木事業**：時間をスクロールすると、黄河の流路の歴史的な変化、広がったり縮んだりする古代の湖（*雲夢沢*、*ロプノール / 蒲昌海*）、戦国・秦・漢・明の長城、隋唐の運河と大運河、シルクロード、鄭和の航路が、それぞれの時代に合わせて変わっていきます。
+- **動く河道、古代の湖、大規模な土木事業**：時間をスクロールすると、黄河の流路の歴史的な変化、広がったり縮んだりする古代の湖（*雲夢沢*、*ロプノール / 蒲昌海*）、戦国・秦・漢・明の長城、隋唐の運河と大運河、シルクロード、鄭和の航路が、それぞれの時代に合わせて変わっていきます。渤海湾、江蘇北部、長江河口、珠江デルタの古代の海岸線も、時代とともに前進・後退します。
+- **ズームできるタイムライン**：タイムライン両端のハンドルを内側へドラッグすると、その期間だけを拡大できます（秦、三国、五代のような短い時代に便利です）。タイムラインをダブルクリックすると全体表示に戻ります。
 
 > [ライブで試す：明の永楽 13 年（1415 年）· 両京十三布政使司と「Yingtian Prefecture」の確認 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=Yingtian%20Prefecture&lang=en)
 
@@ -76,6 +77,8 @@
 - **李白の唐全土への大旅行（701～762 年）**：砕葉と蜀での少年時代から、24 歳で三峡を下って船出し、揚州で金を散じ、長安の翰林院に仕え、洛陽で杜甫に出会い、白帝城で恩赦を受け、晩年の当塗まで。
 - **蘇軾の宋全土にわたる文学と流謫（1056～1101 年）**：眉山を出て都の開封に向かい、密州で月を眺め、黄州での流謫中に『赤壁賦』を詠み、恵州を経て、海を渡って海南島の儋州へ至るまで。
 - **王陽明の知行合一（1472～1529 年）**：余姚での誕生と北京での投獄から、貴州の龍場での悟り、南贛での賊の平定、35 日で寧王の反乱を捕らえたこと、紹興の天泉橋での講学、そして南安での最期の言葉 *「此の心光明なり、亦た復た何をか言わん」* まで。
+- **複数人物の同時表示**：検索ボックスに 2〜3 人の名前を入力すると（例：`李白 杜甫 高適`、`曹操 劉備 孫権`）、それぞれの足跡が 1 本のタイムラインにまとめられます。同じ年に同じ場所で出会った地点は「同途」として示され、`同途 N` のピルでその地点だけに絞り込めます。
+- **歴史的事件のストーリーライン**：大きな事件も、人物の生涯と同じように地点ごとにたどれます。安史の乱（755〜763 年）は 3 幕・10 地点で展開し、唐の討伐軍と反乱軍を 2 色で塗り分けるので、両陣営の動きがひと目でわかります。
 
 次の出来事に進むたびに（`‹ / ›`、`← / →`、または `Space` で自動再生）、**タイムラインの年、在位中の君主、元号、王朝の領土が、その人物の足取りに合わせて変わります**。現在の移動の弧が強調され、まさにその場所で書かれた 2 か国語の一次史料の抜粋や詩も表示されます。
 
@@ -118,6 +121,7 @@
 - **都市の 2,400 年の系譜を確認**：[`?year=741&place=长安&lang=en`](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en)（長安 / 西安）/ [`?year=1415&place=应天府&lang=en`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府&lang=en)（建康 / 応天 / 南京）/ [`?year=819&place=蓝关&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关&lang=en)（藍関の韓愈）
 - **独自の詩や遠征のルートを描く**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en)（763 年の杜甫の帰郷の道のり）/ [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en)（湖州、黄州、恵州、儋州にわたる、蘇軾の何年にもわたる流謫の道のり）
 - **人物の時空の年代記を開く**：[`?person=qinshihuang&lang=en`](https://deanchen.me/jiangshan-map/?person=qinshihuang&lang=en)（始皇帝）/ [`?person=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?person=zhangqian&lang=en)（張騫）/ [`?person=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?person=zhugeliang&lang=en)（諸葛亮）/ [`?person=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?person=xuanzang&lang=en)（玄奘）/ [`?person=libai&lang=en`](https://deanchen.me/jiangshan-map/?person=libai&lang=en)（李白）/ [`?person=sushi&lang=en`](https://deanchen.me/jiangshan-map/?person=sushi&lang=en)（蘇軾）/ [`?person=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?person=wangyangming&lang=en)（王陽明）
+- **複数人物の比較や事件をたどる**：[`?person=libai,dufu&lang=en`](https://deanchen.me/jiangshan-map/?person=libai,dufu&lang=en)（李白と杜甫）/ [`?person=caocao,liubei,sunquan&lang=en`](https://deanchen.me/jiangshan-map/?person=caocao,liubei,sunquan&lang=en)（曹操・劉備・孫権）/ [`?event=anshi&lang=en`](https://deanchen.me/jiangshan-map/?event=anshi&lang=en)（安史の乱）
 - **クイズを始める**：[`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)（Map Pinpoint Challenge）
 - **UI の言語を切り替える**：[`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)（英語）/ [`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw)（繁体字中国語）/ [`/`](https://deanchen.me/jiangshan-map/)（簡体字中国語）
 
