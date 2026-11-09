@@ -656,6 +656,11 @@ async function runSearchRuntimeSuite(ctx) {
         assert(fs.existsSync(mcpServerPath), 'scripts/mcp_server.js must exist');
         new vm.Script(fs.readFileSync(mcpServerPath, 'utf8'), { filename: 'mcp_server.js' });
         if (!FAST_MODE) {
+          const mcpPinyinCases = [
+            { query: 'nanjingtiaoyue', year: 1842, title: '南京条约' },
+            { query: 'nán jīng tiáo yuē', year: 1842, title: '南京条约' },
+            { query: 'nibuchutiaoyue', year: 1689, title: '尼布楚条约' },
+          ];
           const mcpRequests = [
             { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2024-11-05' } },
             { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} },
@@ -677,6 +682,12 @@ async function runSearchRuntimeSuite(ctx) {
               method: 'tools/call',
               params: { name: 'search_atlas', arguments: { query: '长安', limit: 3 } },
             },
+            ...mcpPinyinCases.map(({ query }, index) => ({
+              jsonrpc: '2.0',
+              id: 6 + index,
+              method: 'tools/call',
+              params: { name: 'search_atlas', arguments: { query } },
+            })),
           ]
             .map((r) => JSON.stringify(r))
             .join('\n') + '\n';
@@ -690,7 +701,11 @@ async function runSearchRuntimeSuite(ctx) {
             .trim()
             .split('\n')
             .map((line) => JSON.parse(line));
-          assert.strictEqual(mcpLines.length, 5, 'mcp_server.js must return 5 JSON-RPC responses');
+          assert.strictEqual(
+            mcpLines.length,
+            5 + mcpPinyinCases.length,
+            'mcp_server.js must return a JSON-RPC response for every request'
+          );
           assert.strictEqual(mcpLines[0].result.serverInfo.name, 'jiangshan-atlas-mcp');
           assert.deepStrictEqual(
             mcpLines[1].result.tools.map((t) => t.name),
@@ -714,6 +729,14 @@ async function runSearchRuntimeSuite(ctx) {
           );
           const searchRes = JSON.parse(mcpLines[4].result.content[0].text);
           assert.strictEqual(searchRes.results[0].kind, 'city', 'search_atlas(长安) must rank city #1');
+          for (const [index, { query, year, title }] of mcpPinyinCases.entries()) {
+            const pinyinRes = JSON.parse(mcpLines[5 + index].result.content[0].text);
+            assert(
+              pinyinRes.results.some(item => item.kind === 'event' &&
+                item.year === year && item.titleZh.includes(title)),
+              `MCP search_atlas(${query}) must find the ${year} ${title} event`
+            );
+          }
         }
 
         // CUJ 40: English Mode Zero-CJK Leak & Clue Integrity Guard

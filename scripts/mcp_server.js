@@ -54,6 +54,7 @@ function createMcpRuntime() {
     'map_data.js',
     'lore_core.js',
     'lore_detail.js',
+    'event_pinyin.js',
     'i18n_dict.js',
     'zh_hant.js',
     ...CONTROLLER_SCRIPTS.map((rel) => path.basename(rel)),
