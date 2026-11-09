@@ -39,5 +39,8 @@ jobs:
       - name: Check first-paint synchronous script gzip budget
         run: node scripts/perf_budget.js --check
 
+      - name: Check responsive UI layout geometry and non-overlap
+        run: node scripts/audit_layout.js --check
+
       - name: Run Atlas Validation Suite
         run: node scripts/validate_atlas.js
