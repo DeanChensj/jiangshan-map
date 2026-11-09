@@ -8,14 +8,16 @@
 const assert = require('assert');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const vm = require('vm');
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const { CONTROLLER_SCRIPTS, verifyIndexHtmlAssetHashes } = require('./sync_version');
 
 const ROOT = path.resolve(__dirname, '..');
 const JS_DIR = path.join(ROOT, 'js');
 const CLI_ARGS = new Set(process.argv.slice(2));
-if (CLI_ARGS.has('--help') || CLI_ARGS.has('-h')) {
+if (isMainThread && (CLI_ARGS.has('--help') || CLI_ARGS.has('-h'))) {
   console.log(
     'Usage: node scripts/validate_atlas.js [--fast | --full]\n' +
       '  --fast, -f   Fast iteration check (~6s): syntax, asset hashes, schemas, i18n, search & UI CUJs\n' +
@@ -213,7 +215,59 @@ function buildRegionBoundaryReference(snap) {
   return d;
 }
 
-function main() {
+if (!isMainThread && workerData && workerData.kind === 'boundary_slice') {
+  const wSandbox = {
+    window: { addEventListener: () => {} },
+    document: { addEventListener: () => {}, getElementById: () => null, querySelectorAll: () => [] },
+    addEventListener: () => {},
+    URLSearchParams,
+  };
+  wSandbox.window = wSandbox;
+  vm.createContext(wSandbox);
+  for (const file of ['china_geo_data.js', 'atlas_snapshots.js', 'map_data.js', ...CONTROLLER_SCRIPTS.map((p) => path.basename(p))]) {
+    vm.runInContext(fs.readFileSync(path.join(JS_DIR, file), 'utf8'), wSandbox, { filename: file });
+  }
+  const CtrlClass = vm.runInContext('HistoricalAtlasController', wSandbox);
+  const wCtrl = Object.create(CtrlClass.prototype);
+  wCtrl.provinces = wSandbox.window.PROVINCE_OUTLINES || [];
+  wCtrl.dynasties = wSandbox.window.DYNASTY_DATA;
+  wCtrl.snapshots = wSandbox.window.ATLAS_SNAPSHOTS;
+  wCtrl.projector = { toScreen: (lng, lat) => [(lng - 66) * 13.15, (55 - lat) * 17.07] };
+  wCtrl._hydrateSnapshots();
+  let snapshotsChecked = 0;
+  let anchorsChecked = 0;
+  for (const key of workerData.keys) {
+    const snapshot = wCtrl.snapshots[key];
+    if (!snapshot || Array.isArray(snapshot)) continue;
+    const before = { ...snapshot };
+    const after = { ...snapshot };
+    const expected = buildRegionBoundaryReference.call(wCtrl, before);
+    const actual = wCtrl._buildRegionBoundaryPath(after);
+    assert.strictEqual(actual, expected, `Region boundary geometry changed: ${key}`);
+    assert.strictEqual(wCtrl._buildRegionBoundaryPath(after), actual, `Boundary cache changed: ${key}`);
+    assert.strictEqual(typeof after._allowRegionAnchor, typeof before._allowRegionAnchor);
+    if (before._allowRegionAnchor) {
+      const points = [];
+      for (let lng = 66; lng <= 142; lng += 9.5) {
+        for (let lat = 14; lat <= 55; lat += 6.8) points.push([lng, lat]);
+      }
+      for (const region of snapshot.regions || []) if (region.anchor) points.push(region.anchor);
+      for (const point of points) {
+        assert.strictEqual(
+          after._allowRegionAnchor(...point),
+          before._allowRegionAnchor(...point),
+          `Region label-anchor classification changed: ${key}`
+        );
+        anchorsChecked++;
+      }
+    }
+    snapshotsChecked++;
+  }
+  parentPort.postMessage({ snapshotsChecked, anchorsChecked });
+  process.exit(0);
+}
+
+async function main() {
   const t0 = performance.now();
   const sandbox = { window: {} };
   vm.createContext(sandbox);
@@ -313,6 +367,30 @@ function main() {
   const corridors = sandbox.window.CORRIDOR_DATA;
   const loreData = sandbox.window.ATLAS_LORE_DATA;
   const enLocale = sandbox.window.EN_LOCALE;
+
+  // Launch multi-core worker pool for the full-atlas boundary equivalence sweep in background
+  let boundarySweepPromise = null;
+  if (!FAST_MODE) {
+    const allSnapKeys = Object.keys(snapshots).filter((k) => !Array.isArray(snapshots[k]));
+    const workerCount = Math.min(8, Math.max(2, (os.availableParallelism ? os.availableParallelism() : os.cpus().length) - 1));
+    const slices = Array.from({ length: workerCount }, () => []);
+    allSnapKeys.forEach((k, idx) => slices[idx % workerCount].push(k));
+    boundarySweepPromise = Promise.all(
+      slices
+        .filter((s) => s.length > 0)
+        .map(
+          (keys) =>
+            new Promise((resolve, reject) => {
+              const w = new Worker(__filename, { workerData: { kind: 'boundary_slice', keys } });
+              w.on('message', resolve);
+              w.on('error', reject);
+              w.on('exit', (code) => {
+                if (code !== 0) reject(new Error(`Boundary worker exited with code ${code}`));
+              });
+            })
+        )
+    );
+  }
   assert(
     loreData &&
       Array.isArray(loreData.CHINESE_ERA_SPANS) &&
@@ -1954,13 +2032,24 @@ function main() {
       }
       return { before, after, expected };
     };
-    for (const [key, snapshot] of Object.entries(ctrl.snapshots)) {
-      if (Array.isArray(snapshot)) continue;
-      checkBoundary(snapshot, key);
-      snapshotsChecked++;
+    if (FAST_MODE) {
+      const entries = Object.entries(ctrl.snapshots).filter(([, s]) => !Array.isArray(s));
+      entries.forEach(([key, snapshot], sIdx) => {
+        if (sIdx % 25 === 0) {
+          checkBoundary(snapshot, key);
+          snapshotsChecked++;
+        }
+      });
+      assert(snapshotsChecked >= 8 && anchorsChecked > 600, 'Fast-mode boundary equivalence sample must cover representative snapshots');
+    } else {
+      const workerResults = await boundarySweepPromise;
+      for (const r of workerResults) {
+        snapshotsChecked += r.snapshotsChecked;
+        anchorsChecked += r.anchorsChecked;
+      }
+      assert(snapshotsChecked > 180 && anchorsChecked > 16000,
+        'Boundary equivalence must cover the full atlas');
     }
-    assert(snapshotsChecked > 180 && anchorsChecked > 16000,
-      'Boundary equivalence must cover the full atlas');
 
     const rectangle = (x0, y0, x1, y1) => ({
       type: 'Polygon', coordinates: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]],
@@ -10057,4 +10146,7 @@ function main() {
   console.log(`  - ${(loreData.POLITY_PROFILES || []).length} curated regional/rival regime profiles verified`);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
