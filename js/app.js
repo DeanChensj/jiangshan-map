@@ -3116,6 +3116,7 @@
     _renderPolitiesAndPrefectures(dynasty, snap) {
       this._setPolityFocus(null);
       this._clearHoveredPrefecture();
+      const prevShapes = this._livePolityShapes();
       this.grpPolities.innerHTML = '';
 
       const polGroup = this._svgNode('g', {}, this.grpPolities);
@@ -3190,6 +3191,49 @@
       this._renderLegendBox(snap);
       if (!prefHidden) this._syncTracedPrefecture();
       this._rescaleSvgTypography();
+      this._fadePolityChanges(prevShapes, this._livePolityShapes(), polGroup);
+    }
+
+    // The rendered polity shapes, without the outgoing ones that are still fading.
+    _livePolityShapes() {
+      return Array.from(this.grpPolities.querySelectorAll('.polity-shape:not([aria-hidden])'));
+    }
+
+    // Timing for the snapshot fade, or null when `el` must not animate.
+    _fadeTiming(el) {
+      const reducedMotion =
+        typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Dragging the timeline re-renders faster than a fade can finish, which would only flicker.
+      if (reducedMotion || this.isScrubbing || !el || typeof el.animate !== 'function') return null;
+      // At 4x autoplay a node can last 280ms; the fade has to end before the next render cuts it off.
+      const duration = this.playing ? Math.min(320, 2 * this._autoplayIntervalMs()) : 320;
+      return { duration, easing: 'ease-out' };
+    }
+
+    // Cross-fades the polity shapes that differ between two snapshots; identical ones stay still.
+    // Outgoing shapes are re-parented into the freshly rendered group, so a later render clears
+    // any that are still fading.
+    //
+    // A changed shape mostly overlaps its predecessor, and two half-faded copies of the same
+    // tint would dip mid-way and read as a flicker, so the outgoing one is held above linear.
+    // Prefecture and region lines are left out: they are dashed, and two overlapping copies
+    // fill each other's gaps.
+    _fadePolityChanges(prevShapes, nextShapes, polGroup) {
+      const timing = prevShapes.length && this._fadeTiming(polGroup);
+      if (!timing) return;
+      const paintKey = (el) => `${el.getAttribute('class')}|${el.getAttribute('fill')}|${el.getAttribute('d')}`;
+      const prevKeys = new Set(prevShapes.map(paintKey));
+      const nextKeys = new Set(nextShapes.map(paintKey));
+      for (const el of nextShapes) {
+        if (!prevKeys.has(paintKey(el))) el.animate({ opacity: [0, 1] }, timing);
+      }
+      for (const el of prevShapes) {
+        if (nextKeys.has(paintKey(el))) continue;
+        el.setAttribute('aria-hidden', 'true');
+        el.style.pointerEvents = 'none';
+        polGroup.insertBefore(el, polGroup.firstChild);
+        el.animate({ opacity: [1, 0.6, 0] }, timing).onfinish = () => el.remove();
+      }
     }
 
     _buildRegionBoundaryPath(snap) {
