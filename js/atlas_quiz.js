@@ -184,6 +184,7 @@
       for (const id of [
         'act-autoplay',
         'act-play-speed',
+        'act-narrator',
         'act-step-prev',
         'act-step-next',
         'inp-year',
@@ -196,6 +197,7 @@
     startChallenge(opts = {}) {
       this._recordGestureClick();
       this.stopAutoplay();
+      if (typeof this.stopNarrator === 'function') this.stopNarrator();
       this.clearCustomRoute();
       this.closeMilestoneBalloon();
       this.closeGenealogyCard();

@@ -25,6 +25,7 @@ const CONTROLLER_SCRIPTS = [
   'js/atlas_search.js',
   'js/atlas_api.js',
   'js/atlas_quiz.js',
+  'js/atlas_narrator.js',
 ];
 
 const SYNC_CONTROLLER_SCRIPTS = [
@@ -50,6 +51,7 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-pinyin', datasetKey: 'vPinyin', relPath: 'js/event_pinyin.js' },
   { attr: 'data-v-hant', datasetKey: 'vHant', relPath: 'js/zh_hant.js' },
   { attr: 'data-v-quiz', datasetKey: 'vQuiz', relPath: 'js/atlas_quiz.js' },
+  { attr: 'data-v-narrator', datasetKey: 'vNarrator', relPath: 'js/atlas_narrator.js' },
 ];
 
 function shortSha256(filePath) {
