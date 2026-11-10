@@ -1,5 +1,7 @@
 {
+  "hanshu": { "zh": "班固等《汉书》", "en": "Ban Gu et al., Book of Han (Han Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/漢書" },
   "jiutangshu": { "zh": "刘昫等《旧唐书》", "en": "Liu Xu et al., Old Book of Tang (Jiu Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/舊唐書" },
+  "shiji": { "zh": "司马迁《史记》", "en": "Sima Qian, Records of the Grand Historian (Shi Ji)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/史記" },
   "songshi": { "zh": "脱脱等《宋史》", "en": "Tuotuo et al., History of Song (Song Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/宋史" },
   "suishu": { "zh": "魏徵等《隋书》", "en": "Wei Zheng et al., Book of Sui (Sui Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/隋書" },
   "tangzhiyan": { "zh": "王定保《唐摭言》", "en": "Wang Dingbao, Tang Zhiyan", "kind": "primary", "url": "https://zh.wikisource.org/wiki/唐摭言" },
