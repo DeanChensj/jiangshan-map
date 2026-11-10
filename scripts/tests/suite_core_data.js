@@ -702,6 +702,29 @@ async function runCoreDataSuite(ctx) {
     '_evaluateLocateClick',
     '_finishChallenge',
   ];
+  const NARRATOR_METHODS = [
+    '_hasSpeechSynthesis',
+    '_markNarratorUnsupported',
+    '_probeNarratorSupport',
+    '_spokenYear',
+    '_spokenEra',
+    '_spokenSiteIfAbsent',
+    '_cleanSpokenText',
+    '_candidateSpeechVoices',
+    '_selectSpeechVoice',
+    '_duckMusicForNarration',
+    '_updateNarratorUi',
+    '_isMajorStopYear',
+    '_buildNarrationText',
+    '_clearNarratorTimers',
+    'speakCurrentState',
+    '_dispatchUtterance',
+    'silenceNarrator',
+    'onNarratorSpeedChange',
+    'startNarrator',
+    'stopNarrator',
+    'toggleNarrator',
+  ];
   for (const traceMethod of TRACE_METHODS) {
     const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, traceMethod);
     assert(
@@ -737,14 +760,27 @@ async function runCoreDataSuite(ctx) {
       `atlas_quiz.js must attach ${quizMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
     );
   }
+  for (const narratorMethod of NARRATOR_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, narratorMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_narrator.js must attach ${narratorMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
   {
-    // Verify clean separation: app.js alone must not define any trace, search, api, or quiz mixin methods.
+    // Verify clean separation: app.js alone must not define any trace, search, api, quiz, or narrator mixin methods.
     const appOnlySandbox = { console, addEventListener: () => {} };
     appOnlySandbox.window = appOnlySandbox;
     vm.createContext(appOnlySandbox);
     controllerBundles[0].script.runInContext(appOnlySandbox);
     const BaseClass = appOnlySandbox.window.HistoricalAtlasController;
-    for (const m of [...TRACE_METHODS, ...SEARCH_METHODS, ...API_METHODS, ...QUIZ_METHODS]) {
+    for (const m of [
+      ...TRACE_METHODS,
+      ...SEARCH_METHODS,
+      ...API_METHODS,
+      ...QUIZ_METHODS,
+      ...NARRATOR_METHODS,
+    ]) {
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(BaseClass.prototype, m),
         false,
@@ -764,9 +800,10 @@ async function runCoreDataSuite(ctx) {
         SEARCH_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         API_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         QUIZ_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        NARRATOR_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         Array.isArray(ReorderedClass.PERSON_TRACK_PALETTE) &&
         ReorderedClass.PERSON_TRACK_PALETTE.length >= 3,
-      'atlas_trace.js, atlas_search.js, atlas_api.js, and atlas_quiz.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
+      'atlas_trace.js, atlas_search.js, atlas_api.js, atlas_quiz.js, and atlas_narrator.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
     );
     assert.strictEqual(
       orderSandbox.window.__ATLAS_MIXINS.length,
@@ -846,6 +883,7 @@ async function runCoreDataSuite(ctx) {
                 vLore: '11223344',
                 vHant: '55667788',
                 vQuiz: '99aabbcc',
+                vNarrator: 'ddeeff00',
               },
             }
           : null,
@@ -875,8 +913,18 @@ async function runCoreDataSuite(ctx) {
       'js/atlas_quiz.js?v=99aabbcc',
       '_lazyAssetUrl must read data-v-quiz from #atlas-app-script'
     );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/atlas_narrator.js', 'vNarrator'),
+      'js/atlas_narrator.js?v=ddeeff00',
+      '_lazyAssetUrl must read data-v-narrator from #atlas-app-script'
+    );
     assert.strictEqual(ctrl._hasZhHant(), true, '_hasZhHant must detect loaded ZH_HANT_CONV');
     assert.strictEqual(ctrl._isQuizLoaded(), true, '_isQuizLoaded must detect installed AtlasQuizMixin');
+    assert.strictEqual(
+      ctrl._isNarratorLoaded(),
+      true,
+      '_isNarratorLoaded must detect installed AtlasNarratorMixin'
+    );
     sandbox.document = undefined;
     sandbox.window.ATLAS_ASSET_VERSIONS = { vSnapshots: 'deadbeef' };
     assert.strictEqual(
@@ -892,6 +940,33 @@ async function runCoreDataSuite(ctx) {
     );
     sandbox.document = savedDocLazy;
     sandbox.window.ATLAS_ASSET_VERSIONS = savedWinVers;
+    {
+      // Verify narrator speed-adaptive LOD, imperial era formatting, and site deduplication
+      const savedLocale = ctrl.locale;
+      const savedSpeed = ctrl.playSpeed;
+      const savedDynIdx = ctrl.dynastyIdx;
+      const savedYear = ctrl.year;
+      ctrl.locale = 'zh';
+      ctrl.dynastyIdx = dynasties.findIndex((d) => d.key === 'tang');
+      ctrl.year = 755;
+      ctrl.playSpeed = 1;
+      const text1x = ctrl._buildNarrationText({ forceIntro: true });
+      assert(
+        text1x.includes('公元755年') &&
+          text1x.includes('唐玄宗天宝十四年') &&
+          text1x.includes('范阳'),
+        `1x narration at 755 CE must include year, imperial era, and milestone text, got: ${text1x}`
+      );
+      ctrl.playSpeed = 4;
+      const text4xNew = ctrl._buildNarrationText({ forceIntro: true });
+      const text4xSame = ctrl._buildNarrationText({ forceIntro: false });
+      assert.strictEqual(text4xNew, '唐', '4x narration on dynasty switch must speak only dynasty title');
+      assert.strictEqual(text4xSame, '', '4x narration within same dynasty must remain silent');
+      ctrl.locale = savedLocale;
+      ctrl.playSpeed = savedSpeed;
+      ctrl.dynastyIdx = savedDynIdx;
+      ctrl.year = savedYear;
+    }
 
     // Verify perf_budget.js first-paint synchronous script gzip budget
     const { measurePerfBudget, readBaseline: readPerfBaseline } = require('../perf_budget');
@@ -910,10 +985,12 @@ async function runCoreDataSuite(ctx) {
         !perfReport.syncScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
         !perfReport.syncScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
         !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_quiz.js') &&
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_narrator.js') &&
         perfReport.lazyScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
         perfReport.lazyScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
-        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_quiz.js'),
-      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js, js/zh_hant.js, and js/atlas_quiz.js as lazy bundles'
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_quiz.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_narrator.js'),
+      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js, js/zh_hant.js, js/atlas_quiz.js, and js/atlas_narrator.js as lazy bundles'
     );
   }
 

@@ -495,7 +495,10 @@
           typeof window.requestIdleCallback === 'function'
             ? (fn) => window.requestIdleCallback(fn, { timeout: 200 })
             : (fn) => setTimeout(fn, 80);
-        scheduleIdle(() => this._ensureLoreDetail());
+        scheduleIdle(() => {
+          this._ensureLoreDetail();
+          this._ensureNarrator();
+        });
       }
     }
 
@@ -731,6 +734,27 @@
         }
         return ok;
       });
+    }
+
+    _isNarratorLoaded() {
+      return typeof this.speakCurrentState === 'function';
+    }
+
+    _ensureNarrator() {
+      if (this._isNarratorLoaded()) return Promise.resolve(true);
+      if (!this._narratorPromise) {
+        this._narratorPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_narrator.js', 'vNarrator')
+        ).then(() => {
+          if (this._isNarratorLoaded()) {
+            if (typeof this._probeNarratorSupport === 'function') this._probeNarratorSupport();
+            return true;
+          }
+          this._narratorPromise = null;
+          return false;
+        });
+      }
+      return this._narratorPromise;
     }
 
     _isLoreDetailLoaded() {
@@ -1923,6 +1947,19 @@
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
+      const narratorBtn = this._id('act-narrator');
+      if (narratorBtn) {
+        if (typeof this._updateNarratorUi === 'function') {
+          this._updateNarratorUi();
+        } else {
+          const nTitle =
+            this.locale === 'en'
+              ? 'Autoplay with voice narration'
+              : this._zh('语音讲解（随自动播放朗读时间轴事件）');
+          narratorBtn.title = nTitle;
+          narratorBtn.setAttribute('aria-label', nTitle);
+        }
+      }
       this._renderStartGuide();
       this._id('gesture-guide').textContent = this.uiStr(
         'hint',
@@ -6742,6 +6779,14 @@
           preserveScroll,
         });
       }
+      if (
+        this.narrating &&
+        (this.playing || this.personTimer) &&
+        !this.isScrubbing &&
+        typeof this.speakCurrentState === 'function'
+      ) {
+        this.speakCurrentState();
+      }
     }
 
     _ensureCoordInView(coord) {
@@ -6774,6 +6819,7 @@
         if (this.personTimer) {
           clearInterval(this.personTimer);
           this.personTimer = null;
+          if (typeof this.silenceNarrator === 'function') this.silenceNarrator();
         }
         this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
@@ -6892,6 +6938,9 @@
           this._personAutoplayIntervalMs()
         );
       }
+      if (this.narrating && typeof this.onNarratorSpeedChange === 'function') {
+        this.onNarratorSpeedChange();
+      }
       return this.playSpeed;
     }
 
@@ -6932,13 +6981,16 @@
         clearInterval(this.personTimer);
         this.personTimer = null;
       }
+      if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       this.playing = true;
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
-      if (this.year >= this.maxYear) this.jumpToYear(this.minYear);
       // Leave the starting frame on screen for one event beat before the first jump.
       this.playHoldTicks = AUTOPLAY_EVENT_TICKS;
       this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
+      if (this.narrating && typeof this.speakCurrentState === 'function') {
+        this.speakCurrentState({ forceIntro: true });
+      }
       this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
@@ -6968,6 +7020,7 @@
     }
 
     _autoplayTick() {
+      if (this.narrating && this._narratorSpeaking) return;
       if (this.playHoldTicks > 0) {
         this.playHoldTicks--;
         return;
@@ -6993,6 +7046,9 @@
       if (this.personTimer) {
         clearInterval(this.personTimer);
         this.personTimer = null;
+      }
+      if (typeof this.silenceNarrator === 'function') {
+        this.silenceNarrator();
       }
       this._updateAutoplayUi();
       const cur = this.dynasties[this.dynastyIdx];
@@ -9492,6 +9548,20 @@
       const playSpeedBtn = this._id('act-play-speed');
       if (playSpeedBtn) {
         playSpeedBtn.addEventListener('click', () => this.cyclePlaySpeed());
+      }
+      const narratorBtn = this._id('act-narrator');
+      if (narratorBtn) {
+        narratorBtn.addEventListener('pointerenter', () => this._ensureNarrator());
+        narratorBtn.addEventListener('click', () => {
+          if (this.challenge) return;
+          if (this._isNarratorLoaded()) {
+            this.toggleNarrator();
+            return;
+          }
+          this._ensureNarrator().then((ok) => {
+            if (ok && typeof this.toggleNarrator === 'function') this.toggleNarrator();
+          });
+        });
       }
 
       this._id('inp-year').addEventListener('change', (e) => {

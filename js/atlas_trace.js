@@ -52,7 +52,10 @@
         clearInterval(this.personTimer);
         this.personTimer = null;
       }
-      if (hadTimer) this._updateAutoplayUi();
+      if (hadTimer) {
+        if (typeof this.silenceNarrator === 'function') this.silenceNarrator();
+        this._updateAutoplayUi();
+      }
       if (!this.activePerson) return;
       this.activePerson = null;
       this.activePersonEventIdx = -1;
@@ -1174,11 +1177,13 @@
     }
 
     _personAutoplayTick() {
+      if (this.narrating && this._narratorSpeaking) return;
       if (!this.activePerson || this.activePersonEventIdx + 1 >= this.activePerson.events.length) {
         if (this.personTimer) {
           clearInterval(this.personTimer);
           this.personTimer = null;
         }
+        if (typeof this.silenceNarrator === 'function') this.silenceNarrator();
         this._updateAutoplayUi();
         return;
       }
@@ -1190,13 +1195,17 @@
       if (this.personTimer) {
         clearInterval(this.personTimer);
         this.personTimer = null;
+        if (typeof this.silenceNarrator === 'function') this.silenceNarrator();
         this._updateAutoplayUi();
         return;
       }
       if (this.playing) {
         this.stopAutoplay();
       }
-      if (this.activePersonEventIdx < 0) {
+      if (
+        this.activePersonEventIdx < 0 ||
+        this.activePersonEventIdx >= this.activePerson.events.length - 1
+      ) {
         this.selectPersonEvent(0, true);
       }
       this.personTimer = setInterval(
@@ -1204,6 +1213,9 @@
         this._personAutoplayIntervalMs()
       );
       this._updateAutoplayUi();
+      if (this.narrating && typeof this.speakCurrentState === 'function') {
+        this.speakCurrentState({ forceIntro: true });
+      }
     }
 
     selectPersonEvent(idx, panCamera = true) {

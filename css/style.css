@@ -2914,6 +2914,11 @@ h2 {
   color: var(--vermilion);
 }
 
+.narrator-btn {
+  min-width: 28px;
+  padding: 0 7px;
+}
+
 #scrubber-rail-wrap {
   position: relative;
   padding-top: 22px;
@@ -3679,6 +3684,10 @@ html[lang="en"] .genealogy-list li {
     padding: 0 7px;
     border-radius: 12px;
     font-size: 11px;
+  }
+  .narrator-btn {
+    min-width: 24px;
+    padding: 0 6px;
   }
   .year-stepper {
     grid-column: 3;
@@ -5618,6 +5627,7 @@ html.is-embed #start-guide,
 html.is-embed #gesture-guide,
 html.is-embed #challenge-card,
 html.is-embed #act-play-speed,
+html.is-embed #act-narrator,
 html.is-embed #seo-atlas-directory,
 html.is-embed #seo-static-topics-section {
   display: none !important;
