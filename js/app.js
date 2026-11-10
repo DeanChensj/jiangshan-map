@@ -5668,9 +5668,6 @@
         entry.addEventListener('pointerenter', (e) => {
           if (e.pointerType !== 'touch') this._setPolityFocus(p.title);
         });
-        entry.addEventListener('pointerleave', (e) => {
-          if (e.pointerType !== 'touch') this._setPolityFocus(null);
-        });
         entry.addEventListener('click', () => {
           if (isEraFocused) this.clearEraFocus();
           else if (isActive) this.closePolity();
@@ -5705,12 +5702,14 @@
         entry.addEventListener('pointerenter', (e) => {
           if (e.pointerType !== 'touch') this._setPolityFocus('__neighbors__');
         });
-        entry.addEventListener('pointerleave', (e) => {
-          if (e.pointerType !== 'touch') this._setPolityFocus(null);
-        });
         entry.addEventListener('click', () => this.resetCamera());
         grid.appendChild(entry);
       }
+      // Cleared for the grid as a whole: per entry, crossing the gap between two entries
+      // flashed the unfocused map in between.
+      grid.addEventListener('pointerleave', (e) => {
+        if (e.pointerType !== 'touch') this._setPolityFocus(null);
+      });
       if (grid.firstChild) this.mapKey.appendChild(grid);
 
       if (snap.note) {
