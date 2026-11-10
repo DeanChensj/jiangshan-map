@@ -1,7 +1,7 @@
 # 江山时序 · Chronicles of the Realm
 
 <p align="left">
-  <a href="README.md">English</a> · <strong>简体中文</strong> · <a href="README_JA.md">日本語</a>
+  <a href="README.md">English</a> · <strong>简体中文</strong> · <a href="README_ZH_HANT.md">繁體中文</a> · <a href="README_JA.md">日本語</a>
 </p>
 
 **一幅可以拖动时间、点城读史、追随古人足迹的中国历史交互舆图（公元前 403 年三家分晋 — 今）**
