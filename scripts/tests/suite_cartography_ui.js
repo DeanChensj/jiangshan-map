@@ -2225,21 +2225,52 @@ async function runCartographyUiSuite(ctx) {
       `Expected Traditional Chinese inspect payload for 741 長安, got ${JSON.stringify(tangInsp)}`
     );
 
-    // Traditional Chinese search & resolvePlace must work in any UI locale
+    // Traditional Chinese search & resolvePlace must work in any UI locale (including newly audited variants & Taiwan terms)
+    const hantToHansPairs = [
+      ['餘姚與餘杭', '余姚与余杭'],
+      ['龍巖與七星巖', '龙岩与七星岩'],
+      ['祁山鹵城', '祁山卤城'],
+      ['龐勛、高繼沖與祖沖之', '庞勋、高继冲与祖冲之'],
+      ['鎌倉幕府與甯越郡', '镰仓幕府与宁越郡'],
+      ['西元前214年與寮國、汶萊', '公元前214年与老挝、文莱'],
+    ];
+    for (const [hant, expectedHans] of hantToHansPairs) {
+      assert.strictEqual(
+        conv.toHans(hant),
+        expectedHans,
+        `ZH_HANT_CONV.toHans("${hant}") expected "${expectedHans}", got "${conv.toHans(hant)}"`
+      );
+    }
+
     for (const loc of ['zh', 'zh-tw', 'en']) {
       ctrl.locale = loc;
       const rChangAn = ctrl.resolvePlace('長安', 741);
       const rXianYang = ctrl.resolvePlace('咸陽', -221);
       const rTongGuan = ctrl.resolvePlace('潼關', 756);
+      const rLongYan = ctrl.resolvePlace('龍巖', 1734);
+      const rLuCheng = ctrl.resolvePlace('鹵城', 231);
       assert(
-        rChangAn && rChangAn.name === '长安' && rXianYang && rXianYang.name === '咸阳' && rTongGuan && rTongGuan.name === '潼关',
+        rChangAn && rChangAn.name === '长安' &&
+          rXianYang && rXianYang.name === '咸阳' &&
+          rTongGuan && rTongGuan.name === '潼关' &&
+          rLongYan && rLongYan.name.includes('龙岩') &&
+          rLuCheng && rLuCheng.name === '木门道',
         `Expected Traditional place resolution to succeed in locale=${loc}`
       );
       const qSuShi = ctrl._queryQuickSearch('蘇軾');
       const qQingLi = ctrl._queryQuickSearch('慶曆四年');
+      const qPangXun = ctrl._queryQuickSearch('龐勛');
+      const qGaoJiChong = ctrl._queryQuickSearch('高繼沖');
+      const qBce214 = ctrl._queryQuickSearch('西元前214年');
+      const qQiXingYan = ctrl._queryQuickSearch('七星巖');
       assert(
-        qSuShi.length > 0 && qSuShi[0].personKey === 'sushi' && qQingLi.length > 0 && qQingLi[0].year === 1044,
-        `Expected Traditional quick search for 蘇軾 and 慶曆四年 to succeed in locale=${loc}`
+        qSuShi.length > 0 && qSuShi[0].personKey === 'sushi' &&
+          qQingLi.length > 0 && qQingLi[0].year === 1044 &&
+          qPangXun.length > 0 && qPangXun[0].year === 868 &&
+          qGaoJiChong.length > 0 &&
+          qBce214.length > 0 && qBce214[0].year === -214 &&
+          qQiXingYan.length > 0,
+        `Expected Traditional quick search for 蘇軾, 慶曆四年, 龐勛, 高繼沖, 西元前214年, 七星巖 to succeed in locale=${loc}`
       );
     }
     ctrl.locale = prevLocale;
