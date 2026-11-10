@@ -2,11 +2,12 @@
 /**
  * Source (reference) audit for Jiangshan Atlas.
  *
- * Historical records can carry references in data/sources/*.json, keyed by a stable record key.
+ * Historical facts can carry references in data/sources/*.json, keyed by a stable record key.
+ * Settlements are out of scope: their key facts are location and seat rank, which a citation
+ * rarely proves.
  * These files live in the repository only; the site never loads them.
  *
  *   milestone:<dynasty>:<year>       DYNASTY_DATA[].milestones (year is unique per dynasty)
- *   settlement:<dynasty>:<ancient>   DYNASTY_DATA[].settlements (-2, -3 for repeated names)
  *   event:<id>                       ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS[].id
  *   journey:<key>:<year>             ATLAS_LORE_DATA.HISTORICAL_JOURNEYS[].stops (-2, -3 for repeated years)
  *   person:<key>                     ATLAS_LORE_DATA.PERSON_PROFILES
@@ -69,10 +70,6 @@ function loadRecords() {
   for (const d of D) {
     for (const m of d.milestones || []) {
       add(`milestone:${d.key}:${m.year}`, { kind: 'milestone', dynasty: d.key, label: m.headline });
-    }
-    const name = numbered();
-    for (const s of d.settlements || []) {
-      add(`settlement:${d.key}:${name(s.ancient)}`, { kind: 'settlement', dynasty: d.key, label: s.ancient });
     }
   }
   for (const e of L.PLACE_LANDMARK_EVENTS) {
@@ -207,7 +204,7 @@ const row = (name, keys) => {
   return `${name.padEnd(11)} ${String(s).padStart(5)} / ${String(n).padEnd(5)} ${pct.padStart(5)}%`;
 };
 console.log('Source coverage');
-for (const kind of ['milestone', 'event', 'settlement', 'journey', 'person']) {
+for (const kind of ['milestone', 'event', 'journey', 'person']) {
   console.log(`  ${row(kind, [...recs.keys()].filter((k) => recs.get(k).kind === kind))}`);
 }
 console.log(`  ${row('total', [...recs.keys()])}`);
