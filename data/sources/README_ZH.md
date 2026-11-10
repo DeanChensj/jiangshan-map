@@ -9,10 +9,10 @@
 | 文件 | 内容 |
 | --- | --- |
 | `works.json` | 书目：短 id → `{ zh, en?, kind, url? }`，`kind` 为 `primary`（史籍）、`secondary`（今人著作）、`dataset`（数据库）或 `web` |
-| `<dynasty>.json` | 该朝代的大事、地标事件与城邑出处，如 `tang.json` |
+| `<dynasty>.json` | 该朝代的大事与地标事件出处，如 `tang.json` |
 | `journeys.json` | 人物行迹站点的出处 |
 | `persons.json` | 人物小传的出处 |
-| `baseline.json` | 审计上线前已有、暂未补出处的大事、事件、行迹站点与人物。由脚本生成，只减不增 |
+| `baseline.json` | 审计上线前已有、暂未补出处的记录。由脚本生成，只减不增 |
 
 有了第一条出处再新建文件，空文件不必提交。
 
@@ -21,7 +21,6 @@
 | 键 | 对应数据 |
 | --- | --- |
 | `milestone:<dynasty>:<year>` | `js/map_data.js` 中 `DYNASTY_DATA[].milestones` |
-| `settlement:<dynasty>:<ancient>` | `DYNASTY_DATA[].settlements`；同朝代重名的第二处起加 `-2`、`-3` |
 | `event:<id>` | `js/lore_data.js` 中 `PLACE_LANDMARK_EVENTS[].id` |
 | `journey:<key>:<year>` | `HISTORICAL_JOURNEYS[].stops`；同一行迹同年的第二站起加 `-2`、`-3` |
 | `person:<key>` | `PERSON_PROFILES` |
@@ -50,7 +49,7 @@
 - **每条出处都须由人对照原书核实。** 不要提交 AI 工具生成、未经核对的出处。
 - 只注明书名与卷次或页码，不摘抄原文。
 - 新增的大事、地标事件、行迹站点或人物必须附出处，否则 CI 不通过。
-- 城邑的出处可选。城邑最关键的是位置和治所级别，出处往往证明不了；欢迎补充，写了会照常检查，但不强制。
+- 城邑点位不需要出处：它最关键的是位置和治所级别，史书引文往往证明不了。
 - 补完出处后运行 `node scripts/audit_sources.js --update`，把 `baseline.json` 一并提交。
 
 ```bash

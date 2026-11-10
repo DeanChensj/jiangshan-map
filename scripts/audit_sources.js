@@ -2,11 +2,12 @@
 /**
  * Source (reference) audit for Jiangshan Atlas.
  *
- * Historical records can carry references in data/sources/*.json, keyed by a stable record key.
+ * Historical facts can carry references in data/sources/*.json, keyed by a stable record key.
+ * Settlements are out of scope: their key facts are location and seat rank, which a citation
+ * rarely proves.
  * These files live in the repository only; the site never loads them.
  *
  *   milestone:<dynasty>:<year>       DYNASTY_DATA[].milestones (year is unique per dynasty)
- *   settlement:<dynasty>:<ancient>   DYNASTY_DATA[].settlements (-2, -3 for repeated names)
  *   event:<id>                       ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS[].id
  *   journey:<key>:<year>             ATLAS_LORE_DATA.HISTORICAL_JOURNEYS[].stops (-2, -3 for repeated years)
  *   person:<key>                     ATLAS_LORE_DATA.PERSON_PROFILES
@@ -17,9 +18,8 @@
  *   1. every landmark event has a unique, well-formed `id`;
  *   2. every reference names a known work and uses only known fields;
  *   3. every key points at an existing record (catches records that were renamed or re-dated);
- *   4. ratchet: records listed in data/sources/baseline.json may stay unsourced; every milestone,
- *      event, journey stop or person added after the baseline must come with at least one reference.
- *      Settlement references are optional: they are checked when present but never required;
+ *   4. ratchet: records listed in data/sources/baseline.json may stay unsourced; every record added
+ *      after the baseline must come with at least one reference;
  *   5. files are in canonical form (sorted, one key per line) so parallel PRs rarely conflict.
  *
  * Usage:
@@ -42,8 +42,6 @@ const SRC = path.join(ROOT, 'data/sources');
 const REF_FIELDS = new Set(['w', 'loc', 'note', 'url']);
 const WORK_KINDS = new Set(['primary', 'secondary', 'dataset', 'web']);
 const EVENT_ID = /^[a-z0-9]+:-?\d+[a-z]?$/;
-// A settlement's key facts are its location and seat rank, which a citation rarely proves.
-const OPTIONAL_KINDS = new Set(['settlement']);
 const errors = [];
 const warnings = [];
 
@@ -72,10 +70,6 @@ function loadRecords() {
   for (const d of D) {
     for (const m of d.milestones || []) {
       add(`milestone:${d.key}:${m.year}`, { kind: 'milestone', dynasty: d.key, label: m.headline });
-    }
-    const name = numbered();
-    for (const s of d.settlements || []) {
-      add(`settlement:${d.key}:${name(s.ancient)}`, { kind: 'settlement', dynasty: d.key, label: s.ancient });
     }
   }
   for (const e of L.PLACE_LANDMARK_EVENTS) {
@@ -191,7 +185,7 @@ if (!flag('--fix')) {
 const cited = new Set([...refs.values()].flatMap(({ list }) => (Array.isArray(list) ? list.map((r) => r.w) : [])));
 for (const w of Object.keys(works)) if (!cited.has(w)) warnings.push(`works.json: ${w} is not cited yet`);
 
-const unsourced = [...recs.keys()].filter((k) => !refs.has(k) && !OPTIONAL_KINDS.has(recs.get(k).kind));
+const unsourced = [...recs.keys()].filter((k) => !refs.has(k));
 if (baseline) {
   for (const k of unsourced) {
     if (!baseline.has(k)) {
@@ -210,12 +204,10 @@ const row = (name, keys) => {
   return `${name.padEnd(11)} ${String(s).padStart(5)} / ${String(n).padEnd(5)} ${pct.padStart(5)}%`;
 };
 console.log('Source coverage');
-for (const kind of ['milestone', 'event', 'settlement', 'journey', 'person']) {
-  const label = OPTIONAL_KINDS.has(kind) ? `${kind}*` : kind;
-  console.log(`  ${row(label, [...recs.keys()].filter((k) => recs.get(k).kind === kind))}`);
+for (const kind of ['milestone', 'event', 'journey', 'person']) {
+  console.log(`  ${row(kind, [...recs.keys()].filter((k) => recs.get(k).kind === kind))}`);
 }
 console.log(`  ${row('total', [...recs.keys()])}`);
-console.log('  * optional: checked when present, never required');
 if (flag('--by-dynasty')) {
   const byDyn = new Map();
   for (const [k, r] of recs) {
