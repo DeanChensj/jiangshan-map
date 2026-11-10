@@ -4317,6 +4317,9 @@
       if (!dynasty || !m) return null;
       const map = {
         'tang:755': { key: 'anshi', stopIdx: -1 },
+        'beisong:1127': { key: 'jingkang', stopIdx: -1 },
+        'nansong:1127': { key: 'jingkang', stopIdx: -1 },
+        'nansong:1140': { key: 'jingkang', stopIdx: -1 },
       };
       return map[`${dynasty.key}:${m.year}`] || null;
     }
@@ -8716,27 +8719,29 @@
           setSvgAttribute(shiftEl, 'transform', `translate(${p.ox.toFixed(2)},${p.oy.toFixed(2)})`);
         }
       }
-      const placedRects = pts.map((p) => {
-        const isCur = p.n.classList.contains('is-current');
-        const rPxY = p.isBead
-          ? 3.8 * pxPerLocal
-          : p.isPill
-            ? (isCur ? 6.5 : 5.6) * pxPerLocal
-            : (isCur ? 8.5 : 6.6) * pxPerLocal;
-        const rPxX = p.isBead
-          ? 3.8 * pxPerLocal
-          : p.isPill
-            ? (isCur ? 10.6 : 9.4) * pxPerLocal
-            : rPxY;
-        const cx = p.x * screenScale + p.ox * pxPerLocal;
-        const cy = p.y * screenScale + p.oy * pxPerLocal;
-        return {
-          left: cx - rPxX,
-          right: cx + rPxX,
-          top: cy - rPxY,
-          bottom: cy + rPxY,
-        };
-      });
+      const placedRects = pts
+        .filter((p) => !p.n.classList.contains('is-other-era'))
+        .map((p) => {
+          const isCur = p.n.classList.contains('is-current');
+          const rPxY = p.isBead
+            ? 3.8 * pxPerLocal
+            : p.isPill
+              ? (isCur ? 6.5 : 5.6) * pxPerLocal
+              : (isCur ? 8.5 : 6.6) * pxPerLocal;
+          const rPxX = p.isBead
+            ? 3.8 * pxPerLocal
+            : p.isPill
+              ? (isCur ? 10.6 : 9.4) * pxPerLocal
+              : rPxY;
+          const cx = p.x * screenScale + p.ox * pxPerLocal;
+          const cy = p.y * screenScale + p.oy * pxPerLocal;
+          return {
+            left: cx - rPxX,
+            right: cx + rPxX,
+            top: cy - rPxY,
+            bottom: cy + rPxY,
+          };
+        });
       const defaultSlots = [
         { idx: 0, anchor: 'middle', lx: '0', ly: '-12.2', nx: 0, ny: -12.2 },
         { idx: 1, anchor: 'middle', lx: '0', ly: '19.8', nx: 0, ny: 19.8 },
@@ -8749,6 +8754,7 @@
         { idx: 2, anchor: 'start', lx: '11.8', ly: '3.5', nx: 11.8, ny: 3.5 },
         { idx: 3, anchor: 'end', lx: '-11.8', ly: '3.5', nx: -11.8, ny: 3.5 },
       ];
+      const curPt = pts.find((item) => item.n.classList.contains('is-current')) || null;
       const labelOrder = pts
         .slice()
         .sort((a, b) => {
@@ -8760,18 +8766,26 @@
         const lbl = p.n.querySelector('.jn-label');
         if (!lbl || lbl.classList.contains('is-hover-only-label')) continue;
         const isCur = p.n.classList.contains('is-current');
-        const candSlots = p.isPill ? pillSlots : defaultSlots;
+        let candSlots = p.isPill ? pillSlots : defaultSlots;
+        if (p.isBead && curPt && curPt !== p) {
+          const vx = curPt.x - p.x;
+          const vy = curPt.y - p.y;
+          const orderIdxs =
+            Math.abs(vx) > Math.abs(vy) * 1.15
+              ? vx < 0
+                ? [2, 0, 1, 3]
+                : [3, 0, 1, 2]
+              : vy < 0
+                ? [1, 2, 3, 0]
+                : [0, 2, 3, 1];
+          candSlots = orderIdxs.map((idx) => defaultSlots[idx]);
+        }
         const fontPx = isCur || p.isPill ? 11.2 : 10.2;
         const textW = (this._estimateLocalTextWidth(lbl.textContent, fontPx, 0) + 3.6) * pxPerLocal;
         const textH = (fontPx * 1.18 + 2.4) * pxPerLocal;
         const cx = p.x * screenScale + p.ox * pxPerLocal;
         const cy = p.y * screenScale + p.oy * pxPerLocal;
-        const prevIdx =
-          zoomOnly && lbl.dataset.slotIdx !== undefined ? Number(lbl.dataset.slotIdx) : -1;
-        const orderedSlots =
-          prevIdx >= 0 && candSlots[prevIdx]
-            ? [candSlots[prevIdx], ...candSlots.filter((s0) => s0.idx !== prevIdx)]
-            : candSlots;
+        const orderedSlots = candSlots;
         let chosenSlot = null;
         let chosenRect = null;
         let leastOverlap = Infinity;
