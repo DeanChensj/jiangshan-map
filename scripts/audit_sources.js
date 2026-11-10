@@ -17,8 +17,9 @@
  *   1. every landmark event has a unique, well-formed `id`;
  *   2. every reference names a known work and uses only known fields;
  *   3. every key points at an existing record (catches records that were renamed or re-dated);
- *   4. ratchet: records listed in data/sources/baseline.json may stay unsourced; every record added
- *      after the baseline must come with at least one reference;
+ *   4. ratchet: records listed in data/sources/baseline.json may stay unsourced; every milestone,
+ *      event, journey stop or person added after the baseline must come with at least one reference.
+ *      Settlement references are optional: they are checked when present but never required;
  *   5. files are in canonical form (sorted, one key per line) so parallel PRs rarely conflict.
  *
  * Usage:
@@ -41,6 +42,8 @@ const SRC = path.join(ROOT, 'data/sources');
 const REF_FIELDS = new Set(['w', 'loc', 'note', 'url']);
 const WORK_KINDS = new Set(['primary', 'secondary', 'dataset', 'web']);
 const EVENT_ID = /^[a-z0-9]+:-?\d+[a-z]?$/;
+// A settlement's key facts are its location and seat rank, which a citation rarely proves.
+const OPTIONAL_KINDS = new Set(['settlement']);
 const errors = [];
 const warnings = [];
 
@@ -188,7 +191,7 @@ if (!flag('--fix')) {
 const cited = new Set([...refs.values()].flatMap(({ list }) => (Array.isArray(list) ? list.map((r) => r.w) : [])));
 for (const w of Object.keys(works)) if (!cited.has(w)) warnings.push(`works.json: ${w} is not cited yet`);
 
-const unsourced = [...recs.keys()].filter((k) => !refs.has(k));
+const unsourced = [...recs.keys()].filter((k) => !refs.has(k) && !OPTIONAL_KINDS.has(recs.get(k).kind));
 if (baseline) {
   for (const k of unsourced) {
     if (!baseline.has(k)) {
@@ -208,9 +211,11 @@ const row = (name, keys) => {
 };
 console.log('Source coverage');
 for (const kind of ['milestone', 'event', 'settlement', 'journey', 'person']) {
-  console.log(`  ${row(kind, [...recs.keys()].filter((k) => recs.get(k).kind === kind))}`);
+  const label = OPTIONAL_KINDS.has(kind) ? `${kind}*` : kind;
+  console.log(`  ${row(label, [...recs.keys()].filter((k) => recs.get(k).kind === kind))}`);
 }
 console.log(`  ${row('total', [...recs.keys()])}`);
+console.log('  * optional: checked when present, never required');
 if (flag('--by-dynasty')) {
   const byDyn = new Map();
   for (const [k, r] of recs) {
