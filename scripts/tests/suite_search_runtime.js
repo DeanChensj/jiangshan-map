@@ -98,7 +98,6 @@ async function runSearchRuntimeSuite(ctx) {
     // CUJ 39: Quick Search Anti-Fake-Person, City-vs-Era Ranking, Quiz Clue Integrity & Person Chronicle Site Disentangling
     {
       for (const nonPersonQ of [
-        '靖康',
         '黄巾起义',
         '八王之乱',
         '鸦片战争',
@@ -2576,6 +2575,28 @@ async function runSearchRuntimeSuite(ctx) {
       assert.strictEqual(stParams.get('stop'), '2', 'Storyline active stop must serialize 0-based ?stop=2 (#297)');
       assert.strictEqual(stParams.has('person'), false, 'Storyline deep-link must not emit ?person=anshi (#297)');
       ctrl.closeGenealogyCard();
+
+      const jingkangProf = ctrl._resolvePersonProfile('jingkang');
+      assert(
+        jingkangProf && jingkangProf.isStory === true && Array.isArray(jingkangProf.stops) && jingkangProf.stops.length === 10,
+        'jingkang must resolve as an Event Storyline (isStory: true) with 10 chronological stops'
+      );
+      for (const sq of ['靖康之变', '靖康', '建炎南渡', 'jingkang', 'jingkangzhibian']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'jingkang',
+          `Quick search for "${sq}" must surface the Jingkang storyline (kind="story") at index 0`
+        );
+      }
+      const beisongDyn = dynasties.find((d) => d.key === 'beisong');
+      const nansongDyn = dynasties.find((d) => d.key === 'nansong');
+      const mBs1127 = beisongDyn.milestones.find((m) => m.year === 1127);
+      const mNs1127 = nansongDyn.milestones.find((m) => m.year === 1127);
+      assert(
+        ctrl._findStoryForMilestone(beisongDyn, mBs1127)?.key === 'jingkang' &&
+          ctrl._findStoryForMilestone(nansongDyn, mNs1127)?.key === 'jingkang',
+        'Both Northern Song 1127 (靖康之变) and Southern Song 1127 starting milestone must expose the [始末] storyline entry'
+      );
 
       ctrl.openPersonChronicle('sushi', 5);
       const sushiEvs = ctrl.activePerson.events;
