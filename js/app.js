@@ -4213,7 +4213,9 @@
       this.openMilestoneBalloon(dynasty, m, { isAuto: true });
       if (this.playing && !this.dragState && !this.pinchState) {
         if (this._ensureMilestoneInView(dynasty, m)) {
-          this.playHoldTicks = Math.max(this.playHoldTicks, 3);
+          // Stay on this node until a long pan has landed, or the next one redirects it mid-flight.
+          const panTicks = Math.ceil((this._longPanMs || 0) / this._autoplayIntervalMs());
+          this.playHoldTicks = Math.max(this.playHoldTicks, 3, panTicks);
         }
       }
     }
@@ -8791,12 +8793,22 @@
         this._cameraViewportRect = this._getUnscaledSvgRect();
       }
       const from = { ...this.camera };
+      // A pan across most of the viewport sweeps the whole map past the eye when it starts at
+      // full speed: give it more time and ease both ends.
+      const travel =
+        Math.hypot(
+          targetCam.x + targetCam.w / 2 - from.x - from.w / 2,
+          targetCam.y + targetCam.h / 2 - from.y - from.h / 2
+        ) / Math.min(from.w, targetCam.w);
+      const isLongPan = !zoomInput && travel > 0.5;
+      if (isLongPan) duration *= Math.min(2, 1 + travel / 2);
+      this._longPanMs = isLongPan ? duration : 0;
       const t0 = performance.now();
       if (this.flyRaf) cancelAnimationFrame(this.flyRaf);
       this._prefetchTerrainForTarget(targetCam, zoomInput);
       const step = (now) => {
         const k = Math.max(0, Math.min(1, (now - t0) / duration));
-        const ease = 1 - Math.pow(1 - k, 3);
+        const ease = isLongPan ? k * k * (3 - 2 * k) : 1 - Math.pow(1 - k, 3);
         const w = from.w + (targetCam.w - from.w) * ease;
         const h = from.h + (targetCam.h - from.h) * ease;
         this.camera = {

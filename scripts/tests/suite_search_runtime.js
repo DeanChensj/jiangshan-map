@@ -4,6 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { runCameraPanChecks } = require('./camera_pan');
 
 async function runSearchRuntimeSuite(ctx) {
   ctx.ensureHydrated();
@@ -35,6 +36,7 @@ async function runSearchRuntimeSuite(ctx) {
     pointInShape,
     getCachedPersonEvents,
   } = ctx;
+  runCameraPanChecks({ ControllerClass, sandbox });
   const zgSnap = snapshots[ctrl._resolveSnapKey(zgDyn, -231)];
   const bsKey = ctrl._resolveSnapKey(bsDyn, 1100);
 
