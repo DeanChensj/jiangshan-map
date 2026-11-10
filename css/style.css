@@ -3668,7 +3668,7 @@ html[lang="en"] .genealogy-list li {
   .playback-controls-group {
     grid-column: 1;
     grid-row: 1;
-    gap: 5px;
+    gap: 4px;
   }
   .round-btn {
     width: 28px;
@@ -3679,15 +3679,15 @@ html[lang="en"] .genealogy-list li {
     height: 12px;
   }
   .play-speed-btn {
-    min-width: 34px;
+    min-width: 30px;
     height: 24px;
-    padding: 0 7px;
+    padding: 0 5px;
     border-radius: 12px;
     font-size: 11px;
   }
   .narrator-btn {
     min-width: 24px;
-    padding: 0 6px;
+    padding: 0 5px;
   }
   .year-stepper {
     grid-column: 3;
@@ -3716,14 +3716,14 @@ html[lang="en"] .genealogy-list li {
   }
   #scrubber-Bubble {
     top: -30px;
-    left: 70px !important;
-    right: 58px !important;
+    left: 94px !important;
+    right: 56px !important;
     width: fit-content;
-    max-width: calc(100% - 128px);
+    max-width: calc(100% - 150px);
     margin: 0 auto;
     transform: none !important;
-    font-size: 10.8px;
-    padding: 2.5px 8px;
+    font-size: 10.5px;
+    padding: 2.5px 7px;
     border-radius: 999px;
     overflow: hidden;
     text-overflow: ellipsis;
