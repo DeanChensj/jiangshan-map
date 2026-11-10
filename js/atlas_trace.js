@@ -421,7 +421,9 @@
         );
         const out = profile.stops.map((st, sIdx) => {
           const dyn =
-            this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+            (st.dynastyKey && this.dynasties.find((d) => d.key === st.dynastyKey)) ||
+            this.dynasties[this._findDynastyIndex(st.year)] ||
+            this.dynasties[0];
           const campInfo = st.camp ? campMap.get(st.camp) : null;
           const vecCampInfo = st.campVector ? campMap.get(st.campVector) : campInfo;
           const prongs = Array.isArray(st.prongs)
@@ -511,7 +513,9 @@
       if (hasJourneyStops) {
         journeyStops.forEach((st, sIdx) => {
           const dyn =
-            this.dynasties[this._findDynastyIndex(st.year)] || this.dynasties[0];
+            (st.dynastyKey && this.dynasties.find((d) => d.key === st.dynastyKey)) ||
+            this.dynasties[this._findDynastyIndex(st.year)] ||
+            this.dynasties[0];
           raw.push({
             src: 'J',
             year: st.year,
@@ -1663,12 +1667,16 @@
         }
       }
       const multiLegs = isMulti ? this._getMultiStepLegs(this.activePerson, curIdx, curEv) : [];
+      const prongOriginIdxs =
+        !isMulti && isStory && curEv && Array.isArray(curEv.prongs)
+          ? curEv.prongs
+              .map((p) => (p && typeof p.fromStopIdx === 'number' ? p.fromStopIdx : -1))
+              .filter((idx) => idx >= 0)
+          : [];
       const stepOriginIdxSet = new Set(
         isMulti
           ? multiLegs.map((l) => l.originIdx).filter((idx) => idx >= 0)
-          : stepOriginIdx >= 0
-            ? [stepOriginIdx]
-            : []
+          : [...(stepOriginIdx >= 0 ? [stepOriginIdx] : []), ...prongOriginIdxs]
       );
       const isOriginIdx = (i) => stepOriginIdxSet.has(i);
       const activeEraTracks = this._getVisiblePersonTracks();
@@ -1865,7 +1873,10 @@
                   pColor,
                   false
                 );
-                if (pr.fromLabelZh || pr.fromLabelEn) {
+                if (
+                  (typeof pr.fromStopIdx !== 'number' || pr.fromStopIdx < 0) &&
+                  (pr.fromLabelZh || pr.fromLabelEn)
+                ) {
                   renderOriginBead(pr.fromCoord, pr.fromLabelZh, pr.fromLabelEn, pColor);
                 }
               }
