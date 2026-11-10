@@ -57,19 +57,19 @@ window.EN_LOCALE = {
       "name": "Warring States",
       "short": "Warring States",
       "capital": "Xianyang (Qin) · Luoyang (Zhou) · Seven Capitals",
-      "desc": "Beginning in 403 BCE when King Weilie of Zhou recognized Han, Zhao, and Wei as feudal lords (the opening year of Sima Guang’s Zizhi Tongjian), the Seven Warring States (Qin, Chu, Qi, Yan, Zhao, Wei, Han) vied for supremacy alongside older states such as Lu, Yue, Ba-Shu, and Zhongshan. Strengthened by Shang Yang’s reforms and the conquest of Ba-Shu, King Zheng of Qin annexed all six rival states between 230 and 221 BCE (drag across 14 stages)."
+      "desc": "Beginning in 403 BCE when King Weilie of Zhou recognized Han, Zhao, and Wei as feudal lords (the opening year of Sima Guang’s Zizhi Tongjian), the Seven Warring States (Qin, Chu, Qi, Yan, Zhao, Wei, Han) vied for supremacy alongside older states such as Lu, Yue, Ba-Shu, and Zhongshan. Strengthened by Shang Yang’s reforms and the conquest of Ba-Shu, King Zheng of Qin annexed all six rival states between 230 and 221 BCE."
     },
     "qin": {
       "name": "Qin",
       "short": "Qin",
       "capital": "Xianyang",
-      "desc": "Qin conquered the six rival states to found China’s first centralized empire, standardizing script, coinage, weights, and axles, linking the northern Great Wall, and pushing south into Lingnan."
+      "desc": "Qin conquered the six rival states to found China’s first centralized empire, dividing the realm into 36 (later 40+) commanderies and standardizing script, coinage, weights, and axles. Meng Tian drove the Xiongnu from the Ordos Loop and linked the Great Wall and Qin Direct Road; in the south the Lingqu Canal opened Lingnan (Nanhai, Guilin, and Xiang commanderies) before rebellions erupted in 209 BCE."
     },
     "xihan": {
       "name": "Western Han",
       "short": "W. Han",
       "capital": "Chang'an",
-      "desc": "Early Han combined commanderies with princedoms and used marriage alliances with the Xiongnu. Emperor Wu drove the Xiongnu north, opened the Hexi Corridor and the Silk Road, annexed Nanyue and Gojoseon, and in 60 BCE established the Protectorate of the Western Regions. Wang Mang’s Xin interregnum lasted 8–23 CE. Drag across three stages."
+      "desc": "Early Han combined commanderies with princedoms and used marriage alliances with the Xiongnu. Emperor Wu drove the Xiongnu north, opened the Hexi Corridor and the Silk Road, annexed Nanyue and Gojoseon, and in 60 BCE established the Protectorate of the Western Regions. Wang Mang’s Xin interregnum lasted 8–23 CE."
     },
     "donghan": {
       "name": "Eastern Han",
@@ -81,31 +81,31 @@ window.EN_LOCALE = {
       "name": "Three Kingdoms",
       "short": "3K",
       "capital": "Luoyang / Chengdu / Jianye",
-      "desc": "A tripartite balance between Cao Wei in the North China Plain and northwest, Shu Han in Sichuan, and Eastern Wu along the lower Yangtze and Lingnan."
+      "desc": "Forged after the Battle of Red Cliffs, a tripartite balance formed among Cao Wei across the Central Plains, northwest, and Western Regions, Shu Han in Sichuan and Nanzhong (launching Zhuge Liang’s Northern Expeditions), and Eastern Wu along the Yangtze and Lingnan. Wei conquered Shu in 263, Sima Yan founded Western Jin in 265, and Jin conquered Wu in 280."
     },
     "xijin": {
       "name": "Western Jin",
       "short": "W. Jin",
       "capital": "Luoyang",
-      "desc": "Sima Yan supplanted Wei and conquered Wu in 280, briefly reunifying China. The War of the Eight Princes and uprisings of non-Han peoples led to the Disaster of Yongjia (311) and the fall of Chang’an (316). Shown c. 300 CE with the Xiongnu state of Han-Zhao in Shanxi."
+      "desc": "Sima Yan supplanted Wei and conquered Wu in 280, briefly reunifying China. The War of the Eight Princes and the rise of Han-Zhao in Shanxi and Cheng-Han in Sichuan led to the Disaster of Yongjia (311) and the fall of Chang’an (316)."
     },
     "dongjin": {
       "name": "Eastern Jin & Sixteen Kingdoms",
       "short": "E. Jin",
       "capital": "Jiankang (Eastern Jin)",
-      "desc": "Northern elites fled south and rebuilt the Jin court at Jiankang while Sixteen Kingdoms rose and fell across the north: Shi Le’s Later Zhao unified most of the north (329); Former Qin and Former Yan then faced off east to west; Fu Jian’s Former Qin unified the entire north in 376 but collapsed after the Battle of Fei River (383), and Tuoba’s Northern Wei rose on the northern frontier. Drag across four stages."
+      "desc": "Northern elites fled south and rebuilt the Jin court at Jiankang while Sixteen Kingdoms rose and fell across the north: Shi Le’s Later Zhao unified most of the north (329); Former Qin and Former Yan then faced off east to west; Fu Jian’s Former Qin unified the entire north in 376 but collapsed after the Battle of Fei River (383), and Tuoba’s Northern Wei rose on the northern frontier."
     },
     "nanbei": {
       "name": "Northern & Southern Dynasties",
       "short": "N & S",
       "capital": "Pingcheng → Luoyang (N.) / Jiankang (S.)",
-      "desc": "In the south, Liu Song, Qi, Liang, and Chen succeeded one another at Jiankang. In the north, Emperor Taiwu of Northern Wei conquered Xia (431), Northern Yan (436), and Northern Liang (439) to unify northern China, ending the Sixteen Kingdoms era; Northern Wei later split into Eastern/Western Wei (534), replaced by Northern Qi and Northern Zhou. Drag across six stages."
+      "desc": "In the south, Liu Song, Qi, Liang, and Chen succeeded one another at Jiankang. In the north, Emperor Taiwu of Northern Wei conquered Xia (431), Northern Yan (436), and Northern Liang (439) to unify northern China, ending the Sixteen Kingdoms era; Northern Wei later split into Eastern/Western Wei (534), replaced by Northern Qi and Northern Zhou."
     },
     "sui": {
       "name": "Sui",
       "short": "Sui",
       "capital": "Daxing (Chang'an)",
-      "desc": "Sui ended nearly three centuries of division, excavated the Grand Canal linking the Yellow River and Yangtze, instituted the imperial examination system, and built the eastern capital at Luoyang."
+      "desc": "Founded by Yang Jian in 581, Sui conquered Chen in 589 to end nearly three centuries of division. It instituted the Three Departments and Six Ministries and the imperial examination system, built the eastern capital at Luoyang, excavated the Grand Canal, defeated Tuyuhun in the west, and collapsed after three costly campaigns against Goguryeo."
     },
     "tang": {
       "name": "Tang",
@@ -135,7 +135,7 @@ window.EN_LOCALE = {
       "name": "Yuan",
       "short": "Yuan",
       "capital": "Dadu (Beijing)",
-      "desc": "Kublai Khan’s Yuan dynasty brought Tibet, Yunnan, the Mongolian steppe, and Manchuria under a single administration for the first time and created the provincial system, with Dadu at the crossroads of Eurasia."
+      "desc": "Proclaimed by Kublai Khan in 1271 and completing reunification at Yashan in 1279, the Yuan dynasty brought Tibet (under the Bureau of Buddhist and Tibetan Affairs), Yunnan, the Mongolian steppe, and Manchuria under a single central government, established the Branch Secretariat provincial system and the Penghu Inspection Office, and made Dadu a crossroads of Eurasia."
     },
     "ming": {
       "name": "Ming",
@@ -147,13 +147,13 @@ window.EN_LOCALE = {
       "name": "Qing",
       "short": "Qing",
       "capital": "Jingshi (Beijing)",
-      "desc": "Entering Shanhai Pass in 1644, the Kangxi, Yongzheng, and Qianlong emperors incorporated Taiwan, Outer Mongolia, Qinghai, Tibet, and Xinjiang. After the Opium War (1840), Outer Manchuria and western Ili were ceded to Russia. Drag across six stages."
+      "desc": "Entering Shanhai Pass in 1644, the Kangxi, Yongzheng, and Qianlong emperors incorporated Taiwan, Outer Mongolia, Qinghai, Tibet, and Xinjiang. After the Opium War (1840), Outer Manchuria and western Ili were ceded to Russia."
     },
     "roc": {
       "name": "Republic of China",
       "short": "ROC",
       "capital": "Nanjing",
-      "desc": "The imperial system ended in 1912, followed by the Warlord Era, the Northern Expedition, the War of Resistance against Japan, and the Civil War. Shown in 1936 with Japanese-occupied Manchukuo in the northeast."
+      "desc": "The 1911 Xinhai Revolution ended two millennia of imperial rule and founded the Republic in 1912, followed by the Beiyang Warlord Era, the Northern Expedition, the fourteen-year War of Resistance against Japan and the retrocession of Taiwan (1945), and the Civil War (1946–1949)."
     },
     "prc": {
       "name": "People's Republic of China",
@@ -2275,7 +2275,7 @@ window.EN_LOCALE = {
     ],
     "wall_han_hexi": [
       "Han Great Wall (Hexi)",
-      ""
+      "Built under Emperor Wu from Lingju past Jiuquan and Dunhuang to Yumenguan and Yangguan to shield the Hexi Commandery corridor."
     ],
     "wall_ming": [
       "Ming Great Wall",
@@ -2283,7 +2283,7 @@ window.EN_LOCALE = {
     ],
     "wall_ming_liaodong": [
       "Liaodong Wall",
-      ""
+      "Constructed in the 15th century from Shanhai Pass around the Liao River basin to the Yalu River to defend the Liaodong Commandery."
     ],
     "zhidao": [
       "Qin Direct Road",
@@ -2295,11 +2295,11 @@ window.EN_LOCALE = {
     ],
     "silk_north": [
       "Silk Road · Northern Tarim",
-      ""
+      "From Yumenguan via Hami and Gaochang (Turpan) along the southern foot of the Tianshan through Karasahr, Kucha, and Kashgar over the Pamirs to Fergana."
     ],
     "silk_south": [
       "Silk Road · Southern Tarim",
-      ""
+      "From Yangguan along the northern foot of the Kunlun Mountains via Loulan (Shanshan), Qiemo, Khotan, and Yarkand over the Pamirs toward Bactria and India."
     ],
     "canal_tongji": [
       "Sui–Tang Grand Canal · Tongji",
@@ -2307,11 +2307,11 @@ window.EN_LOCALE = {
     ],
     "canal_hangou": [
       "Hangou & Jiangnan Canal",
-      ""
+      "Dredged under Emperor Yang of Sui (605–610 CE) to link the Huai River at Shanyang with Jiangdu (Yangzhou) and across the Yangtze via Jingkou and Suzhou to Yuhang (Hangzhou)."
     ],
     "canal_yongji": [
       "Sui–Tang Grand Canal · Yongji",
-      ""
+      "Excavated in 608 CE from the Yellow River north through Weizhou and Dezhou to Zhuojun (Beijing), serving as the northern logistics lifeline of Sui and Tang."
     ],
     "canal_jinghang": [
       "Beijing–Hangzhou Grand Canal",
