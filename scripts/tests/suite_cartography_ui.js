@@ -2172,6 +2172,27 @@ async function runCartographyUiSuite(ctx) {
       ['秃发乌孤与剃发易服', '禿髮烏孤與剃髮易服'],
       ['韩侂胄与甲胄', '韓侂冑與甲冑'],
       ['党项羌', '党項羌'],
+      // 繁體化稽核（docs/zh-hant-worklog.md）：全語料一簡多繁逐條校對的回歸用例
+      ['西汉文帝后元与西汉高后', '西漢文帝後元與西漢高后'],
+      ['乾隆与干隆、干封、干道', '乾隆與乾隆、乾封、乾道'],
+      ['湖南岳阳与南岳衡山', '湖南岳陽與南嶽衡山'],
+      ['重大历史事件与唐大历', '重大歷史事件與唐大曆'],
+      ['武周圣历与辽应历', '武周聖曆與遼應曆'],
+      ['秦灭两周置三川郡', '秦滅兩周置三川郡'],
+      ['萨布素发起雅克萨之战', '薩布素發起雅克薩之戰'],
+      ['西域南道交汇总枢纽', '西域南道交匯總樞紐'],
+      ['唐廷于于阗置毗沙都督府', '唐廷於于闐置毗沙都督府'],
+      ['于少保与于忠肃', '于少保與于忠肅'],
+      ['桓温西征收复', '桓溫西征收復'],
+      ['乌孙赤谷城', '烏孫赤谷城'],
+      ['婺州改宁越府', '婺州改寧越府'],
+      ['曲氏高昌与交州曲氏', '麴氏高昌與交州曲氏'],
+      ['秦始皇并六国，幽、并四州并起', '秦始皇併六國，幽、并四州並起'],
+      ['高渐离击筑', '高漸離擊筑'],
+      ['东晋升平', '東晉升平'],
+      ['冉闵复姓冉', '冉閔復姓冉'],
+      ['云台山与天台山', '雲臺山與天台山'],
+      ['祁山卤城', '祁山鹵城'],
     ];
     for (const [hans, expectedHant] of polysemyPairs) {
       const actual = conv.toHant(hans);
@@ -2204,21 +2225,52 @@ async function runCartographyUiSuite(ctx) {
       `Expected Traditional Chinese inspect payload for 741 長安, got ${JSON.stringify(tangInsp)}`
     );
 
-    // Traditional Chinese search & resolvePlace must work in any UI locale
+    // Traditional Chinese search & resolvePlace must work in any UI locale (including newly audited variants & Taiwan terms)
+    const hantToHansPairs = [
+      ['餘姚與餘杭', '余姚与余杭'],
+      ['龍巖與七星巖', '龙岩与七星岩'],
+      ['祁山鹵城', '祁山卤城'],
+      ['龐勛、高繼沖與祖沖之', '庞勋、高继冲与祖冲之'],
+      ['鎌倉幕府與甯越郡', '镰仓幕府与宁越郡'],
+      ['西元前214年與寮國、汶萊', '公元前214年与老挝、文莱'],
+    ];
+    for (const [hant, expectedHans] of hantToHansPairs) {
+      assert.strictEqual(
+        conv.toHans(hant),
+        expectedHans,
+        `ZH_HANT_CONV.toHans("${hant}") expected "${expectedHans}", got "${conv.toHans(hant)}"`
+      );
+    }
+
     for (const loc of ['zh', 'zh-tw', 'en']) {
       ctrl.locale = loc;
       const rChangAn = ctrl.resolvePlace('長安', 741);
       const rXianYang = ctrl.resolvePlace('咸陽', -221);
       const rTongGuan = ctrl.resolvePlace('潼關', 756);
+      const rLongYan = ctrl.resolvePlace('龍巖', 1734);
+      const rLuCheng = ctrl.resolvePlace('鹵城', 231);
       assert(
-        rChangAn && rChangAn.name === '长安' && rXianYang && rXianYang.name === '咸阳' && rTongGuan && rTongGuan.name === '潼关',
+        rChangAn && rChangAn.name === '长安' &&
+          rXianYang && rXianYang.name === '咸阳' &&
+          rTongGuan && rTongGuan.name === '潼关' &&
+          rLongYan && rLongYan.name.includes('龙岩') &&
+          rLuCheng && rLuCheng.name === '木门道',
         `Expected Traditional place resolution to succeed in locale=${loc}`
       );
       const qSuShi = ctrl._queryQuickSearch('蘇軾');
       const qQingLi = ctrl._queryQuickSearch('慶曆四年');
+      const qPangXun = ctrl._queryQuickSearch('龐勛');
+      const qGaoJiChong = ctrl._queryQuickSearch('高繼沖');
+      const qBce214 = ctrl._queryQuickSearch('西元前214年');
+      const qQiXingYan = ctrl._queryQuickSearch('七星巖');
       assert(
-        qSuShi.length > 0 && qSuShi[0].personKey === 'sushi' && qQingLi.length > 0 && qQingLi[0].year === 1044,
-        `Expected Traditional quick search for 蘇軾 and 慶曆四年 to succeed in locale=${loc}`
+        qSuShi.length > 0 && qSuShi[0].personKey === 'sushi' &&
+          qQingLi.length > 0 && qQingLi[0].year === 1044 &&
+          qPangXun.length > 0 && qPangXun[0].year === 868 &&
+          qGaoJiChong.length > 0 &&
+          qBce214.length > 0 && qBce214[0].year === -214 &&
+          qQiXingYan.length > 0,
+        `Expected Traditional quick search for 蘇軾, 慶曆四年, 龐勛, 高繼沖, 西元前214年, 七星巖 to succeed in locale=${loc}`
       );
     }
     ctrl.locale = prevLocale;
