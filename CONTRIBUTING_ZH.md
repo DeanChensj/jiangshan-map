@@ -137,3 +137,10 @@ npm test --prefix scripts/search-pinyin
      node scripts/audit_sources.js --fix          # 按规范格式排序
      node scripts/audit_sources.js --update       # 补出处后下调基线并提交
      ```
+5. **事件始末沙盘（`isStory: true`，`?event=<key>`）**：
+   - 新增重大历史事件始末沙盘（如 `anshi` 安史之乱、`jingkang` 靖康之变）时，需同步完成以下 5 处配置（由 `scripts/tests/suite_search_runtime.js` 自动门禁校验）：
+     1. **检索档案与双字词根别名（`js/lore_core.js`）**：在 `PERSON_PROFILES` 中添加 `"isStory": true` 条目，显式指定起始 `"dynastyKey"`、`"span"`、`"evCount"`，并在 `"aliases"` 中包含事件全称、**双字核心词根**（如 `"安史"`、`"靖康"`、`"赤壁"`、`"楚汉"`）、拼音及英文名，确保搜索框输入双字简写即可在首位命中 `kind: "story"`。
+     2. **大事记唯一 `[始末]` 入口（`js/app.js`）**：在 `_findStoryForMilestone` 中，将事件绑定到大事记里**唯一一个**最具代表性的里程碑（`<dynastyKey>:<year>`，如 `'tang:755'`、`'beisong:1127'`）。每个事件始末在全图大事记中必须且只能有 `1` 个 `[始末]` 徽章入口，切勿在同事件的多条大事上重复挂载。
+     3. **双阵营沙盘与跨朝代站点（`js/lore_detail.js`）**：在 `PERSON_EVENTS` 中定义 `"camps"`（两阵营朱/黛配色）与按时间排序的 `"stops"`；跨朝代事件需在各 `stop` 上标注 `"dynastyKey"`，疆域质变节点标注 `"isMapChange": true`；合围箭头 `"prongs"` 若发自前序已出现的站点，须标注 `"fromStopIdx"` 以复用前序站点圆珠。
+     4. **拼音检索词更新**：运行 `node scripts/gen_pinyin.js` 同步 `js/event_pinyin.js`。
+     5. **出处登记（`data/sources/persons.json`）**：登记 `person:<key>` 的正史或《资治通鉴》卷次出处。
