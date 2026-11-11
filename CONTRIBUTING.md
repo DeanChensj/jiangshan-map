@@ -27,6 +27,7 @@ We welcome contributions of all kinds, including:
 │   ├── atlas_trace.js       # Place Genealogy (点地溯源), Person Chronicles (点人溯事), multi-person comparison & Historical Journeys module
 │   ├── atlas_search.js      # Global Quick Search, Chinese Era & monarch parsing, event pinyin matching & ranking module
 │   ├── atlas_api.js         # AI-Native Public API (resolvePlace / inspect / locate), multi-stop custom route, deep-link restore & WebMCP module
+│   ├── atlas_track.js       # Anonymous button & feature click counter (deferred; batches counts to workers/stats, no cookies or personal data)
 │   ├── atlas_quiz.js        # Lazy-loaded Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
 │   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
 │   ├── lore_core.js         # First-paint & search lore: imperial eras (CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS), passes, gazetteer, person profiles & guqin tracks
@@ -36,6 +37,7 @@ We welcome contributions of all kinds, including:
 │   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
 │   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the X-Ray reference layer
 │   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
+├── workers/stats/           # Cloudflare Worker behind stats.deanchen.me: write-only endpoint storing click counts in Workers Analytics Engine
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill (SKILL.md) & zero-dependency CLI screenshot/inspection tool (scripts/jiangshan.py)
 └── scripts/

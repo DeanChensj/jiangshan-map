@@ -36,6 +36,9 @@ jobs:
       - name: Check data references against baseline
         run: node scripts/audit_sources.js --check
 
+      - name: Test the click-stats Worker
+        run: node workers/stats/test.js
+
       - name: Check first-paint synchronous script gzip budget
         run: node scripts/perf_budget.js --check
 

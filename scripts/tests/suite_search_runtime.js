@@ -2684,6 +2684,185 @@ async function runSearchRuntimeSuite(ctx) {
     }
   }
 
+  {
+    // js/atlas_track.js: anonymous click & feature counter. It is run here against a fake
+    // controller in the real load order: the deferred script executes first, then app.js's
+    // window listener (registered earlier, while parsing) creates the controller.
+    const trackSrc = fs.readFileSync(path.join(JS_DIR, 'atlas_track.js'), 'utf8');
+    assert(
+      /<script defer src="js\/atlas_track\.js\?v=/.test(indexHtml),
+      'atlas_track.js must load with defer so it stays out of the first-paint budget'
+    );
+
+    const bootTracker = ({ hostname = 'deanchen.me', search = '', doNotTrack = null } = {}) => {
+      const listeners = { window: {}, document: {} };
+      const on = (bag) => (type, fn) => (bag[type] = bag[type] || []).push(fn);
+      const fire = (bag, type, ev) => (bag[type] || []).forEach((fn) => fn(ev));
+      const timers = [];
+      const beacons = [];
+      class FakeApp {
+        constructor() {
+          this.locale = 'en';
+          this.activeTrace = null;
+          this.activePerson = null;
+        }
+        openGenealogyAt(lng, lat) {
+          this.activeTrace = [lng, lat];
+        }
+        openPersonChronicle(profiles) {
+          this.activePerson = { profiles };
+          return true;
+        }
+      }
+      const win = { innerWidth: 1280, addEventListener: on(listeners.window) };
+      const box = {
+        window: win,
+        document: { readyState: 'interactive', visibilityState: 'visible', addEventListener: on(listeners.document) },
+        location: { hostname, search },
+        navigator: {
+          doNotTrack,
+          sendBeacon: (url, blob) => beacons.push({ url, body: JSON.parse(blob.parts[0]) }),
+        },
+        Blob: class {
+          constructor(parts) {
+            this.parts = parts;
+          }
+        },
+        URLSearchParams,
+        setTimeout: (fn) => timers.push(fn),
+        setInterval: () => 0,
+      };
+      vm.createContext(box);
+      win.addEventListener('DOMContentLoaded', () => {
+        win.atlasApp = new FakeApp();
+      });
+      vm.runInContext(trackSrc, box, { filename: 'atlas_track.js' });
+      fire(listeners.document, 'DOMContentLoaded');
+      fire(listeners.window, 'DOMContentLoaded');
+      return {
+        win,
+        app: win.atlasApp,
+        FakeApp,
+        beacons,
+        runTimers: () => timers.splice(0).forEach((fn) => fn()),
+        click: (props) =>
+          fire(listeners.document, 'click', {
+            target: { dataset: {}, classList: [], tagName: 'BUTTON', parentElement: null, closest() { return this; }, ...props },
+          }),
+        flush: () => {
+          beacons.length = 0;
+          fire(listeners.window, 'pagehide');
+          const out = {};
+          for (const b of beacons) for (const [kind, name, n] of b.body.ev) out[`${kind}/${name}`] = n;
+          return out;
+        },
+      };
+    };
+
+    const t = bootTracker({ search: '?person=sushi&lang=en' });
+    const hooks = t.win.__ATLAS_TRACK_HOOKS;
+    assert(Array.isArray(hooks) && hooks.length >= 5, 'atlas_track.js must expose its feature hooks');
+    for (const method of hooks) {
+      assert.strictEqual(
+        typeof ControllerClass.prototype[method],
+        'function',
+        `atlas_track.js hooks a controller method that no longer exists: ${method}`
+      );
+    }
+    const ctrlSrc = ['app.js', 'atlas_trace.js', 'atlas_quiz.js']
+      .map((f) => fs.readFileSync(path.join(JS_DIR, f), 'utf8'))
+      .join('\n');
+    for (const needle of [
+      'this.activeTrace = ',
+      'this.activePerson = ',
+      'this.activePolity = ',
+      'this.eraFocus = ',
+      'this._scrubberView = ',
+      '.finished = true',
+      'act-return-person',
+      'act-return-story',
+    ]) {
+      assert(ctrlSrc.includes(needle), `atlas_track.js relies on controller code that no longer exists: ${needle}`);
+    }
+    assert(
+      indexHtml.includes('id="milestone-list"') && indexHtml.includes('id="genealogy-timeline"'),
+      'atlas_track.js counts clicks on rows inside #milestone-list and #genealogy-timeline'
+    );
+
+    const { app } = t;
+    // One user action is many calls: the app re-invokes openGenealogyAt after each lazy bundle
+    // loads and on every year change while the card stays open.
+    app.openGenealogyAt(108.94, 34.26);
+    app.openGenealogyAt(108.94, 34.26);
+    app.openGenealogyAt(108.94, 34.26);
+    app.activeTrace = null;
+    app.openGenealogyAt(108.94, 34.26);
+    app.openGenealogyAt(112.45, 34.62);
+
+    // The quiz bundle is lazy: its methods reach the prototype long after the hooks are set up,
+    // and until then the app relies on `typeof this.startChallenge` being 'undefined'.
+    assert.strictEqual(typeof app.startChallenge, 'undefined', 'A hook must not make an unloaded lazy method look present');
+    t.FakeApp.prototype.startChallenge = function () {
+      this.challenge = { finished: false };
+    };
+    t.FakeApp.prototype._finishChallenge = function () {
+      this.challenge.finished = true;
+    };
+    app.startChallenge();
+    app._finishChallenge();
+    app._finishChallenge();
+
+    app.openPersonChronicle([{ key: 'sushi' }]);
+    // Opening a place card from a chronicle clears it; the return button brings it back.
+    app.activePerson = null;
+    t.click({ id: 'act-return-person' });
+    app.openPersonChronicle([{ key: 'sushi' }]);
+    t.runTimers();
+    app.openPersonChronicle([{ key: 'libai' }, { key: 'dufu' }]);
+    app.openPersonChronicle([{ key: 'anshi', isStory: true }]);
+
+    t.click({ id: 'act-step-next' });
+    t.click({ id: 'act-step-next' });
+    t.click({ tagName: 'DIV', classList: ['is-active', 'band-cell'] });
+    t.click({ tagName: 'LI', parentElement: { closest: () => ({ id: 'milestone-list' }) } });
+
+    assert.deepStrictEqual(
+      t.flush(),
+      {
+        'entry/person': 1,
+        'feat/place_card': 3,
+        'feat/quiz_start': 1,
+        'feat/quiz_finish': 1,
+        'feat/person:sushi': 1,
+        'feat/multi:dufu.libai': 1,
+        'feat/story:anshi': 1,
+        'btn/act-return-person': 1,
+        'btn/act-step-next': 2,
+        'btn/c.band-cell': 1,
+        'btn/li.milestone-list': 1,
+      },
+      'atlas_track.js must count each feature once per open and each named control once per click'
+    );
+    assert.strictEqual(t.beacons.length, 1, 'One page view sends one beacon per flush');
+    assert.strictEqual(t.beacons[0].url, 'https://stats.deanchen.me/e');
+    assert.deepStrictEqual(
+      { v: t.beacons[0].body.v, l: t.beacons[0].body.l, w: t.beacons[0].body.w },
+      { v: 1, l: 'en', w: 'd' }
+    );
+    assert.deepStrictEqual(t.flush(), {}, 'Nothing is sent when nothing happened since the last flush');
+
+    for (const opts of [{ hostname: 'localhost' }, { hostname: '' }, { doNotTrack: '1' }]) {
+      const off = bootTracker(opts);
+      off.click({ id: 'act-music' });
+      off.app.openGenealogyAt(108.94, 34.26);
+      assert.deepStrictEqual(off.flush(), {}, `Tracker must stay off for ${JSON.stringify(opts)}`);
+      assert.strictEqual(
+        Object.getOwnPropertyDescriptor(off.app, 'openGenealogyAt'),
+        undefined,
+        'A disabled tracker must not touch the controller'
+      );
+    }
+  }
 }
 
 module.exports = { runSearchRuntimeSuite };
