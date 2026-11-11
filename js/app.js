@@ -4317,9 +4317,7 @@
       if (!dynasty || !m) return null;
       const map = {
         'tang:755': { key: 'anshi', stopIdx: -1, titleZh: '安史之乱' },
-        'beisong:1125': { key: 'jingkang', stopIdx: -1, titleZh: '靖康之变' },
         'beisong:1127': { key: 'jingkang', stopIdx: -1, titleZh: '靖康之变' },
-        'nansong:1127': { key: 'jingkang', stopIdx: -1, titleZh: '靖康之变' },
       };
       return map[`${dynasty.key}:${m.year}`] || null;
     }

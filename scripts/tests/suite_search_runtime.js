@@ -2594,8 +2594,8 @@ async function runSearchRuntimeSuite(ctx) {
       const mNs1127 = nansongDyn.milestones.find((m) => m.year === 1127);
       assert(
         ctrl._findStoryForMilestone(beisongDyn, mBs1127)?.key === 'jingkang' &&
-          ctrl._findStoryForMilestone(nansongDyn, mNs1127)?.key === 'jingkang',
-        'Both Northern Song 1127 (靖康之变) and Southern Song 1127 starting milestone must expose the [始末] storyline entry'
+          ctrl._findStoryForMilestone(nansongDyn, mNs1127) === null,
+        'Only the single canonical Northern Song 1127 (靖康之变) milestone must expose the [始末] storyline entry'
       );
 
       ctrl.openPersonChronicle('sushi', 5);
