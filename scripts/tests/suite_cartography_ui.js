@@ -126,6 +126,7 @@ async function runCartographyUiSuite(ctx) {
       's_dongjin_a2',
       's_dongjin_b',
       's_dongjin_b2',
+      's_dongjin_373',
       's_dongjin_c',
       's_dongjin_d0',
       's_dongjin_d1',
