@@ -4464,7 +4464,7 @@ window.EN_LOCALE = {
     "安庆": "Anqing",
     "桐城": "Tongcheng",
     "安徽桐城": "Tongcheng, Anhui",
-    "国家历史文化名城（2021年国务院批复，全国第138座）；桐城派故里；六尺巷所在；康熙六年隶安徽省安庆府": "National Historical and Cultural City (State Council, 2021; No. 138); hometown of the Tongcheng School; home of the Six-Foot Alley; under Anqing Prefecture, Anhui since 1667",
+    "桐城派故里；张英、张廷玉父子相继官至大学士，六尺巷所在；康熙六年改隶安徽省安庆府": "Hometown of the Tongcheng School; Zhang Ying and his son Zhang Tingyu both rose to Grand Secretary; home of the Six-Foot Alley; under Anqing, Anhui from 1667",
     "安阳·临漳": "Anyang (Linzhang)",
     "张家口·宣化": "Zhangjiakou (Xuanhua)",
     "昆明·晋宁": "Kunming (Jinning)",
