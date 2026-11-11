@@ -372,7 +372,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "dongjin:335": [
-      "Shi Hu moves Later Zhao capital to Ye; Murong Huang proclaims Former Yan at Jicheng",
+      "Shi Hu moves the Later Zhao capital to Ye; Murong Huang takes the title King of Yan in 337",
       "Ye · Jicheng"
     ],
     "dongjin:347": [
@@ -388,7 +388,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "dongjin:352": [
-      "Former Yan destroys Ran Wei; Murong Jun proclaims emperor at Ye",
+      "Former Yan destroys Ran Wei and takes Ye; Murong Jun proclaims himself emperor",
       "Weichang · Ye"
     ],
     "dongjin:353": [
@@ -412,19 +412,19 @@ window.EN_LOCALE = {
       "Ye"
     ],
     "dongjin:376": [
-      "Former Qin takes Ba-Shu from Jin and conquers Former Liang & Dai to unify North",
-      "Guzang · Chengdu"
+      "Former Qin conquers Former Liang & Dai to unify the North (Ba-Shu already taken in 373)",
+      "Guzang · Shengle"
     ],
     "dongjin:383": [
       "Battle of Fei River: Xie An & Xie Xuan’s Beifu army routs Fu Jian; Former Qin collapses",
       "Fei River (Shouyang)"
     ],
     "dongjin:384": [
-      "Murong Chui founds Later Yan & Yao Chang founds Later Qin; Jin retakes Ba-Shu",
+      "Murong Chui founds Later Yan, Yao Chang Later Qin; Jin retakes Jing-Xiang, then Yizhou in 385",
       "Zhongshan · Chang'an"
     ],
     "dongjin:385": [
-      "Qifu Guoren founds Western Qin; Lü Guang founds Later Liang",
+      "Qifu Guoren founds Western Qin; Lü Guang seizes Guzang and founds Later Liang in 386",
       "Fuhan (Linxia)"
     ],
     "dongjin:386": [
@@ -436,7 +436,7 @@ window.EN_LOCALE = {
       "Canhe Slope (Datong)"
     ],
     "dongjin:397": [
-      "Tufa Wugu founds Southern Liang at Ledu; Duan Ye & Juqu Mengxun found Northern Liang",
+      "Tufa Wugu founds Southern Liang at Ledu; Duan Ye & Juqu Mengxun found Northern Liang at Jiankang",
       "Ledu · Zhangye"
     ],
     "dongjin:398": [
