@@ -411,8 +411,12 @@ window.EN_LOCALE = {
       "Wang Meng routs 300,000 Former Yan troops at Luchuan and captures Ye, destroying Former Yan",
       "Ye"
     ],
+    "dongjin:373": [
+      "Former Qin takes Liang and Yi provinces from Jin as Zhou Zhongsun retreats to Nanzhong",
+      "Chengdu"
+    ],
     "dongjin:376": [
-      "Former Qin conquers Former Liang & Dai to unify the North (Ba-Shu already taken in 373)",
+      "Former Qin conquers Former Liang & Dai and unifies North China",
       "Guzang · Shengle"
     ],
     "dongjin:383": [
@@ -4639,7 +4643,8 @@ window.EN_LOCALE = {
     "951 — 958 · 后周太祖与世宗初期：郭威建周，北汉据太原依附辽国，南唐仍据江北淮南": "951–958 · Early Later Zhou: Guo Wei founds Later Zhou; Northern Han holds Taiyuan while Southern Tang holds Huainan north of the Yangtze",
     "317 — 329 · 东晋初立与两赵并立：司马睿建晋于建康，北方前赵（汉赵）与石勒后赵分据关陇河北": "317–329 · Founding of Eastern Jin & Two Zhaos: Eastern Jin at Jiankang; Former Zhao and Shi Le’s Later Zhao divide North China",
     "329 — 347 · 后赵统一北方大部：石勒灭前赵尽有中原关陇，与东晋、成汉、前凉、前燕并立": "329–347 · Later Zhao Unifies Most of the North: Shi Le conquers Former Zhao, facing Eastern Jin, Cheng-Han, Former Liang & Former Yan",
-    "370 — 376 · 前秦灭前燕：苻坚、王猛攻灭前燕尽吞华北，河西前凉与塞北代国尚存": "370–376 · Former Qin Conquers Former Yan: Fu Jian and Wang Meng annex Former Yan across North China while Former Liang and Dai remain",
+    "370 — 373 · 前秦灭前燕：苻坚、王猛攻灭前燕尽吞华北，河西前凉与塞北代国尚存": "370–373 · Former Qin Conquers Former Yan: Fu Jian and Wang Meng annex Former Yan across North China while Former Liang and Dai remain",
+    "373 — 376 · 前秦取梁、益：周仲孙退走南中，巴蜀入秦，河西前凉与塞北代国尚存": "373–376 · Former Qin Takes Liang and Yi: Zhou Zhongsun retreats to Nanzhong and Ba-Shu falls to Qin while Former Liang and Dai remain",
     "后燕": "Later Yan",
     "后凉": "Later Liang",
     "东阳（青州）": "Dongyang (Qingzhou)",
@@ -6992,8 +6997,8 @@ window.EN_LOCALE = {
     "413 — 417 · 朱龄石平谯蜀收复巴蜀：东晋尽复四川，北方北魏、后秦、西秦、胡夏、北燕、北凉并立": "413–417 · Zhu Lingshi Conquers Qiao Shu: Eastern Jin Recovers Sichuan Alongside Northern Wei, Later/Western Qin, Hu Xia, Northern Yan & Northern Liang",
     "姑臧 · 成都": "Guzang · Chengdu",
     "统万城 · 洛阳": "Tongwancheng · Luoyang",
-    "376 — 384 · 苻坚统一北方并取巴蜀：前秦尽兼北方与巴蜀，与东晋沿淮水—淝水对峙（383 淝水之战）": "376–384 · Fu Jian Unifies North & Takes Ba-Shu: Former Qin Holds Northern China & Sichuan Against Eastern Jin (383 Fei River)",
-    "384 — 385 · 慕容垂建后燕、姚苌建后秦：淝水战后东晋收复巴蜀荆襄，北方再度分裂": "384–385 · Founding of Later Yan & Later Qin After Fei River: Eastern Jin Recovers Ba-Shu & Jing-Xiang as North Fragments",
+    "376 — 384 · 苻坚统一北方：前秦灭前凉、代国尽兼北方，与东晋沿淮水—淝水对峙（383 淝水之战）": "376–384 · Fu Jian Unifies the North: Former Qin Conquers Former Liang & Dai and Faces Eastern Jin Along the Huai (383 Fei River)",
+    "384 — 385 · 慕容垂建后燕、姚苌建后秦：淝水战后东晋收复荆襄，前秦益州刺史仍守成都，北方再度分裂": "384–385 · Founding of Later Yan & Later Qin After Fei River: Eastern Jin Recovers Jing-Xiang While Qin Still Holds Chengdu",
     "420 — 427 · 刘裕代晋建宋：南朝刘宋立国，北方北魏、胡夏、西秦、北燕、北凉并立": "420–427 · Liu Yu Founds Liu Song: Southern Dynasty Song Alongside Northern Wei, Hu Xia, Western Qin, Northern Yan & Northern Liang",
     "427 — 431 · 北魏攻克统万城并取关中河南：胡夏退保陇东，与北魏、刘宋、西秦、北燕、北凉并立": "427–431 · Northern Wei Captures Tongwancheng, Guanzhong & Henan: Hu Xia Retreats to Longdong Alongside Western Qin, Northern Yan & Northern Liang",
     "431 — 436 · 西秦与胡夏相继败亡：北魏尽取关中陇右，与刘宋、北燕、北凉并立": "431–436 · Fall of Western Qin & Hu Xia: Northern Wei Secures Guanzhong & Longyou Alongside Liu Song, Northern Yan & Northern Liang",
