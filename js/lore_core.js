@@ -807,6 +807,8 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"name":"武川镇","aliases":["武川","北魏六镇","六镇"],"modern":"内蒙古呼和浩特·武川","coord":[111.65,40.68],"zoom":2.3},
     {"name":"怀朔镇","aliases":["怀朔","沃野镇"],"modern":"内蒙古包头·固阳","coord":[109.84,40.66],"zoom":2.3},
     {"name":"赤嵌","aliases":["热兰遮城","安平","东都","东宁","承天府（东宁）","夷洲","流求","瑠求","小琉球","东番"],"asciiAliases":["chikan","tayouan","zeelandia","dongning","tungning","yizhou","liuqiu","xiaoliuqiu","dongfan"],"modern":"台湾台南","coord":[120.21,23],"zoom":2.4}
+  ,
+    {"name":"桐城","aliases":["同安","桐城县","桐城市"],"asciiAliases":["tongcheng","tongan","tongchengshi"],"modern":"安徽桐城","coord":[116.951,31.051],"zoom":2.6}
   ],
   "PERSON_PROFILES": [
     {"key":"mengzi","zh":"孟子","en":"Mencius","courtesyZh":"孟轲 · 亚圣 · 仁政民本","courtesyEn":"Meng Ke, Second Sage of Confucianism","dynastyKey":"zhanguo","span":[-372,-289],"aliases":["孟轲","亚圣","孟子舆"],"evCount":3},
