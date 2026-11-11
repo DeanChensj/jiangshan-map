@@ -1,8 +1,17 @@
 {
+  "fashuyaolu": { "zh": "张彦远《法书要录》", "en": "Zhang Yanyuan, Fashu Yaolu", "kind": "primary", "url": "https://zh.wikisource.org/wiki/法書要錄" },
+  "haotaiwangbei": { "zh": "《国冈上广开土境平安好太王碑》", "en": "Gwanggaeto Stele", "kind": "primary", "url": "https://zh.wikisource.org/wiki/國岡上廣開土境平安好太王碑" },
+  "jinshu": { "zh": "房玄龄等《晋书》", "en": "Fang Xuanling et al., Book of Jin (Jin Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/晉書" },
   "jiutangshu": { "zh": "刘昫等《旧唐书》", "en": "Liu Xu et al., Old Book of Tang (Jiu Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/舊唐書" },
+  "nanshi": { "zh": "李延寿《南史》", "en": "Li Yanshou, History of the Southern Dynasties (Nan Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/南史" },
+  "quantangwen": { "zh": "董诰等《全唐文》", "en": "Dong Gao et al., Quan Tang Wen", "kind": "primary", "url": "https://zh.wikisource.org/wiki/全唐文" },
+  "sanbaoganton": { "zh": "道宣《集神州三宝感通录》", "en": "Daoxuan, Ji Shenzhou Sanbao Gantong Lu", "kind": "primary", "url": "https://zh.wikisource.org/wiki/集神州三寶感通錄" },
   "songshi": { "zh": "脱脱等《宋史》", "en": "Tuotuo et al., History of Song (Song Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/宋史" },
+  "songshu": { "zh": "沈约《宋书》", "en": "Shen Yue, Book of Song (Song Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/宋書" },
   "suishu": { "zh": "魏徵等《隋书》", "en": "Wei Zheng et al., Book of Sui (Sui Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/隋書" },
   "tangzhiyan": { "zh": "王定保《唐摭言》", "en": "Wang Dingbao, Tang Zhiyan", "kind": "primary", "url": "https://zh.wikisource.org/wiki/唐摭言" },
+  "taoyuanmingji": { "zh": "陶渊明《陶渊明集》", "en": "Tao Yuanming, Collected Works", "kind": "primary", "url": "https://zh.wikisource.org/wiki/陶淵明集" },
   "tongdian": { "zh": "杜佑《通典》", "en": "Du You, Tongdian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/通典" },
+  "weishu": { "zh": "魏收《魏书》", "en": "Wei Shou, Book of Wei (Wei Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/魏書" },
   "zztj": { "zh": "司马光《资治通鉴》", "en": "Sima Guang, Zizhi Tongjian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/資治通鑑" }
 }
