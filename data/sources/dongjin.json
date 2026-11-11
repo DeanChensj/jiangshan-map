@@ -5,7 +5,7 @@
   "event:dongjin:320": [{ "w": "zztj", "loc": "卷91 晋纪十三 太兴三年六月；太兴四年九月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷091", "note": "祖逖卒于雍丘在太兴四年（321）九月" }],
   "event:dongjin:322": [{ "w": "zztj", "loc": "卷92 晋纪十四 永昌元年三月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷092" }],
   "event:dongjin:351": [{ "w": "zztj", "loc": "卷99 晋纪二十一 永和七年正月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷099" }],
-  "event:dongjin:351b": [{ "w": "zztj", "loc": "卷99 晋纪二十一 永和七年二月至四月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷099", "note": "冉闵围襄国未克，三月大败走还邺；四月刘显弑石祗，传首于邺" }],
+  "event:dongjin:351b": [{ "w": "zztj", "loc": "卷99 晋纪二十一 永和七年二月至四月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷099", "note": "冉闵围襄国百余日未克，三月大败走还邺；四月刘显弑石祗，传首于邺，后赵亡" }, { "w": "zztj", "loc": "卷99 晋纪二十一 永和八年正月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷099", "note": "次年冉闵击败称帝于襄国的刘显，“显大将军曹伏驹开门纳闵”，杀显，焚襄国宫室，迁其民于邺：冉闵入襄国在永和八年（352）正月，石祗死后" }],
   "event:dongjin:353": [{ "w": "jinshu", "loc": "卷80 列传第五十 王羲之传", "url": "https://zh.wikisource.org/wiki/晉書/卷080" }, { "w": "fashuyaolu", "loc": "卷三 何延之《兰亭记》", "url": "https://zh.wikisource.org/wiki/法書要錄/卷三", "note": "列与会者有陈郡谢安安石；《晋书》王羲之传未列谢安于兰亭与会者中" }],
   "event:dongjin:355": [{ "w": "jinshu", "loc": "卷80 列传第五十 王羲之传", "url": "https://zh.wikisource.org/wiki/晉書/卷080", "note": "誓墓去官在永和十一年三月；“金庭”“剡”原传未载" }, { "w": "quantangwen", "loc": "卷729 裴通《金庭观晋右军书楼墨池记》", "url": "https://zh.wikisource.org/wiki/金庭觀晉右軍書樓墨池記", "note": "唐元和二年（807）记，称王羲之“家于此山”（剡县金庭），未言何时" }],
   "event:dongjin:357": [{ "w": "zztj", "loc": "卷100 晋纪二十二 升平元年三月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷100" }],
