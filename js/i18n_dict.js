@@ -168,7 +168,7 @@ window.EN_LOCALE = {
       "Xianyang"
     ],
     "qin:-215": [
-      "Meng Tian drives the Xiongnu from the Ordos Loop and links the Great Wall",
+      "Meng Tian drives the Xiongnu from the Ordos Loop, then links the Great Wall over several years",
       "Jiuyuan (Ordos)"
     ],
     "qin:-214": [
@@ -940,8 +940,8 @@ window.EN_LOCALE = {
       "Shanghai"
     ],
     "qin:-212": [
-      "First Emperor orders Meng Tian to build the 700 km Qin Direct Road from Xianyang to Jiuyuan",
-      "Xianyang · Jiuyuan"
+      "First Emperor orders Meng Tian to build the 700 km Qin Direct Road from Jiuyuan to Yunyang",
+      "Jiuyuan · Yunyang"
     ],
     "qin:-210": [
       "Shaqiu Coup: First Emperor dies; Zhao Gao and Li Si forge an edict to enthrone Huhai",

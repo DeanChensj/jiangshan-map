@@ -1,0 +1,8 @@
+{
+  "name": "jiangshan-stats",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test.js"
+  }
+}

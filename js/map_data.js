@@ -118,10 +118,10 @@ window.DYNASTY_DATA = [
     "summary": "秦灭六国，首次建立大一统的中央集权帝国，分天下为三十六郡（后增至四十余郡），推行书同文、车同轨、统一度量衡。蒙恬北逐匈奴收河套、筑长城与秦直道；南开灵渠平百越，置南海、桂林、象郡。前209年陈胜吴广起义，秦亡后楚汉相争。",
     "milestones": [
       {"year":-221,"headline":"王贲受齐王建降，秦王嬴政统一六国称始皇帝，行郡县、书同文车同轨","site":"咸阳","coord":[108.711,34.331],"persons":["qinshihuang","lisi","wangjian","mengtian"]},
-      {"year":-215,"headline":"蒙恬北击匈奴，收复河套，连接长城","site":"九原（河套）","coord":[109.901,40.601],"persons":["qinshihuang","mengtian"],"isMapChange":true},
+      {"year":-215,"headline":"蒙恬北击匈奴收复河套，其后数年连筑长城","site":"九原（河套）","coord":[109.901,40.601],"persons":["qinshihuang","mengtian"],"isMapChange":true},
       {"year":-214,"headline":"秦军开凿灵渠通湘漓，平定岭南置桂林、象、南海三郡","site":"灵渠 · 番禺","coord":[113.261,23.131],"siteCoords":[[110.69,25.6],[113.261,23.131]],"isMapChange":true},
       {"year":-213,"headline":"秦始皇采李斯议下“焚书令”，次年于咸阳坑杀方士儒生","site":"咸阳","coord":[108.711,34.331],"persons":["qinshihuang","lisi"]},
-      {"year":-212,"headline":"蒙恬奉诏修筑秦直道（咸阳至九原）","site":"咸阳 · 九原","coord":[109.201,37.401],"siteCoords":[[108.701,34.331],[109.841,40.661]]},
+      {"year":-212,"headline":"蒙恬奉诏修筑秦直道（九原至云阳）","site":"九原 · 云阳","coord":[109.201,37.401],"siteCoords":[[109.841,40.661],[108.551,34.971]]},
       {"year":-210,"headline":"沙丘政变：始皇崩于沙丘，赵高李斯矫诏杀扶苏立胡亥","site":"沙丘（广宗）","coord":[115.151,37.071],"persons":["qinshihuang","lisi","mengtian"]},
       {"year":-209,"headline":"陈胜吴广大泽乡起义建张楚；武臣、韩广、田儋相继复立赵、燕、齐","site":"大泽乡","coord":[116.601,33.601],"isMapChange":true},
       {"year":-207,"headline":"项羽巨鹿之战破釜沉舟；南海尉赵佗绝秦道并桂林、象郡据岭南自立","site":"巨鹿 · 番禺","coord":[115.031,37.221],"siteCoords":[[115.031,37.221],[113.261,23.131]],"isMapChange":true},

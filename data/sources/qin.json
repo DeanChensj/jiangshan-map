@@ -1,0 +1,18 @@
+{
+  "event:qin:-207": [{ "w": "shiji", "loc": "卷8 高祖本纪 攻武关、蓝田及汉元年十月", "url": "https://zh.wikisource.org/wiki/史記/卷008" }, { "w": "shiji", "loc": "卷55 留侯世家 下宛、西入武关及破峣下军", "url": "https://zh.wikisource.org/wiki/史記/卷055" }, { "w": "zztj", "loc": "卷8 秦纪三 二世三年八月攻武关、九月破峣关秦军", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷008" }, { "w": "zztj", "loc": "卷9 汉纪一 高帝元年十月 子婴出降", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷009" }],
+  "event:qin:-207b": [{ "w": "shiji", "loc": "卷7 项羽本纪 救巨鹿、九战破王离军及章邯降楚", "url": "https://zh.wikisource.org/wiki/史記/卷007" }, { "w": "zztj", "loc": "卷8 秦纪三 二世三年 巨鹿破王离军及章邯降楚", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷008" }],
+  "event:qin:-208b": [{ "w": "shiji", "loc": "卷87 李斯列传 二世二年七月", "url": "https://zh.wikisource.org/wiki/史記/卷087" }],
+  "event:qin:-209b": [{ "w": "shiji", "loc": "卷7 项羽本纪 秦二世元年九月及项梁渡江西进", "url": "https://zh.wikisource.org/wiki/史記/卷007" }, { "w": "zztj", "loc": "卷7 秦纪二 二世元年九月 项梁起兵于吴", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007" }, { "w": "zztj", "loc": "卷8 秦纪三 二世二年 项梁率八千人渡江西进", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷008" }],
+  "event:qin:-209d": [{ "w": "shiji", "loc": "卷48 陈涉世家 二世元年 起兵攻陈、立张楚", "url": "https://zh.wikisource.org/wiki/史記/卷048" }],
+  "event:qin:-210b": [{ "w": "shiji", "loc": "卷87 李斯列传 沙丘矫诏及扶苏自杀、蒙恬系阳周", "url": "https://zh.wikisource.org/wiki/史記/卷087" }, { "w": "shiji", "loc": "卷88 蒙恬列传 蒙恬囚阳周及吞药自杀", "url": "https://zh.wikisource.org/wiki/史記/卷088" }, { "w": "zztj", "loc": "卷7 秦纪二 始皇三十七年 扶苏自杀、蒙恬囚阳周及二世诛蒙氏", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007" }],
+  "event:qin:-218": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇二十九年", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷55 留侯世家 博浪沙狙击始皇、亡匿下邳", "url": "https://zh.wikisource.org/wiki/史記/卷055" }],
+  "event:qin:-219": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇二十八年 登琅邪、作琅邪台", "url": "https://zh.wikisource.org/wiki/史記/卷006" }],
+  "event:qin:-221": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇二十六年 收天下兵、铸十二金人", "url": "https://zh.wikisource.org/wiki/史記/卷006" }],
+  "event:qin:-221b": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇二十六年 王贲攻齐", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷46 田敬仲完世家 齐王建四十四年", "url": "https://zh.wikisource.org/wiki/史記/卷046" }, { "w": "hanshu", "loc": "卷28上 地理志第八上 齐郡", "url": "https://ancient-china-books.github.io/hanshu/OEBPS/Text/028a.htm" }],
+  "milestone:qin:-209": [{ "w": "shiji", "loc": "卷48 陈涉世家 二世元年 起兵、立张楚及武臣、韩广、田儋称王", "url": "https://zh.wikisource.org/wiki/史記/卷048" }],
+  "milestone:qin:-210": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇三十七年七月", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷87 李斯列传 沙丘之谋、矫诏立胡亥及扶苏自杀", "url": "https://zh.wikisource.org/wiki/史記/卷087" }],
+  "milestone:qin:-212": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇三十五年 通九原至云阳道", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷88 蒙恬列传 通九原至甘泉道", "url": "https://zh.wikisource.org/wiki/史記/卷088" }, { "w": "zztj", "loc": "卷7 秦纪二 始皇三十五年 通九原至云阳直道", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007" }],
+  "milestone:qin:-213": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇三十四年 李斯议焚书", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷6 秦始皇本纪 始皇三十五年 坑诸生于咸阳", "url": "https://zh.wikisource.org/wiki/史記/卷006" }],
+  "milestone:qin:-215": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇三十二年至三十四年", "url": "https://zh.wikisource.org/wiki/史記/卷006" }, { "w": "shiji", "loc": "卷88 蒙恬列传 北逐戎狄、收河南及筑长城", "url": "https://zh.wikisource.org/wiki/史記/卷088" }, { "w": "zztj", "loc": "卷7 秦纪二 始皇三十二年至三十四年", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷007" }],
+  "milestone:qin:-221": [{ "w": "shiji", "loc": "卷6 秦始皇本纪 始皇二十六年", "url": "https://zh.wikisource.org/wiki/史記/卷006" }]
+}

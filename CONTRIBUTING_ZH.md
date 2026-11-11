@@ -21,12 +21,13 @@
 ├── llms.txt                 # 面向 LLM 与 AI Agent 的机器可读接入协议说明
 ├── css/style.css            # 宣纸水墨设色主题样式与响应式布局
 ├── data/atlas/              # 多边形产物的可编辑源数据：每个快照一个 GeoJSON 文件，按朝代分目录，另含 index.json
-├── data/sources/            # 大事、事件、城邑、行迹与人物的出处（只存于仓库，网站不加载）
+├── data/sources/            # 大事、事件、行迹与人物的出处（只存于仓库，网站不加载）
 ├── js/
 │   ├── app.js               # 核心控制器：墨卡托投影、碰撞避让排布、时间轴、镜头控制与事件绑定
 │   ├── atlas_trace.js       # 点地溯源、点人溯事、双/三人同屏对比与青史行迹子模块
 │   ├── atlas_search.js      # 全局快搜、帝王年号解析、事件拼音匹配与排序子模块
 │   ├── atlas_api.js         # AI 原生接口（resolvePlace / inspect / locate）、自定义多站路线、URL 深链恢复与 WebMCP 子模块
+│   ├── atlas_track.js       # 匿名按钮与功能点击计数（延迟加载；批量上报到 workers/stats，不使用 cookie，不含个人信息）
 │   ├── atlas_quiz.js        # 按需懒加载古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
 │   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目
@@ -36,6 +37,7 @@
 │   ├── atlas_snapshots.js   # 由 data/atlas/ 生成：拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（按需惰性加载与解码）
 │   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（古今透视镜）
 │   └── i18n_dict.js         # 中英双语词典与历史专有名词对照表
+├── workers/stats/           # stats.deanchen.me 背后的 Cloudflare Worker：只写入口，把点击计数存入 Workers Analytics Engine
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/
@@ -128,8 +130,8 @@ npm test --prefix scripts/search-pinyin
      node scripts/repair_topology.js wudai --write   # 改写源文件、重建产物并下调基线
      ```
 4. **出处（`data/sources/`）**：
-   - 出处写在 `data/sources/` 中，按记录键索引（`milestone:tang:630`、`event:tang:692b`、`settlement:tang:长安`、`journey:<key>:<year>`、`person:<key>`），书目在 `data/sources/works.json` 中登记一次。网站不加载这些文件，补出处不影响加载速度。格式见 [`data/sources/README_ZH.md`](data/sources/README_ZH.md)。
-   - 审计上线前已有的记录登记在 `data/sources/baseline.json` 中，暂不要求出处；**新增的大事、地标事件、城邑、行迹站点或人物必须至少附一条出处**，否则 CI 不通过。每个地标事件有固定的 `id`（`<朝代>:<年份>`，重复时加字母 b、c……），已有的 id 不要改。
+   - 出处写在 `data/sources/` 中，按记录键索引（`milestone:tang:630`、`event:tang:692b`、`journey:<key>:<year>`、`person:<key>`），书目在 `data/sources/works.json` 中登记一次。网站不加载这些文件，补出处不影响加载速度。格式见 [`data/sources/README_ZH.md`](data/sources/README_ZH.md)。
+   - 审计上线前已有的记录登记在 `data/sources/baseline.json` 中，暂不要求出处；**新增的大事、地标事件、行迹站点或人物必须至少附一条出处**，否则 CI 不通过。城邑点位不需要出处。每个地标事件有固定的 `id`（`<朝代>:<年份>`，重复时加字母 b、c……），已有的 id 不要改。
    - **每条出处都须由人对照原书核实。** 不要直接提交 AI 工具生成、未经核对的出处：卷次写错比不写更糟。只注明书名与卷次 / 页码，不要摘抄原文。
      ```bash
      node scripts/audit_sources.js                # 覆盖率
@@ -137,3 +139,10 @@ npm test --prefix scripts/search-pinyin
      node scripts/audit_sources.js --fix          # 按规范格式排序
      node scripts/audit_sources.js --update       # 补出处后下调基线并提交
      ```
+5. **事件始末沙盘（`isStory: true`，`?event=<key>`）**：
+   - 新增重大历史事件始末沙盘（如 `anshi` 安史之乱、`jingkang` 靖康之变）时，需同步完成以下 5 处配置（由 `scripts/tests/suite_search_runtime.js` 自动门禁校验）：
+     1. **检索档案与双字词根别名（`js/lore_core.js`）**：在 `PERSON_PROFILES` 中添加 `"isStory": true` 条目，显式指定起始 `"dynastyKey"`、`"span"`、`"evCount"`，并在 `"aliases"` 中包含事件全称、**双字核心词根**（如 `"安史"`、`"靖康"`、`"赤壁"`、`"楚汉"`）、拼音及英文名，确保搜索框输入双字简写即可在首位命中 `kind: "story"`。
+     2. **大事记唯一 `[始末]` 入口（`js/app.js`）**：在 `_findStoryForMilestone` 中，将事件绑定到大事记里**唯一一个**最具代表性的里程碑（`<dynastyKey>:<year>`，如 `'tang:755'`、`'beisong:1127'`）。每个事件始末在全图大事记中必须且只能有 `1` 个 `[始末]` 徽章入口，切勿在同事件的多条大事上重复挂载。
+     3. **双阵营沙盘与跨朝代站点（`js/lore_detail.js`）**：在 `PERSON_EVENTS` 中定义 `"camps"`（两阵营朱/黛配色）与按时间排序的 `"stops"`；跨朝代事件需在各 `stop` 上标注 `"dynastyKey"`，疆域质变节点标注 `"isMapChange": true`；合围箭头 `"prongs"` 若发自前序已出现的站点，须标注 `"fromStopIdx"` 以复用前序站点圆珠。
+     4. **拼音检索词更新**：运行 `node scripts/gen_pinyin.js` 同步 `js/event_pinyin.js`。
+     5. **出处登记（`data/sources/persons.json`）**：登记 `person:<key>` 的正史或《资治通鉴》卷次出处。
