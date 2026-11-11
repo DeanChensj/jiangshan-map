@@ -4313,6 +4313,9 @@
       return idx !== undefined ? idx : null;
     }
 
+    // Invariant: each Event Storyline (`isStory: true` in PERSON_PROFILES) maps to
+    // EXACTLY ONE canonical milestone (`<dynastyKey>:<year>`) for its `[始末]` badge.
+    // Never attach `[始末]` to multiple milestones for the same story (enforced in suite_search_runtime.js).
     _findStoryForMilestone(dynasty, m) {
       if (!dynasty || !m) return null;
       const map = {

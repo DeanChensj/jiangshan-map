@@ -2598,6 +2598,39 @@ async function runSearchRuntimeSuite(ctx) {
         'Only the single canonical Northern Song 1127 (靖康之变) milestone must expose the [始末] storyline entry'
       );
 
+      // Universal Event Storyline (`isStory: true`) invariants:
+      // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.
+      // 2) Must map to EXACTLY ONE `[始末]` milestone across all dynasties in `_findStoryForMilestone`.
+      const allStoryProfiles = (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory);
+      assert(allStoryProfiles.length >= 2, 'Expected at least 2 Event Storylines (anshi, jingkang)');
+      for (const sp of allStoryProfiles) {
+        assert(
+          typeof sp.dynastyKey === 'string' && dynasties.some((d) => d.key === sp.dynastyKey),
+          `Storyline "${sp.key}" must specify a valid dynastyKey in PERSON_PROFILES`
+        );
+        const twoCharStem = (sp.aliases || []).find((a) => /^[\u4e00-\u9fa5]{2}$/.test(a));
+        assert(
+          twoCharStem,
+          `Storyline "${sp.key}" (${sp.zh}) must include a 2-character Chinese stem alias in PERSON_PROFILES.aliases`
+        );
+        const stemHits = ctrl._queryQuickSearch(twoCharStem);
+        assert(
+          stemHits.length > 0 && stemHits[0].kind === 'story' && stemHits[0].storyKey === sp.key,
+          `2-char stem alias "${twoCharStem}" must rank storyline "${sp.key}" (kind="story") first in quick search`
+        );
+        let badgeCount = 0;
+        for (const d of dynasties) {
+          for (const m of d.milestones || []) {
+            if (ctrl._findStoryForMilestone(d, m)?.key === sp.key) badgeCount++;
+          }
+        }
+        assert.strictEqual(
+          badgeCount,
+          1,
+          `Storyline "${sp.key}" (${sp.zh}) must have EXACTLY 1 [始末] milestone badge in _findStoryForMilestone (found ${badgeCount})`
+        );
+      }
+
       ctrl.openPersonChronicle('sushi', 5);
       const sushiEvs = ctrl.activePerson.events;
       assert.strictEqual(

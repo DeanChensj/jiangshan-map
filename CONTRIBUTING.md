@@ -137,3 +137,10 @@ The isolated build tool pins `pinyin-pro`; the browser loads the generated index
      node scripts/audit_sources.js --fix          # Sort keys into canonical form
      node scripts/audit_sources.js --update       # After adding references: shrink the baseline and commit it
      ```
+5. **Event Storyline Sandtables (`isStory: true`, `?event=<key>`)**:
+   - When adding an Event Storyline sandtable (such as `anshi` for the An Lushan Rebellion or `jingkang` for the Jingkang Catastrophe), complete all 5 touchpoints below (enforced by `scripts/tests/suite_search_runtime.js`):
+     1. **Search Profile & 2-Char Stem Alias (`js/lore_core.js`)**: Register an `"isStory": true` entry in `PERSON_PROFILES` with an explicit starting `"dynastyKey"`, `"span"`, `"evCount"`, and `"aliases"` that include the full title, a **2-character Chinese stem** (e.g., `"安史"`, `"靖康"`, `"赤壁"`, `"楚汉"`), pinyin, and English names so bare 2-character queries rank `kind: "story"` first.
+     2. **Single Canonical `[始末]` Badge (`js/app.js`)**: In `_findStoryForMilestone`, map the storyline to **exactly one** canonical milestone (`<dynastyKey>:<year>`, e.g., `'tang:755'`, `'beisong:1127'`). Each storyline must expose a single `[始末]` badge across the entire chronicle—never attach duplicate badges to multiple milestones for the same event.
+     3. **Two-Camp Sandtable & Cross-Dynasty Stops (`js/lore_detail.js`)**: Define `"camps"` (two contrasting faction palettes) and chronological `"stops"` in `PERSON_EVENTS`. For cross-dynasty storylines, set `"dynastyKey"` on each stop and `"isMapChange": true` on territorial transitions; when a converging prong in `"prongs"` originates from an earlier stop, set `"fromStopIdx"` so it reuses that stop's numbered bead rather than spawning a duplicate origin dot.
+     4. **Pinyin Index Sync**: Run `node scripts/gen_pinyin.js` to update `js/event_pinyin.js`.
+     5. **Primary Source Reference (`data/sources/persons.json`)**: Add a verified primary-source reference for `person:<key>`.
