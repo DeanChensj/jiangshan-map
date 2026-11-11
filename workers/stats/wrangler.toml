@@ -1,0 +1,12 @@
+name = "jiangshan-stats"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+workers_dev = false
+
+routes = [
+  { pattern = "stats.deanchen.me", custom_domain = true }
+]
+
+[[analytics_engine_datasets]]
+binding = "CLICKS"
+dataset = "jiangshan_clicks"

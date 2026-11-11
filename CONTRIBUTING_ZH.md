@@ -27,6 +27,7 @@
 │   ├── atlas_trace.js       # 点地溯源、点人溯事、双/三人同屏对比与青史行迹子模块
 │   ├── atlas_search.js      # 全局快搜、帝王年号解析、事件拼音匹配与排序子模块
 │   ├── atlas_api.js         # AI 原生接口（resolvePlace / inspect / locate）、自定义多站路线、URL 深链恢复与 WebMCP 子模块
+│   ├── atlas_track.js       # 匿名按钮与功能点击计数（延迟加载；批量上报到 workers/stats，不使用 cookie，不含个人信息）
 │   ├── atlas_quiz.js        # 按需懒加载古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
 │   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
 │   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目
@@ -36,6 +37,7 @@
 │   ├── atlas_snapshots.js   # 由 data/atlas/ 生成：拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（按需惰性加载与解码）
 │   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（古今透视镜）
 │   └── i18n_dict.js         # 中英双语词典与历史专有名词对照表
+├── workers/stats/           # stats.deanchen.me 背后的 Cloudflare Worker：只写入口，把点击计数存入 Workers Analytics Engine
 ├── skills/
 │   └── jiangshan-atlas/     # Agent Skill 技能定义（SKILL.md）与零依赖 CLI 截图/查询脚本（scripts/jiangshan.py）
 └── scripts/

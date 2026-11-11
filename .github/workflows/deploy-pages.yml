@@ -8,6 +8,7 @@ on:
       - 'docs/**'
       - 'scripts/**'
       - 'skills/**'
+      - 'workers/**'
       - 'data/**'
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
@@ -44,6 +45,7 @@ jobs:
             --exclude='docs/' \
             --exclude='scripts/' \
             --exclude='skills/' \
+            --exclude='workers/' \
             --exclude='geojson/demo.html' \
             --exclude='assets/hero_demo_*.webp' \
             --exclude='assets/preview_*.webp' \
