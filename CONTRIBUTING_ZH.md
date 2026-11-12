@@ -46,6 +46,7 @@
     ├── audit_topology.js    # 零依赖政权边界缝隙/重叠审计，与 data/atlas/topology_baseline.json 比对（CI 中运行 --check）
     ├── repair_topology.js   # 零依赖边界修复：把核心政权边界吸附对齐并改写 data/atlas/
     ├── build_atlas.js       # 零依赖构建脚本：data/atlas/ → atlas_snapshots.js + atlas_boot.js（CI 中运行 --check）
+    ├── check_sources.js     # 零依赖本地自查：对照所引页面检查 data/sources/ 的出处（需联网，不进 CI）
     ├── perf_budget.js       # 零依赖首屏同步脚本 gzip 体积预算检查，与 data/atlas/perf_baseline.json 比对（CI 中运行 --check）
     ├── sync_version.js      # 零依赖按文件 SHA-256 内容指纹同步脚本（自动更新 index.html 缓存参数）
     └── validate_atlas.js    # 零依赖自动化数据完整性、多边形拓扑与端到端 CUJ 校验脚本（支持 --fast）
@@ -138,6 +139,7 @@ npm test --prefix scripts/search-pinyin
      node scripts/audit_sources.js --by-dynasty   # 按朝代查看覆盖率
      node scripts/audit_sources.js --fix          # 按规范格式排序
      node scripts/audit_sources.js --update       # 补出处后下调基线并提交
+     node scripts/check_sources.js --changed      # 可选，需联网：对照所引页面检查本次新增的出处
      ```
 5. **事件始末沙盘（`isStory: true`，`?event=<key>`）**：
    - 新增重大历史事件始末沙盘（如 `anshi` 安史之乱、`jingkang` 靖康之变）时，需同步完成以下 5 处配置（由 `scripts/tests/suite_search_runtime.js` 自动门禁校验）：
