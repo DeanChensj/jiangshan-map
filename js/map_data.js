@@ -2043,7 +2043,7 @@ window.DYNASTY_DATA = [
     ],
     "settlements": [
       {"ancient":"南京","modern":"南京","coord":[118.801,32.061],"isCapital":true,"remark":"国民政府首都"},
-      {"ancient":"北平","modern":"北京","coord":[116.401,39.901],"remark":"1928 年改称北平"},
+      {"ancient":"北平","modern":"北京","coord":[116.401,39.901],"eraNames":[{"until":1928,"zh":"北京","en":"Beijing"}],"aliases":["京兆地方"],"remark":"北洋政府首都北京，1914 年改顺天府为京兆地方；1928 年国民政府改称北平"},
       {"ancient":"上海","modern":"上海","coord":[121.471,31.231],"align":"b","remark":"远东第一大都市"},
       {"ancient":"重庆","modern":"重庆","coord":[106.551,29.561],"align":"l","remark":"抗战陪都"},
       {"ancient":"武汉","modern":"武汉","coord":[114.311,30.591]},
