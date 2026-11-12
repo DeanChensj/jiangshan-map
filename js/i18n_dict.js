@@ -3053,7 +3053,7 @@ window.EN_LOCALE = {
     "1858 年《瑷珲条约》": "Site of the 1858 Treaty of Aigun",
     "1685—86 年雅克萨之战": "Site of the Sino-Russian Siege of Albazin (1685–86)",
     "国民政府首都": "Capital of the Nationalist Government",
-    "1928 年改称北平": "Renamed Beiping in 1928",
+    "北洋政府首都北京，1914 年改顺天府为京兆地方；1928 年国民政府改称北平": "Beijing, capital of the Beiyang government (Shuntian Prefecture became the Jingzhao Area in 1914); renamed Beiping in 1928",
     "远东第一大都市": "Largest metropolis in the Far East",
     "抗战陪都": "Wartime capital during WWII",
     "北伐出发地": "Starting point of the Northern Expedition",
