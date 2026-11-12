@@ -2018,7 +2018,7 @@ window.DYNASTY_DATA = [
     "toYear": 1949,
     "focusYear": 1936,
     "tint": "#4f6d8f",
-    "seat": "南京",
+    "seat": "北京→南京",
     "summary": "1912 年辛亥革命终结二千年帝制，共和肇始。历经北洋军阀割据、护法运动、国民革命军北伐、十年建设、十四年抗日战争与台湾光复，至 1946—1949 年解放战争。",
     "milestones": [
       {"year":1912,"headline":"孙中山于南京就职建中华民国；清帝溥仪退位，二千年帝制终结","site":"南京 · 北京","coord":[118.801,32.061],"siteCoords":[[118.801,32.061],[116.395,39.908]]},
@@ -2042,10 +2042,10 @@ window.DYNASTY_DATA = [
       {"year":1949,"headline":"解放军发起渡江战役攻克南京，国民政府退往台北","site":"南京","coord":[118.801,32.061]}
     ],
     "settlements": [
-      {"ancient":"南京","modern":"南京","coord":[118.801,32.061],"isCapital":true,"remark":"国民政府首都"},
-      {"ancient":"北平","modern":"北京","coord":[116.401,39.901],"remark":"1928 年改称北平"},
+      {"ancient":"南京","modern":"南京","coord":[118.801,32.061],"isCapital":true,"capitalPeriods":[[1912,1912],[1927,1937],[1946,1949]],"remark":"1912 年临时政府所在地；1927 年起为国民政府首都"},
+      {"ancient":"北平","modern":"北京","coord":[116.401,39.901],"isCapital":true,"capitalPeriods":[[1912,1927]],"eraNames":[{"until":1928,"zh":"北京","en":"Beijing"}],"aliases":["京兆地方"],"remark":"北洋政府首都北京，1914 年改顺天府为京兆地方；1928 年国民政府改称北平"},
       {"ancient":"上海","modern":"上海","coord":[121.471,31.231],"align":"b","remark":"远东第一大都市"},
-      {"ancient":"重庆","modern":"重庆","coord":[106.551,29.561],"align":"l","remark":"抗战陪都"},
+      {"ancient":"重庆","modern":"重庆","coord":[106.551,29.561],"align":"l","isCapital":true,"capitalPeriods":[[1938,1945]],"remark":"抗战时期国民政府所在地，1940 年定为陪都"},
       {"ancient":"武汉","modern":"武汉","coord":[114.311,30.591]},
       {"ancient":"广州","modern":"广州","coord":[113.261,23.131],"align":"l","remark":"北伐出发地"},
       {"ancient":"延安","modern":"延安","coord":[109.491,36.591],"remark":"中共中央所在地"},

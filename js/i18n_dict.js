@@ -152,7 +152,7 @@ window.EN_LOCALE = {
     "roc": {
       "name": "Republic of China",
       "short": "ROC",
-      "capital": "Nanjing",
+      "capital": "Beijing → Nanjing",
       "desc": "The 1911 Xinhai Revolution ended two millennia of imperial rule and founded the Republic in 1912, followed by the Beiyang Warlord Era, the Northern Expedition, the fourteen-year War of Resistance against Japan and the retrocession of Taiwan (1945), and the Civil War (1946–1949)."
     },
     "prc": {
@@ -3052,10 +3052,10 @@ window.EN_LOCALE = {
     "郑成功驱逐荷兰人后据台": "Held by Koxinga after expelling the Dutch",
     "1858 年《瑷珲条约》": "Site of the 1858 Treaty of Aigun",
     "1685—86 年雅克萨之战": "Site of the Sino-Russian Siege of Albazin (1685–86)",
-    "国民政府首都": "Capital of the Nationalist Government",
-    "1928 年改称北平": "Renamed Beiping in 1928",
+    "1912 年临时政府所在地；1927 年起为国民政府首都": "Seat of the 1912 Provisional Government; capital of the Nationalist Government from 1927",
+    "北洋政府首都北京，1914 年改顺天府为京兆地方；1928 年国民政府改称北平": "Beijing, capital of the Beiyang government (Shuntian Prefecture became the Jingzhao Area in 1914); renamed Beiping in 1928",
     "远东第一大都市": "Largest metropolis in the Far East",
-    "抗战陪都": "Wartime capital during WWII",
+    "抗战时期国民政府所在地，1940 年定为陪都": "Seat of the Nationalist Government during the War of Resistance; designated auxiliary capital in 1940",
     "北伐出发地": "Starting point of the Northern Expedition",
     "中共中央所在地": "Headquarters of the Chinese Communist Party (1937–1947)",
     "1936 年西安事变": "Site of the 1936 Xi'an Incident",
