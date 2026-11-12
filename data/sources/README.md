@@ -59,3 +59,14 @@ node scripts/audit_sources.js --check        # CI
 node scripts/audit_sources.js --fix          # Canonical form
 node scripts/audit_sources.js --update       # Shrink the baseline
 ```
+
+## Checking references against the text
+
+`scripts/check_sources.js` downloads the pages behind each `url` and checks that the chapter number and title in `loc` match the page and that the regnal dates in `loc` occur in it. It needs network access, so it runs locally, not in CI.
+
+```bash
+node scripts/check_sources.js qin         # One file
+node scripts/check_sources.js --changed   # What you added or changed since origin/main
+```
+
+`✓` means the chapter is the right one and covers the date; `~` means only part was found and is worth a look; `✗` means a dead link, a chapter mismatch or a missing date. It cannot tell whether the passage is about the atlas record, so it does not replace reading the text.
