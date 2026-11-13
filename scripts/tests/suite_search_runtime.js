@@ -2598,11 +2598,24 @@ async function runSearchRuntimeSuite(ctx) {
         'Only the single canonical Northern Song 1127 (靖康之变) milestone must expose the [始末] storyline entry'
       );
 
+      const chuhanProf = ctrl._resolvePersonProfile('chuhan');
+      assert(
+        chuhanProf && chuhanProf.isStory === true && Array.isArray(chuhanProf.stops) && chuhanProf.stops.length === 10,
+        'chuhan must resolve as an Event Storyline (isStory: true) with 10 chronological stops'
+      );
+      for (const sq of ['楚汉之争', '楚汉', '楚汉争霸', '鸿门宴', '霸王别姬', 'chuhan']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'chuhan',
+          `Quick search for "${sq}" must surface the Chu-Han storyline (kind="story") at index 0`
+        );
+      }
+
       // Universal Event Storyline (`isStory: true`) invariants:
       // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.
       // 2) Must map to EXACTLY ONE `[始末]` milestone across all dynasties in `_findStoryForMilestone`.
       const allStoryProfiles = (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory);
-      assert(allStoryProfiles.length >= 2, 'Expected at least 2 Event Storylines (anshi, jingkang)');
+      assert(allStoryProfiles.length >= 3, 'Expected at least 3 Event Storylines (anshi, jingkang, chuhan)');
       for (const sp of allStoryProfiles) {
         assert(
           typeof sp.dynastyKey === 'string' && dynasties.some((d) => d.key === sp.dynastyKey),

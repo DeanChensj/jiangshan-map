@@ -4319,6 +4319,7 @@
     _findStoryForMilestone(dynasty, m) {
       if (!dynasty || !m) return null;
       const map = {
+        'qin:-206': { key: 'chuhan', stopIdx: -1, titleZh: '楚汉之争' },
         'tang:755': { key: 'anshi', stopIdx: -1, titleZh: '安史之乱' },
         'beisong:1127': { key: 'jingkang', stopIdx: -1, titleZh: '靖康之变' },
       };
