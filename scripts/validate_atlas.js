@@ -92,7 +92,9 @@ async function main() {
   const { dynasties, snapKeys, provinces, loreData, stats } = ctx;
   console.log(`✓ Jiangshan Atlas validation (${FAST_MODE ? 'fast' : 'full'}) passed in ${elapsed} ms:`);
   console.log(
-    `  - ${dynasties.length} dynasties, ${snapKeys.length} snapshots (${stats.referencedSnaps.size} phase-linked), ${stats.sweptYears} timeline years swept`
+    // `neighbors` is the shared surrounding-countries layer, not a territorial snapshot;
+    // counting it made release notes overstate the snapshot total by one.
+    `  - ${dynasties.length} dynasties, ${snapKeys.filter((k) => k !== 'neighbors').length} snapshots (${stats.referencedSnaps.size} phase-linked), ${stats.sweptYears} timeline years swept`
   );
   if (FAST_MODE) {
     console.log(
