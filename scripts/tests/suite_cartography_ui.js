@@ -2403,6 +2403,28 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_yuan_c', '元', 109.577, 19.521),
       's_yuan_c must keep Zhou (Zhang Shicheng) and Fang Guozhen until 1367 and restrict Chen Youding strictly to Fujian while Guangdong/Guangxi/Hainan stay in Yuan'
     );
+    // Five Dynasties: Guizhou is not Chu's; 桂管 (Guilin, Liuzhou, Wuzhou, Lianzhou) is Chu's until 951, Nan Han's afterwards.
+    for (const sk of ['s_wudai_a', 's_wudai_b', 's_wudai_c', 's_wudai_d']) {
+      assert(
+        hasPolPt(sk, '楚 · 荆南', 110.29, 25.27) &&
+          hasPolPt(sk, '楚 · 荆南', 109.4, 24.3) &&
+          hasPolPt(sk, '楚 · 荆南', 111.3, 23.48) &&
+          hasPolPt(sk, '楚 · 荆南', 112.38, 24.78) &&
+          hasPolPt(sk, '南汉', 108.3, 22.8) &&
+          hasPolPt(sk, '南汉', 111.5, 23.43) &&
+          hasPolPt(sk, '黔中诸部（羁縻）', 106.7, 26.6) &&
+          !hasPolPt(sk, '楚 · 荆南', 106.9, 27.7),
+        `${sk}: 桂管 must be 楚, Yongzhou and Fengzhou 南汉, and Guizhou outside 楚`
+      );
+    }
+    for (const sk of ['s_wudai_e', 's_wudai_e2']) {
+      assert(
+        hasPolPt(sk, '南汉', 110.29, 25.27) &&
+          hasPolPt(sk, '武平 · 荆南', 112.94, 28.2) &&
+          hasPolPt(sk, '黔中诸部（羁縻）', 106.7, 26.6),
+        `${sk}: after 951 Guilin is 南汉 and Guizhou is outside 武平`
+      );
+    }
     // 1367: Zhang Shicheng and Fang Guozhen are absorbed by 吴（朱元璋）; 1335 on: Kamakura and the Ilkhanate are gone.
     const yuanTitles = (sk) => snapshots[sk].polities.map((p) => p.title);
     assert(

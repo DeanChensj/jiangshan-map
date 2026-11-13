@@ -2520,6 +2520,7 @@ window.EN_LOCALE = {
     "西突厥": "Western Göktürks",
     "回鹘": "Uyghurs",
     "黠戛斯": "Yenisei Kyrgyz",
+    "黔中诸部（羁縻）": "Qianzhong Tribes (Loose-Rein)",
     "葛逻禄": "Karluks",
     "骨利干": "Kurykans",
     "铁勒": "Tiele",
