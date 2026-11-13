@@ -448,7 +448,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "dongjin:399": [
-      "Murong De founds Southern Yan; Sun En uprising shakes Jiangdong",
+      "Southern Yan under Murong De makes Guanggu its capital; Sun En’s uprising shakes Jiangdong",
       "Guanggu · Kuaiji"
     ],
     "dongjin:404": [
