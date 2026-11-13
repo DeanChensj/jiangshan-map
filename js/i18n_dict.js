@@ -448,7 +448,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "dongjin:399": [
-      "Murong De founds Southern Yan; Sun En uprising shakes Jiangdong",
+      "Southern Yan under Murong De makes Guanggu its capital; Sun En’s uprising shakes Jiangdong",
       "Guanggu · Kuaiji"
     ],
     "dongjin:404": [
@@ -952,7 +952,7 @@ window.EN_LOCALE = {
       "Shaqiu (Guangzong)"
     ],
     "qin:-207": [
-      "Xiang Yu crushes Qin at Julu; Nanhai official Zhao Tuo unites Lingnan as autonomous Nanyue",
+      "Xiang Yu crushes Qin at Julu; Nanhai commandant Zhao Tuo seals the passes and holds Nanhai",
       "Julu & Panyu"
     ],
     "qin:-206": [
@@ -7152,7 +7152,7 @@ window.EN_LOCALE = {
     "大员（荷占）": "Tayouan (Dutch-ruled)",
     "前 214 — 前 210 · 秦平百越与大一统鼎盛：设桂林、象、南海三郡，北筑万里长城": "214–210 BCE · Apex of the Qin Empire: Guilin, Xiang & Nanhai Commanderies in Lingnan and the Great Wall",
     "前 209 — 前 208 · 大泽乡起义与六国复立：陈胜建张楚，楚、赵、燕、齐复国反秦，秦廷退守关中河洛与巴蜀岭南": "209–208 BCE · Dazexiang Uprising & Six Kingdoms Restored: Chen Sheng’s Zhangchu, Restored Chu, Zhao, Yan & Qi vs. Qin",
-    "前 207 · 巨鹿之战与赵佗据岭南：项羽巨鹿破秦主力，南海尉赵佗绝秦道并桂林、象郡自立": "207 BCE · Battle of Julu & Zhao Tuo’s Lingnan Secession: Xiang Yu Shatters the Qin Army While Zhao Tuo Seizes Lingnan",
+    "前 207 · 巨鹿之战与赵佗据南海：项羽巨鹿破秦主力，南海尉赵佗绝秦道聚兵自守": "207 BCE · Battle of Julu & Zhao Tuo Holds Nanhai: Xiang Yu Shatters the Qin Army While Zhao Tuo Seals the Passes into Nanhai",
     "楚（张楚 · 怀王）": "Chu (Zhangchu & King Huai)",
     "楚（怀王 · 项羽）": "Chu (King Huai & Xiang Yu)",
     "中庆（昆明）": "Zhongqing (Kunming)",
