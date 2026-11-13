@@ -2687,6 +2687,14 @@ async function runCartographyUiSuite(ctx) {
           !hasPolPt(sk, '楚', 105.84, 32.44),
         `${sk} must split 蜀 (Chengdu, Jiameng) and 巴 (Jiangzhou, Langzhong) and keep Hanzhong in 楚 without overlapping Jiameng`
       );
+      // The 巴|蜀 border follows the Fu–Jialing divide: 蜀's Jinniu road (梓潼) and 僰道 stay in 蜀; 遂宁 and 泸州 are 巴.
+      assert(
+        hasPolPt(sk, '蜀', 105.17, 31.64) &&
+          hasPolPt(sk, '蜀', 104.63, 28.77) &&
+          hasPolPt(sk, '巴', 105.57, 30.5) &&
+          hasPolPt(sk, '巴', 105.44, 28.87),
+        `${sk}: Zitong and Bodao must be 蜀; Suining and Luzhou must be 巴`
+      );
     }
     assert(
       hasPolPt('s_zhanguo_a', '魏', 110.44, 35.48) &&
