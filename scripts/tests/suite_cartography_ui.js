@@ -2403,6 +2403,25 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_yuan_c', '元', 109.577, 19.521),
       's_yuan_c must keep Zhou (Zhang Shicheng) and Fang Guozhen until 1367 and restrict Chen Youding strictly to Fujian while Guangdong/Guangxi/Hainan stay in Yuan'
     );
+    // 1367: Zhang Shicheng and Fang Guozhen are absorbed by 吴（朱元璋）; 1335 on: Kamakura and the Ilkhanate are gone.
+    const yuanTitles = (sk) => snapshots[sk].polities.map((p) => p.title);
+    assert(
+      hasPolPt('s_yuan_1367', '吴（朱元璋）', 120.62, 31.3) &&
+        hasPolPt('s_yuan_1367', '吴（朱元璋）', 121.55, 29.87) &&
+        !yuanTitles('s_yuan_1367').includes('周（张士诚）') &&
+        !yuanTitles('s_yuan_1367').includes('方国珍') &&
+        yuanTitles('s_yuan_1367').includes('明夏（明升）'),
+      's_yuan_1367: Pingjiang and Qingyuan must be 吴（朱元璋）, with no 周 / 方国珍 polity and 明夏 under 明升'
+    );
+    for (const sk of ['s_yuan_1335', 's_yuan_b', 's_yuan_c', 's_yuan_1367']) {
+      assert(
+        yuanTitles(sk).includes('日本（南北朝）') &&
+          !yuanTitles(sk).includes('日本（镰仓幕府）') &&
+          !yuanTitles(sk).includes('伊利汗国') &&
+          !yuanTitles(sk).includes('蒲甘'),
+        `${sk}: after 1335 the map must not show Kamakura Japan, the Ilkhanate or Pagan`
+      );
+    }
 
     // 5. Mongol Empire & Western Liao / Yuan interior continuity (zero Lop Nor / Qilian hollow cavities or vertical keyhole cuts)
     assert(
