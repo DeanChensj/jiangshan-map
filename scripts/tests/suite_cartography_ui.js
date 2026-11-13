@@ -2130,6 +2130,16 @@ async function runCartographyUiSuite(ctx) {
         snapshots.s_xihan_c.polities.some((p) => p.title === '西域都护府' && p.role === 'protectorate'),
       'Protectorate of the Western Regions (西域都护府) must not appear before -60 BCE (s_xihan_c)'
     );
+    // Eastern Han: Protector-General 91–107, withdrawn 107–123, Chief Clerk (西域长史) from 123.
+    const xiyuRole = (sk, title) => (snapshots[sk].polities.find((p) => p.title === title) || {}).role;
+    assert(
+      xiyuRole('s_donghan', '西域都护府') === 'protectorate' &&
+        xiyuRole('s_donghan_107', '西域诸国（役属北匈奴）') === 'neighbor' &&
+        !snapshots.s_donghan_107.polities.some((p) => /都护|长史/.test(p.title)) &&
+        xiyuRole('s_donghan_123', '西域长史府') === 'protectorate' &&
+        !snapshots.s_donghan_123.polities.some((p) => p.title === '西域都护府'),
+      'Eastern Han Western Regions: 西域都护府 in 91–107, 西域诸国（役属北匈奴） in 107–123, 西域长史府 from 123'
+    );
     assert(
       !hasPt('s_xihan_b3', '汉', 125.751, 39.031) &&
         hasPt('s_xihan_b', '汉', 125.751, 39.031) &&
