@@ -171,6 +171,7 @@
   "s_roc_w1": { "overlap": 1243, "outside": 1648 },
   "s_roc_w2": { "overlap": 1243, "outside": 1644 },
   "s_roc_w3": { "overlap": 1243, "outside": 1651 },
+  "s_roc_w3b": { "overlap": 1243, "outside": 1650 },
   "s_roc_w4": { "overlap": 1243, "outside": 1643 },
   "s_zhanguo_c2": { "overlap": 14, "outside": 657 },
   "s_zhanguo_c3": { "overlap": 14, "outside": 657 },

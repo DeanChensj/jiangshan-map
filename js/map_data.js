@@ -2396,6 +2396,7 @@ window.DYNASTY_DATA = [
       {"until":1920,"snap":"s_roc_w1"},
       {"until":1924,"snap":"s_roc_w2"},
       {"until":1926,"snap":"s_roc_w3"},
+      {"until":1927,"snap":"s_roc_w3b"},
       {"until":1928,"snap":"s_roc_w4"},
       {"until":1931,"snap":"s_roc_a"},
       {"until":1932,"snap":"s_roc_b0"},
