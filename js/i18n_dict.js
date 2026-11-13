@@ -2508,6 +2508,7 @@ window.EN_LOCALE = {
     "中华人民共和国": "People's Republic of China",
     "西域都护府": "Protectorate of the Western Regions",
     "西域长史府": "Chief Clerk of the Western Regions",
+    "西域诸国（役属北匈奴）": "Western Regions States (under the Northern Xiongnu)",
     "安西都护府": "Anxi Protectorate",
     "北庭都护府": "Beiting Protectorate",
     "匈奴": "Xiongnu",

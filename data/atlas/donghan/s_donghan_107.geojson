@@ -8,7 +8,7 @@
     "polities": [
       "s_donghan/东汉",
       "s_donghan_b2/南匈奴（内附）",
-      "西域诸国",
+      "西域诸国（役属北匈奴）",
       "s_donghan_a/乌孙",
       "s_xihan_b3a/塞种诸国",
       "s_xihan_b3a/狮子国",
@@ -47,12 +47,12 @@
   "features": [
     {
       "type": "Feature",
-      "id": "西域诸国",
+      "id": "西域诸国（役属北匈奴）",
       "properties": {
         "tint": null,
         "role": "neighbor",
         "anchor": [83.5, 41.2],
-        "title": "西域诸国"
+        "title": "西域诸国（役属北匈奴）"
       },
       "geometry": {
         "type": "Polygon",
