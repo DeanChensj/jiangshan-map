@@ -858,7 +858,7 @@ async function runCartographyUiSuite(ctx) {
     }
 
     // Tang 29 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 848, 881, 885, 907];
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
@@ -2140,6 +2140,14 @@ async function runCartographyUiSuite(ctx) {
         !snapshots.s_donghan_123.polities.some((p) => p.title === '西域都护府'),
       'Eastern Han Western Regions: 西域都护府 in 91–107, 西域诸国（役属北匈奴） in 107–123, 西域长史府 from 123'
     );
+    // Uyghur Khaganate falls in 840: Ordu-Baliq [102.66, 47.43] passes to 黠戛斯; 回鹘 survives west of the Altai.
+    assert(hasPt('s_tang_b', '回鹘', 102.66, 47.43), 's_tang_b (790–840): Ordu-Baliq must still be 回鹘');
+    for (const sk of ['s_tang_840', 's_tang_c', 's_tang_d1', 's_tang_d2']) {
+      assert(
+        hasPt(sk, '黠戛斯', 102.66, 47.43) && !hasPt(sk, '回鹘', 102.66, 47.43) && hasPt(sk, '回鹘', 86.0, 48.0),
+        `${sk}: after 840 Ordu-Baliq must belong to 黠戛斯 and 回鹘 must remain only west of the Altai`
+      );
+    }
     assert(
       !hasPt('s_xihan_b3', '汉', 125.751, 39.031) &&
         hasPt('s_xihan_b', '汉', 125.751, 39.031) &&
