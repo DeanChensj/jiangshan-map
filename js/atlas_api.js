@@ -1644,6 +1644,48 @@
       });
     }
 
+    // Indices of the prefectures that a ?hover= value names. Rules run from strictest to
+    // loosest and the first rule that matches anything decides, so an exact name always wins:
+    // the English name as displayed; the same name ignoring spacing and punctuation
+    // ("Jiangzhou" for "Jiang Zhou"); the name without its administrative suffix ("Yingtian
+    // Prefecture" or "Yingtian Fu" for "Yingtian Pref."); then the Chinese name without its
+    // suffix ("应天" for "应天府"). Toneless pinyin is ambiguous (绛州 and 江州 are both
+    // "Jiang Zhou" in 1102), so several indices can come back; the caller picks by location.
+    _matchPrefectureNames(query, zhTitles) {
+      const q = String(query || '').trim();
+      if (!q) return [];
+      const bare = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/\s*[（(][^）)]*[）)]\s*$/, '')
+          .trim();
+      const compact = (s) => bare(s).replace(/['’‘`\-_.\s]+/g, '');
+      const stem = (s) =>
+        compact(
+          bare(s).replace(/\s+(?:prefecture|pref\.?|commandery|circuit|province|fu|zhou|jun)$/, '')
+        );
+      const zhStem = (s) => String(s || '').replace(/(?:州|府|郡|道|路)$/, '');
+      const en = zhTitles.map((zh) => (zh ? this._enDict(zh) : ''));
+      const qLower = q.toLowerCase();
+      const qCompact = compact(q);
+      const qStem = stem(q);
+      const qZhStem = zhStem(q);
+      const rules = [
+        (i) => en[i].toLowerCase() === qLower,
+        (i) => qCompact.length >= 2 && compact(en[i]) === qCompact,
+        (i) => qStem.length >= 2 && stem(en[i]) === qStem,
+        (i) => zhStem(zhTitles[i]) === qZhStem,
+      ];
+      for (const matches of rules) {
+        const hits = [];
+        zhTitles.forEach((zh, i) => {
+          if (zh && matches(i)) hits.push(i);
+        });
+        if (hits.length) return hits;
+      }
+      return [];
+    }
+
     _restoreFromQuery() {
       const q = new URLSearchParams(location.search);
       if (
@@ -1798,29 +1840,38 @@
             this._materializeDeferredPrefectures();
             this._rescaleSvgTypography();
           }
-          let el = this.grpPrefectures.querySelector(
-            `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
+          let matches = Array.from(
+            this.grpPrefectures.querySelectorAll(
+              `.prefecture-shape[data-pref-title="${CSS.escape(targetPref)}"]`
+            )
           );
-          if (!el && targetPref) {
-            const fold = (s) =>
-              String(s || '')
-                .toLowerCase()
-                .replace(/\s+(?:prefecture|commandery|circuit|province|fu|zhou|jun)$/i, '')
-                .replace(/['’‘`\-_.\s]+/g, '');
-            const qFold = fold(targetPref);
+          if (!matches.length && targetPref) {
             const shapes = Array.from(this.grpPrefectures.querySelectorAll('.prefecture-shape'));
-            el =
-              shapes.find((node) => {
-                const zh = node.dataset && node.dataset.prefTitle;
-                if (!zh) return false;
-                const en = this._enDict(zh);
-                return (
-                  en.toLowerCase() === targetPref.trim().toLowerCase() ||
-                  (qFold.length >= 2 && fold(en) === qFold) ||
-                  zh.replace(/(?:州|府|郡|道|路)$/, '') ===
-                    targetPref.trim().replace(/(?:州|府|郡|道|路)$/, '')
-                );
-              }) || null;
+            matches = this._matchPrefectureNames(
+              targetPref,
+              shapes.map((node) => (node.dataset && node.dataset.prefTitle) || '')
+            ).map((i) => shapes[i]);
+          }
+          let el = matches[0] || null;
+          if (matches.length > 1) {
+            // Same name more than once in this year: take the one nearest the linked place.
+            const spot = q.has('place')
+              ? this.resolvePlace((q.get('place') || '').split(/[,，]/)[0], this.year)
+              : q.has('lng') && q.has('lat')
+                ? { lng: Number(q.get('lng')), lat: Number(q.get('lat')) }
+                : null;
+            if (spot && Number.isFinite(spot.lng) && Number.isFinite(spot.lat)) {
+              const [sx, sy] = this.projector.toScreen(spot.lng, spot.lat);
+              let bestDist = Infinity;
+              for (const node of matches) {
+                const box = node.getBBox();
+                const dist = Math.hypot(box.x + box.width / 2 - sx, box.y + box.height / 2 - sy);
+                if (dist < bestDist) {
+                  bestDist = dist;
+                  el = node;
+                }
+              }
+            }
           }
           if (el) {
             this._setHoveredPrefecture(el);

@@ -1822,6 +1822,60 @@ async function runApiSearchSuite(ctx) {
   );
 
 
+  // ?hover=<prefecture> deep links: every documented spelling must resolve against that
+  // year's real prefecture layer, whatever suffix style the English dictionary uses
+  // ("Yingtian Pref." next to "Shuntian Fu", "Jiang Zhou" with a space).
+  {
+    const fs = require('fs');
+    const path = require('path');
+    const prefTitlesIn = (year) => {
+      const dyn = dynasties[ctrl._findDynastyIndex(year)];
+      return (snapshots[ctrl._resolveSnapKey(dyn, year)].prefectures || []).map((p) => p.title);
+    };
+    const hoverHits = (year, query) => {
+      const titles = prefTitlesIn(year);
+      return [...new Set(ctrl._matchPrefectureNames(query, titles).map((i) => titles[i]))];
+    };
+    for (const [year, query, want] of [
+      [1415, 'Yingtian Prefecture', ['应天府']], // README.md, README_JA.md
+      [1415, 'Yingtian Fu', ['应天府']], // llms.txt
+      [1415, 'Yingtian', ['应天府']],
+      [1415, 'Yingtian Pref.', ['应天府']], // as displayed in the English UI
+      [1415, 'yingtian pref', ['应天府']],
+      [1415, '应天', ['应天府']],
+      [1083, 'Huangzhou', ['黄州']], // llms.txt, SKILL.md
+      [1083, 'Huang Zhou', ['黄州']],
+      [1102, 'Wuzhou', ['婺州', '乌州']], // "Wu Zhou (Jinhua)" and "Wu Zhou"
+      [1102, 'Wu Zhou', ['乌州']], // the exact displayed name wins
+      // Toneless pinyin homophones: both come back and the caller picks the nearest to `place`.
+      [1102, 'Jiangzhou', ['绛州', '江州']], // llms.txt, SKILL.md
+      [-210, 'Nanyang Commandery', ['南阳郡']],
+      [1415, 'Nowhere Prefecture', []],
+      [1415, '', []],
+    ]) {
+      assert.deepStrictEqual(
+        hoverHits(year, query).sort(),
+        [...want].sort(),
+        `?year=${year}&hover=${query} must resolve to ${want.join(' / ') || 'nothing'}`
+      );
+    }
+
+    let readmeHoverLinks = 0;
+    for (const file of ['README.md', 'README_ZH.md', 'README_JA.md', 'README_ZH_HANT.md']) {
+      const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+      for (const m of src.matchAll(/\?year=(-?\d+)[^)\s"]*?[&?]hover=([^&)\s"]+)/g)) {
+        readmeHoverLinks++;
+        const query = decodeURIComponent(m[2]);
+        const titles = prefTitlesIn(Number(m[1]));
+        assert(
+          titles.includes(query) || hoverHits(Number(m[1]), query).length === 1,
+          `${file} links to ?year=${m[1]}&hover=${query}, which must name exactly one prefecture of that year`
+        );
+      }
+    }
+    assert(readmeHoverLinks >= 4, 'README hover deep links must be covered by this check');
+  }
+
   ctx.stats.sweptYears = sweptYears;
   ctx.stats.totalJourneyStops = totalJourneyStops;
 }
