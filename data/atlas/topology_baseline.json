@@ -140,6 +140,7 @@
   "s_roc_w1": { "overlap": 252, "gap": 440 },
   "s_roc_w2": { "overlap": 208, "gap": 417 },
   "s_roc_w3": { "overlap": 212, "gap": 428 },
+  "s_roc_w3b": { "overlap": 200, "gap": 421 },
   "s_roc_w4": { "overlap": 216, "gap": 392 },
   "s_zhanguo_c2": { "overlap": 4, "gap": 27 },
   "s_zhanguo_c3": { "overlap": 4, "gap": 26 },
