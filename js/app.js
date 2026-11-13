@@ -6089,16 +6089,10 @@
       if (!Array.isArray(groups) || !groups.length) return '';
       const esc = (s) =>
         String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-      const link = (text, url) =>
-        url
-          ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="在维基文库阅读原文">${esc(text)}</a>`
-          : esc(text);
       // A title is never split from its first chapter; longer lists may still wrap between chapters.
       const parts = groups.map(([title, chapters]) => {
-        const named = chapters.filter(([c]) => c);
-        if (!named.length) return `<span class="ev-src-work">${link(`《${title}》`, (chapters[0] || [])[1])}</span>`;
-        const [first, ...rest] = named.map(([c, url]) => link(c, url));
-        return `<span class="ev-src-work">《${esc(title)}》${first}</span>${rest.map((r) => `、${r}`).join('')}`;
+        const [first = '', ...rest] = chapters.filter(Boolean).map(esc);
+        return `<span class="ev-src-work">《${esc(title)}》${first}</span>${rest.map((c) => `、${c}`).join('')}`;
       });
       return `据${parts.join('；')}`;
     }
@@ -6125,8 +6119,6 @@
       const line = document.createElement('div');
       line.className = 'ev-src';
       line.innerHTML = html;
-      // Following a link must not also select the milestone.
-      line.addEventListener('click', (e) => e.stopPropagation());
       li.appendChild(line);
       if (this.locale === 'zh-tw') this._applyZhHantDom(line);
     }

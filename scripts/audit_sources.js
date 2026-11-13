@@ -144,8 +144,9 @@ function loadSources() {
 }
 
 // ---- js/milestone_sources.js -----------------------------------------------------------------
-// Per milestone: [[title, [[chapter, url], …]], …], one entry per work in citation order.
+// Per milestone: [[title, [chapter, …]], …], one entry per work in citation order.
 // A chapter is the leading 卷 number of `loc` ("" when loc names none); repeats are merged.
+// No URLs: Wikisource is unreachable for many readers in mainland China, so the line is text only.
 const MILESTONE_SOURCES_JS = 'js/milestone_sources.js';
 const CHAPTER = /^卷(\d+|[一二三四五六七八九十百〇]+)([上中下]?)/;
 
@@ -160,15 +161,14 @@ function milestoneSources(refs, works) {
       const title = (/《([^》]+)》/.exec(w.zh) || [null, w.zh])[1];
       const m = CHAPTER.exec(r.loc || '');
       const chapter = m ? `卷${/^\d+$/.test(m[1]) ? Number(m[1]) : m[1]}${m[2]}` : '';
-      const url = /^https:\/\//.test(r.url || '') ? r.url : '';
       if (!groups.has(title)) groups.set(title, []);
       const list = groups.get(title);
-      if (!list.some(([c]) => c === chapter)) list.push([chapter, url]);
+      if (!list.includes(chapter)) list.push(chapter);
     }
     const num = (c) => parseInt(c.slice(1), 10);
     out[key.slice('milestone:'.length)] = [...groups].map(([title, list]) => [
       title,
-      list.every(([c]) => /^卷\d/.test(c)) ? list.sort((a, b) => num(a[0]) - num(b[0])) : list,
+      list.every((c) => /^卷\d/.test(c)) ? list.sort((a, b) => num(a) - num(b)) : list,
     ]);
   }
   return out;

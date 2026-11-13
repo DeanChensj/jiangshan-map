@@ -2529,17 +2529,13 @@ async function runSearchRuntimeSuite(ctx) {
         '据《资治通鉴》卷89、卷91；《晋书》卷108',
         'xijin:316 source line merges repeated chapters per work, in citation order'
       );
-      assert(
-        html316.includes('href="https://zh.wikisource.org/wiki/資治通鑑/卷089"') && html316.includes('rel="noopener noreferrer"'),
-        'each chapter links to its own Wikisource page in a new tab'
-      );
+      assert(!html316.includes('<a '), 'the line is plain text: Wikisource is unreachable for many readers');
       assert.strictEqual(ctrl._milestoneSourceHtml(undefined), '', 'a milestone without sources gets no line');
 
       const xijin = dynasties.find((d) => d.key === 'xijin');
       const lineNode = () => ({
         className: '',
         innerHTML: '',
-        addEventListener() {},
         remove() {
           this.parent.kids.splice(this.parent.kids.indexOf(this), 1);
         },
