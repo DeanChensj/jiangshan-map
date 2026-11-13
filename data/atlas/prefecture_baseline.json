@@ -119,7 +119,7 @@
   "s_wudai_e2": { "overlap": 406, "outside": 239 },
   "s_dongjin_a0": { "overlap": 318, "outside": 1008 },
   "s_dongjin_b2": { "overlap": 318, "outside": 766 },
-  "s_dongjin_373": { "overlap": 318, "outside": 762 },
+  "s_dongjin_373": { "overlap": 318, "outside": 761 },
   "s_tang_b0a": { "overlap": 333, "outside": 106 },
   "s_tang_b0b": { "overlap": 333, "outside": 106 },
   "s_tang_b0": { "overlap": 333, "outside": 106 },
@@ -171,6 +171,7 @@
   "s_roc_w1": { "overlap": 1243, "outside": 1648 },
   "s_roc_w2": { "overlap": 1243, "outside": 1644 },
   "s_roc_w3": { "overlap": 1243, "outside": 1651 },
+  "s_roc_w3b": { "overlap": 1243, "outside": 1650 },
   "s_roc_w4": { "overlap": 1243, "outside": 1643 },
   "s_zhanguo_c2": { "overlap": 14, "outside": 657 },
   "s_zhanguo_c3": { "overlap": 14, "outside": 657 },
@@ -193,5 +194,7 @@
   "s_qin_c": { "overlap": 53, "outside": 6613 },
   "s_qin_d": { "overlap": 53, "outside": 6609 },
   "s_xihan_b3a": { "overlap": 74, "outside": 2597 },
-  "s_xihan_b3b": { "overlap": 74, "outside": 1425 }
+  "s_xihan_b3b": { "overlap": 74, "outside": 1425 },
+  "s_donghan_107": { "overlap": 85, "outside": 871 },
+  "s_donghan_123": { "overlap": 85, "outside": 871 }
 }

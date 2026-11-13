@@ -40,7 +40,7 @@
 - `w`：书目 id，须已登记在 `works.json`
 - `loc`：卷次、篇名或页码
 - `url`：可选，在线原文
-- `note`：可选，简短说明（如诸书记载的分歧）
+- `note`：可选，简短说明诸书记载的分歧，以 60 字以内为宜。若是地图文字本身有误，请写在 PR 描述里，不必写进 note
 
 一个键一行，键按字母排序。运行 `node scripts/audit_sources.js --fix` 会自动整理。
 
@@ -59,3 +59,14 @@ node scripts/audit_sources.js --check        # CI
 node scripts/audit_sources.js --fix          # 整理格式
 node scripts/audit_sources.js --update       # 下调基线
 ```
+
+## 对照原文自查
+
+`scripts/check_sources.js` 会下载每条出处 `url` 指向的页面，检查 `loc` 里的卷次、篇名与页面是否一致，以及 `loc` 里的纪年是否出现在该页。它需要联网，所以只在本地运行，不进 CI。
+
+```bash
+node scripts/check_sources.js qin         # 检查一个文件
+node scripts/check_sources.js --changed   # 检查相对 origin/main 新增或改动的出处
+```
+
+`✓` 表示卷次无误且该卷有这个纪年；`~` 表示只对上了一部分，建议看一眼；`✗` 表示链接失效、卷次不符或纪年找不到。它判断不了那段文字说的是不是地图上这件事，不能代替人工读原文。

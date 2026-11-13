@@ -35,7 +35,7 @@ We welcome contributions of all kinds, including:
 │   ├── zh_hant.js           # Lazy-loaded Traditional Chinese (zh-Hant) runtime converter & historical polysemy dictionary
 │   ├── atlas_boot.js        # Generated from data/atlas/: initial snapshots for instant first-paint rendering
 │   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
-│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the X-Ray reference layer
+│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the `Provinces` reference layer
 │   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
 ├── workers/stats/           # Cloudflare Worker behind stats.deanchen.me: write-only endpoint storing click counts in Workers Analytics Engine
 ├── skills/
@@ -45,6 +45,7 @@ We welcome contributions of all kinds, including:
     ├── audit_sources.js     # Zero-dependency reference audit for data/sources/ against data/sources/baseline.json (--check in CI)
     ├── audit_topology.js    # Zero-dependency polity border gap/overlap audit against data/atlas/topology_baseline.json (--check in CI)
     ├── build_atlas.js       # Zero-dependency builder: data/atlas/ → atlas_snapshots.js + atlas_boot.js (--check in CI)
+    ├── check_sources.js     # Zero-dependency local spot-check of data/sources/ references against the cited pages (needs network; not in CI)
     ├── perf_budget.js       # Zero-dependency synchronous script gzip budget check against data/atlas/perf_baseline.json (--check in CI)
     ├── repair_topology.js   # Zero-dependency border repair: snaps core polity borders together and rewrites data/atlas/
     ├── sync_version.js      # Zero-dependency per-asset SHA-256 cache-busting synchronizer for index.html
@@ -138,6 +139,7 @@ The isolated build tool pins `pinyin-pro`; the browser loads the generated index
      node scripts/audit_sources.js --by-dynasty   # Coverage per dynasty
      node scripts/audit_sources.js --fix          # Sort keys into canonical form
      node scripts/audit_sources.js --update       # After adding references: shrink the baseline and commit it
+     node scripts/check_sources.js --changed      # Optional, needs network: check your references against the cited pages
      ```
 5. **Event Storyline Sandtables (`isStory: true`, `?event=<key>`)**:
    - When adding an Event Storyline sandtable (such as `anshi` for the An Lushan Rebellion or `jingkang` for the Jingkang Catastrophe), complete all 5 touchpoints below (enforced by `scripts/tests/suite_search_runtime.js`):

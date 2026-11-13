@@ -181,6 +181,7 @@
     "s_roc_w1",
     "s_roc_w2",
     "s_roc_w3",
+    "s_roc_w3b",
     "s_roc_w4",
     "s_zhanguo_c2",
     "s_zhanguo_c3",
@@ -203,6 +204,8 @@
     "s_qin_c",
     "s_qin_d",
     "s_xihan_b3a",
-    "s_xihan_b3b"
+    "s_xihan_b3b",
+    "s_donghan_107",
+    "s_donghan_123"
   ]
 }
