@@ -2406,25 +2406,41 @@ async function runCartographyUiSuite(ctx) {
     // Five Dynasties: Guizhou is not Chu's; 桂管 (Guilin, Liuzhou, Wuzhou, Lianzhou) is Chu's until 951, Nan Han's afterwards.
     for (const sk of ['s_wudai_a', 's_wudai_b', 's_wudai_c', 's_wudai_d']) {
       assert(
-        hasPolPt(sk, '楚 · 荆南', 110.29, 25.27) &&
-          hasPolPt(sk, '楚 · 荆南', 109.4, 24.3) &&
-          hasPolPt(sk, '楚 · 荆南', 111.3, 23.48) &&
-          hasPolPt(sk, '楚 · 荆南', 112.38, 24.78) &&
+        hasPolPt(sk, '楚（马楚）', 110.29, 25.27) &&
+          hasPolPt(sk, '楚（马楚）', 109.4, 24.3) &&
+          hasPolPt(sk, '楚（马楚）', 111.3, 23.48) &&
+          hasPolPt(sk, '楚（马楚）', 112.38, 24.78) &&
           hasPolPt(sk, '南汉', 108.3, 22.8) &&
           hasPolPt(sk, '南汉', 111.5, 23.43) &&
           hasPolPt(sk, '黔中诸部（羁縻）', 106.7, 26.6) &&
-          !hasPolPt(sk, '楚 · 荆南', 106.9, 27.7),
+          !hasPolPt(sk, '楚（马楚）', 106.9, 27.7),
         `${sk}: 桂管 must be 楚, Yongzhou and Fengzhou 南汉, and Guizhou outside 楚`
       );
     }
     for (const sk of ['s_wudai_e', 's_wudai_e2']) {
       assert(
         hasPolPt(sk, '南汉', 110.29, 25.27) &&
-          hasPolPt(sk, '武平 · 荆南', 112.94, 28.2) &&
+          hasPolPt(sk, '武平（湖南）', 112.94, 28.2) &&
           hasPolPt(sk, '黔中诸部（羁縻）', 106.7, 26.6),
         `${sk}: after 951 Guilin is 南汉 and Guizhou is outside 武平`
       );
     }
+    // 荆南 (江陵, 峡, 归) is its own state and 施州 is Shu's; 鄂州 is Wu / Southern Tang's, and so are 黄 and 蕲 until 958.
+    for (const [sk, south] of [['s_wudai_a', '吴'], ['s_wudai_c', '南唐'], ['s_wudai_e', '南唐']]) {
+      assert(
+        hasPolPt(sk, '荆南（南平）', 112.2, 30.35) &&
+          hasPolPt(sk, '荆南（南平）', 110.75, 30.95) &&
+          !hasPolPt(sk, '荆南（南平）', 109.48, 30.3) &&
+          hasPolPt(sk, south, 114.3, 30.55) &&
+          hasPolPt(sk, south, 114.87, 30.45) &&
+          hasPolPt(sk, south, 115.43, 30.23),
+        `${sk}: Jiangling and Guizhou (秭归) must be 荆南, Shizhou not; Ezhou, Huangzhou and Qizhou must be ${south}`
+      );
+    }
+    assert(
+      hasPolPt('s_wudai_e1', '南唐', 114.3, 30.55) && hasPolPt('s_wudai_e1', '后周', 114.87, 30.45),
+      's_wudai_e1 (958): Ezhou stays 南唐 while Huangzhou passes to 后周'
+    );
     // 1367: Zhang Shicheng and Fang Guozhen are absorbed by 吴（朱元璋）; 1335 on: Kamakura and the Ilkhanate are gone.
     const yuanTitles = (sk) => snapshots[sk].polities.map((p) => p.title);
     assert(

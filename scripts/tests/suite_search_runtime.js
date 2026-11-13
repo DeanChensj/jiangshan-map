@@ -2331,8 +2331,8 @@ async function runSearchRuntimeSuite(ctx) {
         `${sid} must include 安南`
       );
     }
-    const chuA = snapshots.s_wudai_a.polities.find((p) => p.title === '楚 · 荆南');
-    assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚 · 荆南 must be a single dissolved Polygon');
+    const chuA = snapshots.s_wudai_a.polities.find((p) => p.title === '楚（马楚）');
+    assert.strictEqual(chuA.shape.type, 'Polygon', 's_wudai_a 楚（马楚） must be a single dissolved Polygon');
 
     for (const [sid, title, maxPieces] of [
       ['s_yuan_b', '元', 3],
