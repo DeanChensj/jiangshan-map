@@ -957,7 +957,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"xichu","zh":"西楚","en":"Western Chu","titles":["西楚（项羽）","楚（张楚 · 怀王）","楚（怀王 · 项羽）"],"from":-206,"to":-202,"matchFrom":-209,"seatZh":"彭城（徐州）","seatEn":"Pengcheng (Xuzhou)","aliases":["西楚霸王","楚霸王"]},
     {"key":"nanyue","zh":"南越国","en":"Nanyue Kingdom","titles":["南越（赵佗）","南越"],"from":-204,"to":-111,"matchFrom":-207,"seatZh":"番禺（广州）","seatEn":"Panyu (Guangzhou)","aliases":["南越","赵氏南越"]},
     {"key":"minyue","zh":"闽越国","en":"Minyue Kingdom","titles":["闽越"],"from":-202,"to":-110,"matchFrom":-209,"seatZh":"东治（福州）","seatEn":"Dongye (Fuzhou)","aliases":["闽越","东越"]},
-    {"key":"xiyu_duhufu","zh":"西域都护府","en":"Protectorate of the Western Regions","titles":["西域都护府","西域都护（伊吾·南道）"],"from":-60,"to":188,"seatZh":"乌垒城（轮台）→ 它乾城（龟兹）→ 柳中（西域长史府）","seatEn":"Wulei (Luntai) → Taqian (Kucha) → Liuzhong","aliases":["西域都护","西域长史府"]},
+    {"key":"xiyu_duhufu","zh":"西域都护府","en":"Protectorate of the Western Regions","titles":["西域都护府","西域都护（伊吾·南道）","西域长史府"],"from":-60,"to":188,"seatZh":"乌垒城（轮台）→ 它乾城（龟兹）→ 柳中（西域长史府）","seatEn":"Wulei (Luntai) → Taqian (Kucha) → Liuzhong","aliases":["西域都护","西域长史府"]},
     {"key":"xin_wangmang","zh":"新朝","en":"Xin Dynasty","titles":["新（王莽）"],"from":9,"to":23,"matchFrom":8,"seatZh":"常安（长安）","seatEn":"Chang'an","aliases":["新莽","王莽新朝"]},
     {"key":"chengjia","zh":"成家","en":"Chengjia (Gongsun Shu)","titles":["成家（公孙述）"],"from":25,"to":36,"matchFrom":23,"seatZh":"成都","seatEn":"Chengdu","aliases":["公孙述政权","大成（公孙述）"]},
     {"key":"gongsun_liaodong","zh":"辽东公孙氏（燕）","en":"Gongsun Clan of Liaodong (Yan)","titles":["公孙氏(辽东)","燕（公孙氏辽东）"],"from":189,"to":238,"seatZh":"襄平（辽阳）","seatEn":"Xiangping (Liaoyang)","aliases":["辽东公孙氏","公孙燕"]},

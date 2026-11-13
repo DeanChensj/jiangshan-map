@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
-    "caption": "91 — 189 · 燕然勒石与西域重归：窦宪破北匈奴，班超定西域五十余国任都护",
+    "caption": "91 — 107 · 燕然勒石与西域重归：窦宪破北匈奴，班超定西域五十余国任都护",
     "note": "州郡政区：历代州部与郡级政区",
     "prefectures": [
       "s_xihan_a/会稽郡",

@@ -194,5 +194,7 @@
   "s_qin_c": { "overlap": 53, "outside": 6613 },
   "s_qin_d": { "overlap": 53, "outside": 6609 },
   "s_xihan_b3a": { "overlap": 74, "outside": 2597 },
-  "s_xihan_b3b": { "overlap": 74, "outside": 1425 }
+  "s_xihan_b3b": { "overlap": 74, "outside": 1425 },
+  "s_donghan_107": { "overlap": 85, "outside": 871 },
+  "s_donghan_123": { "overlap": 85, "outside": 871 }
 }
