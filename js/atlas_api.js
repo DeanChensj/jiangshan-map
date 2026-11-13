@@ -1648,7 +1648,7 @@
     // loosest and the first rule that matches anything decides, so an exact name always wins:
     // the English name as displayed; the same name ignoring spacing and punctuation
     // ("Jiangzhou" for "Jiang Zhou"); the name without its administrative suffix ("Yingtian
-    // Prefecture" or "Yingtian Fu" for "Yingtian Pref."); then the Chinese name without its
+    // Prefecture" or "Yingtian Pref." for "Yingtian Fu"); then the Chinese name without its
     // suffix ("应天" for "应天府"). Toneless pinyin is ambiguous (绛州 and 江州 are both
     // "Jiang Zhou" in 1102), so several indices can come back; the caller picks by location.
     _matchPrefectureNames(query, zhTitles) {
