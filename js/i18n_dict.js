@@ -308,19 +308,19 @@ window.EN_LOCALE = {
       "Jinyang · Luoyang"
     ],
     "xijin:291": [
-      "After Emperor Wu dies, Empress Jia Nanfeng purges regents, sparking the War of the Eight Princes",
+      "A year after Emperor Wu dies, Empress Jia purges the regents; War of the Eight Princes begins",
       "Luoyang"
     ],
     "xijin:299": [
-      "Qi Wannian's uprising triggers Guanzhong famine; Jiang Tong warns of frontier settlement perils",
+      "Qi Wannian's revolt is put down after two years; Jiang Tong warns of frontier settlement perils",
       "Chang'an · Guanzhong"
     ],
     "xijin:301": [
-      "Di leader Li Te leads Guanzhong refugees south into Shu and rises against Jin at Mianzhu",
+      "Guanzhong refugees settled in Shu rally to Di leader Li Te, who rises against Jin at Mianzhu",
       "Mianzhu (Chengdu)"
     ],
     "xijin:303": [
-      "After Sima Lun's usurpation, Princes Sima Ying at Ye and Sima Yong at Chang'an march on Luoyang",
+      "After Sima Lun's failed usurpation, Sima Ying at Ye and Sima Yong at Chang'an march on Luoyang",
       "Ye (Anyang)"
     ],
     "xijin:304": [

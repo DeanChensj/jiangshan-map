@@ -287,7 +287,7 @@ const VARIANT_PHRASES = new RegExp([...ALTERNATE_SYLLABLES.keys()].join('|'), 'g
 // These source phrases use 率 as "lead". The subject or clause start separates
 // them from a rate followed by an unrelated group, such as 伤亡率大军撤离后降低.
 const LEADING_CONTEXTS = new RegExp([
-  '赵充国率军', '张角率太平道', '曹髦率宿卫', '钟会率魏军', '李特率关陇',
+  '赵充国率军', '张角率太平道', '曹髦率宿卫', '钟会率魏军',
   '苻健率部自', '谢玄率八万北府兵', '萧衍率军', '陈庆之率七千白袍军', '高仙芝率军',
   '潘美率宋军', '曹彬率宋军', '童贯率北伐军', '忽必烈率蒙军', '伯颜率元军',
   '^率水师东攻', '沐英率军', '郑和率宝船', '^率骑破古北口', '戚继光率戚家军',
