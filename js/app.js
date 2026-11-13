@@ -427,6 +427,7 @@
       this.playSpeed = 1;
       this.playInterval = null;
       this.playHoldTicks = 0;
+      this.mapChangeMode = false;
       this.musicPlaying = false;
       this.musicTrackIdx = 0;
       this.musicAudio = null;
@@ -468,6 +469,11 @@
         this.hasSeenTraceHint = localStorage.getItem('jiangshan_seen_trace_hint') === '1';
       } catch (_) {
         this.hasSeenTraceHint = false;
+      }
+      try {
+        this.showFullTrace = localStorage.getItem('jiangshan_full_trace') === '1';
+      } catch (_) {
+        this.showFullTrace = false;
       }
 
       this.camera = this._getDefaultCamera();
@@ -7040,6 +7046,70 @@
       }
     }
 
+    stepMapChange(dir) {
+      if (this.challenge) return;
+      this._recordGestureClick();
+      this.stopAutoplay();
+      if (this.activeCustomRoute) {
+        this.stepCustomRoute(dir > 0 ? 1 : -1);
+        return;
+      }
+      if (this.activePerson) {
+        if (this.personTimer) {
+          clearInterval(this.personTimer);
+          this.personTimer = null;
+        }
+        this.stepPersonEvent(dir > 0 ? 1 : -1);
+        return;
+      }
+      if (!this._mapChangeYears) {
+        const yrs = new Set();
+        for (const d of this.dynasties) {
+          yrs.add(d.fromYear);
+          if (Array.isArray(d.phases)) {
+            for (const ph of d.phases) {
+              if (ph.until > d.fromYear && ph.until < d.toYear) yrs.add(ph.until);
+            }
+          }
+          for (const m of d.milestones || []) {
+            if (m.isMapChange) yrs.add(this._clampYearToDynasty(d, m.year));
+          }
+        }
+        this._mapChangeYears = Array.from(yrs).sort((a, b) => a - b);
+      }
+      const list = this._mapChangeYears;
+      let targetY = this.year;
+      if (dir > 0) {
+        const nextY = list.find((y) => y > this.year);
+        targetY = nextY !== undefined ? nextY : this.maxYear;
+      } else {
+        targetY = this.minYear;
+        for (let i = list.length - 1; i >= 0; i--) {
+          if (list[i] < this.year) {
+            targetY = list[i];
+            break;
+          }
+        }
+      }
+      this.jumpToYear(targetY);
+      const nextDyn = this.dynasties[this.dynastyIdx];
+      if (nextDyn && Array.isArray(nextDyn.milestones)) {
+        const matched = nextDyn.milestones.filter(
+          (m) => m.isMapChange && this._clampYearToDynasty(nextDyn, m.year) === this.year
+        );
+        if (matched.length > 1 && dir > 0) {
+          this.openMilestoneBalloon(nextDyn, matched[0], { fromStep: true });
+        }
+        const activeM =
+          this.activeMilestone && this.activeMilestone.dynastyKey === nextDyn.key
+            ? this.activeMilestone.milestone
+            : matched[matched.length - 1];
+        if (activeM && activeM.coord) {
+          this._ensureMilestoneInView(nextDyn, activeM);
+        }
+      }
+    }
+
     // ---------------- Autoplay ----------------
     _autoplayIntervalMs() {
       const speed = Number(this.playSpeed) > 0 ? Number(this.playSpeed) : 1;
@@ -9811,11 +9881,32 @@
       });
       const stepPrevBtn = this._id('act-step-prev');
       if (stepPrevBtn) {
-        stepPrevBtn.addEventListener('click', () => this.stepTimelineNode(-1));
+        stepPrevBtn.addEventListener('click', () => {
+          if (this.mapChangeMode) this.stepMapChange(-1);
+          else this.stepTimelineNode(-1);
+        });
       }
       const stepNextBtn = this._id('act-step-next');
       if (stepNextBtn) {
-        stepNextBtn.addEventListener('click', () => this.stepTimelineNode(1));
+        stepNextBtn.addEventListener('click', () => {
+          if (this.mapChangeMode) this.stepMapChange(1);
+          else this.stepTimelineNode(1);
+        });
+      }
+      const mapChangeToggle = this._id('act-mapchange-toggle');
+      if (mapChangeToggle) {
+        mapChangeToggle.addEventListener('click', () => {
+          this.mapChangeMode = !this.mapChangeMode;
+          mapChangeToggle.setAttribute('aria-pressed', String(this.mapChangeMode));
+          mapChangeToggle.classList.toggle('is-active', this.mapChangeMode);
+          if (this.mapChangeMode) {
+            stepPrevBtn && (stepPrevBtn.title = '上一版图变化（←）· Alt+← 始终版图变化');
+            stepNextBtn && (stepNextBtn.title = '下一版图变化（→）· Alt+→ 始终版图变化');
+          } else {
+            stepPrevBtn && (stepPrevBtn.title = '上一历史阶段 / 事件节点（←）· Shift+← 退十年');
+            stepNextBtn && (stepNextBtn.title = '下一历史阶段 / 事件节点（→）· Shift+→ 进十年');
+          }
+        });
       }
 
       // Scrubber dragging (smooth continuous scrubbing anywhere on the bar)
@@ -9923,6 +10014,10 @@
             e.preventDefault();
             e.target.blur();
             const dir = e.key === 'ArrowRight' ? 1 : -1;
+            if (e.altKey || this.mapChangeMode) {
+              this.stepMapChange(dir);
+              return;
+            }
             if (e.shiftKey && !this.activePerson && !this.activeCustomRoute) {
               this.stopAutoplay();
               this.jumpToYear(this.year + dir * 10);
@@ -9938,6 +10033,10 @@
           if (this.challenge) return;
           e.preventDefault();
           const dir = e.key === 'ArrowRight' ? 1 : -1;
+          if (e.altKey || this.mapChangeMode) {
+            this.stepMapChange(dir);
+            return;
+          }
           if (e.shiftKey && !this.activePerson && !this.activeCustomRoute) {
             this.stopAutoplay();
             this.jumpToYear(this.year + dir * 10);

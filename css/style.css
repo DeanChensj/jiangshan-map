@@ -2911,6 +2911,7 @@ html.deeplink-boot #inp-year {
 #scrubber-dock.is-challenge-locked .round-btn,
 #scrubber-dock.is-challenge-locked .play-speed-btn,
 #scrubber-dock.is-challenge-locked .step-nav-btn,
+#scrubber-dock.is-challenge-locked .mapchange-toggle-btn,
 #scrubber-dock.is-challenge-locked #inp-year {
   cursor: not-allowed;
 }
@@ -3341,6 +3342,41 @@ html.is-embed .timeline-crop-mask {
 }
 
 .step-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.mapchange-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: rgba(90, 74, 58, 0.07);
+  color: var(--text-muted);
+  font-family: var(--sans-stack);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+  margin-left: 2px;
+}
+
+.mapchange-toggle-btn:hover {
+  background: rgba(181, 69, 47, 0.12);
+  border-color: rgba(181, 69, 47, 0.35);
+  color: var(--vermilion);
+}
+
+.mapchange-toggle-btn.is-active {
+  background: rgba(181, 69, 47, 0.18);
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+}
+
+.mapchange-toggle-btn:active {
   transform: scale(0.95);
 }
 
