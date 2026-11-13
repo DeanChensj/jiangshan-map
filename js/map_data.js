@@ -951,7 +951,7 @@ window.DYNASTY_DATA = [
       {"year":821,"headline":"长庆科举覆试案引发“牛李党争”，朝臣朋党相倾长达四十余年","site":"长安","coord":[108.941,34.261]},
       {"year":822,"headline":"唐蕃长庆会盟：继长安盟誓后再盟于逻些，次年立会盟碑于大昭寺","site":"逻些（拉萨）","coord":[91.131,29.653]},
       {"year":835,"headline":"甘露之变：唐文宗与李训谋诛仇士良事败，晚唐宦官专权","site":"长安","coord":[108.961,34.291]},
-      {"year":840,"headline":"回鹘汗国崩溃；唐武宗与李德裕破回鹘、平泽潞（会昌中兴）","site":"长安 · 振武（大同）","coord":[113.3,40.08],"siteCoords":[[108.941,34.341],[113.301,40.081]]},
+      {"year":840,"headline":"回鹘汗国崩溃；唐武宗与李德裕破回鹘、平泽潞（会昌中兴）","site":"长安 · 振武（大同）","coord":[113.3,40.08],"siteCoords":[[108.941,34.341],[113.301,40.081]],"isMapChange":true},
       {"year":845,"headline":"唐武宗下诏拆毁天下佛寺四千六百余所、僧尼还俗，史称会昌法难","site":"长安","coord":[108.941,34.261]},
       {"year":848,"headline":"张议潮沙州起义，建归义军收复瓜沙甘肃等十一州归唐","site":"沙州 · 瓜州","coord":[94.661,40.141],"isMapChange":true,"siteCoords":[[94.661,40.141],[96.21,40.25]]},
       {"year":868,"headline":"赴援安南之桂林戍卒由庞勋率领起义北攻徐州，截断江淮漕运","site":"徐州 · 桂林","coord":[117.18,34.27],"siteCoords":[[117.181,34.261],[110.291,25.271]]},
@@ -1097,7 +1097,8 @@ window.DYNASTY_DATA = [
       {"until":763,"snap":"s_tang_b0b"},
       {"until":764,"snap":"s_tang_b0"},
       {"until":790,"snap":"s_tang_b1"},
-      {"until":848,"snap":"s_tang_b"},
+      {"until":840,"snap":"s_tang_b"},
+      {"until":848,"snap":"s_tang_840"},
       {"until":880,"snap":"s_tang_c"},
       {"until":885,"snap":"s_tang_d1"},
       {"until":907,"snap":"s_tang_d2"}
