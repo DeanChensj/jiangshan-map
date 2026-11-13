@@ -705,6 +705,18 @@
       return this._zhHantPromise;
     }
 
+    // One promise per page: a failed load is not retried, so autoplay cannot keep appending tags.
+    _ensureMilestoneSources() {
+      if (typeof window === 'undefined') return Promise.resolve(null);
+      if (window.ATLAS_MILESTONE_SOURCES) return Promise.resolve(window.ATLAS_MILESTONE_SOURCES);
+      if (!this._milestoneSourcesPromise) {
+        this._milestoneSourcesPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/milestone_sources.js', 'vSources')
+        ).then(() => window.ATLAS_MILESTONE_SOURCES || null);
+      }
+      return this._milestoneSourcesPromise;
+    }
+
     _isQuizLoaded() {
       return typeof this._buildChallengeDeck === 'function';
     }
@@ -6022,6 +6034,7 @@
       Array.from(items).forEach((el, idx) =>
         el.classList.toggle('is-current', idx === activeIdx)
       );
+      this._syncMilestoneSource(dynasty);
       const pane = this._id('chronicle-pane');
       if (!pane || this.paneCollapsed) return;
       if (this._isMobileViewport() && !this.mobileChronicleOpen) {
@@ -6070,6 +6083,53 @@
     }
 
     // Place Genealogy & Person Chronicles methods are attached by js/atlas_trace.js.
+
+    // "据《资治通鉴》卷81；《晋书》卷26、卷43" for one entry of js/milestone_sources.js.
+    _milestoneSourceHtml(groups) {
+      if (!Array.isArray(groups) || !groups.length) return '';
+      const esc = (s) =>
+        String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+      const link = (text, url) =>
+        url
+          ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="在维基文库阅读原文">${esc(text)}</a>`
+          : esc(text);
+      // A title is never split from its first chapter; longer lists may still wrap between chapters.
+      const parts = groups.map(([title, chapters]) => {
+        const named = chapters.filter(([c]) => c);
+        if (!named.length) return `<span class="ev-src-work">${link(`《${title}》`, (chapters[0] || [])[1])}</span>`;
+        const [first, ...rest] = named.map(([c, url]) => link(c, url));
+        return `<span class="ev-src-work">《${esc(title)}》${first}</span>${rest.map((r) => `、${r}`).join('')}`;
+      });
+      return `据${parts.join('；')}`;
+    }
+
+    // Source line under the highlighted milestone; Chinese locales only.
+    _syncMilestoneSource(dynasty) {
+      const listEl = this._id('milestone-list');
+      if (!listEl || typeof listEl.querySelectorAll !== 'function') return;
+      listEl.querySelectorAll('.ev-src').forEach((n) => n.remove());
+      if (this.locale === 'en' || this.activePolity || !dynasty) return;
+      const idx = this._activeMilestoneIndex(dynasty);
+      const m = (dynasty.milestones || [])[idx];
+      const li = listEl.children[idx];
+      if (!m || !li) return;
+      const data = typeof window !== 'undefined' ? window.ATLAS_MILESTONE_SOURCES : null;
+      if (!data) {
+        this._ensureMilestoneSources().then((loaded) => {
+          if (loaded) this._syncMilestoneSource(this.dynasties[this.dynastyIdx]);
+        });
+        return;
+      }
+      const html = this._milestoneSourceHtml(data[`${dynasty.key}:${m.year}`]);
+      if (!html) return;
+      const line = document.createElement('div');
+      line.className = 'ev-src';
+      line.innerHTML = html;
+      // Following a link must not also select the milestone.
+      line.addEventListener('click', (e) => e.stopPropagation());
+      li.appendChild(line);
+      if (this.locale === 'zh-tw') this._applyZhHantDom(line);
+    }
 
     // ---------------- Scrubber / Timeline ----------------
     _findDynastyIndex(y) {
