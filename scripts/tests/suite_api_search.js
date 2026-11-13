@@ -1824,7 +1824,7 @@ async function runApiSearchSuite(ctx) {
 
   // ?hover=<prefecture> deep links: every documented spelling must resolve against that
   // year's real prefecture layer, whatever suffix style the English dictionary uses
-  // ("Yingtian Pref." next to "Shuntian Fu", "Jiang Zhou" with a space).
+  // ("Jiang Zhou" with a space, "Wu Zhou (Jinhua)" with a gloss).
   {
     const fs = require('fs');
     const path = require('path');
@@ -1838,9 +1838,9 @@ async function runApiSearchSuite(ctx) {
     };
     for (const [year, query, want] of [
       [1415, 'Yingtian Prefecture', ['应天府']], // README.md, README_JA.md
-      [1415, 'Yingtian Fu', ['应天府']], // llms.txt
+      [1415, 'Yingtian Fu', ['应天府']], // llms.txt; as displayed in the English UI
       [1415, 'Yingtian', ['应天府']],
-      [1415, 'Yingtian Pref.', ['应天府']], // as displayed in the English UI
+      [1415, 'Yingtian Pref.', ['应天府']],
       [1415, 'yingtian pref', ['应天府']],
       [1415, '应天', ['应天府']],
       [1083, 'Huangzhou', ['黄州']], // llms.txt, SKILL.md
