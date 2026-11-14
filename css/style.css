@@ -2805,10 +2805,16 @@ h2 {
   color: var(--text-muted);
   font-size: 11.5px;
   line-height: 1.5;
+  text-align: right;
 }
 
 #milestone-list .ev-src-work {
   white-space: nowrap;
+}
+
+/* The gap sits before a work, so a wrapped line still ends flush with the right edge. */
+#milestone-list .ev-src-work + .ev-src-work {
+  margin-left: 0.6em;
 }
 
 .disclaimer-box {
