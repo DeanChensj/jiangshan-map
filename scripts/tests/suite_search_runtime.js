@@ -1673,6 +1673,37 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.locale = 'zh';
       }
 
+      // Deep links (?year=383): the full snapshot bundle is preloaded from <head>, and while a
+      // snapshot is still downloading no other era's borders or key stay on screen.
+      {
+        assert(
+          /link\.href = 'js\/atlas_snapshots\.js\?v=[0-9a-f]{8}'/.test(indexHtml) &&
+            indexHtml.indexOf('deeplink-boot') < indexHtml.indexOf('css/style.css'),
+          'index.html must preload the snapshot bundle for deep links before the stylesheet'
+        );
+        const flags = () => {
+          const set = new Set();
+          return { add: (c) => set.add(c), remove: (c) => set.delete(c), contains: (c) => set.has(c) };
+        };
+        const saved = { svg: ctrl.svg, mapKey: ctrl.mapKey, snapshots: ctrl.snapshots };
+        try {
+          ctrl.svg = { classList: flags() };
+          ctrl.mapKey = { classList: flags() };
+          ctrl.snapshots = { s_loaded: {} };
+          ctrl._markAwaitingSnapshot('s_loaded');
+          assert(!ctrl.svg.classList.contains('is-awaiting-snapshot'), 'a loaded snapshot hides nothing');
+          ctrl._markAwaitingSnapshot('s_pending');
+          assert(
+            ctrl.svg.classList.contains('is-awaiting-snapshot') && ctrl.mapKey.classList.contains('is-awaiting-snapshot'),
+            'a pending snapshot hides the borders and the key until it is rendered'
+          );
+        } finally {
+          ctrl.svg = saved.svg;
+          ctrl.mapKey = saved.mapKey;
+          ctrl.snapshots = saved.snapshots;
+        }
+      }
+
       // CUJ 45: High-resolution terrain tiles — reset view stays on the base relief, Data Saver is
       // respected, every indexed tile exists, and the base relief shares the tiles' projection.
       {

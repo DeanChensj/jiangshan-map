@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    // Deep links (?year=, ?place=, …) need the full snapshot bundle: fetch it now, in parallel with
+    // the first-paint scripts, and hide the Warring States placeholder text until js/app.js jumps.
+    // scripts/sync_version.js keeps the ?v= below in step with data-v-snapshots.
+    (function () {
+      if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) return;
+      var root = document.documentElement;
+      root.classList.add('deeplink-boot');
+      setTimeout(function () { root.classList.remove('deeplink-boot'); }, 8000);
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'script';
+      link.fetchPriority = 'low'; // after the first-paint scripts, not competing with them
+      link.href = 'js/atlas_snapshots.js?v=56dc16c8';
+      document.head.appendChild(link);
+    })();
+  </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与中英双语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
@@ -308,7 +325,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=63a2fd35" />
+  <link rel="stylesheet" href="css/style.css?v=cef8772c" />
   <!-- Analytics: Vercount, anonymous click counter (workers/stats) & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="js/atlas_track.js?v=4b2c3de3"></script>
@@ -768,7 +785,7 @@
   <script src="js/atlas_boot.js?v=cfa92817"></script>
   <script src="js/map_data.js?v=5a857d18"></script>
   <script src="js/lore_core.js?v=a8dea66c"></script>
-  <script id="atlas-app-script" src="js/app.js?v=87084d0c" data-v-snapshots="56dc16c8" data-v-i18n="a0a823ae" data-v-lore="6bf69de6" data-v-pinyin="8634667c" data-v-hant="3afdab47" data-v-quiz="7699273f" data-v-narrator="fe4f4e00" data-v-sources="598c394b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=690a713d" data-v-snapshots="56dc16c8" data-v-i18n="a0a823ae" data-v-lore="6bf69de6" data-v-pinyin="8634667c" data-v-hant="3afdab47" data-v-quiz="7699273f" data-v-narrator="fe4f4e00" data-v-sources="598c394b"></script>
   <script src="js/atlas_trace.js?v=437065be"></script>
   <script src="js/atlas_search.js?v=432e3c8b"></script>
   <script src="js/atlas_api.js?v=01e2f38b"></script>
