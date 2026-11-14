@@ -4354,7 +4354,7 @@
     _findStoryForMilestone(dynasty, m) {
       if (!dynasty || !m) return null;
       const map = {
-        'zhanguo:-230': { key: 'qinmie', stopIdx: -1, titleZh: '秦灭六国' },
+        'zhanguo:-230': { key: 'qintongyi', stopIdx: -1, titleZh: '秦灭六国' },
         'qin:-206': { key: 'chuhan', stopIdx: -1, titleZh: '楚汉之争' },
         'tang:755': { key: 'anshi', stopIdx: -1, titleZh: '安史之乱' },
         'beisong:1127': { key: 'jingkang', stopIdx: -1, titleZh: '靖康之变' },
