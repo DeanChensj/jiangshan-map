@@ -2437,6 +2437,24 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Jiangling and Guizhou (秭归) must be 荆南, Shizhou not; Ezhou, Huangzhou and Qizhou must be ${south}`
       );
     }
+    // Neighbour names must fit the snapshot's years.
+    for (const [sk, has, lacks] of [
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],
+      ['s_sanguo', '萨珊波斯', '安息'],
+      ['s_nanbei_e', '突厥', '柔然'],
+      ['s_tang_a5', '倭马亚王朝（大食）', '萨珊波斯'],
+      ['s_tang_b', '室利佛逝', '三佛齐'],
+      ['s_wudai_c', '高丽', '新罗'],
+      ['s_wudai_c', '日本（平安）', '大和（日本）'],
+      ['s_nansong_e', '日本（镰仓幕府）', '日本（平安）'],
+      ['s_ming_0c', '高丽', '朝鲜'],
+      ['s_ming_a', '日本（室町幕府）', '萨法维波斯'],
+      ['s_ming_c', '日本（江户幕府）', '日本（战国）'],
+      ['s_qing_g', '大韩帝国', '朝鲜'],
+    ]) {
+      const titles = snapshots[sk].polities.map((p) => p.title);
+      assert(titles.includes(has) && !titles.includes(lacks), `${sk}: expected neighbour ${has}, not ${lacks}`);
+    }
     // 秦/凤/阶/成 are 后蜀's in 947-955 and 后周's from 955; 泉/漳 form 清源军 from 947.
     for (const sk of ['s_wudai_d', 's_wudai_e']) {
       assert(
