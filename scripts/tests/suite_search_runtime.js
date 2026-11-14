@@ -1680,7 +1680,7 @@ async function runSearchRuntimeSuite(ctx) {
           indexHtml.includes('<g id="terrain-relief-layer">') &&
             indexHtml.includes('<g id="grp-terrain-tiles"></g>') &&
             indexHtml.includes('<g id="grp-paleo-sea"></g>') &&
-            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.48;') &&
+            cssSrc.includes('#terrain-relief-layer {\n  opacity: 0.62;') &&
             cssSrc.includes('.paleo-sea {\n  fill: #e6dfd1;'),
           'index.html must wrap #terrain-relief-img, #grp-terrain-tiles, and #grp-paleo-sea in #terrain-relief-layer so .paleo-sea (#e6dfd1) composites seamlessly with open water'
         );

@@ -625,7 +625,7 @@ h2 {
 }
 
 #terrain-relief-layer {
-  opacity: 0.48;
+  opacity: 0.62;
   pointer-events: none;
 }
 
@@ -980,7 +980,7 @@ h2 {
 }
 
 #atlas-svg.terrain-active .polity-shape {
-  fill-opacity: 0.3;
+  fill-opacity: 0.24;
   mix-blend-mode: multiply;
   stroke-width: 1.9;
 }
@@ -991,7 +991,7 @@ h2 {
 }
 
 #atlas-svg.terrain-active .polity-shape.rival {
-  fill-opacity: 0.28;
+  fill-opacity: 0.22;
   stroke-width: 1.75;
 }
 
@@ -1002,7 +1002,7 @@ h2 {
 }
 
 #atlas-svg.terrain-active .polity-shape.protectorate {
-  fill-opacity: 0.2;
+  fill-opacity: 0.16;
 }
 
 .polity-shape.neighbor {
@@ -5085,7 +5085,7 @@ html[lang="en"] #act-toggle-pane .tp-label {
 
 @media (max-width: 640px) {
   #terrain-relief-layer {
-    opacity: 0.48;
+    opacity: 0.62;
   }
 
   /* Slim down non-scaling border & corridor strokes by ~38% so lines don't overpower text */
