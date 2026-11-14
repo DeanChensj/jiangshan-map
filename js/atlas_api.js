@@ -1377,7 +1377,7 @@
           const params = new URLSearchParams();
           params.set('year', isMultiYear ? route.map((s) => s.year).join(',') : String(first.year));
           params.set('place', formattedPlace);
-          if (isEn) params.set('lang', 'en');
+          if (isEn) params.set('lang', this.viMode ? 'vi' : 'en');
           else if (this.locale === 'zh-tw') params.set('lang', 'zh-tw');
           const basePath =
             typeof location !== 'undefined' ? `${location.origin}${location.pathname}` : '';
@@ -1474,7 +1474,7 @@
       if (zoom !== undefined) {
         params.set('zoom', Number(targetZoom.toFixed(2)));
       }
-      if (isEn) params.set('lang', 'en');
+      if (isEn) params.set('lang', this.viMode ? 'vi' : 'en');
       else if (this.locale === 'zh-tw') params.set('lang', 'zh-tw');
       const basePath =
         typeof location !== 'undefined' ? `${location.origin}${location.pathname}` : '';

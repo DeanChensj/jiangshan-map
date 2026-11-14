@@ -405,8 +405,11 @@
       this._initTimelineBands();
 
       const rawLang = (new URLSearchParams(location.search).get('lang') || '').toLowerCase();
+      // Vietnamese runs on the English rendering path (Latin script, same layout rules) with a
+      // Vietnamese overlay on top: see _ensureViLocale. Untranslated text falls back to English.
+      this.viMode = /^(vi|vi-vn|vi_vn)$/.test(rawLang);
       this.locale =
-        rawLang === 'en'
+        rawLang === 'en' || this.viMode
           ? 'en'
           : /^(zh-tw|zh_tw|tw|hk|zh-hk|zh_hk|zh-hant|zh_hant|hant)$/.test(rawLang)
             ? 'zh-tw'
@@ -638,6 +641,7 @@
     }
 
     _ensureEnglishLocale() {
+      if (this.viMode && !this._viApplied) return this._ensureViLocale();
       if (
         window.EN_LOCALE &&
         window.EN_LOCALE.dict &&
@@ -658,6 +662,238 @@
         });
       }
       return this._enLocalePromise;
+    }
+
+    // ---------------- Vietnamese (?lang=vi) ----------------
+    // js/i18n_vi.js defines window.VI_LOCALE:
+    //   strings / dynasties / milestones / corridors  same keys as EN_LOCALE
+    //   dict      Chinese term -> Vietnamese (Hán-Việt names, keyed by Chinese so that pinyin
+    //             homophones such as 叙州 / 徐州 stay apart); also used for *Zh/*En field pairs
+    //   en        English text -> Vietnamese, for content fields and hardcoded UI phrases
+    //   patterns  [regex source, replacement] for UI phrases that carry numbers or names
+    // Everything is applied once, in place, after the English locale loads; switching to or
+    // from Vietnamese reloads the page so the English data is never needed again.
+    _ensureViLocale() {
+      if (!this._viLocalePromise) {
+        const hasEn =
+          window.EN_LOCALE && window.EN_LOCALE.dict && Object.keys(window.EN_LOCALE.dict).length > 0;
+        const loadEn = hasEn
+          ? Promise.resolve()
+          : this._loadScriptOnce(this._lazyAssetUrl('js/i18n_dict.js', 'vI18n'));
+        const loadVi = window.VI_LOCALE
+          ? Promise.resolve()
+          : this._loadScriptOnce(this._lazyAssetUrl('js/i18n_vi.js', 'vVi'));
+        this._viLocalePromise = Promise.all([loadEn, loadVi]).then(() => {
+          this._applyViOverlay();
+          this._viApplied = true;
+          if (window.EN_LOCALE) this._setEnglishLocale(window.EN_LOCALE);
+          this.searchIndex = null;
+          this._extraEnTermMap = null;
+          this._startViDomLayer();
+          return this.enLocale;
+        });
+      }
+      return this._viLocalePromise;
+    }
+
+    _viData() {
+      if (!this._viDataCache) {
+        const v = (typeof window !== 'undefined' && window.VI_LOCALE) || null;
+        // Not loaded yet: answer with an empty table but do not cache it.
+        if (!v) return { en: {}, dict: {}, eras: {}, compiledPatterns: [] };
+        const patterns = [];
+        for (const row of v.patterns || []) {
+          try {
+            patterns.push([new RegExp(row[0], 'g'), row[1]]);
+          } catch (_) {}
+        }
+        this._viDataCache = { ...v, en: v.en || {}, dict: v.dict || {}, compiledPatterns: patterns };
+      }
+      return this._viDataCache;
+    }
+
+    // Translate one English UI string: exact phrase first, then the phrase patterns.
+    _viText(text) {
+      if (!this.viMode || !text || typeof text !== 'string') return text;
+      const vi = this._viData();
+      const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(text);
+      const core = m[2];
+      if (!core || !/[A-Za-z]/.test(core)) return text;
+      if (vi.en[core] !== undefined) return m[1] + vi.en[core] + m[3];
+      let out = core;
+      for (const [re, rep] of vi.compiledPatterns) {
+        re.lastIndex = 0;
+        if (re.test(out)) {
+          re.lastIndex = 0;
+          out = out.replace(re, rep);
+        }
+      }
+      return out === core ? text : m[1] + out + m[3];
+    }
+
+    _applyViOverlay() {
+      const vi = this._viData();
+      const en = window.EN_LOCALE;
+      const pick = (val, ...cands) => {
+        for (const c of cands) if (c !== undefined && c !== null && c !== '') return c;
+        return val;
+      };
+      if (en) {
+        for (const k of Object.keys(en.strings || {})) {
+          en.strings[k] = pick(en.strings[k], vi.strings && vi.strings[k], vi.en[en.strings[k]]);
+        }
+        for (const k of Object.keys(en.dynasties || {})) {
+          const d = en.dynasties[k];
+          const vd = (vi.dynasties && vi.dynasties[k]) || {};
+          for (const f of Object.keys(d)) {
+            if (typeof d[f] === 'string') d[f] = pick(d[f], vd[f], vi.en[d[f]]);
+          }
+        }
+        for (const sec of ['milestones', 'corridors']) {
+          const src = en[sec] || {};
+          const vsec = vi[sec] || {};
+          for (const k of Object.keys(src)) {
+            const cur = src[k];
+            const hit = vsec[k];
+            if (Array.isArray(cur)) {
+              src[k] = cur.map((s, i) =>
+                typeof s === 'string' ? pick(s, Array.isArray(hit) ? hit[i] : i === 0 ? hit : undefined, vi.en[s]) : s
+              );
+            } else if (typeof cur === 'string') {
+              src[k] = pick(cur, Array.isArray(hit) ? hit[0] : hit, vi.en[cur]);
+            } else if (cur && typeof cur === 'object') {
+              for (const f of Object.keys(cur)) {
+                if (typeof cur[f] === 'string') cur[f] = pick(cur[f], hit && hit[f], vi.en[cur[f]]);
+              }
+            }
+          }
+        }
+        const dict = en.dict || {};
+        for (const k of Object.keys(dict)) {
+          dict[k] = pick(dict[k], vi.dict[k], vi.en[dict[k]]);
+        }
+        // Chinese terms that only Vietnamese needs (no English entry to overwrite).
+        for (const k of Object.keys(vi.dict)) {
+          if (dict[k] === undefined) dict[k] = vi.dict[k];
+        }
+      }
+      // Some milestones carry headlineEn / siteEn in map_data.js itself, which win over
+      // EN_LOCALE.milestones; give them the Vietnamese text keyed the same way ("dynasty:year").
+      const viMs = vi.milestones || {};
+      for (const d of window.DYNASTY_DATA || []) {
+        for (const m of (d && d.milestones) || []) {
+          const hit = viMs[`${d.key}:${m.year}`];
+          if (!hit) continue;
+          const [head, site] = Array.isArray(hit) ? hit : [hit, ''];
+          if (m.headlineEn && head) m.headlineEn = head;
+          if (m.siteEn && site) m.siteEn = site;
+        }
+      }
+      const w = window;
+      for (const root of [w.ATLAS_LORE_DATA, w.DYNASTY_DATA, w.CORRIDOR_DATA, w.PROVINCE_OUTLINES, w.HYDRO_DATA]) {
+        if (root) this._viWalk(root, 0, false);
+      }
+      this._viLoreDetailApplied = this._isLoreDetailLoaded();
+    }
+
+    // Overwrite English content fields in place. Only fields that are English by name
+    // ("en", "*En") or by position (an array slot right after a Chinese slot) are touched,
+    // so ids, keys, class names and colours are never rewritten.
+    _viWalk(node, depth, englishSlot) {
+      if (!node || typeof node !== 'object' || depth > 12) return;
+      const vi = this._viData();
+      const isCjk = (s) => typeof s === 'string' && /[㐀-鿿]/.test(s);
+      const isLatin = (s) => typeof s === 'string' && /[A-Za-z]/.test(s) && !isCjk(s);
+      const lookup = (s, zh) => (zh && isCjk(zh) && vi.dict[zh]) || vi.en[s];
+      if (Array.isArray(node)) {
+        for (let i = 0; i < node.length; i++) {
+          const v = node[i];
+          if (typeof v === 'string') {
+            const prevZh = i > 0 && isCjk(node[i - 1]) ? node[i - 1] : null;
+            if (isLatin(v) && (englishSlot || prevZh)) {
+              const out = lookup(v, prevZh);
+              if (out) node[i] = out;
+            }
+          } else if (v && typeof v === 'object') {
+            this._viWalk(v, depth + 1, englishSlot);
+          }
+        }
+        return;
+      }
+      for (const k of Object.keys(node)) {
+        const v = node[k];
+        const enField = k === 'en' || /[a-z0-9]En$/.test(k);
+        if (typeof v === 'string') {
+          if (!enField || !isLatin(v)) continue;
+          let zh = null;
+          if (k === 'en') zh = node.zh;
+          else {
+            const base = k.slice(0, -2);
+            zh = isCjk(node[base + 'Zh']) ? node[base + 'Zh'] : isCjk(node[base]) ? node[base] : null;
+          }
+          const out = lookup(v, zh);
+          if (out) node[k] = out;
+        } else if (v && typeof v === 'object') {
+          this._viWalk(v, depth + 1, enField);
+        }
+      }
+    }
+
+    // Hardcoded English UI phrases are rendered straight into the DOM from many places, so
+    // they are translated where they land: every text node and title / aria-label /
+    // placeholder attribute, now and whenever the page changes.
+    _startViDomLayer() {
+      if (this._viObserver || typeof document === 'undefined' || typeof MutationObserver === 'undefined') {
+        return;
+      }
+      const ATTRS = ['title', 'aria-label', 'placeholder', 'data-label', 'data-chokepoint'];
+      const fixText = (n) => {
+        const val = n.nodeValue;
+        if (!val || !/[A-Za-z]/.test(val)) return;
+        const p = n.parentNode;
+        if (p && (p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE')) return;
+        const next = this._viText(val);
+        if (next !== val) n.nodeValue = next;
+      };
+      const fixAttrs = (el) => {
+        for (const a of ATTRS) {
+          const val = el.getAttribute(a);
+          if (val && /[A-Za-z]/.test(val)) {
+            const next = this._viText(val);
+            if (next !== val) el.setAttribute(a, next);
+          }
+        }
+      };
+      const fixTree = (root) => {
+        if (!root) return;
+        if (root.nodeType === 3) return fixText(root);
+        if (root.nodeType !== 1) return;
+        if (root.nodeName === 'SCRIPT' || root.nodeName === 'STYLE') return;
+        fixAttrs(root);
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+        let n = walker.nextNode();
+        while (n) {
+          if (n.nodeType === 3) fixText(n);
+          else if (n.nodeName !== 'SCRIPT' && n.nodeName !== 'STYLE') fixAttrs(n);
+          n = walker.nextNode();
+        }
+      };
+      this._viFixTree = fixTree;
+      fixTree(document.documentElement);
+      this._viObserver = new MutationObserver((records) => {
+        for (const r of records) {
+          if (r.type === 'characterData') fixText(r.target);
+          else if (r.type === 'attributes') fixAttrs(r.target);
+          else for (const n of r.addedNodes) fixTree(n);
+        }
+      });
+      this._viObserver.observe(document.documentElement, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ATTRS,
+      });
     }
 
     _ensureEventPinyin() {
@@ -793,6 +1029,9 @@
           this._lazyAssetUrl('js/lore_detail.js', 'vLore')
         ).then(() => {
           this._loreDetailLoaded = true;
+          if (this.viMode && this._viApplied && window.ATLAS_LORE_DATA) {
+            this._viWalk(window.ATLAS_LORE_DATA, 0, false);
+          }
           this.searchIndex = null;
           this._soloPersonEventsCache = null;
           this._extraEnTermMap = null;
@@ -1345,6 +1584,10 @@
     formatYear(y, compact = false) {
       const n = Math.round(y);
       if (this.locale === 'en') {
+        if (this.viMode) {
+          if (n <= 0) return `${-n || 1} TCN`;
+          return compact ? `${n}` : `năm ${n}`;
+        }
         if (n <= 0) return `${-n || 1} BCE`;
         return compact ? `${n}` : `${n} CE`;
       }
@@ -1485,7 +1728,32 @@
       return joined ? joined.charAt(0).toUpperCase() + joined.slice(1) : '';
     }
 
+    // Vietnamese follows the Chinese pattern with Hán-Việt readings:
+    // "Đường Huyền Tông · Khai Nguyên 29". Monarch names come from VI_LOCALE.dict (keyed by the
+    // Chinese name), era names from VI_LOCALE.eras; either falls back to the English label.
+    _formatSpanEraVi(sp, targetNum) {
+      const [startY, prefix, , monarchZh = '', monarchEn = ''] = sp;
+      const vi = this._viData();
+      const eras = vi.eras || {};
+      const monarch = (monarchZh && vi.dict[monarchZh]) || monarchEn || '';
+      if (prefix === '民国') return `Dân Quốc năm ${targetNum}`;
+      if (startY < -140) {
+        return monarch ? `${monarch} · năm ${targetNum}` : '';
+      }
+      const dynPfx = ERA_DYNASTY_PREFIXES.find((dp) => prefix.startsWith(dp)) || '';
+      const eraOnly = dynPfx ? prefix.slice(dynPfx.length) : prefix;
+      const eraVi = eras[eraOnly];
+      if (!eraVi) return monarch;
+      // Ming/Qing names carry their era in brackets ("Minh Thành Tổ (Vĩnh Lạc)"); don't say it twice.
+      const shortMonarch = monarch.replace(` (${eraVi})`, '');
+      return shortMonarch ? `${shortMonarch} · ${eraVi} ${targetNum}` : `${eraVi} ${targetNum}`;
+    }
+
     _formatSpanEraEn(sp, targetNum) {
+      if (this.viMode && this._viApplied) {
+        const vi = this._formatSpanEraVi(sp, targetNum);
+        if (vi) return vi;
+      }
       const [startY, prefix, , monarchZh = '', monarchEn = ''] = sp;
       if (prefix === '民国') {
         return `Republic of China · Year ${targetNum}`;
@@ -1524,6 +1792,11 @@
         if (yr >= 1912) return dynName;
         const match = regional || this._resolveEraSpan(yr, dynasty);
         const prefix = (match && match[1]) || '';
+        if (this.viMode && this._viApplied && match) {
+          const [startY, , baseNum = 1] = match;
+          const label = this._formatSpanEraVi(match, yr - startY + baseNum);
+          if (label) return label;
+        }
         if (!regional && prefix.startsWith('武周')) dynName = 'Wu Zhou';
         else if (!regional && prefix.startsWith('新莽')) dynName = 'Xin';
         const monarchEn = match && match[4];
@@ -1548,6 +1821,21 @@
       return this.locale;
     }
 
+    // Vietnamese rewrites the English data in place, so entering or leaving it reloads the
+    // page (keeping the current view in the URL) instead of switching in place.
+    _reloadWithLang(target) {
+      if (typeof location === 'undefined') return;
+      try {
+        const params = this._urlStateParams();
+        if (target === 'zh') params.delete('lang');
+        else params.set('lang', target);
+        const qs = params.toString();
+        location.href = `${location.pathname || '/'}${qs ? `?${qs}` : ''}${location.hash || ''}`;
+      } catch (_) {
+        location.href = target === 'zh' ? './' : `./?lang=${target}`;
+      }
+    }
+
     _syncUrlLangParam() {
       if (this.embed) return;
       if (this._urlSyncArmed) {
@@ -1565,7 +1853,7 @@
       try {
         const params = new URLSearchParams(location.search);
         if (this.locale === 'en') {
-          params.set('lang', 'en');
+          params.set('lang', this.viMode ? 'vi' : 'en');
         } else if (this.locale === 'zh-tw') {
           params.set('lang', 'zh-tw');
         } else {
@@ -1607,7 +1895,7 @@
         }
       }
       if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
-      if (this.locale === 'en') p.set('lang', 'en');
+      if (this.locale === 'en') p.set('lang', this.viMode ? 'vi' : 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
       return p;
     }
@@ -1830,7 +2118,7 @@
         return;
       }
       document.documentElement.lang =
-        this.locale === 'en' ? 'en' : this.locale === 'zh-tw' ? 'zh-Hant' : 'zh-CN';
+        this.viMode ? 'vi' : this.locale === 'en' ? 'en' : this.locale === 'zh-tw' ? 'zh-Hant' : 'zh-CN';
       this._syncDocumentSeoMeta();
       this._syncSeoDirectoryLocale();
 
@@ -1838,7 +2126,7 @@
       const homeLink = this._id('act-home');
       if (homeLink) {
         // Home = a clean URL in the current language; this is the "reset" entry point.
-        homeLink.href = this.locale === 'en' ? './?lang=en' : this.locale === 'zh-tw' ? './?lang=zh-tw' : './';
+        homeLink.href = this.locale === 'en' ? (this.viMode ? './?lang=vi' : './?lang=en') : this.locale === 'zh-tw' ? './?lang=zh-tw' : './';
         homeLink.title = this.locale === 'en' ? 'Back to home' : this._zh('回到首页');
       }
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -1920,6 +2208,17 @@
           actLoc.dataset.targetLocale = 'en';
           actLoc.title = 'Switch to English';
         }
+      } else if (this.viMode) {
+        if (lblLocHant) lblLocHant.textContent = '简';
+        if (actLocHant) {
+          actLocHant.dataset.targetLocale = 'zh';
+          actLocHant.title = '切换至简体中文 / Chuyển sang tiếng Trung giản thể';
+        }
+        if (lblLoc) lblLoc.textContent = 'EN';
+        if (actLoc) {
+          actLoc.dataset.targetLocale = 'en';
+          actLoc.title = 'Switch to English / Chuyển sang tiếng Anh';
+        }
       } else {
         if (lblLocHant) lblLocHant.textContent = '简';
         if (actLocHant) {
@@ -1931,6 +2230,12 @@
           actLoc.dataset.targetLocale = 'zh-tw';
           actLoc.title = '切換至繁體中文 / Switch to Traditional Chinese';
         }
+      }
+      const actLocVi = this._id('act-locale-vi');
+      if (actLocVi) {
+        actLocVi.classList.toggle('is-active', Boolean(this.viMode));
+        actLocVi.setAttribute('aria-pressed', this.viMode ? 'true' : 'false');
+        actLocVi.title = this.viMode ? 'Tiếng Việt' : 'Tiếng Việt / Switch to Vietnamese';
       }
       const ghBtn = this._id('act-github-star');
       if (ghBtn) {
@@ -9589,6 +9894,7 @@
       if (actLocHant) {
         actLocHant.addEventListener('click', () => {
           const target = actLocHant.dataset.targetLocale;
+          if (this.viMode) return this._reloadWithLang(target || 'zh');
           this.locale = target || (this.locale === 'zh' ? 'zh-tw' : 'zh');
           this._syncUrlLangParam();
           this.applyLocale();
@@ -9597,10 +9903,17 @@
       this._id('act-locale').addEventListener('click', () => {
         const btn = this._id('act-locale');
         const target = btn && btn.dataset && btn.dataset.targetLocale;
+        if (this.viMode) return this._reloadWithLang(target || 'en');
         this.locale = target || (this.locale === 'en' ? 'zh' : 'en');
         this._syncUrlLangParam();
         this.applyLocale();
       });
+      const actLocVi = this._id('act-locale-vi');
+      if (actLocVi) {
+        actLocVi.addEventListener('click', () => {
+          if (!this.viMode) this._reloadWithLang('vi');
+        });
+      }
 
       this._id('act-autoplay').addEventListener('click', () => {
         if (this.challenge) return;

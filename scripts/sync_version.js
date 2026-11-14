@@ -48,6 +48,7 @@ const STATIC_TAG_ASSETS = [
 const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-snapshots', datasetKey: 'vSnapshots', relPath: 'js/atlas_snapshots.js' },
   { attr: 'data-v-i18n', datasetKey: 'vI18n', relPath: 'js/i18n_dict.js' },
+  { attr: 'data-v-vi', datasetKey: 'vVi', relPath: 'js/i18n_vi.js' },
   { attr: 'data-v-lore', datasetKey: 'vLore', relPath: 'js/lore_detail.js' },
   { attr: 'data-v-pinyin', datasetKey: 'vPinyin', relPath: 'js/event_pinyin.js' },
   { attr: 'data-v-hant', datasetKey: 'vHant', relPath: 'js/zh_hant.js' },

@@ -60,7 +60,7 @@
         } catch (_) {
           voices = [];
         }
-        const hasUsable = voices.some((v) => /^(?:zh|cmn|en)\b/i.test(String((v && v.lang) || '')));
+        const hasUsable = voices.some((v) => /^(?:zh|cmn|en|vi)\b/i.test(String((v && v.lang) || '')));
         if (hasUsable) {
           if (btn && btn.classList) btn.classList.remove('is-hidden');
           return true;
@@ -180,7 +180,9 @@
 
       const isEn = this.locale === 'en';
       const isTw = this.locale === 'zh-tw';
-      const langRe = isEn
+      const langRe = this.viMode
+        ? /^vi\b/i
+        : isEn
         ? /^en\b/i
         : isTw
           ? /^(?:zh[-_](?:TW|HK|Hant)|cmn[-_](?:TW|Hant))/i
@@ -442,12 +444,13 @@
         const candidates = this._candidateSpeechVoices();
         const voice = candidateIdx < candidates.length ? candidates[candidateIdx] : null;
 
+        if (this.viMode && typeof this._viText === 'function') text = this._viText(text);
         const utter = new window.SpeechSynthesisUtterance(text);
         this._activeUtterance = utter;
 
         const isEn = this.locale === 'en';
         const isTw = this.locale === 'zh-tw';
-        utter.lang = isEn ? 'en-US' : isTw ? 'zh-TW' : 'zh-CN';
+        utter.lang = this.viMode ? 'vi-VN' : isEn ? 'en-US' : isTw ? 'zh-TW' : 'zh-CN';
 
         if (voice) {
           utter.voice = voice;
