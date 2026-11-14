@@ -2469,13 +2469,17 @@
               ? [ac.en].filter(Boolean)
               : [ac.zh, ac.zh && ac.zh.replace(/^唐/, '')].filter(Boolean);
             const actorStyle = ac.color ? ` style="--actor-color:${ac.color}"` : '';
+            // Actors without a person profile (王贲, 荆轲, …) stay coloured but are not buttons.
+            const linkable = Boolean(this._resolvePersonProfile(targetKey));
             for (const term of cands) {
               if (term && storyLinkedCopy.includes(term)) {
                 storyLinkedCopy = storyLinkedCopy.replace(
                   term,
-                  `<button type="button" class="story-inline-person"${actorStyle} data-actor-key="${escHtml(
-                    targetKey
-                  )}" title="${isEn ? 'Open person chronicle' : '点击查看此人生平大事记'}">${term}</button>`
+                  linkable
+                    ? `<button type="button" class="story-inline-person"${actorStyle} data-actor-key="${escHtml(
+                        targetKey
+                      )}" title="${isEn ? 'Open person chronicle' : '点击查看此人生平大事记'}">${term}</button>`
+                    : `<span class="story-inline-person"${actorStyle}>${term}</span>`
                 );
                 break;
               }
@@ -2953,7 +2957,7 @@
         j.stops.forEach((st) => {
           const inDynSpan = st.year >= d.fromYear && st.year <= d.toYear;
           if (!inDynSpan && j.dynastyKey !== d.key) return;
-          if ((j.key === 'zhugeliang' || j.key === 'qinshihuang') && !inDynSpan) return;
+          if (j.key === 'zhugeliang' && !inDynSpan) return;
           if (isCloseCoord(st.coord, 45) && !results.some((r) => r.year === st.year)) {
             // Descriptions that already name the person ("黄河决口逼城，苏轼……") need no prefix.
             const descZh = st.descZh.split(/[；。]/)[0];
