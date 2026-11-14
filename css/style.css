@@ -5894,6 +5894,11 @@ button.story-inline-person:hover {
   text-decoration-color: var(--actor-color, #b53826);
 }
 
+span.story-inline-person {
+  font-weight: 700;
+  color: var(--actor-color, #8c2d19);
+}
+
 .story-camp-legend {
   display: flex;
   align-items: center;

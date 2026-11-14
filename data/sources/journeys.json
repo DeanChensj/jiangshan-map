@@ -1,13 +1,4 @@
 {
-  "journey:qinshihuang:-221": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六", "note": "“六王毕，四海一”出杜牧《阿房宫赋》，史书出处为本纪二十六年条" }],
-  "journey:qinshihuang:-222": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六" }],
-  "journey:qinshihuang:-223": [{ "w": "shiji", "loc": "卷73 白起王翦列传第十三" }],
-  "journey:qinshihuang:-225": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六" }],
-  "journey:qinshihuang:-226": [{ "w": "shiji", "loc": "卷86 刺客列传第二十六", "note": "易水歌；地图标《战国策·燕策三》，史记亦载" }, { "w": "shiji", "loc": "卷6 秦始皇本纪第六", "note": "二十一年取燕蓟城" }],
-  "journey:qinshihuang:-228": [{ "w": "shiji", "loc": "卷81 廉颇蔺相如列传第二十一", "note": "李牧附传：王翦急击，“虏赵王迁及其将颜聚，遂灭赵”" }, { "w": "shiji", "loc": "卷43 赵世家第十三", "note": "幽缪王七年作“赵怱军破，颜聚亡去”，与李牧传颜聚被虏之说不同" }, { "w": "shiji", "loc": "卷6 秦始皇本纪第六", "note": "十九年“得赵王”" }, { "w": "zztj", "loc": "卷6 秦纪一 始皇帝十八年至十九年", "note": "作“杀赵葱，颜聚亡”，从赵世家之说；校记称此句原系十九年，移至十八年" }],
-  "journey:qinshihuang:-230": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六" }],
-  "journey:qinshihuang:-236": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六" }],
-  "journey:qinshihuang:-238": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六", "note": "尉缭语见秦王政十年条（前237），与本站所系九年不同" }],
   "journey:sushi:1085": [{ "w": "songshi", "loc": "卷338 列传第九十七 苏轼传", "note": "元丰七年量移汝州，八年起知登州，到郡五日以礼部郎中召还" }],
   "journey:sushi:1089": [{ "w": "songshi", "loc": "卷338 列传第九十七 苏轼传", "note": "元祐四年以龙图阁学士知杭州，取葑田积湖中为长堤（苏堤）" }],
   "journey:zhangqian:-126": [{ "w": "shiji", "loc": "卷123 大宛列传第六十三" }],
