@@ -2955,6 +2955,9 @@
           if (!inDynSpan && j.dynastyKey !== d.key) return;
           if ((j.key === 'zhugeliang' || j.key === 'qinshihuang') && !inDynSpan) return;
           if (isCloseCoord(st.coord, 45) && !results.some((r) => r.year === st.year)) {
+            // Descriptions that already name the person ("黄河决口逼城，苏轼……") need no prefix.
+            const descZh = st.descZh.split(/[；。]/)[0];
+            const descEn = `${st.descEn.split('.')[0]}.`;
             results.push({
               year: st.year,
               text:
@@ -2963,8 +2966,8 @@
                   : `${nameZh}：${st.titleZh.replace(/\s*·\s*/g, '，')}`,
               milestone: {
                 year: st.year,
-                headline: `${nameZh}：${st.descZh.split(/[；。]/)[0]}`,
-                headlineEn: `${nameEn}: ${st.descEn.split('.')[0]}.`,
+                headline: descZh.includes(nameZh) ? descZh : `${nameZh}：${descZh}`,
+                headlineEn: descEn.includes(nameEn) ? descEn : `${nameEn}: ${descEn}`,
                 site: `${st.ancientZh}（今${st.modernZh}）`,
                 siteEn: `${st.ancientEn} (${st.modernEn})`,
                 coord: st.coord,
