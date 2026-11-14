@@ -2437,6 +2437,15 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Jiangling and Guizhou (秭归) must be 荆南, Shizhou not; Ezhou, Huangzhou and Qizhou must be ${south}`
       );
     }
+    // 大宁 (宁城) is 明 under the 大宁都司 in 1388-1407, and outside 明 again in 1616-1644 as in 1449-1616.
+    assert(
+      hasPolPt('s_ming_a0', '明', 119.0, 41.6) &&
+        !hasPolPt('s_ming_a0', '北元（鞑靼 · 瓦剌）', 119.0, 41.6) &&
+        !hasPolPt('s_ming_b', '明', 119.0, 41.6) &&
+        !hasPolPt('s_ming_c0', '明', 119.0, 41.6) &&
+        !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
+      '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
+    );
     // Neighbour names must fit the snapshot's years.
     for (const [sk, has, lacks] of [
       ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],

@@ -1707,6 +1707,7 @@ window.DYNASTY_DATA = [
       {"ancient":"播州","modern":"遵义","coord":[106.93,27.72],"vanish":1600,"tier":2,"remark":"万历二十八年平播之役，改土归流","aliases":["宣慰司","播州（宣慰司）"]},
       {"ancient":"乌思藏都司","modern":"拉萨","coord":[91.111,29.651],"appear":1373,"tier":2,"remark":"洪武六年置乌思藏都指挥使司，统摄卫藏政教朝贡"},
       {"ancient":"奴儿干都司","modern":"特林（俄罗斯）","coord":[140.06,52.94],"appear":1409,"vanish":1435,"tier":2,"remark":"永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑"},
+      {"ancient":"大宁都司","modern":"赤峰·宁城","coord":[119.19,41.59],"appear":1387,"vanish":1403,"tier":2,"remark":"洪武二十年置大宁都指挥使司，宁王朱权就藩于此；永乐元年内迁保定，故地付兀良哈三卫","aliases":["大宁"]},
       {"ancient":"大员","modern":"台南","coord":[120.211,23.001],"appear":1624,"tier":2,"remark":"1624年荷人筑热兰遮城，1662年郑成功收复改东都明京","aliases":["赤嵌","大员（赤嵌）"]},
       {"ancient":"火州","modern":"吐鲁番","coord":[89.53,42.85],"tier":2,"remark":"吐鲁番地面","aliases":["吐鲁番","火州（吐鲁番）"]},
       {"ancient":"宁远卫","modern":"葫芦岛·兴城","coord":[120.72,40.61],"tier":2,"appear":1428,"remark":"宣德三年置宁远卫；天启六年袁崇焕宁远大捷"},

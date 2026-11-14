@@ -7066,6 +7066,8 @@ window.EN_LOCALE = {
     "洪武六年置乌思藏都指挥使司，统摄卫藏政教朝贡": "U-Tsang Regional Military Commission established in 1373 CE to administer central Tibetan tribute and governance",
     "特林（俄罗斯）": "Tyr (Lower Amur, Russia)",
     "永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑": "Nurgan Regional Military Commission founded in 1409 CE; eunuch admiral Yishiha erected the Yongning Temple steles",
+    "大宁都司": "Daning Regional Military Commission",
+    "洪武二十年置大宁都指挥使司，宁王朱权就藩于此；永乐元年内迁保定，故地付兀良哈三卫": "Daning Regional Military Commission founded in 1387 CE and fief of Zhu Quan, Prince of Ning; moved inside the Great Wall to Baoding in 1403, its land left to the Uriankhai Three Guards",
     "大员（赤嵌）": "Tayouan (Chikan)",
     "1624年荷人筑热兰遮城，1662年郑成功收复改东都明京": "Fort Zeelandia built by Dutch in 1624; retaken by Koxinga as Dongdu Mingjing in 1662",
     "乌里雅苏台（蒙古国）": "Uliastai (Mongolia)",
