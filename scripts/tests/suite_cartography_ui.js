@@ -438,7 +438,7 @@ async function runCartographyUiSuite(ctx) {
       }
       assert(
         hasPolAt('s_sui_c', '隋', 93.51, 42.82) &&
-          hasPolAt('s_sui_c', '西海·鄯善等四郡', 99.82, 36.85) &&
+          hasPolAt('s_sui_c', '西海、鄯善等四郡', 99.82, 36.85) &&
           hasPolAt('s_sui_c', '吐谷浑', 99.2, 34.1) &&
           !hasPolAt('s_sui_c', '吐谷浑', 92.0, 34.0),
         's_sui_c (609-618 CE): Hami must belong to 隋, Qinghai Lake to 西海·鄯善等四郡, and Fuyun remnant to southeastern Bayan Har / Hequ ([99.2, 34.1])'
@@ -498,7 +498,7 @@ async function runCartographyUiSuite(ctx) {
         ['s_donghan_c', '东汉', '北匈奴'],
         ['s_donghan', '东汉', '鲜卑'],
         ['s_donghan_d1', '马腾(凉州)', '鲜卑'],
-        ['s_donghan_d2', '马腾·韩遂(关陇)', '鲜卑'],
+        ['s_donghan_d2', '马腾 · 韩遂(关陇)', '鲜卑'],
         ['s_donghan_e1', '曹操(北方)', '鲜卑'],
       ]) {
         assert(
@@ -610,7 +610,7 @@ async function runCartographyUiSuite(ctx) {
       }
       // De-provincialize modern Gansu Mazongshan ([96.80, 41.80]) & modern Minqin-Tengger spike ([103.90, 39.30]) across Han–Five Dynasties + Ming
       const deProvCoreSet = new Set([
-        '汉（郡国并行）', '汉', '新（王莽）', '隗嚣 · 窦融', '东汉', '马腾(凉州)', '马腾·韩遂(关陇)', '曹操(北方)',
+        '汉（郡国并行）', '汉', '新（王莽）', '隗嚣 · 窦融', '东汉', '马腾(凉州)', '马腾 · 韩遂(关陇)', '曹操(北方)',
         '魏', '晋', '汉赵', '前赵', '后赵', '前凉', '前秦（苻氏）', '前秦', '后凉', '西凉', '北凉',
         '北魏', '西魏', '北周', '隋', '凉（李轨）', '唐', '武周', '吐蕃', '归义军（张议潮）',
         '沙州归义军', '甘州回鹘', '凉州（六谷部）', '明', '哈密卫（关西七卫）', '大顺（李自成）',
@@ -1138,7 +1138,7 @@ async function runCartographyUiSuite(ctx) {
       [{ lng: 123.171, lat: 41.271, year: 196 }, '公孙氏(辽东)'], // Xiangping (Liaodong)
       [{ lng: 113.261, lat: 23.131, year: 200 }, '士燮(交州)'], // Panyu (Jiaozhou) 189-210
       [{ lng: 113.261, lat: 23.131, year: 211 }, '孙权(江东)'], // Panyu submits to Sun Quan 211
-      [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾·韩遂(关陇)'], // Guanlong before Tong Pass
+      [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾 · 韩遂(关陇)'], // Guanlong before Tong Pass
       [{ lng: 103.82, lat: 36.06, year: 211 }, '曹操(北方)'], // Guanlong after Tong Pass (211)
       [{ lng: 107.021, lat: 33.071, year: 200 }, '张鲁(汉中)'], // Nanzheng (Hanzhong) 196-214
       [{ lng: 107.021, lat: 33.071, year: 215 }, '曹操(北方)'], // Hanzhong taken by Cao Cao (215)
