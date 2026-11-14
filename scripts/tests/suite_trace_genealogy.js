@@ -859,7 +859,7 @@ async function runTraceGenealogySuite(ctx) {
     '印度',
     '不丹',
     '尼泊尔',
-    '克什米尔·拉达克',
+    '克什米尔 · 拉达克',
     '莫卧儿帝国',
     '锡克（拉合尔）',
     '阿富汗',

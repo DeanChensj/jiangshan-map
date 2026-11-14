@@ -6,11 +6,11 @@
     "note": "214 年刘备率军入成都迫降刘璋，正式领益州牧，实践《隆中对》“跨有荆、益”战略，与北方曹操、江东孙权形成三方鼎立之势。",
     "regionRef": "s_donghan",
     "polities": [
-      "曹操(北方)",
-      "s_donghan_d1/公孙氏(辽东)",
-      "s_donghan_d2/张鲁(汉中)",
-      "刘备(荆益)",
-      "s_donghan_e1/孙权(江东)",
+      "曹操（北方）",
+      "s_donghan_d1/公孙氏（辽东）",
+      "s_donghan_d2/张鲁（汉中）",
+      "刘备（荆益）",
+      "s_donghan_e1/孙权（江东）",
       "s_xihan_b3a/塞种诸国",
       "s_donghan_d1/百济",
       "s_donghan_d1/摩揭陀",
@@ -80,9 +80,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "刘备(荆益)",
+      "id": "刘备（荆益）",
       "properties": {
-        "title": "刘备(荆益)",
+        "title": "刘备（荆益）",
         "tint": "#c98a2b",
         "anchor": [107.5, 28],
         "role": "main"
@@ -634,9 +634,9 @@
     },
     {
       "type": "Feature",
-      "id": "曹操(北方)",
+      "id": "曹操（北方）",
       "properties": {
-        "title": "曹操(北方)",
+        "title": "曹操（北方）",
         "tint": "#4a6fa5",
         "anchor": [113.8, 35.8],
         "role": "main"

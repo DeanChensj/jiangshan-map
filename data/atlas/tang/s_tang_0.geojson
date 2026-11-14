@@ -1902,7 +1902,7 @@
       "properties": {
         "title": "夏（窦建德）",
         "role": "rival",
-        "tint": "#3f8f6a",
+        "tint": "#298a5e",
         "anchor": [115.8, 38.4]
       },
       "geometry": {
@@ -2249,7 +2249,7 @@
       "properties": {
         "title": "梁（萧铣）",
         "role": "rival",
-        "tint": "#5b7fa6",
+        "tint": "#3b709c",
         "anchor": [111.8, 27.2]
       },
       "geometry": {
@@ -3247,7 +3247,7 @@
       "properties": {
         "title": "吴（杜伏威）",
         "role": "rival",
-        "tint": "#6b5b95",
+        "tint": "#6f5099",
         "anchor": [119.6, 29.2]
       },
       "geometry": {

@@ -704,7 +704,7 @@ window.ATLAS_EVENT_PINYIN = {
     ["qinshihuangdongxundenglangyashan","liusanyue","xisanwanhuzhulangyatailishisongqinde","qinshihuangdongxundenglangyashanliusanyuexisanwanhuzhulangyatailishisongqinde","langyatai","qingdao"],
     ["qinshihuangmocidongxunzhilangya","xufuchengqiuyaoweidajiaoyusuozu","shihuangmingyiliannushezhi","qinshihuangmocidongxunzhilangyaxufuchengqiuyaoweidajiaoyusuozushihuangmingyiliannushezhi","langya","qingdao"],
     ["hanwudidongxunhaishangzhilangya","denglangyatailicisishizhu","qianfangshiruhaiqiupenglai","hanwudidongxunhaishangzhilangyadenglangyatailicisishizhuqianfangshiruhaiqiupenglai","langyatai","qingdao"],
-    ["langyarenfanchongqibingfanmang","yijunyizhutumeixiangbiehao","chimeijun","zhongchengfumangzhuli","langyarenfanchongqibingfanmangyijunyizhutumeixiangbiehaochimeijunzhongchengfumangzhuli","langya","zhucheng"],
+    ["langyarenfanchongqibingfanmang","yijunyizhutumeixiangbiehao","chimeijun","zhongchengfumangzhuli","langyarenfanchongqibingfanmangyijunyizhutumeixiangbiehaochimeijunzhongchengfumangzhuli","juxian","langya"],
     ["langyawangsimaruicaiwangdaozhicenanduzhenjianye","xielangyawangshidiandingdongjinjiye","langyawangsimaruicaiwangdaozhicenanduzhenjianyexielangyawangshidiandingdongjinjiye","langyaguo","linyi"],
     ["songzhenzongjingdeyuannianzhaochangnanzhenjinyucidishu","jingdenianzhi","jingdezhenyoucideming","songzhenzongjingdeyuannianzhaochangnanzhenjinyucidishujingdenianzhijingdezhenyoucideming","changnanzhen","jingdezhen"],
     ["mingtingyujingdezhenzhushanzhiyuqichangduzaogongtingyuci","tianbaiyuqinghuaciqiguanjuetianxia","mingtingyujingdezhenzhushanzhiyuqichangduzaogongtingyucitianbaiyuqinghuaciqiguanjuetianxia","jingdezhen"],

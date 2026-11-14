@@ -341,7 +341,7 @@
       "尼泊尔",
       "s_beisong_d/西辽",
       "不丹",
-      "伽色尼王朝",
+      "印度诸邦",
       "拉其普特诸邦"
     ],
     "regions": [
@@ -26339,9 +26339,9 @@
     },
     {
       "type": "Feature",
-      "id": "伽色尼王朝",
+      "id": "印度诸邦",
       "properties": {
-        "title": "伽色尼王朝",
+        "title": "印度诸邦",
         "tint": null,
         "role": "neighbor",
         "anchor": [77.56, 28.35]

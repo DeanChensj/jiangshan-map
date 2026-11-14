@@ -98,7 +98,7 @@ window.DYNASTY_DATA = [
       {"ancient":"荥阳","modern":"郑州·荥阳","coord":[113.38,34.79],"tier":2,"remark":"韩成皋荥阳重镇，鸿沟水运枢纽，前249入秦置三川郡"},
       {"ancient":"穰","modern":"南阳·邓州","coord":[112.09,32.69],"tier":2,"remark":"韩穰邑；秦穰侯魏冉封地"},
       {"ancient":"曲阜","modern":"济宁·曲阜","coord":[116.99,35.6],"isCapital":true,"capitalPeriods":[[-403,-249]],"remark":"鲁国都城，孔子故里；前249年楚考烈王灭鲁并入楚境","aliases":["鲁都","曲阜（鲁都）"]},
-      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.98,35.65],"tier":2,"remark":"越王勾践北徙都此，筑琅琊台望东海"},
+      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.92,35.65],"tier":2,"remark":"越王勾践北徙都此，筑琅琊台望东海"},
       {"ancient":"随","modern":"随州","coord":[113.38,31.69],"tier":2,"remark":"曾侯乙墓出土六十五件青铜编钟，先秦礼乐重镇","aliases":["曾国","随（曾国）"]},
       {"ancient":"义渠","modern":"庆阳","coord":[107.64,35.71],"tier":2,"vanish":-272,"remark":"西戎义渠国都，前272年秦灭义渠置北地郡","aliases":["北地","义渠（北地）"]},
       {"ancient":"葭萌","modern":"广元","coord":[105.84,32.44],"tier":2,"remark":"古蜀苴侯都邑，秦司马错伐蜀自此南下"},
@@ -164,7 +164,7 @@ window.DYNASTY_DATA = [
       {"ancient":"上洛","modern":"商洛","coord":[109.94,33.87],"tier":2,"remark":"武关道上洛县"},
       {"ancient":"穰","modern":"南阳·邓州","coord":[112.09,32.69],"tier":2,"remark":"南阳郡穰县","aliases":["南阳郡","穰（南阳郡）"]},
       {"ancient":"东冶","modern":"福州","coord":[119.3,26.08],"appear":-214,"remark":"始皇置闽中郡治东冶","aliases":["闽中郡","东冶（闽中郡）"]},
-      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.98,35.65],"tier":2,"remark":"琅琊郡治；秦始皇三巡琅琊筑台立石，遣徐福入海"},
+      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.92,35.65],"tier":2,"remark":"琅琊郡治；秦始皇三巡琅琊筑台立石，遣徐福入海"},
       {"ancient":"淮阴","modern":"淮安","coord":[119.14,33.5],"tier":2,"remark":"秦置淮阴县，韩信故里"},
       {"ancient":"郴县","modern":"郴州","coord":[113.01,25.77],"tier":2,"remark":"秦置郴县扼五岭骑田岭北口，项羽徙义帝于此","aliases":["桂阳","郴县（桂阳）"]},
       {"ancient":"由拳","modern":"嘉兴","coord":[120.75,30.75],"tier":2,"remark":"古槜李地，秦始皇东巡置由拳县","aliases":["嘉兴","由拳（嘉兴）"]},
@@ -272,7 +272,7 @@ window.DYNASTY_DATA = [
       {"ancient":"东冶","modern":"福州","coord":[119.3,26.08],"remark":"闽越王无诸都东冶；武帝灭闽越置冶县","aliases":["闽越","东冶（闽越）"]},
       {"ancient":"临羌","modern":"西宁","coord":[101.78,36.62],"remark":"赵充国河湟屯田；王莽置西海郡于青海湖畔","aliases":["河湟","临羌（河湟）"]},
       {"ancient":"鲁县","modern":"济宁·曲阜","coord":[116.99,35.6],"tier":2,"remark":"鲁国都城，汉高祖过鲁以太牢祠孔子","aliases":["曲阜","鲁县（曲阜）"]},
-      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.98,35.65],"tier":2,"remark":"西汉置琅琊郡；武帝东巡礼祠四时主，汉末樊崇赤眉军起于此"},
+      {"ancient":"琅琊","modern":"青岛·黄岛","coord":[119.92,35.65],"tier":2,"remark":"西汉置琅琊郡；武帝东巡礼祠四时主，汉末樊崇赤眉军起于此"},
       {"ancient":"淮阴","modern":"淮安","coord":[119.14,33.5],"tier":2,"remark":"汉初韩信封淮阴侯，江淮水陆要冲"},
       {"ancient":"东瓯","modern":"温州","coord":[120.66,28.01],"tier":2,"remark":"汉初封越王勾践后裔摇为东海王，都东瓯","aliases":["永嘉","东瓯（永嘉）"]},
       {"ancient":"汝阴","modern":"阜阳","coord":[115.81,32.89],"tier":2,"remark":"汉初夏侯婴封汝阴侯，汝水、颍水交汇重镇"},
@@ -564,7 +564,7 @@ window.DYNASTY_DATA = [
       {"ancient":"高昌","modern":"吐鲁番","coord":[89.53,42.85],"tier":2,"remark":"戊己校尉驻高昌壁","aliases":["高昌壁"]},
       {"ancient":"晋安","modern":"福州","coord":[119.3,26.08],"remark":"太康三年析建安郡置晋安郡"},
       {"ancient":"西平","modern":"西宁","coord":[101.78,36.62],"remark":"凉州西平郡治西都"},
-      {"ancient":"琅琊国","modern":"青岛·黄岛","coord":[119.98,35.65],"tier":2,"remark":"司马睿袭封琅琊王，永嘉初偕琅琊王氏南渡建邺"},
+      {"ancient":"琅琊国","modern":"临沂","coord":[118.35,35.06],"tier":2,"remark":"司马睿袭封琅琊王，永嘉初偕琅琊王氏南渡建邺"},
       {"ancient":"新罗","modern":"龙岩","coord":[117.02,25.08],"appear":282,"tier":2,"remark":"太康三年（282年）析置新罗县，属晋安郡，为闽西建县之始"}
     ],
     "phases": [
@@ -789,8 +789,8 @@ window.DYNASTY_DATA = [
       {"ancient":"伏俟城","modern":"青海湖西（吐谷浑）","coord":[99.5,36.85],"remark":"吐谷浑可汗夸吕建都伏俟城"},
       {"ancient":"永嘉","modern":"温州","coord":[120.66,28.01],"tier":2,"remark":"谢灵运任永嘉太守游历山水，开山水诗派"},
       {"ancient":"东阳","modern":"金华","coord":[119.65,29.08],"tier":2,"remark":"沈约任东阳太守筑玄畅楼（八咏楼）赋《八咏诗》","aliases":["金华","东阳（金华）"]},
-      {"ancient":"怀朔镇","modern":"包头·固阳","coord":[109.84,40.66],"tier":2,"remark":"北魏六镇之一，高欢、贺拔岳、侯景等皆起家于此，东魏北齐霸业摇篮"},
-      {"ancient":"武川镇","modern":"呼和浩特·武川","coord":[111.65,40.68],"tier":2,"remark":"北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮"}
+      {"ancient":"怀朔镇","modern":"包头·固阳","coord":[110.06,41.03],"tier":2,"remark":"北魏六镇之一，高欢、贺拔岳、侯景等皆起家于此，东魏北齐霸业摇篮"},
+      {"ancient":"武川镇","modern":"呼和浩特·武川","coord":[111.45,41.09],"tier":2,"remark":"北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮"}
     ],
     "phases": [
       {"until":427,"snap":"s_nanbei_0"},
@@ -1707,6 +1707,7 @@ window.DYNASTY_DATA = [
       {"ancient":"播州","modern":"遵义","coord":[106.93,27.72],"vanish":1600,"tier":2,"remark":"万历二十八年平播之役，改土归流","aliases":["宣慰司","播州（宣慰司）"]},
       {"ancient":"乌思藏都司","modern":"拉萨","coord":[91.111,29.651],"appear":1373,"tier":2,"remark":"洪武六年置乌思藏都指挥使司，统摄卫藏政教朝贡"},
       {"ancient":"奴儿干都司","modern":"特林（俄罗斯）","coord":[140.06,52.94],"appear":1409,"vanish":1435,"tier":2,"remark":"永乐七年置奴儿干都指挥使司，亦失哈巡视立永宁寺碑"},
+      {"ancient":"大宁都司","modern":"赤峰·宁城","coord":[119.19,41.59],"appear":1387,"vanish":1403,"tier":2,"remark":"洪武二十年置大宁都指挥使司，宁王朱权就藩于此；永乐元年内迁保定，故地付兀良哈三卫","aliases":["大宁"]},
       {"ancient":"大员","modern":"台南","coord":[120.211,23.001],"appear":1624,"tier":2,"remark":"1624年荷人筑热兰遮城，1662年郑成功收复改东都明京","aliases":["赤嵌","大员（赤嵌）"]},
       {"ancient":"火州","modern":"吐鲁番","coord":[89.53,42.85],"tier":2,"remark":"吐鲁番地面","aliases":["吐鲁番","火州（吐鲁番）"]},
       {"ancient":"宁远卫","modern":"葫芦岛·兴城","coord":[120.72,40.61],"tier":2,"appear":1428,"remark":"宣德三年置宁远卫；天启六年袁崇焕宁远大捷"},

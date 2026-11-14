@@ -7,15 +7,15 @@
     "prefRef": "s_donghan",
     "regionRef": "s_donghan",
     "polities": [
-      "曹操(许都)",
-      "袁绍(河北)",
-      "s_donghan_d1/公孙氏(辽东)",
+      "曹操（许都）",
+      "袁绍（河北）",
+      "s_donghan_d1/公孙氏（辽东）",
       "马腾·韩遂(关陇)",
-      "张鲁(汉中)",
-      "s_donghan_d1/刘表(荆州)",
-      "刘璋(益州)",
-      "孙策(江东)",
-      "s_donghan_d1/士燮(交州)",
+      "张鲁（汉中）",
+      "s_donghan_d1/刘表（荆州）",
+      "刘璋（益州）",
+      "孙策（江东）",
+      "s_donghan_d1/士燮（交州）",
       "s_xihan_b3a/塞种诸国",
       "s_donghan_d1/百济",
       "s_donghan_d1/摩揭陀",
@@ -39,9 +39,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "曹操(许都)",
+      "id": "曹操（许都）",
       "properties": {
-        "title": "曹操(许都)",
+        "title": "曹操（许都）",
         "tint": "#4a6fa5",
         "anchor": [116.4, 33],
         "role": "main"
@@ -352,9 +352,9 @@
     },
     {
       "type": "Feature",
-      "id": "袁绍(河北)",
+      "id": "袁绍（河北）",
       "properties": {
-        "title": "袁绍(河北)",
+        "title": "袁绍（河北）",
         "tint": "#b58938",
         "anchor": [115.6, 38.6],
         "role": "main"
@@ -1029,7 +1029,7 @@
       "type": "Feature",
       "id": "马腾·韩遂(关陇)",
       "properties": {
-        "title": "马腾·韩遂(关陇)",
+        "title": "马腾 · 韩遂（关陇）",
         "tint": "#6b7d47",
         "anchor": [104.5, 36.8],
         "role": "main"
@@ -1798,9 +1798,9 @@
     },
     {
       "type": "Feature",
-      "id": "张鲁(汉中)",
+      "id": "张鲁（汉中）",
       "properties": {
-        "title": "张鲁(汉中)",
+        "title": "张鲁（汉中）",
         "tint": "#a63a50",
         "anchor": [107.02, 33.07],
         "role": "main"
@@ -1962,9 +1962,9 @@
     },
     {
       "type": "Feature",
-      "id": "刘璋(益州)",
+      "id": "刘璋（益州）",
       "properties": {
-        "title": "刘璋(益州)",
+        "title": "刘璋（益州）",
         "tint": "#9c5d42",
         "anchor": [103.8, 29.5],
         "role": "main"
@@ -2418,9 +2418,9 @@
     },
     {
       "type": "Feature",
-      "id": "孙策(江东)",
+      "id": "孙策（江东）",
       "properties": {
-        "title": "孙策(江东)",
+        "title": "孙策（江东）",
         "tint": "#3f8f6a",
         "anchor": [117.5, 28],
         "role": "main"
