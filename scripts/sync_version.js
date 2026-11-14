@@ -53,6 +53,7 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-hant', datasetKey: 'vHant', relPath: 'js/zh_hant.js' },
   { attr: 'data-v-quiz', datasetKey: 'vQuiz', relPath: 'js/atlas_quiz.js' },
   { attr: 'data-v-narrator', datasetKey: 'vNarrator', relPath: 'js/atlas_narrator.js' },
+  { attr: 'data-v-sources', datasetKey: 'vSources', relPath: 'js/milestone_sources.js' },
 ];
 
 function shortSha256(filePath) {

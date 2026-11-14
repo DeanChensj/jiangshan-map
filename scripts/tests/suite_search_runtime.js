@@ -2517,6 +2517,83 @@ async function runSearchRuntimeSuite(ctx) {
       );
     }
 
+    // Discussion #366: the highlighted milestone shows its sources (Chinese locales only, lazy data).
+    {
+      const srcCtx = { window: {} };
+      vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'js', 'milestone_sources.js'), 'utf8'), srcCtx);
+      const data = srcCtx.window.ATLAS_MILESTONE_SOURCES;
+      const html316 = ctrl._milestoneSourceHtml(data['xijin:316']);
+      const text316 = html316.replace(/<[^>]+>/g, '');
+      assert.strictEqual(
+        text316,
+        '据《资治通鉴》卷89、卷91；《晋书》卷108',
+        'xijin:316 source line merges repeated chapters per work, in citation order'
+      );
+      assert(!html316.includes('<a '), 'the line is plain text: Wikisource is unreachable for many readers');
+      assert.strictEqual(ctrl._milestoneSourceHtml(undefined), '', 'a milestone without sources gets no line');
+
+      const xijin = dynasties.find((d) => d.key === 'xijin');
+      const lineNode = () => ({
+        className: '',
+        innerHTML: '',
+        remove() {
+          this.parent.kids.splice(this.parent.kids.indexOf(this), 1);
+        },
+      });
+      // Array.from keeps the mocks in this realm; sandbox arrays fail deepStrictEqual on prototype.
+      const lis = Array.from(xijin.milestones, () => ({
+        kids: [],
+        appendChild(n) {
+          n.parent = this;
+          this.kids.push(n);
+        },
+      }));
+      const listEl = {
+        children: lis,
+        querySelectorAll: () => lis.flatMap((li) => li.kids.filter((k) => k.className === 'ev-src')),
+      };
+      const saved = {
+        _id: ctrl._id,
+        locale: ctrl.locale,
+        year: ctrl.year,
+        activePolity: ctrl.activePolity,
+        activeMilestone: ctrl.activeMilestone,
+        document: sandbox.document,
+        sources: sandbox.window.ATLAS_MILESTONE_SOURCES,
+      };
+      try {
+        ctrl._id = (id) => (id === 'milestone-list' ? listEl : saved._id.call(ctrl, id));
+        sandbox.document = { ...(saved.document || {}), createElement: lineNode };
+        sandbox.window.ATLAS_MILESTONE_SOURCES = data;
+        ctrl.activePolity = null;
+        ctrl.activeMilestone = null;
+        const linesAt = () => lis.map((li, i) => (li.kids.length ? xijin.milestones[i].year : null)).filter((y) => y !== null);
+
+        ctrl.locale = 'zh';
+        ctrl.year = 316;
+        ctrl._syncMilestoneSource(xijin);
+        assert.deepStrictEqual(linesAt(), [316], 'zh: exactly the highlighted milestone carries the source line');
+        ctrl.year = 313;
+        ctrl._syncMilestoneSource(xijin);
+        assert.deepStrictEqual(linesAt(), [313], 'moving the highlight moves the line instead of adding another');
+        ctrl.locale = 'en';
+        ctrl._syncMilestoneSource(xijin);
+        assert.deepStrictEqual(linesAt(), [], 'en: no source line');
+        ctrl.locale = 'zh';
+        ctrl.activePolity = { key: 'nantang' };
+        ctrl._syncMilestoneSource(xijin);
+        assert.deepStrictEqual(linesAt(), [], 'polity focus lists related events, not milestones: no line');
+      } finally {
+        ctrl._id = saved._id;
+        ctrl.locale = saved.locale;
+        ctrl.year = saved.year;
+        ctrl.activePolity = saved.activePolity;
+        ctrl.activeMilestone = saved.activeMilestone;
+        sandbox.document = saved.document;
+        sandbox.window.ATLAS_MILESTONE_SOURCES = saved.sources;
+      }
+    }
+
     // Discussion #297 regression check: Event Storyline Mod (点事溯局 · ?event=anshi)
     {
       const anshiProf = ctrl._resolvePersonProfile('anshi');
