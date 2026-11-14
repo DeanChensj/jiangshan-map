@@ -7,16 +7,16 @@
     "prefRef": "s_donghan",
     "regionRef": "s_donghan",
     "polities": [
-      "董卓(长安)",
-      "马腾(凉州)",
-      "袁绍(冀州)",
-      "公孙瓒(幽州)",
-      "公孙氏(辽东)",
-      "曹操(兖豫)",
-      "刘表(荆州)",
-      "刘焉(益州)",
+      "董卓（长安）",
+      "马腾（凉州）",
+      "袁绍（冀州）",
+      "公孙瓒（幽州）",
+      "公孙氏（辽东）",
+      "曹操（兖豫）",
+      "刘表（荆州）",
+      "刘焉（益州）",
       "刘繇·孙氏(江东)",
-      "士燮(交州)",
+      "士燮（交州）",
       "s_xihan_b3a/塞种诸国",
       "百济",
       "摩揭陀",
@@ -40,9 +40,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "董卓(长安)",
+      "id": "董卓（长安）",
       "properties": {
-        "title": "董卓(长安)",
+        "title": "董卓（长安）",
         "tint": "#a63a50",
         "anchor": [109.6, 35.1],
         "role": "main"
@@ -287,9 +287,9 @@
     },
     {
       "type": "Feature",
-      "id": "马腾(凉州)",
+      "id": "马腾（凉州）",
       "properties": {
-        "title": "马腾(凉州)",
+        "title": "马腾（凉州）",
         "tint": "#6b7d47",
         "anchor": [101.5, 38.2],
         "role": "main"
@@ -1000,9 +1000,9 @@
     },
     {
       "type": "Feature",
-      "id": "袁绍(冀州)",
+      "id": "袁绍（冀州）",
       "properties": {
-        "title": "袁绍(冀州)",
+        "title": "袁绍（冀州）",
         "tint": "#b58938",
         "anchor": [115.2, 37.3],
         "role": "main"
@@ -1622,9 +1622,9 @@
     },
     {
       "type": "Feature",
-      "id": "公孙瓒(幽州)",
+      "id": "公孙瓒（幽州）",
       "properties": {
-        "title": "公孙瓒(幽州)",
+        "title": "公孙瓒（幽州）",
         "tint": "#2f7d8c",
         "anchor": [117.5, 40.2],
         "role": "main"
@@ -1855,9 +1855,9 @@
     },
     {
       "type": "Feature",
-      "id": "公孙氏(辽东)",
+      "id": "公孙氏（辽东）",
       "properties": {
-        "title": "公孙氏(辽东)",
+        "title": "公孙氏（辽东）",
         "tint": "#7a528a",
         "anchor": [123.11, 41.12],
         "role": "main"
@@ -2209,9 +2209,9 @@
     },
     {
       "type": "Feature",
-      "id": "曹操(兖豫)",
+      "id": "曹操（兖豫）",
       "properties": {
-        "title": "曹操(兖豫)",
+        "title": "曹操（兖豫）",
         "tint": "#4a6fa5",
         "anchor": [116.8, 33.2],
         "role": "main"
@@ -2471,9 +2471,9 @@
     },
     {
       "type": "Feature",
-      "id": "刘表(荆州)",
+      "id": "刘表（荆州）",
       "properties": {
-        "title": "刘表(荆州)",
+        "title": "刘表（荆州）",
         "tint": "#765898",
         "anchor": [112.2, 29.8],
         "role": "main"
@@ -2748,9 +2748,9 @@
     },
     {
       "type": "Feature",
-      "id": "刘焉(益州)",
+      "id": "刘焉（益州）",
       "properties": {
-        "title": "刘焉(益州)",
+        "title": "刘焉（益州）",
         "tint": "#9c5d42",
         "anchor": [103.8, 29.5],
         "role": "main"
@@ -3257,7 +3257,7 @@
       "type": "Feature",
       "id": "刘繇·孙氏(江东)",
       "properties": {
-        "title": "刘繇 · 孙氏(江东)",
+        "title": "刘繇 · 孙氏（江东）",
         "tint": "#3f8f6a",
         "anchor": [117.5, 28],
         "role": "main"
@@ -3884,9 +3884,9 @@
     },
     {
       "type": "Feature",
-      "id": "士燮(交州)",
+      "id": "士燮（交州）",
       "properties": {
-        "title": "士燮(交州)",
+        "title": "士燮（交州）",
         "tint": "#b07d4f",
         "anchor": [108.95, 22.33],
         "role": "main"

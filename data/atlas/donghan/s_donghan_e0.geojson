@@ -7,14 +7,14 @@
     "prefRef": "s_donghan",
     "regionRef": "s_donghan",
     "polities": [
-      "曹操(北方)",
-      "s_donghan_d1/公孙氏(辽东)",
+      "曹操（北方）",
+      "s_donghan_d1/公孙氏（辽东）",
       "s_donghan_d2/马腾·韩遂(关陇)",
-      "s_donghan_d2/张鲁(汉中)",
-      "刘备(荆州)",
-      "s_donghan_d2/刘璋(益州)",
-      "s_donghan_d/孙权(江东)",
-      "s_donghan_d1/士燮(交州)",
+      "s_donghan_d2/张鲁（汉中）",
+      "刘备（荆州）",
+      "s_donghan_d2/刘璋（益州）",
+      "s_donghan_d/孙权（江东）",
+      "s_donghan_d1/士燮（交州）",
       "s_xihan_b3a/塞种诸国",
       "s_donghan_d1/百济",
       "s_donghan_d1/摩揭陀",
@@ -38,9 +38,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "曹操(北方)",
+      "id": "曹操（北方）",
       "properties": {
-        "title": "曹操(北方)",
+        "title": "曹操（北方）",
         "tint": "#4a6fa5",
         "anchor": [114.8, 35.8],
         "role": "main"
@@ -792,9 +792,9 @@
     },
     {
       "type": "Feature",
-      "id": "刘备(荆州)",
+      "id": "刘备（荆州）",
       "properties": {
-        "title": "刘备(荆州)",
+        "title": "刘备（荆州）",
         "tint": "#c98a2b",
         "anchor": [112.2, 29.8],
         "role": "main"

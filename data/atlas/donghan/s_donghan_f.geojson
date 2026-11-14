@@ -7,10 +7,10 @@
     "prefRef": "s_donghan_e",
     "regionRef": "s_donghan",
     "polities": [
-      "s_donghan_e/曹操(北方)",
-      "s_donghan_d1/公孙氏(辽东)",
-      "刘备(益州)",
-      "孙权(荆扬)",
+      "s_donghan_e/曹操（北方）",
+      "s_donghan_d1/公孙氏（辽东）",
+      "刘备（益州）",
+      "孙权（荆扬）",
       "s_xihan_b3a/塞种诸国",
       "s_donghan_d1/百济",
       "s_donghan_d1/摩揭陀",
@@ -33,9 +33,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "刘备(益州)",
+      "id": "刘备（益州）",
       "properties": {
-        "title": "刘备(益州)",
+        "title": "刘备（益州）",
         "tint": "#c98a2b",
         "anchor": [103.8, 29.5],
         "role": "main"
@@ -545,9 +545,9 @@
     },
     {
       "type": "Feature",
-      "id": "孙权(荆扬)",
+      "id": "孙权（荆扬）",
       "properties": {
-        "title": "孙权(荆扬)",
+        "title": "孙权（荆扬）",
         "tint": "#3f8f6a",
         "anchor": [114.5, 28],
         "role": "main"

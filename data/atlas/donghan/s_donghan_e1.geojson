@@ -3,12 +3,12 @@
   "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
     "polities": [
-      "曹操(北方)",
-      "s_donghan_d1/公孙氏(辽东)",
-      "s_donghan_d2/张鲁(汉中)",
-      "s_donghan_e0/刘备(荆州)",
-      "s_donghan_d2/刘璋(益州)",
-      "孙权(江东)",
+      "曹操（北方）",
+      "s_donghan_d1/公孙氏（辽东）",
+      "s_donghan_d2/张鲁（汉中）",
+      "s_donghan_e0/刘备（荆州）",
+      "s_donghan_d2/刘璋（益州）",
+      "孙权（江东）",
       "s_xihan_b3a/塞种诸国",
       "s_donghan_d1/百济",
       "s_donghan_d1/摩揭陀",
@@ -34,9 +34,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "曹操(北方)",
+      "id": "曹操（北方）",
       "properties": {
-        "title": "曹操(北方)",
+        "title": "曹操（北方）",
         "tint": "#4a6fa5",
         "anchor": [113.8, 35.8],
         "role": "main"
@@ -1613,9 +1613,9 @@
     },
     {
       "type": "Feature",
-      "id": "孙权(江东)",
+      "id": "孙权（江东）",
       "properties": {
-        "title": "孙权(江东)",
+        "title": "孙权（江东）",
         "tint": "#3f8f6a",
         "anchor": [117.5, 28],
         "role": "main"
