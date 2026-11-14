@@ -56,6 +56,10 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-sources', datasetKey: 'vSources', relPath: 'js/milestone_sources.js' },
 ];
 
+// Lazy bundles that index.html also preloads from an inline script (single-quoted URL).
+const PRELOADED_LAZY_ASSETS = ['js/atlas_snapshots.js'];
+const preloadRe = (relPath) => new RegExp(`('${escapeRegExp(relPath)}\\?v=)([0-9a-zA-Z_.-]+)(')`, 'g');
+
 function shortSha256(filePath) {
   const buf = fs.readFileSync(filePath);
   return crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8);
@@ -101,6 +105,14 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
     LAZY_ATTR_ASSETS.map(({ attr, relPath }) => ` ${attr}="${hashes[relPath]}"`).join('') +
     '></script>';
   out = out.replace(appTagRe, expectedAppTag);
+  for (const relPath of PRELOADED_LAZY_ASSETS) {
+    const matches = out.match(preloadRe(relPath));
+    assert(
+      matches && matches.length === 1,
+      `Expected exactly 1 preload '${relPath}?v=...' in index.html, found ${matches ? matches.length : 0}`
+    );
+    out = out.replace(preloadRe(relPath), `$1${hashes[relPath]}$3`);
+  }
   return out;
 }
 
@@ -196,6 +208,14 @@ function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCo
       } else if (m[1] !== hashes[relPath]) {
         mismatches.push(`${relPath} (${attr}): index.html has "${m[1]}", expected "${hashes[relPath]}"`);
       }
+    }
+  }
+
+  for (const relPath of PRELOADED_LAZY_ASSETS) {
+    const m = preloadRe(relPath).exec(indexHtml);
+    if (!m) mismatches.push(`missing preload '${relPath}?v=...' in index.html`);
+    else if (m[2] !== hashes[relPath]) {
+      mismatches.push(`${relPath} (preload): index.html has ?v=${m[2]}, expected ?v=${hashes[relPath]}`);
     }
   }
 

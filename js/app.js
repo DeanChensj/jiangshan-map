@@ -480,9 +480,14 @@
         this._attachListeners();
         this.applyLocale();
 
-        this.jumpToYear(this.dynasties[0].focusYear);
+        // A ?year= link boots at that year, so the Warring States map is never drawn first.
+        const linkedYear = this._linkedBootYear();
+        this.jumpToYear(linkedYear !== null ? linkedYear : this.dynasties[0].focusYear);
         this._bootDone = true;
         this._restoreFromQuery();
+        if (typeof document !== 'undefined' && document.documentElement) {
+          document.documentElement.classList.remove('deeplink-boot');
+        }
         if (this.embed) this._initEmbedChrome();
       });
       if (!this.embed) this._maybeShowStartGuide();
@@ -2863,6 +2868,21 @@
       });
     }
 
+    _linkedBootYear() {
+      if (typeof location === 'undefined' || typeof this._parseYearList !== 'function') return null;
+      const raw = new URLSearchParams(location.search).get('year');
+      const years = raw ? this._parseYearList(raw) : [];
+      return years.length ? years[0] : null;
+    }
+
+    // Until a snapshot arrives (the full bundle loads after first paint), hide the borders and key
+    // instead of leaving another era's on screen. _renderPolitiesAndPrefectures shows them again.
+    _markAwaitingSnapshot(snapKey) {
+      if (this.snapshots && this.snapshots[snapKey]) return;
+      if (this.svg && this.svg.classList) this.svg.classList.add('is-awaiting-snapshot');
+      if (this.mapKey && this.mapKey.classList) this.mapKey.classList.add('is-awaiting-snapshot');
+    }
+
     _withSnapshot(snapKey, cb) {
       if (this.snapshots && this.snapshots[snapKey]) {
         const snap = this.snapshots[snapKey];
@@ -2891,6 +2911,7 @@
       this._renderMilestones(dynasty);
       const snapKey = this._resolveSnapKey(dynasty, this.year);
       this.activeSnapKey = snapKey;
+      this._markAwaitingSnapshot(snapKey);
       this._withSnapshot(snapKey, (snap) => {
         if (this.dynasties[this.dynastyIdx] !== dynasty || this._resolveSnapKey(dynasty, this.year) !== snapKey) {
           return;
@@ -3163,6 +3184,8 @@
     }
 
     _renderPolitiesAndPrefectures(dynasty, snap) {
+      if (this.svg && this.svg.classList) this.svg.classList.remove('is-awaiting-snapshot');
+      if (this.mapKey && this.mapKey.classList) this.mapKey.classList.remove('is-awaiting-snapshot');
       this._setPolityFocus(null);
       this._clearHoveredPrefecture();
       this.grpPolities.innerHTML = '';
@@ -6786,6 +6809,7 @@
           if (nextSnapKey !== this.activeSnapKey) {
             const prevSnap = this.lastRenderedSnap;
             this.activeSnapKey = nextSnapKey;
+            this._markAwaitingSnapshot(nextSnapKey);
             this._withSnapshot(nextSnapKey, (snap) => {
               if (
                 this.dynasties[this.dynastyIdx] !== cur ||
