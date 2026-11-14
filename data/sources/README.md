@@ -2,7 +2,7 @@
 
 [简体中文](README_ZH.md)
 
-References for the facts shown in the atlas. These files live in the repository only; the site never loads them, so adding references does not affect page load.
+References for the facts shown in the atlas. The site never loads these files. `node scripts/audit_sources.js --fix` derives `js/milestone_sources.js` from them (work and chapter of each milestone reference), which the Chinese chronicle pane loads after first paint to show a source line under the selected milestone. Adding references does not affect first paint.
 
 ## Files
 
@@ -56,7 +56,7 @@ One key per line, keys sorted. `node scripts/audit_sources.js --fix` does this f
 node scripts/audit_sources.js                # Coverage
 node scripts/audit_sources.js --by-dynasty   # Coverage per dynasty
 node scripts/audit_sources.js --check        # CI
-node scripts/audit_sources.js --fix          # Canonical form
+node scripts/audit_sources.js --fix          # Canonical form; regenerates js/milestone_sources.js (commit it with index.html)
 node scripts/audit_sources.js --update       # Shrink the baseline
 ```
 
