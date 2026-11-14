@@ -2526,7 +2526,7 @@ async function runSearchRuntimeSuite(ctx) {
       const text316 = html316.replace(/<[^>]+>/g, '');
       assert.strictEqual(
         text316,
-        '据《资治通鉴》卷89、卷91；《晋书》卷108',
+        '据《资治通鉴》卷89、卷91 《晋书》卷108',
         'xijin:316 source line merges repeated chapters per work, in citation order'
       );
       assert(!html316.includes('<a '), 'the line is plain text: Wikisource is unreachable for many readers');

@@ -6084,17 +6084,17 @@
 
     // Place Genealogy & Person Chronicles methods are attached by js/atlas_trace.js.
 
-    // "据《资治通鉴》卷81；《晋书》卷26、卷43" for one entry of js/milestone_sources.js.
+    // "据《资治通鉴》卷81 《晋书》卷26、卷43" for one entry of js/milestone_sources.js.
+    // Each work is one unbreakable unit; the line wraps only between works (css/style.css).
     _milestoneSourceHtml(groups) {
       if (!Array.isArray(groups) || !groups.length) return '';
       const esc = (s) =>
         String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-      // A title is never split from its first chapter; longer lists may still wrap between chapters.
-      const parts = groups.map(([title, chapters]) => {
-        const [first = '', ...rest] = chapters.filter(Boolean).map(esc);
-        return `<span class="ev-src-work">《${esc(title)}》${first}</span>${rest.map((c) => `、${c}`).join('')}`;
-      });
-      return `据${parts.join('；')}`;
+      const parts = groups.map(
+        ([title, chapters], i) =>
+          `<span class="ev-src-work">${i ? '' : '据'}《${esc(title)}》${chapters.filter(Boolean).map(esc).join('、')}</span>`
+      );
+      return parts.join(' ');
     }
 
     // Source line under the highlighted milestone; Chinese locales only.
