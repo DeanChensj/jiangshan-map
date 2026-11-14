@@ -353,15 +353,20 @@
             break;
           }
         }
-        const sep = this.locale === 'en' ? ': ' : '：';
+        // "523年：六镇之乱：…" / "1077年：苏轼：…" read badly; fall back to " · " when the
+        // event text already has its own colon.
+        const sepFor = (txt) => {
+          const colon = this.locale === 'en' ? ': ' : '：';
+          return txt.includes(colon.trim()) ? ' · ' : colon;
+        };
         if (chosenEv) {
-          extraEventStr = ` · ${chosenEv.yrLbl}${sep}${chosenEv.cleanEv}`;
+          extraEventStr = ` · ${chosenEv.yrLbl}${sepFor(chosenEv.cleanEv)}${chosenEv.cleanEv}`;
         } else if (
           firstClean &&
           !baseClue.includes('；') &&
           firstClean.cleanEv.length > baseClue.length
         ) {
-          baseClue = `${firstClean.yrLbl}${sep}${firstClean.cleanEv}`;
+          baseClue = `${firstClean.yrLbl}${sepFor(firstClean.cleanEv)}${firstClean.cleanEv}`;
         }
       }
 

@@ -614,6 +614,20 @@ h2 {
 }
 
 /* Terrain Shaded Relief & Hydrology Layer */
+/* Deep links: the static page is the Warring States view; hide its year text until js/app.js jumps. */
+html.deeplink-boot #chronicle-pane,
+html.deeplink-boot #scrubber-Bubble,
+html.deeplink-boot #inp-year {
+  visibility: hidden;
+}
+
+/* No borders rather than another era's while a snapshot downloads (see _markAwaitingSnapshot). */
+#atlas-svg.is-awaiting-snapshot #grp-polities,
+#atlas-svg.is-awaiting-snapshot #grp-prefectures,
+#map-key.is-awaiting-snapshot {
+  visibility: hidden;
+}
+
 #grp-terrain {
   pointer-events: none;
   transition: opacity 0.25s ease;
