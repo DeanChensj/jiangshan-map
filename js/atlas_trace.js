@@ -2946,7 +2946,7 @@
         j.stops.forEach((st) => {
           const inDynSpan = st.year >= d.fromYear && st.year <= d.toYear;
           if (!inDynSpan && j.dynastyKey !== d.key) return;
-          if ((j.key === 'zhugeliang' || j.key === 'qinshihuang') && !inDynSpan) return;
+          if (j.key === 'zhugeliang' && !inDynSpan) return;
           if (isCloseCoord(st.coord, 45) && !results.some((r) => r.year === st.year)) {
             results.push({
               year: st.year,

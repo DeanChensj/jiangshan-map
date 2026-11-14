@@ -2689,11 +2689,35 @@ async function runSearchRuntimeSuite(ctx) {
         );
       }
 
+      const qinmieProf = ctrl._resolvePersonProfile('qinmie');
+      assert(
+        qinmieProf && qinmieProf.isStory === true && Array.isArray(qinmieProf.stops) && qinmieProf.stops.length === 10,
+        'qinmie must resolve as an Event Storyline (isStory: true) with 10 chronological stops'
+      );
+      assert(
+        !loreData.HISTORICAL_JOURNEYS.some((j) => j.key === 'qinshihuang') &&
+          !ctrl._resolvePersonProfile('qinshihuang').journeyKey,
+        'The Qin unification is told by the qinmie storyline, not a Qin Shi Huang journey'
+      );
+      for (const sq of ['秦灭六国', '扫六合', '六王毕', 'qinmieliuguo']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'qinmie',
+          `Quick search for "${sq}" must surface the Qin unification storyline (kind="story") at index 0`
+        );
+      }
+      const zhanguoDyn = dynasties.find((d) => d.key === 'zhanguo');
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(zhanguoDyn, zhanguoDyn.milestones.find((m) => m.year === -230))?.key,
+        'qinmie',
+        'The 230 BCE fall of Han must carry the [始末] entry for the Qin unification storyline'
+      );
+
       // Universal Event Storyline (`isStory: true`) invariants:
       // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.
       // 2) Must map to EXACTLY ONE `[始末]` milestone across all dynasties in `_findStoryForMilestone`.
       const allStoryProfiles = (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory);
-      assert(allStoryProfiles.length >= 3, 'Expected at least 3 Event Storylines (anshi, jingkang, chuhan)');
+      assert(allStoryProfiles.length >= 4, 'Expected at least 4 Event Storylines (anshi, jingkang, qinmie, chuhan)');
       for (const sp of allStoryProfiles) {
         assert(
           typeof sp.dynastyKey === 'string' && dynasties.some((d) => d.key === sp.dynastyKey),
