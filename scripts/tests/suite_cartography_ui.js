@@ -2437,6 +2437,20 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Jiangling and Guizhou (秭归) must be 荆南, Shizhou not; Ezhou, Huangzhou and Qizhou must be ${south}`
       );
     }
+    // 秦/凤/阶/成 are 后蜀's in 947-955 and 后周's from 955; 泉/漳 form 清源军 from 947.
+    for (const sk of ['s_wudai_d', 's_wudai_e']) {
+      assert(
+        hasPolPt(sk, '后蜀', 105.72, 34.58) && hasPolPt(sk, '后蜀', 106.52, 33.91) && hasPolPt(sk, '后蜀', 104.93, 33.4),
+        `${sk}: Qinzhou, Fengzhou and Jiezhou must be 后蜀 in 947-955`
+      );
+    }
+    assert(hasPolPt('s_wudai_955', '后周', 105.72, 34.58) && !hasPolPt('s_wudai_955', '后蜀', 106.52, 33.91), 's_wudai_955: Qin and Feng must be 后周');
+    for (const sk of ['s_wudai_d', 's_wudai_e', 's_wudai_955', 's_wudai_e1', 's_wudai_e2']) {
+      assert(
+        hasPolPt(sk, '清源军', 118.6, 24.9) && hasPolPt(sk, '清源军', 117.65, 24.5) && !hasPolPt(sk, '南唐', 118.6, 24.9),
+        `${sk}: Quanzhou and Zhangzhou must be 清源军, not 南唐`
+      );
+    }
     assert(
       hasPolPt('s_wudai_e1', '南唐', 114.3, 30.55) && hasPolPt('s_wudai_e1', '后周', 114.87, 30.45),
       's_wudai_e1 (958): Ezhou stays 南唐 while Huangzhou passes to 后周'

@@ -1134,7 +1134,7 @@ window.DYNASTY_DATA = [
       {"year":947,"headline":"契丹南下俘石重贵灭后晋，改国号辽；河东节度使刘知远于太原建后汉","site":"汴州 · 太原","coord":[114.311,34.801],"siteCoords":[[114.311,34.801],[112.551,37.871]]},
       {"year":951,"headline":"枢密使郭威遭后汉隐帝猜忌起兵代汉建后周；刘崇建北汉，南唐灭马楚","site":"汴州 · 太原 · 潭州","coord":[112.551,37.871],"siteCoords":[[114.311,34.801],[112.551,37.871],[112.941,28.231]]},
       {"year":954,"headline":"高平之战：周世宗柴荣亲征，赵匡胤死战大破北汉与辽联军","site":"高平（泽州）","coord":[112.921,35.801],"persons":["chairong","zhaokuangyin"]},
-      {"year":955,"headline":"周世宗西征后蜀收复秦、凤、成、阶四州，同年冬南征淮南","site":"秦州 · 寿州","coord":[116.801,32.501],"siteCoords":[[105.721,34.581],[116.801,32.501]]},
+      {"year":955,"headline":"周世宗西征后蜀收复秦、凤、成、阶四州，同年冬南征淮南","site":"秦州 · 寿州","coord":[116.801,32.501],"siteCoords":[[105.721,34.581],[116.801,32.501]],"isMapChange":true},
       {"year":958,"headline":"周世宗三征南唐功成：李璟去帝号献江北淮南十四州","site":"扬州（江都）","coord":[119.411,32.391],"persons":["chairong","zhaokuangyin","liyu_nt"]},
       {"year":959,"headline":"周世宗北伐辽国，收复瀛、莫、易三州与三关","site":"瓦桥关（雄州）","coord":[116.111,38.991]},
       {"year":960,"headline":"周世宗崩后幼主柴宗训嗣位，殿前都点检赵匡胤陈桥兵变，受禅建宋","site":"陈桥驿","coord":[114.501,34.951]}
@@ -1201,7 +1201,8 @@ window.DYNASTY_DATA = [
       {"until":945,"snap":"s_wudai_c"},
       {"until":947,"snap":"s_wudai_c2"},
       {"until":951,"snap":"s_wudai_d"},
-      {"until":958,"snap":"s_wudai_e"},
+      {"until":955,"snap":"s_wudai_e"},
+      {"until":958,"snap":"s_wudai_955"},
       {"until":959,"snap":"s_wudai_e1"},
       {"until":960,"snap":"s_wudai_e2"}
     ]
