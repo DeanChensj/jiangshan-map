@@ -903,11 +903,11 @@ window.DYNASTY_DATA = [
     "milestones": [
       {"year":618,"headline":"隋炀帝江都遇弑后，唐王李渊迫隋恭帝杨侑禅让，于长安称帝建立唐朝","site":"长安","coord":[108.941,34.341],"isMapChange":true,"persons":["lishimin","weizheng","lijing"]},
       {"year":621,"headline":"虎牢之战李世民擒窦建德、降王世充；李靖平萧铣","site":"虎牢 · 江陵","coord":[113.201,34.851],"isMapChange":true,"siteCoords":[[113.32,34.82],[112.241,30.331]]},
-      {"year":624,"headline":"唐高祖颁行《武德令》，确立均田制、租庸调制与府兵制根基","site":"长安","coord":[108.941,34.261]},
+      {"year":624,"headline":"唐高祖颁行武德律令，初定均田制与租庸调制","site":"长安","coord":[108.941,34.261]},
       {"year":626,"headline":"玄武门之变：秦王李世民伏兵诛太子建成、齐王元吉，唐高祖退位禅让","site":"长安","coord":[108.941,34.341],"persons":["lishimin","weizheng","lijing"]},
       {"year":627,"headline":"唐太宗改元贞观，任房玄龄、杜如晦定官制，虚怀纳谏开创“贞观之治”","site":"长安","coord":[108.941,34.341]},
       {"year":630,"headline":"李靖灭东突厥，西北诸君尊唐太宗为“天可汗”，置定襄、云中都督府","site":"阴山 · 定襄","coord":[110.501,41.201],"isMapChange":true,"siteCoords":[[110.501,41.201],[111.821,40.381]]},
-      {"year":635,"headline":"李靖分道远征吐谷浑抵黄河源柏海，伏允可汗降唐","site":"伏俟城（共和）","coord":[99.7,36.95],"isMapChange":true},
+      {"year":635,"headline":"李靖分道远征吐谷浑抵黄河源柏海，伏允败亡，其子慕容顺举国降唐","site":"伏俟城（共和）","coord":[99.7,36.95],"isMapChange":true},
       {"year":640,"headline":"侯君集灭高昌，唐置安西都护府","site":"高昌","coord":[89.201,42.951],"isMapChange":true},
       {"year":641,"headline":"文成公主入藏，与吐蕃松赞干布联姻","site":"逻些（拉萨）","coord":[91.111,29.651]},
       {"year":645,"headline":"玄奘自天竺载经归长安译经；唐太宗亲征高句丽克辽东城","site":"长安 · 辽东城","coord":[108.941,34.261],"siteCoords":[[108.941,34.341],[123.171,41.271]]},
