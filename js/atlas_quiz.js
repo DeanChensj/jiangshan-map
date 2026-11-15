@@ -456,7 +456,7 @@
         this._svgNode('text', { class: 'quiz-chip-text', y: 3.8 }, chip);
       }
       const text = chip.querySelector('text');
-      text.textContent = this.locale === 'en' ? label : this._zh(label);
+      text.textContent = this._mapText(this.locale === 'en' ? label : this._zh(label));
       const w =
         (typeof text.getComputedTextLength === 'function'
           ? text.getComputedTextLength()
@@ -532,7 +532,7 @@
           : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
       if (this.grpChallenge) {
         const textNode = this.grpChallenge.querySelector('text.answer-label');
-        if (textNode) textNode.textContent = aLabelText;
+        if (textNode) textNode.textContent = this._mapText(aLabelText);
       }
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
       const comment =
@@ -675,10 +675,11 @@
           ? this.trModernCity(cur.settlement.ancient)
           : this.trTerm(cur.settlement.ancient);
       const ansModEn = cur.settlement.modernEn || this.trModernCity(cur.settlement.modern);
-      aLabel.textContent =
+      aLabel.textContent = this._mapText(
         this.locale === 'en'
           ? `${ansAncEn} (${ansModEn})`
-          : `${cur.settlement.ancient}（今${cur.settlement.modern}）`;
+          : `${cur.settlement.ancient}（今${cur.settlement.modern}）`
+      );
 
       this._drawQuizMark(svgX, svgY, true);
       this._rescaleSvgTypography();

@@ -1110,6 +1110,12 @@
       return this._zh(fallback);
     }
 
+    // Text drawn on the map (and its key) is letter-spaced and tightly packed: a pair of
+    // full-width brackets costs about three characters there. Data and panels keep （）.
+    _mapText(text) {
+      return String(text == null ? '' : text).replace(/（/g, '(').replace(/）/g, ')');
+    }
+
     trTerm(text) {
       if (!text) return text;
       if (this.locale !== 'en') return this._zh(text);
@@ -2129,12 +2135,12 @@
         if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
       });
       this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
-        if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
+        if (node.dataset.rawName) node.textContent = this._mapText(this.trTerm(node.dataset.rawName));
       });
       if (this.grpRivers) {
         this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
           node.textContent =
-            this.locale === 'en' ? node.dataset.en || '' : this._zh(node.dataset.zh || '');
+            this.locale === 'en' ? node.dataset.en || '' : this._mapText(this._zh(node.dataset.zh || ''));
         });
       }
 
@@ -2367,7 +2373,7 @@
           },
           this.grpRivers
         );
-        tNode.textContent = this.locale === 'en' ? en : this._zh(zh);
+        tNode.textContent = this.locale === 'en' ? en : this._mapText(this._zh(zh));
       }
     }
 
@@ -2833,7 +2839,7 @@
             this.grpNeighbors
           );
           lbl.dataset.rawName = item.title;
-          lbl.textContent = this.trTerm(item.title);
+          lbl.textContent = this._mapText(this.trTerm(item.title));
         }
       }
       this._invalidateTypographyLayout();
@@ -3164,11 +3170,13 @@
             regGroup
           );
           rLbl._regShape = reg.shape;
-          rLbl.textContent = isQiao
-            ? this.locale === 'en'
-              ? `${this.trTerm(reg.title)} (Emigre)`
-              : this._zh(`${reg.title}·侨`)
-            : this.trTerm(reg.title);
+          rLbl.textContent = this._mapText(
+            isQiao
+              ? this.locale === 'en'
+                ? `${this.trTerm(reg.title)} (Emigre)`
+                : this._zh(`${reg.title}·侨`)
+              : this.trTerm(reg.title)
+          );
         }
       }
     }
@@ -3228,7 +3236,7 @@
           lbl._polShape = pol.shape;
           lbl.dataset.polityTitle = pol.title;
           lbl.dataset.polityRole = pol.role;
-          lbl.textContent = this.trTerm(pol.title);
+          lbl.textContent = this._mapText(this.trTerm(pol.title));
         }
       }
       // Prefectures and first-level regions come from a different base map than the polity
@@ -3658,10 +3666,11 @@
           { class: 'name', x: dx, y: dy1, 'text-anchor': anchor },
           node
         );
-        nameEl.textContent =
+        nameEl.textContent = this._mapText(
           dynasty.key === 'roc' || dynasty.key === 'prc'
             ? this.trModernCity(ancientZh)
-            : this.trTerm(ancientZh);
+            : this.trTerm(ancientZh)
+        );
 
         if (isHintCap) {
           const tagG = this._svgNode(
@@ -3762,7 +3771,7 @@
             { class: 'name pass-name', x: dx, y: dy1, 'text-anchor': anchor },
             pNode
           );
-          nameEl.textContent = passDisplay;
+          nameEl.textContent = this._mapText(passDisplay);
         }
       }
       group.querySelectorAll('.settlement-node.is-capital').forEach((capNode) => {
@@ -3815,7 +3824,7 @@
             },
             group
           );
-          lbl.textContent = this.corridorTitle(corr);
+          lbl.textContent = this._mapText(this.corridorTitle(corr));
         }
       }
       this._rescaleSvgTypography();
@@ -5705,7 +5714,7 @@
         sw.style.background = `${p.tint}55`;
         if (p.role === 'protectorate') sw.style.borderStyle = 'dashed';
         entry.appendChild(sw);
-        entry.appendChild(document.createTextNode(this.trTerm(p.title)));
+        entry.appendChild(document.createTextNode(this._mapText(this.trTerm(p.title))));
         entry.addEventListener('pointerenter', (e) => {
           if (e.pointerType !== 'touch') this._setPolityFocus(p.title);
         });
@@ -5756,7 +5765,7 @@
       if (snap.note) {
         const n = document.createElement('div');
         n.className = 'key-note';
-        n.innerHTML = `${SVG_ICONS.dashedBox} <span>${this.trTerm(snap.note)}</span>`;
+        n.innerHTML = `${SVG_ICONS.dashedBox} <span>${this._mapText(this.trTerm(snap.note))}</span>`;
         this.mapKey.appendChild(n);
       }
 

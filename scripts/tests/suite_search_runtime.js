@@ -2009,6 +2009,20 @@ async function runSearchRuntimeSuite(ctx) {
           grpPref.children.length === 0 && lazyCtrl._deferredPrefectureSnap === tangSnap0 && prefPathCreates === 0,
           'Hidden #grp-prefectures must defer prefecture SVG DOM creation during _renderPolitiesAndPrefectures'
         );
+        // Map captions use half-width brackets (they cost ~3 characters a pair in letter-spaced
+        // labels); the title in the data, used for lookups and panels, keeps full-width ones.
+        const bracketCaps = grpPol
+          .querySelectorAll('.polity-caption')
+          .filter((cap) => /（/.test(cap.dataset.polityTitle));
+        assert(
+          bracketCaps.length >= 3 &&
+            bracketCaps.every(
+              (cap) =>
+                cap.textContent === cap.dataset.polityTitle.replace(/（/g, '(').replace(/）/g, ')') &&
+                !/[（）]/.test(cap.textContent)
+            ),
+          `Polity captions must render （） as (), got ${JSON.stringify(bracketCaps.map((cap) => cap.textContent))}`
+        );
         grpPref.classList.remove('is-hidden');
         const expectedPrefCount = (tangSnap0.prefectures || []).length;
         assert(
