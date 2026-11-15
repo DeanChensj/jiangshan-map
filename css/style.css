@@ -842,6 +842,16 @@ html.deeplink-boot #inp-year {
   pointer-events: fill;
 }
 
+/* Deep links hold the relief image back until the borders are drawn (_holdDeferredLoads):
+   show plain land, as with the relief layer off, instead of land the colour of the sea. */
+#atlas-svg.is-terrain-pending .province-shape:not(.maritime-dash) {
+  fill: var(--province-fill);
+}
+
+#atlas-svg.is-terrain-pending .neighbor-shape {
+  fill: #e7dfd0;
+}
+
 #atlas-svg[data-dynasty="prc"] .province-shape:not(.maritime-dash) {
   fill: rgba(158, 42, 43, 0.11);
 }
