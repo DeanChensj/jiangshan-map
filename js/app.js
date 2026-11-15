@@ -483,6 +483,7 @@
         // A ?year= link boots at that year, so the Warring States map is never drawn first.
         const linkedYear = this._linkedBootYear();
         this.jumpToYear(linkedYear !== null ? linkedYear : this.dynasties[0].focusYear);
+        this._holdDeferredLoads();
         this._bootDone = true;
         this._restoreFromQuery();
         if (typeof document !== 'undefined' && document.documentElement) {
@@ -495,7 +496,37 @@
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
         setTimeout(() => this._ensureFullSnapshots(), 50);
       }
-      if (typeof window !== 'undefined' && !this._isLoreDetailLoaded()) {
+      if (!this._deferredLoadsHeld) this._releaseDeferredLoads();
+    }
+
+    // A deep link whose borders are still downloading holds back the relief image, the terrain
+    // tiles and the lore bundles, so the snapshot bundle gets the bandwidth. Released as soon as
+    // the borders are drawn (_renderPolitiesAndPrefectures), or after 6 s whatever happens.
+    _holdDeferredLoads() {
+      if (!this.svg || !this.svg.classList || !this.svg.classList.contains('is-awaiting-snapshot')) return;
+      this._deferredLoadsHeld = true;
+      this.svg.classList.add('is-terrain-pending');
+      setTimeout(() => this._releaseDeferredLoads(), 6000);
+    }
+
+    _releaseDeferredLoads() {
+      if (this._deferredLoadsReleased) return;
+      this._deferredLoadsReleased = true;
+      this._deferredLoadsHeld = false;
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+      const relief = this._id('terrain-relief-img');
+      const reliefShown = () => {
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-terrain-pending');
+      };
+      if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
+        relief.addEventListener('load', reliefShown, { once: true });
+        relief.addEventListener('error', reliefShown, { once: true });
+        relief.setAttribute('href', relief.getAttribute('data-href'));
+      } else {
+        reliefShown();
+      }
+      this._updateTerrainTiles();
+      if (!this._isLoreDetailLoaded()) {
         const scheduleIdle =
           typeof window.requestIdleCallback === 'function'
             ? (fn) => window.requestIdleCallback(fn, { timeout: 200 })
@@ -3186,6 +3217,7 @@
     _renderPolitiesAndPrefectures(dynasty, snap) {
       if (this.svg && this.svg.classList) this.svg.classList.remove('is-awaiting-snapshot');
       if (this.mapKey && this.mapKey.classList) this.mapKey.classList.remove('is-awaiting-snapshot');
+      if (this._deferredLoadsHeld) this._releaseDeferredLoads();
       this._setPolityFocus(null);
       this._clearHoveredPrefecture();
       this.grpPolities.innerHTML = '';
@@ -7393,7 +7425,8 @@
 
     _terrainReady() {
       return Boolean(
-        this.terrainTileLayer &&
+        !this._deferredLoadsHeld &&
+          this.terrainTileLayer &&
           this.svg &&
           typeof document !== 'undefined' &&
           typeof document.createElementNS === 'function' &&

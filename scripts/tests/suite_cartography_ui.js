@@ -92,9 +92,13 @@ async function runCartographyUiSuite(ctx) {
     }
 
     const maShanLinkMatch = indexHtml.match(
-      /<link href="(https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng&text=([^"&]+)&display=swap)" rel="stylesheet" \/>/
+      /<link href="(https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng&text=([^"&]+)&display=swap)" rel="stylesheet" media="print" onload="this\.media='all'" \/>/
     );
-    assert(maShanLinkMatch, 'Expected synchronous subsetted Ma Shan Zheng stylesheet <link> in index.html');
+    assert(maShanLinkMatch, 'Expected non-blocking subsetted Ma Shan Zheng stylesheet <link> in index.html');
+    assert(
+      !/<link href="https:\/\/fonts\.googleapis\.com[^>]*rel="stylesheet" \/>/.test(indexHtml),
+      'Google Fonts stylesheets must not block rendering (media="print" + onload): the host is unreachable for some readers'
+    );
     const subsetChars = new Set(decodeURIComponent(maShanLinkMatch[2]));
     const requiredCalligraphyChars = [
       '江山时序',

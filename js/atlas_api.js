@@ -1705,11 +1705,16 @@
       const afterFullSnapshots = (fn, delayMs = 80) => {
         const run = () => setTimeout(fn, delayMs);
         const tasks = [];
-        if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
-          tasks.push(this._ensureFullSnapshots());
-        }
+        const snapshotsReady =
+          !this._fullSnapshotsLoaded && typeof window !== 'undefined' ? this._ensureFullSnapshots() : null;
+        if (snapshotsReady) tasks.push(snapshotsReady);
         if (!this._isLoreDetailLoaded() && typeof window !== 'undefined') {
-          tasks.push(this._ensureLoreDetail());
+          // A plain ?year= link shows nothing from the lore bundle: let the borders download first.
+          const bordersFirst =
+            snapshotsReady &&
+            this._deferredLoadsHeld &&
+            !['q', 'person', 'event', 'journey', 'trace', 'hover', 'place', 'lng'].some((k) => q.has(k));
+          tasks.push(bordersFirst ? snapshotsReady.then(() => this._ensureLoreDetail()) : this._ensureLoreDetail());
         }
         if (needsEn && typeof window !== 'undefined' && !this._hasEnDict()) {
           tasks.push(this._ensureEnglishLocale());
