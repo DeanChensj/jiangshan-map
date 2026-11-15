@@ -1142,9 +1142,11 @@
     }
 
     // Text drawn on the map (and its key) is letter-spaced and tightly packed: a pair of
-    // full-width brackets costs about three characters there. Data and panels keep （）.
+    // full-width brackets costs about three characters there, and " · " about two. Data and
+    // panels keep （） and the spaced dot; English labels keep their spaces.
     _mapText(text) {
-      return String(text == null ? '' : text).replace(/（/g, '(').replace(/）/g, ')');
+      const out = String(text == null ? '' : text).replace(/（/g, '(').replace(/）/g, ')');
+      return this.locale === 'en' ? out : out.replace(/\s*·\s*/g, '·');
     }
 
     trTerm(text) {

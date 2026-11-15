@@ -2071,10 +2071,16 @@ async function runSearchRuntimeSuite(ctx) {
           bracketCaps.length >= 3 &&
             bracketCaps.every(
               (cap) =>
-                cap.textContent === cap.dataset.polityTitle.replace(/（/g, '(').replace(/）/g, ')') &&
+                cap.textContent === lazyCtrl._mapText(cap.dataset.polityTitle) &&
                 !/[（）]/.test(cap.textContent)
             ),
           `Polity captions must render （） as (), got ${JSON.stringify(bracketCaps.map((cap) => cap.textContent))}`
+        );
+        assert(
+          proto._mapText.call({ locale: 'zh' }, '马腾 · 韩遂（关陇）') === '马腾·韩遂(关陇)' &&
+            proto._mapText.call({ locale: 'en' }, 'Mongols · Moghulistan') === 'Mongols · Moghulistan' &&
+            proto._mapText.call({ locale: 'zh' }, null) === '',
+          'Map text must tighten " · " to "·" in Chinese and leave English separators alone'
         );
         grpPref.classList.remove('is-hidden');
         const expectedPrefCount = (tangSnap0.prefectures || []).length;
