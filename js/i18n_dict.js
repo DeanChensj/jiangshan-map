@@ -1696,7 +1696,7 @@ window.EN_LOCALE = {
       "Xiangping (Liaoyang)"
     ],
     "tang:635": [
-      "Li Jing leads a six-column expedition to Lake Baihai, forcing Tuyuhun King Buyun to submit",
+      "Li Jing marches to Lake Baihai; Tuyuhun's Fuyun dies in flight and Murong Shun submits",
       "Fusicheng (Qinghai)"
     ],
     "tang:648": [
