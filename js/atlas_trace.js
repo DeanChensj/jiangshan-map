@@ -1812,10 +1812,9 @@
           { class: 'jn-label', x: '0', y: '-8.2' },
           oInner
         );
-        oLbl.textContent =
-          this.locale === 'en'
-            ? labelEn || this.trTerm(labelZh)
-            : this._zh(labelZh);
+        oLbl.textContent = this._mapText(
+          this.locale === 'en' ? labelEn || this.trTerm(labelZh) : this._zh(labelZh)
+        );
       };
       if (!isMulti) {
         if (curIdx >= 0 && curEv) {
@@ -2126,7 +2125,7 @@
             },
             inner
           );
-          lblTxt.textContent = compactLbl;
+          lblTxt.textContent = this._mapText(compactLbl);
         }
       }
 
@@ -3591,7 +3590,7 @@
             { class: 'trace-pin-label', x: '0', y: '22', 'text-anchor': 'middle' },
             g
           );
-          lbl.textContent = this.trTerm(this.activeTraceLabel);
+          lbl.textContent = this._mapText(this.trTerm(this.activeTraceLabel));
         }
       }
       this._invalidateTypographyLayout();
