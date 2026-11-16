@@ -10125,7 +10125,7 @@
                 : `${sIdx + 1}. `;
             const intNote =
               this.activePerson.isMulti && ev.intersection
-                ? `<div class="tt-sub" style="color:#b5452f;font-weight:700">${
+                ? `<div class="tt-sub" style="color:#d97b66;font-weight:700">${
                     ev.intersection.kind === 'same_time'
                       ? isEn
                         ? '✦ Contemporaneous Spacetime Intersection'
