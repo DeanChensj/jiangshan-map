@@ -726,7 +726,14 @@
     {"id":"nanbei:568","dynastyKey":"nanbei","year":568,"coord":[118.8,32.06],"site":"建康","siteEn":"Jiankang","zh":"陈宣帝于建康整饬吏治、劝课江南农桑，蓄力筹备太建北伐","en":"Emperor Xuan of Chen reforms administration and promotes Jiangnan farming before his northern campaign"},
     {"id":"tang:744b","dynastyKey":"tang","year":744,"month":9,"coord":[115.65,34.44],"site":"睢阳（商丘）","siteEn":"Suiyang (Shangqiu)","persons":["libai","dufu","gaoshi"],"zh":"李白、杜甫与高适同游梁宋睢阳，登吹台怀古、纵猎孟诸","en":"Li Bai, Du Fu, and Gao Shi roam Liang-Song around Suiyang, hunting at Mengzhu and writing verse"},
     {"id":"xihan:-202b","dynastyKey":"xihan","year":-202,"coord":[119.3,26.08],"site":"东冶（福州）","siteEn":"Dongye (Fuzhou)","zh":"汉高祖刘邦论灭楚功，复立越王勾践后裔无诸为闽越王，都东冶","en":"Emperor Gaozu of Han restores Wuzhu as King of Minyue for his anti-Chu aid, with seat at Dongye"},
-    {"id":"tang:756i","dynastyKey":"tang","year":756,"month":1,"coord":[112.45,34.62],"site":"洛阳","siteEn":"Luoyang","persons":["anlushan"],"zh":"安禄山攻陷东都洛阳，正月于洛阳自立为大燕皇帝，改元圣武","en":"An Lushan captures the eastern capital Luoyang and proclaims himself Emperor of Great Yan"}
+    {"id":"tang:756i","dynastyKey":"tang","year":756,"month":1,"coord":[112.45,34.62],"site":"洛阳","siteEn":"Luoyang","persons":["anlushan"],"zh":"安禄山攻陷东都洛阳，正月于洛阳自立为大燕皇帝，改元圣武","en":"An Lushan captures the eastern capital Luoyang and proclaims himself Emperor of Great Yan"},
+    {"id":"prc:1956","dynastyKey":"prc","year":1956,"coord":[125.32,43.88],"site":"长春","siteEn":"Changchun","zh":"长春第一汽车制造厂试制成功第一批国产“解放”牌载重汽车","en":"Changchun's First Automobile Works trial-produces the first batch of Jiefang trucks"},
+    {"id":"prc:1959","dynastyKey":"prc","year":1959,"coord":[124.87,46.6],"site":"大庆","siteEn":"Daqing","zh":"石油地质勘探取得重大成果——发现大庆油田，结束中国贫油的历史","en":"Oil and gas exploration makes a major breakthrough as the Daqing Oilfield is discovered"},
+    {"id":"prc:1978","dynastyKey":"prc","year":1978,"coord":[117.55,32.85],"site":"凤阳小岗村","siteEn":"Xiaogang Village, Fengyang","zh":"凤阳小岗村18户农民签订“大包干”契约，拉开农村改革序幕","en":"18 households in Xiaogang Village sign a secret household contract, launching rural reform"},
+    {"id":"prc:1979","dynastyKey":"prc","year":1979,"coord":[113.92,22.49],"site":"深圳蛇口","siteEn":"Shekou, Shenzhen","zh":"广东蛇口建立全国第一个对外开放工业区——蛇口工业区","en":"China establishes its first opening-up industrial zone at Shekou in Guangdong"},
+    {"id":"prc:2003","dynastyKey":"prc","year":2003,"coord":[100.28,40.96],"site":"酒泉","siteEn":"Jiuquan","zh":"神舟五号载人飞船升空并安全返回，首次载人航天飞行圆满成功","en":"Shenzhou 5 carries Yang Liwei into orbit and returns safely, a first for China's crewed spaceflight"},
+    {"id":"prc:2016","dynastyKey":"prc","year":2016,"coord":[106.86,25.65],"site":"平塘（贵州）","siteEn":"Pingtang, Guizhou","zh":"五百米口径球面射电望远镜“中国天眼”在贵州平塘落成","en":"The Five-hundred-meter Aperture Spherical Telescope (FAST) is completed in Pingtang, Guizhou"},
+    {"id":"prc:2018","dynastyKey":"prc","year":2018,"coord":[113.6,22.3],"site":"珠海 · 香港","siteEn":"Zhuhai · Hong Kong","zh":"世界上最长的跨海大桥港珠澳大桥开通，连接香港、珠海和澳门","en":"The world's longest sea crossing, the Hong Kong-Zhuhai-Macau Bridge, opens to traffic"}
   ],
   "HISTORICAL_JOURNEYS": [
     {

@@ -1291,6 +1291,13 @@ window.ATLAS_EVENT_PINYIN = {
     ["chenxuandiyujiankangzhengchilizhi","quankejiangnannongsang","xulichoubeitaijianbeifa","chenxuandiyujiankangzhengchilizhiquankejiangnannongsangxulichoubeitaijianbeifa","jiankang"],
     ["libai","dufuyugaoshitongyouliangsongsuiyang","dengchuitaihuaigu","zongliemengzhu","libaidufuyugaoshitongyouliangsongsuiyangdengchuitaihuaiguzongliemengzhu","suiyang","shangqiu"],
     ["hangaozuliubanglunmiechugong","fuliyuewanggoujianhouyiwuzhuweiminyuewang","dudongye","hangaozuliubanglunmiechugongfuliyuewanggoujianhouyiwuzhuweiminyuewangdudongye","dongye","fuzhou"],
-    ["anlushangongxiandongduluoyang","zhengyueyuluoyangziliweidayanhuangdi","gaiyuanshengwu","anlushangongxiandongduluoyangzhengyueyuluoyangziliweidayanhuangdigaiyuanshengwu","luoyang"]
+    ["anlushangongxiandongduluoyang","zhengyueyuluoyangziliweidayanhuangdi","gaiyuanshengwu","anlushangongxiandongduluoyangzhengyueyuluoyangziliweidayanhuangdigaiyuanshengwu","luoyang"],
+    ["changchundiyiqichezhizaochangshizhichenggongdiyipiguochan","jiefang","paizaizhongqiche","changchundiyiqichezhizaochangshizhichenggongdiyipiguochanjiefangpaizaizhongqiche","changchun"],
+    ["shiyoudizhikantanqudezhongdachengguo","faxiandaqingyoutian","jieshuzhongguopinyoudelishi","shiyoudizhikantanqudezhongdachengguofaxiandaqingyoutianjieshuzhongguopinyoudelishi","daqing"],
+    ["fengyangxiaogangcun","hunongminqianding","dabaogan","qiyue","lakainongcungaigexumu","hunongminqiandingdabaoganqiyuelakainongcungaigexumu"],
+    ["guangdongshekoujianliquanguodiyigeduiwaikaifanggongyequ","shekougongyequ","guangdongshekoujianliquanguodiyigeduiwaikaifanggongyequshekougongyequ","shenzhenshekou"],
+    ["shenzhouwuhaozairenfeichuanshengkongbinganquanfanhui","shoucizairenhangtianfeixingyuanmanchenggong","shenzhouwuhaozairenfeichuanshengkongbinganquanfanhuishoucizairenhangtianfeixingyuanmanchenggong","jiuquan"],
+    ["wubaimikoujingqiumianshedianwangyuanjing","zhongguotianyan","zaiguizhoupingtangluocheng","wubaimikoujingqiumianshedianwangyuanjingzhongguotianyanzaiguizhoupingtangluocheng","pingtang","guizhou"],
+    ["shijieshangzuichangdekuahaidaqiaogangzhuaodaqiaokaitong","lianjiexianggang","zhuhaiheaomen","shijieshangzuichangdekuahaidaqiaogangzhuaodaqiaokaitonglianjiexianggangzhuhaiheaomen","zhuhai","xianggang"]
   ]
 };
