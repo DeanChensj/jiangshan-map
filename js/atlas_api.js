@@ -1842,6 +1842,9 @@
             if (this.grpPrefectures && this.grpPrefectures.classList) {
               this.grpPrefectures.classList.remove('is-hidden');
             }
+            if (this.grpRegionLabels && this.grpRegionLabels.classList) {
+              this.grpRegionLabels.classList.remove('is-hidden');
+            }
             this._materializeDeferredPrefectures();
             this._rescaleSvgTypography();
           }

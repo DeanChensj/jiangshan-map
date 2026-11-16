@@ -623,7 +623,9 @@ html.deeplink-boot #inp-year {
 
 /* No borders rather than another era's while a snapshot downloads (see _markAwaitingSnapshot). */
 #atlas-svg.is-awaiting-snapshot #grp-polities,
+#atlas-svg.is-awaiting-snapshot #grp-polity-labels,
 #atlas-svg.is-awaiting-snapshot #grp-prefectures,
+#atlas-svg.is-awaiting-snapshot #grp-region-labels,
 #map-key.is-awaiting-snapshot {
   visibility: hidden;
 }
@@ -981,12 +983,15 @@ html.deeplink-boot #inp-year {
   stroke-linejoin: round;
 }
 
-#grp-polities {
+#grp-polities,
+#grp-polity-labels {
   transition: opacity 0.25s;
 }
 
 #grp-polities.is-hidden,
+#grp-polity-labels.is-hidden,
 #grp-prefectures.is-hidden,
+#grp-region-labels.is-hidden,
 #grp-settlements.is-hidden,
 #grp-corridors.is-hidden,
 #grp-milestones.is-hidden {
@@ -3819,7 +3824,8 @@ html[lang="en"] .genealogy-list li {
   stroke-opacity: 0.22 !important;
 }
 
-#grp-polities.has-polity-focus .polity-caption:not(.is-focused) {
+#grp-polities.has-polity-focus .polity-caption:not(.is-focused),
+#grp-polity-labels.has-polity-focus .polity-caption:not(.is-focused) {
   fill-opacity: 0.18 !important;
 }
 
@@ -3828,7 +3834,8 @@ html[lang="en"] .genealogy-list li {
   stroke-width: 2.6 !important;
 }
 
-#grp-polities.has-polity-focus .polity-caption.is-focused {
+#grp-polities.has-polity-focus .polity-caption.is-focused,
+#grp-polity-labels.has-polity-focus .polity-caption.is-focused {
   fill-opacity: 1 !important;
 }
 

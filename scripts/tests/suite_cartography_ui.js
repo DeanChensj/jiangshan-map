@@ -1883,6 +1883,147 @@ async function runCartographyUiSuite(ctx) {
       !qinlingNode.classList.contains('is-crowded-hidden'),
       '秦岭 must reappear after zooming back in past the pass gate (zoomOnly frame)'
     );
+
+    // CUJ 31c: Polity and region captions sit in dedicated SVG label groups above rivers/borders/corridors
+    const idxPref = indexHtml.indexOf('<g id="grp-prefectures"></g>');
+    const idxRiv = indexHtml.indexOf('<g id="grp-rivers"></g>');
+    const idxCorr = indexHtml.indexOf('<g id="grp-corridors"></g>');
+    const idxProvNames = indexHtml.indexOf('<g id="grp-prov-names"');
+    const idxRegLbl = indexHtml.indexOf('<g id="grp-region-labels"></g>');
+    const idxPolLbl = indexHtml.indexOf('<g id="grp-polity-labels"></g>');
+    const idxSettle = indexHtml.indexOf('<g id="grp-settlements"></g>');
+    assert(
+      idxPref > 0 &&
+        idxRiv > idxPref &&
+        idxCorr > idxRiv &&
+        idxProvNames > idxCorr &&
+        idxRegLbl > idxProvNames &&
+        idxPolLbl > idxRegLbl &&
+        idxSettle > idxPolLbl,
+      'index.html must order #grp-region-labels and #grp-polity-labels above borders/rivers/corridors and below #grp-settlements'
+    );
+    assert(
+      styleCss.includes('#grp-polity-labels.is-hidden') &&
+        styleCss.includes('#grp-region-labels.is-hidden') &&
+        styleCss.includes('#grp-polity-labels.has-polity-focus .polity-caption:not(.is-focused)') &&
+        styleCss.includes('#atlas-svg.is-awaiting-snapshot #grp-polity-labels') &&
+        styleCss.includes('#atlas-svg.is-awaiting-snapshot #grp-region-labels'),
+      'css/style.css must synchronize hidden, snapshot-awaiting, and focus styles on #grp-polity-labels and #grp-region-labels'
+    );
+    const fakeNode = (tag, attrs = {}) => {
+      const cls = new Set(String(attrs.class || '').split(/\s+/).filter(Boolean));
+      const children = [];
+      const el = {
+        tagName: tag,
+        attributes: { ...attrs },
+        dataset: {},
+        children,
+        textContent: '',
+        classList: {
+          add: (...c) => c.forEach((x) => cls.add(x)),
+          remove: (...c) => c.forEach((x) => cls.delete(x)),
+          toggle: (x, force) => (force === undefined ? (cls.has(x) ? cls.delete(x) : cls.add(x)) : force ? cls.add(x) : cls.delete(x)),
+          contains: (x) => cls.has(x),
+        },
+        setAttribute: (k, v) => {
+          el.attributes[k] = String(v);
+          if (k === 'class') {
+            cls.clear();
+            String(v).split(/\s+/).filter(Boolean).forEach((x) => cls.add(x));
+          }
+        },
+        getAttribute: (k) => (k in el.attributes ? el.attributes[k] : null),
+        appendChild: (c) => {
+          c.parentNode = el;
+          children.push(c);
+          return c;
+        },
+        querySelectorAll: (sel) => {
+          const want = sel.split(',').map((s) => s.trim().replace(/^\./, ''));
+          const out = [];
+          const walk = (n) => {
+            for (const ch of n.children || []) {
+              if (want.some((w) => ch.classList && ch.classList.contains(w))) out.push(ch);
+              walk(ch);
+            }
+          };
+          walk(el);
+          return out;
+        },
+      };
+      return el;
+    };
+    const mockGrpPol = fakeNode('g');
+    const mockGrpPolLbl = fakeNode('g');
+    const mockGrpPref = fakeNode('g');
+    const mockGrpRegLbl = fakeNode('g');
+    const zCtrl = Object.create(proto);
+    Object.assign(zCtrl, {
+      locale: 'zh',
+      year: 317,
+      projector: ctrl.projector,
+      svg: fakeNode('svg'),
+      mapKey: fakeNode('div'),
+      grpPolities: mockGrpPol,
+      grpPolityLabels: mockGrpPolLbl,
+      grpPrefectures: mockGrpPref,
+      grpRegionLabels: mockGrpRegLbl,
+      prefClipPath: fakeNode('path'),
+      _svgNode: (tag, attrs, parent) => {
+        const n = fakeNode(tag, attrs);
+        if (parent) parent.appendChild(n);
+        return n;
+      },
+      _mapText: (s) => s,
+      trTerm: (s) => s,
+      _zh: (s) => s,
+      _clearHoveredPrefecture: () => {},
+      _buildPrefectureBoundaryPath: () => '',
+      _buildRegionBoundaryPath: () => '',
+      _renderLegendBox: () => {},
+      _syncTracedPrefecture: () => {},
+      _rescaleSvgTypography: () => {},
+    });
+    const fakeSnap = {
+      polities: [
+        {
+          title: '东晋',
+          role: 'main',
+          tint: '#6b9e78',
+          anchor: [115.0, 29.5],
+          shape: { type: 'Polygon', coordinates: [[[110, 25], [120, 25], [120, 33], [110, 33], [110, 25]]] },
+        },
+        {
+          title: '汉赵',
+          role: 'rival',
+          tint: '#b87664',
+          anchor: [111.5, 36.5],
+          shape: { type: 'Polygon', coordinates: [[[106, 34], [116, 34], [116, 40], [106, 40], [106, 34]]] },
+        },
+      ],
+      regions: [
+        {
+          title: '司州',
+          category: '州',
+          anchor: [113.0, 35.0],
+          shape: { type: 'Polygon', coordinates: [[[110, 34], [115, 34], [115, 37], [110, 37], [110, 34]]] },
+        },
+      ],
+      prefectures: [],
+    };
+    zCtrl._renderPolitiesAndPrefectures(dynasties[0], fakeSnap);
+    assert.strictEqual(mockGrpPol.querySelectorAll('.polity-caption').length, 0, 'polity captions must not sit inside #grp-polities');
+    assert.strictEqual(mockGrpPolLbl.querySelectorAll('.polity-caption').length, 2, 'polity captions must render inside #grp-polity-labels');
+    assert.strictEqual(mockGrpPref.querySelectorAll('.region-caption').length, 0, 'region captions must not sit inside #grp-prefectures');
+    assert.strictEqual(mockGrpRegLbl.querySelectorAll('.region-caption').length, 1, 'region captions must render inside #grp-region-labels');
+    zCtrl._setPolityFocus('东晋');
+    assert(
+      mockGrpPol.classList.contains('has-polity-focus') &&
+        mockGrpPolLbl.classList.contains('has-polity-focus') &&
+        mockGrpPolLbl.children[0].classList.contains('is-focused') &&
+        !mockGrpPolLbl.children[1].classList.contains('is-focused'),
+      '_setPolityFocus must highlight matching .polity-caption inside #grp-polity-labels'
+    );
   }
 
   // CUJ 32: Timeline & Person Chronicle Playback Speed Control (1x -> 2x -> 0.25x -> 0.5x -> 1x)

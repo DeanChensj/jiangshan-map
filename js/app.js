@@ -1053,7 +1053,9 @@
       this.grpProvinces = this._id('grp-provinces');
       this.grpProvNames = this._id('grp-prov-names');
       this.grpPolities = this._id('grp-polities');
+      this.grpPolityLabels = this._id('grp-polity-labels');
       this.grpPrefectures = this._id('grp-prefectures');
+      this.grpRegionLabels = this._id('grp-region-labels');
       this.prefClipPath = this._id('prefecture-clip-path');
       this.grpGhostDiff = this._id('grp-ghost-diff');
       this.grpCorridors = this._id('grp-corridors');
@@ -3159,6 +3161,8 @@
       }
 
       const regGroup = this._regOverlayGroup;
+      if (this.grpRegionLabels) this.grpRegionLabels.innerHTML = '';
+      const regLabelParent = this.grpRegionLabels || regGroup;
       // Captions stay unclipped; only the lines and hover shapes are cut to the polities.
       const clipAttr = this._prefClipActive ? { 'clip-path': 'url(#prefecture-clip)' } : {};
       const shapesGroup = this._prefShapesGroup;
@@ -3200,7 +3204,7 @@
               'data-base-x': baseX.toFixed(1),
               'data-base-y': baseY.toFixed(1),
             },
-            regGroup
+            regLabelParent
           );
           rLbl._regShape = reg.shape;
           rLbl.textContent = this._mapText(
@@ -3231,8 +3235,10 @@
       this._setPolityFocus(null);
       this._clearHoveredPrefecture();
       this.grpPolities.innerHTML = '';
+      if (this.grpPolityLabels) this.grpPolityLabels.innerHTML = '';
 
       const polGroup = this._svgNode('g', {}, this.grpPolities);
+      const polLabelParent = this.grpPolityLabels || polGroup;
       const zOrder = { neighbor: 0, main: 1, rival: 2, protectorate: 3 };
       const sorted = (snap.polities || [])
         .slice()
@@ -3265,7 +3271,7 @@
               'data-base-x': cx.toFixed(1),
               'data-base-y': cy.toFixed(1),
             },
-            polGroup
+            polLabelParent
           );
           lbl._polShape = pol.shape;
           lbl.dataset.polityTitle = pol.title;
@@ -3293,6 +3299,7 @@
           this._regOverlayGroup = null;
           this._renderedPrefecturesRef = null;
         }
+        if (this.grpRegionLabels) this.grpRegionLabels.innerHTML = '';
         this._deferredPrefectureSnap = snap;
       } else {
         this._deferredPrefectureSnap = null;
@@ -4795,23 +4802,24 @@
       } else if (!targetTitle && this.eraFocus) {
         targetTitle = this._eraFocusTitle();
       }
+      const focusTargets = [this.grpPolities, this.grpPolityLabels].filter(Boolean);
       if (!targetTitle) {
-        this.grpPolities.classList.remove('has-polity-focus');
-        this.grpPolities
-          .querySelectorAll('.is-focused')
-          .forEach((el) => el.classList.remove('is-focused'));
+        for (const grp of focusTargets) {
+          grp.classList.remove('has-polity-focus');
+          grp.querySelectorAll('.is-focused').forEach((el) => el.classList.remove('is-focused'));
+        }
         return;
       }
-      this.grpPolities.classList.add('has-polity-focus');
-      this.grpPolities
-        .querySelectorAll('.polity-shape, .polity-caption')
-        .forEach((el) => {
+      for (const grp of focusTargets) {
+        grp.classList.add('has-polity-focus');
+        grp.querySelectorAll('.polity-shape, .polity-caption').forEach((el) => {
           const match =
             targetTitle === '__neighbors__'
               ? el.dataset.polityRole === 'neighbor'
               : el.dataset.polityTitle === targetTitle;
           el.classList.toggle('is-focused', match);
         });
+      }
     }
 
     _zoomToPolity(polityTitle, snap = this.lastRenderedSnap) {
@@ -8256,7 +8264,8 @@
       }
 
       // Tier 2: Polity captions (main & rival first, then protectorate & neighbor)
-      const polNodes = Array.from(this.grpPolities.querySelectorAll('.polity-caption')).sort(
+      const polLabelGroup = this.grpPolityLabels || this.grpPolities;
+      const polNodes = Array.from(polLabelGroup.querySelectorAll('.polity-caption')).sort(
         (a, b) => {
           const rank = (el) =>
             el.classList.contains('main')
@@ -9549,6 +9558,9 @@
       bindToggle('chk-prov-names', this.grpProvNames);
       this._id('chk-polities').addEventListener('change', (e) => {
         this.grpPolities.classList.toggle('is-hidden', !e.target.checked);
+        if (this.grpPolityLabels) {
+          this.grpPolityLabels.classList.toggle('is-hidden', !e.target.checked);
+        }
         if (this.grpGhostDiff) {
           this.grpGhostDiff.classList.toggle('is-hidden', !e.target.checked);
         }
@@ -9556,6 +9568,9 @@
       });
       this._id('chk-prefectures').addEventListener('change', (e) => {
         this.grpPrefectures.classList.toggle('is-hidden', !e.target.checked);
+        if (this.grpRegionLabels) {
+          this.grpRegionLabels.classList.toggle('is-hidden', !e.target.checked);
+        }
         if (e.target.checked) this._materializeDeferredPrefectures();
         else this._clearHoveredPrefecture();
         this._rescaleSvgTypography();
