@@ -5559,15 +5559,22 @@ html[lang="en"] .genealogy-list li.person-ev-row {
 .person-track-tag {
   display: inline-flex;
   align-items: center;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: var(--track-color, #bd2d22);
-  color: #fffaf2;
+  padding: 0.5px 5.5px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--track-color, #9e3a26) 32%, transparent);
+  background: color-mix(in srgb, var(--track-color, #9e3a26) 11%, rgba(255, 250, 240, 0.78));
+  color: var(--track-color, #9e3a26);
   font-family: var(--serif-stack);
-  font-size: 10.5px;
+  font-size: 10.4px;
   font-weight: 700;
   line-height: 1.3;
   white-space: nowrap;
+}
+
+.genealogy-list li.person-ev-row.is-current .person-track-tag {
+  background: var(--track-color, #9e3a26);
+  border-color: var(--track-color, #9e3a26);
+  color: #fffaf2;
 }
 
 .person-yr-sub {
@@ -5989,4 +5996,48 @@ span.story-inline-person {
 
 .genealogy-list li.person-ev-row[style*="--camp-color"] .person-ev-quote {
   border-left-color: color-mix(in srgb, var(--camp-color) 42%, transparent);
+}
+
+/* Mineral Pigment Pins, Stack Rings & Numbered Multi-Person Rows */
+.mp-era-top {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.mp-row-num {
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  margin-top: 1px;
+  font-size: 9.6px;
+  flex-shrink: 0;
+  color: var(--track-color, #7a4b38);
+  border-color: color-mix(in srgb, var(--track-color, #7a4b38) 32%, transparent);
+  background: color-mix(in srgb, var(--track-color, #7a4b38) 8%, rgba(255, 250, 240, 0.85));
+}
+
+.genealogy-list li.person-ev-row.is-current .mp-row-num {
+  background: var(--track-color, var(--vermilion));
+  border-color: var(--track-color, var(--vermilion));
+  color: #fffaf2;
+}
+
+.jn-disc {
+  fill: #f8f1e3;
+  stroke-width: 1.3px;
+}
+
+.jn-meet-pill {
+  fill: #f8f1e3;
+  stroke: rgba(82, 62, 46, 0.62);
+  stroke-width: 1.2px;
+}
+
+.jn-stack-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.85px;
+  stroke-opacity: 0.48;
+  pointer-events: none;
 }

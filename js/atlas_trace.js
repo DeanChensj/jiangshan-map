@@ -762,7 +762,7 @@
     }
 
     static get PERSON_TRACK_PALETTE() {
-      return ['#c4281c', '#233b8e', '#186a4b', '#7a2e68'];
+      return ['#9e3a26', '#355470', '#3d6654', '#6e435c'];
     }
 
     _resolvePersonProfiles(personOrQuery) {
@@ -1306,12 +1306,18 @@
 
     _getSoloStepOriginCoord(activePerson, events, curIdx, curEv) {
       if (!activePerson || activePerson.isMulti || curIdx < 0 || !curEv) return null;
-      const isStory = Boolean(activePerson.profile && activePerson.profile.isStory);
+      const profile = activePerson.profile || {};
+      const isStory = Boolean(profile.isStory);
       if (isStory) {
         return Array.isArray(curEv.fromCoord) ? curEv.fromCoord : null;
       }
       if (curIdx > 0) {
         const prevEv = events[curIdx - 1];
+        const isScrapedBio = !profile.journeyKey && !profile.isRelic;
+        const yearGap = prevEv ? Math.abs((curEv.year || 0) - (prevEv.year || 0)) : 0;
+        if (isScrapedBio && !curEv.fromCoord && yearGap > 6) {
+          return null;
+        }
         if (
           prevEv &&
           Array.isArray(prevEv.coord) &&
@@ -1710,13 +1716,7 @@
       const clusters = rawPts.map(([sx, sy], i) => {
         const peers = [];
         rawPts.forEach(([ox, oy], j) => {
-          const oneSharedOneSolo =
-            isMulti &&
-            Boolean(events[i]?.isSharedEncounter) !== Boolean(events[j]?.isSharedEncounter);
-          const hit = oneSharedOneSolo
-            ? Math.abs(ox - sx) < 14.2 && Math.abs(oy - sy) < 9.5
-            : Math.hypot(ox - sx, oy - sy) < 6.5;
-          if (hit) peers.push(j);
+          if (Math.hypot(ox - sx, oy - sy) < 6.5) peers.push(j);
         });
         if (isMulti) {
           const sharedPeer = peers.find((pIdx) => events[pIdx] && events[pIdx].isSharedEncounter);
@@ -1728,6 +1728,8 @@
               isPrimary: i === curIdx,
               isMultiCanonical: i === curIdx,
               isCrossEraShared: false,
+              stackCount: peers.length,
+              stackPeers: peers,
               peers,
             };
           }
@@ -1741,6 +1743,8 @@
               isPrimary: i === originPeer,
               isMultiCanonical: i === originPeer,
               isCrossEraShared: false,
+              stackCount: peers.length,
+              stackPeers: peers,
               peers,
             };
           }
@@ -1752,17 +1756,20 @@
               isPrimary: i === sharedPeer,
               isMultiCanonical: i === sharedPeer,
               isCrossEraShared: false,
+              stackCount: peers.length,
+              stackPeers: peers,
               peers,
             };
           }
           const myPersonIdx = events[i]?.personIdx;
-          const firstForPerson = peers.find((pIdx) => events[pIdx]?.personIdx === myPersonIdx);
+          const samePersonPeers = peers.filter((pIdx) => events[pIdx]?.personIdx === myPersonIdx);
+          const firstForPerson = samePersonPeers[0];
           const distinctPersons = Array.from(
             new Set(peers.map((pIdx) => events[pIdx]?.personIdx))
           ).sort((a, b) => a - b);
           const pPos = distinctPersons.indexOf(myPersonIdx);
           const ox =
-            distinctPersons.length > 1 ? (pPos - (distinctPersons.length - 1) * 0.5) * 6.4 : 0;
+            distinctPersons.length > 1 ? (pPos - (distinctPersons.length - 1) * 0.5) * 8.2 : 0;
           return {
             ox,
             oy: 0,
@@ -1770,11 +1777,41 @@
             isPrimary: i === peers[0],
             isMultiCanonical: i === firstForPerson,
             isCrossEraShared: distinctPersons.length > 1,
+            stackCount: samePersonPeers.length,
+            stackPeers: samePersonPeers,
             peers,
           };
         }
         if (peers.length <= 1) {
-          return { ox: 0, oy: 0, ringR: 0, isPrimary: true, isMultiCanonical: true, peers };
+          return {
+            ox: 0,
+            oy: 0,
+            ringR: 0,
+            isPrimary: true,
+            isMultiCanonical: true,
+            isSoloCanonical: true,
+            stackCount: 1,
+            stackPeers: peers,
+            peers,
+          };
+        }
+        if (!isStory) {
+          const canonicalSolo = peers.includes(curIdx)
+            ? curIdx
+            : stepOriginIdx >= 0 && peers.includes(stepOriginIdx)
+              ? stepOriginIdx
+              : peers[0];
+          return {
+            ox: 0,
+            oy: 0,
+            ringR: 0,
+            isPrimary: i === canonicalSolo,
+            isMultiCanonical: true,
+            isSoloCanonical: i === canonicalSolo,
+            stackCount: peers.length,
+            stackPeers: peers,
+            peers,
+          };
         }
         const pos = peers.indexOf(i);
         if (peers.length === 2) {
@@ -1784,6 +1821,9 @@
             ringR: 2,
             isPrimary: pos === 0,
             isMultiCanonical: true,
+            isSoloCanonical: true,
+            stackCount: 1,
+            stackPeers: [i],
             peers,
           };
         }
@@ -1795,6 +1835,9 @@
           ringR,
           isPrimary: pos === 0,
           isMultiCanonical: true,
+          isSoloCanonical: true,
+          stackCount: 1,
+          stackPeers: [i],
           peers,
         };
       });
@@ -1975,6 +2018,7 @@
       for (const idx of order) {
         const cl = clusters[idx];
         if (isMulti && !cl.isMultiCanonical) continue;
+        if (!isMulti && !isStory && cl.isSoloCanonical === false) continue;
         const ev = events[idx];
         const [sx, sy] = rawPts[idx];
         const isCur = idx === curIdx;
@@ -2010,19 +2054,19 @@
               : idx < curIdx;
         const stateCls =
           curIdx < 0 ? 'is-passed' : isCur ? 'is-current' : isPeerPassed ? 'is-passed' : 'is-upcoming';
-        const isMultiBead = isMulti && !isShared && !isCur;
-        const intersectCls = isShared ? ' is-intersect' : isMultiBead ? ' is-multi-bead' : '';
+        const intersectCls = isShared ? ' is-intersect' : '';
         const dimCls = dimmed ? ' is-other-era' : '';
         const pinColor = !isMulti
           ? isStory
             ? isCur || isStepOrigin
-              ? ev.campColor || '#b53826'
-              : ev.campCalmColor || '#7d4b36'
+              ? ev.campColor || '#9e3a26'
+              : ev.campCalmColor || '#7a4b38'
             : isCur
-              ? '#b53826'
-              : '#7d4b36'
-          : ev.personColor || '#bd2d22';
+              ? '#9e3a26'
+              : '#7a4b38'
+          : ev.personColor || '#9e3a26';
 
+        const cyclePeers = cl.stackPeers || cl.peers;
         const g = this._svgNode(
           'g',
           {
@@ -2034,14 +2078,14 @@
             'data-base-ox': cl.ox.toFixed(2),
             'data-base-oy': cl.oy.toFixed(2),
             'data-stop-idx': String(idx),
-            ...(isMulti && cl.peers && cl.peers.length > 1
-              ? { 'data-peer-idxs': `,${cl.peers.join(',')},` }
+            ...(cyclePeers && cyclePeers.length > 1
+              ? { 'data-peer-idxs': `,${cyclePeers.join(',')},` }
               : {}),
           },
           this.grpJourney
         );
         g.style.color = pinColor;
-        if (dimmed) g.style.opacity = isOtherStep || isFilteredOutInOverview ? '0.26' : '0.36';
+        if (dimmed) g.style.opacity = isOtherStep || isFilteredOutInOverview ? '0.24' : '0.36';
 
         const inner = this._svgNode(
           'g',
@@ -2054,7 +2098,7 @@
 
         this._svgNode(
           'circle',
-          { class: 'jn-hit', r: isShared ? 15 : isMultiBead ? 10 : 14, fill: 'transparent' },
+          { class: 'jn-hit', r: isShared ? 15 : 13, fill: 'transparent' },
           inner
         );
         if (isShared) {
@@ -2104,21 +2148,16 @@
             );
             dot.style.color = pt.color;
           });
-        } else if (isMultiBead) {
-          this._svgNode(
-            'circle',
-            { class: 'jn-disc is-waypoint-bead', r: isStepOrigin ? 5.2 : 4.1 },
-            inner
-          );
         } else {
+          const rDisc = isCur ? 7.4 : isMulti ? 5.4 : 5.6;
           if (isCur) {
-            this._svgNode('circle', { class: 'jn-pulse', r: 11.8 }, inner);
+            this._svgNode('circle', { class: 'jn-pulse', r: 11.4 }, inner);
+          } else if (!isStory && cl.stackCount > 1 && !dimmed) {
+            this._svgNode('circle', { class: 'jn-stack-ring', r: (rDisc + 2.1).toFixed(1) }, inner);
           }
-          this._svgNode('circle', { class: 'jn-disc', r: isCur ? 7.6 : 5.8 }, inner);
-          if (!isMulti) {
-            const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
-            numTxt.textContent = String(ev.personStepNum || idx + 1);
-          }
+          this._svgNode('circle', { class: 'jn-disc', r: rDisc }, inner);
+          const numTxt = this._svgNode('text', { class: 'jn-num', y: '0.5' }, inner);
+          numTxt.textContent = String(isMulti ? idx + 1 : ev.personStepNum || idx + 1);
         }
 
         const showStartLbl = isMulti && (ev.personStepIdx === 0 || isStepOrigin) && !dimmed;
@@ -2132,15 +2171,12 @@
           const compactLbl = isCur
             ? fullLbl
             : fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
-          const hideUntilHover = isMultiBead && !showStartLbl;
           const lblTxt = this._svgNode(
             'text',
             {
-              class: `jn-label${isShared ? ' is-intersect-label' : ''}${
-                hideUntilHover ? ' is-hover-only-label' : ''
-              }`,
+              class: `jn-label${isShared ? ' is-intersect-label' : ''}`,
               x: '0',
-              y: isShared ? '-9.8' : isMultiBead ? '-8.2' : '-11.5',
+              y: isShared ? '-9.8' : !isCur && cl.stackCount > 1 ? '-11.8' : '-10.8',
             },
             inner
           );
@@ -2460,6 +2496,7 @@
           const tagItems = isShared && Array.isArray(ev.participants)
             ? ev.participants
             : [{ personEn: ev.personEn, personZh: ev.personZh, color: ev.personColor }];
+          const primaryColor = (tagItems[0] && tagItems[0].color) || ev.personColor || '#9e3a26';
           const tagsHtml = tagItems
             .map(
               (pt) =>
@@ -2469,7 +2506,8 @@
             )
             .join('');
           leftBadgeHtml =
-            `<span class="person-track-tags-group">${tagsHtml}</span>` +
+            `<span class="mp-era-top"><span class="cr-stop-num mp-row-num" style="--track-color:${primaryColor}">${idx + 1}</span>` +
+            `<span class="person-track-tags-group">${tagsHtml}</span></span>` +
             `<span class="person-yr-sub">${yrStr} · ${this.dynastyName(ev.dynasty)}</span>`;
         } else {
           const subTimeLbl =
