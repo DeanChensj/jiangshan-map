@@ -81,6 +81,7 @@ function loadAtlasRuntime() {
     'lore_core.js',
     'lore_detail.js',
     'i18n_dict.js',
+    'zh_hant.js',
     ...CONTROLLER_SCRIPTS.map((rel) => path.basename(rel)),
   ]) {
     const code = fs.readFileSync(path.join(JS_DIR, file), 'utf8');
@@ -1506,9 +1507,14 @@ function updateSitemapXml(dynMeta, journeyMeta, featuredMeta) {
 }
 
 function computeCalligraphySubsetText(dynasties, enLocale) {
+  const zhHantCtx = { window: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(JS_DIR, 'zh_hant.js'), 'utf8'), zhHantCtx);
+  const toHant =
+    (zhHantCtx.window.ZH_HANT_CONV && zhHantCtx.window.ZH_HANT_CONV.toHant) || ((s) => s);
+  const zhSources = ['江山时序', ...dynasties.map((d) => d.title || '')];
   const sources = [
-    '江山时序',
-    ...dynasties.map((d) => d.title || ''),
+    ...zhSources,
+    ...zhSources.map((s) => toHant(s)),
     ...dynasties.map((d) => (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || ''),
   ];
   return Array.from(new Set(sources.join(''))).sort().join('');
