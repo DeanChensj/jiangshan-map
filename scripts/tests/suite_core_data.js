@@ -609,6 +609,7 @@ async function runCoreDataSuite(ctx) {
     'togglePersonAutoplay',
     'selectPersonEvent',
     '_getSoloStepOriginCoord',
+    '_getSimultaneousPeerAnchors',
     '_getMultiStepLegs',
     '_getNavigablePersonEventIdxs',
     'stepPersonEvent',

@@ -8814,6 +8814,7 @@
         ox: Number(n.getAttribute('data-base-ox') || 0),
         oy: Number(n.getAttribute('data-base-oy') || 0),
         isPill: n.classList.contains('is-intersect'),
+        isPeerSync: n.classList.contains('is-peer-sync'),
         isBead: n.classList.contains('is-multi-bead'),
       }));
       for (let iter = 0; iter < 12; iter++) {
@@ -8897,7 +8898,11 @@
         .slice()
         .sort((a, b) => {
           const rank = (item) =>
-            item.n.classList.contains('is-current') ? 0 : item.isPill ? 1 : 2;
+            item.n.classList.contains('is-current')
+              ? 0
+              : item.isPill || item.isPeerSync
+                ? 1
+                : 2;
           return rank(a) - rank(b);
         });
       for (const p of labelOrder) {
@@ -8957,7 +8962,7 @@
             fallbackRect = r;
           }
         }
-        if (!chosenSlot && (isCur || p.isPill)) {
+        if (!chosenSlot && (isCur || p.isPill || p.isPeerSync)) {
           chosenSlot = fallbackSlot || orderedSlots[0];
           chosenRect = fallbackRect;
         }
