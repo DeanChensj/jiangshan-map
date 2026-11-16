@@ -227,8 +227,8 @@
       if (actChal) actChal.classList.add('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
       if (lblChal) {
-        lblChal.textContent =
-          this.locale === 'en' ? 'Quiz Active · Click to Exit' : '挑战进行中 · 点击退出';
+        lblChal.textContent = this.locale === 'en' ? 'Exit Quiz ×' : '退出小试 ×';
+        if (this.locale === 'zh-tw') this._applyZhHantDom(lblChal);
       }
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
@@ -258,8 +258,8 @@
       if (actChal) actChal.classList.remove('is-active');
       const lblChal = this._id('lbl-challenge') || actChal;
       if (lblChal) {
-        lblChal.textContent =
-          this.locale === 'en' ? 'Map Pinpoint · Ancient Place Quiz' : '舆图寻址 · 古地名小试';
+        lblChal.textContent = this.locale === 'en' ? 'Quiz ›' : '古地名小试 ›';
+        if (this.locale === 'zh-tw') this._applyZhHantDom(lblChal);
       }
       this.svg.classList.remove('is-crosshair');
       const chkSettle = this._id('chk-settlements');
@@ -388,7 +388,7 @@
       this._id('challenge-question').innerHTML =
         `<div>${promptHtml}</div>` +
         `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${escHtml(baseClue + extraEventStr)}</span></div>`;
-      if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-banner'));
+      if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-card'));
     }
 
     presentChallengeRound() {
@@ -562,7 +562,7 @@
       this._rescaleSvgTypography();
       this._id('challenge-result').classList.remove('is-hidden');
       if (this.locale === 'zh-tw') {
-        this._applyZhHantDom(this._id('challenge-banner'));
+        this._applyZhHantDom(this._id('challenge-card'));
         this._applyZhHantDom(this.grpChallenge);
       }
     }
@@ -716,7 +716,7 @@
         nextBtn.onclick = null;
         this.startChallenge();
       };
-      if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-banner'));
+      if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-card'));
     }
   }
 

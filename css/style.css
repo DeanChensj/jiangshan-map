@@ -2029,7 +2029,7 @@ html.deeplink-boot #inp-year {
   position: absolute;
   left: 14px;
   top: 12px;
-  width: 248px;
+  width: 264px;
   z-index: 9;
   transition: width 0.18s ease;
 }
@@ -2432,9 +2432,13 @@ html.deeplink-boot #inp-year {
   }
 
   #start-guide .sg-close {
+    position: sticky;
+    right: -8px;
     margin-left: auto;
     flex-shrink: 0;
-    padding: 0 2px 0 4px;
+    padding: 2px 6px 2px 5px;
+    background: linear-gradient(90deg, rgba(243, 238, 228, 0) 0%, rgba(243, 238, 228, 0.95) 28%);
+    border-radius: 0 999px 999px 0;
   }
 }
 

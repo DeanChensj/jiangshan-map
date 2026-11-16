@@ -1165,17 +1165,36 @@
     }
 
     openJourneyAsPerson(journeyKey, stopIdx = -1) {
-      if (!this._isLoreDetailLoaded()) {
-        this._ensureLoreDetail().then(() => {
-          this.openJourneyAsPerson(journeyKey, stopIdx);
-        });
+      const needDetail = !this._isLoreDetailLoaded();
+      if (!this.openPersonChronicle(journeyKey, -1)) {
+        if (needDetail) {
+          this._ensureLoreDetail().then(() => {
+            this.openJourneyAsPerson(journeyKey, stopIdx);
+          });
+          return true;
+        }
+        return false;
       }
-      if (!this.openPersonChronicle(journeyKey, -1)) return false;
-      if (stopIdx >= 0 && this.activePerson && this.activePerson.events.length) {
-        const matchIdx = this.activePerson.events.findIndex((ev) => ev.journeyStopIdx === stopIdx);
-        const targetIdx =
-          matchIdx >= 0 ? matchIdx : Math.min(this.activePerson.events.length - 1, stopIdx);
-        this.selectPersonEvent(targetIdx, true);
+      const applyStop = () => {
+        if (
+          stopIdx >= 0 &&
+          this.activePerson &&
+          this.activePerson.profile &&
+          this.activePerson.profile.key === journeyKey &&
+          this.activePerson.events.length
+        ) {
+          const matchIdx = this.activePerson.events.findIndex((ev) => ev.journeyStopIdx === stopIdx);
+          const targetIdx =
+            matchIdx >= 0 ? matchIdx : Math.min(this.activePerson.events.length - 1, stopIdx);
+          this.selectPersonEvent(targetIdx, true);
+        }
+      };
+      if (stopIdx >= 0) {
+        if (needDetail) {
+          this._ensureLoreDetail().then(applyStop);
+        } else {
+          applyStop();
+        }
       }
       return true;
     }
