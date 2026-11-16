@@ -852,6 +852,9 @@
               }
             }
           }
+          if (this.locale === 'en') {
+            this._syncSeoDirectoryLocale();
+          }
           return (typeof window !== 'undefined' && window.ATLAS_LORE_DATA) || {};
         });
       }
@@ -5932,9 +5935,11 @@
           nav.innerHTML = this._seoDirZhHtml;
           nav.dataset.locale = 'zh';
         }
+        delete nav.dataset.enDetail;
         return;
       }
-      if (nav.dataset.locale === 'en') return;
+      const hasLoreDetail = this._isLoreDetailLoaded();
+      if (nav.dataset.locale === 'en' && (!hasLoreDetail || nav.dataset.enDetail === '1')) return;
       nav.setAttribute(
         'aria-label',
         'Historical Dynasties, Person Chronicles & Strategic Passes Directory'
@@ -5977,7 +5982,8 @@
           const y = p.focusYear !== undefined ? p.focusYear : p.appear || -200;
           const c0 = p.coord ? p.coord[0] : 110;
           const c1 = p.coord ? p.coord[1] : 34;
-          return `<li><a href="${baseSiteUrl}?year=${y}&amp;trace=${c0},${c1}&amp;lang=en"><strong>${p.ancientEn} (now ${p.modernEn})</strong></a> — ${p.rangeEn}: ${p.chokepointEn}</li>`;
+          const descSuffix = p.chokepointEn ? `: ${p.chokepointEn}` : '';
+          return `<li><a href="${baseSiteUrl}?year=${y}&amp;trace=${c0},${c1}&amp;lang=en"><strong>${p.ancientEn} (now ${p.modernEn})</strong></a> — ${p.rangeEn}${descSuffix}</li>`;
         })
         .join('');
       nav.innerHTML =
@@ -5987,6 +5993,7 @@
         `<section><h3>2. Person Chronicles &amp; Life Routes</h3><ul>${journeyItems}</ul></section>` +
         `<section><h3>3. 20 Strategic Mountain &amp; River Passes</h3><ul>${passItems}</ul></section>`;
       nav.dataset.locale = 'en';
+      nav.dataset.enDetail = hasLoreDetail ? '1' : '0';
     }
 
     _renderChroniclePane(dynasty) {
