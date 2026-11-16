@@ -359,6 +359,12 @@
       '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M13 8H3.5M7.5 4l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrowRight:
       '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    expand:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5L8.8 7.2M6.5 13.5h-4v-4M2.5 13.5l4.7-4.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    collapse:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M13.5 6.5h-4v-4M9.5 6.5l4.5-4.5M2.5 9.5h4v4M6.5 9.5L2 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    refresh:
+      '<svg class="ico-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M12.6 6.2A5 5 0 1 0 13 9.6M12.8 3.2v3.1H9.7" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
   class HistoricalAtlasController {
@@ -9231,7 +9237,7 @@
             const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${tagKind}`;
             li.innerHTML =
               `<div><span class="sr-eg-pill">${egLabel}</span><span class="sr-main">${escHtml(mainText)}</span>${subText ? `<span class="sr-sub">${escHtml(subText)}</span>` : ''}</div>` +
-              `<span class="sr-right-meta"><span class="sr-tag">${escHtml(tagText)}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">↻</button></span>`;
+              `<span class="sr-right-meta"><span class="sr-tag">${escHtml(tagText)}</span><button type="button" class="sr-cycle-btn" title="${cycleTitle}" aria-label="${cycleTitle}">${SVG_ICONS.refresh}</button></span>`;
             const cycleBtn = li.querySelector('.sr-cycle-btn');
             if (cycleBtn) {
               cycleBtn.addEventListener('mousedown', (e) => {
