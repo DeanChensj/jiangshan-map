@@ -10431,7 +10431,19 @@
                 this.personTimer = null;
                 this._updateAutoplayUi();
               }
-              this.selectPersonEvent(Number(journeyNodeEl.dataset.stopIdx), true);
+              let targetStopIdx = Number(journeyNodeEl.dataset.stopIdx);
+              if (journeyNodeEl.dataset.peerIdxs) {
+                const peerList = journeyNodeEl.dataset.peerIdxs
+                  .split(',')
+                  .filter(Boolean)
+                  .map(Number)
+                  .filter((n) => !Number.isNaN(n));
+                const curPos = peerList.indexOf(this.activePersonEventIdx);
+                if (curPos >= 0 && peerList.length > 1) {
+                  targetStopIdx = peerList[(curPos + 1) % peerList.length];
+                }
+              }
+              this.selectPersonEvent(targetStopIdx, true);
               return;
             }
           }

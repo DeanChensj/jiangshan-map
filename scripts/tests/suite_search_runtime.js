@@ -2899,7 +2899,75 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.activePerson.sameTimeCount,
         'When personSharedOnly is active, _getNavigablePersonEventIdxs must step strictly across shared encounters'
       );
-      ctrl.closeGenealogyCard();
+      ctrl.personSharedOnly = false;
+      const prevSvgNode = ctrl._svgNode;
+      const prevGrpJourney = ctrl.grpJourney;
+      const prevTypo = ctrl._rescaleSvgTypography;
+      const recordedSvg = [];
+      try {
+        ctrl.grpJourney = { innerHTML: '', querySelectorAll: () => [] };
+        ctrl._rescaleSvgTypography = () => {};
+        ctrl._svgNode = (tag, attrs = {}) => {
+          const node = {
+            tag,
+            attrs,
+            style: {},
+            dataset: {},
+            textContent: '',
+            appendChild() {},
+            setAttribute(k, v) {
+              this.attrs[k] = v;
+            },
+          };
+          recordedSvg.push(node);
+          return node;
+        };
+        ctrl.selectPersonEvent(-1, false);
+        const multiNums = recordedSvg.filter((n) => n.attrs && n.attrs.class === 'jn-num');
+        assert(
+          multiNums.length >= 10,
+          `Multi-person overview must render numbered map pins (.jn-num), got ${multiNums.length}`
+        );
+        assert.strictEqual(
+          ControllerClass.PERSON_TRACK_PALETTE[0],
+          '#9e3a26',
+          'PERSON_TRACK_PALETTE must use muted mineral pigment tones'
+        );
+        ctrl.closeGenealogyCard();
+
+        // Solo multi-visit capital stacking (.jn-stack-ring) & >6-year scraped arrow suppression
+        recordedSvg.length = 0;
+        ctrl.openPersonChronicle('hanwudi', -1);
+        const wudiEvs = ctrl.activePerson.events;
+        const wudiNodes = recordedSvg.filter(
+          (n) => n.tag === 'g' && String(n.attrs.class || '').includes('journey-node')
+        );
+        const wudiStackRings = recordedSvg.filter(
+          (n) => n.attrs && n.attrs.class === 'jn-stack-ring'
+        );
+        assert(
+          wudiNodes.length < wudiEvs.length && wudiStackRings.length >= 1,
+          'Solo chronicle with repeated Chang’an events (hanwudi) must collapse co-located pins into a concentric .jn-stack-ring node'
+        );
+        const longGapIdx = wudiEvs.findIndex(
+          (ev, idx) => idx > 0 && Math.abs(ev.year - wudiEvs[idx - 1].year) > 6
+        );
+        assert(
+          longGapIdx > 0 &&
+            ctrl._getSoloStepOriginCoord(
+              ctrl.activePerson,
+              wudiEvs,
+              longGapIdx,
+              wudiEvs[longGapIdx]
+            ) === null,
+          'Non-journey scraped solo events separated by >6 years must suppress misleading cross-country trajectory arrows'
+        );
+        ctrl.closeGenealogyCard();
+      } finally {
+        ctrl._svgNode = prevSvgNode;
+        ctrl.grpJourney = prevGrpJourney;
+        ctrl._rescaleSvgTypography = prevTypo;
+      }
     }
   }
 
