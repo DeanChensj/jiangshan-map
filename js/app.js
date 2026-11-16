@@ -9423,13 +9423,11 @@
           return;
         }
         const pinyinQuery = this._eventPinyinQuery(q);
-        if (/[a-z]/i.test(q) && !this._hasEnDict()) {
-          if (this._canMatchEventPinyin(pinyinQuery)) this._ensureEventPinyin();
-          this._ensureEnglishLocale().then(renderSearchDropdown);
-          return;
-        }
         currentResults = this._queryQuickSearch(q);
         const pendingSearchData = [];
+        if (/[a-z]/i.test(q) && !this._hasEnDict()) {
+          pendingSearchData.push(this._ensureEnglishLocale());
+        }
         if (!this._isLoreDetailLoaded()) pendingSearchData.push(this._ensureLoreDetail());
         if (/[\u4e00-\u9fff]/.test(q) && !this._hasZhHant()) {
           pendingSearchData.push(this._ensureZhHant());
