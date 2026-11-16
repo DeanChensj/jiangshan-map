@@ -61,7 +61,7 @@ async function load(page, query = '?year=1415') {
       return { before: anchor, after: a._clientToSvgPoint(x, y), width, nextWidth: a.camera.w, calls: cameraChecks.apply };
     });
     assert.equal(burst.calls, 0);
-    assert(Math.abs(burst.nextWidth - Math.max(100, burst.width * Math.exp(-120 * 0.002))) < 1e-7);
+    assert(Math.abs(burst.nextWidth - Math.max(50, burst.width * Math.exp(-120 * 0.002))) < 1e-7);
     assert(Math.hypot(...burst.before.map((n, i) => n - burst.after[i])) < 1e-7, `Wheel anchor drifted: ${JSON.stringify(burst)}`);
     await page.waitForFunction(() => cameraChecks.apply === 1);
     // Merged main keeps text scale current in the coalesced zoom frame.
@@ -209,7 +209,7 @@ async function load(page, query = '?year=1415') {
     assert(Math.abs(fractional.final - 1000) < 1e-7);
     await settled(page);
     // Repeated clamped wheel inputs reach the bounds and reverse normally.
-    for (const [count, deltaY, expected] of [[20, -1e6, 100], [20, 1e6, 1300], [1, -100, 1300 * Math.exp(-0.2)]]) {
+    for (const [count, deltaY, expected] of [[20, -1e6, 50], [20, 1e6, 1300], [1, -100, 1300 * Math.exp(-0.2)]]) {
       await page.evaluate(({ count, deltaY, x, y }) => {
         for (let i = 0; i < count; i++) atlasApp.svg.dispatchEvent(new WheelEvent('wheel', {
           bubbles: true, cancelable: true, clientX: x, clientY: y, deltaY,
