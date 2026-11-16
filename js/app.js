@@ -3916,6 +3916,7 @@
       this.grpMilestones.innerHTML = '';
       const group = this._svgNode('g', {}, this.grpMilestones);
       (dynasty.milestones || []).forEach((m, idx) => {
+        if (this.mapChangeMode && !m.isMapChange) return;
         const anchors = this._getMilestoneAnchors(dynasty, m);
         if (!anchors.length) return;
         const primarySiteIdx = this._defaultAnchorIndex(m, anchors, true);
@@ -4283,6 +4284,10 @@
 
     _syncAutoMilestoneBalloon(dynasty) {
       if (!dynasty || !this.milestoneBalloon) return;
+      if (this.mapChangeMode) {
+        this.closeMilestoneBalloon();
+        return;
+      }
       const milestonesHidden =
         this.grpMilestones && this.grpMilestones.classList.contains('is-hidden');
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
@@ -4326,6 +4331,11 @@
         !m.coord ||
         (this.dismissedCalloutIds && this.dismissedCalloutIds.has(`${dynasty.key}:${activeIdx}`))
       ) {
+        this.closeMilestoneBalloon();
+        return;
+      }
+      // In map-change mode, only show balloons for map-change milestones
+      if (this.mapChangeMode && !m.isMapChange) {
         this.closeMilestoneBalloon();
         return;
       }
@@ -6662,26 +6672,35 @@
 
         const [bandLo, bandHi] = this._bandYearSpan(d);
         const span = Math.max(1, bandHi - bandLo);
+        const seenEvPct = new Set();
         if (Array.isArray(d.phases) && d.phases.length > 1) {
           for (let i = 0; i < d.phases.length - 1; i++) {
             const u = d.phases[i].until;
             if (u > bandLo && u < bandHi) {
+              const pct = Math.max(3, Math.min(97, Math.round(((u - bandLo) / span) * 100)));
               const pt = document.createElement('i');
               pt.className = 'band-phase-tick';
               pt.style.left = `${(((u - bandLo) / span) * 100).toFixed(2)}%`;
               cell.appendChild(pt);
+              if (this.mapChangeMode) {
+                seenEvPct.add(pct);
+                const dot = document.createElement('i');
+                dot.className = 'band-ev-dot is-map-change';
+                dot.style.left = `${pct}%`;
+                cell.appendChild(dot);
+              }
             }
           }
         }
-        const seenEvPct = new Set();
         for (const m of d.milestones || []) {
+          if (this.mapChangeMode && !m.isMapChange) continue;
           const my = this._clampYearToDynasty(d, m.year);
           if (my < bandLo || my > bandHi) continue;
           const pct = Math.max(3, Math.min(97, Math.round(((my - bandLo) / span) * 100)));
           if (seenEvPct.has(pct)) continue;
           seenEvPct.add(pct);
           const dot = document.createElement('i');
-          dot.className = 'band-ev-dot';
+          dot.className = m.isMapChange ? 'band-ev-dot is-map-change' : 'band-ev-dot';
           dot.style.left = `${pct}%`;
           cell.appendChild(dot);
         }
@@ -7100,13 +7119,7 @@
         if (matched.length > 1 && dir > 0) {
           this.openMilestoneBalloon(nextDyn, matched[0], { fromStep: true });
         }
-        const activeM =
-          this.activeMilestone && this.activeMilestone.dynastyKey === nextDyn.key
-            ? this.activeMilestone.milestone
-            : matched[matched.length - 1];
-        if (activeM && activeM.coord) {
-          this._ensureMilestoneInView(nextDyn, activeM);
-        }
+        // Map view stays fixed — do NOT call _ensureMilestoneInView
       }
     }
 
@@ -9899,6 +9912,14 @@
           this.mapChangeMode = !this.mapChangeMode;
           mapChangeToggle.setAttribute('aria-pressed', String(this.mapChangeMode));
           mapChangeToggle.classList.toggle('is-active', this.mapChangeMode);
+          this.closeMilestoneBalloon();
+          this._buildScrubberBands();
+          this._syncScrubberUi();
+          const curDyn = this.dynasties[this.dynastyIdx];
+          if (curDyn) {
+            this._renderMilestones(curDyn);
+            this._renderDynastyInfo(curDyn);
+          }
           if (this.mapChangeMode) {
             stepPrevBtn && (stepPrevBtn.title = '上一版图变化（←）· Alt+← 始终版图变化');
             stepNextBtn && (stepNextBtn.title = '下一版图变化（→）· Alt+→ 始终版图变化');

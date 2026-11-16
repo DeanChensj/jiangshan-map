@@ -4035,6 +4035,16 @@ html[lang="en"] .genealogy-list li {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
+.band-ev-dot.is-map-change {
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  bottom: 2px;
+  background: #e63946;
+  border: 1.5px solid #fff;
+  box-sizing: border-box;
+  box-shadow: 0 0 3px rgba(230, 57, 70, 0.8), 0 0 1px rgba(0, 0, 0, 0.5);
+}
 
 /* #3 Stage Transition Ghost Diff Outline */
 #grp-ghost-diff {
