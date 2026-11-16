@@ -1507,14 +1507,9 @@ function updateSitemapXml(dynMeta, journeyMeta, featuredMeta) {
 }
 
 function computeCalligraphySubsetText(dynasties, enLocale) {
-  const zhHantCtx = { window: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(JS_DIR, 'zh_hant.js'), 'utf8'), zhHantCtx);
-  const toHant =
-    (zhHantCtx.window.ZH_HANT_CONV && zhHantCtx.window.ZH_HANT_CONV.toHant) || ((s) => s);
-  const zhSources = ['江山时序', ...dynasties.map((d) => d.title || '')];
   const sources = [
-    ...zhSources,
-    ...zhSources.map((s) => toHant(s)),
+    '江山时序',
+    ...dynasties.map((d) => d.title || ''),
     ...dynasties.map((d) => (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || ''),
   ];
   return Array.from(new Set(sources.join(''))).sort().join('');

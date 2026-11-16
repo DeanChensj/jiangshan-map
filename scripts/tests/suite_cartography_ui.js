@@ -100,12 +100,9 @@ async function runCartographyUiSuite(ctx) {
       'Google Fonts stylesheets must not block rendering (media="print" + onload): the host is unreachable for some readers'
     );
     const subsetChars = new Set(decodeURIComponent(maShanLinkMatch[2]));
-    const zhCalligraphySources = ['江山时序', ...dynasties.map((d) => d.title || '')];
-    const toHantFn =
-      (sandbox.window.ZH_HANT_CONV && sandbox.window.ZH_HANT_CONV.toHant) || ((s) => s);
     const requiredCalligraphyChars = [
-      ...zhCalligraphySources,
-      ...zhCalligraphySources.map((s) => toHantFn(s)),
+      '江山时序',
+      ...dynasties.map((d) => d.title || ''),
       ...dynasties.map((d) => (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || ''),
     ].join('');
     for (const ch of requiredCalligraphyChars) {
