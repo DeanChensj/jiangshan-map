@@ -1,4 +1,5 @@
 {
+  "bainian": { "zh": "中共中央党史和文献研究院《中国共产党一百年大事记》(1921年7月—2021年6月)", "en": "Chronicle of a Century of the Communist Party of China (1921–2021)", "kind": "secondary", "url": "http://www.npc.gov.cn/c2/c30834/202106/t20210628_312170.html" },
   "chuangyeqijuzhu": { "zh": "温大雅《大唐创业起居注》", "en": "Wen Daya, Diary of the Founding of the Great Tang", "kind": "primary", "url": "https://zh.wikisource.org/wiki/大唐創業起居注" },
   "fashuyaolu": { "zh": "张彦远《法书要录》", "en": "Zhang Yanyuan, Fashu Yaolu", "kind": "primary", "url": "https://zh.wikisource.org/wiki/法書要錄" },
   "hanshu": { "zh": "班固等《汉书》", "en": "Ban Gu et al., Book of Han (Han Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/漢書" },
@@ -21,6 +22,7 @@
   "tiweifuren": { "zh": "王羲之《题卫夫人笔阵图后》", "en": "Wang Xizhi, Postscript to Lady Wei's Battle Formation of the Brush", "kind": "primary", "url": "https://zh.wikisource.org/wiki/題衛夫人筆陣圖後" },
   "tongdian": { "zh": "杜佑《通典》", "en": "Du You, Tongdian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/通典" },
   "weishu": { "zh": "魏收《魏书》", "en": "Wei Shou, Book of Wei (Wei Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/魏書" },
+  "xiaogang": { "zh": "《小岗村实行“大包干”回顾》《党史博览》2018年第7期", "en": "Reviewing the household contract in Xiaogang Village, Dangshi Bolan 2018 No.7", "kind": "secondary", "url": "http://zhongguoguoqing.cssn.cn/zt/qzggkf40znzt/lshm/201810/t20181016_5006037.shtml" },
   "zuozhuanzhengyi": { "zh": "孔颖达等《春秋左传正义》", "en": "Kong Yingda et al., Chunqiu Zuozhuan Zhengyi", "kind": "primary", "url": "https://zh.wikisource.org/wiki/春秋左傳正義" },
   "zztj": { "zh": "司马光《资治通鉴》", "en": "Sima Guang, Zizhi Tongjian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/資治通鑑" }
 }
