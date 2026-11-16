@@ -1274,8 +1274,19 @@
       if (panCamera) {
         if (this.activePerson.isMulti) {
           const multiLegs = this._getMultiStepLegs(this.activePerson, clamped, ev);
-          if (multiLegs.length) {
-            this._framePersonOverview([...multiLegs.map((l) => ({ coord: l.fromCoord })), ev]);
+          const nearPeers = this._getSimultaneousPeerAnchors(this.activePerson, clamped, ev).filter(
+            (anc) =>
+              anc &&
+              anc.ev &&
+              Array.isArray(anc.ev.coord) &&
+              this.projector.greatCircleKm(ev.coord, anc.ev.coord) <= 880
+          );
+          if (multiLegs.length || nearPeers.length) {
+            this._framePersonOverview([
+              ...multiLegs.map((l) => ({ coord: l.fromCoord })),
+              ...nearPeers.map((anc) => ({ coord: anc.ev.coord })),
+              ev,
+            ]);
           } else {
             this._flyToPersonEvent(ev);
           }
@@ -1334,6 +1345,61 @@
         }
       }
       return null;
+    }
+
+    _getSimultaneousPeerAnchors(activePerson, curIdx, curEv) {
+      if (!activePerson || !activePerson.isMulti || curIdx < 0 || !curEv) return [];
+      const allTracks = Array.isArray(activePerson.tracks) ? activePerson.tracks : [];
+      const events = Array.isArray(activePerson.events) ? activePerson.events : [];
+      const presentPersonIdxs = new Set(
+        curEv.isSharedEncounter && Array.isArray(curEv.participants)
+          ? curEv.participants.map((p) => p.personIdx)
+          : [curEv.personIdx]
+      );
+      const anchors = [];
+      for (const tr of allTracks) {
+        if (!tr || presentPersonIdxs.has(tr.personIdx)) continue;
+        const span = tr.profile && Array.isArray(tr.profile.span) ? tr.profile.span : null;
+        if (span && (curEv.year < span[0] - 2 || curEv.year > span[1] + 2)) continue;
+        let bestPriorIdx = -1;
+        let bestPriorScore = Infinity;
+        let bestNearFutureIdx = -1;
+        events.forEach((ev, idx) => {
+          if (idx === curIdx) return;
+          const involves =
+            ev.personIdx === tr.personIdx ||
+            (ev.isSharedEncounter &&
+              Array.isArray(ev.participants) &&
+              ev.participants.some((p) => p.personIdx === tr.personIdx));
+          if (!involves) return;
+          const diff = curEv.year - ev.year;
+          if (idx < curIdx && diff >= 0 && diff <= 22) {
+            const score = diff - idx * 0.001;
+            if (score < bestPriorScore) {
+              bestPriorScore = score;
+              bestPriorIdx = idx;
+            }
+          } else if (
+            idx > curIdx &&
+            ev.year - curEv.year >= 0 &&
+            ev.year - curEv.year <= 2 &&
+            bestNearFutureIdx < 0
+          ) {
+            bestNearFutureIdx = idx;
+          }
+        });
+        const bestIdx = bestPriorIdx >= 0 ? bestPriorIdx : bestNearFutureIdx;
+        if (bestIdx >= 0) {
+          anchors.push({
+            personIdx: tr.personIdx,
+            eventIdx: bestIdx,
+            ev: events[bestIdx],
+            profile: tr.profile,
+            color: tr.color || '#355470',
+          });
+        }
+      }
+      return anchors;
     }
 
     _getMultiStepLegs(activePerson, curIdx, curEv) {
@@ -1692,6 +1758,15 @@
         }
       }
       const multiLegs = isMulti ? this._getMultiStepLegs(this.activePerson, curIdx, curEv) : [];
+      const peerSyncAnchors = isMulti
+        ? this._getSimultaneousPeerAnchors(this.activePerson, curIdx, curEv)
+        : [];
+      const peerSyncByIdx = new Map();
+      for (const anc of peerSyncAnchors) {
+        if (!anc || anc.eventIdx < 0) continue;
+        if (!peerSyncByIdx.has(anc.eventIdx)) peerSyncByIdx.set(anc.eventIdx, []);
+        peerSyncByIdx.get(anc.eventIdx).push(anc);
+      }
       const prongOriginIdxs =
         !isMulti && isStory && curEv && Array.isArray(curEv.prongs)
           ? curEv.prongs
@@ -1727,6 +1802,21 @@
               ringR: 0,
               isPrimary: i === curIdx,
               isMultiCanonical: i === curIdx,
+              isCrossEraShared: false,
+              stackCount: peers.length,
+              stackPeers: peers,
+              peers,
+            };
+          }
+          const syncPeer =
+            curIdx >= 0 ? peers.find((pIdx) => peerSyncByIdx.has(pIdx)) : undefined;
+          if (syncPeer !== undefined) {
+            return {
+              ox: 0,
+              oy: 0,
+              ringR: 0,
+              isPrimary: i === syncPeer,
+              isMultiCanonical: i === syncPeer,
               isCrossEraShared: false,
               stackCount: peers.length,
               stackPeers: peers,
@@ -2001,6 +2091,9 @@
         .sort((a, b) => {
           if (a === curIdx) return 1;
           if (b === curIdx) return -1;
+          const psa = peerSyncByIdx.has(a) ? 1 : 0;
+          const psb = peerSyncByIdx.has(b) ? 1 : 0;
+          if (psa !== psb) return psa - psb;
           const oa = isOriginIdx(a) ? 1 : 0;
           const ob = isOriginIdx(b) ? 1 : 0;
           if (oa !== ob) return oa - ob;
@@ -2025,8 +2118,10 @@
         const isShared = Boolean(
           ev.isSharedEncounter && Array.isArray(ev.participants) && ev.participants.length >= 2
         );
+        const syncPeersAtIdx = peerSyncByIdx.get(idx) || null;
+        const isPeerSync = Boolean(syncPeersAtIdx && syncPeersAtIdx.length && !isCur);
         const isStepOrigin = Boolean(curIdx >= 0 && isOriginIdx(idx));
-        const isOtherStep = Boolean(curIdx >= 0 && !isCur && !isStepOrigin);
+        const isOtherStep = Boolean(curIdx >= 0 && !isCur && !isStepOrigin && !isPeerSync);
         if (
           isOtherStep &&
           unnumberedOriginCoords.some(
@@ -2043,18 +2138,18 @@
             !isShared
         );
         const dimmed =
-          (!isShared && !isCur && isTrackDimmed(ev.personIdx)) ||
+          (!isShared && !isCur && !isPeerSync && isTrackDimmed(ev.personIdx)) ||
           isOtherStep ||
           isFilteredOutInOverview;
         const isPeerPassed =
-          curIdx < 0 || dimmed || isStepOrigin
+          curIdx < 0 || dimmed || isStepOrigin || isPeerSync
             ? true
             : isMulti && curEv
               ? ev.year <= curEv.year
               : idx < curIdx;
         const stateCls =
           curIdx < 0 ? 'is-passed' : isCur ? 'is-current' : isPeerPassed ? 'is-passed' : 'is-upcoming';
-        const intersectCls = isShared ? ' is-intersect' : '';
+        const intersectCls = isShared ? ' is-intersect' : isPeerSync ? ' is-peer-sync' : '';
         const dimCls = dimmed ? ' is-other-era' : '';
         const pinColor = !isMulti
           ? isStory
@@ -2064,7 +2159,9 @@
             : isCur
               ? '#9e3a26'
               : '#7a4b38'
-          : ev.personColor || '#9e3a26';
+          : isPeerSync
+            ? syncPeersAtIdx[0].color || ev.personColor || '#355470'
+            : ev.personColor || '#9e3a26';
 
         const cyclePeers = cl.stackPeers || cl.peers;
         const g = this._svgNode(
@@ -2148,6 +2245,11 @@
             );
             dot.style.color = pt.color;
           });
+        } else if (isPeerSync) {
+          this._svgNode('circle', { class: 'jn-peer-halo', r: 8.2 }, inner);
+          this._svgNode('circle', { class: 'jn-disc is-peer-sync-disc', r: 5.8 }, inner);
+          const numTxt = this._svgNode('text', { class: 'jn-num is-peer-sync-num', y: '0.5' }, inner);
+          numTxt.textContent = String(idx + 1);
         } else {
           const rDisc = isCur ? 7.4 : isMulti ? 5.4 : 5.6;
           if (isCur) {
@@ -2164,17 +2266,24 @@
         if (
           !isOtherStep &&
           !isFilteredOutInOverview &&
-          (labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl)))
+          (isPeerSync || labelOwnerByIdx.has(idx) || (isMulti && (isShared || isCur || showStartLbl)))
         ) {
           const fullLbl =
             this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
-          const compactLbl = isCur
-            ? fullLbl
-            : fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
+          const baseSite = fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
+          let compactLbl = isCur ? fullLbl : baseSite;
+          if (isPeerSync && syncPeersAtIdx) {
+            const peerNames = syncPeersAtIdx
+              .map((a) => (this.locale === 'en' ? a.profile.en : this._zh(a.profile.zh)))
+              .join('/');
+            compactLbl = `${baseSite} · ${peerNames}`;
+          }
           const lblTxt = this._svgNode(
             'text',
             {
-              class: `jn-label${isShared ? ' is-intersect-label' : ''}`,
+              class: `jn-label${isShared ? ' is-intersect-label' : ''}${
+                isPeerSync ? ' is-peer-sync-label' : ''
+              }`,
               x: '0',
               y: isShared ? '-9.8' : !isCur && cl.stackCount > 1 ? '-11.8' : '-10.8',
             },
@@ -2318,11 +2427,103 @@
         }
       }
 
+      const fmtYrShort = (y) =>
+        isEn ? this.formatYear(y) : y <= 0 ? `前${-y}` : `${y}`;
+
       const loreEl = this._id('genealogy-lore');
       if (loreEl) {
         if (isMulti) {
-          loreEl.innerHTML = '';
-          loreEl.classList.add('is-hidden');
+          const validSpans = tracks
+            .map((tr) => ({
+              tr,
+              span: Array.isArray(tr.profile.span) ? tr.profile.span : null,
+            }))
+            .filter((item) => item.span);
+          let minSpan = Infinity;
+          let maxSpan = -Infinity;
+          let ovStart = -Infinity;
+          let ovEnd = Infinity;
+          for (const { span } of validSpans) {
+            if (span[0] < minSpan) minSpan = span[0];
+            if (span[1] > maxSpan) maxSpan = span[1];
+            if (span[0] > ovStart) ovStart = span[0];
+            if (span[1] < ovEnd) ovEnd = span[1];
+          }
+          const hasCommonOverlap = validSpans.length >= 2 && ovEnd >= ovStart;
+          const ovYears = hasCommonOverlap ? Math.max(1, ovEnd - ovStart + 1) : 0;
+          const badgeLabel = isEn ? 'Co-Lifespan' : '同世交集';
+          const rangeLabel = hasCommonOverlap
+            ? isEn
+              ? `${ovYears} yrs (${fmtYrShort(ovStart)}–${fmtYrShort(ovEnd)})`
+              : `共处 ${ovYears} 载（${fmtYrShort(ovStart)}—${fmtYrShort(ovEnd)}）`
+            : isEn
+              ? 'Cross-era comparison'
+              : `隔代并观 · 跨 ${Math.max(1, maxSpan - minSpan)} 载`;
+
+          let ganttHtml = '';
+          if (validSpans.length >= 2 && maxSpan > minSpan) {
+            const totalW = Math.max(1, maxSpan - minSpan);
+            const ovLeft = hasCommonOverlap ? ((ovStart - minSpan) / totalW) * 100 : 0;
+            const ovWidth = hasCommonOverlap ? Math.max(1.5, ((ovEnd - ovStart) / totalW) * 100) : 0;
+            const rowsHtml = validSpans
+              .map(({ tr, span }) => {
+                const leftPct = Math.max(0, Math.min(98, ((span[0] - minSpan) / totalW) * 100));
+                const widthPct = Math.max(
+                  3,
+                  Math.min(100 - leftPct, ((span[1] - span[0]) / totalW) * 100)
+                );
+                const pName = escHtml(isEn ? tr.profile.en : tr.profile.zh);
+                const sLbl = `${fmtYrShort(span[0])}—${fmtYrShort(span[1])}`;
+                return (
+                  `<div class="mp-span-row">` +
+                  `<span class="mp-span-name" style="color:${tr.color}">${pName}</span>` +
+                  `<span class="mp-span-track">` +
+                  (hasCommonOverlap
+                    ? `<i class="mp-span-overlap" style="left:${ovLeft.toFixed(1)}%;width:${ovWidth.toFixed(1)}%"></i>`
+                    : '') +
+                  `<i class="mp-span-bar" style="left:${leftPct.toFixed(1)}%;width:${widthPct.toFixed(1)}%;background:${tr.color}"></i>` +
+                  `</span>` +
+                  `<span class="mp-span-yrs">${sLbl}</span>` +
+                  `</div>`
+                );
+              })
+              .join('');
+            ganttHtml = `<div class="mp-span-chart">${rowsHtml}</div>`;
+          }
+
+          const sharedStops = [];
+          events.forEach((ev, idx) => {
+            if (!ev.isSharedEncounter) return;
+            const rawS = isEn ? ev.siteEn || this.trTerm(ev.siteZh) : ev.siteZh;
+            const cleanS = rawS.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || rawS;
+            sharedStops.push({ idx, label: cleanS });
+          });
+          const sharedLineHtml = sharedStops.length
+            ? `<div class="mp-meet-line">` +
+              `<span class="mp-lore-lbl">${isEn ? 'Encounters:' : '际会：'}</span>` +
+              sharedStops
+                .slice(0, 6)
+                .map(
+                  (st) =>
+                    `<button type="button" class="mp-inline-link is-shared-jump" data-jump-idx="${st.idx}">${escHtml(
+                      st.label
+                    )}</button>`
+                )
+                .join('<span class="mp-dot-sep">·</span>') +
+              `</div>`
+            : '';
+
+          loreEl.innerHTML =
+            `<div class="pass-lore-head"><span class="pass-lore-badge">${badgeLabel}</span><span class="pass-lore-range">${rangeLabel}</span></div>` +
+            ganttHtml +
+            sharedLineHtml;
+          loreEl.classList.remove('is-hidden');
+          loreEl.querySelectorAll('.is-shared-jump').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const jIdx = Number(btn.dataset.jumpIdx);
+              if (!Number.isNaN(jIdx)) this.selectPersonEvent(jIdx, true);
+            });
+          });
         } else {
           const subTitle = isEn ? profile.courtesyEn || '' : profile.courtesyZh || '';
           const badgeLabel = profile.isStory
@@ -2452,7 +2653,6 @@
       listEl.innerHTML = '';
 
       let activeLi = null;
-      let firstSharedLi = null;
       events.forEach((ev, idx) => {
         const isShared = Boolean(ev.isSharedEncounter);
         const li = document.createElement('li');
@@ -2472,7 +2672,6 @@
         }
         li.dataset.evIdx = String(idx);
         if (idx === curIdx) activeLi = li;
-        if (isShared && !firstSharedLi) firstSharedLi = li;
 
         const yrStr = isEn
           ? this.formatYear(ev.year)
@@ -2613,8 +2812,6 @@
           activeLi.scrollIntoView({ block: 'nearest' });
         } else if (preserveScroll) {
           scrollEl.scrollTop = prevScroll;
-        } else if (firstSharedLi && typeof firstSharedLi.scrollIntoView === 'function') {
-          firstSharedLi.scrollIntoView({ block: 'center' });
         } else {
           scrollEl.scrollTop = 0;
         }

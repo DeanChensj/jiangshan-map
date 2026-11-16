@@ -6050,3 +6050,136 @@ span.story-inline-person {
   stroke-opacity: 0.48;
   pointer-events: none;
 }
+
+/* Multi-Person Co-Lifespan Ruler, Encounter Links & Simultaneous Peer Pins */
+.mp-span-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+  margin-top: 4px;
+  padding: 2px 0 1px;
+}
+
+.mp-span-row {
+  display: grid;
+  grid-template-columns: minmax(34px, max-content) 1fr auto;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--serif-stack);
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+
+.mp-span-name {
+  max-width: 86px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-span-track {
+  position: relative;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(96, 76, 56, 0.12);
+}
+
+.mp-span-overlap {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  background: rgba(158, 58, 38, 0.11);
+  border-left: 1px solid rgba(158, 58, 38, 0.26);
+  border-right: 1px solid rgba(158, 58, 38, 0.26);
+}
+
+.mp-span-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  opacity: 0.86;
+}
+
+.mp-span-yrs {
+  font-size: 9.8px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.mp-meet-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(120, 92, 68, 0.2);
+  font-family: var(--serif-stack);
+  font-size: 10.8px;
+  line-height: 1.4;
+}
+
+.mp-lore-lbl {
+  font-family: var(--serif-stack);
+  font-size: 10.6px;
+  color: var(--text-muted);
+}
+
+html[lang="en"] .mp-lore-lbl {
+  margin-right: 3.5px;
+}
+
+.mp-inline-link {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0 1px;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  color: #5c3d28;
+  text-decoration: underline;
+  text-decoration-color: rgba(126, 76, 48, 0.34);
+  text-underline-offset: 2.5px;
+  cursor: pointer;
+  transition: color 0.14s ease, text-decoration-color 0.14s ease;
+}
+
+.mp-inline-link:hover {
+  color: var(--vermilion);
+  text-decoration-color: var(--vermilion);
+}
+
+.mp-dot-sep {
+  margin: 0 3.5px;
+  color: rgba(110, 86, 66, 0.55);
+  user-select: none;
+}
+
+.jn-peer-halo {
+  fill: color-mix(in srgb, currentColor 9%, transparent);
+  stroke: currentColor;
+  stroke-width: 0.95px;
+  stroke-opacity: 0.62;
+  stroke-dasharray: 2.2 1.8;
+}
+
+.journey-node.is-peer-sync .jn-disc.is-peer-sync-disc {
+  fill: #f8f1e3;
+  stroke: currentColor;
+  stroke-width: 1.65px;
+}
+
+.journey-node.is-peer-sync .jn-num.is-peer-sync-num {
+  fill: currentColor;
+  font-weight: 700;
+}
+
+.jn-label.is-peer-sync-label {
+  font-size: 9.6px;
+  fill: currentColor;
+  font-weight: 700;
+}
