@@ -26,7 +26,7 @@
         cardEl.classList.toggle('is-sheet-expanded', next);
       }
       if (btnEl) {
-        btnEl.textContent = next ? '⤡' : '⤢';
+        btnEl.innerHTML = next ? SVG_ICONS.collapse : SVG_ICONS.expand;
         btnEl.setAttribute('aria-expanded', String(next));
         if (btnEl.classList) btnEl.classList.toggle('is-active', next);
       }
