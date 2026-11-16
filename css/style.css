@@ -3368,6 +3368,29 @@ html.is-embed .timeline-crop-mask {
   animation: none;
 }
 
+/* Traditional Chinese (zh-Hant): Ma Shan Zheng lacks several Traditional glyphs (e.g. 時/戰/國/東/漢/華);
+   use bold Song-style serif across brand seal and dynasty headings for uniform stroke weight. */
+html[lang="zh-Hant"] .brand-group .seal-mark {
+  font-family: var(--serif-stack);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+html[lang="zh-Hant"] #dynasty-title {
+  font-family: var(--serif-stack);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+@media (min-width: 901px) {
+  html[lang="zh-Hant"] .brand-group .seal-mark {
+    font-size: 23px;
+  }
+  html[lang="zh-Hant"] #dynasty-title {
+    font-size: 32px;
+  }
+}
+
 /* English Locale Typography Adjustments */
 html[lang="en"] .brand-group .subtitle-mark {
   letter-spacing: 0.04em;
