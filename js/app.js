@@ -470,11 +470,6 @@
       } catch (_) {
         this.hasSeenTraceHint = false;
       }
-      try {
-        this.showFullTrace = localStorage.getItem('jiangshan_full_trace') === '1';
-      } catch (_) {
-        this.showFullTrace = false;
-      }
 
       this.camera = this._getDefaultCamera();
       this.flyRaf = null;

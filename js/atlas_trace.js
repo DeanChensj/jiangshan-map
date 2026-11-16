@@ -1933,8 +1933,7 @@
       });
 
       // 1. Render understated cartographic trajectory arcs + directional chevrons below pins
-      // - Overview (curIdx < 0): render pins only (no crisscrossing full-life cobweb),
-      //   unless the user turned on the "full route" switch
+      // - Overview (curIdx < 0): render pins only (no crisscrossing full-life cobweb)
       // - Single step (curIdx >= 0): render ONLY that step's movement vector(s) (prevStop ──► curStop)
       const unnumberedOriginCoords = [];
       const renderOriginBead = (coord, labelZh, labelEn, color) => {
@@ -1970,21 +1969,7 @@
         );
       };
       if (!isMulti) {
-        if (this.showFullTrace) {
-          const fullSegs = this._buildFullTraceSegments(events, isStory);
-          if (curIdx === 0 && curEv && soloOriginCoord) {
-            const firstLeg = this._buildJourneySegmentInfo(
-              soloOriginCoord,
-              curEv.coord,
-              isStory ? curEv.via || null : null,
-              0
-            );
-            if (firstLeg) fullSegs.unshift({ ...firstLeg, toIdx: 0 });
-          }
-          if (fullSegs.length) {
-            this._renderCartographicTrajectory(fullSegs, curIdx, '#b53826', false);
-          }
-        } else if (curIdx >= 0 && curEv) {
+        if (curIdx >= 0 && curEv) {
           if (soloOriginCoord) {
             const prevEv = !isStory && curIdx > 0 ? events[curIdx - 1] : null;
             const keepsCuratedVia =
@@ -2065,13 +2050,6 @@
               false
             );
           }
-        }
-      } else if (this.showFullTrace && curIdx < 0 && Array.isArray(tracks) && tracks.length && tracks[0].profile) {
-        // Multi-person overview: only the primary track (first person) gets a full route,
-        // so a comparison view never turns into four crisscrossing cobwebs.
-        const primarySegs = this._buildFullTraceSegments(events, isStory, tracks[0].personIdx);
-        if (primarySegs.length) {
-          this._renderCartographicTrajectory(primarySegs, -1, tracks[0].color || '#b53826', false);
         }
       }
 
@@ -2360,11 +2338,6 @@
         if (ovBtn) ovBtn.classList.toggle('is-active', curIdx < 0);
         const shBtn = this._id('act-person-shared-only');
         if (shBtn) shBtn.classList.toggle('is-active', Boolean(this.personSharedOnly));
-        const ftBtn = this._id('act-person-full-trace');
-        if (ftBtn) {
-          ftBtn.classList.toggle('is-active', Boolean(this.showFullTrace));
-          ftBtn.setAttribute('aria-pressed', this.showFullTrace ? 'true' : 'false');
-        }
         this._renderPersonFooter(events, curIdx, isEn);
         if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('genealogy-foot'));
         let activeLi = null;
@@ -2626,40 +2599,15 @@
                 isEn ? 'Filter to shared encounters only' : '仅看多人同途交汇节点'
               }">${isEn ? `Shared ${sameTimeCount}` : `同途 ${sameTimeCount}`}</button>`
             : '';
-        const fullTraceBtn = !isMulti
-          ? `<button type="button" class="gen-filter-pill${
-              this.showFullTrace ? ' is-active' : ''
-            }" id="act-person-full-trace" aria-pressed="${
-              this.showFullTrace ? 'true' : 'false'
-            }" title="${
-              isEn
-                ? 'Connect every stop in chronological order'
-                : '按时间顺序把全部站次连成一条完整路线'
-            }">${isEn ? 'Full route' : '完整轨迹'}</button>`
-          : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
           `<span class="person-sub-actions">` +
           `${returnStoryBtn}` +
           `${sharedFilterBtn}` +
-          `${fullTraceBtn}` +
           `<button type="button" class="gen-filter-pill${
             curIdx < 0 ? ' is-active' : ''
           }" id="act-person-overview">${isEn ? 'Overview' : '全图总览'}</button>` +
           `</span>`;
-
-        const ftBtn = this._id('act-person-full-trace');
-        if (ftBtn) {
-          ftBtn.addEventListener('click', () => {
-            this.showFullTrace = !this.showFullTrace;
-            try {
-              localStorage.setItem('jiangshan_full_trace', this.showFullTrace ? '1' : '0');
-            } catch (_) {}
-            ftBtn.classList.toggle('is-active', this.showFullTrace);
-            ftBtn.setAttribute('aria-pressed', this.showFullTrace ? 'true' : 'false');
-            this._renderPersonPinsOverlay();
-          });
-        }
 
         const retBtn = this._id('act-return-story');
         if (retBtn && this._returnStoryState) {
@@ -4309,53 +4257,6 @@
         }
       }
       return 0.72;
-    }
-
-    // Chronological full-life route: one segment per consecutive stop, keeping the curated
-    // `via` control points when they belong to this exact hop. Segments shorter than 8px are
-    // normally dropped by _buildJourneySegmentInfo; here we keep them as plain connectors so
-    // the polyline never breaks into gaps at low zoom (chevrons stay gated by chord length).
-    _buildFullTraceSegments(events, isStory, personIdx = null) {
-      if (!Array.isArray(events) || events.length < 2) return [];
-      const segs = [];
-      let prevEv = null;
-      for (let i = 0; i < events.length; i++) {
-        const ev = events[i];
-        if (!ev || !Array.isArray(ev.coord)) continue;
-        if (personIdx !== null && ev.personIdx !== personIdx) continue;
-        if (prevEv) {
-          const keepsVia =
-            Boolean(isStory) ||
-            (Boolean(ev.via) &&
-              Boolean(ev.prevStopCoord) &&
-              Math.hypot(
-                prevEv.coord[0] - ev.prevStopCoord[0],
-                prevEv.coord[1] - ev.prevStopCoord[1]
-              ) < 1.2);
-          const info = this._buildJourneySegmentInfo(
-            prevEv.coord,
-            ev.coord,
-            keepsVia ? ev.via || null : null,
-            0
-          );
-          if (info) {
-            segs.push({ ...info, toIdx: i });
-          } else {
-            const [x1, y1] = this.projector.toScreen(prevEv.coord[0], prevEv.coord[1]);
-            const [x2, y2] = this.projector.toScreen(ev.coord[0], ev.coord[1]);
-            segs.push({
-              d: `M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}`,
-              mx: (x1 + x2) * 0.5,
-              my: (y1 + y2) * 0.5,
-              angleDeg: (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI,
-              chord: Math.hypot(x2 - x1, y2 - y1),
-              toIdx: i,
-            });
-          }
-        }
-        prevEv = ev;
-      }
-      return segs;
     }
 
     _buildJourneySegmentInfo(c1, c2, viaCoords, curveBiasOffset = 0) {
