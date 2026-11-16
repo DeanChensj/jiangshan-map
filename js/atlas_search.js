@@ -1310,6 +1310,9 @@
         if (!this._id('chk-prefectures').checked) {
           this._id('chk-prefectures').checked = true;
           this.grpPrefectures.classList.remove('is-hidden');
+          if (this.grpRegionLabels && this.grpRegionLabels.classList) {
+            this.grpRegionLabels.classList.remove('is-hidden');
+          }
         }
         if (this._materializeDeferredPrefectures()) {
           this._rescaleSvgTypography();
