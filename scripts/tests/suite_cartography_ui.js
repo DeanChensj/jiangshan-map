@@ -1359,9 +1359,10 @@ async function runCartographyUiSuite(ctx) {
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-    // Snapshot boundaries without a same-year milestone are still nodes (Shang Yang's Hexi, Sui collapse, Huang Chao).
-    for (const y of [-340, 614, 880]) {
-      assert(stops.some((s) => s.year === y && s.hold), `Autoplay must land and hold on the territory-snapshot boundary ${y}`);
+    // Snapshot boundaries without a same-year milestone (-340, 614, 880, 1335, 1927) must not create
+    // orphan autoplay stops without an event headline.
+    for (const y of [-340, 614, 880, 1335, 1927]) {
+      assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
     assert(holdCount >= 180 && holdCount < stops.length, `Expected ~180+ map-changing nodes among ${stops.length}, got ${holdCount}`);

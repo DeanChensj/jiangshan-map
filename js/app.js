@@ -6656,10 +6656,13 @@
 
         const [bandLo, bandHi] = this._bandYearSpan(d);
         const span = Math.max(1, bandHi - bandLo);
+        const milestoneYears = new Set(
+          (d.milestones || []).map((m) => this._clampYearToDynasty(d, m.year))
+        );
         if (Array.isArray(d.phases) && d.phases.length > 1) {
           for (let i = 0; i < d.phases.length - 1; i++) {
             const u = d.phases[i].until;
-            if (u > bandLo && u < bandHi) {
+            if (u > bandLo && u < bandHi && milestoneYears.has(u)) {
               const pt = document.createElement('i');
               pt.className = 'band-phase-tick';
               pt.style.left = `${(((u - bandLo) / span) * 100).toFixed(2)}%`;
@@ -6994,13 +6997,6 @@
         for (const d of this.dynasties) {
           yrs.add(d.fromYear);
           yrs.add(d.focusYear);
-          if (Array.isArray(d.phases)) {
-            for (const ph of d.phases) {
-              if (ph.until > d.fromYear && ph.until <= d.toYear) {
-                yrs.add(ph.until);
-              }
-            }
-          }
           for (const m of d.milestones || []) {
             yrs.add(this._clampYearToDynasty(d, m.year));
           }
@@ -7139,8 +7135,8 @@
       this.playInterval = setInterval(() => this._autoplayTick(), this._autoplayIntervalMs());
     }
 
-    // Sorted years the autoplay lands on: every milestone year plus every territory-snapshot
-    // boundary. `hold` marks the nodes that redraw the map (border change, dynasty opening,
+    // Sorted years the autoplay lands on: every milestone year plus each dynasty opening.
+    // `hold` marks the nodes that redraw the map (border change, dynasty opening, or same-year
     // snapshot switch) so the border diff gets the longer dwell.
     _autoplayStops() {
       if (!this._autoplayStopList) {
@@ -7148,13 +7144,14 @@
         const mark = (year, hold) => holdByYear.set(year, Boolean(holdByYear.get(year) || hold));
         for (const d of this.dynasties) {
           mark(d.fromYear, true);
-          if (Array.isArray(d.phases)) {
-            for (const ph of d.phases) {
-              if (ph.until > d.fromYear && ph.until < d.toYear) mark(ph.until, true);
-            }
-          }
+          const phaseYears = new Set(
+            (d.phases || [])
+              .map((ph) => ph.until)
+              .filter((u) => u > d.fromYear && u < d.toYear)
+          );
           for (const m of d.milestones || []) {
-            mark(this._clampYearToDynasty(d, m.year), m.isMapChange);
+            const my = this._clampYearToDynasty(d, m.year);
+            mark(my, Boolean(m.isMapChange || phaseYears.has(my)));
           }
         }
         this._autoplayStopList = [...holdByYear]
