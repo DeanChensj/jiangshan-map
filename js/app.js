@@ -2012,7 +2012,7 @@
       setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
       setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
       setMoreCopy('lbl-more-contact', 'Contact & Feedback', '联系作者 · 勘误反馈');
-      setMoreCopy('sub-more-contact', 'deancsj@gmail.com', 'deancsj@gmail.com');
+      setMoreCopy('sub-more-contact', 'deancsj@gmail.com · Click to copy', 'deancsj@gmail.com · 点击复制');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
@@ -9620,6 +9620,44 @@
         morePopover.addEventListener('click', () => {
           this._closeMorePopover();
         });
+        const contactLink = this._id('lnk-more-contact');
+        if (contactLink) {
+          contactLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const email = 'deancsj@gmail.com';
+            const copyFallback = () => {
+              if (typeof document === 'undefined' || !document.body) return;
+              const ta = document.createElement('textarea');
+              ta.value = email;
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand('copy');
+              } catch (_) {}
+              document.body.removeChild(ta);
+            };
+            if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(email).catch(copyFallback);
+            } else {
+              copyFallback();
+            }
+            const subEl = this._id('sub-more-contact');
+            if (subEl) {
+              subEl.textContent =
+                this.locale === 'en' ? `✓ Copied: ${email}` : this._zh(`✓ 已复制：${email}`);
+              subEl.classList.add('is-copied');
+              clearTimeout(this._contactCopyTimer);
+              this._contactCopyTimer = setTimeout(() => {
+                subEl.classList.remove('is-copied');
+                subEl.textContent =
+                  this.locale === 'en' ? `${email} · Click to copy` : this._zh(`${email} · 点击复制`);
+              }, 2000);
+            }
+          });
+        }
         document.addEventListener('pointerdown', (e) => {
           if (
             !morePopover.classList.contains('is-hidden') &&
