@@ -2272,6 +2272,24 @@
             this.locale === 'en' ? ev.siteEn || this.trTerm(ev.siteZh) : this._zh(ev.siteZh);
           const baseSite = fullLbl.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim() || fullLbl;
           let compactLbl = isCur ? fullLbl : baseSite;
+          if (isStory && isStepOrigin && curEv) {
+            if (idx === stepOriginIdx && (curEv.fromLabelZh || curEv.fromLabelEn)) {
+              compactLbl =
+                this.locale === 'en'
+                  ? curEv.fromLabelEn || fullLbl
+                  : this._zh(curEv.fromLabelZh || fullLbl);
+            } else if (Array.isArray(curEv.prongs)) {
+              const matchPr = curEv.prongs.find(
+                (p) => p && p.fromStopIdx === idx && (p.fromLabelZh || p.fromLabelEn)
+              );
+              if (matchPr) {
+                compactLbl =
+                  this.locale === 'en'
+                    ? matchPr.fromLabelEn || fullLbl
+                    : this._zh(matchPr.fromLabelZh || fullLbl);
+              }
+            }
+          }
           if (isPeerSync && syncPeersAtIdx) {
             const peerNames = syncPeersAtIdx
               .map((a) => (this.locale === 'en' ? a.profile.en : this._zh(a.profile.zh)))

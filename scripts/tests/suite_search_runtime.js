@@ -2817,11 +2817,30 @@ async function runSearchRuntimeSuite(ctx) {
         'The 230 BCE fall of Han must carry the [始末] entry for the Qin unification storyline'
       );
 
+      const changzhengProf = ctrl._resolvePersonProfile('changzheng');
+      assert(
+        changzhengProf && changzhengProf.isStory === true && Array.isArray(changzhengProf.stops) && changzhengProf.stops.length === 10,
+        'changzheng must resolve as an Event Storyline (isStory: true) with 10 chronological stops'
+      );
+      for (const sq of ['红军长征', '长征', '四渡赤水', '飞夺泸定桥', 'changzheng', 'Long March']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'changzheng',
+          `Quick search for "${sq}" must surface the Long March storyline (kind="story") at index 0`
+        );
+      }
+      const rocDyn = dynasties.find((d) => d.key === 'roc');
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(rocDyn, rocDyn.milestones.find((m) => m.year === 1935))?.key,
+        'changzheng',
+        'The 1935 Zunyi Conference milestone must carry the [始末] entry for the Long March storyline'
+      );
+
       // Universal Event Storyline (`isStory: true`) invariants:
       // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.
       // 2) Must map to EXACTLY ONE `[始末]` milestone across all dynasties in `_findStoryForMilestone`.
       const allStoryProfiles = (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory);
-      assert(allStoryProfiles.length >= 4, 'Expected at least 4 Event Storylines (anshi, jingkang, qintongyi, chuhan)');
+      assert(allStoryProfiles.length >= 5, 'Expected at least 5 Event Storylines (anshi, jingkang, qintongyi, chuhan, changzheng)');
       for (const sp of allStoryProfiles) {
         assert(
           typeof sp.dynastyKey === 'string' && dynasties.some((d) => d.key === sp.dynastyKey),
