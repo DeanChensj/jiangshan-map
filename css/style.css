@@ -447,6 +447,11 @@ h2 {
   text-overflow: ellipsis;
 }
 
+.more-link-sub.is-copied {
+  color: var(--vermilion);
+  font-weight: 600;
+}
+
 .more-ext-mark {
   font-size: 11px;
   color: var(--text-muted);
