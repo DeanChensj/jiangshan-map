@@ -28,5 +28,6 @@
   "milestone:tang:679": [{ "w": "zztj", "loc": "卷202 唐纪十八 调露元年" }],
   "milestone:tang:692": [{ "w": "zztj", "loc": "卷205 唐纪二十一 长寿元年十月" }],
   "milestone:tang:738": [{ "w": "zztj", "loc": "卷214 唐纪三十 开元二十六年" }],
+  "milestone:tang:880": [{ "w": "zztj", "loc": "卷254 唐纪七十 广明元年十一月、十二月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷254" }, { "w": "jiutangshu", "loc": "卷200下 列传第一百五十下 黄巢传", "url": "https://zh.wikisource.org/wiki/舊唐書/卷200下" }],
   "person:anshi": [{ "w": "zztj", "loc": "卷217–222 唐纪三十三至三十八" }]
 }

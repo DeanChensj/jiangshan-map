@@ -813,13 +813,13 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(suiDyn, w), `sui: must include late Sui warlord center ${w}`);
     }
 
-    // Sui 5 map change milestones
-    const expectedSuiMapChanges = [581, 587, 589, 609, 618];
+    // Sui 6 map change milestones
+    const expectedSuiMapChanges = [581, 587, 589, 609, 614, 618];
     const actualSuiMapChanges = (suiDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualSuiMapChanges),
       JSON.stringify(expectedSuiMapChanges),
-      'sui: 5 map change milestone years must match'
+      'sui: 6 map change milestone years must match'
     );
 
     // Tang capitals & periods
@@ -861,8 +861,8 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 29 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
+    // Tang 30 map change milestones
+    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 880, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),

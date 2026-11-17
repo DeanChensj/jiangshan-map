@@ -1083,6 +1083,10 @@ window.EN_LOCALE = {
       "Emperor Yang launches his first grand campaign against Goguryeo",
       "Zhuo · Liaodong"
     ],
+    "sui:614": [
+      "Emperor Yang's third Goguryeo campaign; revolts sweep the realm as Wagang and Hebei rise",
+      "Zhuo"
+    ],
     "sui:617": [
       "Li Yuan rises in Taiyuan and captures Daxing (Chang'an)",
       "Taiyuan · Daxing"
@@ -1371,6 +1375,10 @@ window.EN_LOCALE = {
       "National Revolutionary Army launches the Northern Expedition",
       "Guangzhou / Wuchang"
     ],
+    "roc:1927": [
+      "Northern Expedition retakes Shanghai and Nanjing; Chiang sets up a rival government at Nanjing",
+      "Nanjing"
+    ],
     "roc:1935": [
       "Zunyi Conference held during the Long March",
       "Zunyi"
@@ -1559,6 +1567,10 @@ window.EN_LOCALE = {
       "Battle of Maling: Sun Bin slays Pang Juan; Shang Yang seizes Hexi as Wei moves to Daliang",
       "Maling · Anyi"
     ],
+    "zhanguo:-340": [
+      "Shang Yang captures Wei's Prince Ang; Wei cedes Hexi and shifts its capital east to Daliang",
+      "Daliang"
+    ],
     "zhanguo:-296": [
       "Zhao completes the conquest of Zhongshan; Qi, Han, and Wei coalition defeats Qin at Hangu Pass",
       "Lingshou (Zhongshan)"
@@ -1638,6 +1650,10 @@ window.EN_LOCALE = {
     "xihan:-8": [
       "Emperor Cheng establishes Three Excellencies; Wang Mang becomes Grand Marshal",
       "Chang'an"
+    ],
+    "tang:880": [
+      "Huang Chao crosses the Huai north, takes Luoyang, then storms Tongguan and closes on Chang'an",
+      "Eastern Capital Luoyang · Tongguan"
     ],
     "tang:881": [
       "Huang Chao captures Chang’an and proclaims the Qi dynasty; Emperor Xizong flees to Shu",
