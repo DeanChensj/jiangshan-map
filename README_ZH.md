@@ -13,9 +13,9 @@
 <p align="center">
   <a href="https://www.star-history.com/deanchensj/jiangshan-map">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending&theme=dark" />
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending" />
-      <img alt="GitHub Trending 每日项目第 2 名" src="https://api.star-history.com/badge?repo=deanchensj/jiangshan-map&type=trending" height="56" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=DeanChensj/jiangshan-map&type=trending&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=DeanChensj/jiangshan-map&type=trending" />
+      <img alt="GitHub Trending 每日项目第 1 名" src="https://api.star-history.com/badge?repo=DeanChensj/jiangshan-map&type=trending" height="56" />
     </picture>
   </a>
 </p>
