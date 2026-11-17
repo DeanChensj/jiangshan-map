@@ -2011,6 +2011,8 @@
       setMoreCopy('sub-more-story', 'From textbook maps to Jiangshan', '从课本插图到开源历史地图');
       setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
       setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
+      setMoreCopy('lbl-more-contact', 'Contact & Feedback', '联系作者 · 勘误反馈');
+      setMoreCopy('sub-more-contact', 'deancsj@gmail.com', 'deancsj@gmail.com');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
