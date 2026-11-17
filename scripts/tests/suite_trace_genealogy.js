@@ -1814,6 +1814,23 @@ async function runTraceGenealogySuite(ctx) {
         );
       }
     }
+
+    // 36. Historical homonym guard: Northern/Southern Song 南京应天府 (Shangqiu) must not match Jiangsu Nanjing
+    for (const dynKey of ['beisong', 'nansong']) {
+      const d = dynasties.find((item) => item.key === dynKey);
+      const njNear = ctrl._findNearestSettlement(d.settlements, 118.801, 32.061, 32);
+      const njEvs = ctrl._collectPlaceEventsForDynasty(d, 118.801, 32.061, njNear);
+      assert(
+        !njEvs.some((e) => (e.milestone && e.milestone.site || '').includes('南京应天府')),
+        `Jiangsu Nanjing (${dynKey}) must not include Shangqiu 南京应天府 events, got ${JSON.stringify(njEvs.map((e) => e.text))}`
+      );
+      const sqNear = ctrl._findNearestSettlement(d.settlements, 115.651, 34.411, 32);
+      const sqEvs = ctrl._collectPlaceEventsForDynasty(d, 115.651, 34.411, sqNear);
+      assert(
+        sqEvs.some((e) => (e.milestone && e.milestone.site || '').includes('南京应天府')),
+        `Shangqiu (${dynKey}) must retain its 南京应天府 event`
+      );
+    }
   }
 
 }

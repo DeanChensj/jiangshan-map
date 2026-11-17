@@ -3188,7 +3188,10 @@
       for (const m of d.milestones || []) {
         const mCoords = this._milestoneCoords(m);
         const veryClose = mCoords.some((mc) => isCloseCoord(mc, 28));
-        const siteMatch = matchesSiteName(m.site);
+        // Guard site-name matching by coordinate proximity so historical homonyms
+        // (e.g. Northern Song 南京应天府 at Shangqiu vs. Jiangsu Nanjing) do not leak across regions.
+        const siteMatch =
+          matchesSiteName(m.site) && (!mCoords.length || mCoords.some((mc) => isCloseCoord(mc, 100)));
         if (siteMatch || veryClose || (!nearCity && mCoords.some((mc) => isCloseCoord(mc, 48)))) {
           results.push({
             year: m.year,
