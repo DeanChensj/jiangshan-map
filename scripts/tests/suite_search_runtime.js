@@ -2687,6 +2687,24 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.activePolity = { key: 'nantang' };
         ctrl._syncMilestoneSource(xijin);
         assert.deepStrictEqual(linesAt(), [], 'polity focus lists related events, not milestones: no line');
+
+        // Discussion #438 regression: an explicitly opened non-chronicle landmark event (idx === -1)
+        // must not fall back to highlighting the preceding chronicle milestone.
+        ctrl.activePolity = null;
+        const tang = dynasties.find((d) => d.key === 'tang');
+        ctrl.year = 646;
+        ctrl.activeMilestone = {
+          dynastyKey: 'tang',
+          milestone: { year: 646, headline: '参天可汗道', site: '回鹘' },
+          idx: -1,
+          year: 646,
+          isAuto: false,
+        };
+        assert.strictEqual(
+          ctrl._activeMilestoneIndex(tang),
+          -1,
+          'Explicit non-chronicle landmark event (idx === -1) must not highlight an earlier chronicle milestone (#438)'
+        );
       } finally {
         ctrl._id = saved._id;
         ctrl.locale = saved.locale;
