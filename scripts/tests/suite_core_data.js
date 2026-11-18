@@ -513,6 +513,7 @@ async function runCoreDataSuite(ctx) {
   const expectedTopicFiles = [
     'index.html',
     ...dynasties.map((d) => `${d.key}.html`),
+    ...(loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory).map((s) => `story-${s.key}.html`),
     ...loreData.HISTORICAL_JOURNEYS.map((j) => `journey-${j.key}.html`),
     'dufu-763.html',
     'sushi-exile.html',

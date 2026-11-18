@@ -38,8 +38,8 @@
       "headline": "唐历史地图（618—907 · Tang）· 疆域演变、州郡政区、古今地名对照与重大事件 | 江山时序",
       "description": "唐历史地图（公元618年至公元907年，都城：长安）：盛唐设安西、北庭、安北、安东、安南等都护府，长安是当时世界最大的都市；690—705 年武则天改唐为周（武周），定都神都洛阳。755 年安史之乱后，河西、陇右与西域先后陷于吐蕃，藩镇割据，直至 907 年朱温代唐。 收录29幅多阶段版图快照、108座城池古今地名对照与60项编年重大历史事件。",
       "url": "https://deanchen.me/jiangshan-map/topics/tang.html",
-      "datePublished": "2026-10-21",
-      "dateModified": "2026-10-21",
+      "datePublished": "2026-11-18",
+      "dateModified": "2026-11-18",
       "inLanguage": [
         "zh-CN",
         "en"
@@ -345,6 +345,53 @@
       border-radius: 4px;
       margin-right: 0.4rem;
     }
+    .camp-badge {
+      display: inline-block;
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.1rem 0.48rem;
+      border-radius: 4px;
+      margin-right: 0.38rem;
+    }
+    .source-cite {
+      margin-top: 0.38rem;
+      padding-top: 0.3rem;
+      border-top: 1px dashed rgba(213, 199, 174, 0.75);
+      font-size: 0.83rem;
+      color: var(--ink-muted);
+      line-height: 1.55;
+    }
+    .story-link-pill {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0.08rem 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--cinnabar);
+      background: rgba(158, 42, 34, 0.1);
+      border: 1px solid rgba(158, 42, 34, 0.3);
+      border-radius: 4px;
+      text-decoration: none;
+    }
+    .story-link-pill:hover {
+      background: var(--cinnabar);
+      color: #fff;
+      text-decoration: none !important;
+    }
+    .diff-add { color: #1f5c3a; font-weight: 600; }
+    .diff-rem { color: #8c2d24; font-weight: 600; }
+    .diff-same { color: var(--ink-muted); font-size: 0.85rem; }
+    .act-heading {
+      margin: 1.25rem 0 0.65rem;
+      padding: 0.4rem 0.75rem;
+      background: #ece3d0;
+      border-left: 4px solid var(--cinnabar);
+      border-radius: 4px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--ink-main);
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -414,212 +461,212 @@
               <th>阶段</th>
               <th>年代范围与代表年号</th>
               <th>并立政权 / 核心版图</th>
-              <th>主要州郡 / 道 / 路 / 行省政区</th>
+              <th>政区格局与阶段疆域变化</th>
               <th>交互式地图直达</th>
             </tr>
           </thead>
           <tbody>
           <tr>
             <td>第 1 阶段</td>
-            <td><strong>618 — 620</strong><br/><small>唐高祖·武德二年</small></td>
+            <td><strong>618 — 620</strong><br/><small>唐高祖·武德二年</small><br/><small style="color:#5e5346;">武德建唐与统一战争初期</small></td>
             <td>唐、郑（王世充）、夏（窦建德）、梁（萧铣）、吴（杜伏威）、吐谷浑、吐蕃</td>
             <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=619">查看 619年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 2 阶段</td>
-            <td><strong>621 — 629</strong><br/><small>唐高祖·武德八年</small></td>
+            <td><strong>621 — 629</strong><br/><small>唐高祖·武德八年</small><br/><small style="color:#5e5346;">虎牢决战与武德一统</small></td>
             <td>唐、吐谷浑、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>郑（王世充）、夏（窦建德）、梁（萧铣）、吴（杜伏威）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=625">查看 625年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 3 阶段</td>
-            <td><strong>630 — 634</strong><br/><small>唐太宗·贞观六年</small></td>
-            <td>唐、吐谷浑、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>630 — 634</strong><br/><small>唐太宗·贞观六年</small><br/><small style="color:#5e5346;">李靖灭东突厥：尊太宗为“天可汗”，囊括阴山漠南并置羁縻府州</small></td>
+            <td>唐、漠北羁縻府州（薛延陀）、吐谷浑、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>漠北羁縻府州（薛延陀）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=632">查看 632年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 4 阶段</td>
-            <td><strong>635 — 639</strong><br/><small>唐太宗·贞观十一年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>635 — 639</strong><br/><small>唐太宗·贞观十一年</small><br/><small style="color:#5e5346;">李靖平吐谷浑：六总管远征青海，慕容顺归降、册封诺曷钵为河源郡王</small></td>
+            <td>唐、漠北羁縻府州（薛延陀）、吐谷浑（唐册封诺曷钵）、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>吐谷浑（唐册封诺曷钵）<br/><span class="diff-rem">－更替/罢撤：</span>吐谷浑</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=637">查看 637年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 5 阶段</td>
-            <td><strong>640 — 647</strong><br/><small>唐太宗·贞观十八年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>640 — 647</strong><br/><small>唐太宗·贞观十八年</small><br/><small style="color:#5e5346;">侯君集平高昌与薛延陀之役：置西州与初设安西都护府（治交河城）</small></td>
+            <td>唐、安西都护府（西州）、燕然（安北）都护府、吐谷浑（唐册封诺曷钵）、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>安西都护府（西州）、燕然（安北）都护府<br/><span class="diff-rem">－更替/罢撤：</span>漠北羁縻府州（薛延陀）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=644">查看 644年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 6 阶段</td>
-            <td><strong>648 — 656</strong><br/><small>唐高宗·永徽三年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>648 — 656</strong><br/><small>唐高宗·永徽三年</small><br/><small style="color:#5e5346;">阿史那社尔平龟兹置安西四镇与王玄策破中天竺：西域尽入安西都护府，天竺震动</small></td>
+            <td>唐、安西都护府、燕然（安北）都护府、吐谷浑（唐册封诺曷钵）、中天竺（王玄策破敌）、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>安西都护府、中天竺（王玄策破敌）<br/><span class="diff-rem">－更替/罢撤：</span>安西都护府（西州）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=652">查看 652年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 7 阶段</td>
-            <td><strong>657 — 662</strong><br/><small>唐高宗·显庆五年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>657 — 662</strong><br/><small>唐高宗·显庆五年</small><br/><small style="color:#5e5346;">苏定方灭西突厥：置昆陵、濛池都护府，唐朝西疆极于咸海</small></td>
+            <td>唐、安西都护府、昆陵 · 濛池都护府、安北都护府、吐谷浑（唐册封诺曷钵）、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>昆陵 · 濛池都护府、安北都护府<br/><span class="diff-rem">－更替/罢撤：</span>燕然（安北）都护府、中天竺（王玄策破敌）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=660">查看 660年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 8 阶段</td>
-            <td><strong>663 — 667</strong><br/><small>唐高宗·麟德二年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>663 — 667</strong><br/><small>唐高宗·麟德二年</small><br/><small style="color:#5e5346;">吐蕃并吞吐谷浑：禄东赞攻灭吐谷浑，诺曷钵率残部内附凉州，青海高原入吐蕃</small></td>
+            <td>唐、安西都护府、昆陵 · 濛池都护府、安北都护府、吐蕃</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>吐谷浑（唐册封诺曷钵）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=665">查看 665年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 9 阶段</td>
-            <td><strong>668 — 669</strong><br/><small>唐高宗·总章二年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>668 — 669</strong><br/><small>唐高宗·总章二年</small><br/><small style="color:#5e5346;">李勣灭高句丽：于平壤置安东都护府，盛唐六大都护府极盛疆域</small></td>
+            <td>唐、安西都护府、昆陵 · 濛池都护府、安北都护府、安东都护府、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>安东都护府</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=669">查看 669年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 10 阶段</td>
-            <td><strong>670 — 675</strong><br/><small>唐高宗·咸亨四年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>670 — 675</strong><br/><small>唐高宗·咸亨四年</small><br/><small style="color:#5e5346;">吐蕃陷安西四镇：大非川兵败，唐罢龟兹、于阗、焉耆、疏勒四镇，安西都护府退治西州</small></td>
+            <td>唐、安西都护府（西州）、昆陵 · 濛池都护府、安北都护府、安东都护府、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>安西都护府（西州）<br/><span class="diff-rem">－更替/罢撤：</span>安西都护府</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=673">查看 673年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 11 阶段</td>
-            <td><strong>676 — 678</strong><br/><small>唐高宗·仪凤二年</small></td>
-            <td>唐、吐蕃</td>
-            <td>泽州、沁州、潞州、绛州、慈州、隰州、晋州、汾州、箕州、忻州、石州、并州、岚州、黄州 等 114 个政区</td>
+            <td><strong>676 — 678</strong><br/><small>唐高宗·仪凤二年</small><br/><small style="color:#5e5346;">安东内迁辽东：安东都护府移驻辽东故城，安西四镇仍陷吐蕃</small></td>
+            <td>唐、安东都护府、吐蕃、安西都护府（西州）</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>昆陵 · 濛池都护府、安北都护府</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=677">查看 677年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 12 阶段</td>
-            <td><strong>679 — 685</strong><br/><small>唐高宗·永淳元年</small></td>
-            <td>唐、吐蕃</td>
-            <td>泽州、沁州、潞州、绛州、慈州、隰州、晋州、汾州、箕州、忻州、石州、并州、岚州、黄州 等 114 个政区</td>
+            <td><strong>679 — 685</strong><br/><small>唐高宗·永淳元年</small><br/><small style="color:#5e5346;">裴行俭复四镇：碎叶代焉耆为四镇之一，调露元年设安南都护府</small></td>
+            <td>唐、安东都护府、吐蕃、安西都护府</td>
+            <td><span class="diff-add">＋新增/建置：</span>安西都护府<br/><span class="diff-rem">－更替/罢撤：</span>安西都护府（西州）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=682">查看 682年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 13 阶段</td>
-            <td><strong>686 — 689</strong><br/><small>唐睿宗·垂拱四年</small></td>
-            <td>唐、吐蕃</td>
-            <td>泽州、沁州、潞州、绛州、慈州、隰州、晋州、汾州、箕州、忻州、石州、并州、岚州、黄州 等 114 个政区</td>
+            <td><strong>686 — 689</strong><br/><small>唐睿宗·垂拱四年</small><br/><small style="color:#5e5346;">武后拔四镇：垂拱二年弃龟兹、于阗、疏勒、碎叶四镇，四镇复陷吐蕃</small></td>
+            <td>唐、安东都护府、吐蕃、安西都护府</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=688">查看 688年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 14 阶段</td>
-            <td><strong>690 — 691</strong><br/><small>武周武则天·天授二年</small></td>
-            <td>武周、吐蕃</td>
-            <td>全境省区</td>
+            <td><strong>690 — 691</strong><br/><small>武周武则天·天授二年</small><br/><small style="color:#5e5346;">武周改制：武则天改唐为周定都神都洛阳，安西四镇仍陷吐蕃</small></td>
+            <td>武周、安东都护府、吐蕃、安西都护府</td>
+            <td><span class="diff-add">＋新增/建置：</span>武周<br/><span class="diff-rem">－更替/罢撤：</span>唐<br/><span class="diff-rem">－失守/省并政区：</span>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道 等 13 处</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=691">查看 691年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 15 阶段</td>
-            <td><strong>692 — 697</strong><br/><small>武周武则天·天册万岁元年</small></td>
-            <td>武周、吐蕃</td>
-            <td>全境省区</td>
+            <td><strong>692 — 697</strong><br/><small>武周武则天·天册万岁元年</small><br/><small style="color:#5e5346;">王孝杰复四镇：大破吐蕃收复龟兹等四镇，安西都护府还治龟兹</small></td>
+            <td>武周、安东都护府、吐蕃、安西都护府</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 0 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=695">查看 695年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 16 阶段</td>
-            <td><strong>698 — 701</strong><br/><small>武周武则天·久视元年</small></td>
-            <td>武周、吐蕃</td>
-            <td>全境省区</td>
+            <td><strong>698 — 701</strong><br/><small>武周武则天·久视元年</small><br/><small style="color:#5e5346;">大祚荣立震国：粟末靺鞨据东牟山自立，武周东北退守辽东</small></td>
+            <td>武周、安东都护府、吐蕃、安西都护府</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 0 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=700">查看 700年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 17 阶段</td>
-            <td><strong>702 — 704</strong><br/><small>武周武则天·长安三年</small></td>
-            <td>武周、吐蕃</td>
-            <td>全境省区</td>
+            <td><strong>702 — 704</strong><br/><small>武周武则天·长安三年</small><br/><small style="color:#5e5346;">武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北</small></td>
+            <td>武周、安西都护府、北庭都护府、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>北庭都护府<br/><span class="diff-rem">－更替/罢撤：</span>安东都护府</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=703">查看 703年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 18 阶段</td>
-            <td><strong>705 — 712</strong><br/><small>唐中宗·景龙三年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>705 — 712</strong><br/><small>唐中宗·景龙三年</small><br/><small style="color:#5e5346;">神龙复唐：中宗复唐国号，震国大祚荣尚未受唐册封</small></td>
+            <td>唐、安西都护府、北庭都护府、吐蕃</td>
+            <td><span class="diff-add">＋新增/建置：</span>唐<br/><span class="diff-rem">－更替/罢撤：</span>武周<br/><span class="diff-add">＋新增政区：</span>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道 等 13 处</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=709">查看 709年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 19 阶段</td>
-            <td><strong>713 — 737</strong><br/><small>唐玄宗·开元十三年</small></td>
-            <td>唐、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>713 — 737</strong><br/><small>唐玄宗·开元十三年</small><br/><small style="color:#5e5346;">开元盛世：玄宗册封大祚荣为渤海郡王，洱海六诏未合</small></td>
+            <td>唐、安西都护府、北庭都护府、吐蕃</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=725">查看 725年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 20 阶段</td>
-            <td><strong>738 — 754</strong><br/><small>唐玄宗·天宝五年</small></td>
-            <td>唐、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>738 — 754</strong><br/><small>唐玄宗·天宝五年</small><br/><small style="color:#5e5346;">南诏统一六诏：皮逻阁受封云南王，玄宗册封大祚荣为渤海郡王</small></td>
+            <td>唐、安西都护府、北庭都护府、吐蕃、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>南诏</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=746">查看 746年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 21 阶段</td>
-            <td><strong>755 — 756</strong><br/><small>唐肃宗·至德元年</small></td>
-            <td>唐、大燕（安禄山）、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>755 — 756</strong><br/><small>唐肃宗·至德元年</small><br/><small style="color:#5e5346;">安史之乱爆发：安禄山据河北、河南称帝大燕，两京相继陷落，玄宗幸蜀、肃宗灵武即位</small></td>
+            <td>唐、大燕（安禄山）、安西都护府、北庭都护府、吐蕃、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>大燕（安禄山）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=756">查看 756年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 22 阶段</td>
-            <td><strong>757 — 762</strong><br/><small>唐肃宗·上元元年</small></td>
-            <td>唐、大燕（史思明）、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>757 — 762</strong><br/><small>唐肃宗·上元元年</small><br/><small style="color:#5e5346;">两京光复与史思明再起：郭子仪借回纥兵收复长安、洛阳，史思明据河北再叛并一度复陷洛阳</small></td>
+            <td>唐、大燕（史思明）、安西都护府、北庭都护府、吐蕃、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>大燕（史思明）<br/><span class="diff-rem">－更替/罢撤：</span>大燕（安禄山）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=760">查看 760年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 23 阶段</td>
-            <td><strong>763 — 763</strong><br/><small>唐代宗·广德元年</small></td>
-            <td>唐、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>763 — 763</strong><br/><small>唐代宗·广德元年</small><br/><small style="color:#5e5346;">安史之乱平定：史朝义败亡，降将田承嗣、李怀仙、李宝臣分领魏博、幽州、成德，藩镇割据肇端</small></td>
+            <td>唐、安西都护府、北庭都护府、吐蕃、南诏</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>大燕（史思明）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=763">查看 763年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 24 阶段</td>
-            <td><strong>764 — 789</strong><br/><small>唐代宗·大历十二年</small></td>
-            <td>唐、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>764 — 789</strong><br/><small>唐代宗·大历十二年</small><br/><small style="color:#5e5346;">吐蕃陷河陇与孤悬西域：凉州失守河西走廊被截断，安西、北庭孤悬绝域坚守</small></td>
+            <td>唐、安西都护府（孤悬坚守）、北庭都护府（孤悬坚守）、吐蕃、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>安西都护府（孤悬坚守）、北庭都护府（孤悬坚守）<br/><span class="diff-rem">－更替/罢撤：</span>安西都护府、北庭都护府<br/><span class="diff-rem">－失守/省并政区：</span>陇右道</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=777">查看 777年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 25 阶段</td>
-            <td><strong>790 — 839</strong><br/><small>唐宪宗·元和十年</small></td>
+            <td><strong>790 — 839</strong><br/><small>唐宪宗·元和十年</small><br/><small style="color:#5e5346;">河西与西域失陷：沙州、北庭相继陷落，陇右河西尽入吐蕃</small></td>
             <td>唐、南诏、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>安西都护府（孤悬坚守）、北庭都护府（孤悬坚守）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=815">查看 815年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 26 阶段</td>
-            <td><strong>840 — 847</strong><br/><small>唐武宗·会昌四年</small></td>
+            <td><strong>840 — 847</strong><br/><small>唐武宗·会昌四年</small><br/><small style="color:#5e5346;">回鹘汗国崩溃：黠戛斯破回鹘牙帐据漠北，回鹘诸部西迁南下，唐会昌年间破乌介可汗</small></td>
             <td>唐、南诏、吐蕃</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 12 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=844">查看 844年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 27 阶段</td>
-            <td><strong>848 — 879</strong><br/><small>唐懿宗·咸通五年</small></td>
-            <td>唐、吐蕃、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>848 — 879</strong><br/><small>唐懿宗·咸通五年</small><br/><small style="color:#5e5346;">张议潮归义军收复河西：沙州起义驱逐吐蕃，收复瓜沙等十一州归唐</small></td>
+            <td>唐、归义军（张议潮）、吐蕃、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>归义军（张议潮）<br/><span class="diff-add">＋新增政区：</span>陇右道</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=864">查看 864年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 28 阶段</td>
-            <td><strong>880 — 884</strong><br/><small>唐僖宗·中和二年</small></td>
-            <td>唐、大齐（黄巢）、甘州回鹘、党项（定难军）、南诏</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>880 — 884</strong><br/><small>唐僖宗·中和二年</small><br/><small style="color:#5e5346;">黄巢攻入长安称帝大齐：黄巢大军渡江破洛阳、入长安建国号大齐，唐僖宗奔蜀，李克用等会诸镇收复长安</small></td>
+            <td>唐、大齐（黄巢）、沙州归义军、甘州回鹘、党项（定难军）、南诏</td>
+            <td><span class="diff-add">＋新增/建置：</span>大齐（黄巢）、沙州归义军、甘州回鹘、党项（定难军）<br/><span class="diff-rem">－更替/罢撤：</span>归义军（张议潮）、吐蕃</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=882">查看 882年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 29 阶段</td>
-            <td><strong>885 — 907</strong><br/><small>唐昭宗·乾宁三年</small></td>
-            <td>唐 · 岐（关中）、宣武（朱温）、河东（李克用）、西川（王建）、淮南（杨行密）、镇海（钱镠）、武安（马殷）、威武（王审知）、岭南（刘隐）、甘州回鹘、党项（定难军）、南诏、静海军（交州）</td>
-            <td>关内道、河南道、河东道、河北道、山南东道、山南西道、陇右道、淮南道、江南东道、江南西道、黔中道、剑南道、岭南道</td>
+            <td><strong>885 — 907</strong><br/><small>唐昭宗·乾宁三年</small><br/><small style="color:#5e5346;">唐末藩镇彻底裂解：朱温据宣武河南、李克用据河东、王建据西川、杨行密据淮南、钱镠据两浙，唐室仅存关中一隅</small></td>
+            <td>唐 · 岐（关中）、宣武（朱温）、河东（李克用）、西川（王建）、淮南（杨行密）、镇海（钱镠）、武安（马殷）、威武（王审知）、岭南（刘隐）、沙州归义军、甘州回鹘、党项（定难军）、南诏、静海军（交州）</td>
+            <td><span class="diff-add">＋新增/建置：</span>唐 · 岐（关中）、宣武（朱温）、河东（李克用）、西川（王建）、淮南（杨行密）、镇海（钱镠）、武安（马殷）、威武（王审知）、岭南（刘隐）、静海军（交州）<br/><span class="diff-rem">－更替/罢撤：</span>唐、大齐（黄巢）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=896">查看 896年 舆图 →</a></td>
           </tr>
           </tbody>
@@ -1404,14 +1451,14 @@
     </section>
 
     <section class="section-card">
-      <h2>三、唐重大历史事件编年表（60 项）</h2>
+      <h2>三、唐重大历史事件编年表与正史出处（60 项）</h2>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
               <th>年份与帝王年号</th>
               <th>历史事件（中英对照）</th>
-              <th>史事背景与地理空间影响</th>
+              <th>史事背景、地理空间影响与史料出处</th>
               <th>地图定格</th>
             </tr>
           </thead>
@@ -1419,55 +1466,55 @@
           <tr>
             <td><strong>618年</strong><br/><small>唐高祖·武德元年</small></td>
             <td><strong>隋炀帝江都遇弑后，唐王李渊迫隋恭帝杨侑禅让，于长安称帝建立唐朝</strong><br/><small>After Emperor Yang is slain at Jiangdu, Li Yuan receives the Sui abdication and founds Tang</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷185 唐纪一 武德元年三月；五月；刘昫等《旧唐书》 卷1 本纪第一 高祖 武德元年五月</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=618">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>621年</strong><br/><small>唐高祖·武德四年</small></td>
             <td><strong>虎牢之战李世民擒窦建德、降王世充；李靖平萧铣</strong><br/><small>Battle of Hulao: Li Shimin captures Dou Jiande and Wang Shichong; Li Jing pacifies Xiao Xian</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷189 唐纪五 武德四年五月；九月至十月；刘昫等《旧唐书》 卷2 本纪第二 太宗上</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=621">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>624年</strong><br/><small>唐高祖·武德七年</small></td>
             <td><strong>唐高祖颁行武德律令，初定均田制与租庸调制</strong><br/><small>Emperor Gaozu promulgates the Wude Statutes establishing equal-field and tripartite tax systems</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷190 唐纪六 武德七年四月；刘昫等《旧唐书》 卷48 志第二十八 食货上</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=624">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>626年</strong><br/><small>唐高祖·武德九年</small></td>
             <td><strong>玄武门之变：秦王李世民伏兵诛太子建成、齐王元吉，唐高祖退位禅让</strong><br/><small>Xuanwu Gate Incident: Prince Li Shimin ambushes Crown Prince Jiancheng and ascends as Taizong</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷191 唐纪七 武德九年六月</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=626">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>627年</strong><br/><small>唐太宗·贞观元年</small></td>
             <td><strong>唐太宗改元贞观，任房玄龄、杜如晦定官制，虚怀纳谏开创“贞观之治”</strong><br/><small>Emperor Taizong inaugurates the Reign of Zhenguan with Fang Xuanling and Du Ruhui</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷192 唐纪八 贞观元年正月；十二月；刘昫等《旧唐书》 卷66 列传第十六 房玄龄传 杜如晦传（杜如晦贞观三年始拜仆射与房玄龄共掌朝政）</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=627">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>630年</strong><br/><small>唐太宗·贞观四年</small></td>
             <td><strong>李靖灭东突厥，西北诸君尊唐太宗为“天可汗”，置定襄、云中都督府</strong><br/><small>Li Jing conquers Eastern Tujue; steppe rulers hail Emperor Taizong as Heavenly Qaghan</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷193 唐纪九 贞观四年</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=630">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>635年</strong><br/><small>唐太宗·贞观九年</small></td>
             <td><strong>李靖分道远征吐谷浑抵黄河源柏海，伏允败亡，其子慕容顺举国降唐</strong><br/><small>Li Jing marches to Lake Baihai; Tuyuhun&#39;s Fuyun dies in flight and Murong Shun submits</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷194 唐纪十 贞观九年五月（伏允为左右所杀；《旧唐书》作自缢）；刘昫等《旧唐书》 卷198 列传第一百四十八 西戎 吐谷浑</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=635">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>640年</strong><br/><small>唐太宗·贞观十四年</small></td>
             <td><strong>侯君集灭高昌，唐置安西都护府</strong><br/><small>Hou Junji conquers Gaochang; Tang establishes the Anxi Protectorate</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷195 唐纪十一 贞观十四年八月；九月；刘昫等《旧唐书》 卷198 列传第一百四十八 西戎 高昌</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=640">定格此年 →</a></td>
           </tr>
           <tr>
             <td><strong>641年</strong><br/><small>唐太宗·贞观十五年</small></td>
             <td><strong>文成公主入藏，与吐蕃松赞干布联姻</strong><br/><small>Princess Wencheng enters Tibet to marry Songtsen Gampo</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷196 唐纪十二 贞观十五年正月；刘昫等《旧唐书》 卷196上 列传第一百四十六上 吐蕃上（逻些为吐蕃都城；松赞干布亲迎于河源柏海）</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=641">定格此年 →</a></td>
           </tr>
           <tr>
@@ -1497,7 +1544,7 @@
           <tr>
             <td><strong>663年</strong><br/><small>唐高宗·龙朔三年</small></td>
             <td><strong>白江口海战大破日济水军；同年吐蕃禄东赞攻灭吐谷浑，诺曷钵奔凉州</strong><br/><small>Battle of Baekgang crushes Yamato-Baekje fleet; Tubo annexes Tuyuhun &amp; takes Qinghai</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷201 唐纪十七 龙朔三年五月、八月</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=663">定格此年 →</a></td>
           </tr>
           <tr>
@@ -1509,7 +1556,7 @@
           <tr>
             <td><strong>670年</strong><br/><small>唐高宗·咸亨元年</small></td>
             <td><strong>大非川之战：薛仁贵败于吐蕃，吐谷浑入吐蕃；吐蕃陷安西四镇</strong><br/><small>Battle of Dafeichuan: Tang defeated; Tibet annexes Tuyuhun and takes the Four Garrisons of Anxi</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷201 唐纪十七 咸亨元年四月</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=670">定格此年 →</a></td>
           </tr>
           <tr>
@@ -1521,7 +1568,7 @@
           <tr>
             <td><strong>679年</strong><br/><small>唐高宗·调露元年</small></td>
             <td><strong>裴行俭擒阿史那都支，复置安西四镇；改交州都督府为安南都护府</strong><br/><small>Pei Xingjian restores the Four Garrisons of Anxi; Jiaozhou becomes the Annam Protectorate</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷202 唐纪十八 调露元年</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=679">定格此年 →</a></td>
           </tr>
           <tr>
@@ -1545,7 +1592,7 @@
           <tr>
             <td><strong>692年</strong><br/><small>武周武则天·长寿元年</small></td>
             <td><strong>王孝杰大破吐蕃收复安西四镇，复置安西都护府于龟兹</strong><br/><small>Wang Xiaojie routs Tibet, recovers the Four Garrisons and restores the Anxi seat at Kucha</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷205 唐纪二十一 长寿元年十月</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=692">定格此年 →</a></td>
           </tr>
           <tr>
@@ -1599,7 +1646,7 @@
           <tr>
             <td><strong>738年</strong><br/><small>唐玄宗·开元二十六年</small></td>
             <td><strong>唐册封皮逻阁为云南王，六诏合一建南诏迁都太和城</strong><br/><small>Tang invests Piluoge as King of Yunnan; the Six Zhao unite to form the Nanzhao Kingdom</small></td>
-            <td></td>
+            <td><div class="source-cite"><strong>史料出处：</strong>司马光《资治通鉴》 卷214 唐纪三十 开元二十六年</div></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=738">定格此年 →</a></td>
           </tr>
           <tr>

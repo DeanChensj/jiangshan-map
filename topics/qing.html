@@ -38,8 +38,8 @@
       "headline": "清历史地图（1644—1912 · Qing）· 疆域演变、州郡政区、古今地名对照与重大事件 | 江山时序",
       "description": "清历史地图（公元1644年至公元1912年，都城：京师（北京））：1644 年入关后，历康熙、雍正、乾隆三朝逐步奠定版图：收台湾、定漠北、平青海、设驻藏大臣、平定天山南北。1840 年后屡遭列强侵略，外东北与伊犁西境割让。 收录18幅多阶段版图快照、140座城池古今地名对照与53项编年重大历史事件。",
       "url": "https://deanchen.me/jiangshan-map/topics/qing.html",
-      "datePublished": "2026-10-21",
-      "dateModified": "2026-10-21",
+      "datePublished": "2026-11-18",
+      "dateModified": "2026-11-18",
       "inLanguage": [
         "zh-CN",
         "en"
@@ -345,6 +345,53 @@
       border-radius: 4px;
       margin-right: 0.4rem;
     }
+    .camp-badge {
+      display: inline-block;
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.1rem 0.48rem;
+      border-radius: 4px;
+      margin-right: 0.38rem;
+    }
+    .source-cite {
+      margin-top: 0.38rem;
+      padding-top: 0.3rem;
+      border-top: 1px dashed rgba(213, 199, 174, 0.75);
+      font-size: 0.83rem;
+      color: var(--ink-muted);
+      line-height: 1.55;
+    }
+    .story-link-pill {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0.08rem 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--cinnabar);
+      background: rgba(158, 42, 34, 0.1);
+      border: 1px solid rgba(158, 42, 34, 0.3);
+      border-radius: 4px;
+      text-decoration: none;
+    }
+    .story-link-pill:hover {
+      background: var(--cinnabar);
+      color: #fff;
+      text-decoration: none !important;
+    }
+    .diff-add { color: #1f5c3a; font-weight: 600; }
+    .diff-rem { color: #8c2d24; font-weight: 600; }
+    .diff-same { color: var(--ink-muted); font-size: 0.85rem; }
+    .act-heading {
+      margin: 1.25rem 0 0.65rem;
+      padding: 0.4rem 0.75rem;
+      background: #ece3d0;
+      border-left: 4px solid var(--cinnabar);
+      border-radius: 4px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--ink-main);
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -414,135 +461,135 @@
               <th>阶段</th>
               <th>年代范围与代表年号</th>
               <th>并立政权 / 核心版图</th>
-              <th>主要州郡 / 道 / 路 / 行省政区</th>
+              <th>政区格局与阶段疆域变化</th>
               <th>交互式地图直达</th>
             </tr>
           </thead>
           <tbody>
           <tr>
             <td>第 1 阶段</td>
-            <td><strong>1644 — 1644</strong><br/><small>清顺治元年</small></td>
+            <td><strong>1644 — 1644</strong><br/><small>清顺治元年</small><br/><small style="color:#5e5346;">清军入关与南明、大顺、大西并立：清廷定都北京控制北方，弘光立于南京，李自成据陕甘、张献忠据四川</small></td>
             <td>清、南明、大顺（李自成）、大西（张献忠）、台湾（荷占）</td>
-            <td>霍州、郧阳府、襄阳府、德安府、汉阳府、黄州府、荆门州、武昌府、荆州府、安陆府、和林格尔厅、归化绥远城、萨拉齐厅、托克托厅 等 279 个政区</td>
+            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等共 21 个政区</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1644">查看 1644年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 2 阶段</td>
-            <td><strong>1645 — 1660</strong><br/><small>清顺治十年</small></td>
+            <td><strong>1645 — 1660</strong><br/><small>清顺治十年</small><br/><small style="color:#5e5346;">清军下江南与南明抗清：清军平定陕川江南，南明隆武、永历政权与李定国、郑成功据南方抗清</small></td>
             <td>清、南明、台湾（荷占）</td>
-            <td>霍州、郧阳府、襄阳府、德安府、汉阳府、黄州府、荆门州、武昌府、荆州府、安陆府、和林格尔厅、归化绥远城、萨拉齐厅、托克托厅 等 279 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>大顺（李自成）、大西（张献忠）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1653">查看 1653年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 3 阶段</td>
-            <td><strong>1661 — 1661</strong><br/><small>清顺治十八年</small></td>
+            <td><strong>1661 — 1661</strong><br/><small>清顺治十八年</small><br/><small style="color:#5e5346;">郑成功收复台湾与南明永历终局：明郑设承天府奉永历正朔，李定国于滇西抗清</small></td>
             <td>清、南明、南明（明郑）</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 21 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>南明（明郑）<br/><span class="diff-rem">－更替/罢撤：</span>台湾（荷占）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1661">查看 1661年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 4 阶段</td>
-            <td><strong>1662 — 1672</strong><br/><small>清康熙六年</small></td>
+            <td><strong>1662 — 1672</strong><br/><small>清康熙六年</small><br/><small style="color:#5e5346;">永历蒙难与康熙亲政：南明大陆抗清终结，台湾明郑奉永历正朔，三藩起兵前夕</small></td>
             <td>清、南明（明郑）</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 21 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>南明</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1667">查看 1667年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 5 阶段</td>
-            <td><strong>1673 — 1680</strong><br/><small>清康熙十六年</small></td>
+            <td><strong>1673 — 1680</strong><br/><small>清康熙十六年</small><br/><small style="color:#5e5346;">三藩之乱与明郑抗清：吴三桂起兵建立吴周据西南，耿精忠、尚之信及郑经响应</small></td>
             <td>清、吴周 · 三藩、南明（明郑）</td>
-            <td>霍州、郧阳府、襄阳府、德安府、汉阳府、黄州府、荆门州、武昌府、荆州府、安陆府、和林格尔厅、归化绥远城、萨拉齐厅、托克托厅 等 280 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>吴周 · 三藩</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1677">查看 1677年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 6 阶段</td>
-            <td><strong>1681 — 1682</strong><br/><small>清康熙二十一年</small></td>
+            <td><strong>1681 — 1682</strong><br/><small>清康熙二十一年</small><br/><small style="color:#5e5346;">平定三藩：西南全境入清，施琅攻台前夕</small></td>
             <td>清、南明（明郑）</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 21 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>吴周 · 三藩</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1682">查看 1682年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 7 阶段</td>
-            <td><strong>1683 — 1690</strong><br/><small>清康熙二十六年</small></td>
+            <td><strong>1683 — 1690</strong><br/><small>清康熙二十六年</small><br/><small style="color:#5e5346;">施琅收台湾与尼布楚条约：置台湾府，划定中俄东段边界</small></td>
             <td>清</td>
-            <td>霍州、郧阳府、襄阳府、德安府、汉阳府、黄州府、荆门州、武昌府、荆州府、安陆府、和林格尔厅、归化绥远城、萨拉齐厅、托克托厅 等 280 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>南明（明郑）<br/><span class="diff-add">＋新增政区：</span>台湾</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1687">查看 1687年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 8 阶段</td>
-            <td><strong>1691 — 1719</strong><br/><small>清康熙四十四年</small></td>
+            <td><strong>1691 — 1719</strong><br/><small>清康熙四十四年</small><br/><small style="color:#5e5346;">多伦会盟定漠北：喀尔喀蒙古正式内附纳入清朝版图</small></td>
             <td>清</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 23 个政区</td>
+            <td><span class="diff-add">＋新增政区：</span>乌里雅苏台</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1705">查看 1705年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 9 阶段</td>
-            <td><strong>1720 — 1758</strong><br/><small>清乾隆四年</small></td>
-            <td>清</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 23 个政区</td>
+            <td><strong>1720 — 1758</strong><br/><small>清乾隆四年</small><br/><small style="color:#5e5346;">驱准入藏与平定青海：设驻藏大臣、西宁办事大臣，《恰克图条约》</small></td>
+            <td>清、西藏（驻藏大臣）</td>
+            <td><span class="diff-add">＋新增/建置：</span>西藏（驻藏大臣）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1739">查看 1739年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 10 阶段</td>
-            <td><strong>1759 — 1795</strong><br/><small>清乾隆四十二年</small></td>
+            <td><strong>1759 — 1795</strong><br/><small>清乾隆四十二年</small><br/><small style="color:#5e5346;">乾隆极盛疆域：平定准噶尔与回部，设伊犁将军统辖天山南北</small></td>
             <td>清</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>西藏（驻藏大臣）<br/><span class="diff-add">＋新增政区：</span>伊犁（新疆）、青海、西藏</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1777">查看 1777年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 11 阶段</td>
-            <td><strong>1796 — 1850</strong><br/><small>清道光三年</small></td>
+            <td><strong>1796 — 1850</strong><br/><small>清道光三年</small><br/><small style="color:#5e5346;">嘉道时期：白莲教起义与 1840 年鸦片战争爆发</small></td>
             <td>清</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 26 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1823">查看 1823年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 12 阶段</td>
-            <td><strong>1851 — 1857</strong><br/><small>清咸丰四年</small></td>
+            <td><strong>1851 — 1857</strong><br/><small>清咸丰四年</small><br/><small style="color:#5e5346;">太平天国运动：洪秀全定都天京（南京），与清廷沿江对峙</small></td>
             <td>清、太平天国</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>太平天国</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1854">查看 1854年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 13 阶段</td>
-            <td><strong>1858 — 1859</strong><br/><small>清咸丰九年</small></td>
+            <td><strong>1858 — 1859</strong><br/><small>清咸丰九年</small><br/><small style="color:#5e5346;">《瑷珲条约》失黑龙江以北：沙俄割占黑龙江以北、外兴安岭以南，乌苏里江以东尚属清廷</small></td>
             <td>清、太平天国</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 26 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1859">查看 1859年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 14 阶段</td>
-            <td><strong>1860 — 1863</strong><br/><small>清同治元年</small></td>
+            <td><strong>1860 — 1863</strong><br/><small>清同治元年</small><br/><small style="color:#5e5346;">《北京条约》失乌苏里江以东；太平天国与湘淮军决战江南（安庆、天京之战）</small></td>
             <td>清、太平天国</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-same">州道/省区建制同上阶段（共 26 政区），详见左侧阶段提要</span></td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1862">查看 1862年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 15 阶段</td>
-            <td><strong>1864 — 1880</strong><br/><small>清同治十一年</small></td>
+            <td><strong>1864 — 1880</strong><br/><small>清同治十一年</small><br/><small style="color:#5e5346;">同治平乱与左宗棠西征：1871 沙俄强占伊犁，1876 左宗棠收复新疆南北路</small></td>
             <td>清、伊犁（沙俄侵占）</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>伊犁（沙俄侵占）<br/><span class="diff-rem">－更替/罢撤：</span>太平天国</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1872">查看 1872年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 16 阶段</td>
-            <td><strong>1881 — 1894</strong><br/><small>清光绪十四年</small></td>
+            <td><strong>1881 — 1894</strong><br/><small>清光绪十四年</small><br/><small style="color:#5e5346;">曾纪泽改订条约收复伊犁与新疆建省：1881 签约收回伊犁九城，1884 新疆建省</small></td>
             <td>清</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 26 个政区</td>
+            <td><span class="diff-rem">－更替/罢撤：</span>伊犁（沙俄侵占）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1888">查看 1888年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 17 阶段</td>
-            <td><strong>1895 — 1897</strong><br/><small>清光绪二十二年</small></td>
+            <td><strong>1895 — 1897</strong><br/><small>清光绪二十二年</small><br/><small style="color:#5e5346;">甲午战败与马关条约：割让台湾、澎湖予日本，列强瓜分狂潮前夕</small></td>
             <td>清、台湾（日占）</td>
-            <td>霍州、郧阳府、襄阳府、德安府、汉阳府、黄州府、荆门州、武昌府、荆州府、安陆府、和林格尔厅、归化绥远城、萨拉齐厅、托克托厅 等 279 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>台湾（日占）<br/><span class="diff-rem">－失守/省并政区：</span>台湾</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1896">查看 1896年 舆图 →</a></td>
           </tr>
           <tr>
             <td>第 18 阶段</td>
-            <td><strong>1898 — 1912</strong><br/><small>清光绪三十一年</small></td>
+            <td><strong>1898 — 1912</strong><br/><small>清光绪三十一年</small><br/><small style="color:#5e5346;">戊戌瓜分狂潮与晚清危局：德租胶州湾、俄租旅大、英租威海卫与九龙新界</small></td>
             <td>清、台湾（日占）、胶州湾（德租）、威海卫（英租）、旅大（俄租）、九龙新界（英租）</td>
-            <td>直隶、江苏、安徽、山东、山西、河南、陕西、甘肃、浙江、江西、湖北、湖南、四川、福建 等 25 个政区</td>
+            <td><span class="diff-add">＋新增/建置：</span>胶州湾（德租）、威海卫（英租）、旅大（俄租）、九龙新界（英租）</td>
             <td><a href="https://deanchen.me/jiangshan-map/?year=1905">查看 1905年 舆图 →</a></td>
           </tr>
           </tbody>
@@ -1551,14 +1598,14 @@
     </section>
 
     <section class="section-card">
-      <h2>三、清重大历史事件编年表（53 项）</h2>
+      <h2>三、清重大历史事件编年表与正史出处（53 项）</h2>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
               <th>年份与帝王年号</th>
               <th>历史事件（中英对照）</th>
-              <th>史事背景与地理空间影响</th>
+              <th>史事背景、地理空间影响与史料出处</th>
               <th>地图定格</th>
             </tr>
           </thead>
