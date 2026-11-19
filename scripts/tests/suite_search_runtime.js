@@ -143,6 +143,32 @@ async function runSearchRuntimeSuite(ctx) {
           `Famous city "${cityQ}" must rank #1 as kind="city" above same-named era, got ${JSON.stringify(cHits[0])}`
         );
       }
+      // Every indexed city entry jumps to a year when its settlement is drawn (appear <= year < vanish)
+      for (const item of ctrl._ensureSearchIndex()) {
+        if (item.kind !== 'city') continue;
+        const s = item.dynasty.settlements.find(
+          (st) => st.ancient === item.titleZh && st.coord === item.coord
+        );
+        assert(
+          s &&
+            (s.vanish === undefined || item.year < s.vanish) &&
+            (s.appear === undefined || item.year >= s.appear),
+          `Indexed city "${item.titleZh}" (${item.dynasty.key}) vanishes in ${s && s.vanish} / appears in ${s && s.appear} but jumps to ${item.year}`
+        );
+      }
+      for (const vanishedQ of ['襄国', '平阳', '棘城', '东阳城', '交州', '夏州']) {
+        const vHit = ctrl
+          ._queryQuickSearch(vanishedQ)
+          .find((h) => h.kind === 'city' && h.titleZh === vanishedQ);
+        assert(vHit, `Expected city search hit for "${vanishedQ}"`);
+        const vSettlement = vHit.dynasty.settlements.find((s) => s.ancient === vHit.titleZh);
+        assert(
+          vSettlement &&
+            vHit.year < vSettlement.vanish &&
+            (vSettlement.appear === undefined || vHit.year >= vSettlement.appear),
+          `City "${vanishedQ}" vanishes in ${vSettlement && vSettlement.vanish} but its search hit jumps to ${vHit.year}`
+        );
+      }
       for (const explicitEraQ of ['长安元年', '建康元年', '绍兴元年', '大同元年', '建安元年']) {
         const eHits = ctrl._queryQuickSearch(explicitEraQ);
         assert(

@@ -321,7 +321,8 @@
         const enDyn = (this.enLocale.dynasties && this.enLocale.dynasties[d.key]) || {};
         const dynNameEn = enDyn.name || d.title;
         for (const s of d.settlements || []) {
-          const yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
+          let yr = s.appear !== undefined ? Math.max(d.fromYear, s.appear) : d.focusYear;
+          if (s.vanish !== undefined && yr >= s.vanish) yr = Math.max(d.fromYear, s.vanish - 1);
           const rawAncEn = this._enDict(s.ancient);
           const ancEn = isModernDyn ? this._enModernCity(s.ancient) : rawAncEn;
           const modEn = this._enModernCity(s.modern || '');
