@@ -392,6 +392,75 @@
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -450,6 +519,16 @@
         <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/ming.html">下一时期：明 &rarr;</a>
       </div>
     </article>
+
+    <section class="embed-card" aria-label="交互式历史地图预览">
+      <div class="embed-header">
+        <h2>元交互式历史舆图预览（1279—1368 · 可拨动底部时间轴切换阶段）</h2>
+        <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
+      </div>
+      <div class="embed-frame-wrap">
+        <iframe class="embed-iframe" src="../?embed=1&amp;year=1300&amp;from=1279&amp;to=1368" title="元交互式历史舆图预览（1279—1368 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section class="section-card">
       <h2>一、元版图演变阶段与政权州郡格局（6 阶段快照）</h2>
@@ -1121,6 +1200,21 @@
           </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>四、元舆图边界、山川形胜与政区考据札记</h2>
+      <p>以下记录「江山时序」在绘制元（1279—1368）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>中书省（腹里）、宣政院与十大行省（含库页岛）</strong>
+          <p>还原元代中书省直辖腹里（河北、山东、山西）、宣政院辖吐蕃之地，以及岭北、辽阳（含库页岛苦夷）、河南江北、江浙、江西（含粤东）、湖广（含广西、海南、黔）、陕西、四川、云南、甘肃十大行省。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>元末（1335 / 1367）周边政权清理与群雄并起</strong>
+          <p>1335 年快照及时移除已覆亡的日本镰仓幕府、波斯伊利汗国与缅甸蒲甘王朝；1351—1367 年快照完整刻画韩宋、陈友谅大汉、张士诚大周、明玉珍大夏与朱元璋西吴的兼并过程。</p>
+        </div>
       </div>
     </section>
 

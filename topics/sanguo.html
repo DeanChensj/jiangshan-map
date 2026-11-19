@@ -392,6 +392,75 @@
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -450,6 +519,16 @@
         <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/xijin.html">下一时期：西晋 &rarr;</a>
       </div>
     </article>
+
+    <section class="embed-card" aria-label="交互式历史地图预览">
+      <div class="embed-header">
+        <h2>三国交互式历史舆图预览（220—280 · 可拨动底部时间轴切换阶段）</h2>
+        <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
+      </div>
+      <div class="embed-frame-wrap">
+        <iframe class="embed-iframe" src="../?embed=1&amp;year=250&amp;from=220&amp;to=280" title="三国交互式历史舆图预览（220—280 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section class="section-card">
       <h2>一、三国版图演变阶段与政权州郡格局（4 阶段快照）</h2>
@@ -941,6 +1020,21 @@
           </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>四、三国舆图边界、山川形胜与政区考据札记</h2>
+      <p>以下记录「江山时序」在绘制三国（220—280）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>魏蜀吴三家僵持的自然山川锁钥</strong>
+          <p>曹魏与蜀汉以秦岭褒斜、子午、散关及陇右祁连山分界；曹魏与孙吴于淮南（合肥、寿春、濡须口）及江汉（襄阳、江陵）形成夹淮、夹江南北拉锯；蜀、吴自222年夷陵之战后以巫峡、武陵山脉划界。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>交广分置、公孙渊辽东与魏灭蜀终局</strong>
+          <p>涵盖黄武五年（226）士燮卒后孙权分交州置广州、景初二年（238）司马懿平定辽东燕王公孙渊，以及景元四年（263）邓艾、钟会灭蜀后魏吴南北对峙的晚期格局。</p>
+        </div>
       </div>
     </section>
 
