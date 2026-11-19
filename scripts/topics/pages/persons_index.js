@@ -1,7 +1,7 @@
 'use strict';
 
 const { BASE_URL } = require('../config');
-const { escHtml, fmtYearShortZh, fmtYearEn } = require('../runtime');
+const { escHtml, fmtYearShortZh, dedupeConsecutive, buildMapHref } = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -17,6 +17,8 @@ function buildPersonsIndexPage({
   directoryOnlyPersons,
   allDynasties,
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
   const canonicalUrl = `${BASE_URL}/topics/persons.html`;
   const dynTitleMap = new Map(allDynasties.map((d) => [d.key, d.title]));
@@ -25,19 +27,17 @@ function buildPersonsIndexPage({
     ...journeys.map((j) => {
       const stops = j.stops || [];
       const cleanSpanZh = j.spanZh.replace(/[（）()]/g, ' ').trim();
-      const sitesPreview = stops
-        .slice(0, 5)
-        .map((s) => s.ancientZh)
-        .join(' → ');
+      const uniqueStops = dedupeConsecutive(stops.map((s) => s.ancientZh));
+      const sitesPreview = uniqueStops.slice(0, 5).join(' → ');
       return {
         badge: '精修行迹',
         badgeClass: 'is-curated',
         zh: j.titleZh,
         en: j.titleEn,
-        subZh: `${cleanSpanZh} · 全线 ${stops.length} 站`,
-        routeZh: `${sitesPreview}${stops.length > 5 ? ' …' : ''}`,
+        spanZh: cleanSpanZh,
+        routeZh: `${sitesPreview}${uniqueStops.length > 5 ? ' …' : ''}`,
         topicHref: `journey-${j.key}.html`,
-        mapHref: `../?person=${encodeURIComponent(j.key)}`,
+        mapHref: buildMapHref(`?person=${encodeURIComponent(j.key)}`, { lang, base: mapBase }),
       };
     }),
     ...personMonographItems
@@ -49,10 +49,10 @@ function buildPersonsIndexPage({
           badgeClass: 'is-relic',
           zh: profile.zh,
           en: profile.en,
-          subZh: `${meta.spanZh} · ${profile.courtesyZh || ''}`,
-          routeZh: `历 13 站千年传序（战国和氏璧 → 秦制传国玺 → 936年洛阳失传）`,
+          spanZh: meta.spanZh,
+          routeZh: '和氏璧 → 秦制传国玺 → 后唐洛阳失传',
           topicHref: `${meta.slug}.html`,
-          mapHref: `../?person=${encodeURIComponent(profile.key)}`,
+          mapHref: buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase }),
         };
       }),
   ];
@@ -63,41 +63,39 @@ function buildPersonsIndexPage({
 
   const curatedRowsHtml = curatedItems
     .map(
-      (item) => `            <tr>
-              <td><a href="${escHtml(item.topicHref)}"><strong>${escHtml(item.zh)}</strong></a><span class="person-type-badge ${item.badgeClass}">${escHtml(item.badge)}</span><br/><small>${escHtml(item.en)}</small></td>
-              <td>${escHtml(item.subZh)}</td>
+      (item) => `            <tr data-search="${escHtml(item.en)}">
+              <td><a href="${escHtml(item.topicHref)}"><strong>${escHtml(item.zh)}</strong></a><span class="person-type-badge ${item.badgeClass}">${escHtml(item.badge)}</span><br/><small>${escHtml(item.spanZh)}</small></td>
               <td>${escHtml(item.routeZh)}</td>
-              <td><a href="${escHtml(item.topicHref)}">查阅图志 →</a><br/><small><a href="${escHtml(item.mapHref)}">主图动画</a></small></td>
+              <td class="col-action"><a href="${escHtml(item.mapHref)}">主图 →</a></td>
             </tr>`
     )
     .join('\n');
 
   const monographRowsHtml = standardMonographs
     .map(({ profile, meta }) => {
-      const mapHref = `../?person=${encodeURIComponent(profile.key)}`;
-      return `            <tr>
-              <td><a href="${escHtml(meta.slug)}.html"><strong>${escHtml(profile.zh)}</strong></a><br/><small>${escHtml(profile.en)}${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
-              <td><strong>${escHtml(meta.dynastyTitle)}</strong><br/><small>${escHtml(meta.spanZh)}</small></td>
-              <td>收录 <strong>${meta.eventCount}</strong> 处节点 · 主要足迹：${escHtml(meta.descZh.replace(/^[^：]+：/, ''))}</td>
-              <td><a href="${escHtml(meta.slug)}.html">查阅人物志 →</a><br/><small><a href="${escHtml(mapHref)}">主图定位</a></small></td>
+      const mapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase });
+      const searchExtras = [profile.en, ...(profile.aliases || [])].filter(Boolean).join(' ');
+      return `            <tr data-search="${escHtml(searchExtras)}">
+              <td><a href="${escHtml(meta.slug)}.html"><strong>${escHtml(profile.zh)}</strong></a><br/><small>${escHtml(meta.dynastyTitle)}（${escHtml(meta.spanZh)}）${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
+              <td>${escHtml(meta.descZh.replace(/^[^：]+：/, ''))}</td>
+              <td class="col-action"><a href="${escHtml(mapHref)}">主图 →</a></td>
             </tr>`;
     })
     .join('\n');
 
   const directoryRowsHtml = directoryOnlyPersons
-    .map(({ profile, eventCount }) => {
+    .map(({ profile }) => {
       const dynTitle = dynTitleMap.get(profile.dynastyKey) || profile.dynastyKey;
       const span = Array.isArray(profile.span) ? profile.span : [0, 0];
       const spanZh = `${fmtYearShortZh(span[0])}—${fmtYearShortZh(span[1])}`;
-      const mapHref = `../?person=${encodeURIComponent(profile.key)}`;
+      const mapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase });
       const aliasList = Array.isArray(profile.aliases) && profile.aliases.length
         ? ` · 别名：${profile.aliases.slice(0, 3).join('、')}`
         : '';
-      return `            <tr>
-              <td><a href="${escHtml(mapHref)}"><strong>${escHtml(profile.zh)}</strong></a><br/><small>${escHtml(profile.en)}${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
-              <td><strong>${escHtml(dynTitle)}</strong><br/><small>${escHtml(spanZh)}（${escHtml(fmtYearEn(span[0]))} – ${escHtml(fmtYearEn(span[1]))}）</small></td>
-              <td>关联 <strong>${eventCount}</strong> 处编年地标事件${escHtml(aliasList)}</td>
-              <td><a href="${escHtml(mapHref)}">打开人物轨迹 →</a></td>
+      const searchExtras = [profile.en, ...(profile.aliases || [])].filter(Boolean).join(' ');
+      return `            <tr data-search="${escHtml(searchExtras)}">
+              <td><a href="${escHtml(mapHref)}"><strong>${escHtml(profile.zh)}</strong></a>${profile.courtesyZh ? `<br/><small>${escHtml(profile.courtesyZh)}</small>` : ''}</td>
+              <td><strong>${escHtml(dynTitle)}</strong>（${escHtml(spanZh)}）${escHtml(aliasList)}</td>
             </tr>`;
     })
     .join('\n');
@@ -122,9 +120,9 @@ function buildPersonsIndexPage({
   ];
 
   const tocItems = [
-    { id: 'sec-curated', label: `一、精修行迹与国器（${curatedItems.length}）` },
-    { id: 'sec-monographs', label: `二、核心人物独立志（${standardMonographs.length}）` },
-    { id: 'sec-directory', label: `三、其余编年人物（${directoryOnlyPersons.length}）` },
+    { id: 'sec-curated', label: '一、精修行迹与国器' },
+    { id: 'sec-monographs', label: '二、核心人物独立志' },
+    { id: 'sec-directory', label: '三、其余编年人物' },
   ];
 
   const pageTitle = `历代人物志与国器流转总录（收录 ${totalDirectoryCount} 位历史人物） | 江山时序`;
@@ -159,45 +157,37 @@ function buildPersonsIndexPage({
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader({ activeNav: 'persons' })}
+${renderTopHeader({ activeNav: 'persons', lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <span>历代人物志</span>
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">点人溯事 · 历代人物志总录（共收录 ${totalDirectoryCount} 位历史人物与国器）</span>
-        <h1>中国历代历史人物生平轨迹与国器流转图志</h1>
-        <p class="en-sub">Biographical Chronicles, Curated Journeys &amp; Temporal Spatial Profiles (403 BCE – Present · ${totalDirectoryCount} Figures)</p>
-        <div class="meta-pills">
-          <span class="meta-pill"><strong>精修行迹与国器：</strong>${curatedItems.length} 篇</span>
-          <span class="meta-pill"><strong>核心人物独立志：</strong>${standardMonographs.length} 篇</span>
-          <span class="meta-pill"><strong>全库人物索引：</strong>${totalDirectoryCount} 位</span>
-        </div>
-        <p>收录「江山时序」人物传记体系全部历史人物：高密度核心人物与传国玉玺均建有独立时空图志，附带逐事正史出处、同代人物交汇与主图双人同看链接；其余编年人物亦可一键定位至交互历史舆图。</p>
+        <span class="kicker">点人溯事 · 历代人物志</span>
+        <h1>历代人物生平轨迹与国器流转志</h1>
+        <p>收录历代精修行迹、传世国器与编年历史人物轨迹，点击人物可进入图文图志或定位交互舆图。</p>
         <div class="cta-row">
-          <a class="cta-btn" href="../">进入主地图体验「点人溯事」与双人同看 →</a>
-          <a class="cta-btn secondary" href="index.html">返回专题图志总览</a>
+          <a class="cta-btn" href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">进入主地图体验「点人溯事」→</a>
         </div>
       </article>
 
       <section id="sec-curated" class="section-card">
-        <h2>一、精修行迹路线与国器流转专题（${curatedItems.length} 篇）</h2>
-        <p>涵盖 6 篇带山川途经点与经典诗文引注的历史人物远行长卷，以及跨越千年的《传国玉玺》流转图志：</p>
+        <h2>一、精修行迹与国器流转</h2>
         <div class="table-wrap">
           <table id="tbl-curated-persons" class="data-table">
             <thead>
               <tr>
-                <th>专题名称（中英对照）</th>
-                <th>时代跨度与简介</th>
-                <th>代表站点路线</th>
-                <th>图志与主图</th>
+                <th>专题</th>
+                <th>代表站点</th>
+                <th class="col-action">主图</th>
               </tr>
             </thead>
             <tbody>
@@ -208,18 +198,16 @@ ${curatedRowsHtml}
       </section>
 
       <section id="sec-monographs" class="section-card">
-        <h2>二、核心人物独立时空图志（${standardMonographs.length} 篇）</h2>
-        <p>由主图编年引擎聚合 ≥ 5 处代表历史节点与地标事件的历代帝王、将相、文豪、史家与改革家：</p>
+        <h2>二、核心人物独立志</h2>
 ${renderFilterPresetChips('tbl-person-monographs', presetOptions)}
-${renderTableFilterBar('tbl-person-monographs', `按姓名、字号、朝代、足迹或英文名检索 ${standardMonographs.length} 篇独立人物志…`, standardMonographs.length, { force: true })}
+${renderTableFilterBar('tbl-person-monographs', '按姓名、字号、朝代或足迹检索…', standardMonographs.length, { force: true })}
         <div class="table-wrap">
           <table id="tbl-person-monographs" class="data-table">
             <thead>
               <tr>
-                <th>人物（中英与头衔字号）</th>
-                <th>所属朝代与生卒年</th>
-                <th>代表节点与活动足迹</th>
-                <th>专题入口</th>
+                <th>人物</th>
+                <th>主要足迹</th>
+                <th class="col-action">主图</th>
               </tr>
             </thead>
             <tbody>
@@ -230,17 +218,14 @@ ${monographRowsHtml}
       </section>
 
       <section id="sec-directory" class="section-card">
-        <h2>三、其余编年历史人物轨迹速查名录（${directoryOnlyPersons.length} 位）</h2>
-        <p>收录 3–4 处核心编年节点的人物传记档案，点击姓名即可直接打开主地图交互轨迹视图：</p>
-${renderTableFilterBar('tbl-person-directory', `按姓名、字号、朝代或英文名检索其余 ${directoryOnlyPersons.length} 位历史人物…`, directoryOnlyPersons.length, { force: true })}
+        <h2>三、其余编年人物</h2>
+${renderTableFilterBar('tbl-person-directory', '按姓名、字号或朝代检索…', directoryOnlyPersons.length, { force: true })}
         <div class="table-wrap">
           <table id="tbl-person-directory" class="data-table">
             <thead>
               <tr>
-                <th>人物（中英与头衔字号）</th>
-                <th>所属朝代与生卒年</th>
-                <th>节点统计与别名索引</th>
-                <th>交互地图</th>
+                <th>人物</th>
+                <th>所属朝代与别称</th>
               </tr>
             </thead>
             <tbody>
@@ -250,7 +235,7 @@ ${directoryRowsHtml}
         </div>
       </section>
 
-${renderFooter(allDynasties)}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

@@ -1,7 +1,7 @@
 'use strict';
 
 const { BASE_URL } = require('./config');
-const { escHtml, fmtDynSpanZh } = require('./runtime');
+const { escHtml, fmtDynSpanZh, buildMapHref } = require('./runtime');
 
 function renderSharedHead({
   title,
@@ -10,9 +10,11 @@ function renderSharedHead({
   canonicalUrl,
   jsonLdObj,
   assetHashes,
+  lang = 'zh',
 }) {
+  const htmlLang = lang === 'en' ? 'en' : 'zh-CN';
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${htmlLang}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,15 +54,16 @@ ${JSON.stringify(jsonLdObj, null, 2)}
 </head>`;
 }
 
-function renderTopHeader({ activeNav = '' } = {}) {
+function renderTopHeader({ activeNav = '', lang = 'zh', mapBase = '../' } = {}) {
+  const mapHref = escHtml(buildMapHref('', { lang, base: mapBase }));
   return `  <header class="top-bar">
     <div class="top-bar-inner">
-      <a class="brand-link" href="../">
+      <a class="brand-link" href="${mapHref}">
         <span class="seal-badge">江山时序</span>
         <span>历史舆图图志</span>
       </a>
       <nav class="top-nav" aria-label="专题图志导航">
-        <a href="../">交互舆图</a>
+        <a href="${mapHref}">交互舆图</a>
         <a href="index.html"${activeNav === 'index' ? ' class="is-current"' : ''}>图志总览</a>
         <a href="persons.html"${activeNav === 'persons' ? ' class="is-current"' : ''}>人物志</a>
         <a href="places.html"${activeNav === 'places' ? ' class="is-current"' : ''}>地区志</a>
@@ -135,21 +138,23 @@ function renderRelatedStrip(links) {
         </div>`;
 }
 
-function renderFooter(allDynasties) {
-  const dynLinks = allDynasties
-    .map(
-      (d) =>
-        `<a class="chip-link" href="${escHtml(d.key)}.html">${escHtml(d.title)}（${fmtDynSpanZh(d)}）</a>`
-    )
-    .join('\n          ');
-  return `      <section class="section-card footer-nav-card">
+function renderFooter(allDynasties, { showDynastyChips = true, lang = 'zh', mapBase = '../' } = {}) {
+  const homeHref = escHtml(buildMapHref('', { lang, base: mapBase }));
+  const dynNavHtml = showDynastyChips
+    ? `      <section class="section-card footer-nav-card">
         <h2>中国十八历史时期疆域图志速查（前403年—今）</h2>
         <div class="chip-grid">
-          ${dynLinks}
+          ${allDynasties
+            .map(
+              (d) =>
+                `<a class="chip-link" href="${escHtml(d.key)}.html">${escHtml(d.title)}（${fmtDynSpanZh(d)}）</a>`
+            )
+            .join('\n          ')}
         </div>
-      </section>
-      <footer class="page-footer">
-        <div>© 江山时序（Jiangshan Historical Atlas）· <a href="../">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
+      </section>\n`
+    : '';
+  return `${dynNavHtml}      <footer class="page-footer">
+        <div>© 江山时序 · <a href="${homeHref}">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
         <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
       </footer>`;
 }

@@ -1,7 +1,14 @@
 'use strict';
 
 const { BASE_URL, LASTMOD, isStandalonePersonMonograph } = require('../config');
-const { escHtml, fmtYearShortZh, fmtYearEn, formatSourceCitationsHtml } = require('../runtime');
+const {
+  escHtml,
+  fmtYearShortZh,
+  fmtYearEn,
+  buildMapHref,
+  buildEmbedHref,
+  formatSourceCitationsHtml,
+} = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -50,7 +57,6 @@ function formatPersonSpan(profile) {
 
 function buildPersonPage({
   profile,
-  idx,
   allStandalonePersons,
   events,
   allDynasties,
@@ -61,6 +67,8 @@ function buildPersonPage({
   peers,
   relatedLinks,
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
   const slug = `person-${profile.key}`;
   const canonicalUrl = `${BASE_URL}/topics/${slug}.html`;
@@ -90,6 +98,7 @@ function buildPersonPage({
   const introPunctZh = /[。！？…；.!?;]$/.test(introTextZh.trim()) ? '' : '。';
   const pageDesc = `${profile.zh}（${profile.en}，${spanZh} · ${introTextZh.replace(/[。！？…；.!?;]+$/, '')}）。收录 ${events.length} 处关联时空节点（${sampleSitesZh}等），提供交互式轨迹地图、逐条历史纪年、古今地名与正史出处。`;
 
+  const idx = allStandalonePersons.indexOf(profile);
   const yearSeen = new Map();
   const stopCardsHtml = events
     .map((ev, eIdx) => {
@@ -98,30 +107,27 @@ function buildPersonPage({
         ev.subEraZh ||
         (ev.dynasty ? ctrl.formatEraLabel(ev.year, ev.dynasty, ev.coord) : dynTitle);
       const siteDisplayZh = ev.modernZh ? `${ev.siteZh}（今${ev.modernZh}）` : ev.siteZh;
-      const siteDisplayEn = ev.modernEn ? `${ev.siteEn || ''} (${ev.modernEn})` : ev.siteEn || '';
-      const evMapHref = `../?person=${encodeURIComponent(profile.key)}&stop=${eIdx}`;
+      const evMapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}&stop=${eIdx}`, {
+        lang,
+        base: mapBase,
+      });
       const srcCiteHtml = resolveEventSourceHtml(profile, ev, yearSeen, loreData, sourcesBundle);
       const quoteBlock = ev.quoteZh
-        ? `\n          <blockquote class="poem-box">${escHtml(ev.quoteZh)}${
-            ev.quoteEn ? `<cite>${escHtml(ev.quoteEn)}</cite>` : ''
-          }</blockquote>`
+        ? `\n          <blockquote class="poem-box">${escHtml(ev.quoteZh)}</blockquote>`
         : '';
 
       return `        <div class="stop-card">
           <div class="stop-header">
             <div>
               <span class="stop-badge">第 ${eIdx + 1} ${unitZh}</span>
-              <strong>${escHtml(siteDisplayZh)}</strong>${
-                siteDisplayEn ? `<small class="stop-sub-en">${escHtml(siteDisplayEn)}</small>` : ''
-              }
+              <strong>${escHtml(siteDisplayZh)}</strong>
             </div>
             <div>
               <strong>${fmtYearShortZh(ev.year)}年 · ${escHtml(eraZh)}</strong> ·
-              <a class="stop-map-link" href="${escHtml(evMapHref)}">在地图定格此节点 →</a>
+              <a class="stop-map-link" href="${escHtml(evMapHref)}">地图定位 →</a>
             </div>
           </div>
-          <p class="stop-desc-zh">${escHtml(ev.textZh)}</p>
-          ${ev.textEn ? `<p class="en-sub stop-desc-en">${escHtml(ev.textEn)}</p>` : ''}${quoteBlock}${
+          <p class="stop-desc-zh">${escHtml(ev.textZh)}</p>${quoteBlock}${
             srcCiteHtml ? `\n          ${srcCiteHtml}` : ''
           }
         </div>`;
@@ -131,8 +137,7 @@ function buildPersonPage({
   const peerList = Array.isArray(peers) ? peers : [];
   const peersSectionHtml = peerList.length
     ? `\n      <section id="sec-peers" class="section-card">
-        <h2>二、同代人物时空交汇与双人同看（${peerList.length} 位）</h2>
-        <p>以下历史人物与「${escHtml(profile.zh)}」在相同历史年份与地域事件中存在同屏交汇，支持点击直接开启「双人同看」轨迹对照：</p>
+        <h2>二、同代人物交汇</h2>
         <div class="person-peer-grid">
 ${peerList
   .map((peer) => {
@@ -140,20 +145,23 @@ ${peerList
       ? `journey-${peer.journeyKey}.html`
       : isStandalonePersonMonograph(peer)
         ? `person-${peer.key}.html`
-        : `../?person=${encodeURIComponent(peer.key)}`;
+        : buildMapHref(`?person=${encodeURIComponent(peer.key)}`, { lang, base: mapBase });
     const peerPageLabel = peer.journeyKey
       ? '行迹图志 →'
       : isStandalonePersonMonograph(peer)
         ? '人物图志 →'
         : '单人轨迹 →';
-    const dualHref = `../?person=${encodeURIComponent(profile.key)},${encodeURIComponent(peer.key)}`;
+    const dualHref = buildMapHref(
+      `?person=${encodeURIComponent(profile.key)},${encodeURIComponent(peer.key)}`,
+      { lang, base: mapBase }
+    );
     const peerSpan = Array.isArray(peer.span)
       ? `${fmtYearShortZh(peer.span[0])}—${fmtYearShortZh(peer.span[1])}`
       : '';
     return `          <div class="person-peer-card">
             <div>
               <div class="person-peer-head">
-                <span class="person-peer-name">${escHtml(peer.zh)}<small>${escHtml(peer.en || '')}</small></span>
+                <span class="person-peer-name">${escHtml(peer.zh)}</span>
                 <span class="person-peer-shared">交汇 ${peer.sharedCount} 处</span>
               </div>
               <div class="person-peer-sub">${escHtml(peerSpan)}${peer.courtesyZh ? ` · ${escHtml(peer.courtesyZh)}` : ''}</div>
@@ -171,10 +179,10 @@ ${peerList
 
   const tocItems = [
     { id: 'sec-map', label: isRelic ? '流转舆图预览' : '轨迹舆图预览' },
-    { id: 'sec-events', label: `一、${isRelic ? '流转节点' : '生平节点'}（${events.length} ${nodeWordZh}）` },
+    { id: 'sec-events', label: `一、${isRelic ? '流转节点' : '生平节点'}` },
   ];
   if (peerList.length) {
-    tocItems.push({ id: 'sec-peers', label: `二、同代人物交汇（${peerList.length} 位）` });
+    tocItems.push({ id: 'sec-peers', label: '二、同代人物交汇' });
   }
 
   const prevPerson = idx > 0 ? allStandalonePersons[idx - 1] : null;
@@ -237,14 +245,15 @@ ${peerList
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader({ activeNav: 'persons' })}
+${renderTopHeader({ activeNav: 'persons', lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems, navFooterParts.join('\n        '))}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <a href="persons.html">历代人物志</a> &rsaquo;
         <span>${escHtml(profile.zh)}</span>
@@ -252,44 +261,35 @@ ${renderTocSidebar(tocItems, navFooterParts.join('\n        '))}
 
       <article class="hero-card">
         <span class="kicker">${
-          isRelic
-            ? '国器流转 · 历史文物时空图志'
-            : `点人溯事 · 历史人物时空图志（第 ${idx + 1} / ${allStandalonePersons.length} 篇）`
+          isRelic ? '国器流转 · 历史文物时空图志' : '点人溯事 · 历代人物志'
         }</span>
-        <h1>${escHtml(profile.zh)}（${escHtml(spanZh)}）· ${isRelic ? '流传时空图志' : '生平史事图志'}</h1>
-        <p class="en-sub">${escHtml(profile.en)} (${escHtml(spanEn)} · ${escHtml(primaryDynEn)})</p>
+        <h1>${escHtml(profile.zh)}（${escHtml(spanZh)}）</h1>
         <div class="meta-pills">
           <span class="meta-pill"><strong>主要时期：</strong>${escHtml(primaryDyn.title)}</span>
-          <span class="meta-pill"><strong>时间跨度：</strong>${escHtml(spanZh)}</span>
-          <span class="meta-pill"><strong>关联节点：</strong>共 ${events.length} ${nodeWordZh}</span>
           <span class="meta-pill"><strong>主要足迹：</strong>${escHtml(uniqueSites.slice(0, 4).join(' · ') || primaryDyn.seat)}</span>
         </div>
-        <p>${escHtml(introTextZh)}${introPunctZh}</p>
-        ${introTextEn ? `<p class="en-sub">${escHtml(introTextEn)}</p>` : ''}${
+        <p>${escHtml(introTextZh)}${introPunctZh}</p>${
           personSourceHtml ? `\n        ${personSourceHtml}` : ''
         }
         <div class="cta-row">
-          <a class="cta-btn" href="../${escHtml(mapQuery)}">在交互地图查看「${escHtml(profile.zh)}」全图轨迹 →</a>
-          <a class="cta-btn secondary" href="../${escHtml(mapQuery)}&amp;lang=en">Open in English →</a>
-          <a class="cta-btn secondary" href="persons.html">返回人物志总录</a>
+          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图查看「${escHtml(profile.zh)}」轨迹 →</a>
         </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
-  iframeSrc: `../?embed=1&person=${encodeURIComponent(profile.key)}`,
-  titleZh: `${profile.zh}交互式历史舆图轨迹预览（${spanZh}）`,
+  iframeSrc: buildEmbedHref(`person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase }),
+  titleZh: `${profile.zh}交互式轨迹预览（${spanZh}）`,
   hintZh: '点击地图激活交互 · 右上角可全屏查看',
 })}
 
       <section id="sec-events" class="section-card">
-        <h2>一、「${escHtml(profile.zh)}」${isRelic ? '历代流转时空节点' : '生平代表史事与古今地名录'}（${events.length} ${nodeWordZh}）</h2>
-        <p>以下事件按时间顺序由主图时空编年引擎聚合生成，点击单条右上角可直接在历史地图定位至对应年份与城邑：</p>
+        <h2>一、「${escHtml(profile.zh)}」${isRelic ? '历代流转节点' : '生平代表史事'}</h2>
 ${stopCardsHtml}
       </section>${peersSectionHtml}
 
-${renderFooter(allDynasties)}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

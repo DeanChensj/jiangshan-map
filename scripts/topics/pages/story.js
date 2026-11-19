@@ -5,6 +5,8 @@ const {
   escHtml,
   fmtYearShortZh,
   fmtYearEn,
+  buildMapHref,
+  buildEmbedHref,
   formatSourceCitationsHtml,
 } = require('../runtime');
 const {
@@ -18,12 +20,12 @@ const {
 
 function buildStorylinePage({
   s,
-  idx,
-  allStories,
   allDynasties,
   sourcesBundle,
   relatedLinks,
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
   const slug = `story-${s.key}`;
   const canonicalUrl = `${BASE_URL}/topics/${slug}.html`;
@@ -48,9 +50,9 @@ function buildStorylinePage({
   const campPillsHtml = camps
     .map(
       (c) =>
-        `<span class="meta-pill"><span class="camp-badge" style="background:${escHtml(c.color || '#9e2a22')};">${escHtml(
+        `<span class="camp-badge" style="background:${escHtml(c.color || '#9e2a22')};">${escHtml(
           c.zh
-        )}</span><small>${escHtml(c.en)}</small></span>`
+        )}</span>`
     )
     .join('\n          ');
 
@@ -65,19 +67,20 @@ function buildStorylinePage({
         lastActZh = st.actZh;
         const actId = `sec-act-${actTocItems.length + 1}`;
         actTocItems.push({ id: actId, label: st.actZh });
-        actHeaderHtml = `        <div id="${actId}" class="act-heading">${escHtml(st.actZh)}${
-          st.actEn ? ` <small>${escHtml(st.actEn)}</small>` : ''
-        }</div>\n`;
+        actHeaderHtml = `        <div id="${actId}" class="act-heading">${escHtml(st.actZh)}</div>\n`;
       }
       const campObj = campMap.get(st.camp);
       const campBadgeHtml = campObj
         ? `<span class="camp-badge" style="background:${escHtml(campObj.color || '#9e2a22')};">${escHtml(campObj.zh)}</span>`
         : '';
-      const stopMapHref = `../?event=${encodeURIComponent(s.key)}&stop=${sIdx}`;
+      const stopMapHref = buildMapHref(`?event=${encodeURIComponent(s.key)}&stop=${sIdx}`, {
+        lang,
+        base: mapBase,
+      });
       const actorsList =
         Array.isArray(st.actors) && st.actors.length
           ? `<div class="stop-meta-line"><strong>核心人物：</strong>${st.actors
-              .map((a) => `${escHtml(a.zh)}（${escHtml(a.en)}）`)
+              .map((a) => escHtml(a.zh))
               .join('、')}</div>`
           : '';
       const vectorParts = [];
@@ -99,19 +102,17 @@ function buildStorylinePage({
             <div>
               <span class="stop-badge">第 ${sIdx + 1} 幕</span>${campBadgeHtml}
               <strong>${escHtml(st.ancientZh)}（今${escHtml(st.modernZh)}）· ${escHtml(st.titleZh)}</strong>
-              <small class="stop-sub-en">${escHtml(st.ancientEn)} (${escHtml(st.modernEn)}) — ${escHtml(st.titleEn)}</small>
             </div>
             <div>
               <strong>${escHtml(timeLabelZh)}</strong> ·
-              <a class="stop-map-link" href="${escHtml(stopMapHref)}">沙盘推演此站 →</a>
+              <a class="stop-map-link" href="${escHtml(stopMapHref)}">沙盘推演 →</a>
             </div>
           </div>
           ${actorsList}${vectorHtml}
           <p class="stop-desc-zh">${escHtml(st.descZh)}</p>
-          <p class="en-sub stop-desc-en">${escHtml(st.descEn)}</p>
           ${
             st.quoteZh
-              ? `<blockquote class="poem-box">${escHtml(st.quoteZh)}<cite>${escHtml(st.quoteEn || '')}</cite></blockquote>`
+              ? `<blockquote class="poem-box">${escHtml(st.quoteZh)}</blockquote>`
               : ''
           }
         </div>`;
@@ -120,7 +121,7 @@ function buildStorylinePage({
 
   const tocItems = [
     { id: 'sec-map', label: '沙盘地图预览' },
-    { id: 'sec-stops', label: `全程节点（${stops.length} 幕）` },
+    { id: 'sec-stops', label: '全程节点' },
     ...actTocItems,
   ];
 
@@ -169,52 +170,47 @@ function buildStorylinePage({
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader()}
+${renderTopHeader({ lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <span>${escHtml(s.zh)}（${escHtml(spanZh)}）</span>
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">事件始末 · 双阵营对抗历史沙盘图志（第 ${idx + 1} / ${allStories.length} 篇）</span>
+        <span class="kicker">事件始末 · 双阵营对抗沙盘</span>
         <h1>${escHtml(s.zh)}（${escHtml(spanZh)}）</h1>
-        <p class="en-sub">${escHtml(s.en)} (${escHtml(s.courtesyEn)})</p>
         <div class="meta-pills">
           <span class="meta-pill"><strong>格局提要：</strong>${escHtml(s.courtesyZh)}</span>
-          <span class="meta-pill"><strong>推演节点：</strong>共 ${stops.length} 站</span>
           ${campPillsHtml}
         </div>
         <p>${escHtml(s.descZh)}</p>
-        <p class="en-sub">${escHtml(s.descEn)}</p>
-        <p><strong>全线关键节点：</strong>${escHtml(stopsChainZh)}。</p>
         ${personSourceHtml}
         <div class="cta-row">
-          <a class="cta-btn" href="../${escHtml(mapQuery)}">在交互地图中推演「${escHtml(s.zh)}」沙盘 →</a>
-          <a class="cta-btn secondary" href="../${escHtml(mapQuery)}&amp;lang=en">Open in English →</a>
-          <a class="cta-btn secondary" href="index.html">返回图志总览</a>
+          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中推演「${escHtml(s.zh)}」→</a>
         </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
-  iframeSrc: `../?embed=1&event=${encodeURIComponent(s.key)}`,
-  titleZh: `${s.zh}双阵营对抗历史沙盘实时预览（${spanZh}）`,
+  iframeSrc: buildEmbedHref(`event=${encodeURIComponent(s.key)}`, { lang, base: mapBase }),
+  titleZh: `${s.zh}沙盘实时预览（${spanZh}）`,
   hintZh: '点击地图即可交互推演 · 右上角可全屏打开沙盘',
 })}
 
       <section id="sec-stops" class="section-card">
-        <h2>${escHtml(s.zh)} · 全程 ${stops.length} 幕时空推演、古今地名与史料引文详解</h2>
+        <h2>${escHtml(s.zh)} · 始末节点详解</h2>
 ${stopCardsHtml}
       </section>
 
-${renderFooter(allDynasties)}
+${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
     </main>
   </div>
 </body>
@@ -230,7 +226,7 @@ ${renderFooter(allDynasties)}
       url: canonicalUrl,
       titleZh: `${s.zh}历史地图（${spanZh}）`,
       titleEn: `${s.en} (${spanEn})`,
-      descZh: `${s.courtesyZh} · 双阵营${stops.length}站沙盘：${stops.map((st) => st.ancientZh).join(' → ')}`,
+      descZh: `${s.courtesyZh} · ${stops.map((st) => st.ancientZh).join(' → ')}`,
       descEn: `${s.courtesyEn} · ${stops.length}-stop sandtable: ${stops.map((st) => st.ancientEn).join(' → ')}`,
     },
   };
