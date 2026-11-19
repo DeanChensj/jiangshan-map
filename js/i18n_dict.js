@@ -7213,6 +7213,23 @@ window.EN_LOCALE = {
     "甘州回鹘": "Ganzhou Uyghurs",
     "凉州（六谷部）": "Liangzhou (Liugu)",
     "西羌": "Western Qiang",
-    "青海蒙古": "Qinghai Mongols"
+    "青海蒙古": "Qinghai Mongols",
+    "刺史部": "Inspectorate Region",
+    "布政使司": "Provincial Administration Commission",
+    "行省": "Branch Secretariat (Province)",
+    "宣政院": "Bureau of Buddhist and Tibetan Affairs",
+    "中书省": "Central Secretariat",
+    "省": "Province",
+    "道/省": "Circuit / Province",
+    "将军辖区": "Generalship Jurisdiction",
+    "办事大臣": "Imperial Resident Jurisdiction",
+    "驻藏大臣": "Imperial Resident in Tibet",
+    "地方": "Region",
+    "都督区": "Area Command",
+    "郡区": "Commandery Zone",
+    "政区": "Administrative Region",
+    "城": "City",
+    "属国": "Dependent State",
+    "部": "Tribal Division"
   }
 };

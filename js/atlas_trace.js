@@ -2685,17 +2685,9 @@
                 isEn ? 'Filter to shared encounters only' : '仅看多人同途交汇节点'
               }">${isEn ? `Shared ${sameTimeCount}` : `同途 ${sameTimeCount}`}</button>`
             : '';
-        const topicSlug = !isMulti
-          ? profile.isStory
-            ? `story-${profile.key}`
-            : profile.journeyKey
-              ? `journey-${profile.journeyKey}`
-              : ''
-          : '';
-        const topicLinkBtn = topicSlug
-          ? `<a class="topic-inline-link" href="topics/${escHtml(topicSlug)}.html" target="_blank" rel="noopener" title="${
-              isEn ? 'Open full topic guide & source table' : '查阅专题图志长卷与史料出处'
-            }">${isEn ? 'Guide' : '图志'}</a>`
+        const tSlug = !isMulti && (profile.isStory ? `story-${profile.key}` : profile.journeyKey ? `journey-${profile.journeyKey}` : '');
+        const topicLinkBtn = tSlug
+          ? `<a class="topic-inline-link" href="topics/${escHtml(tSlug)}.html" target="_blank" rel="noopener" title="${isEn ? 'Topic guide' : '查阅专题图志'}">${isEn ? 'Guide' : '图志'}</a>`
           : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
