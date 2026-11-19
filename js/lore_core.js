@@ -1050,6 +1050,8 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"beiyang_fengxi","zh":"北洋 · 奉系","en":"Fengtian Clique (Beiyang)","titles":["奉系（张作霖）","北洋政府 · 奉系（张作霖）","安国军政府 · 奉系（张作霖）"],"from":1916,"to":1928,"seatZh":"奉天（沈阳）→ 北京（1924—1928）","seatEn":"Fengtian (Shenyang) → Beijing (1924–1928)","aliases":["奉系军阀","安国军政府"]},
     {"key":"guangzhou_gov","zh":"广州护法 · 国民政府","en":"Guangzhou Constitutional Protection & Nationalist Government","titles":["护法军政府 · 西南各系","广州政府（孙中山）","广州国民政府（两广统一）","国民政府（北伐军）","国民政府（北伐军与冯阎集团）"],"from":1917,"to":1927,"matchFrom":1916,"matchTo":1928,"seatZh":"广州 → 武汉 · 南京（1927）","seatEn":"Guangzhou → Wuhan & Nanjing (1927)","aliases":["护法军政府","广州国民政府"]},
     {"key":"manchukuo","zh":"伪满洲国（日占）","en":"Manchukuo (Japanese Occupation)","titles":["辽吉（日军侵占）","伪满洲国（日占）"],"from":1932,"to":1945,"matchFrom":1931,"seatZh":"新京（长春）","seatEn":"Xinjing (Changchun)","aliases":["伪满洲国","满洲国"]},
+    {"key":"shanganning","zh":"陕甘宁边区","en":"Shaan-Gan-Ning Border Region","titles":["陕甘宁边区"],"from":1937,"to":1948,"matchFrom":1935,"seatZh":"延安","seatEn":"Yan'an","aliases":["陕甘宁根据地","延安边区"]},
+    {"key":"jp_occupied_china","zh":"关内日占区","en":"Japanese-Occupied Zones (China Proper)","titles":["关内日占区"],"from":1937,"to":1945,"seatZh":"北平 · 南京（日军与伪政权）","seatEn":"Beiping & Nanjing (Japanese Occupation)","aliases":["沦陷区","日占区"]},
     {"key":"jinghai_jiaozhou","zh":"静海军（交州）","en":"Jinghai Circuit (Jiaozhou)","titles":["静海军（交州）"],"from":905,"to":938,"matchFrom":866,"matchTo":939,"seatZh":"大罗城（交州，今河内）","seatEn":"Dai La (Jiaozhou, modern Hanoi)","aliases":["静海军节度使","交州曲氏"]}
   ]
 });

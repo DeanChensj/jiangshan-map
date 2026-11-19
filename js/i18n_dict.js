@@ -912,8 +912,16 @@ window.EN_LOCALE = {
       "Shenyang"
     ],
     "roc:1937": [
-      "Marco Polo Bridge Incident: Japanese forces shell Wanping and Lugou Bridge, igniting total war",
-      "Marco Polo Bridge"
+      "Marco Polo Bridge Incident sparks total war; after Shanghai the government moves to Chongqing",
+      "Lugou Bridge · Shanghai · Chongqing"
+    ],
+    "roc:1940": [
+      "Peng Dehuai commands the Eighth Route Army in the Hundred Regiments Offensive in North China",
+      "Yangquan · Taiyuan"
+    ],
+    "roc:1942": [
+      "Third Battle of Changsha won; Chinese Expeditionary Force enters Burma to guard the lifeline",
+      "Changsha · Baoshan"
     ],
     "roc:1945": [
       "Victory over Japan: China formally recovers Taiwan Island and the Penghu Archipelago",
@@ -2505,6 +2513,8 @@ window.EN_LOCALE = {
     "西藏（驻藏大臣）": "Tibet (Qing Amban)",
     "中华民国": "Republic of China",
     "伪满洲国（日占）": "Manchukuo (Japanese puppet)",
+    "陕甘宁边区": "Shaan-Gan-Ning Border Region",
+    "关内日占区": "Japanese-Occupied Zones (China Proper)",
     "中华人民共和国": "People's Republic of China",
     "西域都护府": "Protectorate of the Western Regions",
     "西域长史府": "Chief Clerk of the Western Regions",
@@ -5011,7 +5021,8 @@ window.EN_LOCALE = {
     "1927 · 国民革命军北伐：克上海、定都南京，冯玉祥与阎锡山响应，与奉系张作霖安国军隔河对峙": "1927 CE · Northern Expedition: NRA Captures Shanghai and Nanjing, Joined by Feng Yuxiang and Yan Xishan Against Zhang Zuolin",
     "1928 — 1930 · 东北易帜与北伐完成：张学良通电易帜，南京国民政府完成形式统一": "1928–1930 CE · Northeast Flag Replacement & Nominal Reunification Under the Nanjing Nationalist Government",
     "1931 · 九一八事变：日军关东军突袭沈阳北大营，侵占辽宁、吉林两省": "1931 CE · Mukden Incident (Sept 18): Kwantung Army Occupies Liaoning and Jilin",
-    "1932 — 1944 · 伪满洲国建立与抗日战争：日本扶植溥仪在长春建伪“满洲国”，东北四省沦陷": "1932–1944 CE · Puppet Manchukuo & War of Resistance: Northeast Four Provinces under Japanese Occupation",
+    "1932 — 1937 · 伪满洲国建立与全面抗战爆发：日本扶植溥仪在长春建伪“满洲国”，东北四省沦陷": "1932–1937 CE · Puppet Manchukuo & Outbreak of Total War: Northeast Four Provinces under Japanese Occupation",
+    "1938 — 1944 · 抗战战略相持阶段：国民政府迁都重庆苦撑正面战场，陕甘宁边区与敌后战场并立": "1938–1944 CE · Strategic Stalemate of the War of Resistance: Wartime Capital at Chongqing & Shaan-Gan-Ning Border Region",
     "1945 · 抗战胜利台湾光复：中国收回台湾、澎湖与东北四省，“秋海棠”版图重光": "1945 CE · Victory & Retrocession of Taiwan: Northeast and Taiwan Restored (\"Begonia Leaf\" Map)",
     "1946 — 1949 · 承认外蒙古独立与解放战争：外蒙古正式脱离中国，版图由“秋海棠”变为“雄鸡”": "1946–1949 CE · Recognition of Outer Mongolian Independence: Map Shifts from \"Begonia Leaf\" to \"Rooster\"",
     "云中郡": "Yunzhong Commandery",

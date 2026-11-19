@@ -157,7 +157,7 @@ function milestoneSources(refs, works) {
     const groups = new Map();
     for (const r of refs.get(key).list) {
       const w = works[r.w];
-      if (!w) continue;
+      if (!w || w.kind !== 'primary') continue;
       const title = (/《([^》]+)》/.exec(w.zh) || [null, w.zh])[1];
       const m = CHAPTER.exec(r.loc || '');
       const chapter = m ? `卷${/^\d+$/.test(m[1]) ? Number(m[1]) : m[1]}${m[2]}` : '';
@@ -165,6 +165,7 @@ function milestoneSources(refs, works) {
       const list = groups.get(title);
       if (!list.includes(chapter)) list.push(chapter);
     }
+    if (!groups.size) continue;
     const num = (c) => parseInt(c.slice(1), 10);
     out[key.slice('milestone:'.length)] = [...groups].map(([title, list]) => [
       title,

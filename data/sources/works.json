@@ -23,6 +23,7 @@
   "tongdian": { "zh": "杜佑《通典》", "en": "Du You, Tongdian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/通典" },
   "weishu": { "zh": "魏收《魏书》", "en": "Wei Shou, Book of Wei (Wei Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/魏書" },
   "xiaogang": { "zh": "《小岗村实行“大包干”回顾》《党史博览》2018年第7期", "en": "Reviewing the household contract in Xiaogang Village, Dangshi Bolan 2018 No.7", "kind": "secondary", "url": "http://zhongguoguoqing.cssn.cn/zt/qzggkf40znzt/lshm/201810/t20181016_5006037.shtml" },
+  "zhmsdsj": { "zh": "韩信夫、刘明逵主编《中华民国史大事记》，中华书局2011年版", "en": "Han Xinfu & Liu Mingkui (eds.), Chronicle of the History of the Republic of China, Zhonghua Book Company, 2011", "kind": "secondary" },
   "zuozhuanzhengyi": { "zh": "孔颖达等《春秋左传正义》", "en": "Kong Yingda et al., Chunqiu Zuozhuan Zhengyi", "kind": "primary", "url": "https://zh.wikisource.org/wiki/春秋左傳正義" },
   "zztj": { "zh": "司马光《资治通鉴》", "en": "Sima Guang, Zizhi Tongjian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/資治通鑑" }
 }
