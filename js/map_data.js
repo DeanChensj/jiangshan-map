@@ -920,7 +920,7 @@ window.DYNASTY_DATA = [
       {"year":676,"headline":"安东都护府自平壤内迁辽东故城","site":"辽东（辽阳）","coord":[123.171,41.271],"isMapChange":true},
       {"year":679,"headline":"裴行俭擒阿史那都支，复置安西四镇；改交州都督府为安南都护府","site":"碎叶 · 安南都护府（交州）","coord":[75.29,42.83],"siteCoords":[[75.29,42.83],[105.851,21.031]],"isMapChange":true},
       {"year":684,"headline":"武则天于洛阳废中宗临朝称制，遣军讨平徐敬业扬州起兵","site":"东都洛阳 · 扬州","coord":[112.451,34.621],"siteCoords":[[112.451,34.621],[119.411,32.391]]},
-      {"year":686,"headline":"垂拱二年武则天弃安西四镇，四镇复陷吐蕃","site":"龟兹（库车）","coord":[82.96,41.72],"isMapChange":true},
+      {"year":686,"headline":"垂拱年间武则天弃安西四镇，四镇复陷吐蕃","site":"龟兹（库车）","coord":[82.96,41.72],"isMapChange":true},
       {"year":690,"headline":"武则天改唐为周，定都神都洛阳","site":"神都洛阳","coord":[112.451,34.621],"isMapChange":true,"persons":["wuzetian","direnjie"]},
       {"year":692,"headline":"王孝杰大破吐蕃收复安西四镇，复置安西都护府于龟兹","site":"龟兹（库车）","coord":[82.96,41.72],"isMapChange":true},
       {"year":698,"headline":"粟末靺鞨大祚荣于东牟山立震国，后受唐封渤海郡王建渤海国","site":"东牟山（吉林敦化）","coord":[128.23,43.37],"isMapChange":true},
