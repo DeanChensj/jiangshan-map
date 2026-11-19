@@ -3,8 +3,9 @@
  * Programmatic Static Topic Monograph Generator for Jiangshan Historical Atlas (江山时序)
  *
  * Modular architecture under `scripts/topics/` + `data/topics/` + `topics/assets/`.
- * Generates all 39 static HTML pages (`topics/*.html`) and synchronizes `sitemap.xml`,
- * `index.html`, and `llms.txt`.
+ * Generates all static HTML pages (`topics/*.html`, including dynasty, story, journey,
+ * featured, person/relic monographs, `index.html`, and `persons.html`) and synchronizes
+ * `sitemap.xml`, `index.html`, and `llms.txt`.
  *
  * Usage:
  *   node scripts/build_seo_topics.js          # Build & sync all topic pages in place
@@ -14,14 +15,99 @@
 
 const fs = require('fs');
 const path = require('path');
-const { TOPICS_DIR, computeTopicAssetHashes } = require('./topics/config');
-const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData } = require('./topics/runtime');
+const { TOPICS_DIR, computeTopicAssetHashes, isStandalonePersonMonograph } = require('./topics/config');
+const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData, fmtYearShortZh } = require('./topics/runtime');
 const { buildDynastyPage } = require('./topics/pages/dynasty');
 const { buildStorylinePage } = require('./topics/pages/story');
 const { buildJourneyPage } = require('./topics/pages/journey');
 const { buildFeaturedTopicPage } = require('./topics/pages/featured');
+const { buildPersonPage } = require('./topics/pages/person');
+const { buildPersonsIndexPage } = require('./topics/pages/persons_index');
 const { buildTopicsIndexPage } = require('./topics/pages/index_page');
 const { computeSitemapXml, computeLlmsTxt, computeIndexHtml } = require('./topics/sync_site');
+
+function buildPeerCooccurrenceMap(stdPersons, dynasties, loreData, eventsByKey, ctrl) {
+  const stdByKey = new Map(stdPersons.map((p) => [p.key, p]));
+  const pairTokens = new Map();
+
+  const addEncounter = (kA, kB, year, coord) => {
+    if (!kA || !kB || kA === kB || !stdByKey.has(kA) || !stdByKey.has(kB)) return;
+    const pA = stdByKey.get(kA);
+    const pB = stdByKey.get(kB);
+    if (!pA.span || !pB.span || pA.span[0] > pB.span[1] || pB.span[0] > pA.span[1]) return;
+    const pairKey = kA < kB ? `${kA}|${kB}` : `${kB}|${kA}`;
+    let set = pairTokens.get(pairKey);
+    if (!set) {
+      set = new Set();
+      pairTokens.set(pairKey, set);
+    }
+    const lonQ = coord ? Math.round(coord[0] * 4) : 0;
+    const latQ = coord ? Math.round(coord[1] * 4) : 0;
+    set.add(`${year}:${lonQ},${latQ}`);
+  };
+
+  for (const d of dynasties) {
+    for (const m of d.milestones || []) {
+      const pList = Array.isArray(m.persons) ? m.persons.filter((k) => stdByKey.has(k)) : [];
+      for (let i = 0; i < pList.length; i++) {
+        for (let j = i + 1; j < pList.length; j++) {
+          addEncounter(pList[i], pList[j], m.year, m.coord);
+        }
+      }
+    }
+  }
+
+  for (const lm of loreData.PLACE_LANDMARK_EVENTS || []) {
+    const pList = Array.isArray(lm.persons) ? lm.persons.filter((k) => stdByKey.has(k)) : [];
+    for (let i = 0; i < pList.length; i++) {
+      for (let j = i + 1; j < pList.length; j++) {
+        addEncounter(pList[i], pList[j], lm.year, lm.coord);
+      }
+    }
+  }
+
+  for (let i = 0; i < stdPersons.length; i++) {
+    const a = stdPersons[i];
+    const evsA = eventsByKey.get(a.key) || [];
+    for (let j = i + 1; j < stdPersons.length; j++) {
+      const b = stdPersons[j];
+      if (!a.span || !b.span || a.span[0] > b.span[1] || b.span[0] > a.span[1]) continue;
+      const evsB = eventsByKey.get(b.key) || [];
+      for (const evA of evsA) {
+        if (!evA.coord) continue;
+        for (const evB of evsB) {
+          if (evA.year !== evB.year || !evB.coord) continue;
+          if (ctrl.projector.greatCircleKm(evA.coord, evB.coord) <= 35) {
+            const avgCoord = [(evA.coord[0] + evB.coord[0]) / 2, (evA.coord[1] + evB.coord[1]) / 2];
+            addEncounter(a.key, b.key, evA.year, avgCoord);
+          }
+        }
+      }
+    }
+  }
+
+  const peersByKey = new Map(stdPersons.map((p) => [p.key, []]));
+  for (const [pairKey, tokens] of pairTokens.entries()) {
+    const [kA, kB] = pairKey.split('|');
+    const sharedCount = tokens.size;
+    if (sharedCount < 1) continue;
+    const pA = stdByKey.get(kA);
+    const pB = stdByKey.get(kB);
+    peersByKey.get(kA).push({ ...pB, sharedCount });
+    peersByKey.get(kB).push({ ...pA, sharedCount });
+  }
+
+  for (const [k, list] of peersByKey.entries()) {
+    list.sort(
+      (a, b) =>
+        b.sharedCount - a.sharedCount ||
+        (b.evCount || 0) - (a.evCount || 0) ||
+        a.key.localeCompare(b.key)
+    );
+    peersByKey.set(k, list.slice(0, 8));
+  }
+  return peersByKey;
+}
 
 function generateAllOutputs() {
   const { ctrl, dynasties, snapshots, loreData, enLocale, provinces } = loadAtlasRuntime();
@@ -29,13 +115,43 @@ function generateAllOutputs() {
   const { dynastyNotes, featuredTopics, geoOverrides } = loadTopicsData();
   const assetHashes = computeTopicAssetHashes();
 
-  const stories = (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory);
+  const allProfiles = loreData.PERSON_PROFILES || [];
+  const stories = allProfiles.filter((p) => p && p.isStory);
   const journeys = loreData.HISTORICAL_JOURNEYS || [];
   const dynTitleByKey = new Map(dynasties.map((d) => [d.key, `${d.title}疆域政区图志`]));
+
+  const standalonePersons = allProfiles
+    .filter(isStandalonePersonMonograph)
+    .sort((a, b) => {
+      const aY = Array.isArray(a.span) ? a.span[0] : 0;
+      const bY = Array.isArray(b.span) ? b.span[0] : 0;
+      return aY - bY || a.key.localeCompare(b.key);
+    });
+
+  const allNonStoryPersons = allProfiles.filter((p) => p && !p.isStory);
+  const eventsByKey = new Map();
+  for (const p of allNonStoryPersons) {
+    eventsByKey.set(p.key, ctrl._collectPersonEvents(p));
+  }
+
+  const stdPersonsForPeers = allNonStoryPersons.filter((p) => !p.isRelic);
+  const peersByKey = buildPeerCooccurrenceMap(
+    stdPersonsForPeers,
+    dynasties,
+    loreData,
+    eventsByKey,
+    ctrl
+  );
 
   const linksByDynasty = new Map(dynasties.map((d) => [d.key, []]));
   const addDynRel = (dynKey, lnk) => {
     const arr = linksByDynasty.get(dynKey);
+    if (arr && !arr.some((x) => x.href === lnk.href)) arr.push(lnk);
+  };
+
+  const personLinksByDynasty = new Map(dynasties.map((d) => [d.key, []]));
+  const addDynPersonLink = (dynKey, lnk) => {
+    const arr = personLinksByDynasty.get(dynKey);
     if (arr && !arr.some((x) => x.href === lnk.href)) arr.push(lnk);
   };
 
@@ -55,7 +171,24 @@ function generateAllOutputs() {
     for (const d of dynasties) {
       if (years.some((y) => y >= d.fromYear && y <= d.toYear)) {
         addDynRel(d.key, { href: `journey-${j.key}.html`, label: `行迹：${j.shortZh}` });
+        addDynPersonLink(d.key, {
+          href: `journey-${j.key}.html`,
+          label: `行迹：${j.titleZh}`,
+        });
       }
+    }
+  }
+
+  for (const p of standalonePersons) {
+    if (p.dynastyKey) {
+      const span = Array.isArray(p.span) ? p.span : [0, 0];
+      const lbl = p.isRelic
+        ? `国器：${p.zh}`
+        : `${p.zh}（${fmtYearShortZh(span[0])}—${fmtYearShortZh(span[1])}）`;
+      addDynPersonLink(p.dynastyKey, {
+        href: `person-${p.key}.html`,
+        label: lbl,
+      });
     }
   }
 
@@ -77,6 +210,7 @@ function generateAllOutputs() {
       sourcesBundle,
       dynastyNotes,
       relatedLinks: linksByDynasty.get(d.key) || [],
+      personLinks: personLinksByDynasty.get(d.key) || [],
       assetHashes,
     })
   );
@@ -148,22 +282,118 @@ function generateAllOutputs() {
     });
   });
 
+  const standaloneForNav = standalonePersons;
+  const personBuildItems = standaloneForNav.map((profile, idx) => {
+    const evs = eventsByKey.get(profile.key) || [];
+    const relLinks = [];
+    const seenHref = new Set();
+    const addLink = (href, label) => {
+      if (href && !seenHref.has(href)) {
+        seenHref.add(href);
+        relLinks.push({ href, label });
+      }
+    };
+
+    const dynKeys = [];
+    if (profile.dynastyKey && dynTitleByKey.has(profile.dynastyKey)) {
+      dynKeys.push(profile.dynastyKey);
+    }
+    for (const ev of evs) {
+      const dk = ev.dynasty && ev.dynasty.key;
+      if (dk && dynTitleByKey.has(dk) && !dynKeys.includes(dk)) dynKeys.push(dk);
+    }
+    for (const dk of dynKeys.slice(0, 3)) {
+      addLink(`${dk}.html`, dynTitleByKey.get(dk));
+    }
+
+    for (const s of stories) {
+      const mentions = (s.stops || []).some(
+        (st) =>
+          (st.descZh || '').includes(profile.zh) ||
+          (st.titleZh || '').includes(profile.zh) ||
+          (Array.isArray(st.actors) &&
+            st.actors.some((ac) => ac.personKey === profile.key || (ac.zh || '').includes(profile.zh)))
+      );
+      if (mentions || (s.descZh || '').includes(profile.zh) || (s.zh || '').includes(profile.zh)) {
+        addLink(`story-${s.key}.html`, `沙盘：${s.zh}`);
+      }
+    }
+
+    for (const ft of featuredTopics) {
+      if (
+        (ft.titleZh || '').includes(profile.zh) ||
+        (ft.summaryZh || '').includes(profile.zh)
+      ) {
+        addLink(`${ft.slug}.html`, `专题：${ft.shortZh.split('（')[0]}`);
+      }
+    }
+
+    const built = buildPersonPage({
+      profile,
+      idx,
+      allStandalonePersons: standaloneForNav,
+      events: evs,
+      allDynasties: dynasties,
+      ctrl,
+      enLocale,
+      loreData,
+      sourcesBundle,
+      peers: profile.isRelic ? [] : peersByKey.get(profile.key) || [],
+      relatedLinks: relLinks,
+      assetHashes,
+    });
+    return { profile, ...built };
+  });
+
+  const personPages = personBuildItems.map(({ filename, html, meta }) => ({ filename, html, meta }));
+
+  const directoryOnlyPersons = allNonStoryPersons
+    .filter((p) => !p.journeyKey && !isStandalonePersonMonograph(p))
+    .sort((a, b) => {
+      const aY = Array.isArray(a.span) ? a.span[0] : 0;
+      const bY = Array.isArray(b.span) ? b.span[0] : 0;
+      return aY - bY || a.key.localeCompare(b.key);
+    })
+    .map((profile) => ({
+      profile,
+      eventCount: (eventsByKey.get(profile.key) || []).length,
+    }));
+
+  const personsIndexPage = buildPersonsIndexPage({
+    journeys,
+    personMonographItems: personBuildItems,
+    directoryOnlyPersons,
+    allDynasties: dynasties,
+    assetHashes,
+  });
+
   const dynMeta = dynPages.map((p) => p.meta);
   const storyMeta = storyPages.map((p) => p.meta);
   const journeyMeta = journeyPages.map((p) => p.meta);
   const featuredMeta = featuredPages.map((p) => p.meta);
+  const personMeta = personPages.map((p) => p.meta);
 
   const indexPage = buildTopicsIndexPage({
     dynMeta,
     storyMeta,
     journeyMeta,
     featuredMeta,
+    personMeta,
+    totalPersonDirectoryCount: allNonStoryPersons.length,
     allDynasties: dynasties,
     assetHashes,
   });
 
-  const allTopicPages = [...dynPages, ...storyPages, ...journeyPages, ...featuredPages, indexPage];
-  const sitemapRes = computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta);
+  const allTopicPages = [
+    ...dynPages,
+    ...storyPages,
+    ...journeyPages,
+    ...featuredPages,
+    ...personPages,
+    personsIndexPage,
+    indexPage,
+  ];
+  const sitemapRes = computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta, personMeta);
   const llmsRes = computeLlmsTxt(dynasties, snapshots, loreData);
   const indexHtmlRes = computeIndexHtml(
     dynMeta,
@@ -173,7 +403,8 @@ function generateAllOutputs() {
     dynasties,
     snapshots,
     loreData,
-    enLocale
+    enLocale,
+    personMeta
   );
 
   return {
@@ -183,6 +414,9 @@ function generateAllOutputs() {
       story: storyPages.length,
       journey: journeyPages.length,
       featured: featuredPages.length,
+      person: personPages.length,
+      directoryOnly: directoryOnlyPersons.length,
+      totalNonStoryPersons: allNonStoryPersons.length,
       sitemapUrls: sitemapRes.addedCount,
     },
     extraFiles: [sitemapRes, llmsRes, indexHtmlRes].filter(Boolean),
@@ -231,8 +465,9 @@ function runCheck(outputs) {
   }
 
   const { counts } = outputs;
+  const totalPages = counts.dyn + counts.story + counts.journey + counts.featured + counts.person + 2;
   console.log(
-    `✓ All ${counts.dyn + counts.story + counts.journey + counts.featured + 1} topic pages, sitemap.xml, index.html, and llms.txt are up to date`
+    `✓ All ${totalPages} topic pages, sitemap.xml, index.html, and llms.txt are up to date`
   );
   return 0;
 }
@@ -252,7 +487,7 @@ function runWrite(outputs) {
   }
   const { counts } = outputs;
   console.log(
-    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured poetry/battle pages, and topics/index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`
+    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured pages, ${counts.person} person/relic pages, topics/persons.html, and topics/index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`
   );
   return 0;
 }

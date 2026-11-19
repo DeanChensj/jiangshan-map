@@ -5,7 +5,7 @@ const path = require('path');
 const { ROOT, BASE_URL, LASTMOD } = require('./config');
 const { escHtml, fmtYearShortZh, fmtDynSpanZh } = require('./runtime');
 
-function computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta) {
+function computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta, personMeta = []) {
   const sitemapPath = path.join(ROOT, 'sitemap.xml');
   const existingXml = fs.readFileSync(sitemapPath, 'utf8');
 
@@ -17,10 +17,12 @@ function computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta) {
 
   const topicUrls = [
     { loc: `${BASE_URL}/topics/index.html`, priority: '0.95' },
+    { loc: `${BASE_URL}/topics/persons.html`, priority: '0.94' },
     ...storyMeta.map((s) => ({ loc: s.url, priority: '0.92' })),
     ...featuredMeta.map((f) => ({ loc: f.url, priority: '0.9' })),
     ...dynMeta.map((d) => ({ loc: d.url, priority: '0.9' })),
     ...journeyMeta.map((j) => ({ loc: j.url, priority: '0.9' })),
+    ...personMeta.map((p) => ({ loc: p.url, priority: '0.88' })),
   ];
 
   const topicBlocks = topicUrls
@@ -72,7 +74,8 @@ function computeIndexHtml(
   dynasties,
   snapshots,
   loreData,
-  enLocale
+  enLocale,
+  personMeta = []
 ) {
   const indexPath = path.join(ROOT, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -147,9 +150,15 @@ function computeIndexHtml(
 
   html = html.replace(/\s*<section id="seo-static-topics-section">[\s\S]*?<\/section>/g, '');
 
-  const totalCount = dynMeta.length + storyMeta.length + journeyMeta.length + featuredMeta.length;
+  const totalCount =
+    dynMeta.length +
+    storyMeta.length +
+    journeyMeta.length +
+    featuredMeta.length +
+    personMeta.length;
   const allItems = [
     `          <li><a href="${BASE_URL}/topics/index.html"><strong>江山时序专题图志总览（${totalCount}篇静态历史地理百科目录）</strong></a></li>`,
+    `          <li><a href="${BASE_URL}/topics/persons.html"><strong>江山时序历代人物志与国器流转总录（${personMeta.length}篇独立人物图志）</strong></a></li>`,
     ...storyMeta.map(
       (s) =>
         `          <li><a href="${s.url}"><strong>${escHtml(s.titleZh)}双阵营始末沙盘图志（静态专题页）</strong></a></li>`
@@ -164,6 +173,10 @@ function computeIndexHtml(
     ...journeyMeta.map(
       (j) =>
         `          <li><a href="${j.url}"><strong>${escHtml(j.titleZh)}生平行迹与诗词路线图志（静态专题页）</strong></a></li>`
+    ),
+    ...personMeta.map(
+      (p) =>
+        `          <li><a href="${p.url}"><strong>${escHtml(p.titleZh)}时空轨迹与生平史事图志（静态专题页）</strong></a></li>`
     ),
   ].join('\n');
 

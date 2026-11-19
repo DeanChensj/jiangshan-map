@@ -12,6 +12,13 @@ const DATA_TOPICS_DIR = path.join(ROOT, 'data', 'topics');
 const SOURCES_DIR = path.join(ROOT, 'data', 'sources');
 const BASE_URL = 'https://deanchen.me/jiangshan-map';
 const LASTMOD = '2026-11-18';
+const PERSON_MONOG_MIN_EVENTS = 5;
+
+function isStandalonePersonMonograph(p) {
+  return Boolean(
+    p && !p.isStory && !p.journeyKey && (p.isRelic || (p.evCount || 0) >= PERSON_MONOG_MIN_EVENTS)
+  );
+}
 
 function shortSha256(filePath) {
   const buf = fs.readFileSync(filePath);
@@ -38,6 +45,8 @@ module.exports = {
   SOURCES_DIR,
   BASE_URL,
   LASTMOD,
+  PERSON_MONOG_MIN_EVENTS,
+  isStandalonePersonMonograph,
   shortSha256,
   computeTopicAssetHashes,
 };

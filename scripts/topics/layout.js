@@ -62,6 +62,7 @@ function renderTopHeader({ activeNav = '' } = {}) {
       <nav class="top-nav" aria-label="专题图志导航">
         <a href="../">交互舆图</a>
         <a href="index.html"${activeNav === 'index' ? ' class="is-current"' : ''}>图志总览</a>
+        <a href="persons.html"${activeNav === 'persons' ? ' class="is-current"' : ''}>人物志</a>
         <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub</a>
         <button id="act-topic-hant" class="hant-toggle-btn no-hant" type="button" aria-pressed="false" title="切換為繁體中文">繁</button>
       </nav>
@@ -106,6 +107,19 @@ function renderTableFilterBar(tableId, placeholderZh, totalCount, { force = fals
         </div>`;
 }
 
+function renderFilterPresetChips(tableId, presets) {
+  if (!Array.isArray(presets) || !presets.length) return '';
+  const btns = presets
+    .map(
+      (pr, idx) =>
+        `<button type="button" class="filter-preset-btn${idx === 0 ? ' is-active' : ''}" data-filter-preset-table="${escHtml(tableId)}" data-filter-preset-val="${escHtml(pr.value)}">${escHtml(pr.label)}</button>`
+    )
+    .join('\n          ');
+  return `        <div class="filter-preset-row">
+          ${btns}
+        </div>`;
+}
+
 function renderRelatedStrip(links) {
   if (!Array.isArray(links) || !links.length) return '';
   const chipsHtml = links
@@ -145,6 +159,7 @@ module.exports = {
   renderTocSidebar,
   renderEmbedMapSection,
   renderTableFilterBar,
+  renderFilterPresetChips,
   renderRelatedStrip,
   renderFooter,
 };

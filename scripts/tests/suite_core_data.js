@@ -512,9 +512,13 @@ async function runCoreDataSuite(ctx) {
   );
   const expectedTopicFiles = [
     'index.html',
+    'persons.html',
     ...dynasties.map((d) => `${d.key}.html`),
     ...(loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory).map((s) => `story-${s.key}.html`),
     ...loreData.HISTORICAL_JOURNEYS.map((j) => `journey-${j.key}.html`),
+    ...(loreData.PERSON_PROFILES || [])
+      .filter((p) => p && !p.isStory && !p.journeyKey && (p.isRelic || (p.evCount || 0) >= 5))
+      .map((p) => `person-${p.key}.html`),
     'dufu-763.html',
     'sushi-exile.html',
     'wentianxiang-lingdingyang.html',
@@ -533,7 +537,7 @@ async function runCoreDataSuite(ctx) {
     assert(
       tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&
         tfHtml.includes('application/ld+json') &&
-        (tf === 'index.html' || tfHtml.includes('../?embed=1&')) &&
+        (tf === 'index.html' || tf === 'persons.html' || tfHtml.includes('../?embed=1&')) &&
         !tfHtml.toLowerCase().includes('deanchensj.github.io') &&
         !tfHtml.includes('undefined') &&
         !tfHtml.includes('NaN') &&
