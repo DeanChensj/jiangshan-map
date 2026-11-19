@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
-    "caption": "1253 — 1276 · 忽必烈灭大理：蒙古跨金沙江平大理，对南宋形成三面包围",
+    "caption": "1253 — 1271 · 忽必烈灭大理：蒙古跨金沙江平大理，对南宋形成三面包围",
     "note": "府州政区：南宋东部诸路与金十九路",
     "polities": [
       "s_nansong_a/南宋",
@@ -60,7 +60,7 @@
       "s_nansong_e/临洮路",
       "s_nansong_a0/庆原路",
       "s_nansong_c/漠北（和林）",
-      "吐蕃（宣政院辖地）",
+      "吐蕃辖地",
       "大理（云南）"
     ],
     "prefectures": [
@@ -7410,10 +7410,10 @@
     },
     {
       "type": "Feature",
-      "id": "吐蕃（宣政院辖地）",
+      "id": "吐蕃辖地",
       "properties": {
-        "title": "吐蕃（宣政院辖地）",
-        "category": "宣政院",
+        "title": "吐蕃辖地",
+        "category": "吐蕃",
         "anchor": [88.69, 33.22]
       },
       "geometry": {

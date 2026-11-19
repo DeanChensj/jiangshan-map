@@ -160,5 +160,7 @@
   "s_donghan_123": { "overlap": 0, "gap": 7 },
   "s_tang_840": { "overlap": 0, "gap": 8 },
   "s_yuan_1367": { "overlap": 102, "gap": 109 },
-  "s_wudai_955": { "overlap": 49, "gap": 276 }
+  "s_wudai_955": { "overlap": 49, "gap": 276 },
+  "s_nansong_e0": { "overlap": 4, "gap": 7 },
+  "s_nansong_f": { "overlap": 22, "gap": 4 }
 }

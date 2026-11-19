@@ -201,5 +201,7 @@
   "s_yuan_1335": { "overlap": 720, "outside": 849 },
   "s_yuan_1367": { "overlap": 720, "outside": 962 },
   "s_wudai_955": { "overlap": 406, "outside": 464 },
-  "s_roc_1938": { "overlap": 1243, "outside": 1274 }
+  "s_roc_1938": { "overlap": 1243, "outside": 1274 },
+  "s_nansong_e0": { "overlap": 1800, "outside": 200 },
+  "s_nansong_f": { "overlap": 1800, "outside": 195 }
 }
