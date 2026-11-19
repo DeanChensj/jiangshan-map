@@ -6013,6 +6013,18 @@
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
       this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
       this._id('dynasty-summary').textContent = this.dynastySummary(dynasty);
+      const topicLnk = this._id('lnk-dynasty-topic');
+      if (topicLnk && dynasty && dynasty.key) {
+        const isEn = this.locale === 'en';
+        topicLnk.setAttribute('href', `topics/${dynasty.key}.html`);
+        topicLnk.textContent = isEn ? 'Guide ↗' : this._zh('图志 ↗');
+        topicLnk.setAttribute(
+          'title',
+          isEn
+            ? `Open ${this.dynastyName(dynasty)} Historical Atlas Guide`
+            : this._zh(`查阅《${dynasty.title}历史地图》专题图志与古今地名总表`)
+        );
+      }
       this._syncDocumentSeoMeta();
 
       const ul = this._id('milestone-list');

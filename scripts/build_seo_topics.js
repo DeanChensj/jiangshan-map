@@ -49,15 +49,19 @@ function formatSourceCitationsHtml(recordKey, sourcesBundle) {
   if (!sourcesBundle || !sourcesBundle.refs) return '';
   const list = sourcesBundle.refs.get(recordKey);
   if (!Array.isArray(list) || list.length === 0) return '';
-  const parts = list
-    .map((r) => {
-      const w = sourcesBundle.works[r.w];
-      const wTitle = w ? w.zh : r.w;
-      const loc = r.loc ? ` ${r.loc}` : '';
-      const note = r.note ? `（${r.note}）` : '';
-      return `${escHtml(wTitle)}${escHtml(loc)}${escHtml(note)}`;
-    })
-    .filter(Boolean);
+  const byWork = new Map();
+  for (const r of list) {
+    const w = sourcesBundle.works[r.w];
+    const wTitle = w ? w.zh : r.w;
+    if (!byWork.has(wTitle)) byWork.set(wTitle, []);
+    const locs = byWork.get(wTitle);
+    const loc = (r.loc || '').trim();
+    if (loc && !locs.includes(loc)) locs.push(loc);
+  }
+  const parts = [];
+  for (const [wTitle, locs] of byWork.entries()) {
+    parts.push(`${escHtml(wTitle)}${locs.length ? ` ${escHtml(locs.join('、'))}` : ''}`);
+  }
   if (!parts.length) return '';
   return `<div class="source-cite"><strong>史料出处：</strong>${parts.join('；')}</div>`;
 }
@@ -1090,9 +1094,9 @@ const DYNASTY_CARTOGRAPHIC_NOTES = {
         '1928 年 6 月国民革命军克复北京前，省名保持“直隶、奉天”，都城称“北京”；1928 年 6 月后改称“河北、辽宁”与“北平”，并增置热河、察哈尔、绥远、宁夏、青海、西康诸省。首都标记随年份在南京、北京（北洋时期）、武汉与重庆（抗战陪都）间动态跟随。',
     },
     {
-      title: '1926年末北伐初年快照与外蒙古共享精密边界',
+      title: '1926年末北伐快照、1938抗战相持态势与外蒙古精密边界',
       detail:
-        '单列 1926 年末北伐军克复两湖江西而江浙沪尚在孙传芳控制下的历史断面；外蒙古与民国北部诸省共享同一条无裂缝拓扑边界。',
+        '单列 1926 年末北伐初年、1938—1944 年抗战相持阶段（重庆陪都大后方、陕甘宁边区与日占沦陷区对峙）等关键历史断面；外蒙古与民国北部诸省共享同一条无裂缝拓扑边界。',
     },
   ],
   prc: [
@@ -1142,13 +1146,14 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
   const pageDesc = `${d.title}历史地图（${spanFullZh}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${(d.settlements || []).length}座城池古今地名对照与${(d.milestones || []).length}项编年重大历史事件。`;
 
   const phases = d.phases && d.phases.length > 0 ? d.phases : [{ until: d.toYear, snap: d.snapKey }];
+  const usePrefectureDivs = d.key === 'zhanguo' || d.key === 'qin';
   let prevPolities = [];
   let prevPrefs = [];
   const phaseRowsHtml = phases
     .map((ph, pIdx) => {
       const sy = pIdx === 0 ? d.fromYear : phases[pIdx - 1].until;
       const ey = (ph.until === undefined || pIdx === phases.length - 1) ? d.toYear : ph.until - 1;
-      const midYear = sy === 0 ? 1 : Math.round((sy + ey) / 2);
+      const midYear = sy === 0 ? 1 : Math.floor((sy + ey) / 2);
       const eraStr = ctrl.formatEraLabel(midYear, d);
       const sk = ph.snap || ph.snapKey || d.snapKey;
 
@@ -1171,13 +1176,14 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
               .filter(Boolean)
           )
         );
-        const rawDivs =
-          Array.isArray(snap.regions) && snap.regions.length > 0
-            ? snap.regions
-            : snap.prefectures || [];
-        prefs = Array.from(new Set(rawDivs.map((r) => r.title).filter(Boolean)));
+        const primaryDivs = usePrefectureDivs
+          ? snap.prefectures || snap.regions || []
+          : snap.regions || [];
+        prefs = Array.from(new Set(primaryDivs.map((r) => r.title).filter(Boolean)));
       }
-      const overviewRaw = ph.overview || snapCaption;
+      const overviewRaw = String(ph.overview || snapCaption || '')
+        .replace(/^[^·]{1,28}·\s*/, '')
+        .trim();
       const overviewText = overviewRaw
         ? `<br/><small style="color:#5e5346;">${escHtml(overviewRaw)}</small>`
         : '';
@@ -1192,8 +1198,9 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
         const moreSuffix = prefs.length > 14 ? ` 等共 ${prefs.length} 个政区` : '';
         prefCellHtml = `${baseList}${moreSuffix}`;
       } else {
-        const addedPrefs = prefs.filter((x) => !prevPrefs.includes(x));
-        const removedPrefs = prevPrefs.filter((x) => !prefs.includes(x));
+        const comparePrefs = prefs.length > 0 && prevPrefs.length > 0;
+        const addedPrefs = comparePrefs ? prefs.filter((x) => !prevPrefs.includes(x)) : [];
+        const removedPrefs = comparePrefs ? prevPrefs.filter((x) => !prefs.includes(x)) : [];
         const addedPols = polities.filter((x) => !prevPolities.includes(x));
         const removedPols = prevPolities.filter((x) => !polities.includes(x));
         const diffLines = [];
@@ -1220,11 +1227,12 @@ function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provi
         if (diffLines.length > 0) {
           prefCellHtml = diffLines.join('<br/>');
         } else {
-          prefCellHtml = `<span class="diff-same">州道/省区建制同上阶段（共 ${prefs.length} 政区），详见左侧阶段提要</span>`;
+          const divCount = prefs.length || prevPrefs.length;
+          prefCellHtml = `<span class="diff-same">州道/省区建制同上阶段${divCount ? `（共 ${divCount} 政区）` : ''}，详见左侧阶段提要</span>`;
         }
       }
       prevPolities = polities;
-      prevPrefs = prefs;
+      if (prefs.length > 0) prevPrefs = prefs;
 
       return `          <tr>
             <td>第 ${pIdx + 1} 阶段</td>
@@ -1658,7 +1666,7 @@ function buildJourneyPage(j, idx, allJourneys, allDynasties, sourcesBundle) {
       yearSeen.set(s.year, cnt);
       const stopKeySuffix = cnt > 1 ? `${s.year}-${cnt}` : `${s.year}`;
       const stopCiteHtml = formatSourceCitationsHtml(`journey:${j.key}:${stopKeySuffix}`, sourcesBundle);
-      const stopMapUrl = `${BASE_URL}/?year=${s.year}&place=${encodeURIComponent(s.ancientZh)}`;
+      const stopMapUrl = `${BASE_URL}/?person=${encodeURIComponent(j.key)}&stop=${sIdx}`;
       return `      <div class="stop-card">
         <div class="stop-header">
           <div>
@@ -1812,16 +1820,32 @@ function buildFeaturedTopicPage(topic, allDynasties, ctrl) {
         let adminStr = Array.from(new Set([...(st.regions || []), ...(st.prefectures || [])]))
           .map((p) => p.replace(/\(([^)]+)\)/g, '（$1）'))
           .join(' · ');
+        if (topic.slug === 'sushi-exile' && st.year >= 1021 && adminStr.includes('祯州')) {
+          adminStr = adminStr.replace(/祯州/g, '惠州');
+        }
         let polityStr = st.polity || '';
-        if (topic.slug === 'wentianxiang-lingdingyang' && st.place === '零丁洋') {
-          polityStr = '南宋抗元水军海域';
-          adminStr = '元军水陆围攻';
+        if (topic.slug === 'wentianxiang-lingdingyang') {
+          if (st.place === '零丁洋') {
+            polityStr = '南宋抗元水军海域';
+            adminStr = '元军水陆围攻';
+          } else if (st.place === '崖山') {
+            polityStr = '南宋流亡行朝据点（元军合围）';
+            adminStr = '广南东路 · 广州（元江西行省广州路）';
+          } else if (st.place === '惶恐滩') {
+            polityStr = '元军控制（文天祥抗元收复吉州）';
+            adminStr = '江南西路 · 吉州（元江西行省吉安路）';
+          }
+        }
+        let eraStr = st.era;
+        if (topic.slug === 'wentianxiang-lingdingyang') {
+          if (st.year === 1277) eraStr = '南宋端宗·景炎二年（元至元十四年）';
+          else if (st.year === 1279) eraStr = '南宋少帝·祥兴二年（元至元十六年）';
         }
         const adminCombined = [polityStr, adminStr].filter(Boolean).join(' · ');
 
         return `          <tr>
             <td>第 ${idx + 1} 站</td>
-            <td><strong>${fmtYearShortZh(st.year)}年</strong><br/><small>${escHtml(st.era)}</small></td>
+            <td><strong>${fmtYearShortZh(st.year)}年</strong><br/><small>${escHtml(eraStr)}</small></td>
             <td><strong>${escHtml(placeDisplay)}</strong></td>
             <td>${escHtml(modernLoc)}${modProv ? `（${escHtml(modProv)}）` : ''}</td>
             <td>${escHtml(adminCombined)}</td>
@@ -1873,19 +1897,44 @@ ${routeRows}
         const adminParts = Array.from(
           new Set(rawAdminList.map((p) => String(p).replace(/\(([^)]+)\)/g, '（$1）')))
         ).filter(Boolean);
-        const adminStr =
+        let adminStr =
           adminParts.join(' · ') ||
           (d.key === 'zhanguo' ? `${dInfo.polity || d.title}直辖（未设郡）` : `${dInfo.polity || d.title}直辖`);
+        if (topic.slug === 'xinqiji-jingkou' && d.key === 'qin') {
+          adminStr = '会稽郡（鄣郡）';
+        } else if (topic.slug === 'battle-chibi') {
+          if (d.key === 'donghan') adminStr = '荆州（刺史部） · 江夏郡';
+          else if (d.key === 'sanguo' || d.key === 'dongjin') adminStr = '荆州 · 江夏郡';
+        } else if (topic.slug === 'hanyu-languan' && (d.key === 'dongjin' || d.key === 'nanbeichao')) {
+          adminStr = '雍州 · 京兆郡（上洛郡界）';
+        }
+
+        const cleanFallbackSeat = `${targetPlace}（今${info.modern || ''}）`;
         let nearStr = '';
         if (topic.slug === 'shuihu-jiangzhou') {
-          nearStr = dInfo.nearestCity
-            ? `${dInfo.nearestCity.ancient}（今${dInfo.nearestCity.modern}）`
-            : '浔阳 / 江州（九江）';
-          if (nearStr.includes('琵琶亭')) nearStr = '江州 / 浔阳（今江西九江）';
+          const nc = dInfo.nearestCity;
+          if (nc && nc.distanceKm <= 55 && !nc.ancient.includes('琵琶亭')) {
+            nearStr =
+              nc.distanceKm <= 25
+                ? `${nc.ancient}（今${nc.modern}）`
+                : `${nc.ancient}（今${nc.modern}，距 ${nc.distanceKm} km）`;
+          } else {
+            nearStr = '江州 / 浔阳（今江西九江）';
+          }
         } else {
-          nearStr = dInfo.nearestCity
-            ? `${dInfo.nearestCity.ancient}（今${dInfo.nearestCity.modern}）`
-            : resolvedDisplayTitle;
+          const nc = dInfo.nearestCity;
+          const isCrossMountainHenan =
+            topic.slug === 'battle-changping' &&
+            nc &&
+            (nc.modern.includes('洛阳') || nc.modern.includes('开封') || nc.modern.includes('荥阳') || nc.modern.includes('郑州'));
+          if (nc && nc.distanceKm <= 55 && !isCrossMountainHenan) {
+            nearStr =
+              nc.distanceKm <= 25
+                ? `${nc.ancient}（今${nc.modern}）`
+                : `${nc.ancient}（今${nc.modern}，距 ${nc.distanceKm} km）`;
+          } else {
+            nearStr = cleanFallbackSeat;
+          }
         }
 
         const rowUrl = `${BASE_URL}/?year=${sampleY}&place=${encodeURIComponent(targetPlace)}`;
