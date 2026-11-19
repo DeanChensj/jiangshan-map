@@ -32,7 +32,7 @@ function auditAllTopics() {
 
   const { ctrl, dynasties, loreData } = loadAtlasRuntime();
   const sourcesBundle = loadSourcesBundle();
-  const { dynastyNotes, featuredTopics, geoOverrides } = loadTopicsData();
+  const { dynastyNotes, featuredTopics, geoOverrides, placesCatalog } = loadTopicsData();
   const assetHashes = computeTopicAssetHashes();
 
   // 1. Validate structured data schemas
@@ -71,6 +71,23 @@ function auditAllTopics() {
   }
   if (!geoOverrides || !geoOverrides.nearestCity || !geoOverrides.placeDynastyAdminOverrides) {
     fail('data/topics/geo_overrides.json', 'Missing required sections in geo_overrides.json');
+  }
+
+  const cityLoreList = loreData.CITY_LORE || [];
+  const cityLoreModerns = new Set(cityLoreList.map((c) => c.modern));
+  const strategicPasses = loreData.STRATEGIC_PASSES || [];
+  const seenPlaceSlugs = new Set();
+  for (const pl of placesCatalog || []) {
+    if (!pl.slug || seenPlaceSlugs.has(pl.slug)) {
+      fail('data/topics/places.json', `Duplicate or empty slug "${pl.slug}"`);
+    }
+    seenPlaceSlugs.add(pl.slug);
+    if (!cityLoreModerns.has(pl.modern)) {
+      fail('data/topics/places.json', `Unknown CITY_LORE.modern "${pl.modern}" on "${pl.slug}"`);
+    }
+    if (!Number.isInteger(pl.focusYear) || pl.focusYear < dynasties[0].fromYear || pl.focusYear > 2026) {
+      fail('data/topics/places.json', `Invalid focusYear "${pl.focusYear}" on "${pl.slug}"`);
+    }
   }
 
   // 2. Check shared assets exist
@@ -114,13 +131,16 @@ function auditAllTopics() {
     .sort();
   const htmlFileSet = new Set(htmlFiles);
 
+  const placeSlugSet = new Set((placesCatalog || []).map((pl) => `place-${pl.slug}.html`));
+
   const expectedPageTotal =
     dynasties.length +
     storyByKey.size +
     journeys.length +
     featuredTopics.length +
     standalonePersons.length +
-    2;
+    (placesCatalog || []).length +
+    3;
   if (htmlFiles.length !== expectedPageTotal) {
     fail('topics/', `Unexpected HTML file count: ${htmlFiles.length} (expected ${expectedPageTotal})`);
   }
@@ -150,7 +170,7 @@ function auditAllTopics() {
     if (!html.includes(expectedHantAttr)) fail(f, `Missing or stale data-v-hant hash (${expectedHantAttr})`);
     if (!html.includes(`rel="canonical" href="${BASE_URL}/topics/${f}"`)) fail(f, 'Missing or mismatched canonical link');
     if (!html.includes('application/ld+json')) fail(f, 'Missing JSON-LD structured data');
-    if (f !== 'index.html' && f !== 'persons.html' && !html.includes('../?embed=1&')) {
+    if (f !== 'index.html' && f !== 'persons.html' && f !== 'places.html' && !html.includes('../?embed=1&')) {
       fail(f, 'Missing ?embed=1 preview iframe');
     }
 
@@ -249,6 +269,13 @@ function auditAllTopics() {
               if (!Number.isInteger(stopIdx) || stopIdx < 0 || stopIdx >= len) {
                 fail(f, `Invalid story stop index "${params.get('stop')}" for "${ek}" in ${rawUrl}`);
               }
+            }
+          }
+          if (params.has('lng') && params.has('lat')) {
+            const lngNum = Number(params.get('lng'));
+            const latNum = Number(params.get('lat'));
+            if (!Number.isFinite(lngNum) || !Number.isFinite(latNum) || lngNum < 66 || lngNum > 142 || latNum < 14 || latNum > 55) {
+              fail(f, `Out-of-bounds lng/lat (${params.get('lng')},${params.get('lat')}) in ${rawUrl}`);
             }
           }
         }
@@ -376,6 +403,81 @@ function auditAllTopics() {
       }
       if (!/<h1>[\s\S]*?<\/h1>/.test(html)) {
         fail(f, 'Missing <h1> heading on person monograph');
+      }
+    }
+
+    if (f === 'places.html') {
+      for (const pl of placesCatalog || []) {
+        if (!html.includes(`place-${pl.slug}.html`)) {
+          fail(f, `Missing core place link place-${pl.slug}.html in places.html`);
+        }
+      }
+      for (const c of cityLoreList) {
+        if (!html.includes(c.modern)) {
+          fail(f, `Missing CITY_LORE city "${c.modern}" in places.html`);
+        }
+      }
+      for (const p of strategicPasses) {
+        if (!html.includes(p.ancientZh)) {
+          fail(f, `Missing strategic pass "${p.ancientZh}" in places.html`);
+        }
+      }
+    }
+
+    if (placeSlugSet.has(f)) {
+      const genTbl = (html.match(/<table id="tbl-genealogy"[\s\S]*?<\/table>/) || [''])[0];
+      const genRows = parseTableRows(genTbl);
+      if (genRows.length !== dynasties.length) {
+        fail(f, `Expected ${dynasties.length} dynasty rows in #tbl-genealogy, found ${genRows.length}`);
+      }
+      const genBodyText = stripTags(genTbl);
+      if (genBodyText.includes('泰人诸部')) {
+        fail(f, 'Erroneous neighbor polygon "泰人诸部" leaked into #tbl-genealogy');
+      }
+      for (const r of genRows) {
+        const kmMatch = stripTags(r[4]).match(/距\s*(\d+)\s*km/);
+        if (kmMatch && Number(kmMatch[1]) > 55) {
+          fail(f, `Nearest city exceeded 55km threshold in #tbl-genealogy: "${stripTags(r[4])}"`);
+        }
+      }
+      const findRow = (prefix) => genRows.find((r) => stripTags(r[0]).startsWith(prefix));
+      if (f === 'place-xian.html') {
+        const rDh = findRow('东汉');
+        if (!rDh || !stripTags(rDh[3]).includes('京兆尹')) fail(f, 'place-xian 东汉 row must include 京兆尹');
+      }
+      if (f === 'place-luoyang.html') {
+        const rDh = findRow('东汉');
+        if (!rDh || !stripTags(rDh[3]).includes('河南尹')) fail(f, 'place-luoyang 东汉 row must include 河南尹');
+      }
+      if (f === 'place-beijing.html') {
+        const rQ = findRow('秦');
+        if (!rQ || !stripTags(rQ[3]).includes('广阳郡') || stripTags(rQ[3]).includes('渔阳郡')) {
+          fail(f, 'place-beijing 秦 row must use 广阳郡 (not 渔阳郡)');
+        }
+      }
+      if (f === 'place-kaifeng.html') {
+        const rQ = findRow('秦');
+        const rDh = findRow('东汉');
+        if (!rQ || !stripTags(rQ[3]).includes('砀郡')) fail(f, 'place-kaifeng 秦 row must use 砀郡');
+        if (!rDh || !stripTags(rDh[3]).includes('陈留郡')) fail(f, 'place-kaifeng 东汉 row must use 陈留郡');
+      }
+      if (f === 'place-yangzhou.html') {
+        const rQ = findRow('秦');
+        const rDh = findRow('东汉');
+        if (!rQ || !stripTags(rQ[3]).includes('九江郡')) fail(f, 'place-yangzhou 秦 row must use 九江郡');
+        if (!rDh || !stripTags(rDh[3]).includes('广陵郡') || stripTags(rDh[4]).includes('寿春')) {
+          fail(f, 'place-yangzhou 东汉 row must use 广陵郡 and not 寿春');
+        }
+      }
+      if (f === 'place-hangzhou.html' || f === 'place-suzhou.html') {
+        const rDj = findRow('东晋十六国');
+        if (!rDj || !stripTags(rDj[3]).includes('扬州') || !stripTags(rDj[3]).includes('吴郡')) {
+          fail(f, `${f} 东晋十六国 row must show 扬州 · 吴郡`);
+        }
+      }
+      if (f === 'place-dali.html') {
+        const rXh = findRow('西汉');
+        if (!rXh || !stripTags(rXh[3]).includes('益州郡')) fail(f, 'place-dali 西汉 row must show 益州郡');
       }
     }
   }

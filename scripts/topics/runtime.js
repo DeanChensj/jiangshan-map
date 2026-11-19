@@ -66,6 +66,7 @@ function loadTopicsData() {
     dynastyNotes: readJson('dynasty_notes.json'),
     featuredTopics: readJson('featured_topics.json'),
     geoOverrides: readJson('geo_overrides.json'),
+    placesCatalog: readJson('places.json'),
   };
 }
 

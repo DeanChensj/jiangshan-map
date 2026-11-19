@@ -23,6 +23,8 @@ const { buildJourneyPage } = require('./topics/pages/journey');
 const { buildFeaturedTopicPage } = require('./topics/pages/featured');
 const { buildPersonPage } = require('./topics/pages/person');
 const { buildPersonsIndexPage } = require('./topics/pages/persons_index');
+const { buildPlacePage } = require('./topics/pages/place');
+const { buildPlacesIndexPage } = require('./topics/pages/places_index');
 const { buildTopicsIndexPage } = require('./topics/pages/index_page');
 const { computeSitemapXml, computeLlmsTxt, computeIndexHtml } = require('./topics/sync_site');
 
@@ -112,7 +114,7 @@ function buildPeerCooccurrenceMap(stdPersons, dynasties, loreData, eventsByKey, 
 function generateAllOutputs() {
   const { ctrl, dynasties, snapshots, loreData, enLocale, provinces } = loadAtlasRuntime();
   const sourcesBundle = loadSourcesBundle();
-  const { dynastyNotes, featuredTopics, geoOverrides } = loadTopicsData();
+  const { dynastyNotes, featuredTopics, geoOverrides, placesCatalog } = loadTopicsData();
   const assetHashes = computeTopicAssetHashes();
 
   const allProfiles = loreData.PERSON_PROFILES || [];
@@ -367,11 +369,115 @@ function generateAllOutputs() {
     assetHashes,
   });
 
+  const cityLoreList = loreData.CITY_LORE || [];
+  const cityLoreByModern = new Map(cityLoreList.map((c) => [c.modern, c]));
+  const strategicPasses = loreData.STRATEGIC_PASSES || [];
+
+  const placeBuildItems = placesCatalog.map((place, idx) => {
+    const cityLore = cityLoreByModern.get(place.modern);
+    if (!cityLore) {
+      throw new Error(`Missing CITY_LORE entry for place "${place.modern}" (${place.slug})`);
+    }
+
+    const personHits = [];
+    for (const p of allNonStoryPersons) {
+      const evs = eventsByKey.get(p.key) || [];
+      let hits = 0;
+      for (const ev of evs) {
+        if (ev.coord && ctrl.projector.greatCircleKm(cityLore.coord, ev.coord) <= 35) {
+          hits++;
+        }
+      }
+      if (hits > 0) {
+        personHits.push({
+          key: p.key,
+          zh: p.zh,
+          hits,
+          evCount: p.evCount || 0,
+          href: p.journeyKey
+            ? `journey-${p.journeyKey}.html`
+            : isStandalonePersonMonograph(p)
+              ? `person-${p.key}.html`
+              : `../?person=${encodeURIComponent(p.key)}`,
+        });
+      }
+    }
+    personHits.sort(
+      (a, b) => b.hits - a.hits || b.evCount - a.evCount || a.key.localeCompare(b.key)
+    );
+    const linkedPersons = personHits.slice(0, 12);
+
+    const placeRelLinks = [];
+    const seenRelHref = new Set();
+    const addPlaceRel = (href, label) => {
+      if (href && !seenRelHref.has(href)) {
+        seenRelHref.add(href);
+        placeRelLinks.push({ href, label });
+      }
+    };
+    const baseTitleZh = String(place.displayTitleZh || '').split('（')[0];
+
+    for (const j of journeys) {
+      const hitStop = (j.stops || []).some(
+        (st) => st.coord && ctrl.projector.greatCircleKm(cityLore.coord, st.coord) <= 35
+      );
+      if (hitStop) {
+        addPlaceRel(`journey-${j.key}.html`, `行迹：${j.shortZh}`);
+      }
+    }
+    for (const s of stories) {
+      const hitStop = (s.stops || []).some(
+        (st) => st.coord && ctrl.projector.greatCircleKm(cityLore.coord, st.coord) <= 35
+      );
+      if (hitStop) {
+        addPlaceRel(`story-${s.key}.html`, `沙盘：${s.zh}`);
+      }
+    }
+    for (const ft of featuredTopics) {
+      const txt = `${ft.titleZh || ''} ${ft.summaryZh || ''}`;
+      if (
+        (place.modern && txt.includes(place.modern)) ||
+        (baseTitleZh.length >= 2 && txt.includes(baseTitleZh))
+      ) {
+        addPlaceRel(`${ft.slug}.html`, `专题：${ft.shortZh.split('（')[0]}`);
+      }
+    }
+
+    const built = buildPlacePage({
+      place,
+      idx,
+      allPlaces: placesCatalog,
+      cityLore,
+      allDynasties: dynasties,
+      ctrl,
+      loreData,
+      sourcesBundle,
+      geoOverrides,
+      linkedPersons,
+      relatedLinks: placeRelLinks.slice(0, 6),
+      assetHashes,
+    });
+    return { place, ...built };
+  });
+
+  const placePages = placeBuildItems.map(({ filename, html, meta }) => ({ filename, html, meta }));
+
+  const placesIndexPage = buildPlacesIndexPage({
+    placeMonographItems: placeBuildItems,
+    cityLoreList,
+    strategicPasses,
+    allDynasties: dynasties,
+    loreData,
+    ctrl,
+    assetHashes,
+  });
+
   const dynMeta = dynPages.map((p) => p.meta);
   const storyMeta = storyPages.map((p) => p.meta);
   const journeyMeta = journeyPages.map((p) => p.meta);
   const featuredMeta = featuredPages.map((p) => p.meta);
   const personMeta = personPages.map((p) => p.meta);
+  const placeMeta = placePages.map((p) => p.meta);
 
   const indexPage = buildTopicsIndexPage({
     dynMeta,
@@ -379,7 +485,10 @@ function generateAllOutputs() {
     journeyMeta,
     featuredMeta,
     personMeta,
+    placeMeta,
     totalPersonDirectoryCount: allNonStoryPersons.length,
+    totalCitiesCount: cityLoreList.length,
+    totalPassesCount: strategicPasses.length,
     allDynasties: dynasties,
     assetHashes,
   });
@@ -390,10 +499,19 @@ function generateAllOutputs() {
     ...journeyPages,
     ...featuredPages,
     ...personPages,
+    ...placePages,
     personsIndexPage,
+    placesIndexPage,
     indexPage,
   ];
-  const sitemapRes = computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta, personMeta);
+  const sitemapRes = computeSitemapXml(
+    dynMeta,
+    storyMeta,
+    journeyMeta,
+    featuredMeta,
+    personMeta,
+    placeMeta
+  );
   const llmsRes = computeLlmsTxt(dynasties, snapshots, loreData);
   const indexHtmlRes = computeIndexHtml(
     dynMeta,
@@ -404,7 +522,8 @@ function generateAllOutputs() {
     snapshots,
     loreData,
     enLocale,
-    personMeta
+    personMeta,
+    placeMeta
   );
 
   return {
@@ -415,6 +534,7 @@ function generateAllOutputs() {
       journey: journeyPages.length,
       featured: featuredPages.length,
       person: personPages.length,
+      place: placePages.length,
       directoryOnly: directoryOnlyPersons.length,
       totalNonStoryPersons: allNonStoryPersons.length,
       sitemapUrls: sitemapRes.addedCount,
@@ -465,7 +585,8 @@ function runCheck(outputs) {
   }
 
   const { counts } = outputs;
-  const totalPages = counts.dyn + counts.story + counts.journey + counts.featured + counts.person + 2;
+  const totalPages =
+    counts.dyn + counts.story + counts.journey + counts.featured + counts.person + counts.place + 3;
   console.log(
     `✓ All ${totalPages} topic pages, sitemap.xml, index.html, and llms.txt are up to date`
   );
@@ -487,7 +608,7 @@ function runWrite(outputs) {
   }
   const { counts } = outputs;
   console.log(
-    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured pages, ${counts.person} person/relic pages, topics/persons.html, and topics/index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`
+    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured pages, ${counts.person} person/relic pages, ${counts.place} place pages, persons.html, places.html, and index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`
   );
   return 0;
 }

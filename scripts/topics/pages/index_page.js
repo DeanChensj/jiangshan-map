@@ -16,7 +16,10 @@ function buildTopicsIndexPage({
   journeyMeta,
   featuredMeta,
   personMeta = [],
+  placeMeta = [],
   totalPersonDirectoryCount = 139,
+  totalCitiesCount = 87,
+  totalPassesCount = 20,
   allDynasties,
   assetHashes,
 }) {
@@ -75,12 +78,23 @@ function buildTopicsIndexPage({
     )
     .join('\n');
 
+  const placeListHtml = placeMeta
+    .map(
+      (pl) => `            <tr>
+              <td><a href="${escHtml(pl.slug)}.html"><strong>${escHtml(pl.titleZh)}</strong></a><br/><small>${escHtml(pl.titleEn)}</small></td>
+              <td>${escHtml(pl.descZh)}</td>
+              <td><a href="${escHtml(pl.slug)}.html">查阅地区志 →</a></td>
+            </tr>`
+    )
+    .join('\n');
+
   const totalCount =
     dynMeta.length +
     storyMeta.length +
     journeyMeta.length +
     featuredMeta.length +
-    personMeta.length;
+    personMeta.length +
+    placeMeta.length;
 
   const tocItems = [
     { id: 'sec-stories', label: `一、事件始末（${storyMeta.length}）` },
@@ -88,7 +102,8 @@ function buildTopicsIndexPage({
     { id: 'sec-dynasties', label: `三、十八朝疆域（${dynMeta.length}）` },
     { id: 'sec-journeys', label: `四、精修行迹（${journeyMeta.length}）` },
     { id: 'sec-persons', label: `五、历代人物志（${personMeta.length}）` },
-    { id: 'sec-methodology', label: '六、制图考据原则' },
+    { id: 'sec-places', label: `六、历代地区志（${placeMeta.length}）` },
+    { id: 'sec-methodology', label: '七、制图考据原则' },
   ];
 
   const jsonLd = {
@@ -139,6 +154,7 @@ ${renderTocSidebar(tocItems)}
         <div class="cta-row">
           <a class="cta-btn" href="../">进入「江山时序」交互式主地图（前403年—今）→</a>
           <a class="cta-btn secondary" href="persons.html">浏览历代人物志总录（${totalPersonDirectoryCount} 位）→</a>
+          <a class="cta-btn secondary" href="places.html">浏览历代地区志与雄关总录（${totalCitiesCount} 城 · ${totalPassesCount} 关）→</a>
         </div>
       </article>
 
@@ -235,8 +251,28 @@ ${personListHtml}
         </div>
       </section>
 
+      <section id="sec-places" class="section-card">
+        <h2>六、历代核心名城地区志（${placeMeta.length} 篇 · 全库收录 ${totalCitiesCount} 名城与 ${totalPassesCount} 雄关）</h2>
+        <p>收录历代古都与区域中心十八朝政区沿革表与编年史事；全库 87 座名城与 20 座天下雄关名录请见 <a href="places.html"><strong>历代地区志与雄关总录</strong></a>：</p>
+${renderTableFilterBar('tbl-places', `输入城市名、古称、形胜或英文名检索 ${placeMeta.length} 篇地区志…`, placeMeta.length)}
+        <div class="table-wrap">
+          <table id="tbl-places" class="data-table">
+            <thead>
+              <tr>
+                <th>历史名城（中英对照）</th>
+                <th>形胜定位与沿革史事统计</th>
+                <th>专题链接</th>
+              </tr>
+            </thead>
+            <tbody>
+${placeListHtml}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section id="sec-methodology" class="section-card">
-        <h2>六、历史舆图制图原则与山川地理考据说明</h2>
+        <h2>七、历史舆图制图原则与山川地理考据说明</h2>
         <div class="carto-note-grid">
           <div class="carto-note-item">
             <strong>1. 自然山川与分水岭原则（去现代省界化）</strong>

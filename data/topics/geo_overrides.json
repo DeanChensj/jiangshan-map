@@ -38,6 +38,96 @@
         "admin": "雍州 · 京兆郡（上洛郡界）",
         "reason": "蓝田关位于京兆与上洛郡界秦岭脊线"
       }
+    },
+    "place-xian": {
+      "donghan": {
+        "admin": "司隶（刺史部）· 京兆尹",
+        "reason": "东汉三辅长安属司隶京兆尹"
+      }
+    },
+    "place-luoyang": {
+      "donghan": {
+        "admin": "司隶（刺史部）· 河南尹",
+        "reason": "东汉都城洛阳置河南尹，属司隶校尉部"
+      }
+    },
+    "place-beijing": {
+      "qin": {
+        "admin": "广阳郡",
+        "reason": "秦置广阳郡治蓟城（今北京）；渔阳郡治渔阳在今密云东北"
+      },
+      "donghan": {
+        "admin": "幽州（刺史部）· 广阳郡",
+        "reason": "东汉蓟县为广阳郡治，非渔阳郡"
+      }
+    },
+    "place-kaifeng": {
+      "qin": {
+        "admin": "砀郡",
+        "reason": "秦置砀郡，大梁（今开封）属砀郡而非三川郡"
+      },
+      "donghan": {
+        "admin": "兖州（刺史部）· 陈留郡",
+        "reason": "东汉浚仪（今开封）属兖州陈留郡"
+      }
+    },
+    "place-yangzhou": {
+      "qin": {
+        "admin": "九江郡",
+        "reason": "秦广陵（今扬州）属九江郡，非东海郡"
+      }
+    },
+    "place-hangzhou": {
+      "dongjin": {
+        "admin": "扬州 · 吴郡",
+        "reason": "东晋钱塘（今杭州）属扬州吴郡，不入侨置南豫州"
+      }
+    },
+    "place-suzhou": {
+      "dongjin": {
+        "admin": "扬州 · 吴郡",
+        "reason": "东晋吴县（今苏州）属扬州吴郡，南徐州侨治京口（镇江）"
+      },
+      "nanbei": {
+        "admin": "扬州 · 吴郡",
+        "reason": "南朝齐梁苏州吴郡隶属扬州"
+      }
+    },
+    "place-guilin": {
+      "zhanguo": {
+        "polity": "百越（西瓯诸部）",
+        "admin": "岭南百越诸部（未置郡县）",
+        "reason": "战国桂林尚属岭南百越西瓯诸部"
+      }
+    },
+    "place-dali": {
+      "zhanguo": {
+        "polity": "西南夷（昆明诸部）",
+        "admin": "滇西昆明诸部（未置郡县）",
+        "reason": "战国洱海流域属西南夷昆明诸部，非邻国泰人诸部"
+      },
+      "qin": {
+        "polity": "西南夷（昆明诸部）",
+        "admin": "滇西昆明诸部（未置郡县）",
+        "reason": "秦代大理属西南夷昆明诸部"
+      },
+      "xihan": {
+        "polity": "汉",
+        "admin": "益州（刺史部）· 益州郡（叶榆县）",
+        "reason": "西汉元封二年置益州郡，今大理为叶榆县属益州郡"
+      }
+    },
+    "place-lhasa": {
+      "zhanguo": {
+        "polity": "青藏高原先民（雅砻 / 发羌诸部）",
+        "admin": "雅砻诸部（未置郡县）",
+        "reason": "战国拉萨河谷为青藏先民雅砻/发羌诸部聚居地，非东南邻国泰人诸部"
+      },
+      "qin": {
+        "polity": "青藏高原先民（雅砻 / 发羌诸部）",
+        "admin": "雅砻诸部（未置郡县）",
+        "reason": "秦代拉萨河谷为雅砻/发羌诸部，非泰人诸部"
+      }
     }
   },
   "targetNowOverrides": {

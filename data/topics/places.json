@@ -1,0 +1,178 @@
+[
+  {
+    "slug": "xian",
+    "modern": "西安",
+    "displayTitleZh": "长安（今西安）",
+    "en": "Chang'an (Xi'an)",
+    "focusYear": 741,
+    "regionGroup": "关中与西北"
+  },
+  {
+    "slug": "luoyang",
+    "modern": "洛阳",
+    "displayTitleZh": "洛阳（河洛帝都）",
+    "en": "Luoyang",
+    "focusYear": 741,
+    "regionGroup": "中原与华北"
+  },
+  {
+    "slug": "beijing",
+    "modern": "北京",
+    "displayTitleZh": "北京（幽州 · 燕京 · 大都）",
+    "en": "Beijing (Youzhou / Dadu)",
+    "focusYear": 1421,
+    "regionGroup": "中原与华北"
+  },
+  {
+    "slug": "nanjing",
+    "modern": "南京",
+    "displayTitleZh": "南京（建康 · 金陵 · 应天）",
+    "en": "Nanjing (Jiankang / Jinling)",
+    "focusYear": 1368,
+    "regionGroup": "江南与江淮"
+  },
+  {
+    "slug": "kaifeng",
+    "modern": "开封",
+    "displayTitleZh": "开封（大梁 · 汴京）",
+    "en": "Kaifeng (Bianjing / Daliang)",
+    "focusYear": 1080,
+    "regionGroup": "中原与华北"
+  },
+  {
+    "slug": "chengdu",
+    "modern": "成都",
+    "displayTitleZh": "成都（益州 · 锦官城）",
+    "en": "Chengdu (Yizhou)",
+    "focusYear": 221,
+    "regionGroup": "巴蜀与西南"
+  },
+  {
+    "slug": "hangzhou",
+    "modern": "杭州",
+    "displayTitleZh": "杭州（钱塘 · 临安）",
+    "en": "Hangzhou (Lin'an / Qiantang)",
+    "focusYear": 1142,
+    "regionGroup": "江南与江淮"
+  },
+  {
+    "slug": "jingzhou",
+    "modern": "荆州",
+    "displayTitleZh": "荆州（郢都 · 江陵）",
+    "en": "Jingzhou (Jiangling / Ying)",
+    "focusYear": 208,
+    "regionGroup": "荆楚与湖湘"
+  },
+  {
+    "slug": "yangzhou",
+    "modern": "扬州",
+    "displayTitleZh": "扬州（广陵 · 江都）",
+    "en": "Yangzhou (Guangling / Jiangdu)",
+    "focusYear": 741,
+    "regionGroup": "江南与江淮"
+  },
+  {
+    "slug": "xiangyang",
+    "modern": "襄阳",
+    "displayTitleZh": "襄阳（襄州）",
+    "en": "Xiangyang",
+    "focusYear": 1268,
+    "regionGroup": "荆楚与湖湘"
+  },
+  {
+    "slug": "guangzhou",
+    "modern": "广州",
+    "displayTitleZh": "广州（番禺）",
+    "en": "Guangzhou (Panyu)",
+    "focusYear": 741,
+    "regionGroup": "岭南与东南"
+  },
+  {
+    "slug": "taiyuan",
+    "modern": "太原",
+    "displayTitleZh": "太原（晋阳）",
+    "en": "Taiyuan (Jinyang)",
+    "focusYear": 617,
+    "regionGroup": "中原与华北"
+  },
+  {
+    "slug": "datong",
+    "modern": "大同",
+    "displayTitleZh": "大同（平城 · 西京）",
+    "en": "Datong (Pingcheng)",
+    "focusYear": 450,
+    "regionGroup": "中原与华北"
+  },
+  {
+    "slug": "wuwei",
+    "modern": "武威",
+    "displayTitleZh": "武威（姑臧 · 凉州）",
+    "en": "Wuwei (Liangzhou / Guzang)",
+    "focusYear": 400,
+    "regionGroup": "关中与西北"
+  },
+  {
+    "slug": "dunhuang",
+    "modern": "敦煌",
+    "displayTitleZh": "敦煌（沙州）",
+    "en": "Dunhuang (Shazhou)",
+    "focusYear": 741,
+    "regionGroup": "关中与西北"
+  },
+  {
+    "slug": "changsha",
+    "modern": "长沙",
+    "displayTitleZh": "长沙（临湘 · 潭州）",
+    "en": "Changsha (Tanzhou)",
+    "focusYear": 741,
+    "regionGroup": "荆楚与湖湘"
+  },
+  {
+    "slug": "fuzhou",
+    "modern": "福州",
+    "displayTitleZh": "福州（东冶 · 晋安）",
+    "en": "Fuzhou (Dongye / Jin'an)",
+    "focusYear": 741,
+    "regionGroup": "岭南与东南"
+  },
+  {
+    "slug": "hanzhong",
+    "modern": "汉中",
+    "displayTitleZh": "汉中（南郑 · 兴元）",
+    "en": "Hanzhong (Nanzheng)",
+    "focusYear": -206,
+    "regionGroup": "关中与西北"
+  },
+  {
+    "slug": "suzhou",
+    "modern": "苏州",
+    "displayTitleZh": "苏州（吴郡 · 平江）",
+    "en": "Suzhou (Wu / Pingjiang)",
+    "focusYear": 1142,
+    "regionGroup": "江南与江淮"
+  },
+  {
+    "slug": "guilin",
+    "modern": "桂林",
+    "displayTitleZh": "桂林（始安 · 静江）",
+    "en": "Guilin (Guizhou / Jingjiang)",
+    "focusYear": 1142,
+    "regionGroup": "岭南与东南"
+  },
+  {
+    "slug": "dali",
+    "modern": "大理",
+    "displayTitleZh": "大理（太和城 · 叶榆）",
+    "en": "Dali (Taihe)",
+    "focusYear": 1000,
+    "regionGroup": "巴蜀与西南"
+  },
+  {
+    "slug": "lhasa",
+    "modern": "拉萨",
+    "displayTitleZh": "拉萨（逻些）",
+    "en": "Lhasa (Lhasa / Rasa)",
+    "focusYear": 641,
+    "regionGroup": "青藏高原"
+  }
+]
