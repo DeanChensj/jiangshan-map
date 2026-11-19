@@ -735,6 +735,75 @@ ${JSON.stringify(jsonLdObj, null, 2)}
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -787,6 +856,272 @@ function renderFooter(allDynasties) {
       <div>© 江山时序（Jiangshan Historical Atlas）· <a href="${BASE_URL}/">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
       <div><a href="${BASE_URL}/topics/index.html">专题图志总览</a> · <a href="${BASE_URL}/sitemap.xml">Sitemap</a> · <a href="${BASE_URL}/llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">联系与勘误：deancsj@gmail.com</a></div>
     </footer>`;
+}
+
+function renderEmbedMapSection({ iframeSrc, titleZh, hintZh }) {
+  return `    <section class="embed-card" aria-label="交互式历史地图预览">
+      <div class="embed-header">
+        <h2>${escHtml(titleZh)}</h2>
+        <span class="embed-hint">${escHtml(hintZh || '点击地图即可缩放、拖拽或拨动底部时间轴')}</span>
+      </div>
+      <div class="embed-frame-wrap">
+        <iframe class="embed-iframe" src="${escHtml(iframeSrc)}" title="${escHtml(titleZh)}" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </section>`;
+}
+
+const DYNASTY_CARTOGRAPHIC_NOTES = {
+  zhanguo: [
+    {
+      title: '巴蜀疆界循涪江—嘉陵江自然分水岭',
+      detail:
+        '摒弃以东经 105° 经线直线切分巴蜀的简化画法，依据四川盆地山川地理，沿涪江与嘉陵江分水岭、渠江及大巴山脉走势标绘前 316 年秦司马错灭巴蜀前的巴国与蜀国边界。',
+    },
+    {
+      title: '战国郡制按史籍建置年份渐进浮现',
+      detail:
+        '前 403—前 317 年初期快照仅呈现秦关中（内史）、魏上郡与韩（后入赵）上党郡三处早期边郡；秦置汉中郡（前 312）、赵置云中雁门代郡（前 300）、秦置黔中巫郡（前 280—前 277）、陇西南阳郡（前 272）、太原东郡（前 247—前 242）及薛郡（前 223）均严格随历史设郡节点逐阶段出现。',
+    },
+    {
+      title: '先秦古海岸线与河口三角洲复原',
+      detail:
+        '复原战国时期古渤海湾西岸（岸线退至今天津歧口至河北沧州以西）、苏北与长江口漏斗湾（崇明沙洲尚未发育）及珠江三角洲古海湾岸线，避免将现代填海与千年泥沙淤积陆地误标为先秦疆域。',
+    },
+  ],
+  qin: [
+    {
+      title: '三十六郡至四十余郡的疆域演进',
+      detail:
+        '前 221 年秦始皇初并天下分置三十六郡；前 214 年蒙恬北逐匈奴收河南地（新秦中）、略取岭南置南海、桂林、象郡并与闽越故地置闽中郡，完整呈现秦盛期四十余郡格局。',
+    },
+    {
+      title: '秦末（前 209—前 207）动态裂变与赵佗据南海',
+      detail:
+        '拆分前 209 年大泽乡起义陈胜建“张楚”、六国旧贵族复立，以及前 207 年项羽巨鹿破秦主力两幅过渡快照；按《史记·南越列传》校准前 207 年南海尉赵佗初绝秦道时仅据南海郡，桂林、象郡至秦亡后方为赵佗兼并。',
+    },
+  ],
+  xihan: [
+    {
+      title: '元鼎至元封（前 111—前 108）四方开疆逐年切片',
+      detail:
+        '将汉武帝元鼎六年（前 111）平南越置南海交趾九郡并分置张掖敦煌、元封元年（前 110）平闽越并于海南岛置珠崖儋耳二郡、元封二年（前 109）开西南夷置益州郡、元封三年（前 108）灭卫氏朝鲜置乐浪四郡拆分为四幅连续快照。',
+    },
+    {
+      title: '十三刺史部与西域都护府山川边界',
+      detail:
+        '按《汉书·地理志》标绘司隶校尉部与十三刺史部监察区；河西走廊、河套与匈奴边界严格循祁连山、贺兰山与阴山自然分水岭，神爵二年（前 60）后纳入西域都护府统辖之天山南北诸国。',
+    },
+  ],
+  donghan: [
+    {
+      title: '西域“三绝三通”与西域长史府制度区分',
+      detail:
+        '精准还原永初元年（107）因羌乱隔绝陇道罢西域都护（107—123 年西域脱离东汉羁縻），至延光二年（123）班勇以西域长史屯柳中复通西域的变迁；此后东汉终世以“西域长史府”行都护之职。',
+    },
+    {
+      title: '永昌郡西界与王景治河故道',
+      detail:
+        '西南纳入汉明帝永平十二年（69）哀牢内附所置永昌郡（涵盖澜沧江以西叶榆、不韦至高黎贡山）；黄河水系按永平十三年（70）王景治河后由千乘入渤海的东汉至唐宋初故道标绘。',
+    },
+  ],
+  sanguo: [
+    {
+      title: '魏蜀吴三家僵持的自然山川锁钥',
+      detail:
+        '曹魏与蜀汉以秦岭褒斜、子午、散关及陇右祁连山分界；曹魏与孙吴于淮南（合肥、寿春、濡须口）及江汉（襄阳、江陵）形成夹淮、夹江南北拉锯；蜀、吴自222年夷陵之战后以巫峡、武陵山脉划界。',
+    },
+    {
+      title: '交广分置、公孙渊辽东与魏灭蜀终局',
+      detail:
+        '涵盖黄武五年（226）士燮卒后孙权分交州置广州、景初二年（238）司马懿平定辽东燕王公孙渊，以及景元四年（263）邓艾、钟会灭蜀后魏吴南北对峙的晚期格局。',
+    },
+  ],
+  xijin: [
+    {
+      title: '太康一统十九州制与秦汉古海岸线衔接',
+      detail:
+        '太康元年（280）王濬楼船下益州克建业灭吴，结束汉末以来近百年分裂，政区按《晋书·地理志》还原司、兖、豫、冀、幽、平、并、雍、凉、秦、梁、益、宁、青、徐、荆、扬、交、广十九州。',
+    },
+    {
+      title: '八王之乱至永嘉五胡起兵的空间因果链',
+      detail:
+        '在 280—316 年间细分永康（300）、永安（304，刘渊起兵左国城建汉、李雄据成都建国）、永嘉五年（311，洛阳陷落怀帝被掳）与建兴四年（316，长安陷落西晋覆亡）快照，呈现北方裂变过程。',
+    },
+  ],
+  dongjin: [
+    {
+      title: '北伐消长边界与前秦陷蜀期间的南中（宁州）归属',
+      detail:
+        '东晋北界随祖逖、桓温、谢玄（淝水之战后收复淮北河南）、刘裕（灭南燕、后秦收复洛阳长安）动态伸缩；373—384 年前秦攻占梁、益二州期间，南中宁州（今云南、黔西）仍由东晋刺史奉晋正朔固守。',
+    },
+    {
+      title: '十六国与吐谷浑去省界化山川校准',
+      detail:
+        '北方十六国及吐谷浑（317—668）疆界摒弃现代省界套用，沿祁连山、日月山、黄河河曲、太行山与燕山山脉分水岭精密咬合。',
+    },
+  ],
+  nanbei: [
+    {
+      title: '北魏北疆越过“六镇”抵阴山漠南',
+      detail:
+        '439 年北魏太武帝统一北方后，北疆越过沃野、怀朔、武川、抚冥、柔玄、怀荒六镇军事防线涵盖阴山以北漠南草场，准确反映六镇拱卫平城与洛阳的战略纵深。',
+    },
+    {
+      title: '东西魏、北齐北周与梁陈江淮拉锯',
+      detail:
+        '完整还原 534 年北魏分裂后东魏（北齐）与西魏（北周）以黄河、洛阳、潼关争衡，以及侯景之乱后西魏取蜀与江陵（后梁）、北齐尽占淮南至北周灭齐的疆域演变。',
+    },
+  ],
+  sui: [
+    {
+      title: '大业统郡与隋唐大运河水系贯通',
+      detail:
+        '按《隋书·地理志》大业三年（607）改州为郡后的建制标绘中原、河北、河东、关陇、巴蜀、江表、淮海、岭南诸郡区，并标绘以东都洛阳为中心贯通南北的永济渠、通济渠、山阳渎与江南河。',
+    },
+    {
+      title: '大业五年（609）西平吐谷浑与河源且末四郡',
+      detail:
+        '还原隋炀帝大业五年亲征吐谷浑后，于青海湖及柴达木盆地置西海、河源、鄯善、且末四郡的极盛西疆，以及大业末年（617）瓦岗、窦建德、李渊等群雄并起的隋末格局。',
+    },
+  ],
+  tang: [
+    {
+      title: '安西四镇三度得失与六大都护府动态消长',
+      detail:
+        '逐阶段还原贞观十四年（640）置安西都护府、显庆二年（657）灭西突厥置昆陵与濛池都护府，以及咸亨元年（670）与垂拱二年（686）安西四镇两度陷于吐蕃、长寿元年（692）王孝杰复四镇、安史之乱后河西陇右尽陷吐蕃直至大中五年（851）张议潮归义军收复河西的完整过程。',
+    },
+    {
+      title: '武周改制（690—705）、开元十五道与南诏兴起',
+      detail:
+        '690—705 年主政权切换为武则天“周（武周）”并定都神都洛阳；开元二十一年（733）由唐初十道析置为十五道；738 年皮逻阁合一六诏受封云南王，764—907 年间按唐与南诏在大渡河、黔中、雅州、嶲州的实控线划界。',
+    },
+    {
+      title: '开成五年（840）回鹘汗国崩溃后的漠北易主',
+      detail:
+        '840 年黠戛斯破回鹘牙帐后，漠北高原切换为黠戛斯疆域，回鹘仅存阿尔泰山以西及西迁天山（高昌回鹘）、河西（甘州回鹘）残部。',
+    },
+  ],
+  wudai: [
+    {
+      title: '十国精确州郡范围：马楚、荆南与杨吴南唐',
+      detail:
+        '马楚版图不含贵州（黔中土司羁縻区），南包桂管（桂林）至 951 年入南汉；荆南（高氏）独立标绘江陵、归、峡三州锁钥；鄂、黄、蕲三州划归杨吴与南唐。',
+    },
+    {
+      title: '泉漳“清源军”独立割据与后蜀秦凤四州',
+      detail:
+        '947 年后留从效据泉、漳二州置清源军（名义奉南唐、后周正朔而实为闽南独立割据政区）；秦、凤、阶、成四州自 947 年入后蜀，直至显德二年（955）周世宗西征方入后周。',
+    },
+  ],
+  beisong: [
+    {
+      title: '燕云十六州宋辽白沟河界线与西北横山拉锯',
+      detail:
+        '北宋北界循白沟河（今河北保定、雄安至山西雁门关一线）与辽南京道、西京道接壤；西北还原与党项（西夏）在灵州、横山及王韶“熙河开边”（熙河路、陇右河湟）的得失演变。',
+    },
+    {
+      title: '元丰二十三路与大渡河宋理分界',
+      detail:
+        '按《元丰九域志》标绘二十三路与京畿东京开封府、西京河南府、北京大名府、南京应天府四京；西南四川川峡四路与大理国严格循大渡河及滇西山脉分界。',
+    },
+  ],
+  nansong: [
+    {
+      title: '绍兴和议“淮河中流—大散关”宋金边界',
+      detail:
+        '绍兴十二年（1142）《绍兴和议》后，南宋与金朝东起淮河入海口循淮河中流，经唐、邓二州之间西抵秦岭大散关及大渡河，精准呈现两淮、京襄、川陕三大战区防线。',
+    },
+    {
+      title: '金都三迁（上京→中都→汴京）与蒙元灭金包抄南宋',
+      detail:
+        '同步演绎 1153 年完颜亮迁都燕京（金中都）、1214 年金宣宗避蒙古兵锋南迁汴京（金南京）、1234 年蔡州灭金，以及 1253 年忽必烈革囊渡金沙江灭大理对南宋形成南北合围的格局。',
+    },
+  ],
+  yuan: [
+    {
+      title: '中书省（腹里）、宣政院与十大行省（含库页岛）',
+      detail:
+        '还原元代中书省直辖腹里（河北、山东、山西）、宣政院辖吐蕃之地，以及岭北、辽阳（含库页岛苦夷）、河南江北、江浙、江西（含粤东）、湖广（含广西、海南、黔）、陕西、四川、云南、甘肃十大行省。',
+    },
+    {
+      title: '元末（1335 / 1367）周边政权清理与群雄并起',
+      detail:
+        '1335 年快照及时移除已覆亡的日本镰仓幕府、波斯伊利汗国与缅甸蒲甘王朝；1351—1367 年快照完整刻画韩宋、陈友谅大汉、张士诚大周、明玉珍大夏与朱元璋西吴的兼并过程。',
+    },
+  ],
+  ming: [
+    {
+      title: '两京十三布政使司、奴儿干都司与交趾布政使司',
+      detail:
+        '还原京师（北直隶）、南京（南直隶）与十三布政使司，东北纳入永乐七年（1409）所置奴儿干都司（含黑龙江口特林及库页岛囊哈儿卫），西南在 1407—1427 年阶段标绘交趾布政使司。',
+    },
+    {
+      title: '大宁都司的得失（1388—1407 vs 永乐内徙后）',
+      detail:
+        '洪武二十一年（1388）至永乐初，燕山以北至西辽河流域属明大宁都司；永乐初大宁都司内徙保定、将故地畀予兀良哈朵颜三卫后，明北界退守宣府、蓟镇与明长城一线。',
+    },
+    {
+      title: '明代海岸线与台湾“台江内海”复原',
+      detail:
+        '苏北、长江口、珠江三角洲及台湾台南海岸均按明代岸线还原，清晰呈现明末荷据与明郑时期一鲲身（安平）沙洲与赤嵌隔“台江内海”相望的古地理形态。',
+    },
+  ],
+  qing: [
+    {
+      title: '内地十八省、东北三将军与蒙藏新疆藩部体制',
+      detail:
+        '区分内地十八省布政使司与盛京、吉林、黑龙江三将军辖区、伊犁将军（统辖天山南北与巴尔喀什湖以东）、乌里雅苏台将军（外蒙古喀尔喀四部、唐努乌梁海）及驻藏大臣辖区。',
+    },
+    {
+      title: '1689《尼布楚条约》至 1860《北京条约》边界变迁',
+      detail:
+        '1689—1858 年东北疆界循外兴安岭至海并囊括库页岛；1858《瑷珲条约》、1860《北京条约》与 1864《勘分西北界约记》后按阶段展示黑龙江以北、乌苏里江以东（含库页岛）与巴尔喀什湖以东的割让过程。',
+    },
+    {
+      title: '台南台江内海淤积（1823）与光绪台湾建省（1885）',
+      detail:
+        '清初至嘉庆年间台南西侧仍保持台江内海古岸线，道光三年（1823）曾文溪改道注入后台江内海淤积成陆；光绪十一年（1885）台湾由福建台湾道升格建省。',
+    },
+  ],
+  roc: [
+    {
+      title: '1928年前后“直隶/奉天/北京”改制与首都动态迁徙',
+      detail:
+        '1928 年 6 月国民革命军克复北京前，省名保持“直隶、奉天”，都城称“北京”；1928 年 6 月后改称“河北、辽宁”与“北平”，并增置热河、察哈尔、绥远、宁夏、青海、西康诸省。首都标记随年份在南京、北京（北洋时期）、武汉与重庆（抗战陪都）间动态跟随。',
+    },
+    {
+      title: '1926年末北伐初年快照与外蒙古共享精密边界',
+      detail:
+        '单列 1926 年末北伐军克复两湖江西而江浙沪尚在孙传芳控制下的历史断面；外蒙古与民国北部诸省共享同一条无裂缝拓扑边界。',
+    },
+  ],
+  prc: [
+    {
+      title: '现代三十四省级政区沿革与海岸线基准',
+      detail:
+        '完整收录 23 个省、5 个自治区、4 个直辖市与香港、澳门 2 个特别行政区，涵盖 1954—1955 年省制调整、1988 年海南建省、1997 年重庆直辖及港澳回归等关键里程碑与权威文献出处。',
+    },
+  ],
+};
+
+function renderCartographicNotesSection(d) {
+  const notes = DYNASTY_CARTOGRAPHIC_NOTES[d.key];
+  if (!Array.isArray(notes) || notes.length === 0) return '';
+  const itemsHtml = notes
+    .map(
+      (n) => `        <div class="carto-note-item">
+          <strong>${escHtml(n.title)}</strong>
+          <p>${escHtml(n.detail)}</p>
+        </div>`
+    )
+    .join('\n');
+  return `    <section class="section-card">
+      <h2>四、${escHtml(d.title)}舆图边界、山川形胜与政区考据札记</h2>
+      <p>以下记录「江山时序」在绘制${escHtml(d.title)}（${fmtDynSpanZh(d)}）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+      <div class="carto-note-grid">
+${itemsHtml}
+      </div>
+    </section>\n\n`;
 }
 
 function buildDynastyPage(d, idx, allDynasties, snapshots, enLocale, ctrl, provinces, sourcesBundle) {
@@ -1024,6 +1359,12 @@ ${renderTopHeader()}
       </div>
     </article>
 
+${renderEmbedMapSection({
+  iframeSrc: `../?embed=1&year=${focusY}&from=${d.fromYear}&to=${d.key === 'prc' ? 2026 : d.toYear}`,
+  titleZh: `${d.title}交互式历史舆图预览（${spanZh} · 可拨动底部时间轴切换阶段）`,
+  hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
+})}
+
     <section class="section-card">
       <h2>一、${escHtml(d.title)}版图演变阶段与政权州郡格局（${phases.length} 阶段快照）</h2>
       <p>在「江山时序」交互式舆图中拖动底部时间轴滑块，或点击下方各阶段链接，即可查看${escHtml(d.title)}不同年份的政权疆域消长、州道郡县边界及黄河改道水系：</p>
@@ -1085,7 +1426,7 @@ ${milestoneRowsHtml}
       </div>
     </section>
 
-${renderFooter(allDynasties)}
+${renderCartographicNotesSection(d)}${renderFooter(allDynasties)}
   </main>
 </body>
 </html>
@@ -1267,6 +1608,12 @@ ${renderTopHeader()}
       </div>
     </article>
 
+${renderEmbedMapSection({
+  iframeSrc: `../?embed=1&event=${encodeURIComponent(s.key)}`,
+  titleZh: `${s.zh}双阵营对抗历史沙盘实时预览（${spanZh}）`,
+  hintZh: '点击地图即可交互推演 · 右上角可全屏打开沙盘',
+})}
+
     <section class="section-card">
       <h2>${escHtml(s.zh)} · 全程 ${stops.length} 幕时空推演、古今地名与史料引文详解</h2>
 ${stopCardsHtml}
@@ -1408,6 +1755,12 @@ ${renderTopHeader()}
         <a class="cta-btn secondary" href="${escHtml(mapUrl)}&amp;lang=en">Play Interactive Journey in English &rarr;</a>
       </div>
     </article>
+
+${renderEmbedMapSection({
+  iframeSrc: `../?embed=1&person=${encodeURIComponent(j.key)}`,
+  titleZh: `${j.titleZh}交互式历史舆图路线预览（${cleanSpanZh}）`,
+  hintZh: '点击地图即可缩放查看各站 · 右上角可全屏播放动画',
+})}
 
     <section class="section-card">
       <h2>${escHtml(j.titleZh)} · 逐站时空坐标、古今地名与史料诗词详解（${stops.length} 站）</h2>
@@ -1667,6 +2020,12 @@ ${renderTopHeader()}
       </div>
     </article>
 
+${renderEmbedMapSection({
+  iframeSrc: `../?embed=1&${topic.mapHref.split('?')[1] || ''}`,
+  titleZh: `${topic.shortZh}交互式历史舆图预览`,
+  hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
+})}
+
 ${detailSectionHtml}
 
 ${renderFooter(allDynasties)}
@@ -1850,6 +2209,28 @@ ${dynListHtml}
 ${jListHtml}
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>五、历史舆图制图原则与山川地理考据说明</h2>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>1. 自然山川与分水岭原则（去现代省界化）</strong>
+          <p>历代政权边界严格遵循山脉分水岭、大川水道与关隘锁钥（如战国巴蜀循涪江—嘉陵江分水岭、宋元川滇循大渡河、北魏北界越六镇抵阴山漠南、河西与吐谷浑循祁连山及日月山分界），摒弃将现代省界机械套用于古代政区的做法。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>2. 古海岸线与河口三角洲演进复原</strong>
+          <p>分阶段还原先秦至唐宋古渤海湾西岸、苏北范公堤以东成陆前岸线、长江口崇明沙洲发育过程、珠江三角洲古海湾，以及明郑至清道光三年（1823）曾文溪改道淤积前的台湾台南“台江内海”古地理形态。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>3. 一手正史与《资治通鉴》卷次出处核验</strong>
+          <p>编年大事、城邑地标与人物行迹逐条核对《二十四史》（《史记》《汉书》《三国志》《晋书》《隋书》《旧唐书》《新唐书》《宋史》等）及《资治通鉴》具体卷次，并在各朝代与事件专题页内展示史料出处。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>4. 古今同名异地消歧与细粒度时间切片</strong>
+          <p>严格区分历代“同名异地”（如秦汉巴郡江州今重庆 vs 东晋隋唐宋江州今江西九江；三国蒲圻赤壁 vs 黄州东坡赤壁），并在政权交替关键节点（如秦末前209/前207、西汉前111—前108四连拍、盛唐安西四镇三度得失、元末1335/1367、民国1926北伐与1928省名改制）提供高密度时间切片。</p>
+        </div>
       </div>
     </section>
 

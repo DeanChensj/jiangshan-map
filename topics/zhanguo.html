@@ -392,6 +392,75 @@
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -450,6 +519,16 @@
         <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/qin.html">下一时期：秦 &rarr;</a>
       </div>
     </article>
+
+    <section class="embed-card" aria-label="交互式历史地图预览">
+      <div class="embed-header">
+        <h2>战国交互式历史舆图预览（前403—前221 · 可拨动底部时间轴切换阶段）</h2>
+        <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
+      </div>
+      <div class="embed-frame-wrap">
+        <iframe class="embed-iframe" src="../?embed=1&amp;year=-403&amp;from=-403&amp;to=-221" title="战国交互式历史舆图预览（前403—前221 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section class="section-card">
       <h2>一、战国版图演变阶段与政权州郡格局（15 阶段快照）</h2>
@@ -1102,6 +1181,25 @@
           </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>四、战国舆图边界、山川形胜与政区考据札记</h2>
+      <p>以下记录「江山时序」在绘制战国（前403—前221）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>巴蜀疆界循涪江—嘉陵江自然分水岭</strong>
+          <p>摒弃以东经 105° 经线直线切分巴蜀的简化画法，依据四川盆地山川地理，沿涪江与嘉陵江分水岭、渠江及大巴山脉走势标绘前 316 年秦司马错灭巴蜀前的巴国与蜀国边界。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>战国郡制按史籍建置年份渐进浮现</strong>
+          <p>前 403—前 317 年初期快照仅呈现秦关中（内史）、魏上郡与韩（后入赵）上党郡三处早期边郡；秦置汉中郡（前 312）、赵置云中雁门代郡（前 300）、秦置黔中巫郡（前 280—前 277）、陇西南阳郡（前 272）、太原东郡（前 247—前 242）及薛郡（前 223）均严格随历史设郡节点逐阶段出现。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>先秦古海岸线与河口三角洲复原</strong>
+          <p>复原战国时期古渤海湾西岸（岸线退至今天津歧口至河北沧州以西）、苏北与长江口漏斗湾（崇明沙洲尚未发育）及珠江三角洲古海湾岸线，避免将现代填海与千年泥沙淤积陆地误标为先秦疆域。</p>
+        </div>
       </div>
     </section>
 

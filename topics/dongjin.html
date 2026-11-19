@@ -392,6 +392,75 @@
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -450,6 +519,16 @@
         <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/nanbei.html">下一时期：南北朝 &rarr;</a>
       </div>
     </article>
+
+    <section class="embed-card" aria-label="交互式历史地图预览">
+      <div class="embed-header">
+        <h2>东晋十六国交互式历史舆图预览（317—420 · 可拨动底部时间轴切换阶段）</h2>
+        <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
+      </div>
+      <div class="embed-frame-wrap">
+        <iframe class="embed-iframe" src="../?embed=1&amp;year=383&amp;from=317&amp;to=420" title="东晋十六国交互式历史舆图预览（317—420 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section class="section-card">
       <h2>一、东晋十六国版图演变阶段与政权州郡格局（21 阶段快照）</h2>
@@ -1186,6 +1265,21 @@
           </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>四、东晋十六国舆图边界、山川形胜与政区考据札记</h2>
+      <p>以下记录「江山时序」在绘制东晋十六国（317—420）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>北伐消长边界与前秦陷蜀期间的南中（宁州）归属</strong>
+          <p>东晋北界随祖逖、桓温、谢玄（淝水之战后收复淮北河南）、刘裕（灭南燕、后秦收复洛阳长安）动态伸缩；373—384 年前秦攻占梁、益二州期间，南中宁州（今云南、黔西）仍由东晋刺史奉晋正朔固守。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>十六国与吐谷浑去省界化山川校准</strong>
+          <p>北方十六国及吐谷浑（317—668）疆界摒弃现代省界套用，沿祁连山、日月山、黄河河曲、太行山与燕山山脉分水岭精密咬合。</p>
+        </div>
       </div>
     </section>
 

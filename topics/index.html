@@ -358,6 +358,75 @@
       font-weight: 700;
       color: var(--ink-main);
     }
+    .embed-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
+    }
+    .embed-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .embed-header h2 {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-size: 1.12rem;
+    }
+    .embed-hint {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .embed-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #efe7d6;
+    }
+    @media (max-width: 640px) {
+      .embed-frame-wrap { height: 390px; }
+    }
+    .embed-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .carto-note-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .carto-note-item {
+      background: #fdfaf3;
+      border: 1px solid var(--gold-border);
+      border-left: 4px solid var(--accent-teal);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+    .carto-note-item strong {
+      color: var(--ink-main);
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.96rem;
+    }
+    .carto-note-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+    }
     footer.page-footer {
       margin-top: 2.2rem;
       padding-top: 1.2rem;
@@ -660,6 +729,28 @@
           </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>五、历史舆图制图原则与山川地理考据说明</h2>
+      <div class="carto-note-grid">
+        <div class="carto-note-item">
+          <strong>1. 自然山川与分水岭原则（去现代省界化）</strong>
+          <p>历代政权边界严格遵循山脉分水岭、大川水道与关隘锁钥（如战国巴蜀循涪江—嘉陵江分水岭、宋元川滇循大渡河、北魏北界越六镇抵阴山漠南、河西与吐谷浑循祁连山及日月山分界），摒弃将现代省界机械套用于古代政区的做法。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>2. 古海岸线与河口三角洲演进复原</strong>
+          <p>分阶段还原先秦至唐宋古渤海湾西岸、苏北范公堤以东成陆前岸线、长江口崇明沙洲发育过程、珠江三角洲古海湾，以及明郑至清道光三年（1823）曾文溪改道淤积前的台湾台南“台江内海”古地理形态。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>3. 一手正史与《资治通鉴》卷次出处核验</strong>
+          <p>编年大事、城邑地标与人物行迹逐条核对《二十四史》（《史记》《汉书》《三国志》《晋书》《隋书》《旧唐书》《新唐书》《宋史》等）及《资治通鉴》具体卷次，并在各朝代与事件专题页内展示史料出处。</p>
+        </div>
+        <div class="carto-note-item">
+          <strong>4. 古今同名异地消歧与细粒度时间切片</strong>
+          <p>严格区分历代“同名异地”（如秦汉巴郡江州今重庆 vs 东晋隋唐宋江州今江西九江；三国蒲圻赤壁 vs 黄州东坡赤壁），并在政权交替关键节点（如秦末前209/前207、西汉前111—前108四连拍、盛唐安西四镇三度得失、元末1335/1367、民国1926北伐与1928省名改制）提供高密度时间切片。</p>
+        </div>
       </div>
     </section>
 
