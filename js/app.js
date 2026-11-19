@@ -6175,16 +6175,35 @@
 
     // Place Genealogy & Person Chronicles methods are attached by js/atlas_trace.js.
 
-    // "据《资治通鉴》卷81 《晋书》卷26、卷43" for one entry of js/milestone_sources.js.
+    // Join chapters of one cited work cleanly, omitting repeated "卷" after the first.
+    _formatMilestoneChapters(chapters) {
+      const list = (chapters || []).filter(Boolean);
+      return list
+        .map((c, j) => (j > 0 && list[0].startsWith('卷') && c.startsWith('卷') ? c.slice(1) : c))
+        .join('、');
+    }
+
+    // Plain-text full citation string used for hover tooltip when >2 works exist.
+    _milestoneSourceText(groups) {
+      if (!Array.isArray(groups) || !groups.length) return '';
+      return groups
+        .map(([title, chapters], i) => `${i ? '' : '据'}《${title}》${this._formatMilestoneChapters(chapters)}`)
+        .join(' ');
+    }
+
+    // "据《资治通鉴》卷81 《晋书》卷26、43" (at most 2 works, " 等" when more exist).
     // Each work is one unbreakable unit; the line wraps only between works (css/style.css).
     _milestoneSourceHtml(groups) {
       if (!Array.isArray(groups) || !groups.length) return '';
       const esc = (s) =>
         String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-      const parts = groups.map(
-        ([title, chapters], i) =>
-          `<span class="ev-src-work">${i ? '' : '据'}《${esc(title)}》${chapters.filter(Boolean).map(esc).join('、')}</span>`
-      );
+      const shown = groups.slice(0, 2);
+      const hasMore = groups.length > 2;
+      const parts = shown.map(([title, chapters], i) => {
+        const ch = this._formatMilestoneChapters(chapters);
+        const tail = hasMore && i === shown.length - 1 ? ' 等' : '';
+        return `<span class="ev-src-work">${i ? '' : '据'}《${esc(title)}》${esc(ch)}${tail}</span>`;
+      });
       return parts.join(' ');
     }
 
@@ -6205,11 +6224,15 @@
         });
         return;
       }
-      const html = this._milestoneSourceHtml(data[`${dynasty.key}:${m.year}`]);
+      const groups = data[`${dynasty.key}:${m.year}`];
+      const html = this._milestoneSourceHtml(groups);
       if (!html) return;
       const line = document.createElement('div');
       line.className = 'ev-src';
       line.innerHTML = html;
+      if (Array.isArray(groups) && groups.length > 2) {
+        line.title = this._milestoneSourceText(groups);
+      }
       li.appendChild(line);
       if (this.locale === 'zh-tw') this._applyZhHantDom(line);
     }

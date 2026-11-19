@@ -2850,6 +2850,11 @@ html.deeplink-boot #inp-year {
 
 #milestone-list .ev-src {
   grid-column: 1 / -1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
   padding-top: 5px;
   border-top: 1px solid var(--hairline);
   color: var(--text-muted);

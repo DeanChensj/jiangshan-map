@@ -2630,11 +2630,27 @@ async function runSearchRuntimeSuite(ctx) {
       const text316 = html316.replace(/<[^>]+>/g, '');
       assert.strictEqual(
         text316,
-        '据《资治通鉴》卷89、卷91 《晋书》卷108',
-        'xijin:316 source line merges repeated chapters per work, in citation order'
+        '据《资治通鉴》卷89、91 《晋书》卷108',
+        'xijin:316 source line omits repeated 卷 per work, in citation order'
       );
       assert(!html316.includes('<a '), 'the line is plain text: Wikisource is unreachable for many readers');
       assert.strictEqual(ctrl._milestoneSourceHtml(undefined), '', 'a milestone without sources gets no line');
+
+      assert.strictEqual(
+        ctrl._milestoneSourceHtml(data['tang:686']).replace(/<[^>]+>/g, ''),
+        '据《资治通鉴》卷201、202、204 《新唐书》卷221上 等',
+        'tang:686 source line caps display to 2 works with trailing 等'
+      );
+      assert.strictEqual(
+        ctrl._milestoneSourceText(data['tang:686']),
+        '据《资治通鉴》卷201、202、204 《新唐书》卷221上 《全唐文》卷219 《旧唐书》卷93 《唐会要》卷73',
+        'tang:686 plain-text source preserves full work list for hover tooltip'
+      );
+      assert.strictEqual(
+        ctrl._milestoneSourceHtml(data['sanguo:280']).replace(/<[^>]+>/g, ''),
+        '据《晋书》卷3、42 《三国志》卷48 等',
+        'sanguo:280 source line caps display to 2 works with trailing 等'
+      );
 
       const xijin = dynasties.find((d) => d.key === 'xijin');
       const lineNode = () => ({
@@ -2644,18 +2660,25 @@ async function runSearchRuntimeSuite(ctx) {
           this.parent.kids.splice(this.parent.kids.indexOf(this), 1);
         },
       });
-      // Array.from keeps the mocks in this realm; sandbox arrays fail deepStrictEqual on prototype.
-      const lis = Array.from(xijin.milestones, () => ({
-        kids: [],
-        appendChild(n) {
-          n.parent = this;
-          this.kids.push(n);
-        },
-      }));
-      const listEl = {
-        children: lis,
-        querySelectorAll: () => lis.flatMap((li) => li.kids.filter((k) => k.className === 'ev-src')),
+      const makeListEl = (dyn) => {
+        // Array.from keeps the mocks in this realm; sandbox arrays fail deepStrictEqual on prototype.
+        const rows = Array.from(dyn.milestones, () => ({
+          kids: [],
+          appendChild(n) {
+            n.parent = this;
+            this.kids.push(n);
+          },
+        }));
+        return {
+          rows,
+          el: {
+            children: rows,
+            querySelectorAll: () => rows.flatMap((li) => li.kids.filter((k) => k.className === 'ev-src')),
+          },
+        };
       };
+      const { rows: lis, el: listEl } = makeListEl(xijin);
+      let activeListEl = listEl;
       const saved = {
         _id: ctrl._id,
         locale: ctrl.locale,
@@ -2666,7 +2689,7 @@ async function runSearchRuntimeSuite(ctx) {
         sources: sandbox.window.ATLAS_MILESTONE_SOURCES,
       };
       try {
-        ctrl._id = (id) => (id === 'milestone-list' ? listEl : saved._id.call(ctrl, id));
+        ctrl._id = (id) => (id === 'milestone-list' ? activeListEl : saved._id.call(ctrl, id));
         sandbox.document = { ...(saved.document || {}), createElement: lineNode };
         sandbox.window.ATLAS_MILESTONE_SOURCES = data;
         ctrl.activePolity = null;
@@ -2677,6 +2700,8 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.year = 316;
         ctrl._syncMilestoneSource(xijin);
         assert.deepStrictEqual(linesAt(), [316], 'zh: exactly the highlighted milestone carries the source line');
+        const src316Node = lis.find((li) => li.kids.length).kids[0];
+        assert(!src316Node.title, 'xijin:316 (<=2 works) omits redundant hover tooltip title');
         ctrl.year = 313;
         ctrl._syncMilestoneSource(xijin);
         assert.deepStrictEqual(linesAt(), [313], 'moving the highlight moves the line instead of adding another');
@@ -2688,10 +2713,25 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl._syncMilestoneSource(xijin);
         assert.deepStrictEqual(linesAt(), [], 'polity focus lists related events, not milestones: no line');
 
+        // >2 works attaches full citation text to .ev-src title for hover inspection
+        ctrl.activePolity = null;
+        const tang = dynasties.find((d) => d.key === 'tang');
+        const { rows: tangRows, el: tangListEl } = makeListEl(tang);
+        activeListEl = tangListEl;
+        ctrl.year = 686;
+        ctrl._syncMilestoneSource(tang);
+        const src686Node = tangRows.flatMap((li) => li.kids)[0];
+        assert(src686Node, 'tang:686 attaches an .ev-src node');
+        assert.strictEqual(
+          src686Node.title,
+          ctrl._milestoneSourceText(data['tang:686']),
+          'tang:686 (>2 works) sets full citation list on .ev-src title'
+        );
+        activeListEl = listEl;
+
         // Discussion #438 regression: an explicitly opened non-chronicle landmark event (idx === -1)
         // must not fall back to highlighting the preceding chronicle milestone.
         ctrl.activePolity = null;
-        const tang = dynasties.find((d) => d.key === 'tang');
         ctrl.year = 646;
         ctrl.activeMilestone = {
           dynastyKey: 'tang',
