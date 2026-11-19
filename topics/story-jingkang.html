@@ -12,7 +12,7 @@
   <meta name="mobile-agent" content="format=html5;url=https://deanchen.me/jiangshan-map/topics/story-jingkang.html" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta name="theme-color" content="#f5efe2" />
+  <meta name="theme-color" content="#f3eee4" />
   <link rel="canonical" href="https://deanchen.me/jiangshan-map/topics/story-jingkang.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="江山时序 · Jiangshan Historical Atlas" />
@@ -29,6 +29,7 @@
   <meta name="twitter:description" content="靖康之变（Jingkang Catastrophe &amp; Southern Crossing，宣和七年（1125）— 绍兴十二年（1142） · 汴京陆沉、建炎南渡与岳飞北伐）：宣和七年（1125）十月，金太宗完颜晟乘灭辽之威兵分东西两路南侵北宋；靖康二年（1127）春汴京陷落，徽、钦二帝北狩，北宋覆亡。同年五月康王赵构于应天府即位开启南宋，经韩世忠黄天荡、吴玠和尚原阻击稳住江淮秦岭防线，岳飞收复襄阳六郡并大举北伐直抵开封城南朱仙镇；终因高宗与秦桧连发十二道金字牌召还、绍兴十一年除夕冤杀岳飞于风波亭，订立《绍兴和议》划淮河—大散关为界，奠定百余年宋金南北对峙格局。 全程共 10 个关键时空节点（燕山府（今北京） → 太原（今山西太原） → 东京开封（今河南开封） → 应天府（今河南商丘） → 明州（今浙江宁波） → 黄天荡（今江苏镇江东北） → 和尚原（今陕西宝鸡西南） → 襄阳府（今湖北襄阳） → 郾城（今河南漯河郾城） → 临安风波亭（今浙江杭州）），提供双阵营对抗沙盘、古今地名对照与一手史籍出处。" />
   <meta name="twitter:image" content="https://deanchen.me/jiangshan-map/assets/og_preview.png" />
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+  <link rel="stylesheet" href="assets/topics.css?v=e86712b9" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -76,659 +77,284 @@
   ]
 }
   </script>
-  <style>
-    :root {
-      --bg-paper: #f5efe2;
-      --bg-card: #fbf7ee;
-      --ink-main: #221d17;
-      --ink-muted: #5e5346;
-      --cinnabar: #9e2a22;
-      --cinnabar-hover: #7d1e17;
-      --gold-border: #d5c7ae;
-      --accent-teal: #275d52;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg-paper);
-      color: var(--ink-main);
-      font-family: "Noto Serif SC", "Songti SC", "STSong", "PingFang SC", "Microsoft YaHei", serif;
-      line-height: 1.72;
-    }
-    .top-bar {
-      background: #ece3d0;
-      border-bottom: 1px solid var(--gold-border);
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    .brand-link {
-      text-decoration: none;
-      color: var(--ink-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-weight: 700;
-      font-size: 1.08rem;
-    }
-    .seal-badge {
-      background: var(--cinnabar);
-      color: #fff8ee;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.92rem;
-      letter-spacing: 0.06em;
-    }
-    .top-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      font-size: 0.9rem;
-    }
-    .top-nav a {
-      color: var(--ink-muted);
-      text-decoration: none;
-      padding: 0.25rem 0.55rem;
-      border-radius: 4px;
-      border: 1px solid transparent;
-    }
-    .top-nav a:hover {
-      color: var(--cinnabar);
-      border-color: var(--gold-border);
-      background: var(--bg-card);
-    }
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 1.75rem 1.25rem 3.5rem;
-    }
-    .breadcrumb {
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      margin-bottom: 1rem;
-    }
-    .breadcrumb a {
-      color: var(--ink-muted);
-      text-decoration: none;
-    }
-    .breadcrumb a:hover { color: var(--cinnabar); text-decoration: underline; }
-    .hero-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-left: 5px solid var(--cinnabar);
-      border-radius: 8px;
-      padding: 1.4rem 1.5rem;
-      margin-bottom: 1.6rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .kicker {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.09);
-      padding: 0.15rem 0.55rem;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-    }
-    h1 {
-      margin: 0.2rem 0 0.6rem;
-      font-size: 1.65rem;
-      line-height: 1.35;
-      color: var(--ink-main);
-    }
-    .en-sub {
-      font-size: 0.95rem;
-      color: var(--ink-muted);
-      margin: 0 0 0.9rem;
-    }
-    .meta-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
-      margin: 0.85rem 0 1.15rem;
-    }
-    .meta-pill {
-      background: #efe7d6;
-      border: 1px solid var(--gold-border);
-      padding: 0.22rem 0.68rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--ink-main);
-    }
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      margin-top: 1.1rem;
-    }
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: var(--cinnabar);
-      color: #fff9f0;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 0.62rem 1.2rem;
-      border-radius: 6px;
-      font-size: 0.96rem;
-      transition: background 0.15s ease;
-    }
-    .cta-btn:hover { background: var(--cinnabar-hover); }
-    .cta-btn.secondary {
-      background: transparent;
-      color: var(--ink-main);
-      border: 1px solid var(--gold-border);
-    }
-    .cta-btn.secondary:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-    }
-    .section-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1.25rem 1.4rem;
-      margin-bottom: 1.4rem;
-    }
-    h2 {
-      margin: 0 0 0.85rem;
-      font-size: 1.22rem;
-      border-bottom: 1px solid var(--gold-border);
-      padding-bottom: 0.45rem;
-      color: var(--ink-main);
-    }
-    h3 {
-      margin: 1rem 0 0.4rem;
-      font-size: 1.05rem;
-      color: var(--ink-main);
-    }
-    blockquote.poem-box {
-      margin: 0.9rem 0;
-      padding: 0.85rem 1.15rem;
-      background: #f2ead9;
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 4px;
-      font-size: 1.04rem;
-    }
-    blockquote.poem-box cite {
-      display: block;
-      margin-top: 0.35rem;
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      font-style: normal;
-    }
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin-top: 0.5rem;
-    }
-    table.data-table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    table.data-table th,
-    table.data-table td {
-      border: 1px solid var(--gold-border);
-      padding: 0.5rem 0.65rem;
-      text-align: left;
-      vertical-align: top;
-    }
-    table.data-table th {
-      background: #ece3d0;
-      font-weight: 600;
-    }
-    table.data-table tr:nth-child(even) td {
-      background: rgba(236, 227, 208, 0.32);
-    }
-    table.data-table a {
-      color: var(--cinnabar);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    table.data-table a:hover { text-decoration: underline; }
-    .chip-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.6rem;
-    }
-    .chip-link {
-      display: inline-block;
-      background: #f0e8d8;
-      border: 1px solid var(--gold-border);
-      color: var(--ink-main);
-      text-decoration: none;
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.87rem;
-    }
-    .chip-link:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-      background: #fffdf8;
-    }
-    .stop-card {
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      padding: 0.9rem 1.05rem;
-      margin-bottom: 0.85rem;
-      background: #fdfaf3;
-    }
-    .stop-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 0.35rem;
-    }
-    .stop-badge {
-      background: var(--cinnabar);
-      color: #fff;
-      font-size: 0.78rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      margin-right: 0.4rem;
-    }
-    .camp-badge {
-      display: inline-block;
-      color: #fff;
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 0.1rem 0.48rem;
-      border-radius: 4px;
-      margin-right: 0.38rem;
-    }
-    .source-cite {
-      margin-top: 0.38rem;
-      padding-top: 0.3rem;
-      border-top: 1px dashed rgba(213, 199, 174, 0.75);
-      font-size: 0.83rem;
-      color: var(--ink-muted);
-      line-height: 1.55;
-    }
-    .story-link-pill {
-      display: inline-block;
-      margin-left: 0.4rem;
-      padding: 0.08rem 0.45rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.1);
-      border: 1px solid rgba(158, 42, 34, 0.3);
-      border-radius: 4px;
-      text-decoration: none;
-    }
-    .story-link-pill:hover {
-      background: var(--cinnabar);
-      color: #fff;
-      text-decoration: none !important;
-    }
-    .diff-add { color: #1f5c3a; font-weight: 600; }
-    .diff-rem { color: #8c2d24; font-weight: 600; }
-    .diff-same { color: var(--ink-muted); font-size: 0.85rem; }
-    .act-heading {
-      margin: 1.25rem 0 0.65rem;
-      padding: 0.4rem 0.75rem;
-      background: #ece3d0;
-      border-left: 4px solid var(--cinnabar);
-      border-radius: 4px;
-      font-size: 1.02rem;
-      font-weight: 700;
-      color: var(--ink-main);
-    }
-    .embed-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1rem 1.15rem 1.1rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .embed-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.65rem;
-    }
-    .embed-header h2 {
-      margin: 0;
-      padding: 0;
-      border: none;
-      font-size: 1.12rem;
-    }
-    .embed-hint {
-      font-size: 0.84rem;
-      color: var(--ink-muted);
-    }
-    .embed-frame-wrap {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      overflow: hidden;
-      background: #efe7d6;
-    }
-    @media (max-width: 640px) {
-      .embed-frame-wrap { height: 390px; }
-    }
-    .embed-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-    }
-    .carto-note-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-top: 0.6rem;
-    }
-    .carto-note-item {
-      background: #fdfaf3;
-      border: 1px solid var(--gold-border);
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-    }
-    .carto-note-item strong {
-      color: var(--ink-main);
-      display: block;
-      margin-bottom: 0.22rem;
-      font-size: 0.96rem;
-    }
-    .carto-note-item p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--ink-muted);
-      line-height: 1.65;
-    }
-    footer.page-footer {
-      margin-top: 2.2rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--gold-border);
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    footer.page-footer a {
-      color: var(--cinnabar);
-      text-decoration: none;
-    }
-  </style>
+  <script defer src="assets/topics.js?v=ad70ed7b" data-v-hant="3afdab47"></script>
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
 </head>
 <body>
   <header class="top-bar">
-    <a class="brand-link" href="https://deanchen.me/jiangshan-map/">
-      <span class="seal-badge">江山时序</span>
-      <span>中国历史地图 · 战国 → 今</span>
-    </a>
-    <nav class="top-nav" aria-label="专题图志导航">
-      <a href="https://deanchen.me/jiangshan-map/">进入交互式主地图</a>
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a>
-      <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub 开源仓库</a>
-    </nav>
+    <div class="top-bar-inner">
+      <a class="brand-link" href="../">
+        <span class="seal-badge">江山时序</span>
+        <span>历史舆图图志</span>
+      </a>
+      <nav class="top-nav" aria-label="专题图志导航">
+        <a href="../">交互舆图</a>
+        <a href="index.html">图志总览</a>
+        <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <button id="act-topic-hant" class="hant-toggle-btn no-hant" type="button" aria-pressed="false" title="切換為繁體中文">繁</button>
+      </nav>
+    </div>
   </header>
-  <main>
-    <nav class="breadcrumb" aria-label="面包屑导航">
-      <a href="https://deanchen.me/jiangshan-map/">江山时序首页</a> &rsaquo;
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a> &rsaquo;
-      <span>靖康之变（1125—1142年）</span>
-    </nav>
+  <div class="page-shell has-toc">
+    <aside class="topic-toc" aria-label="本页目录">
+      <div class="toc-heading">本页目录</div>
+      <ul class="toc-list">
+        <li><a class="toc-link is-active" href="#sec-map">沙盘地图预览</a></li>
+        <li><a class="toc-link" href="#sec-stops">全程节点（10 幕）</a></li>
+        <li><a class="toc-link" href="#sec-act-1">一 · 靖康陆沉与二帝北狩</a></li>
+        <li><a class="toc-link" href="#sec-act-2">二 · 建炎南渡与江淮秦岭阻击</a></li>
+        <li><a class="toc-link" href="#sec-act-3">三 · 岳飞北伐与绍兴定局</a></li>
+      </ul>
+    </aside>
+    <main class="main-col">
+      <nav class="breadcrumb" aria-label="面包屑导航">
+        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="index.html">专题图志总览</a> &rsaquo;
+        <span>靖康之变（1125—1142年）</span>
+      </nav>
 
-    <article class="hero-card">
-      <span class="kicker">事件始末 · 双阵营对抗历史沙盘图志（第 2 / 5 篇）</span>
-      <h1>靖康之变历史地图（宣和七年（1125）— 绍兴十二年（1142） · 汴京陆沉、建炎南渡与岳飞北伐）</h1>
-      <p class="en-sub">Jingkang Catastrophe &amp; Southern Crossing (1125–1142 CE · Fall of Bianjing, Southern Crossing &amp; Yue Fei&#39;s Expeditions)</p>
-      <div class="meta-pills">
-        <span class="meta-pill"><strong>起止年代：</strong>1125—1142年</span>
-        <span class="meta-pill"><strong>推演节点：</strong>共 10 站</span>
-        <span class="meta-pill"><span class="camp-badge" style="background:#b53826;">两宋抗金</span><small>Song Resistance Forces</small></span>
-        <span class="meta-pill"><span class="camp-badge" style="background:#2b5b84;">金军南侵</span><small>Jurchen Jin Forces</small></span>
-      </div>
-      <p>宣和七年（1125）十月，金太宗完颜晟乘灭辽之威兵分东西两路南侵北宋；靖康二年（1127）春汴京陷落，徽、钦二帝北狩，北宋覆亡。同年五月康王赵构于应天府即位开启南宋，经韩世忠黄天荡、吴玠和尚原阻击稳住江淮秦岭防线，岳飞收复襄阳六郡并大举北伐直抵开封城南朱仙镇；终因高宗与秦桧连发十二道金字牌召还、绍兴十一年除夕冤杀岳飞于风波亭，订立《绍兴和议》划淮河—大散关为界，奠定百余年宋金南北对峙格局。</p>
-      <p class="en-sub">In late 1125 CE, Jurchen Jin armies launched a two-pronged invasion of Northern Song, capturing Kaifeng in early 1127 and carrying Emperors Huizong and Qinzong north into captivity. Re-establishing the Southern Song court south of the Yangtze, loyalist commanders Han Shizhong, Wu Jie, and Yue Fei held the Yangtze–Qinling line and counterattacked to the gates of Kaifeng, until Chancellor Qin Hui recalled and executed Yue Fei in early 1142, sealing the Huai River–Dasan Pass border under the Treaty of Shaoxing.</p>
-      <p><strong>全线关键节点：</strong>燕山府（今北京） → 太原（今山西太原） → 东京开封（今河南开封） → 应天府（今河南商丘） → 明州（今浙江宁波） → 黄天荡（今江苏镇江东北） → 和尚原（今陕西宝鸡西南） → 襄阳府（今湖北襄阳） → 郾城（今河南漯河郾城） → 临安风波亭（今浙江杭州）。</p>
-      <div class="source-cite"><strong>史料出处：</strong>脱脱等《宋史》 卷23 钦宗纪、卷24–29 高宗纪、卷360 宗泽传、卷364 韩世忠传、卷365 岳飞传、卷366 吴玠传、卷446 王禀传</div>
-      <div class="cta-row">
-        <a class="cta-btn" href="https://deanchen.me/jiangshan-map/?event=jingkang">在交互式地图中推演「靖康之变」双阵营沙盘 &rarr;</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;lang=en">Open Two-Camp Sandtable in English &rarr;</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/index.html">返回专题图志总览</a>
-      </div>
-    </article>
+      <article class="hero-card">
+        <span class="kicker">事件始末 · 双阵营对抗历史沙盘图志（第 2 / 5 篇）</span>
+        <h1>靖康之变（1125—1142年）</h1>
+        <p class="en-sub">Jingkang Catastrophe &amp; Southern Crossing (1125–1142 CE · Fall of Bianjing, Southern Crossing &amp; Yue Fei&#39;s Expeditions)</p>
+        <div class="meta-pills">
+          <span class="meta-pill"><strong>格局提要：</strong>宣和七年（1125）— 绍兴十二年（1142） · 汴京陆沉、建炎南渡与岳飞北伐</span>
+          <span class="meta-pill"><strong>推演节点：</strong>共 10 站</span>
+          <span class="meta-pill"><span class="camp-badge" style="background:#b53826;">两宋抗金</span><small>Song Resistance Forces</small></span>
+          <span class="meta-pill"><span class="camp-badge" style="background:#2b5b84;">金军南侵</span><small>Jurchen Jin Forces</small></span>
+        </div>
+        <p>宣和七年（1125）十月，金太宗完颜晟乘灭辽之威兵分东西两路南侵北宋；靖康二年（1127）春汴京陷落，徽、钦二帝北狩，北宋覆亡。同年五月康王赵构于应天府即位开启南宋，经韩世忠黄天荡、吴玠和尚原阻击稳住江淮秦岭防线，岳飞收复襄阳六郡并大举北伐直抵开封城南朱仙镇；终因高宗与秦桧连发十二道金字牌召还、绍兴十一年除夕冤杀岳飞于风波亭，订立《绍兴和议》划淮河—大散关为界，奠定百余年宋金南北对峙格局。</p>
+        <p class="en-sub">In late 1125 CE, Jurchen Jin armies launched a two-pronged invasion of Northern Song, capturing Kaifeng in early 1127 and carrying Emperors Huizong and Qinzong north into captivity. Re-establishing the Southern Song court south of the Yangtze, loyalist commanders Han Shizhong, Wu Jie, and Yue Fei held the Yangtze–Qinling line and counterattacked to the gates of Kaifeng, until Chancellor Qin Hui recalled and executed Yue Fei in early 1142, sealing the Huai River–Dasan Pass border under the Treaty of Shaoxing.</p>
+        <p><strong>全线关键节点：</strong>燕山府（今北京） → 太原（今山西太原） → 东京开封（今河南开封） → 应天府（今河南商丘） → 明州（今浙江宁波） → 黄天荡（今江苏镇江东北） → 和尚原（今陕西宝鸡西南） → 襄阳府（今湖北襄阳） → 郾城（今河南漯河郾城） → 临安风波亭（今浙江杭州）。</p>
+        <div class="source-cite"><strong>史料出处：</strong>脱脱等《宋史》 卷23 钦宗纪、卷24–29 高宗纪、卷360 宗泽传、卷364 韩世忠传、卷365 岳飞传、卷366 吴玠传、卷446 王禀传</div>
+        <div class="cta-row">
+          <a class="cta-btn" href="../?event=jingkang">在交互地图中推演「靖康之变」沙盘 →</a>
+          <a class="cta-btn secondary" href="../?event=jingkang&amp;lang=en">Open in English →</a>
+          <a class="cta-btn secondary" href="index.html">返回图志总览</a>
+        </div>
+        <div class="related-strip">
+          <span>关联图志：</span>
+          <a class="related-chip" href="beisong.html">北宋疆域政区图志</a>
+          <a class="related-chip" href="nansong.html">南宋疆域政区图志</a>
+        </div>
+      </article>
 
-    <section class="embed-card" aria-label="交互式历史地图预览">
-      <div class="embed-header">
-        <h2>靖康之变双阵营对抗历史沙盘实时预览（1125—1142年）</h2>
-        <span class="embed-hint">点击地图即可交互推演 · 右上角可全屏打开沙盘</span>
-      </div>
-      <div class="embed-frame-wrap">
-        <iframe class="embed-iframe" src="../?embed=1&amp;event=jingkang" title="靖康之变双阵营对抗历史沙盘实时预览（1125—1142年）" loading="lazy" allowfullscreen></iframe>
-      </div>
-    </section>
+      <section id="sec-map" class="embed-card" aria-label="交互式历史地图预览">
+        <div class="embed-header">
+          <h2>靖康之变双阵营对抗历史沙盘实时预览（1125—1142年）</h2>
+          <span class="embed-hint">点击地图即可交互推演 · 右上角可全屏打开沙盘</span>
+        </div>
+        <div class="embed-frame-wrap">
+          <iframe class="embed-iframe" src="../?embed=1&amp;event=jingkang" title="靖康之变双阵营对抗历史沙盘实时预览（1125—1142年）" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </section>
 
-    <section class="section-card">
-      <h2>靖康之变 · 全程 10 幕时空推演、古今地名与史料引文详解</h2>
-      <div class="act-heading">一 · 靖康陆沉与二帝北狩 <small style="font-weight:400; color:#5e5346; margin-left:0.5rem;">Act I · Two-Pronged Invasion &amp; Fall of Bianjing</small></div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 1 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
-            <strong>燕山府（今北京）· 两路侵宋·燕山失守</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Yanshan (Beijing) (Beijing) — Two-Pronged Invasion &amp; Fall of Yanshan</small>
+      <section id="sec-stops" class="section-card">
+        <h2>靖康之变 · 全程 10 幕时空推演、古今地名与史料引文详解</h2>
+        <div id="sec-act-1" class="act-heading">一 · 靖康陆沉与二帝北狩 <small>Act I · Two-Pronged Invasion &amp; Fall of Bianjing</small></div>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 1 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
+              <strong>燕山府（今北京）· 两路侵宋·燕山失守</strong>
+              <small class="stop-sub-en">Yanshan (Beijing) (Beijing) — Two-Pronged Invasion &amp; Fall of Yanshan</small>
+            </div>
+            <div>
+              <strong>1125年 · 冬十月—十二月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=0">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1125年 · 冬十月—十二月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=0" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>进军方向：</strong>自 平州（完颜宗望） 推进至 燕山府</div>
+          <p class="stop-desc-zh">宣和七年十月，金太宗乘灭辽之势兵分两路伐宋；东路完颜宗望自平州直趋燕山府，十二月宋常胜军统制郭药师阵前叛降，河北门户洞开，宋徽宗仓皇禅位于太子赵桓（钦宗）。</p>
+          <p class="en-sub stop-desc-en">Following the conquest of Liao, Jurchen Jin launched a two-column invasion; Wanyan Zongwang&#39;s eastern army marched from Pingzhou into Yanshan, where Song general Guo Yaoshi defected and opened the North China Plain.</p>
+          <blockquote class="poem-box">《宋史·钦宗纪》：“宣和七年冬十月，金人分道入寇……十二月甲辰，郭药师以燕山叛降金。”<cite>History of Song: &#39;In winter, the tenth month of Xuanhe 7, the Jurchens invaded in two columns... In the twelfth month, Guo Yaoshi surrendered Yanshan to Jin.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 平州（完颜宗望） 推进至 燕山府</div>
-        <p style="margin:0.4rem 0;">宣和七年十月，金太宗乘灭辽之势兵分两路伐宋；东路完颜宗望自平州直趋燕山府，十二月宋常胜军统制郭药师阵前叛降，河北门户洞开，宋徽宗仓皇禅位于太子赵桓（钦宗）。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Following the conquest of Liao, Jurchen Jin launched a two-column invasion; Wanyan Zongwang&#39;s eastern army marched from Pingzhou into Yanshan, where Song general Guo Yaoshi defected and opened the North China Plain.</p>
-        <blockquote class="poem-box">《宋史·钦宗纪》：“宣和七年冬十月，金人分道入寇……十二月甲辰，郭药师以燕山叛降金。”<cite>History of Song: &#39;In winter, the tenth month of Xuanhe 7, the Jurchens invaded in two columns... In the twelfth month, Guo Yaoshi surrendered Yanshan to Jin.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 2 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
-            <strong>太原（今山西太原）· 东京初守·太原死节</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Taiyuan (Taiyuan, Shanxi) — Defense of Kaifeng &amp; Heroic Fall of Taiyuan</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 2 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
+              <strong>太原（今山西太原）· 东京初守·太原死节</strong>
+              <small class="stop-sub-en">Taiyuan (Taiyuan, Shanxi) — Defense of Kaifeng &amp; Heroic Fall of Taiyuan</small>
+            </div>
+            <div>
+              <strong>1126年 · 春正月—秋九月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=1">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1126年 · 春正月—秋九月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=1" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>进军方向：</strong>自 云中（完颜宗翰） 推进至 太原</div>
+          <p class="stop-desc-zh">靖康元年正月李纲力主抗战击退宗望围汴东路军；然西路完颜宗翰死围太原二百五十余日，城中粮尽煮弓弩筋甲充饥，九月丙寅城陷，守将王禀负宋太祖御容投汾水殉国，河东屏障尽失。</p>
+          <p class="en-sub stop-desc-en">While Li Gang repelled the first siege of Kaifeng in early 1126, Wanyan Zonghan&#39;s western army besieged Taiyuan for 250 days; when the starving city fell in September, commander Wang Bing drowned himself holding Emperor Taizu&#39;s portrait.</p>
+          <blockquote class="poem-box">《宋史·忠义传》：“太原围急，人食牛马、皮角皆尽……城陷，禀负太祖御容赴汾水死。”<cite>History of Song: &#39;Besieged for over 250 days until all leather and sinews were eaten... when Taiyuan fell, Wang Bing carried Emperor Taizu&#39;s portrait and plunged into the Fen River.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 云中（完颜宗翰） 推进至 太原</div>
-        <p style="margin:0.4rem 0;">靖康元年正月李纲力主抗战击退宗望围汴东路军；然西路完颜宗翰死围太原二百五十余日，城中粮尽煮弓弩筋甲充饥，九月丙寅城陷，守将王禀负宋太祖御容投汾水殉国，河东屏障尽失。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">While Li Gang repelled the first siege of Kaifeng in early 1126, Wanyan Zonghan&#39;s western army besieged Taiyuan for 250 days; when the starving city fell in September, commander Wang Bing drowned himself holding Emperor Taizu&#39;s portrait.</p>
-        <blockquote class="poem-box">《宋史·忠义传》：“太原围急，人食牛马、皮角皆尽……城陷，禀负太祖御容赴汾水死。”<cite>History of Song: &#39;Besieged for over 250 days until all leather and sinews were eaten... when Taiyuan fell, Wang Bing carried Emperor Taizu&#39;s portrait and plunged into the Fen River.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 3 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
-            <strong>东京开封（今河南开封）· 东西合围·靖康之变</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Dongjing Kaifeng (Kaifeng, Henan) — Pincer Siege of Kaifeng &amp; the Jingkang Catastrophe</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 3 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
+              <strong>东京开封（今河南开封）· 东西合围·靖康之变</strong>
+              <small class="stop-sub-en">Dongjing Kaifeng (Kaifeng, Henan) — Pincer Siege of Kaifeng &amp; the Jingkang Catastrophe</small>
+            </div>
+            <div>
+              <strong>1126年 · 冬闰十一月—次年四月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=2">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1126年 · 冬闰十一月—次年四月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=2" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          
+          <p class="stop-desc-zh">太原失守后，金东路宗望自燕山、西路宗翰自太原渡河合围汴京；靖康元年闰十一月丙辰京城陷落，次年四月金军废徽、钦二帝并掳宗室、后妃、百工逾十万人北狩五国城，历百六十七年之北宋覆亡。</p>
+          <p class="en-sub stop-desc-en">Converging from Yanshan and Taiyuan, the eastern and western Jin armies stormed Kaifeng in late 1126 and carried Emperors Huizong and Qinzong north into captivity in May 1127, ending the Northern Song dynasty.</p>
+          <blockquote class="poem-box">《宋史·钦宗纪》：“闰十一月丙辰，京城陷……靖康二年夏四月庚申朔，大风吹石折木，金人以帝及皇后、皇太子北归。”<cite>History of Song: &#39;In the intercalary eleventh month the capital fell... On the first day of the fourth month of Jingkang 2, in a gale that snapped trees, the Jurchens carried the Emperor and court north.&#39;</cite></blockquote>
         </div>
-        
-        <p style="margin:0.4rem 0;">太原失守后，金东路宗望自燕山、西路宗翰自太原渡河合围汴京；靖康元年闰十一月丙辰京城陷落，次年四月金军废徽、钦二帝并掳宗室、后妃、百工逾十万人北狩五国城，历百六十七年之北宋覆亡。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Converging from Yanshan and Taiyuan, the eastern and western Jin armies stormed Kaifeng in late 1126 and carried Emperors Huizong and Qinzong north into captivity in May 1127, ending the Northern Song dynasty.</p>
-        <blockquote class="poem-box">《宋史·钦宗纪》：“闰十一月丙辰，京城陷……靖康二年夏四月庚申朔，大风吹石折木，金人以帝及皇后、皇太子北归。”<cite>History of Song: &#39;In the intercalary eleventh month the capital fell... On the first day of the fourth month of Jingkang 2, in a gale that snapped trees, the Jurchens carried the Emperor and court north.&#39;</cite></blockquote>
-      </div>
-      <div class="act-heading">二 · 建炎南渡与江淮秦岭阻击 <small style="font-weight:400; color:#5e5346; margin-left:0.5rem;">Act II · The Southern Crossing &amp; Holding the Yangtze–Qinling Line</small></div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 4 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>应天府（今河南商丘）· 应天即位·宗泽守汴</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Yingtian (Shangqiu) (Shangqiu, Henan) — Accession at Yingtian &amp; Zong Ze&#39;s Defense of Kaifeng</small>
+        <div id="sec-act-2" class="act-heading">二 · 建炎南渡与江淮秦岭阻击 <small>Act II · The Southern Crossing &amp; Holding the Yangtze–Qinling Line</small></div>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 4 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>应天府（今河南商丘）· 应天即位·宗泽守汴</strong>
+              <small class="stop-sub-en">Yingtian (Shangqiu) (Shangqiu, Henan) — Accession at Yingtian &amp; Zong Ze&#39;s Defense of Kaifeng</small>
+            </div>
+            <div>
+              <strong>1127年 · 夏五月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=3">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1127年 · 夏五月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=3" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>进军方向：</strong>自 济州（康王赵构） 推进至 应天府</div>
+          <p class="stop-desc-zh">靖康二年五月庚寅朔，河北兵马大元帅康王赵构自济州大元帅府赴南京应天府即位（宋高宗），改元建炎，南宋始立；以李纲为相、宗泽为东京留守。宗泽屡破金兵并二十四疏请高宗还京，临终三呼“过河”而卒；后杜充代泽弃汴，黄河以南至淮水遂陷于金与伪齐。</p>
+          <p class="en-sub stop-desc-en">In June 1127, Prince Zhao Gou marched from his headquarters at Jizhou to ascend the throne at Yingtian as Emperor Gaozong, founding the Southern Song; Kaifeng governor Zong Ze repelled repeated Jin attacks and died crying &#39;Cross the Yellow River!&#39; three times, after which his successor Du Chong abandoned Kaifeng.</p>
+          <blockquote class="poem-box">《宋史·宗泽传》：“泽前后请上还京二十余奏，每为潜善等所抑，忧愤成疾……但连呼‘过河’者三而薨。”<cite>History of Song: &#39;Zong Ze submitted over twenty memorials urging the Emperor to return to Kaifeng... On his deathbed he cried out Cross the River! three times and passed away.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 济州（康王赵构） 推进至 应天府</div>
-        <p style="margin:0.4rem 0;">靖康二年五月庚寅朔，河北兵马大元帅康王赵构自济州大元帅府赴南京应天府即位（宋高宗），改元建炎，南宋始立；以李纲为相、宗泽为东京留守。宗泽屡破金兵并二十四疏请高宗还京，临终三呼“过河”而卒；后杜充代泽弃汴，黄河以南至淮水遂陷于金与伪齐。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">In June 1127, Prince Zhao Gou marched from his headquarters at Jizhou to ascend the throne at Yingtian as Emperor Gaozong, founding the Southern Song; Kaifeng governor Zong Ze repelled repeated Jin attacks and died crying &#39;Cross the Yellow River!&#39; three times, after which his successor Du Chong abandoned Kaifeng.</p>
-        <blockquote class="poem-box">《宋史·宗泽传》：“泽前后请上还京二十余奏，每为潜善等所抑，忧愤成疾……但连呼‘过河’者三而薨。”<cite>History of Song: &#39;Zong Ze submitted over twenty memorials urging the Emperor to return to Kaifeng... On his deathbed he cried out Cross the River! three times and passed away.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 5 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
-            <strong>明州（今浙江宁波）· 搜山检海·高宗浮海</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Mingzhou (Ningbo) (Ningbo, Zhejiang) — Jin Raid South of the Yangtze &amp; Flight to Sea</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 5 幕</span><span class="camp-badge" style="background:#2b5b84;">金军南侵</span>
+              <strong>明州（今浙江宁波）· 搜山检海·高宗浮海</strong>
+              <small class="stop-sub-en">Mingzhou (Ningbo) (Ningbo, Zhejiang) — Jin Raid South of the Yangtze &amp; Flight to Sea</small>
+            </div>
+            <div>
+              <strong>1129年 · 冬十一月—次年春</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=4">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1129年 · 冬十一月—次年春</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=4" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          
+          <p class="stop-desc-zh">高宗自应天南渡扬州、临安；建炎三年冬，完颜宗弼（金兀术）率军自马家渡渡江，连陷建康、临安、越州、明州，“搜山检海捉赵构”；高宗自越州奔明州定海，乘楼船漂泊台州、温州海上四月之久。</p>
+          <p class="en-sub stop-desc-en">After Emperor Gaozong crossed south to Yangzhou and Lin&#39;an, Wanyan Zongbi (Wuzhu) crossed the Yangtze in late 1129 and seized Jiankang, Lin&#39;an, and Mingzhou in pursuit; Gaozong boarded sea ships at Dinghai and sheltered off the Wenzhou coast for four months.</p>
+          <blockquote class="poem-box">《宋史·高宗纪》：“十一月，金人陷建康府……十二月己丑，帝乘楼船次定海县；金人陷杭州，又陷越州、明州。”<cite>History of Song: &#39;In the eleventh month the Jurchens took Jiankang... In the twelfth month the Emperor boarded a tower ship at Dinghai as Jin forces seized Hangzhou, Yuezhou, and Mingzhou.&#39;</cite></blockquote>
         </div>
-        
-        <p style="margin:0.4rem 0;">高宗自应天南渡扬州、临安；建炎三年冬，完颜宗弼（金兀术）率军自马家渡渡江，连陷建康、临安、越州、明州，“搜山检海捉赵构”；高宗自越州奔明州定海，乘楼船漂泊台州、温州海上四月之久。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">After Emperor Gaozong crossed south to Yangzhou and Lin&#39;an, Wanyan Zongbi (Wuzhu) crossed the Yangtze in late 1129 and seized Jiankang, Lin&#39;an, and Mingzhou in pursuit; Gaozong boarded sea ships at Dinghai and sheltered off the Wenzhou coast for four months.</p>
-        <blockquote class="poem-box">《宋史·高宗纪》：“十一月，金人陷建康府……十二月己丑，帝乘楼船次定海县；金人陷杭州，又陷越州、明州。”<cite>History of Song: &#39;In the eleventh month the Jurchens took Jiankang... In the twelfth month the Emperor boarded a tower ship at Dinghai as Jin forces seized Hangzhou, Yuezhou, and Mingzhou.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 6 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>黄天荡（今江苏镇江东北）· 黄天荡战·建康喋血</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Huangtiandang (Zhenjiang) (Zhenjiang, Jiangsu) — Naval Blockade at Huangtiandang &amp; Recapture of Jiankang</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 6 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>黄天荡（今江苏镇江东北）· 黄天荡战·建康喋血</strong>
+              <small class="stop-sub-en">Huangtiandang (Zhenjiang) (Zhenjiang, Jiangsu) — Naval Blockade at Huangtiandang &amp; Recapture of Jiankang</small>
+            </div>
+            <div>
+              <strong>1130年 · 春三月—夏四月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=5">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1130年 · 春三月—夏四月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=5" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>核心人物：</strong>韩世忠（Han Shizhong）、岳飞（Yue Fei）</div><div class="stop-meta-line"><strong>进军方向：</strong>自 海口（韩世忠水师） / 临安（金兀术北撤） 推进至 黄天荡</div>
+          <p class="stop-desc-zh">金兀术自浙东满载掠夺北返，韩世忠自青龙镇、江湾海口引水师八千溯江趋镇江焦山，与夫人梁红玉亲执桴鼓将金军十万困于黄天荡四十八日；岳飞复于建康牛头山设伏夜袭收复建康，金军自此不敢轻易渡江。</p>
+          <p class="en-sub stop-desc-en">As Wuzhu retreated north from Zhejiang, Han Shizhong sailed his 8,000-man fleet from the Yangtze estuary to Zhenjiang, where he and Liang Hongyu trapped 100,000 Jin troops at Huangtiandang for 48 days while Yue Fei retook Jiankang.</p>
+          <blockquote class="poem-box">《宋史·韩世忠传》：“梁氏亲执桴鼓，金兵终不得渡……相持四十八日，以八千人拒兀术十万之众，凡数十合。”<cite>History of Song: &#39;Lady Liang beat the war drums in person... For forty-eight days Han Shizhong held off Wuzhu&#39;s 100,000 troops with 8,000 men.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>核心人物：</strong>韩世忠（Han Shizhong）、岳飞（Yue Fei）</div><div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 海口（韩世忠水师） / 临安（金兀术北撤） 推进至 黄天荡</div>
-        <p style="margin:0.4rem 0;">金兀术自浙东满载掠夺北返，韩世忠自青龙镇、江湾海口引水师八千溯江趋镇江焦山，与夫人梁红玉亲执桴鼓将金军十万困于黄天荡四十八日；岳飞复于建康牛头山设伏夜袭收复建康，金军自此不敢轻易渡江。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">As Wuzhu retreated north from Zhejiang, Han Shizhong sailed his 8,000-man fleet from the Yangtze estuary to Zhenjiang, where he and Liang Hongyu trapped 100,000 Jin troops at Huangtiandang for 48 days while Yue Fei retook Jiankang.</p>
-        <blockquote class="poem-box">《宋史·韩世忠传》：“梁氏亲执桴鼓，金兵终不得渡……相持四十八日，以八千人拒兀术十万之众，凡数十合。”<cite>History of Song: &#39;Lady Liang beat the war drums in person... For forty-eight days Han Shizhong held off Wuzhu&#39;s 100,000 troops with 8,000 men.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 7 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>和尚原（今陕西宝鸡西南）· 和尚原捷·力保巴蜀</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Heshangyuan (Baoji) (Baoji, Shaanxi) — Victory at Heshangyuan: Securing the Sichuan Passes</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 7 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>和尚原（今陕西宝鸡西南）· 和尚原捷·力保巴蜀</strong>
+              <small class="stop-sub-en">Heshangyuan (Baoji) (Baoji, Shaanxi) — Victory at Heshangyuan: Securing the Sichuan Passes</small>
+            </div>
+            <div>
+              <strong>1131年 · 冬十月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=6">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1131年 · 冬十月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=6" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>进军方向：</strong>自 兴元（吴玠·吴璘） / 长安（金兀术西攻） 推进至 和尚原</div>
+          <p class="stop-desc-zh">富平之战后关陇尽陷，金兀术会集十万大军自长安西扑秦岭大散关下之和尚原，欲取汉中入蜀；吴玠、吴璘选劲弓强弩更番迭射（驻队矢）并夜袭劫营，金兀术中两矢仅以身免，巴蜀门户自此稳固。</p>
+          <p class="en-sub stop-desc-en">After taking Guanzhong, Wuzhu led 100,000 troops against Heshangyuan below Dasan Pass to invade Sichuan; Wu Jie and Wu Lin shattered the Jin army with relay crossbow volleys, wounding Wuzhu with two arrows.</p>
+          <blockquote class="poem-box">《宋史·吴玠传》：“选劲弓强弩，分番迭射，号‘驻队矢’，连发不绝，繁如雨注，大破之，兀术中流矢，仅以身免。”<cite>History of Song: &#39;Wu Jie deployed strong crossbows firing in continuous relays like pouring rain, routing the enemy; Wuzhu was struck by arrows and barely escaped.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 兴元（吴玠·吴璘） / 长安（金兀术西攻） 推进至 和尚原</div>
-        <p style="margin:0.4rem 0;">富平之战后关陇尽陷，金兀术会集十万大军自长安西扑秦岭大散关下之和尚原，欲取汉中入蜀；吴玠、吴璘选劲弓强弩更番迭射（驻队矢）并夜袭劫营，金兀术中两矢仅以身免，巴蜀门户自此稳固。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">After taking Guanzhong, Wuzhu led 100,000 troops against Heshangyuan below Dasan Pass to invade Sichuan; Wu Jie and Wu Lin shattered the Jin army with relay crossbow volleys, wounding Wuzhu with two arrows.</p>
-        <blockquote class="poem-box">《宋史·吴玠传》：“选劲弓强弩，分番迭射，号‘驻队矢’，连发不绝，繁如雨注，大破之，兀术中流矢，仅以身免。”<cite>History of Song: &#39;Wu Jie deployed strong crossbows firing in continuous relays like pouring rain, routing the enemy; Wuzhu was struck by arrows and barely escaped.&#39;</cite></blockquote>
-      </div>
-      <div class="act-heading">三 · 岳飞北伐与绍兴定局 <small style="font-weight:400; color:#5e5346; margin-left:0.5rem;">Act III · Yue Fei&#39;s Northern Expeditions &amp; Treaty of Shaoxing</small></div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 8 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>襄阳府（今湖北襄阳）· 收复六郡·打通中原</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Xiangyang (Xiangyang, Hubei) — Recovery of the Six Commanderies of Xiangyang</small>
+        <div id="sec-act-3" class="act-heading">三 · 岳飞北伐与绍兴定局 <small>Act III · Yue Fei&#39;s Northern Expeditions &amp; Treaty of Shaoxing</small></div>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 8 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>襄阳府（今湖北襄阳）· 收复六郡·打通中原</strong>
+              <small class="stop-sub-en">Xiangyang (Xiangyang, Hubei) — Recovery of the Six Commanderies of Xiangyang</small>
+            </div>
+            <div>
+              <strong>1134年 · 夏五月—秋七月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=7">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1134年 · 夏五月—秋七月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=7" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>核心人物：</strong>岳飞（Yue Fei）</div><div class="stop-meta-line"><strong>进军方向：</strong>自 鄂州（岳家军） 推进至 襄阳府</div>
+          <p class="stop-desc-zh">绍兴四年五月，镇南军承宣使岳飞奏言“襄阳六郡为恢复中原基本”，自鄂州挥师北伐，三日拔郢州，大破金与伪齐李成联军，两月内连复襄阳、唐、邓、随、郢、信阳六郡，首次收复南宋大片的北方失地。</p>
+          <p class="en-sub stop-desc-en">Declaring the six commanderies of Xiangyang the strategic key to recovering the Central Plains, thirty-two-year-old Yue Fei marched north from Ezhou and recaptured Xiangyang, Tang, Deng, Sui, Ying, and Xinyang within two months.</p>
+          <blockquote class="poem-box">《宋史·岳飞传》：“飞奏：‘襄阳等六郡，为恢复中原基本，今当先取六郡以除心膂之病。’……五月，克郢州；六月，李成遁，复襄阳；七月，复邓州、唐州、信阳军，襄汉平。”<cite>History of Song: &#39;Yue Fei memorialized that the six commanderies of Xiangyang were the foundation for recovering the Central Plains... By the seventh month all six were recovered.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>核心人物：</strong>岳飞（Yue Fei）</div><div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>进军方向：</strong>自 鄂州（岳家军） 推进至 襄阳府</div>
-        <p style="margin:0.4rem 0;">绍兴四年五月，镇南军承宣使岳飞奏言“襄阳六郡为恢复中原基本”，自鄂州挥师北伐，三日拔郢州，大破金与伪齐李成联军，两月内连复襄阳、唐、邓、随、郢、信阳六郡，首次收复南宋大片的北方失地。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Declaring the six commanderies of Xiangyang the strategic key to recovering the Central Plains, thirty-two-year-old Yue Fei marched north from Ezhou and recaptured Xiangyang, Tang, Deng, Sui, Ying, and Xinyang within two months.</p>
-        <blockquote class="poem-box">《宋史·岳飞传》：“飞奏：‘襄阳等六郡，为恢复中原基本，今当先取六郡以除心膂之病。’……五月，克郢州；六月，李成遁，复襄阳；七月，复邓州、唐州、信阳军，襄汉平。”<cite>History of Song: &#39;Yue Fei memorialized that the six commanderies of Xiangyang were the foundation for recovering the Central Plains... By the seventh month all six were recovered.&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 9 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>郾城（今河南漯河郾城）· 郾城大捷·金牌班师</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Yancheng (Luohe, Henan) — Triumph at Yancheng &amp; the Twelve Gold Tablets</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 9 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>郾城（今河南漯河郾城）· 郾城大捷·金牌班师</strong>
+              <small class="stop-sub-en">Yancheng (Luohe, Henan) — Triumph at Yancheng &amp; the Twelve Gold Tablets</small>
+            </div>
+            <div>
+              <strong>1140年 · 秋七月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=8">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1140年 · 秋七月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=8" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>核心人物：</strong>岳飞（Yue Fei）</div>
+          <p class="stop-desc-zh">绍兴十年岳飞自襄阳大举北伐，于郾城、颍昌命背嵬军持麻扎刀斫马足，大破金兀术主力“铁浮图”“拐子马”，前锋进抵距开封仅四十五里之朱仙镇；高宗与秦桧一日连降十二道金字牌强令班师，十年心血毁于一旦。</p>
+          <p class="en-sub stop-desc-en">In 1140 Yue Fei marched north from Xiangyang, routing Wuzhu&#39;s heavy cavalry at Yancheng and Yingchang and reaching Zhuxianzhen just 45 li from Kaifeng, before Emperor Gaozong and Qin Hui issued twelve gold tablets forcing his withdrawal.</p>
+          <blockquote class="poem-box">《宋史·岳飞传》：“进军朱仙镇，距汴京四十五里，兀术恸哭，谋弃汴去……一日奉十二金字牌，飞愤惋泣下，东向再拜曰：‘十年之力，废于一旦！’”<cite>History of Song: &#39;Advancing to Zhuxianzhen, 45 li from Bianjing, Wuzhu prepared to abandon the capital... Receiving twelve gold tablets in a single day, Yue Fei wept: Ten years of effort, ruined in a single morning!&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>核心人物：</strong>岳飞（Yue Fei）</div>
-        <p style="margin:0.4rem 0;">绍兴十年岳飞自襄阳大举北伐，于郾城、颍昌命背嵬军持麻扎刀斫马足，大破金兀术主力“铁浮图”“拐子马”，前锋进抵距开封仅四十五里之朱仙镇；高宗与秦桧一日连降十二道金字牌强令班师，十年心血毁于一旦。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">In 1140 Yue Fei marched north from Xiangyang, routing Wuzhu&#39;s heavy cavalry at Yancheng and Yingchang and reaching Zhuxianzhen just 45 li from Kaifeng, before Emperor Gaozong and Qin Hui issued twelve gold tablets forcing his withdrawal.</p>
-        <blockquote class="poem-box">《宋史·岳飞传》：“进军朱仙镇，距汴京四十五里，兀术恸哭，谋弃汴去……一日奉十二金字牌，飞愤惋泣下，东向再拜曰：‘十年之力，废于一旦！’”<cite>History of Song: &#39;Advancing to Zhuxianzhen, 45 li from Bianjing, Wuzhu prepared to abandon the capital... Receiving twelve gold tablets in a single day, Yue Fei wept: Ten years of effort, ruined in a single morning!&#39;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 10 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
-            <strong>临安风波亭（今浙江杭州）· 风波亭冤·绍兴划界</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Lin&#39;an (Fengbo Pavilion) (Hangzhou, Zhejiang) — Martyrdom at Fengbo Pavilion &amp; Treaty of Shaoxing</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 10 幕</span><span class="camp-badge" style="background:#b53826;">两宋抗金</span>
+              <strong>临安风波亭（今浙江杭州）· 风波亭冤·绍兴划界</strong>
+              <small class="stop-sub-en">Lin&#39;an (Fengbo Pavilion) (Hangzhou, Zhejiang) — Martyrdom at Fengbo Pavilion &amp; Treaty of Shaoxing</small>
+            </div>
+            <div>
+              <strong>1141年 · 冬十二月</strong> ·
+              <a class="stop-map-link" href="../?event=jingkang&amp;stop=9">沙盘推演此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>1141年 · 冬十二月</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?event=jingkang&amp;stop=9" style="color:#9e2a22; text-decoration:none; font-weight:600;">沙盘推演此站 &rarr;</a>
-          </div>
+          <div class="stop-meta-line"><strong>核心人物：</strong>岳飞（Yue Fei）、韩世忠（Han Shizhong）</div>
+          <p class="stop-desc-zh">秦桧收三大将兵权后罗织罪名下岳飞于大理寺狱，韩世忠面诘秦桧，桧以“莫须有”塞责；绍兴十一年十二月廿九除夕岳飞与子岳云、部将张宪于临安风波亭蒙冤被害，宋金旋定《绍兴和议》，东以淮水、西以大散关为界，南北对峙定型。</p>
+          <p class="en-sub stop-desc-en">After stripping the generals of command, Chancellor Qin Hui imprisoned Yue Fei on fabricated charges (&#39;perhaps there is&#39;) and executed him on New Year&#39;s Eve at Fengbo Pavilion in Lin&#39;an; the Treaty of Shaoxing fixed the Song–Jin border along the Huai River and Dasan Pass.</p>
+          <blockquote class="poem-box">《宋史·岳飞传》：“韩世忠不平，诣桧诘其实，桧曰：‘飞子云与张宪书虽不明，其事体莫须有。’世忠曰：‘莫须有三字，何以服天下！’岁暮，狱不成，桧手书小纸付狱，即报飞死，时年三十九。”<cite>History of Song: &#39;Han Shizhong confronted Qin Hui, who replied: Though the letters are unclear, perhaps there is something to it. Han cried: How can three words—perhaps there is—convince the realm! At year&#39;s end Yue Fei was put to death, aged thirty-nine.&#39;</cite></blockquote>
         </div>
-        <div style="font-size:0.85rem; color:#5e5346; margin:0.2rem 0;"><strong>核心人物：</strong>岳飞（Yue Fei）、韩世忠（Han Shizhong）</div>
-        <p style="margin:0.4rem 0;">秦桧收三大将兵权后罗织罪名下岳飞于大理寺狱，韩世忠面诘秦桧，桧以“莫须有”塞责；绍兴十一年十二月廿九除夕岳飞与子岳云、部将张宪于临安风波亭蒙冤被害，宋金旋定《绍兴和议》，东以淮水、西以大散关为界，南北对峙定型。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">After stripping the generals of command, Chancellor Qin Hui imprisoned Yue Fei on fabricated charges (&#39;perhaps there is&#39;) and executed him on New Year&#39;s Eve at Fengbo Pavilion in Lin&#39;an; the Treaty of Shaoxing fixed the Song–Jin border along the Huai River and Dasan Pass.</p>
-        <blockquote class="poem-box">《宋史·岳飞传》：“韩世忠不平，诣桧诘其实，桧曰：‘飞子云与张宪书虽不明，其事体莫须有。’世忠曰：‘莫须有三字，何以服天下！’岁暮，狱不成，桧手书小纸付狱，即报飞死，时年三十九。”<cite>History of Song: &#39;Han Shizhong confronted Qin Hui, who replied: Though the letters are unclear, perhaps there is something to it. Han cried: How can three words—perhaps there is—convince the realm! At year&#39;s end Yue Fei was put to death, aged thirty-nine.&#39;</cite></blockquote>
-      </div>
-    </section>
+      </section>
 
-    <section class="section-card">
-      <h2>中国十八历史时期疆域图志速查（403 BCE — 2026 CE）</h2>
-      <div class="chip-grid">
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/zhanguo.html">战国（前403—前221）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qin.html">秦（前221—前202）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xihan.html">西汉（前202—25）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/donghan.html">东汉（25—220）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sanguo.html">三国（220—280）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xijin.html">西晋（280—316）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/dongjin.html">东晋十六国（317—420）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nanbei.html">南北朝（420—581）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sui.html">隋（581—618）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/tang.html">唐（618—907）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/wudai.html">五代十国（907—960）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/beisong.html">北宋（960—1127）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nansong.html">南宋（1127—1279）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/yuan.html">元（1279—1368）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/ming.html">明（1368—1644）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qing.html">清（1644—1912）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/roc.html">中华民国（1912—1949）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/prc.html">中华人民共和国（1949—）</a>
-      </div>
-    </section>
-    <footer class="page-footer">
-      <div>© 江山时序（Jiangshan Historical Atlas）· <a href="https://deanchen.me/jiangshan-map/">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
-      <div><a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总览</a> · <a href="https://deanchen.me/jiangshan-map/sitemap.xml">Sitemap</a> · <a href="https://deanchen.me/jiangshan-map/llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">联系与勘误：deancsj@gmail.com</a></div>
-    </footer>
-  </main>
+      <section class="section-card footer-nav-card">
+        <h2>中国十八历史时期疆域图志速查（前403年—今）</h2>
+        <div class="chip-grid">
+          <a class="chip-link" href="zhanguo.html">战国（前403—前221）</a>
+          <a class="chip-link" href="qin.html">秦（前221—前202）</a>
+          <a class="chip-link" href="xihan.html">西汉（前202—25）</a>
+          <a class="chip-link" href="donghan.html">东汉（25—220）</a>
+          <a class="chip-link" href="sanguo.html">三国（220—280）</a>
+          <a class="chip-link" href="xijin.html">西晋（280—316）</a>
+          <a class="chip-link" href="dongjin.html">东晋十六国（317—420）</a>
+          <a class="chip-link" href="nanbei.html">南北朝（420—581）</a>
+          <a class="chip-link" href="sui.html">隋（581—618）</a>
+          <a class="chip-link" href="tang.html">唐（618—907）</a>
+          <a class="chip-link" href="wudai.html">五代十国（907—960）</a>
+          <a class="chip-link" href="beisong.html">北宋（960—1127）</a>
+          <a class="chip-link" href="nansong.html">南宋（1127—1279）</a>
+          <a class="chip-link" href="yuan.html">元（1279—1368）</a>
+          <a class="chip-link" href="ming.html">明（1368—1644）</a>
+          <a class="chip-link" href="qing.html">清（1644—1912）</a>
+          <a class="chip-link" href="roc.html">中华民国（1912—1949）</a>
+          <a class="chip-link" href="prc.html">中华人民共和国（1949—）</a>
+        </div>
+      </section>
+      <footer class="page-footer">
+        <div>© 江山时序（Jiangshan Historical Atlas）· <a href="../">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
+        <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
+      </footer>
+    </main>
+  </div>
 </body>
 </html>

@@ -12,7 +12,7 @@
   <meta name="mobile-agent" content="format=html5;url=https://deanchen.me/jiangshan-map/topics/xihan.html" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta name="theme-color" content="#f5efe2" />
+  <meta name="theme-color" content="#f3eee4" />
   <link rel="canonical" href="https://deanchen.me/jiangshan-map/topics/xihan.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="江山时序 · Jiangshan Historical Atlas" />
@@ -29,6 +29,7 @@
   <meta name="twitter:description" content="西汉历史地图（公元前202年至公元25年，都城：长安）：汉初郡国并行、与匈奴和亲；武帝北击匈奴，开河西走廊与丝绸之路，南平南越，东置朝鲜四郡，宣帝时设西域都护府。8 年王莽代汉建新，23 年新亡。 收录10幅多阶段版图快照、62座城池古今地名对照与35项编年重大历史事件。" />
   <meta name="twitter:image" content="https://deanchen.me/jiangshan-map/assets/og_preview.png" />
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+  <link rel="stylesheet" href="assets/topics.css?v=e86712b9" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -81,1269 +82,907 @@
   ]
 }
   </script>
-  <style>
-    :root {
-      --bg-paper: #f5efe2;
-      --bg-card: #fbf7ee;
-      --ink-main: #221d17;
-      --ink-muted: #5e5346;
-      --cinnabar: #9e2a22;
-      --cinnabar-hover: #7d1e17;
-      --gold-border: #d5c7ae;
-      --accent-teal: #275d52;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg-paper);
-      color: var(--ink-main);
-      font-family: "Noto Serif SC", "Songti SC", "STSong", "PingFang SC", "Microsoft YaHei", serif;
-      line-height: 1.72;
-    }
-    .top-bar {
-      background: #ece3d0;
-      border-bottom: 1px solid var(--gold-border);
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    .brand-link {
-      text-decoration: none;
-      color: var(--ink-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-weight: 700;
-      font-size: 1.08rem;
-    }
-    .seal-badge {
-      background: var(--cinnabar);
-      color: #fff8ee;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.92rem;
-      letter-spacing: 0.06em;
-    }
-    .top-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      font-size: 0.9rem;
-    }
-    .top-nav a {
-      color: var(--ink-muted);
-      text-decoration: none;
-      padding: 0.25rem 0.55rem;
-      border-radius: 4px;
-      border: 1px solid transparent;
-    }
-    .top-nav a:hover {
-      color: var(--cinnabar);
-      border-color: var(--gold-border);
-      background: var(--bg-card);
-    }
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 1.75rem 1.25rem 3.5rem;
-    }
-    .breadcrumb {
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      margin-bottom: 1rem;
-    }
-    .breadcrumb a {
-      color: var(--ink-muted);
-      text-decoration: none;
-    }
-    .breadcrumb a:hover { color: var(--cinnabar); text-decoration: underline; }
-    .hero-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-left: 5px solid var(--cinnabar);
-      border-radius: 8px;
-      padding: 1.4rem 1.5rem;
-      margin-bottom: 1.6rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .kicker {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.09);
-      padding: 0.15rem 0.55rem;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-    }
-    h1 {
-      margin: 0.2rem 0 0.6rem;
-      font-size: 1.65rem;
-      line-height: 1.35;
-      color: var(--ink-main);
-    }
-    .en-sub {
-      font-size: 0.95rem;
-      color: var(--ink-muted);
-      margin: 0 0 0.9rem;
-    }
-    .meta-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
-      margin: 0.85rem 0 1.15rem;
-    }
-    .meta-pill {
-      background: #efe7d6;
-      border: 1px solid var(--gold-border);
-      padding: 0.22rem 0.68rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--ink-main);
-    }
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      margin-top: 1.1rem;
-    }
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: var(--cinnabar);
-      color: #fff9f0;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 0.62rem 1.2rem;
-      border-radius: 6px;
-      font-size: 0.96rem;
-      transition: background 0.15s ease;
-    }
-    .cta-btn:hover { background: var(--cinnabar-hover); }
-    .cta-btn.secondary {
-      background: transparent;
-      color: var(--ink-main);
-      border: 1px solid var(--gold-border);
-    }
-    .cta-btn.secondary:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-    }
-    .section-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1.25rem 1.4rem;
-      margin-bottom: 1.4rem;
-    }
-    h2 {
-      margin: 0 0 0.85rem;
-      font-size: 1.22rem;
-      border-bottom: 1px solid var(--gold-border);
-      padding-bottom: 0.45rem;
-      color: var(--ink-main);
-    }
-    h3 {
-      margin: 1rem 0 0.4rem;
-      font-size: 1.05rem;
-      color: var(--ink-main);
-    }
-    blockquote.poem-box {
-      margin: 0.9rem 0;
-      padding: 0.85rem 1.15rem;
-      background: #f2ead9;
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 4px;
-      font-size: 1.04rem;
-    }
-    blockquote.poem-box cite {
-      display: block;
-      margin-top: 0.35rem;
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      font-style: normal;
-    }
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin-top: 0.5rem;
-    }
-    table.data-table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    table.data-table th,
-    table.data-table td {
-      border: 1px solid var(--gold-border);
-      padding: 0.5rem 0.65rem;
-      text-align: left;
-      vertical-align: top;
-    }
-    table.data-table th {
-      background: #ece3d0;
-      font-weight: 600;
-    }
-    table.data-table tr:nth-child(even) td {
-      background: rgba(236, 227, 208, 0.32);
-    }
-    table.data-table a {
-      color: var(--cinnabar);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    table.data-table a:hover { text-decoration: underline; }
-    .chip-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.6rem;
-    }
-    .chip-link {
-      display: inline-block;
-      background: #f0e8d8;
-      border: 1px solid var(--gold-border);
-      color: var(--ink-main);
-      text-decoration: none;
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.87rem;
-    }
-    .chip-link:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-      background: #fffdf8;
-    }
-    .stop-card {
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      padding: 0.9rem 1.05rem;
-      margin-bottom: 0.85rem;
-      background: #fdfaf3;
-    }
-    .stop-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 0.35rem;
-    }
-    .stop-badge {
-      background: var(--cinnabar);
-      color: #fff;
-      font-size: 0.78rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      margin-right: 0.4rem;
-    }
-    .camp-badge {
-      display: inline-block;
-      color: #fff;
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 0.1rem 0.48rem;
-      border-radius: 4px;
-      margin-right: 0.38rem;
-    }
-    .source-cite {
-      margin-top: 0.38rem;
-      padding-top: 0.3rem;
-      border-top: 1px dashed rgba(213, 199, 174, 0.75);
-      font-size: 0.83rem;
-      color: var(--ink-muted);
-      line-height: 1.55;
-    }
-    .story-link-pill {
-      display: inline-block;
-      margin-left: 0.4rem;
-      padding: 0.08rem 0.45rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.1);
-      border: 1px solid rgba(158, 42, 34, 0.3);
-      border-radius: 4px;
-      text-decoration: none;
-    }
-    .story-link-pill:hover {
-      background: var(--cinnabar);
-      color: #fff;
-      text-decoration: none !important;
-    }
-    .diff-add { color: #1f5c3a; font-weight: 600; }
-    .diff-rem { color: #8c2d24; font-weight: 600; }
-    .diff-same { color: var(--ink-muted); font-size: 0.85rem; }
-    .act-heading {
-      margin: 1.25rem 0 0.65rem;
-      padding: 0.4rem 0.75rem;
-      background: #ece3d0;
-      border-left: 4px solid var(--cinnabar);
-      border-radius: 4px;
-      font-size: 1.02rem;
-      font-weight: 700;
-      color: var(--ink-main);
-    }
-    .embed-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1rem 1.15rem 1.1rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .embed-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.65rem;
-    }
-    .embed-header h2 {
-      margin: 0;
-      padding: 0;
-      border: none;
-      font-size: 1.12rem;
-    }
-    .embed-hint {
-      font-size: 0.84rem;
-      color: var(--ink-muted);
-    }
-    .embed-frame-wrap {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      overflow: hidden;
-      background: #efe7d6;
-    }
-    @media (max-width: 640px) {
-      .embed-frame-wrap { height: 390px; }
-    }
-    .embed-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-    }
-    .carto-note-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-top: 0.6rem;
-    }
-    .carto-note-item {
-      background: #fdfaf3;
-      border: 1px solid var(--gold-border);
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-    }
-    .carto-note-item strong {
-      color: var(--ink-main);
-      display: block;
-      margin-bottom: 0.22rem;
-      font-size: 0.96rem;
-    }
-    .carto-note-item p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--ink-muted);
-      line-height: 1.65;
-    }
-    footer.page-footer {
-      margin-top: 2.2rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--gold-border);
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    footer.page-footer a {
-      color: var(--cinnabar);
-      text-decoration: none;
-    }
-  </style>
+  <script defer src="assets/topics.js?v=ad70ed7b" data-v-hant="3afdab47"></script>
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
 </head>
 <body>
   <header class="top-bar">
-    <a class="brand-link" href="https://deanchen.me/jiangshan-map/">
-      <span class="seal-badge">江山时序</span>
-      <span>中国历史地图 · 战国 → 今</span>
-    </a>
-    <nav class="top-nav" aria-label="专题图志导航">
-      <a href="https://deanchen.me/jiangshan-map/">进入交互式主地图</a>
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a>
-      <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub 开源仓库</a>
-    </nav>
+    <div class="top-bar-inner">
+      <a class="brand-link" href="../">
+        <span class="seal-badge">江山时序</span>
+        <span>历史舆图图志</span>
+      </a>
+      <nav class="top-nav" aria-label="专题图志导航">
+        <a href="../">交互舆图</a>
+        <a href="index.html">图志总览</a>
+        <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <button id="act-topic-hant" class="hant-toggle-btn no-hant" type="button" aria-pressed="false" title="切換為繁體中文">繁</button>
+      </nav>
+    </div>
   </header>
-  <main>
-    <nav class="breadcrumb" aria-label="面包屑导航">
-      <a href="https://deanchen.me/jiangshan-map/">江山时序首页</a> &rsaquo;
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a> &rsaquo;
-      <span>西汉历史地图（前202—25）</span>
-    </nav>
+  <div class="page-shell has-toc">
+    <aside class="topic-toc" aria-label="本页目录">
+      <div class="toc-heading">本页目录</div>
+      <ul class="toc-list">
+        <li><a class="toc-link is-active" href="#sec-map">交互舆图预览</a></li>
+        <li><a class="toc-link" href="#sec-phases">一、疆域阶段（10）</a></li>
+        <li><a class="toc-link" href="#sec-cities">二、古今名城（62）</a></li>
+        <li><a class="toc-link" href="#sec-events">三、编年大事（35）</a></li>
+        <li><a class="toc-link" href="#sec-notes">四、舆图考据札记</a></li>
+      </ul>
+      <div class="toc-prevnext"><a href="qin.html">← 秦</a>
+        <a href="donghan.html">东汉 →</a></div>
+    </aside>
+    <main class="main-col">
+      <nav class="breadcrumb" aria-label="面包屑导航">
+        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="index.html">专题图志总览</a> &rsaquo;
+        <span>西汉（前202—25）</span>
+      </nav>
 
-    <article class="hero-card">
-      <span class="kicker">中国历代疆域与政区专题图志 · 第 3 / 18 篇</span>
-      <h1>西汉历史地图（前202—25）· 疆域演变、州郡政区与古今地名</h1>
-      <p class="en-sub">Western Han Historical Atlas (202 BCE – 25 CE) · Capital: Chang&#39;an</p>
-      <div class="meta-pills">
-        <span class="meta-pill"><strong>起止年代：</strong>公元前202年 — 公元25年</span>
-        <span class="meta-pill"><strong>历代都城：</strong>长安</span>
-        <span class="meta-pill"><strong>版图演变阶段：</strong>10 个时期快照</span>
-        <span class="meta-pill"><strong>收录名城：</strong>62 座古城</span>
-        <span class="meta-pill"><strong>编年大事：</strong>35 项关键节点</span>
-      </div>
-      <p>汉初郡国并行、与匈奴和亲；武帝北击匈奴，开河西走廊与丝绸之路，南平南越，东置朝鲜四郡，宣帝时设西域都护府。8 年王莽代汉建新，23 年新亡。</p>
-      <p class="en-sub">Early Han combined commanderies with princedoms and used marriage alliances with the Xiongnu. Emperor Wu drove the Xiongnu north, opened the Hexi Corridor and the Silk Road, annexed Nanyue and Gojoseon, and in 60 BCE established the Protectorate of the Western Regions. Wang Mang’s Xin interregnum lasted 8–23 CE.</p>
-      <div class="cta-row">
-        <a class="cta-btn" href="https://deanchen.me/jiangshan-map/?year=-100">立即打开「西汉」交互式历史地图（前100年）&rarr;</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/?year=-100&amp;lang=en">Open Interactive Map in English &rarr;</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/qin.html">&larr; 上一时期：秦</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/topics/donghan.html">下一时期：东汉 &rarr;</a>
-      </div>
-    </article>
-
-    <section class="embed-card" aria-label="交互式历史地图预览">
-      <div class="embed-header">
-        <h2>西汉交互式历史舆图预览（前202—25 · 可拨动底部时间轴切换阶段）</h2>
-        <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
-      </div>
-      <div class="embed-frame-wrap">
-        <iframe class="embed-iframe" src="../?embed=1&amp;year=-100&amp;from=-202&amp;to=25" title="西汉交互式历史舆图预览（前202—25 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
-      </div>
-    </section>
-
-    <section class="section-card">
-      <h2>一、西汉版图演变阶段与政权州郡格局（10 阶段快照）</h2>
-      <p>在「江山时序」交互式舆图中拖动底部时间轴滑块，或点击下方各阶段链接，即可查看西汉不同年份的政权疆域消长、州道郡县边界及黄河改道水系：</p>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>阶段</th>
-              <th>年代范围与代表年号</th>
-              <th>并立政权 / 核心版图</th>
-              <th>政区格局与阶段疆域变化</th>
-              <th>交互式地图直达</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>第 1 阶段</td>
-            <td><strong>前202 — 前128</strong><br/><small>西汉文帝前元十五年</small><br/><small style="color:#5e5346;">汉初：郡国并行与文景之治，匈奴据河套河西，南越自立</small></td>
-            <td>汉（郡国并行）、南越、闽越</td>
-            <td>司隶、豫州、冀州、兖州、徐州、青州、荆州、扬州、益州、凉州、并州、幽州</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-165">查看 前165年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 2 阶段</td>
-            <td><strong>前127 — 前122</strong><br/><small>西汉武帝·元朔四年</small><br/><small style="color:#5e5346;">武帝北击匈奴：卫青收复河套，置朔方、五原郡</small></td>
-            <td>汉、南越、闽越</td>
-            <td><span class="diff-add">＋新增/建置：</span>汉<br/><span class="diff-rem">－更替/罢撤：</span>汉（郡国并行）</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-125">查看 前125年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 3 阶段</td>
-            <td><strong>前121 — 前112</strong><br/><small>西汉武帝·元狩六年</small><br/><small style="color:#5e5346;">河西之战：霍去病受降浑邪王，开河西走廊设武威、酒泉郡</small></td>
-            <td>汉、南越、闽越</td>
-            <td><span class="diff-same">州道/省区建制同上阶段（共 12 政区），详见左侧阶段提要</span></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-117">查看 前117年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 4 阶段</td>
-            <td><strong>前111 — 前111</strong><br/><small>西汉武帝·元鼎六年</small><br/><small style="color:#5e5346;">平定南越与列河西四郡：设南海、交趾等郡，分置张掖、敦煌郡</small></td>
-            <td>汉、闽越</td>
-            <td><span class="diff-rem">－更替/罢撤：</span>南越<br/><span class="diff-add">＋新增政区：</span>交州</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-111">查看 前111年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 5 阶段</td>
-            <td><strong>前110 — 前110</strong><br/><small>西汉武帝·元封元年</small><br/><small style="color:#5e5346;">东平闽越与经略琼州：灭闽越迁民江淮，于海南岛置珠崖、儋耳二郡</small></td>
-            <td>汉</td>
-            <td><span class="diff-rem">－更替/罢撤：</span>闽越</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-110">查看 前110年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 6 阶段</td>
-            <td><strong>前109 — 前109</strong><br/><small>西汉武帝·元封二年</small><br/><small style="color:#5e5346;">经营西南夷：滇王降汉，置益州郡赐金印</small></td>
-            <td>汉</td>
-            <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-109">查看 前109年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 7 阶段</td>
-            <td><strong>前108 — 前61</strong><br/><small>西汉昭帝·始元二年</small><br/><small style="color:#5e5346;">灭卫氏朝鲜：置乐浪、玄菟、真番、临屯四郡</small></td>
-            <td>汉</td>
-            <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-85">查看 前85年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 8 阶段</td>
-            <td><strong>前60 — 7</strong><br/><small>西汉成帝·河平二年</small><br/><small style="color:#5e5346;">设西域都护府：西域三十六国正式纳入版图</small></td>
-            <td>汉、西域都护府</td>
-            <td><span class="diff-add">＋新增/建置：</span>西域都护府</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-27">查看 前27年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 9 阶段</td>
-            <td><strong>8 — 22</strong><br/><small>新莽王莽·天凤二年</small><br/><small style="color:#5e5346;">王莽代汉建新：托古改制与西域断绝，北疆匈奴复叛，绿林赤眉起兵</small></td>
-            <td>新（王莽）</td>
-            <td><span class="diff-add">＋新增/建置：</span>新（王莽）<br/><span class="diff-rem">－更替/罢撤：</span>汉、西域都护府</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=15">查看 15年 舆图 →</a></td>
-          </tr>
-          <tr>
-            <td>第 10 阶段</td>
-            <td><strong>23 — 25</strong><br/><small>汉更始帝·更始二年</small><br/><small style="color:#5e5346;">绿林赤眉起义与更始政权：绿林军拥立汉宗室刘玄为更始帝入长安，宗室刘秀以大司马徇河北独立发展，赤眉军与陇蜀群雄并起</small></td>
-            <td>更始（汉）、刘秀（河北）、赤眉军、成家（公孙述）、隗嚣 · 窦融</td>
-            <td><span class="diff-add">＋新增/建置：</span>更始（汉）、刘秀（河北）、赤眉军、成家（公孙述）、隗嚣 · 窦融<br/><span class="diff-rem">－更替/罢撤：</span>新（王莽）</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=24">查看 24年 舆图 →</a></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section-card">
-      <h2>二、西汉古今地名对照表与点地溯源（共收录 62 座城池）</h2>
-      <p>点击任一城池右侧的「地图定位与沿革」，即可在地图上自动飞跃至该城坐标并展开「点地溯源 · 两千四百年政区沿革」卡片：</p>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>历史古地名</th>
-              <th>现代对应省市 / 地点</th>
-              <th>层级</th>
-              <th>经纬度坐标</th>
-              <th>点地溯源</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><strong>长安</strong></td>
-            <td>西安</td>
-            <td>★ 都城/首府</td>
-            <td>108.94°E, 34.34°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%95%BF%E5%AE%89">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>洛阳</strong></td>
-            <td>洛阳</td>
-            <td>州郡治所/名城</td>
-            <td>112.45°E, 34.62°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%B4%9B%E9%98%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>敦煌</strong></td>
-            <td>敦煌</td>
-            <td>州郡治所/名城</td>
-            <td>94.66°E, 40.14°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%95%A6%E7%85%8C">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>武威</strong></td>
-            <td>武威</td>
-            <td>州郡治所/名城</td>
-            <td>102.64°E, 37.93°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%AD%A6%E5%A8%81">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>乌垒城</strong></td>
-            <td>轮台</td>
-            <td>州郡治所/名城</td>
-            <td>84.25°E, 41.78°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B9%8C%E5%9E%92%E5%9F%8E">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>疏勒</strong></td>
-            <td>喀什</td>
-            <td>州郡治所/名城</td>
-            <td>75.99°E, 39.47°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%96%8F%E5%8B%92">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>成都</strong></td>
-            <td>成都</td>
-            <td>州郡治所/名城</td>
-            <td>104.07°E, 30.57°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%88%90%E9%83%BD">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>番禺</strong></td>
-            <td>广州</td>
-            <td>州郡治所/名城</td>
-            <td>113.26°E, 23.13°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%95%AA%E7%A6%BA">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>交趾</strong></td>
-            <td>河内（越南）</td>
-            <td>州郡治所/名城</td>
-            <td>105.85°E, 21.03°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%BA%A4%E8%B6%BE">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>乐浪</strong></td>
-            <td>平壤（朝鲜）</td>
-            <td>州郡治所/名城</td>
-            <td>125.75°E, 39.03°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B9%90%E6%B5%AA">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>临淄</strong></td>
-            <td>淄博</td>
-            <td>州郡治所/名城</td>
-            <td>118.30°E, 36.83°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%B4%E6%B7%84">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>朔方</strong></td>
-            <td>巴彦淖尔</td>
-            <td>州郡治所/名城</td>
-            <td>107.40°E, 40.75°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%9C%94%E6%96%B9">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>寿春</strong></td>
-            <td>淮南·寿县</td>
-            <td>州郡治所/名城</td>
-            <td>116.78°E, 32.58°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%AF%BF%E6%98%A5">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>蓟</strong></td>
-            <td>北京</td>
-            <td>州郡治所/名城</td>
-            <td>116.40°E, 39.90°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%93%9F">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>晋阳</strong></td>
-            <td>太原</td>
-            <td>州郡治所/名城</td>
-            <td>112.55°E, 37.87°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%99%8B%E9%98%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>邺</strong></td>
-            <td>安阳·临漳</td>
-            <td>州郡治所/名城</td>
-            <td>114.39°E, 36.10°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%82%BA">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>彭城</strong></td>
-            <td>徐州</td>
-            <td>州郡治所/名城</td>
-            <td>117.18°E, 34.26°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%BD%AD%E5%9F%8E">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>宛</strong></td>
-            <td>南阳</td>
-            <td>州郡治所/名城</td>
-            <td>112.53°E, 32.99°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%AE%9B">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>江陵</strong></td>
-            <td>荆州</td>
-            <td>州郡治所/名城</td>
-            <td>112.24°E, 30.33°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%B1%9F%E9%99%B5">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>临湘</strong></td>
-            <td>长沙</td>
-            <td>州郡治所/名城</td>
-            <td>112.94°E, 28.23°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%B4%E6%B9%98">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>吴</strong></td>
-            <td>苏州</td>
-            <td>州郡治所/名城</td>
-            <td>120.58°E, 31.30°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%90%B4">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>南昌</strong></td>
-            <td>南昌</td>
-            <td>州郡治所/名城</td>
-            <td>115.89°E, 28.68°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%8D%97%E6%98%8C">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>南郑</strong></td>
-            <td>汉中</td>
-            <td>州郡治所/名城</td>
-            <td>107.02°E, 33.07°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%8D%97%E9%83%91">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>滇池</strong></td>
-            <td>昆明·晋宁</td>
-            <td>州郡治所/名城</td>
-            <td>102.75°E, 24.67°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%BB%87%E6%B1%A0">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>张掖</strong></td>
-            <td>张掖</td>
-            <td>州郡治所/名城</td>
-            <td>100.45°E, 38.93°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%BC%A0%E6%8E%96">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>酒泉</strong></td>
-            <td>酒泉</td>
-            <td>州郡治所/名城</td>
-            <td>98.49°E, 39.73°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%85%92%E6%B3%89">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>临沅</strong></td>
-            <td>常德</td>
-            <td>州郡治所/名城</td>
-            <td>111.70°E, 29.03°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%B4%E6%B2%85">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>夷陵</strong></td>
-            <td>宜昌</td>
-            <td>州郡治所/名城</td>
-            <td>111.29°E, 30.69°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%A4%B7%E9%99%B5">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>宛陵</strong></td>
-            <td>宣城</td>
-            <td>州郡治所/名城</td>
-            <td>118.76°E, 30.94°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%AE%9B%E9%99%B5">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>乌程</strong></td>
-            <td>湖州</td>
-            <td>州郡治所/名城</td>
-            <td>120.09°E, 30.89°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B9%8C%E7%A8%8B">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>潭中</strong></td>
-            <td>柳州</td>
-            <td>州郡治所/名城</td>
-            <td>109.42°E, 24.33°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%BD%AD%E4%B8%AD">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>儋耳</strong></td>
-            <td>儋州</td>
-            <td>州郡治所/名城</td>
-            <td>109.58°E, 19.52°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%84%8B%E8%80%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>蒲坂</strong></td>
-            <td>运城·永济</td>
-            <td>州郡治所/名城</td>
-            <td>110.32°E, 34.84°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%92%B2%E5%9D%82">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>濮阳</strong></td>
-            <td>濮阳</td>
-            <td>州郡治所/名城</td>
-            <td>115.03°E, 35.76°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%BF%AE%E9%98%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>荥阳</strong></td>
-            <td>郑州·荥阳</td>
-            <td>州郡治所/名城</td>
-            <td>113.38°E, 34.79°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%8D%A5%E9%98%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>奉高</strong></td>
-            <td>泰安</td>
-            <td>州郡治所/名城</td>
-            <td>117.12°E, 36.19°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%A5%89%E9%AB%98">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>巨鹿</strong></td>
-            <td>邢台·平乡</td>
-            <td>州郡治所/名城</td>
-            <td>115.03°E, 37.07°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%B7%A8%E9%B9%BF">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>上洛</strong></td>
-            <td>商洛</td>
-            <td>州郡治所/名城</td>
-            <td>109.94°E, 33.87°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%8A%E6%B4%9B">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>穰</strong></td>
-            <td>南阳·邓州</td>
-            <td>州郡治所/名城</td>
-            <td>112.09°E, 32.69°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%A9%B0">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>交河</strong></td>
-            <td>吐鲁番</td>
-            <td>州郡治所/名城</td>
-            <td>89.07°E, 42.95°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%BA%A4%E6%B2%B3">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>楼兰</strong></td>
-            <td>若羌</td>
-            <td>州郡治所/名城</td>
-            <td>89.84°E, 40.52°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%A5%BC%E5%85%B0">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>东冶</strong></td>
-            <td>福州</td>
-            <td>州郡治所/名城</td>
-            <td>119.30°E, 26.08°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%9C%E5%86%B6">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>临羌</strong></td>
-            <td>西宁</td>
-            <td>州郡治所/名城</td>
-            <td>101.78°E, 36.62°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%B4%E7%BE%8C">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>鲁县</strong></td>
-            <td>济宁·曲阜</td>
-            <td>州郡治所/名城</td>
-            <td>116.99°E, 35.60°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%B2%81%E5%8E%BF">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>琅琊</strong></td>
-            <td>青岛·黄岛</td>
-            <td>州郡治所/名城</td>
-            <td>119.92°E, 35.65°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%90%85%E7%90%8A">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>淮阴</strong></td>
-            <td>淮安</td>
-            <td>州郡治所/名城</td>
-            <td>119.14°E, 33.50°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%B7%AE%E9%98%B4">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>东瓯</strong></td>
-            <td>温州</td>
-            <td>州郡治所/名城</td>
-            <td>120.66°E, 28.01°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%9C%E7%93%AF">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>汝阴</strong></td>
-            <td>阜阳</td>
-            <td>州郡治所/名城</td>
-            <td>115.81°E, 32.89°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%B1%9D%E9%98%B4">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>盐渎</strong></td>
-            <td>盐城</td>
-            <td>州郡治所/名城</td>
-            <td>120.16°E, 33.35°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%9B%90%E6%B8%8E">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>无锡</strong></td>
-            <td>无锡</td>
-            <td>州郡治所/名城</td>
-            <td>120.30°E, 31.57°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%97%A0%E9%94%A1">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>阆中</strong></td>
-            <td>南充·阆中</td>
-            <td>州郡治所/名城</td>
-            <td>105.97°E, 31.56°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%98%86%E4%B8%AD">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>僰道</strong></td>
-            <td>宜宾</td>
-            <td>州郡治所/名城</td>
-            <td>104.64°E, 28.77°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%83%B0%E9%81%93">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>越嶲</strong></td>
-            <td>凉山·西昌</td>
-            <td>州郡治所/名城</td>
-            <td>102.26°E, 27.89°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E8%B6%8A%E5%B6%B2">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>武都</strong></td>
-            <td>陇南</td>
-            <td>州郡治所/名城</td>
-            <td>104.92°E, 33.40°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E6%AD%A6%E9%83%BD">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>广信</strong></td>
-            <td>梧州</td>
-            <td>州郡治所/名城</td>
-            <td>111.28°E, 23.48°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%B9%BF%E4%BF%A1">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>合浦</strong></td>
-            <td>北海·合浦</td>
-            <td>州郡治所/名城</td>
-            <td>109.20°E, 21.66°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%90%88%E6%B5%A6">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>徐闻</strong></td>
-            <td>湛江·雷州</td>
-            <td>州郡治所/名城</td>
-            <td>110.08°E, 20.91°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%BE%90%E9%97%BB">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>居延</strong></td>
-            <td>阿拉善·额济纳</td>
-            <td>州郡治所/名城</td>
-            <td>101.06°E, 41.95°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E5%B1%85%E5%BB%B6">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>龟兹</strong></td>
-            <td>阿克苏·库车</td>
-            <td>州郡治所/名城</td>
-            <td>82.96°E, 41.72°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E9%BE%9F%E5%85%B9">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>于阗</strong></td>
-            <td>和田</td>
-            <td>州郡治所/名城</td>
-            <td>79.92°E, 37.11°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%BA%8E%E9%98%97">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>东莱</strong></td>
-            <td>烟台</td>
-            <td>州郡治所/名城</td>
-            <td>120.76°E, 37.80°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E4%B8%9C%E8%8E%B1">地图定位与沿革 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>秣陵</strong></td>
-            <td>南京</td>
-            <td>州郡治所/名城</td>
-            <td>118.80°E, 32.06°N</td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100&amp;place=%E7%A7%A3%E9%99%B5">地图定位与沿革 →</a></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section-card">
-      <h2>三、西汉重大历史事件编年表与正史出处（35 项）</h2>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>年份与帝王年号</th>
-              <th>历史事件（中英对照）</th>
-              <th>史事背景、地理空间影响与史料出处</th>
-              <th>地图定格</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><strong>前202年</strong><br/><small>汉高帝五年</small></td>
-            <td><strong>韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝定都长安</strong><br/><small>Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-202">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前200年</strong><br/><small>汉高帝七年</small></td>
-            <td><strong>汉高祖亲征匈奴困于白登，汉初遂行和亲之策</strong><br/><small>Emperor Gaozu is besieged at Baideng; early Han adopts the Heqin marriage-alliance policy</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-200">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前180年</strong><br/><small>西汉高后八年</small></td>
-            <td><strong>周勃、陈平诛灭诸吕迎立汉文帝，开启休养生息之政</strong><br/><small>Zhou Bo and Chen Ping eliminate the Lü clan and enthrone Emperor Wen of Han</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-180">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前167年</strong><br/><small>西汉文帝前元十三年</small></td>
-            <td><strong>汉文帝废除肉刑、免收全国田租，与景帝轻徭薄赋共创“文景之治”</strong><br/><small>Emperor Wen abolishes corporal punishment and land taxes, ushering in the Rule of Wen and Jing</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-167">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前154年</strong><br/><small>西汉景帝前元三年</small></td>
-            <td><strong>汉景帝削藩引发七国之乱，周亚夫三月平叛固集权</strong><br/><small>Emperor Jing&#39;s fief cuts spark the Rebellion of the Seven States; Zhou Yafu crushes the revolt</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-154">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前138年</strong><br/><small>西汉武帝·建元三年</small></td>
-            <td><strong>张骞出使西域，凿空丝绸之路</strong><br/><small>Zhang Qian sets out for the Western Regions, opening the Silk Road</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-138">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前134年</strong><br/><small>西汉武帝·元光元年</small></td>
-            <td><strong>汉武帝采董仲舒策独尊儒术，兴太学、初令郡国察举孝廉</strong><br/><small>Emperor Wu elevates Confucianism, founds the Academy, and begins Filial-Incorrupt selection</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-134">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前133年</strong><br/><small>西汉武帝·元光二年</small></td>
-            <td><strong>马邑之谋：汉武帝纳王恢策于马邑设伏诱击单于未果，汉匈全面战争爆发</strong><br/><small>Mayi Ambush: Emperor Wu sets a trap for the Xiongnu Chanyu at Mayi, sparking full-scale war</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-133">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前127年</strong><br/><small>西汉武帝·元朔二年</small></td>
-            <td><strong>卫青收复河套置朔方郡；主父偃献《推恩令》削弱诸侯</strong><br/><small>Wei Qing recovers the Ordos Loop for Shuofang Commandery; Decree of Extended Grace curbs princes</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-127">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前121年</strong><br/><small>西汉武帝·元狩二年</small></td>
-            <td><strong>霍去病两次河西之战受降浑邪王，初置武威、酒泉郡</strong><br/><small>Huo Qubing’s Hexi campaigns; Wuwei and Jiuquan commanderies founded</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-121">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前119年</strong><br/><small>西汉武帝·元狩四年</small></td>
-            <td><strong>漠北之战，卫青破单于、霍去病封狼居胥</strong><br/><small>Mobei Campaign; Wei Qing &amp; Huo Qubing rout the Xiongnu</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-119">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前118年</strong><br/><small>西汉武帝·元狩五年</small></td>
-            <td><strong>汉武帝改铸五铢钱、推行盐铁官营，继行均输平准，财权收归中央</strong><br/><small>Emperor Wu mints five-zhu coins, monopolizes salt and iron, and adds price stabilization</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-118">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前111年</strong><br/><small>西汉武帝·元鼎六年</small></td>
-            <td><strong>路博德、杨仆平定南越设九郡；分河西置张掖、敦煌郡</strong><br/><small>Conquest of Nanyue (nine commanderies); Zhangye and Dunhuang founded</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-111">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前110年</strong><br/><small>西汉武帝·元封元年</small></td>
-            <td><strong>汉武帝灭闽越国迁其民于江淮，并于海南岛置珠崖、儋耳二郡</strong><br/><small>Emperor Wu conquers Minyue and establishes Zhuya and Dan&#39;er commanderies on Hainan Island</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-110">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前109年</strong><br/><small>西汉武帝·元封二年</small></td>
-            <td><strong>汉武帝发兵平西南夷，滇王降汉，置益州郡赐金印</strong><br/><small>Emperor Wu pacifies the Southwestern Yi; King of Dian submits and Yizhou Commandery is set</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-109">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前108年</strong><br/><small>西汉武帝·元封三年</small></td>
-            <td><strong>汉军攻灭卫氏朝鲜，设乐浪、玄菟、真番、临屯四郡</strong><br/><small>Emperor Wu conquers Wiman Joseon and establishes Lelang, Xuantu, and two other commanderies</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-108">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前100年</strong><br/><small>西汉武帝·天汉元年</small></td>
-            <td><strong>贰师将军李广利伐大宛，丝路昆仑北路畅通</strong><br/><small>Li Guangli&#39;s Dayuan campaign secures the Southern Tarim Silk Road</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-100">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前91年</strong><br/><small>西汉武帝·征和二年</small></td>
-            <td><strong>巫蛊之祸太子刘据兵败湖县自尽；太史令司马迁撰成《史记》</strong><br/><small>Witchcraft Crisis drives Prince Liu Ju to suicide; Sima Qian completes the Shiji chronicle</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-91">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前89年</strong><br/><small>西汉武帝·征和四年</small></td>
-            <td><strong>武帝下轮台罪己诏，转向与民休息</strong><br/><small>Emperor Wu issues the Luntai Edict of Repentance</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-89">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前81年</strong><br/><small>西汉昭帝·始元六年</small></td>
-            <td><strong>苏武持节十九载白发归汉；汉昭帝召集盐铁会议辩论国策</strong><br/><small>Su Wu returns after 19 years in captivity; Emperor Zhao convenes the Salt and Iron Debate</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-81">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前74年</strong><br/><small>西汉昭帝·元平元年</small></td>
-            <td><strong>大将军霍光废昌邑王刘贺，迎立汉宣帝开启昭宣中兴</strong><br/><small>Regent Huo Guang deposes Liu He after 27 days and enthrones Emperor Xuan (Zhaoxuan Restoration)</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-74">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前61年</strong><br/><small>西汉宣帝·神爵元年</small></td>
-            <td><strong>赵充国率军平定河湟先零诸羌，首创河湟军屯并置破羌县</strong><br/><small>General Zhao Chongguo pacifies the Qiang in Hehuang and pioneers frontier military farms</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-61">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前60年</strong><br/><small>西汉宣帝·神爵二年</small></td>
-            <td><strong>汉廷设西域都护府（郑吉首任），西域正式纳入版图</strong><br/><small>Emperor Xuan establishes the Protectorate of the Western Regions under Zheng Ji at Wulei</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-60">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前51年</strong><br/><small>西汉宣帝·甘露三年</small></td>
-            <td><strong>呼韩邪单于入长安朝觐，汉宣帝画麒麟阁十一功臣</strong><br/><small>Chanyu Huhanye pays homage at Chang&#39;an; Emperor Xuan honors 11 ministers in the Qilin Pavilion</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-51">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前36年</strong><br/><small>西汉元帝·建昭三年</small></td>
-            <td><strong>陈汤矫制发兵远征康居斩郅支单于，“犯强汉者虽远必诛”</strong><br/><small>Chen Tang storms Zhizhi in Kangju and slays Zhizhi Chanyu, proclaiming Han&#39;s reach afar</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-36">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前33年</strong><br/><small>西汉元帝·竟宁元年</small></td>
-            <td><strong>昭君出塞，呼韩邪单于入朝和亲</strong><br/><small>Wang Zhaojun marries Xiongnu Chanyu Huhanye</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-33">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前25年</strong><br/><small>西汉成帝·河平四年</small></td>
-            <td><strong>西域都护段会宗复入乌孙平定内乱，安辑葱岭以西诸国</strong><br/><small>Protector-General Duan Huizong pacifies strife in Wusun and stabilizes the Pamir states</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-25">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>前8年</strong><br/><small>西汉成帝·绥和元年</small></td>
-            <td><strong>汉成帝改置三公；王莽任大司马，王氏外戚掌权</strong><br/><small>Emperor Cheng establishes Three Excellencies; Wang Mang becomes Grand Marshal</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=-8">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>6年</strong><br/><small>西汉孺子婴·居摄元年</small></td>
-            <td><strong>王莽受封安汉公专擅朝政，汉平帝崩后立孺子婴居摄称“假皇帝”</strong><br/><small>Made Duke of Anhan, Wang Mang seizes power and rules as Acting Emperor over Young Prince Ying</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=6">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>8年</strong><br/><small>西汉孺子婴·初始元年</small></td>
-            <td><strong>外戚王莽迫孺子婴禅让，于未央宫即真天子位，改国号“新”，西汉亡</strong><br/><small>Regent Wang Mang forces Young Prince Ying to abdicate and proclaims the Xin dynasty, ending Han</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=8">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>9年</strong><br/><small>新莽王莽·始建国元年</small></td>
-            <td><strong>王莽推行王田、私属与五均六筦托古改制，四方民变渐起</strong><br/><small>Wang Mang enforces archaic land, currency, and monopoly reforms, sparking widespread unrest</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=9">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>11年</strong><br/><small>新莽王莽·始建国三年</small></td>
-            <td><strong>黄河于魏郡元城决口，禹贡北流故道断绝泛滥兖豫</strong><br/><small>Yellow River breaches at Yuancheng, ending the ancient northern course and flooding the east</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=11">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>17年</strong><br/><small>新莽王莽·天凤四年</small></td>
-            <td><strong>绿林军起于绿林山；次年樊崇起赤眉军于琅琊，新莽末年大起义爆发</strong><br/><small>Lülin rebels rise; Red Eyebrows follow in Langya as late-Xin peasant revolts spread</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=17">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>23年</strong><br/><small>汉更始帝·更始元年</small></td>
-            <td><strong>绿林军拥汉宗室刘玄称更始帝；宗室刘秀昆阳大破莽军，入长安诛王莽</strong><br/><small>Lülin rebels crown Gengshi Emperor Liu Xuan; Liu Xiu routs Xin at Kunyang, ending Wang Mang</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=23">定格此年 →</a></td>
-          </tr>
-          <tr>
-            <td><strong>24年</strong><br/><small>汉更始帝·更始二年</small></td>
-            <td><strong>更始帝刘玄入都长安；刘秀以大司马北渡独立经略河北，拔邯郸诛王郎</strong><br/><small>Gengshi Emperor enters Chang’an; Liu Xiu crosses north to pacify Hebei and slays Wang Lang</small></td>
-            <td></td>
-            <td><a href="https://deanchen.me/jiangshan-map/?year=24">定格此年 →</a></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section-card">
-      <h2>四、西汉舆图边界、山川形胜与政区考据札记</h2>
-      <p>以下记录「江山时序」在绘制西汉（前202—25）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
-      <div class="carto-note-grid">
-        <div class="carto-note-item">
-          <strong>元鼎至元封（前 111—前 108）四方开疆逐年切片</strong>
-          <p>将汉武帝元鼎六年（前 111）平南越置南海交趾九郡并分置张掖敦煌、元封元年（前 110）平闽越并于海南岛置珠崖儋耳二郡、元封二年（前 109）开西南夷置益州郡、元封三年（前 108）灭卫氏朝鲜置乐浪四郡拆分为四幅连续快照。</p>
+      <article class="hero-card">
+        <span class="kicker">中国历代疆域与政区图志 · 第 3 / 18 篇</span>
+        <h1>西汉（前202—25）· 疆域政区图志</h1>
+        <p class="en-sub">Western Han Historical Atlas (202 BCE – 25 CE) · Capital: Chang&#39;an</p>
+        <div class="meta-pills">
+          <span class="meta-pill"><strong>起止年代：</strong>公元前202年 — 公元25年</span>
+          <span class="meta-pill"><strong>历代都城：</strong>长安</span>
+          <span class="meta-pill"><strong>版图阶段：</strong>10 期</span>
+          <span class="meta-pill"><strong>收录名城：</strong>62 座</span>
+          <span class="meta-pill"><strong>编年大事：</strong>35 项</span>
         </div>
-        <div class="carto-note-item">
-          <strong>十三刺史部与西域都护府山川边界</strong>
-          <p>按《汉书·地理志》标绘司隶校尉部与十三刺史部监察区；河西走廊、河套与匈奴边界严格循祁连山、贺兰山与阴山自然分水岭，神爵二年（前 60）后纳入西域都护府统辖之天山南北诸国。</p>
+        <p>汉初郡国并行、与匈奴和亲；武帝北击匈奴，开河西走廊与丝绸之路，南平南越，东置朝鲜四郡，宣帝时设西域都护府。8 年王莽代汉建新，23 年新亡。</p>
+        <p class="en-sub">Early Han combined commanderies with princedoms and used marriage alliances with the Xiongnu. Emperor Wu drove the Xiongnu north, opened the Hexi Corridor and the Silk Road, annexed Nanyue and Gojoseon, and in 60 BCE established the Protectorate of the Western Regions. Wang Mang’s Xin interregnum lasted 8–23 CE.</p>
+        <div class="cta-row">
+          <a class="cta-btn" href="../?year=-100">打开「西汉」交互地图（前100年）→</a>
+          <a class="cta-btn secondary" href="../?year=-100&amp;lang=en">Open in English →</a>
+          <a class="cta-btn secondary" href="qin.html">← 秦</a>
+          <a class="cta-btn secondary" href="donghan.html">东汉 →</a>
         </div>
-      </div>
-    </section>
+        <div class="related-strip">
+          <span>关联图志：</span>
+          <a class="related-chip" href="story-chuhan.html">沙盘：楚汉之争</a>
+          <a class="related-chip" href="journey-zhangqian.html">行迹：张骞凿空西域</a>
+        </div>
+      </article>
 
-    <section class="section-card">
-      <h2>中国十八历史时期疆域图志速查（403 BCE — 2026 CE）</h2>
-      <div class="chip-grid">
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/zhanguo.html">战国（前403—前221）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qin.html">秦（前221—前202）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xihan.html">西汉（前202—25）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/donghan.html">东汉（25—220）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sanguo.html">三国（220—280）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xijin.html">西晋（280—316）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/dongjin.html">东晋十六国（317—420）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nanbei.html">南北朝（420—581）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sui.html">隋（581—618）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/tang.html">唐（618—907）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/wudai.html">五代十国（907—960）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/beisong.html">北宋（960—1127）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nansong.html">南宋（1127—1279）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/yuan.html">元（1279—1368）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/ming.html">明（1368—1644）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qing.html">清（1644—1912）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/roc.html">中华民国（1912—1949）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/prc.html">中华人民共和国（1949—）</a>
-      </div>
-    </section>
-    <footer class="page-footer">
-      <div>© 江山时序（Jiangshan Historical Atlas）· <a href="https://deanchen.me/jiangshan-map/">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
-      <div><a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总览</a> · <a href="https://deanchen.me/jiangshan-map/sitemap.xml">Sitemap</a> · <a href="https://deanchen.me/jiangshan-map/llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">联系与勘误：deancsj@gmail.com</a></div>
-    </footer>
-  </main>
+      <section id="sec-map" class="embed-card" aria-label="交互式历史地图预览">
+        <div class="embed-header">
+          <h2>西汉交互式历史舆图预览（前202—25 · 可拨动底部时间轴切换阶段）</h2>
+          <span class="embed-hint">点击地图激活交互 · 右上角可全屏打开主地图</span>
+        </div>
+        <div class="embed-frame-wrap">
+          <iframe class="embed-iframe" src="../?embed=1&amp;year=-100&amp;from=-202&amp;to=25" title="西汉交互式历史舆图预览（前202—25 · 可拨动底部时间轴切换阶段）" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </section>
+
+      <section id="sec-phases" class="section-card">
+        <h2>一、西汉版图演变阶段与政权州郡格局（10 阶段快照）</h2>
+        <p>在「江山时序」交互式舆图中拖动底部时间轴滑块，或点击下方各阶段链接，即可查看西汉不同年份的政权疆域消长、州道郡县边界及黄河改道水系：</p>
+
+        <div class="table-wrap">
+          <table id="tbl-phases" class="data-table">
+            <thead>
+              <tr>
+                <th>阶段</th>
+                <th>年代范围与代表年号</th>
+                <th>并立政权 / 核心版图</th>
+                <th>政区格局与阶段疆域变化</th>
+                <th>交互地图</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>第 1 阶段</td>
+              <td><strong>前202 — 前128</strong><br/><small>西汉文帝前元十五年</small><br/><small class="muted-note">汉初：郡国并行与文景之治，匈奴据河套河西，南越自立</small></td>
+              <td>汉（郡国并行）、南越、闽越</td>
+              <td>司隶、豫州、冀州、兖州、徐州、青州、荆州、扬州、益州、凉州、并州、幽州</td>
+              <td><a href="../?year=-165">查看 前165年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 2 阶段</td>
+              <td><strong>前127 — 前122</strong><br/><small>西汉武帝·元朔四年</small><br/><small class="muted-note">武帝北击匈奴：卫青收复河套，置朔方、五原郡</small></td>
+              <td>汉、南越、闽越</td>
+              <td><span class="diff-add">＋新增/建置：</span>汉<br/><span class="diff-rem">－更替/罢撤：</span>汉（郡国并行）</td>
+              <td><a href="../?year=-125">查看 前125年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 3 阶段</td>
+              <td><strong>前121 — 前112</strong><br/><small>西汉武帝·元狩六年</small><br/><small class="muted-note">河西之战：霍去病受降浑邪王，开河西走廊设武威、酒泉郡</small></td>
+              <td>汉、南越、闽越</td>
+              <td><span class="diff-same">州道/省区建制同上阶段（共 12 政区），详见左侧阶段提要</span></td>
+              <td><a href="../?year=-117">查看 前117年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 4 阶段</td>
+              <td><strong>前111 — 前111</strong><br/><small>西汉武帝·元鼎六年</small><br/><small class="muted-note">平定南越与列河西四郡：设南海、交趾等郡，分置张掖、敦煌郡</small></td>
+              <td>汉、闽越</td>
+              <td><span class="diff-rem">－更替/罢撤：</span>南越<br/><span class="diff-add">＋新增政区：</span>交州</td>
+              <td><a href="../?year=-111">查看 前111年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 5 阶段</td>
+              <td><strong>前110 — 前110</strong><br/><small>西汉武帝·元封元年</small><br/><small class="muted-note">东平闽越与经略琼州：灭闽越迁民江淮，于海南岛置珠崖、儋耳二郡</small></td>
+              <td>汉</td>
+              <td><span class="diff-rem">－更替/罢撤：</span>闽越</td>
+              <td><a href="../?year=-110">查看 前110年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 6 阶段</td>
+              <td><strong>前109 — 前109</strong><br/><small>西汉武帝·元封二年</small><br/><small class="muted-note">经营西南夷：滇王降汉，置益州郡赐金印</small></td>
+              <td>汉</td>
+              <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
+              <td><a href="../?year=-109">查看 前109年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 7 阶段</td>
+              <td><strong>前108 — 前61</strong><br/><small>西汉昭帝·始元二年</small><br/><small class="muted-note">灭卫氏朝鲜：置乐浪、玄菟、真番、临屯四郡</small></td>
+              <td>汉</td>
+              <td><span class="diff-same">州道/省区建制同上阶段（共 13 政区），详见左侧阶段提要</span></td>
+              <td><a href="../?year=-85">查看 前85年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 8 阶段</td>
+              <td><strong>前60 — 7</strong><br/><small>西汉成帝·河平二年</small><br/><small class="muted-note">设西域都护府：西域三十六国正式纳入版图</small></td>
+              <td>汉、西域都护府</td>
+              <td><span class="diff-add">＋新增/建置：</span>西域都护府</td>
+              <td><a href="../?year=-27">查看 前27年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 9 阶段</td>
+              <td><strong>8 — 22</strong><br/><small>新莽王莽·天凤二年</small><br/><small class="muted-note">王莽代汉建新：托古改制与西域断绝，北疆匈奴复叛，绿林赤眉起兵</small></td>
+              <td>新（王莽）</td>
+              <td><span class="diff-add">＋新增/建置：</span>新（王莽）<br/><span class="diff-rem">－更替/罢撤：</span>汉、西域都护府</td>
+              <td><a href="../?year=15">查看 15年 舆图 →</a></td>
+            </tr>
+            <tr>
+              <td>第 10 阶段</td>
+              <td><strong>23 — 25</strong><br/><small>汉更始帝·更始二年</small><br/><small class="muted-note">绿林赤眉起义与更始政权：绿林军拥立汉宗室刘玄为更始帝入长安，宗室刘秀以大司马徇河北独立发展，赤眉军与陇蜀群雄并起</small></td>
+              <td>更始（汉）、刘秀（河北）、赤眉军、成家（公孙述）、隗嚣 · 窦融</td>
+              <td><span class="diff-add">＋新增/建置：</span>更始（汉）、刘秀（河北）、赤眉军、成家（公孙述）、隗嚣 · 窦融<br/><span class="diff-rem">－更替/罢撤：</span>新（王莽）</td>
+              <td><a href="../?year=24">查看 24年 舆图 →</a></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sec-cities" class="section-card">
+        <h2>二、西汉古今地名对照表与点地溯源（共收录 62 座城池）</h2>
+        <p>点击任一城池右侧的「地图定位与沿革」，即可在地图上自动飞跃至该城坐标并展开「点地溯源 · 两千四百年政区沿革」卡片：</p>
+        <div class="table-filter-bar">
+          <input class="table-filter-input" type="search" data-filter-table="tbl-cities" placeholder="输入古地名或今省市快速检索城池…" aria-label="输入古地名或今省市快速检索城池…" />
+          <button class="table-filter-clear is-hidden" type="button" data-filter-clear="tbl-cities">清除</button>
+          <span class="table-filter-count" data-filter-count="tbl-cities">共 62 项</span>
+        </div>
+        <div class="table-wrap">
+          <table id="tbl-cities" class="data-table">
+            <thead>
+              <tr>
+                <th>历史古地名</th>
+                <th>现代对应省市 / 地点</th>
+                <th>层级</th>
+                <th>经纬度坐标</th>
+                <th>点地溯源</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><strong>长安</strong></td>
+              <td>西安</td>
+              <td>★ 都城/首府</td>
+              <td>108.94°E, 34.34°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%95%BF%E5%AE%89">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>洛阳</strong></td>
+              <td>洛阳</td>
+              <td>州郡治所/名城</td>
+              <td>112.45°E, 34.62°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%B4%9B%E9%98%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>敦煌</strong></td>
+              <td>敦煌</td>
+              <td>州郡治所/名城</td>
+              <td>94.66°E, 40.14°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%95%A6%E7%85%8C">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>武威</strong></td>
+              <td>武威</td>
+              <td>州郡治所/名城</td>
+              <td>102.64°E, 37.93°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%AD%A6%E5%A8%81">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>乌垒城</strong></td>
+              <td>轮台</td>
+              <td>州郡治所/名城</td>
+              <td>84.25°E, 41.78°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B9%8C%E5%9E%92%E5%9F%8E">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>疏勒</strong></td>
+              <td>喀什</td>
+              <td>州郡治所/名城</td>
+              <td>75.99°E, 39.47°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%96%8F%E5%8B%92">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>成都</strong></td>
+              <td>成都</td>
+              <td>州郡治所/名城</td>
+              <td>104.07°E, 30.57°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%88%90%E9%83%BD">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>番禺</strong></td>
+              <td>广州</td>
+              <td>州郡治所/名城</td>
+              <td>113.26°E, 23.13°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%95%AA%E7%A6%BA">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>交趾</strong></td>
+              <td>河内（越南）</td>
+              <td>州郡治所/名城</td>
+              <td>105.85°E, 21.03°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%BA%A4%E8%B6%BE">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>乐浪</strong></td>
+              <td>平壤（朝鲜）</td>
+              <td>州郡治所/名城</td>
+              <td>125.75°E, 39.03°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B9%90%E6%B5%AA">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>临淄</strong></td>
+              <td>淄博</td>
+              <td>州郡治所/名城</td>
+              <td>118.30°E, 36.83°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%B4%E6%B7%84">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>朔方</strong></td>
+              <td>巴彦淖尔</td>
+              <td>州郡治所/名城</td>
+              <td>107.40°E, 40.75°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%9C%94%E6%96%B9">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>寿春</strong></td>
+              <td>淮南·寿县</td>
+              <td>州郡治所/名城</td>
+              <td>116.78°E, 32.58°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%AF%BF%E6%98%A5">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>蓟</strong></td>
+              <td>北京</td>
+              <td>州郡治所/名城</td>
+              <td>116.40°E, 39.90°N</td>
+              <td><a href="../?year=-100&amp;place=%E8%93%9F">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>晋阳</strong></td>
+              <td>太原</td>
+              <td>州郡治所/名城</td>
+              <td>112.55°E, 37.87°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%99%8B%E9%98%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>邺</strong></td>
+              <td>安阳·临漳</td>
+              <td>州郡治所/名城</td>
+              <td>114.39°E, 36.10°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%82%BA">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>彭城</strong></td>
+              <td>徐州</td>
+              <td>州郡治所/名城</td>
+              <td>117.18°E, 34.26°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%BD%AD%E5%9F%8E">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>宛</strong></td>
+              <td>南阳</td>
+              <td>州郡治所/名城</td>
+              <td>112.53°E, 32.99°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%AE%9B">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>江陵</strong></td>
+              <td>荆州</td>
+              <td>州郡治所/名城</td>
+              <td>112.24°E, 30.33°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%B1%9F%E9%99%B5">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>临湘</strong></td>
+              <td>长沙</td>
+              <td>州郡治所/名城</td>
+              <td>112.94°E, 28.23°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%B4%E6%B9%98">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>吴</strong></td>
+              <td>苏州</td>
+              <td>州郡治所/名城</td>
+              <td>120.58°E, 31.30°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%90%B4">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>南昌</strong></td>
+              <td>南昌</td>
+              <td>州郡治所/名城</td>
+              <td>115.89°E, 28.68°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%8D%97%E6%98%8C">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>南郑</strong></td>
+              <td>汉中</td>
+              <td>州郡治所/名城</td>
+              <td>107.02°E, 33.07°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%8D%97%E9%83%91">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>滇池</strong></td>
+              <td>昆明·晋宁</td>
+              <td>州郡治所/名城</td>
+              <td>102.75°E, 24.67°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%BB%87%E6%B1%A0">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>张掖</strong></td>
+              <td>张掖</td>
+              <td>州郡治所/名城</td>
+              <td>100.45°E, 38.93°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%BC%A0%E6%8E%96">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>酒泉</strong></td>
+              <td>酒泉</td>
+              <td>州郡治所/名城</td>
+              <td>98.49°E, 39.73°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%85%92%E6%B3%89">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>临沅</strong></td>
+              <td>常德</td>
+              <td>州郡治所/名城</td>
+              <td>111.70°E, 29.03°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%B4%E6%B2%85">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>夷陵</strong></td>
+              <td>宜昌</td>
+              <td>州郡治所/名城</td>
+              <td>111.29°E, 30.69°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%A4%B7%E9%99%B5">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>宛陵</strong></td>
+              <td>宣城</td>
+              <td>州郡治所/名城</td>
+              <td>118.76°E, 30.94°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%AE%9B%E9%99%B5">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>乌程</strong></td>
+              <td>湖州</td>
+              <td>州郡治所/名城</td>
+              <td>120.09°E, 30.89°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B9%8C%E7%A8%8B">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>潭中</strong></td>
+              <td>柳州</td>
+              <td>州郡治所/名城</td>
+              <td>109.42°E, 24.33°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%BD%AD%E4%B8%AD">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>儋耳</strong></td>
+              <td>儋州</td>
+              <td>州郡治所/名城</td>
+              <td>109.58°E, 19.52°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%84%8B%E8%80%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>蒲坂</strong></td>
+              <td>运城·永济</td>
+              <td>州郡治所/名城</td>
+              <td>110.32°E, 34.84°N</td>
+              <td><a href="../?year=-100&amp;place=%E8%92%B2%E5%9D%82">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>濮阳</strong></td>
+              <td>濮阳</td>
+              <td>州郡治所/名城</td>
+              <td>115.03°E, 35.76°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%BF%AE%E9%98%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>荥阳</strong></td>
+              <td>郑州·荥阳</td>
+              <td>州郡治所/名城</td>
+              <td>113.38°E, 34.79°N</td>
+              <td><a href="../?year=-100&amp;place=%E8%8D%A5%E9%98%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>奉高</strong></td>
+              <td>泰安</td>
+              <td>州郡治所/名城</td>
+              <td>117.12°E, 36.19°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%A5%89%E9%AB%98">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>巨鹿</strong></td>
+              <td>邢台·平乡</td>
+              <td>州郡治所/名城</td>
+              <td>115.03°E, 37.07°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%B7%A8%E9%B9%BF">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>上洛</strong></td>
+              <td>商洛</td>
+              <td>州郡治所/名城</td>
+              <td>109.94°E, 33.87°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%8A%E6%B4%9B">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>穰</strong></td>
+              <td>南阳·邓州</td>
+              <td>州郡治所/名城</td>
+              <td>112.09°E, 32.69°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%A9%B0">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>交河</strong></td>
+              <td>吐鲁番</td>
+              <td>州郡治所/名城</td>
+              <td>89.07°E, 42.95°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%BA%A4%E6%B2%B3">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>楼兰</strong></td>
+              <td>若羌</td>
+              <td>州郡治所/名城</td>
+              <td>89.84°E, 40.52°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%A5%BC%E5%85%B0">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>东冶</strong></td>
+              <td>福州</td>
+              <td>州郡治所/名城</td>
+              <td>119.30°E, 26.08°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%9C%E5%86%B6">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>临羌</strong></td>
+              <td>西宁</td>
+              <td>州郡治所/名城</td>
+              <td>101.78°E, 36.62°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%B4%E7%BE%8C">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>鲁县</strong></td>
+              <td>济宁·曲阜</td>
+              <td>州郡治所/名城</td>
+              <td>116.99°E, 35.60°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%B2%81%E5%8E%BF">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>琅琊</strong></td>
+              <td>青岛·黄岛</td>
+              <td>州郡治所/名城</td>
+              <td>119.92°E, 35.65°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%90%85%E7%90%8A">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>淮阴</strong></td>
+              <td>淮安</td>
+              <td>州郡治所/名城</td>
+              <td>119.14°E, 33.50°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%B7%AE%E9%98%B4">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>东瓯</strong></td>
+              <td>温州</td>
+              <td>州郡治所/名城</td>
+              <td>120.66°E, 28.01°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%9C%E7%93%AF">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>汝阴</strong></td>
+              <td>阜阳</td>
+              <td>州郡治所/名城</td>
+              <td>115.81°E, 32.89°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%B1%9D%E9%98%B4">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>盐渎</strong></td>
+              <td>盐城</td>
+              <td>州郡治所/名城</td>
+              <td>120.16°E, 33.35°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%9B%90%E6%B8%8E">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>无锡</strong></td>
+              <td>无锡</td>
+              <td>州郡治所/名城</td>
+              <td>120.30°E, 31.57°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%97%A0%E9%94%A1">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>阆中</strong></td>
+              <td>南充·阆中</td>
+              <td>州郡治所/名城</td>
+              <td>105.97°E, 31.56°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%98%86%E4%B8%AD">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>僰道</strong></td>
+              <td>宜宾</td>
+              <td>州郡治所/名城</td>
+              <td>104.64°E, 28.77°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%83%B0%E9%81%93">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>越嶲</strong></td>
+              <td>凉山·西昌</td>
+              <td>州郡治所/名城</td>
+              <td>102.26°E, 27.89°N</td>
+              <td><a href="../?year=-100&amp;place=%E8%B6%8A%E5%B6%B2">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>武都</strong></td>
+              <td>陇南</td>
+              <td>州郡治所/名城</td>
+              <td>104.92°E, 33.40°N</td>
+              <td><a href="../?year=-100&amp;place=%E6%AD%A6%E9%83%BD">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>广信</strong></td>
+              <td>梧州</td>
+              <td>州郡治所/名城</td>
+              <td>111.28°E, 23.48°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%B9%BF%E4%BF%A1">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>合浦</strong></td>
+              <td>北海·合浦</td>
+              <td>州郡治所/名城</td>
+              <td>109.20°E, 21.66°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%90%88%E6%B5%A6">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>徐闻</strong></td>
+              <td>湛江·雷州</td>
+              <td>州郡治所/名城</td>
+              <td>110.08°E, 20.91°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%BE%90%E9%97%BB">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>居延</strong></td>
+              <td>阿拉善·额济纳</td>
+              <td>州郡治所/名城</td>
+              <td>101.06°E, 41.95°N</td>
+              <td><a href="../?year=-100&amp;place=%E5%B1%85%E5%BB%B6">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>龟兹</strong></td>
+              <td>阿克苏·库车</td>
+              <td>州郡治所/名城</td>
+              <td>82.96°E, 41.72°N</td>
+              <td><a href="../?year=-100&amp;place=%E9%BE%9F%E5%85%B9">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>于阗</strong></td>
+              <td>和田</td>
+              <td>州郡治所/名城</td>
+              <td>79.92°E, 37.11°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%BA%8E%E9%98%97">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>东莱</strong></td>
+              <td>烟台</td>
+              <td>州郡治所/名城</td>
+              <td>120.76°E, 37.80°N</td>
+              <td><a href="../?year=-100&amp;place=%E4%B8%9C%E8%8E%B1">地图定位与沿革 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>秣陵</strong></td>
+              <td>南京</td>
+              <td>州郡治所/名城</td>
+              <td>118.80°E, 32.06°N</td>
+              <td><a href="../?year=-100&amp;place=%E7%A7%A3%E9%99%B5">地图定位与沿革 →</a></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sec-events" class="section-card">
+        <h2>三、西汉重大历史事件编年表与正史出处（35 项）</h2>
+        <div class="table-filter-bar">
+          <input class="table-filter-input" type="search" data-filter-table="tbl-events" placeholder="输入年份、人物、事件或正史典籍检索大事…" aria-label="输入年份、人物、事件或正史典籍检索大事…" />
+          <button class="table-filter-clear is-hidden" type="button" data-filter-clear="tbl-events">清除</button>
+          <span class="table-filter-count" data-filter-count="tbl-events">共 35 项</span>
+        </div>
+        <div class="table-wrap">
+          <table id="tbl-events" class="data-table">
+            <thead>
+              <tr>
+                <th>年份与帝王年号</th>
+                <th>历史事件（中英对照）</th>
+                <th>史事背景、地理空间影响与史料出处</th>
+                <th>地图定格</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><strong>前202年</strong><br/><small>汉高帝五年</small></td>
+              <td><strong>韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝定都长安</strong><br/><small>Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han</small></td>
+              <td></td>
+              <td><a href="../?year=-202">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前200年</strong><br/><small>汉高帝七年</small></td>
+              <td><strong>汉高祖亲征匈奴困于白登，汉初遂行和亲之策</strong><br/><small>Emperor Gaozu is besieged at Baideng; early Han adopts the Heqin marriage-alliance policy</small></td>
+              <td></td>
+              <td><a href="../?year=-200">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前180年</strong><br/><small>西汉高后八年</small></td>
+              <td><strong>周勃、陈平诛灭诸吕迎立汉文帝，开启休养生息之政</strong><br/><small>Zhou Bo and Chen Ping eliminate the Lü clan and enthrone Emperor Wen of Han</small></td>
+              <td></td>
+              <td><a href="../?year=-180">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前167年</strong><br/><small>西汉文帝前元十三年</small></td>
+              <td><strong>汉文帝废除肉刑、免收全国田租，与景帝轻徭薄赋共创“文景之治”</strong><br/><small>Emperor Wen abolishes corporal punishment and land taxes, ushering in the Rule of Wen and Jing</small></td>
+              <td></td>
+              <td><a href="../?year=-167">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前154年</strong><br/><small>西汉景帝前元三年</small></td>
+              <td><strong>汉景帝削藩引发七国之乱，周亚夫三月平叛固集权</strong><br/><small>Emperor Jing&#39;s fief cuts spark the Rebellion of the Seven States; Zhou Yafu crushes the revolt</small></td>
+              <td></td>
+              <td><a href="../?year=-154">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前138年</strong><br/><small>西汉武帝·建元三年</small></td>
+              <td><strong>张骞出使西域，凿空丝绸之路</strong><br/><small>Zhang Qian sets out for the Western Regions, opening the Silk Road</small></td>
+              <td></td>
+              <td><a href="../?year=-138">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前134年</strong><br/><small>西汉武帝·元光元年</small></td>
+              <td><strong>汉武帝采董仲舒策独尊儒术，兴太学、初令郡国察举孝廉</strong><br/><small>Emperor Wu elevates Confucianism, founds the Academy, and begins Filial-Incorrupt selection</small></td>
+              <td></td>
+              <td><a href="../?year=-134">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前133年</strong><br/><small>西汉武帝·元光二年</small></td>
+              <td><strong>马邑之谋：汉武帝纳王恢策于马邑设伏诱击单于未果，汉匈全面战争爆发</strong><br/><small>Mayi Ambush: Emperor Wu sets a trap for the Xiongnu Chanyu at Mayi, sparking full-scale war</small></td>
+              <td></td>
+              <td><a href="../?year=-133">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前127年</strong><br/><small>西汉武帝·元朔二年</small></td>
+              <td><strong>卫青收复河套置朔方郡；主父偃献《推恩令》削弱诸侯</strong><br/><small>Wei Qing recovers the Ordos Loop for Shuofang Commandery; Decree of Extended Grace curbs princes</small></td>
+              <td></td>
+              <td><a href="../?year=-127">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前121年</strong><br/><small>西汉武帝·元狩二年</small></td>
+              <td><strong>霍去病两次河西之战受降浑邪王，初置武威、酒泉郡</strong><br/><small>Huo Qubing’s Hexi campaigns; Wuwei and Jiuquan commanderies founded</small></td>
+              <td></td>
+              <td><a href="../?year=-121">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前119年</strong><br/><small>西汉武帝·元狩四年</small></td>
+              <td><strong>漠北之战，卫青破单于、霍去病封狼居胥</strong><br/><small>Mobei Campaign; Wei Qing &amp; Huo Qubing rout the Xiongnu</small></td>
+              <td></td>
+              <td><a href="../?year=-119">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前118年</strong><br/><small>西汉武帝·元狩五年</small></td>
+              <td><strong>汉武帝改铸五铢钱、推行盐铁官营，继行均输平准，财权收归中央</strong><br/><small>Emperor Wu mints five-zhu coins, monopolizes salt and iron, and adds price stabilization</small></td>
+              <td></td>
+              <td><a href="../?year=-118">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前111年</strong><br/><small>西汉武帝·元鼎六年</small></td>
+              <td><strong>路博德、杨仆平定南越设九郡；分河西置张掖、敦煌郡</strong><br/><small>Conquest of Nanyue (nine commanderies); Zhangye and Dunhuang founded</small></td>
+              <td></td>
+              <td><a href="../?year=-111">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前110年</strong><br/><small>西汉武帝·元封元年</small></td>
+              <td><strong>汉武帝灭闽越国迁其民于江淮，并于海南岛置珠崖、儋耳二郡</strong><br/><small>Emperor Wu conquers Minyue and establishes Zhuya and Dan&#39;er commanderies on Hainan Island</small></td>
+              <td></td>
+              <td><a href="../?year=-110">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前109年</strong><br/><small>西汉武帝·元封二年</small></td>
+              <td><strong>汉武帝发兵平西南夷，滇王降汉，置益州郡赐金印</strong><br/><small>Emperor Wu pacifies the Southwestern Yi; King of Dian submits and Yizhou Commandery is set</small></td>
+              <td></td>
+              <td><a href="../?year=-109">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前108年</strong><br/><small>西汉武帝·元封三年</small></td>
+              <td><strong>汉军攻灭卫氏朝鲜，设乐浪、玄菟、真番、临屯四郡</strong><br/><small>Emperor Wu conquers Wiman Joseon and establishes Lelang, Xuantu, and two other commanderies</small></td>
+              <td></td>
+              <td><a href="../?year=-108">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前100年</strong><br/><small>西汉武帝·天汉元年</small></td>
+              <td><strong>贰师将军李广利伐大宛，丝路昆仑北路畅通</strong><br/><small>Li Guangli&#39;s Dayuan campaign secures the Southern Tarim Silk Road</small></td>
+              <td></td>
+              <td><a href="../?year=-100">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前91年</strong><br/><small>西汉武帝·征和二年</small></td>
+              <td><strong>巫蛊之祸太子刘据兵败湖县自尽；太史令司马迁撰成《史记》</strong><br/><small>Witchcraft Crisis drives Prince Liu Ju to suicide; Sima Qian completes the Shiji chronicle</small></td>
+              <td></td>
+              <td><a href="../?year=-91">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前89年</strong><br/><small>西汉武帝·征和四年</small></td>
+              <td><strong>武帝下轮台罪己诏，转向与民休息</strong><br/><small>Emperor Wu issues the Luntai Edict of Repentance</small></td>
+              <td></td>
+              <td><a href="../?year=-89">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前81年</strong><br/><small>西汉昭帝·始元六年</small></td>
+              <td><strong>苏武持节十九载白发归汉；汉昭帝召集盐铁会议辩论国策</strong><br/><small>Su Wu returns after 19 years in captivity; Emperor Zhao convenes the Salt and Iron Debate</small></td>
+              <td></td>
+              <td><a href="../?year=-81">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前74年</strong><br/><small>西汉昭帝·元平元年</small></td>
+              <td><strong>大将军霍光废昌邑王刘贺，迎立汉宣帝开启昭宣中兴</strong><br/><small>Regent Huo Guang deposes Liu He after 27 days and enthrones Emperor Xuan (Zhaoxuan Restoration)</small></td>
+              <td></td>
+              <td><a href="../?year=-74">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前61年</strong><br/><small>西汉宣帝·神爵元年</small></td>
+              <td><strong>赵充国率军平定河湟先零诸羌，首创河湟军屯并置破羌县</strong><br/><small>General Zhao Chongguo pacifies the Qiang in Hehuang and pioneers frontier military farms</small></td>
+              <td></td>
+              <td><a href="../?year=-61">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前60年</strong><br/><small>西汉宣帝·神爵二年</small></td>
+              <td><strong>汉廷设西域都护府（郑吉首任），西域正式纳入版图</strong><br/><small>Emperor Xuan establishes the Protectorate of the Western Regions under Zheng Ji at Wulei</small></td>
+              <td></td>
+              <td><a href="../?year=-60">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前51年</strong><br/><small>西汉宣帝·甘露三年</small></td>
+              <td><strong>呼韩邪单于入长安朝觐，汉宣帝画麒麟阁十一功臣</strong><br/><small>Chanyu Huhanye pays homage at Chang&#39;an; Emperor Xuan honors 11 ministers in the Qilin Pavilion</small></td>
+              <td></td>
+              <td><a href="../?year=-51">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前36年</strong><br/><small>西汉元帝·建昭三年</small></td>
+              <td><strong>陈汤矫制发兵远征康居斩郅支单于，“犯强汉者虽远必诛”</strong><br/><small>Chen Tang storms Zhizhi in Kangju and slays Zhizhi Chanyu, proclaiming Han&#39;s reach afar</small></td>
+              <td></td>
+              <td><a href="../?year=-36">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前33年</strong><br/><small>西汉元帝·竟宁元年</small></td>
+              <td><strong>昭君出塞，呼韩邪单于入朝和亲</strong><br/><small>Wang Zhaojun marries Xiongnu Chanyu Huhanye</small></td>
+              <td></td>
+              <td><a href="../?year=-33">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前25年</strong><br/><small>西汉成帝·河平四年</small></td>
+              <td><strong>西域都护段会宗复入乌孙平定内乱，安辑葱岭以西诸国</strong><br/><small>Protector-General Duan Huizong pacifies strife in Wusun and stabilizes the Pamir states</small></td>
+              <td></td>
+              <td><a href="../?year=-25">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>前8年</strong><br/><small>西汉成帝·绥和元年</small></td>
+              <td><strong>汉成帝改置三公；王莽任大司马，王氏外戚掌权</strong><br/><small>Emperor Cheng establishes Three Excellencies; Wang Mang becomes Grand Marshal</small></td>
+              <td></td>
+              <td><a href="../?year=-8">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>6年</strong><br/><small>西汉孺子婴·居摄元年</small></td>
+              <td><strong>王莽受封安汉公专擅朝政，汉平帝崩后立孺子婴居摄称“假皇帝”</strong><br/><small>Made Duke of Anhan, Wang Mang seizes power and rules as Acting Emperor over Young Prince Ying</small></td>
+              <td></td>
+              <td><a href="../?year=6">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>8年</strong><br/><small>西汉孺子婴·初始元年</small></td>
+              <td><strong>外戚王莽迫孺子婴禅让，于未央宫即真天子位，改国号“新”，西汉亡</strong><br/><small>Regent Wang Mang forces Young Prince Ying to abdicate and proclaims the Xin dynasty, ending Han</small></td>
+              <td></td>
+              <td><a href="../?year=8">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>9年</strong><br/><small>新莽王莽·始建国元年</small></td>
+              <td><strong>王莽推行王田、私属与五均六筦托古改制，四方民变渐起</strong><br/><small>Wang Mang enforces archaic land, currency, and monopoly reforms, sparking widespread unrest</small></td>
+              <td></td>
+              <td><a href="../?year=9">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>11年</strong><br/><small>新莽王莽·始建国三年</small></td>
+              <td><strong>黄河于魏郡元城决口，禹贡北流故道断绝泛滥兖豫</strong><br/><small>Yellow River breaches at Yuancheng, ending the ancient northern course and flooding the east</small></td>
+              <td></td>
+              <td><a href="../?year=11">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>17年</strong><br/><small>新莽王莽·天凤四年</small></td>
+              <td><strong>绿林军起于绿林山；次年樊崇起赤眉军于琅琊，新莽末年大起义爆发</strong><br/><small>Lülin rebels rise; Red Eyebrows follow in Langya as late-Xin peasant revolts spread</small></td>
+              <td></td>
+              <td><a href="../?year=17">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>23年</strong><br/><small>汉更始帝·更始元年</small></td>
+              <td><strong>绿林军拥汉宗室刘玄称更始帝；宗室刘秀昆阳大破莽军，入长安诛王莽</strong><br/><small>Lülin rebels crown Gengshi Emperor Liu Xuan; Liu Xiu routs Xin at Kunyang, ending Wang Mang</small></td>
+              <td></td>
+              <td><a href="../?year=23">定格此年 →</a></td>
+            </tr>
+            <tr>
+              <td><strong>24年</strong><br/><small>汉更始帝·更始二年</small></td>
+              <td><strong>更始帝刘玄入都长安；刘秀以大司马北渡独立经略河北，拔邯郸诛王郎</strong><br/><small>Gengshi Emperor enters Chang’an; Liu Xiu crosses north to pacify Hebei and slays Wang Lang</small></td>
+              <td></td>
+              <td><a href="../?year=24">定格此年 →</a></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sec-notes" class="section-card">
+        <h2>四、西汉舆图边界、山川形胜与政区考据札记</h2>
+        <p>以下记录「江山时序」在绘制西汉（前202—25）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+        <div class="carto-note-grid">
+          <div class="carto-note-item">
+            <strong>元鼎至元封（前 111—前 108）四方开疆逐年切片</strong>
+            <p>将汉武帝元鼎六年（前 111）平南越置南海交趾九郡并分置张掖敦煌、元封元年（前 110）平闽越并于海南岛置珠崖儋耳二郡、元封二年（前 109）开西南夷置益州郡、元封三年（前 108）灭卫氏朝鲜置乐浪四郡拆分为四幅连续快照。</p>
+          </div>
+          <div class="carto-note-item">
+            <strong>十三刺史部与西域都护府山川边界</strong>
+            <p>按《汉书·地理志》标绘司隶校尉部与十三刺史部监察区；河西走廊、河套与匈奴边界严格循祁连山、贺兰山与阴山自然分水岭，神爵二年（前 60）后纳入西域都护府统辖之天山南北诸国。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card footer-nav-card">
+        <h2>中国十八历史时期疆域图志速查（前403年—今）</h2>
+        <div class="chip-grid">
+          <a class="chip-link" href="zhanguo.html">战国（前403—前221）</a>
+          <a class="chip-link" href="qin.html">秦（前221—前202）</a>
+          <a class="chip-link" href="xihan.html">西汉（前202—25）</a>
+          <a class="chip-link" href="donghan.html">东汉（25—220）</a>
+          <a class="chip-link" href="sanguo.html">三国（220—280）</a>
+          <a class="chip-link" href="xijin.html">西晋（280—316）</a>
+          <a class="chip-link" href="dongjin.html">东晋十六国（317—420）</a>
+          <a class="chip-link" href="nanbei.html">南北朝（420—581）</a>
+          <a class="chip-link" href="sui.html">隋（581—618）</a>
+          <a class="chip-link" href="tang.html">唐（618—907）</a>
+          <a class="chip-link" href="wudai.html">五代十国（907—960）</a>
+          <a class="chip-link" href="beisong.html">北宋（960—1127）</a>
+          <a class="chip-link" href="nansong.html">南宋（1127—1279）</a>
+          <a class="chip-link" href="yuan.html">元（1279—1368）</a>
+          <a class="chip-link" href="ming.html">明（1368—1644）</a>
+          <a class="chip-link" href="qing.html">清（1644—1912）</a>
+          <a class="chip-link" href="roc.html">中华民国（1912—1949）</a>
+          <a class="chip-link" href="prc.html">中华人民共和国（1949—）</a>
+        </div>
+      </section>
+      <footer class="page-footer">
+        <div>© 江山时序（Jiangshan Historical Atlas）· <a href="../">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
+        <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
+      </footer>
+    </main>
+  </div>
 </body>
 </html>
