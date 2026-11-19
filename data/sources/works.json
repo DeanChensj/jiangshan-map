@@ -1,5 +1,6 @@
 {
   "bainian": { "zh": "中共中央党史和文献研究院《中国共产党一百年大事记》(1921年7月—2021年6月)", "en": "Chronicle of a Century of the Communist Party of China (1921–2021)", "kind": "secondary", "url": "http://www.npc.gov.cn/c2/c30834/202106/t20210628_312170.html" },
+  "beiqishu": { "zh": "李百药《北齐书》", "en": "Li Baiyao, Book of Northern Qi (Bei Qi Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/北齊書" },
   "caoxibiezhuan": { "zh": "《曹溪大师别传》", "en": "Biography of the Great Master of Caoxi", "kind": "primary", "url": "https://zh.wikisource.org/wiki/曹溪大師別傳" },
   "chuangyeqijuzhu": { "zh": "温大雅《大唐创业起居注》", "en": "Wen Daya, Diary of the Founding of the Great Tang", "kind": "primary", "url": "https://zh.wikisource.org/wiki/大唐創業起居注" },
   "ciensizhuan": { "zh": "慧立、彦悰《大唐大慈恩寺三藏法师传》", "en": "Huili and Yancong, Biography of the Tripitaka Master of Da Ci’en Temple", "kind": "primary", "url": "https://zh.wikisource.org/wiki/大唐大慈恩寺三藏法師傳" },
@@ -10,8 +11,10 @@
   "jingdingjiankangzhi": { "zh": "周应合《景定建康志》", "en": "Zhou Yinghe, Jingding Jiankang Zhi", "kind": "primary", "url": "https://zh.wikisource.org/wiki/景定建康志" },
   "jinshu": { "zh": "房玄龄等《晋书》", "en": "Fang Xuanling et al., Book of Jin (Jin Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/晉書" },
   "jiutangshu": { "zh": "刘昫等《旧唐书》", "en": "Liu Xu et al., Old Book of Tang (Jiu Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/舊唐書" },
+  "liangshu": { "zh": "姚思廉《梁书》", "en": "Yao Silian, Book of Liang (Liang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/梁書" },
   "mingshi": { "zh": "张廷玉等《明史》", "en": "Zhang Tingyu et al., History of Ming (Ming Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/明史" },
   "nanshi": { "zh": "李延寿《南史》", "en": "Li Yanshou, History of the Southern Dynasties (Nan Shi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/南史" },
+  "qingshigao": { "zh": "赵尔巽等《清史稿》", "en": "Zhao Erxun et al., Draft History of Qing (Qing Shi Gao)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/清史稿" },
   "quantangwen": { "zh": "董诰等《全唐文》", "en": "Dong Gao et al., Quan Tang Wen", "kind": "primary", "url": "https://zh.wikisource.org/wiki/全唐文" },
   "sanbaoganton": { "zh": "道宣《集神州三宝感通录》", "en": "Daoxuan, Ji Shenzhou Sanbao Gantong Lu", "kind": "primary", "url": "https://zh.wikisource.org/wiki/集神州三寶感通錄" },
   "sgz": { "zh": "陈寿《三国志》", "en": "Chen Shou, Records of the Three Kingdoms (San Guo Zhi)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/三國志" },
@@ -33,6 +36,7 @@
   "xintangshu": { "zh": "欧阳修、宋祁《新唐书》", "en": "Ouyang Xiu and Song Qi, New Book of Tang (Xin Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/新唐書" },
   "yuanhezhi": { "zh": "李吉甫《元和郡县图志》", "en": "Li Jifu, Yuanhe Junxian Tuzhi (Maps and Records of the Commanderies and Counties of the Yuanhe Era)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/元和郡縣圖志" },
   "zhmsdsj": { "zh": "韩信夫、刘明逵主编《中华民国史大事记》，中华书局2011年版", "en": "Han Xinfu & Liu Mingkui (eds.), Chronicle of the History of the Republic of China, Zhonghua Book Company, 2011", "kind": "secondary" },
+  "zhoushu": { "zh": "令狐德棻等《周书》", "en": "Linghu Defen et al., Book of Zhou (Zhou Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/周書" },
   "zuozhuanzhengyi": { "zh": "孔颖达等《春秋左传正义》", "en": "Kong Yingda et al., Chunqiu Zuozhuan Zhengyi", "kind": "primary", "url": "https://zh.wikisource.org/wiki/春秋左傳正義" },
   "zztj": { "zh": "司马光《资治通鉴》", "en": "Sima Guang, Zizhi Tongjian", "kind": "primary", "url": "https://zh.wikisource.org/wiki/資治通鑑" }
 }

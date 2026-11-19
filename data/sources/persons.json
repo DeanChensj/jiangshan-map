@@ -1,11 +1,23 @@
 {
+  "person:changyuchun": [{ "w": "mingshi", "loc": "卷125 列传第十三 常遇春传", "url": "https://zh.wikisource.org/wiki/明史/卷125" }],
   "person:changzheng": [{ "w": "bainian", "loc": "1934年10月—1936年10月条", "note": "中央红军长征出发、湘江战役、遵义会议、四渡赤水、巧渡金沙江、强渡大渡河与飞夺泸定桥、懋功会师、过草地、腊子口战役、抵达陕北吴起镇及红一、二、四方面军会宁、将台堡大会师" }],
   "person:chuhan": [{ "w": "shiji", "loc": "卷7 项羽本纪、卷8 高祖本纪、卷53 萧相国世家、卷55 留侯世家、卷92 淮阴侯列传", "url": "https://zh.wikisource.org/wiki/史記/卷007" }],
+  "person:gaohuan": [{ "w": "beiqishu", "loc": "卷1–2 帝纪第一、二 神武上 神武下", "url": "https://zh.wikisource.org/wiki/北齊書/卷1" }],
   "person:hairui": [{ "w": "mingshi", "loc": "卷226 列传第一百十四 海瑞传", "url": "https://zh.wikisource.org/wiki/明史/卷226" }],
   "person:huzongxian": [{ "w": "mingshi", "loc": "卷205 列传第九十三 胡宗宪传", "url": "https://zh.wikisource.org/wiki/明史/卷205" }],
   "person:jingkang": [{ "w": "songshi", "loc": "卷23 钦宗纪、卷24–29 高宗纪、卷360 宗泽传、卷364 韩世忠传、卷365 岳飞传、卷366 吴玠传、卷446 王禀传", "url": "https://zh.wikisource.org/wiki/宋史/卷023" }],
   "person:qijiguang": [{ "w": "mingshi", "loc": "卷212 列传第一百 戚继光传", "url": "https://zh.wikisource.org/wiki/明史/卷212" }],
   "person:qintongyi": [{ "w": "shiji", "loc": "卷6 秦始皇本纪第六", "url": "https://zh.wikisource.org/wiki/史記/卷006", "note": "九年亲政至二十六年并天下、分三十六郡；“六王毕，四海一”出杜牧《阿房宫赋》。尉缭语见十年条（前237），与首站所系九年不同" }, { "w": "shiji", "loc": "卷73 白起王翦列传第十三", "note": "王翦六十万伐楚，坚壁待楚东撤后追击" }, { "w": "shiji", "loc": "卷81 廉颇蔺相如列传第二十一", "note": "李牧附传：王翦急击，“虏赵王迁及其将颜聚，遂灭赵”" }, { "w": "shiji", "loc": "卷43 赵世家第十三", "note": "幽缪王七年作“赵怱军破，颜聚亡去”，与李牧传颜聚被虏之说不同" }, { "w": "zztj", "loc": "卷6 秦纪一 始皇帝十八年至十九年", "note": "作“杀赵葱，颜聚亡”，从赵世家之说；校记称此句原系十九年，移至十八年" }, { "w": "shiji", "loc": "卷86 刺客列传第二十六", "note": "荆轲刺秦与易水歌" }, { "w": "shiji", "loc": "卷88 蒙恬列传第二十八", "note": "始皇二十六年蒙恬为将攻齐" }],
+  "person:shile": [{ "w": "jinshu", "loc": "卷104–105 载记第四、五 石勒上 石勒下", "url": "https://zh.wikisource.org/wiki/晉書/卷104" }],
+  "person:sunce": [{ "w": "sgz", "loc": "卷46 孙破虏讨逆传", "url": "https://zh.wikisource.org/wiki/三國志/卷46" }],
+  "person:wangmeng": [{ "w": "jinshu", "loc": "卷114 载记第十四 苻坚下 王猛传", "url": "https://zh.wikisource.org/wiki/晉書/卷114" }],
+  "person:wusangui": [{ "w": "qingshigao", "loc": "卷474 列传二百六十一 吴三桂传", "url": "https://zh.wikisource.org/wiki/清史稿/卷474" }],
+  "person:xiaoyan": [{ "w": "liangshu", "loc": "卷1–3 本纪第一、二、三 武帝上 武帝中 武帝下", "url": "https://zh.wikisource.org/wiki/梁書/卷01" }],
   "person:yudayou": [{ "w": "mingshi", "loc": "卷212 列传第一百 俞大猷传", "url": "https://zh.wikisource.org/wiki/明史/卷212" }],
-  "person:zhangjuzheng": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }]
+  "person:yuwentai": [{ "w": "zhoushu", "loc": "卷1–2 帝纪第一、二 文帝上 文帝下", "url": "https://zh.wikisource.org/wiki/周書/卷01" }],
+  "person:zhangjuzheng": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
+  "person:zhangxianzhong": [{ "w": "mingshi", "loc": "卷309 列传第一百九十七 流贼 张献忠传", "url": "https://zh.wikisource.org/wiki/明史/卷309" }],
+  "person:zhangzuolin": [{ "w": "zhmsdsj", "loc": "1922年、1924年、1928年6月条" }],
+  "person:zhaogou": [{ "w": "songshi", "loc": "卷24–32 本纪第二十四–三十二 高宗", "url": "https://zh.wikisource.org/wiki/宋史/卷024" }],
+  "person:zhuxi": [{ "w": "songshi", "loc": "卷429 列传第一百八十八 道学三 朱熹传", "url": "https://zh.wikisource.org/wiki/宋史/卷429" }]
 }

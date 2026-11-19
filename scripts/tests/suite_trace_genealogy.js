@@ -1510,6 +1510,34 @@ async function runTraceGenealogySuite(ctx) {
         zhaoEvs.filter((e) => e.year === 961).length === 1,
       `Expected Zhao Kuangyin to have 1 event in 960 (Chenqiao) and 1 in 961 (Cup of Wine), got ${JSON.stringify(zhaoEvs.map((e) => e.year))}`
     );
+    const gaoProfile = loreData.PERSON_PROFILES.find((p) => p.key === 'gaohuan');
+    const ywtProfile = loreData.PERSON_PROFILES.find((p) => p.key === 'yuwentai');
+    const gaoEvs = ctrl._collectPersonEvents(gaoProfile);
+    const gao534 = gaoEvs.find((e) => e.year === 534);
+    assert(
+      gaoEvs.length === 6 &&
+        gao534 &&
+        gao534.siteZh === '邺' &&
+        Math.hypot(gao534.coord[0] - 114.391, gao534.coord[1] - 36.101) < 0.05,
+      `Expected Gao Huan to collect 6 events with 534 CE split to Ye (邺), got ${JSON.stringify(gao534 && { siteZh: gao534.siteZh, coord: gao534.coord })}`
+    );
+    const ywtEvs = ctrl._collectPersonEvents(ywtProfile);
+    const ywtGaoState = ctrl._buildPersonTracksAndEvents([ywtProfile, gaoProfile]);
+    assert(
+      ywtEvs.length === 5 && ywtGaoState && ywtGaoState.sameTimeCount >= 2,
+      `Expected Yuwen Tai (5 stops) x Gao Huan to merge >= 2 contemporaneous encounters, got ${ywtEvs.length} stops / ${ywtGaoState && ywtGaoState.sameTimeCount} encounters`
+    );
+    const sunCeEvs = ctrl._collectPersonEvents(
+      loreData.PERSON_PROFILES.find((p) => p.key === 'sunce')
+    );
+    assert(
+      sunCeEvs.length === 4 &&
+        sunCeEvs[0].year === 195 &&
+        sunCeEvs[0].siteZh.includes('历阳') &&
+        sunCeEvs[1].year === 195 &&
+        sunCeEvs[1].siteZh.includes('曲阿'),
+      `Expected Sun Ce 195 CE events ordered (Liyang -> Qu'a), got ${JSON.stringify(sunCeEvs.map((e) => `${e.year}:${e.siteZh}`))}`
+    );
   }
 
   // CUJ 24: Eastern Jin & Southern-Northern Dynasties Phased Zhou / Qiaozhou & Commandery Evolution
