@@ -1452,8 +1452,12 @@ window.EN_LOCALE = {
       "Jiaozhi (Hanoi)"
     ],
     "tang:727": [
-      "Tang generals Wang Junchuo and Li Yi capture Shibao Fortress from Tibet, securing Hexi",
-      "Liangzhou · Shibao Fortress"
+      "Liangzhou governor Wang Junchuo defeats Tibet west of Qinghai, later slain by Uyghur raiders",
+      "Liangzhou"
+    ],
+    "tang:729": [
+      "Prince of Xin'an Li Yi captures Shibao Fortress from Tibet, securing the Hexi frontier",
+      "Shibao Fortress"
     ],
     "tang:733": [
       "Emperor Xuanzong divides the empire into Fifteen Kaiyuan Circuits under commissioners",
