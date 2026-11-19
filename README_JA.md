@@ -273,7 +273,7 @@ hit.prefecture;                  // null unless exported with --with-prefectures
 
 ## データの出典とライセンス
 
-コードとこのプロジェクトが作成したデータは **GPL-3.0** で公開しています。例外は 1 つだけで、CHGIS に由来する郡 / 州 / 府レベルの境界は、CHGIS 自身の条件に従います。
+このプロジェクトのコードと独自に作成したデータは **GPL-3.0** で公開しています。外部のデータには下表のライセンスが適用されます。
 
 | レイヤー | 出典 | ライセンス |
 | :-- | :-- | :-- |
@@ -282,12 +282,13 @@ hit.prefecture;                  // null unless exported with --with-prefectures
 | 第一級行政区画（`region`：刺史部 / 道 / 路 / 省 など） | 史書にもとづき手作業で作成。初期版の出典は記録されていません | GPL-3.0 |
 | **郡 / 州 / 府レベルの境界**（`prefecture`、戦国と秦の郡を含む） | **CHGIS V6** と **Robert M. Hartwell China Historical GIS** に由来し、0.01° に簡略化して手作業で修正 | **GPL-3.0 ではありません**。学術・非商用の利用に限り、再配布は禁止です。下記を参照 |
 | 古地名、主要な出来事、旅程、人物年譜、地名の沿革 | 史書にもとづきこのプロジェクトが整理 | GPL-3.0 |
+| 741 年の京兆府に属する二つの県治の座標 | [鄭伊辰・武廷海、Figshare 第 2 版](https://doi.org/10.6084/m9.figshare.30518417.v2) の 742 年の地点データから、藍田県（`CountyID` 1007）と涇陽県（1012）の投影座標を経緯度に換算し、0.01° に丸めました。741 年の県名と所属は[『旧唐書』巻三十八](https://zh.wikisource.org/wiki/舊唐書/卷38#京兆府) によります。 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | 現代の省界 | DataV GeoAtlas（Alibaba Cloud） | DataV GeoAtlas の条件に従う |
 | 河川、湖、周辺国 | パブリックドメインのデータ | パブリックドメイン |
 | 地形の陰影 | `scripts/build_terrain_tiles.py` が [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/)（パブリックドメインの **SRTM**、**GMTED2010**、**ETOPO1**）から描画。公開しているのは、解像度が 1 ピクセルあたり約 1 km より細かくない陰影画像だけです | GPL-3.0（画像） |
 | 古琴の音声 | Wikimedia Commons（*流水*、*平沙落雁*、*陽関三畳*、*酔漁唱晩*、*酒狂*） | パブリックドメイン |
 
-**参考文献（データの出典ではありません）**：境界は、史書と譚其驤の *The Historical Atlas of China*（谭其骧主编《中国历史地图集》）に照らして確認しています。この地図集の画像やデータは、このリポジトリには含まれていません。
+**参考文献（データの出典ではありません）**：境界は、史書と譚其驤の *The Historical Atlas of China*（谭其骧主编《中国历史地图集》）に照らして確認しています。この地図集の画像はこのリポジトリに含まれていません。
 
 **郡 / 州 / 府レベルの境界（CHGIS）**：このレイヤーは GPL-3.0 の対象外で、このサイトでの非商用・教育目的の表示に使っています。このリポジトリから再公開しないでください。郡州府の境界が必要な場合は、CHGIS の公式配布元（Harvard Dataverse）から、その条件に従って入手してください。`scripts/export_geojson.js` は、`--with-prefectures` を付けて実行しない限り、このレイヤーを出力しません。引用形式：*CHGIS, Version: 6. © Fairbank Center for Chinese Studies of Harvard University and the Center for Historical Geographical Studies at Fudan University, 2016.* 出典の詳細は [data/atlas/README.md](data/atlas/README.md) をご覧ください。
 

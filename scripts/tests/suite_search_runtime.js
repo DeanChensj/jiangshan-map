@@ -35,6 +35,34 @@ async function runSearchRuntimeSuite(ctx) {
     pointInShape,
     getCachedPersonEvents,
   } = ctx;
+  // These seats are attested by the contributed 741 slice. Adjacent years
+  // share a territory snapshot, so query them alternately on the same controller.
+  for (const [name, english] of [['蓝田县', 'Lantian County'], ['泾阳县', 'Jingyang County']]) {
+    const seat = tangDyn.settlements.find(s => s.ancient === name);
+    assert(seat && seat.appear === 741 && seat.vanish === 742);
+    const result = ctrl._queryQuickSearch(name)[0];
+    assert(result && result.kind === 'city' && result.titleZh === name && result.year === 741);
+    for (const year of [740, 741, 742, 741]) {
+      for (const query of [name, english]) {
+        const hit = ctrl.resolvePlace(query, year);
+        if (year === 741) {
+          assert(hit && hit.kind === 'city' && hit.name === name);
+          assert.deepStrictEqual(Array.from(hit.coord), Array.from(seat.coord));
+        } else {
+          assert.strictEqual(hit, null, `${query} must not resolve to an unrelated feature in ${year}`);
+        }
+      }
+      const inspected = ctrl.inspect({year, lng: seat.coord[0], lat: seat.coord[1]});
+      assert.strictEqual(inspected.nearestCity?.ancient === name, year === 741);
+    }
+  }
+  for (const year of [741, 819]) {
+    for (const query of ['蓝田关', '蓝关']) {
+      const pass = ctrl.resolvePlace(query, year);
+      assert(pass && pass.kind === 'gazetteer' && pass.name === '蓝田关');
+    }
+  }
+
   const zgSnap = snapshots[ctrl._resolveSnapKey(zgDyn, -231)];
   const bsKey = ctrl._resolveSnapKey(bsDyn, 1100);
 

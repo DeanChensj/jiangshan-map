@@ -289,7 +289,7 @@
       const snapFull = this.snapshots && this.snapshots.s_prc ? 1 : 0;
       const hasEn = this._hasEnDict() ? 1 : 0;
       const hasHant = this._hasZhHant() ? 1 : 0;
-      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}\0${hasHant}`;
+      const cacheKey = `${rawInput}\0${yr}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}\0${hasHant}`;
       if (this._resolvePlaceCache.has(cacheKey)) {
         const cached = this._resolvePlaceCache.get(cacheKey);
         return cached ? { ...cached } : null;
@@ -438,6 +438,7 @@
         }
 
         const matchSettlement = (s, allowStrip = true) => {
+          if (!this._matchesCountySeatYear(s, yr)) return null;
           const anc = (s.ancient || '').toLowerCase();
           const mod = (s.modern || '').toLowerCase();
           const cleanAnc = stripParens(anc);
@@ -557,6 +558,16 @@
             const res = matchSettlement(s, allowStrip);
             if (res) return res;
           }
+        }
+
+        // When the atlas knows the exact county name only for other dates,
+        // avoid falling through to a similarly named pass, event site, or landmark.
+        if (mode === 'strict' && /(?:县|\s+county)$/i.test(raw)) {
+          const namedCounties = (targetDyn.settlements || []).filter(s =>
+            s.level === 'county' &&
+            (s.ancient === raw || (isAsciiQuery && normApos(this._enDict(s.ancient)) === qApos))
+          );
+          if (namedCounties.length && namedCounties.every(s => !this._matchesCountySeatYear(s, yr))) return null;
         }
 
         // 2b. On exact pass, check Poetic & Historical Gazetteer before out-of-era settlements
@@ -868,7 +879,7 @@
 
     _inspectCoord(cLng, cLat, d, snap, year = this.year) {
       const isEn = this.locale === 'en';
-      const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
+      const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap, year);
       const modernProvince = eraHit.modernLoc.inModernChina
         ? isEn
           ? this.trTerm(eraHit.modernLoc.modernTitle)

@@ -273,7 +273,7 @@ hit.prefecture;                  // 默认为 null；加 --with-prefectures 导�
 
 ## 数据来源与授权
 
-代码和本项目自行整理的数据均采用 **GPL-3.0**。只有一层例外：源自 CHGIS 的郡 / 州 / 府级边界，仍受 CHGIS 原始条款约束。
+代码和本项目自行整理的数据均采用 **GPL-3.0**。第三方数据的授权见下表。
 
 | 图层 | 来源 | 授权 |
 | :-- | :-- | :-- |
@@ -282,12 +282,13 @@ hit.prefecture;                  // 默认为 null；加 --with-prefectures 导�
 | 一级政区（`region`：刺史部 / 道 / 路 / 省等） | 依据史籍手工绘制；早期版本的原始来源未记录 | GPL-3.0 |
 | **郡 / 州 / 府级边界**（`prefecture`，含战国与秦的郡） | 源自 **CHGIS V6** 与 **Robert M. Hartwell China Historical GIS**，简化至 0.01° 并经手工调整 | **不适用 GPL-3.0**。仅限学术、非商业用途，不得再分发，详见下文 |
 | 古地名、重大事件、行迹路线、人物年谱、地名沿革 | 本项目依据史籍整理 | GPL-3.0 |
+| 741 年京兆府两处县治的坐标 | [郑伊辰、武廷海，Figshare 第 2 版](https://doi.org/10.6084/m9.figshare.30518417.v2)，742 年点层：蓝田县（`CountyID` 1007）、泾阳县（1012）。投影坐标换算为经纬度，取至 0.01°。741 年县名与隶属据[《旧唐书》卷三十八](https://zh.wikisource.org/wiki/舊唐書/卷38#京兆府)。 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | 现代省界 | DataV GeoAtlas（阿里云） | 以 DataV GeoAtlas 条款为准 |
 | 河流、湖泊、周边国家 | 公有领域数据 | 公有领域 |
 | 地形晕渲 | 由 `scripts/build_terrain_tiles.py` 基于 [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/)（公有领域的 **SRTM**、**GMTED2010**、**ETOPO1**）渲染；仓库只发布最细约 1 km/像素的晕渲图片 | GPL-3.0（图片） |
 | 古琴录音 | Wikimedia Commons（《流水》《平沙落雁》《阳关三叠》《醉渔唱晚》《酒狂》） | 公有领域 |
 
-**参考资料（非数据来源）**：边界依据史籍并参照谭其骧主编《中国历史地图集》核对。本仓库不包含该图集的任何图像或数据。
+**参考资料（非数据来源）**：边界依据史籍并参照谭其骧主编《中国历史地图集》核对。本仓库不包含该图集的图像。
 
 **郡 / 州 / 府级边界（CHGIS）**：该图层不适用 GPL-3.0，仅用于本站非商业的科普展示。请勿从本仓库转载或再分发；如需郡州府边界，请从 CHGIS 官方渠道（Harvard Dataverse）按其条款获取。`scripts/export_geojson.js` 默认不导出该图层，加 `--with-prefectures` 参数才会导出。引用格式：*CHGIS, Version: 6. © Fairbank Center for Chinese Studies of Harvard University and the Center for Historical Geographical Studies at Fudan University, 2016.* 数据来源细节见 [data/atlas/README.md](data/atlas/README.md)。
 

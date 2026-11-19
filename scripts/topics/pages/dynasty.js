@@ -191,7 +191,8 @@ function buildDynastyPage({
   const settlements = d.settlements || [];
   const settlementRowsHtml = settlements
     .map((s) => {
-      const roleStr = s.isCapital ? '★ 都城/首府' : s.tier === 1 ? '核心重镇' : '州郡治所/名城';
+      const roleStr = s.isCapital ? '★ 都城/首府' : s.level === 'county' ? '县治（约址）' :
+        s.tier === 1 ? '核心重镇' : '州郡治所/名城';
       const placeHref = `../?year=${focusY}&place=${encodeURIComponent(s.ancient)}`;
       return `            <tr>
               <td><strong>${escHtml(s.ancient)}</strong></td>

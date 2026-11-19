@@ -967,6 +967,8 @@ window.DYNASTY_DATA = [
       {"ancient":"伏俟城","modern":"青海湖西（吐谷浑）","coord":[99.7,36.95],"appear":635,"remark":"李靖破吐谷浑降服"},
       {"ancient":"茶镈和罗城","modern":"中天竺（南亚次大陆）","coord":[85.13,25.61],"appear":648,"remark":"王玄策借兵大破阿罗那顺"},
       {"ancient":"长安","modern":"西安","coord":[108.941,34.341],"isCapital":true,"capitalPeriods":[[618,689],[705,904]],"align":"l","remark":"唐都，百万人口国际都会"},
+      {"ancient":"蓝田县","modern":"陕西蓝田","coord":[109.32,34.17],"tier":2,"level":"county","appear":741,"vanish":742,"remark":"开元二十九年属京兆府。此点为县治约址，蓝田关另在东南。"},
+      {"ancient":"泾阳县","modern":"陕西泾阳","coord":[108.84,34.53],"tier":2,"level":"county","appear":741,"vanish":742,"remark":"大足元年还隶雍州，开元二十九年属京兆府。此点为县治约址。"},
       {"ancient":"东都洛阳","modern":"洛阳","aliases":["洛阳","神都","神都洛阳"],"eraNames":[{"from":690,"until":705,"zh":"神都洛阳","en":"Shendu Luoyang"}],"coord":[112.451,34.621],"isCapital":true,"capitalPeriods":[[690,704],[904,907]],"remark":"武周时为神都（690—705）；天祐中唐室迁都洛阳（904—907）"},
       {"ancient":"扬州","modern":"扬州","coord":[119.411,32.391],"remark":"“扬一益二”"},
       {"ancient":"益州","modern":"成都","coord":[104.071,30.571],"remark":"剑南道及成都府治所，安史之乱唐玄宗入蜀升为南京，号“扬一益二”"},

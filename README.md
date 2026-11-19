@@ -273,7 +273,7 @@ After exporting, serve the repository (`python3 -m http.server 8000`) and open `
 
 ## Data Sources & License
 
-Code and the data created by this project are released under **GPL-3.0**. One layer is not: the prefecture-level boundaries derived from CHGIS, which stay under CHGIS's own terms.
+Code and data created by this project are released under **GPL-3.0**. Third-party data retain the licenses listed below.
 
 | Layer | Source | License |
 | :-- | :-- | :-- |
@@ -282,12 +282,13 @@ Code and the data created by this project are released under **GPL-3.0**. One la
 | First-level divisions (`region`: 刺史部 / 道 / 路 / 省 …) | Drawn by hand from historical texts; the source of early versions was not recorded | GPL-3.0 |
 | **Prefecture-level boundaries** (`prefecture`: 郡 / 州 / 府, incl. Warring States and Qin commanderies) | Derived from **CHGIS V6** and the **Robert M. Hartwell China Historical GIS**, simplified to 0.01° and edited by hand | **Not GPL-3.0.** Academic, non-commercial use only; do not redistribute. See below |
 | Settlements, milestones, journeys, person chronicles, place lore | Compiled by this project from historical texts | GPL-3.0 |
+| Coordinates of the two Jingzhao county seats shown for 741 | [Yichen Zheng and Tinghai Wu, Figshare v2](https://doi.org/10.6084/m9.figshare.30518417.v2), 742 layer: Lantian (`CountyID` 1007) and Jingyang (1012). The projected points were converted to longitude and latitude and rounded to 0.01°. Names and jurisdiction for 741 follow [*Old Book of Tang*, vol. 38](https://zh.wikisource.org/wiki/舊唐書/卷38#京兆府). | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | Modern provinces | DataV GeoAtlas (Alibaba Cloud) | Subject to DataV GeoAtlas terms |
 | Rivers, lakes, neighbouring countries | Public-domain data | Public domain |
 | Terrain hillshade | Rendered by `scripts/build_terrain_tiles.py` from [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) (public-domain **SRTM**, **GMTED2010**, **ETOPO1**); only shaded images at no finer than about 1 km per pixel are published | GPL-3.0 (images) |
 | Guqin audio | Wikimedia Commons (*Liu Shui*, *Pingsha Luoyan*, *Yangguan Sandie*, *Zuiyu Changwan*, *Jiu Kuang*) | Public domain |
 
-**Scholarly references (not data sources).** Boundaries are checked against historical texts and Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》). No map images or data from that atlas are included in this repository.
+**Scholarly references (not data sources).** Boundaries are checked against historical texts and Tan Qixiang's *The Historical Atlas of China* (谭其骧主编《中国历史地图集》). No map images from that atlas are included in this repository.
 
 **Prefecture-level boundaries (CHGIS).** This layer is not covered by GPL-3.0 and is shown here for non-commercial, educational use. Do not republish it from this repository; if you need prefecture boundaries, download CHGIS from its official distribution (Harvard Dataverse) under its terms. `scripts/export_geojson.js` leaves this layer out unless run with `--with-prefectures`. Cite it as: *CHGIS, Version: 6. © Fairbank Center for Chinese Studies of Harvard University and the Center for Historical Geographical Studies at Fudan University, 2016.* Provenance details: [data/atlas/README.md](data/atlas/README.md).
 

@@ -3491,10 +3491,18 @@
       return list;
     }
 
-    _findNearestSettlement(items, lng, lat, maxKm = 170) {
+    // Ordinary cities can anchor cross-era lookups. Dated county-seat coordinates
+    // are evidence only for their recorded interval ([appear, vanish)).
+    _matchesCountySeatYear(item, year) {
+      return item.level !== 'county' || ((item.appear === undefined || year >= item.appear) &&
+        (item.vanish === undefined || year < item.vanish));
+    }
+
+    _findNearestSettlement(items, lng, lat, maxKm = 170, year) {
       let best = null;
       let bestKm = maxKm;
       for (const s of items || []) {
+        if (year !== undefined && !this._matchesCountySeatYear(s, year)) continue;
         const km = this.projector.greatCircleKm([lng, lat], s.coord);
         if (km < bestKm) {
           bestKm = km;
@@ -3543,7 +3551,7 @@
       return best;
     }
 
-    _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall) {
+    _resolveEraPlaceAt(lng, lat, d, snap, year = d?.focusYear, modernLoc, closestOverall) {
       const loc = modernLoc || this._resolveModernLocationAt(lng, lat);
       const closest =
         closestOverall !== undefined
@@ -3576,7 +3584,7 @@
           }
         }
       }
-      let near = this._findNearestSettlement(d && d.settlements, lng, lat, 175);
+      let near = this._findNearestSettlement(d && d.settlements, lng, lat, 175, year);
       if (
         d &&
         (d.key === 'roc' || d.key === 'prc') &&
@@ -4044,7 +4052,7 @@
         const targetYear = isCurDyn ? this.year : d.focusYear;
         const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
-        const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall);
+        const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, targetYear, modernLoc, closestOverall);
         const polityHit = eraHit.polity;
         const near = eraHit.near;
         const adminHits = [];

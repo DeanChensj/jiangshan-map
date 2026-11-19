@@ -624,7 +624,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"name":"洛邑","aliases":["成周","东周王城","洛京"],"modern":"河南洛阳","coord":[112.45,34.62],"zoom":2.5},
     {"name":"汴京","aliases":["东京汴梁","汴梁","东京","汴州","东都开封府","大梁"],"modern":"河南开封","coord":[114.35,34.79],"zoom":2.5},
     {"name":"幽州","aliases":["辽南京","析津府","燕京","蓟城","幽燕","范阳","范阳郡"],"asciiAliases":["youzhou","fanyang","yanjing","jicheng"],"modern":"北京","coord":[116.4,39.9],"zoom":2.5},
-    {"name":"蓝田关","aliases":["蓝关","峣关","蓝田","蓝田县"],"asciiAliases":["lantianguan","languan","lantian","lantianpass"],"modern":"陕西西安蓝田","coord":[109.48,34.03],"zoom":2.6},
+    {"name":"蓝田关","aliases":["蓝关","峣关","蓝田"],"asciiAliases":["lantianguan","languan","lantian","lantianpass"],"modern":"陕西西安蓝田","coord":[109.48,34.03],"zoom":2.6},
     {"name":"马嵬坡","aliases":["马嵬驿","马嵬","兴平"],"asciiAliases":["maweipo","mawei","maweiyi","maweislope"],"modern":"陕西咸阳兴平","coord":[108.35,34.28],"zoom":2.6},
     {"name":"五丈原","aliases":["岐山","眉县"],"asciiAliases":["wuzhangyuan","wuzhangplains","qishan"],"modern":"陕西宝鸡岐山","coord":[107.63,34.23],"zoom":2.6},
     {"name":"陈仓","aliases":["宝鸡","虢县"],"modern":"陕西宝鸡","coord":[107.15,34.36],"zoom":2.5},
