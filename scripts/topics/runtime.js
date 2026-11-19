@@ -39,6 +39,50 @@ function fmtDynSpanEn(d) {
     : `${fmtYearEn(d.fromYear)} – ${fmtYearEn(d.toYear)}`;
 }
 
+function firstSentenceZh(text, maxLen = 90) {
+  const clean = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!clean) return '';
+  const sentMatch = clean.match(/^.+?[。！？]/);
+  const first = sentMatch ? sentMatch[0] : clean;
+  if (first.length <= maxLen) return first;
+  const head = first.slice(0, maxLen);
+  const semiIdx = head.lastIndexOf('；');
+  const commaIdx = head.lastIndexOf('，');
+  const cutIdx = semiIdx >= 24 ? semiIdx : commaIdx;
+  const rawSlice = cutIdx >= 16 ? head.slice(0, cutIdx) : head.slice(0, Math.max(16, maxLen - 1));
+  const stripped = rawSlice.replace(/[，；、：:\s]+$/, '');
+  const prevSep = Math.max(stripped.lastIndexOf('；'), stripped.lastIndexOf('，'));
+  const body =
+    prevSep >= 12 && stripped.length - prevSep - 1 <= 2
+      ? stripped.slice(0, prevSep).replace(/[，；、：:\s]+$/, '')
+      : stripped;
+  return `${body}…`;
+}
+
+function dedupeConsecutive(items) {
+  const out = [];
+  for (const x of items || []) {
+    if (out.length === 0 || out[out.length - 1] !== x) out.push(x);
+  }
+  return out;
+}
+
+function buildMapHref(query = '', { lang = 'zh', base = '../' } = {}) {
+  const clean = String(query || '').replace(/^\?/, '');
+  if (lang !== 'en') {
+    return clean ? `${base}?${clean}` : base;
+  }
+  if (!clean) return `${base}?lang=en`;
+  return /(?:^|&)lang=/.test(clean) ? `${base}?${clean}` : `${base}?${clean}&lang=en`;
+}
+
+function buildEmbedHref(embedQuery = '', { lang = 'zh', base = '../' } = {}) {
+  const clean = String(embedQuery || '').replace(/^\?/, '').replace(/^embed=1&?/, '');
+  const baseEmbed = clean ? `${base}?embed=1&${clean}` : `${base}?embed=1`;
+  if (lang !== 'en') return baseEmbed;
+  return /(?:^|&)lang=/.test(baseEmbed) ? baseEmbed : `${baseEmbed}&lang=en`;
+}
+
 function loadSourcesBundle() {
   const worksPath = path.join(SOURCES_DIR, 'works.json');
   const works = fs.existsSync(worksPath) ? JSON.parse(fs.readFileSync(worksPath, 'utf8')) : {};
@@ -161,6 +205,10 @@ module.exports = {
   fmtYearEn,
   fmtDynSpanZh,
   fmtDynSpanEn,
+  firstSentenceZh,
+  dedupeConsecutive,
+  buildMapHref,
+  buildEmbedHref,
   loadSourcesBundle,
   loadTopicsData,
   formatSourceCitationsHtml,

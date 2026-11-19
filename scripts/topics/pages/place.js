@@ -1,7 +1,14 @@
 'use strict';
 
 const { BASE_URL, LASTMOD } = require('../config');
-const { escHtml, fmtYearZh, fmtYearShortZh, fmtDynSpanZh, formatSourceCitationsHtml } = require('../runtime');
+const {
+  escHtml,
+  fmtYearShortZh,
+  fmtDynSpanZh,
+  buildMapHref,
+  buildEmbedHref,
+  formatSourceCitationsHtml,
+} = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -26,7 +33,6 @@ function resolvePlaceNearestCityDisplay(dInfo, fallbackLabel, nearestCfg) {
 
 function buildPlacePage({
   place,
-  idx,
   allPlaces,
   cityLore,
   allDynasties,
@@ -37,7 +43,10 @@ function buildPlacePage({
   linkedPersons = [],
   relatedLinks = [],
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
+  const idx = allPlaces.indexOf(place);
   const slug = `place-${place.slug}`;
   const canonicalUrl = `${BASE_URL}/topics/${slug}.html`;
   const [lng, lat] = cityLore.coord;
@@ -120,15 +129,16 @@ function buildPlacePage({
         adminParts.join(' · ') ||
         (d.key === 'zhanguo' ? `${polityStr}直辖（未设郡）` : `${polityStr}直辖`);
       const nearStr = resolvePlaceNearestCityDisplay(dInfo, '—', nearestCfg);
-      const rowHref = `../?year=${sampleY}&lng=${lngFixed}&lat=${latFixed}`;
+      const rowHref = buildMapHref(`?year=${sampleY}&lng=${lngFixed}&lat=${latFixed}`, {
+        lang,
+        base: mapBase,
+      });
 
       return `            <tr>
-              <td><strong>${escHtml(d.title)}</strong>（${fmtDynSpanZh(d)}）</td>
-              <td>${escHtml(dInfo.era)}</td>
+              <td><a href="${escHtml(rowHref)}"><strong>${escHtml(d.title)}</strong></a>（${fmtDynSpanZh(d)}）<br/><small>${escHtml(dInfo.era)}</small></td>
               <td>${escHtml(polityStr)}</td>
               <td>${escHtml(adminStr)}</td>
               <td>${escHtml(nearStr)}</td>
-              <td><a href="${escHtml(rowHref)}">查看该朝版图 →</a></td>
             </tr>`;
     })
     .join('\n');
@@ -136,22 +146,21 @@ function buildPlacePage({
   rawEvents.sort((a, b) => a.year - b.year);
   const evRowsHtml = rawEvents
     .map((ev) => {
-      const rowHref = `../?year=${ev.year}&lng=${lngFixed}&lat=${latFixed}`;
-      return `            <tr>
-              <td><strong>${fmtYearShortZh(ev.year)}年</strong><br/><small>${escHtml(ev.eraZh)}</small></td>
+      const rowHref = buildMapHref(`?year=${ev.year}&lng=${lngFixed}&lat=${latFixed}`, {
+        lang,
+        base: mapBase,
+      });
+      return `            <tr${ev.textEn ? ` data-search="${escHtml(ev.textEn)}"` : ''}>
+              <td><a href="${escHtml(rowHref)}"><strong>${fmtYearShortZh(ev.year)}年</strong></a><br/><small>${escHtml(ev.eraZh)}</small></td>
               <td><strong>${escHtml(ev.siteZh)}</strong><br/><small>${escHtml(ev.dynasty.title)}</small></td>
-              <td>${escHtml(ev.textZh)}${
-                ev.textEn ? `<br/><small class="muted-note">${escHtml(ev.textEn)}</small>` : ''
-              }${ev.citeHtml ? `\n                ${ev.citeHtml}` : ''}</td>
-              <td><a href="${escHtml(rowHref)}">地图定格 →</a></td>
+              <td>${escHtml(ev.textZh)}${ev.citeHtml ? `\n                ${ev.citeHtml}` : ''}</td>
             </tr>`;
     })
     .join('\n');
 
   const eventsSectionHtml = rawEvents.length
     ? `\n      <section id="sec-events" class="section-card">
-        <h2>二、「${escHtml(place.displayTitleZh)}」历代编年大事与正史出处（${rawEvents.length} 项）</h2>
-        <p>由主图编年引擎聚合本城历代重大历史事件与正史典籍出处，支持按年份、朝代或事件关键词筛选：</p>
+        <h2>二、「${escHtml(place.displayTitleZh)}」历代编年大事</h2>
 ${renderTableFilterBar('tbl-place-events', `检索${place.modern}历代事件、年份或正史典籍…`, rawEvents.length)}
         <div class="table-wrap">
           <table id="tbl-place-events" class="data-table">
@@ -159,8 +168,7 @@ ${renderTableFilterBar('tbl-place-events', `检索${place.modern}历代事件、
               <tr>
                 <th>年份与年号</th>
                 <th>城名 / 朝代</th>
-                <th>历史事件与史料出处</th>
-                <th>地图定格</th>
+                <th>史事与出处</th>
               </tr>
             </thead>
             <tbody>
@@ -173,30 +181,34 @@ ${evRowsHtml}
 
   const personChipsHtml = linkedPersons.length
     ? `\n      <section id="sec-persons" class="section-card">
-        <h2>${rawEvents.length ? '三' : '二'}、与「${escHtml(place.displayTitleZh)}」渊源最深的历史人物（${linkedPersons.length} 位）</h2>
-        <p>以下历史人物在生平轨迹、重大史事或行迹途中频繁驻跸/经行此城：</p>
+        <h2>${rawEvents.length ? '三' : '二'}、与「${escHtml(place.displayTitleZh)}」关联的历史人物</h2>
         <div class="chip-grid">
 ${linkedPersons
   .map((lp) => {
-    const href = lp.href || `../?person=${encodeURIComponent(lp.key)}`;
-    return `          <a class="chip-link" href="${escHtml(href)}">${escHtml(lp.zh)}（关联 ${lp.hits} 事）</a>`;
+    const rawHref = lp.href || `?person=${encodeURIComponent(lp.key)}`;
+    const href = rawHref.startsWith('../?')
+      ? buildMapHref(rawHref.slice(3), { lang, base: mapBase })
+      : rawHref.startsWith('?')
+        ? buildMapHref(rawHref, { lang, base: mapBase })
+        : rawHref;
+    return `          <a class="chip-link" href="${escHtml(href)}">${escHtml(lp.zh)}</a>`;
   })
   .join('\n')}
-          <a class="chip-link" href="persons.html">浏览全库 139 位人物总录 →</a>
+          <a class="chip-link" href="persons.html">浏览历代人物志 →</a>
         </div>
       </section>`
     : '';
 
   const tocItems = [
     { id: 'sec-map', label: '交互舆图预览' },
-    { id: 'sec-genealogy', label: `一、十八朝沿革（${allDynasties.length} 朝）` },
+    { id: 'sec-genealogy', label: '一、十八朝沿革' },
   ];
   if (rawEvents.length) {
-    tocItems.push({ id: 'sec-events', label: `二、历代编年史事（${rawEvents.length} 项）` });
+    tocItems.push({ id: 'sec-events', label: '二、历代编年史事' });
   }
   if (linkedPersons.length) {
     const pNumZh = rawEvents.length ? '三' : '二';
-    tocItems.push({ id: 'sec-persons', label: `${pNumZh}、关联人物（${linkedPersons.length} 位）` });
+    tocItems.push({ id: 'sec-persons', label: `${pNumZh}、关联人物` });
   }
 
   const prevPlace = idx > 0 ? allPlaces[idx - 1] : null;
@@ -259,61 +271,53 @@ ${linkedPersons
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader({ activeNav: 'places' })}
+${renderTopHeader({ activeNav: 'places', lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems, navFooterParts.join('\n        '))}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <a href="places.html">历代地区志</a> &rsaquo;
         <span>${escHtml(place.displayTitleZh)}</span>
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">点地溯源 · 历代名城地区志（第 ${idx + 1} / ${allPlaces.length} 篇 · ${escHtml(cityLore.tagZh)}）</span>
-        <h1>${escHtml(place.displayTitleZh)} · 两千四百年沿革图志</h1>
-        <p class="en-sub">${escHtml(place.en)} (${escHtml(cityLore.tagEn)})</p>
+        <span class="kicker">点地溯源 · 历代名城地区志 · ${escHtml(cityLore.tagZh)}</span>
+        <h1>${escHtml(place.displayTitleZh)}</h1>
         <div class="meta-pills">
           <span class="meta-pill"><strong>地理片区：</strong>${escHtml(place.regionGroup)}</span>
           ${modernProv ? `<span class="meta-pill"><strong>今属政区：</strong>${escHtml(modernProv)} · ${escHtml(place.modern)}</span>` : ''}
-          <span class="meta-pill"><strong>坐标定位：</strong>${lngFixed}°E, ${latFixed}°N</span>
           ${capDynCount > 0 ? `<span class="meta-pill"><strong>图中建都：</strong>${capDynCount} 朝（${escHtml(capDynNames.slice(0, 4).join('·'))}${capDynNames.length > 4 ? '等' : ''}）</span>` : ''}
-          <span class="meta-pill"><strong>收录史事：</strong>${rawEvents.length} 项</span>
         </div>
         <p>${escHtml(cityLore.descZh)}</p>
-        <p class="en-sub">${escHtml(cityLore.descEn)}</p>
         <div class="cta-row">
-          <a class="cta-btn" href="../${escHtml(mapQuery)}">在交互地图打开「${escHtml(place.modern)}」点地溯源 →</a>
-          <a class="cta-btn secondary" href="../${escHtml(mapQuery)}&amp;lang=en">Open in English →</a>
-          <a class="cta-btn secondary" href="places.html">返回地区志总录</a>
+          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图查看「${escHtml(place.modern)}」沿革 →</a>
         </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
-  iframeSrc: `../?embed=1&year=${focusY}&lng=${lngFixed}&lat=${latFixed}`,
+  iframeSrc: buildEmbedHref(`year=${focusY}&lng=${lngFixed}&lat=${latFixed}`, { lang, base: mapBase }),
   titleZh: `${place.displayTitleZh}交互式历史地图预览（${fmtYearShortZh(focusY)}年切片）`,
-  hintZh: '点击地图激活交互 · 右侧/底部可拨动时间轴对比历代变迁',
+  hintZh: '点击地图激活交互 · 右上角可全屏对比历代变迁',
 })}
 
       <section id="sec-genealogy" class="section-card">
-        <h2>一、「${escHtml(place.displayTitleZh)}」十八朝政权归属与州郡沿革表</h2>
-        <p>固定坐标（${lngFixed}°E, ${latFixed}°N）由战国（前403年）至现代共 18 个历史时期的政权归属、建置层级与当期治所考据（点击最右列可直接跳至该朝地图视图）：</p>
+        <h2>一、「${escHtml(place.displayTitleZh)}」十八朝政区沿革表</h2>
 ${renderTableFilterBar('tbl-genealogy', '筛选朝代、年号、政权或郡县州府…', allDynasties.length)}
         <div class="table-wrap">
-          <table id="tbl-genealogy" class="data-table">
+          <table id="tbl-genealogy" class="data-table is-wide-table">
             <thead>
               <tr>
-                <th>历史时期</th>
-                <th>代表纪年与年号</th>
+                <th>历史时期与年号</th>
                 <th>所属政权</th>
-                <th>州 / 道 / 路 / 省与郡县</th>
+                <th>州道省郡与郡县</th>
                 <th>当期治所 / 邻近城邑</th>
-                <th>交互地图</th>
               </tr>
             </thead>
             <tbody>
@@ -323,7 +327,7 @@ ${genRows}
         </div>
       </section>${eventsSectionHtml}${personChipsHtml}
 
-${renderFooter(allDynasties)}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

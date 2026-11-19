@@ -155,7 +155,7 @@ function auditAllTopics() {
   const parseTableRows = (tableHtml) => {
     const bodyMatch = tableHtml.match(/<tbody>([\s\S]*?)<\/tbody>/);
     if (!bodyMatch) return [];
-    return [...bodyMatch[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map((m) =>
+    return [...bodyMatch[1].matchAll(/<tr(?:\s[^>]*)?>([\s\S]*?)<\/tr>/g)].map((m) =>
       [...m[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((td) => td[1])
     );
   };
@@ -180,10 +180,50 @@ function auditAllTopics() {
     if (html.includes('[object Object]')) fail(f, 'Contains "[object Object]"');
     if (html.toLowerCase().includes('deanchensj.github.io')) fail(f, 'Contains legacy github.io URL');
 
-    // Empty tbody check
+    // Empty tbody check & duplicate first/last column URL check
+    const extractFirstHref = (cellHtml) => {
+      const m = String(cellHtml || '').match(/<a\b[^>]*\bhref="([^"]+)"/);
+      return m ? m[1].replace(/&amp;/g, '&') : '';
+    };
     const tbodies = [...html.matchAll(/<tbody>([\s\S]*?)<\/tbody>/g)];
     for (const tb of tbodies) {
       if (!tb[1].includes('<tr')) fail(f, 'Contains empty <tbody> without table rows');
+      for (const trMatch of tb[1].matchAll(/<tr(?:\s[^>]*)?>([\s\S]*?)<\/tr>/g)) {
+        const tds = [...trMatch[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1]);
+        if (tds.length >= 2) {
+          const firstHref = extractFirstHref(tds[0]);
+          const lastHref = extractFirstHref(tds[tds.length - 1]);
+          if (firstHref && lastHref && firstHref === lastHref) {
+            fail(f, `Duplicate first/last column URL "${firstHref}" in table row`);
+          }
+        }
+      }
+    }
+
+    // Simplified Chinese body hygiene (keep English in meta/JSON-LD/data-search, never in visible body)
+    if (
+      /class="[^"]*\b(?:en-sub|stop-sub-en)\b/.test(html) ||
+      html.includes('Open in English') ||
+      html.includes('Play in English') ||
+      html.includes('（中英对照）') ||
+      html.includes('函数古道')
+    ) {
+      fail(f, 'Contains banned inline bilingual clutter or typo (en-sub/Open in English/中英对照/函数古道)');
+    }
+
+    if (
+      f === 'persons.html' ||
+      f === 'places.html' ||
+      standalonePersonBySlug.has(f) ||
+      placeSlugSet.has(f)
+    ) {
+      if (html.includes('footer-nav-card')) {
+        fail(f, 'Unexpected footer-nav-card dynasty chips on persons/places page');
+      }
+    }
+
+    if (f === 'index.html' && (html.includes('，在…') || html.includes('，赵…'))) {
+      fail(f, 'Truncated mid-clause summary artifact leaked in topics/index.html');
     }
 
     // Editorial r.note leakage check inside .source-cite
@@ -291,13 +331,16 @@ function auditAllTopics() {
 
     // 5. Historical & geographical invariants by page category
     if (dynKeySet.has(f.replace('.html', ''))) {
+      if (!html.includes('footer-nav-card')) {
+        fail(f, 'Missing footer-nav-card dynasty chips on dynasty page');
+      }
       const phaseTableMatch = html.match(/<table id="tbl-phases"[\s\S]*?<\/table>/);
       if (!phaseTableMatch) {
         fail(f, 'Missing #tbl-phases table');
       } else {
         const rows = parseTableRows(phaseTableMatch[0]);
         for (const cells of rows) {
-          const smalls = [...(cells[1] || '').matchAll(/<small[^>]*>([\s\S]*?)<\/small>/g)].map((m) =>
+          const smalls = [...(cells[0] || '').matchAll(/<small[^>]*>([\s\S]*?)<\/small>/g)].map((m) =>
             stripTags(m[1])
           );
           if (smalls[1] && /^(前\s*)?\d+\s*[—\-–至]/.test(smalls[1])) {
@@ -325,11 +368,11 @@ function auditAllTopics() {
         if (!row) {
           fail(f, `Missing ${dkLabel} row`);
         } else {
-          const adminTxt = stripTags(row[3]);
+          const adminTxt = stripTags(row[2]);
           if (!adminTxt.includes('江夏郡') || adminTxt.includes('长沙郡')) {
             fail(f, `${dkLabel} row must attribute Chibi to 江夏郡 (not 长沙郡), got "${adminTxt}"`);
           }
-          if (stripTags(row[4]).includes('东汉荆州南郡')) {
+          if (stripTags(row[3]).includes('东汉荆州南郡')) {
             fail(f, `Anachronistic "东汉荆州南郡" in nearest-city column on ${dkLabel} row`);
           }
         }
@@ -342,30 +385,30 @@ function auditAllTopics() {
       if (!qinRow) {
         fail(f, 'Missing Qin row');
       } else {
-        const adminTxt = stripTags(qinRow[3]);
+        const adminTxt = stripTags(qinRow[2]);
         if (!adminTxt.includes('会稽郡') || adminTxt.includes('东海郡')) {
           fail(f, `Qin Jingkou row must use 会稽郡 (not 东海郡), got "${adminTxt}"`);
         }
       }
-      if (rows.some((r) => stripTags(r[4]).includes('三国东吴铁瓮城'))) {
-        fail(f, 'Anachronistic "三国东吴铁瓮城" leaked into genealogy column 5');
+      if (rows.some((r) => stripTags(r[3]).includes('三国东吴铁瓮城'))) {
+        fail(f, 'Anachronistic "三国东吴铁瓮城" leaked into genealogy column 4');
       }
     }
 
     if (f === 'sushi-exile.html') {
       const rows = parseTableRows((html.match(/<table id="tbl-route"[\s\S]*?<\/table>/) || [''])[0]);
-      const hzRow = rows.find((r) => stripTags(r[1]).includes('1094年'));
-      if (!hzRow || !stripTags(hzRow[4]).includes('惠州') || stripTags(hzRow[4]).includes('祯州')) {
+      const hzRow = rows.find((r) => stripTags(r[0]).includes('1094年'));
+      if (!hzRow || !stripTags(hzRow[3]).includes('惠州') || stripTags(hzRow[3]).includes('祯州')) {
         fail(f, '1094 Huizhou stop must show taboo-renamed 惠州 rather than 祯州');
       }
     }
 
     if (f === 'wentianxiang-lingdingyang.html') {
       const rows = parseTableRows((html.match(/<table id="tbl-route"[\s\S]*?<\/table>/) || [''])[0]);
-      const row1277 = rows.find((r) => stripTags(r[1]).includes('1277年'));
-      const row1279 = rows.find((r) => stripTags(r[1]).includes('1279年'));
-      if (!row1277 || !stripTags(row1277[1]).includes('景炎')) fail(f, '1277 stop missing Southern Song era 景炎');
-      if (!row1279 || !stripTags(row1279[1]).includes('祥兴')) fail(f, '1279 stop missing Southern Song era 祥兴');
+      const row1277 = rows.find((r) => stripTags(r[0]).includes('1277年'));
+      const row1279 = rows.find((r) => stripTags(r[0]).includes('1279年'));
+      if (!row1277 || !stripTags(row1277[0]).includes('景炎')) fail(f, '1277 stop missing Southern Song era 景炎');
+      if (!row1279 || !stripTags(row1279[0]).includes('祥兴')) fail(f, '1279 stop missing Southern Song era 祥兴');
     }
 
     if (f === 'persons.html') {
@@ -435,49 +478,49 @@ function auditAllTopics() {
         fail(f, 'Erroneous neighbor polygon "泰人诸部" leaked into #tbl-genealogy');
       }
       for (const r of genRows) {
-        const kmMatch = stripTags(r[4]).match(/距\s*(\d+)\s*km/);
+        const kmMatch = stripTags(r[3]).match(/距\s*(\d+)\s*km/);
         if (kmMatch && Number(kmMatch[1]) > 55) {
-          fail(f, `Nearest city exceeded 55km threshold in #tbl-genealogy: "${stripTags(r[4])}"`);
+          fail(f, `Nearest city exceeded 55km threshold in #tbl-genealogy: "${stripTags(r[3])}"`);
         }
       }
       const findRow = (prefix) => genRows.find((r) => stripTags(r[0]).startsWith(prefix));
       if (f === 'place-xian.html') {
         const rDh = findRow('东汉');
-        if (!rDh || !stripTags(rDh[3]).includes('京兆尹')) fail(f, 'place-xian 东汉 row must include 京兆尹');
+        if (!rDh || !stripTags(rDh[2]).includes('京兆尹')) fail(f, 'place-xian 东汉 row must include 京兆尹');
       }
       if (f === 'place-luoyang.html') {
         const rDh = findRow('东汉');
-        if (!rDh || !stripTags(rDh[3]).includes('河南尹')) fail(f, 'place-luoyang 东汉 row must include 河南尹');
+        if (!rDh || !stripTags(rDh[2]).includes('河南尹')) fail(f, 'place-luoyang 东汉 row must include 河南尹');
       }
       if (f === 'place-beijing.html') {
         const rQ = findRow('秦');
-        if (!rQ || !stripTags(rQ[3]).includes('广阳郡') || stripTags(rQ[3]).includes('渔阳郡')) {
+        if (!rQ || !stripTags(rQ[2]).includes('广阳郡') || stripTags(rQ[2]).includes('渔阳郡')) {
           fail(f, 'place-beijing 秦 row must use 广阳郡 (not 渔阳郡)');
         }
       }
       if (f === 'place-kaifeng.html') {
         const rQ = findRow('秦');
         const rDh = findRow('东汉');
-        if (!rQ || !stripTags(rQ[3]).includes('砀郡')) fail(f, 'place-kaifeng 秦 row must use 砀郡');
-        if (!rDh || !stripTags(rDh[3]).includes('陈留郡')) fail(f, 'place-kaifeng 东汉 row must use 陈留郡');
+        if (!rQ || !stripTags(rQ[2]).includes('砀郡')) fail(f, 'place-kaifeng 秦 row must use 砀郡');
+        if (!rDh || !stripTags(rDh[2]).includes('陈留郡')) fail(f, 'place-kaifeng 东汉 row must use 陈留郡');
       }
       if (f === 'place-yangzhou.html') {
         const rQ = findRow('秦');
         const rDh = findRow('东汉');
-        if (!rQ || !stripTags(rQ[3]).includes('九江郡')) fail(f, 'place-yangzhou 秦 row must use 九江郡');
-        if (!rDh || !stripTags(rDh[3]).includes('广陵郡') || stripTags(rDh[4]).includes('寿春')) {
+        if (!rQ || !stripTags(rQ[2]).includes('九江郡')) fail(f, 'place-yangzhou 秦 row must use 九江郡');
+        if (!rDh || !stripTags(rDh[2]).includes('广陵郡') || stripTags(rDh[3]).includes('寿春')) {
           fail(f, 'place-yangzhou 东汉 row must use 广陵郡 and not 寿春');
         }
       }
       if (f === 'place-hangzhou.html' || f === 'place-suzhou.html') {
         const rDj = findRow('东晋十六国');
-        if (!rDj || !stripTags(rDj[3]).includes('扬州') || !stripTags(rDj[3]).includes('吴郡')) {
+        if (!rDj || !stripTags(rDj[2]).includes('扬州') || !stripTags(rDj[2]).includes('吴郡')) {
           fail(f, `${f} 东晋十六国 row must show 扬州 · 吴郡`);
         }
       }
       if (f === 'place-dali.html') {
         const rXh = findRow('西汉');
-        if (!rXh || !stripTags(rXh[3]).includes('益州郡')) fail(f, 'place-dali 西汉 row must show 益州郡');
+        if (!rXh || !stripTags(rXh[2]).includes('益州郡')) fail(f, 'place-dali 西汉 row must show 益州郡');
       }
     }
   }

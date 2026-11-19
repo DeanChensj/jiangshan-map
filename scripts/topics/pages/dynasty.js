@@ -7,6 +7,9 @@ const {
   fmtYearShortZh,
   fmtDynSpanZh,
   fmtDynSpanEn,
+  firstSentenceZh,
+  buildMapHref,
+  buildEmbedHref,
   formatSourceCitationsHtml,
 } = require('../runtime');
 const {
@@ -30,8 +33,7 @@ function renderCartographicNotesSection(d, notes, sectionNumZh = '四') {
     )
     .join('\n');
   return `      <section id="sec-notes" class="section-card">
-        <h2>${escHtml(sectionNumZh)}、${escHtml(d.title)}舆图边界、山川形胜与政区考据札记</h2>
-        <p>以下记录「江山时序」在绘制${escHtml(d.title)}（${fmtDynSpanZh(d)}）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
+        <h2>${escHtml(sectionNumZh)}、${escHtml(d.title)}舆图边界与政区考据</h2>
         <div class="carto-note-grid">
 ${itemsHtml}
         </div>
@@ -47,18 +49,16 @@ function renderDynastyPersonsSection(d, personLinks) {
     )
     .join('\n          ');
   return `      <section id="sec-persons" class="section-card">
-        <h2>四、${escHtml(d.title)}人物志与生平行迹（${personLinks.length} 篇）</h2>
-        <p>收录${escHtml(d.title)}时期具备完整生平编年节点与正史出处的精修行迹与核心历史人物独立图志：</p>
+        <h2>四、${escHtml(d.title)}人物志与行迹</h2>
         <div class="chip-grid">
           ${chipsHtml}
-          <a class="chip-link" href="persons.html">浏览历代人物志总录 →</a>
+          <a class="chip-link" href="persons.html">浏览历代人物志 →</a>
         </div>
       </section>\n\n`;
 }
 
 function buildDynastyPage({
   d,
-  idx,
   allDynasties,
   snapshots,
   enLocale,
@@ -69,11 +69,13 @@ function buildDynastyPage({
   relatedLinks,
   personLinks = [],
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
+  const dIdx = allDynasties.indexOf(d);
   ctrl.locale = 'en';
   const titleEn = ctrl.dynastyName(d);
   const seatEn = ctrl.dynastySeat(d);
-  const summaryEn = ctrl.dynastySummary(d);
   ctrl.locale = 'zh';
 
   const focusY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
@@ -171,19 +173,17 @@ function buildDynastyPage({
         if (diffLines.length > 0) {
           prefCellHtml = diffLines.join('<br/>');
         } else {
-          const divCount = prefs.length || prevPrefs.length;
-          prefCellHtml = `<span class="diff-same">州道/省区建制同上阶段${divCount ? `（共 ${divCount} 政区）` : ''}，详见左侧阶段提要</span>`;
+          prefCellHtml = '<span class="diff-same">州道/省区建制与前阶段相承</span>';
         }
       }
       prevPolities = polities;
       if (prefs.length > 0) prevPrefs = prefs;
 
+      const phaseHref = buildMapHref(`?year=${midYear}`, { lang, base: mapBase });
       return `            <tr>
-              <td>第 ${pIdx + 1} 阶段</td>
-              <td><strong>${phaseSpanStr}</strong><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
+              <td><a href="${escHtml(phaseHref)}"><strong>${phaseSpanStr}</strong></a><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
               <td>${escHtml(polities.join('、') || d.title)}</td>
               <td>${prefCellHtml}</td>
-              <td><a href="../?year=${midYear}">查看 ${fmtYearShortZh(midYear)}年 舆图 →</a></td>
             </tr>`;
     })
     .join('\n');
@@ -192,13 +192,14 @@ function buildDynastyPage({
   const settlementRowsHtml = settlements
     .map((s) => {
       const roleStr = s.isCapital ? '★ 都城/首府' : s.tier === 1 ? '核心重镇' : '州郡治所/名城';
-      const placeHref = `../?year=${focusY}&place=${encodeURIComponent(s.ancient)}`;
+      const placeHref = buildMapHref(`?year=${focusY}&place=${encodeURIComponent(s.ancient)}`, {
+        lang,
+        base: mapBase,
+      });
       return `            <tr>
-              <td><strong>${escHtml(s.ancient)}</strong></td>
+              <td><a href="${escHtml(placeHref)}"><strong>${escHtml(s.ancient)}</strong></a></td>
               <td>${escHtml(s.modern || s.ancient)}</td>
               <td>${roleStr}</td>
-              <td>${s.coord[0].toFixed(2)}°E, ${s.coord[1].toFixed(2)}°N</td>
-              <td><a href="${escHtml(placeHref)}">地图定位与沿革 →</a></td>
             </tr>`;
     })
     .join('\n');
@@ -209,37 +210,36 @@ function buildDynastyPage({
       const mk = `${d.key}:${m.year}`;
       const enPair = (enLocale.milestones && enLocale.milestones[mk]) || [];
       const eraLabel = ctrl._eventEraLabel(d, m);
-      const mUrl = `../?year=${m.year}`;
+      const mUrl = buildMapHref(`?year=${m.year}`, { lang, base: mapBase });
       const storyMatch =
         typeof ctrl._findStoryForMilestone === 'function'
           ? ctrl._findStoryForMilestone(d.key, m)
           : null;
       const storyBadgeHtml = storyMatch
-        ? `<a class="story-link-pill" href="story-${escHtml(storyMatch.key)}.html">始末沙盘图志 →</a>`
+        ? `<a class="story-link-pill" href="story-${escHtml(storyMatch.key)}.html">始末沙盘 →</a>`
         : '';
       const citeHtml = formatSourceCitationsHtml(`milestone:${mk}`, sourcesBundle);
-      return `            <tr>
-              <td><strong>${fmtYearShortZh(m.year)}年</strong><br/><small>${escHtml(eraLabel)}</small></td>
-              <td><strong>${escHtml(m.headline)}</strong>${storyBadgeHtml}${enPair[0] ? `<br/><small>${escHtml(enPair[0])}</small>` : ''}</td>
+      return `            <tr${enPair[0] ? ` data-search="${escHtml(enPair[0])}"` : ''}>
+              <td><a href="${escHtml(mUrl)}"><strong>${fmtYearShortZh(m.year)}年</strong></a><br/><small>${escHtml(eraLabel)}</small></td>
+              <td><strong>${escHtml(m.headline)}</strong>${storyBadgeHtml}</td>
               <td>${escHtml(m.note || '')}${citeHtml}</td>
-              <td><a href="${escHtml(mUrl)}">定格此年 →</a></td>
             </tr>`;
     })
     .join('\n');
 
-  const prevDyn = idx > 0 ? allDynasties[idx - 1] : null;
-  const nextDyn = idx < allDynasties.length - 1 ? allDynasties[idx + 1] : null;
+  const prevDyn = dIdx > 0 ? allDynasties[dIdx - 1] : null;
+  const nextDyn = dIdx < allDynasties.length - 1 ? allDynasties[dIdx + 1] : null;
   const notesList = (dynastyNotes && dynastyNotes[d.key]) || [];
 
   const tocItems = [
     { id: 'sec-map', label: '交互舆图预览' },
-    { id: 'sec-phases', label: `一、疆域阶段（${phases.length}）` },
-    { id: 'sec-cities', label: `二、古今名城（${settlements.length}）` },
-    { id: 'sec-events', label: `三、编年大事（${milestones.length}）` },
+    { id: 'sec-phases', label: '一、疆域阶段' },
+    { id: 'sec-cities', label: '二、古今名城' },
+    { id: 'sec-events', label: '三、编年大事' },
   ];
   const hasPersonsSec = Array.isArray(personLinks) && personLinks.length > 0;
   if (hasPersonsSec) {
-    tocItems.push({ id: 'sec-persons', label: `四、人物与行迹（${personLinks.length}）` });
+    tocItems.push({ id: 'sec-persons', label: '四、人物与行迹' });
   }
   const notesNumZh = hasPersonsSec ? '五' : '四';
   if (notesList.length > 0) {
@@ -303,60 +303,50 @@ function buildDynastyPage({
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader()}
+${renderTopHeader({ lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems, tocFooterLinks)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <span>${escHtml(d.title)}（${escHtml(spanZh)}）</span>
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">中国历代疆域与政区图志 · 第 ${idx + 1} / ${allDynasties.length} 篇</span>
-        <h1>${escHtml(d.title)}（${escHtml(spanZh)}）· 疆域政区图志</h1>
-        <p class="en-sub">${escHtml(titleEn)} Historical Atlas (${escHtml(spanEn)}) · Capital: ${escHtml(seatEn)}</p>
-        <div class="meta-pills">
-          <span class="meta-pill"><strong>起止年代：</strong>${d.key === 'prc' ? `${fmtYearZh(d.fromYear)} —` : `${fmtYearZh(d.fromYear)} — ${fmtYearZh(d.toYear)}`}</span>
-          <span class="meta-pill"><strong>历代都城：</strong>${escHtml(d.seat)}</span>
-          <span class="meta-pill"><strong>版图阶段：</strong>${phases.length} 期</span>
-          <span class="meta-pill"><strong>收录名城：</strong>${settlements.length} 座</span>
-          <span class="meta-pill"><strong>编年大事：</strong>${milestones.length} 项</span>
-        </div>
+        <span class="kicker">中国历代疆域与政区图志</span>
+        <h1>${escHtml(d.title)}（${escHtml(spanZh)}）</h1>
+        ${d.seat ? `<div class="meta-pills"><span class="meta-pill"><strong>都城：</strong>${escHtml(d.seat)}</span></div>` : ''}
         <p>${escHtml(d.summary)}</p>
-        ${summaryEn ? `<p class="en-sub">${escHtml(summaryEn)}</p>` : ''}
         <div class="cta-row">
-          <a class="cta-btn" href="../${escHtml(mapQuery)}">打开「${escHtml(d.title)}」交互地图（${fmtYearShortZh(focusY)}年）→</a>
-          <a class="cta-btn secondary" href="../${escHtml(mapQuery)}&amp;lang=en">Open in English →</a>
-          ${prevDyn ? `<a class="cta-btn secondary" href="${escHtml(prevDyn.key)}.html">← ${escHtml(prevDyn.title)}</a>` : ''}
-          ${nextDyn ? `<a class="cta-btn secondary" href="${escHtml(nextDyn.key)}.html">${escHtml(nextDyn.title)} →</a>` : ''}
+          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中查看「${escHtml(d.title)}」→</a>
         </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
-  iframeSrc: `../?embed=1&year=${focusY}&from=${d.fromYear}&to=${d.key === 'prc' ? 2026 : d.toYear}`,
-  titleZh: `${d.title}交互式历史舆图预览（${spanZh} · 可拨动底部时间轴切换阶段）`,
+  iframeSrc: buildEmbedHref(`year=${focusY}&from=${d.fromYear}&to=${d.key === 'prc' ? 2026 : d.toYear}`, {
+    lang,
+    base: mapBase,
+  }),
+  titleZh: `${d.title}交互式舆图预览（${spanZh}）`,
   hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
 })}
 
       <section id="sec-phases" class="section-card">
-        <h2>一、${escHtml(d.title)}版图演变阶段与政权州郡格局（${phases.length} 阶段快照）</h2>
-        <p>在「江山时序」交互式舆图中拖动底部时间轴滑块，或点击下方各阶段链接，即可查看${escHtml(d.title)}不同年份的政权疆域消长、州道郡县边界及黄河改道水系：</p>
+        <h2>一、${escHtml(d.title)}疆域演变阶段</h2>
 ${renderTableFilterBar('tbl-phases', '筛选阶段、政权或新增/改置政区…', phases.length)}
         <div class="table-wrap">
           <table id="tbl-phases" class="data-table">
             <thead>
               <tr>
-                <th>阶段</th>
-                <th>年代范围与代表年号</th>
-                <th>并立政权 / 核心版图</th>
-                <th>政区格局与阶段疆域变化</th>
-                <th>交互地图</th>
+                <th>年代与年号</th>
+                <th>并立政权</th>
+                <th>政区与疆域变化</th>
               </tr>
             </thead>
             <tbody>
@@ -367,18 +357,15 @@ ${phaseRowsHtml}
       </section>
 
       <section id="sec-cities" class="section-card">
-        <h2>二、${escHtml(d.title)}古今地名对照表与点地溯源（共收录 ${settlements.length} 座城池）</h2>
-        <p>点击任一城池右侧的「地图定位与沿革」，即可在地图上自动飞跃至该城坐标并展开「点地溯源 · 两千四百年政区沿革」卡片：</p>
+        <h2>二、${escHtml(d.title)}古今地名对照</h2>
 ${renderTableFilterBar('tbl-cities', '输入古地名或今省市快速检索城池…', settlements.length)}
         <div class="table-wrap">
           <table id="tbl-cities" class="data-table">
             <thead>
               <tr>
-                <th>历史古地名</th>
-                <th>现代对应省市 / 地点</th>
+                <th>古地名</th>
+                <th>现代对应地</th>
                 <th>层级</th>
-                <th>经纬度坐标</th>
-                <th>点地溯源</th>
               </tr>
             </thead>
             <tbody>
@@ -389,16 +376,15 @@ ${settlementRowsHtml}
       </section>
 
       <section id="sec-events" class="section-card">
-        <h2>三、${escHtml(d.title)}重大历史事件编年表与正史出处（${milestones.length} 项）</h2>
+        <h2>三、${escHtml(d.title)}编年大事与出处</h2>
 ${renderTableFilterBar('tbl-events', '输入年份、人物、事件或正史典籍检索大事…', milestones.length)}
         <div class="table-wrap">
           <table id="tbl-events" class="data-table">
             <thead>
               <tr>
-                <th>年份与帝王年号</th>
-                <th>历史事件（中英对照）</th>
-                <th>史事背景、地理空间影响与史料出处</th>
-                <th>地图定格</th>
+                <th>年份与年号</th>
+                <th>历史事件</th>
+                <th>史事与出处</th>
               </tr>
             </thead>
             <tbody>
@@ -408,13 +394,14 @@ ${milestoneRowsHtml}
         </div>
       </section>
 
-${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList, notesNumZh)}${renderFooter(allDynasties)}
+${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList, notesNumZh)}${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
     </main>
   </div>
 </body>
 </html>
 `;
 
+  const summaryShortZh = firstSentenceZh(d.summary);
   return {
     filename: `${d.key}.html`,
     html,
@@ -423,7 +410,9 @@ ${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d
       url: canonicalUrl,
       titleZh: `${d.title}历史地图（${spanZh}）`,
       titleEn: `${titleEn} Historical Map (${spanEn})`,
-      descZh: `${d.seat} · ${phases.length}阶段版图 · ${settlements.length}座古城与${milestones.length}项大事`,
+      seatZh: d.seat,
+      summaryZh: summaryShortZh,
+      descZh: `都城：${d.seat} · ${summaryShortZh}`,
       descEn: `Capital: ${seatEn} · ${phases.length} territory phases, ${settlements.length} cities & ${milestones.length} events`,
     },
   };

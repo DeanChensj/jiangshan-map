@@ -39,7 +39,8 @@
         tbody.appendChild(emptyRow);
 
         var rowSearchText = rows.map(function (tr) {
-          var txt = (tr.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+          var extra = tr.getAttribute('data-search') || '';
+          var txt = (extra + ' ' + (tr.textContent || '')).replace(/\s+/g, ' ').trim().toLowerCase();
           return txt;
         });
 

@@ -1,7 +1,15 @@
 'use strict';
 
 const { BASE_URL, LASTMOD } = require('../config');
-const { escHtml, fmtYearZh, fmtYearShortZh, fmtDynSpanZh } = require('../runtime');
+const {
+  escHtml,
+  fmtYearZh,
+  fmtYearShortZh,
+  fmtDynSpanZh,
+  firstSentenceZh,
+  buildMapHref,
+  buildEmbedHref,
+} = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -40,6 +48,8 @@ function buildFeaturedTopicPage({
   geoOverrides,
   relatedLinks,
   assetHashes,
+  lang = 'zh',
+  mapBase = '../',
 }) {
   const canonicalUrl = `${BASE_URL}/topics/${topic.slug}.html`;
   const info = ctrl.inspect(topic.inspectQuery);
@@ -61,7 +71,10 @@ function buildFeaturedTopicPage({
     const tabooRules = Array.isArray(routeOverrides._tabooRules) ? routeOverrides._tabooRules : [];
     const routeRows = info.route
       .map((st, idx) => {
-        const stopHref = `../?year=${st.year}&place=${encodeURIComponent(st.place)}`;
+        const stopHref = buildMapHref(`?year=${st.year}&place=${encodeURIComponent(st.place)}`, {
+          lang,
+          base: mapBase,
+        });
         const stopOv = routeOverrides[st.place] || null;
         let placeDisplay = st.place;
         if (stopOv && stopOv.placeDisplay) {
@@ -89,36 +102,29 @@ function buildFeaturedTopicPage({
         const adminCombined = [polityStr, adminStr].filter(Boolean).join(' · ');
 
         return `            <tr>
-              <td>第 ${idx + 1} 站</td>
-              <td><strong>${fmtYearShortZh(st.year)}年</strong><br/><small>${escHtml(eraStr)}</small></td>
+              <td><a href="${escHtml(stopHref)}"><strong>${idx + 1}. ${fmtYearShortZh(st.year)}年</strong></a><br/><small>${escHtml(eraStr)}</small></td>
               <td><strong>${escHtml(placeDisplay)}</strong></td>
               <td>${escHtml(modernLoc)}${modProv ? `（${escHtml(modProv)}）` : ''}</td>
               <td>${escHtml(adminCombined)}</td>
-              <td>${st.coord[0].toFixed(2)}°E, ${st.coord[1].toFixed(2)}°N</td>
-              <td><a href="${escHtml(stopHref)}">单站定位 →</a></td>
             </tr>`;
       })
       .join('\n');
 
     tocItems = [
       { id: 'sec-map', label: '交互舆图预览' },
-      { id: 'sec-route', label: `一、路线政区（${info.route.length} 站）` },
+      { id: 'sec-route', label: '一、路线政区' },
     ];
 
     detailSectionHtml = `      <section id="sec-route" class="section-card">
-        <h2>一、路线各站时空坐标与历史政区解析（总航程/里程约 ${info.routeDistanceKm} 公里）</h2>
-        <p>以下数据由「江山时序」历史地理引擎（<code>window.atlasAPI.inspect</code>）按各站对应历史年份自动解算：</p>
+        <h2>一、路线各站历史政区（里程约 ${info.routeDistanceKm} 公里）</h2>
         <div class="table-wrap">
-          <table id="tbl-route" class="data-table">
+          <table id="tbl-route" class="data-table is-wide-table">
             <thead>
               <tr>
-                <th>站序</th>
-                <th>历史年份与年号</th>
-                <th>诗文/史籍古地名</th>
-                <th>现代地理位置</th>
-                <th>当时所属政权与州道政区</th>
-                <th>经纬度</th>
-                <th>交互地图</th>
+                <th>年份与年号</th>
+                <th>古地名</th>
+                <th>现代位置</th>
+                <th>所属政权与政区</th>
               </tr>
             </thead>
             <tbody>
@@ -154,14 +160,15 @@ ${routeRows}
           adminStr = adminOverrides[d.key].admin;
         }
         const nearStr = resolveNearestCityDisplay(topic.slug, dInfo, cleanFallbackSeat, nearestCfg);
-        const rowHref = `../?year=${sampleY}&place=${encodeURIComponent(targetPlace)}`;
+        const rowHref = buildMapHref(`?year=${sampleY}&place=${encodeURIComponent(targetPlace)}`, {
+          lang,
+          base: mapBase,
+        });
         return `            <tr>
-              <td><strong>${escHtml(d.title)}</strong>（${fmtDynSpanZh(d)}）</td>
-              <td>${escHtml(dInfo.era)}</td>
+              <td><a href="${escHtml(rowHref)}"><strong>${escHtml(d.title)}</strong></a>（${fmtDynSpanZh(d)}）<br/><small>${escHtml(dInfo.era)}</small></td>
               <td>${escHtml(dInfo.polity || d.title)}</td>
               <td>${escHtml(adminStr)}</td>
               <td>${escHtml(nearStr)}</td>
-              <td><a href="${escHtml(rowHref)}">查看该朝版图 →</a></td>
             </tr>`;
       })
       .join('\n');
@@ -176,30 +183,30 @@ ${routeRows}
 
     tocItems = [
       { id: 'sec-map', label: '交互舆图预览' },
-      { id: 'sec-detail', label: '一、目标节点考据' },
-      { id: 'sec-genealogy', label: `二、历代沿革（${allDynasties.length} 朝）` },
+      { id: 'sec-detail', label: '一、节点考据' },
+      { id: 'sec-genealogy', label: '二、历代沿革' },
     ];
 
     detailSectionHtml = `      <section id="sec-detail" class="section-card">
-        <h2>一、目标时空节点精准考据（${fmtYearZh(info.year)} · ${escHtml(info.era)}）</h2>
+        <h2>一、节点考据（${fmtYearZh(info.year)} · ${escHtml(info.era)}）</h2>
         <div class="table-wrap">
           <table class="data-table">
             <tbody>
               <tr>
-                <th style="width:24%">查询古地名 / 典故地标</th>
+                <th style="width:24%">古地名 / 典故地标</th>
                 <td><strong>${escHtml(resolvedDisplayTitle)}</strong></td>
               </tr>
               <tr>
-                <th>历史纪年与帝王年号</th>
+                <th>历史纪年与年号</th>
                 <td>${fmtYearZh(info.year)} · <strong>${escHtml(info.era)}</strong>（${escHtml(info.dynasty.title)}，都城：${escHtml(info.dynasty.seat)}）</td>
               </tr>
               <tr>
-                <th>当时所属政权与州郡政区</th>
+                <th>所属政权与政区</th>
                 <td><strong>${escHtml(adminCombined)}</strong></td>
               </tr>
               <tr>
-                <th>现代行政区划与经纬度</th>
-                <td>${escHtml(info.modernProvince)} · 今${escHtml(info.modern || '')}（${info.coord[0].toFixed(2)}°E, ${info.coord[1].toFixed(2)}°N）</td>
+                <th>现代对应地</th>
+                <td>${escHtml(info.modernProvince)} · 今${escHtml(info.modern || '')}</td>
               </tr>
             </tbody>
           </table>
@@ -207,19 +214,16 @@ ${routeRows}
       </section>
 
       <section id="sec-genealogy" class="section-card">
-        <h2>二、「${escHtml(resolvedDisplayTitle)}」两千四百年历代政区沿革表（点地溯源）</h2>
-        <p>同一地理坐标（${info.coord[0].toFixed(2)}°E, ${info.coord[1].toFixed(2)}°N）从战国（前403年）至现代共 18 个历史时期的政权归属与州道郡县沿革：</p>
+        <h2>二、「${escHtml(resolvedDisplayTitle)}」历代政区沿革</h2>
 ${renderTableFilterBar('tbl-genealogy', '筛选朝代、年号、政权或郡县政区…', allDynasties.length)}
         <div class="table-wrap">
-          <table id="tbl-genealogy" class="data-table">
+          <table id="tbl-genealogy" class="data-table is-wide-table">
             <thead>
               <tr>
-                <th>历史时期</th>
-                <th>代表纪年与年号</th>
+                <th>历史时期与年号</th>
                 <th>所属政权</th>
-                <th>州 / 道 / 路 / 省政区</th>
+                <th>州道省郡政区</th>
                 <th>邻近治所 / 古城</th>
-                <th>地图跳转</th>
               </tr>
             </thead>
             <tbody>
@@ -268,46 +272,43 @@ ${genRows}
     canonicalUrl,
     jsonLdObj: jsonLd,
     assetHashes,
+    lang,
   })}
 <body>
-${renderTopHeader()}
+${renderTopHeader({ lang, mapBase })}
   <div class="page-shell has-toc">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="${escHtml(buildMapHref('', { lang, base: mapBase }))}">江山时序首页</a> &rsaquo;
         <a href="index.html">专题图志总览</a> &rsaquo;
         <span>${escHtml(topic.shortZh)}</span>
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">${escHtml(topic.categoryZh)} · ${escHtml(topic.categoryEn)}</span>
+        <span class="kicker">${escHtml(topic.categoryZh)}</span>
         <h1>${escHtml(topic.shortZh)}</h1>
-        <p class="en-sub">${escHtml(topic.titleEn)}</p>
         <blockquote class="poem-box">
           ${escHtml(topic.poemQuote)}
           <cite>—— ${escHtml(topic.poemAuthor)}</cite>
         </blockquote>
         <p>${escHtml(topic.summaryZh)}</p>
-        <p class="en-sub">${escHtml(topic.summaryEn)}</p>
         <div class="cta-row">
-          <a class="cta-btn" href="../${escHtml(mapQuery)}">在交互地图中打开此专题 →</a>
-          <a class="cta-btn secondary" href="../${escHtml(mapQuery)}&amp;lang=en">Open in English →</a>
-          <a class="cta-btn secondary" href="index.html">返回图志总览</a>
+          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中打开此专题 →</a>
         </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
-  iframeSrc: `../?embed=1&${embedQuery}`,
-  titleZh: `${topic.shortZh}交互式历史舆图预览`,
+  iframeSrc: buildEmbedHref(embedQuery, { lang, base: mapBase }),
+  titleZh: `${topic.shortZh}交互式舆图预览`,
   hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
 })}
 
 ${detailSectionHtml}
 
-${renderFooter(allDynasties)}
+${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
     </main>
   </div>
 </body>
@@ -322,7 +323,7 @@ ${renderFooter(allDynasties)}
       url: canonicalUrl,
       titleZh: topic.shortZh,
       titleEn: topic.titleEn,
-      descZh: topic.summaryZh.slice(0, 95) + '…',
+      descZh: firstSentenceZh(topic.summaryZh),
       descEn: topic.summaryEn.slice(0, 120) + '...',
     },
   };
