@@ -286,6 +286,7 @@
                 const bare = toCorePlace(sp);
                 return (
                   (bare.length >= 2 && personSubClause.includes(bare)) ||
+                  (bare.length === 1 && personSubClause.includes(bare + '城')) ||
                   (sp.length >= 4 && personSubClause.includes(sp.slice(-3)))
                 );
               })
