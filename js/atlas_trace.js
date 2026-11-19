@@ -12,6 +12,31 @@
   let escHtml = null;
   let SVG_ICONS = null;
 
+  const PLACE_TOPIC_SLUGS = {
+    西安: 'xian',
+    洛阳: 'luoyang',
+    北京: 'beijing',
+    南京: 'nanjing',
+    开封: 'kaifeng',
+    成都: 'chengdu',
+    杭州: 'hangzhou',
+    荆州: 'jingzhou',
+    扬州: 'yangzhou',
+    襄阳: 'xiangyang',
+    广州: 'guangzhou',
+    太原: 'taiyuan',
+    大同: 'datong',
+    武威: 'wuwei',
+    敦煌: 'dunhuang',
+    长沙: 'changsha',
+    福州: 'fuzhou',
+    汉中: 'hanzhong',
+    苏州: 'suzhou',
+    桂林: 'guilin',
+    大理: 'dali',
+    拉萨: 'lhasa',
+  };
+
   class AtlasTraceMixin {
     // ---------------- Place Genealogy (Trace Place) ----------------
     toggleGenealogySheetExpand(force) {
@@ -3072,6 +3097,7 @@
           desc: this.locale === 'en' ? bestCity.descEn : bestCity.descZh,
           tagEn: bestCity.tagEn,
           descEn: bestCity.descEn,
+          topicSlug: PLACE_TOPIC_SLUGS[bestCity.modern] || '',
         };
       }
 
@@ -4113,6 +4139,13 @@
 
       const renderSubAndList = () => {
         const subEl = this._id('genealogy-sub');
+        const loreBanner = this._resolvePlaceLoreBanner(
+          lng,
+          lat,
+          matchedPass,
+          identityModern,
+          rowsData
+        );
         const capInfo =
           capDynasties > 0
             ? this.locale === 'en'
@@ -4133,7 +4166,17 @@
                 : retP.labelZh || (retP.profile && retP.profile.zh) || ''
             )}</button>`
           : '';
-        if (totalEvents > 0 || retBtnHtml) {
+        const placeSlug =
+          !matchedPass && loreBanner && loreBanner.topicSlug
+            ? loreBanner.topicSlug
+            : '';
+        const isEnGen = this.locale === 'en';
+        const placeTopicHtml = placeSlug
+          ? `<a class="topic-inline-link" href="topics/place-${escHtml(placeSlug)}.html" target="_blank" rel="noopener" title="${
+              isEnGen ? 'Place guide' : '查阅地区图志'
+            }">${isEnGen ? 'Guide' : '图志'}</a>`
+          : '';
+        if (totalEvents > 0 || retBtnHtml || placeTopicHtml) {
           const btnLabel = this.genealogyEventsOnly
             ? this.locale === 'en'
               ? 'All Dynasties'
@@ -4149,7 +4192,7 @@
               : '';
           subEl.innerHTML =
             `<span>${coordText}</span>` +
-            `<span class="person-sub-actions">${retBtnHtml}${filterHtml}</span>`;
+            `<span class="person-sub-actions">${retBtnHtml}${placeTopicHtml}${filterHtml}</span>`;
           const retBtn = this._id('act-return-person');
           if (retBtn && retP) {
             retBtn.addEventListener('click', (e) => {
@@ -4170,13 +4213,6 @@
         }
 
         const loreEl = this._id('genealogy-lore');
-        const loreBanner = this._resolvePlaceLoreBanner(
-          lng,
-          lat,
-          matchedPass,
-          identityModern,
-          rowsData
-        );
         if (loreEl) {
           if (loreBanner && !this.genealogyEventsOnly) {
             loreEl.innerHTML =

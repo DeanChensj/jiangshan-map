@@ -5,7 +5,14 @@ const path = require('path');
 const { ROOT, BASE_URL, LASTMOD } = require('./config');
 const { escHtml, fmtYearShortZh, fmtDynSpanZh } = require('./runtime');
 
-function computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta, personMeta = []) {
+function computeSitemapXml(
+  dynMeta,
+  storyMeta,
+  journeyMeta,
+  featuredMeta,
+  personMeta = [],
+  placeMeta = []
+) {
   const sitemapPath = path.join(ROOT, 'sitemap.xml');
   const existingXml = fs.readFileSync(sitemapPath, 'utf8');
 
@@ -18,10 +25,12 @@ function computeSitemapXml(dynMeta, storyMeta, journeyMeta, featuredMeta, person
   const topicUrls = [
     { loc: `${BASE_URL}/topics/index.html`, priority: '0.95' },
     { loc: `${BASE_URL}/topics/persons.html`, priority: '0.94' },
+    { loc: `${BASE_URL}/topics/places.html`, priority: '0.94' },
     ...storyMeta.map((s) => ({ loc: s.url, priority: '0.92' })),
     ...featuredMeta.map((f) => ({ loc: f.url, priority: '0.9' })),
     ...dynMeta.map((d) => ({ loc: d.url, priority: '0.9' })),
     ...journeyMeta.map((j) => ({ loc: j.url, priority: '0.9' })),
+    ...placeMeta.map((pl) => ({ loc: pl.url, priority: '0.89' })),
     ...personMeta.map((p) => ({ loc: p.url, priority: '0.88' })),
   ];
 
@@ -75,7 +84,8 @@ function computeIndexHtml(
   snapshots,
   loreData,
   enLocale,
-  personMeta = []
+  personMeta = [],
+  placeMeta = []
 ) {
   const indexPath = path.join(ROOT, 'index.html');
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -155,10 +165,12 @@ function computeIndexHtml(
     storyMeta.length +
     journeyMeta.length +
     featuredMeta.length +
-    personMeta.length;
+    personMeta.length +
+    placeMeta.length;
   const allItems = [
     `          <li><a href="${BASE_URL}/topics/index.html"><strong>江山时序专题图志总览（${totalCount}篇静态历史地理百科目录）</strong></a></li>`,
     `          <li><a href="${BASE_URL}/topics/persons.html"><strong>江山时序历代人物志与国器流转总录（${personMeta.length}篇独立人物图志）</strong></a></li>`,
+    `          <li><a href="${BASE_URL}/topics/places.html"><strong>江山时序历代地区志与雄关总录（${placeMeta.length}篇核心名城沿革图志）</strong></a></li>`,
     ...storyMeta.map(
       (s) =>
         `          <li><a href="${s.url}"><strong>${escHtml(s.titleZh)}双阵营始末沙盘图志（静态专题页）</strong></a></li>`
@@ -173,6 +185,10 @@ function computeIndexHtml(
     ...journeyMeta.map(
       (j) =>
         `          <li><a href="${j.url}"><strong>${escHtml(j.titleZh)}生平行迹与诗词路线图志（静态专题页）</strong></a></li>`
+    ),
+    ...placeMeta.map(
+      (pl) =>
+        `          <li><a href="${pl.url}"><strong>${escHtml(pl.titleZh)}十八朝政区沿革与历代史事地区志（静态专题页）</strong></a></li>`
     ),
     ...personMeta.map(
       (p) =>

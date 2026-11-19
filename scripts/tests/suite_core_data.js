@@ -510,15 +510,20 @@ async function runCoreDataSuite(ctx) {
     fs.existsSync(path.join(topicsDir, 'index.html')),
     'Missing topics/index.html static SEO directory page'
   );
+  const placesCatalog = JSON.parse(
+    fs.readFileSync(path.join(ROOT, 'data/topics/places.json'), 'utf8')
+  );
   const expectedTopicFiles = [
     'index.html',
     'persons.html',
+    'places.html',
     ...dynasties.map((d) => `${d.key}.html`),
     ...(loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory).map((s) => `story-${s.key}.html`),
     ...loreData.HISTORICAL_JOURNEYS.map((j) => `journey-${j.key}.html`),
     ...(loreData.PERSON_PROFILES || [])
       .filter((p) => p && !p.isStory && !p.journeyKey && (p.isRelic || (p.evCount || 0) >= 5))
       .map((p) => `person-${p.key}.html`),
+    ...placesCatalog.map((pl) => `place-${pl.slug}.html`),
     'dufu-763.html',
     'sushi-exile.html',
     'wentianxiang-lingdingyang.html',
@@ -537,7 +542,10 @@ async function runCoreDataSuite(ctx) {
     assert(
       tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&
         tfHtml.includes('application/ld+json') &&
-        (tf === 'index.html' || tf === 'persons.html' || tfHtml.includes('../?embed=1&')) &&
+        (tf === 'index.html' ||
+          tf === 'persons.html' ||
+          tf === 'places.html' ||
+          tfHtml.includes('../?embed=1&')) &&
         !tfHtml.toLowerCase().includes('deanchensj.github.io') &&
         !tfHtml.includes('undefined') &&
         !tfHtml.includes('NaN') &&
