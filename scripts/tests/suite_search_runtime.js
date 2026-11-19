@@ -2305,7 +2305,7 @@ async function runSearchRuntimeSuite(ctx) {
         const jpOccSet = new Set([
           's_qing_g0', 's_qing_g',
           's_roc_a0', 's_roc_w1', 's_roc_w2', 's_roc_w3', 's_roc_w3b', 's_roc_w4',
-          's_roc_a', 's_roc_b0', 's_roc',
+          's_roc_a', 's_roc_b0', 's_roc', 's_roc_1938',
         ]);
         const rocPost45Set = new Set(['s_roc_c', 's_roc_d']);
         const ptInShape = sandbox.window.MercatorProjector.pointInShape;
