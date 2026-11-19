@@ -2782,12 +2782,17 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_nansong_c', '大蒙古国', 86.0, 40.0) &&
         hasPolPt('s_nansong_d', '大蒙古国', 90.5, 40.2) &&
         hasPolPt('s_nansong_d', '大蒙古国', 86.0, 40.0) &&
+        hasPolPt('s_nansong_e0', '大蒙古国', 90.5, 40.2) &&
+        hasPolPt('s_nansong_e0', '大蒙古国', 86.0, 40.0) &&
+        hasPolPt('s_nansong_e0', '吐蕃诸部', 100.0, 38.0) &&
         hasPolPt('s_nansong_e', '大蒙古国', 90.5, 40.2) &&
         hasPolPt('s_nansong_e', '大蒙古国', 86.0, 40.0) &&
         hasPolPt('s_nansong_e', '大蒙古国', 100.0, 38.0) &&
         hasPolPt('s_nansong_b', '大蒙古国', 90.5, 40.2) &&
         hasPolPt('s_nansong_b', '大蒙古国', 100.16, 25.69) &&
         snapshots.s_nansong_b.polities.find((p) => p.title === '大蒙古国').shape.coordinates.length === 2 &&
+        hasPolPt('s_nansong_f', '元', 90.5, 40.2) &&
+        hasPolPt('s_nansong_f', '元', 100.16, 25.69) &&
         hasPolPt('s_nansong_g', '元', 100.0, 28.0) &&
         hasPolPt('s_yuan_b', '元', 90.5, 40.2) &&
         hasPolPt('s_yuan_c', '元', 90.5, 40.2),
@@ -2906,13 +2911,13 @@ async function runCartographyUiSuite(ctx) {
         !snapshots.s_beisong_d.regions.some((r) => r.title.endsWith('道')),
       's_beisong_d (1125–1127) must include Western Liao and rename former Liao circuits from 道 to Jin 路'
     );
-    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e', 's_nansong_b', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       assert(
         hasRegPt(sk, '广南西路', 109.577, 19.521),
         `${sk} must include Hainan Island ([109.577, 19.521]) inside 广南西路`
       );
     }
-    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e', 's_nansong_b', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       const prefs = snapshots[sk].prefectures || [];
       assert(
         prefs.length >= 130 &&
@@ -2932,7 +2937,7 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_nansong_c', '金（迁都汴京）', 103.83, 36.06),
       's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
     );
-    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d']) {
+    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
       assert(
         !hasPolPt(sk, '吐蕃诸部', 103.861, 35.381) && !hasPolPt(sk, '吐蕃诸部', 103.83, 36.06),
         `${sk} must not overlap 吐蕃诸部 onto Lintaofu or Lanzhou`
@@ -2951,8 +2956,10 @@ async function runCartographyUiSuite(ctx) {
       ['s_nansong_b0', '金'],
       ['s_nansong_c', '金（迁都汴京）'],
       ['s_nansong_d', '大蒙古国'],
+      ['s_nansong_e0', '大蒙古国'],
       ['s_nansong_e', '大蒙古国'],
       ['s_nansong_b', '大蒙古国'],
+      ['s_nansong_f', '元'],
     ]) {
       assert(
         hasPolPt(sk, northPol, 105.721, 34.581) &&
@@ -2970,13 +2977,52 @@ async function runCartographyUiSuite(ctx) {
         `${sk} (post-1142 Treaty of Shaoxing) must place Qinzhou & Dasanguan in ${northPol} / Fengxiang Circuit and Fengzhou, Chengzhou, Jiezhou, Minzhou, & Junzhou in Southern Song / Lizhou Circuit`
       );
     }
-    for (const sk of ['s_nansong_e', 's_nansong_b']) {
+    for (const sk of ['s_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f']) {
       assert(
         snapshots[sk].regions.some((r) => r.title === '辽东路') &&
           snapshots[sk].regions.some((r) => r.title === '燕京路') &&
           snapshots[sk].regions.some((r) => r.title === '河南路') &&
           !snapshots[sk].regions.some((r) => r.title === '上京路' || r.title === '中都路' || r.title === '南京（河南）路'),
         `${sk} (post-1234 fall of Jin) must replace Jin imperial circuits with Mongol circuits (辽东路, 燕京路, 河南路)`
+      );
+    }
+    {
+      // 1234–1247 Tibet stays independent (吐蕃诸部) until the 1247 Liangzhou Accord; 1271–1276 renames 大蒙古国 to 元.
+      const tuboE0 = snapshots.s_nansong_e0.polities.find((p) => p.title === '吐蕃诸部');
+      assert(
+        tuboE0 &&
+          tuboE0.role === 'neighbor' &&
+          !tuboE0.tint &&
+          pointInShape(91.111, 29.651, tuboE0.shape) &&
+          !hasPolPt('s_nansong_e0', '大蒙古国', 91.111, 29.651) &&
+          !snapshots.s_nansong_e0.regions.some((r) => /吐蕃|总制院|宣政院/.test(r.title)),
+        's_nansong_e0 (1234–1247) must keep Tibet uncolored under 吐蕃诸部 before the 1247 Liangzhou Accord'
+      );
+      for (const sk of ['s_nansong_e', 's_nansong_b']) {
+        assert(
+          hasPolPt(sk, '大蒙古国', 91.111, 29.651) &&
+            !snapshots[sk].polities.some((p) => p.title === '吐蕃诸部') &&
+            snapshots[sk].regions.some((r) => r.title === '吐蕃辖地') &&
+            !snapshots[sk].regions.some((r) => r.title.includes('宣政院')),
+          `${sk} (1247–1271) must place Lhasa inside 大蒙古国 with neutral region 吐蕃辖地`
+        );
+      }
+      const fYuan = snapshots.s_nansong_f.polities.find((p) => p.title === '元');
+      assert(
+        fYuan &&
+          fYuan.role === 'rival' &&
+          fYuan.tint === '#4b6587' &&
+          pointInShape(116.401, 39.901, fYuan.shape) &&
+          pointInShape(91.111, 29.651, fYuan.shape) &&
+          !snapshots.s_nansong_f.polities.some((p) => p.title === '大蒙古国') &&
+          snapshots.s_nansong_f.regions.some((r) => r.title === '总制院辖地') &&
+          !snapshots.s_nansong_f.regions.some((r) => r.title.includes('宣政院')),
+        's_nansong_f (1271–1276) must label the northern empire 元 (#4b6587) with 总制院辖地'
+      );
+      assert(
+        snapshots.s_nansong_g.regions.some((r) => r.title === '总制院辖地') &&
+          !snapshots.s_nansong_g.regions.some((r) => r.title.includes('宣政院')),
+        's_nansong_g (1276–1279) must label Tibet 总制院辖地 prior to 1288'
       );
     }
 

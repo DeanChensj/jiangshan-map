@@ -2460,6 +2460,22 @@ async function runSearchRuntimeSuite(ctx) {
     assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -209), 's_qin_c', 'Qin at -209 BCE must resolve to s_qin_c');
     assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -207), 's_qin_d', 'Qin at -207 BCE must resolve to s_qin_d');
     assert.strictEqual(ctrl._resolveSnapKey(qinDyn, -206), 's_qin_chuhan', 'Qin at -206 BCE must resolve to s_qin_chuhan');
+    const nansongDyn = dynasties.find((d) => d.key === 'nansong');
+    for (const [yr, expectedSnap] of [
+      [1234, 's_nansong_e0'],
+      [1246, 's_nansong_e0'],
+      [1247, 's_nansong_e'],
+      [1270, 's_nansong_b'],
+      [1271, 's_nansong_f'],
+      [1275, 's_nansong_f'],
+      [1276, 's_nansong_g'],
+    ]) {
+      assert.strictEqual(
+        ctrl._resolveSnapKey(nansongDyn, yr),
+        expectedSnap,
+        `Southern Song at ${yr} must resolve to ${expectedSnap}`
+      );
+    }
     assert(
       snapshots.s_qin_c.polities.some((p) => p.title === '秦') &&
         snapshots.s_qin_c.polities.some((p) => p.title === '楚（张楚 · 怀王）') &&

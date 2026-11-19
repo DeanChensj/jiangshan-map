@@ -596,6 +596,7 @@ async function runTraceGenealogySuite(ctx) {
     's_nansong_b0',
     's_nansong_c',
     's_nansong_d',
+    's_nansong_e0',
     's_nansong_e',
   ];
   for (const sk of daliSnapKeys) {
