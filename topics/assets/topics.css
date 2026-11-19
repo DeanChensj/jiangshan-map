@@ -558,13 +558,6 @@ table.data-table.is-wide-table {
   min-width: 560px;
 }
 
-table.data-table th.col-action,
-table.data-table td.col-action {
-  white-space: nowrap;
-  width: 1%;
-  text-align: right;
-}
-
 table.data-table th,
 table.data-table td {
   border: 1px solid var(--hairline);

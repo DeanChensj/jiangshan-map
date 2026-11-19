@@ -37,7 +37,6 @@ function buildPersonsIndexPage({
         spanZh: cleanSpanZh,
         routeZh: `${sitesPreview}${uniqueStops.length > 5 ? ' …' : ''}`,
         topicHref: `journey-${j.key}.html`,
-        mapHref: buildMapHref(`?person=${encodeURIComponent(j.key)}`, { lang, base: mapBase }),
       };
     }),
     ...personMonographItems
@@ -52,7 +51,6 @@ function buildPersonsIndexPage({
           spanZh: meta.spanZh,
           routeZh: '和氏璧 → 秦制传国玺 → 后唐洛阳失传',
           topicHref: `${meta.slug}.html`,
-          mapHref: buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase }),
         };
       }),
   ];
@@ -66,19 +64,16 @@ function buildPersonsIndexPage({
       (item) => `            <tr data-search="${escHtml(item.en)}">
               <td><a href="${escHtml(item.topicHref)}"><strong>${escHtml(item.zh)}</strong></a><span class="person-type-badge ${item.badgeClass}">${escHtml(item.badge)}</span><br/><small>${escHtml(item.spanZh)}</small></td>
               <td>${escHtml(item.routeZh)}</td>
-              <td class="col-action"><a href="${escHtml(item.mapHref)}">主图 →</a></td>
             </tr>`
     )
     .join('\n');
 
   const monographRowsHtml = standardMonographs
     .map(({ profile, meta }) => {
-      const mapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase });
       const searchExtras = [profile.en, ...(profile.aliases || [])].filter(Boolean).join(' ');
       return `            <tr data-search="${escHtml(searchExtras)}">
               <td><a href="${escHtml(meta.slug)}.html"><strong>${escHtml(profile.zh)}</strong></a><br/><small>${escHtml(meta.dynastyTitle)}（${escHtml(meta.spanZh)}）${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
               <td>${escHtml(meta.descZh.replace(/^[^：]+：/, ''))}</td>
-              <td class="col-action"><a href="${escHtml(mapHref)}">主图 →</a></td>
             </tr>`;
     })
     .join('\n');
@@ -187,7 +182,6 @@ ${renderTocSidebar(tocItems)}
               <tr>
                 <th>专题</th>
                 <th>代表站点</th>
-                <th class="col-action">主图</th>
               </tr>
             </thead>
             <tbody>
@@ -207,7 +201,6 @@ ${renderTableFilterBar('tbl-person-monographs', '按姓名、字号、朝代或�
               <tr>
                 <th>人物</th>
                 <th>主要足迹</th>
-                <th class="col-action">主图</th>
               </tr>
             </thead>
             <tbody>

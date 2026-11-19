@@ -62,16 +62,9 @@ function buildPlacesIndexPage({
 
   const monographRowsHtml = placeMonographItems
     .map(({ meta }) => {
-      const lngFixed = meta.coord[0].toFixed(2);
-      const latFixed = meta.coord[1].toFixed(2);
-      const mapHref = buildMapHref(`?year=${meta.focusYear}&lng=${lngFixed}&lat=${latFixed}`, {
-        lang,
-        base: mapBase,
-      });
       return `            <tr data-search="${escHtml(meta.en)}">
               <td><a href="${escHtml(meta.slug)}.html"><strong>${escHtml(meta.displayTitleZh)}</strong></a><br/><small>${escHtml(meta.regionGroup)}</small></td>
               <td>${escHtml(meta.tagZh)}</td>
-              <td class="col-action"><a href="${escHtml(mapHref)}">主图 →</a></td>
             </tr>`;
     })
     .join('\n');
@@ -198,7 +191,6 @@ ${renderTableFilterBar('tbl-place-monographs', '按城名、古称或片区检�
               <tr>
                 <th>历史名城</th>
                 <th>形胜定位</th>
-                <th class="col-action">主图</th>
               </tr>
             </thead>
             <tbody>
