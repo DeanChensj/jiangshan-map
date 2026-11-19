@@ -1912,7 +1912,14 @@
             ? 'Great Wall · Grand Canal · Silk Road'
             : '长城 · 大运河 · 丝绸之路';
       }
-      this._id('lbl-milestones').textContent = this.uiStr('toggle_events', '重大事件');
+      const lblMilestones = this._id('lbl-milestones');
+      lblMilestones.textContent = this.uiStr('toggle_events', '重大事件');
+      if (lblMilestones.parentElement) {
+        lblMilestones.parentElement.title =
+          this.locale === 'en'
+            ? 'When off, timeline stepping & autoplay stop only at territory changes'
+            : this._zh('关闭后，时间轴步进与播放仅停靠疆域变化节点');
+      }
       const lblReset = this._id('lbl-reset-camera') || this._id('act-reset-camera');
       lblReset.textContent = this.uiStr('btn_reset', '复位视图');
       const actReset = this._id('act-reset-camera');
@@ -2021,28 +2028,7 @@
         '历史疆域与政区为示意性近似，非精确测绘边界。地形晕渲据 SRTM、GMTED2010 公开高程数据。'
       );
       this._id('txt-year-suffix').textContent = this.uiStr('year_unit', '年');
-      const stepPrevBtn = this._id('act-step-prev');
-      if (stepPrevBtn) {
-        stepPrevBtn.title =
-          this.locale === 'en'
-            ? 'Previous historical stage / event node (←) · Shift+← -10 yrs'
-            : '上一历史阶段 / 事件节点（←）· Shift+← 退十年';
-        stepPrevBtn.setAttribute(
-          'aria-label',
-          this.locale === 'en' ? 'Previous historical node' : '上一历史节点'
-        );
-      }
-      const stepNextBtn = this._id('act-step-next');
-      if (stepNextBtn) {
-        stepNextBtn.title =
-          this.locale === 'en'
-            ? 'Next historical stage / event node (→) · Shift+→ +10 yrs'
-            : '下一历史阶段 / 事件节点（→）· Shift+→ 进十年';
-        stepNextBtn.setAttribute(
-          'aria-label',
-          this.locale === 'en' ? 'Next historical node' : '下一历史节点'
-        );
-      }
+      this._syncStepNavTooltips();
       const inpYear = this._id('inp-year');
       if (inpYear) {
         inpYear.setAttribute(
@@ -6671,9 +6657,11 @@
         if (Array.isArray(d.phases) && d.phases.length > 1) {
           for (let i = 0; i < d.phases.length - 1; i++) {
             const u = d.phases[i].until;
-            if (u > bandLo && u < bandHi && milestoneYears.has(u)) {
+            if (u > bandLo && u < bandHi) {
               const pt = document.createElement('i');
-              pt.className = 'band-phase-tick';
+              pt.className = milestoneYears.has(u)
+                ? 'band-phase-tick'
+                : 'band-phase-tick is-silent-phase';
               pt.style.left = `${(((u - bandLo) / span) * 100).toFixed(2)}%`;
               cell.appendChild(pt);
             }
@@ -6704,6 +6692,8 @@
       endTick.style.left = '100%';
       endTick.textContent = this.uiStr('tick_now', '今');
       ticks.appendChild(endTick);
+      const dock = this._id('scrubber-dock');
+      if (dock) dock.classList.toggle('is-milestones-hidden', this._isMilestonesHidden());
       this._lastActiveBandIdx = -1;
       this._scrubberRailWidth = 0;
       this._refreshBandLabels();
@@ -6964,6 +6954,70 @@
       return false;
     }
 
+    _isMilestonesHidden() {
+      const chk = typeof this._id === 'function' ? this._id('chk-milestones') : null;
+      if (chk && typeof chk.checked === 'boolean') return !chk.checked;
+      return Boolean(
+        this.grpMilestones &&
+          this.grpMilestones.classList &&
+          this.grpMilestones.classList.contains('is-hidden')
+      );
+    }
+
+    _territoryStepYears() {
+      if (!this._territoryChangeYears) {
+        const yrs = new Set();
+        for (const d of this.dynasties) {
+          yrs.add(d.fromYear);
+          if (Array.isArray(d.phases)) {
+            for (let i = 0; i < d.phases.length - 1; i++) {
+              const u = d.phases[i].until;
+              if (u > d.fromYear && u < d.toYear) yrs.add(u);
+            }
+          }
+        }
+        this._territoryChangeYears = Array.from(yrs).sort((a, b) => a - b);
+      }
+      return this._territoryChangeYears;
+    }
+
+    _syncStepNavTooltips() {
+      const territoryOnly = this._isMilestonesHidden();
+      const isEn = this.locale === 'en';
+      const stepPrevBtn = typeof this._id === 'function' ? this._id('act-step-prev') : null;
+      if (stepPrevBtn) {
+        stepPrevBtn.title = territoryOnly
+          ? isEn
+            ? 'Previous territory change (←) · Shift+← -10 yrs'
+            : this._zh('上一疆域变化节点（←）· Shift+← 退十年')
+          : isEn
+            ? 'Previous historical stage / event node (←) · Shift+← -10 yrs'
+            : this._zh('上一历史阶段 / 事件节点（←）· Shift+← 退十年');
+        stepPrevBtn.setAttribute(
+          'aria-label',
+          territoryOnly
+            ? isEn ? 'Previous territory change' : this._zh('上一疆域变化节点')
+            : isEn ? 'Previous historical node' : this._zh('上一历史节点')
+        );
+      }
+      const stepNextBtn = typeof this._id === 'function' ? this._id('act-step-next') : null;
+      if (stepNextBtn) {
+        stepNextBtn.title = territoryOnly
+          ? isEn
+            ? 'Next territory change (→) · Shift+→ +10 yrs'
+            : this._zh('下一疆域变化节点（→）· Shift+→ 进十年')
+          : isEn
+            ? 'Next historical stage / event node (→) · Shift+→ +10 yrs'
+            : this._zh('下一历史阶段 / 事件节点（→）· Shift+→ 进十年');
+        stepNextBtn.setAttribute(
+          'aria-label',
+          territoryOnly
+            ? isEn ? 'Next territory change' : this._zh('下一疆域变化节点')
+            : isEn ? 'Next historical node' : this._zh('下一历史节点')
+        );
+      }
+    }
+
     stepTimelineNode(dir) {
       if (this.challenge) return;
       this._recordGestureClick();
@@ -6981,8 +7035,9 @@
         this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
       }
+      const territoryOnly = this._isMilestonesHidden();
       const curDyn = this.dynasties[this.dynastyIdx];
-      if (curDyn && Array.isArray(curDyn.milestones)) {
+      if (!territoryOnly && curDyn && Array.isArray(curDyn.milestones)) {
         const sameYrIdxs = [];
         curDyn.milestones.forEach((m, idx) => {
           if (this._clampYearToDynasty(curDyn, m.year) === this.year) {
@@ -7001,7 +7056,7 @@
           }
         }
       }
-      if (!this._timelineStepYears) {
+      if (!territoryOnly && !this._timelineStepYears) {
         const yrs = new Set();
         for (const d of this.dynasties) {
           yrs.add(d.fromYear);
@@ -7012,7 +7067,7 @@
         }
         this._timelineStepYears = Array.from(yrs).sort((a, b) => a - b);
       }
-      const list = this._timelineStepYears;
+      const list = territoryOnly ? this._territoryStepYears() : this._timelineStepYears;
       let targetY = this.year;
       if (dir > 0) {
         const nextY = list.find((y) => y > this.year);
@@ -7028,7 +7083,7 @@
       }
       this.jumpToYear(targetY);
       const nextDyn = this.dynasties[this.dynastyIdx];
-      if (nextDyn && Array.isArray(nextDyn.milestones)) {
+      if (!territoryOnly && nextDyn && Array.isArray(nextDyn.milestones)) {
         const matched = nextDyn.milestones.filter(
           (m) => this._clampYearToDynasty(nextDyn, m.year) === this.year
         );
@@ -7136,7 +7191,9 @@
       this.closeMilestoneBalloon();
       this._updateAutoplayUi();
       // Leave the starting frame on screen for one event beat before the first jump.
-      this.playHoldTicks = AUTOPLAY_EVENT_TICKS;
+      this.playHoldTicks = this._isMilestonesHidden()
+        ? AUTOPLAY_MAP_CHANGE_TICKS
+        : AUTOPLAY_EVENT_TICKS;
       this._syncAutoMilestoneBalloon(this.dynasties[this.dynastyIdx]);
       if (this.narrating && typeof this.speakCurrentState === 'function') {
         this.speakCurrentState({ forceIntro: true });
@@ -7146,8 +7203,18 @@
 
     // Sorted years the autoplay lands on: every milestone year plus each dynasty opening.
     // `hold` marks the nodes that redraw the map (border change, dynasty opening, or same-year
-    // snapshot switch) so the border diff gets the longer dwell.
+    // snapshot switch) so the border diff gets the longer dwell. When the events layer is hidden,
+    // autoplay visits only territory-snapshot transitions.
     _autoplayStops() {
+      if (this._isMilestonesHidden()) {
+        if (!this._territoryAutoplayStopList) {
+          this._territoryAutoplayStopList = this._territoryStepYears().map((year) => ({
+            year,
+            hold: true,
+          }));
+        }
+        return this._territoryAutoplayStopList;
+      }
       if (!this._autoplayStopList) {
         const holdByYear = new Map();
         const mark = (year, hold) => holdByYear.set(year, Boolean(holdByYear.get(year) || hold));
@@ -9722,14 +9789,18 @@
         if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
       });
       this._id('chk-milestones').addEventListener('change', (e) => {
-        this.grpMilestones.classList.toggle('is-hidden', !e.target.checked);
-        if (!e.target.checked) {
+        const hidden = !e.target.checked;
+        this.grpMilestones.classList.toggle('is-hidden', hidden);
+        const dock = this._id('scrubber-dock');
+        if (dock) dock.classList.toggle('is-milestones-hidden', hidden);
+        if (hidden) {
           this.closeMilestoneBalloon();
         } else {
           if (this.dismissedCalloutIds) this.dismissedCalloutIds.clear();
           const cur = this.dynasties[this.dynastyIdx];
           if (cur) this._syncAutoMilestoneBalloon(cur);
         }
+        this._syncStepNavTooltips();
         this._rescaleSvgTypography();
       });
 

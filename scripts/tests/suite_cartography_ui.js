@@ -1397,6 +1397,74 @@ async function runCartographyUiSuite(ctx) {
     proto._syncAutoMilestoneBalloon.call(ctrl, tang);
     assert.notStrictEqual(ctrl.milestoneBalloon.innerHTML, 'unchanged', 'A locale switch must rebuild the auto callout');
     Object.assign(ctrl, { locale: 'zh', playing: false, activeMilestone: null });
+
+    // CUJ 28b: Hiding #chk-milestones switches stepping & autoplay to pure-territory snapshots, locks camera pan, and toggles timeline ticks cleanly
+    assert(
+      styleCss.includes('#scrubber-dock.is-milestones-hidden .band-ev-dot') &&
+        styleCss.includes('.band-phase-tick.is-silent-phase') &&
+        indexHtml.includes('id="chk-milestones"'),
+      'Expected #chk-milestones pure-territory CSS rules and checkbox markup'
+    );
+    const savedGrpM = ctrl.grpMilestones;
+    const savedEnsureView = ctrl._ensureMilestoneInView;
+    const savedOpenBalloon = ctrl.openMilestoneBalloon;
+    let hiddenFlag = true;
+    ctrl.grpMilestones = {
+      querySelectorAll: () => [],
+      classList: { contains: (cls) => cls === 'is-hidden' && hiddenFlag },
+    };
+    const tStops = proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear);
+    assert(
+      tStops.length >= 195 && tStops.length < stops.length && tStops.every((s) => s.hold),
+      `Pure-territory autoplay must visit only territory transitions (~207 vs ${stops.length}), got ${tStops.length}`
+    );
+    const tStopYears = new Set(tStops.map((s) => s.year));
+    for (const silentY of [-340, 614, 880, 1335, 1927]) {
+      assert(tStopYears.has(silentY), `Pure-territory mode must include snapshot boundary ${silentY}`);
+    }
+    for (const narrativeY of [624, 725, 736, 737]) {
+      assert(!tStopYears.has(narrativeY), `Pure-territory mode must skip non-snapshot milestone ${narrativeY}`);
+    }
+    let cameraPanCalls = 0;
+    let balloonOpenCalls = 0;
+    ctrl._ensureMilestoneInView = () => {
+      cameraPanCalls++;
+    };
+    ctrl.openMilestoneBalloon = () => {
+      balloonOpenCalls++;
+    };
+    ctrl.year = 621;
+    ctrl.dynastyIdx = dynasties.indexOf(tang);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 630, `Expected forward territory step from 621 to skip 624/626/627 and land on 630, got ${ctrl.year}`);
+    proto.stepTimelineNode.call(ctrl, -1);
+    assert.strictEqual(ctrl.year, 621, `Expected backward territory step from 630 to land on 621, got ${ctrl.year}`);
+    assert.strictEqual(cameraPanCalls, 0, 'Pure-territory stepping must not auto-pan camera');
+    assert.strictEqual(balloonOpenCalls, 0, 'Pure-territory stepping must not open milestone balloon');
+
+    visited.length = 0;
+    ctrl.year = ctrl.minYear;
+    ctrl.startAutoplay();
+    totalTicks = 0;
+    while (ctrl.playing && totalTicks < 20000) {
+      tick();
+      totalTicks++;
+    }
+    assert(!ctrl.playing && ctrl.year === ctrl.maxYear, `Pure-territory autoplay must reach ${ctrl.maxYear}, got ${ctrl.year}`);
+    const tMissed = tStops.filter((s) => !visited.includes(s.year)).map((s) => s.year);
+    assert.strictEqual(tMissed.length, 0, `Pure-territory autoplay skipped stops ${tMissed.slice(0, 8).join(', ')}`);
+    const tStrays = visited.filter((y) => !tStopYears.has(y) && y !== ctrl.maxYear);
+    assert.strictEqual(tStrays.length, 0, `Pure-territory autoplay landed on non-territory years ${tStrays.slice(0, 8).join(', ')}`);
+
+    hiddenFlag = false;
+    assert.strictEqual(proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear).length, stops.length);
+    ctrl.year = 621;
+    ctrl.dynastyIdx = dynasties.indexOf(tang);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 624, `Restoring events layer must resume stopping at 624, got ${ctrl.year}`);
+    ctrl.grpMilestones = savedGrpM;
+    ctrl._ensureMilestoneInView = savedEnsureView;
+    ctrl.openMilestoneBalloon = savedOpenBalloon;
   }
 
   // CUJ 29: Scrubber drag — pointermove bursts coalesce via requestAnimationFrame, unchanged
