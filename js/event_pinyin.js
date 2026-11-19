@@ -127,7 +127,7 @@ window.ATLAS_EVENT_PINYIN = {
     ],
     "sanguo": [
       ["weiwangcaocaobingshi","caopicaichenqunyixingjiupinguanrenfa","xuanpohanxiandishanrangjiancaowei","weiwangcaocaobingshicaopicaichenqunyixingjiupinguanrenfaxuanpohanxiandishanrangjiancaowei","luoyang"],
-      ["wenhanxiandizaofeichuanyan","liubeizaichengduchengdiyanxuhanshizhengtong","guohaohan","shuhan","wenhanxiandizaofeichuanyanliubeizaichengduchengdiyanxuhanshizhengtongguohaohanshuhan","chengdu"],
+      ["wenhanxiandiyuhaichuanyan","liubeizaichengduchengdiyanxuhanshizhengtong","guohaohan","shuhan","wenhanxiandiyuhaichuanyanliubeizaichengduchengdiyanxuhanshizhengtongguohaohanshuhan","chengdu"],
       ["yilingzhizhan","luxunhuoshaolianyingdapoliubei","yilingzhizhanluxunhuoshaolianyingdapoliubei","yiling","yichang"],
       ["liubeibingshiyonganbaidicheng","linzhongtuoguyuchengxiangzhugeliang","liubeibingshiyonganbaidichenglinzhongtuoguyuchengxiangzhugeliang","yongan","baidicheng"],
       ["zhugeliangnanzhengmenghuo","pingdingnanzhong","zhugeliangnanzhengmenghuopingdingnanzhong","nanzhong","dianchi"],
@@ -140,10 +140,10 @@ window.ATLAS_EVENT_PINYIN = {
       ["gaopinglingzhibian","simayichencaoshuanghudiyelingbichengduoquan","zhucaoshuangzudangjinkongcaoweichaozheng","gaopinglingzhibiansimayichencaoshuanghudiyelingbichengduoquanzhucaoshuangzudangjinkongcaoweichaozheng","luoyang"],
       ["guanqiujian","wenqinshouchunqibingtaosimashibaiwang","jiangweibeifataoxidapowangjing","guanqiujianwenqinshouchunqibingtaosimashibaiwangjiangweibeifataoxidapowangjing","shouchun","didao"],
       ["ganluzhibian","weidicaomaoshuaisuweitaosimazhao","yunanquexiayushi","ganluzhibianweidicaomaoshuaisuweitaosimazhaoyunanquexiayushi","luoyang"],
-      ["dengai","zhonghuishuaiweijunfashu","shuhanwang","dengaizhonghuishuaiweijunfashushuhanwang","chengdu"],
-      ["zhonghui","jiangweiyuchengdugouluanbaiwang","caoweifenyizhouzhiliangzhou","sunwufenjiaozhouzhiguangzhou","zhonghuijiangweiyuchengdugouluanbaiwangcaoweifenyizhouzhiliangzhousunwufenjiaozhouzhiguangzhou","chengdu","panyu"],
+      ["dengai","zhonghuishuaiweijunfashu","shuhanwang","caoweifenyizhouzhiliangzhou","dengaizhonghuishuaiweijunfashushuhanwangcaoweifenyizhouzhiliangzhou","chengdu"],
+      ["zhonghui","jiangweiyuchengdugouluanbaiwang","sunwufenjiaozhouzhiguangzhou","zhonghuijiangweiyuchengdugouluanbaiwangsunwufenjiaozhouzhiguangzhou","chengdu","panyu"],
       ["jinwangsimazhaozu","zisimayansiweihoupoweiyuandishanrangchengdi","jianlixijin","caoweiwang","jinwangsimazhaozuzisimayansiweihoupoweiyuandishanrangchengdijianlixijincaoweiwang","luoyang"],
-      ["xilingzhizhan","lukangweichengdayuandapojinjiangyanghu","yangzhao","zhanpanjiangbuchan","xilingzhizhanlukangweichengdayuandapojinjiangyanghuyangzhaozhanpanjiangbuchan","xiling","yichang"],
+      ["xilingzhizhan","lukangweichengdayuandapojinjiangyangzhao","potuiyanghu","zhanpanjiangbuchan","xilingzhizhanlukangweichengdayuandapojinjiangyangzhaopotuiyanghuzhanpanjiangbuchan","xiling","yichang"],
       ["jinjunliulufawu","wangjunlouchuanxiayizhou","jinjunliulufawuwangjunlouchuanxiayizhou","jiangling","jianye"],
       ["jinshuiludajunzhidaojianyeshitoucheng","wuzhusunhaomianfuchuxiang","xijinmiewu","sanguoguijin","jinshuiludajunzhidaojianyeshitouchengwuzhusunhaomianfuchuxiangxijinmiewusanguoguijin","jianye"]
     ],

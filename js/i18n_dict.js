@@ -284,7 +284,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "sanguo:221": [
-      "Hearing of Emperor Xian’s deposition, Liu Bei proclaims himself Emperor of Shu Han at Chengdu",
+      "Hearing rumors of Emperor Xian’s death, Liu Bei proclaims himself Emperor of Shu Han at Chengdu",
       "Chengdu"
     ],
     "sanguo:229": [
@@ -292,7 +292,7 @@ window.EN_LOCALE = {
       "Jianye (Nanjing)"
     ],
     "sanguo:263": [
-      "Wei generals Deng Ai and Zhong Hui conquer Shu Han at Chengdu",
+      "Wei forces under Deng Ai and Zhong Hui conquer Shu Han; Wei creates Liangzhou from Yizhou",
       "Chengdu"
     ],
     "sanguo:280": [
@@ -1052,7 +1052,7 @@ window.EN_LOCALE = {
       "Shouchun & Didao"
     ],
     "sanguo:264": [
-      "Zhong Hui and Jiang Wei fall in the Chengdu mutiny; Wei creates Liangzhou, Wu creates Guangzhou",
+      "Zhong Hui and Jiang Wei fall in the Chengdu mutiny; Wu splits Jiaozhou to form Guangzhou",
       "Chengdu & Panyu"
     ],
     "sanguo:265": [
@@ -1060,7 +1060,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "sanguo:272": [
-      "Battle of Xiling: Wu commander Lu Kang repels Jin forces under Yang Hu and retakes Xiling",
+      "Battle of Xiling: Lu Kang defeats Yang Zhao, drives back Yang Hu, and retakes Xiling",
       "Xiling (Yichang)"
     ],
     "sanguo:279": [
