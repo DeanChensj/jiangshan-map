@@ -41,6 +41,8 @@ jobs:
             --exclude='.git/' \
             --exclude='.github/' \
             --exclude='_site/' \
+            --exclude='/extension/' \
+            --exclude='/dist/' \
             --exclude='data/' \
             --exclude='docs/' \
             --exclude='scripts/' \

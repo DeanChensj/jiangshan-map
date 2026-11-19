@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "江山时序 · 新标签页（随机历史疆域）",
+  "short_name": "江山时序",
+  "version": "1.0.1",
+  "description": "每次打开新标签页，走进中国历史的某一年：2400 余年疆域变迁、点地溯源、人物行迹交互舆图。基于开源项目 jiangshan-map 的非官方衍生版（GPL-3.0）。",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "author": "Jiangshan Atlas Contributors",
+  "homepage_url": "https://github.com/DeanChensj/jiangshan-map",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@jiangshan-newtab",
+      "strict_min_version": "109.0"
+    }
+  }
+}
