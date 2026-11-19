@@ -12,7 +12,7 @@
   <meta name="mobile-agent" content="format=html5;url=https://deanchen.me/jiangshan-map/topics/journey-libai.html" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta name="theme-color" content="#f5efe2" />
+  <meta name="theme-color" content="#f3eee4" />
   <link rel="canonical" href="https://deanchen.me/jiangshan-map/topics/journey-libai.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="江山时序 · Jiangshan Historical Atlas" />
@@ -29,6 +29,7 @@
   <meta name="twitter:description" content="李白仗剑壮游行迹（Li Bai&#39;s Grand Travels Across Tang China，701年 — 762年 · 武周长安元年至唐宝应元年）历史地图时空轨迹，全线共 12 站：碎叶城（今吉尔吉斯斯坦托克马克） → 绵州青莲（今四川江油青莲镇） → 渝州（今重庆） → 荆门（今湖北宜都） → 扬州（今江苏扬州） → 安陆（今湖北安陆） → 长安（今陕西西安） → 洛阳（今河南洛阳） → 睢阳（今河南商丘） → 任城（今山东济宁） → 白帝城（今重庆奉节） → 当涂（今安徽马鞍山·当涂）。提供逐站帝王年号、古今政区对照、经典史料诗词与交互式路线回放。" />
   <meta name="twitter:image" content="https://deanchen.me/jiangshan-map/assets/og_preview.png" />
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+  <link rel="stylesheet" href="assets/topics.css?v=e86712b9" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -76,675 +77,297 @@
   ]
 }
   </script>
-  <style>
-    :root {
-      --bg-paper: #f5efe2;
-      --bg-card: #fbf7ee;
-      --ink-main: #221d17;
-      --ink-muted: #5e5346;
-      --cinnabar: #9e2a22;
-      --cinnabar-hover: #7d1e17;
-      --gold-border: #d5c7ae;
-      --accent-teal: #275d52;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg-paper);
-      color: var(--ink-main);
-      font-family: "Noto Serif SC", "Songti SC", "STSong", "PingFang SC", "Microsoft YaHei", serif;
-      line-height: 1.72;
-    }
-    .top-bar {
-      background: #ece3d0;
-      border-bottom: 1px solid var(--gold-border);
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    .brand-link {
-      text-decoration: none;
-      color: var(--ink-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-weight: 700;
-      font-size: 1.08rem;
-    }
-    .seal-badge {
-      background: var(--cinnabar);
-      color: #fff8ee;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.92rem;
-      letter-spacing: 0.06em;
-    }
-    .top-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      font-size: 0.9rem;
-    }
-    .top-nav a {
-      color: var(--ink-muted);
-      text-decoration: none;
-      padding: 0.25rem 0.55rem;
-      border-radius: 4px;
-      border: 1px solid transparent;
-    }
-    .top-nav a:hover {
-      color: var(--cinnabar);
-      border-color: var(--gold-border);
-      background: var(--bg-card);
-    }
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 1.75rem 1.25rem 3.5rem;
-    }
-    .breadcrumb {
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      margin-bottom: 1rem;
-    }
-    .breadcrumb a {
-      color: var(--ink-muted);
-      text-decoration: none;
-    }
-    .breadcrumb a:hover { color: var(--cinnabar); text-decoration: underline; }
-    .hero-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-left: 5px solid var(--cinnabar);
-      border-radius: 8px;
-      padding: 1.4rem 1.5rem;
-      margin-bottom: 1.6rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .kicker {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.09);
-      padding: 0.15rem 0.55rem;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-    }
-    h1 {
-      margin: 0.2rem 0 0.6rem;
-      font-size: 1.65rem;
-      line-height: 1.35;
-      color: var(--ink-main);
-    }
-    .en-sub {
-      font-size: 0.95rem;
-      color: var(--ink-muted);
-      margin: 0 0 0.9rem;
-    }
-    .meta-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
-      margin: 0.85rem 0 1.15rem;
-    }
-    .meta-pill {
-      background: #efe7d6;
-      border: 1px solid var(--gold-border);
-      padding: 0.22rem 0.68rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--ink-main);
-    }
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      margin-top: 1.1rem;
-    }
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: var(--cinnabar);
-      color: #fff9f0;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 0.62rem 1.2rem;
-      border-radius: 6px;
-      font-size: 0.96rem;
-      transition: background 0.15s ease;
-    }
-    .cta-btn:hover { background: var(--cinnabar-hover); }
-    .cta-btn.secondary {
-      background: transparent;
-      color: var(--ink-main);
-      border: 1px solid var(--gold-border);
-    }
-    .cta-btn.secondary:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-    }
-    .section-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1.25rem 1.4rem;
-      margin-bottom: 1.4rem;
-    }
-    h2 {
-      margin: 0 0 0.85rem;
-      font-size: 1.22rem;
-      border-bottom: 1px solid var(--gold-border);
-      padding-bottom: 0.45rem;
-      color: var(--ink-main);
-    }
-    h3 {
-      margin: 1rem 0 0.4rem;
-      font-size: 1.05rem;
-      color: var(--ink-main);
-    }
-    blockquote.poem-box {
-      margin: 0.9rem 0;
-      padding: 0.85rem 1.15rem;
-      background: #f2ead9;
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 4px;
-      font-size: 1.04rem;
-    }
-    blockquote.poem-box cite {
-      display: block;
-      margin-top: 0.35rem;
-      font-size: 0.86rem;
-      color: var(--ink-muted);
-      font-style: normal;
-    }
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin-top: 0.5rem;
-    }
-    table.data-table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    table.data-table th,
-    table.data-table td {
-      border: 1px solid var(--gold-border);
-      padding: 0.5rem 0.65rem;
-      text-align: left;
-      vertical-align: top;
-    }
-    table.data-table th {
-      background: #ece3d0;
-      font-weight: 600;
-    }
-    table.data-table tr:nth-child(even) td {
-      background: rgba(236, 227, 208, 0.32);
-    }
-    table.data-table a {
-      color: var(--cinnabar);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    table.data-table a:hover { text-decoration: underline; }
-    .chip-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.6rem;
-    }
-    .chip-link {
-      display: inline-block;
-      background: #f0e8d8;
-      border: 1px solid var(--gold-border);
-      color: var(--ink-main);
-      text-decoration: none;
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.87rem;
-    }
-    .chip-link:hover {
-      border-color: var(--cinnabar);
-      color: var(--cinnabar);
-      background: #fffdf8;
-    }
-    .stop-card {
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      padding: 0.9rem 1.05rem;
-      margin-bottom: 0.85rem;
-      background: #fdfaf3;
-    }
-    .stop-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 0.35rem;
-    }
-    .stop-badge {
-      background: var(--cinnabar);
-      color: #fff;
-      font-size: 0.78rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      margin-right: 0.4rem;
-    }
-    .camp-badge {
-      display: inline-block;
-      color: #fff;
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 0.1rem 0.48rem;
-      border-radius: 4px;
-      margin-right: 0.38rem;
-    }
-    .source-cite {
-      margin-top: 0.38rem;
-      padding-top: 0.3rem;
-      border-top: 1px dashed rgba(213, 199, 174, 0.75);
-      font-size: 0.83rem;
-      color: var(--ink-muted);
-      line-height: 1.55;
-    }
-    .story-link-pill {
-      display: inline-block;
-      margin-left: 0.4rem;
-      padding: 0.08rem 0.45rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--cinnabar);
-      background: rgba(158, 42, 34, 0.1);
-      border: 1px solid rgba(158, 42, 34, 0.3);
-      border-radius: 4px;
-      text-decoration: none;
-    }
-    .story-link-pill:hover {
-      background: var(--cinnabar);
-      color: #fff;
-      text-decoration: none !important;
-    }
-    .diff-add { color: #1f5c3a; font-weight: 600; }
-    .diff-rem { color: #8c2d24; font-weight: 600; }
-    .diff-same { color: var(--ink-muted); font-size: 0.85rem; }
-    .act-heading {
-      margin: 1.25rem 0 0.65rem;
-      padding: 0.4rem 0.75rem;
-      background: #ece3d0;
-      border-left: 4px solid var(--cinnabar);
-      border-radius: 4px;
-      font-size: 1.02rem;
-      font-weight: 700;
-      color: var(--ink-main);
-    }
-    .embed-card {
-      background: var(--bg-card);
-      border: 1px solid var(--gold-border);
-      border-radius: 8px;
-      padding: 1rem 1.15rem 1.1rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(34, 29, 23, 0.05);
-    }
-    .embed-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.65rem;
-    }
-    .embed-header h2 {
-      margin: 0;
-      padding: 0;
-      border: none;
-      font-size: 1.12rem;
-    }
-    .embed-hint {
-      font-size: 0.84rem;
-      color: var(--ink-muted);
-    }
-    .embed-frame-wrap {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      border: 1px solid var(--gold-border);
-      border-radius: 6px;
-      overflow: hidden;
-      background: #efe7d6;
-    }
-    @media (max-width: 640px) {
-      .embed-frame-wrap { height: 390px; }
-    }
-    .embed-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-    }
-    .carto-note-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-top: 0.6rem;
-    }
-    .carto-note-item {
-      background: #fdfaf3;
-      border: 1px solid var(--gold-border);
-      border-left: 4px solid var(--accent-teal);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-    }
-    .carto-note-item strong {
-      color: var(--ink-main);
-      display: block;
-      margin-bottom: 0.22rem;
-      font-size: 0.96rem;
-    }
-    .carto-note-item p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--ink-muted);
-      line-height: 1.65;
-    }
-    footer.page-footer {
-      margin-top: 2.2rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--gold-border);
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    footer.page-footer a {
-      color: var(--cinnabar);
-      text-decoration: none;
-    }
-  </style>
+  <script defer src="assets/topics.js?v=ad70ed7b" data-v-hant="3afdab47"></script>
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635"}'></script>
 </head>
 <body>
   <header class="top-bar">
-    <a class="brand-link" href="https://deanchen.me/jiangshan-map/">
-      <span class="seal-badge">江山时序</span>
-      <span>中国历史地图 · 战国 → 今</span>
-    </a>
-    <nav class="top-nav" aria-label="专题图志导航">
-      <a href="https://deanchen.me/jiangshan-map/">进入交互式主地图</a>
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a>
-      <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub 开源仓库</a>
-    </nav>
+    <div class="top-bar-inner">
+      <a class="brand-link" href="../">
+        <span class="seal-badge">江山时序</span>
+        <span>历史舆图图志</span>
+      </a>
+      <nav class="top-nav" aria-label="专题图志导航">
+        <a href="../">交互舆图</a>
+        <a href="index.html">图志总览</a>
+        <a href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <button id="act-topic-hant" class="hant-toggle-btn no-hant" type="button" aria-pressed="false" title="切換為繁體中文">繁</button>
+      </nav>
+    </div>
   </header>
-  <main>
-    <nav class="breadcrumb" aria-label="面包屑导航">
-      <a href="https://deanchen.me/jiangshan-map/">江山时序首页</a> &rsaquo;
-      <a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总目录</a> &rsaquo;
-      <span>李白仗剑壮游行迹</span>
-    </nav>
+  <div class="page-shell has-toc">
+    <aside class="topic-toc" aria-label="本页目录">
+      <div class="toc-heading">本页目录</div>
+      <ul class="toc-list">
+        <li><a class="toc-link is-active" href="#sec-map">行迹路线预览</a></li>
+        <li><a class="toc-link" href="#sec-stops">逐站详解（12 站）</a></li>
+      </ul>
+    </aside>
+    <main class="main-col">
+      <nav class="breadcrumb" aria-label="面包屑导航">
+        <a href="../">江山时序首页</a> &rsaquo;
+        <a href="index.html">专题图志总览</a> &rsaquo;
+        <span>李白仗剑壮游行迹</span>
+      </nav>
 
-    <article class="hero-card">
-      <span class="kicker">点人溯事 · 历史人物生平行迹专题（第 4 / 6 篇）</span>
-      <h1>李白仗剑壮游行迹（701年 — 762年 · 武周长安元年至唐宝应元年）</h1>
-      <p class="en-sub">Li Bai&#39;s Grand Travels Across Tang China (701 CE – 762 CE  · High Tang Dynasty)</p>
-      <div class="meta-pills">
-        <span class="meta-pill"><strong>时代跨度：</strong>701年 — 762年 · 武周长安元年至唐宝应元年</span>
-        <span class="meta-pill"><strong>途经站点：</strong>共 12 站</span>
-        <span class="meta-pill"><strong>起点 → 终点：</strong>碎叶城 → 当涂</span>
-      </div>
-      <p><strong>全线途经古今地名：</strong>碎叶城（今吉尔吉斯斯坦托克马克） → 绵州青莲（今四川江油青莲镇） → 渝州（今重庆） → 荆门（今湖北宜都） → 扬州（今江苏扬州） → 安陆（今湖北安陆） → 长安（今陕西西安） → 洛阳（今河南洛阳） → 睢阳（今河南商丘） → 任城（今山东济宁） → 白帝城（今重庆奉节） → 当涂（今安徽马鞍山·当涂）。</p>
-      <p class="en-sub"><strong>Route Stops:</strong> Suyab (Tokmok, Kyrgyzstan) → Qinglian, Mianzhou (Jiangyou, Sichuan) → Yuzhou (Chongqing) → Jingmen (Yidu, Hubei) → Yangzhou (Yangzhou, Jiangsu) → Anlu (Anlu, Hubei) → Chang&#39;an (Xi&#39;an, Shaanxi) → Luoyang (Luoyang, Henan) → Suiyang (Shangqiu, Henan) → Rencheng (Jining, Shandong) → Baidicheng (Fengjie, Chongqing) → Dangtu (Dangtu, Ma&#39;anshan, Anhui).</p>
-      
-      <div class="cta-row">
-        <a class="cta-btn" href="https://deanchen.me/jiangshan-map/?person=libai">在交互式历史地图中播放「李白仗剑壮游行迹」全线动画 &rarr;</a>
-        <a class="cta-btn secondary" href="https://deanchen.me/jiangshan-map/?person=libai&amp;lang=en">Play Interactive Journey in English &rarr;</a>
-      </div>
-    </article>
+      <article class="hero-card">
+        <span class="kicker">点人溯事 · 历史人物生平行迹图志（第 4 / 6 篇）</span>
+        <h1>李白仗剑壮游行迹（701年 — 762年 · 武周长安元年至唐宝应元年）</h1>
+        <p class="en-sub">Li Bai&#39;s Grand Travels Across Tang China (701 CE – 762 CE  · High Tang Dynasty)</p>
+        <div class="meta-pills">
+          <span class="meta-pill"><strong>时代跨度：</strong>701年 — 762年 · 武周长安元年至唐宝应元年</span>
+          <span class="meta-pill"><strong>途经站点：</strong>共 12 站</span>
+          <span class="meta-pill"><strong>起点 → 终点：</strong>碎叶城 → 当涂</span>
+        </div>
+        <p><strong>全线途经古今地名：</strong>碎叶城（今吉尔吉斯斯坦托克马克） → 绵州青莲（今四川江油青莲镇） → 渝州（今重庆） → 荆门（今湖北宜都） → 扬州（今江苏扬州） → 安陆（今湖北安陆） → 长安（今陕西西安） → 洛阳（今河南洛阳） → 睢阳（今河南商丘） → 任城（今山东济宁） → 白帝城（今重庆奉节） → 当涂（今安徽马鞍山·当涂）。</p>
+        <p class="en-sub"><strong>Route Stops:</strong> Suyab (Tokmok, Kyrgyzstan) → Qinglian, Mianzhou (Jiangyou, Sichuan) → Yuzhou (Chongqing) → Jingmen (Yidu, Hubei) → Yangzhou (Yangzhou, Jiangsu) → Anlu (Anlu, Hubei) → Chang&#39;an (Xi&#39;an, Shaanxi) → Luoyang (Luoyang, Henan) → Suiyang (Shangqiu, Henan) → Rencheng (Jining, Shandong) → Baidicheng (Fengjie, Chongqing) → Dangtu (Dangtu, Ma&#39;anshan, Anhui).</p>
+        
+        <div class="cta-row">
+          <a class="cta-btn" href="../?person=libai">播放「李白仗剑壮游行迹」全线交互动画 →</a>
+          <a class="cta-btn secondary" href="../?person=libai&amp;lang=en">Play in English →</a>
+          <a class="cta-btn secondary" href="index.html">返回图志总览</a>
+        </div>
+        <div class="related-strip">
+          <span>关联图志：</span>
+          <a class="related-chip" href="tang.html">唐疆域政区图志</a>
+        </div>
+      </article>
 
-    <section class="embed-card" aria-label="交互式历史地图预览">
-      <div class="embed-header">
-        <h2>李白仗剑壮游行迹交互式历史舆图路线预览（701年 — 762年 · 武周长安元年至唐宝应元年）</h2>
-        <span class="embed-hint">点击地图即可缩放查看各站 · 右上角可全屏播放动画</span>
-      </div>
-      <div class="embed-frame-wrap">
-        <iframe class="embed-iframe" src="../?embed=1&amp;person=libai" title="李白仗剑壮游行迹交互式历史舆图路线预览（701年 — 762年 · 武周长安元年至唐宝应元年）" loading="lazy" allowfullscreen></iframe>
-      </div>
-    </section>
+      <section id="sec-map" class="embed-card" aria-label="交互式历史地图预览">
+        <div class="embed-header">
+          <h2>李白仗剑壮游行迹交互式历史舆图路线预览（701年 — 762年 · 武周长安元年至唐宝应元年）</h2>
+          <span class="embed-hint">点击地图即可缩放查看各站 · 右上角可全屏播放动画</span>
+        </div>
+        <div class="embed-frame-wrap">
+          <iframe class="embed-iframe" src="../?embed=1&amp;person=libai" title="李白仗剑壮游行迹交互式历史舆图路线预览（701年 — 762年 · 武周长安元年至唐宝应元年）" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </section>
 
-    <section class="section-card">
-      <h2>李白仗剑壮游行迹 · 逐站时空坐标、古今地名与史料诗词详解（12 站）</h2>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 1 站</span>
-            <strong>碎叶城（今吉尔吉斯斯坦托克马克）· 诞于西域·安西碎叶</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Suyab (Tokmok, Kyrgyzstan) — Birth at Suyab in the Western Regions</small>
+      <section id="sec-stops" class="section-card">
+        <h2>李白仗剑壮游行迹 · 逐站时空坐标、古今地名与史料诗词详解（12 站）</h2>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 1 站</span>
+              <strong>碎叶城（今吉尔吉斯斯坦托克马克）· 诞于西域·安西碎叶</strong>
+              <small class="stop-sub-en">Suyab (Tokmok, Kyrgyzstan) — Birth at Suyab in the Western Regions</small>
+            </div>
+            <div>
+              <strong>701年（长安元年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=0">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>701年（长安元年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=0" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">诞于唐安西都护府碎叶城，幼承丝路胡汉交融之风，五岁随父李客东迁入蜀。</p>
+          <p class="en-sub stop-desc-en">Born at Suyab in the Anxi Protectorate on the Silk Road frontier, Li Bai migrated east with his family to Sichuan at age five.</p>
+          <blockquote class="poem-box">范传正《唐左拾遗翰林学士李公新墓碑》：“隋末多难，一房被窜于碎叶，流离散落，隐易姓名。”<cite>Fan Chuanzheng, New Tomb Inscription for Li Bai: &quot;Amid the turmoil at the end of Sui, his branch of the clan was exiled to Suyab, living incognito until returning to Shu in the Shenlong era.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">诞于唐安西都护府碎叶城，幼承丝路胡汉交融之风，五岁随父李客东迁入蜀。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Born at Suyab in the Anxi Protectorate on the Silk Road frontier, Li Bai migrated east with his family to Sichuan at age five.</p>
-        <blockquote class="poem-box">范传正《唐左拾遗翰林学士李公新墓碑》：“隋末多难，一房被窜于碎叶，流离散落，隐易姓名。”<cite>Fan Chuanzheng, New Tomb Inscription for Li Bai: &quot;Amid the turmoil at the end of Sui, his branch of the clan was exiled to Suyab, living incognito until returning to Shu in the Shenlong era.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 2 站</span>
-            <strong>绵州青莲（今四川江油青莲镇）· 卜居青莲·大匡山读书</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Qinglian, Mianzhou (Jiangyou, Sichuan) — Youth in Qinglian &amp; Studying on Mount Dakuang</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 2 站</span>
+              <strong>绵州青莲（今四川江油青莲镇）· 卜居青莲·大匡山读书</strong>
+              <small class="stop-sub-en">Qinglian, Mianzhou (Jiangyou, Sichuan) — Youth in Qinglian &amp; Studying on Mount Dakuang</small>
+            </div>
+            <div>
+              <strong>705年（神龙元年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=1">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>705年（神龙元年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=1" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">客居绵州青莲乡（号“青莲居士”），隐大匡山读书习剑，游峨眉获司马承祯赞“仙风道骨”。</p>
+          <p class="en-sub stop-desc-en">Growing up in Qinglian, Mianzhou, young Li Bai studied on Mount Dakuang, practiced swordsmanship, and was praised as having “immortal bones.”</p>
+          <blockquote class="poem-box">李白《上安州裴长史书》：“五岁诵六甲，十岁观百家……十五观奇书，作赋凌相如。”<cite>Li Bai, Letter to Administrator Pei of Anzhou: &quot;At five I recited the calendar classics; at ten I read the Hundred Schools; at fifteen I composed rhapsodies rivaling Sima Xiangru.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">客居绵州青莲乡（号“青莲居士”），隐大匡山读书习剑，游峨眉获司马承祯赞“仙风道骨”。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Growing up in Qinglian, Mianzhou, young Li Bai studied on Mount Dakuang, practiced swordsmanship, and was praised as having “immortal bones.”</p>
-        <blockquote class="poem-box">李白《上安州裴长史书》：“五岁诵六甲，十岁观百家……十五观奇书，作赋凌相如。”<cite>Li Bai, Letter to Administrator Pei of Anzhou: &quot;At five I recited the calendar classics; at ten I read the Hundred Schools; at fifteen I composed rhapsodies rivaling Sima Xiangru.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 3 站</span>
-            <strong>渝州（今重庆）· 夜发清溪·思君下渝州</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Yuzhou (Chongqing) — Sailing Down the Min &amp; Yangtze Rivers to Yuzhou</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 3 站</span>
+              <strong>渝州（今重庆）· 夜发清溪·思君下渝州</strong>
+              <small class="stop-sub-en">Yuzhou (Chongqing) — Sailing Down the Min &amp; Yangtze Rivers to Yuzhou</small>
+            </div>
+            <div>
+              <strong>724年（开元十二年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=2">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>724年（开元十二年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=2" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">年二十四辞别蜀中山水，自峨眉清溪乘舟顺岷江、长江东下渝州，赋《峨眉山月歌》。</p>
+          <p class="en-sub stop-desc-en">At twenty-four, Li Bai set out from Mount Emei and sailed down the Min and Yangtze rivers to Yuzhou, composing Moon Over Mount Emei.</p>
+          <blockquote class="poem-box">李白《峨眉山月歌》：“峨眉山月半轮秋，影入平羌江水流。夜发清溪向三峡，思君不见下渝州。”<cite>Li Bai, Moon Over Mount Emei: &quot;A half-wheel of autumn moon above Mount Emei casts its reflection into the flowing Pingqiang River; setting out by night from Qingxi toward the Three Gorges, longing for you unseen as I sail down to Yuzhou.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">年二十四辞别蜀中山水，自峨眉清溪乘舟顺岷江、长江东下渝州，赋《峨眉山月歌》。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">At twenty-four, Li Bai set out from Mount Emei and sailed down the Min and Yangtze rivers to Yuzhou, composing Moon Over Mount Emei.</p>
-        <blockquote class="poem-box">李白《峨眉山月歌》：“峨眉山月半轮秋，影入平羌江水流。夜发清溪向三峡，思君不见下渝州。”<cite>Li Bai, Moon Over Mount Emei: &quot;A half-wheel of autumn moon above Mount Emei casts its reflection into the flowing Pingqiang River; setting out by night from Qingxi toward the Three Gorges, longing for you unseen as I sail down to Yuzhou.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 4 站</span>
-            <strong>荆门（今湖北宜都）· 仗剑去国·辞亲出三峡</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Jingmen (Yidu, Hubei) — Leaving Shu with Sword in Hand Through the Three Gorges</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 4 站</span>
+              <strong>荆门（今湖北宜都）· 仗剑去国·辞亲出三峡</strong>
+              <small class="stop-sub-en">Jingmen (Yidu, Hubei) — Leaving Shu with Sword in Hand Through the Three Gorges</small>
+            </div>
+            <div>
+              <strong>725年（开元十三年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=3">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>725年（开元十三年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=3" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">怀济世志“仗剑去国，辞亲远游”，穿三峡出荆门山初见江汉平原壮阔，赋《渡荆门送别》。</p>
+          <p class="en-sub stop-desc-en">Sailing through the Three Gorges past Jingmen Mountain onto the vast Jianghan Plain, he wrote Farewell at Jingmen.</p>
+          <blockquote class="poem-box">李白《渡荆门送别》：“山随平野尽，江入大荒流。月下飞天镜，云生结海楼。”<cite>Li Bai, Farewell at Jingmen: &quot;Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">怀济世志“仗剑去国，辞亲远游”，穿三峡出荆门山初见江汉平原壮阔，赋《渡荆门送别》。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Sailing through the Three Gorges past Jingmen Mountain onto the vast Jianghan Plain, he wrote Farewell at Jingmen.</p>
-        <blockquote class="poem-box">李白《渡荆门送别》：“山随平野尽，江入大荒流。月下飞天镜，云生结海楼。”<cite>Li Bai, Farewell at Jingmen: &quot;Mountains vanish into the level plain; the Great River rolls into the boundless wild. Beneath the moon a celestial mirror flies; rising clouds weave ocean pavilions.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 5 站</span>
-            <strong>扬州（今江苏扬州）· 漫游吴越·散金三十万</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Yangzhou (Yangzhou, Jiangsu) — Grand Tour of Wu-Yue &amp; Spending 300,000 Cash in Yangzhou</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 5 站</span>
+              <strong>扬州（今江苏扬州）· 漫游吴越·散金三十万</strong>
+              <small class="stop-sub-en">Yangzhou (Yangzhou, Jiangsu) — Grand Tour of Wu-Yue &amp; Spending 300,000 Cash in Yangzhou</small>
+            </div>
+            <div>
+              <strong>726年（开元十四年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=4">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>726年（开元十四年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=4" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">顺江东下游庐山、金陵至扬州，豪爽济困“散金三十余万”，写下《望庐山瀑布》《静夜思》。</p>
+          <p class="en-sub stop-desc-en">Sailing down the Yangtze past Mount Lu to prosperous Yangzhou, he gave away 300,000 coins to destitute scholars and wrote Quiet Night Thought.</p>
+          <blockquote class="poem-box">李白《上安州裴长史书》：“曩昔东游维扬，不逾一年，散金三十余万，有落魄公子，悉皆济之。”<cite>Li Bai: &quot;Formerly traveling east to Yangzhou, in less than a year I scattered more than three hundred thousand in gold, coming to the aid of every stranded gentleman.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">顺江东下游庐山、金陵至扬州，豪爽济困“散金三十余万”，写下《望庐山瀑布》《静夜思》。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Sailing down the Yangtze past Mount Lu to prosperous Yangzhou, he gave away 300,000 coins to destitute scholars and wrote Quiet Night Thought.</p>
-        <blockquote class="poem-box">李白《上安州裴长史书》：“曩昔东游维扬，不逾一年，散金三十余万，有落魄公子，悉皆济之。”<cite>Li Bai: &quot;Formerly traveling east to Yangzhou, in less than a year I scattered more than three hundred thousand in gold, coming to the aid of every stranded gentleman.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 6 站</span>
-            <strong>安陆（今湖北安陆）· 酒隐安陆·登临黄鹤楼</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Anlu (Anlu, Hubei) — Ten Years in Anlu &amp; Farewell at Yellow Crane Tower</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 6 站</span>
+              <strong>安陆（今湖北安陆）· 酒隐安陆·登临黄鹤楼</strong>
+              <small class="stop-sub-en">Anlu (Anlu, Hubei) — Ten Years in Anlu &amp; Farewell at Yellow Crane Tower</small>
+            </div>
+            <div>
+              <strong>727年（开元十五年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=5">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>727年（开元十五年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=5" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">赘于安陆故相许圉师孙女家，“酒隐安陆”十年，频游江夏、襄阳交孟浩然，赋诗黄鹤楼送别。</p>
+          <p class="en-sub stop-desc-en">Marrying into former Chancellor Xu Yushi’s clan in Anlu, he lived there a decade, befriending Meng Haoran and seeing him off at Yellow Crane Tower.</p>
+          <blockquote class="poem-box">李白《黄鹤楼送孟浩然之广陵》：“故人西辞黄鹤楼，烟花三月下扬州。孤帆远影碧空尽，唯见长江天际流。”<cite>Li Bai, Seeing Off Meng Haoran at Yellow Crane Tower: &quot;My old friend bids farewell to the west at Yellow Crane Tower, sailing down to Yangzhou in the misty blossoms of March.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">赘于安陆故相许圉师孙女家，“酒隐安陆”十年，频游江夏、襄阳交孟浩然，赋诗黄鹤楼送别。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Marrying into former Chancellor Xu Yushi’s clan in Anlu, he lived there a decade, befriending Meng Haoran and seeing him off at Yellow Crane Tower.</p>
-        <blockquote class="poem-box">李白《黄鹤楼送孟浩然之广陵》：“故人西辞黄鹤楼，烟花三月下扬州。孤帆远影碧空尽，唯见长江天际流。”<cite>Li Bai, Seeing Off Meng Haoran at Yellow Crane Tower: &quot;My old friend bids farewell to the west at Yellow Crane Tower, sailing down to Yangzhou in the misty blossoms of March.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 7 站</span>
-            <strong>长安（今陕西西安）· 奉诏入京·翰林待诏</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Chang&#39;an (Xi&#39;an, Shaanxi) — Summoned to Chang&#39;an — Imperial Hanlin Academy</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 7 站</span>
+              <strong>长安（今陕西西安）· 奉诏入京·翰林待诏</strong>
+              <small class="stop-sub-en">Chang&#39;an (Xi&#39;an, Shaanxi) — Summoned to Chang&#39;an — Imperial Hanlin Academy</small>
+            </div>
+            <div>
+              <strong>742年（天宝元年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=6">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>742年（天宝元年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=6" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">奉唐玄宗诏西入长安，贺知章读《蜀道难》惊呼“谪仙人”，玄宗降辇步迎、诏供奉翰林。</p>
+          <p class="en-sub stop-desc-en">Summoned to Chang’an by Emperor Xuanzong, Li Bai was hailed by He Zhizhang as a “Banished Immortal” and served in the Hanlin Academy.</p>
+          <blockquote class="poem-box">李白《南陵别儿童入京》：“仰天大笑出门去，我辈岂是蓬蒿人！”<cite>Li Bai, Parting from My Children at Nanling for the Capital: &quot;Throwing back my head with a great laugh I stride out the gate—how could men like us remain forever amid the mugwort?&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">奉唐玄宗诏西入长安，贺知章读《蜀道难》惊呼“谪仙人”，玄宗降辇步迎、诏供奉翰林。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Summoned to Chang’an by Emperor Xuanzong, Li Bai was hailed by He Zhizhang as a “Banished Immortal” and served in the Hanlin Academy.</p>
-        <blockquote class="poem-box">李白《南陵别儿童入京》：“仰天大笑出门去，我辈岂是蓬蒿人！”<cite>Li Bai, Parting from My Children at Nanling for the Capital: &quot;Throwing back my head with a great laugh I stride out the gate—how could men like us remain forever amid the mugwort?&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 8 站</span>
-            <strong>洛阳（今河南洛阳）· 赐金放还·洛阳逢杜甫</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Luoyang (Luoyang, Henan) — Leaving Court &amp; Historic Meeting with Du Fu in Luoyang</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 8 站</span>
+              <strong>洛阳（今河南洛阳）· 赐金放还·洛阳逢杜甫</strong>
+              <small class="stop-sub-en">Luoyang (Luoyang, Henan) — Leaving Court &amp; Historic Meeting with Du Fu in Luoyang</small>
+            </div>
+            <div>
+              <strong>744年（天宝三载春）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=7">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>744年（天宝三载春）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=7" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">遭权贵谗毁获“赐金放还”，东至洛阳与年三十三的杜甫初遇定交，诗史双子星于此际会。</p>
+          <p class="en-sub stop-desc-en">Granted gold to leave court in 744 CE, Li Bai traveled east to Luoyang where he met the younger Du Fu—the twin peaks of Tang poetry.</p>
+          <blockquote class="poem-box">杜甫《寄李十二白二十韵》：“乞归优诏许，遇我宿心亲。醉舞梁园夜，行歌泗水春。”<cite>Du Fu, Twenty Rhymes Sent to Li Bai: &quot;Your plea to retire was granted by gracious edict; meeting me, our kindred hearts grew close—dancing drunk in Liang Garden by night, singing along the Si River in spring.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">遭权贵谗毁获“赐金放还”，东至洛阳与年三十三的杜甫初遇定交，诗史双子星于此际会。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Granted gold to leave court in 744 CE, Li Bai traveled east to Luoyang where he met the younger Du Fu—the twin peaks of Tang poetry.</p>
-        <blockquote class="poem-box">杜甫《寄李十二白二十韵》：“乞归优诏许，遇我宿心亲。醉舞梁园夜，行歌泗水春。”<cite>Du Fu, Twenty Rhymes Sent to Li Bai: &quot;Your plea to retire was granted by gracious edict; meeting me, our kindred hearts grew close—dancing drunk in Liang Garden by night, singing along the Si River in spring.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 9 站</span>
-            <strong>睢阳（今河南商丘）· 梁园豪游·偕杜甫高适猎孟诸</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Suiyang (Shangqiu, Henan) — Roaming Liang-Song with Du Fu &amp; Gao Shi</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 9 站</span>
+              <strong>睢阳（今河南商丘）· 梁园豪游·偕杜甫高适猎孟诸</strong>
+              <small class="stop-sub-en">Suiyang (Shangqiu, Henan) — Roaming Liang-Song with Du Fu &amp; Gao Shi</small>
+            </div>
+            <div>
+              <strong>744年（天宝三载秋）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=8">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>744年（天宝三载秋）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=8" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">秋与杜甫、高适同游梁宋（开封、商丘），登吹台怀古、纵猎孟诸泽，于梁园题壁作《梁园吟》。</p>
+          <p class="en-sub stop-desc-en">In autumn 744 CE, Li Bai, Du Fu, and Gao Shi roamed the Liang-Song plains, ascending the ancient Liang terrace and hunting at Mengzhu.</p>
+          <blockquote class="poem-box">李白《梁园吟》：“我浮黄河去京阙，挂席欲进波连山。天长水阔厌远涉，访古始及平台间。”<cite>Li Bai, Ballad of Liang Garden: &quot;Floating down the Yellow River away from the palace towers, I hoisted sail across mountain-high waves until reaching the ancient terrace of Liang.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">秋与杜甫、高适同游梁宋（开封、商丘），登吹台怀古、纵猎孟诸泽，于梁园题壁作《梁园吟》。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">In autumn 744 CE, Li Bai, Du Fu, and Gao Shi roamed the Liang-Song plains, ascending the ancient Liang terrace and hunting at Mengzhu.</p>
-        <blockquote class="poem-box">李白《梁园吟》：“我浮黄河去京阙，挂席欲进波连山。天长水阔厌远涉，访古始及平台间。”<cite>Li Bai, Ballad of Liang Garden: &quot;Floating down the Yellow River away from the palace towers, I hoisted sail across mountain-high waves until reaching the ancient terrace of Liang.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 10 站</span>
-            <strong>任城（今山东济宁）· 东游齐鲁·梦游天姥</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Rencheng (Jining, Shandong) — Sojourn in Qilu &amp; Dreaming of Mount Tianmu</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 10 站</span>
+              <strong>任城（今山东济宁）· 东游齐鲁·梦游天姥</strong>
+              <small class="stop-sub-en">Rencheng (Jining, Shandong) — Sojourn in Qilu &amp; Dreaming of Mount Tianmu</small>
+            </div>
+            <div>
+              <strong>745年（天宝四载）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=9">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>745年（天宝四载）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=9" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">寄家山东任城，与杜甫同游齐鲁、受道箓；临别南游越中时赋《梦游天姥吟留别》抒傲岸之志。</p>
+          <p class="en-sub stop-desc-en">Making his home in Rencheng and roaming Qilu with Du Fu, Li Bai composed Dreaming of Mount Tianmu: A Farewell Song before heading south.</p>
+          <blockquote class="poem-box">李白《梦游天姥吟留别》：“安能摧眉折腰事权贵，使我不得开心颜！”<cite>Li Bai, Dreaming of Mount Tianmu: &quot;How can I bow my brow and bend my waist to serve the powerful, denying myself a joyful heart and open brow?&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">寄家山东任城，与杜甫同游齐鲁、受道箓；临别南游越中时赋《梦游天姥吟留别》抒傲岸之志。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Making his home in Rencheng and roaming Qilu with Du Fu, Li Bai composed Dreaming of Mount Tianmu: A Farewell Song before heading south.</p>
-        <blockquote class="poem-box">李白《梦游天姥吟留别》：“安能摧眉折腰事权贵，使我不得开心颜！”<cite>Li Bai, Dreaming of Mount Tianmu: &quot;How can I bow my brow and bend my waist to serve the powerful, denying myself a joyful heart and open brow?&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 11 站</span>
-            <strong>白帝城（今重庆奉节）· 长流夜郎·白帝遇赦还江陵</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Baidicheng (Fengjie, Chongqing) — Exile to Yelang &amp; Imperial Pardon at Baidicheng</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 11 站</span>
+              <strong>白帝城（今重庆奉节）· 长流夜郎·白帝遇赦还江陵</strong>
+              <small class="stop-sub-en">Baidicheng (Fengjie, Chongqing) — Exile to Yelang &amp; Imperial Pardon at Baidicheng</small>
+            </div>
+            <div>
+              <strong>759年（乾元二年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=10">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>759年（乾元二年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=10" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">因入永王李璘幕府坐长流夜郎，行至巫山白帝城忽逢大赦，惊喜放舟东下江陵，赋《早发白帝城》。</p>
+          <p class="en-sub stop-desc-en">Banished toward Yelang after Prince Lin of Yong’s defeat, he received an imperial amnesty at Baidicheng and raced downstream to Jiangling.</p>
+          <blockquote class="poem-box">李白《早发白帝城》：“朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。”<cite>Li Bai, Departing Baidicheng at Dawn: &quot;At dawn I leave Baidicheng amid rainbow clouds; a thousand li to Jiangling I return in a single day. While gibbons on both banks cry without cease, my light skiff has already shot past ten thousand mountains.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">因入永王李璘幕府坐长流夜郎，行至巫山白帝城忽逢大赦，惊喜放舟东下江陵，赋《早发白帝城》。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">Banished toward Yelang after Prince Lin of Yong’s defeat, he received an imperial amnesty at Baidicheng and raced downstream to Jiangling.</p>
-        <blockquote class="poem-box">李白《早发白帝城》：“朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。”<cite>Li Bai, Departing Baidicheng at Dawn: &quot;At dawn I leave Baidicheng amid rainbow clouds; a thousand li to Jiangling I return in a single day. While gibbons on both banks cry without cease, my light skiff has already shot past ten thousand mountains.&quot;</cite></blockquote>
-      </div>
-      <div class="stop-card">
-        <div class="stop-header">
-          <div>
-            <span class="stop-badge">第 12 站</span>
-            <strong>当涂（今安徽马鞍山·当涂）· 赋临路歌·终老当涂青山</strong>
-            <small style="color:#5e5346; margin-left:0.4rem;">Dangtu (Dangtu, Ma&#39;anshan, Anhui) — Final Song at Dangtu &amp; Resting by Mount Qing</small>
+        <div class="stop-card">
+          <div class="stop-header">
+            <div>
+              <span class="stop-badge">第 12 站</span>
+              <strong>当涂（今安徽马鞍山·当涂）· 赋临路歌·终老当涂青山</strong>
+              <small class="stop-sub-en">Dangtu (Dangtu, Ma&#39;anshan, Anhui) — Final Song at Dangtu &amp; Resting by Mount Qing</small>
+            </div>
+            <div>
+              <strong>762年（宝应元年）</strong> ·
+              <a class="stop-map-link" href="../?person=libai&amp;stop=11">在地图定位此站 →</a>
+            </div>
           </div>
-          <div>
-            <strong>762年（宝应元年）</strong> ·
-            <a href="https://deanchen.me/jiangshan-map/?person=libai&amp;stop=11" style="color:#9e2a22; text-decoration:none; font-weight:600;">在地图定位此站 &rarr;</a>
-          </div>
+          <p class="stop-desc-zh">六十一岁请缨从军因病折返，依当涂令李阳冰，宝应元年冬赋《临路歌》绝笔病逝，葬于青山。</p>
+          <p class="en-sub stop-desc-en">After illness cut short his bid to join Li Guangbi’s army at 61, he stayed in Dangtu, composed his final Song Before the Road, and died in 762 CE.</p>
+          <blockquote class="poem-box">李白《临路歌》：“大鹏飞兮振八裔，中天摧兮力不济。馀风激兮万世，游扶桑兮挂石袂。”<cite>Li Bai, Song Before the Road: &quot;The Great Peng soared and shook the eight horizons; broken in mid-heaven, its strength gave out—yet its lingering wind stirs ten thousand generations.&quot;</cite></blockquote>
         </div>
-        <p style="margin:0.4rem 0;">六十一岁请缨从军因病折返，依当涂令李阳冰，宝应元年冬赋《临路歌》绝笔病逝，葬于青山。</p>
-        <p class="en-sub" style="margin:0.25rem 0 0.5rem;">After illness cut short his bid to join Li Guangbi’s army at 61, he stayed in Dangtu, composed his final Song Before the Road, and died in 762 CE.</p>
-        <blockquote class="poem-box">李白《临路歌》：“大鹏飞兮振八裔，中天摧兮力不济。馀风激兮万世，游扶桑兮挂石袂。”<cite>Li Bai, Song Before the Road: &quot;The Great Peng soared and shook the eight horizons; broken in mid-heaven, its strength gave out—yet its lingering wind stirs ten thousand generations.&quot;</cite></blockquote>
-      </div>
-    </section>
+      </section>
 
-    <section class="section-card">
-      <h2>中国十八历史时期疆域图志速查（403 BCE — 2026 CE）</h2>
-      <div class="chip-grid">
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/zhanguo.html">战国（前403—前221）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qin.html">秦（前221—前202）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xihan.html">西汉（前202—25）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/donghan.html">东汉（25—220）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sanguo.html">三国（220—280）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/xijin.html">西晋（280—316）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/dongjin.html">东晋十六国（317—420）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nanbei.html">南北朝（420—581）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/sui.html">隋（581—618）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/tang.html">唐（618—907）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/wudai.html">五代十国（907—960）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/beisong.html">北宋（960—1127）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/nansong.html">南宋（1127—1279）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/yuan.html">元（1279—1368）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/ming.html">明（1368—1644）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/qing.html">清（1644—1912）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/roc.html">中华民国（1912—1949）</a>
-        <a class="chip-link" href="https://deanchen.me/jiangshan-map/topics/prc.html">中华人民共和国（1949—）</a>
-      </div>
-    </section>
-    <footer class="page-footer">
-      <div>© 江山时序（Jiangshan Historical Atlas）· <a href="https://deanchen.me/jiangshan-map/">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
-      <div><a href="https://deanchen.me/jiangshan-map/topics/index.html">专题图志总览</a> · <a href="https://deanchen.me/jiangshan-map/sitemap.xml">Sitemap</a> · <a href="https://deanchen.me/jiangshan-map/llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">联系与勘误：deancsj@gmail.com</a></div>
-    </footer>
-  </main>
+      <section class="section-card footer-nav-card">
+        <h2>中国十八历史时期疆域图志速查（前403年—今）</h2>
+        <div class="chip-grid">
+          <a class="chip-link" href="zhanguo.html">战国（前403—前221）</a>
+          <a class="chip-link" href="qin.html">秦（前221—前202）</a>
+          <a class="chip-link" href="xihan.html">西汉（前202—25）</a>
+          <a class="chip-link" href="donghan.html">东汉（25—220）</a>
+          <a class="chip-link" href="sanguo.html">三国（220—280）</a>
+          <a class="chip-link" href="xijin.html">西晋（280—316）</a>
+          <a class="chip-link" href="dongjin.html">东晋十六国（317—420）</a>
+          <a class="chip-link" href="nanbei.html">南北朝（420—581）</a>
+          <a class="chip-link" href="sui.html">隋（581—618）</a>
+          <a class="chip-link" href="tang.html">唐（618—907）</a>
+          <a class="chip-link" href="wudai.html">五代十国（907—960）</a>
+          <a class="chip-link" href="beisong.html">北宋（960—1127）</a>
+          <a class="chip-link" href="nansong.html">南宋（1127—1279）</a>
+          <a class="chip-link" href="yuan.html">元（1279—1368）</a>
+          <a class="chip-link" href="ming.html">明（1368—1644）</a>
+          <a class="chip-link" href="qing.html">清（1644—1912）</a>
+          <a class="chip-link" href="roc.html">中华民国（1912—1949）</a>
+          <a class="chip-link" href="prc.html">中华人民共和国（1949—）</a>
+        </div>
+      </section>
+      <footer class="page-footer">
+        <div>© 江山时序（Jiangshan Historical Atlas）· <a href="../">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
+        <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
+      </footer>
+    </main>
+  </div>
 </body>
 </html>

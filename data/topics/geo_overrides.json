@@ -1,0 +1,89 @@
+{
+  "nearestCity": {
+    "maxDistanceKm": 55,
+    "showDistanceAboveKm": 25,
+    "excludeAncientContainsBySlug": {
+      "shuihu-jiangzhou": ["琵琶亭"]
+    },
+    "excludeModernContainsBySlug": {
+      "battle-changping": ["洛阳", "开封", "荥阳", "郑州"]
+    },
+    "fallbackLabelBySlug": {
+      "shuihu-jiangzhou": "江州 / 浔阳（今江西九江）"
+    }
+  },
+  "placeDynastyAdminOverrides": {
+    "xinqiji-jingkou": {
+      "qin": {
+        "admin": "会稽郡（鄣郡）",
+        "reason": "秦代江南镇江属会稽郡/鄣郡，非江北东海郡"
+      }
+    },
+    "battle-chibi": {
+      "donghan": {
+        "admin": "荆州（刺史部） · 江夏郡",
+        "reason": "蒲圻赤壁汉末属荆州江夏郡/南郡江防线，非长沙郡"
+      },
+      "sanguo": {
+        "admin": "荆州 · 江夏郡",
+        "reason": "孙吴蒲圻属荆州江夏郡"
+      },
+      "dongjin": {
+        "admin": "荆州 · 江夏郡",
+        "reason": "东晋蒲圻属荆州江夏郡"
+      }
+    },
+    "hanyu-languan": {
+      "dongjin": {
+        "admin": "雍州 · 京兆郡（上洛郡界）",
+        "reason": "蓝田关位于京兆与上洛郡界秦岭脊线"
+      }
+    }
+  },
+  "targetNowOverrides": {
+    "battle-chibi": {
+      "polityNow": "东汉荆州南郡",
+      "adminNow": "孙刘抗曹前线（与曹操水军乌林隔江对峙）",
+      "reason": "208年赤壁之战隔江对峙前线注记"
+    }
+  },
+  "routeStopOverrides": {
+    "dufu-763": {
+      "洛阳": {
+        "placeDisplay": "洛阳（东都 / 河南府）",
+        "reason": "唐代洛阳称东都/河南府"
+      }
+    },
+    "sushi-exile": {
+      "_tabooRules": [
+        {
+          "fromYear": 1021,
+          "replace": "祯州",
+          "with": "惠州",
+          "reason": "北宋天禧五年（1021）避宋仁宗赵祯讳改祯州为惠州"
+        }
+      ]
+    },
+    "wentianxiang-lingdingyang": {
+      "惶恐滩": {
+        "era": "南宋端宗·景炎二年（元至元十四年）",
+        "polity": "元军控制（文天祥抗元收复吉州）",
+        "admin": "江南西路 · 吉州（元江西行省吉安路）",
+        "reason": "1277年宋元易代双纪年与抗元态势"
+      },
+      "零丁洋": {
+        "modernLoc": "广东珠江口伶仃洋海面",
+        "modernProv": "广东省",
+        "polity": "南宋抗元水军海域",
+        "admin": "元军水陆围攻",
+        "reason": "海上战船作诗定位"
+      },
+      "崖山": {
+        "era": "南宋少帝·祥兴二年（元至元十六年）",
+        "polity": "南宋流亡行朝据点（元军合围）",
+        "admin": "广南东路 · 广州（元江西行省广州路）",
+        "reason": "1279年崖山海战双纪年与行朝据点"
+      }
+    }
+  }
+}
