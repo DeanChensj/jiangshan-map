@@ -39,7 +39,7 @@ A reference has only these fields:
 
 - `w`: work id, registered in `works.json`
 - `loc`: chapter, section or page
-- `url`: optional, online text
+- `url`: optional (primary sources only require `w` + `loc`; omitting `url` is completely fine), online text link
 - `note`: optional, a short remark on how the sources differ, about 60 characters at most. If the atlas text itself looks wrong, say so in the PR description instead
 
 One key per line, keys sorted. `node scripts/audit_sources.js --fix` does this for you.
