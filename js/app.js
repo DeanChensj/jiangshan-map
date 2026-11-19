@@ -50,26 +50,6 @@
     象: 'xiang', 废: 'fei', 恭: 'gong', 保: 'bao', 闵: 'min', 西: 'xi', 赞: 'zan', 禄: 'lu', 收: 'shou', 辅: 'fu',
     眷: 'juan', 礼: 'li', 法: 'fa', 祚: 'zuo', 奲: 'da', 都: 'du', 盛: 'sheng', 人: 'ren',
   };
-  const ADMIN_CATEGORY_EN = {
-    刺史部: 'Inspectorate Region',
-    布政使司: 'Provincial Administration Commission',
-    行省: 'Branch Secretariat (Province)',
-    宣政院: 'Bureau of Buddhist and Tibetan Affairs',
-    中书省: 'Central Secretariat',
-    省: 'Province',
-    '道/省': 'Circuit / Province',
-    将军辖区: 'Generalship Jurisdiction',
-    办事大臣: 'Imperial Resident Jurisdiction',
-    驻藏大臣: 'Imperial Resident in Tibet',
-    地方: 'Region',
-    都督区: 'Area Command',
-    郡区: 'Commandery Zone',
-    政区: 'Administrative Region',
-    城: 'City',
-    属国: 'Dependent State',
-    部: 'Tribal Division',
-    侨州: 'Emigre Prefecture',
-  };
   // Timeline autoplay is event-driven: the playhead jumps from one node to the next (every
   // milestone year plus every territory-snapshot boundary) instead of crawling through the
   // ~1,950 calendar years where nothing changes. An ordinary event stays up long enough to
@@ -1193,7 +1173,7 @@
         return this._extraEnTermMap;
       }
       const dict = dictRef || {};
-      const map = { ...ADMIN_CATEGORY_EN };
+      const map = {};
       // 1. Stripped parenthetical keys from enLocale.dict (e.g. '南郑（汉中）' -> '南郑': 'Nanzheng')
       for (const [k, v] of Object.entries(dict)) {
         if (!v) continue;
@@ -5451,17 +5431,15 @@
       const rulers = this._polityRulers(desc);
       const extra = this._id('polity-extra');
       if (extra) {
-        const esc = (s) =>
-          String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
         let html = '';
         if (rulers) {
-          html += `<div class="polity-row"><span class="seat-tag">${en ? 'Rulers' : this._zh('帝系')}</span><span class="polity-rulers">${esc(rulers)}</span></div>`;
+          html += `<div class="polity-row"><span class="seat-tag">${en ? 'Rulers' : this._zh('帝系')}</span><span class="polity-rulers">${escHtml(rulers)}</span></div>`;
         }
         if (stages.length) {
           const chips = stages
             .map(
               (s, i) =>
-                `<button type="button" class="polity-stage-chip" data-idx="${i}" title="${esc(this.trTerm(s.caption))}">${esc(this.formatYear(s.from, true))}${s.to > s.from ? `–${esc(this.formatYear(s.to, true))}` : ''}</button>`
+                `<button type="button" class="polity-stage-chip" data-idx="${i}" title="${escHtml(this.trTerm(s.caption))}">${escHtml(this.formatYear(s.from, true))}${s.to > s.from ? `–${escHtml(this.formatYear(s.to, true))}` : ''}</button>`
             )
             .join('');
           html += `<div class="polity-row polity-stages-row"><span class="seat-tag">${en ? 'Territory' : this._zh('疆域')}</span><span class="polity-stages">${chips}</span></div>`;
@@ -6013,6 +5991,13 @@
       this._id('dynasty-span').textContent = this.formatSpan(dynasty);
       this._id('dynasty-seat').textContent = this.dynastySeat(dynasty);
       this._id('dynasty-summary').textContent = this.dynastySummary(dynasty);
+      const tLnk = this._id('lnk-dynasty-topic');
+      if (tLnk && dynasty && dynasty.key) {
+        const en = this.locale === 'en';
+        tLnk.href = `topics/${dynasty.key}.html`;
+        tLnk.textContent = en ? 'Guide' : this._zh('图志');
+        tLnk.title = en ? `${this.dynastyName(dynasty)} Guide` : this._zh(`${dynasty.title}专题图志`);
+      }
       this._syncDocumentSeoMeta();
 
       const ul = this._id('milestone-list');
@@ -6195,14 +6180,12 @@
     // Each work is one unbreakable unit; the line wraps only between works (css/style.css).
     _milestoneSourceHtml(groups) {
       if (!Array.isArray(groups) || !groups.length) return '';
-      const esc = (s) =>
-        String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
       const shown = groups.slice(0, 2);
       const hasMore = groups.length > 2;
       const parts = shown.map(([title, chapters], i) => {
         const ch = this._formatMilestoneChapters(chapters);
         const tail = hasMore && i === shown.length - 1 ? ' 等' : '';
-        return `<span class="ev-src-work">${i ? '' : '据'}《${esc(title)}》${esc(ch)}${tail}</span>`;
+        return `<span class="ev-src-work">${i ? '' : '据'}《${escHtml(title)}》${escHtml(ch)}${tail}</span>`;
       });
       return parts.join(' ');
     }
