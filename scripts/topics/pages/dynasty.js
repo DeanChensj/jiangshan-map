@@ -19,7 +19,7 @@ const {
   renderFooter,
 } = require('../layout');
 
-function renderCartographicNotesSection(d, notes) {
+function renderCartographicNotesSection(d, notes, sectionNumZh = '四') {
   if (!Array.isArray(notes) || notes.length === 0) return '';
   const itemsHtml = notes
     .map(
@@ -30,10 +30,28 @@ function renderCartographicNotesSection(d, notes) {
     )
     .join('\n');
   return `      <section id="sec-notes" class="section-card">
-        <h2>四、${escHtml(d.title)}舆图边界、山川形胜与政区考据札记</h2>
+        <h2>${escHtml(sectionNumZh)}、${escHtml(d.title)}舆图边界、山川形胜与政区考据札记</h2>
         <p>以下记录「江山时序」在绘制${escHtml(d.title)}（${fmtDynSpanZh(d)}）疆域多边形、古海岸线与州郡政区时所依据的历史地理考据准则：</p>
         <div class="carto-note-grid">
 ${itemsHtml}
+        </div>
+      </section>\n\n`;
+}
+
+function renderDynastyPersonsSection(d, personLinks) {
+  if (!Array.isArray(personLinks) || personLinks.length === 0) return '';
+  const chipsHtml = personLinks
+    .map(
+      (lnk) =>
+        `<a class="chip-link" href="${escHtml(lnk.href)}">${escHtml(lnk.label)}</a>`
+    )
+    .join('\n          ');
+  return `      <section id="sec-persons" class="section-card">
+        <h2>四、${escHtml(d.title)}人物志与生平行迹（${personLinks.length} 篇）</h2>
+        <p>收录${escHtml(d.title)}时期具备完整生平编年节点与正史出处的精修行迹与核心历史人物独立图志：</p>
+        <div class="chip-grid">
+          ${chipsHtml}
+          <a class="chip-link" href="persons.html">浏览历代人物志总录 →</a>
         </div>
       </section>\n\n`;
 }
@@ -49,6 +67,7 @@ function buildDynastyPage({
   sourcesBundle,
   dynastyNotes,
   relatedLinks,
+  personLinks = [],
   assetHashes,
 }) {
   ctrl.locale = 'en';
@@ -218,8 +237,13 @@ function buildDynastyPage({
     { id: 'sec-cities', label: `二、古今名城（${settlements.length}）` },
     { id: 'sec-events', label: `三、编年大事（${milestones.length}）` },
   ];
+  const hasPersonsSec = Array.isArray(personLinks) && personLinks.length > 0;
+  if (hasPersonsSec) {
+    tocItems.push({ id: 'sec-persons', label: `四、人物与行迹（${personLinks.length}）` });
+  }
+  const notesNumZh = hasPersonsSec ? '五' : '四';
   if (notesList.length > 0) {
-    tocItems.push({ id: 'sec-notes', label: '四、舆图考据札记' });
+    tocItems.push({ id: 'sec-notes', label: `${notesNumZh}、舆图考据札记` });
   }
   const tocFooterLinks = [
     prevDyn ? `<a href="${escHtml(prevDyn.key)}.html">← ${escHtml(prevDyn.title)}</a>` : '',
@@ -384,7 +408,7 @@ ${milestoneRowsHtml}
         </div>
       </section>
 
-${renderCartographicNotesSection(d, notesList)}${renderFooter(allDynasties)}
+${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList, notesNumZh)}${renderFooter(allDynasties)}
     </main>
   </div>
 </body>

@@ -22,6 +22,7 @@ const {
   TOPICS_ASSETS_DIR,
   BASE_URL,
   computeTopicAssetHashes,
+  isStandalonePersonMonograph,
 } = require('./topics/config');
 const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData } = require('./topics/runtime');
 
@@ -29,7 +30,7 @@ function auditAllTopics() {
   const errors = [];
   const fail = (ctx, msg) => errors.push(`[${ctx}] ${msg}`);
 
-  const { dynasties, loreData } = loadAtlasRuntime();
+  const { ctrl, dynasties, loreData } = loadAtlasRuntime();
   const sourcesBundle = loadSourcesBundle();
   const { dynastyNotes, featuredTopics, geoOverrides } = loadTopicsData();
   const assetHashes = computeTopicAssetHashes();
@@ -83,8 +84,20 @@ function auditAllTopics() {
   const persons = loreData.PERSON_PROFILES || [];
   const journeys = loreData.HISTORICAL_JOURNEYS || [];
   const personKeys = new Set(persons.map((p) => p.key));
+  const personByKey = new Map(persons.map((p) => [p.key, p]));
   const journeyByKey = new Map(journeys.map((j) => [j.key, j]));
   const storyByKey = new Map(persons.filter((p) => p && p.isStory).map((s) => [s.key, s]));
+  const standalonePersons = persons.filter(isStandalonePersonMonograph);
+  const standalonePersonBySlug = new Map(standalonePersons.map((p) => [`person-${p.key}.html`, p]));
+  const nonStoryPersons = persons.filter((p) => p && !p.isStory);
+  const personEventCountCache = new Map();
+  const getPersonEventCount = (pk) => {
+    if (personEventCountCache.has(pk)) return personEventCountCache.get(pk);
+    const prof = personByKey.get(pk);
+    const n = prof ? ctrl._collectPersonEvents(prof).length : 0;
+    personEventCountCache.set(pk, n);
+    return n;
+  };
 
   // Collect all editorial r.note strings from data/sources/ (>= 8 chars to avoid trivial word collisions)
   const rawNotes = new Set();
@@ -101,8 +114,15 @@ function auditAllTopics() {
     .sort();
   const htmlFileSet = new Set(htmlFiles);
 
-  if (htmlFiles.length !== dynasties.length + storyByKey.size + journeys.length + featuredTopics.length + 1) {
-    fail('topics/', `Unexpected HTML file count: ${htmlFiles.length}`);
+  const expectedPageTotal =
+    dynasties.length +
+    storyByKey.size +
+    journeys.length +
+    featuredTopics.length +
+    standalonePersons.length +
+    2;
+  if (htmlFiles.length !== expectedPageTotal) {
+    fail('topics/', `Unexpected HTML file count: ${htmlFiles.length} (expected ${expectedPageTotal})`);
   }
 
   const minY = dynasties[0].fromYear;
@@ -130,7 +150,9 @@ function auditAllTopics() {
     if (!html.includes(expectedHantAttr)) fail(f, `Missing or stale data-v-hant hash (${expectedHantAttr})`);
     if (!html.includes(`rel="canonical" href="${BASE_URL}/topics/${f}"`)) fail(f, 'Missing or mismatched canonical link');
     if (!html.includes('application/ld+json')) fail(f, 'Missing JSON-LD structured data');
-    if (f !== 'index.html' && !html.includes('../?embed=1&')) fail(f, 'Missing ?embed=1 preview iframe');
+    if (f !== 'index.html' && f !== 'persons.html' && !html.includes('../?embed=1&')) {
+      fail(f, 'Missing ?embed=1 preview iframe');
+    }
 
     // Placeholder / broken render tokens
     if (html.includes('undefined')) fail(f, 'Contains literal "undefined"');
@@ -209,8 +231,9 @@ function auditAllTopics() {
               if (params.has('stop')) {
                 const jObj = journeyByKey.get(pk);
                 const stopIdx = Number(params.get('stop'));
-                if (!jObj || !Number.isInteger(stopIdx) || stopIdx < 0 || stopIdx >= (jObj.stops || []).length) {
-                  fail(f, `Invalid journey stop index "${params.get('stop')}" for "${pk}" in ${rawUrl}`);
+                const maxStops = jObj ? (jObj.stops || []).length : getPersonEventCount(pk);
+                if (!Number.isInteger(stopIdx) || stopIdx < 0 || stopIdx >= maxStops) {
+                  fail(f, `Invalid person/journey stop index "${params.get('stop')}" for "${pk}" in ${rawUrl}`);
                 }
               }
             }
@@ -317,6 +340,44 @@ function auditAllTopics() {
       if (!row1277 || !stripTags(row1277[1]).includes('景炎')) fail(f, '1277 stop missing Southern Song era 景炎');
       if (!row1279 || !stripTags(row1279[1]).includes('祥兴')) fail(f, '1279 stop missing Southern Song era 祥兴');
     }
+
+    if (f === 'persons.html') {
+      for (const j of journeys) {
+        if (!html.includes(`journey-${j.key}.html`)) {
+          fail(f, `Missing journey link journey-${j.key}.html in persons.html`);
+        }
+      }
+      for (const p of standalonePersons) {
+        if (!html.includes(`person-${p.key}.html`)) {
+          fail(f, `Missing standalone person link person-${p.key}.html in persons.html`);
+        }
+      }
+      for (const p of nonStoryPersons) {
+        const hasLink =
+          html.includes(`person-${p.key}.html`) ||
+          (p.journeyKey && html.includes(`journey-${p.journeyKey}.html`)) ||
+          html.includes(`?person=${p.key}"`) ||
+          html.includes(`?person=${encodeURIComponent(p.key)}"`);
+        if (!hasLink) {
+          fail(f, `Missing directory entry for person "${p.key}" in persons.html`);
+        }
+      }
+    }
+
+    if (standalonePersonBySlug.has(f)) {
+      const prof = standalonePersonBySlug.get(f);
+      if (!html.includes(`../?embed=1&amp;person=${prof.key}`) && !html.includes(`../?embed=1&person=${prof.key}`)) {
+        fail(f, `Missing embedded map iframe for ?person=${prof.key}`);
+      }
+      const stopCardsCount = (html.match(/<div class="stop-card">/g) || []).length;
+      const expectedEvCount = getPersonEventCount(prof.key);
+      if (stopCardsCount !== expectedEvCount) {
+        fail(f, `Stop card count mismatch (${stopCardsCount} rendered vs ${expectedEvCount} collected)`);
+      }
+      if (!/<h1>[\s\S]*?<\/h1>/.test(html)) {
+        fail(f, 'Missing <h1> heading on person monograph');
+      }
+    }
   }
 
   return errors;
@@ -330,7 +391,8 @@ if (require.main === module) {
     if (errors.length > 30) console.error(`  ... and ${errors.length - 30} more`);
     process.exitCode = 1;
   } else {
-    console.log('✓ All 39 topic monographs passed link, asset, schema & historical invariant checks');
+    const pageCount = fs.readdirSync(TOPICS_DIR).filter((f) => f.endsWith('.html')).length;
+    console.log(`✓ All ${pageCount} topic monographs passed link, asset, schema & historical invariant checks`);
     process.exitCode = 0;
   }
 }

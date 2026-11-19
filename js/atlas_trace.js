@@ -2686,7 +2686,15 @@
                 isEn ? 'Filter to shared encounters only' : '仅看多人同途交汇节点'
               }">${isEn ? `Shared ${sameTimeCount}` : `同途 ${sameTimeCount}`}</button>`
             : '';
-        const tSlug = !isMulti && (profile.isStory ? `story-${profile.key}` : profile.journeyKey ? `journey-${profile.journeyKey}` : '');
+        const tSlug = !isMulti
+          ? profile.isStory
+            ? `story-${profile.key}`
+            : profile.journeyKey
+              ? `journey-${profile.journeyKey}`
+              : profile.isRelic || (profile.evCount || 0) >= 5
+                ? `person-${profile.key}`
+                : ''
+          : '';
         const topicLinkBtn = tSlug
           ? `<a class="topic-inline-link" href="topics/${escHtml(tSlug)}.html" target="_blank" rel="noopener" title="${isEn ? 'Topic guide' : '查阅专题图志'}">${isEn ? 'Guide' : '图志'}</a>`
           : '';

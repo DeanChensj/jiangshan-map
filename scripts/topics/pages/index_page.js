@@ -15,6 +15,8 @@ function buildTopicsIndexPage({
   storyMeta,
   journeyMeta,
   featuredMeta,
+  personMeta = [],
+  totalPersonDirectoryCount = 139,
   allDynasties,
   assetHashes,
 }) {
@@ -63,14 +65,30 @@ function buildTopicsIndexPage({
     )
     .join('\n');
 
-  const totalCount = dynMeta.length + storyMeta.length + journeyMeta.length + featuredMeta.length;
+  const personListHtml = personMeta
+    .map(
+      (p) => `            <tr>
+              <td><a href="${escHtml(p.slug)}.html"><strong>${escHtml(p.titleZh)}</strong></a><br/><small>${escHtml(p.titleEn)}</small></td>
+              <td>${escHtml(p.descZh)}</td>
+              <td><a href="${escHtml(p.slug)}.html">查阅人物志 →</a></td>
+            </tr>`
+    )
+    .join('\n');
+
+  const totalCount =
+    dynMeta.length +
+    storyMeta.length +
+    journeyMeta.length +
+    featuredMeta.length +
+    personMeta.length;
 
   const tocItems = [
     { id: 'sec-stories', label: `一、事件始末（${storyMeta.length}）` },
     { id: 'sec-featured', label: `二、诗词与战役（${featuredMeta.length}）` },
     { id: 'sec-dynasties', label: `三、十八朝疆域（${dynMeta.length}）` },
-    { id: 'sec-journeys', label: `四、人物行迹（${journeyMeta.length}）` },
-    { id: 'sec-methodology', label: '五、制图考据原则' },
+    { id: 'sec-journeys', label: `四、精修行迹（${journeyMeta.length}）` },
+    { id: 'sec-persons', label: `五、历代人物志（${personMeta.length}）` },
+    { id: 'sec-methodology', label: '六、制图考据原则' },
   ];
 
   const jsonLd = {
@@ -120,6 +138,7 @@ ${renderTocSidebar(tocItems)}
         <p>汇集「江山时序」全部专题图志，每篇提供古今地名对照、帝王年号编年、一手正史出处与交互式古舆图实时预览。</p>
         <div class="cta-row">
           <a class="cta-btn" href="../">进入「江山时序」交互式主地图（前403年—今）→</a>
+          <a class="cta-btn secondary" href="persons.html">浏览历代人物志总录（${totalPersonDirectoryCount} 位）→</a>
         </div>
       </article>
 
@@ -179,7 +198,7 @@ ${dynListHtml}
       </section>
 
       <section id="sec-journeys" class="section-card">
-        <h2>四、点人溯事：历史人物生平行迹图志（${journeyMeta.length} 篇）</h2>
+        <h2>四、点人溯事：历史人物精修行迹图志（${journeyMeta.length} 篇）</h2>
         <div class="table-wrap">
           <table id="tbl-journeys" class="data-table">
             <thead>
@@ -196,8 +215,28 @@ ${jListHtml}
         </div>
       </section>
 
+      <section id="sec-persons" class="section-card">
+        <h2>五、历代核心人物与国器流转独立图志（${personMeta.length} 篇 · 全库收录 ${totalPersonDirectoryCount} 位）</h2>
+        <p>汇总全库高密度历史人物（≥ 5 处代表节点）与《传国玉玺》独立图志；完整 139 位人物总录请见 <a href="persons.html"><strong>历代人物志总录</strong></a>：</p>
+${renderTableFilterBar('tbl-persons', '输入人物姓名、朝代、地点或英文名检索 65 篇人物与国器图志…', personMeta.length)}
+        <div class="table-wrap">
+          <table id="tbl-persons" class="data-table">
+            <thead>
+              <tr>
+                <th>人物 / 国器（中英对照）</th>
+                <th>朝代与主要足迹节点</th>
+                <th>专题链接</th>
+              </tr>
+            </thead>
+            <tbody>
+${personListHtml}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section id="sec-methodology" class="section-card">
-        <h2>五、历史舆图制图原则与山川地理考据说明</h2>
+        <h2>六、历史舆图制图原则与山川地理考据说明</h2>
         <div class="carto-note-grid">
           <div class="carto-note-item">
             <strong>1. 自然山川与分水岭原则（去现代省界化）</strong>
