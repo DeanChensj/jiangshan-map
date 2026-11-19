@@ -6017,7 +6017,7 @@
       if (topicLnk && dynasty && dynasty.key) {
         const isEn = this.locale === 'en';
         topicLnk.setAttribute('href', `topics/${dynasty.key}.html`);
-        topicLnk.textContent = isEn ? 'Guide ↗' : this._zh('图志 ↗');
+        topicLnk.textContent = isEn ? 'Guide' : this._zh('图志');
         topicLnk.setAttribute(
           'title',
           isEn

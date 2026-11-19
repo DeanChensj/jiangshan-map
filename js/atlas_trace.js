@@ -2695,7 +2695,7 @@
         const topicLinkBtn = topicSlug
           ? `<a class="topic-inline-link" href="topics/${escHtml(topicSlug)}.html" target="_blank" rel="noopener" title="${
               isEn ? 'Open full topic guide & source table' : '查阅专题图志长卷与史料出处'
-            }">${isEn ? 'Guide ↗' : '图志 ↗'}</a>`
+            }">${isEn ? 'Guide' : '图志'}</a>`
           : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
