@@ -4244,6 +4244,12 @@ html[lang="en"] #act-toggle-pane .tp-label {
   transition: opacity 0.25s ease;
 }
 
+#viewport-frame.has-person-overview-lines .region-shape,
+#viewport-frame.has-person-overview-lines .region-shape-casing {
+  opacity: 0.28;
+  transition: opacity 0.25s ease;
+}
+
 .journey-track-halo,
 .journey-track-thread,
 .journey-track-upcoming,
@@ -4266,10 +4272,21 @@ html[lang="en"] #act-toggle-pane .tp-label {
   stroke-width: 6.4px;
 }
 
+.journey-track-halo.is-overview {
+  stroke: rgba(251, 246, 236, 0.72);
+  stroke-width: 2.8px;
+}
+
 .journey-track-thread {
   stroke-width: 2.55px;
   stroke-dasharray: 8 3.8;
   opacity: 0.96;
+}
+
+.journey-track-thread.is-overview {
+  stroke-width: 1.5px;
+  stroke-dasharray: none;
+  opacity: 0.78;
 }
 
 .journey-track-upcoming {
