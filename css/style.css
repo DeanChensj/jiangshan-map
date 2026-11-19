@@ -4045,6 +4045,22 @@ html[lang="en"] .genealogy-list li {
   pointer-events: none;
 }
 
+.band-phase-tick.is-silent-phase {
+  display: none;
+}
+
+#scrubber-dock.is-milestones-hidden .band-ev-dot {
+  display: none;
+}
+
+#scrubber-dock.is-milestones-hidden .band-phase-tick {
+  background: rgba(255, 250, 240, 0.56);
+}
+
+#scrubber-dock.is-milestones-hidden .band-phase-tick.is-silent-phase {
+  display: block;
+}
+
 /* #3 Stage Transition Ghost Diff Outline */
 #grp-ghost-diff {
   pointer-events: none;
