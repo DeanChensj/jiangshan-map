@@ -30,7 +30,8 @@ function buildPersonsIndexPage({
       const uniqueStops = dedupeConsecutive(stops.map((s) => s.ancientZh));
       const sitesPreview = uniqueStops.slice(0, 5).join(' → ');
       const prof = personProfileByKey.get(j.key);
-      const dynTitle = prof && prof.dynastyKey ? dynTitleMap.get(prof.dynastyKey) || '' : '';
+      const dynKey = (prof && prof.dynastyKey) || j.dynastyKey || '';
+      const dynTitle = dynKey ? dynTitleMap.get(dynKey) || '' : '';
       const searchExtras = [
         j.titleEn,
         dynTitle,
@@ -43,6 +44,7 @@ function buildPersonsIndexPage({
         badge: '精修行迹',
         badgeClass: 'is-curated',
         zh: j.titleZh,
+        tags: [dynKey, 'journey'].filter(Boolean).join(' '),
         searchExtras,
         spanZh: cleanSpanZh,
         routeZh: `${sitesPreview}${uniqueStops.length > 5 ? ' …' : ''}`,
@@ -60,6 +62,7 @@ function buildPersonsIndexPage({
           badge: '国器流转',
           badgeClass: 'is-relic',
           zh: profile.zh,
+          tags: profile.dynastyKey || meta.dynastyKey || '',
           searchExtras,
           spanZh: `${meta.dynastyTitle}（${meta.spanZh}）`,
           routeZh: '和氏璧 → 秦制传国玺 → 后唐洛阳失传',
@@ -74,7 +77,7 @@ function buildPersonsIndexPage({
 
   const curatedRowsHtml = curatedItems
     .map(
-      (item) => `            <tr data-search="${escHtml(item.searchExtras)}">
+      (item) => `            <tr data-tags="${escHtml(item.tags)}" data-search="${escHtml(item.searchExtras)}">
               <td><a href="${escHtml(item.topicHref)}"><strong>${escHtml(item.zh)}</strong></a><span class="person-type-badge ${item.badgeClass}">${escHtml(item.badge)}</span><br/><small>${escHtml(item.spanZh)}</small></td>
               <td>${escHtml(item.routeZh)}</td>
             </tr>`
@@ -84,7 +87,7 @@ function buildPersonsIndexPage({
   const monographRowsHtml = standardMonographs
     .map(({ profile, meta }) => {
       const searchExtras = [profile.en, ...(profile.aliases || [])].filter(Boolean).join(' ');
-      return `            <tr data-search="${escHtml(searchExtras)}">
+      return `            <tr data-tags="${escHtml(profile.dynastyKey || meta.dynastyKey || '')}" data-search="${escHtml(searchExtras)}">
               <td><a href="${escHtml(meta.slug)}.html"><strong>${escHtml(profile.zh)}</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>${escHtml(meta.dynastyTitle)}（${escHtml(meta.spanZh)}）${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
               <td>${escHtml(meta.descZh.replace(/^[^：]+：/, ''))}</td>
             </tr>`;
@@ -101,7 +104,7 @@ function buildPersonsIndexPage({
         : '';
       const sitesText = sampleSitesZh || aliasList || '';
       const searchExtras = [profile.en, ...(profile.aliases || [])].filter(Boolean).join(' ');
-      return `            <tr data-search="${escHtml(searchExtras)}">
+      return `            <tr data-tags="${escHtml(profile.dynastyKey || '')}" data-search="${escHtml(searchExtras)}">
               <td><a href="${escHtml(mapHref)}"><strong>${escHtml(profile.zh)}</strong></a><br/><small>${escHtml(dynTitle)}（${escHtml(spanZh)}）${profile.courtesyZh ? ` · ${escHtml(profile.courtesyZh)}` : ''}</small></td>
               <td>${escHtml(sitesText)}</td>
             </tr>`;
@@ -110,22 +113,22 @@ function buildPersonsIndexPage({
 
   const presetOptions = [
     { label: '全部', value: '' },
-    { label: '精修行迹', value: '精修行迹' },
-    { label: '战国', value: '战国' },
-    { label: '秦', value: '秦' },
-    { label: '西汉', value: '西汉' },
-    { label: '东汉', value: '东汉' },
-    { label: '三国', value: '三国' },
-    { label: '晋', value: '晋' },
-    { label: '南北朝', value: '南北朝' },
-    { label: '隋', value: '隋' },
-    { label: '唐', value: '唐' },
-    { label: '五代', value: '五代十国' },
-    { label: '宋', value: '宋' },
-    { label: '元', value: '元' },
-    { label: '明', value: '明' },
-    { label: '清', value: '清' },
-    { label: '民国/现代', value: '中华' },
+    { label: '精修行迹', value: 'journey' },
+    { label: '战国', value: 'zhanguo' },
+    { label: '秦', value: 'qin' },
+    { label: '西汉', value: 'xihan' },
+    { label: '东汉', value: 'donghan' },
+    { label: '三国', value: 'sanguo' },
+    { label: '晋', value: 'xijin,dongjin' },
+    { label: '南北朝', value: 'nanbei' },
+    { label: '隋', value: 'sui' },
+    { label: '唐', value: 'tang' },
+    { label: '五代', value: 'wudai' },
+    { label: '宋', value: 'beisong,nansong' },
+    { label: '元', value: 'yuan' },
+    { label: '明', value: 'ming' },
+    { label: '清', value: 'qing' },
+    { label: '民国/现代', value: 'roc,prc' },
   ];
 
   const pageTitle = `历代人物志与国器流转总录（收录 ${totalDirectoryCount} 位历史人物） | 江山时序`;
