@@ -13,30 +13,16 @@
     }
   },
   "placeDynastyAdminOverrides": {
-    "xinqiji-jingkou": {
-      "qin": {
-        "admin": "会稽郡（鄣郡）",
-        "reason": "秦代江南镇江属会稽郡/鄣郡，非江北东海郡"
+    "shuihu-jiangzhou": {
+      "beisong": {
+        "admin": "江南东路 · 江州",
+        "reason": "北宋江州属江南东路，南宋初改隶江南西路"
       }
     },
     "battle-chibi": {
       "donghan": {
         "admin": "荆州（刺史部） · 江夏郡",
         "reason": "蒲圻赤壁汉末属荆州江夏郡/南郡江防线，非长沙郡"
-      },
-      "sanguo": {
-        "admin": "荆州 · 江夏郡",
-        "reason": "孙吴蒲圻属荆州江夏郡"
-      },
-      "dongjin": {
-        "admin": "荆州 · 江夏郡",
-        "reason": "东晋蒲圻属荆州江夏郡"
-      }
-    },
-    "hanyu-languan": {
-      "dongjin": {
-        "admin": "雍州 · 京兆郡（上洛郡界）",
-        "reason": "蓝田关位于京兆与上洛郡界秦岭脊线"
       }
     },
     "place-xian": {
@@ -162,6 +148,7 @@
         "reason": "1277年宋元易代双纪年与抗元态势"
       },
       "零丁洋": {
+        "era": "南宋少帝·祥兴二年（元至元十六年）",
         "modernLoc": "广东珠江口伶仃洋海面",
         "modernProv": "广东省",
         "polity": "南宋抗元水军海域",
