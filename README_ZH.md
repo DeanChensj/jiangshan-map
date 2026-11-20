@@ -46,7 +46,8 @@
 - **当朝在位帝王与年号同步显示**：时间轴上方的气泡实时显示当年在位君主与年号纪年，如 `西汉武帝·天汉元年`、`唐太宗·贞观四年`、`清康熙三十九年`。
 - **历代州府悬停即查 & 古今省界对照**：一级政区采用拓扑去重与宣纸衬底双重描边（Parchment Casing）；放大地图悬停任意州郡（如明代的「应天府」「顺天府」、三国的「荆州」）即可查看政区归属与今省对照。右上角 **「图层」** 菜单里的「现代省界」默认开启，把今天的省界叠在古舆图上，还可以再打开「现代省名」。
 - **水系古泽与千年工程随年代流转**：拉动时间轴时，黄河历代改道、云梦泽与罗布泊（蒲昌海）等古湖消长，以及战国秦汉明长城、隋唐与京杭大运河、丝绸之路、郑和航线均随当朝版图同步演进；渤海湾、苏北、长江口与珠江三角洲的古海岸线也会随年代进退。
-- **时间轴可缩放**：向内拖动时间轴两端的手柄可放大某一段历史（如秦、三国、五代这类短朝代），双击时间轴恢复全览。
+- **时间轴可缩放、可只看版图**：向内拖动时间轴两端的手柄可放大某一段历史（如秦、三国、五代这类短朝代），双击时间轴恢复全览；在「图层」里关掉「重大事件」，步进与自动播放只停在疆域发生变化的年份。
+- **大事注明出处**：选中一条编年大事，下方会注明所据史籍卷次，如「据《后汉书》卷88」（仅中文界面）。
 - **语音讲解**：打开播放按钮旁的讲解开关，时间轴自动播放时会用浏览器内置语音朗读纪年、年号与当年大事，人物行迹的自动巡礼同样适用（需要浏览器支持语音合成）。
 
 > [点击直达：大明永乐十三年（1415 年）· 两京十三布政使司与「应天府」府境探查 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=%E5%BA%94%E5%A4%A9%E5%BA%9C)
@@ -71,15 +72,14 @@
 ### 玩法三：点人溯事 —— 搜任意帝王将相与文豪名僧，重走万里青史路
 
 点开左上角 **万能搜索框**（附单条可轮换人物示例与 `长安 / 赤壁 / 霍去病 / 李白 杜甫 高适` 快捷检索词，亦可直接输入 `曹操`、`司马迁`、`岳飞`、`郑和` 等任意历史人物），即可展开 **「点人溯事」** 生平纪事面板，在山河版图上以编号图钉标出其一生行迹：
-- **秦始皇一统六国行迹（前 238 — 前 221 年）**：从咸阳亲政平乱、王翦攻赵邺城拉开序幕，到内史腾灭韩、王翦克邯郸灭赵、易水破燕拔蓟城、王贲水灌大梁灭魏、王翦六十万大军破楚、远征辽东灭燕平代，直至南下临淄齐王建出降、六国一统——每点下一处史事，地图上的韩、赵、魏、楚、燕、齐便随之一步步并入大秦版图！
 - **张骞凿空西域行迹（前 138 — 前 126 年）**：从长安出发，被匈奴羁留十余载不改其志，持汉节一路走到大宛、康居、大月氏。
 - **诸葛亮出山北伐行迹（207 — 234 年）**：从襄阳隆中三顾茅庐、柴桑联吴破曹、溯江入蜀、白帝托孤、五月渡泸南征，到进驻汉中上《出师表》、祁山北伐与五丈原秋风星落。
 - **玄奘西行求法行迹（627 — 645 年）**：孤身出玉门关，涉莫贺延碛、越凌山雪隘、渡印度河，抵那烂陀寺求法、赴曲女城讲论，载誉归唐。
 - **李白仗剑壮游行迹（701 — 762 年）**：自安西碎叶入蜀居青莲，二十四岁仗剑出三峡、漫游扬州散金三十万、酒隐安陆、仰天大笑入长安供奉翰林、洛阳逢杜甫、白帝城遇赦放舟，终老当涂青山。
 - **苏轼宦海贬谪行迹（1056 — 1101 年）**：从出川赴京、密州超然台赏月，到乌台诗案后贬谪黄州写下《赤壁赋》，再到惠州、跨海远谪海南儋州。
 - **王阳明心学立功行迹（1472 — 1529 年）**：从余姚瑞云楼降生、京师抗疏下诏狱，到贬谪贵州修文「龙场悟道」始倡知行合一、庐陵讲学、巡抚南赣破山贼、三十五日生擒宁王朱宸濠、绍兴天泉证道揭出「致良知」，直至总督两广归途舟次南安留下「此心光明，亦复何言」。
-- **多人同看**：在搜索框里一次输入两三个人物（如 `李白 杜甫 高适`、`曹操 刘备 孙权`），几人的行迹合并到同一条时间轴上，同年同地的相逢以「同途」标出，点 `同途 N` 可只看交集站点。
-- **点事溯局**：重大历史事件也能像人物一样逐站展开。目前收录楚汉之争（前 207 — 前 202 年）、安史之乱（755 — 763 年）与靖康之变（1125 — 1142 年），各以十个节点分三幕铺开，对阵双方用两种颜色区分，攻守路线一目了然。
+- **多人同看**：在搜索框里一次输入两三个人物（如 `李白 杜甫 高适`、`曹操 刘备 孙权`），几人的行迹以不同颜色合并到同一条时间轴上，「同世交集」标尺标出几人同时在世的年份，同年同地的相逢以连线标出，点 `同途 N` 可只看交集站点。
+- **点事溯局**：重大历史事件也能像人物一样逐站展开，如秦灭六国、楚汉之争、安史之乱、靖康之变，对阵双方用两种颜色区分，攻守路线与版图易手随站推进。
 
 每切换上一处 / 下一处史事（点击面板里的「上一站 / 下一站」或底部的 **`‹ / ›`**、键盘方向键，或按空格键自动演进），**底下的历史年份、在位君主与年号、王朝版图都会跟着古人的脚步同步流转**，单段朱砂飞白弧线精准高亮当前行程，并附有《史记》《出师表》《传习录》或唐宋千古名篇原句。
 
@@ -98,6 +98,12 @@
 > [点击直达：西汉武帝元狩二年（前 121 年）· 开启「舆图寻址」挑战模式 →](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)
 
 ![西汉前 121 年 · 舆图寻址挑战模式预览](assets/preview_quiz_challenge.webp)
+
+---
+
+### 延伸阅读：历史专题图志
+
+想安静地读而不是拖地图？[**历史专题图志**](https://deanchen.me/jiangshan-map/topics/) 把地图里的内容整理成可以直接阅读、检索和分享的静态页面：重大事件始末、古诗词路线与著名战役、十八历史时期的疆域与政区变迁、历代人物生平与名城关隘沿革。页面里的年份、地点与人物都能一键跳回舆图对应画面。
 
 ---
 
@@ -121,7 +127,7 @@
 - **看某场大战**：[`?year=-260&place=长平`](https://deanchen.me/jiangshan-map/?year=-260&place=长平)（长平之战） / [`?year=208&place=赤壁`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁)（赤壁之战） / [`?year=383&place=淝水`](https://deanchen.me/jiangshan-map/?year=383&place=淝水)（东晋前秦 · 淝水之战）
 - **查某座古城或名胜的千年故事**：[`?year=741&place=长安`](https://deanchen.me/jiangshan-map/?year=741&place=长安)（长安/西安） / [`?year=1415&place=应天府`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府)（建康/应天/南京） / [`?year=819&place=蓝关`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关)（韩愈「雪拥蓝关马不前」）
 - **画一条自定义诗词/行军路线**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳)（杜甫《闻官军收河南河北》同年归乡路） / [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州)（苏轼「黄州惠州儋州」跨年贬谪路）
-- **展阅历史人物生平与行迹**：[`?person=qinshihuang`](https://deanchen.me/jiangshan-map/?person=qinshihuang)（秦始皇） / [`?person=zhangqian`](https://deanchen.me/jiangshan-map/?person=zhangqian)（张骞凿空西域） / [`?person=zhugeliang`](https://deanchen.me/jiangshan-map/?person=zhugeliang)（诸葛亮出山北伐） / [`?person=xuanzang`](https://deanchen.me/jiangshan-map/?person=xuanzang)（玄奘西行求法） / [`?person=libai`](https://deanchen.me/jiangshan-map/?person=libai)（李白仗剑壮游） / [`?person=sushi`](https://deanchen.me/jiangshan-map/?person=sushi)（苏轼宦海贬谪） / [`?person=wangyangming`](https://deanchen.me/jiangshan-map/?person=wangyangming)（王阳明心学立功）
+- **展阅历史人物生平与行迹**：[`?person=zhangqian`](https://deanchen.me/jiangshan-map/?person=zhangqian)（张骞凿空西域） / [`?person=zhugeliang`](https://deanchen.me/jiangshan-map/?person=zhugeliang)（诸葛亮出山北伐） / [`?person=xuanzang`](https://deanchen.me/jiangshan-map/?person=xuanzang)（玄奘西行求法） / [`?person=libai`](https://deanchen.me/jiangshan-map/?person=libai)（李白仗剑壮游） / [`?person=sushi`](https://deanchen.me/jiangshan-map/?person=sushi)（苏轼宦海贬谪） / [`?person=wangyangming`](https://deanchen.me/jiangshan-map/?person=wangyangming)（王阳明心学立功）
 - **多人同看与历史事件**：[`?person=libai,dufu`](https://deanchen.me/jiangshan-map/?person=libai,dufu)（李白与杜甫） / [`?person=caocao,liubei,sunquan`](https://deanchen.me/jiangshan-map/?person=caocao,liubei,sunquan)（曹操、刘备、孙权） / [`?event=qintongyi`](https://deanchen.me/jiangshan-map/?event=qintongyi)（秦灭六国） / [`?event=chuhan`](https://deanchen.me/jiangshan-map/?event=chuhan)（楚汉之争） / [`?event=anshi`](https://deanchen.me/jiangshan-map/?event=anshi)（安史之乱） / [`?event=jingkang`](https://deanchen.me/jiangshan-map/?event=jingkang)（靖康之变）
 - **直接开一局挑战**：[`?year=-121&quiz=locate`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate)（舆图寻址挑战）
 - **切换繁简与英文界面**：[`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw)（繁体中文） / [`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)（英文版）
