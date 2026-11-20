@@ -875,6 +875,32 @@ async function runApiSearchSuite(ctx) {
     );
   }
 
+  // CONTRIBUTING must document the commands and data symbols that actually ship, so a
+  // contributor following the storyline checklist edits a file that exists and names a
+  // table that is really loaded. `scripts/gen_pinyin.js` never existed and `PERSON_EVENTS`
+  // was renamed to `PERSON_DETAILS` in #312, but both stayed in the checklist (added in #358).
+  for (const [label, docSrc] of [
+    ['CONTRIBUTING.md', contributingSrc],
+    ['CONTRIBUTING_ZH.md', contributingZhSrc],
+  ]) {
+    for (const [, scriptPath] of docSrc.matchAll(/node\s+(scripts\/[A-Za-z0-9_\-.]+\.(?:js|cjs))/g)) {
+      assert(
+        fs.existsSync(path.join(ROOT, scriptPath)),
+        `${label} documents "node ${scriptPath}", but that file does not exist`
+      );
+    }
+    assert(
+      !docSrc.includes('PERSON_EVENTS'),
+      `${label} must not tell contributors to edit PERSON_EVENTS; the story-line stops/camps table is PERSON_DETAILS`
+    );
+  }
+  assert(
+    loreData.PERSON_DETAILS &&
+      typeof loreData.PERSON_DETAILS === 'object' &&
+      Array.isArray((loreData.PERSON_DETAILS.anshi || {}).stops),
+    'PERSON_DETAILS must be the lore_detail.js table holding each story line\'s camps/stops'
+  );
+
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
   const ghostNodes = [];
   ctrl.grpGhostDiff = {
