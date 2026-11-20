@@ -126,10 +126,10 @@
         links[j].classList.toggle('is-active', links[j] === linkById[activeId]);
       }
       var activeLink = linkById[activeId];
-      if (activeLink && window.innerWidth < 1080 && activeLink.scrollIntoView) {
-        try {
-          activeLink.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
-        } catch (_) {}
+      var tocBox = activeLink && activeLink.closest ? activeLink.closest('.topic-toc') : null;
+      if (tocBox && window.innerWidth < 1080 && tocBox.scrollWidth > tocBox.clientWidth) {
+        var targetLeft = activeLink.offsetLeft - (tocBox.clientWidth - activeLink.offsetWidth) / 2;
+        tocBox.scrollLeft = Math.max(0, targetLeft);
       }
     }
 
