@@ -2215,25 +2215,13 @@ window.EN_LOCALE = {
       "Emperor Wu of Northern Zhou proscribes Buddhism and Daoism, returning monks to farms and armies",
       "Chang'an"
     ],
-    "tang:620": [
-      "Li Shimin routs Song Jingang from Bobi to Jiexiu; Liu Wuzhou flees to the Turks, securing Hedong",
-      "Bobi · Jiexiu"
-    ],
     "tang:622": [
-      "Liu Heita retakes Dou Jiande’s lands as Prince of Handong; Lingnan and Jiaozhou submit to Tang",
+      "Liu Heita retakes Hebei as Prince of Handong, falls in 623; Lingnan and Jiaozhou submit to Tang",
       "Mingzhou · Jiaozhou"
-    ],
-    "tang:623": [
-      "Crown Prince Jiancheng crushes Liu Heita in Hebei; Fu Gongshi rebels at Danyang as Song emperor",
-      "Mingzhou · Danyang"
     ],
     "tang:624": [
       "Li Xiaogong and Li Jing crush Fu Gongshi; Gaozu issues the Wude Statutes and equal-field system",
       "Danyang · Chang'an"
-    ],
-    "tang:628": [
-      "Chai Shao besieges Shuofang; Liang Shidu is slain by a cousin, the last Sui-era warlord to fall",
-      "Shuofang (Xiazhou)"
     ],
     "tang:653": [
       "Zhangsun Wuji completes the Tang Code with Commentary, the pinnacle of classical Chinese law",
@@ -4772,11 +4760,8 @@ window.EN_LOCALE = {
     "赤壁 · 江陵": "Red Cliffs · Jiangling",
     "汉中 · 麦城": "Hanzhong · Maicheng",
     "虎牢 · 江陵": "Hulao · Jiangling",
-    "柏壁 · 介休": "Bobi · Jiexiu",
     "洺州 · 交州": "Mingzhou · Jiaozhou",
-    "洺州 · 丹杨": "Mingzhou · Danyang",
     "丹杨 · 长安": "Danyang · Chang'an",
-    "朔方（夏州）": "Shuofang (Xiazhou)",
     "应天 · 平江": "Yingtian (Nanjing) · Suzhou",
     "应天 · 大都": "Yingtian (Nanjing) · Dadu (Beijing)",
     "重庆 · 成都": "Chongqing · Chengdu",
