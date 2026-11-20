@@ -2215,9 +2215,25 @@ window.EN_LOCALE = {
       "Emperor Wu of Northern Zhou proscribes Buddhism and Daoism, returning monks to farms and armies",
       "Chang'an"
     ],
+    "tang:620": [
+      "Li Shimin routs Song Jingang from Bobi to Jiexiu; Liu Wuzhou flees to the Turks, securing Hedong",
+      "Bobi · Jiexiu"
+    ],
+    "tang:622": [
+      "Liu Heita retakes Dou Jiande’s lands as Prince of Handong; Lingnan and Jiaozhou submit to Tang",
+      "Mingzhou · Jiaozhou"
+    ],
+    "tang:623": [
+      "Crown Prince Jiancheng crushes Liu Heita in Hebei; Fu Gongshi rebels at Danyang as Song emperor",
+      "Mingzhou · Danyang"
+    ],
     "tang:624": [
-      "Emperor Gaozu promulgates the Wude Statutes establishing equal-field and tripartite tax systems",
-      "Chang'an"
+      "Li Xiaogong and Li Jing crush Fu Gongshi; Gaozu issues the Wude Statutes and equal-field system",
+      "Danyang · Chang'an"
+    ],
+    "tang:628": [
+      "Chai Shao besieges Shuofang; Liang Shidu is slain by a cousin, the last Sui-era warlord to fall",
+      "Shuofang (Xiazhou)"
     ],
     "tang:653": [
       "Zhangsun Wuji completes the Tang Code with Commentary, the pinnacle of classical Chinese law",
@@ -4756,6 +4772,11 @@ window.EN_LOCALE = {
     "赤壁 · 江陵": "Red Cliffs · Jiangling",
     "汉中 · 麦城": "Hanzhong · Maicheng",
     "虎牢 · 江陵": "Hulao · Jiangling",
+    "柏壁 · 介休": "Bobi · Jiexiu",
+    "洺州 · 交州": "Mingzhou · Jiaozhou",
+    "洺州 · 丹杨": "Mingzhou · Danyang",
+    "丹杨 · 长安": "Danyang · Chang'an",
+    "朔方（夏州）": "Shuofang (Xiazhou)",
     "应天 · 平江": "Yingtian (Nanjing) · Suzhou",
     "应天 · 大都": "Yingtian (Nanjing) · Dadu (Beijing)",
     "重庆 · 成都": "Chongqing · Chengdu",
@@ -4773,15 +4794,18 @@ window.EN_LOCALE = {
     "炀帝三征高句丽引发天下大乱：瓦岗李密围逼东都洛阳，窦建德据河北，杜伏威控江淮，萧铣起兵荆襄，薛举据陇西，617 年李渊自太原起兵入据长安。": "Emperor Yang’s three Goguryeo campaigns sparked nationwide rebellions: Li Mi’s Wagang Army besieged Luoyang, Dou Jiande held Hebei, Du Fuwei controlled Jianghuai, Xiao Xian rose in Jingxiang, Xue Ju held Longxi, and in 617 Li Yuan marched from Taiyuan to capture Chang’an.",
     "郑（王世充）": "Zheng (Wang Shichong)",
     "夏（窦建德）": "Xia (Dou Jiande)",
+    "汉东（刘黑闼）": "Handong (Liu Heita)",
     "大燕（安禄山）": "Yan (An Lushan)",
     "大燕（史思明）": "Yan (Shi Siming)",
     "755 — 757 · 安史之乱爆发：安禄山据河北、河南称帝大燕，两京相继陷落，玄宗幸蜀、肃宗灵武即位": "755–757 · An Lushan Rebellion: An Lushan proclaims the Yan state over Hebei and Henan; both capitals fall, Xuanzong flees to Shu and Suzong is enthroned at Lingwu",
     "757 — 763 · 两京光复与史思明再起：郭子仪借回纥兵收复长安、洛阳，史思明据河北再叛并一度复陷洛阳": "757–763 · Capitals Recovered, Shi Siming Rises: Guo Ziyi retakes Chang'an and Luoyang with Uyghur help; Shi Siming rebels again from Hebei and briefly retakes Luoyang",
     "梁（萧铣）": "Liang (Xiao Xian)",
     "618—621 年 · 武德建唐与统一战争初期": "618–621 CE · Founding of Tang & Early Reunification Wars",
-    "618 年李渊于长安称帝建唐，先平陇西薛仁杲、河西李轨、河东刘武周，巩固关中、河东与巴蜀根据地，与洛阳王世充、河北窦建德、江陵萧铣对峙。": "In 618 Li Yuan proclaimed the Tang Dynasty in Chang’an, pacifying Xue Rengao in Longxi, Li Gui in Hexi, and Liu Wuzhou in Hedong to secure Guanzhong, Hedong, and Bashu while facing Wang Shichong in Luoyang, Dou Jiande in Hebei, and Xiao Xian in Jiangling.",
-    "621—630 年 · 虎牢决战与武德一统": "621–630 CE · Battle of Hulao & Wude Unification",
-    "621 年李世民于虎牢之战一举擒窦建德、降王世充，李孝恭、李靖平定江南萧铣，唐朝基本统一全国，北与东突厥对峙于阴山一线。": "In 621 Li Shimin captured Dou Jiande and forced Wang Shichong’s surrender at the Battle of Hulao while Li Xiaogong and Li Jing pacified Xiao Xian in the south, reuniting China and facing the Eastern Turks along the Yin Mountains.",
+    "618 年李渊于长安称帝建唐，当年破陇西薛仁杲，次年收河西李轨，620 年逐走南下并州的刘武周，据有关中、河东、陇右与巴蜀，与洛阳王世充、河北窦建德、江陵萧铣、江淮杜伏威并立（图示 620 年前后形势）。": "In 618 Li Yuan proclaimed the Tang Dynasty in Chang’an. Tang defeated Xue Rengao in Longxi that year, took Li Gui’s Hexi in 619, and drove Liu Wuzhou out of Bingzhou in 620, holding Guanzhong, Hedong, Longyou, and Bashu while facing Wang Shichong in Luoyang, Dou Jiande in Hebei, Xiao Xian in Jiangling, and Du Fuwei in Jianghuai (the map shows the situation around 620).",
+    "621—624 年 · 虎牢决战与河北、江淮再乱": "621–624 CE · Battle of Hulao; Renewed Revolts in Hebei & Jianghuai",
+    "621 年李世民于虎牢擒窦建德、降王世充，李孝恭、李靖平萧铣，唐得河南、荆湘，次年岭南冯盎、交趾丘和归附。窦建德旧将刘黑闼旋即尽复河北故地，称汉东王，623 年败亡；杜伏威入朝后辅公祏据丹杨称宋帝，624 年平。幽州罗艺早已归唐；朔方梁师都依附突厥至 628 年，图中未单列。": "In 621 Li Shimin captured Dou Jiande and forced Wang Shichong’s surrender at Hulao while Li Xiaogong and Li Jing took Xiao Xian’s Jiangling; Tang gained Henan and Jingxiang, and Feng Ang of Lingnan and Qiu He of Jiaozhi submitted the next year. Dou Jiande’s former general Liu Heita soon retook Hebei as Prince of Handong and was destroyed in 623; after Du Fuwei went to court, Fu Gongshi proclaimed himself Emperor of Song at Danyang and was crushed in 624. Luo Yi of Youzhou had already joined Tang; Liang Shidu of Shuofang, a Turkic client until 628, is not drawn separately.",
+    "624—630 年 · 平定江淮与武德一统": "624–630 CE · Jianghuai Pacified & Wude Unification",
+    "624 年李孝恭、李靖平辅公祏，隋末群雄略尽，唐朝基本统一全国，北与东突厥对峙于阴山一线；朔方梁师都依附突厥，至 628 年始平，图中未单列。": "In 624 Li Xiaogong and Li Jing crushed Fu Gongshi, ending nearly all the late-Sui warlord regimes; Tang had largely reunited China and faced the Eastern Turks along the Yin Mountains. Liang Shidu of Shuofang, a Turkic client, held out until 628 and is not drawn separately.",
     "归义军（张议潮）": "Guiyi Circuit (Zhang Yichao)",
     "归义军 · 甘州回鹘": "Guiyi Circuit · Ganzhou Uyghurs",
     "高昌回鹘": "Qocho Uyghur Kingdom",

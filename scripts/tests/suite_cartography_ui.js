@@ -861,13 +861,13 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 29 map change milestones
-    const expectedTangMapChanges = [618, 621, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
+    // Tang 30 map change milestones
+    const expectedTangMapChanges = [618, 621, 624, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 29 map change milestone years must match'
+      'tang: 30 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -1422,7 +1422,7 @@ async function runCartographyUiSuite(ctx) {
     for (const silentY of [614, 880, 1335, 1927]) {
       assert(tStopYears.has(silentY), `Pure-territory mode must include snapshot boundary ${silentY}`);
     }
-    for (const narrativeY of [624, 725, 736, 737]) {
+    for (const narrativeY of [626, 725, 736, 737]) {
       assert(!tStopYears.has(narrativeY), `Pure-territory mode must skip non-snapshot milestone ${narrativeY}`);
     }
     let cameraPanCalls = 0;
@@ -1433,12 +1433,12 @@ async function runCartographyUiSuite(ctx) {
     ctrl.openMilestoneBalloon = () => {
       balloonOpenCalls++;
     };
-    ctrl.year = 621;
+    ctrl.year = 624;
     ctrl.dynastyIdx = dynasties.indexOf(tang);
     proto.stepTimelineNode.call(ctrl, 1);
-    assert.strictEqual(ctrl.year, 630, `Expected forward territory step from 621 to skip 624/626/627 and land on 630, got ${ctrl.year}`);
+    assert.strictEqual(ctrl.year, 630, `Expected forward territory step from 624 to skip 626/627/628 and land on 630, got ${ctrl.year}`);
     proto.stepTimelineNode.call(ctrl, -1);
-    assert.strictEqual(ctrl.year, 621, `Expected backward territory step from 630 to land on 621, got ${ctrl.year}`);
+    assert.strictEqual(ctrl.year, 624, `Expected backward territory step from 630 to land on 624, got ${ctrl.year}`);
     assert.strictEqual(cameraPanCalls, 0, 'Pure-territory stepping must not auto-pan camera');
     assert.strictEqual(balloonOpenCalls, 0, 'Pure-territory stepping must not open milestone balloon');
 
@@ -1458,10 +1458,10 @@ async function runCartographyUiSuite(ctx) {
 
     hiddenFlag = false;
     assert.strictEqual(proto._autoplayStops.call(ctrl).filter((s) => s.year > ctrl.minYear).length, stops.length);
-    ctrl.year = 621;
+    ctrl.year = 624;
     ctrl.dynastyIdx = dynasties.indexOf(tang);
     proto.stepTimelineNode.call(ctrl, 1);
-    assert.strictEqual(ctrl.year, 624, `Restoring events layer must resume stopping at 624, got ${ctrl.year}`);
+    assert.strictEqual(ctrl.year, 626, `Restoring events layer must resume stopping at 626, got ${ctrl.year}`);
     ctrl.grpMilestones = savedGrpM;
     ctrl._ensureMilestoneInView = savedEnsureView;
     ctrl.openMilestoneBalloon = savedOpenBalloon;

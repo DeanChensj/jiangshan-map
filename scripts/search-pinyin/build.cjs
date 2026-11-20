@@ -68,6 +68,7 @@ customPinyin({
   隗嚣: 'wěi xiāo',
   栎阳: 'yuè yáng',
   阿史那都支: 'ā shǐ nà dū zhī',
+  梁师都: 'liáng shī dū',
   浑邪王: 'hún yé wáng',
   鸠摩罗什: 'jiū mó luó shí',
   什翼犍: 'shí yì jiān',
