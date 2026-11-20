@@ -15,6 +15,7 @@ const {
 const {
   renderSharedHead,
   renderTopHeader,
+  hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
   renderTableFilterBar,
@@ -22,7 +23,7 @@ const {
   renderFooter,
 } = require('../layout');
 
-function renderCartographicNotesSection(d, notes, sectionNumZh = '四') {
+function renderCartographicNotesSection(d, notes) {
   if (!Array.isArray(notes) || notes.length === 0) return '';
   const itemsHtml = notes
     .map(
@@ -32,11 +33,13 @@ function renderCartographicNotesSection(d, notes, sectionNumZh = '四') {
           </div>`
     )
     .join('\n');
-  return `      <section id="sec-notes" class="section-card">
-        <h2>${escHtml(sectionNumZh)}、${escHtml(d.title)}舆图边界与政区考据</h2>
-        <div class="carto-note-grid">
+  return `      <section id="sec-notes" class="section-card carto-notes-card">
+        <details class="carto-details">
+          <summary>${escHtml(d.title)}舆图边界与政区考据（${notes.length} 条）</summary>
+          <div class="carto-note-grid">
 ${itemsHtml}
-        </div>
+          </div>
+        </details>
       </section>\n\n`;
 }
 
@@ -221,8 +224,7 @@ function buildDynastyPage({
       const citeHtml = formatSourceCitationsHtml(`milestone:${mk}`, sourcesBundle);
       return `            <tr${enPair[0] ? ` data-search="${escHtml(enPair[0])}"` : ''}>
               <td><a href="${escHtml(mUrl)}"><strong>${fmtYearShortZh(m.year)}年</strong></a><br/><small>${escHtml(eraLabel)}</small></td>
-              <td><strong>${escHtml(m.headline)}</strong>${storyBadgeHtml}</td>
-              <td>${escHtml(m.note || '')}${citeHtml}</td>
+              <td><strong>${escHtml(m.headline)}</strong>${storyBadgeHtml}${m.note ? `<div class="event-note">${escHtml(m.note)}</div>` : ''}${citeHtml}</td>
             </tr>`;
     })
     .join('\n');
@@ -240,10 +242,6 @@ function buildDynastyPage({
   const hasPersonsSec = Array.isArray(personLinks) && personLinks.length > 0;
   if (hasPersonsSec) {
     tocItems.push({ id: 'sec-persons', label: '四、人物与行迹' });
-  }
-  const notesNumZh = hasPersonsSec ? '五' : '四';
-  if (notesList.length > 0) {
-    tocItems.push({ id: 'sec-notes', label: `${notesNumZh}、舆图考据札记` });
   }
   const tocFooterLinks = [
     prevDyn ? `<a href="${escHtml(prevDyn.key)}.html">← ${escHtml(prevDyn.title)}</a>` : '',
@@ -307,7 +305,7 @@ function buildDynastyPage({
   })}
 <body>
 ${renderTopHeader({ lang, mapBase })}
-  <div class="page-shell has-toc">
+  <div class="page-shell${hasTocSidebar(tocItems) ? ' has-toc' : ''}">
 ${renderTocSidebar(tocItems, tocFooterLinks)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
@@ -317,13 +315,9 @@ ${renderTocSidebar(tocItems, tocFooterLinks)}
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">中国历代疆域与政区图志</span>
         <h1>${escHtml(d.title)}（${escHtml(spanZh)}）</h1>
         ${d.seat ? `<div class="meta-pills"><span class="meta-pill"><strong>都城：</strong>${escHtml(d.seat)}</span></div>` : ''}
         <p>${escHtml(d.summary)}</p>
-        <div class="cta-row">
-          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中查看「${escHtml(d.title)}」→</a>
-        </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
@@ -333,8 +327,8 @@ ${renderEmbedMapSection({
     lang,
     base: mapBase,
   }),
+  fullHref: buildMapHref(mapQuery, { lang, base: mapBase }),
   titleZh: `${d.title}交互式舆图预览（${spanZh}）`,
-  hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
 })}
 
       <section id="sec-phases" class="section-card">
@@ -383,8 +377,7 @@ ${renderTableFilterBar('tbl-events', '输入年份、人物、事件或正史典
             <thead>
               <tr>
                 <th>年份与年号</th>
-                <th>历史事件</th>
-                <th>史事与出处</th>
+                <th>历史事件与出处</th>
               </tr>
             </thead>
             <tbody>
@@ -394,7 +387,7 @@ ${milestoneRowsHtml}
         </div>
       </section>
 
-${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList, notesNumZh)}${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
+${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList)}${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
     </main>
   </div>
 </body>

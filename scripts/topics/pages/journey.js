@@ -12,6 +12,7 @@ const {
 const {
   renderSharedHead,
   renderTopHeader,
+  hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
   renderRelatedStrip,
@@ -40,12 +41,36 @@ function buildJourneyPage({
   const pageDesc = `${j.titleZh}（${j.titleEn}，${cleanSpanZh}）历史地图时空轨迹，全线共 ${stops.length} 站：${stopsChainZh}。提供逐站帝王年号、古今政区对照、经典史料诗词与交互式路线回放。`;
 
   const yearSeen = new Map();
+  const rawStopCites = stops.map((s) => {
+    const cnt = (yearSeen.get(s.year) || 0) + 1;
+    yearSeen.set(s.year, cnt);
+    const stopKeySuffix = cnt > 1 ? `${s.year}-${cnt}` : `${s.year}`;
+    return formatSourceCitationsHtml(`journey:${j.key}:${stopKeySuffix}`, sourcesBundle);
+  });
+
+  const personSourceHtml = formatSourceCitationsHtml(`person:${j.key}`, sourcesBundle);
+  let promotedSourceHtml = personSourceHtml;
+  if (!promotedSourceHtml) {
+    const citeFreq = new Map();
+    for (const c of rawStopCites) {
+      if (c) citeFreq.set(c, (citeFreq.get(c) || 0) + 1);
+    }
+    let bestCite = '';
+    let bestCount = 0;
+    for (const [c, n] of citeFreq.entries()) {
+      if (n > bestCount) {
+        bestCite = c;
+        bestCount = n;
+      }
+    }
+    if (bestCount >= 2) {
+      promotedSourceHtml = bestCite;
+    }
+  }
+
   const stopCardsHtml = stops
     .map((s, sIdx) => {
-      const cnt = (yearSeen.get(s.year) || 0) + 1;
-      yearSeen.set(s.year, cnt);
-      const stopKeySuffix = cnt > 1 ? `${s.year}-${cnt}` : `${s.year}`;
-      const stopCiteHtml = formatSourceCitationsHtml(`journey:${j.key}:${stopKeySuffix}`, sourcesBundle);
+      const stopCiteHtml = rawStopCites[sIdx] === promotedSourceHtml ? '' : rawStopCites[sIdx];
       const stopMapHref = buildMapHref(`?person=${encodeURIComponent(j.key)}&stop=${sIdx}`, {
         lang,
         base: mapBase,
@@ -53,12 +78,10 @@ function buildJourneyPage({
       return `        <div class="stop-card">
           <div class="stop-header">
             <div>
-              <span class="stop-badge">第 ${sIdx + 1} 站</span>
               <strong>${escHtml(s.ancientZh)}（今${escHtml(s.modernZh)}）· ${escHtml(s.titleZh)}</strong>
             </div>
             <div>
-              <strong>${fmtYearShortZh(s.year)}年（${escHtml(s.eraZh)}）</strong> ·
-              <a class="stop-map-link" href="${escHtml(stopMapHref)}">地图定位 →</a>
+              <a class="stop-map-link" href="${escHtml(stopMapHref)}" title="在交互地图中定位此站">${fmtYearShortZh(s.year)}年（${escHtml(s.eraZh)}） ↗</a>
             </div>
           </div>
           <p class="stop-desc-zh">${escHtml(s.descZh)}</p>
@@ -70,8 +93,6 @@ function buildJourneyPage({
         </div>`;
     })
     .join('\n');
-
-  const personSourceHtml = formatSourceCitationsHtml(`person:${j.key}`, sourcesBundle);
 
   const tocItems = [
     { id: 'sec-map', label: '行迹路线预览' },
@@ -127,7 +148,7 @@ function buildJourneyPage({
   })}
 <body>
 ${renderTopHeader({ lang, mapBase })}
-  <div class="page-shell has-toc">
+  <div class="page-shell${hasTocSidebar(tocItems) ? ' has-toc' : ''}">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
@@ -137,23 +158,20 @@ ${renderTocSidebar(tocItems)}
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">点人溯事 · 历史人物精修行迹</span>
         <h1>${escHtml(j.titleZh)}（${escHtml(cleanSpanZh)}）</h1>
         <div class="meta-pills">
           <span class="meta-pill"><strong>起讫：</strong>${escHtml(stops[0].ancientZh)} → ${escHtml(stops[stops.length - 1].ancientZh)}</span>
         </div>
-        ${personSourceHtml}
-        <div class="cta-row">
-          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图播放「${escHtml(j.titleZh)}」→</a>
-        </div>
+        ${promotedSourceHtml}
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
   iframeSrc: buildEmbedHref(`person=${encodeURIComponent(j.key)}`, { lang, base: mapBase }),
+  fullHref: buildMapHref(mapQuery, { lang, base: mapBase }),
   titleZh: `${j.titleZh}交互式路线预览（${cleanSpanZh}）`,
-  hintZh: '点击地图即可缩放查看各站 · 右上角可全屏播放动画',
+  labelZh: '行迹舆图',
 })}
 
       <section id="sec-stops" class="section-card">
@@ -161,7 +179,7 @@ ${renderEmbedMapSection({
 ${stopCardsHtml}
       </section>
 
-${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

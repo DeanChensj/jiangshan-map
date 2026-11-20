@@ -3,7 +3,6 @@
 const { BASE_URL, LASTMOD } = require('../config');
 const {
   escHtml,
-  fmtYearZh,
   fmtYearShortZh,
   fmtDynSpanZh,
   firstSentenceZh,
@@ -13,6 +12,7 @@ const {
 const {
   renderSharedHead,
   renderTopHeader,
+  hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
   renderTableFilterBar,
@@ -57,8 +57,6 @@ function buildFeaturedTopicPage({
   const routeOverrides = (geoOverrides && geoOverrides.routeStopOverrides && geoOverrides.routeStopOverrides[topic.slug]) || {};
   const adminOverrides =
     (geoOverrides && geoOverrides.placeDynastyAdminOverrides && geoOverrides.placeDynastyAdminOverrides[topic.slug]) || {};
-  const nowOverride =
-    (geoOverrides && geoOverrides.targetNowOverrides && geoOverrides.targetNowOverrides[topic.slug]) || null;
   const nearestCfg = (geoOverrides && geoOverrides.nearestCity) || {};
 
   const pageTitle = `${topic.titleZh} · 古今地名政区沿革 | 江山时序`;
@@ -173,48 +171,13 @@ ${routeRows}
       })
       .join('\n');
 
-    const adminNow =
-      (nowOverride && nowOverride.adminNow) ||
-      Array.from(new Set([...(info.regions || []), ...(info.prefectures || [])]))
-        .map((p) => String(p).replace(/\(([^)]+)\)/g, '（$1）'))
-        .join(' · ');
-    const polityNow = (nowOverride && nowOverride.polityNow) || info.polity || '';
-    const adminCombined = [polityNow, adminNow].filter(Boolean).join(' · ');
-
     tocItems = [
       { id: 'sec-map', label: '交互舆图预览' },
-      { id: 'sec-detail', label: '一、节点考据' },
-      { id: 'sec-genealogy', label: '二、历代沿革' },
+      { id: 'sec-genealogy', label: '一、历代沿革' },
     ];
 
-    detailSectionHtml = `      <section id="sec-detail" class="section-card">
-        <h2>一、节点考据（${fmtYearZh(info.year)} · ${escHtml(info.era)}）</h2>
-        <div class="table-wrap">
-          <table class="data-table">
-            <tbody>
-              <tr>
-                <th style="width:24%">古地名 / 典故地标</th>
-                <td><strong>${escHtml(resolvedDisplayTitle)}</strong></td>
-              </tr>
-              <tr>
-                <th>历史纪年与年号</th>
-                <td>${fmtYearZh(info.year)} · <strong>${escHtml(info.era)}</strong>（${escHtml(info.dynasty.title)}，都城：${escHtml(info.dynasty.seat)}）</td>
-              </tr>
-              <tr>
-                <th>所属政权与政区</th>
-                <td><strong>${escHtml(adminCombined)}</strong></td>
-              </tr>
-              <tr>
-                <th>现代对应地</th>
-                <td>${escHtml(info.modernProvince)} · 今${escHtml(info.modern || '')}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="sec-genealogy" class="section-card">
-        <h2>二、「${escHtml(resolvedDisplayTitle)}」历代政区沿革</h2>
+    detailSectionHtml = `      <section id="sec-genealogy" class="section-card">
+        <h2>一、「${escHtml(resolvedDisplayTitle)}」历代政区沿革</h2>
 ${renderTableFilterBar('tbl-genealogy', '筛选朝代、年号、政权或郡县政区…', allDynasties.length)}
         <div class="table-wrap">
           <table id="tbl-genealogy" class="data-table is-wide-table">
@@ -276,7 +239,7 @@ ${genRows}
   })}
 <body>
 ${renderTopHeader({ lang, mapBase })}
-  <div class="page-shell has-toc">
+  <div class="page-shell${hasTocSidebar(tocItems) ? ' has-toc' : ''}">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
@@ -286,29 +249,25 @@ ${renderTocSidebar(tocItems)}
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">${escHtml(topic.categoryZh)}</span>
         <h1>${escHtml(topic.shortZh)}</h1>
         <blockquote class="poem-box">
           ${escHtml(topic.poemQuote)}
           <cite>—— ${escHtml(topic.poemAuthor)}</cite>
         </blockquote>
         <p>${escHtml(topic.summaryZh)}</p>
-        <div class="cta-row">
-          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中打开此专题 →</a>
-        </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
   iframeSrc: buildEmbedHref(embedQuery, { lang, base: mapBase }),
+  fullHref: buildMapHref(mapQuery, { lang, base: mapBase }),
   titleZh: `${topic.shortZh}交互式舆图预览`,
-  hintZh: '点击地图激活交互 · 右上角可全屏打开主地图',
 })}
 
 ${detailSectionHtml}
 
-${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

@@ -74,8 +74,12 @@ function renderTopHeader({ activeNav = '', lang = 'zh', mapBase = '../' } = {}) 
   </header>`;
 }
 
+function hasTocSidebar(tocItems) {
+  return Array.isArray(tocItems) && tocItems.length >= 3;
+}
+
 function renderTocSidebar(tocItems, navFooterHtml = '') {
-  if (!Array.isArray(tocItems) || !tocItems.length) return '';
+  if (!hasTocSidebar(tocItems)) return '';
   const itemsHtml = tocItems
     .map(
       (item, idx) =>
@@ -90,11 +94,18 @@ ${itemsHtml}
     </aside>`;
 }
 
-function renderEmbedMapSection({ id = 'sec-map', iframeSrc, titleZh, hintZh }) {
+function renderEmbedMapSection({
+  id = 'sec-map',
+  iframeSrc,
+  fullHref = '',
+  titleZh,
+  labelZh = '交互舆图',
+  openLabelZh = '全屏打开 ↗',
+}) {
   return `      <section id="${escHtml(id)}" class="embed-card" aria-label="交互式历史地图预览">
         <div class="embed-header">
-          <h2>${escHtml(titleZh)}</h2>
-          <span class="embed-hint">${escHtml(hintZh || '点击地图即可缩放、拖拽或拨动底部时间轴')}</span>
+          <span class="embed-label">${escHtml(labelZh)}</span>
+          ${fullHref ? `<a class="embed-open-link" href="${escHtml(fullHref)}">${escHtml(openLabelZh)}</a>` : ''}
         </div>
         <div class="embed-frame-wrap">
           <iframe class="embed-iframe" src="${escHtml(iframeSrc)}" title="${escHtml(titleZh)}" loading="lazy" allowfullscreen></iframe>
@@ -103,7 +114,7 @@ function renderEmbedMapSection({ id = 'sec-map', iframeSrc, titleZh, hintZh }) {
 }
 
 function renderTableFilterBar(tableId, placeholderZh, totalCount, { force = false } = {}) {
-  if (!force && totalCount < 12) return '';
+  if (!force && totalCount < 30) return '';
   return `        <div class="table-filter-bar">
           <input class="table-filter-input" type="search" data-filter-table="${escHtml(tableId)}" placeholder="${escHtml(placeholderZh)}" aria-label="${escHtml(placeholderZh)}" />
           <button class="table-filter-clear is-hidden" type="button" data-filter-clear="${escHtml(tableId)}">清除</button>
@@ -138,7 +149,7 @@ function renderRelatedStrip(links) {
         </div>`;
 }
 
-function renderFooter(allDynasties, { showDynastyChips = true, lang = 'zh', mapBase = '../' } = {}) {
+function renderFooter(allDynasties, { showDynastyChips = false, lang = 'zh', mapBase = '../' } = {}) {
   const homeHref = escHtml(buildMapHref('', { lang, base: mapBase }));
   const dynNavHtml = showDynastyChips
     ? `      <section class="section-card footer-nav-card">
@@ -155,13 +166,14 @@ function renderFooter(allDynasties, { showDynastyChips = true, lang = 'zh', mapB
     : '';
   return `${dynNavHtml}      <footer class="page-footer">
         <div>© 江山时序 · <a href="${homeHref}">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
-        <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
+        <div><a href="index.html">图志总览</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
       </footer>`;
 }
 
 module.exports = {
   renderSharedHead,
   renderTopHeader,
+  hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
   renderTableFilterBar,

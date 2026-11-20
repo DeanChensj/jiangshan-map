@@ -29,7 +29,7 @@
   <meta name="twitter:description" content="江山时序点人溯事历史人物志总录：汇总 7 篇精修行迹与国器流转、64 篇核心历史人物独立时空图志，以及其余 68 位编年历史人物轨迹直达索引（共 139 位）。" />
   <meta name="twitter:image" content="https://deanchen.me/jiangshan-map/assets/og_preview.png" />
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
-  <link rel="stylesheet" href="assets/topics.css?v=2029c8a9" />
+  <link rel="stylesheet" href="assets/topics.css?v=bd1cd120" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -69,657 +69,603 @@
       </nav>
     </div>
   </header>
-  <div class="page-shell has-toc">
-    <aside class="topic-toc" aria-label="本页目录">
-      <div class="toc-heading">本页目录</div>
-      <ul class="toc-list">
-        <li><a class="toc-link is-active" href="#sec-curated">一、精修行迹与国器</a></li>
-        <li><a class="toc-link" href="#sec-monographs">二、核心人物独立志</a></li>
-        <li><a class="toc-link" href="#sec-directory">三、其余编年人物</a></li>
-      </ul>
-    </aside>
+  <div class="page-shell">
     <main class="main-col">
-      <nav class="breadcrumb" aria-label="面包屑导航">
-        <a href="../">江山时序首页</a> &rsaquo;
-        <a href="index.html">专题图志总览</a> &rsaquo;
-        <span>历代人物志</span>
-      </nav>
-
       <article class="hero-card">
-        <span class="kicker">点人溯事 · 历代人物志</span>
         <h1>历代人物生平轨迹与国器流转志</h1>
-        <p>收录历代精修行迹、传世国器与编年历史人物轨迹，点击人物可进入图文图志或定位交互舆图。</p>
-        <div class="cta-row">
-          <a class="cta-btn" href="../">进入主地图体验「点人溯事」→</a>
-        </div>
+        <p>收录历代精修行迹、传世国器与编年历史人物轨迹；标有「精修行迹」「人物志」的可查阅图文图志，其余人物直达交互舆图定位。</p>
       </article>
 
-      <section id="sec-curated" class="section-card">
-        <h2>一、精修行迹与国器流转</h2>
+      <section id="sec-persons" class="section-card">
+        <h2>历代人物与行迹目录</h2>
+        <div class="filter-preset-row">
+          <button type="button" class="filter-preset-btn is-active" data-filter-preset-table="tbl-persons" data-filter-preset-val="">全部</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="精修行迹">精修行迹</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="战国">战国</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="秦">秦</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="西汉">西汉</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="东汉">东汉</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="三国">三国</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="晋">晋</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="南北朝">南北朝</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="隋">隋</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="唐">唐</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="五代十国">五代</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="宋">宋</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="元">元</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="明">明</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="清">清</button>
+          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-persons" data-filter-preset-val="中华">民国/现代</button>
+        </div>
+        <div class="table-filter-bar">
+          <input class="table-filter-input" type="search" data-filter-table="tbl-persons" placeholder="按姓名、字号、朝代或足迹检索…" aria-label="按姓名、字号、朝代或足迹检索…" />
+          <button class="table-filter-clear is-hidden" type="button" data-filter-clear="tbl-persons">清除</button>
+          <span class="table-filter-count" data-filter-count="tbl-persons">共 139 项</span>
+        </div>
         <div class="table-wrap">
-          <table id="tbl-curated-persons" class="data-table">
+          <table id="tbl-persons" class="data-table">
             <thead>
               <tr>
-                <th>专题</th>
-                <th>代表站点</th>
+                <th>人物</th>
+                <th>代表足迹</th>
               </tr>
             </thead>
             <tbody>
-            <tr data-search="Zhang Qian&#39;s Mission to the Western Regions">
+            <tr data-search="Zhang Qian&#39;s Mission to the Western Regions 西汉 Zhang Qian 博望侯 张子文">
               <td><a href="journey-zhangqian.html"><strong>张骞凿空西域行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>前138年 — 前126年 西汉建元三年至元朔三年</small></td>
               <td>长安 → 陇西 → 姑臧 → 焉耆 → 大宛贰师城 …</td>
             </tr>
-            <tr data-search="Zhuge Liang&#39;s Southern &amp; Northern Campaigns">
+            <tr data-search="Zhuge Liang&#39;s Southern &amp; Northern Campaigns 三国 Zhuge Liang 孔明 诸葛孔明 卧龙 武侯 诸葛武侯 Kongming">
               <td><a href="journey-zhugeliang.html"><strong>诸葛亮出山北伐行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>207年 — 234年 东汉建安十二年至蜀汉建兴十二年</small></td>
               <td>隆中 → 柴桑 → 赤壁 → 成都 → 白帝城 …</td>
             </tr>
-            <tr data-search="Xuanzang&#39;s Pilgrimage to the Western Regions">
+            <tr data-search="Xuanzang&#39;s Pilgrimage to the Western Regions 唐 Xuanzang 唐僧 唐三藏 陈祎 三藏法师">
               <td><a href="journey-xuanzang.html"><strong>玄奘西行求法行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>627年 — 645年 唐贞观元年至贞观十九年</small></td>
               <td>长安 → 凉州 → 瓜州 → 高昌王城 → 龟兹 …</td>
             </tr>
-            <tr data-search="Li Bai&#39;s Grand Travels Across Tang China">
+            <tr data-search="Li Bai&#39;s Grand Travels Across Tang China 唐 Li Bai 太白 李太白 青莲居士 诗仙 谪仙人 Li Po Taibai">
               <td><a href="journey-libai.html"><strong>李白仗剑壮游行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>701年 — 762年 武周长安元年至唐宝应元年</small></td>
               <td>碎叶城 → 绵州青莲 → 渝州 → 荆门 → 扬州 …</td>
             </tr>
-            <tr data-search="Su Shi&#39;s Literary Exile Across Song China">
+            <tr data-search="Su Shi&#39;s Literary Exile Across Song China 北宋 Su Shi 东坡 苏东坡 子瞻 苏子瞻 东坡居士 Su Dongpo Dongpo">
               <td><a href="journey-sushi.html"><strong>苏轼宦海贬谪行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>1056年 — 1101年 北宋嘉祐元年至建中靖国元年</small></td>
               <td>眉州 → 东京开封府 → 凤翔府 → 杭州 → 密州 …</td>
             </tr>
-            <tr data-search="Wang Yangming&#39;s Unity of Knowledge &amp; Action">
+            <tr data-search="Wang Yangming&#39;s Unity of Knowledge &amp; Action 明 Wang Yangming 王守仁 伯安 王伯安 阳明先生 王文成公">
               <td><a href="journey-wangyangming.html"><strong>王阳明知行悟道行迹</strong></a><span class="person-type-badge is-curated">精修行迹</span><br/><small>1472年 — 1529年 明成化八年至嘉靖七年</small></td>
               <td>余姚 → 广信 → 京师 → 钱塘江 → 龙场 …</td>
             </tr>
-            <tr data-search="Heirloom Seal of the Realm">
-              <td><a href="person-yuxi.html"><strong>传国玉玺</strong></a><span class="person-type-badge is-relic">国器流转</span><br/><small>前283—936</small></td>
+            <tr data-search="Heirloom Seal of the Realm 玉玺 传国玺 传国宝 和氏璧 受命于天 既寿永昌 受命于天既寿永昌 秦玺 汉传国玺 heirloom seal imperial seal heshi bi 秦">
+              <td><a href="person-yuxi.html"><strong>传国玉玺</strong></a><span class="person-type-badge is-relic">国器流转</span><br/><small>秦（前283—936）</small></td>
               <td>和氏璧 → 秦制传国玺 → 后唐洛阳失传</td>
             </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="sec-monographs" class="section-card">
-        <h2>二、核心人物独立志</h2>
-        <div class="filter-preset-row">
-          <button type="button" class="filter-preset-btn is-active" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="">全部</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="战国">战国</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="秦">秦</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="西汉">西汉</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="东汉">东汉</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="三国">三国</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="晋">晋</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="南北朝">南北朝</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="隋">隋</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="唐">唐</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="五代十国">五代</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="宋">宋</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="元">元</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="明">明</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="清">清</button>
-          <button type="button" class="filter-preset-btn" data-filter-preset-table="tbl-person-monographs" data-filter-preset-val="中华">民国/现代</button>
-        </div>
-        <div class="table-filter-bar">
-          <input class="table-filter-input" type="search" data-filter-table="tbl-person-monographs" placeholder="按姓名、字号、朝代或足迹检索…" aria-label="按姓名、字号、朝代或足迹检索…" />
-          <button class="table-filter-clear is-hidden" type="button" data-filter-clear="tbl-person-monographs">清除</button>
-          <span class="table-filter-count" data-filter-count="tbl-person-monographs">共 64 项</span>
-        </div>
-        <div class="table-wrap">
-          <table id="tbl-person-monographs" class="data-table">
-            <thead>
-              <tr>
-                <th>人物</th>
-                <th>主要足迹</th>
-              </tr>
-            </thead>
-            <tbody>
             <tr data-search="Shang Yang 卫鞅 公孙鞅 商君">
-              <td><a href="person-shangyang.html"><strong>商鞅</strong></a><br/><small>战国（前390—前338） · 卫鞅 · 商君</small></td>
+              <td><a href="person-shangyang.html"><strong>商鞅</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>战国（前390—前338） · 卫鞅 · 商君</small></td>
               <td>栎阳、咸阳、安邑、河西吴城、商邑</td>
             </tr>
             <tr data-search="Bai Qi 武安君白起">
-              <td><a href="person-baiqi.html"><strong>白起</strong></a><br/><small>战国（前332—前257） · 秦武安君 · 战国名将</small></td>
+              <td><a href="person-baiqi.html"><strong>白起</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>战国（前332—前257） · 秦武安君 · 战国名将</small></td>
               <td>伊阙（龙门）、郢都（江陵）、华阳、长平（高平）、杜邮（咸阳西）</td>
             </tr>
             <tr data-search="Wang Jian">
-              <td><a href="person-wangjian.html"><strong>王翦</strong></a><br/><small>战国（前300—前213） · 秦灭六国主帅 · 武成侯</small></td>
+              <td><a href="person-wangjian.html"><strong>王翦</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>战国（前300—前213） · 秦灭六国主帅 · 武成侯</small></td>
               <td>邺城、邯郸、蓟城、寿春、襄平（辽阳）</td>
             </tr>
             <tr data-search="Qin Shi Huang 嬴政 秦王政 始皇帝 祖龙 First Emperor">
-              <td><a href="person-qinshihuang.html"><strong>秦始皇</strong></a><br/><small>秦（前259—前210） · 嬴政 · 始皇帝</small></td>
+              <td><a href="person-qinshihuang.html"><strong>秦始皇</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>秦（前259—前210） · 嬴政 · 始皇帝</small></td>
               <td>邯郸、咸阳、琅琊台（青岛）、博浪沙（原阳）、灵渠（兴安）</td>
             </tr>
             <tr data-search="Liu Bang 汉高祖 汉高帝 沛公 汉王刘邦">
-              <td><a href="person-liubang.html"><strong>刘邦</strong></a><br/><small>西汉（前256—前195） · 汉高祖 · 字季</small></td>
+              <td><a href="person-liubang.html"><strong>刘邦</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前256—前195） · 汉高祖 · 字季</small></td>
               <td>沛县丰西泽、武关（丹凤）、咸阳、鸿门（临潼）、褒斜栈道（留坝）</td>
             </tr>
             <tr data-search="Zhang Liang 子房 留侯 张子房">
-              <td><a href="person-zhangliang.html"><strong>张良</strong></a><br/><small>西汉（前250—前186） · 留侯 · 字子房</small></td>
+              <td><a href="person-zhangliang.html"><strong>张良</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前250—前186） · 留侯 · 字子房</small></td>
               <td>博浪沙（原阳）、下邳圯桥（睢宁）、鸿门（临潼）、褒斜栈道（留坝）、留县（沛县）</td>
             </tr>
             <tr data-search="Xiang Yu 项籍 西楚霸王 霸王">
-              <td><a href="person-xiangyu.html"><strong>项羽</strong></a><br/><small>秦（前232—前202） · 西楚霸王 · 名籍字羽</small></td>
+              <td><a href="person-xiangyu.html"><strong>项羽</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>秦（前232—前202） · 西楚霸王 · 名籍字羽</small></td>
               <td>会稽吴中、巨鹿、鸿门（临潼）、郴县（郴州）、彭城</td>
             </tr>
             <tr data-search="Han Xin 淮阴侯">
-              <td><a href="person-hanxin.html"><strong>韩信</strong></a><br/><small>西汉（前231—前196） · 淮阴侯 · 汉初兵仙</small></td>
+              <td><a href="person-hanxin.html"><strong>韩信</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前231—前196） · 淮阴侯 · 汉初兵仙</small></td>
               <td>淮阴（淮安）、南郑（汉中）、陈仓（宝鸡）、夏阳、井陉</td>
             </tr>
             <tr data-search="Emperor Wu of Han 刘彻 汉世宗 刘彘">
-              <td><a href="person-hanwudi.html"><strong>汉武帝</strong></a><br/><small>西汉（前156—前87） · 刘彻 · 雄才大略</small></td>
+              <td><a href="person-hanwudi.html"><strong>汉武帝</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前156—前87） · 刘彻 · 雄才大略</small></td>
               <td>东瓯（温州）、长安、马邑（朔州）、茂陵（兴平）、敦煌</td>
             </tr>
             <tr data-search="Sima Qian 子长 太史公 司马子长">
-              <td><a href="person-simaqian.html"><strong>司马迁</strong></a><br/><small>西汉（前145—前86） · 太史公 · 字子长</small></td>
+              <td><a href="person-simaqian.html"><strong>司马迁</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前145—前86） · 太史公 · 字子长</small></td>
               <td>夏阳龙门（韩城）、会稽（绍兴）、泰山、长安</td>
             </tr>
             <tr data-search="Huo Qubing 冠军侯 骠骑将军">
-              <td><a href="person-huoqubing.html"><strong>霍去病</strong></a><br/><small>西汉（前140—前117） · 冠军侯 · 大司马骠骑将军</small></td>
+              <td><a href="person-huoqubing.html"><strong>霍去病</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前140—前117） · 冠军侯 · 大司马骠骑将军</small></td>
               <td>漠南（定襄北）、焉支山（河西）、祁连山（张掖）、狼居胥山（肯特山）、茂陵（兴平）</td>
             </tr>
             <tr data-search="Wang Mang 新莽">
-              <td><a href="person-wangmang.html"><strong>王莽</strong></a><br/><small>西汉（前45—23） · 新朝皇帝 · 字巨君</small></td>
+              <td><a href="person-wangmang.html"><strong>王莽</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西汉（前45—23） · 新朝皇帝 · 字巨君</small></td>
               <td>长安、西海郡龙夷城（海晏）、昆阳（叶县）</td>
             </tr>
             <tr data-search="Liu Xiu 汉光武帝 光武帝 刘文叔 萧王">
-              <td><a href="person-liuxiu.html"><strong>刘秀</strong></a><br/><small>东汉（前5—57） · 汉光武帝 · 字文叔</small></td>
+              <td><a href="person-liuxiu.html"><strong>刘秀</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>东汉（前5—57） · 汉光武帝 · 字文叔</small></td>
               <td>昆阳、邯郸、洛阳、高平第一城（平凉）、成都</td>
             </tr>
             <tr data-search="Ban Chao 定远侯 班仲升">
-              <td><a href="person-banchao.html"><strong>班超</strong></a><br/><small>东汉（32—102） · 定远侯 · 字仲升</small></td>
+              <td><a href="person-banchao.html"><strong>班超</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>东汉（32—102） · 定远侯 · 字仲升</small></td>
               <td>鄯善（楼兰）、于阗（和田）、焉耆、疏勒（喀什）、玉门关</td>
             </tr>
             <tr data-search="Cao Cao 魏武帝 孟德 曹孟德 阿瞒 曹阿瞒 曹公">
-              <td><a href="person-caocao.html"><strong>曹操</strong></a><br/><small>东汉（155—220） · 魏武帝 · 字孟德</small></td>
+              <td><a href="person-caocao.html"><strong>曹操</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>东汉（155—220） · 魏武帝 · 字孟德</small></td>
               <td>兖州昌邑、许（许昌）、下邳（睢宁）、官渡、邺（安阳）</td>
             </tr>
             <tr data-search="Guan Yu 云长 关云长 关公 美髯公 武圣">
-              <td><a href="person-guanyu.html"><strong>关羽</strong></a><br/><small>三国（160—220） · 汉寿亭侯 · 字云长</small></td>
+              <td><a href="person-guanyu.html"><strong>关羽</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>三国（160—220） · 汉寿亭侯 · 字云长</small></td>
               <td>涿县（涿州）、白马坡（滑县）、许都（许昌）、益阳、襄阳</td>
             </tr>
             <tr data-search="Liu Bei 玄德 刘玄德 汉昭烈帝 昭烈帝 先主">
-              <td><a href="person-liubei.html"><strong>刘备</strong></a><br/><small>三国（161—223） · 汉昭烈帝 · 字玄德</small></td>
+              <td><a href="person-liubei.html"><strong>刘备</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>三国（161—223） · 汉昭烈帝 · 字玄德</small></td>
               <td>涿县（涿州）、徐州辕门、隆中（襄阳）、当阳长坂、赤壁</td>
             </tr>
             <tr data-search="Zhang Fei 张翼德 张益德">
-              <td><a href="person-zhangfei.html"><strong>张飞</strong></a><br/><small>三国（165—221） · 车骑将军 · 字益德</small></td>
+              <td><a href="person-zhangfei.html"><strong>张飞</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>三国（165—221） · 车骑将军 · 字益德</small></td>
               <td>涿县（涿州）、当阳长坂、江州（重庆）、巴西阆中、阆中</td>
             </tr>
             <tr data-search="Zhou Yu 公瑾 周公瑾 周郎">
-              <td><a href="person-zhouyu.html"><strong>周瑜</strong></a><br/><small>东汉（175—210） · 东吴大都督 · 字公瑾</small></td>
+              <td><a href="person-zhouyu.html"><strong>周瑜</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>东汉（175—210） · 东吴大都督 · 字公瑾</small></td>
               <td>历阳（和县）、皖城（潜山）、赤壁、江陵（南郡）、巴丘（岳阳）</td>
             </tr>
             <tr data-search="Sima Yi 仲达 司马仲达 晋宣帝">
-              <td><a href="person-simayi.html"><strong>司马懿</strong></a><br/><small>三国（179—251） · 晋宣帝 · 字仲达</small></td>
+              <td><a href="person-simayi.html"><strong>司马懿</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>三国（179—251） · 晋宣帝 · 字仲达</small></td>
               <td>邺城丞相府（临漳）、上庸新城（竹山）、五丈原（岐山）、襄平（辽阳）、樊城（襄阳）</td>
             </tr>
             <tr data-search="Sun Quan 仲谋 孙仲谋 吴大帝">
-              <td><a href="person-sunquan.html"><strong>孙权</strong></a><br/><small>三国（182—252） · 吴大帝 · 字仲谋</small></td>
+              <td><a href="person-sunquan.html"><strong>孙权</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>三国（182—252） · 吴大帝 · 字仲谋</small></td>
               <td>京口（镇江）、赤壁、合肥逍遥津、濡须口（无为）、武昌（鄂州）</td>
             </tr>
             <tr data-search="Yang Hu 羊叔子 太傅羊祜 堕泪碑">
-              <td><a href="person-yanghu.html"><strong>羊祜</strong></a><br/><small>西晋（221—278） · 叔子 · 镇南开济 · 岘山堕泪</small></td>
+              <td><a href="person-yanghu.html"><strong>羊祜</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西晋（221—278） · 叔子 · 镇南开济 · 岘山堕泪</small></td>
               <td>洛阳、襄阳、西陵（宜昌）、襄阳岘山</td>
             </tr>
             <tr data-search="Du Yu 杜元凯 杜武库 镇南大将军杜预">
-              <td><a href="person-duyu.html"><strong>杜预</strong></a><br/><small>西晋（222—285） · 元凯 · 杜武库 · 势如破竹</small></td>
+              <td><a href="person-duyu.html"><strong>杜预</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西晋（222—285） · 元凯 · 杜武库 · 势如破竹</small></td>
               <td>汉中、洛阳、孟津、襄阳岘山、成都</td>
             </tr>
             <tr data-search="Zu Ti 祖士稚 祖豫州">
-              <td><a href="person-zuti.html"><strong>祖逖</strong></a><br/><small>西晋（266—321） · 士稚 · 闻鸡起舞 · 中流击楫</small></td>
+              <td><a href="person-zuti.html"><strong>祖逖</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西晋（266—321） · 士稚 · 闻鸡起舞 · 中流击楫</small></td>
               <td>洛阳、泗口（淮安）、京口、谯城（亳州）、雍丘（杞县）</td>
             </tr>
             <tr data-search="Liu Kun 刘越石 大将军刘琨">
-              <td><a href="person-liukun.html"><strong>刘琨</strong></a><br/><small>西晋（271—318） · 越石 · 枕戈待旦 · 百炼成钢</small></td>
+              <td><a href="person-liukun.html"><strong>刘琨</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>西晋（271—318） · 越石 · 枕戈待旦 · 百炼成钢</small></td>
               <td>洛阳、范阳（涿州）、晋阳（太原）、蓟城（北京）</td>
             </tr>
             <tr data-search="Huan Wen 桓元子">
-              <td><a href="person-huanwen.html"><strong>桓温</strong></a><br/><small>东晋十六国（312—373） · 东晋大司马 · 字元子 · 三次北伐</small></td>
+              <td><a href="person-huanwen.html"><strong>桓温</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>东晋十六国（312—373） · 东晋大司马 · 字元子 · 三次北伐</small></td>
               <td>成都、灞上（长安）、洛阳、建康、枋头（浚县）</td>
             </tr>
             <tr data-search="Liu Yu 宋武帝 寄奴 刘寄奴">
-              <td><a href="person-liuyu.html"><strong>刘裕</strong></a><br/><small>南北朝（363—422） · 南朝宋武帝 · 寄奴</small></td>
+              <td><a href="person-liuyu.html"><strong>刘裕</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南北朝（363—422） · 南朝宋武帝 · 寄奴</small></td>
               <td>京口、广固（青州）、成都、长安、建康</td>
             </tr>
             <tr data-search="Gao Huan 高贺六浑 齐神武帝">
-              <td><a href="person-gaohuan.html"><strong>高欢</strong></a><br/><small>南北朝（496—547） · 字贺六浑 · 东魏权臣 · 北齐奠基者</small></td>
+              <td><a href="person-gaohuan.html"><strong>高欢</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南北朝（496—547） · 字贺六浑 · 东魏权臣 · 北齐奠基者</small></td>
               <td>韩陵（邺）、邺、晋阳、沙苑（大荔）、洛阳邙山</td>
             </tr>
             <tr data-search="Yuwen Tai 宇文黑獭 周文帝">
-              <td><a href="person-yuwentai.html"><strong>宇文泰</strong></a><br/><small>南北朝（507—556） · 字黑獭 · 西魏权臣 · 北周奠基者</small></td>
+              <td><a href="person-yuwentai.html"><strong>宇文泰</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南北朝（507—556） · 字黑獭 · 西魏权臣 · 北周奠基者</small></td>
               <td>武川镇、长安、沙苑（大荔）、洛阳邙山</td>
             </tr>
             <tr data-search="Emperor Yang of Sui 杨广 晋王广">
-              <td><a href="person-yangguang.html"><strong>隋炀帝</strong></a><br/><small>隋（569—618） · 杨广 · 开凿大运河</small></td>
+              <td><a href="person-yangguang.html"><strong>隋炀帝</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>隋（569—618） · 杨广 · 开凿大运河</small></td>
               <td>建康、洛阳、汴州、涿郡、张掖</td>
             </tr>
             <tr data-search="Emperor Taizong of Tang 李世民 秦王李世民 天可汗">
-              <td><a href="person-lishimin.html"><strong>唐太宗</strong></a><br/><small>唐（598—649） · 李世民 · 贞观之治 · 天可汗</small></td>
+              <td><a href="person-lishimin.html"><strong>唐太宗</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（598—649） · 李世民 · 贞观之治 · 天可汗</small></td>
               <td>晋阳（太原）、浅水原（长武）、虎牢、长安、定襄</td>
             </tr>
             <tr data-search="Wu Zetian 武曌 武后 则天皇帝">
-              <td><a href="person-wuzetian.html"><strong>武则天</strong></a><br/><small>唐（624—705） · 武曌 · 则天大圣皇帝</small></td>
+              <td><a href="person-wuzetian.html"><strong>武则天</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（624—705） · 武曌 · 则天大圣皇帝</small></td>
               <td>利州（广元）、扬州、龟兹（库车）、神都洛阳、北庭都护府（吉木萨尔）</td>
             </tr>
             <tr data-search="Emperor Xuanzong of Tang 李隆基 唐明皇 玄宗">
-              <td><a href="person-tangxuanzong.html"><strong>唐玄宗</strong></a><br/><small>唐（685—762） · 李隆基 · 唐明皇 · 开元盛世</small></td>
+              <td><a href="person-tangxuanzong.html"><strong>唐玄宗</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（685—762） · 李隆基 · 唐明皇 · 开元盛世</small></td>
               <td>长安、泰山、马嵬驿（兴平）、成都府</td>
             </tr>
             <tr data-search="Gao Shi 高达夫 高常侍 高散骑">
-              <td><a href="person-gaoshi.html"><strong>高适</strong></a><br/><small>唐（704—765） · 字达夫 · 渤海县侯 · 边塞诗派代表</small></td>
+              <td><a href="person-gaoshi.html"><strong>高适</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（704—765） · 字达夫 · 渤海县侯 · 边塞诗派代表</small></td>
               <td>蓟州、睢阳（商丘）、长安、扬州、成都浣花溪草堂</td>
             </tr>
             <tr data-search="Du Fu 子美 杜子美 杜工部 杜少陵 少陵野老 诗圣 Tu Fu Zimei">
-              <td><a href="person-dufu.html"><strong>杜甫</strong></a><br/><small>唐（712—770） · 诗圣 · 字子美 · 少陵野老</small></td>
+              <td><a href="person-dufu.html"><strong>杜甫</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（712—770） · 诗圣 · 字子美 · 少陵野老</small></td>
               <td>泰山（兖州）、洛阳、睢阳（商丘）、长安、秦州（天水）</td>
             </tr>
             <tr data-search="Bai Juyi 乐天 白乐天 香山居士 醉吟先生">
-              <td><a href="person-baijuyi.html"><strong>白居易</strong></a><br/><small>唐（772—846） · 诗魔 · 字乐天 · 香山居士</small></td>
+              <td><a href="person-baijuyi.html"><strong>白居易</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>唐（772—846） · 诗魔 · 字乐天 · 香山居士</small></td>
               <td>盩厔仙游寺、通州（达州）、江州浔阳江（九江）、杭州西湖、扬州</td>
             </tr>
             <tr data-search="Li Cunxu 后唐庄宗 李亚子">
-              <td><a href="person-licunxu.html"><strong>李存勖</strong></a><br/><small>五代十国（885—926） · 后唐庄宗 · 灭梁建唐</small></td>
+              <td><a href="person-licunxu.html"><strong>李存勖</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>五代十国（885—926） · 后唐庄宗 · 灭梁建唐</small></td>
               <td>幽州、汴州、洛阳、江陵（荆州）、成都</td>
             </tr>
             <tr data-search="Chai Rong 后周世宗 周世宗 郭荣">
-              <td><a href="person-chairong.html"><strong>柴荣</strong></a><br/><small>五代十国（921—959） · 后周世宗 · 五代第一明君</small></td>
+              <td><a href="person-chairong.html"><strong>柴荣</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>五代十国（921—959） · 后周世宗 · 五代第一明君</small></td>
               <td>高平（泽州）、寿州、扬州（江都）、通州（南通）、瓦桥关（雄州）</td>
             </tr>
             <tr data-search="Emperor Taizu of Song 宋太祖 赵点检">
-              <td><a href="person-zhaokuangyin.html"><strong>赵匡胤</strong></a><br/><small>北宋（927—976） · 宋太祖 · 结束五代十国</small></td>
+              <td><a href="person-zhaokuangyin.html"><strong>赵匡胤</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>北宋（927—976） · 宋太祖 · 结束五代十国</small></td>
               <td>高平（泽州）、陈桥驿、开封、成都、金陵（南京）</td>
             </tr>
             <tr data-search="Fan Zhongyan 希文 范希文 范文正公">
-              <td><a href="person-fanzhongyan.html"><strong>范仲淹</strong></a><br/><small>北宋（989—1052） · 范文正公 · 字希文 · 先忧后乐</small></td>
+              <td><a href="person-fanzhongyan.html"><strong>范仲淹</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>北宋（989—1052） · 范文正公 · 字希文 · 先忧后乐</small></td>
               <td>楚州盐城、延州（延安）、庆州（庆阳）、开封、邓州</td>
             </tr>
             <tr data-search="Sima Guang 君实 司马君实 涑水先生 司马温公">
-              <td><a href="person-simaguang.html"><strong>司马光</strong></a><br/><small>北宋（1019—1086） · 温国公 · 字君实 · 主编资治通鉴</small></td>
+              <td><a href="person-simaguang.html"><strong>司马光</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>北宋（1019—1086） · 温国公 · 字君实 · 主编资治通鉴</small></td>
               <td>陕州夏县涑水、东京开封、洛阳独乐园、开封</td>
             </tr>
             <tr data-search="Shen Kuo 沈存中 梦溪丈人 梦溪笔谈">
-              <td><a href="person-shenkuo.html"><strong>沈括</strong></a><br/><small>北宋（1031—1095） · 存中 · 梦溪丈人 · 《梦溪笔谈》</small></td>
+              <td><a href="person-shenkuo.html"><strong>沈括</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>北宋（1031—1095） · 存中 · 梦溪丈人 · 《梦溪笔谈》</small></td>
               <td>东京开封、东京司天监、上京临潢府、延州（延安）、润州梦溪园（镇江）</td>
             </tr>
             <tr data-search="Yue Fei 鹏举 岳鹏举 岳武穆 岳王">
-              <td><a href="person-yuefei.html"><strong>岳飞</strong></a><br/><small>南宋（1103—1142） · 岳武穆 · 字鹏举 · 精忠报国</small></td>
+              <td><a href="person-yuefei.html"><strong>岳飞</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南宋（1103—1142） · 岳武穆 · 字鹏举 · 精忠报国</small></td>
               <td>相州汤阴、建康牛头山、虔州（赣州）、襄阳、鄂州（武昌）</td>
             </tr>
             <tr data-search="Emperor Gaozong of Song 赵构 康王赵构 高宗">
-              <td><a href="person-zhaogou.html"><strong>宋高宗</strong></a><br/><small>南宋（1107—1187） · 赵构 · 南宋开国皇帝</small></td>
+              <td><a href="person-zhaogou.html"><strong>宋高宗</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南宋（1107—1187） · 赵构 · 南宋开国皇帝</small></td>
               <td>南京应天府、杭州（临安）、衢州、温州、临安（杭州）</td>
             </tr>
             <tr data-search="Xin Qiji 稼轩 辛稼轩 幼安 辛幼安 Jiaxuan">
-              <td><a href="person-xinqiji.html"><strong>辛弃疾</strong></a><br/><small>南宋（1140—1207） · 稼轩居士 · 字幼安 · 词中之龙</small></td>
+              <td><a href="person-xinqiji.html"><strong>辛弃疾</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南宋（1140—1207） · 稼轩居士 · 字幼安 · 词中之龙</small></td>
               <td>济南历城、建康（南京）、潭州（长沙）、铅山鹅湖寺、信州（上饶）</td>
             </tr>
             <tr data-search="Genghis Khan 铁木真 元太祖">
-              <td><a href="person-genghiskhan.html"><strong>成吉思汗</strong></a><br/><small>南宋（1162—1227） · 铁木真 · 元太祖 · 统一蒙古</small></td>
+              <td><a href="person-genghiskhan.html"><strong>成吉思汗</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南宋（1162—1227） · 铁木真 · 元太祖 · 统一蒙古</small></td>
               <td>斡难河源、野狐岭（张北）、金中都、克鲁伦河幕府、撒马尔罕（河中）</td>
             </tr>
             <tr data-search="Kublai Khan 元世祖">
-              <td><a href="person-kublaikhan.html"><strong>忽必烈</strong></a><br/><small>元（1215—1294） · 元世祖 · 创立行省一统全国</small></td>
+              <td><a href="person-kublaikhan.html"><strong>忽必烈</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>元（1215—1294） · 元世祖 · 创立行省一统全国</small></td>
               <td>大理、开平（正蓝旗）、萨迦、大都、襄阳</td>
             </tr>
             <tr data-search="Wen Tianxiang 文山 文宋瑞 文履善 文信国公">
-              <td><a href="person-wentianxiang.html"><strong>文天祥</strong></a><br/><small>南宋（1236—1283） · 文山先生 · 字宋瑞 · 丹心照汗青</small></td>
+              <td><a href="person-wentianxiang.html"><strong>文天祥</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>南宋（1236—1283） · 文山先生 · 字宋瑞 · 丹心照汗青</small></td>
               <td>临安集英殿（杭州）、赣州、京口（镇江）、福安府（福州）、零丁洋（珠江口）</td>
             </tr>
             <tr data-search="Marco Polo 马可波罗 东方见闻录 马可·波罗游记">
-              <td><a href="person-marcopolo.html"><strong>马可·波罗</strong></a><br/><small>元（1254—1324） · 威尼斯旅行家 · 《东方见闻录》</small></td>
+              <td><a href="person-marcopolo.html"><strong>马可·波罗</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>元（1254—1324） · 威尼斯旅行家 · 《东方见闻录》</small></td>
               <td>沙州（敦煌）、上都（开平）、大都、扬州、泉州刺桐港</td>
             </tr>
             <tr data-search="Zhu Yuanzhang 明太祖 洪武帝 朱重八 朱国瑞">
-              <td><a href="person-zhuyuanzhang.html"><strong>朱元璋</strong></a><br/><small>明（1328—1398） · 明太祖 · 洪武皇帝 · 朱重八</small></td>
+              <td><a href="person-zhuyuanzhang.html"><strong>朱元璋</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1328—1398） · 明太祖 · 洪武皇帝 · 朱重八</small></td>
               <td>濠州钟离（凤阳）、集庆（南京）、徽州（歙县）、婺州（金华）、处州（丽水）</td>
             </tr>
             <tr data-search="Zhu Di 明成祖 永乐帝 永乐大帝 燕王朱棣">
-              <td><a href="person-zhudi.html"><strong>朱棣</strong></a><br/><small>明（1360—1424） · 明成祖 · 永乐大帝 · 燕王</small></td>
+              <td><a href="person-zhudi.html"><strong>朱棣</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1360—1424） · 明成祖 · 永乐大帝 · 燕王</small></td>
               <td>北平、应天（南京）、交趾、应天、京师（北京）</td>
             </tr>
             <tr data-search="Yu Dayou 俞志辅 俞虚江 俞武襄">
-              <td><a href="person-yudayou.html"><strong>俞大猷</strong></a><br/><small>明（1503—1579） · 俞武襄 · 字志辅 · 俞龙戚虎</small></td>
+              <td><a href="person-yudayou.html"><strong>俞大猷</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1503—1579） · 俞武襄 · 字志辅 · 俞龙戚虎</small></td>
               <td>琼州五指山、普陀山（定海）、嘉兴王江泾、平湖沈家庄、潮州饶平</td>
             </tr>
             <tr data-search="Hu Zongxian 胡汝贞 胡梅林 胡襄懋">
-              <td><a href="person-huzongxian.html"><strong>胡宗宪</strong></a><br/><small>明（1512—1565） · 胡襄懋 · 字汝贞 · 浙直总督平倭</small></td>
+              <td><a href="person-huzongxian.html"><strong>胡宗宪</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1512—1565） · 胡襄懋 · 字汝贞 · 浙直总督平倭</small></td>
               <td>大同镇、嘉兴王江泾、平湖沈家庄、舟山岑港、严州府淳安</td>
             </tr>
             <tr data-search="Hai Rui 海汝贤 海刚峰 海忠介 海青天">
-              <td><a href="person-hairui.html"><strong>海瑞</strong></a><br/><small>明（1514—1587） · 海忠介 · 字汝贤 · 刚峰先生</small></td>
+              <td><a href="person-hairui.html"><strong>海瑞</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1514—1587） · 海忠介 · 字汝贤 · 刚峰先生</small></td>
               <td>延平府南平、严州府淳安、赣州府兴国、北京诏狱、松江府（吴淞江）</td>
             </tr>
             <tr data-search="Zhang Juzheng 张叔大 张太岳 张江陵 张文忠">
-              <td><a href="person-zhangjuzheng.html"><strong>张居正</strong></a><br/><small>明（1525—1582） · 张太岳 · 字叔大 · 万历首辅</small></td>
+              <td><a href="person-zhangjuzheng.html"><strong>张居正</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1525—1582） · 张太岳 · 字叔大 · 万历首辅</small></td>
               <td>荆州江陵、北京文渊阁、大同得胜堡、北京内阁、北京</td>
             </tr>
             <tr data-search="Qi Jiguang 戚元敬 戚少保">
-              <td><a href="person-qijiguang.html"><strong>戚继光</strong></a><br/><small>明（1528—1588） · 戚武毅 · 字元敬 · 抗倭筑边名将</small></td>
+              <td><a href="person-qijiguang.html"><strong>戚继光</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1528—1588） · 戚武毅 · 字元敬 · 抗倭筑边名将</small></td>
               <td>台州、杭州府、兴化府（莆田）、兴化平海卫（莆田）、蓟镇古北口</td>
             </tr>
             <tr data-search="Hong Taiji 清太宗">
-              <td><a href="person-huangtaiji.html"><strong>皇太极</strong></a><br/><small>明（1592—1643） · 清太宗 · 改国号大清</small></td>
+              <td><a href="person-huangtaiji.html"><strong>皇太极</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1592—1643） · 清太宗 · 改国号大清</small></td>
               <td>锦州、喜峰口、北京西市、盛京（沈阳）、松山</td>
             </tr>
             <tr data-search="Li Zicheng 闯王 李闯王">
-              <td><a href="person-lizicheng.html"><strong>李自成</strong></a><br/><small>明（1606—1645） · 闯王 · 大顺皇帝</small></td>
+              <td><a href="person-lizicheng.html"><strong>李自成</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>明（1606—1645） · 闯王 · 大顺皇帝</small></td>
               <td>开封府、西安、北京、山海关、通山九宫山</td>
             </tr>
             <tr data-search="Kangxi Emperor 康熙 玄烨 清圣祖 爱新觉罗玄烨">
-              <td><a href="person-kangxi.html"><strong>康熙帝</strong></a><br/><small>清（1654—1722） · 爱新觉罗·玄烨 · 清圣祖</small></td>
+              <td><a href="person-kangxi.html"><strong>康熙帝</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>清（1654—1722） · 爱新觉罗·玄烨 · 清圣祖</small></td>
               <td>北京、昆明、台湾府（台南）、曲阜、雅克萨</td>
             </tr>
             <tr data-search="Qianlong Emperor 乾隆 弘历 清高宗">
-              <td><a href="person-qianlong.html"><strong>乾隆帝</strong></a><br/><small>清（1711—1799） · 爱新觉罗·弘历 · 十全武功 · 奠定极盛版图</small></td>
+              <td><a href="person-qianlong.html"><strong>乾隆帝</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>清（1711—1799） · 爱新觉罗·弘历 · 十全武功 · 奠定极盛版图</small></td>
               <td>北京、伊犁（惠远）、广州、伊犁、迪化</td>
             </tr>
             <tr data-search="Zuo Zongtang 左季高 左文襄公">
-              <td><a href="person-zuozongtang.html"><strong>左宗棠</strong></a><br/><small>清（1812—1885） · 左文襄公 · 字季高 · 收复新疆</small></td>
+              <td><a href="person-zuozongtang.html"><strong>左宗棠</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>清（1812—1885） · 左文襄公 · 字季高 · 收复新疆</small></td>
               <td>长沙、杭州府、福州马尾、肃州（酒泉）、迪化（乌鲁木齐）</td>
             </tr>
             <tr data-search="Li Hongzhang 李少荃 李中堂">
-              <td><a href="person-lihongzhang.html"><strong>李鸿章</strong></a><br/><small>清（1823—1901） · 李文忠公 · 字渐甫 · 北洋通商大臣</small></td>
+              <td><a href="person-lihongzhang.html"><strong>李鸿章</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>清（1823—1901） · 李文忠公 · 字渐甫 · 北洋通商大臣</small></td>
               <td>上海、天津、烟台芝罘、旅顺口、刘公岛（威海）</td>
             </tr>
             <tr data-search="Sun Yat-sen 孙文 孙逸仙 中山先生">
-              <td><a href="person-sunzhongshan.html"><strong>孙中山</strong></a><br/><small>中华民国（1866—1925） · 孙文 · 字逸仙 · 近代民主革命先行者</small></td>
+              <td><a href="person-sunzhongshan.html"><strong>孙中山</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>中华民国（1866—1925） · 孙文 · 字逸仙 · 近代民主革命先行者</small></td>
               <td>广州、南京、北京铁狮子胡同</td>
             </tr>
             <tr data-search="Mao Zedong 毛润之 润之">
-              <td><a href="person-maozedong.html"><strong>毛泽东</strong></a><br/><small>中华人民共和国（1893—1976） · 字润之 · 中华人民共和国主要缔造者</small></td>
+              <td><a href="person-maozedong.html"><strong>毛泽东</strong></a><span class="person-type-badge is-monograph">人物志</span><br/><small>中华人民共和国（1893—1976） · 字润之 · 中华人民共和国主要缔造者</small></td>
               <td>上海、文家市、遵义、延安杨家岭、西柏坡（平山）</td>
             </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="sec-directory" class="section-card">
-        <h2>三、其余编年人物</h2>
-        <div class="table-filter-bar">
-          <input class="table-filter-input" type="search" data-filter-table="tbl-person-directory" placeholder="按姓名、字号或朝代检索…" aria-label="按姓名、字号或朝代检索…" />
-          <button class="table-filter-clear is-hidden" type="button" data-filter-clear="tbl-person-directory">清除</button>
-          <span class="table-filter-count" data-filter-count="tbl-person-directory">共 68 项</span>
-        </div>
-        <div class="table-wrap">
-          <table id="tbl-person-directory" class="data-table">
-            <thead>
-              <tr>
-                <th>人物</th>
-                <th>所属朝代与别称</th>
-              </tr>
-            </thead>
-            <tbody>
             <tr data-search="Sun Bin 孙子兵法孙膑">
-              <td><a href="../?person=sunbin"><strong>孙膑</strong></a><br/><small>齐国军师 · 兵家代表</small></td>
-              <td><strong>战国</strong>（前380—前316） · 别名：孙子兵法孙膑</td>
+              <td><a href="../?person=sunbin"><strong>孙膑</strong></a><br/><small>战国（前380—前316） · 齐国军师 · 兵家代表</small></td>
+              <td>临淄、桂陵（长垣）、马陵</td>
             </tr>
             <tr data-search="Mencius 孟轲 亚圣 孟子舆">
-              <td><a href="../?person=mengzi"><strong>孟子</strong></a><br/><small>孟轲 · 亚圣 · 仁政民本</small></td>
-              <td><strong>战国</strong>（前372—前289） · 别名：孟轲、亚圣、孟子舆</td>
+              <td><a href="../?person=mengzi"><strong>孟子</strong></a><br/><small>战国（前372—前289） · 孟轲 · 亚圣 · 仁政民本</small></td>
+              <td>大梁（开封）、临淄稷下学宫、邹邑（邹城）</td>
             </tr>
             <tr data-search="Qu Yuan 屈平 灵均 三闾大夫">
-              <td><a href="../?person=quyuan"><strong>屈原</strong></a><br/><small>楚大夫 · 字灵均</small></td>
-              <td><strong>战国</strong>（前340—前278） · 别名：屈平、灵均、三闾大夫</td>
+              <td><a href="../?person=quyuan"><strong>屈原</strong></a><br/><small>战国（前340—前278） · 楚大夫 · 字灵均</small></td>
+              <td>郢都、武关、溆浦、郢都（江陵）</td>
             </tr>
             <tr data-search="Li Mu">
-              <td><a href="../?person=limu"><strong>李牧</strong></a><br/><small>赵国名将 · 武安君</small></td>
-              <td><strong>战国</strong>（前290—前229）</td>
+              <td><a href="../?person=limu"><strong>李牧</strong></a><br/><small>战国（前290—前229） · 赵国名将 · 武安君</small></td>
+              <td>雁门关、肥下（宜安）、邯郸</td>
             </tr>
             <tr data-search="Li Si 李丞相">
-              <td><a href="../?person=lisi"><strong>李斯</strong></a><br/><small>秦朝丞相</small></td>
-              <td><strong>秦</strong>（前284—前208） · 别名：李丞相</td>
+              <td><a href="../?person=lisi"><strong>李斯</strong></a><br/><small>秦（前284—前208） · 秦朝丞相</small></td>
+              <td>咸阳、沙丘（广宗）</td>
             </tr>
             <tr data-search="Xiao He 酂侯 萧相国 萧丞相">
-              <td><a href="../?person=xiaohe"><strong>萧何</strong></a><br/><small>汉初三杰 · 开国丞相</small></td>
-              <td><strong>西汉</strong>（前257—前193） · 别名：酂侯、萧相国、萧丞相</td>
+              <td><a href="../?person=xiaohe"><strong>萧何</strong></a><br/><small>西汉（前257—前193） · 汉初三杰 · 开国丞相</small></td>
+              <td>沛县丰西泽、南郑（汉中）、长安、长安长乐宫</td>
             </tr>
             <tr data-search="Meng Tian">
-              <td><a href="../?person=mengtian"><strong>蒙恬</strong></a><br/><small>秦大将 · 威振匈奴</small></td>
-              <td><strong>秦</strong>（前250—前210）</td>
+              <td><a href="../?person=mengtian"><strong>蒙恬</strong></a><br/><small>秦（前250—前210） · 秦大将 · 威振匈奴</small></td>
+              <td>九原（河套）、九原、上郡（绥德）</td>
             </tr>
             <tr data-search="Chen Sheng 陈涉 陈胜吴广">
-              <td><a href="../?person=chensheng"><strong>陈胜</strong></a><br/><small>张楚王 · 大泽乡首义</small></td>
-              <td><strong>秦</strong>（前240—前207） · 别名：陈涉、陈胜吴广</td>
+              <td><a href="../?person=chensheng"><strong>陈胜</strong></a><br/><small>秦（前240—前207） · 张楚王 · 大泽乡首义</small></td>
+              <td>大泽乡、陈县（淮阳）、下城父（涡阳）</td>
             </tr>
             <tr data-search="Emperor Wen of Han 刘恒 孝文帝刘恒">
-              <td><a href="../?person=hanwendi"><strong>汉文帝</strong></a><br/><small>刘恒 · 文景之治</small></td>
-              <td><strong>西汉</strong>（前203—前157） · 别名：刘恒、孝文帝刘恒</td>
+              <td><a href="../?person=hanwendi"><strong>汉文帝</strong></a><br/><small>西汉（前203—前157） · 刘恒 · 文景之治</small></td>
+              <td>长安、萧关（固原）、咸阳细柳营</td>
             </tr>
             <tr data-search="Wei Qing 卫仲卿 长平侯卫青">
-              <td><a href="../?person=weiqing"><strong>卫青</strong></a><br/><small>大司马大将军 · 字仲卿</small></td>
-              <td><strong>西汉</strong>（前150—前106） · 别名：卫仲卿、长平侯卫青</td>
+              <td><a href="../?person=weiqing"><strong>卫青</strong></a><br/><small>西汉（前150—前106） · 大司马大将军 · 字仲卿</small></td>
+              <td>朔方、高阙塞北、狼居胥山（肯特山）</td>
             </tr>
             <tr data-search="Su Wu 苏子卿 典属国苏武">
-              <td><a href="../?person=suwu"><strong>苏武</strong></a><br/><small>持节牧羊 · 字子卿</small></td>
-              <td><strong>西汉</strong>（前140—前60） · 别名：苏子卿、典属国苏武</td>
+              <td><a href="../?person=suwu"><strong>苏武</strong></a><br/><small>西汉（前140—前60） · 持节牧羊 · 字子卿</small></td>
+              <td>长安、北海（贝加尔湖）</td>
             </tr>
             <tr data-search="Yuan Shao 本初 袁本初">
-              <td><a href="../?person=yuanshao"><strong>袁绍</strong></a><br/><small>冀州牧 · 字本初 · 四世三公</small></td>
-              <td><strong>东汉</strong>（154—202） · 别名：本初、袁本初</td>
+              <td><a href="../?person=yuanshao"><strong>袁绍</strong></a><br/><small>东汉（154—202） · 冀州牧 · 字本初 · 四世三公</small></td>
+              <td>界桥（威县）、易京（雄县）、官渡</td>
             </tr>
             <tr data-search="Lü Bu 奉先 吕奉先 Lu Bu Lv Bu">
-              <td><a href="../?person=lvbu"><strong>吕布</strong></a><br/><small>温侯 · 字奉先 · 汉末猛将</small></td>
-              <td><strong>东汉</strong>（160—199） · 别名：奉先、吕奉先、Lu Bu</td>
+              <td><a href="../?person=lvbu"><strong>吕布</strong></a><br/><small>东汉（160—199） · 温侯 · 字奉先 · 汉末猛将</small></td>
+              <td>长安未央宫门、徐州辕门、下邳（睢宁）</td>
             </tr>
             <tr data-search="Zhao Yun 赵子龙 子龙">
-              <td><a href="../?person=zhaoyun"><strong>赵云</strong></a><br/><small>顺平侯 · 字子龙 · 常山赵子龙</small></td>
-              <td><strong>三国</strong>（168—229） · 别名：赵子龙、子龙</td>
+              <td><a href="../?person=zhaoyun"><strong>赵云</strong></a><br/><small>三国（168—229） · 顺平侯 · 字子龙 · 常山赵子龙</small></td>
+              <td>当阳长坂、汉水偃月营（汉中）、箕谷（褒城北）</td>
             </tr>
             <tr data-search="Sun Ce 孙伯符 小霸王">
-              <td><a href="../?person=sunce"><strong>孙策</strong></a><br/><small>江东小霸王 · 字伯符</small></td>
-              <td><strong>东汉</strong>（175—200） · 别名：孙伯符、小霸王</td>
+              <td><a href="../?person=sunce"><strong>孙策</strong></a><br/><small>东汉（175—200） · 江东小霸王 · 字伯符</small></td>
+              <td>历阳（和县）、曲阿、皖城（潜山）、京口（镇江）</td>
             </tr>
             <tr data-search="Lu Xun 陆伯言 陆议">
-              <td><a href="../?person=luxun"><strong>陆逊</strong></a><br/><small>东吴丞相 · 字伯言</small></td>
-              <td><strong>三国</strong>（183—245） · 别名：陆伯言、陆议</td>
+              <td><a href="../?person=luxun"><strong>陆逊</strong></a><br/><small>三国（183—245） · 东吴丞相 · 字伯言</small></td>
+              <td>陆口（嘉鱼）、夷陵（宜昌）、石亭（潜山）、建业（南京）</td>
             </tr>
             <tr data-search="Deng Ai 邓士载">
-              <td><a href="../?person=dengai"><strong>邓艾</strong></a><br/><small>太尉 · 字士载 · 偷渡阴平灭蜀</small></td>
-              <td><strong>三国</strong>（197—264） · 别名：邓士载</td>
+              <td><a href="../?person=dengai"><strong>邓艾</strong></a><br/><small>三国（197—264） · 太尉 · 字士载 · 偷渡阴平灭蜀</small></td>
+              <td>寿春（淮南）、阴平摩天岭、成都</td>
             </tr>
             <tr data-search="Jiang Wei 姜伯约">
-              <td><a href="../?person=jiangwei"><strong>姜维</strong></a><br/><small>大将军 · 字伯约 · 九伐中原</small></td>
-              <td><strong>三国</strong>（202—264） · 别名：姜伯约</td>
+              <td><a href="../?person=jiangwei"><strong>姜维</strong></a><br/><small>三国（202—264） · 大将军 · 字伯约 · 九伐中原</small></td>
+              <td>冀城（天水）、狄道、剑门关（剑阁）、成都</td>
             </tr>
             <tr data-search="Shi Le 石世龙 后赵明帝">
-              <td><a href="../?person=shile"><strong>石勒</strong></a><br/><small>后赵明帝 · 字世龙</small></td>
-              <td><strong>东晋十六国</strong>（274—333） · 别名：石世龙、后赵明帝</td>
+              <td><a href="../?person=shile"><strong>石勒</strong></a><br/><small>东晋十六国（274—333） · 后赵明帝 · 字世龙</small></td>
+              <td>晋阳（太原）、谯城（亳州）、襄国、洛阳</td>
             </tr>
             <tr data-search="Wang Xizhi 逸少 王右军 书圣">
-              <td><a href="../?person=wangxizhi"><strong>王羲之</strong></a><br/><small>书圣 · 字逸少 · 王右军</small></td>
-              <td><strong>东晋十六国</strong>（303—361） · 别名：逸少、王右军、书圣</td>
+              <td><a href="../?person=wangxizhi"><strong>王羲之</strong></a><br/><small>东晋十六国（303—361） · 书圣 · 字逸少 · 王右军</small></td>
+              <td>琅琊（临沂）、会稽兰亭、剡县金庭（嵊州）</td>
             </tr>
             <tr data-search="Xie An 谢安石 谢太傅 谢公">
-              <td><a href="../?person=xiean"><strong>谢安</strong></a><br/><small>东晋太傅 · 字安石</small></td>
-              <td><strong>东晋十六国</strong>（320—385） · 别名：谢安石、谢太傅、谢公</td>
+              <td><a href="../?person=xiean"><strong>谢安</strong></a><br/><small>东晋十六国（320—385） · 东晋太傅 · 字安石</small></td>
+              <td>会稽兰亭、东山（上虞）、淝水（寿阳）</td>
             </tr>
             <tr data-search="Wang Meng 王景略">
-              <td><a href="../?person=wangmeng"><strong>王猛</strong></a><br/><small>字景略 · 前秦丞相</small></td>
-              <td><strong>东晋十六国</strong>（325—375） · 别名：王景略</td>
+              <td><a href="../?person=wangmeng"><strong>王猛</strong></a><br/><small>东晋十六国（325—375） · 字景略 · 前秦丞相</small></td>
+              <td>灞上（长安）、长安、邺城</td>
             </tr>
             <tr data-search="Fu Jian 前秦苻坚">
-              <td><a href="../?person=fujian"><strong>苻坚</strong></a><br/><small>前秦世祖天王 · 统一北方</small></td>
-              <td><strong>东晋十六国</strong>（338—385） · 别名：前秦苻坚</td>
+              <td><a href="../?person=fujian"><strong>苻坚</strong></a><br/><small>东晋十六国（338—385） · 前秦世祖天王 · 统一北方</small></td>
+              <td>长安、姑臧、淝水（寿阳）</td>
             </tr>
             <tr data-search="Xie Xuan 谢幼度">
-              <td><a href="../?person=xiexuan"><strong>谢玄</strong></a><br/><small>康乐公 · 北府兵统帅</small></td>
-              <td><strong>东晋十六国</strong>（343—388） · 别名：谢幼度</td>
+              <td><a href="../?person=xiexuan"><strong>谢玄</strong></a><br/><small>东晋十六国（343—388） · 康乐公 · 北府兵统帅</small></td>
+              <td>广陵、淝水（寿阳）、洛阳</td>
             </tr>
             <tr data-search="Tao Yuanming 陶潜 五柳先生 靖节先生 元亮">
-              <td><a href="../?person=taoyuanming"><strong>陶渊明</strong></a><br/><small>靖节先生 · 字元亮 · 五柳先生</small></td>
-              <td><strong>东晋十六国</strong>（365—427） · 别名：陶潜、五柳先生、靖节先生</td>
+              <td><a href="../?person=taoyuanming"><strong>陶渊明</strong></a><br/><small>东晋十六国（365—427） · 靖节先生 · 字元亮 · 五柳先生</small></td>
+              <td>庐山栗里（柴桑）、彭泽、浔阳（九江）</td>
             </tr>
             <tr data-search="Zu Chongzhi 祖文远 大明历 缀术">
-              <td><a href="../?person=zuchongzhi"><strong>祖冲之</strong></a><br/><small>文远 · 圆周率七位 · 大明历宗师</small></td>
-              <td><strong>南北朝</strong>（429—500） · 别名：祖文远、大明历、缀术</td>
+              <td><a href="../?person=zuchongzhi"><strong>祖冲之</strong></a><br/><small>南北朝（429—500） · 文远 · 圆周率七位 · 大明历宗师</small></td>
+              <td>京口（镇江）、建康（南京）、娄县（昆山）、建康乐游苑</td>
             </tr>
             <tr data-search="Emperor Wu of Liang 梁武帝 萧叔达">
-              <td><a href="../?person=xiaoyan"><strong>萧衍</strong></a><br/><small>梁武帝 · 字叔达 · 南朝梁开国皇帝</small></td>
-              <td><strong>南北朝</strong>（464—549） · 别名：梁武帝、萧叔达</td>
+              <td><a href="../?person=xiaoyan"><strong>萧衍</strong></a><br/><small>南北朝（464—549） · 梁武帝 · 字叔达 · 南朝梁开国皇帝</small></td>
+              <td>襄阳、建康</td>
             </tr>
             <tr data-search="Li Daoyuan 郦善长 水经注">
-              <td><a href="../?person=lidaoyuan"><strong>郦道元</strong></a><br/><small>善长 · 《水经注》地理巨匠</small></td>
-              <td><strong>南北朝</strong>（466—527） · 别名：郦善长、水经注</td>
+              <td><a href="../?person=lidaoyuan"><strong>郦道元</strong></a><br/><small>南北朝（466—527） · 善长 · 《水经注》地理巨匠</small></td>
+              <td>东阳（青州）、平城（大同）、洛阳、阴盘驿（临潼）</td>
             </tr>
             <tr data-search="Emperor Xiaowen of Northern Wei 拓跋宏 元宏 孝文帝">
-              <td><a href="../?person=xiaowendi"><strong>北魏孝文帝</strong></a><br/><small>拓跋宏（元宏） · 汉化改革</small></td>
-              <td><strong>南北朝</strong>（467—499） · 别名：拓跋宏、元宏、孝文帝</td>
+              <td><a href="../?person=xiaowendi"><strong>北魏孝文帝</strong></a><br/><small>南北朝（467—499） · 拓跋宏（元宏） · 汉化改革</small></td>
+              <td>平城（大同）、洛阳、洛阳龙门</td>
             </tr>
             <tr data-search="Emperor Wen of Sui 隋文帝">
-              <td><a href="../?person=yangjian"><strong>杨坚</strong></a><br/><small>隋文帝 · 开皇之治</small></td>
-              <td><strong>隋</strong>（541—604） · 别名：隋文帝</td>
+              <td><a href="../?person=yangjian"><strong>杨坚</strong></a><br/><small>隋（541—604） · 隋文帝 · 开皇之治</small></td>
+              <td>邺城（相州）、大兴、建康、大利城</td>
             </tr>
             <tr data-search="Li Jing 李药师 卫国公">
-              <td><a href="../?person=lijing"><strong>李靖</strong></a><br/><small>卫国公 · 字药师 · 大唐军神</small></td>
-              <td><strong>唐</strong>（571—649） · 别名：李药师、卫国公</td>
+              <td><a href="../?person=lijing"><strong>李靖</strong></a><br/><small>唐（571—649） · 卫国公 · 字药师 · 大唐军神</small></td>
+              <td>江陵、定襄、伏俟城（共和）</td>
             </tr>
             <tr data-search="Wei Zheng 魏徵 魏玄成 郑国公">
-              <td><a href="../?person=weizheng"><strong>魏征</strong></a><br/><small>贞观谏臣 · 字玄成</small></td>
-              <td><strong>唐</strong>（580—643） · 别名：魏徵、魏玄成、郑国公</td>
+              <td><a href="../?person=weizheng"><strong>魏征</strong></a><br/><small>唐（580—643） · 贞观谏臣 · 字玄成</small></td>
+              <td>洛口（巩义）、长安</td>
             </tr>
             <tr data-search="Di Renjie 狄怀英 狄梁公 狄国老">
-              <td><a href="../?person=direnjie"><strong>狄仁杰</strong></a><br/><small>武周名相 · 字怀英</small></td>
-              <td><strong>唐</strong>（630—700） · 别名：狄怀英、狄梁公、狄国老</td>
+              <td><a href="../?person=direnjie"><strong>狄仁杰</strong></a><br/><small>唐（630—700） · 武周名相 · 字怀英</small></td>
+              <td>长安、彭泽、魏州（大名）、神都洛阳</td>
             </tr>
             <tr data-search="Guo Ziyi 郭令公 汾阳王">
-              <td><a href="../?person=guoziyi"><strong>郭子仪</strong></a><br/><small>汾阳郡王 · 再造唐室</small></td>
-              <td><strong>唐</strong>（697—781） · 别名：郭令公、汾阳王</td>
+              <td><a href="../?person=guoziyi"><strong>郭子仪</strong></a><br/><small>唐（697—781） · 汾阳郡王 · 再造唐室</small></td>
+              <td>灵武、长安、泾阳</td>
             </tr>
             <tr data-search="Wang Wei 摩诘 王摩诘 王右丞 诗佛">
-              <td><a href="../?person=wangwei"><strong>王维</strong></a><br/><small>诗佛 · 字摩诘 · 尚书右丞</small></td>
-              <td><strong>唐</strong>（701—761） · 别名：摩诘、王摩诘、王右丞</td>
+              <td><a href="../?person=wangwei"><strong>王维</strong></a><br/><small>唐（701—761） · 诗佛 · 字摩诘 · 尚书右丞</small></td>
+              <td>居延塞（额济纳）、蓝田辋川、洛阳普施寺</td>
             </tr>
             <tr data-search="An Lushan 安史">
-              <td><a href="../?person=anlushan"><strong>安禄山</strong></a><br/><small>三镇节度使 · 燕帝</small></td>
-              <td><strong>唐</strong>（703—757） · 别名：安史</td>
+              <td><a href="../?person=anlushan"><strong>安禄山</strong></a><br/><small>唐（703—757） · 三镇节度使 · 燕帝</small></td>
+              <td>范阳、洛阳、洛阳宫</td>
             </tr>
             <tr data-search="Yan Zhenqing 颜鲁公 颜清臣 颜平原">
-              <td><a href="../?person=yanzhenqing"><strong>颜真卿</strong></a><br/><small>颜鲁公 · 字清臣 · 书法宗师</small></td>
-              <td><strong>唐</strong>（709—785） · 别名：颜鲁公、颜清臣、颜平原</td>
+              <td><a href="../?person=yanzhenqing"><strong>颜真卿</strong></a><br/><small>唐（709—785） · 颜鲁公 · 字清臣 · 书法宗师</small></td>
+              <td>平原郡（陵县）、常山（真定）、凤翔、蔡州（汝南）</td>
             </tr>
             <tr data-search="Han Yu 退之 韩退之 韩昌黎 韩文公">
-              <td><a href="../?person=hanyu"><strong>韩愈</strong></a><br/><small>韩昌黎 · 字退之 · 唐宋八大家之首</small></td>
-              <td><strong>唐</strong>（768—824） · 别名：退之、韩退之、韩昌黎</td>
+              <td><a href="../?person=hanyu"><strong>韩愈</strong></a><br/><small>唐（768—824） · 韩昌黎 · 字退之 · 唐宋八大家之首</small></td>
+              <td>蔡州（汝南）、蓝田关、潮州、袁州（宜春）</td>
             </tr>
             <tr data-search="Liu Yuxi 梦得 刘梦得 诗豪">
-              <td><a href="../?person=liuyuxi"><strong>刘禹锡</strong></a><br/><small>诗豪 · 字梦得</small></td>
-              <td><strong>唐</strong>（772—842） · 别名：梦得、刘梦得、诗豪</td>
+              <td><a href="../?person=liuyuxi"><strong>刘禹锡</strong></a><br/><small>唐（772—842） · 诗豪 · 字梦得</small></td>
+              <td>朗州（常德）、夔州（奉节）、和州（和县）、扬州</td>
             </tr>
             <tr data-search="Liu Zongyuan 子厚 柳子厚 柳河东 柳柳州">
-              <td><a href="../?person=liuzongyuan"><strong>柳宗元</strong></a><br/><small>柳河东 · 柳柳州 · 字子厚</small></td>
-              <td><strong>唐</strong>（773—819） · 别名：子厚、柳子厚、柳河东</td>
+              <td><a href="../?person=liuzongyuan"><strong>柳宗元</strong></a><br/><small>唐（773—819） · 柳河东 · 柳柳州 · 字子厚</small></td>
+              <td>长安、永州（零陵）、柳州</td>
             </tr>
             <tr data-search="Huang Chao 冲天大将军">
-              <td><a href="../?person=huangchao"><strong>黄巢</strong></a><br/><small>冲天大将军 · 大齐皇帝</small></td>
-              <td><strong>唐</strong>（820—884） · 别名：冲天大将军</td>
+              <td><a href="../?person=huangchao"><strong>黄巢</strong></a><br/><small>唐（820—884） · 冲天大将军 · 大齐皇帝</small></td>
+              <td>曹州（冤句）、广州、长安、泰山狼虎谷（莱芜）</td>
             </tr>
             <tr data-search="Li Yu 李后主 南唐后主 李重光">
-              <td><a href="../?person=liyu_nt"><strong>李煜</strong></a><br/><small>南唐后主 · 词圣 · 字重光</small></td>
-              <td><strong>五代十国</strong>（937—978） · 别名：李后主、南唐后主、李重光</td>
+              <td><a href="../?person=liyu_nt"><strong>李煜</strong></a><br/><small>五代十国（937—978） · 南唐后主 · 词圣 · 字重光</small></td>
+              <td>金陵（南京）、金陵（江宁）、金陵、汴京（开封）</td>
             </tr>
             <tr data-search="Kou Zhun 寇莱公 寇平仲 莱国公">
-              <td><a href="../?person=kouzhun"><strong>寇准</strong></a><br/><small>北宋名相 · 莱国公</small></td>
-              <td><strong>北宋</strong>（961—1023） · 别名：寇莱公、寇平仲、莱国公</td>
+              <td><a href="../?person=kouzhun"><strong>寇准</strong></a><br/><small>北宋（961—1023） · 北宋名相 · 莱国公</small></td>
+              <td>巴东、澶州、雷州</td>
             </tr>
             <tr data-search="Bao Zheng 包公 包青天 包孝肃 包龙图 包希仁">
-              <td><a href="../?person=baozheng"><strong>包拯</strong></a><br/><small>包青天 · 字希仁</small></td>
-              <td><strong>北宋</strong>（999—1062） · 别名：包公、包青天、包孝肃</td>
+              <td><a href="../?person=baozheng"><strong>包拯</strong></a><br/><small>北宋（999—1062） · 包青天 · 字希仁</small></td>
+              <td>天长、端州（肇庆）、东京开封府</td>
             </tr>
             <tr data-search="Ouyang Xiu 永叔 醉翁 六一居士 欧阳文忠公">
-              <td><a href="../?person=ouyangxiu"><strong>欧阳修</strong></a><br/><small>醉翁 · 六一居士 · 字永叔</small></td>
-              <td><strong>北宋</strong>（1007—1072） · 别名：永叔、醉翁、六一居士</td>
+              <td><a href="../?person=ouyangxiu"><strong>欧阳修</strong></a><br/><small>北宋（1007—1072） · 醉翁 · 六一居士 · 字永叔</small></td>
+              <td>东京开封、滁州琅琊山、开封、颍州（阜阳）</td>
             </tr>
             <tr data-search="Wang Anshi 介甫 王介甫 王荆公 半山老人">
-              <td><a href="../?person=wanganshi"><strong>王安石</strong></a><br/><small>荆国公 · 字介甫 · 熙宁变法</small></td>
-              <td><strong>北宋</strong>（1021—1086） · 别名：介甫、王介甫、王荆公</td>
+              <td><a href="../?person=wanganshi"><strong>王安石</strong></a><br/><small>北宋（1021—1086） · 荆国公 · 字介甫 · 熙宁变法</small></td>
+              <td>抚州临川、明州鄞县（宁波）、开封、江宁半山园</td>
             </tr>
             <tr data-search="Li Qingzhao 易安居士 李易安">
-              <td><a href="../?person=liqingzhao"><strong>李清照</strong></a><br/><small>易安居士 · 千古第一才女</small></td>
-              <td><strong>南宋</strong>（1084—1155） · 别名：易安居士、李易安</td>
+              <td><a href="../?person=liqingzhao"><strong>李清照</strong></a><br/><small>南宋（1084—1155） · 易安居士 · 千古第一才女</small></td>
+              <td>汴京（开封）、青州归来堂、乌江（和县）、婺州（金华）</td>
             </tr>
             <tr data-search="Han Shizhong 韩良臣 韩蕲王">
-              <td><a href="../?person=hanshizhong"><strong>韩世忠</strong></a><br/><small>蕲王 · 字良臣 · 中兴四将</small></td>
-              <td><strong>南宋</strong>（1089—1151） · 别名：韩良臣、韩蕲王</td>
+              <td><a href="../?person=hanshizhong"><strong>韩世忠</strong></a><br/><small>南宋（1089—1151） · 蕲王 · 字良臣 · 中兴四将</small></td>
+              <td>杭州、黄天荡（镇江）、楚州（淮安）</td>
             </tr>
             <tr data-search="Lu You 放翁 陆放翁 陆务观">
-              <td><a href="../?person=luyou"><strong>陆游</strong></a><br/><small>放翁 · 字务观 · 爱国诗宗</small></td>
-              <td><strong>南宋</strong>（1125—1210） · 别名：放翁、陆放翁、陆务观</td>
+              <td><a href="../?person=luyou"><strong>陆游</strong></a><br/><small>南宋（1125—1210） · 放翁 · 字务观 · 爱国诗宗</small></td>
+              <td>绍兴沈园、南郑、嘉州、山阴三山村（绍兴）</td>
             </tr>
             <tr data-search="Zhu Xi 朱元晦 朱文公 朱子">
-              <td><a href="../?person=zhuxi"><strong>朱熹</strong></a><br/><small>朱文公 · 字元晦 · 程朱理学集大成者</small></td>
-              <td><strong>南宋</strong>（1130—1200） · 别名：朱元晦、朱文公、朱子</td>
+              <td><a href="../?person=zhuxi"><strong>朱熹</strong></a><br/><small>南宋（1130—1200） · 朱文公 · 字元晦 · 程朱理学集大成者</small></td>
+              <td>信州鹅湖（铅山）、庐山白鹿洞书院（九江）、临安</td>
             </tr>
             <tr data-search="Yelu Chucai 耶律晋卿 湛然居士 吾图撒合里">
-              <td><a href="../?person=yeluchucai"><strong>耶律楚材</strong></a><br/><small>晋卿 · 湛然居士 · 止杀定策</small></td>
-              <td><strong>元</strong>（1190—1244） · 别名：耶律晋卿、湛然居士、吾图撒合里</td>
+              <td><a href="../?person=yeluchucai"><strong>耶律楚材</strong></a><br/><small>元（1190—1244） · 晋卿 · 湛然居士 · 止杀定策</small></td>
+              <td>克鲁伦河幕府、撒马尔罕（河中）、汴京（开封）、哈拉和林</td>
             </tr>
             <tr data-search="Chang Yuchun 常伯仁 开平王">
-              <td><a href="../?person=changyuchun"><strong>常遇春</strong></a><br/><small>开平王 · 字伯仁 · 明初猛将</small></td>
-              <td><strong>明</strong>（1330—1369） · 别名：常伯仁、开平王</td>
+              <td><a href="../?person=changyuchun"><strong>常遇春</strong></a><br/><small>明（1330—1369） · 开平王 · 字伯仁 · 明初猛将</small></td>
+              <td>平江、大都（北京）、开平（上都）</td>
             </tr>
             <tr data-search="Xu Da 徐天德 中山王">
-              <td><a href="../?person=xuda"><strong>徐达</strong></a><br/><small>中山王 · 字天德 · 开国第一功臣</small></td>
-              <td><strong>明</strong>（1332—1385） · 别名：徐天德、中山王</td>
+              <td><a href="../?person=xuda"><strong>徐达</strong></a><br/><small>明（1332—1385） · 中山王 · 字天德 · 开国第一功臣</small></td>
+              <td>平江、大都（北京）、西安府</td>
             </tr>
             <tr data-search="Zheng He 马三保 三宝太监 三保太监">
-              <td><a href="../?person=zhenghe"><strong>郑和</strong></a><br/><small>三宝太监 · 七下西洋</small></td>
-              <td><strong>明</strong>（1371—1433） · 别名：马三保、三宝太监、三保太监</td>
+              <td><a href="../?person=zhenghe"><strong>郑和</strong></a><br/><small>明（1371—1433） · 三宝太监 · 七下西洋</small></td>
+              <td>刘家港（太仓）、占城新州港、长乐（福州）、南海归航道</td>
             </tr>
             <tr data-search="Yu Qian 于廷益 于忠肃 于少保">
-              <td><a href="../?person=yuqian"><strong>于谦</strong></a><br/><small>于忠肃 · 字廷益 · 再造社稷</small></td>
-              <td><strong>明</strong>（1398—1457） · 别名：于廷益、于忠肃、于少保</td>
+              <td><a href="../?person=yuqian"><strong>于谦</strong></a><br/><small>明（1398—1457） · 于忠肃 · 字廷益 · 再造社稷</small></td>
+              <td>开封、土木堡、北京德胜门、北京</td>
             </tr>
             <tr data-search="Nurhaci 清太祖">
-              <td><a href="../?person=nurhaci"><strong>努尔哈赤</strong></a><br/><small>清太祖 · 建立后金八旗</small></td>
-              <td><strong>明</strong>（1559—1626） · 别名：清太祖</td>
+              <td><a href="../?person=nurhaci"><strong>努尔哈赤</strong></a><br/><small>明（1559—1626） · 清太祖 · 建立后金八旗</small></td>
+              <td>赫图阿拉、萨尔浒、辽阳、宁远（兴城）</td>
             </tr>
             <tr data-search="Yuan Chonghuan 袁督师 袁元素 袁自如">
-              <td><a href="../?person=yuanchonghuan"><strong>袁崇焕</strong></a><br/><small>蓟辽督师 · 字元素</small></td>
-              <td><strong>明</strong>（1584—1630） · 别名：袁督师、袁元素、袁自如</td>
+              <td><a href="../?person=yuanchonghuan"><strong>袁崇焕</strong></a><br/><small>明（1584—1630） · 蓟辽督师 · 字元素</small></td>
+              <td>宁远（兴城）、锦州、京师广渠门、北京西市</td>
             </tr>
             <tr data-search="Xu Xiake 徐弘祖 徐振之 霞客">
-              <td><a href="../?person=xuxiake"><strong>徐霞客</strong></a><br/><small>地理学家 · 名弘祖</small></td>
-              <td><strong>明</strong>（1587—1641） · 别名：徐弘祖、徐振之、霞客</td>
+              <td><a href="../?person=xuxiake"><strong>徐霞客</strong></a><br/><small>明（1587—1641） · 地理学家 · 名弘祖</small></td>
+              <td>天台山、黄山、腾越（腾冲）、江阴</td>
             </tr>
             <tr data-search="Zhang Xianzhong 八大王 大西帝">
-              <td><a href="../?person=zhangxianzhong"><strong>张献忠</strong></a><br/><small>八大王 · 大西皇帝</small></td>
-              <td><strong>明</strong>（1606—1647） · 别名：八大王、大西帝</td>
+              <td><a href="../?person=zhangxianzhong"><strong>张献忠</strong></a><br/><small>明（1606—1647） · 八大王 · 大西皇帝</small></td>
+              <td>武昌、成都（西京）、西充凤凰山</td>
             </tr>
             <tr data-search="Wu Sangui 平西王 吴长伯">
-              <td><a href="../?person=wusangui"><strong>吴三桂</strong></a><br/><small>平西王 · 字长伯</small></td>
-              <td><strong>清</strong>（1612—1678） · 别名：平西王、吴长伯</td>
+              <td><a href="../?person=wusangui"><strong>吴三桂</strong></a><br/><small>清（1612—1678） · 平西王 · 字长伯</small></td>
+              <td>山海关、云南府（昆明）、昆明、衡州（衡阳）</td>
             </tr>
             <tr data-search="Zheng Chenggong 国姓爷 郑森 延平王 koxinga">
-              <td><a href="../?person=zhengchenggong"><strong>郑成功</strong></a><br/><small>延平王 · 国姓爷 · 收复台湾</small></td>
-              <td><strong>清</strong>（1624—1662） · 别名：国姓爷、郑森、延平王</td>
+              <td><a href="../?person=zhengchenggong"><strong>郑成功</strong></a><br/><small>清（1624—1662） · 延平王 · 国姓爷 · 收复台湾</small></td>
+              <td>泉州南安、思明州（厦门）、镇江、承天府（台南）</td>
             </tr>
             <tr data-search="Yongzheng Emperor 雍正 胤禛 清世宗">
-              <td><a href="../?person=yongzheng"><strong>雍正帝</strong></a><br/><small>爱新觉罗·胤禛 · 摊丁入亩 · 设军机处</small></td>
-              <td><strong>清</strong>（1678—1735） · 别名：雍正、胤禛、清世宗</td>
+              <td><a href="../?person=yongzheng"><strong>雍正帝</strong></a><br/><small>清（1678—1735） · 爱新觉罗·胤禛 · 摊丁入亩 · 设军机处</small></td>
+              <td>北京、云贵川边区</td>
             </tr>
             <tr data-search="Lin Zexu 林元抚 林少穆 林文忠公">
-              <td><a href="../?person=linzexu"><strong>林则徐</strong></a><br/><small>林文忠公 · 字元抚 · 虎门销烟</small></td>
-              <td><strong>清</strong>（1785—1850） · 别名：林元抚、林少穆、林文忠公</td>
+              <td><a href="../?person=linzexu"><strong>林则徐</strong></a><br/><small>清（1785—1850） · 林文忠公 · 字元抚 · 虎门销烟</small></td>
+              <td>虎门（东莞）、伊犁惠远城、昆明</td>
             </tr>
             <tr data-search="Zeng Guofan 曾伯涵 曾涤生 曾文正公">
-              <td><a href="../?person=zengguofan"><strong>曾国藩</strong></a><br/><small>曾文正公 · 字伯涵 · 湘军统帅</small></td>
-              <td><strong>清</strong>（1811—1872） · 别名：曾伯涵、曾涤生、曾文正公</td>
+              <td><a href="../?person=zengguofan"><strong>曾国藩</strong></a><br/><small>清（1811—1872） · 曾文正公 · 字伯涵 · 湘军统帅</small></td>
+              <td>衡州（衡阳）、安庆、天京（南京）、上海</td>
             </tr>
             <tr data-search="Hong Xiuquan 天王洪秀全">
-              <td><a href="../?person=hongxiuquan"><strong>洪秀全</strong></a><br/><small>太平天国天王</small></td>
-              <td><strong>清</strong>（1814—1864） · 别名：天王洪秀全</td>
+              <td><a href="../?person=hongxiuquan"><strong>洪秀全</strong></a><br/><small>清（1814—1864） · 太平天国天王</small></td>
+              <td>金田、天京（南京）</td>
             </tr>
             <tr data-search="Zhang Zuolin 张雨亭 东北王">
-              <td><a href="../?person=zhangzuolin"><strong>张作霖</strong></a><br/><small>字雨亭 · 奉系军阀首领</small></td>
-              <td><strong>中华民国</strong>（1875—1928） · 别名：张雨亭、东北王</td>
+              <td><a href="../?person=zhangzuolin"><strong>张作霖</strong></a><br/><small>中华民国（1875—1928） · 字雨亭 · 奉系军阀首领</small></td>
+              <td>山海关、北京、奉天皇姑屯（沈阳）</td>
             </tr>
             <tr data-search="Chiang Kai-shek 蒋中正">
-              <td><a href="../?person=jiangjieshi"><strong>蒋介石</strong></a><br/><small>蒋中正 · 北伐与抗战统帅</small></td>
-              <td><strong>中华民国</strong>（1887—1975） · 别名：蒋中正</td>
+              <td><a href="../?person=jiangjieshi"><strong>蒋介石</strong></a><br/><small>中华民国（1887—1975） · 蒋中正 · 北伐与抗战统帅</small></td>
+              <td>广州、南京、西安</td>
             </tr>
             <tr data-search="Deng Xiaoping 邓希贤">
-              <td><a href="../?person=dengxiaoping"><strong>邓小平</strong></a><br/><small>改革开放总设计师</small></td>
-              <td><strong>中华人民共和国</strong>（1904—1997） · 别名：邓希贤</td>
+              <td><a href="../?person=dengxiaoping"><strong>邓小平</strong></a><br/><small>中华人民共和国（1904—1997） · 改革开放总设计师</small></td>
+              <td>北京、深圳、香港</td>
             </tr>
             </tbody>
           </table>
@@ -728,7 +674,7 @@
 
       <footer class="page-footer">
         <div>© 江山时序 · <a href="../">deanchen.me/jiangshan-map</a> · 历史疆域与政区为示意性近似</div>
-        <div><a href="index.html">专题图志总览</a> · <a href="../sitemap.xml">Sitemap</a> · <a href="../llms.txt">LLMs.txt</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
+        <div><a href="index.html">图志总览</a> · <a href="mailto:deancsj@gmail.com">勘误反馈</a></div>
       </footer>
     </main>
   </div>
