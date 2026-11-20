@@ -332,6 +332,7 @@ h2 {
 }
 
 .more-menu-btn {
+  align-self: stretch;
   padding: 5.5px 9px;
   color: var(--text-secondary);
   cursor: pointer;
