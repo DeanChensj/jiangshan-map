@@ -2500,7 +2500,7 @@ async function runSearchRuntimeSuite(ctx) {
       ['s_ming_0a', '明', 4],
       ['s_ming_0b', '明', 4],
       ['s_sui_d', '魏（李密）', 1],
-      ['s_tang_0', '梁（萧铣）', 2],
+      ['s_tang_0', '梁（萧铣）', 3],
       ['s_tang_0', '吴（杜伏威）', 2],
       ['s_tang_d1', '大齐（黄巢）', 2],
     ]) {
