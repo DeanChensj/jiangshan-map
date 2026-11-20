@@ -330,8 +330,6 @@
     pin: '<svg class="ico-svg" viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M8 1.5a4.4 4.4 0 0 0-4.4 4.4c0 3.2 4.4 8.6 4.4 8.6s4.4-5.4 4.4-8.6A4.4 4.4 0 0 0 8 1.5zm0 6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z" fill="currentColor"/></svg>',
     mapChange:
       '<svg class="ico-svg ev-map-svg" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M1.8 3.6L5.8 2l4.4 1.8L14.2 2v10.4l-4 1.6-4.4-1.8-4 1.6V3.6zm4 .2v8.6m4.4-6.8v8.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
-    dashedBox:
-      '<svg class="ico-svg" viewBox="0 0 14 14" width="11" height="11" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2.5 1.5"/></svg>',
     play: '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="4.5,2.8 13.2,8 4.5,13.2" fill="currentColor"/></svg>',
     pause:
       '<svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.8" y="3" width="3" height="10" rx="0.8" fill="currentColor"/><rect x="9.2" y="3" width="3" height="10" rx="0.8" fill="currentColor"/></svg>',
@@ -981,7 +979,7 @@
         localStorage.setItem('jiangshan_seen_trace_hint', '1');
       } catch (_) {}
       if (this.svg) {
-        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
+        this.svg.querySelectorAll('.cap-breath-ring').forEach((el) => el.remove());
         this.svg
           .querySelectorAll('.has-trace-hint')
           .forEach((el) => el.classList.remove('has-trace-hint'));
@@ -3689,42 +3687,6 @@
             ? this.trModernCity(ancientZh)
             : this.trTerm(ancientZh)
         );
-
-        if (isHintCap) {
-          const tagG = this._svgNode(
-            'g',
-            { class: 'cap-hint-tag', transform: 'translate(0, 15.2)' },
-            node
-          );
-          const innerG = this._svgNode('g', { class: 'cap-hint-inner' }, tagG);
-          this._svgNode(
-            'line',
-            { class: 'cap-hint-stem', x1: '0', y1: '-9.8', x2: '0', y2: '-6.8' },
-            innerG
-          );
-          const isEn = this.locale === 'en';
-          const pillW = isEn ? 132 : 112;
-          this._svgNode(
-            'rect',
-            {
-              class: 'cap-hint-bg',
-              x: String(-pillW * 0.5),
-              y: '-6.8',
-              width: String(pillW),
-              height: '13.6',
-              rx: '6.8',
-            },
-            innerG
-          );
-          const hintTxt = this._svgNode(
-            'text',
-            { class: 'cap-hint-text', x: '0', y: '0.3' },
-            innerG
-          );
-          hintTxt.textContent = isEn
-            ? '◆ Click city · 2,000 yrs of history ›'
-            : this._zh('◆ 点按城池 · 阅两千年身世 ›');
-        }
       }
 
       // Render Strategic Passes (名关雄隘 · 天下锁钥): subtle crenellated pass markers
@@ -5592,6 +5554,32 @@
       }
     }
 
+    _stripLegendCaptionYear(raw) {
+      if (!raw) return raw;
+      let s = raw.trim();
+      s = s.replace(
+        /^(?:(?:c\.\s*)?(?:前\s*)?\d+\s*(?:BCE|CE|AD)?\s*(?:[—–\-]\s*(?:(?:前\s*)?\d+|今|Present))?\s*(?:BCE|CE|AD|年)?)\s*[·：:\-—–]\s*/i,
+        ''
+      );
+      s = s.replace(
+        /\s*（\s*(?:前\s*)?\d+(?:\s*[—–\-]\s*(?:(?:前\s*)?\d+|今))?\s*年?\s*[·：:]\s*([^）]+)）\s*$/,
+        ' · $1'
+      );
+      s = s.replace(
+        /\s*\(\s*(?:c\.\s*)?\d+\s*(?:BCE|CE|AD)?(?:\s*[—–\-]\s*(?:\d+|Present))?\s*(?:BCE|CE|AD)?\s*[:·]\s*([^)]+)\)\s*$/i,
+        ' · $1'
+      );
+      s = s.replace(
+        /\s*（\s*(?:前\s*)?\d+(?:\s*[—–\-]\s*(?:(?:前\s*)?\d+|今))?\s*年?\s*）\s*$/,
+        ''
+      );
+      s = s.replace(
+        /\s*\(\s*(?:c\.\s*)?\d+\s*(?:BCE|CE|AD)?(?:\s*[—–\-]\s*(?:\d+|Present))?\s*(?:BCE|CE|AD)?\s*\)\s*$/i,
+        ''
+      );
+      return s.trim() || raw.trim();
+    }
+
     _renderLegendBox(snap) {
       const curDyn = this.dynasties[this.dynastyIdx];
       let pIdx = -1;
@@ -5693,7 +5681,9 @@
       if (snap.caption) {
         const h = document.createElement('div');
         h.className = 'key-heading';
-        h.textContent = this.trTerm(snap.caption);
+        const hasPhaseSpan = Boolean(curDyn && Array.isArray(curDyn.phases) && curDyn.phases.length > 1);
+        const rawCaption = this.trTerm(snap.caption);
+        h.textContent = hasPhaseSpan ? this._stripLegendCaptionYear(rawCaption) : rawCaption;
         this.mapKey.appendChild(h);
       }
       const grid = document.createElement('div');
@@ -5778,13 +5768,6 @@
         if (e.pointerType !== 'touch') this._setPolityFocus(null);
       });
       if (grid.firstChild) this.mapKey.appendChild(grid);
-
-      if (snap.note) {
-        const n = document.createElement('div');
-        n.className = 'key-note';
-        n.innerHTML = `${SVG_ICONS.dashedBox} <span>${this._mapText(this.trTerm(snap.note))}</span>`;
-        this.mapKey.appendChild(n);
-      }
 
       if (this._id('chk-corridors') && this._id('chk-corridors').checked) {
         const activeKinds = new Set();
@@ -8253,18 +8236,9 @@
         const wLocal = this._estimateLocalTextWidth(nameEl.textContent, f1, 0.45) + 7;
         const useCityHalo = isTier2City && allowCull;
 
-        const hasHintTag = node.classList.contains('has-trace-hint');
-        if (hasHintTag) {
-          occupied.push({
-            x1: cx - 40 * s,
-            y1: cy + 6 * s,
-            x2: cx + 40 * s,
-            y2: cy + 28 * s,
-          });
-        }
         const pref = node.dataset.prefAlign || 'r';
-        const dirs = [hasHintTag && pref === 'b' ? 't' : pref];
-        for (const d of hasHintTag ? ['r', 'l', 't'] : ['r', 'l', 'b', 't']) {
+        const dirs = [pref];
+        for (const d of ['r', 'l', 'b', 't']) {
           if (!dirs.includes(d)) dirs.push(d);
         }
 
@@ -10292,7 +10266,7 @@
           return null;
         };
         const journeyNodeEl = findClosest('.journey-node');
-        const settlementNameEl = findClosest('.settlement-node .name, .cap-hint-tag');
+        const settlementNameEl = findClosest('.settlement-node .name');
         const settlementEl = findClosest('.settlement-node');
         const corridorEl = findClosest('.corridor-line');
         const milestoneEl = findClosest('.milestone-pin');
@@ -10651,7 +10625,7 @@
               return;
             }
           }
-          const settlementNameEl = findClosest('.settlement-node .name, .cap-hint-tag');
+          const settlementNameEl = findClosest('.settlement-node .name');
           let settlementEl = findClosest('.settlement-node');
           let milestoneEl = findClosest('.milestone-pin');
           if (e.pointerType === 'touch' && !settlementEl && !milestoneEl) {
