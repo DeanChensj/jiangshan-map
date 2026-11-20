@@ -108,7 +108,7 @@ ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <article class="hero-card">
         <h1>中国历代疆域、事件沙盘、人物行迹与古诗词图志</h1>
-        <p>汇集「江山时序」全部静态历史地理专题，提供古今地名对照、帝王年号编年、正史出处与交互式古舆图实时预览。</p>
+        <p>汇集「江山时序」全部静态历史地理专题，提供古今地名对照、帝王年号编年与交互式古舆图实时预览，部分史事附史料出处。</p>
       </article>
 
       <section id="sec-stories" class="section-card">
@@ -180,7 +180,7 @@ ${jListHtml}
         </div>
       </section>
 
-      <p class="index-editorial-note">制图与考据说明：历代疆域依自然山川、分水岭与关隘划定（非现代省界），分期复原古海岸线与河口演变，史事与同名异地消歧核验自《二十四史》及《资治通鉴》。</p>
+      <p class="index-editorial-note">制图与考据说明：历代疆域依自然山川、分水岭与关隘划定（非现代省界），分期复原古海岸线与河口演变，史事出处以《资治通鉴》与历代正史为主，逐条核对仍在进行。</p>
 
 ${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>

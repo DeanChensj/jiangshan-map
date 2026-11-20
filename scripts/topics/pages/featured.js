@@ -15,7 +15,6 @@ const {
   hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
-  renderTableFilterBar,
   renderRelatedStrip,
   renderFooter,
 } = require('../layout');
@@ -60,7 +59,7 @@ function buildFeaturedTopicPage({
   const nearestCfg = (geoOverrides && geoOverrides.nearestCity) || {};
 
   const pageTitle = `${topic.titleZh} · 古今地名政区沿革 | 江山时序`;
-  const pageDesc = `${topic.titleZh}：${topic.summaryZh.slice(0, 140)}… 交互式历史地图定位、帝王年号与两千四百年古今政区沿革。`;
+  const pageDesc = `${topic.titleZh}：${topic.summaryZh.slice(0, 140)}… 交互式历史地图定位、帝王年号与当时政区。`;
 
   let detailSectionHtml = '';
   let tocItems = [];
@@ -136,10 +135,15 @@ ${routeRows}
     const resolvedDisplayTitle = topic.targetDisplayTitle || info.resolvedName || targetPlace;
     const cleanFallbackSeat = `${targetPlace}（今${info.modern || ''}）`;
 
+    // One row, for the year the topic is about. A row per dynasty sampled at that dynasty's
+    // focus year described the place at eighteen dates unrelated to the battle or poem.
+    const topicYear = Number(String(topic.inspectQuery.year).split(',')[0]);
     const genRows = allDynasties
+      .filter((d) => (topic.dynastyKeys || []).includes(d.key))
+      .slice(0, 1)
       .map((d) => {
-        const sampleY = d.focusYear !== undefined ? d.focusYear : d.fromYear;
-        const dInfo = ctrl.inspect({ year: sampleY, place: targetPlace });
+        const sampleY = topicYear;
+        const dInfo = info;
         const rawAdminList =
           d.key === 'zhanguo'
             ? dInfo.polity === '秦'
@@ -173,12 +177,11 @@ ${routeRows}
 
     tocItems = [
       { id: 'sec-map', label: '交互舆图预览' },
-      { id: 'sec-genealogy', label: '一、历代沿革' },
+      { id: 'sec-genealogy', label: '一、当时政区' },
     ];
 
     detailSectionHtml = `      <section id="sec-genealogy" class="section-card">
-        <h2>一、「${escHtml(resolvedDisplayTitle)}」历代政区沿革</h2>
-${renderTableFilterBar('tbl-genealogy', '筛选朝代、年号、政权或郡县政区…', allDynasties.length)}
+        <h2>一、「${escHtml(resolvedDisplayTitle)}」${fmtYearShortZh(topicYear)}年所属政区</h2>
         <div class="table-wrap">
           <table id="tbl-genealogy" class="data-table is-wide-table">
             <thead>
