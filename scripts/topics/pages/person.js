@@ -4,6 +4,7 @@ const { BASE_URL, LASTMOD, isStandalonePersonMonograph } = require('../config');
 const {
   escHtml,
   fmtYearShortZh,
+  fmtPersonSpanZh,
   fmtYearEn,
   buildMapHref,
   buildEmbedHref,
@@ -50,9 +51,10 @@ function resolveEventSourceHtml(profile, ev, yearSeen, loreData, sourcesBundle) 
 
 function formatPersonSpan(profile) {
   const span = Array.isArray(profile.span) ? profile.span : [0, 0];
+  const u = profile.spanUnknown || '';
   return {
-    spanZh: `${fmtYearShortZh(span[0])}—${fmtYearShortZh(span[1])}`,
-    spanEn: `${fmtYearEn(span[0])} – ${fmtYearEn(span[1])}`,
+    spanZh: fmtPersonSpanZh(profile),
+    spanEn: `${u === 'birth' || u === 'both' ? '?' : fmtYearEn(span[0])} – ${u === 'death' || u === 'both' ? '?' : fmtYearEn(span[1])}`,
   };
 }
 
@@ -149,9 +151,7 @@ ${peerList
       `?person=${encodeURIComponent(profile.key)},${encodeURIComponent(peer.key)}`,
       { lang, base: mapBase }
     );
-    const peerSpan = Array.isArray(peer.span)
-      ? `${fmtYearShortZh(peer.span[0])}—${fmtYearShortZh(peer.span[1])}`
-      : '';
+    const peerSpan = Array.isArray(peer.span) ? fmtPersonSpanZh(peer) : '';
     return `          <div class="person-peer-card">
             <div>
               <div class="person-peer-head">

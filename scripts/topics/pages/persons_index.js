@@ -1,7 +1,7 @@
 'use strict';
 
 const { BASE_URL } = require('../config');
-const { escHtml, fmtYearShortZh, dedupeConsecutive, buildMapHref } = require('../runtime');
+const { escHtml, fmtPersonSpanZh, dedupeConsecutive, buildMapHref } = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -94,8 +94,7 @@ function buildPersonsIndexPage({
   const directoryRowsHtml = directoryOnlyPersons
     .map(({ profile, sampleSitesZh }) => {
       const dynTitle = dynTitleMap.get(profile.dynastyKey) || profile.dynastyKey;
-      const span = Array.isArray(profile.span) ? profile.span : [0, 0];
-      const spanZh = `${fmtYearShortZh(span[0])}—${fmtYearShortZh(span[1])}`;
+      const spanZh = fmtPersonSpanZh(profile);
       const mapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}`, { lang, base: mapBase });
       const aliasList = Array.isArray(profile.aliases) && profile.aliases.length
         ? profile.aliases.slice(0, 3).join('、')
