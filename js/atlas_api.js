@@ -2191,6 +2191,15 @@
   const readyCtrl = window.HistoricalAtlasController;
   if (readyCtrl && typeof readyCtrl._extendPrototype === 'function') {
     install(readyCtrl);
+    if (
+      typeof document !== 'undefined' &&
+      document &&
+      typeof document.getElementById === 'function' &&
+      document.getElementById('atlas-svg') &&
+      typeof readyCtrl._bootOnce === 'function'
+    ) {
+      setTimeout(readyCtrl._bootOnce, 0);
+    }
   } else {
     (window.__ATLAS_MIXINS = window.__ATLAS_MIXINS || []).push(install);
   }

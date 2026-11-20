@@ -92,7 +92,7 @@ async function runCartographyUiSuite(ctx) {
     }
 
     const maShanLinkMatch = indexHtml.match(
-      /<link href="(https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng&text=([^"&]+)&display=swap)" rel="stylesheet" media="print" onload="this\.media='all'" \/>/
+      /<link (?:data-font-)?href="(https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng&text=([^"&]+)&display=swap)" rel="stylesheet" media="print" onload="this\.media='all'" \/>/
     );
     assert(maShanLinkMatch, 'Expected non-blocking subsetted Ma Shan Zheng stylesheet <link> in index.html');
     assert(

@@ -498,9 +498,6 @@
       this._bootInnerWidth = undefined;
       if (!this.embed) this._maybeShowStartGuide();
 
-      if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
-        setTimeout(() => this._ensureFullSnapshots(), 50);
-      }
       if (!this._deferredLoadsHeld) this._releaseDeferredLoads();
     }
 
@@ -514,33 +511,76 @@
       setTimeout(() => this._releaseDeferredLoads(), 6000);
     }
 
+    _activateOptionalWebfonts() {
+      if (typeof window === 'undefined' || typeof document === 'undefined' || !document.querySelectorAll) return;
+      // Google Fonts is TCP-blackholed in Mainland China; system CJK stacks in css/style.css render natively.
+      let tz = '';
+      try {
+        tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+      } catch (_) {}
+      if (/^asia\/(shanghai|chongqing|chungking|harbin|urumqi|kashgar)$/.test(tz)) return;
+      const run = () => {
+        document.querySelectorAll('link[data-font-href]').forEach((lnk) => {
+          const url = lnk.getAttribute('data-font-href');
+          if (url && !lnk.getAttribute('href')) lnk.setAttribute('href', url);
+        });
+      };
+      if (document.readyState === 'complete') setTimeout(run, 100);
+      else if (typeof window.addEventListener === 'function') {
+        window.addEventListener('load', () => setTimeout(run, 100), { once: true });
+      }
+    }
+
     _releaseDeferredLoads() {
       if (this._deferredLoadsReleased) return;
       this._deferredLoadsReleased = true;
       this._deferredLoadsHeld = false;
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       const relief = this._id('terrain-relief-img');
+      let backgroundWarmupStarted = false;
+      const startBackgroundWarmup = () => {
+        if (backgroundWarmupStarted) return;
+        backgroundWarmupStarted = true;
+        this._activateOptionalWebfonts();
+        const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
+        const constrainedLink = Boolean(
+          conn && (conn.saveData || /(^|-)2g$|^3g$/.test(conn.effectiveType || ''))
+        );
+        // On 2G/3G or Data Saver, fetch heavy bundles only on-demand when the user switches eras or opens lore.
+        if (constrainedLink) return;
+        const scheduleIdle =
+          typeof window.requestIdleCallback === 'function'
+            ? (fn) => window.requestIdleCallback(fn, { timeout: 400 })
+            : (fn) => setTimeout(fn, 120);
+        scheduleIdle(() => {
+          const snapsDone = this._fullSnapshotsLoaded
+            ? Promise.resolve()
+            : this._ensureFullSnapshots();
+          snapsDone.then(() => {
+            if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
+            this._ensureNarrator();
+          });
+        });
+      };
       const reliefShown = () => {
         if (this.svg && this.svg.classList) this.svg.classList.remove('is-terrain-pending');
+        startBackgroundWarmup();
       };
       if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
+        const mobHref = this._isMobileViewport() && relief.getAttribute('data-href-mobile');
         relief.addEventListener('load', reliefShown, { once: true });
         relief.addEventListener('error', reliefShown, { once: true });
-        relief.setAttribute('href', relief.getAttribute('data-href'));
+        setTimeout(startBackgroundWarmup, 8000);
+        relief.setAttribute('href', mobHref || relief.getAttribute('data-href'));
+      } else if (relief && relief.getAttribute('href') && !(relief.dataset && relief.dataset.loaded === '1')) {
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-terrain-pending');
+        relief.addEventListener('load', startBackgroundWarmup, { once: true });
+        relief.addEventListener('error', startBackgroundWarmup, { once: true });
+        setTimeout(startBackgroundWarmup, 8000);
       } else {
         reliefShown();
       }
       this._updateTerrainTiles();
-      if (!this._isLoreDetailLoaded()) {
-        const scheduleIdle =
-          typeof window.requestIdleCallback === 'function'
-            ? (fn) => window.requestIdleCallback(fn, { timeout: 200 })
-            : (fn) => setTimeout(fn, 80);
-        scheduleIdle(() => {
-          this._ensureLoreDetail();
-          this._ensureNarrator();
-        });
-      }
     }
 
     _hydrateSnapshots() {
@@ -11070,7 +11110,8 @@
   if (Array.isArray(window.__ATLAS_MIXINS)) {
     for (const install of window.__ATLAS_MIXINS.splice(0)) install(HistoricalAtlasController);
   }
-  window.addEventListener('DOMContentLoaded', () => {
+  const bootAtlasApp = () => {
+    if (window.atlasApp) return;
     const app = new HistoricalAtlasController();
     window.atlasApp = app;
     window.atlasAPI = {
@@ -11081,5 +11122,7 @@
       search: (q) => app._queryQuickSearch(q),
     };
     app._registerWebMcpTools();
-  });
+  };
+  HistoricalAtlasController._bootOnce = bootAtlasApp;
+  window.addEventListener('DOMContentLoaded', bootAtlasApp);
 })();

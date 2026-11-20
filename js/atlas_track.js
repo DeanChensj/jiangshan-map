@@ -230,6 +230,25 @@
     });
     window.addEventListener('pagehide', flush);
     setInterval(flush, FLUSH_INTERVAL_MS);
+
+    // Load 3rd-party beacons asynchronously well after window.load so unreachable hosts
+    // (e.g. GFW TCP blackholes on mobile carriers) can never block DOMContentLoaded or load.
+    const loadExternalBeacons = () => {
+      setTimeout(() => {
+        if (!document.head || typeof document.createElement !== 'function') return;
+        const vc = document.createElement('script');
+        vc.async = true;
+        vc.src = 'https://events.vercount.one/js';
+        document.head.appendChild(vc);
+        const cf = document.createElement('script');
+        cf.async = true;
+        cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        cf.setAttribute('data-cf-beacon', '{"token": "dc645937f75341b2a7416bd1fb81b635", "spa": false}');
+        document.head.appendChild(cf);
+      }, 2500);
+    };
+    if (document.readyState === 'complete') loadExternalBeacons();
+    else window.addEventListener('load', loadExternalBeacons, { once: true });
   }
 
   if (typeof window !== 'undefined') {
