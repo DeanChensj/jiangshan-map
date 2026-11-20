@@ -1528,7 +1528,7 @@ window.EN_LOCALE = {
       "Ying (Jiangling)"
     ],
     "zhanguo:-260": [
-      "Battle of Changping: Bai Qi annihilates 400,000 Zhao troops, breaking Zhao’s military power",
+      "Battle of Changping: Zhao accepts Shangdang & appoints Zhao Kuo; Bai Qi slays 400,000 troops",
       "Changping (Gaoping)"
     ],
     "zhanguo:-256": [
@@ -1560,7 +1560,7 @@ window.EN_LOCALE = {
       "Daliang (Kaifeng)"
     ],
     "zhanguo:-223": [
-      "Conquest of Chu: Wang Jian leads 600,000 troops to defeat Xiang Yan and capture Shouchun",
+      "Conquest of Chu: Wang Jian takes Shouchun (224); Lord Changping & Xiang Yan fall in 223 BCE",
       "Shouchun (Shouxian)"
     ],
     "zhanguo:-222": [
@@ -1568,8 +1568,12 @@ window.EN_LOCALE = {
       "Xiangping (Liaoyang)"
     ],
     "zhanguo:-341": [
-      "Battle of Maling: Sun Bin slays Pang Juan; Shang Yang seizes Hexi as Wei moves to Daliang",
+      "Battle of Maling: Sun Bin defeats Pang Juan; in 340 BCE Shang Yang captures Prince Ang of Wei",
       "Maling · Anyi"
+    ],
+    "zhanguo:-330": [
+      "Battle of Diaoyin: Gongsun Yan routs Wei; Wei cedes all of Hexi (330) and Shangjun (328 BCE)",
+      "Diaoyin · Shangjun"
     ],
     "zhanguo:-296": [
       "Zhao completes the conquest of Zhongshan; Qi, Han, and Wei coalition defeats Qin at Hangu Pass",
@@ -1968,7 +1972,7 @@ window.EN_LOCALE = {
       "Jiangling (Jingzhou)"
     ],
     "zhanguo:-249": [
-      "King Kaolie of Chu annexes Lu; Qin extinguishes Eastern Zhou and sets Sanchuan Commandery",
+      "Chu reduces Duke Qing of Lu to commoner, ending Lu; Qin ends Eastern Zhou & sets Sanchuan",
       "Qufu · Luoyang"
     ],
     "donghan:207": [
@@ -6117,9 +6121,8 @@ window.EN_LOCALE = {
     "581 — 587 · 隋初南北对峙：杨坚代周建隋，江陵西梁存续，与江南陈朝隔江并立": "581–587 · Founding of Sui, Western Liang at Jiangling, and Southern Chen",
     "587 — 589 · 隋文帝废西梁并入隋境，大军临江蓄势灭陈": "587–589 · Emperor Wen of Sui Abolishes Western Liang and Prepares to Conquer Chen",
     "西梁都城（587 年隋废西梁置荆州总管府）": "Capital of Western Liang (abolished by Sui in 587)",
-    "前 340 — 前 317 · 商鞅收河西、魏迁大梁与五国相王：巴蜀、越、中山、义渠尚存": "340–317 BCE · Shang Yang Retakes Hexi, Wei Moves to Daliang & Five-State Royal Accord: Ba–Shu, Yue, Zhongshan & Yiqu Remain",
-    "战国中期之初（前340 — 前317 · 商鞅收河西与五国相王）": "Early Mid-Warring States (340–317 BCE · Qin Retakes Hexi & Five-State Royal Accord)",
-    "前340年商鞅破魏收复河西，魏惠王东迁大梁并献上郡于秦；前323年公孙衍发起“五国相王”。此时巴、蜀、越、中山与义渠诸国皆尚独立存续。": "In 340 BCE Shang Yang defeated Wei to retake Hexi, forcing King Hui of Wei to move his capital east to Daliang and cede Shangjun to Qin; in 323 BCE Gongsun Yan initiated the Five-State Royal Accord. Ba, Shu, Yue, Zhongshan, and Yiqu all remained independent.",
+    "战国中期之初（前330 — 前317 · 雕阴之战秦尽取河西与五国相王）": "Early Mid-Warring States (330–317 BCE · Qin Secures Hexi at Diaoyin & Five-State Accord)",
+    "前340年商鞅破魏收河西部分失地，前330年雕阴之战秦大破龙贾、魏尽献河西之地，前328年再纳上郡十五县；前323年公孙衍发起“五国相王”。此时宋、巴、蜀、越、中山与义渠诸国尚存。": "After Shang Yang recovered part of Hexi in 340 BCE, Qin routed Long Jia at Diaoyin in 330 BCE, forcing Wei to cede all of Hexi and then Shangjun's fifteen counties in 328 BCE; in 323 BCE Gongsun Yan initiated the Five-State Royal Accord while Song, Ba, Shu, Yue, Zhongshan, and Yiqu remained.",
     "前 316 — 前 307 · 秦司马错灭巴蜀、丹阳之战取汉中：越、中山、义渠尚存": "316–307 BCE · Sima Cuo Conquers Ba–Shu & Qin Takes Hanzhong at Danyang: Yue, Zhongshan & Yiqu Remain",
     "战国中期前叶（前316 — 前307 · 秦灭巴蜀与丹阳之战取汉中）": "Mid-Warring States (316–307 BCE · Qin Conquest of Ba–Shu & Hanzhong)",
     "前316年秦惠文王遣司马错灭巴、蜀置巴郡与蜀郡，前312年丹阳、蓝田之战大破楚军取汉中郡；此时江南越国、河北中山国及陇东义渠尚存。": "In 316 BCE King Huiwen of Qin sent Sima Cuo to conquer Ba and Shu, and in 312 BCE Qin defeated Chu at Danyang to take Hanzhong Commandery; Yue in the southeast, Zhongshan in Hebei, and Yiqu in the northwest still remained.",
@@ -6246,6 +6249,7 @@ window.EN_LOCALE = {
     "牧野": "Muye",
     "晋城高平": "Gaoping, Jincheng",
     "长平": "Changping",
+    "雕阴": "Diaoyin",
     "大泽乡": "Dazexiang",
     "蚌埠固镇": "Guzhen, Bengbu",
     "垓下": "Gaixia",
@@ -6837,19 +6841,19 @@ window.EN_LOCALE = {
     "巴": "Ba",
     "定陶": "Dingtao",
     "少梁": "Shaoliang",
-    "战国初期（前403—前341年 · 三家分晋、田氏代齐与魏霸中原）": "Early Warring States (403–341 BCE: Partition of Jin, Tian Qi & Hegemony of Wei)",
+    "战国初期（前403—前331年 · 三家分晋、田氏代齐与魏霸中原）": "Early Warring States (403–331 BCE: Partition of Jin, Tian Qi & Hegemony of Wei)",
     "前403年周威烈王册命韩、赵、魏为诸侯（《资治通鉴》开篇），前386年田氏代齐，战国七雄格局确立；魏文侯、武侯任李悝、吴起率先称雄中原（西跨洛水置河西郡、上郡），宋、巴、蜀、越、中山、义渠与东周王畿并存。": "In 403 BCE King Weilie of Zhou recognized Han, Zhao, and Wei as marquises (opening Zizhi Tongjian), and in 386 BCE the Tian clan took Qi. Marquises Wen and Wu of Wei achieved early hegemony across the Central Plains and Hexi Commandery, alongside Song, Ba, Shu, Yue, Zhongshan, Yiqu, and Eastern Zhou.",
-    "前 403 — 前 341 · 三家分晋、田氏代齐与魏霸中原：七雄并立，宋、巴、蜀、越、中山尚存": "403–341 BCE · Partition of Jin, Tian Qi & Hegemony of Wei: Seven Powers with Song, Ba, Shu, Yue & Zhongshan",
-    "前 340 — 前 317 · 商鞅收河西、魏迁大梁与五国相王：宋、巴、蜀、越、中山、义渠尚存": "340–317 BCE · Shang Yang Recovers Hexi, Wei Moves to Daliang & Five-State Accord: Song, Ba, Shu, Yue, Zhongshan & Yiqu",
+    "前 403 — 前 331 · 三家分晋、田氏代齐与魏霸中原：七雄并立，宋、巴、蜀、越、中山尚存": "403–331 BCE · Partition of Jin, Tian Qi & Hegemony of Wei: Seven Powers with Song, Ba, Shu, Yue & Zhongshan",
+    "前 330 — 前 317 · 雕阴之战秦尽取河西、继纳上郡与五国相王：宋、巴、蜀、越、中山、义渠尚存": "330–317 BCE · Battle of Diaoyin, Qin Annexes Hexi & Shangjun, and Five-State Accord: Song, Ba, Shu, Yue, Zhongshan & Yiqu",
     "前 316 — 前 307 · 秦司马错灭巴蜀、丹阳之战取汉中：宋、越、中山、义渠尚存": "316–307 BCE · Qin Conquers Ba-Shu & Takes Hanzhong at Danyang: Song, Yue, Zhongshan & Yiqu Survive",
     "前 306 — 前 301 · 楚怀王灭越尽取旧吴之地：宋、中山、义渠尚存，燕尚未东辟辽东": "306–301 BCE · King Huai of Chu Conquers Yue: Song, Zhongshan & Yiqu Survive; Prior to Yan’s Liaodong Expansion",
     "前 300 — 前 297 · 燕将秦开辟燕北五郡、赵武灵王辟云中：劲宋尚存": "300–297 BCE · Qin Kai Establishes Five Northern Yan Commanderies & King Wuling of Zhao Founds Yunzhong: Song Survives",
     "前 296 — 前 279 · 赵灭中山、齐湣王灭宋与五国伐齐：齐楚魏三分宋地，乐毅破齐": "296–279 BCE · Zhao Annexes Zhongshan, Qi Annexes Song & Yue Yi’s Coalition Against Qi: Qi, Chu & Wei Partition Song",
     "宋国都城（前286齐湣王灭宋，魏得商丘）": "Capital of the State of Song (annexed by Qi in 286 BCE; Shangqiu taken by Wei)",
     "天下之中，范蠡经商陶朱公驻地，后为秦穰侯魏冉封邑": "Commercial hub of the Central Plains where Fan Li settled as Lord Tao Zhu; later fief of Marquis Rang (Wei Ran) of Qin",
-    "魏置河西郡重镇，吴起任西河守拒秦，前340后入秦更名夏阳": "Stronghold of Wei’s Hexi Commandery defended by Wu Qi against Qin; annexed by Qin after 340 BCE and renamed Xiayang",
+    "魏置河西郡重镇，吴起任西河守拒秦；前330年雕阴之战后河西尽归秦，更名夏阳": "Stronghold of Wei’s Hexi Commandery defended by Wu Qi against Qin; annexed by Qin after Diaoyin in 330 BCE and renamed Xiayang",
     "古陈国故都，楚襄王自郢东迁都此（前278—前241）": "Former capital of Chen; King Qingxiang of Chu moved the Chu capital here after losing Ying (278–241 BCE)",
-    "鲁国都城，孔子故里；前249年楚考烈王灭鲁并入楚境": "Capital of the State of Lu and hometown of Confucius; annexed by King Kaolie of Chu in 249 BCE",
+    "鲁国都城，孔子故里；前256年楚取曲阜迁鲁顷公于莒，前249年废为家人绝祀": "Capital of the State of Lu and hometown of Confucius; Chu took Qufu in 256 BCE, moved Duke Qing to Ju, and ended Lu's sacrifices in 249 BCE",
     "韩成皋荥阳重镇，鸿沟水运枢纽，前249入秦置三川郡": "Strategic Han fortress of Chenggao and Xingyang at the Honggou Canal hub; taken by Qin in 249 BCE to form Sanchuan Commandery",
     "菏泽·定陶": "Dingtao, Heze",
     "天下之中商业重镇，范蠡终老之地，前286年齐灭宋后入齐，后入秦为穰侯魏冉封邑": "Major commercial hub at the center of the realm where Fan Li retired; annexed by Qi after the fall of Song in 286 BCE, later fief of Marquis Rang (Wei Ran) of Qin",

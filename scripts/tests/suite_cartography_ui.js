@@ -1359,9 +1359,9 @@ async function runCartographyUiSuite(ctx) {
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-    // Snapshot boundaries without a same-year milestone (-340, 614, 880, 1335, 1927) must not create
+    // Snapshot boundaries without a same-year milestone (614, 880, 1335, 1927) must not create
     // orphan autoplay stops without an event headline.
-    for (const y of [-340, 614, 880, 1335, 1927]) {
+    for (const y of [614, 880, 1335, 1927]) {
       assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
@@ -1419,7 +1419,7 @@ async function runCartographyUiSuite(ctx) {
       `Pure-territory autoplay must visit only territory transitions (~207 vs ${stops.length}), got ${tStops.length}`
     );
     const tStopYears = new Set(tStops.map((s) => s.year));
-    for (const silentY of [-340, 614, 880, 1335, 1927]) {
+    for (const silentY of [614, 880, 1335, 1927]) {
       assert(tStopYears.has(silentY), `Pure-territory mode must include snapshot boundary ${silentY}`);
     }
     for (const narrativeY of [624, 725, 736, 737]) {
@@ -3184,7 +3184,7 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_zhanguo_a', '韩', 110.92, 34.63) &&
         hasPolPt('s_zhanguo_a2', '秦', 110.44, 35.48) &&
         hasPolPt('s_zhanguo_a2', '秦', 110.92, 34.63),
-      'Shaoliang (Hexi Commandery) must belong to 魏 in s_zhanguo_a (-403..-341 BCE) and transfer with Hangu Pass to 秦 in s_zhanguo_a2 (-340 BCE)'
+      'Shaoliang (Hexi Commandery) must belong to 魏 in s_zhanguo_a (-403..-331 BCE) and transfer with Hangu Pass to 秦 in s_zhanguo_a2 (-330 BCE)'
     );
     for (const sk of ['s_zhanguo_a', 's_zhanguo_a2', 's_zhanguo_b0', 's_zhanguo_b1', 's_zhanguo_b']) {
       assert(
