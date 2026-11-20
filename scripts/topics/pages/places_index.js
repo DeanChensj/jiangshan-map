@@ -1,7 +1,7 @@
 'use strict';
 
 const { BASE_URL } = require('../config');
-const { escHtml, fmtYearShortZh, buildMapHref } = require('../runtime');
+const { escHtml, buildMapHref } = require('../runtime');
 const {
   renderSharedHead,
   renderTopHeader,
@@ -97,11 +97,8 @@ function buildPlacesIndexPage({
         lang,
         base: mapBase,
       });
-      const spanZh = p.vanish
-        ? `${fmtYearShortZh(p.appear)}—${fmtYearShortZh(p.vanish)}`
-        : `${fmtYearShortZh(p.appear)}—今`;
       return `            <tr${p.ancientEn ? ` data-search="${escHtml(p.ancientEn)}"` : ''}>
-              <td><a href="${escHtml(mapHref)}"><strong>${escHtml(p.ancientZh)}</strong></a><br/><small>${escHtml(spanZh)}</small></td>
+              <td><a href="${escHtml(mapHref)}"><strong>${escHtml(p.ancientZh)}</strong></a></td>
               <td><strong>${escHtml(p.modernZh)}</strong><br/><small>${escHtml(p.rangeZh)}</small></td>
               <td>${escHtml(p.chokepointZh)}</td>
             </tr>`;
@@ -181,7 +178,7 @@ ${renderTableFilterBar('tbl-passes', '按关隘、山川或今地检索…', tot
           <table id="tbl-passes" class="data-table">
             <thead>
               <tr>
-                <th>雄关与存续</th>
+                <th>雄关</th>
                 <th>今地与山川</th>
                 <th>战略扼守</th>
               </tr>
