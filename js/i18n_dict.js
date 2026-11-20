@@ -1501,7 +1501,7 @@ window.EN_LOCALE = {
     ],
     "zhanguo:-356": [
       "Duke Xiao of Qin appoints Shang Yang for Legalist reforms; capital moves to Xianyang (350 BCE)",
-      "Xianyang"
+      "Yueyang"
     ],
     "zhanguo:-353": [
       "Battle of Guiling: Sun Bin and Tian Ji besiege Wei to rescue Zhao, defeating Pang Juan",
