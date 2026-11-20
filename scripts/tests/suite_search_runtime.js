@@ -1682,6 +1682,11 @@ async function runSearchRuntimeSuite(ctx) {
         const revInspZh = ctrl.inspect({ year: 705, place: '洛阳' });
         assert.strictEqual(revInspZh.polity, '唐');
         assert.strictEqual(revInspZh.resolvedName, '东都洛阳');
+        // 江宁 and 天京 share one site: the nearest city is the one on the map that year.
+        const tianjingInsp = ctrl.inspect({ year: 1860, lng: 118.801, lat: 32.061 });
+        assert.strictEqual(tianjingInsp.nearestCity && tianjingInsp.nearestCity.ancient, '天京');
+        assert.strictEqual(Boolean(tianjingInsp.nearestCity && tianjingInsp.nearestCity.isCapital), true);
+        assert.strictEqual(ctrl.inspect({ year: 1870, lng: 118.801, lat: 32.061 }).nearestCity.ancient, '江宁');
 
         ctrl.locale = 'en';
         assert.strictEqual(ctrl.formatEraLabel(695, tangDyn), 'Wu Zhou · Wu Zetian');
