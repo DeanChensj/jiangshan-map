@@ -110,6 +110,7 @@ def build_level(dem_dir, z):
 PROJ_W, PROJ_H, WEST, EAST, SOUTH, NORTH = 1000, 700, 66, 142, 14, 55
 BASE_RECT = (-80, -40, 1160, 780)
 BASE_PATH = os.path.join(ROOT, 'assets', 'terrain_relief.webp')
+MOBILE_BASE_PATH = os.path.join(ROOT, 'assets', 'terrain_relief_mobile.webp')
 
 
 def _merc(lat):
@@ -153,6 +154,7 @@ def build_base(dem_dir, zdem=6):
   land = shaded.resize(old.size, Image.LANCZOS, box=box)
   out = Image.composite(land.convert('RGB'), old, land.getchannel('A'))
   out.save(BASE_PATH, 'WEBP', quality=82, method=6)
+  out.resize((BASE_RECT[2], BASE_RECT[3]), Image.LANCZOS).save(MOBILE_BASE_PATH, 'WEBP', quality=72, method=6)
   print(f'base: {old.size[0]}x{old.size[1]} from z{zdem}, {os.path.getsize(BASE_PATH) / 1048576:.2f} MB')
 
 

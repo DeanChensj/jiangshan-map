@@ -445,8 +445,13 @@ async function runSearchRuntimeSuite(ctx) {
           assert.strictEqual(sandbox.location.search, '?year=450&polity=beiwei&trace=108.940,34.260&terrain=0', 'A place card opened on top of a profile must be kept alongside ?polity=');
           ctrl.activePolity = null;
 
-          const indexHtml = require('fs').readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-          assert(/data-cf-beacon='[^']*"spa":\s*false/.test(indexHtml), 'Cloudflare beacon must keep "spa": false, or every URL state write is counted as a pageview');
+          const beaconCorpus =
+            require('fs').readFileSync(path.join(ROOT, 'index.html'), 'utf8') +
+            require('fs').readFileSync(path.join(JS_DIR, 'atlas_track.js'), 'utf8');
+          assert(
+            /(?:data-cf-beacon='[^']*|setAttribute\('data-cf-beacon',\s*'[^']*)"spa":\s*false/.test(beaconCorpus),
+            'Cloudflare beacon must keep "spa": false, or every URL state write is counted as a pageview'
+          );
 
           Object.assign(ctrl, { activePerson: { profiles: [{ key: 'libai' }, { key: 'dufu' }] }, activePersonEventIdx: 3 });
           ctrl._writeUrlState();
@@ -2609,12 +2614,18 @@ async function runSearchRuntimeSuite(ctx) {
       'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
     );
 
-    // First-screen boot regression guards:
-    // 1) stylesheet precedes the 18.9 KB JSON-LD block; relief preload is low-priority
+    // First-screen & China mobile GFW resilience regression guards:
+    // 1) stylesheet precedes JSON-LD; zero external <script defer> or immediate Google Fonts connections; mobile relief exists
+    const mobReliefPath = path.join(ROOT, 'assets', 'terrain_relief_mobile.webp');
     assert(
       indexHtml.indexOf('css/style.css') < indexHtml.indexOf('application/ld+json') &&
-        indexHtml.includes("relief.fetchPriority = 'low'"),
-      'index.html must place css/style.css before JSON-LD and lower terrain_relief.webp preload priority'
+        !/<script\b[^>]*\bdefer\b[^>]*\bsrc=["']https?:/i.test(indexHtml) &&
+        !/\shref="https:\/\/fonts\.googleapis\.com/.test(indexHtml) &&
+        !/\shref="https:\/\/fonts\.gstatic\.com/.test(indexHtml) &&
+        !indexHtml.includes("relief.fetchPriority = 'low'") &&
+        fs.existsSync(mobReliefPath) &&
+        fs.statSync(mobReliefPath).size < 150 * 1024,
+      'index.html must never block DOMContentLoaded on external <script defer>, must defer Google Fonts via data-font-href, and must ship <150 KB terrain_relief_mobile.webp'
     );
     // 2) _restoreFromQuery on Chinese ?person=sushi or ?year=741&place=长安 must NOT fetch i18n_dict.js or zh_hant.js
     {
@@ -2626,9 +2637,11 @@ async function runSearchRuntimeSuite(ctx) {
       const savedOpenPerson = ctrl.openPersonChronicle;
       const savedLocate = ctrl.locate;
       const savedArmUrl = ctrl._armUrlSync;
+      const savedSetTimeout = sandbox.setTimeout;
       let enFetches = 0;
       let hantFetches = 0;
       try {
+        sandbox.setTimeout = () => 0;
         ctrl.locale = 'zh';
         ctrl._hasEnDict = () => false;
         ctrl._hasZhHant = () => false;
@@ -2683,6 +2696,7 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.openPersonChronicle = savedOpenPerson;
         ctrl.locate = savedLocate;
         ctrl._armUrlSync = savedArmUrl;
+        sandbox.setTimeout = savedSetTimeout;
       }
     }
 

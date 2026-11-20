@@ -94,9 +94,9 @@ function computeIndexHtml(
   const calligraphyChars = computeCalligraphySubsetText(dynasties, enLocale);
   const encodedCalligraphy = encodeURIComponent(calligraphyChars).replace(/'/g, '%27');
   const NON_BLOCKING = ` rel="stylesheet" media="print" onload="this.media='all'" />`;
-  const fontLinksBlock = `  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap"${NON_BLOCKING}\n  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=${encodedCalligraphy}&display=swap"${NON_BLOCKING}`;
+  const fontLinksBlock = `  <link data-font-href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap"${NON_BLOCKING}\n  <link data-font-href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=${encodedCalligraphy}&display=swap"${NON_BLOCKING}`;
   const fontRegex =
-    /  <link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Noto\+Serif\+SC[^"]*" rel="stylesheet"[^>]*\/>(?:\r?\n  <link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng[^"]*" rel="stylesheet"[^>]*\/>)?/;
+    /  <link (?:data-font-)?href="https:\/\/fonts\.googleapis\.com\/css2\?family=Noto\+Serif\+SC[^"]*" rel="stylesheet"[^>]*\/>(?:\r?\n  <link (?:data-font-)?href="https:\/\/fonts\.googleapis\.com\/css2\?family=Ma\+Shan\+Zheng[^"]*" rel="stylesheet"[^>]*\/>)?/;
   if (!fontRegex.test(html)) {
     throw new Error('Could not find Google Fonts stylesheet link block in index.html');
   }

@@ -14,8 +14,10 @@
         var relief = document.createElement('link');
         relief.rel = 'preload';
         relief.as = 'image';
-        relief.fetchPriority = 'low';
         relief.href = 'assets/terrain_relief.webp';
+        if (window.innerWidth > 0 && window.innerWidth <= 900) {
+          relief.href = 'assets/terrain_relief_mobile.webp';
+        }
         document.head.appendChild(relief);
         return;
       }
@@ -332,16 +334,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="江山时序" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <!-- Webfonts must not block rendering: where Google Fonts is slow or unreachable the page would
-       stay blank until the request times out. The system fonts in css/style.css show first. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <!-- Analytics: Vercount, anonymous click counter (workers/stats) & Cloudflare Web Analytics -->
-  <script defer src="https://events.vercount.one/js"></script>
-  <script defer src="js/atlas_track.js?v=4b2c3de3"></script>
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635", "spa": false}'></script>
+  <!-- Webfonts must not block rendering or hang sockets where Google Fonts is unreachable (e.g. Mainland China):
+       system fonts in css/style.css show first, and js/app.js activates data-font-href after load. -->
+  <link data-font-href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link data-font-href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <!-- Analytics: anonymous click counter (workers/stats); external beacons load post-paint so unreachable hosts never stall DOMContentLoaded -->
+  <script defer src="js/atlas_track.js?v=c3d799e3"></script>
 </head>
 <body>
   <div id="atlas-shell">
@@ -486,7 +484,7 @@
               <g id="grp-terrain">
                 <!-- Opacity lives on the wrapper so opaque detail tiles cover the base relief instead of double-blending with it. -->
                 <g id="terrain-relief-layer">
-                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" decoding="async" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
+                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" data-href-mobile="assets/terrain_relief_mobile.webp" decoding="async" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
                   <g id="grp-terrain-tiles"></g>
                   <g id="grp-paleo-sea"></g>
                 </g>
@@ -515,7 +513,11 @@
             // Deep links load the borders before the 546 KB relief; js/app.js sets this href later
             // (_releaseDeferredLoads). Everywhere else the relief starts loading right here.
             (function (img) {
-              if (!document.documentElement.classList.contains('deeplink-boot')) img.setAttribute('href', img.getAttribute('data-href'));
+              if (!document.documentElement.classList.contains('deeplink-boot')) {
+                img.onload = img.onerror = function () { img.dataset.loaded = '1'; };
+                var mob = window.innerWidth > 0 && window.innerWidth <= 900 && img.getAttribute('data-href-mobile');
+                img.setAttribute('href', mob || img.getAttribute('data-href'));
+              }
             })(document.getElementById('terrain-relief-img'));
           </script>
         </div>
@@ -917,9 +919,9 @@
   <script src="js/atlas_boot.js?v=67cb36dd"></script>
   <script src="js/map_data.js?v=b8ea359e"></script>
   <script src="js/lore_core.js?v=d47f4dc9"></script>
-  <script id="atlas-app-script" src="js/app.js?v=04ab7f50" data-v-snapshots="26377765" data-v-i18n="c2c30c23" data-v-lore="d8271567" data-v-pinyin="e6b413bd" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="c9d5d609"></script>
+  <script id="atlas-app-script" src="js/app.js?v=24ab6662" data-v-snapshots="26377765" data-v-i18n="c2c30c23" data-v-lore="d8271567" data-v-pinyin="e6b413bd" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="c9d5d609"></script>
   <script src="js/atlas_trace.js?v=374c19da"></script>
   <script src="js/atlas_search.js?v=cfc38510"></script>
-  <script src="js/atlas_api.js?v=3b7f1b6d"></script>
+  <script src="js/atlas_api.js?v=1ee06042"></script>
 </body>
 </html>
