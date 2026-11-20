@@ -6476,6 +6476,13 @@
         ['start', startEl],
         ['end', endEl],
       ]) {
+        el.addEventListener(
+          'touchstart',
+          (e) => {
+            if (e.touches && e.touches.length === 1) e.preventDefault();
+          },
+          { passive: false }
+        );
         el.addEventListener('pointerdown', (e) => {
           if (checkDoubleTapReset(e)) {
             e.preventDefault();
