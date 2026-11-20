@@ -1501,7 +1501,7 @@ window.EN_LOCALE = {
     ],
     "zhanguo:-356": [
       "Duke Xiao of Qin appoints Shang Yang for Legalist reforms; capital moves to Xianyang (350 BCE)",
-      "Xianyang"
+      "Yueyang"
     ],
     "zhanguo:-353": [
       "Battle of Guiling: Sun Bin and Tian Ji besiege Wei to rescue Zhao, defeating Pang Juan",
@@ -5864,7 +5864,7 @@ window.EN_LOCALE = {
     "高句丽自卒本迁都国内城，筑丸都山城": "Second capital of Goguryeo paired with the mountain fortress of Wandu",
     "曹操、华佗故里，曹魏奉谯为先人陪都": "Birthplace of Cao Cao and Hua Tuo, honored as one of the Five Capitals of Cao Wei",
     "张飞领巴西太守镇守阆中七年，保蜀汉北疆": "Garrisoned for seven years by Zhang Fei as Grand Administrator of Baxi to guard Shu Han's northern frontier",
-    "蜀汉置江阳郡，诸葛亮南征水师会师之地": "Seat of Shu Han's Jiangyang Commandery where Zhuge Liang assembled his river fleet for the southern campaign",
+    "江阳郡治，长江与沱江交汇处": "Seat of Jiangyang Commandery, where the Tuo River joins the Yangtze",
     "建兴七年诸葛亮北伐遣陈式攻克武都、阴平二郡": "Captured along with Yinping by Zhuge Liang's general Chen Shi during the third northern expedition in 229 CE",
     "正始五年曹魏毌丘俭东征高句丽克丸都刻石": "Stormed in 244 CE by Cao Wei general Guanqiu Jian during his eastern campaign against Goguryeo",
     "晋明帝太宁元年置永嘉郡，筑温州古城": "Seat of Yongjia Commandery established in 323 CE when Wenzhou's historic city was laid out",
