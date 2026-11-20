@@ -570,6 +570,17 @@ table.data-table.is-wide-table {
     width: 28%;
   }
 
+  #tbl-stories th:first-child,
+  #tbl-stories td:first-child,
+  #tbl-featured th:first-child,
+  #tbl-featured td:first-child,
+  #tbl-dynasties th:first-child,
+  #tbl-dynasties td:first-child,
+  #tbl-journeys th:first-child,
+  #tbl-journeys td:first-child {
+    width: 34%;
+  }
+
   #tbl-passes th:nth-child(1),
   #tbl-passes td:nth-child(1),
   #tbl-place-events th:nth-child(1),
@@ -943,8 +954,44 @@ a.embed-open-link:hover {
 }
 
 @media (max-width: 640px) {
+  html {
+    scroll-padding-top: 94px;
+  }
+
   .top-bar-inner {
-    padding: 0.55rem 0.85rem;
+    padding: 0.45rem 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .brand-link {
+    font-size: 0.96rem;
+  }
+
+  .top-nav {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.2rem;
+    font-size: 0.82rem;
+  }
+
+  .top-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-nav a {
+    padding: 0.2rem 0.44rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .hant-toggle-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    margin-left: auto;
   }
 
   .page-shell {

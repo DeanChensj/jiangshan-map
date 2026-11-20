@@ -90,10 +90,16 @@ function auditAllTopics() {
     }
   }
 
-  // 2. Check shared assets exist
+  // 2. Check shared assets exist and guard against scroll-hijack regressions
   for (const rel of ['topics.css', 'topics.js']) {
-    if (!fs.existsSync(path.join(TOPICS_ASSETS_DIR, rel))) {
+    const assetPath = path.join(TOPICS_ASSETS_DIR, rel);
+    if (!fs.existsSync(assetPath)) {
       fail('topics/assets', `Missing shared asset topics/assets/${rel}`);
+    } else if (rel === 'topics.js') {
+      const jsSrc = fs.readFileSync(assetPath, 'utf8');
+      if (jsSrc.includes('.scrollIntoView(')) {
+        fail('topics/assets/topics.js', 'Must not call .scrollIntoView() inside TOC scroll-spy (breaks mobile page scrolling)');
+      }
     }
   }
 
