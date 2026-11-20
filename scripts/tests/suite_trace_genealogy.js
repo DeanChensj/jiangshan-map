@@ -335,6 +335,25 @@ async function runTraceGenealogySuite(ctx) {
       mockLoreEl.innerHTML.includes('雄关形胜'),
     `Expected #genealogy-lore at Hangu Pass to render Strategic Pass banner, got ${mockLoreEl.innerHTML}`
   );
+  // A site with one entry per name (江宁 → 天京 → 江宁, 承天府 → 台湾府) shows the entry on the map that year.
+  const prevYearGen = ctrl.year;
+  const prevDynastyIdxGen = ctrl.dynastyIdx;
+  for (const [yr, lng, lat, shown, hidden] of [
+    [1860, 118.801, 32.061, '邻近古城：天京（即此地）', '邻近古城：江宁'],
+    [1870, 118.801, 32.061, '1864 年湘军攻克天京复置', '1853 年太平军攻占改称天京'],
+    [1670, 120.211, 23.001, '邻近古城：承天府（即此地）', '台湾府（即此地）'],
+  ]) {
+    ctrl.year = yr;
+    ctrl.dynastyIdx = ctrl._findDynastyIndex(yr);
+    ctrl.openGenealogyAt(lng, lat, null, { fromYearSync: true });
+    const yearRowHtml = mockTimelineItems[ctrl.dynastyIdx].innerHTML;
+    assert(
+      yearRowHtml.includes(shown) && !yearRowHtml.includes(hidden),
+      `Expected the ${yr} row at ${lng},${lat} to show ${shown} and not ${hidden}, got ${yearRowHtml}`
+    );
+  }
+  ctrl.year = prevYearGen;
+  ctrl.dynastyIdx = prevDynastyIdxGen;
   const prevLocaleGen = ctrl.locale;
   ctrl.locale = 'en';
   const genSampleSettlements = FAST_MODE

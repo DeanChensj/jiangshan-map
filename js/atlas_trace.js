@@ -3569,7 +3569,7 @@
       return best;
     }
 
-    _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall) {
+    _resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall, year) {
       const loc = modernLoc || this._resolveModernLocationAt(lng, lat);
       const closest =
         closestOverall !== undefined
@@ -3603,6 +3603,14 @@
         }
       }
       let near = this._findNearestSettlement(d && d.settlements, lng, lat, 175);
+      // One site can carry an entry per name (江宁 → 天京 → 江宁): take the one on the map that year.
+      const offMap = (s) =>
+        (s.appear !== undefined && year < s.appear) || (s.vanish !== undefined && year >= s.vanish);
+      if (near && year !== undefined && offMap(near.s)) {
+        const [x, y] = near.s.coord;
+        const twin = d.settlements.find((s) => s.coord[0] === x && s.coord[1] === y && !offMap(s));
+        if (twin) near = { s: twin, km: near.km };
+      }
       if (
         d &&
         (d.key === 'roc' || d.key === 'prc') &&
@@ -4070,7 +4078,7 @@
         const targetYear = isCurDyn ? this.year : d.focusYear;
         const snapKey = this._resolveSnapKey(d, targetYear);
         const snap = this.snapshots[snapKey] || { polities: [], regions: [], prefectures: [] };
-        const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall);
+        const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall, targetYear);
         const polityHit = eraHit.polity;
         const near = eraHit.near;
         const adminHits = [];

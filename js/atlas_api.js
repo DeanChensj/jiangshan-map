@@ -869,7 +869,7 @@
 
     _inspectCoord(cLng, cLat, d, snap, year = this.year) {
       const isEn = this.locale === 'en';
-      const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap);
+      const eraHit = this._resolveEraPlaceAt(cLng, cLat, d, snap, undefined, undefined, year);
       const modernProvince = eraHit.modernLoc.inModernChina
         ? isEn
           ? this.trTerm(eraHit.modernLoc.modernTitle)
