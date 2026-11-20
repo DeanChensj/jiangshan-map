@@ -492,7 +492,7 @@ window.DYNASTY_DATA = [
       {"ancient":"西平","modern":"西宁","coord":[101.78,36.62],"remark":"魏凉州西平郡"},
       {"ancient":"谯郡","modern":"亳州","coord":[115.78,33.87],"tier":2,"remark":"曹操、华佗故里，曹魏奉谯为先人陪都","aliases":["亳州","谯郡（亳州）"]},
       {"ancient":"阆中","modern":"南充·阆中","coord":[105.97,31.56],"tier":2,"remark":"张飞领巴西太守镇守阆中七年，保蜀汉北疆","aliases":["巴西","阆中（巴西）"]},
-      {"ancient":"江阳","modern":"泸州","coord":[105.44,28.89],"tier":2,"remark":"蜀汉置江阳郡，诸葛亮南征水师会师之地","aliases":["泸州","江阳（泸州）"]},
+      {"ancient":"江阳","modern":"泸州","coord":[105.44,28.89],"tier":2,"remark":"江阳郡治，长江与沱江交汇处","aliases":["泸州","江阳（泸州）"]},
       {"ancient":"武都","modern":"陇南","coord":[104.92,33.4],"tier":2,"remark":"建兴七年诸葛亮北伐遣陈式攻克武都、阴平二郡"},
       {"ancient":"丸都城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"正始五年曹魏毌丘俭东征高句丽克丸都刻石"}
     ],
