@@ -43,7 +43,7 @@ ${itemsHtml}
       </section>\n\n`;
 }
 
-function renderDynastyPersonsSection(d, personLinks) {
+function renderDynastyPersonsSection(d, personLinks, num) {
   if (!Array.isArray(personLinks) || personLinks.length === 0) return '';
   const chipsHtml = personLinks
     .map(
@@ -52,7 +52,7 @@ function renderDynastyPersonsSection(d, personLinks) {
     )
     .join('\n          ');
   return `      <section id="sec-persons" class="section-card">
-        <h2>四、${escHtml(d.title)}人物志与行迹</h2>
+        <h2>${num}、${escHtml(d.title)}人物志与行迹</h2>
         <div class="chip-grid">
           ${chipsHtml}
           <a class="chip-link" href="persons.html">浏览历代人物志 →</a>
@@ -87,23 +87,27 @@ function buildDynastyPage({
   const canonicalUrl = `${BASE_URL}/topics/${d.key}.html`;
   const mapQuery = `?year=${focusY}`;
 
-  const pageTitle = `${d.title}历史地图（${spanZh} · ${titleEn}）· 疆域演变、州郡政区、古今地名对照与重大事件 | 江山时序`;
+  const pageTitle = `${d.title}历史地图（${spanZh} · ${titleEn}）· 疆域演变与编年大事 | 江山时序`;
   const spanFullZh =
     d.key === 'prc'
       ? `${fmtYearZh(d.fromYear)}至今`
       : `${fmtYearZh(d.fromYear)}至${fmtYearZh(d.toYear)}`;
-  const pageDesc = `${d.title}历史地图（${spanFullZh}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${(d.settlements || []).length}座城池古今地名对照与${(d.milestones || []).length}项编年重大历史事件。`;
+  // A table of "ancient name → modern name" says nothing where the names are the same, so once
+  // most rows are identical (20th century) only the renamed places are listed.
+  const allSettlements = d.settlements || [];
+  const renamedSettlements = allSettlements.filter((s) => s.modern && s.modern !== s.ancient);
+  const settlements =
+    renamedSettlements.length * 2 < allSettlements.length ? renamedSettlements : allSettlements;
+  const pageDesc = `${d.title}历史地图（${spanFullZh}，都城：${d.seat}）：${d.summary} 收录${(d.phases || []).length || 1}幅多阶段版图快照、${settlements.length ? `${settlements.length}处古今地名对照与` : ''}${(d.milestones || []).length}项编年重大历史事件。`;
 
   const phases = d.phases && d.phases.length > 0 ? d.phases : [{ until: d.toYear, snap: d.snapKey }];
   const usePrefectureDivs = d.key === 'zhanguo' || d.key === 'qin';
-  let prevPolities = [];
   let prevPrefs = [];
   const phaseRowsHtml = phases
     .map((ph, pIdx) => {
       const sy = pIdx === 0 ? d.fromYear : phases[pIdx - 1].until;
       const ey = ph.until === undefined || pIdx === phases.length - 1 ? d.toYear : ph.until - 1;
       const midYear = sy === 0 ? 1 : Math.floor((sy + ey) / 2);
-      const eraStr = ctrl.formatEraLabel(midYear, d);
       const sk = ph.snap || ph.snapKey || d.snapKey;
 
       let polities = [];
@@ -115,7 +119,7 @@ function buildDynastyPage({
       } else if (sk && snapshots[sk]) {
         const snap = snapshots[sk];
         if (snap.caption) {
-          snapCaption = String(snap.caption).replace(/^[^·]+·\s*/, '').trim();
+          snapCaption = String(snap.caption);
         }
         polities = Array.from(
           new Set(
@@ -130,8 +134,9 @@ function buildDynastyPage({
           : snap.regions || [];
         prefs = Array.from(new Set(primaryDivs.map((r) => r.title).filter(Boolean)));
       }
+      // Captions open with their own year range ("1388—1407 年 · …"); the row already shows it.
       const overviewRaw = String(ph.overview || snapCaption || '')
-        .replace(/^[^·]{1,28}·\s*/, '')
+        .replace(/^\s*前?\d[^·]{0,24}·\s*/, '')
         .trim();
       const overviewText = overviewRaw
         ? `<br/><small class="muted-note">${escHtml(overviewRaw)}</small>`
@@ -150,25 +155,19 @@ function buildDynastyPage({
         const comparePrefs = prefs.length > 0 && prevPrefs.length > 0;
         const addedPrefs = comparePrefs ? prefs.filter((x) => !prevPrefs.includes(x)) : [];
         const removedPrefs = comparePrefs ? prevPrefs.filter((x) => !prefs.includes(x)) : [];
-        const addedPols = polities.filter((x) => !prevPolities.includes(x));
-        const removedPols = prevPolities.filter((x) => !polities.includes(x));
+        // Region names only: the polity column already lists who is on the map, and a name
+        // diff cannot tell a renamed regime from a fallen one.
         const diffLines = [];
-        if (addedPols.length) {
-          diffLines.push(`<span class="diff-add">＋新增/建置：</span>${escHtml(addedPols.join('、'))}`);
-        }
-        if (removedPols.length) {
-          diffLines.push(`<span class="diff-rem">－更替/罢撤：</span>${escHtml(removedPols.join('、'))}`);
-        }
         if (addedPrefs.length) {
           diffLines.push(
-            `<span class="diff-add">＋新增政区：</span>${escHtml(addedPrefs.slice(0, 10).join('、'))}${
+            `<span class="diff-add">＋新见政区名：</span>${escHtml(addedPrefs.slice(0, 10).join('、'))}${
               addedPrefs.length > 10 ? ` 等 ${addedPrefs.length} 处` : ''
             }`
           );
         }
         if (removedPrefs.length) {
           diffLines.push(
-            `<span class="diff-rem">－失守/省并政区：</span>${escHtml(removedPrefs.slice(0, 10).join('、'))}${
+            `<span class="diff-rem">－不再列出：</span>${escHtml(removedPrefs.slice(0, 10).join('、'))}${
               removedPrefs.length > 10 ? ` 等 ${removedPrefs.length} 处` : ''
             }`
           );
@@ -179,30 +178,26 @@ function buildDynastyPage({
           prefCellHtml = '<span class="diff-same">州道/省区建制与前阶段相承</span>';
         }
       }
-      prevPolities = polities;
       if (prefs.length > 0) prevPrefs = prefs;
 
       const phaseHref = buildMapHref(`?year=${midYear}`, { lang, base: mapBase });
       return `            <tr>
-              <td><a href="${escHtml(phaseHref)}"><strong>${phaseSpanStr}</strong></a><br/><small>${escHtml(eraStr)}</small>${overviewText}</td>
+              <td><a href="${escHtml(phaseHref)}"><strong>${phaseSpanStr}</strong></a>${overviewText}</td>
               <td>${escHtml(polities.join('、') || d.title)}</td>
               <td>${prefCellHtml}</td>
             </tr>`;
     })
     .join('\n');
 
-  const settlements = d.settlements || [];
   const settlementRowsHtml = settlements
     .map((s) => {
-      const roleStr = s.isCapital ? '★ 都城/首府' : s.tier === 1 ? '核心重镇' : '州郡治所/名城';
       const placeHref = buildMapHref(`?year=${focusY}&place=${encodeURIComponent(s.ancient)}`, {
         lang,
         base: mapBase,
       });
       return `            <tr>
-              <td><a href="${escHtml(placeHref)}"><strong>${escHtml(s.ancient)}</strong></a></td>
+              <td><a href="${escHtml(placeHref)}"><strong>${escHtml(s.ancient)}</strong></a>${s.isCapital ? " ★" : ""}</td>
               <td>${escHtml(s.modern || s.ancient)}</td>
-              <td>${roleStr}</td>
             </tr>`;
     })
     .join('\n');
@@ -233,16 +228,45 @@ function buildDynastyPage({
   const nextDyn = dIdx < allDynasties.length - 1 ? allDynasties[dIdx + 1] : null;
   const notesList = (dynastyNotes && dynastyNotes[d.key]) || [];
 
+  const hasCitiesSec = settlements.length > 0;
+  const hasCitations = milestoneRowsHtml.includes('source-cite');
+  const numerals = ['一', '二', '三', '四'];
+  const numCities = hasCitiesSec ? numerals[1] : '';
+  const numEvents = numerals[hasCitiesSec ? 2 : 1];
+  const numPersons = numerals[hasCitiesSec ? 3 : 2];
   const tocItems = [
     { id: 'sec-map', label: '交互舆图预览' },
     { id: 'sec-phases', label: '一、疆域阶段' },
-    { id: 'sec-cities', label: '二、古今名城' },
-    { id: 'sec-events', label: '三、编年大事' },
   ];
+  if (hasCitiesSec) {
+    tocItems.push({ id: 'sec-cities', label: `${numCities}、古今名城` });
+  }
+  tocItems.push({ id: 'sec-events', label: `${numEvents}、编年大事` });
   const hasPersonsSec = Array.isArray(personLinks) && personLinks.length > 0;
   if (hasPersonsSec) {
-    tocItems.push({ id: 'sec-persons', label: '四、人物与行迹' });
+    tocItems.push({ id: 'sec-persons', label: `${numPersons}、人物与行迹` });
   }
+  const citiesSectionHtml = hasCitiesSec
+    ? `      <section id="sec-cities" class="section-card">
+        <h2>${numCities}、${escHtml(d.title)}古今地名对照</h2>
+${renderTableFilterBar('tbl-cities', '输入古地名或今省市快速检索城池…', settlements.length)}
+        <div class="table-wrap">
+          <table id="tbl-cities" class="data-table">
+            <thead>
+              <tr>
+                <th>古地名（★ 都城）</th>
+                <th>现代对应地</th>
+              </tr>
+            </thead>
+            <tbody>
+${settlementRowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+`
+    : '';
   const tocFooterLinks = [
     prevDyn ? `<a href="${escHtml(prevDyn.key)}.html">← ${escHtml(prevDyn.title)}</a>` : '',
     nextDyn ? `<a href="${escHtml(nextDyn.key)}.html">${escHtml(nextDyn.title)} →</a>` : '',
@@ -338,7 +362,7 @@ ${renderTableFilterBar('tbl-phases', '筛选阶段、政权或新增/改置政�
           <table id="tbl-phases" class="data-table">
             <thead>
               <tr>
-                <th>年代与年号</th>
+                <th>年代</th>
                 <th>并立政权</th>
                 <th>政区与疆域变化</th>
               </tr>
@@ -350,34 +374,15 @@ ${phaseRowsHtml}
         </div>
       </section>
 
-      <section id="sec-cities" class="section-card">
-        <h2>二、${escHtml(d.title)}古今地名对照</h2>
-${renderTableFilterBar('tbl-cities', '输入古地名或今省市快速检索城池…', settlements.length)}
-        <div class="table-wrap">
-          <table id="tbl-cities" class="data-table">
-            <thead>
-              <tr>
-                <th>古地名</th>
-                <th>现代对应地</th>
-                <th>层级</th>
-              </tr>
-            </thead>
-            <tbody>
-${settlementRowsHtml}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="sec-events" class="section-card">
-        <h2>三、${escHtml(d.title)}编年大事与出处</h2>
-${renderTableFilterBar('tbl-events', '输入年份、人物、事件或正史典籍检索大事…', milestones.length)}
+${citiesSectionHtml}      <section id="sec-events" class="section-card">
+        <h2>${numEvents}、${escHtml(d.title)}编年大事${hasCitations ? '与出处' : ''}</h2>
+${renderTableFilterBar('tbl-events', '输入年份、人物或事件检索大事…', milestones.length)}
         <div class="table-wrap">
           <table id="tbl-events" class="data-table">
             <thead>
               <tr>
                 <th>年份与年号</th>
-                <th>历史事件与出处</th>
+                <th>历史事件${hasCitations ? '与出处' : ''}</th>
               </tr>
             </thead>
             <tbody>
@@ -387,7 +392,7 @@ ${milestoneRowsHtml}
         </div>
       </section>
 
-${renderDynastyPersonsSection(d, personLinks)}${renderCartographicNotesSection(d, notesList)}${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
+${renderDynastyPersonsSection(d, personLinks, numPersons)}${renderCartographicNotesSection(d, notesList)}${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
     </main>
   </div>
 </body>

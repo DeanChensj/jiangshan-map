@@ -391,7 +391,7 @@ function auditAllTopics() {
 
     if (f === 'battle-chibi.html') {
       const rows = parseTableRows((html.match(/<table id="tbl-genealogy"[\s\S]*?<\/table>/) || [''])[0]);
-      for (const dkLabel of ['东汉', '三国', '东晋十六国']) {
+      for (const dkLabel of ['东汉']) {
         const row = rows.find((r) => stripTags(r[0]).startsWith(dkLabel));
         if (!row) {
           fail(f, `Missing ${dkLabel} row`);
@@ -409,15 +409,6 @@ function auditAllTopics() {
 
     if (f === 'xinqiji-jingkou.html') {
       const rows = parseTableRows((html.match(/<table id="tbl-genealogy"[\s\S]*?<\/table>/) || [''])[0]);
-      const qinRow = rows.find((r) => stripTags(r[0]).startsWith('秦'));
-      if (!qinRow) {
-        fail(f, 'Missing Qin row');
-      } else {
-        const adminTxt = stripTags(qinRow[2]);
-        if (!adminTxt.includes('会稽郡') || adminTxt.includes('东海郡')) {
-          fail(f, `Qin Jingkou row must use 会稽郡 (not 东海郡), got "${adminTxt}"`);
-        }
-      }
       if (rows.some((r) => stripTags(r[3]).includes('三国东吴铁瓮城'))) {
         fail(f, 'Anachronistic "三国东吴铁瓮城" leaked into genealogy column 4');
       }

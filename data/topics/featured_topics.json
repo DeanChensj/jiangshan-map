@@ -3,17 +3,17 @@
     "slug": "dufu-763",
     "categoryZh": "古诗词地理路线",
     "categoryEn": "Classical Poetry Route",
-    "titleZh": "杜甫《闻官军收河南河北》归乡路线历史地图（763年）",
+    "titleZh": "杜甫《闻官军收河南河北》诗中归乡路线历史地图（763年）",
     "titleEn": "Du Fu's 763 CE Homeward Route in 'Hearing the Imperial Army Retook Henan and Hebei'",
-    "shortZh": "杜甫《闻官军收河南河北》归乡路线图（763年 · 唐代宗广德元年）",
+    "shortZh": "杜甫《闻官军收河南河北》诗中归乡路线（763年 · 唐代宗广德元年）",
     "inspectQuery": {
       "year": 763,
       "place": "剑外,巴峡,巫峡,襄阳,洛阳"
     },
     "poemQuote": "剑外忽传收蓟北，初闻涕泪满衣裳。却看妻子愁何在，漫卷诗书喜欲狂。白日放歌须纵酒，青春作伴好还乡。即从巴峡穿巫峡，便下襄阳向洛阳。",
     "poemAuthor": "唐 · 杜甫《闻官军收河南河北》（唐代宗广德元年 · 公元763年春作于梓州）",
-    "summaryZh": "公元763年（唐代宗广德元年）正月，史朝义兵败自缢，持续八年的安史之乱宣告结束。流寓剑南东川梓州（今四川绵阳三台，“剑外”）的杜甫闻讯狂喜，挥毫写下“生平第一首快诗”《闻官军收河南河北》，在诗中勾勒出一条横跨巴蜀、三峡、江汉与中原的水陆归乡路线：自剑外（梓州）启程，顺嘉陵江入长江经巴峡（今重庆巴南、奉节一带），穿巫峡（今重庆巫山至湖北巴东）出夔门，转汉水北上襄阳（今湖北襄阳），再由陆路直奔故里洛阳（今河南洛阳偃师首阳山）。",
-    "summaryEn": "In spring 763 CE (first year of the Guangde era under Emperor Daizong of Tang), news of the end of the eight-year An Lushan Rebellion reached Du Fu in Zizhou (modern Santai, Mianyang, Sichuan — \"beyond Jianmen Pass\"). Overjoyed, he composed his famous regulated verse envisioning a rapid river-and-land voyage home: from Jianwai through Baxia and Wuxia along the Three Gorges, up toward Xiangyang, and onward to his ancestral home in Luoyang.",
+    "summaryZh": "公元763年（唐代宗广德元年）正月，史朝义兵败自缢，持续八年的安史之乱宣告结束。流寓剑南东川梓州（今四川绵阳三台，“剑外”）的杜甫闻讯狂喜，挥毫写下“生平第一首快诗”《闻官军收河南河北》，在诗中勾勒出一条横跨巴蜀、三峡、江汉与中原的水陆归乡路线：自剑外（梓州）启程，顺嘉陵江入长江经巴峡（今重庆巴南、奉节一带），穿巫峡（今重庆巫山至湖北巴东），转汉水北上襄阳（今湖北襄阳），再由陆路直奔故里洛阳（今河南洛阳偃师首阳山）。这是诗中设想的行程，杜甫此后并未还乡。",
+    "summaryEn": "In spring 763 CE (first year of the Guangde era under Emperor Daizong of Tang), news of the end of the eight-year An Lushan Rebellion reached Du Fu in Zizhou (modern Santai, Mianyang, Sichuan — \"beyond Jianmen Pass\"). Overjoyed, he composed his famous regulated verse envisioning a rapid river-and-land voyage home: from Jianwai through Baxia and Wuxia along the Three Gorges, up toward Xiangyang, and onward to his ancestral home in Luoyang. The route is the one imagined in the poem; Du Fu never made the journey.",
     "keywords": [
       "闻官军收河南河北地图",
       "即从巴峡穿巫峡便下襄阳向洛阳路线图",
@@ -69,13 +69,13 @@
     "titleEn": "Wen Tianxiang's Resistance Route & 'Crossing Lingdingyang' Historical Map (1275–1279 CE)",
     "shortZh": "文天祥《过零丁洋》抗元路线图（1275—1279年 · 南宋末）",
     "inspectQuery": {
-      "year": "1275,1277,1278,1279",
+      "year": "1275,1277,1279,1279",
       "place": "赣州,惶恐滩,零丁洋,崖山"
     },
     "poemQuote": "辛苦遭逢起一经，干戈寥落四周星。山河破碎风飘絮，身世浮沉雨打萍。惶恐滩头说惶恐，零丁洋里叹零丁。人生自古谁无死？留取丹心照汗青。",
     "poemAuthor": "南宋 · 文天祥《过零丁洋》（祥兴二年 · 公元1279年正月作于珠江口零丁洋战船）",
     "summaryZh": "南宋德祐元年（1275年），赣州知州文天祥散尽家财起兵勤王；景炎二年（1277年）在江西抗元兵败，经赣江十八滩之首“惶恐滩”（今江西吉安万安县赣江险滩）退往闽粤；祥兴元年（1278年）冬于广东海丰五坡岭被俘，次年（1279年）正月被元军押解途经珠江口“零丁洋”（今广东珠江口伶仃洋海域）威逼招降张世杰，文天祥赋《过零丁洋》明志；同年二月崖山（今广东江门新会崖门）海战爆发，南宋覆亡。",
-    "summaryEn": "From raising loyalist forces in Ganzhou (1275 CE) and retreating past Huangkong Shoal on the Gan River in Jiangxi (1277 CE), to his capture and passage across Lingdingyang in the Pearl River Estuary (1278–1279 CE) on the eve of the Battle of Yamen (1279 CE), Wen Tianxiang’s poem links four iconic geographic landmarks of the fall of Southern Song.",
+    "summaryEn": "From raising loyalist forces in Ganzhou (1275 CE) and retreating past Huangkong Shoal on the Gan River in Jiangxi (1277 CE), to his capture (1278 CE) and passage across Lingdingyang in the Pearl River Estuary (early 1279 CE) on the eve of the Battle of Yamen (1279 CE), Wen Tianxiang’s poem links four iconic geographic landmarks of the fall of Southern Song.",
     "keywords": [
       "过零丁洋历史地图",
       "惶恐滩头说惶恐零丁洋里叹零丁地图位置",
@@ -84,7 +84,7 @@
       "南宋末年崖山海战地图",
       "江山时序"
     ],
-    "mapQuery": "?year=1275,1277,1278,1279&place=%E8%B5%A3%E5%B7%9E,%E6%83%B6%E6%81%90%E6%BB%A9,%E9%9B%B6%E4%B8%81%E6%B4%8B,%E5%B4%96%E5%B1%B1",
+    "mapQuery": "?year=1275,1277,1279,1279&place=%E8%B5%A3%E5%B7%9E,%E6%83%B6%E6%81%90%E6%BB%A9,%E9%9B%B6%E4%B8%81%E6%B4%8B,%E5%B4%96%E5%B1%B1",
     "dynastyKeys": [
       "nansong",
       "yuan"
@@ -130,17 +130,17 @@
       "year": 1102,
       "place": "浔阳"
     },
-    "targetDisplayTitle": "江州 / 浔阳（治浔阳县，今江西省九江市）",
-    "poemQuote": "心在山东身在吴，飘蓬震垲幔嗟吁。他时若遂凌云志，敢笑黄巢不丈夫！",
+    "targetDisplayTitle": "江州 / 浔阳（今江西省九江市）",
+    "poemQuote": "心在山东身在吴，飘蓬江海谩嗟吁。他时若遂凌云志，敢笑黄巢不丈夫！",
     "poemAuthor": "《水浒传》第三十九回 · 浔阳楼宋江吟反诗（背景年代：北宋徽宗崇宁年间 · 约1102年）",
-    "summaryZh": "中国历史地理中最著名的“同名异地”案例之一便是“江州”：秦汉至六朝前期的“江州”为巴郡治所，位于嘉陵江入长江处的今重庆市渝中区；而自东晋设江州并移治寻阳（浔阳）后，隋唐宋明所谓的“江州”均指长江中下游赣北重镇——今江西省九江市。白居易《琵琶行》“江州司马青衫湿”与《水浒传》宋江刺配江州牢城、于浔阳江畔浔阳楼醉题反诗，在北宋（1102年）行政区划中皆属江南西路江州（治浔阳县，今江西省九江市浔阳区）。",
-    "summaryEn": "One of Chinese historical geography’s classic homonym traps is \"Jiangzhou\": during the Qin, Han, and Three Kingdoms periods, Jiangzhou referred to modern Chongqing at the confluence of the Jialing and Yangtze rivers; from the Eastern Jin, Tang, and Song dynasties onward, Jiangzhou was seated at Xunyang (modern Jiujiang, Jiangxi). Both Bai Juyi’s \"Pipa Song\" and Song Jiang’s exile to Jiangzhou in Water Margin (c. 1102 CE, Northern Song) take place in Jiangnan West Circuit’s Jiangzhou (Jiujiang, Jiangxi).",
+    "summaryZh": "中国历史地理中最著名的“同名异地”案例之一便是“江州”：秦汉至六朝前期的“江州”为巴郡治所，位于嘉陵江入长江处的今重庆市渝中区；而自西晋置江州、东晋移治寻阳（浔阳）后，隋唐两宋所谓的“江州”均指长江中下游赣北重镇——今江西省九江市。白居易《琵琶行》“江州司马青衫湿”与《水浒传》宋江刺配江州牢城、于浔阳江畔浔阳楼醉题反诗，所指都是这座江州；北宋时属江南东路，治德化县（今江西省九江市浔阳区）。",
+    "summaryEn": "One of Chinese historical geography’s classic homonym traps is \"Jiangzhou\": during the Qin, Han, and Three Kingdoms periods, Jiangzhou referred to modern Chongqing at the confluence of the Jialing and Yangtze rivers; from the Eastern Jin through the Tang and Song, Jiangzhou was seated at Xunyang (modern Jiujiang, Jiangxi). Both Bai Juyi’s \"Pipa Song\" and Song Jiang’s exile to Jiangzhou in Water Margin (c. 1102 CE, Northern Song) take place in this Jiangzhou, part of Jiangnan East Circuit in the Northern Song (Jiujiang, Jiangxi).",
     "keywords": [
       "宋江刺配江州是现在的哪里",
       "水浒传江州浔阳楼历史地图",
       "古代江州是重庆还是九江",
       "江州司马青衫湿是哪里",
-      "北宋江南西路江州地图",
+      "北宋江州九江地图",
       "江山时序"
     ],
     "mapQuery": "?year=1102&place=%E6%B5%94%E9%98%B3&hover=%E6%B1%9F%E5%B7%9E",
@@ -189,8 +189,8 @@
       "place": "长平"
     },
     "targetDisplayTitle": "长平（韩国上党郡 · 今山西省晋城市高平市）",
-    "poemQuote": "秦人开关延敌，九国之师，逡巡而不敢进。",
-    "poemAuthor": "西汉 · 贾谊《过秦论》论战国秦赵争衡",
+    "poemQuote": "乃挟诈而尽阬杀之，遗其小者二百四十人归赵。前后斩首虏四十五万人，赵人大震。",
+    "poemAuthor": "西汉 · 司马迁《史记·白起王翦列传》记长平之战",
     "summaryZh": "公元前262年至前260年（秦昭襄王四十七年、赵孝成王六年），秦、赵两国围绕战略要地韩之上党郡（今山西长治、晋城高平一带，太行山之巅俯瞰中原与河东）展开战国规模最大的战略决战。前260年，赵王以赵括代廉颇为将，秦王密遣武安君白起为上将军。白起采取佯败诱敌、迂回穿插战术，截断赵军粮道四十六日，赵括突围中箭身亡，四十万赵军降卒被坑杀于长平（今山西省晋城市高平市）。此役彻底摧毁东方六国中唯一能与秦军正面对抗的赵国军事主力，奠定秦统一六国之基。",
     "summaryEn": "Fought in 260 BCE around Shangdang and Changping (modern Gaoping, Jincheng, Shanxi) atop the Taihang Mountains, the Battle of Changping saw Qin general Bai Qi encircle and annihilate Zhao Kuo’s 400,000-strong Zhao army, shattering the military balance of the Warring States.",
     "keywords": [
@@ -221,7 +221,7 @@
       "place": "赤壁"
     },
     "targetDisplayTitle": "赤壁（东汉荆州南郡 · 今湖北省咸宁市赤壁市）",
-    "poemQuote": "遥想公瑾当年，小乔初嫁了，雄姿英发。羽扇纶巾，谈笑间，樯櫓灰飞烟灭。",
+    "poemQuote": "遥想公瑾当年，小乔初嫁了，雄姿英发。羽扇纶巾，谈笑间，樯橹灰飞烟灭。",
     "poemAuthor": "北宋 · 苏轼《念奴娇·赤壁怀古》",
     "summaryZh": "东汉献帝建安十三年（公元208年）秋，统一北方的曹操挥师南下荆州，刘琮举州降曹，刘备自樊城退守夏口（今湖北武汉），遣诸葛亮赴柴桑（今江西九江）联结孙权。孙权命周瑜、程普率水军三万与刘备合兵，逆长江而上，与曹军遭遇于赤壁、乌林（今湖北省咸宁市赤壁市西北长江南岸，隔江对岸为洪湖乌林）。黄盖用火攻诈降计焚毁曹军连环战船，曹操经华容道败退江陵、北归邺城，自此奠定魏、蜀、吴三国鼎立之战略格局。",
     "summaryEn": "In winter 208 CE (13th year of the Jian’an era), the allied river fleets of Sun Quan (led by Zhou Yu) and Liu Bei (advised by Zhuge Liang) defeated Cao Cao’s northern expedition by fire attack at Red Cliffs (Chibi, modern Chibi, Hubei) opposite Wulin on the middle Yangtze River, establishing the tripartite division of China.",
@@ -254,7 +254,7 @@
       "place": "淝水"
     },
     "targetDisplayTitle": "淝水（古肥水 · 今安徽省淮南市寿县城东）",
-    "poemQuote": "余兵皆弃甲宵遁，闻风声鹤唳，皆以为王师已至。",
+    "poemQuote": "余众弃甲宵遁，闻风声鹤唳，皆以为王师已至。",
     "poemAuthor": "《晋书·谢玄传》记太元八年（公元383年）淝水之战",
     "summaryZh": "公元376年（东晋太元元年、前秦建元十二年），前秦天王苻坚灭前凉与代国，统一整个中国北方，与定都建康（今南京）的东晋形成南北对峙。公元383年（太元八年）秋，苻坚率号称百万大军南征，前锋苻融攻占寿阳（今安徽省淮南市寿县），与谢石、谢玄、刘牢之统率的八万东晋“北府兵”隔淝水（古肥水，流经寿春城东入淮河）对峙。谢玄用计诱使秦军后撤半渡而击，朱序于阵后高呼“秦兵败矣”，前秦大军溃散，“投鞭断流、草木皆兵、风声鹤唳”皆出于此役。战后北方迅速再度瓦解，慕容垂建后燕、姚苌建后秦，拓跋珪重建代（北魏）。",
     "summaryEn": "In autumn 383 CE, Former Qin ruler Fu Jian marched south after unifying northern China, confronting 80,000 elite Eastern Jin \"Northern Garrison\" troops under Xie Xuan across the Fei River at Shouyang (modern Shouxian, Huainan, Anhui). The rout of Former Qin preserved Eastern Jin in the south and triggered the rapid fragmentation of northern China.",
