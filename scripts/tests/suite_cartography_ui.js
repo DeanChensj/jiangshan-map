@@ -3166,10 +3166,16 @@ async function runCartographyUiSuite(ctx) {
           hasPolPt(sk, '蜀', 105.84, 32.44) &&
           hasPolPt(sk, '巴', 106.551, 29.561) &&
           hasPolPt(sk, '巴', 105.97, 31.58) &&
-          hasPolPt(sk, '楚', 107.021, 33.071) &&
+          hasPolPt(sk, '蜀', 107.021, 33.071) &&
+          hasPolPt(sk, '楚', 109.03, 32.69) &&
+          hasPolPt(sk, '楚', 110.23, 32.22) &&
+          hasPolPt(sk, '巴', 106.83, 32.35) &&
           !hasPolPt(sk, '楚', 105.84, 32.44),
-        `${sk} must split 蜀 (Chengdu, Jiameng) and 巴 (Jiangzhou, Langzhong) and keep Hanzhong in 楚 without overlapping Jiameng`
+        `${sk} must split 蜀 (Chengdu, Jiameng, Nanzheng) and 巴 (Jiangzhou, Langzhong, south of the Micang range) and keep 楚's Hanzhong commandery (西城, 上庸) on the lower Han`
       );
+      // 南郑: 秦 walled it in 451 BCE, it revolted in 441, 秦 and 蜀 fought over it in 387 (史记·秦本纪 /
+      // 六国年表), and 华阳国志 has 蜀 holding 褒汉 under 周显王 (368-321). 楚's 汉中 is the lower Han
+      // valley, lost at 丹阳 in 312 BCE.
       // The 巴|蜀 border follows the Fu–Jialing divide: 蜀's Jinniu road (梓潼) and 僰道 stay in 蜀; 遂宁 and 泸州 are 巴.
       assert(
         hasPolPt(sk, '蜀', 105.17, 31.64) &&

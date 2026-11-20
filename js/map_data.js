@@ -87,7 +87,7 @@ window.DYNASTY_DATA = [
       {"ancient":"灵寿","modern":"石家庄·平山","coord":[114.381,38.311],"tier":2,"align":"b","vanish":-296,"remark":"中山国都城（前296赵灭中山）","aliases":["中山","灵寿（中山）"]},
       {"ancient":"邺城","modern":"邯郸·临漳","coord":[114.351,36.321],"tier":2,"remark":"西门豹治邺 · 魏赵漳水重镇"},
       {"ancient":"上党","modern":"长治","coord":[113.111,36.191],"tier":2,"remark":"韩赵秦争夺要冲 · 长平之战"},
-      {"ancient":"南郑","modern":"汉中","coord":[107.021,33.071],"tier":2,"remark":"秦楚必争汉中重镇","aliases":["汉中","南郑（汉中）"]},
+      {"ancient":"南郑","modern":"汉中","coord":[107.021,33.071],"tier":2,"remark":"秦、蜀、楚必争的汉中重镇","aliases":["汉中","南郑（汉中）"]},
       {"ancient":"宛","modern":"南阳","coord":[112.531,33.001],"tier":2,"remark":"楚宛邑 · 秦南阳郡治","aliases":["南阳","宛（南阳）"]},
       {"ancient":"云中","modern":"呼和浩特·托克托","coord":[111.201,40.251],"tier":2,"appear":-300,"remark":"赵武灵王辟边置云中郡"},
       {"ancient":"代","modern":"张家口·蔚县","coord":[114.551,40.151],"tier":2,"remark":"代郡治所 · 前228赵公子嘉奔代"},

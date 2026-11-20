@@ -4926,7 +4926,7 @@ window.EN_LOCALE = {
     "中山国都城（前296赵灭中山）": "Capital of Zhongshan (conquered by Zhao in 296 BCE)",
     "西门豹治邺 · 魏赵漳水重镇": "Governed by Ximen Bao · Key Wei/Zhao stronghold on the Zhang River",
     "韩赵秦争夺要冲 · 长平之战": "Strategic highland contested by Han, Zhao & Qin · Battle of Changping",
-    "秦楚必争汉中重镇": "Strategic Hanzhong stronghold contested by Qin and Chu",
+    "秦、蜀、楚必争的汉中重镇": "Strategic Hanzhong stronghold contested by Qin, Shu and Chu",
     "楚宛邑 · 秦南阳郡治": "Chu city of Wan · Seat of Qin Nanyang Commandery",
     "赵武灵王辟边置云中郡": "Seat of Yunzhong Commandery established by King Wuling of Zhao",
     "代郡治所 · 前228赵公子嘉奔代": "Seat of Dai Commandery · Refuge of Prince Jia of Zhao in 228 BCE",
