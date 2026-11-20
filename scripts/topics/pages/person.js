@@ -49,6 +49,17 @@ function resolveEventSourceHtml(profile, ev, yearSeen, loreData, sourcesBundle) 
   return '';
 }
 
+// A life is dated by the calendar the person lived under, not by whoever held the spot where an
+// event happened: the reference chronology, or the person's own regime where it kept one.
+function personEraLabel(ctrl, profile, ev) {
+  for (const regime of profile.eraRegimes || []) {
+    if (ctrl._resolveRegionalEraSpan(ev.year, ev.dynasty, null, regime)) {
+      return ctrl.formatEraLabel(ev.year, ev.dynasty, null, regime);
+    }
+  }
+  return ctrl.formatEraLabel(ev.year, ev.dynasty);
+}
+
 function formatPersonSpan(profile) {
   const span = Array.isArray(profile.span) ? profile.span : [0, 0];
   const u = profile.spanUnknown || '';
@@ -101,9 +112,7 @@ function buildPersonPage({
   const stopCardsHtml = events
     .map((ev, eIdx) => {
       const dynTitle = (ev.dynasty && ev.dynasty.title) || primaryDyn.title;
-      const eraZh =
-        ev.subEraZh ||
-        (ev.dynasty ? ctrl.formatEraLabel(ev.year, ev.dynasty, ev.coord) : dynTitle);
+      const eraZh = ev.subEraZh || (ev.dynasty ? personEraLabel(ctrl, profile, ev) : dynTitle);
       const siteDisplayZh = ev.modernZh ? `${ev.siteZh}（今${ev.modernZh}）` : ev.siteZh;
       const evMapHref = buildMapHref(`?person=${encodeURIComponent(profile.key)}&stop=${eIdx}`, {
         lang,
@@ -133,7 +142,7 @@ function buildPersonPage({
   const peerList = Array.isArray(peers) ? peers : [];
   const peersSectionHtml = peerList.length
     ? `\n      <section id="sec-peers" class="section-card">
-        <h2>二、同代人物交汇</h2>
+        <h2>二、同见史事的人物</h2>
         <div class="person-peer-grid">
 ${peerList
   .map((peer) => {
@@ -156,7 +165,7 @@ ${peerList
             <div>
               <div class="person-peer-head">
                 <span class="person-peer-name">${escHtml(peer.zh)}</span>
-                <span class="person-peer-shared">交汇 ${peer.sharedCount} 处</span>
+                <span class="person-peer-shared">同见史事 ${peer.sharedCount} 件</span>
               </div>
               <div class="person-peer-sub">${escHtml(peerSpan)}${peer.courtesyZh ? ` · ${escHtml(peer.courtesyZh)}` : ''}</div>
             </div>
@@ -176,7 +185,7 @@ ${peerList
     { id: 'sec-events', label: `一、${isRelic ? '流转节点' : '生平节点'}` },
   ];
   if (peerList.length) {
-    tocItems.push({ id: 'sec-peers', label: '二、同代人物交汇' });
+    tocItems.push({ id: 'sec-peers', label: '二、同见史事的人物' });
   }
 
   const personSourceHtml = formatSourceCitationsHtml(`person:${profile.key}`, sourcesBundle);
