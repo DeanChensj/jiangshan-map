@@ -16,7 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 const { TOPICS_DIR, computeTopicAssetHashes, isStandalonePersonMonograph } = require('./topics/config');
-const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData, fmtYearShortZh } = require('./topics/runtime');
+const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData, fmtPersonSpanZh } = require('./topics/runtime');
 const { buildDynastyPage } = require('./topics/pages/dynasty');
 const { buildStorylinePage } = require('./topics/pages/story');
 const { buildJourneyPage } = require('./topics/pages/journey');
@@ -182,10 +182,7 @@ function generateAllOutputs() {
 
   for (const p of standalonePersons) {
     if (p.dynastyKey) {
-      const span = Array.isArray(p.span) ? p.span : [0, 0];
-      const lbl = p.isRelic
-        ? `国器：${p.zh}`
-        : `${p.zh}（${fmtYearShortZh(span[0])}—${fmtYearShortZh(span[1])}）`;
+      const lbl = p.isRelic ? `国器：${p.zh}` : `${p.zh}（${fmtPersonSpanZh(p)}）`;
       addDynPersonLink(p.dynastyKey, {
         href: `person-${p.key}.html`,
         label: lbl,

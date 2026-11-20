@@ -220,7 +220,7 @@ window.EN_LOCALE = {
       "Mt. Lülin (Jingshan)"
     ],
     "xihan:23": [
-      "Lülin rebels crown Gengshi Emperor Liu Xuan; Liu Xiu routs Xin at Kunyang, ending Wang Mang",
+      "Liu Xiu routs Xin at Kunyang for the Gengshi Emperor; Gengshi troops kill Wang Mang in Chang’an",
       "Kunyang & Chang'an"
     ],
     "donghan:25": [
@@ -272,7 +272,7 @@ window.EN_LOCALE = {
       "Guandu · Jingkou"
     ],
     "donghan:204": [
-      "Cao Cao captures Ye City and consolidates control over Hebei's four northern provinces",
+      "Cao Cao floods and takes Ye City, becomes Governor of Jizhou and moves his headquarters there",
       "Ye (Anyang)"
     ],
     "donghan:208": [
@@ -524,7 +524,7 @@ window.EN_LOCALE = {
       "Luoyang · Ye · Chang'an"
     ],
     "nanbei:548": [
-      "Hou Jing's Rebellion storms Jiankang Palace; aged Emperor Wu starves as Jiangnan is ravaged",
+      "Hou Jing rebels and besieges the Jiankang palace; it falls in 549 and Emperor Wu starves",
       "Jiankang (Nanjing)"
     ],
     "nanbei:553": [
@@ -796,7 +796,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "ming:1433": [
-      "Zheng He's seventh and final voyage; maritime restrictions follow",
+      "Zheng He's seventh and final voyage; state-sponsored voyages end afterwards",
       "Changle (Fuzhou)"
     ],
     "ming:1449": [
@@ -856,7 +856,7 @@ window.EN_LOCALE = {
       "Kunming"
     ],
     "qing:1683": [
-      "Kangxi Emperor sends Admiral Shi Lang to take Penghu; Zheng Keshuang yields and Taiwanfu is set",
+      "Shi Lang takes Penghu for Kangxi; Zheng Keshuang yields; Taiwan Prefecture is set up in 1684",
       "Taiwanfu (Tainan)"
     ],
     "qing:1689": [
@@ -876,7 +876,7 @@ window.EN_LOCALE = {
       "Lhasa"
     ],
     "qing:1759": [
-      "Qianlong Emperor pacifies the Dzungars and Altishahr Khojas, establishing the General of Ili",
+      "Qing forces defeat the Altishahr Khojas, completing the conquest; General of Ili follows in 1762",
       "Ili"
     ],
     "qing:1840": [
@@ -920,7 +920,7 @@ window.EN_LOCALE = {
       "Yangquan · Taiyuan"
     ],
     "roc:1942": [
-      "Third Battle of Changsha won; Chinese Expeditionary Force enters Burma to guard the lifeline",
+      "Third Battle of Changsha won; Expeditionary Force loses in Burma and retreats to the Salween",
       "Changsha · Baoshan"
     ],
     "roc:1945": [
@@ -987,7 +987,7 @@ window.EN_LOCALE = {
       "Emperor Wu mints five-zhu coins, monopolizes salt and iron, and adds price stabilization",
       "Chang'an"
     ],
-    "xihan:-100": [
+    "xihan:-101": [
       "Li Guangli's Dayuan campaign secures the Southern Tarim Silk Road",
       "Dunhuang · Khotan"
     ],
@@ -1252,7 +1252,7 @@ window.EN_LOCALE = {
       "Suzhou · Fuli"
     ],
     "nansong:1215": [
-      "Mongols capture Jin capital Zhongdu; Jin moves south to Bianjing, losing half its territory",
+      "Mongols take Zhongdu a year after Jin moved its capital to Bianjing; Hebei and Liaodong are lost",
       "Zhongdu · Bianjing"
     ],
     "nansong:1259": [
@@ -2024,7 +2024,7 @@ window.EN_LOCALE = {
       "Ningyuan"
     ],
     "qing:1669": [
-      "Young Kangxi Emperor seizes regent Oboi at Wuying Hall to assume personal rule",
+      "The Kangxi Emperor arrests the regent Oboi, ends the regency and takes real control",
       "Beijing"
     ],
     "qing:1662": [
@@ -2124,7 +2124,7 @@ window.EN_LOCALE = {
       "Dongjing Kaifeng Fu"
     ],
     "nanbei:551": [
-      "Wang Sengbian and Chen Baxian crush Hou Jing; Emperor Yuan ascends at Jiangling",
+      "Hou Jing usurps the throne; Wang Sengbian and Chen Baxian crush him in 552; Emperor Yuan ascends",
       "Jiankang · Jiangling"
     ],
     "nanbei:578": [
@@ -4926,7 +4926,7 @@ window.EN_LOCALE = {
     "中山国都城（前296赵灭中山）": "Capital of Zhongshan (conquered by Zhao in 296 BCE)",
     "西门豹治邺 · 魏赵漳水重镇": "Governed by Ximen Bao · Key Wei/Zhao stronghold on the Zhang River",
     "韩赵秦争夺要冲 · 长平之战": "Strategic highland contested by Han, Zhao & Qin · Battle of Changping",
-    "秦楚必争汉中重镇": "Strategic Hanzhong stronghold contested by Qin and Chu",
+    "秦、蜀、楚必争的汉中重镇": "Strategic Hanzhong stronghold contested by Qin, Shu and Chu",
     "楚宛邑 · 秦南阳郡治": "Chu city of Wan · Seat of Qin Nanyang Commandery",
     "赵武灵王辟边置云中郡": "Seat of Yunzhong Commandery established by King Wuling of Zhao",
     "代郡治所 · 前228赵公子嘉奔代": "Seat of Dai Commandery · Refuge of Prince Jia of Zhao in 228 BCE",
@@ -5695,6 +5695,7 @@ window.EN_LOCALE = {
     "莆田": "Putian",
     "湖北荆门当阳": "Dangyang, Jingmen, Hubei",
     "荆门·当阳": "Dangyang, Jingmen",
+    "宜昌·当阳": "Dangyang, Yichang",
     "荆门": "Jingmen",
     "湖北十堰丹江口": "Danjiangkou, Shiyan, Hubei",
     "十堰·丹江口": "Shiyan (Danjiangkou)",

@@ -19,6 +19,15 @@ function fmtYearZh(y) {
   return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;
 }
 
+// "前332—前257", with "？" for a birth or death year the sources do not record.
+function fmtPersonSpanZh(profile) {
+  const span = Array.isArray(profile.span) ? profile.span : [0, 0];
+  const u = profile.spanUnknown || '';
+  const birth = u === 'birth' || u === 'both' ? '？' : fmtYearShortZh(span[0]);
+  const death = u === 'death' || u === 'both' ? '？' : fmtYearShortZh(span[1]);
+  return `${birth}—${death}`;
+}
+
 function fmtYearShortZh(y) {
   return y < 0 ? `前${Math.abs(y)}` : `${y}`;
 }
@@ -202,6 +211,7 @@ module.exports = {
   escHtml,
   fmtYearZh,
   fmtYearShortZh,
+  fmtPersonSpanZh,
   fmtYearEn,
   fmtDynSpanZh,
   fmtDynSpanEn,
