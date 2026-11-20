@@ -219,17 +219,23 @@
       return this._collectPersonEvents(adhoc).length ? adhoc : null;
     }
 
-    _formatPersonSpan(span, isAdhoc = false) {
+    // `unknown` ('birth' | 'death' | 'both') marks years the sources do not record: the number
+    // stays in the data to place the person on the timeline, but is shown as a question mark.
+    _formatPersonSpan(span, isAdhoc = false, unknown = '') {
       if (!span || isAdhoc || span.length < 2) return '';
       const [y0, y1] = span;
       if (y0 === undefined || y1 === undefined) return '';
+      const noBirth = unknown === 'birth' || unknown === 'both';
+      const noDeath = unknown === 'death' || unknown === 'both';
       if (this.locale === 'en') {
-        if (y0 <= 0 && y1 <= 0) return ` (${-y0}–${-y1} BCE)`;
-        if (y0 <= 0 && y1 > 0) return ` (${-y0} BCE – ${y1} CE)`;
-        return ` (${y0}–${y1})`;
+        const b = noBirth ? '?' : Math.abs(y0);
+        const d = noDeath ? '?' : Math.abs(y1);
+        if (y0 <= 0 && y1 <= 0) return ` (${b}–${d} BCE)`;
+        if (y0 <= 0 && y1 > 0) return ` (${b}${noBirth ? '' : ' BCE'} – ${d}${noDeath ? '' : ' CE'})`;
+        return ` (${b}–${d})`;
       }
       const fZh = (y) => (y <= 0 ? `前${-y}` : `${y}`);
-      return `（${fZh(y0)}—${fZh(y1)}）`;
+      return `（${noBirth ? '？' : fZh(y0)}—${noDeath ? '？' : fZh(y1)}）`;
     }
 
     _tailorPersonEvent(profile, tokens, d, year, rawSite, rawSiteEn, rawCoord, textZh, textEn, src) {
@@ -2534,7 +2540,7 @@
             });
           });
         } else {
-          const spanStr = this._formatPersonSpan(profile.span, isAdhoc);
+          const spanStr = this._formatPersonSpan(profile.span, isAdhoc, profile.spanUnknown);
           headingEl.textContent = `${isEn ? profile.en : profile.zh}${spanStr}`;
         }
       }
@@ -2585,7 +2591,8 @@
                   Math.min(100 - leftPct, ((span[1] - span[0]) / totalW) * 100)
                 );
                 const pName = escHtml(isEn ? tr.profile.en : tr.profile.zh);
-                const sLbl = `${fmtYrShort(span[0])}—${fmtYrShort(span[1])}`;
+                const u = tr.profile.spanUnknown || '';
+                const sLbl = `${u === 'birth' || u === 'both' ? '?' : fmtYrShort(span[0])}—${u === 'death' || u === 'both' ? '?' : fmtYrShort(span[1])}`;
                 return (
                   `<div class="mp-span-row">` +
                   `<span class="mp-span-name" style="color:${tr.color}">${pName}</span>` +
