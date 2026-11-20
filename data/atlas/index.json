@@ -1,8 +1,7 @@
 {
   "boot": [
     "neighbors",
-    "s_zhanguo_a",
-    "s_qin_a"
+    "s_zhanguo_a"
   ],
   "order": [
     "neighbors",
