@@ -1998,6 +1998,8 @@
       setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
       setMoreCopy('lbl-more-contact', 'Contact & Feedback', '联系作者 · 勘误反馈');
       setMoreCopy('sub-more-contact', 'deancsj@gmail.com · Click to copy', 'deancsj@gmail.com · 点击复制');
+      setMoreCopy('lbl-more-github', 'GitHub Repository', 'GitHub 开源仓库');
+      setMoreCopy('sub-more-github', 'DeanChensj/jiangshan-map · ★ Star', 'DeanChensj/jiangshan-map · ★ Star');
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
@@ -7503,8 +7505,30 @@
         this._rescaleSvgTypography({ zoomOnly });
       }
       this._updateScaleBar(rect);
+      this._syncResetCameraUi();
       if (this.activeMilestone) this._positionMilestoneBalloon(rect);
       if (forceTypography) this._scheduleTerrainTiles();
+    }
+
+    _syncResetCameraUi() {
+      if (
+        !this.viewportFrame ||
+        !this.viewportFrame.classList ||
+        typeof this.viewportFrame.classList.toggle !== 'function' ||
+        !this.camera
+      ) {
+        return;
+      }
+      const def = this._getDefaultCamera();
+      const dx = this.camera.x - def.x;
+      const dy = this.camera.y - def.y;
+      const moved =
+        Boolean(this.activeCustomRoute) ||
+        Math.abs(this.camera.w - def.w) > 8 ||
+        Math.hypot(dx, dy) > 12;
+      if (moved === this._lastCameraMoved) return;
+      this._lastCameraMoved = moved;
+      this.viewportFrame.classList.toggle('is-camera-moved', moved);
     }
 
     // ---------------- High-Resolution Terrain Tiles ----------------
@@ -10765,6 +10789,7 @@
           this._syncTogglePaneButton();
         }
         this._updateScaleBar();
+        this._syncResetCameraUi();
       });
       // The chronicle pane can resize the map without a window resize.
       if (typeof ResizeObserver !== 'undefined') {

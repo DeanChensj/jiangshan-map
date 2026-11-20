@@ -27,6 +27,7 @@
       const vf = this._id('viewport-frame');
       if (vf) vf.classList.remove('has-active-journey');
       this._syncMobileOverlayState();
+      if (typeof this._syncResetCameraUi === 'function') this._syncResetCameraUi();
     }
 
     selectCustomRouteStop(idx, panCamera = true) {
@@ -1143,6 +1144,7 @@
         this.customRouteStopIdx = -1;
       }
       this.activeCustomRoute = stops;
+      if (typeof this._syncResetCameraUi === 'function') this._syncResetCameraUi();
       if (this.svg && typeof this.svg.querySelectorAll === 'function') {
         this.svg.querySelectorAll('.cap-breath-ring').forEach((el) => el.remove());
       }
