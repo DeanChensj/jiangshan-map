@@ -12,6 +12,7 @@ const {
 const {
   renderSharedHead,
   renderTopHeader,
+  hasTocSidebar,
   renderTocSidebar,
   renderEmbedMapSection,
   renderRelatedStrip,
@@ -100,12 +101,11 @@ function buildStorylinePage({
       return `${actHeaderHtml}        <div class="stop-card">
           <div class="stop-header">
             <div>
-              <span class="stop-badge">第 ${sIdx + 1} 幕</span>${campBadgeHtml}
+              ${campBadgeHtml}
               <strong>${escHtml(st.ancientZh)}（今${escHtml(st.modernZh)}）· ${escHtml(st.titleZh)}</strong>
             </div>
             <div>
-              <strong>${escHtml(timeLabelZh)}</strong> ·
-              <a class="stop-map-link" href="${escHtml(stopMapHref)}">沙盘推演 →</a>
+              <a class="stop-map-link" href="${escHtml(stopMapHref)}" title="在交互沙盘中定位此节点">${escHtml(timeLabelZh)} ↗</a>
             </div>
           </div>
           ${actorsList}${vectorHtml}
@@ -174,7 +174,7 @@ function buildStorylinePage({
   })}
 <body>
 ${renderTopHeader({ lang, mapBase })}
-  <div class="page-shell has-toc">
+  <div class="page-shell${hasTocSidebar(tocItems) ? ' has-toc' : ''}">
 ${renderTocSidebar(tocItems)}
     <main class="main-col">
       <nav class="breadcrumb" aria-label="面包屑导航">
@@ -184,25 +184,21 @@ ${renderTocSidebar(tocItems)}
       </nav>
 
       <article class="hero-card">
-        <span class="kicker">事件始末 · 双阵营对抗沙盘</span>
         <h1>${escHtml(s.zh)}（${escHtml(spanZh)}）</h1>
         <div class="meta-pills">
-          <span class="meta-pill"><strong>格局提要：</strong>${escHtml(s.courtesyZh)}</span>
           ${campPillsHtml}
         </div>
         <p>${escHtml(s.descZh)}</p>
         ${personSourceHtml}
-        <div class="cta-row">
-          <a class="cta-btn" href="${escHtml(buildMapHref(mapQuery, { lang, base: mapBase }))}">在交互地图中推演「${escHtml(s.zh)}」→</a>
-        </div>
 ${renderRelatedStrip(relatedLinks)}
       </article>
 
 ${renderEmbedMapSection({
   id: 'sec-map',
   iframeSrc: buildEmbedHref(`event=${encodeURIComponent(s.key)}`, { lang, base: mapBase }),
+  fullHref: buildMapHref(mapQuery, { lang, base: mapBase }),
   titleZh: `${s.zh}沙盘实时预览（${spanZh}）`,
-  hintZh: '点击地图即可交互推演 · 右上角可全屏打开沙盘',
+  labelZh: '对抗沙盘',
 })}
 
       <section id="sec-stops" class="section-card">
@@ -210,7 +206,7 @@ ${renderEmbedMapSection({
 ${stopCardsHtml}
       </section>
 
-${renderFooter(allDynasties, { showDynastyChips: true, lang, mapBase })}
+${renderFooter(allDynasties, { showDynastyChips: false, lang, mapBase })}
     </main>
   </div>
 </body>

@@ -172,7 +172,6 @@ function generateAllOutputs() {
     const years = (j.stops || []).map((s) => s.year).filter((y) => typeof y === 'number');
     for (const d of dynasties) {
       if (years.some((y) => y >= d.fromYear && y <= d.toYear)) {
-        addDynRel(d.key, { href: `journey-${j.key}.html`, label: `行迹：${j.shortZh}` });
         addDynPersonLink(d.key, {
           href: `journey-${j.key}.html`,
           label: `行迹：${j.titleZh}`,
@@ -356,13 +355,23 @@ function generateAllOutputs() {
       const bY = Array.isArray(b.span) ? b.span[0] : 0;
       return aY - bY || a.key.localeCompare(b.key);
     })
-    .map((profile) => ({
-      profile,
-      eventCount: (eventsByKey.get(profile.key) || []).length,
-    }));
+    .map((profile) => {
+      const evs = eventsByKey.get(profile.key) || [];
+      const uniqueSites = [];
+      for (const ev of evs) {
+        if (ev.siteZh && !uniqueSites.includes(ev.siteZh)) uniqueSites.push(ev.siteZh);
+      }
+      return {
+        profile,
+        eventCount: evs.length,
+        sampleSitesZh: uniqueSites.slice(0, 5).join('、'),
+      };
+    });
 
+  const personProfileByKey = new Map(allNonStoryPersons.map((p) => [p.key, p]));
   const personsIndexPage = buildPersonsIndexPage({
     journeys,
+    personProfileByKey,
     personMonographItems: personBuildItems,
     directoryOnlyPersons,
     allDynasties: dynasties,
@@ -417,11 +426,12 @@ function generateAllOutputs() {
     };
     const baseTitleZh = String(place.displayTitleZh || '').split('（')[0];
 
+    const linkedPersonHrefs = new Set(linkedPersons.map((lp) => lp.href));
     for (const j of journeys) {
       const hitStop = (j.stops || []).some(
         (st) => st.coord && ctrl.projector.greatCircleKm(cityLore.coord, st.coord) <= 35
       );
-      if (hitStop) {
+      if (hitStop && !linkedPersonHrefs.has(`journey-${j.key}.html`)) {
         addPlaceRel(`journey-${j.key}.html`, `行迹：${j.shortZh}`);
       }
     }

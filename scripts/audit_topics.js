@@ -211,14 +211,36 @@ function auditAllTopics() {
       fail(f, 'Contains banned inline bilingual clutter or typo (en-sub/Open in English/中英对照/函数古道)');
     }
 
+    if (!dynKeySet.has(f.replace('.html', '')) && html.includes('footer-nav-card')) {
+      fail(f, 'Unexpected footer-nav-card dynasty chips on non-dynasty page');
+    }
+
     if (
-      f === 'persons.html' ||
-      f === 'places.html' ||
-      standalonePersonBySlug.has(f) ||
-      placeSlugSet.has(f)
+      /class="[^"]*\b(?:kicker|stop-badge)\b/.test(html) ||
+      html.includes('href="../sitemap.xml"') ||
+      html.includes('href="../llms.txt"')
     ) {
-      if (html.includes('footer-nav-card')) {
-        fail(f, 'Unexpected footer-nav-card dynasty chips on persons/places page');
+      fail(f, 'Contains pruned UI clutter (.kicker/.stop-badge or crawler footer links)');
+    }
+
+    const tocMatch = html.match(/<aside class="topic-toc"[\s\S]*?<\/aside>/);
+    if (tocMatch) {
+      const tocLinks = tocMatch[0].match(/class="toc-link/g) || [];
+      if (tocLinks.length < 3) {
+        fail(f, `Short page must omit .topic-toc when TOC links < 3 (found ${tocLinks.length})`);
+      }
+    }
+
+    const relStripMatch = html.match(/<div class="related-strip">([\s\S]*?)<\/div>/);
+    const secPersonsMatch = html.match(/<section id="sec-persons"[\s\S]*?<\/section>/);
+    if (relStripMatch && secPersonsMatch) {
+      const relJourneys = new Set(
+        [...relStripMatch[1].matchAll(/href="(journey-[^"]+\.html)"/g)].map((m) => m[1])
+      );
+      for (const m of secPersonsMatch[0].matchAll(/href="(journey-[^"]+\.html)"/g)) {
+        if (relJourneys.has(m[1])) {
+          fail(f, `Duplicate journey link "${m[1]}" in both .related-strip and #sec-persons`);
+        }
       }
     }
 
