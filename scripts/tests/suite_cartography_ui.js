@@ -1436,7 +1436,7 @@ async function runCartographyUiSuite(ctx) {
     ctrl.year = 624;
     ctrl.dynastyIdx = dynasties.indexOf(tang);
     proto.stepTimelineNode.call(ctrl, 1);
-    assert.strictEqual(ctrl.year, 630, `Expected forward territory step from 624 to skip 626/627/628 and land on 630, got ${ctrl.year}`);
+    assert.strictEqual(ctrl.year, 630, `Expected forward territory step from 624 to skip 626/627 and land on 630, got ${ctrl.year}`);
     proto.stepTimelineNode.call(ctrl, -1);
     assert.strictEqual(ctrl.year, 624, `Expected backward territory step from 630 to land on 624, got ${ctrl.year}`);
     assert.strictEqual(cameraPanCalls, 0, 'Pure-territory stepping must not auto-pan camera');
