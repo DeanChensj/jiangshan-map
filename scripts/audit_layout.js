@@ -232,6 +232,10 @@ function verifyViewportStates(label, width, height, states) {
         !boxesOverlap(st.bubble, st.yearStepper, 1),
         `${ctx}: mobile #scrubber-Bubble (${JSON.stringify(st.bubble)}) overlaps .year-stepper (${JSON.stringify(st.yearStepper)})`
       );
+      assert(
+        st.edgeStart.left >= 14 && st.edgeEnd.right <= width - 14,
+        `${ctx}: mobile timeline edge handles (${st.edgeStart.left}..${st.edgeEnd.right}) sit too close to screen edge (< 14px)`
+      );
     } else {
       // On desktop/tablet (> 640px), when playhead is at right edge (zoomedRightEdge), bubble must reach right edge of track
       if (stateName === 'zoomedRightEdge') {

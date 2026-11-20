@@ -3192,10 +3192,24 @@ html.is-embed .topic-inline-link {
     top: 0;
     height: 28px;
   }
+  #timeline-crop-mask-left {
+    left: 8px;
+  }
+  #timeline-crop-mask-right {
+    right: 8px;
+  }
   .timeline-edge {
     top: -2px;
     height: 32px;
-    width: 24px;
+    width: 28px;
+  }
+  .timeline-edge-start {
+    left: 6px;
+    justify-content: flex-start;
+  }
+  .timeline-edge-end {
+    right: 6px;
+    justify-content: flex-end;
   }
   .timeline-edge::before {
     height: 32px;
@@ -3203,6 +3217,12 @@ html.is-embed .topic-inline-link {
   .timeline-edge::after {
     top: 8px;
     bottom: 8px;
+  }
+  .timeline-edge-start::after {
+    left: 4.25px;
+  }
+  .timeline-edge-end::after {
+    right: 4.25px;
   }
 }
 
@@ -3853,7 +3873,8 @@ html[lang="en"] .genealogy-list li {
   #scrubber-rail-wrap {
     grid-column: 1 / -1;
     grid-row: 2;
-    padding-top: 0;
+    padding: 0 8px;
+    box-sizing: border-box;
     width: 100%;
   }
   #scrubber-track {
