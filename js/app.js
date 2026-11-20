@@ -454,27 +454,47 @@
       this.didPan = false;
       this.snapshotCache = {};
 
+      this._bootInnerWidth =
+        typeof window !== 'undefined' && typeof window.innerWidth === 'number'
+          ? window.innerWidth
+          : undefined;
       this._bindDom();
       this._runWithDeferredTypography(() => {
         this._applyCamera(true);
         this._buildTerrainRivers();
         this._buildModernProvinces();
         this._buildNeighborCountries();
-        this._buildScrubberBands();
+        this._buildScrubberBands({ skipRefreshLabels: true });
         this._attachListeners();
-        this.applyLocale();
+        this.applyLocale({ fromBoot: true });
 
         // A ?year= link boots at that year, so the Warring States map is never drawn first.
         const linkedYear = this._linkedBootYear();
-        this.jumpToYear(linkedYear !== null ? linkedYear : this.dynasties[0].focusYear);
-        this._holdDeferredLoads();
+        const qBoot =
+          typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
+        const hasLocateBoot = Boolean(
+          qBoot && (qBoot.has('place') || (qBoot.has('lng') && qBoot.has('lat')))
+        );
+        if (!hasLocateBoot) {
+          this.jumpToYear(linkedYear !== null ? linkedYear : this.dynasties[0].focusYear);
+          this._holdDeferredLoads();
+        } else if (linkedYear !== null) {
+          this.year = Math.max(this.minYear, Math.min(this.maxYear, Math.round(linkedYear)));
+          if (this.year === 0) this.year = -1;
+          this.dynastyIdx = this._findDynastyIndex(this.year);
+        }
         this._bootDone = true;
-        this._restoreFromQuery();
+        this._restoreFromQuery({ skipLinkedYearJump: linkedYear !== null && !hasLocateBoot });
+        if (!this.grpSettlements.firstChild) {
+          this.jumpToYear(this.year);
+        }
+        if (!this._deferredLoadsHeld) this._holdDeferredLoads();
         if (typeof document !== 'undefined' && document.documentElement) {
           document.documentElement.classList.remove('deeplink-boot');
         }
         if (this.embed) this._initEmbedChrome();
       });
+      this._bootInnerWidth = undefined;
       if (!this.embed) this._maybeShowStartGuide();
 
       if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
@@ -1853,12 +1873,15 @@
       }
     }
 
-    applyLocale() {
+    applyLocale(opts = null) {
+      const fromBoot = Boolean(opts && opts.fromBoot);
       if (this.locale === 'en' && !this._hasEnDict()) {
+        if (fromBoot) this._refreshBandLabels();
         this._ensureEnglishLocale().then(() => this.applyLocale());
         return;
       }
       if (this.locale === 'zh-tw' && !this._hasZhHant()) {
+        if (fromBoot) this._refreshBandLabels();
         this._ensureZhHant().then(() => this.applyLocale());
         return;
       }
@@ -2143,17 +2166,19 @@
       }
       this._syncTogglePaneButton();
 
-      this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
-        if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
-      });
-      this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
-        if (node.dataset.rawName) node.textContent = this._mapText(this.trTerm(node.dataset.rawName));
-      });
-      if (this.grpRivers) {
-        this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
-          node.textContent =
-            this.locale === 'en' ? node.dataset.en || '' : this._mapText(this._zh(node.dataset.zh || ''));
+      if (!fromBoot || this.locale !== 'zh') {
+        this.grpProvNames.querySelectorAll('.province-caption').forEach((node) => {
+          if (node.dataset.rawName) node.textContent = this.trTerm(node.dataset.rawName);
         });
+        this.grpNeighbors.querySelectorAll('.neighbor-caption').forEach((node) => {
+          if (node.dataset.rawName) node.textContent = this._mapText(this.trTerm(node.dataset.rawName));
+        });
+        if (this.grpRivers) {
+          this.grpRivers.querySelectorAll('.hydro-label').forEach((node) => {
+            node.textContent =
+              this.locale === 'en' ? node.dataset.en || '' : this._mapText(this._zh(node.dataset.zh || ''));
+          });
+        }
       }
 
       this._refreshBandLabels();
@@ -2163,6 +2188,8 @@
       this._lastLegendKey = null;
       this._lastPersonCardKey = null;
       this._invalidateTypographyLayout();
+
+      if (fromBoot) return;
 
       const cur = this.dynasties[this.dynastyIdx];
       this._runWithDeferredTypography(() => {
@@ -2549,6 +2576,129 @@
       if (this._cachedProvinceBoundaryPaths) {
         return this._cachedProvinceBoundaryPaths;
       }
+      const spec =
+        typeof window !== 'undefined' &&
+        window.PROVINCE_BOUNDARY_SPEC &&
+        this.provinces === window.PROVINCE_OUTLINES
+          ? window.PROVINCE_BOUNDARY_SPEC
+          : null;
+      if (spec) {
+        const { R: rev, arcs: rawArcs, masks, provs: pMap, tiles: tSpec } = spec;
+        const simpCache = new Array(masks.length);
+        const getSimpArc = (aid) => {
+          let pts = simpCache[aid];
+          if (pts) return pts;
+          const s = rawArcs[aid];
+          const m = masks[aid];
+          pts = [];
+          let si = 0,
+            sn = s.length,
+            x = 0,
+            y = 0,
+            vIdx = 0;
+          let mi = 0,
+            mn = m.length,
+            nextKeep = 0;
+          while (si < sn) {
+            let b,
+              sh = 0,
+              v = 0;
+            do {
+              b = rev[s.charCodeAt(si++)];
+              v |= (b & 31) << sh;
+              sh += 5;
+            } while (b >= 32);
+            x += v & 1 ? ~(v >>> 1) : v >>> 1;
+            sh = 0;
+            v = 0;
+            do {
+              b = rev[s.charCodeAt(si++)];
+              v |= (b & 31) << sh;
+              sh += 5;
+            } while (b >= 32);
+            y += v & 1 ? ~(v >>> 1) : v >>> 1;
+            if (vIdx === nextKeep) {
+              const sc = this.projector.toScreen(x / 100, y / 100);
+              pts.push([sc[0], sc[1], `${sc[0].toFixed(1)} ${sc[1].toFixed(1)}`]);
+              if (mi < mn) {
+                let mb,
+                  msh = 0,
+                  mv = 0;
+                do {
+                  mb = rev[m.charCodeAt(mi++)];
+                  mv |= (mb & 31) << msh;
+                  msh += 5;
+                } while (mb >= 32);
+                nextKeep += mv & 1 ? ~(mv >>> 1) : mv >>> 1;
+              } else {
+                nextKeep = -1;
+              }
+            }
+            vIdx++;
+          }
+          return (simpCache[aid] = pts);
+        };
+        const renderChainSeq = (refs, closed) => {
+          const seqPts = [];
+          for (let r = 0; r < refs.length; r++) {
+            const ref = refs[r];
+            const pts = getSimpArc(ref < 0 ? ~ref : ref);
+            if (ref < 0) {
+              for (let i = pts.length - 1 - (seqPts.length ? 1 : 0); i >= 0; i--) {
+                seqPts.push(pts[i]);
+              }
+            } else {
+              for (let i = seqPts.length ? 1 : 0; i < pts.length; i++) {
+                seqPts.push(pts[i]);
+              }
+            }
+          }
+          if (!seqPts.length) return '';
+          if (closed) {
+            const limit =
+              seqPts[seqPts.length - 1][0] === seqPts[0][0] &&
+              seqPts[seqPts.length - 1][1] === seqPts[0][1]
+                ? seqPts.length - 1
+                : seqPts.length;
+            if (limit < 3) return '';
+            let d = `M${seqPts[0][2]}`;
+            for (let i = 1; i < limit; i++) d += `L${seqPts[i][2]}`;
+            return d + 'Z';
+          }
+          let d = `M${seqPts[0][2]}`;
+          for (let i = 1; i < seqPts.length; i++) d += `L${seqPts[i][2]}`;
+          return d;
+        };
+        const provPaths = new Map();
+        for (const prov of this.provinces || []) {
+          const ringList = prov && pMap[prov.code];
+          if (!ringList) continue;
+          let pd = '';
+          for (let i = 0; i < ringList.length; i++) pd += renderChainSeq(ringList[i], true);
+          if (pd) provPaths.set(prov, pd);
+        }
+        const tiles = [];
+        let interior = '';
+        let outer = '';
+        for (let t = 0; t < tSpec.length; t++) {
+          const [tiRefs, toRefs] = tSpec[t];
+          let tInt = '';
+          let tOut = '';
+          for (let i = 0; i < tiRefs.length; i++) tInt += renderChainSeq(tiRefs[i], false);
+          for (let i = 0; i < toRefs.length; i++) tOut += renderChainSeq(toRefs[i], false);
+          tiles.push({ interior: tInt, outer: tOut, combined: `${tInt}${tOut}` });
+          interior += tInt;
+          outer += tOut;
+        }
+        this._cachedProvinceBoundaryPaths = {
+          interior,
+          outer,
+          combined: `${interior}${outer}`,
+          tiles,
+          provPaths,
+        };
+        return this._cachedProvinceBoundaryPaths;
+      }
       const ptKey = (pt) => Math.round(pt[0] * 100) * 10000 + Math.round(pt[1] * 100);
       const edgeKey = (k1, k2) => (k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`);
 
@@ -2702,7 +2852,7 @@
 
           const { canonKey, canonPts, reversed } = getSimplifiedChain(subKeys);
           if (reversed) {
-            for (let j = canonPts.length - 1; j >= (ringPts.length ? 1 : 0); j--) {
+            for (let j = canonPts.length - 1 - (ringPts.length ? 1 : 0); j >= 0; j--) {
               ringPts.push(canonPts[j]);
             }
           } else {
@@ -5877,17 +6027,17 @@
     _syncSeoDirectoryLocale() {
       const nav = this._id('seo-atlas-directory');
       if (!nav) return;
-      if (!this._seoDirZhHtml) {
-        this._seoDirZhHtml = nav.innerHTML;
-      }
       if (this.locale !== 'en') {
         nav.setAttribute('aria-label', '中国历代疆域、点人溯事与天下名关索引');
-        if (nav.dataset.locale === 'en') {
+        if (nav.dataset.locale === 'en' && this._seoDirZhHtml !== undefined) {
           nav.innerHTML = this._seoDirZhHtml;
           nav.dataset.locale = 'zh';
         }
         delete nav.dataset.enDetail;
         return;
+      }
+      if (this._seoDirZhHtml === undefined) {
+        this._seoDirZhHtml = nav.innerHTML;
       }
       const hasLoreDetail = this._isLoreDetailLoaded();
       if (nav.dataset.locale === 'en' && (!hasLoreDetail || nav.dataset.enDetail === '1')) return;
@@ -6612,7 +6762,7 @@
       }
     }
 
-    _buildScrubberBands() {
+    _buildScrubberBands(opts = null) {
       const bands = this._id('dynasty-bands');
       const ticks = this._id('scrubber-ticks');
       bands.innerHTML = '';
@@ -6688,7 +6838,9 @@
       if (dock) dock.classList.toggle('is-milestones-hidden', this._isMilestonesHidden());
       this._lastActiveBandIdx = -1;
       this._scrubberRailWidth = 0;
-      this._refreshBandLabels();
+      if (!(opts && opts.skipRefreshLabels)) {
+        this._refreshBandLabels();
+      }
       window.addEventListener('resize', () => {
         this._scrubberRailWidth = 0;
         if (this._scrubberView) this._setScrubberView(this._scrubberView.start, this._scrubberView.end);
@@ -6739,28 +6891,66 @@
       const cells = this._id('dynasty-bands').children;
       const tickNodes = this._id('scrubber-ticks').children;
       const endTick = this._id('tick-present');
-      const maxRight = endTick ? endTick.getBoundingClientRect().left - 4 : Infinity;
-      let lastRight = -Infinity;
-      for (let i = 0; i < cells.length; i++) {
+      const count = cells.length;
+
+      // 1. Batch reset only cells that currently carry compact/narrow state.
+      const lbls = new Array(count);
+      for (let i = 0; i < count; i++) {
         const cell = cells[i];
-        cell.classList.remove('is-narrow', 'is-compact');
-        const lbl = cell.querySelector('.band-label');
+        if (cell.classList.contains('is-narrow') || cell.classList.contains('is-compact')) {
+          cell.classList.remove('is-narrow', 'is-compact');
+        }
+        lbls[i] = cell.querySelector('.band-label');
+      }
+
+      // 2. Batch read all regular widths and tick rects in one layout pass.
+      const maxRight = endTick ? endTick.getBoundingClientRect().left - 4 : Infinity;
+      const clientW = new Array(count);
+      const compactCandidates = [];
+      const narrowNoLbl = [];
+      for (let i = 0; i < count; i++) {
+        const cell = cells[i];
+        const cw = cell.clientWidth;
+        clientW[i] = cw;
+        const lbl = lbls[i];
         if (lbl) {
-          if (lbl.scrollWidth > cell.clientWidth - 2) {
-            cell.classList.add('is-compact');
-            if (lbl.scrollWidth > cell.clientWidth - 2) {
-              cell.classList.remove('is-compact');
-              cell.classList.add('is-narrow');
-            }
-          }
-        } else if (cell.scrollWidth > cell.clientWidth + 1) {
+          if (lbl.scrollWidth > cw - 2) compactCandidates.push(i);
+        } else if (cell.scrollWidth > cw + 1) {
+          narrowNoLbl.push(i);
+        }
+      }
+      const tickCount = Math.min(count, tickNodes.length);
+      const tickRects = new Array(tickCount);
+      for (let i = 0; i < tickCount; i++) {
+        const tk = tickNodes[i];
+        tickRects[i] = tk ? tk.getBoundingClientRect() : null;
+      }
+
+      // 3. Batch test compact candidates in at most one additional layout pass, then write all classes.
+      if (compactCandidates.length) {
+        for (let k = 0; k < compactCandidates.length; k++) {
+          cells[compactCandidates[k]].classList.add('is-compact');
+        }
+        const stillOverflow = [];
+        for (let k = 0; k < compactCandidates.length; k++) {
+          const i = compactCandidates[k];
+          if (lbls[i].scrollWidth > clientW[i] - 2) stillOverflow.push(i);
+        }
+        for (let k = 0; k < stillOverflow.length; k++) {
+          const cell = cells[stillOverflow[k]];
+          cell.classList.remove('is-compact');
           cell.classList.add('is-narrow');
         }
-        const tk = tickNodes[i];
-        if (tk) {
-          const rect = tk.getBoundingClientRect();
+      }
+      for (let k = 0; k < narrowNoLbl.length; k++) {
+        cells[narrowNoLbl[k]].classList.add('is-narrow');
+      }
+      let lastRight = -Infinity;
+      for (let i = 0; i < tickCount; i++) {
+        const rect = tickRects[i];
+        if (rect) {
           const hide = rect.left < lastRight + 6 || rect.right > maxRight;
-          tk.classList.toggle('is-hidden-tick', hide);
+          tickNodes[i].classList.toggle('is-hidden-tick', hide);
           if (!hide) lastRight = rect.right;
         }
       }
@@ -7797,12 +7987,13 @@
     }
 
     _isMobileViewport() {
-      return (
-        typeof window !== 'undefined' &&
-        typeof window.innerWidth === 'number' &&
-        window.innerWidth > 0 &&
-        window.innerWidth <= 900
-      );
+      const vw =
+        this._bootInnerWidth !== undefined
+          ? this._bootInnerWidth
+          : typeof window !== 'undefined'
+            ? window.innerWidth
+            : 0;
+      return typeof vw === 'number' && vw > 0 && vw <= 900;
     }
 
     _syncTogglePaneButton() {

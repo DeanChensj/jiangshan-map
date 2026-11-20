@@ -2337,7 +2337,7 @@ async function runSearchRuntimeSuite(ctx) {
             }
           }
         }
-        for (const bsKey of ['s_zhanguo_a', 's_qin_a']) {
+        for (const bsKey of ['s_zhanguo_a']) {
           for (const f of bootSnapshots[bsKey].polities || []) {
             assert(f.title !== '台湾原住民', `atlas_boot.js ${bsKey} still contains 台湾原住民`);
           }
@@ -2608,6 +2608,83 @@ async function runSearchRuntimeSuite(ctx) {
       !cellMob.classList.contains('is-compact') && cellMob.classList.contains('is-narrow'),
       'Mobile ultra-narrow dynasty cell (9px) must hide cleanly via .is-narrow'
     );
+
+    // First-screen boot regression guards:
+    // 1) stylesheet precedes the 18.9 KB JSON-LD block; relief preload is low-priority
+    assert(
+      indexHtml.indexOf('css/style.css') < indexHtml.indexOf('application/ld+json') &&
+        indexHtml.includes("relief.fetchPriority = 'low'"),
+      'index.html must place css/style.css before JSON-LD and lower terrain_relief.webp preload priority'
+    );
+    // 2) _restoreFromQuery on Chinese ?person=sushi or ?year=741&place=长安 must NOT fetch i18n_dict.js or zh_hant.js
+    {
+      const savedLoc = sandbox.location;
+      const savedHasEn = ctrl._hasEnDict;
+      const savedHasHant = ctrl._hasZhHant;
+      const savedEnsureEn = ctrl._ensureEnglishLocale;
+      const savedEnsureHant = ctrl._ensureZhHant;
+      const savedOpenPerson = ctrl.openPersonChronicle;
+      const savedLocate = ctrl.locate;
+      const savedArmUrl = ctrl._armUrlSync;
+      let enFetches = 0;
+      let hantFetches = 0;
+      try {
+        ctrl.locale = 'zh';
+        ctrl._hasEnDict = () => false;
+        ctrl._hasZhHant = () => false;
+        ctrl._ensureEnglishLocale = () => {
+          enFetches++;
+          return Promise.resolve();
+        };
+        ctrl._ensureZhHant = () => {
+          hantFetches++;
+          return Promise.resolve();
+        };
+        ctrl.openPersonChronicle = () => {};
+        ctrl.locate = () => {};
+        ctrl._armUrlSync = () => {};
+        sandbox.location = { ...savedLoc, search: '?person=sushi' };
+        ctrl._restoreFromQuery();
+        assert.strictEqual(
+          enFetches + hantFetches,
+          0,
+          `Chinese ?person=sushi must not fetch i18n_dict.js (${enFetches}) or zh_hant.js (${hantFetches})`
+        );
+        sandbox.location = { ...savedLoc, search: '?year=741&place=%E9%95%BF%E5%AE%89' };
+        ctrl._restoreFromQuery({ skipLinkedYearJump: true });
+        assert.strictEqual(
+          enFetches + hantFetches,
+          0,
+          `Simplified Chinese ?year=741&place=长安 must not fetch i18n_dict.js (${enFetches}) or zh_hant.js (${hantFetches})`
+        );
+        // Mixed/Traditional query whose prefix ("南京") would otherwise substring-match modern Nanjing
+        // must still fetch zh_hant.js so "南京應天府" resolves accurately to Northern Song Shangqiu.
+        const savedZhHantGlobal = sandbox.window.ZH_HANT_CONV;
+        delete sandbox.window.ZH_HANT_CONV;
+        ctrl._resolvePlaceCache = new Map();
+        try {
+          sandbox.location = { ...savedLoc, search: '?year=1100&place=%E5%8D%97%E4%BA%AC%E6%87%89%E5%A4%A9%E5%BA%9C' };
+          ctrl._restoreFromQuery({ skipLinkedYearJump: true });
+          assert.strictEqual(
+            hantFetches,
+            1,
+            'Traditional ?year=1100&place=南京應天府 must fetch zh_hant.js instead of settling on substring "南京"'
+          );
+        } finally {
+          sandbox.window.ZH_HANT_CONV = savedZhHantGlobal;
+          ctrl._resolvePlaceCache = new Map();
+        }
+      } finally {
+        sandbox.location = savedLoc;
+        ctrl._hasEnDict = savedHasEn;
+        ctrl._hasZhHant = savedHasHant;
+        ctrl._ensureEnglishLocale = savedEnsureEn;
+        ctrl._ensureZhHant = savedEnsureHant;
+        ctrl.openPersonChronicle = savedOpenPerson;
+        ctrl.locate = savedLocate;
+        ctrl._armUrlSync = savedArmUrl;
+      }
+    }
 
     // 6-era boundary & gap regression checks (195 Donghan, 322 Dongjin, 676 Tang, 1410 Ming, 1650 Qing, 1918 ROC)
     const ptIn = sandbox.window.MercatorProjector.pointInShape;

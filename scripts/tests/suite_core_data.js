@@ -424,13 +424,11 @@ async function runCoreDataSuite(ctx) {
     bootSnaps &&
       Array.isArray(bootSnaps.neighbors) &&
       bootSnaps.s_zhanguo_a &&
-      bootSnaps.s_qin_a &&
+      !bootSnaps.s_qin_a &&
       (FAST_MODE
-        ? bootSnaps.s_zhanguo_a.polities.length === snapshots.s_zhanguo_a.polities.length &&
-          bootSnaps.s_qin_a.prefectures.length === snapshots.s_qin_a.prefectures.length
-        : JSON.stringify(bootSnaps.s_zhanguo_a) === JSON.stringify(snapshots.s_zhanguo_a) &&
-          JSON.stringify(bootSnaps.s_qin_a) === JSON.stringify(snapshots.s_qin_a)),
-    'atlas_boot.js must provide neighbors, s_zhanguo_a, and s_qin_a identical to atlas_snapshots.js for instant first paint'
+        ? bootSnaps.s_zhanguo_a.polities.length === snapshots.s_zhanguo_a.polities.length
+        : JSON.stringify(bootSnaps.s_zhanguo_a) === JSON.stringify(snapshots.s_zhanguo_a)),
+    'atlas_boot.js must provide neighbors and s_zhanguo_a identical to atlas_snapshots.js without retired s_qin_a bloat'
   );
   if (!FAST_MODE) {
     verifyShape(bootSnaps.s_zhanguo_a.polities[0].shape, 'boot.s_zhanguo_a.polities[0]');

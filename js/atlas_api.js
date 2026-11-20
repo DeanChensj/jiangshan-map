@@ -288,9 +288,10 @@
         this._resolvePlaceCacheSnapRef = this.snapshots;
       }
       const snapFull = this.snapshots && this.snapshots.s_prc ? 1 : 0;
+      const hasLore = this._isLoreDetailLoaded() ? 1 : 0;
       const hasEn = this._hasEnDict() ? 1 : 0;
       const hasHant = this._hasZhHant() ? 1 : 0;
-      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasEn}\0${hasHant}`;
+      const cacheKey = `${rawInput}\0${targetDyn ? targetDyn.key : ''}\0${targetSnapKey}\0${snapFull}\0${hasLore}\0${hasEn}\0${hasHant}`;
       if (this._resolvePlaceCache.has(cacheKey)) {
         const cached = this._resolvePlaceCache.get(cacheKey);
         return cached ? { ...cached } : null;
@@ -1522,11 +1523,21 @@
       const hasEnDict = this._hasEnDict();
       const needsEnDict =
         !hasEnDict && (this.locale === 'en' || (place && /[a-z]/i.test(String(place))));
+      const placeStr = place ? String(place) : '';
+      const yearStr = year !== undefined && year !== null ? String(year) : '';
+      const placeTokens = this._parsePlaceTokens(place, year);
+      const yearList = this._parseYearList(year);
+      const isExactSimplifiedHit = (tok) => {
+        const r = this.resolvePlace(tok.place, tok.year);
+        return Boolean(r && (r.name === tok.place || r.modern === tok.place));
+      };
+      const hasUnresolvedCjkPlace =
+        /[\u4e00-\u9fff]/.test(placeStr) &&
+        (!placeTokens.length || placeTokens.some((tok) => !isExactSimplifiedHit(tok)));
+      const hasUnresolvedCjkYear = /[\u4e00-\u9fff]/.test(yearStr) && !yearList.length;
       const needsZhHant =
         !this._hasZhHant() &&
-        (this.locale === 'zh-tw' ||
-          (place && /[\u4e00-\u9fff]/.test(String(place))) ||
-          (year && /[\u4e00-\u9fff]/.test(String(year))));
+        (this.locale === 'zh-tw' || hasUnresolvedCjkPlace || hasUnresolvedCjkYear);
       const needsLoreDetail = !this._isLoreDetailLoaded();
       if (!this._fullSnapshotsLoaded || needsEnDict || needsZhHant || needsLoreDetail) {
         Promise.all([
@@ -1539,8 +1550,6 @@
         });
       }
       this.stopAutoplay();
-      const placeTokens = this._parsePlaceTokens(place, year);
-      const yearList = this._parseYearList(year);
       const initialYear = placeTokens.length
         ? placeTokens[0].year
         : yearList.length
@@ -1688,7 +1697,8 @@
       return [];
     }
 
-    _restoreFromQuery() {
+    _restoreFromQuery(opts = null) {
+      const skipLinkedYearJump = Boolean(opts && opts.skipLinkedYearJump);
       const q = new URLSearchParams(location.search);
       if (
         q.has('year') ||
@@ -1701,10 +1711,45 @@
         this.lastRenderedSnap = null;
         if (this.grpGhostDiff) this.grpGhostDiff.innerHTML = '';
       }
-      const queryBag = `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''} ${q.get('person') || ''} ${q.get('event') || ''} ${q.get('journey') || ''} ${q.get('year') || ''}`;
-      const needsEn = this.locale === 'en' || /[a-z]/i.test(queryBag);
-      const needsHant = this.locale === 'zh-tw' || /[\u4e00-\u9fff]/.test(queryBag);
-      const afterFullSnapshots = (fn, delayMs = 80) => {
+      // Person/event/journey slugs are ASCII Pinyin keys resolved from lore_core.js;
+      // only place, hover, and quick-search queries need the English dictionary for Latin terms.
+      const enQueryBag = `${q.get('place') || ''} ${q.get('hover') || ''} ${q.get('q') || ''}`;
+      const needsEn = this.locale === 'en' || /[a-z]/i.test(enQueryBag);
+      const rawPlaceQ = q.get('place') || '';
+      const rawYearQ = q.get('year') || '';
+      const rawPersonQ = `${q.get('person') || ''},${q.get('event') || ''},${q.get('journey') || ''}`;
+      const hasUnresolvedCjkPlace =
+        /[\u4e00-\u9fff]/.test(rawPlaceQ) &&
+        (() => {
+          const toks = this._parsePlaceTokens(rawPlaceQ, q.has('year') ? rawYearQ : undefined);
+          return (
+            !toks.length ||
+            toks.some((t) => {
+              const r = this.resolvePlace(t.place, t.year);
+              return !r || (r.name !== t.place && r.modern !== t.place);
+            })
+          );
+        })();
+      const hasUnresolvedCjkYear =
+        /[\u4e00-\u9fff]/.test(rawYearQ) && !this._parseYearList(rawYearQ).length;
+      const hasUnresolvedCjkPerson =
+        /[\u4e00-\u9fff]/.test(rawPersonQ) &&
+        rawPersonQ
+          .split(/[,，]+/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .some((tok) => {
+            if (!/[\u4e00-\u9fff]/.test(tok)) return false;
+            const p = this._resolvePersonProfile(tok);
+            return !p || p.zh !== tok;
+          });
+      const needsHant =
+        this.locale === 'zh-tw' ||
+        /[\u4e00-\u9fff]/.test(`${q.get('hover') || ''} ${q.get('q') || ''}`) ||
+        hasUnresolvedCjkPlace ||
+        hasUnresolvedCjkYear ||
+        hasUnresolvedCjkPerson;
+      const afterFullSnapshots = (fn, delayMs = 0) => {
         const run = () => setTimeout(fn, delayMs);
         const tasks = [];
         const snapshotsReady =
@@ -1772,7 +1817,9 @@
           const rawYr = q.get('year') || '';
           const yList = this._parseYearList(rawYr);
           if (yList.length) {
-            this.jumpToYear(yList[0]);
+            if (!skipLinkedYearJump || yList[0] !== this.year) {
+              this.jumpToYear(yList[0]);
+            }
           } else if (/[\u4e00-\u9fff]/.test(rawYr) && !this._hasZhHant()) {
             this._ensureZhHant().then(() => {
               const retryList = this._parseYearList(rawYr);
@@ -1783,7 +1830,7 @@
         if (traceParts) {
           afterFullSnapshots(() => {
             this.openGenealogyAt(traceParts[0], traceParts[1]);
-          }, 80);
+          });
         }
         if (q.has('zoom') || q.has('center')) {
           const z = Math.max(1, Math.min(8, Number(q.get('zoom')) || this.camera.zoom));
@@ -1935,7 +1982,7 @@
         if (rawP) {
           afterFullSnapshots(() => {
             this.openPersonChronicle(rawP, Number.isNaN(evIdx) ? -1 : evIdx);
-          }, 80);
+          });
         }
       }
       if (q.has('event')) {
@@ -1944,7 +1991,7 @@
         if (rawEv) {
           afterFullSnapshots(() => {
             this.openPersonChronicle(rawEv, Number.isNaN(evIdx) ? -1 : evIdx);
-          }, 80);
+          });
         }
       }
       if (q.has('journey')) {
@@ -1953,12 +2000,12 @@
         if (jKey) {
           afterFullSnapshots(() => {
             this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
-          }, 80);
+          });
         }
       }
       if (q.has('polity')) {
         const pKey = (q.get('polity') || '').trim();
-        if (pKey) afterFullSnapshots(() => this.openPolityByKey(pKey), 80);
+        if (pKey) afterFullSnapshots(() => this.openPolityByKey(pKey));
       }
       if (q.has('layers')) {
         setTimeout(() => {

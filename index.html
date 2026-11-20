@@ -14,6 +14,7 @@
         var relief = document.createElement('link');
         relief.rel = 'preload';
         relief.as = 'image';
+        relief.fetchPriority = 'low';
         relief.href = 'assets/terrain_relief.webp';
         document.head.appendChild(relief);
         return;
@@ -30,6 +31,7 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
+  <link rel="stylesheet" href="css/style.css?v=cb902f16" />
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与中英双语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -336,7 +338,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <link rel="stylesheet" href="css/style.css?v=cb902f16" />
   <!-- Analytics: Vercount, anonymous click counter (workers/stats) & Cloudflare Web Analytics -->
   <script defer src="https://events.vercount.one/js"></script>
   <script defer src="js/atlas_track.js?v=4b2c3de3"></script>
@@ -485,7 +486,7 @@
               <g id="grp-terrain">
                 <!-- Opacity lives on the wrapper so opaque detail tiles cover the base relief instead of double-blending with it. -->
                 <g id="terrain-relief-layer">
-                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
+                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" decoding="async" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
                   <g id="grp-terrain-tiles"></g>
                   <g id="grp-paleo-sea"></g>
                 </g>
@@ -912,13 +913,13 @@
       </section>
     </nav>
 
-  <script src="js/china_geo_data.js?v=a2d3dc62"></script>
-  <script src="js/atlas_boot.js?v=03d52899"></script>
+  <script src="js/china_geo_data.js?v=5718efe8"></script>
+  <script src="js/atlas_boot.js?v=7fcf32b4"></script>
   <script src="js/map_data.js?v=59e332db"></script>
   <script src="js/lore_core.js?v=a88e8f05"></script>
-  <script id="atlas-app-script" src="js/app.js?v=ffc06c42" data-v-snapshots="673e0ae9" data-v-i18n="49339f71" data-v-lore="43d9e4cc" data-v-pinyin="e273f190" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="2120cf6e"></script>
+  <script id="atlas-app-script" src="js/app.js?v=00e2e300" data-v-snapshots="673e0ae9" data-v-i18n="49339f71" data-v-lore="43d9e4cc" data-v-pinyin="e273f190" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="2120cf6e"></script>
   <script src="js/atlas_trace.js?v=4600f26a"></script>
   <script src="js/atlas_search.js?v=cfc38510"></script>
-  <script src="js/atlas_api.js?v=b86be946"></script>
+  <script src="js/atlas_api.js?v=3b7f1b6d"></script>
 </body>
 </html>
