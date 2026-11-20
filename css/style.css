@@ -309,20 +309,7 @@ h2 {
   color: var(--text-main);
 }
 
-.github-pill-group {
-  display: inline-flex;
-  align-items: stretch;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid var(--hairline);
-  overflow: hidden;
-}
-
-.github-pill-group .github-star-btn {
-  border: none;
-  border-radius: 999px 0 0 999px;
-  background: transparent;
-  padding-right: 8.5px;
+.github-star-btn {
   text-decoration: none;
   font-weight: 600;
   gap: 4px;
@@ -335,8 +322,7 @@ h2 {
   transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.github-pill-group .github-star-btn:hover {
-  background: #fff;
+.github-star-btn:hover {
   color: var(--text-main);
 }
 
@@ -345,41 +331,28 @@ h2 {
   transform: scale(1.15);
 }
 
-.github-pill-group .github-more-btn {
-  border: none;
-  border-left: 1px solid var(--hairline) !important;
-  border-radius: 0 999px 999px 0;
-  background: transparent;
-  padding: 5.5px 8px 5.5px 7px;
+.more-menu-btn {
+  padding: 5.5px 9px;
   color: var(--text-secondary);
   cursor: pointer;
 }
 
-.github-pill-group .github-more-btn .caret-mark {
-  font-size: 9.5px;
+.more-menu-btn .more-dots-mark {
+  font-size: 13px;
   line-height: 1;
-  opacity: 0.65;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
-.github-pill-group .github-more-btn:hover {
+.more-menu-btn:hover {
   background: #fff;
   color: var(--text-main);
 }
 
-.github-pill-group .github-more-btn:hover .caret-mark {
-  opacity: 0.95;
-}
-
-.github-pill-group .github-more-btn.is-active {
+.more-menu-btn.is-active {
   background: #fff !important;
-  color: var(--text-main) !important;
-  border-left-color: var(--hairline) !important;
-}
-
-.github-pill-group .github-more-btn.is-active .caret-mark {
-  opacity: 0.95;
-  transform: rotate(180deg);
+  color: var(--vermilion) !important;
+  border-color: rgba(181, 69, 47, 0.35) !important;
 }
 
 .more-popover {
@@ -462,6 +435,16 @@ h2 {
 .more-pop-link:hover .more-ext-mark {
   color: var(--vermilion);
   opacity: 1;
+}
+
+.more-mobile-only {
+  display: none;
+}
+
+.more-pop-divider {
+  height: 0;
+  border-top: 1px dashed var(--hairline);
+  margin: 3px 6px;
 }
 
 .music-pill-group {
@@ -2764,8 +2747,8 @@ html.deeplink-boot #inp-year {
   font-size: 11px;
   padding: 2px 7px;
   border-radius: 4px;
-  background: rgba(181, 69, 47, 0.12);
-  color: var(--vermilion);
+  background: rgba(90, 74, 58, 0.09);
+  color: var(--text-secondary);
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -2774,19 +2757,19 @@ html.deeplink-boot #inp-year {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 1.5px 7px;
+  padding: 1.5px 5px;
   border-radius: 4px;
-  border: 1px solid var(--hairline);
-  background: rgba(235, 226, 209, 0.45);
-  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+  color: var(--vermilion);
   font-family: var(--serif-stack);
-  font-size: 10.8px;
+  font-size: 11.5px;
   font-weight: 600;
   line-height: 1.35;
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: color 0.14s, border-color 0.14s, background 0.14s;
+  transition: color 0.14s, background 0.14s;
 }
 
 .seat-row .topic-inline-link {
@@ -2795,8 +2778,9 @@ html.deeplink-boot #inp-year {
 
 .topic-inline-link:hover {
   color: var(--vermilion);
-  border-color: rgba(181, 69, 47, 0.38);
   background: rgba(181, 69, 47, 0.08);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 #chronicle-pane.is-polity-mode .seat-row .topic-inline-link,
@@ -3751,8 +3735,7 @@ html[lang="en"] .genealogy-list li {
   #act-locale-hant .btn-svg,
   #act-locale .btn-svg,
   #lbl-music,
-  #act-github-star .star-mark,
-  #lbl-github-star {
+  #act-github-star {
     display: none !important;
   }
   .action-btn {
@@ -3771,12 +3754,11 @@ html[lang="en"] .genealogy-list li {
     min-width: 0;
     padding: 4px 6.5px;
   }
-  .music-pill-group .music-btn,
-  #act-github-star {
+  .music-pill-group .music-btn {
     padding: 4px 6.5px;
   }
-  .github-pill-group .github-more-btn {
-    padding: 4px 5.5px 4px 4.5px;
+  .more-menu-btn {
+    padding: 4px 7.5px;
   }
   .layers-popover {
     left: 8px;
@@ -3786,6 +3768,12 @@ html[lang="en"] .genealogy-list li {
   .more-popover {
     right: 8px;
     width: min(268px, calc(100vw - 16px));
+  }
+  .more-pop-divider.more-mobile-only {
+    display: block;
+  }
+  .more-pop-link.more-mobile-only {
+    display: flex;
   }
   /* Collapsible 34x34px Search Button on Mobile (<= 640px) */
   #map-search-box:not(:focus-within):not(.is-expanded) {
@@ -4152,7 +4140,10 @@ html[lang="en"] .genealogy-list li {
 }
 
 .canvas-reset-btn {
-  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
   display: inline-flex;
   align-items: center;
   gap: 4.5px;
@@ -4167,7 +4158,15 @@ html[lang="en"] .genealogy-list li {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(43, 38, 34, 0.08);
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s, background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+#viewport-frame.is-camera-moved .canvas-reset-btn {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s, background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .canvas-reset-btn:hover {
@@ -4176,7 +4175,7 @@ html[lang="en"] .genealogy-list li {
   color: var(--vermilion);
 }
 
-.canvas-reset-btn:active {
+#viewport-frame.is-camera-moved .canvas-reset-btn:active {
   transform: translateY(1px);
 }
 

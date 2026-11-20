@@ -3514,6 +3514,95 @@ async function runSearchRuntimeSuite(ctx) {
       );
     }
   }
+
+  // CUJ 46: Default-View Reset Camera Auto-Hide, Topic Link Affordance & Desktop-Split / Mobile-Merged Header Menu
+  {
+    assert(
+      !indexHtml.includes('github-pill-group') &&
+        indexHtml.includes('id="act-github-star"') &&
+        indexHtml.includes('id="act-more-menu"') &&
+        indexHtml.includes('more-menu-btn') &&
+        indexHtml.includes('id="lnk-more-github"') &&
+        indexHtml.includes('more-mobile-only') &&
+        /<a id="lnk-dynasty-topic"[^>]*>图志<\/a>/.test(indexHtml),
+      'index.html must split #act-github-star and #act-more-menu on desktop, merge #lnk-more-github into #more-popover on mobile, and keep #lnk-dynasty-topic text clean without arrows'
+    );
+    assert(
+      cssSrc.includes('#viewport-frame.is-camera-moved .canvas-reset-btn') &&
+        cssSrc.includes('.more-pop-link.more-mobile-only'),
+      'css/style.css must gate #act-reset-camera visibility via .is-camera-moved and show .more-mobile-only menu items on <= 640px mobile'
+    );
+
+    const toggled = new Set();
+    const vpStub = {
+      classList: {
+        contains: (c) => toggled.has(c),
+        add: (...items) => items.forEach((c) => toggled.add(c)),
+        remove: (...items) => items.forEach((c) => toggled.delete(c)),
+        toggle: (c, force) => {
+          const on = force === undefined ? !toggled.has(c) : Boolean(force);
+          if (on) toggled.add(c);
+          else toggled.delete(c);
+          return on;
+        },
+      },
+    };
+    const proto = Object.getPrototypeOf(ctrl);
+    const camCtrl = Object.assign(Object.create(proto), {
+      viewportFrame: vpStub,
+      _stageWrap: null,
+      svg: {
+        classList: { add() {}, remove() {}, contains: () => false },
+        setAttribute() {},
+      },
+      hoverTip: { classList: { add() {}, remove() {} } },
+      _cancelPendingHover() {},
+      _clearHoveredPrefecture() {},
+      _getUnscaledSvgRect: () => ({ left: 0, top: 0, width: 1200, height: 840 }),
+      _rescaleSvgTypography() {},
+      _updateScaleBar() {},
+      _scheduleTerrainTiles() {},
+      _id: () => null,
+      _syncMobileOverlayState() {},
+      activeMilestone: null,
+      activeCustomRoute: null,
+      flyRaf: null,
+      _camRaf: null,
+      _lastCameraViewBox: null,
+    });
+    camCtrl.camera = camCtrl._getDefaultCamera();
+    camCtrl._applyCamera(true);
+    assert.strictEqual(
+      toggled.has('is-camera-moved'),
+      false,
+      'Reset camera button must remain hidden on initial default camera'
+    );
+
+    camCtrl.camera = { ...camCtrl._getDefaultCamera(), w: 300, h: 252, zoom: 1000 / 300 };
+    camCtrl._applyCamera(false);
+    clearTimeout(camCtrl._cameraSettleTimer);
+    assert.strictEqual(
+      toggled.has('is-camera-moved'),
+      true,
+      'Zooming away from default camera must reveal #act-reset-camera via .is-camera-moved'
+    );
+
+    camCtrl.camera = camCtrl._getDefaultCamera();
+    camCtrl.activeCustomRoute = [{ ancient: '长安' }];
+    camCtrl._syncResetCameraUi();
+    assert.strictEqual(
+      toggled.has('is-camera-moved'),
+      true,
+      'An active custom route must keep #act-reset-camera visible even when camera matches default bounds'
+    );
+
+    camCtrl.clearCustomRoute();
+    assert.strictEqual(
+      toggled.has('is-camera-moved'),
+      false,
+      'Clearing an active custom route while at default camera must hide #act-reset-camera'
+    );
+  }
 }
 
 module.exports = { runSearchRuntimeSuite };

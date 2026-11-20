@@ -1031,10 +1031,9 @@ async function runApiSearchSuite(ctx) {
       cssSrc.includes('.prefecture-shape.is-traced') &&
       cssSrc.includes('#scrubber-dock.is-challenge-locked') &&
       cssSrc.includes('#journey-card.is-custom-route') &&
-      cssSrc.includes('#act-github-star .star-mark') &&
-      cssSrc.includes('#lbl-github-star') &&
-      !cssSrc.includes('#lbl-music,\n  #act-github-star {'),
-    'app.js & style.css must implement persistent trace onboarding (#2), traced prefecture highlight (#5), custom route control card (#3), challenge scrubber lock (#6), and icon-only mobile GitHub link'
+      cssSrc.includes('.more-pop-link.more-mobile-only') &&
+      indexHtml.includes('id="lnk-more-github"'),
+    'app.js, index.html & style.css must implement persistent trace onboarding (#2), traced prefecture highlight (#5), custom route control card (#3), challenge scrubber lock (#6), and mobile-merged GitHub link inside #more-popover'
   );
   const mockPrefNodes = [
     { dataset: { prefTitle: '黄州' }, classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } } },
