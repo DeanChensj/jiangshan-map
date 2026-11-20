@@ -1144,7 +1144,7 @@
       }
       this.activeCustomRoute = stops;
       if (this.svg && typeof this.svg.querySelectorAll === 'function') {
-        this.svg.querySelectorAll('.cap-breath-ring, .cap-hint-tag').forEach((el) => el.remove());
+        this.svg.querySelectorAll('.cap-breath-ring').forEach((el) => el.remove());
       }
 
       const bounds = this._drawCustomRouteOverlay(stops);

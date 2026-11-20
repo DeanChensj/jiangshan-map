@@ -1581,10 +1581,32 @@ async function runSearchRuntimeSuite(ctx) {
           cssSrc.includes('grid-template-rows: 1fr auto') &&
           cssSrc.includes('#workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane .seat-row') &&
           cssSrc.includes('#workspace-body.is-mobile-chronicle-open #chronicle-pane #dynasty-seat') &&
-          cssSrc.includes('#viewport-frame:has(#milestone-balloon:not(.is-hidden)) .settlement-node .cap-hint-tag') &&
+          !appCode.includes('cap-hint-tag') &&
+          !cssSrc.includes('.cap-hint-tag') &&
           cssSrc.includes('#inp-map-search,\n  #inp-year {\n    font-size: 16px;') &&
           appCode.includes('if (!this._isMobileViewport()) searchInp.focus();'),
-        'css/style.css & js/app.js must use single-row collapsed mobile chronicle bar, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), and avoid synchronous searchInp.focus() on mobile chip clicks'
+        'css/style.css & js/app.js must use single-row collapsed mobile chronicle bar, omit removed .cap-hint-tag, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), and avoid synchronous searchInp.focus() on mobile chip clicks'
+      );
+
+      // Legend cleanup: deduplicate redundant stage year spans and omit redundant .key-note prose
+      assert.strictEqual(
+        ctrl._stripLegendCaptionYear('战国初期（前403—前331年 · 三家分晋、田氏代齐与魏霸中原）'),
+        '战国初期 · 三家分晋、田氏代齐与魏霸中原',
+        'ZH parenthesized date span must collapse cleanly in legend heading'
+      );
+      assert.strictEqual(
+        ctrl._stripLegendCaptionYear('Early Warring States (403–331 BCE: Partition of Jin, Tian Qi & Hegemony of Wei)'),
+        'Early Warring States · Partition of Jin, Tian Qi & Hegemony of Wei',
+        'EN parenthesized date span must collapse cleanly in legend heading'
+      );
+      assert.strictEqual(
+        ctrl._stripLegendCaptionYear('679 — 686 · 裴行俭复四镇：碎叶代焉耆为四镇之一'),
+        '裴行俭复四镇：碎叶代焉耆为四镇之一',
+        'Leading numeric date span must strip cleanly in legend heading'
+      );
+      assert(
+        !appCode.includes('key-note') && !cssSrc.includes('.key-note'),
+        'Legend must not render or style redundant .key-note prose'
       );
 
       // CUJ 43: Wu Zhou (武周, 690–705) Interregnum Snapshots, Shendu Luoyang Capital & Polity Profile
