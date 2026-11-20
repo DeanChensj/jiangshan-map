@@ -1815,9 +1815,9 @@ async function runApiSearchSuite(ctx) {
     }
   }
   assert.strictEqual(
-    bootSnaps.s_qin_a.prefectures.length,
-    snapshots.s_qin_a.prefectures.length,
-    `atlas_boot.js s_qin_a prefecture count (${bootSnaps.s_qin_a.prefectures.length}) must match atlas_snapshots.js (${snapshots.s_qin_a.prefectures.length})`
+    bootSnaps.s_zhanguo_a.prefectures.length,
+    snapshots.s_zhanguo_a.prefectures.length,
+    `atlas_boot.js s_zhanguo_a prefecture count (${bootSnaps.s_zhanguo_a.prefectures.length}) must match atlas_snapshots.js (${snapshots.s_zhanguo_a.prefectures.length})`
   );
 
 

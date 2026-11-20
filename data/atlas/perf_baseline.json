@@ -1,24 +1,24 @@
 {
-  "maxSyncScriptsGzipBytes": 403175,
-  "syncScriptsGzipBytes": 392935,
+  "maxSyncScriptsGzipBytes": 400771,
+  "syncScriptsGzipBytes": 391541,
   "scripts": {
-    "js/china_geo_data.js": 48722,
-    "js/atlas_boot.js": 33714,
-    "js/map_data.js": 86850,
-    "js/lore_core.js": 38917,
-    "js/app.js": 106986,
-    "js/atlas_trace.js": 42864,
-    "js/atlas_search.js": 14547,
-    "js/atlas_api.js": 20335
+    "js/china_geo_data.js": 49780,
+    "js/atlas_boot.js": 26236,
+    "js/map_data.js": 87145,
+    "js/lore_core.js": 39269,
+    "js/app.js": 109475,
+    "js/atlas_trace.js": 44183,
+    "js/atlas_search.js": 14569,
+    "js/atlas_api.js": 20884
   },
   "lazy": {
-    "js/atlas_snapshots.js": 802213,
-    "js/i18n_dict.js": 150360,
-    "js/lore_detail.js": 224454,
-    "js/event_pinyin.js": 57026,
+    "js/atlas_snapshots.js": 804466,
+    "js/i18n_dict.js": 150989,
+    "js/lore_detail.js": 225085,
+    "js/event_pinyin.js": 57232,
     "js/zh_hant.js": 19670,
     "js/atlas_quiz.js": 9040,
     "js/atlas_narrator.js": 6003,
-    "js/milestone_sources.js": 1454
+    "js/milestone_sources.js": 1576
   }
 }
