@@ -377,7 +377,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 8px 10px;
+  padding: 8px 12px 8px 10px;
   border-radius: 8px;
   text-decoration: none;
   color: var(--text-main);
@@ -424,18 +424,6 @@ h2 {
 .more-link-sub.is-copied {
   color: var(--vermilion);
   font-weight: 600;
-}
-
-.more-ext-mark {
-  font-size: 11px;
-  color: var(--text-muted);
-  opacity: 0.7;
-  flex-shrink: 0;
-}
-
-.more-pop-link:hover .more-ext-mark {
-  color: var(--vermilion);
-  opacity: 1;
 }
 
 .more-mobile-only {
