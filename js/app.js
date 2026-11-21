@@ -389,13 +389,8 @@
       if (this.embed) this._applyEmbedYearRange();
       this._initTimelineBands();
 
-      const rawLang = (new URLSearchParams(location.search).get('lang') || '').toLowerCase();
-      this.locale =
-        rawLang === 'en'
-          ? 'en'
-          : /^(zh-tw|zh_tw|tw|hk|zh-hk|zh_hk|zh-hant|zh_hant|hant)$/.test(rawLang)
-            ? 'zh-tw'
-            : 'zh';
+      this.defaultLocale = this._detectDefaultLocale();
+      this.locale = this._parseLangParam(new URLSearchParams(location.search).get('lang')) || this.defaultLocale;
       this.year = this.dynasties[0].focusYear;
       this.dynastyIdx = 0;
       this.activeSnapKey = null;
@@ -1708,6 +1703,33 @@
       return this._zh(this._formatSpanEraZh(match, num));
     }
 
+    // ?lang= value -> 'en' | 'zh-tw' | 'zh', or null when absent/unknown.
+    _parseLangParam(raw) {
+      const v = String(raw || '').trim().toLowerCase();
+      if (!v) return null;
+      if (v === 'en' || /^en[-_]/.test(v)) return 'en';
+      if (/^(zh-tw|zh_tw|tw|hk|zh-hk|zh_hk|zh-mo|zh_mo|zh-hant|zh_hant|hant)$/.test(v)) return 'zh-tw';
+      if (/^(zh|zh-cn|zh_cn|cn|zh-sg|zh_sg|zh-hans|zh_hans|hans)$/.test(v)) return 'zh';
+      return null;
+    }
+
+    // Locale used when the URL carries no ?lang=: follow the browser, so a non-Chinese system lands
+    // on English. Embeds stay with the host page, and crawlers / headless renderers stay on
+    // Simplified Chinese so the x-default root is indexed and screenshotted as before.
+    _detectDefaultLocale() {
+      if (this.embed || typeof navigator === 'undefined' || !navigator) return 'zh';
+      const ua = String(navigator.userAgent || '');
+      if (/bot|crawl|spider|slurp|headlesschrome|lighthouse|facebookexternalhit|embedly|bingpreview/i.test(ua)) {
+        return 'zh';
+      }
+      const primary = String(
+        (Array.isArray(navigator.languages) && navigator.languages[0]) || navigator.language || ''
+      ).toLowerCase();
+      if (!primary) return 'zh';
+      if (primary === 'zh' || /^zh[-_]/.test(primary)) return /hant|tw|hk|mo/.test(primary) ? 'zh-tw' : 'zh';
+      return 'en';
+    }
+
     _effectiveRenderedLocale() {
       if (this.locale === 'en' && !this._hasEnDict()) {
         return 'en-pending';
@@ -1735,6 +1757,8 @@
           params.set('lang', 'en');
         } else if (this.locale === 'zh-tw') {
           params.set('lang', 'zh-tw');
+        } else if (this.defaultLocale && this.defaultLocale !== 'zh') {
+          params.set('lang', 'zh');
         } else {
           params.delete('lang');
         }
@@ -1776,6 +1800,7 @@
       if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
       if (this.locale === 'en') p.set('lang', 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
+      else if (this.defaultLocale && this.defaultLocale !== 'zh') p.set('lang', 'zh');
       return p;
     }
 
@@ -2008,7 +2033,14 @@
       const homeLink = this._id('act-home');
       if (homeLink) {
         // Home = a clean URL in the current language; this is the "reset" entry point.
-        homeLink.href = this.locale === 'en' ? './?lang=en' : this.locale === 'zh-tw' ? './?lang=zh-tw' : './';
+        homeLink.href =
+          this.locale === 'en'
+            ? './?lang=en'
+            : this.locale === 'zh-tw'
+              ? './?lang=zh-tw'
+              : this.defaultLocale && this.defaultLocale !== 'zh'
+                ? './?lang=zh'
+                : './';
         homeLink.title = this.locale === 'en' ? 'Back to home' : this._zh('回到首页');
       }
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
