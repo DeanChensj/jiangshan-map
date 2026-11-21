@@ -1749,11 +1749,58 @@
         hasUnresolvedCjkPlace ||
         hasUnresolvedCjkYear ||
         hasUnresolvedCjkPerson;
+      const linkedDynastyKeys = [];
+      const rawPersonParam = q.has('person') && !q.has('event') ? (q.get('person') || '').trim() : '';
+      const hasMultiPerson = /[,，]/.test(rawPersonParam);
+      if (
+        !q.has('q') &&
+        !q.has('polity') &&
+        !q.has('trace') &&
+        !hasMultiPerson &&
+        (!q.has('place') || q.has('year')) &&
+        Array.isArray(this.dynasties)
+      ) {
+        let canUseChunks = true;
+        if (q.has('year')) {
+          const yList = this._parseYearList(q.get('year') || '');
+          if (!yList.length) {
+            canUseChunks = false;
+          } else {
+            for (const y of yList) {
+              const d = this.dynasties[this._findDynastyIndex(y)];
+              if (d && d.key && !linkedDynastyKeys.includes(d.key)) {
+                linkedDynastyKeys.push(d.key);
+              }
+            }
+          }
+        }
+        const singlePersonOrEvent = q.has('event')
+          ? (q.get('event') || '').trim()
+          : rawPersonParam;
+        if (canUseChunks && singlePersonOrEvent) {
+          const prof = this._resolvePersonProfile(singlePersonOrEvent);
+          if (prof && prof.dynastyKey) {
+            if (!linkedDynastyKeys.includes(prof.dynastyKey)) {
+              linkedDynastyKeys.push(prof.dynastyKey);
+            }
+          } else {
+            canUseChunks = false;
+          }
+        }
+        if (!canUseChunks || linkedDynastyKeys.includes('prc')) {
+          linkedDynastyKeys.length = 0;
+        }
+      }
       const afterFullSnapshots = (fn, delayMs = 0) => {
         const run = () => setTimeout(fn, delayMs);
         const tasks = [];
-        const snapshotsReady =
-          !this._fullSnapshotsLoaded && typeof window !== 'undefined' ? this._ensureFullSnapshots() : null;
+        let snapshotsReady = null;
+        if (!this._fullSnapshotsLoaded && typeof window !== 'undefined') {
+          snapshotsReady =
+            linkedDynastyKeys.length > 0 && typeof this._ensureDynastySnapshots === 'function'
+              ? Promise.all(linkedDynastyKeys.map((dk) => this._ensureDynastySnapshots(dk)))
+              : this._ensureFullSnapshots();
+        }
         if (snapshotsReady) tasks.push(snapshotsReady);
         if (!this._isLoreDetailLoaded() && typeof window !== 'undefined') {
           // A plain ?year= link shows nothing from the lore bundle: let the borders download first.

@@ -57,7 +57,7 @@ const LAZY_ATTR_ASSETS = [
 ];
 
 // Lazy bundles that index.html also preloads from an inline script (single-quoted URL).
-const PRELOADED_LAZY_ASSETS = ['js/atlas_snapshots.js'];
+const PRELOADED_LAZY_ASSETS = [];
 const preloadRe = (relPath) => new RegExp(`('${escapeRegExp(relPath)}\\?v=)([0-9a-zA-Z_.-]+)(')`, 'g');
 
 function shortSha256(filePath) {

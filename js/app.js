@@ -725,6 +725,62 @@
       return this._fullSnapshotsPromise;
     }
 
+    _dynastyKeyForSnap(snapKey) {
+      if (!snapKey) return null;
+      if (Array.isArray(this.dynasties)) {
+        for (const d of this.dynasties) {
+          if (Array.isArray(d.phases) && d.phases.some((p) => p && p.snap === snapKey)) {
+            return d.key;
+          }
+        }
+      }
+      const m = String(snapKey).match(/^s_([a-z]+)/);
+      return m ? m[1] : null;
+    }
+
+    _ensureDynastySnapshots(dynastyKey, expectedSnapKey = null) {
+      if (!dynastyKey || dynastyKey === 'prc' || this._fullSnapshotsLoaded) {
+        return Promise.resolve(this.snapshots);
+      }
+      if (!this._loadedDynastyChunks) this._loadedDynastyChunks = new Set();
+      if (!this._dynastyChunkPromises) this._dynastyChunkPromises = {};
+      if (
+        this._loadedDynastyChunks.has(dynastyKey) &&
+        (!expectedSnapKey || (this.snapshots && this.snapshots[expectedSnapKey]))
+      ) {
+        return Promise.resolve(this.snapshots);
+      }
+      if (!this._dynastyChunkPromises[dynastyKey]) {
+        this._dynastyChunkPromises[dynastyKey] = this._loadScriptOnce(
+          this._lazyAssetUrl(`js/snapshots/${dynastyKey}.js`, 'vSnapshots')
+        ).then(() => {
+          const snaps = typeof window !== 'undefined' ? window.ATLAS_SNAPSHOTS : null;
+          const prefix = `s_${dynastyKey}`;
+          const loaded = Boolean(
+            snaps &&
+              (window.ATLAS_FULL_SNAPSHOTS_LOADED ||
+                (expectedSnapKey
+                  ? snaps[expectedSnapKey]
+                  : Object.keys(snaps).some(
+                      (k) =>
+                        k.startsWith(prefix) &&
+                        (dynastyKey !== 'zhanguo' || k !== 's_zhanguo_a')
+                    )))
+          );
+          if (!loaded) {
+            delete this._dynastyChunkPromises[dynastyKey];
+            return this.snapshots;
+          }
+          this.snapshots = snaps;
+          this._hydrateSnapshots();
+          this._loadedDynastyChunks.add(dynastyKey);
+          this.snapshotCache = {};
+          return this.snapshots;
+        });
+      }
+      return this._dynastyChunkPromises[dynastyKey];
+    }
+
     _ensureEnglishLocale() {
       if (
         window.EN_LOCALE &&
@@ -3082,11 +3138,18 @@
         this.snapshotCache[snapKey] = Promise.resolve(this.snapshots[snapKey]);
         return this.snapshotCache[snapKey];
       }
-      return this._ensureFullSnapshots().then(() => {
+      const dynastyKey = this._dynastyKeyForSnap(snapKey);
+      const loader =
+        dynastyKey && dynastyKey !== 'prc' && !this._fullSnapshotsLoaded
+          ? this._ensureDynastySnapshots(dynastyKey, snapKey)
+          : this._ensureFullSnapshots();
+      return loader.then(() => {
         const embedded = this.snapshots && this.snapshots[snapKey];
-        const res = embedded || { polities: [], prefectures: [], regions: [], note: '', caption: '' };
-        this.snapshotCache[snapKey] = Promise.resolve(res);
-        return res;
+        if (embedded) {
+          this.snapshotCache[snapKey] = Promise.resolve(embedded);
+          return embedded;
+        }
+        return { polities: [], prefectures: [], regions: [], note: '', caption: '' };
       });
     }
 

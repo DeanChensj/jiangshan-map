@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
-    // Deep links (?year=, ?place=, …) need the full snapshot bundle: fetch it now, in parallel with
-    // the first-paint scripts, and hide the Warring States placeholder text until js/app.js jumps.
-    // The relief image waits too (see the script after #atlas-svg), so the borders arrive first.
-    // scripts/sync_version.js keeps the ?v= below in step with data-v-snapshots.
+    // Deep links (?year=, ?place=, …) hide the Warring States placeholder text until js/app.js
+    // jumps and loads the target dynasty's snapshot chunk. The relief image waits too (see the
+    // script after #atlas-svg), so the borders arrive first.
     (function () {
       if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) {
         // Not a deep link: start the relief image now, as early as a plain <image href> would.
@@ -24,12 +23,6 @@
       var root = document.documentElement;
       root.classList.add('deeplink-boot');
       setTimeout(function () { root.classList.remove('deeplink-boot'); }, 8000);
-      var link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'script';
-      link.fetchPriority = 'low'; // after the first-paint scripts, not competing with them
-      link.href = 'js/atlas_snapshots.js?v=26377765';
-      document.head.appendChild(link);
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
@@ -919,9 +912,9 @@
   <script src="js/atlas_boot.js?v=67cb36dd"></script>
   <script src="js/map_data.js?v=b8ea359e"></script>
   <script src="js/lore_core.js?v=d47f4dc9"></script>
-  <script id="atlas-app-script" src="js/app.js?v=7ac15274" data-v-snapshots="26377765" data-v-i18n="596ab292" data-v-lore="92c74d7e" data-v-pinyin="e6b413bd" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="c9d5d609"></script>
+  <script id="atlas-app-script" src="js/app.js?v=c1bd43cf" data-v-snapshots="26377765" data-v-i18n="596ab292" data-v-lore="92c74d7e" data-v-pinyin="e6b413bd" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="c9d5d609"></script>
   <script src="js/atlas_trace.js?v=374c19da"></script>
   <script src="js/atlas_search.js?v=54be5593"></script>
-  <script src="js/atlas_api.js?v=1ee06042"></script>
+  <script src="js/atlas_api.js?v=575d60fd"></script>
 </body>
 </html>

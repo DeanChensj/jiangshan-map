@@ -1,6 +1,7 @@
 # Collapse generated bundles and static SEO snapshots in GitHub PR diffs
 js/atlas_snapshots.js linguist-generated=true
 js/atlas_boot.js linguist-generated=true
+js/snapshots/*.js linguist-generated=true
 js/event_pinyin.js linguist-generated=true
 topics/*.html linguist-generated=true
 
