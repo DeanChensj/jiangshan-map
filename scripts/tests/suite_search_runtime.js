@@ -658,6 +658,53 @@ async function runSearchRuntimeSuite(ctx) {
             ctrl.searchIndex = null;
           }
         }
+        // 5b. Failed _ensureFullSnapshots() must stay retryable instead of permanently setting _fullSnapshotsLoaded
+        {
+          const savedFullLoaded = ctrl._fullSnapshotsLoaded;
+          const savedFullPromise = ctrl._fullSnapshotsPromise;
+          const savedFullSentinel = sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED;
+          const savedSnapshots = sandbox.window.ATLAS_SNAPSHOTS;
+          const savedLoadScriptOnce = ctrl._loadScriptOnce;
+          let calls = 0;
+          try {
+            ctrl._fullSnapshotsLoaded = false;
+            ctrl._fullSnapshotsPromise = null;
+            sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED = false;
+            sandbox.window.ATLAS_SNAPSHOTS = { s_zhanguo_a: savedSnapshots.s_zhanguo_a };
+            ctrl._loadScriptOnce = () => {
+              calls += 1;
+              if (calls >= 2) {
+                sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED = true;
+                sandbox.window.ATLAS_SNAPSHOTS = savedSnapshots;
+              }
+              return Promise.resolve();
+            };
+            await ctrl._ensureFullSnapshots();
+            assert.strictEqual(
+              ctrl._fullSnapshotsLoaded,
+              false,
+              '_ensureFullSnapshots() must not set _fullSnapshotsLoaded when script load failed'
+            );
+            assert.strictEqual(
+              ctrl._fullSnapshotsPromise,
+              null,
+              '_ensureFullSnapshots() must clear _fullSnapshotsPromise on failed load so later calls retry'
+            );
+            await ctrl._ensureFullSnapshots();
+            assert.strictEqual(calls, 2, '_ensureFullSnapshots() must retry after a failed load');
+            assert.strictEqual(
+              ctrl._fullSnapshotsLoaded,
+              true,
+              '_ensureFullSnapshots() must mark _fullSnapshotsLoaded after retry succeeds'
+            );
+          } finally {
+            sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED = savedFullSentinel;
+            sandbox.window.ATLAS_SNAPSHOTS = savedSnapshots;
+            ctrl._fullSnapshotsLoaded = savedFullLoaded;
+            ctrl._fullSnapshotsPromise = savedFullPromise;
+            ctrl._loadScriptOnce = savedLoadScriptOnce;
+          }
+        }
         // 6. WebMCP (navigator.modelContext) registration & Stdio MCP server (scripts/mcp_server.js)
         const registeredWebMcpTools = [];
         const origNav = sandbox.navigator;

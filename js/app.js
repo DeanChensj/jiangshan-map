@@ -704,16 +704,23 @@
       if (!this._fullSnapshotsPromise) {
         this._fullSnapshotsPromise = this._loadScriptOnce(
           this._lazyAssetUrl('js/atlas_snapshots.js', 'vSnapshots')
-        ).then(
-          () => {
-            this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
-            this._hydrateSnapshots();
-            this._fullSnapshotsLoaded = true;
-            this.snapshotCache = {};
-            this.searchIndex = null;
+        ).then(() => {
+          const loaded = Boolean(
+            typeof window !== 'undefined' &&
+              (window.ATLAS_FULL_SNAPSHOTS_LOADED ||
+                (window.ATLAS_SNAPSHOTS && window.ATLAS_SNAPSHOTS.s_prc))
+          );
+          if (!loaded) {
+            this._fullSnapshotsPromise = null;
             return this.snapshots;
           }
-        );
+          this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
+          this._hydrateSnapshots();
+          this._fullSnapshotsLoaded = true;
+          this.snapshotCache = {};
+          this.searchIndex = null;
+          return this.snapshots;
+        });
       }
       return this._fullSnapshotsPromise;
     }
@@ -731,9 +738,15 @@
         this._enLocalePromise = this._loadScriptOnce(
           this._lazyAssetUrl('js/i18n_dict.js', 'vI18n')
         ).then(() => {
-          if (window.EN_LOCALE) {
+          if (
+            window.EN_LOCALE &&
+            window.EN_LOCALE.dict &&
+            Object.keys(window.EN_LOCALE.dict).length > 0
+          ) {
             this._setEnglishLocale(window.EN_LOCALE);
             this.searchIndex = null;
+          } else {
+            this._enLocalePromise = null;
           }
           return this.enLocale;
         });
