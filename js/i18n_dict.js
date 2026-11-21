@@ -1880,7 +1880,7 @@ window.EN_LOCALE = {
       "Shangdu (Xanadu)"
     ],
     "ming:1494": [
-      "Liu Daxia seals the Huanglinggang breach and builds the Taihang Dike, fixing the Yellow-Huai",
+      "Liu Daxia seals Huanglinggang and builds the Taihang Dike, locking the Yellow River in the Huai",
       "Huanglinggang (Lankao)"
     ],
     "ming:1508": [
@@ -2853,7 +2853,7 @@ window.EN_LOCALE = {
     "中庆": "Zhongqing",
     "萨迦": "Sakya",
     "辽阳": "Liaoyang",
-    "顺天府": "Shuntian Fu",
+    "顺天府": "Shuntian Prefecture",
     "应天府": "Yingtian Fu",
     "刘家港": "Liujiagang",
     "苏州": "Su Zhou",
@@ -4740,7 +4740,7 @@ window.EN_LOCALE = {
     "上党郡": "Shangdang Jun",
     "太原郡": "Taiyuan Jun",
     "代郡": "Dai Jun",
-    "三川郡": "Sanchuan Jun",
+    "三川郡": "Sanchuan Commandery",
     "颍川郡": "Yingchuan Jun",
     "邯郸郡": "Handan Jun",
     "巨鹿郡": "Julu Jun",
