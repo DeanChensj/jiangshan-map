@@ -405,6 +405,44 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl._syncUrlLangParam();
         assert.strictEqual(sandbox.location.search, '', 'Bare URL + zh must clear query string');
 
+        // 4a. Default locale follows the browser when ?lang= is absent; on a non-Chinese browser,
+        // choosing Simplified must be written as lang=zh so a refresh does not flip back to English.
+        const savedNav = sandbox.navigator;
+        const savedDefault = ctrl.defaultLocale;
+        const detect = (nav) => {
+          sandbox.navigator = nav;
+          return ctrl._detectDefaultLocale();
+        };
+        try {
+          assert.strictEqual(detect({ language: 'en-US', languages: ['en-US', 'zh-CN'], userAgent: 'Mozilla/5.0 Chrome/120' }), 'en');
+          assert.strictEqual(detect({ language: 'de-DE', userAgent: 'Mozilla/5.0 Firefox/120' }), 'en');
+          assert.strictEqual(detect({ language: 'zh-CN', languages: ['zh-CN', 'en'], userAgent: 'Mozilla/5.0' }), 'zh');
+          assert.strictEqual(detect({ language: 'zh-TW', userAgent: 'Mozilla/5.0' }), 'zh-tw');
+          assert.strictEqual(detect({ languages: ['zh-Hant-HK'], userAgent: 'Mozilla/5.0' }), 'zh-tw');
+          assert.strictEqual(
+            detect({ language: 'en-US', userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' }),
+            'zh',
+            'Crawlers keep the x-default Simplified Chinese root'
+          );
+          assert.strictEqual(detect({ language: 'en-US', userAgent: 'Mozilla/5.0 HeadlessChrome/120' }), 'zh');
+          assert.strictEqual(ctrl._parseLangParam('EN'), 'en');
+          assert.strictEqual(ctrl._parseLangParam('zh-CN'), 'zh');
+          assert.strictEqual(ctrl._parseLangParam('zh-HK'), 'zh-tw');
+          assert.strictEqual(ctrl._parseLangParam('fr'), null);
+          ctrl.defaultLocale = 'en';
+          sandbox.location.search = '?lang=en';
+          ctrl.locale = 'zh';
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?lang=zh', 'Non-Chinese default + zh must pin ?lang=zh');
+          ctrl.locale = 'en';
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?lang=en');
+          sandbox.location.search = '';
+        } finally {
+          sandbox.navigator = savedNav;
+          ctrl.defaultLocale = savedDefault;
+        }
+
         // 4b. Once armed, the URL mirrors restorable state (refresh/share land on the same view)
         // and one-shot params (place, q, quiz) are dropped because they no longer describe the screen.
         const urlSaved = {
