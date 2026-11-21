@@ -8560,6 +8560,7 @@
         });
       }
 
+      const settlementBoxes = [];
       const layoutSettlementLabel = (node, allowCull, maxOverlapRatio = 0.14) => {
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
@@ -8569,6 +8570,7 @@
 
         const nameEl = node.querySelector('.name');
         if (!nameEl) return;
+        node._labelLayout = null;
         if (pinnedCoords.some(([px, py]) => Math.hypot(cx - px, cy - py) < 4.5)) {
           node.classList.add('is-label-crowded');
           return;
@@ -8580,6 +8582,7 @@
         const useCityHalo = isTier2City && allowCull;
 
         const pref = node.dataset.prefAlign || 'r';
+        let explicitAlignPenalty = 24.0;
         const dirs = [pref];
         for (const d of ['r', 'l', 'b', 't']) {
           if (!dirs.includes(d)) dirs.push(d);
@@ -8638,6 +8641,33 @@
           };
         };
 
+        // Hand-set label sides were tuned for two-character Chinese names; in English, let a
+        // capital's hand-set side yield only when it collides (>12% overlap) with another
+        // settlement label, not when it grazes a background river/lake label.
+        if (
+          this.locale === 'en' &&
+          tier === '0' &&
+          node.dataset.explicitAlign === '1' &&
+          settlementBoxes.length
+        ) {
+          const prefSpec = dirSpec(dirs[0]);
+          let prefOv = 0;
+          for (let i = 0; i < settlementBoxes.length; i++) {
+            const b = settlementBoxes[i];
+            const ox = Math.min(prefSpec.box.x2, b.x2) - Math.max(prefSpec.box.x1, b.x1);
+            if (ox <= 0) continue;
+            const oy = Math.min(prefSpec.box.y2, b.y2) - Math.max(prefSpec.box.y1, b.y1);
+            if (oy > 0) prefOv += ox * oy;
+          }
+          const prefArea = Math.max(
+            1e-4,
+            (prefSpec.box.x2 - prefSpec.box.x1) * (prefSpec.box.y2 - prefSpec.box.y1)
+          );
+          if (prefOv > prefArea * 0.12) {
+            explicitAlignPenalty = 1.0;
+          }
+        }
+
         if (zoomOnly && node.dataset.chosenDir) {
           const bestDir = node.dataset.chosenDir;
           const best = dirSpec(bestDir);
@@ -8659,7 +8689,11 @@
                 setSvgAttribute(nameEl, 'text-anchor', best.anchor);
               }
               occupied.push(best.box);
-              if (!isPass) pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+              if (!isPass) {
+                settlementBoxes.push(best.box);
+                pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+              }
+              node._labelLayout = { box: best.box, dirs, dirSpec };
               return;
             }
           }
@@ -8672,7 +8706,7 @@
         for (let i = 0; i < dirs.length; i++) {
           const spec = dirSpec(dirs[i]);
           const rawOv = overlapArea(spec.box) + (useCityHalo ? cityHaloOverlap(spec.box) : 0);
-          const score = rawOv + (node.dataset.explicitAlign === '1' ? 24.0 : 0.01) * i * s * s;
+          const score = rawOv + (node.dataset.explicitAlign === '1' ? explicitAlignPenalty : 0.01) * i * s * s;
           if (score < bestScore) {
             bestScore = score;
             bestOverlap = rawOv;
@@ -8696,7 +8730,11 @@
           setSvgAttribute(nameEl, 'text-anchor', best.anchor);
         }
         occupied.push(best.box);
-        if (!isPass) pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+        if (!isPass) {
+          settlementBoxes.push(best.box);
+          pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+        }
+        node._labelLayout = { box: best.box, dirs, dirSpec };
       };
 
       // Tier 1: Capitals first (never culled), then Tier-1 primary cities (gently culled on narrow mobile overview if unavoidable)
@@ -8770,24 +8808,42 @@
         [0, 60],
       ];
 
+      const prePolityOccupiedLen = occupied.length;
+      const polityBoxes = [];
+      const enCaptions = this.locale === 'en';
       for (const node of polNodes) {
-        const cssFontPx = node.classList.contains('neighbor')
+        const isNeighborCap = node.classList.contains('neighbor');
+        const isProtectorateCap = node.classList.contains('protectorate');
+        const isRivalCap = node.classList.contains('rival');
+        // Keep the conservative box for polity-to-polity spacing in `occupied`; only the English
+        // post-pass below measures against the tighter rendered sizes from html[lang="en"].
+        const cssFontPx = isNeighborCap
           ? 14
-          : node.classList.contains('protectorate')
+          : isProtectorateCap
             ? 12
-            : node.classList.contains('rival')
+            : isRivalCap
               ? 15
               : 19;
 
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
-        const ls = node.classList.contains('neighbor')
-          ? 2.0
-          : node.classList.contains('protectorate')
-            ? 1.4
-            : 3.2;
+        const ls = isNeighborCap ? 2.0 : isProtectorateCap ? 1.4 : 3.2;
         const hw = (this._estimateLocalTextWidth(node.textContent, cssFontPx, ls) * 0.5 + 5) * s;
         const hh = (cssFontPx * 0.56 + 3.5) * s;
+
+        const pushEnPolityBox = (cx, cy) => {
+          if (!enCaptions) return;
+          const enPx = isNeighborCap || isProtectorateCap ? 9.5 : isRivalCap ? 11 : 13;
+          const enLs = enPx * (isNeighborCap || isProtectorateCap ? 0.02 : 0.04);
+          const enHw = (this._estimateLocalTextWidth(node.textContent, enPx, enLs) * 0.5 + 1) * s;
+          const enHh = enPx * 0.45 * s;
+          polityBoxes.push({
+            x1: cx - enHw,
+            y1: cy - enHh,
+            x2: cx + enHw,
+            y2: cy + enHh,
+          });
+        };
 
         if (zoomOnly && node.dataset.placed === '1' && this._lastPolityTier2State === showTier2) {
           const lockedX = parseFloat(node.getAttribute('data-x'));
@@ -8799,6 +8855,7 @@
             x2: lockedX + hw,
             y2: lockedY + hh,
           });
+          pushEnPolityBox(lockedX, lockedY);
           continue;
         }
 
@@ -8886,8 +8943,77 @@
         setSvgAttribute(node, 'data-y', bestYStr);
         applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
+        pushEnPolityBox(bestX, bestY);
       }
       this._lastPolityTier2State = showTier2;
+
+      // A caption boxed into a small territory (e.g. "Royal Zhou") cannot dodge a primary-city label
+      // laid out before it, and English names make that collision common. Move such a city label
+      // to a free side, or hide it at this zoom (it reappears on hover or when zoomed in).
+      if (this.locale === 'en' && polityBoxes.length) {
+        const boxOverlap = (a, b) => {
+          const ox = Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1);
+          const oy = Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1);
+          return ox > 0 && oy > 0 ? ox * oy : 0;
+        };
+        const boxArea = (b) => Math.max(1e-4, (b.x2 - b.x1) * (b.y2 - b.y1));
+        const relocatedBoxes = [];
+        const relocatedOverlap = (cand, own) => {
+          let total = 0;
+          for (let i = 0; i < prePolityOccupiedLen; i++) {
+            total += boxOverlap(cand, occupied[i]);
+          }
+          total -= boxOverlap(cand, own);
+          for (let i = 0; i < polityBoxes.length; i++) {
+            total += boxOverlap(cand, polityBoxes[i]);
+          }
+          for (let i = 0; i < relocatedBoxes.length; i++) {
+            total += boxOverlap(cand, relocatedBoxes[i]);
+          }
+          return total;
+        };
+        for (const node of settlementNodes) {
+          const layout = node._labelLayout;
+          if (
+            !layout ||
+            node.classList.contains('is-capital') ||
+            node.classList.contains('is-tier2') ||
+            node.classList.contains('is-pass') ||
+            node.classList.contains('is-label-crowded')
+          ) {
+            continue;
+          }
+          const own = layout.box;
+          let polOv = 0;
+          for (let i = 0; i < polityBoxes.length; i++) polOv += boxOverlap(own, polityBoxes[i]);
+          if (polOv <= boxArea(own) * 0.12) continue;
+          let next = null;
+          let nextDir = null;
+          let nextOv = Infinity;
+          for (const d of layout.dirs) {
+            const spec = layout.dirSpec(d);
+            const ov = relocatedOverlap(spec.box, own);
+            if (ov < nextOv) {
+              nextOv = ov;
+              next = spec;
+              nextDir = d;
+            }
+          }
+          const nameEl = node.querySelector('.name');
+          if (next && nameEl && nextOv <= boxArea(next.box) * 0.12) {
+            node.dataset.chosenDir = nextDir;
+            node.dataset.appliedDir = nextDir;
+            setSvgAttribute(nameEl, 'x', String(next.dx));
+            setSvgAttribute(nameEl, 'y', String(next.dy1));
+            setSvgAttribute(nameEl, 'text-anchor', next.anchor);
+            occupied.push(next.box);
+            relocatedBoxes.push(next.box);
+            layout.box = next.box;
+          } else {
+            node.classList.add('is-label-crowded');
+          }
+        }
+      }
 
       // Reserve Tier-2 city dots now so pass/Tier-2 labels avoid them while primary cities and polities are not displaced by minor dots
       for (const node of settlementNodes) {
