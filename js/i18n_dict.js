@@ -1880,7 +1880,7 @@ window.EN_LOCALE = {
       "Shangdu (Xanadu)"
     ],
     "ming:1494": [
-      "Liu Daxia seals the Huanglinggang breach and builds the Taihang Dike, fixing the Yellow-Huai",
+      "Liu Daxia seals Huanglinggang and builds the Taihang Dike, locking the Yellow River in the Huai",
       "Huanglinggang (Lankao)"
     ],
     "ming:1508": [
