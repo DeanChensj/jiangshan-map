@@ -705,6 +705,68 @@ async function runSearchRuntimeSuite(ctx) {
             ctrl._loadScriptOnce = savedLoadScriptOnce;
           }
         }
+        // 5c. Per-dynasty snapshot chunk loading, failure non-caching, and retryability
+        {
+          const savedFullLoaded = ctrl._fullSnapshotsLoaded;
+          const savedFullPromise = ctrl._fullSnapshotsPromise;
+          const savedLoadedChunks = ctrl._loadedDynastyChunks;
+          const savedChunkPromises = ctrl._dynastyChunkPromises;
+          const savedSnapCache = ctrl.snapshotCache;
+          const savedCtrlSnapshots = ctrl.snapshots;
+          const savedFullSentinel = sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED;
+          const savedWinSnapshots = sandbox.window.ATLAS_SNAPSHOTS;
+          const savedLoadScriptOnce = ctrl._loadScriptOnce;
+          const requestedSrcs = [];
+          try {
+            ctrl._fullSnapshotsLoaded = false;
+            ctrl._fullSnapshotsPromise = null;
+            ctrl._loadedDynastyChunks = new Set();
+            ctrl._dynastyChunkPromises = {};
+            ctrl.snapshotCache = {};
+            const tangSnap = savedWinSnapshots.s_tang_a;
+            const bootOnly = { s_zhanguo_a: savedWinSnapshots.s_zhanguo_a };
+            sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED = false;
+            sandbox.window.ATLAS_SNAPSHOTS = bootOnly;
+            ctrl.snapshots = bootOnly;
+            ctrl._loadScriptOnce = (src) => {
+              requestedSrcs.push(src);
+              if (requestedSrcs.length >= 2) {
+                bootOnly.s_tang_a = tangSnap;
+              }
+              return Promise.resolve();
+            };
+            const firstRes = await ctrl._fetchSnapshot('s_tang_a');
+            assert.strictEqual(requestedSrcs.length, 1, '_fetchSnapshot must request dynasty chunk once');
+            assert(
+              /^js\/snapshots\/tang\.js(\?|$)/.test(requestedSrcs[0]),
+              `_fetchSnapshot("s_tang_a") must request js/snapshots/tang.js, got ${requestedSrcs[0]}`
+            );
+            assert.strictEqual(
+              ctrl.snapshotCache.s_tang_a,
+              undefined,
+              '_fetchSnapshot() must not cache empty placeholder in snapshotCache on failed load'
+            );
+            assert.strictEqual(firstRes.polities.length, 0);
+            const secondRes = await ctrl._fetchSnapshot('s_tang_a');
+            assert.strictEqual(requestedSrcs.length, 2, '_fetchSnapshot() must retry after failed dynasty chunk load');
+            assert.strictEqual(secondRes, tangSnap, '_fetchSnapshot() must return decoded tang snapshot after retry');
+            assert.strictEqual(
+              ctrl._fullSnapshotsLoaded,
+              false,
+              'loading a single dynasty chunk must not falsely mark _fullSnapshotsLoaded = true'
+            );
+          } finally {
+            sandbox.window.ATLAS_FULL_SNAPSHOTS_LOADED = savedFullSentinel;
+            sandbox.window.ATLAS_SNAPSHOTS = savedWinSnapshots;
+            ctrl.snapshots = savedCtrlSnapshots;
+            ctrl.snapshotCache = savedSnapCache;
+            ctrl._loadedDynastyChunks = savedLoadedChunks;
+            ctrl._dynastyChunkPromises = savedChunkPromises;
+            ctrl._fullSnapshotsLoaded = savedFullLoaded;
+            ctrl._fullSnapshotsPromise = savedFullPromise;
+            ctrl._loadScriptOnce = savedLoadScriptOnce;
+          }
+        }
         // 6. WebMCP (navigator.modelContext) registration & Stdio MCP server (scripts/mcp_server.js)
         const registeredWebMcpTools = [];
         const origNav = sandbox.navigator;
@@ -1784,13 +1846,13 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl.locale = 'zh';
       }
 
-      // Deep links (?year=383): the full snapshot bundle is preloaded from <head>, and while a
-      // snapshot is still downloading no other era's borders or key stay on screen.
+      // Deep links (?year=383): <head> avoids preloading the 786 KB monolithic bundle (per-dynasty
+      // chunks load on demand), and pending snapshots hide borders and the key until rendered.
       {
         assert(
-          /link\.href = 'js\/atlas_snapshots\.js\?v=[0-9a-f]{8}'/.test(indexHtml) &&
+          !/link\.href = 'js\/atlas_snapshots\.js/.test(indexHtml) &&
             indexHtml.indexOf('deeplink-boot') < indexHtml.indexOf('css/style.css'),
-          'index.html must preload the snapshot bundle for deep links before the stylesheet'
+          'index.html must mark deeplink-boot before the stylesheet without preloading monolithic atlas_snapshots.js'
         );
         const flags = () => {
           const set = new Set();
