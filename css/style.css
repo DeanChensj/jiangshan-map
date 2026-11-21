@@ -2318,8 +2318,8 @@ html.deeplink-boot #inp-year {
   right: 14px;
   top: 12px;
   font-size: 11px;
-  color: var(--text-muted);
-  background: rgba(243, 238, 228, 0.78);
+  color: var(--text-secondary);
+  background: rgba(243, 238, 228, 0.94);
   padding: 4px 9px;
   border-radius: 999px;
   border: 1px solid var(--hairline);
@@ -2784,8 +2784,10 @@ html.deeplink-boot #inp-year {
   text-underline-offset: 2px;
 }
 
+/* Topic pages are Chinese-only, so English mode does not offer the Guide link. */
 #chronicle-pane.is-polity-mode .seat-row .topic-inline-link,
-html.is-embed .topic-inline-link {
+html.is-embed .topic-inline-link,
+html[lang="en"] .topic-inline-link {
   display: none !important;
 }
 
@@ -3288,6 +3290,16 @@ html.is-embed .timeline-crop-mask {
 
 .band-cell:last-child {
   border-right: none;
+}
+
+/* Keep the first/last labels clear of the timeline edge handles. The gutter sits on the label,
+   not the cell, so band widths stay proportional to years and _fitBandLabels sees it. */
+.band-cell:first-child .band-label {
+  padding-left: 10px;
+}
+
+.band-cell:last-child .band-label {
+  padding-right: 10px;
 }
 
 .band-cell:hover {

@@ -19,8 +19,8 @@
     _searchPlaceholder(expanded = false) {
       if (this.locale === 'en') {
         return expanded
-          ? 'Search figure (or 2–3: Li Bai, Du Fu, Gao Shi) / city / era'
-          : 'Search figure / multi-person / city / era';
+          ? 'Search people (or 2–3: Li Bai, Du Fu), places, eras'
+          : 'Search people, places, eras';
       }
       return this._zh(
         expanded
@@ -31,7 +31,7 @@
 
     _getSearchSampleQueries() {
       return this.locale === 'en'
-        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu, Gao Shi']
+        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
         : ['长安', '赤壁', '霍去病', '李白 杜甫 高适'].map((s) => this._zh(s));
     }
 
