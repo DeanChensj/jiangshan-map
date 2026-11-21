@@ -1221,8 +1221,14 @@ async function runSearchRuntimeSuite(ctx) {
 
         ctrl.locale = 'en';
         const enChips = Array.from(ctrl._getSearchSampleQueries());
-        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu, Gao Shi']);
+        // English chips are short enough not to ellipsize next to the "Quiz ›" link.
+        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']);
         assert.strictEqual(ctrl._queryQuickSearch('Cao Cao')[0].kind, 'person');
+        assert.strictEqual(ctrl._queryQuickSearch('Li Bai, Du Fu')[0].kind, 'multi_person');
+        assert(
+          ctrl._searchPlaceholder(false).length <= 28,
+          `English compact placeholder must fit the collapsed pill without ellipsis: ${ctrl._searchPlaceholder(false)}`
+        );
         const enPairHit = ctrl._queryQuickSearch('Li Bai, Du Fu, Gao Shi')[0];
         assert(
           enPairHit &&

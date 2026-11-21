@@ -2327,6 +2327,12 @@ html.deeplink-boot #inp-year {
   transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
+/* The English hint is a long line that crosses polity names, so it needs more contrast. */
+html[lang="en"] #gesture-guide {
+  color: var(--text-secondary);
+  background: rgba(243, 238, 228, 0.94);
+}
+
 #gesture-guide.is-dismissed,
 #viewport-frame.has-active-genealogy #gesture-guide,
 #viewport-frame.has-active-journey #gesture-guide,
@@ -2784,8 +2790,10 @@ html.deeplink-boot #inp-year {
   text-underline-offset: 2px;
 }
 
+/* Topic pages are Chinese-only, so English mode does not offer the Guide link. */
 #chronicle-pane.is-polity-mode .seat-row .topic-inline-link,
-html.is-embed .topic-inline-link {
+html.is-embed .topic-inline-link,
+html[lang="en"] .topic-inline-link {
   display: none !important;
 }
 
@@ -3288,6 +3296,16 @@ html.is-embed .timeline-crop-mask {
 
 .band-cell:last-child {
   border-right: none;
+}
+
+/* English band names are long enough to run under the timeline edge handles. Push the first/last
+   labels toward the inner side instead of centering them; widths and label fitting are unchanged. */
+html[lang="en"] .band-cell:first-child {
+  justify-content: flex-end;
+}
+
+html[lang="en"] .band-cell:last-child {
+  justify-content: flex-start;
 }
 
 .band-cell:hover {
