@@ -513,12 +513,8 @@
 
     _activateOptionalWebfonts() {
       if (typeof window === 'undefined' || typeof document === 'undefined' || !document.querySelectorAll) return;
-      // Google Fonts is TCP-blackholed in Mainland China; system CJK stacks in css/style.css render natively.
-      let tz = '';
-      try {
-        tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-      } catch (_) {}
-      if (/^asia\/(shanghai|chongqing|chungking|harbin|urumqi|kashgar)$/.test(tz)) return;
+      // Activate Google Fonts only after window.load (with media="print" onload="this.media='all'")
+      // so unreachable font hosts never block first paint, DOMContentLoaded, or load.
       const run = () => {
         document.querySelectorAll('link[data-font-href]').forEach((lnk) => {
           const url = lnk.getAttribute('data-font-href');
