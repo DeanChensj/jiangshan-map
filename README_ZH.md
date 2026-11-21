@@ -301,6 +301,13 @@ hit.prefecture;                  // 默认为 null；加 --with-prefectures 导�
 
 **转载与复用**：复用 GPL-3.0 图层时，请注明「江山时序 Jiangshan Atlas」并附 https://github.com/DeanChensj/jiangshan-map ，同时注明上文所列原始来源。含郡州府图层的截图同样受 CHGIS 条款约束。
 
+**Fork、镜像与二次开发**：欢迎基于本项目二次开发或自行部署。请：
+- 用 GitHub 的 **Fork** 按钮创建仓库，不要把代码复制到一个新仓库里，这样访问者能找到上游项目，你以后同步更新也更方便；
+- 在你的网站上保留指向 https://github.com/DeanChensj/jiangshan-map 的可见链接（页面里自带的 GitHub 链接即可，请勿删除）；
+- 在网站和 README 里写明这是第三方部署或衍生项目，不是官方站点。
+
+**项目名称**：官方网站为 https://deanchen.me/jiangshan-map/ 。第三方部署和衍生项目请勿以「江山时序」官方站点的身份出现，可以写「基于江山时序」或「江山时序非官方镜像」。
+
 **权利人联系**：如果您是本仓库中某项内容的权利人，认为使用不当，请[提交 issue](https://github.com/DeanChensj/jiangshan-map/issues)，我们会及时回复，必要时删除。
 
 **参与贡献**：参见 [中文贡献指南 (`CONTRIBUTING_ZH.md`)](CONTRIBUTING_ZH.md)（[English Contributing Guide](CONTRIBUTING.md)）了解项目结构、史料校勘规范与自动化校验流程。
