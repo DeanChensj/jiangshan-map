@@ -515,10 +515,18 @@
       if (typeof window === 'undefined' || typeof document === 'undefined' || !document.querySelectorAll) return;
       // Activate Google Fonts only after window.load (with media="print" onload="this.media='all'")
       // so unreachable font hosts never block first paint, DOMContentLoaded, or load.
+      // Mainland China timezones route through the fonts.loli.net mirror since fonts.googleapis.com is TCP-blackholed.
+      let tz = '';
+      try {
+        tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+      } catch (_) {}
+      const useCnMirror = /^asia\/(shanghai|chongqing|chungking|harbin|urumqi|kashgar)$/.test(tz);
       const run = () => {
         document.querySelectorAll('link[data-font-href]').forEach((lnk) => {
-          const url = lnk.getAttribute('data-font-href');
-          if (url && !lnk.getAttribute('href')) lnk.setAttribute('href', url);
+          let url = lnk.getAttribute('data-font-href');
+          if (!url || lnk.getAttribute('href')) return;
+          if (useCnMirror) url = url.replace(/^https:\/\/fonts\.googleapis\.com\//, 'https://fonts.loli.net/');
+          lnk.setAttribute('href', url);
         });
       };
       if (document.readyState === 'complete') setTimeout(run, 100);
