@@ -301,6 +301,13 @@ Code and the data created by this project are released under **GPL-3.0**. One la
 
 **Reusing this project.** For the GPL-3.0 layers, credit **江山时序 Jiangshan Atlas** with a link to https://github.com/DeanChensj/jiangshan-map and cite the upstream sources above. Screenshots that show the prefecture layer carry the CHGIS terms as well.
 
+**Forks, mirrors and derivative projects.** You are welcome to build on this project or deploy your own copy. Please:
+- create your repository with GitHub's **Fork** button rather than copying the code into a new repository, so visitors can find the upstream project and you can pull in later updates more easily;
+- keep a visible link to https://github.com/DeanChensj/jiangshan-map on your site (the GitHub links in the page already do this; please don't remove them);
+- state on your site and in your README that it is a third-party deployment or a derivative project, not the official site.
+
+**Project name.** The official site is https://deanchen.me/jiangshan-map/. Third-party deployments and derivative projects should not present themselves as the official 江山时序 / Chronicles of the Realm site. Wording such as "based on 江山时序" or "unofficial mirror of 江山时序" is fine.
+
 **Rights holders.** If you hold rights in any material here and believe it is used improperly, please [open an issue](https://github.com/DeanChensj/jiangshan-map/issues); we will respond and remove it if needed.
 
 **Contributing**: see [CONTRIBUTING.md](CONTRIBUTING.md) ([中文贡献指南](CONTRIBUTING_ZH.md)) for repository structure, data conventions, and validation checks.

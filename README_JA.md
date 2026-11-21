@@ -301,6 +301,13 @@ hit.prefecture;                  // null unless exported with --with-prefectures
 
 **このプロジェクトの再利用**：GPL-3.0 のレイヤーを再利用するときは、https://github.com/DeanChensj/jiangshan-map へのリンクとともに **江山时序 Jiangshan Atlas** のクレジットを記し、上に挙げた出典も引用してください。郡州府レイヤーが写っているスクリーンショットにも、CHGIS の条件が適用されます。
 
+**フォーク、ミラー、派生プロジェクト**：このプロジェクトをもとにした開発や、独自のデプロイを歓迎します。その際は次の点をお願いします。
+- コードを新しいリポジトリにコピーするのではなく、GitHub の **Fork** ボタンでリポジトリを作成してください。訪問者が上流のプロジェクトを見つけやすくなり、今後の更新も取り込みやすくなります。
+- サイト上に https://github.com/DeanChensj/jiangshan-map への見えるリンクを残してください（ページ内の GitHub リンクで十分です。削除しないでください）。
+- サイトと README に、公式サイトではなく第三者によるデプロイまたは派生プロジェクトであることを明記してください。
+
+**プロジェクト名**：公式サイトは https://deanchen.me/jiangshan-map/ です。第三者によるデプロイや派生プロジェクトは、江山时序 / Chronicles of the Realm の公式サイトであるかのように見せないでください。「江山时序をもとにした」「江山时序の非公式ミラー」といった表記は問題ありません。
+
 **権利者の方へ**：このリポジトリの内容について権利をお持ちで、不適切な利用だとお考えの場合は、[issue](https://github.com/DeanChensj/jiangshan-map/issues) でお知らせください。確認のうえ対応し、必要に応じて削除します。
 
 **コントリビュート**：リポジトリの構成、データの規約、検証のチェックについては [CONTRIBUTING.md](CONTRIBUTING.md)（[中文贡献指南](CONTRIBUTING_ZH.md)）をご覧ください。
