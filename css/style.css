@@ -2318,13 +2318,19 @@ html.deeplink-boot #inp-year {
   right: 14px;
   top: 12px;
   font-size: 11px;
-  color: var(--text-secondary);
-  background: rgba(243, 238, 228, 0.94);
+  color: var(--text-muted);
+  background: rgba(243, 238, 228, 0.78);
   padding: 4px 9px;
   border-radius: 999px;
   border: 1px solid var(--hairline);
   pointer-events: none;
   transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+/* The English hint is a long line that crosses polity names, so it needs more contrast. */
+html[lang="en"] #gesture-guide {
+  color: var(--text-secondary);
+  background: rgba(243, 238, 228, 0.94);
 }
 
 #gesture-guide.is-dismissed,
@@ -3292,14 +3298,14 @@ html.is-embed .timeline-crop-mask {
   border-right: none;
 }
 
-/* Keep the first/last labels clear of the timeline edge handles. The gutter sits on the label,
-   not the cell, so band widths stay proportional to years and _fitBandLabels sees it. */
-.band-cell:first-child .band-label {
-  padding-left: 10px;
+/* English band names are long enough to run under the timeline edge handles. Push the first/last
+   labels toward the inner side instead of centering them; widths and label fitting are unchanged. */
+html[lang="en"] .band-cell:first-child {
+  justify-content: flex-end;
 }
 
-.band-cell:last-child .band-label {
-  padding-right: 10px;
+html[lang="en"] .band-cell:last-child {
+  justify-content: flex-start;
 }
 
 .band-cell:hover {
