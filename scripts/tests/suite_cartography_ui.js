@@ -1083,7 +1083,7 @@ async function runCartographyUiSuite(ctx) {
 
     // All phase transition milestones derive map-change state from phases
     const expectedMapChangeYears = [
-      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
+      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
       .filter((m) => ctrl._isPhaseChangeYear(qingD, m.year))
@@ -1091,8 +1091,42 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(
       JSON.stringify(actualMapChangeYears),
       JSON.stringify(expectedMapChangeYears),
-      'qing: all 18 phase transition milestones must derive map-change state from phases'
+      'qing: all 19 phase transition milestones must derive map-change state from phases'
     );
+
+    assert.strictEqual(ctrl._resolveSnapKey(qingD, 1754), 's_qing_c', 'qing 1754 must resolve to s_qing_c');
+    assert.strictEqual(ctrl._resolveSnapKey(qingD, 1756), 's_qing_1755', 'qing 1756 must resolve to s_qing_1755');
+    if (!FAST_MODE) {
+      const q1755 = snapshots.s_qing_1755;
+      assert(q1755, 'Missing s_qing_1755');
+      const polQing = q1755.polities.find((p) => p.title === '清');
+      const polHuibu = q1755.polities.find((p) => p.title === '回部（大小和卓）');
+      const polTibet = q1755.polities.find((p) => p.title === '西藏（驻藏大臣）');
+      assert(
+        polQing && polHuibu && polTibet && !q1755.polities.some((p) => p.title === '准噶尔汗国'),
+        's_qing_1755 must include 清, 回部（大小和卓）, 西藏（驻藏大臣） and omit 准噶尔汗国'
+      );
+      for (const [name, lng, lat] of [
+        ['伊犁', 81.321, 43.921],
+        ['乌鲁木齐', 87.621, 43.831],
+        ['吐鲁番', 89.19, 42.95],
+        ['哈密', 93.51, 42.82],
+        ['安西州', 95.78, 40.52],
+        ['敦煌', 94.661, 40.141],
+      ]) {
+        assert(pointInShape(lng, lat, polQing.shape) && !pointInShape(lng, lat, polHuibu.shape), `s_qing_1755: ${name} must belong to 清`);
+      }
+      for (const [name, lng, lat] of [
+        ['喀什噶尔', 76.08, 39.47],
+        ['叶尔羌', 77.25, 38.41],
+        ['和阗', 79.92, 37.11],
+        ['阿克苏', 80.26, 41.17],
+        ['库车', 82.96, 41.72],
+      ]) {
+        assert(pointInShape(lng, lat, polHuibu.shape) && !pointInShape(lng, lat, polQing.shape), `s_qing_1755: ${name} must belong to 回部（大小和卓）`);
+      }
+      assert(pointInShape(91.111, 29.651, polTibet.shape), 's_qing_1755: Lhasa must belong to 西藏（驻藏大臣）');
+    }
 
     // Yanping Fu must be centered at Nanping (not Sanming)
     const qingSt = (name) => (qingD.settlements || []).find((s) => s.ancient === name);
@@ -2487,14 +2521,19 @@ async function runCartographyUiSuite(ctx) {
       's_qin_chuhan must cover Sanchuan (Luoyang, Xingyang), Yingchuan (Yangzhai), Dongjun (Daliang, Puyang), Shangjun (Fushi), Longxi, Yunzhong, Jiuyuan, Dongou, and Jiaozhi'
     );
 
-    // 3. 西汉初 (s_xihan_a, -202..-128 BCE) & 汉武帝北伐南征: 河南地 (朔方) in 匈奴 until -127 BCE; 五岭之南 in 南越 until -111 BCE
+    // 3. 西汉初 (s_xihan_a -202..-175 BCE; s_xihan_a2 -174..-128 BCE) & 汉武帝北伐南征: 河南地 (朔方) in 匈奴 until -127 BCE; 河西前174归匈奴
     assert(
       hasPt('s_xihan_a', '汉（郡国并行）', 110.261, 37.501) &&
         hasPt('s_xihan_a', '汉（郡国并行）', 111.19, 40.27) &&
         hasPt('s_xihan_a', '汉（郡国并行）', 103.861, 35.381) &&
         hasPt('s_xihan_a', '匈奴', 107.401, 40.751) &&
+        hasPt('s_xihan_a2', '汉（郡国并行）', 108.941, 34.341) &&
+        hasPt('s_xihan_a2', '匈奴', 107.401, 40.751) &&
+        hasPt('s_xihan_a2', '匈奴', 102.641, 37.931) &&
+        hasPt('s_xihan_a2', '匈奴', 94.661, 40.141) &&
+        !snapshots.s_xihan_a2.polities.some((p) => p.title === '月氏') &&
         hasPt('s_xihan_b1', '汉', 107.401, 40.751),
-      's_xihan_a must keep Fushi, Yunzhong, and Longxi in Han while Shuofang (Hetao) stays in Xiongnu until Wei Qing (-127 BCE, s_xihan_b1)'
+      's_xihan_a / s_xihan_a2 must keep Hetao in Xiongnu until -127 BCE while moving Hexi (Wuwei, Dunhuang) from Yuezhi into Xiongnu in -174 BCE'
     );
     assert(
       hasPt('s_xihan_a', '南越', 113.261, 23.131) &&
@@ -2521,12 +2560,13 @@ async function runCartographyUiSuite(ctx) {
         hasPt('s_qin_d', '楚（怀王 · 项羽）', 115.5, 27.5) &&
         hasPt('s_qin_chuhan', '西楚（项羽）', 115.5, 27.5) &&
         hasPt('s_xihan_a', '汉（郡国并行）', 115.0, 25.8) &&
+        hasPt('s_xihan_a2', '汉（郡国并行）', 115.0, 25.8) &&
         hasPt('s_xihan_b1', '汉', 115.0, 25.8) &&
         hasPt('s_xihan_b2', '汉', 115.0, 25.8) &&
         hasPt('s_xihan_b3a', '汉', 115.0, 25.8),
       'Central and southern Jiangxi (Gan River basin) must not leave a hollow gap between Qin/Chu/Han and Nanyue/Minyue'
     );
-    for (const sk of ['s_qin_d', 's_qin_chuhan', 's_xihan_a', 's_xihan_b1', 's_xihan_b2']) {
+    for (const sk of ['s_qin_d', 's_qin_chuhan', 's_xihan_a', 's_xihan_a2', 's_xihan_b1', 's_xihan_b2']) {
       const ny = snapshots[sk].polities.find((p) => p.title === '南越' || p.title === '南越（赵佗）');
       const my = snapshots[sk].polities.find((p) => p.title === '闽越');
       assert(
@@ -3341,7 +3381,7 @@ async function runCartographyUiSuite(ctx) {
         `${sk} (-228..-223 BCE) must place Yunzhong in 秦 and Dai ([114.551, 40.151]) in 代`
       );
     }
-    for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
+    for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_a2', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
       const mainPol = snapshots[sk].polities[0];
       const mainRing = mainPol.shape.type === 'Polygon' ? mainPol.shape.coordinates[0] : mainPol.shape.coordinates[0][0];
       assert(

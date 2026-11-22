@@ -2487,7 +2487,7 @@ async function runSearchRuntimeSuite(ctx) {
         const qingDutchSet = new Set(['s_qing_a00', 's_qing_a0']);
         const qingMingZhengSet = new Set(['s_qing_a0b', 's_qing_a1', 's_qing_a', 's_qing_a2']);
         const qingRuleSet = new Set([
-          's_qing_b1', 's_qing_b', 's_qing_c', 's_qing_d',
+          's_qing_b1', 's_qing_b', 's_qing_c', 's_qing_1755', 's_qing_d',
           's_qing_e', 's_qing_e2', 's_qing_e3', 's_qing_e4',
           's_qing_f0', 's_qing_f',
         ]);
