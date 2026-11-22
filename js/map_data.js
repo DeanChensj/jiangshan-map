@@ -1106,7 +1106,7 @@ window.DYNASTY_DATA = [
       {"until":790,"snap":"s_tang_b1"},
       {"until":840,"snap":"s_tang_b"},
       {"until":848,"snap":"s_tang_840"},
-      {"until":880,"snap":"s_tang_c"},
+      {"until":881,"snap":"s_tang_c"},
       {"until":885,"snap":"s_tang_d1"},
       {"until":907,"snap":"s_tang_d2"}
     ]
