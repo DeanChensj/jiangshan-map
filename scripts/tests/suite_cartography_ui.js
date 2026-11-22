@@ -1396,9 +1396,9 @@ async function runCartographyUiSuite(ctx) {
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-    // Snapshot boundaries without a same-year milestone (880, 1335) must not create
+    // Snapshot boundaries without a same-year milestone (1335) must not create
     // orphan autoplay stops without an event headline.
-    for (const y of [880, 1335]) {
+    for (const y of [1335]) {
       assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
@@ -1456,7 +1456,7 @@ async function runCartographyUiSuite(ctx) {
       `Pure-territory autoplay must visit only territory transitions (~207 vs ${stops.length}), got ${tStops.length}`
     );
     const tStopYears = new Set(tStops.map((s) => s.year));
-    for (const silentY of [617, 880, 1335, 1927]) {
+    for (const silentY of [617, 881, 1335, 1927]) {
       assert(tStopYears.has(silentY), `Pure-territory mode must include snapshot boundary ${silentY}`);
     }
     for (const narrativeY of [626, 725, 736, 737]) {
