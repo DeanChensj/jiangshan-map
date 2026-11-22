@@ -1565,7 +1565,7 @@ window.EN_LOCALE = {
       "Dujiangyan · Wangcheng (Luoyang)"
     ],
     "zhanguo:-238": [
-      "King Zheng of Qin assumes rule, crushes Lao Ai, ousts Lü Buwei, and plans unification",
+      "King Zheng takes rule, crushes Lao Ai, ousts Lü Buwei next year, and plans unification",
       "Xianyang"
     ],
     "zhanguo:-236": [
