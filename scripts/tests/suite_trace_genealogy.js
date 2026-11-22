@@ -716,7 +716,7 @@ async function runTraceGenealogySuite(ctx) {
       assert.strictEqual(ownerAt(sk, [102.26, 27.9]), who, `${sk}: 嶲州 (西昌) must belong to ${who}`);
     }
     // 1351–1388: northern 越南 is 大越 / 安南, not blank.
-    for (const sk of ['s_yuan_b', 's_yuan_c', 's_ming_0a', 's_ming_0c', 's_ming_0d']) {
+    for (const sk of ['s_yuan_1351', 's_yuan_b', 's_yuan_c', 's_ming_0a', 's_ming_0c', 's_ming_0d']) {
       assert(ownerAt(sk, [104.5, 22.1]) || (snapshots[sk].polities || []).some((q) => q.role === 'neighbor' && pointInShape(104.5, 22.1, q.shape)), `${sk}: 104.5,22.1 must not be blank`);
     }
     // 东汉–隋: 叶榆 (大理) and 不韦 (保山) are Han counties; 永昌郡 (69 CE) adds 腾冲 for 73–347;
