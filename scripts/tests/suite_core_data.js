@@ -726,7 +726,6 @@ async function runCoreDataSuite(ctx) {
     '_spokenSiteIfAbsent',
     '_cleanSpokenText',
     '_candidateSpeechVoices',
-    '_selectSpeechVoice',
     '_duckMusicForNarration',
     '_updateNarratorUi',
     '_isMajorStopYear',
