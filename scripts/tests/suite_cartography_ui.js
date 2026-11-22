@@ -421,10 +421,16 @@ async function runCartographyUiSuite(ctx) {
           `${sk}: Wuyuan, Shengle, Alashan, & Yinshan-north must belong to 鲜卑 after 215 CE while Zhongwei & Xinzhou remain in ${coreTitle}`
         );
       }
-      // 3) 311-316 CE Yongjia (s_xijin_b): Luoyang & Chang'an in Han-Zhao; 350 CE (s_dongjin_350): Chang'an in 前秦（苻氏）, Ye in 冉魏
+      // 3) 306-311 CE (s_xijin_a2): Ye in 汉赵, Luoyang/Jinyang in 晋; 311-316 CE (s_xijin_b): Luoyang in 汉赵 while Chang'an (313-316 capital) stays in 晋; 350 CE (s_dongjin_350): Chang'an in 前秦（苻氏）, Ye in 冉魏
       assert(
-        hasPolAt('s_xijin_b', '汉赵', 112.45, 34.62) && hasPolAt('s_xijin_b', '汉赵', 108.94, 34.34),
-        's_xijin_b (311-316 CE): Luoyang and Chang\'an must belong to 汉赵'
+        hasPolAt('s_xijin_a2', '汉赵', 114.39, 36.1) &&
+          hasPolAt('s_xijin_a2', '晋', 112.45, 34.62) &&
+          hasPolAt('s_xijin_a2', '晋', 112.55, 37.87),
+        's_xijin_a2 (306-311 CE): Ye must belong to 汉赵 while Luoyang and Jinyang belong to 晋'
+      );
+      assert(
+        hasPolAt('s_xijin_b', '汉赵', 112.45, 34.62) && hasPolAt('s_xijin_b', '晋', 108.94, 34.34),
+        's_xijin_b (311-316 CE): Luoyang must belong to 汉赵 while Chang\'an stays in 晋'
       );
       assert(
         hasPolAt('s_dongjin_350', '前秦（苻氏）', 108.94, 34.34) &&
