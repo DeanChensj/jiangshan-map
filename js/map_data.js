@@ -196,6 +196,7 @@ window.DYNASTY_DATA = [
       {"year":-202,"headline":"韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝，旋都关中","site":"垓下 · 长安","coord":[108.941,34.261],"siteCoords":[[117.56,33.32],[108.941,34.341]]},
       {"year":-200,"headline":"汉高祖亲征匈奴困于白登，汉初遂行和亲之策","site":"平城（大同）","coord":[113.301,40.091]},
       {"year":-180,"headline":"周勃、陈平诛灭诸吕迎立汉文帝，开启休养生息之政","site":"长安","coord":[108.941,34.341]},
+      {"year":-174,"headline":"匈奴老上单于大破月氏，迫其西迁西域，匈奴尽据河西走廊","site":"河西（祁连山）","coord":[100.451,38.931]},
       {"year":-167,"headline":"汉文帝废除肉刑、免收全国田租，与景帝轻徭薄赋共创“文景之治”","site":"长安","coord":[108.94,34.34]},
       {"year":-154,"headline":"汉景帝削藩引发七国之乱，周亚夫三月平叛固集权","site":"睢阳（商丘）","coord":[115.651,34.421]},
       {"year":-138,"headline":"张骞出使西域，凿空丝绸之路","site":"大宛 · 大月氏","coord":[67.001,39.701],"siteCoords":[[71.78,40.99],[67.001,39.701]]},
@@ -294,7 +295,8 @@ window.DYNASTY_DATA = [
       {"ancient":"秣陵","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"西汉属扬州刺史部丹阳郡，扼长江下游南岸津渡"}
     ],
     "phases": [
-      {"until":-127,"snap":"s_xihan_a"},
+      {"until":-174,"snap":"s_xihan_a"},
+      {"until":-127,"snap":"s_xihan_a2"},
       {"until":-121,"snap":"s_xihan_b1"},
       {"until":-111,"snap":"s_xihan_b2"},
       {"until":-110,"snap":"s_xihan_b3a"},
@@ -2017,7 +2019,8 @@ window.DYNASTY_DATA = [
       {"until":1683,"snap":"s_qing_a2"},
       {"until":1691,"snap":"s_qing_b1"},
       {"until":1720,"snap":"s_qing_b"},
-      {"until":1759,"snap":"s_qing_c"},
+      {"until":1755,"snap":"s_qing_c"},
+      {"until":1759,"snap":"s_qing_1755"},
       {"until":1796,"snap":"s_qing_d"},
       {"until":1851,"snap":"s_qing_e"},
       {"until":1858,"snap":"s_qing_e2"},

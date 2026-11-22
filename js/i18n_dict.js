@@ -991,6 +991,10 @@ window.EN_LOCALE = {
       "Zhou Bo and Chen Ping eliminate the Lü clan and enthrone Emperor Wen of Han",
       "Chang'an"
     ],
+    "xihan:-174": [
+      "Laoshang Chanyu of the Xiongnu routs the Yuezhi, seizing the Hexi Corridor",
+      "Hexi Corridor (Qilian Mts.)"
+    ],
     "xihan:-133": [
       "Mayi Ambush: Emperor Wu sets a trap for the Xiongnu Chanyu at Mayi, sparking full-scale war",
       "Mayi (Shuozhou)"
@@ -2582,6 +2586,7 @@ window.EN_LOCALE = {
     "蒙古诸部（鞑靼 · 瓦剌） · 东察合台": "Mongols (Tatars & Oirats) · Moghulistan",
     "喀尔喀蒙古 · 准噶尔": "Khalkha Mongols & Dzungars",
     "准噶尔汗国": "Dzungar Khanate",
+    "回部（大小和卓）": "Altishahr (Khojas)",
     "哈萨克汗国": "Kazakh Khanate",
     "哈萨克 · 浩罕": "Kazakhs & Kokand",
     "希瓦汗国": "Khanate of Khiva",
@@ -4115,7 +4120,8 @@ window.EN_LOCALE = {
     "府州政区：南宋东部诸路与金十九路": "Prefectures: Southern Song eastern circuits & Jin circuits",
     "前 221 — 前 215 · 秦灭六国初年：北未收河套，南未平百越": "221–215 BCE · Early Qin Unification (Before Ordos & Lingnan Campaigns)",
     "前 215 — 前 214 · 蒙恬北击匈奴：收复河套设九原郡，修筑长城": "215–214 BCE · Meng Tian Recovers the Ordos Loop & Builds Great Wall",
-    "前 202 — 前 127 · 汉初：郡国并行与文景之治，匈奴据河套河西，南越自立": "202–127 BCE · Early Western Han: Xiongnu Holds Ordos; Nanyue Independent",
+    "前 202 — 前 174 · 汉初：郡国并行，匈奴据河套、月氏居河西，南越自立": "202–174 BCE · Early Western Han: Xiongnu Holds Ordos, Yuezhi Holds Hexi, Nanyue Independent",
+    "前 174 — 前 127 · 匈奴破月氏据河西：汉初文景之治，匈奴控河套与河西走廊": "174–127 BCE · Xiongnu Expels Yuezhi & Seizes Hexi Corridor; Han Wen–Jing Era",
     "前 127 — 前 121 · 武帝北击匈奴：卫青收复河套，置朔方、五原郡": "127–121 BCE · Wei Qing Recovers the Ordos Loop (Shuofang Commandery)",
     "前 121 — 前 111 · 河西之战：霍去病受降浑邪王，开河西走廊设武威、酒泉郡": "121–111 BCE · Huo Qubing Secures the Hexi Corridor",
     "前 111 — 前 110 · 平定南越与列河西四郡：设南海、交趾等郡，分置张掖、敦煌郡": "111–110 BCE · Conquest of Nanyue & Four Hexi Commanderies (Zhangye, Dunhuang)",
@@ -4169,7 +4175,8 @@ window.EN_LOCALE = {
     "1681 — 1683 · 平定三藩：西南全境入清，施琅攻台前夕": "1681–1683 · Three Feudatories Pacified; Tungning Kingdom on Taiwan",
     "1683 — 1691 · 施琅收台湾与尼布楚条约：置台湾府，划定中俄东段边界": "1683–1691 · Taiwan Incorporated into Qing; Treaty of Nerchinsk (1689)",
     "1691 — 1720 · 多伦会盟定漠北：喀尔喀蒙古正式内附纳入清朝版图": "1691–1720 · Dolon Nor Assembly: Outer (Khalkha) Mongolia Joins the Qing Empire",
-    "1720 — 1759 · 驱准入藏与平定青海：设驻藏大臣、西宁办事大臣，《恰克图条约》": "1720–1759 · Qing Pacifies Qinghai, Installs Ambans in Lhasa & Signs Treaty of Kyakhta",
+    "1720 — 1755 · 驱准入藏与平定青海：设驻藏大臣、西宁办事大臣，《恰克图条约》": "1720–1755 · Qing Pacifies Qinghai, Installs Ambans in Lhasa & Signs Treaty of Kyakhta",
+    "1755 — 1759 · 平定准噶尔：清军定伊犁收天山北路，大小和卓据南疆回部": "1755–1759 · Conquest of Dzungaria: Qing Takes Ili & Northern Xinjiang; Khojas Hold Altishahr",
     "1759 — 1796 · 乾隆极盛疆域：平定准噶尔与回部，设伊犁将军统辖天山南北": "1759–1796 · Qianlong Zenith: Conquest of Dzungaria & Tarim, Ili Generalship Established",
     "1796 — 1851 · 嘉道时期：白莲教起义与 1840 年鸦片战争爆发": "1796–1851 · Jiaqing & Daoguang Eras; Outbreak of the First Opium War",
     "新（王莽）": "Xin (Wang Mang)",

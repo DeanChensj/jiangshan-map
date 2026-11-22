@@ -781,6 +781,7 @@ async function runApiSearchSuite(ctx) {
       's_qin_b',
       's_qin',
       's_xihan_a',
+      's_xihan_a2',
       's_xihan_b1',
       's_xihan_b2',
       's_xihan_b3a',
@@ -802,6 +803,7 @@ async function runApiSearchSuite(ctx) {
       's_nansong_a',
       's_yuan',
       's_ming_a',
+      's_qing_1755',
       's_qing_d',
       's_roc',
     ]) {
