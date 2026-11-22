@@ -456,6 +456,25 @@ async function runApiSearchSuite(ctx) {
           );
         }
         assert(!withPref || prefFiles > 150, `--with-prefectures must export the prefecture layer, got ${prefFiles} files`);
+        if (withPref) continue;
+        // Settlements carry the same year range as their dynasty in index.json (a boundary year
+        // belongs to the later dynasty) and the appear / vanish years the app hides them by.
+        const exportIndex = JSON.parse(fs.readFileSync(path.join(outDir, 'index.json'), 'utf8'));
+        const exportDyn = new Map(exportIndex.dynasties.map((d) => [d.key, d]));
+        const exportSettlements = JSON.parse(fs.readFileSync(path.join(outDir, 'settlements.geojson'), 'utf8')).features;
+        for (const ft of exportSettlements) {
+          const sp = ft.properties;
+          const ed = exportDyn.get(sp.dynasty);
+          assert(
+            ed && sp.from === ed.from && sp.to === ed.to,
+            `Exported settlement "${sp.ancient}" (${sp.dynasty}) spans ${sp.from}..${sp.to} but index.json gives ${ed && ed.from}..${ed && ed.to}`
+          );
+        }
+        const exportTianjing = exportSettlements.find((ft) => ft.properties.dynasty === 'qing' && ft.properties.ancient === '天京');
+        assert(
+          exportTianjing && exportTianjing.properties.appear === 1853 && exportTianjing.properties.vanish === 1864,
+          'Exported settlement 天京 must carry appear 1853 / vanish 1864'
+        );
       }
     } finally {
       fs.rmSync(exportRoot, { recursive: true, force: true });

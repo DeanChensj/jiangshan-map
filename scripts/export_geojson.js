@@ -139,10 +139,12 @@ const anchor = (a) => (Array.isArray(a) ? pt(a) : undefined);
 
 const dynastyName = (d) => (EN.dynasties && EN.dynasties[d.key] && EN.dynasties[d.key].name) || undefined;
 const snapUse = {};
+const lastYear = {};
 // A boundary year belongs to the later dynasty, as in _findDynastyIndex.
 const dynasties = W.DYNASTY_DATA.map((d, di, all) => {
   const phases = d.phases && d.phases.length ? d.phases : [{ until: d.toYear, snap: `s_${d.key}` }];
   const end = Math.min(di < all.length - 1 ? all[di + 1].fromYear - 1 : d.toYear, CUTOFF - 1);
+  lastYear[d.key] = end;
   const out = phases.map((ph, i) => {
     const from = i === 0 ? d.fromYear : phases[i - 1].until;
     const to = Math.min(i === phases.length - 1 ? end : ph.until - 1, end);
@@ -261,7 +263,9 @@ for (const d of W.DYNASTY_DATA.filter((d) => d.fromYear < CUTOFF)) {
       feature(point(s.coord), {
         dynasty: d.key,
         from: d.fromYear,
-        to: Math.min(d.toYear, CUTOFF - 1),
+        to: lastYear[d.key],
+        appear: s.appear,
+        vanish: s.vanish,
         ancient: s.ancient,
         ancient_en: en(s.ancient),
         modern: s.modern,
@@ -281,7 +285,9 @@ for (const d of W.DYNASTY_DATA.filter((d) => d.fromYear < CUTOFF)) {
   }
 }
 files['settlements.geojson'] = collection('settlements', settlements, {
-  note: 'Settlements listed per period; the same city can appear once per period with that period\'s name'
+  note:
+    'Settlements listed per period; the same city can appear once per period with that period\'s name. ' +
+    'appear / vanish, when present: first year shown and first year hidden within the period'
 });
 files['milestones.geojson'] = collection('milestones', milestones);
 
