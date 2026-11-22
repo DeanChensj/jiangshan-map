@@ -57,7 +57,7 @@ const LAZY_ATTR_ASSETS = [
 ];
 
 // Lazy bundles that index.html also preloads from an inline script (single-quoted URL).
-const PRELOADED_LAZY_ASSETS = [];
+const PRELOADED_LAZY_ASSETS = ['js/i18n_dict.js'];
 const preloadRe = (relPath) => new RegExp(`('${escapeRegExp(relPath)}\\?v=)([0-9a-zA-Z_.-]+)(')`, 'g');
 
 function shortSha256(filePath) {

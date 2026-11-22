@@ -8,6 +8,13 @@
     // jumps and loads the target dynasty's snapshot chunk. The relief image waits too (see the
     // script after #atlas-svg), so the borders arrive first.
     (function () {
+      if (/[?&]lang=en(?:&|$)/i.test(location.search)) {
+        var i18n = document.createElement('link');
+        i18n.rel = 'preload';
+        i18n.as = 'script';
+        i18n.href = 'js/i18n_dict.js?v=6e7850a8';
+        document.head.appendChild(i18n);
+      }
       if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) {
         // Not a deep link: start the relief image now, as early as a plain <image href> would.
         var relief = document.createElement('link');
