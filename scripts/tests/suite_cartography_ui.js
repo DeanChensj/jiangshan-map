@@ -1217,6 +1217,40 @@ async function runCartographyUiSuite(ctx) {
         ctrl._isSettlementCapital(sgJianye, 234),
       'Expected sanguo capitalPeriods to reflect Chengdu (221-263), Wuchang (221-228, 265-266), and Jianye (229-280)'
     );
+    const zgDynCap = dynasties.find((d) => d.key === 'zhanguo');
+    const qinDynCap = dynasties.find((d) => d.key === 'qin');
+    const wdDynCap = dynasties.find((d) => d.key === 'wudai');
+    const nsDynCap = dynasties.find((d) => d.key === 'nansong');
+    const zgXianyang = zgDynCap.settlements.find((s) => s.ancient === '咸阳');
+    const zgDaliang = zgDynCap.settlements.find((s) => s.ancient === '大梁');
+    const zgXinzheng = zgDynCap.settlements.find((s) => s.ancient === '新郑');
+    const zgChenying = zgDynCap.settlements.find((s) => s.ancient === '陈郢');
+    const qinXianyang = qinDynCap.settlements.find((s) => s.ancient === '咸阳');
+    const wdKaifeng = wdDynCap.settlements.find((s) => s.ancient === '东京开封府');
+    const wdLuoyang = wdDynCap.settlements.find((s) => s.ancient === '洛阳');
+    const nsLinan = nsDynCap.settlements.find((s) => s.ancient === '临安');
+    assert(
+      !ctrl._isSettlementCapital(zgXianyang, -380) &&
+        ctrl._isSettlementCapital(zgXianyang, -330) &&
+        !ctrl._isSettlementCapital(zgDaliang, -380) &&
+        ctrl._isSettlementCapital(zgDaliang, -350) &&
+        !ctrl._isSettlementCapital(zgXinzheng, -380) &&
+        ctrl._isSettlementCapital(zgXinzheng, -350) &&
+        !ctrl._isSettlementCapital(zgChenying, -300) &&
+        ctrl._isSettlementCapital(zgChenying, -260) &&
+        !ctrl._isSettlementCapital(zgChenying, -230) &&
+        ctrl._isSettlementCapital(qinXianyang, -210) &&
+        !ctrl._isSettlementCapital(qinXianyang, -205) &&
+        ctrl._isSettlementCapital(wdKaifeng, 915) &&
+        !ctrl._isSettlementCapital(wdKaifeng, 928) &&
+        ctrl._isSettlementCapital(wdKaifeng, 945) &&
+        !ctrl._isSettlementCapital(wdLuoyang, 915) &&
+        ctrl._isSettlementCapital(wdLuoyang, 928) &&
+        !ctrl._isSettlementCapital(wdLuoyang, 945) &&
+        ctrl._isSettlementCapital(nsLinan, 1200) &&
+        !ctrl._isSettlementCapital(nsLinan, 1277),
+      'Expected zhanguo/qin/wudai/nansong capitalPeriods to track documented capital relocations and dynastic transitions'
+    );
 
     sandbox.setInterval = setInterval;
     sandbox.clearInterval = clearInterval;
