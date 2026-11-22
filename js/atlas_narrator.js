@@ -366,7 +366,9 @@
       // 2× Speed LOD: speak only on dynasty switch or territory-changing stops.
       if (speed >= 2 && !isNewDynasty) {
         const isMajor = Boolean(
-          (m && m.isMapChange) || this._isMajorStopYear(this.year) || (m && this._isMajorStopYear(m.year))
+          (m && this._isPhaseChangeYear(cur, m.year)) ||
+            this._isMajorStopYear(this.year) ||
+            (m && this._isMajorStopYear(m.year))
         );
         if (!isMajor) return '';
       }

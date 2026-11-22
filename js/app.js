@@ -3136,6 +3136,16 @@
       return ph ? ph.snap : `s_${dynasty.key}`;
     }
 
+    _isPhaseChangeYear(dynasty, year) {
+      if (!dynasty || year == null) return false;
+      if (year === dynasty.fromYear || year === dynasty.toYear) return true;
+      const phases = dynasty.phases || [];
+      for (let i = 0; i < phases.length - 1; i++) {
+        if (phases[i].until === year) return true;
+      }
+      return false;
+    }
+
     _fetchSnapshot(snapKey) {
       if (this.snapshotCache[snapKey]) return this.snapshotCache[snapKey];
       if (this.snapshots && this.snapshots[snapKey]) {
@@ -6262,7 +6272,7 @@
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
         const hydroShift = this._hydroCourseMask(targetY) !== this._hydroCourseMask(prevY);
-        const isMapChange = Boolean(m.isMapChange) || snapShift || cityShift || corrShift || hydroShift;
+        const isMapChange = snapShift || cityShift || corrShift || hydroShift || m.year === dynasty.toYear;
         const yrLabel =
           this.locale === 'en'
             ? this.formatYear(m.year)
@@ -6324,7 +6334,7 @@
             this._suppressChronicleAutoScroll = false;
           }
           this._frameMilestoneAnchors(dynasty, m, {
-            isMapChange: Boolean(snapShift || m.isMapChange),
+            isMapChange: Boolean(snapShift || m.year === dynasty.toYear),
           });
         });
         ul.appendChild(li);
@@ -7530,7 +7540,7 @@
           );
           for (const m of d.milestones || []) {
             const my = this._clampYearToDynasty(d, m.year);
-            mark(my, Boolean(m.isMapChange || phaseYears.has(my)));
+            mark(my, phaseYears.has(my));
           }
         }
         this._autoplayStopList = [...holdByYear]
