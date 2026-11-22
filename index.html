@@ -8,6 +8,13 @@
     // jumps and loads the target dynasty's snapshot chunk. The relief image waits too (see the
     // script after #atlas-svg), so the borders arrive first.
     (function () {
+      if (/[?&]lang=en(?:&|$)/i.test(location.search)) {
+        var i18n = document.createElement('link');
+        i18n.rel = 'preload';
+        i18n.as = 'script';
+        i18n.href = 'js/i18n_dict.js?v=859252a6';
+        document.head.appendChild(i18n);
+      }
       if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) {
         // Not a deep link: start the relief image now, as early as a plain <image href> would.
         var relief = document.createElement('link');
@@ -908,7 +915,7 @@
   <script src="js/atlas_boot.js?v=67cb36dd"></script>
   <script src="js/map_data.js?v=86d88927"></script>
   <script src="js/lore_core.js?v=bb36af1f"></script>
-  <script id="atlas-app-script" src="js/app.js?v=a33b246f" data-v-snapshots="a96d6d73" data-v-i18n="859252a6" data-v-lore="69a57d0f" data-v-pinyin="861f4e62" data-v-hant="3afdab47" data-v-quiz="95fe376b" data-v-narrator="91678cf9" data-v-sources="e3776612"></script>
+  <script id="atlas-app-script" src="js/app.js?v=a33b246f" data-v-snapshots="1b449795" data-v-i18n="859252a6" data-v-lore="69a57d0f" data-v-pinyin="861f4e62" data-v-hant="3afdab47" data-v-quiz="95fe376b" data-v-narrator="91678cf9" data-v-sources="e3776612"></script>
   <script src="js/atlas_trace.js?v=5ef930a4"></script>
   <script src="js/atlas_search.js?v=54be5593"></script>
   <script src="js/atlas_api.js?v=575d60fd"></script>
