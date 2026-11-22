@@ -62,6 +62,7 @@
   "s_tang_a4b": { "overlap": 0, "gap": 28 },
   "s_tang_a5z": { "overlap": 0, "gap": 11 },
   "s_tang_a5y": { "overlap": 0, "gap": 11 },
+  "s_tang_726": { "overlap": 0, "gap": 11 },
   "s_tang_a5": { "overlap": 0, "gap": 15 },
   "s_tang_b1": { "overlap": 0, "gap": 13 },
   "s_tang_c": { "overlap": 24, "gap": 20 },

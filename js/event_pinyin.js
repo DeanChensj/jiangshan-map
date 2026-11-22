@@ -283,6 +283,7 @@ window.ATLAS_EVENT_PINYIN = {
       ["jinglongzhengbian","taizilichongjunfayulinbingzhuwusansi","bingbaibeisha","jinglongzhengbiantaizilichongjunfayulinbingzhuwusansibingbaibeisha","changan"],
       ["tanglongzhengbian","lilongjilianjietaipinggongzhuzhuweihou","fengtangruizongfuwei","tanglongzhengbianlilongjilianjietaipinggongzhuzhuweihoufengtangruizongfuwei","changan"],
       ["xiantianzhengbian","tangxuanzongzhutaipinggongzhudangkaiqikaiyuanshengshi","fengbohaijunwang","xiantianzhengbiantangxuanzongzhutaipinggongzhudangkaiqikaiyuanshengshifengbohaijunwang","changan","huhancheng"],
+      ["tangtingyuheishuimohebuzhiheishuidudufu","qianzhangshijianlingheilongjiangliuyuzhubu","tangtingyuheishuimohebuzhiheishuidudufuqianzhangshijianlingheilongjiangliuyuzhubu","heishuidudufu","boli"],
       ["liangzhoududuwangjunchuopotuboyuqinghaizhixi","runjiuyueyuganzhounanweihuihesuosha","liangzhoududuwangjunchuopotuboyuqinghaizhixirunjiuyueyuganzhounanweihuihesuosha","liangzhou"],
       ["shuofangjiedushixinanwangliyigongbatuboshibaocheng","guhexilongyoufangxian","shuofangjiedushixinanwangliyigongbatuboshibaochengguhexilongyoufangxian","shibaocheng"],
       ["tangxuanzongfenquanguoweikaiyuanshiwudao","zhicaifangshidingxingdaozhoujianchazhi","tangxuanzongfenquanguoweikaiyuanshiwudaozhicaifangshidingxingdaozhoujianchazhi","changan"],

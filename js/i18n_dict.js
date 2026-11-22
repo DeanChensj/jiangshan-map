@@ -583,6 +583,10 @@ window.EN_LOCALE = {
       "Xiantian Coup: Xuanzong ousts Princess Taiping to open the Kaiyuan era and invests Bohai",
       "Chang'an · Huhancheng"
     ],
+    "tang:726": [
+      "Tang establishes the Heishui Area Command over the Heishui Mohe in the Amur basin",
+      "Heishui Area Command (Boli)"
+    ],
     "tang:755": [
       "An Lushan and Shi Siming rebel at Fanyang, sparking the An–Shi Rebellion",
       "Fanyang (Youzhou)"
@@ -2558,6 +2562,12 @@ window.EN_LOCALE = {
     "西域诸国（役属北匈奴）": "Western Regions States (under the Northern Xiongnu)",
     "安西都护府": "Anxi Protectorate",
     "北庭都护府": "Beiting Protectorate",
+    "黑水都督府": "Heishui Area Command",
+    "黑水都督府（伯力）": "Heishui Area Command (Boli)",
+    "伯力": "Boli (Khabarovsk)",
+    "哈巴罗夫斯克（伯力）": "Khabarovsk (Boli)",
+    "哈巴罗夫斯克": "Khabarovsk",
+    "俄罗斯·哈巴罗夫斯克（伯力）": "Khabarovsk (Boli), Russia",
     "匈奴": "Xiongnu",
     "南匈奴": "Southern Xiongnu",
     "月氏": "Yuezhi",
@@ -5502,6 +5512,7 @@ window.EN_LOCALE = {
     "武周时为神都（690—705）；天祐中唐室迁都洛阳（904—907）": "Divine Capital (Shendu) under Wu Zhou (690–705); final capital of Tang (904–907)",
     "李唐龙兴之地；开元十一年升为北都，河东节度使治所": "Ancestral cradle of Li Tang; elevated to Northern Capital in 723 CE, seat of Hedong Jiedushi",
     "永徽元年设单于都护府于云中金河，统辖漠南突厥诸羁縻府州": "Established in 650 CE at Jinhe to administer the southern Turkic tributary prefectures",
+    "开元十四年（726）唐廷于黑水靺鞨部置黑水都督府，遣长史监领黑龙江中下游诸部": "Established in 726 CE (Kaiyuan 14) over the Heishui Mohe in the lower and middle Amur basin under Tang-appointed chief clerks",
     "贞观二十一年设燕然都护府，总章二年改安北都护府，统领漠北铁勒回纥诸部": "Established as Yanran in 647 CE and renamed Anbei in 669 CE, governing the northern Tiele and Uyghur tribes",
     "窦建德迁都洺州，后刘黑闼据此建汉东国": "Later capital of Dou Jiande's Xia state; later base of Liu Heita's Handong state",
     "杜伏威建立江淮吴政权，降唐封吴王": "Seat of Du Fuwei's Jianghuai Wu regime; surrendered to Tang and created Prince of Wu",
@@ -7046,7 +7057,8 @@ window.EN_LOCALE = {
     "698 — 702 · 大祚荣立震国：粟末靺鞨据东牟山自立，武周东北退守辽东": "698–702 · Dae Jo-yeong Founds Zhen: The Sumo Mohe Break Away at Mt. Dongmou as Wu Zhou Falls Back to Liaodong",
     "702 — 705 · 武周设北庭：武则天于庭州置北庭都护府，与安西都护府分辖天山南北": "702–705 · Wu Zhou Establishes Beiting: Wu Zetian Sets Beiting Protectorate Alongside Anxi Across the Tianshan",
     "705 — 713 · 神龙复唐：中宗复唐国号，震国大祚荣尚未受唐册封": "705–713 · Shenlong Restoration: Zhongzong Restores Tang; Dae Jo-yeong's Zhen Not Yet Invested by Tang",
-    "713 — 738 · 开元盛世：玄宗册封大祚荣为渤海郡王，洱海六诏未合": "713–738 · Kaiyuan Era: Dae Jo-yeong Made Prince of Bohai; the Six Zhao of Erhai Not Yet United",
+    "713 — 726 · 开元盛世：玄宗册封大祚荣为渤海郡王，洱海六诏未合": "713–726 · Kaiyuan Era: Dae Jo-yeong Made Prince of Bohai; the Six Zhao of Erhai Not Yet United",
+    "726 — 738 · 开元盛世：置黑水都督府领黑水靺鞨，洱海六诏未合": "726–738 · Kaiyuan Era: Heishui Area Command Set Over Heishui Mohe; the Six Zhao Not Yet United",
     "738 — 755 · 南诏统一六诏：皮逻阁受封云南王，玄宗册封大祚荣为渤海郡王": "738–755 · Nanzhao Unites the Six Zhao: Piluoge Made King of Yunnan; Bohai Invested by Xuanzong",
     "岛夷诸部": "Island Yi Tribes",
     "小琉球": "Xiaoliuqiu",
