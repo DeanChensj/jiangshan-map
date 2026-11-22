@@ -246,11 +246,6 @@
       return list;
     }
 
-    _selectSpeechVoice() {
-      const candidates = this._candidateSpeechVoices();
-      return candidates.length ? candidates[0] : null;
-    }
-
     _duckMusicForNarration(duck) {
       if (!this.musicAudio) return;
       try {

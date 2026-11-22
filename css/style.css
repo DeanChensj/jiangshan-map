@@ -1,9 +1,7 @@
 :root {
   --bg-parchment: #f3eee4;
-  --bg-parchment-alt: #ebe4d6;
   --water-fill: #d6e0de;
   --province-fill: #efe8da;
-  --province-border: #c7bba6;
   --text-main: #2b2622;
   --text-secondary: #5d554c;
   --text-muted: #8d847a;
@@ -3445,10 +3443,6 @@ html[lang="en"] .band-cell:last-child {
 
 .is-hidden {
   display: none !important;
-}
-
-.fade-enter {
-  animation: none;
 }
 
 /* Traditional Chinese (zh-Hant): Ma Shan Zheng lacks several Traditional glyphs (e.g. 時/戰/國/東/漢/華);
