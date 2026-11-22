@@ -638,7 +638,7 @@ async function runTraceGenealogySuite(ctx) {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 30, `Expected 30 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 31, `Expected 31 s_tang* snapshots, found ${tangSnapKeys.length}`);
   // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
   // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790;
   // the Four Garrisons fall to 吐蕃 in 670–679 and 686–692, when 安西 falls back to 西州.
@@ -699,7 +699,7 @@ async function runTraceGenealogySuite(ctx) {
       assert.strictEqual(ownerAt(sk, TENGCHONG), dali, `${sk}: 腾冲 must belong to ${dali}`);
     }
     // 唐 621–738: no 南诏 yet (六诏 + 唐 羁縻 in 滇东); 南诏 from 738.
-    for (const sk of ['s_tang_a0', 's_tang_a', 's_tang_wz1', 's_tang_a5y']) {
+    for (const sk of ['s_tang_a0', 's_tang_a', 's_tang_wz1', 's_tang_a5y', 's_tang_726']) {
       assert(!(snapshots[sk].polities || []).some((p) => p.title === '南诏'), `${sk}: 南诏 must not exist before 738`);
       assert.strictEqual(ownerAt(sk, [100.23, 25.6]), '六诏', `${sk}: 洱海 must belong to 六诏 before 738`);
       assert(['唐', '武周'].includes(ownerAt(sk, [102.71, 25.04])), `${sk}: 昆州 (昆明) must belong to 唐 / 武周 before 738`);
@@ -768,7 +768,7 @@ async function runTraceGenealogySuite(ctx) {
   }
   // 南诏 exists from 738 (before that: 六诏 plus 唐 羁縻 in 滇东; 618–621 爨 · 六诏).
   const preNanzhao = new Set(['s_tang_0', 's_tang_0b', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a3b', 's_tang_a4', 's_tang_a4b',
-    's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y']);
+    's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y', 's_tang_726']);
   const nzSnapKeys = tangSnapKeys.filter((k) => !preNanzhao.has(k));
   assert.strictEqual(nzSnapKeys.length, tangSnapKeys.length - preNanzhao.size, 'every pre-738 Tang snapshot key must exist');
   for (const sk of nzSnapKeys) {

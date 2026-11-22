@@ -393,6 +393,7 @@ async function runCartographyUiSuite(ctx) {
         ['s_sui_d', '凉（李轨）'],
         ['s_tang_a1', '唐'],
         ['s_tang_a5y', '唐'],
+        ['s_tang_726', '唐'],
         ['s_tang_a5', '唐'],
         ['s_tang_c', '归义军（张议潮）'],
       ]) {
@@ -861,13 +862,13 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 31 phase-change milestones derived from phases
-    const expectedTangMapChanges = [618, 621, 624, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
+    // Tang 32 phase-change milestones derived from phases
+    const expectedTangMapChanges = [618, 621, 624, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 726, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
     const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => ctrl._isPhaseChangeYear(tangDyn, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
-      'tang: 30 map change milestone years must match'
+      'tang: 32 map change milestone years must match'
     );
 
     // Spatial checks: s_sui_d and s_tang_0 warlords
@@ -2943,6 +2944,28 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_ming_1409', '明', 123.17, 41.27),
       's_ming_1409: Nurgan (1409) incorporates Outer Manchuria and Liaoyang into 明'
     );
+    // 唐黑水都督府 (726–755): 725 无黑水都督府，726–755 覆盖伯力与黑龙江下游（不含库页岛），755 安史之乱后撤除。
+    const tangDynHeishui = dynasties.find((d) => d.key === 'tang');
+    assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 725), 's_tang_a5y');
+    assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 726), 's_tang_726');
+    assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 740), 's_tang_a5');
+    assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 755), 's_tang_b0a');
+    assert(
+      !snapshots.s_tang_a5y.polities.some((p) => p.title === '黑水都督府') &&
+        !snapshots.s_tang_b0a.polities.some((p) => p.title === '黑水都督府'),
+      '黑水都督府 must be absent before 726 and after 755'
+    );
+    for (const sk of ['s_tang_726', 's_tang_a5']) {
+      const hs = snapshots[sk].polities.find((p) => p.title === '黑水都督府');
+      assert(
+        hs &&
+          hs.role === 'protectorate' &&
+          hasPolPt(sk, '黑水都督府', 135.07, 48.48) &&
+          hasPolPt(sk, '黑水都督府', 139.88, 52.86) &&
+          !hasPolPt(sk, '黑水都督府', 142.8, 50.0),
+        `${sk}: 黑水都督府 must be a protectorate covering Boli ([135.07,48.48]) and lower Amur ([139.88,52.86]), excluding Sakhalin ([142.8,50.0])`
+      );
+    }
     // Neighbour names must fit the snapshot's years.
     for (const [sk, has, lacks] of [
       ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],
