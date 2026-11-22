@@ -64,14 +64,14 @@ window.DYNASTY_DATA = [
       {"year":-222,"headline":"王贲灭燕与代，王翦定江南置会稽郡，唯余齐国","site":"襄平（辽阳）","coord":[123.17,41.27]}
     ],
     "settlements": [
-      {"ancient":"咸阳","modern":"西安·咸阳","coord":[108.701,34.331],"isCapital":true,"remark":"秦都（前350孝公迁此）"},
+      {"ancient":"咸阳","modern":"西安·咸阳","coord":[108.701,34.331],"isCapital":true,"capitalPeriods":[[-350,-221]],"remark":"秦都（前350孝公迁此）"},
       {"ancient":"商丘","modern":"商丘","coord":[115.65,34.42],"isCapital":true,"vanish":-286,"remark":"宋国都城（前286齐湣王灭宋，魏得商丘）"},
       {"ancient":"定陶","modern":"菏泽·定陶","coord":[115.57,35.07],"tier":2,"remark":"天下之中，范蠡经商陶朱公驻地，后为秦穰侯魏冉封邑"},
       {"ancient":"少梁","modern":"韩城","coord":[110.44,35.48],"tier":2,"remark":"魏置河西郡重镇，吴起任西河守拒秦；前330年雕阴之战后河西尽归秦，更名夏阳"},
       {"ancient":"洛阳","modern":"洛阳","coord":[112.451,34.621],"isCapital":true,"align":"b","vanish":-256,"remark":"东周王室都城","aliases":["王城","洛阳（王城）"]},
       {"ancient":"邯郸","modern":"邯郸","coord":[114.491,36.611],"isCapital":true,"vanish":-228,"remark":"赵国都城"},
-      {"ancient":"大梁","modern":"开封","coord":[114.351,34.791],"isCapital":true,"vanish":-225,"remark":"魏国都城（前364迁此）"},
-      {"ancient":"新郑","modern":"新郑","coord":[113.741,34.401],"isCapital":true,"align":"b","vanish":-230,"remark":"韩国都城（前375灭郑迁此）"},
+      {"ancient":"大梁","modern":"开封","coord":[114.351,34.791],"isCapital":true,"capitalPeriods":[[-364,-225]],"vanish":-225,"remark":"魏国都城（前364迁此）"},
+      {"ancient":"新郑","modern":"新郑","coord":[113.741,34.401],"isCapital":true,"capitalPeriods":[[-375,-230]],"align":"b","vanish":-230,"remark":"韩国都城（前375灭郑迁此）"},
       {"ancient":"临淄","modern":"淄博","coord":[118.351,36.821],"isCapital":true,"remark":"齐国都城 · 稷下学宫"},
       {"ancient":"郢都","modern":"荆州","coord":[112.201,30.351],"isCapital":true,"align":"l","vanish":-278,"remark":"楚国都城（前278白起拔郢）"},
       {"ancient":"寿春","modern":"寿县","coord":[116.781,32.581],"isCapital":true,"appear":-241,"vanish":-223,"remark":"楚国后期都城（前241迁此）"},
@@ -80,7 +80,7 @@ window.DYNASTY_DATA = [
       {"ancient":"安邑","modern":"运城·夏县","coord":[110.951,35.121],"align":"l","remark":"魏国旧都"},
       {"ancient":"晋阳","modern":"太原","coord":[112.551,37.871],"remark":"赵国初都 · 三家分晋重镇"},
       {"ancient":"阳翟","modern":"禹州","coord":[113.471,34.211],"tier":2,"align":"l","remark":"韩国初都 · 后为颍川郡治"},
-      {"ancient":"陈郢","modern":"周口·淮阳","coord":[114.881,33.781],"vanish":-223,"remark":"古陈国故都，楚襄王自郢东迁都此（前278—前241）"},
+      {"ancient":"陈郢","modern":"周口·淮阳","coord":[114.881,33.781],"isCapital":true,"capitalPeriods":[[-278,-241]],"vanish":-223,"remark":"古陈国故都，楚襄王自郢东迁都此（前278—前241）"},
       {"ancient":"成都","modern":"成都","coord":[104.071,30.571],"remark":"古蜀国都 · 前316秦灭蜀置郡"},
       {"ancient":"吴","modern":"苏州","coord":[120.621,31.301],"remark":"越国都城 · 后为楚春申君封邑","aliases":["姑苏","吴（姑苏）"]},
       {"ancient":"江州","modern":"重庆","coord":[106.551,29.561],"tier":2,"remark":"巴国都城 · 秦巴郡治","aliases":["巴","江州（巴）"]},
@@ -132,7 +132,7 @@ window.DYNASTY_DATA = [
       {"year":-203,"headline":"楚汉久持后“鸿沟议和”中分天下，刘邦旋毁约东追项羽","site":"成皋 · 鸿沟","coord":[113.381,34.821],"siteCoords":[[113.32,34.82],[113.52,34.83]]}
     ],
     "settlements": [
-      {"ancient":"咸阳","modern":"西安·咸阳","coord":[108.701,34.331],"isCapital":true,"remark":"秦都"},
+      {"ancient":"咸阳","modern":"西安·咸阳","coord":[108.701,34.331],"isCapital":true,"capitalPeriods":[[-221,-207]],"remark":"秦都"},
       {"ancient":"临淄","modern":"淄博","coord":[118.301,36.831],"remark":"原齐国都城"},
       {"ancient":"曲阜","modern":"济宁·曲阜","coord":[116.99,35.6],"remark":"秦置薛郡辖鲁县（曲阜），孔子故里；楚汉之际项羽曾封鲁公"},
       {"ancient":"邯郸","modern":"邯郸","coord":[114.491,36.611],"remark":"原赵国都城"},
@@ -1149,8 +1149,8 @@ window.DYNASTY_DATA = [
       {"year":960,"headline":"周世宗崩后幼主柴宗训嗣位，殿前都点检赵匡胤陈桥兵变，受禅建宋","site":"陈桥驿","coord":[114.501,34.951]}
     ],
     "settlements": [
-      {"ancient":"东京开封府","modern":"开封","coord":[114.311,34.801],"isCapital":true,"remark":"后梁、后晋、后汉、后周都城"},
-      {"ancient":"洛阳","modern":"洛阳","coord":[112.451,34.621],"align":"l","remark":"后唐都城"},
+      {"ancient":"东京开封府","modern":"开封","coord":[114.311,34.801],"isCapital":true,"capitalPeriods":[[907,922],[936,960]],"remark":"后梁、后晋、后汉、后周都城"},
+      {"ancient":"洛阳","modern":"洛阳","coord":[112.451,34.621],"isCapital":true,"capitalPeriods":[[923,935]],"align":"l","remark":"后唐都城"},
       {"ancient":"幽州","modern":"北京","coord":[116.401,39.901],"remark":"936 年随燕云十六州入契丹"},
       {"ancient":"太原","modern":"太原","coord":[112.551,37.871],"remark":"河东重镇，951 年起北汉都城"},
       {"ancient":"成都","modern":"成都","coord":[104.071,30.571],"remark":"前蜀、后蜀都城"},
@@ -1412,7 +1412,7 @@ window.DYNASTY_DATA = [
       {"year":1279,"headline":"陆秀夫等奉宋室退保闽广，崖山海战张世杰覆师，陆秀夫负帝投海宋亡","site":"崖山","coord":[113.101,22.301]}
     ],
     "settlements": [
-      {"ancient":"临安","modern":"杭州","coord":[120.151,30.271],"isCapital":true,"align":"b","remark":"南宋行在"},
+      {"ancient":"临安","modern":"杭州","coord":[120.151,30.271],"isCapital":true,"capitalPeriods":[[1127,1275]],"align":"b","remark":"南宋行在"},
       {"ancient":"建康","modern":"南京","coord":[118.801,32.061],"remark":"南宋留都建康府及江南东路治所，拱卫行在临安之长江锁钥"},
       {"ancient":"襄阳","modern":"襄阳","coord":[112.121,32.011],"remark":"抗蒙六年之战"},
       {"ancient":"鄂州","modern":"武汉","coord":[114.311,30.591],"remark":"荆湖北路重镇，岳飞驻军鄂州北伐，南宋中游江防核心"},
