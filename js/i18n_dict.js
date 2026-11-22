@@ -45,6 +45,7 @@ window.EN_LOCALE = {
     "title_400": "Prefectural Aide · Conversant Past & Present",
     "title_0": "Wandering Traveler · Keep Exploring",
     "quiz_again_msg": "Play another round, or close to return to free exploration.",
+    "quiz_star_cta": "Enjoyed the quiz? Star us on GitHub ★",
     "quiz_again": "Play Again",
     "click_for_detail": "Click for details",
     "tag_neighbor": "(Surrounding Polity)",
