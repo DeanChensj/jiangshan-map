@@ -813,13 +813,13 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(suiDyn, w), `sui: must include late Sui warlord center ${w}`);
     }
 
-    // Sui 5 map change milestones
-    const expectedSuiMapChanges = [581, 587, 589, 609, 618];
+    // Sui 6 map change milestones (581, 587, 589, 609, 617, 618)
+    const expectedSuiMapChanges = [581, 587, 589, 609, 617, 618];
     const actualSuiMapChanges = (suiDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualSuiMapChanges),
       JSON.stringify(expectedSuiMapChanges),
-      'sui: 5 map change milestone years must match'
+      'sui: 6 map change milestone years must match'
     );
 
     // Tang capitals & periods
@@ -879,8 +879,22 @@ async function runCartographyUiSuite(ctx) {
     assert(tangInSuiD && pointInShape(108.941, 34.341, tangInSuiD.shape), 's_sui_d: Chang\'an must be inside 唐（李渊）');
     assert(tangInSuiD && pointInShape(112.551, 37.871, tangInSuiD.shape), 's_sui_d: Taiyuan must be inside 唐（李渊）');
 
+    const suiInSuiD = findPol(suiD, '隋');
+    assert(suiInSuiD && pointInShape(112.451, 34.621, suiInSuiD.shape), 's_sui_d: Luoyang must remain inside 隋');
+    assert(suiInSuiD && pointInShape(119.411, 32.391, suiInSuiD.shape), 's_sui_d: Jiangdu must remain inside 隋');
+    assert(suiInSuiD && pointInShape(116.401, 39.901, suiInSuiD.shape), 's_sui_d: Zhuojun/Youzhou must remain inside 隋');
+
     const weiInSuiD = findPol(suiD, '魏（李密）');
-    assert(weiInSuiD && pointInShape(112.451, 34.621, weiInSuiD.shape), 's_sui_d: Luoyang must be inside 魏（李密）');
+    assert(
+      weiInSuiD && pointInShape(114.311, 34.801, weiInSuiD.shape) && !pointInShape(112.451, 34.621, weiInSuiD.shape),
+      's_sui_d: Kaifeng must be inside 魏（李密） while Luoyang stays outside'
+    );
+
+    const xiaInSuiD = findPol(suiD, '夏（窦建德）');
+    assert(
+      xiaInSuiD && pointInShape(116.12, 38.18, xiaInSuiD.shape) && !pointInShape(116.401, 39.901, xiaInSuiD.shape),
+      's_sui_d: Letou must be inside 夏（窦建德） while Zhuojun/Youzhou stays outside'
+    );
 
     const liangInSuiD = findPol(suiD, '梁（萧铣）');
     assert(liangInSuiD && pointInShape(112.241, 30.331, liangInSuiD.shape), 's_sui_d: Jiangling must be inside 梁（萧铣）');
@@ -1359,9 +1373,9 @@ async function runCartographyUiSuite(ctx) {
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-    // Snapshot boundaries without a same-year milestone (614, 880, 1335) must not create
+    // Snapshot boundaries without a same-year milestone (880, 1335) must not create
     // orphan autoplay stops without an event headline.
-    for (const y of [614, 880, 1335]) {
+    for (const y of [880, 1335]) {
       assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
@@ -1419,7 +1433,7 @@ async function runCartographyUiSuite(ctx) {
       `Pure-territory autoplay must visit only territory transitions (~207 vs ${stops.length}), got ${tStops.length}`
     );
     const tStopYears = new Set(tStops.map((s) => s.year));
-    for (const silentY of [614, 880, 1335, 1927]) {
+    for (const silentY of [617, 880, 1335, 1927]) {
       assert(tStopYears.has(silentY), `Pure-territory mode must include snapshot boundary ${silentY}`);
     }
     for (const narrativeY of [626, 725, 736, 737]) {

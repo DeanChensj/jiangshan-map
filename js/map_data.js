@@ -835,7 +835,7 @@ window.DYNASTY_DATA = [
       {"year":612,"headline":"隋炀帝征调百万大军东征高句丽，萨水失利","site":"涿郡 · 辽东","coord":[123.171,41.271],"siteCoords":[[116.401,39.901],[123.171,41.271]]},
       {"year":613,"headline":"杨玄感趁征高句丽于黎阳起兵反隋，围攻东都洛阳，关东震动","site":"黎阳（浚县） · 洛阳","coord":[114.549,35.676],"siteCoords":[[114.549,35.676],[112.451,34.621]]},
       {"year":615,"headline":"隋炀帝雁门被突厥围困；未几瓦岗军克洛口仓群雄并起","site":"雁门 · 洛口仓","coord":[112.88,39.19],"siteCoords":[[112.87,39.19],[113.06,34.8]]},
-      {"year":617,"headline":"李渊太原起兵，攻入大兴城；瓦岗军据中原","site":"太原 · 大兴","coord":[112.551,37.871],"siteCoords":[[112.551,37.871],[108.941,34.341]]},
+      {"year":617,"headline":"李渊太原起兵，攻入大兴城；瓦岗军据中原","site":"太原 · 大兴","coord":[112.551,37.871],"isMapChange":true,"siteCoords":[[112.551,37.871],[108.941,34.341]]},
       {"year":618,"headline":"宇文化及江都兵变弑隋炀帝，隋亡","site":"江都","coord":[119.411,32.391],"isMapChange":true}
     ],
     "settlements": [
@@ -890,7 +890,7 @@ window.DYNASTY_DATA = [
       {"until":587,"snap":"s_sui_a"},
       {"until":589,"snap":"s_sui_a2"},
       {"until":609,"snap":"s_sui"},
-      {"until":614,"snap":"s_sui_c"},
+      {"until":617,"snap":"s_sui_c"},
       {"until":618,"snap":"s_sui_d"}
     ]
   },
