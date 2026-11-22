@@ -1091,8 +1091,58 @@ a.embed-open-link:hover {
 }
 
 /* Footer */
-footer.page-footer {
+.footer-oss-bar {
   margin-top: 2rem;
+  padding: 0.72rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.footer-oss-text {
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+}
+
+.footer-oss-text strong {
+  color: var(--ink-main);
+}
+
+.footer-star-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid rgba(181, 69, 47, 0.35);
+  color: var(--ink-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.footer-star-pill .star-mark {
+  color: #d9821b;
+  line-height: 1;
+}
+
+.footer-star-pill:hover {
+  background: rgba(181, 69, 47, 0.09);
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+  text-decoration: none;
+}
+
+footer.page-footer {
+  margin-top: 1rem;
   padding-top: 1.15rem;
   border-top: 1px solid var(--hairline);
   font-size: 0.85rem;
@@ -1122,7 +1172,8 @@ footer.page-footer a:hover {
   .filter-preset-row,
   .table-filter-bar,
   .embed-card,
-  .footer-nav-card {
+  .footer-nav-card,
+  .footer-oss-bar {
     display: none !important;
   }
 
