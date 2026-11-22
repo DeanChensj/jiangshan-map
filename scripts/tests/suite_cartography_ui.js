@@ -775,13 +775,13 @@ async function runCartographyUiSuite(ctx) {
     assert(findSt('东阳'), 'nanbei: must include 东阳 (Zhejiang Jinhua seat)');
     assert(findSt('钟离'), 'nanbei: must include 钟离');
 
-    // Verify 16 map change milestones
-    const expectedMapChanges = [420, 427, 431, 436, 439, 469, 479, 494, 502, 534, 550, 553, 554, 557, 573, 577];
-    const actualMapChanges = (nbDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    // Verify 15 phase-change milestones derived from phases
+    const expectedMapChanges = [420, 427, 431, 436, 439, 469, 479, 502, 534, 550, 553, 554, 557, 573, 577];
+    const actualMapChanges = (nbDyn.milestones || []).filter((m) => ctrl._isPhaseChangeYear(nbDyn, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualMapChanges),
       JSON.stringify(expectedMapChanges),
-      'nanbei: 16 map change milestone years must match'
+      'nanbei: 15 phase-change milestone years must match'
     );
   }
 
@@ -813,9 +813,9 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(suiDyn, w), `sui: must include late Sui warlord center ${w}`);
     }
 
-    // Sui 6 map change milestones (581, 587, 589, 609, 617, 618)
+    // Sui 6 phase-change milestones (581, 587, 589, 609, 617, 618)
     const expectedSuiMapChanges = [581, 587, 589, 609, 617, 618];
-    const actualSuiMapChanges = (suiDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    const actualSuiMapChanges = (suiDyn.milestones || []).filter((m) => ctrl._isPhaseChangeYear(suiDyn, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualSuiMapChanges),
       JSON.stringify(expectedSuiMapChanges),
@@ -861,9 +861,9 @@ async function runCartographyUiSuite(ctx) {
       assert(findSt(tangDyn, w), `tang: must include warlord settlement ${w}`);
     }
 
-    // Tang 30 map change milestones
+    // Tang 31 phase-change milestones derived from phases
     const expectedTangMapChanges = [618, 621, 624, 630, 635, 640, 648, 657, 663, 668, 670, 676, 679, 686, 690, 692, 698, 702, 705, 713, 738, 755, 757, 763, 764, 790, 840, 848, 881, 885, 907];
-    const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    const actualTangMapChanges = (tangDyn.milestones || []).filter((m) => ctrl._isPhaseChangeYear(tangDyn, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualTangMapChanges),
       JSON.stringify(expectedTangMapChanges),
@@ -1018,10 +1018,10 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(ctrl._isSettlementCapital(mingSt('应天府'), 1400), true, 'Nanjing must be the Ming capital in 1400');
     assert.strictEqual(ctrl._isSettlementCapital(mingSt('顺天府'), 1400), false, 'Beijing must not be the Ming capital before 1421');
 
-    const mcYears = (mingD.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
+    const mcYears = (mingD.milestones || []).filter((m) => ctrl._isPhaseChangeYear(mingD, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1636, 1643]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1636, 1643, 1644]),
       'ming: map-change milestones must match the phase transitions'
     );
 
@@ -1081,17 +1081,17 @@ async function runCartographyUiSuite(ctx) {
       's_qing_g0 caption must cover 1895 — 1898'
     );
 
-    // All phase transition milestones must have isMapChange === true
+    // All phase transition milestones derive map-change state from phases
     const expectedMapChangeYears = [
       1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
-      .filter((m) => m.isMapChange)
+      .filter((m) => ctrl._isPhaseChangeYear(qingD, m.year))
       .map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(actualMapChangeYears),
       JSON.stringify(expectedMapChangeYears),
-      'qing: all 18 phase transition milestones must have isMapChange === true'
+      'qing: all 18 phase transition milestones must derive map-change state from phases'
     );
 
     // Yanping Fu must be centered at Nanping (not Sanming)
@@ -1400,6 +1400,22 @@ async function runCartographyUiSuite(ctx) {
     // orphan autoplay stops without an event headline.
     for (const y of [1335]) {
       assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
+    }
+    // Single-source-of-truth: DYNASTY_DATA milestones must not store redundant isMapChange flags,
+    // and _isPhaseChangeYear derives phase transitions across dynasties.
+    for (const d of dynasties) {
+      for (const m of d.milestones || []) {
+        assert(!('isMapChange' in m), `${d.key}:${m.year} milestone must not carry redundant isMapChange`);
+      }
+    }
+    for (const [dKey, py] of [
+      ['xihan', -127],
+      ['wudai', 936],
+      ['beisong', 1038],
+      ['nansong', 1141],
+    ]) {
+      const targetDyn = dynasties.find((d) => d.key === dKey);
+      assert(targetDyn && ctrl._isPhaseChangeYear(targetDyn, py), `${dKey}:${py} must be derived as a phase change year`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
     assert(holdCount >= 180 && holdCount < stops.length, `Expected ~180+ map-changing nodes among ${stops.length}, got ${holdCount}`);
