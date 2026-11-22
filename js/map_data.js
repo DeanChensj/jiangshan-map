@@ -437,7 +437,7 @@ window.DYNASTY_DATA = [
       {"year":221,"headline":"闻汉献帝遇害传言，刘备在成都称帝延续汉室正统，国号汉（蜀汉）","site":"成都","coord":[104.071,30.571],"persons":["liubei","zhugeliang","zhaoyun"]},
       {"year":222,"headline":"夷陵之战，陆逊火烧连营大破刘备","site":"夷陵（宜昌）","coord":[111.291,30.691],"persons":["liubei","luxun","sunquan","zhaoyun"]},
       {"year":223,"headline":"刘备病逝永安白帝城，临终托孤于丞相诸葛亮","site":"永安（白帝城）","coord":[109.571,31.041],"persons":["liubei","zhugeliang","zhaoyun"]},
-      {"year":225,"headline":"诸葛亮南征孟获，平定南中","site":"南中（滇池）","coord":[102.711,25.041]},
+      {"year":225,"headline":"诸葛亮南征孟获，平定南中","site":"南中（滇池）","coord":[102.711,25.041],"isMapChange":true},
       {"year":228,"headline":"诸葛亮首次北伐，马谡失街亭","site":"街亭（秦安）","coord":[105.901,35.001]},
       {"year":229,"headline":"吴王孙权于武昌称帝建国号吴，旋东迁建业，三国鼎立定型","site":"建业（南京）","coord":[118.801,32.061]},
       {"year":230,"headline":"孙权遣卫温、诸葛直率万人航海至夷洲","site":"夷洲（台湾）","coord":[121.001,23.801]},
@@ -498,6 +498,7 @@ window.DYNASTY_DATA = [
       {"ancient":"丸都城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"正始五年曹魏毌丘俭东征高句丽克丸都刻石"}
     ],
     "phases": [
+      {"until":225,"snap":"s_sanguo_220"},
       {"until":238,"snap":"s_sanguo_a"},
       {"until":263,"snap":"s_sanguo"},
       {"until":265,"snap":"s_sanguo_b"},

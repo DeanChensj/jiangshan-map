@@ -125,6 +125,7 @@
   "s_zhanguo_b0": { "overlap": 0, "gap": 77 },
   "s_donghan_b0": { "overlap": 10, "gap": 19 },
   "s_sanguo_a": { "overlap": 5, "gap": 15 },
+  "s_sanguo_220": { "overlap": 5, "gap": 15 },
   "s_tang_a1b": { "overlap": 0, "gap": 5 },
   "s_tang_a2b": { "overlap": 0, "gap": 20 },
   "s_roc_b0": { "overlap": 37, "gap": 17 },

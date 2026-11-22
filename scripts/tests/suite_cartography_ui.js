@@ -3262,6 +3262,23 @@ async function runCartographyUiSuite(ctx) {
         `${sk} main polity (${mainPol.title}) must use high-resolution outer border aligned with commanderies/provinces (>=1200 vertices, got ${mainRing.length})`
       );
     }
+
+    // Three Kingdoms 225 CE Zhuge Liang pacification of Nanzhong: 220–224 autonomous Nanzhong vs 225–237 Shu Han
+    assert(
+      hasPolPt('s_sanguo_220', '蜀汉', 104.071, 30.571) &&
+        hasPolPt('s_sanguo_220', '蜀汉', 105.44, 28.89) &&
+        hasPolPt('s_sanguo_220', '南中（雍闿 · 孟获）', 102.711, 25.041) &&
+        hasPolPt('s_sanguo_220', '南中（雍闿 · 孟获）', 103.801, 25.491) &&
+        hasPolPt('s_sanguo_220', '南中（雍闿 · 孟获）', 100.23, 25.6) &&
+        hasPolPt('s_sanguo_220', '南中（雍闿 · 孟获）', 106.71, 26.58) &&
+        !hasPolPt('s_sanguo_220', '蜀汉', 102.711, 25.041) &&
+        hasPolPt('s_sanguo_a', '蜀汉', 102.711, 25.041) &&
+        hasPolPt('s_sanguo_a', '蜀汉', 103.801, 25.491) &&
+        hasPolPt('s_sanguo_a', '蜀汉', 100.23, 25.6) &&
+        hasPolPt('s_sanguo_a', '蜀汉', 106.71, 26.58) &&
+        !snapshots.s_sanguo_a.polities.some((p) => p.title === '南中（雍闿 · 孟获）'),
+      's_sanguo_220 (220–224) must keep Nanzhong separate from Shu Han until Zhuge Liang\'s 225 CE Southern Campaign (s_sanguo_a)'
+    );
     }
   }
 }
