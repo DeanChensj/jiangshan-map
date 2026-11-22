@@ -2926,6 +2926,23 @@ async function runCartographyUiSuite(ctx) {
         !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
       '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
     );
+    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409 年设奴儿干都司后归明，1388-1408 年留在女真诸部，明廷止于辽东。
+    for (const sk of ['s_ming_a0', 's_ming_a']) {
+      assert(
+        !hasPolPt(sk, '明', 139.88, 52.86) &&
+          !hasPolPt(sk, '明', 132.0, 48.0) &&
+          hasPolPt(sk, '女真诸部', 139.88, 52.86) &&
+          hasPolPt(sk, '女真诸部', 132.0, 48.0) &&
+          hasPolPt(sk, '明', 123.17, 41.27),
+        `${sk}: Outer Manchuria (Telin/Heilongjiang) must belong to 女真诸部 before 1409 Nurgan, while Liaoyang stays in 明`
+      );
+    }
+    assert(
+      hasPolPt('s_ming_1409', '明', 139.88, 52.86) &&
+        hasPolPt('s_ming_1409', '明', 132.0, 48.0) &&
+        hasPolPt('s_ming_1409', '明', 123.17, 41.27),
+      's_ming_1409: Nurgan (1409) incorporates Outer Manchuria and Liaoyang into 明'
+    );
     // Neighbour names must fit the snapshot's years.
     for (const [sk, has, lacks] of [
       ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],
