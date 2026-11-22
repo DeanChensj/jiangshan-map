@@ -984,7 +984,7 @@ async function runCartographyUiSuite(ctx) {
     const mcYears = (mingD.milestones || []).filter((m) => m.isMapChange).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1427, 1449, 1513, 1616, 1636, 1643]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1636, 1643]),
       'ming: map-change milestones must match the phase transitions'
     );
 

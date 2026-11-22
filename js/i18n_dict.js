@@ -797,8 +797,12 @@ window.EN_LOCALE = {
       "Liujiagang (Taicang)"
     ],
     "ming:1407": [
-      "Yongle Emperor establishes Jiaozhi Province in Annam and founds the Nurgan Commandery in 1409",
+      "Ming forces pacify the Ho Dynasty in Annam and establish Jiaozhi Province",
       "Jiaozhi"
+    ],
+    "ming:1409": [
+      "Ming establishes the Nurgan Regional Military Commission on the lower Amur",
+      "Telin (Nurgan)"
     ],
     "ming:1421": [
       "Yongle moves the capital to Beijing; the Eastern Depot (1420) joins the Embroidered Guard",
@@ -4843,8 +4847,10 @@ window.EN_LOCALE = {
     "1382 年傅友德、蓝玉、沐英平定云南元梁王与大理段氏，西南一统；辽东都司已据辽阳、沈阳，辽北金山仍由北元纳哈出所部据守，直至 1387 年纳哈出降明、1388 年捕鱼儿海大捷。": "In 1382 Fu Youde, Lan Yu, and Mu Ying pacified the Yuan Prince of Liang and the Duan clan in Yunnan; the Liaodong Commission already held Liaoyang and Shenyang, while Naghachu held Jinshan in northern Liaodong until his surrender in 1387 and the Battle of Buir Lake in 1388.",
     "1388—1407 年 · 洪武一统版图与北元（鞑靼 · 瓦剌）并立": "1388–1407 CE · Complete Hongwu Unification & Northern Yuan (Tatars & Oirats)",
     "1387 年收复辽东置辽东都司，1388 年蓝玉于捕鱼儿海大破北元汗廷，洪武两京十三省核心版图最终完成；漠北北元（1402 年后称鞑靼、瓦剌）与明廷隔长城南北对峙。": "After recovering Liaodong (1387) and crushing the Northern Yuan court at Lake Buir (1388), the Hongwu core realm was complete, facing Northern Yuan (Tatars and Oirats after 1402) across the Great Wall.",
-    "1407—1427 年 · 永乐极盛疆域（设交趾布政司与奴儿干都司）": "1407–1427 CE · Yongle Zenith (Jiaozhi Province & Nurgan Commission)",
-    "永乐五年（1407）张辅平定安南胡朝，置交趾承宣布政使司；1409 年于黑龙江口特林设奴儿干都司，西设哈密卫，北五征漠北，1421 年正式迁都北京。": "In 1407 Zhang Fu pacified the Ho Dynasty in Vietnam to establish Jiaozhi Province; in 1409 Ming established the Nurgan Commission on the lower Amur, set up Hami Guard in the west, led five steppe campaigns, and moved the capital to Beijing in 1421.",
+    "1407—1409 年 · 平安南设交趾布政使司": "1407–1409 CE · Pacification of Annam & Jiaozhi Province",
+    "永乐五年（1407）张辅平定安南胡朝，置交趾承宣布政使司；西设哈密卫，北五征漠北准备经略东北。": "In 1407 Zhang Fu pacified the Ho Dynasty in Annam to establish Jiaozhi Province, set up Hami Guard in the west, and prepared northeastern expansion.",
+    "1409—1427 年 · 设奴儿干都司（永乐极盛疆域）": "1409–1427 CE · Nurgan Commission & Yongle Zenith",
+    "永乐七年（1409）于黑龙江口特林设奴儿干都指挥使司，亦失哈多次巡视并立永宁寺碑，辖黑龙江流域至库页岛；西设哈密卫，南领交趾布政使司，1421 年正式迁都北京。": "In 1409 Ming established the Nurgan Regional Military Commission on the lower Amur (covering the Heilongjiang basin to Sakhalin), while holding Jiaozhi in the south and moving the capital to Beijing in 1421.",
     "1427—1449 年 · 仁宣之治与罢交趾布政使司": "1427–1449 CE · Rule of Ren and Xuan & Withdrawal from Jiaozhi (Vietnam)",
     "宣德二年（1427）柳升援军于支棱失利，明宣宗采纳杨士奇、杨荣建议，诏罢交趾布政使司撤军还朝，安南黎利建立后黎朝；东北仍维持奴儿干都司羁縻。": "After Liu Sheng fell at Chi Lang in 1427, Emperor Xuanzong abolished the Jiaozhi Provincial Administration and withdrew Ming troops from Vietnam as Le Loi founded the Later Le Dynasty.",
     "辰国（三韩）": "Jin State (Samhan)",
