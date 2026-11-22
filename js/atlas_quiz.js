@@ -416,8 +416,9 @@
       if (cur.settlement.appear !== undefined && roundYear < cur.settlement.appear) {
         roundYear = cur.settlement.appear;
       }
-      if (cur.settlement.vanish !== undefined && roundYear > cur.settlement.vanish) {
-        roundYear = cur.settlement.vanish;
+      // A place is off the map from its `vanish` year on; stay on its last year.
+      if (cur.settlement.vanish !== undefined && roundYear >= cur.settlement.vanish) {
+        roundYear = cur.settlement.vanish - 1;
       }
       this.jumpToYear(this._clampYearToDynasty(cur.dynasty, roundYear));
       this.grpSettlements.classList.add('is-hidden');

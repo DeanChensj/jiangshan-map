@@ -1034,6 +1034,22 @@ async function runSearchRuntimeSuite(ctx) {
             qCtrl.stopChallenge();
             assert.strictEqual(qCtrl.challenge, null);
           }
+          // A round must open on a year in which its place is still on the map
+          // (the map hides a settlement once year >= vanish).
+          qCtrl.locale = 'zh';
+          qCtrl.startChallenge();
+          for (const pick of qCtrl._challengeBaseTiers.flat()) {
+            const s = pick.settlement;
+            if (s.vanish === undefined) continue;
+            qCtrl.challenge.deck = [pick];
+            qCtrl.challenge.index = 0;
+            qCtrl.presentChallengeRound();
+            assert(
+              qCtrl.year < s.vanish && (s.appear === undefined || qCtrl.year >= s.appear),
+              `Quiz round for "${s.ancient}" (${pick.dynasty.key}) vanishes in ${s.vanish} but opens on ${qCtrl.year}`
+            );
+          }
+          qCtrl.stopChallenge();
         }
         assert.strictEqual(ctrl.trTerm('南郑'), 'Nanzheng');
         assert.strictEqual(ctrl.trTerm('刺史部'), 'Inspectorate Region');
