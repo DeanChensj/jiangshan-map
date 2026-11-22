@@ -903,15 +903,38 @@ async function runCartographyUiSuite(ctx) {
     assert(tang0, 'Missing s_tang_0');
     const tangPol0 = findPol(tang0, '唐');
     assert(tangPol0 && pointInShape(108.941, 34.341, tangPol0.shape), 's_tang_0: Chang\'an must be inside 唐');
+    assert(tangPol0 && pointInShape(116.401, 39.901, tangPol0.shape), 's_tang_0: Youzhou/Beijing must be inside 唐');
 
     const zhengInTang0 = findPol(tang0, '郑（王世充）');
     assert(zhengInTang0 && pointInShape(112.451, 34.621, zhengInTang0.shape), 's_tang_0: Luoyang must be inside 郑（王世充）');
 
     const xiaInTang0 = findPol(tang0, '夏（窦建德）');
-    assert(xiaInTang0 && pointInShape(116.12, 38.18, xiaInTang0.shape), 's_tang_0: Letou must be inside 夏（窦建德）');
+    assert(
+      xiaInTang0 && pointInShape(116.12, 38.18, xiaInTang0.shape) && !pointInShape(116.401, 39.901, xiaInTang0.shape),
+      's_tang_0: Letou must be inside 夏（窦建德） while Youzhou stays outside'
+    );
+
+    const liangInTang0 = findPol(tang0, '梁（萧铣）');
+    assert(liangInTang0 && pointInShape(114.311, 30.551, liangInTang0.shape), 's_tang_0: Wuchang must be inside 梁（萧铣）');
 
     const wuInTang0 = findPol(tang0, '吴（杜伏威）');
-    assert(wuInTang0 && pointInShape(119.411, 32.391, wuInTang0.shape), 's_tang_0: Jiangdu must be inside 吴（杜伏威）');
+    assert(
+      wuInTang0 && pointInShape(119.411, 32.391, wuInTang0.shape) && !pointInShape(114.311, 30.551, wuInTang0.shape),
+      's_tang_0: Jiangdu must be inside 吴（杜伏威） while Wuchang stays outside'
+    );
+
+    const tang0b = snapshots.s_tang_0b;
+    assert(tang0b, 'Missing s_tang_0b');
+    const tangPol0b = findPol(tang0b, '唐');
+    assert(
+      tangPol0b && pointInShape(114.311, 30.551, tangPol0b.shape) && pointInShape(116.401, 39.901, tangPol0b.shape),
+      's_tang_0b: Wuchang and Youzhou must be inside 唐'
+    );
+    const songFuIn0b = findPol(tang0b, '宋（辅公祏）');
+    assert(
+      songFuIn0b && pointInShape(118.801, 32.061, songFuIn0b.shape) && !findPol(tang0b, '吴（杜伏威）'),
+      's_tang_0b: Danyang must belong to 宋（辅公祏）, not 吴（杜伏威）'
+    );
 
     // High Tang s_tang_a5 core cities inside 唐
     const tangA5 = snapshots.s_tang_a5;
