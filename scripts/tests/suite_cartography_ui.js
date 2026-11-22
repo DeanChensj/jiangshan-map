@@ -2712,7 +2712,9 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_yuan_1351', '天完（徐寿辉）', 114.311, 30.551) &&
         hasPolPt('s_yuan_1351', '天完（徐寿辉）', 115.891, 28.681) &&
         hasPolPt('s_yuan_1351', '周（张士诚）', 119.45, 32.78) &&
-        hasPolPt('s_yuan_1351', '方国珍', 121.55, 29.87) &&
+        hasPolPt('s_yuan_1351', '方国珍', 121.13, 28.85) &&
+        hasPolPt('s_yuan_1351', '元', 121.55, 29.87) &&
+        hasPolPt('s_yuan_1351', '元', 120.66, 28.01) &&
         hasPolPt('s_yuan_1351', '元', 118.801, 32.061) &&
         hasPolPt('s_yuan_1351', '元', 120.62, 31.3) &&
         hasPolPt('s_yuan_1351', '元', 106.551, 29.561),

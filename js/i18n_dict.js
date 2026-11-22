@@ -4832,7 +4832,7 @@ window.EN_LOCALE = {
     "明夏（明玉珍）": "Ming Xia (Ming Yuzhen)",
     "陈友定": "Chen Youding",
     "1351—1356 年 · 红巾初起：刘福通颍州举义与徐寿辉建天完": "1351–1356 CE · Early Red Turban Uprising: Liu Futong & Xu Shouhui's Tianwan",
-    "1351 年韩山童、刘福通于颍州起义，徐寿辉于蕲水称帝建天完；1353 年张士诚据高邮建周，方国珍据浙东沿海；江南、巴蜀尚在元廷控制之下。": "In 1351 Han Shantong and Liu Futong rose in Yingzhou while Xu Shouhui founded Tianwan at Qishui; by 1353 Zhang Shicheng held Gaoyou and Fang Guozhen the Zhejiang coast, while Jiangnan and Sichuan stayed under Yuan control.",
+    "1351 年韩山童、刘福通于颍州起义，徐寿辉于蕲水称帝建天完；1353 年张士诚据高邮建周，方国珍据台州沿海；江南、巴蜀尚在元廷控制之下。": "In 1351 Han Shantong and Liu Futong rose in Yingzhou while Xu Shouhui founded Tianwan at Qishui; by 1353 Zhang Shicheng held Gaoyou and Fang Guozhen the Taizhou coast, while Jiangnan and Sichuan stayed under Yuan control.",
     "1356—1363 年 · 群雄逐鹿：朱元璋克集庆、张士诚据平江": "1356–1363 CE · Rival Warlords: Zhu Yuanzhang Takes Jiqing & Zhang Shicheng Takes Pingjiang",
     "1356 年朱元璋克集庆改应天府，张士诚渡江定都平江；韩林儿龙凤大宋据淮西中原，徐寿辉与陈友谅据湖广江西，明玉珍入据巴蜀，方国珍据浙东。": "In 1356 Zhu Yuanzhang took Jiqing (Yingtian) and Zhang Shicheng crossed the Yangtze to Pingjiang; Han Lin'er's Song held Huaixi and the Central Plain, Xu Shouhui and Chen Youliang held Huguang–Jiangxi, Ming Yuzhen held Sichuan, and Fang Guozhen held eastern Zhejiang.",
     "1363—1367 年 · 鄱阳湖决战后朱元璋兼并陈友谅": "1363–1367 CE · After Lake Poyang, Zhu Yuanzhang Absorbs Chen Youliang's Realm",
