@@ -2650,7 +2650,7 @@ async function runCartographyUiSuite(ctx) {
     };
 
     // 1. Northwest frontier: Beshbalik ([89.181, 44.001]) & Qocho ([89.53, 42.85]) inside Yuan (not Chagatai)
-    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_b', 's_yuan_c']) {
+    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_1351', 's_yuan_b', 's_yuan_c']) {
       assert(
         hasPolPt(sk, '元', 89.181, 44.001) &&
           hasPolPt(sk, '元', 89.53, 42.85) &&
@@ -2664,7 +2664,7 @@ async function runCartographyUiSuite(ctx) {
     }
 
     // 2. 《元史·地理志》 provincial boundaries: Jiqing & Hangzhou in 江浙行省, Kaizhou in 中书省（腹里）, Shanzhou in 河南江北行省, Xiningzhou in 甘肃行省, Hainan in 湖广行省
-    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_b', 's_yuan_c']) {
+    for (const sk of ['s_yuan_a', 's_yuan', 's_yuan_1351', 's_yuan_b', 's_yuan_c']) {
       assert(
         hasRegPt(sk, '江浙行省', 118.801, 32.061) &&
           !hasRegPt(sk, '河南江北行省', 118.801, 32.061) &&
@@ -2705,7 +2705,21 @@ async function runCartographyUiSuite(ctx) {
       's_yuan_a and s_yuan prefectures must reflect pre-1301 vs post-1301 circuit renamings and cover frontier circuits'
     );
 
-    // 4. Late Yuan Red Turban & warlord territories in s_yuan_b (1351–1363) and s_yuan_c (1363–1368)
+    // 4. Late Yuan Red Turban & warlord territories in s_yuan_1351 (1351–1356), s_yuan_b (1356–1363), and s_yuan_c (1363–1368)
+    assert(
+      hasPolPt('s_yuan_1351', '红巾军（刘福通）', 115.801, 32.901) &&
+        hasPolPt('s_yuan_1351', '红巾军（刘福通）', 115.78, 33.87) &&
+        hasPolPt('s_yuan_1351', '天完（徐寿辉）', 114.311, 30.551) &&
+        hasPolPt('s_yuan_1351', '天完（徐寿辉）', 115.891, 28.681) &&
+        hasPolPt('s_yuan_1351', '周（张士诚）', 119.45, 32.78) &&
+        hasPolPt('s_yuan_1351', '方国珍', 121.13, 28.85) &&
+        hasPolPt('s_yuan_1351', '元', 121.55, 29.87) &&
+        hasPolPt('s_yuan_1351', '元', 120.66, 28.01) &&
+        hasPolPt('s_yuan_1351', '元', 118.801, 32.061) &&
+        hasPolPt('s_yuan_1351', '元', 120.62, 31.3) &&
+        hasPolPt('s_yuan_1351', '元', 106.551, 29.561),
+      's_yuan_1351 (1351–1355) must isolate early Liu Futong, Xu Shouhui Tianwan, Zhang Shicheng Gaoyou, and Fang Guozhen pockets while keeping Jiqing, Pingjiang, and Chongqing under Yuan'
+    );
     assert(
       hasPolPt('s_yuan_b', '宋（韩林儿）', 115.78, 33.87) &&
         hasPolPt('s_yuan_b', '宋（韩林儿）', 115.801, 32.901) &&
@@ -2831,7 +2845,7 @@ async function runCartographyUiSuite(ctx) {
         yuanTitles('s_yuan_1367').includes('明夏（明升）'),
       's_yuan_1367: Pingjiang and Qingyuan must be 吴（朱元璋）, with no 周 / 方国珍 polity and 明夏 under 明升'
     );
-    for (const sk of ['s_yuan_1335', 's_yuan_b', 's_yuan_c', 's_yuan_1367']) {
+    for (const sk of ['s_yuan_1335', 's_yuan_1351', 's_yuan_b', 's_yuan_c', 's_yuan_1367']) {
       assert(
         yuanTitles(sk).includes('日本（南北朝）') &&
           !yuanTitles(sk).includes('日本（镰仓幕府）') &&
@@ -2862,6 +2876,7 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_nansong_f', '元', 90.5, 40.2) &&
         hasPolPt('s_nansong_f', '元', 100.16, 25.69) &&
         hasPolPt('s_nansong_g', '元', 100.0, 28.0) &&
+        hasPolPt('s_yuan_1351', '元', 90.5, 40.2) &&
         hasPolPt('s_yuan_b', '元', 90.5, 40.2) &&
         hasPolPt('s_yuan_c', '元', 90.5, 40.2),
       'Mongol Empire, Western Liao, and Yuan snapshots must have zero hollow interior cavities at Lop Nor [90.5, 40.2], Eastern Tarim [86, 40], Qilian [100, 38], or Hengduan [100, 28]'
