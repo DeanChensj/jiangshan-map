@@ -706,10 +706,15 @@
         this.locale === 'en'
           ? `Challenge complete! Total score <b>${q.score} / ${total}</b> — Rank: <b>${escHtml(rank)}</b>`
           : `挑战结束！总分 <b>${q.score} / ${total}</b> —— 封号：<b>「${escHtml(rank)}」</b>`;
-      this._id('challenge-verdict').textContent = this.uiStr(
-        'quiz_again_msg',
-        '可再战一局，或关闭回到自由浏览。'
+      const againMsg = escHtml(
+        this.uiStr('quiz_again_msg', '可再战一局，或关闭回到自由浏览。')
       );
+      const starCta = escHtml(
+        this.uiStr('quiz_star_cta', '喜欢这个小挑战？去 GitHub 点颗 ★ Star')
+      );
+      this._id('challenge-verdict').innerHTML =
+        `<span class="challenge-finish-verdict"><span>${againMsg}</span>` +
+        `<a class="challenge-star-link" href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">${starCta}</a></span>`;
       const nextBtn = this._id('act-next-round');
       nextBtn.classList.remove('is-hidden');
       nextBtn.textContent = this.uiStr('quiz_again', '再来一局');

@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-その後、ブラウザーで `http://localhost:8000` を開きます。
+その後、ブラウザーで `http://localhost:8000` を開きます。`topics/` 配下の静的テーマ別ガイドはデプロイ時に生成されます。ローカルで `/topics/` を閲覧したい場合は、先に `node scripts/build_seo_topics.js --html-only` を実行してください。
 
 ## Docker で実行する
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 その後、`http://localhost:8008` を開きます（ポートの対応付け `8008:80` は `docker-compose.yml` で設定されています）。
 
-イメージは、このリポジトリを静的なファイルとして配信する素の `nginx:alpine` です。`Dockerfile` は作業ツリーを `/usr/share/nginx/html` にコピーし、`.dockerignore` は `.git`、`.github`、`data/`、`docs/`、`scripts/`、`skills/`、`workers/`、Markdown ファイル、`geojson/demo.html`、README 用のデモ画像（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）を除外して、ビルドのコンテキストを小さく保ちます。サイトは実行時にこれらのどれも必要としません。
+`Dockerfile` は 2 段階ビルドを採用しています。`node:20-alpine` ステージで `node scripts/build_seo_topics.js --html-only` を実行して静的テーマ別ガイドを生成し、最終の `nginx:alpine` イメージには実行時に必要な静的ファイル（`index.html`、`assets/`、`css/`、`js/`、`geojson/`、`topics/` など）のみを `/usr/share/nginx/html` にコピーします。`.dockerignore` は `.git`、`.github`、`docs/`、`skills/`、`workers/`、不要な `data/` や `scripts/` サブディレクトリ、Markdown ファイル、`geojson/demo.html`、README 用のデモ画像（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）を除外します。
 
 別のポートを使うには、`docker-compose.yml` の `ports` の対応付けを変え（例：`"9000:80"`）、もう一度 `docker compose up -d` を実行します。
 

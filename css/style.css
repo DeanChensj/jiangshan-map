@@ -2614,6 +2614,23 @@ html[lang="en"] #gesture-guide {
   font-size: 13px;
 }
 
+.challenge-finish-verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.challenge-star-link {
+  color: var(--vermilion);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.challenge-star-link:hover {
+  text-decoration: underline;
+}
+
 /* Quiz markers: the guess is a vermilion annotation, the answer an ink circle. */
 .quiz-dot {
   fill: none;

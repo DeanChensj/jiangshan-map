@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000` in your browser.
+Then open `http://localhost:8000` in your browser. Static topic guides under `topics/` are built on deploy; run `node scripts/build_seo_topics.js --html-only` first if you want to browse `/topics/` locally.
 
 ## Run with Docker
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 Then open `http://localhost:8008` (the port mapping `8008:80` is set in `docker-compose.yml`).
 
-The image is a plain `nginx:alpine` that serves this repository as static files: `Dockerfile` copies the working tree into `/usr/share/nginx/html`, and `.dockerignore` keeps the build context small by excluding `.git`, `.github`, `data/`, `docs/`, `scripts/`, `skills/`, `workers/`, Markdown files, `geojson/demo.html` and the README demo images (`assets/hero_demo_*.webp`, `assets/preview_*.webp`) — the site does not need any of them at runtime.
+The `Dockerfile` uses a two-stage build: a `node:20-alpine` stage generates the static `topics/*.html` pages, and the final `nginx:alpine` image serves only the runtime static files (`index.html`, `assets/`, `css/`, `js/`, `geojson/`, `topics/`, and metadata files) from `/usr/share/nginx/html`. `.dockerignore` excludes `.git`, `.github`, `docs/`, `skills/`, `workers/`, unused `data/` and `scripts/` subdirectories, Markdown files, `geojson/demo.html`, and README demo images (`assets/hero_demo_*.webp`, `assets/preview_*.webp`).
 
 To use another port, change the `ports` mapping in `docker-compose.yml` (e.g. `"9000:80"`) and run `docker compose up -d` again.
 

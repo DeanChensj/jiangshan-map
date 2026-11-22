@@ -6,10 +6,11 @@ on:
     paths-ignore:
       - '**.md'
       - 'docs/**'
-      - 'scripts/**'
       - 'skills/**'
       - 'workers/**'
-      - 'data/**'
+      - 'scripts/tests/**'
+      - 'scripts/search-pinyin/**'
+      - 'data/atlas/**'
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
@@ -34,6 +35,14 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build static SEO topic pages
+        run: node scripts/build_seo_topics.js --html-only
+
       - name: Stage runtime static files
         run: |
           mkdir -p _site
@@ -57,6 +66,8 @@ jobs:
             --exclude='/.gitattributes' \
             --exclude='.DS_Store' \
             ./ _site/
+          test -f _site/topics/index.html
+          test -f _site/topics/ming.html
           du -sh _site
           echo "Staged file count: $(find _site -type f | wc -l)"
 
