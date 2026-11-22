@@ -2481,7 +2481,7 @@ async function runSearchRuntimeSuite(ctx) {
 
         const earlyMingSet = new Set([
           's_ming_0a', 's_ming_0b', 's_ming_0c', 's_ming_0d',
-          's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b0',
+          's_ming_a0', 's_ming_a', 's_ming_1409', 's_ming_a2', 's_ming_b0',
         ]);
         const lateMingDutchSet = new Set(['s_ming_c0', 's_ming_c', 's_ming_c2']);
         const qingDutchSet = new Set(['s_qing_a00', 's_qing_a0']);
