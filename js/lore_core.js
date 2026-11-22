@@ -834,7 +834,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"baiqi","zh":"白起","en":"Bai Qi","courtesyZh":"秦武安君 · 战国名将","courtesyEn":"Lord Wu'an of Qin","dynastyKey":"zhanguo","span":[-332,-257],"spanUnknown":"birth","aliases":["武安君白起"],"evCount":5},
     {"key":"limu","zh":"李牧","en":"Li Mu","courtesyZh":"赵国名将 · 武安君","courtesyEn":"General of Zhao","dynastyKey":"zhanguo","span":[-290,-229],"spanUnknown":"birth","aliases":[],"evCount":3},
     {"key":"wangjian","zh":"王翦","en":"Wang Jian","courtesyZh":"秦灭六国主帅 · 武成侯","courtesyEn":"Chief General of Qin","dynastyKey":"zhanguo","span":[-300,-213],"spanUnknown":"both","aliases":[],"evCount":5},
-    {"key":"qinshihuang","zh":"秦始皇","en":"Qin Shi Huang","courtesyZh":"嬴政 · 始皇帝","courtesyEn":"First Emperor of China","dynastyKey":"qin","span":[-259,-210],"aliases":["嬴政","秦王政","始皇帝","祖龙","First Emperor"],"evCount":9},
+    {"key":"qinshihuang","zh":"秦始皇","en":"Qin Shi Huang","courtesyZh":"嬴政 · 始皇帝","courtesyEn":"First Emperor of China","dynastyKey":"qin","span":[-259,-210],"aliases":["嬴政","秦王政","始皇帝","祖龙","First Emperor"],"evCount":10},
     {"key":"mengtian","zh":"蒙恬","en":"Meng Tian","courtesyZh":"秦大将 · 威振匈奴","courtesyEn":"General of Qin","dynastyKey":"qin","span":[-250,-210],"spanUnknown":"birth","aliases":[],"evCount":3},
     {"key":"xiangyu","zh":"项羽","en":"Xiang Yu","courtesyZh":"西楚霸王 · 名籍字羽","courtesyEn":"Hegemon-King of Western Chu","dynastyKey":"qin","span":[-232,-202],"aliases":["项籍","西楚霸王","霸王"],"evCount":7},
     {"key":"liubang","zh":"刘邦","en":"Liu Bang","courtesyZh":"汉高祖 · 字季","courtesyEn":"Emperor Gaozu of Han","dynastyKey":"xihan","span":[-256,-195],"aliases":["汉高祖","汉高帝","沛公","汉王刘邦"],"evCount":14},

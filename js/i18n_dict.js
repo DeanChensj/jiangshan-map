@@ -168,6 +168,10 @@ window.EN_LOCALE = {
       "Wang Ben takes Qi's surrender; First Emperor unifies China with commanderies and one script",
       "Xianyang"
     ],
+    "qin:-219": [
+      "First Emperor tours the east, performs Fengshan on Mount Tai and erects the Langya stele",
+      "Mount Tai · Langya"
+    ],
     "qin:-215": [
       "Meng Tian drives the Xiongnu from the Ordos Loop, then links the Great Wall over several years",
       "Jiuyuan (Ordos)"
@@ -177,8 +181,8 @@ window.EN_LOCALE = {
       "Lingqu & Panyu"
     ],
     "qin:-209": [
-      "Chen Sheng & Wu Guang rise at Dazexiang; nobles restore the kingdoms of Zhao, Yan, and Qi",
-      "Dazexiang"
+      "Chen Sheng & Wu Guang rise at Dazexiang; Liu Bang rises in Pei, Xiang Liang & Xiang Yu in Wu",
+      "Dazexiang · Pei · Wu"
     ],
     "xihan:-202": [
       "Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han",
@@ -315,6 +319,10 @@ window.EN_LOCALE = {
     "xijin:299": [
       "Qi Wannian's revolt is put down after two years; Jiang Tong warns of frontier settlement perils",
       "Chang'an · Guanzhong"
+    ],
+    "xijin:300": [
+      "Sima Lun executes Empress Jia and usurps the throne in 301, sparking rival princes' armies",
+      "Luoyang"
     ],
     "xijin:301": [
       "Guanzhong refugees settled in Shu rally to Di leader Li Te, who rises against Jin at Mianzhu",
@@ -900,6 +908,10 @@ window.EN_LOCALE = {
       "Sun Yat-sen founds the Republic of China in Nanjing; Puyi abdicates, ending imperial rule",
       "Nanjing · Beijing"
     ],
+    "roc:1913": [
+      "After Song Jiaoren's assassination, the Second Revolution against Yuan Shikai erupts and fails",
+      "Hukou · Nanjing"
+    ],
     "roc:1919": [
       "May Fourth Movement erupts in Beijing over the Treaty of Versailles",
       "Beijing"
@@ -1091,6 +1103,10 @@ window.EN_LOCALE = {
     "sui:612": [
       "Emperor Yang launches his first grand campaign against Goguryeo",
       "Zhuo · Liaodong"
+    ],
+    "sui:613": [
+      "Yang Xuangan revolts at Liyang during the Goguryeo campaign and besieges Luoyang",
+      "Liyang · Luoyang"
     ],
     "sui:617": [
       "Li Yuan rises in Taiyuan and captures Daxing (Chang'an)",
@@ -1379,6 +1395,14 @@ window.EN_LOCALE = {
     "roc:1926": [
       "National Revolutionary Army launches the Northern Expedition",
       "Guangzhou / Wuchang"
+    ],
+    "roc:1927": [
+      "KMT-CCP split; the Nanchang and Autumn Harvest uprisings lead to the Jinggangshan base",
+      "Nanchang · Jinggangshan"
+    ],
+    "roc:1934": [
+      "Central Red Army departs Ruijin to begin the Long March",
+      "Ruijin"
     ],
     "roc:1935": [
       "Zunyi Conference held during the Long March",
