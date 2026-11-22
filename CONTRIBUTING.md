@@ -64,7 +64,7 @@ We welcome contributions of all kinds, including:
    cd jiangshan-map
    python3 -m http.server 8000
    ```
-   Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI).
+   Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI). Static SEO pages under `topics/` are generated at deploy time; to preview them locally, run `node scripts/build_seo_topics.js --html-only`.
 
 2. **Sync Per-Asset Cache-Busting Hashes (After Editing `css/` or `js/`)**:
    `index.html` stamps each CSS/JS bundle (and lazy-loaded bundle attributes on `#atlas-app-script`) with an 8-character SHA-256 content hash:

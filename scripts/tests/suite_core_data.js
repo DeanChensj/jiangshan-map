@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { verifyIndexHtmlAssetHashes } = require('../sync_version');
+const { generateAllOutputs } = require('../build_seo_topics');
 
 async function runCoreDataSuite(ctx) {
   const {
@@ -503,10 +504,12 @@ async function runCoreDataSuite(ctx) {
       !appCode.toLowerCase().includes('deanchensj.github.io'),
     'SEO/GEO files (index.html, sitemap.xml, robots.txt, app.js) must canonicalize to https://deanchen.me/jiangshan-map/ and allow Baiduspider/Bytespider'
   );
-  const topicsDir = path.join(ROOT, 'topics');
+  const generatedTopicMap = new Map(
+    generateAllOutputs().allTopicPages.map((p) => [p.filename, p.html])
+  );
   assert(
-    fs.existsSync(path.join(topicsDir, 'index.html')),
-    'Missing topics/index.html static SEO directory page'
+    generatedTopicMap.has('index.html'),
+    'Missing topics/index.html static SEO directory page in generator output'
   );
   const placesCatalog = JSON.parse(
     fs.readFileSync(path.join(ROOT, 'data/topics/places.json'), 'utf8')
@@ -533,9 +536,8 @@ async function runCoreDataSuite(ctx) {
     'battle-feishui.html',
   ];
   for (const tf of expectedTopicFiles) {
-    const tfPath = path.join(topicsDir, tf);
-    assert(fs.existsSync(tfPath), `Missing static SEO topic page: topics/${tf}`);
-    const tfHtml = fs.readFileSync(tfPath, 'utf8');
+    const tfHtml = generatedTopicMap.get(tf);
+    assert(typeof tfHtml === 'string' && tfHtml.length > 0, `Missing static SEO topic page: topics/${tf}`);
     const expectedCanon = `https://deanchen.me/jiangshan-map/topics/${tf}`;
     assert(
       tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&

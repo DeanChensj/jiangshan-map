@@ -64,7 +64,7 @@
    cd jiangshan-map
    python3 -m http.server 8000
    ```
-   随后在浏览器访问 `http://localhost:8000`（英文界面可访问 `http://localhost:8000/?lang=en`）。
+   随后在浏览器访问 `http://localhost:8000`（英文界面可访问 `http://localhost:8000/?lang=en`）。`topics/` 下的静态专题页在部署时构建；如需本地预览，可先运行 `node scripts/build_seo_topics.js --html-only`。
 
 2. **同步静态与懒加载资源指纹（修改 `css/` 或 `js/` 后）**：
    `index.html` 按每个资源文件内容的 8 位 SHA-256 短哈希标记 `?v=` 与 `#atlas-app-script` 上的 `data-v-*` 属性，修改样式或脚本后运行：

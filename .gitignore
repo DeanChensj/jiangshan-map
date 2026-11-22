@@ -8,3 +8,6 @@ _snap_skill_tmp_*.html
 /geojson/*
 !/geojson/demo.html
 !/geojson/jiangshan-locate.js
+
+# Generated static SEO topic pages (built by scripts/build_seo_topics.js)
+/topics/*.html
