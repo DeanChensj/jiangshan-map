@@ -4809,6 +4809,7 @@ window.EN_LOCALE = {
     "郑（王世充）": "Zheng (Wang Shichong)",
     "夏（窦建德）": "Xia (Dou Jiande)",
     "汉东（刘黑闼）": "Handong (Liu Heita)",
+    "宋（辅公祏）": "Song (Fu Gongshi)",
     "大燕（安禄山）": "Yan (An Lushan)",
     "大燕（史思明）": "Yan (Shi Siming)",
     "755 — 757 · 安史之乱爆发：安禄山据河北、河南称帝大燕，两京相继陷落，玄宗幸蜀、肃宗灵武即位": "755–757 · An Lushan Rebellion: An Lushan proclaims the Yan state over Hebei and Henan; both capitals fall, Xuanzong flees to Shu and Suzong is enthroned at Lingwu",
