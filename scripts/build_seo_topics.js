@@ -8,8 +8,9 @@
  * `sitemap.xml`, `index.html`, and `llms.txt`.
  *
  * Usage:
- *   node scripts/build_seo_topics.js          # Build & sync all topic pages in place
- *   node scripts/build_seo_topics.js --check  # Verify disk matches generated output byte-for-byte (CI)
+ *   node scripts/build_seo_topics.js              # Build topic HTMLs & sync tracked sitemap.xml / index.html / llms.txt
+ *   node scripts/build_seo_topics.js --html-only  # Build gitignored topics/*.html only (used on deploy)
+ *   node scripts/build_seo_topics.js --check      # Verify generator output & tracked sync files (CI)
  */
 'use strict';
 
@@ -553,28 +554,8 @@ function generateAllOutputs() {
 function runCheck(outputs) {
   const drift = [];
   const expectedNames = new Set(outputs.allTopicPages.map((p) => p.filename));
-
-  if (!fs.existsSync(TOPICS_DIR)) {
-    console.error('✗ Missing topics/ directory');
-    return 1;
-  }
-
-  for (const name of fs.readdirSync(TOPICS_DIR)) {
-    if (name.endsWith('.html') && !expectedNames.has(name)) {
-      drift.push(`orphan topics/${name}`);
-    }
-  }
-
-  for (const page of outputs.allTopicPages) {
-    const full = path.join(TOPICS_DIR, page.filename);
-    if (!fs.existsSync(full)) {
-      drift.push(`missing topics/${page.filename}`);
-      continue;
-    }
-    const disk = fs.readFileSync(full, 'utf8');
-    if (disk !== page.html) {
-      drift.push(`stale topics/${page.filename}`);
-    }
+  if (expectedNames.size === 0 || outputs.allTopicPages.some((p) => !p.html)) {
+    drift.push('empty generated topic page output');
   }
 
   for (const f of outputs.extraFiles) {
@@ -584,7 +565,7 @@ function runCheck(outputs) {
   }
 
   if (drift.length) {
-    console.error(`✗ Topic pages are out of sync (${drift.length} issue${drift.length > 1 ? 's' : ''}):`);
+    console.error(`✗ Topic site metadata is out of sync (${drift.length} issue${drift.length > 1 ? 's' : ''}):`);
     for (const d of drift.slice(0, 20)) console.error(`  - ${d}`);
     if (drift.length > 20) console.error(`  ... and ${drift.length - 20} more`);
     console.error('Run `node scripts/build_seo_topics.js` to synchronize.');
@@ -595,35 +576,47 @@ function runCheck(outputs) {
   const totalPages =
     counts.dyn + counts.story + counts.journey + counts.featured + counts.person + counts.place + 3;
   console.log(
-    `✓ All ${totalPages} topic pages, sitemap.xml, index.html, and llms.txt are up to date`
+    `✓ Verified ${totalPages} generated topic pages; tracked sitemap.xml, index.html, and llms.txt are up to date`
   );
   return 0;
 }
 
-function runWrite(outputs) {
+function runWrite(outputs, { htmlOnly = false } = {}) {
   fs.mkdirSync(TOPICS_DIR, { recursive: true });
+  const expectedNames = new Set(outputs.allTopicPages.map((p) => p.filename));
+  for (const name of fs.readdirSync(TOPICS_DIR)) {
+    if (name.endsWith('.html') && !expectedNames.has(name)) {
+      fs.unlinkSync(path.join(TOPICS_DIR, name));
+    }
+  }
   for (const page of outputs.allTopicPages) {
     const full = path.join(TOPICS_DIR, page.filename);
     if (!fs.existsSync(full) || fs.readFileSync(full, 'utf8') !== page.html) {
       fs.writeFileSync(full, page.html, 'utf8');
     }
   }
-  for (const f of outputs.extraFiles) {
-    if (!fs.existsSync(f.path) || fs.readFileSync(f.path, 'utf8') !== f.content) {
-      fs.writeFileSync(f.path, f.content, 'utf8');
+  if (!htmlOnly) {
+    for (const f of outputs.extraFiles) {
+      if (!fs.existsSync(f.path) || fs.readFileSync(f.path, 'utf8') !== f.content) {
+        fs.writeFileSync(f.path, f.content, 'utf8');
+      }
     }
   }
   const { counts } = outputs;
+  const syncSuffix = htmlOnly
+    ? '(HTML-only deploy build)'
+    : `and index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`;
   console.log(
-    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured pages, ${counts.person} person/relic pages, ${counts.place} place pages, persons.html, places.html, and index.html (${counts.sitemapUrls} static URLs added to sitemap.xml)`
+    `✓ Generated ${counts.dyn} dynasty pages, ${counts.story} storyline pages, ${counts.journey} journey pages, ${counts.featured} featured pages, ${counts.person} person/relic pages, ${counts.place} place pages, persons.html, places.html, ${syncSuffix}`
   );
   return 0;
 }
 
 if (require.main === module) {
   const isCheck = process.argv.includes('--check');
+  const htmlOnly = process.argv.includes('--html-only');
   const outputs = generateAllOutputs();
-  process.exitCode = isCheck ? runCheck(outputs) : runWrite(outputs);
+  process.exitCode = isCheck ? runCheck(outputs) : runWrite(outputs, { htmlOnly });
 }
 
 module.exports = { generateAllOutputs };

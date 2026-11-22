@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-随后在浏览器打开 `http://localhost:8000`。
+随后在浏览器打开 `http://localhost:8000`。`topics/` 下的静态专题图志在部署时自动构建；如需在本地浏览 `/topics/`，先运行一次 `node scripts/build_seo_topics.js --html-only` 即可。
 
 ## 使用 Docker 运行
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 随后在浏览器打开 `http://localhost:8008`（端口映射为 `docker-compose.yml` 中的 `8008:80`）。
 
-镜像基于 `nginx:alpine` 做静态托管：`Dockerfile` 把整个仓库复制到 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`data/`、`docs/`、`scripts/`、`skills/`、`workers/`、Markdown 文件、`geojson/demo.html` 与 README 用的演示图片（`assets/hero_demo_*.webp`、`assets/preview_*.webp`），以减小构建上下文，页面运行不依赖这些内容。
+`Dockerfile` 采用两阶段构建：先在 `node:20-alpine` 阶段运行 `node scripts/build_seo_topics.js --html-only` 生成静态专题页，再将运行时所需的静态文件（`index.html`、`assets/`、`css/`、`js/`、`geojson/`、`topics/` 等）复制到 `nginx:alpine` 的 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`docs/`、`skills/`、`workers/`、未用到的 `data/` 与 `scripts/` 子目录、Markdown 文件、`geojson/demo.html` 及 README 演示图片（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）。
 
 要换端口：修改 `docker-compose.yml` 的 `ports`（如 `"9000:80"`），再执行 `docker compose up -d`。
 
