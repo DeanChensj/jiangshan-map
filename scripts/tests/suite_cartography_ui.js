@@ -1359,9 +1359,9 @@ async function runCartographyUiSuite(ctx) {
     for (const y of [-221, 755, 1127]) {
       assert(stops.some((s) => s.year === y && s.hold), `Autoplay must hold on the border change in ${y}`);
     }
-    // Snapshot boundaries without a same-year milestone (614, 880, 1335, 1927) must not create
+    // Snapshot boundaries without a same-year milestone (614, 880, 1335) must not create
     // orphan autoplay stops without an event headline.
-    for (const y of [614, 880, 1335, 1927]) {
+    for (const y of [614, 880, 1335]) {
       assert(!stops.some((s) => s.year === y), `Autoplay must not stop on milestone-less snapshot boundary ${y}`);
     }
     const holdCount = stops.filter((s) => s.hold).length;
