@@ -992,7 +992,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "xihan:-180": [
-      "Zhou Bo and Chen Ping eliminate the Lü clan and enthrone Emperor Wen of Han",
+      "Zhou Bo, Chen Ping, and Liu Zhang purge the Lü clan; Emperor Wen begins Huang-Lao rule",
       "Chang'an"
     ],
     "xihan:-174": [
@@ -2112,7 +2112,7 @@ window.EN_LOCALE = {
       "Chenggao & Hong Canal"
     ],
     "xihan:-134": [
-      "Emperor Wu elevates Confucianism, founds the Academy, and begins Filial-Incorrupt selection",
+      "Emperor Wu adopts Dong Zhongshu's Confucianism and later Gongsun Hong's Imperial Academy",
       "Chang'an"
     ],
     "nansong:1207": [

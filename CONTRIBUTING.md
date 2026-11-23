@@ -29,14 +29,14 @@ We welcome contributions of all kinds, including:
 │   ├── atlas_api.js         # AI-Native Public API (resolvePlace / inspect / locate), multi-stop custom route, deep-link restore & WebMCP module
 │   ├── atlas_track.js       # Anonymous button & feature click counter (deferred; batches counts to workers/stats, no cookies or personal data)
 │   ├── atlas_quiz.js        # Lazy-loaded Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
-│   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
+│   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones & transport corridors (CORRIDOR_DATA)
 │   ├── lore_core.js         # First-paint & search lore: imperial eras (CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS), passes, gazetteer, person profiles & guqin tracks
 │   ├── lore_detail.js       # Lazy-loaded lore detail: landmark events (PLACE_LANDMARK_EVENTS), biographical journeys, city lore (CITY_LORE) & polity profiles
 │   ├── zh_hant.js           # Lazy-loaded Traditional Chinese (zh-Hant) runtime converter & historical polysemy dictionary
 │   ├── milestone_sources.js # Generated from data/sources/ by audit_sources.js --fix: lazy milestone source lines
 │   ├── atlas_boot.js        # Generated from data/atlas/: initial snapshots for instant first-paint rendering
 │   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
-│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the `Provinces` reference layer
+│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the `Provinces` reference layer, plus the rivers, lakes & paleo-sea masks drawn under them (HYDRO_DATA)
 │   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
 ├── workers/stats/           # Cloudflare Worker behind stats.deanchen.me: write-only endpoint storing click counts in Workers Analytics Engine
 ├── skills/
