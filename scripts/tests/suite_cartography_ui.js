@@ -1223,11 +1223,17 @@ async function runCartographyUiSuite(ctx) {
 
     // Late Eastern Han & Three Kingdoms (Sanguozhi) territorial & capitalPeriods regression guards
     const sanguoSpotChecks = [
+      [{ lng: 118.801, lat: 32.061, year: 220 }, '孙权'], // Jianye 220 CE before imperial title
+      [{ lng: 104.071, lat: 30.571, year: 220 }, '刘备'], // Chengdu 220 CE before Shu Han founding (221)
+      [{ lng: 104.071, lat: 30.571, year: 221 }, '蜀汉'], // Chengdu 221 CE after Shu Han founding
+      [{ lng: 118.801, lat: 32.061, year: 221 }, '孙权'], // Jianye 221-228 CE before Sun Quan's 229 imperial proclamation
       [{ lng: 118.801, lat: 32.061, year: 229 }, '吴'], // Jianye
       [{ lng: 119.451, lat: 32.201, year: 229 }, '吴'], // Jingkou
       [{ lng: 112.121, lat: 32.011, year: 208 }, '曹操'], // Xiangyang post-208
       [{ lng: 112.121, lat: 32.011, year: 229 }, '魏'], // Xiangyang in Three Kingdoms
       [{ lng: 123.171, lat: 41.271, year: 196 }, '公孙氏（辽东）'], // Xiangping (Liaodong)
+      [{ lng: 123.171, lat: 41.271, year: 220 }, '公孙氏（辽东）'], // Xiangping 220-228
+      [{ lng: 123.171, lat: 41.271, year: 229 }, '燕（公孙氏辽东）'], // Xiangping 229-237
       [{ lng: 113.261, lat: 23.131, year: 200 }, '士燮'], // Panyu (Jiaozhou) 189-210
       [{ lng: 113.261, lat: 23.131, year: 211 }, '孙权'], // Panyu submits to Sun Quan 211
       [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾 · 韩遂'], // Guanlong before Tong Pass
@@ -1244,6 +1250,19 @@ async function runCartographyUiSuite(ctx) {
         info && info.polity === expPol,
         `Sanguozhi guard: inspect(${JSON.stringify(opts)}) expected polity "${expPol}", got ${JSON.stringify(info && info.polity)}`
       );
+    }
+    for (const [sk, expTitles, forbidden] of [
+      ['s_sanguo_220', ['魏', '刘备', '孙权', '公孙氏（辽东）'], ['蜀汉', '吴']],
+      ['s_sanguo_221', ['魏', '蜀汉', '孙权', '公孙氏（辽东）'], ['刘备', '吴']],
+      ['s_sanguo_a', ['魏', '蜀汉', '吴', '燕（公孙氏辽东）'], ['刘备', '孙权']],
+    ]) {
+      const titles = new Set((snapshots[sk].polities || []).map((p) => p.title));
+      for (const t of expTitles) {
+        assert(titles.has(t), `${sk} must contain polity "${t}", got ${JSON.stringify([...titles])}`);
+      }
+      for (const t of forbidden) {
+        assert(!titles.has(t), `${sk} must not contain polity "${t}"`);
+      }
     }
     const dhDyn = dynasties.find((d) => d.key === 'donghan');
     const sgDyn = dynasties.find((d) => d.key === 'sanguo');
@@ -1505,7 +1524,7 @@ async function runCartographyUiSuite(ctx) {
     const holdCount = stops.filter((s) => s.hold).length;
     assert(holdCount >= 180 && holdCount < stops.length, `Expected ~180+ map-changing nodes among ${stops.length}, got ${holdCount}`);
     const runMin = (totalTicks * 280) / 60000;
-    assert(runMin > 12 && runMin < 16, `A 1× full run should take ~14 min (≈190 map nodes × 2.8 s + ≈290 events × 1.1 s), got ${runMin.toFixed(1)} min`);
+    assert(runMin > 12 && runMin < 18, `A 1× full run should take ~16 min (≈215+ map nodes × 2.8 s + ≈325 events × 1.1 s), got ${runMin.toFixed(1)} min`);
 
     const tang = dynasties.find((d) => d.key === 'tang');
     Object.assign(ctrl, {

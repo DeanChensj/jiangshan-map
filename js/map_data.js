@@ -500,6 +500,8 @@ window.DYNASTY_DATA = [
       {"ancient":"丸都城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"正始五年曹魏毌丘俭东征高句丽克丸都刻石"}
     ],
     "phases": [
+      {"until":221,"snap":"s_sanguo_220"},
+      {"until":229,"snap":"s_sanguo_221"},
       {"until":238,"snap":"s_sanguo_a"},
       {"until":263,"snap":"s_sanguo"},
       {"until":265,"snap":"s_sanguo_b"},

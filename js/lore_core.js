@@ -364,7 +364,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
       ]
     },
     {
-      "regime": "孙吴", "polities": ["吴"], "until": 280,
+      "regime": "孙吴", "polities": ["吴", "孙权"], "until": 280,
       "spans": [
       [222,"吴黄武",1,"吴大帝","Emp. Da of Wu"],
       [229,"吴黄龙",1,"吴大帝","Emp. Da of Wu"],

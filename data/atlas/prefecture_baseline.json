@@ -159,6 +159,8 @@
   "s_zhanguo_b0": { "overlap": 0, "outside": 19 },
   "s_donghan_b0": { "overlap": 85, "outside": 855 },
   "s_sanguo_a": { "overlap": 101, "outside": 96 },
+  "s_sanguo_220": { "overlap": 101, "outside": 96 },
+  "s_sanguo_221": { "overlap": 101, "outside": 96 },
   "s_tang_a1b": { "overlap": 333, "outside": 106 },
   "s_tang_a2b": { "overlap": 333, "outside": 106 },
   "s_yuan_a": { "overlap": 720, "outside": 862 },
