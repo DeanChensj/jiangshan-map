@@ -880,6 +880,58 @@ async function runCoreDataSuite(ctx) {
     probe._setEnglishLocale(null);
     assert.strictEqual(probe._hasEnDict(), false, 'A missing locale remains supported');
   }
+  {
+    const hasSynth = Object.prototype.hasOwnProperty.call(sandbox.window, 'speechSynthesis');
+    const savedSynth = sandbox.window.speechSynthesis;
+    const hasUtter = Object.prototype.hasOwnProperty.call(sandbox.window, 'SpeechSynthesisUtterance');
+    const savedUtter = sandbox.window.SpeechSynthesisUtterance;
+    const savedUnsupported = ctrl._ttsUnsupported;
+    const savedLocale = ctrl.locale;
+    let mockVoices = [];
+    try {
+      ctrl._ttsUnsupported = false;
+      ctrl.locale = 'zh';
+      sandbox.window.speechSynthesis = { getVoices: () => mockVoices };
+      sandbox.window.SpeechSynthesisUtterance = function () {};
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting (Enhanced)', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Tingting (Premium)', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Siri Voice 1', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Google 普通话（中国大陆）', lang: 'zh-CN', localService: false, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting (Premium)',
+        'Premium local voice must rank ahead of Enhanced, Siri, and compact Tingting'
+      );
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting (Enhanced)', lang: 'zh-CN', localService: true, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting (Enhanced)',
+        'Enhanced local voice must rank ahead of compact default Tingting'
+      );
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting（优化）', lang: 'zh-CN', localService: true, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting（优化）',
+        'Localized Chinese 优化 voice must rank ahead of compact default Tingting'
+      );
+    } finally {
+      if (hasSynth) sandbox.window.speechSynthesis = savedSynth;
+      else delete sandbox.window.speechSynthesis;
+      if (hasUtter) sandbox.window.SpeechSynthesisUtterance = savedUtter;
+      else delete sandbox.window.SpeechSynthesisUtterance;
+      ctrl._ttsUnsupported = savedUnsupported;
+      ctrl.locale = savedLocale;
+    }
+  }
   assert.strictEqual(
     typeof ctrl._lazyAssetUrl,
     'function',
