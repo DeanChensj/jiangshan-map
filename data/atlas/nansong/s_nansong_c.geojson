@@ -7,7 +7,7 @@
     "prefRef": "s_nansong_a",
     "polities": [
       "s_nansong_a/南宋",
-      "金（迁都汴京）",
+      "金",
       "s_nansong_a0/西夏",
       "大蒙古国",
       "s_beisong_a0/大理",
@@ -377,9 +377,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "金（迁都汴京）",
+      "id": "金",
       "properties": {
-        "title": "金（迁都汴京）",
+        "title": "金",
         "tint": "#c9a227",
         "role": "rival",
         "anchor": [113.5, 34]

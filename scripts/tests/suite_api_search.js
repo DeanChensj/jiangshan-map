@@ -1583,7 +1583,7 @@ async function runApiSearchSuite(ctx) {
   assert.strictEqual(ctrl._resolveSnapKey(xihanDyn, 24), 's_xihan_e', 'Western Han at 24 CE must resolve to s_xihan_e');
   assert(
     snapshots.s_xihan_e.polities.some((p) => p.title === '更始（汉）') &&
-      snapshots.s_xihan_e.polities.some((p) => p.title === '刘秀（河北）') &&
+      snapshots.s_xihan_e.polities.some((p) => p.title === '刘秀') &&
       snapshots.s_xihan_e.polities.some((p) => p.title === '赤眉军'),
     's_xihan_e must map Gengshi, Liu Xiu (Hebei), and Chimei Army'
   );
