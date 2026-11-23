@@ -716,6 +716,7 @@ async function runCoreDataSuite(ctx) {
     '_renderChallengeAnsweredVerdict',
     '_evaluateLocateClick',
     '_finishChallenge',
+    '_openQuizPoster',
   ];
   const NARRATOR_METHODS = [
     '_hasSpeechSynthesis',
@@ -897,6 +898,7 @@ async function runCoreDataSuite(ctx) {
                 vLore: '11223344',
                 vHant: '55667788',
                 vQuiz: '99aabbcc',
+                vQuizPoster: '00112233',
                 vNarrator: 'ddeeff00',
               },
             }
@@ -926,6 +928,11 @@ async function runCoreDataSuite(ctx) {
       ctrl._lazyAssetUrl('js/atlas_quiz.js', 'vQuiz'),
       'js/atlas_quiz.js?v=99aabbcc',
       '_lazyAssetUrl must read data-v-quiz from #atlas-app-script'
+    );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/quiz_poster.js', 'vQuizPoster'),
+      'js/quiz_poster.js?v=00112233',
+      '_lazyAssetUrl must read data-v-quiz-poster from #atlas-app-script'
     );
     assert.strictEqual(
       ctrl._lazyAssetUrl('js/atlas_narrator.js', 'vNarrator'),

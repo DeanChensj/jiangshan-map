@@ -11,6 +11,19 @@
   let escHtml = null;
   const DEG_TO_RAD = Math.PI / 180;
 
+  function syncShareControls(ctrl, showShare) {
+    const shareBtn = ctrl._id('act-share-quiz');
+    const nextBtn = ctrl._id('act-next-round');
+    if (shareBtn && shareBtn.classList) {
+      shareBtn.classList.toggle('is-hidden', !showShare);
+      if (!showShare) shareBtn.onclick = null;
+    }
+    if (nextBtn && nextBtn.classList) {
+      nextBtn.classList.toggle('accent', !showShare);
+      nextBtn.classList.toggle('subtle', showShare);
+    }
+  }
+
   class AtlasQuizMixin {
     _sanitizeChallengeClue(text, settlement, displayAncient) {
       if (!text) return '';
@@ -217,6 +230,7 @@
       this.challenge = {
         variant: 'locate',
         deck: this._buildChallengeDeck(Boolean(opts && opts.preferCurrentDynasty)),
+        history: [],
         index: 0,
         score: 0,
         answered: false,
@@ -246,6 +260,14 @@
 
     stopChallenge(keepPaneState = false) {
       this.challenge = null;
+      syncShareControls(this, false);
+      if (
+        typeof window !== 'undefined' &&
+        window.JiangshanQuizPoster &&
+        typeof window.JiangshanQuizPoster.close === 'function'
+      ) {
+        window.JiangshanQuizPoster.close();
+      }
       this._scheduleUrlSync();
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
@@ -425,6 +447,7 @@
       if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
       this._id('challenge-result').classList.add('is-hidden');
       this._id('act-next-round').classList.add('is-hidden');
+      syncShareControls(this, false);
       this._renderChallengeQuestionText();
     }
 
@@ -600,6 +623,14 @@
       q.score += pts;
       q.lastKm = km;
       q.lastPts = pts;
+      if (!Array.isArray(q.history)) q.history = [];
+      q.history[q.index] = {
+        dynasty: cur.dynasty,
+        settlement: cur.settlement,
+        guess: guessGeo,
+        km,
+        pts,
+      };
 
       const [ax, ay] = this.projector.toScreen(
         cur.settlement.coord[0],
@@ -715,14 +746,67 @@
       this._id('challenge-verdict').innerHTML =
         `<span class="challenge-finish-verdict"><span>${againMsg}</span>` +
         `<a class="challenge-star-link" href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">${starCta}</a></span>`;
+      const shareBtn = this._id('act-share-quiz');
+      if (shareBtn) {
+        shareBtn.textContent = this.uiStr('quiz_share_btn', '分享战绩图');
+        shareBtn.onclick = () => this._openQuizPoster();
+      }
       const nextBtn = this._id('act-next-round');
       nextBtn.classList.remove('is-hidden');
       nextBtn.textContent = this.uiStr('quiz_again', '再来一局');
+      syncShareControls(this, true);
       nextBtn.onclick = () => {
         nextBtn.onclick = null;
         this.startChallenge();
       };
       if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-card'));
+      if (
+        typeof window !== 'undefined' &&
+        window.JiangshanQuizPoster &&
+        typeof window.JiangshanQuizPoster.refreshIfOpen === 'function'
+      ) {
+        window.JiangshanQuizPoster.refreshIfOpen(this);
+      }
+    }
+
+    _openQuizPoster() {
+      if (this._quizPosterLoading) return Promise.resolve(null);
+      this._quizPosterLoading = true;
+      const shareBtn = this._id('act-share-quiz');
+      const setShareLabel = () => {
+        if (!shareBtn) return;
+        shareBtn.textContent = this._quizPosterLoading
+          ? this.uiStr('quiz_poster_loading', '绘图中…')
+          : this.uiStr('quiz_share_btn', '分享战绩图');
+      };
+      setShareLabel();
+
+      let readyPromise;
+      if (typeof window !== 'undefined' && window.JiangshanQuizPoster) {
+        readyPromise = Promise.resolve(true);
+      } else {
+        if (!this._quizPosterPromise && typeof this._loadScriptOnce === 'function') {
+          this._quizPosterPromise = this._loadScriptOnce(
+            this._lazyAssetUrl('js/quiz_poster.js', 'vQuizPoster')
+          ).then(() => {
+            if (typeof window !== 'undefined' && window.JiangshanQuizPoster) return true;
+            this._quizPosterPromise = null;
+            return false;
+          });
+        }
+        readyPromise = this._quizPosterPromise || Promise.resolve(false);
+      }
+
+      return readyPromise
+        .then((ok) => {
+          if (!ok || typeof window === 'undefined' || !window.JiangshanQuizPoster) return null;
+          return window.JiangshanQuizPoster.open(this);
+        })
+        .catch(() => null)
+        .finally(() => {
+          this._quizPosterLoading = false;
+          if (this.challenge && this.challenge.finished) setShareLabel();
+        });
     }
   }
 
