@@ -123,6 +123,7 @@
   "s_wudai_c2": { "overlap": 406, "outside": 460 },
   "s_wudai_e2": { "overlap": 406, "outside": 265 },
   "s_dongjin_a0": { "overlap": 318, "outside": 1008 },
+  "s_dongjin_327": { "overlap": 318, "outside": 1008 },
   "s_dongjin_b2": { "overlap": 318, "outside": 766 },
   "s_dongjin_373": { "overlap": 318, "outside": 761 },
   "s_tang_b0a": { "overlap": 333, "outside": 106 },
