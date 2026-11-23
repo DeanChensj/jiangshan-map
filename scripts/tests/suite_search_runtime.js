@@ -1470,10 +1470,10 @@ async function runSearchRuntimeSuite(ctx) {
           ctrl._polityRulers(ctrl._resolvePolity('宋', 450)).startsWith('武帝 → 少帝 → 文帝'),
           `Liu Song rulers must derive from monarchPrefix era spans, got ${ctrl._polityRulers(ctrl._resolvePolity('宋', 450))}`
         );
-        const ccDesc = ctrl._resolvePolity('曹操（北方）', 205);
+        const ccDesc = ctrl._resolvePolity('曹操', 205);
         assert(
-          !ccDesc.curated && ccDesc.from === 200 && ccDesc.to === 219 && ccDesc.keywords.includes('曹操'),
-          `Uncurated warlord must derive its on-map span 200–219 and name keyword, got ${JSON.stringify(ccDesc)}`
+          !ccDesc.curated && ccDesc.from === 189 && ccDesc.to === 219 && ccDesc.keywords.includes('曹操'),
+          `Uncurated warlord must derive its on-map span 189–219 and name keyword, got ${JSON.stringify(ccDesc)}`
         );
         assert(ctrl._polityEvents(ccDesc).length >= 5, 'Uncurated warlord must still surface related events');
         const dynByKey = (k) => ctrl.dynasties.find((d) => d.key === k);
@@ -2860,11 +2860,11 @@ async function runSearchRuntimeSuite(ctx) {
 
     // 6-era boundary & gap regression checks (195 Donghan, 322 Dongjin, 676 Tang, 1410 Ming, 1650 Qing, 1918 ROC)
     const ptIn = sandbox.window.MercatorProjector.pointInShape;
-    const dz195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '董卓（长安）');
-    const mt195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '马腾（凉州）');
+    const dz195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '董卓');
+    const mt195 = snapshots.s_donghan_d1.polities.find((p) => p.title === '马腾');
     assert(
       !ptIn(106.5, 38.0, dz195.shape) && ptIn(106.5, 38.0, mt195.shape),
-      's_donghan_d1 (195 CE): Northern Ningxia [106.5, 38.0] must belong to 马腾（凉州）, not a Dong Zhuo horn'
+      's_donghan_d1 (195 CE): Northern Ningxia [106.5, 38.0] must belong to 马腾, not a Dong Zhuo horn'
     );
     for (const [sk, mainTitle] of [['s_tang_a', '唐'], ['s_tang_wz1', '武周']]) {
       const mPol = snapshots[sk].polities.find((p) => p.title === mainTitle);
