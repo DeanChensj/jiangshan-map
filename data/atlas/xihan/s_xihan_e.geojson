@@ -8,7 +8,7 @@
     "regionRef": "s_xihan_d",
     "polities": [
       "更始（汉）",
-      "刘秀（河北）",
+      "刘秀",
       "赤眉军",
       "成家（公孙述）",
       "隗嚣 · 窦融",
@@ -1784,9 +1784,9 @@
     },
     {
       "type": "Feature",
-      "id": "刘秀（河北）",
+      "id": "刘秀",
       "properties": {
-        "title": "刘秀（河北）",
+        "title": "刘秀",
         "role": "rival",
         "tint": "#a4432c",
         "anchor": [115.6, 38.4]

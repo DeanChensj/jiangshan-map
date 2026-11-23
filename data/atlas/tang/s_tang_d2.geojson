@@ -6,7 +6,7 @@
     "note": "州郡政区：唐代道州与边疆都护政区",
     "prefRef": "s_tang_a",
     "polities": [
-      "唐 · 岐（关中）",
+      "唐 · 岐",
       "宣武（朱温）",
       "河东（李克用）",
       "西川（王建）",
@@ -44,7 +44,7 @@
       "s_tang_b0a/北亚林中诸部",
       "s_tang_b1/波罗王朝",
       "s_sui_a/流求",
-      "静海军（交州）"
+      "静海军"
     ],
     "regions": [
       "关内道",
@@ -65,9 +65,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "唐 · 岐（关中）",
+      "id": "唐 · 岐",
       "properties": {
-        "title": "唐 · 岐（关中）",
+        "title": "唐 · 岐",
         "role": "main",
         "tint": "#c6952b",
         "anchor": [108.4, 35.2]
@@ -8430,9 +8430,9 @@
     },
     {
       "type": "Feature",
-      "id": "静海军（交州）",
+      "id": "静海军",
       "properties": {
-        "title": "静海军（交州）",
+        "title": "静海军",
         "role": "rival",
         "tint": "#8c7355",
         "anchor": [105.6, 20.6]

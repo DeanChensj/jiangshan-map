@@ -431,7 +431,7 @@ async function runCartographyUiSuite(ctx) {
           `${sk}: Wuyuan, Shengle, Alashan, & Yinshan-north must belong to 鲜卑 after 215 CE while Zhongwei & Xinzhou remain in ${coreTitle}`
         );
       }
-      // 3) 306-311 CE (s_xijin_a2): Ye in 汉赵, Luoyang/Jinyang in 晋; 311-316 CE (s_xijin_b): Luoyang in 汉赵 while Chang'an (313-316 capital) stays in 晋; 350 CE (s_dongjin_350): Chang'an in 前秦（苻氏）, Ye in 冉魏
+      // 3) 306-311 CE (s_xijin_a2): Ye in 汉赵, Luoyang/Jinyang in 晋; 311-316 CE (s_xijin_b): Luoyang in 汉赵 while Chang'an (313-316 capital) stays in 晋; 350 CE (s_dongjin_350): Chang'an in 前秦, Ye in 冉魏
       assert(
         hasPolAt('s_xijin_a2', '汉赵', 114.39, 36.1) &&
           hasPolAt('s_xijin_a2', '晋', 112.45, 34.62) &&
@@ -443,10 +443,10 @@ async function runCartographyUiSuite(ctx) {
         's_xijin_b (311-316 CE): Luoyang must belong to 汉赵 while Chang\'an stays in 晋'
       );
       assert(
-        hasPolAt('s_dongjin_350', '前秦（苻氏）', 108.94, 34.34) &&
+        hasPolAt('s_dongjin_350', '前秦', 108.94, 34.34) &&
           hasPolAt('s_dongjin_350', '冉魏', 114.35, 36.6) &&
           !hasPolAt('s_dongjin_350', '冉魏', 108.94, 34.34),
-        's_dongjin_350 (350 CE): Chang\'an must belong to 前秦（苻氏） while Ye belongs to 冉魏'
+        's_dongjin_350 (350 CE): Chang\'an must belong to 前秦 while Ye belongs to 冉魏'
       );
       // 4) Tuyuhun (吐谷浑) present across Eastern Jin, Northern & Southern Dynasties, Sui, and Early Tang (317-634 CE)
       for (const sk of ['s_dongjin_317', 's_dongjin_c', 's_nanbei_0', 's_nanbei_a', 's_nanbei_e', 's_sui_a', 's_sui', 's_sui_d', 's_tang_0']) {
@@ -632,7 +632,7 @@ async function runCartographyUiSuite(ctx) {
       // De-provincialize modern Gansu Mazongshan ([96.80, 41.80]) & modern Minqin-Tengger spike ([103.90, 39.30]) across Han–Five Dynasties + Ming
       const deProvCoreSet = new Set([
         '汉（郡国并行）', '汉', '新（王莽）', '隗嚣 · 窦融', '东汉', '马腾', '马腾 · 韩遂', '曹操',
-        '魏', '晋', '汉赵', '前赵', '后赵', '前凉', '前秦（苻氏）', '前秦', '后凉', '西凉', '北凉',
+        '魏', '晋', '汉赵', '前赵', '后赵', '前凉', '前秦', '后凉', '西凉', '北凉',
         '北魏', '西魏', '北周', '隋', '凉（李轨）', '唐', '武周', '吐蕃', '归义军（张议潮）',
         '沙州归义军', '甘州回鹘', '凉州（六谷部）', '明', '哈密卫（关西七卫）', '大顺（李自成）',
       ]);
@@ -658,7 +658,7 @@ async function runCartographyUiSuite(ctx) {
         hasPolAt('s_xihan_b1', '匈奴', 98.51, 39.74) &&
           hasPolAt('s_xihan_b2', '汉', 98.51, 39.74) &&
           !hasPolAt('s_xihan_b2', '月氏', 98.51, 39.74) &&
-          !hasPolAt('s_xihan_e', '刘秀（河北）', 108.50, 40.80) &&
+          !hasPolAt('s_xihan_e', '刘秀', 108.50, 40.80) &&
           hasPolAt('s_xihan_e', '匈奴', 108.50, 40.80) &&
           hasPolAt('s_xihan_e', '更始（汉）', 112.55, 37.87) &&
           !hasPolAt('s_sui_c', '吐蕃', 99.82, 36.85) &&
@@ -2936,7 +2936,7 @@ async function runCartographyUiSuite(ctx) {
     for (const sk of ['s_wudai_e', 's_wudai_e2']) {
       assert(
         hasPolPt(sk, '南汉', 110.29, 25.27) &&
-          hasPolPt(sk, '武平（湖南）', 112.94, 28.2) &&
+          hasPolPt(sk, '武平', 112.94, 28.2) &&
           hasPolPt(sk, '黔中诸部（羁縻）', 106.7, 26.6),
         `${sk}: after 951 Guilin is 南汉 and Guizhou is outside 武平`
       );
@@ -3105,8 +3105,8 @@ async function runCartographyUiSuite(ctx) {
     assert(
       !snapshots.s_beisong_a0.polities.some((p) => p.title === '湖南') &&
         hasPolPt('s_beisong_a0', '荆南（南平）', 112.241, 30.331) &&
-        hasPolPt('s_beisong_a0', '武平（湖南）', 112.941, 28.231) &&
-        hasPolPt('s_beisong_a0', '武平（湖南）', 111.698, 29.032) &&
+        hasPolPt('s_beisong_a0', '武平', 112.941, 28.231) &&
+        hasPolPt('s_beisong_a0', '武平', 111.698, 29.032) &&
         hasPolPt('s_beisong_a', '宋', 112.241, 30.331) &&
         hasPolPt('s_beisong_a', '宋', 112.941, 28.231),
       's_beisong_a0 (960–963) must distinguish Jingnan (Jiangling) and Wuping (Tanzhou/Langzhou) before the 963 Jinghu campaign'
@@ -3218,8 +3218,8 @@ async function runCartographyUiSuite(ctx) {
     assert(
       mcPol &&
         (mcPol.shape.type === 'Polygon' || mcPol.shape.coordinates.length === 1) &&
-        hasPolPt('s_nansong_c', '金（迁都汴京）', 103.861, 35.381) &&
-        hasPolPt('s_nansong_c', '金（迁都汴京）', 103.83, 36.06),
+        hasPolPt('s_nansong_c', '金', 103.861, 35.381) &&
+        hasPolPt('s_nansong_c', '金', 103.83, 36.06),
       's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
     );
     for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
@@ -3239,7 +3239,7 @@ async function runCartographyUiSuite(ctx) {
     for (const [sk, northPol] of [
       ['s_nansong_a', '金'],
       ['s_nansong_b0', '金'],
-      ['s_nansong_c', '金（迁都汴京）'],
+      ['s_nansong_c', '金'],
       ['s_nansong_d', '大蒙古国'],
       ['s_nansong_e0', '大蒙古国'],
       ['s_nansong_e', '大蒙古国'],
