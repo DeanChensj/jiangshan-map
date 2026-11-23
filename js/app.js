@@ -390,7 +390,10 @@
       this._initTimelineBands();
 
       this.defaultLocale = this._detectDefaultLocale();
-      this.locale = this._parseLangParam(new URLSearchParams(location.search).get('lang')) || this.defaultLocale;
+      this.locale =
+        this._parseLangParam(new URLSearchParams(location.search).get('lang')) ||
+        this._readStoredLocale() ||
+        this.defaultLocale;
       this.year = this.dynasties[0].focusYear;
       this.dynastyIdx = 0;
       this.activeSnapKey = null;
@@ -1728,6 +1731,27 @@
       if (!primary) return 'zh';
       if (primary === 'zh' || /^zh[-_]/.test(primary)) return /hant|tw|hk|mo/.test(primary) ? 'zh-tw' : 'zh';
       return 'en';
+    }
+
+    _readStoredLocale() {
+      if (this.embed) return null;
+      try {
+        if (typeof localStorage === 'undefined' || !localStorage) return null;
+        return this._parseLangParam(localStorage.getItem('jiangshan_locale'));
+      } catch (_) {
+        return null;
+      }
+    }
+
+    _saveStoredLocale(loc) {
+      if (this.embed) return;
+      const norm = this._parseLangParam(loc);
+      if (!norm) return;
+      try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+          localStorage.setItem('jiangshan_locale', norm);
+        }
+      } catch (_) {}
     }
 
     _effectiveRenderedLocale() {
@@ -10028,6 +10052,7 @@
         actLocHant.addEventListener('click', () => {
           const target = actLocHant.dataset.targetLocale;
           this.locale = target || (this.locale === 'zh' ? 'zh-tw' : 'zh');
+          this._saveStoredLocale(this.locale);
           this._syncUrlLangParam();
           this.applyLocale();
         });
@@ -10036,6 +10061,7 @@
         const btn = this._id('act-locale');
         const target = btn && btn.dataset && btn.dataset.targetLocale;
         this.locale = target || (this.locale === 'en' ? 'zh' : 'en');
+        this._saveStoredLocale(this.locale);
         this._syncUrlLangParam();
         this.applyLocale();
       });

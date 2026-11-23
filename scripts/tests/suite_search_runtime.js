@@ -405,10 +405,13 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl._syncUrlLangParam();
         assert.strictEqual(sandbox.location.search, '', 'Bare URL + zh must clear query string');
 
-        // 4a. Default locale follows the browser when ?lang= is absent; on a non-Chinese browser,
-        // choosing Simplified must be written as lang=zh so a refresh does not flip back to English.
+        // 4a. Default locale follows the browser when ?lang= is absent; manual switches persist in
+        // localStorage (?lang= > localStorage > browser primary); on a non-Chinese browser, choosing
+        // Simplified must be written as lang=zh so a refresh does not flip back to English.
         const savedNav = sandbox.navigator;
         const savedDefault = ctrl.defaultLocale;
+        const savedStorage = sandbox.localStorage;
+        const savedEmbed = ctrl.embed;
         const detect = (nav) => {
           sandbox.navigator = nav;
           return ctrl._detectDefaultLocale();
@@ -429,6 +432,49 @@ async function runSearchRuntimeSuite(ctx) {
           assert.strictEqual(ctrl._parseLangParam('zh-CN'), 'zh');
           assert.strictEqual(ctrl._parseLangParam('zh-HK'), 'zh-tw');
           assert.strictEqual(ctrl._parseLangParam('fr'), null);
+          const store = new Map();
+          sandbox.localStorage = {
+            getItem: (k) => (store.has(k) ? store.get(k) : null),
+            setItem: (k, v) => store.set(k, String(v)),
+          };
+          ctrl.embed = false;
+          assert.strictEqual(ctrl._readStoredLocale(), null);
+          ctrl._saveStoredLocale('zh');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh');
+          assert.strictEqual(ctrl._readStoredLocale(), 'zh');
+          ctrl._saveStoredLocale('zh-Hant');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh-tw');
+          assert.strictEqual(ctrl._readStoredLocale(), 'zh-tw');
+          ctrl._saveStoredLocale('fr');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh-tw', 'Unknown locale must not overwrite stored preference');
+          store.set('jiangshan_locale', 'bogus');
+          assert.strictEqual(ctrl._readStoredLocale(), null);
+          store.set('jiangshan_locale', 'zh');
+          assert.strictEqual(
+            ctrl._parseLangParam('en') || ctrl._readStoredLocale() || 'zh',
+            'en',
+            'Explicit ?lang= must take precedence over stored localStorage preference'
+          );
+          assert.strictEqual(
+            ctrl._parseLangParam('') || ctrl._readStoredLocale() || 'en',
+            'zh',
+            'Stored preference must override non-Chinese browser default when ?lang= is absent'
+          );
+          ctrl.embed = true;
+          assert.strictEqual(ctrl._readStoredLocale(), null, 'Embed mode must ignore stored locale');
+          ctrl._saveStoredLocale('en');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh', 'Embed mode must not persist locale');
+          ctrl.embed = false;
+          sandbox.localStorage = {
+            getItem() {
+              throw new Error('blocked');
+            },
+            setItem() {
+              throw new Error('blocked');
+            },
+          };
+          assert.strictEqual(ctrl._readStoredLocale(), null, 'Storage errors must fail closed to null');
+          ctrl._saveStoredLocale('en');
           ctrl.defaultLocale = 'en';
           sandbox.location.search = '?lang=en';
           ctrl.locale = 'zh';
@@ -441,6 +487,8 @@ async function runSearchRuntimeSuite(ctx) {
         } finally {
           sandbox.navigator = savedNav;
           ctrl.defaultLocale = savedDefault;
+          sandbox.localStorage = savedStorage;
+          ctrl.embed = savedEmbed;
         }
 
         // 4b. Once armed, the URL mirrors restorable state (refresh/share land on the same view)
