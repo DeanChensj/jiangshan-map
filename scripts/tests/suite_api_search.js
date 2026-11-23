@@ -922,6 +922,37 @@ async function runApiSearchSuite(ctx) {
     'PERSON_DETAILS must be the lore_detail.js table holding each story line\'s camps/stops'
   );
 
+  // The Repository Structure block names the file that owns each data table, because that is
+  // where a contributor is sent to edit it. Rivers/lakes/paleo-sea masks moved to
+  // js/china_geo_data.js (HYDRO_DATA) and passes to js/lore_core.js (STRATEGIC_PASSES), but the
+  // map_data.js line kept claiming "rivers, passes" — pointing contributors at a file that has
+  // never contained either, so the edit would be silently wrong.
+  const dataGlobals = {
+    'map_data.js': (sandbox.window.DYNASTY_DATA || []).length > 0 && Array.isArray(sandbox.window.CORRIDOR_DATA),
+    'china_geo_data.js': Array.isArray(sandbox.window.PROVINCE_OUTLINES) && Boolean(sandbox.window.HYDRO_DATA),
+    'lore_core.js': Array.isArray(loreData.STRATEGIC_PASSES) && Array.isArray(loreData.PERSON_PROFILES),
+  };
+  for (const [label, docSrc] of [
+    ['CONTRIBUTING.md', contributingSrc],
+    ['CONTRIBUTING_ZH.md', contributingZhSrc],
+  ]) {
+    for (const [file, ok] of Object.entries(dataGlobals)) {
+      assert(
+        ok && docSrc.split('\n').some((l) => l.includes(`── ${file} `)),
+        `${label} must describe js/${file} in the Repository Structure block`
+      );
+    }
+    const mapDataLine = docSrc.split('\n').find((l) => l.includes('── map_data.js ')) || '';
+    assert(
+      !/\brivers?\b|水系/.test(mapDataLine),
+      `${label} must not credit js/map_data.js with rivers; they live in js/china_geo_data.js as HYDRO_DATA`
+    );
+    assert(
+      !/\bpasses?\b|雄关/.test(mapDataLine),
+      `${label} must not credit js/map_data.js with passes; they live in js/lore_core.js as STRATEGIC_PASSES`
+    );
+  }
+
   // CUJ 9p: Territorial Ghost Diff (#grp-ghost-diff) Across Main, Protectorate, Rival & Cross-Dynasty Transitions
   const ghostNodes = [];
   ctrl.grpGhostDiff = {
