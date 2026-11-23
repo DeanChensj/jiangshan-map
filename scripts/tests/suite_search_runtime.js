@@ -1017,6 +1017,12 @@ async function runSearchRuntimeSuite(ctx) {
             _rescaleSvgTypography: () => { qCtrl._rescaleQuizChip(1000, 1); },
           });
           qCtrl._initTimelineBands();
+          if (!sandbox.window.JiangshanQuizPoster) {
+            vm.runInContext(
+              fs.readFileSync(path.join(JS_DIR, 'quiz_poster.js'), 'utf8'),
+              sandbox
+            );
+          }
           for (const loc of ['zh', 'zh-tw', 'en']) {
             qCtrl.locale = loc;
             qCtrl.startChallenge({ preferCurrentDynasty: true });
@@ -1029,10 +1035,31 @@ async function runSearchRuntimeSuite(ctx) {
             qCtrl._evaluateLocateClick(tx, ty);
             assert.strictEqual(qCtrl.challenge.answered, true);
             assert.strictEqual(qCtrl.challenge.lastPts, 100);
+            assert.strictEqual(qCtrl.challenge.history.length, 1, `Expected quiz history for ${loc}`);
             qCtrl._finishChallenge();
             assert.strictEqual(qCtrl.challenge.finished, true);
+            assert.strictEqual(
+              getQuizEl('act-share-quiz').classList.contains('is-hidden'),
+              false,
+              `#act-share-quiz must be visible after finishing quiz (${loc})`
+            );
+            const pData = sandbox.window.JiangshanQuizPoster.buildPosterData(qCtrl);
+            assert.strictEqual(pData.total, 100);
+            assert.strictEqual(pData.items.length, 1);
+            assert(pData.best && pData.rankTitle, `Poster metadata missing for ${loc}`);
+            assert(
+              loc === 'en'
+                ? pData.items[0].dynEn && !/[\u4e00-\u9fff]/.test(pData.items[0].dynEn + pData.items[0].ancEn)
+                : Boolean(pData.items[0].dynZh && pData.items[0].ancZh),
+              `Poster dynasty/place label invalid for ${loc}: ${JSON.stringify(pData.items[0])}`
+            );
             qCtrl.stopChallenge();
             assert.strictEqual(qCtrl.challenge, null);
+            assert.strictEqual(
+              getQuizEl('act-share-quiz').classList.contains('is-hidden'),
+              true,
+              `#act-share-quiz must hide on stopChallenge (${loc})`
+            );
           }
           // A round must open on a year in which its place is still on the map
           // (the map hides a settlement once year >= vanish).
