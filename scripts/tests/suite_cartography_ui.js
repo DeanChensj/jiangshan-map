@@ -164,12 +164,22 @@ async function runCartographyUiSuite(ctx) {
       snapshots.s_dongjin_a0.polities.some((p) => p.title === '前赵') &&
         snapshots.s_dongjin_a0.polities.some((p) => p.title === '后赵') &&
         !snapshots.s_dongjin_a0.polities.some((p) => p.title === '汉赵'),
-      's_dongjin_a0 (319-328 CE) must split 汉赵 into 前赵 and 后赵'
+      's_dongjin_a0 (319-326 CE) must split 汉赵 into 前赵 and 后赵'
+    );
+    const djGaochangDyn = dynasties.find((d) => d.key === 'dongjin');
+    assert.strictEqual(ctrl._resolveSnapKey(djGaochangDyn, 326), 's_dongjin_a0');
+    assert.strictEqual(ctrl._resolveSnapKey(djGaochangDyn, 327), 's_dongjin_327');
+    assert.strictEqual(ctrl._resolveSnapKey(djGaochangDyn, 329), 's_dongjin_a');
+    assert(
+      !pointInShape(89.53, 42.85, snapshots.s_dongjin_a0.polities.find((p) => p.title === '前凉').shape) &&
+        snapshots.s_dongjin_327.polities.some((p) => p.title === '前赵') &&
+        snapshots.s_dongjin_327.polities.some((p) => p.title === '后赵'),
+      '326 CE (s_dongjin_a0) must keep Gaochang outside 前凉, while 327-328 CE (s_dongjin_327) retains split 前赵 and 后赵'
     );
 
     // Shengle ([111.821, 40.381]) inside Dai (代) across 317-376 CE (s_dongjin_317..s_dongjin_b2)
     const shengle = [111.821, 40.381];
-    for (const sk of ['s_dongjin_317', 's_dongjin_a0', 's_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
+    for (const sk of ['s_dongjin_317', 's_dongjin_a0', 's_dongjin_327', 's_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
       const daiPol = snapshots[sk].polities.find((p) => p.title === '代');
       assert(daiPol && daiPol.shape, `${sk} must include 代 polity`);
       assert(
@@ -179,8 +189,8 @@ async function runCartographyUiSuite(ctx) {
     }
 
     // 沙州 (issue #267): Gaochang Commandery (327 CE) and the 西域长史 at Haitou (Loulan) belong
-    // to 前凉 from 329 CE until 376 CE, and no other polity of those snapshots covers them.
-    for (const sk of ['s_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
+    // to 前凉 from 327 CE until 376 CE, and no other polity of those snapshots covers them.
+    for (const sk of ['s_dongjin_327', 's_dongjin_a', 's_dongjin_a2', 's_dongjin_350', 's_dongjin_351', 's_dongjin_b', 's_dongjin_b2']) {
       for (const [name, x, y] of [['高昌', 89.53, 42.85], ['楼兰', 89.84, 40.52]]) {
         const holders = snapshots[sk].polities.filter((p) => p.shape && pointInShape(x, y, p.shape)).map((p) => p.title);
         assert(holders.length === 1 && holders[0] === '前凉', `${sk}: ${name} must be inside 前凉 only, found ${holders.join('+')}`);

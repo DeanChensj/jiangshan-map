@@ -676,7 +676,8 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {"until":319,"snap":"s_dongjin_317"},
-      {"until":329,"snap":"s_dongjin_a0"},
+      {"until":327,"snap":"s_dongjin_a0"},
+      {"until":329,"snap":"s_dongjin_327"},
       {"until":347,"snap":"s_dongjin_a"},
       {"until":350,"snap":"s_dongjin_a2"},
       {"until":351,"snap":"s_dongjin_350"},

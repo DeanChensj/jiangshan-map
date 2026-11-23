@@ -95,6 +95,7 @@
   "s_wudai_c2": { "overlap": 8, "gap": 71 },
   "s_wudai_e2": { "overlap": 56, "gap": 254 },
   "s_dongjin_a0": { "overlap": 16, "gap": 43 },
+  "s_dongjin_327": { "overlap": 16, "gap": 43 },
   "s_dongjin_b2": { "overlap": 9, "gap": 10 },
   "s_dongjin_373": { "overlap": 6, "gap": 10 },
   "s_tang_b0a": { "overlap": 0, "gap": 15 },
