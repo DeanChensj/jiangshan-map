@@ -44,7 +44,7 @@ function buildStorylinePage({
 
   const stopsChainZh = stops.map((st) => `${st.ancientZh}（今${st.modernZh}）`).join(' → ');
 
-  const pageTitle = `${s.zh}历史地图（${spanZh} · ${s.en}）· 双阵营对抗沙盘、${stops.length}站全过程与史料出处 | 江山时序`;
+  const pageTitle = `${s.zh}历史地图（${spanZh}）· 双阵营沙盘 | 江山时序`;
   const pageDesc = `${s.zh}（${s.en}，${s.courtesyZh}）：${s.descZh} 全程共 ${stops.length} 个关键时空节点（${stopsChainZh}），提供双阵营对抗沙盘、古今地名对照与一手史籍出处。`;
 
   const campMap = new Map(camps.map((c) => [c.key, c]));
@@ -78,8 +78,10 @@ function buildStorylinePage({
         lang,
         base: mapBase,
       });
+      // The Long March storyline only links the two 20th-century profiles in the atlas, so
+      // labelling them "key figures" on every stop (e.g. Xiang River, Huining) misleads.
       const actorsList =
-        Array.isArray(st.actors) && st.actors.length
+        s.key !== 'changzheng' && Array.isArray(st.actors) && st.actors.length
           ? `<div class="stop-meta-line"><strong>核心人物：</strong>${st.actors
               .map((a) => escHtml(a.zh))
               .join('、')}</div>`
@@ -96,7 +98,8 @@ function buildStorylinePage({
             vectorParts.join(' / ')
           )} 推进至 ${escHtml(st.ancientZh)}</div>`
         : '';
-      const timeLabelZh = `${fmtYearShortZh(st.year)}年${st.subEraZh ? ` · ${st.subEraZh}` : ''}`;
+      const yrPrefix = `${fmtYearShortZh(st.year)}年`;
+      const timeLabelZh = st.subEraZh && st.subEraZh.startsWith(yrPrefix) ? st.subEraZh : `${yrPrefix}${st.subEraZh ? ` · ${st.subEraZh}` : ''}`;
 
       return `${actHeaderHtml}        <div class="stop-card">
           <div class="stop-header">
