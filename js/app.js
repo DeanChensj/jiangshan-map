@@ -533,39 +533,6 @@
       }
     }
 
-    _upgradeMobileReliefToHd() {
-      if (!this._usingMobileRelief || typeof Image !== 'function') return;
-      const relief = this._id('terrain-relief-img');
-      const fullHref = relief && relief.getAttribute('data-href');
-      if (!relief || !fullHref || relief.getAttribute('href') === fullHref) {
-        this._usingMobileRelief = false;
-        return;
-      }
-      const idle =
-        typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function'
-          ? (fn) => window.requestIdleCallback(fn, { timeout: 1500 })
-          : (fn) => setTimeout(fn, 400);
-      idle(() => {
-        if (!this._usingMobileRelief) return;
-        const hd = new Image();
-        hd.decoding = 'async';
-        if ('fetchPriority' in hd) hd.fetchPriority = 'low';
-        const commitSwap = () => {
-          if (!this._usingMobileRelief) return;
-          this._usingMobileRelief = false;
-          relief.setAttribute('href', fullHref);
-          this._updateTerrainTiles();
-        };
-        if (typeof hd.decode === 'function') {
-          hd.src = fullHref;
-          hd.decode().then(commitSwap, () => {});
-        } else {
-          hd.onload = commitSwap;
-          hd.src = fullHref;
-        }
-      });
-    }
-
     _releaseDeferredLoads() {
       if (this._deferredLoadsReleased) return;
       this._deferredLoadsReleased = true;
@@ -596,13 +563,8 @@
             ? Promise.resolve()
             : this._ensureFullSnapshots();
           snapsDone.then(() => {
-            const loreDone = this._isLoreDetailLoaded()
-              ? Promise.resolve()
-              : this._ensureLoreDetail();
+            if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
             this._ensureNarrator();
-            Promise.resolve(loreDone).then(() => {
-              this._upgradeMobileReliefToHd();
-            });
           });
         });
       };
@@ -611,13 +573,7 @@
         startBackgroundWarmup();
       };
       if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
-        const vw =
-          this._bootInnerWidth !== undefined
-            ? this._bootInnerWidth
-            : typeof window !== 'undefined'
-              ? window.innerWidth
-              : 0;
-        const mobHref = vw > 0 && vw <= 600 && relief.getAttribute('data-href-mobile');
+        const mobHref = this._isMobileViewport() && relief.getAttribute('data-href-mobile');
         this._usingMobileRelief = Boolean(mobHref);
         relief.addEventListener('load', reliefShown, { once: true });
         relief.addEventListener('error', reliefShown, { once: true });
@@ -7765,7 +7721,14 @@
 
     // A camera flight is starting: fetch the destination's tiles while it is in the air.
     _prefetchTerrainForTarget(targetCam, zoomInput) {
-      if (!this._terrainReady() || !this._terrainIndex) return;
+      if (!this._terrainReady() || !this.terrainMode) return;
+      if (targetCam.w > this._getDefaultCamera().w * 0.8) return;
+      if (!this._terrainIndex) {
+        this._loadTerrainIndex().then((idx) => {
+          if (idx) this._prefetchTerrainForTarget(targetCam, zoomInput);
+        });
+        return;
+      }
       clearTimeout(this._terrainTargetTimer);
       const run = () => this._prefetchTerrainTiles(this._terrainTilesFor(targetCam, 'peek'), 48);
       // Wheel ticks retarget every few ms; wait for the target to stop moving.
@@ -7789,6 +7752,12 @@
     _updateTerrainTiles() {
       const layer = this.terrainTileLayer;
       if (!this._terrainReady()) return;
+      if (
+        (!this._terrainTiles || !this._terrainTiles.size) &&
+        (!this.terrainMode || this.camera.w > this._getDefaultCamera().w * 0.8)
+      ) {
+        return;
+      }
       if (!this._terrainIndex) {
         this._loadTerrainIndex().then((idx) => {
           if (idx) this._updateTerrainTiles();
