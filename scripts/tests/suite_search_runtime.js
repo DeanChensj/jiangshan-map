@@ -2112,6 +2112,31 @@ async function runSearchRuntimeSuite(ctx) {
         sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
         assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
         sandbox.navigator = origNav;
+
+        // Narrow phones (<= 600 px) using the 1 px/unit mobile preview must hand off to z5/z6 tiles
+        // immediately in the mid-zoom band (cam.w=250 on a 390 px screen -> 1.56 px/unit <= 1.70),
+        // then upgrade seamlessly to full 2320x1560 HD relief on idle.
+        const mobCtrl = {
+          ...tCtrl,
+          _getDefaultCamera: () => ({ x: 430, y: 225, w: 340, h: 420, zoom: 1000 / 340 }),
+          _isMobileViewport: () => true,
+          _usingMobileRelief: false,
+        };
+        assert.strictEqual(
+          proto._terrainTileLevel.call(mobCtrl, { w: 250 }, 390 / 250, 'free'),
+          null,
+          '2 px/unit HD base needs no tiles at 1.56 px/unit'
+        );
+        mobCtrl._usingMobileRelief = true;
+        const zMobMid = proto._terrainTileLevel.call(mobCtrl, { w: 250 }, 390 / 250, 'free');
+        assert(
+          zMobMid !== null && mobCtrl._terrainIndex.has(zMobMid),
+          `1 px/unit mobile preview must hand off to tiles immediately at cam.w=250 (got ${zMobMid})`
+        );
+        assert(
+          indexHtml.includes('window.innerWidth <= 600') && !indexHtml.includes('window.innerWidth <= 900'),
+          'index.html must restrict terrain_relief_mobile.webp to narrow phones (<= 600 px) so tablets stay on HD'
+        );
       }
 
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)

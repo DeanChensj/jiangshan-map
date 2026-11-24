@@ -533,12 +533,49 @@
       }
     }
 
+    _upgradeMobileReliefToHd() {
+      if (!this._usingMobileRelief || typeof Image !== 'function') return;
+      const relief = this._id('terrain-relief-img');
+      const fullHref = relief && relief.getAttribute('data-href');
+      if (!relief || !fullHref || relief.getAttribute('href') === fullHref) {
+        this._usingMobileRelief = false;
+        return;
+      }
+      const idle =
+        typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function'
+          ? (fn) => window.requestIdleCallback(fn, { timeout: 1500 })
+          : (fn) => setTimeout(fn, 400);
+      idle(() => {
+        if (!this._usingMobileRelief) return;
+        const hd = new Image();
+        hd.decoding = 'async';
+        if ('fetchPriority' in hd) hd.fetchPriority = 'low';
+        const commitSwap = () => {
+          if (!this._usingMobileRelief) return;
+          this._usingMobileRelief = false;
+          relief.setAttribute('href', fullHref);
+          this._updateTerrainTiles();
+        };
+        if (typeof hd.decode === 'function') {
+          hd.src = fullHref;
+          hd.decode().then(commitSwap, () => {});
+        } else {
+          hd.onload = commitSwap;
+          hd.src = fullHref;
+        }
+      });
+    }
+
     _releaseDeferredLoads() {
       if (this._deferredLoadsReleased) return;
       this._deferredLoadsReleased = true;
       this._deferredLoadsHeld = false;
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       const relief = this._id('terrain-relief-img');
+      const curHref = relief && relief.getAttribute('href');
+      if (curHref) {
+        this._usingMobileRelief = curHref.indexOf('terrain_relief_mobile') >= 0;
+      }
       let backgroundWarmupStarted = false;
       const startBackgroundWarmup = () => {
         if (backgroundWarmupStarted) return;
@@ -559,8 +596,13 @@
             ? Promise.resolve()
             : this._ensureFullSnapshots();
           snapsDone.then(() => {
-            if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
+            const loreDone = this._isLoreDetailLoaded()
+              ? Promise.resolve()
+              : this._ensureLoreDetail();
             this._ensureNarrator();
+            Promise.resolve(loreDone).then(() => {
+              this._upgradeMobileReliefToHd();
+            });
           });
         });
       };
@@ -569,7 +611,14 @@
         startBackgroundWarmup();
       };
       if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
-        const mobHref = this._isMobileViewport() && relief.getAttribute('data-href-mobile');
+        const vw =
+          this._bootInnerWidth !== undefined
+            ? this._bootInnerWidth
+            : typeof window !== 'undefined'
+              ? window.innerWidth
+              : 0;
+        const mobHref = vw > 0 && vw <= 600 && relief.getAttribute('data-href-mobile');
+        this._usingMobileRelief = Boolean(mobHref);
         relief.addEventListener('load', reliefShown, { once: true });
         relief.addEventListener('error', reliefShown, { once: true });
         setTimeout(startBackgroundWarmup, 8000);
@@ -1166,6 +1215,9 @@
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
       this.terrainTileLayer = this._id('grp-terrain-tiles');
+      const reliefEl = this._id('terrain-relief-img');
+      const initReliefHref = reliefEl && typeof reliefEl.getAttribute === 'function' ? reliefEl.getAttribute('href') : '';
+      this._usingMobileRelief = Boolean(initReliefHref && initReliefHref.indexOf('terrain_relief_mobile') >= 0);
       this.grpPaleoSea = this._id('grp-paleo-sea');
       this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
@@ -7623,8 +7675,10 @@
       // Sized for CSS pixels, not device pixels: the relief is a 48%-opacity backdrop, and
       // matching retina density would quadruple the tiles per screen.
       const need = pxPerUnit * this.projector.scale;
-      // Base image: 2 px per SVG unit; no gain while it is not being upscaled.
-      if (need <= 2 * this.projector.scale * 0.85) return null;
+      // Base image: 2 px per SVG unit (1 px while the 1160x780 mobile preview is up);
+      // no gain while it is not being upscaled.
+      const basePxPerUnit = this._usingMobileRelief ? 1 : 2;
+      if (need <= basePxPerUnit * this.projector.scale * 0.85) return null;
       const ppd = (lz) => (this._terrainTileSize * 2 ** lz) / 360;
       const levels = [...this._terrainIndex.keys()].sort((a, b) => a - b);
       const maxPpd = this._isMobileViewport() ? 190 : Infinity;
