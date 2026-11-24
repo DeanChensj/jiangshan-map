@@ -1361,12 +1361,12 @@ window.DYNASTY_DATA = [
       {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"两浙路重镇（政和三年升镇江府），王安石瓜洲渡江赋诗与沈括梦溪园所在地"}
     ],
     "phases": [
-      {"until":963,"snap":"s_beisong_a0","overview":"960 — 963 · 陈桥兵变立宋与杯酒释兵权：十国割据尚存，北宋先取荆湖"},
-      {"until":965,"snap":"s_beisong_a","overview":"963 — 965 · 假道灭虢平荆湖：荆南、武平入宋，继发兵伐后蜀"},
-      {"until":971,"snap":"s_beisong_a2","overview":"965 — 971 · 王全斌灭后蜀与潘美平南汉：巴蜀、岭南次第归宋"},
-      {"until":975,"snap":"s_beisong_a3","overview":"971 — 975 · 曹彬浮桥渡江攻灭南唐：江南、江西、闽北入宋"},
-      {"until":978,"snap":"s_beisong_a4","overview":"975 — 978 · 泉漳清源军陈洪进与吴越王钱俶纳土归宋前夕"},
-      {"until":979,"snap":"s_beisong_a5","overview":"978 — 979 · 吴越与清源军纳土、太宗灭北汉：中原江南复归统一"},
+      {"until":963,"snap":"s_beisong_a0","overview":"960 — 963 · 陈桥兵变立宋与杯酒释兵权：十国与北汉割据尚存"},
+      {"until":965,"snap":"s_beisong_a","overview":"963 — 965 · 假道灭虢平荆湖：荆南、武平并入北宋"},
+      {"until":971,"snap":"s_beisong_a2","overview":"965 — 971 · 王全斌平蜀：后蜀灭亡，巴蜀并入北宋"},
+      {"until":975,"snap":"s_beisong_a3","overview":"971 — 975 · 潘美平定南汉：两广岭南并入北宋"},
+      {"until":978,"snap":"s_beisong_a4","overview":"975 — 978 · 曹彬攻克金陵灭南唐：江南、江西、闽北入宋"},
+      {"until":979,"snap":"s_beisong_a5","overview":"978 — 979 · 钱俶与陈洪进纳土归宋：江南一统，唯余河东北汉"},
       {"until":1038,"snap":"s_beisong_b0","overview":"979 — 1038 · 高梁河与雍熙北伐、1002 李继迁陷灵州与 1004 澶渊之盟"},
       {"until":1072,"snap":"s_beisong_b","overview":"1038 — 1072 · 元昊建西夏、宋夏三川口与好水川之战及庆历和议：宋辽夏三足鼎立"},
       {"until":1104,"snap":"s_beisong_b1","overview":"1072 — 1104 · 王安石变法与王韶熙河开边：收复熙河洮岷兰，新置熙河路"},

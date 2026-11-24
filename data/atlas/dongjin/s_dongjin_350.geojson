@@ -2,10 +2,10 @@
   "type": "FeatureCollection",
   "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
-    "caption": "350 — 351 · 冉闵代赵建冉魏：冉闵于邺城灭后赵建冉魏，与东晋、前凉、代、辽东前燕并立",
+    "caption": "350 — 351 · 冉闵代赵建冉魏：冉闵于邺城灭石鉴建冉魏，后赵残部尚据关陇襄国，与东晋、前凉、代、前燕并立",
     "polities": [
       "s_dongjin_a2/东晋",
-      "前秦",
+      "后赵",
       "s_dongjin_351/冉魏",
       "s_dongjin_a2/前凉",
       "s_dongjin_317/代",
@@ -168,10 +168,10 @@
   "features": [
     {
       "type": "Feature",
-      "id": "前秦",
+      "id": "后赵",
       "properties": {
-        "title": "前秦",
-        "tint": "#9b4a3a",
+        "title": "后赵",
+        "tint": "#8c5a3c",
         "role": "rival",
         "anchor": [107.2, 36.2]
       },
