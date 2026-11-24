@@ -33,12 +33,12 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=b2405471" />
+  <link rel="stylesheet" href="css/style.css?v=e6f4e824" />
   <script defer src="js/china_geo_data.js?v=5718efe8"></script>
   <script defer src="js/atlas_boot.js?v=67cb36dd"></script>
   <script defer src="js/map_data.js?v=59e2e13e"></script>
   <script defer src="js/lore_core.js?v=61ad6f73"></script>
-  <script id="atlas-app-script" src="js/app.js?v=8bd9a6af" data-v-snapshots="4c4d6c0c" data-v-i18n="fc6d46e4" data-v-lore="ad909c0c" data-v-pinyin="df569110" data-v-hant="3afdab47" data-v-quiz="b93ee194" data-v-quiz-poster="6f30122f" data-v-narrator="d9f546a1" data-v-sources="6af05f1b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=3d0558f4" data-v-snapshots="4c4d6c0c" data-v-i18n="fc6d46e4" data-v-lore="ad909c0c" data-v-pinyin="df569110" data-v-hant="3afdab47" data-v-quiz="b93ee194" data-v-quiz-poster="6f30122f" data-v-narrator="d9f546a1" data-v-sources="6af05f1b"></script>
   <script defer src="js/atlas_trace.js?v=a0fce698"></script>
   <script defer src="js/atlas_search.js?v=01352f36"></script>
   <script defer src="js/atlas_api.js?v=575d60fd"></script>
@@ -381,15 +381,9 @@
             </svg>
           </button>
         </div>
-        <div class="locale-pill-group" role="group" aria-label="切换语言 / Switch language">
-          <button id="act-locale-hant" class="action-btn subtle locale-switch locale-pill-left" title="切換繁體中文 / 切换简体中文">
-            <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="8" cy="8" rx="2.8" ry="6.2" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
-            <span id="lbl-locale-hant">繁</span>
-          </button>
-          <button id="act-locale" class="action-btn subtle locale-switch locale-pill-right" title="Switch language / 切换语言">
-            <span id="lbl-locale">EN</span>
-          </button>
-        </div>
+        <button id="act-locale-menu" class="action-btn subtle locale-menu-btn" type="button" aria-expanded="false" aria-controls="locale-popover" aria-haspopup="menu" title="切换语言 / Switch language" aria-label="切换语言 / Switch language">
+          <svg class="btn-svg" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M18.5 10l4.4 11h-2.155l-1.201-3h-4.09l-1.199 3h-2.154L16.5 10h2zM10 2v2h6v2h-1.968a18.222 18.222 0 0 1-3.62 6.301 14.864 14.864 0 0 0 2.336 1.707l-.751 1.878A17.015 17.015 0 0 1 9 13.725a16.676 16.676 0 0 1-6.201 3.548l-.536-1.929a14.7 14.7 0 0 0 5.327-3.042A18.078 18.078 0 0 1 4.767 8h2.24A16.032 16.032 0 0 0 9 10.877a16.165 16.165 0 0 0 2.91-4.876L2 6V4h6V2h2zm7.5 10.885L16.253 16h2.492L17.5 12.885z"/></svg>
+        </button>
         <a id="act-github-star" class="action-btn subtle github-star-btn" href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer" title="在 GitHub 上为「江山时序」点亮 Star" aria-label="Star on GitHub">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
           <span class="star-mark" aria-hidden="true">★</span>
@@ -419,6 +413,21 @@
             <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
           </div>
         </div>
+      </div>
+
+      <div id="locale-popover" class="locale-popover is-hidden" role="menu" aria-label="切换语言 / Switch language">
+        <button class="locale-pop-item is-selected" type="button" role="menuitemradio" data-locale="zh" aria-checked="true">
+          <span class="locale-pop-name">简体中文</span>
+          <span class="locale-pop-check" aria-hidden="true">✓</span>
+        </button>
+        <button class="locale-pop-item" type="button" role="menuitemradio" data-locale="zh-tw" aria-checked="false">
+          <span class="locale-pop-name">繁體中文</span>
+          <span class="locale-pop-check" aria-hidden="true">✓</span>
+        </button>
+        <button class="locale-pop-item" type="button" role="menuitemradio" data-locale="en" aria-checked="false">
+          <span class="locale-pop-name">English</span>
+          <span class="locale-pop-check" aria-hidden="true">✓</span>
+        </button>
       </div>
 
       <div id="more-popover" class="more-popover is-hidden" role="menu" aria-label="创作手记与更多链接">

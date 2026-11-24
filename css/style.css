@@ -269,42 +269,79 @@ h2 {
   border-color: var(--text-main);
 }
 
-.action-btn.locale-switch {
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  min-width: 0;
-  text-align: center;
+.locale-menu-btn {
+  align-self: stretch;
+  padding: 5.5px 8px;
+  color: var(--text-main);
+  cursor: pointer;
 }
 
-.locale-pill-group {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid var(--hairline);
-  overflow: hidden;
-}
-
-.locale-pill-group .locale-pill-left {
-  border: none;
-  border-radius: 999px 0 0 999px;
-  background: transparent;
-  padding-right: 8.5px;
-  gap: 4px;
-}
-
-.locale-pill-group .locale-pill-right {
-  border: none;
-  border-left: 1px solid var(--hairline);
-  border-radius: 0 999px 999px 0;
-  background: transparent;
-  padding-left: 8.5px;
-  padding-right: 10px;
-}
-
-.locale-pill-group .locale-switch:hover {
+.locale-menu-btn:hover {
   background: #fff;
   color: var(--text-main);
+}
+
+.locale-menu-btn.is-active {
+  background: #fff !important;
+  color: var(--vermilion) !important;
+  border-color: rgba(181, 69, 47, 0.35) !important;
+}
+
+.locale-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 12px;
+  width: 136px;
+  background: rgba(251, 248, 241, 0.98);
+  border: 1px solid rgba(181, 69, 47, 0.32);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(43, 38, 34, 0.18);
+  padding: 5px;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.locale-pop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.locale-pop-item:hover {
+  background: rgba(181, 69, 47, 0.09);
+  color: var(--vermilion);
+}
+
+.locale-pop-item.is-selected {
+  background: rgba(181, 69, 47, 0.07);
+  color: var(--vermilion);
+  font-weight: 700;
+}
+
+.locale-pop-check {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--vermilion);
+  opacity: 0;
+}
+
+.locale-pop-item.is-selected .locale-pop-check {
+  opacity: 1;
 }
 
 .github-star-btn {
@@ -3806,8 +3843,6 @@ html[lang="en"] .genealogy-list li {
   .toolbar-divider,
   .layers-trigger-btn .caret-mark,
   #act-layers-menu .btn-svg,
-  #act-locale-hant .btn-svg,
-  #act-locale .btn-svg,
   #lbl-music,
   #act-github-star {
     display: none !important;
@@ -3822,10 +3857,7 @@ html[lang="en"] .genealogy-list li {
     width: 12.5px;
     height: 12.5px;
   }
-  .action-btn.locale-switch,
-  .locale-pill-group .locale-pill-left,
-  .locale-pill-group .locale-pill-right {
-    min-width: 0;
+  .locale-menu-btn {
     padding: 4px 6.5px;
   }
   .music-pill-group .music-btn {
@@ -3838,6 +3870,9 @@ html[lang="en"] .genealogy-list li {
     left: 8px;
     right: 8px;
     width: auto;
+  }
+  .locale-popover {
+    right: 8px;
   }
   .more-popover {
     right: 8px;
