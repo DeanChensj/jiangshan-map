@@ -3403,7 +3403,7 @@
           const dup = results.some((r) =>
             r.fromLandmark
               ? r.year === lm.year && sharesCjkBigram(r.milestone && r.milestone.headline, lm.zh)
-              : Math.abs(r.year - lm.year) <= 3
+              : Math.abs(r.year - lm.year) <= 3 && (r.year === lm.year || sharesCjkBigram(r.milestone && r.milestone.headline, lm.zh))
           );
           if (!dup) {
             results.push({

@@ -785,7 +785,7 @@ window.EN_LOCALE = {
     ],
     "yuan:1293": [
       "Kublai Khan and Guo Shoujing open the Tonghui Canal, completing the Beijing–Hangzhou Grand Canal",
-      "Huitong Canal (Linqing)"
+      "Tonghui Canal (Tongzhou)"
     ],
     "yuan:1351": [
       "Han Shantong and Liu Futong launch the Red Turban Rebellion at Yingzhou",
