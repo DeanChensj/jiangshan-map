@@ -559,6 +559,12 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://deanchen.me/jiangshan-map/topics/journey-liuyu.html</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://deanchen.me/jiangshan-map/topics/journey-xuanzang.html</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -872,12 +878,6 @@
   </url>
   <url>
     <loc>https://deanchen.me/jiangshan-map/topics/person-huanwen.html</loc>
-    <lastmod>2026-11-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.88</priority>
-  </url>
-  <url>
-    <loc>https://deanchen.me/jiangshan-map/topics/person-liuyu.html</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
