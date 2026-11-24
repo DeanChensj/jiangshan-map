@@ -405,6 +405,92 @@ async function runSearchRuntimeSuite(ctx) {
         ctrl._syncUrlLangParam();
         assert.strictEqual(sandbox.location.search, '', 'Bare URL + zh must clear query string');
 
+        // 4a. Default locale follows the browser when ?lang= is absent; manual switches persist in
+        // localStorage (?lang= > localStorage > browser primary); on a non-Chinese browser, choosing
+        // Simplified must be written as lang=zh so a refresh does not flip back to English.
+        const savedNav = sandbox.navigator;
+        const savedDefault = ctrl.defaultLocale;
+        const savedStorage = sandbox.localStorage;
+        const savedEmbed = ctrl.embed;
+        const detect = (nav) => {
+          sandbox.navigator = nav;
+          return ctrl._detectDefaultLocale();
+        };
+        try {
+          assert.strictEqual(detect({ language: 'en-US', languages: ['en-US', 'zh-CN'], userAgent: 'Mozilla/5.0 Chrome/120' }), 'en');
+          assert.strictEqual(detect({ language: 'de-DE', userAgent: 'Mozilla/5.0 Firefox/120' }), 'en');
+          assert.strictEqual(detect({ language: 'zh-CN', languages: ['zh-CN', 'en'], userAgent: 'Mozilla/5.0' }), 'zh');
+          assert.strictEqual(detect({ language: 'zh-TW', userAgent: 'Mozilla/5.0' }), 'zh-tw');
+          assert.strictEqual(detect({ languages: ['zh-Hant-HK'], userAgent: 'Mozilla/5.0' }), 'zh-tw');
+          assert.strictEqual(
+            detect({ language: 'en-US', userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' }),
+            'zh',
+            'Crawlers keep the x-default Simplified Chinese root'
+          );
+          assert.strictEqual(detect({ language: 'en-US', userAgent: 'Mozilla/5.0 HeadlessChrome/120' }), 'zh');
+          assert.strictEqual(ctrl._parseLangParam('EN'), 'en');
+          assert.strictEqual(ctrl._parseLangParam('zh-CN'), 'zh');
+          assert.strictEqual(ctrl._parseLangParam('zh-HK'), 'zh-tw');
+          assert.strictEqual(ctrl._parseLangParam('fr'), null);
+          const store = new Map();
+          sandbox.localStorage = {
+            getItem: (k) => (store.has(k) ? store.get(k) : null),
+            setItem: (k, v) => store.set(k, String(v)),
+          };
+          ctrl.embed = false;
+          assert.strictEqual(ctrl._readStoredLocale(), null);
+          ctrl._saveStoredLocale('zh');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh');
+          assert.strictEqual(ctrl._readStoredLocale(), 'zh');
+          ctrl._saveStoredLocale('zh-Hant');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh-tw');
+          assert.strictEqual(ctrl._readStoredLocale(), 'zh-tw');
+          ctrl._saveStoredLocale('fr');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh-tw', 'Unknown locale must not overwrite stored preference');
+          store.set('jiangshan_locale', 'bogus');
+          assert.strictEqual(ctrl._readStoredLocale(), null);
+          store.set('jiangshan_locale', 'zh');
+          assert.strictEqual(
+            ctrl._parseLangParam('en') || ctrl._readStoredLocale() || 'zh',
+            'en',
+            'Explicit ?lang= must take precedence over stored localStorage preference'
+          );
+          assert.strictEqual(
+            ctrl._parseLangParam('') || ctrl._readStoredLocale() || 'en',
+            'zh',
+            'Stored preference must override non-Chinese browser default when ?lang= is absent'
+          );
+          ctrl.embed = true;
+          assert.strictEqual(ctrl._readStoredLocale(), null, 'Embed mode must ignore stored locale');
+          ctrl._saveStoredLocale('en');
+          assert.strictEqual(store.get('jiangshan_locale'), 'zh', 'Embed mode must not persist locale');
+          ctrl.embed = false;
+          sandbox.localStorage = {
+            getItem() {
+              throw new Error('blocked');
+            },
+            setItem() {
+              throw new Error('blocked');
+            },
+          };
+          assert.strictEqual(ctrl._readStoredLocale(), null, 'Storage errors must fail closed to null');
+          ctrl._saveStoredLocale('en');
+          ctrl.defaultLocale = 'en';
+          sandbox.location.search = '?lang=en';
+          ctrl.locale = 'zh';
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?lang=zh', 'Non-Chinese default + zh must pin ?lang=zh');
+          ctrl.locale = 'en';
+          ctrl._syncUrlLangParam();
+          assert.strictEqual(sandbox.location.search, '?lang=en');
+          sandbox.location.search = '';
+        } finally {
+          sandbox.navigator = savedNav;
+          ctrl.defaultLocale = savedDefault;
+          sandbox.localStorage = savedStorage;
+          ctrl.embed = savedEmbed;
+        }
+
         // 4b. Once armed, the URL mirrors restorable state (refresh/share land on the same view)
         // and one-shot params (place, q, quiz) are dropped because they no longer describe the screen.
         const urlSaved = {
