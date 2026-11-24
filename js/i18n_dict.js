@@ -488,11 +488,11 @@ window.EN_LOCALE = {
       "Chengdu"
     ],
     "dongjin:417": [
-      "Liu Yu's northern expedition destroys Later Qin and retakes Luoyang & Chang'an",
+      "Liu Yu's Crescent-Moon routs Wei and takes Chang'an; Xia seizes Guanzhong in 418",
       "Chang'an"
     ],
     "dongjin:420": [
-      "Emperor Gong abdicates to Liu Yu, ending Eastern Jin and opening Liu Song",
+      "After killing Emperor An, Liu Yu takes the throne to found Song and later kills Emperor Gong",
       "Jiankang"
     ],
     "nanbei:420": [

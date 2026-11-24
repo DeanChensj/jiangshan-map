@@ -860,7 +860,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"wangxizhi","zh":"王羲之","en":"Wang Xizhi","courtesyZh":"书圣 · 字逸少 · 王右军","courtesyEn":"Sage of Calligraphy","dynastyKey":"dongjin","span":[303,361],"aliases":["逸少","王右军","书圣"],"evCount":3},
     {"key":"xiean","zh":"谢安","en":"Xie An","courtesyZh":"东晋太傅 · 字安石","courtesyEn":"Chancellor of Eastern Jin","dynastyKey":"dongjin","span":[320,385],"aliases":["谢安石","谢太傅","谢公"],"evCount":3},
     {"key":"taoyuanming","zh":"陶渊明","en":"Tao Yuanming","courtesyZh":"靖节先生 · 字元亮 · 五柳先生","courtesyEn":"Master of Five Willows","dynastyKey":"dongjin","span":[365,427],"aliases":["陶潜","五柳先生","靖节先生","元亮"],"evCount":3},
-    {"key":"liuyu","zh":"刘裕","en":"Liu Yu","courtesyZh":"南朝宋武帝 · 寄奴","courtesyEn":"Emperor Wu of Liu Song","dynastyKey":"nanbei","span":[363,422],"aliases":["宋武帝","寄奴","刘寄奴"],"evCount":5},
+    {"key":"liuyu","zh":"刘裕","en":"Liu Yu","courtesyZh":"南朝宋武帝 · 寄奴","courtesyEn":"Emperor Wu of Liu Song","dynastyKey":"nanbei","journeyKey":"liuyu","span":[363,422],"aliases":["宋武帝","寄奴","刘寄奴","刘宋武帝"],"evCount":8},
     {"key":"xiaowendi","zh":"北魏孝文帝","en":"Emperor Xiaowen of Northern Wei","courtesyZh":"拓跋宏（元宏） · 汉化改革","courtesyEn":"Tuoba Hong / Yuan Hong","dynastyKey":"nanbei","eraRegimes":["北魏"],"span":[467,499],"aliases":["拓跋宏","元宏","孝文帝"],"evCount":3},
     {"key":"yangjian","zh":"杨坚","en":"Emperor Wen of Sui","courtesyZh":"隋文帝 · 开皇之治","courtesyEn":"Yang Jian","dynastyKey":"sui","span":[541,604],"aliases":["隋文帝"],"evCount":4},
     {"key":"yangguang","zh":"隋炀帝","en":"Emperor Yang of Sui","courtesyZh":"杨广 · 开凿大运河","courtesyEn":"Yang Guang","dynastyKey":"sui","span":[569,618],"aliases":["杨广","晋王广"],"evCount":9},
