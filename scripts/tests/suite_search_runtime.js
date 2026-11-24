@@ -2112,6 +2112,61 @@ async function runSearchRuntimeSuite(ctx) {
         sandbox.navigator = { connection: { effectiveType: 'slow-2g' } };
         assert.strictEqual(level(125), null, 'Slow 2G links must skip terrain tiles');
         sandbox.navigator = origNav;
+
+        // Viewports using the 1 px/unit mobile preview must hand off to z5/z6 tiles immediately in
+        // the mid-zoom band (cam.w=250 on a 390 px screen -> 1.56 px/unit <= 1.70), while the
+        // unzoomed default view skips even fetching assets/terrain/index.json.
+        const mobCtrl = {
+          ...tCtrl,
+          _getDefaultCamera: () => ({ x: 430, y: 225, w: 340, h: 420, zoom: 1000 / 340 }),
+          _isMobileViewport: () => true,
+          _usingMobileRelief: false,
+        };
+        assert.strictEqual(
+          proto._terrainTileLevel.call(mobCtrl, { w: 250 }, 390 / 250, 'free'),
+          null,
+          '2 px/unit HD base needs no tiles at 1.56 px/unit'
+        );
+        mobCtrl._usingMobileRelief = true;
+        const zMobMid = proto._terrainTileLevel.call(mobCtrl, { w: 250 }, 390 / 250, 'free');
+        assert(
+          zMobMid !== null && mobCtrl._terrainIndex.has(zMobMid),
+          `1 px/unit mobile preview must hand off to tiles immediately at cam.w=250 (got ${zMobMid})`
+        );
+        let idxLoads = 0;
+        const lazyIdxCtrl = {
+          terrainTileLayer: {},
+          terrainMode: true,
+          camera: { x: 430, y: 225, w: 340, h: 420 },
+          _terrainIndex: null,
+          _terrainReady: () => true,
+          _getDefaultCamera: () => ({ x: 430, y: 225, w: 340, h: 420, zoom: 1000 / 340 }),
+          _loadTerrainIndex: () => {
+            idxLoads++;
+            return Promise.resolve(null);
+          },
+        };
+        proto._updateTerrainTiles.call(lazyIdxCtrl);
+        assert.strictEqual(
+          idxLoads,
+          0,
+          '_updateTerrainTiles must not fetch assets/terrain/index.json at unzoomed default camera'
+        );
+        lazyIdxCtrl.camera.w = 250;
+        proto._updateTerrainTiles.call(lazyIdxCtrl);
+        assert.strictEqual(
+          idxLoads,
+          1,
+          '_updateTerrainTiles must fetch assets/terrain/index.json once zoomed past 0.8 * defaultW'
+        );
+        const ldJsonPos = indexHtml.indexOf('application/ld+json');
+        assert(
+          indexHtml.indexOf('<script defer src="js/china_geo_data.js?v=') > 0 &&
+            indexHtml.indexOf('<script defer src="js/atlas_api.js?v=') < ldJsonPos &&
+            indexHtml.indexOf('<script defer src="js/atlas_api.js?v=') <
+              indexHtml.indexOf('js/atlas_track.js?v='),
+          'All 8 same-origin boot scripts must be discovered in <head> via <script defer> before JSON-LD and atlas_track.js'
+        );
       }
 
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
