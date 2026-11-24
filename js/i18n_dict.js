@@ -600,7 +600,7 @@ window.EN_LOCALE = {
       "Heishui Area Command (Boli)"
     ],
     "tang:755": [
-      "An Lushan and Shi Siming rebel at Fanyang, sparking the An–Shi Rebellion",
+      "An Lushan rebels at Fanyang, sparking the An–Shi Rebellion",
       "Fanyang (Youzhou)"
     ],
     "tang:757": [
@@ -1520,7 +1520,7 @@ window.EN_LOCALE = {
       "Chang'an · Fanyang"
     ],
     "tang:744": [
-      "Kutlug Bilge Kül founds the Uyghur Khaganate, invested by Tang as Huairen Qaghan",
+      "Kutlug Bilge Kül is invested as Huairen Qaghan; Uyghurs end the Second Turkic Khaganate in 745",
       "Ordu-Baliq (Orkhon)"
     ],
     "tang:747": [
