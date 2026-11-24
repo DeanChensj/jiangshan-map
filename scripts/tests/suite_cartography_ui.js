@@ -378,6 +378,35 @@ async function runCartographyUiSuite(ctx) {
       );
     }
 
+    // Seamless 580 -> 581 CE transition between s_nanbei_f (577-580) and s_sui_a (581-586):
+    // 隋 replaces 北周 with identical borders, while 陈, 西梁, and 吐谷浑 keep 580 CE boundaries until 587/589.
+    assert.strictEqual(
+      JSON.stringify(snapshots.s_nanbei_f.polities.find((p) => p.title === '北周').shape),
+      JSON.stringify(snapshots.s_sui_a.polities.find((p) => p.title === '隋').shape),
+      's_nanbei_f (北周) and s_sui_a (隋) must share identical polygon geometry at 581 CE'
+    );
+    for (const sharedTitle of ['陈', '西梁', '吐谷浑']) {
+      const pNb = snapshots.s_nanbei_f.polities.find((p) => p.title === sharedTitle);
+      const pSui = snapshots.s_sui_a.polities.find((p) => p.title === sharedTitle);
+      assert(pNb && pSui, `Both s_nanbei_f and s_sui_a must include ${sharedTitle}`);
+      assert.strictEqual(
+        JSON.stringify(pNb.shape),
+        JSON.stringify(pSui.shape),
+        `s_nanbei_f and s_sui_a must share identical polygon geometry for ${sharedTitle}`
+      );
+    }
+    for (const sk of ['s_sui_a', 's_sui_a2']) {
+      const chenPol = snapshots[sk].polities.find((p) => p.title === '陈');
+      const suiPol = snapshots[sk].polities.find((p) => p.title === '隋');
+      assert(
+        chenPol &&
+          suiPol &&
+          pointInShape(118.801, 32.061, chenPol.shape) &&
+          !pointInShape(118.801, 32.061, suiPol.shape),
+        `${sk} must keep Jiankang ([118.801, 32.061]) in 陈 and outside 隋 prior to the 589 CE conquest`
+      );
+    }
+
     // P0 Northwest Frontier (Hexi Corridor, Longyou/Hehuang, Hetao/Ordos) historical invariants (189-960 CE)
     {
       const hasPolAt = (sk, title, x, y) => {
