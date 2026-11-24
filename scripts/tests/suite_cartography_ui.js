@@ -200,8 +200,9 @@ async function runCartographyUiSuite(ctx) {
     // 350 CE (s_dongjin_350) & 351 CE (s_dongjin_351) must show 冉魏, while 351 CE adds 前秦 in Guanzhong and keeps 前燕 in Liaodong
     assert(
       snapshots.s_dongjin_350.polities.some((p) => p.title === '冉魏') &&
-        !snapshots.s_dongjin_350.polities.some((p) => p.title === '后赵'),
-      's_dongjin_350 (350-351 CE) must replace 后赵 with 冉魏'
+        snapshots.s_dongjin_350.polities.some((p) => p.title === '后赵') &&
+        !snapshots.s_dongjin_350.polities.some((p) => p.title === '前秦'),
+      's_dongjin_350 (350-351 CE) must show 冉魏 in Ye and 后赵 remnants in Guanzhong before 前秦 is founded in 351'
     );
     assert(
       snapshots.s_dongjin_351.polities.some((p) => p.title === '前秦') &&
@@ -472,10 +473,11 @@ async function runCartographyUiSuite(ctx) {
         's_xijin_b (311-316 CE): Luoyang must belong to 汉赵 while Chang\'an stays in 晋'
       );
       assert(
-        hasPolAt('s_dongjin_350', '前秦', 108.94, 34.34) &&
+        hasPolAt('s_dongjin_350', '后赵', 108.94, 34.34) &&
           hasPolAt('s_dongjin_350', '冉魏', 114.35, 36.6) &&
-          !hasPolAt('s_dongjin_350', '冉魏', 108.94, 34.34),
-        's_dongjin_350 (350 CE): Chang\'an must belong to 前秦 while Ye belongs to 冉魏'
+          !hasPolAt('s_dongjin_350', '冉魏', 108.94, 34.34) &&
+          hasPolAt('s_dongjin_351', '前秦', 108.94, 34.34),
+        's_dongjin_350/351 (350–351 CE): Chang\'an shifts from 后赵 in 350 to 前秦 in 351 while Ye belongs to 冉魏'
       );
       // 4) Tuyuhun (吐谷浑) present across Eastern Jin, Northern & Southern Dynasties, Sui, and Early Tang (317-634 CE)
       for (const sk of ['s_dongjin_317', 's_dongjin_c', 's_nanbei_0', 's_nanbei_a', 's_nanbei_e', 's_sui_a', 's_sui', 's_sui_d', 's_tang_0']) {
@@ -1262,7 +1264,7 @@ async function runCartographyUiSuite(ctx) {
       [{ lng: 112.121, lat: 32.011, year: 229 }, '魏'], // Xiangyang in Three Kingdoms
       [{ lng: 123.171, lat: 41.271, year: 196 }, '公孙氏（辽东）'], // Xiangping (Liaodong)
       [{ lng: 123.171, lat: 41.271, year: 220 }, '公孙氏（辽东）'], // Xiangping 220-228
-      [{ lng: 123.171, lat: 41.271, year: 229 }, '燕（公孙氏辽东）'], // Xiangping 229-237
+      [{ lng: 123.171, lat: 41.271, year: 229 }, '公孙氏（辽东）'], // Xiangping 229-237 (before 237 Yan title)
       [{ lng: 113.261, lat: 23.131, year: 200 }, '士燮'], // Panyu (Jiaozhou) 189-210
       [{ lng: 113.261, lat: 23.131, year: 211 }, '孙权'], // Panyu submits to Sun Quan 211
       [{ lng: 103.82, lat: 36.06, year: 208 }, '马腾 · 韩遂'], // Guanlong before Tong Pass
@@ -1283,7 +1285,7 @@ async function runCartographyUiSuite(ctx) {
     for (const [sk, expTitles, forbidden] of [
       ['s_sanguo_220', ['魏', '刘备', '孙权', '公孙氏（辽东）'], ['蜀汉', '吴']],
       ['s_sanguo_221', ['魏', '蜀汉', '孙权', '公孙氏（辽东）'], ['刘备', '吴']],
-      ['s_sanguo_a', ['魏', '蜀汉', '吴', '燕（公孙氏辽东）'], ['刘备', '孙权']],
+      ['s_sanguo_a', ['魏', '蜀汉', '吴', '公孙氏（辽东）'], ['刘备', '孙权', '燕（公孙氏辽东）']],
     ]) {
       const titles = new Set((snapshots[sk].polities || []).map((p) => p.title));
       for (const t of expTitles) {
