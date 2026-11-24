@@ -416,7 +416,7 @@ async function runCartographyUiSuite(ctx) {
       };
       // 1) Dunhuang ([94.66, 40.14]) & Yangguan ([94.13, 39.93]) inside Hexi / regular prefectures (25-880 CE)
       for (const [sk, title] of [
-        ['s_donghan_a', '东汉'],
+        ['s_donghan_a', '隗嚣 · 窦融'],
         ['s_donghan_d1', '马腾'],
         ['s_donghan_f', '曹操'],
         ['s_sanguo', '魏'],
@@ -545,7 +545,7 @@ async function runCartographyUiSuite(ctx) {
       };
       // 1) Eastern Han (25-214 CE): Juyan Oasis ([101.05, 41.95]) & Lingzhou ([106.28, 38.09]) in Han/Liangzhou; Badain Jaran ([102.20, 40.50]) & Yinshan-north ([108.50, 41.80]) in steppe
       for (const [sk, hexiPol, steppePol] of [
-        ['s_donghan_a', '东汉', '匈奴'],
+        ['s_donghan_a', '隗嚣 · 窦融', '匈奴'],
         ['s_donghan_b2', '东汉', '北匈奴'],
         ['s_donghan_c', '东汉', '北匈奴'],
         ['s_donghan', '东汉', '鲜卑'],
@@ -580,7 +580,7 @@ async function runCartographyUiSuite(ctx) {
       for (const [sk, corePol] of [
         ['s_xihan_b3a', '汉'],
         ['s_xihan_b', '汉'],
-        ['s_donghan_a', '东汉'],
+        ['s_donghan_a', '隗嚣 · 窦融'],
         ['s_donghan', '东汉'],
         ['s_sanguo', '魏'],
         ['s_xijin_a', '晋'],
@@ -643,7 +643,7 @@ async function runCartographyUiSuite(ctx) {
         ['s_xihan_c', '汉'],
         ['s_xihan_d', '新（王莽）'],
         ['s_xihan_e', '隗嚣 · 窦融'],
-        ['s_donghan_a', '东汉'],
+        ['s_donghan_a', '隗嚣 · 窦融'],
         ['s_donghan', '东汉'],
         ['s_tang_a5y', '唐'],
         ['s_tang_a5', '唐'],
@@ -3311,7 +3311,6 @@ async function runCartographyUiSuite(ctx) {
       ['s_nansong_e0', '大蒙古国'],
       ['s_nansong_e', '大蒙古国'],
       ['s_nansong_b', '大蒙古国'],
-      ['s_nansong_f', '元'],
     ]) {
       assert(
         hasPolPt(sk, northPol, 105.721, 34.581) &&
@@ -3329,7 +3328,22 @@ async function runCartographyUiSuite(ctx) {
         `${sk} (post-1142 Treaty of Shaoxing) must place Qinzhou & Dasanguan in ${northPol} / Fengxiang Circuit and Fengzhou, Chengzhou, Jiezhou, Minzhou, & Junzhou in Southern Song / Lizhou Circuit`
       );
     }
-    for (const sk of ['s_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f']) {
+    // 1259–1275: after Möngke's Sichuan campaign the Mongols hold Chengdu, Hanzhong and Lizhou,
+    // while Southern Song keeps Diaoyu Fortress, Chongqing and Kuizhou.
+    for (const [sk, northPol] of [['s_nansong_1259', '大蒙古国'], ['s_nansong_f', '元']]) {
+      assert(
+        hasPolPt(sk, northPol, 104.071, 30.571) &&
+          hasPolPt(sk, northPol, 107.02, 33.07) &&
+          hasPolPt(sk, northPol, 105.84, 32.44) &&
+          hasPolPt(sk, '南宋', 106.281, 30.031) &&
+          hasPolPt(sk, '南宋', 106.55, 29.56) &&
+          hasPolPt(sk, '南宋', 109.47, 31.02) &&
+          !hasPolPt(sk, '南宋', 104.071, 30.571),
+        `${sk} (1259–1275) must place Chengdu, Hanzhong & Lizhou in ${northPol} and Diaoyu Fortress, Chongqing & Kuizhou in Southern Song`
+      );
+    }
+    assert(hasPolPt('s_nansong_b', '南宋', 104.071, 30.571), 's_nansong_b (1253–1258) must keep Chengdu in Southern Song');
+    for (const sk of ['s_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_1259', 's_nansong_f']) {
       assert(
         snapshots[sk].regions.some((r) => r.title === '辽东路') &&
           snapshots[sk].regions.some((r) => r.title === '燕京路') &&

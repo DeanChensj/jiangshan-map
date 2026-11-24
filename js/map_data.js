@@ -1499,7 +1499,8 @@ window.DYNASTY_DATA = [
       {"until":1234,"snap":"s_nansong_d","overview":"1227 — 1234 · 蒙古灭西夏、三峰山之战与宋蒙联军蔡州灭金：金亡于蔡州"},
       {"until":1247,"snap":"s_nansong_e0","overview":"1234 — 1247 · 端平入洛、1235 宋蒙全面战争爆发，吐蕃诸部尚未归附"},
       {"until":1253,"snap":"s_nansong_e","overview":"1247 — 1253 · 凉州会盟吐蕃正式归附大蒙古国，宋蒙川陕荆襄拉锯"},
-      {"until":1271,"snap":"s_nansong_b","overview":"1253 — 1271 · 忽必烈灭大理、1259 钓鱼城蒙哥战死与 1264 设总制院"},
+      {"until":1259,"snap":"s_nansong_b","overview":"1253 — 1259 · 忽必烈灭大理与蒙哥汗三路攻宋"},
+      {"until":1271,"snap":"s_nansong_1259","overview":"1259 — 1271 · 1259 钓鱼城蒙哥战死、蒙古据川西北与 1264 设总制院"},
       {"until":1276,"snap":"s_nansong_f","overview":"1271 — 1276 · 忽必烈建国号大元、1273 襄阳陷落与伯颜渡江逼近临安"},
       {"until":1279,"snap":"s_nansong_g","overview":"1276 — 1279 · 文天祥陆秀夫张世杰拥二王闽粤抗元与 1279 崖山海战南宋覆亡"}
     ]
