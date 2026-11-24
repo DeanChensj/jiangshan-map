@@ -271,8 +271,8 @@ h2 {
 
 .locale-menu-btn {
   align-self: stretch;
-  padding: 5.5px 8.5px;
-  color: var(--text-secondary);
+  padding: 5.5px 8px;
+  color: var(--text-main);
   cursor: pointer;
 }
 
@@ -3858,7 +3858,7 @@ html[lang="en"] .genealogy-list li {
     height: 12.5px;
   }
   .locale-menu-btn {
-    padding: 4px 7px;
+    padding: 4px 6.5px;
   }
   .music-pill-group .music-btn {
     padding: 4px 6.5px;
