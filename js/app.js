@@ -539,6 +539,10 @@
       this._deferredLoadsHeld = false;
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       const relief = this._id('terrain-relief-img');
+      const curHref = relief && relief.getAttribute('href');
+      if (curHref) {
+        this._usingMobileRelief = curHref.indexOf('terrain_relief_mobile') >= 0;
+      }
       let backgroundWarmupStarted = false;
       const startBackgroundWarmup = () => {
         if (backgroundWarmupStarted) return;
@@ -570,6 +574,7 @@
       };
       if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
         const mobHref = this._isMobileViewport() && relief.getAttribute('data-href-mobile');
+        this._usingMobileRelief = Boolean(mobHref);
         relief.addEventListener('load', reliefShown, { once: true });
         relief.addEventListener('error', reliefShown, { once: true });
         setTimeout(startBackgroundWarmup, 8000);
@@ -1166,6 +1171,9 @@
       this.svg = this._id('atlas-svg');
       this.grpTerrain = this._id('grp-terrain');
       this.terrainTileLayer = this._id('grp-terrain-tiles');
+      const reliefEl = this._id('terrain-relief-img');
+      const initReliefHref = reliefEl && typeof reliefEl.getAttribute === 'function' ? reliefEl.getAttribute('href') : '';
+      this._usingMobileRelief = Boolean(initReliefHref && initReliefHref.indexOf('terrain_relief_mobile') >= 0);
       this.grpPaleoSea = this._id('grp-paleo-sea');
       this.grpRivers = this._id('grp-rivers');
       this.grpNeighbors = this._id('grp-neighbors');
@@ -7623,8 +7631,10 @@
       // Sized for CSS pixels, not device pixels: the relief is a 48%-opacity backdrop, and
       // matching retina density would quadruple the tiles per screen.
       const need = pxPerUnit * this.projector.scale;
-      // Base image: 2 px per SVG unit; no gain while it is not being upscaled.
-      if (need <= 2 * this.projector.scale * 0.85) return null;
+      // Base image: 2 px per SVG unit (1 px while the 1160x780 mobile preview is up);
+      // no gain while it is not being upscaled.
+      const basePxPerUnit = this._usingMobileRelief ? 1 : 2;
+      if (need <= basePxPerUnit * this.projector.scale * 0.85) return null;
       const ppd = (lz) => (this._terrainTileSize * 2 ** lz) / 360;
       const levels = [...this._terrainIndex.keys()].sort((a, b) => a - b);
       const maxPpd = this._isMobileViewport() ? 190 : Infinity;
@@ -7711,7 +7721,14 @@
 
     // A camera flight is starting: fetch the destination's tiles while it is in the air.
     _prefetchTerrainForTarget(targetCam, zoomInput) {
-      if (!this._terrainReady() || !this._terrainIndex) return;
+      if (!this._terrainReady() || !this.terrainMode) return;
+      if (targetCam.w > this._getDefaultCamera().w * 0.8) return;
+      if (!this._terrainIndex) {
+        this._loadTerrainIndex().then((idx) => {
+          if (idx) this._prefetchTerrainForTarget(targetCam, zoomInput);
+        });
+        return;
+      }
       clearTimeout(this._terrainTargetTimer);
       const run = () => this._prefetchTerrainTiles(this._terrainTilesFor(targetCam, 'peek'), 48);
       // Wheel ticks retarget every few ms; wait for the target to stop moving.
@@ -7735,6 +7752,12 @@
     _updateTerrainTiles() {
       const layer = this.terrainTileLayer;
       if (!this._terrainReady()) return;
+      if (
+        (!this._terrainTiles || !this._terrainTiles.size) &&
+        (!this.terrainMode || this.camera.w > this._getDefaultCamera().w * 0.8)
+      ) {
+        return;
+      }
       if (!this._terrainIndex) {
         this._loadTerrainIndex().then((idx) => {
           if (idx) this._updateTerrainTiles();

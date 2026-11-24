@@ -28,13 +28,13 @@ function extractSyncScriptPaths(indexHtml) {
   let m;
   while ((m = tagRe.exec(indexHtml)) !== null) {
     const attrs = m[1];
-    if (/\b(?:async|defer)\b/i.test(attrs)) continue;
+    if (/\basync\b/i.test(attrs)) continue;
     const typeMatch = attrs.match(/\btype=["']([^"']+)["']/i);
     if (typeMatch && !/^(?:text\/javascript|application\/javascript)$/i.test(typeMatch[1])) {
       continue;
     }
     const srcMatch = attrs.match(/\bsrc=["']([^"'?]+)(?:\?[^"']*)?["']/i);
-    if (srcMatch) {
+    if (srcMatch && srcMatch[1] !== 'js/atlas_track.js') {
       paths.push(srcMatch[1]);
     }
   }
