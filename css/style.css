@@ -1,9 +1,7 @@
 :root {
   --bg-parchment: #f3eee4;
-  --bg-parchment-alt: #ebe4d6;
   --water-fill: #d6e0de;
   --province-fill: #efe8da;
-  --province-border: #c7bba6;
   --text-main: #2b2622;
   --text-secondary: #5d554c;
   --text-muted: #8d847a;
@@ -377,7 +375,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 8px 10px;
+  padding: 8px 12px 8px 10px;
   border-radius: 8px;
   text-decoration: none;
   color: var(--text-main);
@@ -424,18 +422,6 @@ h2 {
 .more-link-sub.is-copied {
   color: var(--vermilion);
   font-weight: 600;
-}
-
-.more-ext-mark {
-  font-size: 11px;
-  color: var(--text-muted);
-  opacity: 0.7;
-  flex-shrink: 0;
-}
-
-.more-pop-link:hover .more-ext-mark {
-  color: var(--vermilion);
-  opacity: 1;
 }
 
 .more-mobile-only {
@@ -2327,6 +2313,12 @@ html.deeplink-boot #inp-year {
   transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
+/* The English hint is a long line that crosses polity names, so it needs more contrast. */
+html[lang="en"] #gesture-guide {
+  color: var(--text-secondary);
+  background: rgba(243, 238, 228, 0.94);
+}
+
 #gesture-guide.is-dismissed,
 #viewport-frame.has-active-genealogy #gesture-guide,
 #viewport-frame.has-active-journey #gesture-guide,
@@ -2616,8 +2608,34 @@ html.deeplink-boot #inp-year {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px 10px;
   font-size: 13px;
+}
+
+.challenge-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.challenge-finish-verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.challenge-star-link {
+  color: var(--vermilion);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.challenge-star-link:hover {
+  text-decoration: underline;
 }
 
 /* Quiz markers: the guess is a vermilion annotation, the answer an ink circle. */
@@ -2784,8 +2802,10 @@ html.deeplink-boot #inp-year {
   text-underline-offset: 2px;
 }
 
+/* Topic pages are Chinese-only, so English mode does not offer the Guide link. */
 #chronicle-pane.is-polity-mode .seat-row .topic-inline-link,
-html.is-embed .topic-inline-link {
+html.is-embed .topic-inline-link,
+html[lang="en"] .topic-inline-link {
   display: none !important;
 }
 
@@ -3290,6 +3310,16 @@ html.is-embed .timeline-crop-mask {
   border-right: none;
 }
 
+/* English band names are long enough to run under the timeline edge handles. Push the first/last
+   labels toward the inner side instead of centering them; widths and label fitting are unchanged. */
+html[lang="en"] .band-cell:first-child {
+  justify-content: flex-end;
+}
+
+html[lang="en"] .band-cell:last-child {
+  justify-content: flex-start;
+}
+
 .band-cell:hover {
   opacity: 0.9;
 }
@@ -3424,10 +3454,6 @@ html.is-embed .timeline-crop-mask {
   display: none !important;
 }
 
-.fade-enter {
-  animation: none;
-}
-
 /* Traditional Chinese (zh-Hant): Ma Shan Zheng lacks several Traditional glyphs (e.g. 時/戰/國/東/漢/華);
    use bold Song-style serif across brand seal and dynasty headings for uniform stroke weight. */
 html[lang="zh-Hant"] .brand-group .seal-mark {
@@ -3452,6 +3478,53 @@ html[lang="zh-Hant"] #dynasty-title {
 }
 
 /* English Locale Typography Adjustments */
+/* CJK faces draw ‘ ’ “ ” as full-width glyphs, so English text reads "Chang’ an" / "bones.” ".
+   In English mode, take only those quote marks from a local Latin face. */
+@font-face {
+  font-family: 'Latin Quotes Serif';
+  src: local('Georgia'), local('Times New Roman'), local('TimesNewRomanPSMT'), local('Noto Serif'),
+    local('DejaVu Serif'), local('Liberation Serif');
+  font-weight: 400 500;
+  unicode-range: U+2018-201F;
+}
+
+@font-face {
+  font-family: 'Latin Quotes Serif';
+  src: local('Georgia Bold'), local('Georgia-Bold'), local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT'),
+    local('Noto Serif Bold'), local('NotoSerif-Bold'), local('DejaVu Serif Bold'), local('DejaVuSerif-Bold'),
+    local('Liberation Serif Bold'), local('LiberationSerif-Bold');
+  font-weight: 600 900;
+  unicode-range: U+2018-201F;
+}
+
+@font-face {
+  font-family: 'Latin Quotes Sans';
+  src: local('Helvetica Neue'), local('HelveticaNeue'), local('Arial'), local('ArialMT'), local('Segoe UI'),
+    local('Roboto'), local('Noto Sans'), local('DejaVu Sans'), local('Liberation Sans');
+  font-weight: 400 500;
+  unicode-range: U+2018-201F;
+}
+
+@font-face {
+  font-family: 'Latin Quotes Sans';
+  src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'), local('Arial Bold'), local('Arial-BoldMT'),
+    local('Segoe UI Bold'), local('SegoeUI-Bold'), local('Roboto Bold'), local('Roboto-Bold'), local('Noto Sans Bold'),
+    local('NotoSans-Bold'), local('DejaVu Sans Bold'), local('DejaVuSans-Bold'), local('Liberation Sans Bold'),
+    local('LiberationSans-Bold');
+  font-weight: 600 900;
+  unicode-range: U+2018-201F;
+}
+
+html[lang="en"] {
+  --serif-stack: 'Latin Quotes Serif', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --sans-stack: 'Latin Quotes Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+html[lang="en"] #atlas-svg {
+  --serif-stack: 'Latin Quotes Serif', 'Songti SC', 'SimSun', serif;
+  --sans-stack: 'Latin Quotes Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
 html[lang="en"] .brand-group .subtitle-mark {
   letter-spacing: 0.04em;
 }
@@ -6269,4 +6342,114 @@ html[lang="en"] .mp-lore-lbl {
   font-size: 9.6px;
   fill: currentColor;
   font-weight: 700;
+}
+
+/* Locate Quiz Result Poster Share Modal */
+.quiz-poster-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(31, 24, 18, 0.56);
+  backdrop-filter: blur(4px);
+}
+
+.quiz-poster-dialog {
+  width: min(440px, 100%);
+  max-height: min(92vh, 840px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(250, 246, 237, 0.98);
+  border: 1px solid rgba(181, 69, 47, 0.28);
+  border-radius: 14px;
+  padding: 12px 14px 14px;
+  box-shadow: 0 22px 54px rgba(24, 18, 12, 0.34);
+  overflow: hidden;
+}
+
+.quiz-poster-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.quiz-poster-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.quiz-poster-title {
+  margin: 0;
+  font-family: var(--serif-stack);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quiz-poster-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 0;
+}
+
+.quiz-poster-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(64vh, 560px);
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(43, 38, 34, 0.16), 0 1px 3px rgba(43, 38, 34, 0.08);
+  -webkit-touch-callout: default;
+}
+
+.quiz-poster-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.quiz-poster-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.quiz-poster-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .quiz-poster-modal {
+    padding: 10px;
+  }
+  .quiz-poster-dialog {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+  .quiz-poster-img {
+    max-height: min(60vh, 470px);
+  }
 }

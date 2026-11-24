@@ -200,10 +200,12 @@
 
         const isEdgeNatural =
           /Natural|Online.*Microsoft/i.test(name) ||
-          /Xiaoxiao|Yunxi|Xiaoyi|Yunjian|HsiaoChen|HsiaoYu|WanLung|Aria|Jenny|Guy/i.test(name);
+          /Xiaoxiao|Yunxi|Yunyang|Xiaoyi|Yunjian|HsiaoChen|HsiaoYu|WanLung|Aria|Jenny|Guy/i.test(
+            name
+          );
         const isGoogleRemote = /Google/i.test(name) && !v.localService;
         const isPreferredSystemVoice =
-          /婷婷|Tingting|美佳|Meijia|善怡|Sin-?ji|慧慧|Huihui|瑶瑶|Yaoyao|康康|Kangkang|Siri|Enhanced|Premium|Samantha|Alex|Daniel/i.test(
+          /婷婷|Tingting|美佳|Meijia|善怡|Sin-?ji|慧慧|Huihui|瑶瑶|Yaoyao|康康|Kangkang|Li-?Mu|Yu-?shu|Lili|Lanying|Shanshan|Siri|Samantha|Alex|Daniel/i.test(
             name
           );
         const isNoveltyVoice =
@@ -213,7 +215,7 @@
 
         if (isEdgeNatural) {
           score += 130;
-          if (/Yunxi|Xiaoxiao|HsiaoChen|Guy|Aria/i.test(name)) score += 20;
+          if (/Yunyang|Yunxi|Xiaoxiao|HsiaoChen|Guy|Aria/i.test(name)) score += 20;
         } else if (v.localService) {
           score += 85;
         } else if (isGoogleRemote) {
@@ -223,6 +225,9 @@
         }
 
         if (isPreferredSystemVoice) score += 35;
+        if (/\bPremium\b|高级/i.test(name)) score += 45;
+        else if (/\bEnhanced\b|增强|优化/i.test(name)) score += 30;
+        else if (/\bSiri\b/i.test(name)) score += 25;
         if (isNoveltyVoice) score -= 60;
 
         if (!isEn && !isTw && /zh[-_]?CN/i.test(lang)) score += 18;
@@ -244,11 +249,6 @@
       if (bestAlt && bestAlt.voice !== bestPrimary) list.push(bestAlt.voice);
       list.push(null);
       return list;
-    }
-
-    _selectSpeechVoice() {
-      const candidates = this._candidateSpeechVoices();
-      return candidates.length ? candidates[0] : null;
     }
 
     _duckMusicForNarration(duck) {
@@ -366,7 +366,9 @@
       // 2× Speed LOD: speak only on dynasty switch or territory-changing stops.
       if (speed >= 2 && !isNewDynasty) {
         const isMajor = Boolean(
-          (m && m.isMapChange) || this._isMajorStopYear(this.year) || (m && this._isMajorStopYear(m.year))
+          (m && this._isPhaseChangeYear(cur, m.year)) ||
+            this._isMajorStopYear(this.year) ||
+            (m && this._isMajorStopYear(m.year))
         );
         if (!isMajor) return '';
       }

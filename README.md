@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000` in your browser.
+Then open `http://localhost:8000` in your browser. Static topic guides under `topics/` are built on deploy; run `node scripts/build_seo_topics.js --html-only` first if you want to browse `/topics/` locally.
 
 ## Run with Docker
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 Then open `http://localhost:8008` (the port mapping `8008:80` is set in `docker-compose.yml`).
 
-The image is a plain `nginx:alpine` that serves this repository as static files: `Dockerfile` copies the working tree into `/usr/share/nginx/html`, and `.dockerignore` keeps the build context small by excluding `.git`, `.github`, `data/`, `docs/`, `scripts/`, `skills/`, `workers/`, Markdown files, `geojson/demo.html` and the README demo images (`assets/hero_demo_*.webp`, `assets/preview_*.webp`) — the site does not need any of them at runtime.
+The `Dockerfile` uses a two-stage build: a `node:20-alpine` stage generates the static `topics/*.html` pages, and the final `nginx:alpine` image serves only the runtime static files (`index.html`, `assets/`, `css/`, `js/`, `geojson/`, `topics/`, and metadata files) from `/usr/share/nginx/html`. `.dockerignore` excludes `.git`, `.github`, `docs/`, `skills/`, `workers/`, unused `data/` and `scripts/` subdirectories, Markdown files, `geojson/demo.html`, and README demo images (`assets/hero_demo_*.webp`, `assets/preview_*.webp`).
 
 To use another port, change the `ports` mapping in `docker-compose.yml` (e.g. `"9000:80"`) and run `docker compose up -d` again.
 
@@ -300,6 +300,13 @@ Code and the data created by this project are released under **GPL-3.0**. One la
 **Approximate boundaries.** Historical territories and administrative boundaries are schematic approximations of broad jurisdictions, not surveyed borders. Do not cite them as precise or authoritative.
 
 **Reusing this project.** For the GPL-3.0 layers, credit **江山时序 Jiangshan Atlas** with a link to https://github.com/DeanChensj/jiangshan-map and cite the upstream sources above. Screenshots that show the prefecture layer carry the CHGIS terms as well.
+
+**Forks, mirrors and derivative projects.** You are welcome to build on this project or deploy your own copy. Please:
+- create your repository with GitHub's **Fork** button rather than copying the code into a new repository, so visitors can find the upstream project and you can pull in later updates more easily;
+- keep a visible link to https://github.com/DeanChensj/jiangshan-map on your site (the GitHub links in the page already do this; please don't remove them);
+- state on your site and in your README that it is a third-party deployment or a derivative project, not the official site.
+
+**Project name.** The official site is https://deanchen.me/jiangshan-map/. Third-party deployments and derivative projects should not present themselves as the official 江山时序 / Chronicles of the Realm site. Wording such as "based on 江山时序" or "unofficial mirror of 江山时序" is fine.
 
 **Rights holders.** If you hold rights in any material here and believe it is used improperly, please [open an issue](https://github.com/DeanChensj/jiangshan-map/issues); we will respond and remove it if needed.
 

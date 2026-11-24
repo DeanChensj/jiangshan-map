@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { verifyIndexHtmlAssetHashes } = require('../sync_version');
+const { generateAllOutputs } = require('../build_seo_topics');
 
 async function runCoreDataSuite(ctx) {
   const {
@@ -503,10 +504,12 @@ async function runCoreDataSuite(ctx) {
       !appCode.toLowerCase().includes('deanchensj.github.io'),
     'SEO/GEO files (index.html, sitemap.xml, robots.txt, app.js) must canonicalize to https://deanchen.me/jiangshan-map/ and allow Baiduspider/Bytespider'
   );
-  const topicsDir = path.join(ROOT, 'topics');
+  const generatedTopicMap = new Map(
+    generateAllOutputs().allTopicPages.map((p) => [p.filename, p.html])
+  );
   assert(
-    fs.existsSync(path.join(topicsDir, 'index.html')),
-    'Missing topics/index.html static SEO directory page'
+    generatedTopicMap.has('index.html'),
+    'Missing topics/index.html static SEO directory page in generator output'
   );
   const placesCatalog = JSON.parse(
     fs.readFileSync(path.join(ROOT, 'data/topics/places.json'), 'utf8')
@@ -533,9 +536,8 @@ async function runCoreDataSuite(ctx) {
     'battle-feishui.html',
   ];
   for (const tf of expectedTopicFiles) {
-    const tfPath = path.join(topicsDir, tf);
-    assert(fs.existsSync(tfPath), `Missing static SEO topic page: topics/${tf}`);
-    const tfHtml = fs.readFileSync(tfPath, 'utf8');
+    const tfHtml = generatedTopicMap.get(tf);
+    assert(typeof tfHtml === 'string' && tfHtml.length > 0, `Missing static SEO topic page: topics/${tf}`);
     const expectedCanon = `https://deanchen.me/jiangshan-map/topics/${tf}`;
     assert(
       tfHtml.includes(`rel="canonical" href="${expectedCanon}"`) &&
@@ -714,6 +716,7 @@ async function runCoreDataSuite(ctx) {
     '_renderChallengeAnsweredVerdict',
     '_evaluateLocateClick',
     '_finishChallenge',
+    '_openQuizPoster',
   ];
   const NARRATOR_METHODS = [
     '_hasSpeechSynthesis',
@@ -724,7 +727,6 @@ async function runCoreDataSuite(ctx) {
     '_spokenSiteIfAbsent',
     '_cleanSpokenText',
     '_candidateSpeechVoices',
-    '_selectSpeechVoice',
     '_duckMusicForNarration',
     '_updateNarratorUi',
     '_isMajorStopYear',
@@ -878,6 +880,58 @@ async function runCoreDataSuite(ctx) {
     probe._setEnglishLocale(null);
     assert.strictEqual(probe._hasEnDict(), false, 'A missing locale remains supported');
   }
+  {
+    const hasSynth = Object.prototype.hasOwnProperty.call(sandbox.window, 'speechSynthesis');
+    const savedSynth = sandbox.window.speechSynthesis;
+    const hasUtter = Object.prototype.hasOwnProperty.call(sandbox.window, 'SpeechSynthesisUtterance');
+    const savedUtter = sandbox.window.SpeechSynthesisUtterance;
+    const savedUnsupported = ctrl._ttsUnsupported;
+    const savedLocale = ctrl.locale;
+    let mockVoices = [];
+    try {
+      ctrl._ttsUnsupported = false;
+      ctrl.locale = 'zh';
+      sandbox.window.speechSynthesis = { getVoices: () => mockVoices };
+      sandbox.window.SpeechSynthesisUtterance = function () {};
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting (Enhanced)', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Tingting (Premium)', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Siri Voice 1', lang: 'zh-CN', localService: true, default: false },
+        { name: 'Google 普通话（中国大陆）', lang: 'zh-CN', localService: false, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting (Premium)',
+        'Premium local voice must rank ahead of Enhanced, Siri, and compact Tingting'
+      );
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting (Enhanced)', lang: 'zh-CN', localService: true, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting (Enhanced)',
+        'Enhanced local voice must rank ahead of compact default Tingting'
+      );
+      mockVoices = [
+        { name: 'Tingting', lang: 'zh-CN', localService: true, default: true },
+        { name: 'Tingting（优化）', lang: 'zh-CN', localService: true, default: false },
+      ];
+      assert.strictEqual(
+        ctrl._candidateSpeechVoices()[0].name,
+        'Tingting（优化）',
+        'Localized Chinese 优化 voice must rank ahead of compact default Tingting'
+      );
+    } finally {
+      if (hasSynth) sandbox.window.speechSynthesis = savedSynth;
+      else delete sandbox.window.speechSynthesis;
+      if (hasUtter) sandbox.window.SpeechSynthesisUtterance = savedUtter;
+      else delete sandbox.window.SpeechSynthesisUtterance;
+      ctrl._ttsUnsupported = savedUnsupported;
+      ctrl.locale = savedLocale;
+    }
+  }
   assert.strictEqual(
     typeof ctrl._lazyAssetUrl,
     'function',
@@ -896,6 +950,7 @@ async function runCoreDataSuite(ctx) {
                 vLore: '11223344',
                 vHant: '55667788',
                 vQuiz: '99aabbcc',
+                vQuizPoster: '00112233',
                 vNarrator: 'ddeeff00',
               },
             }
@@ -925,6 +980,11 @@ async function runCoreDataSuite(ctx) {
       ctrl._lazyAssetUrl('js/atlas_quiz.js', 'vQuiz'),
       'js/atlas_quiz.js?v=99aabbcc',
       '_lazyAssetUrl must read data-v-quiz from #atlas-app-script'
+    );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/quiz_poster.js', 'vQuizPoster'),
+      'js/quiz_poster.js?v=00112233',
+      '_lazyAssetUrl must read data-v-quiz-poster from #atlas-app-script'
     );
     assert.strictEqual(
       ctrl._lazyAssetUrl('js/atlas_narrator.js', 'vNarrator'),

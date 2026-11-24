@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-随后在浏览器打开 `http://localhost:8000`。
+随后在浏览器打开 `http://localhost:8000`。`topics/` 下的静态专题图志在部署时自动构建；如需在本地浏览 `/topics/`，先运行一次 `node scripts/build_seo_topics.js --html-only` 即可。
 
 ## 使用 Docker 运行
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 随后在浏览器打开 `http://localhost:8008`（端口映射为 `docker-compose.yml` 中的 `8008:80`）。
 
-镜像基于 `nginx:alpine` 做静态托管：`Dockerfile` 把整个仓库复制到 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`data/`、`docs/`、`scripts/`、`skills/`、`workers/`、Markdown 文件、`geojson/demo.html` 与 README 用的演示图片（`assets/hero_demo_*.webp`、`assets/preview_*.webp`），以减小构建上下文，页面运行不依赖这些内容。
+`Dockerfile` 采用两阶段构建：先在 `node:20-alpine` 阶段运行 `node scripts/build_seo_topics.js --html-only` 生成静态专题页，再将运行时所需的静态文件（`index.html`、`assets/`、`css/`、`js/`、`geojson/`、`topics/` 等）复制到 `nginx:alpine` 的 `/usr/share/nginx/html`；`.dockerignore` 排除 `.git`、`.github`、`docs/`、`skills/`、`workers/`、未用到的 `data/` 与 `scripts/` 子目录、Markdown 文件、`geojson/demo.html` 及 README 演示图片（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）。
 
 要换端口：修改 `docker-compose.yml` 的 `ports`（如 `"9000:80"`），再执行 `docker compose up -d`。
 
@@ -300,6 +300,13 @@ hit.prefecture;                  // 默认为 null；加 --with-prefectures 导�
 **近似边界**：地图中的历史疆域与政区边界为示意性近似，用于直观呈现各时期大致的管辖范围，并非测绘成果，请勿作为精确或权威的边界依据引用。
 
 **转载与复用**：复用 GPL-3.0 图层时，请注明「江山时序 Jiangshan Atlas」并附 https://github.com/DeanChensj/jiangshan-map ，同时注明上文所列原始来源。含郡州府图层的截图同样受 CHGIS 条款约束。
+
+**Fork、镜像与二次开发**：欢迎基于本项目二次开发或自行部署。请：
+- 用 GitHub 的 **Fork** 按钮创建仓库，不要把代码复制到一个新仓库里，这样访问者能找到上游项目，你以后同步更新也更方便；
+- 在你的网站上保留指向 https://github.com/DeanChensj/jiangshan-map 的可见链接（页面里自带的 GitHub 链接即可，请勿删除）；
+- 在网站和 README 里写明这是第三方部署或衍生项目，不是官方站点。
+
+**项目名称**：官方网站为 https://deanchen.me/jiangshan-map/ 。第三方部署和衍生项目请勿以「江山时序」官方站点的身份出现，可以写「基于江山时序」或「江山时序非官方镜像」。
 
 **权利人联系**：如果您是本仓库中某项内容的权利人，认为使用不当，请[提交 issue](https://github.com/DeanChensj/jiangshan-map/issues)，我们会及时回复，必要时删除。
 

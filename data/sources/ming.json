@@ -28,5 +28,7 @@
   "event:ming:1578b": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
   "event:ming:1581": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
   "event:ming:1582": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
-  "event:ming:1587": [{ "w": "mingshi", "loc": "卷226 列传第一百十四 海瑞传", "url": "https://zh.wikisource.org/wiki/明史/卷226" }]
+  "event:ming:1587": [{ "w": "mingshi", "loc": "卷226 列传第一百十四 海瑞传", "url": "https://zh.wikisource.org/wiki/明史/卷226" }],
+  "milestone:ming:1407": [{ "w": "mingshi", "loc": "卷6 本纪第六 成祖二 永乐五年六月 平交阯，置交趾布政司", "url": "https://zh.wikisource.org/wiki/明史/卷006" }],
+  "milestone:ming:1409": [{ "w": "mingshi", "loc": "卷6 本纪第六 成祖二 永乐七年闰四月；卷90 兵二 置奴儿干都司", "url": "https://zh.wikisource.org/wiki/明史/卷006" }]
 }

@@ -456,6 +456,25 @@ async function runApiSearchSuite(ctx) {
           );
         }
         assert(!withPref || prefFiles > 150, `--with-prefectures must export the prefecture layer, got ${prefFiles} files`);
+        if (withPref) continue;
+        // Settlements carry the same year range as their dynasty in index.json (a boundary year
+        // belongs to the later dynasty) and the appear / vanish years the app hides them by.
+        const exportIndex = JSON.parse(fs.readFileSync(path.join(outDir, 'index.json'), 'utf8'));
+        const exportDyn = new Map(exportIndex.dynasties.map((d) => [d.key, d]));
+        const exportSettlements = JSON.parse(fs.readFileSync(path.join(outDir, 'settlements.geojson'), 'utf8')).features;
+        for (const ft of exportSettlements) {
+          const sp = ft.properties;
+          const ed = exportDyn.get(sp.dynasty);
+          assert(
+            ed && sp.from === ed.from && sp.to === ed.to,
+            `Exported settlement "${sp.ancient}" (${sp.dynasty}) spans ${sp.from}..${sp.to} but index.json gives ${ed && ed.from}..${ed && ed.to}`
+          );
+        }
+        const exportTianjing = exportSettlements.find((ft) => ft.properties.dynasty === 'qing' && ft.properties.ancient === '天京');
+        assert(
+          exportTianjing && exportTianjing.properties.appear === 1853 && exportTianjing.properties.vanish === 1864,
+          'Exported settlement 天京 must carry appear 1853 / vanish 1864'
+        );
       }
     } finally {
       fs.rmSync(exportRoot, { recursive: true, force: true });
@@ -762,6 +781,7 @@ async function runApiSearchSuite(ctx) {
       's_qin_b',
       's_qin',
       's_xihan_a',
+      's_xihan_a2',
       's_xihan_b1',
       's_xihan_b2',
       's_xihan_b3a',
@@ -783,6 +803,7 @@ async function runApiSearchSuite(ctx) {
       's_nansong_a',
       's_yuan',
       's_ming_a',
+      's_qing_1755',
       's_qing_d',
       's_roc',
     ]) {
@@ -872,6 +893,63 @@ async function runApiSearchSuite(ctx) {
     assert(
       llmsSrc.includes(`| \`${d.key}\` |`) && llmsSrc.includes(`\`${d.fromYear}\` to \`${d.toYear}\``),
       `llms.txt must list exact dynasty key ${d.key} and year span ${d.fromYear} to ${d.toYear}`
+    );
+  }
+
+  // CONTRIBUTING must document the commands and data symbols that actually ship, so a
+  // contributor following the storyline checklist edits a file that exists and names a
+  // table that is really loaded. `scripts/gen_pinyin.js` never existed and `PERSON_EVENTS`
+  // was renamed to `PERSON_DETAILS` in #312, but both stayed in the checklist (added in #358).
+  for (const [label, docSrc] of [
+    ['CONTRIBUTING.md', contributingSrc],
+    ['CONTRIBUTING_ZH.md', contributingZhSrc],
+  ]) {
+    for (const [, scriptPath] of docSrc.matchAll(/node\s+(scripts\/[A-Za-z0-9_\-.]+\.(?:js|cjs))/g)) {
+      assert(
+        fs.existsSync(path.join(ROOT, scriptPath)),
+        `${label} documents "node ${scriptPath}", but that file does not exist`
+      );
+    }
+    assert(
+      !docSrc.includes('PERSON_EVENTS'),
+      `${label} must not tell contributors to edit PERSON_EVENTS; the story-line stops/camps table is PERSON_DETAILS`
+    );
+  }
+  assert(
+    loreData.PERSON_DETAILS &&
+      typeof loreData.PERSON_DETAILS === 'object' &&
+      Array.isArray((loreData.PERSON_DETAILS.anshi || {}).stops),
+    'PERSON_DETAILS must be the lore_detail.js table holding each story line\'s camps/stops'
+  );
+
+  // The Repository Structure block names the file that owns each data table, because that is
+  // where a contributor is sent to edit it. Rivers/lakes/paleo-sea masks moved to
+  // js/china_geo_data.js (HYDRO_DATA) and passes to js/lore_core.js (STRATEGIC_PASSES), but the
+  // map_data.js line kept claiming "rivers, passes" — pointing contributors at a file that has
+  // never contained either, so the edit would be silently wrong.
+  const dataGlobals = {
+    'map_data.js': (sandbox.window.DYNASTY_DATA || []).length > 0 && Array.isArray(sandbox.window.CORRIDOR_DATA),
+    'china_geo_data.js': Array.isArray(sandbox.window.PROVINCE_OUTLINES) && Boolean(sandbox.window.HYDRO_DATA),
+    'lore_core.js': Array.isArray(loreData.STRATEGIC_PASSES) && Array.isArray(loreData.PERSON_PROFILES),
+  };
+  for (const [label, docSrc] of [
+    ['CONTRIBUTING.md', contributingSrc],
+    ['CONTRIBUTING_ZH.md', contributingZhSrc],
+  ]) {
+    for (const [file, ok] of Object.entries(dataGlobals)) {
+      assert(
+        ok && docSrc.split('\n').some((l) => l.includes(`── ${file} `)),
+        `${label} must describe js/${file} in the Repository Structure block`
+      );
+    }
+    const mapDataLine = docSrc.split('\n').find((l) => l.includes('── map_data.js ')) || '';
+    assert(
+      !/\brivers?\b|水系/.test(mapDataLine),
+      `${label} must not credit js/map_data.js with rivers; they live in js/china_geo_data.js as HYDRO_DATA`
+    );
+    assert(
+      !/\bpasses?\b|雄关/.test(mapDataLine),
+      `${label} must not credit js/map_data.js with passes; they live in js/lore_core.js as STRATEGIC_PASSES`
     );
   }
 
@@ -1505,7 +1583,7 @@ async function runApiSearchSuite(ctx) {
   assert.strictEqual(ctrl._resolveSnapKey(xihanDyn, 24), 's_xihan_e', 'Western Han at 24 CE must resolve to s_xihan_e');
   assert(
     snapshots.s_xihan_e.polities.some((p) => p.title === '更始（汉）') &&
-      snapshots.s_xihan_e.polities.some((p) => p.title === '刘秀（河北）') &&
+      snapshots.s_xihan_e.polities.some((p) => p.title === '刘秀') &&
       snapshots.s_xihan_e.polities.some((p) => p.title === '赤眉军'),
     's_xihan_e must map Gengshi, Liu Xiu (Hebei), and Chimei Army'
   );

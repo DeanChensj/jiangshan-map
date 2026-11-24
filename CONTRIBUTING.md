@@ -29,14 +29,14 @@ We welcome contributions of all kinds, including:
 │   ├── atlas_api.js         # AI-Native Public API (resolvePlace / inspect / locate), multi-stop custom route, deep-link restore & WebMCP module
 │   ├── atlas_track.js       # Anonymous button & feature click counter (deferred; batches counts to workers/stats, no cookies or personal data)
 │   ├── atlas_quiz.js        # Lazy-loaded Ancient Place Pinpoint Quiz module (deck construction, clue sanitization, SVG scoring rings & action chip)
-│   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones, rivers, passes & transport corridors
+│   ├── map_data.js          # 18 historical periods metadata, phase rules, ancient settlements, milestones & transport corridors (CORRIDOR_DATA)
 │   ├── lore_core.js         # First-paint & search lore: imperial eras (CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS), passes, gazetteer, person profiles & guqin tracks
 │   ├── lore_detail.js       # Lazy-loaded lore detail: landmark events (PLACE_LANDMARK_EVENTS), biographical journeys, city lore (CITY_LORE) & polity profiles
 │   ├── zh_hant.js           # Lazy-loaded Traditional Chinese (zh-Hant) runtime converter & historical polysemy dictionary
 │   ├── milestone_sources.js # Generated from data/sources/ by audit_sources.js --fix: lazy milestone source lines
 │   ├── atlas_boot.js        # Generated from data/atlas/: initial snapshots for instant first-paint rendering
 │   ├── atlas_snapshots.js   # Generated from data/atlas/: topology-deduplicated & VLQ delta-encoded polity/prefecture polygons (lazy-loaded on demand)
-│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the `Provinces` reference layer
+│   ├── china_geo_data.js    # VLQ delta-encoded modern provincial boundaries for the `Provinces` reference layer, plus the rivers, lakes & paleo-sea masks drawn under them (HYDRO_DATA)
 │   └── i18n_dict.js         # Chinese-English dictionary for historical polities, prefectures, cities, and milestones
 ├── workers/stats/           # Cloudflare Worker behind stats.deanchen.me: write-only endpoint storing click counts in Workers Analytics Engine
 ├── skills/
@@ -64,7 +64,7 @@ We welcome contributions of all kinds, including:
    cd jiangshan-map
    python3 -m http.server 8000
    ```
-   Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI).
+   Then open `http://localhost:8000` in your browser (or `http://localhost:8000/?lang=en` for English UI). Static SEO pages under `topics/` are generated at deploy time; to preview them locally, run `node scripts/build_seo_topics.js --html-only`.
 
 2. **Sync Per-Asset Cache-Busting Hashes (After Editing `css/` or `js/`)**:
    `index.html` stamps each CSS/JS bundle (and lazy-loaded bundle attributes on `#atlas-app-script`) with an 8-character SHA-256 content hash:
@@ -146,6 +146,6 @@ The isolated build tool pins `pinyin-pro`; the browser loads the generated index
    - When adding an Event Storyline sandtable (such as `anshi` for the An Lushan Rebellion or `jingkang` for the Jingkang Catastrophe), complete all 5 touchpoints below (enforced by `scripts/tests/suite_search_runtime.js`):
      1. **Search Profile & 2-Char Stem Alias (`js/lore_core.js`)**: Register an `"isStory": true` entry in `PERSON_PROFILES` with an explicit starting `"dynastyKey"`, `"span"`, `"evCount"`, and `"aliases"` that include the full title, a **2-character Chinese stem** (e.g., `"安史"`, `"靖康"`, `"赤壁"`, `"楚汉"`), pinyin, and English names so bare 2-character queries rank `kind: "story"` first.
      2. **Single Canonical `[始末]` Badge (`js/app.js`)**: In `_findStoryForMilestone`, map the storyline to **exactly one** canonical milestone (`<dynastyKey>:<year>`, e.g., `'tang:755'`, `'beisong:1127'`). Each storyline must expose a single `[始末]` badge across the entire chronicle—never attach duplicate badges to multiple milestones for the same event.
-     3. **Two-Camp Sandtable & Cross-Dynasty Stops (`js/lore_detail.js`)**: Define `"camps"` (two contrasting faction palettes) and chronological `"stops"` in `PERSON_EVENTS`. For cross-dynasty storylines, set `"dynastyKey"` on each stop and `"isMapChange": true` on territorial transitions; when a converging prong in `"prongs"` originates from an earlier stop, set `"fromStopIdx"` so it reuses that stop's numbered bead rather than spawning a duplicate origin dot.
-     4. **Pinyin Index Sync**: Run `node scripts/gen_pinyin.js` to update `js/event_pinyin.js`.
+     3. **Two-Camp Sandtable & Cross-Dynasty Stops (`js/lore_detail.js`)**: Define `"camps"` (two contrasting faction palettes) and chronological `"stops"` in `PERSON_DETAILS` (the detail map that is merged into `PERSON_PROFILES` on load), keyed by the storyline's `PERSON_PROFILES` key. For cross-dynasty storylines, set `"dynastyKey"` on each stop and `"isMapChange": true` on territorial transitions; when a converging prong in `"prongs"` originates from an earlier stop, set `"fromStopIdx"` so it reuses that stop's numbered bead rather than spawning a duplicate origin dot.
+     4. **Pinyin Index Sync**: Regenerate `js/event_pinyin.js` with `npm run build --prefix scripts/search-pinyin` (after `npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund`), the same isolated build tool described under *Rebuilding Event Pinyin Search Keys* above.
      5. **Primary Source Reference (`data/sources/persons.json`)**: Add a verified primary-source reference for `person:<key>`.

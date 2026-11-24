@@ -389,13 +389,11 @@
       if (this.embed) this._applyEmbedYearRange();
       this._initTimelineBands();
 
-      const rawLang = (new URLSearchParams(location.search).get('lang') || '').toLowerCase();
+      this.defaultLocale = this._detectDefaultLocale();
       this.locale =
-        rawLang === 'en'
-          ? 'en'
-          : /^(zh-tw|zh_tw|tw|hk|zh-hk|zh_hk|zh-hant|zh_hant|hant)$/.test(rawLang)
-            ? 'zh-tw'
-            : 'zh';
+        this._parseLangParam(new URLSearchParams(location.search).get('lang')) ||
+        this._readStoredLocale() ||
+        this.defaultLocale;
       this.year = this.dynasties[0].focusYear;
       this.dynastyIdx = 0;
       this.activeSnapKey = null;
@@ -498,9 +496,6 @@
       this._bootInnerWidth = undefined;
       if (!this.embed) this._maybeShowStartGuide();
 
-      if (typeof window !== 'undefined' && !this._fullSnapshotsLoaded) {
-        setTimeout(() => this._ensureFullSnapshots(), 50);
-      }
       if (!this._deferredLoadsHeld) this._releaseDeferredLoads();
     }
 
@@ -514,33 +509,80 @@
       setTimeout(() => this._releaseDeferredLoads(), 6000);
     }
 
+    _activateOptionalWebfonts() {
+      if (typeof window === 'undefined' || typeof document === 'undefined' || !document.querySelectorAll) return;
+      // Activate Google Fonts only after window.load (with media="print" onload="this.media='all'")
+      // so unreachable font hosts never block first paint, DOMContentLoaded, or load.
+      // Mainland China timezones route through the fonts.loli.net mirror since fonts.googleapis.com is TCP-blackholed.
+      let tz = '';
+      try {
+        tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+      } catch (_) {}
+      const useCnMirror = /^asia\/(shanghai|chongqing|chungking|harbin|urumqi|kashgar)$/.test(tz);
+      const run = () => {
+        document.querySelectorAll('link[data-font-href]').forEach((lnk) => {
+          let url = lnk.getAttribute('data-font-href');
+          if (!url || lnk.getAttribute('href')) return;
+          if (useCnMirror) url = url.replace(/^https:\/\/fonts\.googleapis\.com\//, 'https://fonts.loli.net/');
+          lnk.setAttribute('href', url);
+        });
+      };
+      if (document.readyState === 'complete') setTimeout(run, 100);
+      else if (typeof window.addEventListener === 'function') {
+        window.addEventListener('load', () => setTimeout(run, 100), { once: true });
+      }
+    }
+
     _releaseDeferredLoads() {
       if (this._deferredLoadsReleased) return;
       this._deferredLoadsReleased = true;
       this._deferredLoadsHeld = false;
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       const relief = this._id('terrain-relief-img');
+      let backgroundWarmupStarted = false;
+      const startBackgroundWarmup = () => {
+        if (backgroundWarmupStarted) return;
+        backgroundWarmupStarted = true;
+        this._activateOptionalWebfonts();
+        const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
+        const constrainedLink = Boolean(
+          conn && (conn.saveData || /(^|-)2g$|^3g$/.test(conn.effectiveType || ''))
+        );
+        // On 2G/3G or Data Saver, fetch heavy bundles only on-demand when the user switches eras or opens lore.
+        if (constrainedLink) return;
+        const scheduleIdle =
+          typeof window.requestIdleCallback === 'function'
+            ? (fn) => window.requestIdleCallback(fn, { timeout: 400 })
+            : (fn) => setTimeout(fn, 120);
+        scheduleIdle(() => {
+          const snapsDone = this._fullSnapshotsLoaded
+            ? Promise.resolve()
+            : this._ensureFullSnapshots();
+          snapsDone.then(() => {
+            if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
+            this._ensureNarrator();
+          });
+        });
+      };
       const reliefShown = () => {
         if (this.svg && this.svg.classList) this.svg.classList.remove('is-terrain-pending');
+        startBackgroundWarmup();
       };
       if (relief && !relief.getAttribute('href') && relief.getAttribute('data-href')) {
+        const mobHref = this._isMobileViewport() && relief.getAttribute('data-href-mobile');
         relief.addEventListener('load', reliefShown, { once: true });
         relief.addEventListener('error', reliefShown, { once: true });
-        relief.setAttribute('href', relief.getAttribute('data-href'));
+        setTimeout(startBackgroundWarmup, 8000);
+        relief.setAttribute('href', mobHref || relief.getAttribute('data-href'));
+      } else if (relief && relief.getAttribute('href') && !(relief.dataset && relief.dataset.loaded === '1')) {
+        if (this.svg && this.svg.classList) this.svg.classList.remove('is-terrain-pending');
+        relief.addEventListener('load', startBackgroundWarmup, { once: true });
+        relief.addEventListener('error', startBackgroundWarmup, { once: true });
+        setTimeout(startBackgroundWarmup, 8000);
       } else {
         reliefShown();
       }
       this._updateTerrainTiles();
-      if (!this._isLoreDetailLoaded()) {
-        const scheduleIdle =
-          typeof window.requestIdleCallback === 'function'
-            ? (fn) => window.requestIdleCallback(fn, { timeout: 200 })
-            : (fn) => setTimeout(fn, 80);
-        scheduleIdle(() => {
-          this._ensureLoreDetail();
-          this._ensureNarrator();
-        });
-      }
     }
 
     _hydrateSnapshots() {
@@ -664,18 +706,81 @@
       if (!this._fullSnapshotsPromise) {
         this._fullSnapshotsPromise = this._loadScriptOnce(
           this._lazyAssetUrl('js/atlas_snapshots.js', 'vSnapshots')
-        ).then(
-          () => {
-            this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
-            this._hydrateSnapshots();
-            this._fullSnapshotsLoaded = true;
-            this.snapshotCache = {};
-            this.searchIndex = null;
+        ).then(() => {
+          const loaded = Boolean(
+            typeof window !== 'undefined' &&
+              (window.ATLAS_FULL_SNAPSHOTS_LOADED ||
+                (window.ATLAS_SNAPSHOTS && window.ATLAS_SNAPSHOTS.s_prc))
+          );
+          if (!loaded) {
+            this._fullSnapshotsPromise = null;
             return this.snapshots;
           }
-        );
+          this.snapshots = window.ATLAS_SNAPSHOTS || this.snapshots;
+          this._hydrateSnapshots();
+          this._fullSnapshotsLoaded = true;
+          this.snapshotCache = {};
+          this.searchIndex = null;
+          return this.snapshots;
+        });
       }
       return this._fullSnapshotsPromise;
+    }
+
+    _dynastyKeyForSnap(snapKey) {
+      if (!snapKey) return null;
+      if (Array.isArray(this.dynasties)) {
+        for (const d of this.dynasties) {
+          if (Array.isArray(d.phases) && d.phases.some((p) => p && p.snap === snapKey)) {
+            return d.key;
+          }
+        }
+      }
+      const m = String(snapKey).match(/^s_([a-z]+)/);
+      return m ? m[1] : null;
+    }
+
+    _ensureDynastySnapshots(dynastyKey, expectedSnapKey = null) {
+      if (!dynastyKey || dynastyKey === 'prc' || this._fullSnapshotsLoaded) {
+        return Promise.resolve(this.snapshots);
+      }
+      if (!this._loadedDynastyChunks) this._loadedDynastyChunks = new Set();
+      if (!this._dynastyChunkPromises) this._dynastyChunkPromises = {};
+      if (
+        this._loadedDynastyChunks.has(dynastyKey) &&
+        (!expectedSnapKey || (this.snapshots && this.snapshots[expectedSnapKey]))
+      ) {
+        return Promise.resolve(this.snapshots);
+      }
+      if (!this._dynastyChunkPromises[dynastyKey]) {
+        this._dynastyChunkPromises[dynastyKey] = this._loadScriptOnce(
+          this._lazyAssetUrl(`js/snapshots/${dynastyKey}.js`, 'vSnapshots')
+        ).then(() => {
+          const snaps = typeof window !== 'undefined' ? window.ATLAS_SNAPSHOTS : null;
+          const prefix = `s_${dynastyKey}`;
+          const loaded = Boolean(
+            snaps &&
+              (window.ATLAS_FULL_SNAPSHOTS_LOADED ||
+                (expectedSnapKey
+                  ? snaps[expectedSnapKey]
+                  : Object.keys(snaps).some(
+                      (k) =>
+                        k.startsWith(prefix) &&
+                        (dynastyKey !== 'zhanguo' || k !== 's_zhanguo_a')
+                    )))
+          );
+          if (!loaded) {
+            delete this._dynastyChunkPromises[dynastyKey];
+            return this.snapshots;
+          }
+          this.snapshots = snaps;
+          this._hydrateSnapshots();
+          this._loadedDynastyChunks.add(dynastyKey);
+          this.snapshotCache = {};
+          return this.snapshots;
+        });
+      }
+      return this._dynastyChunkPromises[dynastyKey];
     }
 
     _ensureEnglishLocale() {
@@ -691,9 +796,15 @@
         this._enLocalePromise = this._loadScriptOnce(
           this._lazyAssetUrl('js/i18n_dict.js', 'vI18n')
         ).then(() => {
-          if (window.EN_LOCALE) {
+          if (
+            window.EN_LOCALE &&
+            window.EN_LOCALE.dict &&
+            Object.keys(window.EN_LOCALE.dict).length > 0
+          ) {
             this._setEnglishLocale(window.EN_LOCALE);
             this.searchIndex = null;
+          } else {
+            this._enLocalePromise = null;
           }
           return this.enLocale;
         });
@@ -1595,6 +1706,54 @@
       return this._zh(this._formatSpanEraZh(match, num));
     }
 
+    // ?lang= value -> 'en' | 'zh-tw' | 'zh', or null when absent/unknown.
+    _parseLangParam(raw) {
+      const v = String(raw || '').trim().toLowerCase();
+      if (!v) return null;
+      if (v === 'en' || /^en[-_]/.test(v)) return 'en';
+      if (/^(zh-tw|zh_tw|tw|hk|zh-hk|zh_hk|zh-mo|zh_mo|zh-hant|zh_hant|hant)$/.test(v)) return 'zh-tw';
+      if (/^(zh|zh-cn|zh_cn|cn|zh-sg|zh_sg|zh-hans|zh_hans|hans)$/.test(v)) return 'zh';
+      return null;
+    }
+
+    // Locale used when the URL carries no ?lang=: follow the browser, so a non-Chinese system lands
+    // on English. Embeds stay with the host page, and crawlers / headless renderers stay on
+    // Simplified Chinese so the x-default root is indexed and screenshotted as before.
+    _detectDefaultLocale() {
+      if (this.embed || typeof navigator === 'undefined' || !navigator) return 'zh';
+      const ua = String(navigator.userAgent || '');
+      if (/bot|crawl|spider|slurp|headlesschrome|lighthouse|facebookexternalhit|embedly|bingpreview/i.test(ua)) {
+        return 'zh';
+      }
+      const primary = String(
+        (Array.isArray(navigator.languages) && navigator.languages[0]) || navigator.language || ''
+      ).toLowerCase();
+      if (!primary) return 'zh';
+      if (primary === 'zh' || /^zh[-_]/.test(primary)) return /hant|tw|hk|mo/.test(primary) ? 'zh-tw' : 'zh';
+      return 'en';
+    }
+
+    _readStoredLocale() {
+      if (this.embed) return null;
+      try {
+        if (typeof localStorage === 'undefined' || !localStorage) return null;
+        return this._parseLangParam(localStorage.getItem('jiangshan_locale'));
+      } catch (_) {
+        return null;
+      }
+    }
+
+    _saveStoredLocale(loc) {
+      if (this.embed) return;
+      const norm = this._parseLangParam(loc);
+      if (!norm) return;
+      try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+          localStorage.setItem('jiangshan_locale', norm);
+        }
+      } catch (_) {}
+    }
+
     _effectiveRenderedLocale() {
       if (this.locale === 'en' && !this._hasEnDict()) {
         return 'en-pending';
@@ -1622,6 +1781,8 @@
           params.set('lang', 'en');
         } else if (this.locale === 'zh-tw') {
           params.set('lang', 'zh-tw');
+        } else if (this.defaultLocale && this.defaultLocale !== 'zh') {
+          params.set('lang', 'zh');
         } else {
           params.delete('lang');
         }
@@ -1663,6 +1824,7 @@
       if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
       if (this.locale === 'en') p.set('lang', 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
+      else if (this.defaultLocale && this.defaultLocale !== 'zh') p.set('lang', 'zh');
       return p;
     }
 
@@ -1895,7 +2057,14 @@
       const homeLink = this._id('act-home');
       if (homeLink) {
         // Home = a clean URL in the current language; this is the "reset" entry point.
-        homeLink.href = this.locale === 'en' ? './?lang=en' : this.locale === 'zh-tw' ? './?lang=zh-tw' : './';
+        homeLink.href =
+          this.locale === 'en'
+            ? './?lang=en'
+            : this.locale === 'zh-tw'
+              ? './?lang=zh-tw'
+              : this.defaultLocale && this.defaultLocale !== 'zh'
+                ? './?lang=zh'
+                : './';
         homeLink.title = this.locale === 'en' ? 'Back to home' : this._zh('回到首页');
       }
       this._id('txt-subtitle').textContent = this.uiStr('brand_sub', '中国历史地图 · 战国 → 今');
@@ -2440,139 +2609,6 @@
       }
     }
 
-    _simplifyPolylineRdp(pts, eps) {
-      if (!pts || pts.length <= 2) return pts;
-      const n = pts.length;
-      const keep = new Uint8Array(n);
-      keep[0] = 1;
-      keep[n - 1] = 1;
-      const epsSq = eps * eps;
-      const stack = [0, n - 1];
-      while (stack.length) {
-        const e = stack.pop();
-        const s = stack.pop();
-        if (e - s <= 1) continue;
-        const ax = pts[s][0];
-        const ay = pts[s][1];
-        const bx = pts[e][0];
-        const by = pts[e][1];
-        const dx = bx - ax;
-        const dy = by - ay;
-        const lenSq = dx * dx + dy * dy;
-        let maxSq = -1;
-        let maxIdx = -1;
-        for (let i = s + 1; i < e; i++) {
-          const px = pts[i][0];
-          const py = pts[i][1];
-          let dSq;
-          if (lenSq > 1e-12) {
-            let t = ((px - ax) * dx + (py - ay) * dy) / lenSq;
-            if (t < 0) t = 0;
-            else if (t > 1) t = 1;
-            const qx = ax + dx * t;
-            const qy = ay + dy * t;
-            dSq = (px - qx) * (px - qx) + (py - qy) * (py - qy);
-          } else {
-            dSq = (px - ax) * (px - ax) + (py - ay) * (py - ay);
-          }
-          if (dSq > maxSq) {
-            maxSq = dSq;
-            maxIdx = i;
-          }
-        }
-        if (maxSq > epsSq && maxIdx > s) {
-          keep[maxIdx] = 1;
-          stack.push(maxIdx, e, s, maxIdx);
-        }
-      }
-      const out = [];
-      for (let i = 0; i < n; i++) {
-        if (keep[i]) out.push(pts[i]);
-      }
-      return out;
-    }
-
-    _weldBoundaryChains(chains) {
-      const valid = chains.filter((pts) => pts && pts.length >= 2);
-      const count = valid.length;
-      if (!count) return '';
-      const keyOf = (pt) => `${pt[0].toFixed(1)},${pt[1].toFixed(1)}`;
-      const startMap = new Map();
-      const endMap = new Map();
-      const addIdx = (map, k, idx) => {
-        let arr = map.get(k);
-        if (!arr) {
-          arr = [];
-          map.set(k, arr);
-        }
-        arr.push(idx);
-      };
-      for (let i = 0; i < count; i++) {
-        const pts = valid[i];
-        addIdx(startMap, keyOf(pts[0]), i);
-        addIdx(endMap, keyOf(pts[pts.length - 1]), i);
-      }
-      const used = new Uint8Array(count);
-      const takeMatch = (k) => {
-        const sArr = startMap.get(k);
-        if (sArr) {
-          while (sArr.length) {
-            const idx = sArr.pop();
-            if (!used[idx]) return { idx, rev: false };
-          }
-        }
-        const eArr = endMap.get(k);
-        if (eArr) {
-          while (eArr.length) {
-            const idx = eArr.pop();
-            if (!used[idx]) return { idx, rev: true };
-          }
-        }
-        return null;
-      };
-      let out = '';
-      for (let i = 0; i < count; i++) {
-        if (used[i]) continue;
-        used[i] = 1;
-        const headChunks = [];
-        let headKey = keyOf(valid[i][0]);
-        for (;;) {
-          const hit = takeMatch(headKey);
-          if (!hit) break;
-          used[hit.idx] = 1;
-          const pts = valid[hit.idx];
-          const aligned = hit.rev ? pts : pts.slice().reverse();
-          headChunks.push(aligned);
-          headKey = keyOf(aligned[0]);
-        }
-        const merged = [];
-        for (let h = headChunks.length - 1; h >= 0; h--) {
-          const c = headChunks[h];
-          for (let j = merged.length ? 1 : 0; j < c.length; j++) merged.push(c[j]);
-        }
-        const base = valid[i];
-        for (let j = merged.length ? 1 : 0; j < base.length; j++) merged.push(base[j]);
-        let tailKey = keyOf(merged[merged.length - 1]);
-        for (;;) {
-          const hit = takeMatch(tailKey);
-          if (!hit) break;
-          used[hit.idx] = 1;
-          const pts = valid[hit.idx];
-          if (hit.rev) {
-            for (let j = pts.length - 2; j >= 0; j--) merged.push(pts[j]);
-          } else {
-            for (let j = 1; j < pts.length; j++) merged.push(pts[j]);
-          }
-          tailKey = keyOf(merged[merged.length - 1]);
-        }
-        out += `M${merged[0][0].toFixed(1)} ${merged[0][1].toFixed(1)}`;
-        for (let j = 1; j < merged.length; j++) {
-          out += `L${merged[j][0].toFixed(1)} ${merged[j][1].toFixed(1)}`;
-        }
-      }
-      return out;
-    }
-
     _buildProvinceBoundaryPaths() {
       if (this._cachedProvinceBoundaryPaths) {
         return this._cachedProvinceBoundaryPaths;
@@ -2700,214 +2736,12 @@
         };
         return this._cachedProvinceBoundaryPaths;
       }
-      const ptKey = (pt) => Math.round(pt[0] * 100) * 10000 + Math.round(pt[1] * 100);
-      const edgeKey = (k1, k2) => (k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`);
-
-      const coordByKey = new Map();
-      const edgeCounts = new Map();
-      const rawRings = [];
-
-      for (const prov of this.provinces || []) {
-        if (!prov || String(prov.code).includes('_JD') || !Array.isArray(prov.rings)) continue;
-        for (let polyIdx = 0; polyIdx < prov.rings.length; polyIdx++) {
-          const poly = prov.rings[polyIdx];
-          if (!Array.isArray(poly)) continue;
-          for (let ringIdx = 0; ringIdx < poly.length; ringIdx++) {
-            const rawRing = poly[ringIdx];
-            if (!Array.isArray(rawRing) || rawRing.length < 3) continue;
-            const oriented = this.projector._orientRing(rawRing, ringIdx > 0);
-            const keys = [];
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
-            for (let i = 0; i < oriented.length; i++) {
-              const pt = oriented[i];
-              const k = ptKey(pt);
-              if (keys.length && keys[keys.length - 1] === k) continue;
-              keys.push(k);
-              let sc = coordByKey.get(k);
-              if (!sc) {
-                sc = this.projector.toScreen(pt[0], pt[1]);
-                coordByKey.set(k, sc);
-              }
-              if (sc[0] < minX) minX = sc[0];
-              if (sc[0] > maxX) maxX = sc[0];
-              if (sc[1] < minY) minY = sc[1];
-              if (sc[1] > maxY) maxY = sc[1];
-            }
-            while (keys.length > 1 && keys[keys.length - 1] === keys[0]) keys.pop();
-            if (keys.length < 3) continue;
-            for (let i = 0; i < keys.length; i++) {
-              const ek = edgeKey(keys[i], keys[(i + 1) % keys.length]);
-              edgeCounts.set(ek, (edgeCounts.get(ek) || 0) + 1);
-            }
-            rawRings.push({
-              prov,
-              polyIdx,
-              keys,
-              maxSpan: Math.max(maxX - minX, maxY - minY),
-            });
-          }
-        }
-      }
-
-      // Skip secondary sub-pixel offshore reef specks (<0.6 SVG px) while keeping every
-      // primary territory ring, significant island, and shared boundary intact.
-      const activeRings = rawRings.filter((rec) => {
-        if (rec.polyIdx === 0 || rec.maxSpan >= 0.6) return true;
-        const keys = rec.keys;
-        for (let i = 0; i < keys.length; i++) {
-          if ((edgeCounts.get(edgeKey(keys[i], keys[(i + 1) % keys.length])) || 0) >= 2) {
-            return true;
-          }
-        }
-        return false;
-      });
-
-      const neighborSets = new Map();
-      const addNeighbor = (a, b) => {
-        let s = neighborSets.get(a);
-        if (!s) {
-          s = new Set();
-          neighborSets.set(a, s);
-        }
-        s.add(b);
-      };
-      const pinnedKeys = new Set();
-      for (const rec of activeRings) {
-        const keys = rec.keys;
-        const m = keys.length;
-        pinnedKeys.add(keys[0]);
-        pinnedKeys.add(keys[Math.floor(m / 3)]);
-        pinnedKeys.add(keys[Math.floor((2 * m) / 3)]);
-        for (let i = 0; i < m; i++) {
-          const kp = keys[(i + m - 1) % m];
-          const kc = keys[i];
-          const kn = keys[(i + 1) % m];
-          addNeighbor(kc, kn);
-          addNeighbor(kn, kc);
-          const prevInt = (edgeCounts.get(edgeKey(kp, kc)) || 0) >= 2;
-          const nextInt = (edgeCounts.get(edgeKey(kc, kn)) || 0) >= 2;
-          if (prevInt !== nextInt) pinnedKeys.add(kc);
-        }
-      }
-      for (const [k, nbrs] of neighborSets) {
-        if (nbrs.size !== 2) pinnedKeys.add(k);
-      }
-
-      // Simplify each topological chain once so shared borders stay bit-identical across
-      // neighbor fills and deduplicated boundary tiles.
-      const RDP_EPS = 0.38;
-      const chainCache = new Map();
-      const getSimplifiedChain = (subKeys) => {
-        const len = subKeys.length;
-        let canonKey;
-        let reversed = false;
-        if (len === 2) {
-          const a = subKeys[0];
-          const b = subKeys[1];
-          reversed = a > b;
-          canonKey = reversed ? `${b}|${a}` : `${a}|${b}`;
-        } else {
-          const fwdTag = `${subKeys[0]}>${subKeys[1]}`;
-          const revTag = `${subKeys[len - 1]}>${subKeys[len - 2]}`;
-          reversed = fwdTag > revTag;
-          canonKey = reversed ? `${revTag}|${fwdTag}|${len}` : `${fwdTag}|${revTag}|${len}`;
-        }
-        let canonPts = chainCache.get(canonKey);
-        if (!canonPts) {
-          const rawPts = new Array(len);
-          if (reversed) {
-            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[len - 1 - i]);
-          } else {
-            for (let i = 0; i < len; i++) rawPts[i] = coordByKey.get(subKeys[i]);
-          }
-          canonPts = this._simplifyPolylineRdp(rawPts, RDP_EPS);
-          chainCache.set(canonKey, canonPts);
-        }
-        return { canonKey, canonPts, reversed };
-      };
-
-      const seenBoundaryChains = new Set();
-      const tileBuckets = Array.from({ length: 12 }, () => ({ interior: [], outer: [] }));
-      const provPaths = new Map();
-
-      for (const rec of activeRings) {
-        const keys = rec.keys;
-        const m = keys.length;
-        const pinIdx = [];
-        for (let i = 0; i < m; i++) {
-          if (pinnedKeys.has(keys[i])) pinIdx.push(i);
-        }
-        const ringPts = [];
-        for (let p = 0; p < pinIdx.length; p++) {
-          const start = pinIdx[p];
-          const end = pinIdx[(p + 1) % pinIdx.length];
-          const subKeys = [keys[start]];
-          let cursor = start;
-          do {
-            cursor = (cursor + 1) % m;
-            subKeys.push(keys[cursor]);
-          } while (cursor !== end);
-
-          const { canonKey, canonPts, reversed } = getSimplifiedChain(subKeys);
-          if (reversed) {
-            for (let j = canonPts.length - 1 - (ringPts.length ? 1 : 0); j >= 0; j--) {
-              ringPts.push(canonPts[j]);
-            }
-          } else {
-            for (let j = ringPts.length ? 1 : 0; j < canonPts.length; j++) {
-              ringPts.push(canonPts[j]);
-            }
-          }
-
-          if (!seenBoundaryChains.has(canonKey)) {
-            seenBoundaryChains.add(canonKey);
-            const midPt = canonPts[canonPts.length >> 1];
-            const tx = Math.max(0, Math.min(3, Math.floor(midPt[0] / 250)));
-            const ty = Math.max(0, Math.min(2, Math.floor(midPt[1] / 234)));
-            const bucket = tileBuckets[ty * 4 + tx];
-            const isInterior = (edgeCounts.get(edgeKey(subKeys[0], subKeys[1])) || 0) >= 2;
-            (isInterior ? bucket.interior : bucket.outer).push(canonPts);
-          }
-        }
-
-        if (ringPts.length >= 3) {
-          let ringD = `M${ringPts[0][0].toFixed(1)} ${ringPts[0][1].toFixed(1)}`;
-          const limit =
-            ringPts[ringPts.length - 1][0] === ringPts[0][0] &&
-            ringPts[ringPts.length - 1][1] === ringPts[0][1]
-              ? ringPts.length - 1
-              : ringPts.length;
-          if (limit >= 3) {
-            for (let i = 1; i < limit; i++) {
-              ringD += `L${ringPts[i][0].toFixed(1)} ${ringPts[i][1].toFixed(1)}`;
-            }
-            ringD += 'Z';
-            provPaths.set(rec.prov, (provPaths.get(rec.prov) || '') + ringD);
-          }
-        }
-      }
-
-      const tiles = [];
-      let interior = '';
-      let outer = '';
-      for (const b of tileBuckets) {
-        const tInt = this._weldBoundaryChains(b.interior);
-        const tOut = this._weldBoundaryChains(b.outer);
-        if (!tInt && !tOut) continue;
-        tiles.push({ interior: tInt, outer: tOut, combined: `${tInt}${tOut}` });
-        interior += tInt;
-        outer += tOut;
-      }
-
       this._cachedProvinceBoundaryPaths = {
-        interior,
-        outer,
-        combined: `${interior}${outer}`,
-        tiles,
-        provPaths,
+        interior: '',
+        outer: '',
+        combined: '',
+        tiles: [],
+        provPaths: new Map(),
       };
       return this._cachedProvinceBoundaryPaths;
     }
@@ -3023,17 +2857,34 @@
       return ph ? ph.snap : `s_${dynasty.key}`;
     }
 
+    _isPhaseChangeYear(dynasty, year) {
+      if (!dynasty || year == null) return false;
+      if (year === dynasty.fromYear || year === dynasty.toYear) return true;
+      const phases = dynasty.phases || [];
+      for (let i = 0; i < phases.length - 1; i++) {
+        if (phases[i].until === year) return true;
+      }
+      return false;
+    }
+
     _fetchSnapshot(snapKey) {
       if (this.snapshotCache[snapKey]) return this.snapshotCache[snapKey];
       if (this.snapshots && this.snapshots[snapKey]) {
         this.snapshotCache[snapKey] = Promise.resolve(this.snapshots[snapKey]);
         return this.snapshotCache[snapKey];
       }
-      return this._ensureFullSnapshots().then(() => {
+      const dynastyKey = this._dynastyKeyForSnap(snapKey);
+      const loader =
+        dynastyKey && dynastyKey !== 'prc' && !this._fullSnapshotsLoaded
+          ? this._ensureDynastySnapshots(dynastyKey, snapKey)
+          : this._ensureFullSnapshots();
+      return loader.then(() => {
         const embedded = this.snapshots && this.snapshots[snapKey];
-        const res = embedded || { polities: [], prefectures: [], regions: [], note: '', caption: '' };
-        this.snapshotCache[snapKey] = Promise.resolve(res);
-        return res;
+        if (embedded) {
+          this.snapshotCache[snapKey] = Promise.resolve(embedded);
+          return embedded;
+        }
+        return { polities: [], prefectures: [], regions: [], note: '', caption: '' };
       });
     }
 
@@ -5113,24 +4964,24 @@
         闽越: ['无诸', '百越', '鸿沟', '垓下'],
         赤眉军: ['赤眉', '昆阳', '更始', '刘秀'],
         '隗嚣 · 窦融': ['隗嚣', '窦融', '昆阳', '更始', '刘秀'],
-        '马腾（凉州）': ['董卓', '长安', '凉州'],
-        '刘表（荆州）': ['荆州', '隆中对', '赤壁', '三顾茅庐'],
-        '刘焉（益州）': ['益州', '董卓'],
-        '刘繇 · 孙氏（江东）': ['孙策', '江东'],
-        '士燮（交州）': ['交州', '赤壁', '荆州'],
+        马腾: ['董卓', '长安', '凉州'],
+        刘表: ['荆州', '隆中对', '赤壁', '三顾茅庐'],
+        刘焉: ['益州', '董卓'],
+        '刘繇 · 孙氏': ['孙策', '江东'],
+        士燮: ['交州', '赤壁', '荆州'],
         '吴（杜伏威）': ['杜伏威', '江都', '瓦岗'],
         '秦（薛举）': ['薛举', '李渊', '大兴'],
         '凉（李轨）': ['李轨', '河西', '李渊'],
-        '唐 · 岐（关中）': ['李茂贞', '关中', '藩镇'],
+        '唐 · 岐': ['李茂贞', '关中', '藩镇'],
         大长和: ['南诏', '大理', '段思平'],
         清源军: ['留从效', '陈洪进', '南唐', '纳土归宋'],
-        '武平（湖南）': ['湖南', '假道灭虢'],
+        武平: ['湖南', '假道灭虢'],
         方国珍: ['方国珍', '张士诚', '集庆'],
         陈友定: ['陈友定', '北伐', '统一江南'],
         '威海卫（英租）': ['强租', '胶州湾', '戊戌'],
         '九龙新界（英租）': ['新界', '强租'],
         '晋系（阎锡山）': ['南北军阀', '直皖战争', '直奉战争'],
-        '西北诸马（甘宁青）': ['南北军阀', '直皖战争'],
+        西北诸马: ['南北军阀', '直皖战争'],
         '新疆（杨增新）': ['南北军阀', '北伐'],
         西南川滇黔桂各系: ['护法', '直皖战争', '广州', '孙中山'],
         '川滇黔军阀（刘湘 · 唐继尧）': ['南北军阀', '北伐'],
@@ -6142,7 +5993,7 @@
           this._settlementMask(dynasty, targetY) !== this._settlementMask(dynasty, prevY);
         const corrShift = this.corridors.some((c) => c.span && c.span[0] === m.year);
         const hydroShift = this._hydroCourseMask(targetY) !== this._hydroCourseMask(prevY);
-        const isMapChange = Boolean(m.isMapChange) || snapShift || cityShift || corrShift || hydroShift;
+        const isMapChange = snapShift || cityShift || corrShift || hydroShift || m.year === dynasty.toYear;
         const yrLabel =
           this.locale === 'en'
             ? this.formatYear(m.year)
@@ -6204,7 +6055,7 @@
             this._suppressChronicleAutoScroll = false;
           }
           this._frameMilestoneAnchors(dynasty, m, {
-            isMapChange: Boolean(snapShift || m.isMapChange),
+            isMapChange: Boolean(snapShift || m.year === dynasty.toYear),
           });
         });
         ul.appendChild(li);
@@ -7410,7 +7261,7 @@
           );
           for (const m of d.milestones || []) {
             const my = this._clampYearToDynasty(d, m.year);
-            mark(my, Boolean(m.isMapChange || phaseYears.has(my)));
+            mark(my, phaseYears.has(my));
           }
         }
         this._autoplayStopList = [...holdByYear]
@@ -8440,6 +8291,7 @@
         });
       }
 
+      const settlementBoxes = [];
       const layoutSettlementLabel = (node, allowCull, maxOverlapRatio = 0.14) => {
         const cx = parseFloat(node.getAttribute('data-x'));
         const cy = parseFloat(node.getAttribute('data-y'));
@@ -8449,6 +8301,7 @@
 
         const nameEl = node.querySelector('.name');
         if (!nameEl) return;
+        node._labelLayout = null;
         if (pinnedCoords.some(([px, py]) => Math.hypot(cx - px, cy - py) < 4.5)) {
           node.classList.add('is-label-crowded');
           return;
@@ -8460,6 +8313,7 @@
         const useCityHalo = isTier2City && allowCull;
 
         const pref = node.dataset.prefAlign || 'r';
+        let explicitAlignPenalty = 24.0;
         const dirs = [pref];
         for (const d of ['r', 'l', 'b', 't']) {
           if (!dirs.includes(d)) dirs.push(d);
@@ -8518,6 +8372,33 @@
           };
         };
 
+        // Hand-set label sides were tuned for two-character Chinese names; in English, let a
+        // capital's hand-set side yield only when it collides (>12% overlap) with another
+        // settlement label, not when it grazes a background river/lake label.
+        if (
+          this.locale === 'en' &&
+          tier === '0' &&
+          node.dataset.explicitAlign === '1' &&
+          settlementBoxes.length
+        ) {
+          const prefSpec = dirSpec(dirs[0]);
+          let prefOv = 0;
+          for (let i = 0; i < settlementBoxes.length; i++) {
+            const b = settlementBoxes[i];
+            const ox = Math.min(prefSpec.box.x2, b.x2) - Math.max(prefSpec.box.x1, b.x1);
+            if (ox <= 0) continue;
+            const oy = Math.min(prefSpec.box.y2, b.y2) - Math.max(prefSpec.box.y1, b.y1);
+            if (oy > 0) prefOv += ox * oy;
+          }
+          const prefArea = Math.max(
+            1e-4,
+            (prefSpec.box.x2 - prefSpec.box.x1) * (prefSpec.box.y2 - prefSpec.box.y1)
+          );
+          if (prefOv > prefArea * 0.12) {
+            explicitAlignPenalty = 1.0;
+          }
+        }
+
         if (zoomOnly && node.dataset.chosenDir) {
           const bestDir = node.dataset.chosenDir;
           const best = dirSpec(bestDir);
@@ -8539,7 +8420,11 @@
                 setSvgAttribute(nameEl, 'text-anchor', best.anchor);
               }
               occupied.push(best.box);
-              if (!isPass) pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+              if (!isPass) {
+                settlementBoxes.push(best.box);
+                pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+              }
+              node._labelLayout = { box: best.box, dirs, dirSpec };
               return;
             }
           }
@@ -8552,7 +8437,7 @@
         for (let i = 0; i < dirs.length; i++) {
           const spec = dirSpec(dirs[i]);
           const rawOv = overlapArea(spec.box) + (useCityHalo ? cityHaloOverlap(spec.box) : 0);
-          const score = rawOv + (node.dataset.explicitAlign === '1' ? 24.0 : 0.01) * i * s * s;
+          const score = rawOv + (node.dataset.explicitAlign === '1' ? explicitAlignPenalty : 0.01) * i * s * s;
           if (score < bestScore) {
             bestScore = score;
             bestOverlap = rawOv;
@@ -8576,7 +8461,11 @@
           setSvgAttribute(nameEl, 'text-anchor', best.anchor);
         }
         occupied.push(best.box);
-        if (!isPass) pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+        if (!isPass) {
+          settlementBoxes.push(best.box);
+          pushCityHalo(best.box, isTier2City ? 1 : 0.45);
+        }
+        node._labelLayout = { box: best.box, dirs, dirSpec };
       };
 
       // Tier 1: Capitals first (never culled), then Tier-1 primary cities (gently culled on narrow mobile overview if unavoidable)
@@ -8650,24 +8539,42 @@
         [0, 60],
       ];
 
+      const prePolityOccupiedLen = occupied.length;
+      const polityBoxes = [];
+      const enCaptions = this.locale === 'en';
       for (const node of polNodes) {
-        const cssFontPx = node.classList.contains('neighbor')
+        const isNeighborCap = node.classList.contains('neighbor');
+        const isProtectorateCap = node.classList.contains('protectorate');
+        const isRivalCap = node.classList.contains('rival');
+        // Keep the conservative box for polity-to-polity spacing in `occupied`; only the English
+        // post-pass below measures against the tighter rendered sizes from html[lang="en"].
+        const cssFontPx = isNeighborCap
           ? 14
-          : node.classList.contains('protectorate')
+          : isProtectorateCap
             ? 12
-            : node.classList.contains('rival')
+            : isRivalCap
               ? 15
               : 19;
 
         const baseX = parseFloat(node.getAttribute('data-base-x') || node.getAttribute('data-x'));
         const baseY = parseFloat(node.getAttribute('data-base-y') || node.getAttribute('data-y'));
-        const ls = node.classList.contains('neighbor')
-          ? 2.0
-          : node.classList.contains('protectorate')
-            ? 1.4
-            : 3.2;
+        const ls = isNeighborCap ? 2.0 : isProtectorateCap ? 1.4 : 3.2;
         const hw = (this._estimateLocalTextWidth(node.textContent, cssFontPx, ls) * 0.5 + 5) * s;
         const hh = (cssFontPx * 0.56 + 3.5) * s;
+
+        const pushEnPolityBox = (cx, cy) => {
+          if (!enCaptions) return;
+          const enPx = isNeighborCap || isProtectorateCap ? 9.5 : isRivalCap ? 11 : 13;
+          const enLs = enPx * (isNeighborCap || isProtectorateCap ? 0.02 : 0.04);
+          const enHw = (this._estimateLocalTextWidth(node.textContent, enPx, enLs) * 0.5 + 1) * s;
+          const enHh = enPx * 0.45 * s;
+          polityBoxes.push({
+            x1: cx - enHw,
+            y1: cy - enHh,
+            x2: cx + enHw,
+            y2: cy + enHh,
+          });
+        };
 
         if (zoomOnly && node.dataset.placed === '1' && this._lastPolityTier2State === showTier2) {
           const lockedX = parseFloat(node.getAttribute('data-x'));
@@ -8679,6 +8586,7 @@
             x2: lockedX + hw,
             y2: lockedY + hh,
           });
+          pushEnPolityBox(lockedX, lockedY);
           continue;
         }
 
@@ -8766,8 +8674,77 @@
         setSvgAttribute(node, 'data-y', bestYStr);
         applyNodeScale(node, bestXStr, bestYStr);
         occupied.push(bestBox);
+        pushEnPolityBox(bestX, bestY);
       }
       this._lastPolityTier2State = showTier2;
+
+      // A caption boxed into a small territory (e.g. "Royal Zhou") cannot dodge a primary-city label
+      // laid out before it, and English names make that collision common. Move such a city label
+      // to a free side, or hide it at this zoom (it reappears on hover or when zoomed in).
+      if (this.locale === 'en' && polityBoxes.length) {
+        const boxOverlap = (a, b) => {
+          const ox = Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1);
+          const oy = Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1);
+          return ox > 0 && oy > 0 ? ox * oy : 0;
+        };
+        const boxArea = (b) => Math.max(1e-4, (b.x2 - b.x1) * (b.y2 - b.y1));
+        const relocatedBoxes = [];
+        const relocatedOverlap = (cand, own) => {
+          let total = 0;
+          for (let i = 0; i < prePolityOccupiedLen; i++) {
+            total += boxOverlap(cand, occupied[i]);
+          }
+          total -= boxOverlap(cand, own);
+          for (let i = 0; i < polityBoxes.length; i++) {
+            total += boxOverlap(cand, polityBoxes[i]);
+          }
+          for (let i = 0; i < relocatedBoxes.length; i++) {
+            total += boxOverlap(cand, relocatedBoxes[i]);
+          }
+          return total;
+        };
+        for (const node of settlementNodes) {
+          const layout = node._labelLayout;
+          if (
+            !layout ||
+            node.classList.contains('is-capital') ||
+            node.classList.contains('is-tier2') ||
+            node.classList.contains('is-pass') ||
+            node.classList.contains('is-label-crowded')
+          ) {
+            continue;
+          }
+          const own = layout.box;
+          let polOv = 0;
+          for (let i = 0; i < polityBoxes.length; i++) polOv += boxOverlap(own, polityBoxes[i]);
+          if (polOv <= boxArea(own) * 0.12) continue;
+          let next = null;
+          let nextDir = null;
+          let nextOv = Infinity;
+          for (const d of layout.dirs) {
+            const spec = layout.dirSpec(d);
+            const ov = relocatedOverlap(spec.box, own);
+            if (ov < nextOv) {
+              nextOv = ov;
+              next = spec;
+              nextDir = d;
+            }
+          }
+          const nameEl = node.querySelector('.name');
+          if (next && nameEl && nextOv <= boxArea(next.box) * 0.12) {
+            node.dataset.chosenDir = nextDir;
+            node.dataset.appliedDir = nextDir;
+            setSvgAttribute(nameEl, 'x', String(next.dx));
+            setSvgAttribute(nameEl, 'y', String(next.dy1));
+            setSvgAttribute(nameEl, 'text-anchor', next.anchor);
+            occupied.push(next.box);
+            relocatedBoxes.push(next.box);
+            layout.box = next.box;
+          } else {
+            node.classList.add('is-label-crowded');
+          }
+        }
+      }
 
       // Reserve Tier-2 city dots now so pass/Tier-2 labels avoid them while primary cities and polities are not displaced by minor dots
       for (const node of settlementNodes) {
@@ -10075,6 +10052,7 @@
         actLocHant.addEventListener('click', () => {
           const target = actLocHant.dataset.targetLocale;
           this.locale = target || (this.locale === 'zh' ? 'zh-tw' : 'zh');
+          this._saveStoredLocale(this.locale);
           this._syncUrlLangParam();
           this.applyLocale();
         });
@@ -10083,6 +10061,7 @@
         const btn = this._id('act-locale');
         const target = btn && btn.dataset && btn.dataset.targetLocale;
         this.locale = target || (this.locale === 'en' ? 'zh' : 'en');
+        this._saveStoredLocale(this.locale);
         this._syncUrlLangParam();
         this.applyLocale();
       });
@@ -11070,7 +11049,8 @@
   if (Array.isArray(window.__ATLAS_MIXINS)) {
     for (const install of window.__ATLAS_MIXINS.splice(0)) install(HistoricalAtlasController);
   }
-  window.addEventListener('DOMContentLoaded', () => {
+  const bootAtlasApp = () => {
+    if (window.atlasApp) return;
     const app = new HistoricalAtlasController();
     window.atlasApp = app;
     window.atlasAPI = {
@@ -11081,5 +11061,7 @@
       search: (q) => app._queryQuickSearch(q),
     };
     app._registerWebMcpTools();
-  });
+  };
+  HistoricalAtlasController._bootOnce = bootAtlasApp;
+  window.addEventListener('DOMContentLoaded', bootAtlasApp);
 })();

@@ -7,7 +7,7 @@
     "prefRef": "s_roc",
     "regionRef": "s_roc_a0",
     "polities": [
-      "国民政府（北伐军与冯阎集团）",
+      "国民政府",
       "安国军政府 · 奉系（张作霖）",
       "s_roc_w1/新疆（杨增新）",
       "s_roc_a0/日本帝国",
@@ -33,9 +33,9 @@
   "features": [
     {
       "type": "Feature",
-      "id": "国民政府（北伐军与冯阎集团）",
+      "id": "国民政府",
       "properties": {
-        "title": "国民政府（北伐军与冯阎集团）",
+        "title": "国民政府",
         "role": "main",
         "tint": "#2e59a7",
         "anchor": [111.5, 30.5]

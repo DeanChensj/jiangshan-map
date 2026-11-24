@@ -228,7 +228,7 @@ cd jiangshan-map
 python3 -m http.server 8000
 ```
 
-その後、ブラウザーで `http://localhost:8000` を開きます。
+その後、ブラウザーで `http://localhost:8000` を開きます。`topics/` 配下の静的テーマ別ガイドはデプロイ時に生成されます。ローカルで `/topics/` を閲覧したい場合は、先に `node scripts/build_seo_topics.js --html-only` を実行してください。
 
 ## Docker で実行する
 
@@ -240,7 +240,7 @@ docker compose up -d --build
 
 その後、`http://localhost:8008` を開きます（ポートの対応付け `8008:80` は `docker-compose.yml` で設定されています）。
 
-イメージは、このリポジトリを静的なファイルとして配信する素の `nginx:alpine` です。`Dockerfile` は作業ツリーを `/usr/share/nginx/html` にコピーし、`.dockerignore` は `.git`、`.github`、`data/`、`docs/`、`scripts/`、`skills/`、`workers/`、Markdown ファイル、`geojson/demo.html`、README 用のデモ画像（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）を除外して、ビルドのコンテキストを小さく保ちます。サイトは実行時にこれらのどれも必要としません。
+`Dockerfile` は 2 段階ビルドを採用しています。`node:20-alpine` ステージで `node scripts/build_seo_topics.js --html-only` を実行して静的テーマ別ガイドを生成し、最終の `nginx:alpine` イメージには実行時に必要な静的ファイル（`index.html`、`assets/`、`css/`、`js/`、`geojson/`、`topics/` など）のみを `/usr/share/nginx/html` にコピーします。`.dockerignore` は `.git`、`.github`、`docs/`、`skills/`、`workers/`、不要な `data/` や `scripts/` サブディレクトリ、Markdown ファイル、`geojson/demo.html`、README 用のデモ画像（`assets/hero_demo_*.webp`、`assets/preview_*.webp`）を除外します。
 
 別のポートを使うには、`docker-compose.yml` の `ports` の対応付けを変え（例：`"9000:80"`）、もう一度 `docker compose up -d` を実行します。
 
@@ -300,6 +300,13 @@ hit.prefecture;                  // null unless exported with --with-prefectures
 **おおよその境界**：この地図の歴史上の領域と行政境界は、おおまかな管轄を示す概略的な近似です。科学的な測量によるものではなく、正確な、あるいは権威ある境界として引用しないでください。
 
 **このプロジェクトの再利用**：GPL-3.0 のレイヤーを再利用するときは、https://github.com/DeanChensj/jiangshan-map へのリンクとともに **江山时序 Jiangshan Atlas** のクレジットを記し、上に挙げた出典も引用してください。郡州府レイヤーが写っているスクリーンショットにも、CHGIS の条件が適用されます。
+
+**フォーク、ミラー、派生プロジェクト**：このプロジェクトをもとにした開発や、独自のデプロイを歓迎します。その際は次の点をお願いします。
+- コードを新しいリポジトリにコピーするのではなく、GitHub の **Fork** ボタンでリポジトリを作成してください。訪問者が上流のプロジェクトを見つけやすくなり、今後の更新も取り込みやすくなります。
+- サイト上に https://github.com/DeanChensj/jiangshan-map への見えるリンクを残してください（ページ内の GitHub リンクで十分です。削除しないでください）。
+- サイトと README に、公式サイトではなく第三者によるデプロイまたは派生プロジェクトであることを明記してください。
+
+**プロジェクト名**：公式サイトは https://deanchen.me/jiangshan-map/ です。第三者によるデプロイや派生プロジェクトは、江山时序 / Chronicles of the Realm の公式サイトであるかのように見せないでください。「江山时序をもとにした」「江山时序の非公式ミラー」といった表記は問題ありません。
 
 **権利者の方へ**：このリポジトリの内容について権利をお持ちで、不適切な利用だとお考えの場合は、[issue](https://github.com/DeanChensj/jiangshan-map/issues) でお知らせください。確認のうえ対応し、必要に応じて削除します。
 

@@ -43,34 +43,48 @@
           var txt = (extra + ' ' + (tr.textContent || '')).replace(/\s+/g, ' ').trim().toLowerCase();
           return txt;
         });
+        var rowTags = rows.map(function (tr) {
+          var raw = (tr.getAttribute('data-tags') || '').trim().toLowerCase();
+          return raw ? raw.split(/\s+/) : [];
+        });
 
         var presetBtns = Array.prototype.slice.call(
           document.querySelectorAll('.filter-preset-btn[data-filter-preset-table="' + tableId + '"]')
         );
+        var activePreset = '';
 
-        function syncPresetButtons(rawQ) {
-          if (!presetBtns.length) return;
-          var normInput = rawQ ? toHansQuery(rawQ).toLowerCase() : '';
+        function syncPresetButtons() {
           for (var p = 0; p < presetBtns.length; p++) {
             var pVal = (presetBtns[p].getAttribute('data-filter-preset-val') || '').trim().toLowerCase();
-            var normPreset = pVal ? toHansQuery(pVal).toLowerCase() : '';
-            presetBtns[p].classList.toggle('is-active', normInput === normPreset);
+            presetBtns[p].classList.toggle('is-active', pVal === activePreset);
           }
+        }
+
+        function matchesPreset(idx) {
+          if (!activePreset) return true;
+          var want = activePreset.split(',');
+          var tags = rowTags[idx];
+          for (var w = 0; w < want.length; w++) {
+            if (tags.indexOf(want[w]) !== -1) return true;
+          }
+          return false;
         }
 
         function applyFilter() {
           var rawQ = (input.value || '').trim().toLowerCase();
           var hansQ = rawQ ? toHansQuery(rawQ).toLowerCase() : '';
+          var isFiltered = !!(rawQ || activePreset);
           var matched = 0;
           for (var j = 0; j < rows.length; j++) {
             var haystack = rowSearchText[j];
-            var show = !rawQ || haystack.indexOf(rawQ) !== -1 || (hansQ && toHansQuery(haystack).indexOf(hansQ) !== -1);
+            var textOk = !rawQ || haystack.indexOf(rawQ) !== -1 || (hansQ && toHansQuery(haystack).indexOf(hansQ) !== -1);
+            var show = textOk && matchesPreset(j);
             rows[j].classList.toggle('is-filtered-out', !show);
             if (show) matched++;
           }
-          emptyRow.classList.toggle('is-hidden', matched > 0 || !rawQ);
+          emptyRow.classList.toggle('is-hidden', matched > 0 || !isFiltered);
           if (countEl) {
-            var countZh = rawQ ? '匹配 ' + matched + ' / ' + rows.length + ' 项' : '共 ' + rows.length + ' 项';
+            var countZh = isFiltered ? '匹配 ' + matched + ' / ' + rows.length + ' 项' : '共 ' + rows.length + ' 项';
             var conv = window.ZH_HANT_CONV;
             countEl.textContent = isHantActive && conv ? conv.toHant(countZh) : countZh;
             if (countEl.firstChild) {
@@ -80,7 +94,7 @@
           if (clearBtn) {
             clearBtn.classList.toggle('is-hidden', !rawQ);
           }
-          syncPresetButtons(rawQ);
+          syncPresetButtons();
         }
 
         input.addEventListener('input', applyFilter);
@@ -94,9 +108,7 @@
         for (var k = 0; k < presetBtns.length; k++) {
           (function (btn) {
             btn.addEventListener('click', function () {
-              var val = btn.getAttribute('data-filter-preset-val') || '';
-              var conv = window.ZH_HANT_CONV;
-              input.value = val && isHantActive && conv ? conv.toHant(val) : val;
+              activePreset = (btn.getAttribute('data-filter-preset-val') || '').trim().toLowerCase();
               applyFilter();
             });
           })(presetBtns[k]);

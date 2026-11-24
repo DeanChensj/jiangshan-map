@@ -33,6 +33,7 @@ const DATA_DIR = 'data/atlas';
 const INDEX_PATH = `${DATA_DIR}/index.json`;
 const FULL_PATH = 'js/atlas_snapshots.js';
 const BOOT_PATH = 'js/atlas_boot.js';
+const CHUNKS_DIR = 'js/snapshots';
 
 const FEATURE_LISTS = new Set(['polities', 'prefectures', 'regions']);
 // Stamped into every snapshot file so the terms travel with files copied out of the repo.
@@ -383,12 +384,37 @@ function loadSources(rootDir = ROOT) {
 function buildOutputs(rootDir = ROOT) {
   const { index, files, doc } = loadSources(rootDir);
   const outputs = {};
+  const dynastyKeys = new Map();
   for (const { rel, json } of files) {
     const normalized = rel === INDEX_PATH ? json : (({ type, license, ...rest }) => ({ type, license: LICENSE_NOTICE, ...rest }))(json);
     outputs[rel] = formatSource(normalized);
+    if (rel !== INDEX_PATH && rel.endsWith('.geojson')) {
+      const parts = rel.slice(DATA_DIR.length + 1).split('/');
+      if (parts.length === 2) {
+        const dyn = parts[0];
+        const snapKey = path.basename(parts[1], '.geojson');
+        if (!dynastyKeys.has(dyn)) dynastyKeys.set(dyn, []);
+        dynastyKeys.get(dyn).push(snapKey);
+      }
+    }
   }
   outputs[FULL_PATH] = encodeBundle(doc, { keys: index.order });
   outputs[BOOT_PATH] = encodeBundle(doc, { keys: index.boot, isBoot: true });
+  for (const [dyn, keys] of [...dynastyKeys.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    if (dyn === 'prc') continue; // s_prc is empty (provinces hydrate it) and acts as full-bundle sentinel.
+    const chunkKeySet = new Set(keys);
+    // Pull in any cross-dynasty prefRef/regionRef targets (e.g. wudai -> s_beisong_a) so each chunk is self-contained.
+    for (const k of [...chunkKeySet]) {
+      const snap = doc.snapshots[k];
+      if (!snap || Array.isArray(snap)) continue;
+      if (snap.prefRef && doc.snapshots[snap.prefRef]) chunkKeySet.add(snap.prefRef);
+      if (snap.regionRef && doc.snapshots[snap.regionRef]) chunkKeySet.add(snap.regionRef);
+    }
+    const orderedKeys = index.order.filter((k) => chunkKeySet.has(k));
+    if (orderedKeys.length) {
+      outputs[`${CHUNKS_DIR}/${dyn}.js`] = encodeBundle(doc, { keys: orderedKeys, isBoot: true });
+    }
+  }
   return outputs;
 }
 
@@ -396,7 +422,8 @@ function buildOutputs(rootDir = ROOT) {
 function checkOutputs(rootDir = ROOT) {
   const problems = [];
   for (const [rel, want] of Object.entries(buildOutputs(rootDir))) {
-    if (fs.readFileSync(path.join(rootDir, rel), 'utf8') !== want) {
+    const full = path.join(rootDir, rel);
+    if (!fs.existsSync(full) || fs.readFileSync(full, 'utf8') !== want) {
       problems.push(rel.startsWith(DATA_DIR) ? `${rel} is not canonically formatted` : `${rel} is out of date with ${DATA_DIR}/`);
     }
   }
@@ -433,7 +460,8 @@ function writeOutputs(rootDir = ROOT, log = console.log) {
   let written = 0;
   for (const [rel, text] of Object.entries(buildOutputs(rootDir))) {
     const full = path.join(rootDir, rel);
-    if (fs.readFileSync(full, 'utf8') !== text) {
+    if (!fs.existsSync(full) || fs.readFileSync(full, 'utf8') !== text) {
+      fs.mkdirSync(path.dirname(full), { recursive: true });
       fs.writeFileSync(full, text);
       log(`✓ Wrote ${rel}`);
       written++;

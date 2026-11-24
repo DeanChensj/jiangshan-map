@@ -29,14 +29,14 @@
 │   ├── atlas_api.js         # AI 原生接口（resolvePlace / inspect / locate）、自定义多站路线、URL 深链恢复与 WebMCP 子模块
 │   ├── atlas_track.js       # 匿名按钮与功能点击计数（延迟加载；批量上报到 workers/stats，不使用 cookie，不含个人信息）
 │   ├── atlas_quiz.js        # 按需懒加载古地名寻址挑战子模块（题库分层、线索脱敏、评分环与悬浮确认签）
-│   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件、水系古泽、雄关与交通走廊
+│   ├── map_data.js          # 18 个历史时期元数据、阶段划分、古地名点位、重大历史事件与交通走廊（CORRIDOR_DATA）
 │   ├── lore_core.js         # 首屏与检索核心人文数据：历代帝王年号（CHINESE_ERA_SPANS, REGIONAL_ERA_TRACKS）、雄关、名胜辞典、人物档案与古琴曲目
 │   ├── lore_detail.js       # 按需懒加载人文详情：城池定点大事（PLACE_LANDMARK_EVENTS）、人物长程行迹、名城风华题记（CITY_LORE）与割据政权小传
 │   ├── zh_hant.js           # 按需懒加载繁体中文（zh-Hant）运行时转换器与历史专名消歧词表
 │   ├── milestone_sources.js # 由 audit_sources.js --fix 从 data/sources/ 生成：按需加载的大事出处
 │   ├── atlas_boot.js        # 由 data/atlas/ 生成：首屏启动快照，保障首屏零等待渲染
 │   ├── atlas_snapshots.js   # 由 data/atlas/ 生成：拓扑去重与 VLQ 无损增量编码的历史疆域/州道多边形数据（按需惰性加载与解码）
-│   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（「现代省界」图层）
+│   ├── china_geo_data.js    # VLQ 增量编码的现代省级行政区划轮廓参照层（「现代省界」图层），以及其下的水系、湖泊与古海湾掩膜（HYDRO_DATA）
 │   └── i18n_dict.js         # 中英双语词典与历史专有名词对照表
 ├── workers/stats/           # stats.deanchen.me 背后的 Cloudflare Worker：只写入口，把点击计数存入 Workers Analytics Engine
 ├── skills/
@@ -64,7 +64,7 @@
    cd jiangshan-map
    python3 -m http.server 8000
    ```
-   随后在浏览器访问 `http://localhost:8000`（英文界面可访问 `http://localhost:8000/?lang=en`）。
+   随后在浏览器访问 `http://localhost:8000`（英文界面可访问 `http://localhost:8000/?lang=en`）。`topics/` 下的静态专题页在部署时构建；如需本地预览，可先运行 `node scripts/build_seo_topics.js --html-only`。
 
 2. **同步静态与懒加载资源指纹（修改 `css/` 或 `js/` 后）**：
    `index.html` 按每个资源文件内容的 8 位 SHA-256 短哈希标记 `?v=` 与 `#atlas-app-script` 上的 `data-v-*` 属性，修改样式或脚本后运行：
@@ -146,6 +146,6 @@ npm test --prefix scripts/search-pinyin
    - 新增重大历史事件始末沙盘（如 `anshi` 安史之乱、`jingkang` 靖康之变）时，需同步完成以下 5 处配置（由 `scripts/tests/suite_search_runtime.js` 自动门禁校验）：
      1. **检索档案与双字词根别名（`js/lore_core.js`）**：在 `PERSON_PROFILES` 中添加 `"isStory": true` 条目，显式指定起始 `"dynastyKey"`、`"span"`、`"evCount"`，并在 `"aliases"` 中包含事件全称、**双字核心词根**（如 `"安史"`、`"靖康"`、`"赤壁"`、`"楚汉"`）、拼音及英文名，确保搜索框输入双字简写即可在首位命中 `kind: "story"`。
      2. **大事记唯一 `[始末]` 入口（`js/app.js`）**：在 `_findStoryForMilestone` 中，将事件绑定到大事记里**唯一一个**最具代表性的里程碑（`<dynastyKey>:<year>`，如 `'tang:755'`、`'beisong:1127'`）。每个事件始末在全图大事记中必须且只能有 `1` 个 `[始末]` 徽章入口，切勿在同事件的多条大事上重复挂载。
-     3. **双阵营沙盘与跨朝代站点（`js/lore_detail.js`）**：在 `PERSON_EVENTS` 中定义 `"camps"`（两阵营朱/黛配色）与按时间排序的 `"stops"`；跨朝代事件需在各 `stop` 上标注 `"dynastyKey"`，疆域质变节点标注 `"isMapChange": true`；合围箭头 `"prongs"` 若发自前序已出现的站点，须标注 `"fromStopIdx"` 以复用前序站点圆珠。
-     4. **拼音检索词更新**：运行 `node scripts/gen_pinyin.js` 同步 `js/event_pinyin.js`。
+     3. **双阵营沙盘与跨朝代站点（`js/lore_detail.js`）**：在 `PERSON_DETAILS`（载入时合并进 `PERSON_PROFILES` 的详情表，按该事件在 `PERSON_PROFILES` 中的 key 索引）中定义 `"camps"`（两阵营朱/黛配色）与按时间排序的 `"stops"`；跨朝代事件需在各 `stop` 上标注 `"dynastyKey"`，疆域质变节点标注 `"isMapChange": true`；合围箭头 `"prongs"` 若发自前序已出现的站点，须标注 `"fromStopIdx"` 以复用前序站点圆珠。
+     4. **拼音检索词更新**：用 `npm run build --prefix scripts/search-pinyin` 重新生成 `js/event_pinyin.js`（首次需先执行 `npm ci --prefix scripts/search-pinyin --ignore-scripts --no-audit --no-fund`），即上文「重建大事拼音检索键」所用的同一隔离构建工具。
      5. **出处登记（`data/sources/persons.json`）**：登记 `person:<key>` 的正史或《资治通鉴》卷次出处。

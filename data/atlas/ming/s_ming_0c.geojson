@@ -24,7 +24,7 @@
     "polities": [
       "明",
       "北元",
-      "元梁王（云南）",
+      "元梁王",
       "s_ming_0a/日本",
       "s_ming_0a/小琉球",
       "s_ming_0a/菲律宾",
@@ -5885,9 +5885,9 @@
     },
     {
       "type": "Feature",
-      "id": "元梁王（云南）",
+      "id": "元梁王",
       "properties": {
-        "title": "元梁王（云南）",
+        "title": "元梁王",
         "role": "rival",
         "tint": "#6b5b95",
         "anchor": [101.5, 24.8]

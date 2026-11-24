@@ -638,7 +638,7 @@ async function runTraceGenealogySuite(ctx) {
     );
   }
   const tangSnapKeys = Object.keys(snapshots).filter((k) => k.startsWith('s_tang'));
-  assert(tangSnapKeys.length === 29, `Expected 29 s_tang* snapshots, found ${tangSnapKeys.length}`);
+  assert(tangSnapKeys.length === 31, `Expected 31 s_tang* snapshots, found ${tangSnapKeys.length}`);
   // Issue #267. Tang northeast: 平壤 is 安东's seat until 676, never 新罗's before 702;
   // 震国 (698–713) is renamed 渤海 only from 713; 安西 / 北庭 hold oases, not the desert, in 764–790;
   // the Four Garrisons fall to 吐蕃 in 670–679 and 686–692, when 安西 falls back to 西州.
@@ -699,7 +699,7 @@ async function runTraceGenealogySuite(ctx) {
       assert.strictEqual(ownerAt(sk, TENGCHONG), dali, `${sk}: 腾冲 must belong to ${dali}`);
     }
     // 唐 621–738: no 南诏 yet (六诏 + 唐 羁縻 in 滇东); 南诏 from 738.
-    for (const sk of ['s_tang_a0', 's_tang_a', 's_tang_wz1', 's_tang_a5y']) {
+    for (const sk of ['s_tang_a0', 's_tang_a', 's_tang_wz1', 's_tang_a5y', 's_tang_726']) {
       assert(!(snapshots[sk].polities || []).some((p) => p.title === '南诏'), `${sk}: 南诏 must not exist before 738`);
       assert.strictEqual(ownerAt(sk, [100.23, 25.6]), '六诏', `${sk}: 洱海 must belong to 六诏 before 738`);
       assert(['唐', '武周'].includes(ownerAt(sk, [102.71, 25.04])), `${sk}: 昆州 (昆明) must belong to 唐 / 武周 before 738`);
@@ -716,7 +716,7 @@ async function runTraceGenealogySuite(ctx) {
       assert.strictEqual(ownerAt(sk, [102.26, 27.9]), who, `${sk}: 嶲州 (西昌) must belong to ${who}`);
     }
     // 1351–1388: northern 越南 is 大越 / 安南, not blank.
-    for (const sk of ['s_yuan_b', 's_yuan_c', 's_ming_0a', 's_ming_0c', 's_ming_0d']) {
+    for (const sk of ['s_yuan_1351', 's_yuan_b', 's_yuan_c', 's_ming_0a', 's_ming_0c', 's_ming_0d']) {
       assert(ownerAt(sk, [104.5, 22.1]) || (snapshots[sk].polities || []).some((q) => q.role === 'neighbor' && pointInShape(104.5, 22.1, q.shape)), `${sk}: 104.5,22.1 must not be blank`);
     }
     // 东汉–隋: 叶榆 (大理) and 不韦 (保山) are Han counties; 永昌郡 (69 CE) adds 腾冲 for 73–347;
@@ -767,8 +767,8 @@ async function runTraceGenealogySuite(ctx) {
     );
   }
   // 南诏 exists from 738 (before that: 六诏 plus 唐 羁縻 in 滇东; 618–621 爨 · 六诏).
-  const preNanzhao = new Set(['s_tang_0', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a3b', 's_tang_a4', 's_tang_a4b',
-    's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y']);
+  const preNanzhao = new Set(['s_tang_0', 's_tang_0b', 's_tang_a0', 's_tang_a1', 's_tang_a1b', 's_tang_a2', 's_tang_a2b', 's_tang_a3', 's_tang_a3b', 's_tang_a4', 's_tang_a4b',
+    's_tang_a6', 's_tang_a', 's_tang_a7', 's_tang_wz0', 's_tang_wz1', 's_tang_wz1b', 's_tang_wz2', 's_tang_a5z', 's_tang_a5y', 's_tang_726']);
   const nzSnapKeys = tangSnapKeys.filter((k) => !preNanzhao.has(k));
   assert.strictEqual(nzSnapKeys.length, tangSnapKeys.length - preNanzhao.size, 'every pre-738 Tang snapshot key must exist');
   for (const sk of nzSnapKeys) {
@@ -1267,11 +1267,11 @@ async function runTraceGenealogySuite(ctx) {
   // 23p. Verify Republic of China Warlord Era (1916–1928) multi-faction snapshots (s_roc_a0, s_roc_w1..w4, s_roc_a)
   for (const [rk, expectedTitles] of [
     ['s_roc_a0', ['中华民国', '外蒙古（自治/苏控）']],
-    ['s_roc_w1', ['北洋政府 · 皖系（段祺瑞）', '直系（冯国璋 · 曹锟）', '奉系（张作霖）', '护法军政府 · 西南各系', '晋系（阎锡山）', '西北诸马（甘宁青）', '新疆（杨增新）']],
-    ['s_roc_w2', ['北洋政府 · 直系（曹锟 · 吴佩孚）', '奉系（张作霖）', '皖系（卢永祥 · 浙江）', '广州政府（孙中山）', '西南川滇黔桂各系', '晋系（阎锡山）', '西北诸马（甘宁青）', '新疆（杨增新）']],
-    ['s_roc_w3', ['北洋政府 · 奉系（张作霖）', '五省联军（孙传芳）', '直系（吴佩孚）', '西北国民军（冯玉祥）', '广州国民政府（两广统一）', '川滇黔军阀（刘湘 · 唐继尧）', '晋系（阎锡山）', '新疆（杨增新）']],
-    ['s_roc_w3b', ['北洋政府 · 奉系（张作霖）', '国民政府（北伐军）', '五省联军（孙传芳）', '直系（吴佩孚）', '西北国民军（冯玉祥）', '川滇黔军阀（刘湘 · 唐继尧）', '晋系（阎锡山）', '新疆（杨增新）']],
-    ['s_roc_w4', ['国民政府（北伐军与冯阎集团）', '安国军政府 · 奉系（张作霖）', '新疆（杨增新）']],
+    ['s_roc_w1', ['北洋政府 · 皖系（段祺瑞）', '直系（冯国璋 · 曹锟）', '奉系（张作霖）', '护法军政府 · 西南各系', '晋系（阎锡山）', '西北诸马', '新疆（杨增新）']],
+    ['s_roc_w2', ['北洋政府 · 直系（曹锟 · 吴佩孚）', '奉系（张作霖）', '皖系（卢永祥）', '广州政府（孙中山）', '西南川滇黔桂各系', '晋系（阎锡山）', '西北诸马', '新疆（杨增新）']],
+    ['s_roc_w3', ['北洋政府 · 奉系（张作霖）', '五省联军（孙传芳）', '直系（吴佩孚）', '西北国民军（冯玉祥）', '广州国民政府', '川滇黔军阀（刘湘 · 唐继尧）', '晋系（阎锡山）', '新疆（杨增新）']],
+    ['s_roc_w3b', ['北洋政府 · 奉系（张作霖）', '国民政府', '五省联军（孙传芳）', '直系（吴佩孚）', '西北国民军（冯玉祥）', '川滇黔军阀（刘湘 · 唐继尧）', '晋系（阎锡山）', '新疆（杨增新）']],
+    ['s_roc_w4', ['国民政府', '安国军政府 · 奉系（张作霖）', '新疆（杨增新）']],
   ]) {
     const rs = snapshots[rk];
     assert(rs, `Missing ROC warlord snapshot ${rk}`);

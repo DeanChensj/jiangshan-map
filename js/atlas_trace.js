@@ -629,7 +629,7 @@
           if (hasJourneyStops && m.year >= jMinY && m.year <= jMaxY && !byTag) {
             const jHit = raw.find((r) => r.src === 'J' && r.year === m.year);
             if (jHit) {
-              if (m.isMapChange) jHit.isMapChange = true;
+              if (this._isPhaseChangeYear(d, m.year)) jHit.isMapChange = true;
               if (!jHit.milestone) jHit.milestone = m;
             }
             continue;
@@ -678,7 +678,7 @@
             modernEn: '',
             textZh: tailored.textZh,
             textEn: tailored.textEn,
-            isMapChange: Boolean(m.isMapChange),
+            isMapChange: this._isPhaseChangeYear(d, m.year),
             byPersonsTag: byTag,
             milestone: m,
             prio: 2,

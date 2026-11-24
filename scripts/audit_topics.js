@@ -25,8 +25,9 @@ const {
   isStandalonePersonMonograph,
 } = require('./topics/config');
 const { loadAtlasRuntime, loadSourcesBundle, loadTopicsData } = require('./topics/runtime');
+const { generateAllOutputs } = require('./build_seo_topics');
 
-function auditAllTopics() {
+function auditAllTopics(outputs = generateAllOutputs()) {
   const errors = [];
   const fail = (ctx, msg) => errors.push(`[${ctx}] ${msg}`);
 
@@ -131,10 +132,8 @@ function auditAllTopics() {
     }
   }
 
-  const htmlFiles = fs
-    .readdirSync(TOPICS_DIR)
-    .filter((f) => f.endsWith('.html'))
-    .sort();
+  const pageMap = new Map(outputs.allTopicPages.map((p) => [p.filename, p.html]));
+  const htmlFiles = [...pageMap.keys()].sort();
   const htmlFileSet = new Set(htmlFiles);
 
   const placeSlugSet = new Set((placesCatalog || []).map((pl) => `place-${pl.slug}.html`));
@@ -167,7 +166,7 @@ function auditAllTopics() {
   };
 
   for (const f of htmlFiles) {
-    const html = fs.readFileSync(path.join(TOPICS_DIR, f), 'utf8');
+    const html = pageMap.get(f);
 
     // Shell & shared asset checks
     if (/<style\b/i.test(html)) fail(f, 'Inline <style> tag found; must use shared topics/assets/topics.css');
@@ -351,8 +350,16 @@ function auditAllTopics() {
       }
 
       // Other relative file links (e.g., tang.html, assets/topics.css, ../assets/favicon.svg, ../sitemap.xml)
-      const resolved = path.resolve(TOPICS_DIR, relPath.split('#')[0]);
-      if (!fs.existsSync(resolved)) {
+      const targetRel = relPath.split('#')[0];
+      const resolved = path.resolve(TOPICS_DIR, targetRel);
+      const relToTopics = path.relative(TOPICS_DIR, resolved);
+      const isGeneratedTopicHtml =
+        !relToTopics.startsWith('..') &&
+        !path.isAbsolute(relToTopics) &&
+        !relToTopics.includes(path.sep) &&
+        relToTopics.endsWith('.html');
+      const exists = isGeneratedTopicHtml ? htmlFileSet.has(relToTopics) : fs.existsSync(resolved);
+      if (!exists) {
         fail(f, `Broken relative target "${rawUrl}" (resolved ${path.relative(ROOT, resolved)})`);
       }
     }
@@ -548,14 +555,15 @@ function auditAllTopics() {
 }
 
 if (require.main === module) {
-  const errors = auditAllTopics();
+  const outputs = generateAllOutputs();
+  const errors = auditAllTopics(outputs);
   if (errors.length) {
     console.error(`✗ Topic audit failed with ${errors.length} error(s):`);
     for (const e of errors.slice(0, 30)) console.error(`  - ${e}`);
     if (errors.length > 30) console.error(`  ... and ${errors.length - 30} more`);
     process.exitCode = 1;
   } else {
-    const pageCount = fs.readdirSync(TOPICS_DIR).filter((f) => f.endsWith('.html')).length;
+    const pageCount = outputs.allTopicPages.length;
     console.log(`✓ All ${pageCount} topic monographs passed link, asset, schema & historical invariant checks`);
     process.exitCode = 0;
   }

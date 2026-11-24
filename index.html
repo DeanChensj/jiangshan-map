@@ -4,34 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
-    // Deep links (?year=, ?place=, …) need the full snapshot bundle: fetch it now, in parallel with
-    // the first-paint scripts, and hide the Warring States placeholder text until js/app.js jumps.
-    // The relief image waits too (see the script after #atlas-svg), so the borders arrive first.
-    // scripts/sync_version.js keeps the ?v= below in step with data-v-snapshots.
+    // Deep links (?year=, ?place=, …) hide the Warring States placeholder text until js/app.js
+    // jumps and loads the target dynasty's snapshot chunk. The relief image waits too (see the
+    // script after #atlas-svg), so the borders arrive first.
     (function () {
+      if (/[?&]lang=en(?:&|$)/i.test(location.search)) {
+        var i18n = document.createElement('link');
+        i18n.rel = 'preload';
+        i18n.as = 'script';
+        i18n.href = 'js/i18n_dict.js?v=f85754a5';
+        document.head.appendChild(i18n);
+      }
       if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) {
         // Not a deep link: start the relief image now, as early as a plain <image href> would.
         var relief = document.createElement('link');
         relief.rel = 'preload';
         relief.as = 'image';
-        relief.fetchPriority = 'low';
         relief.href = 'assets/terrain_relief.webp';
+        if (window.innerWidth > 0 && window.innerWidth <= 900) {
+          relief.href = 'assets/terrain_relief_mobile.webp';
+        }
         document.head.appendChild(relief);
         return;
       }
       var root = document.documentElement;
       root.classList.add('deeplink-boot');
       setTimeout(function () { root.classList.remove('deeplink-boot'); }, 8000);
-      var link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'script';
-      link.fetchPriority = 'low'; // after the first-paint scripts, not competing with them
-      link.href = 'js/atlas_snapshots.js?v=aaed3410';
-      document.head.appendChild(link);
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=cb902f16" />
+  <link rel="stylesheet" href="css/style.css?v=b2405471" />
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与中英双语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -301,7 +303,7 @@
           "name": "江山时序是什么网站？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "江山时序（Jiangshan Historical Atlas，官方网址 https://deanchen.me/jiangshan-map/）是一幅开源免费的中国历史交互地图时间轴，覆盖公元前403年（战国三家分晋）至现代共18个历史时期、208幅多阶段疆域与州郡政区快照、530条编年大事、755处城池地标，支持黄河改道水系、古今地名政区沿革（点地溯源）、20座天下名关雄隘与历史人物/古诗词时空行迹可视化。"
+            "text": "江山时序（Jiangshan Historical Atlas，官方网址 https://deanchen.me/jiangshan-map/）是一幅开源免费的中国历史交互地图时间轴，覆盖公元前403年（战国三家分晋）至现代共18个历史时期、217幅多阶段疆域与州郡政区快照、540条编年大事、755处城池地标，支持黄河改道水系、古今地名政区沿革（点地溯源）、20座天下名关雄隘与历史人物/古诗词时空行迹可视化。"
           }
         },
         {
@@ -332,16 +334,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="江山时序" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <!-- Webfonts must not block rendering: where Google Fonts is slow or unreachable the page would
-       stay blank until the request times out. The system fonts in css/style.css show first. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <!-- Analytics: Vercount, anonymous click counter (workers/stats) & Cloudflare Web Analytics -->
-  <script defer src="https://events.vercount.one/js"></script>
-  <script defer src="js/atlas_track.js?v=4b2c3de3"></script>
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "dc645937f75341b2a7416bd1fb81b635", "spa": false}'></script>
+  <!-- Webfonts must not block rendering or hang sockets where Google Fonts is unreachable (e.g. Mainland China):
+       system fonts in css/style.css show first, and js/app.js activates data-font-href after load. -->
+  <link data-font-href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link data-font-href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%20%26%27CDEFHJKMNPQRSTWYabcdefghilmnoprstuvxy%E4%B8%89%E4%B8%9C%E4%B8%AD%E4%BA%94%E4%BA%BA%E4%BB%A3%E5%85%83%E5%85%AD%E5%85%B1%E5%8C%97%E5%8D%81%E5%8D%8E%E5%8D%97%E5%92%8C%E5%94%90%E5%9B%BD%E5%AE%8B%E5%B1%B1%E5%BA%8F%E6%88%98%E6%97%B6%E6%98%8E%E6%99%8B%E6%9C%9D%E6%B0%91%E6%B1%89%E6%B1%9F%E6%B8%85%E7%A7%A6%E8%A5%BF%E9%9A%8B&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <!-- Analytics: anonymous click counter (workers/stats); external beacons load post-paint so unreachable hosts never stall DOMContentLoaded -->
+  <script defer src="js/atlas_track.js?v=c3d799e3"></script>
 </head>
 <body>
   <div id="atlas-shell">
@@ -422,7 +420,6 @@
             <span id="lbl-more-story" class="more-link-title">创作手记 · 幕后故事</span>
             <span id="sub-more-story" class="more-link-sub">从课本插图到开源历史地图</span>
           </span>
-          <span class="more-ext-mark" aria-hidden="true">↗</span>
         </a>
         <a id="lnk-more-about" class="more-pop-link" role="menuitem" href="https://deanchen.me/about/" target="_blank" rel="noopener noreferrer">
           <svg class="btn-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.35"/><polygon points="6.6,6.6 10.9,5.1 9.4,9.4 5.1,10.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/></svg>
@@ -430,7 +427,6 @@
             <span id="lbl-more-about" class="more-link-title">作者博客 · 更多作品</span>
             <span id="sub-more-about" class="more-link-sub">deanchen.me</span>
           </span>
-          <span class="more-ext-mark" aria-hidden="true">↗</span>
         </a>
         <a id="lnk-more-contact" class="more-pop-link" role="menuitem" href="mailto:deancsj@gmail.com?subject=%E6%B1%9F%E5%B1%B1%E6%97%B6%E5%BA%8F%E5%8F%8D%E9%A6%88">
           <svg class="btn-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1.8" y="3.2" width="12.4" height="9.6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.35"/><polyline points="2.3,4.1 8,8.6 13.7,4.1" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/></svg>
@@ -438,7 +434,6 @@
             <span id="lbl-more-contact" class="more-link-title">联系作者 · 勘误反馈</span>
             <span id="sub-more-contact" class="more-link-sub">deancsj@gmail.com · 点击复制</span>
           </span>
-          <span class="more-ext-mark" aria-hidden="true">⎘</span>
         </a>
         <div class="more-pop-divider more-mobile-only" role="separator"></div>
         <a id="lnk-more-github" class="more-pop-link more-mobile-only" role="menuitem" href="https://github.com/DeanChensj/jiangshan-map" target="_blank" rel="noopener noreferrer">
@@ -447,7 +442,6 @@
             <span id="lbl-more-github" class="more-link-title">GitHub 开源仓库</span>
             <span id="sub-more-github" class="more-link-sub">DeanChensj/jiangshan-map · ★ Star</span>
           </span>
-          <span class="more-ext-mark" aria-hidden="true">↗</span>
         </a>
       </div>
     </header>
@@ -486,7 +480,7 @@
               <g id="grp-terrain">
                 <!-- Opacity lives on the wrapper so opaque detail tiles cover the base relief instead of double-blending with it. -->
                 <g id="terrain-relief-layer">
-                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" decoding="async" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
+                  <image id="terrain-relief-img" data-href="assets/terrain_relief.webp" data-href-mobile="assets/terrain_relief_mobile.webp" decoding="async" x="-80" y="-40" width="1160" height="780" preserveAspectRatio="none" />
                   <g id="grp-terrain-tiles"></g>
                   <g id="grp-paleo-sea"></g>
                 </g>
@@ -515,7 +509,11 @@
             // Deep links load the borders before the 546 KB relief; js/app.js sets this href later
             // (_releaseDeferredLoads). Everywhere else the relief starts loading right here.
             (function (img) {
-              if (!document.documentElement.classList.contains('deeplink-boot')) img.setAttribute('href', img.getAttribute('data-href'));
+              if (!document.documentElement.classList.contains('deeplink-boot')) {
+                img.onload = img.onerror = function () { img.dataset.loaded = '1'; };
+                var mob = window.innerWidth > 0 && window.innerWidth <= 900 && img.getAttribute('data-href-mobile');
+                img.setAttribute('href', mob || img.getAttribute('data-href'));
+              }
             })(document.getElementById('terrain-relief-img'));
           </script>
         </div>
@@ -558,7 +556,10 @@
           <div id="challenge-question" class="challenge-prompt"></div>
           <div id="challenge-result" class="challenge-feedback is-hidden">
             <span id="challenge-verdict"></span>
-            <button id="act-next-round" class="action-btn accent sm"></button>
+            <div class="challenge-actions">
+              <button id="act-share-quiz" class="action-btn accent sm is-hidden" type="button"></button>
+              <button id="act-next-round" class="action-btn accent sm" type="button"></button>
+            </div>
           </div>
         </div>
 
@@ -645,7 +646,7 @@
             <li><span class="ev-yr">前246 年</span><span>韩水工郑国入秦开凿三百里“郑国渠”，关中自此成沃野</span></li>
             <li><span class="ev-yr">前242 年</span><span>蒙骜攻魏取二十城初置东郡，秦地东接齐境</span></li>
             <li><span class="ev-yr">前241 年</span><span>五国最后合纵攻秦败于蕞；楚畏秦自陈东迁寿春</span></li>
-            <li><span class="ev-yr">前238 年</span><span>秦王政亲政，平嫪毐、罢吕不韦，部署灭六国方略</span></li>
+            <li><span class="ev-yr">前238 年</span><span>秦王政亲政平嫪毐之乱，次年罢吕不韦，部署灭六国方略</span></li>
             <li><span class="ev-yr">前236 年</span><span>王翦、桓齮攻赵邺城取九城，拉开秦灭六国序幕</span></li>
             <li><span class="ev-yr">前230 年</span><span>秦灭韩：内史腾急袭新郑俘韩王安，置颍川郡</span></li>
             <li><span class="ev-yr">前228 年</span><span>秦灭赵：王翦克邯郸俘赵王迁，公子嘉奔代自立</span></li>
@@ -709,22 +710,22 @@
         <h3>一、历代疆域与州郡政区时间轴目录（Dynasties &amp; Historical Territories）</h3>
         <ul>
           <li><a href="https://deanchen.me/jiangshan-map/?year=-403"><strong>战国历史地图（前403—前221 · Warring States）</strong></a> — 都城：咸阳（秦）· 洛阳（周）· 七雄都城。代表事件：前403年周威烈王命韩、赵、魏为诸侯（三家分晋）；前386年周安王册命田和为齐侯，田氏代齐，七雄形成；前381年楚悼王任吴起变法强兵，南平百越、北并陈蔡却三晋、西伐秦；前375年韩哀侯攻灭郑国并迁都新郑；前376年三家废晋静公尽分晋地。</li>
-          <li><a href="https://deanchen.me/jiangshan-map/?year=-214"><strong>秦历史地图（前221—前202 · Qin）</strong></a> — 都城：咸阳。代表事件：前221年王贲受齐王建降，秦王嬴政统一六国称始皇帝，行郡县、书同文车同轨；前215年蒙恬北击匈奴收复河套，其后数年连筑长城；前214年秦军开凿灵渠通湘漓，平定岭南置桂林、象、南海三郡；前213年秦始皇采李斯议下“焚书令”，次年于咸阳坑杀方士儒生。</li>
-          <li><a href="https://deanchen.me/jiangshan-map/?year=-100"><strong>西汉历史地图（前202—25 · Western Han）</strong></a> — 都城：长安。代表事件：前202年韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝，旋都关中；前200年汉高祖亲征匈奴困于白登，汉初遂行和亲之策；前180年周勃、陈平诛灭诸吕迎立汉文帝，开启休养生息之政；前167年汉文帝废除肉刑、免收全国田租，与景帝轻徭薄赋共创“文景之治”。</li>
+          <li><a href="https://deanchen.me/jiangshan-map/?year=-214"><strong>秦历史地图（前221—前202 · Qin）</strong></a> — 都城：咸阳。代表事件：前221年王贲受齐王建降，秦王嬴政统一六国称始皇帝，行郡县、书同文车同轨；前219年秦始皇东巡郡县，登泰山行封禅礼，于琅琊刻石颂秦德；前215年蒙恬北击匈奴收复河套，其后数年连筑长城；前214年秦军开凿灵渠通湘漓，平定岭南置桂林、象、南海三郡。</li>
+          <li><a href="https://deanchen.me/jiangshan-map/?year=-100"><strong>西汉历史地图（前202—25 · Western Han）</strong></a> — 都城：长安。代表事件：前202年韩信等垓下十面埋伏灭项羽，汉高祖刘邦称帝，旋都关中；前200年汉高祖亲征匈奴困于白登，汉初遂行和亲之策；前180年周勃、陈平、刘章诛灭诸吕迎立汉文帝，开启黄老休养生息之政；前174年匈奴老上单于大破月氏，迫其西迁西域，匈奴尽据河西走廊。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=100"><strong>东汉历史地图（25—220 · Eastern Han）</strong></a> — 都城：洛阳。代表事件：25年赤眉军入长安覆灭更始政权；萧王刘秀于鄗城称帝兴复汉室，定都洛阳；36年吴汉攻克成都灭公孙述，光武帝刘秀统一全国；39年光武帝下诏核查全国垦田与户口（度田），打击豪强隐匿田赋；43年伏波将军马援南征交趾平二征起义，立铜柱定汉界。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=250"><strong>三国历史地图（220—280 · Three Kingdoms）</strong></a> — 都城：洛阳 / 成都 / 建业。代表事件：220年魏王曹操病逝；曹丕采陈群议行九品官人法，旋迫汉献帝禅让建曹魏；221年闻汉献帝遇害传言，刘备在成都称帝延续汉室正统，国号汉（蜀汉）；222年夷陵之战，陆逊火烧连营大破刘备；223年刘备病逝永安白帝城，临终托孤于丞相诸葛亮。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=300"><strong>西晋历史地图（280—316 · Western Jin）</strong></a> — 都城：洛阳。代表事件：280年西晋灭吴，三国归晋；颁占田制与罢州郡兵，开启“太康之治”；289年太康年间门阀骄奢斗富；武帝大封诸王出镇重兵，命刘渊领并州匈奴部；291年晋武帝崩后惠帝即位，次年贾南风诛杨骏与辅政宗王，八王之乱爆发；299年关陇氐羌齐万年之乱历两年余始平；江统著《徙戎论》警诫五胡内迁隐患。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=383"><strong>东晋十六国历史地图（317—420 · Eastern Jin &amp; Sixteen Kingdoms）</strong></a> — 都城：建康（东晋）。代表事件：317年司马睿在建康即晋王位建东晋；河西前凉、代北代国、辽东前燕并立；319年刘曜于长安改汉为前赵，石勒在襄国称赵王建后赵，汉赵分裂；322年王敦之乱：王敦自武昌举兵攻入建康，控制东晋朝政；327年前凉张骏擒戊己校尉赵贞，以其地置高昌郡。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=500"><strong>南北朝历史地图（420—581 · Northern &amp; Southern Dynasties）</strong></a> — 都城：平城→洛阳（北朝）/ 建康（南朝）。代表事件：420年刘裕代晋建宋，南朝开始；427年北魏取河南关中，太武帝又袭克胡夏都城统万城；431年赫连定灭西秦后被俘，北魏灭胡夏；宋文帝元嘉之治；436年北魏攻入龙城，北燕亡。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=605"><strong>隋历史地图（581—618 · Sui）</strong></a> — 都城：大兴（长安）。代表事件：581年杨坚建隋，定都大兴；确立三省六部制，颁《开皇律》；587年隋文帝废西梁国，江陵并入隋境，大造战船备战伐陈；589年晋王杨广统军渡江，韩擒虎、贺若弼攻克建康擒陈后主，隋灭陈统一全国；599年东突厥启民可汗内附，隋于河套北筑大利城。</li>
-          <li><a href="https://deanchen.me/jiangshan-map/?year=741"><strong>唐历史地图（618—907 · Tang）</strong></a> — 都城：长安。代表事件：618年隋炀帝江都遇弑后，唐王李渊迫隋恭帝杨侑禅让，于长安称帝建立唐朝；621年虎牢之战李世民擒窦建德、降王世充；李靖平萧铣；624年唐高祖颁行武德律令，初定均田制与租庸调制；626年玄武门之变：秦王李世民伏兵诛太子建成、齐王元吉，唐高祖退位禅让。</li>
+          <li><a href="https://deanchen.me/jiangshan-map/?year=741"><strong>唐历史地图（618—907 · Tang）</strong></a> — 都城：长安。代表事件：618年隋炀帝江都遇弑后，唐王李渊迫隋恭帝杨侑禅让，于长安称帝建立唐朝；621年虎牢之战李世民擒窦建德、降王世充；李靖平萧铣；622年刘黑闼称汉东王复据河北，次年败亡；岭南冯盎、交州丘和归唐；624年李孝恭、李靖平辅公祏，江南悉定；唐颁武德律令，定均田、租庸调制。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=950"><strong>五代十国历史地图（907—960 · Five Dynasties &amp; Ten Kingdoms）</strong></a> — 都城：开封。代表事件：907年朱温代唐建后梁；王建在成都称帝建前蜀，契丹耶律阿保机称汗；909年后梁册封王审知为闽王，定都福州保境安民；910年吴越王钱镠筑钱塘捍海石塘；徐温掌淮南政固杨吴基业；911年刘守光在幽州称大燕皇帝，晋王李存勖兴兵讨燕（913年灭桀燕）。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=1100"><strong>北宋历史地图（960—1127 · Northern Song）</strong></a> — 都城：东京开封府。代表事件：960年殿前都点检赵匡胤发动陈桥兵变，回师开封受后周恭帝禅位，建立北宋；961年宋太祖“杯酒释兵权”定重文轻武，继设通判、转运使收地方权；963年慕容延钊假道灭虢，北宋平定荆南与湖南；965年王全斌攻入成都灭后蜀孟昶降，花蕊夫人赋诗叹亡国。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=1200"><strong>南宋历史地图（1127—1279 · Southern Song）</strong></a> — 都城：临安。代表事件：1127年赵构即位于南京应天府，南宋开始；1129年苗刘兵变：苗傅、刘正彦于杭州逼高宗禅位，韩世忠平叛；1130年韩世忠黄天荡阻击金兀术水军；1134年岳飞挥师北伐收复襄阳、随、郢、唐、邓、信阳六郡。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=1300"><strong>元历史地图（1279—1368 · Yuan）</strong></a> — 都城：大都。代表事件：1279年张弘范于崖山海战灭南宋，元朝统一全国；1281年元廷置澎湖巡检司管辖澎湖与琉球，并第二次东征日本；1283年元廷采纳朱清、张瑄议开辟江南刘家港至直沽海上漕运航线；1287年忽必烈亲征平定辽东乃颜之乱，设辽阳行省。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=1450"><strong>明历史地图（1368—1644 · Ming）</strong></a> — 都城：顺天府（北京）。代表事件：1368年朱元璋于应天称帝建明；徐达北伐克大都，元廷北迁；1369年常遇春克元上都，徐达定陕西，北元退居漠北；1371年汤和、傅友德分道伐蜀，灭明夏政权平定四川；1380年明太祖兴胡惟庸案诛权臣，罢中书省、永废丞相制。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=1800"><strong>清历史地图（1644—1912 · Qing）</strong></a> — 都城：京师（北京）。代表事件：1644年山海关总兵吴三桂降清开关，多尔衮率清军大败李自成大顺军，定都北京；1645年清军破扬州、南京，弘光政权覆灭；颁剃发令，江南抗清；1661年郑成功横渡鹿耳门驱逐荷兰殖民者，收复台湾设承天府；1662年吴三桂于昆明杀南明永历帝，李定国病逝，南明大陆抗清终结。</li>
-          <li><a href="https://deanchen.me/jiangshan-map/?year=1936"><strong>中华民国历史地图（1912—1949 · Republic of China）</strong></a> — 都城：北京→南京。代表事件：1912年孙中山于南京就职建中华民国；清帝溥仪退位，二千年帝制终结；1915年蔡锷在云南起义，发起讨袁护国战争；1916年袁世凯病逝，北洋集团分裂为皖、直、奉系，南北军阀割据；1919年巴黎和会外交失利，北京爆发五四运动。</li>
+          <li><a href="https://deanchen.me/jiangshan-map/?year=1936"><strong>中华民国历史地图（1912—1949 · Republic of China）</strong></a> — 都城：北京→南京。代表事件：1912年孙中山于南京就职建中华民国；清帝溥仪退位，二千年帝制终结；1913年宋教仁遇刺后，李烈钧湖口独立、黄兴南京讨袁，“二次革命”爆发；1915年蔡锷在云南起义，发起讨袁护国战争；1916年袁世凯病逝，北洋集团分裂为皖、直、奉系，南北军阀割据。</li>
           <li><a href="https://deanchen.me/jiangshan-map/?year=2026"><strong>中华人民共和国历史地图（1949— · People&#39;s Republic of China）</strong></a> — 都城：北京。代表事件：1949年毛泽东于天安门宣告中华人民共和国成立；1951年中央政府与西藏地方签订《十七条协议》，西藏和平解放；1964年中国第一颗原子弹在罗布泊成功爆炸；1971年第26届联大通过第2758号决议，中华人民共和国恢复合法席位。</li>
         </ul>
       </section>
@@ -915,11 +916,11 @@
 
   <script src="js/china_geo_data.js?v=5718efe8"></script>
   <script src="js/atlas_boot.js?v=67cb36dd"></script>
-  <script src="js/map_data.js?v=b25e28bf"></script>
-  <script src="js/lore_core.js?v=d8b0ac28"></script>
-  <script id="atlas-app-script" src="js/app.js?v=04ab7f50" data-v-snapshots="aaed3410" data-v-i18n="a98baab7" data-v-lore="2c88f496" data-v-pinyin="5e811026" data-v-hant="3afdab47" data-v-quiz="706065c1" data-v-narrator="fe4f4e00" data-v-sources="5e548638"></script>
-  <script src="js/atlas_trace.js?v=374c19da"></script>
-  <script src="js/atlas_search.js?v=cfc38510"></script>
-  <script src="js/atlas_api.js?v=3b7f1b6d"></script>
+  <script src="js/map_data.js?v=e68831e8"></script>
+  <script src="js/lore_core.js?v=4dcd5e5b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=eef28fd1" data-v-snapshots="e548bf7a" data-v-i18n="f85754a5" data-v-lore="69a57d0f" data-v-pinyin="5de044e1" data-v-hant="3afdab47" data-v-quiz="b93ee194" data-v-quiz-poster="6f30122f" data-v-narrator="d9f546a1" data-v-sources="6af05f1b"></script>
+  <script src="js/atlas_trace.js?v=5ef930a4"></script>
+  <script src="js/atlas_search.js?v=54be5593"></script>
+  <script src="js/atlas_api.js?v=575d60fd"></script>
 </body>
 </html>
