@@ -165,17 +165,14 @@
       };
 
       // 0a. Historical Figures Chronicle & Event Storyline Index (点人溯事 · 点事溯局)
-      const loreLoaded = this._isLoreDetailLoaded();
+      const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
         const d =
-          this.dynasties.find((item) => item.key === p.dynastyKey) ||
+          dynastyByKey.get(p.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
           this.dynasties[0];
-        const evCount = loreLoaded
-          ? this._collectPersonEvents(p).length
-          : typeof p.evCount === 'number'
-            ? p.evCount
-            : this._collectPersonEvents(p).length;
+        const evCount =
+          typeof p.evCount === 'number' ? p.evCount : this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
         if (p.isStory) {
           const spanStr = Array.isArray(p.span) ? `${p.span[0]}—${p.span[1]}` : '';
@@ -397,17 +394,20 @@
       // 2. Prefectures & Macro Regions across snapshots
       const seenAdmin = new Set();
       for (const d of this.dynasties) {
+        const seenLists = new Set();
         const phaseList = d.phases && d.phases.length ? d.phases : [{ until: d.toYear, snap: `s_${d.key}` }];
         phaseList.forEach((ph, idx) => {
-          const sy = idx === 0 ? d.fromYear : phaseList[idx - 1].until;
-          const midY = Math.round((sy + ph.until - 1) * 0.5);
           const snap = this.snapshots[ph.snap];
           if (!snap) return;
+          const sy = idx === 0 ? d.fromYear : phaseList[idx - 1].until;
+          const midY = Math.round((sy + ph.until - 1) * 0.5);
           for (const [list, isPref] of [
             [snap.regions, false],
             [snap.prefectures, true],
           ]) {
-            for (const item of list || []) {
+            if (!list || !list.length || seenLists.has(list)) continue;
+            seenLists.add(list);
+            for (const item of list) {
               if (!item.title || !item.anchor) continue;
               const uid = `${d.key}:${item.title}`;
               if (seenAdmin.has(uid)) continue;
@@ -432,6 +432,17 @@
 
       // 3. Historical Milestones / Events
       const eventEntries = [];
+      const eventsByYear = new Map();
+      const pushEventEntry = (evEntry) => {
+        entries.push(evEntry);
+        eventEntries.push(evEntry);
+        let bucket = eventsByYear.get(evEntry.rawYear);
+        if (!bucket) {
+          bucket = [];
+          eventsByYear.set(evEntry.rawYear, bucket);
+        }
+        bucket.push(evEntry);
+      };
       const eventPinyin = window.ATLAS_EVENT_PINYIN || {};
       for (const d of this.dynasties) {
         for (const [eventIdx, m] of (d.milestones || []).entries()) {
@@ -452,8 +463,7 @@
             pinyinKeys: [...(eventPinyin.milestones?.[d.key]?.[eventIdx] || [])],
             keywords: `${m.headline} ${m.site || ''} ${enHead} ${siteEn} ${m.year}`.toLowerCase(),
           };
-          entries.push(evEntry);
-          eventEntries.push(evEntry);
+          pushEventEntry(evEntry);
         }
       }
 
@@ -481,13 +491,12 @@
           subEn: `${yrEn}${lm.siteEn ? ' · ' + lm.siteEn : ''}`,
           pinyinKeys: eventPinyin.landmarks?.[eventIdx] || [],
         };
-        const existingEv = eventEntries.find(
-          (ev) =>
-            ev.rawYear === lm.year &&
-            ev.coord &&
-            lm.coord &&
-            this.projector.greatCircleKm(ev.coord, lm.coord) <= 65
-        );
+        const yearBucket = lm.coord ? eventsByYear.get(lm.year) : null;
+        const existingEv = yearBucket
+          ? yearBucket.find(
+              (ev) => ev.coord && this.projector.greatCircleKm(ev.coord, lm.coord) <= 65
+            )
+          : null;
         if (existingEv) {
           existingEv.keywords += ` ${lmKeywords}`;
           if (landmark.pinyinKeys.length) {
@@ -502,7 +511,7 @@
           continue;
         }
         const d =
-          this.dynasties.find((dyn) => dyn.key === lm.dynastyKey) ||
+          dynastyByKey.get(lm.dynastyKey) ||
           this.dynasties[this._findDynastyIndex(lm.year)] ||
           this.dynasties[0];
         const lmEntry = {
@@ -514,45 +523,7 @@
           coord: lm.coord,
           keywords: `${lmKeywords} 史事 事件 战役 名胜`,
         };
-        entries.push(lmEntry);
-        eventEntries.push(lmEntry);
-      }
-
-      const foldIdx = (s) =>
-        String(s || '')
-          .toLowerCase()
-          .replace(/['’‘`\-_.\s]+/g, '');
-      for (const item of entries) {
-        const tZh = item.titleZh.toLowerCase();
-        const tEn = item.titleEn.toLowerCase();
-        const bareZh = this._stripPromptParenthetical(item.titleZh).toLowerCase();
-        const bareEn = this._stripPromptParenthetical(item.titleEn).toLowerCase();
-        const mZh = (item.modernZh || '').toLowerCase();
-        const mZhParts = mZh ? mZh.split(/[·/、]/) : null;
-        const mEn = (item.modernEn || '').toLowerCase();
-        Object.defineProperty(item, '_q', {
-          value: {
-            tZh,
-            tEn,
-            bareZh,
-            bareEn,
-            mZh,
-            mZhParts,
-            mEn,
-            tEnFold: foldIdx(tEn),
-            mEnFold: mEn ? foldIdx(mEn) : '',
-            aliasesFold: item.aliases ? item.aliases.map(foldIdx) : null,
-            altZhPairs: item.altTitlesZh
-              ? item.altTitlesZh.map((raw) => [raw, raw.toLowerCase()])
-              : null,
-            altEnPairs: item.altTitlesEn
-              ? item.altTitlesEn.map((raw) => [raw, foldIdx(raw)])
-              : null,
-            keywordsFold: foldIdx(item.keywords),
-          },
-          enumerable: false,
-          configurable: true,
-        });
+        pushEventEntry(lmEntry);
       }
 
       this.searchIndex = entries;
@@ -861,6 +832,8 @@
       // Additional event fallback only; existing query normalization and scores stay intact.
       const pinyinQuery = this._eventPinyinQuery(q);
       const index = this._ensureSearchIndex();
+      if (!this._searchQueryMeta) this._searchQueryMeta = new WeakMap();
+      const metaMap = this._searchQueryMeta;
       const eraResults = this._matchEraResults(normQ);
       const hasEraMatch = eraResults.length > 0;
       const results = [...eraResults];
@@ -870,15 +843,42 @@
         let matchedAltZh = null;
         let matchedAltEn = null;
         let matchedByKeywordOnly = false;
-        const iq = item._q;
-        const tZh = iq ? iq.tZh : item.titleZh.toLowerCase();
-        const tEn = iq ? iq.tEn : item.titleEn.toLowerCase();
-        const bareZh = iq ? iq.bareZh : this._stripPromptParenthetical(item.titleZh).toLowerCase();
-        const bareEn = iq ? iq.bareEn : this._stripPromptParenthetical(item.titleEn).toLowerCase();
-        const mZh = iq ? iq.mZh : (item.modernZh || '').toLowerCase();
-        const mEn = iq ? iq.mEn : (item.modernEn || '').toLowerCase();
-        const tEnFold = isAscii ? (iq ? iq.tEnFold : fold(tEn)) : '';
-        const mEnFold = isAscii ? (iq ? iq.mEnFold : fold(mEn)) : '';
+        let iq = metaMap.get(item);
+        if (!iq) {
+          const mZhRaw = (item.modernZh || '').toLowerCase();
+          iq = {
+            tZh: item.titleZh.toLowerCase(),
+            tEn: item.titleEn.toLowerCase(),
+            bareZh: this._stripPromptParenthetical(item.titleZh).toLowerCase(),
+            bareEn: this._stripPromptParenthetical(item.titleEn).toLowerCase(),
+            mZh: mZhRaw,
+            mZhParts: mZhRaw ? mZhRaw.split(/[·/、]/) : null,
+            mEn: (item.modernEn || '').toLowerCase(),
+            altZhPairs: item.altTitlesZh
+              ? item.altTitlesZh.map((raw) => [raw, raw.toLowerCase()])
+              : null,
+            asciiReady: false,
+            tEnFold: '',
+            mEnFold: '',
+            aliasesFold: null,
+            altEnPairs: null,
+            keywordsFold: '',
+          };
+          metaMap.set(item, iq);
+        }
+        if (isAscii && !iq.asciiReady) {
+          iq.tEnFold = fold(iq.tEn);
+          iq.mEnFold = iq.mEn ? fold(iq.mEn) : '';
+          iq.aliasesFold = item.aliases ? item.aliases.map(fold) : null;
+          iq.altEnPairs = item.altTitlesEn
+            ? item.altTitlesEn.map((raw) => [raw, fold(raw)])
+            : null;
+          iq.keywordsFold = fold(item.keywords);
+          iq.asciiReady = true;
+        }
+        const { tZh, tEn, bareZh, bareEn, mZh, mEn } = iq;
+        const tEnFold = isAscii ? iq.tEnFold : '';
+        const mEnFold = isAscii ? iq.mEnFold : '';
         if (tZh === q || tEn === q) {
           score = item.kind === 'dynasty' ? 108 : item.kind === 'polity' ? 104 : 100;
         } else if (bareZh && (bareZh === q || bareEn === q)) {

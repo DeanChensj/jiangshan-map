@@ -3311,6 +3311,11 @@
       const polRings = [];
       const polList = snap.polities || [];
       const polAreas = polList.map(() => 0);
+      let gMinX = Infinity,
+        gMaxX = -Infinity,
+        gMinY = Infinity,
+        gMaxY = -Infinity;
+      let totalSegs = 0;
       for (let pIdx = 0; pIdx < polList.length; pIdx++) {
         const pol = polList[pIdx];
         if (!pol || pol.role === 'neighbor' || !pol.shape) continue;
@@ -3334,7 +3339,12 @@
             area2 += ring[j][0] * y - x * ring[j][1];
           }
           polAreas[pIdx] += Math.abs(area2) * 0.5;
-          polRings.push({ pIdx, minX, maxX, minY, maxY, ring });
+          if (minX < gMinX) gMinX = minX;
+          if (maxX > gMaxX) gMaxX = maxX;
+          if (minY < gMinY) gMinY = minY;
+          if (maxY > gMaxY) gMaxY = maxY;
+          totalSegs += ring.length - 1;
+          polRings.push({ pIdx, minX, maxX, minY, maxY, ring, yBins: null, yScale: 0 });
         }
       }
       const allCommanderyRegions = snap.regions.every(
@@ -3342,59 +3352,60 @@
       );
       const hasLargePolity = !allCommanderyRegions && polAreas.some((a) => a >= 35);
       const isMultiRegime = !allCommanderyRegions && polList.filter((p) => p && p.role !== 'neighbor').length >= 4;
-      // The boundary build queries many points against the same long rings.
-      // Index candidate edges by latitude; all geometric predicates below stay
-      // exact. The margin also covers nearPolityBorder's distance test.
-      const ringEdgeBins = new Map();
-      // The bins must cover the widest upstream distance query, including
-      // multi-regime midpoint (0.55) and endpoint (0.38) exclusions.
-      const borderMargin = isMultiRegime ? 0.55 : 0.16, binCount = 64;
-      const candidateEdges = (b, y) => {
-        if (b.ring.length < 128 || b.maxY <= b.minY) return null;
-        let index = ringEdgeBins.get(b);
-        if (!index) {
-          const bins = Array.from({ length: binCount }, () => []);
-          const scale = binCount / (b.maxY - b.minY);
-          for (let i = 0, j = b.ring.length - 1; i < b.ring.length; j = i++) {
-            const y1 = b.ring[i][1], y2 = b.ring[j][1];
-            // Extra neighboring bins make the filter conservative at floating
-            // point bucket boundaries. They never change the final predicates.
-            const lo = Math.max(0, Math.floor((Math.min(y1, y2) - borderMargin - b.minY) * scale) - 1);
-            const hi = Math.min(binCount - 1, Math.floor((Math.max(y1, y2) + borderMargin - b.minY) * scale) + 1);
-            for (let k = lo; k <= hi; k++) bins[k].push(i);
-          }
-          index = { bins, scale }; ringEdgeBins.set(b, index);
-        }
-        return index.bins[Math.max(0, Math.min(binCount - 1, Math.floor((y - b.minY) * index.scale)))];
-      };
-      const findPolIdx = (x, y, cache) => {
-        const key = cache ? `${x},${y}` : null;
-        if (cache) {
-          const hit = cache.get(key);
-          if (hit !== undefined) return hit;
-        }
+      const borderMargin = isMultiRegime ? 0.55 : 0.16;
+
+      // Exact ray-casting with tight y-bins (no borderMargin bloat) for boundary-crossed cells
+      // and _allowRegionAnchor calls after the temporary 2D grids are released.
+      const rawFindPolIdx = (x, y) => {
         for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
           const b = polRings[rIdx];
           if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
           const ring = b.ring;
-          const edges = cache ? candidateEdges(b, y) : null;
+          let edges = null;
+          if (ring.length >= 32 && b.maxY > b.minY) {
+            if (!b.yBins) {
+              const bc = 64;
+              const bins = Array.from({ length: bc }, () => []);
+              const sc = bc / (b.maxY - b.minY);
+              for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+                const y1 = ring[i][1],
+                  y2 = ring[j][1];
+                if (y1 === y2) continue;
+                const lo = Math.max(0, Math.floor((Math.min(y1, y2) - b.minY) * sc) - 1);
+                const hi = Math.min(bc - 1, Math.floor((Math.max(y1, y2) - b.minY) * sc) + 1);
+                for (let k = lo; k <= hi; k++) bins[k].push(i);
+              }
+              b.yBins = bins;
+              b.yScale = sc;
+            }
+            edges = b.yBins[Math.max(0, Math.min(63, Math.floor((y - b.minY) * b.yScale)))];
+          }
           let inside = false;
-          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
-            const i = edges ? edges[k] : k, j = i === 0 ? ring.length - 1 : i - 1;
-            const xi = ring[i][0],
-              yi = ring[i][1];
-            const xj = ring[j][0],
-              yj = ring[j][1];
-            if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
-              inside = !inside;
+          if (edges) {
+            for (let k = 0; k < edges.length; k++) {
+              const i = edges[k],
+                j = i === 0 ? ring.length - 1 : i - 1;
+              const yi = ring[i][1],
+                yj = ring[j][1];
+              if ((yi > y) !== (yj > y)) {
+                const xi = ring[i][0],
+                  xj = ring[j][0];
+                if (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+              }
+            }
+          } else {
+            for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+              const yi = ring[i][1],
+                yj = ring[j][1];
+              if ((yi > y) !== (yj > y)) {
+                const xi = ring[i][0],
+                  xj = ring[j][0];
+                if (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+              }
             }
           }
-          if (inside) {
-            if (cache) cache.set(key, b.pIdx);
-            return b.pIdx;
-          }
+          if (inside) return b.pIdx;
         }
-        if (cache) cache.set(key, -1);
         return -1;
       };
       const allowPolIdx = (pIdx) => {
@@ -3404,63 +3415,177 @@
         if (hasLargePolity && pol.role === 'rival' && polAreas[pIdx] < 35) return false;
         return true;
       };
-      const nearPolityBorder = (x, y, margin) => {
-        const m2 = margin * margin;
-        for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
-          const b = polRings[rIdx];
-          if (
-            x < b.minX - margin ||
-            x > b.maxX + margin ||
-            y < b.minY - margin ||
-            y > b.maxY + margin
-          ) {
-            continue;
-          }
-          const ring = b.ring;
-          const edges = candidateEdges(b, y);
-          for (let k = 0, count = edges ? edges.length : ring.length; k < count; k++) {
-            // Ray edge 0 closes the ring implicitly; the original distance
-            // test only considers explicitly consecutive coordinate pairs.
-            const end = edges ? edges[k] : k;
-            if (end === 0) continue;
-            const i = end - 1;
-            const x1 = ring[i][0],
-              y1 = ring[i][1];
-            const x2 = ring[i + 1][0],
-              y2 = ring[i + 1][1];
-            if (x < Math.min(x1, x2) - margin || x > Math.max(x1, x2) + margin) continue;
-            const dx = x2 - x1,
-              dy = y2 - y1;
-            const len2 = dx * dx + dy * dy;
-            let t = len2 > 1e-12 ? ((x - x1) * dx + (y - y1) * dy) / len2 : 0;
-            if (t < 0) t = 0;
-            else if (t > 1) t = 1;
-            const px = x1 + t * dx - x,
-              py = y1 + t * dy - y;
-            if (px * px + py * py < m2) return true;
-          }
-        }
-        return false;
-      };
       Object.defineProperty(snap, '_allowRegionAnchor', {
-        value: (x, y) => !polRings.length || allowPolIdx(findPolIdx(x, y)),
+        value: (x, y) => !polRings.length || allowPolIdx(rawFindPolIdx(x, y)),
         writable: true,
         enumerable: false,
         configurable: true,
       });
-      const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
-      const edgeKey = (p1, p2) => {
-        const k1 = ptKey(p1);
-        const k2 = ptKey(p2);
-        return k1 < k2 ? `${k1}|${k2}` : `${k2}|${k1}`;
+
+      // 2D uniform-cell PIP grid: cells untouched by any polity edge share a single pIdx (-2 = unvisited, -3 = mixed).
+      let pipGrid = null;
+      let pipCols = 0,
+        pipRows = 0,
+        pipInvW = 0,
+        pipInvH = 0;
+      if (polRings.length && gMaxX > gMinX && gMaxY > gMinY) {
+        pipCols = 64;
+        pipRows = 64;
+        pipInvW = pipCols / (gMaxX - gMinX);
+        pipInvH = pipRows / (gMaxY - gMinY);
+        pipGrid = new Int16Array(pipCols * pipRows).fill(-2);
+        const eps = 1e-7;
+        for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+          const ring = polRings[rIdx].ring;
+          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+            const xi = ring[i][0],
+              yi = ring[i][1],
+              xj = ring[j][0],
+              yj = ring[j][1];
+            const cx0 = Math.max(0, Math.floor((Math.min(xi, xj) - eps - gMinX) * pipInvW));
+            const cx1 = Math.min(pipCols - 1, Math.floor((Math.max(xi, xj) + eps - gMinX) * pipInvW));
+            const cy0 = Math.max(0, Math.floor((Math.min(yi, yj) - eps - gMinY) * pipInvH));
+            const cy1 = Math.min(pipRows - 1, Math.floor((Math.max(yi, yj) + eps - gMinY) * pipInvH));
+            for (let cy = cy0; cy <= cy1; cy++) {
+              const rowOff = cy * pipCols;
+              for (let cx = cx0; cx <= cx1; cx++) pipGrid[rowOff + cx] = -3;
+            }
+          }
+        }
+      }
+      const pointPolities = new Map();
+      const findPolIdx = (x, y) => {
+        if (x < gMinX || x > gMaxX || y < gMinY || y > gMaxY) return -1;
+        if (pipGrid) {
+          const cx = Math.max(0, Math.min(pipCols - 1, Math.floor((x - gMinX) * pipInvW)));
+          const cy = Math.max(0, Math.min(pipRows - 1, Math.floor((y - gMinY) * pipInvH)));
+          const cellIdx = cy * pipCols + cx;
+          const state = pipGrid[cellIdx];
+          if (state >= -1) return state;
+          if (state === -2) {
+            const res = rawFindPolIdx(x, y);
+            pipGrid[cellIdx] = res;
+            return res;
+          }
+        }
+        const key = `${x},${y}`;
+        const hit = pointPolities.get(key);
+        if (hit !== undefined) return hit;
+        const res = rawFindPolIdx(x, y);
+        pointPolities.set(key, res);
+        return res;
       };
+
+      // 2D spatial segment grid for nearPolityBorder: interior points > borderMargin from any edge return false in O(1).
+      let bGrid = null,
+        bCols = 0,
+        bRows = 0,
+        bMinX = 0,
+        bMinY = 0,
+        bInvCell = 0;
+      let segX1 = null,
+        segY1 = null,
+        segDX = null,
+        segDY = null,
+        segLen2 = null,
+        segMinX = null,
+        segMaxX = null,
+        segMinY = null,
+        segMaxY = null;
+      if (hasLargePolity && polRings.length && totalSegs > 0) {
+        const cellSize = Math.max(borderMargin, 0.5);
+        bInvCell = 1 / cellSize;
+        bMinX = gMinX - borderMargin - 1e-6;
+        bMinY = gMinY - borderMargin - 1e-6;
+        const bMaxX = gMaxX + borderMargin + 1e-6;
+        const bMaxY = gMaxY + borderMargin + 1e-6;
+        bCols = Math.max(1, Math.ceil((bMaxX - bMinX) * bInvCell));
+        bRows = Math.max(1, Math.ceil((bMaxY - bMinY) * bInvCell));
+        bGrid = new Array(bCols * bRows);
+        segX1 = new Float64Array(totalSegs);
+        segY1 = new Float64Array(totalSegs);
+        segDX = new Float64Array(totalSegs);
+        segDY = new Float64Array(totalSegs);
+        segLen2 = new Float64Array(totalSegs);
+        segMinX = new Float64Array(totalSegs);
+        segMaxX = new Float64Array(totalSegs);
+        segMinY = new Float64Array(totalSegs);
+        segMaxY = new Float64Array(totalSegs);
+        let sIdx = 0;
+        const pad = borderMargin + 1e-7;
+        for (let rIdx = 0; rIdx < polRings.length; rIdx++) {
+          const ring = polRings[rIdx].ring;
+          for (let i = 0; i < ring.length - 1; i++) {
+            const x1 = ring[i][0],
+              y1 = ring[i][1];
+            const x2 = ring[i + 1][0],
+              y2 = ring[i + 1][1];
+            const dx = x2 - x1,
+              dy = y2 - y1;
+            const mnX = x1 < x2 ? x1 : x2,
+              mxX = x1 > x2 ? x1 : x2;
+            const mnY = y1 < y2 ? y1 : y2,
+              mxY = y1 > y2 ? y1 : y2;
+            segX1[sIdx] = x1;
+            segY1[sIdx] = y1;
+            segDX[sIdx] = dx;
+            segDY[sIdx] = dy;
+            segLen2[sIdx] = dx * dx + dy * dy;
+            segMinX[sIdx] = mnX;
+            segMaxX[sIdx] = mxX;
+            segMinY[sIdx] = mnY;
+            segMaxY[sIdx] = mxY;
+            const cx0 = Math.max(0, Math.floor((mnX - pad - bMinX) * bInvCell));
+            const cx1 = Math.min(bCols - 1, Math.floor((mxX + pad - bMinX) * bInvCell));
+            const cy0 = Math.max(0, Math.floor((mnY - pad - bMinY) * bInvCell));
+            const cy1 = Math.min(bRows - 1, Math.floor((mxY + pad - bMinY) * bInvCell));
+            for (let cy = cy0; cy <= cy1; cy++) {
+              const rowOff = cy * bCols;
+              for (let cx = cx0; cx <= cx1; cx++) {
+                const ci = rowOff + cx;
+                if (!bGrid[ci]) bGrid[ci] = [sIdx];
+                else bGrid[ci].push(sIdx);
+              }
+            }
+            sIdx++;
+          }
+        }
+      }
+      const nearPolityBorder = (x, y, margin) => {
+        if (!bGrid) return false;
+        if (x < gMinX - margin || x > gMaxX + margin || y < gMinY - margin || y > gMaxY + margin) return false;
+        const cx = Math.floor((x - bMinX) * bInvCell);
+        const cy = Math.floor((y - bMinY) * bInvCell);
+        if (cx < 0 || cx >= bCols || cy < 0 || cy >= bRows) return false;
+        const bucket = bGrid[cy * bCols + cx];
+        if (!bucket) return false;
+        const m2 = margin * margin;
+        for (let k = 0; k < bucket.length; k++) {
+          const s = bucket[k];
+          if (x < segMinX[s] - margin || x > segMaxX[s] + margin || y < segMinY[s] - margin || y > segMaxY[s] + margin) {
+            continue;
+          }
+          const dx = segDX[s],
+            dy = segDY[s],
+            len2 = segLen2[s];
+          let t = len2 > 1e-12 ? ((x - segX1[s]) * dx + (y - segY1[s]) * dy) / len2 : 0;
+          if (t < 0) t = 0;
+          else if (t > 1) t = 1;
+          const px = segX1[s] + t * dx - x,
+            py = segY1[s] + t * dy - y;
+          if (px * px + py * py < m2) return true;
+        }
+        return false;
+      };
+
+      const ptKey = (pt) => `${pt[0].toFixed(2)},${pt[1].toFixed(2)}`;
 
       // Adjacent phases frequently share the same administrative regions.
       // Keep only the latest topology, so visiting history does not accumulate
       // edge maps. Polity-dependent filtering still runs for every snapshot.
       let topology = this._regionBoundaryTopology;
       if (!topology || topology.regions !== snap.regions) {
-        const allRings = [];
+        const allRingEdges = [];
         const regEdgeCounts = new Map();
         for (const reg of snap.regions) {
           if (!reg || !reg.shape) continue;
@@ -3469,20 +3594,25 @@
           for (const poly of polys) {
             for (const ring of poly || []) {
               if (!ring || ring.length < 2) continue;
-              allRings.push(ring);
+              const keys = new Array(ring.length - 1);
+              let prevK = ptKey(ring[0]);
               for (let i = 0; i < ring.length - 1; i++) {
-                const ek = edgeKey(ring[i], ring[i + 1]);
+                const curK = ptKey(ring[i + 1]);
+                const ek = prevK < curK ? `${prevK}|${curK}` : `${curK}|${prevK}`;
+                prevK = curK;
+                keys[i] = ek;
                 regEdgeCounts.set(ek, (regEdgeCounts.get(ek) || 0) + 1);
               }
+              allRingEdges.push({ ring, keys });
             }
           }
         }
         const rings = [];
-        for (const ring of allRings) {
+        for (const { ring, keys } of allRingEdges) {
           const edges = [];
-          for (let i = 0; i < ring.length - 1; i++) {
-            const p1 = ring[i], p2 = ring[i + 1], key = edgeKey(p1, p2);
-            if ((regEdgeCounts.get(key) || 0) >= 2) edges.push({ p1, p2, key });
+          for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if ((regEdgeCounts.get(key) || 0) >= 2) edges.push({ p1: ring[i], p2: ring[i + 1], key });
             else if (edges.length && edges[edges.length - 1] !== null) edges.push(null);
           }
           if (edges.length) rings.push(edges);
@@ -3491,34 +3621,87 @@
       }
 
       const seenEdges = new Set();
-      const pointPolities = new Map();
       let d = '';
       for (const edges of topology.rings) {
         let penX = NaN;
         let penY = NaN;
+        let prevPt = null;
+        let prevPol = -2;
+        let prevNear38 = -1;
         for (const edge of edges) {
           if (!edge || seenEdges.has(edge.key)) {
             penX = NaN;
             penY = NaN;
+            prevPt = null;
             continue;
           }
           const { p1, p2, key: ek } = edge;
           const mx = (p1[0] + p2[0]) * 0.5;
           const my = (p1[1] + p2[1]) * 0.5;
-          const pIdxM = polRings.length ? findPolIdx(mx, my, pointPolities) : 0;
-          if (
-            polRings.length &&
-            (!allowPolIdx(pIdxM) ||
-              findPolIdx(p1[0], p1[1], pointPolities) !== pIdxM ||
-              findPolIdx(p2[0], p2[1], pointPolities) !== pIdxM ||
-              (hasLargePolity &&
-                (nearPolityBorder(mx, my, borderMargin) ||
-                  (isMultiRegime &&
-                    (nearPolityBorder(p1[0], p1[1], 0.38) || nearPolityBorder(p2[0], p2[1], 0.38))))))
-          ) {
-            penX = NaN;
-            penY = NaN;
-            continue;
+          const pIdxM = polRings.length ? findPolIdx(mx, my) : 0;
+          if (polRings.length) {
+            if (!allowPolIdx(pIdxM)) {
+              penX = NaN;
+              penY = NaN;
+              prevPt = null;
+              continue;
+            }
+            const pol1 = p1 === prevPt ? prevPol : findPolIdx(p1[0], p1[1]);
+            if (pol1 !== pIdxM) {
+              penX = NaN;
+              penY = NaN;
+              prevPt = p2;
+              prevPol = findPolIdx(p2[0], p2[1]);
+              prevNear38 = -1;
+              continue;
+            }
+            const pol2 = findPolIdx(p2[0], p2[1]);
+            if (pol2 !== pIdxM) {
+              penX = NaN;
+              penY = NaN;
+              prevPt = p2;
+              prevPol = pol2;
+              prevNear38 = -1;
+              continue;
+            }
+            if (hasLargePolity) {
+              if (nearPolityBorder(mx, my, borderMargin)) {
+                penX = NaN;
+                penY = NaN;
+                prevPt = p2;
+                prevPol = pol2;
+                prevNear38 = -1;
+                continue;
+              }
+              if (isMultiRegime) {
+                const n1 = p1 === prevPt && prevNear38 >= 0 ? prevNear38 === 1 : nearPolityBorder(p1[0], p1[1], 0.38);
+                if (n1) {
+                  penX = NaN;
+                  penY = NaN;
+                  prevPt = p2;
+                  prevPol = pol2;
+                  prevNear38 = -1;
+                  continue;
+                }
+                const n2 = nearPolityBorder(p2[0], p2[1], 0.38);
+                prevPt = p2;
+                prevPol = pol2;
+                prevNear38 = n2 ? 1 : 0;
+                if (n2) {
+                  penX = NaN;
+                  penY = NaN;
+                  continue;
+                }
+              } else {
+                prevPt = p2;
+                prevPol = pol2;
+                prevNear38 = -1;
+              }
+            } else {
+              prevPt = p2;
+              prevPol = pol2;
+              prevNear38 = -1;
+            }
           }
           seenEdges.add(ek);
           const [x1, y1] = this.projector.toScreen(p1[0], p1[1]);
@@ -3535,7 +3718,6 @@
 
       // The label-anchor predicate outlives this build; retain no point cache.
       pointPolities.clear();
-      ringEdgeBins.clear();
       Object.defineProperty(snap, '_cachedRegionBoundaryPath', {
         value: d,
         writable: true,
