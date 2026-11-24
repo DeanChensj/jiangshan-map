@@ -3933,18 +3933,23 @@ async function runSearchRuntimeSuite(ctx) {
   {
     assert(
       !indexHtml.includes('github-pill-group') &&
+        !indexHtml.includes('locale-pill-group') &&
+        indexHtml.includes('id="act-locale-menu"') &&
+        indexHtml.includes('id="locale-popover"') &&
+        ['data-locale="zh"', 'data-locale="zh-tw"', 'data-locale="en"'].every((k) => indexHtml.includes(k)) &&
         indexHtml.includes('id="act-github-star"') &&
         indexHtml.includes('id="act-more-menu"') &&
         indexHtml.includes('more-menu-btn') &&
         indexHtml.includes('id="lnk-more-github"') &&
         indexHtml.includes('more-mobile-only') &&
         /<a id="lnk-dynasty-topic"[^>]*>图志<\/a>/.test(indexHtml),
-      'index.html must split #act-github-star and #act-more-menu on desktop, merge #lnk-more-github into #more-popover on mobile, and keep #lnk-dynasty-topic text clean without arrows'
+      'index.html must use compact #act-locale-menu + #locale-popover, split #act-github-star and #act-more-menu on desktop, merge #lnk-more-github into #more-popover on mobile, and keep #lnk-dynasty-topic text clean without arrows'
     );
     assert(
       cssSrc.includes('#viewport-frame.is-camera-moved .canvas-reset-btn') &&
+        cssSrc.includes('.locale-popover') &&
         cssSrc.includes('.more-pop-link.more-mobile-only'),
-      'css/style.css must gate #act-reset-camera visibility via .is-camera-moved and show .more-mobile-only menu items on <= 640px mobile'
+      'css/style.css must gate #act-reset-camera visibility via .is-camera-moved, style .locale-popover, and show .more-mobile-only menu items on <= 640px mobile'
     );
 
     const toggled = new Set();
@@ -4015,6 +4020,66 @@ async function runSearchRuntimeSuite(ctx) {
       toggled.has('is-camera-moved'),
       false,
       'Clearing an active custom route while at default camera must hide #act-reset-camera'
+    );
+
+    const locClasses = new Set(['is-hidden']);
+    const locBtnClasses = new Set();
+    const locAttrs = { 'aria-expanded': 'false' };
+    const makePopItem = (code) => {
+      const cls = new Set(code === 'zh' ? ['is-selected'] : []);
+      const attrs = { 'aria-checked': code === 'zh' ? 'true' : 'false' };
+      return {
+        dataset: { locale: code },
+        classList: {
+          toggle: (c, f) => (f ? cls.add(c) : cls.delete(c)),
+          contains: (c) => cls.has(c),
+        },
+        setAttribute: (k, v) => {
+          attrs[k] = v;
+        },
+        getAttribute: (k) => attrs[k],
+      };
+    };
+    const locItems = ['zh', 'zh-tw', 'en'].map(makePopItem);
+    const locPopoverStub = {
+      classList: {
+        contains: (c) => locClasses.has(c),
+        add: (c) => locClasses.add(c),
+        remove: (c) => locClasses.delete(c),
+      },
+      querySelectorAll: () => locItems,
+    };
+    const locBtnStub = {
+      classList: {
+        contains: (c) => locBtnClasses.has(c),
+        add: (c) => locBtnClasses.add(c),
+        remove: (c) => locBtnClasses.delete(c),
+      },
+      setAttribute: (k, v) => {
+        locAttrs[k] = v;
+      },
+    };
+    const locMap = { 'locale-popover': locPopoverStub, 'act-locale-menu': locBtnStub };
+    const locCtrl = Object.assign(Object.create(proto), {
+      locale: 'en',
+      _id: (id) => locMap[id] || null,
+    });
+    locCtrl._zh = (s) => s;
+    locPopoverStub.classList.remove('is-hidden');
+    locBtnStub.classList.add('is-active');
+    locAttrs['aria-expanded'] = 'true';
+    assert.strictEqual(proto._closeLocalePopover.call(locCtrl), true, '_closeLocalePopover must close an open #locale-popover');
+    assert(locPopoverStub.classList.contains('is-hidden') && !locBtnStub.classList.contains('is-active') && locAttrs['aria-expanded'] === 'false', 'Closing #locale-popover must reset classes and aria-expanded');
+    locPopoverStub.querySelectorAll().forEach((item) => {
+      const active = item.dataset.locale === 'en';
+      item.classList.toggle('is-selected', active);
+      item.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    assert(
+      !locItems[0].classList.contains('is-selected') &&
+        locItems[2].classList.contains('is-selected') &&
+        locItems[2].getAttribute('aria-checked') === 'true',
+      'Selecting en in #locale-popover must update is-selected and aria-checked'
     );
   }
 }

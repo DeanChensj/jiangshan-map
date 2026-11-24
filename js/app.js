@@ -1229,7 +1229,7 @@
         if (node.nodeType === 1) {
           const tag = node.tagName;
           if (tag === 'SCRIPT' || tag === 'STYLE') return;
-          if (node.classList && node.classList.contains('locale-pill-group')) return;
+          if (node.id === 'locale-popover') return;
           for (const attr of ['title', 'placeholder', 'aria-label']) {
             if (node.hasAttribute && node.hasAttribute(attr)) {
               const curVal = node.getAttribute(attr);
@@ -2135,43 +2135,26 @@
             ? 'Map Pinpoint · Ancient Place Quiz'
             : '舆图寻址 · 古地名小试';
       }
-      const actLocHant = this._id('act-locale-hant');
-      const lblLocHant = this._id('lbl-locale-hant') || actLocHant;
-      const actLoc = this._id('act-locale');
-      const lblLoc = this._id('lbl-locale') || actLoc;
-      if (this.locale === 'zh') {
-        if (lblLocHant) lblLocHant.textContent = '繁';
-        if (actLocHant) {
-          actLocHant.dataset.targetLocale = 'zh-tw';
-          actLocHant.title = '切換至繁體中文';
+      const locBtn = this._id('act-locale-menu');
+      if (locBtn) {
+        const locTitle =
+          this.locale === 'en'
+            ? 'Switch language'
+            : this._zh('切换语言 / Switch language');
+        locBtn.title = locTitle;
+        if (typeof locBtn.setAttribute === 'function') {
+          locBtn.setAttribute('aria-label', locTitle);
         }
-        if (lblLoc) lblLoc.textContent = 'EN';
-        if (actLoc) {
-          actLoc.dataset.targetLocale = 'en';
-          actLoc.title = 'Switch to English';
-        }
-      } else if (this.locale === 'zh-tw') {
-        if (lblLocHant) lblLocHant.textContent = '简';
-        if (actLocHant) {
-          actLocHant.dataset.targetLocale = 'zh';
-          actLocHant.title = '切换至简体中文';
-        }
-        if (lblLoc) lblLoc.textContent = 'EN';
-        if (actLoc) {
-          actLoc.dataset.targetLocale = 'en';
-          actLoc.title = 'Switch to English';
-        }
-      } else {
-        if (lblLocHant) lblLocHant.textContent = '简';
-        if (actLocHant) {
-          actLocHant.dataset.targetLocale = 'zh';
-          actLocHant.title = '切换至简体中文 / Switch to Simplified Chinese';
-        }
-        if (lblLoc) lblLoc.textContent = '繁';
-        if (actLoc) {
-          actLoc.dataset.targetLocale = 'zh-tw';
-          actLoc.title = '切換至繁體中文 / Switch to Traditional Chinese';
-        }
+      }
+      const locPopover = this._id('locale-popover');
+      if (locPopover && typeof locPopover.querySelectorAll === 'function') {
+        locPopover.querySelectorAll('.locale-pop-item').forEach((item) => {
+          const active = item.dataset && item.dataset.locale === this.locale;
+          item.classList.toggle('is-selected', Boolean(active));
+          if (typeof item.setAttribute === 'function') {
+            item.setAttribute('aria-checked', active ? 'true' : 'false');
+          }
+        });
       }
       const ghBtn = this._id('act-github-star');
       if (ghBtn) {
@@ -9683,8 +9666,26 @@
       return true;
     }
 
+    _closeLocalePopover() {
+      const locPopover = this._id('locale-popover');
+      const locBtn = this._id('act-locale-menu');
+      if (
+        !locPopover ||
+        locPopover.classList.contains('is-hidden') ||
+        !locBtn ||
+        !locBtn.classList.contains('is-active')
+      ) {
+        return false;
+      }
+      locPopover.classList.add('is-hidden');
+      locBtn.classList.remove('is-active');
+      locBtn.setAttribute('aria-expanded', 'false');
+      return true;
+    }
+
     // Dismiss the topmost active popover, sheet, or mode one layer at a time.
     _dismissTopOverlay() {
+      if (this._closeLocalePopover && this._closeLocalePopover()) return true;
       if (this._closeMorePopover && this._closeMorePopover()) return true;
       if (this._closeLayersPopover()) return true;
       if (this.playing || this.personTimer) {
@@ -10029,6 +10030,7 @@
         layersBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this._closeMorePopover();
+          this._closeLocalePopover();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -10062,12 +10064,64 @@
         });
       }
 
+      const localeBtn = this._id('act-locale-menu');
+      const localePopover = this._id('locale-popover');
+      if (localeBtn && localePopover) {
+        localeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._closeLayersPopover();
+          this._closeMorePopover();
+          const willOpen = localePopover.classList.contains('is-hidden');
+          if (willOpen) {
+            const navEl = this._id('nav-bar');
+            if (
+              typeof localeBtn.getBoundingClientRect === 'function' &&
+              navEl &&
+              typeof navEl.getBoundingClientRect === 'function'
+            ) {
+              const btnRect = localeBtn.getBoundingClientRect();
+              const navRect = navEl.getBoundingClientRect();
+              const rightPx = Math.max(8, Math.round(navRect.right - btnRect.right));
+              localePopover.style.right = `${rightPx}px`;
+            }
+            localePopover.classList.remove('is-hidden');
+            localeBtn.classList.add('is-active');
+            localeBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            this._closeLocalePopover();
+          }
+        });
+        localePopover.querySelectorAll('.locale-pop-item').forEach((item) => {
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const target = item.dataset && item.dataset.locale;
+            if (target && target !== this.locale) {
+              this.locale = target;
+              this._saveStoredLocale(this.locale);
+              this._syncUrlLangParam();
+              this.applyLocale();
+            }
+            this._closeLocalePopover();
+          });
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (
+            !localePopover.classList.contains('is-hidden') &&
+            !localePopover.contains(e.target) &&
+            !localeBtn.contains(e.target)
+          ) {
+            this._closeLocalePopover();
+          }
+        });
+      }
+
       const moreBtn = this._id('act-more-menu');
       const morePopover = this._id('more-popover');
       if (moreBtn && morePopover) {
         moreBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this._closeLayersPopover();
+          this._closeLocalePopover();
           const willOpen = morePopover.classList.contains('is-hidden');
           if (willOpen) {
             morePopover.classList.remove('is-hidden');
@@ -10259,25 +10313,6 @@
       if (musicNextBtn) {
         musicNextBtn.addEventListener('click', () => this.nextMusicTrack());
       }
-
-      const actLocHant = this._id('act-locale-hant');
-      if (actLocHant) {
-        actLocHant.addEventListener('click', () => {
-          const target = actLocHant.dataset.targetLocale;
-          this.locale = target || (this.locale === 'zh' ? 'zh-tw' : 'zh');
-          this._saveStoredLocale(this.locale);
-          this._syncUrlLangParam();
-          this.applyLocale();
-        });
-      }
-      this._id('act-locale').addEventListener('click', () => {
-        const btn = this._id('act-locale');
-        const target = btn && btn.dataset && btn.dataset.targetLocale;
-        this.locale = target || (this.locale === 'en' ? 'zh' : 'en');
-        this._saveStoredLocale(this.locale);
-        this._syncUrlLangParam();
-        this.applyLocale();
-      });
 
       this._id('act-autoplay').addEventListener('click', () => {
         if (this.challenge) return;
