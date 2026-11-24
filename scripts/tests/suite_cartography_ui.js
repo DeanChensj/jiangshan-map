@@ -1585,6 +1585,42 @@ async function runCartographyUiSuite(ctx) {
     proto._syncAutoMilestoneBalloon.call(ctrl, tang);
     assert.notStrictEqual(ctrl.milestoneBalloon.innerHTML, 'unchanged', 'A locale switch must rebuild the auto callout');
     Object.assign(ctrl, { locale: 'zh', playing: false, activeMilestone: null });
+    {
+      const idx755 = tang.milestones.findIndex((m) => m.year === 755);
+      const prevM = tang.milestones[idx755 - 1];
+      const nextIdx = tang.milestones.findIndex((m, i) => i > idx755 && tang.milestones[i + 1] && tang.milestones[i + 1].year - m.year > 1);
+      const midM = tang.milestones[nextIdx];
+      const midId = `tang:${nextIdx}`;
+      ctrl.year = midM.year;
+      ctrl.dismissedCalloutIds = new Set();
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert(ctrl.activeMilestone && ctrl.activeMilestone.milestone.year === midM.year, `Expected auto callout on ${midM.year}`);
+      // Closing the callout suppresses reopening while staying on the same milestone (exact or trailing year)
+      ctrl.dismissedCalloutIds.add(midId);
+      proto.closeMilestoneBalloon.call(ctrl);
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert.strictEqual(ctrl.activeMilestone, null, `Dismissed ${midM.year} callout must stay closed on ${midM.year}`);
+      ctrl.year = midM.year + 1;
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert.strictEqual(ctrl.activeMilestone, null, `Dismissed ${midM.year} callout must stay closed on trailing year ${midM.year + 1}`);
+      // Navigating forward to another milestone clears the stale dismissal so returning reopens it
+      ctrl.year = tang.milestones[nextIdx + 1].year;
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert(!ctrl.dismissedCalloutIds.has(midId), 'Navigating forward must prune the previous callout dismissal');
+      ctrl.year = midM.year;
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert(ctrl.activeMilestone && ctrl.activeMilestone.milestone.year === midM.year, `Returning from ahead must reopen ${midM.year} callout`);
+      // Navigating backward and returning also reopens the previously dismissed milestone
+      ctrl.dismissedCalloutIds.add(midId);
+      proto.closeMilestoneBalloon.call(ctrl);
+      ctrl.year = prevM.year;
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert(ctrl.activeMilestone && ctrl.activeMilestone.milestone.year === prevM.year, `Stepping back to ${prevM.year} must open its callout`);
+      ctrl.year = midM.year;
+      proto._syncAutoMilestoneBalloon.call(ctrl, tang);
+      assert(ctrl.activeMilestone && ctrl.activeMilestone.milestone.year === midM.year, `Returning from behind must reopen ${midM.year} callout`);
+      Object.assign(ctrl, { activeMilestone: null, dismissedCalloutIds: new Set() });
+    }
 
     // CUJ 28b: Hiding #chk-milestones switches stepping & autoplay to pure-territory snapshots, locks camera pan, and toggles timeline ticks cleanly
     assert(
