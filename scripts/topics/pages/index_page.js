@@ -65,7 +65,7 @@ function buildTopicsIndexPage({
   const tocItems = [
     { id: 'sec-stories', label: '一、事件始末' },
     { id: 'sec-featured', label: '二、诗词与战役' },
-    { id: 'sec-dynasties', label: '三、十八朝疆域' },
+    { id: 'sec-dynasties', label: '三、十八时期疆域' },
     { id: 'sec-journeys', label: '四、精修行迹' },
   ];
   const shellClass = hasTocSidebar(tocItems) ? 'page-shell has-toc' : 'page-shell';
