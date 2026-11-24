@@ -2167,6 +2167,25 @@ async function runSearchRuntimeSuite(ctx) {
               indexHtml.indexOf('js/atlas_track.js?v='),
           'All 8 same-origin boot scripts must be discovered in <head> via <script defer> before JSON-LD and atlas_track.js'
         );
+        // _ensureSearchIndex must reuse precomputed p.evCount instead of sweeping _collectPersonEvents x144
+        const savedSearchIdx = ctrl.searchIndex;
+        const savedCollect = ctrl._collectPersonEvents;
+        let collectCalls = 0;
+        ctrl._collectPersonEvents = function (...args) {
+          collectCalls++;
+          return savedCollect.apply(this, args);
+        };
+        try {
+          ctrl.searchIndex = null;
+          const rebuilt = ctrl._ensureSearchIndex();
+          assert(
+            Array.isArray(rebuilt) && rebuilt.length > 5000 && collectCalls === 0,
+            `_ensureSearchIndex must reuse precomputed p.evCount with 0 _collectPersonEvents calls (got ${collectCalls})`
+          );
+        } finally {
+          ctrl._collectPersonEvents = savedCollect;
+          ctrl.searchIndex = savedSearchIdx;
+        }
       }
 
       // CUJ 44: Strict Zero-Side-Effect Pan/Scrub/Hover Performance Invariants (Issue #196)
