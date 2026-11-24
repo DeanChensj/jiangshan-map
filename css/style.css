@@ -151,6 +151,17 @@ h2 {
   transform: rotate(180deg);
 }
 
+.challenge-trigger-btn .chal-short {
+  display: none;
+}
+
+.challenge-trigger-btn.is-active {
+  background: #fff !important;
+  color: var(--vermilion) !important;
+  border-color: var(--vermilion) !important;
+  font-weight: 600;
+}
+
 .layers-popover {
   position: absolute;
   top: calc(100% + 6px);
@@ -2313,28 +2324,6 @@ html.deeplink-boot #inp-year {
   background: rgba(181, 69, 47, 0.08);
 }
 
-.sr-quiz-link {
-  border: none;
-  background: transparent;
-  padding: 1px 2px;
-  font-family: var(--serif-stack);
-  font-size: 11px;
-  font-weight: 700;
-  color: #7c4d1e;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  opacity: 0.88;
-  transition: color 0.12s, opacity 0.12s;
-}
-
-.sr-quiz-link:hover {
-  color: var(--vermilion);
-  opacity: 1;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
 /* Gesture Hint & Hover Tooltip */
 #gesture-guide {
   position: absolute;
@@ -3842,10 +3831,15 @@ html[lang="en"] .genealogy-list li {
   }
   .toolbar-divider,
   .layers-trigger-btn .caret-mark,
+  #act-challenge .btn-svg,
+  .challenge-trigger-btn .chal-full,
   #act-layers-menu .btn-svg,
   #lbl-music,
   #act-github-star {
     display: none !important;
+  }
+  .challenge-trigger-btn .chal-short {
+    display: inline;
   }
   .action-btn {
     padding: 3.5px 6.5px;

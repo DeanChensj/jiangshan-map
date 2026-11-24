@@ -168,11 +168,13 @@ async function runTraceGenealogySuite(ctx) {
   const controlStripMatch = indexHtml.match(/<div class="control-strip"[\s\S]*?<\/div>\s*<div id="layers-popover"/);
   assert(
     controlStripMatch &&
-      !controlStripMatch[0].includes('id="act-challenge"') &&
+      controlStripMatch[0].includes('id="act-challenge"') &&
+      controlStripMatch[0].indexOf('id="act-challenge"') <
+        controlStripMatch[0].indexOf('id="act-layers-menu"') &&
       !controlStripMatch[0].includes('id="act-journey-menu"') &&
       !indexHtml.includes('id="journey-popover"') &&
-      appCode.includes('sr-quiz-link'),
-    '.control-strip must stay minimal without #act-journey-menu or #act-challenge, and Quiz must mount cleanly in the search box dropdown'
+      !appCode.includes('sr-quiz-link'),
+    '.control-strip must include #act-challenge before #act-layers-menu without #act-journey-menu, and blank search dropdown must not duplicate .sr-quiz-link'
   );
   assert(
     indexHtml.includes('id="scale-label-text">500 km</div>') &&
