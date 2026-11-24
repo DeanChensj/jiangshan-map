@@ -4438,10 +4438,18 @@
       }
       const activeIdx = this._activeMilestoneIndex(dynasty);
       const m = activeIdx >= 0 ? (dynasty.milestones || [])[activeIdx] : null;
+      const calloutId = activeIdx >= 0 ? `${dynasty.key}:${activeIdx}` : null;
+      // Only suppress re-opening while the user remains on the dismissed milestone;
+      // once navigation moves to another milestone, clear stale dismissals so returning re-opens it.
+      if (this.dismissedCalloutIds && this.dismissedCalloutIds.size) {
+        for (const id of [...this.dismissedCalloutIds]) {
+          if (id !== calloutId) this.dismissedCalloutIds.delete(id);
+        }
+      }
       if (
         !m ||
         !m.coord ||
-        (this.dismissedCalloutIds && this.dismissedCalloutIds.has(`${dynasty.key}:${activeIdx}`))
+        (calloutId && this.dismissedCalloutIds && this.dismissedCalloutIds.has(calloutId))
       ) {
         this.closeMilestoneBalloon();
         return;
