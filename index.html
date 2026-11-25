@@ -33,12 +33,12 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=e6f4e824" />
+  <link rel="stylesheet" href="css/style.css?v=6e435ef2" />
   <script defer src="js/china_geo_data.js?v=5718efe8"></script>
   <script defer src="js/atlas_boot.js?v=67cb36dd"></script>
   <script defer src="js/map_data.js?v=baad32bf"></script>
   <script defer src="js/lore_core.js?v=9d5a93d1"></script>
-  <script id="atlas-app-script" src="js/app.js?v=3d0558f4" data-v-snapshots="a0529827" data-v-i18n="e1677467" data-v-lore="e005a49c" data-v-pinyin="c669bcb7" data-v-hant="3afdab47" data-v-quiz="b93ee194" data-v-quiz-poster="6f30122f" data-v-narrator="d9f546a1" data-v-sources="98a72c85"></script>
+  <script id="atlas-app-script" src="js/app.js?v=b01a9cc8" data-v-snapshots="a0529827" data-v-i18n="e1677467" data-v-lore="e005a49c" data-v-pinyin="c669bcb7" data-v-hant="3afdab47" data-v-quiz="74626e3d" data-v-quiz-poster="6f30122f" data-v-narrator="d9f546a1" data-v-sources="98a72c85"></script>
   <script defer src="js/atlas_trace.js?v=a0fce698"></script>
   <script defer src="js/atlas_search.js?v=01352f36"></script>
   <script defer src="js/atlas_api.js?v=575d60fd"></script>
@@ -359,6 +359,17 @@
         </h1>
       </div>
       <div class="control-strip" role="toolbar" aria-label="地图图层与交互模式">
+        <button id="act-challenge" class="action-btn subtle challenge-trigger-btn" type="button" aria-pressed="false" title="舆图小试 · 古地名定位挑战">
+          <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+            <circle cx="8" cy="8" r="5.2" fill="none" stroke="currentColor" stroke-width="1.35"/>
+            <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+            <line x1="8" y1="1.3" x2="8" y2="3.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+            <line x1="8" y1="12.5" x2="8" y2="14.7" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+            <line x1="1.3" y1="8" x2="3.5" y2="8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+            <line x1="12.5" y1="8" x2="14.7" y2="8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+          </svg>
+          <span id="lbl-challenge"><span id="lbl-challenge-full" class="chal-full">舆图小试</span><span id="lbl-challenge-short" class="chal-short">小试</span></span>
+        </button>
         <button id="act-layers-menu" class="action-btn subtle layers-trigger-btn" type="button" aria-expanded="false" aria-controls="layers-popover" title="展开或收起地图图层开关">
           <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.8L1.5 5.2 8 8.6l6.5-3.4L8 1.8zM1.5 8.2L8 11.6l6.5-3.4M1.5 11.2L8 14.6l6.5-3.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span id="lbl-layers-btn">图层</span>
@@ -608,8 +619,6 @@
         <div id="milestone-balloon" class="is-hidden" role="dialog" aria-live="polite"></div>
 
         <div id="hover-tip" class="is-hidden" role="tooltip"></div>
-
-        <div id="start-guide" class="is-hidden" role="dialog" aria-label="初次到访指引"></div>
 
         <div id="gesture-guide">滚轮缩放 · 拖拽平移 · 点击城名或双击任意处查沿革 · ← → 逐事件跳转（Shift+← → ±10年） · 空格播放</div>
       </div>

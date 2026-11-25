@@ -237,12 +237,8 @@
       };
       this._syncImmersivePaneState();
       this._id('challenge-card').classList.remove('is-hidden');
-      const actChal = this._id('act-challenge');
-      if (actChal) actChal.classList.add('is-active');
-      const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) {
-        lblChal.textContent = this.locale === 'en' ? 'Exit Quiz ×' : '退出小试 ×';
-        if (this.locale === 'zh-tw') this._applyZhHantDom(lblChal);
+      if (typeof this._syncChallengeTriggerUi === 'function') {
+        this._syncChallengeTriggerUi();
       }
       this.svg.classList.add('is-crosshair');
       this.grpSettlements.classList.add('is-hidden');
@@ -276,12 +272,8 @@
       this._syncChallengeScrubberState(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
-      const actChal = this._id('act-challenge');
-      if (actChal) actChal.classList.remove('is-active');
-      const lblChal = this._id('lbl-challenge') || actChal;
-      if (lblChal) {
-        lblChal.textContent = this.locale === 'en' ? 'Quiz ›' : '古地名小试 ›';
-        if (this.locale === 'zh-tw') this._applyZhHantDom(lblChal);
+      if (typeof this._syncChallengeTriggerUi === 'function') {
+        this._syncChallengeTriggerUi();
       }
       this.svg.classList.remove('is-crosshair');
       const chkSettle = this._id('chk-settlements');
