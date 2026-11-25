@@ -10,6 +10,20 @@
   let HistoricalAtlasController = null;
   let escHtml = null;
   const DEG_TO_RAD = Math.PI / 180;
+  const QUIZ_ROUND_MAX = 20;
+  const QUIZ_SCORE_RINGS = [
+    [400, 10],
+    [200, 16],
+    [80, 20],
+  ];
+
+  function scoreLocateKm(km) {
+    if (km <= 80) return 20;
+    if (km <= 200) return Math.round(20 - ((km - 80) / 120) * 4);
+    if (km <= 400) return Math.round(16 - ((km - 200) / 200) * 6);
+    if (km < 700) return Math.round(10 * (1 - (km - 400) / 300));
+    return 0;
+  }
 
   function syncShareControls(ctrl, showShare) {
     const shareBtn = ctrl._id('act-share-quiz');
@@ -87,12 +101,12 @@
       return out;
     }
 
-    // A round climbs from household names to deep cuts: 4 entry questions
-    // (capitals, passes, cities with a city chronicle), 4 places with recorded
-    // events, then 2 prefectures known only by a remark. A short tier is topped
-    // up from the next one so the round always has 10 questions.
+    // A round climbs from household names to deep cuts: 2 entry questions
+    // (capitals, passes, cities with a city chronicle), 2 places with recorded
+    // events, then 1 prefecture known only by a remark. A short tier is topped
+    // up from the next one so the round always has 5 questions.
     _buildChallengeDeck(preferCurrentDynasty = false) {
-      const ROUND = [4, 4, 2];
+      const ROUND = [2, 2, 1];
       const hasEn = this._hasEnDict();
       const loreLoaded =
         typeof this._isLoreDetailLoaded === 'function' ? this._isLoreDetailLoaded() : true;
@@ -552,11 +566,11 @@
       }
       this._id('challenge-points').textContent = `${this.uiStr('quiz_score', '得分')} ${q.score}`;
       const comment =
-        pts === 100
+        pts === 20
           ? this.uiStr('verdict_100', '正中靶心！')
-          : pts >= 80
+          : pts >= 16
             ? this.uiStr('verdict_80', '非常接近！')
-            : pts >= 55
+            : pts >= 10
               ? this.uiStr('verdict_55', '方位基本正确。')
               : pts > 0
                 ? this.uiStr('verdict_25', '稍有点远。')
@@ -602,16 +616,8 @@
       const cur = q.deck[q.index];
       const guessGeo = this.projector.toGeo(svgX, svgY);
       const km = Math.round(this.projector.greatCircleKm(guessGeo, cur.settlement.coord));
-      const pts =
-        km <= 80
-          ? 100
-          : km <= 200
-            ? 80
-            : km <= 380
-              ? 55
-              : km <= 600
-                ? 25
-                : 0;
+      const pts = scoreLocateKm(km);
+      const hitRingKm = km <= 80 ? 80 : km <= 200 ? 200 : km <= 400 ? 400 : 0;
       q.score += pts;
       q.lastKm = km;
       q.lastPts = pts;
@@ -631,11 +637,7 @@
       // Rings mark the scoring tiers, so the reveal doubles as the rules. Radii
       // come from the projection on both axes so ring edges match the km scoring.
       const [lng0, lat0] = cur.settlement.coord;
-      for (const [ringKm, ringPts] of [
-        [380, 55],
-        [200, 80],
-        [80, 100],
-      ]) {
+      for (const [ringKm, ringPts] of QUIZ_SCORE_RINGS) {
         const [ex] = this.projector.toScreen(lng0 + ringKm / (111 * Math.cos(lat0 * DEG_TO_RAD)), lat0);
         const [, ny] = this.projector.toScreen(lng0, lat0 + ringKm / 111);
         const rx = Math.abs(ex - ax);
@@ -643,7 +645,7 @@
         this._svgNode(
           'ellipse',
           {
-            class: `score-ring${ringPts === pts ? ' is-hit' : ''}`,
+            class: `score-ring${ringKm === hitRingKm ? ' is-hit' : ''}`,
             cx: ax.toFixed(1),
             cy: ay.toFixed(1),
             rx: rx.toFixed(1),
@@ -714,13 +716,13 @@
       const q = this.challenge;
       q.finished = true;
       this.grpChallenge.innerHTML = '';
-      const total = q.deck.length * 100;
+      const total = q.deck.length * QUIZ_ROUND_MAX;
       const rank =
-        q.score >= 850
+        q.score >= 85
           ? this.uiStr('title_850', '太史令 · 舆图大家')
-          : q.score >= 650
+          : q.score >= 65
             ? this.uiStr('title_650', '职方郎中 · 熟稔疆理')
-            : q.score >= 400
+            : q.score >= 40
               ? this.uiStr('title_400', '州郡从事 · 略通古今')
               : this.uiStr('title_0', '江湖行客 · 不妨多逛逛时间轴');
 

@@ -1112,7 +1112,7 @@ async function runSearchRuntimeSuite(ctx) {
           for (const loc of ['zh', 'zh-tw', 'en']) {
             qCtrl.locale = loc;
             qCtrl.startChallenge({ preferCurrentDynasty: true });
-            assert(qCtrl.challenge && qCtrl.challenge.deck.length === 10, `Quiz deck failed for ${loc}`);
+            assert(qCtrl.challenge && qCtrl.challenge.deck.length === 5, `Quiz deck failed for ${loc}`);
             qCtrl._previewLocatePin(500, 350);
             assert(Array.isArray(qCtrl.challenge.pendingGuess), `pendingGuess not set for ${loc}`);
             assert.strictEqual(qCtrl._quizChipAt(50, 20), true, `_quizChipAt hit failed for ${loc}`);
@@ -1120,7 +1120,7 @@ async function runSearchRuntimeSuite(ctx) {
             const [tx, ty] = qCtrl.projector.toScreen(...qCtrl.challenge.deck[0].settlement.coord);
             qCtrl._evaluateLocateClick(tx, ty);
             assert.strictEqual(qCtrl.challenge.answered, true);
-            assert.strictEqual(qCtrl.challenge.lastPts, 100);
+            assert.strictEqual(qCtrl.challenge.lastPts, 20);
             assert.strictEqual(qCtrl.challenge.history.length, 1, `Expected quiz history for ${loc}`);
             qCtrl._finishChallenge();
             assert.strictEqual(qCtrl.challenge.finished, true);
@@ -1130,7 +1130,8 @@ async function runSearchRuntimeSuite(ctx) {
               `#act-share-quiz must be visible after finishing quiz (${loc})`
             );
             const pData = sandbox.window.JiangshanQuizPoster.buildPosterData(qCtrl);
-            assert.strictEqual(pData.total, 100);
+            assert.strictEqual(pData.total, 20);
+            assert.strictEqual(pData.maxTotal, 100);
             assert.strictEqual(pData.items.length, 1);
             assert(pData.best && pData.rankTitle, `Poster metadata missing for ${loc}`);
             assert(
@@ -1147,6 +1148,27 @@ async function runSearchRuntimeSuite(ctx) {
               `#act-share-quiz must hide on stopChallenge (${loc})`
             );
           }
+          // Verify smooth intermediate distance scoring (~140 km -> 17..19 pts; >750 km -> 0 pts)
+          qCtrl.locale = 'zh';
+          qCtrl.startChallenge();
+          const c0 = qCtrl.challenge.deck[0].settlement.coord;
+          const [midX, midY] = qCtrl.projector.toScreen(c0[0], c0[1] + 1.26);
+          qCtrl._evaluateLocateClick(midX, midY);
+          assert(
+            qCtrl.challenge.lastKm >= 120 &&
+              qCtrl.challenge.lastKm <= 160 &&
+              qCtrl.challenge.lastPts >= 17 &&
+              qCtrl.challenge.lastPts <= 19,
+            `Expected smooth intermediate score 17..19 near 140 km, got ${qCtrl.challenge.lastKm} km / ${qCtrl.challenge.lastPts} pts`
+          );
+          qCtrl.challenge.answered = false;
+          const [farX, farY] = qCtrl.projector.toScreen(c0[0] + 10, c0[1] + 6);
+          qCtrl._evaluateLocateClick(farX, farY);
+          assert.strictEqual(
+            qCtrl.challenge.lastPts,
+            0,
+            `Expected distant miss (>750 km) to score 0, got ${qCtrl.challenge.lastKm} km / ${qCtrl.challenge.lastPts} pts`
+          );
           // A round must open on a year in which its place is still on the map
           // (the map hides a settlement once year >= vanish).
           qCtrl.locale = 'zh';

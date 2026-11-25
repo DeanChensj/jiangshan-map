@@ -56,7 +56,7 @@ window.EN_LOCALE = {
     "quiz_poster_share": "Share…",
     "quiz_poster_close": "Close",
     "quiz_poster_cta": "How well do you know ancient China?",
-    "quiz_poster_sub": "Scan to play the 10-round Locate Quiz",
+    "quiz_poster_sub": "Scan to play the 5-round Locate Quiz",
     "quiz_poster_hint": "On mobile, you can also long-press the image to save.",
     "click_for_detail": "Click for details",
     "tag_neighbor": "(Surrounding Polity)",
