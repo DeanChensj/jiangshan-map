@@ -17,22 +17,30 @@
   class AtlasSearchMixin {
     // ---------------- Global Quick Search ----------------
     _searchPlaceholder(expanded = false) {
+      const isNarrow =
+        typeof window !== 'undefined' && window.innerWidth > 0 && window.innerWidth <= 640;
       if (this.locale === 'en') {
-        return expanded
-          ? 'Search people (or 2–3: Li Bai, Du Fu), places, eras'
-          : 'Search people, places, eras';
+        if (expanded) {
+          return isNarrow
+            ? 'People (Li Bai, Du Fu), places, events'
+            : 'Search people (Li Bai, Du Fu), places, events';
+        }
+        return isNarrow ? 'Search people, places' : 'People, places, events, eras';
       }
-      return this._zh(
-        expanded
-          ? '搜人物（可搜双人/三人：李白 杜甫 高适）/ 古今地名 / 年号'
-          : '搜人物 / 多人同看 / 古今地名 / 年号'
-      );
+      if (expanded) {
+        return this._zh(
+          isNarrow
+            ? '搜人物（李白 杜甫）/ 地名 / 史事'
+            : '搜人物（双人如：李白 杜甫）/ 地名 / 史事 / 年号'
+        );
+      }
+      return this._zh(isNarrow ? '搜人物 · 地名 · 史事' : '搜人物 / 地名 / 史事 / 年号');
     }
 
     _getSearchSampleQueries() {
       return this.locale === 'en'
-        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
-        : ['长安', '赤壁', '霍去病', '李白 杜甫 高适'].map((s) => this._zh(s));
+        ? ["Chang'an", 'Huo Qubing', 'An-Shi Rebellion', 'Li Bai, Du Fu']
+        : ['长安', '霍去病', '安史之乱', '李白 杜甫'].map((s) => this._zh(s));
     }
 
     _getSearchShowcasePool() {
