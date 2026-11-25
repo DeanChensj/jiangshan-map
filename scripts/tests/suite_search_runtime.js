@@ -1430,7 +1430,13 @@ async function runSearchRuntimeSuite(ctx) {
 
         // CUJ 42: Search Empty-State Solo Preservation + Multi-Person (2–3 Person) Discovery
         ctrl.locale = 'zh';
+        ctrl.searchIndex = null;
         const scPool = ctrl._getSearchShowcasePool();
+        assert.strictEqual(
+          ctrl.searchIndex,
+          null,
+          '_getSearchShowcasePool() must stay lightweight and avoid synchronously building searchIndex'
+        );
         assert(
           scPool.length === 16 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
           `Showcase pool must default to solo Su Shi at index 0 and contain 16 entries, got ${scPool.length}`
@@ -1879,8 +1885,11 @@ async function runSearchRuntimeSuite(ctx) {
           !appCode.includes('cap-hint-tag') &&
           !cssSrc.includes('.cap-hint-tag') &&
           cssSrc.includes('#inp-map-search,\n  #inp-year {\n    font-size: 16px;') &&
+          cssSrc.includes('overscroll-behavior: contain;') &&
+          cssSrc.includes('#atlas-shell.is-mobile-search-open') &&
+          indexHtml.includes('id="act-clear-search"') &&
           appCode.includes('if (!this._isMobileViewport()) searchInp.focus();'),
-        'css/style.css & js/app.js must use single-row collapsed mobile chronicle bar, omit removed .cap-hint-tag, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), and avoid synchronous searchInp.focus() on mobile chip clicks'
+        'css/style.css, index.html & js/app.js must use single-row collapsed mobile chronicle bar, omit removed .cap-hint-tag, prevent iOS Safari auto-zoom (#inp-map-search font-size: 16px), support mobile search containment/clear button, and avoid synchronous searchInp.focus() on mobile chip clicks'
       );
 
       // Legend cleanup: deduplicate redundant stage year spans and omit redundant .key-note prose

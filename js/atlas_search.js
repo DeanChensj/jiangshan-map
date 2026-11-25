@@ -43,9 +43,36 @@
         : ['长安', '霍去病', '安史之乱', '李白 杜甫'].map((s) => this._zh(s));
     }
 
+    _personSummaryFields(p, dynastyByKey) {
+      const d =
+        dynastyByKey.get(p.dynastyKey) ||
+        this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
+        this.dynasties[0];
+      const evCount =
+        typeof p.evCount === 'number' ? p.evCount : this._collectPersonEvents(p).length;
+      const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
+      const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
+      const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
+      const subZh = p.isRelic
+        ? `${briefCourtesyZh} · 历 10 朝 ${evCount} 站流转`
+        : `${briefCourtesyZh} · 共 ${evCount} 处史事`;
+      const subEn = p.isRelic
+        ? `${briefCourtesyEn || 'Heshi Bi Jade'} · ${evCount} stops across 10 eras`
+        : briefCourtesyEn
+          ? `${briefCourtesyEn} · ${evCount} events`
+          : `${evCount} chronicle events`;
+      return { d, evCount, subZh, subEn };
+    }
+
     _getSearchShowcasePool() {
-      const index = this._ensureSearchIndex();
-      if (Array.isArray(index._showcasePool)) return index._showcasePool;
+      const loreReady = this._isLoreDetailLoaded();
+      if (this._showcasePoolCache && this._showcasePoolCache.loreReady === loreReady) {
+        return this._showcasePoolCache.pool;
+      }
+      const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
+      const profileByKey = new Map(
+        HistoricalAtlasController.PERSON_PROFILES.map((p) => [p.key, p])
+      );
       const showcaseSpecs = [
         'sushi',
         ['libai', 'dufu'],
@@ -72,7 +99,6 @@
         'zhugeliang,simayi': { events: 16, sameTime: 3, dynastyKey: 'donghan' },
         'zuti,liukun': { events: 9, sameTime: 1, dynastyKey: 'xijin' },
       };
-      const loreReady = this._isLoreDetailLoaded();
       const pool = [];
       for (const spec of showcaseSpecs) {
         if (Array.isArray(spec)) {
@@ -84,7 +110,7 @@
               const evLen = fb ? fb.events : st.events.length;
               const sameTimeCount = fb ? fb.sameTime : st.sameTimeCount;
               const d = fb
-                ? this.dynasties.find((dyn) => dyn.key === fb.dynastyKey) || this.dynasties[0]
+                ? dynastyByKey.get(fb.dynastyKey) || this.dynasties[0]
                 : st.events[0]
                   ? st.events[0].dynasty
                   : this.dynasties[0];
@@ -108,15 +134,24 @@
             }
           }
         } else {
-          const hit = index.find((item) => item.kind === 'person' && item.personKey === spec);
-          if (hit) pool.push(hit);
+          const p = profileByKey.get(spec);
+          if (!p) continue;
+          const { d, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
+          pool.push({
+            kind: 'person',
+            personKey: p.key,
+            personProfile: p,
+            dynasty: d,
+            year: null,
+            aliases: this._personSearchAliases(p),
+            titleZh: p.zh,
+            subZh,
+            titleEn: p.en,
+            subEn,
+          });
         }
       }
-      Object.defineProperty(index, '_showcasePool', {
-        value: pool,
-        enumerable: false,
-        configurable: true,
-      });
+      this._showcasePoolCache = { loreReady, pool };
       return pool;
     }
 
@@ -175,12 +210,7 @@
       // 0a. Historical Figures Chronicle & Event Storyline Index (点人溯事 · 点事溯局)
       const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
-        const d =
-          dynastyByKey.get(p.dynastyKey) ||
-          this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
-          this.dynasties[0];
-        const evCount =
-          typeof p.evCount === 'number' ? p.evCount : this._collectPersonEvents(p).length;
+        const { d, evCount, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
         const aliases = this._personSearchAliases(p);
         if (p.isStory) {
           const spanStr = Array.isArray(p.span) ? `${p.span[0]}—${p.span[1]}` : '';
@@ -213,9 +243,6 @@
             }
           }
         }
-        const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
-        const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
-        const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
         entries.push({
           kind: 'person',
           personKey: p.key,
@@ -224,15 +251,9 @@
           year: null,
           aliases,
           titleZh: p.zh,
-          subZh: p.isRelic
-            ? `${briefCourtesyZh} · 历 10 朝 ${evCount} 站流转`
-            : `${briefCourtesyZh} · 共 ${evCount} 处史事`,
+          subZh,
           titleEn: p.en,
-          subEn: p.isRelic
-            ? `${briefCourtesyEn || 'Heshi Bi Jade'} · ${evCount} stops across 10 eras`
-            : briefCourtesyEn
-              ? `${briefCourtesyEn} · ${evCount} events`
-              : `${evCount} chronicle events`,
+          subEn,
           keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} ${eraNames.join(' ')} ${p.isRelic ? '国器 宝物 传国玉玺 传国玺 玉玺 和氏璧 relic seal' : '人物 生平 事迹 行迹'}`.toLowerCase(),
         });
       }
