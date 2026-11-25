@@ -148,6 +148,25 @@ async function runCoreDataSuite(ctx) {
       JSON.stringify(cjEstuary.lines[0][cjEstuary.lines[0].length - 1]) === JSON.stringify([121.15, 31.75]),
     'Huai (<1194), Yellow-Huai (1194–1855), and Yangtze Estuary ([121.15, 31.75]) river mouths must terminate on their respective paleo-coastlines'
   );
+  const huangCanyon = hydro.rivers.find((r) => r.name === 'Huang' && r.rank === 1 && !r.appear && r.lines.length === 3);
+  const huangTongguanEast = hydro.rivers.find(
+    (r) => r.name === 'Huang' && r.rank === 1 && !r.appear && r.lines.length === 1 && r.lines[0][0][0] > 110
+  );
+  const weiRiver = hydro.rivers.find((r) => r.name === 'Wei' && r.rank === 2);
+  const fenRiver = hydro.rivers.find((r) => r.name === 'Fen' && r.rank === 2);
+  assert(
+    huangCanyon &&
+      huangTongguanEast &&
+      weiRiver &&
+      fenRiver &&
+      JSON.stringify(huangCanyon.lines[1][huangCanyon.lines[1].length - 1]) === JSON.stringify([110.27, 34.64]) &&
+      JSON.stringify(huangTongguanEast.lines[0][0]) === JSON.stringify([110.27, 34.64]) &&
+      JSON.stringify(weiRiver.lines[0][weiRiver.lines[0].length - 1]) === JSON.stringify([110.27, 34.64]) &&
+      huangCanyon.lines[1].some((p) => p[0] === 110.55 && p[1] === 35.5) &&
+      huangCanyon.lines[1].filter((p) => p[0] >= 109.5 && p[1] >= 35.0 && p[1] <= 39.0).every((p) => p[0] >= 110.25) &&
+      huangCanyon.lines[1].filter((p) => p[0] >= 109.8 && p[0] <= 111.5).every((p) => p[1] >= 34.6),
+    'Yellow River Jin-Shaan canyon (Huang lines[1]) must follow the real Jin-Shaan channel, connect with Fen ([110.55, 35.5]) and Wei ([110.27, 34.64]), and not bend westward or south of Tongguan'
+  );
 
   // 2. Validate modern provincial outlines
   assert(Array.isArray(provinces) && provinces.length >= 34, 'PROVINCE_OUTLINES must contain >= 34 provinces');
