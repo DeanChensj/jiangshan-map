@@ -2209,18 +2209,19 @@
         chalKicker.textContent = this.locale === 'en' ? 'Map Pinpoint' : '舆图寻址';
       }
       const searchInp = this._id('inp-map-search');
+      const searchBox = this._id('map-search-box');
       if (searchInp) {
         const isExpanded =
-          typeof document !== 'undefined' && document.activeElement === searchInp;
+          (typeof document !== 'undefined' && document.activeElement === searchInp) ||
+          Boolean(searchBox && searchBox.classList.contains('is-expanded'));
         const searchPh = this._searchPlaceholder(isExpanded);
         const searchAria =
           this.locale === 'en'
-            ? 'Search historical figures (single or pair, e.g. Li Bai, Du Fu), ancient/modern cities, prefectures, or eras'
-            : this._zh('搜历史人物（支持双人同框如：李白 杜甫）、古今地名、州府或帝王年号');
+            ? 'Search historical figures (single or pair, e.g. Li Bai, Du Fu), ancient/modern cities, event storylines, prefectures, or eras'
+            : this._zh('搜历史人物（支持双人同框如：李白 杜甫）、古今地名、历史事件始末、州府或帝王年号');
         searchInp.placeholder = searchPh;
         searchInp.setAttribute('aria-label', searchAria);
       }
-      const searchBox = this._id('map-search-box');
       if (searchBox) {
         searchBox.setAttribute(
           'aria-label',
@@ -7003,6 +7004,7 @@
         if (typeof document !== 'undefined' && document.activeElement === searchInp) {
           searchInp.blur();
         }
+        searchInp.placeholder = this._searchPlaceholder(false);
       }
       const listEl = this._id('map-search-results');
       if (listEl) listEl.classList.add('is-hidden');
@@ -9871,20 +9873,21 @@
       if (searchInp && searchList) {
         const searchBox = this._id('map-search-box');
         if (searchBox) {
-          searchBox.addEventListener('click', () => {
+          searchBox.addEventListener('click', (e) => {
             if (window.innerWidth <= 640 && !searchBox.classList.contains('is-expanded')) {
               searchBox.classList.add('is-expanded');
-              setTimeout(() => searchInp.focus(), 20);
+              searchInp.placeholder = this._searchPlaceholder(true);
+              if (e.target !== searchInp) searchInp.focus();
             }
           });
         }
         searchInp.addEventListener('input', renderSearchDropdown);
         searchInp.addEventListener('focus', () => {
+          if (searchBox) searchBox.classList.add('is-expanded');
           searchInp.placeholder = this._searchPlaceholder(true);
           renderSearchDropdown();
         });
         searchInp.addEventListener('blur', () => {
-          searchInp.placeholder = this._searchPlaceholder(false);
           setTimeout(() => {
             if (
               searchBox &&
@@ -9892,6 +9895,7 @@
               searchList.classList.contains('is-hidden')
             ) {
               searchBox.classList.remove('is-expanded');
+              searchInp.placeholder = this._searchPlaceholder(false);
             }
           }, 180);
         });
@@ -9920,6 +9924,7 @@
           } else if (e.key === 'Escape') {
             searchList.classList.add('is-hidden');
             if (searchBox) searchBox.classList.remove('is-expanded');
+            searchInp.placeholder = this._searchPlaceholder(false);
             searchInp.blur();
           }
         });
@@ -9928,6 +9933,7 @@
           if (box && !box.contains(e.target)) {
             searchList.classList.add('is-hidden');
             box.classList.remove('is-expanded');
+            searchInp.placeholder = this._searchPlaceholder(false);
           }
         });
       }
@@ -11134,6 +11140,14 @@
         if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
           this._rescaleSvgTypography();
           this._syncTogglePaneButton();
+        }
+        const srInp = this._id('inp-map-search');
+        if (srInp) {
+          const srBox = this._id('map-search-box');
+          const srExp =
+            (typeof document !== 'undefined' && document.activeElement === srInp) ||
+            Boolean(srBox && srBox.classList.contains('is-expanded'));
+          srInp.placeholder = this._searchPlaceholder(srExp);
         }
         this._updateScaleBar();
         this._syncResetCameraUi();

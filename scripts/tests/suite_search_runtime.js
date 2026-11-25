@@ -1470,20 +1470,23 @@ async function runSearchRuntimeSuite(ctx) {
           );
         }
         const zhChips = Array.from(ctrl._getSearchSampleQueries());
-        assert.deepStrictEqual(zhChips, ['长安', '赤壁', '霍去病', '李白 杜甫 高适']);
+        assert.deepStrictEqual(zhChips, ['长安', '霍去病', '安史之乱', '李白 杜甫']);
         assert.strictEqual(ctrl._queryQuickSearch('霍去病')[0].kind, 'person');
-        assert.strictEqual(ctrl._queryQuickSearch('李白 杜甫 高适')[0].kind, 'multi_person');
+        assert.strictEqual(ctrl._queryQuickSearch('安史之乱')[0].kind, 'story');
+        assert.strictEqual(ctrl._queryQuickSearch('李白 杜甫')[0].kind, 'multi_person');
         assert(
           ctrl._searchPlaceholder(false).length <= 22 &&
-            ctrl._searchPlaceholder(true).includes('李白 杜甫 高适'),
-          'Chinese compact placeholder must fit 248px pill while expanded placeholder hints 2–3 person syntax'
+            ctrl._searchPlaceholder(false).includes('史事') &&
+            ctrl._searchPlaceholder(true).includes('李白 杜甫'),
+          'Chinese compact placeholder must fit desktop pill, mention 史事, and expanded placeholder must hint dual-person syntax'
         );
 
         ctrl.locale = 'en';
         const enChips = Array.from(ctrl._getSearchSampleQueries());
         // English chips are short enough not to ellipsize next to the "Quiz ›" link.
-        assert.deepStrictEqual(enChips, ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']);
-        assert.strictEqual(ctrl._queryQuickSearch('Cao Cao')[0].kind, 'person');
+        assert.deepStrictEqual(enChips, ["Chang'an", 'Huo Qubing', 'An-Shi Rebellion', 'Li Bai, Du Fu']);
+        assert.strictEqual(ctrl._queryQuickSearch('Huo Qubing')[0].kind, 'person');
+        assert.strictEqual(ctrl._queryQuickSearch('An-Shi Rebellion')[0].kind, 'story');
         assert.strictEqual(ctrl._queryQuickSearch('Li Bai, Du Fu')[0].kind, 'multi_person');
         assert(
           ctrl._searchPlaceholder(false).length <= 28,
@@ -1501,6 +1504,27 @@ async function runSearchRuntimeSuite(ctx) {
             !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(true)),
           'English search placeholders must contain zero CJK characters'
         );
+        const prevInnerWidth = sandbox.window.innerWidth;
+        try {
+          sandbox.window.innerWidth = 375;
+          ctrl.locale = 'zh';
+          assert(
+            ctrl._searchPlaceholder(false).length <= 14 &&
+              ctrl._searchPlaceholder(false).includes('史事') &&
+              ctrl._searchPlaceholder(true).length <= 20,
+            `Mobile ZH placeholders must fit 375px pill cleanly: ${ctrl._searchPlaceholder(false)} / ${ctrl._searchPlaceholder(true)}`
+          );
+          ctrl.locale = 'en';
+          assert(
+            ctrl._searchPlaceholder(false).length <= 24 &&
+              ctrl._searchPlaceholder(true).length <= 42 &&
+              !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(false)) &&
+              !/[\u4e00-\u9fff]/.test(ctrl._searchPlaceholder(true)),
+            `Mobile EN placeholders must fit 375px pill cleanly: ${ctrl._searchPlaceholder(false)} / ${ctrl._searchPlaceholder(true)}`
+          );
+        } finally {
+          sandbox.window.innerWidth = prevInnerWidth;
+        }
         ctrl.locale = 'zh';
 
         // CUJ 43: Polity focus — per-regime profile (割据/并立政权) inside the chronicle pane

@@ -2117,6 +2117,7 @@ html.deeplink-boot #inp-year {
   background: transparent;
   outline: none;
   width: 100%;
+  min-width: 0;
   font-family: var(--sans-stack);
   font-size: 12px;
   color: var(--text-main);
@@ -3538,6 +3539,9 @@ html[lang="en"] .genealogy-list li {
     font-size: 16px;
     line-height: 1.2;
   }
+  #inp-map-search::placeholder {
+    font-size: 12.5px;
+  }
   #map-search-box:focus-within,
   #map-search-box:has(#map-search-results:not(.is-hidden)),
   #map-search-box.is-expanded {
@@ -3755,23 +3759,23 @@ html[lang="en"] .genealogy-list li {
   .more-pop-link.more-mobile-only {
     display: flex;
   }
-  /* Collapsible 34x34px Search Button on Mobile (<= 640px) */
+  /* Compact translucent search pill on Mobile (<= 640px) */
   #map-search-box:not(:focus-within):not(.is-expanded) {
-    width: 34px;
-    height: 34px;
+    width: 184px;
+    max-width: calc(100% - 16px);
   }
   #map-search-box:not(:focus-within):not(.is-expanded) .search-input-wrap {
-    width: 34px;
-    height: 34px;
-    padding: 0;
-    justify-content: center;
-    cursor: pointer;
+    height: 32px;
+    padding: 4px 10px;
+    gap: 5px;
+    cursor: text;
   }
-  #map-search-box:not(:focus-within):not(.is-expanded) #inp-map-search {
-    width: 0;
-    padding: 0;
-    opacity: 0;
-    pointer-events: none;
+  .search-results-list {
+    max-height: min(52vh, 340px);
+  }
+  .sr-guide-chips {
+    flex-wrap: wrap;
+    row-gap: 5px;
   }
   #map-key {
     max-width: calc(100% - 112px);
