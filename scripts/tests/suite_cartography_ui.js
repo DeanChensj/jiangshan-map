@@ -291,6 +291,24 @@ async function runCartographyUiSuite(ctx) {
         xijinSnap.polities.some((p) => p.title === '汉赵'),
       's_xijin must include both 晋 and 汉赵 polities'
     );
+    // Western Jin & Han-Zhao Jin-Shaan frontier must align with the Yellow River channel (not bulge west into Shaanxi)
+    for (const [sk, shanxiPol] of [
+      ['s_xijin_a', '晋'],
+      ['s_xijin', '汉赵'],
+      ['s_xijin_a2', '汉赵'],
+      ['s_xijin_b', '汉赵'],
+    ]) {
+      const shanxiShape = (snapshots[sk].polities || []).find((p) => p.title === shanxiPol)?.shape;
+      const jinShape = (snapshots[sk].polities || []).find((p) => p.title === '晋')?.shape;
+      assert(shanxiShape, `${sk}: missing ${shanxiPol}`);
+      assert(
+        pointInShape(111.14, 37.52, shanxiShape) &&
+          !pointInShape(110.30, 36.40, shanxiShape) &&
+          !pointInShape(110.45, 37.60, shanxiShape) &&
+          (!jinShape || (!pointInShape(110.30, 36.40, jinShape) && !pointInShape(110.45, 37.60, jinShape))),
+        `${sk}: 左国城 ([111.14, 37.52]) must stay inside ${shanxiPol} while Shaanxi west of the Yellow River ([110.30, 36.40], [110.45, 37.60]) stays outside 晋 and 汉赵`
+      );
+    }
 
     // Capital periods verification for xijin and dongjin
     const xjDyn = dynasties.find((d) => d.key === 'xijin');
