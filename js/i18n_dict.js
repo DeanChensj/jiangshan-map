@@ -2581,6 +2581,7 @@ window.EN_LOCALE = {
     "哈巴罗夫斯克": "Khabarovsk",
     "俄罗斯·哈巴罗夫斯克（伯力）": "Khabarovsk (Boli), Russia",
     "匈奴": "Xiongnu",
+    "东胡": "Donghu",
     "南匈奴": "Southern Xiongnu",
     "月氏": "Yuezhi",
     "丁零诸部": "Dingling Tribes",
