@@ -231,6 +231,16 @@ python3 -m http.server 8000
 
 随后在浏览器打开 `http://localhost:8000`。`topics/` 下的静态专题图志在部署时自动构建；如需在本地浏览 `/topics/`，先运行一次 `node scripts/build_seo_topics.js --html-only` 即可。
 
+### 3D 山河
+
+在地图右下角点 **3D 山河**，即从当前年份和中心进入。全国范围保留俯视，局部地图自动拉近，以斜侧视角看山体。俯视时点 **近看山势** 也可在同一中心进入近景。原时间轴覆盖全部 18 个时期。左键平移，滚轮缩放，右键左右拖动环绕、上下拖动调整俯仰。**恢复俯视**保留中心与缩放，**返回 2D** 保留年份和位置，缩放受原地图范围约束。
+
+可直接打开 [三国阳平关的三维近景](http://localhost:8000/?view=3d&year=250&center=106.12,33.11&zoom=8)，侧看汉水上游，再沿时间轴切换朝代。点城邑或关隘可读今址及沿革。比较黄河下游时，可定位开封，缩小至能看清山东和苏北，依次输入 1193、1194、1854、1855 年，观察分期河道。
+
+三维渲染器 [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) 随项目存放于 `assets/vendor/maplibre-gl-5.24.0/`，首次打开 3D 时加载。需要支持 WebGL 2 的浏览器和网络连接，以便按视野读取 [Mapzen Terrarium 高程瓦片](https://registry.opendata.aws/terrain-tiles/)。各时期共用现代高程，海拔同时决定网格高度和分层设色。默认把垂直起伏放大 100 倍，可在 3D 地图左上角的「高度倍率」输入 1–100 的整数，按回车生效。倍率也可通过网址参数指定，例如 `heightScale=25`。点地面可读未放大的近似海拔。[Natural Earth 1:50m 海洋面](https://www.naturalearthdata.com/downloads/50m-physical-vectors/) 提供海陆参照，古海岸、湖泊和河道沿用原图分期；历史线位为示意。高程服务不可用时仍可返回原地图。
+
+**TODO**　历史气候图层。
+
 ## 使用 Docker 运行
 
 无需本地依赖，用 Docker Compose 一条命令构建并启动：

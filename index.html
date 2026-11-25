@@ -33,12 +33,12 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=6e435ef2" />
+  <link rel="stylesheet" href="css/style.css?v=c70af63b" />
   <script defer src="js/china_geo_data.js?v=5718efe8"></script>
   <script defer src="js/atlas_boot.js?v=67cb36dd"></script>
   <script defer src="js/map_data.js?v=239a2aab"></script>
   <script defer src="js/lore_core.js?v=9d5a93d1"></script>
-  <script id="atlas-app-script" src="js/app.js?v=fa6e8ba1" data-v-snapshots="89e8828d" data-v-i18n="b7ab6e65" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="540634e0" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=27f69e6d" data-v-terrain="f562c024" data-v-snapshots="89e8828d" data-v-i18n="b7ab6e65" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="540634e0" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
   <script defer src="js/atlas_trace.js?v=a0fce698"></script>
   <script defer src="js/atlas_search.js?v=01352f36"></script>
   <script defer src="js/atlas_api.js?v=575d60fd"></script>
@@ -586,6 +586,24 @@
           </script>
         </div>
 
+        <div id="terrain-map" role="region" aria-label="3D 山河地图" hidden></div>
+        <div id="terrain-tools" hidden>
+          <form id="terrain-search" role="search" aria-label="定位山河地图">
+            <input type="search" aria-label="查找城邑、关隘或地区" placeholder="查找城邑、关隘或地区" required />
+            <button type="submit">定位</button>
+          </form>
+          <label class="terrain-scale">高度倍率
+            <input id="terrain-height-scale" type="number" min="1" max="100" step="1" value="100" required> 倍
+          </label>
+          <details id="terrain-guide">
+            <summary>图层与操作</summary>
+            <p>左键平移 · 滚轮缩放 · 右键拖动环绕和俯仰。切换年份可在同一视角对读历史。</p>
+            <label><input type="checkbox" id="terrain-modern-names" checked> 现代城市与今址</label>
+            <p><b>现代高程</b>呈现山势。蓝色水系按原图分期，古河道、湖泊与海岸的位置为示意。半透明色块表示疆域，虚线表示道路与工程。</p>
+          </details>
+        </div>
+        <div id="terrain-elevation-key" hidden><span>海拔（米）</span><div class="elevation-swatches"></div></div>
+        <div id="terrain-status" role="status" hidden></div>
         <div id="map-search-box" role="search" aria-label="快速检索历史人物、古今地名、州府、帝王年号与舆图寻址挑战">
           <div class="search-input-wrap">
             <svg class="search-ico" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -600,6 +618,8 @@
         <div id="map-key" aria-live="polite"></div>
 
         <div id="canvas-br-dock">
+          <button id="terrain-top" class="terrain-button" type="button" hidden>恢复俯视</button>
+          <button id="terrain-toggle" class="terrain-button" type="button" aria-controls="terrain-map" aria-pressed="false">3D 山河</button>
           <button id="act-reset-camera" class="canvas-reset-btn" type="button" title="复位视图">
             <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
             <span id="lbl-reset-camera">复位视图</span>

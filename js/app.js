@@ -1781,6 +1781,8 @@
           p.set('trace', this.activeTrace.map((v) => Number(v).toFixed(3)).join(','));
         }
       }
+      if (prev.has('heightScale')) p.set('heightScale', prev.get('heightScale'));
+      if (this.terrainView?.active) p.set('view', '3d');
       if (prev.has('terrain')) p.set('terrain', prev.get('terrain'));
       if (this.locale === 'en') p.set('lang', 'en');
       else if (this.locale === 'zh-tw') p.set('lang', 'zh-tw');
@@ -2012,6 +2014,7 @@
         this.locale === 'en' ? 'en' : this.locale === 'zh-tw' ? 'zh-Hant' : 'zh-CN';
       this._syncDocumentSeoMeta();
       this._syncSeoDirectoryLocale();
+      this.terrainView?.scheduleYear();
 
       this._id('txt-seal').textContent = this.uiStr('brand_seal', '江山时序');
       const homeLink = this._id('act-home');
@@ -7019,6 +7022,7 @@
       this.dynastyIdx = this._findDynastyIndex(y);
       const cur = this.dynasties[this.dynastyIdx];
       const nextSnapKey = this._resolveSnapKey(cur, y);
+      this.terrainView?.scheduleYear();
 
       this._runWithDeferredTypography(() => {
         if (prevIdx !== this.dynastyIdx || !this.grpSettlements.firstChild) {
@@ -10362,7 +10366,13 @@
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
         if (e.isComposing || e.keyCode === 229) return;
+        if (this.terrainView?.active && (e.defaultPrevented || e.target.closest?.('#terrain-tools, #terrain-map'))) return;
         if ((e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) && e.target.tagName !== 'INPUT') {
+          if (this.terrainView?.active) {
+            e.preventDefault();
+            this._id('terrain-search').querySelector('input').focus();
+            return;
+          }
           if (!this.challenge && searchInp) {
             e.preventDefault();
             searchInp.focus();
@@ -10450,6 +10460,7 @@
       viewportFrame.addEventListener(
         'wheel',
         (e) => {
+          if (this.terrainView?.active) return;
           if (
             e.target &&
             e.target.closest &&
@@ -11229,6 +11240,22 @@
     if (window.atlasApp) return;
     const app = new HistoricalAtlasController();
     window.atlasApp = app;
+    const terrainToggle = document.getElementById('terrain-toggle');
+    if (terrainToggle) {
+      terrainToggle.onclick = async () => {
+        terrainToggle.disabled = true;
+        await app._loadScriptOnce(app._lazyAssetUrl('js/atlas_terrain.js', 'vTerrain'));
+        terrainToggle.disabled = false;
+        if (app.terrainView) {
+          app.terrainView.open();
+        } else {
+          const status = document.getElementById('terrain-status');
+          status.textContent = '三维地图未能载入，请再次点击 3D 山河。';
+          status.hidden = false;
+        }
+      };
+      if (new URLSearchParams(location.search).get('view') === '3d') terrainToggle.click();
+    }
     window.atlasAPI = {
       locate: (opts) => app.locate(opts),
       resolvePlace: (place, year) => app.resolvePlace(place, year),
