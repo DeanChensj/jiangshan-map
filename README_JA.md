@@ -35,7 +35,7 @@
 - *「長安は 2,000 年の間にいくつの名前を持ち、その地ではどんな重要な出来事が起きたのだろう？」*
 - *「司馬光の『資治通鑑』の冒頭にある三家分晋と戦国七雄（紀元前 403 年）から、秦の統一戦争、漢の武帝による河西回廊の開拓、盛唐の安西四鎮、元の宣政院によるチベットの管轄、曽紀沢によるイリの回復（1881 年）、そして 20 世紀の『秋海棠』（秋海棠）の地図から『雄鶏』（雄鸡）の地図への移り変わりまで、天下はどのように一歩ずつ変わってきたのだろう？」*
 
-**Chronicles of the Realm（`jiangshan-map`）** は、**18 の歴史的な時代**にわたる **2,400 年以上**の中国の歴史を、1 枚のインタラクティブな羊皮紙風の地図にまとめています。**多段階の領土と行政区画のスナップショット**、**古都**、**戦略上の峠**、**詩と戦場の名所**、**年代順の出来事**、**在位中の君主と元号**を収めています。重い印刷の地図帳は必要ありません。タイムラインをドラッグし、どの都市でもクリックすれば、時空を旅できます。
+**Chronicles of the Realm（`jiangshan-map`）** は、**18 の歴史的な時代**にわたる **2,400 年以上**の中国の歴史を、1 枚のインタラクティブな羊皮紙風の地図にまとめています。**200 以上の多段階の領土と行政区画のスナップショット**、**古都**、**戦略上の峠**、**詩と戦場の名所**、**年代順の出来事**、**在位中の君主と元号**を収めています。重い印刷の地図帳は必要ありません。タイムラインをドラッグし、どの都市でもクリックすれば、時空を旅できます。
 
 ---
 
@@ -50,9 +50,9 @@
 - **年表への出典表示**：年代記のマイルストーンを選ぶと、その下に拠り所とした古典の巻次が表示されます（例：据《后汉书》卷88、中国語 UI のみ）。
 - **音声ナレーション**：再生ボタンの横にあるナレーションの切り替えをオンにすると、自動再生に合わせて、ブラウザー内蔵の音声がその年と出来事を読み上げます。人物の足跡の自動再生でも使えます（音声合成に対応したブラウザーが必要です）。
 
-> [ライブで試す：明の永楽 13 年（1415 年）· 両京十三布政使司と「Yingtian Prefecture」の確認 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=Yingtian%20Prefecture&lang=en)
+> [ライブで試す：明の永楽 13 年（1415 年）· 両京十三布政使司と「Yingtian Fu」の確認 →](https://deanchen.me/jiangshan-map/?year=1415&zoom=1.75&center=115.8,33.2&hover=Yingtian%20Fu&lang=en)
 
-![明 1415 年 · Yingtian Prefecture のホバーのプレビュー](assets/preview_1415_ming_yingtian_en.webp)
+![明 1415 年 · Yingtian Fu のホバーのプレビュー](assets/preview_1415_ming_yingtian_en.webp)
 
 ---
 
@@ -74,12 +74,13 @@
 左上の **Universal Search Box** をクリックする（`e.g.` の人物のプレビューが切り替わり、クイック検索のチップもあります。または `Cao Cao`、`Huo Qubing`、`Sima Qian`、`Yue Fei`、`Zheng He` など、君主、武将、政治家、僧、詩人を入力します）と、**Person Chronicle（`点人溯事`）** が開き、変わっていく王朝の国境の上に、その人物の生涯のすべての節目を、番号付きのピンで示します。
 - **張騫の西域への使節（紀元前 138～126 年）**：長安を出発し、10 年以上にわたる匈奴での捕囚にも漢の節を手放さずに耐え、大宛（フェルガナ）、康居、大月氏への道を切り開きます。
 - **諸葛亮の登場と北伐（207～234 年）**：隆中での三顧の礼と、赤壁の前の柴桑での同盟から、蜀への入国、白帝城での託孤、瀘水を渡った南征、漢中での『出師表』、祁山、そして五丈原の秋風まで。
+- **劉裕の北伐と劉宋建国（404～422 年）**：京口での挙兵による桓玄の平定、広固攻略による南燕滅亡、建康へ引き返しての盧循撃破、江陵平定と朱齢石派遣による譙蜀の平定から、彭城での北伐誓師、却月陣による北魏撃破、洛陽・長安の回復、そして建康での南朝劉宋建国まで。
 - **玄奘のインドへの巡礼（627～645 年）**：ひとりで玉門関をすり抜けて莫賀延磧を渡り、凍てつくベデル峠を越え、インダス川を渡り、ナーランダー僧院で学び、曲女城（カナウジ）で論争してから長安に戻ります。
 - **李白の唐全土への大旅行（701～762 年）**：砕葉と蜀での少年時代から、24 歳で三峡を下って船出し、揚州で金を散じ、長安の翰林院に仕え、洛陽で杜甫に出会い、白帝城で恩赦を受け、晩年の当塗まで。
 - **蘇軾の宋全土にわたる文学と流謫（1056～1101 年）**：眉山を出て都の開封に向かい、密州で月を眺め、黄州での流謫中に『赤壁賦』を詠み、恵州を経て、海を渡って海南島の儋州へ至るまで。
 - **王陽明の知行合一（1472～1529 年）**：余姚での誕生と北京での投獄から、貴州の龍場での悟り、南贛での賊の平定、35 日で寧王の反乱を捕らえたこと、紹興の天泉橋での講学、そして南安での最期の言葉 *「此の心光明なり、亦た復た何をか言わん」* まで。
 - **複数人物の同時表示**：検索ボックスに 2〜3 人の名前を入力すると（例：`李白 杜甫 高適`、`曹操 劉備 孫権`）、それぞれの足跡が色分けされて 1 本のタイムラインにまとめられます。「同世」の目盛りで同時代に生きた年がわかり、同じ年に同じ場所で出会った地点は線で結ばれ、`同途 N` のピルでその地点だけに絞り込めます。
-- **歴史的事件のストーリーライン**：大きな事件も、人物の生涯と同じように地点ごとにたどれます。秦の六国統一、楚漢戦争、安史の乱、靖康の変などがあり、対立する両陣営を 2 色で塗り分け、両陣営の動きと領土の移り変わりが地点ごとに進みます。
+- **歴史的事件のストーリーライン**：大きな事件も、人物の生涯と同じように地点ごとにたどれます。秦の六国統一、楚漢戦争、安史の乱、靖康の変、紅軍長征などがあり、対立する両陣営を 2 色で塗り分け、両陣営の動きと領土の移り変わりが地点ごとに進みます。
 
 次の出来事に進むたびに（`‹ / ›`、`← / →`、または `Space` で自動再生）、**タイムラインの年、在位中の君主、元号、王朝の領土が、その人物の足取りに合わせて変わります**。現在の移動の弧が強調され、まさにその場所で書かれた 2 か国語の一次史料の抜粋や詩も表示されます。
 
@@ -91,7 +92,7 @@
 
 ### 機能 4：イースターエッグ · Map Pinpoint Challenge — あなたは朝廷でどの位を得られるか？
 
-中国の歴史地理に詳しいつもりですか？ **Universal Search Box** のガイドバーの隅にある **`Quiz ›`** をクリックしてください（または `quiz` と入力すると **`Map Pinpoint · Ancient Place Quiz`** が開きます）。
+中国の歴史地理に詳しいつもりですか？上部ツールバーの **`Quiz`** ボタンをクリックしてください（または **Universal Search Box** で `quiz` と入力すると **`Map Pinpoint · Ancient Place Quiz`** が開きます）。
 - **王朝の歴史の手がかり + 白地図でのピン留め**：都市のラベルが隠され、難易度が段階的に上がる 10 ラウンドの出題で、古都の場所を当てるよう求められます。**王朝の歴史の手がかり** が添えられます（現代の都市名はネタバレしません）。ピンを置いてプレビューと調整をし、ピンの横の **`Confirm ↵`** をクリックすると答えが確定し、同心円の距離のスコアの輪が表示されます。本当の座標までの大圏距離にもとづいて得点できます！
 - 10 ラウンドを終えると、**太史令 · 舆图大家（Grand Historian & Master Cartographer）**、**职方郎中（Director of the Bureau of Operations）**、**州郡从事（Prefectural Retainer）** のような、伝統的な朝廷の地図に関する称号が授けられます。
 
@@ -127,8 +128,8 @@
 - **有名な戦いの場所を示す**：[`?year=-260&place=长平&lang=en`](https://deanchen.me/jiangshan-map/?year=-260&place=长平&lang=en)（長平の戦い）/ [`?year=208&place=赤壁&lang=en`](https://deanchen.me/jiangshan-map/?year=208&place=赤壁&lang=en)（赤壁の戦い）/ [`?year=383&place=淝水&lang=en`](https://deanchen.me/jiangshan-map/?year=383&place=淝水&lang=en)（淝水の戦い）
 - **都市の 2,400 年の系譜を確認**：[`?year=741&place=长安&lang=en`](https://deanchen.me/jiangshan-map/?year=741&place=长安&lang=en)（長安 / 西安）/ [`?year=1415&place=应天府&lang=en`](https://deanchen.me/jiangshan-map/?year=1415&place=应天府&lang=en)（建康 / 応天 / 南京）/ [`?year=819&place=蓝关&lang=en`](https://deanchen.me/jiangshan-map/?year=819&place=蓝关&lang=en)（藍関の韓愈）
 - **独自の詩や遠征のルートを描く**：[`?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en`](https://deanchen.me/jiangshan-map/?year=763&place=剑外,巴峡,巫峡,襄阳,洛阳&lang=en)（763 年の杜甫の帰郷の道のり）/ [`?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en`](https://deanchen.me/jiangshan-map/?year=1079,1080,1094,1097&place=湖州,黄州,惠州,儋州&lang=en)（湖州、黄州、恵州、儋州にわたる、蘇軾の何年にもわたる流謫の道のり）
-- **人物の時空の年代記を開く**：[`?person=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?person=zhangqian&lang=en)（張騫）/ [`?person=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?person=zhugeliang&lang=en)（諸葛亮）/ [`?person=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?person=xuanzang&lang=en)（玄奘）/ [`?person=libai&lang=en`](https://deanchen.me/jiangshan-map/?person=libai&lang=en)（李白）/ [`?person=sushi&lang=en`](https://deanchen.me/jiangshan-map/?person=sushi&lang=en)（蘇軾）/ [`?person=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?person=wangyangming&lang=en)（王陽明）
-- **複数人物の比較や事件をたどる**：[`?person=libai,dufu&lang=en`](https://deanchen.me/jiangshan-map/?person=libai,dufu&lang=en)（李白と杜甫）/ [`?person=caocao,liubei,sunquan&lang=en`](https://deanchen.me/jiangshan-map/?person=caocao,liubei,sunquan&lang=en)（曹操・劉備・孫権）/ [`?event=qintongyi&lang=en`](https://deanchen.me/jiangshan-map/?event=qintongyi&lang=en)（秦の六国統一）/ [`?event=chuhan&lang=en`](https://deanchen.me/jiangshan-map/?event=chuhan&lang=en)（楚漢戦争）/ [`?event=anshi&lang=en`](https://deanchen.me/jiangshan-map/?event=anshi&lang=en)（安史の乱）/ [`?event=jingkang&lang=en`](https://deanchen.me/jiangshan-map/?event=jingkang&lang=en)（靖康の変）
+- **人物の時空の年代記を開く**：[`?person=zhangqian&lang=en`](https://deanchen.me/jiangshan-map/?person=zhangqian&lang=en)（張騫）/ [`?person=zhugeliang&lang=en`](https://deanchen.me/jiangshan-map/?person=zhugeliang&lang=en)（諸葛亮）/ [`?person=liuyu&lang=en`](https://deanchen.me/jiangshan-map/?person=liuyu&lang=en)（劉裕）/ [`?person=xuanzang&lang=en`](https://deanchen.me/jiangshan-map/?person=xuanzang&lang=en)（玄奘）/ [`?person=libai&lang=en`](https://deanchen.me/jiangshan-map/?person=libai&lang=en)（李白）/ [`?person=sushi&lang=en`](https://deanchen.me/jiangshan-map/?person=sushi&lang=en)（蘇軾）/ [`?person=wangyangming&lang=en`](https://deanchen.me/jiangshan-map/?person=wangyangming&lang=en)（王陽明）
+- **複数人物の比較や事件をたどる**：[`?person=libai,dufu&lang=en`](https://deanchen.me/jiangshan-map/?person=libai,dufu&lang=en)（李白と杜甫）/ [`?person=caocao,liubei,sunquan&lang=en`](https://deanchen.me/jiangshan-map/?person=caocao,liubei,sunquan&lang=en)（曹操・劉備・孫権）/ [`?event=qintongyi&lang=en`](https://deanchen.me/jiangshan-map/?event=qintongyi&lang=en)（秦の六国統一）/ [`?event=chuhan&lang=en`](https://deanchen.me/jiangshan-map/?event=chuhan&lang=en)（楚漢戦争）/ [`?event=anshi&lang=en`](https://deanchen.me/jiangshan-map/?event=anshi&lang=en)（安史の乱）/ [`?event=jingkang&lang=en`](https://deanchen.me/jiangshan-map/?event=jingkang&lang=en)（靖康の変）/ [`?event=changzheng&lang=en`](https://deanchen.me/jiangshan-map/?event=changzheng&lang=en)（紅軍長征）
 - **クイズを始める**：[`?year=-121&quiz=locate&lang=en`](https://deanchen.me/jiangshan-map/?year=-121&quiz=locate&lang=en)（Map Pinpoint Challenge）
 - **UI の言語を切り替える**：[`?lang=en`](https://deanchen.me/jiangshan-map/?lang=en)（英語）/ [`?lang=zh-tw`](https://deanchen.me/jiangshan-map/?lang=zh-tw)（繁体字中国語）/ [`/`](https://deanchen.me/jiangshan-map/)（簡体字中国語）
 
