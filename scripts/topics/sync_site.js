@@ -119,7 +119,7 @@ function computeIndexHtml(
     `<ul id="milestone-list">\n${milestoneItemsHtml}\n          </ul>`
   );
 
-  // 3. Synchronize live dataset counts in FAQ JSON-LD
+  // 3. Synchronize live dataset counts in FAQ JSON-LD & ItemList directory in JSON-LD
   const histSnapCount = Object.keys(snapshots).filter((k) => k !== 'neighbors').length;
   const totalMilestones = dynasties.reduce((sum, d) => sum + (d.milestones || []).length, 0);
   const totalLandmarks = (loreData.PLACE_LANDMARK_EVENTS || []).length;
@@ -127,6 +127,56 @@ function computeIndexHtml(
     /共\d+个历史时期、\d+幅多阶段疆域与州郡政区快照、\d+条编年大事、\d+处城池地标/,
     `共${dynasties.length}个历史时期、${histSnapCount}幅多阶段疆域与州郡政区快照、${totalMilestones}条编年大事、${totalLandmarks}处城池地标`
   );
+  const ldMatch = html.match(/(<script type="application\/ld\+json">\r?\n)([\s\S]*?)(\r?\n\s*<\/script>)/);
+  if (ldMatch) {
+    const ldObj = JSON.parse(ldMatch[2]);
+    const graph = Array.isArray(ldObj['@graph']) ? ldObj['@graph'] : [];
+    const itemList = graph.find((n) => n && n['@type'] === 'ItemList');
+    if (itemList) {
+      const listItems = [];
+      let pos = 1;
+      for (const d of dynasties) {
+        const enName = (enLocale.dynasties[d.key] && enLocale.dynasties[d.key].name) || d.key;
+        const focusYr = d.focusYear !== undefined ? d.focusYear : d.fromYear;
+        listItems.push({
+          '@type': 'ListItem',
+          position: pos++,
+          name: `${d.title}（${fmtDynSpanZh(d)}）· ${enName}`,
+          description: `都城：${d.seat}。${d.summary}`,
+          url: `${BASE_URL}/?year=${focusYr}`,
+        });
+      }
+      for (const s of (loreData.PERSON_PROFILES || []).filter((p) => p && p.isStory)) {
+        const chain = (s.stops || [])
+          .map((st) => `${st.ancientZh}（今${st.modernZh}）`)
+          .join(' → ');
+        listItems.push({
+          '@type': 'ListItem',
+          position: pos++,
+          name: `${s.zh} (${s.en}) · ${s.courtesyZh || ''}`,
+          description: `事件全脉络：${chain}`,
+          url: `${BASE_URL}/?event=${s.key}`,
+        });
+      }
+      for (const j of loreData.HISTORICAL_JOURNEYS || []) {
+        const chain = (j.stops || [])
+          .map((st) => `${st.ancientZh}（今${st.modernZh}）`)
+          .join(' → ');
+        listItems.push({
+          '@type': 'ListItem',
+          position: pos++,
+          name: `${j.titleZh} (${j.titleEn}) · ${j.spanZh}`,
+          description: `途经节点：${chain}`,
+          url: `${BASE_URL}/?person=${j.key}`,
+        });
+      }
+      itemList.itemListElement = listItems;
+      html = html.replace(
+        ldMatch[0],
+        `${ldMatch[1]}${JSON.stringify(ldObj, null, 2)}${ldMatch[3]}`
+      );
+    }
+  }
 
   // 4. Synchronize Sections 一, 二, and 五 of #seo-atlas-directory idempotently
   const sectionOneItems = dynasties
