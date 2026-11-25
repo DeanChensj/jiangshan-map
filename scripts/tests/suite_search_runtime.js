@@ -2676,7 +2676,7 @@ async function runSearchRuntimeSuite(ctx) {
         const qingRuleSet = new Set([
           's_qing_b1', 's_qing_b', 's_qing_c', 's_qing_1755', 's_qing_d',
           's_qing_e', 's_qing_e2', 's_qing_e3', 's_qing_e4',
-          's_qing_f0', 's_qing_f',
+          's_qing_f0', 's_qing_1876', 's_qing_f',
         ]);
         const jpOccSet = new Set([
           's_qing_g0', 's_qing_g',

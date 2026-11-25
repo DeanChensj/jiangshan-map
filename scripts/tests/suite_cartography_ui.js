@@ -1121,8 +1121,8 @@ async function runCartographyUiSuite(ctx) {
       's_qing_a caption must start at 1673 (Revolt of Three Feudatories), not 1661'
     );
     assert(
-      snapshots.s_qing_f0 && snapshots.s_qing_f0.caption.includes('1864 — 1881'),
-      's_qing_f0 caption must cover 1864 — 1881'
+      snapshots.s_qing_f0 && snapshots.s_qing_f0.caption.includes('1864 — 1876'),
+      's_qing_f0 caption must cover 1864 — 1876 (s_qing_1876 covers 1876 — 1881)'
     );
     assert(
       snapshots.s_qing_g0 && snapshots.s_qing_g0.caption.includes('1895 — 1898'),
@@ -1131,7 +1131,7 @@ async function runCartographyUiSuite(ctx) {
 
     // All phase transition milestones derive map-change state from phases
     const expectedMapChangeYears = [
-      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1851, 1858, 1860, 1864, 1881, 1895, 1898,
+      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1851, 1858, 1860, 1864, 1876, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
       .filter((m) => ctrl._isPhaseChangeYear(qingD, m.year))
@@ -1139,7 +1139,7 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(
       JSON.stringify(actualMapChangeYears),
       JSON.stringify(expectedMapChangeYears),
-      'qing: all 19 phase transition milestones must derive map-change state from phases'
+      'qing: all 20 phase transition milestones must derive map-change state from phases'
     );
 
     assert.strictEqual(ctrl._resolveSnapKey(qingD, 1754), 's_qing_c', 'qing 1754 must resolve to s_qing_c');
