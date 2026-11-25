@@ -344,15 +344,35 @@ async function runCartographyUiSuite(ctx) {
       ['s_nanbei_f', '陈', '北周'],
     ];
 
-    // Seamless 420 CE transition between s_dongjin_f (417-420) and s_nanbei_0 (420-426):
-    // 东晋 and 宋 must have identical shapes, 北魏, 西秦, 胡夏, 北燕, 吐谷浑 match 1-to-1,
+    // 417 -> 420 CE transition between s_dongjin_f (417-420) and s_nanbei_0 (420-427):
+    // 北魏, 西秦, 北燕, 吐谷浑 match 1-to-1; Guanzhong (长安, 潼关, 蒲坂) passed from Jin to 胡夏
+    // after Helian Bobo's Nov 418 capture while 宋 retains 洛阳, 南郑, and 建康;
     // and s_dongjin_f (西凉 + 北凉) merges into unified 北凉 in s_nanbei_0 (420-421 conquest of Western Liang).
-    assert.strictEqual(
-      JSON.stringify(snapshots.s_dongjin_f.polities.find((p) => p.title === '东晋').shape),
-      JSON.stringify(snapshots.s_nanbei_0.polities.find((p) => p.title === '宋').shape),
-      's_dongjin_f (东晋) and s_nanbei_0 (宋) must share identical polygon geometry at 420 CE'
-    );
-    for (const sharedTitle of ['北魏', '西秦', '胡夏', '北燕', '吐谷浑']) {
+    {
+      const jin417 = snapshots.s_dongjin_f.polities.find((p) => p.title === '东晋');
+      const song420 = snapshots.s_nanbei_0.polities.find((p) => p.title === '宋');
+      const xia420 = snapshots.s_nanbei_0.polities.find((p) => p.title === '胡夏');
+      assert(jin417 && song420 && xia420, 's_dongjin_f/东晋 and s_nanbei_0/宋, 胡夏 must exist');
+      assert(
+        pointInShape(108.941, 34.341, jin417.shape) &&
+          pointInShape(110.25, 34.54, jin417.shape) &&
+          pointInShape(112.45, 34.62, jin417.shape) &&
+          pointInShape(118.801, 32.061, jin417.shape),
+        's_dongjin_f (东晋) must hold Chang’an, Tongguan, Luoyang, and Jiankang'
+      );
+      assert(
+        pointInShape(108.941, 34.341, xia420.shape) &&
+          pointInShape(110.25, 34.54, xia420.shape) &&
+          pointInShape(110.32, 34.84, xia420.shape) &&
+          !pointInShape(108.941, 34.341, song420.shape) &&
+          !pointInShape(110.25, 34.54, song420.shape) &&
+          pointInShape(112.45, 34.62, song420.shape) &&
+          pointInShape(107.02, 33.07, song420.shape) &&
+          pointInShape(118.801, 32.061, song420.shape),
+        's_nanbei_0 (420 CE) must transfer Chang’an, Tongguan, and Puban to 胡夏 while 宋 keeps Luoyang, Nanzheng, and Jiankang'
+      );
+    }
+    for (const sharedTitle of ['北魏', '西秦', '北燕', '吐谷浑']) {
       const pDj = snapshots.s_dongjin_f.polities.find((p) => p.title === sharedTitle);
       const pNb = snapshots.s_nanbei_0.polities.find((p) => p.title === sharedTitle);
       assert(pDj && pNb, `Both s_dongjin_f and s_nanbei_0 must include ${sharedTitle} at 420 CE`);
