@@ -168,13 +168,13 @@
   function rankMetaForScore(ctrl, score) {
     let key = 'title_0';
     let fallback = '江湖行客 · 不妨多逛逛时间轴';
-    if (score >= 850) {
+    if (score >= 85) {
       key = 'title_850';
       fallback = '太史令 · 舆图大家';
-    } else if (score >= 650) {
+    } else if (score >= 65) {
       key = 'title_650';
       fallback = '职方郎中 · 熟稔疆理';
-    } else if (score >= 400) {
+    } else if (score >= 40) {
       key = 'title_400';
       fallback = '州郡从事 · 略通古今';
     }
@@ -216,7 +216,8 @@
     }
 
     const total = Number(q.score) || 0;
-    const maxTotal = (deck.length || items.length || 10) * 100;
+    const roundCount = deck.length || items.length || 5;
+    const maxTotal = roundCount * 20;
     const avgKm = items.length
       ? Math.round(items.reduce((acc, it) => acc + it.km, 0) / items.length)
       : 0;
@@ -231,7 +232,7 @@
       items,
       total,
       maxTotal,
-      roundCount: deck.length || items.length || 10,
+      roundCount,
       avgKm,
       best,
       rankTitle: rank.rankTitle,
@@ -292,8 +293,9 @@
     ctx.textAlign = 'right';
     ctx.fillStyle = '#8d847a';
     ctx.font = `500 13.5px ${SERIF}`;
+    const roundZh = data.roundCount === 5 ? '五' : data.roundCount === 10 ? '十' : String(data.roundCount);
     ctx.fillText(
-      en ? `${data.roundCount} Rounds` : zhText(ctrl, '十题定疆理'),
+      en ? `${data.roundCount} Rounds` : zhText(ctrl, `${roundZh}题定疆理`),
       702,
       71
     );
@@ -649,10 +651,10 @@
   }
 
   function dotStyle(pts) {
-    if (pts === 100) return { fill: '#b5452f', hollow: false, txt: '#b5452f' };
-    if (pts === 80) return { fill: '#c6952b', hollow: false, txt: '#9a6b12' };
-    if (pts === 55) return { fill: '#8a7c6c', hollow: false, txt: '#5d554c' };
-    if (pts === 25) return { fill: '#c7beb1', hollow: false, txt: '#8d847a' };
+    if (pts === 20) return { fill: '#b5452f', hollow: false, txt: '#b5452f' };
+    if (pts >= 16) return { fill: '#c6952b', hollow: false, txt: '#9a6b12' };
+    if (pts >= 10) return { fill: '#8a7c6c', hollow: false, txt: '#5d554c' };
+    if (pts > 0) return { fill: '#c7beb1', hollow: false, txt: '#8d847a' };
     return { fill: '#b4aa9e', hollow: true, txt: '#a3998e' };
   }
 
@@ -662,9 +664,11 @@
     const stripX = 48;
     const stripW = 654;
 
-    if (!data.en) {
+    if (!data.en || items.length <= 5) {
+      const compact = items.length <= 5;
       const colW = stripW / Math.max(1, items.length);
-      const dotY = 732;
+      const maxColW = Math.floor(colW - (compact ? 12 : 6));
+      const dotY = compact ? 730 : 732;
       if (items.length > 1) {
         ctx.strokeStyle = 'rgba(43, 38, 34, 0.11)';
         ctx.lineWidth = 1.2;
@@ -681,32 +685,36 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = '#7a7066';
-        ctx.font = `500 11.5px ${SANS}`;
-        ctx.fillText(it.dynZh, cx, 708, 60);
+        ctx.font = data.en
+          ? `500 11.5px ${SANS}`
+          : `500 ${compact ? 12.5 : 11.5}px ${SANS}`;
+        ctx.fillText(data.en ? it.dynEn : it.dynZh, cx, compact ? 702 : 708, maxColW);
 
         ctx.fillStyle = '#f3ece0';
         ctx.beginPath();
-        ctx.arc(cx, dotY, 9.5, 0, Math.PI * 2);
+        ctx.arc(cx, dotY, compact ? 10.5 : 9.5, 0, Math.PI * 2);
         ctx.fill();
         if (ds.hollow) {
           ctx.strokeStyle = ds.fill;
           ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.arc(cx, dotY, 7.2, 0, Math.PI * 2);
+          ctx.arc(cx, dotY, compact ? 7.8 : 7.2, 0, Math.PI * 2);
           ctx.stroke();
         } else {
           ctx.fillStyle = ds.fill;
           ctx.beginPath();
-          ctx.arc(cx, dotY, 7.5, 0, Math.PI * 2);
+          ctx.arc(cx, dotY, compact ? 8.2 : 7.5, 0, Math.PI * 2);
           ctx.fill();
         }
 
         ctx.fillStyle = '#2b2622';
-        ctx.font = `600 13.5px ${SERIF}`;
-        ctx.fillText(it.ancZh, cx, 758, 60);
+        ctx.font = data.en
+          ? `600 14px ${SERIF}`
+          : `600 ${compact ? 15.5 : 13.5}px ${SERIF}`;
+        ctx.fillText(data.en ? it.ancEn : it.ancZh, cx, 758, maxColW);
         ctx.fillStyle = ds.txt;
-        ctx.font = `600 11.5px ${SANS}`;
-        ctx.fillText(`+${it.pts}`, cx, 779);
+        ctx.font = `600 ${compact ? (data.en ? 11.5 : 12) : 11.5}px ${SANS}`;
+        ctx.fillText(compact ? `${it.km} km · +${it.pts}` : `+${it.pts}`, cx, compact ? 782 : 779, maxColW);
       }
     } else {
       const colW = stripW / 5;
@@ -780,7 +788,7 @@
     ctx.fillStyle = '#5d554c';
     ctx.font = `400 14px ${SANS}`;
     ctx.fillText(
-      uiLabel(ctrl, 'quiz_poster_sub', '扫码开启十题古地名寻址小试'),
+      uiLabel(ctrl, 'quiz_poster_sub', '扫码开启五题古地名寻址小试'),
       48,
       divY + 76,
       530
