@@ -984,6 +984,7 @@
         ).then(() => {
           this._loreDetailLoaded = true;
           this.searchIndex = null;
+          this._showcasePoolCache = null;
           this._soloPersonEventsCache = null;
           this._extraEnTermMap = null;
           this._challengeBaseTiers = null;
@@ -2222,6 +2223,7 @@
         searchInp.placeholder = searchPh;
         searchInp.setAttribute('aria-label', searchAria);
       }
+      if (this._syncSearchClearBtn) this._syncSearchClearBtn();
       if (searchBox) {
         searchBox.setAttribute(
           'aria-label',
@@ -6816,7 +6818,11 @@
       if (!(opts && opts.skipRefreshLabels)) {
         this._refreshBandLabels();
       }
+      let lastResizeWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
       window.addEventListener('resize', () => {
+        const vw = typeof window !== 'undefined' ? window.innerWidth : 0;
+        if (Math.abs(vw - lastResizeWidth) <= 2) return;
+        lastResizeWidth = vw;
         this._scrubberRailWidth = 0;
         if (this._scrubberView) this._setScrubberView(this._scrubberView.start, this._scrubberView.end);
         this._fitBandLabels();
@@ -7010,6 +7016,8 @@
       if (listEl) listEl.classList.add('is-hidden');
       const boxEl = this._id('map-search-box');
       if (boxEl) boxEl.classList.remove('is-expanded');
+      if (this._syncMobileSearchUi) this._syncMobileSearchUi(false);
+      if (this._syncSearchClearBtn) this._syncSearchClearBtn();
     }
 
     jumpToYear(targetYear) {
@@ -9580,6 +9588,92 @@
 
     // Global Quick Search methods are attached by js/atlas_search.js.
 
+    _syncSearchClearBtn() {
+      const clearBtn = this._id('act-clear-search');
+      const searchInp = this._id('inp-map-search');
+      const searchBox = this._id('map-search-box');
+      if (!clearBtn || !searchInp) return;
+      const hasVal = Boolean(searchInp.value && searchInp.value.trim());
+      const isOpen =
+        hasVal ||
+        (searchBox && searchBox.classList.contains('is-expanded')) ||
+        (typeof document !== 'undefined' && document.activeElement === searchInp);
+      clearBtn.classList.toggle('is-hidden', !isOpen);
+      const lbl = hasVal
+        ? this.locale === 'en'
+          ? 'Clear search'
+          : this._zh('清空搜索')
+        : this.locale === 'en'
+          ? 'Close search'
+          : this._zh('关闭搜索');
+      clearBtn.title = lbl;
+      clearBtn.setAttribute('aria-label', lbl);
+    }
+
+    _syncMobileSearchUi(open) {
+      const shell = this._id('atlas-shell');
+      const searchBox = this._id('map-search-box');
+      if (!shell) return;
+      const isNarrow =
+        typeof window !== 'undefined' && window.innerWidth > 0 && window.innerWidth <= 640;
+      const active = Boolean(open && isNarrow);
+      shell.classList.toggle('is-mobile-search-open', active);
+      if (searchBox && searchBox.style) {
+        if (active && typeof window !== 'undefined' && window.visualViewport) {
+          const maxH = Math.max(160, Math.floor(window.visualViewport.height - 102));
+          searchBox.style.setProperty('--mobile-search-list-max-h', `${maxH}px`);
+        } else {
+          searchBox.style.removeProperty('--mobile-search-list-max-h');
+        }
+      }
+    }
+
+    _closeQuickSearch() {
+      const searchInp = this._id('inp-map-search');
+      const searchList = this._id('map-search-results');
+      const searchBox = this._id('map-search-box');
+      const wasOpen = Boolean(
+        (searchBox && searchBox.classList.contains('is-expanded')) ||
+          (searchInp && typeof document !== 'undefined' && document.activeElement === searchInp)
+      );
+      if (searchList) searchList.classList.add('is-hidden');
+      if (searchBox) searchBox.classList.remove('is-expanded');
+      if (searchInp) {
+        searchInp.placeholder = this._searchPlaceholder(false);
+        if (typeof document !== 'undefined' && document.activeElement === searchInp) {
+          searchInp.blur();
+        }
+      }
+      this._syncMobileSearchUi(false);
+      this._syncSearchClearBtn();
+      return wasOpen;
+    }
+
+    _scheduleSearchWarmup() {
+      if (this._searchWarmupScheduled) return;
+      this._searchWarmupScheduled = true;
+      const runWarmup = () => {
+        if (!this._fullSnapshotsLoaded) this._ensureFullSnapshots();
+        if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
+        if (this.locale === 'zh-tw' && !this._hasZhHant()) this._ensureZhHant();
+        const schedIdx = () => {
+          if (!this.searchIndex && typeof this._ensureSearchIndex === 'function') {
+            this._ensureSearchIndex();
+          }
+        };
+        if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(schedIdx, { timeout: 500 });
+        } else {
+          setTimeout(schedIdx, 220);
+        }
+      };
+      if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(runWarmup, { timeout: 220 });
+      } else {
+        setTimeout(runWarmup, 120);
+      }
+    }
+
     _closeLayersPopover() {
       const layersPopover = this._id('layers-popover');
       const layersBtn = this._id('act-layers-menu');
@@ -9631,6 +9725,7 @@
       if (this._closeLocalePopover && this._closeLocalePopover()) return true;
       if (this._closeMorePopover && this._closeMorePopover()) return true;
       if (this._closeLayersPopover()) return true;
+      if (this._closeQuickSearch && this._closeQuickSearch()) return true;
       if (this.playing || this.personTimer) {
         this.stopAutoplay();
         return true;
@@ -9682,10 +9777,13 @@
       let activeSearchIdx = -1;
       let currentResults = [];
       let showcaseIdx = 0;
+      let isComposingSearch = false;
+      let searchInputTimer = null;
 
       const renderSearchDropdown = () => {
         if (!searchInp || !searchList) return;
         const q = searchInp.value.trim();
+        this._syncSearchClearBtn();
         const kindLabel = {
           multi_person: this.locale === 'en' ? 'Intersect' : '交汇',
           person: this.locale === 'en' ? 'Figure' : '人物',
@@ -9702,7 +9800,6 @@
           event: this.locale === 'en' ? 'Event' : '史事',
         };
         if (!q) {
-          this._ensureSearchIndex();
           const showcasePool = this._getSearchShowcasePool();
           const sampleItem = showcasePool.length
             ? showcasePool[showcaseIdx % showcasePool.length]
@@ -9793,18 +9890,16 @@
           searchList.appendChild(guideLi);
           searchList.classList.remove('is-hidden');
           if (this.locale === 'zh-tw') this._applyZhHantDom(searchList);
-          if (!this._isLoreDetailLoaded()) {
-            this._ensureLoreDetail();
-          }
-          if (!this._hasZhHant()) {
-            this._ensureZhHant();
-          }
+          this._scheduleSearchWarmup();
           return;
         }
         const pinyinQuery = this._eventPinyinQuery(q);
         currentResults = this._queryQuickSearch(q);
         const pendingSearchData = [];
-        if (/[a-z]/i.test(q) && !this._hasEnDict()) {
+        if (
+          !this._hasEnDict() &&
+          (this.locale === 'en' || (!isComposingSearch && /[a-z]{2,}/i.test(q)))
+        ) {
           pendingSearchData.push(this._ensureEnglishLocale());
         }
         if (!this._isLoreDetailLoaded()) pendingSearchData.push(this._ensureLoreDetail());
@@ -9872,19 +9967,73 @@
 
       if (searchInp && searchList) {
         const searchBox = this._id('map-search-box');
+        const clearSearchBtn = this._id('act-clear-search');
+        const closeTopPopovers = () => {
+          this._closeLayersPopover();
+          this._closeMorePopover();
+          this._closeLocalePopover();
+        };
         if (searchBox) {
           searchBox.addEventListener('click', (e) => {
+            if (clearSearchBtn && e.target === clearSearchBtn) return;
             if (window.innerWidth <= 640 && !searchBox.classList.contains('is-expanded')) {
+              closeTopPopovers();
               searchBox.classList.add('is-expanded');
               searchInp.placeholder = this._searchPlaceholder(true);
+              this._syncMobileSearchUi(true);
+              this._syncSearchClearBtn();
               if (e.target !== searchInp) searchInp.focus();
             }
           });
         }
-        searchInp.addEventListener('input', renderSearchDropdown);
+        if (clearSearchBtn) {
+          clearSearchBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          });
+          clearSearchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            clearTimeout(searchInputTimer);
+            if (searchInp.value.trim()) {
+              searchInp.value = '';
+              renderSearchDropdown();
+              if (!this._isMobileViewport()) searchInp.focus();
+            } else {
+              this._closeQuickSearch();
+            }
+          });
+        }
+        searchList.addEventListener(
+          'touchmove',
+          () => {
+            if (document.activeElement === searchInp) searchInp.blur();
+          },
+          { passive: true }
+        );
+        searchInp.addEventListener('compositionstart', () => {
+          isComposingSearch = true;
+        });
+        searchInp.addEventListener('compositionend', () => {
+          isComposingSearch = false;
+          clearTimeout(searchInputTimer);
+          renderSearchDropdown();
+        });
+        searchInp.addEventListener('input', (e) => {
+          this._syncSearchClearBtn();
+          if (isComposingSearch || (e && e.isComposing)) return;
+          clearTimeout(searchInputTimer);
+          if (!searchInp.value.trim()) {
+            renderSearchDropdown();
+            return;
+          }
+          searchInputTimer = setTimeout(renderSearchDropdown, 75);
+        });
         searchInp.addEventListener('focus', () => {
+          closeTopPopovers();
           if (searchBox) searchBox.classList.add('is-expanded');
           searchInp.placeholder = this._searchPlaceholder(true);
+          this._syncMobileSearchUi(true);
           renderSearchDropdown();
         });
         searchInp.addEventListener('blur', () => {
@@ -9896,6 +10045,8 @@
             ) {
               searchBox.classList.remove('is-expanded');
               searchInp.placeholder = this._searchPlaceholder(false);
+              this._syncMobileSearchUi(false);
+              this._syncSearchClearBtn();
             }
           }, 180);
         });
@@ -9922,18 +10073,13 @@
               searchInp.blur();
             }
           } else if (e.key === 'Escape') {
-            searchList.classList.add('is-hidden');
-            if (searchBox) searchBox.classList.remove('is-expanded');
-            searchInp.placeholder = this._searchPlaceholder(false);
-            searchInp.blur();
+            this._closeQuickSearch();
           }
         });
         document.addEventListener('pointerdown', (e) => {
           const box = this._id('map-search-box');
           if (box && !box.contains(e.target)) {
-            searchList.classList.add('is-hidden');
-            box.classList.remove('is-expanded');
-            searchInp.placeholder = this._searchPlaceholder(false);
+            this._closeQuickSearch();
           }
         });
       }
@@ -9945,8 +10091,7 @@
           this._closeLayersPopover();
           this._closeMorePopover();
           this._closeLocalePopover();
-          const sl = this._id('map-search-results');
-          if (sl) sl.classList.add('is-hidden');
+          this._closeQuickSearch();
           if (this.challenge) {
             this.stopChallenge();
           } else {
@@ -9965,6 +10110,7 @@
           e.stopPropagation();
           this._closeMorePopover();
           this._closeLocalePopover();
+          this._closeQuickSearch();
           const willOpen = layersPopover.classList.contains('is-hidden');
           if (willOpen) {
             if (window.innerWidth > 640) {
@@ -10005,6 +10151,7 @@
           e.stopPropagation();
           this._closeLayersPopover();
           this._closeMorePopover();
+          this._closeQuickSearch();
           const willOpen = localePopover.classList.contains('is-hidden');
           if (willOpen) {
             const navEl = this._id('nav-bar');
@@ -10056,6 +10203,7 @@
           e.stopPropagation();
           this._closeLayersPopover();
           this._closeLocalePopover();
+          this._closeQuickSearch();
           const willOpen = morePopover.classList.contains('is-hidden');
           if (willOpen) {
             morePopover.classList.remove('is-hidden');
@@ -11135,23 +11283,36 @@
       });
 
       window.addEventListener('resize', () => {
-        this._cameraViewportRect = null;
         const vw = window.innerWidth;
-        if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
-          this._rescaleSvgTypography();
-          this._syncTogglePaneButton();
+        const widthChanged =
+          this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 2;
+        if (widthChanged) {
+          this._cameraViewportRect = null;
+          if (this._lastViewportWidth === undefined || Math.abs(vw - this._lastViewportWidth) > 8) {
+            this._rescaleSvgTypography();
+            this._syncTogglePaneButton();
+          }
         }
         const srInp = this._id('inp-map-search');
-        if (srInp) {
-          const srBox = this._id('map-search-box');
-          const srExp =
-            (typeof document !== 'undefined' && document.activeElement === srInp) ||
-            Boolean(srBox && srBox.classList.contains('is-expanded'));
-          srInp.placeholder = this._searchPlaceholder(srExp);
-        }
+        const srBox = this._id('map-search-box');
+        const srExp = Boolean(
+          (srInp && typeof document !== 'undefined' && document.activeElement === srInp) ||
+            (srBox && srBox.classList.contains('is-expanded'))
+        );
+        if (srInp) srInp.placeholder = this._searchPlaceholder(srExp);
+        if (this._syncMobileSearchUi) this._syncMobileSearchUi(srExp);
+        const shell = this._id('atlas-shell');
+        if (!widthChanged && shell && shell.classList.contains('is-mobile-search-open')) return;
         this._updateScaleBar();
         this._syncResetCameraUi();
       });
+      if (typeof window !== 'undefined' && window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          const shell = this._id('atlas-shell');
+          if (!shell || !shell.classList.contains('is-mobile-search-open')) return;
+          this._syncMobileSearchUi(true);
+        });
+      }
       // The chronicle pane can resize the map without a window resize.
       if (typeof ResizeObserver !== 'undefined') {
         this._cameraResizeObserver = new ResizeObserver(() => {

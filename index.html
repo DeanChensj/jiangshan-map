@@ -33,14 +33,14 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=ef39f78d" />
+  <link rel="stylesheet" href="css/style.css?v=f5e5aad3" />
   <script defer src="js/china_geo_data.js?v=2d9d6497"></script>
   <script defer src="js/atlas_boot.js?v=760b2b58"></script>
   <script defer src="js/map_data.js?v=239a2aab"></script>
   <script defer src="js/lore_core.js?v=9d5a93d1"></script>
-  <script id="atlas-app-script" src="js/app.js?v=6a35a27d" data-v-snapshots="5a08205d" data-v-i18n="8e2f2973" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="540634e0" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=a635e03f" data-v-snapshots="5a08205d" data-v-i18n="8e2f2973" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="540634e0" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
   <script defer src="js/atlas_trace.js?v=a0fce698"></script>
-  <script defer src="js/atlas_search.js?v=5a9e4624"></script>
+  <script defer src="js/atlas_search.js?v=589cd846"></script>
   <script defer src="js/atlas_api.js?v=575d60fd"></script>
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代200+多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与简繁中英三语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
@@ -593,6 +593,7 @@
               <path d="M10.6 10.6L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
             <input id="inp-map-search" type="search" autocomplete="off" placeholder="搜人物 / 地名 / 史事 / 年号" aria-label="搜历史人物（支持双人同框如：李白 杜甫）、古今地名、历史事件始末、州府或帝王年号" />
+            <button id="act-clear-search" class="search-clear-btn is-hidden" type="button" title="清空或关闭搜索" aria-label="清空或关闭搜索">×</button>
           </div>
           <ul id="map-search-results" class="search-results-list is-hidden" role="listbox"></ul>
         </div>
