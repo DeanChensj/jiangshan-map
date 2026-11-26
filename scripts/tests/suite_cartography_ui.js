@@ -1361,20 +1361,49 @@ async function runCartographyUiSuite(ctx) {
     const wdDynCap = dynasties.find((d) => d.key === 'wudai');
     const nsDynCap = dynasties.find((d) => d.key === 'nansong');
     const zgXianyang = zgDynCap.settlements.find((s) => s.ancient === '咸阳');
+    const zgYongcheng = zgDynCap.settlements.find((s) => s.ancient === '雍城');
+    const zgYueyang = zgDynCap.settlements.find((s) => s.ancient === '栎阳');
+    const zgAnyi = zgDynCap.settlements.find((s) => s.ancient === '安邑');
+    const zgJinyang = zgDynCap.settlements.find((s) => s.ancient === '晋阳');
+    const zgHandan = zgDynCap.settlements.find((s) => s.ancient === '邯郸');
+    const zgYangzhai = zgDynCap.settlements.find((s) => s.ancient === '阳翟');
     const zgDaliang = zgDynCap.settlements.find((s) => s.ancient === '大梁');
     const zgXinzheng = zgDynCap.settlements.find((s) => s.ancient === '新郑');
     const zgChenying = zgDynCap.settlements.find((s) => s.ancient === '陈郢');
+    const zgLangya = zgDynCap.settlements.find((s) => s.ancient === '琅琊');
+    const zgWu = zgDynCap.settlements.find((s) => s.ancient === '吴');
     const qinXianyang = qinDynCap.settlements.find((s) => s.ancient === '咸阳');
     const wdKaifeng = wdDynCap.settlements.find((s) => s.ancient === '东京开封府');
     const wdLuoyang = wdDynCap.settlements.find((s) => s.ancient === '洛阳');
     const nsLinan = nsDynCap.settlements.find((s) => s.ancient === '临安');
     assert(
-      !ctrl._isSettlementCapital(zgXianyang, -380) &&
+      zgXianyang.appear === -350 &&
+        !ctrl._isSettlementCapital(zgXianyang, -380) &&
         ctrl._isSettlementCapital(zgXianyang, -330) &&
+        ctrl._isSettlementCapital(zgYongcheng, -403) &&
+        !ctrl._isSettlementCapital(zgYongcheng, -380) &&
+        !ctrl._isSettlementCapital(zgYueyang, -403) &&
+        ctrl._isSettlementCapital(zgYueyang, -360) &&
+        !ctrl._isSettlementCapital(zgYueyang, -340) &&
+        ctrl._isSettlementCapital(zgAnyi, -403) &&
+        !ctrl._isSettlementCapital(zgAnyi, -350) &&
+        ctrl._isSettlementCapital(zgYangzhai, -403) &&
+        !ctrl._isSettlementCapital(zgYangzhai, -350) &&
+        ctrl._isSettlementCapital(zgJinyang, -403) &&
+        !ctrl._isSettlementCapital(zgJinyang, -380) &&
+        !ctrl._isSettlementCapital(zgHandan, -403) &&
+        ctrl._isSettlementCapital(zgHandan, -350) &&
+        ctrl._isSettlementCapital(zgLangya, -403) &&
+        !ctrl._isSettlementCapital(zgLangya, -370) &&
+        !ctrl._isSettlementCapital(zgWu, -403) &&
+        ctrl._isSettlementCapital(zgWu, -350) &&
+        !ctrl._isSettlementCapital(zgWu, -300) &&
         !ctrl._isSettlementCapital(zgDaliang, -380) &&
         ctrl._isSettlementCapital(zgDaliang, -350) &&
         !ctrl._isSettlementCapital(zgXinzheng, -380) &&
         ctrl._isSettlementCapital(zgXinzheng, -350) &&
+        ctrl._settlementAncient(zgChenying, -403) === '陈' &&
+        ctrl._settlementAncient(zgChenying, -260) === '陈郢' &&
         !ctrl._isSettlementCapital(zgChenying, -300) &&
         ctrl._isSettlementCapital(zgChenying, -260) &&
         !ctrl._isSettlementCapital(zgChenying, -230) &&
@@ -3109,6 +3138,9 @@ async function runCartographyUiSuite(ctx) {
     // Neighbour names must fit the snapshot's years.
     for (const [sk, has, lacks] of [
       ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '塞琉古（条支）'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '孔雀帝国'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '大夏（巴克特里亚）'],
       ['s_sanguo', '萨珊波斯', '安息'],
       ['s_nanbei_e', '突厥', '柔然'],
       ['s_tang_a5', '倭马亚王朝（大食）', '萨珊波斯'],
