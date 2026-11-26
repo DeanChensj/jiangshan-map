@@ -1046,11 +1046,12 @@ async function runCartographyUiSuite(ctx) {
       '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
       '长白山', '岷山', '大别山', '陇山', '巫山', '葱岭', '燕然山',
       '外兴安岭', '阿尔泰山', '喜马拉雅山', '横断山', '武陵山',
+      '吕梁山', '中条山', '泰山', '伏牛山', '恒山', '罗霄山',
     ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 24 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 30 curated mountain-range labels'
     );
     const deserts = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'desert');
     assert.strictEqual(JSON.stringify(deserts.map((d) => d.zh)), JSON.stringify(['大 漠']), 'Exactly one Gobi watermark label');
@@ -1075,11 +1076,12 @@ async function runCartographyUiSuite(ctx) {
     const expectedDetailRivers = [
       '鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江',
       '乌苏里江', '额尔齐斯河', '嘉陵江', '岷江', '乌江', '钱塘江', '西拉木伦河', '锡尔河', '阿姆河',
+      '泗水', '洛水', '北洛河', '颍水', '桑干河', '大凌河', '滦河', '泾水', '闽江', '沅水',
     ];
     assert.strictEqual(
       JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
       JSON.stringify([...expectedDetailRivers].sort()),
-      'Zoom-gated boundary rivers must stay limited to the 15 classic frontier rivers'
+      'Zoom-gated boundary rivers must stay limited to the 25 classic frontier & regional boundary rivers'
     );
     for (const lb of detailRivers) {
       for (const en of lb.eraNames || []) {
@@ -1106,6 +1108,15 @@ async function runCartographyUiSuite(ctx) {
     const wuLabel = detailRivers.find((lb) => lb.zh === '乌江');
     assert.strictEqual(ctrl._hydroLabelPair(wuLabel, -200).zh, '延江水', 'Wu River in 200 BCE must resolve to 延江水');
     assert.strictEqual(ctrl._hydroLabelPair(wuLabel, 1200).zh, '乌江', 'Wu River in 1200 CE must resolve to 乌江');
+    const sangganLabel = detailRivers.find((lb) => lb.zh === '桑干河');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 400).zh, '漯水', 'Sanggan in 400 CE must resolve to 漯水');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 936).zh, '桑干河', 'Sanggan in 936 CE must resolve to 桑干河');
+    const dalingLabel = detailRivers.find((lb) => lb.zh === '大凌河');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 400).zh, '白狼水', 'Daling in 400 CE must resolve to 白狼水');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 1005).zh, '大凌河', 'Daling in 1005 CE must resolve to 大凌河');
+    const luanLabel = detailRivers.find((lb) => lb.zh === '滦河');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 400).zh, '濡水', 'Luan in 400 CE must resolve to 濡水');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 1005).zh, '滦河', 'Luan in 1005 CE must resolve to 滦河');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
