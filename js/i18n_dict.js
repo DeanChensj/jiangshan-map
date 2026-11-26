@@ -87,7 +87,7 @@ window.EN_LOCALE = {
       "name": "Eastern Han",
       "short": "E. Han",
       "capital": "Luoyang",
-      "desc": "Restored by Emperor Guangwu with Luoyang as capital. Ban Chao secured the Tarim Basin, Dou Xian routed the Northern Xiongnu, and Cai Lun refined papermaking. Factional struggles and the Yellow Turban Rebellion ushered in an age of warlords."
+      "desc": "Restored by Emperor Guangwu with Luoyang as capital, Eastern Han reached its zenith from the Ming–Zhang era through the Yongyuan peak. Ban Chao secured the Tarim Basin, Dou Xian routed the Northern Xiongnu, and Cai Lun refined papermaking. Factional struggles and the Yellow Turban Rebellion ushered in an age of warlords."
     },
     "sanguo": {
       "name": "Three Kingdoms",
@@ -135,7 +135,7 @@ window.EN_LOCALE = {
       "name": "Northern Song",
       "short": "N. Song",
       "capital": "Dongjing (Kaifeng)",
-      "desc": "After the Chenqiao mutiny (960), Song reunified the southern kingdoms and Northern Han within two decades, but failed to recover the Sixteen Prefectures from Liao, coexisting with Khitan Liao, Tangut Western Xia, and Dali amid an economic and cultural boom."
+      "desc": "After the Chenqiao mutiny (960), Song reunified the southern kingdoms and Northern Han within two decades, but failed to recover the Sixteen Prefectures from Liao, coexisting with Khitan Liao, Tangut Western Xia, and Dali. From Emperor Renzong's flourishing reign through Wang Anshi's reforms, economy and culture thrived."
     },
     "nansong": {
       "name": "Southern Song",
@@ -147,13 +147,13 @@ window.EN_LOCALE = {
       "name": "Yuan",
       "short": "Yuan",
       "capital": "Dadu (Beijing)",
-      "desc": "Proclaimed by Kublai Khan in 1271 and completing reunification at Yashan in 1279, the Yuan dynasty brought Tibet (under the Bureau of Buddhist and Tibetan Affairs), Yunnan, the Mongolian steppe, and Manchuria under a single central government, established the Branch Secretariat provincial system and the Penghu Inspection Office, and made Dadu a crossroads of Eurasia."
+      "desc": "Proclaimed by Kublai Khan in 1271 and completing reunification at Yashan in 1279, Yuan consolidated rule through the Zhiyuan and Dade eras. It brought Tibet (under the Bureau of Buddhist and Tibetan Affairs), Yunnan, the Mongolian steppe, and Manchuria under one central government, established the Branch Secretariat system and Penghu Inspection Office, and made Dadu a crossroads of Eurasia."
     },
     "ming": {
       "name": "Ming",
       "short": "Ming",
       "capital": "Shuntian (Beijing)",
-      "desc": "Early Ming established the Nurgan Commandery, Hami Guard, and Jiaozhi Province and sent Zheng He on seven Indian Ocean voyages. After the Tumu Crisis (1449) Ming pulled back to the Great Wall; in 1616 Later Jin rose in Manchuria."
+      "desc": "From the Hongwu, Yongle, and Ren–Xuan eras through the Hongzhi revival, early Ming established the Nurgan Commandery, Hami Guard, and Jiaozhi Province and sent Zheng He on seven Indian Ocean voyages. After the Tumu Crisis (1449) Ming pulled back to the Great Wall; in 1616 Later Jin rose in Manchuria."
     },
     "qing": {
       "name": "Qing",
@@ -1542,6 +1542,10 @@ window.EN_LOCALE = {
     "zhanguo:-403": [
       "King Weilie of Zhou recognizes Wei, Zhao, and Han as feudal lords (Partition of Jin)",
       "Luoyang · Jinyang"
+    ],
+    "zhanguo:-400": [
+      "Marquis Wen of Wei backs Li Kui's reforms and Wu Qi in Xihe, making Wei first hegemon",
+      "Anyi"
     ],
     "zhanguo:-386": [
       "Tian He recognized as Marquis of Qi (Tian Usurpation), forming the Seven Warring States",
