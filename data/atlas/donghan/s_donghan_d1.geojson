@@ -2417,7 +2417,7 @@
       "properties": {
         "title": "陶谦 · 刘备",
         "role": "main",
-        "tint": "#c98a2b",
+        "tint": "#7c8f3f",
         "anchor": [118.4, 34.2]
       },
       "geometry": {
@@ -4035,7 +4035,7 @@
       "id": "士燮",
       "properties": {
         "title": "士燮",
-        "tint": "#b07d4f",
+        "tint": "#4d7c99",
         "anchor": [108.95, 22.33],
         "role": "main"
       },

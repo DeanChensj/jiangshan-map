@@ -1789,7 +1789,7 @@
       "properties": {
         "title": "西川（王建）",
         "role": "rival",
-        "tint": "#d47a27",
+        "tint": "#4d8573",
         "anchor": [105.6, 30.6]
       },
       "geometry": {
@@ -8628,7 +8628,7 @@
       "properties": {
         "title": "党项（定难军）",
         "role": "rival",
-        "tint": "#9b7653",
+        "tint": "#a6566e",
         "anchor": [109.1, 38.1]
       },
       "geometry": {
