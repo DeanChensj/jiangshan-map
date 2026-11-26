@@ -2450,6 +2450,10 @@ html[lang="en"] #gesture-guide {
   z-index: 8;
 }
 
+#challenge-mobile-dock {
+  display: none;
+}
+
 .challenge-top {
   display: flex;
   align-items: center;
@@ -4741,6 +4745,15 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 @media (max-width: 640px) {
+  #scrubber-dock.is-challenge-locked {
+    display: none !important;
+  }
+  #challenge-card {
+    padding: 7px 10px;
+  }
+  #txt-challenge-kicker {
+    display: none;
+  }
   .challenge-top {
     margin-bottom: 4px;
     gap: 5px;
@@ -4757,6 +4770,61 @@ html[lang="en"] #act-toggle-pane .tp-label {
     line-height: 1.36;
     max-height: 4.4em;
     overflow-y: auto;
+  }
+  #viewport-frame.is-challenge-answered #challenge-card .challenge-clue-box {
+    display: none;
+  }
+  .challenge-feedback {
+    margin-top: 5px;
+    padding-top: 5px;
+    font-size: 12.2px;
+    line-height: 1.4;
+  }
+  #viewport-frame.has-active-challenge .quiz-chip {
+    display: none;
+  }
+  #viewport-frame.has-active-challenge #challenge-mobile-dock:not(.is-hidden) {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 14;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+  }
+  .challenge-mobile-hint {
+    pointer-events: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(250, 246, 237, 0.94);
+    border: 1px solid rgba(181, 69, 47, 0.25);
+    box-shadow: 0 3px 10px rgba(43, 38, 34, 0.12);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .challenge-mobile-hint.is-subtle {
+    padding: 2px 9px;
+    font-size: 11px;
+    background: rgba(250, 246, 237, 0.84);
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .challenge-mobile-cta {
+    pointer-events: auto;
+    width: min(264px, 100%);
+    min-height: 40px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(181, 69, 47, 0.28);
   }
   #journey-card,
   #journey-card.is-custom-route {

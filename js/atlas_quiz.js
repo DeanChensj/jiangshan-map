@@ -258,6 +258,7 @@
       this.grpSettlements.classList.add('is-hidden');
       if (this.grpMilestones) this.grpMilestones.classList.add('is-hidden');
       this._id('act-next-round').onclick = null;
+      this._syncChallengeMobileDock();
       this.presentChallengeRound();
       if (typeof this._isLoreDetailLoaded === 'function' && !this._isLoreDetailLoaded()) {
         this._ensureLoreDetail().then(() => {
@@ -271,6 +272,7 @@
     stopChallenge(keepPaneState = false) {
       this.challenge = null;
       syncShareControls(this, false);
+      this._syncChallengeMobileDock();
       if (
         typeof window !== 'undefined' &&
         window.JiangshanQuizPoster &&
@@ -405,18 +407,70 @@
         : this.locale === 'en'
           ? 'Historical Clue'
           : '当朝掌故';
+      const useTapVerb =
+        typeof this._isMobileViewport === 'function' && this._isMobileViewport();
+      const actionVerb = useTapVerb ? 'Tap on the map to pinpoint' : 'Click on the map to pinpoint';
       const promptHtml = cur.settlement.isPass
         ? this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s strategic pass <b>“${escHtml(displayAncientEn)}”</b>`
+          ? `${actionVerb} <b>${this.dynastyName(cur.dynasty)}</b>’s strategic pass <b>“${escHtml(displayAncientEn)}”</b>`
           : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的天下名关 <b>「${escHtml(displayAncientZh)}」</b>`
         : this.locale === 'en'
-          ? `Click on the map to pinpoint <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${escHtml(displayAncientEn)}”</b>`
+          ? `${actionVerb} <b>${this.dynastyName(cur.dynasty)}</b>’s <b>“${escHtml(displayAncientEn)}”</b>`
           : `请在舆图上标定 <b>【${this.dynastyName(cur.dynasty)}】</b> 时期的 <b>「${escHtml(displayAncientZh)}」</b>`;
 
       this._id('challenge-question').innerHTML =
         `<div>${promptHtml}</div>` +
         `<div class="challenge-clue-box"><span class="clue-tag">${clueTag}</span><span>${escHtml(baseClue + extraEventStr)}</span></div>`;
       if (this.locale === 'zh-tw') this._applyZhHantDom(this._id('challenge-card'));
+      this._syncChallengeMobileDock();
+    }
+
+    _syncChallengeMobileDock() {
+      const dock = this._id('challenge-mobile-dock');
+      const hint = this._id('challenge-mobile-hint');
+      const cta = this._id('act-quiz-mobile-cta');
+      if (!dock) return;
+      const q = this.challenge;
+      if (!q || q.finished) {
+        dock.classList.add('is-hidden');
+        if (hint) hint.classList.add('is-hidden');
+        if (cta) cta.classList.add('is-hidden');
+        return;
+      }
+      dock.classList.remove('is-hidden');
+      const isEn = this.locale === 'en';
+      if (!q.answered && !q.pendingGuess) {
+        if (hint) {
+          hint.textContent = isEn
+            ? 'Tap map to drop pin · Pinch to zoom'
+            : this._zh('轻点地图标定位置 · 可双指缩放');
+          hint.classList.remove('is-hidden', 'is-subtle');
+        }
+        if (cta) cta.classList.add('is-hidden');
+        return;
+      }
+      if (!q.answered && q.pendingGuess) {
+        if (hint) {
+          hint.textContent = isEn ? 'Tap map again to adjust' : this._zh('可再点地图微调落点');
+          hint.classList.remove('is-hidden');
+          hint.classList.add('is-subtle');
+        }
+        if (cta) {
+          cta.textContent = isEn ? 'Confirm Pin' : this._zh('确认标点');
+          cta.classList.remove('is-hidden');
+        }
+        return;
+      }
+      if (hint) hint.classList.add('is-hidden');
+      if (cta) {
+        cta.textContent =
+          q.index + 1 >= q.deck.length
+            ? `${this.uiStr('quiz_see_result', '查看成绩')} ›`
+            : isEn
+              ? 'Next Question ›'
+              : this._zh('下一题 ›');
+        cta.classList.remove('is-hidden');
+      }
     }
 
     presentChallengeRound() {
@@ -530,7 +584,15 @@
       const bg = this.grpChallenge.querySelector('.quiz-chip-bg');
       if (!bg || typeof bg.getBoundingClientRect !== 'function') return false;
       const r = bg.getBoundingClientRect();
-      return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+      if (!r || r.width <= 0 || r.height <= 0) return false;
+      const pad =
+        typeof window !== 'undefined' && window.innerWidth > 0 && window.innerWidth <= 900 ? 10 : 4;
+      return (
+        clientX >= r.left - pad &&
+        clientX <= r.right + pad &&
+        clientY >= r.top - pad &&
+        clientY <= r.bottom + pad
+      );
     }
 
     _previewLocatePin(svgX, svgY) {
@@ -542,6 +604,7 @@
       this._setQuizChip(this.locale === 'en' ? 'Confirm ↵' : '确认 ↵');
       this._rescaleSvgTypography();
       if (this.locale === 'zh-tw') this._applyZhHantDom(this.grpChallenge);
+      this._syncChallengeMobileDock();
     }
 
     _renderChallengeAnsweredVerdict() {
@@ -595,6 +658,87 @@
         this._applyZhHantDom(this._id('challenge-card'));
         this._applyZhHantDom(this.grpChallenge);
       }
+      this._syncChallengeMobileDock();
+    }
+
+    _frameChallengeReveal(svgX, svgY, ax, ay) {
+      const vf = this._id('viewport-frame');
+      if (
+        !vf ||
+        typeof vf.getBoundingClientRect !== 'function' ||
+        !this.svg ||
+        typeof this.svg.getBoundingClientRect !== 'function' ||
+        typeof this._animateCameraTo !== 'function'
+      ) {
+        return false;
+      }
+      const vfRect = vf.getBoundingClientRect();
+      const svgRect =
+        typeof this._getUnscaledSvgRect === 'function'
+          ? this._getUnscaledSvgRect()
+          : this.svg.getBoundingClientRect();
+      if (!vfRect || !svgRect || vfRect.width < 120 || vfRect.height < 120 || svgRect.width < 80) {
+        return false;
+      }
+      const cam = this._cameraTarget || this.camera;
+      if (!cam || !cam.w || !cam.h) return false;
+      const scale = Math.min(svgRect.width / cam.w, svgRect.height / cam.h);
+      const padX = (svgRect.width - cam.w * scale) * 0.5;
+      const padY = (svgRect.height - cam.h * scale) * 0.5;
+      const toVf = (sx, sy) => [
+        svgRect.left - vfRect.left + padX + (sx - cam.x) * scale,
+        svgRect.top - vfRect.top + padY + (sy - cam.y) * scale,
+      ];
+      const [axSc, aySc] = toVf(ax, ay);
+      const [gxSc, gySc] = toVf(svgX, svgY);
+
+      const card = this._id('challenge-card');
+      const cardVisible = Boolean(card && !card.classList.contains('is-hidden'));
+      const cr = cardVisible && typeof card.getBoundingClientRect === 'function' ? card.getBoundingClientRect() : null;
+      const isNarrow = typeof window !== 'undefined' && window.innerWidth > 0 && window.innerWidth <= 640;
+      const dock = this._id('challenge-mobile-dock');
+      const dr =
+        dock && !dock.classList.contains('is-hidden') && typeof dock.getBoundingClientRect === 'function'
+          ? dock.getBoundingClientRect()
+          : null;
+      const safeTop = isNarrow && cr ? Math.max(26, cr.bottom - vfRect.top + 28) : 26;
+      const safeBottom = dr && dr.height > 0 ? Math.min(vfRect.height - 24, dr.top - vfRect.top - 22) : vfRect.height - 26;
+      const safeLeft = 22;
+      const safeRight = vfRect.width - 22;
+
+      const hitsCard = (px, py) =>
+        Boolean(
+          cr &&
+            px >= cr.left - vfRect.left - 18 &&
+            px <= cr.right - vfRect.left + 24 &&
+            py >= cr.top - vfRect.top - 14 &&
+            py <= cr.bottom - vfRect.top + 22
+        );
+      const outOfSafeBox = (px, py) =>
+        px < safeLeft || px > safeRight || py < safeTop || py > safeBottom || hitsCard(px, py);
+
+      if (!outOfSafeBox(axSc, aySc) && !outOfSafeBox(gxSc, gySc)) return false;
+
+      const minX = Math.min(svgX, ax) - 42;
+      const maxX = Math.max(svgX, ax) + 64;
+      const minY = Math.min(svgY, ay) - 34;
+      const maxY = Math.max(svgY, ay) + 34;
+      const defCam = this._getDefaultCamera();
+      const ar = cam.h / cam.w;
+      const availFracY = Math.max(0.35, (safeBottom - safeTop) / vfRect.height);
+      const reqW = Math.max((maxX - minX) / 0.84, (maxY - minY) / (ar * availFracY * 0.86));
+      const w = Math.max(Math.min(defCam.w, 260), Math.min(defCam.w * 1.15, reqW));
+      const h = w * ar;
+      const midFracY = Math.max(0.32, Math.min(0.66, ((safeTop + safeBottom) * 0.5) / vfRect.height));
+      const cx = (minX + maxX) * 0.5;
+      const cy = (minY + maxY) * 0.5;
+      this._animateCameraTo({
+        x: Math.max(-180, Math.min(1000 - w + 140, cx - w * 0.5)),
+        y: Math.max(-150, Math.min(700 - h + 120, cy - h * midFracY)),
+        w,
+        h,
+      });
+      return true;
     }
 
     _evaluateLocateClick(svgX, svgY) {
@@ -710,11 +854,13 @@
       this._drawQuizMark(svgX, svgY, true);
       this._rescaleSvgTypography();
       this._renderChallengeAnsweredVerdict();
+      this._frameChallengeReveal(svgX, svgY, ax, ay);
     }
 
     _finishChallenge() {
       const q = this.challenge;
       q.finished = true;
+      this._syncChallengeMobileDock();
       this.grpChallenge.innerHTML = '';
       const total = q.deck.length * QUIZ_ROUND_MAX;
       const rank =

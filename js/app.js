@@ -2350,6 +2350,7 @@
         } else {
           this.presentChallengeRound();
         }
+        if (typeof this._syncChallengeMobileDock === 'function') this._syncChallengeMobileDock();
       }
       this._applyZhHantDom();
     }
@@ -10386,6 +10387,13 @@
           this.presentChallengeRound();
         }
       });
+      const quizMobileCta = this._id('act-quiz-mobile-cta');
+      if (quizMobileCta) {
+        quizMobileCta.addEventListener('click', () => {
+          const nextBtn = this._id('act-next-round');
+          if (nextBtn) nextBtn.click();
+        });
+      }
 
       const musicBtn = this._id('act-music');
       if (musicBtn) {
@@ -11078,7 +11086,8 @@
           const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
           const pend = this.challenge.pendingGuess;
           const svgPerPx = this.camera.w / Math.max(1, this.svg.getBoundingClientRect().width);
-          if (pend && Math.hypot(sx - pend[0], sy - pend[1]) <= 14 * svgPerPx) {
+          const confirmHitPx = e.pointerType === 'touch' ? 20 : 14;
+          if (pend && Math.hypot(sx - pend[0], sy - pend[1]) <= confirmHitPx * svgPerPx) {
             // Clicking the pending mark again confirms it.
             this._evaluateLocateClick(pend[0], pend[1]);
           } else {
