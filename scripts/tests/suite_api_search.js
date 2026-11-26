@@ -1585,6 +1585,7 @@ async function runApiSearchSuite(ctx) {
       snapshots.s_zhanguo_e2.prefectures.length === 26 &&
       snapshots.s_zhanguo_e4.prefectures.length === 27 &&
       snapshots.s_zhanguo_e5.prefectures.length === 34 &&
+      snapshots.s_zhanguo_e6.prefectures.length === 34 &&
       snapshots.s_qin_a.prefectures.length === 36 &&
       snapshots.s_qin_b.prefectures.length === 37 &&
       snapshots.s_qin.prefectures.length === 41 &&
@@ -1638,7 +1639,7 @@ async function runApiSearchSuite(ctx) {
       `s_zhanguo_a (-403 BCE) must not split State of Yue with post-222 BCE Qin commandery ${anachronistic}`
     );
   }
-  for (const qinSnapKey of ['s_zhanguo_e5', 's_qin_a', 's_qin_b', 's_qin', 's_qin_c', 's_qin_d', 's_qin_chuhan']) {
+  for (const qinSnapKey of ['s_zhanguo_e5', 's_zhanguo_e6', 's_qin_a', 's_qin_b', 's_qin', 's_qin_c', 's_qin_d', 's_qin_chuhan']) {
     const qSnap = snapshots[qinSnapKey];
     for (const cmdTitle of ['泗水郡', '东海郡', '鄣郡', '会稽郡']) {
       assert(
