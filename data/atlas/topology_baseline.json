@@ -7,6 +7,7 @@
   "s_zhanguo_e2": { "overlap": 4, "gap": 17 },
   "s_zhanguo_e3": { "overlap": 4, "gap": 10 },
   "s_zhanguo_e4": { "overlap": 0, "gap": 6 },
+  "s_zhanguo_e5": { "overlap": 0, "gap": 5 },
   "s_beisong_a": { "overlap": 119, "gap": 132 },
   "s_beisong_b": { "overlap": 40, "gap": 2 },
   "s_donghan": { "overlap": 0, "gap": 7 },

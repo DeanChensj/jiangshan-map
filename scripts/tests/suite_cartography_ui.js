@@ -3560,14 +3560,16 @@ async function runCartographyUiSuite(ctx) {
     for (const sk of ['s_zhanguo_b1', 's_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1', 's_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
       assert(hasPolPt(sk, '楚', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 楚`);
     }
-    assert(hasPolPt('s_zhanguo_e5', '秦', 119.98, 35.65), 's_zhanguo_e5 must include Langya ([119.98, 35.65]) inside 秦');
+    for (const sk of ['s_zhanguo_e5', 's_zhanguo_e6']) {
+      assert(hasPolPt(sk, '秦', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 秦`);
+    }
     for (const sk of ['s_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1']) {
       assert(
         hasPolPt(sk, '赵', 111.201, 40.251) && hasPolPt(sk, '赵', 114.551, 40.151),
         `${sk} (-300..-229 BCE) must include both Yunzhong and Dai inside 赵`
       );
     }
-    for (const sk of ['s_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
+    for (const sk of ['s_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4', 's_zhanguo_e5']) {
       assert(
         hasPolPt(sk, '秦', 111.201, 40.251) &&
           hasPolPt(sk, '代', 114.551, 40.151) &&
@@ -3575,6 +3577,20 @@ async function runCartographyUiSuite(ctx) {
         `${sk} (-228..-223 BCE) must place Yunzhong in 秦 and Dai ([114.551, 40.151]) in 代`
       );
     }
+    assert(
+      hasPolPt('s_zhanguo_e5', '秦', 116.78, 32.58) &&
+        hasPolPt('s_zhanguo_e5', '燕', 123.17, 41.27) &&
+        hasPolPt('s_zhanguo_e5', '代', 114.551, 40.151) &&
+        !snapshots.s_zhanguo_e5.polities.some((p) => p.title === '楚'),
+      's_zhanguo_e5 (-223 BCE fall of Chu) must annex Chu into 秦 while keeping 燕 and 代 intact'
+    );
+    assert(
+      hasPolPt('s_zhanguo_e6', '秦', 116.78, 32.58) &&
+        hasPolPt('s_zhanguo_e6', '秦', 114.551, 40.151) &&
+        hasPolPt('s_zhanguo_e6', '秦', 123.17, 41.27) &&
+        !snapshots.s_zhanguo_e6.polities.some((p) => ['楚', '代', '燕'].includes(p.title)),
+      's_zhanguo_e6 (-222 BCE fall of Yan & Dai) must absorb 燕 and 代 into 秦'
+    );
     for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_a2', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
       const mainPol = snapshots[sk].polities[0];
       const mainRing = mainPol.shape.type === 'Polygon' ? mainPol.shape.coordinates[0] : mainPol.shape.coordinates[0][0];
