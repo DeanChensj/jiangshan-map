@@ -2126,7 +2126,7 @@ async function runApiSearchSuite(ctx) {
         mockPills.innerHTML.includes('ep-place') &&
         mockPills.innerHTML.includes('ep-story-seal') &&
         mockText.textContent.includes('安史之乱') &&
-        mockMobBtn.textContent === '史志 · 63 ▲',
+        mockMobBtn.textContent === `史志 · ${tang.milestones.length} ▲`,
       `Expected mobile chronicle peek on tang:755 with place/story pills, headline, and compact button, got pills=${mockPills.innerHTML}, text=${mockText.textContent}, btn=${mockMobBtn.textContent}`
     );
     ctrl.toggleMobileChronicle(true);

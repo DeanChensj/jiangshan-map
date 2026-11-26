@@ -309,6 +309,7 @@ window.ATLAS_EVENT_PINYIN = {
       ["tangfanchangqinghuimeng","jichanganmengshihouzaimengyuluoxie","cinianlihuimengbeiyudazhaosi","tangfanchangqinghuimengjichanganmengshihouzaimengyuluoxiecinianlihuimengbeiyudazhaosi","luoxie","lasa"],
       ["ganluzhibian","tangwenzongyulixunmouzhuqiushiliangshibai","wantanghuanguanzhuanquan","ganluzhibiantangwenzongyulixunmouzhuqiushiliangshibaiwantanghuanguanzhuanquan","changan"],
       ["huihuhanguobengkui","tangwuzongyulideyupohuihu","pingzelu","huichangzhongxing","huihuhanguobengkuitangwuzongyulideyupohuihupingzeluhuichangzhongxing","changan","zhenwu","datong"],
+      ["tubozanpulangdamamiefoyuci","zhujiangneihong","tubodiguowajie","tubozanpulangdamamiefoyucizhujiangneihongtubodiguowajie","luoxie","lasa"],
       ["tangwuzongxiazhaochaihuitianxiafosisiqianliubaiyusuo","sengnihuansu","shichenghuichangfanan","tangwuzongxiazhaochaihuitianxiafosisiqianliubaiyusuosengnihuansushichenghuichangfanan","changan"],
       ["zhangyichaoshazhouqiyizhutubo","sannianhouyihexishiyizhouguitang","zhiguiyijun","zhangyichaoshazhouqiyizhutubosannianhouyihexishiyizhouguitangzhiguiyijun","shazhou","guazhou"],
       ["fuyuanannanzhiguilinshuzuyoupangxunshuailingqiyibeigongxuzhou","jieduanjianghuaicaoyun","fuyuanannanzhiguilinshuzuyoupangxunshuailingqiyibeigongxuzhoujieduanjianghuaicaoyun","xuzhou","guilin"],

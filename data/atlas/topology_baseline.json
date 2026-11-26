@@ -65,7 +65,7 @@
   "s_tang_726": { "overlap": 0, "gap": 11 },
   "s_tang_a5": { "overlap": 0, "gap": 15 },
   "s_tang_b1": { "overlap": 0, "gap": 13 },
-  "s_tang_c": { "overlap": 24, "gap": 20 },
+  "s_tang_c": { "overlap": 0, "gap": 1 },
   "s_wudai_a": { "overlap": 22, "gap": 117 },
   "s_wudai_b1": { "overlap": 15, "gap": 101 },
   "s_wudai_b": { "overlap": 12, "gap": 89 },

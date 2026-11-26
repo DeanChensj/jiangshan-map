@@ -1671,6 +1671,10 @@ window.EN_LOCALE = {
       "Uyghur Khaganate collapses; Emperor Wuzong and Li Deyu defeat Uyghurs and Zelu (Huichang Era)",
       "Chang'an · Zhenwu"
     ],
+    "tang:842": [
+      "Tibetan emperor Langdarma is assassinated after suppressing Buddhism; civil war fractures Tibet",
+      "Rasa (Lhasa)"
+    ],
     "beisong:1007": [
       "Emperor Shengzong of Liao builds the Central Capital; Song and Liao open border trade markets",
       "Zhongjing Dadingfu"
