@@ -590,7 +590,7 @@ async function runTraceGenealogySuite(ctx) {
   assert.strictEqual(mockSearchInp.value, '', '_clearQuickSearchInput() must clear #inp-map-search value');
   ctrl._id = origId23e;
 
-  // 23f. Verify Dali (大理, 937–1253 CE), Nanzhao (南诏, 649–936 CE), and unified Tubo (吐蕃, 618–877 CE) vs fragmented Tibetan polities (吐蕃诸部, 880–1246 CE)
+  // 23f. Verify Dali (大理, 937–1253 CE), Nanzhao (南诏, 649–936 CE), and unified Tubo (吐蕃, 618–847 CE) vs fragmented Tibetan polities (吐蕃诸部, 848–1246 CE)
   if (!FAST_MODE) {
   const daliSnapKeys = [
     's_wudai_c0',
@@ -740,12 +740,12 @@ async function runTraceGenealogySuite(ctx) {
       assert.strictEqual(ownerAt(sk, TENGCHONG), main, `${sk}: 腾冲 must belong to ${main}`);
     }
   }
-  const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_d1' && k !== 's_tang_d2');
+  const unifiedTuboSnapKeys = tangSnapKeys.filter((k) => k !== 's_tang_c' && k !== 's_tang_d1' && k !== 's_tang_d2');
   for (const sk of unifiedTuboSnapKeys) {
     const tuboPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃');
     assert(
       tuboPol && tuboPol.role === 'rival' && tuboPol.tint === '#a8583b',
-      `${sk} must model unified 吐蕃 (618–877 CE) as role="rival" with tint="#a8583b"`
+      `${sk} must model unified 吐蕃 (618–847 CE) as role="rival" with tint="#a8583b"`
     );
     assert(
       pointInShape(91.111, 29.651, tuboPol.shape),
@@ -753,6 +753,7 @@ async function runTraceGenealogySuite(ctx) {
     );
   }
   const fragmentedTuboSnapKeys = [
+    's_tang_c',
     's_tang_d1',
     's_tang_d2',
     's_wudai_a',
@@ -765,7 +766,7 @@ async function runTraceGenealogySuite(ctx) {
     const fragPol = (snapshots[sk].polities || []).find((p) => p.title === '吐蕃诸部');
     assert(
       fragPol && fragPol.role === 'neighbor' && !fragPol.tint,
-      `${sk} must model post-877 fragmented Tibet as uncolored 吐蕃诸部 (role="neighbor", tint=null)`
+      `${sk} must model post-847 fragmented Tibet as uncolored 吐蕃诸部 (role="neighbor", tint=null)`
     );
   }
   // 南诏 exists from 738 (before that: 六诏 plus 唐 羁縻 in 滇东; 618–621 爨 · 六诏).

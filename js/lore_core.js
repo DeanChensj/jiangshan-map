@@ -1031,7 +1031,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"wagang_wei","zh":"瓦岗军（魏）","en":"Wagang Army (Wei)","titles":["魏（李密）"],"from":616,"to":618,"matchFrom":614,"seatZh":"洛口仓 → 金墉城（洛阳）","seatEn":"Luokou Granary → Jinyong (Luoyang)","aliases":["瓦岗军","李密魏政权"]},
     {"key":"douxia","zh":"夏（窦建德）","en":"Xia (Dou Jiande)","titles":["夏（窦建德）"],"from":617,"to":621,"matchFrom":614,"seatZh":"乐寿（河间）→ 洺州（邯郸永年）","seatEn":"Leshou → Mingzhou","aliases":["大夏（窦建德）","河北夏"]},
     {"key":"xiaoxian_liang","zh":"梁（萧铣）","en":"Liang (Xiao Xian)","titles":["梁（萧铣）"],"from":617,"to":621,"matchFrom":614,"seatZh":"巴陵（岳阳）→ 江陵","seatEn":"Baling (Yueyang) → Jiangling","aliases":["后梁（萧铣）"]},
-    {"key":"tubo","zh":"吐蕃","en":"Tibetan Empire","titles":["吐蕃"],"from":618,"to":842,"matchTo":879,"seatZh":"逻些（拉萨）","seatEn":"Rasa (Lhasa)","aliases":["Tibet","Tubo"]},
+    {"key":"tubo","zh":"吐蕃","en":"Tibetan Empire","titles":["吐蕃"],"from":618,"to":842,"matchTo":847,"seatZh":"逻些（拉萨）","seatEn":"Rasa (Lhasa)","aliases":["Tibet","Tubo"]},
     {"key":"wangzheng","zh":"郑（王世充）","en":"Zheng (Wang Shichong)","titles":["郑（王世充）"],"from":619,"to":621,"matchFrom":618,"seatZh":"洛阳","seatEn":"Luoyang","aliases":["王郑"]},
     {"key":"anxi_duhufu","zh":"安西都护府","en":"Anxi Protectorate","titles":["安西都护府（西州）","安西都护府","安西都护府（孤悬坚守）"],"from":640,"to":790,"seatZh":"西州（交河城）→ 龟兹（648 起统辖安西四镇）","seatEn":"Xizhou (Jiaohe) → Kucha (Four Garrisons of Anxi)","aliases":["安西大都护府","安西四镇"]},
     {"key":"anbei_duhufu","zh":"安北都护府（燕然）","en":"Anbei (Yanran) Protectorate","titles":["漠北羁縻府州（薛延陀）","燕然（安北）都护府","安北都护府"],"from":647,"to":687,"matchFrom":630,"seatZh":"故单于台（阴山北）→ 回纥本部（鄂尔浑河）→ 同城","seatEn":"Chanyu Terrace → Orkhon Valley → Tongcheng","aliases":["燕然都护府","瀚海都护府"]},

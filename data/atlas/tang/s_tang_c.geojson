@@ -8,7 +8,7 @@
     "polities": [
       "唐",
       "归义军（张议潮）",
-      "吐蕃",
+      "吐蕃诸部",
       "南诏",
       "s_tang_b0a/占城",
       "s_tang_b0a/孟人国",
@@ -2307,11 +2307,11 @@
     },
     {
       "type": "Feature",
-      "id": "吐蕃",
+      "id": "吐蕃诸部",
       "properties": {
-        "title": "吐蕃",
-        "tint": "#a8583b",
-        "role": "rival",
+        "title": "吐蕃诸部",
+        "tint": null,
+        "role": "neighbor",
         "anchor": [91.1, 29.7]
       },
       "geometry": {
