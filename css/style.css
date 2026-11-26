@@ -5029,8 +5029,11 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane #dynasty-title {
-    font-size: 17.5px;
-    line-height: 1.15;
+    font-family: var(--serif-stack);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -5076,7 +5079,8 @@ html[lang="en"] #act-toggle-pane .tp-label {
   }
 
   #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek #dynasty-title {
-    font-size: 15.5px;
+    font-size: 14.5px;
+    line-height: 1.2;
     color: var(--vermilion);
   }
 
