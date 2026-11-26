@@ -997,7 +997,7 @@
       "id": "晋",
       "properties": {
         "title": "晋",
-        "tint": "#5b6fa8",
+        "tint": "#785896",
         "role": "rival",
         "anchor": [113.2, 38.8]
       },
@@ -19769,7 +19769,7 @@
       "properties": {
         "title": "凉州（六谷部）",
         "role": "rival",
-        "tint": "#7d6c4f",
+        "tint": "#52807a",
         "anchor": [102.85, 38.45]
       },
       "geometry": {
@@ -19923,7 +19923,7 @@
       "properties": {
         "title": "党项（定难军）",
         "role": "rival",
-        "tint": "#9b7653",
+        "tint": "#a6566e",
         "anchor": [109.1, 38.1]
       },
       "geometry": {

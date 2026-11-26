@@ -1749,7 +1749,7 @@
       "properties": {
         "title": "鲁",
         "role": "rival",
-        "tint": "#9c6b30",
+        "tint": "#b0566b",
         "anchor": [117.75, 34.95]
       },
       "geometry": {
@@ -2693,7 +2693,7 @@
       "properties": {
         "title": "越",
         "role": "rival",
-        "tint": "#4a7c59",
+        "tint": "#4e6da6",
         "anchor": [119.85, 29.85]
       },
       "geometry": {
@@ -3403,7 +3403,7 @@
       "properties": {
         "title": "巴",
         "role": "rival",
-        "tint": "#735034",
+        "tint": "#52788a",
         "anchor": [106.75, 30.48]
       },
       "geometry": {
