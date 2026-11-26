@@ -579,7 +579,8 @@ async function runCoreDataSuite(ctx) {
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   for (const strayFile of [
     'app.js',
-    'atlas_trace.js',
+    'atlas_person.js',
+    'atlas_genealogy.js',
     'atlas_search.js',
     'atlas_api.js',
     'atlas_quiz.js',
@@ -602,6 +603,10 @@ async function runCoreDataSuite(ctx) {
     !fs.existsSync(path.join(JS_DIR, 'lore_data.js')),
     'Legacy monolithic js/lore_data.js must not exist; lore data is split into js/lore_core.js and js/lore_detail.js'
   );
+  assert(
+    !fs.existsSync(path.join(JS_DIR, 'atlas_trace.js')),
+    'Legacy monolithic js/atlas_trace.js must not exist; it is split into js/atlas_person.js and js/atlas_genealogy.js'
+  );
   assert(fs.existsSync(llmsTxtPath), 'llms.txt must exist in repository root');
   assert(fs.existsSync(skillMdPath), 'skills/jiangshan-atlas/SKILL.md must exist');
   assert(fs.existsSync(skillPyPath), 'skills/jiangshan-atlas/scripts/jiangshan.py must exist');
@@ -623,17 +628,11 @@ async function runCoreDataSuite(ctx) {
     'app.js & llms.txt must expose window.atlasAPI (locate, resolvePlace, inspect), multi-stop route rendering, PLACE_GAZETTEER, and URL deep-link protocol'
   );
 
-  const TRACE_METHODS = [
-    'toggleGenealogySheetExpand',
-    '_clearActiveTrace',
+  const PERSON_METHODS = [
     '_clearActivePerson',
-    'closeGenealogyCard',
-    '_personSearchAliases',
-    '_resolvePersonProfile',
     '_formatPersonSpan',
     '_tailorPersonEvent',
     '_collectPersonEvents',
-    '_resolvePersonProfiles',
     '_eventsSharePlace',
     '_buildPersonTracksAndEvents',
     'openPersonChronicle',
@@ -656,26 +655,28 @@ async function runCoreDataSuite(ctx) {
     '_renderPersonChronicleCard',
     '_renderPersonFooter',
     '_hidePersonFooter',
+    '_getCustomRouteVisibleTopFrac',
+    '_buildJourneySegmentInfo',
+    '_renderCartographicTrajectory',
+  ];
+  const GENEALOGY_METHODS = [
+    'toggleGenealogySheetExpand',
+    '_clearActiveTrace',
     '_syncTracedPrefecture',
     '_resolvePlaceLoreBanner',
     '_findNearbyPass',
     '_collectPlaceEventsForDynasty',
-    '_findNearestTouchNode',
     '_stripModernProvincePrefix',
     '_resolveModernLocationAt',
     '_getCanonicalPlaces',
     '_findNearestSettlement',
-    '_polityAt',
     '_shapeAnchorOrCentroid',
     '_minVertexDistSq',
     '_resolveEraPlaceAt',
     '_resolveModernIdentity',
     'openGenealogyAt',
-    '_getCustomRouteVisibleTopFrac',
-    '_buildJourneySegmentInfo',
-    '_renderCartographicTrajectory',
   ];
-  const TRACE_STATIC_PROPS = [
+  const CONTROLLER_STATIC_PROPS = [
     'PERSON_PROFILES',
     'PERSON_TRACK_PALETTE',
     'PLACE_LANDMARK_EVENTS',
@@ -688,6 +689,9 @@ async function runCoreDataSuite(ctx) {
     '_searchPlaceholder',
     '_getSearchSampleQueries',
     '_getSearchShowcasePool',
+    '_personSearchAliases',
+    '_resolvePersonProfile',
+    '_resolvePersonProfiles',
     '_ensureSearchIndex',
     '_parseChineseNumber',
     '_getCompiledEraSpans',
@@ -759,18 +763,25 @@ async function runCoreDataSuite(ctx) {
     'stopNarrator',
     'toggleNarrator',
   ];
-  for (const traceMethod of TRACE_METHODS) {
-    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, traceMethod);
+  for (const personMethod of PERSON_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, personMethod);
     assert(
       desc && typeof desc.value === 'function' && desc.enumerable === false,
-      `atlas_trace.js must attach ${traceMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+      `atlas_person.js must attach ${personMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
     );
   }
-  for (const traceStaticProp of TRACE_STATIC_PROPS) {
-    const sDesc = Object.getOwnPropertyDescriptor(ControllerClass, traceStaticProp);
+  for (const genealogyMethod of GENEALOGY_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, genealogyMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_genealogy.js must attach ${genealogyMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
+  for (const ctrlStaticProp of CONTROLLER_STATIC_PROPS) {
+    const sDesc = Object.getOwnPropertyDescriptor(ControllerClass, ctrlStaticProp);
     assert(
       sDesc && (typeof sDesc.get === 'function' || Array.isArray(sDesc.value)),
-      `atlas_trace.js must attach static property ${traceStaticProp} onto HistoricalAtlasController`
+      `HistoricalAtlasController must expose static property ${ctrlStaticProp}`
     );
   }
   for (const searchMethod of SEARCH_METHODS) {
@@ -809,7 +820,8 @@ async function runCoreDataSuite(ctx) {
     controllerBundles[0].script.runInContext(appOnlySandbox);
     const BaseClass = appOnlySandbox.window.HistoricalAtlasController;
     for (const m of [
-      ...TRACE_METHODS,
+      ...PERSON_METHODS,
+      ...GENEALOGY_METHODS,
       ...SEARCH_METHODS,
       ...API_METHODS,
       ...QUIZ_METHODS,
@@ -830,14 +842,15 @@ async function runCoreDataSuite(ctx) {
     const ReorderedClass = orderSandbox.window.HistoricalAtlasController;
     assert(
       typeof ReorderedClass === 'function' &&
-        TRACE_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        PERSON_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        GENEALOGY_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         SEARCH_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         API_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         QUIZ_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         NARRATOR_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         Array.isArray(ReorderedClass.PERSON_TRACK_PALETTE) &&
         ReorderedClass.PERSON_TRACK_PALETTE.length >= 3,
-      'atlas_trace.js, atlas_search.js, atlas_api.js, atlas_quiz.js, and atlas_narrator.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
+      'atlas_person.js, atlas_genealogy.js, atlas_search.js, atlas_api.js, atlas_quiz.js, and atlas_narrator.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
     );
     assert.strictEqual(
       orderSandbox.window.__ATLAS_MIXINS.length,
@@ -1078,11 +1091,15 @@ async function runCoreDataSuite(ctx) {
         !perfReport.syncScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
         !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_quiz.js') &&
         !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_narrator.js') &&
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_person.js') &&
+        !perfReport.syncScripts.some((s) => s.relPath === 'js/atlas_genealogy.js') &&
         perfReport.lazyScripts.some((s) => s.relPath === 'js/lore_detail.js') &&
         perfReport.lazyScripts.some((s) => s.relPath === 'js/zh_hant.js') &&
         perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_quiz.js') &&
-        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_narrator.js'),
-      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js, js/zh_hant.js, js/atlas_quiz.js, and js/atlas_narrator.js as lazy bundles'
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_narrator.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_person.js') &&
+        perfReport.lazyScripts.some((s) => s.relPath === 'js/atlas_genealogy.js'),
+      'index.html must load js/lore_core.js synchronously and defer js/lore_detail.js, js/zh_hant.js, js/atlas_quiz.js, js/atlas_narrator.js, js/atlas_person.js, and js/atlas_genealogy.js as lazy bundles'
     );
   }
 

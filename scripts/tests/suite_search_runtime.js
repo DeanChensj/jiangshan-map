@@ -2267,7 +2267,6 @@ async function runSearchRuntimeSuite(ctx) {
           'js/map_data.js',
           'js/lore_core.js',
           'js/app.js',
-          'js/atlas_trace.js',
           'js/atlas_search.js',
           'js/atlas_api.js',
         ];
@@ -3949,7 +3948,7 @@ async function runSearchRuntimeSuite(ctx) {
         `atlas_track.js hooks a controller method that no longer exists: ${method}`
       );
     }
-    const ctrlSrc = ['app.js', 'atlas_trace.js', 'atlas_quiz.js']
+    const ctrlSrc = ['app.js', 'atlas_person.js', 'atlas_genealogy.js', 'atlas_quiz.js']
       .map((f) => fs.readFileSync(path.join(JS_DIR, f), 'utf8'))
       .join('\n');
     for (const needle of [
@@ -4195,6 +4194,194 @@ async function runSearchRuntimeSuite(ctx) {
         locItems[2].classList.contains('is-selected') &&
         locItems[2].getAttribute('aria-checked') === 'true',
       'Selecting en in #locale-popover must update is-selected and aria-checked'
+    );
+  }
+
+  // Cold-boot behavior without lazy js/atlas_person.js or js/atlas_genealogy.js attached yet
+  {
+    const coldSandbox = {
+      console,
+      addEventListener: () => {},
+      ATLAS_LORE_DATA: {
+        PERSON_PROFILES: loreData.PERSON_PROFILES,
+        CHINESE_ERA_SPANS: loreData.CHINESE_ERA_SPANS,
+        REGIONAL_ERA_TRACKS: loreData.REGIONAL_ERA_TRACKS,
+        PLACE_GAZETTEER: loreData.PLACE_GAZETTEER,
+      },
+    };
+    coldSandbox.window = coldSandbox;
+    vm.createContext(coldSandbox);
+    for (const rel of ['js/app.js', 'js/atlas_search.js', 'js/atlas_api.js']) {
+      vm.runInContext(fs.readFileSync(path.join(ROOT, rel), 'utf8'), coldSandbox, {
+        filename: path.basename(rel),
+      });
+    }
+    const ColdClass = coldSandbox.window.HistoricalAtlasController;
+    assert.strictEqual(typeof ColdClass.prototype._buildPersonTracksAndEvents, 'undefined');
+    assert.strictEqual(typeof ColdClass.prototype.openGenealogyAt, 'undefined');
+    assert.strictEqual(typeof ColdClass.prototype.openPersonChronicle, 'undefined');
+
+    const loadedScripts = [];
+    let openedPersonArgs = null;
+    let openedGenArgs = null;
+    const coldCtrl = Object.assign(Object.create(ColdClass.prototype), {
+      locale: 'zh',
+      dynasties: ctrl.dynasties,
+      dynastyIdx: 0,
+      year: -221,
+      activeCustomRoute: null,
+      activeMilestone: null,
+      _loreDetailLoaded: false,
+      _id: () => null,
+      _zh: (s) => s,
+      _isLoreDetailLoaded: () => false,
+      _syncMobileOverlayState: () => {},
+      _lazyAssetUrl: (relPath, key) => `${relPath}?v=${key}`,
+      _loadScriptOnce(url) {
+        loadedScripts.push(url);
+        if (url.startsWith('js/atlas_person.js')) {
+          ColdClass.prototype.openPersonChronicle = function (who, idx) {
+            openedPersonArgs = [who, idx];
+            return true;
+          };
+        } else if (url.startsWith('js/atlas_genealogy.js')) {
+          ColdClass.prototype.openGenealogyAt = function (lng, lat, label, opts) {
+            openedGenArgs = [lng, lat, label, opts];
+            return true;
+          };
+        }
+        return Promise.resolve();
+      },
+    });
+    const coldPool = coldCtrl._getSearchShowcasePool();
+    assert(
+      Array.isArray(coldPool) && coldPool.length >= 10 && coldPool.some((x) => x.kind === 'multi_person'),
+      'Cold search showcase pool must populate solo and multi-person entries before atlas_person.js loads'
+    );
+    coldCtrl.closeGenealogyCard();
+    if (typeof coldCtrl._syncTracedPrefecture === 'function') coldCtrl._syncTracedPrefecture();
+
+    const pDone = Promise.resolve(coldCtrl._openPerson('libai', 2)).then((ok) => {
+      assert.strictEqual(ok, true, '_openPerson must resolve true after lazy loading atlas_person.js');
+      assert.deepStrictEqual(openedPersonArgs, ['libai', 2]);
+      assert(loadedScripts.some((u) => u.startsWith('js/atlas_person.js?')));
+    });
+    const gDone = Promise.resolve(coldCtrl._openGenealogy(108.94, 34.26, '长安', { testFlag: 1 })).then((ok) => {
+      assert.strictEqual(ok, true, '_openGenealogy must resolve true after lazy loading atlas_genealogy.js');
+      assert.deepStrictEqual(openedGenArgs, [108.94, 34.26, '长安', { testFlag: 1 }]);
+      assert(loadedScripts.some((u) => u.startsWith('js/atlas_genealogy.js?')));
+    });
+    await Promise.all([pDone, gDone]);
+
+    // Offline resilience: failed lazy fetch shows retry card, cancels cleanly on close, and auto-recovers on 'online'.
+    const onlineListeners = new Set();
+    let removedCount = 0;
+    const offlineSandbox = {
+      console,
+      addEventListener: (ev, fn) => {
+        if (ev === 'online') onlineListeners.add(fn);
+      },
+      removeEventListener: (ev, fn) => {
+        if (ev === 'online' && onlineListeners.delete(fn)) removedCount++;
+      },
+      ATLAS_LORE_DATA: {
+        PERSON_PROFILES: loreData.PERSON_PROFILES,
+        CHINESE_ERA_SPANS: loreData.CHINESE_ERA_SPANS,
+        REGIONAL_ERA_TRACKS: loreData.REGIONAL_ERA_TRACKS,
+        PLACE_GAZETTEER: loreData.PLACE_GAZETTEER,
+      },
+    };
+    offlineSandbox.window = offlineSandbox;
+    vm.createContext(offlineSandbox);
+    for (const rel of ['js/app.js', 'js/atlas_search.js', 'js/atlas_api.js']) {
+      vm.runInContext(fs.readFileSync(path.join(ROOT, rel), 'utf8'), offlineSandbox, {
+        filename: path.basename(rel),
+      });
+    }
+    const OfflineClass = offlineSandbox.window.HistoricalAtlasController;
+    const makeDomNode = () => {
+      const classes = new Set(['is-hidden']);
+      let html = '';
+      const listeners = {};
+      return {
+        textContent: '',
+        get innerHTML() {
+          return html;
+        },
+        set innerHTML(v) {
+          html = String(v);
+        },
+        classList: {
+          add: (...c) => c.forEach((x) => classes.add(x)),
+          remove: (...c) => c.forEach((x) => classes.delete(x)),
+          contains: (c) => classes.has(c),
+        },
+        addEventListener: (ev, fn) => {
+          (listeners[ev] = listeners[ev] || []).push(fn);
+        },
+        _listeners: listeners,
+      };
+    };
+    const retryBtnNode = makeDomNode();
+    const domNodes = {
+      'genealogy-card': makeDomNode(),
+      'txt-genealogy-kicker': makeDomNode(),
+      'genealogy-heading': makeDomNode(),
+      'genealogy-sub': makeDomNode(),
+      'genealogy-lore': makeDomNode(),
+      'genealogy-timeline': makeDomNode(),
+      'genealogy-foot': makeDomNode(),
+      'viewport-frame': makeDomNode(),
+      'act-retry-lazy': retryBtnNode,
+    };
+    let shouldFailLazy = true;
+    let recoveredGenArgs = null;
+    const offCtrl = Object.assign(Object.create(OfflineClass.prototype), {
+      locale: 'zh',
+      activeCustomRoute: null,
+      activeMilestone: null,
+      _id: (id) => domNodes[id] || null,
+      _zh: (s) => s,
+      _syncMobileOverlayState: () => {},
+      _lazyAssetUrl: (relPath, key) => `${relPath}?v=${key}`,
+      _loadScriptOnce() {
+        if (!shouldFailLazy) {
+          OfflineClass.prototype.openGenealogyAt = function (lng, lat, label, opts) {
+            recoveredGenArgs = [lng, lat, label, opts];
+            return true;
+          };
+        }
+        return Promise.resolve();
+      },
+    });
+    const offOk = await offCtrl._openGenealogy(108.94, 34.26, '长安');
+    assert.strictEqual(offOk, false, 'Offline _openGenealogy must return false cleanly when bundle fails to load');
+    assert.strictEqual(
+      domNodes['genealogy-card'].classList.contains('is-hidden'),
+      false,
+      'Offline failure must surface #genealogy-card instead of failing silently'
+    );
+    assert(
+      domNodes['genealogy-sub'].innerHTML.includes('id="act-retry-lazy"'),
+      'Offline failure card must render #act-retry-lazy retry action'
+    );
+    assert.strictEqual(onlineListeners.size, 1, 'Offline failure must register one online auto-recovery listener');
+
+    offCtrl.closeGenealogyCard();
+    assert.strictEqual(onlineListeners.size, 0, 'closeGenealogyCard must clear pending online auto-retry listener');
+    assert(removedCount >= 1, 'closeGenealogyCard must remove the online listener from window');
+
+    await offCtrl._openGenealogy(108.94, 34.26, '长安');
+    assert.strictEqual(onlineListeners.size, 1);
+    shouldFailLazy = false;
+    for (const fn of Array.from(onlineListeners)) {
+      onlineListeners.delete(fn);
+      await fn();
+    }
+    assert.deepStrictEqual(
+      JSON.parse(JSON.stringify(recoveredGenArgs)),
+      [108.94, 34.26, '长安', {}],
+      'Reconnecting online must automatically retry and open the deferred genealogy view'
     );
   }
 }
