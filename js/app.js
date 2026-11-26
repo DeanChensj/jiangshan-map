@@ -3983,8 +3983,11 @@
             },
             group
           );
-          this._svgNode('circle', { class: 'ev-hit', r: 7 }, pin);
-          this._svgNode('circle', { class: 'ev-ring', r: 7 }, pin);
+          this._svgNode('circle', { class: 'ev-hit', r: 10 }, pin);
+          this._svgNode('circle', { class: 'ev-halo-bg', r: 7.4 }, pin);
+          this._svgNode('circle', { class: 'ev-halo', r: 7.4 }, pin);
+          this._svgNode('circle', { class: 'ev-ring', r: 7.8 }, pin);
+          this._svgNode('circle', { class: 'ev-ring ev-ring-2', r: 7.8 }, pin);
           this._svgNode('polygon', { class: 'ev-core', points: '0,-3.9 3.9,0 0,3.9 -3.9,0' }, pin);
         });
       });
@@ -4571,6 +4574,51 @@
       const yrText = this.formatYear(m.year);
       const eraLabel = this._eventEraLabel(dynasty, m);
       const headlineText = this.milestoneHeadline(dynasty, m);
+      const pillsData = this._buildMilestonePillsData(dynasty, m, anchors);
+      const { placeHtml, relicStopIdx, relicHtml, storyHit, storyHtml, placeEstText, relicLabel, storyLabel } =
+        pillsData;
+      const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
+      this.milestoneBalloon.innerHTML =
+        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}${storyHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
+        `<div class="ep-text">${headlineText}</div>`;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+      const isMultiAnchor = anchors.length >= 2;
+      const maxW = isMobile ? Math.min(268, (window.innerWidth || 390) - 20) : 348;
+      const headW =
+        this._estimateLocalTextWidth(
+          `${yrText} · ${eraLabel}${placeEstText ? ` ${placeEstText}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}${storyHit ? ` 事 ${storyLabel}` : ''}`,
+          11.5,
+          0
+        ) + (isMultiAnchor ? 40 + anchors.length * 22 : 52);
+      const textW = this._estimateLocalTextWidth(headlineText, isMobile ? 11.5 : 12.2, 0);
+      const estW = Math.round(
+        Math.max(isMobile ? 190 : 220, Math.min(maxW, Math.max(headW, textW + 24)))
+      );
+      const headLines = Math.max(1, Math.ceil(headW / Math.max(120, estW - 28)));
+      const textLines = Math.max(1, Math.ceil(textW / Math.max(120, estW - 22)));
+      const estH = Math.round(16 + headLines * (isMobile ? 22 : 20) + textLines * 17.5);
+      this._milestoneBalloonSize = { w: estW, h: estH };
+      this._bindMilestonePills(this.milestoneBalloon, dynasty, m, anchors, relicStopIdx, storyHit);
+      const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this.dismissedCalloutIds && mIdx >= 0) {
+            this.dismissedCalloutIds.add(`${dynasty.key}:${mIdx}`);
+          }
+          this.closeMilestoneBalloon();
+        });
+      }
+      this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
+      if (this.locale === 'zh-tw') this._applyZhHantDom(this.milestoneBalloon);
+      this._syncMobileChroniclePeek(dynasty, m, { anchors, pillsData, headlineText });
+      this._measureMilestoneBalloonSize(estW, estH);
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-open-milestone-balloon');
+      this._positionMilestoneBalloon();
+    }
+
+    _buildMilestonePillsData(dynasty, m, anchors) {
       const traceTitle =
         this.locale === 'en' ? 'Click to trace place history' : '点击查看此地历代沿革（点地溯源）';
       const isMultiAnchor = anchors.length >= 2;
@@ -4609,30 +4657,25 @@
       const storyHtml = storyHit
         ? `<button type="button" class="ep-relic-seal ep-story-seal" title="${storyTitle}"><span class="seal-stamp">事</span><span>${storyLabel}</span></button>`
         : '';
-      const closeTitle = this.locale === 'en' ? 'Dismiss event callout' : '关闭此事件浮签';
-      this.milestoneBalloon.innerHTML =
-        `<div class="ep-head"><span class="ep-year">${yrText} · ${eraLabel}</span>${placeHtml}${relicHtml}${storyHtml}<button type="button" class="ep-close" title="${closeTitle}" aria-label="${closeTitle}">×</button></div>` +
-        `<div class="ep-text">${headlineText}</div>`;
-      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
-      const maxW = isMobile ? Math.min(268, (window.innerWidth || 390) - 20) : 348;
-      const headW =
-        this._estimateLocalTextWidth(
-          `${yrText} · ${eraLabel}${placeEstText ? ` ${placeEstText}` : ''}${relicStopIdx !== null ? ` 玺 ${relicLabel}` : ''}${storyHit ? ` 事 ${storyLabel}` : ''}`,
-          11.5,
-          0
-        ) + (isMultiAnchor ? 40 + anchors.length * 22 : 52);
-      const textW = this._estimateLocalTextWidth(headlineText, isMobile ? 11.5 : 12.2, 0);
-      const estW = Math.round(
-        Math.max(isMobile ? 190 : 220, Math.min(maxW, Math.max(headW, textW + 24)))
-      );
-      const headLines = Math.max(1, Math.ceil(headW / Math.max(120, estW - 28)));
-      const textLines = Math.max(1, Math.ceil(textW / Math.max(120, estW - 22)));
-      const estH = Math.round(16 + headLines * (isMobile ? 22 : 20) + textLines * 17.5);
-      this._milestoneBalloonSize = { w: estW, h: estH };
+      return {
+        pillsInner,
+        placeHtml,
+        relicStopIdx,
+        relicHtml,
+        storyHit,
+        storyHtml,
+        placeEstText,
+        relicLabel,
+        storyLabel,
+      };
+    }
+
+    _bindMilestonePills(container, dynasty, m, anchors, relicStopIdx, storyHit) {
+      if (!container) return;
       const placeBtns =
-        typeof this.milestoneBalloon.querySelectorAll === 'function'
-          ? Array.from(this.milestoneBalloon.querySelectorAll('.ep-place'))
-          : [this.milestoneBalloon.querySelector('.ep-place')].filter(Boolean);
+        typeof container.querySelectorAll === 'function'
+          ? Array.from(container.querySelectorAll('.ep-place'))
+          : [container.querySelector('.ep-place')].filter(Boolean);
       placeBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -4654,36 +4697,62 @@
           this._panToward(targetCoord[0], targetCoord[1]);
         });
       });
-      const relicBtn = this.milestoneBalloon.querySelector('.ep-relic-seal:not(.ep-story-seal)');
+      const relicBtn =
+        typeof container.querySelector === 'function'
+          ? container.querySelector('.ep-relic-seal:not(.ep-story-seal)')
+          : null;
       if (relicBtn && relicStopIdx !== null) {
         relicBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.openPersonChronicle('yuxi', relicStopIdx);
         });
       }
-      const storyBtn = this.milestoneBalloon.querySelector('.ep-story-seal');
+      const storyBtn =
+        typeof container.querySelector === 'function'
+          ? container.querySelector('.ep-story-seal')
+          : null;
       if (storyBtn && storyHit) {
         storyBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.openPersonChronicle(storyHit.key, storyHit.stopIdx);
         });
       }
-      const closeBtn = this.milestoneBalloon.querySelector('.ep-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (this.dismissedCalloutIds && mIdx >= 0) {
-            this.dismissedCalloutIds.add(`${dynasty.key}:${mIdx}`);
-          }
-          this.closeMilestoneBalloon();
-        });
+    }
+
+    _syncMobileChroniclePeek(dynasty, m, prebuilt = null) {
+      const pane = this._id('chronicle-pane');
+      const pillsEl = this._id('mobile-peek-pills');
+      const textEl = this._id('mobile-peek-text');
+      if (!pane || !pillsEl || !textEl || !pane.classList) return;
+      const milestonesHidden =
+        this.grpMilestones &&
+        this.grpMilestones.classList &&
+        this.grpMilestones.classList.contains('is-hidden');
+      const hidden =
+        !dynasty || !m || milestonesHidden || this.activePolity || this.activePerson || this.challenge;
+      if (hidden) {
+        pane.classList.remove('has-mobile-peek');
+        pillsEl.innerHTML = '';
+        textEl.textContent = '';
+        this._updateMobileChronicleBtn(this.dynasties[this.dynastyIdx]);
+        return;
       }
-      this.milestoneBalloon.classList.remove('is-hidden', 'is-offscreen');
-      if (this.locale === 'zh-tw') this._applyZhHantDom(this.milestoneBalloon);
-      this._measureMilestoneBalloonSize(estW, estH);
-      const vf = this._id('viewport-frame');
-      if (vf) vf.classList.add('has-open-milestone-balloon');
-      this._positionMilestoneBalloon();
+      const anchors = (prebuilt && prebuilt.anchors) || this._getMilestoneAnchors(dynasty, m);
+      const pillsData = (prebuilt && prebuilt.pillsData) || this._buildMilestonePillsData(dynasty, m, anchors);
+      const headlineText = (prebuilt && prebuilt.headlineText) || this.milestoneHeadline(dynasty, m);
+      pillsEl.innerHTML = `${pillsData.pillsInner}${pillsData.relicHtml}${pillsData.storyHtml}`;
+      this._bindMilestonePills(pillsEl, dynasty, m, anchors, pillsData.relicStopIdx, pillsData.storyHit);
+      textEl.textContent = headlineText;
+      if (typeof textEl.setAttribute === 'function') {
+        const tip = this.locale === 'en' ? 'Expand chronicle list' : '展开本朝大事记';
+        textEl.setAttribute('aria-label', `${headlineText} · ${tip}`);
+      }
+      if (this.locale === 'zh-tw') {
+        this._applyZhHantDom(pillsEl);
+        this._applyZhHantDom(textEl);
+      }
+      pane.classList.add('has-mobile-peek');
+      this._updateMobileChronicleBtn(dynasty);
     }
 
     // Box of the event city's name, in the same coordinates as the balloon. The event
@@ -4861,6 +4930,7 @@
       this.grpMilestones
         .querySelectorAll('.milestone-pin.is-active')
         .forEach((n) => n.classList.remove('is-active'));
+      this._syncMobileChroniclePeek(null, null);
     }
 
     _setPolityFocus(targetTitle) {
@@ -5424,6 +5494,7 @@
       this._setPolityFocus(null);
       this._lastLegendKey = null;
       if (this.lastRenderedSnap) this._renderLegendBox(this.lastRenderedSnap);
+      if (cur) this._syncAutoMilestoneBalloon(cur);
     }
 
     _resetPolityPaneChrome() {
@@ -6240,20 +6311,37 @@
             }
             return;
           }
-          if (activeIdx < 0) return;
-          if (activeIdx === 0) {
-            if (pane.scrollTop > 0) {
-              pane.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-            return;
-          }
-          if (items[activeIdx] && pane.scrollHeight > pane.clientHeight) {
-            const el = items[activeIdx];
-            const elTop = el.offsetTop - pane.offsetTop;
-            const targetTop = Math.max(0, elTop - pane.clientHeight * 0.42);
-            pane.scrollTo({ top: targetTop, behavior: 'smooth' });
-          }
+          this._scrollCurrentMilestoneIntoView(pane, activeIdx, 'smooth');
         });
+      }
+    }
+
+    _scrollCurrentMilestoneIntoView(pane, activeIdx, behavior = 'smooth') {
+      const listEl = this._id('milestone-list');
+      if (!pane || !listEl || activeIdx < 0) return;
+      const items = listEl.children;
+      if (!items || !items[activeIdx]) return;
+      if (activeIdx === 0) {
+        if (pane.scrollTop > 0) {
+          if (typeof pane.scrollTo === 'function') {
+            pane.scrollTo({ top: 0, behavior });
+          } else {
+            pane.scrollTop = 0;
+          }
+        }
+        return;
+      }
+      if (pane.scrollHeight <= pane.clientHeight) return;
+      const el = items[activeIdx];
+      const banner = this._id('dynasty-banner-bar');
+      const bannerH = (banner && banner.offsetHeight) || 0;
+      const elTop = el.offsetTop - pane.offsetTop;
+      const headroom = Math.max(bannerH + 10, pane.clientHeight * 0.34);
+      const targetTop = Math.max(0, elTop - headroom);
+      if (typeof pane.scrollTo === 'function') {
+        pane.scrollTo({ top: targetTop, behavior });
+      } else {
+        pane.scrollTop = targetTop;
       }
     }
 
@@ -8041,6 +8129,7 @@
         force !== undefined ? force : !this.mobileChronicleOpen;
       // The sheet is a grid row, so toggling it resizes the map over a 0.22s transition.
       if (wasOpen !== this.mobileChronicleOpen) this._mobileSheetToggledAt = Date.now();
+      const cur = this.dynasties[this.dynastyIdx];
       if (this.mobileChronicleOpen) {
         if (this.paneCollapsed) {
           this.paneCollapsed = false;
@@ -8054,18 +8143,31 @@
         }
       }
       const pane = this._id('chronicle-pane');
-      if (pane) {
+      const activeIdx = cur && !this.activePolity ? this._activeMilestoneIndex(cur) : -1;
+      if (pane && (!this.mobileChronicleOpen || activeIdx <= 0)) {
         pane.scrollTop = 0;
       }
       const body = this._id('workspace-body');
       if (body) {
         body.classList.toggle('is-mobile-chronicle-open', this.mobileChronicleOpen);
       }
-      this._updateMobileChronicleBtn(this.dynasties[this.dynastyIdx]);
+      if (this.mobileChronicleOpen && cur) {
+        if (typeof this._highlightCurrentMilestone === 'function') {
+          this._highlightCurrentMilestone(cur);
+        }
+        if (pane && activeIdx > 0) {
+          this._scrollCurrentMilestoneIntoView(pane, activeIdx, 'instant');
+        }
+      } else if (!this.mobileChronicleOpen && cur && typeof this._syncAutoMilestoneBalloon === 'function') {
+        this._syncAutoMilestoneBalloon(cur);
+      }
+      this._updateMobileChronicleBtn(cur);
       this._syncTogglePaneButton();
       setTimeout(() => {
         if (pane && !this.mobileChronicleOpen) {
           pane.scrollTop = 0;
+        } else if (pane && this.mobileChronicleOpen && activeIdx > 0) {
+          this._scrollCurrentMilestoneIntoView(pane, activeIdx, 'instant');
         }
         this._updateScaleBar();
         if (this.activeMilestone) this._positionMilestoneBalloon();
@@ -8079,12 +8181,21 @@
       const count = (cur && cur.milestones && cur.milestones.length) || 0;
       btn.setAttribute('aria-expanded', this.mobileChronicleOpen ? 'true' : 'false');
       if (this.mobileChronicleOpen) {
-        btn.textContent = this.locale === 'en' ? 'Collapse ▾' : '收起史志 ▾';
+        btn.textContent = this.locale === 'en' ? 'Collapse ▾' : this._zh('收起史志 ▾');
       } else {
-        btn.textContent =
-          this.locale === 'en'
-            ? `Chronicle (${count}) ▲`
-            : `史志 · 事件 (${count}) ▲`;
+        const pane = this._id('chronicle-pane');
+        const hasPeek = Boolean(
+          pane && pane.classList && pane.classList.contains('has-mobile-peek') && this._isMobileViewport()
+        );
+        if (hasPeek) {
+          btn.textContent =
+            this.locale === 'en' ? `Events · ${count} ▲` : this._zh(`史志 · ${count} ▲`);
+        } else {
+          btn.textContent =
+            this.locale === 'en'
+              ? `Chronicle (${count}) ▲`
+              : this._zh(`史志 · 事件 (${count}) ▲`);
+        }
       }
     }
 
@@ -10357,6 +10468,21 @@
         dynBannerBar.addEventListener('click', () => {
           if (window.innerWidth <= 900) {
             this.toggleMobileChronicle();
+          }
+        });
+      }
+      const mobPeekText = this._id('mobile-peek-text');
+      if (mobPeekText) {
+        mobPeekText.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this._isMobileViewport() && !this.mobileChronicleOpen) {
+            this.toggleMobileChronicle(true);
+          }
+        });
+        mobPeekText.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && this._isMobileViewport() && !this.mobileChronicleOpen) {
+            e.preventDefault();
+            this.toggleMobileChronicle(true);
           }
         });
       }

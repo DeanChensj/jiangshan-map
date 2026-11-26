@@ -2039,6 +2039,150 @@ async function runApiSearchSuite(ctx) {
     assert(readmeHoverLinks >= 4, 'README hover deep links must be covered by this check');
   }
 
+  // CUJ 23: Mobile Chronicle Peek Bar, Drawer Auto-Scroll to Current Milestone & Enhanced Pulse SVG
+  {
+    const tang = dynasties.find((d) => d.key === 'tang');
+    const idx755 = tang.milestones.findIndex((m) => m.year === 755);
+    assert(idx755 > 0, 'Expected tang:755 milestone at index > 0');
+    const peekClasses = new Set();
+    const mockPeekPane = {
+      scrollTop: 0,
+      scrollHeight: 900,
+      clientHeight: 310,
+      offsetTop: 0,
+      scrolledTo: null,
+      scrollTo(opts) {
+        this.scrolledTo = opts;
+        if (opts && typeof opts.top === 'number') this.scrollTop = opts.top;
+      },
+      classList: {
+        add(c) { peekClasses.add(c); },
+        remove(c) { peekClasses.delete(c); },
+        contains(c) { return peekClasses.has(c); },
+      },
+    };
+    const mockPills = {
+      innerHTML: '',
+      classList: { contains: () => false },
+      querySelectorAll: () => [],
+      querySelector: () => null,
+    };
+    const mockText = {
+      textContent: '',
+      attrs: {},
+      setAttribute(k, v) { this.attrs[k] = v; },
+    };
+    const mockListItems = tang.milestones.map((_, idx) => ({
+      offsetTop: 120 + idx * 54,
+      offsetHeight: 46,
+      classList: {
+        active: false,
+        toggle(c, val) { if (c === 'is-current') this.active = Boolean(val); },
+      },
+    }));
+    const mockUl = { children: mockListItems };
+    const mockBanner = { offsetHeight: 56 };
+    const mockMobBtn = { textContent: '', setAttribute() {} };
+    const prevId = ctrl._id;
+    const prevPane = ctrl.paneCollapsed;
+    const prevMob = ctrl.mobileChronicleOpen;
+    const prevIsMob = ctrl._isMobileViewport;
+    const prevPos = ctrl._positionMilestoneBalloon;
+    const prevScale = ctrl._updateScaleBar;
+    const prevCloseGen = ctrl.closeGenealogyCard;
+    const prevCloseBalloon = ctrl.closeMilestoneBalloon;
+    const prevHighlight = ctrl._highlightCurrentMilestone;
+    const prevSyncSource = ctrl._syncMilestoneSource;
+    const prevSvgNode = ctrl._svgNode;
+    const prevRescale = ctrl._rescaleSvgTypography;
+    ctrl._id = (id) => {
+      if (id === 'chronicle-pane') return mockPeekPane;
+      if (id === 'mobile-peek-pills') return mockPills;
+      if (id === 'mobile-peek-text') return mockText;
+      if (id === 'milestone-list') return mockUl;
+      if (id === 'dynasty-banner-bar') return mockBanner;
+      if (id === 'act-mobile-chronicle') return mockMobBtn;
+      if (id === 'workspace-body') return { classList: { remove() {}, toggle() {} } };
+      return prevId ? prevId.call(ctrl, id) : null;
+    };
+    delete ctrl._highlightCurrentMilestone;
+    delete ctrl.closeMilestoneBalloon;
+    ctrl._syncMilestoneSource = () => {};
+    ctrl._isMobileViewport = () => true;
+    ctrl._positionMilestoneBalloon = () => {};
+    ctrl._updateScaleBar = () => {};
+    ctrl.closeGenealogyCard = () => {};
+    ctrl.activePerson = null;
+    ctrl.activePolity = null;
+    ctrl.challenge = null;
+    ctrl.mobileChronicleOpen = false;
+    ctrl.paneCollapsed = false;
+    ctrl._lastHighlightedMilestoneKey = null;
+    ctrl.jumpToYear(-403);
+    ctrl.jumpToYear(755);
+    ctrl.openMilestoneBalloon(tang, tang.milestones[idx755]);
+    assert(
+      peekClasses.has('has-mobile-peek') &&
+        mockPills.innerHTML.includes('ep-place') &&
+        mockPills.innerHTML.includes('ep-story-seal') &&
+        mockText.textContent.includes('安史之乱') &&
+        mockMobBtn.textContent === '史志 · 63 ▲',
+      `Expected mobile chronicle peek on tang:755 with place/story pills, headline, and compact button, got pills=${mockPills.innerHTML}, text=${mockText.textContent}, btn=${mockMobBtn.textContent}`
+    );
+    ctrl.toggleMobileChronicle(true);
+    assert(
+      ctrl.mobileChronicleOpen === true &&
+        mockPeekPane.scrolledTo &&
+        mockPeekPane.scrolledTo.top > 0 &&
+        mockListItems[idx755].classList.active === true,
+      `Expanding mobile chronicle on tang:755 must auto-scroll toward active milestone instead of pinning top=0, got ${JSON.stringify(mockPeekPane.scrolledTo)}, active=${mockListItems[idx755].classList.active}`
+    );
+    ctrl.toggleMobileChronicle(false);
+    assert(
+      ctrl.mobileChronicleOpen === false &&
+        mockPeekPane.scrollTop === 0 &&
+        peekClasses.has('has-mobile-peek'),
+      'Collapsing mobile chronicle must reset scrollTop and re-sync mobile peek bar'
+    );
+    ctrl.closeMilestoneBalloon();
+    assert(
+      !peekClasses.has('has-mobile-peek') && mockPills.innerHTML === '' && mockText.textContent === '',
+      'Closing milestone must clear has-mobile-peek cleanly'
+    );
+    const svgClasses = new Set();
+    ctrl._svgNode = (tag, attrs) => {
+      if (attrs && attrs.class) {
+        String(attrs.class).split(/\s+/).forEach((c) => svgClasses.add(c));
+      }
+      return { tag, attrs, dataset: {}, appendChild() {}, setAttribute() {}, classList: { toggle() {}, contains: () => false } };
+    };
+    ctrl._rescaleSvgTypography = () => {};
+    ctrl._renderMilestones(tang);
+    assert(
+      svgClasses.has('ev-halo-bg') &&
+        svgClasses.has('ev-halo') &&
+        svgClasses.has('ev-ring') &&
+        svgClasses.has('ev-ring-2') &&
+        svgClasses.has('ev-core'),
+      `Milestone SVG pins must include double-halo and staggered pulse ring layers, got ${[...svgClasses].join(',')}`
+    );
+    ctrl._id = prevId;
+    ctrl._isMobileViewport = prevIsMob;
+    ctrl._positionMilestoneBalloon = prevPos;
+    ctrl._updateScaleBar = prevScale;
+    ctrl.closeGenealogyCard = prevCloseGen;
+    ctrl.closeMilestoneBalloon = prevCloseBalloon;
+    ctrl._highlightCurrentMilestone = prevHighlight;
+    if (prevSyncSource) ctrl._syncMilestoneSource = prevSyncSource;
+    else delete ctrl._syncMilestoneSource;
+    ctrl._svgNode = prevSvgNode;
+    if (prevRescale) ctrl._rescaleSvgTypography = prevRescale;
+    else delete ctrl._rescaleSvgTypography;
+    ctrl.mobileChronicleOpen = prevMob;
+    ctrl.paneCollapsed = prevPane;
+    ctrl.activeMilestone = null;
+  }
+
   ctx.stats.sweptYears = sweptYears;
   ctx.stats.totalJourneyStops = totalJourneyStops;
 }

@@ -1288,11 +1288,11 @@ html.deeplink-boot #inp-year {
   pointer-events: all;
 }
 
+.milestone-pin .ev-halo-bg,
+.milestone-pin .ev-halo,
 .milestone-pin .ev-ring {
-  fill: var(--vermilion);
-  fill-opacity: 0;
-  stroke: var(--vermilion);
-  stroke-opacity: 0;
+  fill: none;
+  opacity: 0;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
@@ -1321,8 +1321,9 @@ html.deeplink-boot #inp-year {
 .milestone-pin.is-active .ev-core {
   fill: var(--vermilion);
   stroke: #fff6e8;
+  stroke-width: 1.5;
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.16);
 }
 
 @media (hover: hover) {
@@ -1330,28 +1331,76 @@ html.deeplink-boot #inp-year {
     fill: var(--vermilion);
     stroke: #fff6e8;
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.1);
   }
 }
 
 .milestone-pin.is-anchor-pin.is-current .ev-core {
-  stroke-width: 1.45;
+  stroke-width: 1.7;
 }
 
-.milestone-pin.is-current .ev-ring {
-  fill-opacity: 0.25;
-  stroke-opacity: 0.7;
+.milestone-pin.is-current .ev-halo-bg,
+.milestone-pin.is-active .ev-halo-bg {
+  stroke: rgba(255, 250, 240, 0.94);
+  stroke-width: 2.5px;
+  opacity: 0.95;
+}
+
+.milestone-pin.is-current .ev-halo,
+.milestone-pin.is-active .ev-halo {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.4px;
+  opacity: 0.9;
+}
+
+.milestone-pin.is-current .ev-ring,
+.milestone-pin.is-active .ev-ring {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.35px;
+  stroke-opacity: 0.62;
   opacity: 0;
-  animation: milestonePulse 1.8s ease-out infinite;
+  animation: milestonePulse 1.65s ease-out 2 forwards;
+}
+
+.milestone-pin.is-current .ev-ring-2,
+.milestone-pin.is-active .ev-ring-2 {
+  animation-delay: 0.45s;
+}
+
+.milestone-pin.is-secondary-pin.is-current .ev-halo-bg,
+.milestone-pin.is-secondary-pin.is-current .ev-halo,
+.milestone-pin.is-secondary-pin.is-active .ev-halo-bg,
+.milestone-pin.is-secondary-pin.is-active .ev-halo {
+  opacity: 0.78;
+}
+
+.milestone-pin.is-secondary-pin.is-current .ev-ring-2,
+.milestone-pin.is-secondary-pin.is-active .ev-ring-2 {
+  display: none;
+}
+
+.milestone-pin.is-secondary-pin.is-current .ev-ring,
+.milestone-pin.is-secondary-pin.is-active .ev-ring {
+  stroke-opacity: 0.48;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .milestone-pin.is-current .ev-ring,
+  .milestone-pin.is-active .ev-ring {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 @keyframes milestonePulse {
   0% {
-    transform: scale(0.56);
-    opacity: 1;
+    transform: scale(1);
+    opacity: 0.78;
   }
   100% {
-    transform: scale(2);
+    transform: scale(2.65);
     opacity: 0;
   }
 }
@@ -2669,6 +2718,11 @@ html[lang="en"] #gesture-guide {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.mobile-peek-pills,
+.mobile-peek-text {
+  display: none;
 }
 
 .dynasty-title-row {
@@ -5004,6 +5058,136 @@ html[lang="en"] #act-toggle-pane .tp-label {
     display: none;
   }
 
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek {
+    padding: 6px 10px 7px;
+    gap: 4px;
+    background: #faf5ea;
+    border-top: 1px solid rgba(181, 69, 47, 0.28);
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .dynasty-banner {
+    gap: 4px 6px;
+    flex-wrap: nowrap;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .dynasty-title-row {
+    flex: 0 0 auto;
+    gap: 0;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek #dynasty-title {
+    font-size: 15.5px;
+    color: var(--vermilion);
+  }
+
+  html[lang="en"] #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek #dynasty-title {
+    font-size: 13.5px;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek #dynasty-span {
+    display: none;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills {
+    order: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills .ep-place {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--text-secondary);
+    font-size: 10.5px;
+    height: 19px;
+    line-height: 17px;
+    padding: 0 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(181, 69, 47, 0.24);
+    background: rgba(181, 69, 47, 0.06);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: var(--sans-stack);
+    cursor: pointer;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills .ep-place:active {
+    transform: scale(0.97);
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills .ep-relic-seal {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10.5px;
+    height: 19px;
+    line-height: 17px;
+    padding: 0 6px 0 3px;
+    border-radius: 999px;
+    border: 1px solid rgba(180, 40, 30, 0.42);
+    background: rgba(180, 40, 30, 0.09);
+    color: #9e2218;
+    font-family: var(--serif-stack);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-pills .seal-stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    background: #b4281e;
+    color: #fffaf0;
+    font-size: 9px;
+    line-height: 1;
+    font-family: var(--serif-stack);
+    box-shadow: inset 0 0 0 1px rgba(255, 248, 236, 0.55);
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-chronicle-btn {
+    order: 3;
+    padding: 2px 7px;
+    font-size: 10.5px;
+    flex-shrink: 0;
+  }
+
+  #workspace-body:not(.is-mobile-chronicle-open) #chronicle-pane.has-mobile-peek .mobile-peek-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 3.5px 8px;
+    background: rgba(255, 253, 248, 0.78);
+    border-left: 2.5px solid var(--vermilion);
+    border-radius: 0 5px 5px 0;
+    font-size: 11.8px;
+    line-height: 1.38;
+    font-weight: 500;
+    color: #241c15;
+    cursor: pointer;
+  }
+
+  #workspace-body.is-mobile-chronicle-open #chronicle-pane .mobile-peek-pills,
+  #workspace-body.is-mobile-chronicle-open #chronicle-pane .mobile-peek-text {
+    display: none;
+  }
+
   #workspace-body.is-mobile-chronicle-open #chronicle-pane .dynasty-banner {
     position: sticky;
     top: 0;
@@ -5258,11 +5442,28 @@ html[lang="en"] #act-toggle-pane .tp-label {
     font-size: 14px;
   }
 
+  #milestone-balloon,
   #viewport-frame.has-active-journey #milestone-balloon,
   #viewport-frame.has-active-challenge #milestone-balloon,
   #viewport-frame.has-active-genealogy #milestone-balloon,
   #workspace-body.is-mobile-chronicle-open #milestone-balloon {
     display: none !important;
+  }
+
+  .milestone-pin.is-current .ev-halo-bg,
+  .milestone-pin.is-active .ev-halo-bg {
+    stroke-width: 2.8px;
+  }
+
+  .milestone-pin.is-current .ev-halo,
+  .milestone-pin.is-active .ev-halo {
+    stroke-width: 1.55px;
+  }
+
+  .milestone-pin.is-current .ev-ring,
+  .milestone-pin.is-active .ev-ring {
+    stroke-width: 1.45px;
+    stroke-opacity: 0.68;
   }
 }
 /* =========================================================================
