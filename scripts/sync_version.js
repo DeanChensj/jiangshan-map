@@ -101,9 +101,8 @@ function applyHashesToIndexHtml(indexHtml, hashes) {
   const appTagRe = /<script\b[^>]*\bsrc="js\/app\.js\?v=[0-9a-zA-Z_.-]+"[^>]*><\/script>/;
   const appTagMatch = out.match(appTagRe);
   assert(appTagMatch, 'Expected <script ... src="js/app.js?v=..."> tag in index.html');
-  const deferAttr = /\bdefer\b/i.test(appTagMatch[0]) ? ' defer' : '';
   const expectedAppTag =
-    `<script${deferAttr} id="atlas-app-script" src="js/app.js?v=${hashes['js/app.js']}"` +
+    `<script defer id="atlas-app-script" src="js/app.js?v=${hashes['js/app.js']}"` +
     LAZY_ATTR_ASSETS.map(({ attr, relPath }) => ` ${attr}="${hashes[relPath]}"`).join('') +
     '></script>';
   out = out.replace(appTagRe, expectedAppTag);
@@ -188,13 +187,25 @@ function verifyIndexHtmlAssetHashes(rootDir = ROOT, indexHtmlInput = null, appCo
   const mismatches = [];
 
   for (const relPath of STATIC_TAG_ASSETS) {
-    const attrName = relPath.endsWith('.css') ? 'href' : 'src';
-    const re = new RegExp(`${attrName}="${escapeRegExp(relPath)}\\?v=([0-9a-zA-Z_.-]+)"`);
+    const isCss = relPath.endsWith('.css');
+    const attrName = isCss ? 'href' : 'src';
+    const re = isCss
+      ? new RegExp(`${attrName}="${escapeRegExp(relPath)}\\?v=([0-9a-zA-Z_.-]+)"`)
+      : new RegExp(`<script\\b([^>]*?)\\bsrc="${escapeRegExp(relPath)}\\?v=([0-9a-zA-Z_.-]+)"([^>]*)><\\/script>`);
     const m = indexHtml.match(re);
     if (!m) {
       mismatches.push(`missing ${attrName}="${relPath}?v=..." in index.html`);
-    } else if (m[1] !== hashes[relPath]) {
-      mismatches.push(`${relPath}: index.html has ?v=${m[1]}, expected ?v=${hashes[relPath]}`);
+    } else if (isCss) {
+      if (m[1] !== hashes[relPath]) {
+        mismatches.push(`${relPath}: index.html has ?v=${m[1]}, expected ?v=${hashes[relPath]}`);
+      }
+    } else {
+      if (m[2] !== hashes[relPath]) {
+        mismatches.push(`${relPath}: index.html has ?v=${m[2]}, expected ?v=${hashes[relPath]}`);
+      }
+      if (!/\bdefer\b/i.test(`${m[1]} ${m[3]}`)) {
+        mismatches.push(`${relPath}: <script> tag in index.html must include defer`);
+      }
     }
   }
 
