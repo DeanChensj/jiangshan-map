@@ -3131,7 +3131,7 @@ async function runCartographyUiSuite(ctx) {
         !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
       '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
     );
-    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409 年设奴儿干都司后归明，1388-1408 年留在女真诸部，明廷止于辽东。
+    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409–1449 年设奴儿干都司作为羁縻都司（role: 'protectorate'），明本土仍止于辽东。
     for (const sk of ['s_ming_a0', 's_ming_a']) {
       assert(
         !hasPolPt(sk, '明', 139.88, 52.86) &&
@@ -3142,12 +3142,24 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Outer Manchuria (Telin/Heilongjiang) must belong to 女真诸部 before 1409 Nurgan, while Liaoyang stays in 明`
       );
     }
-    assert(
-      hasPolPt('s_ming_1409', '明', 139.88, 52.86) &&
-        hasPolPt('s_ming_1409', '明', 132.0, 48.0) &&
-        hasPolPt('s_ming_1409', '明', 123.17, 41.27),
-      's_ming_1409: Nurgan (1409) incorporates Outer Manchuria and Liaoyang into 明'
-    );
+    for (const sk of ['s_ming_1409', 's_ming_a2']) {
+      const nurganPol = (snapshots[sk].polities || []).find((p) => p.title === '奴儿干都司');
+      assert(
+        nurganPol &&
+          nurganPol.role === 'protectorate' &&
+          pointInShape(139.88, 52.86, nurganPol.shape) &&
+          pointInShape(132.0, 48.0, nurganPol.shape) &&
+          pointInShape(142.8, 50.0, nurganPol.shape) &&
+          !(snapshots[sk].regions || []).some((r) => r.title === '奴儿干都司'),
+        `${sk}: Nurgan (奴儿干都司) must be a protectorate (羁縻) covering Telin, Heilongjiang, and Sakhalin, not a direct region`
+      );
+      assert(
+        !hasPolPt(sk, '明', 139.88, 52.86) &&
+          !hasPolPt(sk, '明', 132.0, 48.0) &&
+          hasPolPt(sk, '明', 123.17, 41.27),
+        `${sk}: direct 明 territory stops at Liaoyang (辽东都司) while Nurgan is protectorate`
+      );
+    }
     // 唐黑水都督府 (726–755): 725 无黑水都督府，726–755 覆盖伯力与黑龙江下游（不含库页岛），755 安史之乱后撤除。
     const tangDynHeishui = dynasties.find((d) => d.key === 'tang');
     assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 725), 's_tang_a5y');
