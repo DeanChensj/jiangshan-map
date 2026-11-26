@@ -205,6 +205,81 @@ async function runApiSearchSuite(ctx) {
         b.maxY + pad < a.minY
       );
     }
+    function hexToLab(hex) {
+      if (!hex || typeof hex !== 'string') return null;
+      const m = hex.replace('#', '');
+      if (m.length !== 6) return null;
+      let [r, g, b] = [0, 2, 4].map((i) => parseInt(m.slice(i, i + 2), 16) / 255);
+      [r, g, b] = [r, g, b].map((c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+      let x = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) / 0.95047;
+      let y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
+      let z = (r * 0.0193339 + g * 0.1191920 + b * 0.9503041) / 1.08883;
+      [x, y, z] = [x, y, z].map((t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116));
+      return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+    }
+    function deltaE76(hexA, hexB) {
+      const a = hexToLab(hexA);
+      const b = hexToLab(hexB);
+      if (!a || !b) return 999;
+      return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    }
+    function outerRingsOf(shape) {
+      if (!shape) return [];
+      if (shape.type === 'Polygon') return [shape.coordinates[0]];
+      if (shape.type === 'MultiPolygon') return shape.coordinates.map((p) => p[0]);
+      return [];
+    }
+    const ADJ_CELL = 0.15;
+    const ADJ_GRID_CACHE = new WeakMap();
+    function vertexGridFor(shape) {
+      let cached = ADJ_GRID_CACHE.get(shape);
+      if (!cached) {
+        const grid = new Map();
+        const pts = [];
+        for (const ring of outerRingsOf(shape)) {
+          for (const pt of ring) {
+            pts.push(pt);
+            const k = `${Math.floor(pt[0] / ADJ_CELL)},${Math.floor(pt[1] / ADJ_CELL)}`;
+            if (!grid.has(k)) grid.set(k, []);
+            grid.get(k).push(pt);
+          }
+        }
+        cached = { grid, pts };
+        ADJ_GRID_CACHE.set(shape, cached);
+      }
+      return cached;
+    }
+    function areShapesAdjacent(shapeA, shapeB) {
+      if (!shapeA || !shapeB) return false;
+      const boxA = shapeBbox(shapeA);
+      const boxB = shapeBbox(shapeB);
+      if (!bboxOverlapOrTouch(boxA, boxB, 0.15)) return false;
+      const { grid } = vertexGridFor(shapeA);
+      const { pts } = vertexGridFor(shapeB);
+      let near = 0;
+      for (let i = 0; i < pts.length; i++) {
+        const [x, y] = pts[i];
+        const cx = Math.floor(x / ADJ_CELL);
+        const cy = Math.floor(y / ADJ_CELL);
+        for (let dx = -1; dx <= 1; dx++) {
+          for (let dy = -1; dy <= 1; dy++) {
+            const list = grid.get(`${cx + dx},${cy + dy}`);
+            if (!list) continue;
+            for (let k = 0; k < list.length; k++) {
+              const [ax, ay] = list[k];
+              if (Math.hypot(ax - x, ay - y) <= 0.12 && ++near >= 2) return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+    // User-approved same-lineage regime exemptions (Japanese-occupied zones; Nanyue/Minyue Yue polities)
+    const COLOR_CONTRAST_EXEMPT_PAIRS = new Set([
+      '伪满洲国（日占）|关内日占区',
+      '南越|闽越',
+      '南越（赵佗）|闽越',
+    ]);
     for (const [sk, snap] of Object.entries(snapshots)) {
       if (!snap || Array.isArray(snap)) continue;
       const activePols = (snap.polities || []).filter(
@@ -222,6 +297,16 @@ async function runApiSearchSuite(ctx) {
               !bboxOverlapOrTouch(boxA, boxB),
               `Polity color collision in ${sk}: "${pA.title}" and "${pB.title}" share identical tint ${pA.tint} with overlapping/adjacent bounds`
             );
+          }
+          const pairKey = [pA.title, pB.title].sort().join('|');
+          if (!COLOR_CONTRAST_EXEMPT_PAIRS.has(pairKey)) {
+            const dE = deltaE76(pA.tint, pB.tint);
+            if (dE < 15) {
+              assert(
+                !areShapesAdjacent(pA.shape, pB.shape),
+                `Polity perceptual color collision in ${sk}: adjacent "${pA.title}" (${pA.tint}) and "${pB.title}" (${pB.tint}) have Lab ΔE=${dE.toFixed(1)} < 15`
+              );
+            }
           }
         }
       }
