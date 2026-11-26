@@ -1113,8 +1113,23 @@ async function runSearchRuntimeSuite(ctx) {
             qCtrl.locale = loc;
             qCtrl.startChallenge({ preferCurrentDynasty: true });
             assert(qCtrl.challenge && qCtrl.challenge.deck.length === 5, `Quiz deck failed for ${loc}`);
+            assert.strictEqual(
+              getQuizEl('challenge-mobile-dock').classList.contains('is-hidden'),
+              false,
+              `Mobile dock must show on startChallenge (${loc})`
+            );
+            assert.strictEqual(
+              getQuizEl('act-quiz-mobile-cta').classList.contains('is-hidden'),
+              true,
+              `Mobile CTA must stay hidden before dropping a pin (${loc})`
+            );
             qCtrl._previewLocatePin(500, 350);
             assert(Array.isArray(qCtrl.challenge.pendingGuess), `pendingGuess not set for ${loc}`);
+            assert.strictEqual(
+              getQuizEl('act-quiz-mobile-cta').classList.contains('is-hidden'),
+              false,
+              `Mobile CTA must show after dropping a pin (${loc})`
+            );
             assert.strictEqual(qCtrl._quizChipAt(50, 20), true, `_quizChipAt hit failed for ${loc}`);
             assert.strictEqual(qCtrl._quizChipAt(500, 500), false, `_quizChipAt miss failed for ${loc}`);
             const [tx, ty] = qCtrl.projector.toScreen(...qCtrl.challenge.deck[0].settlement.coord);
@@ -1122,8 +1137,18 @@ async function runSearchRuntimeSuite(ctx) {
             assert.strictEqual(qCtrl.challenge.answered, true);
             assert.strictEqual(qCtrl.challenge.lastPts, 20);
             assert.strictEqual(qCtrl.challenge.history.length, 1, `Expected quiz history for ${loc}`);
+            assert.strictEqual(
+              getQuizEl('act-quiz-mobile-cta').classList.contains('is-hidden'),
+              false,
+              `Mobile CTA must show Next Question after reveal (${loc})`
+            );
             qCtrl._finishChallenge();
             assert.strictEqual(qCtrl.challenge.finished, true);
+            assert.strictEqual(
+              getQuizEl('challenge-mobile-dock').classList.contains('is-hidden'),
+              true,
+              `Mobile dock must hide on quiz finish (${loc})`
+            );
             assert.strictEqual(
               getQuizEl('act-share-quiz').classList.contains('is-hidden'),
               false,

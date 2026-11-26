@@ -33,12 +33,12 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=f5e5aad3" />
+  <link rel="stylesheet" href="css/style.css?v=eabd7902" />
   <script defer src="js/china_geo_data.js?v=2d9d6497"></script>
   <script defer src="js/atlas_boot.js?v=0f4b6dfa"></script>
   <script defer src="js/map_data.js?v=f3a41da7"></script>
   <script defer src="js/lore_core.js?v=9d5a93d1"></script>
-  <script id="atlas-app-script" src="js/app.js?v=a635e03f" data-v-snapshots="7cd54d1a" data-v-i18n="755d565e" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="540634e0" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
+  <script id="atlas-app-script" src="js/app.js?v=594a7024" data-v-snapshots="7cd54d1a" data-v-i18n="755d565e" data-v-lore="b90894e7" data-v-pinyin="9ff7a022" data-v-hant="3afdab47" data-v-quiz="e6f4354e" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c6e33e3b"></script>
   <script defer src="js/atlas_trace.js?v=a0fce698"></script>
   <script defer src="js/atlas_search.js?v=589cd846"></script>
   <script defer src="js/atlas_api.js?v=575d60fd"></script>
@@ -616,7 +616,7 @@
         <div id="challenge-card" class="is-hidden" role="region" aria-label="古地名挑战">
           <div class="challenge-top">
             <span id="txt-challenge-kicker" class="mode-pill is-active">舆图寻址</span>
-            <span id="challenge-step" class="pill-badge">第 1 / 10 题</span>
+            <span id="challenge-step" class="pill-badge">第 1 / 5 题</span>
             <span id="challenge-points" class="score-readout">得分 0</span>
             <button id="act-close-challenge" class="icon-close" title="退出挑战" aria-label="退出挑战">
               <svg class="ico-svg" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -630,6 +630,11 @@
               <button id="act-next-round" class="action-btn accent sm" type="button"></button>
             </div>
           </div>
+        </div>
+
+        <div id="challenge-mobile-dock" class="is-hidden" role="region" aria-label="舆图小试操作栏">
+          <span id="challenge-mobile-hint" class="challenge-mobile-hint"></span>
+          <button id="act-quiz-mobile-cta" class="action-btn accent challenge-mobile-cta is-hidden" type="button"></button>
         </div>
 
         <div id="genealogy-card" class="is-hidden" role="dialog" aria-label="古今地名沿革">
