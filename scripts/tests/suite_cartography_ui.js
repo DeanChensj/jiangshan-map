@@ -1045,33 +1045,41 @@ async function runCartographyUiSuite(ctx) {
     const expectedRanges = [
       '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
       '长白山', '岷山', '大别山', '陇山', '巫山', '葱岭', '燕然山',
+      '外兴安岭', '阿尔泰山', '喜马拉雅山', '横断山', '武陵山',
     ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 19 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 24 curated mountain-range labels'
     );
     const deserts = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'desert');
     assert.strictEqual(JSON.stringify(deserts.map((d) => d.zh)), JSON.stringify(['大 漠']), 'Exactly one Gobi watermark label');
     const pamirs = ranges.find((r) => r.zh === '葱岭');
     assert.strictEqual(ctrl._hydroLabelPair(pamirs, 640).zh, '葱岭', 'Pamirs in 640 CE must read 葱岭');
     assert.strictEqual(ctrl._hydroLabelPair(pamirs, 1800).zh, '帕米尔', 'Pamirs in 1800 CE must read 帕米尔');
+    const altai = ranges.find((r) => r.zh === '阿尔泰山');
+    assert.strictEqual(ctrl._hydroLabelPair(altai, 640).zh, '金山', 'Altai in 640 CE must read 金山');
+    assert.strictEqual(ctrl._hydroLabelPair(altai, 1759).zh, '阿尔泰山', 'Altai in 1759 CE must read 阿尔泰山');
     for (const r of ranges) {
       assert(
         typeof r.en === 'string' && r.en.length > 0 && !/[\u4e00-\u9fa5]/.test(r.en),
         `Mountain range ${r.zh} must have a clean English name, got ${JSON.stringify(r.en)}`
       );
       assert(
-        Array.isArray(r.coord) && r.coord[0] > 73 && r.coord[0] < 135 && r.coord[1] > 18 && r.coord[1] < 54,
-        `Mountain range ${r.zh} label coord must sit inside China, got ${JSON.stringify(r.coord)}`
+        Array.isArray(r.coord) && r.coord[0] > 73 && r.coord[0] < 135 && r.coord[1] > 18 && r.coord[1] < 57,
+        `Mountain range ${r.zh} label coord must sit inside the map extent, got ${JSON.stringify(r.coord)}`
       );
       assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
     }
     const detailRivers = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'river' && lb.tier >= 1);
+    const expectedDetailRivers = [
+      '鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江',
+      '乌苏里江', '额尔齐斯河', '嘉陵江', '岷江', '乌江', '钱塘江', '西拉木伦河', '锡尔河', '阿姆河',
+    ];
     assert.strictEqual(
       JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
-      JSON.stringify(['鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江'].sort()),
-      'Zoom-gated boundary rivers must stay limited to the 6 classic frontier rivers'
+      JSON.stringify([...expectedDetailRivers].sort()),
+      'Zoom-gated boundary rivers must stay limited to the 15 classic frontier rivers'
     );
     for (const lb of detailRivers) {
       for (const en of lb.eraNames || []) {
@@ -1082,6 +1090,22 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, -100).zh, '马訾水', 'Yalu in 100 BCE must resolve to 马訾水');
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 668).zh, '鸭绿水', 'Yalu in 668 CE must resolve to 鸭绿水');
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 1400).zh, '鸭绿江', 'Yalu in 1400 CE must resolve to 鸭绿江');
+    const qiantangLabel = detailRivers.find((lb) => lb.zh === '钱塘江');
+    assert.strictEqual(ctrl._hydroLabelPair(qiantangLabel, -403).zh, '浙江', 'Qiantang in 403 BCE must resolve to 浙江');
+    assert.strictEqual(ctrl._hydroLabelPair(qiantangLabel, 1138).zh, '钱塘江', 'Qiantang in 1138 CE must resolve to 钱塘江');
+    const xarLabel = detailRivers.find((lb) => lb.zh === '西拉木伦河');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 500).zh, '饶乐水', 'Xar Moron in 500 CE must resolve to 饶乐水');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 1005).zh, '潢水', 'Xar Moron in 1005 CE must resolve to 潢水');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 1759).zh, '西拉木伦河', 'Xar Moron in 1759 CE must resolve to 西拉木伦河');
+    const syrLabel = detailRivers.find((lb) => lb.zh === '锡尔河');
+    assert.strictEqual(ctrl._hydroLabelPair(syrLabel, 660).zh, '药杀水', 'Syr Darya in 660 CE must resolve to 药杀水');
+    assert.strictEqual(ctrl._hydroLabelPair(syrLabel, 1759).zh, '锡尔河', 'Syr Darya in 1759 CE must resolve to 锡尔河');
+    const amuLabel = detailRivers.find((lb) => lb.zh === '阿姆河');
+    assert.strictEqual(ctrl._hydroLabelPair(amuLabel, -100).zh, '妫水', 'Amu Darya in 100 BCE must resolve to 妫水');
+    assert.strictEqual(ctrl._hydroLabelPair(amuLabel, 1759).zh, '阿姆河', 'Amu Darya in 1759 CE must resolve to 阿姆河');
+    const wuLabel = detailRivers.find((lb) => lb.zh === '乌江');
+    assert.strictEqual(ctrl._hydroLabelPair(wuLabel, -200).zh, '延江水', 'Wu River in 200 BCE must resolve to 延江水');
+    assert.strictEqual(ctrl._hydroLabelPair(wuLabel, 1200).zh, '乌江', 'Wu River in 1200 CE must resolve to 乌江');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
