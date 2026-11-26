@@ -2240,13 +2240,26 @@ async function runSearchRuntimeSuite(ctx) {
           '_updateTerrainTiles must fetch assets/terrain/index.json once zoomed past 0.8 * defaultW'
         );
         const ldJsonPos = indexHtml.indexOf('application/ld+json');
-        assert(
-          indexHtml.indexOf('<script defer src="js/china_geo_data.js?v=') > 0 &&
-            indexHtml.indexOf('<script defer src="js/atlas_api.js?v=') < ldJsonPos &&
-            indexHtml.indexOf('<script defer src="js/atlas_api.js?v=') <
-              indexHtml.indexOf('js/atlas_track.js?v='),
-          'All 8 same-origin boot scripts must be discovered in <head> via <script defer> before JSON-LD and atlas_track.js'
-        );
+        const trackPos = indexHtml.indexOf('js/atlas_track.js?v=');
+        const bootScriptTags = [
+          'js/china_geo_data.js',
+          'js/atlas_boot.js',
+          'js/map_data.js',
+          'js/lore_core.js',
+          'js/app.js',
+          'js/atlas_trace.js',
+          'js/atlas_search.js',
+          'js/atlas_api.js',
+        ];
+        for (const relPath of bootScriptTags) {
+          const m = indexHtml.match(
+            new RegExp(`<script\\b([^>]*?)\\bsrc="${relPath.replace('.', '\\.')}\\?v=[0-9a-f]+"([^>]*)><\\/script>`)
+          );
+          assert(
+            m && /\bdefer\b/i.test(`${m[1]} ${m[2]}`) && m.index > 0 && m.index < ldJsonPos && m.index < trackPos,
+            `Boot script ${relPath} must be discovered in <head> via <script defer> before JSON-LD and atlas_track.js`
+          );
+        }
         // _ensureSearchIndex must reuse precomputed p.evCount instead of sweeping _collectPersonEvents x144
         const savedSearchIdx = ctrl.searchIndex;
         const savedCollect = ctrl._collectPersonEvents;

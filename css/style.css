@@ -4534,9 +4534,9 @@ html[lang="en"] #act-toggle-pane .tp-label {
 }
 
 .jn-disc {
-  fill: #fffaf2;
+  fill: #f8f1e3;
   stroke: currentColor;
-  stroke-width: 1.45px;
+  stroke-width: 1.3px;
   transition: transform 0.16s ease, fill 0.16s ease;
 }
 
@@ -5859,9 +5859,9 @@ html[lang="en"] .genealogy-list li.person-ev-row {
 }
 
 .jn-meet-pill {
-  fill: #fffaf2;
-  stroke: #3d3126;
-  stroke-width: 1.35px;
+  fill: #f8f1e3;
+  stroke: rgba(82, 62, 46, 0.62);
+  stroke-width: 1.2px;
   filter: drop-shadow(0 1px 2.5px rgba(42, 30, 20, 0.22));
 }
 
@@ -6420,17 +6420,6 @@ span.story-inline-person {
   background: var(--track-color, var(--vermilion));
   border-color: var(--track-color, var(--vermilion));
   color: #fffaf2;
-}
-
-.jn-disc {
-  fill: #f8f1e3;
-  stroke-width: 1.3px;
-}
-
-.jn-meet-pill {
-  fill: #f8f1e3;
-  stroke: rgba(82, 62, 46, 0.62);
-  stroke-width: 1.2px;
 }
 
 .jn-stack-ring {
