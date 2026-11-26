@@ -1639,6 +1639,26 @@ async function runSearchRuntimeSuite(ctx) {
           `Uncurated warlord must derive its on-map span 189–219 and name keyword, got ${JSON.stringify(ccDesc)}`
         );
         assert(ctrl._polityEvents(ccDesc).length >= 5, 'Uncurated warlord must still surface related events');
+        assert(
+          ctrl._polityEvents(ctrl._resolvePolity('吐蕃', 750)).some((e) => e.year === 822),
+          'Tubo polity events must include the 822 Changqing Treaty'
+        );
+        assert(
+          ctrl._polityEvents(ctrl._resolvePolity('西夏', 1044)).some((e) => e.year === 1044),
+          'Western Xia polity events must include the 1044 Qingli Peace'
+        );
+        assert(
+          ctrl._polityEvents(ctrl._resolvePolity('赵', -260)).some((e) => e.year === -222),
+          'Zhao polity events must include the 222 BCE fall of Dai'
+        );
+        const jinEvents = ctrl._polityEvents(ctrl._resolvePolity('金', 1127));
+        assert(
+          jinEvents.length >= 25 &&
+            !jinEvents.some((e) =>
+              ((e.milestone && e.milestone.headline) || (e.landmark && e.landmark.zh) || '').includes('金石书画')
+            ),
+          'Jurchen Jin polity events must exclude Li Qingzhao epigraphy false positive'
+        );
         const dynByKey = (k) => ctrl.dynasties.find((d) => d.key === k);
         for (const [title, dk, expMain] of [
           ['唐', 'tang', true],
