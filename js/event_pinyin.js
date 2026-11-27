@@ -1348,6 +1348,12 @@ window.ATLAS_EVENT_PINYIN = {
     ["daxueshizhangjuzhengyugaogonglizhuandafenggong","yudatongdeshengbaokaimashi","jiubianzicixibing","daxueshizhangjuzhengyugaogonglizhuandafenggongyudatongdeshengbaokaimashijiubianzicixibing","datongdeshengbao"],
     ["liushibasuideguangxizongbingguanyudayoufenbingqidaogongpoguilingutian","gaisheyongningzhou","liushibasuideguangxizongbingguanyudayoufenbingqidaogongpoguilingutiangaisheyongningzhou","guilingutian","yongningzhou"],
     ["shoufuzhangjuzhengfengzhiguijianglingzangfu","zaijiyaozhichaobing","xuanqiyongpanjixunzongduhedaozhihe","shoufuzhangjuzhengfengzhiguijianglingzangfuzaijiyaozhichaobingxuanqiyongpanjixunzongduhedaozhihe","jingzhoujiangling"],
-    ["nanjingyouduyushihairuizuyuren","yiwujingeweibiying","baixingbashibaiyiguanjiaankusongbaili","nanjingyouduyushihairuizuyurenyiwujingeweibiyingbaixingbashibaiyiguanjiaankusongbaili","yingtianfu","nanjing"]
+    ["nanjingyouduyushihairuizuyuren","yiwujingeweibiying","baixingbashibaiyiguanjiaankusongbaili","nanjingyouduyushihairuizuyurenyiwujingeweibiyingbaixingbashibaiyiguanjiaankusongbaili","yingtianfu","nanjing"],
+    ["sunquanqinzhengwancheng","lvmengdujundengchengyiguerxia","qincaojunlujiangtaishouzhuguang","sunquanqinzhengwanchenglvmengdujundengchengyiguerxiaqincaojunlujiangtaishouzhuguang","wancheng","qianshan"],
+    ["zhianqingfuhuangganyuyichengzhuchengbeijin","weijinanqingchengzhishi","zhianqingfuhuangganyuyichengzhuchengbeijinweijinanqingchengzhishi","anqingfu","yicheng"],
+    ["ningwangzhuchenhaoshunjiangdongxiaweigonganqingbuke","wangshourenchengxuqunanchangbingqinchenhao","ningwangzhuchenhaoshunjiangdongxiaweigonganqingbukewangshourenchengxuqunanchangbingqinchenhao","anqingfu"],
+    ["anhuibuzhengshizijiangningyizhuanqing","anqingziciweianhuishenghui","anhuibuzhengshizijiangningyizhuanqinganqingziciweianhuishenghui","anqing"],
+    ["yaonaicisikuguannangui","cihouzhujiangshuyuansishinian","bian","guwencileizuan","tongchengpaidasheng","yaonaicisikuguannanguicihouzhujiangshuyuansishinianbianguwencileizuantongchengpaidasheng","tongcheng"],
+    ["yanfengying","wangshaofangzhuyanhuangmeixidianying","tianxianpei","fuqishuangshuangbajiahai","chuanchangquanguo","yanfengyingwangshaofangzhuyanhuangmeixidianyingtianxianpeifuqishuangshuangbajiahaichuanchangquanguo","anqing","huangmeixizhixiang"]
   ]
 };
