@@ -1,3 +1,6 @@
+# Keep text files normalized to LF across macOS, Linux, and Windows
+* text=auto eol=lf
+
 # Collapse generated bundles in GitHub PR diffs
 js/atlas_snapshots.js linguist-generated=true
 js/atlas_boot.js linguist-generated=true

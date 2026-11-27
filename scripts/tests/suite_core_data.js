@@ -6,6 +6,7 @@ const path = require('path');
 const vm = require('vm');
 const { verifyIndexHtmlAssetHashes } = require('../sync_version');
 const { generateAllOutputs } = require('../build_seo_topics');
+const { computeIndexHtml, computeSitemapXml } = require('../topics/sync_site');
 
 async function runCoreDataSuite(ctx) {
   const {
@@ -575,6 +576,65 @@ async function runCoreDataSuite(ctx) {
     );
   }
   verifyIndexHtmlAssetHashes(ROOT, indexHtml, appCode);
+
+  // CRLF regression check for Windows checkouts of index.html & sitemap.xml
+  {
+    const crlfIndex = indexHtml.replace(/\r?\n/g, '\r\n');
+    const expectedNavCloses = (indexHtml.match(/<\/nav>/g) || []).length;
+    const idx1 = computeIndexHtml(
+      [],
+      [],
+      [],
+      [],
+      dynasties,
+      snapshots,
+      loreData,
+      enLocale,
+      [],
+      [],
+      crlfIndex
+    );
+    const idx2 = computeIndexHtml(
+      [],
+      [],
+      [],
+      [],
+      dynasties,
+      snapshots,
+      loreData,
+      enLocale,
+      [],
+      [],
+      idx1.content
+    );
+    assert.strictEqual(
+      (idx1.content.match(/<\/nav>/g) || []).length,
+      expectedNavCloses,
+      'CRLF computeIndexHtml must not duplicate closing </nav> tag'
+    );
+    assert(
+      !/[^\r]\n/.test(idx1.content),
+      'CRLF computeIndexHtml output must preserve CRLF line endings'
+    );
+    assert.strictEqual(
+      idx2.content,
+      idx1.content,
+      'CRLF computeIndexHtml must be idempotent across repeated runs'
+    );
+
+    const crlfSitemap = sitemapXml.replace(/\r?\n/g, '\r\n');
+    const sm1 = computeSitemapXml([], [], [], [], [], [], crlfSitemap);
+    const sm2 = computeSitemapXml([], [], [], [], [], [], sm1.content);
+    assert(
+      !/[^\r]\n/.test(sm1.content),
+      'CRLF computeSitemapXml output must preserve CRLF line endings'
+    );
+    assert.strictEqual(
+      sm2.content,
+      sm1.content,
+      'CRLF computeSitemapXml must be idempotent across repeated runs'
+    );
+  }
 
   // 8. Verify AI-Native API (window.atlasAPI: locate / resolvePlace / inspect), PLACE_GAZETTEER, llms.txt & skill
   for (const strayFile of [
