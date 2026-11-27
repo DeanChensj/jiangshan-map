@@ -397,6 +397,36 @@ async function runCoreDataSuite(ctx) {
       pointInShape(120.12, 23.08, qingLateTw.shape),
     'Tainan Taijiang Inner Sea ([120.12, 23.08]) must remain an open coastal lagoon prior to 1823 CE and silt into land in s_qing_e2 (>=1823)'
   );
+  // 4b. Validate 4-stage Taiping Heavenly Kingdom territorial evolution across s_qing_e / e2 / e3 / e4
+  {
+    const tpE = snapshots.s_qing_e.polities.find((p) => p.title === '太平天国');
+    const tpE2 = snapshots.s_qing_e2.polities.find((p) => p.title === '太平天国');
+    const qE2 = snapshots.s_qing_e2.polities.find((p) => p.title === '清');
+    const tpE3 = snapshots.s_qing_e3.polities.find((p) => p.title === '太平天国');
+    const qE3 = snapshots.s_qing_e3.polities.find((p) => p.title === '清');
+    const tpE4 = snapshots.s_qing_e4.polities.find((p) => p.title === '太平天国');
+    const qE4 = snapshots.s_qing_e4.polities.find((p) => p.title === '清');
+    assert(!tpE, 's_qing_e (1796–1853) must keep 1851 Jintian Uprising as a point without a Taiping territory polygon');
+    assert(tpE2 && qE2 && tpE3 && qE3 && tpE4 && qE4, 's_qing_e2/e3/e4 must each contain both 清 and 太平天国 polygons');
+    for (const [lng, lat] of [[114.31, 30.55], [115.99, 29.71], [114.99, 27.11], [116.36, 27.95], [117.05, 30.51], [118.43, 29.87], [118.80, 32.06]]) {
+      assert(pointInShape(lng, lat, tpE2.shape) && !pointInShape(lng, lat, qE2.shape), `s_qing_e2 must include [${lng},${lat}] in Taiping`);
+    }
+    for (const [lng, lat] of [[112.94, 28.23], [114.93, 25.83], [120.58, 31.30], [120.15, 30.27]]) {
+      assert(!pointInShape(lng, lat, tpE2.shape) && pointInShape(lng, lat, qE2.shape), `s_qing_e2 must keep [${lng},${lat}] in Qing`);
+    }
+    for (const [lng, lat] of [[117.05, 30.51], [117.28, 31.86], [118.43, 29.87], [118.80, 32.06]]) {
+      assert(pointInShape(lng, lat, tpE3.shape) && !pointInShape(lng, lat, qE3.shape), `s_qing_e3 must retain [${lng},${lat}] in Taiping`);
+    }
+    for (const [lng, lat] of [[114.31, 30.55], [115.99, 29.71], [114.99, 27.11], [116.36, 27.95], [120.58, 31.30], [120.15, 30.27]]) {
+      assert(!pointInShape(lng, lat, tpE3.shape) && pointInShape(lng, lat, qE3.shape), `s_qing_e3 must return [${lng},${lat}] to Qing`);
+    }
+    for (const [lng, lat] of [[118.80, 32.06], [118.38, 31.33], [118.43, 29.87], [120.58, 31.30], [120.15, 30.27], [119.65, 29.08], [121.55, 29.87]]) {
+      assert(pointInShape(lng, lat, tpE4.shape) && !pointInShape(lng, lat, qE4.shape), `s_qing_e4 must include [${lng},${lat}] in Taiping`);
+    }
+    for (const [lng, lat] of [[114.31, 30.55], [115.99, 29.71], [114.99, 27.11], [117.05, 30.51], [121.47, 31.23]]) {
+      assert(!pointInShape(lng, lat, tpE4.shape) && pointInShape(lng, lat, qE4.shape), `s_qing_e4 must return [${lng},${lat}] to Qing`);
+    }
+  }
   for (const d of dynasties) {
     const snap = snapshots[d.snapKey];
     if (!snap || !Array.isArray(snap.polities)) continue;
