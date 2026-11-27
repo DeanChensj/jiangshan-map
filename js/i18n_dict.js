@@ -808,7 +808,7 @@ window.EN_LOCALE = {
       "Yingtian (Nanjing)"
     ],
     "ming:1399": [
-      "Zhu Di, Prince of Yan, launches the Jingnan Campaign from Beiping",
+      "After Hongwu dies and Jianwen curbs princes, Prince of Yan Zhu Di launches the Jingnan Campaign",
       "Beiping"
     ],
     "ming:1405": [
@@ -832,7 +832,7 @@ window.EN_LOCALE = {
       "Changle (Fuzhou)"
     ],
     "ming:1449": [
-      "Tumu Crisis: Oirat leader Esen routs the Ming army and captures Emperor Yingzong",
+      "Tumu Crisis: Oirats capture Yingzong; Yu Qian enthrones Jingtai and defends Beijing",
       "Tumu Fort"
     ],
     "ming:1550": [
@@ -868,7 +868,7 @@ window.EN_LOCALE = {
       "Xi'an · Wuchang"
     ],
     "ming:1644": [
-      "Li Zicheng takes Beijing and topples the Ming; Qing armies enter Shanhai Pass",
+      "Dashun leader Li Zicheng takes Beijing; Chongzhen dies as Ming falls and Qing enters the Pass",
       "Beijing"
     ],
     "qing:1644": [
@@ -916,7 +916,7 @@ window.EN_LOCALE = {
       "Humen"
     ],
     "qing:1860": [
-      "Anglo-French forces sack the Old Summer Palace; Convention of Peking cedes Outer Manchuria",
+      "Second Opium War: Allies burn Yuanmingyuan, Xianfeng flees; Peking Treaty cedes Outer Manchuria",
       "Beijing"
     ],
     "qing:1864": [
@@ -1400,7 +1400,7 @@ window.EN_LOCALE = {
       "Taiwanfu (Tainan)"
     ],
     "roc:1915": [
-      "Cai E launches the National Protection War in Yunnan against Yuan Shikai",
+      "As Yuan Shikai restores monarchy, Cai E rises in Yunnan to launch the National Protection War",
       "Kunming"
     ],
     "roc:1916": [
@@ -1848,7 +1848,7 @@ window.EN_LOCALE = {
       "Shangdu (Duolun)"
     ],
     "ming:1457": [
-      "Wresting the Gate Coup: Shi Heng and Xu Youzhen restore Emperor Yingzong and execute Yu Qian",
+      "Wresting the Gate Coup: freed from South Palace, Yingzong retakes the throne; Yu Qian is killed",
       "Beijing"
     ],
     "ming:1542": [
@@ -1856,7 +1856,7 @@ window.EN_LOCALE = {
       "Beijing"
     ],
     "qing:1861": [
-      "Xinyou Coup: Cixi, Ci’an, and Prince Gong oust Sushun’s Eight Regents to begin the Regency",
+      "Xinyou Coup: after Xianfeng dies in Rehe, Cixi, Ci’an & Prince Gong oust Sushun’s Eight Regents",
       "Beijing · Chengde"
     ],
     "zhanguo:-381": [
@@ -2084,7 +2084,7 @@ window.EN_LOCALE = {
       "Ningyuan"
     ],
     "qing:1669": [
-      "The Kangxi Emperor arrests the regent Oboi, ends the regency and takes real control",
+      "After Shunzhi dies leaving four regents, young Kangxi arrests Oboi to end regency and take rule",
       "Beijing"
     ],
     "qing:1662": [
