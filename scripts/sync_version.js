@@ -21,7 +21,8 @@ const ROOT = path.resolve(__dirname, '..');
 
 const CONTROLLER_SCRIPTS = [
   'js/app.js',
-  'js/atlas_trace.js',
+  'js/atlas_person.js',
+  'js/atlas_genealogy.js',
   'js/atlas_search.js',
   'js/atlas_api.js',
   'js/atlas_quiz.js',
@@ -30,7 +31,6 @@ const CONTROLLER_SCRIPTS = [
 
 const SYNC_CONTROLLER_SCRIPTS = [
   'js/app.js',
-  'js/atlas_trace.js',
   'js/atlas_search.js',
   'js/atlas_api.js',
 ];
@@ -55,10 +55,12 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-quiz-poster', datasetKey: 'vQuizPoster', relPath: 'js/quiz_poster.js' },
   { attr: 'data-v-narrator', datasetKey: 'vNarrator', relPath: 'js/atlas_narrator.js' },
   { attr: 'data-v-sources', datasetKey: 'vSources', relPath: 'js/milestone_sources.js' },
+  { attr: 'data-v-person', datasetKey: 'vPerson', relPath: 'js/atlas_person.js' },
+  { attr: 'data-v-genealogy', datasetKey: 'vGenealogy', relPath: 'js/atlas_genealogy.js' },
 ];
 
 // Lazy bundles that index.html also preloads from an inline script (single-quoted URL).
-const PRELOADED_LAZY_ASSETS = ['js/i18n_dict.js'];
+const PRELOADED_LAZY_ASSETS = ['js/i18n_dict.js', 'js/atlas_person.js', 'js/atlas_genealogy.js'];
 const preloadRe = (relPath) => new RegExp(`('${escapeRegExp(relPath)}\\?v=)([0-9a-zA-Z_.-]+)(')`, 'g');
 
 function shortSha256(filePath) {

@@ -15,6 +15,20 @@
         i18n.href = 'js/i18n_dict.js?v=51c818c4';
         document.head.appendChild(i18n);
       }
+      if (/[?&](?:person|event|journey)=/.test(location.search)) {
+        var ps = document.createElement('link');
+        ps.rel = 'preload';
+        ps.as = 'script';
+        ps.href = 'js/atlas_person.js?v=33b8f746';
+        document.head.appendChild(ps);
+      }
+      if (/[?&](?:place|lng|trace|quiz)=/.test(location.search)) {
+        var gs = document.createElement('link');
+        gs.rel = 'preload';
+        gs.as = 'script';
+        gs.href = 'js/atlas_genealogy.js?v=1638ae1e';
+        document.head.appendChild(gs);
+      }
       if (!/[?&](year|place|lng|person|event|journey|trace|q)=/.test(location.search)) {
         // Not a deep link: start the relief image now, as early as a plain <image href> would.
         var relief = document.createElement('link');
@@ -38,10 +52,9 @@
   <script defer src="js/atlas_boot.js?v=65b9ac27"></script>
   <script defer src="js/map_data.js?v=d63ab2e1"></script>
   <script defer src="js/lore_core.js?v=a7c3d364"></script>
-  <script defer id="atlas-app-script" src="js/app.js?v=bfdcf401" data-v-snapshots="ee23cdc9" data-v-i18n="51c818c4" data-v-lore="806b56dc" data-v-pinyin="92cae715" data-v-hant="3afdab47" data-v-quiz="e6f4354e" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c066968a"></script>
-  <script defer src="js/atlas_trace.js?v=a0fce698"></script>
-  <script defer src="js/atlas_search.js?v=589cd846"></script>
-  <script defer src="js/atlas_api.js?v=575d60fd"></script>
+  <script defer id="atlas-app-script" src="js/app.js?v=c3d0262b" data-v-snapshots="ee23cdc9" data-v-i18n="51c818c4" data-v-lore="806b56dc" data-v-pinyin="92cae715" data-v-hant="3afdab47" data-v-quiz="e6f4354e" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="c066968a" data-v-person="33b8f746" data-v-genealogy="1638ae1e"></script>
+  <script defer src="js/atlas_search.js?v=cb8b5186"></script>
+  <script defer src="js/atlas_api.js?v=bb6adb1f"></script>
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代200+多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与简繁中英三语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />

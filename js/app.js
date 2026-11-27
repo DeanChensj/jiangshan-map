@@ -558,6 +558,8 @@
             ? (fn) => window.requestIdleCallback(fn, { timeout: 400 })
             : (fn) => setTimeout(fn, 120);
         scheduleIdle(() => {
+          this._ensureGenealogy();
+          this._ensurePerson();
           const snapsDone = this._fullSnapshotsLoaded
             ? Promise.resolve()
             : this._ensureFullSnapshots();
@@ -674,7 +676,10 @@
         s.src = src;
         s.async = true;
         s.onload = () => resolve();
-        s.onerror = () => resolve();
+        s.onerror = () => {
+          if (typeof s.remove === 'function') s.remove();
+          resolve();
+        };
         document.head.appendChild(s);
       });
     }
@@ -892,14 +897,15 @@
     }
 
     _openChallenge(opts = {}) {
-      if (this._isQuizLoaded()) {
+      if (this._isQuizLoaded() && this._isGenealogyLoaded()) {
         this.startChallenge(opts);
         return Promise.resolve(true);
       }
-      if (this._openingChallenge && this._quizPromise) return this._quizPromise;
+      if (this._openingChallenge && this._challengeReadyPromise) return this._challengeReadyPromise;
       this._openingChallenge = true;
-      return this._ensureQuiz().then(
-        (ok) => {
+      this._challengeReadyPromise = Promise.all([this._ensureQuiz(), this._ensureGenealogy()]).then(
+        ([quizOk, genOk]) => {
+          const ok = Boolean(quizOk && genOk);
           this._openingChallenge = false;
           if (ok && !this.challenge && typeof this.startChallenge === 'function') {
             this.startChallenge(opts);
@@ -911,6 +917,7 @@
           throw err;
         }
       );
+      return this._challengeReadyPromise;
     }
 
     _syncChallengeTriggerUi() {
@@ -957,6 +964,164 @@
         });
       }
       return this._narratorPromise;
+    }
+
+    _isPersonLoaded() {
+      return typeof this.openPersonChronicle === 'function';
+    }
+
+    _ensurePerson() {
+      if (this._isPersonLoaded()) return Promise.resolve(true);
+      if (!this._personPromise) {
+        this._personPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_person.js', 'vPerson')
+        ).then(() => {
+          if (this._isPersonLoaded()) return true;
+          this._personPromise = null;
+          return false;
+        });
+      }
+      return this._personPromise;
+    }
+
+    _openPerson(personOrQuery, initialIdx = -1) {
+      if (this._isPersonLoaded()) {
+        this._clearLazyRetryListener();
+        return this.openPersonChronicle(personOrQuery, initialIdx);
+      }
+      return this._ensurePerson().then((ok) => {
+        if (ok && this._isPersonLoaded()) {
+          this._clearLazyRetryListener();
+          return this.openPersonChronicle(personOrQuery, initialIdx);
+        }
+        this._showLazyLoadFailure('person', () => this._openPerson(personOrQuery, initialIdx));
+        return false;
+      });
+    }
+
+    _openJourney(journeyKey, stopIdx = -1) {
+      if (this._isPersonLoaded()) {
+        this._clearLazyRetryListener();
+        return this.openJourneyAsPerson(journeyKey, stopIdx);
+      }
+      return this._ensurePerson().then((ok) => {
+        if (ok && this._isPersonLoaded()) {
+          this._clearLazyRetryListener();
+          return this.openJourneyAsPerson(journeyKey, stopIdx);
+        }
+        this._showLazyLoadFailure('person', () => this._openJourney(journeyKey, stopIdx));
+        return false;
+      });
+    }
+
+    _isGenealogyLoaded() {
+      return typeof this.openGenealogyAt === 'function';
+    }
+
+    _ensureGenealogy() {
+      if (this._isGenealogyLoaded()) return Promise.resolve(true);
+      if (!this._genealogyPromise) {
+        this._genealogyPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_genealogy.js', 'vGenealogy')
+        ).then(() => {
+          if (this._isGenealogyLoaded()) return true;
+          this._genealogyPromise = null;
+          return false;
+        });
+      }
+      return this._genealogyPromise;
+    }
+
+    _openGenealogy(lng, lat, customLabel = null, opts = {}) {
+      if (this._isGenealogyLoaded()) {
+        this._clearLazyRetryListener();
+        return this.openGenealogyAt(lng, lat, customLabel, opts);
+      }
+      return this._ensureGenealogy().then((ok) => {
+        if (ok && this._isGenealogyLoaded()) {
+          this._clearLazyRetryListener();
+          return this.openGenealogyAt(lng, lat, customLabel, opts);
+        }
+        if (!(opts && opts.fromYearSync)) {
+          this._showLazyLoadFailure('genealogy', () =>
+            this._openGenealogy(lng, lat, customLabel, opts)
+          );
+        }
+        return false;
+      });
+    }
+
+    _clearLazyRetryListener() {
+      if (
+        this._lazyRetryHandler &&
+        typeof window !== 'undefined' &&
+        typeof window.removeEventListener === 'function'
+      ) {
+        window.removeEventListener('online', this._lazyRetryHandler);
+      }
+      this._lazyRetryHandler = null;
+    }
+
+    _showLazyLoadFailure(kind, retryFn) {
+      const cardEl = this._id('genealogy-card');
+      if (!cardEl) return;
+      this._clearLazyRetryListener();
+      const isEn = this.locale === 'en';
+      const isPerson = kind === 'person';
+      const kickerEl = this._id('txt-genealogy-kicker');
+      if (kickerEl) {
+        kickerEl.textContent = isEn
+          ? isPerson ? 'Figure Chronicle' : 'Place Genealogy'
+          : this._zh(isPerson ? '点人溯事 · 离线提示' : '点地溯源 · 离线提示');
+      }
+      const headEl = this._id('genealogy-heading');
+      if (headEl) {
+        headEl.textContent = isEn
+          ? isPerson ? 'Figure data unavailable offline' : 'Place genealogy unavailable offline'
+          : this._zh(isPerson ? '人物行迹暂未载入' : '地点沿革暂未载入');
+      }
+      const loreEl = this._id('genealogy-lore');
+      if (loreEl) {
+        loreEl.innerHTML = '';
+        loreEl.classList.add('is-hidden');
+      }
+      const listEl = this._id('genealogy-timeline');
+      if (listEl) listEl.innerHTML = '';
+      const footEl = this._id('genealogy-foot');
+      if (footEl) {
+        footEl.innerHTML = '';
+        footEl.classList.add('is-hidden');
+      }
+      const subEl = this._id('genealogy-sub');
+      if (subEl) {
+        const msg = isEn
+          ? 'Network offline. Reconnect or retry loading.'
+          : this._zh('网络已断开，暂未能拉取该模块；联网后将自动重试。');
+        const btnTxt = isEn ? 'Retry' : this._zh('重试');
+        subEl.innerHTML =
+          `<span>${escHtml(msg)}</span>` +
+          `<button type="button" class="gen-filter-pill" id="act-retry-lazy">${escHtml(btnTxt)}</button>`;
+        const retryBtn = this._id('act-retry-lazy');
+        if (retryBtn) {
+          retryBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this._clearLazyRetryListener();
+            retryFn();
+          });
+        }
+      }
+      cardEl.classList.remove('is-hidden');
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('has-active-genealogy');
+      this._syncMobileOverlayState();
+      if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+        const onOnline = () => {
+          this._clearLazyRetryListener();
+          return retryFn();
+        };
+        this._lazyRetryHandler = onOnline;
+        window.addEventListener('online', onOnline, { once: true });
+      }
     }
 
     _isLoreDetailLoaded() {
@@ -2312,11 +2477,11 @@
           this._syncScrubberUi();
         }
         if (this.activeTrace) {
-          this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
+          this._openGenealogy(this.activeTrace[0], this.activeTrace[1], null, {
             fromYearSync: true,
             preserveScroll: true,
           });
-        } else if (this.activePerson) {
+        } else if (this.activePerson && this._isPersonLoaded()) {
           const rebuilt = this._buildPersonTracksAndEvents(
             this.activePerson.profiles || [this.activePerson.profile]
           );
@@ -3138,7 +3303,7 @@
       const snap = this._deferredPrefectureSnap;
       this._deferredPrefectureSnap = null;
       this._renderPrefecturesLayer(snap);
-      this._syncTracedPrefecture();
+      if (typeof this._syncTracedPrefecture === 'function') this._syncTracedPrefecture();
       this._typoDirty = true;
       return true;
     }
@@ -3224,7 +3389,9 @@
       this.lastRenderedSnap = snap;
       if (this.activePolity || this.eraFocus) this._setPolityFocus(null);
       this._renderLegendBox(snap);
-      if (!prefHidden) this._syncTracedPrefecture();
+      if (!prefHidden && typeof this._syncTracedPrefecture === 'function') {
+        this._syncTracedPrefecture();
+      }
       this._rescaleSvgTypography();
     }
 
@@ -4689,7 +4856,7 @@
             this.activeMilestone.isAuto = false;
             this._selectMilestoneAnchor(k, anchors);
           }
-          this.openGenealogyAt(
+          this._openGenealogy(
             targetCoord[0],
             targetCoord[1],
             coCity ? null : anc && anc.shortLabel ? anc.shortLabel : null
@@ -4704,7 +4871,7 @@
       if (relicBtn && relicStopIdx !== null) {
         relicBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          this.openPersonChronicle('yuxi', relicStopIdx);
+          this._openPerson('yuxi', relicStopIdx);
         });
       }
       const storyBtn =
@@ -4714,7 +4881,7 @@
       if (storyBtn && storyHit) {
         storyBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          this.openPersonChronicle(storyHit.key, storyHit.stopIdx);
+          this._openPerson(storyHit.key, storyHit.stopIdx);
         });
       }
     }
@@ -5055,6 +5222,34 @@
     // title (宋, 齐, 吴, 魏) denotes different regimes in different eras.
     static get POLITY_PROFILES() {
       return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.POLITY_PROFILES) || [];
+    }
+
+    static get PERSON_PROFILES() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PERSON_PROFILES) || [];
+    }
+
+    static get PERSON_TRACK_PALETTE() {
+      return ['#9e3a26', '#355470', '#3d6654', '#6e435c'];
+    }
+
+    static get PLACE_LANDMARK_EVENTS() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PLACE_LANDMARK_EVENTS) || [];
+    }
+
+    static get STRATEGIC_PASSES() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.STRATEGIC_PASSES) || [];
+    }
+
+    static get PLACE_GAZETTEER() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.PLACE_GAZETTEER) || [];
+    }
+
+    static get CITY_LORE() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.CITY_LORE) || [];
+    }
+
+    static get HISTORICAL_JOURNEYS() {
+      return (window.ATLAS_LORE_DATA && window.ATLAS_LORE_DATA.HISTORICAL_JOURNEYS) || [];
     }
 
     _polityWindow(desc) {
@@ -6215,7 +6410,7 @@
             if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
               this.toggleMobileChronicle(false);
             }
-            this.openPersonChronicle('yuxi', relicStopIdx);
+            this._openPerson('yuxi', relicStopIdx);
           });
         }
         const storyBtn = li.querySelector('.ev-story-tag');
@@ -6225,7 +6420,7 @@
             if (window.innerWidth <= 900 && this.mobileChronicleOpen) {
               this.toggleMobileChronicle(false);
             }
-            this.openPersonChronicle(storyHit.key, storyHit.stopIdx);
+            this._openPerson(storyHit.key, storyHit.stopIdx);
           });
         }
         li.addEventListener('pointerenter', (e) => {
@@ -6345,7 +6540,87 @@
       }
     }
 
-    // Place Genealogy & Person Chronicles methods are attached by js/atlas_trace.js.
+    // Place Genealogy & Person Chronicles methods are lazy-loaded via js/atlas_genealogy.js & js/atlas_person.js.
+    closeGenealogyCard() {
+      this._clearLazyRetryListener();
+      if (typeof this._clearActiveTrace === 'function') this._clearActiveTrace();
+      if (typeof this._clearActivePerson === 'function') this._clearActivePerson();
+      if (typeof this.toggleGenealogySheetExpand === 'function') this.toggleGenealogySheetExpand(false);
+      const cardEl = this._id('genealogy-card');
+      if (cardEl) cardEl.classList.add('is-hidden');
+      const loreEl = this._id('genealogy-lore');
+      if (loreEl) {
+        loreEl.innerHTML = '';
+        loreEl.classList.add('is-hidden');
+      }
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.remove('has-active-genealogy');
+      this._syncMobileOverlayState();
+      if (Array.isArray(this.activeCustomRoute) && this.customRouteStopIdx >= 0) {
+        this.customRouteStopIdx = -1;
+        this._drawCustomRouteOverlay(this.activeCustomRoute);
+        this._renderCustomRouteCard();
+      }
+      if (this.activeMilestone) this._positionMilestoneBalloon();
+    }
+
+    _findNearestTouchNode(clientX, clientY, maxPx = 22) {
+      const rect = this._cameraViewportRect || this.svg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return { settlementEl: null, milestoneEl: null };
+      this._cameraViewportRect = rect;
+      const [sx, sy] = this._clientToSvgPoint(clientX, clientY);
+      const scale = Math.min(rect.width / this.camera.w, rect.height / this.camera.h);
+      let bestSettle = null;
+      let bestSettlePx = maxPx;
+      if (this.grpSettlements && !this.grpSettlements.classList.contains('is-hidden')) {
+        const showTier2 = this.svg.classList.contains('is-zoomed-cities');
+        this.grpSettlements.querySelectorAll('.settlement-node').forEach((node) => {
+          if (
+            !showTier2 &&
+            node.classList.contains('is-tier2') &&
+            !node.classList.contains('is-trace-city')
+          ) {
+            return;
+          }
+          const dPx = Math.hypot(Number(node.dataset.x) - sx, Number(node.dataset.y) - sy) * scale;
+          if (dPx <= bestSettlePx) {
+            bestSettlePx = dPx;
+            bestSettle = node;
+          }
+        });
+      }
+      let bestMile = null;
+      let bestMilePx = maxPx;
+      if (this.grpMilestones && !this.grpMilestones.classList.contains('is-hidden')) {
+        this.grpMilestones.querySelectorAll('.milestone-pin').forEach((pin) => {
+          if (
+            pin.classList.contains('is-future') ||
+            (pin.classList.contains('is-past-occluded') && !pin.classList.contains('is-active')) ||
+            (pin.classList.contains('is-secondary-pin') &&
+              !pin.classList.contains('is-current') &&
+              !pin.classList.contains('is-active'))
+          ) {
+            return;
+          }
+          const dPx = Math.hypot(Number(pin.dataset.x) - sx, Number(pin.dataset.y) - sy) * scale;
+          if (dPx <= bestMilePx) {
+            bestMilePx = dPx;
+            bestMile = pin;
+          }
+        });
+      }
+      return { settlementEl: bestSettle, milestoneEl: bestMile };
+    }
+
+    /** Polity containing the point, preferring Chinese regimes over peripheral neighbors. */
+    _polityAt(lng, lat, snap) {
+      const polities = (snap && snap.polities) || [];
+      return (
+        polities.find((p) => p.role !== 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) ||
+        polities.find((p) => p.role === 'neighbor' && MercatorProjector.pointInShape(lng, lat, p.shape)) ||
+        null
+      );
+    }
 
     // Join chapters of one cited work cleanly, omitting repeated "卷" after the first.
     _formatMilestoneChapters(chapters) {
@@ -7157,7 +7432,12 @@
           this._buildTerrainRivers();
         }
         this._renderCorridors();
-        if (this.activePerson && !this._inPersonSync && prevIdx !== this.dynastyIdx) {
+        if (
+          this.activePerson &&
+          !this._inPersonSync &&
+          prevIdx !== this.dynastyIdx &&
+          typeof this._renderPersonPinsOverlay === 'function'
+        ) {
           this._renderPersonPinsOverlay();
         }
       });
@@ -7176,7 +7456,7 @@
       this._preserveGenealogyScrollOnce = false;
       const genCard = this._id('genealogy-card');
       if (this.activeTrace && genCard && !genCard.classList.contains('is-hidden')) {
-        this.openGenealogyAt(this.activeTrace[0], this.activeTrace[1], null, {
+        this._openGenealogy(this.activeTrace[0], this.activeTrace[1], null, {
           fromYearSync: true,
           preserveScroll,
         });
@@ -7287,7 +7567,7 @@
           this.personTimer = null;
           if (typeof this.silenceNarrator === 'function') this.silenceNarrator();
         }
-        this.stepPersonEvent(dir > 0 ? 1 : -1);
+        if (typeof this.stepPersonEvent === 'function') this.stepPersonEvent(dir > 0 ? 1 : -1);
         return;
       }
       const territoryOnly = this._isMilestonesHidden();
@@ -7394,7 +7674,9 @@
       if (this.personTimer && this.activePerson) {
         clearInterval(this.personTimer);
         this.personTimer = setInterval(
-          () => this._personAutoplayTick(),
+          () => {
+            if (typeof this._personAutoplayTick === 'function') this._personAutoplayTick();
+          },
           this._personAutoplayIntervalMs()
         );
       }
@@ -9696,7 +9978,7 @@
 
     // Quiz / Dual-Mode Challenge methods are attached by js/atlas_quiz.js.
 
-    // Historical Journeys (青史行迹) methods are attached by js/atlas_trace.js.
+    // Historical Journeys (青史行迹) methods are lazy-loaded via js/atlas_person.js.
 
     // Global Quick Search methods are attached by js/atlas_search.js.
 
@@ -9767,6 +10049,7 @@
       const runWarmup = () => {
         if (!this._fullSnapshotsLoaded) this._ensureFullSnapshots();
         if (!this._isLoreDetailLoaded()) this._ensureLoreDetail();
+        if (!this._isPersonLoaded()) this._ensurePerson();
         if (this.locale === 'zh-tw' && !this._hasZhHant()) this._ensureZhHant();
         const schedIdx = () => {
           if (!this.searchIndex && typeof this._ensureSearchIndex === 'function') {
@@ -10015,6 +10298,7 @@
           pendingSearchData.push(this._ensureEnglishLocale());
         }
         if (!this._isLoreDetailLoaded()) pendingSearchData.push(this._ensureLoreDetail());
+        if (!this._isPersonLoaded()) pendingSearchData.push(this._ensurePerson());
         if (/[\u4e00-\u9fff]/.test(q) && !this._hasZhHant()) {
           pendingSearchData.push(this._ensureZhHant());
         }
@@ -10489,7 +10773,7 @@
       const expandGenBtn = this._id('act-expand-genealogy');
       if (expandGenBtn) {
         expandGenBtn.addEventListener('click', () => {
-          this.toggleGenealogySheetExpand();
+          if (typeof this.toggleGenealogySheetExpand === 'function') this.toggleGenealogySheetExpand();
         });
       }
       this._id('act-close-genealogy').addEventListener('click', () => {
@@ -10533,7 +10817,7 @@
       this._id('act-autoplay').addEventListener('click', () => {
         if (this.challenge) return;
         if (this.activePerson) {
-          this.togglePersonAutoplay();
+          if (typeof this.togglePersonAutoplay === 'function') this.togglePersonAutoplay();
         } else if (this.playing) {
           this.stopAutoplay();
         } else {
@@ -10612,7 +10896,7 @@
             this._clearQuickSearchInput();
             if (u.searchParams.has('person')) {
               const st = u.searchParams.has('stop') ? Number(u.searchParams.get('stop')) : -1;
-              this.openPersonChronicle(
+              this._openPerson(
                 u.searchParams.get('person'),
                 Number.isNaN(st) ? -1 : st
               );
@@ -10620,7 +10904,7 @@
             }
             if (u.searchParams.has('journey')) {
               const st = u.searchParams.has('stop') ? Number(u.searchParams.get('stop')) : -1;
-              this.openJourneyAsPerson(
+              this._openJourney(
                 u.searchParams.get('journey'),
                 Number.isNaN(st) ? -1 : st
               );
@@ -10640,7 +10924,7 @@
             if (u.searchParams.has('trace')) {
               const parts = u.searchParams.get('trace').split(',').map(Number);
               if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
-                this.openGenealogyAt(parts[0], parts[1]);
+                this._openGenealogy(parts[0], parts[1]);
               }
             }
           } catch (_) {}
@@ -10722,7 +11006,7 @@
         } else if (e.key === ' ' && !this.challenge) {
           e.preventDefault();
           if (this.activePerson) {
-            this.togglePersonAutoplay();
+            if (typeof this.togglePersonAutoplay === 'function') this.togglePersonAutoplay();
           } else if (this.playing) {
             this.stopAutoplay();
           } else {
@@ -10817,7 +11101,7 @@
                   near.settlementEl.dataset.lng &&
                   near.settlementEl.dataset.lat
                 ) {
-                  this.openGenealogyAt(
+                  this._openGenealogy(
                     Number(near.settlementEl.dataset.lng),
                     Number(near.settlementEl.dataset.lat)
                   );
@@ -10825,7 +11109,7 @@
                 }
                 const [sx, sy] = this._clientToSvgPoint(downX, downY);
                 const [lng, lat] = this.projector.toGeo(sx, sy);
-                this.openGenealogyAt(lng, lat);
+                this._openGenealogy(lng, lat);
               }
             }, 460);
           }
@@ -11235,7 +11519,7 @@
                 near.settlementEl.dataset.lng &&
                 near.settlementEl.dataset.lat
               ) {
-                this.openGenealogyAt(
+                this._openGenealogy(
                   Number(near.settlementEl.dataset.lng),
                   Number(near.settlementEl.dataset.lat)
                 );
@@ -11243,7 +11527,7 @@
               }
               const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
               const [lng, lat] = this.projector.toGeo(sx, sy);
-              this.openGenealogyAt(lng, lat);
+              this._openGenealogy(lng, lat);
               return;
             }
             this.lastTouchTap = { time: now, x: e.clientX, y: e.clientY };
@@ -11262,7 +11546,12 @@
             return null;
           };
           let journeyNodeEl = findClosest('.journey-node');
-          if (!journeyNodeEl && e.pointerType === 'touch' && this.activePerson) {
+          if (
+            !journeyNodeEl &&
+            e.pointerType === 'touch' &&
+            this.activePerson &&
+            typeof this._findNearestPersonPin === 'function'
+          ) {
             journeyNodeEl = this._findNearestPersonPin(e.clientX, e.clientY, 26);
           }
           if (journeyNodeEl && journeyNodeEl.dataset.stopIdx !== undefined) {
@@ -11288,7 +11577,9 @@
                   targetStopIdx = peerList[(curPos + 1) % peerList.length];
                 }
               }
-              this.selectPersonEvent(targetStopIdx, true);
+              if (typeof this.selectPersonEvent === 'function') {
+                this.selectPersonEvent(targetStopIdx, true);
+              }
               return;
             }
           }
@@ -11328,7 +11619,7 @@
               !milestoneEl ||
               (settlementEl.classList.contains('has-trace-hint') && milestoneAlreadyAnchored))
           ) {
-            this.openGenealogyAt(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
+            this._openGenealogy(Number(settlementEl.dataset.lng), Number(settlementEl.dataset.lat));
             return;
           }
 
@@ -11354,7 +11645,7 @@
                 (pinSiteIdx === undefined || this.activeMilestone.siteIdx === pinSiteIdx) &&
                 !this.milestoneBalloon.classList.contains('is-hidden');
               if (alreadyOpen) {
-                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+                this._openGenealogy(targetCoord[0], targetCoord[1]);
                 return;
               }
               this.stopAutoplay();
@@ -11365,7 +11656,7 @@
                 window.innerWidth > 900 &&
                 !this._id('genealogy-card').classList.contains('is-hidden')
               ) {
-                this.openGenealogyAt(targetCoord[0], targetCoord[1]);
+                this._openGenealogy(targetCoord[0], targetCoord[1]);
               }
               return;
             }
@@ -11383,7 +11674,7 @@
         this._recordGestureClick();
         const [sx, sy] = this._clientToSvgPoint(e.clientX, e.clientY);
         const [lng, lat] = this.projector.toGeo(sx, sy);
-        this.openGenealogyAt(lng, lat);
+        this._openGenealogy(lng, lat);
       });
 
       // Hover tooltips (Desktop pointermove — coalesced to once per animation frame)
@@ -11470,7 +11761,7 @@
       if (traceBtn) {
         traceBtn.addEventListener('click', (ev) => {
           ev.stopPropagation();
-          this.openGenealogyAt(Number(traceBtn.dataset.lng), Number(traceBtn.dataset.lat));
+          this._openGenealogy(Number(traceBtn.dataset.lng), Number(traceBtn.dataset.lat));
         });
       }
       this.hoverTip.classList.remove('is-hidden');
@@ -11543,7 +11834,7 @@
       locate: (opts) => app.locate(opts),
       resolvePlace: (place, year) => app.resolvePlace(place, year),
       inspect: (opts) => app.inspect(opts),
-      openPerson: (who, idx = -1) => app.openPersonChronicle(who, idx),
+      openPerson: (who, idx = -1) => app._openPerson(who, idx),
       search: (q) => app._queryQuickSearch(q),
     };
     app._registerWebMcpTools();
