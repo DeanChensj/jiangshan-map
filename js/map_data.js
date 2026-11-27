@@ -2047,7 +2047,8 @@ window.DYNASTY_DATA = [
     ],
     "phases": [
       {"until":1645,"snap":"s_qing_a00"},
-      {"until":1661,"snap":"s_qing_a0"},
+      {"until":1652,"snap":"s_qing_a0"},
+      {"until":1661,"snap":"s_qing_1652"},
       {"until":1662,"snap":"s_qing_a0b"},
       {"until":1673,"snap":"s_qing_a1"},
       {"until":1681,"snap":"s_qing_a"},

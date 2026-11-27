@@ -1753,6 +1753,34 @@ async function runApiSearchSuite(ctx) {
     );
   }
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1650), 's_qing_a0', 'Qing at 1650 CE must resolve to s_qing_a0');
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1652), 's_qing_1652', 'Qing at 1652 CE must resolve to s_qing_1652');
+  assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1655), 's_qing_1652', 'Qing at 1655 CE must resolve to s_qing_1652');
+  if (!FAST_MODE) {
+    const q1650 = snapshots.s_qing_a0.polities.find((p) => p.title === '清');
+    const nm1650 = snapshots.s_qing_a0.polities.find((p) => p.title === '南明');
+    const q1652 = snapshots.s_qing_1652.polities.find((p) => p.title === '清');
+    const nm1652 = snapshots.s_qing_1652.polities.find((p) => p.title === '南明');
+    assert(
+      pointInShape(118.801, 32.061, q1650.shape) &&
+        pointInShape(119.3, 26.08, q1650.shape) &&
+        pointInShape(113.261, 23.131, nm1650.shape) &&
+        pointInShape(110.291, 25.271, nm1650.shape) &&
+        pointInShape(112.572, 26.894, nm1650.shape),
+      'In 1645-1652 s_qing_a0 清 must hold Nanjing & Fuzhou while 南明 holds Guangzhou, Guilin & Hengyang'
+    );
+    assert(
+      pointInShape(113.261, 23.131, q1652.shape) &&
+        pointInShape(116.623, 23.657, q1652.shape) &&
+        pointInShape(110.35, 19.95, q1652.shape) &&
+        !pointInShape(113.261, 23.131, nm1652.shape) &&
+        pointInShape(110.291, 25.271, nm1652.shape) &&
+        pointInShape(112.572, 26.894, nm1652.shape) &&
+        pointInShape(106.631, 26.651, nm1652.shape) &&
+        pointInShape(102.831, 24.881, nm1652.shape) &&
+        !pointInShape(110.291, 25.271, q1652.shape),
+      'In 1652-1661 s_qing_1652 清 must hold Guangdong & Hainan while 南明 retains Guilin, Hengyang, Guiyang & Kunming'
+    );
+  }
   assert.strictEqual(ctrl._resolveSnapKey(qingDyn, 1661), 's_qing_a0b', 'Qing at 1661 CE must resolve to s_qing_a0b');
   assert(
     snapshots.s_qing_a0b.polities.some((p) => p.title === '南明') &&
