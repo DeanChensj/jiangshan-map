@@ -1146,8 +1146,18 @@ async function runSearchRuntimeSuite(ctx) {
             assert.strictEqual(qCtrl.challenge.finished, true);
             assert.strictEqual(
               getQuizEl('challenge-mobile-dock').classList.contains('is-hidden'),
+              false,
+              `Mobile dock must remain visible on quiz finish for bottom finish actions (${loc})`
+            );
+            assert.strictEqual(
+              getQuizEl('act-quiz-mobile-cta').classList.contains('is-hidden'),
               true,
-              `Mobile dock must hide on quiz finish (${loc})`
+              `Round CTA must hide on quiz finish (${loc})`
+            );
+            assert.strictEqual(
+              getQuizEl('challenge-mobile-finish-actions').classList.contains('is-hidden'),
+              false,
+              `Mobile finish action row must show on quiz finish (${loc})`
             );
             assert.strictEqual(
               getQuizEl('act-share-quiz').classList.contains('is-hidden'),
@@ -1167,6 +1177,16 @@ async function runSearchRuntimeSuite(ctx) {
             );
             qCtrl.stopChallenge();
             assert.strictEqual(qCtrl.challenge, null);
+            assert.strictEqual(
+              getQuizEl('challenge-mobile-dock').classList.contains('is-hidden'),
+              true,
+              `Mobile dock must hide on stopChallenge (${loc})`
+            );
+            assert.strictEqual(
+              getQuizEl('challenge-mobile-finish-actions').classList.contains('is-hidden'),
+              true,
+              `Mobile finish action row must hide on stopChallenge (${loc})`
+            );
             assert.strictEqual(
               getQuizEl('act-share-quiz').classList.contains('is-hidden'),
               true,

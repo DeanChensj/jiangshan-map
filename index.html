@@ -47,12 +47,12 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=14c890bb" />
+  <link rel="stylesheet" href="css/style.css?v=003d0164" />
   <script defer src="js/china_geo_data.js?v=9a794924"></script>
   <script defer src="js/atlas_boot.js?v=65b9ac27"></script>
   <script defer src="js/map_data.js?v=9bfb17fb"></script>
   <script defer src="js/lore_core.js?v=cb2ea27e"></script>
-  <script defer id="atlas-app-script" src="js/app.js?v=c3d0262b" data-v-snapshots="ee23cdc9" data-v-i18n="b28c88d2" data-v-lore="806b56dc" data-v-pinyin="7e66b7cc" data-v-hant="3afdab47" data-v-quiz="e6f4354e" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="f5127746" data-v-person="33b8f746" data-v-genealogy="1638ae1e"></script>
+  <script defer id="atlas-app-script" src="js/app.js?v=d04cfbeb" data-v-snapshots="ee23cdc9" data-v-i18n="b28c88d2" data-v-lore="806b56dc" data-v-pinyin="7e66b7cc" data-v-hant="3afdab47" data-v-quiz="58cf1453" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="f5127746" data-v-person="33b8f746" data-v-genealogy="1638ae1e"></script>
   <script defer src="js/atlas_search.js?v=cb8b5186"></script>
   <script defer src="js/atlas_api.js?v=bb6adb1f"></script>
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代200+多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与简繁中英三语。" />
@@ -648,6 +648,10 @@
         <div id="challenge-mobile-dock" class="is-hidden" role="region" aria-label="舆图小试操作栏">
           <span id="challenge-mobile-hint" class="challenge-mobile-hint"></span>
           <button id="act-quiz-mobile-cta" class="action-btn accent challenge-mobile-cta is-hidden" type="button"></button>
+          <div id="challenge-mobile-finish-actions" class="challenge-mobile-finish-actions is-hidden">
+            <button id="act-quiz-mobile-again" class="action-btn challenge-mobile-again" data-track="act-next-round" type="button"></button>
+            <button id="act-quiz-mobile-share" class="action-btn accent challenge-mobile-share" data-track="act-share-quiz" type="button"></button>
+          </div>
         </div>
 
         <div id="genealogy-card" class="is-hidden" role="dialog" aria-label="古今地名沿革">

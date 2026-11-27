@@ -10804,6 +10804,21 @@
           if (nextBtn) nextBtn.click();
         });
       }
+      const quizMobileAgain = this._id('act-quiz-mobile-again');
+      if (quizMobileAgain) {
+        quizMobileAgain.addEventListener('click', () => {
+          const nextBtn = this._id('act-next-round');
+          if (nextBtn) nextBtn.click();
+        });
+      }
+      const quizMobileShare = this._id('act-quiz-mobile-share');
+      if (quizMobileShare) {
+        quizMobileShare.addEventListener('click', () => {
+          const shareBtn = this._id('act-share-quiz');
+          if (shareBtn && typeof shareBtn.onclick === 'function') shareBtn.click();
+          else if (typeof this._openQuizPoster === 'function') this._openQuizPoster();
+        });
+      }
 
       const musicBtn = this._id('act-music');
       if (musicBtn) {
