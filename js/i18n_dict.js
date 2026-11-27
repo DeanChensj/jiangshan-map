@@ -275,8 +275,12 @@ window.EN_LOCALE = {
       "Dong Zhuo seizes Luoyang, deposes Emperor Shao for Emperor Xian, and moves the capital",
       "Luoyang & Chang'an"
     ],
+    "donghan:192": [
+      "Wang Yun and Lü Bu slay Dong Zhuo in Chang’an; Li Jue seizes the capital as warlords rise",
+      "Chang'an"
+    ],
     "donghan:195": [
-      "Sun Ce crosses the Yangtze to conquer Jiangdong; Emperor Xian flees east from Chang'an",
+      "Sun Ce conquers Jiangdong; amid Li Jue’s strife in Chang’an, Emperor Xian flees to Luoyang",
       "Qu'a & Luoyang"
     ],
     "donghan:198": [
@@ -604,7 +608,7 @@ window.EN_LOCALE = {
       "Heishui Area Command (Boli)"
     ],
     "tang:755": [
-      "An Lushan rebels at Fanyang, sparking the An–Shi Rebellion",
+      "Tri-circuit general An Lushan rebels at Fanyang against Yang Guozhong, sparking An–Shi War",
       "Fanyang (Youzhou)"
     ],
     "tang:757": [
@@ -1052,7 +1056,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "donghan:196": [
-      "Cao Cao welcomes Emperor Xian to Xu (Xuchang) and establishes military-agricultural colonies",
+      "Yan governor Cao Cao welcomes Emperor Xian to Xu (Xuchang) and launches military colonies",
       "Xu (Xuchang)"
     ],
     "donghan:219": [
@@ -1060,7 +1064,7 @@ window.EN_LOCALE = {
       "Hanzhong · Maicheng"
     ],
     "sanguo:222": [
-      "Battle of Yiling; Lu Xun defeats Liu Bei by fire attack",
+      "Battle of Yiling: marching east to avenge Guan Yu, Liu Bei is routed by Lu Xun’s fire attack",
       "Yiling (Yichang)"
     ],
     "sanguo:225": [
@@ -1088,7 +1092,7 @@ window.EN_LOCALE = {
       "Luoyang"
     ],
     "sanguo:255": [
-      "Guanqiu Jian's Shouchun rebellion is crushed by Sima Shi; Jiang Wei routs Wang Jing at Taoxi",
+      "After Sima Yi dies, Sima Shi crushes Guanqiu Jian at Shouchun; Jiang Wei wins at Taoxi",
       "Shouchun & Didao"
     ],
     "sanguo:264": [
@@ -1808,7 +1812,7 @@ window.EN_LOCALE = {
       "Liangzhou (Longyou)"
     ],
     "sanguo:260": [
-      "Coup of Ganlu: Wei Emperor Cao Mao marches against Sima Zhao and is slain at the palace gate",
+      "Coup of Ganlu: marching against Sima Zhao after Sima Shi’s death, Cao Mao is slain at gate",
       "Luoyang"
     ],
     "tang:707": [
@@ -1820,7 +1824,7 @@ window.EN_LOCALE = {
       "Chang'an"
     ],
     "tang:756": [
-      "Mawei Mutiny: guards execute Yang Guozhong and Consort Yang; Suzong ascends at Lingwu",
+      "Rebels take Chang’an; fleeing west, Xuanzong faces Mawei Mutiny as Suzong ascends at Lingwu",
       "Mawei Post (Xingping) · Lingwu"
     ],
     "tang:805": [
@@ -1916,7 +1920,7 @@ window.EN_LOCALE = {
       "Xuzhou & Guilin"
     ],
     "tang:885": [
-      "Emperor Xizong returns to Chang'an as warlords Zhu Wen and Li Keyong carve out rival domains",
+      "After Zhu Wen defects and Li Keyong breaks Huang Chao, Xizong returns amid rival warlords",
       "Chang'an & Bianzhou"
     ],
     "tang:895": [
@@ -2212,7 +2216,7 @@ window.EN_LOCALE = {
       "Ye · Xu"
     ],
     "tang:684": [
-      "Empress Dowager Wu Zetian deposes Zhongzong at Luoyang and crushes Xu Jingye's Yangzhou revolt",
+      "After Gaozong dies, Empress Dowager Wu deposes Zhongzong at Luoyang and crushes Xu Jingye",
       "Eastern Capital Luoyang · Yangzhou"
     ],
     "tang:904": [
