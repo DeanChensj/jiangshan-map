@@ -199,6 +199,10 @@ window.EN_LOCALE = {
       "Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han",
       "Gaixia & Chang'an"
     ],
+    "xihan:-195": [
+      "Emperor Gaozu purges non-Liu kings and swears the White Horse Oath; Empress Lü takes control",
+      "Chang'an"
+    ],
     "xihan:-154": [
       "Emperor Jing's fief cuts spark the Rebellion of the Seven States; Zhou Yafu crushes the revolt",
       "Suiyang (Shangqiu)"
@@ -882,6 +886,10 @@ window.EN_LOCALE = {
     "qing:1645": [
       "Qing armies take Yangzhou and Nanjing, ending the Hongguang court; the queue edict sparks revolt",
       "Nanjing"
+    ],
+    "qing:1652": [
+      "Li Dingguo retakes Guilin and Hengyang, killing two Qing princes to revive Southern Ming",
+      "Guilin · Hengyang"
     ],
     "qing:1673": [
       "Kangxi orders abolition of the feudatories; Wu Sangui rebels in Yunnan (Three Feudatories)",
@@ -1691,6 +1699,10 @@ window.EN_LOCALE = {
       "After Shenzong dies, Empress Dowager Gao appoints Sima Guang to repeal reforms (Yuanyou)",
       "Kaifeng"
     ],
+    "beisong:1094": [
+      "Emperor Zhezong revives the New Policies under Zhang Dun and banishes Su Shi's faction",
+      "Kaifeng"
+    ],
     "nansong:1175": [
       "Qian-Chun and Dading eras bring stability; Zhu Xi and Lu Jiuyuan debate at Goose Lake",
       "Lin'an · Goose Lake"
@@ -1958,6 +1970,10 @@ window.EN_LOCALE = {
     "qing:1696": [
       "Emperor Kangxi personally leads campaigns into Outer Mongolia, routing Galdan at Jao Modo",
       "Jao Modo (Ulaanbaatar)"
+    ],
+    "qing:1712": [
+      "Kangxi freezes the head-tax quota at 1711 levels, exempting all future population growth",
+      "Beijing"
     ],
     "qing:1729": [
       "Emperor Yongzheng creates the Grand Council, concentrating state power in the throne",

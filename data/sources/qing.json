@@ -1,4 +1,6 @@
 {
   "event:qing:1760": [{ "w": "qingshigao", "loc": "卷59 志三十四 地理六 安徽" }],
-  "event:qing:1774": [{ "w": "qingshigao", "loc": "卷485 列传二百七十二 文苑二 姚鼐传" }]
+  "event:qing:1774": [{ "w": "qingshigao", "loc": "卷485 列传二百七十二 文苑二 姚鼐传" }],
+  "milestone:qing:1652": [{ "w": "qingshigao", "loc": "卷5 本纪五 世祖二 顺治九年七月李定国陷桂林、孔有德自焚死；十一月尼堪战殁于衡州", "url": "https://zh.wikisource.org/wiki/清史稿/卷5" }],
+  "milestone:qing:1712": [{ "w": "qingshigao", "loc": "卷8 本纪八 圣祖三 康熙五十一年二月壬午诏：嗣后滋生人丁，永不加赋", "url": "https://zh.wikisource.org/wiki/清史稿/卷8" }, { "w": "qingshigao", "loc": "卷121 志九十六 食货二 户口 康熙五十一年以五十年丁册定为常额", "url": "https://zh.wikisource.org/wiki/清史稿/卷121" }]
 }
