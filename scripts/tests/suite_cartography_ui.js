@@ -1548,6 +1548,12 @@ async function runCartographyUiSuite(ctx) {
       ['nansong', 1127, '赵构即位', '南宋高宗·建炎元年'],
       ['nansong', 1141, '绍兴和议', '南宋高宗·绍兴十一年'],
       ['nansong', 1275, '马可·波罗', '元世祖·至元十二年'],
+      ['sanguo', 230, '夷洲', '吴大帝·黄龙二年'],
+      ['sanguo', 279, '王濬楼船', '西晋武帝·咸宁五年'],
+      ['sanguo', 280, '西晋灭吴', '西晋武帝·太康元年'],
+      ['nanbei', 529, '陈庆之', '南朝梁武帝·中大通元年'],
+      ['beisong', 986, '雍熙北伐', '北宋太宗·雍熙三年'],
+      ['beisong', 1123, '燕山府路', '北宋徽宗·宣和五年'],
     ]) {
       assert.strictEqual(ctrl._eventEraLabel(dynByKey(k), milestoneOf(k, y, kw)), expected, `${k} ${y} ${kw}`);
     }
@@ -1585,6 +1591,94 @@ async function runCartographyUiSuite(ctx) {
       'English era label must name the regime ruling the location'
     );
     ctrl.locale = 'zh';
+
+    // Async lazy-snapshot hydration updates both milestone balloon and #bubble-text;
+    // scrubber pill follows exact-year milestone era while leaving non-milestone years on reference track.
+    {
+      const bubbleEl = { title: '', style: { setProperty() {} } };
+      const bubbleTextEl = { textContent: '' };
+      const balloonClasses = new Set();
+      const m494 = milestoneOf('nanbei', 494, '北魏孝文帝迁都');
+      const snap494Key = ctrl._resolveSnapKey(nanbei, 494);
+      const eraCtrl = Object.assign(Object.create(ctrl), {
+        _syncAutoMilestoneBalloon: ControllerClass.prototype._syncAutoMilestoneBalloon,
+        closeMilestoneBalloon: ControllerClass.prototype.closeMilestoneBalloon,
+        locale: 'zh',
+        year: 494,
+        dynastyIdx: dynasties.indexOf(nanbei),
+        activePerson: null,
+        challenge: null,
+        activeMilestone: null,
+        dismissedCalloutIds: new Set(),
+        snapshots: { ...snapshots },
+        milestoneBalloon: {
+          innerHTML: '',
+          classList: {
+            add: (...c) => c.forEach((x) => balloonClasses.add(x)),
+            remove: (...c) => c.forEach((x) => balloonClasses.delete(x)),
+            contains: (x) => balloonClasses.has(x),
+          },
+          querySelector: () => null,
+          querySelectorAll: () => [],
+        },
+        grpMilestones: { querySelectorAll: () => [], classList: { contains: () => false } },
+        _id: (id) => (id === 'scrubber-Bubble' ? bubbleEl : id === 'bubble-text' ? bubbleTextEl : null),
+        _highlightCurrentMilestone: () => {},
+        _updateMilestoneStates: () => {},
+        _measureMilestoneBalloonSize: () => {},
+        _positionMilestoneBalloon: () => {},
+        _positionScrubberBubble: () => {},
+        _syncScrubberNavigator: () => {},
+      });
+      delete eraCtrl.snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      eraCtrl._syncScrubberUi();
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('南朝齐明帝·建武元年'),
+        'Before lazy snapshot loads, 494 fallback shows reference era'
+      );
+      eraCtrl.snapshots[snap494Key] = snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      eraCtrl._syncScrubberUi();
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('北魏孝文帝·太和十八年'),
+        `After lazy snapshot loads, 494 auto callout must refresh to Northern Wei era: ${eraCtrl.milestoneBalloon.innerHTML}`
+      );
+      assert.strictEqual(
+        bubbleTextEl.textContent,
+        '公元 494 年 · 北魏孝文帝·太和十八年',
+        'Scrubber pill on exact milestone 494 must sync to Northern Wei era'
+      );
+      // Non-auto manual balloon also refreshes when snapshot finishes loading
+      delete eraCtrl.snapshots[snap494Key];
+      eraCtrl.openMilestoneBalloon(nanbei, m494, { isAuto: false });
+      assert(eraCtrl.milestoneBalloon.innerHTML.includes('南朝齐明帝·建武元年'));
+      eraCtrl.snapshots[snap494Key] = snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('北魏孝文帝·太和十八年'),
+        'Manual 494 balloon must also refresh once snapshot hydrates'
+      );
+      // Non-milestone year stays on Zizhi Tongjian reference chronology
+      eraCtrl.year = 496;
+      eraCtrl._syncScrubberUi();
+      assert.strictEqual(
+        bubbleTextEl.textContent,
+        '公元 496 年 · 南朝齐明帝·建武三年',
+        'Non-milestone year 496 scrubber pill must stay on reference chronology'
+      );
+      // 1616 Later Jin milestone must not attach Ming Shenzong temple title
+      const ming = dynByKey('ming');
+      eraCtrl.year = 1616;
+      eraCtrl.dynastyIdx = dynasties.indexOf(ming);
+      eraCtrl.activeMilestone = null;
+      eraCtrl._syncScrubberUi();
+      assert.strictEqual(bubbleTextEl.textContent, '公元 1616 年 · 后金天命元年');
+      assert(
+        !bubbleEl.title.includes('明神宗'),
+        `Regional milestone scrubber title must not carry Ming temple name: ${bubbleEl.title}`
+      );
+    }
   }
 
   // CUJ 28: Timeline autoplay is event-driven — the playhead lands only on event nodes
@@ -1788,6 +1882,30 @@ async function runCartographyUiSuite(ctx) {
     ctrl.dynastyIdx = dynasties.indexOf(tang);
     proto.stepTimelineNode.call(ctrl, 1);
     assert.strictEqual(ctrl.year, 626, `Restoring events layer must resume stopping at 626, got ${ctrl.year}`);
+    // Normal stepTimelineNode must exclude dead focusYear stops and step cleanly between events
+    delete ctrl._timelineStepYears;
+    ctrl.year = 1197;
+    ctrl.dynastyIdx = ctrl._findDynastyIndex(1197);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 1206, `Expected forward step from 1197 to skip dead focusYear 1200 and land on 1206, got ${ctrl.year}`);
+    proto.stepTimelineNode.call(ctrl, -1);
+    assert.strictEqual(ctrl.year, 1197, `Expected backward step from 1206 to return to 1197, got ${ctrl.year}`);
+    const deadFocusYears = [-100, 100, 250, 741, 950, 1100, 1200, 1300, 1450, 1800, 2026];
+    for (const dy of deadFocusYears) {
+      assert(!ctrl._timelineStepYears.includes(dy), `Dead focusYear ${dy} must not appear in _timelineStepYears`);
+    }
+    const validStepYears = new Set();
+    for (const d of dynasties) {
+      validStepYears.add(d.fromYear);
+      for (const m of d.milestones || []) validStepYears.add(ctrl._clampYearToDynasty(d, m.year));
+    }
+    for (const sy of ctrl._timelineStepYears) {
+      assert(validStepYears.has(sy), `Step year ${sy} must correspond to a dynasty start or milestone`);
+    }
+    ctrl.year = 2010;
+    ctrl.dynastyIdx = ctrl._findDynastyIndex(2010);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 2010, `Forward step from final node 2010 must stay on 2010, got ${ctrl.year}`);
     ctrl.grpMilestones = savedGrpM;
     ctrl._ensureMilestoneInView = savedEnsureView;
     ctrl.openMilestoneBalloon = savedOpenBalloon;
