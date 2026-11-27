@@ -6800,6 +6800,7 @@
         this._clearQuickSearchInput();
         cancelRaf();
         scrubbing = true;
+        this._scrubberPointerDown = true;
         trackRect = track.getBoundingClientRect();
         track.setPointerCapture(e.pointerId);
         scrubAt(e.clientX, false);
@@ -6830,6 +6831,7 @@
         scrubbing = false;
         trackRect = null;
         if (x !== null) scrubAt(x);
+        this._scrubberPointerDown = false;
         this.isScrubbing = false;
         if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         this._revealScrubberYear();
@@ -6841,6 +6843,7 @@
         const wasDragging = Boolean(this.isScrubbing);
         cancelRaf();
         scrubbing = false;
+        this._scrubberPointerDown = false;
         this.isScrubbing = false;
         if (this.svg && this.svg.classList) this.svg.classList.remove('is-scrubbing');
         trackRect = null;

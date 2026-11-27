@@ -62,6 +62,11 @@
     return !app.embed && v && v.end - v.start < 0.999 ? 'zoomed' : '';
   }
 
+  function dynastyState(app) {
+    const d = app.dynasties && app.dynasties[app.dynastyIdx];
+    return d && d.key ? d.key : '';
+  }
+
   // Each hook wraps one controller method. The app re-invokes most of them on its own
   // (after a lazy bundle loads, on every year change while a card is open, on re-render),
   // so a call is not a use. `state` returns '' while the view is closed and a stable key
@@ -73,6 +78,13 @@
     { method: 'openGenealogyAt', state: traceState, name: () => 'place_card' },
     { method: 'openPolity', state: polityState, name: polityName },
     { method: '_setScrubberView', state: timelineState, name: () => 'timeline_zoom' },
+    {
+      method: '_revealScrubberYear',
+      state: dynastyState,
+      name: (app) => slug('dyn:' + dynastyState(app)),
+      skip: (app) => Boolean(app.playing || app.isScrubbing || app._scrubberPointerDown || app.challenge),
+      seedInitial: true,
+    },
     {
       method: '_finishChallenge',
       state: (app) => (app.challenge && app.challenge.finished ? 'done' : ''),
@@ -165,6 +177,7 @@
         } catch (_) {}
         const result = orig.apply(this, args);
         try {
+          if (hook.skip && hook.skip(app)) return result;
           if (!hook.state) {
             bump('feat', hook.name(app, args));
           } else {
@@ -187,6 +200,11 @@
       for (const hook of FEATURE_HOOKS) {
         try {
           const { method } = hook;
+          if (hook.seedInitial && hook.state) {
+            try {
+              hook.last = hook.state(app) || '';
+            } catch (_) {}
+          }
           const wrapped = new WeakMap();
           let own = Object.prototype.hasOwnProperty.call(app, method) ? app[method] : undefined;
           // An accessor rather than a one-time wrap: the quiz methods are added to the

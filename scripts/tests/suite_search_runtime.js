@@ -3904,6 +3904,19 @@ async function runSearchRuntimeSuite(ctx) {
           this.locale = 'en';
           this.activeTrace = null;
           this.activePerson = null;
+          this.dynasties = [
+            { key: 'zhanguo' },
+            { key: 'tang' },
+            { key: 'beisong' },
+            { key: 'ming' },
+            { key: 'qing' },
+            { key: 'roc' },
+          ];
+          this.dynastyIdx = 0;
+          this.playing = false;
+          this.isScrubbing = false;
+          this._scrubberPointerDown = false;
+          this.challenge = null;
         }
         openGenealogyAt(lng, lat) {
           this.activeTrace = [lng, lat];
@@ -3912,6 +3925,7 @@ async function runSearchRuntimeSuite(ctx) {
           this.activePerson = { profiles };
           return true;
         }
+        _revealScrubberYear() {}
       }
       const win = { innerWidth: 1280, addEventListener: on(listeners.window) };
       const box = {
@@ -3977,6 +3991,7 @@ async function runSearchRuntimeSuite(ctx) {
       'this.activePolity = ',
       'this.eraFocus = ',
       'this._scrubberView = ',
+      'this._scrubberPointerDown = ',
       '.finished = true',
       'act-return-person',
       'act-return-story',
@@ -3987,6 +4002,12 @@ async function runSearchRuntimeSuite(ctx) {
       indexHtml.includes('id="milestone-list"') && indexHtml.includes('id="genealogy-timeline"'),
       'atlas_track.js counts clicks on rows inside #milestone-list and #genealogy-timeline'
     );
+    for (const d of dynasties) {
+      assert(
+        /^dyn:[a-z0-9_-]+$/i.test(`dyn:${d.key}`),
+        `Dynasty key "${d.key}" must form a valid track name`
+      );
+    }
 
     const { app } = t;
     // One user action is many calls: the app re-invokes openGenealogyAt after each lazy bundle
@@ -4010,6 +4031,7 @@ async function runSearchRuntimeSuite(ctx) {
     app.startChallenge();
     app._finishChallenge();
     app._finishChallenge();
+    app.challenge = null;
 
     app.openPersonChronicle([{ key: 'sushi' }]);
     // Opening a place card from a chronicle clears it; the return button brings it back.
@@ -4019,6 +4041,34 @@ async function runSearchRuntimeSuite(ctx) {
     t.runTimers();
     app.openPersonChronicle([{ key: 'libai' }, { key: 'dufu' }]);
     app.openPersonChronicle([{ key: 'anshi', isStory: true }]);
+
+    // Initial landing dynasty must not count on idle redraws.
+    app._revealScrubberYear();
+
+    // Intentional visit to Tang counts once per transition.
+    app.dynastyIdx = 1;
+    app._revealScrubberYear();
+    app._revealScrubberYear();
+
+    // Dragging across Beisong to Ming must skip Beisong and record Ming on release.
+    app._scrubberPointerDown = true;
+    app.isScrubbing = true;
+    app.dynastyIdx = 2;
+    app._revealScrubberYear();
+    app.dynastyIdx = 3;
+    app._scrubberPointerDown = false;
+    app.isScrubbing = false;
+    app._revealScrubberYear();
+
+    // Autoplay and quiz jumps must not count as manual dynasty visits.
+    app.playing = true;
+    app.dynastyIdx = 4;
+    app._revealScrubberYear();
+    app.playing = false;
+    app.challenge = { finished: false };
+    app.dynastyIdx = 5;
+    app._revealScrubberYear();
+    app.challenge = null;
 
     t.click({ id: 'act-step-next' });
     t.click({ id: 'act-step-next' });
@@ -4035,6 +4085,8 @@ async function runSearchRuntimeSuite(ctx) {
         'feat/person:sushi': 1,
         'feat/multi:dufu.libai': 1,
         'feat/story:anshi': 1,
+        'feat/dyn:tang': 1,
+        'feat/dyn:ming': 1,
         'btn/act-return-person': 1,
         'btn/act-step-next': 2,
         'btn/c.band-cell': 1,
