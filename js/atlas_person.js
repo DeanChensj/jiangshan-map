@@ -2745,8 +2745,6 @@
             : curIdx + 1 < events.length && !this.personSharedOnly
               ? curIdx + 1
               : -1;
-      const prevIdx =
-        navPos > 0 ? navIdxs[navPos - 1] : !this.personSharedOnly && curIdx > 0 ? curIdx - 1 : -1;
       const next = nextIdx >= 0 ? events[nextIdx] : null;
       let nextLabel;
       if (next) {
@@ -2767,19 +2765,9 @@
       } else {
         nextLabel = isEn ? 'Back to overview' : '回到全图总览';
       }
-      const prevTitle = isEn ? 'Prev' : '上一站';
       footEl.innerHTML =
-        `<button type="button" class="gen-foot-prev" id="act-person-prev" title="${prevTitle}"${
-          curIdx < 0 ? ' disabled' : ''
-        }>${SVG_ICONS.arrowLeft}<span>${prevTitle}</span></button>` +
         `<button type="button" class="gen-foot-next" id="act-person-next"><span>${nextLabel}</span>${SVG_ICONS.arrowRight}</button>`;
       footEl.classList.remove('is-hidden');
-      const prevBtn = footEl.querySelector('#act-person-prev');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          this.selectPersonEvent(prevIdx, true);
-        });
-      }
       const nextBtn = footEl.querySelector('#act-person-next');
       if (nextBtn) {
         nextBtn.addEventListener('click', () => this.selectPersonEvent(next ? nextIdx : -1, true));
