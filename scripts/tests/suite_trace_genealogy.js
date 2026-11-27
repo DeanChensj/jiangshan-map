@@ -612,6 +612,7 @@ async function runTraceGenealogySuite(ctx) {
     's_beisong_b2',
     's_beisong_c',
     's_beisong_d',
+    's_nansong_1127',
     's_nansong_a0',
     's_nansong_a',
     's_nansong_b0',
