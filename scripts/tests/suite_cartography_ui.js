@@ -1046,11 +1046,12 @@ async function runCartographyUiSuite(ctx) {
       '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
       '长白山', '岷山', '大别山', '陇山', '巫山', '葱岭', '燕然山',
       '外兴安岭', '阿尔泰山', '喜马拉雅山', '横断山', '武陵山',
+      '吕梁山', '中条山', '泰山', '伏牛山', '恒山', '罗霄山',
     ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 24 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 30 curated mountain-range labels'
     );
     const deserts = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'desert');
     assert.strictEqual(JSON.stringify(deserts.map((d) => d.zh)), JSON.stringify(['大 漠']), 'Exactly one Gobi watermark label');
@@ -1075,11 +1076,12 @@ async function runCartographyUiSuite(ctx) {
     const expectedDetailRivers = [
       '鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江',
       '乌苏里江', '额尔齐斯河', '嘉陵江', '岷江', '乌江', '钱塘江', '西拉木伦河', '锡尔河', '阿姆河',
+      '泗水', '洛水', '北洛河', '颍水', '桑干河', '大凌河', '滦河', '泾水', '闽江', '沅水',
     ];
     assert.strictEqual(
       JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
       JSON.stringify([...expectedDetailRivers].sort()),
-      'Zoom-gated boundary rivers must stay limited to the 15 classic frontier rivers'
+      'Zoom-gated boundary rivers must stay limited to the 25 classic frontier & regional boundary rivers'
     );
     for (const lb of detailRivers) {
       for (const en of lb.eraNames || []) {
@@ -1106,6 +1108,15 @@ async function runCartographyUiSuite(ctx) {
     const wuLabel = detailRivers.find((lb) => lb.zh === '乌江');
     assert.strictEqual(ctrl._hydroLabelPair(wuLabel, -200).zh, '延江水', 'Wu River in 200 BCE must resolve to 延江水');
     assert.strictEqual(ctrl._hydroLabelPair(wuLabel, 1200).zh, '乌江', 'Wu River in 1200 CE must resolve to 乌江');
+    const sangganLabel = detailRivers.find((lb) => lb.zh === '桑干河');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 400).zh, '漯水', 'Sanggan in 400 CE must resolve to 漯水');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 936).zh, '桑干河', 'Sanggan in 936 CE must resolve to 桑干河');
+    const dalingLabel = detailRivers.find((lb) => lb.zh === '大凌河');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 400).zh, '白狼水', 'Daling in 400 CE must resolve to 白狼水');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 1005).zh, '大凌河', 'Daling in 1005 CE must resolve to 大凌河');
+    const luanLabel = detailRivers.find((lb) => lb.zh === '滦河');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 400).zh, '濡水', 'Luan in 400 CE must resolve to 濡水');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 1005).zh, '滦河', 'Luan in 1005 CE must resolve to 滦河');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
@@ -3120,7 +3131,7 @@ async function runCartographyUiSuite(ctx) {
         !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
       '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
     );
-    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409 年设奴儿干都司后归明，1388-1408 年留在女真诸部，明廷止于辽东。
+    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409–1449 年设奴儿干都司作为羁縻都司（role: 'protectorate'），明本土仍止于辽东。
     for (const sk of ['s_ming_a0', 's_ming_a']) {
       assert(
         !hasPolPt(sk, '明', 139.88, 52.86) &&
@@ -3131,12 +3142,24 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Outer Manchuria (Telin/Heilongjiang) must belong to 女真诸部 before 1409 Nurgan, while Liaoyang stays in 明`
       );
     }
-    assert(
-      hasPolPt('s_ming_1409', '明', 139.88, 52.86) &&
-        hasPolPt('s_ming_1409', '明', 132.0, 48.0) &&
-        hasPolPt('s_ming_1409', '明', 123.17, 41.27),
-      's_ming_1409: Nurgan (1409) incorporates Outer Manchuria and Liaoyang into 明'
-    );
+    for (const sk of ['s_ming_1409', 's_ming_a2']) {
+      const nurganPol = (snapshots[sk].polities || []).find((p) => p.title === '奴儿干都司');
+      assert(
+        nurganPol &&
+          nurganPol.role === 'protectorate' &&
+          pointInShape(139.88, 52.86, nurganPol.shape) &&
+          pointInShape(132.0, 48.0, nurganPol.shape) &&
+          pointInShape(142.8, 50.0, nurganPol.shape) &&
+          !(snapshots[sk].regions || []).some((r) => r.title === '奴儿干都司'),
+        `${sk}: Nurgan (奴儿干都司) must be a protectorate (羁縻) covering Telin, Heilongjiang, and Sakhalin, not a direct region`
+      );
+      assert(
+        !hasPolPt(sk, '明', 139.88, 52.86) &&
+          !hasPolPt(sk, '明', 132.0, 48.0) &&
+          hasPolPt(sk, '明', 123.17, 41.27),
+        `${sk}: direct 明 territory stops at Liaoyang (辽东都司) while Nurgan is protectorate`
+      );
+    }
     // 唐黑水都督府 (726–755): 725 无黑水都督府，726–755 覆盖伯力与黑龙江下游（不含库页岛），755 安史之乱后撤除。
     const tangDynHeishui = dynasties.find((d) => d.key === 'tang');
     assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 725), 's_tang_a5y');
