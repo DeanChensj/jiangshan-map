@@ -1753,6 +1753,27 @@
       return this.formatEraLabel(ev.year, dynasty, ev.coord);
     }
 
+    _currentTimelineEraLabel(dynasty) {
+      const refLabel = this.formatEraLabel(this.year, dynasty);
+      if (!dynasty || this.activePerson || this._isMilestonesHidden()) return refLabel;
+      const am = this.activeMilestone;
+      let exactM = null;
+      if (
+        am &&
+        am.dynastyKey === dynasty.key &&
+        am.milestone &&
+        this._clampYearToDynasty(dynasty, am.milestone.year) === this.year
+      ) {
+        exactM = am.milestone;
+      } else if (Array.isArray(dynasty.milestones)) {
+        const sameYr = dynasty.milestones.filter(
+          (m) => this._clampYearToDynasty(dynasty, m.year) === this.year
+        );
+        if (sameYr.length) exactM = sameYr[sameYr.length - 1];
+      }
+      return exactM ? this._eventEraLabel(dynasty, exactM) : refLabel;
+    }
+
     _formatSpanEraZh(sp, targetNum) {
       const [startY, prefix, , monarchZh = ''] = sp;
       const numStr = this._toChineseEraNum(targetNum);
@@ -2061,7 +2082,7 @@
         const name = en ? this.activePolity.en : this._zh(this.activePolity.zh);
         title = `${this.formatYear(this.year)} · ${name}`;
       } else {
-        title = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, this.dynasties[this.dynastyIdx])}`;
+        title = `${this.formatYear(this.year)} · ${this._currentTimelineEraLabel(this.dynasties[this.dynastyIdx])}`;
       }
       titleEl.textContent = title;
     }
@@ -3010,10 +3031,10 @@
         if (!this.snapshotCache[snapKey]) {
           this.snapshotCache[snapKey] = Promise.resolve(snap);
         }
-        cb(snap);
+        cb(snap, false);
         return;
       }
-      this._fetchSnapshot(snapKey).then(cb);
+      this._fetchSnapshot(snapKey).then((snap) => cb(snap, true));
     }
 
     _renderDynasty(dynasty, prevSnap = null) {
@@ -3033,11 +3054,17 @@
       const snapKey = this._resolveSnapKey(dynasty, this.year);
       this.activeSnapKey = snapKey;
       this._markAwaitingSnapshot(snapKey);
-      this._withSnapshot(snapKey, (snap) => {
+      this._withSnapshot(snapKey, (snap, fromAsync) => {
         if (this.dynasties[this.dynastyIdx] !== dynasty || this._resolveSnapKey(dynasty, this.year) !== snapKey) {
           return;
         }
         this._renderPolitiesAndPrefectures(dynasty, snap);
+        if (fromAsync) {
+          if (!this.activePerson && !this.isScrubbing) {
+            this._syncAutoMilestoneBalloon(dynasty);
+          }
+          this._syncScrubberUi();
+        }
         if (!this.playing && !this.isScrubbing && !this.activePerson && prevSnap && prevSnap !== snap) {
           this._renderGhostDiff(prevSnap, 'fade');
         }
@@ -4524,7 +4551,10 @@
         this.activeMilestone.year === this.year &&
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
-        if (this.activeMilestone.locale !== renderedLocale) {
+        if (
+          this.activeMilestone.locale !== renderedLocale ||
+          this.activeMilestone.eraLabel !== this._eventEraLabel(dynasty, this.activeMilestone.milestone)
+        ) {
           this.openMilestoneBalloon(dynasty, this.activeMilestone.milestone, {
             isAuto: false,
             siteIdx: this.activeMilestone.siteIdx,
@@ -4560,6 +4590,7 @@
         am.isAuto &&
         am.milestone === m &&
         am.locale === renderedLocale &&
+        am.eraLabel === this._eventEraLabel(dynasty, m) &&
         !this.milestoneBalloon.classList.contains('is-hidden')
       ) {
         this.grpMilestones.querySelectorAll('.milestone-pin').forEach((n) => {
@@ -4740,6 +4771,7 @@
       }
       const yrText = this.formatYear(m.year);
       const eraLabel = this._eventEraLabel(dynasty, m);
+      this.activeMilestone.eraLabel = eraLabel;
       const headlineText = this.milestoneHeadline(dynasty, m);
       const pillsData = this._buildMilestonePillsData(dynasty, m, anchors);
       const { placeHtml, relicStopIdx, relicHtml, storyHit, storyHtml, placeEstText, relicLabel, storyLabel } =
@@ -7327,9 +7359,11 @@
       const bubble = this._id('scrubber-Bubble');
       const bubbleText = this._id('bubble-text');
       if (bubble && bubbleText) {
-        const eraText = `${this.formatYear(this.year)} · ${this.formatEraLabel(this.year, d)}`;
+        const refEraLabel = this.formatEraLabel(this.year, d);
+        const eraLabel = this._currentTimelineEraLabel(d);
+        const eraText = `${this.formatYear(this.year)} · ${eraLabel}`;
         bubbleText.textContent = eraText;
-        if (this.year >= 1368 && this.year < 1912) {
+        if (this.year >= 1368 && this.year < 1912 && eraLabel === refEraLabel) {
           const sp = this._resolveEraSpan(this.year, d);
           const templeZh = sp && sp[3];
           bubble.title =
@@ -7407,7 +7441,7 @@
             const prevSnap = this.lastRenderedSnap;
             this.activeSnapKey = nextSnapKey;
             this._markAwaitingSnapshot(nextSnapKey);
-            this._withSnapshot(nextSnapKey, (snap) => {
+            this._withSnapshot(nextSnapKey, (snap, fromAsync) => {
               if (
                 this.dynasties[this.dynastyIdx] !== cur ||
                 this._resolveSnapKey(cur, this.year) !== nextSnapKey
@@ -7415,6 +7449,12 @@
                 return;
               }
               this._renderPolitiesAndPrefectures(cur, snap);
+              if (fromAsync) {
+                if (!this.activePerson && !this.isScrubbing) {
+                  this._syncAutoMilestoneBalloon(cur);
+                }
+                this._syncScrubberUi();
+              }
               if (!this.playing && !this.isScrubbing && !this.activePerson && prevSnap) {
                 this._renderGhostDiff(prevSnap, 'fade');
               }
@@ -7595,7 +7635,6 @@
         const yrs = new Set();
         for (const d of this.dynasties) {
           yrs.add(d.fromYear);
-          yrs.add(d.focusYear);
           for (const m of d.milestones || []) {
             yrs.add(this._clampYearToDynasty(d, m.year));
           }
@@ -7606,7 +7645,8 @@
       let targetY = this.year;
       if (dir > 0) {
         const nextY = list.find((y) => y > this.year);
-        targetY = nextY !== undefined ? nextY : this.maxYear;
+        if (nextY === undefined) return;
+        targetY = nextY;
       } else {
         targetY = this.minYear;
         for (let i = list.length - 1; i >= 0; i--) {
@@ -7615,6 +7655,7 @@
             break;
           }
         }
+        if (targetY === this.year) return;
       }
       this.jumpToYear(targetY);
       const nextDyn = this.dynasties[this.dynastyIdx];
