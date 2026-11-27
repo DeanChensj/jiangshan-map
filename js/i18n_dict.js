@@ -199,6 +199,10 @@ window.EN_LOCALE = {
       "Han Xin and Liu Bang defeat Xiang Yu at Gaixia; Liu Bang ascends as Emperor Gaozu of Western Han",
       "Gaixia & Chang'an"
     ],
+    "xihan:-195": [
+      "Emperor Gaozu purges non-Liu kings and swears the White Horse Oath; Empress Lü takes control",
+      "Chang'an"
+    ],
     "xihan:-154": [
       "Emperor Jing's fief cuts spark the Rebellion of the Seven States; Zhou Yafu crushes the revolt",
       "Suiyang (Shangqiu)"
@@ -882,6 +886,10 @@ window.EN_LOCALE = {
     "qing:1645": [
       "Qing armies take Yangzhou and Nanjing, ending the Hongguang court; the queue edict sparks revolt",
       "Nanjing"
+    ],
+    "qing:1652": [
+      "Li Dingguo retakes Guilin and Hengyang, killing two Qing princes to revive Southern Ming",
+      "Guilin · Hengyang"
     ],
     "qing:1673": [
       "Kangxi orders abolition of the feudatories; Wu Sangui rebels in Yunnan (Three Feudatories)",
@@ -1691,6 +1699,10 @@ window.EN_LOCALE = {
       "After Shenzong dies, Empress Dowager Gao appoints Sima Guang to repeal reforms (Yuanyou)",
       "Kaifeng"
     ],
+    "beisong:1094": [
+      "Emperor Zhezong revives the New Policies under Zhang Dun and banishes Su Shi's faction",
+      "Kaifeng"
+    ],
     "nansong:1175": [
       "Qian-Chun and Dading eras bring stability; Zhu Xi and Lu Jiuyuan debate at Goose Lake",
       "Lin'an · Goose Lake"
@@ -1958,6 +1970,10 @@ window.EN_LOCALE = {
     "qing:1696": [
       "Emperor Kangxi personally leads campaigns into Outer Mongolia, routing Galdan at Jao Modo",
       "Jao Modo (Ulaanbaatar)"
+    ],
+    "qing:1712": [
+      "Kangxi freezes the head-tax quota at 1711 levels, exempting all future population growth",
+      "Beijing"
     ],
     "qing:1729": [
       "Emperor Yongzheng creates the Grand Council, concentrating state power in the throne",
@@ -6760,14 +6776,16 @@ window.EN_LOCALE = {
     "直隶海防总汇，雍正三年置天津府，同治后直隶总督兼北洋通商大臣驻地": "Major maritime defense hub of Zhili elevated to prefecture in 1725; later seat of the Viceroy of Zhili and Minister of Beiyang",
     "后金": "Later Jin",
     "南明（明郑）": "Southern Ming (Koxinga / Tungning)",
-    "1616 — 1636 · 明末后金崛起：努尔哈赤称汗建后金，萨尔浒之战后明失辽东": "1616–1636 · Rise of Later Jin: Nurhaci Founds Later Jin and Captures Liaodong after Sarhū",
+    "1616 — 1621 · 后金兴起辽东：努尔哈赤称汗建后金，萨尔浒之战重创明军，明尚守辽阳、沈阳": "1616–1621 · Rise of Later Jin: Nurhaci Founds Later Jin and Wins at Sarhū; Ming Still Holds Liaoyang & Shenyang",
+    "1621 — 1636 · 沈辽之战后：后金攻克沈阳、辽阳并迁都，明朝退守关宁锦防线": "1621–1636 · After the Battle of Shen-Liao: Later Jin Captures Shenyang & Liaoyang; Ming Holds the Guan-Ning-Jin Line",
     "1636 — 1643 · 皇太极改国号大清：清并漠南蒙古频入塞，中原流民起义烽起": "1636–1643 · Hong Taiji Proclaims the Qing Dynasty: Subjugation of Inner Mongolia and Peasant Uprisings in Central China",
     "1643 — 1644 · 李自成破潼关入秦与张献忠据湖广：大顺据秦豫、大西据湘鄂": "1643–1644 · Li Zicheng Takes Shaanxi & Henan as Zhang Xianzhong Seizes Huguang",
     "1644 — 1645 · 清军入关与南明、大顺、大西并立：清廷定都北京控制北方，弘光立于南京，李自成据陕甘、张献忠据四川": "1644–1645 · Qing Enters Shanhaiguan: Beijing Made Capital while Southern Ming (Hongguang), Dashun, and Daxi Hold the South and West",
     "1645 — 1661 · 清军下江南与南明抗清：清军平定陕川江南，南明隆武、永历政权与李定国、郑成功据南方抗清": "1645–1661 · Qing Conquest of Jiangnan & Southern Ming Resistance under the Longwu and Yongli Courts",
     "1661 — 1662 · 郑成功收复台湾与南明永历终局：明郑设承天府奉永历正朔，李定国于滇西抗清": "1661–1662 · Koxinga Recovers Taiwan (Upholding the Southern Ming Yongli Era) & Final Mainland Resistance in Western Yunnan",
     "1662 — 1673 · 永历蒙难与康熙亲政：南明大陆抗清终结，台湾明郑奉永历正朔，三藩起兵前夕": "1662–1673 · End of Mainland Southern Ming & Kangxi's Personal Rule: Ming-Zheng Holds Taiwan under the Yongli Calendar",
-    "两京十三布政使司：1616 年努尔哈赤建后金，辽东沦陷": "Two Capitals & Thirteen Provinces: Nurhaci founds Later Jin in 1616 and takes Liaodong",
+    "两京十三布政使司与辽东都司：1616 年努尔哈赤建后金于赫图阿拉": "Two Capitals, Thirteen Provinces & Liaodong Commission: Nurhaci founds Later Jin at Hetu Ala in 1616",
+    "两京十三布政使司：1621 年沈辽沦陷，辽东都司失守": "Two Capitals & Thirteen Provinces: Shenyang and Liaoyang fall in 1621; Liaodong Commission is lost",
     "两京十三布政使司：1636 年皇太极称帝改国号大清": "Two Capitals & Thirteen Provinces: Hong Taiji proclaims the Qing Empire in 1636",
     "两京十三布政使司：李自成据秦豫鄂北，张献忠据湖广": "Two Capitals & Thirteen Provinces: Li Zicheng holds Shaanxi & Henan; Zhang Xianzhong holds Huguang",
     "府州政区：清控直鲁晋及东北，南明弘光据淮南及江南湖广闽粤云贵，大顺据陕甘，大西据四川": "Prefectures: Qing holds North & Northeast; Southern Ming holds the South; Dashun holds Shaanxi–Gansu; Daxi holds Sichuan",

@@ -654,7 +654,7 @@ async function runCartographyUiSuite(ctx) {
           `${sk}: Hami, Dunhuang, and Xining must have polity coverage and Haiyan must lie west of Ming Riyue border`
         );
       }
-      for (const sk of ['s_ming_b', 's_ming_c0', 's_ming_c', 's_ming_c2']) {
+      for (const sk of ['s_ming_b', 's_ming_1616', 's_ming_c0', 's_ming_c', 's_ming_c2']) {
         assert(
           hasPolAt(sk, '青海蒙古', 98.85, 36.85) && hasPolAt(sk, '青海蒙古', 100.99, 36.90),
           `${sk}: Qinghai Lake & Qaidam must belong to 青海蒙古 in 1513-1644`
@@ -717,7 +717,7 @@ async function runCartographyUiSuite(ctx) {
         );
         assert(!leak, `${sk}: ${leak ? leak.title : ''} must not inherit modern Gansu Mazongshan ([96.80, 41.80]), Jinchang ([102.10, 39.12]), Minqin-Tengger spike ([103.90, 39.30]), or Helan-west 90-degree desert box ([105.00, 39.80])`);
       }
-      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b0', 's_ming_b', 's_ming_c0', 's_ming_c']) {
+      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0', 's_ming_a', 's_ming_1409', 's_ming_a2', 's_ming_b0', 's_ming_b', 's_ming_1616', 's_ming_c0', 's_ming_c']) {
         assert(
           hasPolAt(sk, '明', 103.09, 38.62) && !hasPolAt(sk, '明', 102.00, 38.90),
           `${sk}: Ming must retain Zhenfan Guard ([103.09, 38.62]) while retracting south of [102.00, 38.90] along Yongchang Guard & Ming Great Wall`
@@ -1142,7 +1142,7 @@ async function runCartographyUiSuite(ctx) {
     const mcYears = (mingD.milestones || []).filter((m) => ctrl._isPhaseChangeYear(mingD, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1636, 1643, 1644]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1621, 1636, 1643, 1644]),
       'ming: map-change milestones must match the phase transitions'
     );
 
@@ -3245,9 +3245,28 @@ async function runCartographyUiSuite(ctx) {
       hasPolPt('s_ming_a0', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_a0', '北元（鞑靼 · 瓦剌）', 119.0, 41.6) &&
         !hasPolPt('s_ming_b', '明', 119.0, 41.6) &&
+        !hasPolPt('s_ming_1616', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_c0', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
       '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
+    );
+    // 1616-1621 后金崛起辽东：赫图阿拉/萨尔浒归后金，辽阳/沈阳仍属明；1621 沈辽之战后辽阳/沈阳改隶后金，明退守关宁锦。
+    assert(
+      hasPolPt('s_ming_1616', '明', 123.171, 41.271) &&
+        hasPolPt('s_ming_1616', '明', 123.431, 41.801) &&
+        hasPolPt('s_ming_1616', '后金', 124.801, 41.701) &&
+        hasPolPt('s_ming_1616', '后金', 124.101, 41.901) &&
+        !hasPolPt('s_ming_1616', '明', 124.801, 41.701) &&
+        !hasPolPt('s_ming_1616', '明', 124.101, 41.901),
+      's_ming_1616 (1616-1621): 明 holds Liaoyang & Shenyang; 后金 holds Hetu Ala & Sarhū'
+    );
+    assert(
+      hasPolPt('s_ming_c0', '后金', 123.171, 41.271) &&
+        hasPolPt('s_ming_c0', '后金', 123.431, 41.801) &&
+        !hasPolPt('s_ming_c0', '明', 123.171, 41.271) &&
+        !hasPolPt('s_ming_c0', '明', 123.431, 41.801) &&
+        hasPolPt('s_ming_c0', '明', 120.721, 40.621),
+      's_ming_c0 (1621-1636): 后金 holds Liaoyang & Shenyang after Shen-Liao; 明 holds Ningyuan'
     );
     // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409–1449 年设奴儿干都司作为羁縻都司（role: 'protectorate'），明本土仍止于辽东。
     for (const sk of ['s_ming_a0', 's_ming_a']) {

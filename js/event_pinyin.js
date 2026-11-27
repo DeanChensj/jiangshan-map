@@ -57,6 +57,7 @@ window.ATLAS_EVENT_PINYIN = {
     "xihan": [
       ["hanxindenggaixiashimianmaifumiexiangyu","hangaozuliubangchengdi","xuandouguanzhong","hanxindenggaixiashimianmaifumiexiangyuhangaozuliubangchengdixuandouguanzhong","gaixia","changan"],
       ["hangaozuqinzhengxiongnukunyubaideng","hanchusuixingheqinzhice","hangaozuqinzhengxiongnukunyubaidenghanchusuixingheqinzhice","pingcheng","datong"],
+      ["hangaozuzhuhanxinpengyuedingbaimazhimeng","gaozubeng","lvhouzhangzheng","hangaozuzhuhanxinpengyuedingbaimazhimenggaozubenglvhouzhangzheng","changan"],
       ["lvhouchengzhibenghou","zhoubo","chenping","liuzhangzhumiezhulvyinglihanwendi","xiuyangshengxi","lvhouchengzhibenghouzhoubochenpingliuzhangzhumiezhulvyinglihanwendixiuyangshengxi","changan"],
       ["xiongnulaoshangchanyudapoyuezhi","poqixiqianxiyu","xiongnujinjuhexizoulang","xiongnulaoshangchanyudapoyuezhipoqixiqianxiyuxiongnujinjuhexizoulang","hexi","qilianshan"],
       ["hanwendifeichurouxing","mianshouquanguotianzu","yujingdiqingyaobofugongchuang","wenjingzhizhi","hanwendifeichurouxingmianshouquanguotianzuyujingdiqingyaobofugongchuangwenjingzhizhi","changan"],
@@ -375,6 +376,7 @@ window.ATLAS_EVENT_PINYIN = {
       ["wangshaoxihekaibian","shoufuxi","he","tao","mindengliuzhou","xinzhixihelu","wangshaoxihekaibianshoufuxihetaomindengliuzhouxinzhixihelu","xizhou","hezhou"],
       ["simaguanglishishijiunianbianchengbianniantitongshijuzhu","zizhitongjian","jinchengsongshenzong","simaguanglishishijiunianbianchengbianniantitongshijuzhuzizhitongjianjinchengsongshenzong","kaifeng"],
       ["songshenzongbengzhezongyouli","gaotaihouchuilianqiyongsimaguangjinfeixinfa","yuanyougenghua","songshenzongbengzhezongyouligaotaihouchuilianqiyongsimaguangjinfeixinfayuanyougenghua","kaifeng"],
+      ["songzhezongqinzhengxing","shaoshengshaoshu","zhangdunfuxinfa","biansushi","songzhezongqinzhengxingshaoshengshaoshuzhangdunfuxinfabiansushi","kaifeng"],
       ["wanghou","tongguanfaqi","hehuangkaibian","shoufuqingtangzhixiningzhou","wanghoutongguanfaqihehuangkaibianshoufuqingtangzhixiningzhou","xiningzhou","qingtang"],
       ["songhuizongrencaijingsheyingfengjuyusuhangzaozuoju","daxing","huashigang","laominshangcai","songhuizongrencaijingsheyingfengjuyusuhangzaozuojudaxinghuashiganglaominshangcai","kaifeng","suzhou"],
       ["wanyanagudazaihuiningchengdijianjin","gongquliaodongyushangjing","wanyanagudazaihuiningchengdijianjingongquliaodongyushangjing","huiningfu","acheng"],
@@ -490,6 +492,7 @@ window.ATLAS_EVENT_PINYIN = {
     "qing": [
       ["shanhaiguanzongbingwusanguixiangqingkaiguan","duoergunshuaiqingjundabailizichengdashunjun","dingdubeijing","shanhaiguanzongbingwusanguixiangqingkaiguanduoergunshuaiqingjundabailizichengdashunjundingdubeijing","shanhaiguan"],
       ["qingjunpoyangzhou","nanjing","hongguangzhengquanfumie","bantifaling","jiangnankangqing","qingjunpoyangzhounanjinghongguangzhengquanfumiebantifalingjiangnankangqing"],
+      ["lidingguolianmingkangqing","keguilinhengyang","liangjuemingwang","yonglifuzhen","lidingguolianmingkangqingkeguilinhengyangliangjuemingwangyonglifuzhen","guilin","hengyang"],
       ["zhengchenggonghengduluermenquzhuhelanzhiminzhe","shoufutaiwanshechengtianfu","zhengchenggonghengduluermenquzhuhelanzhiminzheshoufutaiwanshechengtianfu","chengtianfu","tainan"],
       ["wusanguiyukunmingshananmingyonglidi","lidingguobingshi","nanmingdalukangqingzhongjie","wusanguiyukunmingshananmingyonglidilidingguobingshinanmingdalukangqingzhongjie","yunnanfu","kunming"],
       ["shunzhibenghousifuchenzhuanquan","kangxidizhiqinaobai","zhongjiefuzhengtizhishizhangshiquan","shunzhibenghousifuchenzhuanquankangxidizhiqinaobaizhongjiefuzhengtizhishizhangshiquan","beijing"],
@@ -500,6 +503,7 @@ window.ATLAS_EVENT_PINYIN = {
       ["kangxidiqiansuoetuyushaedingli","nibuchutiaoyue","huadingzhongedongduanbianjie","kangxidiqiansuoetuyushaedinglinibuchutiaoyuehuadingzhongedongduanbianjie","nibuchu"],
       ["duolunhuimeng","kaerkamengguneifu","duolunhuimengkaerkamengguneifu","duolun"],
       ["kangxidisanciqinzhengmobei","zhaomoduozhizhandapozhungaerbugaerdanzhuli","kangxidisanciqinzhengmobeizhaomoduozhizhandapozhungaerbugaerdanzhuli","zhaomoduo","wulanbatuo"],
+      ["kangxidingwushiniandingceweichange","shengshizishengrending","yongbujiafu","kangxidingwushiniandingceweichangeshengshizishengrendingyongbujiafu","beijing"],
       ["kangxidiqianqingjunquzhuzhungaerjun","husongqishidalairuzang","xizangdingju","kangxidiqianqingjunquzhuzhungaerjunhusongqishidalairuzangxizangdingju","lasa"],
       ["kangxidizu","yongzhengdijiwei","kaiqitandingrumuyuxinangaituguiliu","kangxidizuyongzhengdijiweikaiqitandingrumuyuxinangaituguiliu","beijing"],
       ["niangengyaopingqinghailuobuzangdanjin","xining"],
