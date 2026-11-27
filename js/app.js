@@ -10215,11 +10215,11 @@
       const searchList = this._id('map-search-results');
       let activeSearchIdx = -1;
       let currentResults = [];
-      let showcaseIdx = 0;
+      let showcaseIdx = -1;
       let isComposingSearch = false;
       let searchInputTimer = null;
 
-      const renderSearchDropdown = () => {
+      const renderSearchDropdown = (opts = null) => {
         if (!searchInp || !searchList) return;
         const q = searchInp.value.trim();
         this._syncSearchClearBtn();
@@ -10240,6 +10240,13 @@
         };
         if (!q) {
           const showcasePool = this._getSearchShowcasePool();
+          if (showcasePool.length) {
+            if (showcaseIdx < 0) {
+              showcaseIdx = Math.floor(Math.random() * showcasePool.length);
+            } else if (opts && opts.advanceShowcase) {
+              showcaseIdx = (showcaseIdx + 1) % showcasePool.length;
+            }
+          }
           const sampleItem = showcasePool.length
             ? showcasePool[showcaseIdx % showcasePool.length]
             : null;
@@ -10255,8 +10262,8 @@
             const egLabel = this.locale === 'en' ? 'e.g.' : '示例';
             const cycleTitle =
               this.locale === 'en'
-                ? 'Cycle solo / dual figure examples'
-                : '切换单人 / 双人行迹示例';
+                ? 'Cycle figure / storyline examples'
+                : '切换人物 / 史事始末示例';
             const tagKind = kindLabel[sampleItem.kind] || kindLabel.person;
             const tagText = `${this.dynastyBadge(sampleItem.dynasty)} · ${tagKind}`;
             li.innerHTML =
@@ -10471,10 +10478,11 @@
         });
         searchInp.addEventListener('focus', () => {
           closeTopPopovers();
+          const wasHidden = searchList.classList.contains('is-hidden');
           if (searchBox) searchBox.classList.add('is-expanded');
           searchInp.placeholder = this._searchPlaceholder(true);
           this._syncMobileSearchUi(true);
-          renderSearchDropdown();
+          renderSearchDropdown(wasHidden ? { advanceShowcase: true } : null);
         });
         searchInp.addEventListener('blur', () => {
           setTimeout(() => {

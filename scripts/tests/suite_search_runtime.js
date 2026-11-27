@@ -1483,26 +1483,69 @@ async function runSearchRuntimeSuite(ctx) {
           '_getSearchShowcasePool() must stay lightweight and avoid synchronously building searchIndex'
         );
         assert(
-          scPool.length === 16 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
-          `Showcase pool must default to solo Su Shi at index 0 and contain 16 entries, got ${scPool.length}`
+          scPool.length === 31 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
+          `Showcase pool must keep solo Su Shi at index 0 and contain 31 entries, got ${scPool.length}`
         );
         for (const soloKey of [
           'sushi',
+          'liuyu',
           'zhugeliang',
+          'lishimin',
           'huoqubing',
+          'qinshihuang',
           'libai',
+          'yuefei',
           'caocao',
+          'liubang',
           'xinqiji',
+          'genghiskhan',
           'xuanzang',
+          'zhuyuanzhang',
           'wangyangming',
+          'zhangjuzheng',
+          'kangxi',
+          'maozedong',
           'zhangqian',
           'dufu',
         ]) {
+          const soloHit = scPool.find((item) => item.kind === 'person' && item.personKey === soloKey);
+          assert(soloHit, `Showcase pool must include solo figure "${soloKey}"`);
           assert(
-            scPool.some((item) => item.kind === 'person' && item.personKey === soloKey),
-            `Showcase pool must preserve solo figure "${soloKey}"`
+            !/[\u4e00-\u9fff]/.test(soloHit.titleEn) && !/[\u4e00-\u9fff]/.test(soloHit.subEn),
+            `Solo showcase "${soloKey}" must have CJK-free English strings: ${soloHit.titleEn} / ${soloHit.subEn}`
           );
         }
+        assert(
+          appCode.includes('let showcaseIdx = -1;') &&
+            appCode.includes('advanceShowcase: true'),
+          'Search showcase must randomize initial index on first open and auto-advance when re-focused from hidden state'
+        );
+        for (const storyKey of ['anshi', 'changzheng', 'qintongyi', 'jingkang', 'chuhan']) {
+          const hit = scPool.find((item) => item.kind === 'story' && item.storyKey === storyKey);
+          assert(hit && hit.subZh && hit.subEn, `Showcase pool must include storyline "${storyKey}" with bilingual subtitles`);
+          assert(
+            !hit.subZh.includes('史事始末') && !hit.subEn.includes('Storyline'),
+            `Storyline showcase "${storyKey}" must omit redundant "史事始末" / "Storyline" from subtitle: ${hit.subZh} / ${hit.subEn}`
+          );
+          assert(
+            !/[\u4e00-\u9fff]/.test(hit.titleEn) && !/[\u4e00-\u9fff]/.test(hit.subEn),
+            `Storyline showcase "${storyKey}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
+          );
+        }
+        assert(
+          scPool.every((item) => !(item.personProfile && item.personProfile.isRelic) && item.personKey !== 'yuxi'),
+          'Showcase pool must not include relics such as yuxi'
+        );
+        const qinStoryHit = scPool.find((item) => item.kind === 'story' && item.storyKey === 'qintongyi');
+        assert(
+          qinStoryHit.subZh.includes('前238—前221') && qinStoryHit.subEn.includes('238–221 BCE'),
+          `BCE storyline subtitle must format negative years cleanly: ${qinStoryHit.subZh} / ${qinStoryHit.subEn}`
+        );
+        const kangxiHit = scPool.find((item) => item.kind === 'person' && item.personKey === 'kangxi');
+        assert(
+          kangxiHit && kangxiHit.subZh.includes('爱新觉罗·玄烨'),
+          `Manchu figure subtitle must preserve full clan·given name without splitting on unspaced dot: ${kangxiHit && kangxiHit.subZh}`
+        );
         for (const pairKey of [
           'libai,dufu',
           'libai,dufu,gaoshi',

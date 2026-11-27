@@ -191,7 +191,7 @@
           : typeof this._collectPersonEvents === 'function'
             ? this._collectPersonEvents(p).length
             : 0;
-      const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
+      const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s+·\s+/)[0];
       const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
       const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
       const subZh = p.isRelic
@@ -203,6 +203,29 @@
           ? `${briefCourtesyEn} · ${evCount} events`
           : `${evCount} chronicle events`;
       return { d, evCount, subZh, subEn };
+    }
+
+    _storySummaryFields(p, dynastyByKey) {
+      const { d, evCount } = this._personSummaryFields(p, dynastyByKey);
+      let spanZh = '';
+      let spanEn = '';
+      if (Array.isArray(p.span) && p.span.length >= 2) {
+        const [a, b] = p.span;
+        const fmtZh = (y) => (y < 0 ? `前${Math.abs(y)}` : String(y));
+        spanZh = `${fmtZh(a)}—${fmtZh(b)}`;
+        spanEn =
+          a < 0 && b < 0
+            ? `${Math.abs(a)}–${Math.abs(b)} BCE`
+            : a < 0
+              ? `${Math.abs(a)} BCE–${b} CE`
+              : `${a}–${b}`;
+      }
+      return {
+        d,
+        evCount,
+        subZh: `${spanZh ? spanZh + ' · ' : ''}共 ${evCount} 处关键节点`,
+        subEn: `${spanEn ? spanEn + ' · ' : ''}${evCount} key scenes`,
+      };
     }
 
     _getSearchShowcasePool() {
@@ -222,18 +245,33 @@
       const showcaseSpecs = [
         'sushi',
         ['libai', 'dufu'],
+        'anshi',
+        'liuyu',
         'zhugeliang',
         ['libai', 'dufu', 'gaoshi'],
+        'changzheng',
+        'lishimin',
         'huoqubing',
         ['caocao', 'liubei', 'sunquan'],
+        'qintongyi',
+        'qinshihuang',
         'libai',
         ['yanghu', 'duyu'],
+        'jingkang',
+        'yuefei',
         'caocao',
         ['zhugeliang', 'simayi'],
+        'chuhan',
+        'liubang',
         'xinqiji',
         ['zuti', 'liukun'],
+        'genghiskhan',
         'xuanzang',
+        'zhuyuanzhang',
         'wangyangming',
+        'zhangjuzheng',
+        'kangxi',
+        'maozedong',
         'zhangqian',
         'dufu',
       ];
@@ -282,19 +320,35 @@
         } else {
           const p = profileByKey.get(spec);
           if (!p) continue;
-          const { d, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
-          pool.push({
-            kind: 'person',
-            personKey: p.key,
-            personProfile: p,
-            dynasty: d,
-            year: null,
-            aliases: this._personSearchAliases(p),
-            titleZh: p.zh,
-            subZh,
-            titleEn: p.en,
-            subEn,
-          });
+          if (p.isStory) {
+            const { d, subZh, subEn } = this._storySummaryFields(p, dynastyByKey);
+            pool.push({
+              kind: 'story',
+              storyKey: p.key,
+              personProfile: p,
+              dynasty: d,
+              year: Array.isArray(p.span) ? p.span[0] : d.focusYear,
+              aliases: this._personSearchAliases(p),
+              titleZh: p.zh,
+              subZh,
+              titleEn: p.en,
+              subEn,
+            });
+          } else {
+            const { d, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
+            pool.push({
+              kind: 'person',
+              personKey: p.key,
+              personProfile: p,
+              dynasty: d,
+              year: null,
+              aliases: this._personSearchAliases(p),
+              titleZh: p.zh,
+              subZh,
+              titleEn: p.en,
+              subEn,
+            });
+          }
         }
       }
       this._showcasePoolCache = { loreReady, personReady, pool };
@@ -356,10 +410,9 @@
       // 0a. Historical Figures Chronicle & Event Storyline Index (点人溯事 · 点事溯局)
       const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
-        const { d, evCount, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
         const aliases = this._personSearchAliases(p);
         if (p.isStory) {
-          const spanStr = Array.isArray(p.span) ? `${p.span[0]}—${p.span[1]}` : '';
+          const { d, subZh, subEn } = this._storySummaryFields(p, dynastyByKey);
           entries.push({
             kind: 'story',
             storyKey: p.key,
@@ -368,13 +421,14 @@
             year: Array.isArray(p.span) ? p.span[0] : d.focusYear,
             aliases,
             titleZh: p.zh,
-            subZh: `${spanStr ? spanStr + ' · ' : ''}史事始末 · 共 ${evCount} 处关键节点`,
+            subZh,
             titleEn: p.en,
-            subEn: `${spanStr ? spanStr + ' · ' : ''}Storyline · ${evCount} key scenes`,
+            subEn,
             keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 史事 始末 本末 全脉络 storyline`.toLowerCase(),
           });
           continue;
         }
+        const { d, evCount, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
         const eraNames = [];
         if (!p.isRelic) {
           const pText = `${p.zh} ${p.courtesyZh || ''} ${aliases.join(' ')}`;
