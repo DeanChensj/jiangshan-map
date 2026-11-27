@@ -728,7 +728,7 @@ window.EN_LOCALE = {
       "Dengzhou (Penglai)"
     ],
     "beisong:1125": [
-      "Jurchen Jin general Wanyan Loushi captures Emperor Tianzuo, ending Liao",
+      "Jin captures Emperor Tianzuo to end Liao, then invades Song and besieges Kaifeng in 1126",
       "Yingzhou"
     ],
     "beisong:1127": [
@@ -736,7 +736,7 @@ window.EN_LOCALE = {
       "Kaifeng"
     ],
     "nansong:1127": [
-      "Zhao Gou (Emperor Gaozong) enthroned at Yingtianfu, beginning Southern Song",
+      "After Kaifeng falls, Prince Zhao Gou is enthroned at Yingtianfu, beginning Southern Song",
       "Nanjing Yingtianfu"
     ],
     "nansong:1141": [
@@ -796,7 +796,7 @@ window.EN_LOCALE = {
       "Tonghui Canal (Tongzhou)"
     ],
     "yuan:1351": [
-      "Han Shantong and Liu Futong launch the Red Turban Rebellion at Yingzhou",
+      "Jia Lu’s river corvée sparks the Red Turban Rebellion under Han Shantong and Liu Futong",
       "Yingzhou"
     ],
     "ming:1368": [
@@ -1012,7 +1012,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "xihan:-180": [
-      "Zhou Bo, Chen Ping, and Liu Zhang purge the Lü clan; Emperor Wen begins Huang-Lao rule",
+      "After Empress Lü’s death, Zhou Bo and Chen Ping purge the Lü clan and enthrone Emperor Wen",
       "Chang'an"
     ],
     "xihan:-174": [
@@ -1272,7 +1272,7 @@ window.EN_LOCALE = {
       "Beijing Damingfu"
     ],
     "beisong:1043": [
-      "Fan Zhongyan leads the Qingli Reforms",
+      "Amid Tangut war and fiscal strain, Fan Zhongyan leads the Qingli Reforms, soon rolled back",
       "Kaifeng"
     ],
     "beisong:1115": [
@@ -1288,7 +1288,7 @@ window.EN_LOCALE = {
       "Lin'an (Hangzhou)"
     ],
     "nansong:1140": [
-      "Yue Fei's northern campaign wins victories at Yancheng and Zhuxianzhen",
+      "Yue Fei wins at Yancheng and nears Zhuxianzhen, but Gaozong and Qin Hui recall him for peace",
       "Yancheng · Zhuxianzhen"
     ],
     "nansong:1161": [
@@ -1304,7 +1304,7 @@ window.EN_LOCALE = {
       "Zhongdu · Bianjing"
     ],
     "nansong:1259": [
-      "Siege of Diaoyu Fortress; Möngke Khan dies in campaign",
+      "Siege of Diaoyu Fortress: Möngke dies, sparking Mongol succession strife as armies withdraw",
       "Diaoyu Fortress (Hechuan)"
     ],
     "yuan:1281": [
@@ -1688,7 +1688,7 @@ window.EN_LOCALE = {
       "Zhongjing Dadingfu"
     ],
     "beisong:1085": [
-      "Empress Dowager Gao appoints Sima Guang to repeal Wang Anshi’s reforms (Yuanyou Reversal)",
+      "After Shenzong dies, Empress Dowager Gao appoints Sima Guang to repeal reforms (Yuanyou)",
       "Kaifeng"
     ],
     "nansong:1175": [
@@ -1796,7 +1796,7 @@ window.EN_LOCALE = {
       "Kulun (Ulaanbaatar)"
     ],
     "xihan:-91": [
-      "Witchcraft Crisis drives Prince Liu Ju to suicide; Sima Qian completes the Shiji chronicle",
+      "Witchcraft Crisis: Jiang Chong frames Prince Liu Ju to suicide; Sima Qian finishes the Shiji",
       "Huxian · Chang'an"
     ],
     "xihan:-74": [
@@ -1844,7 +1844,7 @@ window.EN_LOCALE = {
       "Kaifeng"
     ],
     "nansong:1129": [
-      "Miao-Liu Mutiny: Miao Fu and Liu Zhengyan depose Gaozong; Han Shizhong restores him",
+      "Driven to Hangzhou by Jin, Gaozong faces the Miao-Liu Mutiny; Han Shizhong restores him",
       "Hangzhou"
     ],
     "yuan:1323": [
@@ -1932,11 +1932,11 @@ window.EN_LOCALE = {
       "Kaifeng"
     ],
     "yuan:1344": [
-      "Yellow River breaches the Baimaodi dike at Caoxian; Jia Lu’s massive corvée sparks unrest",
+      "Yellow River breaches the Baimaodi dike at Caoxian, causing years of floods and famine",
       "Baimaodi (Caoxian)"
     ],
     "yuan:1354": [
-      "Siege of Gaoyou: Toghto is dismissed while besieging Zhang Shicheng and the Yuan host collapses",
+      "Siege of Gaoyou: Toghto is slandered and dismissed mid-siege; Yuan’s main army collapses",
       "Gaoyou"
     ],
     "yuan:1358": [
