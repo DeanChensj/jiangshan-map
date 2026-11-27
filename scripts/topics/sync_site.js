@@ -11,10 +11,12 @@ function computeSitemapXml(
   journeyMeta,
   featuredMeta,
   personMeta = [],
-  placeMeta = []
+  placeMeta = [],
+  sourceXml = null
 ) {
   const sitemapPath = path.join(ROOT, 'sitemap.xml');
-  const existingXml = fs.readFileSync(sitemapPath, 'utf8');
+  const existingXml = sourceXml !== null ? sourceXml : fs.readFileSync(sitemapPath, 'utf8');
+  const eol = existingXml.includes('\r\n') ? '\r\n' : '\n';
 
   // Remove any previously injected /topics/ URLs so this helper is idempotent
   const cleanedXml = existingXml.replace(
@@ -45,9 +47,10 @@ function computeSitemapXml(
     )
     .join('\n');
 
+  const updatedXml = cleanedXml.replace('</urlset>', `${topicBlocks}\n</urlset>`);
   return {
     path: sitemapPath,
-    content: cleanedXml.replace('</urlset>', `${topicBlocks}\n</urlset>`),
+    content: eol === '\r\n' ? updatedXml.replace(/\r?\n/g, '\r\n') : updatedXml,
     addedCount: topicUrls.length,
   };
 }
@@ -85,10 +88,13 @@ function computeIndexHtml(
   loreData,
   enLocale,
   personMeta = [],
-  placeMeta = []
+  placeMeta = [],
+  sourceHtml = null
 ) {
   const indexPath = path.join(ROOT, 'index.html');
-  let html = fs.readFileSync(indexPath, 'utf8');
+  const rawHtml = sourceHtml !== null ? sourceHtml : fs.readFileSync(indexPath, 'utf8');
+  const eol = rawHtml.includes('\r\n') ? '\r\n' : '\n';
+  let html = rawHtml;
 
   // 1. Subset Ma Shan Zheng calligraphy webfont
   const calligraphyChars = computeCalligraphySubsetText(dynasties, enLocale);
@@ -254,11 +260,12 @@ ${allItems}
       </section>
     </nav>`;
 
-  const target = '      </section>\n    </nav>';
-  if (!html.includes(target)) {
+  const target = /      <\/section>\r?\n    <\/nav>/;
+  if (!target.test(html)) {
     throw new Error('Could not find closing </section>\\n    </nav> in index.html');
   }
   html = html.replace(target, `      </section>\n${sectionFive}`);
+  if (eol === '\r\n') html = html.replace(/\r?\n/g, '\r\n');
   return { path: indexPath, content: html };
 }
 
