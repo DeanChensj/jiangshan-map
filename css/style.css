@@ -4833,8 +4833,14 @@ html[lang="en"] #act-toggle-pane .tp-label {
     max-height: 4.4em;
     overflow-y: auto;
   }
-  #viewport-frame.is-challenge-answered #challenge-card .challenge-clue-box {
+  #viewport-frame.is-challenge-answered #challenge-card .challenge-clue-box,
+  #viewport-frame.is-challenge-finished #challenge-card .challenge-actions {
     display: none;
+  }
+  #viewport-frame.is-challenge-finished #challenge-card .challenge-feedback {
+    border-top: none;
+    padding-top: 2px;
+    margin-top: 4px;
   }
   .challenge-feedback {
     margin-top: 5px;
@@ -4887,6 +4893,35 @@ html[lang="en"] #act-toggle-pane .tp-label {
     letter-spacing: 0.04em;
     justify-content: center;
     box-shadow: 0 6px 18px rgba(181, 69, 47, 0.28);
+  }
+  .challenge-mobile-finish-actions:not(.is-hidden) {
+    pointer-events: auto;
+    display: flex;
+    gap: 10px;
+    width: min(332px, 100%);
+    justify-content: center;
+  }
+  .challenge-mobile-again {
+    flex: 1 1 0%;
+    min-height: 40px;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    background: rgba(250, 246, 237, 0.96);
+    border: 1px solid rgba(181, 69, 47, 0.34);
+    color: var(--vermilion);
+    box-shadow: 0 4px 14px rgba(43, 38, 34, 0.14);
+  }
+  .challenge-mobile-share {
+    flex: 1.35 1 0%;
+    min-height: 40px;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    box-shadow: 0 6px 18px rgba(181, 69, 47, 0.3);
   }
   #journey-card,
   #journey-card.is-custom-route {

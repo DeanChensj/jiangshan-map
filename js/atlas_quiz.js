@@ -233,7 +233,7 @@
       const vf = this._id('viewport-frame');
       if (vf) {
         vf.classList.add('has-active-challenge');
-        vf.classList.remove('is-challenge-answered');
+        vf.classList.remove('is-challenge-answered', 'is-challenge-finished');
       }
       this._syncChallengeScrubberState(true);
       // Remember where the player was so a deliberate exit can return there;
@@ -284,7 +284,9 @@
       this.grpChallenge.innerHTML = '';
       this._id('challenge-card').classList.add('is-hidden');
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('has-active-challenge', 'is-challenge-answered');
+      if (vf) {
+        vf.classList.remove('has-active-challenge', 'is-challenge-answered', 'is-challenge-finished');
+      }
       this._syncChallengeScrubberState(false);
       const sb = this._id('map-search-box');
       if (sb) sb.classList.remove('is-hidden');
@@ -429,15 +431,35 @@
       const dock = this._id('challenge-mobile-dock');
       const hint = this._id('challenge-mobile-hint');
       const cta = this._id('act-quiz-mobile-cta');
+      const finishRow = this._id('challenge-mobile-finish-actions');
       if (!dock) return;
       const q = this.challenge;
-      if (!q || q.finished) {
+      if (!q) {
         dock.classList.add('is-hidden');
         if (hint) hint.classList.add('is-hidden');
         if (cta) cta.classList.add('is-hidden');
+        if (finishRow) finishRow.classList.add('is-hidden');
         return;
       }
       dock.classList.remove('is-hidden');
+      if (q.finished) {
+        if (hint) hint.classList.add('is-hidden');
+        if (cta) cta.classList.add('is-hidden');
+        if (finishRow) {
+          finishRow.classList.remove('is-hidden');
+          const againBtn = this._id('act-quiz-mobile-again');
+          const shareMobBtn = this._id('act-quiz-mobile-share');
+          if (againBtn) againBtn.textContent = this.uiStr('quiz_again', '再来一局');
+          if (shareMobBtn) {
+            shareMobBtn.textContent = this._quizPosterLoading
+              ? this.uiStr('quiz_poster_loading', '绘图中…')
+              : this.uiStr('quiz_share_btn', '分享战绩图');
+          }
+          if (this.locale === 'zh-tw') this._applyZhHantDom(dock);
+        }
+        return;
+      }
+      if (finishRow) finishRow.classList.add('is-hidden');
       const isEn = this.locale === 'en';
       if (!q.answered && !q.pendingGuess) {
         if (hint) {
@@ -480,7 +502,7 @@
       q.finished = false;
       q.pendingGuess = null;
       const vf = this._id('viewport-frame');
-      if (vf) vf.classList.remove('is-challenge-answered');
+      if (vf) vf.classList.remove('is-challenge-answered', 'is-challenge-finished');
       if (this.hoverTip) {
         this.hoverTip.classList.add('is-hidden');
         this.hoverTip.classList.remove('is-interactive');
@@ -860,7 +882,8 @@
     _finishChallenge() {
       const q = this.challenge;
       q.finished = true;
-      this._syncChallengeMobileDock();
+      const vf = this._id('viewport-frame');
+      if (vf) vf.classList.add('is-challenge-finished');
       this.grpChallenge.innerHTML = '';
       const total = q.deck.length * QUIZ_ROUND_MAX;
       const rank =
@@ -895,6 +918,7 @@
       nextBtn.classList.remove('is-hidden');
       nextBtn.textContent = this.uiStr('quiz_again', '再来一局');
       syncShareControls(this, true);
+      this._syncChallengeMobileDock();
       nextBtn.onclick = () => {
         nextBtn.onclick = null;
         this.startChallenge();
@@ -913,11 +937,13 @@
       if (this._quizPosterLoading) return Promise.resolve(null);
       this._quizPosterLoading = true;
       const shareBtn = this._id('act-share-quiz');
+      const shareMobBtn = this._id('act-quiz-mobile-share');
       const setShareLabel = () => {
-        if (!shareBtn) return;
-        shareBtn.textContent = this._quizPosterLoading
+        const label = this._quizPosterLoading
           ? this.uiStr('quiz_poster_loading', '绘图中…')
           : this.uiStr('quiz_share_btn', '分享战绩图');
+        if (shareBtn) shareBtn.textContent = label;
+        if (shareMobBtn) shareMobBtn.textContent = label;
       };
       setShareLabel();
 
