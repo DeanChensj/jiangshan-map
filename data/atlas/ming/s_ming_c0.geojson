@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "license": "Approximate historical boundaries for illustration, not surveyed borders. When reusing, credit Jiangshan Atlas (https://github.com/DeanChensj/jiangshan-map) and the sources in data/atlas/README.md. Prefecture-level (郡/州/府) boundaries derive from CHGIS V6 and the Hartwell China Historical GIS: academic, non-commercial use only; do not redistribute; not licensed under GPL-3.0.",
   "snapshot": {
-    "caption": "1616 — 1636 · 明末后金崛起：努尔哈赤称汗建后金，萨尔浒之战后明失辽东",
-    "note": "两京十三布政使司：1616 年努尔哈赤建后金，辽东沦陷",
+    "caption": "1621 — 1636 · 沈辽之战后：后金攻克沈阳、辽阳并迁都，明朝退守关宁锦防线",
+    "note": "两京十三布政使司：1621 年沈辽沦陷，辽东都司失守",
     "polities": [
       "明",
       "后金",
