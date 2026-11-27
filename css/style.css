@@ -5815,14 +5815,13 @@ html[lang="en"] .genealogy-list li.person-ev-row {
 .genealogy-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   margin-top: 8px;
   padding-top: 4px;
   border-top: 1px solid var(--hairline);
 }
 
-.gen-foot-prev,
 .gen-foot-next {
   display: inline-flex;
   align-items: center;
@@ -5835,27 +5834,14 @@ html[lang="en"] .genealogy-list li.person-ev-row {
   font-size: 13px;
   line-height: 1.3;
   cursor: pointer;
+  color: var(--vermilion);
+  text-align: right;
 }
 
-.gen-foot-prev svg,
 .gen-foot-next svg {
   flex: none;
   width: 12px;
   height: 12px;
-}
-
-.gen-foot-prev {
-  flex: none;
-  color: var(--text-muted);
-}
-
-.gen-foot-prev:disabled {
-  visibility: hidden;
-}
-
-.gen-foot-next {
-  color: var(--vermilion);
-  text-align: right;
 }
 
 .gen-foot-next span {
@@ -5864,7 +5850,6 @@ html[lang="en"] .genealogy-list li.person-ev-row {
   white-space: nowrap;
 }
 
-.gen-foot-prev:hover span,
 .gen-foot-next:hover span {
   text-decoration: underline;
   text-underline-offset: 3px;
