@@ -3437,6 +3437,14 @@ html[lang="en"] .band-cell:last-child {
   font-weight: 600;
   text-align: right;
   background: transparent;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+#inp-year::-webkit-inner-spin-button,
+#inp-year::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .year-stepper .unit-label {
