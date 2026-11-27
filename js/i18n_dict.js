@@ -540,11 +540,15 @@ window.EN_LOCALE = {
       "Heyin (Luoyang)"
     ],
     "nanbei:534": [
-      "Emperor Xiaowu flees to Yuwen Tai in Chang'an while Gao Huan installs Eastern Wei at Ye",
+      "Wuchuan general Yuwen Tai holds Chang'an; Xiaowu flees to him as Gao Huan splits Wei at Ye",
       "Luoyang · Ye · Chang'an"
     ],
+    "nanbei:547": [
+      "After Gao Huan dies, Eastern Wei general Hou Jing defects to Liang; Liang’s campaign fails",
+      "Xuanhu (Runan) · Shouyang"
+    ],
     "nanbei:548": [
-      "Hou Jing rebels and besieges the Jiankang palace; it falls in 549 and Emperor Wu starves",
+      "Fearing Liang–Wei peace will betray him, Hou Jing rebels and takes Jiankang; Emperor Wu starves",
       "Jiankang (Nanjing)"
     ],
     "nanbei:553": [
@@ -564,7 +568,7 @@ window.EN_LOCALE = {
       "Ye"
     ],
     "sui:581": [
-      "Yang Jian founds Sui at Daxing; Three Departments, Six Ministries and the Kaihuang Code",
+      "Yang Jian takes Zhou’s abdication to found Sui; builds Daxing, Three Departments & Kaihuang Code",
       "Daxing"
     ],
     "sui:589": [
@@ -1652,7 +1656,7 @@ window.EN_LOCALE = {
       "Pingcheng (Datong)"
     ],
     "nanbei:523": [
-      "Rebellion of the Six Garrisons: Poliuhan Baling’s frontier uprising shatters Northern Wei",
+      "Six Garrisons Revolt shatters Wei frontier; Huaishuo and Wuchuan commanders begin to rise",
       "Woye · Huaihuang Garrisons"
     ],
     "nanbei:537": [
@@ -1904,7 +1908,7 @@ window.EN_LOCALE = {
       "Huaihuang (Zhangbei)"
     ],
     "nanbei:580": [
-      "Regent Yang Jian has Wei Xiaokuan crush Yuchi Jiong and razes the old capital of Ye",
+      "Emperors Wu and Xuan die young; consort-kin regent Yang Jian crushes Yuchi Jiong and razes Ye",
       "Ye (Xiangzhou)"
     ],
     "tang:868": [
@@ -2180,7 +2184,7 @@ window.EN_LOCALE = {
       "Dongjing Kaifeng Fu"
     ],
     "nanbei:551": [
-      "Hou Jing usurps the throne; Wang Sengbian and Chen Baxian crush him in 552; Emperor Yuan ascends",
+      "Hou Jing usurps Liang; crushed in 552 as Xiao Yi rules Jiangling, leaving Jiangnan elite ruined",
       "Jiankang · Jiangling"
     ],
     "nanbei:578": [
@@ -2268,7 +2272,7 @@ window.EN_LOCALE = {
       "Pingcheng"
     ],
     "nanbei:574": [
-      "Emperor Wu of Northern Zhou proscribes Buddhism and Daoism, returning monks to farms and armies",
+      "After slaying regent Yuwen Hu, Zhou Emperor Wu proscribes Buddhism and Daoism to rebuild power",
       "Chang'an"
     ],
     "tang:622": [

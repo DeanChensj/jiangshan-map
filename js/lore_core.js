@@ -956,7 +956,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"sunce","zh":"孙策","en":"Sun Ce","courtesyZh":"江东小霸王 · 字伯符","courtesyEn":"Little Conqueror of Jiangdong","dynastyKey":"donghan","span":[175,200],"aliases":["孙伯符","小霸王"],"evCount":4},
     {"key":"shile","zh":"石勒","en":"Shi Le","courtesyZh":"后赵明帝 · 字世龙","courtesyEn":"Founder of Later Zhao","dynastyKey":"dongjin","span":[274,333],"aliases":["石世龙","后赵明帝"],"evCount":4},
     {"key":"wangmeng","zh":"王猛","en":"Wang Meng","courtesyZh":"字景略 · 前秦丞相","courtesyEn":"Chancellor of Former Qin","dynastyKey":"dongjin","span":[325,375],"aliases":["王景略"],"evCount":3},
-    {"key":"xiaoyan","zh":"萧衍","en":"Emperor Wu of Liang","courtesyZh":"梁武帝 · 字叔达 · 南朝梁开国皇帝","courtesyEn":"Xiao Yan, Founder of Liang","dynastyKey":"nanbei","span":[464,549],"aliases":["梁武帝","萧叔达"],"evCount":4},
+    {"key":"xiaoyan","zh":"萧衍","en":"Emperor Wu of Liang","courtesyZh":"梁武帝 · 字叔达 · 南朝梁开国皇帝","courtesyEn":"Xiao Yan, Founder of Liang","dynastyKey":"nanbei","span":[464,549],"aliases":["梁武帝","萧叔达"],"evCount":5},
     {"key":"gaohuan","zh":"高欢","en":"Gao Huan","courtesyZh":"字贺六浑 · 东魏权臣 · 北齐奠基者","courtesyEn":"Paramount General of Eastern Wei","dynastyKey":"nanbei","eraRegimes":["东魏","北魏"],"span":[496,547],"aliases":["高贺六浑","齐神武帝"],"evCount":6},
     {"key":"yuwentai","zh":"宇文泰","en":"Yuwen Tai","courtesyZh":"字黑獭 · 西魏权臣 · 北周奠基者","courtesyEn":"Paramount General of Western Wei","dynastyKey":"nanbei","eraRegimes":["西魏","北魏"],"span":[507,556],"aliases":["宇文黑獭","周文帝"],"evCount":5},
     {"key":"zhaogou","zh":"宋高宗","en":"Emperor Gaozong of Song","courtesyZh":"赵构 · 南宋开国皇帝","courtesyEn":"Zhao Gou, Founder of Southern Song","dynastyKey":"nansong","span":[1107,1187],"aliases":["赵构","康王赵构","高宗"],"evCount":5},
