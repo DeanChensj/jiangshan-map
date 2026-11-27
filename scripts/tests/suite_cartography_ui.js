@@ -3517,13 +3517,13 @@ async function runCartographyUiSuite(ctx) {
         !snapshots.s_beisong_d.regions.some((r) => r.title.endsWith('道')),
       's_beisong_d (1125–1127) must include Western Liao and rename former Liao circuits from 道 to Jin 路'
     );
-    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       assert(
         hasRegPt(sk, '广南西路', 109.577, 19.521),
         `${sk} must include Hainan Island ([109.577, 19.521]) inside 广南西路`
       );
     }
-    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       const prefs = snapshots[sk].prefectures || [];
       assert(
         prefs.length >= 130 &&
@@ -3543,20 +3543,56 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_nansong_c', '金', 103.83, 36.06),
       's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
     );
-    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
+    for (const sk of ['s_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
       assert(
         !hasPolPt(sk, '吐蕃诸部', 103.861, 35.381) && !hasPolPt(sk, '吐蕃诸部', 103.83, 36.06),
         `${sk} must not overlap 吐蕃诸部 onto Lintaofu or Lanzhou`
       );
     }
+    const nansongDyn = dynasties.find((d) => d.key === 'nansong');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1130), 's_nansong_1127', 'nansong 1130 must resolve to s_nansong_1127');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1134), 's_nansong_a0', 'nansong 1134 must resolve to s_nansong_a0');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1141), 's_nansong_a', 'nansong 1141 must resolve to s_nansong_a');
+    for (const [label, x, y] of [
+      ['襄阳', 112.14, 32.01],
+      ['随州', 113.38, 31.69],
+      ['郢州', 112.59, 31.17],
+      ['唐州', 112.83, 32.69],
+      ['邓州', 112.09, 32.69],
+      ['信阳', 114.07, 32.13],
+    ]) {
+      assert(
+        hasPolPt('s_nansong_1127', '金', x, y) && !hasPolPt('s_nansong_1127', '南宋', x, y),
+        `s_nansong_1127 (1127–1134): ${label} must belong to 金 before Yue Fei's 1134 campaign`
+      );
+      assert(
+        hasPolPt('s_nansong_a0', '南宋', x, y) && !hasPolPt('s_nansong_a0', '金', x, y),
+        `s_nansong_a0 (1134–1141): ${label} must belong to 南宋 after Yue Fei's 1134 campaign`
+      );
+    }
     assert(
-      hasPolPt('s_nansong_a0', '南宋', 105.721, 34.581) &&
-        hasRegPt('s_nansong_a0', '利州路', 105.721, 34.581) &&
-        snapshots.s_nansong_a0.regions.some((r) => r.title === '燕京路') &&
-        !snapshots.s_nansong_a0.regions.some((r) => r.title === '中都路') &&
-        hasPrefPt('s_nansong_a0', '析津府', 116.401, 39.901),
-      's_nansong_a0 (1127–1141, pre-Shaoxing Treaty & pre-1153 Zhongdu) must keep Qinzhou in Southern Song / Lizhou Circuit and name Beijing as Yanjing Circuit / Xijinfu'
+      hasPolPt('s_nansong_1127', '南宋', 112.19, 30.35) &&
+        hasPolPt('s_nansong_1127', '南宋', 113.69, 31.26) &&
+        hasPolPt('s_nansong_1127', '南宋', 110.74, 32.06) &&
+        hasPolPt('s_nansong_1127', '南宋', 105.721, 34.581) &&
+        hasPolPt('s_nansong_a', '南宋', 112.14, 32.01) &&
+        hasPolPt('s_nansong_a', '南宋', 113.38, 31.69) &&
+        hasPolPt('s_nansong_a', '南宋', 112.59, 31.17) &&
+        hasPolPt('s_nansong_a', '南宋', 114.07, 32.13) &&
+        hasPolPt('s_nansong_a', '金', 112.83, 32.69) &&
+        hasPolPt('s_nansong_a', '金', 112.09, 32.69),
+      's_nansong_1127 retains Jingzhou/DeAn/Fangzhou/Qinzhou in Southern Song; s_nansong_a retains Xiangyang/Sui/Ying/Xinyang in Song while ceding Tang/Deng to Jin'
     );
+    for (const sk of ['s_nansong_1127', 's_nansong_a0']) {
+      assert(
+        hasPolPt(sk, '南宋', 105.721, 34.581) &&
+          hasRegPt(sk, '利州路', 105.721, 34.581) &&
+          snapshots[sk].regions.some((r) => r.title === '燕京路') &&
+          !snapshots[sk].regions.some((r) => r.title === '中都路') &&
+          hasPrefPt(sk, '析津府', 116.401, 39.901),
+        `${sk} (pre-Shaoxing Treaty & pre-1153 Zhongdu) must keep Qinzhou in Southern Song / Lizhou Circuit and name Beijing as Yanjing Circuit / Xijinfu`
+      );
+    }
     for (const [sk, northPol] of [
       ['s_nansong_a', '金'],
       ['s_nansong_b0', '金'],
@@ -3690,7 +3726,7 @@ async function runCartographyUiSuite(ctx) {
         `${sk} must extend ${polName} (${eastReg} / ${northReg}) beyond the modern Heilongjiang–Ussuri border to the Sea of Japan and Lower Amur without overlapping 蒙古诸部`
       );
     }
-    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0']) {
+    for (const sk of ['s_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0']) {
       assert(
         hasPolPt(sk, '金', 133.5, 44.8) &&
           hasPolPt(sk, '金', 136.0, 48.8) &&
