@@ -1687,13 +1687,19 @@ async function runApiSearchSuite(ctx) {
     's_tang_d2 must map Late Tang regional warlords (Zhu Wen, Li Keyong, Wang Jian, Yang Xingmi)'
   );
 
-  // CUJ 20: Ming-Qing Transition (1616-1636 Later Jin -> 1636-1643 Qing -> 1643-1644 Dashun & Daxi -> 1644-1645 Qing/Southern Ming/Dashun/Daxi -> 1645-1661 Southern Ming -> 1661-1662 Final Mainland Southern Ming & Ming-Zheng Taiwan -> 1662-1673 Ming-Zheng Taiwan)
+  // CUJ 20: Ming-Qing Transition (1616-1621 Later Jin at Hetu Ala -> 1621-1636 Later Jin holds Shenyang/Liaoyang -> 1636-1643 Qing -> 1643-1644 Dashun & Daxi -> 1644-1645 Qing/Southern Ming/Dashun/Daxi -> 1645-1661 Southern Ming -> 1661-1662 Final Mainland Southern Ming & Ming-Zheng Taiwan -> 1662-1673 Ming-Zheng Taiwan)
   const mingDyn = dynasties.find((d) => d.key === 'ming');
-  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1620), 's_ming_c0', 'Ming at 1620 CE must resolve to s_ming_c0');
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1620), 's_ming_1616', 'Ming at 1620 CE must resolve to s_ming_1616');
+  assert(
+    snapshots.s_ming_1616.polities.some((p) => p.title === '后金') &&
+      !snapshots.s_ming_1616.polities.some((p) => p.title.includes('1636')),
+    's_ming_1616 (1616-1621) must name the Northeast rival polity 后金'
+  );
+  assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1625), 's_ming_c0', 'Ming at 1625 CE must resolve to s_ming_c0');
   assert(
     snapshots.s_ming_c0.polities.some((p) => p.title === '后金') &&
       !snapshots.s_ming_c0.polities.some((p) => p.title.includes('1636')),
-    's_ming_c0 (1616-1636) must name the Northeast rival polity 后金'
+    's_ming_c0 (1621-1636) must name the Northeast rival polity 后金'
   );
   assert.strictEqual(ctrl._resolveSnapKey(mingDyn, 1640), 's_ming_c', 'Ming at 1640 CE must resolve to s_ming_c');
   assert(

@@ -1830,6 +1830,7 @@ window.DYNASTY_DATA = [
       {"until":1449,"snap":"s_ming_a2"},
       {"until":1513,"snap":"s_ming_b0"},
       {"until":1616,"snap":"s_ming_b"},
+      {"until":1621,"snap":"s_ming_1616"},
       {"until":1636,"snap":"s_ming_c0"},
       {"until":1643,"snap":"s_ming_c"},
       {"until":1644,"snap":"s_ming_c2"}

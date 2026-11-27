@@ -2877,7 +2877,7 @@ async function runSearchRuntimeSuite(ctx) {
             else if (/^s_(sui|tang|wudai|beisong|nansong)(_|$)/.test(sk)) expPol = '流求';
             else if (/^s_yuan(_|$)/.test(sk)) expPol = '瑠求';
             else if (earlyMingSet.has(sk)) expPol = '小琉球';
-            else if (sk === 's_ming_b') expPol = '东番';
+            else if (sk === 's_ming_b' || sk === 's_ming_1616') expPol = '东番';
             else if (lateMingDutchSet.has(sk) || qingDutchSet.has(sk)) expPol = '台湾（荷占）';
             else if (qingMingZhengSet.has(sk)) {
               expPol = '南明（明郑）';
