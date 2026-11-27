@@ -278,7 +278,7 @@
       const multiShowcaseFallback = {
         'libai,dufu': { events: 21, sameTime: 3, dynastyKey: 'tang' },
         'libai,dufu,gaoshi': { events: 23, sameTime: 5, dynastyKey: 'tang' },
-        'caocao,liubei,sunquan': { events: 32, sameTime: 8, dynastyKey: 'donghan' },
+        'caocao,liubei,sunquan': { events: 33, sameTime: 8, dynastyKey: 'donghan' },
         'yanghu,duyu': { events: 10, sameTime: 2, dynastyKey: 'sanguo' },
         'zhugeliang,simayi': { events: 16, sameTime: 3, dynastyKey: 'donghan' },
         'zuti,liukun': { events: 9, sameTime: 1, dynastyKey: 'xijin' },

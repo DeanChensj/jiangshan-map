@@ -107,7 +107,8 @@ window.DYNASTY_DATA = [
       {"ancient":"义渠","modern":"庆阳","coord":[107.64,35.71],"tier":2,"vanish":-272,"remark":"西戎义渠国都，前272年秦灭义渠置北地郡","aliases":["北地","义渠（北地）"]},
       {"ancient":"葭萌","modern":"广元","coord":[105.84,32.44],"tier":2,"remark":"古蜀苴侯都邑，秦司马错伐蜀自此南下"},
       {"ancient":"之罘","modern":"烟台","coord":[120.76,37.8],"tier":2,"remark":"齐国胶东海隅重地，齐八神祠“阳主”祠于之罘山","aliases":["东莱","之罘（东莱）"]},
-      {"ancient":"金陵邑","modern":"南京","coord":[118.801,32.061],"appear":-333,"tier":2,"remark":"楚威王七年（前333年）灭越后于石头山置金陵邑，为南京建城正名之始"}
+      {"ancient":"金陵邑","modern":"南京","coord":[118.801,32.061],"appear":-333,"tier":2,"remark":"楚威王七年（前333年）灭越后于石头山置金陵邑，为南京建城正名之始"},
+      {"ancient":"皖","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"春秋皖国故地，战国属楚"}
     ]
   },
   {
@@ -295,7 +296,8 @@ window.DYNASTY_DATA = [
       {"ancient":"龟兹","modern":"阿克苏·库车","coord":[82.96,41.72],"tier":2,"remark":"西域北道大国，汉西域都护府常驻督护之地"},
       {"ancient":"于阗","modern":"和田","coord":[79.92,37.11],"tier":2,"remark":"西域南道大国，盛产美玉"},
       {"ancient":"东莱","modern":"烟台","coord":[120.76,37.8],"tier":2,"remark":"汉高帝置东莱郡，汉武帝东巡登之罘山、筑蓬莱城望海求仙","aliases":["不夜","东莱（不夜）"]},
-      {"ancient":"秣陵","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"西汉属扬州刺史部丹阳郡，扼长江下游南岸津渡"}
+      {"ancient":"秣陵","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"西汉属扬州刺史部丹阳郡，扼长江下游南岸津渡"},
+      {"ancient":"皖","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"庐江郡皖县，皖国故地"}
     ],
     "phases": [
       {"until":-174,"snap":"s_xihan_a"},
@@ -407,7 +409,8 @@ window.DYNASTY_DATA = [
       {"ancient":"高平","modern":"固原","coord":[106.24,36.01],"tier":2,"remark":"光武帝刘秀亲征陇右隗嚣进驻高平第一城","aliases":["安定","高平（安定）"]},
       {"ancient":"于阗","modern":"和田","coord":[79.92,37.11],"tier":2,"remark":"班超服于阗王广德，复通西域南道"},
       {"ancient":"国内城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"高句丽自卒本迁都国内城，筑丸都山城","aliases":["丸都","国内城（丸都）"]},
-      {"ancient":"秣陵","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"东汉末建安十六年（211年）孙权自京口徙治秣陵，翌年筑石头城改称建业"}
+      {"ancient":"秣陵","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"东汉末建安十六年（211年）孙权自京口徙治秣陵，翌年筑石头城改称建业"},
+      {"ancient":"皖","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"庐江郡皖县；建安四年孙策、周瑜攻破刘勋据守的皖城"}
     ],
     "phases": [
       {"until":36,"snap":"s_donghan_a"},
@@ -502,7 +505,8 @@ window.DYNASTY_DATA = [
       {"ancient":"阆中","modern":"南充·阆中","coord":[105.97,31.56],"tier":2,"remark":"张飞领巴西太守镇守阆中七年，保蜀汉北疆","aliases":["巴西","阆中（巴西）"]},
       {"ancient":"江阳","modern":"泸州","coord":[105.44,28.89],"tier":2,"remark":"江阳郡治，长江与沱江交汇处","aliases":["泸州","江阳（泸州）"]},
       {"ancient":"武都","modern":"陇南","coord":[104.92,33.4],"tier":2,"remark":"建兴七年诸葛亮北伐遣陈式攻克武都、阴平二郡"},
-      {"ancient":"丸都城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"正始五年曹魏毌丘俭东征高句丽克丸都刻石"}
+      {"ancient":"丸都城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"正始五年曹魏毌丘俭东征高句丽克丸都刻石"},
+      {"ancient":"皖城","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"建安十九年吕蒙攻克皖城，后为孙吴庐江郡治；黄武七年石亭之战"}
     ],
     "phases": [
       {"until":221,"snap":"s_sanguo_220"},
@@ -577,7 +581,8 @@ window.DYNASTY_DATA = [
       {"ancient":"晋安","modern":"福州","coord":[119.3,26.08],"remark":"太康三年析建安郡置晋安郡"},
       {"ancient":"西平","modern":"西宁","coord":[101.78,36.62],"remark":"凉州西平郡治西都"},
       {"ancient":"琅琊国","modern":"临沂","coord":[118.35,35.06],"tier":2,"remark":"司马睿袭封琅琊王，永嘉初偕琅琊王氏南渡建邺"},
-      {"ancient":"新罗","modern":"龙岩","coord":[117.02,25.08],"appear":282,"tier":2,"remark":"太康三年（282年）析置新罗县，属晋安郡，为闽西建县之始"}
+      {"ancient":"新罗","modern":"龙岩","coord":[117.02,25.08],"appear":282,"tier":2,"remark":"太康三年（282年）析置新罗县，属晋安郡，为闽西建县之始"},
+      {"ancient":"皖","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"西晋庐江郡皖县"}
     ],
     "phases": [
       {"until":304,"snap":"s_xijin_a"},
@@ -679,7 +684,8 @@ window.DYNASTY_DATA = [
       {"ancient":"晋安","modern":"福州","coord":[119.3,26.08],"remark":"衣冠南渡八姓入闽，江州晋安郡"},
       {"ancient":"乐都","modern":"海东·乐都","coord":[102.4,36.48],"appear":397,"vanish":414,"isCapital":true,"capitalPeriods":[[397,414]],"remark":"秃发乌孤建南凉，定都乐都、西平（397–414）","aliases":["南凉","乐都（南凉）"]},
       {"ancient":"永嘉","modern":"温州","coord":[120.66,28.01],"tier":2,"remark":"晋明帝太宁元年置永嘉郡，筑温州古城"},
-      {"ancient":"国内城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"高句丽好太王扩土，长寿王立好太王碑于此"}
+      {"ancient":"国内城","modern":"通化·集安","coord":[126.19,41.12],"tier":2,"remark":"高句丽好太王扩土，长寿王立好太王碑于此"},
+      {"ancient":"皖","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"庐江郡皖县故城；东晋末分置晋熙郡与怀宁县"}
     ],
     "phases": [
       {"until":319,"snap":"s_dongjin_317"},
@@ -804,7 +810,8 @@ window.DYNASTY_DATA = [
       {"ancient":"永嘉","modern":"温州","coord":[120.66,28.01],"tier":2,"remark":"谢灵运任永嘉太守游历山水，开山水诗派"},
       {"ancient":"东阳","modern":"金华","coord":[119.65,29.08],"tier":2,"remark":"沈约任东阳太守筑玄畅楼（八咏楼）赋《八咏诗》","aliases":["金华","东阳（金华）"]},
       {"ancient":"怀朔镇","modern":"包头·固阳","coord":[110.06,41.03],"tier":2,"remark":"北魏六镇之一，高欢、贺拔岳、侯景等皆起家于此，东魏北齐霸业摇篮"},
-      {"ancient":"武川镇","modern":"呼和浩特·武川","coord":[111.45,41.09],"tier":2,"remark":"北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮"}
+      {"ancient":"武川镇","modern":"呼和浩特·武川","coord":[111.45,41.09],"tier":2,"remark":"北魏六镇之一，宇文泰、独孤信、杨忠（隋）、李虎（唐）皆出于此，关陇集团摇篮"},
+      {"ancient":"晋熙","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"晋熙郡治怀宁县（今潜山），南朝江北重镇","aliases":["晋熙郡","怀宁"]}
     ],
     "phases": [
       {"until":427,"snap":"s_nanbei_0"},
@@ -895,7 +902,8 @@ window.DYNASTY_DATA = [
       {"ancient":"随州","modern":"随州","coord":[113.38,31.69],"tier":2,"remark":"隋文帝杨坚受封随国公之地，去“辶”定国号为隋"},
       {"ancient":"历阳","modern":"马鞍山·和县","coord":[118.36,31.73],"tier":2,"remark":"杜伏威据江淮称吴王，治历阳","aliases":["和县","历阳（和县）"]},
       {"ancient":"金城","modern":"兰州","coord":[103.821,36.061],"tier":2,"remark":"薛举自称西秦霸王，称帝建都金城","aliases":["秦都","金城（秦都）"]},
-      {"ancient":"马邑","modern":"朔州","coord":[112.43,39.33],"tier":2,"remark":"刘武周依附突厥起兵马邑，自称定阳可汗","aliases":["朔州","马邑（朔州）"]}
+      {"ancient":"马邑","modern":"朔州","coord":[112.43,39.33],"tier":2,"remark":"刘武周依附突厥起兵马邑，自称定阳可汗","aliases":["朔州","马邑（朔州）"]},
+      {"ancient":"熙州","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"开皇初改晋熙郡为熙州，大业三年改同安郡，治怀宁","aliases":["同安郡","怀宁"]}
     ],
     "phases": [
       {"until":587,"snap":"s_sui_a"},
@@ -1090,7 +1098,8 @@ window.DYNASTY_DATA = [
       {"ancient":"历阳","modern":"马鞍山·和县","coord":[118.36,31.73],"tier":2,"remark":"杜伏威建立江淮吴政权，降唐封吴王","aliases":["吴都","历阳（吴都）"]},
       {"ancient":"金城","modern":"兰州","coord":[103.821,36.061],"appear":619,"tier":2,"remark":"薛举西秦都城，唐武德二年平薛仁杲置兰州","aliases":["兰州","金城（兰州）"]},
       {"ancient":"升州","modern":"南京","coord":[118.801,32.061],"tier":2,"remark":"唐初为润州上元、江宁县，至德二载置升州，李白刘禹锡金陵怀古之地","aliases":["上元","升州（上元）"]},
-      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"江南东道重镇、浙西观察使（镇海军节度使）治所，扼大运河与长江交汇锁钥"}
+      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"江南东道重镇、浙西观察使（镇海军节度使）治所，扼大运河与长江交汇锁钥"},
+      {"ancient":"舒州","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"舒州（同安郡）治怀宁，今潜山梅城","aliases":["同安郡","怀宁"]}
     ],
     "phases": [
       {"until":621,"snap":"s_tang_0"},
@@ -1212,7 +1221,8 @@ window.DYNASTY_DATA = [
       {"ancient":"曲阜","modern":"济宁·曲阜","coord":[116.99,35.6],"tier":2,"remark":"广顺二年后周太祖郭威幸曲阜拜孔庙"},
       {"ancient":"秀州","modern":"嘉兴","coord":[120.75,30.75],"tier":2,"remark":"吴越国文穆王钱元瓘析杭州嘉兴县置秀州"},
       {"ancient":"通州","modern":"南通","coord":[120.89,31.98],"tier":2,"appear":958,"remark":"后周显德五年克江北始置通州，扼长江北口","aliases":["南通","通州（南通）"]},
-      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"杨吴与南唐京口江防重镇，拱卫东都江都与国都金陵之北门"}
+      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"杨吴与南唐京口江防重镇，拱卫东都江都与国都金陵之北门"},
+      {"ancient":"舒州","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"杨吴、南唐舒州；显德五年南唐割江北入后周"}
     ],
     "phases": [
       {"until":923,"snap":"s_wudai_a"},
@@ -1365,7 +1375,8 @@ window.DYNASTY_DATA = [
       {"ancient":"汀州","modern":"龙岩","coord":[117.02,25.08],"tier":2,"remark":"福建路闽西重镇，客家先民南迁聚居大本营，享有“客家首府”之称"},
       {"ancient":"南剑州","modern":"南平","coord":[118.18,26.64],"tier":2,"remark":"福建路闽中重镇，将乐杨时“程门立雪”倡道东南，开闽学先河"},
       {"ancient":"夏州","modern":"榆林·靖边","coord":[108.78,37.98],"vanish":994,"tier":2,"remark":"定难军节度使治所，淳化五年毁城迁民","aliases":["统万城","夏州（统万城）"]},
-      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"两浙路重镇（政和三年升镇江府），王安石瓜洲渡江赋诗与沈括梦溪园所在地"}
+      {"ancient":"润州","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"两浙路重镇（政和三年升镇江府），王安石瓜洲渡江赋诗与沈括梦溪园所在地"},
+      {"ancient":"舒州","modern":"潜山","coord":[116.57,30.63],"tier":2,"remark":"淮南路舒州（同安郡），治怀宁（今潜山）"}
     ],
     "phases": [
       {"until":963,"snap":"s_beisong_a0","overview":"960 — 963 · 陈桥兵变立宋与杯酒释兵权：十国与北汉割据尚存"},
@@ -1496,7 +1507,10 @@ window.DYNASTY_DATA = [
       {"ancient":"汀州","modern":"龙岩","coord":[117.02,25.08],"tier":2,"remark":"闽西山川形胜要地，宋末文天祥抗元曾屯兵汀州经营闽赣"},
       {"ancient":"南剑州","modern":"南平","coord":[118.18,26.64],"tier":2,"remark":"闽学四先生源流重地，建炎四年（1130年）朱熹诞生于尤溪县南溪书院"},
       {"ancient":"均州","modern":"十堰·丹江口","coord":[111.51,32.65],"tier":2,"remark":"京西南路汉水重镇，绍兴和议后宋金前哨","aliases":["武当","均州（武当）"]},
-      {"ancient":"镇江府","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"两浙西路江防要塞，韩世忠黄天荡抗金与辛弃疾北固亭登临处"}
+      {"ancient":"镇江府","modern":"镇江","coord":[119.451,32.201],"tier":2,"remark":"两浙西路江防要塞，韩世忠黄天荡抗金与辛弃疾北固亭登临处"},
+      {"ancient":"舒州","modern":"潜山","coord":[116.57,30.63],"tier":2,"vanish":1195,"remark":"淮南西路舒州，治怀宁（今潜山）"},
+      {"ancient":"安庆府","modern":"潜山","coord":[116.57,30.63],"tier":2,"appear":1195,"vanish":1260,"remark":"庆元元年升舒州为安庆府，“安庆”之名自此始"},
+      {"ancient":"安庆府","modern":"安庆","coord":[117.061,30.541],"tier":2,"appear":1260,"remark":"嘉定十年知府黄榦于宜城筑城，景定元年府治移此，为今安庆城之始"}
     ],
     "phases": [
       {"until":1141,"snap":"s_nansong_a0","overview":"1127 — 1141 · 康王赵构南渡、岳飞收复襄阳六郡与北伐中原、吴玠和尚原抗金"},
@@ -1609,7 +1623,8 @@ window.DYNASTY_DATA = [
       {"ancient":"延平路","modern":"南平·三明","coord":[118.18,26.64],"tier":2,"remark":"元改南剑路为延平路，控扼闽江上游三溪汇流要冲"},
       {"ancient":"平江路","modern":"苏州","coord":[120.62,31.3],"tier":1,"remark":"江浙行省重镇、江南财赋之冠，元末张士诚定都于此"},
       {"ancient":"安丰路","modern":"淮南·寿县","coord":[116.78,32.58],"tier":2,"remark":"河南江北行省淮西重镇，元末红巾军韩林儿龙凤大宋后期都城"},
-      {"ancient":"开京","modern":"开城","coord":[126.55,37.97],"tier":1,"remark":"征东等处行中书省治所，高丽国王兼领征东行省左丞相","aliases":["征东行省","开京（征东行省）"]}
+      {"ancient":"开京","modern":"开城","coord":[126.55,37.97],"tier":1,"remark":"征东等处行中书省治所，高丽国王兼领征东行省左丞相","aliases":["征东行省","开京（征东行省）"]},
+      {"ancient":"安庆路","modern":"安庆","coord":[117.061,30.541],"tier":2,"remark":"安庆路总管府治怀宁（今安庆），属河南江北行省"}
     ],
     "phases": [
       {"until":1288,"snap":"s_yuan_a","overview":"1279 — 1287 · 崖山灭宋统一全国、置北庭都护府与征东行省，设总制院辖吐蕃"},
@@ -1799,7 +1814,8 @@ window.DYNASTY_DATA = [
       {"ancient":"古格","modern":"阿里","coord":[79.8,31.48],"tier":2,"remark":"古格王国晚期重绘托林寺与札达红白殿壁画","aliases":["阿里","古格（阿里）"]},
       {"ancient":"登州府","modern":"烟台","coord":[120.76,37.8],"tier":2,"remark":"洪武九年升登州府；洪武三十一年于芝罘设奇山守御千户所，筑狼烟墩台抗倭，烟台由此得名","aliases":["奇山所","登州府（奇山所）"]},
       {"ancient":"汀州府","modern":"龙岩","coord":[117.02,25.08],"tier":2,"remark":"福建八府之一，成化十四年析置永定县，正德间王阳明巡抚南赣汀漳平定漳寇，闽西土楼肇兴"},
-      {"ancient":"延平府","modern":"南平","coord":[118.18,26.64],"tier":2,"remark":"福建八府之一，辖南平、沙县、尤溪、永安、将乐等县，正统年间邓茂七起义于此"}
+      {"ancient":"延平府","modern":"南平","coord":[118.18,26.64],"tier":2,"remark":"福建八府之一，辖南平、沙县、尤溪、永安、将乐等县，正统年间邓茂七起义于此"},
+      {"ancient":"安庆府","modern":"安庆","coord":[117.061,30.541],"tier":2,"remark":"南直隶安庆府，扼长江中游；正德十四年宁王朱宸濠顺江东下围攻不克"}
     ],
     "phases": [
       {"until":1369,"snap":"s_ming_0a"},

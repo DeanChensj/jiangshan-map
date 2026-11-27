@@ -824,7 +824,9 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"name":"武川镇","aliases":["武川","北魏六镇","六镇"],"modern":"内蒙古呼和浩特·武川","coord":[111.65,40.68],"zoom":2.3},
     {"name":"怀朔镇","aliases":["怀朔","沃野镇"],"modern":"内蒙古包头·固阳","coord":[109.84,40.66],"zoom":2.3},
     {"name":"赤嵌","aliases":["热兰遮城","安平","东都","东宁","承天府（东宁）","夷洲","流求","瑠求","小琉球","东番"],"asciiAliases":["chikan","tayouan","zeelandia","dongning","tungning","yizhou","liuqiu","xiaoliuqiu","dongfan"],"modern":"台湾台南","coord":[120.21,23],"zoom":2.4},
-    {"name":"桐城","aliases":["桐城县","桐城市"],"asciiAliases":["tongcheng","tongchengshi"],"modern":"安徽桐城","coord":[116.951,31.051],"zoom":2.6}
+    {"name":"桐城","aliases":["桐城县","桐城市"],"asciiAliases":["tongcheng","tongchengshi"],"modern":"安徽桐城","coord":[116.951,31.051],"zoom":2.6},
+    {"name":"皖城","aliases":["皖县","皖国","潜山","梅城"],"asciiAliases":["wancheng","qianshan"],"modern":"安徽安庆潜山","coord":[116.57,30.63],"zoom":2.6},
+    {"name":"铜官山","aliases":["铜官","五松山"],"asciiAliases":["tongguanshan"],"modern":"安徽铜陵","coord":[117.81,30.93],"zoom":2.6}
   ],
   "PERSON_PROFILES": [
     {"key":"mengzi","zh":"孟子","en":"Mencius","courtesyZh":"孟轲 · 亚圣 · 仁政民本","courtesyEn":"Meng Ke, Second Sage of Confucianism","dynastyKey":"zhanguo","span":[-372,-289],"aliases":["孟轲","亚圣","孟子舆"],"evCount":3},
@@ -851,7 +853,7 @@ window.ATLAS_LORE_DATA = Object.assign(window.ATLAS_LORE_DATA || {}, {
     {"key":"banchao","zh":"班超","en":"Ban Chao","courtesyZh":"定远侯 · 字仲升","courtesyEn":"Protector-General of Western Regions","dynastyKey":"donghan","span":[32,102],"aliases":["定远侯","班仲升"],"evCount":5},
     {"key":"caocao","zh":"曹操","en":"Cao Cao","courtesyZh":"魏武帝 · 字孟德","courtesyEn":"King Wu of Wei","dynastyKey":"donghan","span":[155,220],"aliases":["魏武帝","孟德","曹孟德","阿瞒","曹阿瞒","曹公"],"evCount":16},
     {"key":"liubei","zh":"刘备","en":"Liu Bei","courtesyZh":"汉昭烈帝 · 字玄德","courtesyEn":"Emperor Zhaolie of Shu Han","dynastyKey":"sanguo","eraRegimes":["蜀汉"],"span":[161,223],"aliases":["玄德","刘玄德","汉昭烈帝","昭烈帝","先主"],"evCount":13},
-    {"key":"sunquan","zh":"孙权","en":"Sun Quan","courtesyZh":"吴大帝 · 字仲谋","courtesyEn":"Emperor Da of Eastern Wu","dynastyKey":"sanguo","eraRegimes":["孙吴"],"span":[182,252],"aliases":["仲谋","孙仲谋","吴大帝"],"evCount":7},
+    {"key":"sunquan","zh":"孙权","en":"Sun Quan","courtesyZh":"吴大帝 · 字仲谋","courtesyEn":"Emperor Da of Eastern Wu","dynastyKey":"sanguo","eraRegimes":["孙吴"],"span":[182,252],"aliases":["仲谋","孙仲谋","吴大帝"],"evCount":8},
     {"key":"zhugeliang","zh":"诸葛亮","en":"Zhuge Liang","courtesyZh":"武乡侯 · 字孔明 · 卧龙","courtesyEn":"Kongming, Chancellor of Shu","dynastyKey":"sanguo","eraRegimes":["蜀汉"],"span":[181,234],"journeyKey":"zhugeliang","aliases":["孔明","诸葛孔明","卧龙","武侯","诸葛武侯","Kongming"],"evCount":11},
     {"key":"guanyu","zh":"关羽","en":"Guan Yu","courtesyZh":"汉寿亭侯 · 字云长","courtesyEn":"General of Shu Han","dynastyKey":"sanguo","eraRegimes":["蜀汉"],"span":[160,220],"spanUnknown":"birth","aliases":["云长","关云长","关公","美髯公","武圣"],"evCount":7},
     {"key":"zhouyu","zh":"周瑜","en":"Zhou Yu","courtesyZh":"东吴大都督 · 字公瑾","courtesyEn":"Grand Commander of Eastern Wu","dynastyKey":"donghan","span":[175,210],"aliases":["公瑾","周公瑾","周郎"],"evCount":5},
