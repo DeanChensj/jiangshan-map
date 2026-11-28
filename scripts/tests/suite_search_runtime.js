@@ -3606,6 +3606,30 @@ async function runSearchRuntimeSuite(ctx) {
         );
       }
 
+      const jingnanProf = ctrl._resolvePersonProfile('jingnan');
+      assert(
+        jingnanProf && jingnanProf.isStory === true && Array.isArray(jingnanProf.stops) && jingnanProf.stops.length === 7,
+        'jingnan must resolve as an Event Storyline (isStory: true) with 7 chronological stops'
+      );
+      for (const sq of ['靖难之役', '靖难', '金川门之变', 'jingnan', 'Jingnan Campaign']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'jingnan',
+          `Quick search for "${sq}" must surface the Jingnan storyline (kind="story") at index 0`
+        );
+      }
+      const mingDynForStory = dynasties.find((d) => d.key === 'ming');
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(mingDynForStory, mingDynForStory.milestones.find((m) => m.year === 1399))?.key,
+        'jingnan',
+        'The 1399 Jingnan Uprising milestone must carry the single canonical [始末] entry for Jingnan'
+      );
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(mingDynForStory, mingDynForStory.milestones.find((m) => m.year === 1402)),
+        null,
+        'Ming milestone 1402 must not duplicate the jingnan [始末] badge'
+      );
+
       // Universal Event Storyline (`isStory: true`) invariants:
       // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.
       // 2) Must map to EXACTLY ONE `[始末]` milestone across all dynasties in `_findStoryForMilestone`.
