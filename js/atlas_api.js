@@ -52,7 +52,7 @@
         const yFrac = isDesktop ? 0.44 : 0.3;
         this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
       }
-      this.openGenealogyAt(st.lng, st.lat, st.query || st.name);
+      this._openGenealogy(st.lng, st.lat, st.query || st.name);
       this._renderCustomRouteCard();
     }
 
@@ -1208,10 +1208,12 @@
       const personProfiles = person ? this._resolvePersonProfiles(person) : [];
       const personProfile = personProfiles[0] || null;
       const multiState =
-        personProfiles.length >= 2 ? this._buildPersonTracksAndEvents(personProfiles) : null;
+        personProfiles.length >= 2 && typeof this._buildPersonTracksAndEvents === 'function'
+          ? this._buildPersonTracksAndEvents(personProfiles)
+          : null;
       const personEvents = multiState
         ? multiState.events
-        : personProfile
+        : personProfile && typeof this._collectPersonEvents === 'function'
           ? this._collectPersonEvents(personProfile)
           : [];
       const stopIdx =
@@ -1539,15 +1541,29 @@
         !this._hasZhHant() &&
         (this.locale === 'zh-tw' || hasUnresolvedCjkPlace || hasUnresolvedCjkYear);
       const needsLoreDetail = !this._isLoreDetailLoaded();
-      if (!this._fullSnapshotsLoaded || needsEnDict || needsZhHant || needsLoreDetail) {
-        Promise.all([
+      const needsGenealogy =
+        typeof this._isGenealogyLoaded === 'function' && !this._isGenealogyLoaded();
+      const needsPerson =
+        placeTokens.length >= 2 &&
+        typeof this._isPersonLoaded === 'function' &&
+        !this._isPersonLoaded();
+      if (
+        !this._fullSnapshotsLoaded ||
+        needsEnDict ||
+        needsZhHant ||
+        needsLoreDetail ||
+        needsGenealogy ||
+        needsPerson
+      ) {
+        const readyPromise = Promise.all([
           this._fullSnapshotsLoaded ? Promise.resolve() : this._ensureFullSnapshots(),
           needsEnDict ? this._ensureEnglishLocale() : Promise.resolve(),
           needsZhHant ? this._ensureZhHant() : Promise.resolve(),
           needsLoreDetail ? this._ensureLoreDetail() : Promise.resolve(),
-        ]).then(() => {
-          this.locate(opts);
-        });
+          needsGenealogy ? this._ensureGenealogy() : Promise.resolve(),
+          needsPerson ? this._ensurePerson() : Promise.resolve(),
+        ]).then(() => this.locate(opts));
+        if (needsGenealogy || needsPerson) return readyPromise;
       }
       this.stopAutoplay();
       const initialYear = placeTokens.length
@@ -1637,7 +1653,7 @@
         const pinLabel = useResolvedZh
           ? resolved.name
           : rawTrim || (resolved ? resolved.name : '');
-        this.openGenealogyAt(targetLng, targetLat, pinLabel);
+        this._openGenealogy(targetLng, targetLat, pinLabel);
       } else if (zoom !== undefined && zoom !== null && zoom !== '' && !Number.isNaN(Number(zoom))) {
         const z = Math.max(1, Math.min(8, Number(zoom)));
         const w = 1000 / z;
@@ -1816,6 +1832,22 @@
         if (needsHant && typeof window !== 'undefined' && !this._hasZhHant()) {
           tasks.push(this._ensureZhHant());
         }
+        if (
+          typeof window !== 'undefined' &&
+          typeof this._isPersonLoaded === 'function' &&
+          !this._isPersonLoaded() &&
+          (q.has('person') || q.has('event') || q.has('journey') || q.has('q'))
+        ) {
+          tasks.push(this._ensurePerson());
+        }
+        if (
+          typeof window !== 'undefined' &&
+          typeof this._isGenealogyLoaded === 'function' &&
+          !this._isGenealogyLoaded() &&
+          q.has('trace')
+        ) {
+          tasks.push(this._ensureGenealogy());
+        }
         if (!tasks.length) {
           run();
         } else {
@@ -1876,7 +1908,7 @@
         }
         if (traceParts) {
           afterFullSnapshots(() => {
-            this.openGenealogyAt(traceParts[0], traceParts[1]);
+            this._openGenealogy(traceParts[0], traceParts[1]);
           });
         }
         if (q.has('zoom') || q.has('center')) {
@@ -2028,7 +2060,7 @@
         const evIdx = q.has('stop') ? Number(q.get('stop')) : -1;
         if (rawP) {
           afterFullSnapshots(() => {
-            this.openPersonChronicle(rawP, Number.isNaN(evIdx) ? -1 : evIdx);
+            this._openPerson(rawP, Number.isNaN(evIdx) ? -1 : evIdx);
           });
         }
       }
@@ -2037,7 +2069,7 @@
         const evIdx = q.has('stop') ? Number(q.get('stop')) : -1;
         if (rawEv) {
           afterFullSnapshots(() => {
-            this.openPersonChronicle(rawEv, Number.isNaN(evIdx) ? -1 : evIdx);
+            this._openPerson(rawEv, Number.isNaN(evIdx) ? -1 : evIdx);
           });
         }
       }
@@ -2046,7 +2078,7 @@
         const stopIdx = q.has('stop') ? Number(q.get('stop')) : -1;
         if (jKey) {
           afterFullSnapshots(() => {
-            this.openJourneyAsPerson(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
+            this._openJourney(jKey, Number.isNaN(stopIdx) ? -1 : stopIdx);
           });
         }
       }
@@ -2122,6 +2154,14 @@
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
+            if (typeof this._ensureGenealogy === 'function') await this._ensureGenealogy();
+            if (
+              args.place &&
+              /[,;，；\n\t]|->|→/.test(String(args.place)) &&
+              typeof this._ensurePerson === 'function'
+            ) {
+              await this._ensurePerson();
+            }
             if (this.locale === 'en') await this._ensureEnglishLocale();
             if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             return this.locate({
@@ -2167,6 +2207,8 @@
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
+            if (typeof this._ensureGenealogy === 'function') await this._ensureGenealogy();
+            if (args.person && typeof this._ensurePerson === 'function') await this._ensurePerson();
             if (this.locale === 'en') await this._ensureEnglishLocale();
             if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             return this.inspect({
@@ -2205,10 +2247,11 @@
             applyOptionalLang(args.lang);
             await this._ensureFullSnapshots();
             await this._ensureLoreDetail();
+            if (typeof this._ensurePerson === 'function') await this._ensurePerson();
             if (this.locale === 'en') await this._ensureEnglishLocale();
             if (this.locale === 'zh-tw' || !this._hasZhHant()) await this._ensureZhHant();
             const stopIdx = typeof args.stop === 'number' ? args.stop : -1;
-            this.openPersonChronicle(args.person, stopIdx);
+            this._openPerson(args.person, stopIdx);
             return this.inspect({
               person: args.person,
               stop: stopIdx >= 0 ? stopIdx : undefined,

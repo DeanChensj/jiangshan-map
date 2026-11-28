@@ -7,7 +7,7 @@
   const dem = {
     type: 'raster-dem', encoding: 'terrarium', tileSize: 256, maxzoom: 15,
     tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
-    attribution: '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md">高程 © Mapzen 及数据提供方</a>',
+    attribution: '<a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md">© Mapzen &amp; contributors</a>',
   };
   const elevationColors = [
     [0, '#fff4d4'], [500, '#d7dfa8'], [1000, '#b9cb88'], [1500, '#77985e'], [2000, '#345c44'],
@@ -46,7 +46,7 @@
     const addPlace = (coord, name, priority, props) => {
       const modern = app.trModernCity(props.modern);
       const paired = modern && modern !== name ? name + '\n' + now + modern : name;
-      add(point(coord), 'place', {...props, name, paired, priority});
+      add(point(coord), 'place', {...props, modern, name, paired, priority});
     };
     for (const prov of app.provinces) {
       if (prov.hub && !String(prov.code).includes('_JD')) {
@@ -62,13 +62,13 @@
     const order = {neighbor: 0, main: 1, rival: 2, protectorate: 3};
     const polities = [...snapshot.polities].sort((a, b) => order[a.role] - order[b.role]);
     for (const pol of polities) {
-      add(area(pol.shape), 'polity', {name: pol.title, color: pol.tint || '#988e76', role: pol.role});
+      add(area(pol.shape), 'polity', {name: app.trTerm(pol.title), color: pol.tint || '#988e76', role: pol.role});
       if (pol.anchor && pol.role !== 'neighbor') add(point(pol.anchor), 'realm', {name: app.trTerm(pol.title)});
     }
     // The original contemporary snapshot derives its coverage from provinces.
     if (dynasty.key === 'prc') {
       for (const region of snapshot.regions) {
-        add(area(region.shape), 'polity', {name: region.title, color: dynasty.tint, role: 'main'});
+        add(area(region.shape), 'polity', {name: app.trTerm(region.title), color: dynasty.tint, role: 'main'});
       }
     }
     const hydro = app.hydroData;
@@ -86,13 +86,13 @@
     for (const city of dynasty.settlements.filter(visible)) {
       const name = app._settlementAncient(city, year);
       const priority = app._isSettlementCapital(city, year) ? 0 : (city.tier === 2 ? 3 : 1);
-      addPlace(city.coord, app.trTerm(name), priority, {modern: city.modern, note: city.remark});
+      addPlace(city.coord, app.trTerm(name), priority, {modern: city.modern, note: app.locale === 'en' ? city.remarkEn : app._zh(city.remark)});
     }
     if (dynasty.key !== 'prc') {
       for (const pass of app.constructor.STRATEGIC_PASSES.filter(visible)) {
         addPlace(pass.coord, app._passName(pass, year), 2, {
-          modern: app.locale === 'en' ? pass.modernEn : pass.modernZh,
-          note: app.locale === 'en' ? pass.rangeEn : pass.rangeZh,
+          modern: app.locale === 'en' ? pass.modernEn : app._zh(pass.modernZh),
+          note: app.locale === 'en' ? pass.rangeEn : app._zh(pass.rangeZh),
         });
       }
     }
@@ -139,12 +139,14 @@
     'chk-corridors': ['roads'], 'chk-settlements': ['places', 'place-names'],
   };
 
-  function style(exaggeration) {
+  function style(exaggeration, regional = false) {
+    const source = regional ? {...dem, bounds: [45, 0, 179.99999, 66.51325], maxzoom: 3,
+      tiles: [new URL('assets/terrain/dem/', document.baseURI).href + '{z}/{x}/{y}.png']} : dem;
     return {
       version: 8,
       sources: {
-        elevation: {...dem}, shading: {...dem},
-        ocean: {type: 'geojson', data: 'assets/terrain/ocean-50m.geojson', attribution: '海洋底图 · Natural Earth'},
+        elevation: {...source}, shading: {...source},
+        ocean: {type: 'geojson', data: 'assets/terrain/ocean-east-asia.geojson', attribution: 'Natural Earth'},
       },
       terrain: {source: 'elevation', exaggeration},
       sky: {'sky-color': '#a7c8d8', 'horizon-color': '#e0e8e3', 'fog-color': '#cbd8d0',
@@ -170,12 +172,26 @@
       const css = document.createElement('link');
       css.rel = 'stylesheet';
       css.href = vendor + 'maplibre-gl.css';
-      script.src = vendor + 'maplibre-gl.js';
-      loading = Promise.all([script, css].map(el => new Promise((resolve, reject) => {
+      const load = el => new Promise((resolve, reject) => {
         el.onload = resolve;
         el.onerror = reject;
         document.head.appendChild(el);
-      }))).catch(error => {
+      });
+      const loadScript = async () => {
+        const response = await fetch(vendor + 'maplibre-gl.js.gz');
+        if (!response.ok) throw new Error('MapLibre HTTP ' + response.status);
+        const bytes = await response.arrayBuffer();
+        const packed = new Uint8Array(bytes)[0] === 0x1f;
+        const body = packed ? new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')) : bytes;
+        const url = URL.createObjectURL(new Blob([await new Response(body).arrayBuffer()], {type: 'text/javascript'}));
+        try {
+          script.src = url;
+          await load(script);
+        } finally {
+          URL.revokeObjectURL(url);
+        }
+      };
+      loading = Promise.all([loadScript(), load(css)]).catch(error => {
         script.remove(); css.remove(); loading = null;
         throw error;
       });
@@ -224,28 +240,33 @@
         map.jumpTo(map.getPitch() > 1 || Math.abs(map.getBearing()) > 1
           ? {pitch: 0, bearing: 0} : {...closeView, zoom: Math.max(map.getZoom(), closeView.zoom)});
       };
-      this.tools.querySelector('form').onsubmit = event => {
-        event.preventDefault();
-        const input = this.tools.querySelector('input');
-        const query = input.value.trim();
-        const normalize = name => name.replace(/\s/g, '').toLowerCase();
-        const geography = app.hydroData.labels.find(item =>
-          app._isHydroVisible(item, app.year) && [item.zh, item.en].some(name =>
-            name && normalize(name) === normalize(query)));
-        const found = geography || app.resolvePlace(query, app.year);
-        if (!found?.coord) {
-          this.searchError = '未找到该地，请尝试古名或今名。';
-          this.updateStatus();
-          return;
-        }
-        this.searchError = '';
-        this.updateStatus();
-        const wide = geography || ['province', 'region', 'polity'].includes(found.kind);
-        this.map.jumpTo({center: found.coord, ...(wide ? {zoom: 6, pitch: 44} : localCamera(this.heightScale))});
-        input.blur();
-      };
-      document.getElementById('terrain-modern-names').onchange = () => this.visibility();
       document.getElementById('layers-popover').addEventListener('change', () => this.visibility());
+    }
+
+    text(zh, en) {
+      return this.app.locale === 'en' ? en : this.app._zh(zh);
+    }
+
+    localize() {
+      const title = this.text('3D 山河', '3D terrain');
+      this.host.setAttribute('aria-label', title);
+      this.toggle.textContent = this.active ? this.text('返回 2D', 'Back to 2D') : title;
+      document.getElementById('terrain-heading').textContent = title;
+      document.getElementById('terrain-scale-label').textContent = this.text('高度倍率', 'Height scale');
+      document.getElementById('terrain-names-label').textContent = this.text('现代地名', 'Modern names');
+      this.key.firstElementChild.textContent = this.text('海拔（米）', 'Elevation (m)');
+      this.updateViewButton();
+      if (this.active) this.updateStatus();
+    }
+
+    updateViewButton() {
+      const tilted = this.map && (this.map.getPitch() > 1 || Math.abs(this.map.getBearing()) > 1);
+      this.top.textContent = tilted ? this.text('恢复俯视', 'Reset orientation') : this.text('近看山势', 'Tilt view');
+    }
+
+    focusPlace(item) {
+      const local = ['city', 'pass', 'gazetteer'].includes(item.kind);
+      this.map.jumpTo({center: item.coord, ...(local ? localCamera(this.heightScale) : {zoom: 6, pitch: 44})});
     }
 
     message(value) {
@@ -258,7 +279,7 @@
       this.host.hidden = !active;
       this.top.hidden = this.tools.hidden = this.key.hidden = true;
       this.frame.classList.toggle('is-terrain-3d', active);
-      this.toggle.textContent = active ? '返回 2D' : '3D 山河';
+      this.localize();
       this.toggle.setAttribute('aria-pressed', String(active));
     }
 
@@ -273,9 +294,9 @@
       const closeView = localCamera(this.heightScale);
       const camera = app.camera.zoom >= 4 ? {...closeView, zoom: Math.max(baseZoom, closeView.zoom)}
         : {zoom: baseZoom, pitch: 0, bearing: 0};
-      this.searchError = '';
+      this.regional = false;
       this.show(true);
-      this.message('正在载入三维地形…');
+      this.message(this.text('正在载入三维地形…', 'Loading terrain…'));
       try {
         await loadRenderer();
         if (this.revision !== session) return;
@@ -289,21 +310,32 @@
         this.observer = new ResizeObserver(() => map.resize());
         this.observer.observe(this.host);
         this.host.addEventListener('webglcontextlost', this.contextLost = () => {
-          this.close('三维绘图中断，已返回原地图。');
+          this.close(this.text('三维绘图中断，已返回原地图。', '3D rendering stopped. Returned to 2D.'));
         }, true);
+        const useRegional = () => {
+          if (this.map !== map || this.regional) return;
+          this.regional = true;
+          ++this.revision;
+          clearTimeout(this.timer);
+          clearTimeout(this.demTimer);
+          this.historySource = null;
+          this.ready = this.firstViewLoaded = this.sawTerrain = false;
+          this.tools.hidden = true;
+          map.setStyle(style(this.heightScale, true), {diff: false});
+          this.updateStatus();
+        };
+        map.on('moveend', () => this.updateViewButton());
         map.on('style.load', () => {
           this.ready = true;
           this.top.hidden = this.tools.hidden = this.key.hidden = false;
-          const updateViewButton = () => {
-            this.top.textContent = map.getPitch() > 1 || Math.abs(map.getBearing()) > 1 ? '恢复俯视' : '近看山势';
-          };
-          map.on('moveend', updateViewButton);
-          updateViewButton();
+          this.updateViewButton();
           this.scheduleYear();
+          if (!this.regional) this.demTimer = setTimeout(useRegional, 7000);
         });
         map.on('error', event => {
           if (!this.active || this.map !== map) return;
           if (['elevation', 'shading'].includes(event.sourceId) || String(event.error).includes('terrarium')) {
+            if (!this.regional) { useRegional(); return; }
             this.tileError = true;
             this.updateStatus();
           } else if (event.sourceId && event.sourceId === this.historySource) {
@@ -315,6 +347,7 @@
         });
         map.on('sourcedata', event => {
           if (!this.sawTerrain && event.sourceId === 'elevation' && event.tile?.state === 'loaded') {
+            clearTimeout(this.demTimer);
             this.sawTerrain = true;
             this.updateStatus();
           }
@@ -326,18 +359,19 @@
           }
         });
         map.on('click', e => this.inspect(e));
-        map.addControl(new maplibregl.NavigationControl({visualizePitch: true}), 'top-right');
+
       } catch (error) {
         if (this.revision !== session) return;
         console.warn('3D 山河', error);
-        this.close('三维地形未能启动，请检查 WebGL 支持。原地图可继续使用。');
+        this.close(this.text('三维地形无法启动，已返回原地图。', '3D terrain is unavailable. Returned to 2D.'));
       }
     }
 
     updateStatus() {
-      this.message(this.tileError ? '部分高程未能加载，可返回 2D 后重新打开。'
-        : this.yearError ? '本年历史快照未能加载，可切年重试或返回 2D。'
-        : this.searchError || (this.pending ? '正在切换历史图层…' : !this.firstViewLoaded ? '正在载入高程…' : ''));
+      if (this.tileError) this.message(this.text('高程暂缺，可返回 2D。', 'Elevation unavailable. You can return to 2D.'));
+      else if (this.yearError) this.message(this.text('历史图层加载失败，请切年重试。', 'History unavailable. Change the year to retry.'));
+      else if (this.regional) this.message(this.text('使用东亚低精度高程', 'Using regional low-resolution terrain'));
+      else this.message(this.firstViewLoaded ? '' : this.text('正在载入高程…', 'Loading elevation…'));
     }
 
     visibility() {
@@ -367,7 +401,6 @@
         this.historySource = null;
       }
       this.pending = true;
-      this.searchError = '';
       this.yearError = false;
       this.updateStatus();
       clearTimeout(this.timer);
@@ -404,15 +437,15 @@
         ? this.map.queryTerrainElevation(coord) : null;
       const box = document.createElement('div');
       const title = document.createElement('strong');
-      title.textContent = name || '地形采样点';
+      title.textContent = name || this.text('地形采样点', 'Terrain sample');
       box.appendChild(title);
-      const altitude = height == null ? '海拔暂缺' : '海拔约 ' + Math.round(height / this.heightScale) + ' 米';
-      for (const text of [altitude, modern && '今址 · ' + modern, note].filter(Boolean)) {
+      const altitude = height == null ? this.text('海拔暂缺', 'Elevation unavailable') : this.text('海拔约 ', 'Elevation ≈ ') + Math.round(height / this.heightScale) + ' m';
+      for (const text of [altitude, modern && this.text('今址 · ', 'Today · ') + modern, note].filter(Boolean)) {
         const p = document.createElement('p'); p.textContent = text; box.appendChild(p);
       }
       if (kind === 'place') {
         const read = document.createElement('button');
-        read.textContent = '查看此地沿革';
+        read.textContent = this.text('查看此地沿革', 'Place history');
         read.onclick = () => {
           this.popup.remove();
           this.frame.classList.add('terrain-reading');
@@ -428,6 +461,7 @@
     close(reason = '') {
       ++this.revision;
       clearTimeout(this.timer);
+      clearTimeout(this.demTimer);
       this.observer?.disconnect();
       if (this.contextLost) this.host.removeEventListener('webglcontextlost', this.contextLost, true);
       const map = this.map, app = this.app;

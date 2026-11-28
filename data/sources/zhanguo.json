@@ -16,5 +16,6 @@
   "milestone:zhanguo:-330": [{ "w": "shiji", "loc": "卷5 秦本纪 惠文君八年 魏纳河西地 十年 魏纳上郡十五县", "url": "https://zh.wikisource.org/wiki/史記/卷005" }, { "w": "zztj", "loc": "卷2 周纪二 显王三十九年 魏入少梁河西地于秦", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷002" }],
   "milestone:zhanguo:-341": [{ "w": "shiji", "loc": "卷65 孙子吴起列传 马陵之战", "url": "https://zh.wikisource.org/wiki/史記/卷065" }, { "w": "shiji", "loc": "卷68 商君列传 孝公二十二年 卫鞅击魏虏公子卬", "url": "https://zh.wikisource.org/wiki/史記/卷068" }],
   "milestone:zhanguo:-375": [{ "w": "shiji", "loc": "卷45 韩世家 韩哀侯灭郑 徙都郑", "url": "https://zh.wikisource.org/wiki/史記/卷045" }, { "w": "shiji", "loc": "卷39 晋世家 静公二年 灭晋 三分其地", "url": "https://zh.wikisource.org/wiki/史記/卷039" }],
+  "milestone:zhanguo:-400": [{ "w": "shiji", "loc": "卷44 魏世家 文侯二十五年 李悝、吴起", "url": "https://zh.wikisource.org/wiki/史記/卷044", "note": "原书未系年" }, { "w": "hanshu", "loc": "卷24上 食货志上 李悝为魏文侯作尽地力之教", "url": "https://zh.wikisource.org/wiki/漢書/卷024上", "note": "原书未系年" }],
   "milestone:zhanguo:-403": [{ "w": "zztj", "loc": "卷1 周纪一 威烈王二十三年 初命晋大夫魏斯赵籍韩虔为诸侯", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷001" }]
 }

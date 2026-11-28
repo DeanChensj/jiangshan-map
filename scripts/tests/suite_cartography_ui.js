@@ -291,6 +291,24 @@ async function runCartographyUiSuite(ctx) {
         xijinSnap.polities.some((p) => p.title === '汉赵'),
       's_xijin must include both 晋 and 汉赵 polities'
     );
+    // Western Jin & Han-Zhao Jin-Shaan frontier must align with the Yellow River channel (not bulge west into Shaanxi)
+    for (const [sk, shanxiPol] of [
+      ['s_xijin_a', '晋'],
+      ['s_xijin', '汉赵'],
+      ['s_xijin_a2', '汉赵'],
+      ['s_xijin_b', '汉赵'],
+    ]) {
+      const shanxiShape = (snapshots[sk].polities || []).find((p) => p.title === shanxiPol)?.shape;
+      const jinShape = (snapshots[sk].polities || []).find((p) => p.title === '晋')?.shape;
+      assert(shanxiShape, `${sk}: missing ${shanxiPol}`);
+      assert(
+        pointInShape(111.14, 37.52, shanxiShape) &&
+          !pointInShape(110.30, 36.40, shanxiShape) &&
+          !pointInShape(110.45, 37.60, shanxiShape) &&
+          (!jinShape || (!pointInShape(110.30, 36.40, jinShape) && !pointInShape(110.45, 37.60, jinShape))),
+        `${sk}: 左国城 ([111.14, 37.52]) must stay inside ${shanxiPol} while Shaanxi west of the Yellow River ([110.30, 36.40], [110.45, 37.60]) stays outside 晋 and 汉赵`
+      );
+    }
 
     // Capital periods verification for xijin and dongjin
     const xjDyn = dynasties.find((d) => d.key === 'xijin');
@@ -636,7 +654,7 @@ async function runCartographyUiSuite(ctx) {
           `${sk}: Hami, Dunhuang, and Xining must have polity coverage and Haiyan must lie west of Ming Riyue border`
         );
       }
-      for (const sk of ['s_ming_b', 's_ming_c0', 's_ming_c', 's_ming_c2']) {
+      for (const sk of ['s_ming_b', 's_ming_1616', 's_ming_c0', 's_ming_c', 's_ming_c2']) {
         assert(
           hasPolAt(sk, '青海蒙古', 98.85, 36.85) && hasPolAt(sk, '青海蒙古', 100.99, 36.90),
           `${sk}: Qinghai Lake & Qaidam must belong to 青海蒙古 in 1513-1644`
@@ -699,7 +717,7 @@ async function runCartographyUiSuite(ctx) {
         );
         assert(!leak, `${sk}: ${leak ? leak.title : ''} must not inherit modern Gansu Mazongshan ([96.80, 41.80]), Jinchang ([102.10, 39.12]), Minqin-Tengger spike ([103.90, 39.30]), or Helan-west 90-degree desert box ([105.00, 39.80])`);
       }
-      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0', 's_ming_a', 's_ming_a2', 's_ming_b0', 's_ming_b', 's_ming_c0', 's_ming_c']) {
+      for (const sk of ['s_ming_0c', 's_ming_0d', 's_ming_a0', 's_ming_a', 's_ming_1409', 's_ming_a2', 's_ming_b0', 's_ming_b', 's_ming_1616', 's_ming_c0', 's_ming_c']) {
         assert(
           hasPolAt(sk, '明', 103.09, 38.62) && !hasPolAt(sk, '明', 102.00, 38.90),
           `${sk}: Ming must retain Zhenfan Guard ([103.09, 38.62]) while retracting south of [102.00, 38.90] along Yongchang Guard & Ming Great Wall`
@@ -1027,33 +1045,43 @@ async function runCartographyUiSuite(ctx) {
     const expectedRanges = [
       '秦岭', '大巴山', '太行山', '燕山', '阴山', '贺兰山', '祁连山', '天山', '昆仑山', '南岭', '武夷山', '大兴安岭',
       '长白山', '岷山', '大别山', '陇山', '巫山', '葱岭', '燕然山',
+      '外兴安岭', '阿尔泰山', '喜马拉雅山', '横断山', '武陵山',
+      '吕梁山', '中条山', '泰山', '伏牛山', '恒山', '罗霄山',
     ];
     assert.strictEqual(
       JSON.stringify(ranges.map((r) => r.zh).sort()),
       JSON.stringify([...expectedRanges].sort()),
-      'HYDRO_DATA.labels must contain exactly the 19 curated mountain-range labels'
+      'HYDRO_DATA.labels must contain exactly the 30 curated mountain-range labels'
     );
     const deserts = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'desert');
     assert.strictEqual(JSON.stringify(deserts.map((d) => d.zh)), JSON.stringify(['大 漠']), 'Exactly one Gobi watermark label');
     const pamirs = ranges.find((r) => r.zh === '葱岭');
     assert.strictEqual(ctrl._hydroLabelPair(pamirs, 640).zh, '葱岭', 'Pamirs in 640 CE must read 葱岭');
     assert.strictEqual(ctrl._hydroLabelPair(pamirs, 1800).zh, '帕米尔', 'Pamirs in 1800 CE must read 帕米尔');
+    const altai = ranges.find((r) => r.zh === '阿尔泰山');
+    assert.strictEqual(ctrl._hydroLabelPair(altai, 640).zh, '金山', 'Altai in 640 CE must read 金山');
+    assert.strictEqual(ctrl._hydroLabelPair(altai, 1759).zh, '阿尔泰山', 'Altai in 1759 CE must read 阿尔泰山');
     for (const r of ranges) {
       assert(
         typeof r.en === 'string' && r.en.length > 0 && !/[\u4e00-\u9fa5]/.test(r.en),
         `Mountain range ${r.zh} must have a clean English name, got ${JSON.stringify(r.en)}`
       );
       assert(
-        Array.isArray(r.coord) && r.coord[0] > 73 && r.coord[0] < 135 && r.coord[1] > 18 && r.coord[1] < 54,
-        `Mountain range ${r.zh} label coord must sit inside China, got ${JSON.stringify(r.coord)}`
+        Array.isArray(r.coord) && r.coord[0] > 73 && r.coord[0] < 135 && r.coord[1] > 18 && r.coord[1] < 57,
+        `Mountain range ${r.zh} label coord must sit inside the map extent, got ${JSON.stringify(r.coord)}`
       );
       assert(Math.abs(r.rot || 0) <= 90, `Mountain range ${r.zh} rotation must stay readable (|rot| <= 90)`);
     }
     const detailRivers = (sandbox.window.HYDRO_DATA.labels || []).filter((lb) => lb.kind === 'river' && lb.tier >= 1);
+    const expectedDetailRivers = [
+      '鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江',
+      '乌苏里江', '额尔齐斯河', '嘉陵江', '岷江', '乌江', '钱塘江', '西拉木伦河', '锡尔河', '阿姆河',
+      '泗水', '洛水', '北洛河', '颍水', '桑干河', '大凌河', '滦河', '泾水', '闽江', '沅水',
+    ];
     assert.strictEqual(
       JSON.stringify(detailRivers.map((lb) => lb.zh).sort()),
-      JSON.stringify(['鸭绿江', '大同江', '大渡河', '金沙江', '澜沧江', '怒江'].sort()),
-      'Zoom-gated boundary rivers must stay limited to the 6 classic frontier rivers'
+      JSON.stringify([...expectedDetailRivers].sort()),
+      'Zoom-gated boundary rivers must stay limited to the 25 classic frontier & regional boundary rivers'
     );
     for (const lb of detailRivers) {
       for (const en of lb.eraNames || []) {
@@ -1064,6 +1092,31 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, -100).zh, '马訾水', 'Yalu in 100 BCE must resolve to 马訾水');
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 668).zh, '鸭绿水', 'Yalu in 668 CE must resolve to 鸭绿水');
     assert.strictEqual(ctrl._hydroLabelPair(yaluLabel, 1400).zh, '鸭绿江', 'Yalu in 1400 CE must resolve to 鸭绿江');
+    const qiantangLabel = detailRivers.find((lb) => lb.zh === '钱塘江');
+    assert.strictEqual(ctrl._hydroLabelPair(qiantangLabel, -403).zh, '浙江', 'Qiantang in 403 BCE must resolve to 浙江');
+    assert.strictEqual(ctrl._hydroLabelPair(qiantangLabel, 1138).zh, '钱塘江', 'Qiantang in 1138 CE must resolve to 钱塘江');
+    const xarLabel = detailRivers.find((lb) => lb.zh === '西拉木伦河');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 500).zh, '饶乐水', 'Xar Moron in 500 CE must resolve to 饶乐水');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 1005).zh, '潢水', 'Xar Moron in 1005 CE must resolve to 潢水');
+    assert.strictEqual(ctrl._hydroLabelPair(xarLabel, 1759).zh, '西拉木伦河', 'Xar Moron in 1759 CE must resolve to 西拉木伦河');
+    const syrLabel = detailRivers.find((lb) => lb.zh === '锡尔河');
+    assert.strictEqual(ctrl._hydroLabelPair(syrLabel, 660).zh, '药杀水', 'Syr Darya in 660 CE must resolve to 药杀水');
+    assert.strictEqual(ctrl._hydroLabelPair(syrLabel, 1759).zh, '锡尔河', 'Syr Darya in 1759 CE must resolve to 锡尔河');
+    const amuLabel = detailRivers.find((lb) => lb.zh === '阿姆河');
+    assert.strictEqual(ctrl._hydroLabelPair(amuLabel, -100).zh, '妫水', 'Amu Darya in 100 BCE must resolve to 妫水');
+    assert.strictEqual(ctrl._hydroLabelPair(amuLabel, 1759).zh, '阿姆河', 'Amu Darya in 1759 CE must resolve to 阿姆河');
+    const wuLabel = detailRivers.find((lb) => lb.zh === '乌江');
+    assert.strictEqual(ctrl._hydroLabelPair(wuLabel, -200).zh, '延江水', 'Wu River in 200 BCE must resolve to 延江水');
+    assert.strictEqual(ctrl._hydroLabelPair(wuLabel, 1200).zh, '乌江', 'Wu River in 1200 CE must resolve to 乌江');
+    const sangganLabel = detailRivers.find((lb) => lb.zh === '桑干河');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 400).zh, '漯水', 'Sanggan in 400 CE must resolve to 漯水');
+    assert.strictEqual(ctrl._hydroLabelPair(sangganLabel, 936).zh, '桑干河', 'Sanggan in 936 CE must resolve to 桑干河');
+    const dalingLabel = detailRivers.find((lb) => lb.zh === '大凌河');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 400).zh, '白狼水', 'Daling in 400 CE must resolve to 白狼水');
+    assert.strictEqual(ctrl._hydroLabelPair(dalingLabel, 1005).zh, '大凌河', 'Daling in 1005 CE must resolve to 大凌河');
+    const luanLabel = detailRivers.find((lb) => lb.zh === '滦河');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 400).zh, '濡水', 'Luan in 400 CE must resolve to 濡水');
+    assert.strictEqual(ctrl._hydroLabelPair(luanLabel, 1005).zh, '滦河', 'Luan in 1005 CE must resolve to 滦河');
   }
 
   // 23ab. Ming capitals, Later Jin capitals, and map-change milestones (History of Ming / Ming Shilu)
@@ -1089,7 +1142,7 @@ async function runCartographyUiSuite(ctx) {
     const mcYears = (mingD.milestones || []).filter((m) => ctrl._isPhaseChangeYear(mingD, m.year)).map((m) => m.year);
     assert.strictEqual(
       JSON.stringify(mcYears),
-      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1636, 1643, 1644]),
+      JSON.stringify([1368, 1369, 1371, 1382, 1388, 1407, 1409, 1427, 1449, 1513, 1616, 1621, 1636, 1643, 1644]),
       'ming: map-change milestones must match the phase transitions'
     );
 
@@ -1151,7 +1204,7 @@ async function runCartographyUiSuite(ctx) {
 
     // All phase transition milestones derive map-change state from phases
     const expectedMapChangeYears = [
-      1644, 1645, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1851, 1858, 1860, 1864, 1876, 1881, 1895, 1898,
+      1644, 1645, 1652, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1853, 1858, 1860, 1864, 1876, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
       .filter((m) => ctrl._isPhaseChangeYear(qingD, m.year))
@@ -1159,7 +1212,7 @@ async function runCartographyUiSuite(ctx) {
     assert.strictEqual(
       JSON.stringify(actualMapChangeYears),
       JSON.stringify(expectedMapChangeYears),
-      'qing: all 20 phase transition milestones must derive map-change state from phases'
+      'qing: all 21 phase transition milestones must derive map-change state from phases'
     );
 
     assert.strictEqual(ctrl._resolveSnapKey(qingD, 1754), 's_qing_c', 'qing 1754 must resolve to s_qing_c');
@@ -1343,20 +1396,49 @@ async function runCartographyUiSuite(ctx) {
     const wdDynCap = dynasties.find((d) => d.key === 'wudai');
     const nsDynCap = dynasties.find((d) => d.key === 'nansong');
     const zgXianyang = zgDynCap.settlements.find((s) => s.ancient === '咸阳');
+    const zgYongcheng = zgDynCap.settlements.find((s) => s.ancient === '雍城');
+    const zgYueyang = zgDynCap.settlements.find((s) => s.ancient === '栎阳');
+    const zgAnyi = zgDynCap.settlements.find((s) => s.ancient === '安邑');
+    const zgJinyang = zgDynCap.settlements.find((s) => s.ancient === '晋阳');
+    const zgHandan = zgDynCap.settlements.find((s) => s.ancient === '邯郸');
+    const zgYangzhai = zgDynCap.settlements.find((s) => s.ancient === '阳翟');
     const zgDaliang = zgDynCap.settlements.find((s) => s.ancient === '大梁');
     const zgXinzheng = zgDynCap.settlements.find((s) => s.ancient === '新郑');
     const zgChenying = zgDynCap.settlements.find((s) => s.ancient === '陈郢');
+    const zgLangya = zgDynCap.settlements.find((s) => s.ancient === '琅琊');
+    const zgWu = zgDynCap.settlements.find((s) => s.ancient === '吴');
     const qinXianyang = qinDynCap.settlements.find((s) => s.ancient === '咸阳');
     const wdKaifeng = wdDynCap.settlements.find((s) => s.ancient === '东京开封府');
     const wdLuoyang = wdDynCap.settlements.find((s) => s.ancient === '洛阳');
     const nsLinan = nsDynCap.settlements.find((s) => s.ancient === '临安');
     assert(
-      !ctrl._isSettlementCapital(zgXianyang, -380) &&
+      zgXianyang.appear === -350 &&
+        !ctrl._isSettlementCapital(zgXianyang, -380) &&
         ctrl._isSettlementCapital(zgXianyang, -330) &&
+        ctrl._isSettlementCapital(zgYongcheng, -403) &&
+        !ctrl._isSettlementCapital(zgYongcheng, -380) &&
+        !ctrl._isSettlementCapital(zgYueyang, -403) &&
+        ctrl._isSettlementCapital(zgYueyang, -360) &&
+        !ctrl._isSettlementCapital(zgYueyang, -340) &&
+        ctrl._isSettlementCapital(zgAnyi, -403) &&
+        !ctrl._isSettlementCapital(zgAnyi, -350) &&
+        ctrl._isSettlementCapital(zgYangzhai, -403) &&
+        !ctrl._isSettlementCapital(zgYangzhai, -350) &&
+        ctrl._isSettlementCapital(zgJinyang, -403) &&
+        !ctrl._isSettlementCapital(zgJinyang, -380) &&
+        !ctrl._isSettlementCapital(zgHandan, -403) &&
+        ctrl._isSettlementCapital(zgHandan, -350) &&
+        ctrl._isSettlementCapital(zgLangya, -403) &&
+        !ctrl._isSettlementCapital(zgLangya, -370) &&
+        !ctrl._isSettlementCapital(zgWu, -403) &&
+        ctrl._isSettlementCapital(zgWu, -350) &&
+        !ctrl._isSettlementCapital(zgWu, -300) &&
         !ctrl._isSettlementCapital(zgDaliang, -380) &&
         ctrl._isSettlementCapital(zgDaliang, -350) &&
         !ctrl._isSettlementCapital(zgXinzheng, -380) &&
         ctrl._isSettlementCapital(zgXinzheng, -350) &&
+        ctrl._settlementAncient(zgChenying, -403) === '陈' &&
+        ctrl._settlementAncient(zgChenying, -260) === '陈郢' &&
         !ctrl._isSettlementCapital(zgChenying, -300) &&
         ctrl._isSettlementCapital(zgChenying, -260) &&
         !ctrl._isSettlementCapital(zgChenying, -230) &&
@@ -1466,6 +1548,12 @@ async function runCartographyUiSuite(ctx) {
       ['nansong', 1127, '赵构即位', '南宋高宗·建炎元年'],
       ['nansong', 1141, '绍兴和议', '南宋高宗·绍兴十一年'],
       ['nansong', 1275, '马可·波罗', '元世祖·至元十二年'],
+      ['sanguo', 230, '夷洲', '吴大帝·黄龙二年'],
+      ['sanguo', 279, '王濬楼船', '西晋武帝·咸宁五年'],
+      ['sanguo', 280, '西晋灭吴', '西晋武帝·太康元年'],
+      ['nanbei', 529, '陈庆之', '南朝梁武帝·中大通元年'],
+      ['beisong', 986, '雍熙北伐', '北宋太宗·雍熙三年'],
+      ['beisong', 1123, '燕山府路', '北宋徽宗·宣和五年'],
     ]) {
       assert.strictEqual(ctrl._eventEraLabel(dynByKey(k), milestoneOf(k, y, kw)), expected, `${k} ${y} ${kw}`);
     }
@@ -1503,6 +1591,94 @@ async function runCartographyUiSuite(ctx) {
       'English era label must name the regime ruling the location'
     );
     ctrl.locale = 'zh';
+
+    // Async lazy-snapshot hydration updates both milestone balloon and #bubble-text;
+    // scrubber pill follows exact-year milestone era while leaving non-milestone years on reference track.
+    {
+      const bubbleEl = { title: '', style: { setProperty() {} } };
+      const bubbleTextEl = { textContent: '' };
+      const balloonClasses = new Set();
+      const m494 = milestoneOf('nanbei', 494, '北魏孝文帝迁都');
+      const snap494Key = ctrl._resolveSnapKey(nanbei, 494);
+      const eraCtrl = Object.assign(Object.create(ctrl), {
+        _syncAutoMilestoneBalloon: ControllerClass.prototype._syncAutoMilestoneBalloon,
+        closeMilestoneBalloon: ControllerClass.prototype.closeMilestoneBalloon,
+        locale: 'zh',
+        year: 494,
+        dynastyIdx: dynasties.indexOf(nanbei),
+        activePerson: null,
+        challenge: null,
+        activeMilestone: null,
+        dismissedCalloutIds: new Set(),
+        snapshots: { ...snapshots },
+        milestoneBalloon: {
+          innerHTML: '',
+          classList: {
+            add: (...c) => c.forEach((x) => balloonClasses.add(x)),
+            remove: (...c) => c.forEach((x) => balloonClasses.delete(x)),
+            contains: (x) => balloonClasses.has(x),
+          },
+          querySelector: () => null,
+          querySelectorAll: () => [],
+        },
+        grpMilestones: { querySelectorAll: () => [], classList: { contains: () => false } },
+        _id: (id) => (id === 'scrubber-Bubble' ? bubbleEl : id === 'bubble-text' ? bubbleTextEl : null),
+        _highlightCurrentMilestone: () => {},
+        _updateMilestoneStates: () => {},
+        _measureMilestoneBalloonSize: () => {},
+        _positionMilestoneBalloon: () => {},
+        _positionScrubberBubble: () => {},
+        _syncScrubberNavigator: () => {},
+      });
+      delete eraCtrl.snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      eraCtrl._syncScrubberUi();
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('南朝齐明帝·建武元年'),
+        'Before lazy snapshot loads, 494 fallback shows reference era'
+      );
+      eraCtrl.snapshots[snap494Key] = snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      eraCtrl._syncScrubberUi();
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('北魏孝文帝·太和十八年'),
+        `After lazy snapshot loads, 494 auto callout must refresh to Northern Wei era: ${eraCtrl.milestoneBalloon.innerHTML}`
+      );
+      assert.strictEqual(
+        bubbleTextEl.textContent,
+        '公元 494 年 · 北魏孝文帝·太和十八年',
+        'Scrubber pill on exact milestone 494 must sync to Northern Wei era'
+      );
+      // Non-auto manual balloon also refreshes when snapshot finishes loading
+      delete eraCtrl.snapshots[snap494Key];
+      eraCtrl.openMilestoneBalloon(nanbei, m494, { isAuto: false });
+      assert(eraCtrl.milestoneBalloon.innerHTML.includes('南朝齐明帝·建武元年'));
+      eraCtrl.snapshots[snap494Key] = snapshots[snap494Key];
+      eraCtrl._syncAutoMilestoneBalloon(nanbei);
+      assert(
+        eraCtrl.milestoneBalloon.innerHTML.includes('北魏孝文帝·太和十八年'),
+        'Manual 494 balloon must also refresh once snapshot hydrates'
+      );
+      // Non-milestone year stays on Zizhi Tongjian reference chronology
+      eraCtrl.year = 496;
+      eraCtrl._syncScrubberUi();
+      assert.strictEqual(
+        bubbleTextEl.textContent,
+        '公元 496 年 · 南朝齐明帝·建武三年',
+        'Non-milestone year 496 scrubber pill must stay on reference chronology'
+      );
+      // 1616 Later Jin milestone must not attach Ming Shenzong temple title
+      const ming = dynByKey('ming');
+      eraCtrl.year = 1616;
+      eraCtrl.dynastyIdx = dynasties.indexOf(ming);
+      eraCtrl.activeMilestone = null;
+      eraCtrl._syncScrubberUi();
+      assert.strictEqual(bubbleTextEl.textContent, '公元 1616 年 · 后金天命元年');
+      assert(
+        !bubbleEl.title.includes('明神宗'),
+        `Regional milestone scrubber title must not carry Ming temple name: ${bubbleEl.title}`
+      );
+    }
   }
 
   // CUJ 28: Timeline autoplay is event-driven — the playhead lands only on event nodes
@@ -1706,6 +1882,30 @@ async function runCartographyUiSuite(ctx) {
     ctrl.dynastyIdx = dynasties.indexOf(tang);
     proto.stepTimelineNode.call(ctrl, 1);
     assert.strictEqual(ctrl.year, 626, `Restoring events layer must resume stopping at 626, got ${ctrl.year}`);
+    // Normal stepTimelineNode must exclude dead focusYear stops and step cleanly between events
+    delete ctrl._timelineStepYears;
+    ctrl.year = 1197;
+    ctrl.dynastyIdx = ctrl._findDynastyIndex(1197);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 1206, `Expected forward step from 1197 to skip dead focusYear 1200 and land on 1206, got ${ctrl.year}`);
+    proto.stepTimelineNode.call(ctrl, -1);
+    assert.strictEqual(ctrl.year, 1197, `Expected backward step from 1206 to return to 1197, got ${ctrl.year}`);
+    const deadFocusYears = [-100, 100, 250, 741, 950, 1100, 1200, 1300, 1450, 1800, 2026];
+    for (const dy of deadFocusYears) {
+      assert(!ctrl._timelineStepYears.includes(dy), `Dead focusYear ${dy} must not appear in _timelineStepYears`);
+    }
+    const validStepYears = new Set();
+    for (const d of dynasties) {
+      validStepYears.add(d.fromYear);
+      for (const m of d.milestones || []) validStepYears.add(ctrl._clampYearToDynasty(d, m.year));
+    }
+    for (const sy of ctrl._timelineStepYears) {
+      assert(validStepYears.has(sy), `Step year ${sy} must correspond to a dynasty start or milestone`);
+    }
+    ctrl.year = 2010;
+    ctrl.dynastyIdx = ctrl._findDynastyIndex(2010);
+    proto.stepTimelineNode.call(ctrl, 1);
+    assert.strictEqual(ctrl.year, 2010, `Forward step from final node 2010 must stay on 2010, got ${ctrl.year}`);
     ctrl.grpMilestones = savedGrpM;
     ctrl._ensureMilestoneInView = savedEnsureView;
     ctrl.openMilestoneBalloon = savedOpenBalloon;
@@ -3045,11 +3245,30 @@ async function runCartographyUiSuite(ctx) {
       hasPolPt('s_ming_a0', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_a0', '北元（鞑靼 · 瓦剌）', 119.0, 41.6) &&
         !hasPolPt('s_ming_b', '明', 119.0, 41.6) &&
+        !hasPolPt('s_ming_1616', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_c0', '明', 119.0, 41.6) &&
         !hasPolPt('s_ming_c2', '明', 119.0, 41.6),
       '大宁 must be 明 in 1388-1407 and outside 明 in 1449-1644'
     );
-    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409 年设奴儿干都司后归明，1388-1408 年留在女真诸部，明廷止于辽东。
+    // 1616-1621 后金崛起辽东：赫图阿拉/萨尔浒归后金，辽阳/沈阳仍属明；1621 沈辽之战后辽阳/沈阳改隶后金，明退守关宁锦。
+    assert(
+      hasPolPt('s_ming_1616', '明', 123.171, 41.271) &&
+        hasPolPt('s_ming_1616', '明', 123.431, 41.801) &&
+        hasPolPt('s_ming_1616', '后金', 124.801, 41.701) &&
+        hasPolPt('s_ming_1616', '后金', 124.101, 41.901) &&
+        !hasPolPt('s_ming_1616', '明', 124.801, 41.701) &&
+        !hasPolPt('s_ming_1616', '明', 124.101, 41.901),
+      's_ming_1616 (1616-1621): 明 holds Liaoyang & Shenyang; 后金 holds Hetu Ala & Sarhū'
+    );
+    assert(
+      hasPolPt('s_ming_c0', '后金', 123.171, 41.271) &&
+        hasPolPt('s_ming_c0', '后金', 123.431, 41.801) &&
+        !hasPolPt('s_ming_c0', '明', 123.171, 41.271) &&
+        !hasPolPt('s_ming_c0', '明', 123.431, 41.801) &&
+        hasPolPt('s_ming_c0', '明', 120.721, 40.621),
+      's_ming_c0 (1621-1636): 后金 holds Liaoyang & Shenyang after Shen-Liao; 明 holds Ningyuan'
+    );
+    // 外东北 / 黑龙江流域 (特林奴儿干、外东北) 1409–1449 年设奴儿干都司作为羁縻都司（role: 'protectorate'），明本土仍止于辽东。
     for (const sk of ['s_ming_a0', 's_ming_a']) {
       assert(
         !hasPolPt(sk, '明', 139.88, 52.86) &&
@@ -3060,12 +3279,24 @@ async function runCartographyUiSuite(ctx) {
         `${sk}: Outer Manchuria (Telin/Heilongjiang) must belong to 女真诸部 before 1409 Nurgan, while Liaoyang stays in 明`
       );
     }
-    assert(
-      hasPolPt('s_ming_1409', '明', 139.88, 52.86) &&
-        hasPolPt('s_ming_1409', '明', 132.0, 48.0) &&
-        hasPolPt('s_ming_1409', '明', 123.17, 41.27),
-      's_ming_1409: Nurgan (1409) incorporates Outer Manchuria and Liaoyang into 明'
-    );
+    for (const sk of ['s_ming_1409', 's_ming_a2']) {
+      const nurganPol = (snapshots[sk].polities || []).find((p) => p.title === '奴儿干都司');
+      assert(
+        nurganPol &&
+          nurganPol.role === 'protectorate' &&
+          pointInShape(139.88, 52.86, nurganPol.shape) &&
+          pointInShape(132.0, 48.0, nurganPol.shape) &&
+          pointInShape(142.8, 50.0, nurganPol.shape) &&
+          !(snapshots[sk].regions || []).some((r) => r.title === '奴儿干都司'),
+        `${sk}: Nurgan (奴儿干都司) must be a protectorate (羁縻) covering Telin, Heilongjiang, and Sakhalin, not a direct region`
+      );
+      assert(
+        !hasPolPt(sk, '明', 139.88, 52.86) &&
+          !hasPolPt(sk, '明', 132.0, 48.0) &&
+          hasPolPt(sk, '明', 123.17, 41.27),
+        `${sk}: direct 明 territory stops at Liaoyang (辽东都司) while Nurgan is protectorate`
+      );
+    }
     // 唐黑水都督府 (726–755): 725 无黑水都督府，726–755 覆盖伯力与黑龙江下游（不含库页岛），755 安史之乱后撤除。
     const tangDynHeishui = dynasties.find((d) => d.key === 'tang');
     assert.strictEqual(ctrl._resolveSnapKey(tangDynHeishui, 725), 's_tang_a5y');
@@ -3091,6 +3322,9 @@ async function runCartographyUiSuite(ctx) {
     // Neighbour names must fit the snapshot's years.
     for (const [sk, has, lacks] of [
       ['s_zhanguo_a', '波斯（阿契美尼德）', '安息'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '塞琉古（条支）'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '孔雀帝国'],
+      ['s_zhanguo_a', '波斯（阿契美尼德）', '大夏（巴克特里亚）'],
       ['s_sanguo', '萨珊波斯', '安息'],
       ['s_nanbei_e', '突厥', '柔然'],
       ['s_tang_a5', '倭马亚王朝（大食）', '萨珊波斯'],
@@ -3283,13 +3517,13 @@ async function runCartographyUiSuite(ctx) {
         !snapshots.s_beisong_d.regions.some((r) => r.title.endsWith('道')),
       's_beisong_d (1125–1127) must include Western Liao and rename former Liao circuits from 道 to Jin 路'
     );
-    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       assert(
         hasRegPt(sk, '广南西路', 109.577, 19.521),
         `${sk} must include Hainan Island ([109.577, 19.521]) inside 广南西路`
       );
     }
-    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
+    for (const sk of ['s_beisong_a0', 's_beisong_a', 's_beisong_a2', 's_beisong_a3', 's_beisong_a4', 's_beisong_a5', 's_beisong_b0', 's_beisong_b', 's_beisong_b1', 's_beisong_b2', 's_beisong_c', 's_beisong_d', 's_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0', 's_nansong_e', 's_nansong_b', 's_nansong_f', 's_nansong_g']) {
       const prefs = snapshots[sk].prefectures || [];
       assert(
         prefs.length >= 130 &&
@@ -3309,20 +3543,56 @@ async function runCartographyUiSuite(ctx) {
         hasPolPt('s_nansong_c', '金', 103.83, 36.06),
       's_nansong_c (1215–1227) must keep Lintao Circuit (Lintaofu & Lanzhou) inside Jin rather than a disconnected Mongol exclave'
     );
-    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
+    for (const sk of ['s_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0', 's_nansong_c', 's_nansong_d', 's_nansong_e0']) {
       assert(
         !hasPolPt(sk, '吐蕃诸部', 103.861, 35.381) && !hasPolPt(sk, '吐蕃诸部', 103.83, 36.06),
         `${sk} must not overlap 吐蕃诸部 onto Lintaofu or Lanzhou`
       );
     }
+    const nansongDyn = dynasties.find((d) => d.key === 'nansong');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1130), 's_nansong_1127', 'nansong 1130 must resolve to s_nansong_1127');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1134), 's_nansong_a0', 'nansong 1134 must resolve to s_nansong_a0');
+    assert.strictEqual(ctrl._resolveSnapKey(nansongDyn, 1141), 's_nansong_a', 'nansong 1141 must resolve to s_nansong_a');
+    for (const [label, x, y] of [
+      ['襄阳', 112.14, 32.01],
+      ['随州', 113.38, 31.69],
+      ['郢州', 112.59, 31.17],
+      ['唐州', 112.83, 32.69],
+      ['邓州', 112.09, 32.69],
+      ['信阳', 114.07, 32.13],
+    ]) {
+      assert(
+        hasPolPt('s_nansong_1127', '金', x, y) && !hasPolPt('s_nansong_1127', '南宋', x, y),
+        `s_nansong_1127 (1127–1134): ${label} must belong to 金 before Yue Fei's 1134 campaign`
+      );
+      assert(
+        hasPolPt('s_nansong_a0', '南宋', x, y) && !hasPolPt('s_nansong_a0', '金', x, y),
+        `s_nansong_a0 (1134–1141): ${label} must belong to 南宋 after Yue Fei's 1134 campaign`
+      );
+    }
     assert(
-      hasPolPt('s_nansong_a0', '南宋', 105.721, 34.581) &&
-        hasRegPt('s_nansong_a0', '利州路', 105.721, 34.581) &&
-        snapshots.s_nansong_a0.regions.some((r) => r.title === '燕京路') &&
-        !snapshots.s_nansong_a0.regions.some((r) => r.title === '中都路') &&
-        hasPrefPt('s_nansong_a0', '析津府', 116.401, 39.901),
-      's_nansong_a0 (1127–1141, pre-Shaoxing Treaty & pre-1153 Zhongdu) must keep Qinzhou in Southern Song / Lizhou Circuit and name Beijing as Yanjing Circuit / Xijinfu'
+      hasPolPt('s_nansong_1127', '南宋', 112.19, 30.35) &&
+        hasPolPt('s_nansong_1127', '南宋', 113.69, 31.26) &&
+        hasPolPt('s_nansong_1127', '南宋', 110.74, 32.06) &&
+        hasPolPt('s_nansong_1127', '南宋', 105.721, 34.581) &&
+        hasPolPt('s_nansong_a', '南宋', 112.14, 32.01) &&
+        hasPolPt('s_nansong_a', '南宋', 113.38, 31.69) &&
+        hasPolPt('s_nansong_a', '南宋', 112.59, 31.17) &&
+        hasPolPt('s_nansong_a', '南宋', 114.07, 32.13) &&
+        hasPolPt('s_nansong_a', '金', 112.83, 32.69) &&
+        hasPolPt('s_nansong_a', '金', 112.09, 32.69),
+      's_nansong_1127 retains Jingzhou/DeAn/Fangzhou/Qinzhou in Southern Song; s_nansong_a retains Xiangyang/Sui/Ying/Xinyang in Song while ceding Tang/Deng to Jin'
     );
+    for (const sk of ['s_nansong_1127', 's_nansong_a0']) {
+      assert(
+        hasPolPt(sk, '南宋', 105.721, 34.581) &&
+          hasRegPt(sk, '利州路', 105.721, 34.581) &&
+          snapshots[sk].regions.some((r) => r.title === '燕京路') &&
+          !snapshots[sk].regions.some((r) => r.title === '中都路') &&
+          hasPrefPt(sk, '析津府', 116.401, 39.901),
+        `${sk} (pre-Shaoxing Treaty & pre-1153 Zhongdu) must keep Qinzhou in Southern Song / Lizhou Circuit and name Beijing as Yanjing Circuit / Xijinfu`
+      );
+    }
     for (const [sk, northPol] of [
       ['s_nansong_a', '金'],
       ['s_nansong_b0', '金'],
@@ -3456,7 +3726,7 @@ async function runCartographyUiSuite(ctx) {
         `${sk} must extend ${polName} (${eastReg} / ${northReg}) beyond the modern Heilongjiang–Ussuri border to the Sea of Japan and Lower Amur without overlapping 蒙古诸部`
       );
     }
-    for (const sk of ['s_nansong_a0', 's_nansong_a', 's_nansong_b0']) {
+    for (const sk of ['s_nansong_1127', 's_nansong_a0', 's_nansong_a', 's_nansong_b0']) {
       assert(
         hasPolPt(sk, '金', 133.5, 44.8) &&
           hasPolPt(sk, '金', 136.0, 48.8) &&
@@ -3542,14 +3812,16 @@ async function runCartographyUiSuite(ctx) {
     for (const sk of ['s_zhanguo_b1', 's_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1', 's_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
       assert(hasPolPt(sk, '楚', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 楚`);
     }
-    assert(hasPolPt('s_zhanguo_e5', '秦', 119.98, 35.65), 's_zhanguo_e5 must include Langya ([119.98, 35.65]) inside 秦');
+    for (const sk of ['s_zhanguo_e5', 's_zhanguo_e6']) {
+      assert(hasPolPt(sk, '秦', 119.98, 35.65), `${sk} must include Langya ([119.98, 35.65]) inside 秦`);
+    }
     for (const sk of ['s_zhanguo_b', 's_zhanguo_b2', 's_zhanguo_c', 's_zhanguo_c2', 's_zhanguo_d', 's_zhanguo_e1']) {
       assert(
         hasPolPt(sk, '赵', 111.201, 40.251) && hasPolPt(sk, '赵', 114.551, 40.151),
         `${sk} (-300..-229 BCE) must include both Yunzhong and Dai inside 赵`
       );
     }
-    for (const sk of ['s_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4']) {
+    for (const sk of ['s_zhanguo_e2', 's_zhanguo_e3', 's_zhanguo_e4', 's_zhanguo_e5']) {
       assert(
         hasPolPt(sk, '秦', 111.201, 40.251) &&
           hasPolPt(sk, '代', 114.551, 40.151) &&
@@ -3557,6 +3829,20 @@ async function runCartographyUiSuite(ctx) {
         `${sk} (-228..-223 BCE) must place Yunzhong in 秦 and Dai ([114.551, 40.151]) in 代`
       );
     }
+    assert(
+      hasPolPt('s_zhanguo_e5', '秦', 116.78, 32.58) &&
+        hasPolPt('s_zhanguo_e5', '燕', 123.17, 41.27) &&
+        hasPolPt('s_zhanguo_e5', '代', 114.551, 40.151) &&
+        !snapshots.s_zhanguo_e5.polities.some((p) => p.title === '楚'),
+      's_zhanguo_e5 (-223 BCE fall of Chu) must annex Chu into 秦 while keeping 燕 and 代 intact'
+    );
+    assert(
+      hasPolPt('s_zhanguo_e6', '秦', 116.78, 32.58) &&
+        hasPolPt('s_zhanguo_e6', '秦', 114.551, 40.151) &&
+        hasPolPt('s_zhanguo_e6', '秦', 123.17, 41.27) &&
+        !snapshots.s_zhanguo_e6.polities.some((p) => ['楚', '代', '燕'].includes(p.title)),
+      's_zhanguo_e6 (-222 BCE fall of Yan & Dai) must absorb 燕 and 代 into 秦'
+    );
     for (const sk of ['s_qin_a', 's_qin_b', 's_qin', 's_xihan_a', 's_xihan_a2', 's_xihan_b1', 's_xihan_b2', 's_xihan_b3a', 's_xihan_b3b', 's_xihan_b3', 's_xihan_b', 's_xihan_c', 's_xihan_d']) {
       const mainPol = snapshots[sk].polities[0];
       const mainRing = mainPol.shape.type === 'Polygon' ? mainPol.shape.coordinates[0] : mainPol.shape.coordinates[0][0];

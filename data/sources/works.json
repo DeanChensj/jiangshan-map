@@ -38,6 +38,7 @@
   "wenxiantongkao": { "zh": "马端临《文献通考》", "en": "Ma Duanlin, Wenxian Tongkao", "kind": "primary", "url": "https://zh.wikisource.org/wiki/文獻通考" },
   "xiaogang": { "zh": "《小岗村实行“大包干”回顾》《党史博览》2018年第7期", "en": "Reviewing the household contract in Xiaogang Village, Dangshi Bolan 2018 No.7", "kind": "secondary", "url": "http://zhongguoguoqing.cssn.cn/zt/qzggkf40znzt/lshm/201810/t20181016_5006037.shtml" },
   "xintangshu": { "zh": "欧阳修、宋祁《新唐书》", "en": "Ouyang Xiu and Song Qi, New Book of Tang (Xin Tang Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/新唐書" },
+  "xiquzhianhui": { "zh": "《中国戏曲志·安徽卷》", "en": "Annals of Chinese Opera: Anhui Volume", "kind": "secondary" },
   "yuanhezhi": { "zh": "李吉甫《元和郡县图志》", "en": "Li Jifu, Yuanhe Junxian Tuzhi (Maps and Records of the Commanderies and Counties of the Yuanhe Era)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/元和郡縣圖志" },
   "zhmsdsj": { "zh": "韩信夫、刘明逵主编《中华民国史大事记》，中华书局2011年版", "en": "Han Xinfu & Liu Mingkui (eds.), Chronicle of the History of the Republic of China, Zhonghua Book Company, 2011", "kind": "secondary" },
   "zhoushu": { "zh": "令狐德棻等《周书》", "en": "Linghu Defen et al., Book of Zhou (Zhou Shu)", "kind": "primary", "url": "https://zh.wikisource.org/wiki/周書" },

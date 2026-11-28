@@ -17,66 +17,292 @@
   class AtlasSearchMixin {
     // ---------------- Global Quick Search ----------------
     _searchPlaceholder(expanded = false) {
+      const isNarrow =
+        typeof window !== 'undefined' && window.innerWidth > 0 && window.innerWidth <= 640;
       if (this.locale === 'en') {
-        return expanded
-          ? 'Search people (or 2–3: Li Bai, Du Fu), places, eras'
-          : 'Search people, places, eras';
+        if (expanded) {
+          return isNarrow
+            ? 'People (Li Bai, Du Fu), places, events'
+            : 'Search people (Li Bai, Du Fu), places, events';
+        }
+        return isNarrow ? 'Search people, places' : 'People, places, events, eras';
       }
-      return this._zh(
-        expanded
-          ? '搜人物（可搜双人/三人：李白 杜甫 高适）/ 古今地名 / 年号'
-          : '搜人物 / 多人同看 / 古今地名 / 年号'
-      );
+      if (expanded) {
+        return this._zh(
+          isNarrow
+            ? '搜人物（李白 杜甫）/ 地名 / 史事'
+            : '搜人物（双人如：李白 杜甫）/ 地名 / 史事 / 年号'
+        );
+      }
+      return this._zh(isNarrow ? '搜人物 · 地名 · 史事' : '搜人物 / 地名 / 史事 / 年号');
     }
 
     _getSearchSampleQueries() {
       return this.locale === 'en'
-        ? ["Chang'an", 'Chibi', 'Cao Cao', 'Li Bai, Du Fu']
-        : ['长安', '赤壁', '霍去病', '李白 杜甫 高适'].map((s) => this._zh(s));
+        ? ["Chang'an", 'Huo Qubing', 'An-Shi Rebellion', 'Li Bai, Du Fu']
+        : ['长安', '霍去病', '安史之乱', '李白 杜甫'].map((s) => this._zh(s));
+    }
+
+    _personSearchAliases(p) {
+      const out = [p.key, ...(p.aliases || [])].filter(Boolean);
+      if (p.courtesyEn) {
+        const roleRe =
+          /\b(general|marshal|minister|chancellor|historian|statesman|poet|master|author|founder|leader|commander|protector|adviser|strategist|admiral|commissioner|architect|governor|reformer|king|prince|lord|marquis|duke|instigator|recoverer|conqueror|empress\s+regnant)\b/i;
+        for (const seg of p.courtesyEn.split(/[,·/()]+/)) {
+          const clean = seg.trim();
+          if (clean.length >= 4 && !roleRe.test(clean)) out.push(clean);
+        }
+      }
+      return out.map((a) => String(a).toLowerCase());
+    }
+
+    _resolvePersonProfile(personOrQuery) {
+      if (!personOrQuery) return null;
+      if (typeof personOrQuery === 'object' && personOrQuery.zh) return personOrQuery;
+      const rawInput = String(personOrQuery).trim();
+      if (!rawInput) return null;
+      const rawHans = /[\u4e00-\u9fff]/.test(rawInput) ? this._toHans(rawInput) : rawInput;
+      const raw = rawHans === '海南藏族自治州' ? '海南州' : rawHans;
+      const qLow = raw.toLowerCase();
+      const fold = (s) =>
+        String(s || '')
+          .toLowerCase()
+          .replace(/['’‘`\-_.\s]+/g, '');
+      const qFold = fold(qLow);
+      const profiles = HistoricalAtlasController.PERSON_PROFILES;
+      const exact = profiles.find((p) => {
+        const aliases = this._personSearchAliases(p);
+        return (
+          p.key === qLow ||
+          p.zh.toLowerCase() === qLow ||
+          (p.en && (p.en.toLowerCase() === qLow || (qFold.length >= 3 && fold(p.en) === qFold))) ||
+          aliases.some((a) => a === qLow || (qFold.length >= 3 && fold(a) === qFold))
+        );
+      });
+      if (exact) return exact;
+      const partial = profiles.find((p) => {
+        if (p.isStory) return false;
+        const aliases = this._personSearchAliases(p);
+        return (
+          p.zh.includes(raw) ||
+          (p.en && p.en.toLowerCase().includes(qLow)) ||
+          aliases.some((a) => a.includes(qLow))
+        );
+      });
+      if (partial) return partial;
+      // Dynamic fallback strictly for historical monarchs in CHINESE_ERA_SPANS / REGIONAL_ERA_TRACKS
+      const allSpans = [
+        ...HistoricalAtlasController.CHINESE_ERA_SPANS,
+        ...HistoricalAtlasController.REGIONAL_ERA_TRACKS.flatMap((t) => t.spans || []),
+      ];
+      const matchingSpans = allSpans.filter((sp) => {
+        if (!sp[3]) return false;
+        const mZh = sp[3];
+        const shortM = mZh
+          .replace(/^(?:西|东|北|南|南朝|武周)/, '')
+          .replace(/^汉高帝$/, '汉高祖');
+        const mEn = (sp[4] || '').toLowerCase();
+        return (
+          mZh === raw ||
+          shortM === raw ||
+          (qLow.length >= 4 && mEn && (mEn === qLow || fold(mEn) === qFold))
+        );
+      });
+      if (!matchingSpans.length) return null;
+      const spanMin = matchingSpans[0][0] - 40;
+      const lastSpan = matchingSpans[matchingSpans.length - 1];
+      const mainIdx = HistoricalAtlasController.CHINESE_ERA_SPANS.indexOf(lastSpan);
+      const spanMax =
+        mainIdx >= 0 && mainIdx + 1 < HistoricalAtlasController.CHINESE_ERA_SPANS.length
+          ? HistoricalAtlasController.CHINESE_ERA_SPANS[mainIdx + 1][0] + 2
+          : lastSpan[0] + 45;
+      const courtesyZh = matchingSpans[0][3];
+      const courtesyEn = matchingSpans[0][4] || '';
+      const adhoc = {
+        key: `adhoc_${raw}`,
+        zh: raw,
+        en: courtesyEn || this.trTerm(raw),
+        courtesyZh: courtesyZh && courtesyZh !== raw ? courtesyZh : '历代帝王纪事',
+        courtesyEn: courtesyEn || 'Historical Monarch',
+        dynastyKey: null,
+        span: [spanMin, spanMax],
+        aliases: [],
+        tokens: Array.from(new Set([raw, courtesyZh].filter(Boolean))),
+        isMonarch: true,
+      };
+      if (typeof this._collectPersonEvents !== 'function') return adhoc;
+      return this._collectPersonEvents(adhoc).length ? adhoc : null;
+    }
+
+    _resolvePersonProfiles(personOrQuery) {
+      if (!personOrQuery) return [];
+      if (Array.isArray(personOrQuery)) {
+        const seen = new Set();
+        const out = [];
+        for (const item of personOrQuery) {
+          const p = this._resolvePersonProfile(item);
+          if (p && !seen.has(p.key)) {
+            seen.add(p.key);
+            out.push(p);
+          }
+        }
+        return out.slice(0, 4);
+      }
+      if (typeof personOrQuery === 'object' && personOrQuery.zh) {
+        return [personOrQuery];
+      }
+      const raw = String(personOrQuery || '').trim();
+      if (!raw) return [];
+      const isSpaceCjkPair = /^[\u4e00-\u9fff·]{2,6}(?:\s+[\u4e00-\u9fff·]{2,6})+$/.test(raw);
+      const hasExplicitDelim = /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(raw);
+      if (isSpaceCjkPair || hasExplicitDelim) {
+        const parts = (
+          hasExplicitDelim
+            ? raw.split(/\s*(?:[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+)\s*/i)
+            : raw.split(/\s+/)
+        )
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (parts.length >= 2) {
+          const seen = new Set();
+          const out = [];
+          for (const part of parts) {
+            const p = this._resolvePersonProfile(part);
+            if (p && !seen.has(p.key)) {
+              seen.add(p.key);
+              out.push(p);
+            }
+          }
+          if (out.length >= 2) return out.slice(0, 4);
+        }
+      }
+      const single = this._resolvePersonProfile(raw);
+      return single ? [single] : [];
+    }
+
+    _personSummaryFields(p, dynastyByKey) {
+      const d =
+        dynastyByKey.get(p.dynastyKey) ||
+        this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
+        this.dynasties[0];
+      const evCount =
+        typeof p.evCount === 'number'
+          ? p.evCount
+          : typeof this._collectPersonEvents === 'function'
+            ? this._collectPersonEvents(p).length
+            : 0;
+      const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s+·\s+/)[0];
+      const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
+      const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
+      const subZh = p.isRelic
+        ? `${briefCourtesyZh} · 历 10 朝 ${evCount} 站流转`
+        : `${briefCourtesyZh} · 共 ${evCount} 处史事`;
+      const subEn = p.isRelic
+        ? `${briefCourtesyEn || 'Heshi Bi Jade'} · ${evCount} stops across 10 eras`
+        : briefCourtesyEn
+          ? `${briefCourtesyEn} · ${evCount} events`
+          : `${evCount} chronicle events`;
+      return { d, evCount, subZh, subEn };
+    }
+
+    _storySummaryFields(p, dynastyByKey) {
+      const { d, evCount } = this._personSummaryFields(p, dynastyByKey);
+      let spanZh = '';
+      let spanEn = '';
+      if (Array.isArray(p.span) && p.span.length >= 2) {
+        const [a, b] = p.span;
+        const fmtZh = (y) => (y < 0 ? `前${Math.abs(y)}` : String(y));
+        spanZh = `${fmtZh(a)}—${fmtZh(b)}`;
+        spanEn =
+          a < 0 && b < 0
+            ? `${Math.abs(a)}–${Math.abs(b)} BCE`
+            : a < 0
+              ? `${Math.abs(a)} BCE–${b} CE`
+              : `${a}–${b}`;
+      }
+      return {
+        d,
+        evCount,
+        subZh: `${spanZh ? spanZh + ' · ' : ''}共 ${evCount} 处关键节点`,
+        subEn: `${spanEn ? spanEn + ' · ' : ''}${evCount} key scenes`,
+      };
     }
 
     _getSearchShowcasePool() {
-      const index = this._ensureSearchIndex();
-      if (Array.isArray(index._showcasePool)) return index._showcasePool;
+      const loreReady = this._isLoreDetailLoaded();
+      const personReady = typeof this._buildPersonTracksAndEvents === 'function';
+      if (
+        this._showcasePoolCache &&
+        this._showcasePoolCache.loreReady === loreReady &&
+        this._showcasePoolCache.personReady === personReady
+      ) {
+        return this._showcasePoolCache.pool;
+      }
+      const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
+      const profileByKey = new Map(
+        HistoricalAtlasController.PERSON_PROFILES.map((p) => [p.key, p])
+      );
       const showcaseSpecs = [
         'sushi',
         ['libai', 'dufu'],
+        'anshi',
+        'liuyu',
         'zhugeliang',
         ['libai', 'dufu', 'gaoshi'],
+        'changzheng',
+        'lishimin',
         'huoqubing',
         ['caocao', 'liubei', 'sunquan'],
+        'qintongyi',
+        'qinshihuang',
         'libai',
         ['yanghu', 'duyu'],
+        'jingkang',
+        'yuefei',
         'caocao',
         ['zhugeliang', 'simayi'],
+        'chuhan',
+        'liubang',
         'xinqiji',
         ['zuti', 'liukun'],
+        'genghiskhan',
         'xuanzang',
+        'zhuyuanzhang',
         'wangyangming',
+        'zhangjuzheng',
+        'kangxi',
+        'taiping',
+        'maozedong',
         'zhangqian',
         'dufu',
       ];
+      const listedKeys = new Set(showcaseSpecs.filter((s) => typeof s === 'string'));
+      for (const p of HistoricalAtlasController.PERSON_PROFILES) {
+        if (p.isStory && !listedKeys.has(p.key)) {
+          showcaseSpecs.push(p.key);
+          listedKeys.add(p.key);
+        }
+      }
       const multiShowcaseFallback = {
         'libai,dufu': { events: 21, sameTime: 3, dynastyKey: 'tang' },
         'libai,dufu,gaoshi': { events: 23, sameTime: 5, dynastyKey: 'tang' },
-        'caocao,liubei,sunquan': { events: 32, sameTime: 8, dynastyKey: 'donghan' },
+        'caocao,liubei,sunquan': { events: 33, sameTime: 8, dynastyKey: 'donghan' },
         'yanghu,duyu': { events: 10, sameTime: 2, dynastyKey: 'sanguo' },
         'zhugeliang,simayi': { events: 16, sameTime: 3, dynastyKey: 'donghan' },
         'zuti,liukun': { events: 9, sameTime: 1, dynastyKey: 'xijin' },
       };
-      const loreReady = this._isLoreDetailLoaded();
       const pool = [];
       for (const spec of showcaseSpecs) {
         if (Array.isArray(spec)) {
           const profiles = this._resolvePersonProfiles(spec);
           if (profiles.length >= 2) {
-            const fb = !loreReady ? multiShowcaseFallback[spec.join(',')] : null;
-            const st = fb ? null : this._buildPersonTracksAndEvents(profiles);
+            const fb = !loreReady || !personReady ? multiShowcaseFallback[spec.join(',')] : null;
+            const st = fb || !personReady ? null : this._buildPersonTracksAndEvents(profiles);
             if (fb || (st && st.isMulti)) {
               const evLen = fb ? fb.events : st.events.length;
               const sameTimeCount = fb ? fb.sameTime : st.sameTimeCount;
               const d = fb
-                ? this.dynasties.find((dyn) => dyn.key === fb.dynastyKey) || this.dynasties[0]
+                ? dynastyByKey.get(fb.dynastyKey) || this.dynasties[0]
                 : st.events[0]
                   ? st.events[0].dynasty
                   : this.dynasties[0];
@@ -100,15 +326,40 @@
             }
           }
         } else {
-          const hit = index.find((item) => item.kind === 'person' && item.personKey === spec);
-          if (hit) pool.push(hit);
+          const p = profileByKey.get(spec);
+          if (!p) continue;
+          if (p.isStory) {
+            const { d, subZh, subEn } = this._storySummaryFields(p, dynastyByKey);
+            pool.push({
+              kind: 'story',
+              storyKey: p.key,
+              personProfile: p,
+              dynasty: d,
+              year: Array.isArray(p.span) ? p.span[0] : d.focusYear,
+              aliases: this._personSearchAliases(p),
+              titleZh: p.zh,
+              subZh,
+              titleEn: p.en,
+              subEn,
+            });
+          } else {
+            const { d, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
+            pool.push({
+              kind: 'person',
+              personKey: p.key,
+              personProfile: p,
+              dynasty: d,
+              year: null,
+              aliases: this._personSearchAliases(p),
+              titleZh: p.zh,
+              subZh,
+              titleEn: p.en,
+              subEn,
+            });
+          }
         }
       }
-      Object.defineProperty(index, '_showcasePool', {
-        value: pool,
-        enumerable: false,
-        configurable: true,
-      });
+      this._showcasePoolCache = { loreReady, personReady, pool };
       return pool;
     }
 
@@ -167,15 +418,9 @@
       // 0a. Historical Figures Chronicle & Event Storyline Index (点人溯事 · 点事溯局)
       const dynastyByKey = new Map(this.dynasties.map((item) => [item.key, item]));
       for (const p of HistoricalAtlasController.PERSON_PROFILES) {
-        const d =
-          dynastyByKey.get(p.dynastyKey) ||
-          this.dynasties[this._findDynastyIndex(p.span ? p.span[0] : 0)] ||
-          this.dynasties[0];
-        const evCount =
-          typeof p.evCount === 'number' ? p.evCount : this._collectPersonEvents(p).length;
         const aliases = this._personSearchAliases(p);
         if (p.isStory) {
-          const spanStr = Array.isArray(p.span) ? `${p.span[0]}—${p.span[1]}` : '';
+          const { d, subZh, subEn } = this._storySummaryFields(p, dynastyByKey);
           entries.push({
             kind: 'story',
             storyKey: p.key,
@@ -184,13 +429,14 @@
             year: Array.isArray(p.span) ? p.span[0] : d.focusYear,
             aliases,
             titleZh: p.zh,
-            subZh: `${spanStr ? spanStr + ' · ' : ''}史事始末 · 共 ${evCount} 处关键节点`,
+            subZh,
             titleEn: p.en,
-            subEn: `${spanStr ? spanStr + ' · ' : ''}Storyline · ${evCount} key scenes`,
+            subEn,
             keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} 史事 始末 本末 全脉络 storyline`.toLowerCase(),
           });
           continue;
         }
+        const { d, evCount, subZh, subEn } = this._personSummaryFields(p, dynastyByKey);
         const eraNames = [];
         if (!p.isRelic) {
           const pText = `${p.zh} ${p.courtesyZh || ''} ${aliases.join(' ')}`;
@@ -205,9 +451,6 @@
             }
           }
         }
-        const briefCourtesyZh = (p.courtesyZh || d.title).split(/\s*·\s*/)[0];
-        const rawFirstEn = (p.courtesyEn || d.title).split(/\s*(?:·|,)\s*/)[0];
-        const briefCourtesyEn = rawFirstEn.length <= 14 ? rawFirstEn : '';
         entries.push({
           kind: 'person',
           personKey: p.key,
@@ -216,15 +459,9 @@
           year: null,
           aliases,
           titleZh: p.zh,
-          subZh: p.isRelic
-            ? `${briefCourtesyZh} · 历 10 朝 ${evCount} 站流转`
-            : `${briefCourtesyZh} · 共 ${evCount} 处史事`,
+          subZh,
           titleEn: p.en,
-          subEn: p.isRelic
-            ? `${briefCourtesyEn || 'Heshi Bi Jade'} · ${evCount} stops across 10 eras`
-            : briefCourtesyEn
-              ? `${briefCourtesyEn} · ${evCount} events`
-              : `${evCount} chronicle events`,
+          subEn,
           keywords: `${p.zh} ${p.en} ${p.courtesyZh || ''} ${p.courtesyEn || ''} ${aliases.join(' ')} ${eraNames.join(' ')} ${p.isRelic ? '国器 宝物 传国玉玺 传国玺 玉玺 和氏璧 relic seal' : '人物 生平 事迹 行迹'}`.toLowerCase(),
         });
       }
@@ -1032,20 +1269,24 @@
       ) {
         const adhoc = this._resolvePersonProfile(normQ);
         if (adhoc && adhoc.isMonarch) {
-          const evs = this._collectPersonEvents(adhoc);
-          if (evs.length >= 2) {
-            const d = evs[0].dynasty || this.dynasties[0];
-            results.push({
-              kind: 'person',
-              personProfile: adhoc,
-              dynasty: d,
-              year: null,
-              titleZh: adhoc.zh,
-              subZh: `${adhoc.courtesyZh} · 共 ${evs.length} 处史事`,
-              titleEn: adhoc.en,
-              subEn: `${evs.length} events`,
-              score: 126,
-            });
+          if (typeof this._collectPersonEvents === 'function') {
+            const evs = this._collectPersonEvents(adhoc);
+            if (evs.length >= 2) {
+              const d = evs[0].dynasty || this.dynasties[0];
+              results.push({
+                kind: 'person',
+                personProfile: adhoc,
+                dynasty: d,
+                year: null,
+                titleZh: adhoc.zh,
+                subZh: `${adhoc.courtesyZh} · 共 ${evs.length} 处史事`,
+                titleEn: adhoc.en,
+                subEn: `${evs.length} events`,
+                score: 126,
+              });
+            }
+          } else if (typeof this._ensurePerson === 'function') {
+            this._ensurePerson();
           }
         }
       }
@@ -1055,26 +1296,30 @@
         /[,，;；×+、&]|\s+(?:vs\.?|and|with)\s+/i.test(normQ);
       const multiProfiles = canBeMultiPerson ? this._resolvePersonProfiles(normQ) : [];
       if (multiProfiles.length >= 2) {
-        const st = this._buildPersonTracksAndEvents(multiProfiles);
-        if (st && st.isMulti) {
-          const d = st.events[0] ? st.events[0].dynasty : this.dynasties[0];
-          results.push({
-            kind: 'multi_person',
-            personProfiles: multiProfiles,
-            dynasty: d,
-            year: null,
-            titleZh: multiProfiles.map((p) => p.zh).join(' × '),
-            subZh:
-              st.sameTimeCount > 0
-                ? `共 ${st.events.length} 处行迹 · ${st.sameTimeCount} 处相逢`
-                : `并行行迹对照 · 共 ${st.events.length} 处行迹`,
-            titleEn: multiProfiles.map((p) => p.en).join(' × '),
-            subEn:
-              st.sameTimeCount > 0
-                ? `${st.events.length} stops · ${st.sameTimeCount} encounters`
-                : `${st.events.length} stops`,
-            score: 165,
-          });
+        if (typeof this._buildPersonTracksAndEvents === 'function') {
+          const st = this._buildPersonTracksAndEvents(multiProfiles);
+          if (st && st.isMulti) {
+            const d = st.events[0] ? st.events[0].dynasty : this.dynasties[0];
+            results.push({
+              kind: 'multi_person',
+              personProfiles: multiProfiles,
+              dynasty: d,
+              year: null,
+              titleZh: multiProfiles.map((p) => p.zh).join(' × '),
+              subZh:
+                st.sameTimeCount > 0
+                  ? `共 ${st.events.length} 处行迹 · ${st.sameTimeCount} 处相逢`
+                  : `并行行迹对照 · 共 ${st.events.length} 处行迹`,
+              titleEn: multiProfiles.map((p) => p.en).join(' × '),
+              subEn:
+                st.sameTimeCount > 0
+                  ? `${st.events.length} stops · ${st.sameTimeCount} encounters`
+                  : `${st.events.length} stops`,
+              score: 165,
+            });
+          }
+        } else if (typeof this._ensurePerson === 'function') {
+          this._ensurePerson();
         }
       }
 
@@ -1257,6 +1502,15 @@
       this.clearCustomRoute();
       this._clearQuickSearchInput();
 
+      if (this.terrainView?.active) {
+        if (item.coord && this.terrainView.ready && ['city', 'pass', 'gazetteer', 'region', 'prefecture', 'polity'].includes(item.kind)) {
+          if (item.year != null) this.jumpToYear(item.year);
+          this.terrainView.focusPlace(item);
+          return;
+        }
+        this.terrainView.close();
+      }
+
       if (item.kind === 'quiz') {
         if (this.challenge) this.stopChallenge();
         else this._openChallenge();
@@ -1264,12 +1518,12 @@
       }
 
       if (item.kind === 'multi_person') {
-        this.openPersonChronicle(item.personProfiles, -1);
+        this._openPerson(item.personProfiles, -1);
         return;
       }
 
       if (item.kind === 'person' || item.kind === 'story') {
-        this.openPersonChronicle(
+        this._openPerson(
           item.personProfile || item.storyKey || item.personKey || item.titleZh,
           -1
         );
@@ -1302,7 +1556,7 @@
         const xFrac = isDesktop ? 0.38 : 0.5;
         const yFrac = isDesktop ? 0.45 : 0.32;
         this._animateCameraTo({ x: tx - w * xFrac, y: ty - h * yFrac, w, h });
-        this.openGenealogyAt(
+        this._openGenealogy(
           item.coord[0],
           item.coord[1],
           item.kind === 'gazetteer' ? item.titleZh : undefined
@@ -1333,7 +1587,7 @@
       } else if (item.kind === 'event' && item.milestone) {
         const storyHit = this._findStoryForMilestone(item.dynasty, item.milestone);
         if (storyHit) {
-          this.openPersonChronicle(storyHit.key, -1);
+          this._openPerson(storyHit.key, -1);
           return;
         }
         this.openMilestoneBalloon(item.dynasty, item.milestone);

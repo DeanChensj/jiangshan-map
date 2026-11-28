@@ -1,4 +1,5 @@
 {
+  "event:ming:1519": [{ "w": "mingshi", "loc": "卷16 本纪第十六 武宗 正德十四年" }, { "w": "mingshi", "loc": "卷195 列传第八十三 王守仁传" }],
   "event:ming:1525": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
   "event:ming:1549": [{ "w": "mingshi", "loc": "卷212 列传第一百 俞大猷传", "url": "https://zh.wikisource.org/wiki/明史/卷212" }],
   "event:ming:1551": [{ "w": "mingshi", "loc": "卷205 列传第九十三 胡宗宪传", "url": "https://zh.wikisource.org/wiki/明史/卷205" }],
@@ -29,6 +30,10 @@
   "event:ming:1581": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
   "event:ming:1582": [{ "w": "mingshi", "loc": "卷213 列传第一百一 张居正传", "url": "https://zh.wikisource.org/wiki/明史/卷213" }],
   "event:ming:1587": [{ "w": "mingshi", "loc": "卷226 列传第一百十四 海瑞传", "url": "https://zh.wikisource.org/wiki/明史/卷226" }],
+  "milestone:ming:1399": [{ "w": "mingshi", "loc": "卷4 本纪第四 恭闵帝 建文元年七月", "url": "https://zh.wikisource.org/wiki/明史/卷004" }],
   "milestone:ming:1407": [{ "w": "mingshi", "loc": "卷6 本纪第六 成祖二 永乐五年六月 平交阯，置交趾布政司", "url": "https://zh.wikisource.org/wiki/明史/卷006" }],
-  "milestone:ming:1409": [{ "w": "mingshi", "loc": "卷6 本纪第六 成祖二 永乐七年闰四月；卷90 兵二 置奴儿干都司", "url": "https://zh.wikisource.org/wiki/明史/卷006" }]
+  "milestone:ming:1409": [{ "w": "mingshi", "loc": "卷6 本纪第六 成祖二 永乐七年闰四月；卷90 兵二 置奴儿干都司", "url": "https://zh.wikisource.org/wiki/明史/卷006" }],
+  "milestone:ming:1449": [{ "w": "mingshi", "loc": "卷10 本纪第十 英宗前纪 正统十四年八月", "url": "https://zh.wikisource.org/wiki/明史/卷010" }, { "w": "mingshi", "loc": "卷11 本纪第十一 景帝 正统十四年九月、十月", "url": "https://zh.wikisource.org/wiki/明史/卷011" }],
+  "milestone:ming:1457": [{ "w": "mingshi", "loc": "卷12 本纪第十二 英宗后纪 天顺元年正月", "url": "https://zh.wikisource.org/wiki/明史/卷012" }],
+  "milestone:ming:1644": [{ "w": "mingshi", "loc": "卷24 本纪第二十四 庄烈帝二 崇祯十七年三月", "url": "https://zh.wikisource.org/wiki/明史/卷024" }]
 }

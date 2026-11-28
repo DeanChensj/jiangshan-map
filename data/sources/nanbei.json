@@ -1,3 +1,10 @@
 {
-  "event:nanbei:421b": [{ "w": "zztj", "loc": "卷119 宋纪一 永初二年九月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷119" }, { "w": "songshu", "loc": "卷3 本纪第三 武帝下 永初二年九月", "url": "https://zh.wikisource.org/wiki/宋書/卷03" }]
+  "event:nanbei:421b": [{ "w": "zztj", "loc": "卷119 宋纪一 永初二年九月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷119" }, { "w": "songshu", "loc": "卷3 本纪第三 武帝下 永初二年九月", "url": "https://zh.wikisource.org/wiki/宋書/卷03" }],
+  "milestone:nanbei:523": [{ "w": "zztj", "loc": "卷149 梁纪五 普通四年四月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷149" }],
+  "milestone:nanbei:534": [{ "w": "zztj", "loc": "卷156 梁纪十二 中大通六年二月、七月、十月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷156" }],
+  "milestone:nanbei:547": [{ "w": "zztj", "loc": "卷160 梁纪十六 太清元年正月、二月、十一月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷160" }],
+  "milestone:nanbei:548": [{ "w": "zztj", "loc": "卷161 梁纪十七 太清二年八月、十月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷161" }, { "w": "zztj", "loc": "卷162 梁纪十八 太清三年三月、五月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷162" }],
+  "milestone:nanbei:551": [{ "w": "zztj", "loc": "卷164 梁纪二十 大宝二年八月、十一月；承圣元年三月、十一月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷164" }],
+  "milestone:nanbei:574": [{ "w": "zztj", "loc": "卷171 陈纪五 太建四年三月；太建六年五月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷171" }],
+  "milestone:nanbei:580": [{ "w": "zztj", "loc": "卷174 陈纪八 太建十二年五月、六月、八月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷174" }]
 }

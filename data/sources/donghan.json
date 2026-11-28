@@ -1,4 +1,8 @@
 {
+  "event:donghan:214d": [{ "w": "sgz", "loc": "卷54 吴书九 吕蒙传" }],
   "milestone:donghan:107": [{ "w": "houhanshu", "loc": "卷87 西羌传 永初元年夏羌叛、断陇道", "url": "https://zh.wikisource.org/wiki/後漢書/卷87" }, { "w": "houhanshu", "loc": "卷88 西域传 永初元年诏罢都护，北匈奴复收属诸国", "url": "https://zh.wikisource.org/wiki/後漢書/卷88" }],
-  "milestone:donghan:123": [{ "w": "houhanshu", "loc": "卷88 西域传 延光二年以班勇为西域长史西屯柳中，破平车师", "url": "https://zh.wikisource.org/wiki/後漢書/卷88" }]
+  "milestone:donghan:123": [{ "w": "houhanshu", "loc": "卷88 西域传 延光二年以班勇为西域长史西屯柳中，破平车师", "url": "https://zh.wikisource.org/wiki/後漢書/卷88" }],
+  "milestone:donghan:192": [{ "w": "zztj", "loc": "卷60 汉纪五十二 初平三年四月、六月", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷060" }],
+  "milestone:donghan:195": [{ "w": "zztj", "loc": "卷61 汉纪五十三 兴平二年", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷061" }],
+  "milestone:donghan:196": [{ "w": "zztj", "loc": "卷62 汉纪五十四 建安元年", "url": "https://zh.wikisource.org/wiki/資治通鑑/卷062" }]
 }
