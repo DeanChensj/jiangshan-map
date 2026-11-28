@@ -45,6 +45,9 @@ jobs:
       - name: Test the click-stats Worker
         run: node workers/stats/test.js
 
+      - name: Test the feedback Worker
+        run: node workers/feedback/test.js
+
       - name: Check first-paint synchronous script gzip budget
         run: node scripts/perf_budget.js --check
 

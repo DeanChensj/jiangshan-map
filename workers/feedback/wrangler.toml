@@ -1,0 +1,14 @@
+name = "jiangshan-feedback"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+workers_dev = false
+
+routes = [
+  { pattern = "feedback.deanchen.me", custom_domain = true }
+]
+
+# Replace database_id after running: npx wrangler d1 create jiangshan-feedback
+[[d1_databases]]
+binding = "DB"
+database_name = "jiangshan-feedback"
+database_id = "00000000-0000-0000-0000-000000000000"
