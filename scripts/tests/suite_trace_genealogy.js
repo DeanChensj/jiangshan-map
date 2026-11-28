@@ -1883,6 +1883,35 @@ async function runTraceGenealogySuite(ctx) {
         `Shangqiu (${dynKey}) must retain its 南京应天府 event`
       );
     }
+
+    // 37. Jiangnan / Shanghai historical prefecture & region chronology
+    const jnCases = [
+      [{ lng: 121.23, lat: 31.03, year: 100 }, '扬州(刺史部)', '会稽郡'],
+      [{ lng: 121.23, lat: 31.03, year: 150 }, '扬州(刺史部)', '吴郡'],
+      [{ lng: 121.23, lat: 31.03, year: 214 }, null, '吴郡'],
+      [{ lng: 121.47, lat: 31.23, year: 383 }, '扬州', '吴郡'],
+      [{ lng: 120.62, lat: 31.30, year: 383 }, '扬州', '吴郡'],
+      [{ lng: 121.47, lat: 31.23, year: 500 }, '扬州', '吴郡'],
+      [{ lng: 120.62, lat: 31.30, year: 500 }, '扬州', '吴郡'],
+      [{ lng: 120.75, lat: 30.75, year: 560 }, '扬州', '吴郡'],
+      [{ lng: 119.451, lat: 32.18, year: 383 }, '南徐州(侨州)', '南东海郡(侨郡)'],
+      [{ lng: 121.47, lat: 31.23, year: 920 }, '两浙(政区)', '苏州'],
+      [{ lng: 121.47, lat: 31.23, year: 950 }, '两浙(政区)', '秀州'],
+      [{ lng: 121.47, lat: 31.23, year: 1135 }, '两浙路', '秀州'],
+      [{ lng: 121.47, lat: 31.23, year: 1200 }, '两浙路', '嘉兴府'],
+    ];
+    for (const [opts, expReg, expPref] of jnCases) {
+      const info = ctrl.inspect(opts);
+      assert(
+        info && (!expReg || info.regions.includes(expReg)) && info.prefectures.includes(expPref),
+        `Expected (${opts.lng}, ${opts.lat}, ${opts.year}) to resolve to ${expReg} / ${expPref}, got regs=${JSON.stringify(info && info.regions)} prefs=${JSON.stringify(info && info.prefectures)}`
+      );
+    }
+    const shLore = (loreData.CITY_LORE || []).find((c) => c.modern === '上海');
+    assert(
+      shLore && shLore.descZh.includes('会稽郡') && shLore.descZh.includes('华亭县') && shLore.descZh.includes('嘉兴府'),
+      'Expected Shanghai CITY_LORE to document Kuaiji Commandery, Huating County, and Jiaxing Fu'
+    );
   }
 
 }
