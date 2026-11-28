@@ -7,8 +7,7 @@ routes = [
   { pattern = "feedback.deanchen.me", custom_domain = true }
 ]
 
-# Replace database_id after running: npx wrangler d1 create jiangshan-feedback
 [[d1_databases]]
 binding = "DB"
 database_name = "jiangshan-feedback"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "950d0576-3125-4af9-8f52-16f9701888c5"
