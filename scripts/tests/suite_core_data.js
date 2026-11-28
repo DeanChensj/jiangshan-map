@@ -853,6 +853,18 @@ async function runCoreDataSuite(ctx) {
     'stopNarrator',
     'toggleNarrator',
   ];
+  const FEEDBACK_METHODS = [
+    '_fbText',
+    '_buildFeedbackContext',
+    '_ensureFeedbackModalDom',
+    '_switchFeedbackTab',
+    '_updateFeedbackUi',
+    '_renderFeedbackList',
+    '_fetchPublicComments',
+    '_submitFeedbackForm',
+    'openFeedbackModal',
+    '_closeFeedbackModal',
+  ];
   for (const personMethod of PERSON_METHODS) {
     const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, personMethod);
     assert(
@@ -902,6 +914,13 @@ async function runCoreDataSuite(ctx) {
       `atlas_narrator.js must attach ${narratorMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
     );
   }
+  for (const fbMethod of FEEDBACK_METHODS) {
+    const desc = Object.getOwnPropertyDescriptor(ControllerClass.prototype, fbMethod);
+    assert(
+      desc && typeof desc.value === 'function' && desc.enumerable === false,
+      `atlas_feedback.js must attach ${fbMethod} as a non-enumerable method on HistoricalAtlasController.prototype`
+    );
+  }
   {
     // Verify clean separation: app.js alone must not define any trace, search, api, quiz, or narrator mixin methods.
     const appOnlySandbox = { console, addEventListener: () => {} };
@@ -916,6 +935,7 @@ async function runCoreDataSuite(ctx) {
       ...API_METHODS,
       ...QUIZ_METHODS,
       ...NARRATOR_METHODS,
+      ...FEEDBACK_METHODS,
     ]) {
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(BaseClass.prototype, m),
@@ -938,6 +958,7 @@ async function runCoreDataSuite(ctx) {
         API_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         QUIZ_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         NARRATOR_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
+        FEEDBACK_METHODS.every((m) => typeof ReorderedClass.prototype[m] === 'function') &&
         Array.isArray(ReorderedClass.PERSON_TRACK_PALETTE) &&
         ReorderedClass.PERSON_TRACK_PALETTE.length >= 3,
       'atlas_person.js, atlas_genealogy.js, atlas_search.js, atlas_api.js, atlas_quiz.js, and atlas_narrator.js loaded before app.js must attach all mixin methods via window.__ATLAS_MIXINS'
@@ -1074,6 +1095,7 @@ async function runCoreDataSuite(ctx) {
                 vQuiz: '99aabbcc',
                 vQuizPoster: '00112233',
                 vNarrator: 'ddeeff00',
+                vFeedback: '1122aabb',
               },
             }
           : null,
@@ -1112,6 +1134,11 @@ async function runCoreDataSuite(ctx) {
       ctrl._lazyAssetUrl('js/atlas_narrator.js', 'vNarrator'),
       'js/atlas_narrator.js?v=ddeeff00',
       '_lazyAssetUrl must read data-v-narrator from #atlas-app-script'
+    );
+    assert.strictEqual(
+      ctrl._lazyAssetUrl('js/atlas_feedback.js', 'vFeedback'),
+      'js/atlas_feedback.js?v=1122aabb',
+      '_lazyAssetUrl must read data-v-feedback from #atlas-app-script'
     );
     assert.strictEqual(ctrl._hasZhHant(), true, '_hasZhHant must detect loaded ZH_HANT_CONV');
     assert.strictEqual(ctrl._isQuizLoaded(), true, '_isQuizLoaded must detect installed AtlasQuizMixin');

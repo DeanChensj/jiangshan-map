@@ -27,6 +27,7 @@ const CONTROLLER_SCRIPTS = [
   'js/atlas_api.js',
   'js/atlas_quiz.js',
   'js/atlas_narrator.js',
+  'js/atlas_feedback.js',
 ];
 
 const SYNC_CONTROLLER_SCRIPTS = [
@@ -57,6 +58,7 @@ const LAZY_ATTR_ASSETS = [
   { attr: 'data-v-sources', datasetKey: 'vSources', relPath: 'js/milestone_sources.js' },
   { attr: 'data-v-person', datasetKey: 'vPerson', relPath: 'js/atlas_person.js' },
   { attr: 'data-v-genealogy', datasetKey: 'vGenealogy', relPath: 'js/atlas_genealogy.js' },
+  { attr: 'data-v-feedback', datasetKey: 'vFeedback', relPath: 'js/atlas_feedback.js' },
 ];
 
 // Lazy bundles that index.html also preloads from an inline script (single-quoted URL).
