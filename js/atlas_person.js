@@ -2503,8 +2503,9 @@
                 ? `person-${profile.key}`
                 : ''
           : '';
+        const topicTrack = profile.isStory ? 'lnk-story-topic' : 'lnk-person-topic';
         const topicLinkBtn = tSlug
-          ? `<a class="topic-inline-link" href="topics/${escHtml(tSlug)}.html" target="_blank" rel="noopener" title="${isEn ? 'Topic guide' : '查阅专题图志'}">${isEn ? 'Guide' : '图志'}</a>`
+          ? `<a class="topic-inline-link" href="topics/${escHtml(tSlug)}.html" data-track="${topicTrack}" target="_blank" rel="noopener" title="${isEn ? 'Topic guide' : '查阅专题图志'}">${isEn ? 'Guide' : '图志'}</a>`
           : '';
         subEl.innerHTML =
           `<span>${summaryTxt}</span>` +
