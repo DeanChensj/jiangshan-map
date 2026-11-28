@@ -272,6 +272,7 @@
         'zhangjuzheng',
         'kangxi',
         'taiping',
+        'jingnan',
         'maozedong',
         'zhangqian',
         'dufu',
