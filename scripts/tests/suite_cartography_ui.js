@@ -1204,7 +1204,7 @@ async function runCartographyUiSuite(ctx) {
 
     // All phase transition milestones derive map-change state from phases
     const expectedMapChangeYears = [
-      1644, 1645, 1652, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1851, 1858, 1860, 1864, 1876, 1881, 1895, 1898,
+      1644, 1645, 1652, 1661, 1662, 1673, 1681, 1683, 1691, 1720, 1755, 1759, 1796, 1853, 1858, 1860, 1864, 1876, 1881, 1895, 1898,
     ];
     const actualMapChangeYears = (qingD.milestones || [])
       .filter((m) => ctrl._isPhaseChangeYear(qingD, m.year))

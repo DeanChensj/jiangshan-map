@@ -1396,8 +1396,12 @@ window.EN_LOCALE = {
       "Beijing · Xiangyang"
     ],
     "qing:1851": [
-      "Hong Xiuquan launches the Jintian Uprising, founding the Taiping Heavenly Kingdom",
-      "Jintian · Jiangning"
+      "Hong Xiuquan launches the Jintian Uprising in Guangxi, founding the Taiping Kingdom",
+      "Jintian"
+    ],
+    "qing:1853": [
+      "Taiping forces capture Jiangning, rename it Tianjing, and establish their capital",
+      "Tianjing (Nanjing)"
     ],
     "qing:1858": [
       "Treaty of Aigun cedes territory north of the Amur River to Russia",
@@ -2812,9 +2816,9 @@ window.EN_LOCALE = {
     "太平天国": "Taiping Heavenly Kingdom",
     "天京（太平天国）": "Tianjing (Taiping)",
     "天京（江宁）": "Tianjing (Nanjing)",
-    "1851 — 1858 · 太平天国运动：洪秀全定都天京（南京），与清廷沿江对峙": "1851–1858 · Taiping Rebellion: Taiping Heavenly Kingdom establishes its capital at Tianjing (Nanjing)",
-    "1858 — 1860 · 《瑷珲条约》失黑龙江以北：沙俄割占黑龙江以北、外兴安岭以南，乌苏里江以东尚属清廷": "1858–1860 · Treaty of Aigun: Tsarist Russia annexes territory north of the Amur River, while east of the Ussuri River remains under Qing",
-    "1860 — 1864 · 《北京条约》失乌苏里江以东；太平天国与湘淮军决战江南（安庆、天京之战）": "1860–1864 · Convention of Peking Cedes Ussuri East; Final Xiang–Taiping Campaigns in Jiangnan",
+    "1853 — 1858 · 太平天国定都天京与西征鼎盛：据武昌、九江、安庆至天京沿江重镇": "1853–1858 · Taiping Capital at Tianjing & Western Expedition Peak along the Yangtze",
+    "1858 — 1860 · 《瑷珲条约》失黑龙江以北；太平天国退守安庆至天京皖江防线": "1858–1860 · Treaty of Aigun Cedes North of the Amur; Taiping Holds Anqing–Tianjing",
+    "1860 — 1864 · 《北京条约》失乌苏里江以东；太平天国失安庆、东取苏浙与天京合围": "1860–1864 · Convention of Peking Cedes East of the Ussuri; Taiping Shifts to Jiangsu–Zhejiang",
     "郡": "Commandery (Jun)",
     "州": "Prefecture (Zhou)",
     "府": "Superior Prefecture (Fu)",
@@ -4259,7 +4263,7 @@ window.EN_LOCALE = {
     "1720 — 1755 · 驱准入藏与平定青海：设驻藏大臣、西宁办事大臣，《恰克图条约》": "1720–1755 · Qing Pacifies Qinghai, Installs Ambans in Lhasa & Signs Treaty of Kyakhta",
     "1755 — 1759 · 平定准噶尔：清军定伊犁收天山北路，大小和卓据南疆回部": "1755–1759 · Conquest of Dzungaria: Qing Takes Ili & Northern Xinjiang; Khojas Hold Altishahr",
     "1759 — 1796 · 乾隆极盛疆域：平定准噶尔与回部，设伊犁将军统辖天山南北": "1759–1796 · Qianlong Zenith: Conquest of Dzungaria & Tarim, Ili Generalship Established",
-    "1796 — 1851 · 嘉道时期：白莲教起义与 1840 年鸦片战争爆发": "1796–1851 · Jiaqing & Daoguang Eras; Outbreak of the First Opium War",
+    "1796 — 1853 · 嘉道时期：白莲教起义、鸦片战争与金田起义爆发": "1796–1853 · Jiaqing & Daoguang Eras; Opium War & Jintian Uprising",
     "新（王莽）": "Xin (Wang Mang)",
     "西域诸国": "Western Regions States",
     "卫氏朝鲜": "Wiman Joseon",
