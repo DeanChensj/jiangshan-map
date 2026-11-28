@@ -1482,9 +1482,11 @@ async function runSearchRuntimeSuite(ctx) {
           null,
           '_getSearchShowcasePool() must stay lightweight and avoid synchronously building searchIndex'
         );
+        const allStoryProfiles = loreData.PERSON_PROFILES.filter((p) => p.isStory);
+        const expectedPoolLen = 26 + allStoryProfiles.length;
         assert(
-          scPool.length === 32 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
-          `Showcase pool must keep solo Su Shi at index 0 and contain 32 entries, got ${scPool.length}`
+          scPool.length === expectedPoolLen && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
+          `Showcase pool must keep solo Su Shi at index 0 and auto-include all ${allStoryProfiles.length} stories (expected ${expectedPoolLen}, got ${scPool.length})`
         );
         for (const soloKey of [
           'sushi',
@@ -1520,17 +1522,46 @@ async function runSearchRuntimeSuite(ctx) {
             appCode.includes('advanceShowcase: true'),
           'Search showcase must randomize initial index on first open and auto-advance when re-focused from hidden state'
         );
-        for (const storyKey of ['anshi', 'changzheng', 'taiping', 'qintongyi', 'jingkang', 'chuhan']) {
-          const hit = scPool.find((item) => item.kind === 'story' && item.storyKey === storyKey);
-          assert(hit && hit.subZh && hit.subEn, `Showcase pool must include storyline "${storyKey}" with bilingual subtitles`);
+        for (const sp of allStoryProfiles) {
+          const hit = scPool.find((item) => item.kind === 'story' && item.storyKey === sp.key);
+          assert(hit && hit.subZh && hit.subEn, `Showcase pool must include storyline "${sp.key}" with bilingual subtitles`);
           assert(
             !hit.subZh.includes('史事始末') && !hit.subEn.includes('Storyline'),
-            `Storyline showcase "${storyKey}" must omit redundant "史事始末" / "Storyline" from subtitle: ${hit.subZh} / ${hit.subEn}`
+            `Storyline showcase "${sp.key}" must omit redundant "史事始末" / "Storyline" from subtitle: ${hit.subZh} / ${hit.subEn}`
           );
           assert(
             !/[\u4e00-\u9fff]/.test(hit.titleEn) && !/[\u4e00-\u9fff]/.test(hit.subEn),
-            `Storyline showcase "${storyKey}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
+            `Storyline showcase "${sp.key}" must have CJK-free English strings: ${hit.titleEn} / ${hit.subEn}`
           );
+        }
+        // Synthetic new isStory profile must auto-enter the showcase pool without editing showcaseSpecs.
+        const savedPoolCache = ctrl._showcasePoolCache;
+        loreData.PERSON_PROFILES.push({
+          key: '__synth_story__',
+          zh: '合成测试史事',
+          en: 'Synthetic Test Story',
+          isStory: true,
+          dynastyKey: 'ming',
+          span: [1399, 1402],
+          aliases: ['合成测试'],
+          evCount: 10,
+        });
+        try {
+          ctrl._showcasePoolCache = null;
+          const nextPool = ctrl._getSearchShowcasePool();
+          assert.strictEqual(
+            nextPool.length,
+            expectedPoolLen + 1,
+            '_getSearchShowcasePool() must auto-append newly registered isStory profiles'
+          );
+          const synthHit = nextPool.find((item) => item.kind === 'story' && item.storyKey === '__synth_story__');
+          assert(
+            synthHit && synthHit.subZh.includes('1399—1402') && synthHit.subEn.includes('10 key scenes'),
+            `Auto-included storyline must format bilingual summary fields: ${JSON.stringify(synthHit)}`
+          );
+        } finally {
+          loreData.PERSON_PROFILES.pop();
+          ctrl._showcasePoolCache = savedPoolCache;
         }
         assert(
           scPool.every((item) => !(item.personProfile && item.personProfile.isRelic) && item.personKey !== 'yuxi'),

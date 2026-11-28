@@ -276,6 +276,13 @@
         'zhangqian',
         'dufu',
       ];
+      const listedKeys = new Set(showcaseSpecs.filter((s) => typeof s === 'string'));
+      for (const p of HistoricalAtlasController.PERSON_PROFILES) {
+        if (p.isStory && !listedKeys.has(p.key)) {
+          showcaseSpecs.push(p.key);
+          listedKeys.add(p.key);
+        }
+      }
       const multiShowcaseFallback = {
         'libai,dufu': { events: 21, sameTime: 3, dynastyKey: 'tang' },
         'libai,dufu,gaoshi': { events: 23, sameTime: 5, dynastyKey: 'tang' },
