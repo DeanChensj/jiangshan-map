@@ -912,6 +912,113 @@
       return this._stripModernProvincePrefix(raw, modernTitle);
     }
 
+    _formatAdminHits(regionObjs, prefObjs) {
+      const adminHits = [];
+      for (const item of [...(regionObjs || []), ...(prefObjs || [])]) {
+        const isEmigre = item.category === '侨州' || item.category === '侨郡';
+        const label =
+          this.locale === 'en'
+            ? this.trTerm(item.title) + (isEmigre ? ' (Emigre)' : '')
+            : item.title +
+              (item.category && !item.title.endsWith(item.category) ? `（${item.category}）` : '');
+        if (!adminHits.includes(label)) adminHits.push(label);
+      }
+      return adminHits;
+    }
+
+    _resolveAncientCoastalFallback(lng, lat, d, snap, modernLoc, targetYear) {
+      if (
+        !d ||
+        d.key === 'prc' ||
+        d.key === 'roc' ||
+        !modernLoc ||
+        !modernLoc.inModernChina ||
+        modernLoc.modernTitle === '台湾省' ||
+        modernLoc.modernTitle === '海南省' ||
+        !snap ||
+        !Array.isArray(snap.polities)
+      ) {
+        return null;
+      }
+
+      const seaProbes = [
+        [lng + 0.35, lat],
+        [lng + 0.25, lat - 0.25],
+        [lng, lat - 0.35],
+        [lng + 0.25, lat + 0.25],
+      ];
+      const hasOpenSea = seaProbes.some(
+        ([px, py]) => !this._resolveModernLocationAt(px, py).modernTitle
+      );
+      if (!hasOpenSea) return null;
+
+      let bestD2 = Infinity;
+      let bestPt = null;
+      let bestPol = null;
+      for (const pol of snap.polities) {
+        if (
+          !pol ||
+          !['main', 'rival', 'protectorate'].includes(pol.role) ||
+          !pol.shape ||
+          !pol.shape.coordinates
+        ) {
+          continue;
+        }
+        const polys = pol.shape.type === 'Polygon' ? [pol.shape.coordinates] : pol.shape.coordinates;
+        for (const poly of polys) {
+          const ring = poly && poly[0];
+          if (!ring) continue;
+          for (const pt of ring) {
+            const d2 = (pt[0] - lng) * (pt[0] - lng) + (pt[1] - lat) * (pt[1] - lat);
+            if (d2 < bestD2) {
+              bestD2 = d2;
+              bestPt = pt;
+              bestPol = pol;
+            }
+          }
+        }
+      }
+      if (!bestPt || this.projector.greatCircleKm([lng, lat], bestPt) > 35) {
+        return null;
+      }
+
+      const dx = bestPt[0] - lng;
+      const dy = bestPt[1] - lat;
+      const len = Math.hypot(dx, dy);
+      const ux = len > 1e-6 ? dx / len : -1;
+      const uy = len > 1e-6 ? dy / len : 0;
+      const candidates = [
+        [bestPt[0] + ux * 0.04, bestPt[1] + uy * 0.04],
+        [bestPt[0] + ux * 0.1, bestPt[1] + uy * 0.1],
+        [bestPt[0] + ux * 0.18, bestPt[1] + uy * 0.18],
+      ];
+      const anchor = this._shapeAnchorOrCentroid(bestPol);
+      const adx = anchor[0] - bestPt[0];
+      const ady = anchor[1] - bestPt[1];
+      const alen = Math.hypot(adx, ady);
+      if (alen > 1e-6) {
+        candidates.push([bestPt[0] + (adx / alen) * 0.06, bestPt[1] + (ady / alen) * 0.06]);
+      }
+
+      let shoreHit = null;
+      for (const [ix, iy] of candidates) {
+        const polHit = this._polityAt(ix, iy, snap);
+        if (polHit && ['main', 'rival', 'protectorate'].includes(polHit.role)) {
+          shoreHit = this._resolveEraPlaceAt(ix, iy, d, snap, modernLoc, null, targetYear);
+          break;
+        }
+      }
+      const shorePolity = (shoreHit && shoreHit.polity) || (bestPol && bestPol.title) || '';
+      const shoreAdmins = shoreHit
+        ? this._formatAdminHits(shoreHit.regionObjs, shoreHit.prefObjs)
+        : [];
+      return {
+        isCoastalUnaccreted: true,
+        shorePolity,
+        shoreAdmins,
+      };
+    }
+
     openGenealogyAt(lng, lat, customLabel = null, opts = {}) {
       const fromYearSync = Boolean(opts && opts.fromYearSync);
       const preserveScroll = Boolean(opts && opts.preserveScroll);
@@ -1082,7 +1189,10 @@
         const eraHit = this._resolveEraPlaceAt(lng, lat, d, snap, modernLoc, closestOverall, targetYear);
         const polityHit = eraHit.polity;
         const near = eraHit.near;
-        const adminHits = [];
+        const adminHits =
+          d.key === 'prc'
+            ? []
+            : this._formatAdminHits(eraHit.regionObjs, eraHit.prefObjs);
         if (d.key === 'prc') {
           if (inModernChina) {
             const provLabel = this.locale === 'en' ? this.trTerm(modernTitle) : modernTitle;
@@ -1093,17 +1203,11 @@
               if (cityLabel && !adminHits.includes(cityLabel)) adminHits.push(cityLabel);
             }
           }
-        } else {
-          for (const item of [...eraHit.regionObjs, ...eraHit.prefObjs]) {
-            const isEmigre = item.category === '侨州' || item.category === '侨郡';
-            const label =
-              this.locale === 'en'
-                ? this.trTerm(item.title) + (isEmigre ? ' (Emigre)' : '')
-                : item.title +
-                  (item.category && !item.title.endsWith(item.category) ? `（${item.category}）` : '');
-            if (!adminHits.includes(label)) adminHits.push(label);
-          }
         }
+        const coastalFallback =
+          !polityHit && !adminHits.length
+            ? this._resolveAncientCoastalFallback(lng, lat, d, snap, modernLoc, targetYear)
+            : null;
         const isCapHere = Boolean(near && near.km <= 38 && near.s.isCapital);
         if (isCapHere) capDynasties++;
 
@@ -1118,6 +1222,7 @@
           regionObjs: eraHit.regionObjs,
           prefObjs: eraHit.prefObjs,
           adminHits,
+          coastalFallback,
           near,
           isCapHere,
           placeEvents,
@@ -1245,14 +1350,25 @@
           : rowsData;
 
         for (const r of visibleRows) {
-          const { d, isCurDyn, polityHit, adminHits, near, isCapHere, placeEvents } = r;
+          const {
+            d,
+            isCurDyn,
+            polityHit,
+            adminHits,
+            coastalFallback,
+            near,
+            isCapHere,
+            placeEvents,
+          } = r;
           const li = document.createElement('li');
           if (isCurDyn) li.classList.add('is-current');
           const mainStr = adminHits.length
             ? adminHits.join(' · ')
             : polityHit
               ? this.trTerm(polityHit)
-              : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
+              : coastalFallback
+                ? this.uiStr('coastal_unaccreted', '（古海岸线外 / 滨海）')
+                : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
 
           const defaultCapLabel = d.key === 'roc' || d.key === 'prc' ? '首都' : '王朝都城';
           const capBadgeHtml = isCapHere
@@ -1266,6 +1382,19 @@
           const subParts = [];
           if (adminHits.length && polityHit) {
             subParts.push(`${this.uiStr('belongs_to', '属 ')}${this.trTerm(polityHit)}`);
+          } else if (coastalFallback) {
+            const shoreParts = [];
+            if (coastalFallback.shorePolity) {
+              shoreParts.push(this.trTerm(coastalFallback.shorePolity));
+            }
+            for (const a of coastalFallback.shoreAdmins || []) {
+              if (a && !shoreParts.includes(a)) shoreParts.push(a);
+            }
+            if (shoreParts.length) {
+              subParts.push(
+                `${this.uiStr('nearest_shore', '近岸政区：')}${shoreParts.join(' · ')}`
+              );
+            }
           }
           if (near) {
             const distStr =
