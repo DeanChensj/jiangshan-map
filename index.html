@@ -47,13 +47,13 @@
     })();
   </script>
   <title>江山时序 · 中国历史地图时间轴（战国至现代历代疆域、州郡政区与古今地名沿革）</title>
-  <link rel="stylesheet" href="css/style.css?v=b32b9c61" />
+  <link rel="stylesheet" href="css/style.css?v=54d1e059" />
   <script defer src="js/china_geo_data.js?v=9a794924"></script>
   <script defer src="js/atlas_boot.js?v=478c009f"></script>
   <script defer src="js/map_data.js?v=7603d326"></script>
   <script defer src="js/lore_core.js?v=1980e8d9"></script>
-  <script defer id="atlas-app-script" src="js/app.js?v=0add71ef" data-v-snapshots="51e6b4bf" data-v-i18n="9c06e657" data-v-lore="8e150f38" data-v-pinyin="9c86cc5f" data-v-hant="3afdab47" data-v-quiz="58cf1453" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="967b840e" data-v-person="54c1dd0f" data-v-genealogy="b801f4a2" data-v-feedback="17f36ed6"></script>
-  <script defer src="js/atlas_search.js?v=a24a974b"></script>
+  <script defer id="atlas-app-script" src="js/app.js?v=2947855a" data-v-terrain="8437ef7e" data-v-snapshots="51e6b4bf" data-v-i18n="9c06e657" data-v-lore="8e150f38" data-v-pinyin="9c86cc5f" data-v-hant="3afdab47" data-v-quiz="58cf1453" data-v-quiz-poster="ed70d460" data-v-narrator="d9f546a1" data-v-sources="967b840e" data-v-person="54c1dd0f" data-v-genealogy="b801f4a2" data-v-feedback="17f36ed6"></script>
+  <script defer src="js/atlas_search.js?v=6a2bee4c"></script>
   <script defer src="js/atlas_api.js?v=bb6adb1f"></script>
   <meta name="description" id="meta-description" content="交互式中国历史地图时间轴（公元前403年战国三家分晋至现代）：浏览18个朝代200+多阶段历史疆域、州郡道省政区、黄河改道水系、历代古城古今地名对照（点地溯源）、天下名关与青史人物行迹，支持现代省界对照、古地名挑战与简繁中英三语。" />
   <meta name="keywords" content="江山时序,江山时序历史地图,中国历史地图,历史地图时间轴,历代疆域变迁,中国历代地图,古今地名对照,政区沿革查询,点地溯源,古诗词路线地图,战国七雄地图,秦朝郡县地图,西汉地图,西域都护府,三国地图,东晋十六国地图,南北朝地图,唐朝地图,五代十国地图,燕云十六州,北宋地图,南宋地图,大理国地图,元朝行省地图,明朝地图,清朝地图,名关雄隘,函谷关,潼关,剑门关,雁门关,玉门关,山海关,张骞出使西域路线,诸葛亮北伐路线,玄奘西行路线,李白壮游路线,杜甫闻官军收河南河北路线,苏轼贬谪路线,文天祥过零丁洋路线,王阳明行迹,长平之战地图,赤壁之战地图,淝水之战地图,Historical Atlas of China,Chinese History Map Timeline,Jiangshan Atlas" />
@@ -484,6 +484,13 @@
             <label class="layer-chip"><input type="checkbox" id="chk-prov-names" /><span id="lbl-prov-names">现代省名</span></label>
           </div>
         </div>
+        <div id="terrain-tools" class="layers-pop-section" hidden>
+          <div class="layers-pop-heading" id="terrain-heading">3D 山河</div>
+          <div class="layers-pop-grid">
+            <label class="layer-chip"><span id="terrain-scale-label">高度倍率</span> × <input id="terrain-height-scale" type="number" min="1" max="100" step="1" value="5" required></label>
+            <label class="layer-chip"><input type="checkbox" id="terrain-modern-names" checked><span id="terrain-names-label">现代地名</span></label>
+          </div>
+        </div>
       </div>
 
       <div id="locale-popover" class="locale-popover is-hidden" role="menu" aria-label="切换语言 / Switch language">
@@ -606,6 +613,9 @@
           </script>
         </div>
 
+        <div id="terrain-map" role="region" aria-label="3D 山河" hidden></div>
+        <div id="terrain-status" role="status" hidden></div>
+        <div id="terrain-elevation-key" hidden><span>海拔（米）</span><div class="elevation-swatches"></div></div>
         <div id="map-search-box" role="search" aria-label="快速检索历史人物、古今地名、州府、帝王年号与舆图寻址挑战">
           <div class="search-input-wrap">
             <svg class="search-ico" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -621,6 +631,8 @@
         <div id="map-key" aria-live="polite"></div>
 
         <div id="canvas-br-dock">
+          <button id="terrain-top" class="canvas-reset-btn terrain-button" type="button" hidden>恢复俯视</button>
+          <button id="terrain-toggle" class="canvas-reset-btn terrain-button" type="button" aria-controls="terrain-map" aria-pressed="false">3D 山河</button>
           <button id="act-reset-camera" class="canvas-reset-btn" type="button" title="复位视图">
             <svg class="btn-svg" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg>
             <span id="lbl-reset-camera">复位视图</span>

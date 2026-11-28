@@ -47,6 +47,7 @@ const STATIC_TAG_ASSETS = [
 ];
 
 const LAZY_ATTR_ASSETS = [
+  { attr: 'data-v-terrain', datasetKey: 'vTerrain', relPath: 'js/atlas_terrain.js' },
   { attr: 'data-v-snapshots', datasetKey: 'vSnapshots', relPath: 'js/atlas_snapshots.js' },
   { attr: 'data-v-i18n', datasetKey: 'vI18n', relPath: 'js/i18n_dict.js' },
   { attr: 'data-v-lore', datasetKey: 'vLore', relPath: 'js/lore_detail.js' },

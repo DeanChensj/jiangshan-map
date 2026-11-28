@@ -231,6 +231,18 @@ python3 -m http.server 8000
 
 随后在浏览器打开 `http://localhost:8000`。`topics/` 下的静态专题图志在部署时自动构建；如需在本地浏览 `/topics/`，先运行一次 `node scripts/build_seo_topics.js --html-only` 即可。
 
+### 3D 山河
+
+在地图右下角点 **3D 山河**，即从当前年份和中心进入。全国范围保留俯视，局部地图自动拉近，以斜侧视角看山体。俯视时点 **近看山势** 也可在同一中心进入近景。原时间轴覆盖全部 18 个时期。左键平移，滚轮缩放，右键左右拖动环绕、上下拖动调整俯仰。**恢复俯视**保留中心与缩放，**返回 2D** 保留年份和位置，缩放受原地图范围约束。
+
+可直接打开 [三国阳平关的三维近景](http://localhost:8000/?view=3d&year=250&center=106.12,33.11&zoom=8)，侧看汉水上游，再沿时间轴切换朝代。点城邑或关隘可读今址及沿革。比较黄河下游时，可定位开封，缩小至能看清山东和苏北，依次输入 1193、1194、1854、1855 年，观察分期河道。
+
+进入 3D 后，沿用原地图的搜索框和「图层」菜单。「图层 → 3D 山河 → 高度倍率」可输入 1–100 的整数，默认 5 倍；可通过 `heightScale=100` 分享指定倍率。颜色和点击读出的海拔均按实际米数显示。窄屏收起海拔图例，图志嵌入模式（`embed=1`）沿用二维地图。
+
+[MapLibre GL JS 5.24.0](https://github.com/maplibre/maplibre-gl-js/releases/tag/v5.24.0) 以 gzip 存放在 `assets/vendor/maplibre-gl-5.24.0/`，打开 3D 时在浏览器本地解压，需要 WebGL 2 和支持 DecompressionStream 的浏览器。详细地形按视野读取 [Mapzen Terrarium 高程瓦片](https://registry.opendata.aws/terrain-tiles/)。高程请求失败或首次等待超过 7 秒，会自动切换到随站提供的区域高程（东经 45°–180°、北纬 0°–66.5°，最高瓦片级别 3，垂直量化间隔 16 米）。此模式适合观察大尺度山势；重新进入 3D 会重试详细高程。[Natural Earth 海洋面](https://www.naturalearthdata.com/downloads/50m-physical-vectors/) 已裁剪到东亚及邻区，历史水系仍按原图分期显示。
+
+**TODO**　历史气候图层。
+
 ## 使用 Docker 运行
 
 无需本地依赖，用 Docker Compose 一条命令构建并启动：

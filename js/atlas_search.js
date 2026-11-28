@@ -1502,6 +1502,15 @@
       this.clearCustomRoute();
       this._clearQuickSearchInput();
 
+      if (this.terrainView?.active) {
+        if (item.coord && this.terrainView.ready && ['city', 'pass', 'gazetteer', 'region', 'prefecture', 'polity'].includes(item.kind)) {
+          if (item.year != null) this.jumpToYear(item.year);
+          this.terrainView.focusPlace(item);
+          return;
+        }
+        this.terrainView.close();
+      }
+
       if (item.kind === 'quiz') {
         if (this.challenge) this.stopChallenge();
         else this._openChallenge();
