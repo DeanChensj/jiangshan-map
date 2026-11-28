@@ -372,6 +372,46 @@ async function runTraceGenealogySuite(ctx) {
       `English genealogy-lore for ${s.ancient} contains CJK: "${mockLoreEl.innerHTML}"`
     );
   }
+  // 23a-3. Verify ancient shoreline / unaccreted coastal city fallback
+  const getTimelineHtml = (lng, lat, label, locale) => {
+    ctrl.locale = locale;
+    ctrl.openGenealogyAt(lng, lat, label, { fromYearSync: true });
+    return mockTimelineItems.map((el) => el.innerHTML);
+  };
+  const shZh = getTimelineHtml(121.47, 31.23, '上海', 'zh');
+  assert(
+    shZh.some((t) => t.includes('秦') && t.includes('古海岸线外 / 尚未成陆') && t.includes('近岸政区：') && t.includes('会稽郡')),
+    `Expected Shanghai in Qin (zh) to show coastal_unaccreted + nearest shore 会稽郡, got ${JSON.stringify(shZh.slice(0, 4))}`
+  );
+  assert(
+    shZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 尚未成陆') && t.includes('扬州') && t.includes('会稽郡')),
+    `Expected Shanghai in Western Han (zh) to show coastal_unaccreted + nearest shore 扬州·会稽郡, got ${JSON.stringify(shZh.slice(0, 4))}`
+  );
+  const shEn = getTimelineHtml(121.47, 31.23, '上海', 'en');
+  assert(
+    shEn.some((t) => t.includes('(Beyond ancient shoreline / Unaccreted)') && t.includes('Nearest shore:')),
+    `Expected Shanghai in Qin/Han (en) to show coastal_unaccreted + Nearest shore, got ${JSON.stringify(shEn.slice(0, 4))}`
+  );
+  const dyZh = getTimelineHtml(118.67, 37.43, '东营', 'zh');
+  assert(
+    dyZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 尚未成陆')),
+    `Expected Dongying in Western Han to show coastal_unaccreted, got ${JSON.stringify(dyZh.slice(0, 4))}`
+  );
+  const hhZh = getTimelineHtml(127.49, 50.25, '黑河', 'zh');
+  assert(
+    hhZh.some((t) => t.includes('西汉') && t.includes('域外 / 未设郡县') && !t.includes('古海岸线外')),
+    `Expected inland Heihe in Western Han NOT to trigger coastal_unaccreted, got ${JSON.stringify(hhZh.slice(0, 4))}`
+  );
+  const fsZh = getTimelineHtml(124.85, 41.72, '抚顺', 'zh');
+  assert(
+    fsZh.some((t) => t.includes('唐') && t.includes('域外 / 未设郡县') && !t.includes('古海岸线外')),
+    `Expected inland Fushun in Tang NOT to trigger coastal_unaccreted, got ${JSON.stringify(fsZh.slice(0, 4))}`
+  );
+  const twZh = getTimelineHtml(121.56, 25.03, '台北', 'zh');
+  assert(
+    !twZh.some((t) => t.includes('古海岸线外')),
+    `Expected Taiwan NOT to trigger coastal_unaccreted, got ${JSON.stringify(twZh.slice(0, 4))}`
+  );
   ctrl.locale = prevLocaleGen;
   ctrl._id = prevIdForGen;
   sandbox.document = prevDoc;
