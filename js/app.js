@@ -984,6 +984,38 @@
       return this._personPromise;
     }
 
+    _isFeedbackLoaded() {
+      return typeof this.openFeedbackModal === 'function';
+    }
+
+    _ensureFeedback() {
+      if (this._isFeedbackLoaded()) return Promise.resolve(true);
+      if (!this._feedbackPromise) {
+        this._feedbackPromise = this._loadScriptOnce(
+          this._lazyAssetUrl('js/atlas_feedback.js', 'vFeedback')
+        ).then(() => {
+          if (this._isFeedbackLoaded()) return true;
+          this._feedbackPromise = null;
+          return false;
+        });
+      }
+      return this._feedbackPromise;
+    }
+
+    _openFeedback(tab = 'comment') {
+      if (this._isFeedbackLoaded()) {
+        this.openFeedbackModal(tab);
+        return Promise.resolve(true);
+      }
+      return this._ensureFeedback().then((ok) => {
+        if (ok && typeof this.openFeedbackModal === 'function') {
+          this.openFeedbackModal(tab);
+          return true;
+        }
+        return false;
+      });
+    }
+
     _openPerson(personOrQuery, initialIdx = -1) {
       if (this._isPersonLoaded()) {
         this._clearLazyRetryListener();
@@ -2310,10 +2342,11 @@
       setMoreCopy('sub-more-story', 'From textbook maps to Jiangshan', '从课本插图到开源历史地图');
       setMoreCopy('lbl-more-about', 'About & More Projects', '作者博客 · 更多作品');
       setMoreCopy('sub-more-about', 'deanchen.me', 'deanchen.me');
-      setMoreCopy('lbl-more-contact', 'Contact & Feedback', '联系作者 · 勘误反馈');
-      setMoreCopy('sub-more-contact', 'deancsj@gmail.com · Click to copy', 'deancsj@gmail.com · 点击复制');
+      setMoreCopy('lbl-more-contact', 'Guestbook & Feedback', '留言与勘误');
+      setMoreCopy('sub-more-contact', 'Public notes · Report errata', '访客留言 · 史料勘误反馈');
       setMoreCopy('lbl-more-github', 'GitHub Repository', 'GitHub 开源仓库');
       setMoreCopy('sub-more-github', 'DeanChensj/jiangshan-map · ★ Star', 'DeanChensj/jiangshan-map · ★ Star');
+      if (typeof this._updateFeedbackUi === 'function') this._updateFeedbackUi();
       this._updateMusicUi();
       this._updateAutoplayUi();
       this._updatePlaySpeedUi();
@@ -10162,6 +10195,7 @@
 
     // Dismiss the topmost active popover, sheet, or mode one layer at a time.
     _dismissTopOverlay() {
+      if (this._closeFeedbackModal && this._closeFeedbackModal()) return true;
       if (this._closeLocalePopover && this._closeLocalePopover()) return true;
       if (this._closeMorePopover && this._closeMorePopover()) return true;
       if (this._closeLayersPopover()) return true;
@@ -10670,37 +10704,8 @@
           contactLink.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const email = 'deancsj@gmail.com';
-            const copyFallback = () => {
-              if (typeof document === 'undefined' || !document.body) return;
-              const ta = document.createElement('textarea');
-              ta.value = email;
-              ta.style.position = 'fixed';
-              ta.style.opacity = '0';
-              document.body.appendChild(ta);
-              ta.select();
-              try {
-                document.execCommand('copy');
-              } catch (_) {}
-              document.body.removeChild(ta);
-            };
-            if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(email).catch(copyFallback);
-            } else {
-              copyFallback();
-            }
-            const subEl = this._id('sub-more-contact');
-            if (subEl) {
-              subEl.textContent =
-                this.locale === 'en' ? `✓ Copied: ${email}` : this._zh(`✓ 已复制：${email}`);
-              subEl.classList.add('is-copied');
-              clearTimeout(this._contactCopyTimer);
-              this._contactCopyTimer = setTimeout(() => {
-                subEl.classList.remove('is-copied');
-                subEl.textContent =
-                  this.locale === 'en' ? `${email} · Click to copy` : this._zh(`${email} · 点击复制`);
-              }, 2000);
-            }
+            this._closeMorePopover();
+            this._openFeedback('comment');
           });
         }
         document.addEventListener('pointerdown', (e) => {
@@ -11002,6 +11007,16 @@
       // Keyboard navigation
       window.addEventListener('keydown', (e) => {
         if (e.isComposing || e.keyCode === 229) return;
+        if (e.key === 'Escape' && this._closeFeedbackModal && this._closeFeedbackModal()) {
+          e.preventDefault();
+          return;
+        }
+        if (
+          e.target &&
+          (e.target.tagName === 'TEXTAREA' || (e.target.closest && e.target.closest('#feedback-modal')))
+        ) {
+          return;
+        }
         if ((e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) && e.target.tagName !== 'INPUT') {
           if (!this.challenge && searchInp) {
             e.preventDefault();
