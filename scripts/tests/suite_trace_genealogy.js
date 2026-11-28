@@ -372,7 +372,7 @@ async function runTraceGenealogySuite(ctx) {
       `English genealogy-lore for ${s.ancient} contains CJK: "${mockLoreEl.innerHTML}"`
     );
   }
-  // 23a-3. Verify ancient shoreline / unaccreted coastal city fallback
+  // 23a-3. Verify ancient shoreline / coastal fallback
   const getTimelineHtml = (lng, lat, label, locale) => {
     ctrl.locale = locale;
     ctrl.openGenealogyAt(lng, lat, label, { fromYearSync: true });
@@ -380,21 +380,21 @@ async function runTraceGenealogySuite(ctx) {
   };
   const shZh = getTimelineHtml(121.47, 31.23, '上海', 'zh');
   assert(
-    shZh.some((t) => t.includes('秦') && t.includes('古海岸线外 / 尚未成陆') && t.includes('近岸政区：') && t.includes('会稽郡')),
+    shZh.some((t) => t.includes('秦') && t.includes('古海岸线外 / 滨海') && t.includes('近岸政区：') && t.includes('会稽郡')),
     `Expected Shanghai in Qin (zh) to show coastal_unaccreted + nearest shore 会稽郡, got ${JSON.stringify(shZh.slice(0, 4))}`
   );
   assert(
-    shZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 尚未成陆') && t.includes('扬州') && t.includes('会稽郡')),
+    shZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 滨海') && t.includes('扬州') && t.includes('会稽郡')),
     `Expected Shanghai in Western Han (zh) to show coastal_unaccreted + nearest shore 扬州·会稽郡, got ${JSON.stringify(shZh.slice(0, 4))}`
   );
   const shEn = getTimelineHtml(121.47, 31.23, '上海', 'en');
   assert(
-    shEn.some((t) => t.includes('(Beyond ancient shoreline / Unaccreted)') && t.includes('Nearest shore:')),
+    shEn.some((t) => t.includes('(Beyond ancient shoreline / Coastal)') && t.includes('Nearest shore:')),
     `Expected Shanghai in Qin/Han (en) to show coastal_unaccreted + Nearest shore, got ${JSON.stringify(shEn.slice(0, 4))}`
   );
   const dyZh = getTimelineHtml(118.67, 37.43, '东营', 'zh');
   assert(
-    dyZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 尚未成陆')),
+    dyZh.some((t) => t.includes('西汉') && t.includes('古海岸线外 / 滨海')),
     `Expected Dongying in Western Han to show coastal_unaccreted, got ${JSON.stringify(dyZh.slice(0, 4))}`
   );
   const hhZh = getTimelineHtml(127.49, 50.25, '黑河', 'zh');

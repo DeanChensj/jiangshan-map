@@ -1367,7 +1367,7 @@
             : polityHit
               ? this.trTerm(polityHit)
               : coastalFallback
-                ? this.uiStr('coastal_unaccreted', '（古海岸线外 / 尚未成陆）')
+                ? this.uiStr('coastal_unaccreted', '（古海岸线外 / 滨海）')
                 : this.uiStr('beyond_recorded', '（域外 / 未设郡县）');
 
           const defaultCapLabel = d.key === 'roc' || d.key === 'prc' ? '首都' : '王朝都城';

@@ -25,7 +25,7 @@ window.EN_LOCALE = {
     "near_city": "Ancient city: ",
     "outside_modern": "Outside modern provinces / Maritime",
     "beyond_recorded": "(Outside realm / Unrecorded)",
-    "coastal_unaccreted": "(Beyond ancient shoreline / Unaccreted)",
+    "coastal_unaccreted": "(Beyond ancient shoreline / Coastal)",
     "nearest_shore": "Nearest shore: ",
     "trace_click_hint": "Click any dynasty to jump on map",
     "tick_now": "Now",
