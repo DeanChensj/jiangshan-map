@@ -1483,8 +1483,8 @@ async function runSearchRuntimeSuite(ctx) {
           '_getSearchShowcasePool() must stay lightweight and avoid synchronously building searchIndex'
         );
         assert(
-          scPool.length === 31 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
-          `Showcase pool must keep solo Su Shi at index 0 and contain 31 entries, got ${scPool.length}`
+          scPool.length === 32 && scPool[0].kind === 'person' && scPool[0].personKey === 'sushi',
+          `Showcase pool must keep solo Su Shi at index 0 and contain 32 entries, got ${scPool.length}`
         );
         for (const soloKey of [
           'sushi',
@@ -1520,7 +1520,7 @@ async function runSearchRuntimeSuite(ctx) {
             appCode.includes('advanceShowcase: true'),
           'Search showcase must randomize initial index on first open and auto-advance when re-focused from hidden state'
         );
-        for (const storyKey of ['anshi', 'changzheng', 'qintongyi', 'jingkang', 'chuhan']) {
+        for (const storyKey of ['anshi', 'changzheng', 'taiping', 'qintongyi', 'jingkang', 'chuhan']) {
           const hit = scPool.find((item) => item.kind === 'story' && item.storyKey === storyKey);
           assert(hit && hit.subZh && hit.subEn, `Showcase pool must include storyline "${storyKey}" with bilingual subtitles`);
           assert(
@@ -3548,6 +3548,32 @@ async function runSearchRuntimeSuite(ctx) {
         'changzheng',
         'The 1935 Zunyi Conference milestone must carry the [始末] entry for the Long March storyline'
       );
+
+      const taipingProf = ctrl._resolvePersonProfile('taiping');
+      assert(
+        taipingProf && taipingProf.isStory === true && Array.isArray(taipingProf.stops) && taipingProf.stops.length === 10,
+        'taiping must resolve as an Event Storyline (isStory: true) with 10 chronological stops'
+      );
+      for (const sq of ['太平天国', '太平', '金田起义', '天京事变', 'taiping', 'Taiping Rebellion']) {
+        const sqHits = ctrl._queryQuickSearch(sq);
+        assert(
+          sqHits.length > 0 && sqHits[0].kind === 'story' && sqHits[0].storyKey === 'taiping',
+          `Quick search for "${sq}" must surface the Taiping storyline (kind="story") at index 0`
+        );
+      }
+      const qingDynForStory = dynasties.find((d) => d.key === 'qing');
+      assert.strictEqual(
+        ctrl._findStoryForMilestone(qingDynForStory, qingDynForStory.milestones.find((m) => m.year === 1851))?.key,
+        'taiping',
+        'The 1851 Jintian Uprising milestone must carry the single canonical [始末] entry for Taiping'
+      );
+      for (const otherY of [1853, 1856, 1864]) {
+        assert.strictEqual(
+          ctrl._findStoryForMilestone(qingDynForStory, qingDynForStory.milestones.find((m) => m.year === otherY)),
+          null,
+          `Qing milestone ${otherY} must not duplicate the taiping [始末] badge`
+        );
+      }
 
       // Universal Event Storyline (`isStory: true`) invariants:
       // 1) Must declare `dynastyKey` and a 2-char Chinese stem alias searchable as `kind: "story"`.

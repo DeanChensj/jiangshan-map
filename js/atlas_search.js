@@ -271,6 +271,7 @@
         'wangyangming',
         'zhangjuzheng',
         'kangxi',
+        'taiping',
         'maozedong',
         'zhangqian',
         'dufu',
