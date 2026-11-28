@@ -1181,7 +1181,7 @@
             : '';
         const isEnGen = this.locale === 'en';
         const placeTopicHtml = placeSlug
-          ? `<a class="topic-inline-link" href="topics/place-${escHtml(placeSlug)}.html" target="_blank" rel="noopener" title="${
+          ? `<a class="topic-inline-link" href="topics/place-${escHtml(placeSlug)}.html" data-track="lnk-place-topic" target="_blank" rel="noopener" title="${
               isEnGen ? 'Place guide' : '查阅地区图志'
             }">${isEnGen ? 'Guide' : '图志'}</a>`
           : '';

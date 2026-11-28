@@ -4095,9 +4095,20 @@ async function runSearchRuntimeSuite(ctx) {
       '.finished = true',
       'act-return-person',
       'act-return-story',
+      'lnk-story-topic',
+      'lnk-person-topic',
+      'lnk-place-topic',
     ]) {
       assert(ctrlSrc.includes(needle), `atlas_track.js relies on controller code that no longer exists: ${needle}`);
     }
+    assert(
+      /class="topic-inline-link"[^>]*data-track="\$\{topicTrack\}"/.test(ctrlSrc),
+      'atlas_person.js must expose data-track on inline person/story topic guide links'
+    );
+    assert(
+      /class="topic-inline-link"[^>]*data-track="lnk-place-topic"/.test(ctrlSrc),
+      'atlas_genealogy.js must expose data-track="lnk-place-topic" on inline place topic guide links'
+    );
     assert(
       indexHtml.includes('id="milestone-list"') && indexHtml.includes('id="genealogy-timeline"'),
       'atlas_track.js counts clicks on rows inside #milestone-list and #genealogy-timeline'
@@ -4174,6 +4185,9 @@ async function runSearchRuntimeSuite(ctx) {
     t.click({ id: 'act-step-next' });
     t.click({ tagName: 'DIV', classList: ['is-active', 'band-cell'] });
     t.click({ tagName: 'LI', parentElement: { closest: () => ({ id: 'milestone-list' }) } });
+    t.click({ tagName: 'A', dataset: { track: 'lnk-story-topic' } });
+    t.click({ tagName: 'A', dataset: { track: 'lnk-person-topic' } });
+    t.click({ tagName: 'A', dataset: { track: 'lnk-place-topic' } });
 
     assert.deepStrictEqual(
       t.flush(),
@@ -4191,6 +4205,9 @@ async function runSearchRuntimeSuite(ctx) {
         'btn/act-step-next': 2,
         'btn/c.band-cell': 1,
         'btn/li.milestone-list': 1,
+        'btn/lnk-story-topic': 1,
+        'btn/lnk-person-topic': 1,
+        'btn/lnk-place-topic': 1,
       },
       'atlas_track.js must count each feature once per open and each named control once per click'
     );
